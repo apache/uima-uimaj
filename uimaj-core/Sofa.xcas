@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CAS>
+    <uima.cas.Sofa _indexed="0" _id="1" sofaNum="2" sofaID="EnglishDocument" mimeType="text" sofaString="this beer is good"/>
+    <uima.tcas.DocumentAnnotation _indexed="2" _id="8" _ref_sofa="1" begin="0" end="17" language="x-unspecified"/>
+</CAS>

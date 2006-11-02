@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JCasGen Plug-in
+Bundle-SymbolicName: org.apache.uima.jcas.jcasgenp; singleton:=true
+Bundle-Version: 2.0.1
+Bundle-ClassPath: jcasgenp.jar
+Bundle-Activator: org.eclipse.core.internal.compatibility.PluginActivator
+Bundle-Vendor: IBM UIMA
+Bundle-Localization: plugin
+Export-Package: org.apache.uima.jcas.jcasgenp
+Require-Bundle: org.eclipse.core.runtime.compatibility,
+ org.eclipse.emf.codegen,
+ org.eclipse.jdt.core,
+ org.apache.uima.runtime,
+ org.eclipse.core.resources
+Eclipse-AutoStart: true
+Plugin-Class: org.apache.uima.jcas.jcasgenp.JgPlugin

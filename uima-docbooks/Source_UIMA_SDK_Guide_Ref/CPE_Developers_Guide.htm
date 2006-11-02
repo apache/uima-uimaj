@@ -1,0 +1,1295 @@
+<document>
+  <properties>
+    <title>Collection Processing Engine Developer's Guide</title>
+  </properties>
+<body>
+
+
+
+<div class="chapter">
+<div class="Section1">
+
+
+
+<section name="Collection Processing Engine Developer's Guide"><a id="_crossRef183"> </a>
+
+
+
+<p>The UIMA Analysis Engine interface provides support for
+developing and integrating algorithms that analyze unstructured data.  Analysis Engines are designed to operate on a
+per-document basis. Their interface handles one CAS at a time. UIMA provides
+additional support for applying analysis engines to collections of unstructured
+data with its <i>Collection Processing Architecture</i>.  The Collection Processing Architecture
+defines additional components for reading raw data formats from data
+collections, preparing the data for processing by Analysis Engines, executing
+the analysis, extracting analysis results, and deploying the overall flow in a
+variety of local and distributed configurations.</p>
+
+<p>The functionality defined in the Collection Processing
+Architecture is implemented by a <i>Collection Processing Engine</i>
+(CPE).  A CPE includes an Analysis Engine
+and adds a <i>Collection Reader</i>, a <i>CAS Initializer</i>, and <i>CAS
+Consumers</i>.  The part of the UIMA
+Framework that supports CPEs is called the Collection Processing Manager, or
+CPM.</p>
+
+<p>A Collection Reader provides the interface to the raw
+input data and knows how to iterate over the data collection.  Collection Readers are discussed in Section <a class="crossrefText" href="CPE_Developers_Guide.htm#_crossRef192">5.4.1
+</a>.  The CAS Initializer
+prepares an individual data item for analysis and loads it into the CAS.  CAS Initializers are discussed in Section <a class="crossrefText" href="CPE_Developers_Guide.htm#_crossRef193">5.4.2
+</a>.  A CAS
+Consumer extracts analysis results from the CAS and may also perform <i>collection
+level processing</i>, or analysis over a collection of CASes.  CAS Consumers are discussed in Section <a class="crossrefText" href="CPE_Developers_Guide.htm#_crossRef194">5.4.3
+</a>.</p>
+
+<p>Analysis Engines and CAS Consumers are both instances of <i>CAS
+Processors</i>.  A CPM may contain
+multiple CAS Processors.  An Analysis
+Engine may be a Primitive or an Aggregate (composed of other Analysis
+Engines).  Aggregates may contain Cas
+Consumers.  While Collection Readers and
+CAS Initializers always run in the same JVM as the CPM, a CAS Processor may be
+deployed in a variety of local and distributed modes, providing a number of
+options for scalability and robustness.  The different deployment options are covered in detail in Section <a class="crossrefText" href="CPE_Developers_Guide.htm#_crossRef195">5.5
+</a>.</p>
+
+<p>Each of the components in a CPE has an interface specified
+by the UIMA Collection Processing Architecture and is described by a
+declarative XML descriptor file.  Similarly, the CPE itself has a well defined component interface and is
+described by a declarative XML descriptor file.  </p>
+
+<p>A user creates a CPE by assembling the components
+mentioned above.  The UIMA SDK provides a
+graphical tool, called the CPE Configurator, for assisting in the assembly of
+CPEs.  Use of this tool is summarized in
+Section <a class="crossrefText" href="CPE_Developers_Guide.htm#_crossRef186">5.2
+</a>, and more details can be found in <a class="crossrefText" href="CPE_Configurator_Users_Manual.htm#_crossRef152">Chapter
+13, <b>Collection
+Processing Engine Configurator User's</b> Guide</a>.  Alternatively, a CPE can be assembled by writing an XML CPE descriptor.  Details on the CPE descriptor, including its
+syntax and content, can be found in the  <a class="crossrefText" href="CPE_Descriptor_Reference.htm#_crossRef160">Chapter
+24, <b>Collection
+Processing Engine Descriptor Reference</b></a>.  The individual
+components have associated XML descriptors, each of which can be created and /
+or edited using the Component Description Editor.   </p>
+
+<p>A CPE is executed by a UIMA infrastructure component
+called the <i>Collection Processing Manager</i> (CPM).  The CPM provides a number of services and
+deployment options that cover instantiation and execution of CPEs, error
+recovery, and local and distributed deployment of the CPE components.  </p>
+
+
+
+<subsection name="CPE Concepts"><a id="_crossRef184"> </a>
+
+
+
+<p><a class="figReference" href="#_crossRef185">Figure
+12</a> illustrates the data flow that occurs between the
+different types of components that make up a CPE.</p>
+
+<p><img alt="" width="576" height="360"
+src="../UIMA_SDK_Guide_Ref/CPE_Developers_Guide_files/image002.png"/></p>
+
+<a class="figCaption" id="_crossRef185">CPE Components</a>
+
+<p>The components of a CPE are:</p>
+
+<ul><li><i>Collection Reader &ndash; </i>interfaces to a collection of
+data items (e.g., documents) to be analyzed.  Collection Readers return CASes that contain the documents to analyze,
+possibly along with additional metadata.</li>
+
+
+<li><i>Analysis Engine &ndash;</i> takes a
+CAS, analyzes its contents, and produces an enriched CAS.  Analysis Engines can be recursively composed
+of other Analysis Engines (called an <i>Aggregate</i> Analysis Engine).
+Aggregates may also contain CAS Consumers.</li>
+
+
+<li><i>CAS Consumer &ndash;</i> consume the
+enriched CAS that was produced by the sequence of Analysis Engines before it,
+and produce an application-specific data structure, such as a search engine
+index or database. 
+</li></ul>
+
+<p>A fourth type of component, the <i>CAS Initializer,</i>
+may be used by a Collection Reader to populate a CAS from a document.  An example of a CAS Initializer is an HTML
+parser that de-tags an HTML document and also inserts paragraph annotations
+(determined from <code>&lt;P&gt;</code> tags in the original
+HTML) into the CAS.  The Collection
+Processing Manager orchestrates the data flow within a CPE, monitors status,
+optionally manages the life-cycle of internal components and collects
+statistics. </p>
+
+<p>CASes are not saved in a persistent way by the
+framework.  If you want to save CASes,
+then you have to save each CAS as it comes through (for example) using a CAS
+Consumer you write to do this, in whatever format you like.  The UIMA SDK supplies an example CAS Consumer
+to save CASes to files, in the externalized XCAS format (an XML version of the
+CAS).  It also supplies an example CAS
+Consumer to extract information from CASes and store the results into a
+relational Database, using Java's JDBC APIs.</p>
+
+
+
+
+
+
+  </subsection>
+<subsection name="The CPE Configurator and the XCAS viewer"><a id="_crossRef186"> </a>
+
+
+
+<h3><a id="_crossRef187">Using the CPE Configurator</a></h3>
+
+<p>A CPE can be assembled by writing an XML CPE
+descriptor.  Details on the CPE
+descriptor, including its syntax and content, can be found in <a class="crossrefText" href="CPE_Descriptor_Reference.htm#_crossRef160">Chapter
+24, <b>Collection
+Processing Engine Descriptor Reference</b></a>.  Rather
+than edit raw XML, you may develop a CPE Descriptor using the CPE Configurator
+tool.  The CPE Configurator tool is
+described briefly in this section, and in more detail in <a class="crossrefText" href="CPE_Configurator_Users_Manual.htm#_crossRef152">Chapter
+13, <b>Collection
+Processing Engine Configurator User's</b> Guide</a>.</p>
+
+<p>The CPE Configurator tool can be run from Eclipse (see <b><a class="crossrefText" href="CPE_Developers_Guide.htm#_crossRef188">Running the CPE
+Configurator from Eclipse</a></b> <a class="crossrefPage" href="CPE_Developers_Guide.htm#_crossRef188"></a>), or using the <code>cpeGui</code> shell
+script (<code>cpeGui.bat</code> on Windows, <code>cpeGui.sh</code>
+on Unix), which is located in the <code>bin</code> directory of
+the UIMA SDK installation.  Executing
+this batch file will display the window shown here:</p>
+
+<p><img alt="" width="575" height="547"
+src="../UIMA_SDK_Guide_Ref/CPE_Developers_Guide_files/image004.jpg"/></p>
+
+<p>The window is divided into 4 sections, one each for the
+Collection Reader, CAS Initializer, Analysis Engines, and CAS Consumers.  In each section, you select the component(s)
+you want to include in the CPE by browsing to their XML descriptors.  The configuration parameters present in the
+XML descriptors will then be displayed in the GUI; these can be modified to
+override the values present in the descriptor.  For example, the screen shot below shows the CPE Configurator after the
+following components have been chosen:</p>
+
+<p class="xmp">Collection Reader: %UIMA_HOME%docsexamplesdescriptorscollection_reader FileSystemCollectionReader.xml</p>
+
+<p class="xmp">Analysis Engine: %UIMA_HOME%docsexamplesdescriptorsanalysis_engineNamesAndPersonTitles_TAE.xml</p>
+
+<p class="xmp">CAS Consumer: %UIMA_HOME%docsexamplesdescriptorscas_consumerXCasWriterCasConsumer.xml</p>
+
+
+
+<p><img alt="" width="576" height="439"
+src="../UIMA_SDK_Guide_Ref/CPE_Developers_Guide_files/image006.jpg"/></p>
+
+<p>For the File System Collection Reader, ensure that the
+Input Directory is set to <code>%UIMA_HOME%\docs\examples\data</code>.  The other parameters may be left blank.  For the XCAS Writer CAS Consumer, ensure that
+the Output Directory is set to <code>%UIMA_HOME%\docs\examples\data\processed</code>.</p>
+
+<p>After selecting each of the components and providing
+configuration settings, click the play (forward arrow) button at the bottom of
+the screen to begin processing.  A
+progress bar should be displayed in the lower left corner.  (Note that the progress bar will not begin to
+move until all components have completed their initialization, which may take
+several seconds.)  Once processing has
+begun, the pause and stop buttons become enabled.</p>
+
+<p>If an error occurs, you will be informed by an error
+dialog.  If processing completes
+successfully, you will be presented with a performance report.</p>
+
+<p>Using the File menu, you can select <code>Save
+CPE Descriptor </code>to create an .xml descriptor file that defines the CPE
+you have constructed.  Later, you can use
+<code>Open CPE Descriptor</code> to restore the CPE Configurator
+to the saved state.  Also, CPE
+descriptors can be used to run a CPE from a Java program &ndash; see section <a class="crossrefText" href="CPE_Developers_Guide.htm#_crossRef189">5.3
+</a>.  CPE
+Descriptors allow specifying operational parameters, such as error handling
+options, that are not currently available for configuration through the CPE
+Configurator.  For more information on
+manually creating a CPE Descriptor, see the  <a class="crossrefText" href="CPE_Descriptor_Reference.htm#_crossRef160">Chapter
+24, <b>Collection
+Processing Engine Descriptor Reference</b></a></p>
+
+<p>Note that CPE descriptors identify <i>which</i> components
+comprise the CPE, but they do not capture the individual configuration settings
+for these components.  That information
+is kept in the individual component descriptors.  If you have made changes to these settings in
+the CPE Configurator tool and wish to save the settings back to the original
+descriptor files, use the <code>File </code><code>&ndash;&gt;
+Save Component Configuration</code> action.</p>
+
+<p>The CPE configured above runs a simple name and title
+annotator on the sample data provided with the UIMA SDK and stores the results
+using the XCAS Writer CAS Consumer.  To
+view the results, start the XCAS Annotation Viewer by running the <code>xcasAnnotationViewer</code> batch file (<code>xcasAnnotationViewer.bat</code>
+on Windows, <code>xcasAnnotationViewer.sh</code> on Unix), which
+is located in the <code>bin</code> directory of the UIMA SDK
+installation.  Executing this batch file
+will display the window shown here:</p>
+
+<p><img alt="" width="488" height="226"
+src="../UIMA_SDK_Guide_Ref/CPE_Developers_Guide_files/image008.jpg"/></p>
+
+<p>Ensure that the Input Directory is the same as the Output
+Directory specified for the XCAS Writer CAS Consumer in the CPE configured
+above (e.g., <code>%UIMA_HOME%\docs\examples\data\processed</code>)
+and that the TAE Descriptor File is set to the Analysis Engine used in the CPE
+configured above (e.g., <code>%UIMA_HOME%\docs\examples\descriptors\analysis_engine\NamesAndPersonTitles_TAE.xml</code>).</p>
+
+<p>Click the View button to display the Analyzed Documents
+window:</p>
+
+<p><img alt="" width="385" height="286"
+src="../UIMA_SDK_Guide_Ref/CPE_Developers_Guide_files/image010.jpg"/></p>
+
+<p>Double click on any document in the list to view the
+analyzed document.  Double clicking the
+first document, IBM_LifeSciences.txt, will bring up the following window:</p>
+
+<p><img alt="" width="575" height="418"
+src="../UIMA_SDK_Guide_Ref/CPE_Developers_Guide_files/image012.jpg"/></p>
+
+<p>This window shows the analysis results for the
+document.  Clicking on any highlighted
+annotation causes the details for that annotation to be displayed in the
+right-hand pane.  Here the annotation
+spanning &quot;John M. Thompson&quot; has been clicked.</p>
+
+<p>Congratulations!  You have successfully configured a CPE, saved its descriptor, run the
+CPE, and viewed the analysis results.</p>
+
+<h3><a id="_crossRef188">Running the CPE Configurator from
+Eclipse</a></h3>
+
+<p>If you have followed the instructions in <a class="crossrefText" href="UIMA_SDK_Installation_and_Setup.htm#_crossRef372">Chapter
+3, <b>UIMA
+SDK Setup for Eclipse</b></a> and imported the example Eclipse project, then
+you should already have a Run configuration for the CPE Configurator tool
+(called <code>UIMA CPE GUI</code>) configured to run in the
+example project.  Simply run that
+configuration to start the CPE Configurator.</p>
+
+<p>If you haven&rsquo;t followed the Eclipse setup instructions and
+wish to run the CPE Configurator tool from Eclipse, you will need to do the
+following.  As installed, this Eclipse
+launch configuration is associated with the &quot;uima_examples&quot;
+project.  If you've not already done so,
+you may wish to import that project into your Eclipse workspace.  It's located in
+%UIMA_HOME%/docs/examples.  Doing this
+will supply the Eclipse launcher with all the class files it needs to run the
+CPE configurator.  If you don't do this,
+please manually add the JAR files for UIMA to the launch configuration.  </p>
+
+<p>Also, you need to add any projects or JAR files for any
+UIMA components you will be running to the launch class path.</p>
+
+<ul class="note"><li>A simpler alternative may be
+to change the CPE launch configuration to be based on your project.  If you do that, it will pick up all the files
+in your project's class path, which you should set up to include all the UIMA
+framework files.  An easy way to do this
+is to specify in your project's properties' build-path that the uima_examples
+project is on the build path. 
+</li></ul>
+
+<p>Next, in the Eclipse menu select <code>Run</code><code>&ndash;&gt;
+Run</code>..., which brings up the Run configuration screen. </p>
+
+<p>In the Main tab, set the main
+class to <code>com.ibm.uima.reference_impl.application.cpm.CpmFrame</code></p>
+
+<p>In the arguments tab, add the
+following to the VM arguments <br/>
+<code>-Xms128M -Xmx256M -Duima.home=&quot;C:\Program
+Files\IBM\uima&quot;</code> (or wherever you installed the UIMA SDK)  </p>
+
+<p>Click the Run button to launch the CPE Configurator, and
+use it as previously described in this section.</p>
+
+
+
+
+  </subsection>
+<subsection name="Running a CPE from Your Own Java Application"><a id="_crossRef189"> </a>
+
+
+
+<p>The simplest way to run a CPE from a Java application is
+to first create a CPE descriptor as described in the previous section.  Then the CPE can be instantiated and run
+using the following code:</p>
+
+<p class="xmp">//parse CPE descriptor in file specified on command line
+CpeDescription cpeDesc = UIMAFramework.getXMLParser().
+parseCpeDescription(new XMLInputSource(args[0]));</p>
+
+<p class="xmp">//instantiate CPE
+mCPE = UIMAFramework.produceCollectionProcessingEngine(cpeDesc);</p>
+
+<p class="xmp">//Create and register a Status Callback Listener
+mCPE.addStatusCallbackListener(new StatusCallbackListenerImpl());</p>
+
+<p class="xmp">//Start Processing
+mCPE.process();       </p>
+
+<p>This will start the CPE running in a separate thread.  </p>
+
+<h3><a id="_crossRef190">Using Listeners</a></h3>
+
+<p>Updates of the CPM's progress, including any errors that
+occur, are sent to the callback handler that is registered by the call to <code>addStatusCallbackListener</code>, above.  The callback handler is a class that
+implements the CPM's <code>StatusCallbackListener</code>
+interface.  It responds to events by
+printing messages to the console.  The
+source code is fairly straightforward and is not included in this chapter &ndash; see
+the <code>com.ibm.uima.examples.cpe.SimpleRunCPE.java</code> in
+the <code>%UIMA_HOME%\docs\examples\src</code> directory for the
+complete code.</p>
+
+<p>If you need more control over the information in the CPE
+descriptor, you can manually configure it via its API.  See the JavaDocs for package <code>com.ibm.uima.collection</code> for more details.</p>
+
+<p> </p>
+
+
+
+
+  </subsection>
+<subsection name="Developing Collection Processing Components"><a id="_crossRef191"> </a>
+
+
+
+<p>This section is an introduction to the process of
+developing Collection Readers, CAS Initializers, and CAS Consumers.  The code snippets refer to the classes that
+can be found in <code>%UIMA_HOME%\docs\examples\src </code>example
+project.</p>
+
+<p>In the following sections, classes you write to represent
+components need to be public and have public, 0-argument constructors, so that
+they can be instantiated by the framework.   (Although Java classes in which you do not define any constructor will,
+by default, have a 0-argument constructor that doesn't do anything, a class in
+which you have defined at least one constructor does not get a default
+0-argument constructor.)</p>
+
+<h3><a id="_crossRef192">Developing Collection Readers</a></h3>
+
+<p>A Collection Reader is responsible for obtaining documents
+from the collection and returning each document as a CAS.  Like all UIMA components, a Collection Reader
+consists of two parts &ndash; the code and an XML descriptor.</p>
+
+<p>A simple example of a Collection Reader is the &quot;File
+System Collection Reader,&quot; which simply reads documents from files in a
+specified directory. The Java code is in the class <code>com.ibm.uima.examples.cpe.FileSystemCollectionReader</code>
+and the XML descriptor is <code>%UIMA_HOME%\docs\examples\descriptors\collection_reader\FileSystemCollectionReader.xml</code>.</p>
+
+<h4>Java Class</h4>
+
+<p>The Java class for a Collection Reader must implement the <code>com.ibm.uima.collection.CollectionReader</code> interface.  You may build your Collection Reader from
+scratch and implement this interface, or you may extend the convenience base
+class <code>com.ibm.uima.collection.CollectionReader_ImplBase</code>.  </p>
+
+<p>The convenience base class provides default
+implementations for many of the methods defined in the <code>CollectionReader</code>
+interface, and provides abstract definitions for those methods that you are
+required to implement in your new Collection Reader.  Note that if you extend this base class, you
+do not need to declare that your new Collection Reader implements the <code>CollectionReader</code> interface.  </p>
+
+<p>Eclipse tip &ndash; if you are using Eclipse, you can quickly
+create the boiler plate code and stubs for all of the required methods by
+clicking <code>Fi</code><code>le </code><code>&ndash;&gt;
+New </code><code>&ndash;&gt;
+Class</code> to bring up the &quot;New Java Class&quot; dialogue, specifying <code>com.ibm.uima.collection.CollectionReader_ImplBase</code> as the
+Superclass, and checking &quot;Inherited abstract methods&quot; in the section &quot;Which
+method stubs would you like to create?&quot;, e.g.,</p>
+
+<p><img alt="" width="378" height="415"
+src="../UIMA_SDK_Guide_Ref/CPE_Developers_Guide_files/image014.jpg"/></p>
+
+<p>For the rest of this section we will assume that your new
+Collection Reader extends the <code>CollectionReader_ImplBase</code>
+class, and we will show examples from the <code>com.ibm.uima.examples.cpe.FileSystemCollectionReader</code>.  If you must inherit from a different super
+class, you must ensure that your Collection Reader implements the <code>CollectionReader</code> interface &ndash; see the JavaDocs for <code>CollectionReader</code> for more details.</p>
+
+<h4>Required Methods</h4>
+
+<p>The following abstract methods must be implemented:</p>
+
+<h4><i>initialize()</i></h4>
+
+<p>The <code>initialize()</code> method is
+called by the framework when the Collection Reader is first created.  <code>CollectionReader_ImplBase</code>
+actually provides a default implementation of this method (i.e., it is not
+abstract), so you are not strictly required to implement this method.  However, a typical Collection Reader will
+implement this method to obtain parameter values and perform various
+initialization steps.</p>
+
+<p>In this method, the Collection Reader class can access the
+values of its configuration parameters and perform other initialization
+logic.  The example File System
+Collection Reader reads its configuration parameters and then builds a list of
+files in the specified input directory, as follows: </p>
+
+<p class="xmp">public void initialize() throws ResourceInitializationException
+{
+  File directory = new File(
+            (String)getConfigParameterValue(PARAM_INPUTDIR));
+  mEncoding = (String)getConfigParameterValue(PARAM_ENCODING);
+  mDocumentTextXmlTagName = (String)getConfigParameterValue(PARAM_XMLTAG);
+  mLanguage = (String)getConfigParameterValue(PARAM_LANGUAGE);
+  mCurrentIndex = 0;
+  //get list of files (not subdirectories) in the specified directory
+  mFiles = new ArrayList();
+  File[] files = directory.listFiles();
+  for (int i = 0; i &lt; files.length; i++)
+  {
+    if (!files[i].isDirectory())
+    {
+      mFiles.add(files[i]);  
+    }
+  }
+}</p>
+
+<ul class="note"><li>This is the zero-argument
+version of the initialize method.  There
+is also a method on the Collection Reader interface called <code>initialize(ResourceSpecifier, Map)</code> but it is not
+recommended that you override this method in your code.  That method performs internal initialization
+steps and then calls the zero-argument <code>initialize()</code>.
+</li></ul>
+
+<h4><i>hasNext()</i></h4>
+
+<p>The <code>hasNext()</code> method returns
+whether or not there are any documents remaining to be read from the collection.  The File System Collection Reader's <code>hasNext()</code> method is very simple.  It just checks if there are any more files
+left to be read:  </p>
+
+<p class="xmp">public boolean hasNext()
+{
+  return mCurrentIndex &lt; mFiles.size();
+}</p>
+
+<h4><i>getNext(CAS)</i></h4>
+
+<p>The <code>getNext()</code> method reads the
+next document from the collection and populates a CAS.  In the simple case, this amounts to reading
+the file and calling the CAS's <code>setDocumentText</code>
+method.  The example File System
+Collection Reader is slightly more complex.  It first checks for a CAS Initializer.  If the CPE includes a CAS Initializer, the CAS Initializer is used to
+read the document, and <code>initialize() </code>the CAS.  If the CPE does not include a CAS
+Initializer, the File System Collection Reader reads the document and sets the
+document text in the CAS.</p>
+
+<p>The File System Collection Reader also stores additional
+metadata about the document in the CAS.  In particular, it sets the document's language in the special built-in
+feature structure <code>uima.tcas.DocumentAnnotation </code>(see
+<a class="crossrefText" href="CAS_Reference.htm#_crossRef77">Chapter 26, <b>CAS Reference</b></a> for details about this built-in type) and
+creates an instance of <code>com.ibm.uima.examples.SourceDocumentInformation</code>,
+which stores information about the document&rsquo;s source location.  This information may be useful to downstream
+components such as CAS Consumers.  Note
+that the type system descriptor for this type can be found in <code>com.ibm.uima.examples.SourceDocumentInformation.xml</code>.</p>
+
+<p>The getNext() method for the File System Collection Reader
+looks like this:</p>
+
+<p class="xmp">public void getNext(CAS aCAS) throws IOException, CollectionException
+{
+  JCas jcas;
+  try
+  {
+    jcas = aCAS.getJCas();
+  } 
+  catch (CASException e)
+  {
+    throw new CollectionException(e);
+  }
+  
+  //open input stream to file
+  File file = (File)mFiles.get(mCurrentIndex++);
+  FileInputStream fis = new FileInputStream(file);
+  try
+  { 
+    //if there©s a CAS Initializer, call it</p>
+
+<p class="xmp">    if (getCasInitializer() != null)</p>
+
+<p class="xmp">    {
+      getCasInitializer().initializeCas(fis, aCAS);
+    }</p>
+
+<p class="xmp">    else  //No CAS Initializer, so read file and set document
+          //text here
+    {
+      byte[] contents = new byte[(int)file.length() ];
+      fis.read( contents );   
+      String text;
+      if (mEncoding != null)
+      {   
+        text = new String(contents, mEncoding);
+      }
+      else
+      { 
+        text = new String(contents); 
+      }
+      //put document in CAS (assume this CAS is a view of a Text CAS)
+      jcas.setDocumentText(text);
+    }
+  }
+  finally
+  {
+    if (fis != null)
+      fis.close();
+  }  
+   
+  //set language if it was explicitly specified as a 
+  //configuration parameter
+  if (mLanguage != null)
+  {
+    ((DocumentAnnotation)jcas.getDocumentAnnotationFs())
+        .setLanguage(mLanguage);
+  }
+    
+  //Also store file location information in CAS metadata.  
+  //This information is critical
+  //if CAS Consumers will need to know where the 
+  //original document contents are located.</p>
+
+<p class="xmp">  //For example, the Semantic Search CAS Indexer writes this 
+  //information into the search index that it creates, which allows 
+  //applications that use the search index to
+  //locate the documents that satisfy their semantic queries.  </p>
+
+<p class="xmp"> 
+  SourceDocumentInformation srcDocInfo = 
+    new SourceDocumentInformation(jcas);
+  srcDocInfo.setUri(file.getAbsoluteFile().toURL().toString());
+  srcDocInfo.setOffsetInSource(0);
+  srcDocInfo.setDocumentSize((int)file.length());
+  srcDocInfo.addToIndexes();
+}</p>
+
+<p>The Collection Reader can create additional annotations in
+the CAS at this point, in the same way that annotators create annotations.  However, if you are doing complex
+initialization of the CAS, it may be better to use a CAS Initializer as
+described in Section <a class="crossrefText" href="CPE_Developers_Guide.htm#_crossRef193">5.4.2
+</a>. </p>
+
+<h4><i>getProgress()</i></h4>
+
+<p>The Collection Reader is responsible for returning
+progress information; that is, how much of the collection has been read thus
+far and how much remains to be read.  The
+framework defines progress very generally; the Collection Reader simply returns
+an array of <code>Progress</code> objects, where each object
+contains three fields &ndash; the amount already completed, the total amount (if
+known), and a unit (e.g. entities (documents), bytes, or files).  The method returns an array so that the
+Collection Reader can report progress in multiple different units, if that
+information is available.  The File
+System Collection Reader's <code>getProgress()</code> method
+looks like this:</p>
+
+
+
+<p class="xmp">public Progress[] getProgress()
+{
+  return new Progress[]{
+     new ProgressImpl(mCurrentIndex,mFiles.size(),Progress.ENTITIES)};
+}</p>
+
+<p>In this particular example, the total number of files in
+the collection is known, but the total size of the collection is not
+known.  As such, a <code>ProgressImpl</code>
+object for <code>Progress.ENTITIES</code> is returned, but a <code>ProgressImpl</code> object for  <code>Progress.BYTES</code> is not.</p>
+
+<h4><i>close()</i></h4>
+
+<p>The close method is called when the Collection Reader is
+no longer needed.  The Collection Reader
+should then release any resources it may be holding.  The FileSystemCollectionReader does not hold
+resources and so has an empty implementation of this method: </p>
+
+<p class="xmp">public void close() throws IOException { }</p>
+
+<h4>Optional Methods</h4>
+
+<p>The following methods may be implemented:</p>
+
+<h4><i>reconfigure()</i></h4>
+
+<p>This method is called if the Collection Reader's
+configuration parameters change.  </p>
+
+<h4><i>typeSystemInit()</i></h4>
+
+<p>If you are only setting the document text in the CAS, or
+if you are using the JCas (recommended, as in the current example), you do not
+have to implement this method.  If you
+are directly using the CAS API, this method is used in the same way as it is
+used for an annotator &ndash; see <a class="crossrefText" href="Annotator_and_Analysis_Engine_Developers_Guide.htm#_crossRef1">Chapter 4, <b>Annotator
+and Analysis Engine Developer&rsquo;s</b> Guide</a>for
+more information.</p>
+
+<h4>Threading considerations</h4>
+
+<p>Collection readers do not have to be thread safe; they are run with a
+single thread per instance, and only one instance per instance of the
+Collection Processing Manager (CPM) is made.</p>
+
+<h4>XML
+Descriptor</h4>
+
+<p>You can use the Component Description Editor to create and / or edit the
+File System Collection Reader's descriptor.  Here is its descriptor (abbreviated somewhat to fit on a page), which is
+very similar to an Analysis Engine descriptor:</p>
+
+<p class="xmp">&lt;collectionReaderDescription  xmlns=&quot;http://uima.watson.ibm.com/resourceSpecifier&quot;&gt;
+    &lt;frameworkImplementation&gt;com.ibm.uima.java&lt;/frameworkImplementation&gt;
+    &lt;implementationName&gt;
+        com.ibm.uima.util.FileSystemCollectionReader
+    &lt;/implementationName&gt;
+    &lt;processingResourceMetaData&gt;
+        &lt;name&gt;File System Collection Reader&lt;/name&gt;
+        &lt;description&gt;Reads text files from the filesystem&lt;/description&gt;
+        &lt;version&gt;1.0&lt;/version&gt;
+        &lt;vendor&gt;IBM&lt;/vendor&gt;
+        &lt;configurationParameters&gt;
+            &lt;configurationParameter&gt;
+                &lt;name&gt;InputDirectory&lt;/name&gt;
+                &lt;description&gt;Directory containing input files&lt;/description&gt;
+                &lt;type&gt;String&lt;/type&gt;
+                &lt;multiValued&gt;false&lt;/multiValued&gt;
+                &lt;mandatory&gt;true&lt;/mandatory&gt;
+            &lt;/configurationParameter&gt;   </p>
+
+<p class="xmp">            &lt;!-- Other Configuration Parameters Omitted --&gt;  
+        &lt;/configurationParameters&gt;</p>
+
+<p class="xmp">        &lt;configurationParameterSettings&gt;
+            &lt;nameValuePair&gt;
+                &lt;name&gt;InputDirectory&lt;/name&gt;
+                &lt;value&gt;
+                    &lt;string&gt;C:program filesuimadata&lt;/string&gt;
+                &lt;/value&gt;
+            &lt;/nameValuePair&gt;
+        &lt;/configurationParameterSettings&gt;
+        
+        &lt;!-- Type System of CASes returned by this Collection Reader --&gt;
+        
+        &lt;typeSystemDescription&gt;
+            &lt;imports&gt;
+                &lt;import name=&quot;com.ibm.uima.examples.SourceDocumentInformation&quot;/&gt;
+            &lt;/imports&gt;
+        &lt;/typeSystemDescription&gt;
+
+        &lt;capabilities&gt;
+           &lt;capability&gt;
+              &lt;inputs/&gt;
+               &lt;outputs&gt;
+                 &lt;type allAnnotatorFeatures=&quot;true&quot;&gt;
+                    com.ibm.uima.examples.SourceDocumentInformation
+                 &lt;/type&gt;
+              &lt;/outputs&gt;
+           &lt;/capability&gt;
+        &lt;/capabilities&gt;
+    &lt;/processingResourceMetaData&gt;
+&lt;/collectionReaderDescription&gt;</p>
+
+<h3><a id="_crossRef193">Developing CAS Initializers</a></h3>
+
+<p>Although
+Collection Readers can directly write to the CAS, it is best that they do so
+only for simple cases.  If the task of
+populating the CAS from a raw document is complex and might be reusable with
+other data collections, then it is worthwhile to encapsulate it in a separate
+CAS Initializer component.</p>
+
+<p>An example where the use of a CAS Initializer is ideal is a scenario
+where the documents in the collection contain inline HTML or XML markup.  Since Analysis Engines often ingest
+plain-text documents with stand-off annotations, it is necessary to translate
+the inline HTML or XML markup into this form.  For example, an HTML document with inline <code>&lt;p&gt;</code> and <code>&lt;h1&gt;</code> tags could be translated into a CAS with a
+plain-text document and stand-off <code>Paragraph</code> and <code>Heading</code> annotations.  Since this HTML parsing logic could be used regardless of the source of
+the HTML documents (e.g. a file system, a web connection, or a relational
+database), it would be ideal to implement this using a CAS Initializer that
+could be plugged-in to multiple Collection Readers.</p>
+
+<p>A CAS Initializer Java class must implement the interface <code>com.ibm.uima.collection.CasInitializer</code>, and will
+also generally extend from the convenience base class <code>com</code><code>.ibm.uima.collection.CasInitializer_ImplBase</code>.  A CAS Initializer also must have an XML
+descriptor, which has the exact same form as a Collection Reader Descriptor
+except that the outer tag is <code>&lt;casInitializerDescription&gt;</code>.</p>
+
+<p>CAS Initializers have optional <code>init</code><code>ialize()</code>, <code>reconfigure()</code>, and <code>typeSystemInit()</code> methods, which perform the same functions as they
+do for Collection Readers.  The only
+required method for a CAS Initializer is <code>initializeCas(Object,
+CAS)</code>.  This method takes the raw
+document (for example, an <code>I</code><code>nputStream</code> object from which the document can be read) and a
+CAS, and populates the CAS from the document.</p>
+
+<p>An example CAS Initializer is implemented by the class <code>com.ibm.uima.examples.cpe.<br/>
+SimpleXmlCasInitializer</code>.  The
+SimpleXmlCasInitializer shows how a CAS Initializer can invoke an XML Parser on
+the raw document.  In this very simple
+example the only thing extracted from the XML document is the text to be processed.  You can configure the <code>SimpleXmlCasInitializer
+</code>with the name of an XML tag that contains the text; it will then filter
+out the rest of the document. </p>
+
+<p>Here is the implementation of the <code>initializeCas()</code> method for
+this example:</p>
+
+
+
+<p class="xmp">public void initializeCas(Object aObj, CAS aCAS)
+  throws CollectionException, IOException
+{
+  //build SAX InputSource object from InputStream supplied
+  //by the CollectionReader
+  InputSource inputSource;
+  if (aObj instanceof InputStream)
+  {
+    inputSource = new InputSource((InputStream)aObj);
+  }
+  else
+  {
+      throw new CollectionException( 
+                  CollectionException.INCORRECT_INPUT_TO_CAS_INITIALIZER,
+                  new Object[]{InputStream.class.getName(), 
+                  Obj.getClass().getName()});
+  }
+  //create SAX ContentHandler that populates CAS
+  SaxHandler handler = new SaxHandler(aCAS);
+  //parse
+  try
+  {
+    SAXParser parser = mParserFactory.newSAXParser();      
+    XMLReader reader = parser.getXMLReader();
+    reader.setContentHandler(handler);
+    reader.parse(inputSource);  
+  } 
+  catch (Exception e)
+  {
+    throw new CollectionException(e);
+  }  
+}</p>
+
+<p>The <code>SaxHandler</code> class referenced here is an inner class that does
+the actual work of extracting the text from the specified XML element.  For the full implementation, see the example
+code under <code>docs/examples</code>.</p>
+
+<p>To try out the CAS Initializer, use the CPE Configurator GUI as
+described in section <a class="crossrefText" href="CPE_Configurator_Users_Manual.htm#_crossRef156">13.3
+</a>.  However, in
+addition to selecting a Collection Reader, Analysis Engine, and CAS Consumer as
+described in that section, also select a CAS Initializer by using the
+&quot;Browse&quot; button on the CAS Initializer panel.  Browse to the <code>%UIMA_HOME%/docs/examples/descriptors/cas_initializer
+</code>directory and select the <code>SimpleXmlCasInitializer.xml</code> descriptor
+file.  Then, set the &quot;Xml Tag
+Containing Text&quot; parameter to the value TEXT.  The CPE Configurator should then look like
+this:</p>
+
+<p><img alt="" width="576" height="439"
+src="../UIMA_SDK_Guide_Ref/CPE_Developers_Guide_files/image016.jpg"/></p>
+
+<p>The <code>SimpleXmlCasInitializer</code> only works with XML documents, so you will
+need to change the &quot;Input Directory&quot; parameter of the Collection
+Reader by clicking the &quot;Browse&quot; button and selecting the <code>%UIMA_HOME%/d</code><code>ocs/examples/data/xml</code>
+directory.  Then click the play
+button.  Once processing has completed,
+you can use the XCAS Annotation Viewer, as described in <a class="crossrefText" href="XCAS_Annotation_Viewer.htm#_crossRef381">Chapter
+20  </a>, to view the results.  Notice that only the contents of the
+&lt;TEXT&gt; elements in the original source documents appear in the analysis
+results.</p>
+
+<p>It is important to note that CAS Initializers will only work with
+Collection Readers that are designed to use them.  The Collection Reader needs to call its <code>getCasI</code><code>nitializer()</code> method to
+see if a CAS Initializer has been supplied, and call the CAS Initializer's <code>initializeCas()</code> method, rather than setting up the CAS itself.  Our File System Collection Reader example
+from section <a class="crossrefText" href="CPE_Developers_Guide.htm#_crossRef192">5.4.1
+</a>optionally uses a CAS Initializer as follows:</p>
+
+<p class="xmp">//if there is a CAS Initializer, call it
+if (getCasInitializer() != null)
+{
+  getCasInitializer().initializeCas(fis, aCAS);
+}
+else  //No CAS Initializer, so read file and set document text ourselves
+{
+  ...
+}</p>
+
+<p>When you write your own Collection Reader, in the description element of
+your Collection Reader's descriptor you should document whether your Collection
+Reader supports (or requires) a CAS Initializer, so that users will know how to
+configure their CPE properly.</p>
+
+<h3><a id="_crossRef194">Developing CAS Consumers</a></h3>
+
+<p>A CAS Consumer receives each CAS after it has been analyzed by the
+Analysis Engine.  CAS Consumers typically
+do not update the CAS; they typically extract data from the CAS and persist
+selected information to aggregate data structures such as search engine indexes
+or databases.</p>
+
+<p>A CAS Consumer Java class must implement the interface <code>com.ibm.uima.collection.CasConsumer</code>, and will also generally extend from the
+convenience base class <code>com.ibm.uima.co</code><code>llection.CasConsumer_ImplBase</code>.  A
+CAS Consumer also must have an XML descriptor, which has the exact same form as
+a Collection Reader Descriptor except that the outer tag is<code> &lt;casConsumerDescription&gt;</code>.</p>
+
+<p>CAS Consumers have optional <code>initialize()</code>, <code>reconfigure()</code>, and <code>typeSystemInit()</code> methods,
+which perform the same functions as they do for Collection Readers and CAS
+Initializers.  The only required method
+for a CAS Consumer is <code>processCas(CAS)</code>, which is where the CAS Consumer does
+the bulk of its work (i.e., consume the CAS).  </p>
+
+<p>The <code>CasConsumer</code> interface additionally defines batch and
+collection level processing methods.  The
+CAS Consumer can implement the <code>batchProcessComplete()</code> method to
+perform processing that should occur at the end of each batch of CASes.  Similarly, the CAS Consumer can implement the
+<code>collectionProcessComplete()</code>
+method to perform any collection level processing at the end of the collection.</p>
+
+<p>A very simple example of a CAS Consumer, which writes an XML
+representation of the CAS to a file, is the XCAS Writer CAS Consumer. The Java
+code is in the class <code>com.ibm.uima.examples.cpe.XCasWriterCasConsumer</code> and the
+descriptor is in <code>%UIMA_HOME%\docs\examples\descriptors\cas_consumer\XCasWriterCasConsumer.xml</code>.  </p>
+
+<h4>Required Methods</h4>
+
+<p>When extending the convenience class <code>com.ibm.uima.collection.CasConsumer_ImplBase</code>,
+the following abstract methods must be implemented:</p>
+
+<h4><i>initialize()</i></h4>
+
+<p>The <code>initialize()</code> method is
+called by the framework when the CAS Consumer is first created.  <code>CasConsumer_ImplBase</code>
+actually provides a default implementation of this method (i.e., it is not
+abstract), so you are not strictly required to implement this method.  However, a typical CAS Consumer will
+implement this method to obtain parameter values and perform various
+initialization steps.</p>
+
+<p>In this method, the CAS Consumer can access the values of
+its configuration parameters and perform other initialization logic.  The example XCAS Writer CAS Consumer reads
+its configuration parameters and sets up the output directory: </p>
+
+<p class="xmp">public void initialize() throws ResourceInitializationException
+{
+  mDocNum = 0;
+  mOutputDir = new File((String)getConfigParameterValue(PARAM_OUTPUTDIR));
+  if (!mOutputDir.exists()) {
+    mOutputDir.mkdirs();
+  }
+}</p>
+
+<h4><i>processCas()</i></h4>
+
+<p>The <code>processCas()</code> method is
+where the CAS Consumer does most of its work.  In our example, the XCAS Writer CAS Consumer obtains an iterator over
+the document metadata in the CAS (in the SourceDocumentInformation feature
+structure, which is created by the File System Collection Reader) and extracts
+the URI for the current document.  From
+this the output filename is constructed in the output directory and a
+subroutine (<code>writeXCas</code>) is called to generate the
+output file.  The <code>writeXCas
+</code>subroutine uses the <code>XCASSerializer</code> class
+provided with the UIMA SDK to serialize the CAS to the output file (see the
+example source code for details).</p>
+
+<p class="xmp">public void processCas(CAS aCAS) throws ResourceProcessException
+{
+  JCas jcas;
+  try {
+    jcas = aCAS.getJCas();
+  } 
+  catch (CASException e) {
+    throw new ResourceProcessException(e);
+  }</p>
+
+<p class="xmp">  // retrieve the filename of the input file from the CAS </p>
+
+<p class="xmp">  FSIterator it = jcas.getJFSIndexRepository().
+                     getAnnotationIndex(
+                       SourceDocumentInformation.type).iterator();
+  File outFile = null;
+  if (it.hasNext()) {
+    SourceDocumentInformation fileLoc = 
+               (SourceDocumentInformation)it.next();
+    File inFile;
+    try {
+      inFile = new File(new URL(fileLoc.getUIR()).getPath());
+      outFile = new File(mOutputDir, inFile.getName());
+    } catch (MalformedURLException e1) {
+        // invalid URL, use default processing below
+    }
+  }
+  if (null == outFile) {
+    outFile = new File(mOutputDir, &quot;doc&quot;+ mDocNum++);
+  }
+  // serialize XCAS and write to output file
+  try {
+    writeXCas(jcas.getCas(), outFile);
+  } 
+  catch (IOException e) {
+    throw new ResourceProcessException(e);
+  } 
+  catch (SAXException e) {
+    throw new ResourceProcessException(e);
+  }
+}</p>
+
+<h4>Optional
+Methods</h4>
+
+<p>The following methods are optional in a CAS Consumer, though they are
+often used.</p>
+
+<h4><i>batchProcessComplete()</i></h4>
+
+<p>The framework calls the batchProcessComplete() method at the end of each
+batch of CASes.  This gives the CAS
+Consumer an opportunity to perform any batch level processing.  Our simple XCAS Writer CAS Consumer does not
+perform any batch level processing, so this method is empty.  Batch size is set in the Collection
+Processing Engine descriptor.</p>
+
+<h4><i>collectionProcessComplete()</i></h4>
+
+<p>The framework calls the collectionProcessComplete() method at the end of
+the collection (i.e., when all objects in the collection have been
+processed).  At this point in time, no
+CAS is passed in as a parameter.  This
+gives the CAS Consumer an opportunity to perform collection processing over the
+entire set of objects in the collection.  Our simple XCAS Writer CAS Consumer does not perform any collection
+level processing, so this method is empty.</p>
+
+
+
+
+  </subsection>
+<subsection name="Deploying a CPE"><a id="_crossRef195"> </a>
+
+
+
+<p>The CPM provides a number of service and deployment
+options that cover instantiation and execution of CPEs, error recovery, and
+local and distributed deployment of the CPE components.  The behavior of the CPM (and correspondingly,
+the CPE) is controlled by various options and parameters set in the CPE
+descriptor.  The current version of the
+CPE Configurator tool, however, supports only default error handling and
+deployment options.  To change these
+options, you must manually edit the CPE descriptor &ndash; a potentially error prone
+task.  </p>
+
+<p>Eventually the CPE Configurator tool will support
+configuring these options and a detailed tutorial for these settings will be
+provided.  In the meantime, we provide
+only a high-level, conceptual overview of these advanced features in the rest
+of this chapter, and refer the advanced user to <a class="crossrefText" href="CPE_Descriptor_Reference.htm#_crossRef160">Chapter 24, <b>Collection Processing
+Engine Descriptor Reference</b></a> for details on setting these options in the
+CPE Descriptor.</p>
+
+<p><a class="figReference" id="cpedg_">Figure nn</a> shows a logical
+view of how an application uses the UIMA framework to instantiate a CPE from a
+CPE descriptor.  The CPE descriptor
+identifies the CPE components (referencing their corresponding descriptors) and
+specifies the various options for configuring the CPM and deploying the CPE
+components.</p>
+
+<p><img alt="" width="535" height="327"
+src="../UIMA_SDK_Guide_Ref/CPE_Developers_Guide_files/image018.png"/></p>
+
+<a class="figCaption" id="_crossRef196">CPE instantiation</a>
+
+<p>There are three deployment modes for CAS Processors
+(Analysis Engines and CAS Consumers) in a CPE: </p>
+
+<ol><li><b>Integrated</b> (runs in the same
+Java instance as the CPM)</li>
+
+
+<li><b>Managed</b> (runs in a separate
+process on the same machine), and </li>
+
+
+<li><b>Non-managed</b> (runs in a
+separate process, perhaps on a different machine).  
+</li></ol>
+
+<p>An integrated CAS Processor runs in the same JVM as the
+CPE.  A managed CAS Processor runs in a
+separate process from the CPE, but still on the same computer.  The CPE controls startup, shutdown, and
+recovery of a managed CAS Processor.  A
+non-managed CAS Processor runs as a service and may be on the same computer as
+the CPE or on a remote computer.  A
+non-managed CAS Processor <b><i>service</i></b> is started and managed
+independently from the CPE.</p>
+
+<p>For both managed and non-managed CAS Processors, the CAS
+must be transmitted between separate processes and possibly between separate
+computers.  This is accomplished using <i>Vinci</i>,
+a communication protocol used by the CPM that ships with the UIMA SDK. Vinci
+handles service naming and location and data transport (see <a class="crossrefText" href="Application_Developers_Guide.htm#_crossRef66">6.6.2, <b>How to Deploy
+a UIMA Component as a Vinci Service</b></a> for more information).  Service naming and location are provided by a
+<i>Vinci Naming Service</i>, or <i>VNS</i>.  For managed CAS Processors, the CPE uses its own internal VNS.  For non-managed CAS Processors, a separate
+VNS must be running.  </p>
+
+<ul class="note"><li>The UIMA SDK also supports
+using unmanaged remote services via the web-standard SOAP communications
+protocol (see <b><a class="crossrefText" href="Application_Developers_Guide.htm#_crossRef65">How
+to Deploy a UIMA Component as a SOAP Web Service</a></b> <a class="crossrefPage" href="Application_Developers_Guide.htm#_crossRef65"></a>).  This
+approach is based on a proxy implementation, where the proxy is essentially
+running in an integrated mode.  To use
+this approach with the CPM, use the Integrated mode, with the component being
+an Aggregate which, in turn, connects to a remote service.
+</li></ul>
+
+<p>The CPE Configurator tool currently only supports
+constructing CPEs that deploy CAS Processors in integrated mode.  To deploy CAS Processors in any other mode,
+the CPE descriptor must be edited by hand (better tooling support is being
+worked on).  Details on the CPE
+descriptor and the required settings for various CAS Processor deployment modes
+can be found in <a class="crossrefText" href="CPE_Descriptor_Reference.htm#_crossRef160">Chapter 24, <b>Collection Processing
+Engine Descriptor Reference</b></a>.  In
+the following sections we merely summarize the various CAS Processor deployment
+options.</p>
+
+<h3><a id="_crossRef197">Deploying Managed CAS Processors</a></h3>
+
+<p>Managed CAS Processor deployment is shown in <a class="figReference" href="#_crossRef198">Figure nn</a>.  A managed CAS
+Processor is deployed by the CPE as a Vinci service.  The CPE manages the lifecycle of the CAS
+Processor including service launch, restart on failures, and service
+shutdown.  A managed CAS Processor runs
+on the same machine as the CPE, but in a separate process.  This provides the necessary fault isolation
+for the CPE to protect it from non-robust CAS Processors.  A fatal failure of a managed CAS Processor
+does not threaten the stability of the CPE.  </p>
+
+<p><img alt="" width="306" height="274"
+src="../UIMA_SDK_Guide_Ref/CPE_Developers_Guide_files/image020.png"/>  </p>
+
+<a class="figCaption" id="_crossRef198">CPE with managed CAS Processors</a>
+
+<p>The CPE communicates with managed CAS Processors using the
+Vinci communication protocol.  A CAS
+Processor is launched as a Vinci service and its <code>process()</code>
+method is invoked remotely via a Vinci command.  The CPE uses its own internal VNS to support managed CAS
+processors.  The VNS, by default, listens
+on port 9005.  If this port is not
+available, the VNS will increment its listen port until it finds one that is
+available.  All managed CAS Processors
+are internally configured to &quot;talk&quot; to the CPE managed VNS.  This internal VNS is transparent to the end
+user launching the CPE. </p>
+
+<p>To deploy a managed CAS Processor, the CPE deployer must
+change the CPE descriptor. The following is a section from the CPE descriptor
+that shows an example configuration specifying a managed CAS Processor.</p>
+
+<p class="xmp">&lt;casProcessor <b><i>deployment=&quot;local&quot;</i></b> name=&quot;Meeting Detector TAE&quot;&gt;
+  &lt;descriptor&gt;
+    &lt;include href=&quot;deploy/vinci/Deploy_MeetingDetectorTAE.xml&quot;/&gt;
+  &lt;/descriptor&gt;
+  &lt;runInSeparateProcess&gt;
+    &lt;exec dir=&quot;.&quot; executable=&quot;java&quot;&gt;
+      &lt;env key=&quot;CLASSPATH&quot; 
+value=&quot;src;C:/Program Files/IBM/uima/lib/uima_core.jar;C:/Program                Files/IBM/uima/lib/uima_cpe.jar;C:/Program Files/IBM/uima/lib/uima_examples.jar;C:/Program Files/IBM/uima/lib/uima_adapter_vinci.jar;C:/Program Files/IBM/uima/lib/uima_jcas_builtin_types.jar;C:/Program Files/IBM/uima/lib/vinci/jVinci.jar;C:/Program Files/IBM/uima/lib/xml.jar&quot;/&gt;
+      &lt;arg&gt;-DLOG=C:/Temp/service.log&lt;/arg&gt;
+      &lt;arg&gt;com.ibm.uima.reference_impl.collection.
+         service.vinci.VinciCasObjectProcessorService_impl&lt;/arg&gt;
+      &lt;arg&gt;${descriptor}&lt;/arg&gt;
+    &lt;/exec&gt;
+  &lt;/runInSeparateProcess&gt;
+  &lt;deploymentParameters/&gt;
+  &lt;filter/&gt;
+  &lt;errorHandling&gt;
+    &lt;errorRateThreshold action=&quot;terminate&quot; value=&quot;1/100&quot;/&gt;
+    &lt;maxConsecutiveRestarts action=&quot;terminate&quot; value=&quot;3&quot;/&gt;
+    &lt;timeout max=&quot;100000&quot;/&gt;
+  &lt;/errorHandling&gt;
+  &lt;checkpoint batch=&quot;10000&quot;/&gt;
+&lt;/casProcessor&gt;</p>
+
+<p><a id="_crossRef199">See <a class="crossrefText" href="CPE_Descriptor_Reference.htm#_crossRef160">Chapter
+24, <b><i>Collection
+Processing Engine Descriptor Reference</i></b></a><a class="crossrefPage" href="CPE_Descriptor_Reference.htm#_crossRef160"></a> for details and required settings.</a></p>
+
+<h3><a id="_crossRef200">Deploying Non-managed CAS
+Processors</a></h3>
+
+<p>Non-managed CAS Processor deployment is shown in <a class="figReference" href="#_crossRef201">Figure nn</a>.  In
+non-managed mode, the CPE supports connectivity to CAS Processors running on
+local or remote computers using Vinci.  Non-managed processors are different from managed processors in two
+aspects:</p>
+
+<ol><li>Non-managed processors are neither started nor stopped by the CPE.</li>
+
+
+<li>Non-managed processors use an independent VNS, also neither started nor
+stopped by the CPE.  
+</li></ol>
+
+<p><img alt="" width="396" height="309"
+src="../UIMA_SDK_Guide_Ref/CPE_Developers_Guide_files/image023.png"/> </p>
+
+<a class="figCaption" id="_crossRef201">CPE with non-managed CAS Processors</a>
+
+<p>While non-managed CAS Processors provide the same level of
+fault isolation and robustness as managed CAS Processors, error recovery
+support for non-managed CAS Processors is much more limited.  In particular, the CPE cannot restart a
+non-managed CAS Processor after an error.</p>
+
+<p>Non-managed CAS Processors also require a separate Vinci
+Naming Service running on the network.  This VNS must be manually started and monitored by the end user or
+application.  Instructions for running a
+VNS can be found in section <a class="crossrefText" href="Application_Developers_Guide.htm#_crossRef71">6.6.5
+</a><b><a class="crossrefText" href="Application_Developers_Guide.htm#_crossRef72">Starting
+VNS</a></b>, <a class="crossrefPage" href="Application_Developers_Guide.htm#_crossRef72"></a>.</p>
+
+<p>To deploy a non-managed CAS Processor, the CPE deployer
+must change the CPE descriptor. The following is a section from the CPE
+descriptor that shows an example configuration for the non-managed CAS
+Processor.</p>
+
+<p class="xmp">&lt;casProcessor <b><i>deployment=&quot;remote&quot;</i></b> name=&quot;Meeting Detector TAE&quot;&gt;
+  &lt;descriptor&gt;
+    &lt;include href= &quot;descriptors/vinciService/MeetingDetectorVinciService.xml&quot;/&gt;
+  &lt;/descriptor&gt;
+  &lt;deploymentParameters/&gt;
+  &lt;filter/&gt;
+  &lt;errorHandling&gt;
+    &lt;errorRateThreshold action=&quot;terminate&quot; value=&quot;1/100&quot;/&gt;
+    &lt;maxConsecutiveRestarts action=&quot;terminate&quot; value=&quot;3&quot;/&gt;
+    &lt;timeout max=&quot;100000&quot;/&gt;
+  &lt;/errorHandling&gt;
+  &lt;checkpoint batch=&quot;10000&quot;/&gt;
+&lt;/casProcessor&gt;</p>
+
+<p>See <a class="crossrefText" href="CPE_Descriptor_Reference.htm#_crossRef160">Chapter
+24, <b><i>Collection
+Processing Engine Descriptor Reference</i></b></a><a class="crossrefPage" href="CPE_Descriptor_Reference.htm#_crossRef160"></a> for details and required settings.</p>
+
+<h3><a id="_crossRef202">Deploying Integrated CAS
+Processors</a></h3>
+
+<p>Integrated CAS Processors are shown in <a class="figReference" href="#_crossRef203">Figure 16</a>.  Here the CAS
+Processors run in the same JVM as the CPE, just like the Collection Reader and
+CAS Initializer.  This deployment method
+results in minimal CAS communication and transport overhead as the CAS is
+shared in the same process space of the JVM.  However, a CPE running with all integrated CAS Processors is limited in
+scalability by the capability of the single computer on which the CPE is
+running.  There is also a stability risk
+associated with integrated processors because a poorly written CAS Processor
+can cause the JVM, and hence the entire CPE, to abort.</p>
+
+<p><img alt="" width="330" height="295"
+src="../UIMA_SDK_Guide_Ref/CPE_Developers_Guide_files/image026.png"/></p>
+
+<a class="figCaption" id="_crossRef203">CPE with integrated CAS Processor</a>
+
+<p>The
+following is a section from a CPE descriptor that shows an example configuration for
+the integrated CAS Processor.</p>
+
+<p class="xmp">&lt;casProcessor <b><i>deployment=&quot;integrated&quot;</i></b> name=&quot;Meeting Detector TAE&quot;&gt;
+  &lt;descriptor&gt;
+    &lt;include href=&quot;descriptors/tutorial/ex4/MeetingDetectorTAE.xml&quot;/&gt;
+  &lt;/descriptor&gt;
+  &lt;deploymentParameters/&gt;
+  &lt;filter/&gt;
+  &lt;errorHandling&gt;
+    &lt;errorRateThreshold action=&quot;terminate&quot; value=&quot;100/1000&quot;/&gt;
+    &lt;maxConsecutiveRestarts action=&quot;terminate&quot; value=&quot;30&quot;/&gt;
+    &lt;timeout max=&quot;100000&quot;/&gt;
+  &lt;/errorHandling&gt;
+  &lt;checkpoint batch=&quot;10000&quot;/&gt;
+&lt;/casProcessor&gt;</p>
+
+<p>See <a class="crossrefText" href="CPE_Descriptor_Reference.htm#_crossRef160">Chapter
+24, <b><i>Collection
+Processing Engine Descriptor Reference</i></b></a><a class="crossrefPage" href="CPE_Descriptor_Reference.htm#_crossRef160"></a> for details and required settings.</p>
+
+
+
+
+  </subsection>
+<subsection name="Collection Processing Examples"><a id="_crossRef204"> </a>
+
+
+
+<p>The UIMA SDK includes a set of examples illustrating the
+three modes of deployment, integrated, managed, and non-managed.  These are in the <code>/docs/examples/descriptors/collection_processing_engine</code>
+directory.  There are three CPE
+descriptors that run an example annotator (the Meeting Finder) in these modes. </p>
+
+<p>To run either the integrated or managed examples, use the <code>runCPE</code> script in the /bin directory of the UIMA
+installation, passing the appropriate CPE descriptor as an argument.  </p>
+
+<ul class="note"><li>The <code>runCPE</code> script <b><i>must</i></b>
+be run from the <code>%UIMA_HOME%\docs\examples </code>directory, because it uses relative path names that are
+resolved relative to this working directory.  For instance, 
+</li></ul>
+
+<p><code>runCPE
+descriptors\collection_processing_engine\MeetingFinderCPE_Integrated.xml</code></p>
+
+<p>If you installed the examples into Eclipse, you can run
+directly from Eclipse by creating a run configuration.  To do this, highlight the SimpleRunCPE.java
+source file in the examples src/com/ibm/uima/examples/cpe directory, and then </p>
+
+<ol><li>pick the menu Run -&gt; Run...  Select</li>
+
+
+<li>click &quot;Java Application&quot; and press &quot;New&quot;</li>
+
+
+<li>click on the Arguments panel, and insert a path to the appropriate CPE
+descriptor in the &quot;Program Arguments&quot; box by typing, for instance: <code>descriptors/collection_processing_engine/MeetingFinderCPE_Integrated.xml</code></li>
+
+
+<li>Then press &quot;Run&quot;
+</li></ol>
+
+<p>To run the non-managed example, there are some additional
+steps.</p>
+
+<ol><li>Start a VNS service by running the <code>startVNS</code>
+script in the <code>/bin</code> directory.</li>
+
+
+<li>Deploy the Meeting Detector Analysis Engine as a Vinci service, by
+running the <code>startVinciService</code> script in the <code>/bin</code> directory, and passing it the location of the
+descriptor to deploy, in this case <code>%UIMA_HOME%/docs/examples/deploy/vinci/Deploy_MeetingDetectorTAE.xml</code></li>
+
+
+<li>Now, run the runCPE script, passing it the CPE for the non-managed
+version <code>(%UIMA_HOME%/docs/examples/descriptors/collection_processing_engine/MeetingFinderCPE_NonManaged.xml</code>).
+</li></ol>
+
+<p>This assumes that the Vinci Naming Service, the runCPE
+application, and the <code>MeetingDetectorTAE</code> service are
+all running on the same machine.   Most of the scripts that need information
+about VNS will look for values to use in environment variables VNS_HOST and
+VNS_PORT; these default to &quot;localhost&quot; and &quot;9000&quot;.  You may set these to appropriate values
+before running the scripts, as needed; you can also pass the name of the VNS
+host as the 2<sup>nd</sup> argument to the startVinciService script.  </p>
+
+<p>Alternatively, you can edit the scripts and/or the XML
+files to specify alternatives for the VNS_HOST and VNS_PORT.  For instance, if the <code>runCPE</code>
+application is running on a different machine from the Vinci Naming Service,
+you can edit the <code>MeetingFinderCPE_NonManaged.xml</code>
+and change the vnsHost parameter:<br/>
+<br/>
+<code>&lt;parameter name=&quot;vnsHost&quot;  value=&quot;localhost&quot;
+type=&quot;string&quot;/&gt;<br/>
+</code><code><br/>
+</code>to specify the VNS host instead of &quot;localhost&quot;.</p>
+
+</div>
+
+<br/>
+
+
+<div class="Section2">
+
+
+
+</div>
+<div class="footnotesHere"></div>
+</div>
+
+
+
+  </subsection>
+
+</section>
+</body>
+</document>

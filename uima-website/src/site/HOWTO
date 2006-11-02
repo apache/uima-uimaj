@@ -1,0 +1,47 @@
+################################################################################
+#    Copyright 2006 The Apache Software Foundation
+#
+#    Licensed under the Apache License, Version 2.0 (the "License");
+#    you may not use this file except in compliance with the License.
+#    You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
+################################################################################
+
+HOWTO for Podling Site
+======================
+
+How do I change the site content and generate ?
+---------------------------------------------
+
+1) Make your modifications to the source xml file in xdocs/
+2) Run the default ant target to generate new html
+
+    $ ant
+
+3) If errors, fix and repeat step 2
+
+4) If all ok - you can verify by looking at the site locally 
+   with your browser, do a svn commit to ensure that all changes
+   both .xml in the xdocs directory and the .html in the docs 
+   directory get committed.
+
+How do I deploy site to the internet?
+-------------------------------------
+
+1) Once all changes are committed to subversion, ssh into 
+   people.apache.org
+
+2) cd /www/incubator.apache.org/podling
+
+3) `cat UPDATE`
+
+That should bring all the changed content from SVN.  You must then 
+wait for up to 4 hours for the sync to take place to the real website.
+

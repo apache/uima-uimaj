@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!--
+	 ***************************************************************
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements.  See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership.  The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License.  You may obtain a copy of the License at
+     *
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 * 
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied.  See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 ***************************************************************
+   -->
+
+<ecore:EPackage xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="uima"
+    nsURI="http:///uima.ecore" nsPrefix="uima">
+  <eSubpackages name="cas" nsURI="http:///uima/cas.ecore" nsPrefix="cas">
+    <eClassifiers xsi:type="ecore:EClass" name="TOP"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Sofa" eSuperTypes="#//cas/TOP">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="sofaNum" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="sofaID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="mimeType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="sofaArray" eType="#//cas/TOP"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="sofaString" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="sofaURI" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ListBase" abstract="true" eSuperTypes="#//cas/TOP"/>
+    <eClassifiers xsi:type="ecore:EClass" name="FSList" abstract="true" eSuperTypes="#//cas/ListBase"/>
+    <eClassifiers xsi:type="ecore:EClass" name="NonEmptyFSList" eSuperTypes="#//cas/FSList">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="head" eType="#//cas/TOP"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="tail" eType="#//cas/FSList"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="EmptyFSList" eSuperTypes="#//cas/FSList"/>
+    <eClassifiers xsi:type="ecore:EClass" name="StringList" abstract="true" eSuperTypes="#//cas/ListBase"/>
+    <eClassifiers xsi:type="ecore:EClass" name="EmptyStringList" eSuperTypes="#//cas/StringList"/>
+    <eClassifiers xsi:type="ecore:EClass" name="NonEmptyStringList" eSuperTypes="#//cas/StringList">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="head" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="tail" eType="#//cas/StringList"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="IntegerList" eSuperTypes="#//cas/ListBase"/>
+    <eClassifiers xsi:type="ecore:EClass" name="EmptyIntegerList" eSuperTypes="#//cas/IntegerList"/>
+    <eClassifiers xsi:type="ecore:EClass" name="NonEmptyIntegerList" eSuperTypes="#//cas/IntegerList">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="head" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="tail" eType="#//cas/IntegerList"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="FloatList" eSuperTypes="#//cas/ListBase"/>
+    <eClassifiers xsi:type="ecore:EClass" name="EmptyFloatList" eSuperTypes="#//cas/FloatList"/>
+    <eClassifiers xsi:type="ecore:EClass" name="NonEmptyFloatList" eSuperTypes="#//cas/FloatList">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="head" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="tail" eType="#//cas/FloatList"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ArrayBase" eSuperTypes="#//cas/TOP"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IntegerArray" eSuperTypes="#//cas/ArrayBase">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="elements" upperBound="-1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="FloatArray" eSuperTypes="#//cas/ArrayBase">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="elements" upperBound="-1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="StringArray" eSuperTypes="#//cas/ArrayBase">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="elements" upperBound="-1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="FSArray" eSuperTypes="#//cas/ArrayBase">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="elements" unique="false"
+          upperBound="-1" eType="#//cas/TOP"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="NULL" eSuperTypes="#//cas/TOP"/>
+    <eClassifiers xsi:type="ecore:EClass" name="View">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="members" upperBound="-1"
+          eType="#//cas/TOP"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="sofa" eType="#//cas/Sofa"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AnnotationBase" eSuperTypes="#//cas/TOP">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="sofa" lowerBound="1"
+          eType="#//cas/Sofa"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ShortArray" eSuperTypes="#//cas/ArrayBase">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="elements" upperBound="-1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EShort"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="LongArray" eSuperTypes="#//cas/ArrayBase">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="elements" upperBound="-1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="DoubleArray" eSuperTypes="#//cas/ArrayBase">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="elements" upperBound="-1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="BooleanArray" eSuperTypes="#//cas/ArrayBase">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="elements" upperBound="-1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ByteArray" eSuperTypes="#//cas/ArrayBase">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="elements" upperBound="-1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EByte"/>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="tcas" nsURI="http:///uima/tcas.ecore" nsPrefix="tcas">
+    <eClassifiers xsi:type="ecore:EClass" name="Annotation" eSuperTypes="#//cas/AnnotationBase">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="begin" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="end" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eClassifiers>
+  </eSubpackages>
+</ecore:EPackage>

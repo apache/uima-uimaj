@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-Name: UIMA Debugging for Eclipse
+Bundle-SymbolicName: org.apache.uima.debug; singleton=true
+Bundle-Version: 1.0.0.SNAPSHOT
+Bundle-ClassPath: uima-ep-debug.jar
+Bundle-Activator: org.apache.uima.ep_debug.DebugPlugin
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.jdt.debug.ui,
+ org.eclipse.ui
+Eclipse-AutoStart: true
+Bundle-Vendor: IBM Watson Research

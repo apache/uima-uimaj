@@ -1,0 +1,225 @@
+<document>
+  <properties>
+    <title>Collection Processing Engine Configurator User's Guide</title>
+  </properties>
+<body>
+
+
+
+<div class="chapter">
+<div class="Section1">
+
+
+
+<section name="Collection Processing Engine Configurator User's Guide"><a id="_crossRef152"> </a>
+
+
+
+<p><a id="_crossRef153">A <i>Collection Processing Engine
+(CPE)</i> processes collections of artifacts (documents) through the
+combination of the following components: a Collection Reader, an optional CAS
+Initializer, Analysis Engines, and CAS Consumers. </a></p>
+
+<p>The <i>Collection
+Processing Engine Configurator(CPE Configurator)</i> is a graphical tool that
+allows you to assemble and run CPEs.  </p>
+
+<p>For an
+introduction to Collection Processing Engine concepts, including developing the
+components that make up a CPE, read <a class="crossrefText" href="CPE_Developers_Guide.htm#_crossRef183">Chapter 5, <b>Collection Processing
+Engine Developer's Guide</b></a>.  This chapter is a user's guide for using the CPE Configurator tool, and
+does not describe UIMA's Collection Processing Architecture itself.  </p>
+
+
+
+<subsection name="Limitations of the CPE Configurator"><a id="_crossRef154"> </a>
+
+
+
+<p>The CPE Configurator only supports basic CPE
+configurations.  </p>
+
+<p>It only supports &quot;Integrated&quot;
+deployments (although it will connect to remotes if particular CAS Processors
+are specified with remote service descriptors).   It doesn't support configuration of the
+error handling.  It doesn't support Sofa
+Mappings; it assumes all Single-View components are operating with the
+_InitialView Sofa.  Multi-View components
+will not have their names mapped. It sets up a fixed-sized CAS Pool.</p>
+
+<p>For running arbitrary CPE descriptors, or
+running with other than the default configuration supplied by the CPE
+Configurator, you can write your own application, or use the runCPE script,
+which invokes an example application, SimpleRunCPE.</p>
+
+
+
+
+  </subsection>
+<subsection name="Starting the CPE Configurator"><a id="_crossRef155"> </a>
+
+
+
+<p>The CPE Configurator tool can be run using the <code>cpeGui</code> shell script, which is located in the <code>bin</code> directory of the UIMA SDK.  If you've installed the example Eclipse
+project (see <a class="crossrefText" href="UIMA_SDK_Installation_and_Setup.htm#_crossRef372">Chapter 3, <b>UIMA SDK Setup for
+Eclipse</b></a>), you can also run it using the
+&quot;UIMA CPE GUI&quot; run configuration provided in that project. </p>
+
+<p>Note that if you are planning to build a CPE using
+components other than the examples included in the UIMA SDK, you will first
+need to update your CLASSPATH environment variable to include the classes
+needed by these components.</p>
+
+<p>When you first start the CPE Configurator, you will see
+the main window shown here:</p>
+
+<p><img alt="" width="542" height="412"
+src="../UIMA_SDK_Guide_Ref/CPE_Configurator_Users_Manual_files/image002.jpg"/></p>
+
+
+
+
+
+
+  </subsection>
+<subsection name="Selecting Component Descriptors"><a id="_crossRef156"> </a>
+
+
+
+<p>The CPE Configurator's main window is divided into 4
+sections: one for each of the types of components that constitute a CPE:
+CollectionReader, CAS Initializer, Analysis Engines, and CasConsumers.  Each CPE has exactly one CollectionReader, an
+optional CAS Initializer, and at least one each of Analysis Engines and CAS
+Consumers.  </p>
+
+<p>In each section of the CPE Configurator, you can select
+the component(s) you want to use by browsing to (or typing the location of)
+their XML descriptors.  You must select a
+Collection Reader, at least one Analysis Engine, and at least one CAS
+Consumer.  You may or may not need to
+select a CAS Initializer; this depends on the particular Collection Reader that
+you are using.    </p>
+
+<p>When you select a descriptor, the configuration parameters
+that are defined in that descriptor will then be displayed in the GUI; these
+can be modified to override the values present in the descriptor.  </p>
+
+<p>For example, the screen shot below shows the CPE Configurator
+after the following components have been chosen:</p>
+
+<p class="xmp">docs/examples/descriptors/collectionReader/FileSystemCollectionReader.xml
+docs/examples/descriptors/analysis_engine/NamesAndPersonTitles_TAE.xml
+docs/examples/descriptors/cas_consumer/XCasWriterCasConsumer.xml</p>
+
+<p><img alt="" width="576" height="439"
+src="../UIMA_SDK_Guide_Ref/CPE_Configurator_Users_Manual_files/image004.jpg"/></p>
+
+
+
+
+  </subsection>
+<subsection name="Running a Collection Processing Engine"><a id="_crossRef157"> </a>
+
+
+
+<p>After selecting each of the components and providing
+configuration settings, click the play (forward arrow) button at the bottom of
+the screen to begin processing.  A
+progress bar should be displayed in the lower left corner.  (Note that the progress bar will not begin to
+move until all components have completed their initialization, which may take
+several seconds.)  Once processing has
+begun, the pause and stop buttons become enabled.</p>
+
+<p>If an error occurs, you will be informed by an error
+dialog.  If processing completes
+successfully, you will be presented with a performance report.</p>
+
+
+
+
+  </subsection>
+<subsection name="The File Menu"><a id="_crossRef158"> </a>
+
+
+
+<p>The CPE Configurator's File Menu has six options:</p>
+
+<ul><li>Open CPE Descriptor</li>
+
+
+<li>Save CPE Descriptor</li>
+
+
+<li>Refresh Descriptors from File
+System</li>
+
+
+<li>Clear All</li>
+
+
+<li>Exit
+</li></ul>
+
+<p><b>Open CPE Descriptor</b> will allow you to select a CPE
+Descriptor file from disk, and will read in that CPE Descriptor and configure
+the GUI appropriately.</p>
+
+<p><b>Save CPE Descriptor</b> will create a CPE Descriptor
+file that defines the CPE you have constructed. This CPE Descriptor will
+identify the components that constitute the CPE, as well as the configuration
+settings you have specified for each of these components.  Later, you can use &quot;Open CPE
+Descriptor&quot; to restore the CPE Configurator to the state.  Also, CPE Descriptors can be used to easily
+run a CPE from a Java program &ndash; see <a class="crossrefText" href="Application_Developers_Guide.htm#_crossRef44">Chapter 6, <b>Application Developer&rsquo;s
+Guide</b></a>.  </p>
+
+<p>CPE Descriptors also allow specifying operational
+parameters, such as error handling options that are not currently available for
+configuration through the CPE Configurator.  For more information on manually creating a CPE Descriptor, see <a class="crossrefText" href="CPE_Descriptor_Reference.htm#_crossRef160">Chapter 24, <b>Collection Processing
+Engine Descriptor Reference</b></a>.</p>
+
+<p><b>Refresh Descriptors from File System</b> will reload
+all descriptors from disk.  This is
+useful if you have made a change to the descriptor outside of the CPE
+Configurator, and want to refresh the display.</p>
+
+<p><b>Clear All</b> will reset the CPE Configurator to its
+initial state, with no components selected.</p>
+
+<p><b>Exit</b> will close the CPE Configurator.  If you have unsaved changes, you will be
+prompted as to whether you would like to save them to a CPE Descriptor file.  If you do not save them, they will be lost.</p>
+
+<p>When you restart the CPE Configurator, it will automatically
+reload the last CPE descriptor file that you were working with.</p>
+
+
+
+
+  </subsection>
+<subsection name="The Help Menu"><a id="_crossRef159"> </a>
+
+
+
+<p>The CPE Configurator's Help menu provides
+&quot;About&quot; information and some very simple instructions on how to use
+the tool.</p>
+
+</div>
+
+<br/>
+
+
+<div class="Section2">
+
+
+
+</div>
+<div class="footnotesHere"></div>
+</div>
+
+
+
+  </subsection>
+
+</section>
+</body>
+</document>

@@ -1,0 +1,63 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.apache.uima</groupId>
+	<artifactId>uimaj</artifactId>
+	<packaging>pom</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>Apache UIMA Java SDK</name>
+	<url>http://maven.apache.org</url>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.4</source>
+					<target>1.4</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor>src/main/assembly/bin.xml</descriptor>
+					</descriptors>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<modules>
+		<module>../uimaj-core</module>
+		<module>../uimaj-cpe</module>
+		<module>../uimaj-examples</module>
+		<module>../uimaj-tools</module>
+		<module>../uimaj-adapter-vinci</module>
+		<module>../uimaj-test-util</module>
+		<module>../uimaj-distr</module>
+		<module>../jVinci</module>
+		<module>../uimaj-ep-debug</module>
+		<module>../uimaj-ep-jcasgen</module>
+		<module>../uimaj-ep-configurator</module>
+<!-- these don't build yet
+		<module>../uimaj-adapter-soap</module>
+		<module>../uimaj-ep-pear-packager</module>
+		<module>../uimaj-ep-runtime</module>
+-->	
+	</modules>
+	<repositories>
+		<repository>
+			<id>uima</id>
+			<url>http://uima18.watson.ibm.com:8081/mavenRepo</url>
+		</repository>
+	</repositories>
+</project>

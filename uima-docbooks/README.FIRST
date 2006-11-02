@@ -1,0 +1,7 @@
+If you want to render PDF files, you must get the "Java Advanced
+Imaging" Library from Sun first.
+
+Download it from https://jai.dev.java.net/binary-builds.html#Stable_builds_1.1.3
+
+Unzip the archive and place the jai_core.jar and ja_codec.jar in the lib subdirectory.
+

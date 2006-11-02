@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<book lang="en" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <title>UIMA SDK Tutorial and Developers' Guides</title>
+  <xi:include href="common_book_info.xml"/>
+
+  <toc/>
+  
+  <xi:include href="Tutorial_Annotator_and_Analysis_Engine.xml"/>
+  <xi:include href="Tutorial_Collection_Processing_Engine.xml"/>
+  <xi:include href="guide/Applications.xml"/>
+  <xi:include href="guide/Sofas.xml"/>
+  <xi:include href="guide/Multiple_Views.xml"/>
+  <xi:include href="guide/CAS_Multiplier.xml"/>
+  <xi:include href="guide/XMI_and_EMF_Interoperability.xml"/>
+  <xi:include href="Notices_and_Trademarks.xml"/>
+  </book>
