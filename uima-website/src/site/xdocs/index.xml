@@ -36,6 +36,27 @@ thriving community of users and developers of UIMA frameworks, supporting
   components for analysing unstructured content such as text, 
   audio and video.
 </p>
+
+<p>Unstructured Information Management applications are software systems
+that analyze large volumes of unstructured information in order to
+discover knowledge that is relevant to an end user. UIMA is a
+framework and SDK for developing such applications. An example UIM
+application might ingest plain text and identify entities, such as
+persons, places, organizations; or relations, such as works-for or
+located-at. UIMA enables such an application to be decomposed into
+components, for example "language identification" -&gt; "language
+specific segmentation" -&gt; "sentence boundary detection" -&gt; "entity
+detection (person/place names etc.)". Each component must implement
+interfaces defined by the framework and must provide self-describing
+metadata via XML descriptor files. The framework manages these
+components and the data flow between them. Components are written in
+Java or C++; the data that flows between components is designed for
+efficient mapping between these languages. UIMA additionally provides
+capabilities to wrap components as network services, and can scale to
+very large volumes by replicating processing pipelines over a cluster
+of networked nodes. 
+</p>
+
 <p>UIMA is an Apache-licensed open source implementation of the UIMA specification (that specification is, in turn, being
   developed concurrently by a technical committee 
 within <a href="http://www.oasis-open.org">OASIS</a>, a standards organization). 
