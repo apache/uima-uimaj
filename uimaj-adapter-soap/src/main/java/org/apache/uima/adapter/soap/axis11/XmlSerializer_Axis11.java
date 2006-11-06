@@ -27,12 +27,11 @@ import org.apache.axis.Constants;
 import org.apache.axis.encoding.SerializationContext;
 import org.apache.axis.encoding.Serializer;
 import org.apache.axis.wsdl.fromJava.Types;
+import org.apache.uima.util.XMLizable;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
-import org.apache.uima.util.XMLizable;
 
 /**
  * An Axis serializer for any {@link XMLizable} object.

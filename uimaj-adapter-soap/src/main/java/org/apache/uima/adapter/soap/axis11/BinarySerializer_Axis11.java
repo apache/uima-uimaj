@@ -36,11 +36,10 @@ import org.apache.axis.encoding.SerializationContext;
 import org.apache.axis.encoding.Serializer;
 import org.apache.axis.soap.SOAPConstants;
 import org.apache.axis.wsdl.fromJava.Types;
+import org.apache.uima.internal.util.SerializationUtils;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
-
-import org.apache.uima.reference_impl.util.SerializationUtils;
 
 /**
  * An Axis serializer for {@link Serializable} objects.  The serialized bytes

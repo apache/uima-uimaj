@@ -24,14 +24,14 @@ import java.io.File;
 import org.apache.axis.encoding.DeserializationContext;
 import org.apache.axis.encoding.DeserializerImpl;
 import org.apache.axis.message.SOAPHandler;
+import org.apache.uima.UIMAFramework;
+import org.apache.uima.util.InvalidXMLException;
+import org.apache.uima.util.XMLParser;
+import org.apache.uima.util.XMLizable;
+import org.apache.uima.util.impl.SaxDeserializer_impl;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.LocatorImpl;
-
-import org.apache.uima.UIMAFramework;
-import org.apache.uima.reference_impl.util.SaxDeserializer_impl;
-import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.XMLParser;
 
 /**
  * An Axis deserializer for any {@link XMLizable} object.

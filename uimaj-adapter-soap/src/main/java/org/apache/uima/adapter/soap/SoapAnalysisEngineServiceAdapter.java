@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.apache.uima.Constants;
 import org.apache.uima.analysis_engine.AnalysisEngineServiceStub;
-import org.apache.uima.reference_impl.analysis_engine.service.AnalysisEngineServiceAdapter;
+import org.apache.uima.analysis_engine.service.impl.AnalysisEngineServiceAdapter;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.URISpecifier;

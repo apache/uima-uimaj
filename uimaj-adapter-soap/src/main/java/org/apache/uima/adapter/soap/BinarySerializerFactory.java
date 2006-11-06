@@ -27,7 +27,6 @@ import javax.xml.rpc.encoding.Serializer;
 import org.apache.axis.Constants;
 import org.apache.axis.Version;
 import org.apache.axis.encoding.SerializerFactory;
-
 import org.apache.uima.adapter.soap.axis11.BinarySerializer_Axis11;
 
 /**

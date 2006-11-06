@@ -27,7 +27,6 @@ import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
-
 import org.apache.uima.resource.ResourceServiceException;
 import org.apache.uima.resource.ResourceServiceStub;
 import org.apache.uima.resource.metadata.ResourceMetaData;

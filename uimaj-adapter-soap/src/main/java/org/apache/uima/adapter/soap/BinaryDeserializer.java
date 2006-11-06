@@ -21,6 +21,7 @@ package org.apache.uima.adapter.soap;
 
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 
 import javax.activation.DataHandler;
 import javax.xml.namespace.QName;
@@ -33,10 +34,9 @@ import org.apache.axis.encoding.DeserializerImpl;
 import org.apache.axis.message.SOAPBodyElement;
 import org.apache.axis.soap.SOAPConstants;
 import org.apache.axis.utils.Messages;
+import org.apache.uima.internal.util.SerializationUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-
-import org.apache.uima.reference_impl.util.SerializationUtils;
 
 /**
  * An Axis deserializer for {@link Serializable} objects.  The serialized bytes

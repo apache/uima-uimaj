@@ -20,11 +20,10 @@
 package org.apache.uima.adapter.soap;
 
 import org.apache.axis.AxisFault;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.ResultSpecification;
-import org.apache.uima.reference_impl.analysis_engine.service.AnalysisEngineService_impl;
-import org.apache.uima.reference_impl.analysis_engine.service.ServiceDataCargo;
+import org.apache.uima.analysis_engine.service.impl.AnalysisEngineService_impl;
+import org.apache.uima.analysis_engine.service.impl.ServiceDataCargo;
 import org.apache.uima.resource.ResourceServiceException;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.Level;

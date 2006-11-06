@@ -32,13 +32,12 @@ import org.apache.axis.attachments.AttachmentPart;
 import org.apache.axis.attachments.AttachmentUtils;
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
-
 import org.apache.uima.analysis_engine.AnalysisEngineServiceStub;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
+import org.apache.uima.analysis_engine.service.impl.ServiceDataCargo;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.text.TCASException;
-import org.apache.uima.reference_impl.analysis_engine.service.ServiceDataCargo;
 import org.apache.uima.resource.ResourceServiceException;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 

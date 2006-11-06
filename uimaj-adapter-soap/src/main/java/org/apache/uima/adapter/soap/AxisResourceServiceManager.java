@@ -25,12 +25,11 @@ import java.util.Map;
 import org.apache.axis.AxisFault;
 import org.apache.axis.Handler;
 import org.apache.axis.MessageContext;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.reference_impl.analysis_engine.service.AnalysisEngineService_impl;
-import org.apache.uima.reference_impl.resource.service.ResourceService_impl;
+import org.apache.uima.analysis_engine.service.impl.AnalysisEngineService_impl;
 import org.apache.uima.resource.ResourceSpecifier;
+import org.apache.uima.resource.service.impl.ResourceService_impl;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.XMLInputSource;

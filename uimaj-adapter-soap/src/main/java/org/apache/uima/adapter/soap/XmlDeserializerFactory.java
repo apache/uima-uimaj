@@ -25,7 +25,6 @@ import java.util.Vector;
 import org.apache.axis.Constants;
 import org.apache.axis.Version;
 import org.apache.axis.encoding.DeserializerFactory;
-
 import org.apache.uima.adapter.soap.axis11.XmlDeserializer_Axis11;
 
 /**
