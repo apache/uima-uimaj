@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.apache.uima</groupId>
-	<artifactId>uimaj-ep-debug</artifactId>
+	<artifactId>uimaj-ep-runtime</artifactId>
 	<packaging>pom</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>Apache UIMA Runtime Plugin</name>
@@ -14,6 +14,48 @@
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 	<dependencies>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-core</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-cpe</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-tools</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-examples</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>		
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-adapter-vinci</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>	
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-adapter-soap</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>jVinci</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>	
 	</dependencies>
 	<build>
 		<finalName>uima-ep-runtime</finalName>	
@@ -25,13 +67,15 @@
 						<id>bin</id>
 						<phase>package</phase>
 						<goals>
-							<goal>assembly</goal>
+							<goal>attached</goal>
 						</goals>
 						<configuration>
 							<descriptors>
 								<descriptor>
 									src/main/assembly/assemble-plugin.xml</descriptor>
 							</descriptors>
+							<finalName>org.apache.uima.runtime.1.0.0.SNAPSHOT</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 					</execution>
 				</executions>

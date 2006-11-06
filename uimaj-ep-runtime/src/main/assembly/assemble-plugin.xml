@@ -1,7 +1,7 @@
 <assembly>
 	<id>plugin</id>
 	<formats>
-		<format>dir</format>
+		<format>zip</format>
 	</formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
 	<fileSets>
@@ -13,6 +13,37 @@
 			</includes>
 			<outputDirectory>/</outputDirectory>
 		</fileSet>
-<!-- TODO: include dependent jar files -->
 	</fileSets>
+	<files>
+		<file>
+			<source>../uimaj-core/target/uima-core.jar</source>
+			<outputDirectory>/lib</outputDirectory>
+		</file>
+		<file>
+			<source>../uimaj-cpe/target/uima-cpe.jar</source>
+			<outputDirectory>/lib</outputDirectory>
+		</file>
+		<file>
+			<source>../uimaj-examples/target/uima-examples.jar</source>
+			<outputDirectory>/lib</outputDirectory>
+		</file>
+		<file>
+			<source>../uimaj-tools/target/uima-tools.jar</source>
+			<outputDirectory>/lib</outputDirectory>
+		</file>
+		<file>
+			<source>
+				../uimaj-adapter-vinci/target/uima-adapter-vinci.jar</source>
+			<outputDirectory>/lib</outputDirectory>
+		</file>
+		<file>
+			<source>
+				../uimaj-adapter-soap/target/uima-adapter-soap.jar</source>
+			<outputDirectory>/lib</outputDirectory>
+		</file>
+		<file>
+			<source>../jVinci/target/jVinci.jar</source>
+			<outputDirectory>/lib</outputDirectory>
+		</file>
+	</files>
 </assembly>

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.apache.uima.runtime
 Bundle-SymbolicName: org.apache.uima.runtime
-Bundle-Version: 2.0.1
+Bundle-Version: 1.0.0.SNAPSHOT
 Bundle-ClassPath:  lib/uima_adapter_soap.jar,
  lib/uima_adapter_vinci.jar,
  lib/uima_core.jar,
