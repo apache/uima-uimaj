@@ -15,6 +15,12 @@
 	</parent>
 	<dependencies>
 		<dependency>
+			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-core</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>			
+		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>osgi</artifactId>
 			<version>3.1.2</version>
@@ -40,16 +46,58 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
-			<artifactId>jdt-debug-ui</artifactId>
-			<version>3.1.2</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse</groupId>
 			<artifactId>jface</artifactId>
 			<version>3.1.1</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.eclipse</groupId>
+			<artifactId>ui-ide</artifactId>
+			<version>3.1.1</version>
+			<scope>provided</scope>
+		</dependency>	
+		<dependency>
+			<groupId>org.eclipse</groupId>
+			<artifactId>jface-text</artifactId>
+			<version>3.1.2</version>
+			<scope>provided</scope>
+		</dependency>	
+		<dependency>
+			<groupId>org.eclipse</groupId>
+			<artifactId>ui-workbench-texteditor</artifactId>
+			<version>3.1.2</version>
+			<scope>provided</scope>
+		</dependency>	
+		<dependency>
+			<groupId>org.eclipse</groupId>
+			<artifactId>core-resources</artifactId>
+			<version>3.1.2</version>
+			<scope>provided</scope>
+		</dependency>	
+		<dependency>
+			<groupId>org.eclipse</groupId>
+			<artifactId>jdt-core</artifactId>
+			<version>3.1.2</version>
+			<scope>provided</scope>
+		</dependency>						
+		<dependency>
+			<groupId>org.eclipse</groupId>
+			<artifactId>jdt-ui</artifactId>
+			<version>3.1.2</version>
+			<scope>provided</scope>
+		</dependency>	
+		<dependency>
+			<groupId>org.eclipse</groupId>
+			<artifactId>swt</artifactId>
+			<version>3.1.0</version>
+			<scope>provided</scope>
+		</dependency>		
+		<dependency>
+			<groupId>org.eclipse</groupId>
+			<artifactId>swt-win32-win32-x86</artifactId>
+			<version>3.1.2</version>
+			<scope>provided</scope>
+		</dependency>																
 	</dependencies>
 	<build>
 		<finalName>uima-ep-pear-packager</finalName>	
@@ -61,13 +109,15 @@
 						<id>bin</id>
 						<phase>package</phase>
 						<goals>
-							<goal>assembly</goal>
+							<goal>attached</goal>
 						</goals>
 						<configuration>
 							<descriptors>
 								<descriptor>
 									src/main/assembly/assemble-plugin.xml</descriptor>
 							</descriptors>
+							<finalName>org.apache.uima.pear.1.0.0.SNAPSHOT</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 					</execution>
 				</executions>

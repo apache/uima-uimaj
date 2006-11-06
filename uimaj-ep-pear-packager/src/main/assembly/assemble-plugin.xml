@@ -1,9 +1,9 @@
 <assembly>
 	<id>plugin</id>
 	<formats>
-		<format>dir</format>
+		<format>zip</format>
 	</formats>
-	<includeBaseDirectory>false</includeBaseDirectory>
+	<includeBaseDirectory>true</includeBaseDirectory>
 	<fileSets>
 		<fileSet>
 			<directory>/</directory>
