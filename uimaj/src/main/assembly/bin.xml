@@ -6,6 +6,7 @@
 		<format>zip</format>
 	</formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
+
 	<!-- This appears not to preserve the custom jar file names, instead
 	it adds back the version number that we don't want.  Using <files> instead.
 	<moduleSets>
@@ -27,7 +28,8 @@
 			</binaries>
 		</moduleSet>
 	</moduleSets>
- -->		
+ -->	
+	
 	<fileSets>
 		<fileSet>
 			<directory>../uimaj-distr/src/main/scripts</directory>
@@ -36,6 +38,42 @@
 		<fileSet>
 			<directory>../uimaj-distr/src/main/properties</directory>
 			<outputDirectory>/</outputDirectory>
+		</fileSet>
+
+		<fileSet>
+			<directory>../uimaj-ep-configurator/target</directory>
+			<includes>
+				<include>*.zip</include>
+			</includes>
+			<outputDirectory>/eclipsePlugins</outputDirectory>
+		</fileSet>		
+		<fileSet>
+			<directory>../uimaj-ep-debug/target</directory>
+			<includes>
+				<include>*.zip</include>
+			</includes>
+			<outputDirectory>/eclipsePlugins</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>../uimaj-ep-jcasgen/target</directory>
+			<includes>
+				<include>*.zip</include>
+			</includes>
+			<outputDirectory>/eclipsePlugins</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>../uimaj-ep-pear-packager/target</directory>
+			<includes>
+				<include>*.zip</include>
+			</includes>
+			<outputDirectory>/eclipsePlugins</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>../uimaj-ep-runtime/target</directory>
+			<includes>
+				<include>*.zip</include>
+			</includes>
+			<outputDirectory>/eclipsePlugins</outputDirectory>
 		</fileSet>
 	</fileSets>
 	<files>
@@ -61,20 +99,13 @@
 			<outputDirectory>/lib</outputDirectory>
 		</file>
 		<file>
-			<source>../jVinci/target/jVinci.jar</source>
+			<source>
+				../uimaj-adapter-soap/target/uima-adapter-soap.jar</source>
 			<outputDirectory>/lib</outputDirectory>
 		</file>
 		<file>
-			<source>../uimaj-ep-debug/target/uima-ep-debug-plugin.zip</source>
-			<outputDirectory>/eclipsePlugins</outputDirectory>
-		</file>
-		<file>
-			<source>../uimaj-ep-jcasgen/target/uima-ep-jcasgen-plugin.zip</source>
-			<outputDirectory>/eclipsePlugins</outputDirectory>
-		</file>
-		<file>
-			<source>../uimaj-ep-configurator/target/uima-ep-configurator-plugin.zip</source>
-			<outputDirectory>/eclipsePlugins</outputDirectory>
+			<source>../jVinci/target/jVinci.jar</source>
+			<outputDirectory>/lib</outputDirectory>
 		</file>
 	</files>
 </assembly>

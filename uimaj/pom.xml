@@ -42,17 +42,15 @@
 		<module>../uimaj-examples</module>
 		<module>../uimaj-tools</module>
 		<module>../uimaj-adapter-vinci</module>
+		<module>../uimaj-adapter-soap</module>
 		<module>../uimaj-test-util</module>
 		<module>../uimaj-distr</module>
 		<module>../jVinci</module>
 		<module>../uimaj-ep-debug</module>
 		<module>../uimaj-ep-jcasgen</module>
 		<module>../uimaj-ep-configurator</module>
-<!-- these don't build yet
-		<module>../uimaj-adapter-soap</module>
 		<module>../uimaj-ep-pear-packager</module>
 		<module>../uimaj-ep-runtime</module>
--->	
 	</modules>
 	<repositories>
 		<repository>
