@@ -26,7 +26,7 @@ import org.apache.uima.jcas.cas.TOP_Type;
 
 /** Fragment.
  * Updated by JCasGen Fri Dec 02 14:22:24 EST 2005
- * XML source: C:/workspace/jedii_examples/src/com/ibm/uima/examples/opennlp/annotator/OpenNLPExampleTypes.xml
+ * XML source: C:/workspace/jedii_examples/src/org/apache/uima/examples/opennlp/annotator/OpenNLPExampleTypes.xml
  * @generated */
 public class FRAG extends Phrase {
   /** @generated

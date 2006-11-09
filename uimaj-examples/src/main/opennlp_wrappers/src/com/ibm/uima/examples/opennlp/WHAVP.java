@@ -26,7 +26,7 @@ import org.apache.uima.jcas.cas.TOP_Type;
 
 /** Wh-adverb Phrase. Introduces a clause with an NP gap. May be null (containing the 0 complementizer) or lexical, containing a wh-adverb such as how or why.
  * Updated by JCasGen Fri Dec 02 14:22:24 EST 2005
- * XML source: C:/workspace/jedii_examples/src/com/ibm/uima/examples/opennlp/annotator/OpenNLPExampleTypes.xml
+ * XML source: C:/workspace/jedii_examples/src/org/apache/uima/examples/opennlp/annotator/OpenNLPExampleTypes.xml
  * @generated */
 public class WHAVP extends Phrase {
   /** @generated

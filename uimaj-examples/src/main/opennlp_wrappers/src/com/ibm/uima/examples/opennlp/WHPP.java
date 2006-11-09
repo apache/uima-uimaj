@@ -26,7 +26,7 @@ import org.apache.uima.jcas.cas.TOP_Type;
 
 /** Wh-prepositional Phrase. Prepositional phrase containing a wh-noun phrase (such as of which or by whose authority) that either introduces a PP gap or is contained by a WHNP.
  * Updated by JCasGen Fri Dec 02 14:22:24 EST 2005
- * XML source: C:/workspace/jedii_examples/src/com/ibm/uima/examples/opennlp/annotator/OpenNLPExampleTypes.xml
+ * XML source: C:/workspace/jedii_examples/src/org/apache/uima/examples/opennlp/annotator/OpenNLPExampleTypes.xml
  * @generated */
 public class WHPP extends Phrase {
   /** @generated

@@ -85,7 +85,7 @@
 				<name>UimaAcronymTableFile</name>
 				<description>A table containing UIMA acronyms and their exanded forms.</description>
 				<fileResourceSpecifier>
-					<fileUrl>file:com/ibm/uima/tutorial/ex6/uimaAcronyms.txt</fileUrl>
+					<fileUrl>file:org/apache/uima/tutorial/ex6/uimaAcronyms.txt</fileUrl>
 				</fileResourceSpecifier>
 				<implementationName>org.apache.uima.tutorial.ex6.StringMapResource_impl</implementationName>
 			</externalResource>
