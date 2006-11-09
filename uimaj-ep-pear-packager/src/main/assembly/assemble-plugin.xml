@@ -10,6 +10,8 @@
 			<includes>
 				<include>plugin.xml</include>
 				<include>META-INF/</include>
+				<include>icons/</include>
+				<include>about.html/</include>
 			</includes>
 			<outputDirectory>/</outputDirectory>
 		</fileSet>
