@@ -215,7 +215,7 @@ public class Jg {
 		try {
 			resourceBundle =
 				ResourceBundle.getBundle(
-					"org.apache.uima.jcas.jcasgen_gen.jcasgenpPluginResources");
+					"org.apache.uima.tools.jcasgen.jcasgenpPluginResources");
 		} catch (MissingResourceException x) {
 			resourceBundle = null;
 		}
