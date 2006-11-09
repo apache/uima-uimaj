@@ -26,14 +26,6 @@
 					<target>1.4</target>
 				</configuration>
 			</plugin>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptors>
-						<descriptor>src/main/assembly/bin.xml</descriptor>
-					</descriptors>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
 	<modules>
