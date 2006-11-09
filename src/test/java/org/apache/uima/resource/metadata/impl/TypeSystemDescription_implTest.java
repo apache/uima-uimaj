@@ -85,7 +85,7 @@ public class TypeSystemDescription_implTest extends TestCase
 			assertEquals("0.1", ts.getVersion());
 			Import[] imports = ts.getImports();
 			assertEquals(3, imports.length);
-			assertEquals("org.apache.uima.resource.impl.metadata.TypeSystemImportedByName", 
+			assertEquals("org.apache.uima.resource.metadata.impl.TypeSystemImportedByName", 
 			             imports[0].getName());
 			assertNull(imports[0].getLocation());			
 			assertNull(imports[1].getName());			

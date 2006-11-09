@@ -25,6 +25,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.TaeDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
@@ -68,31 +69,20 @@ public class XMLParser_implTest extends TestCase
   {
     try
     {
-      //JTalentAndStringMatch.xml contains xincludes, 
+      //JTalentAndStringMatch.xml contains imports, 
       //JTalentAndStringMatch_Expanded.xml has had them manually expanded
-      File withXIncludes = JUnitExtension.getFile("XmlParserTest/JTalentAndStringMatch.xml");
+      File withImports = JUnitExtension.getFile("XmlParserTest/JTalentAndStringMatch.xml");
       File manuallyExpanded = JUnitExtension.getFile("XmlParserTest/JTalentAndStringMatch_Expanded.xml");
       
-      //After passing JTalentAndStringMatch.xml through processXIncludes,
+      //After parsing both files and calling resolveImports,
       //we should then be able to parse both files and get identical results.
-      XMLizable obj1 = mXmlParser.parse(new XMLInputSource(withXIncludes));
-      XMLizable obj2 = mXmlParser.parse(new XMLInputSource(manuallyExpanded));
-      Assert.assertNotNull(obj1);    
-      Assert.assertNotNull(obj2);    
-      Assert.assertEquals(obj1,obj2); 
-      
-      //try similar test for XInclude containing xpointer
-      withXIncludes = JUnitExtension.getFile("XmlParserTest/XIncludeXPointerTest.xml");
-      manuallyExpanded = JUnitExtension.getFile("XmlParserTest/XIncludeXPointerTest_Expanded.xml");
-      
-      //After passing JTalentAndStringMatch.xml through processXIncludes,
-      //we should then be able to parse both files and get identical results.
-      obj1 = mXmlParser.parse(new XMLInputSource(withXIncludes));
-      obj2 = mXmlParser.parse(new XMLInputSource(manuallyExpanded));
-      Assert.assertNotNull(obj1); 
-      //obj1.toXML(System.out);
-      Assert.assertNotNull(obj2);    
-      Assert.assertEquals(obj1,obj2); 
+      AnalysisEngineDescription desc1 = (AnalysisEngineDescription)
+        mXmlParser.parse(new XMLInputSource(withImports));
+      AnalysisEngineDescription desc2 = (AnalysisEngineDescription)
+        mXmlParser.parse(new XMLInputSource(manuallyExpanded));
+      Assert.assertNotNull(desc1);    
+      Assert.assertNotNull(desc2);
+      Assert.assertEquals(desc1.getDelegateAnalysisEngineSpecifiers(),desc2.getDelegateAnalysisEngineSpecifiers()); 
     }
     catch (Exception e)
     {

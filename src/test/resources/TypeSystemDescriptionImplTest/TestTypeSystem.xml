@@ -26,7 +26,7 @@
 <version>0.1</version>
 <vendor>IBM</vendor>
 <imports>
-<import name="org.apache.uima.resource.impl.metadata.TypeSystemImportedByName"/>
+<import name="org.apache.uima.resource.metadata.impl.TypeSystemImportedByName"/>
 <import location="TypeSystemImportedByLocation.xml"/>
 <import name="TypeSystemImportedFromDataPath"/>
 </imports>
