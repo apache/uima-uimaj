@@ -36,7 +36,6 @@
 		<module>../uimaj-adapter-vinci</module>
 		<module>../uimaj-adapter-soap</module>
 		<module>../uimaj-test-util</module>
-		<module>../uimaj-distr</module>
 		<module>../jVinci</module>
 		<module>../uimaj-ep-debug</module>
 		<module>../uimaj-ep-jcasgen</module>
