@@ -35,7 +35,7 @@ import org.apache.uima.test.junit_extension.TestPropertyReader;
 import org.apache.uima.util.XMLInputSource;
 
 /**
- * TestCase for the Sequencer with a capabilityLanguageFlow
+ * Testclass for Sequencers with a capabilityLanguageFlow
  * 
  * @author Michael Baessler 
  */
