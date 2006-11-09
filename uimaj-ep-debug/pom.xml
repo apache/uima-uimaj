@@ -15,39 +15,23 @@
 	</parent>
 	<dependencies>
 		<dependency>
-			<groupId>org.eclipse</groupId>
-			<artifactId>osgi</artifactId>
-			<version>3.1.2</version>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>org.eclipse.core.runtime</artifactId>
+			<version>3.2.0</version>
 			<scope>provided</scope>
 		</dependency>
+<!--
 		<dependency>
-			<groupId>org.eclipse</groupId>
-			<artifactId>core-runtime</artifactId>
-			<version>3.1.2</version>
+			<groupId>org.eclipse.ui</groupId>
+			<artifactId>org.eclipse.ui</artifactId>
+			<version>3.2.0</version>
 			<scope>provided</scope>
 		</dependency>
+	-->
 		<dependency>
-			<groupId>org.eclipse</groupId>
-			<artifactId>ui</artifactId>
-			<version>3.1.2</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse</groupId>
-			<artifactId>ui-workbench</artifactId>
-			<version>3.1.2</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse</groupId>
-			<artifactId>jdt-debug-ui</artifactId>
-			<version>3.1.2</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse</groupId>
-			<artifactId>jface</artifactId>
-			<version>3.1.1</version>
+			<groupId>org.eclipse.jdt</groupId>
+			<artifactId>org.eclipse.jdt.debug.ui</artifactId>
+			<version>3.2.0</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
@@ -61,7 +45,7 @@
 						<id>bin</id>
 						<phase>package</phase>
 						<goals>
-							<goal>attached</goal>
+							<goal>single</goal>
 						</goals>
 						<configuration>
 							<descriptors>
