@@ -186,7 +186,7 @@ below for more information.
       <tr><td>
         <blockquote>
                                     <p>Use a command like:</p>
-                                                <pre>% svn checkout http://svn.apache.org/repos/asf/incubator/uima </pre>
+                                                <pre>% svn checkout http://svn.apache.org/repos/asf/incubator/uima/uimaj/trunk </pre>
                                                 <p>Once you have Apache UIMA checked out you can update the source 
 by executing the following command from within the UIMA directory. </p>
                                                 <pre>
@@ -208,7 +208,7 @@ by executing the following command from within the UIMA directory. </p>
 blocking http access to the Subversion repository, you can try to access it 
 via HTTPS: </p>
                                                 <pre>
-% svn checkout https://svn.apache.org/repos/asf/incubator/uima
+% svn checkout https://svn.apache.org/repos/asf/incubator/uima/uimaj/trunk
 </pre>
                             </blockquote>
       </td></tr>
@@ -256,7 +256,7 @@ but Apache UIMA Committers must checkout the Subversion repository
 via HTTPS. 
 </p>
                                                 <pre>
-% svn checkout https://svn.apache.org/repos/asf/incubator/uima
+% svn checkout https://svn.apache.org/repos/asf/incubator/uima/uimaj/trunk
 </pre>
                             </blockquote>
       </td></tr>
@@ -353,13 +353,111 @@ your actual username and password on svn.apache.org.
       <tr><td>
         <blockquote>
                                     <p>
-  Under construction
-  <!--
-Refer to the <a href="http://wiki.apache.org/incubator/uima">Wiki
-page</a> for details. Note that the UIMA project is subdivided into several
-smaller projects, and each project is built separately. 
-    -->
+Apache UIMA uses Maven 2 to do builds.  Download Maven from <a class="external" rel="nofollow" href="http://maven.apache.org">
+http://maven.apache.org</a> and add &lt;maven-home&gt;/bin to your path.
 </p>
+                                                    <table border="0" cellspacing="0" cellpadding="2" width="100%">
+      <tr><td bgcolor="#9289A2">
+        <font color="#ffffff" face="arial,helvetica,sanserif">
+          <a name="Building from the command line"><strong>Building from the command line</strong></a>
+        </font>
+      </td></tr>
+      <tr><td>
+        <blockquote>
+                                    <p>
+<pre>
+$&gt; cd uimaj
+$&gt; mvn install
+</pre>
+</p>
+                                                <p>
+The first time you try this, you will probably get an error that <code>javax:activation:activation:jar:1.0.2</code> is not found.  To resolve this,
+download <code>activation.jar</code> from <a class="external" rel="nofollow" href="http://maven.apache.org">http://java.sun.com/products/archive/javabeans/jaf102.html</a> and execute the command:
+<pre>
+$&gt; mvn install:install-file -DgroupId=javax.activation -DartifactId=activation -Dversion=1.0.2 -Dpackaging=jar -Dfile=/path/to/file/activation.jar
+</pre>
+
+then re-run the UIMA build with the command:
+<pre>
+$&gt; mvn install
+</pre>
+</p>
+                                                <p>
+This should build all of the jars and run the unit tests.  Each jar will be located under the <code>target</code> subdirectory of its project, for example <code>uimaj-core/target/uima-core.jar</code>.
+</p>
+                            </blockquote>
+      </td></tr>
+      <tr><td><br/></td></tr>
+    </table>
+                                                    <table border="0" cellspacing="0" cellpadding="2" width="100%">
+      <tr><td bgcolor="#9289A2">
+        <font color="#ffffff" face="arial,helvetica,sanserif">
+          <a name="Building from Eclipse"><strong>Building from Eclipse</strong></a>
+        </font>
+      </td></tr>
+      <tr><td>
+        <blockquote>
+                                    <p>
+	  <ol>
+	  <li>(Optional) If you want a new workspace for the maven work, start Eclipse and create a new workspace. </li> 
+      <li>In a command window, execute <br />
+		  <code>mvn -Declipse.workspace=&lt;eclipse workspace dir&gt; eclipse:add-maven-repo</code><br />
+		  This adds a maven repository to your machine (On Windows, under documents &amp; settings / .m2 / repository), and sets up an Eclipse Java Build Path variable to reference it.</li>
+      <li>Use Eclipse's SVN Repository explorer to checkout all the projects under uimaj/trunk.  Tell it to create new Java projects for these.</li>
+      <li><code>cd uimaj</code> to switch to the Eclipse workspace for the uimaj project itself is (it has the top level POM), and run the command:<br />
+		  <code>mvn eclipse:eclipse</code> <br /> 
+		  If you notice error messages that components need to be downloaded from the maven repository, it might tell you to redo the command using the <code>-DdownloadSources=true</code> parameter in order to check remote repositories for sources.</li>
+      <li>Return to Eclipse, and if needed, select all the projects and push F5 to "refresh" them (because the previous command changed the .project and .classpath files).  You can set your workspace to automatically refresh - in which case skip this step.</li>
+      <li>The projects should now compile without errors, and have build paths which reference copies of things in your local maven repository.</li>
+	  <li>You can also run <code>mvn install</code> to build from the command line and run the unit tests, as described in the previous section.</li>
+  </ol>
+</p>
+                            </blockquote>
+      </td></tr>
+      <tr><td><br/></td></tr>
+    </table>
+                                                    <table border="0" cellspacing="0" cellpadding="2" width="100%">
+      <tr><td bgcolor="#9289A2">
+        <font color="#ffffff" face="arial,helvetica,sanserif">
+          <a name="What to do if the tests fail"><strong>What to do if the tests fail</strong></a>
+        </font>
+      </td></tr>
+      <tr><td>
+        <blockquote>
+                                    <p>
+(Note: this kludgy proceedure needs improvement)
+</p>
+                                                <p>
+If you get a failure messsage, in Eclipse, use the Search facility to search Files in the workspace of type "*.txt" for the string "&lt;&lt;&lt; FAILURE!"
+</p>
+                                                <p>
+If not using Eclipse, you can use <code>grep</code> to accomplish the same thing.
+</p>
+                            </blockquote>
+      </td></tr>
+      <tr><td><br/></td></tr>
+    </table>
+                                                    <table border="0" cellspacing="0" cellpadding="2" width="100%">
+      <tr><td bgcolor="#9289A2">
+        <font color="#ffffff" face="arial,helvetica,sanserif">
+          <a name="How to build the full Apache UIMA distribution"><strong>How to build the full Apache UIMA distribution</strong></a>
+        </font>
+      </td></tr>
+      <tr><td>
+        <blockquote>
+                                    <p>
+First do a build as described in "Building from the command line".  Then execute the following:
+<pre>
+$&gt;cd ../uimaj-distr
+$&gt;mvn assembly:assembly
+</pre>
+
+This will create .zip, .tar.gz, and .tar.bz2 archives in the <code>uimaj-distr/target</code> directory.
+</p>
+                            </blockquote>
+      </td></tr>
+      <tr><td><br/></td></tr>
+    </table>
                             </blockquote>
         </p>
       </td></tr>
