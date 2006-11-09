@@ -1845,11 +1845,7 @@ public class MultiPageEditor extends FormEditor {
       if (null == checker
 //          || null != checker.findResource("java/lang/Object.class") //$NON-NLS-1$
           || null != checker
-              .findResource("com/ibm/uima/reference_impl/UIMAFramework_impl.class") //$NON-NLS-1$
-          || null != checker
-              .findResource("com/ibm/uima/collection/CollectionProcessingEngine.class") //$NON-NLS-1$
-          || null != checker
-              .findResource("com/ibm/uima/reference_impl/collection/CollectionProcessingEngine_impl.class")) //$NON-NLS-1$
+              .findResource("org/apache/uima/impl/UIMAFramework_impl.class")) //$NON-NLS-1$
         continue;
       if (result.length() > 0)
         result = result.append(PATH_SEPARATOR);
