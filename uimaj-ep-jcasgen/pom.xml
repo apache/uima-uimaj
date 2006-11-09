@@ -27,43 +27,17 @@
 			<scope>compile</scope>
 		</dependency>	
 		<dependency>
-			<groupId>org.eclipse</groupId>
-			<artifactId>osgi</artifactId>
-			<version>3.1.2</version>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>org.eclipse.core.runtime</artifactId>
+			<version>3.2.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse</groupId>
-			<artifactId>core-runtime</artifactId>
-			<version>3.1.2</version>
+			<groupId>org.eclipse.jdt</groupId>
+			<artifactId>org.eclipse.jdt.core</artifactId>
+			<version>3.2.0</version>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse</groupId>
-			<artifactId>ui</artifactId>
-			<version>3.1.2</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse</groupId>
-			<artifactId>ui-workbench</artifactId>
-			<version>3.1.2</version>
-			<scope>provided</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.eclipse</groupId>
-			<artifactId>jdt-core</artifactId>
-			<version>3.1.2</version>
-			<scope>provided</scope>
-		</dependency>						
-		<dependency>
-			<groupId>org.eclipse</groupId>
-			<artifactId>core-resources</artifactId>
-			<version>3.1.2</version>
-			<scope>provided</scope>
-		</dependency>					
-		
+		</dependency>								
 		<dependency>
 			<groupId>org.eclipse.emf</groupId>
 			<artifactId>codegen</artifactId>
@@ -81,7 +55,7 @@
 						<id>bin</id>
 						<phase>package</phase>
 						<goals>
-							<goal>attached</goal>
+							<goal>single</goal>
 						</goals>
 						<configuration>
 							<descriptors>
