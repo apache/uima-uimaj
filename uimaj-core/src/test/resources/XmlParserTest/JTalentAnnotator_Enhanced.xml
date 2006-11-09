@@ -19,8 +19,8 @@
  -->
 
 <taeDescription xmlns="http://uima.watson.ibm.com/resourceSpecifier">
-<primitive>true</primitive>
 <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+<primitive>true</primitive>
 <annotatorImplementationName>org.apache.research.talentuima.annotations.JTalentAnnotator_Enhanced</annotatorImplementationName>
  
 <analysisEngineMetaData>

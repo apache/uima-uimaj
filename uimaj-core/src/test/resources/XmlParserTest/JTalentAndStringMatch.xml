@@ -25,11 +25,11 @@
 
 <delegateAnalysisEngineSpecifiers>
 <delegateAnalysisEngine key="JTalent">
-<xi:include href="JTalentAnnotator_Enhanced.xml"/>
+<import location="JTalentAnnotator_Enhanced.xml"/>
 </delegateAnalysisEngine>
 
 <delegateAnalysisEngine key="StringMatch">
-<xi:include href="StringMatchAnnotator2.xml"/>
+<import location="StringMatchAnnotator2.xml"/>
 </delegateAnalysisEngine>
 </delegateAnalysisEngineSpecifiers>
 
