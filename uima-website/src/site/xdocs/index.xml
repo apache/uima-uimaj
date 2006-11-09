@@ -20,7 +20,7 @@ under the License.
 <document>
 
 <properties>
-<title>Home</title>
+<title>Apache UIMA</title>
 <author email="uima-dev@incubator.apache.org">
  UIMA Documentation Team</author>
 </properties>
@@ -37,6 +37,7 @@ thriving community of users and developers of UIMA frameworks, supporting
   audio and video.
 </p>
 
+  <h2>What is UIMA?</h2>
 <p>Unstructured Information Management applications are software systems
 that analyze large volumes of unstructured information in order to
 discover knowledge that is relevant to an end user. UIMA is a
