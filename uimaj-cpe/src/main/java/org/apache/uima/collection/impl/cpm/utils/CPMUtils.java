@@ -45,7 +45,7 @@ import org.apache.uima.util.UimaTimer;
 
 public class CPMUtils
 {
-    public static final String CPM_LOG_RESOURCE_BUNDLE = "org.apache.uima.collection.cpm.impl.cpm_messages";
+    public static final String CPM_LOG_RESOURCE_BUNDLE = "org.apache.uima.collection.impl.cpm.cpm_messages";
 	
 	private static UimaTimer timer = null;
 	/**
