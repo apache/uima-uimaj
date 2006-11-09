@@ -1,0 +1,102 @@
+<assembly>
+	<id>bin</id>
+	<formats>
+		<format>tar.gz</format>
+		<format>tar.bz2</format>
+		<format>zip</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+
+	<dependencySets>
+		<!-- Because our artifactIds are uimaj-xxx but our jars are uima-xxx,
+			I need a separate dependency set for each module so that I can
+			specify the jar file name.  If we didn't have this inconsistency
+			we could have a single dependencySet that included all modules
+			and had an outputFileNameMapping of ${artifactId}.jar -->
+		<dependencySet>
+			<includes>
+				<include>org.apache.uima:uimaj-core</include>
+			</includes>
+			<unpack>false</unpack>
+			<outputFileNameMapping>uima-core.jar</outputFileNameMapping>
+			<outputDirectory>/lib</outputDirectory>
+		</dependencySet>
+		<dependencySet>
+			<includes>
+				<include>org.apache.uima:uimaj-cpe</include>
+			</includes>
+			<unpack>false</unpack>
+			<outputFileNameMapping>uima-cpe.jar</outputFileNameMapping>
+			<outputDirectory>/lib</outputDirectory>
+		</dependencySet>
+		<dependencySet>
+			<includes>
+				<include>org.apache.uima:uimaj-examples</include>
+			</includes>
+			<unpack>false</unpack>
+			<outputFileNameMapping>uima-examples.jar</outputFileNameMapping>
+			<outputDirectory>/lib</outputDirectory>
+		</dependencySet>
+		<dependencySet>
+			<includes>
+				<include>org.apache.uima:uimaj-tools</include>
+			</includes>
+			<unpack>false</unpack>
+			<scope>runtime</scope>
+			<outputFileNameMapping>uima-tools.jar</outputFileNameMapping>
+			<outputDirectory>/lib</outputDirectory>
+		</dependencySet>
+		<dependencySet>
+			<includes>
+				<include>org.apache.uima:uimaj-adapter-soap</include>
+			</includes>
+			<unpack>false</unpack>
+			<scope>runtime</scope>
+			<outputFileNameMapping>uima-adapter-soap.jar</outputFileNameMapping>
+			<outputDirectory>/lib</outputDirectory>
+		</dependencySet>				
+		<dependencySet>
+			<includes>
+				<include>org.apache.uima:uimaj-adapter-vinci</include>
+			</includes>
+			<unpack>false</unpack>
+			<scope>runtime</scope>
+			<outputFileNameMapping>uima-adapter-vinci.jar</outputFileNameMapping>
+			<outputDirectory>/lib</outputDirectory>
+		</dependencySet>				
+		<dependencySet>
+			<includes>
+				<include>org.apache.uima:jVinci</include>
+			</includes>
+			<unpack>false</unpack>
+			<scope>runtime</scope>
+			<outputFileNameMapping>jVinci.jar</outputFileNameMapping>
+			<outputDirectory>/lib</outputDirectory>
+		</dependencySet>				
+		
+		
+		<dependencySet>
+			<includes>
+				<include>org.apache.uima:uimaj-ep-configurator:zip</include>
+				<include>org.apache.uima:uimaj-ep-debug:zip</include>
+				<include>org.apache.uima:uimaj-ep-jcasgen:zip</include>
+				<include>org.apache.uima:uimaj-ep-pear-packager:zip</include>
+				<include>org.apache.uima:uimaj-ep-runtime:zip</include>
+			</includes>
+			<unpack>true</unpack>
+			<scope>runtime</scope>
+			<outputDirectory>/eclipsePlugins</outputDirectory>
+		</dependencySet>
+	</dependencySets>
+		
+	<fileSets>
+		<fileSet>
+			<directory>../uimaj-distr/src/main/scripts</directory>
+			<outputDirectory>bin</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>../uimaj-distr/src/main/properties</directory>
+			<outputDirectory>/</outputDirectory>
+		</fileSet>
+	</fileSets>
+</assembly>
