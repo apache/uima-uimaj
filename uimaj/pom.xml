@@ -54,8 +54,8 @@
 	</modules>
 	<repositories>
 		<repository>
-			<id>uima</id>
-			<url>http://uima18.watson.ibm.com:8081/mavenRepo</url>
+			<id>eclipsePlugins</id>
+			<url>http://repo1.maven.org/eclipse</url>
 		</repository>
 	</repositories>
 </project>
