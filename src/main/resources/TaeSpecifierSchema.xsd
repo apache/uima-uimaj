@@ -314,7 +314,7 @@
 	<complexType name="TypeDescriptionType">
 		<sequence>
 			<element name="name" type="Name" />
-			<element name="description" type="string" />
+			<element name="description" type="string" minOccurs="0"/>
 			<element name="supertypeName" type="Name" />
 			<choice>
 				<element name="allowedValues" minOccurs="0">
@@ -324,7 +324,7 @@
 								<complexType>
 									<sequence>
 										<element name="string" type="string" />
-										<element name="description" type="string" />
+										<element name="description" type="string" minOccurs="0"/>
 									</sequence>
 								</complexType>
 							</element>
@@ -338,7 +338,7 @@
 								<complexType>
 									<sequence>
 										<element name="name" type="Name" />
-										<element name="description" type="string" />
+										<element name="description" type="string" minOccurs="0"/>
 										<element name="rangeTypeName" type="Name" />
 										<element name="elementType" type="string" minOccurs="0" />
 										<element name="multipleReferencesAllowed" type="boolean" minOccurs="0" />
