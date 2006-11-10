@@ -120,6 +120,26 @@ via HTTPS.
 % svn checkout https://svn.apache.org/repos/asf/incubator/uima/uimaj/trunk
 </pre>
 </subsection>
+		
+<subsection name="Checking Out Code using Eclipse">
+
+<p>To access the SVN repository from Eclipse, you will need to install the Subclipse plugin from the update site
+<a class="external" rel="nofollow" href="http://subclipse.tigris.org/update_1.0.x">
+http://subclipse.tigris.org/update_1.0.x</a>.
+
+You can then check out code as follows:
+<ol>
+	<li>Bring up the "SVN Repositories" View (from Window -> Show View -> Other)</li>
+	<li>Right click in the SVN Repositories View and select New -> Repository Location.</li>
+	<li>Enter the URL <code>http://svn.apache.org/repos/asf/incubator/uima/uimaj/trunk</code> (or <code>https://</code>...)</li>
+	<li>Shift-click to select all of the projects, right click and choose "Checkout..."</li>
+	<li>Select "Check out into the workspace as projects" and click "Finish"</li>	
+</ol>	
+			
+This will check out all of the code, but it will not build.  See below for instructions on how to build from Eclipse.
+</p>
+</subsection>	
+		
 </section>
 
 <section name="Submitting Code Changes">
@@ -189,7 +209,8 @@ $&gt; mvn install
 The first time you try this, you will probably get an error that <code>javax:activation:activation:jar:1.0.2</code> is not found.  To resolve this,
 download <code>activation.jar</code> from <a  class="external" rel="nofollow" href="http://maven.apache.org">http://java.sun.com/products/archive/javabeans/jaf102.html</a> and execute the command:
 <pre>
-$&gt; mvn install:install-file -DgroupId=javax.activation -DartifactId=activation -Dversion=1.0.2 -Dpackaging=jar -Dfile=/path/to/file/activation.jar
+$&gt; mvn install:install-file -DgroupId=javax.activation -DartifactId=activation -Dversion=1.0.2   
+	    \ -Dpackaging=jar -Dfile=/path/to/file/activation.jar
 </pre>
 
 then re-run the UIMA build with the command:
