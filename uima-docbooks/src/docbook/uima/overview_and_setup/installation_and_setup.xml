@@ -1,0 +1,296 @@
+<document>
+  <properties>
+    <title>UIMA SDK Setup for Eclipse</title>
+  </properties>
+<body>
+
+
+
+<div class="chapter">
+<div class="Section1">
+
+
+
+<section name="UIMA SDK Setup for Eclipse"><a id="_crossRef372"> </a>
+
+
+
+<p>This chapter describes how to set up the UIMA SDK to work
+with Eclipse.  Eclipse (<a href="http://www.eclipse.org/">http://www.eclipse.org</a>)
+is a popular open-source Integrated Development Environment for many things,
+including Java. The UIMA SDK does not require that you use Eclipse.  However, we recommend that you do use Eclipse
+because some useful UIMA SDK tools run as plug-ins to the Eclipse platform and
+because the UIMA SDK examples are provided in a form that's easy to import into
+your Eclipse environment.</p>
+
+<p>If you are not planning on using the UIMA SDK with
+Eclipse, you may skip this chapter and read <a class="crossrefText" href="Annotator_and_Analysis_Engine_Developers_Guide.htm#_crossRef1">Chapter 4, <b>Annotator and Analysis Engine Developer&rsquo;s Guide</b></a> next.</p>
+
+<p>This chapter provides instructions for </p>
+
+<ul class="compact"><li>installing Eclipse, </li>
+
+
+<li>installing the UIMA SDK's Eclipse
+plugins into your Eclipse environment, and </li>
+
+
+<li>importing the example UIMA code
+into an Eclipse project.
+</li></ul>
+
+<p>The UIMA Eclipse plugins are designed to be used with
+Eclipse version 3.    </p>
+
+
+
+<subsection name="Installation"><a id="_crossRef373"> </a>
+
+
+
+<h3><a id="_crossRef374">Install Eclipse</a></h3>
+
+<ul class="compact"><li>Go to <a
+href="http://download.eclipse.org/downloads">http://download.eclipse.org/downloads</a>  </li>
+
+
+<li>We recommend using the latest
+release level (not an &quot;Integration level').  Navigate to the Eclipse Release version you
+want and download the archive for your platform.</li>
+
+
+<li>Unzip the archive to install
+Eclipse somewhere, e.g., c:\</li>
+
+
+<li>Eclipse has a bit of a learning
+curve.  If you plan to make significant
+use of Eclipse, check out the tutorial under the help menu.  It is well worth the effort.
+</li></ul>
+
+
+
+<h3><a id="_crossRef375">Install EMF</a></h3>
+
+<p>EMF stands for Eclipse Modeling
+Framework.  It is an add-on to Eclipse,
+and is used by the UIMA Eclipse tooling.  Use the built-in facilities in Eclipse to find and install new features.
+</p>
+
+<p>Activate the software feature finding by
+using the menu: help &gt;&gt; Software Updates &gt;&gt; Find and Install.  Select &quot;Search for new features to
+install&quot;, push &quot;Next&quot;. Specify the update site where EMF is
+found as a site to search, making sure the &quot;Ignore features not applicable
+to this environment&quot; box is checked, and push &quot;Finish&quot;.  You can find out where this site is by going
+to <a href="http://www.eclipse.org/">http://www.eclipse.org</a> and
+browsing for EMF.  In early 2006, the EMF
+update site was <a
+href="http://download.eclipse.org/tools/emf/updates">http://download.eclipse.org/tools/emf/updates</a>.  If your computer is on an internet connection
+which uses a proxy server, you can configure Eclipse to know about that.  Put your proxy settings into Ecluse using the
+Eclipse preferences by accessing the menus: Window =&gt; Preferences... =&gt;
+Install/Update, and Enable HTTP proxy connection under the Proxy Settings with
+the information about your proxy. </p>
+
+<p>This will launch a search for updates to
+Eclipse; it may show a list of update site mirrors &ndash; click OK.  When it finishes, it shows a list of possible
+updates in an expandable tree.  Expand
+the tree nodes to find EMF SDK.  The
+specific level may vary from the level shown below as newer versions are
+released.</p>
+
+<p><img alt="" width="501" height="586"
+src="../UIMA_SDK_Guide_Ref/UIMA_SDK_Installation_and_Setup_files/image002.jpg"/></p>
+
+<p>Click &quot;Next&quot;.  Then pick Eclipse Modeling Framework (EMF),
+and push &quot;Next&quot;, accept any licensing agreements, etc., until it
+finishes the installation.  It may say
+it's an &quot;unsigned feature&quot;; proceed by clicking
+&quot;Install&quot;.  If it recommends
+restarting, you may do that.</p>
+
+<p>This will install EMF, without any
+extras.  (If you want the whole EMF
+system, including source and documentation, you can pick the &quot;EMF
+SDK&quot; and the &quot;Examples for Eclipse Modeling Framework&quot;.)   </p>
+
+<h3><a id="_crossRef376">Install the UIMA SDK</a></h3>
+
+<p>If you haven't already done so, please
+download and install the UIMA SDK from <a
+href="http://www.alphaworks.ibm.com/tech/uima">http://www.alphaworks.ibm.com/tech/uima</a>.</p>
+
+<h3><a id="_crossRef377">Install the UIMA Eclipse Plugins</a></h3>
+
+<p>In the directory %UIMA_HOME%/eclipsePlugin,
+you will find a zip file.  (The environment
+variable %UIMA_HOME% is where you installed the UIMA SDK.)  Unzip it into your
+%ECLIPSE_HOME%/eclipse/plugins directory.  %ECLIPSE_HOME% is where you installed Eclipse.</p>
+
+
+
+<h3><a id="_crossRef378">Start Eclipse</a></h3>
+
+<p>If you have Eclipse running, restart it (shut it down, and
+start it again) using the <code>clean</code> option.  Start Eclipse by running the command <code>eclipse -clean</code> (see explanation in the next section) in
+the directory where you installed Eclipse.  You may want to set up a desktop shortcut at this point for
+Eclipse.  Eclipse has a bit of a learning
+curve.  If you plan to make significant
+use of Eclipse, check out the tutorial under the help menu.  It is well worth the effort.  There are also books you can get that
+describe Eclipse and its use.</p>
+
+<p>The first time Eclipse starts up it will take a bit longer
+as it completes its installation.  A
+&quot;welcome&quot; page will come up.  After you are through reading the welcome information, click on the
+arrow in the upper right of the main panel to exit the welcome page and get to
+the main Eclipse screens.</p>
+
+<h4>Special startup
+parameter for Eclipse: -clean</h4>
+
+<p>If you have modified the plugin structure (by copying or
+unzipping files directly in the file system) in Eclipse 3.x after you started
+it for the first time, please include the &quot;-clean&quot; parameter in the startup
+arguments to Eclipse, <b><i>one time</i></b>
+(after any plugin modifications were done).  This is needed because Eclipse may not notice the changes you made,
+otherwise.  This parameter forces Eclipse
+to reexamine all of its plugins at startup and recompute any cached information
+about them.</p>
+
+
+
+
+  </subsection>
+<subsection name="Setting up Eclipse to view Example Code"><a id="_crossRef379"> </a>
+
+
+
+<p>Later chapters refer to example code. You can create a
+special project in Eclipse to hold the examples.  Here's how:</p>
+
+<ul class="compact"><li>In Eclipse, if the Java
+perspective is not already open, switch to it by going to Window &ndash;&gt;
+Open Perspective &ndash;&gt;
+Java.</li>
+
+
+<li>Set up a class path variable named
+UIMA_HOME, whose value is the directory where you installed the UIMA SDK.,  This is done as follows:
+
+
+<ul><li>Go to Window &ndash;&gt;
+Preferences &ndash;&gt;
+Java &ndash;&gt;
+Build Path &ndash;&gt;
+Classpath Variables.  </li>
+
+
+<li>Click &quot;New&quot;</li>
+
+
+<li>Enter UIMA_HOME (all capitals,
+exactly as written) in the &quot;Name&quot; field.</li>
+
+
+<li>Enter your installation directory
+(e.g. <code>c:/Program Files/IBM/uima</code>) in the
+&quot;Path&quot; field</li>
+
+
+<li>Click &quot;OK&quot; in the
+&quot;New Variable Entry&quot; dialog</li>
+
+
+<li>Click &quot;OK&quot; in the
+&quot;Preferences&quot; dialog</li>
+
+
+<li>If it asks you if you want to do a
+full build, click &quot;Yes&quot;
+</li></ul></li>
+
+
+<li>Select the File -&gt; Import menu
+option</li>
+
+
+<li>Select &quot;Existing Project into
+Workspace&quot; and click the &quot;Next&quot; button.</li>
+
+
+<li>Click &quot;Browse&quot; and
+browse to the %UIMA_HOME%\docs\examples directory</li>
+
+
+<li>Click &quot;Finish.&quot;  This will create a new project called
+&quot;uima_examples&quot; in your Eclipse workspace.  There should be no compilation errors. 
+</li></ul>
+
+<p>To verify that you have set up the project correctly,
+check that there are no error messages in the &quot;Tasks&quot; or
+&quot;Problems&quot; view.</p>
+
+
+
+
+  </subsection>
+<subsection name="Running external tools from Eclipse"><a id="_crossRef380"> </a>
+
+
+
+<p>You can run outside of Eclipse using the shell scripts in
+the UIMA SDK's bin directory.  In
+addition, many tools can be run from inside Eclipse; examples are the Document
+Analyzer, CPE Configurator, CAS Visual Debugger, Semantic Search, and JCasGen.  The uima_examples project provides Eclipse
+launch configurations that make this easy to do.</p>
+
+<p>To run these tools from Eclipse:</p>
+
+<ul class="compact"><li>If the Java perspective is not
+already open, switch to it by going to Window &ndash;&gt; Open Perspective &ndash;&gt;
+Java.</li>
+
+
+<li>Go to Run &ndash;&gt;
+Run... </li>
+
+
+<li>In the window that appears, select
+&quot;UIMA CPE GUI&quot;, &quot;UIMA CAS Visual Debugger&quot;, &quot;UIMA
+JCasGen&quot;, &quot;UIMA Document Analyzer&quot;, or &quot;UIMA Semantic
+Search&quot; from the list of run configurations on the left. (If you don't
+see, these, please select the uima_examples project and do a Menu -&gt; File
+-&gt; Refresh).</li>
+
+
+<li>Press the &quot;Run&quot;
+button.  The tools should start.  Close the tools by clicking the &quot;X&quot;
+in the upper right corner on the GUI. 
+</li></ul>
+
+<p>For instructions on using the Document Analyzer and CPE
+Configurator, see <a class="crossrefText" href="Document_Analyzer_Users_Manual.htm#_crossRef205">Chapter 17, <b>Document Analyzer
+User's Guide</b></a>, and
+<a class="crossrefText" href="CPE_Configurator_Users_Manual.htm#_crossRef152">Chapter 13  </a><i>. </i>For
+instructions on using the CAS Visual Debugger and JCasGen, see <a class="crossrefText" href="Document_Analyzer_Users_Manual.htm#_crossRef212">Chapter 18, <b>CAS Visual Debugger</b></a><i>, </i>and
+<a class="crossrefText" href="JCasGen_Users_Guide.htm#_crossRef222">Chapter 19, <b>JCasGen User Guide</b></a><i>.</i></p>
+
+</div>
+
+<br/>
+
+
+<div class="Section2">
+
+
+
+</div>
+<div class="footnotesHere"></div>
+</div>
+
+
+
+  </subsection>
+
+</section>
+</body>
+</document>
