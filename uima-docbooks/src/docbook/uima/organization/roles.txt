@@ -1,0 +1,3 @@
+tableSubhead = style background = lite gray, text = bold
+key_concepts = box around, block style
+bold

@@ -22,10 +22,11 @@ html {
 body {
     margin-top:     1em;
     margin-bottom:  1em;
-    margin-left:    10%;
-    margin-right:   10%;
-    
-    font-family:    Times, Times New Roman, serif;
+    margin-left:    16%;
+    margin-right:   8%;
+    font-size: 10.5pt;
+    line-height: 1.3;
+    font-family:     "Palatino Linotype", "Times New Roman", Times, serif;
 }
 
 div {
@@ -33,7 +34,7 @@ div {
 }
 
 p {
-    text-align:     justify;
+    text-align:     left;
     margin-bottom:  .6em;
     line-height:    1.2;
 }
@@ -47,13 +48,49 @@ hr {
     background:     gray;
 }
 
-h1,h2,h3,h4,h5 {
+h2,h3,h4,h5 {
+  margin: 0 0 0.5em 0; 
+  page-break-after: avoid;
+  font-family: Helvetica, Arial, sans-serif;
+  font-weight: bold;
     color:          #525D76;
+}
+
+h2 {
+  margin-left: -10%; }
+
+h2, h3, h4 { margin-top: 1em; }
+
+/* later rules of same specificity override earlier ones */
+/* cant use ">" because IE doesn't recognize */
+
+div.chapter div.titlepage h2.title {  
+  margin-bottom: 1.5em;
+  font-size: 1.6em;
+  letter-spacing: -0.07ex;
+  border-top:solid black 2.25pt;
+}
+
+/* this one comes after and is therefore more specific */
+
+div.section div.titlepage h2.title {  /* h2 */
+  font-size: 1.3em;
+  border-top:solid black 1.00pt;
+}
+
+h3 {
+  margin-left: -5%;
+  font-size: 1.2em;
+  border-top:solid black .75pt;
+}
+
+h4 {
+  font-size: 1.1em;
 }
 
 a {
    text-decoration: underline;
-   color: black;
+   /*color: black;*/
 }
 
 a:hover {
@@ -61,7 +98,7 @@ a:hover {
    color: black;
 }
 
-h1,h2,h3,h4,h5 {
+h3,h4,h5 {
     line-height:    1.3;
     margin-top:     1.5em;
     font-family:    Arial, Sans-serif;
@@ -89,6 +126,11 @@ h3.author, p.othercredit {
     font-style:     oblique;
     text-align:     left;
     color:          #525D76;
+}
+
+td.tableSubhead {
+    font-weight:    bold;
+    background-color: silver;
 }
 
 div.titlepage {
