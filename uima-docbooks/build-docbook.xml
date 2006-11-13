@@ -166,13 +166,21 @@
 
     <mkdir dir="${tmp.dir}" />
 
+  	<available file="${docbook.xml.dir}" property="docbook.ref.unzipped.already" />
+  	
+  	<antcall target="unzip_docbook_ref"/>
+  </target>
+
+	<target name="unzip_docbook_ref" 
+	        description="internal: unzips docbook xml and xsl style sheets"
+	        unless="docbook.ref.unzipped.already">
     <mkdir dir="${docbook.xml.dir}" />
     <unzip src="${zip.src.dir}/docbook-xml-${docbook.xml.version}.zip" dest="${docbook.xml.dir}" />
 
     <mkdir dir="${docbook.xsl.dir}" />
-    <unzip src="${zip.src.dir}/docbook-xsl-${docbook.xsl.version}.zip" dest="${target.dir}" />
-  </target>
-
+    <unzip src="${zip.src.dir}/docbook-xsl-${docbook.xsl.version}.zip" dest="${docbook.ref.dir}" />
+	</target>
+		
   <!-- ======================================================================== -->
   <!-- ==                                                                    == -->
   <!-- == This is the main target to generate all the docs                   == -->

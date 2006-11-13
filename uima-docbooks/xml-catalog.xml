@@ -21,14 +21,14 @@
   <!-- Translate DocBook XML 4.4 system ids to local file names -->
   <rewriteSystem
     systemIdStartString="http://www.oasis-open.org/docbook/xml/4.4/"
-    rewritePrefix="target/docbook-xml-4.4/"/>
+    rewritePrefix="docbook/docbook-xml-4.4/"/>
 
   <!-- Translate DocBook XML 4.4 public ids to local file names -->
   <nextCatalog
-    catalog="target/docbook-xml-4.4/catalog.xml"/>
+    catalog="docbook/docbook-xml-4.4/catalog.xml"/>
 
   <rewriteURI
     uriStartString="http://docbook.sourceforge.net/release/xsl/current/"
-    rewritePrefix="target/docbook-xsl-1.70.0/"/>
+    rewritePrefix="docbook/docbook-xsl-1.70.0/"/>
 
 </catalog>
