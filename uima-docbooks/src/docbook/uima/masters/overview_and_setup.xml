@@ -32,9 +32,9 @@ under the License.
     <xi:include href="../overview_and_setup/acknowledgements.xml"/>
   </preface>
     -->
-  <xi:include href="../overview_and_setup/SDK_overview.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="../overview_and_setup/project_overview.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
   <xi:include href="../overview_and_setup/conceptual_overview.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
-  <xi:include href="../overview_and_setup/SDK_installation_and_setup.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="../overview_and_setup/eclipse_setup.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
   <xi:include href="../overview_and_setup/FAQs.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
   <xi:include href="../overview_and_setup/glossary.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
   <xi:include href="notices_and_trademarks.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>

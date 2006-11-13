@@ -49,7 +49,7 @@ development practices.
 overview.</para>
 
 <section id="ugr.conceptual_overview.uima_introduction">
-  <title>UIMA Introduction"</title>
+  <title>UIMA Introduction</title>
   <figure>
     <title>UIMA helps you build the bridge between the unstructured and structured worlds</title>
     <mediaobject>
@@ -144,7 +144,7 @@ deployments for highly flexible and scaleable solutions.</para>
   
   
 <section id="ugr.conceptual_overview_architecture_framework_sdk">
-  <title>The Architecture, the Framework and the SDK"></title>
+  <title>The Architecture, the Framework and the SDK</title>
   <para>UIMA is a software architecture which specifies component
 interfaces, data representations, design patterns and development roles for
 creating, describing, discovering, composing and deploying multi-modal analysis
@@ -502,7 +502,7 @@ details on the structure of UIMA component descriptors refer to
   </section>
     </section> 
 <section id="ugr.conceptual_overview.aggregate_analysis_engines">
-  <title>Aggregate Analysis Engines"></title>
+  <title>Aggregate Analysis Engines</title>
 
   <blockquote role="key_concepts"><para>&key_concepts; Aggregate Analysis Engine, Delegate Analysis
 Engine, Tightly and Loosely Coupled, Flow Specification, Analysis Engine
