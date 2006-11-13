@@ -91,12 +91,16 @@
 		
 	<fileSets>
 		<fileSet>
-			<directory>../uimaj-distr/src/main/scripts</directory>
+			<directory>src/main/scripts</directory>
 			<outputDirectory>bin</outputDirectory>
 		</fileSet>
 		<fileSet>
-			<directory>../uimaj-distr/src/main/properties</directory>
+			<directory>src/main/properties</directory>
 			<outputDirectory>/</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>target/site/apidocs</directory>
+			<outputDirectory>/docs/api</outputDirectory>
 		</fileSet>
 	</fileSets>
 </assembly>
