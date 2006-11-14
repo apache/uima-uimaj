@@ -113,12 +113,24 @@
 			</excludes>
 		</fileSet>
 		<fileSet>
-			<directory>../uimaj-examples/src/main</directory>
-			<outputDirectory>/examples</outputDirectory>
-			<excludes>
-				<exclude>java</exclude>
-				<exclude>eclipseProject</exclude>
-			</excludes>
+			<directory>../uimaj-examples/src/main/data</directory>
+			<outputDirectory>/examples/data</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>../uimaj-examples/src/main/deploy</directory>
+			<outputDirectory>/examples/deploy</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>../uimaj-examples/src/main/descriptors</directory>
+			<outputDirectory>/examples/descriptors</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>../uimaj-examples/src/main/opennlp_wrappers</directory>
+			<outputDirectory>/examples/opennlp_wrappers</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>../uimaj-examples/src/main/run_configuration</directory>
+			<outputDirectory>/examples/run_configuration</outputDirectory>
 		</fileSet>
 	</fileSets>
 	<files>
