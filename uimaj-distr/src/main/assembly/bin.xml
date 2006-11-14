@@ -6,13 +6,13 @@
 		<format>zip</format>
 	</formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
-
+	
 	<dependencySets>
 		<!-- Because our artifactIds are uimaj-xxx but our jars are uima-xxx,
-			I need a separate dependency set for each module so that I can
-			specify the jar file name.  If we didn't have this inconsistency
-			we could have a single dependencySet that included all modules
-			and had an outputFileNameMapping of ${artifactId}.jar -->
+		I need a separate dependency set for each module so that I can
+		specify the jar file name.  If we didn't have this inconsistency
+		we could have a single dependencySet that included all modules
+		and had an outputFileNameMapping of ${artifactId}.jar -->
 		<dependencySet>
 			<includes>
 				<include>org.apache.uima:uimaj-core</include>
@@ -54,16 +54,17 @@
 			<scope>runtime</scope>
 			<outputFileNameMapping>uima-adapter-soap.jar</outputFileNameMapping>
 			<outputDirectory>/lib</outputDirectory>
-		</dependencySet>				
+		</dependencySet>
 		<dependencySet>
 			<includes>
 				<include>org.apache.uima:uimaj-adapter-vinci</include>
 			</includes>
 			<unpack>false</unpack>
 			<scope>runtime</scope>
-			<outputFileNameMapping>uima-adapter-vinci.jar</outputFileNameMapping>
+			<outputFileNameMapping>
+				uima-adapter-vinci.jar</outputFileNameMapping>
 			<outputDirectory>/lib</outputDirectory>
-		</dependencySet>				
+		</dependencySet>
 		<dependencySet>
 			<includes>
 				<include>org.apache.uima:jVinci</include>
@@ -72,9 +73,10 @@
 			<scope>runtime</scope>
 			<outputFileNameMapping>jVinci.jar</outputFileNameMapping>
 			<outputDirectory>/lib</outputDirectory>
-		</dependencySet>				
+		</dependencySet>
 		
 		
+		<!-- Unpack the zip files for each eclipse plugin into the /eclipsePlugins dir of the distribution -->
 		<dependencySet>
 			<includes>
 				<include>org.apache.uima:uimaj-ep-configurator:zip</include>
@@ -88,7 +90,7 @@
 			<outputDirectory>/eclipsePlugins</outputDirectory>
 		</dependencySet>
 	</dependencySets>
-		
+	
 	<fileSets>
 		<fileSet>
 			<directory>src/main/scripts</directory>
@@ -102,5 +104,45 @@
 			<directory>target/site/apidocs</directory>
 			<outputDirectory>/docs/api</outputDirectory>
 		</fileSet>
+		<fileSet>
+			<directory>../uimaj-examples/src/main/java</directory>
+			<outputDirectory>/examples/src</outputDirectory>
+			<excludes>
+				<exclude>
+					org/apache/uima/examples/xmi/XmiEcoreCasConsumer.java</exclude>
+			</excludes>
+		</fileSet>
+		<fileSet>
+			<directory>../uimaj-examples/src/main</directory>
+			<outputDirectory>/examples</outputDirectory>
+			<excludes>
+				<exclude>java</exclude>
+				<exclude>eclipseProject</exclude>
+			</excludes>
+		</fileSet>
 	</fileSets>
+	<files>
+		<file>
+			<source>../uimaj-examples/src/main/eclipseProject/project</source>
+			<outputDirectory>/examples</outputDirectory>
+			<destName>.project</destName>
+		</file>
+		<file>
+			<source>../uimaj-examples/src/main/eclipseProject/classpath</source>
+			<outputDirectory>/examples</outputDirectory>
+			<destName>.classpath</destName>
+		</file>
+		<file>
+			<source>
+				../uimaj-examples/src/main/eclipseProject/ecore_src_readme.txt</source>
+			<outputDirectory>/examples/ecore_src</outputDirectory>
+			<destName>readme.txt</destName>
+		</file>
+		<file>
+			<source>
+				../uimaj-examples/src/main/java/org/apache/uima/examples/xmi/XmiEcoreCasConsumer.java</source>
+			<outputDirectory>
+				/examples/ecore_src/org/apache/uima/examples/xmi</outputDirectory>
+		</file>
+	</files>
 </assembly>
