@@ -2,32 +2,24 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="UIMA_HOME/lib/uima_core.jar">
+	<classpathentry kind="var" path="UIMA_HOME/lib/uima-core.jar">
 		<attributes>
-			<attribute value="file:/C:/Program Files/IBM/uima/docs/api" name="javadoc_location"/>
+			<attribute value="file:/C:/Program Files/uima/docs/api" name="javadoc_location"/>
 		</attributes>
   </classpathentry>		
-	<classpathentry kind="var" path="UIMA_HOME/lib/uima_cpe.jar">
+	<classpathentry kind="var" path="UIMA_HOME/lib/uima-cpe.jar">
 		<attributes>
-			<attribute value="file:/C:/Program Files/IBM/uima/docs/api" name="javadoc_location"/>
+			<attribute value="file:/C:/Program Files/uima/docs/api" name="javadoc_location"/>
 		</attributes>
   </classpathentry>		
-	<classpathentry kind="var" path="UIMA_HOME/lib/uima_jcas_builtin_types.jar">
-		<attributes>
-			<attribute value="file:/C:/Program Files/IBM/uima/docs/api" name="javadoc_location"/>
-		</attributes>
-  </classpathentry>		
-	<classpathentry kind="var" path="UIMA_HOME/lib/uima_tools.jar">
+	<classpathentry kind="var" path="UIMA_HOME/lib/uima-tools.jar">
 			<attributes>
-			<attribute value="file:/C:/Program Files/IBM/uima/docs/api" name="javadoc_location"/>
+			<attribute value="file:/C:/Program Files/uima/docs/api" name="javadoc_location"/>
 		</attributes>
   </classpathentry>			
-	<classpathentry kind="var" path="UIMA_HOME/lib/uima_adapter_vinci.jar"/>
-	<classpathentry kind="var" path="UIMA_HOME/lib/uima_adapter_soap.jar"/>
-	<classpathentry kind="var" path="UIMA_HOME/lib/uima_search.jar"/>
-	<classpathentry kind="var" path="UIMA_HOME/lib/juru.jar"/>
-	<classpathentry kind="var" path="UIMA_HOME/lib/siapi.jar"/>
-	<classpathentry kind="var" path="UIMA_HOME/lib/vinci/jVinci.jar"/>
+	<classpathentry kind="var" path="UIMA_HOME/lib/uima-adapter-vinci.jar"/>
+	<classpathentry kind="var" path="UIMA_HOME/lib/uima-adapter-soap.jar"/>
+	<classpathentry kind="var" path="UIMA_HOME/lib/jVinci.jar"/>
 	<classpathentry kind="lib" path="resources"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

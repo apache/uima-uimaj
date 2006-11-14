@@ -23,10 +23,10 @@
 
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.apache.uima.annot_view.Gladis"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="uima_examples"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="uimaj-examples"/>
 <stringAttribute key="org.eclipse.debug.ui.target_run_perspective" value="perspective_default"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/uima_examples"/>
+<listEntry value="/uimaj-examples"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="&quot;-Djava.util.logging.config.file=${env_var:UIMA_HOME}/Logger.properties&quot; -DVNS_HOST=localhost"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
