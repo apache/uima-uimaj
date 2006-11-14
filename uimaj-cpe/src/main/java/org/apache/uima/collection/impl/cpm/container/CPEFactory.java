@@ -111,7 +111,7 @@ public class CPEFactory
 {
 	public static final String CPM_HOME = "${CPM_HOME}";
 	private int processorCount = 0;
-	private String DEFAULT_CONFIG_FILE = "cpmWFdefault.xml";
+	private String DEFAULT_CONFIG_FILE = "defaultCpeDescriptor.xml";
 	private boolean defaultConfig = true;
 	public HashMap casProcessorConfigMap = new HashMap();
 	private CpeDescription cpeDescriptor = null;
