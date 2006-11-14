@@ -5,31 +5,31 @@
 	<groupId>org.apache.uima</groupId>
 	<artifactId>uimaj-ep-configurator</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>2.1.0-incubating-SNAPSHOT</version>
 	<name>Apache UIMA Configurator Eclipse Plugin</name>
-	<url>http://maven.apache.org</url>
+	<url>http://incubator.apache.org/uima</url>
 	<parent>
 		<groupId>org.apache.uima</groupId>
 		<artifactId>uimaj</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>2.1.0-incubating-SNAPSHOT</version>
 	</parent>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-core</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>2.1.0-incubating-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>		
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-tools</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>2.1.0-incubating-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>	
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-ep-jcasgen</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>2.1.0-incubating-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>			
 		
@@ -87,7 +87,7 @@
 								<descriptor>
 									src/main/assembly/assemble-plugin.xml</descriptor>
 							</descriptors>
-							<finalName>org.apache.uima.desceditor.1.0.0.SNAPSHOT</finalName>
+							<finalName>org.apache.uima.desceditor.2.1.0.incubating-SNAPSHOT</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 					</execution>
