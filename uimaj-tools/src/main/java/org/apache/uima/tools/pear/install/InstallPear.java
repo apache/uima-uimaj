@@ -35,6 +35,7 @@ import org.apache.uima.internal.util.SystemEnvReader;
 
 import org.apache.uima.pear.tools.*;
 import org.apache.uima.pear.util.*;
+import org.apache.uima.tools.images.Images;
 
 /** 
  * This GUI is used to install a pear file locally in a 
@@ -160,10 +161,6 @@ public class InstallPear extends JFrame {
     private static final String SET_ENV_FILE = "metadata/setenv.txt";
 	protected static final String UIMA_HOME_ENV = "UIMA_HOME";
 	protected static final String UIMA_DATAPATH_ENV = "uima.datapath";
-	// UIMA images
-	protected static final String UIMA_BANNER = "/com/ibm/uima/images/Banner_UIMA.gif";
-	protected static final String UIMA_SPLASH = "/com/ibm/uima/images/Splash_screen.gif";
-	protected static final String UIMA_MICROSCOPE = "/com/ibm/uima/images/Micro_16.gif";
 
     
 	/**
@@ -1040,7 +1037,7 @@ public class InstallPear extends JFrame {
 			System.err.println("Could not set look and feel: " + exception.getMessage());
 		}
 		try {
-			setIconImage(ImageIO.read(getClass().getResource(UIMA_MICROSCOPE)));
+			setIconImage(ImageIO.read(getClass().getResource(Images.MICROSCOPE)));
 		}
 		catch (IOException ioexception){
 			System.err.println("Image could not be loaded: " + ioexception.getMessage());
@@ -1095,7 +1092,7 @@ public class InstallPear extends JFrame {
 				if (e.getActionCommand()== "About") {
 				JFrame messageFrame = new JFrame("About PEARInstaller");
 				aboutMenuItemPanel = new JPanel();
-				JLabel frameLabel = new JLabel(new ImageIcon(getClass().getResource(UIMA_SPLASH)));
+				JLabel frameLabel = new JLabel(new ImageIcon(getClass().getResource(Images.SPLASH)));
 				JOptionPane.showMessageDialog(messageFrame, aboutMenuItemPanel.add(frameLabel), "About PEAR Installer Version 1.0", JOptionPane.PLAIN_MESSAGE);
 			}
 			}
@@ -1105,7 +1102,7 @@ public class InstallPear extends JFrame {
 		JPanel bannerPanel = new JPanel();
 		bannerPanel.setSize(735, 60);
 		bannerPanel.setBackground(Color.WHITE);
-		bannerLabel = new JLabel(new ImageIcon(getClass().getResource(UIMA_BANNER)));
+		bannerLabel = new JLabel(new ImageIcon(getClass().getResource(Images.BANNER)));
 		bannerLabel.setBounds(0, 30, 735, 20);
 		bannerPanel.add(bannerLabel);
 		/* Initialize jContentPane and add the initialized components

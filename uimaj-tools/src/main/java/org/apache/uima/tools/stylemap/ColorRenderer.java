@@ -28,12 +28,7 @@ import javax.swing.JTable;
 import javax.swing.border.Border;
 import javax.swing.table.TableCellRenderer;
 
-/**
- * @author J W Cooper - IBM T J Watson Research
- *
- * 
- */
- class ColorRenderer extends JLabel implements TableCellRenderer
+class ColorRenderer extends JLabel implements TableCellRenderer
 {
 
 	private Border unselectedBorder = null;

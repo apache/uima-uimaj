@@ -29,11 +29,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import org.apache.uima.tools.images.Images;
 
-/**
- * @author J W Cooper - IBM T J Watson Research
- *
- * 
- */
 //cell renderer for the JTable
 class MyCellRenderer extends DefaultTableCellRenderer
 {

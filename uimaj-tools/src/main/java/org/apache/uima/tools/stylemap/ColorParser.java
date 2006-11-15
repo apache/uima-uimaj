@@ -23,11 +23,6 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
-/**
- * @author J W Cooper - IBM T J Watson Research
- *
- * 
- */
 public class ColorParser {
 	private HashMap colorNameMap;
 	

@@ -1340,8 +1340,8 @@ public class MainFrame extends JFrame {
                         + javaVendor;
             }
             String msg = "CVD (CAS Visual Debugger)\n"
-                    + "Version 0.3.3, 10/27/2004\n"
-                    + "Copyright IBM 2003, 2004\n" + versionInfo + "\n";
+                    + "Apache UIMA Version " + UIMAFramework.getVersionString() + "\n"
+                    + "Copyright 2006 The Apache Software Foundation\n" + versionInfo + "\n";
             Icon icon = Images.getImageIcon(Images.MICROSCOPE);
             if (icon == null) {
                 JOptionPane.showMessageDialog(MainFrame.this, msg, "About CVD",
@@ -1396,25 +1396,6 @@ public class MainFrame extends JFrame {
             panel.setBackground(Color.WHITE);
             panel.add(splashLabel, BorderLayout.NORTH);
             panel.setBorder(null);
-            // String javaVersion = System.getProperty("java.version");
-            // String javaVendor = System.getProperty("java.vendor");
-            // javaVendor = (javaVendor == null) ? "<Unknown>" : javaVendor;
-            // String versionInfo = null;
-            // if (javaVersion == null) {
-            // versionInfo = "Running on an old version of Java";
-            // } else {
-            // versionInfo = "Running Java " + javaVersion + " from " +
-            // javaVendor;
-            // }
-            // String msg =
-            // "CVD (CAS Visual Debugger)\n"
-            // + "Version 0.3.3, 10/27/2004\n"
-            // + "Copyright IBM 2003, 2004\n"
-            // + versionInfo
-            // + "\n";
-            // JTextArea textArea = new JTextArea(msg);
-            // JLabel textLabel = new JLabel(msg);
-            // panel.add(textArea, BorderLayout.SOUTH);
             window.setContentPane(panel);
             window.pack();
             window.setLocationRelativeTo(MainFrame.this);

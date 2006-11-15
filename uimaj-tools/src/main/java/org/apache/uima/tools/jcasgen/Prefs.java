@@ -22,7 +22,7 @@ import java.util.prefs.Preferences;
 
 public class Prefs {
 	static final Preferences prefs = Preferences.userRoot().
-	     node("IBM/Watson/UIMA/JCas/JCasGen");
+	     node("org/apache/uima/tools/JCasGen");
 	     
   static void set(GUI gui) {
   	prefs.putInt("WindowPos X", gui.getLocation().x);

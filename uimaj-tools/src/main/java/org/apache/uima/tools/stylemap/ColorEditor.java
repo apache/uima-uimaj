@@ -29,11 +29,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JTable;
 
-/**
- * @author J W Cooper - IBM T J Watson Research
- *
- * 
- */
 class ColorEditor extends DefaultCellEditor
 {
 	Color currentColor = null;

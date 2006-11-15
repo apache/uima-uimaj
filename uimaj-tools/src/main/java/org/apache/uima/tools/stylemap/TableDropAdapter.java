@@ -24,12 +24,6 @@ import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetContext;
 import java.awt.dnd.DropTargetDropEvent;
 
-
-/**
- * @author J W Cooper - IBM T J Watson Research
- *
- * 
- */
 class TableDropAdapter extends DropTargetAdapter {
 	private AnnotationFeaturesViewer annotationFeaturesViewer;
 	private StyleMapEditor edit;

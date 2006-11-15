@@ -21,11 +21,6 @@ package org.apache.uima.tools.stylemap;
 
 import java.awt.Color;
 
-/**
- * @author J W Cooper - IBM T J Watson Research
- *
- * 
- */
 public class StyleMapEntry
 {
 	/**

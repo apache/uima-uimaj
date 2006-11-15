@@ -196,7 +196,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   private long lastFileSyncUserPromptTime;
 
   /**Stores user preferences */
-  private Preferences prefs = Preferences.userRoot().node("IBM/Watson/UIMA/RefImpl/CPE_GUI");
+  private Preferences prefs = Preferences.userRoot().node("org/apache/uima/tools/CPE_GUI");
 
   private boolean mShuttingDown;
 

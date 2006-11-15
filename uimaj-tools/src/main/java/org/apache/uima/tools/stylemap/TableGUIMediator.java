@@ -24,7 +24,6 @@ import javax.swing.event.ListSelectionEvent;
 import org.apache.uima.tools.util.gui.ImageButton;
 
 /**
- * @author J W Cooper - IBM T J Watson Research
  * Mediates GI elements in StyleMapEditor
  * keeping buttons enabled or disabled depending on whether a row is selected.
  * 

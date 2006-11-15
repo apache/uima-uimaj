@@ -23,11 +23,6 @@ import java.util.Vector;
 
 import javax.swing.table.AbstractTableModel;
 
-/**
- * @author J W Cooper - IBM T J Watson Research
- *
- * 
- */
 public class StyleMapTableModel extends AbstractTableModel
 {
 	Vector v;

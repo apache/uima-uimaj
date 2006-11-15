@@ -79,7 +79,7 @@ public class PrefsMediator {
 		defaultInputDir = "docs/examples/data";
 		defaultOutputDir = "processed";
 		prefs = Preferences.userRoot().node(
-				"IBM/Watson/UIMA/RefImpl/DocumentAnalyzer1");
+				"org/apache/uima/tools/DocumentAnalyzer1");
 		restorePreferences();
 	}
 

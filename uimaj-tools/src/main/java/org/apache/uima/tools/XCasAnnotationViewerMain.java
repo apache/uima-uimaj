@@ -100,7 +100,7 @@ public class XCasAnnotationViewerMain extends JFrame
 
   /**Stores user preferences */
   private Preferences prefs = 
-    Preferences.userRoot().node("IBM/Watson/UIMA/RefImpl/AnnotationViewer");
+    Preferences.userRoot().node("org/apache/uima/tools/AnnotationViewer");
    
   /**
    * Constructor.  Sets up the GUI.

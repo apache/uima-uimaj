@@ -19,11 +19,6 @@
 
 package org.apache.uima.tools.stylemap;
 
-/**
- * @author J W Cooper - IBM T J Watson Research
- *
- * 
- */
 public class StyleConstants {
 	public static final int NR_TABLE_COLUMNS = 7;
 	// Column zero is for visual indication of selection
