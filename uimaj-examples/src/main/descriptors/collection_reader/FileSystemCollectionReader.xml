@@ -24,7 +24,7 @@
 <!-- A simple collection reader that reads text files from a directory in the
      filesystem.  The Java class for this collection reader is in uima_core.jar. -->
 
-<collectionReaderDescription  xmlns="http://uima.watson.ibm.com/resourceSpecifier">
+<collectionReaderDescription  xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <implementationName>org.apache.uima.examples.cpe.FileSystemCollectionReader</implementationName>
     <processingResourceMetaData>

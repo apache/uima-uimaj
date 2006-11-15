@@ -21,7 +21,7 @@
 	 ***************************************************************
    -->
    
-<uriSpecifier xmlns="http://uima.watson.ibm.com/resourceSpecifier">
+<uriSpecifier xmlns="http://uima.apache.org/resourceSpecifier">
 	<resourceType>AnalysisEngine</resourceType>
 	<uri>http://localhost:8080/axis/services/urn:SimpleNameRecognizer</uri>
 	<protocol>SOAP</protocol>

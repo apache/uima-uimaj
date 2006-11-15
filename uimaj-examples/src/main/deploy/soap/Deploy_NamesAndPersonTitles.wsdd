@@ -32,19 +32,19 @@
     <parameter name="timeoutPeriod" value="30000"/>
     <parameter name="enableLogging" value="true"/>
 
-    <typeMapping qname="ns:resourceMetaData" xmlns:ns="http://uima.watson.ibm.com/resourceSpecifier"
+    <typeMapping qname="ns:resourceMetaData" xmlns:ns="http://uima.apache.org/resourceSpecifier"
              languageSpecificType="java:org.apache.uima.resource.metadata.ResourceMetaData"
              serializer="org.apache.uima.adapter.soap.XmlSerializerFactory"
              deserializer="org.apache.uima.adapter.soap.XmlDeserializerFactory"
              encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 
-    <typeMapping qname="ns:resultSpecification" xmlns:ns="http://uima.watson.ibm.com/analysis_engine"
+    <typeMapping qname="ns:resultSpecification" xmlns:ns="http://uima.apache.org/analysis_engine"
              languageSpecificType="java:org.apache.uima.analysis_engine.ResultSpecification"
              serializer="org.apache.uima.adapter.soap.XmlSerializerFactory"
              deserializer="org.apache.uima.adapter.soap.XmlDeserializerFactory"
              encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 
-    <typeMapping qname="ns:serviceDataCargo" xmlns:ns="http://uima.watson.ibm.com/analysis_engine"
+    <typeMapping qname="ns:serviceDataCargo" xmlns:ns="http://uima.apache.org/analysis_engine"
              languageSpecificType="java:org.apache.uima.adapter.ServiceDataCargo"
              serializer="org.apache.uima.adapter.soap.BinarySerializerFactory"
              deserializer="org.apache.uima.adapter.soap.BinaryDeserializerFactory"

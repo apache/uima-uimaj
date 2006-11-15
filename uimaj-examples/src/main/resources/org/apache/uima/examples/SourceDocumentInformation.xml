@@ -21,7 +21,7 @@
 	 ***************************************************************
    -->
    
-<typeSystemDescription xmlns="http://uima.watson.ibm.com/resourceSpecifier">
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
 	<name>org.apache.uima.examples.SourceDocumentInformation</name>
 	<description>Defines a type for storing information about the original source document from which the current CAS was initialized</description>
 	<version>1.0</version>

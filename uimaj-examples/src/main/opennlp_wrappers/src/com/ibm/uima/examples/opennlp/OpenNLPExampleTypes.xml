@@ -21,7 +21,7 @@
 	 ***************************************************************
    -->
    
-<typeSystemDescription xmlns="http://uima.watson.ibm.com/resourceSpecifier">
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>OpenNLP Example Types</name>
   <description>Type system used by the org.apache.uima.examples.opennlp package.  Defines token, sentence, named entity, and syntactic parse annotation types.</description>
   <version>1.0</version>

@@ -24,7 +24,7 @@
 <!-- A simple CAS consumer that writes an inline XML representation of the
 	CAS to the filesystem.  The Java class for this CAS consumer is in uima_core.jar. -->
 
-<casConsumerDescription xmlns="http://uima.watson.ibm.com/resourceSpecifier" xmlns:xi="http://www.w3.org/2001/XInclude">
+<casConsumerDescription xmlns="http://uima.apache.org/resourceSpecifier" xmlns:xi="http://www.w3.org/2001/XInclude">
 	<frameworkImplementation>org.apache.uima.java</frameworkImplementation>
 	<implementationName>org.apache.uima.examples.cpe.XCasWriterCasConsumer</implementationName>
 

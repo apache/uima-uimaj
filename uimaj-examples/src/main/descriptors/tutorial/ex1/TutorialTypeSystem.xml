@@ -21,7 +21,7 @@
 	 ***************************************************************
    -->
    
-<typeSystemDescription  xmlns="http://uima.watson.ibm.com/resourceSpecifier">
+<typeSystemDescription  xmlns="http://uima.apache.org/resourceSpecifier">
 	<name>TutorialTypeSystem</name>
 	<description>Type System Definition for the tutorial examples - as of Exercise 1</description>
 	<vendor>IBM</vendor>

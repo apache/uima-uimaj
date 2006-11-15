@@ -24,7 +24,7 @@
 <!--
 	Descriptor for a primitive TAE that uses the TutorialDateTime annotator
 -->
-<analysisEngineDescription xmlns="http://uima.watson.ibm.com/resourceSpecifier">
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
 	<frameworkImplementation>org.apache.uima.java</frameworkImplementation>
 	<primitive>true</primitive>
 	<annotatorImplementationName>org.apache.uima.tutorial.ex4.MeetingAnnotator</annotatorImplementationName>

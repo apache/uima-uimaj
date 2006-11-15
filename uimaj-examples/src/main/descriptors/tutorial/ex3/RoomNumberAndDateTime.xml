@@ -21,7 +21,7 @@
 	 ***************************************************************
    -->
    
-<analysisEngineDescription xmlns="http://uima.watson.ibm.com/resourceSpecifier" xmlns:xi="http://www.w3.org/2001/XInclude">
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier" xmlns:xi="http://www.w3.org/2001/XInclude">
 	<frameworkImplementation>org.apache.uima.java</frameworkImplementation>
 	<primitive>false</primitive>
 

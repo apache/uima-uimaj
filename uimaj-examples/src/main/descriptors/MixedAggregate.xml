@@ -22,7 +22,7 @@
    -->
    
 <!-- Aggregate descriptor for testing merging of type system, type priorities, and indexes. -->
-<analysisEngineDescription xmlns="http://uima.watson.ibm.com/resourceSpecifier">
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
 	<frameworkImplementation>org.apache.uima.java</frameworkImplementation>
 	<primitive>false</primitive>
 	<delegateAnalysisEngineSpecifiers>
