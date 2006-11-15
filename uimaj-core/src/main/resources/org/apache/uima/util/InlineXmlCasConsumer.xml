@@ -28,7 +28,7 @@
         <name>Inline XML CAS Consumer</name>
         <description>Generates inline XML for each CAS and writes it to a file</description>
         <version>1.0</version>
-        <vendor>IBM</vendor>
+        <vendor>The Apache Software Foundation</vendor>
         <configurationParameters>
             <configurationParameter>
                 <name>OutputDirectory</name>

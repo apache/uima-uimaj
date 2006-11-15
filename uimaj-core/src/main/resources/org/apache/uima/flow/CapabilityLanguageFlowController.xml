@@ -31,7 +31,7 @@
 		of the current document or if their outputs have already been
 		produced by a previous AE in the flow.</description>
     <version>1.0</version>
-    <vendor>IBM</vendor>	
+    <vendor>The Apache Software Foundation</vendor>	
     <capabilities>
       <capability>
         <inputs/>

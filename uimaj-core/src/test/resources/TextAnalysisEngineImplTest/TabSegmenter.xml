@@ -29,7 +29,7 @@
 <name>Test Segmenter</name>
 <description>Segments a test document by breaking at tab characters.</description>
 <version>1.0</version>
-<vendor>IBM</vendor>
+<vendor>The Apache Software Foundation</vendor>
 
 <capabilities>
 <capability>

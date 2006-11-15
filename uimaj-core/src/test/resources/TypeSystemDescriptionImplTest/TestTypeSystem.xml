@@ -24,7 +24,7 @@
 <name>TestTypeSystem</name>
 <description>This is a test.</description>
 <version>0.1</version>
-<vendor>IBM</vendor>
+<vendor>The Apache Software Foundation</vendor>
 <imports>
 <import name="org.apache.uima.resource.metadata.impl.TypeSystemImportedByName"/>
 <import location="TypeSystemImportedByLocation.xml"/>

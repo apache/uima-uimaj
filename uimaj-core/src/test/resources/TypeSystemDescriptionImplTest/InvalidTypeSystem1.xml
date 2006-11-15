@@ -3,7 +3,7 @@
 <name>Invalid Type System 1</name>
 <description>Tests error checking for type system descriptors.</description>
 <version>0.1</version>
-<vendor>IBM</vendor>
+<vendor>The Apache Software Foundation</vendor>
 
 
 <types>

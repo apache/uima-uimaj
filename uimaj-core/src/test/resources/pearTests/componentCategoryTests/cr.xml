@@ -34,7 +34,7 @@
           read the file itself and set treat the entire contents of the file as the
           document to be inserted into the CAS.</description>
         <version>1.0</version>
-        <vendor>IBM</vendor>
+        <vendor>The Apache Software Foundation</vendor>
         <configurationParameters>
             <configurationParameter>
                 <name>InputDirectory</name>

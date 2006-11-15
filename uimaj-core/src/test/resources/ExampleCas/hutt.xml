@@ -21,7 +21,7 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>Hierarchical Unified Type Taxonomy (HUTT)</name>
   <version>0.1</version>
-  <vendor>IBM</vendor>
+  <vendor>The Apache Software Foundation</vendor>
   <imports>
     <import location="klt.xml"/>
   </imports>

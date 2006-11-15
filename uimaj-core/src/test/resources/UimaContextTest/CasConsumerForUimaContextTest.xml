@@ -28,7 +28,7 @@
 <name>CAS Consumer for Testing UimaContext</name>
 <description>For testing the UimaContext.</description>
 <version>1.0</version>
-<vendor>IBM</vendor>
+<vendor>The Apache Software Foundation</vendor>
  
 <!-- Configuration Parameter Definitions -->
 <configurationParameters> 

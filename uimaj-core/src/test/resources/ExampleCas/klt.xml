@@ -21,7 +21,7 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>Knowledge-Level Types</name>
   <version>0.1</version>
-  <vendor>IBM</vendor>
+  <vendor>The Apache Software Foundation</vendor>
   <types>
     <typeDescription>
       <name>org.apache.uima.klt.EntityAnnotation</name>

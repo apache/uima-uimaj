@@ -30,6 +30,6 @@
 <description>Annotator that throws an exception if the document text is "ERROR".
   For testing error handling.</description>
 <version>1.0</version>
-<vendor>IBM</vendor>
+<vendor>The Apache Software Foundation</vendor>
 </analysisEngineMetaData>
 </taeDescription>

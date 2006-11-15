@@ -30,7 +30,7 @@
 <description>For testing configuration groups.  Has multiple definitions of same group name
 	which should be allowed.</description>
 <version>1.0</version>
-<vendor>IBM</vendor>
+<vendor>The Apache Software Foundation</vendor>
  
 <!-- Configuration Parameter Definitions -->
 <configurationParameters defaultGroup="a" searchStrategy="none"> 

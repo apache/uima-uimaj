@@ -37,7 +37,7 @@
       <name>Sequencer Test aggregate TAE</name>
       <description>SequencerTest runs same primitive annotator two times.</description>
       <version>1.0</version>
-      <vendor>IBM Corporation</vendor>
+      <vendor>The Apache Software Foundation Corporation</vendor>
 
       <configurationParameters>
       </configurationParameters>

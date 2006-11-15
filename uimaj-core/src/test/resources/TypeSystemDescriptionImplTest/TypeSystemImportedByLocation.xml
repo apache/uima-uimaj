@@ -24,7 +24,7 @@
 <name>TypeSystemImportedByName</name>
 <description>This is for testing the import mechanism.</description>
 <version>0.1</version>
-<vendor>IBM</vendor>
+<vendor>The Apache Software Foundation</vendor>
 <types>
 <typeDescription>
 <name>TestType1</name>

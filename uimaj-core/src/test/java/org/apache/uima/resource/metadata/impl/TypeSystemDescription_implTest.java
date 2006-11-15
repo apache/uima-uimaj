@@ -81,7 +81,7 @@ public class TypeSystemDescription_implTest extends TestCase
 			
 			assertEquals("TestTypeSystem", ts.getName());
 			assertEquals("This is a test.", ts.getDescription());
-			assertEquals("IBM", ts.getVendor());
+			assertEquals("The Apache Software Foundation", ts.getVendor());
 			assertEquals("0.1", ts.getVersion());
 			Import[] imports = ts.getImports();
 			assertEquals(3, imports.length);

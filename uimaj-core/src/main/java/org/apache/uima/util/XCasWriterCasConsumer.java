@@ -51,7 +51,7 @@ import org.apache.uima.resource.ResourceProcessException;
  * </ul> 
  * <p>
  * The XML descriptor for this collection reader is stored in the uima.jar 
- * file as <code>com/ibm/uima/util/XCasWriterCasConsumer.xml</code>.  It
+ * file as <code>org/apache/uima/util/XCasWriterCasConsumer.xml</code>.  It
  * can be accessed via the static method {@link #getDescription()}, which
  * parses the descriptor and returns a {@link CasConsumerDescription}
  * object.

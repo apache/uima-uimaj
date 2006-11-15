@@ -77,7 +77,7 @@ public class FsIndexCollection_implTest extends TestCase
 			
 			assertEquals("TestFsIndexCollection", indexColl.getName());
 			assertEquals("This is a test.", indexColl.getDescription());
-			assertEquals("IBM", indexColl.getVendor());
+			assertEquals("The Apache Software Foundation", indexColl.getVendor());
 			assertEquals("0.1", indexColl.getVersion());
 			Import[] imports = indexColl.getImports();
 			assertEquals(2, imports.length);

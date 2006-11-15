@@ -87,7 +87,7 @@ public class TypePriorities_implTest extends TestCase
 			
 			assertEquals("TestTypePriorities", pri.getName());
 			assertEquals("This is a test.", pri.getDescription());
-			assertEquals("IBM", pri.getVendor());
+			assertEquals("The Apache Software Foundation", pri.getVendor());
 			assertEquals("0.1", pri.getVersion());
 			Import[] imports = pri.getImports();
 			assertEquals(2, imports.length);

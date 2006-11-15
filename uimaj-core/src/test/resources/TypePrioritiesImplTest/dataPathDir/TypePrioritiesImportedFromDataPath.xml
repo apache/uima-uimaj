@@ -25,7 +25,7 @@
 <name>TypePrioritiesImportedFromDataPath</name>
 <description>This is a test of the import mechanism.</description>
 <version>0.1</version>
-<vendor>IBM</vendor>
+<vendor>The Apache Software Foundation</vendor>
 <priorityLists>
 <priorityList>
 <type>TestType1</type>

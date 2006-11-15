@@ -158,7 +158,7 @@ public class CasConsumerDescription_implTest extends TestCase
       settings.getSettingsForGroups().put("cfgGrp2b", new NameValuePair[] { nvp3b });
 
       URISpecifier uriSpec = new URISpecifier_impl();
-      uriSpec.setUri("http://www.ibm.com");
+      uriSpec.setUri("http://www.incubator.apache.org/uima");
       uriSpec.setProtocol(Constants.PROTOCOL_SOAP);
       ExternalResourceDependency dep = UIMAFramework.getResourceSpecifierFactory()
           .createExternalResourceDependency();

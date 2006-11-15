@@ -25,7 +25,7 @@
 <name>TestTypePriorities</name>
 <description>This is a test.</description>
 <version>0.1</version>
-<vendor>IBM</vendor>
+<vendor>The Apache Software Foundation</vendor>
 <imports>
 <import location="TypePrioritiesImportedByLocation.xml"/>
 <import name="TypePrioritiesImportedFromDataPath"/>

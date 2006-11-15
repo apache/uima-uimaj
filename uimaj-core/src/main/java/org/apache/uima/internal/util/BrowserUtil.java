@@ -111,7 +111,7 @@ public class BrowserUtil {
 	 * @param args [url_to_open]
 	 */
 	public static void main( String args[] ) {
-		String url = (args.length > 0) ? args[0] : "http://www.ibm.com";
+		String url = (args.length > 0) ? args[0] : "http://apache.org";
 		try {
 			Process process = BrowserUtil.openUrlInDefaultBrowser( url );
 			process.waitFor();

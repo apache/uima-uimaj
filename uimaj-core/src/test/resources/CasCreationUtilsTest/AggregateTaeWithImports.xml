@@ -34,7 +34,7 @@
 <name>Aggregate TAE with Import</name>
 <description>For testing CAS Creation with imports.</description>
 <version>1.0</version>
-<vendor>IBM</vendor>
+<vendor>The Apache Software Foundation</vendor>
 
 <flowConstraints>
   <fixedFlow>

@@ -24,7 +24,7 @@
 
 <name>Test Resource Manager Configuration</name>
 <description>This is a test.  This is only a test.</description>
-<vendor>IBM</vendor>
+<vendor>The Apache Software Foundation</vendor>
 <version>0.1</version>
 <externalResources>
 <externalResource>
