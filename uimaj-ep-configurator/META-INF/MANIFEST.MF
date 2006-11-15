@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Component Descriptor Editor
+Bundle-Name: Apache UIMA Component Descriptor Editor
 Bundle-SymbolicName: org.apache.uima.desceditor; singleton:=true
 Bundle-Version: 2.1.0.incubating-SNAPSHOT
 Bundle-ClassPath: uima-ep-configurator.jar
 Bundle-Activator: org.eclipse.core.internal.compatibility.PluginActivator
-Bundle-Vendor: IBM Corporation
+Bundle-Vendor: The Apache Software Foundation
 Bundle-Localization: plugin
 Export-Package: .,
  org.apache.uima.taeconfigurator,
