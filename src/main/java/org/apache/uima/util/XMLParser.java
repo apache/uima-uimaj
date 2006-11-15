@@ -772,7 +772,7 @@ public interface XMLParser
    * schema validator.
    */
   public static final String RESOURCE_SPECIFIER_NAMESPACE = 
-     "http://uima.watson.ibm.com/resourceSpecifier";
+     "http://uima.apache.org/resourceSpecifier";
   
   /**
    * Name of schema for ResourceSpecifiers.  This file will be looked up in

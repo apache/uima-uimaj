@@ -20,8 +20,8 @@
 	 ***************************************************************
    -->
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
-  targetNamespace="http://uima.watson.ibm.com/resourceSpecifier"
-  xmlns:rs="http://uima.watson.ibm.com/resourceSpecifier" 
+  targetNamespace="http://uima.apache.org/resourceSpecifier"
+  xmlns:rs="http://uima.apache.org/resourceSpecifier" 
   elementFormDefault="qualified">
  
   <annotation>

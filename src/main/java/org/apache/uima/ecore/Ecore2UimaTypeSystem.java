@@ -127,10 +127,10 @@ public class Ecore2UimaTypeSystem
     
     TypeSystemDescription tsDesc = uimaFactory.createTypeSystemDescription();
 
-    //try to get descriptive info from EAnnotation with NS "http://uima.watson.ibm.com",
+    //try to get descriptive info from EAnnotation with NS "http://uima.apache.org",
     //on the first EPackage in the Resource
     EPackage ePackage = (EPackage)aEcoreResource.getContents().get(0);
-    EAnnotation eannot = ePackage.getEAnnotation("http://uima.watson.ibm.com");
+    EAnnotation eannot = ePackage.getEAnnotation("http://uima.apache.org");
     if (eannot != null)
     {
       tsDesc.setName((String)eannot.getDetails().get("name"));
@@ -208,7 +208,7 @@ public class Ecore2UimaTypeSystem
       type.setName(aEClass.getName());
     }
     //try to get desecription from EAnnotation
-    EAnnotation eannot = aEClass.getEAnnotation("http://uima.watson.ibm.com");
+    EAnnotation eannot = aEClass.getEAnnotation("http://uima.apache.org");
     if (eannot != null)
     {
       type.setDescription((String)eannot.getDetails().get("description"));
@@ -328,7 +328,7 @@ public class Ecore2UimaTypeSystem
     //set supetype to String
     type.setSupertypeName(CAS.TYPE_NAME_STRING);
     //try to get desecription from EAnnotation
-    EAnnotation eannot = aEEnum.getEAnnotation("http://uima.watson.ibm.com");
+    EAnnotation eannot = aEEnum.getEAnnotation("http://uima.apache.org");
     if (eannot != null)
     {
       type.setDescription((String)eannot.getDetails().get("description"));
@@ -341,7 +341,7 @@ public class Ecore2UimaTypeSystem
       EEnumLiteral literal = (EEnumLiteral)literals.get(i);
       vals[i] = uimaFactory.createAllowedValue();
       vals[i].setString(literal.getName());
-      EAnnotation literalAnnot = literal.getEAnnotation("http://uima.watson.ibm.com");
+      EAnnotation literalAnnot = literal.getEAnnotation("http://uima.apache.org");
       if (literalAnnot != null)
       {
         vals[i].setDescription((String)literalAnnot.getDetails().get("description"));
@@ -361,7 +361,7 @@ public class Ecore2UimaTypeSystem
     feat.setName(aStructuralFeature.getName());
     String rangeTypeName = null;
     String elementTypeName = null;
-    EAnnotation eannot = aStructuralFeature.getEAnnotation("http://uima.watson.ibm.com");
+    EAnnotation eannot = aStructuralFeature.getEAnnotation("http://uima.apache.org");
     if (eannot != null)
     {
       feat.setDescription((String)eannot.getDetails().get("description"));

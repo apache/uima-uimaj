@@ -1,4 +1,4 @@
-<resourceManagerConfiguration xmlns="http://uima.watson.ibm.com/resourceSpecifier">
+<resourceManagerConfiguration xmlns="http://uima.apache.org/resourceSpecifier">
 	
         <!--
 	 ***************************************************************

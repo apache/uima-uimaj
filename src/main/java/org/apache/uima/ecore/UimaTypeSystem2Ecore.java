@@ -196,7 +196,7 @@ public class UimaTypeSystem2Ecore
     
     //add descriptive type system attributes as EAnnotations on first package
     EAnnotation eannot = EcoreFactory.eINSTANCE.createEAnnotation();
-    eannot.setSource("http://uima.watson.ibm.com");
+    eannot.setSource("http://uima.apache.org");
     if (aTypeSystem.getName() != null && aTypeSystem.getName().length() > 0)
       eannot.getDetails().put("name", aTypeSystem.getName());
     if (aTypeSystem.getDescription() != null && aTypeSystem.getDescription().length() > 0)
@@ -271,7 +271,7 @@ public class UimaTypeSystem2Ecore
         if (vals[i].getDescription() != null && vals[i].getDescription().length() > 0)
         {
     	    EAnnotation eannot = EcoreFactory.eINSTANCE.createEAnnotation();
-    	    eannot.setSource("http://uima.watson.ibm.com");
+    	    eannot.setSource("http://uima.apache.org");
     	    eannot.getDetails().put("description", vals[i].getDescription());
     	    literal.getEAnnotations().add(eannot);          
         }
@@ -292,7 +292,7 @@ public class UimaTypeSystem2Ecore
 	  if (aType.getDescription() != null && aType.getDescription().length() > 0)
 	  {  
 	    EAnnotation eannot = EcoreFactory.eINSTANCE.createEAnnotation();
-	    eannot.setSource("http://uima.watson.ibm.com");
+	    eannot.setSource("http://uima.apache.org");
 	    eannot.getDetails().put("description", aType.getDescription());
 	    eclassifier.getEAnnotations().add(eannot);
 	  }      
@@ -440,7 +440,7 @@ public class UimaTypeSystem2Ecore
         efeat.isMany() || aFeature.getElementType() != null)
     {  
       EAnnotation eannot = EcoreFactory.eINSTANCE.createEAnnotation();
-      eannot.setSource("http://uima.watson.ibm.com");
+      eannot.setSource("http://uima.apache.org");
       if (aFeature.getDescription() != null && aFeature.getDescription().length() > 0)
       {
         eannot.getDetails().put("description", aFeature.getDescription());

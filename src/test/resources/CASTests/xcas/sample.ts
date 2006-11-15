@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<typeSystemDescription xmlns="http://uima.watson.ibm.com/resourceSpecifier">
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <types>
         <typeDescription>
             <name>uima.tcas.Annotation</name>

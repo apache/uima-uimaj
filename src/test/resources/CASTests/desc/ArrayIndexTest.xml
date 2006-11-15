@@ -19,7 +19,7 @@
  -->
 
 <taeDescription
-   xmlns="http://uima.watson.ibm.com/resourceSpecifier">
+   xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>JEDII</frameworkImplementation>
     <primitive>true</primitive>
     <annotatorImplementationName>org.apache.uima.cas.test.ArrayIndexTest</annotatorImplementationName>

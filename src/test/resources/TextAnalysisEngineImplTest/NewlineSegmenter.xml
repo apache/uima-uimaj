@@ -20,7 +20,7 @@
 
 <!-- For testing only. -->
 
-<taeDescription xmlns="http://uima.watson.ibm.com/resourceSpecifier">
+<taeDescription xmlns="http://uima.apache.org/resourceSpecifier">
 <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
 <primitive>true</primitive>
 <annotatorImplementationName>org.apache.uima.analysis_engine.impl.NewlineSegmenter</annotatorImplementationName>
