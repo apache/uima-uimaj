@@ -46,7 +46,7 @@ public class FlowControllerNewWizard extends AbstractNewWizard implements INewWi
 	
 	public String getPrototypeDescriptor(String name) {
 	  return "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
-	  +  "<flowControllerDescription xmlns=\"http://uima.watson.ibm.com/resourceSpecifier\">\n"
+	  +  "<flowControllerDescription xmlns=\"http://uima.apache.org/resourceSpecifier\">\n"
 	  +  "<frameworkImplementation>org.apache.uima.java</frameworkImplementation>\n"
 	  +  "<implementationName></implementationName>\n"
 	  +  "<processingResourceMetaData>\n"

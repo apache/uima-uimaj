@@ -66,7 +66,7 @@ import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 
 public abstract class AbstractNewWizard extends Wizard implements INewWizard {
 
-	public final static String XMLNS_PART = "xmlns=\"http://uima.watson.ibm.com/resourceSpecifier\">\n";
+	public final static String XMLNS_PART = "xmlns=\"http://uima.apache.org/resourceSpecifier\">\n";
 	protected AbstractNewWizardPage page;
 	protected ISelection selection;
 	private String windowTitle;

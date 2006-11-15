@@ -388,7 +388,7 @@ public class AggregateSection extends AbstractSection {
 
   private final static String REMOTE_TEMPLATE = 
 	"<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
-	"<uriSpecifier xmlns=\"http://uima.watson.ibm.com/resourceSpecifier\">\n" +
+	"<uriSpecifier xmlns=\"http://uima.apache.org/resourceSpecifier\">\n" +
   "  <resourceType>{0}</resourceType>\n" +  //AnalysisEngine CasConsumer
 	"  <uri>{1}</uri> \n" + // sURI
 	"  <protocol>{2}</protocol>\n" + // SOAP or Vinci

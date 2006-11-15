@@ -1399,7 +1399,7 @@ public abstract class AbstractSection extends SectionPart /* extends FormSection
 //    parser.enableSchemaValidation(true);
     return parser.parse(
         input, 
-        "http://uima.watson.ibm.com/resourceSpecifier",
+        "http://uima.apache.org/resourceSpecifier",
         urlForResourceSpecifierSchema,
         parsingOptions);
   }
