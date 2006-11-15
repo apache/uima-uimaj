@@ -70,7 +70,7 @@ public class CpeCasProcessorAPI_Tests extends TestCase {
 		//CpeComponentDescriptor detagDesc = CpeDescriptorFactory.produceComponentDescriptor("c://cpm/annotators/wfminers/detag/service.xml");
 		remoteProcessor.setDescriptor("c://cpm/annotators/wfminers/detag/service.xml"); //detagDesc);
 		remoteProcessor.addDeployParam("vnsPort", "9003");
-		remoteProcessor.addDeployParam("vnsHost", "wf226.almaden.ibm.com");
+		remoteProcessor.addDeployParam("vnsHost", "localhost");
 		remoteProcessor.setCasProcessorFilter("where Detag:DetagContent");
 		remoteProcessor.setBatchSize(3);
 		remoteProcessor.setMaxErrorCount(50);
@@ -129,7 +129,7 @@ public class CpeCasProcessorAPI_Tests extends TestCase {
 		CpeRemoteCasProcessor remoteProcessor = CpeDescriptorFactory.produceRemoteCasProcessor("Detag Miner _2_");
 		remoteProcessor.setDescriptor("c://cpm/annotators/dummy.xml");
 		remoteProcessor.addDeployParam("vnsPort", "9999");
-		remoteProcessor.addDeployParam("vnsHost", "xxx.almaden.ibm.com");
+		remoteProcessor.addDeployParam("vnsHost", "localhost");
 		remoteProcessor.setCasProcessorFilter("where Detag:DetagContent_2");
 		remoteProcessor.setBatchSize(5);
 		remoteProcessor.setMaxErrorCount(51);
@@ -143,7 +143,7 @@ public class CpeCasProcessorAPI_Tests extends TestCase {
 		assertEquals("Name", "Detag Miner _2_", remoteProcessor.getName());
 		assertEquals("Descriptor()", "c://cpm/annotators/dummy.xml",remoteProcessor.getDescriptor());
 		assertEquals("DeploymentParam", "9999", ((remoteProcessor.getDeploymentParams()).get("vnsPort")).getParameterValue());
-		assertEquals("DeploymentParam", "xxx.almaden.ibm.com", ((remoteProcessor.getDeploymentParams()).get("vnsHost")).getParameterValue());
+		assertEquals("DeploymentParam", "localhost", ((remoteProcessor.getDeploymentParams()).get("vnsHost")).getParameterValue());
 		assertEquals("CasProcessorFilter", "where Detag_colon_DetagContent_2", remoteProcessor.getCasProcessorFilter());
 		assertEquals("BatchSize", 5, remoteProcessor.getBatchSize());
 		assertEquals("MaxErrorCount", 51, remoteProcessor.getMaxErrorCount());

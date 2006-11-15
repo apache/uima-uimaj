@@ -28,7 +28,7 @@
         <name>Test Sofa Cas Consumer</name>
         <description>Sofa-aware CAS Consumer used in Sofa unit tests.</description>
         <version>1.0</version>
-        <vendor>IBM</vendor>	   
+        <vendor>The Apache Software Foundation</vendor>	   
         <capabilities>
           <capability>
             <inputSofas>

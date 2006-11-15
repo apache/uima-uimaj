@@ -26,7 +26,7 @@
     <description>Simple FlowController that uses the FixedFlow element of the
 		aggregate descriptor to determine a linear flow.</description>
     <version>1.0</version>
-    <vendor>IBM</vendor>	
+    <vendor>The Apache Software Foundation</vendor>	
     <capabilities>
       <capability>
         <inputs/>

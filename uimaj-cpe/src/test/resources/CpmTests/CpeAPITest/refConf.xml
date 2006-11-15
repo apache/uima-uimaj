@@ -39,7 +39,7 @@
 			<deploymentParameters>
 				<parameter name="vnsPort" type="string" value="9003"/>
 				<parameter name="vnsHost" type="string" 
-					value="wf226.almaden.ibm.com"/>
+					value="localhost"/>
 			</deploymentParameters>
 			<filter>where Detag:DetagContent</filter>
 			<errorHandling>

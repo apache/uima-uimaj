@@ -28,7 +28,7 @@
         <name>Test Sofa Collection Reader</name>
         <description>Creates a text SofA</description>
         <version>1.0</version>
-        <vendor>IBM</vendor>
+        <vendor>The Apache Software Foundation</vendor>
         
         <configurationParameters>            
             <!--configurationParameter>

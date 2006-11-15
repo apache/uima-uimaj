@@ -26,7 +26,7 @@
         <name>ErrorTestAnnotator</name>
         <description>Annotator is used to cause predefined errors</description>
         <version>1.0</version>
-        <vendor>IBM Corporation</vendor>
+        <vendor>The Apache Software Foundation Corporation</vendor>
         <configurationParameters defaultGroup="default" searchStrategy="default_fallback">
             <commonParameters>
                 <configurationParameter>

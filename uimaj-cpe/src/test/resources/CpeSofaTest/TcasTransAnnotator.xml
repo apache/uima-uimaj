@@ -29,7 +29,7 @@
   <name>English to German translator</name>
   <description>Takes a TCAS as input and creates output GermanDocument SofA in de CAS</description>
   <version>1.0</version>
-  <vendor>IBM</vendor>
+  <vendor>The Apache Software Foundation</vendor>
 
  
 <typeSystemDescription>

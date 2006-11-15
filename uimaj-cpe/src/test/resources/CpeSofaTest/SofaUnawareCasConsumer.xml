@@ -28,7 +28,7 @@
         <name>Test Sofa-Unaware Cas Consumer</name>
         <description>Sofa-unaware annotator used for Sofa unit tests.</description>
         <version>1.0</version>
-        <vendor>IBM</vendor>	   
+        <vendor>The Apache Software Foundation</vendor>	   
         <capabilities>
           <capability/>
         </capabilities>
