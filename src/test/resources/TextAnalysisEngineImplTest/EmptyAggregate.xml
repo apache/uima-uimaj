@@ -30,7 +30,7 @@
 <name>Empty Aggregate</name>
 <description>An aggregate containing no components.  For testing empty flow.</description>
 <version>1.0</version>
-<vendor>IBM</vendor>
+<vendor>The Apache Software Foundation</vendor>
 
 <flowConstraints>
   <fixedFlow/>

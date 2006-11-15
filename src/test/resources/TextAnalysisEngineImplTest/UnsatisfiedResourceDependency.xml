@@ -29,7 +29,7 @@
 <name>Unsatisfied Resource Test</name>
 <description>For testing the resource manager.</description>
 <version>1.0</version>
-<vendor>IBM</vendor>
+<vendor>The Apache Software Foundation</vendor>
  
 
 <!-- TypeSystem Definition -->

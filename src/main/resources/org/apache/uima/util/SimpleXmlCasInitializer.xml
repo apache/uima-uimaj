@@ -32,7 +32,7 @@
            The CollectionReader must provide this CAS Initializer with an InputStream
            object from which a valid XML document can be read.</description>        
         <version>1.0</version>
-        <vendor>IBM</vendor>
+        <vendor>The Apache Software Foundation</vendor>
         <configurationParameters>
             <configurationParameter>
                 <name>XmlTagContainingText</name>

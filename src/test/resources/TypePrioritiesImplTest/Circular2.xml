@@ -25,7 +25,7 @@
 <name>Circular2</name>
 <description>For testing circular imports.</description>
 <version>0.1</version>
-<vendor>IBM</vendor>
+<vendor>The Apache Software Foundation</vendor>
 <imports>
 <import location="Circular1.xml"/>
 </imports>

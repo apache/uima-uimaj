@@ -38,7 +38,7 @@
 <name>Aggregate TAE containing an Annotator and a CAS Consumer</name>
 <description>For testing mixed aggregate.</description>
 <version>1.0</version>
-<vendor>IBM</vendor>
+<vendor>The Apache Software Foundation</vendor>
 
 <flowConstraints>
   <fixedFlow>

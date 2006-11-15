@@ -28,6 +28,6 @@
 <name>Cas Consumer Print</name>
 <description>Prints annotations.</description>
 <version>1.0</version>
-<vendor>IBM</vendor>
+<vendor>The Apache Software Foundation</vendor>
 </processingResourceMetaData>
 </casConsumerDescription>

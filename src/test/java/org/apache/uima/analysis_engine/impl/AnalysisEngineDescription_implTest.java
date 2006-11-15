@@ -213,7 +213,7 @@ public class AnalysisEngineDescription_implTest extends TestCase
           new Capability[] { new Capability_impl() });
       delegateTaeMap.put("Empty", primDesc2);
       URISpecifier uriSpec = new URISpecifier_impl();
-      uriSpec.setUri("http://www.ibm.com");
+      uriSpec.setUri("http://incubator.apache.org/uima");
       uriSpec.setProtocol(Constants.PROTOCOL_SOAP);
       FlowControllerDeclaration fcDecl = new FlowControllerDeclaration_impl();
       fcDecl.setKey("TestFlowController");

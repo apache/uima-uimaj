@@ -54,8 +54,8 @@ import org.apache.uima.resource.ResourceProcessException;
  *       omitted, all annotations will be included in the output.</li>
  * </ul> 
  * <p>
- * The XML descriptor for this collection reader is stored in the uima.jar 
- * file as <code>com/ibm/uima/util/InlineXmlCasConsumer.xml</code>.  It
+ * The XML descriptor for this collection reader is stored in the uima-core.jar 
+ * file as <code>org/apache/uima/util/InlineXmlCasConsumer.xml</code>.  It
  * can be accessed via the static method {@link #getDescription()}, which
  * parses the descirptor and returns a {@link CasConsumerDescription}
  * object.

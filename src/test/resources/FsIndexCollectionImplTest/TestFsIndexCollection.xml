@@ -25,7 +25,7 @@
 <name>TestFsIndexCollection</name>
 <description>This is a test.</description>
 <version>0.1</version>
-<vendor>IBM</vendor>
+<vendor>The Apache Software Foundation</vendor>
 <imports>
 <import name="FsIndexCollectionImportedFromDataPath"/>
 <import location="FsIndexCollectionImportedByLocation.xml"/>

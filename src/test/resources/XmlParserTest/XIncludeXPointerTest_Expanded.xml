@@ -27,7 +27,7 @@
 <name>XInclude XPointer Test</name>
 <description>This is only a test.</description>
 <version>1.0</version>
-<vendor>IBM</vendor> 
+<vendor>The Apache Software Foundation</vendor> 
 
 <!-- TypeSystem Definition -->
 <typeSystemDescription>

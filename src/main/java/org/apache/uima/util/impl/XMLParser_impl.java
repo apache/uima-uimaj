@@ -312,7 +312,7 @@ public class XMLParser_impl implements XMLParser
 
   
   /* (non-Javadoc)
-   * @see com.ibm.uima.util.XMLParser#buildObjectOrPrimitive(org.w3c.dom.Element, com.ibm.uima.util.XMLParser.ParsingOptions)
+   * @see org.apache.uima.util.XMLParser#buildObjectOrPrimitive(Element, ParsingOptions)
    */
   public Object buildObjectOrPrimitive(Element aElement, ParsingOptions aOptions) throws InvalidXMLException
   {

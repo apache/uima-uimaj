@@ -28,7 +28,7 @@
 <name>FlowController With Configuration Groups</name>
 <description>For testing parameter overrides on FlowControllers.</description>
 <version>1.0</version>
-<vendor>IBM</vendor>
+<vendor>The Apache Software Foundation</vendor>
  
 <!-- Configuration Parameter Definitions -->
 <configurationParameters defaultGroup="en" searchStrategy="language_fallback"> 

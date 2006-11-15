@@ -80,7 +80,7 @@ public class ResourceManagerConfiguration_implTest extends TestCase
       assertEquals("Test Resource Manager Configuration", rmc.getName());
       assertEquals("This is a test.  This is only a test.", rmc.getDescription());
       assertEquals("0.1", rmc.getVersion());
-      assertEquals("IBM", rmc.getVendor());
+      assertEquals("The Apache Software Foundation", rmc.getVendor());
 
       descriptor = JUnitExtension
       .getFile("ResourceManagerConfigurationImplTest/ResourceManagerConfigurationWithImports.xml");

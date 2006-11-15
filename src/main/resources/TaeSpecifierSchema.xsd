@@ -34,21 +34,6 @@
 
 	<element name="analysisEngineDescription" substitutionGroup="rs:resourceSpecifier" type="rs:AnalysisEngineDescriptionType" />
 
-	<!--
-		Xerces DOMParser that ships with IBM JDK1.4.0 chokes on this section, so it has been
-		removed for now. -APL
-		
-		<key name="analysisEngineKey">
-		<selector xpath="rs:delegateAnalysisEngineSpecifiers/rs:delegateAnalysisEngine"/>
-		<field xpath="@key"/>
-		</key>
-		
-		<keyref name="analysisEngineKeyRef" refer="rs:analysisEngineKey">
-		<selector xpath="rs:analysisEngineMetaData/rs:flowConstraints/rs:fixedFlow/rs:node"/>
-		<field xpath="."/>
-		</keyref>
-	-->
-
 	<complexType name="AnalysisEngineDescriptionType">
 		<sequence>
 			<element name="frameworkImplementation" type="string" />

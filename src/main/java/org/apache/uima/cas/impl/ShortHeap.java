@@ -23,13 +23,6 @@ import java.util.Arrays;
 
 /**
  * Encapsulate 16 bit storage for a CAS.HEAP_CELL_SIZE
- * 
- * <p>
- * <b>ID </b>: jedii_cas/src/com/ibm/uima/cas/impl/StringHeap.java, jedii_cas,
- * jediiR4
- * 
- * 
- * @version 1.7, 05/06/06 15:11:37
  */
 final class ShortHeap extends CommonAuxHeap {
 

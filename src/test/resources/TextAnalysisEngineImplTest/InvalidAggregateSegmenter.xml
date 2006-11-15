@@ -43,7 +43,7 @@
 <description>This descriptor declares it is a segmenter, but none of its
 components are segmenters.  This should be caught during validation.</description>
 <version>1.0</version>
-<vendor>IBM</vendor>
+<vendor>The Apache Software Foundation</vendor>
 
 <flowConstraints>
   <fixedFlow>

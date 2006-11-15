@@ -28,7 +28,7 @@
       <name>SequencerTestAnnotator</name>
       <description>The simplest possible annotator.</description>
       <version>1.0</version>
-      <vendor>IBM Corporation</vendor>
+      <vendor>The Apache Software Foundation Corporation</vendor>
 
       <configurationParameters>
         <configurationParameter>

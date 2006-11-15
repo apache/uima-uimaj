@@ -27,7 +27,7 @@
     <description>Simple FlowController that drops any segment whose document text
 		is "DROP", and otherwise uses linear flow.</description>
     <version>1.0</version>
-    <vendor>IBM</vendor>	
+    <vendor>The Apache Software Foundation</vendor>	
     <capabilities>
       <capability>
         <inputs/>

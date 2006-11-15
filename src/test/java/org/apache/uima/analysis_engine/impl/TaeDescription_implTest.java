@@ -220,7 +220,7 @@ public class TaeDescription_implTest extends TestCase
           new Capability[]{new Capability_impl()});      
         delegateTaeMap.put("Empty",primDesc2);
         URISpecifier uriSpec = new URISpecifier_impl();
-        uriSpec.setUri("http://www.ibm.com");
+        uriSpec.setUri("http://www.incubator.apache.org/uima");
         uriSpec.setProtocol(Constants.PROTOCOL_SOAP);
       ExternalResourceDependency dep =
         UIMAFramework
