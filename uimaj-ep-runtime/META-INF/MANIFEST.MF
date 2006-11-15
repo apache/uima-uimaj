@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: org.apache.uima.runtime
+Bundle-Name: Apache UIMA Runtime Plugin
 Bundle-SymbolicName: org.apache.uima.runtime
 Bundle-Version: 2.1.0.incubating-SNAPSHOT
 Bundle-ClassPath:  lib/uima_adapter_soap.jar,
@@ -11,7 +11,7 @@ Bundle-ClassPath:  lib/uima_adapter_soap.jar,
  lib/uima-jcas-builtin-types.jar,
  lib/uima-tools.jar,
  lib/jVinci.jar
-Bundle-Vendor: IBM
+Bundle-Vendor: The Apache Software Foundation
 Bundle-Localization: plugin
 Eclipse-BuddyPolicy: registered
 Export-Package: example,
