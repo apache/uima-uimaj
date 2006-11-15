@@ -19,7 +19,7 @@
  -->
 
 <taeDescription
-   xmlns="http://uima.watson.ibm.com/resourceSpecifier">
+   xmlns="http://uima.apache.org/resourceSpecifier">
    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
    <primitive>true</primitive>
    <annotatorImplementationName>org.apache.uima.analysis_engine.impl.sequencer.SequencerTestAnnotator</annotatorImplementationName>

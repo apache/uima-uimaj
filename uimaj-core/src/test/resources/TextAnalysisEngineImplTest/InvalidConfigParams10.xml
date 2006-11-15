@@ -20,7 +20,7 @@
 
 <!-- Descriptor for testing configuration groups. -->
 
-<taeDescription xmlns="http://uima.watson.ibm.com/resourceSpecifier">
+<taeDescription xmlns="http://uima.apache.org/resourceSpecifier">
 <frameworkImplementation>JEDII</frameworkImplementation>
 <primitive>false</primitive>
 

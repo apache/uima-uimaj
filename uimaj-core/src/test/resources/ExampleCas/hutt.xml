@@ -18,7 +18,7 @@
  * under the License.
  -->
 
-<typeSystemDescription xmlns="http://uima.watson.ibm.com/resourceSpecifier">
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <name>Hierarchical Unified Type Taxonomy (HUTT)</name>
   <version>0.1</version>
   <vendor>IBM</vendor>

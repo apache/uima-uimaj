@@ -18,7 +18,7 @@
  * under the License.
  -->
 
-<typeSystemDescription xmlns="http://uima.watson.ibm.com/resourceSpecifier">
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <imports>
     <import location="hutt.xml"/>
   </imports>
