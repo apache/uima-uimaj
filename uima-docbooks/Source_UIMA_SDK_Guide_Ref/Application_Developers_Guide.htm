@@ -586,7 +586,7 @@ The CPE descriptor for the above configuration looks like this:<br/>
 <code></code></p>
 
 <p class="xmp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;cpeDescription xmlns=&quot;http://uima.watson.ibm.com/resourceSpecifier&quot;&gt;
+&lt;cpeDescription xmlns=&quot;http://uima.apache.org/resourceSpecifier&quot;&gt;
   &lt;collectionReader&gt;
     &lt;collectionIterator&gt;
       &lt;descriptor&gt;
@@ -1260,7 +1260,7 @@ required files are the following (all part of the Apache Axis download):  </p>
 <p>The descriptor used to call the PersonTitleAnnotator SOAP
 service from the example above is:</p>
 
-<p class="xmp">&lt;uriSpecifier xmlns=&quot;http://uima.watson.ibm.com/resourceSpecifier&quot;&gt;
+<p class="xmp">&lt;uriSpecifier xmlns=&quot;http://uima.apache.org/resourceSpecifier&quot;&gt;
    &lt;resourceType&gt;AnalysisEngine&lt;/resourceType&gt;
    &lt;uri&gt;http://localhost:8080/axis/services/urn:PersonTitleAnnotator&lt;/uri&gt;
     &lt;protocol&gt;SOAP&lt;/protocol&gt;
@@ -1280,7 +1280,7 @@ deployment descriptor used to deploy the service.</p>
 <p>To call a
 Vinci service, a similar descriptor is used:</p>
 
-<p class="xmp">&lt;uriSpecifier xmlns=&quot;http://uima.watson.ibm.com/resourceSpecifier&quot;&gt;
+<p class="xmp">&lt;uriSpecifier xmlns=&quot;http://uima.apache.org/resourceSpecifier&quot;&gt;
    &lt;resourceType&gt;AnalysisEngine&lt;/resourceType&gt;
    &lt;uri&gt;uima.annot.PersonTitleAnnotator&lt;/uri&gt;
    &lt;protocol&gt;Vinci&lt;/protocol&gt;

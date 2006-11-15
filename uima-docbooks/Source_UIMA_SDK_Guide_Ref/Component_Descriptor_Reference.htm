@@ -186,7 +186,7 @@ use of &lt;import&gt;.
 <p>To use XInclude, you first must include the XInclude
 namespace in your document&rsquo;s root element, e.g.:</p>
 
-<p class="xmp">&lt;analysisEngineDescription xmlns=&quot;http://uima.watson.ibm.com/resourceSpecifier&quot; xmlns:xi=&quot;http://www.w3.org/2001/XInclude&quot;&gt;</p>
+<p class="xmp">&lt;analysisEngineDescription xmlns=&quot;http://uima.apache.org/resourceSpecifier&quot; xmlns:xi=&quot;http://www.w3.org/2001/XInclude&quot;&gt;</p>
 
 <p>Then, you can include a file using the syntax <code>&lt;xi:include
 href=&quot;[URL]&quot;/&gt;</code></p>
@@ -194,7 +194,7 @@ href=&quot;[URL]&quot;/&gt;</code></p>
 <p>where [URL] can be any relative or absolute URL referring
 to another XML document.  The referred-to
 document must be a valid XML document, meaning that it must consist of exactly
-one root element and must define all of the namespace prefixes that it uses.  The default namespace (generally <code>http://uima.watson.ibm.com/resourceSpecifier</code>) will be
+one root element and must define all of the namespace prefixes that it uses.  The default namespace (generally <code>http://uima.apache.org/resourceSpecifier</code>) will be
 inherited from the parent document.   When UIMA parses the XML document, it will automatically replace the <code>&lt;xi:include&gt; </code>element with the entire XML document
 referred to by the href.  For more
 information on XInclude see <a href="http://www.w3.org/TR/xinclude/">http://www.w3.org/TR/xinclude/</a>.</p>
@@ -214,7 +214,7 @@ Collection Processing Component Descriptor.</p>
 <p>The basic structure of a Type System Descriptor is as
 follows:</p>
 
-<p class="xmp">&lt;typeSystemDescription xmlns=&quot;http://uima.watson.ibm.com/resourceSpecifier&quot;&gt;</p>
+<p class="xmp">&lt;typeSystemDescription xmlns=&quot;http://uima.apache.org/resourceSpecifier&quot;&gt;</p>
 
 <p class="xmp">  &lt;name&gt; [String] &lt;/name&gt;
   &lt;description&gt;[String]&lt;/description&gt;
@@ -433,7 +433,7 @@ Descriptors</a></h3>
 <h4><a id="_crossRef127">Basic Structure</a></h4>
 
 <p class="xmp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
-&lt;analysisEngineDescription xmlns=&quot;http://uima.watson.ibm.com/resourceSpecifier&quot;&gt;
+&lt;analysisEngineDescription xmlns=&quot;http://uima.apache.org/resourceSpecifier&quot;&gt;
   &lt;frameworkImplementation&gt;com.ibm.uima.java&lt;/frameworkImplementation&gt; </p>
 
 <p class="xmp">  &lt;primitive&gt;true&lt;/primitive&gt;
@@ -457,7 +457,7 @@ Descriptors</a></h3>
 compatibility.</p>
 
 <p>Within the root element we declare that we are using the
-XML namespace <code>http://uima.watson.ibm.com/resourceSpecifier.</code>  It is required that this namespace be used;
+XML namespace <code>http://uima.apache.org/resourceSpecifier.</code>  It is required that this namespace be used;
 otherwise, the descriptor will not be able to be validated for errors.</p>
 
 <p> The first
@@ -1728,7 +1728,7 @@ follows:</p>
 <p class="xmp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt; </p>
 
 <p class="xmp">&lt;flowControllerDescription 
-    xmlns=&quot;http://uima.watson.ibm.com/resourceSpecifier&quot;&gt;</p>
+    xmlns=&quot;http://uima.apache.org/resourceSpecifier&quot;&gt;</p>
 
 <p class="xmp">  &lt;frameworkImplementation&gt;com.ibm.uima.java&lt;/frameworkImplementation&gt; </p>
 
@@ -1788,7 +1788,7 @@ structure of a Collection Reader descriptor is as follows:</p>
 <p class="xmp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt; </p>
 
 <p class="xmp">&lt;collectionReaderDescription
-    xmlns=&quot;http://uima.watson.ibm.com/resourceSpecifier&quot;&gt;</p>
+    xmlns=&quot;http://uima.apache.org/resourceSpecifier&quot;&gt;</p>
 
 <p class="xmp">  &lt;frameworkImplementation&gt;com.ibm.uima.java&lt;/frameworkImplementation&gt;
   &lt;implementationName&gt;[ClassName]&lt;/implementationName&gt; </p>
@@ -1869,7 +1869,7 @@ structure of a CAS Initializer Descriptor is as follows:</p>
 <p class="xmp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt; </p>
 
 <p class="xmp">&lt;casInitializerDescription
-    xmlns=&quot;http://uima.watson.ibm.com/resourceSpecifier&quot;&gt;</p>
+    xmlns=&quot;http://uima.apache.org/resourceSpecifier&quot;&gt;</p>
 
 <p class="xmp">  &lt;frameworkImplementation&gt;com.ibm.uima.java&lt;/frameworkImplementation&gt;
   &lt;implementationName&gt;[ClassName] &lt;/implementationName&gt;</p>
@@ -1954,7 +1954,7 @@ structure of a CAS Consumer Descriptor is as follows:</p>
 <p class="xmp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt; </p>
 
 <p class="xmp">&lt;casConsumerDescription 
-    xmlns=&quot;http://uima.watson.ibm.com/resourceSpecifier&quot;&gt;</p>
+    xmlns=&quot;http://uima.apache.org/resourceSpecifier&quot;&gt;</p>
 
 <p class="xmp">  &lt;frameworkImplementation&gt;com.ibm.uima.java&lt;/frameworkImplementation&gt; </p>
 
@@ -2022,7 +2022,7 @@ the only type of service client descriptor is the <code>uriSpecifier</code>, whi
 the SOAP and Vinci protocols.</p>
 
 <p class="xmp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
-&lt;uriSpecifier xmlns=&quot;http://uima.watson.ibm.com/resourceSpecifier&quot;&gt;
+&lt;uriSpecifier xmlns=&quot;http://uima.apache.org/resourceSpecifier&quot;&gt;
   &lt;resourceType&gt;AnalysisEngine | CasConsumer &lt;/resourceType&gt;
   &lt;uri&gt;[URI]&lt;/uri&gt; 
   &lt;protocol&gt;SOAP | SOAPwithAttachments | Vinci&lt;/protocol&gt; 
