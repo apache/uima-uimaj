@@ -27,7 +27,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 /** 
  * Updated by JCasGen Mon Nov 29 15:02:37 EST 2004
- * XML source: C:/Program Files/IBM/uima/docs/examples/descriptors/tutorial/ex6/TutorialTypeSystem.xml
+ * XML source: C:/Program Files/apache/uima/examples/descriptors/tutorial/ex6/TutorialTypeSystem.xml
  * @generated */
 public class RoomNumber extends Annotation {
   /** @generated

@@ -26,7 +26,7 @@ import org.apache.uima.jcas.cas.TOP_Type;
 
 /** 
  * Updated by JCasGen Mon Nov 29 15:02:38 EST 2004
- * XML source: C:/Program Files/IBM/uima/docs/examples/descriptors/tutorial/ex6/TutorialTypeSystem.xml
+ * XML source: C:/Program Files/apache/uima/examples/descriptors/tutorial/ex6/TutorialTypeSystem.xml
  * @generated */
 public class TimeAnnot extends DateTimeAnnot {
   /** @generated

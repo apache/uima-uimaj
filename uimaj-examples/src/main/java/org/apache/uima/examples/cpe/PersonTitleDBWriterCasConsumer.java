@@ -58,7 +58,7 @@ import example.PersonTitle;
  * To use - add derby.jar to the classpath when you start the CPE GUI
  *        - run the CPE Gui and select the Name Recognizer and Person Title Annotator aggregate.
  *        - a good sample collection reader is the FileSystemCollectionReader, and
- *        - a good sample data is the <UIMA_HOME>/docs/examples/data
+ *        - a good sample data is the <UIMA_HOME>/examples/data
  *  
  * The processing is set up to handle multiple CASes.
  * The end is indicated by using the CollectionProcessComplete call.
