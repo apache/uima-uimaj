@@ -109,7 +109,7 @@ public class XCasAnnotationViewerMain extends JFrame
     super("XCAS Annotation Viewer");
 
     //set UIMA home dir
-    uimaHomeDir = new File(System.getProperty("uima.home","c:/Program Files/IBM/uima"));
+    uimaHomeDir = new File(System.getProperty("uima.home","C:/Program Files/apache/uima"));
 
 		try
 		{
