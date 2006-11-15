@@ -100,9 +100,9 @@ public class AxisAnalysisEngineServiceStub
     throws ResourceServiceException
   {
     final QName mOperationQName = 
-        new QName("http://uima.watson.ibm.com/analysis_engine", "getAnalysisEngineMetaData");
+        new QName("http://uima.apache.org/analysis_engine", "getAnalysisEngineMetaData");
     final QName mResourceMetaDataTypeQName =
-        new QName("http://uima.watson.ibm.com/resourceSpecifier","resourceMetaData");     
+        new QName("http://uima.apache.org/resourceSpecifier","resourceMetaData");     
 
     try
     {
@@ -134,11 +134,11 @@ public class AxisAnalysisEngineServiceStub
     throws ResourceServiceException
   {
     final QName operationQName = 
-        new QName("http://uima.watson.ibm.com/analysis_engine", "process");
+        new QName("http://uima.apache.org/analysis_engine", "process");
     final QName resultSpecTypeQName =
-        new QName("http://uima.watson.ibm.com/analysis_engine","resultSpecification");
+        new QName("http://uima.apache.org/analysis_engine","resultSpecification");
     final QName serviceDataCargoTypeQName =
-        new QName("http://uima.watson.ibm.com/analysis_engine","serviceDataCargo");
+        new QName("http://uima.apache.org/analysis_engine","serviceDataCargo");
 
     try
     {

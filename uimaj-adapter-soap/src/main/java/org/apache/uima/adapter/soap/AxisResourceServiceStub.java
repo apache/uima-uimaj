@@ -66,9 +66,9 @@ public abstract class AxisResourceServiceStub implements ResourceServiceStub
     throws ResourceServiceException
   {
     final QName operationQName = 
-        new QName("http://uima.watson.ibm.com/resource", "getMetaData");
+        new QName("http://uima.apache.org/resource", "getMetaData");
     final QName resourceMetaDataTypeQName =
-        new QName("http://uima.watson.ibm.com/resourceSpecifier","resourceMetaData");     
+        new QName("http://uima.apache.org/resourceSpecifier","resourceMetaData");     
 
     try
     {
