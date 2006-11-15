@@ -30,7 +30,7 @@ public class TransportConstants {
   }
 
   public static final String VINCI_NAMESPACE     = "vinci:";
-  public static final String VINCI_NAMESPACE_URI = "http://vinci.almaden.ibm.com/FrameSpec/";
+  public static final String VINCI_NAMESPACE_URI = "http://uima.apache.org/vinci/FrameSpec/";
   // ^^ This transport library naively assumes that the Vinci namepsace is ALWAYS
   // indicated by the "vinci:" tag prefix, even though XML requires the namespace
   // be defined by the prefix "xmlns" definition. 
