@@ -212,7 +212,7 @@ exactly as written) in the <quote>Name</quote> field.</para></listitem>
 
 
 <listitem><para>Enter your installation directory
-(e.g. <literal>c:/Program Files/IBM/uima</literal>) in the
+(e.g. <literal>C:/Program Files/apache/uima</literal>) in the
 <quote>Path</quote> field</para></listitem>
 
 
