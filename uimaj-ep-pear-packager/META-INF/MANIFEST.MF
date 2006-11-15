@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: UIMA PEAR
+Bundle-Name: Apache UIMA PEAR Packager
 Bundle-SymbolicName: org.apache.uima.pear; singleton:=true
 Bundle-Version: 2.1.0.incubating-SNAPSHOT
 Bundle-ClassPath: uima-ep-pear-packager.jar
 Bundle-Activator: org.apache.uima.pear.PearPlugin
-Bundle-Vendor: Apache
+Bundle-Vendor: The Apache Software Foundation
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.ide,
