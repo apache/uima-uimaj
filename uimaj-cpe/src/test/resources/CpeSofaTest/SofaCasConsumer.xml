@@ -21,7 +21,7 @@
 
 <!-- Descriptor for CAS consumer that prints annotations over sofas to System.out -->
 
-<casConsumerDescription xmlns="http://uima.watson.ibm.com/resourceSpecifier">
+<casConsumerDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <implementationName>org.apache.uima.examples.cpm.sofa.SofaCasConsumer</implementationName>
     <processingResourceMetaData>

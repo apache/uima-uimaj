@@ -21,7 +21,7 @@
 
 <!-- Descriptor for a CAS Initializer -->
 
-<casInitializerDescription xmlns="http://uima.watson.ibm.com/resourceSpecifier">
+<casInitializerDescription xmlns="http://uima.apache.org/resourceSpecifier">
 	<frameworkImplementation>org.apache.uima.java</frameworkImplementation>
 	<implementationName>org.apache.uima.examples.cpm.sofa.SofaCasInitializer</implementationName>
 	<processingResourceMetaData>

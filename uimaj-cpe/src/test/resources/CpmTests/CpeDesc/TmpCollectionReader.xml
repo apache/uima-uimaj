@@ -19,7 +19,7 @@
 	 * under the License.
 	 ***************************************************************
    -->
-<collectionReaderDescription xmlns="http://uima.watson.ibm.com/resourceSpecifier">
+<collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <implementationName>org.apache.uima.collection.impl.cpm.utils.ErrorTestCollectionReader</implementationName>
     <processingResourceMetaData>
