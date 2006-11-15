@@ -31,7 +31,7 @@
 
 This analysis engine takes a parameter called "ParseTagMapping" which maps each parse tag to a syntax annotation type.  The parse tags come from the standard Penn Tree Bank phrase and clause tags (produced by the OpenNLP parser), and each syntax annotation type must be defined in the type system and have a corresponding JCas Java class.</description>
     <version>1.0</version>
-    <vendor>IBM</vendor>
+    <vendor>The Apache Software Foundation</vendor>
     <configurationParameters>
       <configurationParameter>
         <name>ModelDirectory</name>

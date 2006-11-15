@@ -35,7 +35,7 @@
 		<description>Detects meetings from co-occurrences of room numbers, dates, and
 			times</description>
 		<version>1.0</version>
-		<vendor>IBM</vendor>
+		<vendor>The Apache Software Foundation</vendor>
 		
 		<configurationParameters>
 			<configurationParameter>

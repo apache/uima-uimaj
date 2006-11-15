@@ -30,7 +30,7 @@
 		<name>English to German translator</name>
 		<description>Creates output SOFA in de CAS</description>
 		<version>1.0</version>
-		<vendor>IBM</vendor>
+		<vendor>The Apache Software Foundation</vendor>
 		<typeSystemDescription>
 			<types>
 				<typeDescription>

@@ -75,14 +75,14 @@ public class SourceDocumentInformation extends Annotation {
   //*--------------*
   //* Feature: uri
 
-  /** getter for uri - gets URI of document. (For example, file:///MyDirectory/myFile.txt for a simple file or http://www.research.ibm.com/UIMA/relatedprojects.htm for content from a web source.)
+  /** getter for uri - gets URI of document. (For example, file:///MyDirectory/myFile.txt for a simple file or http://incubator.apache.org/uima/index.html for content from a web source.)
    * @generated */
   public String getUri() {
     if (SourceDocumentInformation_Type.featOkTst && ((SourceDocumentInformation_Type)jcasType).casFeat_uri == null)
       JCas.throwFeatMissing("uri", "org.apache.uima.examples.SourceDocumentInformation");
     return jcasType.ll_cas.ll_getStringValue(addr, ((SourceDocumentInformation_Type)jcasType).casFeatCode_uri);}
     
-  /** setter for uri - sets URI of document. (For example, file:///MyDirectory/myFile.txt for a simple file or http://www.research.ibm.com/UIMA/relatedprojects.htm for content from a web source) 
+  /** setter for uri - sets URI of document. (For example, file:///MyDirectory/myFile.txt for a simple file or http://incubator.apache.org/uima/index.html for content from a web source) 
    * @generated */
   public void setUri(String v) {
     if (SourceDocumentInformation_Type.featOkTst && ((SourceDocumentInformation_Type)jcasType).casFeat_uri == null)

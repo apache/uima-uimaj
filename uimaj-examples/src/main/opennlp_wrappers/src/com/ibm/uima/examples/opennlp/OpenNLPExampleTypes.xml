@@ -25,7 +25,7 @@
   <name>OpenNLP Example Types</name>
   <description>Type system used by the org.apache.uima.examples.opennlp package.  Defines token, sentence, named entity, and syntactic parse annotation types.</description>
   <version>1.0</version>
-  <vendor>IBM</vendor>
+  <vendor>The Apache Software Foundation</vendor>
   <types>
     <typeDescription>
       <name>org.apache.uima.examples.opennlp.Sentence</name>

@@ -36,7 +36,7 @@
     <name>OpenNLPTokenAndSentenceAggregate</name>
     <description>Aggregate analysis engine that performs sentence detection and tokenization using the OpenNLP sentence detector and tokenizer.</description>
     <version>1.0</version>
-    <vendor>IBM</vendor>
+    <vendor>The Apache Software Foundation</vendor>
     <configurationParameters searchStrategy="language_fallback">
       <configurationParameter>
         <name>SentenceDetectorModelFile</name>

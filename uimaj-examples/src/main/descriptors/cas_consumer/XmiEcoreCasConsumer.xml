@@ -28,7 +28,7 @@
 		<name>Xmi Writer CAS Consumer</name>
 		<description>Writes the CAS to XMI format</description>
 		<version>1.0</version>
-		<vendor>IBM</vendor>
+		<vendor>The Apache Software Foundation</vendor>
 		<configurationParameters>
 			<configurationParameter>
 				<name>OutputDirectory</name>

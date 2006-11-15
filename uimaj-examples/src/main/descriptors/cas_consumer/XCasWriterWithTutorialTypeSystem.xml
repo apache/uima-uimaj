@@ -37,7 +37,7 @@
 			but it is necessary if the CAS Consumer is to be deployed as a remote
 			service. </description>
 		<version>1.0</version>
-		<vendor>IBM</vendor>
+		<vendor>The Apache Software Foundation</vendor>
 
 		<configurationParameters>
 			<configurationParameter>

@@ -33,7 +33,7 @@
 		<name>XCAS Writer CAS Consumer</name>
 		<description>Writes the CAS to a stand-off XML format (XCAS)</description>
 		<version>1.0</version>
-		<vendor>IBM</vendor>
+		<vendor>The Apache Software Foundation</vendor>
 
 		<configurationParameters>
 			<configurationParameter>

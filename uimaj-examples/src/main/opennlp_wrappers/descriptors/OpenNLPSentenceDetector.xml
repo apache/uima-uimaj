@@ -28,7 +28,7 @@
     <name>OpenNLPSentenceDetector</name>
     <description>Detect sentence boundaries and create sentence annotations that span these boundaries.  Uses the OpenNLP MaxEnt Sentence Detector.</description>
     <version>1.0</version>
-    <vendor>IBM</vendor>
+    <vendor>The Apache Software Foundation</vendor>
     <configurationParameters>
       <configurationParameter>
         <name>ModelFile</name>

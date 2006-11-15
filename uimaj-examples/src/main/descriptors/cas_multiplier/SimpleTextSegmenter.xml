@@ -36,7 +36,7 @@
 		occur at a newline character, so segments will not be exactly that
 		size.</description>
 	<version>1.0</version>
-	<vendor>IBM</vendor>
+	<vendor>The Apache Software Foundation</vendor>
 	
 	<configurationParameters>
 		<configurationParameter>

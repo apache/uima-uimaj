@@ -33,7 +33,7 @@
     titles within existing annotations of a particular type (for example, Person Name 
     annotations).</description>
     <version>1.0</version>
-    <vendor>IBM</vendor>
+    <vendor>The Apache Software Foundation</vendor>
     <configurationParameters>
       <configurationParameter>
         <name>CivilianTitles</name>

@@ -25,7 +25,7 @@
 	<name>org.apache.uima.examples.SourceDocumentInformation</name>
 	<description>Defines a type for storing information about the original source document from which the current CAS was initialized</description>
 	<version>1.0</version>
-	<vendor>IBM</vendor>
+	<vendor>The Apache Software Foundation</vendor>
 	<types>
 		<typeDescription>
 			<name>org.apache.uima.examples.SourceDocumentInformation</name>
@@ -34,7 +34,7 @@
 			<features>
 				<featureDescription>
 					<name>uri</name>
-					<description>URI of document. (For example, file:///MyDirectory/myFile.txt for a simple file or http://www.research.ibm.com/UIMA/relatedprojects.htm for content from a web source.)</description>
+					<description>URI of document. (For example, file:///MyDirectory/myFile.txt for a simple file or http://incubator.apache.org/uima/index.html for content from a web source.)</description>
 					<rangeTypeName>uima.cas.String</rangeTypeName>
 				</featureDescription>
 				<featureDescription>

@@ -31,7 +31,7 @@
 
 This analysis engine takes a parameter called "EntityTypeMapping" which maps each entity class name to an entity annotation type.  The entity class name must match a model file in the model file directory, and the entity annotation type must be defined in the type system and have a corresponding JCas Java class.</description>
     <version>1.0</version>
-    <vendor>IBM</vendor>
+    <vendor>The Apache Software Foundation</vendor>
     <configurationParameters>
       <configurationParameter>
         <name>ModelDirectory</name>

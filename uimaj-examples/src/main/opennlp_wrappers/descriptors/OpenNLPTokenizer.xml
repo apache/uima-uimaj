@@ -29,7 +29,7 @@
     <name>OpenNLPTokenizer</name>
     <description>Tokenize the text and create token annotations that span the tokens.  The tokenization is performed using the  OpenNLP MaxEnt tokenizer, which tokenizes according to the  Penn Tree Bank tokenization standard.  In general, tokens are separated by white space, but punctuation marks (e.g., ".", ",", "!", "?", etc.) and apostrophed endings (e.g., "'s", "'nt", etc.) are separate tokens.</description>
     <version>1.0</version>
-    <vendor>IBM</vendor>
+    <vendor>The Apache Software Foundation</vendor>
     <configurationParameters>
       <configurationParameter>
         <name>ModelFile</name>

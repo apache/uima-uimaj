@@ -29,7 +29,7 @@
     <name>UIMA Meeting Annotator</name>
     <description>Iterates over Meeting annotations and annotates a meeting as a UimaMeeting if a UIMA acronym occurs in close proximity to that meeting.</description>
     <version>1.0</version>
-    <vendor>IBM</vendor>
+    <vendor>The Apache Software Foundation</vendor>
     <configurationParameters/>
     <configurationParameterSettings/>
     <typeSystemDescription>

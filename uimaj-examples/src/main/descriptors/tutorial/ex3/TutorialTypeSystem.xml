@@ -24,7 +24,7 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
 	<name>TutorialTypeSystem</name>
 	<description>Type System Definition for the tutorial examples - as of Exercise 3</description>
-	<vendor>IBM</vendor>
+	<vendor>The Apache Software Foundation</vendor>
 	<version>1.0</version>
 	<types>
 		<typeDescription>

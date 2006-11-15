@@ -29,7 +29,7 @@
     <name>XML Detagger</name>
     <description>A multi-sofa annotator that does XML detagging.  Reads XML data from the input Sofa (named "xmlDocument"); this data can be stored in the CAS as a string or array, or it can be a URI to a remote file.  The XML is parsed using the JVM's default parser, and the plain-text content is written to a new sofa called "plainTextDocument".  </description>
     <version>1.0</version>
-    <vendor>IBM</vendor>
+    <vendor>The Apache Software Foundation</vendor>
     <configurationParameters/>
     <configurationParameterSettings/>
     <typeSystemDescription/>

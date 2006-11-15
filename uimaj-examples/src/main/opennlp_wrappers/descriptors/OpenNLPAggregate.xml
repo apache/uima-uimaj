@@ -39,7 +39,7 @@
     <name>OpenNLPAggregate</name>
     <description>Aggregate analysis engine that performs sentence detection, tokenization, and POS tagging using OpenNLP.</description>
     <version>1.0</version>
-    <vendor>IBM</vendor>
+    <vendor>The Apache Software Foundation</vendor>
     <configurationParameters searchStrategy="language_fallback"/>
     <configurationParameterSettings/>
     <flowConstraints>

@@ -29,7 +29,7 @@
     <name>OpenNLPPOSTagger</name>
     <description>Assigns part of speech tags to tokens using the OpenNLP MaxEnt part of speech tagger.  Requires that sentence and token annotations have been created in the CAS.  Updates the POS field of each token annotation with the part of speech tag.</description>
     <version>1.0</version>
-    <vendor>IBM</vendor>
+    <vendor>The Apache Software Foundation</vendor>
     <configurationParameters>
       <configurationParameter>
         <name>ModelFile</name>

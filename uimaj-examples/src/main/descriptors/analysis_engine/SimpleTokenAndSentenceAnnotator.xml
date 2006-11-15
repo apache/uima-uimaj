@@ -29,7 +29,7 @@
     <name>Simple Token and Sentence Annotator</name>
     <description>Annotates tokens and sentences.</description>
     <version>1.0</version>
-    <vendor>IBM</vendor>
+    <vendor>The Apache Software Foundation</vendor>
     <configurationParameters/>
     <configurationParameterSettings/>
     <typeSystemDescription>
