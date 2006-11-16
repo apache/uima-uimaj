@@ -85,11 +85,16 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.FloatArrayFS;
-import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.SofaFS;
-import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.impl.BooleanArrayFSImpl;
+import org.apache.uima.cas.impl.ByteArrayFSImpl;
+import org.apache.uima.cas.impl.DoubleArrayFSImpl;
+import org.apache.uima.cas.impl.FloatArrayFSImpl;
+import org.apache.uima.cas.impl.IntArrayFSImpl;
+import org.apache.uima.cas.impl.LongArrayFSImpl;
+import org.apache.uima.cas.impl.ShortArrayFSImpl;
+import org.apache.uima.cas.impl.StringArrayFSImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.jcas.impl.JCas;
@@ -204,6 +209,8 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
   private CAS mCAS;
 
   private Type mStringType;
+  
+  private Type mFsArrayType;
 
   private boolean mConsistentColors = true;
 
@@ -561,6 +568,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
   {
     mCAS = aCAS;
     mStringType = mCAS.getTypeSystem().getType(CAS.TYPE_NAME_STRING);
+    mFsArrayType = mCAS.getTypeSystem().getType(CAS.TYPE_NAME_FS_ARRAY);
     //clear checkbox panel so it will be repopulated
     annotationCheckboxPanel.removeAll();
     entityCheckboxPanel.removeAll();
@@ -1195,7 +1203,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    * 
    * @param aAnnotation the annotation to add
    */
-  private void addAnnotationToTree(AnnotationFS aAnnotation)
+  protected void addAnnotationToTree(AnnotationFS aAnnotation)
   {
     DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.selectedAnnotationTreeModel
         .getRoot();
@@ -1255,92 +1263,11 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
           featVal = featVal.substring(0, 64) + "...";
         }
       }
-      else if (CAS.TYPE_NAME_INTEGER.equals(rangeTypeName))
+      else if (rangeType.isPrimitive())
       {
-        int intVal = aFS.getIntValue(feat);
-        featVal = Integer.toString(intVal);
+        featVal = aFS.getFeatureValueAsString(feat);
       }
-      else if (CAS.TYPE_NAME_FLOAT.equals(rangeTypeName))
-      {
-        float floatVal = aFS.getFloatValue(feat);
-        featVal = Float.toString(floatVal);
-      }
-      else if (CAS.TYPE_NAME_STRING_ARRAY.equals(rangeTypeName))
-      {
-        StringArrayFS arrayFS = (StringArrayFS) aFS.getFeatureValue(feat);
-        StringBuffer displayVal = new StringBuffer();
-        if (arrayFS == null)
-        {
-          displayVal.append("null");
-        }
-        else
-        {
-          displayVal.append('[');
-          String[] vals = arrayFS.toArray();
-          for (int i = 0; i < vals.length - 1; i++)
-          {
-            displayVal.append(vals[i]);
-            displayVal.append(',');
-          }
-          if (vals.length > 0)
-          {
-            displayVal.append(vals[vals.length - 1]);
-          }
-          displayVal.append(']');
-        }
-        featVal = displayVal.toString();
-      }
-      else if (CAS.TYPE_NAME_INTEGER_ARRAY.equals(rangeTypeName))
-      {
-        IntArrayFS arrayFS = (IntArrayFS) aFS.getFeatureValue(feat);
-        StringBuffer displayVal = new StringBuffer();
-        if (arrayFS == null)
-        {
-          displayVal.append("null");
-        }
-        else
-        {
-          displayVal.append('[');
-          int[] vals = arrayFS.toArray();
-          for (int i = 0; i < vals.length - 1; i++)
-          {
-            displayVal.append(vals[i]);
-            displayVal.append(',');
-          }
-          if (vals.length > 0)
-          {
-            displayVal.append(vals[vals.length - 1]);
-          }
-          displayVal.append(']');
-        }
-        featVal = displayVal.toString();
-      }
-      else if (CAS.TYPE_NAME_FLOAT_ARRAY.equals(rangeTypeName))
-      {
-        FloatArrayFS arrayFS = (FloatArrayFS) aFS.getFeatureValue(feat);
-        StringBuffer displayVal = new StringBuffer();
-        if (arrayFS == null)
-        {
-          displayVal.append("null");
-        }
-        else
-        {
-          displayVal.append('[');
-          float[] vals = arrayFS.toArray();
-          for (int i = 0; i < vals.length - 1; i++)
-          {
-            displayVal.append(vals[i]);
-            displayVal.append(',');
-          }
-          if (vals.length > 0)
-          {
-            displayVal.append(vals[vals.length - 1]);
-          }
-          displayVal.append(']');
-        }
-        featVal = displayVal.toString();
-      }
-      else if (CAS.TYPE_NAME_FS_ARRAY.equals(rangeTypeName))
+      else if (mCAS.getTypeSystem().subsumes(mFsArrayType, rangeType))
       {
         ArrayFS arrayFS = (ArrayFS) aFS.getFeatureValue(feat);
         if (arrayFS != null)
@@ -1369,7 +1296,79 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
           }
           aParentNode.add(arrayNode);
           continue;
-        }  
+        }
+      }
+      else if (rangeType.isArray()) //primitive array
+      {
+        String[] vals = null;
+        if (CAS.TYPE_NAME_STRING_ARRAY.equals(rangeTypeName))
+        {
+          StringArrayFSImpl arrayFS = (StringArrayFSImpl) aFS.getFeatureValue(feat);
+          if (arrayFS != null)
+            vals = arrayFS.toArray();
+        }
+        else if (CAS.TYPE_NAME_INTEGER_ARRAY.equals(rangeTypeName))
+        {
+          IntArrayFSImpl arrayFS = (IntArrayFSImpl) aFS.getFeatureValue(feat);
+          if (arrayFS != null)
+            vals = arrayFS.toStringArray();
+        }
+        else if (CAS.TYPE_NAME_FLOAT_ARRAY.equals(rangeTypeName))
+        {
+          FloatArrayFSImpl arrayFS = (FloatArrayFSImpl) aFS.getFeatureValue(feat);
+          if (arrayFS != null)
+            vals = arrayFS.toStringArray();
+        }
+        else if (CAS.TYPE_NAME_BOOLEAN_ARRAY.equals(rangeTypeName))
+        {
+          BooleanArrayFSImpl arrayFS = (BooleanArrayFSImpl) aFS.getFeatureValue(feat);
+          if (arrayFS != null)
+            vals = arrayFS.toStringArray();
+        }
+        else if (CAS.TYPE_NAME_BYTE_ARRAY.equals(rangeTypeName))
+        {
+          ByteArrayFSImpl arrayFS = (ByteArrayFSImpl) aFS.getFeatureValue(feat);
+          if (arrayFS != null)
+            vals = arrayFS.toStringArray();
+        }
+        else if (CAS.TYPE_NAME_SHORT_ARRAY.equals(rangeTypeName))
+        {
+          ShortArrayFSImpl arrayFS = (ShortArrayFSImpl) aFS.getFeatureValue(feat);
+          if (arrayFS != null)
+            vals = arrayFS.toStringArray();
+        }
+        else if (CAS.TYPE_NAME_LONG_ARRAY.equals(rangeTypeName))
+        {
+          LongArrayFSImpl arrayFS = (LongArrayFSImpl) aFS.getFeatureValue(feat);
+          if (arrayFS != null)
+            vals = arrayFS.toStringArray();
+        }
+        if (CAS.TYPE_NAME_DOUBLE_ARRAY.equals(rangeTypeName))
+        {
+          DoubleArrayFSImpl arrayFS = (DoubleArrayFSImpl) aFS.getFeatureValue(feat);
+          if (arrayFS != null)
+            vals = arrayFS.toStringArray();
+        }        
+        if (vals== null)
+        {
+          featVal = "null";
+        }
+        else
+        {
+          StringBuffer displayVal = new StringBuffer();
+          displayVal.append('[');
+          for (int i = 0; i < vals.length - 1; i++)
+          {
+            displayVal.append(vals[i]);
+            displayVal.append(',');
+          }
+          if (vals.length > 0)
+          {
+            displayVal.append(vals[vals.length - 1]);
+          }
+          displayVal.append(']');
+          featVal = displayVal.toString();
+        }
       }
       else
       //single feature value
@@ -1832,6 +1831,16 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
       }
       i += 2;
     }
+  }
+  
+  /**
+   * Gets the selected annotation tree component.
+   * @return the tree that displays annotation details about annotations
+   *   overlapping the point where the user last clicked in the text.
+   */
+  protected JTree getSelectedAnnotationTree()
+  {
+    return this.selectedAnnotationTree;
   }
 
   /**
