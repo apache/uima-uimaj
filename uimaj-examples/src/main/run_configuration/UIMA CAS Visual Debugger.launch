@@ -22,7 +22,7 @@
    -->
 
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.apache.uima.annot_view.Gladis"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.apache.uima.tools.annot_view.Gladis"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="uimaj-examples"/>
 <stringAttribute key="org.eclipse.debug.ui.target_run_perspective" value="perspective_default"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
