@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
+<!ENTITY % uimaents SYSTEM "entities.ent" >  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="ugr.faqs">
+  <title>UIMA Frequently Asked Questions (FAQs)</title>
+  
+  <qandaset>
+    <title></title>
+    
+    <qandadiv>
+      <title>Basic definitions</title>
+    
+      <qandaentry>
+        <question><para>What is UIMA?</para></question>
+        <answer><para>
+          UIMA stands for Unstructured Information Management
+          Architecture. It is component software architecture for the development,
+          discovery, composition and deployment of multi-modal analytics for the analysis
+          of unstructured information and its integration with search and knowledge
+          management technologies.</para>
+          <para>
+            UIMA processing occurs through a series of modules called analysis
+            engines. The result of analysis is an assignment of semantics 
+            to the elements of
+            unstructured data, for example, the indication that the phrase
+            <quote>Washington</quote> refers to a person&apos;s  name or that 
+            it refers to a place.           
+            </para>
+          <para>UIMA supports the rendering of these results in conventional structures,
+            for example, relational databases or search engine indices, where the content
+            of the original unstructured information may be efficiently accessed
+            according to its inferred semantics. </para>
+          
+          <para>UIMA is specifically designed to support the developer in creating,
+            integrating, and deploying components across platforms and among disperse
+            teams working to develop unstructured information management
+            applications.
+      
+            </para>
+        </answer>
+      </qandaentry>
+
+      <qandaentry>
+        <question><para>How do you pronounce UIMA?</para></question>
+        <answer><para>You &ndash; eee &ndash; muh</para></answer>
+      </qandaentry>
+
+      <qandaentry>
+        <question><para>What&apos;s the difference between UIMA and the UIMA SDK?</para>
+        </question>
+        <answer><para>UIMA is an architecture which specifies component interfaces,
+          design patterns, data representations and development roles.</para>
+          <para>The UIMA Software Development Kit (SDK) is a software system which includes
+            a run-time framework, APIs and tools for implementing, composing, packaging
+            and deploying UIMA components. It interfaces with a semantic search engine
+            component (available from <ulink
+              url="www.alphaworks.ibm.com/tech/uima"/> for indexing and querying over
+            the results of analysis. Over time, we hope that additional search engines will
+            add support for semantic searching.</para>
+          
+          <para>The UIMA run-time framework allows developers to plug-in their components
+            and applications and run them on different platforms and according to different
+            deployment options that range from tightly-coupled (running in the same
+            process space) to loosely-coupled (distributed across different processes or
+            machines for greater scale, flexibility and recoverability).</para>
+        </answer>
+      </qandaentry>
+
+      <qandaentry>
+        <question><para>What is an Annotation?</para></question>
+        <answer><para>An annotation is metadata that is associated with a region of a
+          document. It often is a label, typically represented as string of characters. The
+          region may be the whole document. </para>
+          
+          <para>An example is the label <quote>Person</quote> associated with the span of
+            text <quote>George Washington</quote>. We say that <quote>Person</quote>
+            annotates <quote>George Washington</quote> in the sentence <quote>George
+            Washington was the first president of the United States</quote>. The
+            association of the label
+            <quote>Person</quote> with a particular span of text is an annotation. Another
+            example may have an annotation represent a topic, like <quote>American
+            Presidents</quote> and be used to label an entire document.</para>
+          
+          <para>Annotations are not limited to regions of texts. An annotation may annotate
+            a region of an image or a segment of audio. The same concepts apply.</para>
+        </answer>
+      </qandaentry>
+     
+    </qandadiv>
+     
+  </qandaset>
+</chapter>
