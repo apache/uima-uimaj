@@ -22,7 +22,7 @@ package org.apache.uima.impl;
 import java.util.Map;
 
 import org.apache.uima.ResourceFactory;
-import org.apache.uima.analysis_engine.impl.TafAnalysisEngine_impl;
+import org.apache.uima.analysis_engine.impl.UimacppAnalysisEngineImpl;
 import org.apache.uima.collection.CasConsumer;
 import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.collection.base_cpm.CasDataConsumer;
@@ -30,7 +30,7 @@ import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
-import org.apache.uima.uimacpp.TafAnalysisComponent;
+import org.apache.uima.uimacpp.UimacppAnalysisEngine;
 
 /**
  * Specialized Resource Factory for producing CasConsumers.
@@ -137,7 +137,7 @@ public class CasConsumerFactory_impl implements ResourceFactory
       }
       else if (fwImpl.startsWith("org.apache.uima.cpp") || fwImpl.startsWith("TAF"))
       {
-        Resource resource = new TafAnalysisEngine_impl();
+        Resource resource = new UimacppAnalysisEngineImpl();
         if (resource.initialize(aSpecifier, aAdditionalParams))
         {
           //success!
@@ -148,14 +148,14 @@ public class CasConsumerFactory_impl implements ResourceFactory
         {
           throw new ResourceInitializationException(
               ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
-                  TafAnalysisComponent.class.getName(), aSpecifier.getSourceUrlString() });
+                  UimacppAnalysisEngine.class.getName(), aSpecifier.getSourceUrlString() });
         }
       }
       else
       {
         throw new ResourceInitializationException(
             ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
-                TafAnalysisComponent.class.getName(), aSpecifier.getSourceUrlString() });
+                UimacppAnalysisEngine.class.getName(), aSpecifier.getSourceUrlString() });
       }
     }
     else

@@ -51,10 +51,10 @@ import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.ProcessTrace;
 
-public class TafAnalysisComponent extends AnalysisComponent_ImplBase
+public class UimacppAnalysisEngine extends AnalysisComponent_ImplBase
 {
 
-  private JTafEngine engine;
+  private UimacppEngine engine;
 
   private AnalysisEngineImplBase ae;
 
@@ -74,9 +74,9 @@ public class TafAnalysisComponent extends AnalysisComponent_ImplBase
   /**
    * current class 
    */
-  private static final Class CLASS_NAME = TafAnalysisComponent.class;
+  private static final Class CLASS_NAME = UimacppAnalysisEngine.class;
 
-  public TafAnalysisComponent(AnalysisEngineDescription aeDescription, AnalysisEngineImplBase ae)
+  public UimacppAnalysisEngine(AnalysisEngineDescription aeDescription, AnalysisEngineImplBase ae)
   {
     super();
     this.ae = ae;
@@ -117,16 +117,16 @@ public class TafAnalysisComponent extends AnalysisComponent_ImplBase
       this.log = context.getLogger();
       if (engine == null)
       {
-        JTafEngine.configureResourceManager(System.getProperty("java.io.tmpdir"), ae
+        UimacppEngine.configureResourceManager(System.getProperty("java.io.tmpdir"), ae
             .getResourceManager().getDataPath());
 
         StringWriter strWriter = new StringWriter();
         aeDescription.toXML(strWriter);
         strWriter.close();
-        engine = JTafEngine.createJTafTAE(strWriter.getBuffer().toString());
+        engine = UimacppEngine.createJTafTAE(strWriter.getBuffer().toString());
       }
     }
-    catch (JTafException e)
+    catch (UimacppException e)
     {
       logJTafException(e);
       throw new ResourceInitializationException(
@@ -183,13 +183,13 @@ public class TafAnalysisComponent extends AnalysisComponent_ImplBase
     {
       if (engine == null)
       {
-        JTafEngine.configureResourceManager(System.getProperty("java.io.tmpdir"), ae
+        UimacppEngine.configureResourceManager(System.getProperty("java.io.tmpdir"), ae
             .getResourceManager().getDataPath());
 
         StringWriter strWriter = new StringWriter();
         aeDescription.toXML(strWriter);
         strWriter.close();
-        engine = JTafEngine.createJTafTAE(strWriter.getBuffer().toString());
+        engine = UimacppEngine.createJTafTAE(strWriter.getBuffer().toString());
         this.tsReinit = true;
       }
       if (this.tsReinit)
@@ -200,7 +200,7 @@ public class TafAnalysisComponent extends AnalysisComponent_ImplBase
       }
       engine.process(aResultSpec, cas, false);
     }
-    catch (JTafException e)
+    catch (UimacppException e)
     {
       logJTafException(e);
       throw new AnnotatorProcessException(e);
@@ -251,7 +251,7 @@ public class TafAnalysisComponent extends AnalysisComponent_ImplBase
         return engine.hasNext();
       }
     }
-    catch (JTafException e)
+    catch (UimacppException e)
     {
       logJTafException(e);
       throw new UIMARuntimeException(e);
@@ -275,7 +275,7 @@ public class TafAnalysisComponent extends AnalysisComponent_ImplBase
         return cas;
       }
     }
-    catch (JTafException e)
+    catch (UimacppException e)
     {
       logJTafException(e);
       throw new UIMARuntimeException(e);
@@ -313,7 +313,7 @@ public class TafAnalysisComponent extends AnalysisComponent_ImplBase
         engine.batchProcessComplete();
       }
     }
-    catch (JTafException e)
+    catch (UimacppException e)
     {
       logJTafException(e);
       throw new UIMARuntimeException(e);
@@ -333,7 +333,7 @@ public class TafAnalysisComponent extends AnalysisComponent_ImplBase
         engine.collectionProcessComplete();
       }
     }
-    catch (JTafException e)
+    catch (UimacppException e)
     {
       logJTafException(e);
       throw new UIMARuntimeException(e);
@@ -353,7 +353,7 @@ public class TafAnalysisComponent extends AnalysisComponent_ImplBase
         engine = null;
       }
     }
-    catch (JTafException e)
+    catch (UimacppException e)
     {
       logJTafException(e);
       throw new UIMARuntimeException(e);
@@ -381,7 +381,7 @@ public class TafAnalysisComponent extends AnalysisComponent_ImplBase
   public static int getLoggingLevel()
   {
 
-    Logger tafLogger = UIMAFramework.getLogger(TafAnalysisComponent.class);
+    Logger tafLogger = UIMAFramework.getLogger(UimacppAnalysisEngine.class);
 
     if (tafLogger.isLoggable(Level.FINEST) || tafLogger.isLoggable(Level.FINER)
         || tafLogger.isLoggable(Level.FINE) || tafLogger.isLoggable(Level.CONFIG)
@@ -409,7 +409,7 @@ public class TafAnalysisComponent extends AnalysisComponent_ImplBase
     //System.out.println("CPPJEDIIEnging::log() level=" + msglevel  + "src=" + sourceClass +
     //		"method=" +  sourceMethod + "message=" + message);
 
-    Logger tafLogger = UIMAFramework.getLogger(TafAnalysisComponent.class);
+    Logger tafLogger = UIMAFramework.getLogger(UimacppAnalysisEngine.class);
     Level level = Level.INFO; //default
     if (msglevel == TAF_LOGLEVEL_MESSAGE)
     {
@@ -439,7 +439,7 @@ public class TafAnalysisComponent extends AnalysisComponent_ImplBase
 
   private static final int TAF_LOGLEVEL_ERROR = 3;
 
-  private void logJTafException(JTafException e)
+  private void logJTafException(UimacppException e)
   {
     if (e.getEmbeddedException() instanceof InternalTafException)
     {
@@ -448,9 +448,9 @@ public class TafAnalysisComponent extends AnalysisComponent_ImplBase
       String errorName = "";
       try
       {
-        errorName = JTafEngine.getErrorMessage(errorCode);
+        errorName = UimacppEngine.getErrorMessage(errorCode);
       }
-      catch (JTafException jtafexc)
+      catch (UimacppException jtafexc)
       {
         log.logrb(Level.SEVERE, CLASS_NAME.getName(), "logJTafException", LOG_RESOURCE_BUNDLE,
             "UIMA_error_while_getting_name__SEVERE", jtafexc.getMessage());

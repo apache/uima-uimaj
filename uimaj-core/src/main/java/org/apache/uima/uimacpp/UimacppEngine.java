@@ -41,7 +41,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.SofaFS;
 
 
-public class JTafEngine {
+public class UimacppEngine {
 
 //	 Those types can not be created with CAS.createFS().
     private static String[] compatibleTafJniVersions = { "7.0.0" };
@@ -64,7 +64,7 @@ public class JTafEngine {
 						new Object[] {jniVersion});
 			}
 			
-		} catch (JTafException exc) {
+		} catch (UimacppException exc) {
 			throw new UIMARuntimeException(exc.getEmbeddedException());
 		}
 	}
@@ -212,7 +212,7 @@ public class JTafEngine {
 	/**
 	 * Create the TAF resource manager.
 	 */
-	private static void createResourceManager() throws JTafException {
+	private static void createResourceManager() throws UimacppException {
 		try {
 			createResourceManagerJNI();
 		} catch (Exception exc) {
@@ -224,7 +224,7 @@ public class JTafEngine {
 	 * Configure the TAF Resource Manager.
 	 */
 	public static void configureResourceManager(String workDirectory,
-			String dataDirectory) throws JTafException {
+			String dataDirectory) throws UimacppException {
 		try {
 			configureResourceManagerJNI(workDirectory, dataDirectory);
 		} catch (Exception exc) {
@@ -232,7 +232,7 @@ public class JTafEngine {
 		}
 	}
 
-	public JTafEngine() throws JTafException {
+	public UimacppEngine() throws UimacppException {
 		try {
 			constructorJNI();
 		} catch (Exception exc) {
@@ -247,9 +247,9 @@ public class JTafEngine {
 	/**
 	 * create a TAF engine with a config file
 	 */
-	public static JTafEngine createJTafTAE(String configFile)
-			throws JTafException {
-		JTafEngine result = new JTafEngine();
+	public static UimacppEngine createJTafTAE(String configFile)
+			throws UimacppException {
+		UimacppEngine result = new UimacppEngine();
 		result.initialize(configFile);
 
 		return result;
@@ -279,7 +279,7 @@ public class JTafEngine {
 	 * @param configFile
 	 *            the configuration as a string (not a filename)
 	 */
-	void initialize(String config) throws JTafException {
+	void initialize(String config) throws UimacppException {
 		// for (int i = 0; i < casMgrSerializer.indexNames.length; i++) {
 		// System.out.println(casMgrSerializer.indexNames[i]);
 		// }
@@ -298,7 +298,7 @@ public class JTafEngine {
 	 * @param serialized
 	 *            CAS definition
 	 */
-	void typeSystemInit(CASMgrSerializer casMgrSerializer) throws JTafException {
+	void typeSystemInit(CASMgrSerializer casMgrSerializer) throws UimacppException {
 		// for (int i = 0; i < casMgrSerializer.indexNames.length; i++) {
 		// System.out.println(casMgrSerializer.indexNames[i]);
 				
@@ -325,7 +325,7 @@ public class JTafEngine {
 	/**
 	 * de-initializes the TAF engine.
 	 */
-	public void destroy() throws JTafException {
+	public void destroy() throws UimacppException {
 		try {
 			destroyJNI();
 		} catch (Exception exc) {
@@ -353,7 +353,7 @@ public class JTafEngine {
 	 * process the document.
 	 */
 	public void process(ResultSpecification rs, CAS aCas, boolean casIsEmpty)
-			throws JTafException {
+			throws UimacppException {
 		
 		int isTCas;
 		String sofaName;
@@ -419,7 +419,7 @@ public class JTafEngine {
 	/**
 	 * hasNext
 	 */
-	public boolean hasNext() throws JTafException {
+	public boolean hasNext() throws UimacppException {
 		
 		try {
 			hasNext = hasNextSegmentJNI();
@@ -452,7 +452,7 @@ public class JTafEngine {
 	/**
 	 * next
 	 */
-	public void next(CAS segment) throws JTafException {
+	public void next(CAS segment) throws UimacppException {
 		
 		try {
 		
@@ -490,7 +490,7 @@ public class JTafEngine {
 	/**
 	 * batchProcessComplete
 	 */
-	public void batchProcessComplete() throws JTafException {
+	public void batchProcessComplete() throws UimacppException {
 		try {
 			batchProcessCompleteJNI();
 		} catch (Exception exc) {
@@ -501,7 +501,7 @@ public class JTafEngine {
 	/**
 	 * CasConsumer collectionProcessComplete
 	 */
-	public void collectionProcessComplete() throws JTafException {
+	public void collectionProcessComplete() throws UimacppException {
 		try {
 			collectionProcessCompleteJNI();
 		} catch (Exception exc) {
@@ -512,7 +512,7 @@ public class JTafEngine {
 	/**
 	 * helper function to get the error message for some TAF error ID.
 	 */
-	public static String getErrorMessage(long errorCode) throws JTafException {
+	public static String getErrorMessage(long errorCode) throws UimacppException {
 		try {
 			return getErrorMessageJNI(errorCode);
 		} catch (Exception exc) {
@@ -524,7 +524,7 @@ public class JTafEngine {
 	/**
 	 * helper function to get the TAF JNI version.
 	 */
-	public static String getTafJNIVersion() throws JTafException {
+	public static String getTafJNIVersion() throws UimacppException {
 		try {
 			return getVersionJNI();
 		} catch (Exception exc) {
@@ -533,7 +533,7 @@ public class JTafEngine {
 		return null;
 	}
 	
-	static void throwJTafException(Exception exc) throws JTafException {
+	static void throwJTafException(Exception exc) throws UimacppException {
 		if (exc instanceof InternalTafException) {
 			InternalTafException itExc = (InternalTafException) exc;
 			// check special errors
@@ -555,9 +555,9 @@ public class JTafEngine {
 
 			// TafException tafException = new TafException(
 			// itExc.getTafErrorCode(), exc.getMessage() );
-			throw new JTafException(itExc);
+			throw new UimacppException(itExc);
 		} else {
-			throw new JTafException(exc);
+			throw new UimacppException(exc);
 		}
 	}
 
