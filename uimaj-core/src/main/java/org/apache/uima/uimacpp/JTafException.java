@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.itu;
+package org.apache.uima.uimacpp;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
