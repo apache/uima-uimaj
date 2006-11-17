@@ -18,7 +18,7 @@
  * under the License.
  -->
 
-<xmi:XMI xmlns:cas="http:///uima/cas.ecore" xmlns:tcas="http:///uima/tcas.ecore" xmlns:xmi="http://www.omg.org/XMI" xmi:version="2.0">
+<xmi:XMI xmlns:cas="http:///uima/cas.ecore" xmlns:tcas="http:///uima/tcas.ecore" xmlns:test="http:///sofa/test.ecore" xmlns:xmi="http://www.omg.org/XMI" xmi:version="2.0">
 <cas:NULL xmi:id="0"/>
 <cas:Sofa xmi:id="1" sofaNum="1" sofaID="EnglishDocument" mimeType="text" sofaString="this beer is good"/>
 <cas:Sofa xmi:id="8" sofaNum="2" sofaID="GermanDocument" mimeType="text" sofaString="das bier ist gut"/>
