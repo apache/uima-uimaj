@@ -24,3 +24,16 @@ Eclipse auto-completion and checking.
 Entities you declare can be put into shared entity files, and then
 essentially included in other files.  See Chapter 22 of the DocBook XSL, the 
 Complete Guide, for examples.
+
+NOTES:
+
+The functionality for xi:include relative linking when the thing being included was 
+in a different directory from the includer was broken.  
+This showed up in image fileref= attributes being improperly / inconsistently translated
+to src=... attributes in the generated xml.  Work-around: give up for now
+in having subdirectories - put all things into one directory.
+
+The qandaset functionality works but the FOP processor 0.20.5 seems to have trouble
+handling id= attributes; it's giving an incorrect error message about a duplicate id tag,
+when, in fact, there is no duplicate.  Work-around: give up using qandaset - just use
+variablelist instead.
