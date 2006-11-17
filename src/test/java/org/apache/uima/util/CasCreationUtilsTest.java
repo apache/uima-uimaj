@@ -29,8 +29,11 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.admin.CASFactory;
+import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.TCAS;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.FsIndexDescription;
@@ -38,6 +41,7 @@ import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 /**
@@ -302,4 +306,34 @@ public class CasCreationUtilsTest extends TestCase
       JUnitExtension.handleException(e);
     }
   }
+  
+  public void testSetupTypeSystem() throws Exception
+  {
+    try
+    {
+      //test that duplicate feature names on supertype and subtype works
+      //regardless of the order in which the types appear in the TypeSystemDescription
+      TypeSystemDescription tsd1 = new TypeSystemDescription_impl();
+      TypeDescription supertype = tsd1.addType("test.Super", "", "uima.cas.TOP");
+      supertype.addFeature("testfeat", "", "uima.cas.Integer");
+      TypeDescription subtype = tsd1.addType("test.Sub", "", "test.Super");
+      subtype.addFeature("testfeat", "", "uima.cas.Integer");    
+      
+      CASMgr casMgr = CASFactory.createCAS();
+      CasCreationUtils.setupTypeSystem(casMgr, tsd1);
+      assertNotNull(casMgr.getTypeSystemMgr().getType("test.Super").getFeatureByBaseName("testfeat"));
+
+      TypeSystemDescription tsd2 = new TypeSystemDescription_impl();
+      tsd2.setTypes(new TypeDescription[]{subtype,supertype});
+      
+      casMgr = CASFactory.createCAS();
+      CasCreationUtils.setupTypeSystem(casMgr, tsd2);
+      assertNotNull(casMgr.getTypeSystemMgr().getType("test.Super").getFeatureByBaseName("testfeat"));
+
+    }
+    catch (ResourceInitializationException e)
+    {
+      JUnitExtension.handleException(e);
+    }
+  }  
 }

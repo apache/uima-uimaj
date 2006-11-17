@@ -916,6 +916,7 @@ public class CasCreationUtils
           typeList.addAll(Arrays.asList(types));
           int numTypes = typeList.size();
           int lastNumTypes;
+          LinkedList typesInOrderOfCreation = new LinkedList();
           do
           {
             lastNumTypes = numTypes;
@@ -965,8 +966,9 @@ public class CasCreationUtils
                   }                  
                   typeSystemMgr.addType(typeName, supertype);
                 }
-                //remove from list of type descriptions
+                //remove from list of type descriptions and add it to the typesInOrderOfCreation list for later processing
                 it.remove();
+                typesInOrderOfCreation.add(curTypeDesc);
               }
             }
             numTypes = typeList.size();
@@ -986,13 +988,18 @@ public class CasCreationUtils
                 firstFailed.getSourceUrlString()});
           }
 
-          //now for each type, add its features
-          for (int i = 0; i < types.length; i++)
+          //now for each type, add its features.  We add features to supertypes before subtypes.  This is done so that
+          //if we have a duplicate feature name on both a supertype and a subtype, it is added to the supertype and then
+          //ignored when we get to the subtype.  Although this is a dubious type system, we support it for backwards
+          //compatibility (but we might want to think about generating a warning).
+          Iterator typeIter = typesInOrderOfCreation.iterator();
+          while (typeIter.hasNext())
           {
-            Type type = typeSystemMgr.getType(types[i].getName());
+            TypeDescription typeDesc = (TypeDescription)typeIter.next();
+            Type type = typeSystemMgr.getType(typeDesc.getName());
             //            assert type != null;
 
-            FeatureDescription[] features = types[i].getFeatures();
+            FeatureDescription[] features = typeDesc.getFeatures();
             if (features != null)
             {
               for (int j = 0; j < features.length; j++)
@@ -1004,7 +1011,7 @@ public class CasCreationUtils
                 {
                   throw new ResourceInitializationException(
                     ResourceInitializationException.UNDEFINED_RANGE_TYPE,
-                    new Object[] { rangeTypeName, featName, types[i].getName(),
+                    new Object[] { rangeTypeName, featName, typeDesc.getName(),
                         features[j].getSourceUrlString()});
                 }
                 if (rangeType.isArray()) //TODO: also List?
@@ -1019,7 +1026,7 @@ public class CasCreationUtils
                     {
                       throw new ResourceInitializationException(
                           ResourceInitializationException.UNDEFINED_RANGE_TYPE,
-                          new Object[]{elementTypeName, featName, types[i].getName(),
+                          new Object[]{elementTypeName, featName, typeDesc.getName(),
                               features[j].getSourceUrlString()});                        
                     }
                     rangeType = typeSystemMgr.getArrayType(elementType);
