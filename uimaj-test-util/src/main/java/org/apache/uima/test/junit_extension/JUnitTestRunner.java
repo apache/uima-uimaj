@@ -218,7 +218,7 @@ public class JUnitTestRunner
 			 }
 
 			//set IBMResult printer mode, if teeResult is true use another output layout
-			IBMResultPrinter printer = new IBMResultPrinter(resultWriter,abortOnFail,teeResult); 			
+			UIMAResultPrinter printer = new UIMAResultPrinter(resultWriter,abortOnFail,teeResult); 			
 			aTestRunner.setPrinter(printer);
 	
 			//get testClass for the given testname
