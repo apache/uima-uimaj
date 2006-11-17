@@ -488,7 +488,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr,
 		this.sofaType = (TypeImpl) this.ts.getType(TYPE_NAME_SOFA);
 		this.annotType = (TypeImpl) this.ts.getType(TCAS.TYPE_NAME_ANNOTATION);
 		this.annotBaseType = (TypeImpl) this.ts
-				.getType(TCAS.TYPE_NAME_ANNOTATION_BASE);
+				.getType(CAS.TYPE_NAME_ANNOTATION_BASE);
 		this.startFeat = (FeatureImpl) this.ts
 				.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_BEGIN);
 		this.endFeat = (FeatureImpl) this.ts
@@ -951,7 +951,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr,
 	}
 
 	public void commitTypeSystem() {
-		ts.commit();
+		this.ts.commit();
 		redoTypeSystemSetup();
 		initFSClassRegistry();
 		// After the type system has been committed, we can create the
@@ -1025,13 +1025,13 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr,
 			resetStringTable(false);
 		}
 
-		byteHeap.reset();
-		shortHeap.reset();
-		longHeap.reset();
+		this.byteHeap.reset();
+		this.shortHeap.reset();
+		this.longHeap.reset();
 
 		this.indexRepository.flush();
 		this.baseCAS.sofaNameSet.clear();
-		initialSofaCreated = false;
+		this.initialSofaCreated = false;
 		// always an Initial View now!!!
 		this.sofaCount = 1;
 
@@ -1124,31 +1124,30 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr,
 
 	void initFSClassRegistry() {
 		// System.out.println("Initializing FSClassRegistry");
-		FSClassRegistry fsClassReg1 = new FSClassRegistry(this.ts,
+		this.fsClassReg = new FSClassRegistry(this.ts,
 				this.useFSCache);
-		setFSClassRegistry(fsClassReg1);
-		fsClassReg1.addClassForType(this.fsArrayType, new ArrayFSGenerator());
-		fsClassReg1.addClassForType(this.intArrayType, IntArrayFSImpl
+		this.fsClassReg.addClassForType(this.fsArrayType, new ArrayFSGenerator());
+		this.fsClassReg.addClassForType(this.intArrayType, IntArrayFSImpl
 				.generator());
-		fsClassReg1.addClassForType(this.floatArrayType, FloatArrayFSImpl
+		this.fsClassReg.addClassForType(this.floatArrayType, FloatArrayFSImpl
 				.generator());
-		fsClassReg1.addClassForType(this.stringArrayType, StringArrayFSImpl
+		this.fsClassReg.addClassForType(this.stringArrayType, StringArrayFSImpl
 				.generator());
-		fsClassReg1.addClassForType(this.sofaType, SofaFSImpl
+		this.fsClassReg.addClassForType(this.sofaType, SofaFSImpl
 				.getSofaFSGenerator());
-		fsClassReg1.addClassForType(this.annotBaseType, AnnotationBaseImpl
+		this.fsClassReg.addClassForType(this.annotBaseType, AnnotationBaseImpl
 				.getAnnotationGenerator());
-		fsClassReg1.addClassForType(this.annotType, AnnotationImpl
+		this.fsClassReg.addClassForType(this.annotType, AnnotationImpl
 				.getAnnotationGenerator());
-		fsClassReg.addClassForType(getTypeSystem().getType(
+		this.fsClassReg.addClassForType(getTypeSystem().getType(
 				CAS.TYPE_NAME_BYTE_ARRAY), ByteArrayFSImpl.generator());
-		fsClassReg.addClassForType(getTypeSystem().getType(
+		this.fsClassReg.addClassForType(getTypeSystem().getType(
 				CAS.TYPE_NAME_BOOLEAN_ARRAY), BooleanArrayFSImpl.generator());
-		fsClassReg.addClassForType(getTypeSystem().getType(
+		this.fsClassReg.addClassForType(getTypeSystem().getType(
 				CAS.TYPE_NAME_SHORT_ARRAY), ShortArrayFSImpl.generator());
-		fsClassReg.addClassForType(getTypeSystem().getType(
+		this.fsClassReg.addClassForType(getTypeSystem().getType(
 				CAS.TYPE_NAME_LONG_ARRAY), LongArrayFSImpl.generator());
-		fsClassReg.addClassForType(getTypeSystem().getType(
+		this.fsClassReg.addClassForType(getTypeSystem().getType(
 				CAS.TYPE_NAME_DOUBLE_ARRAY), DoubleArrayFSImpl.generator());
 
 		// assert(fsClassReg != null);
@@ -1711,29 +1710,29 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr,
 			final String value) {
 		int arrayType = this.heap.heap[addr];
 
-		if (arrayType == intArrayTypeCode) {
+		if (arrayType == this.intArrayTypeCode) {
 			setArrayValue(addr, index, Integer.parseInt(value));
-		} else if (arrayType == floatArrayTypeCode) {
+		} else if (arrayType == this.floatArrayTypeCode) {
 			setArrayValue(addr, index, CASImpl.float2int(Float
 					.parseFloat(value)));
-		} else if (arrayType == stringArrayTypeCode) {
+		} else if (arrayType == this.stringArrayTypeCode) {
 			setArrayValue(addr, index, addString(value));
-		} else if (arrayType == booleanArrayTypeCode) {
+		} else if (arrayType == this.booleanArrayTypeCode) {
 			getLowLevelCAS().ll_setBooleanArrayValue(addr, index,
 					Boolean.valueOf(value).booleanValue());
-		} else if (arrayType == byteArrayTypeCode) {
+		} else if (arrayType == this.byteArrayTypeCode) {
 			getLowLevelCAS().ll_setByteArrayValue(addr, index,
 					Byte.parseByte(value));
-		} else if (arrayType == shortArrayTypeCode) {
+		} else if (arrayType == this.shortArrayTypeCode) {
 			getLowLevelCAS().ll_setShortArrayValue(addr, index,
 					Short.parseShort(value));
-		} else if (arrayType == longArrayTypeCode) {
+		} else if (arrayType == this.longArrayTypeCode) {
 			getLowLevelCAS().ll_setLongArrayValue(addr, index,
 					Long.parseLong(value));
-		} else if (arrayType == doubleArrayTypeCode) {
+		} else if (arrayType == this.doubleArrayTypeCode) {
 			getLowLevelCAS().ll_setDoubleArrayValue(addr, index,
 					Double.parseDouble(value));
-		} else if (arrayType == fsArrayTypeCode) {
+		} else if (arrayType == this.fsArrayTypeCode) {
 			setArrayValue(addr, index, Integer.parseInt(value));
 		}
 	}
@@ -1962,7 +1961,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr,
 	}
 
 	public String getFeatureValueAsString(int addr, int feat) {
-		int typeCode = (ts.range(feat));
+		int typeCode = (this.ts.range(feat));
 		if (typeCode == this.intTypeCode) {
 			return Integer.toString(this.ll_getIntValue(addr, feat));
 		} else if (typeCode == this.floatTypeCode) {
@@ -1982,15 +1981,15 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr,
 		} else {
 			CASRuntimeException e = new CASRuntimeException(
 					CASRuntimeException.INAPPROP_RANGE);
-			e.addArgument(ts.getFeatureName(feat));
-			e.addArgument(ts.getTypeName(typeCode));
+			e.addArgument(this.ts.getFeatureName(feat));
+			e.addArgument(this.ts.getTypeName(typeCode));
 			throw e;
 		}
 
 	}
 
 	public void setFeatureValueFromString(int fsref, int feat, String value) {
-		int typeCode = (ts.range(feat));
+		int typeCode = (this.ts.range(feat));
 		if (typeCode == this.intTypeCode) {
 			this.ll_setIntValue(fsref, feat, Integer.parseInt(value));
 		} else if (typeCode == this.floatTypeCode) {
@@ -2388,7 +2387,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr,
 		ts.addFeature(CAS.FEATURE_BASE_NAME_SOFAURI, sofa, stringT);
 
 		// Annotations (moved here from TCASImpl)
-		Type annotBaseType = ts.addType(TCAS.TYPE_NAME_ANNOTATION_BASE, top);
+		Type annotBaseType = ts.addType(CAS.TYPE_NAME_ANNOTATION_BASE, top);
 		ts.addFeature(TCAS.FEATURE_BASE_NAME_SOFA, annotBaseType, sofa);
 		Type annotType = ts.addType(TCAS.TYPE_NAME_ANNOTATION, annotBaseType);
 		ts.addFeature(TCAS.FEATURE_BASE_NAME_BEGIN, annotType, intT);
@@ -2582,31 +2581,30 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr,
 	}
 
 	public CAS getView(String aSofaID) {
-		// do sofa mapping for current component
-		String absoluteSofaName = null;
-		if (getCurrentComponentInfo() != null) {
-			absoluteSofaName = getCurrentComponentInfo().mapToSofaID(aSofaID);
-		}
-		if (absoluteSofaName == null) {
-			absoluteSofaName = aSofaID;
-		}
+        // do sofa mapping for current component
+        String absoluteSofaName = null;
+        if (getCurrentComponentInfo() != null) {
+            absoluteSofaName = getCurrentComponentInfo().mapToSofaID(aSofaID);
+        }
+        if (absoluteSofaName == null) {
+            absoluteSofaName = aSofaID;
+        }
 
-		// if this resolves to the Initial View, return view(1)...
-		// ... as the Sofa for this view may not exist yet
-		if (CAS.NAME_DEFAULT_SOFA.equals(absoluteSofaName)) {
-			return getInitialView();
-		} else {
-			// get Sofa and switch to view
-			SofaFS sofa = getSofa(absoluteSofaName);
-			if (sofa == null) {
-				CASRuntimeException e = new CASRuntimeException(
-						CASRuntimeException.SOFANAME_NOT_FOUND);
-				e.addArgument(absoluteSofaName);
-				throw e;
-			}
-			return getView(sofa);
-		}
-	}
+        // if this resolves to the Initial View, return view(1)...
+        // ... as the Sofa for this view may not exist yet
+        if (CAS.NAME_DEFAULT_SOFA.equals(absoluteSofaName)) {
+            return getInitialView();
+        }
+        // get Sofa and switch to view
+        SofaFS sofa = getSofa(absoluteSofaName);
+        if (sofa == null) {
+            CASRuntimeException e = new CASRuntimeException(
+                    CASRuntimeException.SOFANAME_NOT_FOUND);
+            e.addArgument(absoluteSofaName);
+            throw e;
+        }
+        return getView(sofa);
+    }
   
 	public CAS getView(SofaFS aSofa) {
     TCASImpl aTcas = (TCASImpl) this.sofa2tcasMap.get(new Integer(aSofa
@@ -2883,7 +2881,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr,
 	public final int ll_createAnnotationBaseFS(int typeCode, boolean doCheck) {
 		if (doCheck) {
 			if (!this.ts.isType(typeCode) || !isCreatableType(typeCode)
-					|| ts.ll_subsumes(this.annotBaseTypeCode, typeCode)) {
+					|| this.ts.ll_subsumes(this.annotBaseTypeCode, typeCode)) {
 				LowLevelException e = new LowLevelException(
 						LowLevelException.CREATE_FS_OF_TYPE_ERROR);
 				e.addArgument(Integer.toString(typeCode));
@@ -3812,9 +3810,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr,
     if (this.mySofaRef > 0) {
       return getSofa(this.mySofaRef);
     }
-    else {
-      return null;
-    }
+    return null;
   }
 
   public String getViewName() {
