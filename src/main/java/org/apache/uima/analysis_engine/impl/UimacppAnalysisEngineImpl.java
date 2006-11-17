@@ -50,7 +50,7 @@ import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.apache.uima.uimacpp.TafAnalysisComponent;
+import org.apache.uima.uimacpp.UimacppAnalysisEngine;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
@@ -61,7 +61,7 @@ import org.apache.uima.util.ProcessTrace;
  * 
  * 
  */
-public class TafAnalysisEngine_impl extends AnalysisEngineImplBase implements
+public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
 		AnalysisEngine {
 
 	/**
@@ -72,7 +72,7 @@ public class TafAnalysisEngine_impl extends AnalysisEngineImplBase implements
 	/**
 	 * current class
 	 */
-	private static final Class CLASS_NAME = TafAnalysisEngine_impl.class;
+	private static final Class CLASS_NAME = UimacppAnalysisEngineImpl.class;
 
 	/**
 	 * @throws ResourceConfigurationException
@@ -321,11 +321,11 @@ public class TafAnalysisEngine_impl extends AnalysisEngineImplBase implements
 		// create Annotator Context and set Logger
 		UimaContextAdmin uimaContext = getUimaContextAdmin();
 		uimaContext.setLogger(UIMAFramework
-				.getLogger(TafAnalysisComponent.class));
+				.getLogger(UimacppAnalysisEngine.class));
 		mAnnotatorContext = new AnnotatorContext_impl(uimaContext);
 
 		if (!mVerificationMode) {
-			mAnnotator = new TafAnalysisComponent(aDescription, this);
+			mAnnotator = new UimacppAnalysisEngine(aDescription, this);
 
 			getUimaContextAdmin().defineCasPool(
 					mAnnotator.getCasInstancesRequired(),
@@ -492,7 +492,7 @@ public class TafAnalysisEngine_impl extends AnalysisEngineImplBase implements
 	 * the analysis logic.
 	 */
 	// private BaseAnnotator mAnnotator;
-	private TafAnalysisComponent mAnnotator;
+	private UimacppAnalysisEngine mAnnotator;
 
 	/**
 	 * For a primitive AnalysisEngine only, the AnnotatorContext instance that

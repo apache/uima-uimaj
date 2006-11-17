@@ -22,17 +22,17 @@ package org.apache.uima.cas.test;
 import junit.framework.TestCase;
 
 /**
- * Class comment for TafDeserializationTest.java goes here.
+ * Class comment for UimacppDeserializationTest.java goes here.
  * 
  * @author Thilo Goetz 
  */
-public class TafDeserializationTest extends TestCase {
+public class UimacppDeserializationTest extends TestCase {
 
   /**
-   * Constructor for TafDeserializationTest.
+   * Constructor for UimacppDeserializationTest.
    * @param arg0
    */
-  public TafDeserializationTest(String arg0) {
+  public UimacppDeserializationTest(String arg0) {
     super(arg0);
   }
 
@@ -140,7 +140,7 @@ public class TafDeserializationTest extends TestCase {
   }
 */
   public static void main(String[] args) {
-    junit.textui.TestRunner.run(TafDeserializationTest.class);
+    junit.textui.TestRunner.run(UimacppDeserializationTest.class);
   }
 
 }

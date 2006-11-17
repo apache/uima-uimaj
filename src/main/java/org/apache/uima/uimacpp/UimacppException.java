@@ -25,7 +25,7 @@ import java.io.PrintWriter;
 /**
  * Use this class to signalize a fatal (internal) error to the API user.
  */
-public class JTafException extends Exception {
+public class UimacppException extends Exception {
   private static final long serialVersionUID = 378698033899907645L;
   /**
     * Nested exception to hold wrapped exception.
@@ -38,7 +38,7 @@ public class JTafException extends Exception {
     *
     * @param ex the nested exception
     */
-   public JTafException(Exception ex) {
+   public UimacppException(Exception ex) {
       super();
       detail = ex;
    }

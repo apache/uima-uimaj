@@ -29,7 +29,7 @@ import org.apache.uima.analysis_engine.TextAnalysisEngine;
 import org.apache.uima.analysis_engine.impl.AggregateAnalysisEngine_impl;
 import org.apache.uima.analysis_engine.impl.MultiprocessingAnalysisEngine_impl;
 import org.apache.uima.analysis_engine.impl.PrimitiveAnalysisEngine_impl;
-import org.apache.uima.analysis_engine.impl.TafAnalysisEngine_impl;
+import org.apache.uima.analysis_engine.impl.UimacppAnalysisEngineImpl;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -71,7 +71,7 @@ public class AnalysisEngineFactory_impl implements ResourceFactory
       else if ("org.apache.uima.cpp".equals(spec.getFrameworkImplementation()) ||
                "TAF".equals(spec.getFrameworkImplementation()))
       {
-        resource = new TafAnalysisEngine_impl();
+        resource = new UimacppAnalysisEngineImpl();
       }
       else         
       {

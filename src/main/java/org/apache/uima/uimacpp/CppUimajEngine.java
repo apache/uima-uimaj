@@ -49,7 +49,7 @@ import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.XMLInputSource;
 
-public class CPPJEDIIEngine {
+public class CppUimajEngine {
 	private String exceptionString = "";
 
 	private AnalysisEngine ae = null;
@@ -78,7 +78,7 @@ public class CPPJEDIIEngine {
 		pw.close();
 	}
 
-	public CPPJEDIIEngine() {
+	public CppUimajEngine() {
 	}
 
 	public int initialize(String config, String dataPath,
@@ -89,7 +89,7 @@ public class CPPJEDIIEngine {
 			int[] compStarts, int[] compDefs) {
 		int result = 0;
 		try {
-            //System.out.println("CPPJEDIIEngine::initialize()");
+            //System.out.println("CppUimajEngine::initialize()");
 			CASMgrSerializer serializer = new CASMgrSerializer();
 			serializer.typeOrder = typePriorities;
 			serializer.indexNames = indexIDs;
@@ -177,7 +177,7 @@ public class CPPJEDIIEngine {
 			short[] shortHeapArray, long[] longHeapArray) {
 		int result = 0;
 		try {
-			// System.err.println("CPPJEDIIEngine.process() called");
+			// System.err.println("CppUimajEngine.process() called");
 
 			casImpl.reset();
 
