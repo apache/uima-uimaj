@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.itu;
+package org.apache.uima.uimacpp;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;

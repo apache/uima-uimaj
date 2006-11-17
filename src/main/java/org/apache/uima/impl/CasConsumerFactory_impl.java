@@ -21,7 +21,6 @@ package org.apache.uima.impl;
 
 import java.util.Map;
 
-import org.apache.itu.TafAnalysisComponent;
 import org.apache.uima.ResourceFactory;
 import org.apache.uima.analysis_engine.impl.TafAnalysisEngine_impl;
 import org.apache.uima.collection.CasConsumer;
@@ -31,6 +30,7 @@ import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
+import org.apache.uima.uimacpp.TafAnalysisComponent;
 
 /**
  * Specialized Resource Factory for producing CasConsumers.
