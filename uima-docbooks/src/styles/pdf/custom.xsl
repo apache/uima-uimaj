@@ -20,6 +20,13 @@
                 xmlns:fo="http://www.w3.org/1999/XSL/Format"
                 version='1.0'>
 
+  <xsl:param name="body.font.family"  select="'Palatino'"/>
+  <xsl:param name="body.font.size"    select="'10.5'"/>
+  <xsl:attribute-set name="root.properties">
+      <xsl:attribute name="text-align">left</xsl:attribute>
+  </xsl:attribute-set>
+<!--  <xsl.param name="alignment"         select="'left'"/> -->
+  
   <xsl:param name="page.margin.top" select="'1cm'"/>
   <xsl:param name="region.before.extent" select="'1cm'"/>
   <xsl:param name="body.margin.top" select="'1.5cm'"/>
@@ -153,7 +160,7 @@
     ################################################### -->
 
     <!-- Paper type, no headers on blank pages, no double sided printing -->
-    <xsl:param name="double.sided">0</xsl:param>
+    <xsl:param name="double.sided">1</xsl:param>
     <xsl:param name="headers.on.blank.pages">0</xsl:param>
     <xsl:param name="footers.on.blank.pages">0</xsl:param>
 
@@ -189,7 +196,7 @@
     <!-- Label Chapters and Sections (numbering) -->
     <xsl:param name="chapter.autolabel" select="1"/>
     <xsl:param name="section.autolabel" select="1"/>
-    <xsl:param name="section.autolabel.max.depth" select="1"/>
+    <xsl:param name="section.autolabel.max.depth" select="3"/>
 
     <xsl:param name="section.label.includes.component.label" select="1"/>
     <xsl:param name="table.footnote.number.format" select="'1'"/>
@@ -199,6 +206,7 @@
     ################################################### -->
 
     <xsl:attribute-set name="verbatim.properties">
+        <xsl:attribute name="font-size">9pt</xsl:attribute>
         <xsl:attribute name="space-before.minimum">1em</xsl:attribute>
         <xsl:attribute name="space-before.optimum">1em</xsl:attribute>
         <xsl:attribute name="space-before.maximum">1em</xsl:attribute>
