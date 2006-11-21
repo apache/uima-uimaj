@@ -35,26 +35,22 @@ import org.apache.vinci.transport.document.AFrame;
  * 
  * 
  */
-public class VinciXCASSerializer implements VinciCASSerializer
-{
-  
-      
+public class VinciXCASSerializer implements VinciCASSerializer {
 
   /**
-   * @see org.apache.uima.adapter.vinci.VinciCASSerializer#serialize(org.apache.uima.cas.text.TCAS, vinci.transport.VinciFrame,OutOfTypeSystemData)
+   * @see org.apache.uima.adapter.vinci.VinciCASSerializer#serialize(org.apache.uima.cas.text.TCAS,
+   *      vinci.transport.VinciFrame,OutOfTypeSystemData)
    */
   public void serialize(CAS aCAS, AFrame aParentFrame, OutOfTypeSystemData aOutOfTypeSystemData)
-    throws IOException, SAXException
-  {
-    //Serialize CAS to XCAS
-    //Would be nice to serialize straight to parent frame frame, but we have
-    //to change the tag name to KEYS to satisfy the TAE interface
-    //spec - sigh.
+                  throws IOException, SAXException {
+    // Serialize CAS to XCAS
+    // Would be nice to serialize straight to parent frame frame, but we have
+    // to change the tag name to KEYS to satisfy the TAE interface
+    // spec - sigh.
     AFrame xcasHolder = new AFrame();
-    XCASSerializer xcasSerializer = 
-      new XCASSerializer(aCAS.getTypeSystem());
+    XCASSerializer xcasSerializer = new XCASSerializer(aCAS.getTypeSystem());
     SaxVinciFrameBuilder vinciFrameBuilder = new SaxVinciFrameBuilder();
-    vinciFrameBuilder.setParentFrame(xcasHolder);  
+    vinciFrameBuilder.setParentFrame(xcasHolder);
     xcasSerializer.serialize(aCAS, vinciFrameBuilder, true, aOutOfTypeSystemData);
     AFrame xcasFrame = xcasHolder.fgetAFrame("CAS");
     aParentFrame.aadd(Constants.KEYS, xcasFrame);

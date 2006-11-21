@@ -19,38 +19,34 @@
 
 package org.apache.uima.adapter.vinci;
 
-
 /**
- * Main class for Vinci CAS Processor Services.  This class is equivalent
- * to {@link org.apache.uima.adapter.vinci.VinciAnalysisEngineService_impl}.
- * They exist as separate classes only for historical reasons.
+ * Main class for Vinci CAS Processor Services. This class is equivalent to
+ * {@link org.apache.uima.adapter.vinci.VinciAnalysisEngineService_impl}. They exist as separate
+ * classes only for historical reasons.
  */
-public class VinciCasObjectProcessorService_impl extends VinciAnalysisEngineService_impl
-{
+public class VinciCasObjectProcessorService_impl extends VinciAnalysisEngineService_impl {
   /**
    * Instantiate Analysis Engine service from a given descriptor - possibly in debug mode.
    * 
-   * @param aResourceSpecifierPath - descriptor location
+   * @param aResourceSpecifierPath -
+   *          descriptor location
    */
   public VinciCasObjectProcessorService_impl(String serviceConfigPath, boolean debug)
-      throws Exception
-  {
+                  throws Exception {
     super(serviceConfigPath, debug);
   }
 
   /**
    * Instantiate Analysis Engine service from a given descriptor.
    * 
-   * @param aResourceSpecifierPath - descriptor location
+   * @param aResourceSpecifierPath -
+   *          descriptor location
    */
-  public VinciCasObjectProcessorService_impl(String serviceConfigPath) throws Exception
-  {
+  public VinciCasObjectProcessorService_impl(String serviceConfigPath) throws Exception {
     this(serviceConfigPath, false);
   }
 
-
-  public static void main(String[] args)
-  {
+  public static void main(String[] args) {
     VinciAnalysisEngineService_impl.main(args);
   }
 }

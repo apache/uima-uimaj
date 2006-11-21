@@ -45,91 +45,72 @@ import org.apache.vinci.transport.VinciFrame;
 import org.apache.vinci.transport.context.VinciContext;
 import org.apache.vinci.transport.document.AFrame;
 
-public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServiceStub
-{
-  private VinciClient mVinciClient;
+public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServiceStub {
 
   private static final boolean debug = false;
+
+  private VinciClient mVinciClient;
 
   private AnalysisEngineServiceAdapter mOwner;
 
   public VinciBinaryAnalysisEngineServiceStub(String endpointURI, AnalysisEngineServiceAdapter owner)
-      throws ResourceInitializationException
-  {
+                  throws ResourceInitializationException {
     this(endpointURI, null, owner, null);
   }
 
   public VinciBinaryAnalysisEngineServiceStub(String endpointURI, Integer timeout,
-      AnalysisEngineServiceAdapter owner, Parameter[] parameters) throws ResourceInitializationException
-  {
+                  AnalysisEngineServiceAdapter owner, Parameter[] parameters)
+                  throws ResourceInitializationException {
     mOwner = owner;
-    
-    //open Vinci connection
-    try
-    {
+
+    // open Vinci connection
+    try {
       String vnsHost;
-      if (parameters != null && (vnsHost = getParameterValueFor("VNS_HOST", parameters)) != null)
-      {
-        //		Override vinci default VNS settings	
+      if (parameters != null && (vnsHost = getParameterValueFor("VNS_HOST", parameters)) != null) {
+        // Override vinci default VNS settings
         VinciContext vctx = new VinciContext(InetAddress.getLocalHost().getCanonicalHostName(), 0);
         vctx.setVNSHost(vnsHost);
         String vnsPort = getParameterValueFor("VNS_PORT", parameters);
-        if (vnsPort != null)
-        {
+        if (vnsPort != null) {
           vctx.setVNSPort(Integer.parseInt(vnsPort));
-        }
-        else
-        {
-          vctx.setVNSPort(9000); // use default. 
+        } else {
+          vctx.setVNSPort(9000); // use default.
         }
 
-        if (debug)
-        {
+        if (debug) {
           System.out.println("Establishing connnection to " + endpointURI + " using VNS_HOST:"
-              + vnsHost + " and VNS_PORT=" + ((vnsPort == null) ? "9000" : vnsPort));
+                          + vnsHost + " and VNS_PORT=" + ((vnsPort == null) ? "9000" : vnsPort));
         }
-        //	establish connection to service
+        // establish connection to service
         mVinciClient = new VinciClient(endpointURI, AFrame.getAFrameFactory(), vctx);
-      }
-      else
-      {
-        //If VNS_HOST system property is not set, use default value
-        if (System.getProperty("VNS_HOST") == null)
-        {
+      } else {
+        // If VNS_HOST system property is not set, use default value
+        if (System.getProperty("VNS_HOST") == null) {
           System.out.println("No VNS_HOST specified; using default " + Constants.DEFAULT_VNS_HOST);
           System.setProperty("VNS_HOST", Constants.DEFAULT_VNS_HOST);
         }
 
-        if (debug)
-        {
+        if (debug) {
           System.out.println("Establishing connnection to " + endpointURI);
         }
-        //	Use default VNS
+        // Use default VNS
         mVinciClient = new VinciClient(endpointURI, AFrame.getAFrameFactory());
       }
-      if (timeout != null)
-      {
+      if (timeout != null) {
         mVinciClient.setSocketTimeout(timeout.intValue());
       }
-      if (debug)
-      {
+      if (debug) {
         System.out.println("Success");
       }
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       throw new ResourceInitializationException(e);
     }
   }
 
-  public static String getParameterValueFor(String aKey, Parameter[] parameters)
-  {
-    if (aKey != null)
-    {
-      for (int i = 0; parameters != null && i < parameters.length; i++)
-      {
-        if (aKey.equals(parameters[i].getName()))
-        {
+  public static String getParameterValueFor(String aKey, Parameter[] parameters) {
+    if (aKey != null) {
+      for (int i = 0; parameters != null && i < parameters.length; i++) {
+        if (aKey.equals(parameters[i].getName())) {
           return parameters[i].getValue();
         }
       }
@@ -140,49 +121,41 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
   /**
    * @see org.apache.uima.resource.service.ResourceServiceStb#callGetMetaData()
    */
-  public ResourceMetaData callGetMetaData() throws ResourceServiceException
-  {
-    try
-    {
-      //  create Vinci Frame
+  public ResourceMetaData callGetMetaData() throws ResourceServiceException {
+    try {
+      // create Vinci Frame
       VinciFrame queryFrame = new VinciFrame();
-      //  Add Vinci Command, so that the receiving service knows what to do
+      // Add Vinci Command, so that the receiving service knows what to do
       queryFrame.fadd("vinci:COMMAND", "GetMeta");
-      //  Send the request to the service and wait for response
+      // Send the request to the service and wait for response
 
-      if (debug)
-      {
+      if (debug) {
         System.out.println("Calling GetMeta");
       }
 
       mVinciClient.setTransportableFactory(AFrame.getAFrameFactory());
       VinciFrame resultFrame = mVinciClient.rpc(queryFrame);
 
-      if (debug)
-      {
+      if (debug) {
         System.out.println("Success");
       }
 
-      //  Extract the data from Vinci Response frame
-      //System.out.println(resultFrame.toXML()); //DEBUG
+      // Extract the data from Vinci Response frame
+      // System.out.println(resultFrame.toXML()); //DEBUG
 
       // Remove things from the result frame that are not the MetaData objects we expect.
       // In the future other things may go in here.
       int i = 0;
-      while (i < resultFrame.getKeyValuePairCount())
-      {
+      while (i < resultFrame.getKeyValuePairCount()) {
         String key = resultFrame.getKeyValuePair(i).getKey();
-        if (key.length() < 8 || !key.substring(key.length() - 8).equalsIgnoreCase("metadata"))
-        {
+        if (key.length() < 8 || !key.substring(key.length() - 8).equalsIgnoreCase("metadata")) {
           resultFrame.fdrop(key);
-        }
-        else
-        {
+        } else {
           i++;
         }
       }
 
-      //  Parse the XML into the AnalysisEngineMetaData object
+      // Parse the XML into the AnalysisEngineMetaData object
       SaxDeserializer saxDeser = UIMAFramework.getXMLParser().newSaxDeserializer(null, null, false);
 
       VinciSaxParser vinciSaxParser = new VinciSaxParser();
@@ -191,9 +164,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
       AnalysisEngineMetaData metadata = (AnalysisEngineMetaData) saxDeser.getObject();
 
       return metadata;
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       throw new ResourceServiceException(e);
     }
   }
@@ -201,22 +172,18 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
   /**
    * @see org.apache.uima.analysis_engine.service.AnalysisEngineServiceStub#callGetAnalysisEngineMetaData()
    */
-  public AnalysisEngineMetaData callGetAnalysisEngineMetaData() throws ResourceServiceException
-  {
+  public AnalysisEngineMetaData callGetAnalysisEngineMetaData() throws ResourceServiceException {
     return (AnalysisEngineMetaData) callGetMetaData();
   }
 
   /**
    * @see org.apache.uima.analysis_engine.service.AnalysisEngineServiceStub#callProcess(CAS)
    */
-  public void callProcess(CAS aCAS)
-      throws ResourceServiceException
-  {
-    try
-    {
+  public void callProcess(CAS aCAS) throws ResourceServiceException {
+    try {
       AFrame requestFrame = new AFrame();
       requestFrame.fset(Constants.VINCI_COMMAND, Constants.ANNOTATE);
-      //  serialize CAS (including type system)
+      // serialize CAS (including type system)
       CASMgr cas = (CASMgr) aCAS;
       CASCompleteSerializer serializer = Serialization.serializeCASComplete(cas);
 
@@ -224,43 +191,36 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
 
       AFrame responseFrame = (AFrame) mVinciClient.sendAndReceive(requestFrame);
 
-      //deserialize CAS from response frame
+      // deserialize CAS from response frame
       byte[] responseCasBytes = responseFrame.fgetTrueBinary("BinaryCAS");
       CASSerializer responseSerializer = (CASSerializer) SerializationUtils
-          .deserialize(responseCasBytes);
+                      .deserialize(responseCasBytes);
       ((CASImpl) cas).reinit(responseSerializer);
 
-      //also read annotation time and enter into AnalysisEngineManagementMBean
+      // also read annotation time and enter into AnalysisEngineManagementMBean
       int annotationTime = responseFrame.fgetInt(Constants.ANNOTATION_TIME);
-      if (annotationTime > 0)
-      {
-        AnalysisEngineManagementImpl mbean = 
-          (AnalysisEngineManagementImpl)mOwner.getManagementInterface();
+      if (annotationTime > 0) {
+        AnalysisEngineManagementImpl mbean = (AnalysisEngineManagementImpl) mOwner
+                        .getManagementInterface();
         mbean.reportAnalysisTime(annotationTime);
       }
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       throw new ResourceServiceException(e);
     }
   }
-  
+
   /**
    * @see org.apache.uima.analysis_engine.service.AnalysisEngineServiceStub#callBatchProcessComplete()
    */
-  public void callBatchProcessComplete() throws ResourceServiceException
-  {
-    try
-    {
-      //  create Vinci Frame ( Data Cargo)
+  public void callBatchProcessComplete() throws ResourceServiceException {
+    try {
+      // create Vinci Frame ( Data Cargo)
       AFrame queryFrame = new AFrame();
-      //  Add Vinci Command, so that the receiving service knows what to do
+      // Add Vinci Command, so that the receiving service knows what to do
       queryFrame.fadd("vinci:COMMAND", Constants.BATCH_PROCESS_COMPLETE);
 
-      mVinciClient.send(queryFrame); //oneway call
-    }
-    catch (Exception e)
-    {
+      mVinciClient.send(queryFrame); // oneway call
+    } catch (Exception e) {
       throw new ResourceServiceException(e);
     }
   }
@@ -268,20 +228,16 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
   /**
    * @see org.apache.uima.analysis_engine.service.AnalysisEngineServiceStub#callCollectionProcessComplete()
    */
-  public void callCollectionProcessComplete() throws ResourceServiceException
-  {
-    try
-    {
-      //  create Vinci Frame ( Data Cargo)
+  public void callCollectionProcessComplete() throws ResourceServiceException {
+    try {
+      // create Vinci Frame ( Data Cargo)
       AFrame queryFrame = new AFrame();
-      //  Add Vinci Command, so that the receiving service knows what to do
+      // Add Vinci Command, so that the receiving service knows what to do
       queryFrame.fadd("vinci:COMMAND", Constants.COLLECTION_PROCESS_COMPLETE);
 
-      //make RPC call (return val ignored)
+      // make RPC call (return val ignored)
       mVinciClient.rpc(queryFrame);
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       throw new ResourceServiceException(e);
     }
   }
@@ -289,8 +245,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
   /**
    * @see org.apache.uima.resource.service.impl.ResourceServiceStub#destroy()
    */
-  public void destroy()
-  {
+  public void destroy() {
     mVinciClient.close();
   }
 

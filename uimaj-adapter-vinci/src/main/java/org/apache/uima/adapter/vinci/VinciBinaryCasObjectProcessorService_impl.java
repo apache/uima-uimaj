@@ -19,39 +19,35 @@
 
 package org.apache.uima.adapter.vinci;
 
-
 /**
- * Main class for Vinci CAS Processor Services that use binary CAS serialization.  
- * This class is equivalent to 
- * {@link org.apache.uima.adapter.vinci.VinciBinaryAnalysisEngineService_impl}.
- * They exist as separate classes only for historical reasons.
+ * Main class for Vinci CAS Processor Services that use binary CAS serialization. This class is
+ * equivalent to {@link org.apache.uima.adapter.vinci.VinciBinaryAnalysisEngineService_impl}. They
+ * exist as separate classes only for historical reasons.
  */
-public class VinciBinaryCasObjectProcessorService_impl extends 
-  VinciBinaryAnalysisEngineService_impl
-{
+public class VinciBinaryCasObjectProcessorService_impl extends
+                VinciBinaryAnalysisEngineService_impl {
   /**
    * Instantiate Analysis Engine service from a given descriptor - possibly in debug mode.
    * 
-   * @param aResourceSpecifierPath - descriptor location
+   * @param aResourceSpecifierPath -
+   *          descriptor location
    */
   public VinciBinaryCasObjectProcessorService_impl(String serviceConfigPath, boolean debug)
-      throws Exception
-  {
+                  throws Exception {
     super(serviceConfigPath, debug);
   }
 
   /**
    * Instantiate Analysis Engine service from a given descriptor.
    * 
-   * @param aResourceSpecifierPath - descriptor location
+   * @param aResourceSpecifierPath -
+   *          descriptor location
    */
-  public VinciBinaryCasObjectProcessorService_impl(String serviceConfigPath) throws Exception
-  {
+  public VinciBinaryCasObjectProcessorService_impl(String serviceConfigPath) throws Exception {
     this(serviceConfigPath, false);
   }
-  
-  public static void main(String[] args)
-  {
+
+  public static void main(String[] args) {
     VinciBinaryAnalysisEngineService_impl.main(args);
   }
 }

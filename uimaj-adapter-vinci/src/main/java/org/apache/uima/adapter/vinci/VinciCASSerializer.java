@@ -18,6 +18,7 @@
  */
 
 package org.apache.uima.adapter.vinci;
+
 import java.io.IOException;
 
 import org.xml.sax.SAXException;
@@ -31,22 +32,20 @@ import org.apache.vinci.transport.document.AFrame;
  * 
  * 
  */
-public interface VinciCASSerializer
-{
-  
-      
+public interface VinciCASSerializer {
 
   /**
-   * Serializes a CAS to a Vinci frame and adds that frame to the given
-   * parent frame.
+   * Serializes a CAS to a Vinci frame and adds that frame to the given parent frame.
    * 
-   * @param aCAS the CAS to be serialized
-   * @param aParentFrame the Vinci Frame to which to add the serialized CAS
-   * @param aOutOfTypeSystemData data that does not conform to CAS's type
-   *    system but should be included in XCAS anyway.  May be null.
+   * @param aCAS
+   *          the CAS to be serialized
+   * @param aParentFrame
+   *          the Vinci Frame to which to add the serialized CAS
+   * @param aOutOfTypeSystemData
+   *          data that does not conform to CAS's type system but should be included in XCAS anyway.
+   *          May be null.
    */
-  public void serialize(CAS aCAS, AFrame aParentFrame, 
-                        OutOfTypeSystemData aOutOfTypeSystemData)
-    throws IOException, SAXException;
+  public void serialize(CAS aCAS, AFrame aParentFrame, OutOfTypeSystemData aOutOfTypeSystemData)
+                  throws IOException, SAXException;
 
 }

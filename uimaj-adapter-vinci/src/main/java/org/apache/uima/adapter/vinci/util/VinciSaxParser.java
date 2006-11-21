@@ -32,105 +32,81 @@ import org.apache.vinci.transport.document.AFrame;
 import org.apache.vinci.transport.document.AFrameLeaf;
 
 /**
- * Takes a Vinci frame and generates SAX events that correspond to the data 
- * in the frame.
+ * Takes a Vinci frame and generates SAX events that correspond to the data in the frame.
  * 
  * 
  */
-public class VinciSaxParser
-{
-  public void setContentHandler(ContentHandler aHandler)
-  {
+public class VinciSaxParser {
+
+  private ContentHandler mHandler;
+
+  public void setContentHandler(ContentHandler aHandler) {
     mHandler = aHandler;
   }
-  
-  public void parse(VinciFrame aFrame)
-    throws SAXException
-  {
-    parse(aFrame,true);
+
+  public void parse(VinciFrame aFrame) throws SAXException {
+    parse(aFrame, true);
   }
-  
-  public void parse(VinciFrame aFrame, boolean aSendStartAndEndDocEvents)
-    throws SAXException
-  {
-    if (aSendStartAndEndDocEvents)
-    {
+
+  public void parse(VinciFrame aFrame, boolean aSendStartAndEndDocEvents) throws SAXException {
+    if (aSendStartAndEndDocEvents) {
       mHandler.startDocument();
-    }  
-    
+    }
+
     _parse(aFrame);
 
-    if (aSendStartAndEndDocEvents)
-    {
+    if (aSendStartAndEndDocEvents) {
       mHandler.endDocument();
-    }  
+    }
   }
-  
-  protected void _parse(VinciFrame aFrame)
-    throws SAXException
-  {
+
+  protected void _parse(VinciFrame aFrame) throws SAXException {
     int count = aFrame.getKeyValuePairCount();
 
-    for (int i = 0; i < count; i++)
-    {
+    for (int i = 0; i < count; i++) {
       KeyValuePair kvp = aFrame.getKeyValuePair(i);
-	  boolean isIndexed = false;
-      
+      boolean isIndexed = false;
+
       FrameComponent val = kvp.getValue();
-      
-      //read attributes
+
+      // read attributes
       AttributesImpl attrs = new AttributesImpl();
 
       Attributes vinciAttrs = null;
-      if (val instanceof AFrame)
-      {
-        vinciAttrs =((AFrame)val).getAttributes();
+      if (val instanceof AFrame) {
+        vinciAttrs = ((AFrame) val).getAttributes();
+      } else if (val instanceof AFrameLeaf) {
+        vinciAttrs = ((AFrameLeaf) val).getAttributes();
       }
-      else if (val instanceof AFrameLeaf)
-      {
-        vinciAttrs = ((AFrameLeaf)val).getAttributes();
-      }
-      
-      if (vinciAttrs != null)
-      {
-        for (int j = 0; j < vinciAttrs.getKeyValuePairCount(); j++)
-        {
+
+      if (vinciAttrs != null) {
+        for (int j = 0; j < vinciAttrs.getKeyValuePairCount(); j++) {
           KeyValuePair attr = vinciAttrs.getKeyValuePair(j);
           String attrName = attr.getKey();
           String attrVal = attr.getValueAsString();
-          attrs.addAttribute("",attrName,attrName,"CDATA",attrVal);
-		  if (attrName.equals("_indexed")) {
-			  isIndexed = true;
-		  }
+          attrs.addAttribute("", attrName, attrName, "CDATA", attrVal);
+          if (attrName.equals("_indexed")) {
+            isIndexed = true;
+          }
         }
       }
 
-      //Kludge: all annotations returned from Vinci service are "indexed"
-      //(but not array elements!)
-      if (!isIndexed && !kvp.getKey().equals("i"))
-      {
-        attrs.addAttribute("","_indexed","_indexed","CDATA","true");
-      }  
-      
-      mHandler.startElement("",kvp.getKey(),kvp.getKey(),attrs);
-      if (val instanceof FrameLeaf)
-      {
-        String leafString = ((FrameLeaf)val).toString();
-        mHandler.characters(leafString.toCharArray(), 0 ,leafString.length());
+      // Kludge: all annotations returned from Vinci service are "indexed"
+      // (but not array elements!)
+      if (!isIndexed && !kvp.getKey().equals("i")) {
+        attrs.addAttribute("", "_indexed", "_indexed", "CDATA", "true");
       }
-      else if (val instanceof VinciFrame)
-      {
-        _parse((VinciFrame)val);  
-      }
-      else
-      {
+
+      mHandler.startElement("", kvp.getKey(), kvp.getKey(), attrs);
+      if (val instanceof FrameLeaf) {
+        String leafString = ((FrameLeaf) val).toString();
+        mHandler.characters(leafString.toCharArray(), 0, leafString.length());
+      } else if (val instanceof VinciFrame) {
+        _parse((VinciFrame) val);
+      } else {
         throw new SAXException("Expected FrameLeaf or VinciFrame, found " + val.getClass());
       }
-      mHandler.endElement("",kvp.getKey(),kvp.getKey());
+      mHandler.endElement("", kvp.getKey(), kvp.getKey());
     }
   }
-  
-  
-  private ContentHandler mHandler;
-    
 }

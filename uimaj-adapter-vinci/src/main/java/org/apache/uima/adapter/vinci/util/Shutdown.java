@@ -22,26 +22,20 @@ package org.apache.uima.adapter.vinci.util;
 import org.apache.vinci.transport.VinciClient;
 import org.apache.vinci.transport.VinciFrame;
 
+public class Shutdown {
 
-public class Shutdown
-{
-
-	public static void main(String[] args)
-	{
-		System.out.println("Shutting down the service...");
-		try
-		{
-			String serviceName = args[0];
-			VinciFrame query = new VinciFrame();
+  public static void main(String[] args) {
+    System.out.println("Shutting down the service...");
+    try {
+      String serviceName = args[0];
+      VinciFrame query = new VinciFrame();
       query.fadd(Constants.VINCI_COMMAND, Constants.SHUTDOWN);
-			VinciClient.rpc(query, serviceName);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-		}
+      VinciClient.rpc(query, serviceName);
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.out.println(e.getMessage());
+    }
 
-	}
+  }
 
 }

@@ -22,8 +22,8 @@ package org.apache.uima.adapter.vinci.util;
 import org.xml.sax.Attributes;
 
 /**
- * A specialization of the general <code>SaxVinciFrameBuilder</code> utility
- * for UIMA analysis engine services.  Adds two options:
+ * A specialization of the general <code>SaxVinciFrameBuilder</code> utility for UIMA analysis
+ * engine services. Adds two options:
  * <ul>
  * <li>Supress document text</li>
  * <li>Include spanned text as character content of all annotation FSs</li>
@@ -31,57 +31,47 @@ import org.xml.sax.Attributes;
  * 
  * 
  */
-public class UimaSaxVinciFrameBuilder extends SaxVinciFrameBuilder
-{
+public class UimaSaxVinciFrameBuilder extends SaxVinciFrameBuilder {
   public UimaSaxVinciFrameBuilder(boolean aSupressDocumentText,
-    boolean aIncludeSpannedTextInAnnotations, String aDocText)
-  {
+                  boolean aIncludeSpannedTextInAnnotations, String aDocText) {
     mSupressDocumentText = aSupressDocumentText;
     mIncludeSpannedTextInAnnotations = aIncludeSpannedTextInAnnotations;
     mDocText = aDocText;
   }
-  
+
   private boolean mSupressDocumentText;
+
   private boolean mIncludeSpannedTextInAnnotations;
+
   private String mDocText;
-  
 
   /**
    * Overridden to supress document content and include annotation spans.
    * 
    * @see SaxVinciFrameBuilder#getLeafContent(String, Attibutes, StringBuffer)
    */
-  protected String getLeafContent(String aFrameName, Attributes aAttributes, 
-    StringBuffer aContentBuf)
-  {
-    //supress documen text if requested
-    if ("uima.tcas.Document".equals(aFrameName) ||
-        "uima.tcas.DocumentAnnotation".equals(aFrameName))
-    {
+  protected String getLeafContent(String aFrameName, Attributes aAttributes,
+                  StringBuffer aContentBuf) {
+    // supress documen text if requested
+    if ("uima.tcas.Document".equals(aFrameName)
+                    || "uima.tcas.DocumentAnnotation".equals(aFrameName)) {
       if (mSupressDocumentText)
         return "";
-    }
-    else if (mIncludeSpannedTextInAnnotations && 
-      aContentBuf.length() == 0 && mDocText != null)
-    {
-      //attempt to extract text fron begin,end feature values
+    } else if (mIncludeSpannedTextInAnnotations && aContentBuf.length() == 0 && mDocText != null) {
+      // attempt to extract text fron begin,end feature values
       String begin = aAttributes.getValue("begin");
       String end = aAttributes.getValue("end");
-      if (begin != null && end != null)
-      {
-        try
-        {
+      if (begin != null && end != null) {
+        try {
           int b = Integer.parseInt(begin);
           int e = Integer.parseInt(end);
-          return mDocText.substring(b,e);
-        }
-        catch(Exception e)
-        {
-          //just ignore and use default behavior
+          return mDocText.substring(b, e);
+        } catch (Exception e) {
+          // just ignore and use default behavior
         }
       }
     }
-    //default to superclass behavior
+    // default to superclass behavior
     return super.getLeafContent(aFrameName, aAttributes, aContentBuf);
   }
 

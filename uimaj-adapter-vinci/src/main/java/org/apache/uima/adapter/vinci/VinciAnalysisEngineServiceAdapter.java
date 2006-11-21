@@ -32,49 +32,42 @@ import org.apache.uima.resource.URISpecifier;
  * 
  * 
  */
-public class VinciAnalysisEngineServiceAdapter extends AnalysisEngineServiceAdapter
-{
+public class VinciAnalysisEngineServiceAdapter extends AnalysisEngineServiceAdapter {
 
   /**
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-      throws ResourceInitializationException
-  {
-    //aSpecifier must be a URISpecifier 
-    if (!(aSpecifier instanceof URISpecifier))
-    {
+                  throws ResourceInitializationException {
+    // aSpecifier must be a URISpecifier
+    if (!(aSpecifier instanceof URISpecifier)) {
       return false;
     }
-    
+
     URISpecifier uriSpec = (URISpecifier) aSpecifier;
-    //protocol must be Vinci or VinciBinaryCAS
+    // protocol must be Vinci or VinciBinaryCAS
     if (!uriSpec.getProtocol().equals(Constants.PROTOCOL_VINCI)
-        && !uriSpec.getProtocol().equals(Constants.PROTOCOL_VINCI_BINARY_CAS))
-    {
+                    && !uriSpec.getProtocol().equals(Constants.PROTOCOL_VINCI_BINARY_CAS)) {
       return false;
     }
-    
-    //As of 2.0, we allow an AnalysisEngine adapter to connect
-    //to a CAS Consumer service.  So we no longer reject that case.
 
-    //create proxy to service
-    if (uriSpec.getProtocol().equals(Constants.PROTOCOL_VINCI))
-    {
-      setStub(new VinciAnalysisEngineServiceStub(uriSpec.getUri(), uriSpec.getTimeout(),
-          this, uriSpec.getParameters()));
-    }
-    else
-    {
+    // As of 2.0, we allow an AnalysisEngine adapter to connect
+    // to a CAS Consumer service. So we no longer reject that case.
+
+    // create proxy to service
+    if (uriSpec.getProtocol().equals(Constants.PROTOCOL_VINCI)) {
+      setStub(new VinciAnalysisEngineServiceStub(uriSpec.getUri(), uriSpec.getTimeout(), this,
+                      uriSpec.getParameters()));
+    } else {
       setStub(new VinciBinaryAnalysisEngineServiceStub(uriSpec.getUri(), uriSpec.getTimeout(),
-          this, uriSpec.getParameters()));
+                      this, uriSpec.getParameters()));
     }
 
-    //do superclass initialization, which among other things initializes UimaContext.
-    //note we need to establish connection to service before calling this, since
-    //superclass initialization depends on having access to the component metadata.
-    super.initialize(aSpecifier, aAdditionalParams);    
-          
+    // do superclass initialization, which among other things initializes UimaContext.
+    // note we need to establish connection to service before calling this, since
+    // superclass initialization depends on having access to the component metadata.
+    super.initialize(aSpecifier, aAdditionalParams);
+
     return true;
   }
 

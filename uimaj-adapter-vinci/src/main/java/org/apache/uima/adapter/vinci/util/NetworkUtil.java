@@ -29,51 +29,43 @@ import java.util.Enumeration;
 /**
  * Network utilities.
  */
-public class NetworkUtil
-{
+public class NetworkUtil {
   /**
-   * Gets the InetAddress of the localhost.  Attempts to get a non-loopback address
-   * (i.e. not 127.0.0.1) if at all possible.  This utility is better than
-   * InetAddress.getLocalHost() since the latter often fails on Linux.
+   * Gets the InetAddress of the localhost. Attempts to get a non-loopback address (i.e. not
+   * 127.0.0.1) if at all possible. This utility is better than InetAddress.getLocalHost() since the
+   * latter often fails on Linux.
    * 
-   * @return the InetAddress of the localhost.  This will be a non-loopback address
-   *   if one could be found.
-   *   
-   * @throws UnknownHostException if the local host address could not be obtained
+   * @return the InetAddress of the localhost. This will be a non-loopback address if one could be
+   *         found.
+   * 
+   * @throws UnknownHostException
+   *           if the local host address could not be obtained
    */
-  public static InetAddress getLocalHostAddress() throws UnknownHostException 
-  {
-    //try the straightforward call first
+  public static InetAddress getLocalHostAddress() throws UnknownHostException {
+    // try the straightforward call first
     InetAddress localhost = InetAddress.getLocalHost();
-    if (!localhost.isLoopbackAddress())
-    {
+    if (!localhost.isLoopbackAddress()) {
       return localhost;
     }
-    
-    //the above often fails on Linux.  Try enumerating all NetworkInterfaces.
-    try
-    {
+
+    // the above often fails on Linux. Try enumerating all NetworkInterfaces.
+    try {
       Enumeration networkInterfaces = NetworkInterface.getNetworkInterfaces();
-      while (networkInterfaces.hasMoreElements())
-      {
-        NetworkInterface networkInterface = (NetworkInterface)networkInterfaces.nextElement();
+      while (networkInterfaces.hasMoreElements()) {
+        NetworkInterface networkInterface = (NetworkInterface) networkInterfaces.nextElement();
         Enumeration addresses = networkInterface.getInetAddresses();
-        while (addresses.hasMoreElements())
-        {
-          InetAddress address = (InetAddress)addresses.nextElement();
-          if (address instanceof Inet4Address && !address.isLoopbackAddress()) 
-          {
+        while (addresses.hasMoreElements()) {
+          InetAddress address = (InetAddress) addresses.nextElement();
+          if (address instanceof Inet4Address && !address.isLoopbackAddress()) {
             return address;
           }
         }
       }
+    } catch (SocketException e) {
+      // couldn't get network interfaces. Give up.
     }
-    catch (SocketException e)
-    {
-      //couldn't get network interfaces.  Give up.
-    }
-    
-    //give up and just return the loopback address
+
+    // give up and just return the loopback address
     return localhost;
   }
 }

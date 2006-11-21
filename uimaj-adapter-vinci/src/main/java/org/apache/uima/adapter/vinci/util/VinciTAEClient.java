@@ -25,66 +25,52 @@ import java.io.FileInputStream;
 import org.apache.vinci.transport.VinciClient;
 import org.apache.vinci.transport.VinciFrame;
 
+public class VinciTAEClient {
 
-public class VinciTAEClient
-{
-	 
+  public static void main(String[] args) {
+    System.out.println("Invoking the service...");
+    try {
+      String serviceName = args[0];
+      VinciFrame query = new VinciFrame();
+      VinciFrame response;
 
-	public static void main(String[] args)
-	{
-		System.out.println("Invoking the service...");
-		try
-		{
-			String serviceName = args[0];
-			VinciFrame query = new VinciFrame();
-			VinciFrame response;
+      if (args.length < 2) {
+        query.fadd(Constants.VINCI_COMMAND, Constants.GETMETA);
+        response = VinciClient.rpc(query, serviceName);
+      } else {
 
-			if (args.length < 2)
-			{
-				query.fadd(Constants.VINCI_COMMAND, Constants.GETMETA);
-				response = VinciClient.rpc(query, serviceName);
-			}
-			else
-			{
-
-				System.out.println("Analyzing Document...");
-				File aFile = new File(args[1]);
+        System.out.println("Analyzing Document...");
+        File aFile = new File(args[1]);
         byte[] contents = new byte[(int) aFile.length()];
         FileInputStream fis = null;
-        try
-        {
+        try {
           fis = new FileInputStream(aFile);
           fis.read(contents);
-        }
-        finally
-        {
-          if (fis != null)
-          {
+        } finally {
+          if (fis != null) {
             fis.close();
-          }    
+          }
         }
-			
-				VinciFrame data = new VinciFrame();
-				VinciFrame key = new VinciFrame();
-				
-				key.fadd(Constants.VINCI_DETAG, new String(contents));
-				data.fadd("KEYS", key);
-				
-				query.fadd(Constants.VINCI_COMMAND, Constants.ANNOTATE);
-				query.fadd( "DATA", data );
-				
-				System.out.println(query.toXML());
-				response = VinciClient.rpc(query, serviceName);
 
-			}
-			//			VinciFrame response = VinciClient.sen(query, serviceName);
-			System.out.println("Response:\n" + response.toXML());
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-		}
+        VinciFrame data = new VinciFrame();
+        VinciFrame key = new VinciFrame();
 
-	}
+        key.fadd(Constants.VINCI_DETAG, new String(contents));
+        data.fadd("KEYS", key);
+
+        query.fadd(Constants.VINCI_COMMAND, Constants.ANNOTATE);
+        query.fadd("DATA", data);
+
+        System.out.println(query.toXML());
+        response = VinciClient.rpc(query, serviceName);
+
+      }
+      // VinciFrame response = VinciClient.sen(query, serviceName);
+      System.out.println("Response:\n" + response.toXML());
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.out.println(e.getMessage());
+    }
+
+  }
 }
