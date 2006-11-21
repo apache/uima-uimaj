@@ -24,49 +24,41 @@ package org.apache.uima;
  * 
  * 
  */
-public abstract class Constants
-{
+public abstract class Constants {
   /**
-   * A constant indicating the name of the "SOAP" protocol for service
-   * communication. 
+   * A constant indicating the name of the "SOAP" protocol for service communication.
    */
   public static final String PROTOCOL_SOAP = "SOAP";
 
-
   /**
-   * A constant indicating the name of the "SOAP with Attachments" protocol
-   * for service communication. 
+   * A constant indicating the name of the "SOAP with Attachments" protocol for service
+   * communication.
    */
   public static final String PROTOCOL_SOAP_WITH_ATTACHMENTS = "SOAPwithAttachments";
 
-
   /**
-   * A constant indicating the name of the "VINCI" protocol for service
-   * communication. 
+   * A constant indicating the name of the "VINCI" protocol for service communication.
    */
   public static final String PROTOCOL_VINCI = "Vinci";
 
   /**
-   * A constant indicating the name of the "VINCI" protocol, using binary
-   * CAS serialization, for service communication. 
+   * A constant indicating the name of the "VINCI" protocol, using binary CAS serialization, for
+   * service communication.
    */
   public static final String PROTOCOL_VINCI_BINARY_CAS = "VinciBinaryCAS";
 
   /**
-   * A constant indicating the name of the "MQ" protocol for service
-   * communication. 
+   * A constant indicating the name of the "MQ" protocol for service communication.
    */
   public static final String PROTOCOL_MQ = "MQ";
-  
+
   /**
-   * A constant indicating the name of the "Mail" protocol for service
-   * communication. 
+   * A constant indicating the name of the "Mail" protocol for service communication.
    */
-  public static final String PROTOCOL_MAIL = "MAIL";  
-  
-	/**
-   * A constant indicating the name of the "JMS" protocol for service
-   * communication. 
+  public static final String PROTOCOL_MAIL = "MAIL";
+
+  /**
+   * A constant indicating the name of the "JMS" protocol for service communication.
    */
-  public static final String PROTOCOL_JMS = "JMS";    
+  public static final String PROTOCOL_JMS = "JMS";
 }

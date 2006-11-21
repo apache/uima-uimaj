@@ -27,8 +27,7 @@ import org.apache.uima.cas_data.PrimitiveArrayFS;
  * 
  * 
  */
-public class PrimitiveArrayFSImpl extends FeatureStructureImpl implements PrimitiveArrayFS
-{
+public class PrimitiveArrayFSImpl extends FeatureStructureImpl implements PrimitiveArrayFS {
   /**
    * 
    */
@@ -36,110 +35,97 @@ public class PrimitiveArrayFSImpl extends FeatureStructureImpl implements Primit
 
   private Object mArrayObject;
 
-  public PrimitiveArrayFSImpl(String[] aArray)
-  {
+  public PrimitiveArrayFSImpl(String[] aArray) {
     mArrayObject = aArray;
   }
 
-  public PrimitiveArrayFSImpl(int[] aArray)
-  {
+  public PrimitiveArrayFSImpl(int[] aArray) {
     mArrayObject = aArray;
   }
 
-  public PrimitiveArrayFSImpl(float[] aArray)
-  {
+  public PrimitiveArrayFSImpl(float[] aArray) {
     mArrayObject = aArray;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas_data.PrimitiveArrayFS#size()
    */
-  public int size()
-  {
+  public int size() {
     return Array.getLength(mArrayObject);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas_data.PrimitiveArrayFS#toIntArray()
    */
-  public int[] toIntArray()
-  {
-    if (mArrayObject instanceof int[])
-    {
+  public int[] toIntArray() {
+    if (mArrayObject instanceof int[]) {
       return (int[]) mArrayObject;
-    }
-    else
-    {
+    } else {
       return null;
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas_data.PrimitiveArrayFS#toFloatArray()
    */
-  public float[] toFloatArray()
-  {
-    if (mArrayObject instanceof float[])
-    {
+  public float[] toFloatArray() {
+    if (mArrayObject instanceof float[]) {
       return (float[]) mArrayObject;
-    }
-    else
-    {
+    } else {
       return null;
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas_data.PrimitiveArrayFS#toStringArray()
    */
-  public String[] toStringArray()
-  {
-    if (mArrayObject instanceof String[])
-    {
+  public String[] toStringArray() {
+    if (mArrayObject instanceof String[]) {
       return (String[]) mArrayObject;
-    }
-    else
-    {
-      //convert int or flota arrays to String arrays
+    } else {
+      // convert int or flota arrays to String arrays
       int size = size();
       String[] strArray = new String[size];
-      for (int i = 0; i < size; i++)
-      {
+      for (int i = 0; i < size; i++) {
         strArray[i] = Array.get(mArrayObject, i).toString();
       }
       return strArray;
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas_data.FeatureValue#get()
    */
-  public Object get()
-  {
+  public Object get() {
     return mArrayObject;
   }
 
-  public String toString()
-  {
+  public String toString() {
     String[] strArray = toStringArray();
     StringBuffer buf = new StringBuffer();
     buf.append('\n').append(getType()).append('\n');
-    if (getId() != null)
-    {
+    if (getId() != null) {
       buf.append("ID = ").append(getId()).append('\n');
     }
     buf.append("[");
-    for (int i = 0; i < strArray.length; i++)
-    {
+    for (int i = 0; i < strArray.length; i++) {
       buf.append(strArray[i]);
-      if (i < strArray.length - 1)
-      {
+      if (i < strArray.length - 1) {
         buf.append(',');
       }
     }
     buf.append("]\n");
     return buf.toString();
   }
-
 
 }

@@ -23,34 +23,31 @@ import org.apache.uima.analysis_engine.metadata.impl.AnalysisEngineMetaData_impl
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 
 /**
- * Reference implementation of {@link ProcessingResourceMetaData}.
- * This class only exists for historical reasons.  It inherits almost everything
- * from AnalysisEngineMetaData_impl.  The only reason we need this class is
- * because its XML tag name needs to be &lt;processingResourceMetaData>,
- * not @lt;analysisEngienMetaData>, for compatibility with existing descriptors.
+ * Reference implementation of {@link ProcessingResourceMetaData}. This class only exists for
+ * historical reasons. It inherits almost everything from AnalysisEngineMetaData_impl. The only
+ * reason we need this class is because its XML tag name needs to be
+ * &lt;processingResourceMetaData>, not
+ * 
+ * @lt;analysisEngienMetaData>, for compatibility with existing descriptors.
  */
-public class ProcessingResourceMetaData_impl extends AnalysisEngineMetaData_impl
-  implements  ProcessingResourceMetaData
-{
-  protected XmlizationInfo getXmlizationInfo()
-  {
-    return XMLIZATION_INFO;
-  }
-  
-  static final protected XmlizationInfo XMLIZATION_INFO =
-     new XmlizationInfo("processingResourceMetaData",null); //properties assigned below 
-  
-  static
-  {
-    //this class's Xmlization info is derived from that of its superclass
-    XmlizationInfo superclassInfo = AnalysisEngineMetaData_impl.XMLIZATION_INFO;
-
-    XMLIZATION_INFO.propertyInfo = 
-      new PropertyXmlInfo[superclassInfo.propertyInfo.length];
-    System.arraycopy(superclassInfo.propertyInfo, 0, XMLIZATION_INFO.propertyInfo,
-      0,superclassInfo.propertyInfo.length);
-  }
-
+public class ProcessingResourceMetaData_impl extends AnalysisEngineMetaData_impl implements
+                ProcessingResourceMetaData {
 
   static final long serialVersionUID = -4839907155580879702L;
+
+  protected XmlizationInfo getXmlizationInfo() {
+    return XMLIZATION_INFO;
+  }
+
+  static final protected XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+                  "processingResourceMetaData", null); // properties assigned below
+
+  static {
+    // this class's Xmlization info is derived from that of its superclass
+    XmlizationInfo superclassInfo = AnalysisEngineMetaData_impl.XMLIZATION_INFO;
+
+    XMLIZATION_INFO.propertyInfo = new PropertyXmlInfo[superclassInfo.propertyInfo.length];
+    System.arraycopy(superclassInfo.propertyInfo, 0, XMLIZATION_INFO.propertyInfo, 0,
+                    superclassInfo.propertyInfo.length);
+  }
 }

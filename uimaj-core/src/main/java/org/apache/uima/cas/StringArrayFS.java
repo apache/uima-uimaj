@@ -27,76 +27,73 @@ package org.apache.uima.cas;
  */
 public interface StringArrayFS extends FeatureStructure {
 
-    /**
-     * Return the size of the array.
-     * 
-     * @return The size of the array.
-     */
-    int size();
+  /**
+   * Return the size of the array.
+   * 
+   * @return The size of the array.
+   */
+  int size();
 
-    /**
-     * Get the i-th string from the array.
-     * 
-     * @return The i-th element.
-     * @exception ArrayIndexOutOfBoundsException
-     *                If the index is out of bounds.
-     */
-    String get(int i) throws ArrayIndexOutOfBoundsException;
+  /**
+   * Get the i-th string from the array.
+   * 
+   * @return The i-th element.
+   * @exception ArrayIndexOutOfBoundsException
+   *              If the index is out of bounds.
+   */
+  String get(int i) throws ArrayIndexOutOfBoundsException;
 
-    /**
-     * Set the i-th value.
-     * 
-     * @param i
-     *            The index.
-     * @param str
-     *            The value.
-     * @exception ArrayIndexOutOfBoundsException
-     *                If <code>i</code> is out of bounds.
-     */
-    void set(int i, String str) throws ArrayIndexOutOfBoundsException;
+  /**
+   * Set the i-th value.
+   * 
+   * @param i
+   *          The index.
+   * @param str
+   *          The value.
+   * @exception ArrayIndexOutOfBoundsException
+   *              If <code>i</code> is out of bounds.
+   */
+  void set(int i, String str) throws ArrayIndexOutOfBoundsException;
 
-    /**
-     * Copy the contents of the array from <code>start</code> to
-     * <code>end</code> to the destination <code>destArray</code> with
-     * destination offset <code>destOffset</code>.
-     * 
-     * @param srcOffset
-     *            The index of the first element to copy.
-     * @param dest
-     *            The array to copy to.
-     * @param destOffset
-     *            Where to start copying into <code>dest</code>.
-     * @param length
-     *            The number of elements to copy.
-     * @exception ArrayIndexOutOfBoundsException
-     *                If <code>srcOffset &lt; 0</code> or
-     *                <code>length > size()</code> or
-     *                <code>destOffset + length > destArray.length</code>.
-     */
-    void copyToArray(int srcOffset, String[] dest, int destOffset, int length)
-            throws ArrayIndexOutOfBoundsException;
+  /**
+   * Copy the contents of the array from <code>start</code> to <code>end</code> to the
+   * destination <code>destArray</code> with destination offset <code>destOffset</code>.
+   * 
+   * @param srcOffset
+   *          The index of the first element to copy.
+   * @param dest
+   *          The array to copy to.
+   * @param destOffset
+   *          Where to start copying into <code>dest</code>.
+   * @param length
+   *          The number of elements to copy.
+   * @exception ArrayIndexOutOfBoundsException
+   *              If <code>srcOffset &lt; 0</code> or <code>length > size()</code> or
+   *              <code>destOffset + length > destArray.length</code>.
+   */
+  void copyToArray(int srcOffset, String[] dest, int destOffset, int length)
+                  throws ArrayIndexOutOfBoundsException;
 
-    /**
-     * Copy the contents of an external array into this array.
-     * 
-     * @param src
-     *            The source array.
-     * @param srcOffset
-     *            Where to start copying in the source array.
-     * @param destOffset
-     *            Where to start copying to in the destination array.
-     * @param length
-     *            The number of elements to copy.
-     */
-    void copyFromArray(String[] src, int srcOffset, int destOffset, int length)
-            throws ArrayIndexOutOfBoundsException;
+  /**
+   * Copy the contents of an external array into this array.
+   * 
+   * @param src
+   *          The source array.
+   * @param srcOffset
+   *          Where to start copying in the source array.
+   * @param destOffset
+   *          Where to start copying to in the destination array.
+   * @param length
+   *          The number of elements to copy.
+   */
+  void copyFromArray(String[] src, int srcOffset, int destOffset, int length)
+                  throws ArrayIndexOutOfBoundsException;
 
-    /**
-     * Creates a new array the this array is copied to.
-     * 
-     * @return A Java array copy of this FS array.
-     */
-    String[] toArray();
-
+  /**
+   * Creates a new array the this array is copied to.
+   * 
+   * @return A Java array copy of this FS array.
+   */
+  String[] toArray();
 
 }

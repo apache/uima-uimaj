@@ -28,29 +28,26 @@ import org.apache.uima.resource.ResourceServiceStub;
  * 
  * 
  */
-public interface AnalysisEngineServiceStub extends ResourceServiceStub
-{
+public interface AnalysisEngineServiceStub extends ResourceServiceStub {
   /**
    * Performs service call to process an entity.
    * 
-   * @param aCAS the CAS to process
+   * @param aCAS
+   *          the CAS to process
    * 
    * @return metadata for the Analysis Engine
    */
-  public abstract void callProcess(CAS aCAS)
-      throws ResourceServiceException;
-  
-  /**
-   * Performs service call to inform the AnalysisEngine that the processing of
-   * a batch has been completed.
-   */
-  public abstract void callBatchProcessComplete()
-      throws ResourceServiceException;
+  public abstract void callProcess(CAS aCAS) throws ResourceServiceException;
 
   /**
-   * Performs service call to inform the AnalysisEngine that the processing of
-   * a collection has been completed.
+   * Performs service call to inform the AnalysisEngine that the processing of a batch has been
+   * completed.
    */
-  public abstract void callCollectionProcessComplete()
-      throws ResourceServiceException;
+  public abstract void callBatchProcessComplete() throws ResourceServiceException;
+
+  /**
+   * Performs service call to inform the AnalysisEngine that the processing of a collection has been
+   * completed.
+   */
+  public abstract void callCollectionProcessComplete() throws ResourceServiceException;
 }

@@ -23,62 +23,54 @@ import org.apache.uima.util.UimaTimer;
 
 /**
  * Simple implementation of {@link UimaTimer} using {@link System#currentTimeMillis()}.
- *
+ * 
  * 
  */
-public class JavaTimer implements UimaTimer
-{
-	/**
+public class JavaTimer implements UimaTimer {
+  /**
    * 
    */
   private static final long serialVersionUID = 4644107369628471363L;
-  
-  private long start=0;
-	private long end=0;
-	
-	// starts the timer
-	public long startIt()
-	{
-		start = System.currentTimeMillis();	
-		return start;
-	}
 
-	// ends the timer
-	public long stopIt()
-	{
-		end = System.currentTimeMillis();
-		return end;	
-	}
-	
-	public int getResolution()
-	{
-		return 10;	
-	}
+  private long start = 0;
 
-	// returns duration (in ms) between start() and end() calls
-	public long getDuration()
-	{
-		return ( end - start );
-	}
-	
-	public long getTimeInSecs()
-	{
-		return (getTime()/1000);
-	}
-	
-	public long getTimeInMillis()
-	{
-		return getTime();
-	}
-	
-	public long getTimeInMicros() 
-	{
-		return System.currentTimeMillis() * 1000;
-	}
+  private long end = 0;
 
-	private long getTime()
-	{
-		return System.currentTimeMillis();
-	}	
+  // starts the timer
+  public long startIt() {
+    start = System.currentTimeMillis();
+    return start;
+  }
+
+  // ends the timer
+  public long stopIt() {
+    end = System.currentTimeMillis();
+    return end;
+  }
+
+  public int getResolution() {
+    return 10;
+  }
+
+  // returns duration (in ms) between start() and end() calls
+  public long getDuration() {
+    return (end - start);
+  }
+
+  public long getTimeInSecs() {
+    return (getTime() / 1000);
+  }
+
+  public long getTimeInMillis() {
+    return getTime();
+  }
+
+  public long getTimeInMicros() {
+    return System.currentTimeMillis() * 1000;
+  }
+
+  private long getTime() {
+    return System.currentTimeMillis();
+  }
 
 }

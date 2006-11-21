@@ -43,83 +43,78 @@ import org.apache.uima.util.XMLInputSource;
 
 public class ArrayIndexTest extends TestCase implements TextAnnotator {
 
-    private static final String idxId = "ArrayIndex";
+  private static final String idxId = "ArrayIndex";
 
-    private TextAnalysisEngine tae = null;
+  private TextAnalysisEngine tae = null;
 
-    protected void setUp() throws Exception {
-        super.setUp();
-        // Start up TAE
-        XMLInputSource input = new XMLInputSource(
-               JUnitExtension.getFile("CASTests/desc/ArrayIndexTest.xml"));
-        TaeDescription desc = UIMAFramework.getXMLParser().parseTaeDescription(
-                input);
-        this.tae = UIMAFramework.produceTAE(desc);
+  protected void setUp() throws Exception {
+    super.setUp();
+    // Start up TAE
+    XMLInputSource input = new XMLInputSource(JUnitExtension
+                    .getFile("CASTests/desc/ArrayIndexTest.xml"));
+    TaeDescription desc = UIMAFramework.getXMLParser().parseTaeDescription(input);
+    this.tae = UIMAFramework.produceTAE(desc);
 
+  }
+
+  public void testArrayIndex() {
+    try {
+      TCAS cas = this.tae.newTCAS();
+      FSIndexRepository ir = cas.getIndexRepository();
+      TypeSystem ts = cas.getTypeSystem();
+      Type annotationType = ts.getType(TCAS.TYPE_NAME_ANNOTATION);
+      Type annotArrayType = ts.getArrayType(annotationType);
+
+      FSIndex arrayIndexAll = ir.getIndex(idxId);
+      assertEquals(countIndexMembers(arrayIndexAll), 0);
+      FSIndex arrayIndexFSArray = ir.getIndex(idxId, ts.getType(CAS.TYPE_NAME_FS_ARRAY));
+      assertEquals(countIndexMembers(arrayIndexFSArray), 0);
+      FSIndex arrayIndexAnnotArray = ir.getIndex(idxId, annotArrayType);
+      assertNull(arrayIndexAnnotArray);
+    } catch (ResourceInitializationException e) {
+      assertTrue(false);
     }
+  }
 
-    public void testArrayIndex() {
-        try {
-            TCAS cas = this.tae.newTCAS();
-            FSIndexRepository ir = cas.getIndexRepository();
-            TypeSystem ts = cas.getTypeSystem();
-            Type annotationType = ts.getType(TCAS.TYPE_NAME_ANNOTATION);
-            Type annotArrayType = ts.getArrayType(annotationType);
+  private static final int countIndexMembers(FSIndex idx) {
+    FSIterator it = idx.iterator();
+    int count = 0;
+    for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
+      ++count;
+    }
+    return count;
+  }
 
-            FSIndex arrayIndexAll = ir.getIndex(idxId);
-            assertEquals(countIndexMembers(arrayIndexAll), 0);
-            FSIndex arrayIndexFSArray = ir.getIndex(idxId, ts
-                    .getType(CAS.TYPE_NAME_FS_ARRAY));
-            assertEquals(countIndexMembers(arrayIndexFSArray), 0);
-            FSIndex arrayIndexAnnotArray = ir.getIndex(idxId, annotArrayType);
-            assertNull(arrayIndexAnnotArray);
-        } catch (ResourceInitializationException e) {
-            assertTrue(false);
-        }
-    }
-    
-    private static final int countIndexMembers(FSIndex idx) {
-        FSIterator it = idx.iterator();
-        int count = 0;
-        for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
-            ++count;
-        }
-        return count;
-    }
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    this.tae.destroy();
+  }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        this.tae.destroy();
-    }
+  public void process(TCAS aTCAS, ResultSpecification aResultSpec) throws AnnotatorProcessException {
+    // Do nothing.
+  }
 
-    public void process(TCAS aTCAS, ResultSpecification aResultSpec)
-            throws AnnotatorProcessException {
-        // Do nothing.
-    }
+  public void initialize(AnnotatorContext aContext) throws AnnotatorInitializationException,
+                  AnnotatorConfigurationException {
+    // do nothing
+  }
 
-    public void initialize(AnnotatorContext aContext)
-            throws AnnotatorInitializationException,
-            AnnotatorConfigurationException {
-        // do nothing
-    }
+  public void typeSystemInit(TypeSystem aTypeSystem) throws AnnotatorInitializationException,
+                  AnnotatorConfigurationException {
+    // do nothing
+  }
 
-    public void typeSystemInit(TypeSystem aTypeSystem)
-            throws AnnotatorInitializationException,
-            AnnotatorConfigurationException {
-        // do nothing
-    }
+  public void reconfigure() throws AnnotatorConfigurationException,
+                  AnnotatorInitializationException {
+    // do nothing
+  }
 
-    public void reconfigure() throws AnnotatorConfigurationException,
-            AnnotatorInitializationException {
-        // do nothing
-    }
+  public void destroy() {
+    // do nothing
+  }
 
-    public void destroy() {
-        // do nothing
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(ArrayIndexTest.class);
-    }
+  public static void main(String[] args) {
+    junit.textui.TestRunner.run(ArrayIndexTest.class);
+  }
 
 }

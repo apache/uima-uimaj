@@ -22,26 +22,24 @@ package org.apache.uima.cas_data;
 import java.io.Serializable;
 
 /**
- * The base interface for the value of a feature.  Feature values will be 
- * implement one of three subinterfaces:
+ * The base interface for the value of a feature. Feature values will be implement one of three
+ * subinterfaces:
  * <ul>
  * <li>{@link PrimitiveValue} (string, integer, float)</li>
  * <li>{@link ReferenceValue} (reference, via ID, to another feature structure)</li>
  * </ul>
  * <p>
- * Note that arrays are represented as FeatureStructures, not primitive values.
- * Therefore features with array values will be of type {@link ReferenceValue},
- * where the reference will resolve to an instance of
- * {@link PrimitiveArrayFS} or {@link ReferenceArrayFS}.
- *  
+ * Note that arrays are represented as FeatureStructures, not primitive values. Therefore features
+ * with array values will be of type {@link ReferenceValue}, where the reference will resolve to an
+ * instance of {@link PrimitiveArrayFS} or {@link ReferenceArrayFS}.
+ * 
  * 
  */
-public interface FeatureValue extends Serializable
-{
+public interface FeatureValue extends Serializable {
   /**
    * Gets the feature value as a Java object.
    * 
    * @return the feature value.
    */
-	public Object get();
+  public Object get();
 }

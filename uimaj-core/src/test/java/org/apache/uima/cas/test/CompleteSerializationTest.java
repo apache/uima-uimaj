@@ -33,12 +33,13 @@ import org.apache.uima.util.CasCreationUtils;
 /**
  * TODO: add type comment for <code>CompleteSerializationTest</code>.
  * 
- * @author Thilo Goetz 
+ * @author Thilo Goetz
  */
 public class CompleteSerializationTest extends TestCase {
 
   /**
    * Constructor for CASTest.
+   * 
    * @param arg0
    */
   public CompleteSerializationTest(String arg0) {
@@ -46,44 +47,41 @@ public class CompleteSerializationTest extends TestCase {
   }
 
   public void testSerialization() throws Exception {
-    try
-    {
+    try {
       CASMgr cas = null;
       try {
         cas = (CASMgr) CASInitializer.initCas(new CASTestSetup());
       } catch (Exception e) {
         assertTrue(false);
       }
-      ((CAS)cas).setDocumentText("Create the sofa for the inital view");
-      assertTrue(((CASImpl)cas).isBackwardCompatibleCas());
+      ((CAS) cas).setDocumentText("Create the sofa for the inital view");
+      assertTrue(((CASImpl) cas).isBackwardCompatibleCas());
       CASCompleteSerializer ser = Serialization.serializeCASComplete(cas);
-      
-      //deserialize into a new CAS with a type system that only contains the builtins
-      CAS newCas = CasCreationUtils.createCas(new TypeSystemDescription_impl(),null,null); 
-      
+
+      // deserialize into a new CAS with a type system that only contains the builtins
+      CAS newCas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
+
       try {
-        Serialization.deserializeCASComplete(ser, (CASImpl)newCas);
+        Serialization.deserializeCASComplete(ser, (CASImpl) newCas);
       } catch (Exception e) {
         assertTrue(false);
       }
       assertTrue(cas.getTypeSystemMgr().getType(CASTestSetup.GROUP_1) != null);
-      assertTrue(((CASImpl)newCas).isBackwardCompatibleCas());
+      assertTrue(((CASImpl) newCas).isBackwardCompatibleCas());
       assertEquals("Create the sofa for the inital view", newCas.getDocumentText());
-      
-      //make sure JCas can be created
+
+      // make sure JCas can be created
       newCas.getJCas();
 
-      //deserialize into newCas a second time (OF bug found 7/7/2006)
+      // deserialize into newCas a second time (OF bug found 7/7/2006)
       try {
-        Serialization.deserializeCASComplete(ser, (CASImpl)newCas);
+        Serialization.deserializeCASComplete(ser, (CASImpl) newCas);
       } catch (Exception e) {
         assertTrue(false);
       }
       assertTrue(cas.getTypeSystemMgr().getType(CASTestSetup.GROUP_1) != null);
-      assertTrue(((CASImpl)newCas).isBackwardCompatibleCas());
-    }
-    catch (Exception e)
-    {
+      assertTrue(((CASImpl) newCas).isBackwardCompatibleCas());
+    } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
   }

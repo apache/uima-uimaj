@@ -24,38 +24,33 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
 
 /**
- * Base class for all annotators.  An Annotator is an {@link AnalysisComponent} that 
- * may modify its input CAS, but never creates any new CASes as output.
- * Typically, annotators should not extend this class directly, but instead extend 
- * {@link CasAnnotator_ImplBase} or {@link JCasAnnotator_ImplBase} depending on 
- * which CAS interface they wish to use.
+ * Base class for all annotators. An Annotator is an {@link AnalysisComponent} that may modify its
+ * input CAS, but never creates any new CASes as output. Typically, annotators should not extend
+ * this class directly, but instead extend {@link CasAnnotator_ImplBase} or
+ * {@link JCasAnnotator_ImplBase} depending on which CAS interface they wish to use.
  */
-public abstract class Annotator_ImplBase extends AnalysisComponent_ImplBase
-{   
+public abstract class Annotator_ImplBase extends AnalysisComponent_ImplBase {
   /**
-   * Returns 0, since annotators are not allowed to create new CAS instances.
-   * Only CasMultipliers are allowed to do this.
+   * Returns 0, since annotators are not allowed to create new CAS instances. Only CasMultipliers
+   * are allowed to do this.
    */
-  public final int getCasInstancesRequired()
-  {
+  public final int getCasInstancesRequired() {
     return 0;
   }
 
   /**
-   * Returns false, since annotators are not allowed to create new CAS instances.
-   * Only CasMultipliers are allowed to do this.
+   * Returns false, since annotators are not allowed to create new CAS instances. Only
+   * CasMultipliers are allowed to do this.
    */
-  public final boolean hasNext() throws AnalysisEngineProcessException
-  {
+  public final boolean hasNext() throws AnalysisEngineProcessException {
     return false;
   }
 
   /**
-   * Throws a UIMA_IllegalStateException,  since annotators are not allowed to 
-   * create new CAS instances.  Only CasMultipliers are allowed to do this.
+   * Throws a UIMA_IllegalStateException, since annotators are not allowed to create new CAS
+   * instances. Only CasMultipliers are allowed to do this.
    */
-  public final AbstractCas next() throws AnalysisEngineProcessException
-  {
+  public final AbstractCas next() throws AnalysisEngineProcessException {
     throw new UIMA_IllegalStateException(UIMA_IllegalStateException.NO_NEXT_CAS, null);
   }
 }

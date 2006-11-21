@@ -35,100 +35,112 @@ import org.apache.uima.cas.text.TCASRuntimeException;
 /**
  * Class comment for FilteredIteratorTest.java goes here.
  * 
- * @author Thilo Goetz 
+ * @author Thilo Goetz
  */
 public class AnnotationIteratorTest extends TestCase {
 
   private TCAS cas;
+
   private TypeSystem ts;
 
   private Type stringType;
+
   private Type tokenType;
+
   private Type intType;
+
   private Type tokenTypeType;
+
   private Type wordType;
+
   private Type sepType;
+
   private Type eosType;
+
   private Feature tokenTypeFeat;
+
   private Feature lemmaFeat;
+
   private Feature sentLenFeat;
+
   private Feature tokenFloatFeat;
+
   private Feature startFeature;
+
   private Feature endFeature;
+
   private Type sentenceType;
 
   /**
    * Constructor for FilteredIteratorTest.
+   * 
    * @param arg0
    */
   public AnnotationIteratorTest(String arg0) {
     super(arg0);
- }
-  
-  public void setUp(){
-		try {
-			this.cas = CASInitializer.initCas(new CASTestSetup());
-			assertTrue(cas != null);
-			this.ts = this.cas.getTypeSystem();
-			assertTrue(ts != null);
-		} catch (Exception e) {
-			e.printStackTrace();
-			assertTrue(false);
-		}
-		this.stringType = ts.getType(CAS.TYPE_NAME_STRING);
-		assertTrue(stringType != null);
-		this.tokenType = ts.getType(CASTestSetup.TOKEN_TYPE);
-		assertTrue(stringType != null);
-		this.intType = ts.getType(CAS.TYPE_NAME_INTEGER);
-		assertTrue(intType != null);
-		this.tokenTypeType = ts.getType(CASTestSetup.TOKEN_TYPE_TYPE);
-		assertTrue(tokenTypeType != null);
-		this.wordType = ts.getType(CASTestSetup.WORD_TYPE);
-		assertTrue(wordType != null);
-		this.sepType = ts.getType(CASTestSetup.SEP_TYPE);
-		assertTrue(sepType != null);
-		this.eosType = ts.getType(CASTestSetup.EOS_TYPE);
-		assertTrue(eosType != null);
-		this.tokenTypeFeat =
-			ts.getFeatureByFullName(CASTestSetup.TOKEN_TYPE_FEAT_Q);
-		assertTrue(tokenTypeFeat != null);
-		this.lemmaFeat = ts.getFeatureByFullName(CASTestSetup.LEMMA_FEAT_Q);
-		assertTrue(lemmaFeat != null);
-		this.sentLenFeat = ts.getFeatureByFullName(CASTestSetup.SENT_LEN_FEAT_Q);
-		assertTrue(sentLenFeat != null);
-		this.tokenFloatFeat =
-			ts.getFeatureByFullName(CASTestSetup.TOKEN_FLOAT_FEAT_Q);
-		assertTrue(tokenFloatFeat != null);
-		this.startFeature = ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_BEGIN);
-		assertTrue(startFeature != null);
-		this.endFeature = ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_END);
-		assertTrue(endFeature != null);
-		this.sentenceType = ts.getType(CASTestSetup.SENT_TYPE);
-		assertTrue(sentenceType != null);
   }
-  
-  public void tearDown(){
-		this.cas = null;
-		this.ts = null;
-		this.tokenType = null;
-		this.intType = null;
-		this.tokenTypeType = null;
-		this.wordType = null;
-		this.sepType = null;
-		this.eosType = null;
-		this.tokenTypeFeat = null;
-		this.lemmaFeat = null;
-		this.sentLenFeat = null;
-		this.tokenFloatFeat = null;
-		this.startFeature = null;
-		this.endFeature = null;
-		this.sentenceType = null;
+
+  public void setUp() {
+    try {
+      this.cas = CASInitializer.initCas(new CASTestSetup());
+      assertTrue(cas != null);
+      this.ts = this.cas.getTypeSystem();
+      assertTrue(ts != null);
+    } catch (Exception e) {
+      e.printStackTrace();
+      assertTrue(false);
+    }
+    this.stringType = ts.getType(CAS.TYPE_NAME_STRING);
+    assertTrue(stringType != null);
+    this.tokenType = ts.getType(CASTestSetup.TOKEN_TYPE);
+    assertTrue(stringType != null);
+    this.intType = ts.getType(CAS.TYPE_NAME_INTEGER);
+    assertTrue(intType != null);
+    this.tokenTypeType = ts.getType(CASTestSetup.TOKEN_TYPE_TYPE);
+    assertTrue(tokenTypeType != null);
+    this.wordType = ts.getType(CASTestSetup.WORD_TYPE);
+    assertTrue(wordType != null);
+    this.sepType = ts.getType(CASTestSetup.SEP_TYPE);
+    assertTrue(sepType != null);
+    this.eosType = ts.getType(CASTestSetup.EOS_TYPE);
+    assertTrue(eosType != null);
+    this.tokenTypeFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_TYPE_FEAT_Q);
+    assertTrue(tokenTypeFeat != null);
+    this.lemmaFeat = ts.getFeatureByFullName(CASTestSetup.LEMMA_FEAT_Q);
+    assertTrue(lemmaFeat != null);
+    this.sentLenFeat = ts.getFeatureByFullName(CASTestSetup.SENT_LEN_FEAT_Q);
+    assertTrue(sentLenFeat != null);
+    this.tokenFloatFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_FLOAT_FEAT_Q);
+    assertTrue(tokenFloatFeat != null);
+    this.startFeature = ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_BEGIN);
+    assertTrue(startFeature != null);
+    this.endFeature = ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_END);
+    assertTrue(endFeature != null);
+    this.sentenceType = ts.getType(CASTestSetup.SENT_TYPE);
+    assertTrue(sentenceType != null);
+  }
+
+  public void tearDown() {
+    this.cas = null;
+    this.ts = null;
+    this.tokenType = null;
+    this.intType = null;
+    this.tokenTypeType = null;
+    this.wordType = null;
+    this.sepType = null;
+    this.eosType = null;
+    this.tokenTypeFeat = null;
+    this.lemmaFeat = null;
+    this.sentLenFeat = null;
+    this.tokenFloatFeat = null;
+    this.startFeature = null;
+    this.endFeature = null;
+    this.sentenceType = null;
   }
 
   public void testIterator1() {
 
-    final String text =
-      "aaaa bbbb cccc dddd aaaa bbbb cccc dddd aaaa bbbb cccc dddd ";
+    final String text = "aaaa bbbb cccc dddd aaaa bbbb cccc dddd aaaa bbbb cccc dddd ";
 
     try {
       ((TCASMgr) cas).setDocumentText(text);
@@ -136,19 +148,18 @@ public class AnnotationIteratorTest extends TestCase {
       assertTrue(false);
     }
 
-    int annotCount = 1;  // Init with document annotation.
-    //create token and sentence annotations
+    int annotCount = 1; // Init with document annotation.
+    // create token and sentence annotations
     for (int i = 0; i < text.length() - 5; i++) {
       ++annotCount;
       cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, i, i + 5));
     }
-    //    for (int i = 0; i < text.length() - 5; i++) {
-    //      cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, i, i+5));
-    //    }
+    // for (int i = 0; i < text.length() - 5; i++) {
+    // cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, i, i+5));
+    // }
     for (int i = 0; i < text.length() - 10; i += 5) {
       ++annotCount;
-      cas.getIndexRepository().addFS(
-        cas.createAnnotation(sentenceType, i, i + 10));
+      cas.getIndexRepository().addFS(cas.createAnnotation(sentenceType, i, i + 10));
     }
 
     int count;
@@ -160,7 +171,7 @@ public class AnnotationIteratorTest extends TestCase {
       it.moveToNext();
     }
     assertTrue(annotCount == count);
-//    System.out.println("Size of ambiguous iterator: " + count);
+    // System.out.println("Size of ambiguous iterator: " + count);
     it = annotIndex.iterator(false);
     count = 0;
     while (it.isValid()) {
@@ -168,14 +179,14 @@ public class AnnotationIteratorTest extends TestCase {
       it.moveToNext();
     }
     assertTrue(count == 1);
-//    System.out.println("Size of unambiguous iterator: " + count);
+    // System.out.println("Size of unambiguous iterator: " + count);
     AnnotationFS bigAnnot = cas.createAnnotation(sentenceType, 10, 41);
     it = annotIndex.subiterator(bigAnnot, true, true);
     count = 0;
     while (it.isValid()) {
       ++count;
-//      AnnotationFS a = (AnnotationFS) it.get();
-//      System.out.println("Annotation from " + a.getBegin() + " to " + a.getEnd());
+      // AnnotationFS a = (AnnotationFS) it.get();
+      // System.out.println("Annotation from " + a.getBegin() + " to " + a.getEnd());
       it.moveToNext();
     }
     assertTrue(count == 32);
@@ -184,17 +195,17 @@ public class AnnotationIteratorTest extends TestCase {
       ++count;
     }
     assertTrue(count == 32);
-//    System.out.println("Size of subiterator(true, true): " + count);
+    // System.out.println("Size of subiterator(true, true): " + count);
     it = annotIndex.subiterator(bigAnnot, false, true);
     count = 0;
     while (it.isValid()) {
       ++count;
-//      AnnotationFS a = (AnnotationFS) it.get();
-//      System.out.println("Annotation from " + a.getBegin() + " to " + a.getEnd());
+      // AnnotationFS a = (AnnotationFS) it.get();
+      // System.out.println("Annotation from " + a.getBegin() + " to " + a.getEnd());
       it.moveToNext();
     }
     assertTrue(count == 3);
-//    System.out.println("Size of subiterator(false, true): " + count);
+    // System.out.println("Size of subiterator(false, true): " + count);
     count = 0;
     for (it.moveToLast(); it.isValid(); it.moveToPrevious()) {
       ++count;
@@ -204,12 +215,12 @@ public class AnnotationIteratorTest extends TestCase {
     count = 0;
     while (it.isValid()) {
       ++count;
-//      AnnotationFS a = (AnnotationFS) it.get();
-//      System.out.println("Annotation from " + a.getBegin() + " to " + a.getEnd());
+      // AnnotationFS a = (AnnotationFS) it.get();
+      // System.out.println("Annotation from " + a.getBegin() + " to " + a.getEnd());
       it.moveToNext();
     }
     assertTrue(count == 39);
-//    System.out.println("Size of subiterator(true, false): " + count);
+    // System.out.println("Size of subiterator(true, false): " + count);
     count = 0;
     for (it.moveToLast(); it.isValid(); it.moveToPrevious()) {
       ++count;
@@ -219,12 +230,12 @@ public class AnnotationIteratorTest extends TestCase {
     count = 0;
     while (it.isValid()) {
       ++count;
-//      AnnotationFS a = (AnnotationFS) it.get();
-//      System.out.println("Annotation from " + a.getBegin() + " to " + a.getEnd());
+      // AnnotationFS a = (AnnotationFS) it.get();
+      // System.out.println("Annotation from " + a.getBegin() + " to " + a.getEnd());
       it.moveToNext();
     }
     assertTrue(count == 4);
-//    System.out.println("Size of subiterator(false, false): " + count);
+    // System.out.println("Size of subiterator(false, false): " + count);
     count = 0;
     for (it.moveToLast(); it.isValid(); it.moveToPrevious()) {
       ++count;
@@ -235,12 +246,12 @@ public class AnnotationIteratorTest extends TestCase {
     count = 0;
     while (it.isValid()) {
       ++count;
-//      AnnotationFS a = (AnnotationFS) it.get();
-//      System.out.println("Annotation from " + a.getBegin() + " to " + a.getEnd());
+      // AnnotationFS a = (AnnotationFS) it.get();
+      // System.out.println("Annotation from " + a.getBegin() + " to " + a.getEnd());
       it.moveToNext();
     }
     assertTrue(count == 2);
-//    System.out.println("Size of subiterator(false, false): " + count);
+    // System.out.println("Size of subiterator(false, false): " + count);
     count = 0;
     for (it.moveToLast(); it.isValid(); it.moveToPrevious()) {
       ++count;

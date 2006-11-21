@@ -36,149 +36,130 @@ import org.apache.uima.util.XMLParser;
  * 
  * 
  */
-public class TypeOrFeature_impl extends MetaDataObject_impl
-  implements TypeOrFeature
-{
+public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFeature {
+
+  static final long serialVersionUID = 7184362666821154031L;
+
+  private boolean mType;
+
+  private String mName;
+
+  private boolean mAllAnnotatorFeatures;
+  
   /**
    * @see org.apache.uima.analysis_engine.TypeOrFeature#isType()
    */
-  public boolean isType()
-  {
+  public boolean isType() {
     return mType;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.TypeOrFeature#setType(boolean)
    */
-  public void setType(boolean aType)
-  {
+  public void setType(boolean aType) {
     mType = aType;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.TypeOrFeature#getName()
    */
-  public String getName()
-  {
+  public String getName() {
     return mName;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.TypeOrFeature#setName(java.lang.String)
    */
-  public void setName(String aName)
-  {
+  public void setName(String aName) {
     mName = aName;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.TypeOrFeature#isAllAnnotatorFeatures()
    */
-  public boolean isAllAnnotatorFeatures()
-  {
+  public boolean isAllAnnotatorFeatures() {
     return mAllAnnotatorFeatures;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.TypeOrFeature#setAllAnnotatorFeatures(boolean)
    */
-  public void setAllAnnotatorFeatures(boolean aAllAnnotatorFeatures)
-  {
+  public void setAllAnnotatorFeatures(boolean aAllAnnotatorFeatures) {
     mAllAnnotatorFeatures = aAllAnnotatorFeatures;
   }
 
   /**
    * Overridden to provide custom XML representation.
-   * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element, org.apache.uima.util.XMLParser)
+   * 
+   * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element,
+   *      org.apache.uima.util.XMLParser)
    */
-  public void buildFromXMLElement(Element aElement, XMLParser aParser, XMLParser.ParsingOptions aOptions)
-    throws InvalidXMLException
-  {
-    //element tag determines whether this is a type or a feature
-    if (aElement.getTagName().equals("type"))
-    {
+  public void buildFromXMLElement(Element aElement, XMLParser aParser,
+                  XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
+    // element tag determines whether this is a type or a feature
+    if (aElement.getTagName().equals("type")) {
       setType(true);
-      //AllAnnotatorFeatures determined by attribute
-      setAllAnnotatorFeatures(
-        aElement.getAttribute("allAnnotatorFeatures").equals("true"));
-    }
-    else //feature
+      // AllAnnotatorFeatures determined by attribute
+      setAllAnnotatorFeatures(aElement.getAttribute("allAnnotatorFeatures").equals("true"));
+    } else // feature
     {
-      setType(false);  
+      setType(false);
     }
 
-    //name is the tag's text
+    // name is the tag's text
     setName(XMLUtils.getText(aElement).trim());
   }
-  
 
   /**
    * Overridden to provide custom XML representation.
+   * 
    * @see org.apache.uima.util.XMLizable#toXML(ContentHandler)
    */
-  public void toXML(ContentHandler aContentHandler, 
-    boolean aWriteDefaultNamespaceAttribute)
-    throws SAXException
-  {
-    if (isType())
-    {
-      //tag is "type"
-      //if allAnnotatorFeatures is true, write that as an attribute
-      if (isAllAnnotatorFeatures())
-      {
+  public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
+                  throws SAXException {
+    if (isType()) {
+      // tag is "type"
+      // if allAnnotatorFeatures is true, write that as an attribute
+      if (isAllAnnotatorFeatures()) {
         AttributesImpl attrs = new AttributesImpl();
-        attrs.addAttribute("","allAnnotatorFeatures","allAnnotatorFeatures",null,"true");
-        aContentHandler.startElement(getXmlizationInfo().namespace,
-          "type","type",attrs);
+        attrs.addAttribute("", "allAnnotatorFeatures", "allAnnotatorFeatures", null, "true");
+        aContentHandler.startElement(getXmlizationInfo().namespace, "type", "type", attrs);
+      } else {
+        aContentHandler.startElement(getXmlizationInfo().namespace, "type", "type",
+                        new AttributesImpl());
       }
-      else
-      {
-        aContentHandler.startElement(getXmlizationInfo().namespace,
-          "type","type",new AttributesImpl());
-      }
-      //write type name here
-      aContentHandler.characters(getName().toCharArray(),0,getName().length());
+      // write type name here
+      aContentHandler.characters(getName().toCharArray(), 0, getName().length());
 
-      aContentHandler.endElement(getXmlizationInfo().namespace,
-        "type","type");
-    }
-    else //feature
+      aContentHandler.endElement(getXmlizationInfo().namespace, "type", "type");
+    } else // feature
     {
-      aContentHandler.startElement(getXmlizationInfo().namespace,
-        "feature","feature",new AttributesImpl());
+      aContentHandler.startElement(getXmlizationInfo().namespace, "feature", "feature",
+                      new AttributesImpl());
 
-      aContentHandler.characters(getName().toCharArray(),0,getName().length());
+      aContentHandler.characters(getName().toCharArray(), 0, getName().length());
 
-      aContentHandler.endElement(getXmlizationInfo().namespace,
-        "feature","feature");
+      aContentHandler.endElement(getXmlizationInfo().namespace, "feature", "feature");
     }
   }
-	
+
   /**
    * @see java.lang.Comparable#compareTo(java.lang.Object)
    */
-  public int compareTo(Object obj)
-  {
-  	if(this == obj)
-  		return 0;
-  		
-  	//cast object
-  	TypeOrFeature_impl tof = (TypeOrFeature_impl)obj;
-  	return this.getName().compareTo(tof.getName());
+  public int compareTo(Object obj) {
+    if (this == obj)
+      return 0;
+
+    // cast object
+    TypeOrFeature_impl tof = (TypeOrFeature_impl) obj;
+    return this.getName().compareTo(tof.getName());
   }
 
   /**
    * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXmlizationInfo()
    */
-  protected XmlizationInfo getXmlizationInfo()
-  {
+  protected XmlizationInfo getXmlizationInfo() {
     return new XmlizationInfo(null, null);
-    //this object has custom XMLization routines
+    // this object has custom XMLization routines
   }
-
-  private boolean mType;
-  private String mName;
-  private boolean mAllAnnotatorFeatures;
-
-  static final long serialVersionUID = 7184362666821154031L;  
 }

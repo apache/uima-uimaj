@@ -29,38 +29,40 @@ import org.apache.uima.search.IndexBuildSpecification;
  * 
  * 
  */
-public class IndexBuildSpecification_impl extends MetaDataObject_impl implements IndexBuildSpecification
-{
+public class IndexBuildSpecification_impl extends MetaDataObject_impl implements
+                IndexBuildSpecification {
   private static final long serialVersionUID = -5922996488248689708L;
+
   private IndexBuildItem[] mItems = new IndexBuildItem[0];
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.IndexBuildSpecification#getIndexBuildItems()
    */
-  public IndexBuildItem[] getIndexBuildItems()
-  {
+  public IndexBuildItem[] getIndexBuildItems() {
     return mItems;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.IndexBuildSpecification#setIndexBuildItems(org.apache.uima.search.IndexBuildItem[])
    */
-  public void setIndexBuildItems(IndexBuildItem[] aItems)
-  {
-  	mItems = (aItems == null) ? new IndexBuildItem[0] : aItems;
+  public void setIndexBuildItems(IndexBuildItem[] aItems) {
+    mItems = (aItems == null) ? new IndexBuildItem[0] : aItems;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
-	protected XmlizationInfo getXmlizationInfo()
-	{
-		return XMLIZATION_INFO;
-	}
+  protected XmlizationInfo getXmlizationInfo() {
+    return XMLIZATION_INFO;
+  }
 
-	static final private XmlizationInfo XMLIZATION_INFO =
-		new XmlizationInfo("indexBuildSpecification",
-			new PropertyXmlInfo[]{
-				 new PropertyXmlInfo("indexBuildItems",null),
-			});
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+                  "indexBuildSpecification", new PropertyXmlInfo[] { new PropertyXmlInfo(
+                                  "indexBuildItems", null), });
 }

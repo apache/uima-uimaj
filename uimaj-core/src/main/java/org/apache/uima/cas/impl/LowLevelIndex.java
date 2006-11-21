@@ -25,31 +25,30 @@ package org.apache.uima.cas.impl;
  */
 public interface LowLevelIndex {
 
-    /**
-     * Get a low-level, FS reference iterator.
-     * 
-     * @return An iterator for this index.
-     */
-    LowLevelIterator ll_iterator();
+  /**
+   * Get a low-level, FS reference iterator.
+   * 
+   * @return An iterator for this index.
+   */
+  LowLevelIterator ll_iterator();
 
-    /**
-     * Get a low-level, FS reference iterator. This iterator can be
-     * disambiguated.  This means that only non-overlapping annotations will be
-     * returned.  Non-annotation FSs will be filtered in this mode.  
-     * 
-     * @param ambiguous
-     *            When set to <code>false</code>, iterator will be
-     *            disambiguated.
-     * @return An iterator for this index.
-     */
-    LowLevelIterator ll_iterator(boolean ambiguous);
+  /**
+   * Get a low-level, FS reference iterator. This iterator can be disambiguated. This means that
+   * only non-overlapping annotations will be returned. Non-annotation FSs will be filtered in this
+   * mode.
+   * 
+   * @param ambiguous
+   *          When set to <code>false</code>, iterator will be disambiguated.
+   * @return An iterator for this index.
+   */
+  LowLevelIterator ll_iterator(boolean ambiguous);
 
-    /**
-     * Get the number of FSs in this index.
-     * 
-     * @return The size of this index.
-     */
-    int size();
-    
-    int ll_compare(int ref1, int ref2);
+  /**
+   * Get the number of FSs in this index.
+   * 
+   * @return The size of this index.
+   */
+  int size();
+
+  int ll_compare(int ref1, int ref2);
 }

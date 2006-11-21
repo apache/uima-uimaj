@@ -21,80 +21,77 @@ package org.apache.uima.cas.text;
 
 public class Language {
 
-    public static final String UNSPECIFIED_LANGUAGE = "x-unspecified";
+  public static final String UNSPECIFIED_LANGUAGE = "x-unspecified";
 
-    // TODO: finish implementing this class
+  // TODO: finish implementing this class
 
-    public static final Language ZH = new Language("zh");
+  public static final Language ZH = new Language("zh");
 
-    public static final Language ZH_CN = new Language("zh-cn");
+  public static final Language ZH_CN = new Language("zh-cn");
 
-    public static final Language ZH_TW = new Language("zh-tw");
+  public static final Language ZH_TW = new Language("zh-tw");
 
-    public static final char CANONICAL_LANG_SEPARATOR = '-';
+  public static final char CANONICAL_LANG_SEPARATOR = '-';
 
+  private String lang;
 
+  private String langPart = null;
 
-    private String lang;
+  private String territoryPart = null;
 
-    private String langPart = null;
+  /**
+   * 
+   */
+  public Language(String language) {
+    super();
+    this.lang = normalize(language);
+    this.parseLanguage();
+  }
 
-    private String territoryPart = null;
-
-    /**
-     * 
-     */
-    public Language(String language) {
-        super();
-        this.lang = normalize(language);
-        this.parseLanguage();
+  public static final String normalize(String lang) {
+    if (lang == null) {
+      return UNSPECIFIED_LANGUAGE;
     }
+    lang = lang.toLowerCase();
+    lang = lang.replace('_', CANONICAL_LANG_SEPARATOR);
+    return lang;
+  }
 
-    public static final String normalize(String lang) {
-        if (lang == null) {
-            return UNSPECIFIED_LANGUAGE;
-        }
-        lang = lang.toLowerCase();
-        lang = lang.replace('_', CANONICAL_LANG_SEPARATOR);
-        return lang;
-    }
+  public String getLanguagePart() {
+    return this.langPart;
+  }
 
-    public String getLanguagePart() {
-        return this.langPart;
-    }
+  public String getTerritoryPart() {
+    return this.territoryPart;
+  }
 
-    public String getTerritoryPart() {
-        return this.territoryPart;
-    }
+  public String getFullLanguage() {
+    return this.lang;
+  }
 
-    public String getFullLanguage() {
-        return this.lang;
+  private final void parseLanguage() {
+    int pos = this.lang.indexOf(CANONICAL_LANG_SEPARATOR);
+    if (pos >= 0) {
+      this.langPart = this.lang.substring(0, pos);
+    } else {
+      this.langPart = this.lang;
+      return;
     }
+    ++pos;
+    if (pos < this.lang.length()) {
+      this.territoryPart = this.lang.substring(pos);
+    }
+  }
 
-    private final void parseLanguage() {
-        int pos = this.lang.indexOf(CANONICAL_LANG_SEPARATOR);
-        if (pos >= 0) {
-            this.langPart = this.lang.substring(0, pos);
-        } else {
-            this.langPart = this.lang;
-            return;
-        }
-        ++pos;
-        if (pos < this.lang.length()) {
-            this.territoryPart = this.lang.substring(pos);
-        }
-    }
+  public String toString() {
+    return "Full language string: " + this.getFullLanguage() + ", language part: "
+                    + this.getLanguagePart() + ", territory part: " + this.getTerritoryPart();
+  }
 
-    public String toString() {
-        return "Full language string: " + this.getFullLanguage()
-                + ", language part: " + this.getLanguagePart()
-                + ", territory part: " + this.getTerritoryPart();
-    }
-
-    public static void main(String[] args) {
-        System.out.println(Language.ZH);
-        System.out.println(Language.ZH_CN);
-        System.out.println(new Language("en_US_NY"));
-    }
+  public static void main(String[] args) {
+    System.out.println(Language.ZH);
+    System.out.println(Language.ZH_CN);
+    System.out.println(new Language("en_US_NY"));
+  }
 
 }

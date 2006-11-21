@@ -29,39 +29,38 @@ import org.apache.uima.search.Style;
  * 
  * 
  */
-public class IndexRule_impl extends MetaDataObject_impl implements IndexRule
-{
+public class IndexRule_impl extends MetaDataObject_impl implements IndexRule {
   private static final long serialVersionUID = 8072560372466068952L;
-  
+
   private Style[] mStyles = new Style[0];
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.IndexRule#getStyles()
    */
-  public Style[] getStyles()
-  {
+  public Style[] getStyles() {
     return mStyles;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.IndexRule#setStyles(org.apache.uima.search.Style[])
    */
-  public void setStyles(Style[] aStyles)
-  {
+  public void setStyles(Style[] aStyles) {
     mStyles = (aStyles == null) ? new Style[0] : aStyles;
   }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
-	 */
-	protected XmlizationInfo getXmlizationInfo()
-	{
-		return XMLIZATION_INFO;
-	}
-	
-	static final private XmlizationInfo XMLIZATION_INFO =
-		new XmlizationInfo("indexRule",
-			new PropertyXmlInfo[]{
-				 new PropertyXmlInfo("styles",null),
-			});	
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
+   */
+  protected XmlizationInfo getXmlizationInfo() {
+    return XMLIZATION_INFO;
+  }
+
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("indexRule",
+                  new PropertyXmlInfo[] { new PropertyXmlInfo("styles", null), });
 }

@@ -26,214 +26,183 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A class that is useful for generating an Analysis Engine performance
- * report from a {@link ProcessTrace} object.
- *  
+ * A class that is useful for generating an Analysis Engine performance report from a
+ * {@link ProcessTrace} object.
+ * 
  * 
  */
-public class AnalysisEnginePerformanceReports
-{
+public class AnalysisEnginePerformanceReports {
+
+  private ProcessTrace mProcessTrace;
+
+  private Map mAnnotatorAnalysisTimes = new HashMap();
+
+  private int mAnalysisTime = 0;
+
+  private int mFrameworkOverhead = 0;
+
+  private int mServiceWrapperOverhead = 0;
+
+  private int mServiceCallOverhead = 0;
+
+  private int mTotalTime = 0;
+
+  private NumberFormat pctFormat;
   
-  public AnalysisEnginePerformanceReports(ProcessTrace aProcessTrace)
-  {
+  public AnalysisEnginePerformanceReports(ProcessTrace aProcessTrace) {
     mProcessTrace = aProcessTrace;
-    
+
     pctFormat = NumberFormat.getPercentInstance();
     pctFormat.setMaximumFractionDigits(2);
 
     List events = aProcessTrace.getEvents();
     Iterator it = events.iterator();
-    while (it.hasNext())
-    {
-      ProcessTraceEvent evt = (ProcessTraceEvent)it.next();
-      if (ProcessTraceEvent.ANALYSIS_ENGINE.equals(evt.getType()) ||
-          ProcessTraceEvent.SERVICE_CALL.equals(evt.getType()))
-      {
+    while (it.hasNext()) {
+      ProcessTraceEvent evt = (ProcessTraceEvent) it.next();
+      if (ProcessTraceEvent.ANALYSIS_ENGINE.equals(evt.getType())
+                      || ProcessTraceEvent.SERVICE_CALL.equals(evt.getType())) {
         mTotalTime += evt.getDuration();
-      }   
+      }
       addEventData(evt);
     }
   }
 
-  protected void addEventData(ProcessTraceEvent aEvent)
-  {
-    //add results to report
-    if (ProcessTraceEvent.ANALYSIS.equals(aEvent.getType()))
-    {
+  protected void addEventData(ProcessTraceEvent aEvent) {
+    // add results to report
+    if (ProcessTraceEvent.ANALYSIS.equals(aEvent.getType())) {
       mAnalysisTime += aEvent.getDuration();
       String componentName = aEvent.getComponentName();
-      mAnnotatorAnalysisTimes.put(componentName,new Integer(aEvent.getDuration()));
-    }
-    else if (ProcessTraceEvent.ANALYSIS_ENGINE.equals(aEvent.getType()))
-    {
-      //framework overhead is difference between this event's duration and
-      //combined duration of all ANLAYSIS or ANALYSIS_ENGINE subevents
-      final String[] subEventTypes = new String[]{ 
-        ProcessTraceEvent.ANALYSIS, ProcessTraceEvent.ANALYSIS_ENGINE};         
+      mAnnotatorAnalysisTimes.put(componentName, new Integer(aEvent.getDuration()));
+    } else if (ProcessTraceEvent.ANALYSIS_ENGINE.equals(aEvent.getType())) {
+      // framework overhead is difference between this event's duration and
+      // combined duration of all ANLAYSIS or ANALYSIS_ENGINE subevents
+      final String[] subEventTypes = new String[] { ProcessTraceEvent.ANALYSIS,
+          ProcessTraceEvent.ANALYSIS_ENGINE };
       int duration = aEvent.getDuration();
       int subEventDuration = getSubEventDuration(aEvent, subEventTypes);
-      if (subEventDuration > 0)
-      {
+      if (subEventDuration > 0) {
         mFrameworkOverhead += (duration - subEventDuration);
-      }  
-    }
-    else if (ProcessTraceEvent.SERVICE.equals(aEvent.getType()))
-    {
-      //service wrapper overhead is difference between this event's duration 
-      //and duration of contained ANALYSIS or ANALYSIS_ENGINE subevents
-      final String[] subEventTypes = new String[]{ 
-        ProcessTraceEvent.ANALYSIS, ProcessTraceEvent.ANALYSIS_ENGINE};         
+      }
+    } else if (ProcessTraceEvent.SERVICE.equals(aEvent.getType())) {
+      // service wrapper overhead is difference between this event's duration
+      // and duration of contained ANALYSIS or ANALYSIS_ENGINE subevents
+      final String[] subEventTypes = new String[] { ProcessTraceEvent.ANALYSIS,
+          ProcessTraceEvent.ANALYSIS_ENGINE };
       int duration = aEvent.getDuration();
       int subEventDuration = getSubEventDuration(aEvent, subEventTypes);
-      if (subEventDuration > 0)
-      {
+      if (subEventDuration > 0) {
         mServiceWrapperOverhead += (duration - subEventDuration);
-      }  
-    }  
-    else if (ProcessTraceEvent.SERVICE_CALL.equals(aEvent.getType()))
-    {
-      //service call overhead is difference between this event's duration 
-      //and duration of contained SERVICE, ANALYSIS or ANALYSIS_ENGINE subevents
-      final String[] subEventTypes = new String[]{ 
-        ProcessTraceEvent.SERVICE, ProcessTraceEvent.ANALYSIS, 
-        ProcessTraceEvent.ANALYSIS_ENGINE};         
+      }
+    } else if (ProcessTraceEvent.SERVICE_CALL.equals(aEvent.getType())) {
+      // service call overhead is difference between this event's duration
+      // and duration of contained SERVICE, ANALYSIS or ANALYSIS_ENGINE subevents
+      final String[] subEventTypes = new String[] { ProcessTraceEvent.SERVICE,
+          ProcessTraceEvent.ANALYSIS, ProcessTraceEvent.ANALYSIS_ENGINE };
       int duration = aEvent.getDuration();
       int subEventDuration = getSubEventDuration(aEvent, subEventTypes);
-      if (subEventDuration > 0)
-      {
+      if (subEventDuration > 0) {
         mServiceCallOverhead += (duration - subEventDuration);
-      }  
-    }  
- 
+      }
+    }
+
     Iterator subEvents = aEvent.getSubEvents().iterator();
-    while (subEvents.hasNext())
-    {
-      ProcessTraceEvent subEvt = (ProcessTraceEvent)subEvents.next();
+    while (subEvents.hasNext()) {
+      ProcessTraceEvent subEvt = (ProcessTraceEvent) subEvents.next();
       addEventData(subEvt);
     }
-  }    
+  }
 
-  public int getTotalTime()
-  {
+  public int getTotalTime() {
     return mTotalTime;
   }
-  
-  public int getAnalysisTime()
-  {
+
+  public int getAnalysisTime() {
     return mAnalysisTime;
   }
-  
-  public int getFrameworkOverhead()
-  {
+
+  public int getFrameworkOverhead() {
     return mFrameworkOverhead;
   }
-  
-  public int getServiceWrapperOverhead()
-  {
+
+  public int getServiceWrapperOverhead() {
     return mServiceWrapperOverhead;
   }
-  
-  public int getServiceCallOverhead()
-  {
+
+  public int getServiceCallOverhead() {
     return mServiceCallOverhead;
   }
-  
-  public String getFullReport()
-  {
+
+  public String getFullReport() {
     return mProcessTrace.toString();
   }
- 
-  public String toString()
-  {
+
+  public String toString() {
     int total = getTotalTime();
     int analysis = getAnalysisTime();
     int frameworkOver = getFrameworkOverhead();
     int serviceWrapperOver = getServiceWrapperOverhead();
     int serviceCallOver = getServiceCallOverhead();
-    
-    StringBuffer buf = new StringBuffer();   
+
+    StringBuffer buf = new StringBuffer();
     buf.append("Total Analysis Engine Time: " + total + "ms\n");
-    if (analysis > 0)
-    {
-      buf.append("Annotator Time: " + getAnalysisTime() + "ms (" +
-         toPct(analysis, total) + ")\n");
-    }
-    else
-    {
+    if (analysis > 0) {
+      buf.append("Annotator Time: " + getAnalysisTime() + "ms (" + toPct(analysis, total) + ")\n");
+    } else {
       buf.append("Analysis: <10ms\n");
     }
-    if (frameworkOver > 0)
-    {     
-      buf.append("Framework Overhead: " + frameworkOver + "ms (" +
-         toPct(frameworkOver, total) + ")\n");
-    }     
-    else
-    {
+    if (frameworkOver > 0) {
+      buf.append("Framework Overhead: " + frameworkOver + "ms (" + toPct(frameworkOver, total)
+                      + ")\n");
+    } else {
       buf.append("Framework Overhead: <10ms\n");
     }
-    if (serviceCallOver > 0)
-    {   
-      buf.append("Service Wrapper Overhead: " +
-         serviceWrapperOver + "ms (" +
-         toPct(serviceWrapperOver, total) + ")\n");
-      buf.append("Service Call Overhead: " +
-         serviceCallOver + "ms (" +
-         toPct(serviceCallOver, total) + ")\n");
-    } 
-   
+    if (serviceCallOver > 0) {
+      buf.append("Service Wrapper Overhead: " + serviceWrapperOver + "ms ("
+                      + toPct(serviceWrapperOver, total) + ")\n");
+      buf.append("Service Call Overhead: " + serviceCallOver + "ms ("
+                      + toPct(serviceCallOver, total) + ")\n");
+    }
+
     return buf.toString();
   }
-  
- 
+
   /**
-   * Convert to percent string - to two decimal places 
+   * Convert to percent string - to two decimal places
    */
-  private String toPct(long numerator, long denomenator)
-  {
-    return pctFormat.format(((double)numerator)/denomenator);
+  private String toPct(long numerator, long denomenator) {
+    return pctFormat.format(((double) numerator) / denomenator);
   }
-  
+
   /**
-   * Gets the combined duration of all sub-events of certain types.
-   * Will recurse into events that don't have the correct type but will not
-   * recurse inside a matching event (to avoid double-counting of any times).
+   * Gets the combined duration of all sub-events of certain types. Will recurse into events that
+   * don't have the correct type but will not recurse inside a matching event (to avoid
+   * double-counting of any times).
    * 
-   * @param aEvent event whose subevents will be examined
-   * @param aEventTypes array of event types in which we are interested
+   * @param aEvent
+   *          event whose subevents will be examined
+   * @param aEventTypes
+   *          array of event types in which we are interested
    * 
-   * @return sum of the durations of sub-events of <code>aEvent</code> whose
-   *   type is a member of <code>aEventTypes</code>.
+   * @return sum of the durations of sub-events of <code>aEvent</code> whose type is a member of
+   *         <code>aEventTypes</code>.
    */
-  private int getSubEventDuration(ProcessTraceEvent aEvent, String[] aEventTypes)
-  {
+  private int getSubEventDuration(ProcessTraceEvent aEvent, String[] aEventTypes) {
     int duration = 0;
     List subEvents = aEvent.getSubEvents();
     Iterator it = subEvents.iterator();
-    whileLoop: while (it.hasNext())
-    {
-      ProcessTraceEvent evt = (ProcessTraceEvent)it.next();
+    whileLoop: while (it.hasNext()) {
+      ProcessTraceEvent evt = (ProcessTraceEvent) it.next();
       String type = evt.getType();
-      for (int i = 0; i < aEventTypes.length; i++)
-      {
-        if (aEventTypes[i].equals(type))
-        {
+      for (int i = 0; i < aEventTypes.length; i++) {
+        if (aEventTypes[i].equals(type)) {
           duration += evt.getDuration();
           continue whileLoop;
         }
       }
-      //call recursively on subevents
+      // call recursively on subevents
       duration += getSubEventDuration(evt, aEventTypes);
     }
 
     return duration;
-  }  
-  
-  private ProcessTrace mProcessTrace;
-  private Map mAnnotatorAnalysisTimes = new HashMap();
-  private int mAnalysisTime = 0;
-  private int mFrameworkOverhead = 0;
-  private int mServiceWrapperOverhead = 0;
-  private int mServiceCallOverhead = 0;
-  private int mTotalTime = 0;
-  private NumberFormat pctFormat;
-}  
+  }
+}

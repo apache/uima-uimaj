@@ -19,51 +19,48 @@
 
 package org.apache.uima.resource.metadata;
 
-
 /**
- * Declares a relative priority between CAS types.  This object contains a 
- * single list of types.  One or more <code>TypePriorityList</code> objects
- * can be grouped together to define a complete <code>TypePriorities</code>
- * declaration for a type system.
+ * Declares a relative priority between CAS types. This object contains a single list of types. One
+ * or more <code>TypePriorityList</code> objects can be grouped together to define a complete
+ * <code>TypePriorities</code> declaration for a type system.
  * <p>
- * This object implements <code>MetaDataObject</code>,
- * which implements {@link org.apache.uima.util.XMLizable}, so it can be serialized 
- * to and  deserialized from an XML element.
+ * This object implements <code>MetaDataObject</code>, which implements
+ * {@link org.apache.uima.util.XMLizable}, so it can be serialized to and deserialized from an XML
+ * element.
  * 
  * @see TypePriorities
  * 
  */
-public interface TypePriorityList extends MetaDataObject
-{
-  
+public interface TypePriorityList extends MetaDataObject {
+
   /**
    * Gets the type names, in order of their priority.
-   *  
+   * 
    * @return an array of type names, in order of their priority
    */
   public String[] getTypes();
 
-
   /**
    * Sets the type names, in order of their priority.
-   *  
-   * @param aTypeNames an array type names, in order of their priority
+   * 
+   * @param aTypeNames
+   *          an array type names, in order of their priority
    */
   public void setTypes(String[] aTypeNames);
-  
 
   /**
    * Adds a type at the end of the priority list.
-   *  
-   * @param aTypeName the type name to add
+   * 
+   * @param aTypeName
+   *          the type name to add
    */
-  public void addType(String aTypeName);  
-
+  public void addType(String aTypeName);
 
   /**
    * Removes a type from the priority list.
-   *  
-   * @param aTypeName the type name to remove
+   * 
+   * @param aTypeName
+   *          the type name to remove
    */
-  public void removeType(String aTypeName);  
+  public void removeType(String aTypeName);
 }

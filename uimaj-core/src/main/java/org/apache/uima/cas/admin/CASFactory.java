@@ -23,49 +23,51 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 
-/** Factory class to create CASMgr objects.  This is the only class in
- *  this package.  Once you have created a CAS object, you can use the
- *  methods there to create and access objects implementing the other
- *  interfaces.  For the OO API, no direct access to any of the
- *  implementations is provided.  Should you want to provide an
- *  alternative implementation of the CAS interfaces in this package,
- *  the only thing you have to change is the implementation of the
- *  createCAS() method here.
- *
- *  <p>All methods in this class are static.  CASFactory objects
- *  can not be created.
- *
- *  
+/**
+ * Factory class to create CASMgr objects. This is the only class in this package. Once you have
+ * created a CAS object, you can use the methods there to create and access objects implementing the
+ * other interfaces. For the OO API, no direct access to any of the implementations is provided.
+ * Should you want to provide an alternative implementation of the CAS interfaces in this package,
+ * the only thing you have to change is the implementation of the createCAS() method here.
+ * 
+ * <p>
+ * All methods in this class are static. CASFactory objects can not be created.
+ * 
+ * 
  */
 public abstract class CASFactory {
 
-  /** 
+  /**
    * Create a new CASMgr object.
+   * 
    * @return A new CASMgr object.
    */
   public static CASMgr createCAS() {
     return new CASImpl();
   }
 
-  /** 
+  /**
    * Create a new CASMgr object.
-   * @param initialHeapSize The initial size of the internal CAS heap.  If you 
-   * choose this number too small, it can have a major performance impact.  As a
-   * very rough guideline, this number should not be smaller than the number of
-   * characters in documents you are processing.
+   * 
+   * @param initialHeapSize
+   *          The initial size of the internal CAS heap. If you choose this number too small, it can
+   *          have a major performance impact. As a very rough guideline, this number should not be
+   *          smaller than the number of characters in documents you are processing.
    * @return A new CASMgr object.
    */
   public static CASMgr createCAS(int initialHeapSize) {
     return new CASImpl(initialHeapSize);
   }
 
-  /** 
+  /**
    * Create a new CASMgr object from a give type system.
-   * @param initialHeapSize The initial size of the internal CAS heap.  If you 
-   * choose this number too small, it can have a major performance impact.  As a
-   * very rough guideline, this number should not be smaller than the number of
-   * characters in documents you are processing.
-   * @param ts An existing type system (must not be null).
+   * 
+   * @param initialHeapSize
+   *          The initial size of the internal CAS heap. If you choose this number too small, it can
+   *          have a major performance impact. As a very rough guideline, this number should not be
+   *          smaller than the number of characters in documents you are processing.
+   * @param ts
+   *          An existing type system (must not be null).
    * @return A new CASMgr object.
    */
   public static CASMgr createCAS(int initialHeapSize, TypeSystem ts) {
@@ -75,9 +77,11 @@ public abstract class CASFactory {
     return new CASImpl((TypeSystemImpl) ts, initialHeapSize);
   }
 
-  /** 
+  /**
    * Create a new CASMgr object from a give type system.
-   * @param ts An existing type system (must not be null).
+   * 
+   * @param ts
+   *          An existing type system (must not be null).
    * @return A new CASMgr object.
    */
   public static CASMgr createCAS(TypeSystem ts) {
@@ -86,9 +90,10 @@ public abstract class CASFactory {
     }
     return new CASImpl((TypeSystemImpl) ts, CASImpl.DEFAULT_INITIAL_HEAP_SIZE);
   }
-  
+
   /**
    * Create a new type system that is populated with the built-in CAS types.
+   * 
    * @return A type system manager object that can be used to add more types.
    */
   public static TypeSystemMgr createTypeSystem() {

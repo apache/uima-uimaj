@@ -50,282 +50,8 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
  * 
  */
 public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implements
-    AnalysisEngineMetaData
-{
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.resource.metadata.ProcessingResourceMetaData#resolveImports()
-   */
-  public void resolveImports() throws InvalidXMLException
-  {
-    resolveImports(UIMAFramework.newDefaultResourceManager());
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.resource.metadata.ProcessingResourceMetaData#resolveImports(org.apache.uima.resource.ResourceManager)
-   */
-  public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException
-  {
-    if (getTypeSystem() != null)
-    {
-      getTypeSystem().resolveImports(aResourceManager);
-    }
-    if (getTypePriorities() != null)
-    {
-      getTypePriorities().resolveImports(aResourceManager);
-    }
-    if (getFsIndexCollection() != null)
-    {
-      getFsIndexCollection().resolveImports(aResourceManager);
-    }
-  }
-
-  /**
-   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#getCapabilities()
-   */
-  public Capability[] getCapabilities()
-  {
-    return mCapabilities;
-  }
-
-  /**
-   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#setCapabilities(Capability[])
-   */
-  public void setCapabilities(Capability[] aCapabilities)
-  {
-    if (aCapabilities == null)
-    {
-      throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-          new Object[] { "null", "aCapabilities", "setCapabilities" });
-    }
-    mCapabilities = aCapabilities;
-  }
-
-  /**
-   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#getTypeSystem()
-   */
-  public TypeSystemDescription getTypeSystem()
-  {
-    return mTypeSystem;
-  }
-
-  /**
-   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#setTypeSystem(TypeSystemDescription)
-   */
-  public void setTypeSystem(TypeSystemDescription aTypeSystem)
-  {
-    mTypeSystem = aTypeSystem;
-  }
-
-  /**
-   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#getTypePriorities()
-   */
-  public TypePriorities getTypePriorities()
-  {
-    return mTypePriorities;
-  }
-
-  /**
-   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#setTypePriorities(org.apache.uima.analysis_engine.metadata.TypePriorities)
-   */
-  public void setTypePriorities(TypePriorities aTypePriorities)
-  {
-    mTypePriorities = aTypePriorities;
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.resource.metadata.ProcessingResourceMetaData#getFsIndexCollection()
-   */
-  public FsIndexCollection getFsIndexCollection()
-  {
-    return mFsIndexCollection;
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.resource.metadata.ProcessingResourceMetaData#setFsIndexCollection(org.apache.uima.resource.metadata.FsIndexCollection)
-   */
-  public void setFsIndexCollection(FsIndexCollection aFsIndexCollection)
-  {
-    mFsIndexCollection = aFsIndexCollection;
-  }
-
-  /**
-   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#getFsIndexes()
-   */
-  public FsIndexDescription[] getFsIndexes()
-  {
-    return mFsIndexCollection == null ? null : mFsIndexCollection.getFsIndexes();
-  }
-
-  /**
-   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#setFsIndexes(FsIndexDescription[])
-   */
-  public void setFsIndexes(FsIndexDescription[] aFsIndexes)
-  {
-    if (mFsIndexCollection == null)
-    {
-      mFsIndexCollection = new FsIndexCollection_impl();
-    }
-    mFsIndexCollection.setFsIndexes(aFsIndexes);
-  }
-
-  public OperationalProperties getOperationalProperties()
-  {
-    return mOperationalProperties;
-  }
-
-  public void setOperationalProperties(OperationalProperties aOperationalProperties)
-  {
-    mOperationalProperties = aOperationalProperties;
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#writePropertyAsElement(org.apache.uima.resource.metadata.impl.PropertyXmlInfo, java.lang.String, org.xml.sax.ContentHandler)
-   */
-  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace,
-      ContentHandler aContentHandler) throws SAXException
-  {
-    // Prevent the fsIndexes property from being written to XML - it exists only so old-style XML
-    // can be read.
-    if (!"fsIndexes".equals(aPropInfo.propertyName))
-    {
-      super.writePropertyAsElement(aPropInfo, aNamespace, aContentHandler);
-    }
-  }
-
-  protected void readPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo, Element aElement,
-      XMLParser aParser, ParsingOptions aOptions) throws InvalidXMLException
-  {
-    // Catch the case where both fsIndexes and fsIndexCollection are specified
-    if ("fsIndexes".equals(aPropXmlInfo.xmlElementName) || 
-        "fsIndexCollection".equals(aPropXmlInfo.xmlElementName))
-    {
-      if (mFsIndexCollection != null)
-      {
-        throw new InvalidXMLException(InvalidXMLException.FS_INDEXES_OUTSIDE_FS_INDEX_COLLECTION, null);
-      }
-    }
-    super.readPropertyValueFromXMLElement(aPropXmlInfo, aElement, aParser, aOptions);
-  }   
-
-  protected void readUnknownPropertyValueFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions, List aKnownPropertyNames) throws InvalidXMLException
-  {
-    // Catch the case where both fsIndexes and fsIndexCollection are specified
-    if ("fsIndexes".equals(aElement.getTagName()) || 
-        "fsIndexCollection".equals(aElement.getTagName()))
-    {
-      if (mFsIndexCollection != null)
-      {
-        throw new InvalidXMLException(InvalidXMLException.FS_INDEXES_OUTSIDE_FS_INDEX_COLLECTION, null);
-      }
-    }
-      super.readUnknownPropertyValueFromXMLElement(aElement, aParser, aOptions, aKnownPropertyNames);
-  }
-
-  /**
-   * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#isAsynchronousModeSupported()
-   */
-  public boolean isAsynchronousModeSupported()
-  {
-    return mAsynchronousModeSupported;
-  }
-
-  /**
-   * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#setAsynchronousModeSupported(boolean)
-   */
-  public void setAsynchronousModeSupported(boolean aSupported)
-  {
-    mAsynchronousModeSupported = aSupported;
-  }
-
-  /**
-   * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#getFlowConstraints()
-   */
-  public FlowConstraints getFlowConstraints()
-  {
-    return mFlowConstraints;
-  }
-
-  /**
-   * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#setFlowConstraints(FlowConstraints)
-   */
-  public void setFlowConstraints(FlowConstraints aFlowConstraints)
-  {
-    mFlowConstraints = aFlowConstraints;
-  }
-
-  /**
-   * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#getDelegateAnalysisEngineMetaData()
-   */
-  public AnalysisEngineMetaData[] getDelegateAnalysisEngineMetaData()
-  {
-    return mDelegateAnalysisEngineMetaData;
-  }
-
-  /**
-   * Used internally to set the AnalysisEngine metadata.  Not published through
-   * the interface or available to the JavaBeans introspector.
-   * 
-   * @param aMetaData metadata for the delegate AnalysisEngines
-   */
-  public void _setDelegateAnalysisEngineMetaData(AnalysisEngineMetaData[] aMetaData)
-  {
-    mDelegateAnalysisEngineMetaData = aMetaData;
-  }
-
-  /**
-   * Gets whether this AE is sofa-aware.  This is a derived property that cannot
-   * be set directly.  An AE is sofa-aware if and only if it declares at least 
-   * one input sofa or output sofa.
-   * 
-   * @return true if this component is sofa-aware, false if it is sofa-unaware.
-   */
-  public boolean isSofaAware()
-  {
-    Capability[] capabilities = getCapabilities();
-    if (capabilities != null)
-    {
-      for (int i = 0; i < capabilities.length; i++)
-      {
-        if (capabilities[i].getInputSofas().length > 0
-            || capabilities[i].getOutputSofas().length > 0)
-        {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  protected XmlizationInfo getXmlizationInfo()
-  {
-    return XMLIZATION_INFO;
-  }
-
-  static final protected XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-      "analysisEngineMetaData", null); //properties assigned below 
-
-  static
-  {
-    //this class's Xmlization info is derived from that of its superclass
-    //(would derive from ProcessingResourceMetaData_impl but preexisting XML
-    // schema requires that flowConstraints come before type system.)
-    XmlizationInfo superclassInfo = ResourceMetaData_impl.XMLIZATION_INFO;
-
-    PropertyXmlInfo[] newProperties = new PropertyXmlInfo[] {
-        new PropertyXmlInfo("flowConstraints"), new PropertyXmlInfo("typeSystem", null),
-        new PropertyXmlInfo("typePriorities", null),
-        new PropertyXmlInfo("fsIndexCollection", null), new PropertyXmlInfo("fsIndexes"),
-        new PropertyXmlInfo("capabilities", false),
-        new PropertyXmlInfo("operationalProperties", null), new PropertyXmlInfo("casInterface") };
-
-    XMLIZATION_INFO.propertyInfo = new PropertyXmlInfo[superclassInfo.propertyInfo.length
-        + newProperties.length];
-    System.arraycopy(superclassInfo.propertyInfo, 0, XMLIZATION_INFO.propertyInfo, 0,
-        superclassInfo.propertyInfo.length);
-    System.arraycopy(newProperties, 0, XMLIZATION_INFO.propertyInfo,
-        superclassInfo.propertyInfo.length, newProperties.length);
-  }
+                AnalysisEngineMetaData {
+  static final long serialVersionUID = -3030574527767871396L;
 
   private boolean mAsynchronousModeSupported;
 
@@ -342,6 +68,253 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
   private FsIndexCollection mFsIndexCollection;
 
   private OperationalProperties mOperationalProperties;
+  
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.metadata.ProcessingResourceMetaData#resolveImports()
+   */
+  public void resolveImports() throws InvalidXMLException {
+    resolveImports(UIMAFramework.newDefaultResourceManager());
+  }
 
-  static final long serialVersionUID = -3030574527767871396L;
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.metadata.ProcessingResourceMetaData#resolveImports(org.apache.uima.resource.ResourceManager)
+   */
+  public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
+    if (getTypeSystem() != null) {
+      getTypeSystem().resolveImports(aResourceManager);
+    }
+    if (getTypePriorities() != null) {
+      getTypePriorities().resolveImports(aResourceManager);
+    }
+    if (getFsIndexCollection() != null) {
+      getFsIndexCollection().resolveImports(aResourceManager);
+    }
+  }
+
+  /**
+   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#getCapabilities()
+   */
+  public Capability[] getCapabilities() {
+    return mCapabilities;
+  }
+
+  /**
+   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#setCapabilities(Capability[])
+   */
+  public void setCapabilities(Capability[] aCapabilities) {
+    if (aCapabilities == null) {
+      throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+                      new Object[] { "null", "aCapabilities", "setCapabilities" });
+    }
+    mCapabilities = aCapabilities;
+  }
+
+  /**
+   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#getTypeSystem()
+   */
+  public TypeSystemDescription getTypeSystem() {
+    return mTypeSystem;
+  }
+
+  /**
+   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#setTypeSystem(TypeSystemDescription)
+   */
+  public void setTypeSystem(TypeSystemDescription aTypeSystem) {
+    mTypeSystem = aTypeSystem;
+  }
+
+  /**
+   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#getTypePriorities()
+   */
+  public TypePriorities getTypePriorities() {
+    return mTypePriorities;
+  }
+
+  /**
+   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#setTypePriorities(org.apache.uima.analysis_engine.metadata.TypePriorities)
+   */
+  public void setTypePriorities(TypePriorities aTypePriorities) {
+    mTypePriorities = aTypePriorities;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.metadata.ProcessingResourceMetaData#getFsIndexCollection()
+   */
+  public FsIndexCollection getFsIndexCollection() {
+    return mFsIndexCollection;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.metadata.ProcessingResourceMetaData#setFsIndexCollection(org.apache.uima.resource.metadata.FsIndexCollection)
+   */
+  public void setFsIndexCollection(FsIndexCollection aFsIndexCollection) {
+    mFsIndexCollection = aFsIndexCollection;
+  }
+
+  /**
+   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#getFsIndexes()
+   */
+  public FsIndexDescription[] getFsIndexes() {
+    return mFsIndexCollection == null ? null : mFsIndexCollection.getFsIndexes();
+  }
+
+  /**
+   * @see org.apache.uima.resource.metadata.AnalysisEngineMetaData#setFsIndexes(FsIndexDescription[])
+   */
+  public void setFsIndexes(FsIndexDescription[] aFsIndexes) {
+    if (mFsIndexCollection == null) {
+      mFsIndexCollection = new FsIndexCollection_impl();
+    }
+    mFsIndexCollection.setFsIndexes(aFsIndexes);
+  }
+
+  public OperationalProperties getOperationalProperties() {
+    return mOperationalProperties;
+  }
+
+  public void setOperationalProperties(OperationalProperties aOperationalProperties) {
+    mOperationalProperties = aOperationalProperties;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#writePropertyAsElement(org.apache.uima.resource.metadata.impl.PropertyXmlInfo,
+   *      java.lang.String, org.xml.sax.ContentHandler)
+   */
+  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace,
+                  ContentHandler aContentHandler) throws SAXException {
+    // Prevent the fsIndexes property from being written to XML - it exists only so old-style XML
+    // can be read.
+    if (!"fsIndexes".equals(aPropInfo.propertyName)) {
+      super.writePropertyAsElement(aPropInfo, aNamespace, aContentHandler);
+    }
+  }
+
+  protected void readPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo, Element aElement,
+                  XMLParser aParser, ParsingOptions aOptions) throws InvalidXMLException {
+    // Catch the case where both fsIndexes and fsIndexCollection are specified
+    if ("fsIndexes".equals(aPropXmlInfo.xmlElementName)
+                    || "fsIndexCollection".equals(aPropXmlInfo.xmlElementName)) {
+      if (mFsIndexCollection != null) {
+        throw new InvalidXMLException(InvalidXMLException.FS_INDEXES_OUTSIDE_FS_INDEX_COLLECTION,
+                        null);
+      }
+    }
+    super.readPropertyValueFromXMLElement(aPropXmlInfo, aElement, aParser, aOptions);
+  }
+
+  protected void readUnknownPropertyValueFromXMLElement(Element aElement, XMLParser aParser,
+                  ParsingOptions aOptions, List aKnownPropertyNames) throws InvalidXMLException {
+    // Catch the case where both fsIndexes and fsIndexCollection are specified
+    if ("fsIndexes".equals(aElement.getTagName())
+                    || "fsIndexCollection".equals(aElement.getTagName())) {
+      if (mFsIndexCollection != null) {
+        throw new InvalidXMLException(InvalidXMLException.FS_INDEXES_OUTSIDE_FS_INDEX_COLLECTION,
+                        null);
+      }
+    }
+    super.readUnknownPropertyValueFromXMLElement(aElement, aParser, aOptions, aKnownPropertyNames);
+  }
+
+  /**
+   * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#isAsynchronousModeSupported()
+   */
+  public boolean isAsynchronousModeSupported() {
+    return mAsynchronousModeSupported;
+  }
+
+  /**
+   * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#setAsynchronousModeSupported(boolean)
+   */
+  public void setAsynchronousModeSupported(boolean aSupported) {
+    mAsynchronousModeSupported = aSupported;
+  }
+
+  /**
+   * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#getFlowConstraints()
+   */
+  public FlowConstraints getFlowConstraints() {
+    return mFlowConstraints;
+  }
+
+  /**
+   * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#setFlowConstraints(FlowConstraints)
+   */
+  public void setFlowConstraints(FlowConstraints aFlowConstraints) {
+    mFlowConstraints = aFlowConstraints;
+  }
+
+  /**
+   * @see org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData#getDelegateAnalysisEngineMetaData()
+   */
+  public AnalysisEngineMetaData[] getDelegateAnalysisEngineMetaData() {
+    return mDelegateAnalysisEngineMetaData;
+  }
+
+  /**
+   * Used internally to set the AnalysisEngine metadata. Not published through the interface or
+   * available to the JavaBeans introspector.
+   * 
+   * @param aMetaData
+   *          metadata for the delegate AnalysisEngines
+   */
+  public void _setDelegateAnalysisEngineMetaData(AnalysisEngineMetaData[] aMetaData) {
+    mDelegateAnalysisEngineMetaData = aMetaData;
+  }
+
+  /**
+   * Gets whether this AE is sofa-aware. This is a derived property that cannot be set directly. An
+   * AE is sofa-aware if and only if it declares at least one input sofa or output sofa.
+   * 
+   * @return true if this component is sofa-aware, false if it is sofa-unaware.
+   */
+  public boolean isSofaAware() {
+    Capability[] capabilities = getCapabilities();
+    if (capabilities != null) {
+      for (int i = 0; i < capabilities.length; i++) {
+        if (capabilities[i].getInputSofas().length > 0
+                        || capabilities[i].getOutputSofas().length > 0) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  protected XmlizationInfo getXmlizationInfo() {
+    return XMLIZATION_INFO;
+  }
+
+  static final protected XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+                  "analysisEngineMetaData", null); // properties assigned below
+
+  static {
+    // this class's Xmlization info is derived from that of its superclass
+    // (would derive from ProcessingResourceMetaData_impl but preexisting XML
+    // schema requires that flowConstraints come before type system.)
+    XmlizationInfo superclassInfo = ResourceMetaData_impl.XMLIZATION_INFO;
+
+    PropertyXmlInfo[] newProperties = new PropertyXmlInfo[] {
+        new PropertyXmlInfo("flowConstraints"), new PropertyXmlInfo("typeSystem", null),
+        new PropertyXmlInfo("typePriorities", null),
+        new PropertyXmlInfo("fsIndexCollection", null), new PropertyXmlInfo("fsIndexes"),
+        new PropertyXmlInfo("capabilities", false),
+        new PropertyXmlInfo("operationalProperties", null), new PropertyXmlInfo("casInterface") };
+
+    XMLIZATION_INFO.propertyInfo = new PropertyXmlInfo[superclassInfo.propertyInfo.length
+                    + newProperties.length];
+    System.arraycopy(superclassInfo.propertyInfo, 0, XMLIZATION_INFO.propertyInfo, 0,
+                    superclassInfo.propertyInfo.length);
+    System.arraycopy(newProperties, 0, XMLIZATION_INFO.propertyInfo,
+                    superclassInfo.propertyInfo.length, newProperties.length);
+  }
 }

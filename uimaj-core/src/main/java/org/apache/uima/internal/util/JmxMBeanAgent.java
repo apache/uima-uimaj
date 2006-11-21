@@ -27,158 +27,154 @@ import org.apache.uima.analysis_engine.AnalysisEngineManagement;
 import org.apache.uima.util.Level;
 
 /**
- * Utility class for registering MBeans with a JMX MBeanServer.  This allows
- * AnalysisEngine performance stats to be monitored through JMX.
+ * Utility class for registering MBeans with a JMX MBeanServer. This allows AnalysisEngine
+ * performance stats to be monitored through JMX.
  */
-public class JmxMBeanAgent
-{  
+public class JmxMBeanAgent {
   /**
    * Register an MBean with the MBeanServer.
    * 
-   * @param aMBean the MBean to register
-   * @param aMBeanServer server to register with.  If null, the platform MBeanServer
-   *   will be used if we are running under Java 1.5.  Earlier versions of Java did
-   *   not have a platform MBeanServer; in that case, this method will do nothing.
+   * @param aMBean
+   *          the MBean to register
+   * @param aMBeanServer
+   *          server to register with. If null, the platform MBeanServer will be used if we are
+   *          running under Java 1.5. Earlier versions of Java did not have a platform MBeanServer;
+   *          in that case, this method will do nothing.
    */
-  public static void registerMBean(AnalysisEngineManagement aMBean, Object aMBeanServer)
-  {
-    if (!jmxAvailable) //means we couldn't find the required classes and methods
+  public static void registerMBean(AnalysisEngineManagement aMBean, Object aMBeanServer) {
+    if (!jmxAvailable) // means we couldn't find the required classes and methods
     {
       return;
     }
-    
-    if (aMBeanServer == null)
-    {
-      if (platformMBeanServer != null)
-      {
+
+    if (aMBeanServer == null) {
+      if (platformMBeanServer != null) {
         aMBeanServer = platformMBeanServer;
-      }
-      else
-      {
-        UIMAFramework.getLogger().logrb(Level.CONFIG, JmxMBeanAgent.class.getName(), "registerMBean", LOG_RESOURCE_BUNDLE, "UIMA_JMX_platform_mbean_server_not_available__CONFIG");
+      } else {
+        UIMAFramework.getLogger().logrb(Level.CONFIG, JmxMBeanAgent.class.getName(),
+                        "registerMBean", LOG_RESOURCE_BUNDLE,
+                        "UIMA_JMX_platform_mbean_server_not_available__CONFIG");
         return;
       }
     }
-    
-     try
-     {
-      //Now register the MBean.  But, check for name collisions first.  It is possible
-      //that we are trying to register the same MBean twice (this happens for pools of AEs that 
-      //all share an identical UimaContext).  If that happens, we only register the
-      //MBean the first time and just skip the registration each subsequent time.
-      Object mbeanName = objectNameConstructor.newInstance(new Object[]{aMBean.getUniqueMBeanName()});
-      if (!(((Boolean)isRegistered.invoke(aMBeanServer, new Object[]{mbeanName})).booleanValue()))
-      {
-        registerMBean.invoke(aMBeanServer, new Object[]{aMBean, mbeanName});
-      }         
-    }
-    catch (Exception e)
-    {
-      //don't fail catastrophically if we can't register with JMX.  Just log a warning and continue.
-      UIMAFramework.getLogger().logrb(Level.WARNING, JmxMBeanAgent.class.getName(), "registerMBean", LOG_RESOURCE_BUNDLE, "UIMA_JMX_failed_to_register_mbean__WARNING", e);
+
+    try {
+      // Now register the MBean. But, check for name collisions first. It is possible
+      // that we are trying to register the same MBean twice (this happens for pools of AEs that
+      // all share an identical UimaContext). If that happens, we only register the
+      // MBean the first time and just skip the registration each subsequent time.
+      Object mbeanName = objectNameConstructor.newInstance(new Object[] { aMBean
+                      .getUniqueMBeanName() });
+      if (!(((Boolean) isRegistered.invoke(aMBeanServer, new Object[] { mbeanName }))
+                      .booleanValue())) {
+        registerMBean.invoke(aMBeanServer, new Object[] { aMBean, mbeanName });
+      }
+    } catch (Exception e) {
+      // don't fail catastrophically if we can't register with JMX. Just log a warning and continue.
+      UIMAFramework.getLogger().logrb(Level.WARNING, JmxMBeanAgent.class.getName(),
+                      "registerMBean", LOG_RESOURCE_BUNDLE,
+                      "UIMA_JMX_failed_to_register_mbean__WARNING", e);
       return;
     }
   }
-  
+
   /**
    * Unregister an MBean from the MBeanServer.
    * 
-   * @param aMBean the MBean to register
-   * @param aMBeanServer server to unregister from.  If null, the platform MBeanServer
-   *   will be used if we are running under Java 1.5.  Earlier versions of Java did
-   *   not have a platform MBeanServer; in that case, this method will do nothing.
+   * @param aMBean
+   *          the MBean to register
+   * @param aMBeanServer
+   *          server to unregister from. If null, the platform MBeanServer will be used if we are
+   *          running under Java 1.5. Earlier versions of Java did not have a platform MBeanServer;
+   *          in that case, this method will do nothing.
    */
-  public static void unregisterMBean(AnalysisEngineManagement aMBean, Object aMBeanServer)
-  {
-    if (!jmxAvailable) //means we couldn't find the required classes and methods
+  public static void unregisterMBean(AnalysisEngineManagement aMBean, Object aMBeanServer) {
+    if (!jmxAvailable) // means we couldn't find the required classes and methods
     {
       return;
     }
-    
-    if (aMBeanServer == null)
-    {
-      if (platformMBeanServer != null)
-      {
+
+    if (aMBeanServer == null) {
+      if (platformMBeanServer != null) {
         aMBeanServer = platformMBeanServer;
-      }
-      else
-      {
-        UIMAFramework.getLogger().logrb(Level.CONFIG, JmxMBeanAgent.class.getName(), "unregisterMBean", LOG_RESOURCE_BUNDLE, "UIMA_JMX_platform_mbean_server_not_available__CONFIG");
+      } else {
+        UIMAFramework.getLogger().logrb(Level.CONFIG, JmxMBeanAgent.class.getName(),
+                        "unregisterMBean", LOG_RESOURCE_BUNDLE,
+                        "UIMA_JMX_platform_mbean_server_not_available__CONFIG");
         return;
       }
     }
-    
-    try
-    {
-      //Now unregister the MBean. 
+
+    try {
+      // Now unregister the MBean.
       String mbeanName = aMBean.getUniqueMBeanName();
-      if (mbeanName != null) //guards against uninitialized AE instances
+      if (mbeanName != null) // guards against uninitialized AE instances
       {
-        Object objName = objectNameConstructor.newInstance(new Object[]{mbeanName});
-        if (((Boolean)isRegistered.invoke(aMBeanServer, new Object[]{objName})).booleanValue())
-        {
-          unregisterMBean.invoke(aMBeanServer, new Object[]{objName});
+        Object objName = objectNameConstructor.newInstance(new Object[] { mbeanName });
+        if (((Boolean) isRegistered.invoke(aMBeanServer, new Object[] { objName })).booleanValue()) {
+          unregisterMBean.invoke(aMBeanServer, new Object[] { objName });
         }
       }
-    }
-    catch (Exception e)
-    {
-      //don't fail catastrophically if we can't unregister.  Just log a warning and continue.
-      UIMAFramework.getLogger().logrb(Level.WARNING, JmxMBeanAgent.class.getName(), "unregisterMBean", LOG_RESOURCE_BUNDLE, "UIMA_JMX_failed_to_unregister_mbean__WARNING", e);
+    } catch (Exception e) {
+      // don't fail catastrophically if we can't unregister. Just log a warning and continue.
+      UIMAFramework.getLogger().logrb(Level.WARNING, JmxMBeanAgent.class.getName(),
+                      "unregisterMBean", LOG_RESOURCE_BUNDLE,
+                      "UIMA_JMX_failed_to_unregister_mbean__WARNING", e);
       return;
     }
   }
-  
+
   /** Class and Method handles for reflection */
   private static Class mbeanServerClass;
+
   private static Class objectNameClass;
+
   private static Constructor objectNameConstructor;
+
   private static Method isRegistered;
+
   private static Method registerMBean;
+
   private static Method unregisterMBean;
 
   /**
-   * Set to true if we can find the required JMX classes and methods 
+   * Set to true if we can find the required JMX classes and methods
    */
   private static boolean jmxAvailable;
-  
+
   /**
    * The platform MBean server if one is available (Java 1.5 only)
    */
   private static Object platformMBeanServer;
-  
+
   /** Get class/method handles */
-  static
-  {
-    try
-    {
+  static {
+    try {
       mbeanServerClass = Class.forName("javax.management.MBeanServer");
       objectNameClass = Class.forName("javax.management.ObjectName");
-      objectNameConstructor = objectNameClass.getConstructor(new Class[]{String.class});
-      isRegistered = mbeanServerClass.getMethod("isRegistered",new Class[]{objectNameClass});
-      registerMBean = mbeanServerClass.getMethod("registerMBean", new Class[]{Object.class, objectNameClass});
-      unregisterMBean = mbeanServerClass.getMethod("unregisterMBean", new Class[]{objectNameClass});
-      jmxAvailable = true;      
-    }
-    catch (Exception e)
-    {      
-      //JMX not available
+      objectNameConstructor = objectNameClass.getConstructor(new Class[] { String.class });
+      isRegistered = mbeanServerClass.getMethod("isRegistered", new Class[] { objectNameClass });
+      registerMBean = mbeanServerClass.getMethod("registerMBean", new Class[] { Object.class,
+          objectNameClass });
+      unregisterMBean = mbeanServerClass.getMethod("unregisterMBean",
+                      new Class[] { objectNameClass });
+      jmxAvailable = true;
+    } catch (Exception e) {
+      // JMX not available
       jmxAvailable = false;
     }
-    
-    //try to get platform MBean Server (Java 1.5 only)
-    try
-    {
+
+    // try to get platform MBean Server (Java 1.5 only)
+    try {
       Class managementFactory = Class.forName("java.lang.management.ManagementFactory");
-      Method getPlatformMBeanServer = managementFactory.getMethod("getPlatformMBeanServer",new Class[0]);
-      platformMBeanServer = getPlatformMBeanServer.invoke(null,null);
-    }
-    catch (Exception e)
-    {
+      Method getPlatformMBeanServer = managementFactory.getMethod("getPlatformMBeanServer",
+                      new Class[0]);
+      platformMBeanServer = getPlatformMBeanServer.invoke(null, null);
+    } catch (Exception e) {
       platformMBeanServer = null;
     }
   }
-  
+
   /**
    * resource bundle for log messages
    */

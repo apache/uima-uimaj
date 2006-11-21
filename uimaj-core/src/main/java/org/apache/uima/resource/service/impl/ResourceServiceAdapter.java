@@ -25,79 +25,67 @@ import org.apache.uima.resource.ResourceServiceStub;
 import org.apache.uima.resource.Resource_ImplBase;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 
-
 /**
- * Insulates applications from the knowledge that they are interacting
- * with a {@link ResourceService} rather than a local instance of a
- * {@link Resource}.  This is an abstract base class that specific resource
- * adapter implementations may extend.  
+ * Insulates applications from the knowledge that they are interacting with a
+ * {@link ResourceService} rather than a local instance of a {@link Resource}. This is an abstract
+ * base class that specific resource adapter implementations may extend.
  * <p>
- * This class implements the {@link Resource} interface and encapsulates all 
- * communications with a remote <code>ResourceService</code>.
- * Thus, applications can interact with this adapter in the same way they
- * would interact with any <code>Resource</code>, and can be completely unaware 
- * of the fact that a remote <code>ResourceService</code> is being used.
+ * This class implements the {@link Resource} interface and encapsulates all communications with a
+ * remote <code>ResourceService</code>. Thus, applications can interact with this adapter in the
+ * same way they would interact with any <code>Resource</code>, and can be completely unaware of
+ * the fact that a remote <code>ResourceService</code> is being used.
  * 
  * 
  */
-public abstract class ResourceServiceAdapter extends Resource_ImplBase 
-{
-  
+public abstract class ResourceServiceAdapter extends Resource_ImplBase {
+
   /**
-   * Sets the stub to be used to communicate with the remote service.
-   * Subclasses must call this from their <code>initialize</code> method.
-   * 
-   * @param aStub the stub for the remote service
+   * The stub that communicates with the remote service.
    */
-   protected void setStub(ResourceServiceStub aStub)
-   {
-     mStub = aStub;
-   }
-  
-   /**
-    * Gets the stub to be used to communicate with the remote service.
-    * 
-    * @return the stub for the remote service
-    */
-   protected ResourceServiceStub getStub()
-   {
-     return mStub;
-   }
-   
+  private ResourceServiceStub mStub;
+
+  /**
+   * Cached meta data.
+   */
+  private ResourceMetaData mCachedMetaData;
+
+  /**
+   * Sets the stub to be used to communicate with the remote service. Subclasses must call this from
+   * their <code>initialize</code> method.
+   * 
+   * @param aStub
+   *          the stub for the remote service
+   */
+  protected void setStub(ResourceServiceStub aStub) {
+    mStub = aStub;
+  }
+
+  /**
+   * Gets the stub to be used to communicate with the remote service.
+   * 
+   * @return the stub for the remote service
+   */
+  protected ResourceServiceStub getStub() {
+    return mStub;
+  }
+
   /**
    * @see org.apache.uima.resource.Resource#getMetaData()
    */
-  public ResourceMetaData getMetaData()
-  {
-    try
-    {
-      if (mCachedMetaData == null)
-      {
+  public ResourceMetaData getMetaData() {
+    try {
+      if (mCachedMetaData == null) {
         mCachedMetaData = getStub().callGetMetaData();
       }
-      return mCachedMetaData;  
-    }
-    catch(ResourceServiceException e)
-    {
+      return mCachedMetaData;
+    } catch (ResourceServiceException e) {
       throw new UIMARuntimeException(e);
-    }  
+    }
   }
 
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
-  public void destroy()
-  {
-  }  
-  
- 
-  /**
-   * The stub that communicates with the remote service.
-   */
-   private ResourceServiceStub mStub;
-  
- /**
-  * Cached meta data.
-  */ 
-  private ResourceMetaData mCachedMetaData;
+  public void destroy() {
+  }
 }

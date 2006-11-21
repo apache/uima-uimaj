@@ -20,7 +20,7 @@
 package org.apache.uima.cas;
 
 /**
- * Boolean array interface.  To create a boolean array object, use
+ * Boolean array interface. To create a boolean array object, use
  * {@link org.apache.uima.cas.CAS#createBooleanArrayFS CAS.createBooleanArrayFS()}.
  * 
  * 
@@ -29,18 +29,24 @@ public interface BooleanArrayFS extends CommonArrayFS {
 
   /**
    * Get the i-th string from the array.
+   * 
    * @return The i-th element.
-   * @exception ArrayIndexOutOfBoundsException If the index is out of bounds.
+   * @exception ArrayIndexOutOfBoundsException
+   *              If the index is out of bounds.
    */
-	boolean get(int i) throws ArrayIndexOutOfBoundsException;
+  boolean get(int i) throws ArrayIndexOutOfBoundsException;
 
   /**
    * Set the i-th value.
-   * @param i The index.
-   * @param b The value.
-   * @exception ArrayIndexOutOfBoundsException If <code>i</code> is out of bounds.
+   * 
+   * @param i
+   *          The index.
+   * @param b
+   *          The value.
+   * @exception ArrayIndexOutOfBoundsException
+   *              If <code>i</code> is out of bounds.
    */
-	void set(int i, boolean b) throws ArrayIndexOutOfBoundsException;
+  void set(int i, boolean b) throws ArrayIndexOutOfBoundsException;
 
   /**
    * Create a Java array that is a copy of the internal CAS array.
@@ -49,37 +55,37 @@ public interface BooleanArrayFS extends CommonArrayFS {
    */
   boolean[] toArray();
 
-	/**
-	 * Copy the contents of the array from <code>start</code> to <code>end</code> 
-	 * to the destination <code>destArray</code> with destination offset
-	 * <code>destOffset</code>.
-	 * @param srcOffset The index of the first element to copy.
-	 * @param dest The array to copy to.
-	 * @param destOffset Where to start copying into <code>dest</code>.
-   * @param length The number of elements to copy.
-	 * @exception ArrayIndexOutOfBoundsException If <code>srcOffset &lt; 0</code>
-	 * or <code>length > size()</code> or 
-	 * <code>destOffset + length > destArray.length</code>.
-	 */
-	void copyToArray(
-		int srcOffset,
-		boolean[] dest,
-		int destOffset,
-    int length)
-		throws ArrayIndexOutOfBoundsException;
+  /**
+   * Copy the contents of the array from <code>start</code> to <code>end</code> to the
+   * destination <code>destArray</code> with destination offset <code>destOffset</code>.
+   * 
+   * @param srcOffset
+   *          The index of the first element to copy.
+   * @param dest
+   *          The array to copy to.
+   * @param destOffset
+   *          Where to start copying into <code>dest</code>.
+   * @param length
+   *          The number of elements to copy.
+   * @exception ArrayIndexOutOfBoundsException
+   *              If <code>srcOffset &lt; 0</code> or <code>length > size()</code> or
+   *              <code>destOffset + length > destArray.length</code>.
+   */
+  void copyToArray(int srcOffset, boolean[] dest, int destOffset, int length)
+                  throws ArrayIndexOutOfBoundsException;
 
   /**
    * Copy the contents of an external array into this array.
-   * @param src The source array.
-   * @param srcOffset Where to start copying in the source array.
-   * @param destOffset Where to start copying to in the destination array.
-   * @param length The number of elements to copy.
+   * 
+   * @param src
+   *          The source array.
+   * @param srcOffset
+   *          Where to start copying in the source array.
+   * @param destOffset
+   *          Where to start copying to in the destination array.
+   * @param length
+   *          The number of elements to copy.
    */
-	void copyFromArray(
-		boolean[] src,
-		int srcOffset,
-		int destOffset,
-    int length)
-		throws ArrayIndexOutOfBoundsException;
+  void copyFromArray(boolean[] src, int srcOffset, int destOffset, int length)
+                  throws ArrayIndexOutOfBoundsException;
 }
-

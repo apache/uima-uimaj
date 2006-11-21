@@ -19,7 +19,6 @@
 
 package org.apache.uima.resource.impl;
 
-public interface TestResourceInterface
-{
-  String readString();  
+public interface TestResourceInterface {
+  String readString();
 }

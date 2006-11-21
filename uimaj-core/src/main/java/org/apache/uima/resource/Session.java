@@ -22,24 +22,23 @@ package org.apache.uima.resource;
 import java.io.Serializable;
 
 /**
- * An object that encapsulates all conversational state between a UIMA {@link Resource} and a particular
- * client.  In a local deployment, there will probably be only one session.  Distributed deployments
- * often have multiple sessions.  If multiple sessions are in use, it is the application's or
- * service wrapper's responsibility to make sure that a Resource's <code>Session</code> object is properly 
- * set up prior to invoking any of that Resource's methods.  
+ * An object that encapsulates all conversational state between a UIMA {@link Resource} and a
+ * particular client. In a local deployment, there will probably be only one session. Distributed
+ * deployments often have multiple sessions. If multiple sessions are in use, it is the
+ * application's or service wrapper's responsibility to make sure that a Resource's
+ * <code>Session</code> object is properly set up prior to invoking any of that Resource's
+ * methods.
  * <p>
- * Note that a particular component, such as an annotator, may get a handle to a Session
- * object that actually represents a particular namespace within a larger Session.  This
- * allows each component to use arbitrary keys for storing information in the session without
- * risking name collisions.
+ * Note that a particular component, such as an annotator, may get a handle to a Session object that
+ * actually represents a particular namespace within a larger Session. This allows each component to
+ * use arbitrary keys for storing information in the session without risking name collisions.
  * 
  * 
  */
-public interface Session extends Serializable
-{
-	/** Stores an object in the Session */
-	public void put(String aKey, Object aValue);
+public interface Session extends Serializable {
+  /** Stores an object in the Session */
+  public void put(String aKey, Object aValue);
 
   /** Gets an object from the Session */
-	public Object get(String aKey);
+  public Object get(String aKey);
 }

@@ -19,65 +19,57 @@
 
 package org.apache.uima.resource;
 
-
 /**
- * Implementation base class for {@link ConfigurableResource}s.  Provides
- * access to configuration parameters as well as basic reconfiguration
- * capability.  Subclasses should override the <code>initialize</code> and
- * <code>reconfigure</code> methods to read specific configuration parameters
- * (after calling <code>super.initialize</code> or 
- *  <code>super.reconfigure</code>).
+ * Implementation base class for {@link ConfigurableResource}s. Provides access to configuration
+ * parameters as well as basic reconfiguration capability. Subclasses should override the
+ * <code>initialize</code> and <code>reconfigure</code> methods to read specific configuration
+ * parameters (after calling <code>super.initialize</code> or <code>super.reconfigure</code>).
  * 
  * 
  */
-public abstract class ConfigurableResource_ImplBase extends Resource_ImplBase
-  implements ConfigurableResource
-{
-  
+public abstract class ConfigurableResource_ImplBase extends Resource_ImplBase implements
+                ConfigurableResource {
+
   /**
    * @see org.apache.uima.resource.ConfigurableResource#getConfigParameterValue(java.lang.String)
    */
-  public Object getConfigParameterValue(String aParamName)
-  {
-  	return getUimaContext().getConfigParameterValue(aParamName);
+  public Object getConfigParameterValue(String aParamName) {
+    return getUimaContext().getConfigParameterValue(aParamName);
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurableResource#getConfigParameterValue(java.lang.String, java.lang.String)
+   * @see org.apache.uima.resource.ConfigurableResource#getConfigParameterValue(java.lang.String,
+   *      java.lang.String)
    */
-  public Object getConfigParameterValue(String aGroupName, String aParamName)
-  {
-  	return getUimaContext().getConfigParameterValue(aGroupName, aParamName);
+  public Object getConfigParameterValue(String aGroupName, String aParamName) {
+    return getUimaContext().getConfigParameterValue(aGroupName, aParamName);
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurableResource#setConfigParameterValue(java.lang.String, java.lang.Object)
+   * @see org.apache.uima.resource.ConfigurableResource#setConfigParameterValue(java.lang.String,
+   *      java.lang.Object)
    */
-  public void setConfigParameterValue(String aParamName, Object aValue)
-  {
+  public void setConfigParameterValue(String aParamName, Object aValue) {
     getUimaContextAdmin().getConfigurationManager().setConfigParameterValue(
-      getUimaContextAdmin().getQualifiedContextName() + aParamName, aValue);
+                    getUimaContextAdmin().getQualifiedContextName() + aParamName, aValue);
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurableResource#setConfigParameterValue(java.lang.String, java.lang.String, java.lang.Object)
+   * @see org.apache.uima.resource.ConfigurableResource#setConfigParameterValue(java.lang.String,
+   *      java.lang.String, java.lang.Object)
    */
-  public void setConfigParameterValue(String aGroupName, String aParamName,
-    Object aValue)
-  {
+  public void setConfigParameterValue(String aGroupName, String aParamName, Object aValue) {
     getUimaContextAdmin().getConfigurationManager().setConfigParameterValue(
-      getUimaContextAdmin().getQualifiedContextName() + aParamName, aGroupName, aValue);
+                    getUimaContextAdmin().getQualifiedContextName() + aParamName, aGroupName,
+                    aValue);
   }
 
   /**
    * @see org.apache.uima.resource.ConfigurableResource#reconfigure()
    */
-  public void reconfigure() 
-      throws ResourceConfigurationException
-  {
-  	 getUimaContextAdmin().getConfigurationManager().reconfigure(
-  	     getUimaContextAdmin().getQualifiedContextName());
+  public void reconfigure() throws ResourceConfigurationException {
+    getUimaContextAdmin().getConfigurationManager().reconfigure(
+                    getUimaContextAdmin().getQualifiedContextName());
   }
-  
-  }
-  
+
+}

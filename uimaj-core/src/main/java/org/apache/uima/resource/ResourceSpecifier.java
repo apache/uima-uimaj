@@ -22,20 +22,17 @@ package org.apache.uima.resource;
 import org.apache.uima.resource.metadata.MetaDataObject;
 
 /**
- * A <code>ResourceSpecifier</code> contains information that can be used
- * acquire a reference to a {@link Resource}, whether that is done by 
- * instantiating the resource locally or locating an existing resource 
- * available as a service.
+ * A <code>ResourceSpecifier</code> contains information that can be used acquire a reference to a
+ * {@link Resource}, whether that is done by instantiating the resource locally or locating an
+ * existing resource available as a service.
  * <p>
- * It is the job of the {@link org.apache.uima.ResourceFactory} to locate
- * or create the {@link Resource} that is specified by a 
- * <code>ResourceSpecifier</code>. 
+ * It is the job of the {@link org.apache.uima.ResourceFactory} to locate or create the
+ * {@link Resource} that is specified by a <code>ResourceSpecifier</code>.
  * <p>
- * This interface itself does nothing.  It serves as a common parent for
- * different types of Resource Specifiers.
- *    
+ * This interface itself does nothing. It serves as a common parent for different types of Resource
+ * Specifiers.
+ * 
  * 
  */
-public interface ResourceSpecifier extends MetaDataObject
-{
+public interface ResourceSpecifier extends MetaDataObject {
 }

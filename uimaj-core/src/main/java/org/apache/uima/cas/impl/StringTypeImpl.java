@@ -26,24 +26,23 @@ package org.apache.uima.cas.impl;
  */
 public class StringTypeImpl extends TypeImpl {
 
-    private final int stringSet;
+  private final int stringSet;
 
-    /**
-     * Constructor for StringTypeImpl.
-     * 
-     * @param name
-     * @param code
-     * @param ts
-     */
-    public StringTypeImpl(String name, int code, TypeSystemImpl ts,
-            int stringSet) {
-        super(name, code, ts);
-        this.stringSet = stringSet;
-    }
+  /**
+   * Constructor for StringTypeImpl.
+   * 
+   * @param name
+   * @param code
+   * @param ts
+   */
+  public StringTypeImpl(String name, int code, TypeSystemImpl ts, int stringSet) {
+    super(name, code, ts);
+    this.stringSet = stringSet;
+  }
 
-    public int getStringSet() { // public for JCas access from TOP impl which
-                                // impls FeatureStructureImpl
-        return this.stringSet;
-    }
+  public int getStringSet() { // public for JCas access from TOP impl which
+    // impls FeatureStructureImpl
+    return this.stringSet;
+  }
 
 }

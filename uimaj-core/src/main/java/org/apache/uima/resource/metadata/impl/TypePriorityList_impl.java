@@ -29,15 +29,16 @@ import org.apache.uima.resource.metadata.TypePriorityList;
  * 
  * 
  */
-public class TypePriorityList_impl extends MetaDataObject_impl
-  implements TypePriorityList
-{
+public class TypePriorityList_impl extends MetaDataObject_impl implements TypePriorityList {
+
+  static final long serialVersionUID = 4700170375564691096L;
+
+  private ArrayList mTypeNames = new ArrayList();
 
   /**
    * @see org.apache.uima.analysis_engine.metadata.TypePriorityList#getTypes()
    */
-  public String[] getTypes()
-  {
+  public String[] getTypes() {
     String[] result = new String[mTypeNames.size()];
     mTypeNames.toArray(result);
     return result;
@@ -46,11 +47,9 @@ public class TypePriorityList_impl extends MetaDataObject_impl
   /**
    * @see org.apache.uima.analysis_engine.metadata.TypePriorityList#setTypes(java.lang.String[])
    */
-  public void setTypes(String[] aTypeNames)
-  {
+  public void setTypes(String[] aTypeNames) {
     mTypeNames.clear();
-    for (int i = 0; i < aTypeNames.length; i++)
-    {
+    for (int i = 0; i < aTypeNames.length; i++) {
       mTypeNames.add(aTypeNames[i]);
     }
   }
@@ -58,8 +57,7 @@ public class TypePriorityList_impl extends MetaDataObject_impl
   /**
    * @see org.apache.uima.analysis_engine.metadata.TypePriorityList#addType(java.lang.String)
    */
-  public void addType(String aTypeName)
-  {
+  public void addType(String aTypeName) {
     mTypeNames.add(aTypeName);
 
   }
@@ -67,42 +65,31 @@ public class TypePriorityList_impl extends MetaDataObject_impl
   /**
    * @see org.apache.uima.analysis_engine.metadata.TypePriorityList#removeType(java.lang.String)
    */
-  public void removeType(String aTypeName)
-  {
+  public void removeType(String aTypeName) {
     mTypeNames.remove(aTypeName);
   }
 
-
-  /* (non-Javadoc)
-   * Special purpose clone method to deal with ArrayList.
+  /*
+   * (non-Javadoc) Special purpose clone method to deal with ArrayList.
    */
-  public Object clone()
-  {
-    TypePriorityList_impl clone = (TypePriorityList_impl)super.clone();
+  public Object clone() {
+    TypePriorityList_impl clone = (TypePriorityList_impl) super.clone();
 
     clone.mTypeNames = new ArrayList();
     Iterator typeNameIter = mTypeNames.iterator();
-    while (typeNameIter.hasNext())
-    {
-      String name = (String)typeNameIter.next();
+    while (typeNameIter.hasNext()) {
+      String name = (String) typeNameIter.next();
       clone.addType(name);
     }
-    
+
     return clone;
-  }	
-  
+  }
+
   /**
    * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXmlizationInfo()
    */
-  protected XmlizationInfo getXmlizationInfo()
-  {
-    return new XmlizationInfo("priorityList",
-      new PropertyXmlInfo[]{
-        new PropertyXmlInfo("types",null,false,"type")
-      });      
+  protected XmlizationInfo getXmlizationInfo() {
+    return new XmlizationInfo("priorityList", new PropertyXmlInfo[] { new PropertyXmlInfo("types",
+                    null, false, "type") });
   }
-
-  private ArrayList mTypeNames = new ArrayList();
-  
-  static final long serialVersionUID = 4700170375564691096L;  
 }

@@ -19,25 +19,25 @@
 
 package org.apache.uima.internal.util;
 
-/** 
+/**
  * Used in the CAS implementation.
  */
 public interface IntPointerIterator {
-  
+
   boolean isValid();
-  
+
   int get();
-  
+
   void inc();
-  
+
   void dec();
-  
+
   void moveTo(int i);
-  
+
   void moveToFirst();
-  
+
   void moveToLast();
-  
+
   Object copy();
 
 }

@@ -50,327 +50,323 @@ import org.apache.uima.util.Logger;
 import org.apache.uima.util.XMLInputSource;
 
 public class CppUimajEngine {
-	private String exceptionString = "";
+  private String exceptionString = "";
 
-	private AnalysisEngine ae = null;
+  private AnalysisEngine ae = null;
 
-	private CasConsumer cc = null;
+  private CasConsumer cc = null;
 
-	private boolean requiresTCas = true;
+  private boolean requiresTCas = true;
 
-	private CASImpl casImpl = null;
+  private CASImpl casImpl = null;
 
-	private int[] heap;
+  private int[] heap;
 
-	private int[] indexedFSs;
+  private int[] indexedFSs;
 
-	private String[] stringSymbolTable;
+  private String[] stringSymbolTable;
 
-	private byte[] byteHeapArray;
-	private short[] shortHeapArray;
-	private long[] longHeapArray;
-	
-	private void logException(Exception exc) {
-		StringWriter sw = new StringWriter();
-		PrintWriter pw = new PrintWriter(sw);
-		exc.printStackTrace(pw);
-		exceptionString = sw.toString();
-		pw.close();
-	}
+  private byte[] byteHeapArray;
 
-	public CppUimajEngine() {
-	}
+  private short[] shortHeapArray;
 
-	public int initialize(String config, String dataPath,
-			int[] typeInheritance, int[] typePriorities, int[] featureDefs,
-			int[] featureOffset, String[] typeNames, String[] featureNames,
-			int[] stringSubTypes, String[] stringSubTypeValues,
-			int[] stringSubTypeValuePos, String[] indexIDs, int[] indexKinds,
-			int[] compStarts, int[] compDefs) {
-		int result = 0;
-		try {
-            //System.out.println("CppUimajEngine::initialize()");
-			CASMgrSerializer serializer = new CASMgrSerializer();
-			serializer.typeOrder = typePriorities;
-			serializer.indexNames = indexIDs;
+  private long[] longHeapArray;
 
-			// trivalliy construct the name to index map
-			serializer.nameToIndexMap = new int[indexIDs.length];
-			for (int i = 0; i < serializer.nameToIndexMap.length; ++i) {
-				serializer.nameToIndexMap[i] = i;
-			}
+  private void logException(Exception exc) {
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    exc.printStackTrace(pw);
+    exceptionString = sw.toString();
+    pw.close();
+  }
 
-			serializer.indexingStrategy = indexKinds;
-			serializer.comparatorIndex = compStarts;
-			serializer.comparators = compDefs;
+  public CppUimajEngine() {
+  }
 
-			serializer.typeNames = typeNames;
-			serializer.featureNames = featureNames;
-			serializer.typeInheritance = typeInheritance;
-			serializer.featDecls = featureDefs;
-			serializer.topTypeCode = 1;
-			serializer.featureOffsets = featureOffset;
-			serializer.stringSubtypes = stringSubTypes;
-			serializer.stringSubtypeValues = stringSubTypeValues;
-			serializer.stringSubtypeValuePos = stringSubTypeValuePos;
+  public int initialize(String config, String dataPath, int[] typeInheritance,
+                  int[] typePriorities, int[] featureDefs, int[] featureOffset, String[] typeNames,
+                  String[] featureNames, int[] stringSubTypes, String[] stringSubTypeValues,
+                  int[] stringSubTypeValuePos, String[] indexIDs, int[] indexKinds,
+                  int[] compStarts, int[] compDefs) {
+    int result = 0;
+    try {
+      // System.out.println("CppUimajEngine::initialize()");
+      CASMgrSerializer serializer = new CASMgrSerializer();
+      serializer.typeOrder = typePriorities;
+      serializer.indexNames = indexIDs;
 
-			byte[] bar = config.getBytes("UTF-16");
-			ByteArrayInputStream bais = new ByteArrayInputStream(bar);
-			XMLInputSource in = new XMLInputSource(bais, null);
-			ResourceSpecifier specifier = UIMAFramework.getXMLParser()
-					.parseResourceSpecifier(in);
-			bais.close();
+      // trivalliy construct the name to index map
+      serializer.nameToIndexMap = new int[indexIDs.length];
+      for (int i = 0; i < serializer.nameToIndexMap.length; ++i) {
+        serializer.nameToIndexMap[i] = i;
+      }
 
-			ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
-			resMgr.setDataPath(dataPath);
+      serializer.indexingStrategy = indexKinds;
+      serializer.comparatorIndex = compStarts;
+      serializer.comparators = compDefs;
 
-			if (specifier instanceof CasConsumerDescription) {
-				cc = UIMAFramework.produceCasConsumer(specifier);
-				CasConsumerDescription ccdesc = (CasConsumerDescription) specifier;
-				Capability[] capabilities = ccdesc.getCasConsumerMetaData()
-						.getCapabilities();
-				for (int i = 0; i < capabilities.length; i++) {
-					String[] inputsofas = capabilities[i].getInputSofas();
-					if (inputsofas.length > 0)
-						requiresTCas = false;
-				}
-			} else {
-				ae = UIMAFramework.produceAnalysisEngine(specifier, resMgr,
-						null);
-			}
+      serializer.typeNames = typeNames;
+      serializer.featureNames = featureNames;
+      serializer.typeInheritance = typeInheritance;
+      serializer.featDecls = featureDefs;
+      serializer.topTypeCode = 1;
+      serializer.featureOffsets = featureOffset;
+      serializer.stringSubtypes = stringSubTypes;
+      serializer.stringSubtypeValues = stringSubTypeValues;
+      serializer.stringSubtypeValuePos = stringSubTypeValuePos;
 
-			casImpl = (CASImpl) CASFactory.createCAS();
-			casImpl.commitTypeSystem();
+      byte[] bar = config.getBytes("UTF-16");
+      ByteArrayInputStream bais = new ByteArrayInputStream(bar);
+      XMLInputSource in = new XMLInputSource(bais, null);
+      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+      bais.close();
 
-			// Create the Base indexes in order to deserialize
-			casImpl.initCASIndexes();
-			casImpl.getIndexRepositoryMgr().commit();
-            
-			// deserialize into this CAS 
-			CASCompleteSerializer completeSerializer = new CASCompleteSerializer();
-			completeSerializer.setCasMgrSerializer(serializer);
-			completeSerializer.setCasSerializer(Serialization
-					.serializeCAS(casImpl));
+      ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
+      resMgr.setDataPath(dataPath);
 
-			casImpl.reinit(completeSerializer);
+      if (specifier instanceof CasConsumerDescription) {
+        cc = UIMAFramework.produceCasConsumer(specifier);
+        CasConsumerDescription ccdesc = (CasConsumerDescription) specifier;
+        Capability[] capabilities = ccdesc.getCasConsumerMetaData().getCapabilities();
+        for (int i = 0; i < capabilities.length; i++) {
+          String[] inputsofas = capabilities[i].getInputSofas();
+          if (inputsofas.length > 0)
+            requiresTCas = false;
+        }
+      } else {
+        ae = UIMAFramework.produceAnalysisEngine(specifier, resMgr, null);
+      }
 
-			// System.out.println(cc.getProcessingResourceMetaData().getName());
-		} catch (Exception exc) {
-			result = 1;
-			logException(exc);
-		}
+      casImpl = (CASImpl) CASFactory.createCAS();
+      casImpl.commitTypeSystem();
 
-		return result;
-	}
+      // Create the Base indexes in order to deserialize
+      casImpl.initCASIndexes();
+      casImpl.getIndexRepositoryMgr().commit();
 
-	String stringTableToString(String[] s) {
-		StringBuffer buffer = new StringBuffer();
-		for (int i = 0; i < s.length; ++i) {
-			buffer.append(i + ": " + s[i] + ", ");
-		}
-		return buffer.toString();
-	}
+      // deserialize into this CAS
+      CASCompleteSerializer completeSerializer = new CASCompleteSerializer();
+      completeSerializer.setCasMgrSerializer(serializer);
+      completeSerializer.setCasSerializer(Serialization.serializeCAS(casImpl));
 
-	public int process(String doc, int[] heapArray, int[] fsIndex,
-			String[] stringTable, int[] resultSpecTypes,
-			int[] resultSpecFeatures, int sofaNum, byte[] byteHeapArray,
-			short[] shortHeapArray, long[] longHeapArray) {
-		int result = 0;
-		try {
-			// System.err.println("CppUimajEngine.process() called");
+      casImpl.reinit(completeSerializer);
 
-			casImpl.reset();
+      // System.out.println(cc.getProcessingResourceMetaData().getName());
+    } catch (Exception exc) {
+      result = 1;
+      logException(exc);
+    }
 
-			// 1. deserialize CAS
+    return result;
+  }
 
-			CASSerializer serializer = new CASSerializer();
-			// set serialization data
-			serializer.heapArray = heapArray;
-			serializer.fsIndex = fsIndex;
-			serializer.stringTable = stringTable;
-			
-			serializer.byteHeapArray = byteHeapArray;
-			serializer.shortHeapArray = shortHeapArray;
-			serializer.longHeapArray = longHeapArray;
+  String stringTableToString(String[] s) {
+    StringBuffer buffer = new StringBuffer();
+    for (int i = 0; i < s.length; ++i) {
+      buffer.append(i + ": " + s[i] + ", ");
+    }
+    return buffer.toString();
+  }
 
-			casImpl.reinit(serializer);
+  public int process(String doc, int[] heapArray, int[] fsIndex, String[] stringTable,
+                  int[] resultSpecTypes, int[] resultSpecFeatures, int sofaNum,
+                  byte[] byteHeapArray, short[] shortHeapArray, long[] longHeapArray) {
+    int result = 0;
+    try {
+      // System.err.println("CppUimajEngine.process() called");
 
-			// 2. create result spec
-			if (ae != null) {
+      casImpl.reset();
 
-				ResultSpecification rs = ae.createResultSpecification();
-				for (int i = 0; i < resultSpecTypes.length; ++i) {
-					// allAnnotatorFeatures is not considere here! (TODO)
-					rs.addResultType(casImpl.getTypeSystemImpl().getType(
-							resultSpecTypes[i]).getName(), false);
-				}
-				for (int i = 0; i < resultSpecFeatures.length; ++i) {
-					rs.addResultFeature(casImpl.getTypeSystemImpl().getFeature(
-							resultSpecFeatures[i]).getName());
-				}
-				// 3. call process with cas
-				ae.process(casImpl, rs);
+      // 1. deserialize CAS
 
-			} else if (cc != null) {
-				// 3. call process with tcas or cas
-				if (requiresTCas && sofaNum == 0) {
-					result = 1;
-					exceptionString = "This CasConsumer expects a TCAS but Sofa from which to construct one is not specified.";
-				} else if (sofaNum > 0) {
-					TCAS tcas = casImpl.getTCAS(sofaNum);
-					cc.processCas(tcas);
-				} else {
-					cc.processCas(casImpl);
-				}
-			}
-			// 4. deserialize CAS again
-			CASSerializer deSerializer = Serialization.serializeCAS(casImpl);
+      CASSerializer serializer = new CASSerializer();
+      // set serialization data
+      serializer.heapArray = heapArray;
+      serializer.fsIndex = fsIndex;
+      serializer.stringTable = stringTable;
 
-			saveSerializedCAS(deSerializer);
+      serializer.byteHeapArray = byteHeapArray;
+      serializer.shortHeapArray = shortHeapArray;
+      serializer.longHeapArray = longHeapArray;
 
-		} catch (Exception exc) {
-			result = 1;
-			logException(exc);
-		}
-		return result;
-	}
+      casImpl.reinit(serializer);
 
-	private void saveSerializedCAS(CASSerializer deSerializer) {
-		heap = deSerializer.heapArray;
-		indexedFSs = deSerializer.fsIndex;
-		stringSymbolTable = deSerializer.stringTable;
-		
-		byteHeapArray = deSerializer.byteHeapArray;
-		shortHeapArray = deSerializer.shortHeapArray;
-		longHeapArray = deSerializer.longHeapArray;
-		
-	}
+      // 2. create result spec
+      if (ae != null) {
 
-	public int[] getHeap() {
-		return heap;
-	}
+        ResultSpecification rs = ae.createResultSpecification();
+        for (int i = 0; i < resultSpecTypes.length; ++i) {
+          // allAnnotatorFeatures is not considere here! (TODO)
+          rs
+                          .addResultType(casImpl.getTypeSystemImpl().getType(resultSpecTypes[i])
+                                          .getName(), false);
+        }
+        for (int i = 0; i < resultSpecFeatures.length; ++i) {
+          rs.addResultFeature(casImpl.getTypeSystemImpl().getFeature(resultSpecFeatures[i])
+                          .getName());
+        }
+        // 3. call process with cas
+        ae.process(casImpl, rs);
 
-	public int[] getIndexedFSs() {
-		return indexedFSs;
-	}
+      } else if (cc != null) {
+        // 3. call process with tcas or cas
+        if (requiresTCas && sofaNum == 0) {
+          result = 1;
+          exceptionString = "This CasConsumer expects a TCAS but Sofa from which to construct one is not specified.";
+        } else if (sofaNum > 0) {
+          TCAS tcas = casImpl.getTCAS(sofaNum);
+          cc.processCas(tcas);
+        } else {
+          cc.processCas(casImpl);
+        }
+      }
+      // 4. deserialize CAS again
+      CASSerializer deSerializer = Serialization.serializeCAS(casImpl);
 
-	public String[] getStringTable() {
-		return stringSymbolTable;
-	}
-	
-	public byte[] getByteHeap() {
-		return byteHeapArray;
-	}
-	
-	public short[] getShortHeap() {
-		return shortHeapArray;
-	}
-	
-	public long[] getLongHeap() {
-		return longHeapArray;
-	}
+      saveSerializedCAS(deSerializer);
 
-	public int destroy() {
-		int result = 0;
-		try {
-			if (ae != null) {
-				ae.destroy();
-				ae = null;
-			}
-		} catch (Exception exc) {
-			result = 1;
-			logException(exc);
-		}
-		return result;
-	}
+    } catch (Exception exc) {
+      result = 1;
+      logException(exc);
+    }
+    return result;
+  }
 
-	public int batchProcessComplete() {
-		int result = 0;
+  private void saveSerializedCAS(CASSerializer deSerializer) {
+    heap = deSerializer.heapArray;
+    indexedFSs = deSerializer.fsIndex;
+    stringSymbolTable = deSerializer.stringTable;
 
-		try {
-			cc.batchProcessComplete(null);
-		} catch (ResourceProcessException e) {
-			logException(e);
-			return 100;
-		} catch (IOException e) {
-			logException(e);
-			return 100;
-		}
-		return result;
-	}
+    byteHeapArray = deSerializer.byteHeapArray;
+    shortHeapArray = deSerializer.shortHeapArray;
+    longHeapArray = deSerializer.longHeapArray;
 
-	public int collectionProcessComplete() {
-		int result = 0;
+  }
 
-		try {
-			cc.batchProcessComplete(null);
-		} catch (ResourceProcessException e) {
-			logException(e);
-			return 100;
-		} catch (IOException e) {
-			logException(e);
-			return 100;
-		}
-		return result;
+  public int[] getHeap() {
+    return heap;
+  }
 
-	}
+  public int[] getIndexedFSs() {
+    return indexedFSs;
+  }
 
-	public String resolveImports(String inDesc, String dataPath) {
+  public String[] getStringTable() {
+    return stringSymbolTable;
+  }
 
-		try {
-			byte[] bar;
-			bar = inDesc.getBytes("UTF-16");
-			ByteArrayInputStream bais = new ByteArrayInputStream(bar);
-			XMLInputSource in = new XMLInputSource(bais, null);
-			ResourceSpecifier specifier = UIMAFramework.getXMLParser()
-					.parseResourceSpecifier(in);
-			bais.close();
-			ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
-			resMgr.setDataPath(dataPath);
-			if (specifier instanceof AnalysisEngineDescription) {
+  public byte[] getByteHeap() {
+    return byteHeapArray;
+  }
 
-				AnalysisEngineDescription aeSpecifier = (AnalysisEngineDescription) specifier;
+  public short[] getShortHeap() {
+    return shortHeapArray;
+  }
 
-				aeSpecifier.getDelegateAnalysisEngineSpecifiers();
-				aeSpecifier.getAnalysisEngineMetaData().resolveImports(resMgr);
+  public long[] getLongHeap() {
+    return longHeapArray;
+  }
 
-				StringWriter writer = new StringWriter();
-				aeSpecifier.toXML(writer);
+  public int destroy() {
+    int result = 0;
+    try {
+      if (ae != null) {
+        ae.destroy();
+        ae = null;
+      }
+    } catch (Exception exc) {
+      result = 1;
+      logException(exc);
+    }
+    return result;
+  }
 
-				return writer.toString();
-			} else if (specifier instanceof CasConsumerDescription) {
-				CasConsumerDescription ccSpecifier = (CasConsumerDescription) specifier;
-				ccSpecifier.getCasConsumerMetaData().resolveImports(resMgr);
-				StringWriter writer = new StringWriter();
-				ccSpecifier.toXML(writer);
-				return writer.toString();
-			}
-		} catch (UnsupportedEncodingException e) {
-			logException(e);
-		} catch (InvalidXMLException e) {
-			logException(e);
-		} catch (IOException e) {
-			logException(e);
-		} catch (SAXException e) {
-			logException(e);
-		}
+  public int batchProcessComplete() {
+    int result = 0;
 
-		return null;
-	}
+    try {
+      cc.batchProcessComplete(null);
+    } catch (ResourceProcessException e) {
+      logException(e);
+      return 100;
+    } catch (IOException e) {
+      logException(e);
+      return 100;
+    }
+    return result;
+  }
 
-	protected void finalize() throws Throwable {
-		if (ae != null) {
-			destroy();
-		}
-	}
+  public int collectionProcessComplete() {
+    int result = 0;
 
-	public String getLastExceptionString() {
-		return exceptionString;
-	}
-	
-	//get UIMA Framework version
-	public static String getVersion() {
-		return UIMAFramework.getVersionString();
-	}
+    try {
+      cc.batchProcessComplete(null);
+    } catch (ResourceProcessException e) {
+      logException(e);
+      return 100;
+    } catch (IOException e) {
+      logException(e);
+      return 100;
+    }
+    return result;
+
+  }
+
+  public String resolveImports(String inDesc, String dataPath) {
+
+    try {
+      byte[] bar;
+      bar = inDesc.getBytes("UTF-16");
+      ByteArrayInputStream bais = new ByteArrayInputStream(bar);
+      XMLInputSource in = new XMLInputSource(bais, null);
+      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+      bais.close();
+      ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
+      resMgr.setDataPath(dataPath);
+      if (specifier instanceof AnalysisEngineDescription) {
+
+        AnalysisEngineDescription aeSpecifier = (AnalysisEngineDescription) specifier;
+
+        aeSpecifier.getDelegateAnalysisEngineSpecifiers();
+        aeSpecifier.getAnalysisEngineMetaData().resolveImports(resMgr);
+
+        StringWriter writer = new StringWriter();
+        aeSpecifier.toXML(writer);
+
+        return writer.toString();
+      } else if (specifier instanceof CasConsumerDescription) {
+        CasConsumerDescription ccSpecifier = (CasConsumerDescription) specifier;
+        ccSpecifier.getCasConsumerMetaData().resolveImports(resMgr);
+        StringWriter writer = new StringWriter();
+        ccSpecifier.toXML(writer);
+        return writer.toString();
+      }
+    } catch (UnsupportedEncodingException e) {
+      logException(e);
+    } catch (InvalidXMLException e) {
+      logException(e);
+    } catch (IOException e) {
+      logException(e);
+    } catch (SAXException e) {
+      logException(e);
+    }
+
+    return null;
+  }
+
+  protected void finalize() throws Throwable {
+    if (ae != null) {
+      destroy();
+    }
+  }
+
+  public String getLastExceptionString() {
+    return exceptionString;
+  }
+
+  // get UIMA Framework version
+  public static String getVersion() {
+    return UIMAFramework.getVersionString();
+  }
 
 }

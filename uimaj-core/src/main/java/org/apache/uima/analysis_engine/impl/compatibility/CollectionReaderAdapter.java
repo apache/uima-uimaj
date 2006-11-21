@@ -44,37 +44,42 @@ import org.apache.uima.resource.ResourceInitializationException;
 /**
  * Adapter that allows CollectionReaders to implement the AnalysisComponent interface.
  */
-public class CollectionReaderAdapter implements AnalysisComponent
-{
+public class CollectionReaderAdapter implements AnalysisComponent {
   private CollectionReader mCollectionReader;
+
   private TypeSystem mLastTypeSystem;
+
   private UimaContext mUimaContext;
+
   private CasManager mCasManager;
+
   private boolean mSofaAware;
 
   /**
    * Create a new annotator adapter.
-   * @param aAnnotator the annotator instance
-   * @param aMetaData metadata for the annotator.  Needed to compute
-   *   ResultSpecification.
+   * 
+   * @param aAnnotator
+   *          the annotator instance
+   * @param aMetaData
+   *          metadata for the annotator. Needed to compute ResultSpecification.
    */
   public CollectionReaderAdapter(CollectionReader aCollectionReader,
-      AnalysisEngineMetaData aMetaData)
-  {
+                  AnalysisEngineMetaData aMetaData) {
     mCollectionReader = aCollectionReader;
     mSofaAware = aMetaData.isSofaAware();
   }
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.core.AnalysisComponent#initialize(org.apache.uima.UimaContext)
    */
-  public void initialize(UimaContext aContext) throws ResourceInitializationException
-  {
-    //Initialize the CollectionReader, passing the appropriate UimaContext
-    //We pass an empty descriptor to satisfy the Collection Reader's initialize
-    //method; we don't want to do any additional set-up of resources or 
-    //config params, that's all handled in the initialization of the enclosing
-    //Primitive AnalysisEngine.
+  public void initialize(UimaContext aContext) throws ResourceInitializationException {
+    // Initialize the CollectionReader, passing the appropriate UimaContext
+    // We pass an empty descriptor to satisfy the Collection Reader's initialize
+    // method; we don't want to do any additional set-up of resources or
+    // config params, that's all handled in the initialization of the enclosing
+    // Primitive AnalysisEngine.
     AnalysisEngineDescription_impl desc = new AnalysisEngineDescription_impl();
 
     Map paramsMap = new HashMap();
@@ -84,164 +89,154 @@ public class CollectionReaderAdapter implements AnalysisComponent
     mCasManager = mCollectionReader.getResourceManager().getCasManager();
 
   }
-   
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.core.AnalysisComponent#typeSystemChanged(org.apache.uima.core.AbstractCas)
    */
-  public void checkTypeSystemChange(AbstractCas aCAS) throws AnalysisEngineProcessException
-  {
-    try
-    {
+  public void checkTypeSystemChange(AbstractCas aCAS) throws AnalysisEngineProcessException {
+    try {
       TypeSystem typeSystem;
-      if (aCAS instanceof JCas)
+      if (aCAS instanceof JCas) {
+        typeSystem = ((JCas) aCAS).getTypeSystem();
+      } else // CAS or TCAS
       {
-        typeSystem = ((JCas)aCAS).getTypeSystem();
+        typeSystem = ((CAS) aCAS).getTypeSystem();
       }
-      else //CAS or TCAS
-      {
-        typeSystem = ((CAS)aCAS).getTypeSystem();
-      }  
-      if (typeSystem != mLastTypeSystem)
-      {
+      if (typeSystem != mLastTypeSystem) {
         mCollectionReader.typeSystemInit(typeSystem);
         mLastTypeSystem = typeSystem;
       }
-    }
-    catch (ResourceInitializationException e)
-    {
+    } catch (ResourceInitializationException e) {
       throw new AnalysisEngineProcessException(e);
     }
-  } 
-  
-  /* (non-Javadoc)
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.annotator.Annotator#process(org.apache.uima.core.AbstractCas)
    */
-  public void process(AbstractCas aCAS) throws AnalysisEngineProcessException
-  {
-    //does nothing - CollectionReaders ignore their input CAS
+  public void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
+    // does nothing - CollectionReaders ignore their input CAS
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.core.AnalysisComponent#batchProcessComplete()
    */
-  public void batchProcessComplete() throws AnalysisEngineProcessException
-  {
-    //CollectionReaders don't implement batchProcessComplete
+  public void batchProcessComplete() throws AnalysisEngineProcessException {
+    // CollectionReaders don't implement batchProcessComplete
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.core.AnalysisComponent#collectionProcessComplete()
    */
-  public void collectionProcessComplete() throws AnalysisEngineProcessException
-  {
-    //CollectionReaders don't implement collectionProcessComplete
+  public void collectionProcessComplete() throws AnalysisEngineProcessException {
+    // CollectionReaders don't implement collectionProcessComplete
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.core.AnalysisComponent#destroy()
    */
-  public void destroy()
-  {
-    mCollectionReader.destroy();    
+  public void destroy() {
+    mCollectionReader.destroy();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.core.AnalysisComponent#reconfigure()
    */
-  public void reconfigure() throws ResourceInitializationException, ResourceConfigurationException
-  {
+  public void reconfigure() throws ResourceInitializationException, ResourceConfigurationException {
     mCollectionReader.reconfigure();
   }
 
-
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#hasNext()
    */
-  public boolean hasNext() throws AnalysisEngineProcessException
-  {
-    try
-    {
+  public boolean hasNext() throws AnalysisEngineProcessException {
+    try {
       return mCollectionReader.hasNext();
-    }
-    catch (CollectionException e)
-    {
+    } catch (CollectionException e) {
       throw new AnalysisEngineProcessException(e);
-    }
-    catch (IOException e)
-    {
+    } catch (IOException e) {
       throw new AnalysisEngineProcessException(e);
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#next()
    */
-  public AbstractCas next() throws AnalysisEngineProcessException
-  {
-    //get a new CAS
+  public AbstractCas next() throws AnalysisEngineProcessException {
+    // get a new CAS
     CAS cas = (CAS) mUimaContext.getEmptyCas(CAS.class);
 
-    //check if type system changed; if so, notify CollectionReader
+    // check if type system changed; if so, notify CollectionReader
     checkTypeSystemChange(cas);
-    
-    //Get the right view of the CAS.  Sofa-aware components get the base CAS.
-    //Sofa-unaware components get whatever is mapped to the default text sofa.
-    CAS view = ((CASImpl)cas).getBaseCAS();
-    if (!mSofaAware)
-    {
-      view = cas.getView(CAS.NAME_DEFAULT_SOFA);          
+
+    // Get the right view of the CAS. Sofa-aware components get the base CAS.
+    // Sofa-unaware components get whatever is mapped to the default text sofa.
+    CAS view = ((CASImpl) cas).getBaseCAS();
+    if (!mSofaAware) {
+      view = cas.getView(CAS.NAME_DEFAULT_SOFA);
     }
-            
-    try
-    {
+
+    try {
       mCollectionReader.getNext(view);
-    }
-    catch (CollectionException e)
-    {
+    } catch (CollectionException e) {
       throw new AnalysisEngineProcessException(e);
-    }
-    catch (IOException e)
-    {
+    } catch (IOException e) {
       throw new AnalysisEngineProcessException(e);
     }
     return cas;
   }
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#next(org.apache.uima.core.AbstractCas)
    */
-  public void next(AbstractCas aEmptyCas) throws AnalysisEngineProcessException
-  {
-    if (!CAS.class.isAssignableFrom(aEmptyCas.getClass()))
-    {
+  public void next(AbstractCas aEmptyCas) throws AnalysisEngineProcessException {
+    if (!CAS.class.isAssignableFrom(aEmptyCas.getClass())) {
       throw new AnalysisEngineProcessException(
-          AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE,
-          new Object[]{CAS.class, aEmptyCas.getClass()});
+                      AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] {
+                          CAS.class, aEmptyCas.getClass() });
     }
-    
+
   }
 
-  /** 
-   * Get the CAS interface required by this annotator.  
+  /**
+   * Get the CAS interface required by this annotator.
+   * 
    * @return the CAS interface required by this annotator
    */
-  public Class getRequiredCasInterface()
-  {
-    //CollectionReaders don't use the input CAS, so they don't
-    //care what CAS interface they receive 
-    return AbstractCas.class; 
+  public Class getRequiredCasInterface() {
+    // CollectionReaders don't use the input CAS, so they don't
+    // care what CAS interface they receive
+    return AbstractCas.class;
   }
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#getCasInstancesRequired()
    */
-  public int getCasInstancesRequired()
-  {
+  public int getCasInstancesRequired() {
     return 1;
   }
-  
-  public void setResultSpecification(ResultSpecification aResultSpec)
-  {
-    //Collection Readers    
+
+  public void setResultSpecification(ResultSpecification aResultSpec) {
+    // Collection Readers
   }
 }

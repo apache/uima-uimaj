@@ -22,40 +22,39 @@ package org.apache.uima.resource;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 
 /**
- * A type of <code>ResourceSpecifier</code> that locates a resource file
- * using its URL.
- *    
+ * A type of <code>ResourceSpecifier</code> that locates a resource file using its URL.
+ * 
  * 
  */
-public interface ConfigurableDataResourceSpecifier extends ResourceSpecifier
-{ 
+public interface ConfigurableDataResourceSpecifier extends ResourceSpecifier {
   /**
    * Retrieves the URL of the data.
    * 
    * @return a URL string
    */
   public String getUrl();
-  
+
   /**
    * Sets the URL of the data.
    * 
-   * @param aUrl a URL string
+   * @param aUrl
+   *          a URL string
    */
   public void setUrl(String aUrl);
-  
 
   /**
-   * Gets the metadata for this resource, which includes descriptive information
-   * as well as configuration settings.
+   * Gets the metadata for this resource, which includes descriptive information as well as
+   * configuration settings.
    * 
    * @return the metadata for this resource
    */
   public ResourceMetaData getMetaData();
-    
-	/**
-	 * Sets the metadata for this resource.
-	 * 
-	 * @param aMetaData metadata to assign
-	 */
-	public void setMetaData(ResourceMetaData aMetaData);
+
+  /**
+   * Sets the metadata for this resource.
+   * 
+   * @param aMetaData
+   *          metadata to assign
+   */
+  public void setMetaData(ResourceMetaData aMetaData);
 }

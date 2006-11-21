@@ -24,129 +24,118 @@ import org.apache.uima.collection.base_cpm.CasObjectProcessor;
 import org.apache.uima.resource.metadata.Capability;
 
 /**
- * A <code>AnalysisSequenceCapabilityNode</code> is a node element of the 
- * {@link CapabilityLanguageFlowObject}. A <code>AnalysisSequenceCapabilityNode</code>
- * has a <code>AnalysisEngine</code>, a <code>ResultSpecification</code> which should be processed 
+ * A <code>AnalysisSequenceCapabilityNode</code> is a node element of the
+ * {@link CapabilityLanguageFlowObject}. A <code>AnalysisSequenceCapabilityNode</code> has a
+ * <code>AnalysisEngine</code>, a <code>ResultSpecification</code> which should be processed
  * from the <code>AnalysisEngine</code>. Also a <code>AnalysisSequenceCapabilityNode</code> has
  * a {@link CapabilityContainer} which inculdes the capabilities of the <code>AnalysisEngine</code>.
  * 
  */
-public class AnalysisSequenceCapabilityNode implements Cloneable
-{
+public class AnalysisSequenceCapabilityNode implements Cloneable {
   private static final long serialVersionUID = -1471125199227401514L;
 
   /**
-   * The reference to the AnalysisEngine to be executed at this point
-   * in the sequence.  If this is null, the Key should be used to find
-   * the AnalysisEngine.  This field is transient and so does not persist when
-   * this AnalysisEngineSequence is serialized.  
+   * The reference to the AnalysisEngine to be executed at this point in the sequence. If this is
+   * null, the Key should be used to find the AnalysisEngine. This field is transient and so does
+   * not persist when this AnalysisEngineSequence is serialized.
    */
   private transient CasObjectProcessor mCasProcessor = null;
 
   /**
-   * The Key of the AnalysisEngine to be executed at this point
-   * in the sequence.
+   * The Key of the AnalysisEngine to be executed at this point in the sequence.
    */
   private String mCasProcessorKey;
 
   /**
-   * The ResultSpecification to provide to the AnalysisEngine at this
-   * point in the sequence.  May be null, indicating that the AnalysisEngine 
-   * should produce all possible results.
+   * The ResultSpecification to provide to the AnalysisEngine at this point in the sequence. May be
+   * null, indicating that the AnalysisEngine should produce all possible results.
    */
   private ResultSpecification mResultSpec;
 
   /**
-   * The mCapabilityContainer hold the capabilities of the current AnalyseEngine. 
-   * The capabilities are hold in hash maps for the quick search for ToFs or 
-   * languages
+   * The mCapabilityContainer hold the capabilities of the current AnalyseEngine. The capabilities
+   * are hold in hash maps for the quick search for ToFs or languages
    */
   private CapabilityContainer mCapabilityContainer;
 
   /**
    * Creates a new AnalysisSequenceCapabilityNode from an AnalysisEngine reference
    * 
-   * @param aKey key for AnalysisEngine to be executed at this point in sequence
-   * @param aAnalysisEngine  reference to the AnalysisEngine instance
-   * @param aResultSpec result specification to be passed to this AnalysisEngine
+   * @param aKey
+   *          key for AnalysisEngine to be executed at this point in sequence
+   * @param aAnalysisEngine
+   *          reference to the AnalysisEngine instance
+   * @param aResultSpec
+   *          result specification to be passed to this AnalysisEngine
    */
   public AnalysisSequenceCapabilityNode(String aKey, CasObjectProcessor aCasProcessor,
-      ResultSpecification aResultSpec)
-  {
+                  ResultSpecification aResultSpec) {
     mCasProcessorKey = aKey;
     mCasProcessor = aCasProcessor;
     mResultSpec = aResultSpec;
     mCapabilityContainer = null;
 
-    //check if analysis engine is available
-    if (mCasProcessor != null)
-    {
-      //get capabilities of the current analysis engine
+    // check if analysis engine is available
+    if (mCasProcessor != null) {
+      // get capabilities of the current analysis engine
       Capability[] capabilities = mCasProcessor.getProcessingResourceMetaData().getCapabilities();
 
-      //create capability container and compile only output capabilities
+      // create capability container and compile only output capabilities
       mCapabilityContainer = new CapabilityContainer(capabilities, false, true);
     }
 
   }
 
   /**
-   * Creates a new AnalysisSequenceCapabilityNode from a AnalysisEngine Key. This is to 
-   * be used when a direct reference to a AnalysisEngine is not available.
+   * Creates a new AnalysisSequenceCapabilityNode from a AnalysisEngine Key. This is to be used when
+   * a direct reference to a AnalysisEngine is not available.
    * 
-   * @param aAnalysisEngine_Key  Key of a AnalysisEngine
-   * @param aCasProcessorCapabilities Capabilities for this AnalysisEngine
-   * @param aResultSpec result specification to be passed to this AnalysisEngine
+   * @param aAnalysisEngine_Key
+   *          Key of a AnalysisEngine
+   * @param aCasProcessorCapabilities
+   *          Capabilities for this AnalysisEngine
+   * @param aResultSpec
+   *          result specification to be passed to this AnalysisEngine
    */
-  public AnalysisSequenceCapabilityNode(String aCasProcessorKey, 
-      Capability[] aCasProcessorCapabilities, ResultSpecification aResultSpec)
-  {
+  public AnalysisSequenceCapabilityNode(String aCasProcessorKey,
+                  Capability[] aCasProcessorCapabilities, ResultSpecification aResultSpec) {
     mCasProcessorKey = aCasProcessorKey;
     mResultSpec = aResultSpec;
     mCasProcessor = null;
 
-    //analysis engine is not set, so we cannot create capabilityContainer
+    // analysis engine is not set, so we cannot create capabilityContainer
     mCapabilityContainer = new CapabilityContainer(aCasProcessorCapabilities, false, true);
   }
 
-  public String getCasProcessorKey()
-  {
+  public String getCasProcessorKey() {
     return mCasProcessorKey;
   }
 
-  public CasObjectProcessor getCasProcessor()
-  {
+  public CasObjectProcessor getCasProcessor() {
     return mCasProcessor;
   }
 
-  public ResultSpecification getResultSpec()
-  {
+  public ResultSpecification getResultSpec() {
     return mResultSpec;
   }
 
   /**
    * Sets this node's Result Specificatoin.
    */
-  public void setResultSpec(ResultSpecification aResultSpec)
-  {
+  public void setResultSpec(ResultSpecification aResultSpec) {
     mResultSpec = aResultSpec;
   }
 
   /**
    * Returns a clone of this <code>AnalysisSequenceNode</code>.
    * 
-   * @return a new <code>AnalysisSequenceNode</code> object that is an exact clone
-   *    of this one.
+   * @return a new <code>AnalysisSequenceNode</code> object that is an exact clone of this one.
    */
-  public Object clone()
-  {
-    try
-    {
+  public Object clone() {
+    try {
       return super.clone();
-    }
-    catch (CloneNotSupportedException e)
-    {
-      assert false : "AnalysisSequenceNode is cloneable";  
+    } catch (CloneNotSupportedException e) {
+      assert false : "AnalysisSequenceNode is cloneable";
       return null;
     }
   }
@@ -156,10 +145,8 @@ public class AnalysisSequenceCapabilityNode implements Cloneable
    * 
    * @return CapabilityContainer - returns the reference to the capability container
    */
-  public CapabilityContainer getCapabilityContainer()
-  {
+  public CapabilityContainer getCapabilityContainer() {
     return mCapabilityContainer;
   }
-
 
 }

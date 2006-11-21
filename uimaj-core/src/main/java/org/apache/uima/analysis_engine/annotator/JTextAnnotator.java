@@ -23,34 +23,31 @@ import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.jcas.impl.JCas;
 
 /**
- * Interface for JCAS annotators in UIMA SDK v1.x.
- * As of v2.0, JCAS annotators should extend 
+ * Interface for JCAS annotators in UIMA SDK v1.x. As of v2.0, JCAS annotators should extend
  * {@link org.apache.uima.analysis_component.JCasAnnotator_ImplBase}.
  */
-public interface JTextAnnotator extends BaseAnnotator
-{
+public interface JTextAnnotator extends BaseAnnotator {
   /**
-   * Invokes this annotator's analysis logic.  Prior to calling this method,
-   * the caller must ensure that the {@link JCas} has been populated with the
-   * document to be analyzed as well as any information that this annotator 
-   * needs to do its processing.  This annotator will access the data in the 
-   * JCas and add new data to the JCas.
+   * Invokes this annotator's analysis logic. Prior to calling this method, the caller must ensure
+   * that the {@link JCas} has been populated with the document to be analyzed as well as any
+   * information that this annotator needs to do its processing. This annotator will access the data
+   * in the JCas and add new data to the JCas.
    * <p>
-   * The caller must also guarantee that the {@link ResultSpecification} falls
-   * within the scope of the 
-   * {@link org.apache.uima.resource.metadata.Capability Capabilities}
-   * of this annotator (as published by its containing AnalysisEngine).
+   * The caller must also guarantee that the {@link ResultSpecification} falls within the scope of
+   * the {@link org.apache.uima.resource.metadata.Capability Capabilities} of this annotator (as
+   * published by its containing AnalysisEngine).
    * <p>
-   * The annotator will only produce the output types and features that
-   * are declared in the <code>aResultSpec</code> parameter.  
+   * The annotator will only produce the output types and features that are declared in the
+   * <code>aResultSpec</code> parameter.
    * 
-   * @param aJCas contains the document to be analyzed and may contain other
-   *    metadata about that document.
-   * @param aResultSpec  A list of output types and features that this annotator
-   *    should produce.
+   * @param aJCas
+   *          contains the document to be analyzed and may contain other metadata about that
+   *          document.
+   * @param aResultSpec
+   *          A list of output types and features that this annotator should produce.
    * 
-   * @throws AnnotatorProcessException  if a failure occurs during processing.     
+   * @throws AnnotatorProcessException
+   *           if a failure occurs during processing.
    */
-  public void process(JCas aJCas, ResultSpecification aResultSpec)
-    throws AnnotatorProcessException;
+  public void process(JCas aJCas, ResultSpecification aResultSpec) throws AnnotatorProcessException;
 }

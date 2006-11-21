@@ -21,6 +21,7 @@ package org.apache.uima.cas;
 
 /**
  * An exception that occurs during contraint parsing.
+ * 
  * @deprecated The Constraint Parser is not supported in externally released versions of UIMA
  */
 public class ParsingException extends Exception {

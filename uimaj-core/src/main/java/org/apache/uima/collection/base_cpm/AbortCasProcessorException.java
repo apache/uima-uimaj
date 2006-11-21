@@ -20,18 +20,16 @@
 package org.apache.uima.collection.base_cpm;
 
 /**
- * Exception to notify the CPM to disable a Cas Processor. Cas Processor can
- * be disabled due to excessive errors during processing. The presumption is
- * that such Cas Processor is not reliable and it should be removed from the
- * processing chain. 
- *
- *
+ * Exception to notify the CPM to disable a Cas Processor. Cas Processor can be disabled due to
+ * excessive errors during processing. The presumption is that such Cas Processor is not reliable
+ * and it should be removed from the processing chain.
+ * 
+ * 
  */
-public class AbortCasProcessorException extends Exception
-{
-	private static final long serialVersionUID = 6667835751923326076L;
-  public AbortCasProcessorException(String msg)
-	{
-		super(msg);
-	}
+public class AbortCasProcessorException extends Exception {
+  private static final long serialVersionUID = 6667835751923326076L;
+
+  public AbortCasProcessorException(String msg) {
+    super(msg);
+  }
 }

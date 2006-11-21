@@ -22,8 +22,8 @@ package org.apache.uima.cas.impl;
 import java.lang.reflect.Array;
 
 /**
- * Common part of array impl for those arrays of primitives which use auxilliary
- * heaps. Is a super class to those.
+ * Common part of array impl for those arrays of primitives which use auxilliary heaps. Is a super
+ * class to those.
  */
 public abstract class CommonAuxArrayFSImpl extends FeatureStructureImplC {
 
@@ -42,31 +42,25 @@ public abstract class CommonAuxArrayFSImpl extends FeatureStructureImplC {
   }
 
   /**
-   * copyFromArray - only works for things where the src and tgt are the same
-   * underlying type (long and byte) src = external java object, tgt = internal
-   * CAS Aux heap
+   * copyFromArray - only works for things where the src and tgt are the same underlying type (long
+   * and byte) src = external java object, tgt = internal CAS Aux heap
    */
-  protected void copyFromJavaArray(Object src, int srcOffset,
-      Object casAuxHeap, int tgtOffset, int length) {
+  protected void copyFromJavaArray(Object src, int srcOffset, Object casAuxHeap, int tgtOffset,
+                  int length) {
     this.casImpl.checkArrayBounds(this.addr, tgtOffset, length);
-    final int startOffset = casImpl.heap.heap[casImpl
-        .getArrayStartAddress(this.addr)];
-    System.arraycopy(src, srcOffset, casAuxHeap, startOffset + tgtOffset,
-        length);
+    final int startOffset = casImpl.heap.heap[casImpl.getArrayStartAddress(this.addr)];
+    System.arraycopy(src, srcOffset, casAuxHeap, startOffset + tgtOffset, length);
   }
 
   /**
-   * copyFromArray - only works for things where the src and tgt are the same
-   * underlying type (long and byte) src = internal CAS Aux heap, tgt = external
-   * java object
+   * copyFromArray - only works for things where the src and tgt are the same underlying type (long
+   * and byte) src = internal CAS Aux heap, tgt = external java object
    */
-  protected void copyToJavaArray(Object casAuxHeap, int srcOffset, Object tgt,
-      int tgtOffset, int length) {
+  protected void copyToJavaArray(Object casAuxHeap, int srcOffset, Object tgt, int tgtOffset,
+                  int length) {
     this.casImpl.checkArrayBounds(this.addr, srcOffset, length);
-    final int startOffset = casImpl.heap.heap[casImpl
-        .getArrayStartAddress(this.addr)];
-    System.arraycopy(casAuxHeap, startOffset + srcOffset, tgt, tgtOffset,
-        length);
+    final int startOffset = casImpl.heap.heap[casImpl.getArrayStartAddress(this.addr)];
+    System.arraycopy(casAuxHeap, startOffset + srcOffset, tgt, tgtOffset, length);
   }
 
   /**
@@ -74,8 +68,7 @@ public abstract class CommonAuxArrayFSImpl extends FeatureStructureImplC {
    */
   protected Object toArray(Object casAuxHeap) {
     final int size = size();
-    Object outArray = Array.newInstance(casAuxHeap.getClass()
-        .getComponentType(), size);
+    Object outArray = Array.newInstance(casAuxHeap.getClass().getComponentType(), size);
     copyToJavaArray(casAuxHeap, 0, outArray, 0, size);
     return outArray;
   }

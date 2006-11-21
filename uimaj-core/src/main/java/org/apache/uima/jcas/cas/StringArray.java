@@ -25,19 +25,22 @@ import org.apache.uima.jcas.impl.JCas;
 /** JCas class model for StringArray */
 public final class StringArray extends TOP implements StringArrayFS {
   /**
-   * Each cover class when loaded sets an index. Used in the JCas typeArray to
-   * go from the cover class or class instance to the corresponding instance
-   * of the _Type class
+   * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
+   * class or class instance to the corresponding instance of the _Type class
    */
   public final static int typeIndexID = JCas.getNextIndex();
 
   public final static int type = typeIndexID;
 
-  /** used to obtain reference to the TOP_Type instance
+  /**
+   * used to obtain reference to the TOP_Type instance
+   * 
    * @return the type array index
    */
   // can't be factored - refs locally defined field
-  public int getTypeIndexID() {return typeIndexID;}
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
 
   // never called. Here to disable default constructor
   private StringArray() {
@@ -51,8 +54,9 @@ public final class StringArray extends TOP implements StringArrayFS {
   /** Make a new StringArray of given size */
   public StringArray(JCas jcas, int length) {
     this(
-       /* addr */ jcas.getLowLevelCas().ll_createArray(jcas.getType(typeIndexID).casTypeCode, length, true),
-       /* type */ jcas.getType(typeIndexID));
+    /* addr */jcas.getLowLevelCas().ll_createArray(jcas.getType(typeIndexID).casTypeCode, length,
+                    true),
+    /* type */jcas.getType(typeIndexID));
   }
 
   /**
@@ -60,7 +64,7 @@ public final class StringArray extends TOP implements StringArrayFS {
    */
   public String get(int i) {
     jcasType.casImpl.checkArrayBounds(addr, i);
-    return jcasType.ll_cas.ll_getStringArrayValue(addr, i); 
+    return jcasType.ll_cas.ll_getStringArrayValue(addr, i);
   }
 
   /**

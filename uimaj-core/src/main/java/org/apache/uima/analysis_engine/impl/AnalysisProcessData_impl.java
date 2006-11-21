@@ -31,70 +31,59 @@ import org.apache.uima.util.impl.ProcessTrace_impl;
  * 
  * @deprecated since v2.0
  */
-public class AnalysisProcessData_impl implements AnalysisProcessData
-{
-  
-     
+public class AnalysisProcessData_impl implements AnalysisProcessData {
 
   /**
-   * Creates a new AnalysisProcessData_impl from exsiting {@link CAS}.
-   * and {@link ProcessTrace} objects.
+   * The CAS owned by this AnalysisProcessData. This reference does not change during the life of
+   * this AnalysisProcessData.
    */
-  public AnalysisProcessData_impl(CAS aCAS, ProcessTrace aTrace)
-  {
-    mCAS = aCAS; 
+  protected CAS mCAS;
+
+  /**
+   * The ProcessTrace owned by this AnalysisProcessData. This reference may change during the life
+   * of this AnalysisProcessData. once and does not change.
+   */
+  protected ProcessTrace mProcessTrace;
+
+  /**
+   * Creates a new AnalysisProcessData_impl from exsiting {@link CAS}. and {@link ProcessTrace}
+   * objects.
+   */
+  public AnalysisProcessData_impl(CAS aCAS, ProcessTrace aTrace) {
+    mCAS = aCAS;
     mProcessTrace = aTrace;
   }
-    /**
-   * Creates a new AnalysisProcessData_impl from an exsiting {@link CAS}.
-   * A new {@link ProcessTrace} will be created.
+
+  /**
+   * Creates a new AnalysisProcessData_impl from an exsiting {@link CAS}. A new
+   * {@link ProcessTrace} will be created.
    * 
-   * @param aPerformanceTuningSettings performance tuning settings used to
-   *    configure ProcessTrace.
+   * @param aPerformanceTuningSettings
+   *          performance tuning settings used to configure ProcessTrace.
    */
-  public AnalysisProcessData_impl(CAS aCAS, Properties aPerformanceTuningSettings)
-  {
-    mCAS = aCAS; 
+  public AnalysisProcessData_impl(CAS aCAS, Properties aPerformanceTuningSettings) {
+    mCAS = aCAS;
     mProcessTrace = new ProcessTrace_impl(aPerformanceTuningSettings);
   }
-  
+
   /**
    * @see org.apache.uima.analysis_engine.AnalysisProcessData#getCAS()
    */
-  public CAS getCAS()
-  {
+  public CAS getCAS() {
     return mCAS;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.AnalysisProcessData#getProcessTrace()
    */
-  public ProcessTrace getProcessTrace()
-  {
+  public ProcessTrace getProcessTrace() {
     return mProcessTrace;
-  } 
- 
-
-  /**
-   * Sets the ProcessTrace object.  This is not available through the
-   * AnalysisProcessData interface.
-   */
-  public void setProcessTrace(ProcessTrace aProcessTrace)
-  {
-    mProcessTrace = aProcessTrace;
   }
 
-  
   /**
-   * The CAS owned by this AnalysisProcessData.  This reference does not
-   * change during the life of this AnalysisProcessData.
+   * Sets the ProcessTrace object. This is not available through the AnalysisProcessData interface.
    */
-  protected CAS mCAS;
-  
-  /**
-   * The ProcessTrace owned by this AnalysisProcessData.  This reference
-   * may change during the life of this AnalysisProcessData.
-   * once and does not change.
-   */
-  protected ProcessTrace mProcessTrace;
+  public void setProcessTrace(ProcessTrace aProcessTrace) {
+    mProcessTrace = aProcessTrace;
+  }
 }

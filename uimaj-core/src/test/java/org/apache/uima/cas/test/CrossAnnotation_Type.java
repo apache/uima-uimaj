@@ -31,55 +31,66 @@ import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Feature;
 
-  /** This class is part of the JCas internals.
- * The Get/Set accessors are for low-level CAS access, only. */
+/**
+ * This class is part of the JCas internals. The Get/Set accessors are for low-level CAS access,
+ * only.
+ */
 public class CrossAnnotation_Type extends Annotation_Type {
-  protected FSGenerator getFSGenerator() {return fsGenerator;};
-  private final FSGenerator fsGenerator = 
-    new FSGenerator() {
-      public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (instanceOf_Type.useExistingInstance) {
-  			   // Return eq fs instance if already created
-  		     FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
-  		     if (null == fs) {
-  		       fs = new CrossAnnotation(addr, instanceOf_Type);
-  			     instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
-  			     return fs;
-  		     }
-  		     return fs;
-        } else return new CrossAnnotation(addr, instanceOf_Type);
-  	  }
-    };
+  protected FSGenerator getFSGenerator() {
+    return fsGenerator;
+  };
+
+  private final FSGenerator fsGenerator = new FSGenerator() {
+    public FeatureStructure createFS(int addr, CASImpl cas) {
+      if (instanceOf_Type.useExistingInstance) {
+        // Return eq fs instance if already created
+        FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
+        if (null == fs) {
+          fs = new CrossAnnotation(addr, instanceOf_Type);
+          instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
+          return fs;
+        }
+        return fs;
+      } else
+        return new CrossAnnotation(addr, instanceOf_Type);
+    }
+  };
 
   public final static int typeIndexID = CrossAnnotation.typeIndexID;
 
   public final static boolean featOkTst = JCas.getFeatOkTst("uima.tcas.CrossAnnotation");
+
   final Feature casFeat_otherAnnotation;
-  final int     casFeatCode_otherAnnotation;
+
+  final int casFeatCode_otherAnnotation;
 
   public int getOtherAnnotation(int addr) {
     if (featOkTst && casFeat_otherAnnotation == null)
-          JCas.throwFeatMissing("otherAnnotation", "uima.tcas.CrossAnnotation");
-    return ll_cas.ll_getRefValue(addr, casFeatCode_otherAnnotation);}
+      JCas.throwFeatMissing("otherAnnotation", "uima.tcas.CrossAnnotation");
+    return ll_cas.ll_getRefValue(addr, casFeatCode_otherAnnotation);
+  }
 
   public void setOtherAnnotation(int addr, int v) {
     if (featOkTst && casFeat_otherAnnotation == null)
-          JCas.throwFeatMissing("otherAnnotation", "uima.tcas.CrossAnnotation");
-    ll_cas.ll_setRefValue(addr, casFeatCode_otherAnnotation, v);}
-
-
-  //* initialize variables to correspond with Cas Type and Features
-  public CrossAnnotation_Type(JCas jcas, Type casType) {
-    super(jcas, casType);
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
-
-    casFeat_otherAnnotation = jcas.getRequiredFeatureDE(casType, "otherAnnotation", "uima.tcas.Annotation", featOkTst);
-    casFeatCode_otherAnnotation = (null == casFeat_otherAnnotation) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_otherAnnotation).getCode();
+      JCas.throwFeatMissing("otherAnnotation", "uima.tcas.CrossAnnotation");
+    ll_cas.ll_setRefValue(addr, casFeatCode_otherAnnotation, v);
   }
 
-  protected CrossAnnotation_Type() { //block default new operator
+  // * initialize variables to correspond with Cas Type and Features
+  public CrossAnnotation_Type(JCas jcas, Type casType) {
+    super(jcas, casType);
+    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
+
+    casFeat_otherAnnotation = jcas.getRequiredFeatureDE(casType, "otherAnnotation",
+                    "uima.tcas.Annotation", featOkTst);
+    casFeatCode_otherAnnotation = (null == casFeat_otherAnnotation) ? JCas.INVALID_FEATURE_CODE
+                    : ((FeatureImpl) casFeat_otherAnnotation).getCode();
+  }
+
+  protected CrossAnnotation_Type() { // block default new operator
     casFeat_otherAnnotation = null;
     casFeatCode_otherAnnotation = JCas.INVALID_FEATURE_CODE;
-    throw new RuntimeException("Internal Error-this constructor should never be called.");  }
+    throw new RuntimeException("Internal Error-this constructor should never be called.");
+  }
 
 }

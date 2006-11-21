@@ -22,129 +22,112 @@ package org.apache.uima.resource;
 import org.apache.uima.UIMAException;
 
 /**
- * Thrown to indicate a failure has occurred in attempting to access
- * an external resource.
+ * Thrown to indicate a failure has occurred in attempting to access an external resource.
  * 
  * 
  */
-public class ResourceAccessException extends UIMAException
-{
+public class ResourceAccessException extends UIMAException {
+
+  private static final long serialVersionUID = 6192395953611408054L;
+
+  /**
+   * Message key for a standard UIMA exception message: "The Resource {0} requires parameters, none
+   * were specified."
+   */
+  public static final String PARAMETERS_REQUIRED = "parameters_required";
+
+  /**
+   * Message key for a standard UIMA exception message: "The Resource {0} does not accept
+   * parameters."
+   */
+  public static final String PARAMETERS_NOT_ALLOWED = "parameters_not_allowed";
   
- private static final long serialVersionUID = 6192395953611408054L;
-/**
-  * Creates a new exception with a null
-  * message.
-  */
-  public ResourceAccessException()
-  {
+  /**
+   * Creates a new exception with a null message.
+   */
+  public ResourceAccessException() {
     super();
   }
 
- 
- /**
-  * Creates a new exception with the specified cause and a null message.
-  * 
-  * @param aCause  the original exception that caused this exception
-  *     to be thrown, if any
-  */
-  public ResourceAccessException(Throwable aCause)
-  {
+  /**
+   * Creates a new exception with the specified cause and a null message.
+   * 
+   * @param aCause
+   *          the original exception that caused this exception to be thrown, if any
+   */
+  public ResourceAccessException(Throwable aCause) {
     super(aCause);
   }
-  
-  
-  
- /**
-  * Creates a new exception with a the specified message.
-  * 
-  * @param aResourceBundleName the base name of the resource bundle in which 
-  *        the message for this exception is located.
-  * @param aMessageKey an identifier that maps to the message for
-  *        this exception.  The message may contain placeholders for
-  *        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-  *        class.   
-  * @param aArguments  The arguments to the message.  <code>null</code> may
-  *        be used if the message has no arguments.
-  */
-  public ResourceAccessException(String aResourceBundleName,
-     String aMessageKey, Object[] aArguments)
-  {
-    super(aResourceBundleName, aMessageKey, aArguments);   
+
+  /**
+   * Creates a new exception with a the specified message.
+   * 
+   * @param aResourceBundleName
+   *          the base name of the resource bundle in which the message for this exception is
+   *          located.
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
+   */
+  public ResourceAccessException(String aResourceBundleName, String aMessageKey, Object[] aArguments) {
+    super(aResourceBundleName, aMessageKey, aArguments);
   }
-  
-  
- /**
-  * Creates a new exception with the specified message and cause.
-  * 
-  * @param aResourceBundleName the base name of the resource bundle in which 
-  *        the message for this exception is located.
-  * @param aMessageKey an identifier that maps to the message for
-  *        this exception.  The message may contain placeholders for
-  *        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-  *        class.   
-  * @param aArguments  The arguments to the message.  <code>null</code> may
-  *        be used if the message has no arguments.
-  * @param aCause  the original exception that caused this exception
-  *     to be thrown, if any
-  */
-  public ResourceAccessException(String aResourceBundleName, 
-     String aMessageKey, Object[] aArguments, Throwable aCause)
-  {
+
+  /**
+   * Creates a new exception with the specified message and cause.
+   * 
+   * @param aResourceBundleName
+   *          the base name of the resource bundle in which the message for this exception is
+   *          located.
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
+   * @param aCause
+   *          the original exception that caused this exception to be thrown, if any
+   */
+  public ResourceAccessException(String aResourceBundleName, String aMessageKey,
+                  Object[] aArguments, Throwable aCause) {
     super(aResourceBundleName, aMessageKey, aArguments, aCause);
-  }  
- 
-  
- /**
-  * Creates a new exception with a message from the 
-  * {@link #STANDARD_MESSAGE_CATALOG}.
-  * 
-  * @param aMessageKey an identifier that maps to the message for
-  *        this exception.  The message may contain placeholders for
-  *        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-  *        class.   
-  * @param aArguments  The arguments to the message.  <code>null</code> may
-  *        be used if the message has no arguments.
-  */
-  public ResourceAccessException(String aMessageKey, Object[] aArguments)
-  {
-    super(aMessageKey, aArguments);   
   }
-  
- 
-  
- /**
-  * Creates a new exception with the specified cause and a message from the
-  * {@link #STANDARD_MESSAGE_CATALOG}.
-  *  
-  * @param aMessageKey an identifier that maps to the message for
-  *        this exception.  The message may contain placeholders for
-  *        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-  *        class.   
-  * @param aArguments  The arguments to the message.  <code>null</code> may
-  *        be used if the message has no arguments.
-  * @param aCause  the original exception that caused this exception
-  *     to be thrown, if any
-  */
-  public ResourceAccessException(String aMessageKey, Object[] aArguments, 
-                        Throwable aCause)
-  {
+
+  /**
+   * Creates a new exception with a message from the {@link #STANDARD_MESSAGE_CATALOG}.
+   * 
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
+   */
+  public ResourceAccessException(String aMessageKey, Object[] aArguments) {
+    super(aMessageKey, aArguments);
+  }
+
+  /**
+   * Creates a new exception with the specified cause and a message from the
+   * {@link #STANDARD_MESSAGE_CATALOG}.
+   * 
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
+   * @param aCause
+   *          the original exception that caused this exception to be thrown, if any
+   */
+  public ResourceAccessException(String aMessageKey, Object[] aArguments, Throwable aCause) {
     super(aMessageKey, aArguments, aCause);
-  }  
-  
-	/**
-	 * Message key for a standard UIMA exception message:
-	 * "The Resource {0} requires parameters, none were specified."
-	 */
-	 public static final String PARAMETERS_REQUIRED = 
-		 "parameters_required";  
-
-	/**
-	 * Message key for a standard UIMA exception message:
-	 * "The Resource {0} does not accept parameters."
-	 */
-	 public static final String PARAMETERS_NOT_ALLOWED = 
-		 "parameters_not_allowed";    	
+  }
 }
-
-
-

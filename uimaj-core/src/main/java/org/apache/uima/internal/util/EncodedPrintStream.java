@@ -26,9 +26,9 @@ import java.io.UnsupportedEncodingException;
 /**
  * Allow a <code>PrintStream</code> to specify an encoding.
  * 
- * <p>This functionality is provided out of the box by the Java 1.4 version
- * of <code>PrintStream</code>.  This class is strictly for backwards
- * compatibility.
+ * <p>
+ * This functionality is provided out of the box by the Java 1.4 version of <code>PrintStream</code>.
+ * This class is strictly for backwards compatibility.
  * 
  */
 public class EncodedPrintStream extends PrintStream {
@@ -38,31 +38,34 @@ public class EncodedPrintStream extends PrintStream {
   /**
    * Constructor allows specifying a character encoding.
    * 
-   * <p>Does not automatically flush the underlying output stream.
+   * <p>
+   * Does not automatically flush the underlying output stream.
    * 
-   * @param out The underlying output stream.
-   * @param encoding String representation of a character encoding.
-   * @throws java.io.UnsupportedEncodingException If the character encoding is
-   * not supported by the JVM.
+   * @param out
+   *          The underlying output stream.
+   * @param encoding
+   *          String representation of a character encoding.
+   * @throws java.io.UnsupportedEncodingException
+   *           If the character encoding is not supported by the JVM.
    */
-  public EncodedPrintStream(OutputStream out, String encoding)
-    throws UnsupportedEncodingException {
+  public EncodedPrintStream(OutputStream out, String encoding) throws UnsupportedEncodingException {
     this(out, false, encoding);
   }
 
   /**
    * Constructor allows specifying a character encoding.
-   * @param out The underlying output stream.
-   * @param autoFlush See {@link PrintStream#PrintStream(java.io.OutputStream, boolean) PrintStream()}
-   * @param encoding String representation of a character encoding.
-   * @throws java.io.UnsupportedEncodingException If the character encoding is
-   * not supported by the JVM.
+   * 
+   * @param out
+   *          The underlying output stream.
+   * @param autoFlush
+   *          See {@link PrintStream#PrintStream(java.io.OutputStream, boolean) PrintStream()}
+   * @param encoding
+   *          String representation of a character encoding.
+   * @throws java.io.UnsupportedEncodingException
+   *           If the character encoding is not supported by the JVM.
    */
-  public EncodedPrintStream(
-    OutputStream out,
-    boolean autoFlush,
-    String encoding)
-    throws UnsupportedEncodingException {
+  public EncodedPrintStream(OutputStream out, boolean autoFlush, String encoding)
+                  throws UnsupportedEncodingException {
     super(out, autoFlush);
     this.encoding = encoding;
     // Possibly trigger Unsupported encoding exception.

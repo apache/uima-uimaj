@@ -25,66 +25,64 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.jcas.impl.JCas;
 
 /**
- * Base class to be extended by CAS Multipliers that use the {@link CAS} interface.
- * A CAS Multiplier can produce multiplie output CASes while processing an input CAS.
- * See {@link AnalysisComponent} for a description of how the framework 
- * calls the methods on this interface.
+ * Base class to be extended by CAS Multipliers that use the {@link CAS} interface. A CAS Multiplier
+ * can produce multiplie output CASes while processing an input CAS. See {@link AnalysisComponent}
+ * for a description of how the framework calls the methods on this interface.
  */
-public abstract class JCasMultiplier_ImplBase extends AnalysisComponent_ImplBase
-{
-  /* (non-Javadoc)
+public abstract class JCasMultiplier_ImplBase extends AnalysisComponent_ImplBase {
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#getRequiredCasInterface()
    */
-  public final Class getRequiredCasInterface()
-  {
+  public final Class getRequiredCasInterface() {
     return JCas.class;
   }
-   
+
   /**
-   * Returns the maximum number of CAS instances that this CAS Multiplier expects to 
-   * use at the same time.  Returns a default value of 1, which will be sufficient
-   * for most CAS Multipliers.  Only if there is a clear need should this be overridden
-   * to return something greater than 1. 
+   * Returns the maximum number of CAS instances that this CAS Multiplier expects to use at the same
+   * time. Returns a default value of 1, which will be sufficient for most CAS Multipliers. Only if
+   * there is a clear need should this be overridden to return something greater than 1.
    */
-  public int getCasInstancesRequired()
-  {
+  public int getCasInstancesRequired() {
     return 1;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#process(org.apache.uima.core.AbstractCas)
    */
-  public final void process(AbstractCas aCAS) throws AnalysisEngineProcessException
-  {
-    if (aCAS instanceof JCas)
-    {
-      process((JCas)aCAS);
+  public final void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
+    if (aCAS instanceof JCas) {
+      process((JCas) aCAS);
+    } else {
+      throw new AnalysisEngineProcessException(
+                      AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] {
+                          JCas.class, aCAS.getClass() });
     }
-    else
-    {
-      throw new AnalysisEngineProcessException(AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE,
-          new Object[]{JCas.class, aCAS.getClass()});    
-    } 
   }
-  
+
   /**
-   * This method should be overriden by subclasses.  Inputs a JCAS to the AnalysisComponent. 
-   * The AnalysisComponent "owns" this JCAS until such time as {@link #hasNext()} is
-   * called and returns false, or until the <code>process</code> method is called again
-   * (see {@link AnalysisComponent} for details).
-   *
-   * @param aJCas a JCAS that this AnalysisComponent should process.
-   *   
-   * @throws AnalysisEngineProcessException if a problem occurs during processing
+   * This method should be overriden by subclasses. Inputs a JCAS to the AnalysisComponent. The
+   * AnalysisComponent "owns" this JCAS until such time as {@link #hasNext()} is called and returns
+   * false, or until the <code>process</code> method is called again (see
+   * {@link AnalysisComponent} for details).
+   * 
+   * @param aJCas
+   *          a JCAS that this AnalysisComponent should process.
+   * 
+   * @throws AnalysisEngineProcessException
+   *           if a problem occurs during processing
    */
   public abstract void process(JCas aJCas) throws AnalysisEngineProcessException;
-  
+
   /**
    * Gets an empty JCas that this CAS Multiplier can then populate.
+   * 
    * @return an empty JCas
    */
-  protected final JCas getEmptyJCas()
-  {
-    return (JCas)getContext().getEmptyCas(JCas.class);
+  protected final JCas getEmptyJCas() {
+    return (JCas) getContext().getEmptyCas(JCas.class);
   }
 }

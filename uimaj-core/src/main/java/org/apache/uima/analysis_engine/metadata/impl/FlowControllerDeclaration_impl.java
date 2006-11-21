@@ -43,144 +43,141 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
 /**
  * Declares which FlowController is used by the Aggregate Analysis Engine.
  */
-public class FlowControllerDeclaration_impl extends MetaDataObject_impl implements FlowControllerDeclaration
-{
+public class FlowControllerDeclaration_impl extends MetaDataObject_impl implements
+                FlowControllerDeclaration {
   private static final long serialVersionUID = 1526130202197517743L;
+
   private String mKey;
+
   private Import mImport;
+
   private ResourceSpecifier mSpecifier;
 
-
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration#getKey()
    */
-  public String getKey()
-  {
+  public String getKey() {
     return mKey;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration#setKey(java.lang.String)
    */
-  public void setKey(String aKey)
-  {
+  public void setKey(String aKey) {
     mKey = aKey;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see FlowControllerDeclaration#getImport()
    */
-  public Import getImport()
-  {
+  public Import getImport() {
     return mImport;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see FlowControllerDeclaration#setImport(org.apache.uima.resource.metadata.Import)
    */
-  public void setImport(Import aImport)
-  {
+  public void setImport(Import aImport) {
     mImport = aImport;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see FlowControllerDeclaration#getSpecifier()
    */
-  public ResourceSpecifier getSpecifier()
-  {
+  public ResourceSpecifier getSpecifier() {
     return mSpecifier;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see FlowControllerDeclaration#setSpecifier(org.apache.uima.resource.ResourceSpecifier)
    */
-  public void setSpecifier(ResourceSpecifier aSpecifier)
-  {
+  public void setSpecifier(ResourceSpecifier aSpecifier) {
     mSpecifier = aSpecifier;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see FlowControllerDeclaration#resolveImports()
    */
-  public void resolveImports() throws InvalidXMLException
-  {
+  public void resolveImports() throws InvalidXMLException {
     resolveImports(UIMAFramework.newDefaultResourceManager());
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see FlowControllerDeclaration#resolveImports(org.apache.uima.resource.ResourceManager)
    */
-  public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException
-  {
+  public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
     Import theImport = getImport();
-    if (theImport != null)
-    {
+    if (theImport != null) {
       URL url = theImport.findAbsoluteUrl(aResourceManager);
       InputStream stream = null;
-      try
-      {
-          stream = url.openStream();
-          XMLInputSource input = new XMLInputSource(url);
-          ResourceSpecifier spec = UIMAFramework.getXMLParser().parseResourceSpecifier(input);
-          setSpecifier(spec);
-          setImport(null);
-      }
-      catch (IOException e)
-      {
-          throw new InvalidXMLException(e);
-      }
-      finally
-      {
-          try
-          {
-              if (stream != null)
-              {
-                  stream.close();
-              } 
+      try {
+        stream = url.openStream();
+        XMLInputSource input = new XMLInputSource(url);
+        ResourceSpecifier spec = UIMAFramework.getXMLParser().parseResourceSpecifier(input);
+        setSpecifier(spec);
+        setImport(null);
+      } catch (IOException e) {
+        throw new InvalidXMLException(e);
+      } finally {
+        try {
+          if (stream != null) {
+            stream.close();
           }
-          catch (IOException e1)
-          {
-              UIMAFramework.getLogger(this.getClass()).log(Level.SEVERE, "", e1);
-          }
+        } catch (IOException e1) {
+          UIMAFramework.getLogger(this.getClass()).log(Level.SEVERE, "", e1);
+        }
       }
-    }  
+    }
   }
 
-  
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element, org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
+   *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
-  public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions) throws InvalidXMLException
-  {
+  public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+                  throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
-    //set key from attributes
+    // set key from attributes
     mKey = aElement.getAttribute("key");
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
    */
-  protected AttributesImpl getXMLAttributes()
-  {
-    //write key as attribute
+  protected AttributesImpl getXMLAttributes() {
+    // write key as attribute
     AttributesImpl attrs = new AttributesImpl();
-    if (mKey != null && mKey.length() > 0)
-    {
+    if (mKey != null && mKey.length() > 0) {
       attrs.addAttribute(null, null, "key", "string", mKey);
     }
     return attrs;
   }
 
-  protected XmlizationInfo getXmlizationInfo()
-  {
+  protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
-  
-  static final protected XmlizationInfo XMLIZATION_INFO =
-    new XmlizationInfo("flowController",
-      new PropertyXmlInfo[]{
-         new PropertyXmlInfo("import", null),
-         new PropertyXmlInfo("specifier", null)
-      });
+
+  static final protected XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("flowController",
+                  new PropertyXmlInfo[] { new PropertyXmlInfo("import", null),
+                      new PropertyXmlInfo("specifier", null) });
 }

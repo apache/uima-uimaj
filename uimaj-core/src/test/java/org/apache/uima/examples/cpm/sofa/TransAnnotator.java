@@ -33,29 +33,29 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.TCAS;
 
-/**  
+/**
  * Simple English to German translator
  * 
- * @author  Eddie Epstein
+ * @author Eddie Epstein
  */
-public class TransAnnotator extends Annotator_ImplBase implements GenericAnnotator
-{
+public class TransAnnotator extends Annotator_ImplBase implements GenericAnnotator {
 
-  public void process(CAS aCas, ResultSpecification aResultSpec) throws AnnotatorProcessException
-  {
+  public void process(CAS aCas, ResultSpecification aResultSpec) throws AnnotatorProcessException {
     TCAS engTcas, germTcas;
 
     // get English text Sofa and open TCAS view
     SofaID realSofaName = getContext().mapToSofaID("EnglishDocument");
-    //System.out.println("TRANSANNOTATOR: real sofa name for English document " + realSofaName.getSofaID());
+    // System.out.println("TRANSANNOTATOR: real sofa name for English document " +
+    // realSofaName.getSofaID());
 
     engTcas = aCas.getTCAS(aCas.getSofa(realSofaName));
-//    if (engTcas == null)
-//      System.out.println(realSofaName + " sofa not found in CAS");
+    // if (engTcas == null)
+    // System.out.println(realSofaName + " sofa not found in CAS");
 
     realSofaName = getContext().mapToSofaID("GermanDocument");
-    //System.out.println("TRANSANNOTATOR: real sofa name of GermanDocument " + realSofaName.getSofaID());
-    //Create the output German text Sofa and open TCAS view
+    // System.out.println("TRANSANNOTATOR: real sofa name of GermanDocument " +
+    // realSofaName.getSofaID());
+    // Create the output German text Sofa and open TCAS view
     germTcas = aCas.getTCAS(aCas.createSofa(realSofaName, "text"));
 
     // Get some necessary Type System constants
@@ -74,8 +74,7 @@ public class TransAnnotator extends Annotator_ImplBase implements GenericAnnotat
 
     // Parse the English text
     StringTokenizer st = new StringTokenizer(engText);
-    while (st.hasMoreTokens())
-    {
+    while (st.hasMoreTokens()) {
       String thisTok = st.nextToken();
       int engBegin = engText.indexOf(thisTok, engEnd);
       engEnd = engBegin + thisTok.length();
@@ -88,8 +87,7 @@ public class TransAnnotator extends Annotator_ImplBase implements GenericAnnotat
       String germWord = Translate(thisTok);
 
       // Accumulate the translated text
-      if (germBegin > 0)
-      {
+      if (germBegin > 0) {
         translation.append(' ');
         germBegin += 1;
       }
@@ -116,8 +114,7 @@ public class TransAnnotator extends Annotator_ImplBase implements GenericAnnotat
 
   static char wIs[] = { 'i', 's' };
 
-  private String Translate(String word)
-  {
+  private String Translate(String word) {
     String lword = word.toLowerCase();
     if (Arrays.equals(wThis, lword.toCharArray()))
       return new String("das");

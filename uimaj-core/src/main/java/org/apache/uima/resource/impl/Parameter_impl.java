@@ -30,73 +30,64 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLParser.ParsingOptions;
 
-public class Parameter_impl extends MetaDataObject_impl implements Parameter
-{
+public class Parameter_impl extends MetaDataObject_impl implements Parameter {
   String name;
+
   String value;
 
-  public Parameter_impl()
-  {    
+  public Parameter_impl() {
   }
-  
-  public Parameter_impl(String name, String value)
-  {
+
+  public Parameter_impl(String name, String value) {
     this.name = name;
     this.value = value;
   }
 
-  public String getName()
-  {
+  public String getName() {
     return name;
   }
 
-  public void setName(String aName)
-  {
+  public void setName(String aName) {
     this.name = aName;
   }
 
-  public String getValue()
-  {
+  public String getValue() {
     return value;
   }
 
-  public void setValue(String aValue)
-  {
+  public void setValue(String aValue) {
     this.value = aValue;
   }
 
   /**
    * Overridden to read "name" and "value" attributes.
-   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element, org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
+   * 
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
+   *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
-  public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions) throws InvalidXMLException
-  {
+  public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+                  throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
     setName(aElement.getAttribute("name"));
     setValue(aElement.getAttribute("value"));
   }
 
-  
-  
   /**
    * Overridden to handle "name" and "value" attributes.
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
    */
-  protected AttributesImpl getXMLAttributes()
-  {
+  protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = super.getXMLAttributes();
-    attrs.addAttribute("","name","name","CDATA",getName());
-    attrs.addAttribute("","value","value","CDATA",getValue());
+    attrs.addAttribute("", "name", "name", "CDATA", getName());
+    attrs.addAttribute("", "value", "value", "CDATA", getValue());
     return attrs;
   }
-  
-  
-  protected XmlizationInfo getXmlizationInfo()
-  {
+
+  protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
-  
-  static final private XmlizationInfo XMLIZATION_INFO =
-    new XmlizationInfo("parameter",
-        new PropertyXmlInfo[0]);
+
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("parameter",
+                  new PropertyXmlInfo[0]);
 }

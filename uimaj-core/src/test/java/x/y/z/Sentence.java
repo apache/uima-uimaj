@@ -23,15 +23,20 @@ import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.impl.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
-  /* comment 1 of 14 */
+/* comment 1 of 14 */
 public class Sentence extends Annotation {
 
   public final static int typeIndexID = JCas.getNextIndex();
-  public final static int type = typeIndexID;
-  public           int getTypeIndexID() {return typeIndexID;}
 
-  // Never called.  Disable default constructor
-  protected Sentence() {}
+  public final static int type = typeIndexID;
+
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  // Never called. Disable default constructor
+  protected Sentence() {
+  }
 
   /** Internal - Constructor used by generator */
   public Sentence(int addr, TOP_Type type) {
@@ -47,12 +52,14 @@ public class Sentence extends Annotation {
     setBegin(begin);
     setEnd(end);
     readObject();
-  }   
+  }
 
-  /** <!-- begin-user-doc -->
-    * Write your own initialization here
-    * <!-- end-user-doc -->
-  @generated modifiable */
-  private void readObject() {}
-     
+  /**
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
+   * 
+   * @generated modifiable
+   */
+  private void readObject() {
+  }
+
 }

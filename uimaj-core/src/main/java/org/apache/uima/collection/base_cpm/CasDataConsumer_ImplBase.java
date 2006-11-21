@@ -28,79 +28,69 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 
 /**
- * Base class from which to extend when writing CAS Consumers that
- * use the {@link CasData} interface to access the CAS.
+ * Base class from which to extend when writing CAS Consumers that use the {@link CasData} interface
+ * to access the CAS.
  */
-public abstract class CasDataConsumer_ImplBase extends ConfigurableResource_ImplBase
-implements CasDataConsumer
-{
-	/**
-	 * Called by the framework to initialize this CAS Consumer.  Subclasses
-	 * should NOT override this method; instead they should override 
-	 * the zero-argument {@link #initialize()} method and access metadata via
-	 * the {@link #getProcessingResourceMetaData()} method.  This method is 
-	 * non-final only for legacy reasons.
-	 * <p>
-	 * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier, java.util.Map)
-	 */
-	public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-	  throws ResourceInitializationException
-	{
-	  //aSpecifier must be a CasConsumerDescription
-	  if (aSpecifier instanceof CasConsumerDescription)
-	  {
-			if (super.initialize(aSpecifier, aAdditionalParams))
-			{
-				//do user initialization    	
-				initialize();
-				return true;
-			}  
-	  }
-		return false;		  
-	}
+public abstract class CasDataConsumer_ImplBase extends ConfigurableResource_ImplBase implements
+                CasDataConsumer {
+  /**
+   * Called by the framework to initialize this CAS Consumer. Subclasses should NOT override this
+   * method; instead they should override the zero-argument {@link #initialize()} method and access
+   * metadata via the {@link #getProcessingResourceMetaData()} method. This method is non-final only
+   * for legacy reasons.
+   * <p>
+   * 
+   * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier,
+   *      java.util.Map)
+   */
+  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+                  throws ResourceInitializationException {
+    // aSpecifier must be a CasConsumerDescription
+    if (aSpecifier instanceof CasConsumerDescription) {
+      if (super.initialize(aSpecifier, aAdditionalParams)) {
+        // do user initialization
+        initialize();
+        return true;
+      }
+    }
+    return false;
+  }
 
-	/**
-	 * This method is called during initialization, and does nothing by default.
-	 * Subclasses should override it to perform one-time startup logic.
-	 *
-	 * @throws ResourceInitializationException if a failure occurs during
-	 *    initialization.
-	 */
-	public void initialize()
-	  throws ResourceInitializationException
-	{
-	}
-  
-	/**
-	 * @see org.apache.uima.resource.Resource#destroy()
-	 */
-	public void destroy()
-	{
-	}
+  /**
+   * This method is called during initialization, and does nothing by default. Subclasses should
+   * override it to perform one-time startup logic.
+   * 
+   * @throws ResourceInitializationException
+   *           if a failure occurs during initialization.
+   */
+  public void initialize() throws ResourceInitializationException {
+  }
 
-	/**
-	 * @see org.apache.uima.collection.base_cpm.CasProcessor#isStateless()
-	 */
-	public boolean isStateless()
-	{
-	  return false;
-	}
+  /**
+   * @see org.apache.uima.resource.Resource#destroy()
+   */
+  public void destroy() {
+  }
 
-	/**
-	 * @see org.apache.uima.collection.base_cpm.CasProcessor#isReadOnly()
-	 */
-	public boolean isReadOnly()
-	{
-	  return true;
-	}
+  /**
+   * @see org.apache.uima.collection.base_cpm.CasProcessor#isStateless()
+   */
+  public boolean isStateless() {
+    return false;
+  }
 
-	/**
-	 * @see org.apache.uima.collection.base_cpm.CasProcessor#getProcessingResourceMetaData()
-	 */
-	public ProcessingResourceMetaData getProcessingResourceMetaData()
-	{
-	  return (ProcessingResourceMetaData)getMetaData();
-	}
-	
-	
+  /**
+   * @see org.apache.uima.collection.base_cpm.CasProcessor#isReadOnly()
+   */
+  public boolean isReadOnly() {
+    return true;
+  }
+
+  /**
+   * @see org.apache.uima.collection.base_cpm.CasProcessor#getProcessingResourceMetaData()
+   */
+  public ProcessingResourceMetaData getProcessingResourceMetaData() {
+    return (ProcessingResourceMetaData) getMetaData();
+  }
+
 }

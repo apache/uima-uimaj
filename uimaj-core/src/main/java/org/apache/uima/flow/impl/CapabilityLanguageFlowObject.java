@@ -37,309 +37,280 @@ import org.apache.uima.flow.SimpleStep;
 import org.apache.uima.flow.Step;
 
 /**
- * The <code>CapabilityLanguageAnalysisSequence</code> is used for a <code>CapabilityLanguageFlow</code>.
- * The sequence contains all analysis engines included in the <code>CapabilityLanguageFlow</code>.
+ * The <code>CapabilityLanguageAnalysisSequence</code> is used for a
+ * <code>CapabilityLanguageFlow</code>. The sequence contains all analysis engines included in
+ * the <code>CapabilityLanguageFlow</code>.
  * 
- * Within this sequence skipping of analysis engines is possible if the document language of the current
- * document does not match to the analysis engine capabilities or the output capabilities are already
- * done by another analysis engine.
+ * Within this sequence skipping of analysis engines is possible if the document language of the
+ * current document does not match to the analysis engine capabilities or the output capabilities
+ * are already done by another analysis engine.
  * 
  */
-public class CapabilityLanguageFlowObject extends CasFlow_ImplBase implements Cloneable
-{
-	
-	private static final String UNSPECIFIED_LANGUAGE = "x-unspecified";
-	
-	/**
-	 * save the last type system
-	 */
-	private TypeSystem mLastTypeSystem;
-	
-	/**
-	 * The static list of nodes.
-	 */
-	private List mNodeList;
+public class CapabilityLanguageFlowObject extends CasFlow_ImplBase implements Cloneable {
 
-	/**
-	 * Current index in the sequence list.
-	 */
-	private int mIndex;
+  private static final String UNSPECIFIED_LANGUAGE = "x-unspecified";
 
-	/**
-  	 * mResultSpec provides the current result specification which has to be processed. 
-	 * After every analysis run, the processed ouput result are removed from the mResultSpec.
-	 */
-	private ResultSpecification mResultSpec;
-	
-	/**
-	 * flowTable includes all languages with their flow sequence
-	 */
-	private Map mFlowTable;
-	/**
-	 * main language separator e.g  'en' and 'en-US'
-	 */
-	private static final char LANGUAGE_SEPARATOR = '-';
+  /**
+   * save the last type system
+   */
+  private TypeSystem mLastTypeSystem;
 
-	static final long serialVersionUID = -5879514955935785660L;
-	/**
-	 * Creates a new CapabilityLanguageAnalysisSequence.
-	 * 
-	 * @param aNodeList a List of {@link AnalysisSequenceNode} objects.  These
-	 *   will be returned in order by {@link #getNext(CAS)}.
-	 * @param resultSpec result specification of the top level aggregate AE
-	 */
-	public CapabilityLanguageFlowObject(List aNodeList, ResultSpecification resultSpec)
-	{
-		mNodeList = aNodeList;
-		mIndex = 0;
-		//clone result specification
-		mResultSpec = (ResultSpecification) resultSpec.clone();
-		mFlowTable = null;
-		mLastTypeSystem = null;
-		
-	}
+  /**
+   * The static list of nodes.
+   */
+  private List mNodeList;
 
-	/**
-	 * Create a new CapabilityLangaugeAnalysisSequence with the flowTable
-	 * 
-	 * @param aFlowTable a flow table
-	 */
-	public CapabilityLanguageFlowObject(Map aFlowTable)
-	{
-		mNodeList = null;
-		mIndex = 0;
-		mResultSpec = null;
-		mFlowTable = aFlowTable;
-		mLastTypeSystem = null;
-	}
+  /**
+   * Current index in the sequence list.
+   */
+  private int mIndex;
 
-	public Step next()
-	{
-		//check if CAS is set
+  /**
+   * mResultSpec provides the current result specification which has to be processed. After every
+   * analysis run, the processed ouput result are removed from the mResultSpec.
+   */
+  private ResultSpecification mResultSpec;
+
+  /**
+   * flowTable includes all languages with their flow sequence
+   */
+  private Map mFlowTable;
+
+  /**
+   * main language separator e.g 'en' and 'en-US'
+   */
+  private static final char LANGUAGE_SEPARATOR = '-';
+
+  static final long serialVersionUID = -5879514955935785660L;
+
+  /**
+   * Creates a new CapabilityLanguageAnalysisSequence.
+   * 
+   * @param aNodeList
+   *          a List of {@link AnalysisSequenceNode} objects. These will be returned in order by
+   *          {@link #getNext(CAS)}.
+   * @param resultSpec
+   *          result specification of the top level aggregate AE
+   */
+  public CapabilityLanguageFlowObject(List aNodeList, ResultSpecification resultSpec) {
+    mNodeList = aNodeList;
+    mIndex = 0;
+    // clone result specification
+    mResultSpec = (ResultSpecification) resultSpec.clone();
+    mFlowTable = null;
+    mLastTypeSystem = null;
+
+  }
+
+  /**
+   * Create a new CapabilityLangaugeAnalysisSequence with the flowTable
+   * 
+   * @param aFlowTable
+   *          a flow table
+   */
+  public CapabilityLanguageFlowObject(Map aFlowTable) {
+    mNodeList = null;
+    mIndex = 0;
+    mResultSpec = null;
+    mFlowTable = aFlowTable;
+    mLastTypeSystem = null;
+  }
+
+  public Step next() {
+    // check if CAS is set
     CAS cas = getCas();
-		assert cas != null; //CapabilityLanguageFlowController ensures this 
-		
-		//if type system has changed, recompile flow table 
-		if (mLastTypeSystem	!= cas.getTypeSystem())
-		{
-			//set new type system
-			mLastTypeSystem = cas.getTypeSystem();
-			
-			//recompile all result specs
-			recompileFlowTable();
-		}
+    assert cas != null; // CapabilityLanguageFlowController ensures this
 
-		//get current document language from the CAS
-		String documentLanguage = Language.normalize(cas.getDocumentLanguage());
+    // if type system has changed, recompile flow table
+    if (mLastTypeSystem != cas.getTypeSystem()) {
+      // set new type system
+      mLastTypeSystem = cas.getTypeSystem();
 
-		if(mNodeList != null)
-		{
-			//check if another engine is available
-			if (mIndex >= mNodeList.size())
-			{
-				return new FinalStep();
-			}
-			else
-			{
-				//get array of ouput capabilities for the current languge from the current result spec
-				TypeOrFeature[] ouputCapabilities = mResultSpec.getResultTypesAndFeatures(documentLanguage);
-				
-				//strip language extension if available
-				int index = documentLanguage.indexOf(LANGUAGE_SEPARATOR);
-				
-				//if country extension was available
-				if(index >= 0)
-				{
-					//create HashSet for outputSpec
-					HashSet outputSpec = new HashSet();
-					
-					//add language with country extension output capabilities to the outputSpec
-					if(ouputCapabilities.length > 0)
-					{
-						for(int i = 0; i < ouputCapabilities.length; i++)
-						{
-							outputSpec.add(ouputCapabilities[i]);	
-						}
-						
-						//get array of output capabilities only for the language without country extension
-						ouputCapabilities = mResultSpec.getResultTypesAndFeatures(documentLanguage.substring(0, index));
-						
-						//add language output capabilities to the outputSpec
-						for(int i = 0; i < ouputCapabilities.length; i++)
-						{
-							outputSpec.add(ouputCapabilities[i]);	
-						}
-						
-						//convert all output capabilities to a outputCapabilities array
-						ouputCapabilities = new TypeOrFeature[outputSpec.size()];
-						outputSpec.toArray(ouputCapabilities);
-					}
-					else //for language with country extension was noting found
-					{
-						//get array of output capabilities with the new main language without country extension
-						ouputCapabilities = mResultSpec.getResultTypesAndFeatures(documentLanguage.substring(0, index));	
-					}
-				}
-	
-				//current analysis node which contains the current analysis engine
-				AnalysisSequenceCapabilityNode node;
-	
-				//result spec for the current analysis engine			
-				ResultSpecification currentAnalysisResultSpec = null;
-	
-				//flag if current analysis engine should be called or not			
-				boolean shouldEngineBeCalled = false;
-	
-				//check output capabilites from the current result spec							
-				do
-				{
-					//get next analysis engine from the sequence node
-					node = (AnalysisSequenceCapabilityNode) mNodeList.get(mIndex++);
-	
-					//get capability container from the current analysis engine
-					CapabilityContainer capabilityContainer = node.getCapabilityContainer();
-	
-					//create current analysis result spec without any language information
-					currentAnalysisResultSpec = UIMAFramework.getResourceSpecifierFactory().createResultSpecification();
-	
-					//check if engine should be called - loop over all ouput capabilities of the result spec
-					for (int i = 0; i < ouputCapabilities.length; i++)
-					{
-						//check if current ToF can be produced by the current analysis engine
-						if (capabilityContainer.hasOutputTypeOrFeature(ouputCapabilities[i], documentLanguage, true))
-						{
-							currentAnalysisResultSpec.addResultTypeOrFeature(ouputCapabilities[i]);
-							shouldEngineBeCalled = true;
-	
-							//remove current ToF from the result spec
-							mResultSpec.removeTypeOrFeature(ouputCapabilities[i]);
-						}
-	
-					}
-					//skip engine if not output capability match
-				}
-				while (shouldEngineBeCalled == false && mIndex < mNodeList.size());
-	
-				//check if current engine should be called
-				if (shouldEngineBeCalled == true)
-				{
-					//set result spec for current analysis engine
-					node.setResultSpec(currentAnalysisResultSpec);
-	
-					//return current analysis engine node
-					return new SimpleStep(node.getCasProcessorKey());
-				}
-				else //no engine left which can be called
-				{
-					return new FinalStep();
-				}
-			}
-		}
-		else if(mFlowTable != null)
-		{
-			AnalysisSequenceCapabilityNode node = null;
-			
-			//check if document language is included in the flowTable
-			List flow = (List) mFlowTable.get(documentLanguage);
-			
-			if(flow == null) //try to get flow without language extension or with x-unspecified
-			{
-				//strip language extension if available
-				int index = documentLanguage.indexOf(LANGUAGE_SEPARATOR);
-			
-				//if country extension is available
-				if(index >= 0)
-				{
-					  //check if document language is included in the flowTable
-					  flow = (List) mFlowTable.get(documentLanguage.substring(0, index));
-                 // If the language was not found, use flow for unspecified lang instead.
-                 if (flow == null) {
-                    flow = (List) mFlowTable.get(UNSPECIFIED_LANGUAGE);
-                 }
-				}
-				else //try to get flow for language x-unspecified 
-				{
-					flow = (List) mFlowTable.get(UNSPECIFIED_LANGUAGE);
-				}
-			}
-			
-			//if flow is available get next node
-			if(flow != null)
-			{
-				if(flow.size() > mIndex)
-				{
-					node = (AnalysisSequenceCapabilityNode) flow.get(mIndex++);
-					while(node == null && flow.size() > mIndex)
-					{
-						node = (AnalysisSequenceCapabilityNode) flow.get(mIndex++);
-					}
-				}
-			}
-			if (node != null)
+      // recompile all result specs
+      recompileFlowTable();
+    }
+
+    // get current document language from the CAS
+    String documentLanguage = Language.normalize(cas.getDocumentLanguage());
+
+    if (mNodeList != null) {
+      // check if another engine is available
+      if (mIndex >= mNodeList.size()) {
+        return new FinalStep();
+      } else {
+        // get array of ouput capabilities for the current languge from the current result spec
+        TypeOrFeature[] ouputCapabilities = mResultSpec.getResultTypesAndFeatures(documentLanguage);
+
+        // strip language extension if available
+        int index = documentLanguage.indexOf(LANGUAGE_SEPARATOR);
+
+        // if country extension was available
+        if (index >= 0) {
+          // create HashSet for outputSpec
+          HashSet outputSpec = new HashSet();
+
+          // add language with country extension output capabilities to the outputSpec
+          if (ouputCapabilities.length > 0) {
+            for (int i = 0; i < ouputCapabilities.length; i++) {
+              outputSpec.add(ouputCapabilities[i]);
+            }
+
+            // get array of output capabilities only for the language without country extension
+            ouputCapabilities = mResultSpec.getResultTypesAndFeatures(documentLanguage.substring(0,
+                            index));
+
+            // add language output capabilities to the outputSpec
+            for (int i = 0; i < ouputCapabilities.length; i++) {
+              outputSpec.add(ouputCapabilities[i]);
+            }
+
+            // convert all output capabilities to a outputCapabilities array
+            ouputCapabilities = new TypeOrFeature[outputSpec.size()];
+            outputSpec.toArray(ouputCapabilities);
+          } else // for language with country extension was noting found
+          {
+            // get array of output capabilities with the new main language without country extension
+            ouputCapabilities = mResultSpec.getResultTypesAndFeatures(documentLanguage.substring(0,
+                            index));
+          }
+        }
+
+        // current analysis node which contains the current analysis engine
+        AnalysisSequenceCapabilityNode node;
+
+        // result spec for the current analysis engine
+        ResultSpecification currentAnalysisResultSpec = null;
+
+        // flag if current analysis engine should be called or not
+        boolean shouldEngineBeCalled = false;
+
+        // check output capabilites from the current result spec
+        do {
+          // get next analysis engine from the sequence node
+          node = (AnalysisSequenceCapabilityNode) mNodeList.get(mIndex++);
+
+          // get capability container from the current analysis engine
+          CapabilityContainer capabilityContainer = node.getCapabilityContainer();
+
+          // create current analysis result spec without any language information
+          currentAnalysisResultSpec = UIMAFramework.getResourceSpecifierFactory()
+                          .createResultSpecification();
+
+          // check if engine should be called - loop over all ouput capabilities of the result spec
+          for (int i = 0; i < ouputCapabilities.length; i++) {
+            // check if current ToF can be produced by the current analysis engine
+            if (capabilityContainer.hasOutputTypeOrFeature(ouputCapabilities[i], documentLanguage,
+                            true)) {
+              currentAnalysisResultSpec.addResultTypeOrFeature(ouputCapabilities[i]);
+              shouldEngineBeCalled = true;
+
+              // remove current ToF from the result spec
+              mResultSpec.removeTypeOrFeature(ouputCapabilities[i]);
+            }
+
+          }
+          // skip engine if not output capability match
+        } while (shouldEngineBeCalled == false && mIndex < mNodeList.size());
+
+        // check if current engine should be called
+        if (shouldEngineBeCalled == true) {
+          // set result spec for current analysis engine
+          node.setResultSpec(currentAnalysisResultSpec);
+
+          // return current analysis engine node
+          return new SimpleStep(node.getCasProcessorKey());
+        } else // no engine left which can be called
+        {
+          return new FinalStep();
+        }
+      }
+    } else if (mFlowTable != null) {
+      AnalysisSequenceCapabilityNode node = null;
+
+      // check if document language is included in the flowTable
+      List flow = (List) mFlowTable.get(documentLanguage);
+
+      if (flow == null) // try to get flow without language extension or with x-unspecified
       {
+        // strip language extension if available
+        int index = documentLanguage.indexOf(LANGUAGE_SEPARATOR);
+
+        // if country extension is available
+        if (index >= 0) {
+          // check if document language is included in the flowTable
+          flow = (List) mFlowTable.get(documentLanguage.substring(0, index));
+          // If the language was not found, use flow for unspecified lang instead.
+          if (flow == null) {
+            flow = (List) mFlowTable.get(UNSPECIFIED_LANGUAGE);
+          }
+        } else // try to get flow for language x-unspecified
+        {
+          flow = (List) mFlowTable.get(UNSPECIFIED_LANGUAGE);
+        }
+      }
+
+      // if flow is available get next node
+      if (flow != null) {
+        if (flow.size() > mIndex) {
+          node = (AnalysisSequenceCapabilityNode) flow.get(mIndex++);
+          while (node == null && flow.size() > mIndex) {
+            node = (AnalysisSequenceCapabilityNode) flow.get(mIndex++);
+          }
+        }
+      }
+      if (node != null) {
         return new SimpleStep(node.getCasProcessorKey());
-      }  
-		}
-  	return new FinalStep();
-	}
+      }
+    }
+    return new FinalStep();
+  }
 
-	/**
-	 * Returns a clone of this <code>AnalysisSequence</code>.
-	 * 
-	 * @return a new <code>AnalysisSequence</code> object that is an exact clone
-	 *    of this one.
-	 */
-	public Object clone()
-	{
-		try
-		{
-			return super.clone();
-		}
-		catch (CloneNotSupportedException e)
-		{
-			return null;
-		}
-	}
+  /**
+   * Returns a clone of this <code>AnalysisSequence</code>.
+   * 
+   * @return a new <code>AnalysisSequence</code> object that is an exact clone of this one.
+   */
+  public Object clone() {
+    try {
+      return super.clone();
+    } catch (CloneNotSupportedException e) {
+      return null;
+    }
+  }
 
-	/**
-	 * reset index of the sequence to 0
-	 */
-	public void resetIndex()
-	{
-		mIndex = 0;	
-	}
-	
-	/**
-	 * recompiles all result specs in the flow table with the current type system 
-	 */
-	protected void recompileFlowTable()
-	{
-		
-		if(mFlowTable != null)
-		{
-			//get all language key from the table
-			Set keys = mFlowTable.keySet();
-			
-			//loop over all languages
-			Iterator it = keys.iterator();
-			while (it.hasNext())
-			{
-				
-				//get sequence for current language
-				List sequence = (List) mFlowTable.get(it.next());
-				
-				//loop over all nodes in the sequence
-				for(int i = 0; i < sequence.size(); i++)
-				{
-					//get current annotator node
-					AnalysisSequenceCapabilityNode node = (AnalysisSequenceCapabilityNode) sequence.get(i);
-					if(node != null)
-					{
-						//recompile result spec
-						node.getResultSpec().compile(mLastTypeSystem);
-					}
-				}
-			}
-		}
-	}
+  /**
+   * reset index of the sequence to 0
+   */
+  public void resetIndex() {
+    mIndex = 0;
+  }
+
+  /**
+   * recompiles all result specs in the flow table with the current type system
+   */
+  protected void recompileFlowTable() {
+
+    if (mFlowTable != null) {
+      // get all language key from the table
+      Set keys = mFlowTable.keySet();
+
+      // loop over all languages
+      Iterator it = keys.iterator();
+      while (it.hasNext()) {
+
+        // get sequence for current language
+        List sequence = (List) mFlowTable.get(it.next());
+
+        // loop over all nodes in the sequence
+        for (int i = 0; i < sequence.size(); i++) {
+          // get current annotator node
+          AnalysisSequenceCapabilityNode node = (AnalysisSequenceCapabilityNode) sequence.get(i);
+          if (node != null) {
+            // recompile result spec
+            node.getResultSpec().compile(mLastTypeSystem);
+          }
+        }
+      }
+    }
+  }
 }

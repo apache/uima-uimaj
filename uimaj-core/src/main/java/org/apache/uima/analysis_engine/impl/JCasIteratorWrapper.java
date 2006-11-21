@@ -28,44 +28,42 @@ import org.apache.uima.jcas.impl.JCas;
 /**
  * Wraps a CasIterator as a JCasIterator
  */
-public class JCasIteratorWrapper implements JCasIterator
-{
+public class JCasIteratorWrapper implements JCasIterator {
   CasIterator mCasIterator;
 
-  public JCasIteratorWrapper(CasIterator aCasIterator)
-  {
+  public JCasIteratorWrapper(CasIterator aCasIterator) {
     mCasIterator = aCasIterator;
   }
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.core.CasIterator#hasNext()
    */
-  public boolean hasNext() throws AnalysisEngineProcessException
-  {
+  public boolean hasNext() throws AnalysisEngineProcessException {
     return mCasIterator.hasNext();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_engine.CasIterator#next()
    */
-  public JCas next() throws AnalysisEngineProcessException
-  {
-    try
-    {
+  public JCas next() throws AnalysisEngineProcessException {
+    try {
       return mCasIterator.next().getJCas();
-    }
-    catch (CASException e)
-    {
+    } catch (CASException e) {
       throw new AnalysisEngineProcessException(e);
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_engine.JCasIterator#release()
    */
-  public void release()
-  {
-    mCasIterator.release();    
+  public void release() {
+    mCasIterator.release();
   }
 
 }

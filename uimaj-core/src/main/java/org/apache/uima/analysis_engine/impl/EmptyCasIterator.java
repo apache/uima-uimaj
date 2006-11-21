@@ -25,29 +25,31 @@ import org.apache.uima.analysis_engine.CasIterator;
 import org.apache.uima.cas.CAS;
 
 /** Trivial CasIterator that returns no CASes. */
-public class EmptyCasIterator implements CasIterator
-{
-  /* (non-Javadoc)
+public class EmptyCasIterator implements CasIterator {
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_engine.CasIterator#hasNext()
    */
-  public boolean hasNext() throws AnalysisEngineProcessException
-  {
+  public boolean hasNext() throws AnalysisEngineProcessException {
     return false;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_engine.CasIterator#next()
    */
-  public CAS next() throws AnalysisEngineProcessException
-  {
-    throw new UIMA_IllegalStateException(
-        UIMA_IllegalStateException.NO_NEXT_CAS, new Object[0]);
+  public CAS next() throws AnalysisEngineProcessException {
+    throw new UIMA_IllegalStateException(UIMA_IllegalStateException.NO_NEXT_CAS, new Object[0]);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_engine.CasIterator#release()
    */
-  public void release()
-  {
-  }    
+  public void release() {
+    //nothing to do
+  }
 }

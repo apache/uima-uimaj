@@ -20,8 +20,8 @@
 package org.apache.uima.cas.impl;
 
 /**
- * Common part of array impl for those arrays of primitives which exist
- * in the main heap.  Is a super class to those.
+ * Common part of array impl for those arrays of primitives which exist in the main heap. Is a super
+ * class to those.
  */
 public abstract class CommonArrayFSImpl extends FeatureStructureImplC {
 
@@ -35,7 +35,7 @@ public abstract class CommonArrayFSImpl extends FeatureStructureImplC {
   public int size() {
     return casImpl.getArraySize(addr);
   }
-  
+
   public abstract void copyToArray(int srcOffset, String[] dest, int destOffset, int length);
 
   public String[] toStringArray() {

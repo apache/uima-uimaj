@@ -33,86 +33,82 @@ import org.apache.uima.flow.Step;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**
- * Test FlowController that drops any segment whose document text is "DROP".
- * Otherwise uses linear flow.
+ * Test FlowController that drops any segment whose document text is "DROP". Otherwise uses linear
+ * flow.
  */
-public class SegmentDroppingFlowController extends CasFlowController_ImplBase
-{
+public class SegmentDroppingFlowController extends CasFlowController_ImplBase {
   String[] mSequence;
-  
-  public void initialize(FlowControllerContext aContext) throws ResourceInitializationException
-  {
+
+  public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     FlowConstraints flowConstraints = aContext.getAggregateMetadata().getFlowConstraints();
-    mSequence = ((FixedFlow)flowConstraints).getFixedFlow(); 
+    mSequence = ((FixedFlow) flowConstraints).getFixedFlow();
   }
 
-  
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.flow.CasFlowController_ImplBase#computeFlow(org.apache.uima.cas.CAS)
    */
-  public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException
-  {
+  public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
     FixedFlowObject ffo = new FixedFlowObject(aCAS, 0);
     ffo.setCas(aCAS);
     return ffo;
   }
 
-
-  class FixedFlowObject extends CasFlow_ImplBase
-  {
+  class FixedFlowObject extends CasFlow_ImplBase {
     private int currentStep;
+
     private boolean wasSegmented = false;
-    
-    /** 
-     * Create a new fixed flow starting at step <code>startStep</code>
-     * of the fixed sequence.
-     * @param startStep index of mSequence to start at
+
+    /**
+     * Create a new fixed flow starting at step <code>startStep</code> of the fixed sequence.
+     * 
+     * @param startStep
+     *          index of mSequence to start at
      */
-    public FixedFlowObject(CAS cas, int startStep)
-    {
+    public FixedFlowObject(CAS cas, int startStep) {
       setCas(cas);
       currentStep = startStep;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.uima.flow.Flow#next()
      */
-    public Step next() throws AnalysisEngineProcessException
-    {
-      //drop any segment whose document text is "DROP"
-      if ("DROP".equals(getCas().getTCAS().getDocumentText()))
-      {
+    public Step next() throws AnalysisEngineProcessException {
+      // drop any segment whose document text is "DROP"
+      if ("DROP".equals(getCas().getTCAS().getDocumentText())) {
         return new FinalStep(true);
       }
-      
-      if (currentStep >= mSequence.length)
-      {
-        return new FinalStep(); //this CAS has finished the sequence
+
+      if (currentStep >= mSequence.length) {
+        return new FinalStep(); // this CAS has finished the sequence
       }
-      //If CAS was segmented, do not continue with flow.  The individual segments
-      //are processed further but the original CAS is not.
-      if (wasSegmented)
-      {
-        return new FinalStep();        
-      }  
-      
-      //otherwise, we just send the CAS to the next AE in sequence.
+      // If CAS was segmented, do not continue with flow. The individual segments
+      // are processed further but the original CAS is not.
+      if (wasSegmented) {
+        return new FinalStep();
+      }
+
+      // otherwise, we just send the CAS to the next AE in sequence.
       return new SimpleStep(mSequence[currentStep++]);
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.uima.flow.CasFlow_ImplBase#newCasProduced(CAS, String)
      */
-    public Flow newCasProduced(CAS newCas, String producedBy) throws AnalysisEngineProcessException
-    {
-      //record that the input CAS has been segmented (affects its subsequent flow)
+    public Flow newCasProduced(CAS newCas, String producedBy) throws AnalysisEngineProcessException {
+      // record that the input CAS has been segmented (affects its subsequent flow)
       wasSegmented = true;
-      //start the new segment CAS from the next node after the Segmenter that produced it
+      // start the new segment CAS from the next node after the Segmenter that produced it
       int i = 0;
       while (!mSequence[i].equals(producedBy))
         i++;
-      return new FixedFlowObject(newCas, i+1);
+      return new FixedFlowObject(newCas, i + 1);
     }
-  }  
+  }
 }

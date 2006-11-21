@@ -31,16 +31,17 @@ import org.apache.uima.analysis_engine.metadata.impl.SofaMapping_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-public class SofaMapping_implTest extends TestCase
-{
+public class SofaMapping_implTest extends TestCase {
   SofaMapping_impl sm1;
+
   SofaMapping_impl sm2;
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see junit.framework.TestCase#setUp()
    */
-  protected void setUp() throws Exception
-  {
+  protected void setUp() throws Exception {
     super.setUp();
     sm1 = new SofaMapping_impl();
     sm1.setAggregateSofaName("aggSofa");
@@ -51,31 +52,27 @@ public class SofaMapping_implTest extends TestCase
     sm2.setAggregateSofaName("aggSofa");
     sm2.setComponentKey("myAnnotator2");
   }
-  
-  public void testXmlization() throws Exception
-  {
-    try
-    {
-      //write to XML
+
+  public void testXmlization() throws Exception {
+    try {
+      // write to XML
       StringWriter writer = new StringWriter();
       sm1.toXML(writer);
       String sm1Xml = writer.getBuffer().toString();
       writer = new StringWriter();
       sm2.toXML(writer);
       String sm2Xml = writer.getBuffer().toString();
-      //parse from XML
+      // parse from XML
       InputStream is = new ByteArrayInputStream(sm1Xml.getBytes());
-      SofaMapping_impl newSm1 = (SofaMapping_impl) UIMAFramework
-          .getXMLParser().parse(new XMLInputSource(is, null));
+      SofaMapping_impl newSm1 = (SofaMapping_impl) UIMAFramework.getXMLParser().parse(
+                      new XMLInputSource(is, null));
       is = new ByteArrayInputStream(sm2Xml.getBytes());
-      SofaMapping_impl newSm2 = (SofaMapping_impl) UIMAFramework
-      .getXMLParser().parse(new XMLInputSource(is, null));
+      SofaMapping_impl newSm2 = (SofaMapping_impl) UIMAFramework.getXMLParser().parse(
+                      new XMLInputSource(is, null));
 
       Assert.assertEquals(sm1, newSm1);
       Assert.assertEquals(sm2, newSm2);
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
   }

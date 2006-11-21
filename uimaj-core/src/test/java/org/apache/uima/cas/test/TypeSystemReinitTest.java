@@ -42,41 +42,39 @@ import org.apache.uima.util.XMLInputSource;
 /**
  * @author alally
  */
-public class TypeSystemReinitTest extends TestCase 
-{
-  public void testReinitCASCompleteSerializer() throws Exception
-  {
-    try
-    {
-	    AnalysisEngineDescription aed =
-	      UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-	        new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml")));
-	   CollectionReaderDescription crd =  FileSystemCollectionReader.getDescription();
-	   
-	   ArrayList l = new ArrayList();
-	   l.add(aed);
-	   l.add(crd);
-	   TCAS cas1 = CasCreationUtils.createTCas(l);
-	   cas1.setDocumentText("foo");
-	   CASCompleteSerializer ser = Serialization.serializeCASComplete((CASMgr)cas1);
-	   
-	   TCAS tcas2 = CasCreationUtils.createTCas(new TypeSystemDescription_impl(), null, null);
-	   CASImpl cas2 = ((TCASImpl)tcas2).getBaseCAS();
-	   tcas2.setDocumentText("bar");
-	       
-	   //reinit
-	   cas2.reinit(ser);
-	   TCAS tcas3 = cas2.getTCAS();
+public class TypeSystemReinitTest extends TestCase {
+  public void testReinitCASCompleteSerializer() throws Exception {
+    try {
+      AnalysisEngineDescription aed = UIMAFramework
+                      .getXMLParser()
+                      .parseAnalysisEngineDescription(
+                                      new XMLInputSource(
+                                                      JUnitExtension
+                                                                      .getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml")));
+      CollectionReaderDescription crd = FileSystemCollectionReader.getDescription();
 
-	   assertTrue(tcas2 == tcas3);
-	   assertNotNull(cas1.getTypeSystem().getType("NamedEntity"));
-	   assertNotNull(tcas3.getTypeSystem().getType("NamedEntity"));
-	   
-	   FeatureStructure fs = tcas3.createFS(tcas3.getTypeSystem().getType("NamedEntity"));
-	   tcas3.getIndexRepository().addFS(fs);
-    }
-    catch(Exception e)
-    {
+      ArrayList l = new ArrayList();
+      l.add(aed);
+      l.add(crd);
+      TCAS cas1 = CasCreationUtils.createTCas(l);
+      cas1.setDocumentText("foo");
+      CASCompleteSerializer ser = Serialization.serializeCASComplete((CASMgr) cas1);
+
+      TCAS tcas2 = CasCreationUtils.createTCas(new TypeSystemDescription_impl(), null, null);
+      CASImpl cas2 = ((TCASImpl) tcas2).getBaseCAS();
+      tcas2.setDocumentText("bar");
+
+      // reinit
+      cas2.reinit(ser);
+      TCAS tcas3 = cas2.getTCAS();
+
+      assertTrue(tcas2 == tcas3);
+      assertNotNull(cas1.getTypeSystem().getType("NamedEntity"));
+      assertNotNull(tcas3.getTypeSystem().getType("NamedEntity"));
+
+      FeatureStructure fs = tcas3.createFS(tcas3.getTypeSystem().getType("NamedEntity"));
+      tcas3.getIndexRepository().addFS(fs);
+    } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
   }

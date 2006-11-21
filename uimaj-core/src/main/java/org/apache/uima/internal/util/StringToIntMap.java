@@ -29,73 +29,69 @@ import java.util.HashMap;
  */
 public class StringToIntMap {
 
-    private static final int DEFAULT_VALUE = 0;
+  private static final int DEFAULT_VALUE = 0;
 
-    private HashMap map;
+  private HashMap map;
 
-    /**
-     * Constructor.
-     * 
-     * @see java.lang.Object#Object()
-     */
-    public StringToIntMap() {
-        super();
-        this.map = new HashMap();
+  /**
+   * Constructor.
+   * 
+   * @see java.lang.Object#Object()
+   */
+  public StringToIntMap() {
+    super();
+    this.map = new HashMap();
+  }
+
+  /**
+   * Check if the the argument string is defined as a key in this map.
+   * 
+   * @see java.util.Map#containsKey(java.lang.Object)
+   * @param key
+   *          The string to be looked up.
+   * @return <code>true</code> if a value is defined for this string; <code>false</code> else.
+   */
+  public boolean containsKey(String key) {
+    return this.map.containsKey(key);
+  }
+
+  /**
+   * Get the value for the key.
+   * 
+   * @param key
+   *          The string to be looked up.
+   * @return The int value for <code>key</code>, or <code>0</code> if <code>key</code> is not
+   *         a key in the map. Use {@link #containsKey(String) containsKey()} to find out if
+   *         <code>key</code> is actually defined in the map.
+   */
+  public int get(String key) {
+    Integer i = (Integer) this.map.get(key);
+    if (i == null) {
+      return DEFAULT_VALUE;
     }
+    return i.intValue();
+  }
 
-    /**
-     * Check if the the argument string is defined as a key in this map.
-     * 
-     * @see java.util.Map#containsKey(java.lang.Object)
-     * @param key
-     *            The string to be looked up.
-     * @return <code>true</code> if a value is defined for this string;
-     *         <code>false</code> else.
-     */
-    public boolean containsKey(String key) {
-        return this.map.containsKey(key);
+  /**
+   * Add a key-value pair to the map.
+   * 
+   * @param key
+   *          The string key.
+   * @param value
+   *          The int value.
+   * @return The previous value of <code>key</code>, if it was set. <code>0</code> else.
+   */
+  public int put(String key, int value) {
+    Integer i = (Integer) this.map.get(key);
+    int rc;
+    if (i == null) {
+      rc = 0;
+    } else {
+      rc = i.intValue();
     }
-
-    /**
-     * Get the value for the key.
-     * 
-     * @param key
-     *            The string to be looked up.
-     * @return The int value for <code>key</code>, or <code>0</code> if
-     *         <code>key</code> is not a key in the map. Use
-     *         {@link #containsKey(String) containsKey()} to find out if
-     *         <code>key</code> is actually defined in the map.
-     */
-    public int get(String key) {
-        Integer i = (Integer) this.map.get(key);
-        if (i == null) {
-            return DEFAULT_VALUE;
-        }
-        return i.intValue();
-    }
-
-    /**
-     * Add a key-value pair to the map.
-     * 
-     * @param key
-     *            The string key.
-     * @param value
-     *            The int value.
-     * @return The previous value of <code>key</code>, if it was set.
-     *         <code>0</code> else.
-     */
-    public int put(String key, int value) {
-        Integer i = (Integer) this.map.get(key);
-        int rc;
-        if (i == null) {
-            rc = 0;
-        } else {
-            rc = i.intValue();
-        }
-        i = new Integer(value);
-        this.map.put(key, i);
-        return rc;
-    }
-
+    i = new Integer(value);
+    this.map.put(key, i);
+    return rc;
+  }
 
 }

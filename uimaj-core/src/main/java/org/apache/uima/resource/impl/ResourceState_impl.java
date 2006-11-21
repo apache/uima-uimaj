@@ -22,55 +22,47 @@ package org.apache.uima.resource.impl;
 import org.apache.uima.resource.metadata.NameValuePair;
 
 /**
- * Encapuslates state information about a {@link Resource_impl}.  Note
- * that this does not need to include all state infomration, just that
- * information that is modifiable by a client of a Resource service.
- * The purpose of this class is to enable instance pooling when Resources
- * are deployed as services.
+ * Encapuslates state information about a {@link Resource_impl}. Note that this does not need to
+ * include all state infomration, just that information that is modifiable by a client of a Resource
+ * service. The purpose of this class is to enable instance pooling when Resources are deployed as
+ * services.
  * <p>
- * Note that the methods of this class have default (package) visibility
- * since only a {@link Resource_impl} object should be able to get and set
- * its state.
- *  
+ * Note that the methods of this class have default (package) visibility since only a
+ * {@link Resource_impl} object should be able to get and set its state.
+ * 
  * 
  */
-public class ResourceState_impl
-{
-  
-     
+public class ResourceState_impl {
 
   /**
-   * Creates a new ResourceState_impl 
+   * Creates a new ResourceState_impl
    */
-  ResourceState_impl()
-  {
+  ResourceState_impl() {
   }
-  
+
   /**
    * Gets configuration parameter settings for the Resource.
    * 
-   * @return an array of <code>NameValuePair</code> objects containing the
-   *   names of configuration parameters and their current values.
+   * @return an array of <code>NameValuePair</code> objects containing the names of configuration
+   *         parameters and their current values.
    */
-  NameValuePair[] getConfigurationParameterSettings()
-  {
+  NameValuePair[] getConfigurationParameterSettings() {
     return mConfigurationParameterSettings;
   }
-    
 
   /**
    * Sets configuration parameter settings for the Resource.
    * 
-   * @param aSettings an array of <code>NameValuePair</code> objects containing
-   *   the names of configuration parameters and their current values.
+   * @param aSettings
+   *          an array of <code>NameValuePair</code> objects containing the names of configuration
+   *          parameters and their current values.
    */
-  void setConfigurationParameterSettings(NameValuePair[] aSettings)
-  {
-    mConfigurationParameterSettings = aSettings;  
-  }  
-  
- /**
-  * Configuration parameter settings for the resource. 
-  */
+  void setConfigurationParameterSettings(NameValuePair[] aSettings) {
+    mConfigurationParameterSettings = aSettings;
+  }
+
+  /**
+   * Configuration parameter settings for the resource.
+   */
   private NameValuePair[] mConfigurationParameterSettings;
 }

@@ -33,45 +33,43 @@ import org.apache.uima.util.UimaTimer;
 /**
  * Container for Flow objects, to handle CAS conversions and performance timing.
  */
-public class FlowContainer
-{
+public class FlowContainer {
   private Flow mFlow;
+
   private FlowControllerContainer mFlowControllerContainer;
+
   private boolean mSofaAware;
+
   private UimaTimer mTimer = UIMAFramework.newTimer();
-  
-  public FlowContainer(Flow aFlow, FlowControllerContainer aFlowControllerContainer)
-  {
+
+  public FlowContainer(Flow aFlow, FlowControllerContainer aFlowControllerContainer) {
     mFlow = aFlow;
     mFlowControllerContainer = aFlowControllerContainer;
     mSofaAware = mFlowControllerContainer.getProcessingResourceMetaData().isSofaAware();
   }
 
-  public FlowContainer newCasProduced(CAS newCAS, String producedBy) throws AnalysisEngineProcessException
-  {
+  public FlowContainer newCasProduced(CAS newCAS, String producedBy)
+                  throws AnalysisEngineProcessException {
     mTimer.startIt();
-    try
-    {
-      //set the current component info of the CAS, so that it knows the sofa
-      //mappings for the component that's about to process it (the FlowController)
-      newCAS.setCurrentComponentInfo(mFlowControllerContainer.getUimaContextAdmin().getComponentInfo());
-      
-      //Get the right view of the CAS.  Sofa-aware components get the base CAS.
-      //Sofa-unaware components get whatever is mapped to the default text sofa.
-      CAS view = ((CASImpl)newCAS).getBaseCAS();
-      if (!mSofaAware)
-      {
-        view = newCAS.getView(CAS.NAME_DEFAULT_SOFA);          
+    try {
+      // set the current component info of the CAS, so that it knows the sofa
+      // mappings for the component that's about to process it (the FlowController)
+      newCAS.setCurrentComponentInfo(mFlowControllerContainer.getUimaContextAdmin()
+                      .getComponentInfo());
+
+      // Get the right view of the CAS. Sofa-aware components get the base CAS.
+      // Sofa-unaware components get whatever is mapped to the default text sofa.
+      CAS view = ((CASImpl) newCAS).getBaseCAS();
+      if (!mSofaAware) {
+        view = newCAS.getView(CAS.NAME_DEFAULT_SOFA);
       }
-      //now get the right interface(e.g. CAS or JCAS)
+      // now get the right interface(e.g. CAS or JCAS)
       Class requiredInterface = mFlowControllerContainer.getRequiredCasInterface();
       AbstractCas casToPass = getCasManager().getCasInterface(view, requiredInterface);
-      
-      Flow flow = mFlow.newCasProduced(casToPass,producedBy);
+
+      Flow flow = mFlow.newCasProduced(casToPass, producedBy);
       return new FlowContainer(flow, mFlowControllerContainer);
-    }  
-    finally
-    {
+    } finally {
       newCAS.setCurrentComponentInfo(null);
       mTimer.stopIt();
       getMBean().reportAnalysisTime(mTimer.getDuration());
@@ -79,29 +77,25 @@ public class FlowContainer
     }
   }
 
-  public Step next() throws AnalysisEngineProcessException
-  {
+  public Step next() throws AnalysisEngineProcessException {
     mTimer.startIt();
-    try
-    {
+    try {
       return mFlow.next();
-    }
-    finally
-    {
+    } finally {
       mTimer.stopIt();
       getMBean().reportAnalysisTime(mTimer.getDuration());
     }
   }
-  
-  private CasManager getCasManager()
-  {
+
+  private CasManager getCasManager() {
     return mFlowControllerContainer.getResourceManager().getCasManager();
   }
-  
-  /** Gets the MBean to use to report performance statistics.
+
+  /**
+   * Gets the MBean to use to report performance statistics.
    */
-  public AnalysisEngineManagementImpl getMBean()
-  {
-    return (AnalysisEngineManagementImpl)mFlowControllerContainer.getUimaContextAdmin().getManagementInterface();
+  public AnalysisEngineManagementImpl getMBean() {
+    return (AnalysisEngineManagementImpl) mFlowControllerContainer.getUimaContextAdmin()
+                    .getManagementInterface();
   }
 }

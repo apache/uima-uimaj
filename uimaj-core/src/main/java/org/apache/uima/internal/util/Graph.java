@@ -28,43 +28,42 @@ import java.util.Vector;
  */
 public class Graph {
 
-    protected GraphNode root;
+  protected GraphNode root;
 
-    /** @return The root of the graph. */
-    public GraphNode getRoot() {
-        return this.root;
+  /** @return The root of the graph. */
+  public GraphNode getRoot() {
+    return this.root;
+  }
+
+  /**
+   * Set the root of the graph.
+   * 
+   * @param root
+   *          The root node.
+   */
+  public void setRoot(GraphNode root) {
+    this.root = root;
+  }
+
+  protected static int getNodeCode(GraphNode n, Vector nodes) {
+    int max = nodes.size();
+    for (int i = 0; i < max; i++) {
+      if (n == nodes.get(i)) {
+        return i;
+      }
     }
+    return -1;
+  }
 
-    /**
-     * Set the root of the graph.
-     * 
-     * @param root
-     *            The root node.
-     */
-    public void setRoot(GraphNode root) {
-        this.root = root;
+  public static void collectNodes(GraphNode n, Vector nodes) {
+    if (getNodeCode(n, nodes) >= 0) {
+      return;
     }
-
-    protected static int getNodeCode(GraphNode n, Vector nodes) {
-        int max = nodes.size();
-        for (int i = 0; i < max; i++) {
-            if (n == nodes.get(i)) {
-                return i;
-            }
-        }
-        return -1;
+    nodes.add(n);
+    int max = n.getNbrSucc();
+    for (int i = 0; i < max; i++) {
+      collectNodes(n.getSuccessor(i), nodes);
     }
-
-    public static void collectNodes(GraphNode n, Vector nodes) {
-        if (getNodeCode(n, nodes) >= 0) {
-            return;
-        }
-        nodes.add(n);
-        int max = n.getNbrSucc();
-        for (int i = 0; i < max; i++) {
-            collectNodes(n.getSuccessor(i), nodes);
-        }
-    }
-
+  }
 
 }

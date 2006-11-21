@@ -22,26 +22,26 @@ package org.apache.uima.collection.metadata;
 import org.apache.uima.resource.metadata.MetaDataObject;
 
 /**
- * An object that holds configuration that is part of the CPE descriptor.
- * It provides the means of configuring executable program used by the CPE
- * when launching local CasProcessor.
+ * An object that holds configuration that is part of the CPE descriptor. It provides the means of
+ * configuring executable program used by the CPE when launching local CasProcessor.
  * 
  * 
  */
-public interface CasProcessorRunInSeperateProcess extends MetaDataObject
-{
-	/**
-	 * Sets {@link org.apache.uima.collection.metadata.CasProcessorExecutable} executable program
-	 * used by the CPE to launch CasProcessor.
-	 * 
-	 * @param aExec - {@link org.apache.uima.collection.metadata.CasProcessorExecutable}
-	 */
-	public void setExecutable( CasProcessorExecutable aExec );
-	/**
-	 * Returns {@link org.apache.uima.collection.metadata.CasProcessorExecutable} program
-	 * used by the CPE to launch CasProcessor.
-	 * 
-	 * @return {@link org.apache.uima.collection.metadata.CasProcessorExecutable}
-	 */
-	public CasProcessorExecutable getExecutable();
+public interface CasProcessorRunInSeperateProcess extends MetaDataObject {
+  /**
+   * Sets {@link org.apache.uima.collection.metadata.CasProcessorExecutable} executable program used
+   * by the CPE to launch CasProcessor.
+   * 
+   * @param aExec -
+   *          {@link org.apache.uima.collection.metadata.CasProcessorExecutable}
+   */
+  public void setExecutable(CasProcessorExecutable aExec);
+
+  /**
+   * Returns {@link org.apache.uima.collection.metadata.CasProcessorExecutable} program used by the
+   * CPE to launch CasProcessor.
+   * 
+   * @return {@link org.apache.uima.collection.metadata.CasProcessorExecutable}
+   */
+  public CasProcessorExecutable getExecutable();
 }

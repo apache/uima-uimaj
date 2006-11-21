@@ -21,13 +21,14 @@ package org.apache.uima.cas.text;
 
 /**
  * Represents an annotation tree.
- *  
+ * 
  * 
  */
 public interface AnnotationTree {
-  
+
   /**
    * Get the root node of the tree.
+   * 
    * @return The root node of the tree.
    */
   AnnotationTreeNode getRoot();

@@ -26,104 +26,102 @@ import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**
- * Implementation base class for AnalysisComponents.  Normally developers do not extend
- * this class directly.  Instead extend one of the Annotator or CasMultiplier base classes.
+ * Implementation base class for AnalysisComponents. Normally developers do not extend this class
+ * directly. Instead extend one of the Annotator or CasMultiplier base classes.
  * <p>
- * This class implements the {@link #initialize(UimaContext)} method and
- * stores the <code>UimaContext</code> in a private field where it can be
- * accessed via the {@link #getContext()} method.
+ * This class implements the {@link #initialize(UimaContext)} method and stores the
+ * <code>UimaContext</code> in a private field where it can be accessed via the
+ * {@link #getContext()} method.
  * <p>
- * This class also provides a "dumb" implementation of the 
- * {@link #reconfigure()} method, which simply calls
- * {@link #destroy()} followed by {@link #initialize(UimaContext)}.
- * Developers of AnalysisComponents with expensive initialization logic should
- * override this method and provide a more intelligent implementation.
+ * This class also provides a "dumb" implementation of the {@link #reconfigure()} method, which
+ * simply calls {@link #destroy()} followed by {@link #initialize(UimaContext)}. Developers of
+ * AnalysisComponents with expensive initialization logic should override this method and provide a
+ * more intelligent implementation.
  */
-public abstract class AnalysisComponent_ImplBase implements AnalysisComponent
-{
+public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
   private UimaContext mContext;
+
   private ResultSpecification mResultSpecification;
-  
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.AnalysisComponent.AnalysisComponent#initialize(org.apache.uima.AnalysisComponent.AnalysisComponentContext)
    */
-  public void initialize(UimaContext aContext) throws ResourceInitializationException
-  {
+  public void initialize(UimaContext aContext) throws ResourceInitializationException {
     mContext = aContext;
   }
 
   /**
-   * Notifies this AnalysisComponent that its configuration parameters have changed.
-   * This implementation just calls {@link #destroy()} followed by
-   * {@link #initialize()}.  Subclasses can override to provide more efficient
-   * reconfiguration logic if necessary.
+   * Notifies this AnalysisComponent that its configuration parameters have changed. This
+   * implementation just calls {@link #destroy()} followed by {@link #initialize()}. Subclasses can
+   * override to provide more efficient reconfiguration logic if necessary.
+   * 
    * @see org.apache.uima.AnalysisComponent.AnalysisComponent#reconfigure()
    */
-  public void reconfigure() throws ResourceConfigurationException, ResourceInitializationException
-  {
+  public void reconfigure() throws ResourceConfigurationException, ResourceInitializationException {
     destroy();
     initialize(mContext);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.AnalysisComponent.AnalysisComponent#batchProcessComplete()
    */
-  public void batchProcessComplete() throws AnalysisEngineProcessException
-  {
+  public void batchProcessComplete() throws AnalysisEngineProcessException {
+    //no default behavior
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.AnalysisComponent.AnalysisComponent#collectionProcessComplete()
    */
-  public void collectionProcessComplete() throws AnalysisEngineProcessException
-  {
+  public void collectionProcessComplete() throws AnalysisEngineProcessException {
+    //no default behavior
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.AnalysisComponent.AnalysisComponent#destroy()
    */
-  public void destroy()
-  {
+  public void destroy() {
+    //no default behavior
   }
-  
-  
 
   /**
-   * Sets the Result Specification for this Analysis Component.  This implementation
-   * just saves the Result Specification to a field, where it can later be accessed
-   * by calling {@link #getResultSpecification()}.  An AnalysisComponent implementation may
-   * override this method if it would like to do specific processing when its ResultSpecificatin
-   * is changed.
+   * Sets the Result Specification for this Analysis Component. This implementation just saves the
+   * Result Specification to a field, where it can later be accessed by calling
+   * {@link #getResultSpecification()}. An AnalysisComponent implementation may override this
+   * method if it would like to do specific processing when its ResultSpecificatin is changed.
+   * 
    * @see org.apache.uima.AnalysisComponent.AnalysisComponent#setResultSpecification(ResultSpecification)
    */
-  public void setResultSpecification(ResultSpecification aResultSpec)
-  {
+  public void setResultSpecification(ResultSpecification aResultSpec) {
     mResultSpecification = aResultSpec;
   }
 
-  /** 
-   * Gets the UimaContext for this AnalysisComponent.  This provides access to
-   * configuration parameters and external resources.
+  /**
+   * Gets the UimaContext for this AnalysisComponent. This provides access to configuration
+   * parameters and external resources.
    * 
    * @return the UimaContext for this AnalysisComponent
    */
-  protected final UimaContext getContext()
-  {
+  protected final UimaContext getContext() {
     return mContext;
   }
-  
-  /** 
-   * Gets the ResultSpecification for this AnalysisComponent.
-   * The ResultSpecification is a set of types and features that this 
-   * AnalysisComponent is asked to produce.  An Analysis Component may (but is
-   * not required to) optimize its processing by omitting the generation of any
-   * types or features that are not part of the ResultSpecification.
-   *   
+
+  /**
+   * Gets the ResultSpecification for this AnalysisComponent. The ResultSpecification is a set of
+   * types and features that this AnalysisComponent is asked to produce. An Analysis Component may
+   * (but is not required to) optimize its processing by omitting the generation of any types or
+   * features that are not part of the ResultSpecification.
+   * 
    * @return the ResultSpecification for this Analysis Component to use.
    */
-  protected ResultSpecification getResultSpecification()
-  {
+  protected ResultSpecification getResultSpecification() {
     return mResultSpecification;
   }
 }

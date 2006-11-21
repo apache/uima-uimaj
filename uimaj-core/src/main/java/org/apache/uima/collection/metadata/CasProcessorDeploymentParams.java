@@ -20,41 +20,48 @@
 package org.apache.uima.collection.metadata;
 
 /**
- * An object that contains all {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam}
- * instances. Provides the means to add, get, and delete deployment parameters. 
- *  
+ * An object that contains all
+ * {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam} instances. Provides the
+ * means to add, get, and delete deployment parameters.
+ * 
  * 
  */
-public interface CasProcessorDeploymentParams 
-{
-	/**
-	 * Adds new {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam} param
-	 * 
-	 * @param aParam - parameter to add
-	 */
-	public void add( CasProcessorDeploymentParam aParam );
-	/**
-	 * Returns {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam} instance identified
-	 * by aParamName.
-	 * 
-	 * @param aParamName - name of the parameter to get
-	 * @return - instance of {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam}
-	 * @throws CpeDescriptorException
-	 */
-	public CasProcessorDeploymentParam get( String aParamName ) 
-		throws CpeDescriptorException;
-	/**
-	 * Returns all instances of {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam}
-	 * 
-	 * @return - array of {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam} instances
-	 */
-	public CasProcessorDeploymentParam[] getAll();
-	/**
-	 * Deletes named instance of {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam}
-	 * 
-	 * @param aParam - name of a parameter to remove
-	 * @throws CpeDescriptorException
-	 */
-	public void remove( CasProcessorDeploymentParam aParam )
-		throws CpeDescriptorException;
+public interface CasProcessorDeploymentParams {
+  /**
+   * Adds new {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam} param
+   * 
+   * @param aParam -
+   *          parameter to add
+   */
+  public void add(CasProcessorDeploymentParam aParam);
+
+  /**
+   * Returns {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam} instance
+   * identified by aParamName.
+   * 
+   * @param aParamName -
+   *          name of the parameter to get
+   * @return - instance of {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam}
+   * @throws CpeDescriptorException
+   */
+  public CasProcessorDeploymentParam get(String aParamName) throws CpeDescriptorException;
+
+  /**
+   * Returns all instances of
+   * {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam}
+   * 
+   * @return - array of {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam}
+   *         instances
+   */
+  public CasProcessorDeploymentParam[] getAll();
+
+  /**
+   * Deletes named instance of
+   * {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam}
+   * 
+   * @param aParam -
+   *          name of a parameter to remove
+   * @throws CpeDescriptorException
+   */
+  public void remove(CasProcessorDeploymentParam aParam) throws CpeDescriptorException;
 }

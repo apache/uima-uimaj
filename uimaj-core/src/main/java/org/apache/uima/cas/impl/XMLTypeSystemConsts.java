@@ -19,17 +19,23 @@
 
 package org.apache.uima.cas.impl;
 
-/** Class comment for XMLTypeSystemConsts.java goes here.
- *
- *  
+/**
+ * Class comment for XMLTypeSystemConsts.java goes here.
+ * 
+ * 
  */
 public interface XMLTypeSystemConsts {
-  
-	static final String TYPE_SYSTEM_TAG =    "type_system";
-	static final String TYPE_TAG =           "type";
-	static final String FEATURE_TAG =        "feature";
-	static final String TYPE_NAME_ATTR =     "name";
-	static final String FEATURE_NAME_ATTR =  "name";
-	static final String FEATURE_RANGE_ATTR = "range";
+
+  static final String TYPE_SYSTEM_TAG = "type_system";
+
+  static final String TYPE_TAG = "type";
+
+  static final String FEATURE_TAG = "feature";
+
+  static final String TYPE_NAME_ATTR = "name";
+
+  static final String FEATURE_NAME_ATTR = "name";
+
+  static final String FEATURE_RANGE_ATTR = "range";
 
 }

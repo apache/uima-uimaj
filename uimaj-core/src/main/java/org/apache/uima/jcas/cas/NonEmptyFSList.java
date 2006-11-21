@@ -24,11 +24,16 @@ import org.apache.uima.jcas.impl.JCas;
 public class NonEmptyFSList extends FSList {
 
   public final static int typeIndexID = JCas.getNextIndex();
-  public final static int type = typeIndexID;
-  public           int getTypeIndexID() {return typeIndexID;}
 
-  // Never called.  Disable default constructor
-  protected NonEmptyFSList() {}
+  public final static int type = typeIndexID;
+
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  // Never called. Disable default constructor
+  protected NonEmptyFSList() {
+  }
 
   /** Internal - Constructor used by generator */
   public NonEmptyFSList(int addr, TOP_Type type) {
@@ -39,30 +44,39 @@ public class NonEmptyFSList extends FSList {
     super(jcas);
   }
 
-  //*------------------*
-  //* Feature: head
-  /** getter for head  * */
+  // *------------------*
+  // * Feature: head
+  /** getter for head * */
   public org.apache.uima.jcas.cas.TOP getHead() {
-    if (NonEmptyFSList_Type.featOkTst && ((NonEmptyFSList_Type)jcasType).casFeat_head == null)
-          JCas.throwFeatMissing("head", "uima.cas.NonEmptyFSList");
-    return (org.apache.uima.jcas.cas.TOP)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((NonEmptyFSList_Type)jcasType).casFeatCode_head)));}
+    if (NonEmptyFSList_Type.featOkTst && ((NonEmptyFSList_Type) jcasType).casFeat_head == null)
+      JCas.throwFeatMissing("head", "uima.cas.NonEmptyFSList");
+    return (org.apache.uima.jcas.cas.TOP) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas
+                    .ll_getRefValue(addr, ((NonEmptyFSList_Type) jcasType).casFeatCode_head)));
+  }
 
-  /** setter for head  * */
+  /** setter for head * */
   public void setHead(org.apache.uima.jcas.cas.TOP v) {
-    if (NonEmptyFSList_Type.featOkTst && ((NonEmptyFSList_Type)jcasType).casFeat_head == null)
-          JCas.throwFeatMissing("head", "uima.cas.NonEmptyFSList");
-    jcasType.ll_cas.ll_setRefValue(addr, ((NonEmptyFSList_Type)jcasType).casFeatCode_head, jcasType.ll_cas.ll_getFSRef(v));}
-  //*------------------*
-  //* Feature: tail
-  /** getter for tail  * */
-  public FSList getTail() {
-    if (NonEmptyFSList_Type.featOkTst && ((NonEmptyFSList_Type)jcasType).casFeat_tail == null)
-          JCas.throwFeatMissing("tail", "uima.cas.NonEmptyFSList");
-    return (FSList)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((NonEmptyFSList_Type)jcasType).casFeatCode_tail)));}
+    if (NonEmptyFSList_Type.featOkTst && ((NonEmptyFSList_Type) jcasType).casFeat_head == null)
+      JCas.throwFeatMissing("head", "uima.cas.NonEmptyFSList");
+    jcasType.ll_cas.ll_setRefValue(addr, ((NonEmptyFSList_Type) jcasType).casFeatCode_head,
+                    jcasType.ll_cas.ll_getFSRef(v));
+  }
 
-  /** setter for tail  * */
+  // *------------------*
+  // * Feature: tail
+  /** getter for tail * */
+  public FSList getTail() {
+    if (NonEmptyFSList_Type.featOkTst && ((NonEmptyFSList_Type) jcasType).casFeat_tail == null)
+      JCas.throwFeatMissing("tail", "uima.cas.NonEmptyFSList");
+    return (FSList) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
+                    ((NonEmptyFSList_Type) jcasType).casFeatCode_tail)));
+  }
+
+  /** setter for tail * */
   public void setTail(FSList v) {
-    if (NonEmptyFSList_Type.featOkTst && ((NonEmptyFSList_Type)jcasType).casFeat_tail == null)
-          JCas.throwFeatMissing("tail", "uima.cas.NonEmptyFSList");
-    jcasType.ll_cas.ll_setRefValue(addr, ((NonEmptyFSList_Type)jcasType).casFeatCode_tail, jcasType.ll_cas.ll_getFSRef(v));}
+    if (NonEmptyFSList_Type.featOkTst && ((NonEmptyFSList_Type) jcasType).casFeat_tail == null)
+      JCas.throwFeatMissing("tail", "uima.cas.NonEmptyFSList");
+    jcasType.ll_cas.ll_setRefValue(addr, ((NonEmptyFSList_Type) jcasType).casFeatCode_tail,
+                    jcasType.ll_cas.ll_getFSRef(v));
+  }
 }

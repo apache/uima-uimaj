@@ -24,111 +24,96 @@ import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.FsIndexKeyDescription;
 
 /**
- *
+ * 
  * 
  */
-public class FsIndexDescription_impl
-  extends MetaDataObject_impl
-  implements FsIndexDescription
-{
+public class FsIndexDescription_impl extends MetaDataObject_impl implements FsIndexDescription {
+
+  static final long serialVersionUID = 8939000196947456114L;
+
+  private String mLabel;
+
+  private String mTypeName;
+
+  private String mKind;
+
+  private FsIndexKeyDescription[] mKeys = new FsIndexKeyDescription[0];
 
   /**
    * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXMLElementTagName()
    */
-  protected String getXMLElementTagName()
-  {
+  protected String getXMLElementTagName() {
     return "fsIndexDescription";
   }
 
   /**
    * @see org.apache.uima.cas.FsIndexDescription#getLabel()
    */
-  public String getLabel()
-  {
+  public String getLabel() {
     return mLabel;
   }
 
   /**
    * @see org.apache.uima.cas.FsIndexDescription#setLabel(String)
    */
-  public void setLabel(String aLabel)
-  {
+  public void setLabel(String aLabel) {
     mLabel = aLabel;
   }
 
   /**
    * @see org.apache.uima.cas.FsIndexDescription#getTypeName()
    */
-  public String getTypeName()
-  {
+  public String getTypeName() {
     return mTypeName;
   }
 
   /**
    * @see org.apache.uima.cas.FsIndexDescription#setTypeName(String)
    */
-  public void setTypeName(String aTypeName)
-  {
+  public void setTypeName(String aTypeName) {
     mTypeName = aTypeName;
   }
 
   /**
    * @see org.apache.uima.cas.FsIndexDescription#getKind
    */
-  public String getKind()
-  {
+  public String getKind() {
     return mKind;
   }
 
   /**
    * @see org.apache.uima.cas.FsIndexDescription#setKind(String)
    */
-  public void setKind(String aKind)
-  {
+  public void setKind(String aKind) {
     mKind = aKind;
   }
 
   /**
    * @see org.apache.uima.cas.FsIndexDescription#getKeys()
    */
-  public FsIndexKeyDescription[] getKeys()
-  {
+  public FsIndexKeyDescription[] getKeys() {
     return mKeys;
   }
 
   /**
    * @see org.apache.uima.cas.FsIndexDescription#setKeys(FsIndexKeyDescription[])
    */
-  public void setKeys(FsIndexKeyDescription[] aKeys)
-  {
-    if (aKeys == null)
-    {
-      throw new UIMA_IllegalArgumentException(
-          UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-          new Object[]{"null", "aKeys", "setKeys"});            
-    }    
+  public void setKeys(FsIndexKeyDescription[] aKeys) {
+    if (aKeys == null) {
+      throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+                      new Object[] { "null", "aKeys", "setKeys" });
+    }
     mKeys = aKeys;
   }
-  
-  protected XmlizationInfo getXmlizationInfo()
-  {
+
+  protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
-  
-  static final private XmlizationInfo XMLIZATION_INFO =
-    new XmlizationInfo("fsIndexDescription",
-      new PropertyXmlInfo[]{
-         new PropertyXmlInfo("label"),
-         new PropertyXmlInfo("typeName"),
-         new PropertyXmlInfo("kind"),
-         new PropertyXmlInfo("keys",true)
-         
-      });
-      
-  private String mLabel;
-  private String mTypeName;
-  private String mKind;
-  private FsIndexKeyDescription[] mKeys = new FsIndexKeyDescription[0];
 
-  static final long serialVersionUID = 8939000196947456114L;
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fsIndexDescription",
+                  new PropertyXmlInfo[] { new PropertyXmlInfo("label"),
+                      new PropertyXmlInfo("typeName"), new PropertyXmlInfo("kind"),
+                      new PropertyXmlInfo("keys", true)
+
+                  });
 }

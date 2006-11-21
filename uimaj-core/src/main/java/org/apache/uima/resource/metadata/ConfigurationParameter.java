@@ -19,8 +19,6 @@
 
 package org.apache.uima.resource.metadata;
 
-
-
 /**
  * Completely specifies a configuration parameter on a UIMA resource.
  * <p>
@@ -32,212 +30,204 @@ package org.apache.uima.resource.metadata;
  * <li>Is the parameter multi-valued?</li>
  * <li>Is a value mandatory?</li>
  * <li>Overrides (see below)</li>
- * </ul> 
+ * </ul>
  * <p>
- * This interface does not provide access to the value of the parameter -
- * that is a separate piece of metadata associated with the resource.
+ * This interface does not provide access to the value of the parameter - that is a separate piece
+ * of metadata associated with the resource.
  * <p>
  * In an aggregate resource, configuration parameters may override component resources' parameters.
- * This is done by the {@link #getOverrides() overrides} property.  Overrides should always be
- * specified for aggregate resources.  If no overrides are specified, the default behavior is to 
- * override any parameter with the same name in any component resource.  However, this usage is
+ * This is done by the {@link #getOverrides() overrides} property. Overrides should always be
+ * specified for aggregate resources. If no overrides are specified, the default behavior is to
+ * override any parameter with the same name in any component resource. However, this usage is
  * discouraged and will generate a warning in the log file; it exists for backwards compatibility
- * purposes. 
+ * purposes.
  * <p>
- * As with all {@link MetaDataObject}s, a <code>ConfigurationParameter</code>
- * may or may not be modifiable.  An application can find out by calling
- * the {@link #isModifiable()} method.  
- *   
+ * As with all {@link MetaDataObject}s, a <code>ConfigurationParameter</code> may or may not be
+ * modifiable. An application can find out by calling the {@link #isModifiable()} method.
+ * 
  * 
  */
-public interface ConfigurationParameter extends MetaDataObject
-{
-  
- /**
-  * Retrieves the name of this configuration parameter.
-  * 
-  * @return the name of this configuration parameter.
-  */
+public interface ConfigurationParameter extends MetaDataObject {
+
+  /**
+   * Retrieves the name of this configuration parameter.
+   * 
+   * @return the name of this configuration parameter.
+   */
   public String getName();
 
-
- /**
-  * Sets the name of this configuration parameter.
-  * 
-  * @param aName the name of this configuration parameter.
-  *
-  * @throws org.apache.uima.UIMA_UnsupportedOperationException if this object is not modifiable
-  */
+  /**
+   * Sets the name of this configuration parameter.
+   * 
+   * @param aName
+   *          the name of this configuration parameter.
+   * 
+   * @throws org.apache.uima.UIMA_UnsupportedOperationException
+   *           if this object is not modifiable
+   */
   public void setName(String aName);
- 
 
- /**
-  * Retrieves the description of this configuration parameter.
-  * 
-  * @return the description of this configuraiton parameter.
-  */
+  /**
+   * Retrieves the description of this configuration parameter.
+   * 
+   * @return the description of this configuraiton parameter.
+   */
   public String getDescription();
 
-
- /**
-  * Sets the description of this configuration parameter.
-  * 
-  * @param aDescription the description of this configuraiton parameter.
-  *
-  * @throws org.apache.uima.UIMA_UnsupportedOperationException if this object is not modifiable
-  */
+  /**
+   * Sets the description of this configuration parameter.
+   * 
+   * @param aDescription
+   *          the description of this configuraiton parameter.
+   * 
+   * @throws org.apache.uima.UIMA_UnsupportedOperationException
+   *           if this object is not modifiable
+   */
   public void setDescription(String aDescription);
-     
 
- /**
-  * Retrieves the data type of this configuration parameter.
-  * 
-  * @return the data type of this configuraiton parameter.  This will
-  *     be one of the TYPE constants defined on this interface.
-  */
+  /**
+   * Retrieves the data type of this configuration parameter.
+   * 
+   * @return the data type of this configuraiton parameter. This will be one of the TYPE constants
+   *         defined on this interface.
+   */
   public String getType();
 
-
- /**
-  * Sets the data type of this configuration parameter.
-  * 
-  * @param aType the data type of this configuraiton parameter.  This must
-  *     be one of the TYPE constants defined on this interface.
-  * 
-  * @throws org.apache.uima.UIMA_IllegalArgumentException if <code>aType</code> is not a valid
-  *    data type defined by a TYPE constant on this interface.
-  * @throws org.apache.uima.UIMA_UnsupportedOperationException if this object is not modifiable
-  */
+  /**
+   * Sets the data type of this configuration parameter.
+   * 
+   * @param aType
+   *          the data type of this configuraiton parameter. This must be one of the TYPE constants
+   *          defined on this interface.
+   * 
+   * @throws org.apache.uima.UIMA_IllegalArgumentException
+   *           if <code>aType</code> is not a valid data type defined by a TYPE constant on this
+   *           interface.
+   * @throws org.apache.uima.UIMA_UnsupportedOperationException
+   *           if this object is not modifiable
+   */
   public void setType(String aType);
-  
-  
- /**
-  * Retrieves whether this parameter is multi-valued.  Multi-valued parameters
-  * take an array of values, each of which must be of the appropriate data
-  * type.
-  * 
-  * @return true if and only if this parameter is multi-valued.
-  */
+
+  /**
+   * Retrieves whether this parameter is multi-valued. Multi-valued parameters take an array of
+   * values, each of which must be of the appropriate data type.
+   * 
+   * @return true if and only if this parameter is multi-valued.
+   */
   public boolean isMultiValued();
-  
 
- /**
-  * Sets whether this parameter is multi-valued.  Multi-valued parameters
-  * take an array of values, each of which must be of the appropriate data
-  * type.
-  * 
-  * @param aMultiValued true if and only if this parameter is multi-valued.
-  *
-  * @throws org.apache.uima.UIMA_UnsupportedOperationException if this object is not modifiable
-  */
+  /**
+   * Sets whether this parameter is multi-valued. Multi-valued parameters take an array of values,
+   * each of which must be of the appropriate data type.
+   * 
+   * @param aMultiValued
+   *          true if and only if this parameter is multi-valued.
+   * 
+   * @throws org.apache.uima.UIMA_UnsupportedOperationException
+   *           if this object is not modifiable
+   */
   public void setMultiValued(boolean aMultiValued);
-  
-   
- /**
-  * Retrieves whether this parameter is mandatory.
-  * 
-  * @return true if and only if this parameter is mandatory.
-  */
-  public boolean isMandatory();
-  
 
- /**
-  * Sets whether this parameter is mandatory.
-  * 
-  * @param aMandatory true if and only if this parameter is mandatory.
-  * 
-  * @throws org.apache.uima.UIMA_UnsupportedOperationException if this object is not modifiable
-  */
+  /**
+   * Retrieves whether this parameter is mandatory.
+   * 
+   * @return true if and only if this parameter is mandatory.
+   */
+  public boolean isMandatory();
+
+  /**
+   * Sets whether this parameter is mandatory.
+   * 
+   * @param aMandatory
+   *          true if and only if this parameter is mandatory.
+   * 
+   * @throws org.apache.uima.UIMA_UnsupportedOperationException
+   *           if this object is not modifiable
+   */
   public void setMandatory(boolean aMandatory);
 
+  /**
+   * Retrieves whether this parameter is published to clients. A non-published parameter is used
+   * only for initialization of the resource, and thereafter is not accessible to clients.
+   * 
+   * @return true if and only if this parameter is published
+   */
+  // public boolean isPublished();
 
- /**
-  * Retrieves whether this parameter is published to clients.  A 
-  * non-published parameter is used only for initialization of the
-  * resource, and thereafter is not accessible to clients.
-  * 
-  * @return true if and only if this parameter is published
-  */
-//  public boolean isPublished();
-  
+  /**
+   * Sets whether this parameter is published to clients. A non-published parameter is used only for
+   * initialization of the resource, and thereafter is not accessible to clients.
+   * 
+   * @param aPublishes
+   *          true if and only if this parameter is published
+   * 
+   * @throws UIMA_UnsupportedOperationException
+   *           if this object is not modifiable
+   */
+  // public void setPublished(boolean aPublished);
+  /**
+   * Gets the parameters that are this parameter overrides. This is used for aggregate resources
+   * only. Overrides are expressed as strings of the form <i>componentName</i><code>/</code><i>parameterName</i>.
+   * For example the overrides <code>annotator1/parameter1</code> would override the parameter
+   * named <code>parameter1</code> within the component named <code>annotator1</code>.
+   * 
+   * @return the parameters this this parameter overrides
+   */
+  public String[] getOverrides();
 
- /**
-  * Sets whether this parameter is published to clients.  A 
-  * non-published parameter is used only for initialization of the
-  * resource, and thereafter is not accessible to clients.
-  * 
-  * @param aPublishes true if and only if this parameter is published
-  * 
-  * @throws UIMA_UnsupportedOperationException if this object is not modifiable
-  */
-//  public void setPublished(boolean aPublished);
+  /**
+   * Sets the parameters that are this parameter overrides. This is used for aggregate resources
+   * only. Overrides are expressed as strings of the form <i>componentName</i><code>/</code><i>parameterName</i>.
+   * For example the overrides <code>annotator1/parameter1</code> would override the parameter
+   * named <code>parameter1</code> within the component named <code>annotator1</code>.
+   * 
+   * @param aOverrides
+   *          the parameters this this parameter overrides
+   */
+  public void setOverrides(String[] aOverrides);
 
-	/**
-	 * Gets the parameters that are this parameter overrides.  This is used
-	 * for aggregate resources only.  Overrides are expressed as strings of the form
-	 * <i>componentName</i><code>/</code><i>parameterName</i>.  For example the overrides
-	 * <code>annotator1/parameter1</code> would override the parameter named
-	 * <code>parameter1</code> within the component named <code>annotator1</code>.
-	 * 
-	 * @return the parameters this this parameter overrides
-	 */
-	 public String[] getOverrides();
-    
- /**
-	 * Sets the parameters that are this parameter overrides.  This is used
-	 * for aggregate resources only.  Overrides are expressed as strings of the form
-	 * <i>componentName</i><code>/</code><i>parameterName</i>.  For example the overrides
-	 * <code>annotator1/parameter1</code> would override the parameter named
-	 * <code>parameter1</code> within the component named <code>annotator1</code>.
-	 * 
-	 * @param aOverrides the parameters this this parameter overrides
-	 */
-	 public void setOverrides(String[] aOverrides);
+  /**
+   * Adds an override to this configuration parameter.
+   * 
+   * @param aOverride
+   *          the override to add
+   * 
+   * @throws UIMA_UnsupportedOperationException
+   *           if this object is not modifiable
+   * @see #setOverrides(String[])
+   */
+  public void addOverride(String aOverride);
 
-		/**
-		 * Adds an override to this configuration parameter.  
-		 * 
-		 * @param aOverride the override to add
-		 *
-		 * @throws UIMA_UnsupportedOperationException if this object is not modifiable
-		 * @see #setOverrides(String[])
-		 */
-		public void addOverride(String aOverride);
+  /**
+   * Removes an override from this configuration parameter.
+   * 
+   * @param aOverride
+   *          the override to remove. Must equal (via the equals() method) one of the overrides on
+   *          this parameter, or this method will do nothing.
+   * 
+   * @throws UIMA_UnsupportedOperationException
+   *           if this object is not modifiable
+   * @see #setOverrides(String[])
+   */
+  public void removeOverride(String aOverride);
 
-		/**
-		 * Removes an override from this configuration parameter.  
-		 * 
-		 * @param aOverride the override to remove.  Must equal (via the equals()
-		 *   method) one of the overrides on this parameter, or this method
-		 *   will do nothing.
-		 *
-		 * @throws UIMA_UnsupportedOperationException if this object is not modifiable
-		 * @see #setOverrides(String[])
-		 */
-		public void removeOverride(String aOverride);
-
-		
- /**
-  * Identifies the String data type.  Values of the parameter will be
-  * of type java.lang.String.
-  */
+  /**
+   * Identifies the String data type. Values of the parameter will be of type java.lang.String.
+   */
   public static final String TYPE_STRING = "String";
 
- /**
-  * Identifies the Boolean data type.  Values of the parameter will be
-  * of type java.lang.Boolean.
-  */
+  /**
+   * Identifies the Boolean data type. Values of the parameter will be of type java.lang.Boolean.
+   */
   public static final String TYPE_BOOLEAN = "Boolean";
 
- /**
-  * Identifies the Integer data type.  Values of the parameter will be
-  * of type java.lang.Integer.
-  */
+  /**
+   * Identifies the Integer data type. Values of the parameter will be of type java.lang.Integer.
+   */
   public static final String TYPE_INTEGER = "Integer";
 
- /**
-  * Identifies the Float data type.  Values of the parameter will be
-  * of type java.lang.Float.
-  */
-  public static final String TYPE_FLOAT = "Float";  
+  /**
+   * Identifies the Float data type. Values of the parameter will be of type java.lang.Float.
+   */
+  public static final String TYPE_FLOAT = "Float";
 }

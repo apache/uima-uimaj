@@ -20,107 +20,104 @@
 package org.apache.uima.resource.metadata.impl;
 
 /**
- * A simple class containing information on how to render a property in XML. 
+ * A simple class containing information on how to render a property in XML.
  */
-public class PropertyXmlInfo
-{
+public class PropertyXmlInfo {
   /**
-   * Name of the property (must correspond to a property on this bean
-   * according to the JavaBeans spec).
+   * Name of the property (must correspond to a property on this bean according to the JavaBeans
+   * spec).
    */
   public String propertyName;
-    
-  /**
-   * Name if the XML element that represents this property in XML.  
-   * Defaults to the same value as {@link #propertyName}.
-   * <p>
-   * If this is <code>null</code>, it indicates that this property is not
-   * represented by its own element tag in the XML.  Instead, the value of
-   * the property determines the XML tag that is generated.
-   */
-  public String xmlElementName;
-    
-  /**
-   * If true, this property should be ommitted from the XML entirely if its
-   * value is null.  Defaults to true.
-   */
-  public boolean omitIfNull;
-  
-  /**
-   * Only used for properties with array values, this determines the tag name
-   * of each array element.  As with <code>aXmlName</code>, this may be null, 
-   * which will cause each array element to have a tag determined by its class.
-   */
-  public String arrayElementTagName;
-    
 
   /**
-   * Creates a new, default PropertyXmlInfo.  The XML name is assumed to be
-   * the same as the property name, omitIfNull is true, and 
-   * arrayElementTagName is null.
-   *
-   * @param aPropName name of the property
+   * Name if the XML element that represents this property in XML. Defaults to the same value as
+   * {@link #propertyName}.
+   * <p>
+   * If this is <code>null</code>, it indicates that this property is not represented by its own
+   * element tag in the XML. Instead, the value of the property determines the XML tag that is
+   * generated.
    */
-  public PropertyXmlInfo(String aPropName)
-  {
+  public String xmlElementName;
+
+  /**
+   * If true, this property should be ommitted from the XML entirely if its value is null. Defaults
+   * to true.
+   */
+  public boolean omitIfNull;
+
+  /**
+   * Only used for properties with array values, this determines the tag name of each array element.
+   * As with <code>aXmlName</code>, this may be null, which will cause each array element to have
+   * a tag determined by its class.
+   */
+  public String arrayElementTagName;
+
+  /**
+   * Creates a new, default PropertyXmlInfo. The XML name is assumed to be the same as the property
+   * name, omitIfNull is true, and arrayElementTagName is null.
+   * 
+   * @param aPropName
+   *          name of the property
+   */
+  public PropertyXmlInfo(String aPropName) {
     this(aPropName, aPropName, true, null);
   }
-  
+
   /**
-   * Creates a new PropertyXmlInfo. 
+   * Creates a new PropertyXmlInfo.
    * 
-   * @param aPropName name of the property
-   * @param aOmitIfNull if true, this property should be ommitted entirely from
-   *    the XML if its value is null
+   * @param aPropName
+   *          name of the property
+   * @param aOmitIfNull
+   *          if true, this property should be ommitted entirely from the XML if its value is null
    */
-  public PropertyXmlInfo(String aPropName, boolean aOmitIfNull)
-  {
+  public PropertyXmlInfo(String aPropName, boolean aOmitIfNull) {
     this(aPropName, aPropName, aOmitIfNull, null);
   }
 
   /**
-   * Creates a new PropertyXmlInfo. 
+   * Creates a new PropertyXmlInfo.
    * 
-   * @param aPropName name of the property
-   * @param aXmlElementName name of xml element that represents 
-   *    this property (may be null - see {@link #xmlName}).
+   * @param aPropName
+   *          name of the property
+   * @param aXmlElementName
+   *          name of xml element that represents this property (may be null - see {@link #xmlName}).
    */
-  public PropertyXmlInfo(String aPropName, String aXmlName)
-  {
+  public PropertyXmlInfo(String aPropName, String aXmlName) {
     this(aPropName, aXmlName, true, null);
   }
 
   /**
    * Creates a new PropertyXmlInfo.
    * 
-   * @param aPropName name of the property
-   * @param aXmlElementName name of xml element that represents this
-   *    property (may be null - see {@link #xmlName}.
-   * @param aOmitIfNull if true, this property should be ommitted entirely from
-   *    the XML if its value is null
+   * @param aPropName
+   *          name of the property
+   * @param aXmlElementName
+   *          name of xml element that represents this property (may be null - see {@link #xmlName}.
+   * @param aOmitIfNull
+   *          if true, this property should be ommitted entirely from the XML if its value is null
    */
-  public PropertyXmlInfo(String aPropName, String aXmlName, boolean aOmitIfNull)
-  {
+  public PropertyXmlInfo(String aPropName, String aXmlName, boolean aOmitIfNull) {
     this(aPropName, aXmlName, aOmitIfNull, null);
   }
-
 
   /**
    * Creates a new PropertyXmlInfo.
    * 
-   * @param aPropName name of the property
-   * @param aXmlElementName name of xml element that represents this
-   *    property (may be null - see {@link #xmlElementName}.
-   * @param aOmitIfNull if true, this property should be ommitted entirely from
-   *    the XML if its value is null
-   * @param aArrayElementTagName only used for properties with array values,
-   *    this determines the tag name of each array element.  As with
-   *    <code>aXmlName</code>, this may be null, which will cause each
-   *    array element to have a tag determined by its class.
+   * @param aPropName
+   *          name of the property
+   * @param aXmlElementName
+   *          name of xml element that represents this property (may be null - see
+   *          {@link #xmlElementName}.
+   * @param aOmitIfNull
+   *          if true, this property should be ommitted entirely from the XML if its value is null
+   * @param aArrayElementTagName
+   *          only used for properties with array values, this determines the tag name of each array
+   *          element. As with <code>aXmlName</code>, this may be null, which will cause each
+   *          array element to have a tag determined by its class.
    */
-  public PropertyXmlInfo(String aPropName, String aXmlElementName,
-                         boolean aOmitIfNull, String aArrayElementTagName)
-  {
+  public PropertyXmlInfo(String aPropName, String aXmlElementName, boolean aOmitIfNull,
+                  String aArrayElementTagName) {
     propertyName = aPropName;
     xmlElementName = aXmlElementName;
     omitIfNull = aOmitIfNull;

@@ -29,65 +29,65 @@ import java.util.NoSuchElementException;
  */
 class LowLevelIteratorWrapper implements LowLevelIterator {
 
-    private final IntPointerIterator it;
-    private final LowLevelIndex index;
+  private final IntPointerIterator it;
 
-    LowLevelIteratorWrapper(IntPointerIterator it, LowLevelIndex index) {
-        super();
-        this.it = it;
-        this.index = index;
+  private final LowLevelIndex index;
+
+  LowLevelIteratorWrapper(IntPointerIterator it, LowLevelIndex index) {
+    super();
+    this.it = it;
+    this.index = index;
+  }
+
+  public final void moveToFirst() {
+    this.it.moveToFirst();
+  }
+
+  public final void moveToLast() {
+    this.it.moveToLast();
+  }
+
+  public final boolean isValid() {
+    return this.it.isValid();
+  }
+
+  public final int ll_get() throws NoSuchElementException {
+    return this.it.get();
+  }
+
+  public void moveToNext() {
+    this.it.inc();
+  }
+
+  public void moveToPrevious() {
+    this.it.dec();
+  }
+
+  public void moveTo(int fsRef) {
+    this.it.moveTo(fsRef);
+  }
+
+  public Object copy() {
+    return this.it.copy();
+  }
+
+  public int ll_indexSize() {
+    // TODO: make this more efficient
+    if (!this.isValid()) {
+      return 0;
     }
-
-    public final void moveToFirst() {
-        this.it.moveToFirst();
+    IntPointerIterator count = (IntPointerIterator) this.it.copy();
+    count.moveToFirst();
+    int size = 0;
+    while (count.isValid()) {
+      ++size;
+      count.inc();
     }
+    return size;
+  }
 
-    public final void moveToLast() {
-        this.it.moveToLast();
-    }
-
-    public final boolean isValid() {
-        return this.it.isValid();
-    }
-
-    public final int ll_get() throws NoSuchElementException {
-        return this.it.get();
-    }
-
-    public void moveToNext() {
-        this.it.inc();
-    }
-
-    public void moveToPrevious() {
-        this.it.dec();
-    }
-
-    public void moveTo(int fsRef) {
-        this.it.moveTo(fsRef);
-    }
-
-    public Object copy() {
-        return this.it.copy();
-    }
-
-    public int ll_indexSize() {
-        // TODO: make this more efficient
-        if (!this.isValid()) {
-            return 0;
-        }
-        IntPointerIterator count = (IntPointerIterator) this.it.copy();
-        count.moveToFirst();
-        int size = 0;
-        while (count.isValid()) {
-            ++size;
-            count.inc();
-        }
-        return size;
-    }
-
-    public LowLevelIndex ll_getIndex() {
-        return this.index;
-    }
-
+  public LowLevelIndex ll_getIndex() {
+    return this.index;
+  }
 
 }

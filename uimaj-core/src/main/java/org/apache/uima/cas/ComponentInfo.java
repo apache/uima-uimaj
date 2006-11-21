@@ -22,18 +22,18 @@ package org.apache.uima.cas;
 import java.util.Map;
 
 /**
- * Information that a CAS needs to know about the component that's 
- * currently operating on it.  Intended for internal framework usage.
+ * Information that a CAS needs to know about the component that's currently operating on it.
+ * Intended for internal framework usage.
  */
-public interface ComponentInfo
-{
-  
+public interface ComponentInfo {
+
   /**
-   * Retrieve actual sofa ID  given a symbolic name
-   * @param aSofaName this component's name for a SofA
-   * @return absolute SofA ID 
+   * Retrieve actual sofa ID given a symbolic name
+   * 
+   * @param aSofaName
+   *          this component's name for a SofA
+   * @return absolute SofA ID
    */
   String mapToSofaID(String aSofaName);
-  
- 
+
 }

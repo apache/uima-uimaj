@@ -37,48 +37,48 @@ import org.apache.uima.util.XMLInputSource;
  * 
  * @author Adam Lally
  */
-public class CasPerformanceTuningSettingsTest extends TestCase
-{
+public class CasPerformanceTuningSettingsTest extends TestCase {
 
   /**
    * Constructor for CasPerformanceTuningSettingsTest.
+   * 
    * @param arg0
    */
-  public CasPerformanceTuningSettingsTest(String arg0)
-  {
+  public CasPerformanceTuningSettingsTest(String arg0) {
     super(arg0);
   }
-  
-  public void testInitialHeapSize() throws Exception
-  {
-  	try
-  	{
-	  	Properties defaultProps = UIMAFramework.getDefaultPerformanceTuningProperties();
-	  	int expectedHeapSizeDefault = Integer.parseInt(defaultProps.getProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE));
-	  	Properties newProps = UIMAFramework.getDefaultPerformanceTuningProperties();
-	  	newProps.setProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE, "100000");
-	  	
-	  	TaeDescription testDescriptor = UIMAFramework.getXMLParser().parseTaeDescription(
-	  	  new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml")));
-	  	
-	  	//check default setting
-			TextAnalysisEngine taeDefault = UIMAFramework.produceTAE(testDescriptor);
-			TCAS tcasDefault = taeDefault.newTCAS();
-			int heapSize = ((CASImpl)tcasDefault).getHeap().heap.length;
-			Assert.assertEquals(expectedHeapSizeDefault, heapSize);
-	  	
-	  	//check override
-			HashMap params = new HashMap();
-			params.put(Resource.PARAM_PERFORMANCE_TUNING_SETTINGS, newProps);
-			TextAnalysisEngine taeOverride = UIMAFramework.produceTAE(testDescriptor, params);
-			TCAS tcasOverride = taeOverride.newTCAS();
-			heapSize = ((CASImpl)tcasOverride).getHeap().heap.length;
-			Assert.assertEquals(100000, heapSize);
-  	}
-  	catch(Exception e)
-  	{
-  		JUnitExtension.handleException(e);  	
-  	}
+
+  public void testInitialHeapSize() throws Exception {
+    try {
+      Properties defaultProps = UIMAFramework.getDefaultPerformanceTuningProperties();
+      int expectedHeapSizeDefault = Integer.parseInt(defaultProps
+                      .getProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE));
+      Properties newProps = UIMAFramework.getDefaultPerformanceTuningProperties();
+      newProps.setProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE, "100000");
+
+      TaeDescription testDescriptor = UIMAFramework
+                      .getXMLParser()
+                      .parseTaeDescription(
+                                      new XMLInputSource(
+                                                      JUnitExtension
+                                                                      .getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml")));
+
+      // check default setting
+      TextAnalysisEngine taeDefault = UIMAFramework.produceTAE(testDescriptor);
+      TCAS tcasDefault = taeDefault.newTCAS();
+      int heapSize = ((CASImpl) tcasDefault).getHeap().heap.length;
+      Assert.assertEquals(expectedHeapSizeDefault, heapSize);
+
+      // check override
+      HashMap params = new HashMap();
+      params.put(Resource.PARAM_PERFORMANCE_TUNING_SETTINGS, newProps);
+      TextAnalysisEngine taeOverride = UIMAFramework.produceTAE(testDescriptor, params);
+      TCAS tcasOverride = taeOverride.newTCAS();
+      heapSize = ((CASImpl) tcasOverride).getHeap().heap.length;
+      Assert.assertEquals(100000, heapSize);
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
   }
 
 }

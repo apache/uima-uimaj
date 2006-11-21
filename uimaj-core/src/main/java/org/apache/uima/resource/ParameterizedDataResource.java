@@ -20,30 +20,28 @@
 package org.apache.uima.resource;
 
 /**
- * A resource that provides access to data, where the data can vary based
- * on parameters.  A common example is a dictionary, where the dictionary data
- * is dependent upon the language being analyzed.
+ * A resource that provides access to data, where the data can vary based on parameters. A common
+ * example is a dictionary, where the dictionary data is dependent upon the language being analyzed.
  * <p>
- * The {@link #getDataResource(String[])} takes an array of string parameters 
- * and returns a {@link DataResource} object that can be used to access the
- * data that is appropriate for those parameter values.    
+ * The {@link #getDataResource(String[])} takes an array of string parameters and returns a
+ * {@link DataResource} object that can be used to access the data that is appropriate for those
+ * parameter values.
  * 
  * 
  */
-public interface ParameterizedDataResource extends Resource
-{
-  
+public interface ParameterizedDataResource extends Resource {
+
   /**
-   * Gets a {@link DataResource} object that can be used to access the
-   * data that is appropriate for the given parameter values.
+   * Gets a {@link DataResource} object that can be used to access the data that is appropriate for
+   * the given parameter values.
    * 
-   * @param aParams parameter values
+   * @param aParams
+   *          parameter values
    * 
    * @return an object providing access to the resource data, <code>null</code>
    * 
-   * @throws ResourceInitializationException if no <code>DataResource</code>
-   *   could be initialized from the specified parameters
+   * @throws ResourceInitializationException
+   *           if no <code>DataResource</code> could be initialized from the specified parameters
    */
-  public DataResource getDataResource(String[] aParams)
-    throws ResourceInitializationException;
+  public DataResource getDataResource(String[] aParams) throws ResourceInitializationException;
 }

@@ -31,30 +31,29 @@ import java.util.ArrayList;
  */
 abstract class PathConstraint implements FSMatchConstraint {
 
-    protected ArrayList featNames;
+  protected ArrayList featNames;
 
-    protected PathConstraint() {
-        super();
+  protected PathConstraint() {
+    super();
+  }
+
+  PathConstraint(ArrayList featNames) {
+    this();
+    this.featNames = featNames;
+  }
+
+  public String toString() {
+    if (this.featNames == null) {
+      return "";
     }
-
-    PathConstraint(ArrayList featNames) {
-        this();
-        this.featNames = featNames;
+    StringBuffer buf = new StringBuffer();
+    for (int i = 0; i < this.featNames.size(); i++) {
+      if (i > 0) {
+        buf.append('.');
+      }
+      buf.append((String) this.featNames.get(i));
     }
-
-    public String toString() {
-        if (this.featNames == null) {
-            return "";
-        }
-        StringBuffer buf = new StringBuffer();
-        for (int i = 0; i < this.featNames.size(); i++) {
-            if (i > 0) {
-                buf.append('.');
-            }
-            buf.append((String) this.featNames.get(i));
-        }
-        return buf.toString();
-    }
-
+    return buf.toString();
+  }
 
 }

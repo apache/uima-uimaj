@@ -27,106 +27,100 @@ import org.apache.uima.cas.StringArrayFS;
  * 
  * 
  */
-public class StringArrayFSImpl extends FeatureStructureImplC implements
-        StringArrayFS {
+public class StringArrayFSImpl extends FeatureStructureImplC implements StringArrayFS {
 
-    private static class StringArrayGenerator implements FSGenerator {
+  private static class StringArrayGenerator implements FSGenerator {
 
-        private StringArrayGenerator() {
-            super();
-        }
-
-        /**
-         * @see org.apache.uima.cas.impl.FSGenerator#createFS(int, LowLevelCAS)
-         */
-        public FeatureStructure createFS(int addr, CASImpl cas) {
-            return new StringArrayFSImpl(addr, cas);
-        }
-
-    }
-
-    private StringArrayFSImpl() {
-        super();
-    }
-
-    public StringArrayFSImpl(int addr, CASImpl cas) {
-        super(cas, addr);
-    }
-
-    static FSGenerator generator() {
-        return new StringArrayGenerator();
+    private StringArrayGenerator() {
+      super();
     }
 
     /**
-     * @see org.apache.uima.cas.ArrayFS#size()
+     * @see org.apache.uima.cas.impl.FSGenerator#createFS(int, LowLevelCAS)
      */
-    public int size() {
-        return this.casImpl.getArraySize(this.addr);
+    public FeatureStructure createFS(int addr, CASImpl cas) {
+      return new StringArrayFSImpl(addr, cas);
     }
 
-    /**
-     * @see org.apache.uima.cas.ArrayFS#get(int)
-     */
-    public String get(int i) {
-        if (i < 0 || i >= size()) {
-            throw new ArrayIndexOutOfBoundsException();
-        }
-        return this.casImpl.getStringForCode(this.casImpl
-                .getArrayValue(this.addr, i));
-    }
+  }
 
-    /**
-     * @see org.apache.uima.cas.ArrayFS#set(int, FeatureStructure)
-     */
-    public void set(int i, String str) throws ArrayIndexOutOfBoundsException {
-        this.casImpl.setArrayValue(this.addr, i, this.casImpl.addString(str));
-    }
+  private StringArrayFSImpl() {
+    super();
+  }
 
-    /**
-     * @see org.apache.uima.cas.ArrayFS#copyFromArray(FeatureStructure[], int, int,
-     *      int)
-     */
-    public void copyFromArray(String[] src, int srcOffset, int destOffset,
-            int length) throws ArrayIndexOutOfBoundsException {
-        if ((destOffset < 0) || ((destOffset + length) > size())) {
-            throw new ArrayIndexOutOfBoundsException();
-        }
-        destOffset += this.casImpl.getArrayStartAddress(this.addr);
-        for (int i = 0; i < length; i++) {
-            // cas.heap.heap[destOffset] =
-            // ((FeatureStructureImpl)src[srcOffset]).getAddress();
-            this.casImpl.heap.heap[destOffset] = this.casImpl
-                    .addString(src[srcOffset]);
-            ++destOffset;
-            ++srcOffset;
-        }
-    }
+  public StringArrayFSImpl(int addr, CASImpl cas) {
+    super(cas, addr);
+  }
 
-    /**
-     * @see org.apache.uima.cas.ArrayFS#copyToArray(int, FeatureStructure[], int,
-     *      int)
-     */
-    public void copyToArray(int srcOffset, String[] dest, int destOffset,
-            int length) throws ArrayIndexOutOfBoundsException {
-        if ((srcOffset < 0) || ((srcOffset + length) > size())) {
-            throw new ArrayIndexOutOfBoundsException();
-        }
-        for (int i = 0; i < length; i++) {
-            dest[destOffset] = this.casImpl.ll_getStringArrayValue(this.addr,
-                    srcOffset);
-            ++destOffset;
-            ++srcOffset;
-        }
-    }
+  static FSGenerator generator() {
+    return new StringArrayGenerator();
+  }
 
-    /**
-     * @see org.apache.uima.cas.ArrayFS#toArray()
-     */
-    public String[] toArray() {
-        final int size = size();
-        String[] outArray = new String[size];
-        copyToArray(0, outArray, 0, size);
-        return outArray;
+  /**
+   * @see org.apache.uima.cas.ArrayFS#size()
+   */
+  public int size() {
+    return this.casImpl.getArraySize(this.addr);
+  }
+
+  /**
+   * @see org.apache.uima.cas.ArrayFS#get(int)
+   */
+  public String get(int i) {
+    if (i < 0 || i >= size()) {
+      throw new ArrayIndexOutOfBoundsException();
     }
+    return this.casImpl.getStringForCode(this.casImpl.getArrayValue(this.addr, i));
+  }
+
+  /**
+   * @see org.apache.uima.cas.ArrayFS#set(int, FeatureStructure)
+   */
+  public void set(int i, String str) throws ArrayIndexOutOfBoundsException {
+    this.casImpl.setArrayValue(this.addr, i, this.casImpl.addString(str));
+  }
+
+  /**
+   * @see org.apache.uima.cas.ArrayFS#copyFromArray(FeatureStructure[], int, int, int)
+   */
+  public void copyFromArray(String[] src, int srcOffset, int destOffset, int length)
+                  throws ArrayIndexOutOfBoundsException {
+    if ((destOffset < 0) || ((destOffset + length) > size())) {
+      throw new ArrayIndexOutOfBoundsException();
+    }
+    destOffset += this.casImpl.getArrayStartAddress(this.addr);
+    for (int i = 0; i < length; i++) {
+      // cas.heap.heap[destOffset] =
+      // ((FeatureStructureImpl)src[srcOffset]).getAddress();
+      this.casImpl.heap.heap[destOffset] = this.casImpl.addString(src[srcOffset]);
+      ++destOffset;
+      ++srcOffset;
+    }
+  }
+
+  /**
+   * @see org.apache.uima.cas.ArrayFS#copyToArray(int, FeatureStructure[], int, int)
+   */
+  public void copyToArray(int srcOffset, String[] dest, int destOffset, int length)
+                  throws ArrayIndexOutOfBoundsException {
+    if ((srcOffset < 0) || ((srcOffset + length) > size())) {
+      throw new ArrayIndexOutOfBoundsException();
+    }
+    for (int i = 0; i < length; i++) {
+      dest[destOffset] = this.casImpl.ll_getStringArrayValue(this.addr, srcOffset);
+      ++destOffset;
+      ++srcOffset;
+    }
+  }
+
+  /**
+   * @see org.apache.uima.cas.ArrayFS#toArray()
+   */
+  public String[] toArray() {
+    final int size = size();
+    String[] outArray = new String[size];
+    copyToArray(0, outArray, 0, size);
+    return outArray;
+  }
 
 }

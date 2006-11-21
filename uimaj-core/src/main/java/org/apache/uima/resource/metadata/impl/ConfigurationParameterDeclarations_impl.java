@@ -37,134 +37,126 @@ import org.apache.uima.util.XMLParser;
  * 
  * 
  */
-public class ConfigurationParameterDeclarations_impl
-  extends MetaDataObject_impl
-  implements ConfigurationParameterDeclarations
-{
-  
+public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl implements
+                ConfigurationParameterDeclarations {
+
+  static final long serialVersionUID = -2248322904617280983L;
+
+  /** Configuration Parameters that are not in any group */
+  private ConfigurationParameter[] mConfigurationParameters = new ConfigurationParameter[0];
+
+  /** Configuration Groups */
+  private ConfigurationGroup[] mConfigurationGroups = new ConfigurationGroup[0];
+
+  /** Parameters common to all groups */
+  private ConfigurationParameter[] mCommonParameters = new ConfigurationParameter[0];
+
+  /** Name of the default group */
+  private String mDefaultGroupName;
+
+  /** Configuration parameter search strategy */
+  private String mSearchStrategy;
+
   /**
    * @see org.apache.uima.resource.ConfigurationParameterDeclarations#getConfigurationParameters()
    */
-  public ConfigurationParameter[] getConfigurationParameters()
-  {
+  public ConfigurationParameter[] getConfigurationParameters() {
     return mConfigurationParameters;
   }
 
   /**
    * @see org.apache.uima.resource.ConfigurationParameterDeclarations#setConfigurationParameters(ConfigurationParameter[])
    */
-  public void setConfigurationParameters(ConfigurationParameter[] aParams)
-  {
-    if (aParams == null)
-    {
-      throw new UIMA_IllegalArgumentException(
-          UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-          new Object[]{"null", "aParams", "setConfigurationParameters"});            
-    }        
+  public void setConfigurationParameters(ConfigurationParameter[] aParams) {
+    if (aParams == null) {
+      throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+                      new Object[] { "null", "aParams", "setConfigurationParameters" });
+    }
     mConfigurationParameters = aParams;
   }
-  
+
   /**
    * @see org.apache.uima.resource.ConfigurationParameterDeclarations#getCommonParameters()
    */
-  public ConfigurationParameter[] getCommonParameters()
-  {
+  public ConfigurationParameter[] getCommonParameters() {
     return mCommonParameters;
   }
 
   /**
    * @see org.apache.uima.resource.ConfigurationParameterDeclarations#getConfigurationGroups()
    */
-  public ConfigurationGroup[] getConfigurationGroups()
-  {
+  public ConfigurationGroup[] getConfigurationGroups() {
     return mConfigurationGroups;
   }
 
   /**
    * @see org.apache.uima.resource.ConfigurationParameterDeclarations#getDefaultGroupName()
    */
-  public String getDefaultGroupName()
-  {
+  public String getDefaultGroupName() {
     return mDefaultGroupName;
   }
 
   /**
    * @see org.apache.uima.resource.ConfigurationParameterDeclarations#getSearchStragtegy()
    */
-  public String getSearchStrategy()
-  {
+  public String getSearchStrategy() {
     return mSearchStrategy;
   }
 
   /**
    * @see org.apache.uima.resource.ConfigurationParameterDeclarations#setCommonParameters(org.apache.uima.resource.ConfigurationParameter[])
    */
-  public void setCommonParameters(ConfigurationParameter[] aParams)
-  {
-    if (aParams == null)
-    {
-      throw new UIMA_IllegalArgumentException(
-          UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-          new Object[]{"null", "aParams", "setCommonParameters"});            
-    }    
+  public void setCommonParameters(ConfigurationParameter[] aParams) {
+    if (aParams == null) {
+      throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+                      new Object[] { "null", "aParams", "setCommonParameters" });
+    }
     mCommonParameters = aParams;
   }
 
   /**
    * @see org.apache.uima.resource.ConfigurationParameterDeclarations#setConfigurationGroups(org.apache.uima.resource.ConfigurationGroup[])
    */
-  public void setConfigurationGroups(ConfigurationGroup[] aGroups)
-  {
-    if (aGroups == null)
-    {
-      throw new UIMA_IllegalArgumentException(
-          UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-          new Object[]{"null", "aGroups", "setConfigurationGroups"});            
-    }    
+  public void setConfigurationGroups(ConfigurationGroup[] aGroups) {
+    if (aGroups == null) {
+      throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+                      new Object[] { "null", "aGroups", "setConfigurationGroups" });
+    }
     mConfigurationGroups = aGroups;
   }
 
   /**
    * @see org.apache.uima.resource.ConfigurationParameterDeclarations#setDefaultGroupName(java.lang.String)
    */
-  public void setDefaultGroupName(String aGroupName)
-  {
+  public void setDefaultGroupName(String aGroupName) {
     mDefaultGroupName = aGroupName;
   }
 
   /**
    * @see org.apache.uima.resource.ConfigurationParameterDeclarations#setSearchStrategy(java.lang.String)
    */
-  public void setSearchStrategy(String aStrategy)
-  {
+  public void setSearchStrategy(String aStrategy) {
     mSearchStrategy = aStrategy;
   }
-  
+
   /**
-   * @see org.apache.uima.resource.ConfigurationParameterDeclarations#getConfigurationParameter(java.lang.String, java.lang.String)
+   * @see org.apache.uima.resource.ConfigurationParameterDeclarations#getConfigurationParameter(java.lang.String,
+   *      java.lang.String)
    */
-  public ConfigurationParameter getConfigurationParameter(
-    String aGroupName, String aParamName)
-  {
-    if (aGroupName == null)
-    {
-      //look in list of params that are in no group
+  public ConfigurationParameter getConfigurationParameter(String aGroupName, String aParamName) {
+    if (aGroupName == null) {
+      // look in list of params that are in no group
       ConfigurationParameter[] params = getConfigurationParameters();
       return _getConfigurationParameter(params, aParamName);
-    }
-    else
-    {
-      //look in common parameters
+    } else {
+      // look in common parameters
       ConfigurationParameter[] commonParams = getCommonParameters();
-      ConfigurationParameter p = _getConfigurationParameter(commonParams,aParamName);
-      if (p == null)
-      {
-        //find group
+      ConfigurationParameter p = _getConfigurationParameter(commonParams, aParamName);
+      if (p == null) {
+        // find group
         ConfigurationGroup[] groups = getConfigurationGroupDeclarations(aGroupName);
-        for (int i = 0; i < groups.length; i++)
-        {
-          ConfigurationParameter[] paramsInGroup = 
-            groups[i].getConfigurationParameters();
+        for (int i = 0; i < groups.length; i++) {
+          ConfigurationParameter[] paramsInGroup = groups[i].getConfigurationParameters();
           p = _getConfigurationParameter(paramsInGroup, aParamName);
           if (p != null)
             break;
@@ -173,135 +165,127 @@ public class ConfigurationParameterDeclarations_impl
       return p;
     }
   }
-  
+
   /**
    * @see org.apache.uima.resource.ConfigurationParameterDeclarations#getConfigurationGroup(java.lang.String)
    */
-  public ConfigurationGroup[] getConfigurationGroupDeclarations(String aGroupName)
-  {
+  public ConfigurationGroup[] getConfigurationGroupDeclarations(String aGroupName) {
     ArrayList results = new ArrayList();
     ConfigurationGroup[] grps = getConfigurationGroups();
-    if (grps != null)
-    {
-      for (int i = 0; i < grps.length; i++)
-      {
+    if (grps != null) {
+      for (int i = 0; i < grps.length; i++) {
         String[] names = grps[i].getNames();
-        for (int j = 0; j < names.length; j++)
-        {
-          if (aGroupName.equals(names[j]))
-          {
+        for (int j = 0; j < names.length; j++) {
+          if (aGroupName.equals(names[j])) {
             results.add(grps[i]);
             break;
           }
         }
       }
-    }  
+    }
     ConfigurationGroup[] resultArr = new ConfigurationGroup[results.size()];
     results.toArray(resultArr);
     return resultArr;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.ConfigurationParameterDeclarations#addConfigurationParameter(org.apache.uima.resource.metadata.ConfigurationParameter)
    */
-  public void addConfigurationParameter(ConfigurationParameter aConfigurationParameter)
-  {
-	  ConfigurationParameter[] current = getConfigurationParameters();
-	  ConfigurationParameter[] newArr = new ConfigurationParameter[current.length + 1];
-	  System.arraycopy(current, 0, newArr, 0, current.length);
-	  newArr[current.length] = aConfigurationParameter;
-	  setConfigurationParameters(newArr);
- }
+  public void addConfigurationParameter(ConfigurationParameter aConfigurationParameter) {
+    ConfigurationParameter[] current = getConfigurationParameters();
+    ConfigurationParameter[] newArr = new ConfigurationParameter[current.length + 1];
+    System.arraycopy(current, 0, newArr, 0, current.length);
+    newArr[current.length] = aConfigurationParameter;
+    setConfigurationParameters(newArr);
+  }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.ConfigurationParameterDeclarations#removeConfigurationParameter(org.apache.uima.resource.metadata.ConfigurationParameter)
    */
-  public void removeConfigurationParameter(ConfigurationParameter aConfigurationParameter)
-  {
-	  ConfigurationParameter[] current = getConfigurationParameters();
-	  for (int i = 0; i < current.length; i++)
-	  {
-	    if (current[i] == aConfigurationParameter)
-	    {
-	  	  ConfigurationParameter[] newArr = new ConfigurationParameter[current.length - 1];
-	  	  System.arraycopy(current, 0, newArr, 0, i);
-	  	  System.arraycopy(current, i+1, newArr, i, current.length - i - 1);
+  public void removeConfigurationParameter(ConfigurationParameter aConfigurationParameter) {
+    ConfigurationParameter[] current = getConfigurationParameters();
+    for (int i = 0; i < current.length; i++) {
+      if (current[i] == aConfigurationParameter) {
+        ConfigurationParameter[] newArr = new ConfigurationParameter[current.length - 1];
+        System.arraycopy(current, 0, newArr, 0, i);
+        System.arraycopy(current, i + 1, newArr, i, current.length - i - 1);
         setConfigurationParameters(newArr);
-	  	  break; 	      
-	    }
-	  }
+        break;
+      }
+    }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.ConfigurationParameterDeclarations#addConfigurationParameter(org.apache.uima.resource.metadata.ConfigurationParameter)
    */
-  public void addCommonParameter(ConfigurationParameter aConfigurationParameter)
-  {
-	  ConfigurationParameter[] current = getCommonParameters();
-	  ConfigurationParameter[] newArr = new ConfigurationParameter[current.length + 1];
-	  System.arraycopy(current, 0, newArr, 0, current.length);
-	  newArr[current.length] = aConfigurationParameter;
-	  setCommonParameters(newArr);
- }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.resource.metadata.ConfigurationParameterDeclarations#removeConfigurationParameter(org.apache.uima.resource.metadata.ConfigurationParameter)
-   */
-  public void removeCommonParameter(ConfigurationParameter aConfigurationParameter)
-  {
-	  ConfigurationParameter[] current = getCommonParameters();
-	  for (int i = 0; i < current.length; i++)
-	  {
-	    if (current[i] == aConfigurationParameter)
-	    {
-	  	  ConfigurationParameter[] newArr = new ConfigurationParameter[current.length - 1];
-	  	  System.arraycopy(current, 0, newArr, 0, i);
-	  	  System.arraycopy(current, i+1, newArr, i, current.length - i - 1);
-        setCommonParameters(newArr);
-	  	  break; 	      
-	    }
-	  }
+  public void addCommonParameter(ConfigurationParameter aConfigurationParameter) {
+    ConfigurationParameter[] current = getCommonParameters();
+    ConfigurationParameter[] newArr = new ConfigurationParameter[current.length + 1];
+    System.arraycopy(current, 0, newArr, 0, current.length);
+    newArr[current.length] = aConfigurationParameter;
+    setCommonParameters(newArr);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.metadata.ConfigurationParameterDeclarations#removeConfigurationParameter(org.apache.uima.resource.metadata.ConfigurationParameter)
+   */
+  public void removeCommonParameter(ConfigurationParameter aConfigurationParameter) {
+    ConfigurationParameter[] current = getCommonParameters();
+    for (int i = 0; i < current.length; i++) {
+      if (current[i] == aConfigurationParameter) {
+        ConfigurationParameter[] newArr = new ConfigurationParameter[current.length - 1];
+        System.arraycopy(current, 0, newArr, 0, i);
+        System.arraycopy(current, i + 1, newArr, i, current.length - i - 1);
+        setCommonParameters(newArr);
+        break;
+      }
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.ConfigurationGroupDeclarations#addConfigurationGroup(org.apache.uima.resource.metadata.ConfigurationGroup)
    */
-  public void addConfigurationGroup(ConfigurationGroup aConfigurationGroup)
-  {
-	  ConfigurationGroup[] current = getConfigurationGroups();
-	  ConfigurationGroup[] newArr = new ConfigurationGroup[current.length + 1];
-	  System.arraycopy(current, 0, newArr, 0, current.length);
-	  newArr[current.length] = aConfigurationGroup;
-	  setConfigurationGroups(newArr);
- }
+  public void addConfigurationGroup(ConfigurationGroup aConfigurationGroup) {
+    ConfigurationGroup[] current = getConfigurationGroups();
+    ConfigurationGroup[] newArr = new ConfigurationGroup[current.length + 1];
+    System.arraycopy(current, 0, newArr, 0, current.length);
+    newArr[current.length] = aConfigurationGroup;
+    setConfigurationGroups(newArr);
+  }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.ConfigurationGroupDeclarations#removeConfigurationGroup(org.apache.uima.resource.metadata.ConfigurationGroup)
    */
-  public void removeConfigurationGroup(ConfigurationGroup aConfigurationGroup)
-  {
-	  ConfigurationGroup[] current = getConfigurationGroups();
-	  for (int i = 0; i < current.length; i++)
-	  {
-	    if (current[i] == aConfigurationGroup)
-	    {
-	  	  ConfigurationGroup[] newArr = new ConfigurationGroup[current.length - 1];
-	  	  System.arraycopy(current, 0, newArr, 0, i);
-	  	  System.arraycopy(current, i+1, newArr, i, current.length - i - 1);
+  public void removeConfigurationGroup(ConfigurationGroup aConfigurationGroup) {
+    ConfigurationGroup[] current = getConfigurationGroups();
+    for (int i = 0; i < current.length; i++) {
+      if (current[i] == aConfigurationGroup) {
+        ConfigurationGroup[] newArr = new ConfigurationGroup[current.length - 1];
+        System.arraycopy(current, 0, newArr, 0, i);
+        System.arraycopy(current, i + 1, newArr, i, current.length - i - 1);
         setConfigurationGroups(newArr);
-	  	  break; 	      
-	    }
-	  }
+        break;
+      }
+    }
   }
-  
+
   /** Utility method */
-  protected ConfigurationParameter _getConfigurationParameter(
-    ConfigurationParameter[] aParams, String aName)
-  {
-    if (aParams != null)
-    {
-      for (int i = 0; i < aParams.length; i++)
-      {
+  protected ConfigurationParameter _getConfigurationParameter(ConfigurationParameter[] aParams,
+                  String aName) {
+    if (aParams != null) {
+      for (int i = 0; i < aParams.length; i++) {
         if (aName.equals(aParams[i].getName()))
           return aParams[i];
       }
@@ -311,103 +295,82 @@ public class ConfigurationParameterDeclarations_impl
 
   /**
    * Overridden to provide custom XMLization.
-   * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element, org.apache.uima.util.XMLParser)
+   * 
+   * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element,
+   *      org.apache.uima.util.XMLParser)
    */
-  public void buildFromXMLElement(Element aElement, XMLParser aParser, XMLParser.ParsingOptions aOptions)
-    throws InvalidXMLException
-  {
-    //read defaultGroup and searchStrategy from attributes
+  public void buildFromXMLElement(Element aElement, XMLParser aParser,
+                  XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
+    // read defaultGroup and searchStrategy from attributes
     String defaultGroup = aElement.getAttribute("defaultGroup");
-    if (defaultGroup.length() > 0)
-    {
-      setDefaultGroupName(defaultGroup);  
-    }
-    else
-    {
+    if (defaultGroup.length() > 0) {
+      setDefaultGroupName(defaultGroup);
+    } else {
       setDefaultGroupName(null);
     }
 
     String searchStrategy = aElement.getAttribute("searchStrategy");
-    if (searchStrategy.length() > 0)
-    {
-      setSearchStrategy(searchStrategy); 
-    }
-    else
-    {
+    if (searchStrategy.length() > 0) {
+      setSearchStrategy(searchStrategy);
+    } else {
       setSearchStrategy(null);
     }
 
-    //read parameters, commonParameters, and configurationGroups
+    // read parameters, commonParameters, and configurationGroups
     ArrayList params = new ArrayList();
     ArrayList groups = new ArrayList();
     NodeList childNodes = aElement.getChildNodes();
-    for (int i = 0; i < childNodes.getLength(); i++)
-    {
+    for (int i = 0; i < childNodes.getLength(); i++) {
       Node curNode = childNodes.item(i);
-      if (curNode instanceof Element)
-      {
-        Element elem = (Element)curNode;
-        if ("configurationParameter".equals(elem.getTagName()))
-        {
-          params.add(aParser.buildObject(elem,aOptions));  
-        }
-        else if ("commonParameters".equals(elem.getTagName()))
-        {
-          final PropertyXmlInfo commonParametersPropInfo =
-            new PropertyXmlInfo("commonParameters");
-          readPropertyValueFromXMLElement(commonParametersPropInfo, 
-             elem, aParser, aOptions);  
-        }
-        else if ("configurationGroup".equals(elem.getTagName()))
-        {
-          groups.add(aParser.buildObject(elem,aOptions));  
-        }
-        else
-        {
-          throw new InvalidXMLException(
-              InvalidXMLException.UNKNOWN_ELEMENT,
-              new Object[]{elem.getTagName()});
+      if (curNode instanceof Element) {
+        Element elem = (Element) curNode;
+        if ("configurationParameter".equals(elem.getTagName())) {
+          params.add(aParser.buildObject(elem, aOptions));
+        } else if ("commonParameters".equals(elem.getTagName())) {
+          final PropertyXmlInfo commonParametersPropInfo = new PropertyXmlInfo("commonParameters");
+          readPropertyValueFromXMLElement(commonParametersPropInfo, elem, aParser, aOptions);
+        } else if ("configurationGroup".equals(elem.getTagName())) {
+          groups.add(aParser.buildObject(elem, aOptions));
+        } else {
+          throw new InvalidXMLException(InvalidXMLException.UNKNOWN_ELEMENT, new Object[] { elem
+                          .getTagName() });
         }
       }
-    }  
-    ConfigurationParameter[] paramArr = 
-       new ConfigurationParameter[params.size()];
+    }
+    ConfigurationParameter[] paramArr = new ConfigurationParameter[params.size()];
     params.toArray(paramArr);
-    setConfigurationParameters(paramArr);      
-    ConfigurationGroup[] groupArr = 
-       new ConfigurationGroup[groups.size()];
+    setConfigurationParameters(paramArr);
+    ConfigurationGroup[] groupArr = new ConfigurationGroup[groups.size()];
     groups.toArray(groupArr);
-    setConfigurationGroups(groupArr);      
+    setConfigurationGroups(groupArr);
   }
-  
 
   /**
    * Overridden to return defaultGroup and searchStrategy as XML attributes.
+   * 
    * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXMLAttributeString()
    */
-  protected String getXMLAttributeString()
-  {
+  protected String getXMLAttributeString() {
     StringBuffer buf = new StringBuffer();
-    if (getDefaultGroupName() != null)
-    {
+    if (getDefaultGroupName() != null) {
       buf.append("defaultGroup = \"");
       buf.append(getDefaultGroupName());
       buf.append("\"");
-    }  
-    if (getSearchStrategy() != null)
-    {
-      if (buf.length() > 0)
-      {
+    }
+    if (getSearchStrategy() != null) {
+      if (buf.length() > 0) {
         buf.append(' ');
       }
       buf.append("searchStrategy = \"");
       buf.append(getSearchStrategy());
       buf.append("\"");
-    }  
+    }
     return buf.toString();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
    */
   protected AttributesImpl getXMLAttributes() {
@@ -424,36 +387,12 @@ public class ConfigurationParameterDeclarations_impl
   /**
    * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXmlizationInfo()
    */
-  protected XmlizationInfo getXmlizationInfo()
-  {
-    //NOTE: custom XMLization is used for reading.  This information
-    //is only used for writing.
-    return new XmlizationInfo("configurationParameters",
-      new PropertyXmlInfo[]{
-        new PropertyXmlInfo("configurationParameters",null),
-        new PropertyXmlInfo("commonParameters","commonParameters"),
-        new PropertyXmlInfo("configurationGroups",null)
-      });
+  protected XmlizationInfo getXmlizationInfo() {
+    // NOTE: custom XMLization is used for reading. This information
+    // is only used for writing.
+    return new XmlizationInfo("configurationParameters", new PropertyXmlInfo[] {
+        new PropertyXmlInfo("configurationParameters", null),
+        new PropertyXmlInfo("commonParameters", "commonParameters"),
+        new PropertyXmlInfo("configurationGroups", null) });
   }
-
-  /** Configuration Parameters that are not in any group */
-  private ConfigurationParameter[] mConfigurationParameters =
-    new ConfigurationParameter[0];
-  
-  /** Configuration Groups */
-  private ConfigurationGroup[] mConfigurationGroups =
-    new ConfigurationGroup[0];
-
-  /** Parameters common to all groups */
-  private ConfigurationParameter[] mCommonParameters =
-    new ConfigurationParameter[0];
-
-  /** Name of the default group */
-  private String mDefaultGroupName;
-
-  /** Configuration parameter search strategy */
-  private String mSearchStrategy;
-  
-  static final long serialVersionUID = -2248322904617280983L;  
-  
 }

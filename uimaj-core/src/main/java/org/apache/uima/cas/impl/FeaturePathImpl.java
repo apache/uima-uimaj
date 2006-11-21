@@ -32,24 +32,23 @@ import org.apache.uima.cas.FeaturePath;
  */
 class FeaturePathImpl implements FeaturePath {
 
-    private Vector path;
+  private Vector path;
 
-    FeaturePathImpl() {
-        super();
-        this.path = new Vector();
-    }
+  FeaturePathImpl() {
+    super();
+    this.path = new Vector();
+  }
 
-    public int size() {
-        return this.path.size();
-    }
+  public int size() {
+    return this.path.size();
+  }
 
-    public Feature getFeature(int i) {
-        return (Feature) this.path.get(i);
-    }
+  public Feature getFeature(int i) {
+    return (Feature) this.path.get(i);
+  }
 
-    public void addFeature(Feature feat) {
-        this.path.add(feat);
-    }
-
+  public void addFeature(Feature feat) {
+    this.path.add(feat);
+  }
 
 }

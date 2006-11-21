@@ -20,38 +20,37 @@
 package org.apache.uima.cas_data;
 
 /**
- * A subtype of FeatureStructure that represents an array of primitive values
- * (Strings, int, or floats).
+ * A subtype of FeatureStructure that represents an array of primitive values (Strings, int, or
+ * floats).
  * 
  * 
  */
-public interface PrimitiveArrayFS extends FeatureStructure
-{
+public interface PrimitiveArrayFS extends FeatureStructure {
   /**
    * Get the size of this array.
    * 
    * @return the size
    */
   public int size();
-    
-	/**
-	 * Gets this value as an integer array.  
-	 * 
-	 * @return integer array value, empty array if value is not an array
-	 */
-	public int[] toIntArray();
 
-	/**
-	 * Gets this value as an float array.  
-	 * 
-	 * @return float array value, empty array if value is not an array
-	 */
-	public float[] toFloatArray();
+  /**
+   * Gets this value as an integer array.
+   * 
+   * @return integer array value, empty array if value is not an array
+   */
+  public int[] toIntArray();
 
-	/**
-	 * Gets this value as an string array.  
-	 * 
-	 * @return string array value, empty array if value is not an array
-	 */
-	public String[] toStringArray();  
+  /**
+   * Gets this value as an float array.
+   * 
+   * @return float array value, empty array if value is not an array
+   */
+  public float[] toFloatArray();
+
+  /**
+   * Gets this value as an string array.
+   * 
+   * @return string array value, empty array if value is not an array
+   */
+  public String[] toStringArray();
 }

@@ -22,26 +22,22 @@ package org.apache.uima.resource;
 import java.util.List;
 
 /**
- * A type of <code>ResourceSpecifier</code> that is an aggregate of
- * other <code>ResourceSpecifier</code>s.  When attempting to produce a
- * resource using a <code>ResourceSpecifierList</code>, the
- * <code>ResourceFactory</code> will try each constituent 
- * <code>ResourceSpecifier</code>, in order.  The first
- * <code>Resource</code> that is successfully produced will be returned to
- * the caller.
+ * A type of <code>ResourceSpecifier</code> that is an aggregate of other
+ * <code>ResourceSpecifier</code>s. When attempting to produce a resource using a
+ * <code>ResourceSpecifierList</code>, the <code>ResourceFactory</code> will try each
+ * constituent <code>ResourceSpecifier</code>, in order. The first <code>Resource</code> that
+ * is successfully produced will be returned to the caller.
  * <p>
- * <code>ResourceSpecifierList</code> allows applications to attempt to
- * locate a resource and then, if that fails, to construct a new instance
- * of the resource.
- *    
+ * <code>ResourceSpecifierList</code> allows applications to attempt to locate a resource and
+ * then, if that fails, to construct a new instance of the resource.
+ * 
  * 
  */
-public interface ResourceSpecifierList extends ResourceSpecifier
-{
+public interface ResourceSpecifierList extends ResourceSpecifier {
 
   /**
-   * Retrieves the constituent <code>ResourceSpecifiers</code> that comprise
-   * this aggregate <code>ResourceSpecifierList</code>.
+   * Retrieves the constituent <code>ResourceSpecifiers</code> that comprise this aggregate
+   * <code>ResourceSpecifierList</code>.
    * 
    * @return an unmodifiable List of {@link ResourceSpecifier}s.
    */

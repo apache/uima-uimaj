@@ -26,19 +26,16 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
  * 
  * 
  */
-public interface ResourceServiceStub
-{
+public interface ResourceServiceStub {
   /**
    * Performs service call to retreive resource meta data.
    * 
    * @return metadata for the Resource
    */
-  public ResourceMetaData callGetMetaData()
-    throws ResourceServiceException;  
-    
+  public ResourceMetaData callGetMetaData() throws ResourceServiceException;
+
   /**
-   * Called when this stub is no longer needed, so any open 
-   * connections can be closed.
+   * Called when this stub is no longer needed, so any open connections can be closed.
    */
-  public void destroy();  
+  public void destroy();
 }

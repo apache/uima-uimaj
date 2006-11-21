@@ -24,16 +24,15 @@ package org.apache.uima.internal.util;
  */
 public interface IntComparator {
 
-    /**
-     * Compare two ints.
-     * 
-     * @param i
-     *            first int.
-     * @param j
-     *            second int.
-     * @return <code>-1</code> if <code>i &lt; j</code>; <code>1</code>
-     *         if <code>i &gt; j</code>; <code>0</code> if
-     *         <code>i == j</code>.
-     */
-    public int compare(int i, int j);
+  /**
+   * Compare two ints.
+   * 
+   * @param i
+   *          first int.
+   * @param j
+   *          second int.
+   * @return <code>-1</code> if <code>i &lt; j</code>; <code>1</code> if
+   *         <code>i &gt; j</code>; <code>0</code> if <code>i == j</code>.
+   */
+  public int compare(int i, int j);
 }

@@ -25,60 +25,58 @@ import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 
 /**
- * Convenience base class for Flow objects that use the CAS interface.  
- * Stores the CAS in a field made accessible through the protected 
- * {@link #getCas()} method. 
+ * Convenience base class for Flow objects that use the CAS interface. Stores the CAS in a field
+ * made accessible through the protected {@link #getCas()} method.
  */
-public abstract class CasFlow_ImplBase implements Flow
-{
+public abstract class CasFlow_ImplBase implements Flow {
   private CAS mCAS;
 
   /**
-   * Sets the CAS to be routed by this Flow object.  This should be called from 
-   * the {@link FlowController#computeFlow(AbstractCas)} method after this Flow 
-   * object is instantiated.
+   * Sets the CAS to be routed by this Flow object. This should be called from the
+   * {@link FlowController#computeFlow(AbstractCas)} method after this Flow object is instantiated.
    * 
-   * @param aCAS the CAS to be routed by this Flow object
+   * @param aCAS
+   *          the CAS to be routed by this Flow object
    */
-  public void setCas(CAS aCAS)
-  {
+  public void setCas(CAS aCAS) {
     mCAS = aCAS;
   }
 
   /**
-   * Overriden to check that <code>newCas</code> is an instanceof {@link CAS}.
-   * If it is, then {@link #newCasProduced(CAS,String)} is called.  If not, an 
-   * exception is thrown.
+   * Overriden to check that <code>newCas</code> is an instanceof {@link CAS}. If it is, then
+   * {@link #newCasProduced(CAS,String)} is called. If not, an exception is thrown.
+   * 
    * @see Flow#newCasProduced(AbstractCas, String)
    */
-  public final Flow newCasProduced(AbstractCas newCas, String producedBy) throws AnalysisEngineProcessException
-  {
-    if (newCas instanceof CAS)
-    {
-      return newCasProduced((CAS)newCas, producedBy);
+  public final Flow newCasProduced(AbstractCas newCas, String producedBy)
+                  throws AnalysisEngineProcessException {
+    if (newCas instanceof CAS) {
+      return newCasProduced((CAS) newCas, producedBy);
+    } else {
+      throw new AnalysisEngineProcessException(
+                      AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] {
+                          CAS.class, newCas.getClass() });
     }
-    else
-    {
-      throw new AnalysisEngineProcessException(AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE,
-          new Object[]{CAS.class, newCas.getClass()});
-    }    
   }
-  
+
   /**
-   * By default, throws an exception to indicate this this Flow object does
-   * not support new CASes being produced in the middle of the flow.  Subclasses can override
-   * to implement handling for this.
+   * By default, throws an exception to indicate this this Flow object does not support new CASes
+   * being produced in the middle of the flow. Subclasses can override to implement handling for
+   * this.
    * 
-   * @param newCas the new CAS
-   * @param producedBy the key of the CAS Multiplier that produced this CAS
+   * @param newCas
+   *          the new CAS
+   * @param producedBy
+   *          the key of the CAS Multiplier that produced this CAS
    * 
    * @return a Flow object that will be used to route the new CAS
    * @see Flow#newCasProduced(AbstractCas, String)
    */
-  protected Flow newCasProduced(CAS newCas, String producedBy)  throws AnalysisEngineProcessException
-  {
+  protected Flow newCasProduced(CAS newCas, String producedBy)
+                  throws AnalysisEngineProcessException {
     throw new UIMA_UnsupportedOperationException(
-        UIMA_UnsupportedOperationException.CAS_MULTIPLIER_NOT_SUPPORTED, new Object[]{this.getClass().getName()});
+                    UIMA_UnsupportedOperationException.CAS_MULTIPLIER_NOT_SUPPORTED,
+                    new Object[] { this.getClass().getName() });
   }
 
   /**
@@ -86,8 +84,7 @@ public abstract class CasFlow_ImplBase implements Flow
    * 
    * @return the CAS being routed by this Flow object
    */
-  protected CAS getCas()
-  {
+  protected CAS getCas() {
     return mCAS;
   }
 }

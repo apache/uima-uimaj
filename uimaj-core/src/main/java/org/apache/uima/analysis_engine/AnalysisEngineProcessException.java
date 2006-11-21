@@ -22,168 +22,145 @@ package org.apache.uima.analysis_engine;
 import org.apache.uima.resource.ResourceProcessException;
 
 /**
- * An <code>AnalysisEngineProcessException</code> may be thrown by an Analysis 
- * Engine's process method, indicating that a failure occured during processing.
- *  
+ * An <code>AnalysisEngineProcessException</code> may be thrown by an Analysis Engine's process
+ * method, indicating that a failure occured during processing.
+ * 
  * 
  */
-public class AnalysisEngineProcessException extends ResourceProcessException
-{
-  
+public class AnalysisEngineProcessException extends ResourceProcessException {
 
- private static final long serialVersionUID = 2815910374191768858L;
-/**
-  * Creates a new exception with a null
-  * message.
-  */
-  public AnalysisEngineProcessException()
-  {
-    super();
-  }
+  private static final long serialVersionUID = 2815910374191768858L;
 
- 
- /**
-  * Creates a new exception with the specified cause and a null message.
-  * 
-  * @param aCause  the original exception that caused this exception
-  *     to be thrown, if any
-  */
-  public AnalysisEngineProcessException(Throwable aCause)
-  {
-    super(aCause);
-  }
-  
-  
-  
- /**
-  * Creates a new exception with a the specified message.
-  * 
-  * @param aResourceBundleName the base name of the resource bundle in which 
-  *        the message for this exception is located.
-  * @param aMessageKey an identifier that maps to the message for
-  *        this exception.  The message may contain placeholders for
-  *        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-  *        class.   
-  * @param aArguments  The arguments to the message.  <code>null</code> may
-  *        be used if the message has no arguments.
-  */
-  public AnalysisEngineProcessException(String aResourceBundleName,
-     String aMessageKey, Object[] aArguments)
-  {
-    super(aResourceBundleName, aMessageKey, aArguments);   
-  }
-  
-  
- /**
-  * Creates a new exception with the specified message and cause.
-  * 
-  * @param aResourceBundleName the base name of the resource bundle in which 
-  *        the message for this exception is located.
-  * @param aMessageKey an identifier that maps to the message for
-  *        this exception.  The message may contain placeholders for
-  *        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-  *        class.   
-  * @param aArguments  The arguments to the message.  <code>null</code> may
-  *        be used if the message has no arguments.
-  * @param aCause  the original exception that caused this exception
-  *     to be thrown, if any
-  */
-  public AnalysisEngineProcessException(String aResourceBundleName, 
-     String aMessageKey, Object[] aArguments, Throwable aCause)
-  {
-    super(aResourceBundleName, aMessageKey, aArguments, aCause);
-  }  
- 
-  
- /**
-  * Creates a new exception with a message from the 
-  * {@link #STANDARD_MESSAGE_CATALOG}.
-  * 
-  * @param aMessageKey an identifier that maps to the message for
-  *        this exception.  The message may contain placeholders for
-  *        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-  *        class.   
-  * @param aArguments  The arguments to the message.  <code>null</code> may
-  *        be used if the message has no arguments.
-  */
-  public AnalysisEngineProcessException(String aMessageKey, Object[] aArguments)
-  {
-    super(aMessageKey, aArguments);   
-  }
-  
- 
-  
- /**
-  * Creates a new exception with the specified cause and a message from the
-  * {@link #STANDARD_MESSAGE_CATALOG}.
-  *  
-  * @param aMessageKey an identifier that maps to the message for
-  *        this exception.  The message may contain placeholders for
-  *        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-  *        class.   
-  * @param aArguments  The arguments to the message.  <code>null</code> may
-  *        be used if the message has no arguments.
-  * @param aCause  the original exception that caused this exception
-  *     to be thrown, if any
-  */
-  public AnalysisEngineProcessException(String aMessageKey, Object[] aArguments, 
-                        Throwable aCause)
-  {
-    super(aMessageKey, aArguments, aCause);
-  }  
+  /**
+   * Message key for a standard UIMA exception message: "Annotator processing failed."
+   */
+  public static final String ANNOTATOR_EXCEPTION = "annotator_exception";
 
- /**
-  * Message key for a standard UIMA exception message:
-  * "Annotator processing failed."
-  */
-  public static final String ANNOTATOR_EXCEPTION =
-      "annotator_exception";
-
- /**
-  * Message key for a standard UIMA exception message:
-  * "AnalysisEngine subclass {0} does not support CAS class {1}."
-  */
+  /**
+   * Message key for a standard UIMA exception message: "AnalysisEngine subclass {0} does not
+   * support CAS class {1}."
+   */
   public static final String UNSUPPORTED_CAS_TYPE = "unsupported_cas_type";
 
   /**
-   * Message key for a standard UIMA exception message:
-   * "This AnalysisEngine is serving too many simultaneous requests.  
-   *  The timeout period of {0}ms has elapsed."
+   * Message key for a standard UIMA exception message: "This AnalysisEngine is serving too many
+   * simultaneous requests. The timeout period of {0}ms has elapsed."
    */
-   public static final String TIMEOUT_ELAPSED = "timeout_elapsed";      
+  public static final String TIMEOUT_ELAPSED = "timeout_elapsed";
 
-   /**
-    * Message key for a standard UIMA exception message:
-    * "The ASB encountered an unknown Analysis Engine ID "{0}" in the execution 
-    *  sequence."
-    */
-    public static final String UNKNOWN_ID_IN_SEQUENCE = 
-        "unknown_id_in_sequence";      
+  /**
+   * Message key for a standard UIMA exception message: "The ASB encountered an unknown Analysis
+   * Engine ID "{0}" in the execution sequence."
+   */
+  public static final String UNKNOWN_ID_IN_SEQUENCE = "unknown_id_in_sequence";
 
-    /**
-     * Message key for a standard UIMA exception message:
-     * "The FlowController returned a Step object of class {0}, which is not
-     *  supported by this framework implementation."
-     */
-     public static final String UNSUPPORTED_STEP_TYPE = 
-       "unsupported_step_type";    
+  /**
+   * Message key for a standard UIMA exception message: "The FlowController returned a Step object
+   * of class {0}, which is not supported by this framework implementation."
+   */
+  public static final String UNSUPPORTED_STEP_TYPE = "unsupported_step_type";
 
-     /**
-      * Message key for a standard UIMA exception message:
-      * "The FlowController attempted to drop a CAS that was passed as input to
-      * the Aggregate AnalysisEngine containing that FlowController.  The only
-      * CASes that may be dropped are those that are created within the same
-      * Aggregate AnalysisEngine as the FlowController."
-      */
-      public static final String ILLEGAL_DROP_CAS = 
-        "illegal_drop_cas";    
+  /**
+   * Message key for a standard UIMA exception message: "The FlowController attempted to drop a CAS
+   * that was passed as input to the Aggregate AnalysisEngine containing that FlowController. The
+   * only CASes that may be dropped are those that are created within the same Aggregate
+   * AnalysisEngine as the FlowController."
+   */
+  public static final String ILLEGAL_DROP_CAS = "illegal_drop_cas";
 
-      /**
-       * Message key for a standard UIMA exception message:
-       * "Expected CAS interface {0}, but received interface {1}." 
-       */
-      public static final String INCORRECT_CAS_INTERFACE = 
-        "incorrect_cas_interface";
+  /**
+   * Message key for a standard UIMA exception message: "Expected CAS interface {0}, but received
+   * interface {1}."
+   */
+  public static final String INCORRECT_CAS_INTERFACE = "incorrect_cas_interface";
+
+  /**
+   * Creates a new exception with a null message.
+   */
+  public AnalysisEngineProcessException() {
+    super();
+  }
+
+  /**
+   * Creates a new exception with the specified cause and a null message.
+   * 
+   * @param aCause
+   *          the original exception that caused this exception to be thrown, if any
+   */
+  public AnalysisEngineProcessException(Throwable aCause) {
+    super(aCause);
+  }
+
+  /**
+   * Creates a new exception with a the specified message.
+   * 
+   * @param aResourceBundleName
+   *          the base name of the resource bundle in which the message for this exception is
+   *          located.
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
+   */
+  public AnalysisEngineProcessException(String aResourceBundleName, String aMessageKey,
+                  Object[] aArguments) {
+    super(aResourceBundleName, aMessageKey, aArguments);
+  }
+
+  /**
+   * Creates a new exception with the specified message and cause.
+   * 
+   * @param aResourceBundleName
+   *          the base name of the resource bundle in which the message for this exception is
+   *          located.
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
+   * @param aCause
+   *          the original exception that caused this exception to be thrown, if any
+   */
+  public AnalysisEngineProcessException(String aResourceBundleName, String aMessageKey,
+                  Object[] aArguments, Throwable aCause) {
+    super(aResourceBundleName, aMessageKey, aArguments, aCause);
+  }
+
+  /**
+   * Creates a new exception with a message from the {@link #STANDARD_MESSAGE_CATALOG}.
+   * 
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
+   */
+  public AnalysisEngineProcessException(String aMessageKey, Object[] aArguments) {
+    super(aMessageKey, aArguments);
+  }
+
+  /**
+   * Creates a new exception with the specified cause and a message from the
+   * {@link #STANDARD_MESSAGE_CATALOG}.
+   * 
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
+   * @param aCause
+   *          the original exception that caused this exception to be thrown, if any
+   */
+  public AnalysisEngineProcessException(String aMessageKey, Object[] aArguments, Throwable aCause) {
+    super(aMessageKey, aArguments, aCause);
+  }
 }
-
-

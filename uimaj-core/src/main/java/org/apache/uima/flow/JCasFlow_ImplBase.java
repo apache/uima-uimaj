@@ -25,60 +25,58 @@ import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.jcas.impl.JCas;
 
 /**
- * Convenience base class for Flow objects that use the JCas interface.  
- * Stores the JCas in a field made accessible through the protected 
- * {@link #getJCas()} method. 
+ * Convenience base class for Flow objects that use the JCas interface. Stores the JCas in a field
+ * made accessible through the protected {@link #getJCas()} method.
  */
-public abstract class JCasFlow_ImplBase implements Flow
-{
+public abstract class JCasFlow_ImplBase implements Flow {
   private JCas mJCas;
 
   /**
-   * Sets the JCas to be routed by this Flow object.  This should be called from 
-   * the {@link FlowController#computeFlow(AbstractCas)} method after this Flow 
-   * object is instantiated.
+   * Sets the JCas to be routed by this Flow object. This should be called from the
+   * {@link FlowController#computeFlow(AbstractCas)} method after this Flow object is instantiated.
    * 
-   * @param aJCas the JCas to be routed by this Flow object
+   * @param aJCas
+   *          the JCas to be routed by this Flow object
    */
-  public void setJCas(JCas aJCas)
-  {
+  public void setJCas(JCas aJCas) {
     mJCas = aJCas;
   }
 
   /**
-   * Overriden to check that <code>newCas</code> is an instanceof {@link JCas}.
-   * If it is, then {@link #newCasProduced(JCas,String)} is called.  If not, an 
-   * exception is thrown.
+   * Overriden to check that <code>newCas</code> is an instanceof {@link JCas}. If it is, then
+   * {@link #newCasProduced(JCas,String)} is called. If not, an exception is thrown.
+   * 
    * @see Flow#newCasProduced(AbstractCas, String)
    */
-  public final Flow newCasProduced(AbstractCas newCas, String producedBy) throws AnalysisEngineProcessException
-  {
-    if (newCas instanceof JCas)
-    {
-      return newCasProduced((JCas)newCas, producedBy);
+  public final Flow newCasProduced(AbstractCas newCas, String producedBy)
+                  throws AnalysisEngineProcessException {
+    if (newCas instanceof JCas) {
+      return newCasProduced((JCas) newCas, producedBy);
+    } else {
+      throw new AnalysisEngineProcessException(
+                      AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] {
+                          JCas.class, newCas.getClass() });
     }
-    else
-    {
-      throw new AnalysisEngineProcessException(AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE,
-          new Object[]{JCas.class, newCas.getClass()});
-    }    
   }
-  
+
   /**
-   * By default, throws an exception to indicate this this Flow object does
-   * not support new CASes being produced in the middle of the flow.  Subclasses can override
-   * to implement handling for this.
+   * By default, throws an exception to indicate this this Flow object does not support new CASes
+   * being produced in the middle of the flow. Subclasses can override to implement handling for
+   * this.
    * 
-   * @param newCas the new JCas
-   * @param producedBy the key of the CAS Multiplier that produced this JCas
+   * @param newCas
+   *          the new JCas
+   * @param producedBy
+   *          the key of the CAS Multiplier that produced this JCas
    * 
    * @return a Flow object that will be used to route the new JCas
    * @see Flow#newCasProduced(AbstractCas, String)
    */
-  protected Flow newCasProduced(JCas newCas, String producedBy) throws AnalysisEngineProcessException
-  {
+  protected Flow newCasProduced(JCas newCas, String producedBy)
+                  throws AnalysisEngineProcessException {
     throw new UIMA_UnsupportedOperationException(
-        UIMA_UnsupportedOperationException.CAS_MULTIPLIER_NOT_SUPPORTED, new Object[]{this.getClass().getName()});
+                    UIMA_UnsupportedOperationException.CAS_MULTIPLIER_NOT_SUPPORTED,
+                    new Object[] { this.getClass().getName() });
   }
 
   /**
@@ -86,8 +84,7 @@ public abstract class JCasFlow_ImplBase implements Flow
    * 
    * @return the JCas being routed by this Flow object
    */
-  protected JCas getJCas()
-  {
+  protected JCas getJCas() {
     return mJCas;
   }
 }

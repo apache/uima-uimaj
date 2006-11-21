@@ -19,9 +19,10 @@
 
 package org.apache.uima.cas.impl;
 
-/** Class comment for StringMap.java goes here.
- *
- *  
+/**
+ * Class comment for StringMap.java goes here.
+ * 
+ * 
  */
 public interface StringMap {
 

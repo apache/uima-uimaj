@@ -24,19 +24,19 @@ package org.apache.uima.cas_data;
  * 
  * 
  */
-public interface ReferenceValue extends FeatureValue
-{
-	/**
-	 * Gets the ID of the target FeatureStructure.
-	 * 
-	 * @return The ID of the target FeatureStructure
-	 */
+public interface ReferenceValue extends FeatureValue {
+  /**
+   * Gets the ID of the target FeatureStructure.
+   * 
+   * @return The ID of the target FeatureStructure
+   */
   public String getTargetId();
-  
-	/**
-	 * Sets the ID of the target FeatureStructure.
-	 * 
-	 * @param aId The ID of the target FeatureStructure
-	 */
+
+  /**
+   * Sets the ID of the target FeatureStructure.
+   * 
+   * @param aId
+   *          The ID of the target FeatureStructure
+   */
   public void setTargetId(String aId);
 }

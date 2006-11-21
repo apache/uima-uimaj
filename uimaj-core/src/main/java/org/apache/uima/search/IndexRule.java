@@ -24,29 +24,29 @@ import java.io.Serializable;
 import org.apache.uima.util.XMLizable;
 
 /**
- * A rule that specifies indexing behavior.  An indexing rule is attached to 
- * an {@link IndexBuildItem} in order to assign indexing behavior to an annotation type.
- * An Index Rule consists of zero or more {@link Style}s.
+ * A rule that specifies indexing behavior. An indexing rule is attached to an
+ * {@link IndexBuildItem} in order to assign indexing behavior to an annotation type. An Index Rule
+ * consists of zero or more {@link Style}s.
  * <p>
- * This object implements the {@link XMLizable} interface and can be parsed
- * from an XML representation.
+ * This object implements the {@link XMLizable} interface and can be parsed from an XML
+ * representation.
  * 
  * 
  */
-public interface IndexRule extends XMLizable, Serializable
-{
-	
-	/**
-	 * Gets the styles that comprise this index rule.
-	 * 
-	 * @return the CAS type name for this build item
-	 */
+public interface IndexRule extends XMLizable, Serializable {
+
+  /**
+   * Gets the styles that comprise this index rule.
+   * 
+   * @return the CAS type name for this build item
+   */
   public Style[] getStyles();
 
-	/**
-	 * Sets the styles that comprise this index rule.
-	 * 
-	 * @param aStyles the CAS type name for this build item
-	 */
-	public void setStyles(Style[] aStyles);
+  /**
+   * Sets the styles that comprise this index rule.
+   * 
+   * @param aStyles
+   *          the CAS type name for this build item
+   */
+  public void setStyles(Style[] aStyles);
 }

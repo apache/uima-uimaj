@@ -41,115 +41,93 @@ import org.apache.uima.UIMARuntimeException;
 /**
  * Utility class that generates XML output from SAX events or DOM nodes.
  */
-public class XMLSerializer 
-{
-  private static final SAXTransformerFactory transformerFactory = (SAXTransformerFactory)SAXTransformerFactory.newInstance();
-  
+public class XMLSerializer {
+  private static final SAXTransformerFactory transformerFactory = (SAXTransformerFactory) SAXTransformerFactory
+                  .newInstance();
+
   private TransformerHandler mHandler;
+
   private Transformer mTransformer;
+
   private Result mResult;
-  
-  public XMLSerializer()
-  {
-  	this(true);
+
+  public XMLSerializer() {
+    this(true);
   }
-  
-  public XMLSerializer(boolean isFormattedOutput)
-  {
-	 try
-	 {
-	  mHandler = transformerFactory.newTransformerHandler();
-	  mTransformer = mHandler.getTransformer();
-	  
-	  if(isFormattedOutput) {
-	     //set default output format
-	     mTransformer.setOutputProperty(OutputKeys.INDENT, "yes");
-	     mTransformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-	     mTransformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-	     mTransformer.setOutputProperty(OutputKeys.METHOD, "xml");
-	  }
-      
-	 }
-	 catch (TransformerConfigurationException e)
-	 {
-		throw new UIMARuntimeException(e);
-	 }
+
+  public XMLSerializer(boolean isFormattedOutput) {
+    try {
+      mHandler = transformerFactory.newTransformerHandler();
+      mTransformer = mHandler.getTransformer();
+
+      if (isFormattedOutput) {
+        // set default output format
+        mTransformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        mTransformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        mTransformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+        mTransformer.setOutputProperty(OutputKeys.METHOD, "xml");
+      }
+
+    } catch (TransformerConfigurationException e) {
+      throw new UIMARuntimeException(e);
+    }
   }
-  
-  public XMLSerializer(OutputStream aOutputStream)
-  {
+
+  public XMLSerializer(OutputStream aOutputStream) {
     this();
     setOutputStream(aOutputStream);
   }
 
-  public XMLSerializer(OutputStream aOutputStream, boolean isFormattedOutput)
-  {
-	 this(isFormattedOutput);
-	 setOutputStream(aOutputStream);
+  public XMLSerializer(OutputStream aOutputStream, boolean isFormattedOutput) {
+    this(isFormattedOutput);
+    setOutputStream(aOutputStream);
   }
 
-  public XMLSerializer(Writer aWriter)
-  {
+  public XMLSerializer(Writer aWriter) {
     this();
     setWriter(aWriter);
   }
 
-  public XMLSerializer(Writer aWriter, boolean isFormattedOutput)
-  {
-	 this(isFormattedOutput);
-	 setWriter(aWriter);
+  public XMLSerializer(Writer aWriter, boolean isFormattedOutput) {
+    this(isFormattedOutput);
+    setWriter(aWriter);
   }
-  
-  public void setOutputStream(OutputStream aOutputStream)
-  {
+
+  public void setOutputStream(OutputStream aOutputStream) {
     mResult = new StreamResult(aOutputStream);
-    mHandler.setResult(mResult);      
+    mHandler.setResult(mResult);
   }
-  
-  public void setWriter(Writer aWriter)
-  {
-    mResult = new StreamResult(aWriter);  
-    mHandler.setResult(mResult);       
+
+  public void setWriter(Writer aWriter) {
+    mResult = new StreamResult(aWriter);
+    mHandler.setResult(mResult);
   }
-  
-  public ContentHandler getContentHandler()
-  {
+
+  public ContentHandler getContentHandler() {
     return mHandler;
   }
-  
-  public void serialize(Node node)
-  {
-    try
-    {
+
+  public void serialize(Node node) {
+    try {
       mTransformer.transform(new DOMSource(node), mResult);
-    }
-    catch (TransformerException e)
-    {
-      throw new UIMARuntimeException(e);
-    }
-  }  
-  
-  public void dom2sax(Node node, ContentHandler handler)
-  {
-    try
-    {
-      mTransformer.transform(new DOMSource(node), new SAXResult(handler));
-    }
-    catch (TransformerException e)
-    {
+    } catch (TransformerException e) {
       throw new UIMARuntimeException(e);
     }
   }
-  
-  public void setOutputProperty(String name, String value) 
-  {
-	try
-	 {
-		mTransformer.setOutputProperty(name, value);
-	 }
-	 catch (IllegalArgumentException e)
-	 {
-		throw new UIMARuntimeException(e);
-	 }	
-  }	
+
+  public void dom2sax(Node node, ContentHandler handler) {
+    try {
+      mTransformer.transform(new DOMSource(node), new SAXResult(handler));
+    } catch (TransformerException e) {
+      throw new UIMARuntimeException(e);
+    }
+  }
+
+  public void setOutputProperty(String name, String value) {
+    try {
+      mTransformer.setOutputProperty(name, value);
+    } catch (IllegalArgumentException e) {
+      throw new UIMARuntimeException(e);
+    }
+  }
 }

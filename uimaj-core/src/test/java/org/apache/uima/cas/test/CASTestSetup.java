@@ -35,77 +35,77 @@ import org.apache.uima.cas.text.TCAS;
 
 /**
  * @author goetz
- *
+ * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
 public class CASTestSetup extends TestCase implements AnnotatorInitializer {
 
   // Type system constants.
   public static final String TOKEN_TYPE = "Token";
+
   public static final String TOKEN_TYPE_FEAT = "type";
-  public static final String TOKEN_TYPE_FEAT_Q =
-    TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR + TOKEN_TYPE_FEAT;
+
+  public static final String TOKEN_TYPE_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
+                  + TOKEN_TYPE_FEAT;
+
   public static final String TOKEN_TYPE_TYPE = "TokenType";
+
   public static final String WORD_TYPE = "Word";
+
   public static final String SEP_TYPE = "Separator";
+
   public static final String EOS_TYPE = "EndOfSentence";
+
   public static final String SENT_TYPE = "Sentence";
-  //	public static final String INT_ARRAY_SUB = "IntArraySub";
+
+  // public static final String INT_ARRAY_SUB = "IntArraySub";
   public static final String INT_SUB_NAME = "intArrayName";
 
   public static final String LEMMA_FEAT = "lemma";
-  public static final String LEMMA_FEAT_Q =
-    TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR + LEMMA_FEAT;
+
+  public static final String LEMMA_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR + LEMMA_FEAT;
+
   public static final String SENT_LEN_FEAT = "sentenceLength";
-  public static final String SENT_LEN_FEAT_Q =
-    SENT_TYPE + TypeSystem.FEATURE_SEPARATOR + SENT_LEN_FEAT;
+
+  public static final String SENT_LEN_FEAT_Q = SENT_TYPE + TypeSystem.FEATURE_SEPARATOR
+                  + SENT_LEN_FEAT;
+
   public static final String TOKEN_FLOAT_FEAT = "tokenFloatFeat";
-  public static final String TOKEN_FLOAT_FEAT_Q =
-    TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR + TOKEN_FLOAT_FEAT;
+
+  public static final String TOKEN_FLOAT_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
+                  + TOKEN_FLOAT_FEAT;
+
   public static final String LEMMA_LIST_FEAT = "lemmaList";
-  public static final String LEMMA_LIST_FEAT_Q =
-    TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR + LEMMA_LIST_FEAT;
+
+  public static final String LEMMA_LIST_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
+                  + LEMMA_LIST_FEAT;
+
   public static final String LANG_PAIR = "org.apache.lang.LanguagePair";
+
   public static final String LANG1 = "lang1";
+
   public static final String LANG2 = "lang2";
+
   public static final String DESCR_FEAT = "description";
+
   public static final String GROUP_1 = "org.apache.lang.Group1";
+
   public static final String GROUP_2 = "org.apache.lang.Group2";
 
-  public static final String[] GROUP_1_LANGUAGES =
-    {
-      "Chinese",
-      "Japanese",
-      "Korean",
-      "English",
-      "French",
-      "German",
-      "Italian",
-      "Spanish",
-      "Portuguese" };
+  public static final String[] GROUP_1_LANGUAGES = { "Chinese", "Japanese", "Korean", "English",
+      "French", "German", "Italian", "Spanish", "Portuguese" };
 
-  public static final String[] GROUP_2_LANGUAGES =
-    {
-      "Arabic",
-      "Czech",
-      "Danish",
-      "Dutch",
-      "Finnish",
-      "Greek",
-      "Hebrew",
-      "Hungarian",
-      "Norwegian",
-      "Polish",
-      "Portuguese",
-      "Russian",
+  public static final String[] GROUP_2_LANGUAGES = { "Arabic", "Czech", "Danish", "Dutch",
+      "Finnish", "Greek", "Hebrew", "Hungarian", "Norwegian", "Polish", "Portuguese", "Russian",
       "Turkish" };
 
   // Index name constants.
   public static final String ANNOT_SET_INDEX = "Annotation Set Index";
+
   public static final String ANNOT_BAG_INDEX = "Annotation Bag Index";
+
   public static final String ANNOT_SORT_INDEX = "Annotation Sort Index";
 
   /**
@@ -122,7 +122,7 @@ public class CASTestSetup extends TestCase implements AnnotatorInitializer {
     // Add new types and features.
     Type topType = tsm.getTopType();
     Type annotType = tsm.getType(TCAS.TYPE_NAME_ANNOTATION);
-    //assert(annotType != null);
+    // assert(annotType != null);
     tsm.addType(SENT_TYPE, annotType);
     Type tokenType = tsm.addType(TOKEN_TYPE, annotType);
     Type tokenTypeType = tsm.addType(TOKEN_TYPE_TYPE, topType);
@@ -130,25 +130,17 @@ public class CASTestSetup extends TestCase implements AnnotatorInitializer {
     tsm.addType(SEP_TYPE, tokenTypeType);
     tsm.addType(EOS_TYPE, tokenTypeType);
     tsm.addFeature(TOKEN_TYPE_FEAT, tokenType, tokenTypeType);
-    tsm.addFeature(
-      TOKEN_FLOAT_FEAT,
-      tokenType,
-      tsm.getType(CAS.TYPE_NAME_FLOAT));
+    tsm.addFeature(TOKEN_FLOAT_FEAT, tokenType, tsm.getType(CAS.TYPE_NAME_FLOAT));
     // Add a type that inherits from IntArray.
-    //		tsm.addType(INT_ARRAY_SUB, tsm.getType(CAS.TYPE_NAME_INTEGER_ARRAY));
-    //		tsm.addFeature(
-    //			INT_SUB_NAME,
-    //			tsm.getType(INT_ARRAY_SUB),
-    //			tsm.getType(CAS.TYPE_NAME_STRING));
+    // tsm.addType(INT_ARRAY_SUB, tsm.getType(CAS.TYPE_NAME_INTEGER_ARRAY));
+    // tsm.addFeature(
+    // INT_SUB_NAME,
+    // tsm.getType(INT_ARRAY_SUB),
+    // tsm.getType(CAS.TYPE_NAME_STRING));
     tsm.addFeature(LEMMA_FEAT, tokenType, tsm.getType(CAS.TYPE_NAME_STRING));
-    tsm.addFeature(
-      SENT_LEN_FEAT,
-      tsm.getType(SENT_TYPE),
-      tsm.getType(CAS.TYPE_NAME_INTEGER));
-    tsm.addFeature(
-      LEMMA_LIST_FEAT,
-      tsm.getType(TOKEN_TYPE),
-      tsm.getType(CAS.TYPE_NAME_STRING_ARRAY));
+    tsm.addFeature(SENT_LEN_FEAT, tsm.getType(SENT_TYPE), tsm.getType(CAS.TYPE_NAME_INTEGER));
+    tsm.addFeature(LEMMA_LIST_FEAT, tsm.getType(TOKEN_TYPE), tsm
+                    .getType(CAS.TYPE_NAME_STRING_ARRAY));
     Type group1 = tsm.addStringSubtype(GROUP_1, GROUP_1_LANGUAGES);
     Type group2 = tsm.addStringSubtype(GROUP_2, GROUP_2_LANGUAGES);
     Type langPair = tsm.addType(LANG_PAIR, topType);
@@ -181,12 +173,10 @@ public class CASTestSetup extends TestCase implements AnnotatorInitializer {
     FSIndexComparator comp = irm.createComparator();
     Type annotation = ts.getType(TCAS.TYPE_NAME_ANNOTATION);
     comp.setType(annotation);
-    comp.addKey(
-      annotation.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_BEGIN),
-      FSIndexComparator.STANDARD_COMPARE);
-    comp.addKey(
-      annotation.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_END),
-      FSIndexComparator.REVERSE_STANDARD_COMPARE);
+    comp.addKey(annotation.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_BEGIN),
+                    FSIndexComparator.STANDARD_COMPARE);
+    comp.addKey(annotation.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_END),
+                    FSIndexComparator.REVERSE_STANDARD_COMPARE);
     LinearTypeOrderBuilder tob = irm.createTypeSortOrder();
     try {
       tob.add(new String[] { TCAS.TYPE_NAME_ANNOTATION, SENT_TYPE, TOKEN_TYPE });
@@ -199,8 +189,9 @@ public class CASTestSetup extends TestCase implements AnnotatorInitializer {
     irm.createIndex(comp, ANNOT_SORT_INDEX, FSIndex.SORTED_INDEX);
 
   }
+
   // keep a null test here to avoid having suite complain there are no tests here
-  public void testNothing () {
-  	assertTrue(true);
+  public void testNothing() {
+    assertTrue(true);
   }
-  }
+}

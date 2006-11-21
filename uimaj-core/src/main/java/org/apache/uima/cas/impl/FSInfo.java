@@ -19,15 +19,13 @@
 
 package org.apache.uima.cas.impl;
 
-class FSInfo
-{
+class FSInfo {
 
   int addr;
 
   int indexRep;
 
-  FSInfo(int addr, int indexRep)
-  {
+  FSInfo(int addr, int indexRep) {
     super();
     this.addr = addr;
     this.indexRep = indexRep;

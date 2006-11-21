@@ -33,49 +33,49 @@ import org.apache.uima.util.Logger;
 import org.apache.uima.util.ProcessTrace;
 
 /**
- * Reference implementation of {@link AnnotatorContext}. 
+ * Reference implementation of {@link AnnotatorContext}.
  * 
  * 
  */
-public class AnnotatorContext_impl implements AnnotatorContext
-{
-  
-     
+public class AnnotatorContext_impl implements AnnotatorContext {
+
+  /**
+   * The UimaContextAdmin that this AnnotatorContext wraps.
+   */
+  private UimaContextAdmin mUimaContext;
 
   /**
    * Creates a new AnnotatorContext_impl.
    * 
-   * @param aUimaContext the UIMA Context that this AnnotatorContext wraps.
-   *
-   * @throws ResourceConfigurationException if a required parameter does not 
-   *    have a value   
+   * @param aUimaContext
+   *          the UIMA Context that this AnnotatorContext wraps.
+   * 
+   * @throws ResourceConfigurationException
+   *           if a required parameter does not have a value
    */
-  public AnnotatorContext_impl(UimaContextAdmin aUimaContext)
-  {
+  public AnnotatorContext_impl(UimaContextAdmin aUimaContext) {
     mUimaContext = aUimaContext;
   }
-  
+
   /**
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigParameterValue(String)
    */
-  public Object getConfigParameterValue(String aName)
-  {    
+  public Object getConfigParameterValue(String aName) {
     return mUimaContext.getConfigParameterValue(aName);
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigParameterValue(java.lang.String, java.lang.String)
+   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigParameterValue(java.lang.String,
+   *      java.lang.String)
    */
-  public Object getConfigParameterValue(String aGroupName, String aParamName)
-  {
+  public Object getConfigParameterValue(String aGroupName, String aParamName) {
     return mUimaContext.getConfigParameterValue(aGroupName, aParamName);
   }
- 
+
   /**
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getLogger()
    */
-  public Logger getLogger()
-  {
+  public Logger getLogger() {
     return mUimaContext.getLogger();
   }
 
@@ -84,177 +84,144 @@ public class AnnotatorContext_impl implements AnnotatorContext
    * 
    * @return the InstrumentationFacility to be used within this AnalysisEngine
    */
-  public InstrumentationFacility getInstrumentationFacility()
-  {
+  public InstrumentationFacility getInstrumentationFacility() {
     return mUimaContext.getInstrumentationFacility();
   }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigurationGroupNames()
-	 */
-	public String[] getConfigurationGroupNames()
-	{
-		return mUimaContext.getConfigurationGroupNames();
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigurationGroupNames()
+   */
+  public String[] getConfigurationGroupNames() {
+    return mUimaContext.getConfigurationGroupNames();
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigurationParameterNames()
-	 */
-	public String[] getConfigParameterNames()
-	{
-		return mUimaContext.getConfigParameterNames();
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigurationParameterNames()
+   */
+  public String[] getConfigParameterNames() {
+    return mUimaContext.getConfigParameterNames();
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigurationParameterNames(java.lang.String)
-	 */
-	public String[] getConfigParameterNames(String aGroup)
-	{
-		return mUimaContext.getConfigParameterNames(aGroup);
-	}
-	
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigurationParameterNames(java.lang.String)
+   */
+  public String[] getConfigParameterNames(String aGroup) {
+    return mUimaContext.getConfigParameterNames(aGroup);
+  }
+
   /**
-   * Locates Resource URL's using the ResourceManager, or, if that fails,
-   * the ClassLoader.
+   * Locates Resource URL's using the ResourceManager, or, if that fails, the ClassLoader.
+   * 
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceURL(String)
    */
-  public URL getResourceURL(String aKey) throws AnnotatorContextException
-  {
-    try
-    {
-    	return mUimaContext.getResourceURL(aKey);   
-    }
-    catch(ResourceAccessException e)
-    {
-      throw new AnnotatorContextException(e);    
+  public URL getResourceURL(String aKey) throws AnnotatorContextException {
+    try {
+      return mUimaContext.getResourceURL(aKey);
+    } catch (ResourceAccessException e) {
+      throw new AnnotatorContextException(e);
     }
   }
 
   /**
-   * Acquires Resource InputStreams using the ResourceManager, or, if that fails,
-   * the ClassLoader.
+   * Acquires Resource InputStreams using the ResourceManager, or, if that fails, the ClassLoader.
+   * 
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceAsStream(String)
    */
-  public InputStream getResourceAsStream(String aKey)
-    throws AnnotatorContextException
-  {
-		try
-		{
-			return mUimaContext.getResourceAsStream(aKey);   
-		}
-		catch(ResourceAccessException e)
-		{
-			throw new AnnotatorContextException(e);    
-		}
+  public InputStream getResourceAsStream(String aKey) throws AnnotatorContextException {
+    try {
+      return mUimaContext.getResourceAsStream(aKey);
+    } catch (ResourceAccessException e) {
+      throw new AnnotatorContextException(e);
+    }
   }
 
   /**
    * Acquires a Resource object using the ResourceManager.
+   * 
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceObject(String)
    */
-  public Object getResourceObject(String aKey)
-    throws AnnotatorContextException
-  {
-		try
-		{
-			return mUimaContext.getResourceObject(aKey);   
-		}
-		catch(ResourceAccessException e)
-		{
-			throw new AnnotatorContextException(e);    
-		}
+  public Object getResourceObject(String aKey) throws AnnotatorContextException {
+    try {
+      return mUimaContext.getResourceObject(aKey);
+    } catch (ResourceAccessException e) {
+      throw new AnnotatorContextException(e);
+    }
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceAsStream(java.lang.String, java.lang.String[])
+   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceAsStream(java.lang.String,
+   *      java.lang.String[])
    */
   public InputStream getResourceAsStream(String aKey, String[] aParams)
-    throws AnnotatorContextException
-  {
-		try
-		{
-			return mUimaContext.getResourceAsStream(aKey, aParams);   
-		}
-		catch(ResourceAccessException e)
-		{
-			throw new AnnotatorContextException(e);    
-		}
+                  throws AnnotatorContextException {
+    try {
+      return mUimaContext.getResourceAsStream(aKey, aParams);
+    } catch (ResourceAccessException e) {
+      throw new AnnotatorContextException(e);
+    }
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceObject(java.lang.String, java.lang.String[])
+   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceObject(java.lang.String,
+   *      java.lang.String[])
    */
-  public Object getResourceObject(String aKey, String[] aParams)
-    throws AnnotatorContextException
-  {
-		try
-		{
-			return mUimaContext.getResourceObject(aKey, aParams);   
-		}
-		catch(ResourceAccessException e)
-		{
-			throw new AnnotatorContextException(e);    
-		}
+  public Object getResourceObject(String aKey, String[] aParams) throws AnnotatorContextException {
+    try {
+      return mUimaContext.getResourceObject(aKey, aParams);
+    } catch (ResourceAccessException e) {
+      throw new AnnotatorContextException(e);
+    }
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceURL(java.lang.String, java.lang.String[])
+   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceURL(java.lang.String,
+   *      java.lang.String[])
    */
-  public URL getResourceURL(String aKey, String[] aParams)
-    throws AnnotatorContextException
-  {
-		try
-		{
-			return mUimaContext.getResourceURL(aKey, aParams);   
-		}
-		catch(ResourceAccessException e)
-		{
-			throw new AnnotatorContextException(e);    
-		}
+  public URL getResourceURL(String aKey, String[] aParams) throws AnnotatorContextException {
+    try {
+      return mUimaContext.getResourceURL(aKey, aParams);
+    } catch (ResourceAccessException e) {
+      throw new AnnotatorContextException(e);
+    }
   }
-  
+
   /**
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getDataPath()
    */
-  public String getDataPath()
-  {
+  public String getDataPath() {
     return mUimaContext.getDataPath();
   }
-  
- 
+
   /**
-   * Sets the current ProcessTrace object, which will receive trace events
-   * generated by the InstrumentationFacility.
+   * Sets the current ProcessTrace object, which will receive trace events generated by the
+   * InstrumentationFacility.
    * <p>
-   * This method is to be called from the Analysis Engine, not the Annotator,
-   * so it is not part of the AnnotatorContext interface.
+   * This method is to be called from the Analysis Engine, not the Annotator, so it is not part of
+   * the AnnotatorContext interface.
    */
-  public void setProcessTrace(ProcessTrace aProcessTrace)
-  {
-    mUimaContext.setProcessTrace(aProcessTrace); 
+  public void setProcessTrace(ProcessTrace aProcessTrace) {
+    mUimaContext.setProcessTrace(aProcessTrace);
   }
-   
+
   /**
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#mapToSofaID(java.lang.String)
    * @deprecated
    */
-	  public SofaID mapToSofaID(String aSofaName) {
-		  return mUimaContext.mapToSofaID(aSofaName);
-	  }
+  public SofaID mapToSofaID(String aSofaName) {
+    return mUimaContext.mapToSofaID(aSofaName);
+  }
 
-
-	
-	  /**
-		 * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getSofaMappings()
-     * @deprecated
-		 */
-	  public SofaID[] getSofaMappings() {
-		  return mUimaContext.getSofaMappings();
-	  }
-	    
   /**
-   * The UimaContextAdmin that this AnnotatorContext wraps.
+   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getSofaMappings()
+   * @deprecated
    */
-  private UimaContextAdmin mUimaContext;
-  
+  public SofaID[] getSofaMappings() {
+    return mUimaContext.getSofaMappings();
+  }
 }

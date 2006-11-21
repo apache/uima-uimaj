@@ -27,57 +27,57 @@ import org.apache.uima.search.Mapping;
 /**
  * 
  */
-public class Mapping_impl extends MetaDataObject_impl implements Mapping
-{
+public class Mapping_impl extends MetaDataObject_impl implements Mapping {
   private String mFeature;
+
   private String mIndexName;
 
-
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.Mapping#getFeature()
    */
-  public String getFeature()
-  {
+  public String getFeature() {
     return mFeature;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.Mapping#setFeature(java.lang.String)
    */
-  public void setFeature(String aFeature)
-  {
+  public void setFeature(String aFeature) {
     mFeature = aFeature;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.Mapping#getIndexName()
    */
-  public String getIndexName()
-  {
+  public String getIndexName() {
     return mIndexName;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.Mapping#setIndexName(java.lang.String)
    */
-  public void setIndexName(String aIndexName)
-  {
+  public void setIndexName(String aIndexName) {
     mIndexName = aIndexName;
   }
 
-
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
-  protected XmlizationInfo getXmlizationInfo()
-  {
+  protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO =
-    new XmlizationInfo("mapping",
-      new PropertyXmlInfo[]{
-        new PropertyXmlInfo("feature"),
-        new PropertyXmlInfo("indexName")
-      });   
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("mapping",
+                  new PropertyXmlInfo[] { new PropertyXmlInfo("feature"),
+                      new PropertyXmlInfo("indexName") });
 }

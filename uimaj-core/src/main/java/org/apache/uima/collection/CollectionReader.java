@@ -28,71 +28,65 @@ import org.apache.uima.resource.ConfigurableResource;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**
- * A <code>CollectionReader</code> is used to iterate over the elements of a
- * Collection.  Iteration is done using the {@link #hasNext()} and 
- * {@link #getNext(CAS)} methods.  Each element of the collection is returned
- * in a {@link CAS}.
+ * A <code>CollectionReader</code> is used to iterate over the elements of a Collection. Iteration
+ * is done using the {@link #hasNext()} and {@link #getNext(CAS)} methods. Each element of the
+ * collection is returned in a {@link CAS}.
  * <p>
- * A <i>consuming</i> <code>CollectionReader</code> is one that removes each
- * element from the collection as it is read.  To find out whether a 
- * <code>CollectionReader</code> will consume elements in this way, call the 
- * {@link #isConsuming()} method.
+ * A <i>consuming</i> <code>CollectionReader</code> is one that removes each element from the
+ * collection as it is read. To find out whether a <code>CollectionReader</code> will consume
+ * elements in this way, call the {@link #isConsuming()} method.
  * <p>
- * Users of a <code>CollectionReader</code> should always 
- * {@link #close() close} it when they are finished using it.
+ * Users of a <code>CollectionReader</code> should always {@link #close() close} it when they are
+ * finished using it.
  * <p>
- * <code>CollectionReader</code>s are also {@link ConfigurableResource}s,
- * and can be instantiated from descriptors.  See
- * {@link org.apache.uima.util.XMLParser#parseCollectionReaderDescription(XMLInputSource)}
- * and {@link org.apache.uima.UIMAFramework#produceCollectionReader(ResourceSpecifier,Map)}
- * for more information.
+ * <code>CollectionReader</code>s are also {@link ConfigurableResource}s, and can be
+ * instantiated from descriptors. See
+ * {@link org.apache.uima.util.XMLParser#parseCollectionReaderDescription(XMLInputSource)} and
+ * {@link org.apache.uima.UIMAFramework#produceCollectionReader(ResourceSpecifier,Map)} for more
+ * information.
  * 
  * 
  */
-public interface CollectionReader extends BaseCollectionReader, ConfigurableResource
-{
+public interface CollectionReader extends BaseCollectionReader, ConfigurableResource {
   /**
-   * Informs this CollectionReader that the CAS TypeSystem has changed.
-   * The CPM calls this method immediately following the call to
-   * {@link #initialize(ResourceSpecifier,Map)}, and will call it again 
-   * whenever the CAS TypeSystem changes.
+   * Informs this CollectionReader that the CAS TypeSystem has changed. The CPM calls this method
+   * immediately following the call to {@link #initialize(ResourceSpecifier,Map)}, and will call it
+   * again whenever the CAS TypeSystem changes.
    * <p>
-   * In this method, the CollectionReader should use the {@link TypeSystem} to
-   * resolve the names of Type and Features to the actual
-   * {@link org.apache.uima.cas.Type} and {@link org.apache.uima.cas.Feature} objects,
-   * which can then be used during processing.
+   * In this method, the CollectionReader should use the {@link TypeSystem} to resolve the names of
+   * Type and Features to the actual {@link org.apache.uima.cas.Type} and
+   * {@link org.apache.uima.cas.Feature} objects, which can then be used during processing.
    * 
-   * @param aTypeSystem the CAS TypeSystem
+   * @param aTypeSystem
+   *          the CAS TypeSystem
    * 
-   * @throws ResourceInitializationException if the type system is not 
-   *    compatible with this Collection Reader
+   * @throws ResourceInitializationException
+   *           if the type system is not compatible with this Collection Reader
    */
-  public void typeSystemInit(TypeSystem aTypeSystem)
-    throws ResourceInitializationException;
+  public void typeSystemInit(TypeSystem aTypeSystem) throws ResourceInitializationException;
 
   /**
-   * Gets the next element of the collection.  The element will be stored in
-   * the provided CAS objet.  If this is a consuming <code>CollectionReader</code> 
-   * (see {@link #isConsuming()}), this element will also be removed
-   * from the collection.
+   * Gets the next element of the collection. The element will be stored in the provided CAS objet.
+   * If this is a consuming <code>CollectionReader</code> (see {@link #isConsuming()}), this
+   * element will also be removed from the collection.
    * 
-   * @param aCAS the CAS to populate with the next element of the collection
+   * @param aCAS
+   *          the CAS to populate with the next element of the collection
    * 
-   * @throws org.apache.uima.UIMA_IllegalStateException if there are no more
-   *   elements left in the collection
-   * @throws IOException if an I/O failure occurs
-   * @throws CollectionException if there is some other problem with reading
-   *    from the Collection
+   * @throws org.apache.uima.UIMA_IllegalStateException
+   *           if there are no more elements left in the collection
+   * @throws IOException
+   *           if an I/O failure occurs
+   * @throws CollectionException
+   *           if there is some other problem with reading from the Collection
    */
-  public void getNext(CAS aCAS)
-    throws IOException, CollectionException;
-    
-  /**
-   * Gets the CAS Initializer that has been assigned to this Collection Reader.
-   * Note that CollectionReader implementations are not required to make use of 
-   * the CAS Initializer - refer to the documentation for your specific
-   * Collection Reader.
+  public void getNext(CAS aCAS) throws IOException, CollectionException;
 
+  /**
+   * Gets the CAS Initializer that has been assigned to this Collection Reader. Note that
+   * CollectionReader implementations are not required to make use of the CAS Initializer - refer to
+   * the documentation for your specific Collection Reader.
+   * 
    * @return the CAS Initializer for this Collection Reader
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
@@ -100,15 +94,15 @@ public interface CollectionReader extends BaseCollectionReader, ConfigurableReso
   public CasInitializer getCasInitializer();
 
   /**
-   * Assigns a CAS Initializer for this Collection Reader to use.  Note that
-   * CollectionReader implementations are not required to make use of the
-   * CAS Initializer - refer to the documentation for your specific
-   * Collection Reader.
+   * Assigns a CAS Initializer for this Collection Reader to use. Note that CollectionReader
+   * implementations are not required to make use of the CAS Initializer - refer to the
+   * documentation for your specific Collection Reader.
    * 
-   * @param aCasInitializer the CAS Initializer for this Collection Reader
+   * @param aCasInitializer
+   *          the CAS Initializer for this Collection Reader
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
   public void setCasInitializer(CasInitializer aCasInitializer);
-  
+
 }

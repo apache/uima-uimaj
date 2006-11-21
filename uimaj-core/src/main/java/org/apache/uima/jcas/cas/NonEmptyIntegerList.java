@@ -24,11 +24,16 @@ import org.apache.uima.jcas.impl.JCas;
 public class NonEmptyIntegerList extends IntegerList {
 
   public final static int typeIndexID = JCas.getNextIndex();
-  public final static int type = typeIndexID;
-  public           int getTypeIndexID() {return typeIndexID;}
 
-  // Never called.  Disable default constructor
-  protected NonEmptyIntegerList() {}
+  public final static int type = typeIndexID;
+
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  // Never called. Disable default constructor
+  protected NonEmptyIntegerList() {
+  }
 
   /** Internal - Constructor used by generator */
   public NonEmptyIntegerList(int addr, TOP_Type type) {
@@ -39,30 +44,42 @@ public class NonEmptyIntegerList extends IntegerList {
     super(jcas);
   }
 
-  //*------------------*
-  //* Feature: head
-  /** getter for head  * */
+  // *------------------*
+  // * Feature: head
+  /** getter for head * */
   public int getHead() {
-    if (NonEmptyIntegerList_Type.featOkTst && ((NonEmptyIntegerList_Type)jcasType).casFeat_head == null)
-          JCas.throwFeatMissing("head", "uima.cas.NonEmptyIntegerList");
-    return jcasType.ll_cas.ll_getIntValue(addr, ((NonEmptyIntegerList_Type)jcasType).casFeatCode_head);}
+    if (NonEmptyIntegerList_Type.featOkTst
+                    && ((NonEmptyIntegerList_Type) jcasType).casFeat_head == null)
+      JCas.throwFeatMissing("head", "uima.cas.NonEmptyIntegerList");
+    return jcasType.ll_cas.ll_getIntValue(addr,
+                    ((NonEmptyIntegerList_Type) jcasType).casFeatCode_head);
+  }
 
-  /** setter for head  * */
+  /** setter for head * */
   public void setHead(int v) {
-    if (NonEmptyIntegerList_Type.featOkTst && ((NonEmptyIntegerList_Type)jcasType).casFeat_head == null)
-          JCas.throwFeatMissing("head", "uima.cas.NonEmptyIntegerList");
-    jcasType.ll_cas.ll_setIntValue(addr, ((NonEmptyIntegerList_Type)jcasType).casFeatCode_head, v);}
-  //*------------------*
-  //* Feature: tail
-  /** getter for tail  * */
-  public IntegerList getTail() {
-    if (NonEmptyIntegerList_Type.featOkTst && ((NonEmptyIntegerList_Type)jcasType).casFeat_tail == null)
-          JCas.throwFeatMissing("tail", "uima.cas.NonEmptyIntegerList");
-    return (IntegerList)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((NonEmptyIntegerList_Type)jcasType).casFeatCode_tail)));}
+    if (NonEmptyIntegerList_Type.featOkTst
+                    && ((NonEmptyIntegerList_Type) jcasType).casFeat_head == null)
+      JCas.throwFeatMissing("head", "uima.cas.NonEmptyIntegerList");
+    jcasType.ll_cas.ll_setIntValue(addr, ((NonEmptyIntegerList_Type) jcasType).casFeatCode_head, v);
+  }
 
-  /** setter for tail  * */
+  // *------------------*
+  // * Feature: tail
+  /** getter for tail * */
+  public IntegerList getTail() {
+    if (NonEmptyIntegerList_Type.featOkTst
+                    && ((NonEmptyIntegerList_Type) jcasType).casFeat_tail == null)
+      JCas.throwFeatMissing("tail", "uima.cas.NonEmptyIntegerList");
+    return (IntegerList) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
+                    ((NonEmptyIntegerList_Type) jcasType).casFeatCode_tail)));
+  }
+
+  /** setter for tail * */
   public void setTail(IntegerList v) {
-    if (NonEmptyIntegerList_Type.featOkTst && ((NonEmptyIntegerList_Type)jcasType).casFeat_tail == null)
-          JCas.throwFeatMissing("tail", "uima.cas.NonEmptyIntegerList");
-    jcasType.ll_cas.ll_setRefValue(addr, ((NonEmptyIntegerList_Type)jcasType).casFeatCode_tail, jcasType.ll_cas.ll_getFSRef(v));}
+    if (NonEmptyIntegerList_Type.featOkTst
+                    && ((NonEmptyIntegerList_Type) jcasType).casFeat_tail == null)
+      JCas.throwFeatMissing("tail", "uima.cas.NonEmptyIntegerList");
+    jcasType.ll_cas.ll_setRefValue(addr, ((NonEmptyIntegerList_Type) jcasType).casFeatCode_tail,
+                    jcasType.ll_cas.ll_getFSRef(v));
+  }
 }

@@ -26,25 +26,31 @@ import org.apache.uima.resource.metadata.AllowedValue;
  * 
  * 
  */
-public class AllowedValue_impl extends MetaDataObject_impl
-  implements AllowedValue
-{
-  
+public class AllowedValue_impl extends MetaDataObject_impl implements AllowedValue {
+
+  static final long serialVersionUID = -3463916068572525348L;
+
+  /** The allowed value string. */
+  private String mString;
+
+  /** Verbose description of this value. */
+  private String mDescription;
+
   /**
    * Default constructor.
    */
-  public AllowedValue_impl()
-  {
+  public AllowedValue_impl() {
   }
-  
+
   /**
    * Constructor.
    * 
-   * @param aString the allowed value string
-   * @param aDescription verbose description of this allowed value
+   * @param aString
+   *          the allowed value string
+   * @param aDescription
+   *          verbose description of this allowed value
    */
-  public AllowedValue_impl(String aString, String aDescription)
-  {
+  public AllowedValue_impl(String aString, String aDescription) {
     setString(aString);
     setDescription(aDescription);
   }
@@ -52,57 +58,39 @@ public class AllowedValue_impl extends MetaDataObject_impl
   /**
    * @see org.apache.uima.analysis_engine.metadata.AllowedValue#getString()
    */
-  public String getString()
-  {
+  public String getString() {
     return mString;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.metadata.AllowedValue#setString(java.lang.String)
    */
-  public void setString(String aString)
-  {
+  public void setString(String aString) {
     mString = aString;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.metadata.AllowedValue#getDescription()
    */
-  public String getDescription()
-  {
+  public String getDescription() {
     return mDescription;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.metadata.AllowedValue#setDescription(java.lang.String)
    */
-  public void setDescription(String aDescription)
-  {
+  public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
 
   /**
    * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXmlizationInfo()
    */
-  protected XmlizationInfo getXmlizationInfo()
-  {
+  protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO =
-    new XmlizationInfo("value",
-      new PropertyXmlInfo[]{
-         new PropertyXmlInfo("string"),
-         new PropertyXmlInfo("description",false),
-      });
-      
-    
-  
-  /** The allowed value string. */
-  private String mString;
-  
-  /** Verbose description of this value. */
-  private String mDescription;
-
-  static final long serialVersionUID = -3463916068572525348L;
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("value",
+                  new PropertyXmlInfo[] { new PropertyXmlInfo("string"),
+                      new PropertyXmlInfo("description", false), });
 }

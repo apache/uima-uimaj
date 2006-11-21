@@ -30,126 +30,116 @@ import org.apache.uima.cas.text.TCASException;
 import org.apache.uima.util.ProcessTrace;
 
 /**
- * A serializable class containing the information passed to and returned from
- * Analysis Engine Services.
+ * A serializable class containing the information passed to and returned from Analysis Engine
+ * Services.
  * <p>
- * It is not required that Analysis Engine Services use this class.  It is
- * provided as a convenience for those services that communicate using binary 
- * data.
+ * It is not required that Analysis Engine Services use this class. It is provided as a convenience
+ * for those services that communicate using binary data.
  * <p>
- * This object contains state information extracted from an
- * {@link AnalysisProcessData}.  The <code>AnalysisProcessData</code> object 
- * itself is not serializable, because it contains the <code>CAS</code> object.  
- * CASes are heavyweight objects and should not be created and destroyed with 
- * each network call.
+ * This object contains state information extracted from an {@link AnalysisProcessData}. The
+ * <code>AnalysisProcessData</code> object itself is not serializable, because it contains the
+ * <code>CAS</code> object. CASes are heavyweight objects and should not be created and destroyed
+ * with each network call.
  * <p>
- * Instead, to pass Analysis Process Data to a remote service, one should
- * create a <code>ServiceDataCargo</code> and send that to the remote service.
+ * Instead, to pass Analysis Process Data to a remote service, one should create a
+ * <code>ServiceDataCargo</code> and send that to the remote service.
  * <p>
- * A <code>ServiceDataCargo</code> can be unmarshalled into an existing 
- * <code>AnalysisProcessData</code> by calling the 
- * {@link #unmarshalInto(AnalysisProcessData)} method.  Alternatively, the CAS
- * state can be unmarshalled separately by calling the
+ * A <code>ServiceDataCargo</code> can be unmarshalled into an existing
+ * <code>AnalysisProcessData</code> by calling the {@link #unmarshalInto(AnalysisProcessData)}
+ * method. Alternatively, the CAS state can be unmarshalled separately by calling the
  * {@link #unmarshalCas(CAS)} method.
  * 
  * 
  */
-public class ServiceDataCargo implements Serializable
-{
+public class ServiceDataCargo implements Serializable {
   /**
    * 
    */
   private static final long serialVersionUID = 2433836175315405277L;
+
+  private CASCompleteSerializer mCasSer;
+
+  private ProcessTrace mProcessTrace;
   
   /**
-   * Creates a new <code>SerializableAnalysisProcessData</code> that contains
-   * information extracted from the specified <code>AnalysisProcessData</code>.
+   * Creates a new <code>SerializableAnalysisProcessData</code> that contains information
+   * extracted from the specified <code>AnalysisProcessData</code>.
    * 
-   * @param aData the AnalysisProcessData to extract from
+   * @param aData
+   *          the AnalysisProcessData to extract from
    */
-  public ServiceDataCargo(AnalysisProcessData aData)
-  {
-    mCasSer = Serialization.serializeCASComplete((CASMgr)aData.getCAS());
+  public ServiceDataCargo(AnalysisProcessData aData) {
+    mCasSer = Serialization.serializeCASComplete((CASMgr) aData.getCAS());
     mProcessTrace = aData.getProcessTrace();
   }
 
   /**
-   * Creates a new <code>SerializableAnalysisProcessData</code> that contains
-   * the given <code>CAS</code> and <code>ProcessTrace</code>.
+   * Creates a new <code>SerializableAnalysisProcessData</code> that contains the given
+   * <code>CAS</code> and <code>ProcessTrace</code>.
    * 
-   * @param aCAS the CAS whose state will be extracted into this object
-   * @param aProcessTrace the process trace object.  This may be null, if no 
-   *   process trace is available.  (For example, ProcessTrace data may often 
-   *   be returned from a service but not passed to the service.)  
+   * @param aCAS
+   *          the CAS whose state will be extracted into this object
+   * @param aProcessTrace
+   *          the process trace object. This may be null, if no process trace is available. (For
+   *          example, ProcessTrace data may often be returned from a service but not passed to the
+   *          service.)
    */
-  public ServiceDataCargo(CAS aCAS, ProcessTrace aProcessTrace)
-  {
-    mCasSer = Serialization.serializeCASComplete((CASMgr)aCAS);
+  public ServiceDataCargo(CAS aCAS, ProcessTrace aProcessTrace) {
+    mCasSer = Serialization.serializeCASComplete((CASMgr) aCAS);
     mProcessTrace = aProcessTrace;
   }
-    
+
   /**
-   * Unmarshalls this <code>SerializableAnalysisProcessData</code> into
-   * an existing <code>AnalysisProcessData</code> object.  The existing CAS
-   * data in the <code>aDataContainer</code> object will be replaced by the
-   * CAS data in this object.  The <code>ProcessTrace</code> events in this
-   * object will be appended to the <code>ProcessTrace</code> of the
-   * <code>aDataContainer</code> object.
+   * Unmarshalls this <code>SerializableAnalysisProcessData</code> into an existing
+   * <code>AnalysisProcessData</code> object. The existing CAS data in the
+   * <code>aDataContainer</code> object will be replaced by the CAS data in this object. The
+   * <code>ProcessTrace</code> events in this object will be appended to the
+   * <code>ProcessTrace</code> of the <code>aDataContainer</code> object.
    * 
-   * @param aDataContainer the AnalysisProcessData to unmarshal into
+   * @param aDataContainer
+   *          the AnalysisProcessData to unmarshal into
    */
-  public void unmarshalInto(AnalysisProcessData aDataContainer,
-    boolean aReplaceCasTypeSystem)
-    throws TCASException
-  {
+  public void unmarshalInto(AnalysisProcessData aDataContainer, boolean aReplaceCasTypeSystem)
+                  throws TCASException {
     unmarshalCas(aDataContainer.getCAS(), aReplaceCasTypeSystem);
     aDataContainer.getProcessTrace().addAll(mProcessTrace.getEvents());
   }
 
   /**
-   * Unmarshalls the CAS data in this <code>ServiceDataCargo</code> 
-   * into an existing <code>CAS</code> instance.  The data in the exsiting CAS
-   * will be replaced by the CAS data in this object.  
+   * Unmarshalls the CAS data in this <code>ServiceDataCargo</code> into an existing
+   * <code>CAS</code> instance. The data in the exsiting CAS will be replaced by the CAS data in
+   * this object.
    * 
-   * @param aDataContainer the AnalysisProcessData to unmarshal into
+   * @param aDataContainer
+   *          the AnalysisProcessData to unmarshal into
    */
-  public void unmarshalCas(CAS aCas, boolean aReplaceCasTypeSystem)
-    throws TCASException
-  {
-    CASMgr casMgr = (CASMgr)aCas;
-    if (aReplaceCasTypeSystem)
-    {
+  public void unmarshalCas(CAS aCas, boolean aReplaceCasTypeSystem) throws TCASException {
+    CASMgr casMgr = (CASMgr) aCas;
+    if (aReplaceCasTypeSystem) {
       Serialization.deserializeCASComplete(mCasSer, casMgr);
-    }
-    else
-    {
+    } else {
       Serialization.createCAS(casMgr, mCasSer.getCASSerializer());
-    } 
+    }
   }
-  
+
   /**
-   * Gets the ProcessTrace object from this <code>ServiceDataCargo</code>.
-   * This may return null, if no process trace is available.  (For example,
-   * ProcessTrace data may often be returned from a service but not passed
-   * to the service.)  
+   * Gets the ProcessTrace object from this <code>ServiceDataCargo</code>. This may return null,
+   * if no process trace is available. (For example, ProcessTrace data may often be returned from a
+   * service but not passed to the service.)
    * 
    * @return the process trace
    */
-  public ProcessTrace getProcessTrace()
-  {
+  public ProcessTrace getProcessTrace() {
     return mProcessTrace;
   }
-  
+
   /**
    * Sets the ProcessTrace object from this <code>ServiceDataCargo</code>.
    * 
-   * @param aProcessTrace the process trace
+   * @param aProcessTrace
+   *          the process trace
    */
-  public void setProcessTrace(ProcessTrace aProcessTrace)
-  {
+  public void setProcessTrace(ProcessTrace aProcessTrace) {
     mProcessTrace = aProcessTrace;
   }
-  
-  private CASCompleteSerializer mCasSer;
-  private ProcessTrace mProcessTrace; 
 }

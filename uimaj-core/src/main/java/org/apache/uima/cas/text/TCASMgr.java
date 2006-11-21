@@ -21,11 +21,8 @@ package org.apache.uima.cas.text;
 
 import org.apache.uima.cas.admin.CASMgr;
 
-
-
-
 /**
- * Collect admin functionality for TCAS. 
+ * Collect admin functionality for TCAS.
  */
 public interface TCASMgr extends CASMgr {
   /**
@@ -36,22 +33,27 @@ public interface TCASMgr extends CASMgr {
 
   /**
    * Set the document text.
-   * @param text The text being analyzed.
-   * @exception TCASRuntimeException If setting the text has been disabled.
+   * 
+   * @param text
+   *          The text being analyzed.
+   * @exception TCASRuntimeException
+   *              If setting the text has been disabled.
    * @see #enableSetText(boolean)
    */
   void setDocumentText(String text) throws TCASRuntimeException;
 
   /**
-   * Allow or disallow setting the text on the TCAS object corresponding
-   * to this manager.
-   * @param flag If the text can be set on the corresponding TCAS object.
+   * Allow or disallow setting the text on the TCAS object corresponding to this manager.
+   * 
+   * @param flag
+   *          If the text can be set on the corresponding TCAS object.
    */
   void enableSetText(boolean flag);
 
   /**
-   * Return the TCAS corresponding to this CASMgr instance.  This handle will
-   * remain valid, even after calls to {@link CASMgr#reset() flush()}.
+   * Return the TCAS corresponding to this CASMgr instance. This handle will remain valid, even
+   * after calls to {@link CASMgr#reset() flush()}.
+   * 
    * @return The <code>TCAS</code> corresponding to this TCASMgr.
    * @see org.apache.uima.cas.admin.FSIndexRepositoryMgr
    */

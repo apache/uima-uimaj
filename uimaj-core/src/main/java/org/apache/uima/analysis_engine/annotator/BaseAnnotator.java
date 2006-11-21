@@ -22,74 +22,67 @@ package org.apache.uima.analysis_engine.annotator;
 import org.apache.uima.cas.TypeSystem;
 
 /**
- * Base interface for annotators in UIMA SDK v1.x.  As of v2.0, annotators
- * should extend {@link org.apache.uima.analysis_component.CasAnnotator_ImplBase}
- * or {@link org.apache.uima.analysis_component.JCasAnnotator_ImplBase}.
+ * Base interface for annotators in UIMA SDK v1.x. As of v2.0, annotators should extend
+ * {@link org.apache.uima.analysis_component.CasAnnotator_ImplBase} or
+ * {@link org.apache.uima.analysis_component.JCasAnnotator_ImplBase}.
  */
-public interface BaseAnnotator
-{
+public interface BaseAnnotator {
   /**
-   * Performs any startup tasks required by this annotator.  The Analysis
-   * Engine calls this method only once, just after an Annotator has been
-   * instantiated.
+   * Performs any startup tasks required by this annotator. The Analysis Engine calls this method
+   * only once, just after an Annotator has been instantiated.
    * <p>
-   * The Analysis Engine supplies this annotator with a reference to the
-   * {@link AnnotatorContext} that it will use.  This annotator should store
-   * a reference to its this object for later use.
+   * The Analysis Engine supplies this annotator with a reference to the {@link AnnotatorContext}
+   * that it will use. This annotator should store a reference to its this object for later use.
    * 
-   * @param aContext  Provides access to external resources that may
-   *    be used by this annotator.  This includes configuration parameters,
-   *    logging and instrumentation services, and access to external analysis
-   *    resources.
+   * @param aContext
+   *          Provides access to external resources that may be used by this annotator. This
+   *          includes configuration parameters, logging and instrumentation services, and access to
+   *          external analysis resources.
    * 
-   * @throws AnnotatorInitializationException  if the annotator cannot
-   *    initialize itself.     
-   * @throws AnnotatorConfigurationException  if the configuration specified 
-   *    for this annotator is invalid.
+   * @throws AnnotatorInitializationException
+   *           if the annotator cannot initialize itself.
+   * @throws AnnotatorConfigurationException
+   *           if the configuration specified for this annotator is invalid.
    */
-  public void initialize(AnnotatorContext aContext)
-    throws AnnotatorInitializationException, AnnotatorConfigurationException; 
-  
-  /**
-   * Informs this annotator that the CAS TypeSystem has changed.
-   * The Analysis Engine calls this method immediately following the call to
-   * {@link #initialize(AnnotatorContext)}, and will call it again 
-   * whenever the CAS TypeSystem changes.
-   * <p>
-   * In this method, the Annotator should use the {@link TypeSystem} to
-   * resolve the names of Type and Features to the actual
-   * {@link org.apache.uima.cas.Type} and {@link org.apache.uima.cas.Feature} objects,
-   * which can then be used during processing.
-   * 
-   * @throws AnnotatorInitializationException  if the annotator cannot
-   *    initialize itself.     
-   * @throws AnnotatorConfigurationException  if the configuration specified 
-   *    for this annotator is invalid.
-   */
-  public void typeSystemInit(TypeSystem aTypeSystem)
-    throws AnnotatorInitializationException, AnnotatorConfigurationException;
+  public void initialize(AnnotatorContext aContext) throws AnnotatorInitializationException,
+                  AnnotatorConfigurationException;
 
   /**
-   * Alerts this annotator that the values of its configuration parameters
-   * or external resources have changed.  This annotator should take appropriate 
-   * action to reconfigure itself.
+   * Informs this annotator that the CAS TypeSystem has changed. The Analysis Engine calls this
+   * method immediately following the call to {@link #initialize(AnnotatorContext)}, and will call
+   * it again whenever the CAS TypeSystem changes.
    * <p>
-   * It is suggested that annotators implement this efficiently, but it is not
-   * required.  Annotators may implement a "dumb" reconfigure by calling
-   * <code>destroy</code> followed by <code>initialize</code> and 
-   * <code>typeSystemInit</code>.
+   * In this method, the Annotator should use the {@link TypeSystem} to resolve the names of Type
+   * and Features to the actual {@link org.apache.uima.cas.Type} and
+   * {@link org.apache.uima.cas.Feature} objects, which can then be used during processing.
    * 
-   * @throws AnnotatorConfigurationException  if the configuration specified 
-   *    for this annotator is invalid.
-   * @throws AnnotatorInitializationException  if the annotator fails to 
-   *    reinitialize itself based on the new configuration.
+   * @throws AnnotatorInitializationException
+   *           if the annotator cannot initialize itself.
+   * @throws AnnotatorConfigurationException
+   *           if the configuration specified for this annotator is invalid.
    */
-  public void reconfigure()
-    throws AnnotatorConfigurationException, AnnotatorInitializationException;
+  public void typeSystemInit(TypeSystem aTypeSystem) throws AnnotatorInitializationException,
+                  AnnotatorConfigurationException;
 
   /**
-   * Frees all resources held by this annotator.  The Analysis Engine
-   * calls this method only once, when it is finished using this annotator.
+   * Alerts this annotator that the values of its configuration parameters or external resources
+   * have changed. This annotator should take appropriate action to reconfigure itself.
+   * <p>
+   * It is suggested that annotators implement this efficiently, but it is not required. Annotators
+   * may implement a "dumb" reconfigure by calling <code>destroy</code> followed by
+   * <code>initialize</code> and <code>typeSystemInit</code>.
+   * 
+   * @throws AnnotatorConfigurationException
+   *           if the configuration specified for this annotator is invalid.
+   * @throws AnnotatorInitializationException
+   *           if the annotator fails to reinitialize itself based on the new configuration.
+   */
+  public void reconfigure() throws AnnotatorConfigurationException,
+                  AnnotatorInitializationException;
+
+  /**
+   * Frees all resources held by this annotator. The Analysis Engine calls this method only once,
+   * when it is finished using this annotator.
    */
   public void destroy();
 }

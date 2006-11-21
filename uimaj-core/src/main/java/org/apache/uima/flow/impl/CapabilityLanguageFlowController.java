@@ -41,13 +41,11 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.Capability;
 
 /**
- * FlowController for the CapabilityLanguageFlow, which uses a linear fow but may 
- * skip some of the AEs in the flow if they do not handle the language
- * of the current document or if their outputs have already been
- * produced by a previous AE in the flow.
+ * FlowController for the CapabilityLanguageFlow, which uses a linear fow but may skip some of the
+ * AEs in the flow if they do not handle the language of the current document or if their outputs
+ * have already been produced by a previous AE in the flow.
  */
-public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
-{
+public class CapabilityLanguageFlowController extends CasFlowController_ImplBase {
   private ArrayList mStaticSequence;
 
   private Map mComponentMetaDataMap;
@@ -55,74 +53,72 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
   private Map mFlowTable;
 
   /**
-   * main language separator e.g  'en' and 'en-US'
+   * main language separator e.g 'en' and 'en-US'
    */
   private static final char LANGUAGE_SEPARATOR = '-';
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.flow.FlowController#initialize(FlowControllerContext)
    */
-  public void initialize(FlowControllerContext aContext) throws ResourceInitializationException
-  {
+  public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     mComponentMetaDataMap = aContext.getAnalysisEngineMetaDataMap();
 
-    //build a list of AnalysisSequenceNodes from the capabilityLanguageFlow 
+    // build a list of AnalysisSequenceNodes from the capabilityLanguageFlow
     mStaticSequence = new ArrayList();
     CapabilityLanguageFlow flowConstraints = (CapabilityLanguageFlow) aContext
-        .getAggregateMetadata().getFlowConstraints();
+                    .getAggregateMetadata().getFlowConstraints();
     String[] flow = flowConstraints.getCapabilityLanguageFlow();
-    for (int i = 0; i < flow.length; i++)
-    {
+    for (int i = 0; i < flow.length; i++) {
       AnalysisEngineMetaData md = (AnalysisEngineMetaData) mComponentMetaDataMap.get(flow[i]);
       mStaticSequence.add(new AnalysisSequenceCapabilityNode(flow[i], md.getCapabilities(), null));
     }
 
-    //compute flow table with the specified capabilities
+    // compute flow table with the specified capabilities
     mFlowTable = computeFlowTable(aContext.getAggregateMetadata().getCapabilities());
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.flow.CasFlowController_ImplBase#computeFlow(org.apache.uima.cas.CAS)
    */
-  public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException
-  {
+  public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
     CapabilityLanguageFlowObject flow = new CapabilityLanguageFlowObject(mFlowTable);
     flow.setCas(aCAS);
     return flow;
   }
 
   /**
-   * method computeFlowTable create the flow table for faster processing. The flow table
-   * inlcudes for all languages in the capabilities the coresponding flow sequence
+   * method computeFlowTable create the flow table for faster processing. The flow table inlcudes
+   * for all languages in the capabilities the coresponding flow sequence
    * 
-   * @param aCapabilities aggregate engine capabilities
+   * @param aCapabilities
+   *          aggregate engine capabilities
    * @return Map - flow table includes all sequences for all languages
    */
-  protected Map computeFlowTable(Capability[] aCapabilities)
-  {
-    //create flowTable
+  protected Map computeFlowTable(Capability[] aCapabilities) {
+    // create flowTable
     Map flowTable = new HashMap();
 
-    //get all languages from the capabilities
+    // get all languages from the capabilities
     HashSet languages = new HashSet();
-    for (int i = 0; i < aCapabilities.length; i++)
-    {
-      //get languages from current capability
+    for (int i = 0; i < aCapabilities.length; i++) {
+      // get languages from current capability
       aCapabilities[i].getLanguagesSupported();
       String language;
-      for (int y = 0; y < aCapabilities[i].getLanguagesSupported().length; y++)
-      {
+      for (int y = 0; y < aCapabilities[i].getLanguagesSupported().length; y++) {
         language = aCapabilities[i].getLanguagesSupported()[y];
         languages.add(language);
       }
     }
 
-    //create flow table with sequences for all languages
+    // create flow table with sequences for all languages
     Iterator it = languages.iterator();
-    while (it.hasNext())
-    {
-      //add sequence for the current language
+    while (it.hasNext()) {
+      // add sequence for the current language
       String language = (String) it.next();
       flowTable.put(language, computeSequence(language, aCapabilities));
     }
@@ -133,123 +129,111 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
   /**
    * method computeSequence creates a capabilityLanguageAnalysisSequence for the given language
    * 
-   * @param language current language
-   * @param aCapabilities output capabilities of the aggregate engine
+   * @param language
+   *          current language
+   * @param aCapabilities
+   *          output capabilities of the aggregate engine
    * 
    * @return List - capabilityLanguageAnalysisSequence for the current language
    */
-  protected List computeSequence(String language, Capability[] aCapabilities)
-  {
+  protected List computeSequence(String language, Capability[] aCapabilities) {
     language = Language.normalize(language);
 
-    //create resultSpec from the current aggregate capabilities
+    // create resultSpec from the current aggregate capabilities
     ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-        .createResultSpecification();
+                    .createResultSpecification();
 
-    if (aCapabilities != null)
-    {
+    if (aCapabilities != null) {
       resultSpec.addCapabilities(aCapabilities);
-    }
-    else
-    {
+    } else {
       return null;
     }
 
-    //create array list for the current sequence
+    // create array list for the current sequence
     List newSequence = new ArrayList();
 
-    //loop pver all annotators that should be called
-    for (int sequenceIndex = 0; sequenceIndex < mStaticSequence.size(); sequenceIndex++)
-    {
-      //get array of ouput capabilities for the current languge from the current result spec
+    // loop pver all annotators that should be called
+    for (int sequenceIndex = 0; sequenceIndex < mStaticSequence.size(); sequenceIndex++) {
+      // get array of ouput capabilities for the current languge from the current result spec
       TypeOrFeature[] ouputCapabilities = resultSpec.getResultTypesAndFeatures(language);
 
-      //strip language extension if available
+      // strip language extension if available
       int index = language.indexOf(LANGUAGE_SEPARATOR);
 
-      //if country extension is available
-      if (index >= 0)
-      {
-        //create HashSet for outputSpec
+      // if country extension is available
+      if (index >= 0) {
+        // create HashSet for outputSpec
         HashSet outputSpec = new HashSet();
 
-        //add language with country extension output capabilities to the outputSpec
-        if (ouputCapabilities.length > 0)
-        {
-          for (int i = 0; i < ouputCapabilities.length; i++)
-          {
+        // add language with country extension output capabilities to the outputSpec
+        if (ouputCapabilities.length > 0) {
+          for (int i = 0; i < ouputCapabilities.length; i++) {
             outputSpec.add(ouputCapabilities[i]);
           }
 
-          //get array of output capabilities only for the language without country extension
+          // get array of output capabilities only for the language without country extension
           ouputCapabilities = resultSpec.getResultTypesAndFeatures(language.substring(0, index));
 
-          //add language output capabilities to the outputSpec
-          for (int i = 0; i < ouputCapabilities.length; i++)
-          {
+          // add language output capabilities to the outputSpec
+          for (int i = 0; i < ouputCapabilities.length; i++) {
             outputSpec.add(ouputCapabilities[i]);
           }
 
-          //convert all output capabilities to a outputCapabilities array
+          // convert all output capabilities to a outputCapabilities array
           ouputCapabilities = new TypeOrFeature[outputSpec.size()];
           outputSpec.toArray(ouputCapabilities);
-        }
-        else
-        //for language with country extension was noting found
+        } else
+        // for language with country extension was noting found
         {
-          //get array of output capabilities with the new main language without country extension
+          // get array of output capabilities with the new main language without country extension
           ouputCapabilities = resultSpec.getResultTypesAndFeatures(language.substring(0, index));
         }
       }
 
-      //current analysis node which contains the current analysis engine
+      // current analysis node which contains the current analysis engine
       AnalysisSequenceCapabilityNode node;
 
-      //result spec for the current analysis engine           
+      // result spec for the current analysis engine
       ResultSpecification currentAnalysisResultSpec = null;
 
-      //flag if current analysis engine should be called or not           
+      // flag if current analysis engine should be called or not
       boolean shouldEngineBeCalled = false;
 
-      //check output capabilites from the current result spec                         
+      // check output capabilites from the current result spec
 
-      //get next analysis engine from the sequence node
+      // get next analysis engine from the sequence node
       node = (AnalysisSequenceCapabilityNode) mStaticSequence.get(sequenceIndex);
 
-      //get capability container from the current analysis engine
+      // get capability container from the current analysis engine
       CapabilityContainer capabilityContainer = node.getCapabilityContainer();
 
-      //create current analysis result spec without any language information
+      // create current analysis result spec without any language information
       currentAnalysisResultSpec = UIMAFramework.getResourceSpecifierFactory()
-          .createResultSpecification();
+                      .createResultSpecification();
 
-      //check if engine should be called - loop over all ouput capabilities of the result spec
-      for (int i = 0; i < ouputCapabilities.length; i++)
-      {
-        //check if current ToF can be produced by the current analysis engine
-        if (capabilityContainer.hasOutputTypeOrFeature(ouputCapabilities[i], language, true))
-        {
+      // check if engine should be called - loop over all ouput capabilities of the result spec
+      for (int i = 0; i < ouputCapabilities.length; i++) {
+        // check if current ToF can be produced by the current analysis engine
+        if (capabilityContainer.hasOutputTypeOrFeature(ouputCapabilities[i], language, true)) {
           currentAnalysisResultSpec.addResultTypeOrFeature(ouputCapabilities[i]);
           shouldEngineBeCalled = true;
 
-          //remove current ToF from the result spec
+          // remove current ToF from the result spec
           resultSpec.removeTypeOrFeature(ouputCapabilities[i]);
         }
       }
-      //skip engine if not output capability match
+      // skip engine if not output capability match
 
-      //check if current engine should be called
-      if (shouldEngineBeCalled == true)
-      {
-        //set result spec for current analysis engine
+      // check if current engine should be called
+      if (shouldEngineBeCalled == true) {
+        // set result spec for current analysis engine
         node.setResultSpec(currentAnalysisResultSpec);
 
-        //add note to the current sequence
+        // add note to the current sequence
         newSequence.add(node.clone());
-      }
-      else
-      //engine should not be called, but add null to the sequence to track that
-      //engine should not be called
+      } else
+      // engine should not be called, but add null to the sequence to track that
+      // engine should not be called
       {
         newSequence.add(null);
       }

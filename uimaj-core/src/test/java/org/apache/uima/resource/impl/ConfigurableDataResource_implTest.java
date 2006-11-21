@@ -42,35 +42,31 @@ import org.apache.uima.resource.metadata.impl.ResourceMetaData_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 /**
- * Tests the DataResource_impl class. 
- * @author Adam Lally 
+ * Tests the DataResource_impl class.
+ * 
+ * @author Adam Lally
  */
-public class ConfigurableDataResource_implTest extends TestCase
-{
+public class ConfigurableDataResource_implTest extends TestCase {
 
   /**
    * Constructor for DataResource_implTest.
+   * 
    * @param arg0
    */
-  public ConfigurableDataResource_implTest(String arg0)
-  {
+  public ConfigurableDataResource_implTest(String arg0) {
     super(arg0);
   }
 
   /**
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception
-  {
+  protected void setUp() throws Exception {
     super.setUp();
   }
 
-  public void testInitialize()
-    throws Exception
-  {
-    try
-    {
-      //create a ConfigurableDataResourceSpecifier
+  public void testInitialize() throws Exception {
+    try {
+      // create a ConfigurableDataResourceSpecifier
       ConfigurableDataResourceSpecifier_impl cspec = new ConfigurableDataResourceSpecifier_impl();
       cspec.setUrl("jdbc:db2:MyDatabase");
       ResourceMetaData md = new ResourceMetaData_impl();
@@ -82,20 +78,19 @@ public class ConfigurableDataResource_implTest extends TestCase
       param.setType("String");
       decls.addConfigurationParameter(param);
       md.setConfigurationParameterDeclarations(decls);
-      
-      //initialize a DataResource
+
+      // initialize a DataResource
       ConfigurableDataResource_impl cdr = new ConfigurableDataResource_impl();
       cdr.initialize(cspec, Collections.EMPTY_MAP);
       assertEquals(new URI("jdbc:db2:MyDatabase"), cdr.getUri());
       assertEquals("foo", cdr.getMetaData().getName());
-      ConfigurationParameter param0 = cdr.getMetaData().getConfigurationParameterDeclarations().getConfigurationParameters()[0];
+      ConfigurationParameter param0 = cdr.getMetaData().getConfigurationParameterDeclarations()
+                      .getConfigurationParameters()[0];
       assertEquals("param", param0.getName());
       assertEquals("String", param0.getType());
 
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
     }
-		catch (Exception e)
-		{
-			JUnitExtension.handleException(e);
-		}
   }
 }

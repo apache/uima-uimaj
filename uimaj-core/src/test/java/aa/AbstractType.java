@@ -19,69 +19,90 @@
 
 package aa;
 
-import org.apache.uima.jcas.impl.JCas; 
+import org.apache.uima.jcas.impl.JCas;
 import org.apache.uima.jcas.cas.TOP_Type;
 
 import org.apache.uima.jcas.cas.TOP;
 
-
-/** 
- * Updated by JCasGen Tue Feb 21 14:56:04 EST 2006
- * XML source: C:/a/Eclipse/3.1/j4/jedii_jcas_tests/testTypes.xml
- * @generated */
+/**
+ * Updated by JCasGen Tue Feb 21 14:56:04 EST 2006 XML source:
+ * C:/a/Eclipse/3.1/j4/jedii_jcas_tests/testTypes.xml
+ * 
+ * @generated
+ */
 public class AbstractType extends TOP {
-  /** @generated
-   * @ordered 
+  /**
+   * @generated
+   * @ordered
    */
   public final static int typeIndexID = JCas.getNextIndex();
-  /** @generated
-   * @ordered 
+
+  /**
+   * @generated
+   * @ordered
    */
   public final static int type = typeIndexID;
-  /** @generated  */
-  public              int getTypeIndexID() {return typeIndexID;}
- 
-  /** Never called.  Disable default constructor
-   * @generated */
-  protected AbstractType() {}
-    
-  /** Internal - constructor used by generator 
-   * @generated */
+
+  /** @generated */
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  /**
+   * Never called. Disable default constructor
+   * 
+   * @generated
+   */
+  protected AbstractType() {
+  }
+
+  /**
+   * Internal - constructor used by generator
+   * 
+   * @generated
+   */
   public AbstractType(int addr, TOP_Type type) {
     super(addr, type);
     readObject();
   }
-  
+
   /** @generated */
   public AbstractType(JCas jcas) {
     super(jcas);
-    readObject();   
-  } 
-
-  /** <!-- begin-user-doc -->
-    * Write your own initialization here
-    * <!-- end-user-doc -->
-  @generated modifiable */
-  private void readObject() {}
-     
- 
-    
-  //*--------------*
-  //* Feature: abstractInt
-
-  /** getter for abstractInt - gets 
-   * @generated */
-  public int getAbstractInt() {
-    if (AbstractType_Type.featOkTst && ((AbstractType_Type)jcasType).casFeat_abstractInt == null)
-      JCas.throwFeatMissing("abstractInt", "aa.AbstractType");
-    return jcasType.ll_cas.ll_getIntValue(addr, ((AbstractType_Type)jcasType).casFeatCode_abstractInt);}
-    
-  /** setter for abstractInt - sets  
-   * @generated */
-  public void setAbstractInt(int v) {
-    if (AbstractType_Type.featOkTst && ((AbstractType_Type)jcasType).casFeat_abstractInt == null)
-      JCas.throwFeatMissing("abstractInt", "aa.AbstractType");
-    jcasType.ll_cas.ll_setIntValue(addr, ((AbstractType_Type)jcasType).casFeatCode_abstractInt, v);}    
+    readObject();
   }
 
-    
+  /**
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
+   * 
+   * @generated modifiable
+   */
+  private void readObject() {
+  }
+
+  // *--------------*
+  // * Feature: abstractInt
+
+  /**
+   * getter for abstractInt - gets
+   * 
+   * @generated
+   */
+  public int getAbstractInt() {
+    if (AbstractType_Type.featOkTst && ((AbstractType_Type) jcasType).casFeat_abstractInt == null)
+      JCas.throwFeatMissing("abstractInt", "aa.AbstractType");
+    return jcasType.ll_cas.ll_getIntValue(addr,
+                    ((AbstractType_Type) jcasType).casFeatCode_abstractInt);
+  }
+
+  /**
+   * setter for abstractInt - sets
+   * 
+   * @generated
+   */
+  public void setAbstractInt(int v) {
+    if (AbstractType_Type.featOkTst && ((AbstractType_Type) jcasType).casFeat_abstractInt == null)
+      JCas.throwFeatMissing("abstractInt", "aa.AbstractType");
+    jcasType.ll_cas.ll_setIntValue(addr, ((AbstractType_Type) jcasType).casFeatCode_abstractInt, v);
+  }
+}

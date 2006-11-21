@@ -29,66 +29,63 @@ import org.apache.uima.cas.text.TCASMgr;
 
 public class Serialization {
 
-    public static CASSerializer serializeCAS(CAS cas) {
-        CASSerializer ser = new CASSerializer();
-        ser.addCAS((CASImpl) cas);
-        return ser;
-    }
+  public static CASSerializer serializeCAS(CAS cas) {
+    CASSerializer ser = new CASSerializer();
+    ser.addCAS((CASImpl) cas);
+    return ser;
+  }
 
-    public static CASSerializer serializeNoMetaData(CAS cas) {
-        CASSerializer ser = new CASSerializer();
-        ser.addNoMetaData((CASImpl) cas);
-        return ser;
-    }
+  public static CASSerializer serializeNoMetaData(CAS cas) {
+    CASSerializer ser = new CASSerializer();
+    ser.addNoMetaData((CASImpl) cas);
+    return ser;
+  }
 
-    public static CASMgrSerializer serializeCASMgr(CASMgr casMgr) {
-        CASMgrSerializer ser = new CASMgrSerializer();
-        ser.addTypeSystem((TypeSystemImpl) casMgr.getCAS().getTypeSystem());
-        ser.addIndexRepository((FSIndexRepositoryImpl) ((CASImpl) casMgr.getCAS()).getBaseIndexRepository());
-        return ser;
-    }
+  public static CASMgrSerializer serializeCASMgr(CASMgr casMgr) {
+    CASMgrSerializer ser = new CASMgrSerializer();
+    ser.addTypeSystem((TypeSystemImpl) casMgr.getCAS().getTypeSystem());
+    ser.addIndexRepository((FSIndexRepositoryImpl) ((CASImpl) casMgr.getCAS())
+                    .getBaseIndexRepository());
+    return ser;
+  }
 
-    public static CASCompleteSerializer serializeCASComplete(CASMgr casMgr) {
-        return new CASCompleteSerializer((CASImpl) casMgr);
-    }
+  public static CASCompleteSerializer serializeCASComplete(CASMgr casMgr) {
+    return new CASCompleteSerializer((CASImpl) casMgr);
+  }
 
-    public static void deserializeCASComplete(CASCompleteSerializer casCompSer,
-            CASMgr casMgr) {
-        ((CASImpl) casMgr).reinit(casCompSer);
-    }
+  public static void deserializeCASComplete(CASCompleteSerializer casCompSer, CASMgr casMgr) {
+    ((CASImpl) casMgr).reinit(casCompSer);
+  }
 
-    public static void deserializeTCASComplete(
-            CASCompleteSerializer casCompSer, CASMgr casMgr) {
-        ((TCASImpl) casMgr).reinit(casCompSer);
-    }
+  public static void deserializeTCASComplete(CASCompleteSerializer casCompSer, CASMgr casMgr) {
+    ((TCASImpl) casMgr).reinit(casCompSer);
+  }
 
-    public static CASMgr createCASMgr(CASMgrSerializer ser) {
-        return new CASImpl(ser);
-    }
+  public static CASMgr createCASMgr(CASMgrSerializer ser) {
+    return new CASImpl(ser);
+  }
 
-//    public static TCASMgr createTCASMgr(CASMgrSerializer ser) {
-//        return new TCASImpl(ser);
-//    }
+  // public static TCASMgr createTCASMgr(CASMgrSerializer ser) {
+  // return new TCASImpl(ser);
+  // }
 
-    public static CAS createCAS(CASMgr casMgr, CASSerializer casSer) {
-        ((CASImpl) casMgr).reinit(casSer);
-        return casMgr.getCAS();
-    }
+  public static CAS createCAS(CASMgr casMgr, CASSerializer casSer) {
+    ((CASImpl) casMgr).reinit(casSer);
+    return casMgr.getCAS();
+  }
 
-    public static TCAS createTCAS(TCASMgr tcasMgr, CASSerializer casSer) {
-        ((TCASImpl) tcasMgr).reinit(casSer);
-        return tcasMgr.getTCAS();
-    }
+  public static TCAS createTCAS(TCASMgr tcasMgr, CASSerializer casSer) {
+    ((TCASImpl) tcasMgr).reinit(casSer);
+    return tcasMgr.getTCAS();
+  }
 
-    public static void serializeCAS(CAS cas, OutputStream ostream) {
-        CASSerializer ser = new CASSerializer();
-        ser.addCAS((CASImpl) cas, ostream);        
-    }
-    
-    public static void deserializeCAS(CAS cas, InputStream istream) {
-        ((CASImpl) cas).reinit(istream);        
-    }
+  public static void serializeCAS(CAS cas, OutputStream ostream) {
+    CASSerializer ser = new CASSerializer();
+    ser.addCAS((CASImpl) cas, ostream);
+  }
 
-    
-    
+  public static void deserializeCAS(CAS cas, InputStream istream) {
+    ((CASImpl) cas).reinit(istream);
+  }
+
 }

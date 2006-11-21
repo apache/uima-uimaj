@@ -35,75 +35,64 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.util.ProcessTrace;
 
 /**
- * Base class for CAS Consumers, which developers should extend with their
- * own CAS Consumer implementation classes.
+ * Base class for CAS Consumers, which developers should extend with their own CAS Consumer
+ * implementation classes.
  * 
  * 
  */
-public abstract class CasConsumer_ImplBase extends ConfigurableResource_ImplBase
-    implements CasConsumer
-{
+public abstract class CasConsumer_ImplBase extends ConfigurableResource_ImplBase implements
+                CasConsumer {
   /**
-   * Called by the framework to initialize this CAS Consumer.  Subclasses
-   * should NOT override this method; instead they should override 
-   * the zero-argument {@link #initialize()} method and access metadata via
-   * the {@link #getProcessingResourceMetaData()} method.  This method is 
-   * non-final only for legacy reasons.
+   * Called by the framework to initialize this CAS Consumer. Subclasses should NOT override this
+   * method; instead they should override the zero-argument {@link #initialize()} method and access
+   * metadata via the {@link #getProcessingResourceMetaData()} method. This method is non-final only
+   * for legacy reasons.
    * <p>
-   * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier, java.util.Map)
+   * 
+   * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier,
+   *      java.util.Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-    throws ResourceInitializationException
-  {
-    //aSpecifier must be a CasConsumerDescription
-    if (aSpecifier instanceof ResourceCreationSpecifier)
-    {
-    	//do framework intitialiation
-    	if (super.initialize(aSpecifier, aAdditionalParams))
-    	{
-    	  //do user initialization    	
+                  throws ResourceInitializationException {
+    // aSpecifier must be a CasConsumerDescription
+    if (aSpecifier instanceof ResourceCreationSpecifier) {
+      // do framework intitialiation
+      if (super.initialize(aSpecifier, aAdditionalParams)) {
+        // do user initialization
         initialize();
         return true;
-    	}  
+      }
     }
-    return false;		  
+    return false;
   }
 
   /**
-   * This method is called during initialization, and does nothing by default.
-   * Subclasses should override it to perform one-time startup logic.
-   *
-   * @throws ResourceInitializationException if a failure occurs during
-   *    initialization.
+   * This method is called during initialization, and does nothing by default. Subclasses should
+   * override it to perform one-time startup logic.
+   * 
+   * @throws ResourceInitializationException
+   *           if a failure occurs during initialization.
    */
-  public void initialize()
-    throws ResourceInitializationException
-  {
+  public void initialize() throws ResourceInitializationException {
   }
-  
+
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
-  public void destroy()
-  {
+  public void destroy() {
   }
 
-	
   /**
    * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#typeSystemInit(org.apache.uima.cas.TypeSystem)
    */
-  public void typeSystemInit(TypeSystem arg0)
-    throws ResourceInitializationException
-  {
+  public void typeSystemInit(TypeSystem arg0) throws ResourceInitializationException {
   }
 
   /**
    * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#processCas(org.apache.uima.cas.CAS[])
    */
-  public void processCas(CAS[] aCASes) throws ResourceProcessException
-  {
-    for (int i = 0; i < aCASes.length; i++)
-    {
+  public void processCas(CAS[] aCASes) throws ResourceProcessException {
+    for (int i = 0; i < aCASes.length; i++) {
       processCas(aCASes[i]);
     }
   }
@@ -111,17 +100,16 @@ public abstract class CasConsumer_ImplBase extends ConfigurableResource_ImplBase
   /**
    * @see org.apache.uima.collection.base_cpm.CasProcessor#isStateless()
    */
-  public boolean isStateless()
-  {
+  public boolean isStateless() {
     return false;
   }
 
   /**
-   * Returns true.  By contract, CAS Consumers must be read only.
+   * Returns true. By contract, CAS Consumers must be read only.
+   * 
    * @see org.apache.uima.collection.base_cpm.CasProcessor#isReadOnly()
    */
-  public final boolean isReadOnly()
-  {
+  public final boolean isReadOnly() {
     OperationalProperties opProps = getProcessingResourceMetaData().getOperationalProperties();
     return opProps == null ? true : !opProps.getModifiesCas();
   }
@@ -129,48 +117,40 @@ public abstract class CasConsumer_ImplBase extends ConfigurableResource_ImplBase
   /**
    * @see org.apache.uima.collection.base_cpm.CasProcessor#getProcessingResourceMetaData()
    */
-  public ProcessingResourceMetaData getProcessingResourceMetaData()
-  {
-    return (ProcessingResourceMetaData)getMetaData();
+  public ProcessingResourceMetaData getProcessingResourceMetaData() {
+    return (ProcessingResourceMetaData) getMetaData();
   }
-	
-	
+
   /**
    * @see org.apache.uima.collection.base_cpm.CasProcessor#batchProcessComplete(org.apache.uima.util.ProcessTrace)
    */
-  public void batchProcessComplete(ProcessTrace arg0)
-    throws ResourceProcessException, IOException
-  {
+  public void batchProcessComplete(ProcessTrace arg0) throws ResourceProcessException, IOException {
 
   }
 
   /**
    * @see org.apache.uima.collection.base_cpm.CasProcessor#collectionProcessComplete(org.apache.uima.util.ProcessTrace)
    */
-  public void collectionProcessComplete(ProcessTrace arg0)
-    throws ResourceProcessException, IOException
-  {
+  public void collectionProcessComplete(ProcessTrace arg0) throws ResourceProcessException,
+                  IOException {
 
   }
-  
+
   /**
-   * Notifies this CAS Consumer that its configuration parameter settings have
-   * been changed.  By default this method just calls {@link #destroy()} followed
-   * by {@link #initialize()}.  CAS Consumers that have expensive initialization
-   * that does not need to be redone whenever configuration parameters change
-   * may wish to override this method to provide a more efficient implementation.
+   * Notifies this CAS Consumer that its configuration parameter settings have been changed. By
+   * default this method just calls {@link #destroy()} followed by {@link #initialize()}. CAS
+   * Consumers that have expensive initialization that does not need to be redone whenever
+   * configuration parameters change may wish to override this method to provide a more efficient
+   * implementation.
+   * 
    * @see org.apache.uima.resource.ConfigurableResource_ImplBase#reconfigure()
    */
-  public void reconfigure() throws ResourceConfigurationException
-  {
+  public void reconfigure() throws ResourceConfigurationException {
     super.reconfigure();
     destroy();
-    try
-    {
+    try {
       initialize();
-    }
-    catch (ResourceInitializationException e)
-    {
+    } catch (ResourceInitializationException e) {
       throw new ResourceConfigurationException(e);
     }
   }

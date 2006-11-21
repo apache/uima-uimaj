@@ -22,50 +22,52 @@ package org.apache.uima.collection.metadata;
 import org.apache.uima.resource.metadata.MetaDataObject;
 
 /**
- * An object that holds configuration that is part of the CPE descriptor. Provides the
- * means of setting descriptor path containing CasInitializer configuration
- *  
+ * An object that holds configuration that is part of the CPE descriptor. Provides the means of
+ * setting descriptor path containing CasInitializer configuration
+ * 
  * 
  * @deprecated As of v2.0 CAS Initializers are deprecated.
  */
-public interface CpeCollectionReaderCasInitializer extends MetaDataObject
-{
-	/**
-	 * Sets descriptor path containing configuration for the CasInitializer
-	 * 
-	 * @param aDescriptor - descriptor path
-	 */
-	public void setDescriptor( CpeComponentDescriptor aDescriptor );
-	/**
-	 * Returns {@link org.apache.uima.collection.metadata.CpeComponentDescriptor} containing
-	 * CasInitializer descriptor path.
-	 * 
-	 * @return {@link org.apache.uima.collection.metadata.CpeComponentDescriptor}
-	 */
-	public CpeComponentDescriptor getDescriptor();
-    
-    /**
-     * Returns {@link org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings} object
-     * containing overrides to parameter settings for this CasInitializer.
-     * 
-     * @return - object containing parameter setting overrides 
-     */
-    public CasProcessorConfigurationParameterSettings getConfigurationParameterSettings();    
+public interface CpeCollectionReaderCasInitializer extends MetaDataObject {
+  /**
+   * Sets descriptor path containing configuration for the CasInitializer
+   * 
+   * @param aDescriptor -
+   *          descriptor path
+   */
+  public void setDescriptor(CpeComponentDescriptor aDescriptor);
 
-    /**
-     * Sets the {@link org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings} object
-     * containing overrides to parameter settings for this CasInitializer.
-     * 
-     * @param aSettings object containing parameter setting overrides 
-     */
-    public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aSettings)
-      throws CpeDescriptorException; 
-      
-	public CpeSofaMappings getSofaNameMappings();
+  /**
+   * Returns {@link org.apache.uima.collection.metadata.CpeComponentDescriptor} containing
+   * CasInitializer descriptor path.
+   * 
+   * @return {@link org.apache.uima.collection.metadata.CpeComponentDescriptor}
+   */
+  public CpeComponentDescriptor getDescriptor();
 
-	/**
-	 * @param mappings
-	 */
-	public void setSofaNameMappings(CpeSofaMappings mappings);
-    
+  /**
+   * Returns {@link org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings}
+   * object containing overrides to parameter settings for this CasInitializer.
+   * 
+   * @return - object containing parameter setting overrides
+   */
+  public CasProcessorConfigurationParameterSettings getConfigurationParameterSettings();
+
+  /**
+   * Sets the {@link org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings}
+   * object containing overrides to parameter settings for this CasInitializer.
+   * 
+   * @param aSettings
+   *          object containing parameter setting overrides
+   */
+  public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aSettings)
+                  throws CpeDescriptorException;
+
+  public CpeSofaMappings getSofaNameMappings();
+
+  /**
+   * @param mappings
+   */
+  public void setSofaNameMappings(CpeSofaMappings mappings);
+
 }

@@ -21,60 +21,70 @@ package org.apache.uima.resource;
 
 /**
  * 
- *
+ * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public interface MailMessagingSpecifier extends MessagingSpecifier
-{
-   	
-	/**
-	 * Returns the hostImapPort.
-	 * @return int
-	 */
-	public int getHostImapPort();
+public interface MailMessagingSpecifier extends MessagingSpecifier {
 
-	/**
-	 * Returns the hostSmtpPort.
-	 * @return int
-	 */
-	public int getHostSmtpPort();
+  /**
+   * Returns the hostImapPort.
+   * 
+   * @return int
+   */
+  public int getHostImapPort();
 
-	/**
-	 * Returns the targetImapPort.
-	 * @return int
-	 */
-	public int getTargetImapPort();
+  /**
+   * Returns the hostSmtpPort.
+   * 
+   * @return int
+   */
+  public int getHostSmtpPort();
 
-	/**
-	 * Returns the targetSmtpPort.
-	 * @return int
-	 */
-	public int getTargetSmtpPort();
+  /**
+   * Returns the targetImapPort.
+   * 
+   * @return int
+   */
+  public int getTargetImapPort();
 
-	/**
-	 * Sets the hostImapPort.
-	 * @param hostImapPort The hostImapPort to set
-	 */
-	public void setHostImapPort(int hostImapPort);
+  /**
+   * Returns the targetSmtpPort.
+   * 
+   * @return int
+   */
+  public int getTargetSmtpPort();
 
-	/**
-	 * Sets the hostSmtpPort.
-	 * @param hostSmtpPort The hostSmtpPort to set
-	 */
-	public void setHostSmtpPort(int hostSmtpPort);
+  /**
+   * Sets the hostImapPort.
+   * 
+   * @param hostImapPort
+   *          The hostImapPort to set
+   */
+  public void setHostImapPort(int hostImapPort);
 
-	/**
-	 * Sets the targetImapPort.
-	 * @param targetImapPort The targetImapPort to set
-	 */
-	public void setTargetImapPort(int targetImapPort);
+  /**
+   * Sets the hostSmtpPort.
+   * 
+   * @param hostSmtpPort
+   *          The hostSmtpPort to set
+   */
+  public void setHostSmtpPort(int hostSmtpPort);
 
-	/**
-	 * Sets the targetSmtpPort.
-	 * @param targetSmtpPort The targetSmtpPort to set
-	 */
-	public void setTargetSmtpPort(int targetSmtpPort);
+  /**
+   * Sets the targetImapPort.
+   * 
+   * @param targetImapPort
+   *          The targetImapPort to set
+   */
+  public void setTargetImapPort(int targetImapPort);
+
+  /**
+   * Sets the targetSmtpPort.
+   * 
+   * @param targetSmtpPort
+   *          The targetSmtpPort to set
+   */
+  public void setTargetSmtpPort(int targetSmtpPort);
 }

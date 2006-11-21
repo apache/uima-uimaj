@@ -24,11 +24,16 @@ import org.apache.uima.jcas.impl.JCas;
 public class EmptyFSList extends FSList {
 
   public final static int typeIndexID = JCas.getNextIndex();
-  public final static int type = typeIndexID;
-  public           int getTypeIndexID() {return typeIndexID;}
 
-  // Never called.  Disable default constructor
-  protected EmptyFSList() {}
+  public final static int type = typeIndexID;
+
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  // Never called. Disable default constructor
+  protected EmptyFSList() {
+  }
 
   /** Internal - Constructor used by generator */
   public EmptyFSList(int addr, TOP_Type type) {

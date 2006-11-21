@@ -19,22 +19,21 @@
 
 package org.apache.uima.collection.metadata;
 
-public interface CpeTimer
-{
-	/**
-	 * Plug-in a custom timer class to be used for measuring performance.
-	 * 
-	 * @param aTimerClass - name of a timer class
-	 * 
-	 * @throws CpeDescriptorException
-	 */
-	public void set( String aTimerClass )  
-		throws CpeDescriptorException;
-	
-	/**
-	 * Return a name of the timer class 
-	 * 
-	 * @return - class as string
-	 */
-	public String get();
+public interface CpeTimer {
+  /**
+   * Plug-in a custom timer class to be used for measuring performance.
+   * 
+   * @param aTimerClass -
+   *          name of a timer class
+   * 
+   * @throws CpeDescriptorException
+   */
+  public void set(String aTimerClass) throws CpeDescriptorException;
+
+  /**
+   * Return a name of the timer class
+   * 
+   * @return - class as string
+   */
+  public String get();
 }

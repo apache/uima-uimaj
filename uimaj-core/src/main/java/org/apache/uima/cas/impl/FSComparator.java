@@ -21,19 +21,24 @@ package org.apache.uima.cas.impl;
 
 import org.apache.uima.cas.FeatureStructure;
 
-/** Interface to compare two feature structures.
- *  
- *  
- *  @version $Revision: 1.1 $
+/**
+ * Interface to compare two feature structures.
+ * 
+ * 
+ * @version $Revision: 1.1 $
  */
 public interface FSComparator {
 
-  /** Compare two FSs.
-   *  @param fs1 First feature structure.
-   *  @param fs2 Second feature structure.
-   *  @return <code>-1</code>, if <code>fs1</code> is "smaller" than <code>fs2</code>;
-   *    <code>1</code>, if <code>fs2</code> is smaller than <code>fs1</code>; and <code>0</code>,
-   *    if <code>fs1</code> equals <code>fs2</code>.
+  /**
+   * Compare two FSs.
+   * 
+   * @param fs1
+   *          First feature structure.
+   * @param fs2
+   *          Second feature structure.
+   * @return <code>-1</code>, if <code>fs1</code> is "smaller" than <code>fs2</code>;
+   *         <code>1</code>, if <code>fs2</code> is smaller than <code>fs1</code>; and
+   *         <code>0</code>, if <code>fs1</code> equals <code>fs2</code>.
    */
   int compare(FeatureStructure fs1, FeatureStructure fs2);
 

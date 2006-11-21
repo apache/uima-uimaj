@@ -20,15 +20,13 @@
 package org.apache.uima.resource;
 
 /**
- * A <code>ResourceServiceSpecifier</code> is a type of
- * <code>ResourceSpecifier</code> that contains information that can be used
- * to locate an existing resource available as a service.
+ * A <code>ResourceServiceSpecifier</code> is a type of <code>ResourceSpecifier</code> that
+ * contains information that can be used to locate an existing resource available as a service.
  * <p>
- * This interface itself does nothing.  It serves as a common parent for
- * different types of Resource Service Specifiers.
- *    
+ * This interface itself does nothing. It serves as a common parent for different types of Resource
+ * Service Specifiers.
+ * 
  * 
  */
-public interface ResourceServiceSpecifier extends ResourceSpecifier
-{
+public interface ResourceServiceSpecifier extends ResourceSpecifier {
 }

@@ -20,64 +20,56 @@
 package org.apache.uima.util;
 
 /**
- * Progress statistics for a process.  This is represented by an amount
- * completed, a total amount (if known), and a unit.  There are some
- * predefined unit types ({@link #BYTES}, {@link #ENTITIES}), but any unit 
- * can be used.
- *   
+ * Progress statistics for a process. This is represented by an amount completed, a total amount (if
+ * known), and a unit. There are some predefined unit types ({@link #BYTES}, {@link #ENTITIES}),
+ * but any unit can be used.
+ * 
  * 
  */
-public interface Progress extends java.io.Serializable
-{
-  
+public interface Progress extends java.io.Serializable {
+
   /**
    * The amount completed, in terms of units specified by {@link #getUnit()}.
    * 
    * @return the amount completed
    */
   public long getCompleted();
-  
 
   /**
-   * The total amount being processed, in terms of units specified by 
-   * {@link #getUnit()}.  For some processes, this information may not be
-   * available - in these cases, -1 will be returned.
+   * The total amount being processed, in terms of units specified by {@link #getUnit()}. For some
+   * processes, this information may not be available - in these cases, -1 will be returned.
    * 
    * @return the total amount, -1 if not known
    */
   public long getTotal();
 
-
   /**
-   * The unit type represented by the {@link #getCompleted()} and
-   * {@link #getTotal()} numbers.  There are some
-   * predefined unit types ({@link #BYTES}, {@link #ENTITIES}), but any unit 
-   * can be used.
+   * The unit type represented by the {@link #getCompleted()} and {@link #getTotal()} numbers. There
+   * are some predefined unit types ({@link #BYTES}, {@link #ENTITIES}), but any unit can be
+   * used.
    * 
    * @return the unit
-   */ 
+   */
   public String getUnit();
 
   /**
-   * Returns true if the progress staistics are approximate, for example 
-   * if the total number of entities in the collection is not known.
+   * Returns true if the progress staistics are approximate, for example if the total number of
+   * entities in the collection is not known.
    * 
    * @return true if the statistics are approximate, false if they are exact
-   */   
-  public boolean isApproximate() ;
+   */
+  public boolean isApproximate();
 
   /**
-   * The predefined unit type "entities".  An entity is the thing being
-   * processed, for example a document.  When this unit is used, the
-   * amount completed and total amount represent a number of entities.  
-   */ 
+   * The predefined unit type "entities". An entity is the thing being processed, for example a
+   * document. When this unit is used, the amount completed and total amount represent a number of
+   * entities.
+   */
   public String ENTITIES = "entities";
-  
 
   /**
-   * The predefined unit type "bytes".  When this unit is used, the
-   * amount completed and total amount represent the size of the data in
-   * bytes.  
-   */   
+   * The predefined unit type "bytes". When this unit is used, the amount completed and total amount
+   * represent the size of the data in bytes.
+   */
   public String BYTES = "bytes";
 }

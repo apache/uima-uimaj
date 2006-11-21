@@ -18,6 +18,7 @@
  */
 
 package org.apache.uima.cas.test;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -55,35 +56,54 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.TestPropertyReader;
 import org.apache.uima.util.CasCreationUtils;
 
-
-/** Class comment for TokenizerTest.java goes here.
- *
- *  @author Thilo Goetz 
+/**
+ * Class comment for TokenizerTest.java goes here.
+ * 
+ * @author Thilo Goetz
  */
 public class SerializationReinitTest extends TestCase {
 
   public static final String TOKEN_TYPE = "Token";
+
   public static final String TOKEN_TYPE_FEAT = "type";
-  public static final String TOKEN_TYPE_FEAT_Q =
-    TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR + TOKEN_TYPE_FEAT;
+
+  public static final String TOKEN_TYPE_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
+                  + TOKEN_TYPE_FEAT;
+
   public static final String TOKEN_TYPE_TYPE = "TokenType";
+
   public static final String WORD_TYPE = "Word";
+
   public static final String SEP_TYPE = "Separator";
+
   public static final String EOS_TYPE = "EndOfSentence";
+
   public static final String SENT_TYPE = "Sentence";
+
   public static final String STRING_SUBTYPE_1 = "StringSubtype1";
-  public static final String [] STR_1_VALS = { "test1", "test2" };
+
+  public static final String[] STR_1_VALS = { "test1", "test2" };
 
   private TCASMgr casMgr;
+
   private TCAS cas;
+
   private Type wordType;
+
   private Type separatorType;
+
   private Type eosType;
+
   private Type tokenType;
-  private Feature tokenTypeFeature;  
+
+  private Feature tokenTypeFeature;
+
   private Type sentenceType;
+
   private Feature startFeature;
+
   private Feature endFeature;
+
   private Type strSub1;
 
   public SerializationReinitTest(String arg) {
@@ -100,7 +120,7 @@ public class SerializationReinitTest extends TestCase {
 
     TypeSystem ts = cas.getTypeSystem();
     wordType = ts.getType(WORD_TYPE);
-    //assert(wordType != null);
+    // assert(wordType != null);
     separatorType = ts.getType(SEP_TYPE);
     eosType = ts.getType(EOS_TYPE);
     tokenType = ts.getType(TOKEN_TYPE);
@@ -111,44 +131,41 @@ public class SerializationReinitTest extends TestCase {
     strSub1 = ts.getType(STRING_SUBTYPE_1);
     assertTrue(strSub1 != null);
   }
- 
-  public void tearDown () {
-  	casMgr = null;
-  	cas = null;
-		wordType = null;
-		//assert(wordType != null);
-		separatorType = null;
-		eosType = null;
-		tokenType = null;
-		tokenTypeFeature = null;
-		startFeature = null;
-		endFeature = null;
-		sentenceType = null;
-		strSub1 = null;
+
+  public void tearDown() {
+    casMgr = null;
+    cas = null;
+    wordType = null;
+    // assert(wordType != null);
+    separatorType = null;
+    eosType = null;
+    tokenType = null;
+    tokenTypeFeature = null;
+    startFeature = null;
+    endFeature = null;
+    sentenceType = null;
+    strSub1 = null;
   }
 
   // Initialize the first CAS.
   private static TCASMgr initCAS() throws TCASException {
     // Create an initial CASMgr from the factory.
-//    CASMgr cas = CASFactory.createCAS();
-    //assert(tsa != null);
-    // Create a TCASMgr.  Ensures existence of AnnotationFS type.
-	//    TCASMgr tcas = TCASFactory.createTCAS();
+    // CASMgr cas = CASFactory.createCAS();
+    // assert(tsa != null);
+    // Create a TCASMgr. Ensures existence of AnnotationFS type.
+    // TCASMgr tcas = TCASFactory.createTCAS();
     CASMgr aCas = CASFactory.createCAS();
-	try
-		{
-			CasCreationUtils.setupTypeSystem(aCas, (TypeSystemDescription) null);
-		}
-	catch (ResourceInitializationException e)
-		{
-			e.printStackTrace();
-		}
+    try {
+      CasCreationUtils.setupTypeSystem(aCas, (TypeSystemDescription) null);
+    } catch (ResourceInitializationException e) {
+      e.printStackTrace();
+    }
     // Create a writable type system.
     TypeSystemMgr tsa = aCas.getTypeSystemMgr();
     // Add new types and features.
     Type topType = tsa.getTopType();
     Type annotType = tsa.getType(TCAS.TYPE_NAME_ANNOTATION);
-    //assert(annotType != null);
+    // assert(annotType != null);
     tsa.addType(SENT_TYPE, annotType);
     Type tokenType = tsa.addType(TOKEN_TYPE, annotType);
     Type tokenTypeType = tsa.addType(TOKEN_TYPE_TYPE, topType);
@@ -158,27 +175,24 @@ public class SerializationReinitTest extends TestCase {
     tsa.addFeature(TOKEN_TYPE_FEAT, tokenType, tokenTypeType);
     tsa.addStringSubtype(STRING_SUBTYPE_1, STR_1_VALS);
     // Commit the type system.
-    ((CASImpl)aCas).commitTypeSystem();
-    //assert(tsa.isCommitted());
-	//    // Create the TCAS indexes.
-	//    tcas.initTCASIndexes();
-	// Create the Base indexes.
-	try
-		{
-			aCas.initCASIndexes();
-		}
-	catch (CASException e)
-		{
-			e.printStackTrace();
-		}
+    ((CASImpl) aCas).commitTypeSystem();
+    // assert(tsa.isCommitted());
+    // // Create the TCAS indexes.
+    // tcas.initTCASIndexes();
+    // Create the Base indexes.
+    try {
+      aCas.initCASIndexes();
+    } catch (CASException e) {
+      e.printStackTrace();
+    }
 
     // Commit the index repository.
     aCas.getIndexRepositoryMgr().commit();
-    //assert(cas.getIndexRepositoryMgr().isCommitted());
+    // assert(cas.getIndexRepositoryMgr().isCommitted());
 
-	//Create the default text Sofa and return TCAS view
-	return (TCASMgr)aCas.getCAS().getTCAS();
-  }  
+    // Create the default text Sofa and return TCAS view
+    return (TCASMgr) aCas.getCAS().getTCAS();
+  }
 
   public void testReset() {
     cas.reset();
@@ -196,115 +210,105 @@ public class SerializationReinitTest extends TestCase {
   }
 
   // Tokenize text.
-	private void tokenize()
-		throws Exception 
-	{
-//    System.out.println("Tokenizing text.");
+  private void tokenize() throws Exception {
+    // System.out.println("Tokenizing text.");
 
-		// Create FSs for the token types.
-		FeatureStructure wordFS = cas.createFS(wordType);
-		FeatureStructure sepFS = cas.createFS(separatorType);
-		FeatureStructure eosFS = cas.createFS(eosType);
+    // Create FSs for the token types.
+    FeatureStructure wordFS = cas.createFS(wordType);
+    FeatureStructure sepFS = cas.createFS(separatorType);
+    FeatureStructure eosFS = cas.createFS(eosType);
 
     String text = cas.getDocumentText();
-		TextStringTokenizer tokenizer = new TextStringTokenizer(text);
-		tokenizer.setSeparators("/-*&@");
-		tokenizer.addWhitespaceChars(",");
-		tokenizer.setEndOfSentenceChars(".!?");
-		tokenizer.setShowWhitespace(false);
-		int tokenTypeCode;
-		int wordCounter = 0;
-		int sepCounter = 0;
-		int endOfSentenceCounter = 0;
-		AnnotationFS tokenAnnot;
-		while (tokenizer.isValid()) {
-			tokenAnnot =
-				cas.createAnnotation(
-					tokenType,
-					tokenizer.getTokenStart(),
-					tokenizer.getTokenEnd());
-			tokenTypeCode = tokenizer.getTokenType();
-			switch (tokenTypeCode) {
-				case TextStringTokenizer.EOS :
-					{
-						++endOfSentenceCounter;
-						tokenAnnot.setFeatureValue(tokenTypeFeature, eosFS);
-						break;
-					}
-				case TextStringTokenizer.SEP :
-					{
-						++sepCounter;
-						tokenAnnot.setFeatureValue(tokenTypeFeature, sepFS);
-						break;
-					}
-				case TextStringTokenizer.WSP : { break;	}
-				case TextStringTokenizer.WCH :
-					{
-						++wordCounter;
-						tokenAnnot.setFeatureValue(tokenTypeFeature, wordFS);
-//						if ((wordCounter % 100000) == 0) {
-//							System.out.println("Number of words tokenized: " + wordCounter);
-//						}
-						break;
-					}
-				default :
-					{
-						throw new Exception("Something went wrong, fire up that debugger!");
-					}
-			}
-			cas.getIndexRepository().addFS(tokenAnnot);
-			tokenizer.setToNext();
-			//        System.out.println("Token: " + tokenizer.nextToken());
-		}
-//		time = System.currentTimeMillis() - time;
-//		System.out.println("Number of words: " + wordCounter);
-//		int allTokens = wordCounter + sepCounter + endOfSentenceCounter;
-//		System.out.println("Number of tokens: " + allTokens);
-//		System.out.println("Time used: " + new TimeSpan(time));
-    
-//    FSIterator it = cas.getAnnotationIndex(tokenType).iterator();
-//    int count = 0;
-//    while (it.isValid()) {
-//      ++count;
-//      it.moveToNext();
-//    }
-//    System.out.println("Number of tokens in index: " + count); 
-	}
+    TextStringTokenizer tokenizer = new TextStringTokenizer(text);
+    tokenizer.setSeparators("/-*&@");
+    tokenizer.addWhitespaceChars(",");
+    tokenizer.setEndOfSentenceChars(".!?");
+    tokenizer.setShowWhitespace(false);
+    int tokenTypeCode;
+    int wordCounter = 0;
+    int sepCounter = 0;
+    int endOfSentenceCounter = 0;
+    AnnotationFS tokenAnnot;
+    while (tokenizer.isValid()) {
+      tokenAnnot = cas.createAnnotation(tokenType, tokenizer.getTokenStart(), tokenizer
+                      .getTokenEnd());
+      tokenTypeCode = tokenizer.getTokenType();
+      switch (tokenTypeCode) {
+        case TextStringTokenizer.EOS: {
+          ++endOfSentenceCounter;
+          tokenAnnot.setFeatureValue(tokenTypeFeature, eosFS);
+          break;
+        }
+        case TextStringTokenizer.SEP: {
+          ++sepCounter;
+          tokenAnnot.setFeatureValue(tokenTypeFeature, sepFS);
+          break;
+        }
+        case TextStringTokenizer.WSP: {
+          break;
+        }
+        case TextStringTokenizer.WCH: {
+          ++wordCounter;
+          tokenAnnot.setFeatureValue(tokenTypeFeature, wordFS);
+          // if ((wordCounter % 100000) == 0) {
+          // System.out.println("Number of words tokenized: " + wordCounter);
+          // }
+          break;
+        }
+        default: {
+          throw new Exception("Something went wrong, fire up that debugger!");
+        }
+      }
+      cas.getIndexRepository().addFS(tokenAnnot);
+      tokenizer.setToNext();
+      // System.out.println("Token: " + tokenizer.nextToken());
+    }
+    // time = System.currentTimeMillis() - time;
+    // System.out.println("Number of words: " + wordCounter);
+    // int allTokens = wordCounter + sepCounter + endOfSentenceCounter;
+    // System.out.println("Number of tokens: " + allTokens);
+    // System.out.println("Time used: " + new TimeSpan(time));
 
+    // FSIterator it = cas.getAnnotationIndex(tokenType).iterator();
+    // int count = 0;
+    // while (it.isValid()) {
+    // ++count;
+    // it.moveToNext();
+    // }
+    // System.out.println("Number of tokens in index: " + count);
+  }
 
   // Very (!) primitive EOS detection.
-  private void createSentences()
-    throws CASException 
-  {
-//    TypeSystem ts = cas.getTypeSystem();
-//    Type eosType = ts.getType(EOS_TYPE);
-//    Type tokenType = ts.getType(TOKEN_TYPE);
-//    //assert(tokenType != null);
-//    Type sentenceType = ts.getType(SENT_TYPE);
-//    Feature tokenTypeFeature = ts.getFeature(TOKEN_TYPE_FEAT);
-//    Feature startFeature = ts.getFeature(TCAS.START_FEAT);
-//    Feature endFeature = ts.getFeature(TCAS.END_FEAT);
+  private void createSentences() throws CASException {
+    // TypeSystem ts = cas.getTypeSystem();
+    // Type eosType = ts.getType(EOS_TYPE);
+    // Type tokenType = ts.getType(TOKEN_TYPE);
+    // //assert(tokenType != null);
+    // Type sentenceType = ts.getType(SENT_TYPE);
+    // Feature tokenTypeFeature = ts.getFeature(TOKEN_TYPE_FEAT);
+    // Feature startFeature = ts.getFeature(TCAS.START_FEAT);
+    // Feature endFeature = ts.getFeature(TCAS.END_FEAT);
 
-//    System.out.println("\nCreating sentence annotations.");
-      
+    // System.out.println("\nCreating sentence annotations.");
+
     // Get a handle to the index repository.
     FSIndexRepository indexRepository = cas.getIndexRepository();
-    //assert(indexRepository != null);
+    // assert(indexRepository != null);
     Iterator labelIt = indexRepository.getLabels();
     assertTrue(labelIt != null);
     // Get the standard index for tokens.
     FSIndex tokenIndex = cas.getAnnotationIndex(tokenType);
-    //assert(tokenIndex != null);
+    // assert(tokenIndex != null);
     // Get an iterator over tokens.
     FSIterator it = tokenIndex.iterator();
-    //assert(it != null);
-    // Now create sentences.  We do this as follows: a sentence starts where
+    // assert(it != null);
+    // Now create sentences. We do this as follows: a sentence starts where
     // the first token after an EOS starts, and ends with an EOS.
     long time = System.currentTimeMillis();
     int endOfSentenceCounter = 0;
     it.moveToFirst();
     boolean lookForStart = true;
-    int start = 0, end;  // Initialize start to pacify compiler.
+    int start = 0, end; // Initialize start to pacify compiler.
     FeatureStructure tokenFS, sentFS;
     while (it.isValid()) {
       if (lookForStart) {
@@ -328,15 +332,12 @@ public class SerializationReinitTest extends TestCase {
       it.moveToNext();
     }
     time = System.currentTimeMillis() - time;
-//    System.out.println("Created " + endOfSentenceCounter + " sentences: " + new TimeSpan(time));
+    // System.out.println("Created " + endOfSentenceCounter + " sentences: " + new TimeSpan(time));
   }
-  
 
-
-  private static String file2String(File file)
-    throws IOException {
+  private static String file2String(File file) throws IOException {
     // Read the file into a string using a char buffer.
-    char [] buf = new char [10000];
+    char[] buf = new char[10000];
     int charsRead;
     BufferedReader reader = new BufferedReader(new FileReader(file));
     StringWriter writer = new StringWriter();
@@ -349,27 +350,27 @@ public class SerializationReinitTest extends TestCase {
     return text;
   }
 
-
-  /** Test driver.
+  /**
+   * Test driver.
    */
   public void testMain() throws Exception {
 
-    //System.out.println("Setting up CAS.");
+    // System.out.println("Setting up CAS.");
     // Create the initial CAS.
     long time = System.currentTimeMillis();
     time = System.currentTimeMillis() - time;
-    //System.out.println("CAS set up: " + new TimeSpan(time));
- 
+    // System.out.println("CAS set up: " + new TimeSpan(time));
+
     time = System.currentTimeMillis();
-    // Read the document into a String.  I'm sure there are better ways to
+    // Read the document into a String. I'm sure there are better ways to
     // do this.
-//    File dataDir = new File(System.getProperty("cas.data.test"));
+    // File dataDir = new File(System.getProperty("cas.data.test"));
     File dataDir = new File(TestPropertyReader.getJUnitTestBasePath());
     assertTrue(dataDir.exists());
     assertTrue(dataDir.isDirectory());
     File textFile = new File(dataDir, "data/moby.txt");
     String moby = file2String(textFile);
-//    String moby = file2String(System.getProperty("cas.data.test") + "moby.txt");
+    // String moby = file2String(System.getProperty("cas.data.test") + "moby.txt");
     String line;
     BufferedReader br = new BufferedReader(new StringReader(moby));
     StringBuffer buf = new StringBuffer();
@@ -384,7 +385,7 @@ public class SerializationReinitTest extends TestCase {
     }
     docs.add(buf.toString());
     buf = null;
-    
+
     final int numDocs = docs.size();
     final int max = 30;
     int docCount = 0;
@@ -393,16 +394,16 @@ public class SerializationReinitTest extends TestCase {
     CASSerializer cs;
     while (docCount < max) {
       for (int i = 0; i < numDocs && docCount < max; i++) {
-//        System.out.println("Processing document: " + i);
+        // System.out.println("Processing document: " + i);
         // Set document text in first CAS.
-        casMgr.setDocumentText((String)docs.get(i));
+        casMgr.setDocumentText((String) docs.get(i));
 
         tokenize();
-        numTok = cas.getAnnotationIndex(tokenType).size();          
+        numTok = cas.getAnnotationIndex(tokenType).size();
         assertTrue(numTok > 0);
-//        System.out.println("  Number of tokens: " + numTok);
+        // System.out.println(" Number of tokens: " + numTok);
 
-//        System.out.println("Serializing...");
+        // System.out.println("Serializing...");
         cs = Serialization.serializeCAS(cas);
         cas = Serialization.createTCAS(casMgr, cs);
 
@@ -411,46 +412,47 @@ public class SerializationReinitTest extends TestCase {
         createSentences();
         numSent = cas.getAnnotationIndex(sentenceType).size();
         assertTrue(numSent > 0);
-//        System.out.println("  Number of sentences: " + numSent);
+        // System.out.println(" Number of sentences: " + numSent);
 
-//        System.out.println("Serializing...");
+        // System.out.println("Serializing...");
         cs = Serialization.serializeCAS(cas);
         cas = Serialization.createTCAS(casMgr, cs);
 
         assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
         assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());
 
-//        System.out.println("Serializing...");
+        // System.out.println("Serializing...");
         cs = Serialization.serializeCAS(cas);
         cas = Serialization.createTCAS(casMgr, cs);
 
         assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
         assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());
-//        System.out.println("  Verify: " + numTok + " tokens, " + numSent + " sentences.");
-      
+        // System.out.println(" Verify: " + numTok + " tokens, " + numSent + " sentences.");
+
         casMgr.reset();
 
         ++docCount;
       }
-      //System.out.println("Number of documents processed: " + docCount);
+      // System.out.println("Number of documents processed: " + docCount);
     }
     overallTime = System.currentTimeMillis() - overallTime;
-    //System.out.println("Time taken over all: " + new TimeSpan(overallTime));
-      
+    // System.out.println("Time taken over all: " + new TimeSpan(overallTime));
+
   }
 
-  /** Test setCAS().
+  /**
+   * Test setCAS().
    */
   public void testSetCAS() throws Exception {
 
-    // Read the document into a String.  I'm sure there are better ways to
+    // Read the document into a String. I'm sure there are better ways to
     // do this.
     File dataDir = new File(TestPropertyReader.getJUnitTestBasePath());
     assertTrue(dataDir.exists());
     assertTrue(dataDir.isDirectory());
     File textFile = new File(dataDir, "data/moby.txt");
     String moby = file2String(textFile);
-//    String moby = file2String(System.getProperty("cas.data.test") + "moby.txt");
+    // String moby = file2String(System.getProperty("cas.data.test") + "moby.txt");
     String line;
     BufferedReader br = new BufferedReader(new StringReader(moby));
     StringBuffer buf = new StringBuffer();
@@ -465,7 +467,7 @@ public class SerializationReinitTest extends TestCase {
     }
     docs.add(buf.toString());
     buf = null;
-    
+
     final int numDocs = docs.size();
     final int max = 30;
     int docCount = 0;
@@ -473,65 +475,65 @@ public class SerializationReinitTest extends TestCase {
     int numTok, numSent;
     while (docCount < max) {
       for (int i = 0; i < numDocs && docCount < max; i++) {
-//        System.out.println("Processing document: " + i);
+        // System.out.println("Processing document: " + i);
         // Set document text in first CAS.
-        casMgr.setDocumentText((String)docs.get(i));
+        casMgr.setDocumentText((String) docs.get(i));
 
         tokenize();
-        numTok = cas.getAnnotationIndex(tokenType).size();          
+        numTok = cas.getAnnotationIndex(tokenType).size();
         assertTrue(numTok > 0);
-//        System.out.println("  Number of tokens: " + numTok);
+        // System.out.println(" Number of tokens: " + numTok);
 
-//        System.out.println("Serializing...");
-//        TCASMgr casMgr = TCASFactory.createTCAS();
-//        casMgr.setCAS(cas);
-//        cas = (TCAS) casMgr.getCAS();
-		CASMgr realCasMgr = CASFactory.createCAS();
-		realCasMgr.setCAS(((CASImpl)cas).getBaseCAS());
-		cas = ((CASImpl)realCasMgr).getTCAS();
-		casMgr = (TCASMgr)cas;
-        
+        // System.out.println("Serializing...");
+        // TCASMgr casMgr = TCASFactory.createTCAS();
+        // casMgr.setCAS(cas);
+        // cas = (TCAS) casMgr.getCAS();
+        CASMgr realCasMgr = CASFactory.createCAS();
+        realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
+        cas = ((CASImpl) realCasMgr).getTCAS();
+        casMgr = (TCASMgr) cas;
+
         assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
 
         createSentences();
         numSent = cas.getAnnotationIndex(sentenceType).size();
         assertTrue(numSent > 0);
-//        System.out.println("  Number of sentences: " + numSent);
+        // System.out.println(" Number of sentences: " + numSent);
 
-//        System.out.println("Serializing...");
-//        casMgr = TCASFactory.createTCAS();
-//        casMgr.setCAS(cas);
-//        cas = (TCAS) casMgr.getCAS();
-		realCasMgr = CASFactory.createCAS();
-		realCasMgr.setCAS(((CASImpl)cas).getBaseCAS());
-		cas = ((CASImpl)realCasMgr).getTCAS();
-		casMgr = (TCASMgr)cas;
-
-        assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
-        assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());
-
-//        System.out.println("Serializing...");
-//        casMgr = TCASFactory.createTCAS();
-//        casMgr.setCAS(cas);
-//        cas = (TCAS) casMgr.getCAS();
-		realCasMgr = CASFactory.createCAS();
-		realCasMgr.setCAS(((CASImpl)cas).getBaseCAS());
-		cas = ((CASImpl)realCasMgr).getTCAS();
-		casMgr = (TCASMgr)cas;
+        // System.out.println("Serializing...");
+        // casMgr = TCASFactory.createTCAS();
+        // casMgr.setCAS(cas);
+        // cas = (TCAS) casMgr.getCAS();
+        realCasMgr = CASFactory.createCAS();
+        realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
+        cas = ((CASImpl) realCasMgr).getTCAS();
+        casMgr = (TCASMgr) cas;
 
         assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
         assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());
-//        System.out.println("  Verify: " + numTok + " tokens, " + numSent + " sentences.");
-      
+
+        // System.out.println("Serializing...");
+        // casMgr = TCASFactory.createTCAS();
+        // casMgr.setCAS(cas);
+        // cas = (TCAS) casMgr.getCAS();
+        realCasMgr = CASFactory.createCAS();
+        realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
+        cas = ((CASImpl) realCasMgr).getTCAS();
+        casMgr = (TCASMgr) cas;
+
+        assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
+        assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());
+        // System.out.println(" Verify: " + numTok + " tokens, " + numSent + " sentences.");
+
         casMgr.reset();
 
         ++docCount;
       }
-      //System.out.println("Number of documents processed: " + docCount);
+      // System.out.println("Number of documents processed: " + docCount);
     }
     overallTime = System.currentTimeMillis() - overallTime;
-    //System.out.println("Time taken over all: " + new TimeSpan(overallTime));
-      
+    // System.out.println("Time taken over all: " + new TimeSpan(overallTime));
+
   }
 
   public static void main(String[] args) {

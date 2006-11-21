@@ -71,26 +71,23 @@ import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
 
 /**
- * Tests XCasToCasDataSaxHandler.  Also Tests CasDataToXCas.
+ * Tests XCasToCasDataSaxHandler. Also Tests CasDataToXCas.
  * 
- * @author Adam Lally 
+ * @author Adam Lally
  */
-public class XCasToCasDataSaxHandlerTest extends TestCase
-{
+public class XCasToCasDataSaxHandlerTest extends TestCase {
 
   /**
    * Constructor for XCasToCasDataSaxHandlerTest.
+   * 
    * @param arg0
    */
-  public XCasToCasDataSaxHandlerTest(String arg0) throws IOException
-  {
+  public XCasToCasDataSaxHandlerTest(String arg0) throws IOException {
     super(arg0);
   }
 
-  public void testParse() throws Exception
-  {
-    try
-    {
+  public void testParse() throws Exception {
+    try {
       CasData casData = new CasDataImpl();
       XCasToCasDataSaxHandler handler = new XCasToCasDataSaxHandler(casData);
 
@@ -100,40 +97,34 @@ public class XCasToCasDataSaxHandlerTest extends TestCase
       xmlReader.setContentHandler(handler);
       xmlReader.parse(new InputSource(getClass().getResourceAsStream("xcastest.xml")));
 
-      //System.out.println(casData);
+      // System.out.println(casData);
       Iterator fsIter = casData.getFeatureStructures();
       boolean foundCrawlUrl = false;
-      while (fsIter.hasNext())
-      {
+      while (fsIter.hasNext()) {
         FeatureStructure fs = (FeatureStructure) fsIter.next();
-        if ("Crawl_colon_URL".equals(fs.getType()))
-        {
-          //System.out.println("[" + fs.getFeatureValue("value") + "]");
+        if ("Crawl_colon_URL".equals(fs.getType())) {
+          // System.out.println("[" + fs.getFeatureValue("value") + "]");
           Assert
-              .assertEquals(
-                  "http://www.nolimitmedia.com/index.php?act=group&gro=1&gron=Flash&PHPSESSID=5dcc31fb425c4a204b70d9eab92531a5",
-                  fs.getFeatureValue("value").toString());
+                          .assertEquals(
+                                          "http://www.nolimitmedia.com/index.php?act=group&gro=1&gron=Flash&PHPSESSID=5dcc31fb425c4a204b70d9eab92531a5",
+                                          fs.getFeatureValue("value").toString());
           foundCrawlUrl = true;
         }
       }
       assertTrue(foundCrawlUrl);
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
   }
 
-  public void testConversions() throws Exception
-  {
-    try
-    {
-      //complex CAS obtained by deserialization
+  public void testConversions() throws Exception {
+    try {
+      // complex CAS obtained by deserialization
       File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
       TypeSystemDescription typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-          new XMLInputSource(typeSystemFile));
+                      new XMLInputSource(typeSystemFile));
       TCAS tcas2 = CasCreationUtils.createTCas(typeSystem, new TypePriorities_impl(),
-          new FsIndexDescription[0]);
+                      new FsIndexDescription[0]);
 
       InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
       XCASDeserializer deser = new XCASDeserializer(tcas2.getTypeSystem());
@@ -146,30 +137,28 @@ public class XCasToCasDataSaxHandlerTest extends TestCase
       serCasStream.close();
       _testConversions(tcas2);
 
-      //a CAS with multiple Sofas
+      // a CAS with multiple Sofas
       InputStream translatorAeStream = new FileInputStream(JUnitExtension
-          .getFile("CpeSofaTest/TransAnnotator.xml"));
-      AnalysisEngineDescription translatorAeDesc = UIMAFramework.getXMLParser().
-          parseAnalysisEngineDescription(new XMLInputSource(translatorAeStream, null));
+                      .getFile("CpeSofaTest/TransAnnotator.xml"));
+      AnalysisEngineDescription translatorAeDesc = UIMAFramework.getXMLParser()
+                      .parseAnalysisEngineDescription(new XMLInputSource(translatorAeStream, null));
       AnalysisEngine transAnnotator = UIMAFramework.produceAnalysisEngine(translatorAeDesc);
       CAS cas = transAnnotator.newCAS();
-      SofaFS ls = cas.createSofa(transAnnotator.getUimaContext().mapToSofaID("EnglishDocument"), "text");
+      SofaFS ls = cas.createSofa(transAnnotator.getUimaContext().mapToSofaID("EnglishDocument"),
+                      "text");
       ls.setLocalSofaData("this beer is good");
       transAnnotator.process(cas);
       _testConversions(cas);
-     
-    }
-    catch (Exception e)
-    {
+
+    } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
   }
 
   private void _testConversions(CAS aCAS) throws TCASException, IOException,
-      ParserConfigurationException, SAXException, ResourceInitializationException,
-      CASRuntimeException
-  {
-    //generate XCAS events and pipe them to XCasToCasDataSaxHandler
+                  ParserConfigurationException, SAXException, ResourceInitializationException,
+                  CASRuntimeException {
+    // generate XCAS events and pipe them to XCasToCasDataSaxHandler
     CasData casData = new CasDataImpl();
     XCasToCasDataSaxHandler handler = new XCasToCasDataSaxHandler(casData);
     XCASSerializer xcasSer = new XCASSerializer(aCAS.getTypeSystem());
@@ -177,9 +166,9 @@ public class XCasToCasDataSaxHandlerTest extends TestCase
 
     Assert.assertNotNull(casData);
     assertValidCasData(casData, aCAS.getTypeSystem());
-    //System.out.println(casData);
+    // System.out.println(casData);
 
-    //now generate XCAS from the CasData
+    // now generate XCAS from the CasData
     CasDataToXCas generator = new CasDataToXCas();
 
     StringWriter sw = new StringWriter();
@@ -190,10 +179,10 @@ public class XCasToCasDataSaxHandlerTest extends TestCase
     String xml = sw.getBuffer().toString();
     UIMAFramework.getLogger(XCasToCasDataSaxHandlerTest.class).log(Level.FINE, xml);
 
-    //deserialize back into CAS for comparison
-    //    TCASMgr tcasMgr = TCASFactory.createTCAS(aTCAS.getTypeSystem());
-    //    tcasMgr.initTCASIndexes();
-    //    tcasMgr.getIndexRepositoryMgr().commit();
+    // deserialize back into CAS for comparison
+    // TCASMgr tcasMgr = TCASFactory.createTCAS(aTCAS.getTypeSystem());
+    // tcasMgr.initTCASIndexes();
+    // tcasMgr.getIndexRepositoryMgr().commit();
 
     CAS cas2 = CasCreationUtils.createCas(null, aCAS.getTypeSystem(), null);
     XCASDeserializer deser = new XCASDeserializer(cas2.getTypeSystem());
@@ -205,7 +194,7 @@ public class XCasToCasDataSaxHandlerTest extends TestCase
     xmlReader.setContentHandler(deserHandler);
     xmlReader.parse(new InputSource(new StringReader(xml)));
 
-    //CASes should be identical
+    // CASes should be identical
     CasComparer.assertEquals(aCAS, cas2);
   }
 
@@ -213,26 +202,23 @@ public class XCasToCasDataSaxHandlerTest extends TestCase
    * @param casData
    * @param system
    */
-  private void assertValidCasData(CasData casData, TypeSystem typeSystem)
-  {
+  private void assertValidCasData(CasData casData, TypeSystem typeSystem) {
     Type annotType = typeSystem.getType(TCAS.TYPE_NAME_ANNOTATION);
     Type arrayType = typeSystem.getType(CAS.TYPE_NAME_ARRAY_BASE);
     Iterator fsIter = casData.getFeatureStructures();
-    while (fsIter.hasNext())
-    {
+    while (fsIter.hasNext()) {
       org.apache.uima.cas_data.FeatureStructure fs = (org.apache.uima.cas_data.FeatureStructure) fsIter
-          .next();
+                      .next();
       String typeName = fs.getType();
 
-      //don't do tests on the "fake" document text FS
+      // don't do tests on the "fake" document text FS
       if (XCASSerializer.DEFAULT_DOC_TYPE_NAME.equals(typeName))
         continue;
 
       Type type = typeSystem.getType(typeName);
       Assert.assertNotNull(type);
-      if (typeSystem.subsumes(annotType, type))
-      {
-        //annotation type - check for presence of begin/end
+      if (typeSystem.subsumes(annotType, type)) {
+        // annotation type - check for presence of begin/end
         FeatureValue beginVal = fs.getFeatureValue("begin");
         Assert.assertTrue(beginVal instanceof PrimitiveValue);
         Assert.assertTrue(((PrimitiveValue) beginVal).toInt() >= 0);
@@ -240,14 +226,12 @@ public class XCasToCasDataSaxHandlerTest extends TestCase
         Assert.assertTrue(endVal instanceof PrimitiveValue);
         Assert.assertTrue(((PrimitiveValue) endVal).toInt() >= 0);
 
-        //all annotations should be indexed (not a general requirement, but good
-        //for these test CASes)
+        // all annotations should be indexed (not a general requirement, but good
+        // for these test CASes)
         Assert.assertTrue(fs.isIndexed());
-      }
-      else if (typeSystem.subsumes(arrayType, type))
-      {
-        //all non-annotations should not be indexed (not a general requirement, but good
-        //for these test CASes)
+      } else if (typeSystem.subsumes(arrayType, type)) {
+        // all non-annotations should not be indexed (not a general requirement, but good
+        // for these test CASes)
         Assert.assertFalse(fs.isIndexed());
       }
     }

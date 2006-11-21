@@ -36,77 +36,71 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.Resource_ImplBase;
 
 /**
- * A simple {@link DataResource} implementation that can read data from
- * a file via a URL.  There is an attribute for specifying the location of
- * a local cache for a remote file, but this is not currently being used.
+ * A simple {@link DataResource} implementation that can read data from a file via a URL. There is
+ * an attribute for specifying the location of a local cache for a remote file, but this is not
+ * currently being used.
  * 
  * 
  */
-public class DataResource_impl extends Resource_ImplBase implements DataResource
-{
-  
+public class DataResource_impl extends Resource_ImplBase implements DataResource {
+
+  /** URL of file. */
+  private URL mFileUrl;
+
+  /** Filename of local cache, if any. */
+  private File mLocalCache;
 
   /**
    * Initializes this DataResource.
    * 
-   * @param aSpecifier describes how to create this DataResource.  Must 
-   *    (at least for now) be a {@link FileResourceSpecifier}.
-   * @param aAdditionalParams not currently used
-   *  
-   * @return true if and only if initialization completed successfully.
-   *    Returns false if this implementation cannot handle the given
-   *    <code>ResourceSpecifier</code>.
-   *
+   * @param aSpecifier
+   *          describes how to create this DataResource. Must (at least for now) be a
+   *          {@link FileResourceSpecifier}.
+   * @param aAdditionalParams
+   *          not currently used
+   * 
+   * @return true if and only if initialization completed successfully. Returns false if this
+   *         implementation cannot handle the given <code>ResourceSpecifier</code>.
+   * 
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-    throws ResourceInitializationException
-  {
-    //aSpecifier must be a FileResourceSpecifier
+                  throws ResourceInitializationException {
+    // aSpecifier must be a FileResourceSpecifier
     if (!(aSpecifier instanceof FileResourceSpecifier))
-      return false; 
-   
-    //If we get here, aSpecifier is supported by this implementation.
-    FileResourceSpecifier spec = (FileResourceSpecifier)aSpecifier;
-    
-    //Get Relative Path Resolver
+      return false;
+
+    // If we get here, aSpecifier is supported by this implementation.
+    FileResourceSpecifier spec = (FileResourceSpecifier) aSpecifier;
+
+    // Get Relative Path Resolver
     RelativePathResolver relPathResolver = null;
-    if (aAdditionalParams != null)
-    {
-      relPathResolver = (RelativePathResolver)
-        aAdditionalParams.get(PARAM_RELATIVE_PATH_RESOLVER);        
+    if (aAdditionalParams != null) {
+      relPathResolver = (RelativePathResolver) aAdditionalParams.get(PARAM_RELATIVE_PATH_RESOLVER);
     }
-    if (relPathResolver == null)
-    {
+    if (relPathResolver == null) {
       relPathResolver = new RelativePathResolver_impl();
-    }    
-    
-    //Get the file URL, resolving relative path as necessary
+    }
+
+    // Get the file URL, resolving relative path as necessary
     IOException ioEx = null;
-    try
-    {
+    try {
       mFileUrl = relPathResolver.resolveRelativePath(new URL(spec.getFileUrl()));
 
-      //Store local cache info, even though it is not used
-      if (spec.getLocalCache() == null)
-      {
+      // Store local cache info, even though it is not used
+      if (spec.getLocalCache() == null) {
         mLocalCache = null;
-      }
-      else
-      {  
+      } else {
         mLocalCache = new File(spec.getLocalCache());
-      }  
-      
-    }
-    catch(IOException e)
-    {
+      }
+
+    } catch (IOException e) {
       ioEx = e;
     }
-    if (mFileUrl == null)
-    {
+    if (mFileUrl == null) {
       throw new ResourceInitializationException(
-        ResourceInitializationException.COULD_NOT_ACCESS_DATA,
-        new Object[]{spec.getFileUrl()}, ioEx);        
+                      ResourceInitializationException.COULD_NOT_ACCESS_DATA, new Object[] { spec
+                                      .getFileUrl() }, ioEx);
     }
 
     return true;
@@ -115,100 +109,83 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
-  public void destroy()
-  {
+  public void destroy() {
   }
 
   /**
    * @see org.apache.uima.resource.DataResource#getInputStream()
    */
-  public InputStream getInputStream()
-    throws IOException
-  {
+  public InputStream getInputStream() throws IOException {
     return mFileUrl.openStream();
   }
 
   /**
    * @see org.apache.uima.resource.DataResource#getUrl()
    */
-  public URL getUrl()
-  {
+  public URL getUrl() {
     return mFileUrl;
   }
-  
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.DataResource#getUri()
    */
-  public URI getUri()
-  {
-    try
-    {
-      //we need to escape any space characters in the URL.  In Java,
-      //a URL object may contain a space but a URI may not.
+  public URI getUri() {
+    try {
+      // we need to escape any space characters in the URL. In Java,
+      // a URL object may contain a space but a URI may not.
       String urlStr = mFileUrl.toString();
-      return new URI(urlStr.replaceAll(" ","%20"));
-    }
-    catch (URISyntaxException e)
-    {
+      return new URI(urlStr.replaceAll(" ", "%20"));
+    } catch (URISyntaxException e) {
       throw new UIMARuntimeException(e);
     }
   }
-  
+
   /**
    * Gets the file name of the local cache for a remote resource file, if any.
    * 
    * @return the local cache File
    */
-  protected File getLocalCache()
-  {
+  protected File getLocalCache() {
     return mLocalCache;
   }
-
 
   /**
    * @see DataResource#equals(java.lang.Object)
    */
-  public boolean equals(Object obj)
-  {
-    //obj must be a DataResource_impl
+  public boolean equals(Object obj) {
+    // obj must be a DataResource_impl
     if (!(obj instanceof DataResource_impl))
       return false;
-    
-    //URLs must be the same
-    URL url = ((DataResource_impl)obj).getUrl();
+
+    // URLs must be the same
+    URL url = ((DataResource_impl) obj).getUrl();
     if (url == null || !url.equals(this.getUrl()))
       return false;
-      
-    //Local Cache Files must be the same
-    File localCache = ((DataResource_impl)obj).getLocalCache();
+
+    // Local Cache Files must be the same
+    File localCache = ((DataResource_impl) obj).getLocalCache();
     if (localCache == null && this.getLocalCache() != null)
       return false;
-    
+
     if (localCache != null && !localCache.equals(this.getLocalCache()))
       return false;
-  
+
     return true;
   }
 
   /**
    * @see DataResource#hashCode()
    */
-  public int hashCode()
-  {
+  public int hashCode() {
     // add hash codes of member variables
     int hashCode = 0;
     if (mFileUrl != null)
       hashCode += mFileUrl.hashCode();
     if (mLocalCache != null)
       hashCode += mLocalCache.hashCode();
-      
+
     return hashCode;
   }
-  
-  /** URL of file. */
-  private URL mFileUrl;
-  
-  /** Filename of local cache, if any. */
-  private File mLocalCache;
 }

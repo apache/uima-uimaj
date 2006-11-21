@@ -29,52 +29,60 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.impl.JCas;
 
 public class DocumentAnnotation_Type extends Annotation_Type {
-  protected FSGenerator getFSGenerator() {return fsGenerator;}
-  private final FSGenerator fsGenerator = 
-    new FSGenerator() {
-      public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (DocumentAnnotation_Type.this.useExistingInstance) {
-  			   // Return eq fs instance if already created
-  		     FeatureStructure fs = DocumentAnnotation_Type.this.jcas.getJfsFromCaddr(addr);
-  		     if (null == fs) {
-  		       fs = new DocumentAnnotation(addr, DocumentAnnotation_Type.this);
-  		       DocumentAnnotation_Type.this.jcas.putJfsFromCaddr(addr, fs);
-  			     return fs;
-  		     }
-  		     return fs;
-        } else return new DocumentAnnotation(addr, DocumentAnnotation_Type.this);
-  	  }
-    };
+  protected FSGenerator getFSGenerator() {
+    return fsGenerator;
+  }
+
+  private final FSGenerator fsGenerator = new FSGenerator() {
+    public FeatureStructure createFS(int addr, CASImpl cas) {
+      if (DocumentAnnotation_Type.this.useExistingInstance) {
+        // Return eq fs instance if already created
+        FeatureStructure fs = DocumentAnnotation_Type.this.jcas.getJfsFromCaddr(addr);
+        if (null == fs) {
+          fs = new DocumentAnnotation(addr, DocumentAnnotation_Type.this);
+          DocumentAnnotation_Type.this.jcas.putJfsFromCaddr(addr, fs);
+          return fs;
+        }
+        return fs;
+      } else
+        return new DocumentAnnotation(addr, DocumentAnnotation_Type.this);
+    }
+  };
 
   public final static int typeIndexID = DocumentAnnotation.typeIndexID;
 
   public final static boolean featOkTst = JCas.getFeatOkTst("uima.tcas.DocumentAnnotation");
+
   final Feature casFeat_language;
-  final int     casFeatCode_language;
+
+  final int casFeatCode_language;
 
   public String getLanguage(int addr) {
     if (featOkTst && casFeat_language == null)
-          JCas.throwFeatMissing("language", "uima.tcas.DocumentAnnotation");
-    return ll_cas.ll_getStringValue(addr, casFeatCode_language);}
+      JCas.throwFeatMissing("language", "uima.tcas.DocumentAnnotation");
+    return ll_cas.ll_getStringValue(addr, casFeatCode_language);
+  }
 
   public void setLanguage(int addr, String v) {
     if (featOkTst && casFeat_language == null)
-          JCas.throwFeatMissing("language", "uima.tcas.DocumentAnnotation");
-    ll_cas.ll_setStringValue(addr, casFeatCode_language, v);}
-
-
-  //* initialize variables to correspond with Cas Type and Features
-  public DocumentAnnotation_Type(JCas jcas, Type casType) {
-    super(jcas, casType);
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
-
-    casFeat_language        = jcas.getRequiredFeatureDE(casType, "language", "uima.cas.String", featOkTst);
-    casFeatCode_language    = (null == casFeat_language) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_language).getCode();
+      JCas.throwFeatMissing("language", "uima.tcas.DocumentAnnotation");
+    ll_cas.ll_setStringValue(addr, casFeatCode_language, v);
   }
 
-  protected DocumentAnnotation_Type() { //block default new operator
-    casFeat_language        = null;
-    casFeatCode_language        = JCas.INVALID_FEATURE_CODE;
-    throw new RuntimeException("Internal Error-this constructor should never be called.");  }
+  // * initialize variables to correspond with Cas Type and Features
+  public DocumentAnnotation_Type(JCas jcas, Type casType) {
+    super(jcas, casType);
+    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
+
+    casFeat_language = jcas.getRequiredFeatureDE(casType, "language", "uima.cas.String", featOkTst);
+    casFeatCode_language = (null == casFeat_language) ? JCas.INVALID_FEATURE_CODE
+                    : ((FeatureImpl) casFeat_language).getCode();
+  }
+
+  protected DocumentAnnotation_Type() { // block default new operator
+    casFeat_language = null;
+    casFeatCode_language = JCas.INVALID_FEATURE_CODE;
+    throw new RuntimeException("Internal Error-this constructor should never be called.");
+  }
 
 }

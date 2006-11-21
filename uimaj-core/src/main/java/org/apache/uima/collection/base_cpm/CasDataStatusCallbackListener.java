@@ -19,25 +19,25 @@
 
 package org.apache.uima.collection.base_cpm;
 
-
 import org.apache.uima.cas_data.CasData;
 import org.apache.uima.collection.EntityProcessStatus;
 
 /**
- * Interface for a Listener that receives notification from the 
- * {@link org.apache.uima.collection.CollectionProcessingManager} as various events occur.  The most
+ * Interface for a Listener that receives notification from the
+ * {@link org.apache.uima.collection.CollectionProcessingManager} as various events occur. The most
  * common event is that the processing of an Entity has completed.
  * 
  * 
  */
-public interface CasDataStatusCallbackListener extends BaseStatusCallbackListener
-{
+public interface CasDataStatusCallbackListener extends BaseStatusCallbackListener {
   /**
    * Called when the processing of each CasData unit has completed.
    * 
-   * @param aCasData the CasData that was processed
-   * @param aStatus the status of the processing.  This object contains
-   *   a record of any Exception that occurred, as well as timing information.
+   * @param aCasData
+   *          the CasData that was processed
+   * @param aStatus
+   *          the status of the processing. This object contains a record of any Exception that
+   *          occurred, as well as timing information.
    */
   public void entityProcessComplete(CasData aCasData, EntityProcessStatus aStatus);
 }

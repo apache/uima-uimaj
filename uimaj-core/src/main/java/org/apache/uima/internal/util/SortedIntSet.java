@@ -20,155 +20,152 @@
 package org.apache.uima.internal.util;
 
 /**
- * A set of integers, maintained as a sorted array. Note that the actual array
- * used to implement this class grows in larger increments, so it is efficient
- * to use this class even when doing lots of insertions.
+ * A set of integers, maintained as a sorted array. Note that the actual array used to implement
+ * this class grows in larger increments, so it is efficient to use this class even when doing lots
+ * of insertions.
  * 
  * 
  */
 public class SortedIntSet {
 
-    // Use an IntVector for automatic array management.
-    private IntVector vector;
+  // Use an IntVector for automatic array management.
+  private IntVector vector;
 
-    /** Default constructor. */
-    public SortedIntSet() {
-        super();
-        this.vector = new IntVector();
+  /** Default constructor. */
+  public SortedIntSet() {
+    super();
+    this.vector = new IntVector();
+  }
+
+  public SortedIntSet(int[] array) {
+    this();
+    for (int i = 0; i < array.length; i++) {
+      this.add(array[i]);
     }
+  }
 
-    public SortedIntSet(int[] array) {
-        this();
-        for (int i = 0; i < array.length; i++) {
-            this.add(array[i]);
-        }
+  /**
+   * Find position of <code>ele</code> in set.
+   * 
+   * @param ele
+   *          The element we're looking for.
+   * @return The position, if found; a negative value, else. See
+   *         {@link org.apache.uima.internal.util.IntArrayUtils#binarySearch IntArrayUtils.binarySearch()}.
+   */
+  public int find(int ele) {
+    int[] array = this.vector.getArray();
+    return IntArrayUtils.binarySearch(array, ele, 0, this.vector.size());
+  }
+
+  /**
+   * @return <code>true</code> iff <code>ele</code is contained in
+   *  the set.
+   */
+  public boolean contains(int ele) {
+    return this.find(ele) >= 0;
+  }
+
+  /**
+   * Add element to set.
+   * 
+   * @return <code>true</code> iff <code>ele</code> was not already contained in the set.
+   */
+  public boolean add(int ele) {
+    final int pos = this.find(ele);
+    if (pos >= 0) {
+      return false;
     }
+    this.vector.add(-(pos + 1), ele);
+    return true;
+  }
 
-    /**
-     * Find position of <code>ele</code> in set.
-     * 
-     * @param ele
-     *            The element we're looking for.
-     * @return The position, if found; a negative value, else. See
-     *         {@link org.apache.uima.internal.util.IntArrayUtils#binarySearch IntArrayUtils.binarySearch()}.
-     */
-    public int find(int ele) {
-        int[] array = this.vector.getArray();
-        return IntArrayUtils.binarySearch(array, ele, 0, this.vector.size());
+  /**
+   * Remove element from set.
+   * 
+   * @return <code>true</code> iff <code>ele</code> was actually contained in the set.
+   */
+  public boolean remove(int ele) {
+    final int pos = this.find(ele);
+    if (pos < 0) {
+      return false;
     }
+    this.vector.remove(pos);
+    return true;
+  }
 
-    /**
-     * @return <code>true</code> iff <code>ele</code is contained in
-     *  the set.
-     */
-    public boolean contains(int ele) {
-        return this.find(ele) >= 0;
+  /**
+   * Number of elements in set.
+   * 
+   * @return Current number of elements in set.
+   */
+  public int size() {
+    return this.vector.size();
+  }
+
+  /**
+   * Get element at position.
+   * 
+   * @param pos
+   *          Get element at this position.
+   * @return The element at this position.
+   */
+  public int get(int pos) {
+    return this.vector.get(pos);
+  }
+
+  public void union(SortedIntSet set) {
+    final int max = set.size();
+    for (int i = 0; i < max; i++) {
+      this.add(set.get(i));
     }
+  }
 
-    /**
-     * Add element to set.
-     * 
-     * @return <code>true</code> iff <code>ele</code> was not already
-     *         contained in the set.
-     */
-    public boolean add(int ele) {
-        final int pos = this.find(ele);
-        if (pos >= 0) {
-            return false;
-        }
-        this.vector.add(-(pos + 1), ele);
-        return true;
-    }
+  public void removeAll() {
+    this.vector.removeAllElements();
+  }
 
-    /**
-     * Remove element from set.
-     * 
-     * @return <code>true</code> iff <code>ele</code> was actually contained
-     *         in the set.
-     */
-    public boolean remove(int ele) {
-        final int pos = this.find(ele);
-        if (pos < 0) {
-            return false;
-        }
-        this.vector.remove(pos);
-        return true;
-    }
+  public int[] toArray() {
+    return this.vector.toArrayCopy();
+  }
 
-    /**
-     * Number of elements in set.
-     * 
-     * @return Current number of elements in set.
-     */
-    public int size() {
-        return this.vector.size();
-    }
+  // public static void main(String [] args) {
 
-    /**
-     * Get element at position.
-     * 
-     * @param pos
-     *            Get element at this position.
-     * @return The element at this position.
-     */
-    public int get(int pos) {
-        return this.vector.get(pos);
-    }
+  // SortedIntSet set = new SortedIntSet();
+  // assert set.size() == 0;
+  // assert !set.contains(0);
 
-    public void union(SortedIntSet set) {
-        final int max = set.size();
-        for (int i = 0; i < max; i++) {
-            this.add(set.get(i));
-        }
-    }
+  // set.add(3);
+  // set.add(5);
+  // set.add(1);
+  // assert set.find(1) == 0;
+  // assert set.find(3) == 1;
+  // assert set.find(5) == 2;
+  // assert set.get(0) == 1;
+  // assert set.get(1) == 3;
+  // assert set.get(2) == 5;
 
-    public void removeAll() {
-        this.vector.removeAllElements();
-    }
+  // set.add(2);
+  // set.add(0);
+  // set.add(4);
 
-    public int[] toArray() {
-        return this.vector.toArrayCopy();
-    }
+  // assert set.find(0) == 0;
+  // assert set.find(1) == 1;
+  // assert set.find(2) == 2;
+  // assert set.find(3) == 3;
+  // assert set.find(4) == 4;
+  // assert set.find(5) == 5;
+  // assert set.get(0) == 0;
+  // assert set.get(1) == 1;
+  // assert set.get(2) == 2;
+  // assert set.size() == 6;
 
-    // public static void main(String [] args) {
+  // assert set.remove(1);
+  // assert set.remove(3);
+  // assert set.remove(5);
+  // assert set.get(0) == 0;
+  // assert set.get(1) == 2;
+  // assert set.get(2) == 4;
 
-    // SortedIntSet set = new SortedIntSet();
-    // assert set.size() == 0;
-    // assert !set.contains(0);
-
-    // set.add(3);
-    // set.add(5);
-    // set.add(1);
-    // assert set.find(1) == 0;
-    // assert set.find(3) == 1;
-    // assert set.find(5) == 2;
-    // assert set.get(0) == 1;
-    // assert set.get(1) == 3;
-    // assert set.get(2) == 5;
-
-    // set.add(2);
-    // set.add(0);
-    // set.add(4);
-
-    // assert set.find(0) == 0;
-    // assert set.find(1) == 1;
-    // assert set.find(2) == 2;
-    // assert set.find(3) == 3;
-    // assert set.find(4) == 4;
-    // assert set.find(5) == 5;
-    // assert set.get(0) == 0;
-    // assert set.get(1) == 1;
-    // assert set.get(2) == 2;
-    // assert set.size() == 6;
-
-    // assert set.remove(1);
-    // assert set.remove(3);
-    // assert set.remove(5);
-    // assert set.get(0) == 0;
-    // assert set.get(1) == 2;
-    // assert set.get(2) == 4;
-
-    // }
-
+  // }
 
 }

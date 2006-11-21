@@ -29,79 +29,71 @@ import java.util.logging.LogRecord;
 /**
  * JSR47 log formatter for UIMA JSR47Logger
  * 
- * Provides a log format which looks like:
- * timestamp; threadID; sourceInfo; Message level; message
- * e.g.
- * 7/12/04 2:15:35 PM - 10: org.apache.uima.util.TestClass.main(62): INFO: You are not logged in!
- *   
+ * Provides a log format which looks like: timestamp; threadID; sourceInfo; Message level; message
+ * e.g. 7/12/04 2:15:35 PM - 10: org.apache.uima.util.TestClass.main(62): INFO: You are not logged
+ * in!
+ * 
  */
-public class UIMALogFormatter extends Formatter
-{
-	private static final String timestampFormat = "{0,date,short} {0,time}";
-	private static final String CRLF = System.getProperties().getProperty("line.separator");
+public class UIMALogFormatter extends Formatter {
+  private static final String timestampFormat = "{0,date,short} {0,time}";
 
-	public synchronized String format(LogRecord record)
-	{
-		//if record is null, return an empty String
-		if(record == null)
-		{
-			return ""; 
-		} 
-	
-		StringBuffer buffer = new StringBuffer(100);
-	
-		//create timestamp
-		Date timestamp = new Date(record.getMillis());
-		Object[] timestampArgs = { timestamp };
-		String timestampStr = MessageFormat.format(timestampFormat,timestampArgs);
-		//append timestamp to the output string
-		buffer.append(timestampStr);
-		
-		//append source thread ID
-		buffer.append(" - ");
-		buffer.append(record.getThreadID());
-			  
-		//append source class if logrb() method was used, otherwise append logger name
-		buffer.append(": ");
-		if(record.getSourceClassName() == null || record.getSourceClassName().equals(""))
-		{
-			buffer.append(record.getLoggerName());	
-		}
-		else
-		{
-			buffer.append(record.getSourceClassName());
-		}
-		
-		//append source method if logrb() was used
-		if(record.getSourceMethodName() != null)
-		{
-			buffer.append(".");
-			buffer.append(record.getSourceMethodName());
-		}
-		
-		//append message level
-		buffer.append(": ");
-		buffer.append(record.getLevel().getLocalizedName());
-		
-		//append message
-		buffer.append(": ");
-		buffer.append(record.getMessage());
-		
-		//append exception if avaialble
-		if(record.getThrown() != null)
-		{
-			buffer.append(CRLF);
-			StringWriter stringWriter = new StringWriter();
-			PrintWriter printWriter = new PrintWriter(stringWriter);
-			record.getThrown().printStackTrace(printWriter);
-			printWriter.close();
-			buffer.append(stringWriter.toString());
-		}
-		
-		//append new line at the end
-		buffer.append(CRLF);
-		
-		//return log entry
-		return buffer.toString();
-	}
+  private static final String CRLF = System.getProperties().getProperty("line.separator");
+
+  public synchronized String format(LogRecord record) {
+    // if record is null, return an empty String
+    if (record == null) {
+      return "";
+    }
+
+    StringBuffer buffer = new StringBuffer(100);
+
+    // create timestamp
+    Date timestamp = new Date(record.getMillis());
+    Object[] timestampArgs = { timestamp };
+    String timestampStr = MessageFormat.format(timestampFormat, timestampArgs);
+    // append timestamp to the output string
+    buffer.append(timestampStr);
+
+    // append source thread ID
+    buffer.append(" - ");
+    buffer.append(record.getThreadID());
+
+    // append source class if logrb() method was used, otherwise append logger name
+    buffer.append(": ");
+    if (record.getSourceClassName() == null || record.getSourceClassName().equals("")) {
+      buffer.append(record.getLoggerName());
+    } else {
+      buffer.append(record.getSourceClassName());
+    }
+
+    // append source method if logrb() was used
+    if (record.getSourceMethodName() != null) {
+      buffer.append(".");
+      buffer.append(record.getSourceMethodName());
+    }
+
+    // append message level
+    buffer.append(": ");
+    buffer.append(record.getLevel().getLocalizedName());
+
+    // append message
+    buffer.append(": ");
+    buffer.append(record.getMessage());
+
+    // append exception if avaialble
+    if (record.getThrown() != null) {
+      buffer.append(CRLF);
+      StringWriter stringWriter = new StringWriter();
+      PrintWriter printWriter = new PrintWriter(stringWriter);
+      record.getThrown().printStackTrace(printWriter);
+      printWriter.close();
+      buffer.append(stringWriter.toString());
+    }
+
+    // append new line at the end
+    buffer.append(CRLF);
+
+    // return log entry
+    return buffer.toString();
+  }
 }

@@ -22,65 +22,67 @@ package org.apache.uima.resource.metadata.impl;
 import org.apache.uima.resource.metadata.OperationalProperties;
 
 public class OperationalProperties_impl extends MetaDataObject_impl implements
-    OperationalProperties
-{
+                OperationalProperties {
 
+  private static final long serialVersionUID = 8649608701550531026L;
 
-  /* (non-Javadoc)
+  private boolean mModifiesCas;
+
+  private boolean mMultipleDeploymentAllowed;
+
+  private boolean mOutputsNewCASes;
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.OperationalProperties#getModifiesCas()
    */
-  public boolean getModifiesCas()
-  {
+  public boolean getModifiesCas() {
     return mModifiesCas;
   }
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.OperationalProperties#isMultipleDeploymentAllowed()
    */
-  public boolean isMultipleDeploymentAllowed()
-  {
+  public boolean isMultipleDeploymentAllowed() {
     return mMultipleDeploymentAllowed;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.OperationalProperties#setModifiesCas(boolean)
    */
-  public void setModifiesCas(boolean aModifiesCas)
-  {
+  public void setModifiesCas(boolean aModifiesCas) {
     mModifiesCas = aModifiesCas;
-    
+
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.OperationalProperties#setMultipleDeploymentAllowed(boolean)
    */
-  public void setMultipleDeploymentAllowed(boolean aMultipleDeploymentAllowed)
-  {
-    mMultipleDeploymentAllowed = aMultipleDeploymentAllowed;    
+  public void setMultipleDeploymentAllowed(boolean aMultipleDeploymentAllowed) {
+    mMultipleDeploymentAllowed = aMultipleDeploymentAllowed;
   }
-    
-  public boolean getOutputsNewCASes()
-  {
+
+  public boolean getOutputsNewCASes() {
     return mOutputsNewCASes;
   }
-  public void setOutputsNewCASes(boolean aOutputsNewCASes)
-  {
-    mOutputsNewCASes = aOutputsNewCASes;   
+
+  public void setOutputsNewCASes(boolean aOutputsNewCASes) {
+    mOutputsNewCASes = aOutputsNewCASes;
   }
-  protected XmlizationInfo getXmlizationInfo()
-  {
+
+  protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
-  
-  static final private XmlizationInfo XMLIZATION_INFO =
-    new XmlizationInfo("operationalProperties",
-      new PropertyXmlInfo[]{
-         new PropertyXmlInfo("modifiesCas"),
-         new PropertyXmlInfo("multipleDeploymentAllowed"),
-         new PropertyXmlInfo("outputsNewCASes")
-      });
 
-  private boolean mModifiesCas;
-  private boolean mMultipleDeploymentAllowed;
-  private boolean mOutputsNewCASes;
-  private static final long serialVersionUID = 8649608701550531026L;
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("operationalProperties",
+                  new PropertyXmlInfo[] { new PropertyXmlInfo("modifiesCas"),
+                      new PropertyXmlInfo("multipleDeploymentAllowed"),
+                      new PropertyXmlInfo("outputsNewCASes") });
 }

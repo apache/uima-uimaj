@@ -29,22 +29,16 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 /**
- *
+ * 
  */
-public class ResourceCreationSpecifier_implTest extends TestCase
-{
-  public void testDoFullValidation() throws Exception
-  {
-    try
-    {
+public class ResourceCreationSpecifier_implTest extends TestCase {
+  public void testDoFullValidation() throws Exception {
+    try {
       File descFile = JUnitExtension.getFile("UimaContextTest/CasConsumerForUimaContextTest.xml");
-      ResourceCreationSpecifier resCreaSpec =
-        (ResourceCreationSpecifier)UIMAFramework.getXMLParser().parseResourceSpecifier(
-              new XMLInputSource(descFile));
-      resCreaSpec.doFullValidation();      
-    }
-    catch (Exception e)
-    {
+      ResourceCreationSpecifier resCreaSpec = (ResourceCreationSpecifier) UIMAFramework
+                      .getXMLParser().parseResourceSpecifier(new XMLInputSource(descFile));
+      resCreaSpec.doFullValidation();
+    } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
   }

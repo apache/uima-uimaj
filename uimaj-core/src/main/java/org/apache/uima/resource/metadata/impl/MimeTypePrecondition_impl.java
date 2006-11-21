@@ -29,13 +29,11 @@ import org.apache.uima.resource.metadata.MimeTypePrecondition;
  * 
  * 
  */
-public class MimeTypePrecondition_impl extends SimplePrecondition_impl
-  implements MimeTypePrecondition
-{
+public class MimeTypePrecondition_impl extends SimplePrecondition_impl implements
+                MimeTypePrecondition {
   private static final long serialVersionUID = -2496834003359218342L;
 
-  public MimeTypePrecondition_impl()
-  {
+  public MimeTypePrecondition_impl() {
     super.setFeatureName("MimeType");
     super.setPredicate(ELEMENT_OF);
   }
@@ -43,30 +41,25 @@ public class MimeTypePrecondition_impl extends SimplePrecondition_impl
   /**
    * @see org.apache.uima.resource.metadata.MimeTypePrecondition#getMimeTypes()
    */
-  public String[] getMimeTypes()
-  {
-    return (String[])getComparisonValue();
+  public String[] getMimeTypes() {
+    return (String[]) getComparisonValue();
   }
 
   /**
    * @see org.apache.uima.resource.metadata.MimeTypePrecondition#setMimeTypes(java.lang.String[])
    */
-  public void setMimeTypes(String[] aMimeTypes)
-  {
+  public void setMimeTypes(String[] aMimeTypes) {
     setComparisonValue(aMimeTypes);
   }
 
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#setComparisonValue(java.lang.Object)
    */
-  public void setComparisonValue(Object aValue)
-  {
-    //value must be a string array
-    if (!(aValue instanceof String[]))
-    {
-      throw new UIMA_IllegalArgumentException(
-        UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-        new Object[]{aValue, "aValue", "setComparisonValue"});  
+  public void setComparisonValue(Object aValue) {
+    // value must be a string array
+    if (!(aValue instanceof String[])) {
+      throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+                      new Object[] { aValue, "aValue", "setComparisonValue" });
     }
     super.setComparisonValue(aValue);
   }
@@ -74,51 +67,46 @@ public class MimeTypePrecondition_impl extends SimplePrecondition_impl
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#setFeatureName(java.lang.String)
    */
-  public void setFeatureName(String aFeatureName)
-  {
+  public void setFeatureName(String aFeatureName) {
     throw new UIMA_UnsupportedOperationException(
-      UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD,
-      new Object[]{this.getClass().getName(), "setFeatureName"});
+                    UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
+                        this.getClass().getName(), "setFeatureName" });
   }
 
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#setFsIndexName(java.lang.String)
    */
-  public void setFsIndexName(String aIndexName)
-  {
+  public void setFsIndexName(String aIndexName) {
     throw new UIMA_UnsupportedOperationException(
-      UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD,
-      new Object[]{this.getClass().getName(), "setFsIndexName"});
+                    UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
+                        this.getClass().getName(), "setFsIndexName" });
   }
 
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#setFsMatchConstraint(org.apache.uima.cas.FSMatchConstraint)
    */
-  public void setFsMatchConstraint(FSMatchConstraint aConstraint)
-  {
+  public void setFsMatchConstraint(FSMatchConstraint aConstraint) {
     throw new UIMA_UnsupportedOperationException(
-      UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD,
-      new Object[]{this.getClass().getName(), "setFsMatchConstraint"});
+                    UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
+                        this.getClass().getName(), "setFsMatchConstraint" });
   }
 
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#setMetaDataKeyName(java.lang.String)
    */
-  public void setMetaDataKeyName(String aKey)
-  {
+  public void setMetaDataKeyName(String aKey) {
     throw new UIMA_UnsupportedOperationException(
-      UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD,
-      new Object[]{this.getClass().getName(), "setMetaDataKeyName"});
+                    UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
+                        this.getClass().getName(), "setMetaDataKeyName" });
   }
 
   /**
    * @see org.apache.uima.resource.metadata.SimplePrecondition#setPredicate(java.lang.String)
    */
-  public void setPredicate(String aPredicate)
-  {
+  public void setPredicate(String aPredicate) {
     throw new UIMA_UnsupportedOperationException(
-      UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD,
-      new Object[]{this.getClass().getName(), "setPredicate"});
+                    UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
+                        this.getClass().getName(), "setPredicate" });
   }
 
 }

@@ -22,15 +22,20 @@ package x.y.z;
 import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.impl.JCas;
 
-  /* comment 6 of 14 */
+/* comment 6 of 14 */
 public class EndOfSentence extends TokenType {
 
   public final static int typeIndexID = JCas.getNextIndex();
-  public final static int type = typeIndexID;
-  public           int getTypeIndexID() {return typeIndexID;}
 
-  // Never called.  Disable default constructor
-  protected EndOfSentence() {}
+  public final static int type = typeIndexID;
+
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  // Never called. Disable default constructor
+  protected EndOfSentence() {
+  }
 
   /** Internal - Constructor used by generator */
   public EndOfSentence(int addr, TOP_Type type) {
@@ -41,10 +46,12 @@ public class EndOfSentence extends TokenType {
     super(jcas);
   }
 
-  /** <!-- begin-user-doc -->
-    * Write your own initialization here
-    * <!-- end-user-doc -->
-  @generated modifiable */
-  private void readObject() {}
-     
+  /**
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
+   * 
+   * @generated modifiable
+   */
+  private void readObject() {
+  }
+
 }

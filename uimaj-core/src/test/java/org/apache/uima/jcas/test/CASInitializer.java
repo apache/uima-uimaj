@@ -31,28 +31,28 @@ import org.apache.uima.cas.text.TCAS;
  * Use this as your CAS factory.
  */
 public class CASInitializer {
-  
+
   public static TCAS initCas(AnnotatorInitializer init) throws CASException {
     // Create an initial CASMgr from the factory.
     CASMgr casMgr = CASFactory.createCAS();
     // Create a writable type system.
     TypeSystemMgr tsa = casMgr.getTypeSystemMgr();
-    //assert(tsa != null);
-    // Create a TCASMgr.  Ensures existence of AnnotationFS type.
+    // assert(tsa != null);
+    // Create a TCASMgr. Ensures existence of AnnotationFS type.
     init.initTypeSystem(tsa);
     // Commit the type system.
-    ((CASImpl)casMgr).commitTypeSystem();
-    //assert(tsa.isCommitted());
+    ((CASImpl) casMgr).commitTypeSystem();
+    // assert(tsa.isCommitted());
     // Create the TCAS indexes.
-		casMgr.initCASIndexes();
+    casMgr.initCASIndexes();
 
-//    tcasMgr.initTCASIndexes();
+    // tcasMgr.initTCASIndexes();
     FSIndexRepositoryMgr irm = casMgr.getIndexRepositoryMgr();
     init.initIndexes(irm, casMgr.getTypeSystemMgr());
     // Commit the index repository.
     irm.commit();
-    //assert(cas.getIndexRepositoryMgr().isCommitted());
-    
+    // assert(cas.getIndexRepositoryMgr().isCommitted());
+
     return casMgr.getCAS().getTCAS();
   }
 

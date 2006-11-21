@@ -42,21 +42,22 @@ import org.apache.uima.util.XMLSerializer;
 /**
  * Dumps a Type System object to XML.
  */
-public class TypeSystem2Xml
-{
+public class TypeSystem2Xml {
   /**
    * Converts a TypeSystem object to XML
    * 
-   * @param aTypeSystem the TypeSystem to convert
-   * @param aOutputStream the streamt o which XML output will be written
+   * @param aTypeSystem
+   *          the TypeSystem to convert
+   * @param aOutputStream
+   *          the streamt o which XML output will be written
    * 
-   * @throws IOException if there is a problem writing to the provided OutputStream
-   * @throws SAXException if an error occurs during the translation of the type 
-   *   system to XML
-   */  
+   * @throws IOException
+   *           if there is a problem writing to the provided OutputStream
+   * @throws SAXException
+   *           if an error occurs during the translation of the type system to XML
+   */
   public static void typeSystem2Xml(TypeSystem aTypeSystem, OutputStream aOutputStream)
-    throws SAXException, IOException
-  {
+                  throws SAXException, IOException {
     XMLSerializer sax2xml = new XMLSerializer(aOutputStream);
     typeSystem2Xml(aTypeSystem, sax2xml.getContentHandler());
   }
@@ -64,38 +65,37 @@ public class TypeSystem2Xml
   /**
    * Traverses a TypeSystem and calls SAX events on the specified ContentHandler.
    * 
-   * @param aTypeSystem the TypeSystem to traverse
-   * @param aContentHandler the ContentHandler on which events will be called
+   * @param aTypeSystem
+   *          the TypeSystem to traverse
+   * @param aContentHandler
+   *          the ContentHandler on which events will be called
    * 
-   * @throws SAXException if an exception is thrown by the ContentHandler
+   * @throws SAXException
+   *           if an exception is thrown by the ContentHandler
    */
   public static void typeSystem2Xml(TypeSystem aTypeSystem, ContentHandler aContentHandler)
-    throws SAXException
-  {
+                  throws SAXException {
     ResourceSpecifierFactory factory = UIMAFramework.getResourceSpecifierFactory();
     TypeSystemDescription tsDesc = factory.createTypeSystemDescription();
 
-    List typeDescs = new ArrayList();    
+    List typeDescs = new ArrayList();
     Iterator typeIterator = aTypeSystem.getTypeIterator();
-    while (typeIterator.hasNext())
-    {
-      Type type = (Type)typeIterator.next();
-      
+    while (typeIterator.hasNext()) {
+      Type type = (Type) typeIterator.next();
+
       Type superType = aTypeSystem.getParent(type);
-      if (type.getName().startsWith("uima.cas") && type.isFeatureFinal())
-      {
-        continue; //this indicates a primitive type
-      }  
-      
+      if (type.getName().startsWith("uima.cas") && type.isFeatureFinal()) {
+        continue; // this indicates a primitive type
+      }
+
       TypeDescription typeDesc = factory.createTypeDescription();
       typeDesc.setName(type.getName());
       typeDesc.setSupertypeName(superType.getName());
-      
+
       List featDescs = new ArrayList();
       Iterator featIterator = type.getFeatures().iterator();
-      while (featIterator.hasNext())
-      {
-        Feature feat = (Feature)featIterator.next();
+      while (featIterator.hasNext()) {
+        Feature feat = (Feature) featIterator.next();
         FeatureDescription featDesc = factory.createFeatureDescription();
         featDesc.setName(feat.getShortName());
         featDesc.setRangeTypeName(feat.getRange().getName());
@@ -104,30 +104,28 @@ public class TypeSystem2Xml
       FeatureDescription[] featDescArr = new FeatureDescription[featDescs.size()];
       featDescs.toArray(featDescArr);
       typeDesc.setFeatures(featDescArr);
-      
-      //check for string subtypes
-      if (type instanceof StringTypeImpl)
-      {
-        int stringSetId = ((StringTypeImpl)type).getStringSet();
-        String[] strings = ((TypeSystemImpl)aTypeSystem).getStringSet(stringSetId);
+
+      // check for string subtypes
+      if (type instanceof StringTypeImpl) {
+        int stringSetId = ((StringTypeImpl) type).getStringSet();
+        String[] strings = ((TypeSystemImpl) aTypeSystem).getStringSet(stringSetId);
         AllowedValue[] allowedVals = new AllowedValue[strings.length];
-        for (int i = 0; i < strings.length; i++)
-        {
+        for (int i = 0; i < strings.length; i++) {
           allowedVals[i] = factory.createAllowedValue();
           allowedVals[i].setString(strings[i]);
         }
         typeDesc.setAllowedValues(allowedVals);
       }
-      
+
       typeDescs.add(typeDesc);
     }
-    
+
     TypeDescription[] typeDescArr = new TypeDescription[typeDescs.size()];
     typeDescs.toArray(typeDescArr);
     tsDesc.setTypes(typeDescArr);
 
     aContentHandler.startDocument();
-    tsDesc.toXML(aContentHandler);  
+    tsDesc.toXML(aContentHandler);
     aContentHandler.endDocument();
   }
 }

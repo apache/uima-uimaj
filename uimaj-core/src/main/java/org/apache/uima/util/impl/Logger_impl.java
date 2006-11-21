@@ -31,300 +31,306 @@ import org.apache.uima.util.Logger;
 
 /**
  * UIMA Logging interface implementation without using an logging toolkit
- *   
+ * 
  */
-public class Logger_impl implements Logger
-{
-	/**
-	 * default PrintStream to which the log messages are printed. 
-	 * Defaults to <code>System.out</code>.
-	 */
-	private static final PrintStream defaultOut = System.out;
-	
-	/**
-	 * PrintStream which the object is used to log the messages, is by default set to defaultOut
-	 */
-	private PrintStream mOut;
-	
-	/**
-	 * message level to be logged
-	 */
-	private Level configLevel = Level.INFO;
-	
-	/**
-	 * default logger instance
-	 */
-	private static final Logger_impl defaultLogger = new Logger_impl();
-
-  /** ResourceManager whose extension ClassLoader will be used to
-   *  locate the message digests.  Null will cause the ClassLoader to
-   *  default to this.class.getClassLoader(). */
-  private ResourceManager mResourceManager = null;
-  
-	/**
-	 * creates a new Logger object and set <code>System.out</code> as default output 
-	 */
-	private Logger_impl()
-	{
-		//set default Output
-		mOut = defaultOut;
-	}
-	
-	/**
-	 * creates a new Logger instance for the specified source class
-	 * 
-	 * @param component current source class
-	 * 
-	 * @return Logger - returns the Logger object for the specified class
-	 */
-	public static synchronized Logger getInstance(Class component)
-	{
-		return new Logger_impl();
-	}
-
-	/**
-	 * creates a new Logger instance for the specified source class
-	 * 
-	 * @return Logger - returns a new Logger object
-	 */
-	public static synchronized Logger getInstance()
-	{
-		return defaultLogger;
-	}
-
-	/**
-	 * Logs a message with message level INFO
-	 * 
-	 * @deprecated use method with log level as parameter
-	 * 
-	 * @param aMessage the message to be logged
-	 */
-	public void log(String aMessage)
-	{
-		if (isLoggable(Level.INFO) && mOut != null)
-		{
-			mOut.print(new Date());
-			mOut.print(": " + Level.INFO.toString() + ": ");
-			mOut.println(aMessage);
-		}
-	}
-
-	/**
-	 * Logs a message with a message key and with the message level INFO
-	 * 
-	 * @deprecated use method with log level as parameter
-	 * 
-	 * @see org.apache.uima.util.Logger#log(java.lang.String, java.lang.String, java.lang.Object[])
-	 */
-	public void log(String aResourceBundleName, String aMessageKey, Object[] aArguments)
-	{
-		if(isLoggable(Level.INFO))
-		{
-			log(I18nUtil.localizeMessage(aResourceBundleName, aMessageKey, aArguments, getExtensionClassLoader()));
-		}
-	}
+public class Logger_impl implements Logger {
+  /**
+   * default PrintStream to which the log messages are printed. Defaults to <code>System.out</code>.
+   */
+  private static final PrintStream defaultOut = System.out;
 
   /**
-	 * Logs an exception with message level INFO
-	 * 
-	 * @deprecated use method with log level as parameter
-	 * 
-	 * @param aException the exception to be logged
-	 */
-	public void logException(Exception aException)
-	{
-		if (isLoggable(Level.INFO) && mOut != null)
-		{
-			mOut.print(new Date());
-			mOut.print(": " + Level.INFO.toString() + ": ");
-			aException.printStackTrace(mOut);
-		}
-	}
+   * PrintStream which the object is used to log the messages, is by default set to defaultOut
+   */
+  private PrintStream mOut;
 
-	/**
-	 * @deprecated use external configuration possibility 
-	 * 
-	 * @see org.apache.uima.util.Logger#setOutputStream(java.io.OutputStream)
-	 */
-	public void setOutputStream(OutputStream out)
-	{
-    	if (out == null || out instanceof PrintStream)
-    	{
-    		mOut = (PrintStream) out;
-    	}
-    	else
-    	{
-    		mOut = new PrintStream(out);
-    	}
-	}
+  /**
+   * message level to be logged
+   */
+  private Level configLevel = Level.INFO;
 
-	/**
-	 * @deprecated use external configuration possibility
-	 * 
-	 * @see org.apache.uima.util.Logger#setOutputStream(java.io.PrintStream)
-	 */
-	public void setOutputStream(PrintStream out)
-	{
-	  mOut = out;
-	}
+  /**
+   * default logger instance
+   */
+  private static final Logger_impl defaultLogger = new Logger_impl();
 
-	/**
-	 * Logs an exception.
-	 * 
-	 * @param level message level
-	 * @param thrown the throwable
-	 */
-	private void logException(Level level, Throwable thrown)
-	{
-		mOut.print(new Date());
-		mOut.print(": " + level.toString() + ": ");
-		thrown.printStackTrace(mOut);
-	}
+  /**
+   * ResourceManager whose extension ClassLoader will be used to locate the message digests. Null
+   * will cause the ClassLoader to default to this.class.getClassLoader().
+   */
+  private ResourceManager mResourceManager = null;
 
-	/**
-	 * Logs a message.
-	 * 
-	 * @param level message level
-	 * @param aMessage the message
-	 */
-	private void logMessage(Level level, String aMessage)
-	{
-		if(mOut != null)
-		{
-			mOut.print(new Date());
-			mOut.print(": " + level.toString() + ": ");
-			mOut.println(aMessage);
-		}
-	}
+  /**
+   * creates a new Logger object and set <code>System.out</code> as default output
+   */
+  private Logger_impl() {
+    // set default Output
+    mOut = defaultOut;
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.util.Logger#isLoggable(org.apache.uima.util.Level)
-	 */
-	public boolean isLoggable(Level level)
-	{
-		return configLevel.isGreaterOrEqual(level);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.apache.uima.util.Logger#log(org.apache.uima.util.Level, java.lang.String)
-	 */
-	public void log(Level level, String aMessage)
-	{
-		if (isLoggable(level))
-		{
-			logMessage(level,aMessage);
-		}
-	}
+  /**
+   * creates a new Logger instance for the specified source class
+   * 
+   * @param component
+   *          current source class
+   * 
+   * @return Logger - returns the Logger object for the specified class
+   */
+  public static synchronized Logger getInstance(Class component) {
+    return new Logger_impl();
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.util.Logger#log(org.apache.uima.util.Level, java.lang.String, java.lang.Object)
-	 */
-	public void log(Level level, String aMessage, Object param1)
-	{
-		if(isLoggable(level))
-		{
-			String result = MessageFormat.format(aMessage, new Object[] {param1});
-		
-			logMessage(level, result);			
-		}
-	}
+  /**
+   * creates a new Logger instance for the specified source class
+   * 
+   * @return Logger - returns a new Logger object
+   */
+  public static synchronized Logger getInstance() {
+    return defaultLogger;
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.util.Logger#log(org.apache.uima.util.Level, java.lang.String, java.lang.Object[])
-	 */
-	public void log(Level level, String aMessage, Object[] params)
-	{
-		if(isLoggable(level))
-		{
-			String result = MessageFormat.format(aMessage, params);
-		
-			logMessage(level, result);
-		}
-	}
+  /**
+   * Logs a message with message level INFO
+   * 
+   * @deprecated use method with log level as parameter
+   * 
+   * @param aMessage
+   *          the message to be logged
+   */
+  public void log(String aMessage) {
+    if (isLoggable(Level.INFO) && mOut != null) {
+      mOut.print(new Date());
+      mOut.print(": " + Level.INFO.toString() + ": ");
+      mOut.println(aMessage);
+    }
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.util.Logger#log(org.apache.uima.util.Level, java.lang.String, java.lang.Throwable)
-	 */
-	public void log(Level level, String aMessage, Throwable thrown)
-	{
-		if(isLoggable(level))
-		{
-			logMessage(level, aMessage);
-		
-			logException(level,thrown);
-		}
-	}
+  /**
+   * Logs a message with a message key and with the message level INFO
+   * 
+   * @deprecated use method with log level as parameter
+   * 
+   * @see org.apache.uima.util.Logger#log(java.lang.String, java.lang.String, java.lang.Object[])
+   */
+  public void log(String aResourceBundleName, String aMessageKey, Object[] aArguments) {
+    if (isLoggable(Level.INFO)) {
+      log(I18nUtil.localizeMessage(aResourceBundleName, aMessageKey, aArguments,
+                      getExtensionClassLoader()));
+    }
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.util.Logger#logrb(org.apache.uima.util.Level, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Object)
-	 */
-	public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName, String msgKey, Object param1)
-	{
-		if(isLoggable(level))
-		{
-			logMessage(level,I18nUtil.localizeMessage(bundleName, msgKey, new Object[] {param1}, getExtensionClassLoader()));
-		}		
-	}
+  /**
+   * Logs an exception with message level INFO
+   * 
+   * @deprecated use method with log level as parameter
+   * 
+   * @param aException
+   *          the exception to be logged
+   */
+  public void logException(Exception aException) {
+    if (isLoggable(Level.INFO) && mOut != null) {
+      mOut.print(new Date());
+      mOut.print(": " + Level.INFO.toString() + ": ");
+      aException.printStackTrace(mOut);
+    }
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.util.Logger#logrb(org.apache.uima.util.Level, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Object[])
-	 */
-	public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName, String msgKey, Object[] params)
-	{
-		if(isLoggable(level))
-		{
-			logMessage(level,I18nUtil.localizeMessage(bundleName, msgKey, params, getExtensionClassLoader()));
-		}	
-	}
+  /**
+   * @deprecated use external configuration possibility
+   * 
+   * @see org.apache.uima.util.Logger#setOutputStream(java.io.OutputStream)
+   */
+  public void setOutputStream(OutputStream out) {
+    if (out == null || out instanceof PrintStream) {
+      mOut = (PrintStream) out;
+    } else {
+      mOut = new PrintStream(out);
+    }
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.util.Logger#logrb(org.apache.uima.util.Level, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Throwable)
-	 */
-	public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName, String msgKey, Throwable thrown)
-	{
-		if(isLoggable(level))
-		{
-			logMessage(level,I18nUtil.localizeMessage(bundleName, msgKey, null, getExtensionClassLoader()));
-		
-			logException(level,thrown);
-		}
-	}
+  /**
+   * @deprecated use external configuration possibility
+   * 
+   * @see org.apache.uima.util.Logger#setOutputStream(java.io.PrintStream)
+   */
+  public void setOutputStream(PrintStream out) {
+    mOut = out;
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.util.Logger#logrb(org.apache.uima.util.Level, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-	 */
-	public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName, String msgKey)
-	{
-		if(isLoggable(level))
-		 {
-			logMessage(level,I18nUtil.localizeMessage(bundleName, msgKey, null, getExtensionClassLoader()));
-		 }
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.apache.uima.util.Logger#setLevel(org.apache.uima.util.Level)
-	 */
-	public void setLevel(Level level)
-	{
-		//set new config level
-		configLevel = level;
-	}
-	
-  /* (non-Javadoc)
+  /**
+   * Logs an exception.
+   * 
+   * @param level
+   *          message level
+   * @param thrown
+   *          the throwable
+   */
+  private void logException(Level level, Throwable thrown) {
+    mOut.print(new Date());
+    mOut.print(": " + level.toString() + ": ");
+    thrown.printStackTrace(mOut);
+  }
+
+  /**
+   * Logs a message.
+   * 
+   * @param level
+   *          message level
+   * @param aMessage
+   *          the message
+   */
+  private void logMessage(Level level, String aMessage) {
+    if (mOut != null) {
+      mOut.print(new Date());
+      mOut.print(": " + level.toString() + ": ");
+      mOut.println(aMessage);
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.util.Logger#isLoggable(org.apache.uima.util.Level)
+   */
+  public boolean isLoggable(Level level) {
+    return configLevel.isGreaterOrEqual(level);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.util.Logger#log(org.apache.uima.util.Level, java.lang.String)
+   */
+  public void log(Level level, String aMessage) {
+    if (isLoggable(level)) {
+      logMessage(level, aMessage);
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.util.Logger#log(org.apache.uima.util.Level, java.lang.String,
+   *      java.lang.Object)
+   */
+  public void log(Level level, String aMessage, Object param1) {
+    if (isLoggable(level)) {
+      String result = MessageFormat.format(aMessage, new Object[] { param1 });
+
+      logMessage(level, result);
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.util.Logger#log(org.apache.uima.util.Level, java.lang.String,
+   *      java.lang.Object[])
+   */
+  public void log(Level level, String aMessage, Object[] params) {
+    if (isLoggable(level)) {
+      String result = MessageFormat.format(aMessage, params);
+
+      logMessage(level, result);
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.util.Logger#log(org.apache.uima.util.Level, java.lang.String,
+   *      java.lang.Throwable)
+   */
+  public void log(Level level, String aMessage, Throwable thrown) {
+    if (isLoggable(level)) {
+      logMessage(level, aMessage);
+
+      logException(level, thrown);
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.util.Logger#logrb(org.apache.uima.util.Level, java.lang.String,
+   *      java.lang.String, java.lang.String, java.lang.String, java.lang.Object)
+   */
+  public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
+                  String msgKey, Object param1) {
+    if (isLoggable(level)) {
+      logMessage(level, I18nUtil.localizeMessage(bundleName, msgKey, new Object[] { param1 },
+                      getExtensionClassLoader()));
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.util.Logger#logrb(org.apache.uima.util.Level, java.lang.String,
+   *      java.lang.String, java.lang.String, java.lang.String, java.lang.Object[])
+   */
+  public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
+                  String msgKey, Object[] params) {
+    if (isLoggable(level)) {
+      logMessage(level, I18nUtil.localizeMessage(bundleName, msgKey, params,
+                      getExtensionClassLoader()));
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.util.Logger#logrb(org.apache.uima.util.Level, java.lang.String,
+   *      java.lang.String, java.lang.String, java.lang.String, java.lang.Throwable)
+   */
+  public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
+                  String msgKey, Throwable thrown) {
+    if (isLoggable(level)) {
+      logMessage(level, I18nUtil.localizeMessage(bundleName, msgKey, null,
+                      getExtensionClassLoader()));
+
+      logException(level, thrown);
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.util.Logger#logrb(org.apache.uima.util.Level, java.lang.String,
+   *      java.lang.String, java.lang.String, java.lang.String)
+   */
+  public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
+                  String msgKey) {
+    if (isLoggable(level)) {
+      logMessage(level, I18nUtil.localizeMessage(bundleName, msgKey, null,
+                      getExtensionClassLoader()));
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.util.Logger#setLevel(org.apache.uima.util.Level)
+   */
+  public void setLevel(Level level) {
+    // set new config level
+    configLevel = level;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.util.Logger#setResourceManager(org.apache.uima.resource.ResourceManager)
    */
-  public void setResourceManager(ResourceManager resourceManager)
-  {
+  public void setResourceManager(ResourceManager resourceManager) {
     mResourceManager = resourceManager;
   }
-  
+
   /**
-   *  Gets the extension ClassLoader to used to locate the message digests.
-   *  If this returns null, then message digests will be searched for using
-   *  this.class.getClassLoader(). 
+   * Gets the extension ClassLoader to used to locate the message digests. If this returns null,
+   * then message digests will be searched for using this.class.getClassLoader().
    */
-  private ClassLoader getExtensionClassLoader()
-  {
+  private ClassLoader getExtensionClassLoader() {
     if (mResourceManager == null)
       return null;
     else

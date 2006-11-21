@@ -30,77 +30,76 @@ import org.apache.uima.internal.util.IntPointerIterator;
  */
 public class FSIteratorWrapper extends FSIteratorImplBase {
 
-    IntPointerIterator it;
+  IntPointerIterator it;
 
-    CASImpl casImpl;
+  CASImpl casImpl;
 
-    /**
-     * Constructor for FSIteratorWrapper.
-     */
-    private FSIteratorWrapper() {
-        super();
-    }
+  /**
+   * Constructor for FSIteratorWrapper.
+   */
+  private FSIteratorWrapper() {
+    super();
+  }
 
-    FSIteratorWrapper(IntPointerIterator it, CASImpl casImpl) {
-        this.it = it;
-        this.casImpl = casImpl;
-    }
+  FSIteratorWrapper(IntPointerIterator it, CASImpl casImpl) {
+    this.it = it;
+    this.casImpl = casImpl;
+  }
 
-    /**
-     * @see org.apache.uima.cas.FSIterator#isValid()
-     */
-    public boolean isValid() {
-        return this.it.isValid();
-    }
+  /**
+   * @see org.apache.uima.cas.FSIterator#isValid()
+   */
+  public boolean isValid() {
+    return this.it.isValid();
+  }
 
-    /**
-     * @see org.apache.uima.cas.FSIterator#get()
-     */
-    public FeatureStructure get() {
-        return this.casImpl.createFS(this.it.get());
-    }
+  /**
+   * @see org.apache.uima.cas.FSIterator#get()
+   */
+  public FeatureStructure get() {
+    return this.casImpl.createFS(this.it.get());
+  }
 
-    /**
-     * @see org.apache.uima.cas.FSIterator#moveToNext()()
-     */
-    public void moveToNext() {
-        this.it.inc();
-    }
+  /**
+   * @see org.apache.uima.cas.FSIterator#moveToNext()()
+   */
+  public void moveToNext() {
+    this.it.inc();
+  }
 
-    /**
-     * @see org.apache.uima.cas.FSIterator#moveToPrevious()()
-     */
-    public void moveToPrevious() {
-        this.it.dec();
-    }
+  /**
+   * @see org.apache.uima.cas.FSIterator#moveToPrevious()()
+   */
+  public void moveToPrevious() {
+    this.it.dec();
+  }
 
-    /**
-     * @see org.apache.uima.cas.FSIterator#moveToFirst()
-     */
-    public void moveToFirst() {
-        this.it.moveToFirst();
-    }
+  /**
+   * @see org.apache.uima.cas.FSIterator#moveToFirst()
+   */
+  public void moveToFirst() {
+    this.it.moveToFirst();
+  }
 
-    /**
-     * @see org.apache.uima.cas.FSIterator#moveToLast()
-     */
-    public void moveToLast() {
-        this.it.moveToLast();
-    }
+  /**
+   * @see org.apache.uima.cas.FSIterator#moveToLast()
+   */
+  public void moveToLast() {
+    this.it.moveToLast();
+  }
 
-    /**
-     * @see org.apache.uima.cas.FSIterator#copy()
-     */
-    public FSIterator copy() {
-        return new FSIteratorWrapper((IntPointerIterator) this.it.copy(),
-                this.casImpl);
-    }
+  /**
+   * @see org.apache.uima.cas.FSIterator#copy()
+   */
+  public FSIterator copy() {
+    return new FSIteratorWrapper((IntPointerIterator) this.it.copy(), this.casImpl);
+  }
 
-    /**
-     * @see org.apache.uima.cas.FSIterator#moveTo(FeatureStructure)
-     */
-    public void moveTo(FeatureStructure fs) {
-        this.it.moveTo(((FeatureStructureImpl) fs).getAddress());
-    }
+  /**
+   * @see org.apache.uima.cas.FSIterator#moveTo(FeatureStructure)
+   */
+  public void moveTo(FeatureStructure fs) {
+    this.it.moveTo(((FeatureStructureImpl) fs).getAddress());
+  }
 
 }

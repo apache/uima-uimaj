@@ -20,11 +20,11 @@
 package org.apache.uima.internal.util;
 
 /**
- * Interface for a comparable IntListIterator. Two IntIterators are compared
- * according to the element that would be returned by the next call to next().
+ * Interface for a comparable IntListIterator. Two IntIterators are compared according to the
+ * element that would be returned by the next call to next().
  */
-public interface ComparableIntPointerIterator extends IntPointerIterator,
-        Comparable { 
+public interface ComparableIntPointerIterator extends IntPointerIterator, Comparable {
   public boolean isConcurrentModification();
+
   public void resetConcurrentModification();
 }

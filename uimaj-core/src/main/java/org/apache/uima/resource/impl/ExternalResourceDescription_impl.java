@@ -26,110 +26,89 @@ import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 
 /**
- * Reference implementation of {@link AnalysisEngineDescription}.  Note that 
- * this class has a slightly nonstandard XML representation because the
- * "key" property is represented in XML by an attribute rather than a child 
- * element.  Therefore, we override the {@link #toXML()} method and the
+ * Reference implementation of {@link AnalysisEngineDescription}. Note that this class has a
+ * slightly nonstandard XML representation because the "key" property is represented in XML by an
+ * attribute rather than a child element. Therefore, we override the {@link #toXML()} method and the
  * {@link #buildFromXMLElement(Element,XMLParser)} method.
  * 
  * 
  */
-public class ExternalResourceDescription_impl extends MetaDataObject_impl
-  implements ExternalResourceDescription
-{ 
-  
+public class ExternalResourceDescription_impl extends MetaDataObject_impl implements
+                ExternalResourceDescription {
+
+  static final long serialVersionUID = -6995615796561255268L;
+
+  private String mName;
+
+  private String mDescription;
+
+  private ResourceSpecifier mResourceSpecifier;
+
+  private String mImplementationName;
 
   /**
    * @see org.apache.uima.analysis_engine.ExternalResourceDescription#getName()
    */
-  public String getName()
-  {
+  public String getName() {
     return mName;
   }
-
 
   /**
    * @see org.apache.uima.analysis_engine.ExternalResourceDescription#getResourceSpecifier()
    */
-  public ResourceSpecifier getResourceSpecifier()
-  {
+  public ResourceSpecifier getResourceSpecifier() {
     return mResourceSpecifier;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.ExternalResourceDescription#getImplementationName()
    */
-  public String getImplementationName()
-  {
+  public String getImplementationName() {
     return mImplementationName;
   }
-
 
   /**
    * @see org.apache.uima.analysis_engine.ExternalResourceDescription#setName(String)
    */
-  public void setName(String aName)
-  {
+  public void setName(String aName) {
     mName = aName;
   }
-
 
   /**
    * @see org.apache.uima.analysis_engine.ExternalResourceDescription#setResourceSpecifier(ResourceSpecifier)
    */
-  public void setResourceSpecifier(ResourceSpecifier aSpecifier)
-  {
+  public void setResourceSpecifier(ResourceSpecifier aSpecifier) {
     mResourceSpecifier = aSpecifier;
   }
-
 
   /**
    * @see org.apache.uima.analysis_engine.ExternalResourceDescription#setImpelmentationName(String)
    */
-  public void setImplementationName(String aName)
-  {
+  public void setImplementationName(String aName) {
     mImplementationName = aName;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.ExternalResourceDescription#getDescription()
    */
-  public String getDescription()
-  {
+  public String getDescription() {
     return mDescription;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.ExternalResourceDescription#setDescription(java.lang.String)
    */
-  public void setDescription(String aDescription)
-  {
+  public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
-  
-  
-  protected XmlizationInfo getXmlizationInfo()
-  {
+
+  protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
-  
-  static final private XmlizationInfo XMLIZATION_INFO =
-    new XmlizationInfo("externalResource",
-      new PropertyXmlInfo[]{
-         new PropertyXmlInfo("name"),
-         new PropertyXmlInfo("description",false),
-         new PropertyXmlInfo("resourceSpecifier",null),
-         new PropertyXmlInfo("implementationName")
-      });
-         
 
-  private String mName;
-  
-  private String mDescription;
-
-  private ResourceSpecifier mResourceSpecifier;
-   
-  private String mImplementationName;
-  
-  static final long serialVersionUID = -6995615796561255268L;
-}  
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("externalResource",
+                  new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
+                      new PropertyXmlInfo("description", false),
+                      new PropertyXmlInfo("resourceSpecifier", null),
+                      new PropertyXmlInfo("implementationName") });
+}

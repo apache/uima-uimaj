@@ -22,89 +22,87 @@ package org.apache.uima.cas;
 import java.util.Iterator;
 
 /**
- * Repository of indexes over feature structures. Use this interface to access
- * previously defined indexes.
+ * Repository of indexes over feature structures. Use this interface to access previously defined
+ * indexes.
  */
 public interface FSIndexRepository {
 
-    /**
-     * Retrieve an index according to a label.
-     * 
-     * @param label
-     *            The name of the index.
-     * @return The index with the name <code>label</code>, or
-     *         <code>null</code> if no such index is defined.
-     */
-    FSIndex getIndex(String label);
+  /**
+   * Retrieve an index according to a label.
+   * 
+   * @param label
+   *          The name of the index.
+   * @return The index with the name <code>label</code>, or <code>null</code> if no such index
+   *         is defined.
+   */
+  FSIndex getIndex(String label);
 
-    /**
-     * Retrieve an index according to a label and a type. The type is used to
-     * narrow down the index of a more general type to a more specific one.
-     * 
-     * @param label
-     *            The name of the index.
-     * @param type
-     *            A subtype of the type of the index.
-     * @return The specified, or <code>null</code> if an index with that name
-     *         doesn't exist, or it exists but <code>type</code> is not a
-     *         subtype of the index's type.
-     */
-    FSIndex getIndex(String label, Type type);
+  /**
+   * Retrieve an index according to a label and a type. The type is used to narrow down the index of
+   * a more general type to a more specific one.
+   * 
+   * @param label
+   *          The name of the index.
+   * @param type
+   *          A subtype of the type of the index.
+   * @return The specified, or <code>null</code> if an index with that name doesn't exist, or it
+   *         exists but <code>type</code> is not a subtype of the index's type.
+   */
+  FSIndex getIndex(String label, Type type);
 
-    /**
-     * Get all labels for all indexes.
-     * 
-     * @return All labels.
-     */
-    Iterator getLabels();
+  /**
+   * Get all labels for all indexes.
+   * 
+   * @return All labels.
+   */
+  Iterator getLabels();
 
-    /**
-     * Get all indexes in this repository.
-     * 
-     * @return All indexes.
-     */
-    Iterator getIndexes();
+  /**
+   * Get all indexes in this repository.
+   * 
+   * @return All indexes.
+   */
+  Iterator getIndexes();
 
-    /**
-     * Add a feature structure to all appropriate indexes in the repository.
-     * 
-     * <p>
-     * <b>Important</b>: after you have called <code>addFS()</code> on a FS,
-     * do not change the values of any features used for indexing. If you do,
-     * the index will become corrupted and may be unusable. If you need to
-     * change an index feature value, first call
-     * {@link #removeFS(FeatureStructure) removeFS()} on the FS, change the
-     * feature values, then call <code>addFS()</code> again.
-     * 
-     * @param fs
-     *            The FS to be added.
-     * @exception NullPointerException
-     *                If the <code>fs</code> parameter is <code>null</code>.
-     */
-    void addFS(FeatureStructure fs);
+  /**
+   * Add a feature structure to all appropriate indexes in the repository.
+   * 
+   * <p>
+   * <b>Important</b>: after you have called <code>addFS()</code> on a FS, do not change the
+   * values of any features used for indexing. If you do, the index will become corrupted and may be
+   * unusable. If you need to change an index feature value, first call
+   * {@link #removeFS(FeatureStructure) removeFS()} on the FS, change the feature values, then call
+   * <code>addFS()</code> again.
+   * 
+   * @param fs
+   *          The FS to be added.
+   * @exception NullPointerException
+   *              If the <code>fs</code> parameter is <code>null</code>.
+   */
+  void addFS(FeatureStructure fs);
 
-    /**
-     * Remove a feature structure from all indexes in the repository.
-     * 
-     * @param fs
-     *            The FS to be removed.
-     * @exception NullPointerException
-     *                If the <code>fs</code> parameter is <code>null</code>.
-     */
-    void removeFS(FeatureStructure fs);
+  /**
+   * Remove a feature structure from all indexes in the repository.
+   * 
+   * @param fs
+   *          The FS to be removed.
+   * @exception NullPointerException
+   *              If the <code>fs</code> parameter is <code>null</code>.
+   */
+  void removeFS(FeatureStructure fs);
 
-    /** 
-     * Gets an iterator over all indexed FeatureStructures of the specified
-     * Type (and any of its subtypes).  
-     * <p>
-     * Current limitation: there must be a sorted or bag index defined over this type
-     * (or one of its supertypes).  Otherwise an empty iterator will always be
-     * returned.
-     *  
-     * @param aType  The type  
-     * 
-     * @return An iterator that returns all indexed FeatureStructures of
-     *   type <code>aType</code>, in no particular order.
-     */
-    FSIterator getAllIndexedFS(Type aType);
+  /**
+   * Gets an iterator over all indexed FeatureStructures of the specified Type (and any of its
+   * subtypes).
+   * <p>
+   * Current limitation: there must be a sorted or bag index defined over this type (or one of its
+   * supertypes). Otherwise an empty iterator will always be returned.
+   * 
+   * @param aType
+   *          The type
+   * 
+   * @return An iterator that returns all indexed FeatureStructures of type <code>aType</code>,
+   *         in no particular order.
+   */
+  FSIterator getAllIndexedFS(Type aType);
 }

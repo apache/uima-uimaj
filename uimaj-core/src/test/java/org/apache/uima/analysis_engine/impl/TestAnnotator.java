@@ -34,53 +34,46 @@ import org.apache.uima.util.ProcessTraceEvent;
 /**
  * Annotator class used for testing
  * 
- * @author Adam Lally 
+ * @author Adam Lally
  */
-public class TestAnnotator extends Annotator_ImplBase implements TextAnnotator 
-{
+public class TestAnnotator extends Annotator_ImplBase implements TextAnnotator {
   // Process method saves information to these static fields,
   // which are queried by the unit test.
   public static String lastDocument;
+
   public static String stringParamValue;
+
   public static ResultSpecification lastResultSpec;
+
   public static boolean typeSystemInitCalled;
-  
+
   /**
    * @see org.apache.uima.analysis_engine.annotator.Annotator#initialize(CAS, AnnotatorContext)
    */
-  public void initialize(AnnotatorContext aContext)
-    throws AnnotatorConfigurationException, AnnotatorInitializationException
-  {
+  public void initialize(AnnotatorContext aContext) throws AnnotatorConfigurationException,
+                  AnnotatorInitializationException {
     super.initialize(aContext);
     typeSystemInitCalled = false;
     lastResultSpec = null;
     lastDocument = null;
-    try
-    {
-      stringParamValue = 
-        (String)getContext().getConfigParameterValue("StringParam");
-    }
-    catch(AnnotatorContextException e)
-    {
+    try {
+      stringParamValue = (String) getContext().getConfigParameterValue("StringParam");
+    } catch (AnnotatorContextException e) {
       throw new AnnotatorInitializationException(e);
     }
   }
-  
-  public void typeSystemInit(TypeSystem aTypeSystem)
-  {
+
+  public void typeSystemInit(TypeSystem aTypeSystem) {
     typeSystemInitCalled = true;
   }
-
 
   /**
    * @see org.apache.uima.analysis_engine.annotator.TextAnnotator#process(TCAS,ResultSpecification)
    */
-  public void process(TCAS aTCAS, ResultSpecification aResultSpec)
-    throws AnnotatorProcessException
-  {
-    //set static fields to contain document text, result spec,
-    //and value of StringParam configuration parameter.
+  public void process(TCAS aTCAS, ResultSpecification aResultSpec) throws AnnotatorProcessException {
+    // set static fields to contain document text, result spec,
+    // and value of StringParam configuration parameter.
     lastDocument = aTCAS.getDocumentText();
     lastResultSpec = aResultSpec;
-  }  
+  }
 }

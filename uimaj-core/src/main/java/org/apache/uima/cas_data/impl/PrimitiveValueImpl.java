@@ -24,8 +24,7 @@ import org.apache.uima.cas_data.PrimitiveValue;
 /**
  * 
  */
-public class PrimitiveValueImpl implements PrimitiveValue
-{
+public class PrimitiveValueImpl implements PrimitiveValue {
   /**
    * 
    */
@@ -33,75 +32,57 @@ public class PrimitiveValueImpl implements PrimitiveValue
 
   private Object aValueObject = null;
 
-  public PrimitiveValueImpl(String aValue)
-  {
+  public PrimitiveValueImpl(String aValue) {
     aValueObject = aValue;
   }
 
-  public PrimitiveValueImpl(int aValue)
-  {
+  public PrimitiveValueImpl(int aValue) {
     aValueObject = new Integer(aValue);
   }
 
-  public PrimitiveValueImpl(float aValue)
-  {
+  public PrimitiveValueImpl(float aValue) {
     aValueObject = new Float(aValue);
   }
 
-  public String toString()
-  {
+  public String toString() {
     if (aValueObject == null)
       return "";
     else
       return aValueObject.toString();
   }
 
-  public int toInt()
-  {
+  public int toInt() {
     if (aValueObject instanceof Integer)
       return ((Integer) aValueObject).intValue();
-    else if (aValueObject instanceof String)
-    {
-      try
-      {
+    else if (aValueObject instanceof String) {
+      try {
         return Integer.parseInt((String) aValueObject);
-      }
-      catch(NumberFormatException e)
-      {
-        //the string doesn't parse as an integer.  Return 0 as per the contract
-        //stated by the PrimitiveValue interface.
+      } catch (NumberFormatException e) {
+        // the string doesn't parse as an integer. Return 0 as per the contract
+        // stated by the PrimitiveValue interface.
         return 0;
       }
-    }
-    else
+    } else
       return 0;
   }
 
-  public float toFloat()
-  {
+  public float toFloat() {
     if (aValueObject instanceof Float)
       return ((Float) aValueObject).floatValue();
-    else if (aValueObject instanceof String)
-    {
-      try
-      {
+    else if (aValueObject instanceof String) {
+      try {
         return Float.parseFloat((String) aValueObject);
-      }
-      catch(NumberFormatException e)
-      {
-        //the string doesn't parse as an float.  Return 0 as per the contract
-        //stated by the PrimitiveValue interface.
+      } catch (NumberFormatException e) {
+        // the string doesn't parse as an float. Return 0 as per the contract
+        // stated by the PrimitiveValue interface.
         return 0;
       }
-    }
-    else
+    } else
       return 0;
   }
 
-  public Object get()
-  {
+  public Object get() {
     return aValueObject;
   }
-
 
 }

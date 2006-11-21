@@ -22,72 +22,78 @@ package org.apache.uima.collection.metadata;
 import org.apache.uima.resource.metadata.MetaDataObject;
 
 /**
- * An object that holds configuration that is part of the CPE descriptor. Provides the
- * means of configuring CPE CollectionReader.
- *  
+ * An object that holds configuration that is part of the CPE descriptor. Provides the means of
+ * configuring CPE CollectionReader.
+ * 
  * 
  */
-public interface CpeCollectionReader extends MetaDataObject
-{
-	/**
-	 * Sets CasInitializer for the CollectionReader will use. This object initializes the CAS
-	 * with SoFas. 
-	 * 
-	 * @param aCasInitializer - {@link org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer}
-	 * @throws CpeDescriptorException
+public interface CpeCollectionReader extends MetaDataObject {
+  /**
+   * Sets CasInitializer for the CollectionReader will use. This object initializes the CAS with
+   * SoFas.
+   * 
+   * @param aCasInitializer -
+   *          {@link org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer}
+   * @throws CpeDescriptorException
    * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
-	 */
-	public void setCasInitializer( CpeCollectionReaderCasInitializer aCasInitializer ) 
-		throws CpeDescriptorException;
-	/**
-	 * Returns CasInitializer associated with CollectionReader. This object initializes the CAS
-	 * with SoFas. 
-	 * 
-	 * @return {@link org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer}
-	 * @throws CpeDescriptorException
-   *   
+   */
+  public void setCasInitializer(CpeCollectionReaderCasInitializer aCasInitializer)
+                  throws CpeDescriptorException;
+
+  /**
+   * Returns CasInitializer associated with CollectionReader. This object initializes the CAS with
+   * SoFas.
+   * 
+   * @return {@link org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer}
+   * @throws CpeDescriptorException
+   * 
    * @deprecated As of v2.0 CAS Initializers are deprecated.
-	 */
-	public CpeCollectionReaderCasInitializer getCasInitializer() 
-		throws CpeDescriptorException;
-	/**
-	 * Removes {@link org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer} from 
-	 * CollectionReader
-	 *
-	 */	
-	public void removeCasInitializer();
-	
-	/**
-	 * Sets descriptor path containing configuration for the CollectionReader
-	 * 
-	 * @param aDescriptor - component containing descriptor path
-	 */
-	public void setDescriptor( CpeComponentDescriptor aDescriptor );
-	/**
-	 * Returns {@link org.apache.uima.collection.metadata.CpeComponentDescriptor} containing
-	 * CollectionReader descriptor path.
-	 * 
-	 * @return component containing descriptor path
-	 */
-	public CpeComponentDescriptor getDescriptor();	
+   */
+  public CpeCollectionReaderCasInitializer getCasInitializer() throws CpeDescriptorException;
 
-    /**
-     * Returns {@link org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings} object
-     * containing overrides to parameter settings for this CollectionReader.
-     * 
-     * @return - object containing parameter setting overrides 
-     */
-    public CasProcessorConfigurationParameterSettings getConfigurationParameterSettings();    
+  /**
+   * Removes {@link org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer} from
+   * CollectionReader
+   * 
+   */
+  public void removeCasInitializer();
 
-    /**
-     * Sets the {@link org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings} object
-     * containing overrides to parameter settings for this CollectionReader.
-     * 
-     * @param aSettings object containing parameter setting overrides 
-     */
-    public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aSettings)
-      throws CpeDescriptorException; 
-	public void setCollectionIterator(CpeCollectionReaderIterator iterator);
-	public CpeCollectionReaderIterator getCollectionIterator();
+  /**
+   * Sets descriptor path containing configuration for the CollectionReader
+   * 
+   * @param aDescriptor -
+   *          component containing descriptor path
+   */
+  public void setDescriptor(CpeComponentDescriptor aDescriptor);
+
+  /**
+   * Returns {@link org.apache.uima.collection.metadata.CpeComponentDescriptor} containing
+   * CollectionReader descriptor path.
+   * 
+   * @return component containing descriptor path
+   */
+  public CpeComponentDescriptor getDescriptor();
+
+  /**
+   * Returns {@link org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings}
+   * object containing overrides to parameter settings for this CollectionReader.
+   * 
+   * @return - object containing parameter setting overrides
+   */
+  public CasProcessorConfigurationParameterSettings getConfigurationParameterSettings();
+
+  /**
+   * Sets the {@link org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings}
+   * object containing overrides to parameter settings for this CollectionReader.
+   * 
+   * @param aSettings
+   *          object containing parameter setting overrides
+   */
+  public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aSettings)
+                  throws CpeDescriptorException;
+
+  public void setCollectionIterator(CpeCollectionReaderIterator iterator);
+
+  public CpeCollectionReaderIterator getCollectionIterator();
 }

@@ -19,31 +19,27 @@
 
 package org.apache.uima;
 
-
 /**
- * A type of {@link ResourceFactory} that produces resources by delegating
- * to other Resource Factories.
+ * A type of {@link ResourceFactory} that produces resources by delegating to other Resource
+ * Factories.
  * <p>
- * Resource Factories are registered with the composite factory by calling
- * the {@link #registerFactory(Class,ResourceFactory)} method.  The type of
- * {@link org.apache.uima.resource.ResourceSpecifier} that the factory can handle 
- * is passed to this method.  In the event that more than one 
- * <code>ResourceFactory</code> is registered for the same Resource Specifier 
- * class, the most recently registered factory will be tried first.
+ * Resource Factories are registered with the composite factory by calling the
+ * {@link #registerFactory(Class,ResourceFactory)} method. The type of
+ * {@link org.apache.uima.resource.ResourceSpecifier} that the factory can handle is passed to this
+ * method. In the event that more than one <code>ResourceFactory</code> is registered for the same
+ * Resource Specifier class, the most recently registered factory will be tried first.
  * 
  * 
  */
-public interface CompositeResourceFactory extends ResourceFactory
-{
+public interface CompositeResourceFactory extends ResourceFactory {
   /**
    * Registers a ResourceFactory with this composite factory.
    * 
-   * @param aResourceSpecifierInterface the subinterface of 
-   *   {@link org.apache.uima.resource.ResourceSpecifier} that the factory can
-   *   handle
-   * @param aFactory the factory used to create resources from resource
-   *   specifiers of the given type
+   * @param aResourceSpecifierInterface
+   *          the subinterface of {@link org.apache.uima.resource.ResourceSpecifier} that the
+   *          factory can handle
+   * @param aFactory
+   *          the factory used to create resources from resource specifiers of the given type
    */
-  public void registerFactory(Class aResourceSpecifierInterface,
-    ResourceFactory aFactory);
+  public void registerFactory(Class aResourceSpecifierInterface, ResourceFactory aFactory);
 }

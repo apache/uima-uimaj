@@ -22,132 +22,119 @@ package org.apache.uima.analysis_engine.annotator;
 import org.apache.uima.UIMAException;
 
 /**
- * An <code>AnnotatorInitializationException</code> may be thrown by an
- * annotator's initialize method, indicating that the annotator failed
- * to successfully initialize itself.
- *  
+ * An <code>AnnotatorInitializationException</code> may be thrown by an annotator's initialize
+ * method, indicating that the annotator failed to successfully initialize itself.
+ * 
  * 
  */
-public class AnnotatorInitializationException extends UIMAException
-{
- private static final long serialVersionUID = -7227559164945115624L;
-/**
-  * Creates a new exception with a null
-  * message.
-  */
-  public AnnotatorInitializationException()
-  {
+public class AnnotatorInitializationException extends UIMAException {
+  private static final long serialVersionUID = -7227559164945115624L;
+
+  /**
+   * Message key for a standard UIMA exception message: "Annotator class {0} was initialized with a
+   * CAS that does not implement the required interface {1}."
+   */
+  public static final String WRONG_CAS_TYPE = "wrong_cas_type";
+
+  /**
+   * Message key for a standard UIMA exception message: "Annotator class {0} requires Type {1},
+   * which was not found in the CAS."
+   */
+  public static final String TYPE_NOT_FOUND = "annotator_ex_type_not_found";
+
+  /**
+   * Message key for a standard UIMA exception message: "Annotator class {0} requires Feature {1},
+   * which was not found in the CAS."
+   */
+  public static final String FEATURE_NOT_FOUND = "annotator_ex_feature_not_found";
+
+  /**
+   * Creates a new exception with a null message.
+   */
+  public AnnotatorInitializationException() {
     super();
   }
 
- 
- /**
-  * Creates a new exception with the specified cause and a null message.
-  * 
-  * @param aCause  the original exception that caused this exception
-  *     to be thrown, if any
-  */
-  public AnnotatorInitializationException(Throwable aCause)
-  {
+  /**
+   * Creates a new exception with the specified cause and a null message.
+   * 
+   * @param aCause
+   *          the original exception that caused this exception to be thrown, if any
+   */
+  public AnnotatorInitializationException(Throwable aCause) {
     super(aCause);
   }
-  
-  
-  
- /**
-  * Creates a new exception with a the specified message.
-  * 
-  * @param aResourceBundleName the base name of the resource bundle in which 
-  *        the message for this exception is located.
-  * @param aMessageKey an identifier that maps to the message for
-  *        this exception.  The message may contain placeholders for
-  *        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-  *        class.   
-  * @param aArguments  The arguments to the message.  <code>null</code> may
-  *        be used if the message has no arguments.
-  */
-  public AnnotatorInitializationException(String aResourceBundleName,
-     String aMessageKey, Object[] aArguments)
-  {
-    super(aResourceBundleName, aMessageKey, aArguments);   
-  }
-  
-  
- /**
-  * Creates a new exception with the specified message and cause.
-  * 
-  * @param aResourceBundleName the base name of the resource bundle in which 
-  *        the message for this exception is located.
-  * @param aMessageKey an identifier that maps to the message for
-  *        this exception.  The message may contain placeholders for
-  *        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-  *        class.   
-  * @param aArguments  The arguments to the message.  <code>null</code> may
-  *        be used if the message has no arguments.
-  * @param aCause  the original exception that caused this exception
-  *     to be thrown, if any
-  */
-  public AnnotatorInitializationException(String aResourceBundleName, 
-     String aMessageKey, Object[] aArguments, Throwable aCause)
-  {
-    super(aResourceBundleName, aMessageKey, aArguments, aCause);
-  }  
- 
-  
- /**
-  * Creates a new exception with a message from the 
-  * {@link #STANDARD_MESSAGE_CATALOG}.
-  * 
-  * @param aMessageKey an identifier that maps to the message for
-  *        this exception.  The message may contain placeholders for
-  *        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-  *        class.   
-  * @param aArguments  The arguments to the message.  <code>null</code> may
-  *        be used if the message has no arguments.
-  */
-  public AnnotatorInitializationException(String aMessageKey, Object[] aArguments)
-  {
-    super(aMessageKey, aArguments);   
-  }
-  
- 
-  
- /**
-  * Creates a new exception with the specified cause and a message from the
-  * {@link #STANDARD_MESSAGE_CATALOG}.
-  *  
-  * @param aMessageKey an identifier that maps to the message for
-  *        this exception.  The message may contain placeholders for
-  *        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-  *        class.   
-  * @param aArguments  The arguments to the message.  <code>null</code> may
-  *        be used if the message has no arguments.
-  * @param aCause  the original exception that caused this exception
-  *     to be thrown, if any
-  */
-  public AnnotatorInitializationException(String aMessageKey, Object[] aArguments, 
-                        Throwable aCause)
-  {
-    super(aMessageKey, aArguments, aCause);
-  }  
-  
- /**
-  * Message key for a standard UIMA exception message:
-  * "Annotator class {0} was initialized with a CAS that does not implement
-  *  the required interface {1}."
-  */
-  public static final String WRONG_CAS_TYPE = "wrong_cas_type";
- 
- /**
-  * Message key for a standard UIMA exception message:
-  * "Annotator class {0} requires Type {1}, which was not found in the CAS."
-  */
-  public static final String TYPE_NOT_FOUND = "annotator_ex_type_not_found";         
 
- /**
-  * Message key for a standard UIMA exception message:
-  * "Annotator class {0} requires Feature {1}, which was not found in the CAS."
-  */
-  public static final String FEATURE_NOT_FOUND = "annotator_ex_feature_not_found";         
-  
+  /**
+   * Creates a new exception with a the specified message.
+   * 
+   * @param aResourceBundleName
+   *          the base name of the resource bundle in which the message for this exception is
+   *          located.
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
+   */
+  public AnnotatorInitializationException(String aResourceBundleName, String aMessageKey,
+                  Object[] aArguments) {
+    super(aResourceBundleName, aMessageKey, aArguments);
+  }
+
+  /**
+   * Creates a new exception with the specified message and cause.
+   * 
+   * @param aResourceBundleName
+   *          the base name of the resource bundle in which the message for this exception is
+   *          located.
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
+   * @param aCause
+   *          the original exception that caused this exception to be thrown, if any
+   */
+  public AnnotatorInitializationException(String aResourceBundleName, String aMessageKey,
+                  Object[] aArguments, Throwable aCause) {
+    super(aResourceBundleName, aMessageKey, aArguments, aCause);
+  }
+
+  /**
+   * Creates a new exception with a message from the {@link #STANDARD_MESSAGE_CATALOG}.
+   * 
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
+   */
+  public AnnotatorInitializationException(String aMessageKey, Object[] aArguments) {
+    super(aMessageKey, aArguments);
+  }
+
+  /**
+   * Creates a new exception with the specified cause and a message from the
+   * {@link #STANDARD_MESSAGE_CATALOG}.
+   * 
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
+   * @param aCause
+   *          the original exception that caused this exception to be thrown, if any
+   */
+  public AnnotatorInitializationException(String aMessageKey, Object[] aArguments, Throwable aCause) {
+    super(aMessageKey, aArguments, aCause);
+  }
 }

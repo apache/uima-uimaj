@@ -28,57 +28,57 @@ import org.apache.uima.cas.CAS;
  */
 public class FeatureStructureImplC extends FeatureStructureImpl {
 
-    protected CASImpl casImpl;
+  protected CASImpl casImpl;
 
-    protected int addr;
+  protected int addr;
 
-    protected FeatureStructureImplC() {
-        this.casImpl = null;
-        this.addr = 0;
+  protected FeatureStructureImplC() {
+    this.casImpl = null;
+    this.addr = 0;
+  }
+
+  FeatureStructureImplC(CASImpl casImpl, int addr) {
+    // assert(addr > 0);
+    this.addr = addr;
+    this.casImpl = casImpl;
+  }
+
+  public void setUp(CASImpl casImpl, int addr) {
+    this.addr = addr;
+    this.casImpl = casImpl;
+  }
+
+  public int getAddress() {
+    return this.addr;
+  }
+
+  public CAS getCAS() {
+    return this.casImpl;
+  }
+
+  public CASImpl getCASImpl() { // was package private 9-03
+    return this.casImpl;
+  }
+
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    FeatureStructureImplC(CASImpl casImpl, int addr) {
-        // assert(addr > 0);
-        this.addr = addr;
-        this.casImpl = casImpl;
+    if (o == null) {
+      return false;
     }
-
-    public void setUp(CASImpl casImpl, int addr) {
-        this.addr = addr;
-        this.casImpl = casImpl;
+    if (!(o instanceof FeatureStructureImplC)) {
+      return false;
     }
-
-    public int getAddress() {
-        return this.addr;
+    FeatureStructureImplC fs = (FeatureStructureImplC) o;
+    if ((this.addr == fs.addr) && (this.casImpl == fs.casImpl)) {
+      return true;
     }
+    return false;
+  }
 
-    public CAS getCAS() {
-        return this.casImpl;
-    }
-
-    public CASImpl getCASImpl() { // was package private 9-03
-        return this.casImpl;
-    }
-
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null) {
-            return false;
-        }
-        if (!(o instanceof FeatureStructureImplC)) {
-            return false;
-        }
-        FeatureStructureImplC fs = (FeatureStructureImplC) o;
-        if ((this.addr == fs.addr) && (this.casImpl == fs.casImpl)) {
-            return true;
-        }
-        return false;
-    }
-
-    public int hashCode() {
-        return this.addr;
-    }
+  public int hashCode() {
+    return this.addr;
+  }
 
 }

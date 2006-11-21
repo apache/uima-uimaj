@@ -31,32 +31,35 @@ public interface ConstraintParser {
 
   /**
    * Parse a string representing a feature structure match constraint.
-   * @param s The input string.
+   * 
+   * @param s
+   *          The input string.
    * @return The corresponding match constraint.
-   * @throws IOException If there is a problem with the input string.
-   * @throws ParsingException If the input string is not a well-formed string
-   * representation of a match constraint.
+   * @throws IOException
+   *           If there is a problem with the input string.
+   * @throws ParsingException
+   *           If the input string is not a well-formed string representation of a match constraint.
    */
-  public FSMatchConstraint parse(String s)
-    throws IOException, ParsingException;
+  public FSMatchConstraint parse(String s) throws IOException, ParsingException;
 
   /**
    * Parse a string representing a feature structure match constraint.
-   * @param s The input string.
-   * @param src For better error messages: an input source, such as a file
-   * name (can be null).
-   * @param line For better error messages: a line offset.
-   * @param col For better error messages: a column offset.
+   * 
+   * @param s
+   *          The input string.
+   * @param src
+   *          For better error messages: an input source, such as a file name (can be null).
+   * @param line
+   *          For better error messages: a line offset.
+   * @param col
+   *          For better error messages: a column offset.
    * @return The corresponding match constraint.
-   * @throws IOException If there is a problem with the input string.
-   * @throws ParsingException If the input string is not a well-formed string
-   * representation of a match constraint.
+   * @throws IOException
+   *           If there is a problem with the input string.
+   * @throws ParsingException
+   *           If the input string is not a well-formed string representation of a match constraint.
    */
-  public FSMatchConstraint parse(
-    String s,
-    String src,
-    int line,
-    int col)
-    throws IOException, ParsingException;
+  public FSMatchConstraint parse(String s, String src, int line, int col) throws IOException,
+                  ParsingException;
 
 }

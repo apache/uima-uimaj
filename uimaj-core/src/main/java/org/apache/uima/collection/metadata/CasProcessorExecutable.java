@@ -24,59 +24,67 @@ import java.util.ArrayList;
 import org.apache.uima.resource.metadata.MetaDataObject;
 
 /**
- * An object containing configuration for a program that the CPE will use to launch
- * CasProcessor. It provides the means to define an executable program and its arguments
- *  
+ * An object containing configuration for a program that the CPE will use to launch CasProcessor. It
+ * provides the means to define an executable program and its arguments
+ * 
  * 
  */
-public interface CasProcessorExecutable extends MetaDataObject
-{
-	/**
-	 * Sets an executable program that the CPE will use for launching CasProcessor.
-	 * 
-	 * @param aExecutable - program name (like java.exe)
-	 */
-	public void setExecutable( String aExecutable );
-	/**
-	 * Returns an executable program that the CPE will use for launching CasProcessor.
-	 * 
-	 * @return - exec program as String
-	 */
-	public String getExecutable();
-	/**
-	 * Adds a {@link org.apache.uima.collection.metadata.CasProcessorExecArg} argument to be supplied
-	 * when launching a program. 
-	 * 
-	 * @param aArgs - argument for the executable program
-	 */
-	public void addCasProcessorExecArg( CasProcessorExecArg aArgs );
-	/**
-	 * Returns a {@link org.apache.uima.collection.metadata.CasProcessorExecArg} argument idenitied 
-	 * by a given position in the list.
-	 * 
-	 * @param aIndex - position of argument to return
-	 * @return {@link org.apache.uima.collection.metadata.CasProcessorExecArg} argument
-	 */
-	public CasProcessorExecArg getCasProcessorExecArg( int aIndex  );
-	/**
-	 * Returns ALL {@link org.apache.uima.collection.metadata.CasProcessorExecArg} arguments 
-	 * 
-	 * @return array of {@link org.apache.uima.collection.metadata.CasProcessorExecArg} 
-	 */
-	public CasProcessorExecArg[] getAllCasProcessorExecArgs();
-	/**
-	 * Removes program argument from the list. The argument for deletion is idenitied
-	 * by provided position in the list.
-	 * 
-	 * @param aIndex - position of argument to delete
-	 */
-	public void removeCasProcessorExecArg(int aIndex);
-	
-	public ArrayList getEnvs();
+public interface CasProcessorExecutable extends MetaDataObject {
+  /**
+   * Sets an executable program that the CPE will use for launching CasProcessor.
+   * 
+   * @param aExecutable -
+   *          program name (like java.exe)
+   */
+  public void setExecutable(String aExecutable);
 
-	/**
-	 * @param params
-	 */
-	public void setEnvs(ArrayList params);
-	
+  /**
+   * Returns an executable program that the CPE will use for launching CasProcessor.
+   * 
+   * @return - exec program as String
+   */
+  public String getExecutable();
+
+  /**
+   * Adds a {@link org.apache.uima.collection.metadata.CasProcessorExecArg} argument to be supplied
+   * when launching a program.
+   * 
+   * @param aArgs -
+   *          argument for the executable program
+   */
+  public void addCasProcessorExecArg(CasProcessorExecArg aArgs);
+
+  /**
+   * Returns a {@link org.apache.uima.collection.metadata.CasProcessorExecArg} argument idenitied by
+   * a given position in the list.
+   * 
+   * @param aIndex -
+   *          position of argument to return
+   * @return {@link org.apache.uima.collection.metadata.CasProcessorExecArg} argument
+   */
+  public CasProcessorExecArg getCasProcessorExecArg(int aIndex);
+
+  /**
+   * Returns ALL {@link org.apache.uima.collection.metadata.CasProcessorExecArg} arguments
+   * 
+   * @return array of {@link org.apache.uima.collection.metadata.CasProcessorExecArg}
+   */
+  public CasProcessorExecArg[] getAllCasProcessorExecArgs();
+
+  /**
+   * Removes program argument from the list. The argument for deletion is idenitied by provided
+   * position in the list.
+   * 
+   * @param aIndex -
+   *          position of argument to delete
+   */
+  public void removeCasProcessorExecArg(int aIndex);
+
+  public ArrayList getEnvs();
+
+  /**
+   * @param params
+   */
+  public void setEnvs(ArrayList params);
+
 }

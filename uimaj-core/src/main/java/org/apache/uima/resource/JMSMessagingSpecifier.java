@@ -21,62 +21,72 @@ package org.apache.uima.resource;
 
 /**
  * 
- *
+ * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public interface JMSMessagingSpecifier extends MessagingSpecifier
-{
-	 
-    public static final String defaultInitialContextFactory = "com.sun.jndi.ldap.LdapCtxFactory";
-    	
-	/**
-	 * Returns the hostInitialContextFactory.
-	 * @return String
-	 */
-	public String getHostInitialContextFactory();
+public interface JMSMessagingSpecifier extends MessagingSpecifier {
 
-	/**
-	 * Returns the hostProviderURL.
-	 * @return String
-	 */
-	public String getHostProviderURL();
-	
-	/**
-	 * Returns the targetInitialContextFactory.
-	 * @return String
-	 */
-	public String getTargetInitialContextFactory();
-	
-	/**
-	 * Returns the targetProviderURL.
-	 * @return String
-	 */
-	public String getTargetProviderURL();
-	
-	/**
-	 * Sets the hostInitialContextFactory.
-	 * @param hostInitialContextFactory The hostInitialContextFactory to set
-	 */
-	public void setHostInitialContextFactory(String hostInitialContextFactory);
-	
-	/**
-	 * Sets the hostProviderURL.
-	 * @param hostProviderURL The hostProviderURL to set
-	 */
-	public void setHostProviderURL(String hostProviderURL);
+  public static final String defaultInitialContextFactory = "com.sun.jndi.ldap.LdapCtxFactory";
 
-	/**
-	 * Sets the targetInitialContextFactory.
-	 * @param targetInitialContextFactory The targetInitialContextFactory to set
-	 */
-	public void setTargetInitialContextFactory(String targetInitialContextFactory);
+  /**
+   * Returns the hostInitialContextFactory.
+   * 
+   * @return String
+   */
+  public String getHostInitialContextFactory();
 
-	/**
-	 * Sets the targetProviderURL.
-	 * @param targetProviderURL The targetProviderURL to set
-	 */
-	public void setTargetProviderURL(String targetProviderURL);
+  /**
+   * Returns the hostProviderURL.
+   * 
+   * @return String
+   */
+  public String getHostProviderURL();
+
+  /**
+   * Returns the targetInitialContextFactory.
+   * 
+   * @return String
+   */
+  public String getTargetInitialContextFactory();
+
+  /**
+   * Returns the targetProviderURL.
+   * 
+   * @return String
+   */
+  public String getTargetProviderURL();
+
+  /**
+   * Sets the hostInitialContextFactory.
+   * 
+   * @param hostInitialContextFactory
+   *          The hostInitialContextFactory to set
+   */
+  public void setHostInitialContextFactory(String hostInitialContextFactory);
+
+  /**
+   * Sets the hostProviderURL.
+   * 
+   * @param hostProviderURL
+   *          The hostProviderURL to set
+   */
+  public void setHostProviderURL(String hostProviderURL);
+
+  /**
+   * Sets the targetInitialContextFactory.
+   * 
+   * @param targetInitialContextFactory
+   *          The targetInitialContextFactory to set
+   */
+  public void setTargetInitialContextFactory(String targetInitialContextFactory);
+
+  /**
+   * Sets the targetProviderURL.
+   * 
+   * @param targetProviderURL
+   *          The targetProviderURL to set
+   */
+  public void setTargetProviderURL(String targetProviderURL);
 }

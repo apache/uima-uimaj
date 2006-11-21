@@ -63,21 +63,18 @@ import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-public class CasConsumerDescription_implTest extends TestCase
-{
+public class CasConsumerDescription_implTest extends TestCase {
   CasConsumerDescription_impl mTestDesc;
 
-  protected void setUp() throws Exception
-  {
-    try
-    {
+  protected void setUp() throws Exception {
+    try {
       super.setUp();
 
       TypeSystemDescription typeSystem = new TypeSystemDescription_impl();
       TypeDescription type1 = typeSystem.addType("Fake", "<b>Fake</b> Type", "Annotation");
       type1.addFeature("TestFeature", "For Testing Only", CAS.TYPE_NAME_STRING);
       TypeDescription enumType = typeSystem.addType("EnumType", "Test Enumerated Type",
-          "uima.cas.String");
+                      "uima.cas.String");
       enumType.setAllowedValues(new AllowedValue[] { new AllowedValue_impl("One", "First Value"),
           new AllowedValue_impl("Two", "Second Value") });
 
@@ -108,7 +105,7 @@ public class CasConsumerDescription_implTest extends TestCase
       key1a.setComparator(1);
       index2.setKeys(new FsIndexKeyDescription[] { key1a });
 
-      //create primitive TAE description
+      // create primitive TAE description
       mTestDesc = new CasConsumerDescription_impl();
       mTestDesc.setFrameworkImplementation("org.apache.uima.java");
       mTestDesc.setImplementationName("org.apache.uima.examples.TestAnnotator");
@@ -146,7 +143,7 @@ public class CasConsumerDescription_implTest extends TestCase
       cfgGrp2.setNames(new String[] { "cfgGrp2a", "cfgGrp2b" });
       cfgGrp2.setConfigurationParameters(new ConfigurationParameter[] { cfgParam3 });
       md.getConfigurationParameterDeclarations().setConfigurationGroups(
-          new ConfigurationGroup[] { cfgGrp1, cfgGrp2 });
+                      new ConfigurationGroup[] { cfgGrp1, cfgGrp2 });
 
       NameValuePair nvp1 = new NameValuePair_impl("param1", "test");
       NameValuePair nvp2 = new NameValuePair_impl("param2", Integer.valueOf("42"));
@@ -161,70 +158,61 @@ public class CasConsumerDescription_implTest extends TestCase
       uriSpec.setUri("http://www.incubator.apache.org/uima");
       uriSpec.setProtocol(Constants.PROTOCOL_SOAP);
       ExternalResourceDependency dep = UIMAFramework.getResourceSpecifierFactory()
-          .createExternalResourceDependency();
+                      .createExternalResourceDependency();
       dep.setKey("ResourceKey");
       dep.setDescription("Test");
       mTestDesc.setExternalResourceDependencies(new ExternalResourceDependency[] { dep });
       ResourceManagerConfiguration resMgrCfg = UIMAFramework.getResourceSpecifierFactory()
-          .createResourceManagerConfiguration();
+                      .createResourceManagerConfiguration();
       ExternalResourceDescription extRes = UIMAFramework.getResourceSpecifierFactory()
-          .createExternalResourceDescription();
+                      .createExternalResourceDescription();
       extRes.setResourceSpecifier(uriSpec);
       extRes.setName("Resource1");
       extRes.setDescription("Test");
       resMgrCfg.setExternalResources(new ExternalResourceDescription[] { extRes });
 
       ExternalResourceBinding binding = UIMAFramework.getResourceSpecifierFactory()
-          .createExternalResourceBinding();
+                      .createExternalResourceBinding();
       binding.setKey("ResourceKey");
       binding.setResourceName("Resource1");
       mTestDesc.setResourceManagerConfiguration(resMgrCfg);
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       JUnitExtension.handleException(e);
-    }    
+    }
   }
-  
-  public void testXMLization() throws Exception
-  {
-    try
-    {
-      //write objects to XML
+
+  public void testXMLization() throws Exception {
+    try {
+      // write objects to XML
       StringWriter writer = new StringWriter();
       mTestDesc.toXML(writer);
       String testDescXml = writer.getBuffer().toString();
-      //System.out.println(testDescXml);
+      // System.out.println(testDescXml);
 
-      //parse objects from XML (no schema validation)
+      // parse objects from XML (no schema validation)
       InputStream is = new ByteArrayInputStream(testDescXml.getBytes());
-      CasConsumerDescription newDesc = (CasConsumerDescription) UIMAFramework
-          .getXMLParser().parse(new XMLInputSource(is, null));
-      
-      //compare
+      CasConsumerDescription newDesc = (CasConsumerDescription) UIMAFramework.getXMLParser().parse(
+                      new XMLInputSource(is, null));
+
+      // compare
       Assert.assertEquals(mTestDesc, newDesc);
-    } catch (Exception e)
-    {
+    } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
   }
 
-  public void testSerialization() throws Exception
-  {
-    try
-    {
-      //serialize objects to byte array
+  public void testSerialization() throws Exception {
+    try {
+      // serialize objects to byte array
 
       byte[] testDescBytes = SerializationUtils.serialize(mTestDesc);
 
-      //deserialize
+      // deserialize
       CasConsumerDescription newDesc = (CasConsumerDescription) SerializationUtils
-          .deserialize(testDescBytes);
+                      .deserialize(testDescBytes);
 
       Assert.assertEquals(mTestDesc, newDesc);
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
   }

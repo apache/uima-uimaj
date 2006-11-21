@@ -23,16 +23,15 @@ import org.apache.uima.cas.FeatureStructure;
 
 public class ArrayFSGenerator implements FSGenerator {
 
-    public ArrayFSGenerator() {
-        super();
-    }
+  public ArrayFSGenerator() {
+    super();
+  }
 
-    /**
-     * @see org.apache.uima.cas.impl.FSGenerator#createFS(int, CASImpl)
-     */
-    public FeatureStructure createFS(int addr, CASImpl cas) {
-        return new ArrayFSImpl(addr, cas);
-    }
-
+  /**
+   * @see org.apache.uima.cas.impl.FSGenerator#createFS(int, CASImpl)
+   */
+  public FeatureStructure createFS(int addr, CASImpl cas) {
+    return new ArrayFSImpl(addr, cas);
+  }
 
 }

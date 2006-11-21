@@ -30,22 +30,22 @@ public interface LinearTypeOrder {
 
   /**
    * Compare two types.
+   * 
    * @param t1
    * @param t2
-   * @return <code>true</code> iff <code>t1</code> is less than <code>t2</code>
-   * in this order.
+   * @return <code>true</code> iff <code>t1</code> is less than <code>t2</code> in this order.
    */
   boolean lessThan(Type t1, Type t2);
 
   /**
    * Compare two types.
+   * 
    * @param t1
    * @param t2
-   * @return <code>true</code> iff <code>t1</code> is less than <code>t2</code>
-   * in this order.
+   * @return <code>true</code> iff <code>t1</code> is less than <code>t2</code> in this order.
    */
   boolean lessThan(int t1, int t2);
-  
+
   /**
    * @return The type order as array of type codes in ascending order.
    */

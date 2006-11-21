@@ -25,46 +25,46 @@ import org.apache.uima.cas_data.ReferenceValue;
  * 
  * 
  */
-public class ReferenceValueImpl implements ReferenceValue
-{
+public class ReferenceValueImpl implements ReferenceValue {
   /**
    * 
    */
   private static final long serialVersionUID = -2890705944833477494L;
-  
+
   private String mTargetId;
-  
-  public ReferenceValueImpl(String aTargetId)
-  {
-  	mTargetId = aTargetId;
+
+  public ReferenceValueImpl(String aTargetId) {
+    mTargetId = aTargetId;
   }
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas_data.ReferenceValue#getTargetId()
    */
-  public String getTargetId()
-  {
+  public String getTargetId() {
     return mTargetId;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas_data.ReferenceValue#setTargetId(java.lang.String)
    */
-  public void setTargetId(String aId)
-  {
-  	mTargetId = aId;
+  public void setTargetId(String aId) {
+    mTargetId = aId;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas_data.FeatureValue#get()
    */
-  public Object get()
-  {
+  public Object get() {
     return mTargetId;
   }
 
-  public String toString()
-  {
-  	return mTargetId;
+  public String toString() {
+    return mTargetId;
   }
 }

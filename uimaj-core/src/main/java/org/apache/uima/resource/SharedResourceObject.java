@@ -19,36 +19,31 @@
 
 package org.apache.uima.resource;
 
-
 /**
- * The <code>SharedResourceObject</code> interface must be implemented by
- * all classes that provide access to resource data.  Object that implement
- * this interface may be made accessible to Annotators via the
- * {@link org.apache.uima.resource.ResourceManager}.
+ * The <code>SharedResourceObject</code> interface must be implemented by all classes that provide
+ * access to resource data. Object that implement this interface may be made accessible to
+ * Annotators via the {@link org.apache.uima.resource.ResourceManager}.
  * <p>
- * This interface's {@link #load(DataResource)} method is called by the
- * ResourceManager after the <code>SharedResourceObject</code> has been
- * instantiated.  A {@link DataResource} is passes as a parameter to this method.
- * The implementation of the <code>load</code> method should read the data
- * from the <code>DataResource</code> and use that data to initialize this
- * object.
- *     
+ * This interface's {@link #load(DataResource)} method is called by the ResourceManager after the
+ * <code>SharedResourceObject</code> has been instantiated. A {@link DataResource} is passes as a
+ * parameter to this method. The implementation of the <code>load</code> method should read the
+ * data from the <code>DataResource</code> and use that data to initialize this object.
+ * 
  * 
  */
-public interface SharedResourceObject
-{
-  
+public interface SharedResourceObject {
+
   /**
-   * Called by the {@link org.apache.uima.resource.ResourceManager} after this
-   * object has been instantiated.  The implementation of this method should
-   * read the data from the specified <code>DataResource</code> and use that
-   * data to initialize this object.
+   * Called by the {@link org.apache.uima.resource.ResourceManager} after this object has been
+   * instantiated. The implementation of this method should read the data from the specified
+   * <code>DataResource</code> and use that data to initialize this object.
    * 
-   * @param aData a <code>DataResource</code> that provides access to the data
-   *   for this resource object.
-   *
-   * @throws ResourceInitializationException if a failure occurs during loading.
+   * @param aData
+   *          a <code>DataResource</code> that provides access to the data for this resource
+   *          object.
+   * 
+   * @throws ResourceInitializationException
+   *           if a failure occurs during loading.
    */
-  public void load(DataResource aData)
-    throws ResourceInitializationException;
+  public void load(DataResource aData) throws ResourceInitializationException;
 }

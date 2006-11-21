@@ -33,110 +33,107 @@ import org.apache.uima.internal.util.rb_trees.CompIntArrayRBT;
  * 
  * 
  */
-  // may not be used - no refs to it on 6-2006
+// may not be used - no refs to it on 6-2006
 class FSRBTIndex extends FSLeafIndexImpl {
 
-    private CompIntArrayRBT tree;
-    
-    /**
-     * Constructor for FSRBTIndex.
-     * 
-     * @param cas
-     */
-    public FSRBTIndex(CASImpl cas, Type type, int indexType) {
-        super(cas, type, indexType);
-        // We can only initialize the tree after we got the comparator.
-        this.tree = null;
-    }
+  private CompIntArrayRBT tree;
 
-    boolean init(FSIndexComparator comp) {
-        boolean rc = super.init(comp);
-        this.tree = new CompIntArrayRBT(this);
-        return rc;
-    }
+  /**
+   * Constructor for FSRBTIndex.
+   * 
+   * @param cas
+   */
+  public FSRBTIndex(CASImpl cas, Type type, int indexType) {
+    super(cas, type, indexType);
+    // We can only initialize the tree after we got the comparator.
+    this.tree = null;
+  }
 
-    public void flush() {
-        this.tree.flush();
-    }
+  boolean init(FSIndexComparator comp) {
+    boolean rc = super.init(comp);
+    this.tree = new CompIntArrayRBT(this);
+    return rc;
+  }
 
-    /**
-     * @see org.apache.uima.cas.impl.FSLeafIndexImpl#insert(int)
-     */
-    boolean insert(int fs) {
-        this.tree.insertKeyWithDups(fs);
-        return true;
-    }
+  public void flush() {
+    this.tree.flush();
+  }
 
-    public IntPointerIterator refIterator() {
-        return this.tree.pointerIterator();
-    }
+  /**
+   * @see org.apache.uima.cas.impl.FSLeafIndexImpl#insert(int)
+   */
+  boolean insert(int fs) {
+    this.tree.insertKeyWithDups(fs);
+    return true;
+  }
 
-    ComparableIntIterator refIterator(IntComparator comp) {
-        return this.tree.iterator(comp);
-    }
+  public IntPointerIterator refIterator() {
+    return this.tree.pointerIterator();
+  }
 
-    public ComparableIntPointerIterator pointerIterator
-              (IntComparator comp,  
-               int [] detectIllegalIndexUpdates,
-               int typeCode) {
-        return ((CompIntArrayRBT)this.tree)
-               .pointerIterator(comp, detectIllegalIndexUpdates, typeCode);
-    }
+  ComparableIntIterator refIterator(IntComparator comp) {
+    return this.tree.iterator(comp);
+  }
 
-    /**
-     * @see org.apache.uima.cas.impl.FSLeafIndexImpl#refIterator(int)
-     */
-    protected IntPointerIterator refIterator(int fsCode) {
-        return this.tree.pointerIterator(fsCode);
-    }
+  public ComparableIntPointerIterator pointerIterator(IntComparator comp,
+                  int[] detectIllegalIndexUpdates, int typeCode) {
+    return ((CompIntArrayRBT) this.tree).pointerIterator(comp, detectIllegalIndexUpdates, typeCode);
+  }
 
-    /**
-     * @see org.apache.uima.cas.FSIndex#contains(FeatureStructure)
-     */
-    public boolean contains(FeatureStructure fs) {
-        return this.tree.containsKey(((FeatureStructureImpl) fs).getAddress());
-    }
+  /**
+   * @see org.apache.uima.cas.impl.FSLeafIndexImpl#refIterator(int)
+   */
+  protected IntPointerIterator refIterator(int fsCode) {
+    return this.tree.pointerIterator(fsCode);
+  }
 
-    public FeatureStructure find(FeatureStructure fs) {
-        final FeatureStructureImpl fsi = (FeatureStructureImpl) fs;
-        final int resultAddr = this.tree.findKey(fsi.getAddress());
-        if (resultAddr > 0) {
-            return fsi.getCASImpl().createFS(resultAddr);
-        }
-        return null;
-    }
+  /**
+   * @see org.apache.uima.cas.FSIndex#contains(FeatureStructure)
+   */
+  public boolean contains(FeatureStructure fs) {
+    return this.tree.containsKey(((FeatureStructureImpl) fs).getAddress());
+  }
 
-    /**
-     * @see org.apache.uima.cas.FSIndex#size()
-     */
-    public int size() {
-        return this.tree.size();
+  public FeatureStructure find(FeatureStructure fs) {
+    final FeatureStructureImpl fsi = (FeatureStructureImpl) fs;
+    final int resultAddr = this.tree.findKey(fsi.getAddress());
+    if (resultAddr > 0) {
+      return fsi.getCASImpl().createFS(resultAddr);
     }
+    return null;
+  }
 
-    /**
-     * @see org.apache.uima.cas.impl.FSLeafIndexImpl#deleteFS(org.apache.uima.cas.FeatureStructure)
-     */
-    public void deleteFS(FeatureStructure fs) {
-        final int addr = ((FeatureStructureImpl) fs).getAddress();
-        this.tree.deleteKey(addr);
-    }
+  /**
+   * @see org.apache.uima.cas.FSIndex#size()
+   */
+  public int size() {
+    return this.tree.size();
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.impl.LowLevelIndex#ll_iterator()
-     */
-    public LowLevelIterator ll_iterator() {
-        return new LowLevelIteratorWrapper(this.tree.pointerIterator(), this);
-    }
+  /**
+   * @see org.apache.uima.cas.impl.FSLeafIndexImpl#deleteFS(org.apache.uima.cas.FeatureStructure)
+   */
+  public void deleteFS(FeatureStructure fs) {
+    final int addr = ((FeatureStructureImpl) fs).getAddress();
+    this.tree.deleteKey(addr);
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.impl.FSLeafIndexImpl#remove(int)
-     */
-    void remove(int fs) {
-        this.tree.deleteKey(fs);
-    }
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.impl.LowLevelIndex#ll_iterator()
+   */
+  public LowLevelIterator ll_iterator() {
+    return new LowLevelIteratorWrapper(this.tree.pointerIterator(), this);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.impl.FSLeafIndexImpl#remove(int)
+   */
+  void remove(int fs) {
+    this.tree.deleteKey(fs);
+  }
 
 }

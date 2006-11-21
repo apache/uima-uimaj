@@ -22,127 +22,112 @@ package org.apache.uima.collection;
 import org.apache.uima.UIMAException;
 
 /**
- * Thrown to indicate that there is a problem with some aspect of a 
- * Collection.  For example, this exception could be thrown if a 
- * collection could not be read from or written to.
+ * Thrown to indicate that there is a problem with some aspect of a Collection. For example, this
+ * exception could be thrown if a collection could not be read from or written to.
  * 
  * 
  */
-public class CollectionException extends UIMAException
-{
- private static final long serialVersionUID = -78797158130497524L;
-/**
-  * Creates a new exception with a null
-  * message.
-  */
-  public CollectionException()
-  {
+public class CollectionException extends UIMAException {
+  private static final long serialVersionUID = -78797158130497524L;
+
+  /**
+   * Message key for a standard UIMA exception message: The Collection Reader "{0}" requires a CAS
+   * Initializer. None was supplied.
+   */
+  public static final String MISSING_CAS_INITIALIZER = "missing_cas_initializer";
+
+  /**
+   * Message key for a standard UIMA exception message: The CAS Initializer requires an input of
+   * class {0}, but received an object of class {1}.
+   */
+  public static final String INCORRECT_INPUT_TO_CAS_INITIALIZER = "incorrect_input_to_cas_initializer";
+
+  /**
+   * Creates a new exception with a null message.
+   */
+  public CollectionException() {
     super();
   }
 
- 
- /**
-  * Creates a new exception with the specified cause and a null message.
-  * 
-  * @param aCause  the original exception that caused this exception
-  *     to be thrown, if any
-  */
-  public CollectionException(Throwable aCause)
-  {
+  /**
+   * Creates a new exception with the specified cause and a null message.
+   * 
+   * @param aCause
+   *          the original exception that caused this exception to be thrown, if any
+   */
+  public CollectionException(Throwable aCause) {
     super(aCause);
   }
-  
-  
-  
- /**
-  * Creates a new exception with a the specified message.
-  * 
-  * @param aResourceBundleName the base name of the resource bundle in which 
-  *        the message for this exception is located.
-  * @param aMessageKey an identifier that maps to the message for
-  *        this exception.  The message may contain placeholders for
-  *        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-  *        class.   
-  * @param aArguments  The arguments to the message.  <code>null</code> may
-  *        be used if the message has no arguments.
-  */
-  public CollectionException(String aResourceBundleName,
-     String aMessageKey, Object[] aArguments)
-  {
-    super(aResourceBundleName, aMessageKey, aArguments);   
+
+  /**
+   * Creates a new exception with a the specified message.
+   * 
+   * @param aResourceBundleName
+   *          the base name of the resource bundle in which the message for this exception is
+   *          located.
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
+   */
+  public CollectionException(String aResourceBundleName, String aMessageKey, Object[] aArguments) {
+    super(aResourceBundleName, aMessageKey, aArguments);
   }
-  
-  
- /**
-  * Creates a new exception with the specified message and cause.
-  * 
-  * @param aResourceBundleName the base name of the resource bundle in which 
-  *        the message for this exception is located.
-  * @param aMessageKey an identifier that maps to the message for
-  *        this exception.  The message may contain placeholders for
-  *        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-  *        class.   
-  * @param aArguments  The arguments to the message.  <code>null</code> may
-  *        be used if the message has no arguments.
-  * @param aCause  the original exception that caused this exception
-  *     to be thrown, if any
-  */
-  public CollectionException(String aResourceBundleName, 
-     String aMessageKey, Object[] aArguments, Throwable aCause)
-  {
+
+  /**
+   * Creates a new exception with the specified message and cause.
+   * 
+   * @param aResourceBundleName
+   *          the base name of the resource bundle in which the message for this exception is
+   *          located.
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
+   * @param aCause
+   *          the original exception that caused this exception to be thrown, if any
+   */
+  public CollectionException(String aResourceBundleName, String aMessageKey, Object[] aArguments,
+                  Throwable aCause) {
     super(aResourceBundleName, aMessageKey, aArguments, aCause);
-  }  
- 
-  
- /**
-  * Creates a new exception with a message from the 
-  * {@link #STANDARD_MESSAGE_CATALOG}.
-  * 
-  * @param aMessageKey an identifier that maps to the message for
-  *        this exception.  The message may contain placeholders for
-  *        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-  *        class.   
-  * @param aArguments  The arguments to the message.  <code>null</code> may
-  *        be used if the message has no arguments.
-  */
-  public CollectionException(String aMessageKey, Object[] aArguments)
-  {
-    super(aMessageKey, aArguments);   
   }
-  
- 
-  
- /**
-  * Creates a new exception with the specified cause and a message from the
-  * {@link #STANDARD_MESSAGE_CATALOG}.
-  *  
-  * @param aMessageKey an identifier that maps to the message for
-  *        this exception.  The message may contain placeholders for
-  *        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-  *        class.   
-  * @param aArguments  The arguments to the message.  <code>null</code> may
-  *        be used if the message has no arguments.
-  * @param aCause  the original exception that caused this exception
-  *     to be thrown, if any
-  */
-  public CollectionException(String aMessageKey, Object[] aArguments, 
-                        Throwable aCause)
-  {
+
+  /**
+   * Creates a new exception with a message from the {@link #STANDARD_MESSAGE_CATALOG}.
+   * 
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
+   */
+  public CollectionException(String aMessageKey, Object[] aArguments) {
+    super(aMessageKey, aArguments);
+  }
+
+  /**
+   * Creates a new exception with the specified cause and a message from the
+   * {@link #STANDARD_MESSAGE_CATALOG}.
+   * 
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
+   * @param aCause
+   *          the original exception that caused this exception to be thrown, if any
+   */
+  public CollectionException(String aMessageKey, Object[] aArguments, Throwable aCause) {
     super(aMessageKey, aArguments, aCause);
   }
-  
-  /**
-   * Message key for a standard UIMA exception message:
-   * The Collection Reader "{0}" requires a CAS Initializer.  None was supplied.
-   */
-   public static final String MISSING_CAS_INITIALIZER = "missing_cas_initializer";
-
-	/**
-	 * Message key for a standard UIMA exception message:
-	 * The CAS Initializer requires an input of class {0}, but received an object of class {1}.
-	 */
-	 public static final String INCORRECT_INPUT_TO_CAS_INITIALIZER = "incorrect_input_to_cas_initializer";
-          
 }
-
-

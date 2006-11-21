@@ -92,8 +92,7 @@ public class ByteArrayFSImpl extends CommonAuxArrayFSImpl implements ByteArrayFS
    */
   public void copyToArray(int srcOffset, String[] dest, int destOffset, int length) {
     casImpl.checkArrayBounds(addr, srcOffset, length);
-    final int startOffset = srcOffset
-        + casImpl.heap.heap[casImpl.getArrayStartAddress(addr)];
+    final int startOffset = srcOffset + casImpl.heap.heap[casImpl.getArrayStartAddress(addr)];
     final byte[] heap = this.casImpl.byteHeap.heap;
     for (int i = 0; i < length; i++) {
       dest[i + destOffset] = Byte.toString(heap[i + startOffset]);
@@ -105,8 +104,7 @@ public class ByteArrayFSImpl extends CommonAuxArrayFSImpl implements ByteArrayFS
    */
   public void copyFromArray(String[] src, int srcOffset, int destOffset, int length) {
     this.casImpl.checkArrayBounds(this.addr, destOffset, length);
-    final int startOffset = destOffset
-        + casImpl.heap.heap[casImpl.getArrayStartAddress(this.addr)];
+    final int startOffset = destOffset + casImpl.heap.heap[casImpl.getArrayStartAddress(this.addr)];
     byte[] heap = this.casImpl.byteHeap.heap;
     for (int i = 0; i < length; i++) {
       heap[i + startOffset] = Byte.parseByte(src[i + srcOffset]);

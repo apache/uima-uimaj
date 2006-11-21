@@ -20,44 +20,39 @@
 package org.apache.uima.resource;
 
 /**
- * A type of <code>ResourceSpecifier</code> that locates a resource file
- * using its URL.
- *    
+ * A type of <code>ResourceSpecifier</code> that locates a resource file using its URL.
+ * 
  * 
  */
-public interface FileResourceSpecifier extends ResourceSpecifier
-{
-  
+public interface FileResourceSpecifier extends ResourceSpecifier {
+
   /**
    * Retrieves the URL of the file.
    * 
    * @return a URL string
    */
   public String getFileUrl();
-  
 
   /**
-   * Gets the file name for the local cache of a remote resource file.
-   * This is optional.
+   * Gets the file name for the local cache of a remote resource file. This is optional.
    * 
    * @return the file name of the local cache, <code>null</code> if none.
    */
   public String getLocalCache();
 
-
   /**
    * Sets the URL of the file.
    * 
-   * @param aUrl a URL string
+   * @param aUrl
+   *          a URL string
    */
   public void setFileUrl(String aUrl);
-  
 
   /**
-   * Sets the file name for the local cache of a remote resource file.
-   * This is optional.
+   * Sets the file name for the local cache of a remote resource file. This is optional.
    * 
-   * @param aFileName file name of the local cache, <code>null</code> if none.
+   * @param aFileName
+   *          file name of the local cache, <code>null</code> if none.
    */
   public void setLocalCache(String aFileName);
 }

@@ -25,11 +25,9 @@ import org.apache.uima.resource.metadata.ExternalResourceBinding;
  * 
  * 
  */
-public class ExternalResourceBinding_impl
-  extends MetaDataObject_impl
-  implements ExternalResourceBinding
-{
-	
+public class ExternalResourceBinding_impl extends MetaDataObject_impl implements
+                ExternalResourceBinding {
+
   /**
    * 
    */
@@ -39,47 +37,47 @@ public class ExternalResourceBinding_impl
 
   private String mKey;
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.ExternalResourceBinding#getKey()
    */
-  public String getKey()
-  {
-	return mKey;
+  public String getKey() {
+    return mKey;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.ExternalResourceBinding#setKey(java.lang.String)
    */
-  public void setKey(String aKey)
-  {
-	mKey = aKey;
+  public void setKey(String aKey) {
+    mKey = aKey;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.ExternalResourceBinding#getResourceName()
    */
-  public String getResourceName()
-  {
-	return mResourceName;
+  public String getResourceName() {
+    return mResourceName;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.ExternalResourceBinding#setResourceName(java.lang.String)
    */
-  public void setResourceName(String aName)
-  {
-	mResourceName = aName;
+  public void setResourceName(String aName) {
+    mResourceName = aName;
   }
 
-	protected XmlizationInfo getXmlizationInfo()
-	{
-		return XMLIZATION_INFO;
-	}
-  
-	static final private XmlizationInfo XMLIZATION_INFO =
-		new XmlizationInfo("externalResourceBinding",
-			new PropertyXmlInfo[]{
-				 new PropertyXmlInfo("key"),
-				 new PropertyXmlInfo("resourceName"),
-			});  
+  protected XmlizationInfo getXmlizationInfo() {
+    return XMLIZATION_INFO;
+  }
+
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+                  "externalResourceBinding", new PropertyXmlInfo[] { new PropertyXmlInfo("key"),
+                      new PropertyXmlInfo("resourceName"), });
 }

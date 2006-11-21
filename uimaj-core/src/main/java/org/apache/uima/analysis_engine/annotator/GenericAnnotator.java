@@ -23,34 +23,31 @@ import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.cas.CAS;
 
 /**
- * Interface implemented for multiple-sofa annotators in UIMA SDK v1.x
- * As of v2.0, annotators should extend 
- * {@link org.apache.uima.analysis_component.CasAnnotator_ImplBase}
- * or {@link org.apache.uima.analysis_component.JCasAnnotator_ImplBase}.
+ * Interface implemented for multiple-sofa annotators in UIMA SDK v1.x As of v2.0, annotators should
+ * extend {@link org.apache.uima.analysis_component.CasAnnotator_ImplBase} or
+ * {@link org.apache.uima.analysis_component.JCasAnnotator_ImplBase}.
  */
-public interface GenericAnnotator extends BaseAnnotator
-{
+public interface GenericAnnotator extends BaseAnnotator {
   /**
-   * Invokes this annotator's analysis logic.  Prior to calling this method,
-   * the caller must ensure that the {@link CAS} has been populated with all
-   * information that this annotator needs to do its processing.  This annotator 
-   * will access the data in the CAS and add new data to the CAS.
+   * Invokes this annotator's analysis logic. Prior to calling this method, the caller must ensure
+   * that the {@link CAS} has been populated with all information that this annotator needs to do
+   * its processing. This annotator will access the data in the CAS and add new data to the CAS.
    * <p>
-   * The caller must also guarantee that the {@link ResultSpecification} falls
-   * within the scope of the 
-   * {@link org.apache.uima.resource.metadata.Capability Capabilities}
-   * of this annotator (as published by its containing AnalysisEngine).
+   * The caller must also guarantee that the {@link ResultSpecification} falls within the scope of
+   * the {@link org.apache.uima.resource.metadata.Capability Capabilities} of this annotator (as
+   * published by its containing AnalysisEngine).
    * <p>
-   * The annotator will only produce the output types and features that
-   * are declared in the <code>aResultSpec</code> parameter.  
+   * The annotator will only produce the output types and features that are declared in the
+   * <code>aResultSpec</code> parameter.
    * 
-   * @param aCAS contains the artifact to be analyzed and may contain other
-   *    metadata about that artifact.
-   * @param aResultSpec  A list of output types and features that this annotator
-   *    should produce.
+   * @param aCAS
+   *          contains the artifact to be analyzed and may contain other metadata about that
+   *          artifact.
+   * @param aResultSpec
+   *          A list of output types and features that this annotator should produce.
    * 
-   * @throws AnnotatorProcessException  if a failure occurs during processing.     
+   * @throws AnnotatorProcessException
+   *           if a failure occurs during processing.
    */
-   public void process(CAS aCAS, ResultSpecification aResultSpec)
-    throws AnnotatorProcessException;
+  public void process(CAS aCAS, ResultSpecification aResultSpec) throws AnnotatorProcessException;
 }

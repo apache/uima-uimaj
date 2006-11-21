@@ -19,33 +19,29 @@
 
 package org.apache.uima.internal.util.text;
 
-
 public interface INormalizerType1 {
 
-   
-   /**
- * Turns a range of characters to its normalized form.
- * 
- * <p>This version of the API may modify the input buffer.  If you don't want
- * your input char array to be modified, use 
- * {@link #normalize(char[], int, int, NormalizationResult) normalize(char[], int, int, NormalizationResult)}.
- * 
- * @param text the character array to normalize
- * @param from starting offset within the character array (inclusive)
- * @param to ending position within the character array (non-inclusive)
- * @param language The human language of the text; do special processing
- * for some languages.
- * @return the normalized array.
- */
-public INormalizationResult normalize(
-   char[] text,
-   int from,
-   int length);      
+  /**
+   * Turns a range of characters to its normalized form.
+   * 
+   * <p>
+   * This version of the API may modify the input buffer. If you don't want your input char array to
+   * be modified, use
+   * {@link #normalize(char[], int, int, NormalizationResult) normalize(char[], int, int, NormalizationResult)}.
+   * 
+   * @param text
+   *          the character array to normalize
+   * @param from
+   *          starting offset within the character array (inclusive)
+   * @param to
+   *          ending position within the character array (non-inclusive)
+   * @param language
+   *          The human language of the text; do special processing for some languages.
+   * @return the normalized array.
+   */
+  public INormalizationResult normalize(char[] text, int from, int length);
 
-public INormalizationResult normalize(
-   char[] text,
-   int from,
-   int length,      
-   boolean cjRemoveWhitespace);
+  public INormalizationResult normalize(char[] text, int from, int length,
+                  boolean cjRemoveWhitespace);
 
 }

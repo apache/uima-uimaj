@@ -28,78 +28,78 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 /**
  * Implementation of {@link SofaMapping}.
  */
-public class SofaMapping_impl extends MetaDataObject_impl implements SofaMapping
-{
+public class SofaMapping_impl extends MetaDataObject_impl implements SofaMapping {
   /**
    * 
    */
   private static final long serialVersionUID = -6115544748030506703L;
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.analysis_engine.metadata.SofaMapping#getComponentKey()
-   */
-  public String getComponentKey()
-  {
-    return mComponentKey;
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.analysis_engine.metadata.SofaMapping#setComponentKey(java.lang.String)
-   */
-  public void setComponentKey(String aComponentKey)
-  {
-    mComponentKey = aComponentKey;
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.analysis_engine.metadata.SofaMapping#getComponentSofaName()
-   */
-  public String getComponentSofaName()
-  {
-    return mComponentSofaName;
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.analysis_engine.metadata.SofaMapping#setComponentSofaName(java.lang.String)
-   */
-  public void setComponentSofaName(String aComponentSofaName)
-  {
-    mComponentSofaName = aComponentSofaName;
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.analysis_engine.metadata.SofaMapping#getAggregateSofaName()
-   */
-  public String getAggregateSofaName()
-  {
-    return mAggregateSofaName;
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.analysis_engine.metadata.SofaMapping#setAggregateSofaName(java.lang.String)
-   */
-  public void setAggregateSofaName(String aAggregateSofaName)
-  {
-    mAggregateSofaName = aAggregateSofaName;
-  }
-
-  protected XmlizationInfo getXmlizationInfo()
-  {
-    return XMLIZATION_INFO;
-  }
-
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("sofaMapping",
-      new PropertyXmlInfo[] { 
-        new PropertyXmlInfo("componentKey"),
-        new PropertyXmlInfo("componentSofaName"), 
-        new PropertyXmlInfo("aggregateSofaName") 
-      });
 
   private String mComponentKey = CAS.NAME_DEFAULT_TEXT_SOFA;
 
   private String mComponentSofaName;
 
   private String mAggregateSofaName;
+  
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.analysis_engine.metadata.SofaMapping#getComponentKey()
+   */
+  public String getComponentKey() {
+    return mComponentKey;
+  }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.analysis_engine.metadata.SofaMapping#setComponentKey(java.lang.String)
+   */
+  public void setComponentKey(String aComponentKey) {
+    mComponentKey = aComponentKey;
+  }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.analysis_engine.metadata.SofaMapping#getComponentSofaName()
+   */
+  public String getComponentSofaName() {
+    return mComponentSofaName;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.analysis_engine.metadata.SofaMapping#setComponentSofaName(java.lang.String)
+   */
+  public void setComponentSofaName(String aComponentSofaName) {
+    mComponentSofaName = aComponentSofaName;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.analysis_engine.metadata.SofaMapping#getAggregateSofaName()
+   */
+  public String getAggregateSofaName() {
+    return mAggregateSofaName;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.analysis_engine.metadata.SofaMapping#setAggregateSofaName(java.lang.String)
+   */
+  public void setAggregateSofaName(String aAggregateSofaName) {
+    mAggregateSofaName = aAggregateSofaName;
+  }
+
+  protected XmlizationInfo getXmlizationInfo() {
+    return XMLIZATION_INFO;
+  }
+
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("sofaMapping",
+                  new PropertyXmlInfo[] { new PropertyXmlInfo("componentKey"),
+                      new PropertyXmlInfo("componentSofaName"),
+                      new PropertyXmlInfo("aggregateSofaName") });
 }

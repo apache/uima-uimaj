@@ -32,272 +32,14 @@ import org.apache.uima.util.ProcessTraceEvent;
  * 
  * 
  */
-public class ProcessTraceEvent_impl implements ProcessTraceEvent
-{
-  /**
-   * 
-   */
+public class ProcessTraceEvent_impl implements ProcessTraceEvent {
+
   private static final long serialVersionUID = 4275351517280216988L;
-  
-  /**
-   * Creates a new ProcessTraceEvent_impl with null property values.
-   */
-  public ProcessTraceEvent_impl()
-  {
-  }
-  
-  /**
-   * Creates a new ProcessTraceEvent_impl and sets the Component name, type,
-   * and description properties.
-   * 
-   * @param aComponentName name of Component generating this event
-   * @param aType type of event.  Standard event types are defined as constants
-   *    on the {@link ProcessTraceEvent} interface, but any string is allowed.
-   * @param aDescription description of event
-   */
-  public ProcessTraceEvent_impl(String aComponentName, String aType, 
-      String aDescription)
-  {
-    mComponentName = aComponentName;
-    mType = aType;
-    mDescription = aDescription;
-  }
 
-  /**
-   * @see org.apache.uima.util.ProcessTraceEvent#getComponentName()
-   */
-  public String getComponentName()
-  {
-    return mComponentName;
-  }
-
-  /**
-   * Sets the component name for this event
-   */
-  public void setComponentName(String aName)
-  {
-    mComponentName = aName;  
-  }
-
-  /**
-   * @see org.apache.uima.util.ProcessTraceEvent#getType()
-   */
-  public String getType()
-  {
-    return mType;
-  }
-
-  /**
-   * Sets the type of this event
-   */
-  public void setType(String aType)
-  {
-    mType = aType;
-  }
-
-  /**
-   * @see org.apache.uima.util.ProcessTraceEvent#getDescription()
-   */
-  public String getDescription()
-  {
-    return mDescription;
-  }
-
-  /**
-   * Sets the description for this event
-   */
-  public void setDescription(String aDescription)
-  {
-    mDescription = aDescription;
-  }
-  
-
-  /**
-   * @see org.apache.uima.util.ProcessTraceEvent#getDuration()
-   */
-  public int getDuration()
-  {
-    return mDuration;
-  }
-
-
-  /**
-   * Sets the duration for this event
-   */
-  public void setDuration(int aDuration)
-  {
-    mDuration = aDuration;
-  }
-
-
-  /**
-   * Adds to the duration of this event
-   */
-  public void addToDuration(long aAdditionalDuration)
-  {
-    mDuration += aAdditionalDuration;
-  }
-
-
-  /**
-   * @see org.apache.uima.util.ProcessTraceEvent#getResultMessage()
-   */
-  public String getResultMessage()
-  {
-    return mResultMessage;
-  }
-
-  /**
-   * Sets the Result Message for this event
-   */
-  public void setResultMessage(String aResultMessage)
-  {
-    mResultMessage = aResultMessage;
-  }
-  
-  /**
-   * @see org.apache.uima.util.ProcessTraceEvent#getSubEvents()
-   */
-  public List getSubEvents()
-  {
-    if (mSubEvents == null)
-    {
-      return Collections.EMPTY_LIST;
-    }
-    else
-    {
-      return mSubEvents;
-    }  
-  }  
-  
-  /**
-   * Adds a sub-event to this event.
-   */
-  public void addSubEvent(ProcessTraceEvent aEvent)
-  {
-    if (mSubEvents == null)
-    {
-      mSubEvents = new ArrayList();
-    }
-    mSubEvents.add(aEvent);
-  }
-  
-  /**
-   * @see org.apache.uima.util.ProcessTraceEvent#toString()
-   */  
-  public String toString()
-  {
-    StringBuffer buf = new StringBuffer();
-    toString(buf,0);
-    return buf.toString();
-  }
-  
-  /**
-   * @see org.apache.uima.util.ProcessTraceEvent#toString(StringBuffer,int)
-   */ 
-  public void toString(StringBuffer aBuf, int aIndentLevel)
-  {
-    toString(aBuf, aIndentLevel, 0);
-  }  
-
-  /**
-   * @see org.apache.uima.util.ProcessTraceEvent#toString(java.lang.StringBuffer, int, int)
-   */
-  public void toString(StringBuffer aBuf, int aIndentLevel, int aTotalTime)
-  {
-    final DecimalFormat pctFmt = new DecimalFormat("##.##%");
-
-    writeTabs(aIndentLevel, aBuf);
-    aBuf.append("Component Name: ").append(getComponentName()).append("\n");
-    writeTabs(aIndentLevel, aBuf);
-    aBuf.append("Event Type: ").append(getType()).append("\n");
-    if (getDescription() != null && getDescription().length() > 0)
-    {
-      writeTabs(aIndentLevel, aBuf);
-      aBuf.append("Description: ").append(getDescription()).append("\n");
-    }  
-        
-    int duration = getDuration();
-    if (duration >= 0)
-    {
-      writeTabs(aIndentLevel, aBuf);
-      aBuf.append("Duration: ").append(duration).append("ms");
-      if (aTotalTime > 0)
-      {
-        double pct = (double)duration / aTotalTime;
-        String pctStr = pctFmt.format(pct);
-        aBuf.append(" (").append(pctStr).append(')');        
-      }
-      aBuf.append('\n');
-    }
-    
-    if (getResultMessage() != null && getResultMessage().length() > 0)
-    {
-      writeTabs(aIndentLevel, aBuf);
-      aBuf.append("Result: ").append(getResultMessage()).append("\n");
-    }
-        
-    List subEvents = getSubEvents();
-    if (!subEvents.isEmpty())
-    {
-      writeTabs(aIndentLevel, aBuf);
-      aBuf.append("Sub-events:").append("\n");    
-    
-      Iterator it = subEvents.iterator();
-      while (it.hasNext())
-      {
-        ProcessTraceEvent evt = (ProcessTraceEvent)it.next();
-        evt.toString(aBuf, aIndentLevel + 1, aTotalTime);
-        aBuf.append("\n");    
-      }
-    }  
-  }
-  
-  /**
-   * @see org.apache.uima.util.ProcessTraceEvent#getDurationExcludingSubEvents()
-   */
-  public int getDurationExcludingSubEvents()
-  {
-    int result = getDuration();
-    Iterator it = getSubEvents().iterator();
-    while(it.hasNext())
-    {
-      ProcessTraceEvent evt = (ProcessTraceEvent)it.next();    
-      result -= evt.getDuration();
-    }
-    return result;
-  }
-  
-  
-  public long getStartTime()
-  {
-    return mStartTime;
-  }
-  
-  public void setStartTime(long aStartTime)
-  {
-    mStartTime = aStartTime;
-  }
-  
-  /**
-   * Writes tabs to a StringBuffer
-   * 
-   * @param aNumTabs number of tabs to print
-   * @param aBuf the buffer to write to
-   */
-  protected void writeTabs(int aNumTabs, StringBuffer aBuf)
-  {
-    for (int i = 0; i < aNumTabs; i++)
-    {
-      aBuf.append('\t');
-    }
-  }  
-  
   /**
    * Component Name for this event.
    */
   private String mComponentName;
-
 
   /**
    * Type of this event.
@@ -309,18 +51,15 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent
    */
   private String mDescription;
 
-
   /**
    * Duration of this event in milliseconds.
    */
   private int mDuration;
 
-
   /**
    * Result Message of this event.
    */
   private String mResultMessage;
-
 
   /**
    * List of sub-events of this event. (Initialized lazily.)
@@ -331,4 +70,223 @@ public class ProcessTraceEvent_impl implements ProcessTraceEvent
    * Start time of this event.
    */
   private long mStartTime;
+
+  /**
+   * Creates a new ProcessTraceEvent_impl with null property values.
+   */
+  public ProcessTraceEvent_impl() {
+  }
+
+  /**
+   * Creates a new ProcessTraceEvent_impl and sets the Component name, type, and description
+   * properties.
+   * 
+   * @param aComponentName
+   *          name of Component generating this event
+   * @param aType
+   *          type of event. Standard event types are defined as constants on the
+   *          {@link ProcessTraceEvent} interface, but any string is allowed.
+   * @param aDescription
+   *          description of event
+   */
+  public ProcessTraceEvent_impl(String aComponentName, String aType, String aDescription) {
+    mComponentName = aComponentName;
+    mType = aType;
+    mDescription = aDescription;
+  }
+
+  /**
+   * @see org.apache.uima.util.ProcessTraceEvent#getComponentName()
+   */
+  public String getComponentName() {
+    return mComponentName;
+  }
+
+  /**
+   * Sets the component name for this event
+   */
+  public void setComponentName(String aName) {
+    mComponentName = aName;
+  }
+
+  /**
+   * @see org.apache.uima.util.ProcessTraceEvent#getType()
+   */
+  public String getType() {
+    return mType;
+  }
+
+  /**
+   * Sets the type of this event
+   */
+  public void setType(String aType) {
+    mType = aType;
+  }
+
+  /**
+   * @see org.apache.uima.util.ProcessTraceEvent#getDescription()
+   */
+  public String getDescription() {
+    return mDescription;
+  }
+
+  /**
+   * Sets the description for this event
+   */
+  public void setDescription(String aDescription) {
+    mDescription = aDescription;
+  }
+
+  /**
+   * @see org.apache.uima.util.ProcessTraceEvent#getDuration()
+   */
+  public int getDuration() {
+    return mDuration;
+  }
+
+  /**
+   * Sets the duration for this event
+   */
+  public void setDuration(int aDuration) {
+    mDuration = aDuration;
+  }
+
+  /**
+   * Adds to the duration of this event
+   */
+  public void addToDuration(long aAdditionalDuration) {
+    mDuration += aAdditionalDuration;
+  }
+
+  /**
+   * @see org.apache.uima.util.ProcessTraceEvent#getResultMessage()
+   */
+  public String getResultMessage() {
+    return mResultMessage;
+  }
+
+  /**
+   * Sets the Result Message for this event
+   */
+  public void setResultMessage(String aResultMessage) {
+    mResultMessage = aResultMessage;
+  }
+
+  /**
+   * @see org.apache.uima.util.ProcessTraceEvent#getSubEvents()
+   */
+  public List getSubEvents() {
+    if (mSubEvents == null) {
+      return Collections.EMPTY_LIST;
+    } else {
+      return mSubEvents;
+    }
+  }
+
+  /**
+   * Adds a sub-event to this event.
+   */
+  public void addSubEvent(ProcessTraceEvent aEvent) {
+    if (mSubEvents == null) {
+      mSubEvents = new ArrayList();
+    }
+    mSubEvents.add(aEvent);
+  }
+
+  /**
+   * @see org.apache.uima.util.ProcessTraceEvent#toString()
+   */
+  public String toString() {
+    StringBuffer buf = new StringBuffer();
+    toString(buf, 0);
+    return buf.toString();
+  }
+
+  /**
+   * @see org.apache.uima.util.ProcessTraceEvent#toString(StringBuffer,int)
+   */
+  public void toString(StringBuffer aBuf, int aIndentLevel) {
+    toString(aBuf, aIndentLevel, 0);
+  }
+
+  /**
+   * @see org.apache.uima.util.ProcessTraceEvent#toString(java.lang.StringBuffer, int, int)
+   */
+  public void toString(StringBuffer aBuf, int aIndentLevel, int aTotalTime) {
+    final DecimalFormat pctFmt = new DecimalFormat("##.##%");
+
+    writeTabs(aIndentLevel, aBuf);
+    aBuf.append("Component Name: ").append(getComponentName()).append("\n");
+    writeTabs(aIndentLevel, aBuf);
+    aBuf.append("Event Type: ").append(getType()).append("\n");
+    if (getDescription() != null && getDescription().length() > 0) {
+      writeTabs(aIndentLevel, aBuf);
+      aBuf.append("Description: ").append(getDescription()).append("\n");
+    }
+
+    int duration = getDuration();
+    if (duration >= 0) {
+      writeTabs(aIndentLevel, aBuf);
+      aBuf.append("Duration: ").append(duration).append("ms");
+      if (aTotalTime > 0) {
+        double pct = (double) duration / aTotalTime;
+        String pctStr = pctFmt.format(pct);
+        aBuf.append(" (").append(pctStr).append(')');
+      }
+      aBuf.append('\n');
+    }
+
+    if (getResultMessage() != null && getResultMessage().length() > 0) {
+      writeTabs(aIndentLevel, aBuf);
+      aBuf.append("Result: ").append(getResultMessage()).append("\n");
+    }
+
+    List subEvents = getSubEvents();
+    if (!subEvents.isEmpty()) {
+      writeTabs(aIndentLevel, aBuf);
+      aBuf.append("Sub-events:").append("\n");
+
+      Iterator it = subEvents.iterator();
+      while (it.hasNext()) {
+        ProcessTraceEvent evt = (ProcessTraceEvent) it.next();
+        evt.toString(aBuf, aIndentLevel + 1, aTotalTime);
+        aBuf.append("\n");
+      }
+    }
+  }
+
+  /**
+   * @see org.apache.uima.util.ProcessTraceEvent#getDurationExcludingSubEvents()
+   */
+  public int getDurationExcludingSubEvents() {
+    int result = getDuration();
+    Iterator it = getSubEvents().iterator();
+    while (it.hasNext()) {
+      ProcessTraceEvent evt = (ProcessTraceEvent) it.next();
+      result -= evt.getDuration();
+    }
+    return result;
+  }
+
+  public long getStartTime() {
+    return mStartTime;
+  }
+
+  public void setStartTime(long aStartTime) {
+    mStartTime = aStartTime;
+  }
+
+  /**
+   * Writes tabs to a StringBuffer
+   * 
+   * @param aNumTabs
+   *          number of tabs to print
+   * @param aBuf
+   *          the buffer to write to
+   */
+  protected void writeTabs(int aNumTabs, StringBuffer aBuf) {
+    for (int i = 0; i < aNumTabs; i++) {
+      aBuf.append('\t');
+    }
+  }
 }

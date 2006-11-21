@@ -23,17 +23,19 @@ package org.apache.uima.cas;
  * Annotation Base API
  * 
  * <p>
- * The <code>AnnotationBase</code> object holds one feature, the Sofa, 
- * which is a reference to the SofaFS object associated with subtypes of this type.
+ * The <code>AnnotationBase</code> object holds one feature, the Sofa, which is a reference to the
+ * SofaFS object associated with subtypes of this type.
  * 
- * <p> It implements the methods to get the CAS view associated with this sofa.
+ * <p>
+ * It implements the methods to get the CAS view associated with this sofa.
  * 
  */
 
-public interface AnnotationBaseFS extends FeatureStructure{
-  
+public interface AnnotationBaseFS extends FeatureStructure {
+
   /**
    * Gets the CAS view associated with the Sofa that this Annotation is over.
+   * 
    * @return the CAS view associated with the Annotation's Sofa
    */
   public CAS getView();

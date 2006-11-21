@@ -22,33 +22,32 @@ package org.apache.uima.analysis_engine.metadata;
 import org.apache.uima.resource.metadata.MetaDataObject;
 
 /**
- * Sofa Name mapping is required to connect the output Sofas from one component to
- * the input Sofa of another component.  
+ * Sofa Name mapping is required to connect the output Sofas from one component to the input Sofa of
+ * another component.
  * 
- * <p>A <code>SofaMapping</code> object represents mapping of a Sofa name assigned
- * by a component to a Sofa name assigned by an aggregate which could be either 
- * an aggregate AE or a CPE.  This interface provides methods to set
- * the attributes that define a mapping.
- *  
- * <p>If the component Sofa Name is not set, it defaults to ({@link CAS#NAME_DEFAULT_SOFA}).
+ * <p>
+ * A <code>SofaMapping</code> object represents mapping of a Sofa name assigned by a component to
+ * a Sofa name assigned by an aggregate which could be either an aggregate AE or a CPE. This
+ * interface provides methods to set the attributes that define a mapping.
+ * 
+ * <p>
+ * If the component Sofa Name is not set, it defaults to ({@link CAS#NAME_DEFAULT_SOFA}).
  * 
  */
 
-public interface SofaMapping extends MetaDataObject
-{
+public interface SofaMapping extends MetaDataObject {
   /**
-   * Gets the component key. This identifies the component
-   * for which this mapping is defined.  
+   * Gets the component key. This identifies the component for which this mapping is defined.
    * 
    * @return the key
    */
-  public String getComponentKey();  
-  
+  public String getComponentKey();
+
   /**
-   * Set the component key. This identifies the component
-   * for which this mapping is defined.
+   * Set the component key. This identifies the component for which this mapping is defined.
    * 
-   * @param aComponentKey the key
+   * @param aComponentKey
+   *          the key
    */
   public void setComponentKey(String aComponentKey);
 
@@ -58,23 +57,27 @@ public interface SofaMapping extends MetaDataObject
    * @return the component's sofa name
    */
   public String getComponentSofaName();
-  
+
   /**
    * Set the component assigned sofa name.
    * 
-   * @param aComponentSofaName the component's sofa name
-   */ 
+   * @param aComponentSofaName
+   *          the component's sofa name
+   */
   public void setComponentSofaName(String aComponentSofaName);
-  
+
   /**
    * Get the sofa name assigned by the aggregate.
+   * 
    * @return the aggregate's sofa name
    */
   public String getAggregateSofaName();
 
   /**
    * Set the sofa name assigned by the aggregate.
-   * @param aAggregateSofaName the aggregate's sofa name
+   * 
+   * @param aAggregateSofaName
+   *          the aggregate's sofa name
    */
-  public void setAggregateSofaName(String aAggregateSofaName);  
+  public void setAggregateSofaName(String aAggregateSofaName);
 }

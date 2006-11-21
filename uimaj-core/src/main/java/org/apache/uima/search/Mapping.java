@@ -20,34 +20,39 @@
 package org.apache.uima.search;
 
 /**
- *  Mapping from a CAS feature name to its name in the index.
- *  Used inside {@link Style#getAttributeMappings()}.
+ * Mapping from a CAS feature name to its name in the index. Used inside
+ * {@link Style#getAttributeMappings()}.
  */
-public interface Mapping
-{
+public interface Mapping {
   /**
-   * Gets the name of the feature that should be indexed.  
+   * Gets the name of the feature that should be indexed.
+   * 
    * @return the CAS feature name
    */
   public String getFeature();
-  
+
   /**
-   * Sets the name of the feature that should be indexed.  
-   * @param aFeature the CAS feature name
+   * Sets the name of the feature that should be indexed.
+   * 
+   * @param aFeature
+   *          the CAS feature name
    */
   public void setFeature(String aFeature);
-  
+
   /**
-   * Gets the name that will be used to represent this feature in the index.  This 
-   * determines the name that must be used to query for this feature.
+   * Gets the name that will be used to represent this feature in the index. This determines the
+   * name that must be used to query for this feature.
+   * 
    * @return the index name for the feature
    */
   public String getIndexName();
-  
+
   /**
-   * Sets the name that will be used to represent this feature in the index.  This 
-   * determines the name that must be used to query for this feature.
-   * @param aIndexName the index name for the feature
+   * Sets the name that will be used to represent this feature in the index. This determines the
+   * name that must be used to query for this feature.
+   * 
+   * @param aIndexName
+   *          the index name for the feature
    */
   public void setIndexName(String aIndexName);
 }

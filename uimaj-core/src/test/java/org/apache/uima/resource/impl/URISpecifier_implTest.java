@@ -36,31 +36,26 @@ import org.apache.uima.util.XMLInputSource;
 
 import junit.framework.TestCase;
 
-public class URISpecifier_implTest extends TestCase
-{
+public class URISpecifier_implTest extends TestCase {
   URISpecifier_impl uriSpec;
-  protected void setUp() throws Exception
-  {
+
+  protected void setUp() throws Exception {
     uriSpec = new URISpecifier_impl();
     uriSpec.setProtocol("Vinci");
     uriSpec.setUri("foo.bar");
-    uriSpec.setParameters(new Parameter[]{
-        new Parameter_impl("VNS_HOST","myhost"),
-        new Parameter_impl("VNS_PORT","42")});
+    uriSpec.setParameters(new Parameter[] { new Parameter_impl("VNS_HOST", "myhost"),
+        new Parameter_impl("VNS_PORT", "42") });
   }
 
-  public void testXmlization() throws Exception
-  {
-    try
-    {
+  public void testXmlization() throws Exception {
+    try {
       StringWriter sw = new StringWriter();
       uriSpec.toXML(sw);
-      URISpecifier uriSpec2 = (URISpecifier)UIMAFramework.getXMLParser().parse(
-          new XMLInputSource(new ByteArrayInputStream(sw.getBuffer().toString().getBytes()), null));
+      URISpecifier uriSpec2 = (URISpecifier) UIMAFramework.getXMLParser().parse(
+                      new XMLInputSource(new ByteArrayInputStream(sw.getBuffer().toString()
+                                      .getBytes()), null));
       assertEquals(uriSpec, uriSpec2);
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
   }

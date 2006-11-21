@@ -30,116 +30,104 @@ import org.apache.uima.util.Logger;
 
 /**
  * Logger implementation test
- *   
- * @author Michael Baessler 
+ * 
+ * @author Michael Baessler
  */
-public class LoggingTest extends TestCase
-{
-	private String junitTestBasePath;
-	/**
-	 * Constructor for SequencerTest
-	 * @param arg0
-	 */
-	public LoggingTest(String arg0)
-	{
-	   super(arg0);
-	}
+public class LoggingTest extends TestCase {
+  private String junitTestBasePath;
 
-	/**
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	protected void setUp() throws Exception
-	{
-		//get test base path setting
-		junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
-	}
+  /**
+   * Constructor for SequencerTest
+   * 
+   * @param arg0
+   */
+  public LoggingTest(String arg0) {
+    super(arg0);
+  }
 
-	public void testDefaultLoggerCreation() throws Exception
-	{
-		try 
-		{
-			//get default logger
-			Logger logger = UIMAFramework.getLogger();
-			Assert.assertNotNull(logger);
-			
-			//create another logger
-			Logger logger1 = UIMAFramework.getLogger();
-			
-			//both loggers must reference the same instance
-			Assert.assertEquals(logger,logger1);
-			
-			//test base logging functions
-			logger.log(Level.SEVERE,"Log test messege with Level SEVERE");
-		}
-		catch(Exception ex)
-		{
-			JUnitExtension.handleException(ex);
-		}
-	}
-	
-	public void testClassLoggerCreation() throws Exception
-	{
-		try 
-		{
-			//get class logger
-			Logger logger = UIMAFramework.getLogger(this.getClass());
-			Assert.assertNotNull(logger);
-			
-			//create another class logger
-			Logger logger1 = UIMAFramework.getLogger(this.getClass());
-			
-			//create default logger
-			Logger defaultLogger = UIMAFramework.getLogger();
-			
-			//both loggers must reference the same instance
-			Assert.assertEquals(logger,logger1);
-			
-			//should not be the same
-			Assert.assertNotSame(defaultLogger,logger1);
-			
-			//test base logging functions
-			logger.log(Level.SEVERE,"Log test messege with Level SEVERE");
-		}
-		catch(Exception ex)
-		{
-			JUnitExtension.handleException(ex);
-		}
-	}
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    // get test base path setting
+    junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
+  }
 
-	public void testSetLevel() throws Exception
-	{
-		try 
-		{
-			//get class logger
-			Logger logger = UIMAFramework.getLogger(this.getClass());
-			Logger uimaLogger = UIMAFramework.getLogger(); //should affect everything in org.apache.uima.*
-			
-			//set level to WARNING
-            uimaLogger.setLevel(Level.WARNING);
-			Assert.assertTrue(uimaLogger.isLoggable(Level.WARNING));
-			Assert.assertTrue(uimaLogger.isLoggable(Level.SEVERE));
-			Assert.assertFalse(uimaLogger.isLoggable(Level.INFO));
-            Assert.assertTrue(logger.isLoggable(Level.WARNING));
-            Assert.assertTrue(logger.isLoggable(Level.SEVERE));
-            Assert.assertFalse(logger.isLoggable(Level.INFO));
-			
-			//set level to FINE
-			uimaLogger.setLevel(Level.FINE);
-			Assert.assertTrue(uimaLogger.isLoggable(Level.WARNING));
-			Assert.assertTrue(uimaLogger.isLoggable(Level.SEVERE));
-			Assert.assertTrue(uimaLogger.isLoggable(Level.INFO));
-			Assert.assertFalse(uimaLogger.isLoggable(Level.FINER));
-			Assert.assertFalse(uimaLogger.isLoggable(Level.ALL));
-            Assert.assertTrue(logger.isLoggable(Level.WARNING));
-            Assert.assertTrue(logger.isLoggable(Level.SEVERE));
-            Assert.assertTrue(logger.isLoggable(Level.INFO));
-            Assert.assertFalse(logger.isLoggable(Level.FINER));
-            Assert.assertFalse(logger.isLoggable(Level.ALL));
-		}
-		catch(Exception ex)
-		{
-			JUnitExtension.handleException(ex);
-		}	
-	}
+  public void testDefaultLoggerCreation() throws Exception {
+    try {
+      // get default logger
+      Logger logger = UIMAFramework.getLogger();
+      Assert.assertNotNull(logger);
+
+      // create another logger
+      Logger logger1 = UIMAFramework.getLogger();
+
+      // both loggers must reference the same instance
+      Assert.assertEquals(logger, logger1);
+
+      // test base logging functions
+      logger.log(Level.SEVERE, "Log test messege with Level SEVERE");
+    } catch (Exception ex) {
+      JUnitExtension.handleException(ex);
+    }
+  }
+
+  public void testClassLoggerCreation() throws Exception {
+    try {
+      // get class logger
+      Logger logger = UIMAFramework.getLogger(this.getClass());
+      Assert.assertNotNull(logger);
+
+      // create another class logger
+      Logger logger1 = UIMAFramework.getLogger(this.getClass());
+
+      // create default logger
+      Logger defaultLogger = UIMAFramework.getLogger();
+
+      // both loggers must reference the same instance
+      Assert.assertEquals(logger, logger1);
+
+      // should not be the same
+      Assert.assertNotSame(defaultLogger, logger1);
+
+      // test base logging functions
+      logger.log(Level.SEVERE, "Log test messege with Level SEVERE");
+    } catch (Exception ex) {
+      JUnitExtension.handleException(ex);
+    }
+  }
+
+  public void testSetLevel() throws Exception {
+    try {
+      // get class logger
+      Logger logger = UIMAFramework.getLogger(this.getClass());
+      Logger uimaLogger = UIMAFramework.getLogger(); // should affect everything in
+                                                      // org.apache.uima.*
+
+      // set level to WARNING
+      uimaLogger.setLevel(Level.WARNING);
+      Assert.assertTrue(uimaLogger.isLoggable(Level.WARNING));
+      Assert.assertTrue(uimaLogger.isLoggable(Level.SEVERE));
+      Assert.assertFalse(uimaLogger.isLoggable(Level.INFO));
+      Assert.assertTrue(logger.isLoggable(Level.WARNING));
+      Assert.assertTrue(logger.isLoggable(Level.SEVERE));
+      Assert.assertFalse(logger.isLoggable(Level.INFO));
+
+      // set level to FINE
+      uimaLogger.setLevel(Level.FINE);
+      Assert.assertTrue(uimaLogger.isLoggable(Level.WARNING));
+      Assert.assertTrue(uimaLogger.isLoggable(Level.SEVERE));
+      Assert.assertTrue(uimaLogger.isLoggable(Level.INFO));
+      Assert.assertFalse(uimaLogger.isLoggable(Level.FINER));
+      Assert.assertFalse(uimaLogger.isLoggable(Level.ALL));
+      Assert.assertTrue(logger.isLoggable(Level.WARNING));
+      Assert.assertTrue(logger.isLoggable(Level.SEVERE));
+      Assert.assertTrue(logger.isLoggable(Level.INFO));
+      Assert.assertFalse(logger.isLoggable(Level.FINER));
+      Assert.assertFalse(logger.isLoggable(Level.ALL));
+    } catch (Exception ex) {
+      JUnitExtension.handleException(ex);
+    }
+  }
 
 }

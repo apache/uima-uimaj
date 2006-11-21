@@ -33,84 +33,88 @@ import org.apache.uima.util.XMLParser;
  * 
  * 
  */
-public class Attribute_impl extends MetaDataObject_impl implements Attribute
-{
+public class Attribute_impl extends MetaDataObject_impl implements Attribute {
   private static final long serialVersionUID = -7368701438572498616L;
 
   private String mValue;
 
   private String mName;
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.Attribute#getName()
    */
-  public String getName()
-  {
+  public String getName() {
     return mName;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.Attribute#setName(java.lang.String)
    */
-  public void setName(String aName)
-  {
-  	mName = aName;
+  public void setName(String aName) {
+    mName = aName;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.Attribute#getValue()
    */
-  public String getValue()
-  {
+  public String getValue() {
     return mValue;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.Attribute#setValue(java.lang.String)
    */
-  public void setValue(String aValue)
-  {
+  public void setValue(String aValue) {
     mValue = aValue;
   }
-  
-	/**
-	 * Overridden to write the name and value properties as XML attributes.
-	 * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXMLAttributeString()
-	 */
-	protected AttributesImpl getXMLAttributes()
-	{
-		AttributesImpl attrs = super.getXMLAttributes();
-		attrs.addAttribute("","name","name",null,getName());
-		attrs.addAttribute("","value","value",null,getValue());
-		return attrs;
-	}
 
-	/**
-	 * Overridden to read the name and value properties from XML attributes.
-	 * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element, org.apache.uima.util.XMLParser)
-	 */
-	public void buildFromXMLElement(Element aElement, XMLParser aParser, XMLParser.ParsingOptions aOptions)
-		throws InvalidXMLException
-	{
-		setName(aElement.getAttribute("name"));
-		setValue(aElement.getAttribute("value"));
-		
-		// call superclass method for good measure
-		super.buildFromXMLElement(aElement, aParser, aOptions);
-	}  
+  /**
+   * Overridden to write the name and value properties as XML attributes.
+   * 
+   * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXMLAttributeString()
+   */
+  protected AttributesImpl getXMLAttributes() {
+    AttributesImpl attrs = super.getXMLAttributes();
+    attrs.addAttribute("", "name", "name", null, getName());
+    attrs.addAttribute("", "value", "value", null, getValue());
+    return attrs;
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
-	 */
-	protected XmlizationInfo getXmlizationInfo()
-	{
-		return XMLIZATION_INFO;
-	}
+  /**
+   * Overridden to read the name and value properties from XML attributes.
+   * 
+   * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element,
+   *      org.apache.uima.util.XMLParser)
+   */
+  public void buildFromXMLElement(Element aElement, XMLParser aParser,
+                  XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
+    setName(aElement.getAttribute("name"));
+    setValue(aElement.getAttribute("value"));
 
-	static final private XmlizationInfo XMLIZATION_INFO =
-		new XmlizationInfo("attribute",
-			new PropertyXmlInfo[]{
-				//name and value are attributes, not elements
-			});			
+    // call superclass method for good measure
+    super.buildFromXMLElement(aElement, aParser, aOptions);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
+   */
+  protected XmlizationInfo getXmlizationInfo() {
+    return XMLIZATION_INFO;
+  }
+
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("attribute",
+                  new PropertyXmlInfo[] {
+                  // name and value are attributes, not elements
+                  });
 
 }

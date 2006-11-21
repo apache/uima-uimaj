@@ -24,44 +24,45 @@ import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.jcas.impl.JCas;
 
 /**
- * Base class to be extended by Annotators that use the {@link JCas} interface.
- * An Annotator is an {@link AnalysisComponent} that may modify its input CAS,
- * but never creates any new CASes as output.
+ * Base class to be extended by Annotators that use the {@link JCas} interface. An Annotator is an
+ * {@link AnalysisComponent} that may modify its input CAS, but never creates any new CASes as
+ * output.
  */
-public abstract class JCasAnnotator_ImplBase extends Annotator_ImplBase
-{
-  /* (non-Javadoc)
+public abstract class JCasAnnotator_ImplBase extends Annotator_ImplBase {
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#getRequiredCasInterface()
    */
-  public Class getRequiredCasInterface()
-  {
+  public Class getRequiredCasInterface() {
     return JCas.class;
   }
-   
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#process(org.apache.uima.core.AbstractCas)
    */
-  public void process(AbstractCas aCAS) throws AnalysisEngineProcessException
-  {
-    if (aCAS instanceof JCas)
-    {
-      process((JCas)aCAS);
+  public void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
+    if (aCAS instanceof JCas) {
+      process((JCas) aCAS);
+    } else {
+      throw new AnalysisEngineProcessException(
+                      AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] {
+                          JCas.class, aCAS.getClass() });
     }
-    else
-    {
-      throw new AnalysisEngineProcessException(AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE,
-          new Object[]{JCas.class, aCAS.getClass()});    
-    } 
   }
-  
+
   /**
-   * This method should be overriden by subclasses.  Inputs a JCAS to the AnalysisComponent. 
-   * The AnalysisComponent "owns" this JCAS until such time as {@link #hasNext()} is
-   * called and returns false (see {@link AnalysisComponent} for details).
-   *
-   * @param aJCas a JCAS that this AnalysisComponent should process.
-   *   
-   * @throws AnalysisEngineProcessException if a problem occurs during processing
+   * This method should be overriden by subclasses. Inputs a JCAS to the AnalysisComponent. The
+   * AnalysisComponent "owns" this JCAS until such time as {@link #hasNext()} is called and returns
+   * false (see {@link AnalysisComponent} for details).
+   * 
+   * @param aJCas
+   *          a JCAS that this AnalysisComponent should process.
+   * 
+   * @throws AnalysisEngineProcessException
+   *           if a problem occurs during processing
    */
   public abstract void process(JCas aJCas) throws AnalysisEngineProcessException;
 }

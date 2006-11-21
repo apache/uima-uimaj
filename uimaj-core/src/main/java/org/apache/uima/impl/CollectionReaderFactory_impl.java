@@ -33,92 +33,77 @@ import org.apache.uima.resource.ResourceSpecifier;
  * Specialized Resource Factory for producing CollectionReaders.
  * 
  */
-public class CollectionReaderFactory_impl implements ResourceFactory
-{
+public class CollectionReaderFactory_impl implements ResourceFactory {
 
   /**
-   * @see org.apache.uima.ResourceFactory#produceResource(java.lang.Class, org.apache.uima.resource.ResourceSpecifier, java.util.Map)
+   * @see org.apache.uima.ResourceFactory#produceResource(java.lang.Class,
+   *      org.apache.uima.resource.ResourceSpecifier, java.util.Map)
    */
   public Resource produceResource(Class aResourceClass, ResourceSpecifier aSpecifier,
-      Map aAdditionalParams) throws ResourceInitializationException
-  {
-    if (aSpecifier instanceof CollectionReaderDescription)
-    {
+                  Map aAdditionalParams) throws ResourceInitializationException {
+    if (aSpecifier instanceof CollectionReaderDescription) {
       CollectionReaderDescription desc = (CollectionReaderDescription) aSpecifier;
       String className = desc.getImplementationName();
 
-      //load class using UIMA Extension ClassLoader if there is one
+      // load class using UIMA Extension ClassLoader if there is one
       ClassLoader cl = null;
       ResourceManager resourceManager = null;
-      if (aAdditionalParams != null)
-      {
-        resourceManager = (ResourceManager) aAdditionalParams
-          .get(Resource.PARAM_RESOURCE_MANAGER);
-      }  
-      if (resourceManager != null)
-      {
+      if (aAdditionalParams != null) {
+        resourceManager = (ResourceManager) aAdditionalParams.get(Resource.PARAM_RESOURCE_MANAGER);
+      }
+      if (resourceManager != null) {
         cl = resourceManager.getExtensionClassLoader();
       }
-      if (cl == null)
-      {
+      if (cl == null) {
         cl = this.getClass().getClassLoader();
       }
 
-      try
-      {
+      try {
         Class implClass = Class.forName(className, true, cl);
 
-        //check to see if this is a subclass of BaseCollectionReader and of aResourceClass
-        if (!BaseCollectionReader.class.isAssignableFrom(implClass))
-        {
+        // check to see if this is a subclass of BaseCollectionReader and of aResourceClass
+        if (!BaseCollectionReader.class.isAssignableFrom(implClass)) {
           throw new ResourceInitializationException(
-              ResourceInitializationException.NOT_A_COLLECTION_READER,
-              new Object[] {className, aSpecifier.getSourceUrlString()});
+                          ResourceInitializationException.NOT_A_COLLECTION_READER, new Object[] {
+                              className, aSpecifier.getSourceUrlString() });
         }
-        if (!aResourceClass.isAssignableFrom(implClass))
-        {
+        if (!aResourceClass.isAssignableFrom(implClass)) {
           throw new ResourceInitializationException(
-              ResourceInitializationException.RESOURCE_DOES_NOT_IMPLEMENT_INTERFACE,
-              new Object[] {className, aResourceClass.getName(), aSpecifier.getSourceUrlString()});          
+                          ResourceInitializationException.RESOURCE_DOES_NOT_IMPLEMENT_INTERFACE,
+                          new Object[] { className, aResourceClass.getName(),
+                              aSpecifier.getSourceUrlString() });
         }
 
-        //instantiate this Resource Class
+        // instantiate this Resource Class
         Resource resource = (Resource) implClass.newInstance();
-        //attempt to initialize it
-        if (resource.initialize(aSpecifier, aAdditionalParams))
-        {
-          //success!
+        // attempt to initialize it
+        if (resource.initialize(aSpecifier, aAdditionalParams)) {
+          // success!
           return resource;
-        }
-        else //failure, for some unknown reason :(  This isn't likely to happen
+        } else // failure, for some unknown reason :( This isn't likely to happen
         {
           throw new ResourceInitializationException(
-              ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR,
-              new Object[] {className, aSpecifier.getSourceUrlString()});
+                          ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR,
+                          new Object[] { className, aSpecifier.getSourceUrlString() });
         }
       }
-      //if an exception occurs, log it but do not throw it... yet
-      catch (ClassNotFoundException e)
-      {
+      // if an exception occurs, log it but do not throw it... yet
+      catch (ClassNotFoundException e) {
         throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
-            new Object[] { className, aSpecifier.getSourceUrlString() }, e);
-      }
-      catch (IllegalAccessException e)
-      {
+                        new Object[] { className, aSpecifier.getSourceUrlString() }, e);
+      } catch (IllegalAccessException e) {
         throw new ResourceInitializationException(
-            ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] { className, aSpecifier.getSourceUrlString() }, e);
-      }
-      catch (InstantiationException e)
-      {
+                        ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
+                            className, aSpecifier.getSourceUrlString() }, e);
+      } catch (InstantiationException e) {
         throw new ResourceInitializationException(
-            ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] { className, aSpecifier.getSourceUrlString() }, e);
+                        ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
+                            className, aSpecifier.getSourceUrlString() }, e);
       }
-    }
-    else //not a CR descriptor
+    } else // not a CR descriptor
     {
       return null;
     }
   }
-
 
 }

@@ -25,11 +25,15 @@ import org.apache.uima.jcas.impl.JCas;
 public class FSList extends org.apache.uima.jcas.cas.TOP {
 
   public final static int typeIndexID = JCas.getNextIndex();
-  public final static int type = typeIndexID;
-  public           int getTypeIndexID() {return typeIndexID;}
 
-  // Never called.  
-  protected FSList() {//Disable default constructor
+  public final static int type = typeIndexID;
+
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  // Never called.
+  protected FSList() {// Disable default constructor
   }
 
   /** Internal - Constructor used by generator */
@@ -41,29 +45,31 @@ public class FSList extends org.apache.uima.jcas.cas.TOP {
     super(jcas);
   }
 
-
   public TOP getNthElement(int i) {
     if (this instanceof EmptyFSList) {
-      CASRuntimeException casEx = new CASRuntimeException(CASRuntimeException.JCAS_GET_NTH_ON_EMPTY_LIST);
+      CASRuntimeException casEx = new CASRuntimeException(
+                      CASRuntimeException.JCAS_GET_NTH_ON_EMPTY_LIST);
       casEx.addArgument("EmptyFSList");
       throw casEx;
     }
     if (i < 0) {
-			CASRuntimeException casEx = new CASRuntimeException(
-					CASRuntimeException.JCAS_GET_NTH_NEGATIVE_INDEX);
-			casEx.addArgument(new Integer(i).toString());
-			throw casEx;
-		}
+      CASRuntimeException casEx = new CASRuntimeException(
+                      CASRuntimeException.JCAS_GET_NTH_NEGATIVE_INDEX);
+      casEx.addArgument(new Integer(i).toString());
+      throw casEx;
+    }
     int originali = i;
     FSList cg = this;
     for (;; i--) {
       if (cg instanceof EmptyFSList) {
-        CASRuntimeException casEx = new CASRuntimeException(CASRuntimeException.JCAS_GET_NTH_PAST_END);
+        CASRuntimeException casEx = new CASRuntimeException(
+                        CASRuntimeException.JCAS_GET_NTH_PAST_END);
         casEx.addArgument(new Integer(originali).toString());
         throw casEx;
       }
-      NonEmptyFSList c = (NonEmptyFSList)cg;
-      if (i == 0) return c.getHead();
+      NonEmptyFSList c = (NonEmptyFSList) cg;
+      if (i == 0)
+        return c.getHead();
       cg = c.getTail();
     }
   }

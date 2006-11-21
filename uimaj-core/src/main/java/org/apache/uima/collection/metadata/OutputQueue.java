@@ -22,35 +22,37 @@ package org.apache.uima.collection.metadata;
 import org.apache.uima.resource.metadata.MetaDataObject;
 
 /**
- * An object that holds configuration that is part of the CPE descriptor. It provides the 
- * means of configuring CPE output queue that is shared between processing pipelines
- * and cas consumers
- *  
+ * An object that holds configuration that is part of the CPE descriptor. It provides the means of
+ * configuring CPE output queue that is shared between processing pipelines and cas consumers
+ * 
  */
-public interface OutputQueue extends MetaDataObject
-{
-	/**
-	 * Milliseconds to wait for new message
-	 * 
-	 * @return - ms to wait for message
-	 */
-	public int getDequeueTimeout();
-	/**
-	 * Class name of the queue object to be used as Output Queue
-	 * 
-	 * @return - name of the queue class
-	 */
-	public String getQueueClass();
-	/** 
-	 * Define the time (in ms) to wait for a new message
-	 * 
-	 * @param i
-	 */
-	public void setDequeueTimeout(int i);
-	/**
-	 * Define a class for a queue object
-	 * 
-	 * @param string - name of the queue class
-	 */
-	public void setQueueClass(String string);
+public interface OutputQueue extends MetaDataObject {
+  /**
+   * Milliseconds to wait for new message
+   * 
+   * @return - ms to wait for message
+   */
+  public int getDequeueTimeout();
+
+  /**
+   * Class name of the queue object to be used as Output Queue
+   * 
+   * @return - name of the queue class
+   */
+  public String getQueueClass();
+
+  /**
+   * Define the time (in ms) to wait for a new message
+   * 
+   * @param i
+   */
+  public void setDequeueTimeout(int i);
+
+  /**
+   * Define a class for a queue object
+   * 
+   * @param string -
+   *          name of the queue class
+   */
+  public void setQueueClass(String string);
 }

@@ -23,90 +23,81 @@ import org.apache.uima.resource.metadata.NameValuePair;
 
 /**
  * Reference implementation of {@link NameValuePair}.
- *  
+ * 
  * 
  */
-public class NameValuePair_impl extends MetaDataObject_impl
-  implements NameValuePair
-{
-  
+public class NameValuePair_impl extends MetaDataObject_impl implements NameValuePair {
+
+  static final long serialVersionUID = -1806648654924417387L;
+
+  /** Name */
+  private String mName;
+
+  /** Value */
+  private Object mValue;
+
   /**
    * Creates a new <code>NameValuePair_impl</code> with a null name and value.
    */
-  public NameValuePair_impl()
-  {
+  public NameValuePair_impl() {
   }
-  
+
   /**
    * Creates a new <code>NameValuePair_impl</code> with the specified name and value.
    * 
-   * @param aName a name
-   * @param aValue a value
+   * @param aName
+   *          a name
+   * @param aValue
+   *          a value
    */
-  public NameValuePair_impl(String aName, Object aValue)    
-  {
+  public NameValuePair_impl(String aName, Object aValue) {
     setName(aName);
     setValue(aValue);
   }
-  
+
   /**
    * Gets the name.
    * 
-   * @return the name 
+   * @return the name
    */
-  public String getName()
-  {
+  public String getName() {
     return mName;
   }
-  
+
   /**
    * Sets the name.
    * 
-   * @param aName a name
+   * @param aName
+   *          a name
    */
-  public void setName(String aName)
-  {
+  public void setName(String aName) {
     mName = aName;
   }
-
 
   /**
    * Gets the value.
    * 
-   * @return the value 
+   * @return the value
    */
-  public Object getValue()
-  {
+  public Object getValue() {
     return mValue;
   }
-  
+
   /**
    * Sets the value.
    * 
-   * @param aValue a value
+   * @param aValue
+   *          a value
    */
-  public void setValue(Object aValue)
-  {
+  public void setValue(Object aValue) {
     mValue = aValue;
   }
-     
-  protected XmlizationInfo getXmlizationInfo()
-  {
+
+  protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
-  
-  static final private XmlizationInfo XMLIZATION_INFO =
-    new XmlizationInfo("nameValuePair",
-      new PropertyXmlInfo[]{
-         new PropertyXmlInfo("name"),
-         new PropertyXmlInfo("value",false),
-      });
-      
-  /** Name */
-  private String mName;
-  
-  /** Value */
-  private Object mValue;
 
-  static final long serialVersionUID = -1806648654924417387L;
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("nameValuePair",
+                  new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
+                      new PropertyXmlInfo("value", false), });
 }

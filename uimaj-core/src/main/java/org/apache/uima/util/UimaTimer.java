@@ -20,15 +20,14 @@
 package org.apache.uima.util;
 
 /**
- * Interface for a timer, used to collect performance statistics for UIMA components.
- * A default Timer implementation can be obtained by calling 
- * {@link org.apache.uima.UIMAFramework#newTimer()}.  A Timer implementation can also be 
- * specified in a {@link org.apache.uima.collection.CollectionProcessingEngine} descriptor.
+ * Interface for a timer, used to collect performance statistics for UIMA components. A default
+ * Timer implementation can be obtained by calling {@link org.apache.uima.UIMAFramework#newTimer()}.
+ * A Timer implementation can also be specified in a
+ * {@link org.apache.uima.collection.CollectionProcessingEngine} descriptor.
  * 
  * 
  */
-public interface UimaTimer extends java.io.Serializable
-{
+public interface UimaTimer extends java.io.Serializable {
   /**
    * Starts the timer.
    * 
@@ -36,45 +35,45 @@ public interface UimaTimer extends java.io.Serializable
    */
   public long startIt();
 
-	/**
-	 * Stops the timer.
-	 * 
-	 * @return the current time in milliseconds
-	 */
+  /**
+   * Stops the timer.
+   * 
+   * @return the current time in milliseconds
+   */
   public long stopIt();
 
-	/**
-	 * Gets the time between the last call to stopIt() and the last call to startIt().
-	 * 
-	 * @return the duration in milliseconds
-	 */
+  /**
+   * Gets the time between the last call to stopIt() and the last call to startIt().
+   * 
+   * @return the duration in milliseconds
+   */
   public long getDuration();
 
-	/**
-	 * Gets the current time in seconds.
-	 * 
-	 * @return the current time in seconds
-	 */
+  /**
+   * Gets the current time in seconds.
+   * 
+   * @return the current time in seconds
+   */
   public long getTimeInSecs();
 
-	/**
-	 * Gets the current time in milliseconds.
-	 * 
-	 * @return the current time in milliseconds
-	 */
+  /**
+   * Gets the current time in milliseconds.
+   * 
+   * @return the current time in milliseconds
+   */
   public long getTimeInMillis();
 
-	/**
-	 * Gets the current time in microseconds.
-	 * 
-	 * @return the current time in microseconds
-	 */
+  /**
+   * Gets the current time in microseconds.
+   * 
+   * @return the current time in microseconds
+   */
   public long getTimeInMicros();
 
-	/**
-	 * Gets the timer resolution in milliseconds.
-	 * 
-	 * @return the timer resolution in milliseconds
-	 */
+  /**
+   * Gets the timer resolution in milliseconds.
+   * 
+   * @return the timer resolution in milliseconds
+   */
   public int getResolution();
 }

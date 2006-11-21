@@ -24,28 +24,27 @@ import org.apache.uima.jcas.impl.JCas;
 
 /**
  * 
- *
+ * 
  */
 public class CommonArray_Type extends TOP_Type {
-	
-	protected CommonArray_Type(){}	// block default new operator
-	
-	public CommonArray_Type(JCas jcas, Type casType) {
-		super(jcas, casType);
-	} 
-		
-	//******************************************************
-	//* No Object version
-	//******************************************************
+
+  protected CommonArray_Type() {
+  } // block default new operator
+
+  public CommonArray_Type(JCas jcas, Type casType) {
+    super(jcas, casType);
+  }
+
+  // ******************************************************
+  // * No Object version
+  // ******************************************************
   /*
-	public int noObjCreate(int length) {
-		casImpl.checkArrayPreconditions(length);
-		return casImpl.createTempArray(casTypeCode, length);
-	} 
-  */	
-	/** return the size of the array*/  
-	public int size(int addr) {
-		return casImpl.getArraySize(addr);
-	} 
-		 		 
+   * public int noObjCreate(int length) { casImpl.checkArrayPreconditions(length); return
+   * casImpl.createTempArray(casTypeCode, length); }
+   */
+  /** return the size of the array */
+  public int size(int addr) {
+    return casImpl.getArraySize(addr);
+  }
+
 }

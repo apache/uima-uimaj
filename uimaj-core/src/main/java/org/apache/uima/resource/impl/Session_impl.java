@@ -28,30 +28,29 @@ import org.apache.uima.resource.Session;
 /**
  * 
  */
-public class Session_impl implements Session
-{
-  /**
-   * 
-   */
+public class Session_impl implements Session {
+
   private static final long serialVersionUID = -8525494546736102324L;
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.resource.Session#put(java.lang.String, java.lang.Object)
-   */
-  public void put(String aKey, Object aValue)
-  {
-	mMap.put(aKey, aValue);
 
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.resource.Session#get(java.lang.String)
-   */
-  public Object get(String aKey)
-  {
-	return mMap.get(aKey);
-  }
-  
   private Map mMap = Collections.synchronizedMap(new HashMap());
 
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.Session#put(java.lang.String, java.lang.Object)
+   */
+  public void put(String aKey, Object aValue) {
+    mMap.put(aKey, aValue);
+
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.Session#get(java.lang.String)
+   */
+  public Object get(String aKey) {
+    return mMap.get(aKey);
+  }
 }

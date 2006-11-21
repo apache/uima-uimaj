@@ -34,74 +34,63 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 
 /**
  * Tests the FileLanguageResource_impl class.
- * @author Adam Lally 
+ * 
+ * @author Adam Lally
  */
-public class FileLanguageResource_implTest extends TestCase
-{
+public class FileLanguageResource_implTest extends TestCase {
 
   /**
    * Constructor for FileLanguageResource_implTest.
+   * 
    * @param arg0
    */
-  public FileLanguageResource_implTest(String arg0)
-    throws IOException
-  {
+  public FileLanguageResource_implTest(String arg0) throws IOException {
     super(arg0);
   }
+
   /*
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception
-  {   
-    try
-    {
+  protected void setUp() throws Exception {
+    try {
       super.setUp();
-      
+
       FileLanguageResourceSpecifier spec = new FileLanguageResourceSpecifier_impl();
-      spec.setFileUrlPrefix(JUnitExtension.getFile("ResourceTest/FileLanguageResource_implTest_data_").toURL().toString());
+      spec.setFileUrlPrefix(JUnitExtension.getFile(
+                      "ResourceTest/FileLanguageResource_implTest_data_").toURL().toString());
       spec.setFileUrlSuffix(".dat");
       mResource = new FileLanguageResource_impl();
       mResource.initialize(spec, Collections.EMPTY_MAP);
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
     }
-		catch (Exception e)
-		{
-			JUnitExtension.handleException(e);
-		}
   }
 
-  public void testGetDataResource()
-    throws Exception
-  {
-    try
-    {
-      DataResource enResource = mResource.getDataResource(new String[]{"en"});
-      DataResource deResource = mResource.getDataResource(new String[]{"de"});
-      DataResource enusResource = mResource.getDataResource(new String[]{"en-US"});
-      
+  public void testGetDataResource() throws Exception {
+    try {
+      DataResource enResource = mResource.getDataResource(new String[] { "en" });
+      DataResource deResource = mResource.getDataResource(new String[] { "de" });
+      DataResource enusResource = mResource.getDataResource(new String[] { "en-US" });
+
       Assert.assertNotNull(enResource);
       Assert.assertNotNull(deResource);
       Assert.assertNotNull(enusResource);
       Assert.assertFalse(enResource.equals(deResource));
       Assert.assertTrue(enResource.equals(enusResource));
       Assert.assertEquals(enResource.hashCode(), enusResource.hashCode());
-      
+
       ResourceInitializationException ex = null;
-      try
-      {
-        DataResource zhResource = mResource.getDataResource(new String[]{"zh"});
-      }
-      catch(ResourceInitializationException e)
-      {
+      try {
+        DataResource zhResource = mResource.getDataResource(new String[] { "zh" });
+      } catch (ResourceInitializationException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);  
+      Assert.assertNotNull(ex);
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
     }
-		catch (Exception e)
-		{
-			JUnitExtension.handleException(e);
-		}
   }
-  
+
   FileLanguageResource_impl mResource;
 
 }

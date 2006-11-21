@@ -27,35 +27,39 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.impl.JCas;
 
 public class FloatList_Type extends org.apache.uima.jcas.cas.TOP_Type {
-  protected FSGenerator getFSGenerator() {return fsGenerator;}
-  private final FSGenerator fsGenerator = 
-    new FSGenerator() {
-      public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (FloatList_Type.this.useExistingInstance) {
-  			   // Return eq fs instance if already created
-  		     FeatureStructure fs = FloatList_Type.this.jcas.getJfsFromCaddr(addr);
-  		     if (null == fs) {
-  		       fs = new FloatList(addr, FloatList_Type.this);
-  		       FloatList_Type.this.jcas.putJfsFromCaddr(addr, fs);
-  			     return fs;
-  		     }
-  		     return fs;
-        } else return new FloatList(addr, FloatList_Type.this);
-  	  }
-    };
+  protected FSGenerator getFSGenerator() {
+    return fsGenerator;
+  }
+
+  private final FSGenerator fsGenerator = new FSGenerator() {
+    public FeatureStructure createFS(int addr, CASImpl cas) {
+      if (FloatList_Type.this.useExistingInstance) {
+        // Return eq fs instance if already created
+        FeatureStructure fs = FloatList_Type.this.jcas.getJfsFromCaddr(addr);
+        if (null == fs) {
+          fs = new FloatList(addr, FloatList_Type.this);
+          FloatList_Type.this.jcas.putJfsFromCaddr(addr, fs);
+          return fs;
+        }
+        return fs;
+      } else
+        return new FloatList(addr, FloatList_Type.this);
+    }
+  };
 
   public final static int typeIndexID = FloatList.typeIndexID;
 
   public final static boolean featOkTst = JCas.getFeatOkTst("uima.cas.FloatList");
 
-  //* initialize variables to correspond with Cas Type and Features
+  // * initialize variables to correspond with Cas Type and Features
   public FloatList_Type(JCas jcas, Type casType) {
     super(jcas, casType);
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
+    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
   }
 
-  protected FloatList_Type() { //block default new operator
-    throw new RuntimeException("Internal Error-this constructor should never be called.");  }
+  protected FloatList_Type() { // block default new operator
+    throw new RuntimeException("Internal Error-this constructor should never be called.");
+  }
 
 }

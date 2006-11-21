@@ -27,35 +27,39 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.impl.JCas;
 
 public class FSList_Type extends org.apache.uima.jcas.cas.TOP_Type {
-  protected FSGenerator getFSGenerator() {return fsGenerator;}
-  private final FSGenerator fsGenerator = 
-    new FSGenerator() {
-      public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (FSList_Type.this.useExistingInstance) {
-  			   // Return eq fs instance if already created
-  		     FeatureStructure fs = FSList_Type.this.jcas.getJfsFromCaddr(addr);
-  		     if (null == fs) {
-  		       fs = new FSList(addr, FSList_Type.this);
-  		       FSList_Type.this.jcas.putJfsFromCaddr(addr, fs);
-  			     return fs;
-  		     }
-  		     return fs;
-        } else return new FSList(addr, FSList_Type.this);
-  	  }
-    };
+  protected FSGenerator getFSGenerator() {
+    return fsGenerator;
+  }
+
+  private final FSGenerator fsGenerator = new FSGenerator() {
+    public FeatureStructure createFS(int addr, CASImpl cas) {
+      if (FSList_Type.this.useExistingInstance) {
+        // Return eq fs instance if already created
+        FeatureStructure fs = FSList_Type.this.jcas.getJfsFromCaddr(addr);
+        if (null == fs) {
+          fs = new FSList(addr, FSList_Type.this);
+          FSList_Type.this.jcas.putJfsFromCaddr(addr, fs);
+          return fs;
+        }
+        return fs;
+      } else
+        return new FSList(addr, FSList_Type.this);
+    }
+  };
 
   public final static int typeIndexID = FSList.typeIndexID;
 
   public final static boolean featOkTst = JCas.getFeatOkTst("uima.cas.FSList");
 
-  //* initialize variables to correspond with Cas Type and Features
+  // * initialize variables to correspond with Cas Type and Features
   public FSList_Type(JCas jcas, Type casType) {
     super(jcas, casType);
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
+    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
   }
 
-  protected FSList_Type() { //block default new operator
-    throw new RuntimeException("Internal Error-this constructor should never be called.");  }
+  protected FSList_Type() { // block default new operator
+    throw new RuntimeException("Internal Error-this constructor should never be called.");
+  }
 
 }

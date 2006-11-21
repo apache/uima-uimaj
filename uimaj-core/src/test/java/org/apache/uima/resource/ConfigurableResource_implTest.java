@@ -39,25 +39,22 @@ import org.apache.uima.util.XMLInputSource;
 
 /**
  * 
- * @author Adam Lally 
+ * @author Adam Lally
  */
-public class ConfigurableResource_implTest extends TestCase
-{
+public class ConfigurableResource_implTest extends TestCase {
 
   /**
    * Constructor for ConfigurableResource_implTest.
+   * 
    * @param arg0
    */
-  public ConfigurableResource_implTest(String arg0)
-  {
+  public ConfigurableResource_implTest(String arg0) {
     super(arg0);
   }
-  
-  public void testReconfigure() throws Exception
-  {
-    try
-    {
-      //set up some resource metadata and create a resource
+
+  public void testReconfigure() throws Exception {
+    try {
+      // set up some resource metadata and create a resource
       ResourceCreationSpecifier specifier = new MyTestSpecifier();
       ResourceMetaData md = specifier.getMetaData();
       md.setName("TestResource");
@@ -99,263 +96,207 @@ public class ConfigurableResource_implTest extends TestCase
       p8.setType(ConfigurationParameter.TYPE_FLOAT);
       p8.setMultiValued(true);
       md.getConfigurationParameterDeclarations().setConfigurationParameters(
-        new ConfigurationParameter[]{p1,p2,p3,p4,p5,p6,p7,p8});
+                      new ConfigurationParameter[] { p1, p2, p3, p4, p5, p6, p7, p8 });
       ConfigurableResource testResource1 = new MyTestResource();
       testResource1.initialize(specifier, null);
-      
-      //valid settings
-      String[] paramNames = {"StringParam","BooleanParam","IntegerParam",
-         "FloatParam", "StringArrayParam", "BooleanArrayParam",
-         "IntegerArrayParam", "FloatArrayParam"};
-         
+
+      // valid settings
+      String[] paramNames = { "StringParam", "BooleanParam", "IntegerParam", "FloatParam",
+          "StringArrayParam", "BooleanArrayParam", "IntegerArrayParam", "FloatArrayParam" };
+
       String theStr = "hello world";
       Boolean theBool = new Boolean(false);
       Integer theInt = new Integer(42);
       Float theFloat = new Float(2.718281828459045);
-      String[] theStrArr = {"the","quick","brown","fox"};
-      Boolean[] theBoolArr = {new Boolean(false),new Boolean(true)};
-      Integer[] theIntArr = {new Integer(1),new Integer(2),new Integer(3)};
-      Float[] theFloatArr = {new Float(3.0),new Float(3.1),new Float(3.14)};
-      
-      Object[] values = new Object[]{theStr, theBool, theInt, theFloat,
-          theStrArr, theBoolArr, theIntArr, theFloatArr};
-      
-      for (int i = 0; i < paramNames.length; i++)
-      {
+      String[] theStrArr = { "the", "quick", "brown", "fox" };
+      Boolean[] theBoolArr = { new Boolean(false), new Boolean(true) };
+      Integer[] theIntArr = { new Integer(1), new Integer(2), new Integer(3) };
+      Float[] theFloatArr = { new Float(3.0), new Float(3.1), new Float(3.14) };
+
+      Object[] values = new Object[] { theStr, theBool, theInt, theFloat, theStrArr, theBoolArr,
+          theIntArr, theFloatArr };
+
+      for (int i = 0; i < paramNames.length; i++) {
         testResource1.setConfigParameterValue(paramNames[i], values[i]);
       }
       testResource1.reconfigure();
-        
-      //check
-      for (int i = 0; i < paramNames.length; i++)
-      {
+
+      // check
+      for (int i = 0; i < paramNames.length; i++) {
         Object val = testResource1.getConfigParameterValue(paramNames[i]);
         Assert.assertEquals(val, values[i]);
-      }    
-      
-      //invalid settings
-      //wrong type
+      }
+
+      // invalid settings
+      // wrong type
       Exception ex = null;
       testResource1.setConfigParameterValue("StringParam", new Integer(13));
-      try
-      {
+      try {
         testResource1.reconfigure();
+      } catch (ResourceConfigurationException e) {
+        ex = e;
       }
-      catch(ResourceConfigurationException e)
-      {
-        ex = e;    
-      }  
       Assert.assertNotNull(ex);
-      
+
       ex = null;
-      testResource1.setConfigParameterValue("IntegerArrayParam", 
-        new Object[]{"A","B","C"});
-      try
-      {
+      testResource1.setConfigParameterValue("IntegerArrayParam", new Object[] { "A", "B", "C" });
+      try {
         testResource1.reconfigure();
+      } catch (ResourceConfigurationException e) {
+        ex = e;
       }
-      catch(ResourceConfigurationException e)
-      {
-        ex = e;    
-      }  
-      Assert.assertNotNull(ex);          
-      
-      //inappropriate array
+      Assert.assertNotNull(ex);
+
+      // inappropriate array
       ex = null;
-      testResource1.setConfigParameterValue("FloatParam", 
-          new Float[]{new Float(0.1), new Float(0.2), new Float(0.3)});
-      try
-      {
+      testResource1.setConfigParameterValue("FloatParam", new Float[] { new Float(0.1),
+          new Float(0.2), new Float(0.3) });
+      try {
         testResource1.reconfigure();
+      } catch (ResourceConfigurationException e) {
+        ex = e;
       }
-      catch(ResourceConfigurationException e)
-      {
-        ex = e;    
-      }  
-      Assert.assertNotNull(ex);          
-      
-      //array required
+      Assert.assertNotNull(ex);
+
+      // array required
       ex = null;
-      testResource1.setConfigParameterValue("BooleanArrayParam", new Boolean(true)); 
-      try
-      {
+      testResource1.setConfigParameterValue("BooleanArrayParam", new Boolean(true));
+      try {
         testResource1.reconfigure();
+      } catch (ResourceConfigurationException e) {
+        ex = e;
       }
-      catch(ResourceConfigurationException e)
-      {
-        ex = e;    
-      }  
-      Assert.assertNotNull(ex);          
-      
-      //required parameter set to null
+      Assert.assertNotNull(ex);
+
+      // required parameter set to null
       ex = null;
-      testResource1.setConfigParameterValue("StringParam", null); 
-      try
-      {
+      testResource1.setConfigParameterValue("StringParam", null);
+      try {
         testResource1.reconfigure();
+      } catch (ResourceConfigurationException e) {
+        ex = e;
       }
-      catch(ResourceConfigurationException e)
-      {
-        ex = e;    
-      }  
-      Assert.assertNotNull(ex);          
-      
-      
-      //Now try a resource that defines configuration groups 
-      //(instantiate metadata from XML TAE descriptor because it's convenient)
-      XMLInputSource in = new XMLInputSource(
-          JUnitExtension.getFile("ConfigurableResourceImplTest/AnnotatorWithConfigurationGroups.xml"));
-      AnalysisEngineDescription desc =
-        UIMAFramework.getXMLParser().parseTaeDescription(in);
+      Assert.assertNotNull(ex);
+
+      // Now try a resource that defines configuration groups
+      // (instantiate metadata from XML TAE descriptor because it's convenient)
+      XMLInputSource in = new XMLInputSource(JUnitExtension
+                      .getFile("ConfigurableResourceImplTest/AnnotatorWithConfigurationGroups.xml"));
+      AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
       ResourceMetaData metadata = desc.getMetaData();
       MyTestSpecifier spec = new MyTestSpecifier();
       spec.setMetaData(metadata);
       ConfigurableResource testResource2 = new MyTestResource();
       testResource2.initialize(spec, null);
-      
-      //valid settings
-      String[] groupNames = new String[]{"en","en-US","de","zh"};
-      String[][] grpParamNames = new String[][]{
-          new String[]{"StringParam", "StringArrayParam",
-            "IntegerParam","IntegerArrayParam"
-          },
-          new String[]{"StringParam", "StringArrayParam",
-            "IntegerParam","IntegerArrayParam"
-          },
-          new String[]{"StringParam", "StringArrayParam",
-            "IntegerParam","IntegerArrayParam"
-          },
-          new String[]{"StringParam", "StringArrayParam",
-            "FloatParam","FloatArrayParam"
-          }        
-        };
-      Object[][] grpValues = new Object[][]{
-          new Object[]{"test", new String[]{"foo","bar"}, new Integer(1024),
-            new Integer[]{new Integer(1), new Integer(3), new Integer(5)}
-          },
-          new Object[]{"blah", new String[]{"abc","def"}, new Integer(32768),
-            new Integer[]{new Integer(-1), new Integer(-3), new Integer(-5)}
-          },
-          new Object[]{"?", new String[]{"+","-"}, new Integer(112376),
-            new Integer[]{new Integer(-1), new Integer(0), new Integer(1)}
-          },
-          new Object[]{"different", new String[]{"test","ing"}, new Float(49.95),
-            new Float[]{new Float(3.14), new Float(2.71), new Float(1.4)}
-          }
-        };
-        
-      for (int i = 0; i < groupNames.length; i++)
-      {  
+
+      // valid settings
+      String[] groupNames = new String[] { "en", "en-US", "de", "zh" };
+      String[][] grpParamNames = new String[][] {
+          new String[] { "StringParam", "StringArrayParam", "IntegerParam", "IntegerArrayParam" },
+          new String[] { "StringParam", "StringArrayParam", "IntegerParam", "IntegerArrayParam" },
+          new String[] { "StringParam", "StringArrayParam", "IntegerParam", "IntegerArrayParam" },
+          new String[] { "StringParam", "StringArrayParam", "FloatParam", "FloatArrayParam" } };
+      Object[][] grpValues = new Object[][] {
+          new Object[] { "test", new String[] { "foo", "bar" }, new Integer(1024),
+              new Integer[] { new Integer(1), new Integer(3), new Integer(5) } },
+          new Object[] { "blah", new String[] { "abc", "def" }, new Integer(32768),
+              new Integer[] { new Integer(-1), new Integer(-3), new Integer(-5) } },
+          new Object[] { "?", new String[] { "+", "-" }, new Integer(112376),
+              new Integer[] { new Integer(-1), new Integer(0), new Integer(1) } },
+          new Object[] { "different", new String[] { "test", "ing" }, new Float(49.95),
+              new Float[] { new Float(3.14), new Float(2.71), new Float(1.4) } } };
+
+      for (int i = 0; i < groupNames.length; i++) {
         String[] paramsInGrp = grpParamNames[i];
-        for (int j = 0; j < paramsInGrp.length; j++)
-        {
-          testResource2.setConfigParameterValue(groupNames[i],
-             paramsInGrp[j], grpValues[i][j]);
+        for (int j = 0; j < paramsInGrp.length; j++) {
+          testResource2.setConfigParameterValue(groupNames[i], paramsInGrp[j], grpValues[i][j]);
         }
-      }       
+      }
       testResource2.reconfigure();
-      
-      for (int i = 0; i < groupNames.length; i++)
-      {  
+
+      for (int i = 0; i < groupNames.length; i++) {
         String[] paramsInGrp = grpParamNames[i];
-        for (int j = 0; j < paramsInGrp.length; j++)
-        {
-          Object val = testResource2.getConfigParameterValue(groupNames[i],
-             paramsInGrp[j]);
+        for (int j = 0; j < paramsInGrp.length; j++) {
+          Object val = testResource2.getConfigParameterValue(groupNames[i], paramsInGrp[j]);
           Assert.assertEquals(val, grpValues[i][j]);
         }
-      }       
+      }
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
     }
-    catch (Exception e)
-    {
-			JUnitExtension.handleException(e);
-		}
   }
-  
+
   /*
    * Test for Object getConfigParameterValue(String)
    */
-  public void testGetConfigParameterValueString() throws Exception
-  {
-    try
-    {
-      		XMLInputSource in = new XMLInputSource(
-             JUnitExtension.getFile("ConfigurableResourceImplTest/AnnotatorWithConfigurationGroups.xml"));
-      		AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);     
-      		TextAnalysisEngine test = UIMAFramework.produceTAE(desc);
-          
-      		//test default fallback
-      		String str3 = (String)test.getConfigParameterValue("StringParam");
-      		Assert.assertEquals("en",str3);
-      		
-      //  The below was commented out because it has a dependency on the jedii_cpe_impl module		
-      //    //XMLInputSource in = new XMLInputSource("CasConsumerWithDefaultFallbackConfiguration.xml");
-      //    XMLInputSource in = new XMLInputSource("GroupCasConsumer.xml");
-      //    CasConsumerDescription desc = UIMAFramework.getXMLParser().parseCasConsumerDescription(in);     
-      //    //ConfigurableResource testResource1 = new TestResource();
-      //    CasConsumer test = UIMAFramework.produceCasConsumer(desc);
-      //   // testResource1.initialize(desc, null);
+  public void testGetConfigParameterValueString() throws Exception {
+    try {
+      XMLInputSource in = new XMLInputSource(JUnitExtension
+                      .getFile("ConfigurableResourceImplTest/AnnotatorWithConfigurationGroups.xml"));
+      AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+                      in);
+      TextAnalysisEngine test = UIMAFramework.produceTAE(desc);
+
+      // test default fallback
+      String str3 = (String) test.getConfigParameterValue("StringParam");
+      Assert.assertEquals("en", str3);
+
+      // The below was commented out because it has a dependency on the jedii_cpe_impl module
+      // //XMLInputSource in = new
+      // XMLInputSource("CasConsumerWithDefaultFallbackConfiguration.xml");
+      // XMLInputSource in = new XMLInputSource("GroupCasConsumer.xml");
+      // CasConsumerDescription desc = UIMAFramework.getXMLParser().parseCasConsumerDescription(in);
+      // //ConfigurableResource testResource1 = new TestResource();
+      // CasConsumer test = UIMAFramework.produceCasConsumer(desc);
+      // // testResource1.initialize(desc, null);
       //    
-      //    //test default fallback
-      //    String str3 = (String)test.getConfigParameterValue("FeatureIndex");
-      //    Assert.assertEquals("test",str3);
+      // //test default fallback
+      // String str3 = (String)test.getConfigParameterValue("FeatureIndex");
+      // Assert.assertEquals("test",str3);
       //    
-      //    String[] strArr2 = (String[])testResource1.getConfigParameterValue("StringArrayParam");
-      //    Assert.assertEquals(4,strArr2.length);
-      //    Assert.assertEquals("t",strArr2[0]);
-      //    Assert.assertEquals("e",strArr2[1]);    
-      //    Assert.assertEquals("s",strArr2[2]);    
-      //    Assert.assertEquals("t",strArr2[3]);   
-       
+      // String[] strArr2 = (String[])testResource1.getConfigParameterValue("StringArrayParam");
+      // Assert.assertEquals(4,strArr2.length);
+      // Assert.assertEquals("t",strArr2[0]);
+      // Assert.assertEquals("e",strArr2[1]);
+      // Assert.assertEquals("s",strArr2[2]);
+      // Assert.assertEquals("t",strArr2[3]);
+
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
     }
-    catch (Exception e)
-    {
-			JUnitExtension.handleException(e);
-    } 
   }
 }
 
 /**
  * A simple concrete Resource class used for testing.
  */
-class MyTestResource extends ConfigurableResource_ImplBase
-{
+class MyTestResource extends ConfigurableResource_ImplBase {
   public boolean initialize(ResourceSpecifier aSpecifier, Map aParams)
-    throws ResourceInitializationException
-  {
+                  throws ResourceInitializationException {
     return super.initialize(aSpecifier, aParams);
-//    if (aSpecifier instanceof ResourceCreationSpecifier)
-//    {
-//      setMetaData(((ResourceCreationSpecifier)aSpecifier).getMetaData());
-//      return true;
-//    }
-//
-//    return false;
+    // if (aSpecifier instanceof ResourceCreationSpecifier)
+    // {
+    // setMetaData(((ResourceCreationSpecifier)aSpecifier).getMetaData());
+    // return true;
+    // }
+    //
+    // return false;
   }
-  
-  public void destroy()
-  {
-  }  
+
+  public void destroy() {
+  }
 }
 
-class MyTestSpecifier extends ResourceCreationSpecifier_impl
-{
-  public MyTestSpecifier()
-  {
+class MyTestSpecifier extends ResourceCreationSpecifier_impl {
+  public MyTestSpecifier() {
     setMetaData(new ResourceMetaData_impl());
   }
-  
-  protected XmlizationInfo getXmlizationInfo()
-  {
+
+  protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
-  
-  static final private XmlizationInfo XMLIZATION_INFO =
-    new XmlizationInfo("testSpecifier",
-      new PropertyXmlInfo[]{
-         new PropertyXmlInfo("metaData",null,false),
-      });
-    
+
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("testSpecifier",
+                  new PropertyXmlInfo[] { new PropertyXmlInfo("metaData", null, false), });
 
 }
-

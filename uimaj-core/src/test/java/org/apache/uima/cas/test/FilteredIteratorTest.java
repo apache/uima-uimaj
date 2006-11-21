@@ -48,25 +48,40 @@ import org.apache.uima.cas.text.TCASRuntimeException;
 public class FilteredIteratorTest extends TestCase {
 
   private TCAS cas;
+
   private TypeSystem ts;
 
   private Type stringType;
+
   private Type tokenType;
+
   private Type intType;
+
   private Type tokenTypeType;
+
   private Type wordType;
+
   private Type sepType;
+
   private Type eosType;
+
   private Feature tokenTypeFeat;
+
   private Feature lemmaFeat;
+
   private Feature sentLenFeat;
+
   private Feature tokenFloatFeat;
+
   private Feature startFeature;
+
   private Type sentenceType;
+
   private Type annotationType;
 
   /**
    * Constructor for FilteredIteratorTest.
+   * 
    * @param arg0
    */
   public FilteredIteratorTest(String arg0) {
@@ -97,15 +112,13 @@ public class FilteredIteratorTest extends TestCase {
     assertTrue(sepType != null);
     this.eosType = ts.getType(CASTestSetup.EOS_TYPE);
     assertTrue(eosType != null);
-    this.tokenTypeFeat =
-      ts.getFeatureByFullName(CASTestSetup.TOKEN_TYPE_FEAT_Q);
+    this.tokenTypeFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_TYPE_FEAT_Q);
     assertTrue(tokenTypeFeat != null);
     this.lemmaFeat = ts.getFeatureByFullName(CASTestSetup.LEMMA_FEAT_Q);
     assertTrue(lemmaFeat != null);
     this.sentLenFeat = ts.getFeatureByFullName(CASTestSetup.SENT_LEN_FEAT_Q);
     assertTrue(sentLenFeat != null);
-    this.tokenFloatFeat =
-      ts.getFeatureByFullName(CASTestSetup.TOKEN_FLOAT_FEAT_Q);
+    this.tokenFloatFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_FLOAT_FEAT_Q);
     assertTrue(tokenFloatFeat != null);
     this.startFeature = ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_BEGIN);
     assertTrue(startFeature != null);
@@ -137,7 +150,7 @@ public class FilteredIteratorTest extends TestCase {
   public void testIterator1() {
 
     try {
-//      cas.setDocumentText("A test."); can't set document text twice
+      // cas.setDocumentText("A test."); can't set document text twice
     } catch (TCASRuntimeException e) {
       assertTrue(false);
     }
@@ -157,7 +170,7 @@ public class FilteredIteratorTest extends TestCase {
     } catch (TCASRuntimeException e) {
       assertTrue(false);
     }
-    //create token and sentence annotations
+    // create token and sentence annotations
     cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 0, 4));
     cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 5, 7));
     cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 8, 9));
@@ -165,19 +178,18 @@ public class FilteredIteratorTest extends TestCase {
     cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 14, 15));
     cas.getIndexRepository().addFS(cas.createAnnotation(sentenceType, 0, 15));
 
-    //create filtered iterator over Tokens only
+    // create filtered iterator over Tokens only
     FSIterator it = cas.getAnnotationIndex().iterator();
-    FSTypeConstraint constraint =
-      cas.getConstraintFactory().createTypeConstraint();
+    FSTypeConstraint constraint = cas.getConstraintFactory().createTypeConstraint();
     constraint.add(tokenType);
     it = cas.createFilteredIterator(it, constraint);
 
-    //do iteration
+    // do iteration
     while (it.isValid()) {
       AnnotationFS a = (AnnotationFS) it.get();
       assertTrue(a.getType().equals(tokenType));
-      //      System.out.println("Annotation type: " + a.getType().getName());
-      //      System.out.println("Covered text: " + a.getCoveredText());
+      // System.out.println("Annotation type: " + a.getType().getName());
+      // System.out.println("Covered text: " + a.getCoveredText());
       it.moveToNext();
     }
 
@@ -188,19 +200,19 @@ public class FilteredIteratorTest extends TestCase {
       ++countAll;
     }
 
-    //create filtered iterator over annotations
+    // create filtered iterator over annotations
     it = cas.getAnnotationIndex().iterator();
     constraint = cas.getConstraintFactory().createTypeConstraint();
     constraint.add(annotationType);
     it = cas.createFilteredIterator(it, constraint);
 
-    //do iteration
+    // do iteration
     int countFiltered = 0;
     while (it.isValid()) {
       AnnotationFS a = (AnnotationFS) it.get();
       assertTrue(ts.subsumes(annotationType, a.getType()));
-      //      System.out.println("Annotation type: " + a.getType().getName());
-      //      System.out.println("Covered text: " + a.getCoveredText());
+      // System.out.println("Annotation type: " + a.getType().getName());
+      // System.out.println("Covered text: " + a.getCoveredText());
       it.moveToNext();
       ++countFiltered;
     }
@@ -210,7 +222,7 @@ public class FilteredIteratorTest extends TestCase {
   public void testIterator1a() {
 
     try {
-//      cas.setDocumentText("A test."); can't set document text twice!
+      // cas.setDocumentText("A test."); can't set document text twice!
     } catch (TCASRuntimeException e) {
       assertTrue(false);
     }
@@ -230,7 +242,7 @@ public class FilteredIteratorTest extends TestCase {
     } catch (TCASRuntimeException e) {
       assertTrue(false);
     }
-    //create token and sentence annotations
+    // create token and sentence annotations
     cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 0, 4));
     cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 5, 7));
     cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 8, 9));
@@ -238,91 +250,62 @@ public class FilteredIteratorTest extends TestCase {
     cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 14, 15));
     cas.getIndexRepository().addFS(cas.createAnnotation(sentenceType, 0, 15));
 
-    //create filtered iterator over Tokens only
+    // create filtered iterator over Tokens only
     FSIterator it = cas.getAnnotationIndex().iterator();
-    FSTypeConstraint constraint =
-      cas.getConstraintFactory().createTypeConstraint();
+    FSTypeConstraint constraint = cas.getConstraintFactory().createTypeConstraint();
     constraint.add(tokenType.getName());
     it = cas.createFilteredIterator(it, constraint);
 
-    //do iteration
+    // do iteration
     while (it.isValid()) {
       AnnotationFS a = (AnnotationFS) it.get();
       assertTrue(a.getType().equals(tokenType));
-      //      System.out.println("Annotation type: " + a.getType().getName());
-      //      System.out.println("Covered text: " + a.getCoveredText());
+      // System.out.println("Annotation type: " + a.getType().getName());
+      // System.out.println("Covered text: " + a.getCoveredText());
       it.moveToNext();
     }
   }
-  
-  //test uses constraint compiler
+
+  // test uses constraint compiler
   /*
-  public void testIterator1b() {
+   * public void testIterator1b() {
+   * 
+   * try { cas.setDocumentText("A test."); } catch (TCASRuntimeException e) { assertTrue(false); }
+   * ((TCASMgr) cas).enableSetText(false); boolean exc = false; try { cas.setDocumentText("A
+   * test."); } catch (TCASRuntimeException e) { assertTrue(e.getError() ==
+   * TCASRuntimeException.SET_DOC_TEXT_DISABLED); exc = true; } assertTrue(exc); ((TCASMgr)
+   * cas).enableSetText(true);
+   * 
+   * try { ((TCASMgr) cas).setDocumentText("This is a test."); } catch (TCASRuntimeException e) {
+   * assertTrue(false); } //create token and sentence annotations
+   * cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 0, 4));
+   * cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 5, 7));
+   * cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 8, 9));
+   * cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 10, 14));
+   * cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 14, 15));
+   * cas.getIndexRepository().addFS(cas.createAnnotation(sentenceType, 0, 15));
+   * 
+   * //create filtered iterator over Tokens only FSIterator it =
+   * cas.getAnnotationIndex().iterator(); // FSTypeConstraint constraint = //
+   * cas.getConstraintFactory().createTypeConstraint(); // constraint.add(tokenType.getName());
+   * 
+   * FSMatchConstraint constraint = null; try { ConstraintParser parser =
+   * ConstraintParserFactory.getDefaultConstraintParser(); constraint = parser.parse("isa " +
+   * tokenType.getName()); } catch (Exception e) { e.printStackTrace(); assertTrue(false); }
+   * 
+   * it = cas.createFilteredIterator(it, constraint);
+   * 
+   * //do iteration while (it.isValid()) { AnnotationFS a = (AnnotationFS) it.get();
+   * assertTrue(a.getType().equals(tokenType)); // System.out.println("Annotation type: " +
+   * a.getType().getName()); // System.out.println("Covered text: " + a.getCoveredText());
+   * it.moveToNext(); } }
+   */
 
-    try {
-      cas.setDocumentText("A test.");
-    } catch (TCASRuntimeException e) {
-      assertTrue(false);
-    }
-    ((TCASMgr) cas).enableSetText(false);
-    boolean exc = false;
-    try {
-      cas.setDocumentText("A test.");
-    } catch (TCASRuntimeException e) {
-      assertTrue(e.getError() == TCASRuntimeException.SET_DOC_TEXT_DISABLED);
-      exc = true;
-    }
-    assertTrue(exc);
-    ((TCASMgr) cas).enableSetText(true);
-
-    try {
-      ((TCASMgr) cas).setDocumentText("This is a test.");
-    } catch (TCASRuntimeException e) {
-      assertTrue(false);
-    }
-    //create token and sentence annotations
-    cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 0, 4));
-    cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 5, 7));
-    cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 8, 9));
-    cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 10, 14));
-    cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 14, 15));
-    cas.getIndexRepository().addFS(cas.createAnnotation(sentenceType, 0, 15));
-
-    //create filtered iterator over Tokens only
-    FSIterator it = cas.getAnnotationIndex().iterator();
-    //    FSTypeConstraint constraint =
-    //      cas.getConstraintFactory().createTypeConstraint();
-    //    constraint.add(tokenType.getName());
-
-    FSMatchConstraint constraint = null;
-    try {
-      ConstraintParser parser =
-        ConstraintParserFactory.getDefaultConstraintParser();
-      constraint = parser.parse("isa " + tokenType.getName());
-    } catch (Exception e) {
-      e.printStackTrace();
-      assertTrue(false);
-    }
-
-    it = cas.createFilteredIterator(it, constraint);
-
-    //do iteration
-    while (it.isValid()) {
-      AnnotationFS a = (AnnotationFS) it.get();
-      assertTrue(a.getType().equals(tokenType));
-      //      System.out.println("Annotation type: " + a.getType().getName());
-      //      System.out.println("Covered text: " + a.getCoveredText());
-      it.moveToNext();
-    }
-  }
-  */
-  
   public void testIterator2() {
     try {
-      ((TCASMgr) cas).setDocumentText(
-        "This is a test with the word \"the\" in it.");
+      ((TCASMgr) cas).setDocumentText("This is a test with the word \"the\" in it.");
 
-      //create token and sentence annotations
+      // create token and sentence annotations
       String type1 = "type1";
       String type2 = "type2";
       AnnotationFS token;
@@ -346,15 +329,13 @@ public class FilteredIteratorTest extends TestCase {
       cas.getIndexRepository().addFS(token);
 
       String lemma = "the";
-      //create filtered iterator over Tokens of type 1
+      // create filtered iterator over Tokens of type 1
       FSIterator it = cas.getAnnotationIndex(tokenType).iterator();
-      FSStringConstraint type1Constraint =
-        cas.getConstraintFactory().createStringConstraint();
+      FSStringConstraint type1Constraint = cas.getConstraintFactory().createStringConstraint();
       type1Constraint.equals(lemma);
       FeaturePath path = cas.createFeaturePath();
       path.addFeature(lemmaFeat);
-      FSMatchConstraint cons =
-        cas.getConstraintFactory().embedConstraint(path, type1Constraint);
+      FSMatchConstraint cons = cas.getConstraintFactory().embedConstraint(path, type1Constraint);
       it = cas.createFilteredIterator(it, cons);
 
       int count = 0;
@@ -362,7 +343,7 @@ public class FilteredIteratorTest extends TestCase {
         ++count;
       }
 
-      ///////////////////////////////////////////////////////////////
+      // /////////////////////////////////////////////////////////////
       // Count instances of tokens with lemma "the".
 
       // Create an iterator over Token annotations.
@@ -375,16 +356,16 @@ public class FilteredIteratorTest extends TestCase {
         AnnotationFS tok = (AnnotationFS) tokenIt.get();
         if (tok.getStringValue(lemmaFeat).equals(lemma)) {
           ++theCount;
-          //          System.out.println("Found token: " + tok.getCoveredText());
+          // System.out.println("Found token: " + tok.getCoveredText());
         }
       }
       assertTrue(count == theCount);
-      //      System.out.println(
-      //        "Number of tokens with \"" + lemma + "\": " + theCount);
-      //      System.out.println("Number of tokens overall: " + tokenIndex.size());
+      // System.out.println(
+      // "Number of tokens with \"" + lemma + "\": " + theCount);
+      // System.out.println("Number of tokens overall: " + tokenIndex.size());
 
-      //      System.out.println("Count: " + count);
-      //      assertTrue(count == 4);
+      // System.out.println("Count: " + count);
+      // assertTrue(count == 4);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -394,10 +375,9 @@ public class FilteredIteratorTest extends TestCase {
 
   public void testIterator2a() {
     try {
-      ((TCASMgr) cas).setDocumentText(
-        "This is a test with the word \"the\" in it.");
+      ((TCASMgr) cas).setDocumentText("This is a test with the word \"the\" in it.");
 
-      //create token and sentence annotations
+      // create token and sentence annotations
       String type1 = "type1";
       String type2 = "type2";
       AnnotationFS token;
@@ -422,13 +402,11 @@ public class FilteredIteratorTest extends TestCase {
 
       String lemma = "the";
       FSIterator it = cas.getAnnotationIndex(tokenType).iterator();
-      FSStringConstraint type1Constraint =
-        cas.getConstraintFactory().createStringConstraint();
+      FSStringConstraint type1Constraint = cas.getConstraintFactory().createStringConstraint();
       type1Constraint.equals(lemma);
       ArrayList path = new ArrayList();
       path.add(lemmaFeat.getShortName());
-      FSMatchConstraint cons =
-        cas.getConstraintFactory().embedConstraint(path, type1Constraint);
+      FSMatchConstraint cons = cas.getConstraintFactory().embedConstraint(path, type1Constraint);
       it = cas.createFilteredIterator(it, cons);
 
       int count = 0;
@@ -436,7 +414,7 @@ public class FilteredIteratorTest extends TestCase {
         ++count;
       }
 
-      ///////////////////////////////////////////////////////////////
+      // /////////////////////////////////////////////////////////////
       // Count instances of tokens with lemma "the".
 
       // Create an iterator over Token annotations.
@@ -449,16 +427,16 @@ public class FilteredIteratorTest extends TestCase {
         AnnotationFS tok = (AnnotationFS) tokenIt.get();
         if (tok.getStringValue(lemmaFeat).equals(lemma)) {
           ++theCount;
-          //          System.out.println("Found token: " + tok.getCoveredText());
+          // System.out.println("Found token: " + tok.getCoveredText());
         }
       }
       assertTrue(count == theCount);
-      //      System.out.println(
-      //        "Number of tokens with \"" + lemma + "\": " + theCount);
-      //      System.out.println("Number of tokens overall: " + tokenIndex.size());
+      // System.out.println(
+      // "Number of tokens with \"" + lemma + "\": " + theCount);
+      // System.out.println("Number of tokens overall: " + tokenIndex.size());
 
-      //      System.out.println("Count: " + count);
-      //      assertTrue(count == 4);
+      // System.out.println("Count: " + count);
+      // assertTrue(count == 4);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -468,14 +446,13 @@ public class FilteredIteratorTest extends TestCase {
 
   public void testIterator2b() {
     try {
-      ((TCASMgr) cas).setDocumentText(
-        "This is a test with the word \"the\" in it.");
+      ((TCASMgr) cas).setDocumentText("This is a test with the word \"the\" in it.");
 
       FeatureStructure wordFS = this.cas.createFS(wordType);
       FeatureStructure sepFS = this.cas.createFS(sepType);
       FeatureStructure eosFS = this.cas.createFS(eosType);
 
-      //create token and sentence annotations
+      // create token and sentence annotations
       String type1 = "type1";
       String type2 = "type2";
       AnnotationFS token;
@@ -526,80 +503,41 @@ public class FilteredIteratorTest extends TestCase {
     }
   }
 
-  //test uses constraint compiler
+  // test uses constraint compiler
   /*
-  public void testIterator2c() {
-    try {
-      ((TCASMgr) cas).setDocumentText(
-        "This is a test with the word \"the\" in it.");
-
-      FeatureStructure wordFS = this.cas.createFS(wordType);
-      FeatureStructure sepFS = this.cas.createFS(sepType);
-      FeatureStructure eosFS = this.cas.createFS(eosType);
-
-      //create token and sentence annotations
-      String type1 = "type1";
-      String type2 = "type2";
-      AnnotationFS token;
-      token = cas.createAnnotation(tokenType, 0, 4);
-      token.setStringValue(lemmaFeat, type1);
-      token.setFeatureValue(tokenTypeFeat, wordFS);
-      cas.getIndexRepository().addFS(token);
-      token = cas.createAnnotation(tokenType, 5, 7);
-      token.setStringValue(lemmaFeat, "the");
-      token.setFeatureValue(tokenTypeFeat, sepFS);
-      cas.getIndexRepository().addFS(token);
-      token = cas.createAnnotation(tokenType, 8, 9);
-      token.setStringValue(lemmaFeat, type2);
-      token.setFeatureValue(tokenTypeFeat, eosFS);
-      cas.getIndexRepository().addFS(token);
-      token = cas.createAnnotation(tokenType, 10, 14);
-      token.setStringValue(lemmaFeat, type1);
-      token.setFeatureValue(tokenTypeFeat, wordFS);
-      cas.getIndexRepository().addFS(token);
-      token = cas.createAnnotation(tokenType, 14, 15);
-      token.setStringValue(lemmaFeat, type1);
-      token.setFeatureValue(tokenTypeFeat, sepFS);
-      cas.getIndexRepository().addFS(token);
-      token = cas.createAnnotation(tokenType, 0, 15);
-      token.setStringValue(lemmaFeat, type1);
-      token.setFeatureValue(tokenTypeFeat, eosFS);
-      cas.getIndexRepository().addFS(token);
-
-      FSIterator it = cas.getAnnotationIndex(tokenType).iterator();
-
-      FSMatchConstraint cons = null;
-      try {
-        ConstraintParser parser =
-          ConstraintParserFactory.getDefaultConstraintParser();
-        cons =
-          parser.parse(
-            tokenTypeFeat.getShortName()
-              + " isa ("
-              + sepType.getName()
-              + "|"
-              + eosType.getName()
-              + ")");
-      } catch (Exception e) {
-        assertTrue(false);
-      }
-      it = this.cas.createFilteredIterator(it, cons);
-      int count = 0;
-      for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
-        ++count;
-      }
-      assertTrue(count == 4);
-
-    } catch (Exception e) {
-      e.printStackTrace();
-      assertTrue(false);
-    }
-  }
-
-  public static void main(String[] args) {
-    FilteredIteratorTest test = new FilteredIteratorTest(null);
-    test.run();
-  }
-  */
+   * public void testIterator2c() { try { ((TCASMgr) cas).setDocumentText( "This is a test with the
+   * word \"the\" in it.");
+   * 
+   * FeatureStructure wordFS = this.cas.createFS(wordType); FeatureStructure sepFS =
+   * this.cas.createFS(sepType); FeatureStructure eosFS = this.cas.createFS(eosType);
+   * 
+   * //create token and sentence annotations String type1 = "type1"; String type2 = "type2";
+   * AnnotationFS token; token = cas.createAnnotation(tokenType, 0, 4);
+   * token.setStringValue(lemmaFeat, type1); token.setFeatureValue(tokenTypeFeat, wordFS);
+   * cas.getIndexRepository().addFS(token); token = cas.createAnnotation(tokenType, 5, 7);
+   * token.setStringValue(lemmaFeat, "the"); token.setFeatureValue(tokenTypeFeat, sepFS);
+   * cas.getIndexRepository().addFS(token); token = cas.createAnnotation(tokenType, 8, 9);
+   * token.setStringValue(lemmaFeat, type2); token.setFeatureValue(tokenTypeFeat, eosFS);
+   * cas.getIndexRepository().addFS(token); token = cas.createAnnotation(tokenType, 10, 14);
+   * token.setStringValue(lemmaFeat, type1); token.setFeatureValue(tokenTypeFeat, wordFS);
+   * cas.getIndexRepository().addFS(token); token = cas.createAnnotation(tokenType, 14, 15);
+   * token.setStringValue(lemmaFeat, type1); token.setFeatureValue(tokenTypeFeat, sepFS);
+   * cas.getIndexRepository().addFS(token); token = cas.createAnnotation(tokenType, 0, 15);
+   * token.setStringValue(lemmaFeat, type1); token.setFeatureValue(tokenTypeFeat, eosFS);
+   * cas.getIndexRepository().addFS(token);
+   * 
+   * FSIterator it = cas.getAnnotationIndex(tokenType).iterator();
+   * 
+   * FSMatchConstraint cons = null; try { ConstraintParser parser =
+   * ConstraintParserFactory.getDefaultConstraintParser(); cons = parser.parse(
+   * tokenTypeFeat.getShortName() + " isa (" + sepType.getName() + "|" + eosType.getName() + ")"); }
+   * catch (Exception e) { assertTrue(false); } it = this.cas.createFilteredIterator(it, cons); int
+   * count = 0; for (it.moveToFirst(); it.isValid(); it.moveToNext()) { ++count; } assertTrue(count ==
+   * 4);
+   *  } catch (Exception e) { e.printStackTrace(); assertTrue(false); } }
+   * 
+   * public static void main(String[] args) { FilteredIteratorTest test = new
+   * FilteredIteratorTest(null); test.run(); }
+   */
 
 }

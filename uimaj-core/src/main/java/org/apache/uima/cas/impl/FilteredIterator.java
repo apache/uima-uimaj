@@ -28,84 +28,84 @@ import org.apache.uima.cas.*;
  */
 class FilteredIterator extends FSIteratorImplBase {
 
-    // The base iterator.
-    private FSIterator it;
+  // The base iterator.
+  private FSIterator it;
 
-    // The filter constraint.
-    private FSMatchConstraint cons;
+  // The filter constraint.
+  private FSMatchConstraint cons;
 
-    // Private...
-    private FilteredIterator() {
-        super();
+  // Private...
+  private FilteredIterator() {
+    super();
+  }
+
+  /**
+   * Create a filtered iterator from a base iterator and a constraint.
+   */
+  FilteredIterator(FSIterator it, FSMatchConstraint cons) {
+    this();
+    this.it = it;
+    this.cons = cons;
+    moveToFirst();
+  }
+
+  public boolean isValid() {
+    // We always make sure that the underlying iterator is either pointing
+    // at an FS
+    // that matches the constraint, or is not valid. Thus, for isValid(), we
+    // can simply refer to the underlying iterator.
+    return this.it.isValid();
+  }
+
+  public void moveToFirst() {
+    this.it.moveToFirst();
+    // If the iterator is valid, but doesn't match the constraint, advance.
+    while (this.it.isValid() && !this.cons.match(this.it.get())) {
+      this.it.moveToNext();
     }
+  }
 
-    /**
-     * Create a filtered iterator from a base iterator and a constraint.
-     */
-    FilteredIterator(FSIterator it, FSMatchConstraint cons) {
-        this();
-        this.it = it;
-        this.cons = cons;
-        moveToFirst();
+  public void moveToLast() {
+    this.it.moveToLast();
+    while (this.it.isValid() && !this.cons.match(this.it.get())) {
+      this.it.moveToPrevious();
     }
+  }
 
-    public boolean isValid() {
-        // We always make sure that the underlying iterator is either pointing
-        // at an FS
-        // that matches the constraint, or is not valid. Thus, for isValid(), we
-        // can simply refer to the underlying iterator.
-        return this.it.isValid();
+  public void moveToNext() {
+    this.it.moveToNext();
+    while (this.it.isValid() && !this.cons.match(this.it.get())) {
+      this.it.moveToNext();
     }
+  }
 
-    public void moveToFirst() {
-        this.it.moveToFirst();
-        // If the iterator is valid, but doesn't match the constraint, advance.
-        while (this.it.isValid() && !this.cons.match(this.it.get())) {
-            this.it.moveToNext();
-        }
+  public void moveToPrevious() {
+    this.it.moveToPrevious();
+    while (this.it.isValid() && !this.cons.match(this.it.get())) {
+      this.it.moveToPrevious();
     }
+  }
 
-    public void moveToLast() {
-        this.it.moveToLast();
-        while (this.it.isValid() && !this.cons.match(this.it.get())) {
-            this.it.moveToPrevious();
-        }
-    }
+  public FeatureStructure get() throws NoSuchElementException {
+    // This may throw an exception.
+    return this.it.get();
+  }
 
-    public void moveToNext() {
-        this.it.moveToNext();
-        while (this.it.isValid() && !this.cons.match(this.it.get())) {
-            this.it.moveToNext();
-        }
-    }
+  /**
+   * @see org.apache.uima.cas.FSIterator#copy()
+   */
+  public FSIterator copy() {
+    return new FilteredIterator(this.it.copy(), this.cons);
+  }
 
-    public void moveToPrevious() {
-        this.it.moveToPrevious();
-        while (this.it.isValid() && !this.cons.match(this.it.get())) {
-            this.it.moveToPrevious();
-        }
+  /**
+   * @see org.apache.uima.cas.FSIterator#moveTo(FeatureStructure)
+   */
+  public void moveTo(FeatureStructure fs) {
+    this.it.moveTo(fs);
+    if (!this.cons.match(this.it.get())) {
+      moveToNext();
     }
-
-    public FeatureStructure get() throws NoSuchElementException {
-        // This may throw an exception.
-        return this.it.get();
-    }
-
-    /**
-     * @see org.apache.uima.cas.FSIterator#copy()
-     */
-    public FSIterator copy() {
-        return new FilteredIterator(this.it.copy(), this.cons);
-    }
-
-    /**
-     * @see org.apache.uima.cas.FSIterator#moveTo(FeatureStructure)
-     */
-    public void moveTo(FeatureStructure fs) {
-        this.it.moveTo(fs);
-        if (!this.cons.match(this.it.get())) {
-            moveToNext();
-        }
-    }
+  }
 
 }

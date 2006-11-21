@@ -29,69 +29,81 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.impl.JCas;
 
 public class NonEmptyIntegerList_Type extends IntegerList_Type {
-  protected FSGenerator getFSGenerator() {return fsGenerator;}
-  private final FSGenerator fsGenerator = 
-    new FSGenerator() {
-      public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (instanceOf_Type.useExistingInstance) {
-  			   // Return eq fs instance if already created
-  		     FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
-  		     if (null == fs) {
-  		       fs = new NonEmptyIntegerList(addr, instanceOf_Type);
-  			     instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
-  			     return fs;
-  		     }
-  		     return fs;
-        } else return new NonEmptyIntegerList(addr, instanceOf_Type);
-  	  }
-    };
+  protected FSGenerator getFSGenerator() {
+    return fsGenerator;
+  }
+
+  private final FSGenerator fsGenerator = new FSGenerator() {
+    public FeatureStructure createFS(int addr, CASImpl cas) {
+      if (instanceOf_Type.useExistingInstance) {
+        // Return eq fs instance if already created
+        FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
+        if (null == fs) {
+          fs = new NonEmptyIntegerList(addr, instanceOf_Type);
+          instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
+          return fs;
+        }
+        return fs;
+      } else
+        return new NonEmptyIntegerList(addr, instanceOf_Type);
+    }
+  };
 
   public final static int typeIndexID = NonEmptyIntegerList.typeIndexID;
 
   public final static boolean featOkTst = JCas.getFeatOkTst("uima.cas.NonEmptyIntegerList");
+
   final Feature casFeat_head;
-  final int     casFeatCode_head;
+
+  final int casFeatCode_head;
 
   public int getHead(int addr) {
     if (featOkTst && casFeat_head == null)
-          JCas.throwFeatMissing("head", "uima.cas.NonEmptyIntegerList");
-    return ll_cas.ll_getIntValue(addr, casFeatCode_head);}
+      JCas.throwFeatMissing("head", "uima.cas.NonEmptyIntegerList");
+    return ll_cas.ll_getIntValue(addr, casFeatCode_head);
+  }
 
   public void setHead(int addr, int v) {
     if (featOkTst && casFeat_head == null)
-          JCas.throwFeatMissing("head", "uima.cas.NonEmptyIntegerList");
-    ll_cas.ll_setIntValue(addr, casFeatCode_head, v);}
+      JCas.throwFeatMissing("head", "uima.cas.NonEmptyIntegerList");
+    ll_cas.ll_setIntValue(addr, casFeatCode_head, v);
+  }
 
   final Feature casFeat_tail;
-  final int     casFeatCode_tail;
+
+  final int casFeatCode_tail;
 
   public int getTail(int addr) {
     if (featOkTst && casFeat_tail == null)
-          JCas.throwFeatMissing("tail", "uima.cas.NonEmptyIntegerList");
-    return ll_cas.ll_getRefValue(addr, casFeatCode_tail);}
+      JCas.throwFeatMissing("tail", "uima.cas.NonEmptyIntegerList");
+    return ll_cas.ll_getRefValue(addr, casFeatCode_tail);
+  }
 
   public void setTail(int addr, int v) {
     if (featOkTst && casFeat_tail == null)
-          JCas.throwFeatMissing("tail", "uima.cas.NonEmptyIntegerList");
-    ll_cas.ll_setRefValue(addr, casFeatCode_tail, v);}
-
-
-  //* initialize variables to correspond with Cas Type and Features
-  public NonEmptyIntegerList_Type(JCas jcas, Type casType) {
-    super(jcas, casType);
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
-
-    casFeat_head            = jcas.getRequiredFeatureDE(casType, "head", "uima.cas.Integer", featOkTst);
-    casFeatCode_head        = (null == casFeat_head) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_head).getCode();
-    casFeat_tail            = jcas.getRequiredFeatureDE(casType, "tail", "uima.cas.IntegerList", featOkTst);
-    casFeatCode_tail        = (null == casFeat_tail) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_tail).getCode();
+      JCas.throwFeatMissing("tail", "uima.cas.NonEmptyIntegerList");
+    ll_cas.ll_setRefValue(addr, casFeatCode_tail, v);
   }
 
-  protected NonEmptyIntegerList_Type() { //block default new operator
-    casFeat_head            = null;
-    casFeatCode_head            = JCas.INVALID_FEATURE_CODE;
-    casFeat_tail            = null;
-    casFeatCode_tail            = JCas.INVALID_FEATURE_CODE;
-    throw new RuntimeException("Internal Error-this constructor should never be called.");  }
+  // * initialize variables to correspond with Cas Type and Features
+  public NonEmptyIntegerList_Type(JCas jcas, Type casType) {
+    super(jcas, casType);
+    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
+
+    casFeat_head = jcas.getRequiredFeatureDE(casType, "head", "uima.cas.Integer", featOkTst);
+    casFeatCode_head = (null == casFeat_head) ? JCas.INVALID_FEATURE_CODE
+                    : ((FeatureImpl) casFeat_head).getCode();
+    casFeat_tail = jcas.getRequiredFeatureDE(casType, "tail", "uima.cas.IntegerList", featOkTst);
+    casFeatCode_tail = (null == casFeat_tail) ? JCas.INVALID_FEATURE_CODE
+                    : ((FeatureImpl) casFeat_tail).getCode();
+  }
+
+  protected NonEmptyIntegerList_Type() { // block default new operator
+    casFeat_head = null;
+    casFeatCode_head = JCas.INVALID_FEATURE_CODE;
+    casFeat_tail = null;
+    casFeatCode_tail = JCas.INVALID_FEATURE_CODE;
+    throw new RuntimeException("Internal Error-this constructor should never be called.");
+  }
 
 }

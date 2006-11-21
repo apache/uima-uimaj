@@ -33,68 +33,54 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 /**
  * Tests the ResourceService_impl class.
  * 
- * @author Adam Lally 
+ * @author Adam Lally
  */
-public class ResourceService_implTest extends TestCase
-{
+public class ResourceService_implTest extends TestCase {
   /**
    * Constructor for ResourceService_implTest.
+   * 
    * @param arg0
    */
-  public ResourceService_implTest(String arg0)
-    throws java.io.FileNotFoundException
-  {
+  public ResourceService_implTest(String arg0) throws java.io.FileNotFoundException {
     super(arg0);
   }
 
   /**
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception
-  {
-    try
-    {
+  protected void setUp() throws Exception {
+    try {
       super.setUp();
-      //create resource specifier and a pool containing 2 instances
+      // create resource specifier and a pool containing 2 instances
       TaeDescription primitiveDesc = new TaeDescription_impl();
       primitiveDesc.setPrimitive(true);
-      primitiveDesc.setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
+      primitiveDesc
+                      .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       primitiveDesc.getMetaData().setName("Test Annotator");
       ConfigurationParameter p1 = new ConfigurationParameter_impl();
       p1.setName("StringParam");
       p1.setDescription("parameter with String data type");
       p1.setType(ConfigurationParameter.TYPE_STRING);
-      primitiveDesc.getMetaData().getConfigurationParameterDeclarations().
-          setConfigurationParameters(new ConfigurationParameter[]{p1});
-      //create a ResourceService_impl
+      primitiveDesc.getMetaData().getConfigurationParameterDeclarations()
+                      .setConfigurationParameters(new ConfigurationParameter[] { p1 });
+      // create a ResourceService_impl
       service = new ResourceService_impl();
-      service.initialize(primitiveDesc,null);
+      service.initialize(primitiveDesc, null);
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
     }
-		catch (Exception e)
-		{
-			JUnitExtension.handleException(e);
-		}
   }
 
-
-  public void testGetMetaData()
-    throws Exception
-  {
-    try
-    {
+  public void testGetMetaData() throws Exception {
+    try {
       ResourceMetaData md = service.getMetaData();
       Assert.assertNotNull(md);
-      Assert.assertEquals( "Test Annotator", md.getName());
+      Assert.assertEquals("Test Annotator", md.getName());
       Assert.assertNotNull(md.getUUID());
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
     }
-		catch (Exception e)
-		{
-			JUnitExtension.handleException(e);
-		}
   }
-  
 
   private ResourceService_impl service;
 }
-
-

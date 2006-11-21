@@ -25,32 +25,31 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 
 /**
- * A subtype of {@link UimaContext} used by {@link FlowController} components.
- * In addition to access to resources and configuration settings (provided by <code>UimaContext</code>),
- * the <code>FlowControllerContext</code> provides access to other infomration that the FlowController can
- * use to make routing decitions.  This includes:
+ * A subtype of {@link UimaContext} used by {@link FlowController} components. In addition to access
+ * to resources and configuration settings (provided by <code>UimaContext</code>), the
+ * <code>FlowControllerContext</code> provides access to other infomration that the FlowController
+ * can use to make routing decitions. This includes:
  * <ul>
- *   <li>A map from AnalysisEngine key to AnalysisEngineMetaData for all AnalysisEngines that
- *       the FlowController can route CASes to</li>
- *   <li>Declared Capabilities of the Aggregate AnalysisEngine containing this FlowController.</li>
+ * <li>A map from AnalysisEngine key to AnalysisEngineMetaData for all AnalysisEngines that the
+ * FlowController can route CASes to</li>
+ * <li>Declared Capabilities of the Aggregate AnalysisEngine containing this FlowController.</li>
  * </ul>
  */
-public interface FlowControllerContext extends UimaContext
-{
+public interface FlowControllerContext extends UimaContext {
   /**
-   * Gets a map from Analysis Engine key (a String) to {@link AnalysisEngineMetaData}.  
-   * This map contains an entry for all Analysis Engines to which the FlowController can route CASes.
+   * Gets a map from Analysis Engine key (a String) to {@link AnalysisEngineMetaData}. This map
+   * contains an entry for all Analysis Engines to which the FlowController can route CASes.
    * 
-   * @return a map with <code>String</code> keys, and {@link AnalysisEngineMetaData} values 
+   * @return a map with <code>String</code> keys, and {@link AnalysisEngineMetaData} values
    */
   Map getAnalysisEngineMetaDataMap();
-  
+
   /**
-   * Gets the metadata of the Aggregate AnalysisEngine containing this FlowController.  This includes
-   * the specification of the inputs and outputs of the aggregate, which may be useful for 
-   * some FlowController implementations.
+   * Gets the metadata of the Aggregate AnalysisEngine containing this FlowController. This includes
+   * the specification of the inputs and outputs of the aggregate, which may be useful for some
+   * FlowController implementations.
    * 
-   * @return the Capabilities of the aggregate containing this FlowController. 
-   */  
+   * @return the Capabilities of the aggregate containing this FlowController.
+   */
   AnalysisEngineMetaData getAggregateMetadata();
 }

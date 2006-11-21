@@ -21,15 +21,13 @@ package org.apache.uima.internal.util;
 
 /*
  * Test class for UIMA ClassLoader test
- *   
+ * 
  * @author Michael Baessler
  */
-public class ClassloadingTestClass
-{
-	private int value;
-	
-	public ClassloadingTestClass()
-	{
-		value = 10;
-	}
+public class ClassloadingTestClass {
+  private int value;
+
+  public ClassloadingTestClass() {
+    value = 10;
+  }
 }

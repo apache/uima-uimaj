@@ -23,16 +23,22 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.jcas.impl.JCas;
 import org.apache.uima.jcas.cas.TOP_Type;
 
-  /** An annotation holding another annotation.
+/**
+ * An annotation holding another annotation.
  */
 public class CrossAnnotation extends Annotation {
 
   public final static int typeIndexID = JCas.getNextIndex();
-  public final static int type = typeIndexID;
-  public           int getTypeIndexID() {return typeIndexID;}
 
-  // Never called.  Disable default constructor
-  protected CrossAnnotation() {}
+  public final static int type = typeIndexID;
+
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  // Never called. Disable default constructor
+  protected CrossAnnotation() {
+  }
 
   /** Internal - Constructor used by generator */
   public CrossAnnotation(int addr, TOP_Type type) {
@@ -43,17 +49,24 @@ public class CrossAnnotation extends Annotation {
     super(jcas);
   }
 
-  //*------------------*
-  //* Feature: otherAnnotation
-  /** getter for otherAnnotation  * */
+  // *------------------*
+  // * Feature: otherAnnotation
+  /** getter for otherAnnotation * */
   public Annotation getOtherAnnotation() {
-    if (CrossAnnotation_Type.featOkTst && ((CrossAnnotation_Type)jcasType).casFeat_otherAnnotation == null)
-          JCas.throwFeatMissing("otherAnnotation", "uima.tcas.CrossAnnotation");
-    return (Annotation)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((CrossAnnotation_Type)jcasType).casFeatCode_otherAnnotation)));}
+    if (CrossAnnotation_Type.featOkTst
+                    && ((CrossAnnotation_Type) jcasType).casFeat_otherAnnotation == null)
+      JCas.throwFeatMissing("otherAnnotation", "uima.tcas.CrossAnnotation");
+    return (Annotation) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
+                    ((CrossAnnotation_Type) jcasType).casFeatCode_otherAnnotation)));
+  }
 
-  /** setter for otherAnnotation  * */
+  /** setter for otherAnnotation * */
   public void setOtherAnnotation(Annotation v) {
-    if (CrossAnnotation_Type.featOkTst && ((CrossAnnotation_Type)jcasType).casFeat_otherAnnotation == null)
-          JCas.throwFeatMissing("otherAnnotation", "uima.tcas.CrossAnnotation");
-    jcasType.ll_cas.ll_setRefValue(addr, ((CrossAnnotation_Type)jcasType).casFeatCode_otherAnnotation, jcasType.ll_cas.ll_getFSRef(v));}
+    if (CrossAnnotation_Type.featOkTst
+                    && ((CrossAnnotation_Type) jcasType).casFeat_otherAnnotation == null)
+      JCas.throwFeatMissing("otherAnnotation", "uima.tcas.CrossAnnotation");
+    jcasType.ll_cas.ll_setRefValue(addr,
+                    ((CrossAnnotation_Type) jcasType).casFeatCode_otherAnnotation, jcasType.ll_cas
+                                    .ll_getFSRef(v));
+  }
 }

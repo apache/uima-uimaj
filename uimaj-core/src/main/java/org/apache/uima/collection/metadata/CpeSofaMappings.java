@@ -21,21 +21,19 @@ package org.apache.uima.collection.metadata;
 
 import org.apache.uima.resource.metadata.MetaDataObject;
 
+public interface CpeSofaMappings extends MetaDataObject {
+  /**
+   * Return Sofa Name Mappings
+   * 
+   * @return
+   */
+  public CpeSofaMapping[] getSofaNameMappings();
 
-public interface CpeSofaMappings extends MetaDataObject
-{
-	/**
-	 * Return Sofa Name Mappings 
-	 * 
-	 * @return
-	 */
-	public CpeSofaMapping[] getSofaNameMappings();
-
-	/**
-	 * Set Sofa Name Mappings
-	 * 
-	 * @param sofaMappings
-	 */
-	public void setSofaNameMappings(CpeSofaMapping[] sofaMappings);
+  /**
+   * Set Sofa Name Mappings
+   * 
+   * @param sofaMappings
+   */
+  public void setSofaNameMappings(CpeSofaMapping[] sofaMappings);
 
 }

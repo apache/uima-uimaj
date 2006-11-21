@@ -31,50 +31,48 @@ import java.util.ArrayList;
  */
 class IntConstraint extends PathConstraint implements FSMatchConstraint {
 
-    private FSIntConstraint intConstraint;
+  private FSIntConstraint intConstraint;
 
-    private IntConstraint() {
-        super();
+  private IntConstraint() {
+    super();
+  }
+
+  // IntConstraint(FeaturePath path, FSIntConstraint cons) {
+  // super(path);
+  // this.intConstraint = cons;
+  // }
+
+  IntConstraint(ArrayList path, FSIntConstraint cons) {
+    super(path);
+    this.intConstraint = cons;
+  }
+
+  public boolean match(FeatureStructure fs) {
+    // compile(((FeatureStructureImpl) fs).getCAS().getTypeSystem());
+    final int max = this.featNames.size() - 1; // The last position in the
+    // path!
+    if (max < 0) {
+      // If the path is empty, we can't get an int, and therefore the
+      // constraint is not satisfied.
+      return false;
     }
-
-    // IntConstraint(FeaturePath path, FSIntConstraint cons) {
-    // super(path);
-    // this.intConstraint = cons;
-    // }
-
-    IntConstraint(ArrayList path, FSIntConstraint cons) {
-        super(path);
-        this.intConstraint = cons;
+    Feature feat;
+    for (int i = 0; i < max; i++) {
+      feat = fs.getType().getFeatureByBaseName((String) this.featNames.get(i));
+      if (feat == null) {
+        return false;
+      }
+      fs = fs.getFeatureValue(feat);
     }
-
-    public boolean match(FeatureStructure fs) {
-        // compile(((FeatureStructureImpl) fs).getCAS().getTypeSystem());
-        final int max = this.featNames.size() - 1; // The last position in the
-                                                    // path!
-        if (max < 0) {
-            // If the path is empty, we can't get an int, and therefore the
-            // constraint is not satisfied.
-            return false;
-        }
-        Feature feat;
-        for (int i = 0; i < max; i++) {
-            feat = fs.getType().getFeatureByBaseName(
-                    (String) this.featNames.get(i));
-            if (feat == null) {
-                return false;
-            }
-            fs = fs.getFeatureValue(feat);
-        }
-        feat = fs.getType().getFeatureByBaseName(
-                (String) this.featNames.get(max));
-        if (feat == null) {
-            return false;
-        }
-        return this.intConstraint.match(fs.getIntValue(feat));
+    feat = fs.getType().getFeatureByBaseName((String) this.featNames.get(max));
+    if (feat == null) {
+      return false;
     }
+    return this.intConstraint.match(fs.getIntValue(feat));
+  }
 
-    public String toString() {
-        return super.toString() + " " + this.intConstraint.toString();
-    }
+  public String toString() {
+    return super.toString() + " " + this.intConstraint.toString();
+  }
 
 }

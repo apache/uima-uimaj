@@ -31,76 +31,63 @@ import java.io.Serializable;
  * 
  * 
  */
-public abstract class SerializationUtils
-{
-  
-     
+public abstract class SerializationUtils {
 
   /**
    * Serializes an object to a byte array.
    * 
-   * @param aObject object to serialize
+   * @param aObject
+   *          object to serialize
    * 
-   * @return <code>aObject</code> encoded as a byte array.  If
-   *   <code>aObject</code> is <code>null</code>, <code>null</code>
-   *   is returned.
+   * @return <code>aObject</code> encoded as a byte array. If <code>aObject</code> is
+   *         <code>null</code>, <code>null</code> is returned.
    * 
-   * @throws IOException if an I/O error occurs
+   * @throws IOException
+   *           if an I/O error occurs
    */
-  public static byte[] serialize(Serializable aObject)
-    throws IOException
-  {
-    if (aObject == null)
-    {
+  public static byte[] serialize(Serializable aObject) throws IOException {
+    if (aObject == null) {
       return null;
-    }  
-    
+    }
+
     ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
     ObjectOutputStream objStream = null;
-    try
-    {
+    try {
       objStream = new ObjectOutputStream(byteStream);
       objStream.writeObject(aObject);
       objStream.flush();
       return byteStream.toByteArray();
-    }
-    finally
-    {
+    } finally {
       if (objStream != null)
         objStream.close();
     }
   }
 
-
   /**
    * Deserializes an object from a byte array.
    * 
-   * @param aBytes byte array to read from
+   * @param aBytes
+   *          byte array to read from
    * 
-   * @return The <code>Object</code> deserialized from <code>aBytes</code>.
-   *   If <code>aBytes</code> is <code>null</code>, <code>null</code> is 
-   *   returned.
+   * @return The <code>Object</code> deserialized from <code>aBytes</code>. If
+   *         <code>aBytes</code> is <code>null</code>, <code>null</code> is returned.
    * 
-   * @throws IOException if an I/O error occurs
-   * @throws ClassNotFoundException if a required class could not be found
+   * @throws IOException
+   *           if an I/O error occurs
+   * @throws ClassNotFoundException
+   *           if a required class could not be found
    */
-  public static Object deserialize(byte[] aBytes)
-    throws IOException,ClassNotFoundException
-  {
-    if (aBytes == null)
-    {
+  public static Object deserialize(byte[] aBytes) throws IOException, ClassNotFoundException {
+    if (aBytes == null) {
       return null;
     }
-      
+
     ByteArrayInputStream byteStream = new ByteArrayInputStream(aBytes);
     ObjectInputStream objStream = null;
-    try
-    {
+    try {
       objStream = new ObjectInputStream(byteStream);
       return objStream.readObject();
-    }
-    finally
-    {
+    } finally {
       if (objStream != null)
         objStream.close();
     }

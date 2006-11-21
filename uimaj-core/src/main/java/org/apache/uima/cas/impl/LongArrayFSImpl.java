@@ -27,9 +27,7 @@ import org.apache.uima.cas.LongArrayFS;
  * 
  * 
  */
-public class LongArrayFSImpl
-extends CommonAuxArrayFSImpl
-  implements LongArrayFS {
+public class LongArrayFSImpl extends CommonAuxArrayFSImpl implements LongArrayFS {
 
   private static class LongArrayGenerator implements FSGenerator {
 
@@ -38,8 +36,8 @@ extends CommonAuxArrayFSImpl
     }
 
     /**
-    * @see org.apache.uima.cas.impl.FSGenerator#createFS(int, LowLevelCAS)
-    */
+     * @see org.apache.uima.cas.impl.FSGenerator#createFS(int, LowLevelCAS)
+     */
     public FeatureStructure createFS(int addr, CASImpl cas) {
       return new LongArrayFSImpl(addr, cas);
     }
@@ -64,40 +62,36 @@ extends CommonAuxArrayFSImpl
     return casImpl.getArraySize(addr);
   }
 
-   /**
+  /**
    * @see org.apache.uima.cas.ArrayFS#get(int)
    */
-   public long get(int i) {
-     if (i < 0 || i >= size()) {
+  public long get(int i) {
+    if (i < 0 || i >= size()) {
       throw new ArrayIndexOutOfBoundsException();
-     }
-     return casImpl.ll_getLongArrayValue(addr,i);
+    }
+    return casImpl.ll_getLongArrayValue(addr, i);
   }
 
-   /**
-    * @see org.apache.uima.cas.ArrayFS#set(int, FeatureStructure)
-    */
-    public void set(int i, long val) throws ArrayIndexOutOfBoundsException {
-        casImpl.ll_setLongArrayValue(addr, i, val);
-    }
+  /**
+   * @see org.apache.uima.cas.ArrayFS#set(int, FeatureStructure)
+   */
+  public void set(int i, long val) throws ArrayIndexOutOfBoundsException {
+    casImpl.ll_setLongArrayValue(addr, i, val);
+  }
 
   /**
    * @see org.apache.uima.cas.ArrayFS#copyFromArray(FeatureStructure[], int, int, int)
    */
-  public void copyFromArray(
-    long[] src,
-    int srcOffset,
-    int destOffset,
-    int length)
-    throws ArrayIndexOutOfBoundsException {
+  public void copyFromArray(long[] src, int srcOffset, int destOffset, int length)
+                  throws ArrayIndexOutOfBoundsException {
     if ((destOffset < 0) || ((destOffset + length) > size())) {
       throw new ArrayIndexOutOfBoundsException();
     }
-    
+
     final int startoffset = casImpl.heap.heap[casImpl.getArrayStartAddress(this.addr)];
     destOffset += startoffset;
     for (int i = 0; i < length; i++) {
-      //      cas.heap.heap[destOffset] = ((FeatureStructureImpl)src[srcOffset]).getAddress();
+      // cas.heap.heap[destOffset] = ((FeatureStructureImpl)src[srcOffset]).getAddress();
       this.casImpl.ll_setLongArrayValue(this.addr, destOffset, src[srcOffset]);
       ++destOffset;
       ++srcOffset;
@@ -107,20 +101,15 @@ extends CommonAuxArrayFSImpl
   /**
    * @see org.apache.uima.cas.ArrayFS#copyToArray(int, FeatureStructure[], int, int)
    */
-  public void copyToArray(
-    int srcOffset,
-    long[] dest,
-    int destOffset,
-    int length)
-    throws ArrayIndexOutOfBoundsException {
+  public void copyToArray(int srcOffset, long[] dest, int destOffset, int length)
+                  throws ArrayIndexOutOfBoundsException {
     if ((srcOffset < 0) || ((srcOffset + length) > size())) {
       throw new ArrayIndexOutOfBoundsException();
     }
-    
-    //srcOffset += this.casImpl.heap.heap[this.casImpl.getArrayStartAddress(addr)];
+
+    // srcOffset += this.casImpl.heap.heap[this.casImpl.getArrayStartAddress(addr)];
     for (int i = 0; i < length; i++) {
-      dest[destOffset] =
-        this.casImpl.ll_getLongArrayValue(this.addr, srcOffset);
+      dest[destOffset] = this.casImpl.ll_getLongArrayValue(this.addr, srcOffset);
       ++destOffset;
       ++srcOffset;
     }
@@ -135,36 +124,36 @@ extends CommonAuxArrayFSImpl
     copyToArray(0, outArray, 0, size);
     return outArray;
   }
+
   public String[] toStringArray() {
-      final int size = size();
-      String[] strArray = new String[size];
-      copyToArray(0, strArray, 0, size);
-      return strArray;
+    final int size = size();
+    String[] strArray = new String[size];
+    copyToArray(0, strArray, 0, size);
+    return strArray;
   }
-  
-  public void copyToArray(int srcOffset, String[] dest, int destOffset,
-          int length) throws ArrayIndexOutOfBoundsException {
-      if ((srcOffset < 0) || ((srcOffset + length) > size())) {
-          throw new ArrayIndexOutOfBoundsException();
-      }
-      long[] bDest = new long[dest.length];
-      copyToArray(srcOffset,bDest,destOffset,length);
-      
-      for (int i = 0; i < length; i++) {
-          dest[destOffset] = Long
-                  .toString(bDest[destOffset]);
-          ++destOffset;
-      }
+
+  public void copyToArray(int srcOffset, String[] dest, int destOffset, int length)
+                  throws ArrayIndexOutOfBoundsException {
+    if ((srcOffset < 0) || ((srcOffset + length) > size())) {
+      throw new ArrayIndexOutOfBoundsException();
+    }
+    long[] bDest = new long[dest.length];
+    copyToArray(srcOffset, bDest, destOffset, length);
+
+    for (int i = 0; i < length; i++) {
+      dest[destOffset] = Long.toString(bDest[destOffset]);
+      ++destOffset;
+    }
 
   }
 
-  public void copyFromArray(String[] src, int srcOffset, int destOffset,
-          int length) throws ArrayIndexOutOfBoundsException {
-      long[] bArray = new long[length];
-      for (int i = 0; i < length; i++) {
-          bArray[i] = Long.parseLong(src[i]);
-      }
-      copyFromArray(bArray, srcOffset, destOffset, length);
+  public void copyFromArray(String[] src, int srcOffset, int destOffset, int length)
+                  throws ArrayIndexOutOfBoundsException {
+    long[] bArray = new long[length];
+    for (int i = 0; i < length; i++) {
+      bArray[i] = Long.parseLong(src[i]);
+    }
+    copyFromArray(bArray, srcOffset, destOffset, length);
   }
 
 }

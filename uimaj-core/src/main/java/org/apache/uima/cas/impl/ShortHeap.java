@@ -26,26 +26,26 @@ import java.util.Arrays;
  */
 final class ShortHeap extends CommonAuxHeap {
 
-	short[] heap;
+  short[] heap;
 
-	ShortHeap() {
-		super(DEFAULT_HEAP_BASE_SIZE, DEFAULT_HEAP_MULT_LIMIT);
-	}
+  ShortHeap() {
+    super(DEFAULT_HEAP_BASE_SIZE, DEFAULT_HEAP_MULT_LIMIT);
+  }
 
-	ShortHeap(int heapBaseSize, int heapMultLimit) {
-		super(heapBaseSize, heapMultLimit);
-	}
+  ShortHeap(int heapBaseSize, int heapMultLimit) {
+    super(heapBaseSize, heapMultLimit);
+  }
 
-	final void initMemory() {
-		this.heap = new short[this.heapBaseSize];
-	}
+  final void initMemory() {
+    this.heap = new short[this.heapBaseSize];
+  }
 
   void growHeapIfNeeded() {
     if (heap.length >= heapPos)
       return;
 
     short[] new_array = new short[computeNewArraySize(heap.length, heapPos, GROWTH_FACTOR,
-        heapMultLimit)];
+                    heapMultLimit)];
     System.arraycopy(heap, 0, new_array, 0, heap.length);
     heap = new_array;
   }
@@ -54,21 +54,21 @@ final class ShortHeap extends CommonAuxHeap {
     Arrays.fill(this.heap, 0, this.heapPos, (short) NULL);
   }
 
-	// Getters
-	short getHeapValue(int offset) {
-		return this.heap[offset];
-	}
+  // Getters
+  short getHeapValue(int offset) {
+    return this.heap[offset];
+  }
 
-	// setters
-	void setHeapValue(short val, int pos) {
-			heap[pos] = val;
-	}
+  // setters
+  void setHeapValue(short val, int pos) {
+    heap[pos] = val;
+  }
 
-	int addShort(short val) {
-		int pos = reserve(1);
-		heap[pos] = val;
-		return pos;
-	}
+  int addShort(short val) {
+    int pos = reserve(1);
+    heap[pos] = val;
+    return pos;
+  }
 
   protected void reinit(short[] shortHeap) {
     int argLength = shortHeap.length;

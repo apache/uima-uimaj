@@ -21,7 +21,7 @@ package org.apache.uima.cas;
 
 /**
  * A feature structure constraint parser factory.
- *  
+ * 
  * @deprecated The Constraint Parser is not supported in externally released versions of UIMA
  */
 public class ConstraintParserFactory {
@@ -33,13 +33,13 @@ public class ConstraintParserFactory {
     super();
   }
 
-  public static ConstraintParser getDefaultConstraintParser()
-    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+  public static ConstraintParser getDefaultConstraintParser() throws ClassNotFoundException,
+                  InstantiationException, IllegalAccessException {
     return getConstraintParser("org.apache.uima.cas.constraint_compiler.SableConstraintParser");
   }
 
   public static ConstraintParser getConstraintParser(String className)
-    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+                  throws ClassNotFoundException, InstantiationException, IllegalAccessException {
     ClassLoader loader = getAvailableClassLoader();
     if (loader == null) {
       throw new ClassNotFoundException("No class loader accessible.");

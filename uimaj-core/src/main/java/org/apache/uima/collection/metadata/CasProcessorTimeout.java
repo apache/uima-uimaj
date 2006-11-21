@@ -22,23 +22,24 @@ package org.apache.uima.collection.metadata;
 import org.apache.uima.resource.metadata.MetaDataObject;
 
 /**
- * An object that holds configuration that is part of the CPE descriptor.
- * It provides the means of configuring timeout conditions for CasProcessors.
+ * An object that holds configuration that is part of the CPE descriptor. It provides the means of
+ * configuring timeout conditions for CasProcessors.
  * 
  * 
  */
-public interface CasProcessorTimeout extends MetaDataObject
-{
-	/**
-	 * Sets the timeout value 
-	 * 
-	 * @param aTimeoutValue - timeout
-	 */
-	public void set( int aTimeoutValue );
-	/**
-	 * Returns timeout value
-	 * 
-	 * @return - timeout value
-	 */
-	public int get();
+public interface CasProcessorTimeout extends MetaDataObject {
+  /**
+   * Sets the timeout value
+   * 
+   * @param aTimeoutValue -
+   *          timeout
+   */
+  public void set(int aTimeoutValue);
+
+  /**
+   * Returns timeout value
+   * 
+   * @return - timeout value
+   */
+  public int get();
 }

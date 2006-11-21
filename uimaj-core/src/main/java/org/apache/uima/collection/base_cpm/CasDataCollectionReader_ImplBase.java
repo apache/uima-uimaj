@@ -31,82 +31,73 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.util.Level;
 
 /**
- * Base class from which to extend when writing Collection Readers that
- * use the {@link CasData} interface to access the CAS.
+ * Base class from which to extend when writing Collection Readers that use the {@link CasData}
+ * interface to access the CAS.
  */
-public abstract class CasDataCollectionReader_ImplBase 
-extends ConfigurableResource_ImplBase implements CasDataCollectionReader
-{
-	/**
-	 * current class 
-	 */
-	private static final Class CLASS_NAME = CasDataCollectionReader_ImplBase.class;
+public abstract class CasDataCollectionReader_ImplBase extends ConfigurableResource_ImplBase
+                implements CasDataCollectionReader {
+  /**
+   * current class
+   */
+  private static final Class CLASS_NAME = CasDataCollectionReader_ImplBase.class;
 
-	/**
-	 * Called by the framework to initialize this Collection Reader.  Subclasses
-	 * should generally NOT override this method; instead they should override 
-	 * the zero-argument {@link #initialize()} method and access metadata via
-	 * the {@link #getProcessingResourceMetaData()} method.  This method is 
-	 * non-final only for legacy reasons.
-	 * <p>
-	 * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier, java.util.Map)
-	 */
-	public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams) throws ResourceInitializationException
-	{
-		//aSpecifier must be a CollectionReaderDescription
-		if (aSpecifier instanceof CollectionReaderDescription)
-		{
-			//do framework intitialiation
-			if (super.initialize(aSpecifier, aAdditionalParams))
-			{
-				//do user initialization    	
-				initialize();
-				return true;
-			}  
-		}
-		return false;	
-	}
+  /**
+   * Called by the framework to initialize this Collection Reader. Subclasses should generally NOT
+   * override this method; instead they should override the zero-argument {@link #initialize()}
+   * method and access metadata via the {@link #getProcessingResourceMetaData()} method. This method
+   * is non-final only for legacy reasons.
+   * <p>
+   * 
+   * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier,
+   *      java.util.Map)
+   */
+  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+                  throws ResourceInitializationException {
+    // aSpecifier must be a CollectionReaderDescription
+    if (aSpecifier instanceof CollectionReaderDescription) {
+      // do framework intitialiation
+      if (super.initialize(aSpecifier, aAdditionalParams)) {
+        // do user initialization
+        initialize();
+        return true;
+      }
+    }
+    return false;
+  }
 
-	/**
-	 * This method is called during initialization, and does nothing by default.
-	 * Subclasses should override it to perform one-time startup logic.
-	 *
-	 * @throws ResourceInitializationException if a failure occurs during
-	 *    initialization.
-	 */
-	public void initialize() throws ResourceInitializationException
-	{
-	}
+  /**
+   * This method is called during initialization, and does nothing by default. Subclasses should
+   * override it to perform one-time startup logic.
+   * 
+   * @throws ResourceInitializationException
+   *           if a failure occurs during initialization.
+   */
+  public void initialize() throws ResourceInitializationException {
+  }
 
-	/**
-	 * @see org.apache.uima.resource.Resource#destroy()
-	 */
-	public void destroy()
-	{
-		try
-		{
-			close();
-		}
-		catch (IOException e)
-		{
-			UIMAFramework.getLogger(CLASS_NAME).log(Level.SEVERE, "", e);
-		}
-	}
+  /**
+   * @see org.apache.uima.resource.Resource#destroy()
+   */
+  public void destroy() {
+    try {
+      close();
+    } catch (IOException e) {
+      UIMAFramework.getLogger(CLASS_NAME).log(Level.SEVERE, "", e);
+    }
+  }
 
-	/**
-	 * @see org.apache.uima.collection.CollectionReader#getProcessingResourceMetaData()
-	 */
-	public ProcessingResourceMetaData getProcessingResourceMetaData()
-	{
-		return (ProcessingResourceMetaData) getMetaData();
-	}
+  /**
+   * @see org.apache.uima.collection.CollectionReader#getProcessingResourceMetaData()
+   */
+  public ProcessingResourceMetaData getProcessingResourceMetaData() {
+    return (ProcessingResourceMetaData) getMetaData();
+  }
 
-	/**
-	 * @see org.apache.uima.collection.CollectionReader#isConsuming()
-	 */
-	public boolean isConsuming()
-	{
-		return false;
-	}
+  /**
+   * @see org.apache.uima.collection.CollectionReader#isConsuming()
+   */
+  public boolean isConsuming() {
+    return false;
+  }
 
 }

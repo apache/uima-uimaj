@@ -27,14 +27,12 @@ import org.apache.uima.cas.FeatureStructure;
  * 
  * 
  */
-public class DoubleArrayFSImpl
-  extends CommonAuxArrayFSImpl
-  implements DoubleArrayFS {
+public class DoubleArrayFSImpl extends CommonAuxArrayFSImpl implements DoubleArrayFS {
 
   private static class DoubleArrayGenerator implements FSGenerator {
     /**
-    * @see org.apache.uima.cas.impl.FSGenerator#createFS(int, LowLevelCAS)
-    */
+     * @see org.apache.uima.cas.impl.FSGenerator#createFS(int, LowLevelCAS)
+     */
     public FeatureStructure createFS(int addr, CASImpl cas) {
       return new DoubleArrayFSImpl(addr, cas);
     }
@@ -51,21 +49,21 @@ public class DoubleArrayFSImpl
     return new DoubleArrayGenerator();
   }
 
-   /**
+  /**
    * @see org.apache.uima.cas.DoubleArrayFS#get(int)
    */
-   public double get(int i) {
-     casImpl.checkArrayBounds(addr, i); // don't need to check type code
-     return casImpl.ll_getDoubleArrayValue(addr, i);
+  public double get(int i) {
+    casImpl.checkArrayBounds(addr, i); // don't need to check type code
+    return casImpl.ll_getDoubleArrayValue(addr, i);
   }
 
-   /**
-    * @see org.apache.uima.cas.DoubleArrayFS#set(int, double)
-    */
-    public void set(int i, double val) {
-      casImpl.checkArrayBounds(addr, i);  // don't need to check type code
-      casImpl.ll_setDoubleArrayValue(addr, i, val);
-    }
+  /**
+   * @see org.apache.uima.cas.DoubleArrayFS#set(int, double)
+   */
+  public void set(int i, double val) {
+    casImpl.checkArrayBounds(addr, i); // don't need to check type code
+    casImpl.ll_setDoubleArrayValue(addr, i, val);
+  }
 
   /**
    * @see org.apache.uima.cas.DoubleArrayFS#copyFromArray(double[], int, int, int)
@@ -96,7 +94,7 @@ public class DoubleArrayFSImpl
     copyToArray(0, outArray, 0, size);
     return outArray;
   }
-  
+
   /**
    * @see org.apache.uima.cas.CommonArrayFS#copyToArray(int, String[], int, int)
    */
@@ -115,5 +113,5 @@ public class DoubleArrayFSImpl
     for (int i = 0; i < length; i++) {
       casImpl.ll_setDoubleArrayValue(addr, destOffset + i, Double.parseDouble(src[i + srcOffset]));
     }
-  }  
+  }
 }
