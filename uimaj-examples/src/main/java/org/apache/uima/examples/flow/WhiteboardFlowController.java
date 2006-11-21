@@ -38,90 +38,83 @@ import org.apache.uima.flow.Step;
 import org.apache.uima.resource.metadata.Capability;
 
 /**
- * FlowController implementing a simple version of the "whiteboard" flow model.  Each 
- * time a CAS is received, it looks at the pool of available AEs that have not yet
- * run on that CAS, and picks one whose input requirements are satisfied.
+ * FlowController implementing a simple version of the "whiteboard" flow model. Each time a CAS is
+ * received, it looks at the pool of available AEs that have not yet run on that CAS, and picks one
+ * whose input requirements are satisfied.
  * <p>
- * Limitations: only looks at types, not features.  Ignores languagesSupported.
- * Does not handle multiple Sofas or CasMultipliers.
+ * Limitations: only looks at types, not features. Ignores languagesSupported. Does not handle
+ * multiple Sofas or CasMultipliers.
  */
-public class WhiteboardFlowController extends CasFlowController_ImplBase
-{
+public class WhiteboardFlowController extends CasFlowController_ImplBase {
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.flow.CasFlowController_ImplBase#computeFlow(org.apache.uima.cas.CAS)
    */
-  public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException
-  {
+  public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
     WhiteboardFlow flow = new WhiteboardFlow();
     flow.setCas(aCAS);
     return flow;
   }
 
-  /** 
-   * A separate instance of WhiteboardFlow is created for each input CAS,
-   * and is responsible for routing that CAS to all appropriate AnalysisEngines.
+  /**
+   * A separate instance of WhiteboardFlow is created for each input CAS, and is responsible for
+   * routing that CAS to all appropriate AnalysisEngines.
    */
-  class WhiteboardFlow extends CasFlow_ImplBase
-  {
+  class WhiteboardFlow extends CasFlow_ImplBase {
     private Set mAlreadyCalled = new HashSet();
 
     /**
      * Get the next AnalyisEngine that should receive the CAS.
      */
-    public Step next() throws AnalysisEngineProcessException
-    {
-      //Get the CAS that this Flow object is responsible for routing.
-      //Each Flow instance is responsible for a single CAS.
+    public Step next() throws AnalysisEngineProcessException {
+      // Get the CAS that this Flow object is responsible for routing.
+      // Each Flow instance is responsible for a single CAS.
       CAS cas = getCas();
-      
-      //iterate over available AEs
+
+      // iterate over available AEs
       Iterator aeIter = getContext().getAnalysisEngineMetaDataMap().entrySet().iterator();
-      while (aeIter.hasNext())
-      {
+      while (aeIter.hasNext()) {
         Map.Entry entry = (Map.Entry) aeIter.next();
-        //skip AEs that were already called on this CAS
+        // skip AEs that were already called on this CAS
         String aeKey = (String) entry.getKey();
-        if (!mAlreadyCalled.contains(aeKey))
-        {
-          //check for satisfied input capabilities (i.e. the CAS contains at least one instance
-          //of each required input
+        if (!mAlreadyCalled.contains(aeKey)) {
+          // check for satisfied input capabilities (i.e. the CAS contains at least one instance
+          // of each required input
           AnalysisEngineMetaData md = (AnalysisEngineMetaData) entry.getValue();
           Capability[] caps = md.getCapabilities();
           boolean satisfied = true;
-          for (int i = 0; i < caps.length; i++)
-          {
+          for (int i = 0; i < caps.length; i++) {
             satisfied = inputsSatisfied(caps[i].getInputs(), cas);
             if (satisfied)
               break;
           }
-          if (satisfied)
-          {
+          if (satisfied) {
             mAlreadyCalled.add(aeKey);
             return new SimpleStep(aeKey);
           }
         }
       }
-      //no appropriate AEs to call - end of flow
+      // no appropriate AEs to call - end of flow
       return new FinalStep();
     }
 
-    /** Checks if a set of input requirements are satisfied in the given CAS.
-     *  This currently looks only at types, not features.  It returns true iff 
-     *  the default CAS view's indexes contain at least one instance of each required 
-     *  input type.
-     *   
-     * @param aInputs input requirements
-     * @param aCAS the CAS to check against
+    /**
+     * Checks if a set of input requirements are satisfied in the given CAS. This currently looks
+     * only at types, not features. It returns true iff the default CAS view's indexes contain at
+     * least one instance of each required input type.
+     * 
+     * @param aInputs
+     *          input requirements
+     * @param aCAS
+     *          the CAS to check against
      * @return true iff the input requirements are satisfied
      */
-    private boolean inputsSatisfied(TypeOrFeature[] aInputs, CAS aCAS)
-    {
-      for (int i = 0; i < aInputs.length; i++)
-      {
+    private boolean inputsSatisfied(TypeOrFeature[] aInputs, CAS aCAS) {
+      for (int i = 0; i < aInputs.length; i++) {
         TypeOrFeature input = aInputs[i];
-        if (input.isType())
-        {
+        if (input.isType()) {
           Type type = aCAS.getTypeSystem().getType(input.getName());
           if (type == null)
             return false;

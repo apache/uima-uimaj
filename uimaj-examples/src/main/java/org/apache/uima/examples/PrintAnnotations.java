@@ -47,29 +47,26 @@ import org.apache.uima.util.XMLInputSource;
  * 
  * 
  */
-public class PrintAnnotations
-{
- 
+public class PrintAnnotations {
+
   /**
    * Prints all Annotations to a PrintStream.
    * 
    * @param aCAS the CAS containing the FeatureStructures to print
    * @param aOut the PrintStream to which output will be written
    */
-  public static void printAnnotations(CAS aCAS, PrintStream aOut)
-  {       
+  public static void printAnnotations(CAS aCAS, PrintStream aOut) {
     //get iterator over annotations
     FSIterator iter = aCAS.getAnnotationIndex().iterator();
-    
+
     //iterate
-    while (iter.isValid())
-    {
+    while (iter.isValid()) {
       FeatureStructure fs = iter.get();
-      printFS(fs,aCAS, 0, aOut);      
+      printFS(fs, aCAS, 0, aOut);
       iter.moveToNext();
     }
   }
-  
+
   /**
    * Prints all Annotations of a specified Type to a PrintStream.
    * 
@@ -77,21 +74,18 @@ public class PrintAnnotations
    * @param aAnnotType the Type of Annotation to be printed
    * @param aOut the PrintStream to which output will be written
    */
-  public static void printAnnotations(CAS aCAS, Type aAnnotType, 
-      PrintStream aOut)
-  {       
+  public static void printAnnotations(CAS aCAS, Type aAnnotType, PrintStream aOut) {
     //get iterator over annotations
     FSIterator iter = aCAS.getAnnotationIndex(aAnnotType).iterator();
-    
+
     //iterate
-    while (iter.isValid())
-    {
+    while (iter.isValid()) {
       FeatureStructure fs = iter.get();
-      printFS(fs,aCAS, 0, aOut);      
+      printFS(fs, aCAS, 0, aOut);
       iter.moveToNext();
     }
-  }    
-  
+  }
+
   /**
    * Prints a FeatureStructure to a PrintStream.
    * 
@@ -100,38 +94,31 @@ public class PrintAnnotations
    * @param aNestingLevel number of tabs to print before each line
    * @param aOut the PrintStream to which output will be written
    */
-  public static void printFS(FeatureStructure aFS, CAS aCAS, int aNestingLevel, 
-      PrintStream aOut)
-  {
+  public static void printFS(FeatureStructure aFS, CAS aCAS, int aNestingLevel, PrintStream aOut) {
     Type stringType = aCAS.getTypeSystem().getType(CAS.TYPE_NAME_STRING);
-    
+
     printTabs(aNestingLevel, aOut);
     aOut.println(aFS.getType().getName());
-    
+
     //if it's an annotation, print the first 64 chars of its covered text
-    if (aFS instanceof AnnotationFS)
-    {
-      AnnotationFS annot = (AnnotationFS)aFS;
+    if (aFS instanceof AnnotationFS) {
+      AnnotationFS annot = (AnnotationFS) aFS;
       String coveredText = annot.getCoveredText();
       printTabs(aNestingLevel + 1, aOut);
       aOut.print("\"");
-      if (coveredText.length() <= 64)
-      {
+      if (coveredText.length() <= 64) {
         aOut.print(coveredText);
+      } else {
+        aOut.println(coveredText.substring(0, 64) + "...");
       }
-      else
-      {
-        aOut.println(coveredText.substring(0,64) + "...");
-      }
-      aOut.println("\"");      
+      aOut.println("\"");
     }
-    
+
     //print all features
     List aFeatures = aFS.getType().getFeatures();
     Iterator iter = aFeatures.iterator();
-    while (iter.hasNext())
-    {
-      Feature feat = (Feature)iter.next();
+    while (iter.hasNext()) {
+      Feature feat = (Feature) iter.next();
       printTabs(aNestingLevel + 1, aOut);
       //print feature name
       aOut.print(feat.getShortName());
@@ -141,127 +128,91 @@ public class PrintAnnotations
       if (aCAS.getTypeSystem().subsumes(stringType, feat.getRange())) //must check for subtypes of string
       {
         String str = aFS.getStringValue(feat);
-        if (str == null)
-        {
+        if (str == null) {
           aOut.println("null");
-        }
-        else 
-        {
+        } else {
           aOut.print("\"");
-          if (str.length() > 64)
-          {
-            str = str.substring(0,64) + "...";
-          }  
+          if (str.length() > 64) {
+            str = str.substring(0, 64) + "...";
+          }
           aOut.print(str);
-          aOut.println("\""); 
-        } 
-      }
-      else if (CAS.TYPE_NAME_INTEGER.equals(rangeTypeName))
-      {
-        aOut.println(aFS.getIntValue(feat));        
-      }
-      else if (CAS.TYPE_NAME_FLOAT.equals(rangeTypeName))
-      {
-        aOut.println(aFS.getFloatValue(feat));        
-      }
-      else if (CAS.TYPE_NAME_STRING_ARRAY.equals(rangeTypeName))
-      {
-        StringArrayFS arrayFS = (StringArrayFS)aFS.getFeatureValue(feat);
-        if (arrayFS == null)
-        {
-          aOut.println("null");
+          aOut.println("\"");
         }
-        else
-        {  
+      } else if (CAS.TYPE_NAME_INTEGER.equals(rangeTypeName)) {
+        aOut.println(aFS.getIntValue(feat));
+      } else if (CAS.TYPE_NAME_FLOAT.equals(rangeTypeName)) {
+        aOut.println(aFS.getFloatValue(feat));
+      } else if (CAS.TYPE_NAME_STRING_ARRAY.equals(rangeTypeName)) {
+        StringArrayFS arrayFS = (StringArrayFS) aFS.getFeatureValue(feat);
+        if (arrayFS == null) {
+          aOut.println("null");
+        } else {
           String[] vals = arrayFS.toArray();
           aOut.print("[");
-          for (int i=0; i < vals.length - 1; i++)
-          {
+          for (int i = 0; i < vals.length - 1; i++) {
             aOut.print(vals[i]);
             aOut.print(',');
           }
-          if (vals.length > 0)
-          {
+          if (vals.length > 0) {
             aOut.print(vals[vals.length - 1]);
           }
           aOut.println("]\"");
-        }  
-      }
-      else if (CAS.TYPE_NAME_INTEGER_ARRAY.equals(rangeTypeName))
-      {
-        IntArrayFS arrayFS = (IntArrayFS)aFS.getFeatureValue(feat);
-        if (arrayFS == null)
-        {
-          aOut.println("null");
         }
-        else
-        {  
+      } else if (CAS.TYPE_NAME_INTEGER_ARRAY.equals(rangeTypeName)) {
+        IntArrayFS arrayFS = (IntArrayFS) aFS.getFeatureValue(feat);
+        if (arrayFS == null) {
+          aOut.println("null");
+        } else {
           int[] vals = arrayFS.toArray();
           aOut.print("[");
-          for (int i=0; i < vals.length - 1; i++)
-          {
+          for (int i = 0; i < vals.length - 1; i++) {
             aOut.print(vals[i]);
             aOut.print(',');
           }
-          if (vals.length > 0)
-          {
+          if (vals.length > 0) {
             aOut.print(vals[vals.length - 1]);
           }
           aOut.println("]\"");
-        }  
-      }  
-      else if (CAS.TYPE_NAME_FLOAT_ARRAY.equals(rangeTypeName))
-      {
-        FloatArrayFS arrayFS = (FloatArrayFS)aFS.getFeatureValue(feat);
-        if (arrayFS == null)
-        {
-          aOut.println("null");
         }
-        else
-        {  
+      } else if (CAS.TYPE_NAME_FLOAT_ARRAY.equals(rangeTypeName)) {
+        FloatArrayFS arrayFS = (FloatArrayFS) aFS.getFeatureValue(feat);
+        if (arrayFS == null) {
+          aOut.println("null");
+        } else {
           float[] vals = arrayFS.toArray();
           aOut.print("[");
-          for (int i=0; i < vals.length - 1; i++)
-          {
+          for (int i = 0; i < vals.length - 1; i++) {
             aOut.print(vals[i]);
             aOut.print(',');
           }
-          if (vals.length > 0)
-          {
+          if (vals.length > 0) {
             aOut.print(vals[vals.length - 1]);
           }
           aOut.println("]\"");
-        }  
-      }   
-      else //non-primitive type
+        }
+      } else //non-primitive type
       {
         FeatureStructure val = aFS.getFeatureValue(feat);
-        if (val == null)
-        {
+        if (val == null) {
           aOut.println("null");
-        }
-        else
-        {
+        } else {
           printFS(val, aCAS, aNestingLevel + 1, aOut);
-        }    
-      }      
-    }   
+        }
+      }
+    }
   }
-  
+
   /**
    * Prints tabs to a PrintStream.
    * 
    * @param aNumTabs number of tabs to print
    * @param aOut the PrintStream to which output will be written
    */
-  private static void printTabs(int aNumTabs, PrintStream aOut)
-  {
-    for (int i = 0; i < aNumTabs; i++)
-    {
+  private static void printTabs(int aNumTabs, PrintStream aOut) {
+    for (int i = 0; i < aNumTabs; i++) {
       aOut.print("\t");
     }
   }
-  
 
   /**
    * Main program for testing this class.  Ther are two required arguments -
@@ -269,18 +220,15 @@ public class PrintAnnotations
    * Additional arguments are Type or Feature names
    * to be included in the ResultSpecification passed to the TAE.
    */
-  public static void main(String[] args)
-  {
-    try
-    {
+  public static void main(String[] args) {
+    try {
       File taeDescriptor = new File(args[0]);
       File inputFile = new File(args[1]);
 
       //get Resource Specifier from XML file or TEAR
       XMLInputSource in = new XMLInputSource(taeDescriptor);
-      ResourceSpecifier specifier = 
-        UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-        
+      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+
       //create Analysis Engine
       AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(specifier);
       //create a CAS
@@ -288,47 +236,38 @@ public class PrintAnnotations
 
       //build ResultSpec if Type and Feature names were specified on commandline
       ResultSpecification resultSpec = null;
-      if (args.length > 2)
-      {
+      if (args.length > 2) {
         resultSpec = ae.createResultSpecification();
-        for (int i = 2; i < args.length; i++)
-        {
+        for (int i = 2; i < args.length; i++) {
           if (args[i].indexOf(':') > 0) //feature name
           {
             resultSpec.addResultFeature(args[i]);
+          } else {
+            resultSpec.addResultType(args[i], false);
           }
-          else
-          {
-            resultSpec.addResultType(args[i],false);
-          }
-        }        
+        }
       }
 
-            
       //read contents of file
       FileInputStream fis = new FileInputStream(inputFile);
-      byte[] contents = new byte[(int)inputFile.length() ];
-      fis.read( contents );      
+      byte[] contents = new byte[(int) inputFile.length()];
+      fis.read(contents);
       fis.close();
-      String document =new String(contents );
-      
+      String document = new String(contents);
+
       //send doc through the AE
       cas.setDocumentText(document);
       ae.process(cas, resultSpec);
-      
+
       //print results
       Type annotationType = cas.getTypeSystem().getType(CAS.TYPE_NAME_ANNOTATION);
-      PrintAnnotations.printAnnotations(cas, annotationType,
-        System.out);
-      
+      PrintAnnotations.printAnnotations(cas, annotationType, System.out);
+
       //destroy AE
       ae.destroy();
-    }  
-    catch(Exception e)
-    {
+    } catch (Exception e) {
       e.printStackTrace();
-    }    
+    }
   }
 
 }
-

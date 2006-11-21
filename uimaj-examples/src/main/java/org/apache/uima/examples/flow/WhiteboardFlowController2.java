@@ -42,38 +42,37 @@ import org.apache.uima.flow.Step;
 import org.apache.uima.resource.metadata.Capability;
 
 /**
- * FlowController implementing a simple version of the "whiteboard" flow model.  Each 
- * time a CAS is received, it looks at the pool of available AEs that have not yet
- * run on that CAS, and picks one whose input requirements are satisfied.
+ * FlowController implementing a simple version of the "whiteboard" flow model. Each time a CAS is
+ * received, it looks at the pool of available AEs that have not yet run on that CAS, and picks one
+ * whose input requirements are satisfied.
  * <p>
- * Limitations: only looks at types, not features.  Ignores languagesSupported.
- * Does not handle multiple Sofas or CasMultipliers.
+ * Limitations: only looks at types, not features. Ignores languagesSupported. Does not handle
+ * multiple Sofas or CasMultipliers.
  * <p>
- * This is an alternative implementation of {@link org.apache.uima.examples.flow.WhiteboardFlowController}.
- * It is slightly more complex but should acheive better performance because CAS Type handles
- * are resolved once, during intitialization, instead of repeatedly resolved at each step of the flow. 
+ * This is an alternative implementation of
+ * {@link org.apache.uima.examples.flow.WhiteboardFlowController}. It is slightly more complex but
+ * should acheive better performance because CAS Type handles are resolved once, during
+ * intitialization, instead of repeatedly resolved at each step of the flow.
  */
-public class WhiteboardFlowController2 extends CasFlowController_ImplBase
-{
+public class WhiteboardFlowController2 extends CasFlowController_ImplBase {
   /**
-   * A Collection of {@link ComponentInfo} objects, one for each component of this
-   * aggregate.  The ComponentInfo objects store the component key and the component's
-   * required input types.
+   * A Collection of {@link ComponentInfo} objects, one for each component of this aggregate. The
+   * ComponentInfo objects store the component key and the component's required input types.
    */
   private Collection mComponentInfo = new ArrayList();
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.flow.CasFlowController_ImplBase#typeSystemInit(org.apache.uima.cas.TypeSystem)
    */
-  public void typeSystemInit(TypeSystem aTypeSystem) throws AnalysisEngineProcessException
-  {
+  public void typeSystemInit(TypeSystem aTypeSystem) throws AnalysisEngineProcessException {
     super.typeSystemInit(aTypeSystem);
-    //Iterate over available AEs and get the required input types of each AE.
-    //Resolve those to Type handles in the TypeSystem and store this information in
-    //the mComponentInfo field for use in routing.
+    // Iterate over available AEs and get the required input types of each AE.
+    // Resolve those to Type handles in the TypeSystem and store this information in
+    // the mComponentInfo field for use in routing.
     Iterator aeIter = getContext().getAnalysisEngineMetaDataMap().entrySet().iterator();
-    while (aeIter.hasNext())
-    {
+    while (aeIter.hasNext()) {
       Map.Entry entry = (Map.Entry) aeIter.next();
       String aeKey = (String) entry.getKey();
       AnalysisEngineMetaData md = (AnalysisEngineMetaData) entry.getValue();
@@ -82,20 +81,16 @@ public class WhiteboardFlowController2 extends CasFlowController_ImplBase
       ComponentInfo compInfo = new ComponentInfo();
       compInfo.key = aeKey;
       compInfo.inputTypesByCapability = new Type[capabilities.length][];
-      
-      for (int i = 0; i < capabilities.length; i++)
-      {
+
+      for (int i = 0; i < capabilities.length; i++) {
         List inputTypes = new ArrayList();
         TypeOrFeature[] inputs = capabilities[i].getInputs();
-        for (int j = 0; j < inputs.length; j++)
-        {
-          if (inputs[j].isType())
-          {
+        for (int j = 0; j < inputs.length; j++) {
+          if (inputs[j].isType()) {
             Type typeHandle = aTypeSystem.getType(inputs[j].getName());
-            if (typeHandle != null)
-            {
+            if (typeHandle != null) {
               inputTypes.add(typeHandle);
-            }  
+            }
           }
         }
         compInfo.inputTypesByCapability[i] = new Type[inputTypes.size()];
@@ -105,70 +100,65 @@ public class WhiteboardFlowController2 extends CasFlowController_ImplBase
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.flow.CasFlowController_ImplBase#computeFlow(org.apache.uima.cas.CAS)
    */
-  public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException
-  {
+  public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
     WhiteboardFlow flow = new WhiteboardFlow();
     flow.setCas(aCAS);
     return flow;
   }
 
-  /** 
-   * A separate instance of WhiteboardFlow is created for each input CAS,
-   * and is responsible for routing that CAS to all appropriate AnalysisEngines.
+  /**
+   * A separate instance of WhiteboardFlow is created for each input CAS, and is responsible for
+   * routing that CAS to all appropriate AnalysisEngines.
    */
-  class WhiteboardFlow extends CasFlow_ImplBase
-  {
+  class WhiteboardFlow extends CasFlow_ImplBase {
     private Set mAlreadyCalled = new HashSet();
 
     /**
      * Get the next AnalyisEngine that should receive the CAS.
      */
-    public Step next() throws AnalysisEngineProcessException
-    {
+    public Step next() throws AnalysisEngineProcessException {
       CAS cas = getCas();
-      
-      //iterate over available AEs
+
+      // iterate over available AEs
       Iterator componentIter = mComponentInfo.iterator();
-      while (componentIter.hasNext())
-      {
+      while (componentIter.hasNext()) {
         ComponentInfo componentInfo = (ComponentInfo) componentIter.next();
-        //skip AEs that were already called on this CAS
-        if (!mAlreadyCalled.contains(componentInfo.key))
-        {
+        // skip AEs that were already called on this CAS
+        if (!mAlreadyCalled.contains(componentInfo.key)) {
           boolean satisfied = false;
-          for (int i = 0; i < componentInfo.inputTypesByCapability.length; i++)
-          {
+          for (int i = 0; i < componentInfo.inputTypesByCapability.length; i++) {
             satisfied = casContainsTypes(cas, componentInfo.inputTypesByCapability[i]);
             if (satisfied)
               break;
           }
-          if (satisfied)
-          {
+          if (satisfied) {
             mAlreadyCalled.add(componentInfo.key);
             return new SimpleStep(componentInfo.key);
           }
         }
       }
-      //no appropriate AEs to call - end of flow
+      // no appropriate AEs to call - end of flow
       return new FinalStep();
     }
 
-    /** Checks if the CAS contains at least one instance of each of the
-     *  specified types.
-     *   
-     * @param aCAS the CAS to check 
-     * @param aTypes array of types to look for
+    /**
+     * Checks if the CAS contains at least one instance of each of the specified types.
      * 
-     * @return true iff <code>aCAS</code> contains at least one instance of each type
-     *   in <code>aTypes</code>
+     * @param aCAS
+     *          the CAS to check
+     * @param aTypes
+     *          array of types to look for
+     * 
+     * @return true iff <code>aCAS</code> contains at least one instance of each type in
+     *         <code>aTypes</code>
      */
-    private boolean casContainsTypes(CAS aCAS, Type[] aTypes)
-    {
-      for (int i = 0; i < aTypes.length; i++)
-      {
+    private boolean casContainsTypes(CAS aCAS, Type[] aTypes) {
+      for (int i = 0; i < aTypes.length; i++) {
         Iterator iter = aCAS.getIndexRepository().getAllIndexedFS(aTypes[i]);
         if (!iter.hasNext())
           return false;
@@ -176,19 +166,19 @@ public class WhiteboardFlowController2 extends CasFlowController_ImplBase
       return true;
     }
   }
-  
+
   /**
-   * Data structure that holds the key of a component (AnalysisEngine) and its 
-   * required input types.
+   * Data structure that holds the key of a component (AnalysisEngine) and its required input types.
    */
-  static private class ComponentInfo
-  {
-    String key;    
-    
-    /** Required input types, organized by capability.  
-     * For example, inputTypesByCapability[0] is the array of input types for the first
-     * capability.  This is organized like this because an AnalysisEngine is ready to
-     * run if <i>any</i> of its capabilities have all of their inputs satisfied. */
+  static private class ComponentInfo {
+    String key;
+
+    /**
+     * Required input types, organized by capability. For example, inputTypesByCapability[0] is the
+     * array of input types for the first capability. This is organized like this because an
+     * AnalysisEngine is ready to run if <i>any</i> of its capabilities have all of their inputs
+     * satisfied.
+     */
     Type[][] inputTypesByCapability;
   }
 }

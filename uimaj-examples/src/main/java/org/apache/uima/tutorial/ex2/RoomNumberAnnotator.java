@@ -32,62 +32,51 @@ import org.apache.uima.tutorial.RoomNumber;
 import org.apache.uima.util.Level;
 
 /**
- * Example annotator that detects room numbers using Java 1.4 regular 
- * expressions.
- * 
- * 
+ * Example annotator that detects room numbers using Java 1.4 regular expressions. 
  */
-public class RoomNumberAnnotator extends JCasAnnotator_ImplBase
-{
+public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
   private Pattern[] mPatterns;
-  private String [] mLocations;
-  
+
+  private String[] mLocations;
+
   /**
    * @see AnalysisComponent#initialize(UimaContext)
    */
-  public void initialize(UimaContext aContext)
-    throws ResourceInitializationException
-  {
+  public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
-    //Get config. parameter values
-    String[] patternStrings = 
-      (String[])aContext.getConfigParameterValue("Patterns");
-    mLocations = (String[])aContext.getConfigParameterValue("Locations");
-   
-    //compile regular expressions
+    // Get config. parameter values
+    String[] patternStrings = (String[]) aContext.getConfigParameterValue("Patterns");
+    mLocations = (String[]) aContext.getConfigParameterValue("Locations");
+
+    // compile regular expressions
     mPatterns = new Pattern[patternStrings.length];
-    for (int i = 0; i < patternStrings.length; i++)
-    {
-      mPatterns[i] = Pattern.compile(patternStrings[i]);  
-    }    
+    for (int i = 0; i < patternStrings.length; i++) {
+      mPatterns[i] = Pattern.compile(patternStrings[i]);
+    }
   }
 
   /**
    * @see JCasAnnotator_ImplBase#process(JCas)
    */
-  public void process(JCas aJCas)
-    throws AnalysisEngineProcessException
-  {
-    //get document text
+  public void process(JCas aJCas) throws AnalysisEngineProcessException {
+    // get document text
     String docText = aJCas.getDocumentText();
-    
-    //loop over patterns
-    for (int i = 0; i < mPatterns.length; i++)
-    {
+
+    // loop over patterns
+    for (int i = 0; i < mPatterns.length; i++) {
       Matcher matcher = mPatterns[i].matcher(docText);
       int pos = 0;
-      while (matcher.find(pos))
-      {
-        //found one - creation annotation
+      while (matcher.find(pos)) {
+        // found one - creation annotation
         RoomNumber annotation = new RoomNumber(aJCas);
         annotation.setBegin(matcher.start());
         annotation.setEnd(matcher.end());
         annotation.addToIndexes();
         annotation.setBuilding(mLocations[i]);
         pos = matcher.end();
-        getContext().getLogger().log(Level.FINEST,"Found: " + annotation);
+        getContext().getLogger().log(Level.FINEST, "Found: " + annotation);
       }
-    }  
+    }
   }
 
 }

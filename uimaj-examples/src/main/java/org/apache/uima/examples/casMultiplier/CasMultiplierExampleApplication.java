@@ -32,79 +32,71 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
 
 /**
- * An example application that shows how to interact with a CasMultiplier.
- * A CasMultiplier is a type of Analysis Engine that outputs new CASes.  One
- * use of a CasMultiplier is to divide a large CAS into smaller pieces - a 
- * CasMultiplier that does this is called a "Segmenter".
+ * An example application that shows how to interact with a CasMultiplier. A CasMultiplier is a type
+ * of Analysis Engine that outputs new CASes. One use of a CasMultiplier is to divide a large CAS
+ * into smaller pieces - a CasMultiplier that does this is called a "Segmenter".
  * <p>
- * This program takes two arguments - 
+ * This program takes two arguments -
  * <ul>
- * <li>The path to the Analysis Engine Descriptor
- * for the CasMultiplier to run (such as descriptors/cas_multiplier/SimpleTextSegmenter.xml
- * or descriptors/cas_multiplier/SegmenterAndTokenizerAE.xml)</li>
- * <li>The file name of a text document to analyze (to see the effect of segmentation,
- * choose a document larger than 100k characters, which is the default segment size
- * produced by the SimpleTextSegmenter.</li>
+ * <li>The path to the Analysis Engine Descriptor for the CasMultiplier to run (such as
+ * descriptors/cas_multiplier/SimpleTextSegmenter.xml or
+ * descriptors/cas_multiplier/SegmenterAndTokenizerAE.xml)</li>
+ * <li>The file name of a text document to analyze (to see the effect of segmentation, choose a
+ * document larger than 100k characters, which is the default segment size produced by the
+ * SimpleTextSegmenter.</li>
  * </ul>
  */
-public class CasMultiplierExampleApplication
-{
+public class CasMultiplierExampleApplication {
   static PrintStream outputStream;
-  
- /**
-  * Main program.
-  * 
-  * @param args Command-line arguments - see class description
-  */ 
-  public static void main(String[] args)
-  {
-    try
-    {
-      //get Resource Specifier from XML file
+
+  /**
+   * Main program.
+   * 
+   * @param args
+   *          Command-line arguments - see class description
+   */
+  public static void main(String[] args) {
+    try {
+      // get Resource Specifier from XML file
       XMLInputSource in = new XMLInputSource(args[0]);
-      ResourceSpecifier specifier = 
-        UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-      
-      //create AnalysisEngine
+      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+
+      // create AnalysisEngine
       AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(specifier);
 
-      //read input text file
+      // read input text file
       File textFile = new File(args[1]);
       FileInputStream fis = new FileInputStream(textFile);
-      byte[] contents = new byte[(int)textFile.length()];
-      fis.read( contents );      
+      byte[] contents = new byte[(int) textFile.length()];
+      fis.read(contents);
       String document = new String(contents, "UTF-8");
-      
-      //create a new CAS and set the document text
+
+      // create a new CAS and set the document text
       CAS initialCas = ae.newCAS();
       initialCas.setDocumentText(document);
-      
-      //pass the CAS to the AnalysisEngine and get back
-      //a CasIterator for stepping over the output CASes that are produced.
+
+      // pass the CAS to the AnalysisEngine and get back
+      // a CasIterator for stepping over the output CASes that are produced.
       CasIterator casIterator = ae.processAndOutputNewCASes(initialCas);
-      while (casIterator.hasNext())
-      {      
+      while (casIterator.hasNext()) {
         CAS outCas = casIterator.next();
-        
-        //dump the document text and annotations for this segment
+
+        // dump the document text and annotations for this segment
         System.out.println("********* NEW SEGMENT *********");
         System.out.println(outCas.getDocumentText());
-        PrintAnnotations.printAnnotations(outCas, System.out); 
+        PrintAnnotations.printAnnotations(outCas, System.out);
 
-        //release the CAS (important)
+        // release the CAS (important)
         outCas.release();
       }
-      
-      //If there's a CAS Consumer inside this aggregate and we want
-      //it's collectionProcessComplete method to be called, we need to
-      //call it ourselves.  If run inside a CPE this would get called
-      //automatically.
+
+      // If there's a CAS Consumer inside this aggregate and we want
+      // it's collectionProcessComplete method to be called, we need to
+      // call it ourselves. If run inside a CPE this would get called
+      // automatically.
       ae.collectionProcessComplete();
-    }  
-    catch(Exception e)
-    {
+    } catch (Exception e) {
       e.printStackTrace();
-    }    
+    }
   }
 }
-  

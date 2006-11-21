@@ -20,11 +20,10 @@
 package org.apache.uima.tutorial.ex6;
 
 /**
- *
+ * 
  * 
  */
-public interface StringMapResource
-{
+public interface StringMapResource {
   public String get(String aKey);
 
 }

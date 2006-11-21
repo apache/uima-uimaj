@@ -36,44 +36,39 @@ import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
 
 /**
- * A simple collection reader that reads CASes in XMI format from a directory
- * in the filesystem.
+ * A simple collection reader that reads CASes in XMI format from a directory in the filesystem.
  */
-public class XmiCollectionReader extends CollectionReader_ImplBase
-{
+public class XmiCollectionReader extends CollectionReader_ImplBase {
   /**
-   * Name of configuration parameter that must be set to the path of
-   * a directory containing the XMI files.
+   * Name of configuration parameter that must be set to the path of a directory containing the XMI
+   * files.
    */
   public static final String PARAM_INPUTDIR = "InputDirectory";
-    
+
   private ArrayList mFiles;
+
   private int mCurrentIndex;
 
   /**
    * @see org.apache.uima.collection.CollectionReader_ImplBase#initialize()
    */
-  public void initialize() throws ResourceInitializationException
-  {
-    File directory = new File(((String)getConfigParameterValue(PARAM_INPUTDIR)).trim());
+  public void initialize() throws ResourceInitializationException {
+    File directory = new File(((String) getConfigParameterValue(PARAM_INPUTDIR)).trim());
     mCurrentIndex = 0;
 
-	//if input directory does not exist or is not a directory, throw exception
-	if (!directory.exists() || !directory.isDirectory())
-	{
-		throw new ResourceInitializationException(
-			ResourceConfigurationException.DIRECTORY_NOT_FOUND,
-			new Object[]{PARAM_INPUTDIR, this.getMetaData().getName(), directory.getPath()});
-	}
-		
-    //get list of .xmi files in the specified directory
+    // if input directory does not exist or is not a directory, throw exception
+    if (!directory.exists() || !directory.isDirectory()) {
+      throw new ResourceInitializationException(ResourceConfigurationException.DIRECTORY_NOT_FOUND,
+                      new Object[] { PARAM_INPUTDIR, this.getMetaData().getName(),
+                          directory.getPath() });
+    }
+
+    // get list of .xmi files in the specified directory
     mFiles = new ArrayList();
     File[] files = directory.listFiles();
-    for (int i = 0; i < files.length; i++)
-    {
-      if (!files[i].isDirectory() && files[i].getName().endsWith(".xmi"))
-      {
-        mFiles.add(files[i]);  
+    for (int i = 0; i < files.length; i++) {
+      if (!files[i].isDirectory() && files[i].getName().endsWith(".xmi")) {
+        mFiles.add(files[i]);
       }
     }
   }
@@ -81,28 +76,21 @@ public class XmiCollectionReader extends CollectionReader_ImplBase
   /**
    * @see org.apache.uima.collection.CollectionReader#hasNext()
    */
-  public boolean hasNext()
-  {
+  public boolean hasNext() {
     return mCurrentIndex < mFiles.size();
   }
 
   /**
    * @see org.apache.uima.collection.CollectionReader#getNext(org.apache.uima.cas.CAS)
    */
-  public void getNext(CAS aCAS) throws IOException, CollectionException
-  {
-    File currentFile = (File)mFiles.get(mCurrentIndex++);
+  public void getNext(CAS aCAS) throws IOException, CollectionException {
+    File currentFile = (File) mFiles.get(mCurrentIndex++);
     FileInputStream inputStream = new FileInputStream(currentFile);
-  	try
-    {
+    try {
       XmiCasDeserializer.deserialize(inputStream, aCAS);
-    }
-    catch (SAXException e)
-    {
+    } catch (SAXException e) {
       throw new CollectionException(e);
-    }
-    finally
-    {
+    } finally {
       inputStream.close();
     }
   }
@@ -110,17 +98,14 @@ public class XmiCollectionReader extends CollectionReader_ImplBase
   /**
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#close()
    */
-  public void close() throws IOException
-  {
+  public void close() throws IOException {
   }
 
   /**
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#getProgress()
    */
-  public Progress[] getProgress()
-  {
-    return new Progress[]{
-       new ProgressImpl(mCurrentIndex,mFiles.size(),Progress.ENTITIES)};
+  public Progress[] getProgress() {
+    return new Progress[] { new ProgressImpl(mCurrentIndex, mFiles.size(), Progress.ENTITIES) };
   }
 
 }

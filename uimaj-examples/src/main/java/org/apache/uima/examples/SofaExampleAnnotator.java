@@ -38,10 +38,8 @@ import org.apache.uima.cas.text.AnnotationFS;
  * and requires no initialization method
  */
 
-public class SofaExampleAnnotator extends CasAnnotator_ImplBase
-{
-  public void process(CAS aCas) throws AnalysisEngineProcessException
-  {
+public class SofaExampleAnnotator extends CasAnnotator_ImplBase {
+  public void process(CAS aCas) throws AnalysisEngineProcessException {
     CAS englishView, germanView;
 
     // get the CAS view for the English document
@@ -66,8 +64,7 @@ public class SofaExampleAnnotator extends CasAnnotator_ImplBase
 
     // Parse the English text
     StringTokenizer st = new StringTokenizer(engText);
-    while (st.hasMoreTokens())
-    {
+    while (st.hasMoreTokens()) {
       String thisTok = st.nextToken();
       int engBegin = engText.indexOf(thisTok, engEnd);
       engEnd = engBegin + thisTok.length();
@@ -80,8 +77,7 @@ public class SofaExampleAnnotator extends CasAnnotator_ImplBase
       String germWord = translate(thisTok);
 
       // Accumulate the translated text
-      if (germBegin > 0)
-      {
+      if (germBegin > 0) {
         translation.append(' ');
         germBegin += 1;
       }
@@ -108,8 +104,7 @@ public class SofaExampleAnnotator extends CasAnnotator_ImplBase
 
   static char wIs[] = { 'i', 's' };
 
-  private String translate(String word)
-  {
+  private String translate(String word) {
     String lword = word.toLowerCase();
     if (Arrays.equals(wThis, lword.toCharArray()))
       return new String("das");

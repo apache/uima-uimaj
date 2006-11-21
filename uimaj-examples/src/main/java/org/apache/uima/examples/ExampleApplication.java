@@ -41,132 +41,107 @@ import org.apache.uima.util.XMLInputSource;
  * <li>An input directory containing files to be processed</li>
  * </ol>
  */
-public class ExampleApplication
-{
- /**
-  * Main program.
-  * 
-  * @param args Command-line arguments - see class description
-  */ 
-  public static void main(String[] args)
-  {
-    try
-    {
+public class ExampleApplication {
+  /**
+   * Main program.
+   * 
+   * @param args Command-line arguments - see class description
+   */
+  public static void main(String[] args) {
+    try {
       File taeDescriptor = null;
       File inputDir = null;
 
       //Read and validate command line arguments
       boolean validArgs = false;
-      if (args.length == 2)
-      {
+      if (args.length == 2) {
         taeDescriptor = new File(args[0]);
         inputDir = new File(args[1]);
 
-        validArgs = taeDescriptor.exists() && !taeDescriptor.isDirectory() &&
-           inputDir.isDirectory();
+        validArgs = taeDescriptor.exists() && !taeDescriptor.isDirectory()
+                        && inputDir.isDirectory();
       }
-      if (!validArgs)
-      {
+      if (!validArgs) {
         printUsageMessage();
-      }
-      else
-      {
+      } else {
         //get Resource Specifier from XML file
         XMLInputSource in = new XMLInputSource(taeDescriptor);
-        ResourceSpecifier specifier = 
-          UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-        
+        ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+
         //for debugging, output the Resource Specifier
         //System.out.println(specifier);
-          
+
         //create Analysis Engine
         AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(specifier);
         //create a CAS 
         CAS cas = ae.newCAS();
-             
+
         //get all files in the input directory
         File[] files = inputDir.listFiles();
-        if (files == null)
-        {
-          System.out.println("No files to process");  
-        }
-        else
-        {          
+        if (files == null) {
+          System.out.println("No files to process");
+        } else {
           //process documents
-          for(int i = 0; i < files.length; i++)
-          {
-            if (!files[i].isDirectory())
-            {
+          for (int i = 0; i < files.length; i++) {
+            if (!files[i].isDirectory()) {
               processFile(files[i], ae, cas);
-            }  
+            }
           }
-        }      
+        }
         ae.destroy();
-      }  
-    }
-    catch(Exception e)
-    {
+      }
+    } catch (Exception e) {
       e.printStackTrace();
-    }    
+    }
   }
-  
- /**
-  * Prints usage message.
-  */ 
-  private static void printUsageMessage()
-  {
+
+  /**
+   * Prints usage message.
+   */
+  private static void printUsageMessage() {
     System.err.println("Usage: java org.apache.uima.example.ExampleApplication "
-      + "<TAE descriptor or TEAR file name> <input dir> <output dir>");
+                    + "<TAE descriptor or TEAR file name> <input dir> <output dir>");
   }
-  
- /**
-  * Processes a single XML file and prints annotations to System.out
-  * 
-  * @param aFile file to process
-  * @param aAE Analysis Engine that will process the file
-  * @param aCAS CAS that will be used to hold analysis results
-  */ 
-  private static void processFile( File aFile, AnalysisEngine aAE,
-    CAS aCAS)
-    throws IOException, AnalysisEngineProcessException
-  {
+
+  /**
+   * Processes a single XML file and prints annotations to System.out
+   * 
+   * @param aFile file to process
+   * @param aAE Analysis Engine that will process the file
+   * @param aCAS CAS that will be used to hold analysis results
+   */
+  private static void processFile(File aFile, AnalysisEngine aAE, CAS aCAS) throws IOException,
+                  AnalysisEngineProcessException {
     System.out.println("Processing file " + aFile.getName());
     FileInputStream fis = null;
 
-    try
-    {
+    try {
       //read file
-      fis = new FileInputStream(aFile );
-      byte[] contents = new byte[(int)aFile.length() ];
-      fis.read( contents );      
+      fis = new FileInputStream(aFile);
+      byte[] contents = new byte[(int) aFile.length()];
+      fis.read(contents);
       String document = new String(contents, "UTF-8");
       document = document.trim();
-      
+
       //put document text in CAS 
       aCAS.setDocumentText(document);
-      
+
       //process
-      aAE.process(aCAS);        
+      aAE.process(aCAS);
 
       //print annotations to System.out
       PrintAnnotations.printAnnotations(aCAS, System.out);
-        
+
       //reset the CAS to prepare it for processing the next document
       aCAS.reset();
-    }
-    finally
-    {      
-      try
-      {
-        if ( fis != null )
+    } finally {
+      try {
+        if (fis != null)
           fis.close();
-      }
-      catch( Exception ex )
-      {
+      } catch (Exception ex) {
         ex.printStackTrace();
       }
     }
-  }  
+  }
 
 }
-  

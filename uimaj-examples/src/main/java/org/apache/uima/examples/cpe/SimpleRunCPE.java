@@ -32,14 +32,13 @@ import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.util.XMLInputSource;
 
 /**
- * Main Class that runs a Collection Processing Engine (CPE).  This class 
- * reads a CPE Descriptor as a command-line argument and instantiates the CPE.  It also 
- * registers a callback listener with the CPE, which will print progress and statistics to System.out.
+ * Main Class that runs a Collection Processing Engine (CPE). This class reads a CPE Descriptor as a
+ * command-line argument and instantiates the CPE. It also registers a callback listener with the
+ * CPE, which will print progress and statistics to System.out.
  * 
  * 
  */
-public class SimpleRunCPE extends Thread
-{
+public class SimpleRunCPE extends Thread {
   /**
    * The CPE instance.
    */
@@ -50,99 +49,94 @@ public class SimpleRunCPE extends Thread
    */
   private long mStartTime;
 
-  /** 
-   * Constructor for the class. 
-   * @param args command line arguments into the program - see class
-   *    description
+  /**
+   * Constructor for the class.
+   * 
+   * @param args
+   *          command line arguments into the program - see class description
    */
-  public SimpleRunCPE(String args[]) throws Exception
-  {
+  public SimpleRunCPE(String args[]) throws Exception {
     mStartTime = System.currentTimeMillis();
 
-    //check command line args      	
-    if (args.length < 1)
-    {
+    // check command line args
+    if (args.length < 1) {
       printUsageMessage();
       System.exit(1);
     }
 
-    //parse CPE descriptor
+    // parse CPE descriptor
     System.out.println("Parsing CPE Descriptor");
     CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
-        new XMLInputSource(args[0]));
-    //instantiate CPE
+                    new XMLInputSource(args[0]));
+    // instantiate CPE
     System.out.println("Instantiating CPE");
     mCPE = UIMAFramework.produceCollectionProcessingEngine(cpeDesc);
 
-    //Create and register a Status Callback Listener
+    // Create and register a Status Callback Listener
     mCPE.addStatusCallbackListener(new StatusCallbackListenerImpl());
 
-    //Start Processing
+    // Start Processing
     System.out.println("Running CPE");
     mCPE.process();
-    
-    //Allow user to abort by pressing Enter
+
+    // Allow user to abort by pressing Enter
     System.out.println("To abort processing, type \"abort\" and press enter.");
-    while(true)
-    {
+    while (true) {
       String line = new BufferedReader(new InputStreamReader(System.in)).readLine();
-      if ("abort".equals(line) && mCPE.isProcessing())
-      {
+      if ("abort".equals(line) && mCPE.isProcessing()) {
         System.out.println("Aborting...");
         mCPE.stop();
         break;
       }
-    }    
+    }
   }
 
   /**
    * 
    */
-  private static void printUsageMessage()
-  {
+  private static void printUsageMessage() {
     System.out.println(" Arguments to the program are as follows : \n"
-        + "args[0] : path to CPE descriptor file");
+                    + "args[0] : path to CPE descriptor file");
   }
 
   /**
    * main class.
-   * @param args Command line arguments - see class description
+   * 
+   * @param args
+   *          Command line arguments - see class description
    */
-  public static void main(String[] args) throws Exception
-  {
+  public static void main(String[] args) throws Exception {
     new SimpleRunCPE(args);
   }
 
   /**
-   * Callback Listener.  Receives event notifications from CPE.
+   * Callback Listener. Receives event notifications from CPE.
    * 
    * 
    */
-  class StatusCallbackListenerImpl implements StatusCallbackListener
-  {
+  class StatusCallbackListenerImpl implements StatusCallbackListener {
     int entityCount = 0;
 
     long size = 0;
 
-    /** 
+    /**
      * Called when the initialization is completed.
+     * 
      * @see org.apache.uima.collection.processing.StatusCallbackListener#initializationComplete()
-     **/
-    public void initializationComplete()
-    {
+     */
+    public void initializationComplete() {
       System.out.println("CPM Initialization Complete");
     }
 
     /**
-     * Called when the batchProcessing is completed. 
+     * Called when the batchProcessing is completed.
+     * 
      * @see org.apache.uima.collection.processing.StatusCallbackListener#batchProcessComplete()
      * 
-     **/
-    public void batchProcessComplete()
-    {
+     */
+    public void batchProcessComplete() {
       System.out.print("Completed " + entityCount + " documents");
-      if (size > 0)
-      {
+      if (size > 0) {
         System.out.print("; " + size + " characters");
       }
       System.out.println();
@@ -150,15 +144,14 @@ public class SimpleRunCPE extends Thread
       System.out.println("Time Elapsed : " + elapsedTime + " ms ");
     }
 
-    /** 
+    /**
      * Called when the collection processing is completed.
+     * 
      * @see org.apache.uima.collection.processing.StatusCallbackListener#collectionProcessComplete()
-     **/
-    public void collectionProcessComplete()
-    {
+     */
+    public void collectionProcessComplete() {
       System.out.print("Completed " + entityCount + " documents");
-      if (size > 0)
-      {
+      if (size > 0) {
         System.out.print("; " + size + " characters");
       }
       System.out.println();
@@ -166,69 +159,64 @@ public class SimpleRunCPE extends Thread
       System.out.println("Time Elapsed : " + elapsedTime + " ms ");
       System.out.println("\n\n ------------------ PERFORMANCE REPORT ------------------\n");
       System.out.println(mCPE.getPerformanceReport().toString());
-      //stop the JVM.  Otherwise main thread will still be blocked waiting for
-      //user to press Enter.
+      // stop the JVM. Otherwise main thread will still be blocked waiting for
+      // user to press Enter.
       System.exit(1);
     }
 
-    /** 
+    /**
      * Called when the CPM is paused.
+     * 
      * @see org.apache.uima.collection.processing.StatusCallbackListener#paused()
-     **/
-    public void paused()
-    {
+     */
+    public void paused() {
       System.out.println("Paused");
     }
 
-    /** 
+    /**
      * Called when the CPM is resumed after a pause.
+     * 
      * @see org.apache.uima.collection.processing.StatusCallbackListener#resumed()
-     **/
-    public void resumed()
-    {
+     */
+    public void resumed() {
       System.out.println("Resumed");
     }
 
     /**
      * Called when the CPM is stopped abruptly due to errors.
+     * 
      * @see org.apache.uima.collection.processing.StatusCallbackListener#aborted()
-     **/
-    public void aborted()
-    {
+     */
+    public void aborted() {
       System.out.println("Aborted");
-      //stop the JVM.  Otherwise main thread will still be blocked waiting for
-      //user to press Enter.
+      // stop the JVM. Otherwise main thread will still be blocked waiting for
+      // user to press Enter.
       System.exit(1);
     }
 
     /**
-     * Called when the processing of a Document is completed. 
-     * <br>The process status can be looked at and corresponding 
-     * actions taken.
+     * Called when the processing of a Document is completed. <br>
+     * The process status can be looked at and corresponding actions taken.
      * 
-     * @param aCas CAS corresponding to the completed processing
-     * @param aStatus EntityProcessStatus that holds the status of all 
-     * 	the events for aEntity
+     * @param aCas
+     *          CAS corresponding to the completed processing
+     * @param aStatus
+     *          EntityProcessStatus that holds the status of all the events for aEntity
      */
-    public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus)
-    {
-      if (aStatus.isException())
-      {
+    public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
+      if (aStatus.isException()) {
         List exceptions = aStatus.getExceptions();
-        for (int i = 0; i < exceptions.size(); i++)
-        {
+        for (int i = 0; i < exceptions.size(); i++) {
           ((Throwable) exceptions.get(i)).printStackTrace();
         }
         return;
       }
       entityCount++;
       String docText = aCas.getDocumentText();
-      if (docText != null)
-      {
+      if (docText != null) {
         size += docText.length();
       }
     }
   }
 
 }
-

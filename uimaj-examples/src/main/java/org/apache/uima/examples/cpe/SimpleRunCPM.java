@@ -36,42 +36,37 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
 
 /**
- * Main Class that runs the Collection Processing Manager (CPM).  This class 
- * reads descriptor files and initiailizes the following components: 
+ * Main Class that runs the Collection Processing Manager (CPM). This class reads descriptor files
+ * and initiailizes the following components:
  * <ol>
- * <li> CollectionReader  </li>
+ * <li> CollectionReader </li>
  * <li> CasInitializer </li>
  * <li> Text Analysis Engine </li>
  * <li> CAS Consumer </li>
  * </ol>
  * <br>
- * It also registers a callback listener with the CPM, which will print
- * progress and statistics to System.out.
- * <br>
- * Command lines arguments for the run are : 
+ * It also registers a callback listener with the CPM, which will print progress and statistics to
+ * System.out. <br>
+ * Command lines arguments for the run are :
  * <ol>
- * <li> args[0] : CollectionReader descriptor file  </li>
+ * <li> args[0] : CollectionReader descriptor file </li>
  * <li> args[1] : CAS Initializer descriptor file </li>
- * <li> args[2] : CAS Consumer descriptor file.  </li>
+ * <li> args[2] : CAS Consumer descriptor file. </li>
  * <li> args[3] : AnnotationPrinter descriptor file </li>
  * debug mode </li>
  * </ol>
  * <br>
- * Example :
- * <br>
- * java -cp &lt; all jar files needed &gt; 
- * C:\\uima\desc\collection_reader\XMLFileCollectionReader.xml  
- * C:\\uima\desc\cas_initializer\XMLCasInitializer.xml   
- * C:\\uima\desc\PersonTitleAnnotator.xml  
- * C:\\uima\desc\cas_consumer\AnnotationPrinter.xml   
+ * Example : <br>
+ * java -cp &lt; all jar files needed &gt;
+ * C:\\uima\desc\collection_reader\XMLFileCollectionReader.xml
+ * C:\\uima\desc\cas_initializer\XMLCasInitializer.xml C:\\uima\desc\PersonTitleAnnotator.xml
+ * C:\\uima\desc\cas_consumer\AnnotationPrinter.xml
  * 
  * 
  */
-public class SimpleRunCPM extends Thread
-{
+public class SimpleRunCPM extends Thread {
   /**
-   * The Collection Processing Manager instance that coordinates
-   * the processing.
+   * The Collection Processing Manager instance that coordinates the processing.
    */
   private CollectionProcessingManager mCPM;
 
@@ -80,116 +75,114 @@ public class SimpleRunCPM extends Thread
    */
   private long mStartTime;
 
-  /** 
-   * Constructor for the class. 
-   * @param args command line arguments into the program - see class
-   *    description
+  /**
+   * Constructor for the class.
+   * 
+   * @param args
+   *          command line arguments into the program - see class description
    */
-  public SimpleRunCPM(String args[]) throws UIMAException, IOException
-  {
+  public SimpleRunCPM(String args[]) throws UIMAException, IOException {
     mStartTime = System.currentTimeMillis();
 
-    //check command line args      	
-    if (args.length < 4)
-    {
+    // check command line args
+    if (args.length < 4) {
       printUsageMessage();
     }
 
-    //create components from their descriptors
+    // create components from their descriptors
 
-    //Collection Reader
+    // Collection Reader
     System.out.println("Initializing Collection Reader");
     ResourceSpecifier colReaderSpecifier = UIMAFramework.getXMLParser()
-        .parseCollectionReaderDescription(new XMLInputSource(args[0]));
+                    .parseCollectionReaderDescription(new XMLInputSource(args[0]));
     CollectionReader collectionReader = UIMAFramework.produceCollectionReader(colReaderSpecifier);
 
-    //CAS Initializer
+    // CAS Initializer
     System.out.println("Initializing CAS Initializer");
     ResourceSpecifier casIniSpecifier = UIMAFramework.getXMLParser()
-        .parseCasInitializerDescription(new XMLInputSource(args[1]));
+                    .parseCasInitializerDescription(new XMLInputSource(args[1]));
     CasInitializer casIni = UIMAFramework.produceCasInitializer(casIniSpecifier);
-    //plug CAS Initializer into Collection Reader
+    // plug CAS Initializer into Collection Reader
     collectionReader.setCasInitializer(casIni);
 
-    //TAE
+    // TAE
     System.out.println("Initializing AnalysisEngine");
     ResourceSpecifier aeSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-        new XMLInputSource(args[2]));
+                    new XMLInputSource(args[2]));
     AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aeSpecifier);
 
-    //CAS Consumer    
+    // CAS Consumer
     System.out.println("Initializing CAS Consumer");
     ResourceSpecifier consumerSpecifier = UIMAFramework.getXMLParser().parseCasConsumerDescription(
-        new XMLInputSource(args[3]));
+                    new XMLInputSource(args[3]));
     CasConsumer casConsumer = UIMAFramework.produceCasConsumer(consumerSpecifier);
 
     // create a new Collection Processing Manager
     mCPM = UIMAFramework.newCollectionProcessingManager();
 
-    //Register AE and CAS Consumer with the CPM
+    // Register AE and CAS Consumer with the CPM
     mCPM.setAnalysisEngine(ae);
     mCPM.addCasConsumer(casConsumer);
 
-    //Create and register a Status Callback Listener
+    // Create and register a Status Callback Listener
     mCPM.addStatusCallbackListener(new StatusCallbackListenerImpl());
 
-    //Finish setup
+    // Finish setup
     mCPM.setPauseOnException(false);
 
-    //Start Processing (in batches of 10, just for testing purposes)
+    // Start Processing (in batches of 10, just for testing purposes)
     mCPM.process(collectionReader, 10);
   }
 
   /**
    * 
    */
-  private static void printUsageMessage()
-  {
+  private static void printUsageMessage() {
     System.out.println(" Arguments to the program are as follows : \n"
-        + "args[0] : CollectionReader descriptor file \n "
-        + "args[1] : CAS Initializer descriptor file \n " + "args[2] : TAE descriptor file. \n"
-        + "args[3] : CAS Consumer descriptor file");
+                    + "args[0] : CollectionReader descriptor file \n "
+                    + "args[1] : CAS Initializer descriptor file \n "
+                    + "args[2] : TAE descriptor file. \n"
+                    + "args[3] : CAS Consumer descriptor file");
   }
 
   /**
    * main class.
-   * @param args Command line arguments - see class description
+   * 
+   * @param args
+   *          Command line arguments - see class description
    */
-  public static void main(String[] args) throws UIMAException, IOException
-  {
+  public static void main(String[] args) throws UIMAException, IOException {
     new SimpleRunCPM(args);
   }
 
   /**
-   * Callback Listener.  Receives event notifications from CPM.
+   * Callback Listener. Receives event notifications from CPM.
    * 
    * 
    */
-  class StatusCallbackListenerImpl implements StatusCallbackListener
-  {
+  class StatusCallbackListenerImpl implements StatusCallbackListener {
     int entityCount = 0;
 
     long size = 0;
 
-    /** 
+    /**
      * Called when the initialization is completed.
+     * 
      * @see org.apache.uima.collection.processing.StatusCallbackListener#initializationComplete()
-     **/
-    public void initializationComplete()
-    {
+     */
+    public void initializationComplete() {
       System.out.println("CPM Initialization Complete");
     }
 
     /**
-     * Called when the batchProcessing is completed. 
+     * Called when the batchProcessing is completed.
+     * 
      * @see org.apache.uima.collection.processing.StatusCallbackListener#batchProcessComplete()
      * 
-     **/
-    public void batchProcessComplete()
-    {
+     */
+    public void batchProcessComplete() {
       System.out.print("Completed " + entityCount + " documents");
-      if (size > 0)
-      {
+      if (size > 0) {
         System.out.print("; " + size + " characters");
       }
       System.out.println();
@@ -197,15 +190,14 @@ public class SimpleRunCPM extends Thread
       System.out.println("Time Elapsed : " + elapsedTime + " ms ");
     }
 
-    /** 
+    /**
      * Called when the collection processing is completed.
+     * 
      * @see org.apache.uima.collection.processing.StatusCallbackListener#collectionProcessComplete()
-     **/
-    public void collectionProcessComplete()
-    {
+     */
+    public void collectionProcessComplete() {
       System.out.print("Completed " + entityCount + " documents");
-      if (size > 0)
-      {
+      if (size > 0) {
         System.out.print("; " + size + " characters");
       }
       System.out.println();
@@ -215,61 +207,56 @@ public class SimpleRunCPM extends Thread
       System.out.println(mCPM.getPerformanceReport().toString());
     }
 
-    /** 
+    /**
      * Called when the CPM is paused.
+     * 
      * @see org.apache.uima.collection.processing.StatusCallbackListener#paused()
-     **/
-    public void paused()
-    {
+     */
+    public void paused() {
       System.out.println("Paused");
     }
 
-    /** 
+    /**
      * Called when the CPM is resumed after a pause.
+     * 
      * @see org.apache.uima.collection.processing.StatusCallbackListener#resumed()
-     **/
-    public void resumed()
-    {
+     */
+    public void resumed() {
       System.out.println("Resumed");
     }
 
     /**
      * Called when the CPM is stopped abruptly due to errors.
+     * 
      * @see org.apache.uima.collection.processing.StatusCallbackListener#aborted()
-     **/
-    public void aborted()
-    {
+     */
+    public void aborted() {
       System.out.println("Aborted");
     }
 
     /**
-     * Called when the processing of a Document is completed. 
-     * <br>The process status can be looked at and corresponding 
-     * actions taken.
+     * Called when the processing of a Document is completed. <br>
+     * The process status can be looked at and corresponding actions taken.
      * 
-     * @param aCas CAS corresponding to the completed processing
-     * @param aStatus EntityProcessStatus that holds the status of all 
-     * 	the events for aEntity
+     * @param aCas
+     *          CAS corresponding to the completed processing
+     * @param aStatus
+     *          EntityProcessStatus that holds the status of all the events for aEntity
      */
-    public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus)
-    {
-      if (aStatus.isException())
-      {
+    public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
+      if (aStatus.isException()) {
         List exceptions = aStatus.getExceptions();
-        for (int i = 0; i < exceptions.size(); i++)
-        {
+        for (int i = 0; i < exceptions.size(); i++) {
           ((Throwable) exceptions.get(i)).printStackTrace();
         }
         return;
       }
       entityCount++;
       String docText = aCas.getDocumentText();
-      if (docText != null)
-      {
+      if (docText != null) {
         size += docText.length();
       }
     }
   }
 
 }
-

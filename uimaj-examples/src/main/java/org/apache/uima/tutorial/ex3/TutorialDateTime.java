@@ -37,95 +37,82 @@ import org.apache.uima.tutorial.DateTimeAnnot;
 import org.apache.uima.tutorial.TimeAnnot;
 
 /**
- * Simple Date/Time annotator.
- * 
+ * Simple Date/Time annotator. 
  */
-public class TutorialDateTime extends JCasAnnotator_ImplBase
-{
+public class TutorialDateTime extends JCasAnnotator_ImplBase {
 
-  static abstract class Maker
-  {
+  static abstract class Maker {
     abstract Annotation newAnnotation(JCas jcas, int start, int end);
   }
 
   JCas jcas;
+
   String input;
+
   ParsePosition pp = new ParsePosition(0);
 
-  //Static vars holding patterns, and function pointers 
+  // Static vars holding patterns, and function pointers
 
-  // n:nn nn:nn  followed optionally with AM or PM
+  // n:nn nn:nn followed optionally with AM or PM
 
-  // .*?   (any number of arbitrary chars, minimum, not greedy)
-  // \b   followed by a word boundary
-  // [0-2]?  followed by the optionally the first digit, a 0, 1, or 2
-  // \d:[0-6]\d    followed by a digit and the colon char,and minutes
-  // \s*?(AM|PM)?  followed by optional white space (non greedy) and AM or PM
-  static final Pattern hoursMinutesPattern =
-    Pattern.compile(
-      "(?s)\\b([0-2]?\\d:[0-5]\\d\\s*(AM\\W|PM\\W|am\\W|pm\\W)?)");
+  // .*? (any number of arbitrary chars, minimum, not greedy)
+  // \b followed by a word boundary
+  // [0-2]? followed by the optionally the first digit, a 0, 1, or 2
+  // \d:[0-6]\d followed by a digit and the colon char,and minutes
+  // \s*?(AM|PM)? followed by optional white space (non greedy) and AM or PM
+  static final Pattern hoursMinutesPattern = Pattern
+                  .compile("(?s)\\b([0-2]?\\d:[0-5]\\d\\s*(AM\\W|PM\\W|am\\W|pm\\W)?)");
+
   //
-  static final DateFormat dfTimeShort =
-    DateFormat.getTimeInstance(DateFormat.SHORT, Locale.US);
+  static final DateFormat dfTimeShort = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.US);
 
   // .*? (any number of artibrary chars, non greedy
-  // \b  word boundary
-  // [0-1]?  optional first digit
-  // \d      digit of month
+  // \b word boundary
+  // [0-1]? optional first digit
+  // \d digit of month
   // /
-  // [0-3]?  optional day of month 1st digit
-  // \d      
-  // ((/[1-2]\d\d\d)|(/\d\d)|\s)   // year is /nnnn or /nn or missing  
-  static final Pattern numericDatePattern =
-    Pattern.compile(
-      "(?s)\\b([0-1]?\\d/[0-3]?\\d((/[1-2]\\d\\d\\d)|(/\\d\\d))?)\\W");
-  static final DateFormat dfDateShort =
-    DateFormat.getDateInstance(DateFormat.SHORT, Locale.US);
+  // [0-3]? optional day of month 1st digit
+  // \d
+  // ((/[1-2]\d\d\d)|(/\d\d)|\s) // year is /nnnn or /nn or missing
+  static final Pattern numericDatePattern = Pattern
+                  .compile("(?s)\\b([0-1]?\\d/[0-3]?\\d((/[1-2]\\d\\d\\d)|(/\\d\\d))?)\\W");
+
+  static final DateFormat dfDateShort = DateFormat.getDateInstance(DateFormat.SHORT, Locale.US);
 
   // .*? (any number of artibrary chars, non greedy
-  // \b  word boundary
+  // \b word boundary
   // [Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec] Month
-  // \.?  optional period    
+  // \.? optional period
   // \s+
-  // [0-3]?  optional day of month 1st digit
-  // \d      
-  // (((,\s+)?[1-2]\d\d\d\W)|((,\s+)?\d\d\W)|\W)   // year is /nnnn or /nn or missing  
-  static final String shortMonthNames =
-    "(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)";
-  static final Pattern mediumDatePattern =
-    Pattern.compile(
-      "(?s)\\b("
-        + shortMonthNames
-        + "\\.?\\s[0-3]?\\d(((,\\s+)?[1-2]\\d\\d\\d)|((,\\s+)?\\d\\d))?)\\W");
-  static final DateFormat dfDateMedium =
-    DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.US);
+  // [0-3]? optional day of month 1st digit
+  // \d
+  // (((,\s+)?[1-2]\d\d\d\W)|((,\s+)?\d\d\W)|\W) // year is /nnnn or /nn or missing
+  static final String shortMonthNames = "(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)";
 
-  //for long month names, exclude May since it is covered by short month names
-  static final String longMonthNames =
-    "(January|February|March|April|June|July|August|September|October|November|December)";
-  static final Pattern longDatePattern =
-    Pattern.compile(
-      "(?s)\\b("
-        + longMonthNames
-        + "\\s[0-3]?\\d(((,\\s+)?[1-2]\\d\\d\\d)|((,\\s+)?\\d\\d))?)\\W");
-  static final DateFormat dfDateLong =
-    DateFormat.getDateInstance(DateFormat.LONG, Locale.US);
+  static final Pattern mediumDatePattern = Pattern.compile("(?s)\\b(" + shortMonthNames
+                  + "\\.?\\s[0-3]?\\d(((,\\s+)?[1-2]\\d\\d\\d)|((,\\s+)?\\d\\d))?)\\W");
+
+  static final DateFormat dfDateMedium = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.US);
+
+  // for long month names, exclude May since it is covered by short month names
+  static final String longMonthNames = "(January|February|March|April|June|July|August|September|October|November|December)";
+
+  static final Pattern longDatePattern = Pattern.compile("(?s)\\b(" + longMonthNames
+                  + "\\s[0-3]?\\d(((,\\s+)?[1-2]\\d\\d\\d)|((,\\s+)?\\d\\d))?)\\W");
+
+  static final DateFormat dfDateLong = DateFormat.getDateInstance(DateFormat.LONG, Locale.US);
 
   static final NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
 
-  // function pointers for new instances     
-  static final Maker dateAnnotationMaker = new Maker()
-  {
-    Annotation newAnnotation(JCas jcas, int start, int end)
-    {
+  // function pointers for new instances
+  static final Maker dateAnnotationMaker = new Maker() {
+    Annotation newAnnotation(JCas jcas, int start, int end) {
       return new DateAnnot(jcas, start, end);
     }
   };
 
-  static final Maker timeAnnotationMaker = new Maker()
-  {
-    Annotation newAnnotation(JCas jcas, int start, int end)
-    {
+  static final Maker timeAnnotationMaker = new Maker() {
+    Annotation newAnnotation(JCas jcas, int start, int end) {
       return new TimeAnnot(jcas, start, end);
     }
   };
@@ -134,16 +121,14 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase
 
   // PROCESS
   /**
-   * The ResultSpecification controls what gets produced.
-   * For example, to only produce DateAnnotations, change the descriptor for this 
-   * component to specify it outputs only that type.
+   * The ResultSpecification controls what gets produced. For example, to only produce
+   * DateAnnotations, change the descriptor for this component to specify it outputs only that type.
    */
-  public void process(JCas jcas)
-  {
-    this.jcas = jcas;
+  public void process(JCas aJCas) {
+    jcas = aJCas;
     input = jcas.getDocumentText();
 
-    //Create Annotations 
+    // Create Annotations
     ResultSpecification resultSpec = getResultSpecification();
     if (resultSpec.containsType("org.apache.uima.tutorial.TimeAnnot"))
       makeAnnotations(timeAnnotationMaker, hoursMinutesPattern, dfTimeShort);
@@ -155,67 +140,51 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase
       makeAnnotations(dateAnnotationMaker, longDatePattern, dfDateLong);
   }
 
-  //HELPER METHODS
+  // HELPER METHODS
 
-  void makeAnnotations(Maker m, BreakIterator b)
-  {
+  void makeAnnotations(Maker m, BreakIterator b) {
     b.setText(input);
-    for (int end = b.next(), start = b.first();
-      end != BreakIterator.DONE;
-      start = end, end = b.next())
-    {
+    for (int end = b.next(), start = b.first(); end != BreakIterator.DONE; start = end, end = b
+                    .next()) {
 
-      //eliminate all-whitespace tokens
+      // eliminate all-whitespace tokens
       boolean isWhitespace = true;
-      for (int i = start; i < end; i++)
-      {
-        if (!Character.isWhitespace(input.charAt(i)))
-        {
+      for (int i = start; i < end; i++) {
+        if (!Character.isWhitespace(input.charAt(i))) {
           isWhitespace = false;
           break;
         }
       }
-      if (!isWhitespace)
-      {
+      if (!isWhitespace) {
         m.newAnnotation(jcas, start, end).addToIndexes();
       }
     }
   }
 
-  void makeAnnotations(Maker m, Pattern pattern, DateFormat dateFormat)
-  {
+  void makeAnnotations(Maker m, Pattern pattern, DateFormat dateFormat) {
     Matcher matcher = pattern.matcher(input);
     String matched;
-    while (matcher.find())
-    {
+    while (matcher.find()) {
       int start = matcher.start(1);
       matched = fixUpDateTimeStrings(matcher.group(1));
-      DateTimeAnnot dtAnnot =
-        (DateTimeAnnot) m.newAnnotation(jcas, start, matcher.end(1));
+      DateTimeAnnot dtAnnot = (DateTimeAnnot) m.newAnnotation(jcas, start, matcher.end(1));
       pp.setIndex(0);
       Date dtSpec = dateFormat.parse(matched, pp);
-      //System.out.println(dtAnnot.dtSpec);
-      if (dtSpec != null)
-      {
+      // System.out.println(dtAnnot.dtSpec);
+      if (dtSpec != null) {
         dtAnnot.setShortDateString(dfDateShort.format(dtSpec));
       }
       dtAnnot.addToIndexes();
     }
   }
 
-  String fixUpDateTimeStrings(String s)
-  {
+  String fixUpDateTimeStrings(String s) {
     String av; // append value
     pp.setIndex(0);
-    if (-1 < s.indexOf(":"))
-    { //have time string
-      if (s.endsWith("AM")
-        | s.endsWith("PM")
-        | s.endsWith("am")
-        | s.endsWith("pm"))
+    if (-1 < s.indexOf(":")) { // have time string
+      if (s.endsWith("AM") | s.endsWith("PM") | s.endsWith("am") | s.endsWith("pm"))
         return s;
-      else
-      {
+      else {
         int hour = numberFormat.parse(s, pp).intValue();
         if (0 == hour)
           av = " AM";
@@ -228,7 +197,7 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase
     }
 
     // have date string
-    return s + ", " + defaultYear; // in case no year available 		
+    return s + ", " + defaultYear; // in case no year available
   }
 
 }

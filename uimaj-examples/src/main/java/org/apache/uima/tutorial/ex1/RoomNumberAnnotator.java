@@ -27,29 +27,24 @@ import org.apache.uima.jcas.impl.JCas;
 import org.apache.uima.tutorial.RoomNumber;
 
 /**
- * Example annotator that detects room numbers using Java 1.4 regular 
- * expressions.
- * 
- * 
+ * Example annotator that detects room numbers using Java 1.4 regular expressions.
  */
-public class RoomNumberAnnotator extends JCasAnnotator_ImplBase
-{
+public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
   private Pattern mYorktownPattern = Pattern.compile("\\b[0-4]\\d-[0-2]\\d\\d\\b");
+
   private Pattern mHawthornePattern = Pattern.compile("\\b[G1-4][NS]-[A-Z]\\d\\d\\b");
-  
+
   /**
    * @see JCasAnnotator_ImplBase#process(JCas)
    */
-  public void process(JCas aJCas)
-  {
-    //get document text
+  public void process(JCas aJCas) {
+    // get document text
     String docText = aJCas.getDocumentText();
-    //search for Yorktown room numbers
+    // search for Yorktown room numbers
     Matcher matcher = mYorktownPattern.matcher(docText);
     int pos = 0;
-    while (matcher.find(pos))
-    {
-      //found one - creation annotation
+    while (matcher.find(pos)) {
+      // found one - creation annotation
       RoomNumber annotation = new RoomNumber(aJCas);
       annotation.setBegin(matcher.start());
       annotation.setEnd(matcher.end());
@@ -57,19 +52,18 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase
       annotation.addToIndexes();
       pos = matcher.end();
     }
-    //search for Hawthorne room numbers
+    // search for Hawthorne room numbers
     matcher = mHawthornePattern.matcher(docText);
     pos = 0;
-    while (matcher.find(pos))
-    {
-      //found one - creation annotation
+    while (matcher.find(pos)) {
+      // found one - creation annotation
       RoomNumber annotation = new RoomNumber(aJCas);
       annotation.setBegin(matcher.start());
       annotation.setEnd(matcher.end());
       annotation.setBuilding("Hawthorne");
       annotation.addToIndexes();
       pos = matcher.end();
-    }     
+    }
   }
 
 }
