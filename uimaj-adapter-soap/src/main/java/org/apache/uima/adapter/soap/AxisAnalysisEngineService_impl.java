@@ -29,85 +29,59 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.Level;
 
 /**
- * A class used to deploy a {@link AnalysisEngineService} as an Axis (SOAP)
- * service.
+ * A class used to deploy a {@link AnalysisEngineService} as an Axis (SOAP) service.
  */
-public class AxisAnalysisEngineService_impl 
-{
+public class AxisAnalysisEngineService_impl {
+  /**
+   * Class that will actually implement functionality for this service.
+   */
+  private AnalysisEngineService_impl mServiceImpl;
   
-    
-    
-
   /**
    * Constructor, responsible for initializing the service.
    */
-  public AxisAnalysisEngineService_impl() throws AxisFault
-  {
-    mServiceImpl = (AnalysisEngineService_impl)
-      AxisResourceServiceManager.getServiceImpl(
-        AnalysisEngineService_impl.class);
-  }  
+  public AxisAnalysisEngineService_impl() throws AxisFault {
+    mServiceImpl = (AnalysisEngineService_impl) AxisResourceServiceManager
+                    .getServiceImpl(AnalysisEngineService_impl.class);
+  }
 
   /**
    * Gets metadata for this Resource service.
    * 
    * @param metadata
    */
-  public ResourceMetaData getMetaData()
-    throws ResourceServiceException
-  {
-    try
-    {
+  public ResourceMetaData getMetaData() throws ResourceServiceException {
+    try {
       return mServiceImpl.getMetaData();
-    }
-    catch(ResourceServiceException e)
-    {
-      UIMAFramework.getLogger().log(Level.SEVERE,
-          e.getMessage(), e);
+    } catch (ResourceServiceException e) {
+      UIMAFramework.getLogger().log(Level.SEVERE, e.getMessage(), e);
+      throw e;
+    } catch (RuntimeException e) {
+      UIMAFramework.getLogger().log(Level.SEVERE, e.getMessage(), e);
       throw e;
     }
-    catch(RuntimeException e)
-    {
-      UIMAFramework.getLogger().log(Level.SEVERE,
-          e.getMessage(), e);
-      throw e;      
-    }    
-  } 
-  
+  }
+
   /**
    * Processes an entity.
    * 
-   * @param aData data to be processed
-   * @param aResultSpec specifies which results the Analysis Engine should
-   *   produce
+   * @param aData
+   *          data to be processed
+   * @param aResultSpec
+   *          specifies which results the Analysis Engine should produce
    * 
    * @return the results of analysis
    */
-  public ServiceDataCargo process(
-    ServiceDataCargo aData, ResultSpecification aResultSpec)
-    throws ResourceServiceException
-  {
-    try
-    {
-      return mServiceImpl.process(aData,aResultSpec);
-    }
-    catch(ResourceServiceException e)
-    {
-      UIMAFramework.getLogger().log(Level.SEVERE,
-          e.getMessage(), e);
+  public ServiceDataCargo process(ServiceDataCargo aData, ResultSpecification aResultSpec)
+                  throws ResourceServiceException {
+    try {
+      return mServiceImpl.process(aData, aResultSpec);
+    } catch (ResourceServiceException e) {
+      UIMAFramework.getLogger().log(Level.SEVERE, e.getMessage(), e);
+      throw e;
+    } catch (RuntimeException e) {
+      UIMAFramework.getLogger().log(Level.SEVERE, e.getMessage(), e);
       throw e;
     }
-    catch(RuntimeException e)
-    {
-      UIMAFramework.getLogger().log(Level.SEVERE,
-          e.getMessage(), e);
-      throw e;      
-    }
-  }       
-  
-  /**
-   * Class that will actually implement functionality for this service.
-   */
-  private AnalysisEngineService_impl mServiceImpl;
+  }
 }
-

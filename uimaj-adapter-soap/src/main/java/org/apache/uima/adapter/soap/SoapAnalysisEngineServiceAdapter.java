@@ -34,50 +34,44 @@ import org.apache.uima.resource.URISpecifier;
  * 
  * 
  */
-public class SoapAnalysisEngineServiceAdapter extends AnalysisEngineServiceAdapter
-{
+public class SoapAnalysisEngineServiceAdapter extends AnalysisEngineServiceAdapter {
 
   /**
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-      throws ResourceInitializationException
-  {
-    //aSpecifier must be a URISpecifier using the SOAP protocol
-    if (!(aSpecifier instanceof URISpecifier))
-    {
+                  throws ResourceInitializationException {
+    // aSpecifier must be a URISpecifier using the SOAP protocol
+    if (!(aSpecifier instanceof URISpecifier)) {
       return false;
     }
     URISpecifier uriSpec = (URISpecifier) aSpecifier;
     if (!uriSpec.getProtocol().equals(Constants.PROTOCOL_SOAP)
-        && !uriSpec.getProtocol().equals(Constants.PROTOCOL_SOAP_WITH_ATTACHMENTS))
-    {
+                    && !uriSpec.getProtocol().equals(Constants.PROTOCOL_SOAP_WITH_ATTACHMENTS)) {
       return false;
     }
-    //resource type must be null or AnalysisEngine
+    // resource type must be null or AnalysisEngine
     if (uriSpec.getResourceType() != null
-        && !uriSpec.getResourceType().equals(URISpecifier.RESOURCE_TYPE_ANALYSIS_ENGINE))
-    {
+                    && !uriSpec.getResourceType()
+                                    .equals(URISpecifier.RESOURCE_TYPE_ANALYSIS_ENGINE)) {
       return false;
     }
 
-    try
-    {
-      //create proxy to service
+    try {
+      // create proxy to service
       AnalysisEngineServiceStub stub = new AxisAnalysisEngineServiceStub(uriSpec.getUri(), uriSpec
-          .getTimeout(), uriSpec.getProtocol().equals(Constants.PROTOCOL_SOAP_WITH_ATTACHMENTS));
+                      .getTimeout(), uriSpec.getProtocol().equals(
+                      Constants.PROTOCOL_SOAP_WITH_ATTACHMENTS));
       setStub(stub);
 
-      //finish initialization.  This requires access to metadata, so must be called
-      //after we create the stub
+      // finish initialization. This requires access to metadata, so must be called
+      // after we create the stub
       super.initialize(aSpecifier, aAdditionalParams);
 
       return true;
-    }
-    catch (MalformedURLException e)
-    {
+    } catch (MalformedURLException e) {
       throw new ResourceInitializationException(ResourceInitializationException.MALFORMED_URL,
-          new Object[] { uriSpec.getUri(), uriSpec.getSourceUrlString() }, e);
+                      new Object[] { uriSpec.getUri(), uriSpec.getSourceUrlString() }, e);
     }
   }
 }

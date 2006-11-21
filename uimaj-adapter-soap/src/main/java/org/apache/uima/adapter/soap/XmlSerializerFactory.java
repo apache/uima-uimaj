@@ -30,43 +30,35 @@ import org.apache.axis.encoding.SerializerFactory;
 import org.apache.uima.adapter.soap.axis11.XmlSerializer_Axis11;
 
 /**
- * An AxisSerializer factory that constructs instances of 
- * {@link XmlSerializer}.  
+ * An AxisSerializer factory that constructs instances of {@link XmlSerializer}.
  * 
  * 
  */
 public class XmlSerializerFactory implements SerializerFactory {
+
+  private static final long serialVersionUID = -6341240975976459158L;
   
-      
+  private Vector mechanisms;
 
-    private Vector mechanisms;
+  public Serializer getSerializerAs(String mechanismType) {
+    // There is a binary incompatibility between Axis v1.1 and
+    // Axis v1.2 in the serializer/deserializer libraries.
+    // So that UIMA can support both Axis versions, we have different
+    // versions of each of our serializer classes. Here we check the
+    // Axis version number and return an insance of the correct class.
+    String ver = Version.getVersion();
+    if (ver.startsWith("Apache Axis version: 1.1")) {
+      return new XmlSerializer_Axis11();
+    } else {
+      return new XmlSerializer();
+    }
+  }
 
-    public XmlSerializerFactory() 
-    {
+  public Iterator getSupportedMechanismTypes() {
+    if (mechanisms == null) {
+      mechanisms = new Vector();
+      mechanisms.add(Constants.AXIS_SAX);
     }
-    
-    public Serializer getSerializerAs(String mechanismType) {
-      //There is a binary incompatibility between Axis v1.1 and
-      //Axis v1.2 in the serializer/deserializer libraries.
-      //So that UIMA can support both Axis versions, we have different
-      //versions of each of our serializer classes.  Here we check the
-      //Axis version number and return an insance of the correct class.
-      String ver = Version.getVersion();
-      if (ver.startsWith("Apache Axis version: 1.1"))
-      {
-        return new XmlSerializer_Axis11();
-      }
-      else
-      {
-        return new XmlSerializer();        
-      }
-    }
-    
-    public Iterator getSupportedMechanismTypes() {
-        if (mechanisms == null) {
-            mechanisms = new Vector();
-            mechanisms.add(Constants.AXIS_SAX);
-        }
-        return mechanisms.iterator();
-    }
+    return mechanisms.iterator();
+  }
 }

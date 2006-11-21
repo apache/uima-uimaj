@@ -28,42 +28,35 @@ import org.apache.axis.encoding.DeserializerFactory;
 import org.apache.uima.adapter.soap.axis11.BinaryDeserializer_Axis11;
 
 /**
- * An Axis deserializer factory that constructs instances of 
- * {@link BinaryDeserializer}.  
+ * An Axis deserializer factory that constructs instances of {@link BinaryDeserializer}.
  * 
  * 
  */
 public class BinaryDeserializerFactory implements DeserializerFactory {
+
+  private static final long serialVersionUID = 9029965561439924991L;
   
-      
+  private Vector mechanisms;
 
-    private Vector mechanisms;
+  public javax.xml.rpc.encoding.Deserializer getDeserializerAs(String mechanismType) {
+    // There is a binary incompatibility between Axis v1.1 and
+    // Axis v1.2 in the serializer/deserializer libraries.
+    // So that UIMA can support both Axis versions, we have different
+    // versions of each of our serializer classes. Here we check the
+    // Axis version number and return an insance of the correct class.
+    String ver = Version.getVersion();
+    if (ver.startsWith("Apache Axis version: 1.1")) {
+      return new BinaryDeserializer_Axis11();
+    } else {
+      return new BinaryDeserializer();
+    }
+  }
 
-    public BinaryDeserializerFactory() {
+  public Iterator getSupportedMechanismTypes() {
+    if (mechanisms == null) {
+      mechanisms = new Vector();
+      mechanisms.add(Constants.AXIS_SAX);
     }
-
-    public javax.xml.rpc.encoding.Deserializer getDeserializerAs(String mechanismType) {
-      //There is a binary incompatibility between Axis v1.1 and
-      //Axis v1.2 in the serializer/deserializer libraries.
-      //So that UIMA can support both Axis versions, we have different
-      //versions of each of our serializer classes.  Here we check the
-      //Axis version number and return an insance of the correct class.
-      String ver = Version.getVersion();
-      if (ver.startsWith("Apache Axis version: 1.1"))
-      {
-        return new BinaryDeserializer_Axis11();
-      }
-      else
-      {
-        return new BinaryDeserializer();                
-      }  
-    }
-    
-    public Iterator getSupportedMechanismTypes() {
-        if (mechanisms == null) {
-            mechanisms = new Vector();
-            mechanisms.add(Constants.AXIS_SAX);
-        }
-        return mechanisms.iterator();
-    }
+    return mechanisms.iterator();
+  }
 }

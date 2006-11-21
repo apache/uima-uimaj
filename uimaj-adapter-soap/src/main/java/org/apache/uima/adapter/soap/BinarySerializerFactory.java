@@ -30,51 +30,43 @@ import org.apache.axis.encoding.SerializerFactory;
 import org.apache.uima.adapter.soap.axis11.BinarySerializer_Axis11;
 
 /**
- * An Axis serializer factory that constructs instances of 
- * {@link BinarySerializer}.  
+ * An Axis serializer factory that constructs instances of {@link BinarySerializer}.
  * 
  * 
  */
 public class BinarySerializerFactory implements SerializerFactory {
-  
-      
 
-    private Vector mechanisms;
-    
-    private boolean mUseAttachments;
+  private Vector mechanisms;
 
-    public BinarySerializerFactory() 
-    {
-      this(true);
+  private boolean mUseAttachments;
+
+  public BinarySerializerFactory() {
+    this(true);
+  }
+
+  public BinarySerializerFactory(boolean aUseAttachments) {
+    mUseAttachments = aUseAttachments;
+  }
+
+  public Serializer getSerializerAs(String mechanismType) {
+    // There is a binary incompatibility between Axis v1.1 and
+    // Axis v1.2 in the serializer/deserializer libraries.
+    // So that UIMA can support both Axis versions, we have different
+    // versions of each of our serializer classes. Here we check the
+    // Axis version number and return an insance of the correct class.
+    String ver = Version.getVersion();
+    if (ver.startsWith("Apache Axis version: 1.1")) {
+      return new BinarySerializer_Axis11();
+    } else {
+      return new BinarySerializer();
     }
-    
-    public BinarySerializerFactory(boolean aUseAttachments) 
-    {
-      mUseAttachments = aUseAttachments;
+  }
+
+  public Iterator getSupportedMechanismTypes() {
+    if (mechanisms == null) {
+      mechanisms = new Vector();
+      mechanisms.add(Constants.AXIS_SAX);
     }
-    
-    public Serializer getSerializerAs(String mechanismType) {
-      //There is a binary incompatibility between Axis v1.1 and
-      //Axis v1.2 in the serializer/deserializer libraries.
-      //So that UIMA can support both Axis versions, we have different
-      //versions of each of our serializer classes.  Here we check the
-      //Axis version number and return an insance of the correct class.
-      String ver = Version.getVersion();
-      if (ver.startsWith("Apache Axis version: 1.1"))
-      {
-        return new BinarySerializer_Axis11();
-      }
-      else
-      {
-        return new BinarySerializer();        
-      }
-    }
-    
-    public Iterator getSupportedMechanismTypes() {
-        if (mechanisms == null) {
-            mechanisms = new Vector();
-            mechanisms.add(Constants.AXIS_SAX);
-        }
-        return mechanisms.iterator();
-    }
+    return mechanisms.iterator();
+  }
 }

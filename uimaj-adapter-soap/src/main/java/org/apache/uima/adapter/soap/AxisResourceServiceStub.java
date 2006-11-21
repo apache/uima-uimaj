@@ -32,97 +32,80 @@ import org.apache.uima.resource.ResourceServiceStub;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 
 /**
- * Proxy to a {@link ResourceService} that uses Axis SOAP to 
- * communicate with the service.
+ * Proxy to a {@link ResourceService} that uses Axis SOAP to communicate with the service.
  * 
  * 
  */
-public abstract class AxisResourceServiceStub implements ResourceServiceStub
-{  
+public abstract class AxisResourceServiceStub implements ResourceServiceStub {
+
+  /**
+   * The service endpoint URL.
+   */
+  private URL mEndpoint;
+
+  /**
+   * Timeout in milliseconds; null to use Axis's default value.
+   */
+  private Integer mTimeout;
   
-      
-
-
   /**
    * Sets the endpoint of the service with which this proxy communicates.
    * 
-   * @param aEndpoint the service endpoint URI
-   * @param aTimeout timeout period in milliseconds, or null to use
-   *    Axis's default value
+   * @param aEndpoint
+   *          the service endpoint URI
+   * @param aTimeout
+   *          timeout period in milliseconds, or null to use Axis's default value
    * 
-   * @throws MalformedURLException if <code>aEndpoint</code> is not a valid URL
+   * @throws MalformedURLException
+   *           if <code>aEndpoint</code> is not a valid URL
    */
-  public AxisResourceServiceStub(String aEndpoint, Integer aTimeout)
-    throws MalformedURLException
-  {
+  public AxisResourceServiceStub(String aEndpoint, Integer aTimeout) throws MalformedURLException {
     mEndpoint = new URL(aEndpoint);
-    mTimeout = aTimeout; 
+    mTimeout = aTimeout;
   }
 
   /**
    * @see org.apache.uima.resource.service.ResourceService#getMetaData()
    */
-  public ResourceMetaData callGetMetaData()
-    throws ResourceServiceException
-  {
-    final QName operationQName = 
-        new QName("http://uima.apache.org/resource", "getMetaData");
-    final QName resourceMetaDataTypeQName =
-        new QName("http://uima.apache.org/resourceSpecifier","resourceMetaData");     
+  public ResourceMetaData callGetMetaData() throws ResourceServiceException {
+    final QName operationQName = new QName("http://uima.apache.org/resource", "getMetaData");
+    final QName resourceMetaDataTypeQName = new QName("http://uima.apache.org/resourceSpecifier",
+                    "resourceMetaData");
 
-    try
-    {
-      Service  service = new Service();
-      Call     call    = (Call) service.createCall();
+    try {
+      Service service = new Service();
+      Call call = (Call) service.createCall();
       call.setTimeout(getTimeout());
       call.setTargetEndpointAddress(mEndpoint);
       call.setOperationName(operationQName);
 
-      call.registerTypeMapping(ResourceMetaData.class, resourceMetaDataTypeQName, 
-        new XmlSerializerFactory(), new XmlDeserializerFactory());
- 
-      return (ResourceMetaData)call.invoke(new Object[0]);
-    }
-    catch(ServiceException e)
-    {
-      throw new ResourceServiceException(e);
-    }   
-    catch(java.rmi.RemoteException e)
-    {
-      throw new ResourceServiceException(e);
-    }    
-  }
+      call.registerTypeMapping(ResourceMetaData.class, resourceMetaDataTypeQName,
+                      new XmlSerializerFactory(), new XmlDeserializerFactory());
 
+      return (ResourceMetaData) call.invoke(new Object[0]);
+    } catch (ServiceException e) {
+      throw new ResourceServiceException(e);
+    } catch (java.rmi.RemoteException e) {
+      throw new ResourceServiceException(e);
+    }
+  }
 
   /**
    * Gets the service endpoint URL.
    * 
-   * @return the service endpoint URL 
+   * @return the service endpoint URL
    */
-  public URL getServiceEndpoint()
-  {
+  public URL getServiceEndpoint() {
     return mEndpoint;
   }
-  
+
   /**
    * Gets the timeout period.
    * 
-   * @return the timeout period in milliseconds.  Null indicates that
-   *    Axis's default value will be used. 
+   * @return the timeout period in milliseconds. Null indicates that Axis's default value will be
+   *         used.
    */
-  public Integer getTimeout()
-  {
+  public Integer getTimeout() {
     return mTimeout;
   }
-  
-
-  /**
-   * The service endpoint URL. 
-   */
-  private URL mEndpoint;
-  
-  /**
-   * Timeout in milliseconds; null to use Axis's default value. 
-   */
-  private Integer mTimeout;
 }
