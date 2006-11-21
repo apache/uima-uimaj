@@ -30,10 +30,11 @@ import org.apache.uima.impl.ChildUimaContext_impl;
 /**
  * Implementation of FlowControllerContext.
  */
-public class FlowControllerContext_impl extends ChildUimaContext_impl implements FlowControllerContext
-{
+public class FlowControllerContext_impl extends ChildUimaContext_impl implements
+                FlowControllerContext {
 
   private Map mAnalysisEngineMetaDataMap;
+
   private AnalysisEngineMetaData mAggregateMetadata;
 
   /**
@@ -42,30 +43,32 @@ public class FlowControllerContext_impl extends ChildUimaContext_impl implements
    * @param aSofaMappings
    */
   public FlowControllerContext_impl(UimaContextAdmin aParentContext, String aContextName,
-      Map aSofaMappings, Map aAnalysisEngineMetaDataMap, 
-      AnalysisEngineMetaData aAggregateMetadata)
-  {
+                  Map aSofaMappings, Map aAnalysisEngineMetaDataMap,
+                  AnalysisEngineMetaData aAggregateMetadata) {
     super(aParentContext, aContextName, aSofaMappings);
     mAnalysisEngineMetaDataMap = aAnalysisEngineMetaDataMap;
     mAggregateMetadata = aAggregateMetadata;
-    
-    //add our MBean to the tree
-    ((AnalysisEngineManagementImpl)aParentContext.getManagementInterface()).addComponent(aContextName, this.mMBean);
+
+    // add our MBean to the tree
+    ((AnalysisEngineManagementImpl) aParentContext.getManagementInterface()).addComponent(
+                    aContextName, this.mMBean);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.flow.FlowControllerContext#getAnalysisEngineMetaDataMap()
    */
-  public Map getAnalysisEngineMetaDataMap()
-  {
+  public Map getAnalysisEngineMetaDataMap() {
     return mAnalysisEngineMetaDataMap;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.flow.FlowControllerContext#getAggregateMetadata()
    */
-  public AnalysisEngineMetaData getAggregateMetadata()
-  {
+  public AnalysisEngineMetaData getAggregateMetadata() {
     return mAggregateMetadata;
-  }    
+  }
 }

@@ -19,7 +19,6 @@
 
 package org.apache.uima.resource.metadata;
 
-
 /**
  * Represents an allowed value for an "enumerated" type.
  * 
@@ -27,9 +26,8 @@ package org.apache.uima.resource.metadata;
  * 
  * 
  */
-public interface AllowedValue extends MetaDataObject
-{
-  
+public interface AllowedValue extends MetaDataObject {
+
   /**
    * Gets the allowed value.
    * 
@@ -37,14 +35,13 @@ public interface AllowedValue extends MetaDataObject
    */
   public String getString();
 
-
   /**
    * Sets the allowed value.
    * 
-   * @param aString the allowed value string
+   * @param aString
+   *          the allowed value string
    */
   public void setString(String aString);
-
 
   /**
    * Gets the verbose description of this allowed value.
@@ -53,11 +50,11 @@ public interface AllowedValue extends MetaDataObject
    */
   public String getDescription();
 
-
   /**
    * Sets the verbose description of this allowed value.
    * 
-   * @param aDescription the description of this allowed value
+   * @param aDescription
+   *          the description of this allowed value
    */
   public void setDescription(String aDescription);
 }

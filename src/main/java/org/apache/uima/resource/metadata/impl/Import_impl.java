@@ -36,8 +36,7 @@ import org.apache.uima.util.XMLParser;
  * 
  * 
  */
-public class Import_impl extends MetaDataObject_impl implements Import
-{
+public class Import_impl extends MetaDataObject_impl implements Import {
   /**
    * 
    */
@@ -47,136 +46,121 @@ public class Import_impl extends MetaDataObject_impl implements Import
 
   private String mLocation;
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.Import#getName()
    */
-  public String getName()
-  {
+  public String getName() {
     return mName;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.Import#setName(java.lang.String)
    */
-  public void setName(String aName)
-  {
-  	mName = aName;
+  public void setName(String aName) {
+    mName = aName;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.Import#getLocation()
    */
-  public String getLocation()
-  {
-  	return mLocation;
+  public String getLocation() {
+    return mLocation;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.Import#setLocation(java.lang.String)
    */
-  public void setLocation(String aUri)
-  {
-  	mLocation = aUri;
+  public void setLocation(String aUri) {
+    mLocation = aUri;
   }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.resource.metadata.Import#findAbsoluteUrl(org.apache.uima.resource.ResourceManager)
-	 */
-	public URL findAbsoluteUrl(ResourceManager aResourceManager)
-	  throws InvalidXMLException 
-	{
-		if (getLocation() != null)
-		{	
-			try
-			{
-				return new URL(this.getRelativePathBase(),getLocation());
-			}
-			catch (MalformedURLException e)
-			{
-				throw new InvalidXMLException(InvalidXMLException.MALFORMED_IMPORT_URL,
-				  new Object[]{getLocation(), getSourceUrlString()},e);
-			}
-		}
-		else if (getName() != null)
-		{
-			String filename = getName().replace('.','/') + ".xml";
-			URL url;
-			try
-			{
-				url = aResourceManager.resolveRelativePath(filename);
-			}
-			catch (MalformedURLException e)
-			{
-				throw new InvalidXMLException(InvalidXMLException.IMPORT_BY_NAME_TARGET_NOT_FOUND,
-					new Object[]{getName(), getSourceUrlString()},e);
-			}
-			if (url == null)
-			{
-				throw new InvalidXMLException(InvalidXMLException.IMPORT_BY_NAME_TARGET_NOT_FOUND,
-					new Object[]{getName(), getSourceUrlString()});
-			}
-			return url;
-		}
-		else
-		{
-			//no name or location -- this should be caught at XML parse time but we still need to
-			//check here in case object was modified or was created progrmatically.
-			throw new InvalidXMLException(InvalidXMLException.IMPORT_MUST_HAVE_NAME_XOR_LOCATION, 
-                new Object[]{getSourceUrlString()});
-		}	    
-	}
-	
-	/**
-	 * Overridden to provide custom XML representation.
-	 * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element, org.apache.uima.util.XMLParser)
-	 */
-	public void buildFromXMLElement(Element aElement, XMLParser aParser, XMLParser.ParsingOptions aOptions)
-		throws InvalidXMLException
-	{
-		String name = aElement.getAttribute("name");
-		setName(name.length() == 0 ? null : name);
-		String location = aElement.getAttribute("location");
-		setLocation(location.length() == 0 ? null : location);
-		
-		//validate that at exactly one of name or location is specified
-		if (!((getName() == null) ^ (getLocation() == null)))
-		{
-			throw new InvalidXMLException(InvalidXMLException.IMPORT_MUST_HAVE_NAME_XOR_LOCATION, new Object[0]);
-		}
-	}
-  
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.metadata.Import#findAbsoluteUrl(org.apache.uima.resource.ResourceManager)
+   */
+  public URL findAbsoluteUrl(ResourceManager aResourceManager) throws InvalidXMLException {
+    if (getLocation() != null) {
+      try {
+        return new URL(this.getRelativePathBase(), getLocation());
+      } catch (MalformedURLException e) {
+        throw new InvalidXMLException(InvalidXMLException.MALFORMED_IMPORT_URL, new Object[] {
+            getLocation(), getSourceUrlString() }, e);
+      }
+    } else if (getName() != null) {
+      String filename = getName().replace('.', '/') + ".xml";
+      URL url;
+      try {
+        url = aResourceManager.resolveRelativePath(filename);
+      } catch (MalformedURLException e) {
+        throw new InvalidXMLException(InvalidXMLException.IMPORT_BY_NAME_TARGET_NOT_FOUND,
+                        new Object[] { getName(), getSourceUrlString() }, e);
+      }
+      if (url == null) {
+        throw new InvalidXMLException(InvalidXMLException.IMPORT_BY_NAME_TARGET_NOT_FOUND,
+                        new Object[] { getName(), getSourceUrlString() });
+      }
+      return url;
+    } else {
+      // no name or location -- this should be caught at XML parse time but we still need to
+      // check here in case object was modified or was created progrmatically.
+      throw new InvalidXMLException(InvalidXMLException.IMPORT_MUST_HAVE_NAME_XOR_LOCATION,
+                      new Object[] { getSourceUrlString() });
+    }
+  }
 
-	/**
-	 * Overridden to provide custom XML representation.
-	 * @see org.apache.uima.util.XMLizable#toXML(ContentHandler)
-	 */
-	public void toXML(ContentHandler aContentHandler, 
-		boolean aWriteDefaultNamespaceAttribute)
-		throws SAXException
-	{
-		AttributesImpl attrs = new AttributesImpl();
-		if (getName() != null)
-		{
-		  attrs.addAttribute("","name","name",null, getName());
-		}
-		if (getLocation() != null)
-		{
-		  attrs.addAttribute("","location","location",null, getLocation());
-		}  
-		aContentHandler.startElement(getXmlizationInfo().namespace,
-					"import","import",attrs);
-		aContentHandler.endElement(getXmlizationInfo().namespace,
-				"import","import");
-	}
-	
+  /**
+   * Overridden to provide custom XML representation.
+   * 
+   * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element,
+   *      org.apache.uima.util.XMLParser)
+   */
+  public void buildFromXMLElement(Element aElement, XMLParser aParser,
+                  XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
+    String name = aElement.getAttribute("name");
+    setName(name.length() == 0 ? null : name);
+    String location = aElement.getAttribute("location");
+    setLocation(location.length() == 0 ? null : location);
 
-	/**
-	 * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXmlizationInfo()
-	 */
-	protected XmlizationInfo getXmlizationInfo()
-	{
-		return new XmlizationInfo(null, null);
-		//this object has custom XMLization routines
-	}
+    // validate that at exactly one of name or location is specified
+    if (!((getName() == null) ^ (getLocation() == null))) {
+      throw new InvalidXMLException(InvalidXMLException.IMPORT_MUST_HAVE_NAME_XOR_LOCATION,
+                      new Object[0]);
+    }
+  }
+
+  /**
+   * Overridden to provide custom XML representation.
+   * 
+   * @see org.apache.uima.util.XMLizable#toXML(ContentHandler)
+   */
+  public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
+                  throws SAXException {
+    AttributesImpl attrs = new AttributesImpl();
+    if (getName() != null) {
+      attrs.addAttribute("", "name", "name", null, getName());
+    }
+    if (getLocation() != null) {
+      attrs.addAttribute("", "location", "location", null, getLocation());
+    }
+    aContentHandler.startElement(getXmlizationInfo().namespace, "import", "import", attrs);
+    aContentHandler.endElement(getXmlizationInfo().namespace, "import", "import");
+  }
+
+  /**
+   * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXmlizationInfo()
+   */
+  protected XmlizationInfo getXmlizationInfo() {
+    return new XmlizationInfo(null, null);
+    // this object has custom XMLization routines
+  }
 
 }

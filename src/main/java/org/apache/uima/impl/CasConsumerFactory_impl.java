@@ -37,129 +37,105 @@ import org.apache.uima.uimacpp.UimacppAnalysisEngine;
  * 
  * 
  */
-public class CasConsumerFactory_impl implements ResourceFactory
-{
+public class CasConsumerFactory_impl implements ResourceFactory {
 
   /**
-   * @see org.apache.uima.ResourceFactory#produceResource(java.lang.Class, org.apache.uima.resource.ResourceSpecifier, java.util.Map)
+   * @see org.apache.uima.ResourceFactory#produceResource(java.lang.Class,
+   *      org.apache.uima.resource.ResourceSpecifier, java.util.Map)
    */
   public Resource produceResource(Class aResourceClass, ResourceSpecifier aSpecifier,
-      Map aAdditionalParams) throws ResourceInitializationException
-  {
-    if (aSpecifier instanceof CasConsumerDescription)
-    {
+                  Map aAdditionalParams) throws ResourceInitializationException {
+    if (aSpecifier instanceof CasConsumerDescription) {
       CasConsumerDescription desc = (CasConsumerDescription) aSpecifier;
       final String fwImpl = desc.getFrameworkImplementation();
-      if (fwImpl.startsWith("org.apache.uima.java") || fwImpl.startsWith("JEDII"))
-      {
+      if (fwImpl.startsWith("org.apache.uima.java") || fwImpl.startsWith("JEDII")) {
         String className = desc.getImplementationName();
-        if (className == null || className.length() == 0)
-        {
+        if (className == null || className.length() == 0) {
           throw new ResourceInitializationException(
-              ResourceInitializationException.MISSING_IMPLEMENTATION_CLASS_NAME,
-              new Object[] { aSpecifier.getSourceUrlString() });
+                          ResourceInitializationException.MISSING_IMPLEMENTATION_CLASS_NAME,
+                          new Object[] { aSpecifier.getSourceUrlString() });
         }
 
-        //load class using UIMA Extension ClassLoader if there is one
+        // load class using UIMA Extension ClassLoader if there is one
         ClassLoader cl = null;
         Class implClass = null;
         ResourceManager resourceManager = null;
-        if (aAdditionalParams != null)
-        {
+        if (aAdditionalParams != null) {
           resourceManager = (ResourceManager) aAdditionalParams
-              .get(Resource.PARAM_RESOURCE_MANAGER);
+                          .get(Resource.PARAM_RESOURCE_MANAGER);
         }
-        if (resourceManager != null)
-        {
+        if (resourceManager != null) {
           cl = resourceManager.getExtensionClassLoader();
         }
-        if (cl == null)
-        {
+        if (cl == null) {
           cl = this.getClass().getClassLoader();
         }
-        try
-        {
+        try {
           implClass = Class.forName(className, true, cl);
-        }
-        catch (ClassNotFoundException e)
-        {
+        } catch (ClassNotFoundException e) {
           throw new ResourceInitializationException(
-              ResourceInitializationException.CLASS_NOT_FOUND, new Object[] { className,
-                  aSpecifier.getSourceUrlString() }, e);
+                          ResourceInitializationException.CLASS_NOT_FOUND, new Object[] {
+                              className, aSpecifier.getSourceUrlString() }, e);
         }
 
-        //check to see if this is a subclass of Cas[Data]Consumer and of aResourceClass
+        // check to see if this is a subclass of Cas[Data]Consumer and of aResourceClass
         if (!CasConsumer.class.isAssignableFrom(implClass)
-            && !CasDataConsumer.class.isAssignableFrom(implClass))
-        {
+                        && !CasDataConsumer.class.isAssignableFrom(implClass)) {
           throw new ResourceInitializationException(
-              ResourceInitializationException.NOT_A_CAS_CONSUMER, new Object[] { className,
-                  aSpecifier.getSourceUrlString() });
+                          ResourceInitializationException.NOT_A_CAS_CONSUMER, new Object[] {
+                              className, aSpecifier.getSourceUrlString() });
         }
-        if (!aResourceClass.isAssignableFrom(implClass))
-        {
+        if (!aResourceClass.isAssignableFrom(implClass)) {
           throw new ResourceInitializationException(
-              ResourceInitializationException.RESOURCE_DOES_NOT_IMPLEMENT_INTERFACE, new Object[] {
-                  className, aResourceClass.getName(), aSpecifier.getSourceUrlString() });
+                          ResourceInitializationException.RESOURCE_DOES_NOT_IMPLEMENT_INTERFACE,
+                          new Object[] { className, aResourceClass.getName(),
+                              aSpecifier.getSourceUrlString() });
         }
 
-        //instantiate this Resource Class
+        // instantiate this Resource Class
         Resource resource;
-        try
-        {
+        try {
           resource = (Resource) implClass.newInstance();
-        }
-        catch (InstantiationException e)
-        {
+        } catch (InstantiationException e) {
           throw new ResourceInitializationException(
-              ResourceInitializationException.COULD_NOT_INSTANTIATE,
-              new Object[] { className, aSpecifier.getSourceUrlString() }, e);
-        }
-        catch (IllegalAccessException e)
-        {
+                          ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
+                              className, aSpecifier.getSourceUrlString() }, e);
+        } catch (IllegalAccessException e) {
           throw new ResourceInitializationException(
-              ResourceInitializationException.COULD_NOT_INSTANTIATE,
-              new Object[] { className, aSpecifier.getSourceUrlString() }, e);
+                          ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
+                              className, aSpecifier.getSourceUrlString() }, e);
         }
-        //attempt to initialize it
-        if (resource.initialize(aSpecifier, aAdditionalParams))
-        {
-          //success!
+        // attempt to initialize it
+        if (resource.initialize(aSpecifier, aAdditionalParams)) {
+          // success!
           return resource;
-        }
-        else
-        //failure, for some unknown reason :(  This isn't likely to happen
+        } else
+        // failure, for some unknown reason :( This isn't likely to happen
         {
           throw new ResourceInitializationException(
-              ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
-                  className, aSpecifier.getSourceUrlString() });
+                          ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR,
+                          new Object[] { className, aSpecifier.getSourceUrlString() });
         }
-      }
-      else if (fwImpl.startsWith("org.apache.uima.cpp") || fwImpl.startsWith("TAF"))
-      {
+      } else if (fwImpl.startsWith("org.apache.uima.cpp") || fwImpl.startsWith("TAF")) {
         Resource resource = new UimacppAnalysisEngineImpl();
-        if (resource.initialize(aSpecifier, aAdditionalParams))
-        {
-          //success!
+        if (resource.initialize(aSpecifier, aAdditionalParams)) {
+          // success!
           return resource;
-        }
-        else
-        //failure, for some unknown reason :(  This isn't likely to happen
+        } else
+        // failure, for some unknown reason :( This isn't likely to happen
         {
           throw new ResourceInitializationException(
-              ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
-                  UimacppAnalysisEngine.class.getName(), aSpecifier.getSourceUrlString() });
+                          ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR,
+                          new Object[] { UimacppAnalysisEngine.class.getName(),
+                              aSpecifier.getSourceUrlString() });
         }
-      }
-      else
-      {
+      } else {
         throw new ResourceInitializationException(
-            ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
-                UimacppAnalysisEngine.class.getName(), aSpecifier.getSourceUrlString() });
+                        ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR,
+                        new Object[] { UimacppAnalysisEngine.class.getName(),
+                            aSpecifier.getSourceUrlString() });
       }
-    }
-    else
-    {
+    } else {
       return null;
     }
   }

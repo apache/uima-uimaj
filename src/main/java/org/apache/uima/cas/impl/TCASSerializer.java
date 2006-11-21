@@ -26,15 +26,15 @@ package org.apache.uima.cas.impl;
  */
 public class TCASSerializer extends CASSerializer {
 
-    public String documentText;
+  public String documentText;
 
-    public String documentLanguage;
+  public String documentLanguage;
 
-    /**
-     * Constructor for TCASSerializer.
-     */
-    public TCASSerializer() {
-        super();
-    }
+  /**
+   * Constructor for TCASSerializer.
+   */
+  public TCASSerializer() {
+    super();
+  }
 
 }

@@ -19,62 +19,61 @@
 
 package org.apache.uima.cas;
 
-
 /**
- * Common parts of the Array interfaces.  
+ * Common parts of the Array interfaces.
  */
 public interface CommonArrayFS extends FeatureStructure {
 
   /**
    * Return the size of the array.
+   * 
    * @return The size of the array.
    */
-	int size(); // Java style.  We can also call this getLength().
-  
+  int size(); // Java style. We can also call this getLength().
+
   /**
    * Creates a new string array and copies this array values into it.
+   * 
    * @return A Java array copy of this array.
    */
-  String [] toStringArray();
-  
+  String[] toStringArray();
+
   /**
    * Copy the contents of the array to an external string array.
    * 
    * @param srcOffset
-   *            The index of the first element to copy.
+   *          The index of the first element to copy.
    * @param dest
-   *            The array to copy to.
+   *          The array to copy to.
    * @param destOffset
-   *            Where to start copying into <code>dest</code>.
+   *          Where to start copying into <code>dest</code>.
    * @param length
-   *            The number of elements to copy.
+   *          The number of elements to copy.
    * @exception ArrayIndexOutOfBoundsException
-   *                If <code>srcOffset &lt; 0</code> or
-   *                <code>length > size()</code> or
-   *                <code>destOffset + length > destArray.length</code>.
+   *              If <code>srcOffset &lt; 0</code> or <code>length > size()</code> or
+   *              <code>destOffset + length > destArray.length</code>.
    */
   void copyToArray(int srcOffset, String[] dest, int destOffset, int length)
-          throws ArrayIndexOutOfBoundsException;
+                  throws ArrayIndexOutOfBoundsException;
 
   /**
-   * Copy the contents of an external string array into this array. The
-   * strings are parsed and converted to floats.
+   * Copy the contents of an external string array into this array. The strings are parsed and
+   * converted to floats.
    * 
    * @param src
-   *            The source array.
+   *          The source array.
    * @param srcOffset
-   *            Where to start copying in the source array.
+   *          Where to start copying in the source array.
    * @param destOffset
-   *            Where to start copying to in the destination array.
+   *          Where to start copying to in the destination array.
    * @param length
-   *            The number of elements to copy.
+   *          The number of elements to copy.
    * @exception ArrayIndexOutOfBoundsException
-   *                When length conditions are not met.
+   *              When length conditions are not met.
    * @exception NumberFormatException
-   *                When the input strings do not represent valid floats.
+   *              When the input strings do not represent valid floats.
    */
   void copyFromArray(String[] src, int srcOffset, int destOffset, int length)
-          throws ArrayIndexOutOfBoundsException, NumberFormatException;
+                  throws ArrayIndexOutOfBoundsException, NumberFormatException;
 
 }
-

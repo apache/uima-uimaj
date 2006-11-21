@@ -30,8 +30,7 @@ import org.apache.uima.search.IndexRule;
  * 
  * 
  */
-public class IndexBuildItem_impl extends MetaDataObject_impl implements IndexBuildItem 
-{
+public class IndexBuildItem_impl extends MetaDataObject_impl implements IndexBuildItem {
   private static final long serialVersionUID = -2034703263819608423L;
 
   private Filter mFilter;
@@ -40,67 +39,71 @@ public class IndexBuildItem_impl extends MetaDataObject_impl implements IndexBui
 
   private String mName;
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.IndexBuildItem#getName()
    */
-  public String getName()
-  {
+  public String getName() {
     return mName;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.IndexBuildItem#setName(java.lang.String)
    */
-  public void setName(String aName)
-  {
+  public void setName(String aName) {
     mName = aName;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.IndexBuildItem#getIndexRule()
    */
-  public IndexRule getIndexRule()
-  {
-  	return mRule;
+  public IndexRule getIndexRule() {
+    return mRule;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.IndexBuildItem#setIndexRule(org.apache.uima.search.IndexRule)
    */
-  public void setIndexRule(IndexRule aRule)
-  {
+  public void setIndexRule(IndexRule aRule) {
     mRule = aRule;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.IndexBuildItem#getFilter()
    */
-  public Filter getFilter()
-  {
+  public Filter getFilter() {
     return mFilter;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.IndexBuildItem#setFilter(org.apache.uima.search.Filter)
    */
-  public void setFilter(Filter aFilter)
-  {
-  	mFilter = aFilter;
+  public void setFilter(Filter aFilter) {
+    mFilter = aFilter;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
    */
-  protected XmlizationInfo getXmlizationInfo()
-  {
+  protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
-  
-	static final private XmlizationInfo XMLIZATION_INFO =
-		new XmlizationInfo("indexBuildItem",
-			new PropertyXmlInfo[]{
-			  new PropertyXmlInfo("name","name"),
-				new PropertyXmlInfo("indexRule",null),
-				new PropertyXmlInfo("filter",null),
-			});  
+
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+                  "indexBuildItem",
+                  new PropertyXmlInfo[] { new PropertyXmlInfo("name", "name"),
+                      new PropertyXmlInfo("indexRule", null), new PropertyXmlInfo("filter", null), });
 }

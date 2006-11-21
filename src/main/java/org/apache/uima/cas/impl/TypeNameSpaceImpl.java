@@ -28,22 +28,20 @@ import org.apache.uima.cas.TypeSystem;
  */
 public class TypeNameSpaceImpl implements TypeNameSpace {
 
-    private String name;
+  private String name;
 
-    private TypeSystemImpl ts;
+  private TypeSystemImpl ts;
 
-    TypeNameSpaceImpl(String name, TypeSystemImpl ts) {
-        this.name = name;
-        this.ts = ts;
-    }
+  TypeNameSpaceImpl(String name, TypeSystemImpl ts) {
+    this.name = name;
+    this.ts = ts;
+  }
 
-    /**
-     * @see org.apache.uima.cas.TypeNameSpace#getType(java.lang.String)
-     */
-    public Type getType(String typeName) {
-        return this.ts.getType(this.name + TypeSystem.NAMESPACE_SEPARATOR
-                + typeName);
-    }
-
+  /**
+   * @see org.apache.uima.cas.TypeNameSpace#getType(java.lang.String)
+   */
+  public Type getType(String typeName) {
+    return this.ts.getType(this.name + TypeSystem.NAMESPACE_SEPARATOR + typeName);
+  }
 
 }

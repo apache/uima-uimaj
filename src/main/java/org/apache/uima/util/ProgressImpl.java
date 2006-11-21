@@ -19,12 +19,11 @@
 
 package org.apache.uima.util;
 
-/** 
+/**
  * 
  * 
  */
-public class ProgressImpl implements Progress, Cloneable
-{
+public class ProgressImpl implements Progress, Cloneable {
   private static final long serialVersionUID = -1436588781274530622L;
 
   private String mUnitType = Progress.BYTES;
@@ -35,75 +34,61 @@ public class ProgressImpl implements Progress, Cloneable
 
   private boolean mApproximate;
 
-  public ProgressImpl(int aCompleted, int aTotal, String aUnit, boolean aApproximate)
-  {
+  public ProgressImpl(int aCompleted, int aTotal, String aUnit, boolean aApproximate) {
     mUnitType = aUnit;
     mCompleted = aCompleted;
     mTotal = aTotal;
     mApproximate = aApproximate;
   }
 
-  public ProgressImpl(int aCompleted, int aTotal, String aUnit)
-  {
+  public ProgressImpl(int aCompleted, int aTotal, String aUnit) {
     this(aCompleted, aTotal, aUnit, false);
   }
 
-  public long getCompleted()
-  {
+  public long getCompleted() {
     return mCompleted;
   }
 
-  public long getTotal()
-  {
+  public long getTotal() {
     return mTotal;
   }
 
-  public String getUnit()
-  {
+  public String getUnit() {
     return mUnitType;
   }
 
-  public void setCompleted(int aCompleted)
-  {
+  public void setCompleted(int aCompleted) {
     mCompleted = aCompleted;
   }
 
-  public void setTotal(int aTotal)
-  {
+  public void setTotal(int aTotal) {
     mTotal = aTotal;
   }
 
-  public boolean isApproximate()
-  {
+  public boolean isApproximate() {
     return mApproximate;
   }
 
-  public void increment(int aIncrement)
-  {
+  public void increment(int aIncrement) {
     mCompleted += aIncrement;
   }
 
-  public Object clone() throws CloneNotSupportedException
-  {
+  public Object clone() throws CloneNotSupportedException {
 
     return super.clone();
   }
 
-  public String toString()
-  {
+  public String toString() {
     StringBuffer buf = new StringBuffer();
     buf.append(getCompleted());
-    if (getTotal() >= 0)
-    {
+    if (getTotal() >= 0) {
       buf.append(" of ").append(getTotal());
     }
     buf.append(" ").append(getUnit());
-    if (isApproximate())
-    {
+    if (isApproximate()) {
       buf.append(" (approximate)");
     }
     return buf.toString();
   }
-
 
 }

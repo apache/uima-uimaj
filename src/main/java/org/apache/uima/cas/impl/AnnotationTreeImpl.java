@@ -29,27 +29,26 @@ import org.apache.uima.cas.text.AnnotationTreeNode;
  */
 public class AnnotationTreeImpl implements AnnotationTree {
 
-    private AnnotationTreeNodeImpl root = null;
+  private AnnotationTreeNodeImpl root = null;
 
-    /**
-     * 
-     */
-    AnnotationTreeImpl() {
-        super();
-    }
+  /**
+   * 
+   */
+  AnnotationTreeImpl() {
+    super();
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.text.AnnotationTree#getRoot()
-     */
-    public AnnotationTreeNode getRoot() {
-        return this.root;
-    }
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.text.AnnotationTree#getRoot()
+   */
+  public AnnotationTreeNode getRoot() {
+    return this.root;
+  }
 
-    void setRoot(AnnotationTreeNodeImpl root) {
-        this.root = root;
-    }
-
+  void setRoot(AnnotationTreeNodeImpl root) {
+    this.root = root;
+  }
 
 }

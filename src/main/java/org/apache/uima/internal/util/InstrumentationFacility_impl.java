@@ -27,69 +27,59 @@ import org.apache.uima.util.ProcessTrace;
  * 
  * 
  */
-public class InstrumentationFacility_impl implements InstrumentationFacility
-{
-  
-     
+public class InstrumentationFacility_impl implements InstrumentationFacility {
 
   /**
    * Creates a new InstrumentationFacility_impl.
    * 
-   * @param aProcessTrace the process trace object in which to record
-   *    instrumentation information.
+   * @param aProcessTrace
+   *          the process trace object in which to record instrumentation information.
    */
-  public InstrumentationFacility_impl(ProcessTrace aProcessTrace)
-  {
+  public InstrumentationFacility_impl(ProcessTrace aProcessTrace) {
     mProcessTrace = aProcessTrace;
   }
-  
+
   /**
-   * @see org.apache.uima.util.InstrumentationFacility#startEvent(java.lang.String, java.lang.String, java.lang.String)
+   * @see org.apache.uima.util.InstrumentationFacility#startEvent(java.lang.String,
+   *      java.lang.String, java.lang.String)
    */
-  public void startEvent(String aComponentName, String aEventType,
-    String aDescription)
-  {
-    if (mProcessTrace != null)
-    {
+  public void startEvent(String aComponentName, String aEventType, String aDescription) {
+    if (mProcessTrace != null) {
       mProcessTrace.startEvent(aComponentName, aEventType, aDescription);
-    }   
+    }
   }
 
   /**
-   * @see org.apache.uima.util.InstrumentationFacility#endEvent(java.lang.String, java.lang.String, java.lang.String)
+   * @see org.apache.uima.util.InstrumentationFacility#endEvent(java.lang.String, java.lang.String,
+   *      java.lang.String)
    */
-  public void endEvent(String aComponentName, String aEventType,
-    String aResultMessage)
-  {
-    if (mProcessTrace != null)
-    {
+  public void endEvent(String aComponentName, String aEventType, String aResultMessage) {
+    if (mProcessTrace != null) {
       mProcessTrace.endEvent(aComponentName, aEventType, aResultMessage);
-    }  
+    }
   }
 
   /**
-   * @see org.apache.uima.util.InstrumentationFacility#addEvent(java.lang.String, java.lang.String, java.lang.String, int, java.lang.String)
+   * @see org.apache.uima.util.InstrumentationFacility#addEvent(java.lang.String, java.lang.String,
+   *      java.lang.String, int, java.lang.String)
    */
-  public void addEvent(String aResourceName, String aType, String aDescription,
-    int aDuration, String aResultMsg)
-  {
-    if (mProcessTrace != null)
-    {
+  public void addEvent(String aResourceName, String aType, String aDescription, int aDuration,
+                  String aResultMsg) {
+    if (mProcessTrace != null) {
       mProcessTrace.addEvent(aResourceName, aType, aDescription, aDuration, aResultMsg);
-    }  
+    }
   }
-  
+
   /**
-   * Sets the process trace object wrapped by this instrumentation facility.
-   * This is not part of the InstrumentationFacility interface.
+   * Sets the process trace object wrapped by this instrumentation facility. This is not part of the
+   * InstrumentationFacility interface.
    */
-  public void setProcessTrace(ProcessTrace aProcessTrace)
-  {
+  public void setProcessTrace(ProcessTrace aProcessTrace) {
     mProcessTrace = aProcessTrace;
   }
 
- /**
-  * The process trace object wrapped by this instrumentation facility.
-  */
+  /**
+   * The process trace object wrapped by this instrumentation facility.
+   */
   private ProcessTrace mProcessTrace;
 }

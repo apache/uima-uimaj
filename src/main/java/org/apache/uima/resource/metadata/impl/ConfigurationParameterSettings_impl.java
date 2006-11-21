@@ -42,54 +42,55 @@ import org.apache.uima.util.XMLParser;
  * 
  * 
  */
-public class ConfigurationParameterSettings_impl
-  extends MetaDataObject_impl
-  implements ConfigurationParameterSettings
-{
-  
+public class ConfigurationParameterSettings_impl extends MetaDataObject_impl implements
+                ConfigurationParameterSettings {
+
+  static final long serialVersionUID = 3476535733588304983L;
+
+  /**
+   * Settings for parameters that are not in any group.
+   */
+  private NameValuePair[] mParameterSettings = new NameValuePair[0];
+
+  /**
+   * Settings for parameters in groups. This HashMap has <code>String</code> keys (the group name)
+   * and <code>NameValuePair[]</code> values (the parmeter names and their values).
+   */
+  private Map mSettingsForGroups = new HashMap();
+
   /**
    * @see org.apache.uima.resource.ConfigurationParameterSettings#getParameterSettings()
    */
-  public NameValuePair[] getParameterSettings()
-  {
+  public NameValuePair[] getParameterSettings() {
     return mParameterSettings;
   }
 
   /**
    * @see org.apache.uima.resource.ConfigurationParameterSettings#setParameterSettings(org.apache.uima.resource.NameValuePair[])
    */
-  public void setParameterSettings(NameValuePair[] aSettings)
-  {
-    if (aSettings == null)
-    {
-      throw new UIMA_IllegalArgumentException(
-          UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-          new Object[]{"null", "aSettings", "setParameterSettings"});            
-    }    
+  public void setParameterSettings(NameValuePair[] aSettings) {
+    if (aSettings == null) {
+      throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+                      new Object[] { "null", "aSettings", "setParameterSettings" });
+    }
     mParameterSettings = aSettings;
   }
 
   /**
    * @see org.apache.uima.resource.ConfigurationParameterSettings#getSettingsForGroups()
    */
-  public Map getSettingsForGroups()
-  {
+  public Map getSettingsForGroups() {
     return mSettingsForGroups;
   }
-
 
   /**
    * @see org.apache.uima.resource.ConfigurationParameterSettings#getParameterValue(java.lang.String)
    */
-  public Object getParameterValue(String aParamName)
-  {
+  public Object getParameterValue(String aParamName) {
     NameValuePair[] nvps = getParameterSettings();
-    if (nvps != null)
-    {
-      for (int i = 0; i < nvps.length; i++)
-      {
-        if (aParamName.equals(nvps[i].getName()))
-        {
+    if (nvps != null) {
+      for (int i = 0; i < nvps.length; i++) {
+        if (aParamName.equals(nvps[i].getName())) {
           return nvps[i].getValue();
         }
       }
@@ -98,266 +99,203 @@ public class ConfigurationParameterSettings_impl
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameterSettings#getParameterValue(java.lang.String, java.lang.String)
+   * @see org.apache.uima.resource.ConfigurationParameterSettings#getParameterValue(java.lang.String,
+   *      java.lang.String)
    */
-  public Object getParameterValue(String aGroupName, String aParamName)
-  {
-    if (aGroupName == null)
-    {
+  public Object getParameterValue(String aGroupName, String aParamName) {
+    if (aGroupName == null) {
       return getParameterValue(aParamName);
-    }
-    else
-    {    
-      NameValuePair[] nvps = (NameValuePair[])mSettingsForGroups.get(aGroupName);
-      if (nvps != null)
-      {
-        for (int i = 0; i < nvps.length; i++)
-        {
-          if (aParamName.equals(nvps[i].getName()))
-          {
+    } else {
+      NameValuePair[] nvps = (NameValuePair[]) mSettingsForGroups.get(aGroupName);
+      if (nvps != null) {
+        for (int i = 0; i < nvps.length; i++) {
+          if (aParamName.equals(nvps[i].getName())) {
             return nvps[i].getValue();
           }
-        }      
+        }
       }
       return null;
-    }  
+    }
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameterSettings#setParameterValue(java.lang.String, java.lang.Object)
+   * @see org.apache.uima.resource.ConfigurationParameterSettings#setParameterValue(java.lang.String,
+   *      java.lang.Object)
    */
-  public void setParameterValue(String aParamName, Object aValue)
-  {   
-    if (aValue != null) //setting a value
-    {     
+  public void setParameterValue(String aParamName, Object aValue) {
+    if (aValue != null) // setting a value
+    {
       NameValuePair[] nvps = getParameterSettings();
-      if (nvps != null)
-      {
-        for (int i = 0; i < nvps.length; i++)
-        {
-          if (aParamName.equals(nvps[i].getName()))
-          {
+      if (nvps != null) {
+        for (int i = 0; i < nvps.length; i++) {
+          if (aParamName.equals(nvps[i].getName())) {
             nvps[i].setValue(aValue);
             return;
           }
         }
-    
-        //param not found - add new NameValuePair
-        NameValuePair newNVP = new NameValuePair_impl(aParamName,aValue);
+
+        // param not found - add new NameValuePair
+        NameValuePair newNVP = new NameValuePair_impl(aParamName, aValue);
         NameValuePair[] newArr = new NameValuePair[nvps.length + 1];
-        System.arraycopy(nvps,0,newArr,0,nvps.length);
+        System.arraycopy(nvps, 0, newArr, 0, nvps.length);
         newArr[newArr.length - 1] = newNVP;
         setParameterSettings(newArr);
+      } else {
+        setParameterSettings(new NameValuePair[] { new NameValuePair_impl(aParamName, aValue) });
       }
-      else
-      {
-        setParameterSettings(
-          new NameValuePair[]{new NameValuePair_impl(aParamName,aValue)});
-      }
-    }  
-    else //clearing a value
+    } else // clearing a value
     {
       NameValuePair[] nvps = getParameterSettings();
-      if (nvps != null)
-      {
-        for (int i = 0; i < nvps.length; i++)
-        {
-          if (aParamName.equals(nvps[i].getName()))
-          {
+      if (nvps != null) {
+        for (int i = 0; i < nvps.length; i++) {
+          if (aParamName.equals(nvps[i].getName())) {
             NameValuePair[] newArr = new NameValuePair[nvps.length - 1];
-            System.arraycopy(nvps,0,newArr,0,i);
-            System.arraycopy(nvps,i+1,newArr,i,nvps.length-i-1);
+            System.arraycopy(nvps, 0, newArr, 0, i);
+            System.arraycopy(nvps, i + 1, newArr, i, nvps.length - i - 1);
             setParameterSettings(newArr);
             break;
           }
         }
-    
+
       }
-    }    
+    }
   }
 
   /**
-   * @see org.apache.uima.resource.ConfigurationParameterSettings#setParameterValue(java.lang.String, java.lang.String, java.lang.Object)
+   * @see org.apache.uima.resource.ConfigurationParameterSettings#setParameterValue(java.lang.String,
+   *      java.lang.String, java.lang.Object)
    */
-  public void setParameterValue(String aGroupName, String aParamName,
-    Object aValue)
-  {
-    if (aGroupName == null)
-    {
+  public void setParameterValue(String aGroupName, String aParamName, Object aValue) {
+    if (aGroupName == null) {
       setParameterValue(aParamName, aValue);
-    }
-    else
-    {    
-      if (aValue != null) //setting a value
-      {     
-        NameValuePair[] nvps = (NameValuePair[])mSettingsForGroups.get(aGroupName);
-        if (nvps ==  null) //create new group
+    } else {
+      if (aValue != null) // setting a value
+      {
+        NameValuePair[] nvps = (NameValuePair[]) mSettingsForGroups.get(aGroupName);
+        if (nvps == null) // create new group
         {
-          NameValuePair newNVP = new NameValuePair_impl(aParamName,aValue);
-          mSettingsForGroups.put(aGroupName,new NameValuePair[]{newNVP});
-        }
-        else    
-        {
-          for (int i = 0; i < nvps.length; i++)
-          {
-            if (aParamName.equals(nvps[i].getName()))
-            {
+          NameValuePair newNVP = new NameValuePair_impl(aParamName, aValue);
+          mSettingsForGroups.put(aGroupName, new NameValuePair[] { newNVP });
+        } else {
+          for (int i = 0; i < nvps.length; i++) {
+            if (aParamName.equals(nvps[i].getName())) {
               nvps[i].setValue(aValue);
               return;
             }
-          }      
-          //param not found - add new NameValuePair to group
-          NameValuePair newNVP = new NameValuePair_impl(aParamName,aValue);
+          }
+          // param not found - add new NameValuePair to group
+          NameValuePair newNVP = new NameValuePair_impl(aParamName, aValue);
           NameValuePair[] newArr = new NameValuePair[nvps.length + 1];
-          System.arraycopy(nvps,0,newArr,0,nvps.length);
+          System.arraycopy(nvps, 0, newArr, 0, nvps.length);
           newArr[newArr.length - 1] = newNVP;
-          mSettingsForGroups.put(aGroupName,newArr);
+          mSettingsForGroups.put(aGroupName, newArr);
         }
-      }  
-      else //clearing a value
+      } else // clearing a value
       {
-        NameValuePair[] nvps = (NameValuePair[])mSettingsForGroups.get(aGroupName);
-        if (nvps != null)
-        {
-          for (int i = 0; i < nvps.length; i++)
-          {
-            if (aParamName.equals(nvps[i].getName()))
-            {
+        NameValuePair[] nvps = (NameValuePair[]) mSettingsForGroups.get(aGroupName);
+        if (nvps != null) {
+          for (int i = 0; i < nvps.length; i++) {
+            if (aParamName.equals(nvps[i].getName())) {
               NameValuePair[] newArr = new NameValuePair[nvps.length - 1];
-              System.arraycopy(nvps,0,newArr,0,i);
-              System.arraycopy(nvps,i+1,newArr,i,nvps.length-i-1);
-              mSettingsForGroups.put(aGroupName,newArr);
+              System.arraycopy(nvps, 0, newArr, 0, i);
+              System.arraycopy(nvps, i + 1, newArr, i, nvps.length - i - 1);
+              mSettingsForGroups.put(aGroupName, newArr);
               break;
             }
-          }    
+          }
         }
-      }    
+      }
     }
   }
 
   /**
    * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXmlizationInfo()
    */
-  protected XmlizationInfo getXmlizationInfo()
-  {
+  protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
   /**
-   * Overridden to add the settingsForGroups property to the result list.  
-   * Default introspection implementation won't return it because it has no set 
-   * method.  We've also overridden the XML import/export methods, though, so 
-   * that set methods are not required.
+   * Overridden to add the settingsForGroups property to the result list. Default introspection
+   * implementation won't return it because it has no set method. We've also overridden the XML
+   * import/export methods, though, so that set methods are not required.
    * 
    * @see org.apache.uima.resource.MetaDataObject#listAttributes()
    */
-  public List listAttributes()
-  {
+  public List listAttributes() {
     List result = super.listAttributes();
-    result.add(new NameClassPair("settingsForGroups",
-                                 Map.class.getName()));
+    result.add(new NameClassPair("settingsForGroups", Map.class.getName()));
     return result;
   }
- 
 
   /**
-   * Overridden becuase of settingsForGroups property, which is a Map and isn't
-   * handled by default XMLization routines.
-   * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element, org.apache.uima.util.XMLParser)
+   * Overridden becuase of settingsForGroups property, which is a Map and isn't handled by default
+   * XMLization routines.
+   * 
+   * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element,
+   *      org.apache.uima.util.XMLParser)
    */
-  public void buildFromXMLElement(Element aElement, XMLParser aParser, XMLParser.ParsingOptions aOptions)
-    throws InvalidXMLException
-  {
+  public void buildFromXMLElement(Element aElement, XMLParser aParser,
+                  XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     ArrayList nvps = new ArrayList();
-    //get all child nodes
+    // get all child nodes
     NodeList childNodes = aElement.getChildNodes();
-    for (int i = 0; i <childNodes.getLength(); i++)
-    {
+    for (int i = 0; i < childNodes.getLength(); i++) {
       Node curNode = childNodes.item(i);
-      if (curNode instanceof Element)
-      {
-        Element elem = (Element)curNode;
-        //check element tag name
-        if ("nameValuePair".equals(elem.getTagName()))
-        {
-          nvps.add(aParser.buildObject(elem,aOptions));  
-        }
-        else if ("settingsForGroup".equals(elem.getTagName()))
-        {
+      if (curNode instanceof Element) {
+        Element elem = (Element) curNode;
+        // check element tag name
+        if ("nameValuePair".equals(elem.getTagName())) {
+          nvps.add(aParser.buildObject(elem, aOptions));
+        } else if ("settingsForGroup".equals(elem.getTagName())) {
           String key = elem.getAttribute("name");
 
           ArrayList vals = new ArrayList();
           NodeList arrayNodes = elem.getChildNodes();
-          for (int j = 0; j <arrayNodes.getLength(); j++)
-          {
+          for (int j = 0; j < arrayNodes.getLength(); j++) {
             Node curArrayNode = arrayNodes.item(j);
-            if (curArrayNode instanceof Element)
-            {
-              Element valElem = (Element)curArrayNode;
+            if (curArrayNode instanceof Element) {
+              Element valElem = (Element) curArrayNode;
               vals.add(aParser.buildObject(valElem));
             }
           }
-          if (!vals.isEmpty())
-          {
+          if (!vals.isEmpty()) {
             NameValuePair[] valArr = new NameValuePair[vals.size()];
             vals.toArray(valArr);
             mSettingsForGroups.put(key, valArr);
-          }                
+          }
+        } else {
+          throw new InvalidXMLException(InvalidXMLException.UNKNOWN_ELEMENT, new Object[] { elem
+                          .getTagName() });
         }
-        else
-        {
-          throw new InvalidXMLException(
-              InvalidXMLException.UNKNOWN_ELEMENT,
-              new Object[]{elem.getTagName()});
-        }
-      }  
+      }
     }
     NameValuePair[] nvpArr = new NameValuePair[nvps.size()];
     nvps.toArray(nvpArr);
-    setParameterSettings(nvpArr);      
-    
+    setParameterSettings(nvpArr);
+
   }
 
-
   /**
-   * Overridden to write the settingsForGroups property, whose value is a
-   * Map, which is not supported by the default XMLization routines.
-   * @see org.apache.uima.resource.impl.MetaDataObject_impl#writePropertyAsElement(org.apache.uima.resource.impl.PropertyXmlInfo, java.lang.String, ContentHandler)
+   * Overridden to write the settingsForGroups property, whose value is a Map, which is not
+   * supported by the default XMLization routines.
+   * 
+   * @see org.apache.uima.resource.impl.MetaDataObject_impl#writePropertyAsElement(org.apache.uima.resource.impl.PropertyXmlInfo,
+   *      java.lang.String, ContentHandler)
    */
-  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo,
-    String aNamespace, ContentHandler aContentHandler)
-    throws SAXException
-  {
-    if ("settingsForGroups".equals(aPropInfo.propertyName))
-    {
-      this.writeMapPropertyToXml("settingsForGroups",null,"name",
-            "settingsForGroup",true,aNamespace,aContentHandler);     
-    }
-    else
-    {
+  protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace,
+                  ContentHandler aContentHandler) throws SAXException {
+    if ("settingsForGroups".equals(aPropInfo.propertyName)) {
+      this.writeMapPropertyToXml("settingsForGroups", null, "name", "settingsForGroup", true,
+                      aNamespace, aContentHandler);
+    } else {
       super.writePropertyAsElement(aPropInfo, aNamespace, aContentHandler);
-    }  
+    }
   }
-  
-  
-  static final private XmlizationInfo XMLIZATION_INFO =
-    new XmlizationInfo("configurationParameterSettings",
-      new PropertyXmlInfo[]{
-         new PropertyXmlInfo("parameterSettings",null),
-         new PropertyXmlInfo("settingsForGroups",null) //NOTE: custom XMLization
-      });  
-      
- /**
-  * Settings for parameters that are not in any group.
-  */
-  private NameValuePair[] mParameterSettings = new NameValuePair[0];
-  
-  /**
-   * Settings for parameters in groups.  This HashMap has
-   * <code>String</code> keys (the group name) and <code>NameValuePair[]</code> 
-   * values (the parmeter names and their values).
-   */
-  private Map mSettingsForGroups = new HashMap();
-  
-  static final long serialVersionUID = 3476535733588304983L;
+
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+                  "configurationParameterSettings", new PropertyXmlInfo[] {
+                      new PropertyXmlInfo("parameterSettings", null),
+                      new PropertyXmlInfo("settingsForGroups", null) // NOTE: custom XMLization
+                  });
 }

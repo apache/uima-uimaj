@@ -34,36 +34,32 @@ import org.w3c.dom.Document;
 
 /**
  * 
- * @author Adam Lally 
+ * @author Adam Lally
  */
-public class ConfigurationParameterDeclarations_implTest extends TestCase
-{
+public class ConfigurationParameterDeclarations_implTest extends TestCase {
 
   /**
    * Constructor for ConfigurationParameterDeclarations_implTest.
+   * 
    * @param arg0
    */
-  public ConfigurationParameterDeclarations_implTest(String arg0)
-  {
+  public ConfigurationParameterDeclarations_implTest(String arg0) {
     super(arg0);
   }
-  
-  public void testBuildFromXmlElement() throws Exception
-  {
-    //parse XML
-    DocumentBuilderFactory docBuilderFactory = 
-      DocumentBuilderFactory.newInstance();
-    DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();  
-       
-    InputStream str = new FileInputStream(
-        JUnitExtension.getFile("org/apache/uima/resource/metadata/impl/ConfigParamEmptyGroup.xml"));   
+
+  public void testBuildFromXmlElement() throws Exception {
+    // parse XML
+    DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+
+    InputStream str = new FileInputStream(JUnitExtension
+                    .getFile("org/apache/uima/resource/metadata/impl/ConfigParamEmptyGroup.xml"));
     Document doc = docBuilder.parse(str);
-    
-    ConfigurationParameterDeclarations_impl obj = 
-        new ConfigurationParameterDeclarations_impl();   
+
+    ConfigurationParameterDeclarations_impl obj = new ConfigurationParameterDeclarations_impl();
     obj.buildFromXMLElement(doc.getDocumentElement(), UIMAFramework.getXMLParser());
-    
-    Assert.assertEquals(1,obj.getConfigurationGroups().length);              
+
+    Assert.assertEquals(1, obj.getConfigurationGroups().length);
   }
 
 }

@@ -39,100 +39,86 @@ import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.test.junit_extension.TestPropertyReader;
 
 /**
- * Dummy annotator which does not processing. Annotator only writes his name and his
- * result specification to a textfile
+ * Dummy annotator which does not processing. Annotator only writes his name and his result
+ * specification to a textfile
  * 
- * @author Michael Baessler 
+ * @author Michael Baessler
  */
-public class SequencerTestAnnotator extends Annotator_ImplBase implements TextAnnotator 
-{
-	//annotator name
-	private String name;
-	private String junitTestBasePath;
-	
-	public SequencerTestAnnotator() 
-	{
-  		super();
-		junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
-	}
+public class SequencerTestAnnotator extends Annotator_ImplBase implements TextAnnotator {
+  // annotator name
+  private String name;
 
-	/**
-	 * method to read configuration parameter for the annotator
-	 */
-	private static String secureGetConfigParameterValue(AnnotatorContext context, String param, String defaultValue)
-	  throws AnnotatorContextException 
-	{
-		  String name = (String)context.getConfigParameterValue(param);
-		  if (name != null) {
-			 return name;
-		  }
-		  return defaultValue;
-	}
-	 
-	/**
-	 * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#initialize(org.apache.uima.analysis_engine.annotator.AnnotatorContext)
-	 */
-	public void initialize(AnnotatorContext context)
-		throws AnnotatorInitializationException, AnnotatorConfigurationException
-	{
-		
-		try
-		{
-			//read annotator name from configuration parameter 'AnnotatorName'
-			this.name = secureGetConfigParameterValue(context,"AnnotatorName","defaultName");
-		}
-		catch (AnnotatorContextException e)
-		{
-		  throw new AnnotatorConfigurationException(e);
-		}
-		
-	}
-	
-	/**
-	 * @see org.apache.uima.analysis_engine.annotator.TextAnnotator#process(org.apache.uima.cas.text.TCAS, org.apache.uima.analysis_engine.ResultSpecification)
-	 */
-	public void process(TCAS tcas, ResultSpecification resultSpec)
-  		throws AnnotatorProcessException 
-  	{
-	  
-	  //get document language
-	  final String documentLanguage = tcas.getDocumentLanguage();
-	  
-	  try 
-	  {
-		//use standard output file
-		File fp = new File(junitTestBasePath + "SequencerTest/SequencerTest.txt");
-		if(fp.canWrite())
-		{
-			//write result specification to the output file
-			OutputStreamWriter writer =  new OutputStreamWriter(new FileOutputStream(fp,true),"UTF-8");
-			writer.write("\nResultSpec for annotator " + name + ":\n");
-			TypeOrFeature[] tofs = resultSpec.getResultTypesAndFeatures();
-            //sort by name to ensure consistent output for testing purposes
-            Arrays.sort(tofs, new Comparator() {
-              public int compare(Object o1, Object o2)
-              {
-                return ((TypeOrFeature)o1).getName().compareTo(
-                    ((TypeOrFeature)o2).getName());
-              }});
-			for(int i = 0; i < tofs.length; i++)
-			{
-				writer.write(tofs[i].getName() + "\n");
-			}
-			writer.flush();
-			writer.close();
-		}
-		else
-		{
-			throw new IOException("Cannot write to " + junitTestBasePath + "SequencerTest/SequencerTest.txt");
-		}
-	  } 
-	  catch (IOException e) 
-	  {
-		// If an error occours, throw new annotator exception
-		throw new AnnotatorProcessException(e);
-	  }
-	      
-	}
+  private String junitTestBasePath;
+
+  public SequencerTestAnnotator() {
+    super();
+    junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
+  }
+
+  /**
+   * method to read configuration parameter for the annotator
+   */
+  private static String secureGetConfigParameterValue(AnnotatorContext context, String param,
+                  String defaultValue) throws AnnotatorContextException {
+    String name = (String) context.getConfigParameterValue(param);
+    if (name != null) {
+      return name;
+    }
+    return defaultValue;
+  }
+
+  /**
+   * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#initialize(org.apache.uima.analysis_engine.annotator.AnnotatorContext)
+   */
+  public void initialize(AnnotatorContext context) throws AnnotatorInitializationException,
+                  AnnotatorConfigurationException {
+
+    try {
+      // read annotator name from configuration parameter 'AnnotatorName'
+      this.name = secureGetConfigParameterValue(context, "AnnotatorName", "defaultName");
+    } catch (AnnotatorContextException e) {
+      throw new AnnotatorConfigurationException(e);
+    }
+
+  }
+
+  /**
+   * @see org.apache.uima.analysis_engine.annotator.TextAnnotator#process(org.apache.uima.cas.text.TCAS,
+   *      org.apache.uima.analysis_engine.ResultSpecification)
+   */
+  public void process(TCAS tcas, ResultSpecification resultSpec) throws AnnotatorProcessException {
+
+    // get document language
+    final String documentLanguage = tcas.getDocumentLanguage();
+
+    try {
+      // use standard output file
+      File fp = new File(junitTestBasePath + "SequencerTest/SequencerTest.txt");
+      if (fp.canWrite()) {
+        // write result specification to the output file
+        OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(fp, true), "UTF-8");
+        writer.write("\nResultSpec for annotator " + name + ":\n");
+        TypeOrFeature[] tofs = resultSpec.getResultTypesAndFeatures();
+        // sort by name to ensure consistent output for testing purposes
+        Arrays.sort(tofs, new Comparator() {
+          public int compare(Object o1, Object o2) {
+            return ((TypeOrFeature) o1).getName().compareTo(((TypeOrFeature) o2).getName());
+          }
+        });
+        for (int i = 0; i < tofs.length; i++) {
+          writer.write(tofs[i].getName() + "\n");
+        }
+        writer.flush();
+        writer.close();
+      } else {
+        throw new IOException("Cannot write to " + junitTestBasePath
+                        + "SequencerTest/SequencerTest.txt");
+      }
+    } catch (IOException e) {
+      // If an error occours, throw new annotator exception
+      throw new AnnotatorProcessException(e);
+    }
+
+  }
 
 }

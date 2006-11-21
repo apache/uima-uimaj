@@ -30,278 +30,275 @@ import org.apache.uima.internal.util.IntVector;
 
 public class FSVectorIndex extends FSLeafIndexImpl {
 
-    private class IntVectorIterator implements ComparableIntPointerIterator,
-            LowLevelIterator {
+  private class IntVectorIterator implements ComparableIntPointerIterator, LowLevelIterator {
 
-        private int itPos;
+    private int itPos;
 
-        private IntComparator comp;
-        
-        private int modificationSnapshot; // to catch illegal modifications
-        
-        private int [] detectIllegalIndexUpdates;  // shared copy with Index Repository
-        
-        private int typeCode;
+    private IntComparator comp;
 
-        public boolean isConcurrentModification() {
-          return modificationSnapshot != detectIllegalIndexUpdates[typeCode];
-        }
-        public void resetConcurrentModification() {
-          modificationSnapshot = detectIllegalIndexUpdates[typeCode];
-        }
+    private int modificationSnapshot; // to catch illegal modifications
 
-        private IntVectorIterator() {
-            super();
-            this.itPos = 0;
-        }
+    private int[] detectIllegalIndexUpdates; // shared copy with Index Repository
 
-        private IntVectorIterator(IntComparator comp) {
-            this();
-            this.comp = comp;
-        }
+    private int typeCode;
 
-        public boolean isValid() {
-            return ((this.itPos >= 0) && (this.itPos < FSVectorIndex.this.index
-                    .size()));
-        }
-
-        public void moveToFirst() {
-            this.itPos = 0;
-        }
-
-        public void moveToLast() {
-            this.itPos = FSVectorIndex.this.index.size() - 1;
-        }
-
-        public void moveToNext() {
-            ++this.itPos;
-        }
-
-        public void moveToPrevious() {
-            --this.itPos;
-        }
-
-        public int ll_get() {
-            if (!isValid()) {
-                throw new NoSuchElementException();
-            }
-            return FSVectorIndex.this.index.get(this.itPos);
-        }
-
-        /**
-         * @see org.apache.uima.internal.util.IntPointerIterator#copy()
-         */
-        public Object copy() {
-            IntVectorIterator copy = new IntVectorIterator(this.comp);
-            copy.itPos = this.itPos;
-            return copy;
-        }
-
-        /**
-         * @see java.lang.Comparable#compareTo(Object)
-         */
-        public int compareTo(Object o) throws NoSuchElementException {
-            return this.comp.compare(get(), ((IntVectorIterator) o).get());
-        }
-
-        /**
-         * @see org.apache.uima.internal.util.IntPointerIterator#moveTo(int)
-         */
-        public void moveTo(int i) {
-            final int position = find(i);
-            if (position >= 0) {
-                this.itPos = position;
-            } else {
-                this.itPos = -(position + 1);
-            }
-        }
-
-        public int get() throws NoSuchElementException {
-            return ll_get();
-        }
-
-        public void inc() {
-            moveToNext();
-        }
-
-        public void dec() {
-            moveToPrevious();
-        }
-
-        public int ll_indexSize() {
-            return FSVectorIndex.this.size();
-        }
-
-        public LowLevelIndex ll_getIndex() {
-            return FSVectorIndex.this;
-        }
-
+    public boolean isConcurrentModification() {
+      return modificationSnapshot != detectIllegalIndexUpdates[typeCode];
     }
 
-    // The index, a vector of FS references.
-    private IntVector index;
-
-    private int initialSize;
-
-    FSVectorIndex(CASImpl cas, Type type, int initialSize, int indexType) {
-        super(cas, type, indexType);
-        this.initialSize = initialSize;
-        this.index = new IntVector(initialSize);
+    public void resetConcurrentModification() {
+      modificationSnapshot = detectIllegalIndexUpdates[typeCode];
     }
 
-    IntVector getVector() {
-        return this.index;
+    private IntVectorIterator() {
+      super();
+      this.itPos = 0;
     }
 
-    public void flush() {
-        this.index = new IntVector(this.initialSize);
+    private IntVectorIterator(IntComparator comp) {
+      this();
+      this.comp = comp;
     }
 
-    public final boolean insert(int fs) {
-        // First, check if we can insert at the end.
-        final int[] indexArray = this.index.getArray();
-        final int length = this.index.size();
-        if (length == 0) {
-            this.index.add(fs);
-            return true;
-        }
-        final int last = indexArray[length - 1];
-        if (compare(last, fs) < 0) {
-            this.index.add(fs);
-            return true;
-        }
-        final int pos = this.binarySearch(indexArray, fs, 0, length);
-        if (pos >= 0) {
-            return false;
-        }
-        this.index.add(-(pos + 1), fs);
-        return true;
+    public boolean isValid() {
+      return ((this.itPos >= 0) && (this.itPos < FSVectorIndex.this.index.size()));
     }
 
-    // public IntIteratorStl iterator() {
-    // return new IntVectorIterator();
-    // }
-
-    private final int find(int ele) {
-        return binarySearch(this.index.getArray(), ele, 0, this.index.size());
+    public void moveToFirst() {
+      this.itPos = 0;
     }
 
-    // Do binary search on index.
-    private final int binarySearch(int[] array, int ele, int start, int end) {
-        --end; // Make end a legal value.
-        int i; // Current position
-        int comp; // Compare value
-        while (start <= end) {
-            i = (start + end) / 2;
-            comp = compare(ele, array[i]);
-            if (comp == 0) {
-                return i;
-            }
-            if (start == end) {
-                if (comp < 0) {
-                    return (-i) - 1;
-                }
-                // comp > 0
-                return (-i) - 2; // (-(i+1))-1
-            }
-            if (comp < 0) {
-                end = i - 1;
-            } else { // comp > 0
-                start = i + 1;
-            }
-        }
-        // This means that the input span is empty.
-        return (-start) - 1;
+    public void moveToLast() {
+      this.itPos = FSVectorIndex.this.index.size() - 1;
+    }
+
+    public void moveToNext() {
+      ++this.itPos;
+    }
+
+    public void moveToPrevious() {
+      --this.itPos;
+    }
+
+    public int ll_get() {
+      if (!isValid()) {
+        throw new NoSuchElementException();
+      }
+      return FSVectorIndex.this.index.get(this.itPos);
     }
 
     /**
-     * @see org.apache.uima.cas.impl.FSLeafIndexImpl#pointerIterator(IntComparator)
+     * @see org.apache.uima.internal.util.IntPointerIterator#copy()
      */
-    public ComparableIntPointerIterator pointerIterator
-            (IntComparator comp,  
-             int [] detectIllegalIndexUpdates,
-             int typeCode) {
-      IntVectorIterator ivi = new IntVectorIterator(comp);
-      ivi.modificationSnapshot = detectIllegalIndexUpdates[typeCode];
-      ivi.detectIllegalIndexUpdates = detectIllegalIndexUpdates;
-      ivi.typeCode = typeCode;
-      return ivi;
+    public Object copy() {
+      IntVectorIterator copy = new IntVectorIterator(this.comp);
+      copy.itPos = this.itPos;
+      return copy;
     }
 
     /**
-     * @see org.apache.uima.cas.impl.FSLeafIndexImpl#refIterator()
+     * @see java.lang.Comparable#compareTo(Object)
      */
-    protected IntPointerIterator refIterator() {
-        return new IntVectorIterator();
+    public int compareTo(Object o) throws NoSuchElementException {
+      return this.comp.compare(get(), ((IntVectorIterator) o).get());
     }
 
     /**
-     * @see org.apache.uima.cas.impl.FSLeafIndexImpl#refIterator(int)
+     * @see org.apache.uima.internal.util.IntPointerIterator#moveTo(int)
      */
-    protected IntPointerIterator refIterator(int fsCode) {
-        IntVectorIterator it = new IntVectorIterator();
-        final int pos = find(fsCode);
-        if (pos >= 0) {
-            it.itPos = pos;
-        } else {
-            it.itPos = -(pos + 1);
+    public void moveTo(int i) {
+      final int position = find(i);
+      if (position >= 0) {
+        this.itPos = position;
+      } else {
+        this.itPos = -(position + 1);
+      }
+    }
+
+    public int get() throws NoSuchElementException {
+      return ll_get();
+    }
+
+    public void inc() {
+      moveToNext();
+    }
+
+    public void dec() {
+      moveToPrevious();
+    }
+
+    public int ll_indexSize() {
+      return FSVectorIndex.this.size();
+    }
+
+    public LowLevelIndex ll_getIndex() {
+      return FSVectorIndex.this;
+    }
+
+  }
+
+  // The index, a vector of FS references.
+  private IntVector index;
+
+  private int initialSize;
+
+  FSVectorIndex(CASImpl cas, Type type, int initialSize, int indexType) {
+    super(cas, type, indexType);
+    this.initialSize = initialSize;
+    this.index = new IntVector(initialSize);
+  }
+
+  IntVector getVector() {
+    return this.index;
+  }
+
+  public void flush() {
+    this.index = new IntVector(this.initialSize);
+  }
+
+  public final boolean insert(int fs) {
+    // First, check if we can insert at the end.
+    final int[] indexArray = this.index.getArray();
+    final int length = this.index.size();
+    if (length == 0) {
+      this.index.add(fs);
+      return true;
+    }
+    final int last = indexArray[length - 1];
+    if (compare(last, fs) < 0) {
+      this.index.add(fs);
+      return true;
+    }
+    final int pos = this.binarySearch(indexArray, fs, 0, length);
+    if (pos >= 0) {
+      return false;
+    }
+    this.index.add(-(pos + 1), fs);
+    return true;
+  }
+
+  // public IntIteratorStl iterator() {
+  // return new IntVectorIterator();
+  // }
+
+  private final int find(int ele) {
+    return binarySearch(this.index.getArray(), ele, 0, this.index.size());
+  }
+
+  // Do binary search on index.
+  private final int binarySearch(int[] array, int ele, int start, int end) {
+    --end; // Make end a legal value.
+    int i; // Current position
+    int comp; // Compare value
+    while (start <= end) {
+      i = (start + end) / 2;
+      comp = compare(ele, array[i]);
+      if (comp == 0) {
+        return i;
+      }
+      if (start == end) {
+        if (comp < 0) {
+          return (-i) - 1;
         }
-        return it;
+        // comp > 0
+        return (-i) - 2; // (-(i+1))-1
+      }
+      if (comp < 0) {
+        end = i - 1;
+      } else { // comp > 0
+        start = i + 1;
+      }
     }
+    // This means that the input span is empty.
+    return (-start) - 1;
+  }
 
-    /**
-     * @see org.apache.uima.cas.FSIndex#contains(FeatureStructure)
-     */
-    public boolean contains(FeatureStructure fs) {
-        return (find(((FeatureStructureImpl) fs).getAddress()) >= 0);
-    }
+  /**
+   * @see org.apache.uima.cas.impl.FSLeafIndexImpl#pointerIterator(IntComparator)
+   */
+  public ComparableIntPointerIterator pointerIterator(IntComparator comp,
+                  int[] detectIllegalIndexUpdates, int typeCode) {
+    IntVectorIterator ivi = new IntVectorIterator(comp);
+    ivi.modificationSnapshot = detectIllegalIndexUpdates[typeCode];
+    ivi.detectIllegalIndexUpdates = detectIllegalIndexUpdates;
+    ivi.typeCode = typeCode;
+    return ivi;
+  }
 
-    public FeatureStructure find(FeatureStructure fs) {
-        final FeatureStructureImpl fsi = (FeatureStructureImpl) fs;
-        final int resultAddr = find(fsi.getAddress());
-        if (resultAddr > 0) {
-            return fsi.getCASImpl().createFS(resultAddr);
-        }
-        return null;
-    }
+  /**
+   * @see org.apache.uima.cas.impl.FSLeafIndexImpl#refIterator()
+   */
+  protected IntPointerIterator refIterator() {
+    return new IntVectorIterator();
+  }
 
-    /**
-     * @see org.apache.uima.cas.FSIndex#size()
-     */
-    public int size() {
-        return this.index.size();
+  /**
+   * @see org.apache.uima.cas.impl.FSLeafIndexImpl#refIterator(int)
+   */
+  protected IntPointerIterator refIterator(int fsCode) {
+    IntVectorIterator it = new IntVectorIterator();
+    final int pos = find(fsCode);
+    if (pos >= 0) {
+      it.itPos = pos;
+    } else {
+      it.itPos = -(pos + 1);
     }
+    return it;
+  }
 
-    /**
-     * @see org.apache.uima.cas.impl.FSLeafIndexImpl#deleteFS(org.apache.uima.cas.FeatureStructure)
-     */
-    public void deleteFS(FeatureStructure fs) {
-        final int addr = ((FeatureStructureImpl) fs).getAddress();
-        final int pos = this.index.indexOf(addr);
-        if (pos >= 0) {
-            this.index.remove(pos);
-        }
-    }
+  /**
+   * @see org.apache.uima.cas.FSIndex#contains(FeatureStructure)
+   */
+  public boolean contains(FeatureStructure fs) {
+    return (find(((FeatureStructureImpl) fs).getAddress()) >= 0);
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.impl.LowLevelIndex#ll_iterator()
-     */
-    public LowLevelIterator ll_iterator() {
-        return new IntVectorIterator();
+  public FeatureStructure find(FeatureStructure fs) {
+    final FeatureStructureImpl fsi = (FeatureStructureImpl) fs;
+    final int resultAddr = find(fsi.getAddress());
+    if (resultAddr > 0) {
+      return fsi.getCASImpl().createFS(resultAddr);
     }
+    return null;
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.impl.FSLeafIndexImpl#remove(int)
-     */
-    void remove(int fs) {
-        final int pos = this.index.indexOf(fs);
-        if (pos >= 0) {
-            this.index.remove(pos);
-        }
+  /**
+   * @see org.apache.uima.cas.FSIndex#size()
+   */
+  public int size() {
+    return this.index.size();
+  }
+
+  /**
+   * @see org.apache.uima.cas.impl.FSLeafIndexImpl#deleteFS(org.apache.uima.cas.FeatureStructure)
+   */
+  public void deleteFS(FeatureStructure fs) {
+    final int addr = ((FeatureStructureImpl) fs).getAddress();
+    final int pos = this.index.indexOf(addr);
+    if (pos >= 0) {
+      this.index.remove(pos);
     }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.impl.LowLevelIndex#ll_iterator()
+   */
+  public LowLevelIterator ll_iterator() {
+    return new IntVectorIterator();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.impl.FSLeafIndexImpl#remove(int)
+   */
+  void remove(int fs) {
+    final int pos = this.index.indexOf(fs);
+    if (pos >= 0) {
+      this.index.remove(pos);
+    }
+  }
 
 }

@@ -29,60 +29,58 @@ import org.apache.uima.cas.text.AnnotationFS;
  * 
  * 
  */
-public class AnnotationBaseImpl extends FeatureStructureImplC implements
-        AnnotationBaseFS {
+public class AnnotationBaseImpl extends FeatureStructureImplC implements AnnotationBaseFS {
 
-    private static class AnnotationBaseFSGenerator implements FSGenerator {
+  private static class AnnotationBaseFSGenerator implements FSGenerator {
 
-        private AnnotationBaseFSGenerator() {
-            super();
-        }
-
-        /**
-         * @see org.apache.uima.cas.impl.FSGenerator#createFS(int, LowLevelCAS)
-         */
-        public FeatureStructure createFS(int addr, CASImpl cas) {
-            return new AnnotationBaseImpl(addr, cas);
-        }
-
-    }
-
-    static FSGenerator getAnnotationGenerator() {
-        return new AnnotationBaseFSGenerator();
+    private AnnotationBaseFSGenerator() {
+      super();
     }
 
     /**
-     * Constructor for AnnotationImpl.
+     * @see org.apache.uima.cas.impl.FSGenerator#createFS(int, LowLevelCAS)
      */
-    protected AnnotationBaseImpl() {
-        super();
-    }
-   
-    /**
-     * Constructor for AnnotationImpl.
-     * 
-     * @param addr
-     * @param cas
-     */
-    public AnnotationBaseImpl(int addr, CASImpl cas) {
-    	super.setUp(cas, addr);
+    public FeatureStructure createFS(int addr, CASImpl cas) {
+      return new AnnotationBaseImpl(addr, cas);
     }
 
+  }
 
-    public String toString() {
-        return toString(3);
-    }
+  static FSGenerator getAnnotationGenerator() {
+    return new AnnotationBaseFSGenerator();
+  }
 
-    public String toString(int indent) {
-        StringBuffer buf = new StringBuffer();
-        prettyPrint(0, indent, buf, true, getView().getSofa().getSofaID());
-        return buf.toString();
-    }
+  /**
+   * Constructor for AnnotationImpl.
+   */
+  protected AnnotationBaseImpl() {
+    super();
+  }
 
-    /**
-     * see org.apache.uima.cas.AnnotationBase#getView()
-     */
-    public CAS getView() {
-      return getCASImpl().ll_getSofaCasView(addr);
-    }
+  /**
+   * Constructor for AnnotationImpl.
+   * 
+   * @param addr
+   * @param cas
+   */
+  public AnnotationBaseImpl(int addr, CASImpl cas) {
+    super.setUp(cas, addr);
+  }
+
+  public String toString() {
+    return toString(3);
+  }
+
+  public String toString(int indent) {
+    StringBuffer buf = new StringBuffer();
+    prettyPrint(0, indent, buf, true, getView().getSofa().getSofaID());
+    return buf.toString();
+  }
+
+  /**
+   * see org.apache.uima.cas.AnnotationBase#getView()
+   */
+  public CAS getView() {
+    return getCASImpl().ll_getSofaCasView(addr);
+  }
 }

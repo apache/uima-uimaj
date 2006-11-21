@@ -19,42 +19,46 @@
 
 package org.apache.uima.collection.metadata;
 
-
 /**
- * An object containing all {@link org.apache.uima.collection.metadata.CasProcessorExecArg} instances.
- * It provides the means of adding new program arguments, retrieving them, and removing them.
+ * An object containing all {@link org.apache.uima.collection.metadata.CasProcessorExecArg}
+ * instances. It provides the means of adding new program arguments, retrieving them, and removing
+ * them.
  */
-public interface CasProcessorExecArgs //extends MetaDataObject
+public interface CasProcessorExecArgs // extends MetaDataObject
 {
-	/**
-	 * Adds new {@link org.apache.uima.collection.metadata.CasProcessorExecArg} instance to the
-	 * list. 
-	 * 
-	 * @param aArg - new argument
-	 */
-	public void add( CasProcessorExecArg aArg );
-	/**
-	 * Returns an {@link org.apache.uima.collection.metadata.CasProcessorExecArg} instance located 
-	 * with provided index.
-	 * 
-	 * @param aIndex - position of argument in the list
-	 * 
-	 * @return - {@link org.apache.uima.collection.metadata.CasProcessorExecArg} instance
-	 * @throws CpeDescriptorException
-	 */
-	public CasProcessorExecArg get( int aIndex ) 
-		throws CpeDescriptorException;
-	/**
-	 * Returns ALL {@link org.apache.uima.collection.metadata.CasProcessorExecArg} instances.
-	 * 
-	 * @return array of {@link org.apache.uima.collection.metadata.CasProcessorExecArg}
-	 */	
-	public CasProcessorExecArg[] getAll();
-	/**
-	 * Removes {@link org.apache.uima.collection.metadata.CasProcessorExecArg} instance found 
-	 * in the list in a given position.
-	 * 
-	 * @param aIndex - position of argument to remove.
-	 */
-	public void remove(int aIndex);
+  /**
+   * Adds new {@link org.apache.uima.collection.metadata.CasProcessorExecArg} instance to the list.
+   * 
+   * @param aArg -
+   *          new argument
+   */
+  public void add(CasProcessorExecArg aArg);
+
+  /**
+   * Returns an {@link org.apache.uima.collection.metadata.CasProcessorExecArg} instance located
+   * with provided index.
+   * 
+   * @param aIndex -
+   *          position of argument in the list
+   * 
+   * @return - {@link org.apache.uima.collection.metadata.CasProcessorExecArg} instance
+   * @throws CpeDescriptorException
+   */
+  public CasProcessorExecArg get(int aIndex) throws CpeDescriptorException;
+
+  /**
+   * Returns ALL {@link org.apache.uima.collection.metadata.CasProcessorExecArg} instances.
+   * 
+   * @return array of {@link org.apache.uima.collection.metadata.CasProcessorExecArg}
+   */
+  public CasProcessorExecArg[] getAll();
+
+  /**
+   * Removes {@link org.apache.uima.collection.metadata.CasProcessorExecArg} instance found in the
+   * list in a given position.
+   * 
+   * @param aIndex -
+   *          position of argument to remove.
+   */
+  public void remove(int aIndex);
 }

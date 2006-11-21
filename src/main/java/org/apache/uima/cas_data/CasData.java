@@ -23,50 +23,47 @@ import java.io.Serializable;
 import java.util.Iterator;
 
 /**
- * Interface for directly accessing and manipulating the data in the 
- * Common Analysis Structure.  
+ * Interface for directly accessing and manipulating the data in the Common Analysis Structure.
  * <p>
- * The CAS Data is a collection of {@link FeatureStructure}s, where each
- * FeatureStructure has an optional ID, a type (represented as a string), 
- * and a collection of features, which are attribute-value pairs.  Feature 
- * names are strings, and their values may be primitives (String, integer, 
- * or float) or references, via ID, to one or more other FeatureStuctures.  
- * Circular references are allowed.  
+ * The CAS Data is a collection of {@link FeatureStructure}s, where each FeatureStructure has an
+ * optional ID, a type (represented as a string), and a collection of features, which are
+ * attribute-value pairs. Feature names are strings, and their values may be primitives (String,
+ * integer, or float) or references, via ID, to one or more other FeatureStuctures. Circular
+ * references are allowed.
  * <p>
- * Note on Arrays:  Arrays are represented by {@link ArrayFS}, which
- * is a subtype of {@link FeatureStructure}.  Arrays are NOT primitive values.
- * See {@link FeatureStructure} for more information.
+ * Note on Arrays: Arrays are represented by {@link ArrayFS}, which is a subtype of
+ * {@link FeatureStructure}. Arrays are NOT primitive values. See {@link FeatureStructure} for more
+ * information.
  * <p>
  * FeatureStructures also have a property <code>indexed</code>, which determines whether the
- * FeatureStructure should be added to the CAS's indexes if the CAS Data is
- * converted to a CAS Object.  The CasData itself does not provide indexes.    
- *
+ * FeatureStructure should be added to the CAS's indexes if the CAS Data is converted to a CAS
+ * Object. The CasData itself does not provide indexes.
+ * 
  * 
  */
-public interface CasData extends Serializable
-{
+public interface CasData extends Serializable {
   /**
-   * Get an iterator over all top-level FeatureStructures, in no particular 
-   * order.
+   * Get an iterator over all top-level FeatureStructures, in no particular order.
    * 
    * @return an iterator over {@link FeatureStructure} objects.
    */
   public Iterator getFeatureStructures();
 
   /**
-   * Adds a FeatureStructure to the list of top-level FeatureStructures
-   * contained in this CasData.
+   * Adds a FeatureStructure to the list of top-level FeatureStructures contained in this CasData.
    * 
-   * @param aFS the FeatureStructure to be added
+   * @param aFS
+   *          the FeatureStructure to be added
    */
   public void addFeatureStructure(FeatureStructure aFS);
 
   /**
-   * Removes a FeatureStructure to this CasData.  Note that this only removes
-   * the FeatureStructure from the top-level list.  If the FeatureStructure
-   * is a value of a feature, it is will still be accessible through that path.
+   * Removes a FeatureStructure to this CasData. Note that this only removes the FeatureStructure
+   * from the top-level list. If the FeatureStructure is a value of a feature, it is will still be
+   * accessible through that path.
    * 
-   * @param aFS the FeatureStructure to be removed
+   * @param aFS
+   *          the FeatureStructure to be removed
    */
-  public void removeFeatureStructure(FeatureStructure aFS); 
+  public void removeFeatureStructure(FeatureStructure aFS);
 }

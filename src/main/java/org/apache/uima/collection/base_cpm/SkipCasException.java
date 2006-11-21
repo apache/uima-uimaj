@@ -20,15 +20,15 @@
 package org.apache.uima.collection.base_cpm;
 
 /**
- * Exception to notify the CPM to skip a Cas Processor for the current CAS.
- * Skipping means that the CPM will not call CasProcessor's process() method for
- * the current CAS. It allows the CPM to continue processing.
+ * Exception to notify the CPM to skip a Cas Processor for the current CAS. Skipping means that the
+ * CPM will not call CasProcessor's process() method for the current CAS. It allows the CPM to
+ * continue processing.
  */
 public class SkipCasException extends Exception {
-    private static final long serialVersionUID = -1536918949728720979L;
+  private static final long serialVersionUID = -1536918949728720979L;
 
-    public SkipCasException(String msg) {
-        super(msg);
-    }
+  public SkipCasException(String msg) {
+    super(msg);
+  }
 
 }

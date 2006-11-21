@@ -22,28 +22,30 @@ package org.apache.uima.cas.admin;
 import org.apache.uima.cas.CASException;
 
 /**
- * Defines a pre-order on types.  This pre-order is later embedded in a total
- * order an can be used in index comparators.
+ * Defines a pre-order on types. This pre-order is later embedded in a total order an can be used in
+ * index comparators.
  * 
  * 
  */
 public interface LinearTypeOrderBuilder {
-  
+
   /**
-   * Add pairs types[i] &lt; types[i+1], for each i &lt; (types.length-1), to 
-   * the partial sort order.  This method can be called as often as desired.  It
-   * will throw an exception if the pairs could not be successfully added to the relation.
-   * A pair can not be added if the resulting relation is no longer a partial
-   * order.  If you need to know exactly which pair fails, always call add() 
-   * with a two-element array.
+   * Add pairs types[i] &lt; types[i+1], for each i &lt; (types.length-1), to the partial sort
+   * order. This method can be called as often as desired. It will throw an exception if the pairs
+   * could not be successfully added to the relation. A pair can not be added if the resulting
+   * relation is no longer a partial order. If you need to know exactly which pair fails, always
+   * call add() with a two-element array.
+   * 
    * @param types
-   * @exception CASException When adding pairs would make order inconsistent.
+   * @exception CASException
+   *              When adding pairs would make order inconsistent.
    */
   void add(String[] types) throws CASException;
-  
+
   /**
-   * Return a total order of the type names added earlier that is consistent
-   * with the pre-order defined through calls to add().
+   * Return a total order of the type names added earlier that is consistent with the pre-order
+   * defined through calls to add().
+   * 
    * @return An array of Strings in ascending order.
    */
   LinearTypeOrder getOrder() throws CASException;

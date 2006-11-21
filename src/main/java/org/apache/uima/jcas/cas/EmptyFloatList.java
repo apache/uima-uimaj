@@ -24,11 +24,16 @@ import org.apache.uima.jcas.impl.JCas;
 public class EmptyFloatList extends FloatList {
 
   public final static int typeIndexID = JCas.getNextIndex();
-  public final static int type = typeIndexID;
-  public           int getTypeIndexID() {return typeIndexID;}
 
-  // Never called.  Disable default constructor
-  protected EmptyFloatList() {}
+  public final static int type = typeIndexID;
+
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  // Never called. Disable default constructor
+  protected EmptyFloatList() {
+  }
 
   /** Internal - Constructor used by generator */
   public EmptyFloatList(int addr, TOP_Type type) {

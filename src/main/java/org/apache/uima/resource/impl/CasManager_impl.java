@@ -38,149 +38,134 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.util.CasPool;
 
 /**
- * Simple CAS Manager Implementation used in the AnalysisEngine framework.
- * Maintains a pool of 1 CAS for each requestor.
+ * Simple CAS Manager Implementation used in the AnalysisEngine framework. Maintains a pool of 1 CAS
+ * for each requestor.
  */
-public class CasManager_impl implements CasManager
-{
+public class CasManager_impl implements CasManager {
   private ResourceManager mResourceManager;
+
   private ArrayList mMetaDataList = new ArrayList();
+
   private Map mRequestorToCasPoolMap = new HashMap();
+
   private Map mCasToCasPoolMap = new HashMap();
+
   private CasDefinition mCasDefinition = null;
-  
-  public CasManager_impl(ResourceManager aResourceManager)
-  {
+
+  public CasManager_impl(ResourceManager aResourceManager) {
     mResourceManager = aResourceManager;
   }
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.CasManager#addMetaData(org.apache.uima.resource.metadata.ProcessingResourceMetaData)
    */
-  public void addMetaData(ProcessingResourceMetaData aMetaData)
-  {
+  public void addMetaData(ProcessingResourceMetaData aMetaData) {
     mMetaDataList.add(aMetaData);
-    mCasDefinition = null; //mark this stale
+    mCasDefinition = null; // mark this stale
   }
-  
-  
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.CasManager#getCasDefinition()
    */
-  public CasDefinition getCasDefinition()
-    throws ResourceInitializationException
-  {
-    if (mCasDefinition == null)
-    {
+  public CasDefinition getCasDefinition() throws ResourceInitializationException {
+    if (mCasDefinition == null) {
       mCasDefinition = new CasDefinition(mMetaDataList, mResourceManager);
-    } 
+    }
 
-   return mCasDefinition;
+    return mCasDefinition;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.CasManager#getCAS(org.apache.uima.analysis_engine.AnalysisEngine)
    */
-  public CAS getCas(String aRequestorContextName)
-  {
-    CasPool pool = (CasPool)mRequestorToCasPoolMap.get(aRequestorContextName);
-    if (pool == null)
-    {
+  public CAS getCas(String aRequestorContextName) {
+    CasPool pool = (CasPool) mRequestorToCasPoolMap.get(aRequestorContextName);
+    if (pool == null) {
       throw new UIMARuntimeException(UIMARuntimeException.REQUESTED_TOO_MANY_CAS_INSTANCES,
-          new Object[]{aRequestorContextName, "1", "0"});
-    }    
+                      new Object[] { aRequestorContextName, "1", "0" });
+    }
     return pool.getCas(0);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.CasManager#releaseCAS(org.apache.uima.cas.CAS)
    */
-  public void releaseCas(AbstractCas aCAS)
-  {
-    CasPool pool = (CasPool)mCasToCasPoolMap.get(aCAS);
-    if (pool == null)
-    {
-      //CAS doesn't belong to this CasManager!
-      throw new UIMARuntimeException(
-          UIMARuntimeException.CAS_RELEASED_TO_WRONG_CAS_MANAGER, new Object[0]);
+  public void releaseCas(AbstractCas aCAS) {
+    CasPool pool = (CasPool) mCasToCasPoolMap.get(aCAS);
+    if (pool == null) {
+      // CAS doesn't belong to this CasManager!
+      throw new UIMARuntimeException(UIMARuntimeException.CAS_RELEASED_TO_WRONG_CAS_MANAGER,
+                      new Object[0]);
+    } else {
+      pool.releaseCas((CAS) aCAS);
     }
-    else
-    {
-      pool.releaseCas((CAS)aCAS);
-    }  
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.CasManager#setMinimumCasPoolSize(java.lang.String, int)
    */
-  public void defineCasPool(String aRequestorContextName, int aSize, Properties aPerformanceTuningSettings)
-     throws ResourceInitializationException
-  {    
-    if (aSize > 0)
-    {
-      CasPool pool = (CasPool)mRequestorToCasPoolMap.get(aRequestorContextName);
-      if (pool == null)
-      {
-        //this requestor hasn't requested a CAS before 
+  public void defineCasPool(String aRequestorContextName, int aSize,
+                  Properties aPerformanceTuningSettings) throws ResourceInitializationException {
+    if (aSize > 0) {
+      CasPool pool = (CasPool) mRequestorToCasPoolMap.get(aRequestorContextName);
+      if (pool == null) {
+        // this requestor hasn't requested a CAS before
         pool = new CasPool(aSize, getCasDefinition(), aPerformanceTuningSettings);
         populateCasToCasPoolMap(pool);
         mRequestorToCasPoolMap.put(aRequestorContextName, pool);
-      }
-      else
-      {
+      } else {
         throw new UIMARuntimeException(UIMARuntimeException.DEFINE_CAS_POOL_CALLED_TWICE,
-            new Object[]{aRequestorContextName});
+                        new Object[] { aRequestorContextName });
       }
-    }  
+    }
   }
-  
+
   /**
    * Gets a specified interface to a CAS.
-   * @param cas The CAS
-   * @param requiredInterface interface to get.  Currently must be one
-   *    of CAS or JCas.
+   * 
+   * @param cas
+   *          The CAS
+   * @param requiredInterface
+   *          interface to get. Currently must be one of CAS or JCas.
    */
-  public AbstractCas getCasInterface(CAS cas, Class requiredInterface)
-  {
-    if (requiredInterface == CAS.class)
-    {
+  public AbstractCas getCasInterface(CAS cas, Class requiredInterface) {
+    if (requiredInterface == CAS.class) {
       return cas;
-    }
-    else if (requiredInterface == JCas.class)
-    {
-      try
-      {
+    } else if (requiredInterface == JCas.class) {
+      try {
         return cas.getJCas();
-      }
-      catch (CASException e)
-      {
+      } catch (CASException e) {
         throw new UIMARuntimeException(e);
       }
-    }
-    else if (requiredInterface.isInstance(cas)) //covers AbstractCas
+    } else if (requiredInterface.isInstance(cas)) // covers AbstractCas
     {
       return cas;
     }
     {
-       throw new UIMARuntimeException(UIMARuntimeException.UNSUPPORTED_CAS_INTERFACE,
-           new Object[]{requiredInterface});
-    }  
-  }  
-  
-  private void populateCasToCasPoolMap(CasPool aCasPool)
-  {
+      throw new UIMARuntimeException(UIMARuntimeException.UNSUPPORTED_CAS_INTERFACE,
+                      new Object[] { requiredInterface });
+    }
+  }
+
+  private void populateCasToCasPoolMap(CasPool aCasPool) {
     CAS[] casArray = new CAS[aCasPool.getSize()];
-    for (int i = 0; i < casArray.length; i++)
-    {
-      casArray[i] = ((TCASImpl)aCasPool.getCas()).getBaseCAS();
+    for (int i = 0; i < casArray.length; i++) {
+      casArray[i] = ((TCASImpl) aCasPool.getCas()).getBaseCAS();
       mCasToCasPoolMap.put(casArray[i], aCasPool);
     }
-    for (int i = 0; i < casArray.length; i++)
-    {
+    for (int i = 0; i < casArray.length; i++) {
       aCasPool.releaseCas(casArray[i]);
-    }    
+    }
   }
-  
-  
+
 }

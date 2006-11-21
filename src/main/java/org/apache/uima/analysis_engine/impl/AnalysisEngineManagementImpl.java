@@ -34,158 +34,149 @@ import org.apache.uima.analysis_engine.AnalysisEngineManagement;
  * Implements Monitoring/Management interface to an AnalysisEngine.
  * 
  */
-public class AnalysisEngineManagementImpl implements AnalysisEngineManagementImplMBean, AnalysisEngineManagement
-{
-  private String name;
-  private long numProcessed;
-  private long markedAnalysisTime;
-  private long markedBatchProcessCompleteTime;
-  private long markedCollectionProcessCompleteTime;
-  private long markedServiceCallTime;
-  private long analysisTime;
-  private long batchProcessCompleteTime;
-  private long collectionProcessCompleteTime;
-  private long serviceCallTime;
-  private Map components = new HashMap();
-  private String uniqueMBeanName;
+public class AnalysisEngineManagementImpl implements AnalysisEngineManagementImplMBean,
+                AnalysisEngineManagement {
+
+  static final DecimalFormat format = new DecimalFormat("0.##");
+
+  /**
+   * This static set is needed to keep track of what names we've already used for "root" MBeans
+   * (those representing top-level AEs and CPEs).
+   */
+  private static Set usedRootNames = new HashSet();
   
-  public void reportAnalysisTime(long time)
-  {
+  private String name;
+
+  private long numProcessed;
+
+  private long markedAnalysisTime;
+
+  private long markedBatchProcessCompleteTime;
+
+  private long markedCollectionProcessCompleteTime;
+
+  private long markedServiceCallTime;
+
+  private long analysisTime;
+
+  private long batchProcessCompleteTime;
+
+  private long collectionProcessCompleteTime;
+
+  private long serviceCallTime;
+
+  private Map components = new HashMap();
+
+  private String uniqueMBeanName;
+
+  public void reportAnalysisTime(long time) {
     analysisTime += time;
   }
-  
-  public void reportBatchProcessCompleteTime(long time)
-  {
+
+  public void reportBatchProcessCompleteTime(long time) {
     batchProcessCompleteTime += time;
   }
 
-  public void reportCollectionProcessCompleteTime(long time)
-  {
+  public void reportCollectionProcessCompleteTime(long time) {
     collectionProcessCompleteTime += time;
   }
 
-  public void reportServiceCallTime(long time)
-  {
+  public void reportServiceCallTime(long time) {
     serviceCallTime += time;
   }
-  
-  public void incrementCASesProcessed()
-  {
+
+  public void incrementCASesProcessed() {
     numProcessed++;
   }
-  
-  public long getBatchProcessCompleteTime()
-  {
+
+  public long getBatchProcessCompleteTime() {
     return batchProcessCompleteTime;
   }
 
-  public long getCollectionProcessCompleteTime()
-  {
+  public long getCollectionProcessCompleteTime() {
     return collectionProcessCompleteTime;
   }
 
-  public long getAnalysisTime()
-  {
+  public long getAnalysisTime() {
     return analysisTime;
   }
 
-  public long getServiceCallTime()
-  {
+  public long getServiceCallTime() {
     return serviceCallTime;
   }
-  
-  
+
   /**
-   * Internal use only.  Used to implement backwards compatibility with
-   * the ProcessTrace interface.
+   * Internal use only. Used to implement backwards compatibility with the ProcessTrace interface.
    */
-  public void mark()
-  {
+  public void mark() {
     markedAnalysisTime = analysisTime;
     markedBatchProcessCompleteTime = batchProcessCompleteTime;
     markedCollectionProcessCompleteTime = collectionProcessCompleteTime;
     markedServiceCallTime = serviceCallTime;
-    //mark components also
+    // mark components also
     Iterator iter = components.values().iterator();
-    while (iter.hasNext())
-    {
-      AnalysisEngineManagementImpl component = (AnalysisEngineManagementImpl)iter.next();
+    while (iter.hasNext()) {
+      AnalysisEngineManagementImpl component = (AnalysisEngineManagementImpl) iter.next();
       component.mark();
     }
   }
-  
+
   /**
-   * Internal use only.  Used to implement backwards compatibility with
-   * the ProcessTrace interface.
+   * Internal use only. Used to implement backwards compatibility with the ProcessTrace interface.
    */
-  public long getBatchProcessCompleteTimeSinceMark()
-  {
+  public long getBatchProcessCompleteTimeSinceMark() {
     return batchProcessCompleteTime - markedBatchProcessCompleteTime;
   }
 
   /**
-   * Internal use only.  Used to implement backwards compatibility with
-   * the ProcessTrace interface.
+   * Internal use only. Used to implement backwards compatibility with the ProcessTrace interface.
    */
-  public long getCollectionProcessCompleteTimeSinceMark()
-  {
+  public long getCollectionProcessCompleteTimeSinceMark() {
     return collectionProcessCompleteTime - markedCollectionProcessCompleteTime;
   }
 
   /**
-   * Internal use only.  Used to implement backwards compatibility with
-   * the ProcessTrace interface.
+   * Internal use only. Used to implement backwards compatibility with the ProcessTrace interface.
    */
-  public long getAnalysisTimeSinceMark()
-  {
+  public long getAnalysisTimeSinceMark() {
     return analysisTime - markedAnalysisTime;
   }
 
   /**
-   * Internal use only.  Used to implement backwards compatibility with
-   * the ProcessTrace interface.
+   * Internal use only. Used to implement backwards compatibility with the ProcessTrace interface.
    */
-  public long getServiceCallTimeSinceMark()
-  {
+  public long getServiceCallTimeSinceMark() {
     return serviceCallTime - markedServiceCallTime;
   }
 
-  
-  public long getNumberOfCASesProcessed()
-  {
+  public long getNumberOfCASesProcessed() {
     return numProcessed;
   }
 
-  public String getCASesPerSecond()
-  {    
+  public String getCASesPerSecond() {
     if (analysisTime == 0)
       return "0";
-    float docsPerSecond = (float)numProcessed / analysisTime * 1000;   
+    float docsPerSecond = (float) numProcessed / analysisTime * 1000;
     return format.format(docsPerSecond);
   }
-  
-  public Map getComponents()
-  {
+
+  public Map getComponents() {
     return Collections.unmodifiableMap(components);
   }
-  
-  public void addComponent(String key, AnalysisEngineManagementImpl component)
-  {
+
+  public void addComponent(String key, AnalysisEngineManagementImpl component) {
     components.put(key, component);
   }
-  
-  public String getName()
-  {
+
+  public String getName() {
     return name;
   }
-     
-  public String getUniqueMBeanName()
-  {
+
+  public String getUniqueMBeanName() {
     return uniqueMBeanName;
   }
 
-  public void resetStats()
-  {
+  public void resetStats() {
     numProcessed = 0;
     analysisTime = 0;
     batchProcessCompleteTime = 0;
@@ -195,87 +186,71 @@ public class AnalysisEngineManagementImpl implements AnalysisEngineManagementImp
     markedBatchProcessCompleteTime = 0;
     markedCollectionProcessCompleteTime = 0;
     markedServiceCallTime = 0;
-    //reset components also
+    // reset components also
     Iterator iter = components.values().iterator();
-    while (iter.hasNext())
-    {
-      AnalysisEngineManagementImpl component = (AnalysisEngineManagementImpl)iter.next();
+    while (iter.hasNext()) {
+      AnalysisEngineManagementImpl component = (AnalysisEngineManagementImpl) iter.next();
       component.resetStats();
     }
-  }  
+  }
 
-  
   /**
-   * Sets the name of this AnalyaisEngineManagement object, and also computes the
-   * unique MBean name that can later be used to register this object with an 
-   * MBeanServer.
-   * @param aName the simple name of this AnalysisEngine (generally this is the <code>name</code>
-   *   property from the AnalysisEngineMetaData)
-   * @param aContext the UimaContext for this AnalysisEngine.  Needed to compute the
-   *   unique name, which is hierarchical
+   * Sets the name of this AnalyaisEngineManagement object, and also computes the unique MBean name
+   * that can later be used to register this object with an MBeanServer.
+   * 
+   * @param aName
+   *          the simple name of this AnalysisEngine (generally this is the <code>name</code>
+   *          property from the AnalysisEngineMetaData)
+   * @param aContext
+   *          the UimaContext for this AnalysisEngine. Needed to compute the unique name, which is
+   *          hierarchical
    */
-  public void setName(String aName, UimaContextAdmin aContext)
-  {
-    //set the simple name
+  public void setName(String aName, UimaContextAdmin aContext) {
+    // set the simple name
     name = aName;
-    
-    //compute the unique name
-    //first get the rootMBean and assign it a unique name if it doesn't already have one)
-    AnalysisEngineManagementImpl rootMBean =
-       (AnalysisEngineManagementImpl)aContext.getRootContext().getManagementInterface();    
-    if (rootMBean.getUniqueMBeanName() == null)
-    {
-      //try to find a unique name for the root MBean
+
+    // compute the unique name
+    // first get the rootMBean and assign it a unique name if it doesn't already have one)
+    AnalysisEngineManagementImpl rootMBean = (AnalysisEngineManagementImpl) aContext
+                    .getRootContext().getManagementInterface();
+    if (rootMBean.getUniqueMBeanName() == null) {
+      // try to find a unique name for the root MBean
       String baseRootName = rootMBean.getName();
-      if (baseRootName == null)
-      {
-        baseRootName = "CPE"; //CPE's don't currently have names
+      if (baseRootName == null) {
+        baseRootName = "CPE"; // CPE's don't currently have names
       }
       String rootName = baseRootName;
       int i = 2;
-      while (usedRootNames.contains(rootName))
-      {
+      while (usedRootNames.contains(rootName)) {
         rootName = baseRootName + " " + i++;
       }
       usedRootNames.add(rootName);
-      //create a propertly-formatted MBean name
+      // create a propertly-formatted MBean name
       rootMBean.uniqueMBeanName = "org.apache.uima:name=" + rootName;
-    } 
-    
-    if (rootMBean != this)
-    {
-      //form the MBean name hierarchically starting from the root name
+    }
+
+    if (rootMBean != this) {
+      // form the MBean name hierarchically starting from the root name
       String rootName = rootMBean.getUniqueMBeanName();
-      //strip off the org.apache.uima:name= prefix to get just the simple name
+      // strip off the org.apache.uima:name= prefix to get just the simple name
       rootName = rootName.substring("org.apache.uima:name=".length());
-      //form the hierarchical MBean name
+      // form the hierarchical MBean name
       String prefix = "org.apache.uima:p0=" + rootName + " Components,";
       uniqueMBeanName = makeMBeanName(prefix, aContext.getQualifiedContextName().substring(1), 1);
     }
   }
-  
+
   /**
    * Recursive utility method for generating a hierarchical mbean name
    */
-  private static String makeMBeanName(String prefix, String contextName, int depth)
-  {
+  private static String makeMBeanName(String prefix, String contextName, int depth) {
     int firstSlash = contextName.indexOf('/');
-    if (firstSlash == contextName.length() - 1)
-    {
+    if (firstSlash == contextName.length() - 1) {
       return prefix + "name=" + contextName.substring(0, contextName.length() - 1);
-    }
-    else
-    {
-      String newPrefix = prefix + "p" + depth + "=" + contextName.substring(0,firstSlash) + " Components,";
+    } else {
+      String newPrefix = prefix + "p" + depth + "=" + contextName.substring(0, firstSlash)
+                      + " Components,";
       return makeMBeanName(newPrefix, contextName.substring(firstSlash + 1), depth + 1);
     }
   }
-  
-  static final DecimalFormat format = new DecimalFormat("0.##");
-  
-  /**
-   * This static set is needed to keep track of what names we've already used
-   * for "root" MBeans (those representing top-level AEs and CPEs).
-   */
-  private static Set usedRootNames = new HashSet();
 }

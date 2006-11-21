@@ -33,115 +33,114 @@ import java.util.ArrayList;
 
 public class AnnotationTreeNodeImpl implements AnnotationTreeNode {
 
-    private AnnotationFS annot;
+  private AnnotationFS annot;
 
-    private AnnotationTreeNodeImpl parent;
+  private AnnotationTreeNodeImpl parent;
 
-    private ArrayList dtrs;
+  private ArrayList dtrs;
 
-    private int pos;
+  private int pos;
 
-    /**
-     * 
-     */
-    AnnotationTreeNodeImpl() {
-        super();
-        this.dtrs = new ArrayList();
+  /**
+   * 
+   */
+  AnnotationTreeNodeImpl() {
+    super();
+    this.dtrs = new ArrayList();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.text.AnnotationTreeNode#getParent()
+   */
+  public AnnotationTreeNode getParent() {
+    return this.parent;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.text.AnnotationTreeNode#getChildCount()
+   */
+  public int getChildCount() {
+    return this.dtrs.size();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.text.AnnotationTreeNode#getChild(int)
+   */
+  public AnnotationTreeNode getChild(int i) throws CASRuntimeException {
+    try {
+      return (AnnotationTreeNode) this.dtrs.get(i);
+    } catch (IndexOutOfBoundsException e) {
+      throw new CASRuntimeException(CASRuntimeException.CHILD_INDEX_OOB);
     }
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.text.AnnotationTreeNode#getParent()
-     */
-    public AnnotationTreeNode getParent() {
-        return this.parent;
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.text.AnnotationTreeNode#getNextSibling()
+   */
+  public AnnotationTreeNode getNextSibling() {
+    if (this.parent == null) {
+      return null;
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.text.AnnotationTreeNode#getChildCount()
-     */
-    public int getChildCount() {
-        return this.dtrs.size();
+    try {
+      return this.parent.getChild(this.pos + 1);
+    } catch (CASRuntimeException e) {
+      return null;
     }
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.text.AnnotationTreeNode#getChild(int)
-     */
-    public AnnotationTreeNode getChild(int i) throws CASRuntimeException {
-        try {
-            return (AnnotationTreeNode) this.dtrs.get(i);
-        } catch (IndexOutOfBoundsException e) {
-            throw new CASRuntimeException(CASRuntimeException.CHILD_INDEX_OOB);
-        }
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.text.AnnotationTreeNode#getPreviousSibling()
+   */
+  public AnnotationTreeNode getPreviousSibling() {
+    if (this.parent == null) {
+      return null;
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.text.AnnotationTreeNode#getNextSibling()
-     */
-    public AnnotationTreeNode getNextSibling() {
-        if (this.parent == null) {
-            return null;
-        }
-        try {
-            return this.parent.getChild(this.pos + 1);
-        } catch (CASRuntimeException e) {
-            return null;
-        }
+    try {
+      return this.parent.getChild(this.pos - 1);
+    } catch (CASRuntimeException e) {
+      return null;
     }
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.text.AnnotationTreeNode#getPreviousSibling()
-     */
-    public AnnotationTreeNode getPreviousSibling() {
-        if (this.parent == null) {
-            return null;
-        }
-        try {
-            return this.parent.getChild(this.pos - 1);
-        } catch (CASRuntimeException e) {
-            return null;
-        }
-    }
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.text.AnnotationTreeNode#getChildren()
+   */
+  public ArrayList getChildren() {
+    return this.dtrs;
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.text.AnnotationTreeNode#getChildren()
-     */
-    public ArrayList getChildren() {
-        return this.dtrs;
-    }
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.text.AnnotationTreeNode#get()
+   */
+  public AnnotationFS get() {
+    return this.annot;
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.text.AnnotationTreeNode#get()
-     */
-    public AnnotationFS get() {
-        return this.annot;
-    }
+  // ////////////////////////////////////////////////////////////////////////////
+  // Package private APIs for building the tree.
 
-    // ////////////////////////////////////////////////////////////////////////////
-    // Package private APIs for building the tree.
+  void set(AnnotationFS annot) {
+    this.annot = annot;
+  }
 
-    void set(AnnotationFS annot) {
-        this.annot = annot;
-    }
-
-    void addChild(AnnotationTreeNodeImpl child) {
-        child.pos = this.dtrs.size();
-        child.parent = this;
-        this.dtrs.add(child);
-    }
-
+  void addChild(AnnotationTreeNodeImpl child) {
+    child.pos = this.dtrs.size();
+    child.parent = this;
+    this.dtrs.add(child);
+  }
 
 }

@@ -24,38 +24,35 @@ import org.apache.uima.resource.ResourceServiceStub;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 
 /**
- * A mock ResourceService implementation used for testing communications.
- * Return values of all methods are specified by public fields.  
- * Info on last method called is also specified by public fields.
+ * A mock ResourceService implementation used for testing communications. Return values of all
+ * methods are specified by public fields. Info on last method called is also specified by public
+ * fields.
  * 
- * @author Adam Lally 
+ * @author Adam Lally
  */
-public class TestResourceServiceStub implements ResourceServiceStub
-{
+public class TestResourceServiceStub implements ResourceServiceStub {
   /** Name of last method called */
   public String lastMethodName;
-  
+
   /** Args to last method call */
   public Object[] lastMethodArgs;
 
   /** Return value of getMetaData */
-  public ResourceMetaData getMetaDataReturnValue;  
-  
+  public ResourceMetaData getMetaDataReturnValue;
+
   /**
    * @see org.apache.uima.resource.service.ResourceService#getMetaData()
    */
-  public ResourceMetaData callGetMetaData() throws ResourceServiceException
-  {
+  public ResourceMetaData callGetMetaData() throws ResourceServiceException {
     lastMethodName = "callGetMetaData";
-    lastMethodArgs = new Object[]{};
+    lastMethodArgs = new Object[] {};
     return getMetaDataReturnValue;
   }
 
   /**
    * @see org.apache.uima.resource.service.impl.ResourceServiceStub#destroy()
    */
-  public void destroy()
-  {
+  public void destroy() {
 
   }
 

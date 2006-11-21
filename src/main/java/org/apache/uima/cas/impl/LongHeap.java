@@ -26,57 +26,57 @@ import java.util.Arrays;
  */
 final class LongHeap extends CommonAuxHeap {
 
-	long[] heap;  // is never null after construction
+  long[] heap; // is never null after construction
 
-	LongHeap() {
-		super(DEFAULT_HEAP_BASE_SIZE, DEFAULT_HEAP_MULT_LIMIT);
-	}
+  LongHeap() {
+    super(DEFAULT_HEAP_BASE_SIZE, DEFAULT_HEAP_MULT_LIMIT);
+  }
 
-	LongHeap(int heapBaseSize, int heapMultLimit) {
-		super(heapBaseSize, heapMultLimit);  
-	}
-  
+  LongHeap(int heapBaseSize, int heapMultLimit) {
+    super(heapBaseSize, heapMultLimit);
+  }
+
   final void initMemory() {
     this.heap = new long[this.heapBaseSize];
   }
-  
+
   void growHeapIfNeeded() {
-    if  (heap.length >= heapPos)
+    if (heap.length >= heapPos)
       return;
-        
-    long[] new_array = new long[computeNewArraySize(
-        heap.length, heapPos, GROWTH_FACTOR, heapMultLimit)];
+
+    long[] new_array = new long[computeNewArraySize(heap.length, heapPos, GROWTH_FACTOR,
+                    heapMultLimit)];
     System.arraycopy(heap, 0, new_array, 0, heap.length);
     heap = new_array;
   }
-  
+
   void resetToZeros() {
-      Arrays.fill(this.heap, 0, this.heapPos, (long) NULL);
+    Arrays.fill(this.heap, 0, this.heapPos, (long) NULL);
   }
-  
-	// Getters
-	long getHeapValue(int offset) {
-		return this.heap[offset];		
-	}
 
-	// setters
-	void setHeapValue(long val, int pos) {
-		heap[pos] = val;
-	}
+  // Getters
+  long getHeapValue(int offset) {
+    return this.heap[offset];
+  }
 
-	int addLong(long val) {
-		int pos = reserve(1);
-		heap[pos] = val;
-		return pos;
-	}
+  // setters
+  void setHeapValue(long val, int pos) {
+    heap[pos] = val;
+  }
 
-	protected void reinit(long[] longHeap) {
+  int addLong(long val) {
+    int pos = reserve(1);
+    heap[pos] = val;
+    return pos;
+  }
+
+  protected void reinit(long[] longHeap) {
     int argLength = longHeap.length;
-		if (argLength > heap.length)
-			heap = new long[argLength];
+    if (argLength > heap.length)
+      heap = new long[argLength];
 
-		System.arraycopy(longHeap, 0, heap, 0, argLength);
-		this.heapPos = argLength;
-	}
+    System.arraycopy(longHeap, 0, heap, 0, argLength);
+    this.heapPos = argLength;
+  }
 
 }

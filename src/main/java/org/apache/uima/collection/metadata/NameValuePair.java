@@ -19,40 +19,38 @@
 
 package org.apache.uima.collection.metadata;
 
-
-
 /**
  * Stores a name (String) and value (Object).
- */  
-public interface NameValuePair
-{ 
+ */
+public interface NameValuePair {
 
   /**
    * Gets the name.
    * 
-   * @return the name 
+   * @return the name
    */
   public String getName();
-  
+
   /**
    * Sets the name.
    * 
-   * @param aName a name
+   * @param aName
+   *          a name
    */
   public void setName(String aName);
-
 
   /**
    * Gets the value.
    * 
-   * @return the value 
+   * @return the value
    */
   public Object getValue();
-  
+
   /**
    * Sets the value.
    * 
-   * @param aValue a value
+   * @param aValue
+   *          a value
    */
   public void setValue(Object aValue);
 

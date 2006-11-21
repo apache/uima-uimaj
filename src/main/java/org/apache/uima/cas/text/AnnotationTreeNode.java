@@ -25,55 +25,60 @@ import java.util.ArrayList;
 
 /**
  * Represents a node in an annotation tree.
- *  
+ * 
  * 
  */
 public interface AnnotationTreeNode {
-  
+
   /**
    * Get the parent of this node.
-   * @return The parent of this node, or <code>null</code> if this node has no
-   * parent (root).
+   * 
+   * @return The parent of this node, or <code>null</code> if this node has no parent (root).
    */
   AnnotationTreeNode getParent();
-  
+
   /**
    * Get the number of children this node has.
+   * 
    * @return The number of children.
    */
   int getChildCount();
-  
+
   /**
    * Get the i-th child of this node.
-   * @param i The index of the child.
+   * 
+   * @param i
+   *          The index of the child.
    * @return The i-th child.
-   * @throws CASRuntimeException If <code>i &lt; 0</code> or 
-   * <code>i &gt;= getChildCount()</code>.
+   * @throws CASRuntimeException
+   *           If <code>i &lt; 0</code> or <code>i &gt;= getChildCount()</code>.
    */
   AnnotationTreeNode getChild(int i) throws CASRuntimeException;
-  
+
   /**
    * Get the next sibling (to the right) of this node.
-   * @return The right sibling of this node, or <code>null</code> if no such
-   * sibling exists.
+   * 
+   * @return The right sibling of this node, or <code>null</code> if no such sibling exists.
    */
   AnnotationTreeNode getNextSibling();
-  
+
   /**
    * Get the previous sibling (to the left) of this node.
-   * @return The left sibling of this node, or <code>null</code> if no such
-   * sibling exists.
+   * 
+   * @return The left sibling of this node, or <code>null</code> if no such sibling exists.
    */
   AnnotationTreeNode getPreviousSibling();
-  
+
   /**
    * Get all children of this node as an ArrayList.
+   * 
    * @return An ArrayList of the children.
    */
   ArrayList getChildren();
-  
+
   /**
    * Return the annotation for this node.
+   * 
    * @return The annotation for this node.
    */
   AnnotationFS get();

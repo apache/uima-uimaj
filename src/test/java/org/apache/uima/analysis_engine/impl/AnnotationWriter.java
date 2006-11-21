@@ -37,163 +37,149 @@ import org.apache.uima.test.junit_extension.TestPropertyReader;
 import org.apache.uima.util.ProcessTrace;
 
 /*
- * @author Michael Baessler 
+ * @author Michael Baessler
  * 
  */
 
 /**
- * The AnnotationWriter class writes specified annotations to an output file.
- * The encoding of the output file is UTF-8
+ * The AnnotationWriter class writes specified annotations to an output file. The encoding of the
+ * output file is UTF-8
  */
 
-public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsumer
-{
-	//output file
-	File outFile;
-	//output file writer
-	OutputStreamWriter fileWriter;
-    
-    public static boolean typeSystemInitCalled = false;
+public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsumer {
+  // output file
+  File outFile;
 
-	public AnnotationWriter()
-	{
-	}
+  // output file writer
+  OutputStreamWriter fileWriter;
 
-	/**
-	 * Initializes this CAS Consumer with the parameters specified in the 
-	 * descriptor.
-	 * 
-	 * @throws ResourceInitializationException if there is error in 
-	 * initializing the resources
-	 */
-	public void initialize() throws ResourceInitializationException
-	{
+  public static boolean typeSystemInitCalled = false;
 
-		//get test base path setting
-		String junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
-		// extract configuration parameter settings
-		outFile = new File(junitTestBasePath,"CpmOutput.txt");
-		
-		try
-      	{
-        	 fileWriter = new OutputStreamWriter(new FileOutputStream(outFile, false), "UTF-8");
-      	}
-      	catch (Exception e)
-        {
-			throw new ResourceInitializationException(e);
-        }
-        typeSystemInitCalled = false;
-	}
+  public AnnotationWriter() {
+  }
 
+  /**
+   * Initializes this CAS Consumer with the parameters specified in the descriptor.
+   * 
+   * @throws ResourceInitializationException
+   *           if there is error in initializing the resources
+   */
+  public void initialize() throws ResourceInitializationException {
 
-	/* (non-Javadoc)
+    // get test base path setting
+    String junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
+    // extract configuration parameter settings
+    outFile = new File(junitTestBasePath, "CpmOutput.txt");
+
+    try {
+      fileWriter = new OutputStreamWriter(new FileOutputStream(outFile, false), "UTF-8");
+    } catch (Exception e) {
+      throw new ResourceInitializationException(e);
+    }
+    typeSystemInitCalled = false;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.CasConsumer_ImplBase#typeSystemInit(org.apache.uima.cas.TypeSystem)
    */
-  public void typeSystemInit(TypeSystem arg0) throws ResourceInitializationException
-  {
+  public void typeSystemInit(TypeSystem arg0) throws ResourceInitializationException {
     typeSystemInitCalled = true;
   }
 
   /**
-	 * print the cas content to the output file
-	 * 
-	 * @param aCAS CasContainer which has been populated  by the TAEs
-	 * 
-	 * @throws ResourceProcessException if there is an error in processing the 
-	 * 	Resource
-	 * 
-	 * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#processCas(CAS)
-	 */
-	public synchronized void processCas(CAS aCAS) throws ResourceProcessException
-	{
-	   try
-	   {	
-  			//iterate and print annotations
-			FSIterator typeIterator = aCAS.getTCAS().getAnnotationIndex().iterator();
+   * print the cas content to the output file
+   * 
+   * @param aCAS
+   *          CasContainer which has been populated by the TAEs
+   * 
+   * @throws ResourceProcessException
+   *           if there is an error in processing the Resource
+   * 
+   * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#processCas(CAS)
+   */
+  public synchronized void processCas(CAS aCAS) throws ResourceProcessException {
+    try {
+      // iterate and print annotations
+      FSIterator typeIterator = aCAS.getTCAS().getAnnotationIndex().iterator();
 
-			for (typeIterator.moveToFirst(); typeIterator.isValid(); typeIterator.moveToNext())
-			{
-				AnnotationFS annot = (AnnotationFS) typeIterator.get();
+      for (typeIterator.moveToFirst(); typeIterator.isValid(); typeIterator.moveToNext()) {
+        AnnotationFS annot = (AnnotationFS) typeIterator.get();
 
-				fileWriter.write(annot.getCoveredText());
-				fileWriter.write(System.getProperty("line.separator"));
-				fileWriter.write(annot.toString());	
-			}
-			fileWriter.flush();			
-		}
-		catch(Exception ex)
-		{
-			ex.printStackTrace();
-		}
-	}
+        fileWriter.write(annot.getCoveredText());
+        fileWriter.write(System.getProperty("line.separator"));
+        fileWriter.write(annot.toString());
+      }
+      fileWriter.flush();
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
+  }
 
-	/** 
-	 * Called when a batch of processing is completed.
-	 * 
-	 * @param aTrace ProcessTrace object that will log events in this method.
-	 * @throws ResourceProcessException if there is an error in processing the 
-	 * 	Resource
-	 * @throws IOException if there is an IO Error
-	 * 
-	 * @see org.apache.uima.collection.CasConsumer#batchProcessComplete(ProcessTrace)
-	 **/
-	public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException, IOException
-	{
-		// nothing to do in this case	as AnnotationPrinter doesnot do 
-		//anything cumulatively		
-	}
+  /**
+   * Called when a batch of processing is completed.
+   * 
+   * @param aTrace
+   *          ProcessTrace object that will log events in this method.
+   * @throws ResourceProcessException
+   *           if there is an error in processing the Resource
+   * @throws IOException
+   *           if there is an IO Error
+   * 
+   * @see org.apache.uima.collection.CasConsumer#batchProcessComplete(ProcessTrace)
+   */
+  public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
+                  IOException {
+    // nothing to do in this case as AnnotationPrinter doesnot do
+    // anything cumulatively
+  }
 
-	/** 
-	 * Called when the entire collection is completed.
-	 * 
-	 * @param aTrace ProcessTrace object that will log events in this method.
-	 * @throws ResourceProcessException if there is an error in processing the 
-	 * 	Resource
-	 * @throws IOException if there is an IO Error
-	 * @see org.apache.uima.collection.CasConsumer#collectionProcessComplete(ProcessTrace) 
-	 **/
-	public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException, IOException
-	{
-		if (fileWriter != null)
-		{
-			fileWriter.close();
-		}
-	}
+  /**
+   * Called when the entire collection is completed.
+   * 
+   * @param aTrace
+   *          ProcessTrace object that will log events in this method.
+   * @throws ResourceProcessException
+   *           if there is an error in processing the Resource
+   * @throws IOException
+   *           if there is an IO Error
+   * @see org.apache.uima.collection.CasConsumer#collectionProcessComplete(ProcessTrace)
+   */
+  public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
+                  IOException {
+    if (fileWriter != null) {
+      fileWriter.close();
+    }
+  }
 
-	/** 
-	 * Reconfigures the parameters of this Consumer. <br>This is used in 
-	 * conjunction with the setConfigurationParameterValue to set the 
-	 * configuration parameter values to values other than the ones specified in
-	 *  the descriptor.
-	 * 
-	 * @throws ResourceConfigurationException if the configuration parameter
-	*   settings are invalid
-	 * 
-	 * @see org.apache.uima.resource.ConfigurableResource#reconfigure()
-	 **/
-	public void reconfigure() throws ResourceConfigurationException
-	{
+  /**
+   * Reconfigures the parameters of this Consumer. <br>
+   * This is used in conjunction with the setConfigurationParameterValue to set the configuration
+   * parameter values to values other than the ones specified in the descriptor.
+   * 
+   * @throws ResourceConfigurationException
+   *           if the configuration parameter settings are invalid
+   * 
+   * @see org.apache.uima.resource.ConfigurableResource#reconfigure()
+   */
+  public void reconfigure() throws ResourceConfigurationException {
 
-	}
+  }
 
-	/** 
-	 * Called if clean up is needed in case of exit under error conditions.
-	 * 
-	 * @see org.apache.uima.resource.Resource#destroy() 
-	 **/
-	public void destroy()
-	{
-		if (fileWriter != null)
-		{
-			try
-			{
-				fileWriter.close();
-			}
-			catch (IOException e)
-			{
-				// ignore IOException on destroy
-			}
-		}
-	}
+  /**
+   * Called if clean up is needed in case of exit under error conditions.
+   * 
+   * @see org.apache.uima.resource.Resource#destroy()
+   */
+  public void destroy() {
+    if (fileWriter != null) {
+      try {
+        fileWriter.close();
+      } catch (IOException e) {
+        // ignore IOException on destroy
+      }
+    }
+  }
 
 }

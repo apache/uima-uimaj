@@ -22,12 +22,10 @@ package org.apache.uima.internal.util;
 /**
  * 
  */
-public class MutableInteger
-{
+public class MutableInteger {
   public int intValue;
-  
-  public MutableInteger(int x)
-  {
+
+  public MutableInteger(int x) {
     this.intValue = x;
-  }  
+  }
 }

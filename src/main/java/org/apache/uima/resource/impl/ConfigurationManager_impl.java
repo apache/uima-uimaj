@@ -30,45 +30,44 @@ import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
  * Basic standalone Configuration Manager implmentation.
  * 
  */
-public class ConfigurationManager_impl extends ConfigurationManagerImplBase
-{  	
-	/* (non-Javadoc)
-	 * @see org.apache.uima.resource.impl.ConfigurationManagerImplBase#declareParameters(java.lang.String, org.apache.uima.resource.metadata.ConfigurationParameter[], org.apache.uima.resource.metadata.ConfigurationParameterSettings, java.lang.String, java.lang.String)
-	 */
-	protected void declareParameters(
-		String aGroupName,
-		ConfigurationParameter[] aParams,
-		ConfigurationParameterSettings aSettings,
-		String aContextName,
-		String aParentContextName)
-	{
-		super.declareParameters(aGroupName, aParams, aSettings, aContextName, aParentContextName);
-		//iterate over config. param _declarations_ and build mSharedParamNap
-		if (aParams != null) 
-		{
-			for (int i = 0; i < aParams.length; i++)
-			{
-				String qname = makeQualifiedName(aContextName, aParams[i].getName(), aGroupName);
-   
-		//get the actual setting and store it in the Map (even if it's a null value)
-			Object paramValue = aSettings.getParameterValue(aGroupName, aParams[i].getName());
-			mSharedParamMap.put(qname, paramValue);
-		  }
-		}
-	}
+public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.resource.impl.ConfigurationManagerImplBase#lookupSharedParamNoLinks(java.lang.String)
-	 */
-	protected Object lookupSharedParamNoLinks(String aCompleteName)
-	{
-		return mSharedParamMap.get(aCompleteName);
-	}
-
-  
   /**
-   * Map containing configuration parameter values and links for parameter values shared
-   * by all sessions.
+   * Map containing configuration parameter values and links for parameter values shared by all
+   * sessions.
    */
-  private Map mSharedParamMap = Collections.synchronizedMap(new HashMap());  
+  private Map mSharedParamMap = Collections.synchronizedMap(new HashMap());
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.impl.ConfigurationManagerImplBase#declareParameters(java.lang.String,
+   *      org.apache.uima.resource.metadata.ConfigurationParameter[],
+   *      org.apache.uima.resource.metadata.ConfigurationParameterSettings, java.lang.String,
+   *      java.lang.String)
+   */
+  protected void declareParameters(String aGroupName, ConfigurationParameter[] aParams,
+                  ConfigurationParameterSettings aSettings, String aContextName,
+                  String aParentContextName) {
+    super.declareParameters(aGroupName, aParams, aSettings, aContextName, aParentContextName);
+    // iterate over config. param _declarations_ and build mSharedParamNap
+    if (aParams != null) {
+      for (int i = 0; i < aParams.length; i++) {
+        String qname = makeQualifiedName(aContextName, aParams[i].getName(), aGroupName);
+
+        // get the actual setting and store it in the Map (even if it's a null value)
+        Object paramValue = aSettings.getParameterValue(aGroupName, aParams[i].getName());
+        mSharedParamMap.put(qname, paramValue);
+      }
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.impl.ConfigurationManagerImplBase#lookupSharedParamNoLinks(java.lang.String)
+   */
+  protected Object lookupSharedParamNoLinks(String aCompleteName) {
+    return mSharedParamMap.get(aCompleteName);
+  }
 }

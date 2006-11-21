@@ -19,48 +19,49 @@
 
 package org.apache.uima.internal.util.text;
 
-
 public interface INormalizationResult {
 
-   /**
-    * Returns the char[] holding the normalized text.
-    * 
-    * <p><b>Note</b>: do not keep a handle to the char[] between calls to
-    * <code>normalize()</code>, since the char[] buffer may be reallocated.
-    * 
-    * @return The char[] containing the normalized text processed by {@link AbstractCustomNormalizer#normalize(char[],int,int)}.
-    */
-   public char[] getBuffer();
+  /**
+   * Returns the char[] holding the normalized text.
+   * 
+   * <p>
+   * <b>Note</b>: do not keep a handle to the char[] between calls to <code>normalize()</code>,
+   * since the char[] buffer may be reallocated.
+   * 
+   * @return The char[] containing the normalized text processed by
+   *         {@link AbstractCustomNormalizer#normalize(char[],int,int)}.
+   */
+  public char[] getBuffer();
 
-   /**
-    * @return The index within the char[] ({@link #getBuffer()}), where the first normalized character has been written.
-    *
-    */
-   public int getStartIndex(); 
+  /**
+   * @return The index within the char[] ({@link #getBuffer()}), where the first normalized
+   *         character has been written.
+   * 
+   */
+  public int getStartIndex();
 
-   /**
-    * @return The index+1 of the last normalized character in the char[] ({@link #getBuffer()}).
-    * 			This index may be used as start index for retrieving the untouched content after the normalized text
-    * 			(if more is following).
-    */
-   public int getStopIndex();
+  /**
+   * @return The index+1 of the last normalized character in the char[] ({@link #getBuffer()}).
+   *         This index may be used as start index for retrieving the untouched content after the
+   *         normalized text (if more is following).
+   */
+  public int getStopIndex();
 
-   /**
-    * Package friendy. Only meant for {@link AbstractCustomNormalizer}.
-    */
-   public void setBuffer(char[] cs);
+  /**
+   * Package friendy. Only meant for {@link AbstractCustomNormalizer}.
+   */
+  public void setBuffer(char[] cs);
 
-   /**
-    * Package friendy. Only meant for {@link AbstractCustomNormalizer}.
-    */
-   public void setStartIndex(int i);
+  /**
+   * Package friendy. Only meant for {@link AbstractCustomNormalizer}.
+   */
+  public void setStartIndex(int i);
 
-   /**
-    * Package friendy. Only meant for {@link AbstractCustomNormalizer}.
-    */
-   public void setStopIndex(int i);
+  /**
+   * Package friendy. Only meant for {@link AbstractCustomNormalizer}.
+   */
+  public void setStopIndex(int i);
 
-   boolean ensureLength(int len);
-
+  boolean ensureLength(int len);
 
 }

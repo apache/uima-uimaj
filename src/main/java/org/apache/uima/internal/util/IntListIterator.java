@@ -25,45 +25,49 @@ import java.util.NoSuchElementException;
  * Integer list iterator.
  */
 public interface IntListIterator {
-  
+
   /**
-   * Check if there is a next element.  Does not move the iterator.
+   * Check if there is a next element. Does not move the iterator.
+   * 
    * @return <code>true</code> iff there is a next element.
    */
   boolean hasNext();
-  
+
   /**
    * Return the next feature structure and increment the iterator.
+   * 
    * @return The next feature structure.
-   * @exception NoSuchElementException If no next element exists, i.e., when the
-   * iterator points at the last position in the index.
+   * @exception NoSuchElementException
+   *              If no next element exists, i.e., when the iterator points at the last position in
+   *              the index.
    */
   int next() throws NoSuchElementException;
-  
+
   /**
-   * Check if there is a previous element.  Does not move the iterator.
+   * Check if there is a previous element. Does not move the iterator.
+   * 
    * @return <code>true</code> iff there is a previous element.
    */
   boolean hasPrevious();
 
   /**
    * Return the previous feature structure and decrement the iterator.
+   * 
    * @return The previous feature structure.
-   * @exception NoSuchElementException If no previous element exists, i.e., when
-   * the iterator points at the first position in the index.
+   * @exception NoSuchElementException
+   *              If no previous element exists, i.e., when the iterator points at the first
+   *              position in the index.
    */
   int previous();
-  
+
   /**
    * Move the iterator to the start of the underlying index.
    */
   void moveToStart();
-  
+
   /**
    * Move the iterator to the end of the underlying index.
    */
   void moveToEnd();
-  
-  
 
 }

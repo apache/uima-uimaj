@@ -22,33 +22,34 @@ package org.apache.uima.collection.metadata;
 import org.apache.uima.resource.metadata.MetaDataObject;
 
 /**
- * Object containing a filter expression used by the CPE to route CAS's to CasProcessor.
- *  A CasProcessor can be configured in the CPE Descriptor to use filtering using an 
- * SQL-like WHERE clause: where featurespec [ and featurespec2 ...]. The featurespec can 
- * be one of these four forms and meanings:
+ * Object containing a filter expression used by the CPE to route CAS's to CasProcessor. A
+ * CasProcessor can be configured in the CPE Descriptor to use filtering using an SQL-like WHERE
+ * clause: where featurespec [ and featurespec2 ...]. The featurespec can be one of these four forms
+ * and meanings:
  * <ul>
- * <li>	Feature Process CAS if the Feature is present (e.g. where Person)
- * <li>	Feature! Process CAS if the Feature is not present (e.g. where Person!)
- * <li>	Feature=value Process CAS if the Feature has this value( e.g. where Person=Bush)
- * <li>	Feature!=value Process CAS if the Feature does not have this value (e.g. where Person!=Bush)
+ * <li> Feature Process CAS if the Feature is present (e.g. where Person)
+ * <li> Feature! Process CAS if the Feature is not present (e.g. where Person!)
+ * <li> Feature=value Process CAS if the Feature has this value( e.g. where Person=Bush)
+ * <li> Feature!=value Process CAS if the Feature does not have this value (e.g. where Person!=Bush)
  * 
- * The featurespecs are implicitly connected with and operators and precedence rules are currently 
- * not supported. 
- *  
+ * The featurespecs are implicitly connected with and operators and precedence rules are currently
+ * not supported.
+ * 
  * 
  */
-public interface CasProcessorFilter extends MetaDataObject
-{
-	/**
-	 * Sets filter expression 
-	 * 
-	 * @param aFilterString - expression
-	 */
-	public void setFilterString( String aFilterString);
-    /**
-     * Returns a filter expression as String
-     * 
-     * @return - filter expression
-     */
-	public String getFilterString();
+public interface CasProcessorFilter extends MetaDataObject {
+  /**
+   * Sets filter expression
+   * 
+   * @param aFilterString -
+   *          expression
+   */
+  public void setFilterString(String aFilterString);
+
+  /**
+   * Returns a filter expression as String
+   * 
+   * @return - filter expression
+   */
+  public String getFilterString();
 }

@@ -20,30 +20,26 @@
 package org.apache.uima.resource;
 
 /**
- * A type of <code>ResourceSpecifier</code> that locates a resource file
- * using its URL, where the URL depends on an ISO language identifier.  An
- * example of this type of resource is a dictionary with a separate data file
- * for each language. 
+ * A type of <code>ResourceSpecifier</code> that locates a resource file using its URL, where the
+ * URL depends on an ISO language identifier. An example of this type of resource is a dictionary
+ * with a separate data file for each language.
  * <p>
- * Instead of a single URL, this specifier defines a URL prefix and a URL suffix.
- * The ISO language identifier is then placed between the prefix and suffix to
- * form the complete URL of the file.  If that file does not exist, more 
- * general language identifiers will be tried.  For example, if there is no
- * resource for <code>en-US</code>, the resource for <code>en</code> will be
- * used instead.
- *    
+ * Instead of a single URL, this specifier defines a URL prefix and a URL suffix. The ISO language
+ * identifier is then placed between the prefix and suffix to form the complete URL of the file. If
+ * that file does not exist, more general language identifiers will be tried. For example, if there
+ * is no resource for <code>en-US</code>, the resource for <code>en</code> will be used
+ * instead.
+ * 
  * 
  */
-public interface FileLanguageResourceSpecifier extends ResourceSpecifier
-{
-  
+public interface FileLanguageResourceSpecifier extends ResourceSpecifier {
+
   /**
    * Retrieves the URL prefix.
    * 
    * @return the URL prefix
    */
   public String getFileUrlPrefix();
-  
 
   /**
    * Retrieves the URL suffix.
@@ -52,19 +48,19 @@ public interface FileLanguageResourceSpecifier extends ResourceSpecifier
    */
   public String getFileUrlSuffix();
 
-
   /**
    * Sets the URL prefix.
    * 
-   * @param aPrefix the URL prefix
+   * @param aPrefix
+   *          the URL prefix
    */
   public void setFileUrlPrefix(String aPrefix);
-  
 
   /**
    * Sets the URL suffix.
    * 
-   * @param aSuffix the URL suffix
+   * @param aSuffix
+   *          the URL suffix
    */
   public void setFileUrlSuffix(String aSuffix);
 }

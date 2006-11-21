@@ -37,63 +37,60 @@ import java.util.ArrayList;
  */
 public class ConstraintFactoryImpl extends ConstraintFactory {
 
-    public FSTypeConstraint createTypeConstraint() {
-        return new FSTypeConstraintImpl();
-    }
+  public FSTypeConstraint createTypeConstraint() {
+    return new FSTypeConstraintImpl();
+  }
 
-    public FSIntConstraint createIntConstraint() {
-        return new FSIntConstraintImpl();
-    }
+  public FSIntConstraint createIntConstraint() {
+    return new FSIntConstraintImpl();
+  }
 
-    public FSFloatConstraint createFloatConstraint() {
-        return new FSFloatConstraintImpl();
-    }
+  public FSFloatConstraint createFloatConstraint() {
+    return new FSFloatConstraintImpl();
+  }
 
-    public FSStringConstraint createStringConstraint() {
-        return new FSStringConstraintImpl();
-    }
+  public FSStringConstraint createStringConstraint() {
+    return new FSStringConstraintImpl();
+  }
 
-    public FSMatchConstraint embedConstraint(FeaturePath featPath,
-            FSConstraint constraint) {
-        ArrayList path = new ArrayList();
-        for (int i = 0; i < featPath.size(); i++) {
-            path.add(featPath.getFeature(i).getShortName());
-        }
-        if (constraint instanceof FSMatchConstraint) {
-            return new EmbeddedConstraint(path, constraint);
-        } else if (constraint instanceof FSIntConstraint) {
-            return new IntConstraint(path, (FSIntConstraint) constraint);
-        } else if (constraint instanceof FSFloatConstraint) {
-            return new FloatConstraint(path, (FSFloatConstraint) constraint);
-        } else if (constraint instanceof FSStringConstraint) {
-            return new StringConstraint(path, (FSStringConstraint) constraint);
-        } else {
-            return null;
-        }
+  public FSMatchConstraint embedConstraint(FeaturePath featPath, FSConstraint constraint) {
+    ArrayList path = new ArrayList();
+    for (int i = 0; i < featPath.size(); i++) {
+      path.add(featPath.getFeature(i).getShortName());
     }
-
-    public FSMatchConstraint embedConstraint(ArrayList path,
-            FSConstraint constraint) {
-        if (constraint instanceof FSMatchConstraint) {
-            return new EmbeddedConstraint(path, constraint);
-        } else if (constraint instanceof FSIntConstraint) {
-            return new IntConstraint(path, (FSIntConstraint) constraint);
-        } else if (constraint instanceof FSFloatConstraint) {
-            return new FloatConstraint(path, (FSFloatConstraint) constraint);
-        } else if (constraint instanceof FSStringConstraint) {
-            return new StringConstraint(path, (FSStringConstraint) constraint);
-        } else {
-            return null;
-        }
+    if (constraint instanceof FSMatchConstraint) {
+      return new EmbeddedConstraint(path, constraint);
+    } else if (constraint instanceof FSIntConstraint) {
+      return new IntConstraint(path, (FSIntConstraint) constraint);
+    } else if (constraint instanceof FSFloatConstraint) {
+      return new FloatConstraint(path, (FSFloatConstraint) constraint);
+    } else if (constraint instanceof FSStringConstraint) {
+      return new StringConstraint(path, (FSStringConstraint) constraint);
+    } else {
+      return null;
     }
+  }
 
-    public FSMatchConstraint and(FSMatchConstraint c1, FSMatchConstraint c2) {
-        return new ConjunctiveConstraint(c1, c2);
+  public FSMatchConstraint embedConstraint(ArrayList path, FSConstraint constraint) {
+    if (constraint instanceof FSMatchConstraint) {
+      return new EmbeddedConstraint(path, constraint);
+    } else if (constraint instanceof FSIntConstraint) {
+      return new IntConstraint(path, (FSIntConstraint) constraint);
+    } else if (constraint instanceof FSFloatConstraint) {
+      return new FloatConstraint(path, (FSFloatConstraint) constraint);
+    } else if (constraint instanceof FSStringConstraint) {
+      return new StringConstraint(path, (FSStringConstraint) constraint);
+    } else {
+      return null;
     }
+  }
 
-    public FSMatchConstraint or(FSMatchConstraint c1, FSMatchConstraint c2) {
-        return new DisjunctiveConstraint(c1, c2);
-    }
+  public FSMatchConstraint and(FSMatchConstraint c1, FSMatchConstraint c2) {
+    return new ConjunctiveConstraint(c1, c2);
+  }
 
+  public FSMatchConstraint or(FSMatchConstraint c1, FSMatchConstraint c2) {
+    return new DisjunctiveConstraint(c1, c2);
+  }
 
 }

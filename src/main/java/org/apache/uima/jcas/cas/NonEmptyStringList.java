@@ -24,11 +24,16 @@ import org.apache.uima.jcas.impl.JCas;
 public class NonEmptyStringList extends StringList {
 
   public final static int typeIndexID = JCas.getNextIndex();
-  public final static int type = typeIndexID;
-  public           int getTypeIndexID() {return typeIndexID;}
 
-  // Never called.  Disable default constructor
-  protected NonEmptyStringList() {}
+  public final static int type = typeIndexID;
+
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  // Never called. Disable default constructor
+  protected NonEmptyStringList() {
+  }
 
   /** Internal - Constructor used by generator */
   public NonEmptyStringList(int addr, TOP_Type type) {
@@ -39,30 +44,43 @@ public class NonEmptyStringList extends StringList {
     super(jcas);
   }
 
-  //*------------------*
-  //* Feature: head
-  /** getter for head  * */
+  // *------------------*
+  // * Feature: head
+  /** getter for head * */
   public String getHead() {
-    if (NonEmptyStringList_Type.featOkTst && ((NonEmptyStringList_Type)jcasType).casFeat_head == null)
-          JCas.throwFeatMissing("head", "uima.cas.NonEmptyStringList");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((NonEmptyStringList_Type)jcasType).casFeatCode_head);}
+    if (NonEmptyStringList_Type.featOkTst
+                    && ((NonEmptyStringList_Type) jcasType).casFeat_head == null)
+      JCas.throwFeatMissing("head", "uima.cas.NonEmptyStringList");
+    return jcasType.ll_cas.ll_getStringValue(addr,
+                    ((NonEmptyStringList_Type) jcasType).casFeatCode_head);
+  }
 
-  /** setter for head  * */
+  /** setter for head * */
   public void setHead(String v) {
-    if (NonEmptyStringList_Type.featOkTst && ((NonEmptyStringList_Type)jcasType).casFeat_head == null)
-          JCas.throwFeatMissing("head", "uima.cas.NonEmptyStringList");
-    jcasType.ll_cas.ll_setStringValue(addr, ((NonEmptyStringList_Type)jcasType).casFeatCode_head, v);}
-  //*------------------*
-  //* Feature: tail
-  /** getter for tail  * */
-  public StringList getTail() {
-    if (NonEmptyStringList_Type.featOkTst && ((NonEmptyStringList_Type)jcasType).casFeat_tail == null)
-          JCas.throwFeatMissing("tail", "uima.cas.NonEmptyStringList");
-    return (StringList)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((NonEmptyStringList_Type)jcasType).casFeatCode_tail)));}
+    if (NonEmptyStringList_Type.featOkTst
+                    && ((NonEmptyStringList_Type) jcasType).casFeat_head == null)
+      JCas.throwFeatMissing("head", "uima.cas.NonEmptyStringList");
+    jcasType.ll_cas.ll_setStringValue(addr, ((NonEmptyStringList_Type) jcasType).casFeatCode_head,
+                    v);
+  }
 
-  /** setter for tail  * */
+  // *------------------*
+  // * Feature: tail
+  /** getter for tail * */
+  public StringList getTail() {
+    if (NonEmptyStringList_Type.featOkTst
+                    && ((NonEmptyStringList_Type) jcasType).casFeat_tail == null)
+      JCas.throwFeatMissing("tail", "uima.cas.NonEmptyStringList");
+    return (StringList) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
+                    ((NonEmptyStringList_Type) jcasType).casFeatCode_tail)));
+  }
+
+  /** setter for tail * */
   public void setTail(StringList v) {
-    if (NonEmptyStringList_Type.featOkTst && ((NonEmptyStringList_Type)jcasType).casFeat_tail == null)
-          JCas.throwFeatMissing("tail", "uima.cas.NonEmptyStringList");
-    jcasType.ll_cas.ll_setRefValue(addr, ((NonEmptyStringList_Type)jcasType).casFeatCode_tail, jcasType.ll_cas.ll_getFSRef(v));}
+    if (NonEmptyStringList_Type.featOkTst
+                    && ((NonEmptyStringList_Type) jcasType).casFeat_tail == null)
+      JCas.throwFeatMissing("tail", "uima.cas.NonEmptyStringList");
+    jcasType.ll_cas.ll_setRefValue(addr, ((NonEmptyStringList_Type) jcasType).casFeatCode_tail,
+                    jcasType.ll_cas.ll_getFSRef(v));
+  }
 }

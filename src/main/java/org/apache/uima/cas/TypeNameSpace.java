@@ -23,7 +23,7 @@ package org.apache.uima.cas;
  * An object holding the namespace string for a type.
  */
 public interface TypeNameSpace {
-  
+
   Type getType(String typeName);
 
 }

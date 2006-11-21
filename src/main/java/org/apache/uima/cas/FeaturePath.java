@@ -19,37 +19,44 @@
 
 package org.apache.uima.cas;
 
-/** Interface for a feature path.
- * A feature path is a sequence of {@link org.apache.uima.cas.Feature}s that are
- * used with constraint tests to specify how to get the value to test, starting
- * from a given feature structure.
+/**
+ * Interface for a feature path. A feature path is a sequence of {@link org.apache.uima.cas.Feature}s
+ * that are used with constraint tests to specify how to get the value to test, starting from a
+ * given feature structure.
  * 
- * To use: 
- * <ul><li>create an empty feature path using {@link org.apache.uima.cas.CAS#createFeaturePath()}
- * </li><li>add one or more features to it, representing the chain of features
- * to follow to get to the value to test, using
- * {@link #addFeature(Feature)}
- * </li><li>hook up this feature path with a particular constraint test, using
- * {@link org.apache.uima.cas.ConstraintFactory#embedConstraint(FeaturePath, FSConstraint)}.
- * </li></ul>
+ * To use:
+ * <ul>
+ * <li>create an empty feature path using {@link org.apache.uima.cas.CAS#createFeaturePath()} </li>
+ * <li>add one or more features to it, representing the chain of features to follow to get to the
+ * value to test, using {@link #addFeature(Feature)} </li>
+ * <li>hook up this feature path with a particular constraint test, using
+ * {@link org.apache.uima.cas.ConstraintFactory#embedConstraint(FeaturePath, FSConstraint)}. </li>
+ * </ul>
  */
 public interface FeaturePath {
 
-  /** Get length of path.
-   *  @return An integer <code>&gt;= 0</code>.
+  /**
+   * Get length of path.
+   * 
+   * @return An integer <code>&gt;= 0</code>.
    */
   int size();
 
-  /** Get feature at position.
-   *  @param i The position in the path (starting at <code>0</code>).
-   *  @return The feature, or <code>null</code> if there is no such feature.
+  /**
+   * Get feature at position.
+   * 
+   * @param i
+   *          The position in the path (starting at <code>0</code>).
+   * @return The feature, or <code>null</code> if there is no such feature.
    */
   Feature getFeature(int i);
 
-  /** Add a new feature at the end of the path.
-   *  @param feat The feature to be added.
+  /**
+   * Add a new feature at the end of the path.
+   * 
+   * @param feat
+   *          The feature to be added.
    */
   void addFeature(Feature feat);
 
 }
-

@@ -35,8 +35,7 @@ import org.apache.uima.util.XMLParser;
  * 
  * 
  */
-public class Style_impl extends MetaDataObject_impl implements Style
-{
+public class Style_impl extends MetaDataObject_impl implements Style {
   private static final long serialVersionUID = -1506108274843606087L;
 
   private Attribute[] mAttributes = new Attribute[0];
@@ -45,102 +44,103 @@ public class Style_impl extends MetaDataObject_impl implements Style
 
   private Mapping[] mAttributeMappings;
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.Style#getName()
    */
-  public String getName()
-  {
+  public String getName() {
     return mName;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.Style#setName(java.lang.String)
    */
-  public void setName(String aName)
-  {
+  public void setName(String aName) {
     mName = aName.intern();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.Style#getAttributes()
    */
-  public Attribute[] getAttributes()
-  {
+  public Attribute[] getAttributes() {
     return mAttributes;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.Style#setAttributes(org.apache.uima.search.Attribute[])
    */
-  public void setAttributes(Attribute[] aAttributes)
-  {
-  	mAttributes = (aAttributes == null) ? new Attribute[0] :  aAttributes;
+  public void setAttributes(Attribute[] aAttributes) {
+    mAttributes = (aAttributes == null) ? new Attribute[0] : aAttributes;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.Style#getAttribute(java.lang.String)
    */
-  public String getAttribute(String aName)
-  {
+  public String getAttribute(String aName) {
     Attribute[] attrs = getAttributes();
-    for (int i = 0; i < attrs.length; i++)
-    {
-      if (aName.equals(attrs[i].getName()))
-      {
+    for (int i = 0; i < attrs.length; i++) {
+      if (aName.equals(attrs[i].getName())) {
         return attrs[i].getValue();
       }
     }
     return null;
   }
-    
-	public Mapping[] getAttributeMappings()
-  {
+
+  public Mapping[] getAttributeMappings() {
     return mAttributeMappings;
   }
 
-  public void setAttributeMappings(Mapping[] aMappings)
-  {
+  public void setAttributeMappings(Mapping[] aMappings) {
     mAttributeMappings = aMappings;
   }
 
   /**
-	 * Overridden to write the name property as an XML attribute.
-	 * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXMLAttributeString()
-	 */
-	protected AttributesImpl getXMLAttributes()
-	{
-		AttributesImpl attrs = super.getXMLAttributes();
-		attrs.addAttribute("","name","name",null,getName());
-		return attrs;
-	}
+   * Overridden to write the name property as an XML attribute.
+   * 
+   * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXMLAttributeString()
+   */
+  protected AttributesImpl getXMLAttributes() {
+    AttributesImpl attrs = super.getXMLAttributes();
+    attrs.addAttribute("", "name", "name", null, getName());
+    return attrs;
+  }
 
-	/**
-	 * Overridden to read the name property from XML attributes.
-	 * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element, org.apache.uima.util.XMLParser)
-	 */
-	public void buildFromXMLElement(Element aElement, XMLParser aParser, XMLParser.ParsingOptions aOptions)
-		throws InvalidXMLException
-	{
-		setName(aElement.getAttribute("name"));
-		
-		// call superclass method to parse the "attributes" property, which is stored
-		// as child elements (confusing, isn't it? :)
-		super.buildFromXMLElement(aElement, aParser, aOptions);
-	}  
+  /**
+   * Overridden to read the name property from XML attributes.
+   * 
+   * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element,
+   *      org.apache.uima.util.XMLParser)
+   */
+  public void buildFromXMLElement(Element aElement, XMLParser aParser,
+                  XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
+    setName(aElement.getAttribute("name"));
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
-	 */
-	protected XmlizationInfo getXmlizationInfo()
-	{
-		return XMLIZATION_INFO;
-	}
+    // call superclass method to parse the "attributes" property, which is stored
+    // as child elements (confusing, isn't it? :)
+    super.buildFromXMLElement(aElement, aParser, aOptions);
+  }
 
-	static final private XmlizationInfo XMLIZATION_INFO =
-		new XmlizationInfo("style",
-			new PropertyXmlInfo[]{
-				//name is an attribute, not an element
-				new PropertyXmlInfo("attributes",null),
-        new PropertyXmlInfo("attributeMappings")
-			});	
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
+   */
+  protected XmlizationInfo getXmlizationInfo() {
+    return XMLIZATION_INFO;
+  }
+
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("style",
+                  new PropertyXmlInfo[] {
+                      // name is an attribute, not an element
+                      new PropertyXmlInfo("attributes", null),
+                      new PropertyXmlInfo("attributeMappings") });
 }

@@ -24,100 +24,97 @@ import java.util.Map;
 import org.apache.uima.cas.CAS;
 
 /**
- * Monitoring and management interface to an AnalysisEngine.
- * An application can obtain an instance of this object by calling
- * {@link AnalysisEngine#getManagementInterface()}.
+ * Monitoring and management interface to an AnalysisEngine. An application can obtain an instance
+ * of this object by calling {@link AnalysisEngine#getManagementInterface()}.
  * <p>
- * In this implementation, objects implementing this interface will
- * always be JMX-compatible MBeans that you can register with an
- * MBeanServer.  For information on JMX see  
- * <a href="http://java.sun.com/j2se/1.5.0/docs/api/javax/management/package-summary.html"/>
+ * In this implementation, objects implementing this interface will always be JMX-compatible MBeans
+ * that you can register with an MBeanServer. For information on JMX see <a
+ * href="http://java.sun.com/j2se/1.5.0/docs/api/javax/management/package-summary.html"/>
  */
-public interface AnalysisEngineManagement
-{
+public interface AnalysisEngineManagement {
   /**
-   * Gets a name for this AnalysisEngineManagement object, which
-   * will be unique among all of its siblings (i.e. the objects
-   * returned from its parent's {@link #getComponents()} method.
-   *
+   * Gets a name for this AnalysisEngineManagement object, which will be unique among all of its
+   * siblings (i.e. the objects returned from its parent's {@link #getComponents()} method.
+   * 
    * @return a name for this AnalysisEngineManagement object
    */
   String getName();
 
-  /** 
-   * Gets the total time this AnalysisEngine has spent doing
-   * analysis over its entire lifetime.  This includes calls
-   * to the {@link AnalysisEngine#process(CAS)} and
-   * {@link AnalysisEngine#processAndOutputNewCASes(CAS)} methods, as well as calls 
-   * to the CasIterator returned from the processAndOutputNewCASes method.
+  /**
+   * Gets the total time this AnalysisEngine has spent doing analysis over its entire lifetime. This
+   * includes calls to the {@link AnalysisEngine#process(CAS)} and
+   * {@link AnalysisEngine#processAndOutputNewCASes(CAS)} methods, as well as calls to the
+   * CasIterator returned from the processAndOutputNewCASes method.
    * 
    * @return the analysis time time in milliseconds
    */
   long getAnalysisTime();
-  
-  /** 
-   * Gets the total time this AnalysisEngine has spent in its
-   * batchProcessComplete method over its entire lifetime.
+
+  /**
+   * Gets the total time this AnalysisEngine has spent in its batchProcessComplete method over its
+   * entire lifetime.
+   * 
    * @return the batch process complete time in milliseconds
    */
   long getBatchProcessCompleteTime();
 
-  /** 
-   * Gets the total time this AnalysisEngine has spent in its
-   * collectionProcessComplete method over its entire lifetime.
+  /**
+   * Gets the total time this AnalysisEngine has spent in its collectionProcessComplete method over
+   * its entire lifetime.
+   * 
    * @return the batch process complete time in milliseconds
    */
   long getCollectionProcessCompleteTime();
 
   /**
-   * If this AnalysisEngine is a proxy to a remote service, gets
-   * the total time spent making calls on that service.
-   * @return the service call time in milliseconds, or 0 if this
-   *   AnalysisEngine is not a proxy to a service
+   * If this AnalysisEngine is a proxy to a remote service, gets the total time spent making calls
+   * on that service.
+   * 
+   * @return the service call time in milliseconds, or 0 if this AnalysisEngine is not a proxy to a
+   *         service
    */
   long getServiceCallTime();
 
   /**
-   * Gets the total number of CASes this AnalysisEngine has processed
-   * over its lifetime.  For a CAS Multipliers, this includes both input
-   * and output CASes.
+   * Gets the total number of CASes this AnalysisEngine has processed over its lifetime. For a CAS
+   * Multipliers, this includes both input and output CASes.
+   * 
    * @return the number of CASes processed
    */
   long getNumberOfCASesProcessed();
 
   /**
-   * Gets the throughput of this AnalysisEngine, represented as
-   * number of CASes processed per second.
+   * Gets the throughput of this AnalysisEngine, represented as number of CASes processed per
+   * second.
+   * 
    * @return a string representation of the throughput
    */
   String getCASesPerSecond();
 
   /**
-   * For an Aggregate AnalysisEngine, gets a Map whose values are
-   * AnalysisEngineManagement objects that contain the statistics for 
-   * the components of the aggregate.  The keys in the Map are the unique
-   * String keys specified in the aggregate AnalysisEngine descriptor.
-   * If this AnalysisEngine is a primitive, returns an empty Map.
+   * For an Aggregate AnalysisEngine, gets a Map whose values are AnalysisEngineManagement objects
+   * that contain the statistics for the components of the aggregate. The keys in the Map are the
+   * unique String keys specified in the aggregate AnalysisEngine descriptor. If this AnalysisEngine
+   * is a primitive, returns an empty Map.
    * 
    * @return a map from String keys to AnalysisEngineManagement objects
    */
   Map getComponents();
-  
+
   /**
-   * Resets all of the performance statistics to zero.
-   * For an Aggregate Analysis Engine, also resets the statistics for 
-   * all the components of the aggregate.
+   * Resets all of the performance statistics to zero. For an Aggregate Analysis Engine, also resets
+   * the statistics for all the components of the aggregate.
    */
   void resetStats();
-  
+
   /**
-   * Gets a valid JMX MBean name that is unique among all AnalysisEngineManagement
-   * objects in this JVM. (Technically, it is unique only among 
-   * AnalysisEngineManagement objects loaded by the same ClassLoader, which is 
-   * whatever ClassLoader was used to load the UIMA Framework classes.)
+   * Gets a valid JMX MBean name that is unique among all AnalysisEngineManagement objects in this
+   * JVM. (Technically, it is unique only among AnalysisEngineManagement objects loaded by the same
+   * ClassLoader, which is whatever ClassLoader was used to load the UIMA Framework classes.)
    * <p>
-   * If you are running with JRE 1.5, this is the name used to register this
-   * object with the platform MBeanServer.  
+   * If you are running with JRE 1.5, this is the name used to register this object with the
+   * platform MBeanServer.
+   * 
    * @return
    */
   String getUniqueMBeanName();

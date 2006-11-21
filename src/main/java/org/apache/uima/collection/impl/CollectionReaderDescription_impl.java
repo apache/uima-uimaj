@@ -41,111 +41,99 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
 
 /**
  * 
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * 
+ * To change the template for this generated type comment go to Window>Preferences>Java>Code
+ * Generation>Code and Comments
  */
-public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_impl
-	implements CollectionReaderDescription {
+public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_impl implements
+                CollectionReaderDescription {
 
-	/**
-	 * Creates a new ProcessingResourceMetaData_impl.  Initializes the MetaData and
-	 * FrameworkImplementation attributes.
-	 */
-	public CollectionReaderDescription_impl()
-	{
-		setMetaData(new ProcessingResourceMetaData_impl());
-		setFrameworkImplementation("org.apache.uima.java");
-        //set default operational properties (may be overriden during parsing)
-        OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory().
-            createOperationalProperties();
-        opProps.setModifiesCas(true);
-        opProps.setMultipleDeploymentAllowed(false);
-        opProps.setOutputsNewCASes(true);
-        getCollectionReaderMetaData().setOperationalProperties(opProps);
-    }
-	
-	public ProcessingResourceMetaData getCollectionReaderMetaData() {
-		return (ProcessingResourceMetaData) getMetaData();
-	}
+  /**
+   * Creates a new ProcessingResourceMetaData_impl. Initializes the MetaData and
+   * FrameworkImplementation attributes.
+   */
+  public CollectionReaderDescription_impl() {
+    setMetaData(new ProcessingResourceMetaData_impl());
+    setFrameworkImplementation("org.apache.uima.java");
+    // set default operational properties (may be overriden during parsing)
+    OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory()
+                    .createOperationalProperties();
+    opProps.setModifiesCas(true);
+    opProps.setMultipleDeploymentAllowed(false);
+    opProps.setOutputsNewCASes(true);
+    getCollectionReaderMetaData().setOperationalProperties(opProps);
+  }
 
-  /* (non-Javadoc)
+  public ProcessingResourceMetaData getCollectionReaderMetaData() {
+    return (ProcessingResourceMetaData) getMetaData();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.ResourceCreationSpecifier#doFullValidation(org.apache.uima.resource.ResourceManager)
    */
   public void doFullValidation(ResourceManager aResourceManager)
-      throws ResourceInitializationException
-  {
-    //check that user class was specified
-    if (getImplementationName() == null || getImplementationName().length() == 0)
-    {
+                  throws ResourceInitializationException {
+    // check that user class was specified
+    if (getImplementationName() == null || getImplementationName().length() == 0) {
       throw new ResourceInitializationException(
-          ResourceInitializationException.MISSING_IMPLEMENTATION_CLASS_NAME, new Object[] {getSourceUrlString()});
+                      ResourceInitializationException.MISSING_IMPLEMENTATION_CLASS_NAME,
+                      new Object[] { getSourceUrlString() });
     }
-    //try to load user class
-    //ust UIMA extension ClassLoader if available
+    // try to load user class
+    // ust UIMA extension ClassLoader if available
     Class implClass;
     ClassLoader cl = aResourceManager.getExtensionClassLoader();
-    try
-    {
-      if (cl != null)
-      {
+    try {
+      if (cl != null) {
         implClass = cl.loadClass(getImplementationName());
-      }
-      else
-      {
+      } else {
         implClass = Class.forName(getImplementationName());
       }
+    } catch (ClassNotFoundException e) {
+      throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
+                      new Object[] { getImplementationName(), getSourceUrlString() }, e);
     }
-    catch (ClassNotFoundException e)
-    {
+    // verify the user class implements CollectionReader
+    if (!CollectionReader.class.isAssignableFrom(implClass)) {
       throw new ResourceInitializationException(
-         ResourceInitializationException.CLASS_NOT_FOUND,
-         new Object[]{getImplementationName(), getSourceUrlString()}, e);
-    }  
-    //verify the user class implements CollectionReader
-    if (!CollectionReader.class.isAssignableFrom(implClass))
-    {
-      throw new ResourceInitializationException(
-          ResourceInitializationException.RESOURCE_DOES_NOT_IMPLEMENT_INTERFACE,
-          new Object[]{getImplementationName(), CollectionReader.class.getName(), getSourceUrlString()});
+                      ResourceInitializationException.RESOURCE_DOES_NOT_IMPLEMENT_INTERFACE,
+                      new Object[] { getImplementationName(), CollectionReader.class.getName(),
+                          getSourceUrlString() });
     }
-    //try to create a CAS
+    // try to create a CAS
     ArrayList metadata = new ArrayList();
     metadata.add(getCollectionReaderMetaData());
     CasCreationUtils.createCas(metadata);
   }
 
   /**
-   * Overridden to set default operational properties if they
-   * are not specified in descriptor. 
+   * Overridden to set default operational properties if they are not specified in descriptor.
    */
-  public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions) throws InvalidXMLException
-  {
+  public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+                  throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
-    if (getCollectionReaderMetaData().getOperationalProperties() == null)
-    {
-      OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory().
-        createOperationalProperties();
+    if (getCollectionReaderMetaData().getOperationalProperties() == null) {
+      OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory()
+                      .createOperationalProperties();
       opProps.setModifiesCas(true);
       opProps.setMultipleDeploymentAllowed(false);
       opProps.setOutputsNewCASes(true);
-      getCollectionReaderMetaData().setOperationalProperties(opProps); 
-    }  
+      getCollectionReaderMetaData().setOperationalProperties(opProps);
+    }
   }
-  
-	protected XmlizationInfo getXmlizationInfo()
-	{
-	  return XMLIZATION_INFO;
-	}
-  
-	static final protected XmlizationInfo XMLIZATION_INFO =
-	  new XmlizationInfo("collectionReaderDescription",
-		new PropertyXmlInfo[]{
-		   new PropertyXmlInfo("frameworkImplementation"),
-		   new PropertyXmlInfo("implementationName"),
-		   new PropertyXmlInfo("metaData",null),
-			 new PropertyXmlInfo("externalResourceDependencies"),
-			 new PropertyXmlInfo("resourceManagerConfiguration", null)
-		});
+
+  protected XmlizationInfo getXmlizationInfo() {
+    return XMLIZATION_INFO;
+  }
+
+  static final protected XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+                  "collectionReaderDescription", new PropertyXmlInfo[] {
+                      new PropertyXmlInfo("frameworkImplementation"),
+                      new PropertyXmlInfo("implementationName"),
+                      new PropertyXmlInfo("metaData", null),
+                      new PropertyXmlInfo("externalResourceDependencies"),
+                      new PropertyXmlInfo("resourceManagerConfiguration", null) });
 
 }

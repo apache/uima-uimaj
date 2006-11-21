@@ -25,41 +25,38 @@ package org.apache.uima.cas;
  * The SofaID is obtained from the UimaContext by calling
  * {@link org.apache.uima.UimaContext#mapToSofaID UimaContext.mapToSofaID()}.
  * 
- * @deprecated As of v2.0, this is no longer needed.  CAS views can now be obtained directly
- *   using String identifiers, through the method {@link CAS#getView(String)}. 
+ * @deprecated As of v2.0, this is no longer needed. CAS views can now be obtained directly using
+ *             String identifiers, through the method {@link CAS#getView(String)}.
  */
 public interface SofaID {
-    /**
-     * Set the Sofa ID of a Sofa FS in the CAS.
-     * 
-     * @param aSofaID
-     */
-    public void setSofaID(String aSofaID);
+  /**
+   * Set the Sofa ID of a Sofa FS in the CAS.
+   * 
+   * @param aSofaID
+   */
+  public void setSofaID(String aSofaID);
 
-    /**
-     * Get the Sofa ID.
-     * 
-     * @return Sofa ID
-     */
-    public String getSofaID();
+  /**
+   * Get the Sofa ID.
+   * 
+   * @return Sofa ID
+   */
+  public String getSofaID();
 
-    /**
-     * Set the component Sofa name that was used to obtain this SofaID by
-     * calling
-     * {@link org.apache.uima.UimaContext#mapToSofaID UimaContext.mapToSofaID()}.
-     * 
-     * @param aSofaName
-     */
-    public void setComponentSofaName(String aSofaName);
+  /**
+   * Set the component Sofa name that was used to obtain this SofaID by calling
+   * {@link org.apache.uima.UimaContext#mapToSofaID UimaContext.mapToSofaID()}.
+   * 
+   * @param aSofaName
+   */
+  public void setComponentSofaName(String aSofaName);
 
-    /**
-     * Get the component Sofa name that was used to obtain this SofaID by
-     * calling {
-     * 
-     * @link org.apache.uima.UimaContext#mapToSofaID UimaContext.mapToSofaID()}.
-     * @return Component Sofa Name
-     */
-    public String getComponentSofaName();
-
+  /**
+   * Get the component Sofa name that was used to obtain this SofaID by calling {
+   * 
+   * @link org.apache.uima.UimaContext#mapToSofaID UimaContext.mapToSofaID()}.
+   * @return Component Sofa Name
+   */
+  public String getComponentSofaName();
 
 }

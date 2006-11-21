@@ -32,77 +32,65 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 
 /**
- * A registry containing (ResourceSpecifier Class, {@link ResourceFactory}) 
- * pairs.  Also implements the <code>ResourceFactory</code> interface, and
- * produces resources by delegating to the most recently registered
- * <code>ResourceFactory</code> instance that can handle the class of the
+ * A registry containing (ResourceSpecifier Class, {@link ResourceFactory}) pairs. Also implements
+ * the <code>ResourceFactory</code> interface, and produces resources by delegating to the most
+ * recently registered <code>ResourceFactory</code> instance that can handle the class of the
  * given specifier object.
  * 
  * 
  */
-public class CompositeResourceFactory_impl implements CompositeResourceFactory
-{
+public class CompositeResourceFactory_impl implements CompositeResourceFactory {
 
   /**
-   * @see org.apache.uima.ResourceFactory#produceResource(java.lang.Class, org.apache.uima.resource.ResourceSpecifier, java.util.Map)
+   * List of Registration objects.
    */
-  public Resource produceResource(Class aResourceClass,
-    ResourceSpecifier aSpecifier, Map aAdditionalParams)
-    throws ResourceInitializationException
-  {
-    //check for factories registered for this resource specifier type 
-    //(most recently registered first)
-    ListIterator it = 
-        mRegisteredFactories.listIterator(mRegisteredFactories.size());
+  private List mRegisteredFactories = Collections.synchronizedList(new ArrayList());
+
+  /**
+   * @see org.apache.uima.ResourceFactory#produceResource(java.lang.Class,
+   *      org.apache.uima.resource.ResourceSpecifier, java.util.Map)
+   */
+  public Resource produceResource(Class aResourceClass, ResourceSpecifier aSpecifier,
+                  Map aAdditionalParams) throws ResourceInitializationException {
+    // check for factories registered for this resource specifier type
+    // (most recently registered first)
+    ListIterator it = mRegisteredFactories.listIterator(mRegisteredFactories.size());
     Resource result = null;
-    while (it.hasPrevious())
-    {
-      Registration reg = (Registration)it.previous();
-      if (reg.resourceSpecifierInterface.isAssignableFrom(aSpecifier.getClass()))
-      {
-        result = reg.factory.produceResource(aResourceClass,
-              aSpecifier, aAdditionalParams);
-        if (result != null)
-        {
+    while (it.hasPrevious()) {
+      Registration reg = (Registration) it.previous();
+      if (reg.resourceSpecifierInterface.isAssignableFrom(aSpecifier.getClass())) {
+        result = reg.factory.produceResource(aResourceClass, aSpecifier, aAdditionalParams);
+        if (result != null) {
           return result;
         }
       }
     }
     return null;
   }
-  
+
   /**
    * @see org.apache.uima.CompositeResourceFactory#registerFactory(Class,ResourceFactory)
    */
-  public void registerFactory(Class aResourceSpecifierInterface, ResourceFactory aFactory)
-  {
+  public void registerFactory(Class aResourceSpecifierInterface, ResourceFactory aFactory) {
     mRegisteredFactories.add(new Registration(aResourceSpecifierInterface, aFactory));
   }
 
   /**
-   * List of Registration objects.
-   */
-  private List mRegisteredFactories = 
-      Collections.synchronizedList(new ArrayList());
-  
-  /**
    * Inner class that holds information on a registered factory.
    */
-  static class Registration
-  {
+  static class Registration {
     Class resourceSpecifierInterface;
+
     ResourceFactory factory;
+
     /**
      * @param aResourceSpecifierInterface
      * @param aFactory
      */
-    public Registration(Class aResourceSpecifierInterface, ResourceFactory aFactory)
-    {
-      resourceSpecifierInterface = aResourceSpecifierInterface;  
+    public Registration(Class aResourceSpecifierInterface, ResourceFactory aFactory) {
+      resourceSpecifierInterface = aResourceSpecifierInterface;
       factory = aFactory;
-    }  
+    }
   }
-  
+
 }
-
-

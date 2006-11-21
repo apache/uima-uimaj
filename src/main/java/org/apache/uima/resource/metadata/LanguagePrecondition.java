@@ -20,42 +20,39 @@
 package org.apache.uima.resource.metadata;
 
 /**
- * A precondition on the language of the document.  This interface is a kind of
- * <code>SimplePrecondition</code> to be used as a convenience. 
+ * A precondition on the language of the document. This interface is a kind of
+ * <code>SimplePrecondition</code> to be used as a convenience.
  * 
  * 
  */
-public interface LanguagePrecondition extends SimplePrecondition
-{
+public interface LanguagePrecondition extends SimplePrecondition {
   /**
-   * Gets the languages that satisfy this precondition.  This will be an 
-   * array of ISO language identifiers.  For this precondition to be 
-   * satisfied, the document's language must be subsumed by one of these
-   * identifiers (for example, en-GB is subsumed by en).
+   * Gets the languages that satisfy this precondition. This will be an array of ISO language
+   * identifiers. For this precondition to be satisfied, the document's language must be subsumed by
+   * one of these identifiers (for example, en-GB is subsumed by en).
    * <p>
    * Note that if the document's language is unknown, the value of the
-   * {@link #setDefault(boolean) default} property determines whether this
-   * precondition is satisfied.
+   * {@link #setDefault(boolean) default} property determines whether this precondition is
+   * satisfied.
    * 
    * @return the languages that satisfy this precondition
    */
   public String[] getLanguages();
 
-
   /**
-   * Sets the languages that satisfy this precondition.  This will be an 
-   * array of ISO language identifiers.  For this precondition to be 
-   * satisfied, the document's language must be subsumed by one of these
-   * identifiers (for example, en-GB is subsumed by en).
+   * Sets the languages that satisfy this precondition. This will be an array of ISO language
+   * identifiers. For this precondition to be satisfied, the document's language must be subsumed by
+   * one of these identifiers (for example, en-GB is subsumed by en).
    * <p>
    * Note that if the document's language is unknown, the value of the
-   * {@link #setDefault(boolean) default} property determines whether this
-   * precondition is satisfied.
+   * {@link #setDefault(boolean) default} property determines whether this precondition is
+   * satisfied.
    * 
-   * @param aLanguages the languages that satisfy this precondition
+   * @param aLanguages
+   *          the languages that satisfy this precondition
    * 
-   * @throws UIMA_UnsupportedOperationException if this 
-   *    <code>MetaDataObject</code> is not modifiable.
+   * @throws UIMA_UnsupportedOperationException
+   *           if this <code>MetaDataObject</code> is not modifiable.
    */
   public void setLanguages(String[] aLanguages);
 }

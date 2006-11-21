@@ -20,13 +20,12 @@
 package org.apache.uima.analysis_engine;
 
 /**
- * A Text Analysis Engine (TAE) is a type of Analysis Engine specialized for
- * processing Text documents.
+ * A Text Analysis Engine (TAE) is a type of Analysis Engine specialized for processing Text
+ * documents.
  * 
- * @deprecated As of v2.0, {@link AnalysisEngine} should be used instead.  This
- *   interface no longer defines any additional methods beyond those in
- *   AnalysisEngine.    
+ * @deprecated As of v2.0, {@link AnalysisEngine} should be used instead. This interface no longer
+ *             defines any additional methods beyond those in AnalysisEngine.
  */
-public interface TextAnalysisEngine extends AnalysisEngine
-{
+public interface TextAnalysisEngine extends AnalysisEngine {
+  //As of 2.0, no longer defines any additional methods beyond those in AnalysisEngineDescription
 }

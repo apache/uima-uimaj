@@ -32,40 +32,42 @@ import org.apache.uima.cas.impl.Heap;
 /**
  * Class comment for CASTest.java goes here.
  * 
- * @author Thilo Goetz 
+ * @author Thilo Goetz
  */
 public class CASTest extends TestCase {
 
   private CAS cas;
+
   private TypeSystem ts;
 
-	/**
-	 * Constructor for CASTest.
-	 * @param arg0
-	 */
-	public CASTest(String arg0) {
-		super(arg0);
-	}
-
-  public void setUp(){
-		try {
-		  this.cas = CASInitializer.initCas(new CASTestSetup());
-		  this.ts = this.cas.getTypeSystem();
-	  } catch (Exception e) {
-		  assertTrue(false);
-	  }
+  /**
+   * Constructor for CASTest.
+   * 
+   * @param arg0
+   */
+  public CASTest(String arg0) {
+    super(arg0);
   }
-  
+
+  public void setUp() {
+    try {
+      this.cas = CASInitializer.initCas(new CASTestSetup());
+      this.ts = this.cas.getTypeSystem();
+    } catch (Exception e) {
+      assertTrue(false);
+    }
+  }
+
   public void tearDown() {
-  	this.cas = null;
-  	this.ts = null;
+    this.cas = null;
+    this.ts = null;
   }
-  
-	public void testGetTypeSystem() {
-    assertTrue(cas.getTypeSystem() != null);
-	}
 
-	public void testCreateFS() {
+  public void testGetTypeSystem() {
+    assertTrue(cas.getTypeSystem() != null);
+  }
+
+  public void testCreateFS() {
     // Can create FS of type "Top"
     assertTrue(this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_TOP)) != null);
     boolean caughtExc = false;
@@ -87,7 +89,7 @@ public class CASTest extends TestCase {
     }
     assertTrue(caughtExc);
     caughtExc = false;
-    
+
     // Check that we can create structures that are larger than the internal
     // heap page size.
     final int arraySize = 1000000;
@@ -96,63 +98,63 @@ public class CASTest extends TestCase {
     assertTrue(arraySize > Heap.DEFAULT_PAGE_SIZE);
     IntArrayFS array = null;
     try {
-       array = this.cas.createIntArrayFS(arraySize);
+      array = this.cas.createIntArrayFS(arraySize);
     } catch (CASRuntimeException e) {
-        assertTrue(false);
+      assertTrue(false);
     }
     try {
-        array.set(arraySize-1, 1);
+      array.set(arraySize - 1, 1);
     } catch (ArrayIndexOutOfBoundsException e) {
-        assertTrue(false);
+      assertTrue(false);
     }
-    
+
     // Can't create array subtype with CAS.createFS().
-//    try {
-//      this.cas.createFS(this.ts.getType(CASTestSetup.INT_ARRAY_SUB));
-//    } catch (CASRuntimeException e) {
-//      caughtExc = true;
-//      assertTrue(e.getError() == CASRuntimeException.NON_CREATABLE_TYPE);
-//    }
-//    assertTrue(caughtExc);
-	}
-  
+    // try {
+    // this.cas.createFS(this.ts.getType(CASTestSetup.INT_ARRAY_SUB));
+    // } catch (CASRuntimeException e) {
+    // caughtExc = true;
+    // assertTrue(e.getError() == CASRuntimeException.NON_CREATABLE_TYPE);
+    // }
+    // assertTrue(caughtExc);
+  }
+
   public void testCreateCAS() {
     TypeSystemMgr ts = CASFactory.createTypeSystem();
     ts.commit();
-	//    assertNotNull(CASFactory.createCAS(ts));
-//TODO discuss this test with Thilo and Adam!!!
+    // assertNotNull(CASFactory.createCAS(ts));
+    // TODO discuss this test with Thilo and Adam!!!
   }
 
-	public void testCreateArrayFS() {
+  public void testCreateArrayFS() {
     // Has its own test class.
-	}
+  }
 
-	public void testCreateIntArrayFS() {
+  public void testCreateIntArrayFS() {
     // Has its own test class.
-	}
+  }
 
-	public void testCreateStringArrayFS() {
+  public void testCreateStringArrayFS() {
     // Has its own test class.
-	}
+  }
 
-//	public void testCreateFilteredIterator() {
-//	}
-//
-//	public void testCommitFS() {
-//	}
-//
-//	public void testGetConstraintFactory() {
-//	}
-//
-//	public void testCreateFeaturePath() {
-//	}
-//
-//	public void testGetIndexRepository() {
-//	}
-//
-//	public void testFs2listIterator() {
-//	}
-//
+  // public void testCreateFilteredIterator() {
+  // }
+  //
+  // public void testCommitFS() {
+  // }
+  //
+  // public void testGetConstraintFactory() {
+  // }
+  //
+  // public void testCreateFeaturePath() {
+  // }
+  //
+  // public void testGetIndexRepository() {
+  // }
+  //
+  // public void testFs2listIterator() {
+  // }
+  //
   public static void main(String[] args) {
     junit.textui.TestRunner.run(CASTest.class);
   }

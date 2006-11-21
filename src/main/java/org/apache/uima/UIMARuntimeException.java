@@ -20,187 +20,160 @@
 package org.apache.uima;
 
 /**
- * This is the superclass for all runtime exceptions in UIMA.  Runtime 
- * exceptions do not need to be declared in the throws clause of methods. 
+ * This is the superclass for all runtime exceptions in UIMA. Runtime exceptions do not need to be
+ * declared in the throws clause of methods.
  * <p>
- * <code>UIMARuntimeException</code> extends 
- * {@link InternationalizedRuntimeException} for internationalization support.
- * Since UIMA Runtime Exceptions are internationalized, the thrower does not 
- * supply a hardcoded message.  Instead, the thrower specifies a key that 
- * identifies the message.  That key is then looked up in a locale-specific
- * {@link java.util.ResourceBundle ResourceBundle} to find the actual message
- * associated with this exception.
+ * <code>UIMARuntimeException</code> extends {@link InternationalizedRuntimeException} for
+ * internationalization support. Since UIMA Runtime Exceptions are internationalized, the thrower
+ * does not supply a hardcoded message. Instead, the thrower specifies a key that identifies the
+ * message. That key is then looked up in a locale-specific
+ * {@link java.util.ResourceBundle ResourceBundle} to find the actual message associated with this
+ * exception.
  * <p>
- * The thrower may specify the name of the <code>ResourceBundle</code>
- * in which to find the exception message.  Any name may be used.  If the name
- * is omitted, the resource bundle identified by {@link #STANDARD_MESSAGE_CATALOG} 
- * will be used.  This contains the standard UIMA exception messages.
+ * The thrower may specify the name of the <code>ResourceBundle</code> in which to find the
+ * exception message. Any name may be used. If the name is omitted, the resource bundle identified
+ * by {@link #STANDARD_MESSAGE_CATALOG} will be used. This contains the standard UIMA exception
+ * messages.
  * 
  * 
  */
-public class UIMARuntimeException extends InternationalizedRuntimeException
-{
+public class UIMARuntimeException extends InternationalizedRuntimeException {
 
- private static final long serialVersionUID = 6738051692628592989L;
-/**
-  * Creates a new exception with a null
-  * message.
-  */
-  public UIMARuntimeException()
-  {
+  private static final long serialVersionUID = 6738051692628592989L;
+
+  /**
+   * The name of the {@link java.util.ResourceBundle ResourceBundle} containing the standard UIMA
+   * Exception messages.
+   */
+  public static final String STANDARD_MESSAGE_CATALOG = "org.apache.uima.UIMAException_Messages";
+
+  /**
+   * Message key for a standard UIMA exception message: CasManager.release(CAS) was called with a
+   * CAS that does not belong to this CasManager.
+   */
+  public static final String CAS_RELEASED_TO_WRONG_CAS_MANAGER = "cas_released_to_wrong_cas_manager";
+
+  /**
+   * Message key for a standard UIMA exception message: "The Ecore model for the UIMA built-in types
+   * (uima.ecore) was not found in the classpath."
+   */
+  public static final String UIMA_ECORE_NOT_FOUND = "uima_ecore_not_found";
+
+  /**
+   * Message key for a standard UIMA exception message: "The Ecore model contained an unresolved
+   * proxy {0}."
+   */
+  public static final String ECORE_UNRESOLVED_PROXY = "ecore_unresolved_proxy";
+
+  /**
+   * Message key for a standard UIMA exception message: "AnalysisComponent "{0}" requested more
+   * CASes ({1}) than defined in its getCasInstancesRequired() method ({2}). It is possible that the
+   * AnalysisComponent is not properly releasing CASes when it encounters an error."
+   */
+  public static final String REQUESTED_TOO_MANY_CAS_INSTANCES = "requested_too_many_cas_instances";
+
+  /**
+   * Message key for a standard UIMA exception message: "The method CasManager.defineCasPool() was
+   * called twice by the same Analysis Engine ({0)}."
+   */
+  public static final String DEFINE_CAS_POOL_CALLED_TWICE = "define_cas_pool_called_twice";
+
+  /**
+   * Message key for a standard UIMA exception message: "Unsupported CAS interface {0}."
+   */
+  public static final String UNSUPPORTED_CAS_INTERFACE = "unsupported_cas_interface";
+
+  /**
+   * Message key for a standard UIMA exception message: "Incompatible taf jni library {0}."
+   */
+  public static final String INCOMPATIBLE_TAF_JNI_LIBRARY = "incompatible_taf_jni_library";
+
+  /**
+   * Creates a new exception with a null message.
+   */
+  public UIMARuntimeException() {
     super();
   }
 
- 
- /**
-  * Creates a new exception with the specified cause and a null message.
-  * 
-  * @param aCause  the original exception that caused this exception
-  *     to be thrown, if any
-  */
-  public UIMARuntimeException(Throwable aCause)
-  {
+  /**
+   * Creates a new exception with the specified cause and a null message.
+   * 
+   * @param aCause
+   *          the original exception that caused this exception to be thrown, if any
+   */
+  public UIMARuntimeException(Throwable aCause) {
     super(aCause);
   }
-  
-  
-  
- /**
-  * Creates a new exception with a the specified message.
-  * 
-  * @param aResourceBundleName the base name of the resource bundle in which 
-  *        the message for this exception is located.
-  * @param aMessageKey an identifier that maps to the message for
-  *        this exception.  The message may contain placeholders for
-  *        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-  *        class.   
-  * @param aArguments  The arguments to the message.  <code>null</code> may
-  *        be used if the message has no arguments.
-  */
-  public UIMARuntimeException(String aResourceBundleName,
-     String aMessageKey, Object[] aArguments)
-  {
-    super(aResourceBundleName, aMessageKey, aArguments);   
-  }
-  
-  
- /**
-  * Creates a new exception with the specified message and cause.
-  * 
-  * @param aResourceBundleName the base name of the resource bundle in which 
-  *        the message for this exception is located.
-  * @param aMessageKey an identifier that maps to the message for
-  *        this exception.  The message may contain placeholders for
-  *        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-  *        class.   
-  * @param aArguments  The arguments to the message.  <code>null</code> may
-  *        be used if the message has no arguments.
-  * @param aCause  the original exception that caused this exception
-  *     to be thrown, if any
-  */
-  public UIMARuntimeException(String aResourceBundleName, 
-     String aMessageKey, Object[] aArguments, Throwable aCause)
-  {
-    super(aResourceBundleName, aMessageKey, aArguments, aCause);
-  }  
- 
-  
- /**
-  * Creates a new exception with a message from the 
-  * {@link #STANDARD_MESSAGE_CATALOG}.
-  * 
-  * @param aMessageKey an identifier that maps to the message for
-  *        this exception.  The message may contain placeholders for
-  *        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-  *        class.   
-  * @param aArguments  The arguments to the message.  <code>null</code> may
-  *        be used if the message has no arguments.
-  */
-  public UIMARuntimeException(String aMessageKey, Object[] aArguments)
-  {
-    super(STANDARD_MESSAGE_CATALOG, aMessageKey, aArguments);   
-  }
-  
- 
-  
- /**
-  * Creates a new exception with the specified cause and a message from the
-  * {@link #STANDARD_MESSAGE_CATALOG}.
-  *  
-  * @param aMessageKey an identifier that maps to the message for
-  *        this exception.  The message may contain placeholders for
-  *        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-  *        class.   
-  * @param aArguments  The arguments to the message.  <code>null</code> may
-  *        be used if the message has no arguments.
-  * @param aCause  the original exception that caused this exception
-  *     to be thrown, if any
-  */
-  public UIMARuntimeException(String aMessageKey, Object[] aArguments, 
-                        Throwable aCause)
-  {
-    super(STANDARD_MESSAGE_CATALOG, aMessageKey, aArguments, aCause);
-  }  
-  
-
- /**
-  * The name of the {@link java.util.ResourceBundle ResourceBundle} containing
-  * the standard UIMA Exception messages.
-  */  
-  public static final String STANDARD_MESSAGE_CATALOG
-     = "org.apache.uima.UIMAException_Messages";
-  
-  /**
-   * Message key for a standard UIMA exception message:
-   * CasManager.release(CAS) was called with a CAS that does not belong
-   * to this CasManager.
-   */ 
-  public static final String CAS_RELEASED_TO_WRONG_CAS_MANAGER = 
-      "cas_released_to_wrong_cas_manager";   
 
   /**
-   * Message key for a standard UIMA exception message:
-   * "The Ecore model for the UIMA built-in types (uima.ecore) was not found in the classpath."
+   * Creates a new exception with a the specified message.
+   * 
+   * @param aResourceBundleName
+   *          the base name of the resource bundle in which the message for this exception is
+   *          located.
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
    */
-   public static final String UIMA_ECORE_NOT_FOUND =
-     "uima_ecore_not_found";  
+  public UIMARuntimeException(String aResourceBundleName, String aMessageKey, Object[] aArguments) {
+    super(aResourceBundleName, aMessageKey, aArguments);
+  }
 
-   /**
-    * Message key for a standard UIMA exception message:
-    * "The Ecore model contained an unresolved proxy {0}."
-    */
-    public static final String ECORE_UNRESOLVED_PROXY =
-      "ecore_unresolved_proxy";   
+  /**
+   * Creates a new exception with the specified message and cause.
+   * 
+   * @param aResourceBundleName
+   *          the base name of the resource bundle in which the message for this exception is
+   *          located.
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
+   * @param aCause
+   *          the original exception that caused this exception to be thrown, if any
+   */
+  public UIMARuntimeException(String aResourceBundleName, String aMessageKey, Object[] aArguments,
+                  Throwable aCause) {
+    super(aResourceBundleName, aMessageKey, aArguments, aCause);
+  }
 
-    /**
-     * Message key for a standard UIMA exception message:
-     * "AnalysisComponent "{0}" requested more CASes ({1}) than defined in its 
-     * getCasInstancesRequired() method ({2}).  It is possible that the AnalysisComponent
-     * is not properly releasing CASes when it encounters an error."
-     */
-     public static final String REQUESTED_TOO_MANY_CAS_INSTANCES =
-       "requested_too_many_cas_instances";  
+  /**
+   * Creates a new exception with a message from the {@link #STANDARD_MESSAGE_CATALOG}.
+   * 
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
+   */
+  public UIMARuntimeException(String aMessageKey, Object[] aArguments) {
+    super(STANDARD_MESSAGE_CATALOG, aMessageKey, aArguments);
+  }
 
-     /**
-      * Message key for a standard UIMA exception message:
-      * "The method CasManager.defineCasPool() was called twice by the same Analysis Engine ({0)}."
-      */
-      public static final String DEFINE_CAS_POOL_CALLED_TWICE =
-        "define_cas_pool_called_twice";  
-
-      /**
-       * Message key for a standard UIMA exception message:
-       * "Unsupported CAS interface {0}."
-       */
-       public static final String UNSUPPORTED_CAS_INTERFACE =
-         "unsupported_cas_interface";  
-       
-       /**
-        * Message key for a standard UIMA exception message:
-        * "Incompatible taf jni library {0}."
-        */
-        public static final String INCOMPATIBLE_TAF_JNI_LIBRARY =
-          "incompatible_taf_jni_library";  
+  /**
+   * Creates a new exception with the specified cause and a message from the
+   * {@link #STANDARD_MESSAGE_CATALOG}.
+   * 
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
+   * @param aCause
+   *          the original exception that caused this exception to be thrown, if any
+   */
+  public UIMARuntimeException(String aMessageKey, Object[] aArguments, Throwable aCause) {
+    super(STANDARD_MESSAGE_CATALOG, aMessageKey, aArguments, aCause);
+  }
 }
-
-

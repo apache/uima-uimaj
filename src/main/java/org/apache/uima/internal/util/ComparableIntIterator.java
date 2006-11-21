@@ -20,9 +20,9 @@
 package org.apache.uima.internal.util;
 
 /**
- * Interface for a comparable IntListIterator. Two IntIterators are compared
- * according to the element that would be returned by the next call to next().
+ * Interface for a comparable IntListIterator. Two IntIterators are compared according to the
+ * element that would be returned by the next call to next().
  */
 public interface ComparableIntIterator extends IntListIterator, Comparable {
-    // Empty interface
+  // Empty interface
 }

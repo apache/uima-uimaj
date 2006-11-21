@@ -19,103 +19,151 @@
 
 package aa;
 
-import org.apache.uima.jcas.impl.JCas; 
+import org.apache.uima.jcas.impl.JCas;
 import org.apache.uima.jcas.cas.TOP_Type;
 
 import org.apache.uima.jcas.cas.TOP;
 
-
-/** 
- * Updated by JCasGen Tue Feb 21 14:56:04 EST 2006
- * XML source: C:/a/Eclipse/3.1/j4/jedii_jcas_tests/testTypes.xml
- * @generated */
+/**
+ * Updated by JCasGen Tue Feb 21 14:56:04 EST 2006 XML source:
+ * C:/a/Eclipse/3.1/j4/jedii_jcas_tests/testTypes.xml
+ * 
+ * @generated
+ */
 public class MissingFeatureInCas extends TOP {
-  /** @generated
-   * @ordered 
+  /**
+   * @generated
+   * @ordered
    */
   public final static int typeIndexID = JCas.getNextIndex();
-  /** @generated
-   * @ordered 
+
+  /**
+   * @generated
+   * @ordered
    */
   public final static int type = typeIndexID;
-  /** @generated  */
-  public              int getTypeIndexID() {return typeIndexID;}
- 
-  /** Never called.  Disable default constructor
-   * @generated */
-  protected MissingFeatureInCas() {}
-    
-  /** Internal - constructor used by generator 
-   * @generated */
+
+  /** @generated */
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  /**
+   * Never called. Disable default constructor
+   * 
+   * @generated
+   */
+  protected MissingFeatureInCas() {
+  }
+
+  /**
+   * Internal - constructor used by generator
+   * 
+   * @generated
+   */
   public MissingFeatureInCas(int addr, TOP_Type type) {
     super(addr, type);
     readObject();
   }
-  
+
   /** @generated */
   public MissingFeatureInCas(JCas jcas) {
     super(jcas);
-    readObject();   
-  } 
-
-  /** <!-- begin-user-doc -->
-    * Write your own initialization here
-    * <!-- end-user-doc -->
-  @generated modifiable */
-  private void readObject() {}
-     
-  //*--------------*
-  //* Feature: haveThisOne
-
-  /** getter for haveThisOne - gets 
-   * @generated */
-  public int getHaveThisOne() {
-    if (MissingFeatureInCas_Type.featOkTst && ((MissingFeatureInCas_Type)jcasType).casFeat_haveThisOne == null)
-      JCas.throwFeatMissing("haveThisOne", "aa.MissingFeatureInCas");
-    return jcasType.ll_cas.ll_getIntValue(addr, ((MissingFeatureInCas_Type)jcasType).casFeatCode_haveThisOne);}
-    
-  /** setter for haveThisOne - sets  
-   * @generated */
-  public void setHaveThisOne(int v) {
-    if (MissingFeatureInCas_Type.featOkTst && ((MissingFeatureInCas_Type)jcasType).casFeat_haveThisOne == null)
-      JCas.throwFeatMissing("haveThisOne", "aa.MissingFeatureInCas");
-    jcasType.ll_cas.ll_setIntValue(addr, ((MissingFeatureInCas_Type)jcasType).casFeatCode_haveThisOne, v);}    
-   
-    
-  //*--------------*
-  //* Feature: missingThisOne
-
-  /** getter for missingThisOne - gets 
-   * @generated */
-  public float getMissingThisOne() {
-    if (MissingFeatureInCas_Type.featOkTst && ((MissingFeatureInCas_Type)jcasType).casFeat_missingThisOne == null)
-      JCas.throwFeatMissing("missingThisOne", "aa.MissingFeatureInCas");
-    return jcasType.ll_cas.ll_getFloatValue(addr, ((MissingFeatureInCas_Type)jcasType).casFeatCode_missingThisOne);}
-    
-  /** setter for missingThisOne - sets  
-   * @generated */
-  public void setMissingThisOne(float v) {
-    if (MissingFeatureInCas_Type.featOkTst && ((MissingFeatureInCas_Type)jcasType).casFeat_missingThisOne == null)
-      JCas.throwFeatMissing("missingThisOne", "aa.MissingFeatureInCas");
-    jcasType.ll_cas.ll_setFloatValue(addr, ((MissingFeatureInCas_Type)jcasType).casFeatCode_missingThisOne, v);}    
-   
-    
-  //*--------------*
-  //* Feature: changedFType
-
-  /** getter for changedFType - gets 
-   * @generated */
-  public String getChangedFType() {
-    if (MissingFeatureInCas_Type.featOkTst && ((MissingFeatureInCas_Type)jcasType).casFeat_changedFType == null)
-      JCas.throwFeatMissing("changedFType", "aa.MissingFeatureInCas");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((MissingFeatureInCas_Type)jcasType).casFeatCode_changedFType);}
-    
-  /** setter for changedFType - sets  
-   * @generated */
-  public void setChangedFType(String v) {
-    if (MissingFeatureInCas_Type.featOkTst && ((MissingFeatureInCas_Type)jcasType).casFeat_changedFType == null)
-      JCas.throwFeatMissing("changedFType", "aa.MissingFeatureInCas");
-    jcasType.ll_cas.ll_setStringValue(addr, ((MissingFeatureInCas_Type)jcasType).casFeatCode_changedFType, v);}    
+    readObject();
   }
 
-    
+  /**
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
+   * 
+   * @generated modifiable
+   */
+  private void readObject() {
+  }
+
+  // *--------------*
+  // * Feature: haveThisOne
+
+  /**
+   * getter for haveThisOne - gets
+   * 
+   * @generated
+   */
+  public int getHaveThisOne() {
+    if (MissingFeatureInCas_Type.featOkTst
+                    && ((MissingFeatureInCas_Type) jcasType).casFeat_haveThisOne == null)
+      JCas.throwFeatMissing("haveThisOne", "aa.MissingFeatureInCas");
+    return jcasType.ll_cas.ll_getIntValue(addr,
+                    ((MissingFeatureInCas_Type) jcasType).casFeatCode_haveThisOne);
+  }
+
+  /**
+   * setter for haveThisOne - sets
+   * 
+   * @generated
+   */
+  public void setHaveThisOne(int v) {
+    if (MissingFeatureInCas_Type.featOkTst
+                    && ((MissingFeatureInCas_Type) jcasType).casFeat_haveThisOne == null)
+      JCas.throwFeatMissing("haveThisOne", "aa.MissingFeatureInCas");
+    jcasType.ll_cas.ll_setIntValue(addr,
+                    ((MissingFeatureInCas_Type) jcasType).casFeatCode_haveThisOne, v);
+  }
+
+  // *--------------*
+  // * Feature: missingThisOne
+
+  /**
+   * getter for missingThisOne - gets
+   * 
+   * @generated
+   */
+  public float getMissingThisOne() {
+    if (MissingFeatureInCas_Type.featOkTst
+                    && ((MissingFeatureInCas_Type) jcasType).casFeat_missingThisOne == null)
+      JCas.throwFeatMissing("missingThisOne", "aa.MissingFeatureInCas");
+    return jcasType.ll_cas.ll_getFloatValue(addr,
+                    ((MissingFeatureInCas_Type) jcasType).casFeatCode_missingThisOne);
+  }
+
+  /**
+   * setter for missingThisOne - sets
+   * 
+   * @generated
+   */
+  public void setMissingThisOne(float v) {
+    if (MissingFeatureInCas_Type.featOkTst
+                    && ((MissingFeatureInCas_Type) jcasType).casFeat_missingThisOne == null)
+      JCas.throwFeatMissing("missingThisOne", "aa.MissingFeatureInCas");
+    jcasType.ll_cas.ll_setFloatValue(addr,
+                    ((MissingFeatureInCas_Type) jcasType).casFeatCode_missingThisOne, v);
+  }
+
+  // *--------------*
+  // * Feature: changedFType
+
+  /**
+   * getter for changedFType - gets
+   * 
+   * @generated
+   */
+  public String getChangedFType() {
+    if (MissingFeatureInCas_Type.featOkTst
+                    && ((MissingFeatureInCas_Type) jcasType).casFeat_changedFType == null)
+      JCas.throwFeatMissing("changedFType", "aa.MissingFeatureInCas");
+    return jcasType.ll_cas.ll_getStringValue(addr,
+                    ((MissingFeatureInCas_Type) jcasType).casFeatCode_changedFType);
+  }
+
+  /**
+   * setter for changedFType - sets
+   * 
+   * @generated
+   */
+  public void setChangedFType(String v) {
+    if (MissingFeatureInCas_Type.featOkTst
+                    && ((MissingFeatureInCas_Type) jcasType).casFeat_changedFType == null)
+      JCas.throwFeatMissing("changedFType", "aa.MissingFeatureInCas");
+    jcasType.ll_cas.ll_setStringValue(addr,
+                    ((MissingFeatureInCas_Type) jcasType).casFeatCode_changedFType, v);
+  }
+}

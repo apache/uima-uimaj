@@ -28,8 +28,7 @@ import org.apache.uima.cas_data.FeatureStructure;
 /**
  * 
  */
-public class CasDataImpl implements CasData
-{
+public class CasDataImpl implements CasData {
   /**
    * 
    */
@@ -40,8 +39,7 @@ public class CasDataImpl implements CasData
   /**
    * Initializes FeatureStructure list
    */
-  public CasDataImpl()
-  {
+  public CasDataImpl() {
     fsList = new LinkedList();
   }
 
@@ -50,35 +48,32 @@ public class CasDataImpl implements CasData
    * 
    * @return an iterator over FeatureStructure list
    */
-  public Iterator getFeatureStructures()
-  {
+  public Iterator getFeatureStructures() {
     return fsList.iterator();
   }
 
   /**
    * Adds a new FeatureStructure to the list
    * 
-   * @param aFS - new FeatureStructure to be added
+   * @param aFS -
+   *          new FeatureStructure to be added
    */
-  public void addFeatureStructure(FeatureStructure aFS)
-  {
+  public void addFeatureStructure(FeatureStructure aFS) {
     fsList.add(aFS);
   }
 
   /**
    * Removes named FeatureStructure from the list
    * 
-   * @param AFS - FeatureStructure to remove
+   * @param AFS -
+   *          FeatureStructure to remove
    */
-  public void removeFeatureStructure(FeatureStructure aFS)
-  {
+  public void removeFeatureStructure(FeatureStructure aFS) {
     fsList.remove(aFS);
   }
 
-  public String toString()
-  {
+  public String toString() {
     return fsList.toString();
   }
-
 
 }

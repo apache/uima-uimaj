@@ -19,48 +19,56 @@
 
 package org.apache.uima.cas.text;
 
-
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 import java.util.MissingResourceException;
 
-/** Exception class for package org.apache.uima.cas.text.  Automatically generated from message catalog.
+/**
+ * Exception class for package org.apache.uima.cas.text. Automatically generated from message
+ * catalog.
  */
 public class TCASRuntimeException extends RuntimeException {
 
   private static final String resource_file = "org.apache.uima.cas.text.tcas_runtime_exc";
-  private static final String missing_resource_error = 
-    "Could not load message catalog: " + resource_file;
-  
+
+  private static final String missing_resource_error = "Could not load message catalog: "
+                  + resource_file;
+
   private static final int MESSAGES_NOT_FOUND = -1;
+
   /** Can't set document text, operation disabled. */
   public static final int SET_DOC_TEXT_DISABLED = 0;
 
-  private static final String [] identifiers = {
-    "SET_DOC_TEXT_DISABLED"
-  };
+  private static final String[] identifiers = { "SET_DOC_TEXT_DISABLED" };
 
   private int error;
+
   private ResourceBundle resource = null;
-  private String [] arguments = new String[9];
-  
-  /** Create a new <code>TCASRuntimeException</code>
-   *  @param error The error code.
+
+  private String[] arguments = new String[9];
+
+  /**
+   * Create a new <code>TCASRuntimeException</code>
+   * 
+   * @param error
+   *          The error code.
    */
   public TCASRuntimeException(int error) {
     this.error = error;
   }
 
-  /** @return The error code for the exception.  This may be useful when
-   *  the error needs to be handed over language boundaries.  Instead of
-   *  handing over the complete exception object, return the error code,
-   *  and the receiving application can look up the error in the message
-   *  file.  Unfortunately, the error parameters get lost that way.
+  /**
+   * @return The error code for the exception. This may be useful when the error needs to be handed
+   *         over language boundaries. Instead of handing over the complete exception object, return
+   *         the error code, and the receiving application can look up the error in the message
+   *         file. Unfortunately, the error parameters get lost that way.
    */
-  public int getError() { return this.error; }
+  public int getError() {
+    return this.error;
+  }
 
-  /** @return The message of the exception.  Useful for including the text
-   *  in another exception.
+  /**
+   * @return The message of the exception. Useful for including the text in another exception.
    */
   public String getMessage() {
     if (this.resource == null) {
@@ -73,7 +81,8 @@ public class TCASRuntimeException extends RuntimeException {
     }
     // Retrieve message from resource bundle, format using arguments,
     // and return resulting string.
-    return (new MessageFormat(this.resource.getString(identifiers[this.error]))).format(this.arguments);
+    return (new MessageFormat(this.resource.getString(identifiers[this.error])))
+                    .format(this.arguments);
   }
 
   /** @return The same as getMessage(), but prefixed with <code>"TCASRuntimeException: "</code>. */
@@ -81,12 +90,13 @@ public class TCASRuntimeException extends RuntimeException {
     return "TCASRuntimeException: " + this.getMessage();
   }
 
-  /** Add an argument to a <code>TCASRuntimeException</code> object.  Excess arguments will be
-   *  ignored, and missing arguments will have the value <code>null</code>.  Add
-   *  arguments in the order in which they are specified in the message catalog
-   *  (i.e. add %1 first, %2 next, and so on).  Adding a <code>null String</code>
-   *  has no effect!  So if you don't know the value of an argument, use something
-   *  like <code>""</code> or <code>"UNKNOWN"</code>, but not <code>null</code>.
+  /**
+   * Add an argument to a <code>TCASRuntimeException</code> object. Excess arguments will be
+   * ignored, and missing arguments will have the value <code>null</code>. Add arguments in the
+   * order in which they are specified in the message catalog (i.e. add %1 first, %2 next, and so
+   * on). Adding a <code>null String</code> has no effect! So if you don't know the value of an
+   * argument, use something like <code>""</code> or <code>"UNKNOWN"</code>, but not
+   * <code>null</code>.
    */
   public boolean addArgument(String s) {
     int i = 0;
@@ -99,9 +109,10 @@ public class TCASRuntimeException extends RuntimeException {
     }
     return false;
   }
-  
+
   /**
    * Get the string identifier for this exception.
+   * 
    * @return The internal message key.
    */
   public String getMessageCode() {
@@ -110,6 +121,7 @@ public class TCASRuntimeException extends RuntimeException {
 
   /**
    * Get the arguments to the exception string.
+   * 
    * @return The arguments to the exception.
    */
   public String[] getArguments() {
@@ -117,8 +129,8 @@ public class TCASRuntimeException extends RuntimeException {
   }
 
   /**
-   * Get the short name of the message bundle, i.e., the name without the
-   * package prefix.
+   * Get the short name of the message bundle, i.e., the name without the package prefix.
+   * 
    * @return The short name of the message bundle.
    */
   public String getBundleShortName() {

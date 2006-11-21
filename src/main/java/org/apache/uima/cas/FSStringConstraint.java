@@ -19,29 +19,34 @@
 
 package org.apache.uima.cas;
 
-/** Interface for a String constraint.  
- * A String constraint supports equality testing to a given string.
- *  After creating this constraint, use the {@link #equals(String)} method to specify
- * the string that the constraint uses in its testing.
+/**
+ * Interface for a String constraint. A String constraint supports equality testing to a given
+ * string. After creating this constraint, use the {@link #equals(String)} method to specify the
+ * string that the constraint uses in its testing.
  * <p>
- * To use the constraint, invoke its {@link #match(String)} method, passing 
- * the value to test. You can also embed this test with a path specification,
- * using the {@link org.apache.uima.cas.ConstraintFactory#embedConstraint(FeaturePath, FSConstraint)}
- * method, and use it to test feature structures, or combine it with other
- * tests using the {@link org.apache.uima.cas.ConstraintFactory#and(FSMatchConstraint, FSMatchConstraint)}
- * and {@link org.apache.uima.cas.ConstraintFactory#or(FSMatchConstraint, FSMatchConstraint)}
- * methods.
+ * To use the constraint, invoke its {@link #match(String)} method, passing the value to test. You
+ * can also embed this test with a path specification, using the
+ * {@link org.apache.uima.cas.ConstraintFactory#embedConstraint(FeaturePath, FSConstraint)} method,
+ * and use it to test feature structures, or combine it with other tests using the
+ * {@link org.apache.uima.cas.ConstraintFactory#and(FSMatchConstraint, FSMatchConstraint)} and
+ * {@link org.apache.uima.cas.ConstraintFactory#or(FSMatchConstraint, FSMatchConstraint)} methods.
  */
 public interface FSStringConstraint extends FSConstraint {
 
-  /** String value of matched FS must match input String.
-   *  @param s The string that the matched FS must equal.
+  /**
+   * String value of matched FS must match input String.
+   * 
+   * @param s
+   *          The string that the matched FS must equal.
    */
   void equals(String s);
 
-  /** Check if String matches defined constraints.
-   *  @param s The String to be checked.
-   *  @return <code>true</code> iff the String satisfies the constraints.
+  /**
+   * Check if String matches defined constraints.
+   * 
+   * @param s
+   *          The String to be checked.
+   * @return <code>true</code> iff the String satisfies the constraints.
    */
   boolean match(String s);
 

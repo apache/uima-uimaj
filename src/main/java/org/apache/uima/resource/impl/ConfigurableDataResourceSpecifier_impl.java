@@ -30,69 +30,59 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  * 
  * 
  */
-public class ConfigurableDataResourceSpecifier_impl extends MetaDataObject_impl
-	implements ConfigurableDataResourceSpecifier 
-{
+public class ConfigurableDataResourceSpecifier_impl extends MetaDataObject_impl implements
+                ConfigurableDataResourceSpecifier {
   private static final long serialVersionUID = -5414343447386950507L;
-  
+
+  /** URL of the data. */
+  private String mUrl;
+
+  /** Resource metadata. */
+  private ResourceMetaData mMetaData;
+
   /**
    * Creates a new <code>ConfigurableDataResourceSpecifier_impl</code>.
    */
-  public ConfigurableDataResourceSpecifier_impl()
-  {
+  public ConfigurableDataResourceSpecifier_impl() {
   }
-  
+
   /**
    * @see org.apache.uima.resource.ConfigurableDataResourceSpecifier#getUrl()
    */
-  public String getUrl()
-  {
+  public String getUrl() {
     return mUrl;
   }
 
   /**
    * @see org.apache.uima.resource.ConfigurableDataResourceSpecifier#getUrl(String)
    */
-  public void setUrl(String aUrl)
-  {
+  public void setUrl(String aUrl) {
     mUrl = aUrl;
   }
-  
-  
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.ConfigurableDataResourceSpecifier#getMetaData()
    */
-  public ResourceMetaData getMetaData()
-  {
+  public ResourceMetaData getMetaData() {
     return mMetaData;
   }
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.ConfigurableDataResourceSpecifier#setMetaData(org.apache.uima.resource.metadata.ResourceMetaData)
    */
-  public void setMetaData(ResourceMetaData aMetaData)
-  {
+  public void setMetaData(ResourceMetaData aMetaData) {
     mMetaData = aMetaData;
   }
-  
-  protected XmlizationInfo getXmlizationInfo()
-  {
+
+  protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
-  
-  static final private XmlizationInfo XMLIZATION_INFO =
-    new XmlizationInfo("configurableDataResourceSpecifier",
-      new PropertyXmlInfo[]{
-         new PropertyXmlInfo("url"),
-         new PropertyXmlInfo("metaData",null)
-      });
-       
 
-  /** URL of the data. */
-  private String mUrl;
-  
-  /** Resource metadata. */
-  private ResourceMetaData mMetaData;  
-
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+                  "configurableDataResourceSpecifier", new PropertyXmlInfo[] {
+                      new PropertyXmlInfo("url"), new PropertyXmlInfo("metaData", null) });
 }

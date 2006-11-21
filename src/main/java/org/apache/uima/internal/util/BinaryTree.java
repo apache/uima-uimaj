@@ -24,53 +24,52 @@ package org.apache.uima.internal.util;
  */
 public class BinaryTree {
 
-    private BinaryTree mother;
+  private BinaryTree mother;
 
-    private BinaryTree left;
+  private BinaryTree left;
 
-    private BinaryTree right;
+  private BinaryTree right;
 
-    private Object value;
+  private Object value;
 
-    public BinaryTree() {
-        super();
-        this.mother = null;
-        this.left = null;
-        this.right = null;
-        this.value = null;
-    }
+  public BinaryTree() {
+    super();
+    this.mother = null;
+    this.left = null;
+    this.right = null;
+    this.value = null;
+  }
 
-    public void setValue(Object value) {
-        this.value = value;
-    }
+  public void setValue(Object value) {
+    this.value = value;
+  }
 
-    public BinaryTree newLeftDtr() {
-        this.left = new BinaryTree();
-        this.left.mother = this;
-        return this.left;
-    }
+  public BinaryTree newLeftDtr() {
+    this.left = new BinaryTree();
+    this.left.mother = this;
+    return this.left;
+  }
 
-    public BinaryTree newRightDtr() {
-        this.right = new BinaryTree();
-        this.right.mother = this;
-        return this.right;
-    }
+  public BinaryTree newRightDtr() {
+    this.right = new BinaryTree();
+    this.right.mother = this;
+    return this.right;
+  }
 
-    public BinaryTree getLeftDtr() {
-        return this.left;
-    }
+  public BinaryTree getLeftDtr() {
+    return this.left;
+  }
 
-    public BinaryTree getRightDtr() {
-        return this.right;
-    }
+  public BinaryTree getRightDtr() {
+    return this.right;
+  }
 
-    public BinaryTree getMother() {
-        return this.mother;
-    }
+  public BinaryTree getMother() {
+    return this.mother;
+  }
 
-    public Object getValue() {
-        return this.value;
-    }
-
+  public Object getValue() {
+    return this.value;
+  }
 
 }

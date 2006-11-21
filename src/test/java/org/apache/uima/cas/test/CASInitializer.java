@@ -38,37 +38,36 @@ import org.apache.uima.util.CasCreationUtils;
  */
 public class CASInitializer {
 
-    public static TCAS initCas(AnnotatorInitializer init) {
-        // Create an initial CASMgr from the factory.
-        CASMgr casMgr0 = CASFactory.createCAS();
-        CASMgr casMgr = null;
-        try {
-            CasCreationUtils.setupTypeSystem(casMgr0,
-                    (TypeSystemDescription) null);
-            // Create a writable type system.
-            TypeSystemMgr tsa = casMgr0.getTypeSystemMgr();
-            ((TypeSystemImpl) tsa).setCommitted(false);
-            // do the type system tests
-            init.initTypeSystem(tsa);
-            // Commit the type system.
-            ((CASImpl)casMgr0).commitTypeSystem();
+  public static TCAS initCas(AnnotatorInitializer init) {
+    // Create an initial CASMgr from the factory.
+    CASMgr casMgr0 = CASFactory.createCAS();
+    CASMgr casMgr = null;
+    try {
+      CasCreationUtils.setupTypeSystem(casMgr0, (TypeSystemDescription) null);
+      // Create a writable type system.
+      TypeSystemMgr tsa = casMgr0.getTypeSystemMgr();
+      ((TypeSystemImpl) tsa).setCommitted(false);
+      // do the type system tests
+      init.initTypeSystem(tsa);
+      // Commit the type system.
+      ((CASImpl) casMgr0).commitTypeSystem();
 
-            casMgr = CASFactory.createCAS(tsa);
+      casMgr = CASFactory.createCAS(tsa);
 
-            // Create the Base indexes.
-            casMgr.initCASIndexes();
-            // Commit the index repository.
-            FSIndexRepositoryMgr irm = casMgr.getIndexRepositoryMgr();
-            init.initIndexes(irm, casMgr.getTypeSystemMgr());
-            irm.commit();
-        } catch (ResourceInitializationException e) {
-            e.printStackTrace();
-        } catch (CASException e) {
-            e.printStackTrace();
-        }
-
-        // Create the default text Sofa and return TCAS view
-        return casMgr.getCAS().getTCAS();
+      // Create the Base indexes.
+      casMgr.initCASIndexes();
+      // Commit the index repository.
+      FSIndexRepositoryMgr irm = casMgr.getIndexRepositoryMgr();
+      init.initIndexes(irm, casMgr.getTypeSystemMgr());
+      irm.commit();
+    } catch (ResourceInitializationException e) {
+      e.printStackTrace();
+    } catch (CASException e) {
+      e.printStackTrace();
     }
+
+    // Create the default text Sofa and return TCAS view
+    return casMgr.getCAS().getTCAS();
+  }
 
 }

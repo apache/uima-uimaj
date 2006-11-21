@@ -25,28 +25,20 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 /**
  * Reference implementation of {@link TaeDescription}.
  * 
- * @deprecated since v2.0 
+ * @deprecated since v2.0
  */
-public class TaeDescription_impl 
-  extends AnalysisEngineDescription_impl
-  implements TaeDescription
-{ 
-  
-     
-    
-  protected XmlizationInfo getXmlizationInfo()
-  {
+public class TaeDescription_impl extends AnalysisEngineDescription_impl implements TaeDescription {
+
+  static final long serialVersionUID = 7829820134797529630L;
+
+  protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
-  
-  static final protected XmlizationInfo XMLIZATION_INFO =
-    new XmlizationInfo("taeDescription", null); //property info set below
-  
-  static
-  {
-    XMLIZATION_INFO.propertyInfo = 
-      AnalysisEngineDescription_impl.XMLIZATION_INFO.propertyInfo;
-  }    
-    
-  static final long serialVersionUID = 7829820134797529630L;
-}  
+
+  static final protected XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("taeDescription", null); 
+  // property info set below
+
+  static {
+    XMLIZATION_INFO.propertyInfo = AnalysisEngineDescription_impl.XMLIZATION_INFO.propertyInfo;
+  }
+}

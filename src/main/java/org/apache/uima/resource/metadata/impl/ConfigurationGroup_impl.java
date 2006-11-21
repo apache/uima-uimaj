@@ -35,116 +35,119 @@ import org.apache.uima.util.XMLParser;
  * 
  * 
  */
-public class ConfigurationGroup_impl extends MetaDataObject_impl
-  implements ConfigurationGroup
-{
-  
+public class ConfigurationGroup_impl extends MetaDataObject_impl implements ConfigurationGroup {
+
+  static final long serialVersionUID = 4220504881786100821L;
+
+  /**
+   * Group names.
+   */
+  private String[] mNames;
+
+  /**
+   * Parameters contained within the group(s).
+   */
+  private ConfigurationParameter[] mConfigurationParameters = new ConfigurationParameter[0];
+
   /**
    * @see org.apache.uima.resource.ConfigurationGroup#getNames()
    */
-  public String[] getNames()
-  {
+  public String[] getNames() {
     return mNames;
   }
 
   /**
    * @see org.apache.uima.resource.ConfigurationGroup#setNames(java.lang.String[])
    */
-  public void setNames(String[] aNames)
-  {
+  public void setNames(String[] aNames) {
     mNames = aNames;
   }
 
   /**
    * @see org.apache.uima.resource.ConfigurationGroup#getConfigurationParameters()
    */
-  public ConfigurationParameter[] getConfigurationParameters()
-  {
+  public ConfigurationParameter[] getConfigurationParameters() {
     return mConfigurationParameters;
   }
 
   /**
    * @see org.apache.uima.resource.ConfigurationGroup#setConfigurationParameters(org.apache.uima.resource.ConfigurationParameter[])
    */
-  public void setConfigurationParameters(ConfigurationParameter[] aParams)
-  {
+  public void setConfigurationParameters(ConfigurationParameter[] aParams) {
     mConfigurationParameters = aParams;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.ConfigurationParameterDeclarations#addConfigurationParameter(org.apache.uima.resource.metadata.ConfigurationParameter)
    */
-  public void addConfigurationParameter(ConfigurationParameter aConfigurationParameter)
-  {
-	  ConfigurationParameter[] current = getConfigurationParameters();
-	  ConfigurationParameter[] newArr = new ConfigurationParameter[current.length + 1];
-	  System.arraycopy(current, 0, newArr, 0, current.length);
-	  newArr[current.length] = aConfigurationParameter;
-	  setConfigurationParameters(newArr);
- }
+  public void addConfigurationParameter(ConfigurationParameter aConfigurationParameter) {
+    ConfigurationParameter[] current = getConfigurationParameters();
+    ConfigurationParameter[] newArr = new ConfigurationParameter[current.length + 1];
+    System.arraycopy(current, 0, newArr, 0, current.length);
+    newArr[current.length] = aConfigurationParameter;
+    setConfigurationParameters(newArr);
+  }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.ConfigurationParameterDeclarations#removeConfigurationParameter(org.apache.uima.resource.metadata.ConfigurationParameter)
    */
-  public void removeConfigurationParameter(ConfigurationParameter aConfigurationParameter)
-  {
-	  ConfigurationParameter[] current = getConfigurationParameters();
-	  for (int i = 0; i < current.length; i++)
-	  {
-	    if (current[i] == aConfigurationParameter)
-	    {
-	  	  ConfigurationParameter[] newArr = new ConfigurationParameter[current.length - 1];
-	  	  System.arraycopy(current, 0, newArr, 0, i);
-	  	  System.arraycopy(current, i+1, newArr, i, current.length - i - 1);
+  public void removeConfigurationParameter(ConfigurationParameter aConfigurationParameter) {
+    ConfigurationParameter[] current = getConfigurationParameters();
+    for (int i = 0; i < current.length; i++) {
+      if (current[i] == aConfigurationParameter) {
+        ConfigurationParameter[] newArr = new ConfigurationParameter[current.length - 1];
+        System.arraycopy(current, 0, newArr, 0, i);
+        System.arraycopy(current, i + 1, newArr, i, current.length - i - 1);
         setConfigurationParameters(newArr);
-	  	  break; 	      
-	    }
-	  }
+        break;
+      }
+    }
   }
-  
+
   /**
    * Overridden to write the <code>names</code> property as an XML attribute.
+   * 
    * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXMLAttributeString()
    */
-  protected AttributesImpl getXMLAttributes()
-  {
+  protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = super.getXMLAttributes();
     StringBuffer buf = new StringBuffer();
     String[] names = getNames();
-    buf.append(names[0]);    
-    for (int i = 1; i < names.length; i++)
-    {
+    buf.append(names[0]);
+    for (int i = 1; i < names.length; i++) {
       buf.append(' ').append(names[i]);
-    }    
-    attrs.addAttribute("","names","names",null,buf.toString());
+    }
+    attrs.addAttribute("", "names", "names", null, buf.toString());
     return attrs;
   }
 
   /**
    * Overridden to read <code>names</code> property from XML attribute.
-   * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element, org.apache.uima.util.XMLParser)
+   * 
+   * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element,
+   *      org.apache.uima.util.XMLParser)
    */
-  public void buildFromXMLElement(Element aElement, XMLParser aParser, XMLParser.ParsingOptions aOptions)
-    throws InvalidXMLException
-  {
+  public void buildFromXMLElement(Element aElement, XMLParser aParser,
+                  XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     String names = aElement.getAttribute("names");
-    if (names.length() == 0)
-    {
-      throw new InvalidXMLException(
-        InvalidXMLException.REQUIRED_ATTRIBUTE_MISSING,
-        new Object[]{"names", "configurationGroup"});
+    if (names.length() == 0) {
+      throw new InvalidXMLException(InvalidXMLException.REQUIRED_ATTRIBUTE_MISSING, new Object[] {
+          "names", "configurationGroup" });
     }
-    //treat names as a space-separated list
-    StringTokenizer tokenizer = new StringTokenizer(names," \t");
+    // treat names as a space-separated list
+    StringTokenizer tokenizer = new StringTokenizer(names, " \t");
     ArrayList nameList = new ArrayList();
-    while (tokenizer.hasMoreTokens())
-    {
+    while (tokenizer.hasMoreTokens()) {
       nameList.add(tokenizer.nextToken());
     }
     String[] nameArr = new String[nameList.size()];
     nameList.toArray(nameArr);
     setNames(nameArr);
-    
+
     // call superclass method to read the configurationParameters property
     super.buildFromXMLElement(aElement, aParser, aOptions);
   }
@@ -152,27 +155,12 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl
   /**
    * @see org.apache.uima.resource.impl.MetaDataObject_impl#getXmlizationInfo()
    */
-  protected XmlizationInfo getXmlizationInfo()
-  {
+  protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
-  
-  static final private XmlizationInfo XMLIZATION_INFO =
-    new XmlizationInfo("configurationGroup",
-      new PropertyXmlInfo[]{
-         //NOTE: names property is XMLized as an attribute
-         new PropertyXmlInfo("configurationParameters",null),
-      });    
-  /**
-   * Group names.
-   */
-  private String[] mNames;
-  
-  /**
-   * Parameters contained within the group(s).
-   */ 
-  private ConfigurationParameter[] mConfigurationParameters =
-      new ConfigurationParameter[0];
-  
-  static final long serialVersionUID = 4220504881786100821L;  
+
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("configurationGroup",
+                  new PropertyXmlInfo[] {
+                  // NOTE: names property is XMLized as an attribute
+                  new PropertyXmlInfo("configurationParameters", null), });
 }

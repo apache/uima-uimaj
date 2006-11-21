@@ -27,37 +27,41 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.impl.JCas;
 
-  /* comment 3 of 14 */
+/* comment 3 of 14 */
 public class TokenType_Type extends TOP_Type {
-  protected FSGenerator getFSGenerator() {return fsGenerator;};
-  private final FSGenerator fsGenerator = 
-    new FSGenerator() {
-      public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (instanceOf_Type.useExistingInstance) {
-  			   // Return eq fs instance if already created
-  		     FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
-  		     if (null == fs) {
-  		       fs = new TokenType(addr, instanceOf_Type);
-  			     instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
-  			     return fs;
-  		     }
-  		     return fs;
-        } else return new TokenType(addr, instanceOf_Type);
-  	  }
-    };
+  protected FSGenerator getFSGenerator() {
+    return fsGenerator;
+  };
+
+  private final FSGenerator fsGenerator = new FSGenerator() {
+    public FeatureStructure createFS(int addr, CASImpl cas) {
+      if (instanceOf_Type.useExistingInstance) {
+        // Return eq fs instance if already created
+        FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
+        if (null == fs) {
+          fs = new TokenType(addr, instanceOf_Type);
+          instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
+          return fs;
+        }
+        return fs;
+      } else
+        return new TokenType(addr, instanceOf_Type);
+    }
+  };
 
   public final static int typeIndexID = TokenType.typeIndexID;
 
   public final static boolean featOkTst = JCas.getFeatOkTst("x.y.z.TokenType");
 
-  //* initialize variables to correspond with Cas Type and Features
+  // * initialize variables to correspond with Cas Type and Features
   public TokenType_Type(JCas jcas, Type casType) {
     super(jcas, casType);
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
+    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
   }
 
-  protected TokenType_Type() { //block default new operator
-    throw new RuntimeException("Internal Error-this constructor should never be called.");  }
+  protected TokenType_Type() { // block default new operator
+    throw new RuntimeException("Internal Error-this constructor should never be called.");
+  }
 
 }

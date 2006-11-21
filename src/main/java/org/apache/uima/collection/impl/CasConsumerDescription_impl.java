@@ -18,6 +18,7 @@
  */
 
 package org.apache.uima.collection.impl;
+
 import java.util.ArrayList;
 
 import org.w3c.dom.Element;
@@ -38,118 +39,100 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLParser.ParsingOptions;
 
-
 /**
  * 
  * 
  */
-public class CasConsumerDescription_impl
-  extends ResourceCreationSpecifier_impl
-  implements CasConsumerDescription
-{
-	/**
-	 * Creates a new CasConsumerDescription_impl.  Initializes the MetaData and
-	 * FrameworkImplementation attributes.
-	 */
-	public CasConsumerDescription_impl()
-	{
-		setMetaData(new ProcessingResourceMetaData_impl());
-		setFrameworkImplementation("org.apache.uima.java");
-        //set default operational properties (may be overrriden during parsing)
-        OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory().
-            createOperationalProperties();
-        opProps.setModifiesCas(false);
-        opProps.setMultipleDeploymentAllowed(false);
-        opProps.setOutputsNewCASes(false);
-        getCasConsumerMetaData().setOperationalProperties(opProps);
-    }
-	
+public class CasConsumerDescription_impl extends ResourceCreationSpecifier_impl implements
+                CasConsumerDescription {
+  /**
+   * Creates a new CasConsumerDescription_impl. Initializes the MetaData and FrameworkImplementation
+   * attributes.
+   */
+  public CasConsumerDescription_impl() {
+    setMetaData(new ProcessingResourceMetaData_impl());
+    setFrameworkImplementation("org.apache.uima.java");
+    // set default operational properties (may be overrriden during parsing)
+    OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory()
+                    .createOperationalProperties();
+    opProps.setModifiesCas(false);
+    opProps.setMultipleDeploymentAllowed(false);
+    opProps.setOutputsNewCASes(false);
+    getCasConsumerMetaData().setOperationalProperties(opProps);
+  }
+
   /**
    * @see org.apache.uima.collection.processing.CasConsumerDescription#getCasConsumerMetaData()
    */
-  public ProcessingResourceMetaData getCasConsumerMetaData()
-  {
-    return (ProcessingResourceMetaData)getMetaData();
+  public ProcessingResourceMetaData getCasConsumerMetaData() {
+    return (ProcessingResourceMetaData) getMetaData();
   }
 
-
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.ResourceCreationSpecifier#doFullValidation(org.apache.uima.resource.ResourceManager)
    */
   public void doFullValidation(ResourceManager aResourceManager)
-      throws ResourceInitializationException
-  {
-    //check that user class was specified
-    if (getImplementationName() == null || getImplementationName().length() == 0)
-    {
+                  throws ResourceInitializationException {
+    // check that user class was specified
+    if (getImplementationName() == null || getImplementationName().length() == 0) {
       throw new ResourceInitializationException(
-          ResourceInitializationException.MISSING_IMPLEMENTATION_CLASS_NAME, 
-            new Object[] {getSourceUrlString()});
+                      ResourceInitializationException.MISSING_IMPLEMENTATION_CLASS_NAME,
+                      new Object[] { getSourceUrlString() });
     }
-    //try to load user class
-    //ust UIMA extension ClassLoader if available
+    // try to load user class
+    // ust UIMA extension ClassLoader if available
     Class implClass;
     ClassLoader cl = aResourceManager.getExtensionClassLoader();
-    try
-    {
-      if (cl != null)
-      {
+    try {
+      if (cl != null) {
         implClass = cl.loadClass(getImplementationName());
-      }
-      else
-      {
+      } else {
         implClass = Class.forName(getImplementationName());
       }
+    } catch (ClassNotFoundException e) {
+      throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
+                      new Object[] { getImplementationName(), getSourceUrlString() }, e);
     }
-    catch (ClassNotFoundException e)
-    {
+    // verify the user class implements CasConsumer
+    if (!CasConsumer.class.isAssignableFrom(implClass)) {
       throw new ResourceInitializationException(
-         ResourceInitializationException.CLASS_NOT_FOUND,
-         new Object[]{getImplementationName(), getSourceUrlString()}, e);
-    }  
-    //verify the user class implements CasConsumer
-    if (!CasConsumer.class.isAssignableFrom(implClass))
-    {
-      throw new ResourceInitializationException(
-          ResourceInitializationException.RESOURCE_DOES_NOT_IMPLEMENT_INTERFACE,
-          new Object[]{getImplementationName(), CasConsumer.class.getName(), getSourceUrlString()});
+                      ResourceInitializationException.RESOURCE_DOES_NOT_IMPLEMENT_INTERFACE,
+                      new Object[] { getImplementationName(), CasConsumer.class.getName(),
+                          getSourceUrlString() });
     }
-    //try to create a CAS
+    // try to create a CAS
     ArrayList metadata = new ArrayList();
     metadata.add(getCasConsumerMetaData());
     CasCreationUtils.createCas(metadata);
   }
-  
+
   /**
-   * Overridden to set default operational properties if they
-   * are not specified in descriptor. 
+   * Overridden to set default operational properties if they are not specified in descriptor.
    */
-  public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions) throws InvalidXMLException
-  {
+  public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+                  throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
-    if (getCasConsumerMetaData().getOperationalProperties() == null)
-    {
-      OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory().
-        createOperationalProperties();
+    if (getCasConsumerMetaData().getOperationalProperties() == null) {
+      OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory()
+                      .createOperationalProperties();
       opProps.setModifiesCas(false);
       opProps.setMultipleDeploymentAllowed(false);
       opProps.setOutputsNewCASes(false);
-      getCasConsumerMetaData().setOperationalProperties(opProps); 
-    }  
+      getCasConsumerMetaData().setOperationalProperties(opProps);
+    }
   }
-  
-  protected XmlizationInfo getXmlizationInfo()
-  {
+
+  protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
-  
-  static final protected XmlizationInfo XMLIZATION_INFO =
-    new XmlizationInfo("casConsumerDescription",
-      new PropertyXmlInfo[]{
-         new PropertyXmlInfo("frameworkImplementation"),
-         new PropertyXmlInfo("implementationName"),
-         new PropertyXmlInfo("metaData",null),
-         new PropertyXmlInfo("externalResourceDependencies"),
-         new PropertyXmlInfo("resourceManagerConfiguration", null)
-      });
+
+  static final protected XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+                  "casConsumerDescription", new PropertyXmlInfo[] {
+                      new PropertyXmlInfo("frameworkImplementation"),
+                      new PropertyXmlInfo("implementationName"),
+                      new PropertyXmlInfo("metaData", null),
+                      new PropertyXmlInfo("externalResourceDependencies"),
+                      new PropertyXmlInfo("resourceManagerConfiguration", null) });
 }

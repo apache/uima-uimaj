@@ -28,80 +28,79 @@ import org.apache.uima.cas.text.AnnotationFS;
  * 
  * 
  */
-public class AnnotationImpl extends AnnotationBaseImpl implements
-        AnnotationFS {
+public class AnnotationImpl extends AnnotationBaseImpl implements AnnotationFS {
 
-    private static class AnnotationFSGenerator implements FSGenerator {
+  private static class AnnotationFSGenerator implements FSGenerator {
 
-        private AnnotationFSGenerator() {
-            super();
-        }
-
-        /**
-         * @see org.apache.uima.cas.impl.FSGenerator#createFS(int, LowLevelCAS)
-         */
-        public FeatureStructure createFS(int addr, CASImpl cas) {
-            return new AnnotationImpl(addr, cas);
-        }
-
-    }
-
-    static FSGenerator getAnnotationGenerator() {
-        return new AnnotationFSGenerator();
+    private AnnotationFSGenerator() {
+      super();
     }
 
     /**
-     * Constructor for AnnotationImpl.
+     * @see org.apache.uima.cas.impl.FSGenerator#createFS(int, LowLevelCAS)
      */
-    protected AnnotationImpl() {
-        super();
-    }
-   
-    /**
-     * Constructor for AnnotationImpl.
-     * 
-     * @param addr
-     * @param cas
-     */
-    public AnnotationImpl(int addr, CASImpl cas) {
-    	super.setUp(cas, addr);
+    public FeatureStructure createFS(int addr, CASImpl cas) {
+      return new AnnotationImpl(addr, cas);
     }
 
-    /**
-     * @see org.apache.uima.cas.text.AnnotationFS#getStart()
-     */
-    public int getBegin() {
-        return this.casImpl.getFeatureValue(addr, this.casImpl.startFeatCode);
-//        return ((TCASImpl) this.casImpl).getStartFeat(this.addr);
-    }
+  }
 
-    /**
-     * @see org.apache.uima.cas.text.AnnotationFS#getEnd()
-     */
-    public int getEnd() {
-        return this.casImpl.getFeatureValue(addr, this.casImpl.endFeatCode);
-//        return ((TCASImpl) this.casImpl).getEndFeat(this.addr);
-    }
+  static FSGenerator getAnnotationGenerator() {
+    return new AnnotationFSGenerator();
+  }
 
-    /**
-     * @see org.apache.uima.cas.text.AnnotationFS#getCoveredText()
-     */
-    public String getCoveredText() {
-        final CAS casView = this.getView(); 
-        final String text = casView.getDocumentText();
-        if (text == null) {
-            return null;
-        }
-        return text.substring(getBegin(), getEnd());
-    }
+  /**
+   * Constructor for AnnotationImpl.
+   */
+  protected AnnotationImpl() {
+    super();
+  }
 
-    public String toString() {
-        return toString(3);
-    }
+  /**
+   * Constructor for AnnotationImpl.
+   * 
+   * @param addr
+   * @param cas
+   */
+  public AnnotationImpl(int addr, CASImpl cas) {
+    super.setUp(cas, addr);
+  }
 
-    public String toString(int indent) {
-        StringBuffer buf = new StringBuffer();
-        prettyPrint(0, indent, buf, true, getCoveredText());
-        return buf.toString();
-    }  
+  /**
+   * @see org.apache.uima.cas.text.AnnotationFS#getStart()
+   */
+  public int getBegin() {
+    return this.casImpl.getFeatureValue(addr, this.casImpl.startFeatCode);
+    // return ((TCASImpl) this.casImpl).getStartFeat(this.addr);
+  }
+
+  /**
+   * @see org.apache.uima.cas.text.AnnotationFS#getEnd()
+   */
+  public int getEnd() {
+    return this.casImpl.getFeatureValue(addr, this.casImpl.endFeatCode);
+    // return ((TCASImpl) this.casImpl).getEndFeat(this.addr);
+  }
+
+  /**
+   * @see org.apache.uima.cas.text.AnnotationFS#getCoveredText()
+   */
+  public String getCoveredText() {
+    final CAS casView = this.getView();
+    final String text = casView.getDocumentText();
+    if (text == null) {
+      return null;
+    }
+    return text.substring(getBegin(), getEnd());
+  }
+
+  public String toString() {
+    return toString(3);
+  }
+
+  public String toString(int indent) {
+    StringBuffer buf = new StringBuffer();
+    prettyPrint(0, indent, buf, true, getCoveredText());
+    return buf.toString();
+  }
 }

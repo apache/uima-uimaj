@@ -22,18 +22,17 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.internal.util.IntPointerIterator;
 
-
-/** 
+/**
  * Class comment for FSIndexImpl.java goes here.
- *
+ * 
  * 
  */
 public interface FSIndexImpl extends LowLevelIndex {
-  
+
   FSIndexComparator getComparator();
-  
+
   void flush();
-  
+
   public IntPointerIterator getIntIterator();
 
 }

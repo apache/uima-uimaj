@@ -27,16 +27,14 @@ import org.apache.uima.collection.CollectionReader_ImplBase;
 
 /**
  * 
- * @author Adam Lally 
+ * @author Adam Lally
  */
-public class TestCollectionReader extends CollectionReader_ImplBase
-{
+public class TestCollectionReader extends CollectionReader_ImplBase {
 
   /**
    * @see org.apache.uima.collection.CollectionReader#getNext(org.apache.uima.cas.CAS)
    */
-  public void getNext(CAS aCAS) throws IOException, CollectionException
-  {
+  public void getNext(CAS aCAS) throws IOException, CollectionException {
     // TODO Auto-generated method stub
 
   }
@@ -44,8 +42,7 @@ public class TestCollectionReader extends CollectionReader_ImplBase
   /**
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#hasNext()
    */
-  public boolean hasNext() throws IOException, CollectionException
-  {
+  public boolean hasNext() throws IOException, CollectionException {
     // TODO Auto-generated method stub
     return false;
   }
@@ -53,8 +50,7 @@ public class TestCollectionReader extends CollectionReader_ImplBase
   /**
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#getProgress()
    */
-  public Progress[] getProgress()
-  {
+  public Progress[] getProgress() {
     // TODO Auto-generated method stub
     return null;
   }
@@ -62,8 +58,7 @@ public class TestCollectionReader extends CollectionReader_ImplBase
   /**
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#close()
    */
-  public void close() throws IOException
-  {
+  public void close() throws IOException {
     // TODO Auto-generated method stub
 
   }

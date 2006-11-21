@@ -22,44 +22,43 @@ package org.apache.uima.collection.metadata;
 import org.apache.uima.resource.metadata.MetaDataObject;
 
 /**
- * An object that holds configuration that is part of the CPE descriptor.
- * It provides the means of configuring environment variables used when launching
- * local CasProcessors. 
+ * An object that holds configuration that is part of the CPE descriptor. It provides the means of
+ * configuring environment variables used when launching local CasProcessors.
  * 
  * 
  */
-public interface CasProcessorRuntimeEnvParam extends MetaDataObject
-{
-	/**
-	 * Sets a name for new parameter
-	 * 
-	 * @param aEnvParamName - param name
-	 * @throws CpeDescriptorException
-	 */
-	public void setEnvParamName( String aEnvParamName ) 
-		throws CpeDescriptorException;
-	/**
-	 * Returns a name of parameter
-	 * 
-	 * @return - parm name
-	 * @throws CpeDescriptorException
-	 */	
-	public String getEnvParamName() 
-		throws CpeDescriptorException;
-	/**
-	 * Sets a value for new parameter
-	 * 
-	 * @param aEnvParamValue - param value
-	 * @throws CpeDescriptorException
-	 */	
-	public void setEnvParamValue( String aEnvParamValue ) 
-		throws CpeDescriptorException;
-	/**
-	 * Returns parameter value
-	 * 
-	 * @return - param value
-	 * @throws CpeDescriptorException
-	 */	
-	public String getEnvParamValue()
-		throws CpeDescriptorException;
+public interface CasProcessorRuntimeEnvParam extends MetaDataObject {
+  /**
+   * Sets a name for new parameter
+   * 
+   * @param aEnvParamName -
+   *          param name
+   * @throws CpeDescriptorException
+   */
+  public void setEnvParamName(String aEnvParamName) throws CpeDescriptorException;
+
+  /**
+   * Returns a name of parameter
+   * 
+   * @return - parm name
+   * @throws CpeDescriptorException
+   */
+  public String getEnvParamName() throws CpeDescriptorException;
+
+  /**
+   * Sets a value for new parameter
+   * 
+   * @param aEnvParamValue -
+   *          param value
+   * @throws CpeDescriptorException
+   */
+  public void setEnvParamValue(String aEnvParamValue) throws CpeDescriptorException;
+
+  /**
+   * Returns parameter value
+   * 
+   * @return - param value
+   * @throws CpeDescriptorException
+   */
+  public String getEnvParamValue() throws CpeDescriptorException;
 }

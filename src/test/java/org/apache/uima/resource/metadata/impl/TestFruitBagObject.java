@@ -28,49 +28,38 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.util.NameClassPair;
 
 /**
- * A simple concrete MetaDataObject implementation for use in testing
- * the MetaDataObject_impl class.
+ * A simple concrete MetaDataObject implementation for use in testing the MetaDataObject_impl class.
  */
-public class TestFruitBagObject extends MetaDataObject_impl
-{
-  public TestFruitBagObject()
-  {
+public class TestFruitBagObject extends MetaDataObject_impl {
+  public TestFruitBagObject() {
   }
-    
- 
-  public TestFruitObject[] getFruits()
-  {
+
+  public TestFruitObject[] getFruits() {
     return mFruits;
   }
-  
-  public void setFruits(TestFruitObject[] aFruits)
-  {
+
+  public void setFruits(TestFruitObject[] aFruits) {
     mFruits = aFruits;
   }
-  
+
   /**
-   * For testing purposes - a hardcoded attribute set.  Should be
-   * compared with the results of {@link #listAttributes()}.
+   * For testing purposes - a hardcoded attribute set. Should be compared with the results of
+   * {@link #listAttributes()}.
    */
-  static public Set getAttributeSet()
-  {
+  static public Set getAttributeSet() {
     HashSet result = new HashSet();
-    result.add(new NameClassPair("fruits",TestFruitObject[].class.getName()));
-    return result;    
+    result.add(new NameClassPair("fruits", TestFruitObject[].class.getName()));
+    return result;
   }
 
-  protected XmlizationInfo getXmlizationInfo()
-  {
+  protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
-  
-  static final private XmlizationInfo XMLIZATION_INFO =
-    new XmlizationInfo("fruitBag",
-      new PropertyXmlInfo[]{
-         new PropertyXmlInfo("fruits")
-      });
-  
+
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fruitBag",
+                  new PropertyXmlInfo[] { new PropertyXmlInfo("fruits") });
 
   private String mName;
-  private TestFruitObject[] mFruits;  
+
+  private TestFruitObject[] mFruits;
 }

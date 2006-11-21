@@ -32,53 +32,55 @@ import org.apache.uima.util.XMLInputSource;
 
 /**
  * 
- * @author Adam Lally 
+ * @author Adam Lally
  */
 public class CasResetResizeTest extends TestCase {
 
-   /**
-    * Constructor for CasPerformanceTuningSettingsTest.
-    * 
-    * @param arg0
-    */
-   public CasResetResizeTest(String arg0) {
-      super(arg0);
-   }
+  /**
+   * Constructor for CasPerformanceTuningSettingsTest.
+   * 
+   * @param arg0
+   */
+  public CasResetResizeTest(String arg0) {
+    super(arg0);
+  }
 
-   public void testInitialHeapSize() throws Exception {
-      try {
-         TaeDescription testDescriptor = UIMAFramework
-            .getXMLParser()
-            .parseTaeDescription(
-                                 new XMLInputSource(JUnitExtension
-                                    .getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml")));
+  public void testInitialHeapSize() throws Exception {
+    try {
+      TaeDescription testDescriptor = UIMAFramework
+                      .getXMLParser()
+                      .parseTaeDescription(
+                                      new XMLInputSource(
+                                                      JUnitExtension
+                                                                      .getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml")));
 
-         //check default setting
-         TextAnalysisEngine taeDefault = UIMAFramework
-            .produceTAE(testDescriptor);
-         TCAS cas = taeDefault.newTCAS();
-         int heapSize = ((CASImpl) cas).heap.getCurrentTempSize();
-//         System.out.println("Heap size: " + heapSize + ", buffer size: " + ((CASImpl) cas).heap.heap.length);
-         Assert.assertTrue(heapSize < CASImpl.DEFAULT_RESET_HEAP_SIZE);
-         assertTrue(heapSize <= ((CASImpl) cas).heap.heap.length);
-         Type annotType = cas.getTypeSystem().getType(TCAS.TYPE_NAME_ANNOTATION);
-         for (int i = 0; i < 2000000; i++) {
-            cas.createAnnotation(annotType, i, i);
-         }
-         heapSize = ((CASImpl) cas).heap.getCurrentTempSize();         
-//         System.out.println("Heap size: " + heapSize + ", buffer size: " + ((CASImpl) cas).heap.heap.length);
-         assertTrue(heapSize <= ((CASImpl) cas).heap.heap.length);
-         Assert.assertTrue(heapSize > CASImpl.DEFAULT_RESET_HEAP_SIZE);
-         cas.reset();
-         heapSize = ((CASImpl) cas).heap.getCurrentTempSize();         
-//         System.out.println("Heap size: " + heapSize + ", buffer size: " + ((CASImpl) cas).heap.heap.length);
-         assertTrue(heapSize <= ((CASImpl) cas).heap.heap.length);
-         Assert.assertTrue(heapSize < CASImpl.DEFAULT_RESET_HEAP_SIZE);
-         
+      // check default setting
+      TextAnalysisEngine taeDefault = UIMAFramework.produceTAE(testDescriptor);
+      TCAS cas = taeDefault.newTCAS();
+      int heapSize = ((CASImpl) cas).heap.getCurrentTempSize();
+      // System.out.println("Heap size: " + heapSize + ", buffer size: " + ((CASImpl)
+      // cas).heap.heap.length);
+      Assert.assertTrue(heapSize < CASImpl.DEFAULT_RESET_HEAP_SIZE);
+      assertTrue(heapSize <= ((CASImpl) cas).heap.heap.length);
+      Type annotType = cas.getTypeSystem().getType(TCAS.TYPE_NAME_ANNOTATION);
+      for (int i = 0; i < 2000000; i++) {
+        cas.createAnnotation(annotType, i, i);
       }
-      catch (Exception e) {
-         JUnitExtension.handleException(e);
-      }
-   }
+      heapSize = ((CASImpl) cas).heap.getCurrentTempSize();
+      // System.out.println("Heap size: " + heapSize + ", buffer size: " + ((CASImpl)
+      // cas).heap.heap.length);
+      assertTrue(heapSize <= ((CASImpl) cas).heap.heap.length);
+      Assert.assertTrue(heapSize > CASImpl.DEFAULT_RESET_HEAP_SIZE);
+      cas.reset();
+      heapSize = ((CASImpl) cas).heap.getCurrentTempSize();
+      // System.out.println("Heap size: " + heapSize + ", buffer size: " + ((CASImpl)
+      // cas).heap.heap.length);
+      assertTrue(heapSize <= ((CASImpl) cas).heap.heap.length);
+      Assert.assertTrue(heapSize < CASImpl.DEFAULT_RESET_HEAP_SIZE);
+
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
+  }
 
 }

@@ -34,145 +34,143 @@ import org.apache.uima.cas.text.AnnotationTree;
  */
 public class AnnotationIndexImpl implements FSIndex, AnnotationIndex {
 
-    private FSIndex index;
+  private FSIndex index;
 
-    /**
-     * 
-     */
-    public AnnotationIndexImpl(FSIndex index) {
-        super();
-        this.index = index;
+  /**
+   * 
+   */
+  public AnnotationIndexImpl(FSIndex index) {
+    super();
+    this.index = index;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.FSIndex#size()
+   */
+  public int size() {
+    return this.index.size();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.FSIndex#getType()
+   */
+  public Type getType() {
+    return this.index.getType();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.FSIndex#contains(org.apache.uima.cas.FeatureStructure)
+   */
+  public boolean contains(FeatureStructure fs) {
+    return this.index.contains(fs);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.FSIndex#find(org.apache.uima.cas.FeatureStructure)
+   */
+  public FeatureStructure find(FeatureStructure fs) {
+    return this.index.find(fs);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.FSIndex#compare(org.apache.uima.cas.FeatureStructure,
+   *      org.apache.uima.cas.FeatureStructure)
+   */
+  public int compare(FeatureStructure fs1, FeatureStructure fs2) {
+    return this.index.compare(fs1, fs2);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.FSIndex#iterator()
+   */
+  public FSIterator iterator() {
+    return this.index.iterator();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.FSIndex#iterator(org.apache.uima.cas.FeatureStructure)
+   */
+  public FSIterator iterator(FeatureStructure fs) {
+    return this.index.iterator(fs);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.FSIndex#getIndexingStrategy()
+   */
+  public int getIndexingStrategy() {
+    return this.index.getIndexingStrategy();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.text.AnnotationIndex#iterator(boolean)
+   */
+  public FSIterator iterator(boolean ambiguous) {
+    if (ambiguous) {
+      return this.index.iterator();
     }
+    return new Subiterator(this.index.iterator());
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.FSIndex#size()
-     */
-    public int size() {
-        return this.index.size();
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.text.AnnotationIndex#subiterator(org.apache.uima.cas.text.AnnotationFS)
+   */
+  public FSIterator subiterator(AnnotationFS annot) {
+    return subiterator(annot, true, true);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.text.AnnotationIndex#subiterator(org.apache.uima.cas.text.AnnotationFS,
+   *      boolean, boolean)
+   */
+  public FSIterator subiterator(AnnotationFS annot, boolean ambiguous, boolean strict) {
+    return new Subiterator(this.index.iterator(), annot, ambiguous, strict);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.text.AnnotationIndex#tree(org.apache.uima.cas.text.AnnotationFS)
+   */
+  public AnnotationTree tree(AnnotationFS annot) {
+    AnnotationTreeImpl tree = new AnnotationTreeImpl();
+    AnnotationTreeNodeImpl root = new AnnotationTreeNodeImpl();
+    root.set(annot);
+    addChildren(root, subiterator(annot));
+    return tree;
+  }
+
+  private void addChildren(AnnotationTreeNodeImpl node, FSIterator it) {
+    AnnotationTreeNodeImpl dtr;
+    AnnotationFS annot;
+    while (it.isValid()) {
+      annot = (AnnotationFS) it.get();
+      dtr = new AnnotationTreeNodeImpl();
+      dtr.set(annot);
+      node.addChild(dtr);
+      addChildren(dtr, subiterator(annot));
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.FSIndex#getType()
-     */
-    public Type getType() {
-        return this.index.getType();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.FSIndex#contains(org.apache.uima.cas.FeatureStructure)
-     */
-    public boolean contains(FeatureStructure fs) {
-        return this.index.contains(fs);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.FSIndex#find(org.apache.uima.cas.FeatureStructure)
-     */
-    public FeatureStructure find(FeatureStructure fs) {
-        return this.index.find(fs);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.FSIndex#compare(org.apache.uima.cas.FeatureStructure,
-     *      org.apache.uima.cas.FeatureStructure)
-     */
-    public int compare(FeatureStructure fs1, FeatureStructure fs2) {
-        return this.index.compare(fs1, fs2);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.FSIndex#iterator()
-     */
-    public FSIterator iterator() {
-        return this.index.iterator();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.FSIndex#iterator(org.apache.uima.cas.FeatureStructure)
-     */
-    public FSIterator iterator(FeatureStructure fs) {
-        return this.index.iterator(fs);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.FSIndex#getIndexingStrategy()
-     */
-    public int getIndexingStrategy() {
-        return this.index.getIndexingStrategy();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.text.AnnotationIndex#iterator(boolean)
-     */
-    public FSIterator iterator(boolean ambiguous) {
-        if (ambiguous) {
-            return this.index.iterator();
-        }
-        return new Subiterator(this.index.iterator());
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.text.AnnotationIndex#subiterator(org.apache.uima.cas.text.AnnotationFS)
-     */
-    public FSIterator subiterator(AnnotationFS annot) {
-        return subiterator(annot, true, true);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.text.AnnotationIndex#subiterator(org.apache.uima.cas.text.AnnotationFS,
-     *      boolean, boolean)
-     */
-    public FSIterator subiterator(AnnotationFS annot, boolean ambiguous,
-            boolean strict) {
-        return new Subiterator(this.index.iterator(), annot, ambiguous, strict);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.text.AnnotationIndex#tree(org.apache.uima.cas.text.AnnotationFS)
-     */
-    public AnnotationTree tree(AnnotationFS annot) {
-        AnnotationTreeImpl tree = new AnnotationTreeImpl();
-        AnnotationTreeNodeImpl root = new AnnotationTreeNodeImpl();
-        root.set(annot);
-        addChildren(root, subiterator(annot));
-        return tree;
-    }
-
-    private void addChildren(AnnotationTreeNodeImpl node, FSIterator it) {
-        AnnotationTreeNodeImpl dtr;
-        AnnotationFS annot;
-        while (it.isValid()) {
-            annot = (AnnotationFS) it.get();
-            dtr = new AnnotationTreeNodeImpl();
-            dtr.set(annot);
-            node.addChild(dtr);
-            addChildren(dtr, subiterator(annot));
-        }
-    }
-
+  }
 
 }

@@ -29,41 +29,49 @@ import org.apache.uima.cas.impl.TCASImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.impl.JCas;
+
 /**
- * the JCas class model for the CAS type uima.cas.Annotation.
- * It defines two integer valued features indicating the begin and end of the
- * span being annotated.  There is also a method to retrieve the spanned
- * text as a string.
+ * the JCas class model for the CAS type uima.cas.Annotation. It defines two integer valued features
+ * indicating the begin and end of the span being annotated. There is also a method to retrieve the
+ * spanned text as a string.
  */
 public class AnnotationBase extends org.apache.uima.jcas.cas.TOP implements AnnotationBaseFS {
 
   public final static int typeIndexID = JCas.getNextIndex();
-  public final static int type = typeIndexID;
-  public           int getTypeIndexID() {return typeIndexID;}
 
-  // Never called.  Disable default constructor
-  protected AnnotationBase() {}
+  public final static int type = typeIndexID;
+
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  // Never called. Disable default constructor
+  protected AnnotationBase() {
+  }
 
   /** Internal - Constructor used by generator */
   public AnnotationBase(int addr, TOP_Type type) {
     super(addr, type);
   }
-  
+
   public AnnotationBase(JCas jcas) {
     super(jcas);
   }
 
-  //*------------------*
-  //* Feature: sofa
-  //* Sofa reference of the annotation
-  /** getter for sofa - gets Sofaref for annotation
-  * */
+  // *------------------*
+  // * Feature: sofa
+  // * Sofa reference of the annotation
+  /**
+   * getter for sofa - gets Sofaref for annotation
+   */
   public SofaFS getSofa() {
-    if (AnnotationBase_Type.featOkTst && ((AnnotationBase_Type)jcasType).casFeat_sofa == null)
-          JCas.throwFeatMissing("sofa", "uima.tcas.Annotation");
-    return (SofaFS)jcasType.ll_cas.ll_getFSForRef(addr);}
+    if (AnnotationBase_Type.featOkTst && ((AnnotationBase_Type) jcasType).casFeat_sofa == null)
+      JCas.throwFeatMissing("sofa", "uima.tcas.Annotation");
+    return (SofaFS) jcasType.ll_cas.ll_getFSForRef(addr);
+  }
 
-  
-  public CAS getView() {return this.jcasType.casImpl.ll_getSofaCasView(addr); }
+  public CAS getView() {
+    return this.jcasType.casImpl.ll_getSofaCasView(addr);
+  }
 
 }

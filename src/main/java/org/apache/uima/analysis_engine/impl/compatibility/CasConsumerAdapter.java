@@ -44,32 +44,34 @@ import org.apache.uima.util.impl.ProcessTrace_impl;
 /**
  * Adapter that allows CasConsumers to implement the AnalysisComponent interface.
  */
-public class CasConsumerAdapter implements AnalysisComponent
-{
+public class CasConsumerAdapter implements AnalysisComponent {
   private CasConsumer mCasConsumer;
+
   private TypeSystem mLastTypeSystem;
+
   private AnalysisEngineMetaData mMetaData;
 
   /**
    * Create a new annotator adapter.
-   * @param aAnnotator the annotator instance
-   * @param aMetaData metadata for the annotator.  Needed to compute
-   *   ResultSpecification.
+   * 
+   * @param aAnnotator
+   *          the annotator instance
+   * @param aMetaData
+   *          metadata for the annotator. Needed to compute ResultSpecification.
    */
-  public CasConsumerAdapter(CasConsumer aCasConsumer,
-      AnalysisEngineMetaData aMetaData)
-  {
-    mCasConsumer = aCasConsumer;  
+  public CasConsumerAdapter(CasConsumer aCasConsumer, AnalysisEngineMetaData aMetaData) {
+    mCasConsumer = aCasConsumer;
     mMetaData = aMetaData;
   }
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.core.AnalysisComponent#initialize(org.apache.uima.UimaContext)
    */
-  public void initialize(UimaContext aContext) throws ResourceInitializationException
-  {
-    //Initialize the CasConsumer, passing the appropriate UimaContext
-    //and a dummy descriptor containing the metadata passed to our constructor
+  public void initialize(UimaContext aContext) throws ResourceInitializationException {
+    // Initialize the CasConsumer, passing the appropriate UimaContext
+    // and a dummy descriptor containing the metadata passed to our constructor
     AnalysisEngineDescription_impl desc = new AnalysisEngineDescription_impl();
     desc.setMetaData(mMetaData);
 
@@ -77,152 +79,139 @@ public class CasConsumerAdapter implements AnalysisComponent
     paramsMap.put(Resource.PARAM_UIMA_CONTEXT, aContext);
     mCasConsumer.initialize(desc, paramsMap);
   }
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.annotator.Annotator#process(org.apache.uima.core.AbstractCas)
    */
-  public void process(AbstractCas aCAS) throws AnalysisEngineProcessException
-  {
-    if (!CAS.class.isAssignableFrom(aCAS.getClass()))
-    {
+  public void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
+    if (!CAS.class.isAssignableFrom(aCAS.getClass())) {
       throw new AnalysisEngineProcessException(
-          AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE,
-          new Object[]{CAS.class, aCAS.getClass()});
+                      AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] {
+                          CAS.class, aCAS.getClass() });
     }
-    
-    //check if type system changed; if so, notify Annotator
+
+    // check if type system changed; if so, notify Annotator
     checkTypeSystemChange(aCAS);
-    
-    try
-    {
-      mCasConsumer.processCas((CAS)aCAS);
-    }
-    catch (ResourceProcessException e)
-    {
+
+    try {
+      mCasConsumer.processCas((CAS) aCAS);
+    } catch (ResourceProcessException e) {
       throw new AnalysisEngineProcessException(e);
     }
   }
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.core.AnalysisComponent#typeSystemChanged(org.apache.uima.core.AbstractCas)
    */
-  public void checkTypeSystemChange(AbstractCas aCAS) throws AnalysisEngineProcessException
-  {
-    try
-    {
+  public void checkTypeSystemChange(AbstractCas aCAS) throws AnalysisEngineProcessException {
+    try {
       TypeSystem typeSystem;
-      if (aCAS instanceof JCas)
+      if (aCAS instanceof JCas) {
+        typeSystem = ((JCas) aCAS).getTypeSystem();
+      } else // CAS or TCAS
       {
-        typeSystem = ((JCas)aCAS).getTypeSystem();
+        typeSystem = ((CAS) aCAS).getTypeSystem();
       }
-      else //CAS or TCAS
-      {
-        typeSystem = ((CAS)aCAS).getTypeSystem();
-      }  
-      if (typeSystem != mLastTypeSystem)
-      {
+      if (typeSystem != mLastTypeSystem) {
         mCasConsumer.typeSystemInit(typeSystem);
         mLastTypeSystem = typeSystem;
       }
-    }
-    catch (ResourceInitializationException e)
-    {
+    } catch (ResourceInitializationException e) {
       throw new AnalysisEngineProcessException(e);
     }
-  } 
-  
-  /* (non-Javadoc)
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.core.AnalysisComponent#batchProcessComplete()
    */
-  public void batchProcessComplete() throws AnalysisEngineProcessException
-  {
-    try
-    {
+  public void batchProcessComplete() throws AnalysisEngineProcessException {
+    try {
       mCasConsumer.batchProcessComplete(new ProcessTrace_impl());
-    }
-    catch (ResourceProcessException e)
-    {
+    } catch (ResourceProcessException e) {
       throw new AnalysisEngineProcessException(e);
-    }
-    catch (IOException e)
-    {
+    } catch (IOException e) {
       throw new AnalysisEngineProcessException(e);
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.core.AnalysisComponent#collectionProcessComplete()
    */
-  public void collectionProcessComplete() throws AnalysisEngineProcessException
-  {
-    try
-    {
+  public void collectionProcessComplete() throws AnalysisEngineProcessException {
+    try {
       mCasConsumer.collectionProcessComplete(new ProcessTrace_impl());
-    }
-    catch (ResourceProcessException e)
-    {
+    } catch (ResourceProcessException e) {
       throw new AnalysisEngineProcessException(e);
-    }
-    catch (IOException e)
-    {
+    } catch (IOException e) {
       throw new AnalysisEngineProcessException(e);
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.core.AnalysisComponent#destroy()
    */
-  public void destroy()
-  {
-    mCasConsumer.destroy();    
+  public void destroy() {
+    mCasConsumer.destroy();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.core.AnalysisComponent#reconfigure()
    */
-  public void reconfigure() throws ResourceConfigurationException, ResourceInitializationException
-  {
+  public void reconfigure() throws ResourceConfigurationException, ResourceInitializationException {
     mCasConsumer.reconfigure();
   }
 
-
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#hasNext()
    */
-  public boolean hasNext() throws AnalysisEngineProcessException
-  {
+  public boolean hasNext() throws AnalysisEngineProcessException {
     return false;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#next()
    */
-  public AbstractCas next() throws AnalysisEngineProcessException
-  {
-    throw new UIMA_UnsupportedOperationException(UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD,
-        new Object[]{AnnotatorAdapter.class, "next"});
+  public AbstractCas next() throws AnalysisEngineProcessException {
+    throw new UIMA_UnsupportedOperationException(
+                    UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
+                        AnnotatorAdapter.class, "next" });
   }
 
-  /** 
-   * Get the CAS interface required by this CasConsumer.  
-   * Currently always returns CAS.class.
+  /**
+   * Get the CAS interface required by this CasConsumer. Currently always returns CAS.class.
+   * 
    * @return the CAS interface required by this CasConsumer
    */
-  public Class getRequiredCasInterface()
-  {
+  public Class getRequiredCasInterface() {
     return CAS.class;
-  }  
- 
-  /* (non-Javadoc)
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#getCasInstancesRequired()
    */
-  public int getCasInstancesRequired()
-  {
+  public int getCasInstancesRequired() {
     return 0;
   }
 
-  public void setResultSpecification(ResultSpecification aResultSpec)
-  {
-    //CAS Consumers don't use Result Specifications    
+  public void setResultSpecification(ResultSpecification aResultSpec) {
+    // CAS Consumers don't use Result Specifications
   }
 }

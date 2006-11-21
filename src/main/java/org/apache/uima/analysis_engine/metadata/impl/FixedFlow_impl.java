@@ -32,78 +32,64 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  * 
  * 
  */
-public class FixedFlow_impl extends MetaDataObject_impl implements FixedFlow
-{ 
-  
+public class FixedFlow_impl extends MetaDataObject_impl implements FixedFlow {
+
+  static final long serialVersionUID = -3582926806264514233L;
+ 
+  /** Array of AnalysisEngine identifiers indicating the fixed flow. */
+  private String[] mFixedFlow = new String[0];
+
   /**
    * @see org.apache.uima.analysis_engine.metadata.FixedFlow#getFlowConstraintsType()
    */
-  public String getFlowConstraintsType()
-  {
+  public String getFlowConstraintsType() {
     return FLOW_CONSTRAINTS_TYPE;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.metadata.FixedFlow#getFixedFlow()
    */
-  public String[] getFixedFlow()
-  {
+  public String[] getFixedFlow() {
     return mFixedFlow;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.metadata.FixedFlow#setFixedFlow(String[])
    */
-  public void setFixedFlow(String[] aFlow)
-  {
-    if (aFlow == null)
-    {
-      throw new UIMA_IllegalArgumentException(
-          UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-          new Object[]{"null", "aFlow", "setFixedFlow"});            
-    }    
+  public void setFixedFlow(String[] aFlow) {
+    if (aFlow == null) {
+      throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+                      new Object[] { "null", "aFlow", "setFixedFlow" });
+    }
     mFixedFlow = aFlow;
   }
-  
+
   /**
    * @see org.apache.uima.analysis_engine.metadata.FlowConstraints#remapIDs(Map)
    */
-  public void remapIDs(Map aIDMap)
-  {
-    //Can't just overwrite existing array because cloned FixedFlow_impl objects
-    //share the same array.  Needs more thought.
+  public void remapIDs(Map aIDMap) {
+    // Can't just overwrite existing array because cloned FixedFlow_impl objects
+    // share the same array. Needs more thought.
     String[] oldFlow = getFixedFlow();
     String[] newFlow = new String[oldFlow.length];
-    
-    for (int i = 0; i < oldFlow.length; i++)
-    {
-      String newID = (String)aIDMap.get(oldFlow[i]);
-      if (newID != null)
-      {
-        newFlow[i] = newID;  
-      }  
-      else
-      {
+
+    for (int i = 0; i < oldFlow.length; i++) {
+      String newID = (String) aIDMap.get(oldFlow[i]);
+      if (newID != null) {
+        newFlow[i] = newID;
+      } else {
         newFlow[i] = oldFlow[i];
       }
-    }  
-    
+    }
+
     setFixedFlow(newFlow);
-  }  
-  
-  protected XmlizationInfo getXmlizationInfo()
-  {
+  }
+
+  protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
-  
-  static final private XmlizationInfo XMLIZATION_INFO =
-    new XmlizationInfo("fixedFlow",
-      new PropertyXmlInfo[]{
-         new PropertyXmlInfo("fixedFlow",null,true,"node")         
-      });
- 
-  /** Array of AnalysisEngine identifiers indicating the fixed flow. */
-  private String[] mFixedFlow = new String[0];
 
-  static final long serialVersionUID = -3582926806264514233L;
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fixedFlow",
+                  new PropertyXmlInfo[] { new PropertyXmlInfo("fixedFlow", null, true, "node") });
+
 }

@@ -20,16 +20,15 @@
 package org.apache.uima.cas;
 
 /**
- * Represents the "owner" of a CAS.  A CAS may have a reference to its owner,
- * which allows the CAS to be released back to the owner when it is no
- * longer needed.  A CasOwner may implement a pool of CAS instances.
+ * Represents the "owner" of a CAS. A CAS may have a reference to its owner, which allows the CAS to
+ * be released back to the owner when it is no longer needed. A CasOwner may implement a pool of CAS
+ * instances.
  */
-public interface CasOwner
-{
+public interface CasOwner {
 
   /**
-   * Releases a CAS back to its owner.  After calling this method, the
-   * caller should no longer access <code>aCAS</code..
+   * Releases a CAS back to its owner. After calling this method, the caller should no longer access
+   * <code>aCAS</code..
    * 
    * @param aCAS the CAS to release
    */

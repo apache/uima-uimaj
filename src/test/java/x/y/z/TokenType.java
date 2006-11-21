@@ -23,15 +23,20 @@ import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.impl.JCas;
 
-  /* comment 3 of 14 */
+/* comment 3 of 14 */
 public class TokenType extends TOP {
 
   public final static int typeIndexID = JCas.getNextIndex();
-  public final static int type = typeIndexID;
-  public           int getTypeIndexID() {return typeIndexID;}
 
-  // Never called.  Disable default constructor
-  protected TokenType() {}
+  public final static int type = typeIndexID;
+
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  // Never called. Disable default constructor
+  protected TokenType() {
+  }
 
   /** Internal - Constructor used by generator */
   public TokenType(int addr, TOP_Type type) {
@@ -42,10 +47,12 @@ public class TokenType extends TOP {
     super(jcas);
   }
 
-  /** <!-- begin-user-doc -->
-    * Write your own initialization here
-    * <!-- end-user-doc -->
-  @generated modifiable */
-  private void readObject() {}
-     
+  /**
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
+   * 
+   * @generated modifiable
+   */
+  private void readObject() {
+  }
+
 }

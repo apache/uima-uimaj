@@ -19,18 +19,15 @@
 
 package org.apache.uima.flow;
 
-
 /**
- * Represents the next destination or destinations to which a CAS should be routed.
- * A <code>Step</code> is the output of the {@link Flow#next()} method.
- * A Flow should output an instance of a concrete class that extends Step.
- * Currently, these are:
+ * Represents the next destination or destinations to which a CAS should be routed. A
+ * <code>Step</code> is the output of the {@link Flow#next()} method. A Flow should output an
+ * instance of a concrete class that extends Step. Currently, these are:
  * <ul>
- *   <li>{@link SimpleStep} - specifies a single AnalysisEngine to which the CAS
- *     should next be routed</li>
- *   <li>{@link FinalStep} - indicates that there are no more destinations for this CAS.</li>
+ * <li>{@link SimpleStep} - specifies a single AnalysisEngine to which the CAS should next be
+ * routed</li>
+ * <li>{@link FinalStep} - indicates that there are no more destinations for this CAS.</li>
  * </ul>
  */
-public abstract class Step
-{
+public abstract class Step {
 }

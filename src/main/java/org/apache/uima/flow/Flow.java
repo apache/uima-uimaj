@@ -23,41 +23,40 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
 
 /**
- * A Flow object is responsible for routing a single CAS through an Aggregate Analysis
- * Engine.
+ * A Flow object is responsible for routing a single CAS through an Aggregate Analysis Engine.
  * <p>
  * Typically, developers extend {@link org.apache.uima.flow.CasFlow_ImplBase} or
- * {@link org.apache.uima.flow.JCasFlow_ImplBase} depending on which CAS interface they
- * wish to use.
+ * {@link org.apache.uima.flow.JCasFlow_ImplBase} depending on which CAS interface they wish to use.
  */
-public interface Flow
-{
+public interface Flow {
   /**
-   * Gets the next destination for the CAS.  This is defined by a {@link Step} object.
-   * There may be different kinds of Step objects to indicate different kinds of
-   * routing actions.
+   * Gets the next destination for the CAS. This is defined by a {@link Step} object. There may be
+   * different kinds of Step objects to indicate different kinds of routing actions.
+   * 
    * @return the next destination for the CAS
-   * @throws AnalysisEngineProcessException if a failure occurs while determining the next destination
+   * @throws AnalysisEngineProcessException
+   *           if a failure occurs while determining the next destination
    */
   Step next() throws AnalysisEngineProcessException;
-  
+
   /**
-   * Called by the framework if the CAS that is being routed by this Flow has been
-   * sent to a CAS Multiplier which has then created a new CAS derived from that original CAS.
+   * Called by the framework if the CAS that is being routed by this Flow has been sent to a CAS
+   * Multiplier which has then created a new CAS derived from that original CAS.
    * <p>
-   * It is not required for a Flow implementation to support the production of new CASes in
-   * the middle of the flow, in which case this method may throw an exception.
+   * It is not required for a Flow implementation to support the production of new CASes in the
+   * middle of the flow, in which case this method may throw an exception.
    * <p>
-   * If implemented, this method should construct a new {@link Flow} object that
-   * will be used to route the new CAS.  The new Flow object then takes over
-   * all responsibility for that CAS.   
+   * If implemented, this method should construct a new {@link Flow} object that will be used to
+   * route the new CAS. The new Flow object then takes over all responsibility for that CAS.
    * 
-   * @param newCas the new CAS
-   * @param producedBy key of the AnalysisEngine (CAS Multiplier) that produced the new CAS
+   * @param newCas
+   *          the new CAS
+   * @param producedBy
+   *          key of the AnalysisEngine (CAS Multiplier) that produced the new CAS
    * 
-   * @return a new Flow object that has responsibility for routing <code>aCAS</code> 
-   *   through the Aggregate Analysis Engine.
-   *   
+   * @return a new Flow object that has responsibility for routing <code>aCAS</code> through the
+   *         Aggregate Analysis Engine.
+   * 
    * @throws AnalysisEngineProcessException
    */
   Flow newCasProduced(AbstractCas newCas, String producedBy) throws AnalysisEngineProcessException;

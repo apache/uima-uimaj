@@ -22,41 +22,40 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.FSIterator;
 
 /**
- * Base class for FSIterator implementations. Defines the hasNext, next, and
- * remove methods required by java.util.Iterator.
+ * Base class for FSIterator implementations. Defines the hasNext, next, and remove methods required
+ * by java.util.Iterator.
  * 
  * 
  */
 public abstract class FSIteratorImplBase implements FSIterator {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.util.Iterator#hasNext()
-     */
-    public boolean hasNext() {
-        return isValid();
-    }
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.util.Iterator#hasNext()
+   */
+  public boolean hasNext() {
+    return isValid();
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.util.Iterator#next()
-     */
-    public Object next() {
-        Object result = get();
-        moveToNext();
-        return result;
-    }
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.util.Iterator#next()
+   */
+  public Object next() {
+    Object result = get();
+    moveToNext();
+    return result;
+  }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.util.Iterator#remove()
-     */
-    public void remove() {
-        throw new UnsupportedOperationException();
-    }
-
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.util.Iterator#remove()
+   */
+  public void remove() {
+    throw new UnsupportedOperationException();
+  }
 
 }

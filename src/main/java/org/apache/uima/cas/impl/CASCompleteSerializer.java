@@ -28,52 +28,51 @@ import java.io.Serializable;
  */
 public class CASCompleteSerializer implements Serializable {
 
-    static final long serialVersionUID = 6841574968081866308L;
+  static final long serialVersionUID = 6841574968081866308L;
 
-    private CASMgrSerializer casMgrSer;
+  private CASMgrSerializer casMgrSer;
 
-    private CASSerializer casSer;
+  private CASSerializer casSer;
 
-    /**
-     * Constructor for CASCompleteSerializer.
-     */
-    public CASCompleteSerializer() {
-        super();
-    }
+  /**
+   * Constructor for CASCompleteSerializer.
+   */
+  public CASCompleteSerializer() {
+    super();
+  }
 
-    public CASCompleteSerializer(CASImpl cas) {
-        this();
-        this.casMgrSer = Serialization.serializeCASMgr(cas);
-        this.casSer = Serialization.serializeCAS(cas);
-    }
+  public CASCompleteSerializer(CASImpl cas) {
+    this();
+    this.casMgrSer = Serialization.serializeCASMgr(cas);
+    this.casSer = Serialization.serializeCAS(cas);
+  }
 
-    public CASMgrSerializer getCASMgrSerializer() {
-        return this.casMgrSer;
-    }
+  public CASMgrSerializer getCASMgrSerializer() {
+    return this.casMgrSer;
+  }
 
-    public CASSerializer getCASSerializer() {
-        return this.casSer;
-    }
+  public CASSerializer getCASSerializer() {
+    return this.casSer;
+  }
 
-    /**
-     * Sets the casMgrSer.
-     * 
-     * @param casMgrSer
-     *            The casMgrSer to set
-     */
-    public void setCasMgrSerializer(CASMgrSerializer casMgrSer) {
-        this.casMgrSer = casMgrSer;
-    }
+  /**
+   * Sets the casMgrSer.
+   * 
+   * @param casMgrSer
+   *          The casMgrSer to set
+   */
+  public void setCasMgrSerializer(CASMgrSerializer casMgrSer) {
+    this.casMgrSer = casMgrSer;
+  }
 
-    /**
-     * Sets the casSer.
-     * 
-     * @param casSer
-     *            The casSer to set
-     */
-    public void setCasSerializer(CASSerializer casSer) {
-        this.casSer = casSer;
-    }
-
+  /**
+   * Sets the casSer.
+   * 
+   * @param casSer
+   *          The casSer to set
+   */
+  public void setCasSerializer(CASSerializer casSer) {
+    this.casSer = casSer;
+  }
 
 }

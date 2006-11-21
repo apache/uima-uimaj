@@ -36,152 +36,148 @@ import org.apache.uima.resource.metadata.Precondition;
  * 
  * 
  */
-public class Capability_impl extends MetaDataObject_impl 
-    implements Capability
-{
-  
-  /* (non-Javadoc)
+public class Capability_impl extends MetaDataObject_impl implements Capability {
+
+  static final long serialVersionUID = -2821073595288674925L;
+
+  /** a description of this capability */
+  private String mDescription;
+
+  /** Input Types and/or Features. */
+  private TypeOrFeature[] mInputs = new TypeOrFeature[0];
+
+  /** Output Types and/or Features. */
+  private TypeOrFeature[] mOutputs = new TypeOrFeature[0];
+
+  /** Preconditions (includes languages supported). */
+  private Precondition[] mPreconditions = new Precondition[0];
+
+  /** input SofAs */
+  private String[] mInputSofas = new String[0];
+
+  /** output SofAs */
+  private String[] mOutputSofas = new String[0];
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.Capability#getDescription()
    */
-  public String getDescription()
-  {
+  public String getDescription() {
     return mDescription;
   }
 
-
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.Capability#setDescription(java.lang.String)
    */
-  public void setDescription(String aDescription)
-  {
+  public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
-
 
   /**
    * @see org.apache.uima.analysis_engine.metadata.Capability#getInputs()
    */
-  public TypeOrFeature[] getInputs()
-  {
+  public TypeOrFeature[] getInputs() {
     return mInputs;
   }
-
 
   /**
    * @see org.apache.uima.analysis_engine.metadata.Capability#getOutputs()
    */
-  public TypeOrFeature[] getOutputs()
-  {
+  public TypeOrFeature[] getOutputs() {
     return mOutputs;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.metadata.Capability#getPreconditions()
    */
-  public Precondition[] getPreconditions()
-  {
+  public Precondition[] getPreconditions() {
     return mPreconditions;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.metadata.Capability#getLanguagesSupported()
    */
-  public String[] getLanguagesSupported()
-  {
-    //search for LanguagePreconditions
+  public String[] getLanguagesSupported() {
+    // search for LanguagePreconditions
     Precondition[] preconditions = getPreconditions();
-    for (int i = 0; i < preconditions.length; i++)
-    {
-      if (preconditions[i] instanceof LanguagePrecondition)
-      {
-        return ((LanguagePrecondition)preconditions[i]).getLanguages();
+    for (int i = 0; i < preconditions.length; i++) {
+      if (preconditions[i] instanceof LanguagePrecondition) {
+        return ((LanguagePrecondition) preconditions[i]).getLanguages();
       }
     }
-    
-    //No language precondition found.  Return an empty array.
+
+    // No language precondition found. Return an empty array.
     return new String[0];
   }
-
 
   /**
    * @see org.apache.uima.resource.metadata.Capability#getMimeTypesSupported()
    */
-  public String[] getMimeTypesSupported()
-  {
-    //search for MimeTypePreconditions
+  public String[] getMimeTypesSupported() {
+    // search for MimeTypePreconditions
     Precondition[] preconditions = getPreconditions();
-    for (int i = 0; i < preconditions.length; i++)
-    {
-      if (preconditions[i] instanceof MimeTypePrecondition)
-      {
-        return ((MimeTypePrecondition)preconditions[i]).getMimeTypes();
+    for (int i = 0; i < preconditions.length; i++) {
+      if (preconditions[i] instanceof MimeTypePrecondition) {
+        return ((MimeTypePrecondition) preconditions[i]).getMimeTypes();
       }
     }
-    
-    //No language precondition found.  Return an empty array.
+
+    // No language precondition found. Return an empty array.
     return new String[0];
   }
-
 
   /**
    * @see org.apache.uima.analysis_engine.metadata.Capability#setInputs(TypeOrFeature[])
    */
-  public void setInputs(TypeOrFeature[] aInputs)
-  {
+  public void setInputs(TypeOrFeature[] aInputs) {
     mInputs = aInputs;
   }
-
 
   /**
    * @see org.apache.uima.analysis_engine.metadata.Capability#setOutputs(TypeOrFeature[])
    */
-  public void setOutputs(TypeOrFeature[] aOutputs)
-  {
+  public void setOutputs(TypeOrFeature[] aOutputs) {
     mOutputs = aOutputs;
   }
-
 
   /**
    * @see org.apache.uima.analysis_engine.metadata.Capability#setPreconditions(Precondition[])
    */
-  public void setPreconditions(Precondition[] aPreconditions)
-  {
+  public void setPreconditions(Precondition[] aPreconditions) {
     mPreconditions = aPreconditions;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.metadata.Capability#setLanguagesSupported(String[])
    */
-  public void setLanguagesSupported(String[] aLanguageIDs)
-  {
-    //create a list of existing preconditions
+  public void setLanguagesSupported(String[] aLanguageIDs) {
+    // create a list of existing preconditions
     List preconditions = new ArrayList();
     Precondition[] precondArray = getPreconditions();
-    if (precondArray != null)
-    {
+    if (precondArray != null) {
       preconditions.addAll(Arrays.asList(precondArray));
     }
-    
-    //remove any existing LanguagePrecondtiions
+
+    // remove any existing LanguagePrecondtiions
     Iterator i = preconditions.iterator();
-    while (i.hasNext())
-    {
-      Precondition p = (Precondition)i.next();
-      if (p instanceof LanguagePrecondition)
-      {
+    while (i.hasNext()) {
+      Precondition p = (Precondition) i.next();
+      if (p instanceof LanguagePrecondition) {
         i.remove();
       }
-    }    
-    
-    //add new precondition
-    if (aLanguageIDs != null && aLanguageIDs.length > 0)
-    {
+    }
+
+    // add new precondition
+    if (aLanguageIDs != null && aLanguageIDs.length > 0) {
       LanguagePrecondition languagePrecond = new LanguagePrecondition_impl();
       languagePrecond.setLanguages(aLanguageIDs);
       preconditions.add(languagePrecond);
     }
-    
-    //set attribute value
+
+    // set attribute value
     Precondition[] newPrecondArray = new Precondition[preconditions.size()];
     preconditions.toArray(newPrecondArray);
     setPreconditions(newPrecondArray);
@@ -190,238 +186,206 @@ public class Capability_impl extends MetaDataObject_impl
   /**
    * @see org.apache.uima.resource.metadata.Capability#setMimeTypesSupported(java.lang.String[])
    */
-  public void setMimeTypesSupported(String[] aMimeTypes)
-  {
-    //create a list of existing preconditions
+  public void setMimeTypesSupported(String[] aMimeTypes) {
+    // create a list of existing preconditions
     List preconditions = new ArrayList();
     Precondition[] precondArray = getPreconditions();
-    if (precondArray != null)
-    {
+    if (precondArray != null) {
       preconditions.addAll(Arrays.asList(precondArray));
     }
-    
-    //remove any existing MimeTypePrecondtiions
+
+    // remove any existing MimeTypePrecondtiions
     Iterator i = preconditions.iterator();
-    while (i.hasNext())
-    {
-      Precondition p = (Precondition)i.next();
-      if (p instanceof MimeTypePrecondition)
-      {
+    while (i.hasNext()) {
+      Precondition p = (Precondition) i.next();
+      if (p instanceof MimeTypePrecondition) {
         i.remove();
       }
-    }    
-    
-    //add new precondition
-    if (aMimeTypes != null && aMimeTypes.length > 0)
-    {
+    }
+
+    // add new precondition
+    if (aMimeTypes != null && aMimeTypes.length > 0) {
       MimeTypePrecondition mimeTypePrecond = new MimeTypePrecondition_impl();
       mimeTypePrecond.setMimeTypes(aMimeTypes);
       preconditions.add(mimeTypePrecond);
     }
-    
-    //set attribute value
+
+    // set attribute value
     Precondition[] newPrecondArray = new Precondition[preconditions.size()];
     preconditions.toArray(newPrecondArray);
     setPreconditions(newPrecondArray);
   }
-  
+
   /**
-   * @see org.apache.uima.analysis_engine.metadata.Capability#addInputType(java.lang.String, boolean)
+   * @see org.apache.uima.analysis_engine.metadata.Capability#addInputType(java.lang.String,
+   *      boolean)
    */
-  public void addInputType(String aTypeName, boolean aAllAnnotatorFeatures)
-  {
-    TypeOrFeature type =
-      UIMAFramework.getResourceSpecifierFactory().createTypeOrFeature();
+  public void addInputType(String aTypeName, boolean aAllAnnotatorFeatures) {
+    TypeOrFeature type = UIMAFramework.getResourceSpecifierFactory().createTypeOrFeature();
     type.setType(true);
     type.setName(aTypeName);
     type.setAllAnnotatorFeatures(aAllAnnotatorFeatures);
-    
+
     TypeOrFeature[] oldArr = getInputs();
     TypeOrFeature[] newArr = new TypeOrFeature[oldArr.length + 1];
-    System.arraycopy(oldArr,0,newArr,0,oldArr.length);
+    System.arraycopy(oldArr, 0, newArr, 0, oldArr.length);
     newArr[newArr.length - 1] = type;
-    setInputs(newArr);  
+    setInputs(newArr);
   }
-
 
   /**
    * @see org.apache.uima.analysis_engine.metadata.Capability#addInputFeature(java.lang.String)
    */
-  public void addInputFeature(String aFeatureName)
-  {
-    TypeOrFeature feat = 
-      UIMAFramework.getResourceSpecifierFactory().createTypeOrFeature();
+  public void addInputFeature(String aFeatureName) {
+    TypeOrFeature feat = UIMAFramework.getResourceSpecifierFactory().createTypeOrFeature();
     feat.setType(false);
     feat.setName(aFeatureName);
-    
+
     TypeOrFeature[] oldArr = getInputs();
     TypeOrFeature[] newArr = new TypeOrFeature[oldArr.length + 1];
-    System.arraycopy(oldArr,0,newArr,0,oldArr.length);
-    newArr[newArr.length - 1] = feat;  
-    setInputs(newArr);  
+    System.arraycopy(oldArr, 0, newArr, 0, oldArr.length);
+    newArr[newArr.length - 1] = feat;
+    setInputs(newArr);
   }
 
-
   /**
-   * @see org.apache.uima.analysis_engine.metadata.Capability#addOutputType(java.lang.String, boolean)
+   * @see org.apache.uima.analysis_engine.metadata.Capability#addOutputType(java.lang.String,
+   *      boolean)
    */
-  public void addOutputType(String aTypeName, boolean aAllAnnotatorFeatures)
-  {
-    TypeOrFeature type =
-      UIMAFramework.getResourceSpecifierFactory().createTypeOrFeature();
+  public void addOutputType(String aTypeName, boolean aAllAnnotatorFeatures) {
+    TypeOrFeature type = UIMAFramework.getResourceSpecifierFactory().createTypeOrFeature();
     type.setType(true);
     type.setName(aTypeName);
     type.setAllAnnotatorFeatures(aAllAnnotatorFeatures);
-    
+
     TypeOrFeature[] oldArr = getOutputs();
     TypeOrFeature[] newArr = new TypeOrFeature[oldArr.length + 1];
-    System.arraycopy(oldArr,0,newArr,0,oldArr.length);
+    System.arraycopy(oldArr, 0, newArr, 0, oldArr.length);
     newArr[newArr.length - 1] = type;
-    setOutputs(newArr);  
+    setOutputs(newArr);
   }
-
 
   /**
    * @see org.apache.uima.analysis_engine.metadata.Capability#addOutputFeature(java.lang.String)
    */
-  public void addOutputFeature(String aFeatureName)
-  {
-    TypeOrFeature feat =
-      UIMAFramework.getResourceSpecifierFactory().createTypeOrFeature();
+  public void addOutputFeature(String aFeatureName) {
+    TypeOrFeature feat = UIMAFramework.getResourceSpecifierFactory().createTypeOrFeature();
     feat.setType(false);
     feat.setName(aFeatureName);
-    
+
     TypeOrFeature[] oldArr = getOutputs();
     TypeOrFeature[] newArr = new TypeOrFeature[oldArr.length + 1];
-    System.arraycopy(oldArr,0,newArr,0,oldArr.length);
+    System.arraycopy(oldArr, 0, newArr, 0, oldArr.length);
     newArr[newArr.length - 1] = feat;
-    setOutputs(newArr);  
+    setOutputs(newArr);
   }
-
 
   /**
    * @see org.apache.uima.analysis_engine.metadata.Capability#addSupportedLanguage(java.lang.String)
    */
-  public void addSupportedLanguage(String aLanguage)
-  {
+  public void addSupportedLanguage(String aLanguage) {
     String[] oldArr = getLanguagesSupported();
     String[] newArr = new String[oldArr.length + 1];
-    System.arraycopy(oldArr,0,newArr,0,oldArr.length);
-    newArr[newArr.length - 1] = aLanguage;  
-    setLanguagesSupported(newArr);  
-  }  
- 
-  /* (non-Javadoc)
+    System.arraycopy(oldArr, 0, newArr, 0, oldArr.length);
+    newArr[newArr.length - 1] = aLanguage;
+    setLanguagesSupported(newArr);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.resource.metadata.Capability#removeSupportedLanguage(java.lang.String)
    */
-  public void removeSupportedLanguage(String aLanguage)
-  {
-	  String[] current = getLanguagesSupported();
-	  for (int i = 0; i < current.length; i++)
-	  {
-	    if (current[i].equals(aLanguage))
-	    {
-	  	  String[] newArr = new String[current.length - 1];
-	  	  System.arraycopy(current, 0, newArr, 0, i);
-	  	  System.arraycopy(current, i+1, newArr, i, current.length - i - 1);
+  public void removeSupportedLanguage(String aLanguage) {
+    String[] current = getLanguagesSupported();
+    for (int i = 0; i < current.length; i++) {
+      if (current[i].equals(aLanguage)) {
+        String[] newArr = new String[current.length - 1];
+        System.arraycopy(current, 0, newArr, 0, i);
+        System.arraycopy(current, i + 1, newArr, i, current.length - i - 1);
         setLanguagesSupported(newArr);
-	  	  break; 	      
-	    }
-	  }
-  }  
-   
+        break;
+      }
+    }
+  }
 
- /* (non-Javadoc)
-  * @see org.apache.uima.resource.metadata.Capability#getInputSofaNames()
-  */
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.metadata.Capability#getInputSofaNames()
+   */
   public String[] getInputSofas() {
-	return mInputSofas;
+    return mInputSofas;
   }
 
-
-  /* (non-Javadoc)
-  * @see org.apache.uima.resource.metadata.Capability#getOutputSofaNames()
-  */
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.metadata.Capability#getOutputSofaNames()
+   */
   public String[] getOutputSofas() {
-	return mOutputSofas;
+    return mOutputSofas;
   }
 
-
- /* (non-Javadoc)
-  * @see org.apache.uima.resource.metadata.Capability#setInputSofaNames(java.lang.String[])
-  */
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.metadata.Capability#setInputSofaNames(java.lang.String[])
+   */
   public void setInputSofas(String[] aInputSofaNames) {
-	mInputSofas = aInputSofaNames;
+    mInputSofas = aInputSofaNames;
   }
 
-
-  /* (non-Javadoc)
-  * @see org.apache.uima.resource.metadata.Capability#setOutputSofaNames(java.lang.String[])
-  */
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.metadata.Capability#setOutputSofaNames(java.lang.String[])
+   */
   public void setOutputSofas(String[] aOutputSofaNames) {
-	mOutputSofas = aOutputSofaNames;
+    mOutputSofas = aOutputSofaNames;
   }
 
-
- /* (non-Javadoc)
- * @see org.apache.uima.resource.metadata.Capability#addInputSofaName(java.lang.String)
- */
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.metadata.Capability#addInputSofaName(java.lang.String)
+   */
   public void addInputSofa(String aSofaName) {
-	String[] oldArr = getInputSofas();
+    String[] oldArr = getInputSofas();
     String[] newArr = new String[oldArr.length + 1];
-    System.arraycopy(oldArr,0,newArr,0,oldArr.length);
-	newArr[newArr.length - 1] = aSofaName;
-	setInputSofas(newArr);  
+    System.arraycopy(oldArr, 0, newArr, 0, oldArr.length);
+    newArr[newArr.length - 1] = aSofaName;
+    setInputSofas(newArr);
   }
 
-
- /* (non-Javadoc)
-  * @see org.apache.uima.resource.metadata.Capability#addOutputSofaName(java.lang.String)
-  */
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.metadata.Capability#addOutputSofaName(java.lang.String)
+   */
   public void addOutputSofa(String aSofaName) {
-	String[] oldArr = getOutputSofas();
-	String[] newArr = new String[oldArr.length + 1];
-	System.arraycopy(oldArr,0,newArr,0,oldArr.length);
-	newArr[newArr.length - 1] = aSofaName;
-	setOutputSofas(newArr);  
+    String[] oldArr = getOutputSofas();
+    String[] newArr = new String[oldArr.length + 1];
+    System.arraycopy(oldArr, 0, newArr, 0, oldArr.length);
+    newArr[newArr.length - 1] = aSofaName;
+    setOutputSofas(newArr);
   }
 
-
-  protected XmlizationInfo getXmlizationInfo()
-  {
+  protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
-  
+
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("capability",
-      new PropertyXmlInfo[] { 
-          new PropertyXmlInfo("description"),
-          new PropertyXmlInfo("inputs", false), new PropertyXmlInfo("outputs", false),
-          new PropertyXmlInfo("inputSofas", "inputSofas", true, "sofaName"),
-          new PropertyXmlInfo("outputSofas", "outputSofas", true, "sofaName"),
-          new PropertyXmlInfo("languagesSupported", "languagesSupported", false, "language"),
-          new PropertyXmlInfo("mimeTypesSupported", "mimeTypesSupported", true, "mimeType")
+                  new PropertyXmlInfo[] {
+                      new PropertyXmlInfo("description"),
+                      new PropertyXmlInfo("inputs", false),
+                      new PropertyXmlInfo("outputs", false),
+                      new PropertyXmlInfo("inputSofas", "inputSofas", true, "sofaName"),
+                      new PropertyXmlInfo("outputSofas", "outputSofas", true, "sofaName"),
+                      new PropertyXmlInfo("languagesSupported", "languagesSupported", false,
+                                      "language"),
+                      new PropertyXmlInfo("mimeTypesSupported", "mimeTypesSupported", true,
+                                      "mimeType")
 
-      });
-      
-  
- /** a description of this capability */
- private String mDescription;
-  
-  /** Input Types and/or Features. */
- private TypeOrFeature[] mInputs = new TypeOrFeature[0];
-
- /** Output Types and/or Features. */
- private TypeOrFeature[] mOutputs = new TypeOrFeature[0];
-  
- /** Preconditions (includes languages supported). */
- private Precondition[] mPreconditions = new Precondition[0];
-
- /** input SofAs */
- private String[]  mInputSofas = new String[0];
- /** output SofAs */
- private String[]  mOutputSofas = new String[0];	
-
-	
- static final long serialVersionUID = -2821073595288674925L;
-
+                  });
 }

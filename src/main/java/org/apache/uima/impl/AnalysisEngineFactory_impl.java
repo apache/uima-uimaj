@@ -36,64 +36,52 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 
 /**
- * Resource Factory that handles {@link AnalysisEngineDescription} and
- * {@link TaeDescription} elements.
+ * Resource Factory that handles {@link AnalysisEngineDescription} and {@link TaeDescription}
+ * elements.
  * 
  * 
  */
-public class AnalysisEngineFactory_impl implements ResourceFactory
-{
+public class AnalysisEngineFactory_impl implements ResourceFactory {
   /**
-   * @see org.apache.uima.ResourceFactory#produceResource(java.lang.Class, org.apache.uima.resource.ResourceSpecifier, java.util.Map)
+   * @see org.apache.uima.ResourceFactory#produceResource(java.lang.Class,
+   *      org.apache.uima.resource.ResourceSpecifier, java.util.Map)
    */
-  public Resource produceResource(Class aResourceClass,
-    ResourceSpecifier aSpecifier, Map aAdditionalParams)
-    throws ResourceInitializationException
-  {
-    //It is important to know whether we need a Multiprocessing-capable
-    //Analysis Engine implementation - this is determined by whether there
-    //is a value for the PARAM_NUM_SIMULTANEOUS_REQUESTS parameter.
-    boolean multiprocessing = (aAdditionalParams != null) && 
-      aAdditionalParams.containsKey(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS);
-    
+  public Resource produceResource(Class aResourceClass, ResourceSpecifier aSpecifier,
+                  Map aAdditionalParams) throws ResourceInitializationException {
+    // It is important to know whether we need a Multiprocessing-capable
+    // Analysis Engine implementation - this is determined by whether there
+    // is a value for the PARAM_NUM_SIMULTANEOUS_REQUESTS parameter.
+    boolean multiprocessing = (aAdditionalParams != null)
+                    && aAdditionalParams
+                                    .containsKey(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS);
+
     Resource resource = null;
-    if (aSpecifier instanceof ResourceCreationSpecifier &&
-      aResourceClass.isAssignableFrom(TextAnalysisEngine.class))
-      //NOTE: for backwards-compatibility, we have to check TextAnalysisEngine, 
-      //not AnalysisEngine.  Otherwise produceTAE would fail becasue
-      //TextAnalysisEngien.class.isAssignableFrom(AnalysisEngine.class) is false.
-    {  
-      ResourceCreationSpecifier spec = (ResourceCreationSpecifier)aSpecifier;
-      if (multiprocessing)
-      {
-        resource = new MultiprocessingAnalysisEngine_impl(); 
-      }
-      else if ("org.apache.uima.cpp".equals(spec.getFrameworkImplementation()) ||
-               "TAF".equals(spec.getFrameworkImplementation()))
-      {
+    if (aSpecifier instanceof ResourceCreationSpecifier
+                    && aResourceClass.isAssignableFrom(TextAnalysisEngine.class))
+    // NOTE: for backwards-compatibility, we have to check TextAnalysisEngine,
+    // not AnalysisEngine. Otherwise produceTAE would fail becasue
+    // TextAnalysisEngien.class.isAssignableFrom(AnalysisEngine.class) is false.
+    {
+      ResourceCreationSpecifier spec = (ResourceCreationSpecifier) aSpecifier;
+      if (multiprocessing) {
+        resource = new MultiprocessingAnalysisEngine_impl();
+      } else if ("org.apache.uima.cpp".equals(spec.getFrameworkImplementation())
+                      || "TAF".equals(spec.getFrameworkImplementation())) {
         resource = new UimacppAnalysisEngineImpl();
-      }
-      else         
-      {
-        if (spec instanceof AnalysisEngineDescription &&
-            !((AnalysisEngineDescription)spec).isPrimitive())
-        {
+      } else {
+        if (spec instanceof AnalysisEngineDescription
+                        && !((AnalysisEngineDescription) spec).isPrimitive()) {
           resource = new AggregateAnalysisEngine_impl();
-        }
-        else
-        {
+        } else {
           resource = new PrimitiveAnalysisEngine_impl();
         }
-      }    
+      }
     }
-    
-    if (resource != null && resource.initialize(aSpecifier, aAdditionalParams))
-    {
+
+    if (resource != null && resource.initialize(aSpecifier, aAdditionalParams)) {
       return resource;
-    }
-    else
-    {
+    } else {
       return null;
-    }  
+    }
   }
 }

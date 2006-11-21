@@ -23,17 +23,15 @@ import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 
 /**
- * A <code>FlowControllerDescription</code> contains all of the information 
- * needed to instantiate and use a
- * {@link org.apache.uima.flow.FlowController}. 
+ * A <code>FlowControllerDescription</code> contains all of the information needed to instantiate
+ * and use a {@link org.apache.uima.flow.FlowController}.
  */
-public interface FlowControllerDescription extends ResourceCreationSpecifier
-{
+public interface FlowControllerDescription extends ResourceCreationSpecifier {
   /**
    * Retrieves the metadata that describes the FlowController.
    * 
-   * @return the <code>ProcessingResourceMetaData</code> object containing the 
-   *     FlowController's metadata.  This object can be modified.
+   * @return the <code>ProcessingResourceMetaData</code> object containing the FlowController's
+   *         metadata. This object can be modified.
    */
   public ProcessingResourceMetaData getFlowControllerMetaData();
 }

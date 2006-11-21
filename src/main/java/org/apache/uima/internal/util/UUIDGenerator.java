@@ -23,44 +23,38 @@ import java.rmi.dgc.VMID;
 import java.rmi.server.UID;
 
 /**
- * Utility class for generating UUIDs.  This implementation currently uses
- * RMI's VMID and UID objects.
+ * Utility class for generating UUIDs. This implementation currently uses RMI's VMID and UID
+ * objects.
  * 
  * 
  */
-public abstract class UUIDGenerator
-{
-  
+public abstract class UUIDGenerator {
+
   /**
    * Generates a UUID.
    * 
    * @return the UUID
    */
-  public static String generate()
-  {
+  public static String generate() {
     String uuid = mHostId + new UID().toString();
-    //System.out.println("UUID: " + uuid);
+    // System.out.println("UUID: " + uuid);
     return uuid;
   }
 
   private static String mHostId;
-  
-  //static initializer
-  static
-  {
+
+  // static initializer
+  static {
     String vmid = new VMID().toString();
-    //System.out.println("VMID = " + vmid);
-    //host ID appears to be first part of VMID - the rest of the VMID is
-    //repeated in each UID
+    // System.out.println("VMID = " + vmid);
+    // host ID appears to be first part of VMID - the rest of the VMID is
+    // repeated in each UID
     int colonOffset = vmid.indexOf(':');
-    if (colonOffset > 0)
-    {
-      mHostId = vmid.substring(0,colonOffset+1); 
-    }
-    else
-    {
+    if (colonOffset > 0) {
+      mHostId = vmid.substring(0, colonOffset + 1);
+    } else {
       mHostId = vmid;
-    }    
+    }
   }
-  
+
 }

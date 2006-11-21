@@ -22,29 +22,34 @@ package org.apache.uima.resource;
 import org.apache.uima.resource.metadata.MetaDataObject;
 
 /** A general parameter having a name and a value, which are both strings. */
-public interface Parameter extends MetaDataObject
-{
-  /** 
+public interface Parameter extends MetaDataObject {
+  /**
    * Gets the name of the parameter
+   * 
    * @return the name
    */
   String getName();
-  
+
   /**
    * Sets the name of the parameter
-   * @param aName the name
+   * 
+   * @param aName
+   *          the name
    */
   void setName(String aName);
-  
-  /** 
+
+  /**
    * Gets the value of the parameter.
+   * 
    * @return the value
    */
   String getValue();
 
   /**
    * Sets the value of the parameter.
-   * @param aValue the value
+   * 
+   * @param aValue
+   *          the value
    */
   void setValue(String aValue);
 }

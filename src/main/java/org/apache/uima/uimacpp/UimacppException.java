@@ -27,82 +27,81 @@ import java.io.PrintWriter;
  */
 public class UimacppException extends Exception {
   private static final long serialVersionUID = 378698033899907645L;
+
   /**
-    * Nested exception to hold wrapped exception.
-    */
-   Exception detail = null;
+   * Nested exception to hold wrapped exception.
+   */
+  Exception detail = null;
 
-   /**
-    * Constructs a <code>JTafRuntimeException</code> with the specified
-    * nested exception.
-    *
-    * @param ex the nested exception
-    */
-   public UimacppException(Exception ex) {
-      super();
-      detail = ex;
-   }
+  /**
+   * Constructs a <code>JTafRuntimeException</code> with the specified nested exception.
+   * 
+   * @param ex
+   *          the nested exception
+   */
+  public UimacppException(Exception ex) {
+    super();
+    detail = ex;
+  }
 
+  /**
+   * Returns a detail message. If present, this will also include the nested exception.
+   */
+  public String getMessage() {
+    if (detail == null) {
+      return super.getMessage();
+    }
+    return super.getMessage() + ";\n\t" + detail.toString();
+  }
 
-   /**
-    * Returns a detail message. If present, this will also include the
-    * nested exception.
-    */
-   public String getMessage() {
-      if (detail == null) {
-         return super.getMessage();
+  /**
+   * Prints the composite message and the embedded stack trace to the specified print stream,
+   * <code>ps</code>.
+   * 
+   * @param ps
+   *          the print stream
+   */
+  public void printStackTrace(PrintStream ps) {
+    if (detail == null) {
+      super.printStackTrace(ps);
+    } else {
+      synchronized (ps) {
+        ps.println(this);
+        detail.printStackTrace(ps);
       }
-	return super.getMessage() + ";\n\t" + detail.toString();
-   }
+    }
+  }
 
-   /**
-    * Prints the composite message and the embedded stack trace to
-    * the specified print stream, <code>ps</code>.
-    * @param ps the print stream
-    */
-   public void printStackTrace(PrintStream ps) {
-      if (detail == null) {
-         super.printStackTrace(ps);
+  /**
+   * Prints the composite message to <code>System.err</code>.
+   */
+  public void printStackTrace() {
+    printStackTrace(System.err);
+  }
+
+  /**
+   * Prints the composite message and the embedded stack trace to the specified print writer,
+   * <code>pw</code>
+   * 
+   * @param pw
+   *          the print writer
+   */
+  public void printStackTrace(PrintWriter pw) {
+    if (detail == null) {
+      super.printStackTrace(pw);
+    } else {
+      synchronized (pw) {
+        pw.println(this);
+        detail.printStackTrace(pw);
       }
-      else {
-         synchronized(ps) {
-            ps.println(this);
-            detail.printStackTrace(ps);
-         }
-      }
-   }
+    }
+  }
 
-   /**
-    * Prints the composite message to <code>System.err</code>.
-    */
-   public void printStackTrace() {
-      printStackTrace(System.err);
-   }
-
-   /**
-    * Prints the composite message and the embedded stack trace to
-    * the specified print writer, <code>pw</code>
-    * @param pw the print writer
-    */
-   public void printStackTrace(PrintWriter pw) {
-      if (detail == null) {
-         super.printStackTrace(pw);
-      }
-      else {
-         synchronized(pw) {
-            pw.println(this);
-            detail.printStackTrace(pw);
-         }
-      }
-   }
-
-   /**
-    * get the embedded exception, if any.
-    */
-   public Exception getEmbeddedException() {
-      return detail;
-   }
-
+  /**
+   * get the embedded exception, if any.
+   */
+  public Exception getEmbeddedException() {
+    return detail;
+  }
 
 }
-

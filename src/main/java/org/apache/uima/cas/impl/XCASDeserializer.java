@@ -46,22 +46,19 @@ import org.apache.uima.internal.util.StringUtils;
 import org.apache.uima.internal.util.rb_trees.RedBlackTree;
 
 /**
- * XCAS Deserializer.  Takes an XCAS and reads it into a CAS.
+ * XCAS Deserializer. Takes an XCAS and reads it into a CAS.
  * 
  * 
  */
-public class XCASDeserializer
-{
+public class XCASDeserializer {
 
-  private static class FSInfo
-  {
+  private static class FSInfo {
 
     private int addr;
 
     private IntVector indexRep;
 
-    private FSInfo(int addr, IntVector indexRep)
-    {
+    private FSInfo(int addr, IntVector indexRep) {
       super();
       this.addr = addr;
       this.indexRep = indexRep;
@@ -69,41 +66,40 @@ public class XCASDeserializer
 
   }
 
-  private class XCASDeserializerHandler extends DefaultHandler
-  {
+  private class XCASDeserializerHandler extends DefaultHandler {
 
-    /////////////////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////////////////
     // Internal states for the parser.
 
     // Expect the start of the XML document.
     private static final int DOC_STATE = 0;
 
-    // At the top level.  Expect a FS, or a TCAS document, or the end of the
+    // At the top level. Expect a FS, or a TCAS document, or the end of the
     // XML input.
     private static final int FS_STATE = 1;
 
-    // Inside a FS.  Expect features, or the end of the FS.
+    // Inside a FS. Expect features, or the end of the FS.
     private static final int FEAT_STATE = 2;
 
-    // Inside FS.  We have seen a _content attribute, and expect text.
+    // Inside FS. We have seen a _content attribute, and expect text.
     private static final int CONTENT_STATE = 3;
 
-    // Inside a feature element.  We expect the feature value.
+    // Inside a feature element. We expect the feature value.
     private static final int FEAT_CONTENT_STATE = 4;
 
-    // Inside an array element.  Expect array element value.
+    // Inside an array element. Expect array element value.
     private static final int ARRAY_ELE_CONTENT_STATE = 5;
 
-    // Inside an array FS.  Expect an array element, or the end of the FS.
+    // Inside an array FS. Expect an array element, or the end of the FS.
     private static final int ARRAY_ELE_STATE = 6;
 
-    // Inside the TCAS document.  Expect the doc text.
+    // Inside the TCAS document. Expect the doc text.
     private static final int DOC_TEXT_STATE = 7;
 
-    // Inside an Out-Of-Typesystem FS.  Expect features, or the end of the FS.
+    // Inside an Out-Of-Typesystem FS. Expect features, or the end of the FS.
     private static final int OOTS_FEAT_STATE = 8;
 
-    // Inside an Out-Of-Typesystem FS.  We have seen a _content attribute,
+    // Inside an Out-Of-Typesystem FS. We have seen a _content attribute,
     // and expect text.
     private static final int OOTS_CONTENT_STATE = 9;
 
@@ -111,7 +107,7 @@ public class XCASDeserializer
     private static final String DEFAULT_CONTENT_FEATURE = "value";
 
     // End parser states.
-    /////////////////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////////////////
 
     private static final String reservedAttrPrefix = "_";
 
@@ -119,9 +115,9 @@ public class XCASDeserializer
     // of XML input.
     private static final String unknownXMLSource = "<unknown>";
 
-    //    private long time;
+    // private long time;
 
-    // SAX locator.  Used for error message generation.
+    // SAX locator. Used for error message generation.
     private Locator locator;
 
     // The CAS we're filling.
@@ -139,7 +135,7 @@ public class XCASDeserializer
     // StringBuffer to accumulate text.
     private StringBuffer buffer;
 
-    // The address of the most recently created FS.  Needed for array elements
+    // The address of the most recently created FS. Needed for array elements
     // and embedded feature values.
     private int currentAddr;
 
@@ -170,23 +166,21 @@ public class XCASDeserializer
     // for processing v1.x format XCAS
     // map from sofa int values to id references
     private IntVector sofaRefMap;
+
     // map incoming _indexed values
     private IntVector indexMap;
-    
+
     // working with initial view
     private int nextIndex;
-    
-	//private FeatureStructureImplC currentFS;
 
+    // private FeatureStructureImplC currentFS;
 
-    private XCASDeserializerHandler(CASImpl cas)
-    {
+    private XCASDeserializerHandler(CASImpl cas) {
       this(cas, null);
     }
 
-    //APL
-    private XCASDeserializerHandler(CASImpl aCAS, OutOfTypeSystemData ootsData)
-    {
+    // APL
+    private XCASDeserializerHandler(CASImpl aCAS, OutOfTypeSystemData ootsData) {
       super();
       this.cas = aCAS.getBaseCAS();
       // Reset the CAS.
@@ -202,7 +196,7 @@ public class XCASDeserializer
       // There should always be another index for the Initial View
       indexRepositories.add(this.cas.getView(CAS.NAME_DEFAULT_SOFA).getIndexRepository());
       this.sofaTypeCode = cas.ll_getTypeSystem().ll_getCodeForType(
-          cas.getTypeSystem().getType(CAS.TYPE_NAME_SOFA));
+                      cas.getTypeSystem().getType(CAS.TYPE_NAME_SOFA));
       this.annotBaseType = this.cas.getAnnotationType();
       this.sofaRefMap = new IntVector();
       this.indexMap = new IntVector();
@@ -212,66 +206,60 @@ public class XCASDeserializer
       indexMap.add(0);
     }
 
-    private final void resetBuffer()
-    {
-      //      this.buffer.delete(0, this.buffer.length());
+    private final void resetBuffer() {
+      // this.buffer.delete(0, this.buffer.length());
       this.buffer = new StringBuffer();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.xml.sax.ContentHandler#startDocument()
      */
-    public void startDocument() throws SAXException
-    {
+    public void startDocument() throws SAXException {
       // Do setup work in the constructor.
       this.state = DOC_STATE;
-      //      System.out.println("Starting to read document.");
-      //      time = System.currentTimeMillis();
+      // System.out.println("Starting to read document.");
+      // time = System.currentTimeMillis();
     }
 
-    /* (non-Javadoc)
-     * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String,
+     *      java.lang.String, org.xml.sax.Attributes)
      */
     public void startElement(String nameSpaceURI, String localName, String qualifiedName,
-        Attributes attrs) throws SAXException
-    {
-      //org.apache.vinci.debug.Debug.p("startElement: " + qualifiedName);
-      //if (attrs != null) {
-      //for (int i=0; i<attrs.getLength(); i++) {
-      //		    org.apache.vinci.debug.Debug.p("a: " + attrs.getQName(i) + " v: " + attrs.getValue(i));
-      //		}
-      //}
+                    Attributes attrs) throws SAXException {
+      // org.apache.vinci.debug.Debug.p("startElement: " + qualifiedName);
+      // if (attrs != null) {
+      // for (int i=0; i<attrs.getLength(); i++) {
+      // org.apache.vinci.debug.Debug.p("a: " + attrs.getQName(i) + " v: " + attrs.getValue(i));
+      // }
+      // }
       resetBuffer();
-      switch (state)
-      {
-        case DOC_STATE:
-        {
-          if (!qualifiedName.equals(XCASSerializer.casTagName))
-          {
+      switch (state) {
+        case DOC_STATE: {
+          if (!qualifiedName.equals(XCASSerializer.casTagName)) {
             throw createException(XCASParsingException.WRONG_ROOT_TAG, qualifiedName);
           }
           this.state = FS_STATE;
           break;
         }
-        case FS_STATE:
-        {
+        case FS_STATE: {
           this.currentContentFeat = DEFAULT_CONTENT_FEATURE;
-          if (qualifiedName.equals(getDocumentTypeName()))
-          {
+          if (qualifiedName.equals(getDocumentTypeName())) {
             readDocument(attrs);
-          } else
-          {
+          } else {
             readFS(qualifiedName, attrs);
           }
           break;
         }
-        case ARRAY_ELE_STATE:
-        {
+        case ARRAY_ELE_STATE: {
           readArrayElement(qualifiedName, attrs);
           break;
         }
-        default:
-        {
+        default: {
           // If we're not in an element expecting state, raise an error.
           throw createException(XCASParsingException.TEXT_EXPECTED, qualifiedName);
         }
@@ -279,52 +267,42 @@ public class XCASDeserializer
     }
 
     // Get ready to read document text.
-    private void readDocument(Attributes attrs)
-    {
+    private void readDocument(Attributes attrs) {
       this.state = DOC_TEXT_STATE;
     }
 
     // Get ready to read array element.
-    private void readArrayElement(String eleName, Attributes attrs) throws SAXParseException
-    {
-      if (!eleName.equals(XCASSerializer.ARRAY_ELEMENT_TAG))
-      {
+    private void readArrayElement(String eleName, Attributes attrs) throws SAXParseException {
+      if (!eleName.equals(XCASSerializer.ARRAY_ELEMENT_TAG)) {
         throw createException(XCASParsingException.ARRAY_ELE_EXPECTED, eleName);
       }
-      if (attrs.getLength() > 0)
-      {
+      if (attrs.getLength() > 0) {
         throw createException(XCASParsingException.ARRAY_ELE_ATTRS);
       }
       this.state = ARRAY_ELE_CONTENT_STATE;
-      //      resetBuffer();
+      // resetBuffer();
     }
 
     // Create a new FS.
-    private void readFS(String qualifiedName, Attributes attrs) throws SAXParseException
-    {
+    private void readFS(String qualifiedName, Attributes attrs) throws SAXParseException {
       String typeName = getCasTypeName(qualifiedName);
       TypeImpl type = (TypeImpl) ts.getType(typeName);
       if (type == null) {
-    	  if ( typeName.equals("uima.cas.SofA") ) {
-    	      // temporary fix for XCAS written with pre-public version of Sofas
-    		  type = (TypeImpl) ts.getType("uima.cas.Sofa");
-    	  }
+        if (typeName.equals("uima.cas.SofA")) {
+          // temporary fix for XCAS written with pre-public version of Sofas
+          type = (TypeImpl) ts.getType("uima.cas.Sofa");
+        }
       }
-      if (type == null)
-      {
-        if (this.outOfTypeSystemData == null)
-        {
+      if (type == null) {
+        if (this.outOfTypeSystemData == null) {
           throw createException(XCASParsingException.UNKNOWN_TYPE, typeName);
-        } else
-        {
-          //add this FS to out-of-typesystem data - this also sets the
-          //parser state appropriately (APL)
+        } else {
+          // add this FS to out-of-typesystem data - this also sets the
+          // parser state appropriately (APL)
           addToOutOfTypeSystemData(typeName, attrs);
         }
-      } else
-      {
-        if (cas.isArrayType(type.getCode()))
-        {
+      } else {
+        if (cas.isArrayType(type.getCode())) {
           readArray(type, attrs);
           return;
         }
@@ -337,52 +315,48 @@ public class XCASDeserializer
      * 
      * @param addr
      * @param attrs
-     * @param toIndex Special hack to accomodate document annotation, which is
-     * already in the index.
+     * @param toIndex
+     *          Special hack to accomodate document annotation, which is already in the index.
      * @throws SAXParseException
      */
-    private void readFS(final int addr, Attributes attrs, boolean toIndex) throws SAXParseException
-    {
+    private void readFS(final int addr, Attributes attrs, boolean toIndex) throws SAXParseException {
       // Hang on address for setting content feature
       this.currentAddr = addr;
       /**
-      if (this.currentFS==null) {
-    	  this.currentFS = new FeatureStructureImplC(cas,addr);
-      } else 
-    	  this.currentFS.setUp(cas,addr);
-      **/	  
+       * if (this.currentFS==null) { this.currentFS = new FeatureStructureImplC(cas,addr); } else
+       * this.currentFS.setUp(cas,addr);
+       */
       int id = -1;
       IntVector indexRep = new IntVector(); // empty means not indexed
       String attrName, attrValue;
       final int heapValue = cas.getHeapValue(addr);
       final Type type = cas.ll_getTypeSystem().ll_getTypeForCode(cas.ll_getFSRefType(addr));
-      
+
       // Special handling for Sofas
       if (sofaTypeCode == heapValue) {
         // create some maps to handle v1 format XCAS ...
         // ... where the sofa feature of annotations was an int not a ref
-        
+
         // determine if this is the one and only initial view Sofa
         boolean isInitialView = false;
         String sofaID = attrs.getValue(CAS.FEATURE_BASE_NAME_SOFAID);
         if (sofaID.equals("_DefaultTextSofaName")) {
           sofaID = CAS.NAME_DEFAULT_SOFA;
         }
-        if (uimaContext != null)
-        {
+        if (uimaContext != null) {
           // Map incoming SofaIDs
           sofaID = uimaContext.mapToSofaID(sofaID).getSofaID();
         }
         if (sofaID.equals(CAS.NAME_DEFAULT_SOFA)) {
           isInitialView = true;
-        }        
+        }
         // get the sofaNum
         String sofaNum = attrs.getValue(CAS.FEATURE_BASE_NAME_SOFANUM);
         int thisSofaNum = Integer.parseInt(sofaNum);
 
         // get the sofa's FeatureStructure id
         int sofaFsId = Integer.parseInt(attrs.getValue(XCASSerializer.ID_ATTR_NAME));
-        
+
         // for v1 and v2 formats, create the index map
         // ***we assume Sofas are always received in Sofanum order***
         // Two scenarios ... the initial view is the first sofa, or not.
@@ -396,29 +370,25 @@ public class XCASDeserializer
               this.indexMap.add(-1); // for this CAS, there should not be a sofanum = 1
               this.indexMap.add(1); // map 2 to 1
               this.nextIndex = 2;
-            }
-            else {
+            } else {
               this.indexMap.add(1);
               this.nextIndex = 2;
             }
-          }
-          else {
+          } else {
             if (thisSofaNum > 1) {
               // the first Sofa not initial, but sofaNum > 1
               // must be a v2 format, and sofaNum better be 2
               this.indexMap.add(1);
-              assert(thisSofaNum == 2);
+              assert (thisSofaNum == 2);
               this.indexMap.add(2);
               this.nextIndex = 3;
-            }
-            else {
+            } else {
               // must be v1 format
               this.indexMap.add(2);
               this.nextIndex = 3;
             }
           }
-        }
-        else {
+        } else {
           // if the new Sofa is the initial view, always map to 1
           if (isInitialView) {
             // the initial view is not the first
@@ -427,69 +397,54 @@ public class XCASDeserializer
               // v1 format, add mapping for initial view
               this.indexMap.add(1);
             }
-          }
-          else {
+          } else {
             this.indexMap.add(this.nextIndex);
             this.nextIndex++;
           }
         }
 
         // Now update the mapping from annotation int to ref values
-        if (this.sofaRefMap.size() == thisSofaNum )
-        {
+        if (this.sofaRefMap.size() == thisSofaNum) {
           // Sofa received in sofaNum order, add new one
           this.sofaRefMap.add(sofaFsId);
-        }
-        else if (this.sofaRefMap.size() > thisSofaNum )
-        {
+        } else if (this.sofaRefMap.size() > thisSofaNum) {
           // new Sofa has lower sofaNum than last one
           this.sofaRefMap.set(thisSofaNum, sofaFsId);
-        }
-        else
-        {
+        } else {
           // new Sofa has skipped ahead more than 1
           this.sofaRefMap.setSize(thisSofaNum + 1);
           this.sofaRefMap.set(thisSofaNum, sofaFsId);
         }
 
       }
-      
-      for (int i = 0; i < attrs.getLength(); i++)
-      {
+
+      for (int i = 0; i < attrs.getLength(); i++) {
         attrName = attrs.getQName(i);
         attrValue = attrs.getValue(i);
-        if (attrName.startsWith(reservedAttrPrefix))
-        {
-          if (attrName.equals(XCASSerializer.ID_ATTR_NAME))
-          {
-            try
-            {
+        if (attrName.startsWith(reservedAttrPrefix)) {
+          if (attrName.equals(XCASSerializer.ID_ATTR_NAME)) {
+            try {
               id = Integer.parseInt(attrValue);
-            } catch (NumberFormatException e)
-            {
+            } catch (NumberFormatException e) {
               throw createException(XCASParsingException.ILLEGAL_ID, attrValue);
             }
-          } else if (attrName.equals(XCASSerializer.CONTENT_ATTR_NAME))
-          {
+          } else if (attrName.equals(XCASSerializer.CONTENT_ATTR_NAME)) {
             this.currentContentFeat = attrValue;
-            //            this.state = CONTENT_STATE;   APL-6/28/04 - removed, see below
-          } else if (attrName.equals(XCASSerializer.INDEXED_ATTR_NAME))
-          {
+            // this.state = CONTENT_STATE; APL-6/28/04 - removed, see below
+          } else if (attrName.equals(XCASSerializer.INDEXED_ATTR_NAME)) {
             // if (attrValue.equals(XCASSerializer.TRUE_VALUE) && toIndex)
-          	String[] arrayvals = parseArray(attrValue);
-          	for (int s = 0; s < arrayvals.length; s++) {
-          	  indexRep.add(Integer.parseInt(arrayvals[s]));
-          	}
-          } else
-          {
+            String[] arrayvals = parseArray(attrValue);
+            for (int s = 0; s < arrayvals.length; s++) {
+              indexRep.add(Integer.parseInt(arrayvals[s]));
+            }
+          } else {
             handleFeature(type, addr, attrName, attrValue, false);
           }
-        } else
-        {
+        } else {
           if (sofaTypeCode == heapValue) {
             if (attrName.equals(CAS.FEATURE_BASE_NAME_SOFAID)) {
               if (attrValue.equals("_DefaultTextSofaName")) {
-                //First change old default Sofa name into the new one
+                // First change old default Sofa name into the new one
                 attrValue = CAS.NAME_DEFAULT_SOFA;
               }
               if (uimaContext != null) {
@@ -501,201 +456,177 @@ public class XCASDeserializer
           handleFeature(type, addr, attrName, attrValue, false);
         }
       }
- 
-      if (sofaTypeCode == heapValue)
-      {
+
+      if (sofaTypeCode == heapValue) {
         // If a Sofa, create TCAS view to get new indexRepository
-        SofaFS sofa = (SofaFS) cas.createFS(addr); 
-        //also add to indexes so we can retrieve the Sofa later
+        SofaFS sofa = (SofaFS) cas.createFS(addr);
+        // also add to indexes so we can retrieve the Sofa later
         cas.getBaseIndexRepository().addFS(sofa);
         CAS view = cas.getView(sofa);
         if (sofa.getSofaRef() == 1) {
-        	cas.registerInitialSofa();
+          cas.registerInitialSofa();
+        } else {
+          // add indexRepo for views other than the initial view
+          indexRepositories.add(cas.getSofaIndexRepository(sofa));
         }
-        else {
-        	// add indexRepo for views other than the initial view
-        	indexRepositories.add(cas.getSofaIndexRepository(sofa));
-        }
-        ((TCASImpl)view).registerView(sofa);
+        ((TCASImpl) view).registerView(sofa);
         tcasInstances.add(view);
       }
       FSInfo fsInfo = new FSInfo(addr, indexRep);
-      if (id < 0)
-      {
+      if (id < 0) {
         idLess.add(fsInfo);
-      } else
-      {
+      } else {
         fsTree.put(id, fsInfo);
       }
       // Set the state; we're either expecting features, or _content.
-      //APL - 6/28/04 - even if _content attr is not specified, we can still have content, which would
-      //be assigned to the "value" feature, as per XCAS spec.  FEAT_STATE did not really seem to be
-      //working, anyway.
+      // APL - 6/28/04 - even if _content attr is not specified, we can still have content, which
+      // would
+      // be assigned to the "value" feature, as per XCAS spec. FEAT_STATE did not really seem to be
+      // working, anyway.
       this.state = CONTENT_STATE;
-      //      if (this.state != CONTENT_STATE)
-      //      {
-      //        this.state = FEAT_STATE;
-      //      }
+      // if (this.state != CONTENT_STATE)
+      // {
+      // this.state = FEAT_STATE;
+      // }
     }
 
     // Create a new array FS.
-    private void readArray(TypeImpl type, Attributes attrs) throws SAXParseException
-    {
+    private void readArray(TypeImpl type, Attributes attrs) throws SAXParseException {
       String attrName, attrVal;
       // No entries in indexRep means not indexed
       IntVector indexRep = new IntVector();
       int size = 0;
       int id = -1;
-      for (int i = 0; i < attrs.getLength(); i++)
-      {
+      for (int i = 0; i < attrs.getLength(); i++) {
         attrName = attrs.getQName(i);
         attrVal = attrs.getValue(i);
-        if (attrName.equals(XCASSerializer.ID_ATTR_NAME))
-        {
-          try
-          {
+        if (attrName.equals(XCASSerializer.ID_ATTR_NAME)) {
+          try {
             id = Integer.parseInt(attrVal);
-          } catch (NumberFormatException e)
-          {
+          } catch (NumberFormatException e) {
             throw createException(XCASParsingException.ILLEGAL_ID, attrVal);
           }
-        } else if (attrName.equals(XCASSerializer.ARRAY_SIZE_ATTR))
-        {
-          try
-          {
+        } else if (attrName.equals(XCASSerializer.ARRAY_SIZE_ATTR)) {
+          try {
             size = Integer.parseInt(attrVal);
-            if (size < 0)
-            {
+            if (size < 0) {
               throw createException(XCASParsingException.ILLEGAL_ARRAY_SIZE, attrVal);
             }
-          } catch (NumberFormatException e)
-          {
+          } catch (NumberFormatException e) {
             throw createException(XCASParsingException.INTEGER_EXPECTED, attrVal);
           }
-        } else if (attrName.equals(XCASSerializer.INDEXED_ATTR_NAME))
-        {
+        } else if (attrName.equals(XCASSerializer.INDEXED_ATTR_NAME)) {
           String[] arrayvals = parseArray(attrVal);
-          for (int s=0; s<arrayvals.length; s++) {
+          for (int s = 0; s < arrayvals.length; s++) {
             indexRep.add(Integer.parseInt(arrayvals[s]));
-        	}
-        } else
-        {
+          }
+        } else {
           throw createException(XCASParsingException.ILLEGAL_ARRAY_ATTR, attrName);
         }
       }
-      FeatureStructureImplC fs; 
+      FeatureStructureImplC fs;
       if (cas.isBooleanArrayType(type)) {
-    	  fs = (FeatureStructureImplC) cas.createBooleanArrayFS(size);
+        fs = (FeatureStructureImplC) cas.createBooleanArrayFS(size);
       } else if (cas.isByteArrayType(type)) {
-    	   fs = (FeatureStructureImplC) cas.createByteArrayFS(size);
-      }  else if (cas.isShortArrayType(type)) {
-    	  fs = (FeatureStructureImplC) cas.createShortArrayFS(size);
+        fs = (FeatureStructureImplC) cas.createByteArrayFS(size);
+      } else if (cas.isShortArrayType(type)) {
+        fs = (FeatureStructureImplC) cas.createShortArrayFS(size);
       } else if (cas.isLongArrayType(type)) {
-          fs = (FeatureStructureImplC) cas.createLongArrayFS(size);
+        fs = (FeatureStructureImplC) cas.createLongArrayFS(size);
       } else if (cas.isDoubleArrayType(type)) {
-          fs = (FeatureStructureImplC) cas.createDoubleArrayFS(size);
+        fs = (FeatureStructureImplC) cas.createDoubleArrayFS(size);
       } else {
-    	  int addr = cas.createTempArray(type.getCode(), size);
-    	  fs = new FeatureStructureImplC(cas,addr);
+        int addr = cas.createTempArray(type.getCode(), size);
+        fs = new FeatureStructureImplC(cas, addr);
       }
-      
+
       final int addr = fs.getAddress();
       FSInfo fsInfo = new FSInfo(addr, indexRep);
-      if (id >= 0)
-      {
+      if (id >= 0) {
         fsTree.put(id, fsInfo);
-      } else
-      {
+      } else {
         idLess.add(fsInfo);
       }
       // Hang on to those for setting array values.
       this.currentAddr = addr;
       this.arrayPos = 0;
-      
+
       this.state = ARRAY_ELE_STATE;
     }
 
-    // The definition of a null value.  Any other value must be in the expected
+    // The definition of a null value. Any other value must be in the expected
     // format.
-    private final boolean emptyVal(String val)
-    {
+    private final boolean emptyVal(String val) {
       return ((val == null) || (val.length() == 0));
     }
 
     // Create a feature value from a string representation.
     private void handleFeature(int addr, String featName, String featVal, boolean lenient)
-        throws SAXParseException
-    {
+                    throws SAXParseException {
       int typeCode = cas.ll_getFSRefType(addr);
       Type type = cas.ll_getTypeSystem().ll_getTypeForCode(typeCode);
       handleFeature(type, addr, featName, featVal, lenient);
     }
 
     private void handleFeature(final Type type, int addr, String featName, String featVal,
-        boolean lenient) throws SAXParseException
-    {
-      //The FeatureMap approach is broken because it assumes feature short names
-      //are unique.  This is my quick fix. -APL
-      //      final FeatureImpl feat = (FeatureImpl) featureMap.get(featName);
-      
-      //handle v1.x format annotations, mapping int to ref values
+                    boolean lenient) throws SAXParseException {
+      // The FeatureMap approach is broken because it assumes feature short names
+      // are unique. This is my quick fix. -APL
+      // final FeatureImpl feat = (FeatureImpl) featureMap.get(featName);
+
+      // handle v1.x format annotations, mapping int to ref values
       if (featName.equals("sofa") && ts.subsumes(this.annotBaseType, type)) {
         featVal = Integer.toString(this.sofaRefMap.get(Integer.parseInt(featVal)));
       }
-      
-      //handle v1.x sofanum values, remapping so that _InitialView always == 1
-      if (featName.equals(CAS.FEATURE_BASE_NAME_SOFAID) && this.sofaTypeCode == cas.getHeapValue(addr)) {
+
+      // handle v1.x sofanum values, remapping so that _InitialView always == 1
+      if (featName.equals(CAS.FEATURE_BASE_NAME_SOFAID)
+                      && this.sofaTypeCode == cas.getHeapValue(addr)) {
         Type sofaType = ts.getType(this.sofaTypeCode);
-        final FeatureImpl sofaNumFeat = (FeatureImpl) sofaType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFANUM);
+        final FeatureImpl sofaNumFeat = (FeatureImpl) sofaType
+                        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFANUM);
         int sofaNum = cas.getFeatureValue(addr, sofaNumFeat.getCode());
         cas.setFeatureValue(addr, sofaNumFeat.getCode(), this.indexMap.get(sofaNum));
       }
-      
+
       String realFeatName;
-      if (featName.startsWith(XCASSerializer.REF_PREFIX))
-      {
+      if (featName.startsWith(XCASSerializer.REF_PREFIX)) {
         realFeatName = featName.substring(XCASSerializer.REF_PREFIX.length());
-      } else
-      {
+      } else {
         realFeatName = featName;
       }
       final FeatureImpl feat = (FeatureImpl) type.getFeatureByBaseName(realFeatName);
-      //System.out.println("DEBUG - Feature map result: " + featName + " = " + feat.getName());
-      if (feat == null)
-      { //feature does not exist in typesystem
-        if (outOfTypeSystemData != null)
-        {
-          //Add to Out-Of-Typesystem data (APL)
+      // System.out.println("DEBUG - Feature map result: " + featName + " = " + feat.getName());
+      if (feat == null) { // feature does not exist in typesystem
+        if (outOfTypeSystemData != null) {
+          // Add to Out-Of-Typesystem data (APL)
           Integer addrInteger = new Integer(addr);
           List ootsAttrs = (List) outOfTypeSystemData.extraFeatureValues.get(addrInteger);
-          if (ootsAttrs == null)
-          {
+          if (ootsAttrs == null) {
             ootsAttrs = new ArrayList();
             outOfTypeSystemData.extraFeatureValues.put(addrInteger, ootsAttrs);
           }
           ootsAttrs.add(new String[] { featName, featVal });
-        } else if (!lenient)
-        {
+        } else if (!lenient) {
           throw createException(XCASParsingException.UNKNOWN_FEATURE, featName);
         }
-      } else
-      {
-    	if (cas.isFSRefType(ts.range(feat.getCode()))) {
-    		cas.setFeatureValue(addr,feat.getCode(), Integer.parseInt(featVal));
-    	} else {
-    		cas.setFeatureValueFromString(addr, feat.getCode(),featVal);
-    	}
-    	
+      } else {
+        if (cas.isFSRefType(ts.range(feat.getCode()))) {
+          cas.setFeatureValue(addr, feat.getCode(), Integer.parseInt(featVal));
+        } else {
+          cas.setFeatureValueFromString(addr, feat.getCode(), featVal);
+        }
+
       }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.xml.sax.ContentHandler#characters(char[], int, int)
      */
-    public void characters(char[] chars, int start, int length) throws SAXException
-    {
-      switch (this.state)
-      {
+    public void characters(char[] chars, int start, int length) throws SAXException {
+      switch (this.state) {
         case DOC_TEXT_STATE:
         case CONTENT_STATE:
         case OOTS_CONTENT_STATE:
@@ -707,86 +638,73 @@ public class XCASDeserializer
       }
     }
 
-    boolean isAllWhitespace(StringBuffer b)
-    {
+    boolean isAllWhitespace(StringBuffer b) {
       final int len = b.length();
-      for (int i = 0; i < len; i++)
-      {
-        if (!Character.isWhitespace(b.charAt(i)))
-        {
+      for (int i = 0; i < len; i++) {
+        if (!Character.isWhitespace(b.charAt(i))) {
           return false;
         }
       }
       return true;
     }
 
-    /* (non-Javadoc)
-     * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String,
+     *      java.lang.String)
      */
     public void endElement(String nsURI, String localName, String qualifiedName)
-        throws SAXException
-    {
-      switch (this.state)
-      {
-        case DOC_STATE:
-        {
+                    throws SAXException {
+      switch (this.state) {
+        case DOC_STATE: {
           // Do nothing.
           break;
         }
-        case FS_STATE:
-        {
+        case FS_STATE: {
           this.state = DOC_STATE;
           break;
         }
-        case FEAT_STATE:
-        {
+        case FEAT_STATE: {
           this.state = FS_STATE;
           break;
         }
-        case CONTENT_STATE:
-        {
+        case CONTENT_STATE: {
           // Set the value of the content feature.
-          if (!isAllWhitespace(buffer))
-          {
-            try
-            {
+          if (!isAllWhitespace(buffer)) {
+            try {
               handleFeature(currentAddr, currentContentFeat, buffer.toString(), true);
-            } catch (XCASParsingException x)
-            {
+            } catch (XCASParsingException x) {
               // Not sure why we are calling handleFeature for WF content
             }
           }
           this.state = FS_STATE;
           break;
         }
-        case FEAT_CONTENT_STATE:
-        {
+        case FEAT_CONTENT_STATE: {
           // Create a feature value from an element.
           handleFeature(currentAddr, qualifiedName, buffer.toString(), false);
           this.state = FEAT_STATE;
           break;
         }
-        case ARRAY_ELE_CONTENT_STATE:
-        {
+        case ARRAY_ELE_CONTENT_STATE: {
           // Create an array value.
           addArrayElement(buffer.toString());
           this.state = ARRAY_ELE_STATE;
           break;
         }
-        case ARRAY_ELE_STATE:
-        {
+        case ARRAY_ELE_STATE: {
           this.state = FS_STATE;
           break;
         }
-        case DOC_TEXT_STATE:
-        {
+        case DOC_TEXT_STATE: {
           // Assume old style TCAS with one text Sofa
           SofaFS newSofa = cas.createInitialSofa("text");
-          TCASImpl tcas = (TCASImpl)cas.getInitialView();
+          TCASImpl tcas = (TCASImpl) cas.getInitialView();
           tcas.registerView(newSofa);
           // Set the document text without creating a documentAnnotation
           tcas.setDocTextFromDeserializtion(buffer.toString());
-          
+
           // and assume the new Sofa is at location 1!
           int addr = 1;
           int id = 1;
@@ -795,139 +713,120 @@ public class XCASDeserializer
           // and register the id for this Sofa
           FSInfo fsInfo = new FSInfo(addr, new IntVector());
           fsTree.put(id, fsInfo);
-          
+
           this.state = FS_STATE;
           break;
         }
-        case OOTS_CONTENT_STATE:
-        {
+        case OOTS_CONTENT_STATE: {
           // Set the value of the content feature.
-          if (!isAllWhitespace(buffer))
-          {
+          if (!isAllWhitespace(buffer)) {
             // Set the value of the content feature.
             currentOotsFs.featVals.put(currentContentFeat, buffer.toString());
           }
           this.state = FS_STATE;
           break;
         }
-        case OOTS_FEAT_STATE:
-        {
+        case OOTS_FEAT_STATE: {
           this.state = FS_STATE;
           break;
         }
       }
     }
 
-    private void addArrayElement(String content) throws SAXParseException
-    {
-      if (arrayPos >= cas.getArraySize(currentAddr))
-      {
+    private void addArrayElement(String content) throws SAXParseException {
+      if (arrayPos >= cas.getArraySize(currentAddr)) {
         throw createException(XCASParsingException.EXCESS_ARRAY_ELE);
       }
-      try
-      {
-    	  if (!emptyVal(content)) {
-    	  if (cas.isArrayType(cas.heap.heap[currentAddr])) {
-    		  cas.setArrayValueFromString(currentAddr,arrayPos,content);
-    	  } else {
-    		  System.out.println(" not a known array type ");
-    	  }
-    	  }
-      } catch (NumberFormatException e)
-      {
+      try {
+        if (!emptyVal(content)) {
+          if (cas.isArrayType(cas.heap.heap[currentAddr])) {
+            cas.setArrayValueFromString(currentAddr, arrayPos, content);
+          } else {
+            System.out.println(" not a known array type ");
+          }
+        }
+      } catch (NumberFormatException e) {
         throw createException(XCASParsingException.INTEGER_EXPECTED, content);
       }
-      
+
       ++arrayPos;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.xml.sax.ContentHandler#endDocument()
      */
-    public void endDocument() throws SAXException
-    {
-      //      time = System.currentTimeMillis() - time;
-      //      System.out.println("Done reading xml data in " + new TimeSpan(time));
-      //      System.out.println(
-      //        "Resolving references for id data (" + fsTree.size() + ").");
-      //      time = System.currentTimeMillis();
+    public void endDocument() throws SAXException {
+      // time = System.currentTimeMillis() - time;
+      // System.out.println("Done reading xml data in " + new TimeSpan(time));
+      // System.out.println(
+      // "Resolving references for id data (" + fsTree.size() + ").");
+      // time = System.currentTimeMillis();
       // Resolve references, index.
       Iterator it = fsTree.iterator();
-      while (it.hasNext())
-      {
+      while (it.hasNext()) {
         finalizeFS((FSInfo) it.next());
       }
-      //      time = System.currentTimeMillis() - time;
-      //      System.out.println("Done in " + new TimeSpan(time));
-      //      System.out.println(
-      //        "Resolving references for non-id data (" + idLess.size() + ").");
-      //      time = System.currentTimeMillis();
-      for (int i = 0; i < idLess.size(); i++)
-      {
+      // time = System.currentTimeMillis() - time;
+      // System.out.println("Done in " + new TimeSpan(time));
+      // System.out.println(
+      // "Resolving references for non-id data (" + idLess.size() + ").");
+      // time = System.currentTimeMillis();
+      for (int i = 0; i < idLess.size(); i++) {
         finalizeFS((FSInfo) idLess.get(i));
       }
-      //      time = System.currentTimeMillis() - time;
-      //      System.out.println("Done in " + new TimeSpan(time));
+      // time = System.currentTimeMillis() - time;
+      // System.out.println("Done in " + new TimeSpan(time));
 
-      //also finalize Out-Of-TypeSystem FSs and features (APL)
-      if (outOfTypeSystemData != null)
-      {
+      // also finalize Out-Of-TypeSystem FSs and features (APL)
+      if (outOfTypeSystemData != null) {
         it = outOfTypeSystemData.fsList.iterator();
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
           finalizeOutOfTypeSystemFS((FSData) it.next());
         }
         finalizeOutOfTypeSystemFeatures();
       }
 
-      for (int i = 0; i < tcasInstances.size(); i++)
-      {
+      for (int i = 0; i < tcasInstances.size(); i++) {
         ((TCASImpl) tcasInstances.get(i)).updateDocumentAnnotation();
       }
     }
 
-    private void finalizeFS(FSInfo fsInfo)
-    {
+    private void finalizeFS(FSInfo fsInfo) {
       final int addr = fsInfo.addr;
-      if (fsInfo.indexRep.size() >= 0)
-      {
+      if (fsInfo.indexRep.size() >= 0) {
         // Now add FS to all specified index repositories
-        for (int i=0; i<fsInfo.indexRep.size(); i++) {
+        for (int i = 0; i < fsInfo.indexRep.size(); i++) {
           if (indexMap.size() == 1) {
             ((FSIndexRepositoryImpl) indexRepositories.get(fsInfo.indexRep.get(i))).addFS(addr);
-          }
-          else {
-            ((FSIndexRepositoryImpl) indexRepositories.get(indexMap.get(fsInfo.indexRep.get(i)))).addFS(addr);
+          } else {
+            ((FSIndexRepositoryImpl) indexRepositories.get(indexMap.get(fsInfo.indexRep.get(i))))
+                            .addFS(addr);
           }
         }
       }
       final int type = cas.getHeapValue(addr);
-      if (cas.isArrayType(type))
-      {
+      if (cas.isArrayType(type)) {
         finalizeArray(type, addr, fsInfo);
         return;
       }
       int[] feats = cas.getTypeSystemImpl().getAppropriateFeatures(type);
       int feat;
       FSInfo fsValInfo;
-      for (int i = 0; i < feats.length; i++)
-      {
+      for (int i = 0; i < feats.length; i++) {
         feat = feats[i];
-        if (cas.isFSRefType(ts.range(feats[i])))	
-        {
+        if (cas.isFSRefType(ts.range(feats[i]))) {
           int featVal = cas.getFeatureValue(addr, feat);
           fsValInfo = (FSInfo) fsTree.get(featVal);
-          if (fsValInfo == null)
-          {
+          if (fsValInfo == null) {
             cas.setFeatureValue(addr, feat, CASImpl.NULL);
-            //this feature may be a ref to an out-of-typesystem FS.
-            //add it to the Out-of-typesystem features list (APL)
-            if (featVal != 0 && outOfTypeSystemData != null)
-            {
+            // this feature may be a ref to an out-of-typesystem FS.
+            // add it to the Out-of-typesystem features list (APL)
+            if (featVal != 0 && outOfTypeSystemData != null) {
               Integer addrInteger = new Integer(addr);
               List ootsAttrs = (List) outOfTypeSystemData.extraFeatureValues.get(addrInteger);
-              if (ootsAttrs == null)
-              {
+              if (ootsAttrs == null) {
                 ootsAttrs = new ArrayList();
                 outOfTypeSystemData.extraFeatureValues.put(addrInteger, ootsAttrs);
               }
@@ -936,81 +835,67 @@ public class XCASDeserializer
               String featName = "_ref_" + featFullName.substring(separatorOffset + 1);
               ootsAttrs.add(new String[] { featName, Integer.toString(featVal) });
             }
-          } else
-          {
+          } else {
             cas.setFeatureValue(addr, feat, fsValInfo.addr);
           }
         }
       }
     }
 
-    private void finalizeArray(int type, int addr, FSInfo fsInfo)
-    {
-      if (!cas.isFSArrayType(type))
-      {
+    private void finalizeArray(int type, int addr, FSInfo fsInfo) {
+      if (!cas.isFSArrayType(type)) {
         // Nothing to do.
         return;
       }
       final int size = cas.getArraySize(addr);
       FSInfo fsValInfo;
-      for (int i = 0; i < size; i++)
-      {
+      for (int i = 0; i < size; i++) {
         int arrayVal = cas.getArrayValue(addr, i);
         fsValInfo = (FSInfo) fsTree.get(arrayVal);
-        if (fsValInfo == null)
-        {
+        if (fsValInfo == null) {
           cas.setArrayValue(addr, i, CASImpl.NULL);
-          //this element may be a ref to an out-of-typesystem FS.
-          //add it to the Out-of-typesystem array elements list (APL)
-          if (arrayVal != 0 && outOfTypeSystemData != null)
-          {
+          // this element may be a ref to an out-of-typesystem FS.
+          // add it to the Out-of-typesystem array elements list (APL)
+          if (arrayVal != 0 && outOfTypeSystemData != null) {
             Integer arrayAddrInteger = new Integer(addr);
             List ootsElements = (List) outOfTypeSystemData.arrayElements.get(arrayAddrInteger);
-            if (ootsElements == null)
-            {
+            if (ootsElements == null) {
               ootsElements = new ArrayList();
               outOfTypeSystemData.arrayElements.put(arrayAddrInteger, ootsElements);
             }
-            //the "value" of the refrence is the ID, but we prefix with a letter to indicate
-            //that this ID refers to an OOTS FS
+            // the "value" of the refrence is the ID, but we prefix with a letter to indicate
+            // that this ID refers to an OOTS FS
             ArrayElement ootsElem = new ArrayElement(i, "a" + Integer.toString(arrayVal));
             ootsElements.add(ootsElem);
           }
-        }  
-        else
-        {
+        } else {
           cas.setArrayValue(addr, i, fsValInfo.addr);
         }
       }
     }
 
     /**
-     * Finalizes an Out Of Type System FS by assigning a unique ID
-     * (prepending a letter) and remapping ID references appropriately
-     * (both In-Type-System and Out-Of-TypeSystem refs).
+     * Finalizes an Out Of Type System FS by assigning a unique ID (prepending a letter) and
+     * remapping ID references appropriately (both In-Type-System and Out-Of-TypeSystem refs).
      */
-    private void finalizeOutOfTypeSystemFS(FSData aFS)
-    {
-      //make ID unique by prefixing a letter
+    private void finalizeOutOfTypeSystemFS(FSData aFS) {
+      // make ID unique by prefixing a letter
       aFS.id = 'a' + aFS.id;
-      //remap ref features
+      // remap ref features
       Iterator it = aFS.featVals.entrySet().iterator();
-      while (it.hasNext())
-      {
+      while (it.hasNext()) {
         Map.Entry entry = (Map.Entry) it.next();
         String attrName = (String) entry.getKey();
-        if (attrName.startsWith("_ref_"))
-        {
+        if (attrName.startsWith("_ref_")) {
           int val = Integer.parseInt((String) entry.getValue());
-          if (val >= 0) //negative numbers represent null and are left unchanged
+          if (val >= 0) // negative numbers represent null and are left unchanged
           {
-            //attempt to locate target in type system
+            // attempt to locate target in type system
             FSInfo fsValInfo = (FSInfo) fsTree.get(val);
-            if (fsValInfo != null)
-            {
+            if (fsValInfo != null) {
               entry.setValue(Integer.toString(fsValInfo.addr));
             } else
-            //out of type system - remap by prepending letter
+            // out of type system - remap by prepending letter
             {
               entry.setValue("a" + val);
             }
@@ -1021,32 +906,26 @@ public class XCASDeserializer
     }
 
     /**
-     * Finalizes the Out Of Type System features (extra features on
-     * in-typesystem types).
+     * Finalizes the Out Of Type System features (extra features on in-typesystem types).
      */
-    private void finalizeOutOfTypeSystemFeatures()
-    {
-      //remap ref features
+    private void finalizeOutOfTypeSystemFeatures() {
+      // remap ref features
       Iterator it = outOfTypeSystemData.extraFeatureValues.values().iterator();
-      while (it.hasNext())
-      {
+      while (it.hasNext()) {
         List attrs = (List) it.next();
         Iterator attrIt = attrs.iterator();
-        while (attrIt.hasNext())
-        {
+        while (attrIt.hasNext()) {
           String[] attr = (String[]) attrIt.next();
-          if (attr[0].startsWith("_ref_"))
-          {
+          if (attr[0].startsWith("_ref_")) {
             int val = Integer.parseInt(attr[1]);
-            if (val >= 0) //negative numbers represent null and are left unchanged
+            if (val >= 0) // negative numbers represent null and are left unchanged
             {
-              //attempt to locate target in type system
+              // attempt to locate target in type system
               FSInfo fsValInfo = (FSInfo) fsTree.get(val);
-              if (fsValInfo != null)
-              {
+              if (fsValInfo != null) {
                 attr[1] = Integer.toString(fsValInfo.addr);
               } else
-              //out of type system - remap by prepending letter
+              // out of type system - remap by prepending letter
               {
                 attr[1] = "a" + val;
               }
@@ -1056,21 +935,17 @@ public class XCASDeserializer
       }
     }
 
-    private XCASParsingException createException(int code)
-    {
+    private XCASParsingException createException(int code) {
       XCASParsingException e = new XCASParsingException(code);
       String source = unknownXMLSource;
       String line = unknownXMLSource;
       String col = unknownXMLSource;
-      if (locator != null)
-      {
+      if (locator != null) {
         source = locator.getSystemId();
-        if (source == null)
-        {
+        if (source == null) {
           source = locator.getPublicId();
         }
-        if (source == null)
-        {
+        if (source == null) {
           source = unknownXMLSource;
         }
         line = Integer.toString(locator.getLineNumber());
@@ -1082,89 +957,84 @@ public class XCASDeserializer
       return e;
     }
 
-    private XCASParsingException createException(int code, String arg)
-    {
+    private XCASParsingException createException(int code, String arg) {
       XCASParsingException e = createException(code);
       e.addArgument(arg);
       return e;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
      */
-    public void error(SAXParseException e) throws SAXException
-    {
+    public void error(SAXParseException e) throws SAXException {
       throw e;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
      */
-    public void fatalError(SAXParseException e) throws SAXException
-    {
+    public void fatalError(SAXParseException e) throws SAXException {
       throw e;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.xml.sax.ContentHandler#ignorableWhitespace(char[], int, int)
      */
-    public void ignorableWhitespace(char[] arg0, int arg1, int arg2) throws SAXException
-    {
+    public void ignorableWhitespace(char[] arg0, int arg1, int arg2) throws SAXException {
       // Since we're not validating, we don't need to do anything; this won't
       // be called.
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.xml.sax.ContentHandler#setDocumentLocator(org.xml.sax.Locator)
      */
-    public void setDocumentLocator(Locator loc)
-    {
-      //      System.out.println("Setting document locator.");
+    public void setDocumentLocator(Locator loc) {
+      // System.out.println("Setting document locator.");
       this.locator = loc;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
      */
-    public void warning(SAXParseException e) throws SAXException
-    {
+    public void warning(SAXParseException e) throws SAXException {
       throw e;
     }
 
     /**
-     * Adds a feature sturcture to the out-of-typesystem data, and sets
-     * the parser's state appropriately. (APL)
+     * Adds a feature sturcture to the out-of-typesystem data, and sets the parser's state
+     * appropriately. (APL)
      */
     private void addToOutOfTypeSystemData(String typeName, Attributes attrs)
-        throws XCASParsingException
-    {
-      if (this.outOfTypeSystemData != null)
-      {
+                    throws XCASParsingException {
+      if (this.outOfTypeSystemData != null) {
         FSData fs = new FSData();
         fs.type = typeName;
         fs.indexRep = null; // not indexed
         String attrName, attrValue;
-        for (int i = 0; i < attrs.getLength(); i++)
-        {
+        for (int i = 0; i < attrs.getLength(); i++) {
           attrName = attrs.getQName(i);
           attrValue = attrs.getValue(i);
-          if (attrName.startsWith(reservedAttrPrefix))
-          {
-            if (attrName.equals(XCASSerializer.ID_ATTR_NAME))
-            {
+          if (attrName.startsWith(reservedAttrPrefix)) {
+            if (attrName.equals(XCASSerializer.ID_ATTR_NAME)) {
               fs.id = attrValue;
-            } else if (attrName.equals(XCASSerializer.CONTENT_ATTR_NAME))
-            {
+            } else if (attrName.equals(XCASSerializer.CONTENT_ATTR_NAME)) {
               this.currentContentFeat = attrValue;
-            } else if (attrName.equals(XCASSerializer.INDEXED_ATTR_NAME))
-            {
+            } else if (attrName.equals(XCASSerializer.INDEXED_ATTR_NAME)) {
               fs.indexRep = attrValue;
-            } else
-            {
+            } else {
               fs.featVals.put(attrName, attrValue);
             }
-          } else
-          {
+          } else {
             fs.featVals.put(attrName, attrValue);
           }
         }
@@ -1177,44 +1047,39 @@ public class XCASDeserializer
     }
 
     /**
-     * Parse a multi-valued attribute into a String array,
-     * by splitting on whitespace.
+     * Parse a multi-valued attribute into a String array, by splitting on whitespace.
      * 
-     * @param val attribute value
+     * @param val
+     *          attribute value
      * @return an array with each array value as an element
      */
-    private String[] parseArray(String val)
-    {
+    private String[] parseArray(String val) {
       String[] arrayVals;
       val = val.trim();
-      if (emptyVal(val))
-      {
-        arrayVals = new String[0];  
-      }
-      else
-      {
+      if (emptyVal(val)) {
+        arrayVals = new String[0];
+      } else {
         arrayVals = val.split("\\s+");
       }
       return arrayVals;
     }
 
     /**
-     * Gets the CAS type name corresponding to an XCAS tag name.  The type name is usually equal to the
-     * tag name, but the characters : and - are translated into the sequences _colon_ and _dash_, respectively.
-     *
-     * @param aTagName XCAS tag name 
+     * Gets the CAS type name corresponding to an XCAS tag name. The type name is usually equal to
+     * the tag name, but the characters : and - are translated into the sequences _colon_ and
+     * _dash_, respectively.
+     * 
+     * @param aTagName
+     *          XCAS tag name
      * @return CAS type name corresponding to this tag
      */
-    private String getCasTypeName(String aTagName)
-    {
-      if (aTagName.indexOf(':') == -1 && aTagName.indexOf('-') == -1)
-      {
+    private String getCasTypeName(String aTagName) {
+      if (aTagName.indexOf(':') == -1 && aTagName.indexOf('-') == -1) {
         return aTagName;
-      } else
-      {
+      } else {
         // Note: This is really slow so we avoid if possible. -- RJB
         return StringUtils.replaceAll(StringUtils.replaceAll(aTagName, ":", "_colon_"), "-",
-            "_dash_");
+                        "_dash_");
       }
     }
   }
@@ -1223,139 +1088,135 @@ public class XCASDeserializer
 
   private UimaContext uimaContext;
 
-  //  private HashMap featureMap; -APL
-  /////private int[] featureType;
+  // private HashMap featureMap; -APL
+  // ///private int[] featureType;
 
-  //name of tag to contain document text
+  // name of tag to contain document text
   private String docTypeName = XCASSerializer.DEFAULT_DOC_TYPE_NAME;
 
   /**
-   * Create a new deserializer from a type system.  Note: all CAS arguments
-   * later supplied to <code>getXCASHandler()</code> must have this type system
-   * as their type system.
-   * @param ts The type system of the CASes to be deserialized.  
+   * Create a new deserializer from a type system. Note: all CAS arguments later supplied to
+   * <code>getXCASHandler()</code> must have this type system as their type system.
+   * 
+   * @param ts
+   *          The type system of the CASes to be deserialized.
    */
-  public XCASDeserializer(TypeSystem ts, UimaContext uimaContext)
-  {
+  public XCASDeserializer(TypeSystem ts, UimaContext uimaContext) {
     super();
     this.ts = (TypeSystemImpl) ts;
     this.uimaContext = uimaContext;
-    //    this.featureMap = new HashMap(); - APL
+    // this.featureMap = new HashMap(); - APL
   }
 
-  public XCASDeserializer(TypeSystem ts)
-  {
+  public XCASDeserializer(TypeSystem ts) {
     this(ts, null);
   }
 
   /**
-   * Create a default handler for deserializing an XCAS into the <code>cas</code>
-   * parameter.
+   * Create a default handler for deserializing an XCAS into the <code>cas</code> parameter.
    * <p>
-   * Warning: for efficiency reasons, the deserializer does not do much type
-   * checking for features and their values.  It is expected that the incoming
-   * XCAS conforms to the type system provided.  If it doesn't, the results
-   * are undefined.
+   * Warning: for efficiency reasons, the deserializer does not do much type checking for features
+   * and their values. It is expected that the incoming XCAS conforms to the type system provided.
+   * If it doesn't, the results are undefined.
    * 
-   * @param cas This CAS will be used to hold the data of the serialized XCAS.
+   * @param cas
+   *          This CAS will be used to hold the data of the serialized XCAS.
    * @return The <code>DefaultHandler</code> to pass to the SAX parser.
    */
-  public DefaultHandler getXCASHandler(CAS cas)
-  {
+  public DefaultHandler getXCASHandler(CAS cas) {
     return getXCASHandler(cas, null);
   }
 
   /**
-   * Create a default handler for deserializing an XCAS into the <code>cas</code>
-   * parameter.  This version causes the deserializer to store out-of-typesystem
-   * data for later use. (APL)
+   * Create a default handler for deserializing an XCAS into the <code>cas</code> parameter. This
+   * version causes the deserializer to store out-of-typesystem data for later use. (APL)
    * <p>
-   * Warning: for efficiency reasons, the deserializer does not do much type
-   * checking for features and their values.  It is expected that the incoming
-   * XCAS conforms to the type system provided.  If it doesn't, the results
-   * are undefined.
+   * Warning: for efficiency reasons, the deserializer does not do much type checking for features
+   * and their values. It is expected that the incoming XCAS conforms to the type system provided.
+   * If it doesn't, the results are undefined.
    * 
-   * @param cas This CAS will be used to hold the data of the serialized XCAS.
-   * @param outOfTypeSystemData An object that stores FSs that do not conform
-   *    to the CAS's type system
+   * @param cas
+   *          This CAS will be used to hold the data of the serialized XCAS.
+   * @param outOfTypeSystemData
+   *          An object that stores FSs that do not conform to the CAS's type system
    * @return The <code>DefaultHandler</code> to pass to the SAX parser.
    */
-  public DefaultHandler getXCASHandler(CAS cas, OutOfTypeSystemData outOfTypeSystemData)
-  {
+  public DefaultHandler getXCASHandler(CAS cas, OutOfTypeSystemData outOfTypeSystemData) {
     return new XCASDeserializerHandler((CASImpl) cas, outOfTypeSystemData);
   }
 
   /**
-   * Gets the name of the type representing the document.  This will become
-   * the name of the XML element that will hold the document text.
+   * Gets the name of the type representing the document. This will become the name of the XML
+   * element that will hold the document text.
    * 
    * @return the document type name
    */
-  public String getDocumentTypeName()
-  {
+  public String getDocumentTypeName() {
     return docTypeName;
   }
 
   /**
-   * Gets the name of the type representing the document.  This will become
-   * the name of the XML element that will hold the document text.
-   * If not set, defaults to 
+   * Gets the name of the type representing the document. This will become the name of the XML
+   * element that will hold the document text. If not set, defaults to
    * {@link XCASSerializer#DEFAULT_DOC_TYPE_NAME XCASSerializer.DEFAULT_DOC_TYPE_NAME}.
    * 
-   * @param aDocTypeName the document type name
+   * @param aDocTypeName
+   *          the document type name
    */
-  public void setDocumentTypeName(String aDocTypeName)
-  {
+  public void setDocumentTypeName(String aDocTypeName) {
     docTypeName = aDocTypeName;
   }
 
   /**
-   * Deserializes an XCAS from a stream.  By default this is not lenient, meaning that if the
-   * XCAS references Types that are not in the Type System, an Exception will be thrown.
-   * Use {@link XCASDeserializer#deserialize(InputStream,CAS,boolean)} to turn on lenient
-   * mode and ignore any unknown types.
+   * Deserializes an XCAS from a stream. By default this is not lenient, meaning that if the XCAS
+   * references Types that are not in the Type System, an Exception will be thrown. Use
+   * {@link XCASDeserializer#deserialize(InputStream,CAS,boolean)} to turn on lenient mode and
+   * ignore any unknown types.
    * 
-   * @param aStream input stream from which to read the XCAS XML document
-   * @param aCAS CAS into which to deserialize.  This CAS must be set up with a type system
-   *   that is compatible with that in the XCAS
+   * @param aStream
+   *          input stream from which to read the XCAS XML document
+   * @param aCAS
+   *          CAS into which to deserialize. This CAS must be set up with a type system that is
+   *          compatible with that in the XCAS
    * 
-   * @throws SAXException if an XML Parsing error occurs
-   * @throws IOException if an I/O failure occurs
+   * @throws SAXException
+   *           if an XML Parsing error occurs
+   * @throws IOException
+   *           if an I/O failure occurs
    */
-  public static void deserialize(InputStream aStream, CAS aCAS)
-    throws SAXException, IOException
-  {
+  public static void deserialize(InputStream aStream, CAS aCAS) throws SAXException, IOException {
     XCASDeserializer.deserialize(aStream, aCAS, false);
   }
 
   /**
    * Deserializes an XCAS from a stream.
    * 
-   * @param aStream input stream from which to read the XCAS XML document
-   * @param aCAS CAS into which to deserialize.  This CAS must be set up with a type system
-   *   that is compatible with that in the XCAS.
-   * @param aLenient if true, unknown Types will be ignored.  If false, unknown Types will
-   *   cause an exception.  The default is false.
+   * @param aStream
+   *          input stream from which to read the XCAS XML document
+   * @param aCAS
+   *          CAS into which to deserialize. This CAS must be set up with a type system that is
+   *          compatible with that in the XCAS.
+   * @param aLenient
+   *          if true, unknown Types will be ignored. If false, unknown Types will cause an
+   *          exception. The default is false.
    * 
-   * @throws SAXException if an XML Parsing error occurs
-   * @throws IOException if an I/O failure occurs
+   * @throws SAXException
+   *           if an XML Parsing error occurs
+   * @throws IOException
+   *           if an I/O failure occurs
    */
   public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient)
-    throws SAXException, IOException
-  {
+                  throws SAXException, IOException {
     XMLReader xmlReader = XMLReaderFactory.createXMLReader();
     XCASDeserializer deser = new XCASDeserializer(aCAS.getTypeSystem());
     ContentHandler handler;
-    if (aLenient)
-    {
+    if (aLenient) {
       handler = deser.getXCASHandler(aCAS, new OutOfTypeSystemData());
-    }
-    else
-    {
+    } else {
       handler = deser.getXCASHandler(aCAS);
     }
     xmlReader.setContentHandler(handler);
-    xmlReader.parse(new InputSource(aStream));  
+    xmlReader.parse(new InputSource(aStream));
   }
 
 }

@@ -28,44 +28,45 @@ import org.apache.uima.cas.text.TCAS;
 
 /**
  * @author goetz
- *
+ * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
 public class FloatArrayFSTest extends TestCase {
 
   private TCAS cas;
+
   private TypeSystem ts;
 
-	/**
-	 * Constructor for ArrayFSTest.
-	 * @param arg0
-	 */
-	public FloatArrayFSTest(String arg0) {
-		super(arg0);
-	}
-
-  public void setUp(){
-		try {
-			this.cas = CASInitializer.initCas(new CASTestSetup());
-			this.ts = this.cas.getTypeSystem();
-		} catch (Exception e) {
-			assertTrue(false);
-		}
+  /**
+   * Constructor for ArrayFSTest.
+   * 
+   * @param arg0
+   */
+  public FloatArrayFSTest(String arg0) {
+    super(arg0);
   }
-  
-  public void tearDown(){
-  	this.cas = null;
-  	this.ts = null;
-  }
-  
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(FloatArrayFSTest.class);
-	}
 
-	public void testSet() {
+  public void setUp() {
+    try {
+      this.cas = CASInitializer.initCas(new CASTestSetup());
+      this.ts = this.cas.getTypeSystem();
+    } catch (Exception e) {
+      assertTrue(false);
+    }
+  }
+
+  public void tearDown() {
+    this.cas = null;
+    this.ts = null;
+  }
+
+  public static void main(String[] args) {
+    junit.textui.TestRunner.run(FloatArrayFSTest.class);
+  }
+
+  public void testSet() {
     FloatArrayFS array = cas.createFloatArrayFS(0);
     assertTrue(array != null);
     assertTrue(array.size() == 0);
@@ -124,9 +125,9 @@ public class FloatArrayFSTest extends TestCase {
       assertTrue(e.getError() == CASRuntimeException.ILLEGAL_ARRAY_SIZE);
     }
     assertTrue(exceptionCaught);
-	}
+  }
 
-	public void testToArray() {
+  public void testToArray() {
     // From CAS array to Java array.
     FloatArrayFS array = cas.createFloatArrayFS(3);
     float[] fsArray = array.toArray();
@@ -141,7 +142,7 @@ public class FloatArrayFSTest extends TestCase {
     assertTrue(fsArray[0] == 1f);
     assertTrue(fsArray[1] == 2f);
     assertTrue(fsArray[2] == 3f);
-    
+
     // From Java array to CAS array.
     array = cas.createFloatArrayFS(3);
     assertTrue(array.get(0) == 0f);
@@ -155,6 +156,6 @@ public class FloatArrayFSTest extends TestCase {
     assertTrue(array.get(2) == 3f);
     array.set(0, 0f);
     assertTrue(array.get(0) == 0f);
-	}
-  
+  }
+
 }

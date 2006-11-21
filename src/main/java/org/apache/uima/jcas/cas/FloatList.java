@@ -25,11 +25,15 @@ import org.apache.uima.jcas.impl.JCas;
 public class FloatList extends org.apache.uima.jcas.cas.TOP {
 
   public final static int typeIndexID = JCas.getNextIndex();
-  public final static int type = typeIndexID;
-  public           int getTypeIndexID() {return typeIndexID;}
 
-  // Never called.  
-  protected FloatList() {//Disable default constructor
+  public final static int type = typeIndexID;
+
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  // Never called.
+  protected FloatList() {// Disable default constructor
   }
 
   /** Internal - Constructor used by generator */
@@ -41,30 +45,32 @@ public class FloatList extends org.apache.uima.jcas.cas.TOP {
     super(jcas);
   }
 
-
   public float getNthElement(int i) {
     if (this instanceof EmptyFloatList) {
-      CASRuntimeException casEx = new CASRuntimeException(CASRuntimeException.JCAS_GET_NTH_ON_EMPTY_LIST);
+      CASRuntimeException casEx = new CASRuntimeException(
+                      CASRuntimeException.JCAS_GET_NTH_ON_EMPTY_LIST);
       casEx.addArgument("EmptyFloatList");
       throw casEx;
     }
     if (i < 0) {
-			CASRuntimeException casEx = new CASRuntimeException(
-					CASRuntimeException.JCAS_GET_NTH_NEGATIVE_INDEX);
-			casEx.addArgument(new Integer(i).toString());
-			throw casEx;
-		}
+      CASRuntimeException casEx = new CASRuntimeException(
+                      CASRuntimeException.JCAS_GET_NTH_NEGATIVE_INDEX);
+      casEx.addArgument(new Integer(i).toString());
+      throw casEx;
+    }
     int originali = i;
 
     FloatList cg = this;
     for (;; i--) {
       if (cg instanceof EmptyFloatList) {
-        CASRuntimeException casEx = new CASRuntimeException(CASRuntimeException.JCAS_GET_NTH_PAST_END);
+        CASRuntimeException casEx = new CASRuntimeException(
+                        CASRuntimeException.JCAS_GET_NTH_PAST_END);
         casEx.addArgument(new Integer(originali).toString());
         throw casEx;
       }
-      NonEmptyFloatList c = (NonEmptyFloatList)cg;
-      if (i == 0) return c.getHead();
+      NonEmptyFloatList c = (NonEmptyFloatList) cg;
+      if (i == 0)
+        return c.getHead();
       cg = c.getTail();
     }
   }

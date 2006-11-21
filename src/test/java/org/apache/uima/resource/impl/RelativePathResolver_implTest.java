@@ -31,67 +31,56 @@ import org.apache.uima.test.junit_extension.TestPropertyReader;
 
 /**
  * 
- * @author Adam Lally 
+ * @author Adam Lally
  */
-public class RelativePathResolver_implTest extends TestCase
-{
+public class RelativePathResolver_implTest extends TestCase {
   /**
    * Constructor for RelativePathResolver_implTest.
+   * 
    * @param arg0
    */
-  public RelativePathResolver_implTest(String arg0)
-  {
+  public RelativePathResolver_implTest(String arg0) {
     super(arg0);
   }
 
-  public void testSetDataPath() throws Exception
-  {
-    try
-    {
+  public void testSetDataPath() throws Exception {
+    try {
       RelativePathResolver_impl resolver = new RelativePathResolver_impl();
-      //specify path by file names
-      String path = "/this/is/a/test" + System.getProperty("path.separator") + 
-      "/another/test";
+      // specify path by file names
+      String path = "/this/is/a/test" + System.getProperty("path.separator") + "/another/test";
       resolver.setDataPath(path);
-      Assert.assertEquals(path,resolver.getDataPath()); 
+      Assert.assertEquals(path, resolver.getDataPath());
       URL[] urls = resolver.getBaseUrls();
       Assert.assertEquals(2, urls.length);
       Assert.assertEquals(new File("/this/is/a/test").toURL(), urls[0]);
       Assert.assertEquals(new File("/another/test").toURL(), urls[1]);
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
     }
-		catch (Exception e)
-		{
-			JUnitExtension.handleException(e);
-		}
   }
 
-  public void testResolveRelativePath()
-    throws Exception
-  {
-    try
-    {
+  public void testResolveRelativePath() throws Exception {
+    try {
       RelativePathResolver_impl resolver = new RelativePathResolver_impl();
-      //file should not be found 
+      // file should not be found
       URL absUrl = resolver.resolveRelativePath(new URL("file:test/relativePathTest.dat"));
       Assert.assertNull(absUrl);
-      
-      //specify path
+
+      // specify path
       String path = TestPropertyReader.getJUnitTestBasePath() + "ResourceTest/subdir";
       resolver.setDataPath(path);
-      
-      //now file should be found
+
+      // now file should be found
       absUrl = resolver.resolveRelativePath(new URL("file:test/relativePathTest.dat"));
-      Assert.assertNotNull(absUrl);   
-      
-      //try resolving an absolute path even with no data path
+      Assert.assertNotNull(absUrl);
+
+      // try resolving an absolute path even with no data path
       resolver.setDataPath("");
       URL newUrl = resolver.resolveRelativePath(absUrl);
       assertEquals(absUrl, newUrl);
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
     }
-		catch (Exception e)
-		{
-			JUnitExtension.handleException(e);
-		}
   }
 
 }

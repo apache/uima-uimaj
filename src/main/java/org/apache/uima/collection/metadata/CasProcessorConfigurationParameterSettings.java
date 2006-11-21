@@ -20,36 +20,37 @@
 package org.apache.uima.collection.metadata;
 
 /**
- * Contains configuration parameter settings for a CAS Processor.  
- * These settings override settings in the CAS Processor's descriptor. 
+ * Contains configuration parameter settings for a CAS Processor. These settings override settings
+ * in the CAS Processor's descriptor.
  */
-public interface CasProcessorConfigurationParameterSettings
-{
+public interface CasProcessorConfigurationParameterSettings {
   /**
    * Gets the settings for configuration parameters that are not in any group.
    * 
-   * @return an array of <code>NameValuePair</code> objects, each of which
-   *    contains a parameter name and the value of that parameter
+   * @return an array of <code>NameValuePair</code> objects, each of which contains a parameter
+   *         name and the value of that parameter
    */
   public NameValuePair[] getParameterSettings();
-  
+
   /**
-   * Looks up the value of a parameter. 
+   * Looks up the value of a parameter.
    * 
-   * @param aParamName the name of a parameter 
+   * @param aParamName
+   *          the name of a parameter
    * 
    * @return the value of the parameter with name <code>aParamName</code>
    */
-  public Object getParameterValue(String aParamName);   
+  public Object getParameterValue(String aParamName);
 
   /**
    * Sets the value of a parameter.
    * 
-   * @param aParamName the name of a parameter that is not in any group
-   * @param aValue the value to assign to the parameter.  This must be 
-   *   a String, Boolean, Integer, Float, or an array of one of those types.
+   * @param aParamName
+   *          the name of a parameter that is not in any group
+   * @param aValue
+   *          the value to assign to the parameter. This must be a String, Boolean, Integer, Float,
+   *          or an array of one of those types.
    */
-  public void setParameterValue(String aParamName, Object aValue);   
-
+  public void setParameterValue(String aParamName, Object aValue);
 
 }

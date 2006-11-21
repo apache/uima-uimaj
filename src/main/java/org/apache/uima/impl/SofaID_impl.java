@@ -22,59 +22,68 @@ package org.apache.uima.impl;
 import org.apache.uima.cas.SofaID;
 
 /**
- * Implementation of {@link SofaID}. 
+ * Implementation of {@link SofaID}.
+ * 
  * @deprecated
  */
 public class SofaID_impl implements SofaID {
 
+  String mSofaID;
+
+  String mComponentSofaName;
+
   /**
    * Creates an empty Sofa ID.
    */
-  public SofaID_impl()
-  {    
+  public SofaID_impl() {
   }
-  
+
   /**
-   * Creates a new Sofa ID from the given String.  Note that this constructor should be used
-   * only by applications.  Analysis components should use the {@link UimaContext#mapToSofaID(String)}
-   * method instead.
-   * @param aID the String identifier of the Sofa
+   * Creates a new Sofa ID from the given String. Note that this constructor should be used only by
+   * applications. Analysis components should use the {@link UimaContext#mapToSofaID(String)} method
+   * instead.
+   * 
+   * @param aID
+   *          the String identifier of the Sofa
    */
-  public SofaID_impl(String aID)
-  {
+  public SofaID_impl(String aID) {
     mSofaID = aID;
     mComponentSofaName = aID;
   }
-  
-	/* (non-Javadoc)
-	 * @see org.apache.uima.SofaID#setAbsoluteSofaName(java.lang.String)
-	 */
-	public void setSofaID(String aSofaID) {
-		mSofaID = aSofaID;
-	}
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.SofaID#getAbsoluteSofaName()
-	 */
-	public String getSofaID() {
-		return mSofaID;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.apache.uima.SofaID#setComponentSofaName(java.lang.String)
-	 */
-	public void setComponentSofaName(String aSofaName) {
-		mComponentSofaName=aSofaName;		
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.SofaID#setAbsoluteSofaName(java.lang.String)
+   */
+  public void setSofaID(String aSofaID) {
+    mSofaID = aSofaID;
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.SofaID#getComponentSofaName()
-	 */
-	public String getComponentSofaName() {		
-		return mComponentSofaName;
-	}
-	
-	String mSofaID;
-	String mComponentSofaName;
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.SofaID#getAbsoluteSofaName()
+   */
+  public String getSofaID() {
+    return mSofaID;
+  }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.SofaID#setComponentSofaName(java.lang.String)
+   */
+  public void setComponentSofaName(String aSofaName) {
+    mComponentSofaName = aSofaName;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.SofaID#getComponentSofaName()
+   */
+  public String getComponentSofaName() {
+    return mComponentSofaName;
+  }
 }

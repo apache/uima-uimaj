@@ -26,78 +26,63 @@ import java.util.Set;
 import org.apache.uima.internal.util.rb_trees.RedBlackTree;
 
 /**
- * Holds information that is shared between the XmiCasSerializer
- * and the XmiCasDeserializer.  This allows consistency of XMI IDs
- * across serializations, and also provides the ability to filter
- * out some FSs during serialization (e.g. to send to a service)
- * and then reintegrate those FSs during the next deserialization.
- *
+ * Holds information that is shared between the XmiCasSerializer and the XmiCasDeserializer. This
+ * allows consistency of XMI IDs across serializations, and also provides the ability to filter out
+ * some FSs during serialization (e.g. to send to a service) and then reintegrate those FSs during
+ * the next deserialization.
+ * 
  */
-public class XmiSerializationSharedData
-{
+public class XmiSerializationSharedData {
   /**
-   * A map from FeatureStructure address to XMI ID.  This is
-   * built during deserialization, then used by the next serialization
-   * to ensure consistent IDs.
+   * A map from FeatureStructure address to XMI ID. This is built during deserialization, then used
+   * by the next serialization to ensure consistent IDs.
    */
   private RedBlackTree fsAddrToXmiIdMap = new RedBlackTree();
-  
+
   /**
-   * The maximum XMI ID used in the serialization.  Used to generate
-   * unique IDs if needed.
+   * The maximum XMI ID used in the serialization. Used to generate unique IDs if needed.
    */
   private int maxXmiId = 0;
-  
-  void addIdMapping(int fsAddr, int xmiId)
-  {
+
+  void addIdMapping(int fsAddr, int xmiId) {
     fsAddrToXmiIdMap.put(fsAddr, Integer.toString(xmiId));
     if (xmiId > maxXmiId)
       maxXmiId = xmiId;
   }
-  
-  String getXmiId(int fsAddr)
-  {
-    //see if we already have a mapping
-    String xmiId = (String)fsAddrToXmiIdMap.get(fsAddr);
-    if (xmiId != null)
-    {
+
+  String getXmiId(int fsAddr) {
+    // see if we already have a mapping
+    String xmiId = (String) fsAddrToXmiIdMap.get(fsAddr);
+    if (xmiId != null) {
       return xmiId;
-    }
-    else //no mapping for this FS.  Generate a unique ID
+    } else // no mapping for this FS. Generate a unique ID
     {
-      //to be sure we get a unique Id, increment maxXmiId and use that
+      // to be sure we get a unique Id, increment maxXmiId and use that
       String idStr = Integer.toString(++maxXmiId);
       fsAddrToXmiIdMap.put(fsAddr, idStr);
       return idStr;
     }
   }
-  
 
-  public void clearIdMap()
-  {
+  public void clearIdMap() {
     fsAddrToXmiIdMap.clear();
   }
-  
-  void checkForDups()
-  {
+
+  void checkForDups() {
     Set ids = new HashSet();
     Iterator iter = fsAddrToXmiIdMap.iterator();
-    while (iter.hasNext())
-    {
-      String xmiId = (String)iter.next();
-      if (!ids.add(xmiId))
-      {
+    while (iter.hasNext()) {
+      String xmiId = (String) iter.next();
+      if (!ids.add(xmiId)) {
         throw new RuntimeException("Duplicate ID " + xmiId + "!");
       }
     }
   }
-  
-  public String toString()
-  {
+
+  public String toString() {
     StringBuffer buf = new StringBuffer();
     int[] keys = fsAddrToXmiIdMap.keySet();
-    for (int i = 0; i < keys.length; i++)
-    {
+    for (int i = 0; i < keys.length; i++) {
       buf.append(keys[i]).append(": ").append(fsAddrToXmiIdMap.get(keys[i])).append('\n');
     }
     return buf.toString();

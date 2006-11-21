@@ -28,19 +28,15 @@ import org.apache.uima.cas.text.TCAS;
 /**
  * Annotator class used for testing errors
  * 
- * @author Adam Lally 
+ * @author Adam Lally
  */
-public class ErrorAnnotator extends Annotator_ImplBase implements TextAnnotator 
-{
+public class ErrorAnnotator extends Annotator_ImplBase implements TextAnnotator {
   /**
    * @see org.apache.uima.analysis_engine.annotator.TextAnnotator#process(TCAS,ResultSpecification)
    */
-  public void process(TCAS aTCAS, ResultSpecification aResultSpec)
-    throws AnnotatorProcessException
-  {
-    if ("ERROR".equals(aTCAS.getDocumentText()))
-    {
-      throw new RuntimeException("Test Error");  
+  public void process(TCAS aTCAS, ResultSpecification aResultSpec) throws AnnotatorProcessException {
+    if ("ERROR".equals(aTCAS.getDocumentText())) {
+      throw new RuntimeException("Test Error");
     }
-  }  
+  }
 }

@@ -33,38 +33,39 @@ import org.apache.uima.cas.text.TCAS;
 
 /**
  * @author goetz
- *
+ * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
 public class ArrayFSTest extends TestCase {
 
   private TCAS cas;
+
   private TypeSystem ts;
 
   /**
    * Constructor for ArrayFSTest.
+   * 
    * @param arg0
    */
   public ArrayFSTest(String arg0) {
     super(arg0);
   }
 
-	public void setUp(){
-		try {
-			this.cas = CASInitializer.initCas(new CASTestSetup());
-			this.ts = this.cas.getTypeSystem();
-		} catch (Exception e) {
-			assertTrue(false);
-		}
-	}
-  
-	public void tearDown() {
-		this.cas = null;
-		this.ts = null;
-	}
+  public void setUp() {
+    try {
+      this.cas = CASInitializer.initCas(new CASTestSetup());
+      this.ts = this.cas.getTypeSystem();
+    } catch (Exception e) {
+      assertTrue(false);
+    }
+  }
+
+  public void tearDown() {
+    this.cas = null;
+    this.ts = null;
+  }
 
   public static void main(String[] args) {
     junit.textui.TestRunner.run(ArrayFSTest.class);

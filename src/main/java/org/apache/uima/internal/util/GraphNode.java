@@ -28,111 +28,110 @@ import java.util.ArrayList;
  */
 public class GraphNode {
 
-    protected Object element;
+  protected Object element;
 
-    protected ArrayList successors = new ArrayList();
+  protected ArrayList successors = new ArrayList();
 
-    protected ArrayList predecessors = new ArrayList();
+  protected ArrayList predecessors = new ArrayList();
 
-    public GraphNode(Object element) {
-        this.element = element;
+  public GraphNode(Object element) {
+    this.element = element;
+  }
+
+  /**
+   * Get the element contained in the node.
+   * 
+   * @return The object contained in the node.
+   */
+  public Object getElement() {
+    return this.element;
+  }
+
+  /**
+   * Set the element in the node.
+   * 
+   * @param element
+   *          The element.
+   */
+  public void setElement(Object element) {
+    this.element = element;
+  }
+
+  /**
+   * Get the number of successor node.
+   * 
+   * @return The number of successor nodes.
+   */
+  public int getNbrSucc() {
+    return this.successors.size();
+  }
+
+  /**
+   * Get a specific successor node. As usual, the count is 0-based.
+   * 
+   * @param i
+   *          The number of the successor to be retrieved.
+   * @return The successor node.
+   */
+  public GraphNode getSuccessor(int i) {
+    if (i >= 0 && i < this.successors.size()) {
+      return (GraphNode) this.successors.get(i);
     }
+    throw new UtilError(UtilError.ILLEGAL_SUCCESSOR_INDEX);
+  }
 
-    /**
-     * Get the element contained in the node.
-     * 
-     * @return The object contained in the node.
-     */
-    public Object getElement() {
-        return this.element;
+  /**
+   * Add a new successor node.
+   * 
+   * @param dtr
+   *          The node to be added.
+   */
+  public void addSuccessor(GraphNode succ) {
+    this.successors.add(succ);
+  }
+
+  /**
+   * Get the number of predecessor node.
+   * 
+   * @return The number of predecessor nodes.
+   */
+  public int getNbrPred() {
+    return this.predecessors.size();
+  }
+
+  /**
+   * Get a specific predecessor node. As usual, the count is 0-based.
+   * 
+   * @param i
+   *          The number of the predecessor to be retrieved.
+   * @return The predecessor node.
+   */
+  public GraphNode getPredecessor(int i) {
+    if (i >= 0 && i < this.predecessors.size()) {
+      return (GraphNode) this.predecessors.get(i);
     }
+    throw new UtilError(UtilError.ILLEGAL_PREDECESSOR_INDEX);
+  }
 
-    /**
-     * Set the element in the node.
-     * 
-     * @param element
-     *            The element.
-     */
-    public void setElement(Object element) {
-        this.element = element;
-    }
+  /**
+   * Add a new predecessor node.
+   * 
+   * @param pred
+   *          The node to be added.
+   */
+  public void addPredecessor(GraphNode pred) {
+    this.predecessors.add(pred);
+  }
 
-    /**
-     * Get the number of successor node.
-     * 
-     * @return The number of successor nodes.
-     */
-    public int getNbrSucc() {
-        return this.successors.size();
-    }
-
-    /**
-     * Get a specific successor node. As usual, the count is 0-based.
-     * 
-     * @param i
-     *            The number of the successor to be retrieved.
-     * @return The successor node.
-     */
-    public GraphNode getSuccessor(int i) {
-        if (i >= 0 && i < this.successors.size()) {
-            return (GraphNode) this.successors.get(i);
-        }
-        throw new UtilError(UtilError.ILLEGAL_SUCCESSOR_INDEX);
-    }
-
-    /**
-     * Add a new successor node.
-     * 
-     * @param dtr
-     *            The node to be added.
-     */
-    public void addSuccessor(GraphNode succ) {
-        this.successors.add(succ);
-    }
-
-    /**
-     * Get the number of predecessor node.
-     * 
-     * @return The number of predecessor nodes.
-     */
-    public int getNbrPred() {
-        return this.predecessors.size();
-    }
-
-    /**
-     * Get a specific predecessor node. As usual, the count is 0-based.
-     * 
-     * @param i
-     *            The number of the predecessor to be retrieved.
-     * @return The predecessor node.
-     */
-    public GraphNode getPredecessor(int i) {
-        if (i >= 0 && i < this.predecessors.size()) {
-            return (GraphNode) this.predecessors.get(i);
-        }
-        throw new UtilError(UtilError.ILLEGAL_PREDECESSOR_INDEX);
-    }
-
-    /**
-     * Add a new predecessor node.
-     * 
-     * @param pred
-     *            The node to be added.
-     */
-    public void addPredecessor(GraphNode pred) {
-        this.predecessors.add(pred);
-    }
-
-    /**
-     * Connect this node to a new node.
-     * 
-     * @param node
-     *            The node to be connected to.
-     */
-    public void connect(GraphNode node) {
-        this.addSuccessor(node);
-        node.addPredecessor(this);
-    }
-
+  /**
+   * Connect this node to a new node.
+   * 
+   * @param node
+   *          The node to be connected to.
+   */
+  public void connect(GraphNode node) {
+    this.addSuccessor(node);
+    node.addPredecessor(this);
+  }
 
 }

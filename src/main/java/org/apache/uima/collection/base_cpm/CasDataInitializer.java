@@ -27,39 +27,38 @@ import org.apache.uima.resource.ConfigurableResource;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 
 /**
- * A component that takes an Object (for text analysis applications, this
- * will often be a String) and creates a {@link CasData}.
+ * A component that takes an Object (for text analysis applications, this will often be a String)
+ * and creates a {@link CasData}.
  * <p>
- * An example of a <code>CasDataInitializer</code> would be a component that
- * takes an HTML document and populates a CasData with the plain (detagged) text
- * as well as document structure annotations that were inferred from the
- * locations of certain HTML tags (paragraphs and headings, for example).
- *  
- * @deprecated As of v2.0, CAS Initializers are deprecated.  A component that performs
- *   an operation like HTML detagging should instead be implemented as a "multi-Sofa"
- *   annotator.  See {@link org.apache.uima.examples.XmlDetagger} for an example.
+ * An example of a <code>CasDataInitializer</code> would be a component that takes an HTML
+ * document and populates a CasData with the plain (detagged) text as well as document structure
+ * annotations that were inferred from the locations of certain HTML tags (paragraphs and headings,
+ * for example).
+ * 
+ * @deprecated As of v2.0, CAS Initializers are deprecated. A component that performs an operation
+ *             like HTML detagging should instead be implemented as a "multi-Sofa" annotator. See
+ *             {@link org.apache.uima.examples.XmlDetagger} for an example.
  */
-public interface CasDataInitializer extends ConfigurableResource
-{
+public interface CasDataInitializer extends ConfigurableResource {
   /**
-   * Reads content and metadata from an Object and creates a 
-   * <code>CasData</code>.  
+   * Reads content and metadata from an Object and creates a <code>CasData</code>.
    * 
-   * @param aObj the Object to process
+   * @param aObj
+   *          the Object to process
    * 
    * @return CasData corresponding to the Object
    * 
-   * @throws CollectionException if an error occurs during initialization
-   *    of the CAS
-   * @throws IOException if an I/O failure occurs
+   * @throws CollectionException
+   *           if an error occurs during initialization of the CAS
+   * @throws IOException
+   *           if an I/O failure occurs
    */
-	public CasData initializeCas(Object aObj)
-	  throws CollectionException, IOException;
+  public CasData initializeCas(Object aObj) throws CollectionException, IOException;
 
-	/**
-	 * Gets the metadata that describes this <code>CasDataInitializer</code>. 
-	 * 
-	 * @return an object containing all metadata for this CasDataInitializer
-	 */
-	public ProcessingResourceMetaData getCasInitializerMetaData();
+  /**
+   * Gets the metadata that describes this <code>CasDataInitializer</code>.
+   * 
+   * @return an object containing all metadata for this CasDataInitializer
+   */
+  public ProcessingResourceMetaData getCasInitializerMetaData();
 }

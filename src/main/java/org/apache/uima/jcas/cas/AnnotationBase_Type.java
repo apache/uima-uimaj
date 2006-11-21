@@ -31,49 +31,58 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.impl.JCas;
 
 public class AnnotationBase_Type extends org.apache.uima.jcas.cas.TOP_Type {
-  protected FSGenerator getFSGenerator() {return fsGenerator;}
-  private final FSGenerator fsGenerator = 
-    new FSGenerator() {
-      public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (AnnotationBase_Type.this.useExistingInstance) {
-  			   // Return eq fs instance if already created
-  		     FeatureStructure fs = AnnotationBase_Type.this.jcas.getJfsFromCaddr(addr);
-  		     if (null == fs) {
-  		       fs = new AnnotationBase(addr, AnnotationBase_Type.this);
-  		       AnnotationBase_Type.this.jcas.putJfsFromCaddr(addr, fs);
-  			     return fs;
-  		     }
-  		     return fs;
-        } else return new AnnotationBase(addr, AnnotationBase_Type.this);
-  	  }
-    };
+  protected FSGenerator getFSGenerator() {
+    return fsGenerator;
+  }
+
+  private final FSGenerator fsGenerator = new FSGenerator() {
+    public FeatureStructure createFS(int addr, CASImpl cas) {
+      if (AnnotationBase_Type.this.useExistingInstance) {
+        // Return eq fs instance if already created
+        FeatureStructure fs = AnnotationBase_Type.this.jcas.getJfsFromCaddr(addr);
+        if (null == fs) {
+          fs = new AnnotationBase(addr, AnnotationBase_Type.this);
+          AnnotationBase_Type.this.jcas.putJfsFromCaddr(addr, fs);
+          return fs;
+        }
+        return fs;
+      } else
+        return new AnnotationBase(addr, AnnotationBase_Type.this);
+    }
+  };
 
   public final static int typeIndexID = AnnotationBase.typeIndexID;
 
   public final static boolean featOkTst = JCas.getFeatOkTst("uima.cas.AnnotationBase");
 
   final Feature casFeat_sofa;
-  final int     casFeatCode_sofa;
+
+  final int casFeatCode_sofa;
 
   public SofaFS getSofa(int addr) {
     if (featOkTst && casFeat_sofa == null)
-          JCas.throwFeatMissing("sofa", "uima.cas.AnnotationBase");
-    return (SofaFS)ll_cas.ll_getFSForRef(addr);}
-
-  public CAS getView(int addr) {return casImpl.ll_getSofaCasView(addr); }
-
-  //* initialize variables to correspond with Cas Type and Features
-  public AnnotationBase_Type(JCas jcas, Type casType) {
-    super(jcas, casType);
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
-
-    casFeat_sofa             = jcas.getRequiredFeatureDE(casType, "sofa", "uima.cas.Sofa", featOkTst);
-    casFeatCode_sofa         = (null == casFeat_sofa) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_sofa).getCode();
+      JCas.throwFeatMissing("sofa", "uima.cas.AnnotationBase");
+    return (SofaFS) ll_cas.ll_getFSForRef(addr);
   }
 
-  protected AnnotationBase_Type() { //block default new operator
-	casFeat_sofa            = null;
-	casFeatCode_sofa             = JCas.INVALID_FEATURE_CODE;
-    throw new RuntimeException("Internal Error-this constructor should never be called.");  }
+  public CAS getView(int addr) {
+    return casImpl.ll_getSofaCasView(addr);
+  }
+
+  // * initialize variables to correspond with Cas Type and Features
+  public AnnotationBase_Type(JCas jcas, Type casType) {
+    super(jcas, casType);
+    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
+
+    casFeat_sofa = jcas.getRequiredFeatureDE(casType, "sofa", "uima.cas.Sofa", featOkTst);
+    casFeatCode_sofa = (null == casFeat_sofa) ? JCas.INVALID_FEATURE_CODE
+                    : ((FeatureImpl) casFeat_sofa).getCode();
+  }
+
+  protected AnnotationBase_Type() { // block default new operator
+    casFeat_sofa = null;
+    casFeatCode_sofa = JCas.INVALID_FEATURE_CODE;
+    throw new RuntimeException("Internal Error-this constructor should never be called.");
+  }
 
 }

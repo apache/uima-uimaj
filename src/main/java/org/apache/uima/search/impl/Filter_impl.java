@@ -37,111 +37,108 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
  * 
  * 
  */
-public class Filter_impl extends MetaDataObject_impl implements Filter
-{
+public class Filter_impl extends MetaDataObject_impl implements Filter {
   private static final long serialVersionUID = -5839668733093703591L;
 
   private String mExpression;
 
   private String mSyntax;
 
-	public Filter_impl()
-	{
-	}
+  public Filter_impl() {
+  }
 
-	/**
-	 * @param string
-	 * @param string2
-	 */
-	public Filter_impl(String aSyntax, String aExpression)
-	{
-		setSyntax(aSyntax);
-		setExpression(aExpression);
-	}
+  /**
+   * @param string
+   * @param string2
+   */
+  public Filter_impl(String aSyntax, String aExpression) {
+    setSyntax(aSyntax);
+    setExpression(aExpression);
+  }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.Filter#getSyntax()
    */
-  public String getSyntax()
-  {
+  public String getSyntax() {
     return mSyntax;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.Filter#setSyntax(java.lang.String)
    */
-  public void setSyntax(String aSyntax)
-  {
-  	mSyntax = aSyntax;
+  public void setSyntax(String aSyntax) {
+    mSyntax = aSyntax;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.Filter#getExpression()
    */
-  public String getExpression()
-  {
+  public String getExpression() {
     return mExpression;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.search.Filter#setExpression(java.lang.String)
    */
-  public void setExpression(String aExpression)
-  {
-		mExpression = aExpression;
+  public void setExpression(String aExpression) {
+    mExpression = aExpression;
   }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element, org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
-	 */
-	public void buildFromXMLElement(
-		Element aElement,
-		XMLParser aParser,
-		ParsingOptions aOptions)
-		throws InvalidXMLException
-	{
-		super.buildFromXMLElement(aElement, aParser, aOptions);
-		setSyntax(aElement.getAttribute("syntax"));
-		setExpression(XMLUtils.getText(aElement));
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.util.XMLizable#buildFromXMLElement(org.w3c.dom.Element,
+   *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
+   */
+  public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+                  throws InvalidXMLException {
+    super.buildFromXMLElement(aElement, aParser, aOptions);
+    setSyntax(aElement.getAttribute("syntax"));
+    setExpression(XMLUtils.getText(aElement));
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.util.XMLizable#toXML(org.xml.sax.ContentHandler, boolean)
-	 */
-	public void toXML(
-		ContentHandler aContentHandler,
-		boolean aWriteDefaultNamespaceAttribute)
-		throws SAXException
-	{
-		//write the element's start tag
-		AttributesImpl attrs = new AttributesImpl();
-		attrs.addAttribute("","syntax","syntax",null,getSyntax());
-    
-		//start element
-		aContentHandler.startElement("", "filter", "filter", attrs);
-        
-		//write content
-	  String expr = getExpression();
-		aContentHandler.characters(expr.toCharArray(), 0, expr.length());
-   
-		//end element
-		aContentHandler.endElement("", "filter", "filter");
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.util.XMLizable#toXML(org.xml.sax.ContentHandler, boolean)
+   */
+  public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
+                  throws SAXException {
+    // write the element's start tag
+    AttributesImpl attrs = new AttributesImpl();
+    attrs.addAttribute("", "syntax", "syntax", null, getSyntax());
 
+    // start element
+    aContentHandler.startElement("", "filter", "filter", attrs);
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
-	 */
-	protected XmlizationInfo getXmlizationInfo()
-	{
-		return XMLIZATION_INFO;
-	}
+    // write content
+    String expr = getExpression();
+    aContentHandler.characters(expr.toCharArray(), 0, expr.length());
 
-	static final private XmlizationInfo XMLIZATION_INFO =
-		new XmlizationInfo("filter",
-			new PropertyXmlInfo[]{
-				//custom XMLization -- syntax is an attribute, expression is content
-			});		
+    // end element
+    aContentHandler.endElement("", "filter", "filter");
+  }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
+   */
+  protected XmlizationInfo getXmlizationInfo() {
+    return XMLIZATION_INFO;
+  }
+
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("filter",
+                  new PropertyXmlInfo[] {
+                  // custom XMLization -- syntax is an attribute, expression is content
+                  });
 
 }

@@ -29,32 +29,33 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 
 /**
- * Convenience base class for Resource Service implementations.  This class is
- * independent of the deployment technology used to deploy the service.
+ * Convenience base class for Resource Service implementations. This class is independent of the
+ * deployment technology used to deploy the service.
  * 
  * 
  */
-public class ResourceService_impl 
-{
-  
-     
+public class ResourceService_impl {
 
   /**
-   * Initializes this ResourceService_impl.  This method must be called before
-   * any other methods on this class may be called.
-   * 
-   * @param aResourceSpecifier specifier that describes how to create the
-   *    resources that provide the functionality for this service.
-   * @param aResourceInitParams additional parameters to be passed on to the
-   *    Resource Factory.
+   * The Resource that delivers the functionality for this service.
    */
-  public void initialize(ResourceSpecifier aResourceSpecifier,
-    Map aResourceInitParams)
-    throws ResourceInitializationException
-  {
+  private Resource mResource;
+
+  /**
+   * Initializes this ResourceService_impl. This method must be called before any other methods on
+   * this class may be called.
+   * 
+   * @param aResourceSpecifier
+   *          specifier that describes how to create the resources that provide the functionality
+   *          for this service.
+   * @param aResourceInitParams
+   *          additional parameters to be passed on to the Resource Factory.
+   */
+  public void initialize(ResourceSpecifier aResourceSpecifier, Map aResourceInitParams)
+                  throws ResourceInitializationException {
     // create Resource
-    mResource = UIMAFramework.produceResource(
-      getResourceClass(), aResourceSpecifier, aResourceInitParams);  
+    mResource = UIMAFramework.produceResource(getResourceClass(), aResourceSpecifier,
+                    aResourceInitParams);
   }
 
   /**
@@ -62,40 +63,28 @@ public class ResourceService_impl
    * 
    * @param metadata
    */
-  public ResourceMetaData getMetaData()
-    throws ResourceServiceException
-  {
+  public ResourceMetaData getMetaData() throws ResourceServiceException {
     return getResource().getMetaData();
   }
-    
-    
+
   /**
-   * Gets the Class of resource that provides the functionality for
-   * this service.  This information is used in the 
-   * {@link #initialize(ResourceSpecifier,Map)} method in order to create the
-   * Resource object.  Subclasses may override this method to specify which 
-   * resource class is to be created.
+   * Gets the Class of resource that provides the functionality for this service. This information
+   * is used in the {@link #initialize(ResourceSpecifier,Map)} method in order to create the
+   * Resource object. Subclasses may override this method to specify which resource class is to be
+   * created.
    * 
    * @return the Resource Class for this service
-   */  
-   protected Class getResourceClass()
-   {
-     return Resource.class;
-   }
-  
+   */
+  protected Class getResourceClass() {
+    return Resource.class;
+  }
+
   /**
    * Gets the Resource that delivers the functionality for this resource.
    * 
    * @return the Resource Pool
-   */  
-  protected Resource getResource()
-  {
+   */
+  protected Resource getResource() {
     return mResource;
   }
-    
-  
-  /**
-   * The Resource that delivers the functionality for this service.
-   */  
-  private Resource mResource;
 }

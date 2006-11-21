@@ -30,35 +30,34 @@ import org.apache.uima.cas.FeatureStructure;
  */
 class ConjunctiveConstraint implements FSMatchConstraint {
 
-    private FSMatchConstraint c1;
+  private FSMatchConstraint c1;
 
-    private FSMatchConstraint c2;
+  private FSMatchConstraint c2;
 
-    private ConjunctiveConstraint() {
-        super();
-    }
+  private ConjunctiveConstraint() {
+    super();
+  }
 
-    /**
-     * Create a conjunctive constraint from two FSMatchConstraints.
-     * 
-     * @param c1
-     *            First conjunct.
-     * @param c2
-     *            Second conjunct.
-     */
-    ConjunctiveConstraint(FSMatchConstraint c1, FSMatchConstraint c2) {
-        this();
-        this.c1 = c1;
-        this.c2 = c2;
-    }
+  /**
+   * Create a conjunctive constraint from two FSMatchConstraints.
+   * 
+   * @param c1
+   *          First conjunct.
+   * @param c2
+   *          Second conjunct.
+   */
+  ConjunctiveConstraint(FSMatchConstraint c1, FSMatchConstraint c2) {
+    this();
+    this.c1 = c1;
+    this.c2 = c2;
+  }
 
-    public boolean match(FeatureStructure fs) {
-        return (this.c1.match(fs) && this.c2.match(fs));
-    }
+  public boolean match(FeatureStructure fs) {
+    return (this.c1.match(fs) && this.c2.match(fs));
+  }
 
-    public String toString() {
-        return "(" + this.c1.toString() + " & " + this.c2.toString() + ")";
-    }
-
+  public String toString() {
+    return "(" + this.c1.toString() + " & " + this.c2.toString() + ")";
+  }
 
 }

@@ -24,42 +24,43 @@ import java.io.Serializable;
 import org.apache.uima.util.XMLizable;
 
 /**
- * A simple name, value pair that is specified as part of a {@link Style} to further
- * define its behavior.
+ * A simple name, value pair that is specified as part of a {@link Style} to further define its
+ * behavior.
  * <p>
- * This object implements the {@link XMLizable} interface and can be parsed
- * from an XML representation.
+ * This object implements the {@link XMLizable} interface and can be parsed from an XML
+ * representation.
  * 
  * 
  */
-public interface Attribute extends XMLizable, Serializable
-{
-	
-	/**
-	 * Gets the name of this attribute.
-	 * 
+public interface Attribute extends XMLizable, Serializable {
+
+  /**
+   * Gets the name of this attribute.
+   * 
    * @return the name of this attribute
-	 */
+   */
   public String getName();
 
-	/**
-	 * Sets the name of this attribute.
-	 * 
-	 * @param aName the name of this attribute
-	 */
-	public void setName(String aName);
-  
-	/**
-	 * Gets the value of this attribute.
-	 * 
-	 * @return the value of this attribute
-	 */
-	public String getValue();
+  /**
+   * Sets the name of this attribute.
+   * 
+   * @param aName
+   *          the name of this attribute
+   */
+  public void setName(String aName);
 
-	/**
-	 * Sets the value of this attribute.
-	 * 
-	 * @param aValue the value of this attribute
-	 */
-	public void setValue(String aValue);
+  /**
+   * Gets the value of this attribute.
+   * 
+   * @return the value of this attribute
+   */
+  public String getValue();
+
+  /**
+   * Sets the value of this attribute.
+   * 
+   * @param aValue
+   *          the value of this attribute
+   */
+  public void setValue(String aValue);
 }

@@ -25,8 +25,7 @@ import org.apache.uima.cas_data.ReferenceArrayFS;
  * 
  * 
  */
-public class ReferenceArrayFSImpl extends FeatureStructureImpl implements ReferenceArrayFS
-{
+public class ReferenceArrayFSImpl extends FeatureStructureImpl implements ReferenceArrayFS {
   /**
    * 
    */
@@ -34,48 +33,44 @@ public class ReferenceArrayFSImpl extends FeatureStructureImpl implements Refere
 
   private String[] mIdRefs;
 
-  public ReferenceArrayFSImpl(String[] aIdRefs)
-  {
+  public ReferenceArrayFSImpl(String[] aIdRefs) {
     mIdRefs = aIdRefs;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas_data.ReferenceArrayFS#size()
    */
-  public int size()
-  {
+  public int size() {
     return mIdRefs.length;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas_data.ReferenceArrayFS#getIdRefArray()
    */
-  public String[] getIdRefArray()
-  {
+  public String[] getIdRefArray() {
     return mIdRefs;
   }
 
-  public String toString()
-  {
+  public String toString() {
     StringBuffer buf = new StringBuffer();
     buf.append('\n').append(getType()).append('\n');
-    if (getId() != null)
-    {
+    if (getId() != null) {
       buf.append("ID = ").append(getId()).append('\n');
     }
     buf.append("[");
     int size = size();
-    for (int i = 0; i < size; i++)
-    {
+    for (int i = 0; i < size; i++) {
       buf.append(mIdRefs[i]);
-      if (i < size - 1)
-      {
+      if (i < size - 1) {
         buf.append(',');
       }
     }
     buf.append("]\n");
     return buf.toString();
   }
-
 
 }

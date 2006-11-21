@@ -20,14 +20,14 @@
 package org.apache.uima.collection.metadata;
 
 /**
- * An object that holds configuration that is part of the CPE descriptor. Provides the
- * means of defining and obtaining configuration for CasProcessors collocated with the CPE.
+ * An object that holds configuration that is part of the CPE descriptor. Provides the means of
+ * defining and obtaining configuration for CasProcessors collocated with the CPE.
  * <p>
- * Its basic functionality is inherited from {@link org.apache.uima.collection.metadata.CpeCasProcessor}
- *  
+ * Its basic functionality is inherited from
+ * {@link org.apache.uima.collection.metadata.CpeCasProcessor}
+ * 
  * 
  */
-public interface CpeIntegratedCasProcessor extends CpeCasProcessor
-{
+public interface CpeIntegratedCasProcessor extends CpeCasProcessor {
 
 }

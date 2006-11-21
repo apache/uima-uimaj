@@ -19,28 +19,28 @@
 
 package org.apache.uima.internal.util.rb_trees;
 
-/** Represents a key-value pair of a red-black tree.
-*
-*  
-*  @version $Id: RBTKeyValuePair.java,v 1.1 2001/12/12 18:01:07 goetz Exp $
-*/
+/**
+ * Represents a key-value pair of a red-black tree.
+ * 
+ * 
+ * @version $Id: RBTKeyValuePair.java,v 1.1 2001/12/12 18:01:07 goetz Exp $
+ */
 public class RBTKeyValuePair {
-    private int key;
+  private int key;
 
-    private Object value;
+  private Object value;
 
-    RBTKeyValuePair(int key, Object value) {
-        this.key = key;
-        this.value = value;
-    }
+  RBTKeyValuePair(int key, Object value) {
+    this.key = key;
+    this.value = value;
+  }
 
-    public int getKey() {
-        return this.key;
-    }
+  public int getKey() {
+    return this.key;
+  }
 
-    public Object getValue() {
-        return this.value;
-    }
-
+  public Object getValue() {
+    return this.value;
+  }
 
 }

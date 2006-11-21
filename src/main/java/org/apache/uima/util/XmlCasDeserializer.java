@@ -37,79 +37,80 @@ import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
 
 /**
- * Deserializes a CAS from a standoff-XML format.  This class can read the
- * XMI format introduced in UIMA v1.4 as well as the XCAS format from previous
- * versions.
+ * Deserializes a CAS from a standoff-XML format. This class can read the XMI format introduced in
+ * UIMA v1.4 as well as the XCAS format from previous versions.
  */
-public abstract class XmlCasDeserializer
-{
+public abstract class XmlCasDeserializer {
   /**
    * Deserializes a CAS from a standoff-XML format.
    * 
-   * @param aStream input stream from which to read the XML document
-   * @param aCAS CAS into which to deserialize.  This CAS must be set up with a type system
-   *   that is compatible with that in the XML.
+   * @param aStream
+   *          input stream from which to read the XML document
+   * @param aCAS
+   *          CAS into which to deserialize. This CAS must be set up with a type system that is
+   *          compatible with that in the XML.
    * 
-   * @throws SAXException if an XML Parsing error occurs
-   * @throws IOException if an I/O failure occurs
+   * @throws SAXException
+   *           if an XML Parsing error occurs
+   * @throws IOException
+   *           if an I/O failure occurs
    */
-  public static void deserialize(InputStream aStream, CAS aCAS)
-    throws SAXException, IOException
-  {
+  public static void deserialize(InputStream aStream, CAS aCAS) throws SAXException, IOException {
     deserialize(aStream, aCAS, false);
   }
 
   /**
-   * Deserializes a CAS from XMI.  
+   * Deserializes a CAS from XMI.
    * 
-   * @param aStream input stream from which to read the XML document
-   * @param aCAS CAS into which to deserialize.  This CAS must be set up with a type system
-   *   that is compatible with that in the XML
-   * @param aLenient if true, unknown Types will be ignored.  If false, unknown Types will
-   *   cause an exception.  The default is false.
+   * @param aStream
+   *          input stream from which to read the XML document
+   * @param aCAS
+   *          CAS into which to deserialize. This CAS must be set up with a type system that is
+   *          compatible with that in the XML
+   * @param aLenient
+   *          if true, unknown Types will be ignored. If false, unknown Types will cause an
+   *          exception. The default is false.
    * 
-   * @throws SAXException if an XML Parsing error occurs
-   * @throws IOException if an I/O failure occurs
+   * @throws SAXException
+   *           if an XML Parsing error occurs
+   * @throws IOException
+   *           if an I/O failure occurs
    */
   public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient)
-    throws SAXException, IOException
-  {
+                  throws SAXException, IOException {
     XMLReader xmlReader = XMLReaderFactory.createXMLReader();
     ContentHandler handler = new XmlCasDeserializerHandler(aCAS, aLenient);
     xmlReader.setContentHandler(handler);
-    xmlReader.parse(new InputSource(aStream));  
+    xmlReader.parse(new InputSource(aStream));
   }
-  
-  static class XmlCasDeserializerHandler extends DefaultHandler
-  {
+
+  static class XmlCasDeserializerHandler extends DefaultHandler {
     private CAS mCAS;
+
     private boolean mLenient;
-    private ContentHandler mDelegateHandler; //will be set to either XMI or XCAS
-    
-    XmlCasDeserializerHandler(CAS cas, boolean lenient)
-    {
+
+    private ContentHandler mDelegateHandler; // will be set to either XMI or XCAS
+
+    XmlCasDeserializerHandler(CAS cas, boolean lenient) {
       mCAS = cas;
       mLenient = lenient;
     }
 
-    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
-    {
-      if (mDelegateHandler == null)
-      {
-        //try to find out whether we should use the XCAS or XMI deserializers
-        //if there's an xmi:version attribute, always use XMI
+    public void startElement(String uri, String localName, String qName, Attributes attributes)
+                    throws SAXException {
+      if (mDelegateHandler == null) {
+        // try to find out whether we should use the XCAS or XMI deserializers
+        // if there's an xmi:version attribute, always use XMI
         String xmiVer = attributes.getValue("xmi:version");
-        if (xmiVer != null && xmiVer.length() > 0)
-        {
+        if (xmiVer != null && xmiVer.length() > 0) {
           XmiCasDeserializer deser = new XmiCasDeserializer(mCAS.getTypeSystem());
           mDelegateHandler = deser.getXmiCasHandler(mCAS, mLenient);
-        }
-        else if ("CAS".equals(localName)) //use XCAS
+        } else if ("CAS".equals(localName)) // use XCAS
         {
           XCASDeserializer deser = new XCASDeserializer(mCAS.getTypeSystem());
-          mDelegateHandler = deser.getXCASHandler(mCAS, mLenient ? new OutOfTypeSystemData() : null);
-        }
-        else //default to XMI
+          mDelegateHandler = deser
+                          .getXCASHandler(mCAS, mLenient ? new OutOfTypeSystemData() : null);
+        } else // default to XMI
         {
           XmiCasDeserializer deser = new XmiCasDeserializer(mCAS.getTypeSystem());
           mDelegateHandler = deser.getXmiCasHandler(mCAS, mLenient);
@@ -118,35 +119,29 @@ public abstract class XmlCasDeserializer
       }
       mDelegateHandler.startElement(uri, localName, qName, attributes);
     }
-    
-    public void characters(char[] ch, int start, int length) throws SAXException
-    {
+
+    public void characters(char[] ch, int start, int length) throws SAXException {
       mDelegateHandler.characters(ch, start, length);
     }
 
-    public void endDocument() throws SAXException
-    {
+    public void endDocument() throws SAXException {
       mDelegateHandler.endDocument();
     }
 
-    public void endElement(String uri, String localName, String qName) throws SAXException
-    {
+    public void endElement(String uri, String localName, String qName) throws SAXException {
       mDelegateHandler.endElement(uri, localName, qName);
     }
 
-    public void error(SAXParseException e) throws SAXException
-    {
+    public void error(SAXParseException e) throws SAXException {
       throw e;
     }
 
-    public void fatalError(SAXParseException e) throws SAXException
-    {
+    public void fatalError(SAXParseException e) throws SAXException {
       throw e;
     }
-    
-    public void warning(SAXParseException e) throws SAXException
-    {
+
+    public void warning(SAXParseException e) throws SAXException {
       throw e;
-    }    
+    }
   }
 }

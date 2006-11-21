@@ -20,13 +20,11 @@
 package org.apache.uima.analysis_engine;
 
 /**
- * An <code>AnalysisEngineDescription</code> specific to a
- * Text Analysis Engine (TAE).
- *  
- * @deprecated As of v2.0, {@link AnalysisEngineDescription} should be used instead.  
- *   This interface no longer defines any additional methods beyond those in
- *   AnalysisEngineDescription.     
+ * An <code>AnalysisEngineDescription</code> specific to a Text Analysis Engine (TAE).
+ * 
+ * @deprecated As of v2.0, {@link AnalysisEngineDescription} should be used instead. This interface
+ *             no longer defines any additional methods beyond those in AnalysisEngineDescription.
  */
-public interface TaeDescription extends AnalysisEngineDescription
-{
+public interface TaeDescription extends AnalysisEngineDescription {
+  //As of 2.0, no longer defines any additional methods beyond those in AnalysisEngineDescription
 }

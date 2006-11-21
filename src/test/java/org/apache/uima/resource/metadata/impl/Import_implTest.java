@@ -40,164 +40,137 @@ import org.apache.uima.util.XMLInputSource;
 
 /**
  * 
- * @author Adam Lally 
+ * @author Adam Lally
  */
-public class Import_implTest extends TestCase
-{
+public class Import_implTest extends TestCase {
 
   /**
    * Constructor for Import_implTest.
+   * 
    * @param arg0
    */
-  public Import_implTest(String arg0)
-  {
+  public Import_implTest(String arg0) {
     super(arg0);
   }
 
   /*
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception
-  {
+  protected void setUp() throws Exception {
     super.setUp();
   }
 
   /*
    * @see TestCase#tearDown()
    */
-  protected void tearDown() throws Exception
-  {
+  protected void tearDown() throws Exception {
     super.tearDown();
   }
-  
-  public void testBuildFromXmlElement() throws Exception
-  {
-    try
-    {
-			DocumentBuilderFactory docBuilderFactory = 
-				DocumentBuilderFactory.newInstance();
-			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();             
 
-      //name import
+  public void testBuildFromXmlElement() throws Exception {
+    try {
+      DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+
+      // name import
       String importXml = "<import name=\"this.is.a.test\"/>";
-      Document importDoc = docBuilder.parse(
-      	new ByteArrayInputStream(importXml.getBytes()));    
+      Document importDoc = docBuilder.parse(new ByteArrayInputStream(importXml.getBytes()));
       Import_impl importObj = new Import_impl();
-      importObj.buildFromXMLElement(importDoc.getDocumentElement(),null);
-      assertEquals("this.is.a.test",importObj.getName());
+      importObj.buildFromXMLElement(importDoc.getDocumentElement(), null);
+      assertEquals("this.is.a.test", importObj.getName());
       assertNull(importObj.getLocation());
-      
-      //location import
+
+      // location import
       importXml = "<import location=\"foo/bar/MyFile.xml\"/>";
-			importDoc = docBuilder.parse(
-				new ByteArrayInputStream(importXml.getBytes()));    
-			importObj = new Import_impl();
-			importObj.buildFromXMLElement(importDoc.getDocumentElement(),null);
-			assertEquals("foo/bar/MyFile.xml",importObj.getLocation());
-			assertNull(importObj.getName());
-			
-			//invalid - both location and name
-			importXml = "<import name=\"this.is.a.test\" location=\"foo/bar/MyFile.xml\"/>";
-			importDoc = docBuilder.parse(
-				new ByteArrayInputStream(importXml.getBytes()));    
-			importObj = new Import_impl();
-			InvalidXMLException ex = null;
-			try
-			{
-			  importObj.buildFromXMLElement(importDoc.getDocumentElement(),null);
-			}
-			catch(InvalidXMLException e)
-			{
-				ex = e;  
-			}
-			assertNotNull(ex);
+      importDoc = docBuilder.parse(new ByteArrayInputStream(importXml.getBytes()));
+      importObj = new Import_impl();
+      importObj.buildFromXMLElement(importDoc.getDocumentElement(), null);
+      assertEquals("foo/bar/MyFile.xml", importObj.getLocation());
+      assertNull(importObj.getName());
 
-			//invalid - empty import
-			importXml = "<import/>";
-			importDoc = docBuilder.parse(
-				new ByteArrayInputStream(importXml.getBytes()));    
-			importObj = new Import_impl();
-			ex = null;
-			try
-			{
-				importObj.buildFromXMLElement(importDoc.getDocumentElement(),null);
-			}
-			catch(InvalidXMLException e)
-			{
-				ex = e;  
-			}
-			assertNotNull(ex);
-			assertNotNull(ex.getMessage());
+      // invalid - both location and name
+      importXml = "<import name=\"this.is.a.test\" location=\"foo/bar/MyFile.xml\"/>";
+      importDoc = docBuilder.parse(new ByteArrayInputStream(importXml.getBytes()));
+      importObj = new Import_impl();
+      InvalidXMLException ex = null;
+      try {
+        importObj.buildFromXMLElement(importDoc.getDocumentElement(), null);
+      } catch (InvalidXMLException e) {
+        ex = e;
+      }
+      assertNotNull(ex);
 
-    }
-    catch (Exception e)
-    {
-    	JUnitExtension.handleException(e);
+      // invalid - empty import
+      importXml = "<import/>";
+      importDoc = docBuilder.parse(new ByteArrayInputStream(importXml.getBytes()));
+      importObj = new Import_impl();
+      ex = null;
+      try {
+        importObj.buildFromXMLElement(importDoc.getDocumentElement(), null);
+      } catch (InvalidXMLException e) {
+        ex = e;
+      }
+      assertNotNull(ex);
+      assertNotNull(ex.getMessage());
+
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
     }
   }
-  
-  public void testFindAbsoluteUrl() throws Exception
-  {
-		try
-		{
-			//location import
-  		Import_impl importObj = new Import_impl();
-	  	importObj.setLocation("foo/bar/MyFile.xml");
-		  URL absUrl = importObj.findAbsoluteUrl(UIMAFramework.newDefaultResourceManager());
-		  URL expectedUrl = new File(System.getProperty("user.dir"),"foo/bar/MyFile.xml").toURL();
-		  assertEquals(expectedUrl,absUrl);
-		  
-		  //name import
-			importObj = new Import_impl();
-			importObj.setName("TypeSystemDescriptionImplTest.TestTypeSystem");
-			String workingDir = JUnitExtension.getFile("").getAbsolutePath();
-			ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
-			resMgr.setDataPath(workingDir);
-			absUrl = importObj.findAbsoluteUrl(resMgr);
-			expectedUrl = new File(workingDir,"TypeSystemDescriptionImplTest/TestTypeSystem.xml").toURL();
-			assertEquals(expectedUrl,absUrl);
-		  
-		  //name not found
-			importObj = new Import_impl();
-			importObj.setName("this.should.not.be.found.at.least.i.hope.not");
-			InvalidXMLException ex = null;
-			try
-			{
-			  importObj.findAbsoluteUrl(UIMAFramework.newDefaultResourceManager());
-			}
-			catch(InvalidXMLException e)
-			{
-				ex = e;  
-			}
-			assertNotNull(ex);
-			assertNotNull(ex.getMessage());
-		}
-		catch(Exception e)	
-		{
-			JUnitExtension.handleException(e);
-		}
+
+  public void testFindAbsoluteUrl() throws Exception {
+    try {
+      // location import
+      Import_impl importObj = new Import_impl();
+      importObj.setLocation("foo/bar/MyFile.xml");
+      URL absUrl = importObj.findAbsoluteUrl(UIMAFramework.newDefaultResourceManager());
+      URL expectedUrl = new File(System.getProperty("user.dir"), "foo/bar/MyFile.xml").toURL();
+      assertEquals(expectedUrl, absUrl);
+
+      // name import
+      importObj = new Import_impl();
+      importObj.setName("TypeSystemDescriptionImplTest.TestTypeSystem");
+      String workingDir = JUnitExtension.getFile("").getAbsolutePath();
+      ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
+      resMgr.setDataPath(workingDir);
+      absUrl = importObj.findAbsoluteUrl(resMgr);
+      expectedUrl = new File(workingDir, "TypeSystemDescriptionImplTest/TestTypeSystem.xml")
+                      .toURL();
+      assertEquals(expectedUrl, absUrl);
+
+      // name not found
+      importObj = new Import_impl();
+      importObj.setName("this.should.not.be.found.at.least.i.hope.not");
+      InvalidXMLException ex = null;
+      try {
+        importObj.findAbsoluteUrl(UIMAFramework.newDefaultResourceManager());
+      } catch (InvalidXMLException e) {
+        ex = e;
+      }
+      assertNotNull(ex);
+      assertNotNull(ex.getMessage());
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
   }
-  
-  public void testNestedImports() throws Exception  
-  {
-    try
-    {
-      File baseDescriptorFile = JUnitExtension.getFile("ImportImplTest/subdir/subdir2/AggregateTaeForNestedImportTest.xml");
-      File importedFile = JUnitExtension.getFile("ImportImplTest/subdir/PrimitiveTaeForNestedImportTest.xml");
-      TaeDescription_impl agg = (TaeDescription_impl)
-          UIMAFramework.getXMLParser().parseTaeDescription(
-            new XMLInputSource(baseDescriptorFile));
+
+  public void testNestedImports() throws Exception {
+    try {
+      File baseDescriptorFile = JUnitExtension
+                      .getFile("ImportImplTest/subdir/subdir2/AggregateTaeForNestedImportTest.xml");
+      File importedFile = JUnitExtension
+                      .getFile("ImportImplTest/subdir/PrimitiveTaeForNestedImportTest.xml");
+      TaeDescription_impl agg = (TaeDescription_impl) UIMAFramework.getXMLParser()
+                      .parseTaeDescription(new XMLInputSource(baseDescriptorFile));
       assertEquals(baseDescriptorFile.toURL(), agg.getSourceUrl());
 
-      TaeDescription_impl prim = (TaeDescription_impl)
-          agg.getDelegateAnalysisEngineSpecifiers().get("Annotator1");
+      TaeDescription_impl prim = (TaeDescription_impl) agg.getDelegateAnalysisEngineSpecifiers()
+                      .get("Annotator1");
       assertEquals(importedFile.toURL(), prim.getSourceUrl());
-      
+
       prim.getAnalysisEngineMetaData().getTypeSystem().resolveImports();
       assertEquals(1, prim.getAnalysisEngineMetaData().getTypeSystem().getTypes().length);
-    }
-    catch(Exception e)
-    {
+    } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
   }

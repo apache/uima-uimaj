@@ -29,36 +29,38 @@ import org.apache.uima.cas.CAS;
 /**
  * 
  */
-public class NewlineSegmenter extends CasMultiplier_ImplBase
-{
+public class NewlineSegmenter extends CasMultiplier_ImplBase {
   StringTokenizer mStringTok;
-  
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_component.CasSegmenter_ImplBase#process(org.apache.uima.cas.CAS)
    */
-  public void process(CAS aCAS) throws AnalysisEngineProcessException
-  {
+  public void process(CAS aCAS) throws AnalysisEngineProcessException {
     String doc = aCAS.getTCAS().getDocumentText();
     mStringTok = new StringTokenizer(doc, "\n");
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#hasNext()
    */
-  public boolean hasNext() throws AnalysisEngineProcessException
-  {
+  public boolean hasNext() throws AnalysisEngineProcessException {
     return mStringTok.hasMoreTokens();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#next()
    */
-  public AbstractCas next() throws AnalysisEngineProcessException
-  {
+  public AbstractCas next() throws AnalysisEngineProcessException {
     String nextSeg = mStringTok.nextToken();
-    CAS cas = (CAS)getContext().getEmptyCas(CAS.class);
-    cas.getTCAS().setDocumentText(nextSeg);  
+    CAS cas = (CAS) getContext().getEmptyCas(CAS.class);
+    cas.getTCAS().setDocumentText(nextSeg);
     return cas;
   }
-  
+
 }

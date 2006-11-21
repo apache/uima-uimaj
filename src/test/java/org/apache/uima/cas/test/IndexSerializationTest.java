@@ -18,6 +18,7 @@
  */
 
 package org.apache.uima.cas.test;
+
 import junit.framework.TestCase;
 
 import org.apache.uima.cas.CAS;
@@ -43,36 +44,53 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 
-
-/** 
- * @author Thilo Goetz 
+/**
+ * @author Thilo Goetz
  */
 public class IndexSerializationTest extends TestCase {
 
   // Index name constants.
   public static final String ANNOT_SET_INDEX = "Annotation Set Index";
+
   public static final String ANNOT_BAG_INDEX = "Annotation Bag Index";
 
   public static final String TOKEN_TYPE = "Token";
+
   public static final String TOKEN_TYPE_FEAT = "type";
-  public static final String TOKEN_TYPE_FEAT_Q =
-    TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR + TOKEN_TYPE_FEAT;
+
+  public static final String TOKEN_TYPE_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
+                  + TOKEN_TYPE_FEAT;
+
   public static final String TOKEN_TYPE_TYPE = "TokenType";
+
   public static final String WORD_TYPE = "Word";
+
   public static final String SEP_TYPE = "Separator";
+
   public static final String EOS_TYPE = "EndOfSentence";
+
   public static final String SENT_TYPE = "Sentence";
 
   private TCASMgr casMgr;
+
   private TCAS cas;
+
   private Type annotationType;
+
   private Type wordType;
+
   private Type separatorType;
+
   private Type eosType;
+
   private Type tokenType;
-  private Feature tokenTypeFeature;  
+
+  private Feature tokenTypeFeature;
+
   private Type sentenceType;
+
   private Feature startFeature;
+
   private Feature endFeature;
 
   public IndexSerializationTest(String arg) {
@@ -89,7 +107,7 @@ public class IndexSerializationTest extends TestCase {
 
     TypeSystem ts = cas.getTypeSystem();
     wordType = ts.getType(WORD_TYPE);
-    //assert(wordType != null);
+    // assert(wordType != null);
     separatorType = ts.getType(SEP_TYPE);
     eosType = ts.getType(EOS_TYPE);
     tokenType = ts.getType(TOKEN_TYPE);
@@ -101,26 +119,22 @@ public class IndexSerializationTest extends TestCase {
     assertTrue(annotationType != null);
   }
 
-
   // Initialize the first CAS.
   private static TCASMgr initCAS() throws TCASException {
-	//    // Create a TCASMgr.  Ensures existence of AnnotationFS type.
-	//    TCASMgr tcas = TCASFactory.createTCAS();
+    // // Create a TCASMgr. Ensures existence of AnnotationFS type.
+    // TCASMgr tcas = TCASFactory.createTCAS();
     CASMgr casMgr = CASFactory.createCAS();
-	try
-		{
-			CasCreationUtils.setupTypeSystem(casMgr, (TypeSystemDescription) null);
-		}
-	catch (ResourceInitializationException e)
-		{
-			e.printStackTrace();
-		}
+    try {
+      CasCreationUtils.setupTypeSystem(casMgr, (TypeSystemDescription) null);
+    } catch (ResourceInitializationException e) {
+      e.printStackTrace();
+    }
     // Create a writable type system.
     TypeSystemMgr tsa = casMgr.getTypeSystemMgr();
     // Add new types and features.
     Type topType = tsa.getTopType();
     Type annotType = tsa.getType(TCAS.TYPE_NAME_ANNOTATION);
-    //assert(annotType != null);
+    // assert(annotType != null);
     tsa.addType(SENT_TYPE, annotType);
     Type tokenType = tsa.addType(TOKEN_TYPE, annotType);
     Type tokenTypeType = tsa.addType(TOKEN_TYPE_TYPE, topType);
@@ -129,43 +143,38 @@ public class IndexSerializationTest extends TestCase {
     tsa.addType(EOS_TYPE, tokenTypeType);
     tsa.addFeature(TOKEN_TYPE_FEAT, tokenType, tokenTypeType);
     // Commit the type system.
-    ((CASImpl)casMgr).commitTypeSystem();
-    //assert(tsa.isCommitted());
-	//    // Create the TCAS indexes.
-	//    tcas.initTCASIndexes();
-	// Create the Base indexes.
-	try
-		{
-			casMgr.initCASIndexes();
-		}
-	catch (CASException e)
-		{
-			e.printStackTrace();
-		}
+    ((CASImpl) casMgr).commitTypeSystem();
+    // assert(tsa.isCommitted());
+    // // Create the TCAS indexes.
+    // tcas.initTCASIndexes();
+    // Create the Base indexes.
+    try {
+      casMgr.initCASIndexes();
+    } catch (CASException e) {
+      e.printStackTrace();
+    }
 
     FSIndexRepositoryMgr irm = casMgr.getIndexRepositoryMgr();
     FSIndexComparator comp = irm.createComparator();
     Type annotation = tsa.getType(TCAS.TYPE_NAME_ANNOTATION);
     comp.setType(annotation);
-    comp.addKey(
-      annotation.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_BEGIN),
-      FSIndexComparator.STANDARD_COMPARE);
-    comp.addKey(
-      annotation.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_END),
-      FSIndexComparator.REVERSE_STANDARD_COMPARE);
+    comp.addKey(annotation.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_BEGIN),
+                    FSIndexComparator.STANDARD_COMPARE);
+    comp.addKey(annotation.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_END),
+                    FSIndexComparator.REVERSE_STANDARD_COMPARE);
     irm.createIndex(comp, ANNOT_BAG_INDEX, FSIndex.BAG_INDEX);
     irm.createIndex(comp, ANNOT_SET_INDEX, FSIndex.SET_INDEX);
 
-
     // Commit the index repository.
     irm.commit();
-    //assert(cas.getIndexRepositoryMgr().isCommitted());
+    // assert(cas.getIndexRepositoryMgr().isCommitted());
 
-	//Create the default text Sofa and return TCAS view
-	return (TCASMgr)casMgr.getCAS().getTCAS();
-  }  
+    // Create the default text Sofa and return TCAS view
+    return (TCASMgr) casMgr.getCAS().getTCAS();
+  }
 
-  /** Test driver.
+  /**
+   * Test driver.
    */
   public void testMain() throws Exception {
 
@@ -183,56 +192,54 @@ public class IndexSerializationTest extends TestCase {
       cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
       cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, i * 2, (i * 2) + 1));
     }
-    
+
     AnnotationFS searchAnnot = cas.createAnnotation(annotationType, 0, 1);
     assertTrue(cas.getAnnotationIndex().find(searchAnnot) != null);
     assertTrue(cas.getIndexRepository().getIndex(ANNOT_SET_INDEX).find(searchAnnot) != null);
     // find() does not produce useful results on bag indexes, since the comparator
     // is not defined.
-//    assertTrue(cas.getIndexRepository().getIndex(ANNOT_BAG_INDEX).find(searchAnnot) != null);
-    
+    // assertTrue(cas.getIndexRepository().getIndex(ANNOT_BAG_INDEX).find(searchAnnot) != null);
+
     searchAnnot.setIntValue(endFeature, 4);
     assertTrue(cas.getAnnotationIndex().find(searchAnnot) == null);
     assertTrue(cas.getIndexRepository().getIndex(ANNOT_SET_INDEX).find(searchAnnot) == null);
     assertTrue(cas.getIndexRepository().getIndex(ANNOT_BAG_INDEX).find(searchAnnot) == null);
 
     final int ordSize = cas.getAnnotationIndex().size();
-    final int setSize =
-      cas.getIndexRepository().getIndex(ANNOT_SET_INDEX).size();
-    final int bagSize =
-      cas.getIndexRepository().getIndex(ANNOT_BAG_INDEX).size();
-//    System.out.println("Before serialization\n");
-//    System.out.println("Size of ordered index: " + ordSize);
-//    System.out.println("Size of set index: " + setSize);
-//    System.out.println("Size of bag index: " + bagSize);
+    final int setSize = cas.getIndexRepository().getIndex(ANNOT_SET_INDEX).size();
+    final int bagSize = cas.getIndexRepository().getIndex(ANNOT_BAG_INDEX).size();
+    // System.out.println("Before serialization\n");
+    // System.out.println("Size of ordered index: " + ordSize);
+    // System.out.println("Size of set index: " + setSize);
+    // System.out.println("Size of bag index: " + bagSize);
 
     CASCompleteSerializer cs;
     cs = Serialization.serializeCASComplete(casMgr);
-	//    casMgr = TCASFactory.createTCAS();
+    // casMgr = TCASFactory.createTCAS();
     CASMgr realCasMgr = CASFactory.createCAS();
-    ((CASImpl)realCasMgr).commitTypeSystem();
+    ((CASImpl) realCasMgr).commitTypeSystem();
     Serialization.deserializeCASComplete(cs, realCasMgr);
-    cas = ((CASImpl)realCasMgr).getTCAS();
-	casMgr = (TCASMgr)cas;
+    cas = ((CASImpl) realCasMgr).getTCAS();
+    casMgr = (TCASMgr) cas;
 
-//    System.out.println("After serialization\n");
+    // System.out.println("After serialization\n");
     FSIndex index = cas.getAnnotationIndex();
     assertTrue(index != null);
     assertTrue(index.getIndexingStrategy() == FSIndex.SORTED_INDEX);
-//    System.out.println("Size of ordered index: " + index.size());
+    // System.out.println("Size of ordered index: " + index.size());
     assertTrue(index.size() == ordSize);
-    
+
     index = cas.getIndexRepository().getIndex(ANNOT_BAG_INDEX);
     assertTrue(index != null);
     assertTrue(index.getIndexingStrategy() == FSIndex.BAG_INDEX);
-//    System.out.println("Size of bag index: " + index.size());
+    // System.out.println("Size of bag index: " + index.size());
     assertTrue(index.size() == bagSize);
 
     index = cas.getIndexRepository().getIndex(ANNOT_SET_INDEX);
     assertTrue(index != null);
     assertTrue(index.getIndexingStrategy() == FSIndex.SET_INDEX);
-//    System.out.println("Size of set index: " + index.size());
-//    System.out.println("Should be: " + setSize);
+    // System.out.println("Size of set index: " + index.size());
+    // System.out.println("Should be: " + setSize);
     assertTrue(index.size() == setSize);
 
   }

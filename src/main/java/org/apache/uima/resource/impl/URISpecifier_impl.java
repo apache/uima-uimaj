@@ -30,132 +30,114 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  * 
  * 
  */
-public class URISpecifier_impl extends MetaDataObject_impl
-	implements URISpecifier 
-{
-  
+public class URISpecifier_impl extends MetaDataObject_impl implements URISpecifier {
+
+  static final long serialVersionUID = -7910540167197537337L;
+
+  /** URI of the Resource. */
+  private String mUri;
+
+  /** Protocol used to communicate with the Resource. */
+  private String mProtocol;
+
+  /** Timeout period in milliseconds. */
+  private Integer mTimeout;
+
+  /**
+   * Type of Resource that the service at this URI is expected to implement. Value should be one of
+   * the constants on the URISpecifier interface, or null if unspecified.
+   */
+  private String mResourceType;
+
+  private Parameter[] mParameters;
+
   /**
    * Creates a new <code>URISpecifier_impl</code>.
    */
-  public URISpecifier_impl()
-  {
+  public URISpecifier_impl() {
   }
-  
-  
+
   /**
    * @see org.apache.uima.resrouce.URISpecifier#getURI()
    */
-  public String getUri()
-  {
+  public String getUri() {
     return mUri;
   }
-  
+
   /**
    * @see org.apache.uima.resrouce.URISpecifier#setURI(String)
    */
-  public void setUri(String aUri)
-  {
+  public void setUri(String aUri) {
     mUri = aUri;
   }
 
   /**
    * @see org.apache.uima.resrouce.URISpecifier#getProtocol()
    */
-  public String getProtocol()
-  {
+  public String getProtocol() {
     return mProtocol;
   }
-  
+
   /**
    * @see org.apache.uima.resrouce.URISpecifier#setProtocol(String)
    */
-  public void setProtocol(String aProtocol)
-  {
+  public void setProtocol(String aProtocol) {
     mProtocol = aProtocol;
   }
-  
+
   /**
    * @see org.apache.uima.resource.URISpecifier#getTimeout()
    */
-  public Integer getTimeout()
-  {
+  public Integer getTimeout() {
     return mTimeout;
   }
 
   /**
    * @see org.apache.uima.resource.URISpecifier#setTimeout(int)
    */
-  public void setTimeout(Integer aTimeout)
-  {
+  public void setTimeout(Integer aTimeout) {
     mTimeout = aTimeout;
-  }      
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.resource.URISpecifier#getResourceType()
-	 */
-	public String getResourceType()
-	{
-		return mResourceType;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.URISpecifier#getResourceType()
+   */
+  public String getResourceType() {
+    return mResourceType;
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.resource.URISpecifier#setResourceType(java.lang.String)
-	 */
-	public void setResourceType(String aResourceType)
-	{
-		mResourceType = aResourceType;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.URISpecifier#setResourceType(java.lang.String)
+   */
+  public void setResourceType(String aResourceType) {
+    mResourceType = aResourceType;
+  }
 
+  /**
+   * @return Returns the Parameters.
+   */
+  public Parameter[] getParameters() {
+    return mParameters;
+  }
 
-    /**
-     * @return Returns the Parameters.
-     */
-    public Parameter[] getParameters()
-    {
-      return mParameters;
-    }
+  /**
+   * @param parameters
+   *          The Parameters to set.
+   */
+  public void setParameters(Parameter[] parameters) {
+    mParameters = parameters;
+  }
 
-
-    /**
-     * @param parameters The Parameters to set.
-     */
-    public void setParameters(Parameter[] parameters)
-    {
-      mParameters = parameters;
-    }
-
-
-  protected XmlizationInfo getXmlizationInfo()
-  {
+  protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
-  
-  static final private XmlizationInfo XMLIZATION_INFO =
-    new XmlizationInfo("uriSpecifier",
-      new PropertyXmlInfo[]{
-				 new PropertyXmlInfo("resourceType"),
-         new PropertyXmlInfo("uri"),
-         new PropertyXmlInfo("protocol"),
-        new PropertyXmlInfo("timeout"),
-        new PropertyXmlInfo("parameters"),
-      });
-      
 
-  /** URI of the Resource. */
-  private String mUri;
-  
-  /** Protocol used to communicate with the Resource. */
-  private String mProtocol;  
-
-  /** Timeout period in milliseconds. */
-  private Integer mTimeout;
-  
-	/** Type of Resource that the service at this URI is expected to implement. 
-	 *  Value should be one of the constants on the URISpecifier interface, or null if unspecified.*/
-  private String mResourceType;
-  
-  private Parameter[] mParameters;
-  
-  static final long serialVersionUID = -7910540167197537337L;
-
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("uriSpecifier",
+                  new PropertyXmlInfo[] { new PropertyXmlInfo("resourceType"),
+                      new PropertyXmlInfo("uri"), new PropertyXmlInfo("protocol"),
+                      new PropertyXmlInfo("timeout"), new PropertyXmlInfo("parameters"), });
 }

@@ -19,73 +19,68 @@
 
 package org.apache.uima.cas;
 
-
 /**
  * Base class from which CAS implementations should extend.
  */
-public abstract class AbstractCas_ImplBase implements AbstractCas
-{
+public abstract class AbstractCas_ImplBase implements AbstractCas {
   private CasOwner mOwner;
-//  private int mID;
-//  private int mParentID;
-//
-//  //TODO: decide which of these methods to expose through interface,
-//  //and which should be deleted.
-//  
-//  /* (non-Javadoc)
-//   * @see org.apache.uima.core.AbstractCas#getID()
-//   */
-//  public int getID()
-//  {
-//    return mID;
-//  }
-//
-//  /* (non-Javadoc)
-//   * @see org.apache.uima.core.AbstractCas#getParentID()
-//   */
-//  public int getParentID()
-//  {
-//    return mParentID;
-//  }
-//
-//  /* (non-Javadoc)
-//   * @see org.apache.uima.core.AbstractCas#setID(int)
-//   */
-//  public void setID(int aID)
-//  {
-//    mID = aID;    
-//  }
-//
-//  /* (non-Javadoc)
-//   * @see org.apache.uima.core.AbstractCas#setParentID(int)
-//   */
-//  public void setParentID(int aParentID)
-//  {
-//    mParentID = aParentID;
-//  }
+
+  // private int mID;
+  // private int mParentID;
+  //
+  // //TODO: decide which of these methods to expose through interface,
+  // //and which should be deleted.
+  //  
+  // /* (non-Javadoc)
+  // * @see org.apache.uima.core.AbstractCas#getID()
+  // */
+  // public int getID()
+  // {
+  // return mID;
+  // }
+  //
+  // /* (non-Javadoc)
+  // * @see org.apache.uima.core.AbstractCas#getParentID()
+  // */
+  // public int getParentID()
+  // {
+  // return mParentID;
+  // }
+  //
+  // /* (non-Javadoc)
+  // * @see org.apache.uima.core.AbstractCas#setID(int)
+  // */
+  // public void setID(int aID)
+  // {
+  // mID = aID;
+  // }
+  //
+  // /* (non-Javadoc)
+  // * @see org.apache.uima.core.AbstractCas#setParentID(int)
+  // */
+  // public void setParentID(int aParentID)
+  // {
+  // mParentID = aParentID;
+  // }
 
   /**
-   * Default implementation that returns this CAS to its CasManager by 
-   * calling {@link CasOwner#releaseCas(AbstractCas)}.
+   * Default implementation that returns this CAS to its CasManager by calling
+   * {@link CasOwner#releaseCas(AbstractCas)}.
    */
-  public void release()
-  {
-    if (mOwner != null)
-    {
+  public void release() {
+    if (mOwner != null) {
       mOwner.releaseCas(this);
-    }  
+    }
   }
 
   /**
-   * Provides this CAS with a handle to the CASOwner that owns it.  This is called by
-   * the framework when a CAS instance is created.  This handle is used
-   * to implement the release() method by returning the CAS to its
-   * CasOwner.
+   * Provides this CAS with a handle to the CASOwner that owns it. This is called by the framework
+   * when a CAS instance is created. This handle is used to implement the release() method by
+   * returning the CAS to its CasOwner.
    * 
    * @param aCasOwner
    */
-  public void setOwner(CasOwner aCasOwner)
-  {
-      mOwner = aCasOwner;
-  }  
+  public void setOwner(CasOwner aCasOwner) {
+    mOwner = aCasOwner;
+  }
 }

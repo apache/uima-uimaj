@@ -63,26 +63,25 @@ import org.apache.uima.util.impl.ProcessTrace_impl;
  * 
  * 
  */
-public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBase 
-  implements TextAnalysisEngine
-{
+public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBase implements
+                TextAnalysisEngine {
 
   /**
    * resource bundle for log messages
    */
   protected static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";
 
-  
   /**
-   * Key that must be inserted into the aAdditionalParams map to turn on verification mode.  Also passed down to delegates.
+   * Key that must be inserted into the aAdditionalParams map to turn on verification mode. Also
+   * passed down to delegates.
    */
   public static final String PARAM_VERIFICATION_MODE = "VERIFICATION_MODE";
 
-  
   /**
    * Performance Tuning setting in effect for this Analysis Engine.
    */
-  private Properties mPerformanceTuningSettings = UIMAFramework.getDefaultPerformanceTuningProperties();
+  private Properties mPerformanceTuningSettings = UIMAFramework
+                  .getDefaultPerformanceTuningProperties();
 
   private UimaTimer mProcessTimer = UIMAFramework.newTimer();
 
@@ -91,84 +90,79 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   /**
    * The JMX MBeanServer that this AnalysisEngine registers with to publish its statistics.
    */
-  private Object mMBeanServer;  
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.resource.Resource_ImplBase#initialize(org.apache.uima.resource.ResourceSpecifier, java.util.Map)
+  private Object mMBeanServer;
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.Resource_ImplBase#initialize(org.apache.uima.resource.ResourceSpecifier,
+   *      java.util.Map)
    */
-  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams) throws ResourceInitializationException
-  {
+  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+                  throws ResourceInitializationException {
     boolean result = super.initialize(aSpecifier, aAdditionalParams);
-    if (result)
-    {
-      //add our metadata to the CasManager, so that it will pick up our
-      //type system, priorities, and indexes
+    if (result) {
+      // add our metadata to the CasManager, so that it will pick up our
+      // type system, priorities, and indexes
       AnalysisEngineMetaData md = getAnalysisEngineMetaData();
       getCasManager().addMetaData(md);
 
-      //read parameters from additionalParams map   
+      // read parameters from additionalParams map
       Properties perfSettings = null;
       mMBeanServer = null;
-      if (aAdditionalParams != null)
-      {
-         perfSettings = (Properties)aAdditionalParams.get(PARAM_PERFORMANCE_TUNING_SETTINGS);
-         mMBeanServer = aAdditionalParams.get(PARAM_MBEAN_SERVER);
-      }  
-      //set performance tuning settings
-      if (perfSettings != null)
-      {
-          setPerformanceTuningSettings(perfSettings);
-      }      
-      //register MBean with MBeanServer.  If no MBeanServer specified in the
-      //additionalParams map, this will use the platform MBean Server 
-      //(Java 1.5 only)
+      if (aAdditionalParams != null) {
+        perfSettings = (Properties) aAdditionalParams.get(PARAM_PERFORMANCE_TUNING_SETTINGS);
+        mMBeanServer = aAdditionalParams.get(PARAM_MBEAN_SERVER);
+      }
+      // set performance tuning settings
+      if (perfSettings != null) {
+        setPerformanceTuningSettings(perfSettings);
+      }
+      // register MBean with MBeanServer. If no MBeanServer specified in the
+      // additionalParams map, this will use the platform MBean Server
+      // (Java 1.5 only)
       getMBean().setName(getMetaData().getName(), getUimaContextAdmin());
       JmxMBeanAgent.registerMBean(getManagementInterface(), mMBeanServer);
     }
     return result;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#finalize()
    */
-  protected void finalize() throws Throwable
-  {
-    //unregister MBean from MBeanServer when GC occurs.
-    //NOTE: we don't want to do this in destroy() because all AEs in a CPE are
-    //destroyed when the CPE processing completes.  If we unregistered the MBean then,
-    //the user could not see the stats of a completed CPE.  
+  protected void finalize() throws Throwable {
+    // unregister MBean from MBeanServer when GC occurs.
+    // NOTE: we don't want to do this in destroy() because all AEs in a CPE are
+    // destroyed when the CPE processing completes. If we unregistered the MBean then,
+    // the user could not see the stats of a completed CPE.
     AnalysisEngineManagement mbean = getManagementInterface();
-    if (mbean != null)
-    {
+    if (mbean != null) {
       JmxMBeanAgent.unregisterMBean(mbean, mMBeanServer);
     }
     super.finalize();
-      
+
   }
 
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngine#getAnalysisEngineMetaData()
    */
-  public AnalysisEngineMetaData getAnalysisEngineMetaData()
-  {
-    return (AnalysisEngineMetaData)getMetaData();
+  public AnalysisEngineMetaData getAnalysisEngineMetaData() {
+    return (AnalysisEngineMetaData) getMetaData();
   }
-
 
   /**
    * @see org.apache.uima.cas_processor.CasProcessor#getProcessingResourceMetaData()
    */
-  public ProcessingResourceMetaData getProcessingResourceMetaData()
-  {
-    return (ProcessingResourceMetaData)getMetaData();
+  public ProcessingResourceMetaData getProcessingResourceMetaData() {
+    return (ProcessingResourceMetaData) getMetaData();
   }
-  
+
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngine#newCAS()
    */
-  public synchronized CAS newCAS()
-    throws ResourceInitializationException
-  {
+  public synchronized CAS newCAS() throws ResourceInitializationException {
     CasDefinition casDef = getCasManager().getCasDefinition();
     return CasCreationUtils.createCas(casDef, getPerformanceTuningSettings());
   }
@@ -176,401 +170,350 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   /**
    * @see org.apache.uima.analysis_engine.MultithreadableTextAnalysisEngine#newTCAS()
    */
-  public synchronized TCAS newTCAS() throws ResourceInitializationException
-  {
-    return (TCAS)newCAS();
+  public synchronized TCAS newTCAS() throws ResourceInitializationException {
+    return (TCAS) newCAS();
   }
-  
+
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngine#newJCas()
    */
-  public JCas newJCas() throws ResourceInitializationException
-  {
-    try
-    {
+  public JCas newJCas() throws ResourceInitializationException {
+    try {
       return newCAS().getJCas();
-    }
-    catch(CASException e)
-    {
+    } catch (CASException e) {
       throw new ResourceInitializationException(e);
     }
   }
-  
+
   /**
-   * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.cas.CAS, org.apache.uima.analysis_engine.ResultSpecification)
+   * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.cas.CAS,
+   *      org.apache.uima.analysis_engine.ResultSpecification)
    */
   public ProcessTrace process(CAS aCAS, ResultSpecification aResultSpec)
-    throws ResultNotSupportedException, AnalysisEngineProcessException
-  {
+                  throws ResultNotSupportedException, AnalysisEngineProcessException {
     setResultSpecification(aResultSpec);
     return process(aCAS);
   }
-  
+
   /**
-   * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.cas.CAS, org.apache.uima.analysis_engine.ResultSpecification, org.apache.uima.util.ProcessTrace)
+   * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.cas.CAS,
+   *      org.apache.uima.analysis_engine.ResultSpecification, org.apache.uima.util.ProcessTrace)
    */
-  public void process(
-    CAS aCAS,
-    ResultSpecification aResultSpec,
-    ProcessTrace aTrace)
-    throws ResultNotSupportedException, AnalysisEngineProcessException
-  {
+  public void process(CAS aCAS, ResultSpecification aResultSpec, ProcessTrace aTrace)
+                  throws ResultNotSupportedException, AnalysisEngineProcessException {
     setResultSpecification(aResultSpec);
     process(aCAS);
     buildProcessTraceFromMBeanStats(aTrace);
   }
-  
-  
 
-  public ProcessTrace process(CAS aCAS) throws AnalysisEngineProcessException
-  {
+  public ProcessTrace process(CAS aCAS) throws AnalysisEngineProcessException {
     CasIterator iter = processAndOutputNewCASes(aCAS);
-    //step through all output CASes which lets the AE finish all processing
-    while (iter.hasNext())
-    {
+    // step through all output CASes which lets the AE finish all processing
+    while (iter.hasNext()) {
       CAS cas = iter.next();
       cas.release();
     }
     return buildProcessTraceFromMBeanStats();
   }
-  
+
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.jcas.impl.JCas)
    */
-  public ProcessTrace process(JCas aJCas) throws AnalysisEngineProcessException
-  {
-		return process(aJCas.getCas());
+  public ProcessTrace process(JCas aJCas) throws AnalysisEngineProcessException {
+    return process(aJCas.getCas());
   }
 
-
   /**
-   * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.jcas.impl.JCas, org.apache.uima.analysis_engine.ResultSpecification)
+   * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.jcas.impl.JCas,
+   *      org.apache.uima.analysis_engine.ResultSpecification)
    */
   public ProcessTrace process(JCas aJCas, ResultSpecification aResultSpec)
-    throws ResultNotSupportedException, AnalysisEngineProcessException
-  {
+                  throws ResultNotSupportedException, AnalysisEngineProcessException {
     return process(aJCas.getCas(), aResultSpec);
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.jcas.impl.JCas, org.apache.uima.analysis_engine.ResultSpecification, org.apache.uima.util.ProcessTrace)
+   * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.jcas.impl.JCas,
+   *      org.apache.uima.analysis_engine.ResultSpecification, org.apache.uima.util.ProcessTrace)
    */
-  public void process(JCas aJCas, ResultSpecification aResultSpec,
-    ProcessTrace aTrace)
-    throws ResultNotSupportedException, AnalysisEngineProcessException
-  {
+  public void process(JCas aJCas, ResultSpecification aResultSpec, ProcessTrace aTrace)
+                  throws ResultNotSupportedException, AnalysisEngineProcessException {
     process(aJCas.getCas(), aResultSpec, aTrace);
   }
-  
+
   /**
    * @deprecated
-   */ 
-  public void process(org.apache.uima.analysis_engine.AnalysisProcessData aProcessData, ResultSpecification aResultSpec) throws ResultNotSupportedException, AnalysisEngineProcessException
-  {
+   */
+  public void process(org.apache.uima.analysis_engine.AnalysisProcessData aProcessData,
+                  ResultSpecification aResultSpec) throws ResultNotSupportedException,
+                  AnalysisEngineProcessException {
     process(aProcessData.getCAS(), aResultSpec, aProcessData.getProcessTrace());
   }
 
-
-  /* (non-Javadoc)
- * @see org.apache.uima.cas_processor.CasObjectProcessor#process(org.apache.uima.cas.CAS)
- */
-  public void processCas(CAS aCAS) throws ResourceProcessException {    
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas_processor.CasObjectProcessor#process(org.apache.uima.cas.CAS)
+   */
+  public void processCas(CAS aCAS) throws ResourceProcessException {
     try {
       process(aCAS);
     } catch (AnalysisEngineProcessException e) {
       throw new ResourceProcessException(e);
-    } 
+    }
   }
 
   /**
    * @see org.apache.uima.cas_processor.CasObjectProcessor#processCas(org.apache.uima.cas.CAS[])
    */
-  public void processCas(CAS[] aCASes) throws ResourceProcessException
-  {
-    for (int i = 0; i < aCASes.length; i++)
-    {
-      if (aCASes[i] != null)
-      {
+  public void processCas(CAS[] aCASes) throws ResourceProcessException {
+    for (int i = 0; i < aCASes.length; i++) {
+      if (aCASes[i] != null) {
         processCas(aCASes[i]);
       }
     }
   }
 
   /**
-   * Default implementation of processAndOutputNewCASes(JCas) method.  
-   * Calls the version of this method that takes a CAS, then wraps the resulting
-   * CasIterator in a JCasIterator.
+   * Default implementation of processAndOutputNewCASes(JCas) method. Calls the version of this
+   * method that takes a CAS, then wraps the resulting CasIterator in a JCasIterator.
    */
-  public JCasIterator processAndOutputNewCASes(JCas aJCas) throws AnalysisEngineProcessException
-  {
+  public JCasIterator processAndOutputNewCASes(JCas aJCas) throws AnalysisEngineProcessException {
     return new JCasIteratorWrapper(processAndOutputNewCASes(aJCas.getCas()));
   }
-
 
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngine#createResultSpecification()
    */
-  public ResultSpecification createResultSpecification()
-  {
+  public ResultSpecification createResultSpecification() {
     return new ResultSpecification_impl();
   }
 
   /**
    * @see org.apache.uima.analysis_engine.AnalysisEngine#getFeatureNamesForType(java.lang.String)
    */
-  public synchronized String[] getFeatureNamesForType(String aTypeName)
-  {
-    //build CAS and populate mFirstTypeSystem
+  public synchronized String[] getFeatureNamesForType(String aTypeName) {
+    // build CAS and populate mFirstTypeSystem
     CAS cas = getCasManager().getCas(this.getUimaContextAdmin().getQualifiedContextName());
     TypeSystem ts = cas.getTypeSystem();
     getCasManager().releaseCas(cas);
 
     Type t = ts.getType(aTypeName);
-    if (t != null)
-    {
+    if (t != null) {
       List features = t.getFeatures();
       String[] featNames = new String[features.size()];
-      for (int i = 0; i < features.size(); i++)
-      {
-        Feature f = (Feature)features.get(i);
-        featNames[i] = f .getShortName();
+      for (int i = 0; i < features.size(); i++) {
+        Feature f = (Feature) features.get(i);
+        featNames[i] = f.getShortName();
       }
       return featNames;
-    }
-    else
-    {
+    } else {
       return null;
-    }  
+    }
   }
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas_processor.CasProcessor#isStateless()
    */
   public boolean isStateless() {
-	  return false;
+    return false;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas_processor.CasProcessor#isReadOnly()
    */
   public boolean isReadOnly() {
     OperationalProperties opProps = getAnalysisEngineMetaData().getOperationalProperties();
-    return opProps == null ? false : !opProps.getModifiesCas();  
+    return opProps == null ? false : !opProps.getModifiesCas();
   }
 
   /**
-   * From the CAS Processor interface.  Called by the CPM if the CAS
-   * type system changes - this does not need to do anything since the
-   * annotators' typeSystemInit methods are automatically called prior to
-   * processing whenever it is necessary.
+   * From the CAS Processor interface. Called by the CPM if the CAS type system changes - this does
+   * not need to do anything since the annotators' typeSystemInit methods are automatically called
+   * prior to processing whenever it is necessary.
    * 
    * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#typeSystemInit(org.apache.uima.cas.TypeSystem)
    */
-  public void typeSystemInit(TypeSystem aTypeSystem)
-    throws ResourceInitializationException
-  {
+  public void typeSystemInit(TypeSystem aTypeSystem) throws ResourceInitializationException {
   }
 
-  
   /**
    * Gets the performance tuning settings in effect for this Analysis Engine.
+   * 
    * @return performance tuning settings
    */
-  public Properties getPerformanceTuningSettings()
-  {
-		return mPerformanceTuningSettings;   	
+  public Properties getPerformanceTuningSettings() {
+    return mPerformanceTuningSettings;
   }
-  
-  
-  
-	/* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_engine.AnalysisEngine#setResultSpecification(org.apache.uima.analysis_engine.ResultSpecification)
    */
-  public void setResultSpecification(ResultSpecification aResultSpec)
-  {
-    //does nothing by default (for service adapters)
-    //overridden in both primitive and aggregate AE implementations
+  public void setResultSpecification(ResultSpecification aResultSpec) {
+    // does nothing by default (for service adapters)
+    // overridden in both primitive and aggregate AE implementations
   }
-  
-  public void resetResultSpecificationToDefault()
-  {
+
+  public void resetResultSpecificationToDefault() {
     ResultSpecification resultSpec = new ResultSpecification_impl();
     resultSpec.addCapabilities(this.getAnalysisEngineMetaData().getCapabilities());
     setResultSpecification(resultSpec);
   }
 
-  public AnalysisEngineManagement getManagementInterface()
-  {
+  public AnalysisEngineManagement getManagementInterface() {
     UimaContextAdmin uc = getUimaContextAdmin();
     return uc == null ? null : uc.getManagementInterface();
   }
 
-  public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException, IOException
-  {
+  public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
+                  IOException {
     batchProcessComplete();
-    
+
   }
 
-  public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException, IOException
-  {
-    collectionProcessComplete();    
+  public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
+                  IOException {
+    collectionProcessComplete();
   }
 
   /**
-	 * Sets the performance tuning settings in effect for this Analysis Engine.
-	 * This should be set from the initialize() method if the defaults are to
-	 * be overriden.
-	 * 
-	 * @param aSettings performance tuning settings
-	 */
-  protected void setPerformanceTuningSettings(Properties aSettings)
-  {
-  	mPerformanceTuningSettings = (Properties)aSettings.clone();
-    String procTrEnabled = mPerformanceTuningSettings.getProperty(UIMAFramework.PROCESS_TRACE_ENABLED);
+   * Sets the performance tuning settings in effect for this Analysis Engine. This should be set
+   * from the initialize() method if the defaults are to be overriden.
+   * 
+   * @param aSettings
+   *          performance tuning settings
+   */
+  protected void setPerformanceTuningSettings(Properties aSettings) {
+    mPerformanceTuningSettings = (Properties) aSettings.clone();
+    String procTrEnabled = mPerformanceTuningSettings
+                    .getProperty(UIMAFramework.PROCESS_TRACE_ENABLED);
     mProcessTraceEnabled = procTrEnabled == null || procTrEnabled.equalsIgnoreCase("true");
   }
-  
-  protected void normalizeIsoLangCodes(ProcessingResourceMetaData md)
-  {
-    if (md == null)
-    {
+
+  protected void normalizeIsoLangCodes(ProcessingResourceMetaData md) {
+    if (md == null) {
       return;
     }
     Capability[] capabilities = md.getCapabilities();
-    if (capabilities == null)
-    {
+    if (capabilities == null) {
       return;
     }
-    for (int i = 0; i < capabilities.length; i++)
-    {
+    for (int i = 0; i < capabilities.length; i++) {
       Capability c = capabilities[i];
       String[] languages = c.getLanguagesSupported();
-      for (int j = 0; j < languages.length; j++)
-      {
+      for (int j = 0; j < languages.length; j++) {
         languages[j] = Language.normalize(languages[j]);
       }
     }
-  } 
-  
+  }
+
   /**
-   * Kludge - make this  public (but not part of AnalysisEngine interface) so
-   * that TAFAnnotator can access it.
+   * Kludge - make this public (but not part of AnalysisEngine interface) so that TAFAnnotator can
+   * access it.
+   * 
    * @see org.apache.uima.resource.ConfigurableResource_ImplBase#getCurrentConfigParameterSettings()
    */
-  protected ConfigurationParameterSettings getCurrentConfigParameterSettings()
-  {
+  protected ConfigurationParameterSettings getCurrentConfigParameterSettings() {
     return getUimaContextAdmin().getConfigurationManager().getCurrentConfigParameterSettings(
-        getUimaContextAdmin().getQualifiedContextName());
-  }  
-  
-  /** Gets the MBean that provides the management interface to this AE.
-   *  Returns the same object as getManagementInterface() but casted to
-   *  the AnalysisEngineManagement type.
-   */
-  protected AnalysisEngineManagementImpl getMBean()
-  {
-    return (AnalysisEngineManagementImpl)getUimaContextAdmin().getManagementInterface();
+                    getUimaContextAdmin().getQualifiedContextName());
   }
-  
-  protected void enterProcess()
-  {
+
+  /**
+   * Gets the MBean that provides the management interface to this AE. Returns the same object as
+   * getManagementInterface() but casted to the AnalysisEngineManagement type.
+   */
+  protected AnalysisEngineManagementImpl getMBean() {
+    return (AnalysisEngineManagementImpl) getUimaContextAdmin().getManagementInterface();
+  }
+
+  protected void enterProcess() {
     mProcessTimer.startIt();
   }
 
-  protected void exitProcess()
-  {
+  protected void exitProcess() {
     mProcessTimer.stopIt();
     getMBean().reportAnalysisTime(mProcessTimer.getDuration());
   }
- 
-  protected void enterBatchProcessComplete()
-  {
+
+  protected void enterBatchProcessComplete() {
     mProcessTimer.startIt();
   }
 
-  protected void exitBatchProcessComplete()
-  {
+  protected void exitBatchProcessComplete() {
     mProcessTimer.stopIt();
     getMBean().reportBatchProcessCompleteTime(mProcessTimer.getDuration());
   }
 
-  protected void enterCollectionProcessComplete()
-  {
+  protected void enterCollectionProcessComplete() {
     mProcessTimer.startIt();
   }
 
-  protected void exitCollectionProcessComplete()
-  {
+  protected void exitCollectionProcessComplete() {
     mProcessTimer.stopIt();
     getMBean().reportCollectionProcessCompleteTime(mProcessTimer.getDuration());
   }
-  
+
   /**
-   * Construct a ProcessTrace object that represnts the last excecution of
-   * this AnalysisEngine.  This is used so that we can return a ProcessTrace
-   * object from each process() call for backwards compatibility with version 1.x.
+   * Construct a ProcessTrace object that represnts the last excecution of this AnalysisEngine. This
+   * is used so that we can return a ProcessTrace object from each process() call for backwards
+   * compatibility with version 1.x.
    */
-  protected ProcessTrace buildProcessTraceFromMBeanStats()
-  {
+  protected ProcessTrace buildProcessTraceFromMBeanStats() {
     ProcessTrace trace = new ProcessTrace_impl(getPerformanceTuningSettings());
     buildProcessTraceFromMBeanStats(trace);
     return trace;
   }
 
   /**
-   * Modify an existing ProcessTrace object by adding events that represent the 
-   * last excecution of this AnalysisEngine.  This is used so that we can return 
-   * a ProcessTrace object from each process() call for backwards compatibility 
-   * with version 1.x.
+   * Modify an existing ProcessTrace object by adding events that represent the last excecution of
+   * this AnalysisEngine. This is used so that we can return a ProcessTrace object from each
+   * process() call for backwards compatibility with version 1.x.
    */
-  protected void buildProcessTraceFromMBeanStats(ProcessTrace trace)
-  {
-    //this is the implementation for primitives only.  Aggregate AE overrides.
-    if (isProcessTraceEnabled())
-    {
-      //to accomodate service adapters, check if a Service Call time is registered
-      int serviceCallTime = (int)getMBean().getServiceCallTimeSinceMark();
+  protected void buildProcessTraceFromMBeanStats(ProcessTrace trace) {
+    // this is the implementation for primitives only. Aggregate AE overrides.
+    if (isProcessTraceEnabled()) {
+      // to accomodate service adapters, check if a Service Call time is registered
+      int serviceCallTime = (int) getMBean().getServiceCallTimeSinceMark();
       ProcessTraceEvent_impl serviceCallEvent = null;
-      if (serviceCallTime > 0)
-      {
-        serviceCallEvent = new ProcessTraceEvent_impl(
-            getMetaData().getName(), "Service Call", "");
+      if (serviceCallTime > 0) {
+        serviceCallEvent = new ProcessTraceEvent_impl(getMetaData().getName(), "Service Call", "");
         serviceCallEvent.setDuration(serviceCallTime);
         trace.addEvent(serviceCallEvent);
       }
-        
-      //now check Analysis time    
-      int analysisTime = (int)getMBean().getAnalysisTimeSinceMark();
-      if (analysisTime > 0)
-      {
-        ProcessTraceEvent_impl analysisEvent = new ProcessTraceEvent_impl(
-          getMetaData().getName(), "Analysis", "");
+
+      // now check Analysis time
+      int analysisTime = (int) getMBean().getAnalysisTimeSinceMark();
+      if (analysisTime > 0) {
+        ProcessTraceEvent_impl analysisEvent = new ProcessTraceEvent_impl(getMetaData().getName(),
+                        "Analysis", "");
         analysisEvent.setDuration(analysisTime);
-        if (serviceCallEvent != null)
-        {
-          serviceCallEvent.addSubEvent(analysisEvent);        
-        }
-        else
-        {
+        if (serviceCallEvent != null) {
+          serviceCallEvent.addSubEvent(analysisEvent);
+        } else {
           trace.addEvent(analysisEvent);
         }
       }
-  
-      //set a mark at the current time, so that subsequent calls to
-      //this method will pick up only times recorded after the mark.
+
+      // set a mark at the current time, so that subsequent calls to
+      // this method will pick up only times recorded after the mark.
       getMBean().mark();
     }
   }
 
-
   /**
-   * Gets whether the Process Trace (which collects performance stats
-   * for this AnalysisEngine) is enabled.  This is controlled through
-   * the PerformanceTuningSettings passed to the initialize() method.
+   * Gets whether the Process Trace (which collects performance stats for this AnalysisEngine) is
+   * enabled. This is controlled through the PerformanceTuningSettings passed to the initialize()
+   * method.
    * 
    * @return true if the ProcessTrace is enabled, false if not.
    */
-  protected boolean isProcessTraceEnabled()
-  {
+  protected boolean isProcessTraceEnabled() {
     return mProcessTraceEnabled;
   }
 }

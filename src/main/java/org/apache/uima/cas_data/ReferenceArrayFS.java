@@ -20,25 +20,23 @@
 package org.apache.uima.cas_data;
 
 /**
- * A subtype of FeatureStructure that represents an array of primitive values
- * (Strings, int, or floats).
+ * A subtype of FeatureStructure that represents an array of primitive values (Strings, int, or
+ * floats).
  * 
  * 
  */
-public interface ReferenceArrayFS extends FeatureStructure
-{
+public interface ReferenceArrayFS extends FeatureStructure {
   /**
    * Get the size of this array.
    * 
    * @return the size
    */
   public int size();
-    
 
-	/**
-	 * Gets the IDs of the target feature structures.  
-	 * 
-	 * @return string array containing feature structure IDs 
-	 */
-	public String[] getIdRefArray();  
+  /**
+   * Gets the IDs of the target feature structures.
+   * 
+   * @return string array containing feature structure IDs
+   */
+  public String[] getIdRefArray();
 }

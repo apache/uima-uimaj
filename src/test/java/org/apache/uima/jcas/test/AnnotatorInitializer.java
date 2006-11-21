@@ -24,13 +24,13 @@ import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 
 /**
- * Implement this interface to create types, features and indexes.  Use in
- * conjunction with <code>CASInitializer</code>.
+ * Implement this interface to create types, features and indexes. Use in conjunction with
+ * <code>CASInitializer</code>.
  */
 public interface AnnotatorInitializer {
 
   void initTypeSystem(TypeSystemMgr tsm);
-  
+
   void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts);
 
 }

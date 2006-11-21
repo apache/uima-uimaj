@@ -29,68 +29,56 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  * 
  * 
  */
-public class FileLanguageResourceSpecifier_impl extends MetaDataObject_impl
-	implements FileLanguageResourceSpecifier 
-{
-  
+public class FileLanguageResourceSpecifier_impl extends MetaDataObject_impl implements
+                FileLanguageResourceSpecifier {
+
+  static final long serialVersionUID = 4660680936104675527L;
+
+  /** URL prefix for the file. */
+  private String mFileUrlPrefix;
+
+  /** URL suffix for the file. */
+  private String mFileUrlSuffix;
+
   /**
    * Creates a new <code>FileLanguageResourceSpecifier_impl</code>.
    */
-  public FileLanguageResourceSpecifier_impl()
-  {
+  public FileLanguageResourceSpecifier_impl() {
   }
-     
+
   /**
    * @see org.apache.uima.resource.FileLanguageResourceSpecifier#getFileUrlPrefix()
    */
-  public String getFileUrlPrefix()
-  {
+  public String getFileUrlPrefix() {
     return mFileUrlPrefix;
   }
 
   /**
    * @see org.apache.uima.resource.FileLanguageResourceSpecifier#getFileUrlSuffix()
    */
-  public String getFileUrlSuffix()
-  {
+  public String getFileUrlSuffix() {
     return mFileUrlSuffix;
   }
 
   /**
    * @see org.apache.uima.resource.FileLanguageResourceSpecifier#setFileUrlPrefix(java.lang.String)
    */
-  public void setFileUrlPrefix(String aPrefix)
-  {
+  public void setFileUrlPrefix(String aPrefix) {
     mFileUrlPrefix = aPrefix;
   }
 
   /**
    * @see org.apache.uima.resource.FileLanguageResourceSpecifier#setFileUrlSuffix(java.lang.String)
    */
-  public void setFileUrlSuffix(String aSuffix)
-  {
+  public void setFileUrlSuffix(String aSuffix) {
     mFileUrlSuffix = aSuffix;
   }
 
-  
-  protected XmlizationInfo getXmlizationInfo()
-  {
+  protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
-  
-  static final private XmlizationInfo XMLIZATION_INFO =
-    new XmlizationInfo("fileLanguageResourceSpecifier",
-      new PropertyXmlInfo[]{
-         new PropertyXmlInfo("fileUrlPrefix"),
-         new PropertyXmlInfo("fileUrlSuffix"),
-      });
-       
 
-  /** URL prefix for the file. */
-  private String mFileUrlPrefix;
-  
-  /** URL suffix for the file. */
-  private String mFileUrlSuffix;
-
-  static final long serialVersionUID = 4660680936104675527L;
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+                  "fileLanguageResourceSpecifier", new PropertyXmlInfo[] {
+                      new PropertyXmlInfo("fileUrlPrefix"), new PropertyXmlInfo("fileUrlSuffix"), });
 }

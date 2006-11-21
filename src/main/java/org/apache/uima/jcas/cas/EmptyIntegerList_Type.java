@@ -27,35 +27,39 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.impl.JCas;
 
 public class EmptyIntegerList_Type extends IntegerList_Type {
-  protected FSGenerator getFSGenerator() {return fsGenerator;}
-  private final FSGenerator fsGenerator = 
-    new FSGenerator() {
-      public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (instanceOf_Type.useExistingInstance) {
-  			   // Return eq fs instance if already created
-  		     FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
-  		     if (null == fs) {
-  		       fs = new EmptyIntegerList(addr, instanceOf_Type);
-  			     instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
-  			     return fs;
-  		     }
-  		     return fs;
-        } else return new EmptyIntegerList(addr, instanceOf_Type);
-  	  }
-    };
+  protected FSGenerator getFSGenerator() {
+    return fsGenerator;
+  }
+
+  private final FSGenerator fsGenerator = new FSGenerator() {
+    public FeatureStructure createFS(int addr, CASImpl cas) {
+      if (instanceOf_Type.useExistingInstance) {
+        // Return eq fs instance if already created
+        FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
+        if (null == fs) {
+          fs = new EmptyIntegerList(addr, instanceOf_Type);
+          instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
+          return fs;
+        }
+        return fs;
+      } else
+        return new EmptyIntegerList(addr, instanceOf_Type);
+    }
+  };
 
   public final static int typeIndexID = EmptyIntegerList.typeIndexID;
 
   public final static boolean featOkTst = JCas.getFeatOkTst("uima.cas.EmptyIntegerList");
 
-  //* initialize variables to correspond with Cas Type and Features
+  // * initialize variables to correspond with Cas Type and Features
   public EmptyIntegerList_Type(JCas jcas, Type casType) {
     super(jcas, casType);
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
+    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
   }
 
-  protected EmptyIntegerList_Type() { //block default new operator
-    throw new RuntimeException("Internal Error-this constructor should never be called.");  }
+  protected EmptyIntegerList_Type() { // block default new operator
+    throw new RuntimeException("Internal Error-this constructor should never be called.");
+  }
 
 }

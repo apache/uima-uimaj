@@ -26,37 +26,41 @@ import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.impl.JCas;
 
-  /* comment 5 of 14 */
+/* comment 5 of 14 */
 public class Separator_Type extends TokenType_Type {
-  protected FSGenerator getFSGenerator() {return fsGenerator;};
-  private final FSGenerator fsGenerator = 
-    new FSGenerator() {
-      public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (instanceOf_Type.useExistingInstance) {
-  			   // Return eq fs instance if already created
-  		     FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
-  		     if (null == fs) {
-  		       fs = new Separator(addr, instanceOf_Type);
-  			     instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
-  			     return fs;
-  		     }
-  		     return fs;
-        } else return new Separator(addr, instanceOf_Type);
-  	  }
-    };
+  protected FSGenerator getFSGenerator() {
+    return fsGenerator;
+  };
+
+  private final FSGenerator fsGenerator = new FSGenerator() {
+    public FeatureStructure createFS(int addr, CASImpl cas) {
+      if (instanceOf_Type.useExistingInstance) {
+        // Return eq fs instance if already created
+        FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
+        if (null == fs) {
+          fs = new Separator(addr, instanceOf_Type);
+          instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
+          return fs;
+        }
+        return fs;
+      } else
+        return new Separator(addr, instanceOf_Type);
+    }
+  };
 
   public final static int typeIndexID = Separator.typeIndexID;
 
   public final static boolean featOkTst = JCas.getFeatOkTst("x.y.z.Separator");
 
-  //* initialize variables to correspond with Cas Type and Features
+  // * initialize variables to correspond with Cas Type and Features
   public Separator_Type(JCas jcas, Type casType) {
     super(jcas, casType);
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
+    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
   }
 
-  protected Separator_Type() { //block default new operator
-    throw new RuntimeException("Internal Error-this constructor should never be called.");  }
+  protected Separator_Type() { // block default new operator
+    throw new RuntimeException("Internal Error-this constructor should never be called.");
+  }
 
 }

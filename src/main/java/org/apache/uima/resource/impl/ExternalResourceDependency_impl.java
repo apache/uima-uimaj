@@ -29,66 +29,65 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  * 
  * 
  */
-public class ExternalResourceDependency_impl extends MetaDataObject_impl
-  implements ExternalResourceDependency
-{ 
-  
+public class ExternalResourceDependency_impl extends MetaDataObject_impl implements
+                ExternalResourceDependency {
+
+  static final long serialVersionUID = 8416783152191685356L;
+
+  private String mKey;
+
+  private String mDescription;
+
+  private String mInterfaceName;
+
+  private boolean mOptional;
+
   /**
    * @see org.apache.uima.analysis_engine.ExternalResourceDependency#getKey()
    */
-  public String getKey()
-  {
+  public String getKey() {
     return mKey;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.ExternalResourceDependency#getInterfaceName()
    */
-  public String getInterfaceName()
-  {
+  public String getInterfaceName() {
     return mInterfaceName;
   }
-
 
   /**
    * @see org.apache.uima.analysis_engine.ExternalResourceDependency#setKey(String)
    */
-  public void setKey(String aKey)
-  {
+  public void setKey(String aKey) {
     mKey = aKey;
   }
-
 
   /**
    * @see org.apache.uima.analysis_engine.ExternalResourceDependency#setInterfaceName(String)
    */
-  public void setInterfaceName(String aName)
-  {
+  public void setInterfaceName(String aName) {
     mInterfaceName = aName;
   }
-
 
   /**
    * @see org.apache.uima.analysis_engine.ExternalResourceDependency#getDescription()
    */
-  public String getDescription()
-  {
+  public String getDescription() {
     return mDescription;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.ExternalResourceDependency#isOptional()
    */
-  public boolean isOptional()
-  {
+  public boolean isOptional() {
     return mOptional;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.ExternalResourceDependency#setDescription(java.lang.String)
    */
-  public void setDescription(String aDescription)
-  {
+  public void setDescription(String aDescription) {
     mDescription = aDescription;
 
   }
@@ -96,33 +95,16 @@ public class ExternalResourceDependency_impl extends MetaDataObject_impl
   /**
    * @see org.apache.uima.analysis_engine.ExternalResourceDependency#setOptional(boolean)
    */
-  public void setOptional(boolean aOptional)
-  {
+  public void setOptional(boolean aOptional) {
     mOptional = aOptional;
   }
 
-
-  protected XmlizationInfo getXmlizationInfo()
-  {
+  protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
-  
-  static final private XmlizationInfo XMLIZATION_INFO =
-    new XmlizationInfo("externalResourceDependency",
-      new PropertyXmlInfo[]{
-         new PropertyXmlInfo("key"),
-         new PropertyXmlInfo("description",false),
-         new PropertyXmlInfo("interfaceName"),
-         new PropertyXmlInfo("optional"),
-      });
 
-  private String mKey;
-   
-  private String mDescription;
-
-  private String mInterfaceName;
-  
-  private boolean mOptional;
-  
-  static final long serialVersionUID = 8416783152191685356L;
-}  
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+                  "externalResourceDependency", new PropertyXmlInfo[] { new PropertyXmlInfo("key"),
+                      new PropertyXmlInfo("description", false),
+                      new PropertyXmlInfo("interfaceName"), new PropertyXmlInfo("optional"), });
+}

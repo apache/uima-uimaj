@@ -34,49 +34,41 @@ import org.apache.uima.resource.metadata.Capability;
  * Static utility methods relating to analysis engines.
  * 
  */
-public class AnalysisEngineUtils
-{
-  
-  /**
-   * Creates a FSMatchConstraint used when formatting the CAS for output.
-   * This constraint filters the feature structures in the CAS so that the
-   * only feature sturctures that are outputted are those of types specified
-   * in the Analysis Engine's capability specification.
-   *
-   * @param aMetaData metadata for the text analysis engine that is producing
-   *    the results to be filtered
-   *
-   * @return the filter to be passed to
-   *    {@link TCasFormatter#format(TCAS,FSMatchConstraint)}.
-   */
-  public static FSMatchConstraint createOutputFilter(AnalysisEngineMetaData aMetaData)
-  {
-    //get a list of the AE's output type names
-    Set outputTypes = new TreeSet();
-    //outputTypes.add("Document"); //always output the document
-    Capability[] capabilities =
-        aMetaData.getCapabilities();
-    for (int i = 0; i < capabilities.length; i++) {
-        TypeOrFeature[] outputs = capabilities[i].getOutputs();
-        for (int j = 0; j < outputs.length; j++) {
-            if (outputs[j].isType())
-            {
-                outputTypes.add(outputs[j].getName());
-            }
-        }
-    }    
+public class AnalysisEngineUtils {
 
-    FSTypeConstraint constraint  = 
-      ConstraintFactory.instance().createTypeConstraint();
+  /**
+   * Creates a FSMatchConstraint used when formatting the CAS for output. This constraint filters
+   * the feature structures in the CAS so that the only feature sturctures that are outputted are
+   * those of types specified in the Analysis Engine's capability specification.
+   * 
+   * @param aMetaData
+   *          metadata for the text analysis engine that is producing the results to be filtered
+   * 
+   * @return the filter to be passed to {@link TCasFormatter#format(TCAS,FSMatchConstraint)}.
+   */
+  public static FSMatchConstraint createOutputFilter(AnalysisEngineMetaData aMetaData) {
+    // get a list of the AE's output type names
+    Set outputTypes = new TreeSet();
+    // outputTypes.add("Document"); //always output the document
+    Capability[] capabilities = aMetaData.getCapabilities();
+    for (int i = 0; i < capabilities.length; i++) {
+      TypeOrFeature[] outputs = capabilities[i].getOutputs();
+      for (int j = 0; j < outputs.length; j++) {
+        if (outputs[j].isType()) {
+          outputTypes.add(outputs[j].getName());
+        }
+      }
+    }
+
+    FSTypeConstraint constraint = ConstraintFactory.instance().createTypeConstraint();
 
     Iterator it = outputTypes.iterator();
-    while (it.hasNext())
-    {
-      //get next Type in set
-      String typeName = (String)it.next();
-      //add type to constraint
-      constraint.add(typeName);          
+    while (it.hasNext()) {
+      // get next Type in set
+      String typeName = (String) it.next();
+      // add type to constraint
+      constraint.add(typeName);
     }
-    return constraint;     
+    return constraint;
   }
 }

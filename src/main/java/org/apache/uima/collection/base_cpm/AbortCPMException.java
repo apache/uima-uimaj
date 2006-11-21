@@ -20,15 +20,13 @@
 package org.apache.uima.collection.base_cpm;
 
 /**
-/**
- * Exception to notify the CPM to terminate itself. The CPM can
- * be terminated due to excessive errors during the processing. 
+ * /** Exception to notify the CPM to terminate itself. The CPM can be terminated due to excessive
+ * errors during the processing.
  */
- public class AbortCPMException extends Exception
-{
-	private static final long serialVersionUID = 3227334551231448553L;
-  public AbortCPMException( String msg )
-	{
-		super( msg);
-	}
+public class AbortCPMException extends Exception {
+  private static final long serialVersionUID = 3227334551231448553L;
+
+  public AbortCPMException(String msg) {
+    super(msg);
+  }
 }

@@ -29,73 +29,67 @@ import junit.framework.TestCase;
 
 /**
  * Pear encoding tests
- *    
+ * 
  * @author Michael Baessler
  */
-public class PearEncodingTest extends TestCase
-{
-	/**JUnit test base path*/
-	private String junitTestBasePath;
+public class PearEncodingTest extends TestCase {
+  /** JUnit test base path */
+  private String junitTestBasePath;
 
-	/**
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	protected void setUp() throws Exception
-	{
-		//get test base path setting
-		junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    // get test base path setting
+    junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
 
-	}
-	
-	public void testUTF8NoSignature() throws Exception
-	{
-		//get XML file
-		File xmlFile = new File(junitTestBasePath, "pearTests/encodingTests/UTF8_no_signature.xml");
-		//get encoding
-		String encoding = XMLUtil.detectXmlFileEncoding(xmlFile);
-		
-		//normalize encoding
-		encoding = encoding.toUpperCase();
-		
-		Assert.assertTrue(encoding.equals("UTF-8"));
-	}
-	
-	public void testUTF8WithSignature() throws Exception
-	{
-		//get XML file
-		File xmlFile = new File(junitTestBasePath, "pearTests/encodingTests/UTF8_with_signature.xml");
-		//get encoding
-		String encoding = XMLUtil.detectXmlFileEncoding(xmlFile);
-		
-		//normalize encoding
-		encoding = encoding.toUpperCase();
-		
-		Assert.assertTrue(encoding.equals("UTF-8"));
-	}
-	
-	public void testUTF16NoSignature() throws Exception
-	{
-		//get XML file
-		File xmlFile = new File(junitTestBasePath, "pearTests/encodingTests/UTF16_no_signature.xml");
-		//get encoding
-		String encoding = XMLUtil.detectXmlFileEncoding(xmlFile);
-		
-		//normalize encoding
-		encoding = encoding.toUpperCase();
-		
-		Assert.assertTrue(encoding.equals("UTF-16LE"));
-	}
-	
-	public void testUTF16WithSignature() throws Exception
-	{
-		//get XML file
-		File xmlFile = new File(junitTestBasePath, "pearTests/encodingTests/UTF16_with_signature.xml");
-		//get encoding
-		String encoding = XMLUtil.detectXmlFileEncoding(xmlFile);
-		
-		//normalize encoding
-		encoding = encoding.toUpperCase();
-		
-		Assert.assertTrue(encoding.equals("UTF-16"));
-	}
+  }
+
+  public void testUTF8NoSignature() throws Exception {
+    // get XML file
+    File xmlFile = new File(junitTestBasePath, "pearTests/encodingTests/UTF8_no_signature.xml");
+    // get encoding
+    String encoding = XMLUtil.detectXmlFileEncoding(xmlFile);
+
+    // normalize encoding
+    encoding = encoding.toUpperCase();
+
+    Assert.assertTrue(encoding.equals("UTF-8"));
+  }
+
+  public void testUTF8WithSignature() throws Exception {
+    // get XML file
+    File xmlFile = new File(junitTestBasePath, "pearTests/encodingTests/UTF8_with_signature.xml");
+    // get encoding
+    String encoding = XMLUtil.detectXmlFileEncoding(xmlFile);
+
+    // normalize encoding
+    encoding = encoding.toUpperCase();
+
+    Assert.assertTrue(encoding.equals("UTF-8"));
+  }
+
+  public void testUTF16NoSignature() throws Exception {
+    // get XML file
+    File xmlFile = new File(junitTestBasePath, "pearTests/encodingTests/UTF16_no_signature.xml");
+    // get encoding
+    String encoding = XMLUtil.detectXmlFileEncoding(xmlFile);
+
+    // normalize encoding
+    encoding = encoding.toUpperCase();
+
+    Assert.assertTrue(encoding.equals("UTF-16LE"));
+  }
+
+  public void testUTF16WithSignature() throws Exception {
+    // get XML file
+    File xmlFile = new File(junitTestBasePath, "pearTests/encodingTests/UTF16_with_signature.xml");
+    // get encoding
+    String encoding = XMLUtil.detectXmlFileEncoding(xmlFile);
+
+    // normalize encoding
+    encoding = encoding.toUpperCase();
+
+    Assert.assertTrue(encoding.equals("UTF-16"));
+  }
 }

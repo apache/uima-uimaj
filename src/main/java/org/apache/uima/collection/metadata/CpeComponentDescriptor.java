@@ -22,23 +22,24 @@ package org.apache.uima.collection.metadata;
 import org.apache.uima.resource.metadata.MetaDataObject;
 
 /**
- * An object that holds configuration that is part of the CPE descriptor. Provides the
- * means of setting component descriptor file path containing configuration
- *  
+ * An object that holds configuration that is part of the CPE descriptor. Provides the means of
+ * setting component descriptor file path containing configuration
+ * 
  * 
  */
-public interface CpeComponentDescriptor extends MetaDataObject
-{
-	/**
-	 * Sets component's descriptor file path
-	 * 
-	 * @param aInclude - {@link org.apache.uima.collection.metadata.CpeInclude} containing file path
-	 */
-	public void setInclude(CpeInclude aInclude);
-	/**
-	 * Returns component's descriptor file path
-	 * 
-	 * @return {@link org.apache.uima.collection.metadata.CpeInclude} 
-	 */
-	public CpeInclude getInclude();
+public interface CpeComponentDescriptor extends MetaDataObject {
+  /**
+   * Sets component's descriptor file path
+   * 
+   * @param aInclude -
+   *          {@link org.apache.uima.collection.metadata.CpeInclude} containing file path
+   */
+  public void setInclude(CpeInclude aInclude);
+
+  /**
+   * Returns component's descriptor file path
+   * 
+   * @return {@link org.apache.uima.collection.metadata.CpeInclude}
+   */
+  public CpeInclude getInclude();
 }

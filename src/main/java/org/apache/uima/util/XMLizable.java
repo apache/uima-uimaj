@@ -28,106 +28,100 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 /**
- * An interface to be implemented by UIMA classes that can be written to
- * and parsed from XML.  Classes must implement this interface in order for
- * the UIMA {@link XMLParser} to generate them from XML documents.  XMLizble
- * classes also must define a zero-argument constructor.  When constructing
- * an object, the <code>XMLParser</code> will first create it using the
- * zero-argument constructor and then call 
- * {@link #buildFromXMLElement(Element,XMLParser)}.
+ * An interface to be implemented by UIMA classes that can be written to and parsed from XML.
+ * Classes must implement this interface in order for the UIMA {@link XMLParser} to generate them
+ * from XML documents. XMLizble classes also must define a zero-argument constructor. When
+ * constructing an object, the <code>XMLParser</code> will first create it using the zero-argument
+ * constructor and then call {@link #buildFromXMLElement(Element,XMLParser)}.
  * 
  */
-public interface XMLizable 
-{
+public interface XMLizable {
 
   /**
-   * Writes this object's XML representation as a string.  Note that if
-   * you want to write the XML to a file, it is highly recommended that
-   * you use {@link #toXML(OutputStream)} instead, as it ensures that
-   * output is written in UTF-8 encoding, which is the default encoding
-   * that should be used for XML files. 
+   * Writes this object's XML representation as a string. Note that if you want to write the XML to
+   * a file, it is highly recommended that you use {@link #toXML(OutputStream)} instead, as it
+   * ensures that output is written in UTF-8 encoding, which is the default encoding that should be
+   * used for XML files.
    * 
-   * @param aWriter a Writer to which the XML string will be written
+   * @param aWriter
+   *          a Writer to which the XML string will be written
    * 
-   * @throws IOException if an I/O failure occurs
+   * @throws IOException
+   *           if an I/O failure occurs
    */
-  public void toXML(Writer aWriter)
-    throws SAXException, IOException;
-
+  public void toXML(Writer aWriter) throws SAXException, IOException;
 
   /**
    * Writes this object's XML representation as a string in UTF-8 encoding.
    * 
-   * @param aOutputStream an OutputStream to which the XML string will
-   *   be written, in UTF-8 encoding.
+   * @param aOutputStream
+   *          an OutputStream to which the XML string will be written, in UTF-8 encoding.
    * 
-   * @throws IOException if an I/O failure occurs
+   * @throws IOException
+   *           if an I/O failure occurs
    */
-  public void toXML(OutputStream aOutputStream)
-    throws SAXException, IOException;
-
-  
-  /**
-   * Writes this object's XML representation by making calls on a SAX
-   * {@link ContentHandler}.  This method just calls
-   * <code>toXML(aContentHandler,false)</code>, so subclasses should 
-   * override that version of this method, not this one.
-   * 
-   * @param aContentHandler the content handler to which this object will
-   *   write events that describe its XML representation.
-   * 
-   * @throws IOException if an I/O failure occurs
-   */
-  public void toXML(ContentHandler aContentHandler)
-    throws SAXException;
-  
- 
-  /**
-   * Writes this object's XML representation by making calls on a SAX
-   * {@link ContentHandler}.
-   * 
-   * @param aContentHandler the content handler to which this object will
-   *   write events that describe its XML representation.
-   * @param aWriteDefaultNamespaceAttribute whether the namespace of this
-   *   element should be written as the default namespace.  This should be
-   *   done only for the root element, and it defaults to false.
-   * 
-   * @throws IOException if an I/O failure occurs
-   */
-  public void toXML(ContentHandler aContentHandler, 
-                    boolean aWriteDefaultNamespaceAttribute)
-    throws SAXException;
-
+  public void toXML(OutputStream aOutputStream) throws SAXException, IOException;
 
   /**
-   * Initializes this object from its XML DOM representation.  This
-   * method is typically called from the {@link XMLParser}.
+   * Writes this object's XML representation by making calls on a SAX {@link ContentHandler}. This
+   * method just calls <code>toXML(aContentHandler,false)</code>, so subclasses should override
+   * that version of this method, not this one.
    * 
-   * @param aElement the XML element that represents this object.
-   * @param aParser a reference to the UIMA <code>XMLParser</code>.
-   *    The  {@link XMLParser#buildObject(Element)} method can be used to
-   *    construct sub-objects.
+   * @param aContentHandler
+   *          the content handler to which this object will write events that describe its XML
+   *          representation.
    * 
-   * @throws InvalidXMLException if the input XML element does not specify
-   *    a valid object
+   * @throws IOException
+   *           if an I/O failure occurs
    */
-  public void buildFromXMLElement(Element aElement, XMLParser aParser)
-    throws InvalidXMLException;
+  public void toXML(ContentHandler aContentHandler) throws SAXException;
 
-	/**
-	 * Initializes this object from its XML DOM representation.  This
-	 * method is typically called from the {@link XMLParser}.
-	 * 
-	 * @param aElement the XML element that represents this object.
-	 * @param aParser a reference to the UIMA <code>XMLParser</code>.
-	 *    The  {@link XMLParser#buildObject(Element)} method can be used to
-	 *    construct sub-objects.
-	 * @param aOptions option settings
-	 * 
-	 * @throws InvalidXMLException if the input XML element does not specify
-	 *    a valid object
-	 */
-	public void buildFromXMLElement(Element aElement, XMLParser aParser,
-	  XMLParser.ParsingOptions aOptions)
-		throws InvalidXMLException;
+  /**
+   * Writes this object's XML representation by making calls on a SAX {@link ContentHandler}.
+   * 
+   * @param aContentHandler
+   *          the content handler to which this object will write events that describe its XML
+   *          representation.
+   * @param aWriteDefaultNamespaceAttribute
+   *          whether the namespace of this element should be written as the default namespace. This
+   *          should be done only for the root element, and it defaults to false.
+   * 
+   * @throws IOException
+   *           if an I/O failure occurs
+   */
+  public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
+                  throws SAXException;
+
+  /**
+   * Initializes this object from its XML DOM representation. This method is typically called from
+   * the {@link XMLParser}.
+   * 
+   * @param aElement
+   *          the XML element that represents this object.
+   * @param aParser
+   *          a reference to the UIMA <code>XMLParser</code>. The
+   *          {@link XMLParser#buildObject(Element)} method can be used to construct sub-objects.
+   * 
+   * @throws InvalidXMLException
+   *           if the input XML element does not specify a valid object
+   */
+  public void buildFromXMLElement(Element aElement, XMLParser aParser) throws InvalidXMLException;
+
+  /**
+   * Initializes this object from its XML DOM representation. This method is typically called from
+   * the {@link XMLParser}.
+   * 
+   * @param aElement
+   *          the XML element that represents this object.
+   * @param aParser
+   *          a reference to the UIMA <code>XMLParser</code>. The
+   *          {@link XMLParser#buildObject(Element)} method can be used to construct sub-objects.
+   * @param aOptions
+   *          option settings
+   * 
+   * @throws InvalidXMLException
+   *           if the input XML element does not specify a valid object
+   */
+  public void buildFromXMLElement(Element aElement, XMLParser aParser,
+                  XMLParser.ParsingOptions aOptions) throws InvalidXMLException;
 }

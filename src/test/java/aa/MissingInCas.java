@@ -19,51 +19,65 @@
 
 package aa;
 
-import org.apache.uima.jcas.impl.JCas; 
+import org.apache.uima.jcas.impl.JCas;
 import org.apache.uima.jcas.cas.TOP_Type;
 
 import org.apache.uima.jcas.cas.TOP;
 
-
-/** 
- * Updated by JCasGen Tue Feb 21 14:56:04 EST 2006
- * XML source: C:/a/Eclipse/3.1/j4/jedii_jcas_tests/testTypes.xml
- * @generated */
+/**
+ * Updated by JCasGen Tue Feb 21 14:56:04 EST 2006 XML source:
+ * C:/a/Eclipse/3.1/j4/jedii_jcas_tests/testTypes.xml
+ * 
+ * @generated
+ */
 public class MissingInCas extends TOP {
-  /** @generated
-   * @ordered 
+  /**
+   * @generated
+   * @ordered
    */
   public final static int typeIndexID = JCas.getNextIndex();
-  /** @generated
-   * @ordered 
+
+  /**
+   * @generated
+   * @ordered
    */
   public final static int type = typeIndexID;
-  /** @generated  */
-  public              int getTypeIndexID() {return typeIndexID;}
- 
-  /** Never called.  Disable default constructor
-   * @generated */
-  protected MissingInCas() {}
-    
-  /** Internal - constructor used by generator 
-   * @generated */
+
+  /** @generated */
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  /**
+   * Never called. Disable default constructor
+   * 
+   * @generated
+   */
+  protected MissingInCas() {
+  }
+
+  /**
+   * Internal - constructor used by generator
+   * 
+   * @generated
+   */
   public MissingInCas(int addr, TOP_Type type) {
     super(addr, type);
     readObject();
   }
-  
+
   /** @generated */
   public MissingInCas(JCas jcas) {
     super(jcas);
-    readObject();   
-  } 
+    readObject();
+  }
 
-  /** <!-- begin-user-doc -->
-    * Write your own initialization here
-    * <!-- end-user-doc -->
-  @generated modifiable */
-  private void readObject() {}
-     
+  /**
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
+   * 
+   * @generated modifiable
+   */
+  private void readObject() {
+  }
+
 }
-
-    

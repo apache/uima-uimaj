@@ -27,56 +27,53 @@ import java.net.URL;
  * 
  * 
  */
-public interface RelativePathResolver
-{
-   
-   static final String UIMA_DATAPATH_PROP = "uima.datapath";
-  
+public interface RelativePathResolver {
+
+  static final String UIMA_DATAPATH_PROP = "uima.datapath";
+
   /**
-   * Gets the data path used to resolve relative paths.  More than one
-   * directory may be specified by separating them with the System
-   * <code>path.separator</code> character (; on windows, : on UNIX).
-   * Elements of this path may be absolute or relative file paths.
+   * Gets the data path used to resolve relative paths. More than one directory may be specified by
+   * separating them with the System <code>path.separator</code> character (; on windows, : on
+   * UNIX). Elements of this path may be absolute or relative file paths.
    * 
    * @return the data path
    */
   public String getDataPath();
-  
 
   /**
-   * Sets the data path used to resolve relative paths.  More than one
-   * directory may be specified by separating them with the System
-   * <code>path.separator</code> character (; on windows, : on UNIX).  
-   * Elements of this path may be absolute or relative file paths.
+   * Sets the data path used to resolve relative paths. More than one directory may be specified by
+   * separating them with the System <code>path.separator</code> character (; on windows, : on
+   * UNIX). Elements of this path may be absolute or relative file paths.
    * 
-   * @param aPath the data path
+   * @param aPath
+   *          the data path
    * 
-   * @throws MalformedURLException if a file path could not be converted to a URL
+   * @throws MalformedURLException
+   *           if a file path could not be converted to a URL
    */
-  public void setDataPath(String aPath)
-    throws MalformedURLException;
+  public void setDataPath(String aPath) throws MalformedURLException;
 
   /**
-   * Resolves a relative URL to an absolute URL.  This will attempt to resolve
-   * the URL relative to each element of the data path, sequentially starting
-   * with the first element.  If this results in an absolute URL at which a 
-   * file actually exists, that absolute URL is returned.  If no file could
-   * be found, <code>null</code> is returned.
+   * Resolves a relative URL to an absolute URL. This will attempt to resolve the URL relative to
+   * each element of the data path, sequentially starting with the first element. If this results in
+   * an absolute URL at which a file actually exists, that absolute URL is returned. If no file
+   * could be found, <code>null</code> is returned.
    * 
-   * @param aRelativeUrl the relative URL to be resolved (if an absolute URL is 
-   *    specified, it will be returned unmodified if a file actually exists
-   *    at the URL; otherwise <code>null</code> will be returned). 
+   * @param aRelativeUrl
+   *          the relative URL to be resolved (if an absolute URL is specified, it will be returned
+   *          unmodified if a file actually exists at the URL; otherwise <code>null</code> will be
+   *          returned).
    * 
-   * @return the absolute URL at which the file exists, <code>null</code> 
-   *    it none could be found.
+   * @return the absolute URL at which the file exists, <code>null</code> it none could be found.
    */
   public URL resolveRelativePath(URL aRelativeUrl);
-  
+
   /**
    * Sets the ClassLoader that should be used to resolve the resources.
-   *
-   * @param aClassLoader the ClassLoader that should be used to resolve the resources.
+   * 
+   * @param aClassLoader
+   *          the ClassLoader that should be used to resolve the resources.
    */
   public void setPathResolverClassLoader(ClassLoader aClassLoader);
-  
+
 }

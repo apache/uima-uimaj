@@ -22,45 +22,47 @@ package org.apache.uima.collection.metadata;
 import org.apache.uima.resource.metadata.MetaDataObject;
 
 /**
- * An object that holds configuration that is part of the CPE descriptor. It provides the 
- * means of configuring CPE Collection Reader Iterator.
- *  
+ * An object that holds configuration that is part of the CPE descriptor. It provides the means of
+ * configuring CPE Collection Reader Iterator.
+ * 
  */
-public interface CpeCollectionReaderIterator extends MetaDataObject
-{
-	/**
-	 * Return Descriptor 
-	 * 
-	 * @return
-	 */
-	public CpeComponentDescriptor getDescriptor();
-	/**
-	 * Associate Descriptor with the Collection Reader Iterator
-	 * 
-	 * @param descriptor
-	 */
-	public void setDescriptor(CpeComponentDescriptor descriptor);
-	/**
-	 * Return override parameters. These override parameters in the Collection Reader
-	 * component descriptor.
-	 * 
-	 * @return
-	 */
-	public CasProcessorConfigurationParameterSettings getConfigurationParameterSettings();
-	/**
-	 * Set parameters that will override params defined in the Collection Reader 
-	 * component descriptor.
-	 * 
-	 * @param settings
-	 */
-	public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings settings);
-	public CpeSofaMappings getSofaNameMappings();
+public interface CpeCollectionReaderIterator extends MetaDataObject {
+  /**
+   * Return Descriptor
+   * 
+   * @return
+   */
+  public CpeComponentDescriptor getDescriptor();
 
-	/**
-	 * Set Sofa Name Mappings
-	 * 
-	 * @param mappings
-	 */
-	public void setSofaNameMappings(CpeSofaMappings mappings);
-	
+  /**
+   * Associate Descriptor with the Collection Reader Iterator
+   * 
+   * @param descriptor
+   */
+  public void setDescriptor(CpeComponentDescriptor descriptor);
+
+  /**
+   * Return override parameters. These override parameters in the Collection Reader component
+   * descriptor.
+   * 
+   * @return
+   */
+  public CasProcessorConfigurationParameterSettings getConfigurationParameterSettings();
+
+  /**
+   * Set parameters that will override params defined in the Collection Reader component descriptor.
+   * 
+   * @param settings
+   */
+  public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings settings);
+
+  public CpeSofaMappings getSofaNameMappings();
+
+  /**
+   * Set Sofa Name Mappings
+   * 
+   * @param mappings
+   */
+  public void setSofaNameMappings(CpeSofaMappings mappings);
+
 }

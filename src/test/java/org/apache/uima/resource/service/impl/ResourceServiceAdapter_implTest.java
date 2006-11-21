@@ -35,45 +35,38 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 /**
  * Tests the ResourceServiceAdapter_impl class.
  * 
- * @author Adam Lally 
+ * @author Adam Lally
  */
-public class ResourceServiceAdapter_implTest extends TestCase
-{
+public class ResourceServiceAdapter_implTest extends TestCase {
   /**
    * Constructor for ResourceServiceAdapter_implTest.
+   * 
    * @param arg0
    */
-  public ResourceServiceAdapter_implTest(String arg0)
-  {
-    super(arg0);    
+  public ResourceServiceAdapter_implTest(String arg0) {
+    super(arg0);
   }
 
   /**
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception
-  {
-    try
-    {
+  protected void setUp() throws Exception {
+    try {
       super.setUp();
       mServiceStub = new TestResourceServiceStub();
-      mAdapter = new ResourceServiceAdapter() 
-        {
-          public boolean initialize(ResourceSpecifier p1, Map p2)
-          {return false;}
-        };
+      mAdapter = new ResourceServiceAdapter() {
+        public boolean initialize(ResourceSpecifier p1, Map p2) {
+          return false;
+        }
+      };
       mAdapter.setStub(mServiceStub);
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
     }
-		catch (Exception e)
-		{
-			JUnitExtension.handleException(e);
-		}
   }
-  
-  public void testGetMetaData() throws Exception
-  {
-    try
-    {
+
+  public void testGetMetaData() throws Exception {
+    try {
       ResourceMetaData md = new ResourceMetaData_impl();
       md.setName("Test");
       md.setDescription("This is a test");
@@ -82,21 +75,20 @@ public class ResourceServiceAdapter_implTest extends TestCase
       p1.setDescription("multi-valued parameter with Integer data type");
       p1.setType(ConfigurationParameter.TYPE_INTEGER);
       p1.setMultiValued(true);
-      md.getConfigurationParameterDeclarations().
-        setConfigurationParameters(new ConfigurationParameter[]{p1});
-      
+      md.getConfigurationParameterDeclarations().setConfigurationParameters(
+                      new ConfigurationParameter[] { p1 });
+
       mServiceStub.getMetaDataReturnValue = md;
-      ResourceMetaData result = mAdapter.getMetaData();     
+      ResourceMetaData result = mAdapter.getMetaData();
       Assert.assertEquals("callGetMetaData", mServiceStub.lastMethodName);
-      Assert.assertEquals(md, result);         
+      Assert.assertEquals(md, result);
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
     }
-		catch (Exception e)
-		{
-			JUnitExtension.handleException(e);
-		}
   }
-  
+
   private TestResourceServiceStub mServiceStub;
+
   private ResourceServiceAdapter mAdapter;
 
 }

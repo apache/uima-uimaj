@@ -22,57 +22,62 @@ package org.apache.uima.collection.metadata;
 import org.apache.uima.resource.metadata.MetaDataObject;
 
 /**
- * An object that holds configuration related to handling max restarts for CasProcessors.
- * It provides the means of configuring threshold for max restart tolerance, and 
- * defining a strategy to apply when thresholds are exceeded. Used when constucting 
- * a CPE descriptor.
+ * An object that holds configuration related to handling max restarts for CasProcessors. It
+ * provides the means of configuring threshold for max restart tolerance, and defining a strategy to
+ * apply when thresholds are exceeded. Used when constucting a CPE descriptor.
  * 
  * 
  */
-public interface CasProcessorMaxRestarts extends MetaDataObject
-{
-	/**
-	 * Sets max tolerated restarts threshold for CasProcessor
-	 * 
-	 * @param aRestartCount - max restart count
-	 */
-	public void setRestartCount( int aRestartCount );
-	/**
-	 * Returns max restarts threshold fro CasProcessor
-	 * @return - restart count
-	 */
-	public int getRestartCount();
-	/**
-	 * Sets a strategy to apply by the CPE when max restart count is exceeded.
-	 * The three supported strategies are:
-	 * <ul>
-	 * <li> terminate - termines the CPE
-	 * <li> continue - continue despite the error
-	 * <li> disable - disable CasProcessor	 
-	 * 
-	 * @param aAction - action to take
-	 */
-	public void setAction( String aAction );
-	/**
-	 * Returns a strategy to apply by the CPE when max restart count is exceeded.
-	 * The three supported strategies are:
-	 * <ul>
-	 * <li> terminate - termines the CPE
-	 * <li> continue - continue despite the error
-	 * <li> disable - disable CasProcessor
-	 * 
-	 * @return - action as String
-	 */
-	public String getAction();
-	/**
-	 * 
-	 * @return
-	 */
-	public int getWaitTimeBetweenRetries();
+public interface CasProcessorMaxRestarts extends MetaDataObject {
+  /**
+   * Sets max tolerated restarts threshold for CasProcessor
+   * 
+   * @param aRestartCount -
+   *          max restart count
+   */
+  public void setRestartCount(int aRestartCount);
 
-	/**
-	 * @param i
-	 */
-	public void setWaitTimeBetweenRetries(int i);
-	
+  /**
+   * Returns max restarts threshold fro CasProcessor
+   * 
+   * @return - restart count
+   */
+  public int getRestartCount();
+
+  /**
+   * Sets a strategy to apply by the CPE when max restart count is exceeded. The three supported
+   * strategies are:
+   * <ul>
+   * <li> terminate - termines the CPE
+   * <li> continue - continue despite the error
+   * <li> disable - disable CasProcessor
+   * 
+   * @param aAction -
+   *          action to take
+   */
+  public void setAction(String aAction);
+
+  /**
+   * Returns a strategy to apply by the CPE when max restart count is exceeded. The three supported
+   * strategies are:
+   * <ul>
+   * <li> terminate - termines the CPE
+   * <li> continue - continue despite the error
+   * <li> disable - disable CasProcessor
+   * 
+   * @return - action as String
+   */
+  public String getAction();
+
+  /**
+   * 
+   * @return
+   */
+  public int getWaitTimeBetweenRetries();
+
+  /**
+   * @param i
+   */
+  public void setWaitTimeBetweenRetries(int i);
+
 }

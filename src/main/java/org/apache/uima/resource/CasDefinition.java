@@ -32,129 +32,126 @@ import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 
-
 /**
  * Encapsulates information that defines how to create a CAS.
  */
-public class CasDefinition
-{
+public class CasDefinition {
   private TypeSystemDescription typeSystemDescription;
+
   private TypePriorities typePriorities;
+
   private FsIndexDescription[] fsIndexDescriptions;
+
   private ResourceManager resourceManager;
-    
+
   public CasDefinition(TypeSystemDescription aTypeSystem, TypePriorities aTypePriorities,
-      FsIndexDescription[] aFsIndexes, ResourceManager aResourceManager,
-      Properties aPerformanceTuningSettings)
-  {
+                  FsIndexDescription[] aFsIndexes, ResourceManager aResourceManager,
+                  Properties aPerformanceTuningSettings) {
     this.typeSystemDescription = aTypeSystem;
     this.typePriorities = aTypePriorities;
     this.fsIndexDescriptions = aFsIndexes;
     this.resourceManager = aResourceManager;
   }
-  
+
   public CasDefinition(Collection aMetaDataToMerge, ResourceManager aResourceManager)
-    throws ResourceInitializationException
-  {
-    //extract TypeSystems, TypePriorities, and FsIndexes from metadata
+                  throws ResourceInitializationException {
+    // extract TypeSystems, TypePriorities, and FsIndexes from metadata
     List typeSystems = new ArrayList();
     List typePriorities = new ArrayList();
     List fsIndexes = new ArrayList();
     Iterator it = aMetaDataToMerge.iterator();
-    while (it.hasNext())
-    {
-        ProcessingResourceMetaData md = (ProcessingResourceMetaData) it.next();
-        if (md.getTypeSystem() != null)
-          typeSystems.add(md.getTypeSystem());
-        if (md.getTypePriorities() != null)
-          typePriorities.add(md.getTypePriorities());
-        if (md.getFsIndexCollection() != null)
-          fsIndexes.add(md.getFsIndexCollection());
+    while (it.hasNext()) {
+      ProcessingResourceMetaData md = (ProcessingResourceMetaData) it.next();
+      if (md.getTypeSystem() != null)
+        typeSystems.add(md.getTypeSystem());
+      if (md.getTypePriorities() != null)
+        typePriorities.add(md.getTypePriorities());
+      if (md.getFsIndexCollection() != null)
+        fsIndexes.add(md.getFsIndexCollection());
     }
-    
-    //merge TypePriorities and FsIndexes
-    TypePriorities aggTypePriorities =
-      CasCreationUtils.mergeTypePriorities(typePriorities, aResourceManager);
-    FsIndexCollection aggIndexColl = 
-      CasCreationUtils.mergeFsIndexes(fsIndexes, aResourceManager);       
-    TypeSystemDescription aggTypeDesc = 
-      CasCreationUtils.mergeTypeSystems(typeSystems, aResourceManager);
-    
+
+    // merge TypePriorities and FsIndexes
+    TypePriorities aggTypePriorities = CasCreationUtils.mergeTypePriorities(typePriorities,
+                    aResourceManager);
+    FsIndexCollection aggIndexColl = CasCreationUtils.mergeFsIndexes(fsIndexes, aResourceManager);
+    TypeSystemDescription aggTypeDesc = CasCreationUtils.mergeTypeSystems(typeSystems,
+                    aResourceManager);
+
     this.typeSystemDescription = aggTypeDesc;
     this.typePriorities = aggTypePriorities;
     this.fsIndexDescriptions = aggIndexColl.getFsIndexes();
     this.resourceManager = aResourceManager;
   }
-  
+
   /**
    * @return Returns the fsIndexDescriptions.
    */
-  public FsIndexDescription[] getFsIndexDescriptions()
-  {
+  public FsIndexDescription[] getFsIndexDescriptions() {
     return fsIndexDescriptions;
   }
+
   /**
-   * @param fsIndexDescriptions The fsIndexDescriptions to set.
+   * @param fsIndexDescriptions
+   *          The fsIndexDescriptions to set.
    */
-  public void setFsIndexDescriptions(FsIndexDescription[] fsIndexDescriptions)
-  {
+  public void setFsIndexDescriptions(FsIndexDescription[] fsIndexDescriptions) {
     this.fsIndexDescriptions = fsIndexDescriptions;
   }
+
   /**
    * @return Returns the resourceManager.
    */
-  public ResourceManager getResourceManager()
-  {
+  public ResourceManager getResourceManager() {
     return resourceManager;
   }
+
   /**
-   * @param resourceManager The resourceManager to set.
+   * @param resourceManager
+   *          The resourceManager to set.
    */
-  public void setResourceManager(ResourceManager resourceManager)
-  {
+  public void setResourceManager(ResourceManager resourceManager) {
     this.resourceManager = resourceManager;
   }
+
   /**
    * @return Returns the typePriorities.
    */
-  public TypePriorities getTypePriorities()
-  {
+  public TypePriorities getTypePriorities() {
     return typePriorities;
   }
+
   /**
-   * @param typePriorities The typePriorities to set.
+   * @param typePriorities
+   *          The typePriorities to set.
    */
-  public void setTypePriorities(TypePriorities typePriorities)
-  {
+  public void setTypePriorities(TypePriorities typePriorities) {
     this.typePriorities = typePriorities;
   }
+
   /**
    * @return Returns the typeSystemDescription.
    */
-  public TypeSystemDescription getTypeSystemDescription()
-  {
+  public TypeSystemDescription getTypeSystemDescription() {
     return typeSystemDescription;
   }
+
   /**
-   * @param typeSystemDescription The typeSystemDescription to set.
+   * @param typeSystemDescription
+   *          The typeSystemDescription to set.
    */
-  public void setTypeSystemDescription(TypeSystemDescription typeSystemDescription)
-  {
+  public void setTypeSystemDescription(TypeSystemDescription typeSystemDescription) {
     this.typeSystemDescription = typeSystemDescription;
   }
-  
+
   /**
    * Gets the CasManager associated with this CAS Definition.
+   * 
    * @return this CAS Definition's CasManager
    */
-  public CasManager getCasManager()
-  {
-    if (this.resourceManager != null)
-    {
+  public CasManager getCasManager() {
+    if (this.resourceManager != null) {
       return this.resourceManager.getCasManager();
-    }
-    else
-    {
+    } else {
       return null;
     }
   }

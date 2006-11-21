@@ -28,52 +28,49 @@ import java.util.Properties;
  * 
  */
 public class SystemEnvReader {
-    /**
-     * Returns system environment settings. It uses OS specific system command
-     * to obtain variables.
-     * 
-     * @return Java Properties object containing environment variables.
-     * @throws Throwable
-     *             If any error occurred.
-     */
-    public static Properties getEnvVars() throws Throwable {
-        Process p = null;
-        Properties envVars = new Properties();
-        Runtime r = Runtime.getRuntime();
-        String OS = System.getProperty("os.name").toLowerCase();
-        if (OS.indexOf("windows 9") > -1) {
-            p = r.exec("command.com /c set");
-        } else if ((OS.indexOf("nt") > -1) || (OS.indexOf("windows 2000") > -1)
-                || (OS.indexOf("windows xp") > -1)) {
-            p = r.exec("cmd.exe /c set");
-        } else {
-            // our last hope, we assume Unix
-            p = r.exec("env");
-        }
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line;
-            while ((line = br.readLine()) != null) {
-                int idx = line.indexOf('=');
-                if (idx < 0)
-                    continue;
-                String key = line.substring(0, idx);
-                String value = (idx < line.length() - 1) ? line
-                        .substring(idx + 1) : "";
-                envVars.setProperty(key, value);
-            }
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (Exception e) {
-                    // do nothing
-                }
-            }
-        }
-        return envVars;
+  /**
+   * Returns system environment settings. It uses OS specific system command to obtain variables.
+   * 
+   * @return Java Properties object containing environment variables.
+   * @throws Throwable
+   *           If any error occurred.
+   */
+  public static Properties getEnvVars() throws Throwable {
+    Process p = null;
+    Properties envVars = new Properties();
+    Runtime r = Runtime.getRuntime();
+    String OS = System.getProperty("os.name").toLowerCase();
+    if (OS.indexOf("windows 9") > -1) {
+      p = r.exec("command.com /c set");
+    } else if ((OS.indexOf("nt") > -1) || (OS.indexOf("windows 2000") > -1)
+                    || (OS.indexOf("windows xp") > -1)) {
+      p = r.exec("cmd.exe /c set");
+    } else {
+      // our last hope, we assume Unix
+      p = r.exec("env");
     }
-
+    BufferedReader br = null;
+    try {
+      br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+      String line;
+      while ((line = br.readLine()) != null) {
+        int idx = line.indexOf('=');
+        if (idx < 0)
+          continue;
+        String key = line.substring(0, idx);
+        String value = (idx < line.length() - 1) ? line.substring(idx + 1) : "";
+        envVars.setProperty(key, value);
+      }
+    } finally {
+      if (br != null) {
+        try {
+          br.close();
+        } catch (Exception e) {
+          // do nothing
+        }
+      }
+    }
+    return envVars;
+  }
 
 }

@@ -29,47 +29,46 @@ import org.apache.uima.cas.FSStringConstraint;
  */
 class FSStringConstraintImpl implements FSStringConstraint {
 
-    private String string;
+  private String string;
 
-    /**
-     * Constructor is package private.
-     */
-    FSStringConstraintImpl() {
-        super();
-        this.string = "";
+  /**
+   * Constructor is package private.
+   */
+  FSStringConstraintImpl() {
+    super();
+    this.string = "";
+  }
+
+  public void equals(String s) {
+    this.string = s;
+  }
+
+  public boolean match(String s) {
+    if (this.string == null) {
+      return (s == null);
     }
+    return (this.string.equals(s));
+  }
 
-    public void equals(String s) {
-        this.string = s;
+  public String toString() {
+    // need to escape quotes and backslashes
+    StringBuffer buf = new StringBuffer();
+    buf.append("= \"");
+    for (int i = 0; i < this.string.length(); i++) {
+      char c = this.string.charAt(i);
+      switch (c) {
+        case '"':
+          buf.append("\\\"");
+          break;
+        case '\\':
+          buf.append("\\\\");
+          break;
+        default:
+          buf.append(c);
+      }
     }
-
-    public boolean match(String s) {
-        if (this.string == null) {
-            return (s == null);
-        }
-        return (this.string.equals(s));
-    }
-
-    public String toString() {
-        // need to escape quotes and backslashes
-        StringBuffer buf = new StringBuffer();
-        buf.append("= \"");
-        for (int i = 0; i < this.string.length(); i++) {
-            char c = this.string.charAt(i);
-            switch (c) {
-            case '"':
-                buf.append("\\\"");
-                break;
-            case '\\':
-                buf.append("\\\\");
-                break;
-            default:
-                buf.append(c);
-            }
-        }
-        buf.append("\"");
-        return buf.toString();
-    }
-
+    buf.append("\"");
+    return buf.toString();
+  }
 
 }

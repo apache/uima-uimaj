@@ -40,15 +40,12 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 /**
- *
+ * 
  */
-public class ConfigurableDataResourceSpecifier_implTest extends TestCase
-{
-  public void testXmlization() throws Exception
-  {
-    try
-    {
-      //create a ConfigurableDataResourceSpecifier
+public class ConfigurableDataResourceSpecifier_implTest extends TestCase {
+  public void testXmlization() throws Exception {
+    try {
+      // create a ConfigurableDataResourceSpecifier
       ConfigurableDataResourceSpecifier_impl cspec = new ConfigurableDataResourceSpecifier_impl();
       cspec.setUrl("jdbc:db2:MyDatabase");
       ResourceMetaData md = new ResourceMetaData_impl();
@@ -59,31 +56,28 @@ public class ConfigurableDataResourceSpecifier_implTest extends TestCase
       param.setName("param");
       param.setType("String");
       decls.addConfigurationParameter(param);
-      md.setConfigurationParameterDeclarations(decls);   
+      md.setConfigurationParameterDeclarations(decls);
       ConfigurationParameterSettings settings = new ConfigurationParameterSettings_impl();
       NameValuePair nvp = new NameValuePair_impl();
       nvp.setName("param");
       nvp.setValue("bar");
-      settings.setParameterSettings(new NameValuePair[]{nvp});
+      settings.setParameterSettings(new NameValuePair[] { nvp });
       md.setConfigurationParameterSettings(settings);
-      
-      //wrtie to XML
+
+      // wrtie to XML
       StringWriter sw = new StringWriter();
       cspec.toXML(sw);
       String xmlStr = sw.getBuffer().toString();
 
-      //parse back
+      // parse back
       ByteArrayInputStream inStream = new ByteArrayInputStream(xmlStr.getBytes("UTF-8"));
       XMLInputSource in = new XMLInputSource(inStream, null);
-      ConfigurableDataResourceSpecifier_impl parsedSpec =
-        (ConfigurableDataResourceSpecifier_impl)
-        UIMAFramework.getXMLParser().parse(in);
-      
+      ConfigurableDataResourceSpecifier_impl parsedSpec = (ConfigurableDataResourceSpecifier_impl) UIMAFramework
+                      .getXMLParser().parse(in);
+
       assertEquals(cspec, parsedSpec);
-    
-    }
-    catch (Exception e)
-    {
+
+    } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
   }

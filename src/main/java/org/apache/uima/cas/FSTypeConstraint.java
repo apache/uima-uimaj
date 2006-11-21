@@ -19,38 +19,43 @@
 
 package org.apache.uima.cas;
 
-/** 
- * Interface for type constraint.  Tests if a feature structure is a subtype of
- * a given type (or types).
+/**
+ * Interface for type constraint. Tests if a feature structure is a subtype of a given type (or
+ * types).
  * 
- * <p>You can add as many types to this constraint as you like.  If you add more
- * than one type, they will be interpreted disjunctively; i.e., the constraint
- * will match any feature structure whose type is subsumed by one of the types of the 
- * constraint. 
+ * <p>
+ * You can add as many types to this constraint as you like. If you add more than one type, they
+ * will be interpreted disjunctively; i.e., the constraint will match any feature structure whose
+ * type is subsumed by one of the types of the constraint.
  * 
- * <p> these constraints may be embedded in a path, or combined using and/or operators.
- * <p>To use the constraint, invoke its {@link #match(FeatureStructure)} method, passing 
- * the feature structure to test.
- * <p>You can also use these constraints to construct a
- * {@link org.apache.uima.cas.CAS#createFilteredIterator(FSIterator, FSMatchConstraint)}. 
- *  
+ * <p>
+ * these constraints may be embedded in a path, or combined using and/or operators.
+ * <p>
+ * To use the constraint, invoke its {@link #match(FeatureStructure)} method, passing the feature
+ * structure to test.
+ * <p>
+ * You can also use these constraints to construct a
+ * {@link org.apache.uima.cas.CAS#createFilteredIterator(FSIterator, FSMatchConstraint)}.
+ * 
  */
 public interface FSTypeConstraint extends FSMatchConstraint {
 
   /**
-   * Add a new type to this type constraint.  This method can be called more
-   * than once.  Multiple types will be interpreted disjunctively.
-   * @param type A type that should be permitted by this constraint.
+   * Add a new type to this type constraint. This method can be called more than once. Multiple
+   * types will be interpreted disjunctively.
+   * 
+   * @param type
+   *          A type that should be permitted by this constraint.
    */
   void add(Type type);
-  
+
   /**
-   * Add a new type to this type constraint.  This method can be called more
-   * than once.  Multiple types will be interpreted disjunctively.
-   * @param type A fully qualified type name that should be permitted by this constraint.
+   * Add a new type to this type constraint. This method can be called more than once. Multiple
+   * types will be interpreted disjunctively.
+   * 
+   * @param type
+   *          A fully qualified type name that should be permitted by this constraint.
    */
   void add(String type);
-  
-  
 
 }

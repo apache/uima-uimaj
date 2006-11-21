@@ -35,365 +35,333 @@ import org.apache.uima.test.junit_extension.TestPropertyReader;
 import org.apache.uima.util.XMLInputSource;
 
 /*
- * @author Michael Baessler 
+ * @author Michael Baessler
  */
 
 /**
  * TestCase for the Sequencer with a fixedFlow
- */ 
-public class SequencerFixedTest extends TestCase
-{
-	private String junitTestBasePath;
-	/**
-	 * Constructor for SequencerTest
-	 * @param arg0
-	 */
-	public SequencerFixedTest(String arg0)
-	{
-	   super(arg0);
-	}
+ */
+public class SequencerFixedTest extends TestCase {
+  private String junitTestBasePath;
 
-	/**
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	protected void setUp() throws Exception
-	{
-		//get test base path setting
-		junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
-	}
+  /**
+   * Constructor for SequencerTest
+   * 
+   * @param arg0
+   */
+  public SequencerFixedTest(String arg0) {
+    super(arg0);
+  }
 
-	public void testSequencerFixedEn() throws Exception
-	{
-		TextAnalysisEngine tae = null;
-		try 
-		{
-			//create TempFile for test
-			File outputReferenceFile = new File(junitTestBasePath + "SequencerTest/SequencerTest.txt");
-			outputReferenceFile.delete(); //delete file if exist
-			outputReferenceFile.createNewFile(); //create new file
-			outputReferenceFile.deleteOnExit(); //delete file after closing VM
-																	
-			// Create an XML input source from the specifier file.
-			XMLInputSource in = new XMLInputSource(junitTestBasePath + "SequencerTest/SequencerFixedAggregate.xml");
-			// Parse the specifier.
-			ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-			// Create the Text Analysis Engine.
-			tae = UIMAFramework.produceTAE(specifier, null, null);
-			// Create a new TCAS.
-			TCAS cas = tae.newTCAS();
-			// Our sample text.
-			String text = "Hello world!";
-			//System.out.println("Processing text: \"" + text + "\"");
-			// Set the document text on the CAS.
-			cas.setDocumentText(text);
-			cas.setDocumentLanguage("en");
-			// Process the sample document.
-			ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory().createResultSpecification();
-			resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
-			tae.process(cas,resultSpec);
-			//check fileoutput
-			Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",junitTestBasePath + "SequencerTest/SequencerFixedExpected.txt"));
-			outputReferenceFile.delete();
-			
-		}
-		catch(Exception ex)
-		{
-			JUnitExtension.handleException(ex);
-		}
-		finally 
-		{
-			// Destroy the CAS, releasing resources.
-			if (tae != null) 
-			{
-				tae.destroy();
-			}
-		}
-	}
-	
-	public void testSequencerFixedEN() throws Exception
-	{
-		TextAnalysisEngine tae = null;
-		try 
-		{
-			//create TempFile for test
-			File outputReferenceFile = new File(junitTestBasePath + "SequencerTest/SequencerTest.txt");
-			outputReferenceFile.delete(); //delete file if exist
-			outputReferenceFile.createNewFile(); //create new file
-			outputReferenceFile.deleteOnExit(); //delete file after closing VM
-																	
-			// Create an XML input source from the specifier file.
-			XMLInputSource in = new XMLInputSource(junitTestBasePath + "SequencerTest/SequencerFixedAggregate.xml");
-			// Parse the specifier.
-			ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-			// Create the Text Analysis Engine.
-			tae = UIMAFramework.produceTAE(specifier, null, null);
-			// Create a new TCAS.
-			TCAS cas = tae.newTCAS();
-			// Our sample text.
-			String text = "Hello world!";
-			//System.out.println("Processing text: \"" + text + "\"");
-			// Set the document text on the CAS.
-			cas.setDocumentText(text);
-			cas.setDocumentLanguage("EN");
-			// Process the sample document.
-			ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory().createResultSpecification();
-			resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
-			tae.process(cas,resultSpec);
-			//check fileoutput
-			Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",junitTestBasePath + "SequencerTest/SequencerFixedExpected.txt"));
-			outputReferenceFile.delete();
-			
-		}
-		catch(Exception ex)
-		{
-			JUnitExtension.handleException(ex);
-		}
-		finally 
-		{
-			// Destroy the CAS, releasing resources.
-			if (tae != null) 
-			{
-				tae.destroy();
-			}
-		}
-	}
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    // get test base path setting
+    junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
+  }
 
+  public void testSequencerFixedEn() throws Exception {
+    TextAnalysisEngine tae = null;
+    try {
+      // create TempFile for test
+      File outputReferenceFile = new File(junitTestBasePath + "SequencerTest/SequencerTest.txt");
+      outputReferenceFile.delete(); // delete file if exist
+      outputReferenceFile.createNewFile(); // create new file
+      outputReferenceFile.deleteOnExit(); // delete file after closing VM
 
-	public void testSequencerFixedEnUS() throws Exception
-	{
-		TextAnalysisEngine tae = null;
-		try 
-		{
-			//create TempFile for test
-			File outputReferenceFile = new File(junitTestBasePath + "SequencerTest/SequencerTest.txt");
-			outputReferenceFile.delete(); //delete file if exist
-			outputReferenceFile.createNewFile(); //create new file
-			outputReferenceFile.deleteOnExit(); //delete file after closing VM
-																	
-			// Create an XML input source from the specifier file.
-			XMLInputSource in = new XMLInputSource(junitTestBasePath + "SequencerTest/SequencerFixedAggregate.xml");
-			// Parse the specifier.
-			ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-			// Create the Text Analysis Engine.
-			tae = UIMAFramework.produceTAE(specifier, null, null);
-			// Create a new TCAS.
-			TCAS cas = tae.newTCAS();
-			// Our sample text.
-			String text = "Hello world!";
-			//System.out.println("Processing text: \"" + text + "\"");
-			// Set the document text on the CAS.
-			cas.setDocumentText(text);
-			cas.setDocumentLanguage("en-US");
-			// Process the sample document.
-			ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory().createResultSpecification();
-			resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
-			tae.process(cas,resultSpec);
-			//check fileoutput
-			Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",junitTestBasePath + "SequencerTest/SequencerFixedExpected.txt"));
-			outputReferenceFile.delete();
-		} 
-		catch(Exception ex)
-		{
-			JUnitExtension.handleException(ex);
-		}
-		finally 
-		{
-			// Destroy the CAS, releasing resources.
-			if (tae != null) 
-			{
-				tae.destroy();
-			}
-		}
-	}
-	
-	public void testSequencerFixedEnus() throws Exception
-	{
-		TextAnalysisEngine tae = null;
-		try 
-		{
-			//create TempFile for test
-			File outputReferenceFile = new File(junitTestBasePath + "SequencerTest/SequencerTest.txt");
-			outputReferenceFile.delete(); //delete file if exist
-			outputReferenceFile.createNewFile(); //create new file
-			outputReferenceFile.deleteOnExit(); //delete file after closing VM
-																	
-			// Create an XML input source from the specifier file.
-			XMLInputSource in = new XMLInputSource(junitTestBasePath + "SequencerTest/SequencerFixedAggregate.xml");
-			// Parse the specifier.
-			ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-			// Create the Text Analysis Engine.
-			tae = UIMAFramework.produceTAE(specifier, null, null);
-			// Create a new TCAS.
-			TCAS cas = tae.newTCAS();
-			// Our sample text.
-			String text = "Hello world!";
-			//System.out.println("Processing text: \"" + text + "\"");
-			// Set the document text on the CAS.
-			cas.setDocumentText(text);
-			cas.setDocumentLanguage("en-us");
-			// Process the sample document.
-			ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory().createResultSpecification();
-			resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
-			tae.process(cas,resultSpec);
-			//check fileoutput
-			Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",junitTestBasePath + "SequencerTest/SequencerFixedExpected.txt"));
-			outputReferenceFile.delete();
-		} 
-		catch(Exception ex)
-		{
-			JUnitExtension.handleException(ex);
-		}
-		finally 
-		{
-			// Destroy the CAS, releasing resources.
-			if (tae != null) 
-			{
-				tae.destroy();
-			}
-		}
-	}
+      // Create an XML input source from the specifier file.
+      XMLInputSource in = new XMLInputSource(junitTestBasePath
+                      + "SequencerTest/SequencerFixedAggregate.xml");
+      // Parse the specifier.
+      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+      // Create the Text Analysis Engine.
+      tae = UIMAFramework.produceTAE(specifier, null, null);
+      // Create a new TCAS.
+      TCAS cas = tae.newTCAS();
+      // Our sample text.
+      String text = "Hello world!";
+      // System.out.println("Processing text: \"" + text + "\"");
+      // Set the document text on the CAS.
+      cas.setDocumentText(text);
+      cas.setDocumentLanguage("en");
+      // Process the sample document.
+      ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
+                      .createResultSpecification();
+      resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
+      tae.process(cas, resultSpec);
+      // check fileoutput
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+                      junitTestBasePath + "SequencerTest/SequencerFixedExpected.txt"));
+      outputReferenceFile.delete();
 
+    } catch (Exception ex) {
+      JUnitExtension.handleException(ex);
+    } finally {
+      // Destroy the CAS, releasing resources.
+      if (tae != null) {
+        tae.destroy();
+      }
+    }
+  }
 
-	public void testSequencerFixedUnkown() throws Exception
-	{
-		TextAnalysisEngine tae = null;
-		try 
-		{
-			//create TempFile for test
-			File outputReferenceFile = new File(junitTestBasePath + "SequencerTest/SequencerTest.txt");
-			outputReferenceFile.delete(); //delete file if exist
-			outputReferenceFile.createNewFile(); //create new file
-			outputReferenceFile.deleteOnExit(); //delete file after closing VM
-																	
-			// Create an XML input source from the specifier file.
-			XMLInputSource in = new XMLInputSource(junitTestBasePath + "SequencerTest/SequencerFixedAggregate.xml");
-			// Parse the specifier.
-			ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-			// Create the Text Analysis Engine.
-			tae = UIMAFramework.produceTAE(specifier, null, null);
-			// Create a new TCAS.
-			TCAS cas = tae.newTCAS();
-			// Our sample text.
-			String text = "Hello world!";
-			//System.out.println("Processing text: \"" + text + "\"");
-			// Set the document text on the CAS.
-			cas.setDocumentText(text);
-			cas.setDocumentLanguage("unkown");
-			// Process the sample document.
-			ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory().createResultSpecification();
-			resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
-			tae.process(cas,resultSpec);
-			//check fileoutput
-			Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",junitTestBasePath + "SequencerTest/SequencerFixedExpected.txt"));
-			outputReferenceFile.delete();
-		} 
-		catch(Exception ex)
-		{
-			JUnitExtension.handleException(ex);
-		}
-		finally 
-		{
-			// Destroy the CAS, releasing resources.
-			if (tae != null) 
-			{
-				tae.destroy();
-			}
-		}
-	}
-	
-	public void testSequencerFixedFooBar() throws Exception
-	{
-		TextAnalysisEngine tae = null;
-		try 
-		{
-			//create TempFile for test
-			File outputReferenceFile = new File(junitTestBasePath + "SequencerTest/SequencerTest.txt");
-			outputReferenceFile.delete(); //delete file if exist
-			outputReferenceFile.createNewFile(); //create new file
-			outputReferenceFile.deleteOnExit(); //delete file after closing VM
-																	
-			// Create an XML input source from the specifier file.
-			XMLInputSource in = new XMLInputSource(junitTestBasePath + "SequencerTest/SequencerFixedAggregate.xml");
-			// Parse the specifier.
-			ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-			// Create the Text Analysis Engine.
-			tae = UIMAFramework.produceTAE(specifier, null, null);
-			// Create a new TCAS.
-			TCAS cas = tae.newTCAS();
-			// Our sample text.
-			String text = "Hello world!";
-			//System.out.println("Processing text: \"" + text + "\"");
-			// Set the document text on the CAS.
-			cas.setDocumentText(text);
-			cas.setDocumentLanguage("foo-BAR");
-			// Process the sample document.
-			ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory().createResultSpecification();
-			resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
-			tae.process(cas,resultSpec);
-			//check fileoutput
-			Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",junitTestBasePath + "SequencerTest/SequencerFixedExpected.txt"));
-			outputReferenceFile.delete();
-		} 
-		catch(Exception ex)
-		{
-			JUnitExtension.handleException(ex);
-		}
-		finally 
-		{
-			// Destroy the CAS, releasing resources.
-			if (tae != null) 
-			{
-				tae.destroy();
-			}
-		}
-	}
+  public void testSequencerFixedEN() throws Exception {
+    TextAnalysisEngine tae = null;
+    try {
+      // create TempFile for test
+      File outputReferenceFile = new File(junitTestBasePath + "SequencerTest/SequencerTest.txt");
+      outputReferenceFile.delete(); // delete file if exist
+      outputReferenceFile.createNewFile(); // create new file
+      outputReferenceFile.deleteOnExit(); // delete file after closing VM
 
-	public void testSequencerFixedXunSpec() throws Exception
-	{
-		TextAnalysisEngine tae = null;
-		try 
-		{
-			//create TempFile for test
-			File outputReferenceFile = new File(junitTestBasePath + "SequencerTest/SequencerTest.txt");
-			outputReferenceFile.delete(); //delete file if exist
-			outputReferenceFile.createNewFile(); //create new file
-			outputReferenceFile.deleteOnExit(); //delete file after closing VM
-																	
-			// Create an XML input source from the specifier file.
-			XMLInputSource in = new XMLInputSource(junitTestBasePath + "SequencerTest/SequencerFixedAggregate.xml");
-			// Parse the specifier.
-			ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-			// Create the Text Analysis Engine.
-			tae = UIMAFramework.produceTAE(specifier, null, null);
-			// Create a new TCAS.
-			TCAS cas = tae.newTCAS();
-			// Our sample text.
-			String text = "Hello world!";
-			//System.out.println("Processing text: \"" + text + "\"");
-			// Set the document text on the CAS.
-			cas.setDocumentText(text);
-			cas.setDocumentLanguage("x-unspecified");
-			// Process the sample document.
-			ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory().createResultSpecification();
-			resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
-			tae.process(cas,resultSpec);
-			//check fileoutput
-			Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",junitTestBasePath + "SequencerTest/SequencerFixedExpected.txt"));
-			outputReferenceFile.delete();
-		} 
-		catch(Exception ex)
-		{
-			JUnitExtension.handleException(ex);
-		}
-		finally 
-		{
-			// Destroy the CAS, releasing resources.
-			if (tae != null) 
-			{
-				tae.destroy();
-			}
-		}
-	}
+      // Create an XML input source from the specifier file.
+      XMLInputSource in = new XMLInputSource(junitTestBasePath
+                      + "SequencerTest/SequencerFixedAggregate.xml");
+      // Parse the specifier.
+      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+      // Create the Text Analysis Engine.
+      tae = UIMAFramework.produceTAE(specifier, null, null);
+      // Create a new TCAS.
+      TCAS cas = tae.newTCAS();
+      // Our sample text.
+      String text = "Hello world!";
+      // System.out.println("Processing text: \"" + text + "\"");
+      // Set the document text on the CAS.
+      cas.setDocumentText(text);
+      cas.setDocumentLanguage("EN");
+      // Process the sample document.
+      ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
+                      .createResultSpecification();
+      resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
+      tae.process(cas, resultSpec);
+      // check fileoutput
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+                      junitTestBasePath + "SequencerTest/SequencerFixedExpected.txt"));
+      outputReferenceFile.delete();
 
+    } catch (Exception ex) {
+      JUnitExtension.handleException(ex);
+    } finally {
+      // Destroy the CAS, releasing resources.
+      if (tae != null) {
+        tae.destroy();
+      }
+    }
+  }
+
+  public void testSequencerFixedEnUS() throws Exception {
+    TextAnalysisEngine tae = null;
+    try {
+      // create TempFile for test
+      File outputReferenceFile = new File(junitTestBasePath + "SequencerTest/SequencerTest.txt");
+      outputReferenceFile.delete(); // delete file if exist
+      outputReferenceFile.createNewFile(); // create new file
+      outputReferenceFile.deleteOnExit(); // delete file after closing VM
+
+      // Create an XML input source from the specifier file.
+      XMLInputSource in = new XMLInputSource(junitTestBasePath
+                      + "SequencerTest/SequencerFixedAggregate.xml");
+      // Parse the specifier.
+      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+      // Create the Text Analysis Engine.
+      tae = UIMAFramework.produceTAE(specifier, null, null);
+      // Create a new TCAS.
+      TCAS cas = tae.newTCAS();
+      // Our sample text.
+      String text = "Hello world!";
+      // System.out.println("Processing text: \"" + text + "\"");
+      // Set the document text on the CAS.
+      cas.setDocumentText(text);
+      cas.setDocumentLanguage("en-US");
+      // Process the sample document.
+      ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
+                      .createResultSpecification();
+      resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
+      tae.process(cas, resultSpec);
+      // check fileoutput
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+                      junitTestBasePath + "SequencerTest/SequencerFixedExpected.txt"));
+      outputReferenceFile.delete();
+    } catch (Exception ex) {
+      JUnitExtension.handleException(ex);
+    } finally {
+      // Destroy the CAS, releasing resources.
+      if (tae != null) {
+        tae.destroy();
+      }
+    }
+  }
+
+  public void testSequencerFixedEnus() throws Exception {
+    TextAnalysisEngine tae = null;
+    try {
+      // create TempFile for test
+      File outputReferenceFile = new File(junitTestBasePath + "SequencerTest/SequencerTest.txt");
+      outputReferenceFile.delete(); // delete file if exist
+      outputReferenceFile.createNewFile(); // create new file
+      outputReferenceFile.deleteOnExit(); // delete file after closing VM
+
+      // Create an XML input source from the specifier file.
+      XMLInputSource in = new XMLInputSource(junitTestBasePath
+                      + "SequencerTest/SequencerFixedAggregate.xml");
+      // Parse the specifier.
+      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+      // Create the Text Analysis Engine.
+      tae = UIMAFramework.produceTAE(specifier, null, null);
+      // Create a new TCAS.
+      TCAS cas = tae.newTCAS();
+      // Our sample text.
+      String text = "Hello world!";
+      // System.out.println("Processing text: \"" + text + "\"");
+      // Set the document text on the CAS.
+      cas.setDocumentText(text);
+      cas.setDocumentLanguage("en-us");
+      // Process the sample document.
+      ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
+                      .createResultSpecification();
+      resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
+      tae.process(cas, resultSpec);
+      // check fileoutput
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+                      junitTestBasePath + "SequencerTest/SequencerFixedExpected.txt"));
+      outputReferenceFile.delete();
+    } catch (Exception ex) {
+      JUnitExtension.handleException(ex);
+    } finally {
+      // Destroy the CAS, releasing resources.
+      if (tae != null) {
+        tae.destroy();
+      }
+    }
+  }
+
+  public void testSequencerFixedUnkown() throws Exception {
+    TextAnalysisEngine tae = null;
+    try {
+      // create TempFile for test
+      File outputReferenceFile = new File(junitTestBasePath + "SequencerTest/SequencerTest.txt");
+      outputReferenceFile.delete(); // delete file if exist
+      outputReferenceFile.createNewFile(); // create new file
+      outputReferenceFile.deleteOnExit(); // delete file after closing VM
+
+      // Create an XML input source from the specifier file.
+      XMLInputSource in = new XMLInputSource(junitTestBasePath
+                      + "SequencerTest/SequencerFixedAggregate.xml");
+      // Parse the specifier.
+      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+      // Create the Text Analysis Engine.
+      tae = UIMAFramework.produceTAE(specifier, null, null);
+      // Create a new TCAS.
+      TCAS cas = tae.newTCAS();
+      // Our sample text.
+      String text = "Hello world!";
+      // System.out.println("Processing text: \"" + text + "\"");
+      // Set the document text on the CAS.
+      cas.setDocumentText(text);
+      cas.setDocumentLanguage("unkown");
+      // Process the sample document.
+      ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
+                      .createResultSpecification();
+      resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
+      tae.process(cas, resultSpec);
+      // check fileoutput
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+                      junitTestBasePath + "SequencerTest/SequencerFixedExpected.txt"));
+      outputReferenceFile.delete();
+    } catch (Exception ex) {
+      JUnitExtension.handleException(ex);
+    } finally {
+      // Destroy the CAS, releasing resources.
+      if (tae != null) {
+        tae.destroy();
+      }
+    }
+  }
+
+  public void testSequencerFixedFooBar() throws Exception {
+    TextAnalysisEngine tae = null;
+    try {
+      // create TempFile for test
+      File outputReferenceFile = new File(junitTestBasePath + "SequencerTest/SequencerTest.txt");
+      outputReferenceFile.delete(); // delete file if exist
+      outputReferenceFile.createNewFile(); // create new file
+      outputReferenceFile.deleteOnExit(); // delete file after closing VM
+
+      // Create an XML input source from the specifier file.
+      XMLInputSource in = new XMLInputSource(junitTestBasePath
+                      + "SequencerTest/SequencerFixedAggregate.xml");
+      // Parse the specifier.
+      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+      // Create the Text Analysis Engine.
+      tae = UIMAFramework.produceTAE(specifier, null, null);
+      // Create a new TCAS.
+      TCAS cas = tae.newTCAS();
+      // Our sample text.
+      String text = "Hello world!";
+      // System.out.println("Processing text: \"" + text + "\"");
+      // Set the document text on the CAS.
+      cas.setDocumentText(text);
+      cas.setDocumentLanguage("foo-BAR");
+      // Process the sample document.
+      ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
+                      .createResultSpecification();
+      resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
+      tae.process(cas, resultSpec);
+      // check fileoutput
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+                      junitTestBasePath + "SequencerTest/SequencerFixedExpected.txt"));
+      outputReferenceFile.delete();
+    } catch (Exception ex) {
+      JUnitExtension.handleException(ex);
+    } finally {
+      // Destroy the CAS, releasing resources.
+      if (tae != null) {
+        tae.destroy();
+      }
+    }
+  }
+
+  public void testSequencerFixedXunSpec() throws Exception {
+    TextAnalysisEngine tae = null;
+    try {
+      // create TempFile for test
+      File outputReferenceFile = new File(junitTestBasePath + "SequencerTest/SequencerTest.txt");
+      outputReferenceFile.delete(); // delete file if exist
+      outputReferenceFile.createNewFile(); // create new file
+      outputReferenceFile.deleteOnExit(); // delete file after closing VM
+
+      // Create an XML input source from the specifier file.
+      XMLInputSource in = new XMLInputSource(junitTestBasePath
+                      + "SequencerTest/SequencerFixedAggregate.xml");
+      // Parse the specifier.
+      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+      // Create the Text Analysis Engine.
+      tae = UIMAFramework.produceTAE(specifier, null, null);
+      // Create a new TCAS.
+      TCAS cas = tae.newTCAS();
+      // Our sample text.
+      String text = "Hello world!";
+      // System.out.println("Processing text: \"" + text + "\"");
+      // Set the document text on the CAS.
+      cas.setDocumentText(text);
+      cas.setDocumentLanguage("x-unspecified");
+      // Process the sample document.
+      ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
+                      .createResultSpecification();
+      resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
+      tae.process(cas, resultSpec);
+      // check fileoutput
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+                      junitTestBasePath + "SequencerTest/SequencerFixedExpected.txt"));
+      outputReferenceFile.delete();
+    } catch (Exception ex) {
+      JUnitExtension.handleException(ex);
+    } finally {
+      // Destroy the CAS, releasing resources.
+      if (tae != null) {
+        tae.destroy();
+      }
+    }
+  }
 
 }

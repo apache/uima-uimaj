@@ -33,108 +33,117 @@ import org.apache.uima.cas.impl.TCASImpl;
 import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.jcas.impl.JCas;
 
-/** 
+/**
  * Updated by JCasGen Fri Apr 29 16:05:04 EDT 2005
- **/
-public class Sofa extends TOP implements SofaFS
-{
-  /** @generated
-   * @ordered 
+ */
+public class Sofa extends TOP implements SofaFS {
+  /**
+   * @generated
+   * @ordered
    */
   public final static int typeIndexID = JCas.getNextIndex();
 
-  /** @generated
-   * @ordered 
+  /**
+   * @generated
+   * @ordered
    */
   public final static int type = typeIndexID;
 
-  /** @generated  */
-  public int getTypeIndexID()
-  {
+  /** @generated */
+  public int getTypeIndexID() {
     return typeIndexID;
   }
 
-  /** Never called.  Disable default constructor
-   * @generated */
-  protected Sofa()
-  {
+  /**
+   * Never called. Disable default constructor
+   * 
+   * @generated
+   */
+  protected Sofa() {
   }
 
-  /** Internal - constructor used by generator 
-   * @generated */
-  public Sofa(int addr, TOP_Type type)
-  {
+  /**
+   * Internal - constructor used by generator
+   * 
+   * @generated
+   */
+  public Sofa(int addr, TOP_Type type) {
     super(addr, type);
     readObject();
   }
 
-  /** @deprecated As of v2.0, use {@link JCas#createView(String)} to
-   * create a view, which will also create the Sofa for that view.*/
-  public Sofa(JCas jcas, SofaID ID, String mimeType) { 
-	super(jcas);
-	final CASImpl casImpl = jcasType.casImpl;
-	casImpl.addSofa(casImpl.createFS(this.addr), ID.getSofaID(), mimeType);
-	} 
-
-  /** <!-- begin-user-doc -->
-   * Write your own initialization here
-   * <!-- end-user-doc -->
-   @generated modifiable */
-
-  
-  private void readObject()
-  {
+  /**
+   * @deprecated As of v2.0, use {@link JCas#createView(String)} to create a view, which will also
+   *             create the Sofa for that view.
+   */
+  public Sofa(JCas jcas, SofaID ID, String mimeType) {
+    super(jcas);
+    final CASImpl casImpl = jcasType.casImpl;
+    casImpl.addSofa(casImpl.createFS(this.addr), ID.getSofaID(), mimeType);
   }
 
-  //*--------------*
-  //* Feature: sofaNum
+  /**
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
+   * 
+   * @generated modifiable
+   */
 
-  /** getter for sofaNum - gets 
-   * @generated */
-  public int getSofaNum()
-  {
+  private void readObject() {
+  }
+
+  // *--------------*
+  // * Feature: sofaNum
+
+  /**
+   * getter for sofaNum - gets
+   * 
+   * @generated
+   */
+  public int getSofaNum() {
     if (Sofa_Type.featOkTst && ((Sofa_Type) jcasType).casFeat_sofaNum == null)
       JCas.throwFeatMissing("sofaNum", "uima.cas.Sofa");
     return jcasType.ll_cas.ll_getIntValue(addr, ((Sofa_Type) jcasType).casFeatCode_sofaNum);
   }
 
-  //*--------------*
-  //* Feature: sofaID
+  // *--------------*
+  // * Feature: sofaID
 
-  /** getter for sofaID - gets 
-   * @generated */
-  public String getSofaID()
-  {
+  /**
+   * getter for sofaID - gets
+   * 
+   * @generated
+   */
+  public String getSofaID() {
     if (Sofa_Type.featOkTst && ((Sofa_Type) jcasType).casFeat_sofaID == null)
       JCas.throwFeatMissing("sofaID", "uima.cas.Sofa");
     return jcasType.ll_cas.ll_getStringValue(addr, ((Sofa_Type) jcasType).casFeatCode_sofaID);
   }
 
-  //*--------------*
-  //* Feature: mimeType
+  // *--------------*
+  // * Feature: mimeType
 
-  /** getter for mimeType - gets 
-   * @generated */
-  public String getMimeType()
-  {
+  /**
+   * getter for mimeType - gets
+   * 
+   * @generated
+   */
+  public String getMimeType() {
     if (Sofa_Type.featOkTst && ((Sofa_Type) jcasType).casFeat_mimeType == null)
       JCas.throwFeatMissing("mimeType", "uima.cas.Sofa");
     return jcasType.ll_cas.ll_getStringValue(addr, ((Sofa_Type) jcasType).casFeatCode_mimeType);
   }
 
-  //IMPORTANT: Methods below here are duplicated in SofaFSImpl.  If they are 
-  //changed here they must be changed in SofaFSImpl as well.
+  // IMPORTANT: Methods below here are duplicated in SofaFSImpl. If they are
+  // changed here they must be changed in SofaFSImpl as well.
 
   /**
-   * @see org.apache.uima.cas.SofaFS#setLocalSofaData(FeatureStructure)
-   * This method is duplicated in SofaFSImpl.  Any changes should be made in both places.  
+   * @see org.apache.uima.cas.SofaFS#setLocalSofaData(FeatureStructure) This method is duplicated in
+   *      SofaFSImpl. Any changes should be made in both places.
    */
-  public void setLocalSofaData(FeatureStructure aFS)
-  {
+  public void setLocalSofaData(FeatureStructure aFS) {
     final Feature arrayFeat = jcasType.casImpl.getTypeSystem().getFeatureByFullName(
-        CAS.FEATURE_FULL_NAME_SOFAARRAY);
-    if (isSofaDataSet())
-    {
+                    CAS.FEATURE_FULL_NAME_SOFAARRAY);
+    if (isSofaDataSet()) {
       CASRuntimeException e = new CASRuntimeException(CASRuntimeException.SOFADATA_ALREADY_SET);
       e.addArgument("SetLocalSofaData()");
       throw e;
@@ -143,15 +152,13 @@ public class Sofa extends TOP implements SofaFS
   }
 
   /**
-   * @see org.apache.uima.cas.SofaFS#setLocalSofaData(String)
-   * This method is duplicated in SofaFSImpl.  Any changes should be made in both places.  
+   * @see org.apache.uima.cas.SofaFS#setLocalSofaData(String) This method is duplicated in
+   *      SofaFSImpl. Any changes should be made in both places.
    */
-  public void setLocalSofaData(String aString)
-  {
+  public void setLocalSofaData(String aString) {
     final Feature stringFeat = jcasType.casImpl.getTypeSystem().getFeatureByFullName(
-        CAS.FEATURE_FULL_NAME_SOFASTRING);
-    if (isSofaDataSet())
-    {
+                    CAS.FEATURE_FULL_NAME_SOFASTRING);
+    if (isSofaDataSet()) {
       CASRuntimeException e = new CASRuntimeException(CASRuntimeException.SOFADATA_ALREADY_SET);
       e.addArgument("SetLocalSofaData()");
       throw e;
@@ -163,37 +170,33 @@ public class Sofa extends TOP implements SofaFS
   }
 
   /**
-   * @see org.apache.uima.cas.SofaFS#getLocalFSData()
-   * This method is duplicated in SofaFSImpl.  Any changes should be made in both places.  
+   * @see org.apache.uima.cas.SofaFS#getLocalFSData() This method is duplicated in SofaFSImpl. Any
+   *      changes should be made in both places.
    */
-  public FeatureStructure getLocalFSData()
-  {
+  public FeatureStructure getLocalFSData() {
     final Feature arrayFeat = jcasType.casImpl.getTypeSystem().getFeatureByFullName(
-        CAS.FEATURE_FULL_NAME_SOFAARRAY);
+                    CAS.FEATURE_FULL_NAME_SOFAARRAY);
     return this.getFeatureValue(arrayFeat);
   }
 
   /**
-   * @see org.apache.uima.cas.SofaFS#getLocalStringData()
-   * This method is duplicated in SofaFSImpl.  Any changes should be made in both places.  
+   * @see org.apache.uima.cas.SofaFS#getLocalStringData() This method is duplicated in SofaFSImpl.
+   *      Any changes should be made in both places.
    */
-  public String getLocalStringData()
-  {
+  public String getLocalStringData() {
     final Feature stringFeat = jcasType.casImpl.getTypeSystem().getFeatureByFullName(
-        CAS.FEATURE_FULL_NAME_SOFASTRING);
+                    CAS.FEATURE_FULL_NAME_SOFASTRING);
     return this.getStringValue(stringFeat);
   }
 
   /**
-   * @see org.apache.uima.cas.SofaFS#setRemoteSofaURI(String)
-   * This method is duplicated in SofaFSImpl.  Any changes should be made in both places.  
+   * @see org.apache.uima.cas.SofaFS#setRemoteSofaURI(String) This method is duplicated in
+   *      SofaFSImpl. Any changes should be made in both places.
    */
-  public void setRemoteSofaURI(String aURI)
-  {
+  public void setRemoteSofaURI(String aURI) {
     final Feature uriFeat = jcasType.casImpl.getTypeSystem().getFeatureByFullName(
-        CAS.FEATURE_FULL_NAME_SOFAURI);
-    if (isSofaDataSet())
-    {
+                    CAS.FEATURE_FULL_NAME_SOFAURI);
+    if (isSofaDataSet()) {
       CASRuntimeException e = new CASRuntimeException(CASRuntimeException.SOFADATA_ALREADY_SET);
       e.addArgument("setRemoteSofaURI()");
       throw e;
@@ -202,69 +205,60 @@ public class Sofa extends TOP implements SofaFS
   }
 
   private boolean isSofaDataSet() {
-	  final Feature uriFeat = jcasType.casImpl.getTypeSystem().getFeatureByFullName(
-			  CAS.FEATURE_FULL_NAME_SOFAURI);
-	  final Feature arrayFeat = jcasType.casImpl.getTypeSystem().getFeatureByFullName(
-			  CAS.FEATURE_FULL_NAME_SOFAARRAY);
-	  final Feature stringFeat = jcasType.casImpl.getTypeSystem().getFeatureByFullName(
-			  CAS.FEATURE_FULL_NAME_SOFASTRING);
+    final Feature uriFeat = jcasType.casImpl.getTypeSystem().getFeatureByFullName(
+                    CAS.FEATURE_FULL_NAME_SOFAURI);
+    final Feature arrayFeat = jcasType.casImpl.getTypeSystem().getFeatureByFullName(
+                    CAS.FEATURE_FULL_NAME_SOFAARRAY);
+    final Feature stringFeat = jcasType.casImpl.getTypeSystem().getFeatureByFullName(
+                    CAS.FEATURE_FULL_NAME_SOFASTRING);
 
-      if (null != this.getStringValue(uriFeat) ||
-      	null != this.getFeatureValue(arrayFeat)	||
-      	null != this.getStringValue(stringFeat)	) {
-      	return true;
-      }
-      return false;
+    if (null != this.getStringValue(uriFeat) || null != this.getFeatureValue(arrayFeat)
+                    || null != this.getStringValue(stringFeat)) {
+      return true;
+    }
+    return false;
   }
 
   // override setStringValue for SofaFS to not work!
-  // This method is duplicated in SofaFSImpl.  Any changes should be made in both places.  
-  public void setStringValue(Feature feat, String val)
-  {
+  // This method is duplicated in SofaFSImpl. Any changes should be made in both places.
+  public void setStringValue(Feature feat, String val) {
     CASRuntimeException e = new CASRuntimeException(CASRuntimeException.PROTECTED_SOFA_FEATURE);
     throw e;
   }
 
   // override setFeatureValue for SofaFS to not work!
-  // This method is duplicated in SofaFSImpl.  Any changes should be made in both places.  
-  public void setFeatureValue(Feature feat, FeatureStructure fs)
-  {
+  // This method is duplicated in SofaFSImpl. Any changes should be made in both places.
+  public void setFeatureValue(Feature feat, FeatureStructure fs) {
     CASRuntimeException e = new CASRuntimeException(CASRuntimeException.PROTECTED_SOFA_FEATURE);
     throw e;
   }
 
-  // This method is duplicated in SofaFSImpl.  Any changes should be made in both places.  
-  public String getSofaMime()
-  {
+  // This method is duplicated in SofaFSImpl. Any changes should be made in both places.
+  public String getSofaMime() {
     final Feature mimeFeat = jcasType.casImpl.getTypeSystem().getFeatureByFullName(
-        CAS.FEATURE_FULL_NAME_SOFAMIME);
+                    CAS.FEATURE_FULL_NAME_SOFAMIME);
     return jcasType.casImpl.getLowLevelCAS().ll_getStringValue(super.addr,
-        ((FeatureImpl) mimeFeat).getCode());
+                    ((FeatureImpl) mimeFeat).getCode());
   }
 
-  // This method is duplicated in SofaFSImpl.  Any changes should be made in both places.  
-  public String getSofaURI()
-  {
+  // This method is duplicated in SofaFSImpl. Any changes should be made in both places.
+  public String getSofaURI() {
     final Feature uriFeat = jcasType.casImpl.getTypeSystem().getFeatureByFullName(
-        CAS.FEATURE_FULL_NAME_SOFAURI);
+                    CAS.FEATURE_FULL_NAME_SOFAURI);
     return jcasType.casImpl.getLowLevelCAS().ll_getStringValue(super.addr,
-        ((FeatureImpl) uriFeat).getCode());
+                    ((FeatureImpl) uriFeat).getCode());
   }
 
-  // This method is duplicated in SofaFSImpl.  Any changes should be made in both places.  
-  public int getSofaRef()
-  {
+  // This method is duplicated in SofaFSImpl. Any changes should be made in both places.
+  public int getSofaRef() {
     final Feature numFeat = jcasType.casImpl.getTypeSystem().getFeatureByFullName(
-        CAS.FEATURE_FULL_NAME_SOFANUM);
+                    CAS.FEATURE_FULL_NAME_SOFANUM);
     return jcasType.casImpl.getLowLevelCAS().ll_getIntValue(super.addr,
-        ((FeatureImpl) numFeat).getCode());
+                    ((FeatureImpl) numFeat).getCode());
   }
 
   public InputStream getSofaDataStream() {
-	return jcasType.casImpl.getSofaDataStream(this);
+    return jcasType.casImpl.getSofaDataStream(this);
   }
 
 }
-
-
-

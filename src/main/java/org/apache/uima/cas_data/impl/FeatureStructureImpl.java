@@ -29,8 +29,7 @@ import org.apache.uima.cas_data.FeatureValue;
 /**
  * 
  */
-public class FeatureStructureImpl implements FeatureStructure
-{
+public class FeatureStructureImpl implements FeatureStructure {
   /**
    * 
    */
@@ -44,65 +43,53 @@ public class FeatureStructureImpl implements FeatureStructure
 
   private int[] mIndexed = new int[0];
 
-  public FeatureStructureImpl()
-  {
+  public FeatureStructureImpl() {
     mFeatureMap = new TreeMap();
   }
 
-  public String getType()
-  {
+  public String getType() {
     return mFSType;
   }
 
-  public void setType(String aType)
-  {
+  public void setType(String aType) {
     mFSType = aType;
   }
 
-  public String[] getFeatureNames()
-  {
+  public String[] getFeatureNames() {
     Set aSet = mFeatureMap.keySet();
     String[] featureNames = new String[aSet.size()];
     aSet.toArray(featureNames);
     return featureNames;
   }
 
-  public FeatureValue getFeatureValue(String aFeatureName)
-  {
+  public FeatureValue getFeatureValue(String aFeatureName) {
     return (FeatureValue) mFeatureMap.get(aFeatureName);
   }
 
-  public void setFeatureValue(String aFeatureType, FeatureValue aValue)
-  {
+  public void setFeatureValue(String aFeatureType, FeatureValue aValue) {
     mFeatureMap.put(aFeatureType, aValue);
   }
 
-  public Object get()
-  {
+  public Object get() {
     return this;
   }
 
-  public String toString()
-  {
+  public String toString() {
     StringBuffer buf = new StringBuffer();
     buf.append('\n').append(getType()).append('\n');
-    if (getId() != null)
-    {
+    if (getId() != null) {
       buf.append("ID = ").append(getId()).append('\n');
     }
     int[] indexed = getIndexed();
-    if (indexed.length > 0)
-    {
+    if (indexed.length > 0) {
       buf.append("indexed = ").append(indexed[0]);
-      for (int i = 1; i < indexed.length; i++)
-      {
+      for (int i = 1; i < indexed.length; i++) {
         buf.append(' ').append(indexed[i]);
       }
       buf.append('\n');
     }
     String[] featNames = getFeatureNames();
-    for (int i = 0; i < featNames.length; i++)
-    {
+    for (int i = 0; i < featNames.length; i++) {
       buf.append(featNames[i]).append(" = ").append(getFeatureValue(featNames[i])).append('\n');
     }
     return buf.toString();
@@ -111,8 +98,7 @@ public class FeatureStructureImpl implements FeatureStructure
   /**
    * @return
    */
-  public String getId()
-  {
+  public String getId() {
     return mId;
   }
 
@@ -120,16 +106,14 @@ public class FeatureStructureImpl implements FeatureStructure
    * @return
    * @deprecated
    */
-  public boolean isIndexed()
-  {
+  public boolean isIndexed() {
     return mIndexed.length > 0;
   }
 
   /**
    * @param string
    */
-  public void setId(String string)
-  {
+  public void setId(String string) {
     mId = string;
   }
 
@@ -137,31 +121,29 @@ public class FeatureStructureImpl implements FeatureStructure
    * @param b
    * @deprecated
    */
-  public void setIndexed(boolean b)
-  {
-    mIndexed = new int[]{1}; //index in first index repository for backwards compatibility    
+  public void setIndexed(boolean b) {
+    mIndexed = new int[] { 1 }; // index in first index repository for backwards compatibility
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas_data.FeatureStructure#getIndexed()
    */
-  public int[] getIndexed()
-  {
+  public int[] getIndexed() {
     return mIndexed;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas_data.FeatureStructure#setIndexed(int[])
    */
-  public void setIndexed(int[] aIndexed)
-  {
+  public void setIndexed(int[] aIndexed) {
     if (aIndexed == null)
       mIndexed = new int[0];
     else
       mIndexed = aIndexed;
   }
-  
-  
-
 
 }

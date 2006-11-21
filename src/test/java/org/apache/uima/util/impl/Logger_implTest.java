@@ -27,110 +27,105 @@ import junit.framework.TestCase;
 
 /**
  * UIMA Logging interface implementation test without using an logging toolkit
- *   
- * @author Michael Baessler 
+ * 
+ * @author Michael Baessler
  */
-public class Logger_implTest extends TestCase
-{
-	public Logger_implTest(String arg0)
-	{
-	   super(arg0);
-	}
+public class Logger_implTest extends TestCase {
+  public Logger_implTest(String arg0) {
+    super(arg0);
+  }
 
-	/**
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	protected void setUp() throws Exception
-	{
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
 
-	}
+  }
 
-	public void testLogWrapperCreation() throws Exception
-	{
-		org.apache.uima.util.Logger rootLogger = Logger_impl.getInstance();
-		org.apache.uima.util.Logger rootLogger1 = Logger_impl.getInstance();
-		org.apache.uima.util.Logger classLogger = Logger_impl.getInstance(this.getClass());
-		org.apache.uima.util.Logger classLogger1 = Logger_impl.getInstance(this.getClass());
-		
-		rootLogger.setLevel(Level.INFO);
-		
-		//check default configuration
-		Assert.assertNotNull(rootLogger);
-		Assert.assertNotNull(classLogger);
-		Assert.assertTrue(rootLogger.isLoggable(Level.INFO));
-		Assert.assertTrue(classLogger.isLoggable(Level.INFO));
-		
-		//check getInstance() calls
-		Assert.assertNotSame(classLogger,rootLogger);
-		Assert.assertEquals(rootLogger,rootLogger1);
-		Assert.assertNotSame(classLogger,classLogger1);
-	}
-	
-	public void testMessageLeveling() throws Exception
-	{
-		//create logger
-		org.apache.uima.util.Logger rootLogger = Logger_impl.getInstance();
-		org.apache.uima.util.Logger classLogger = Logger_impl.getInstance(this.getClass());
-		
-		rootLogger.setLevel(Level.INFO);
-		
-		//check message leveling root logger
-		Assert.assertFalse(rootLogger.isLoggable(Level.ALL));
-		Assert.assertFalse(rootLogger.isLoggable(Level.FINEST));
-		Assert.assertFalse(rootLogger.isLoggable(Level.FINER));
-		Assert.assertFalse(rootLogger.isLoggable(Level.FINE));
-		Assert.assertFalse(rootLogger.isLoggable(Level.CONFIG));
-		Assert.assertTrue(rootLogger.isLoggable(Level.INFO));
-		Assert.assertTrue(rootLogger.isLoggable(Level.WARNING));
-		Assert.assertTrue(rootLogger.isLoggable(Level.SEVERE));
-		Assert.assertTrue(rootLogger.isLoggable(Level.OFF));
-		
-		//check message leveling class logger
-		Assert.assertFalse(rootLogger.isLoggable(Level.ALL));
-		Assert.assertFalse(rootLogger.isLoggable(Level.FINEST));
-		Assert.assertFalse(rootLogger.isLoggable(Level.FINER));
-		Assert.assertFalse(rootLogger.isLoggable(Level.FINE));
-		Assert.assertFalse(rootLogger.isLoggable(Level.CONFIG));
-		Assert.assertTrue(rootLogger.isLoggable(Level.INFO));
-		Assert.assertTrue(rootLogger.isLoggable(Level.WARNING));
-		Assert.assertTrue(rootLogger.isLoggable(Level.SEVERE));
-		Assert.assertTrue(rootLogger.isLoggable(Level.OFF));
+  public void testLogWrapperCreation() throws Exception {
+    org.apache.uima.util.Logger rootLogger = Logger_impl.getInstance();
+    org.apache.uima.util.Logger rootLogger1 = Logger_impl.getInstance();
+    org.apache.uima.util.Logger classLogger = Logger_impl.getInstance(this.getClass());
+    org.apache.uima.util.Logger classLogger1 = Logger_impl.getInstance(this.getClass());
 
-		//reset class logger level to OFF
-		classLogger.setLevel(Level.OFF);
-		Assert.assertFalse(classLogger.isLoggable(Level.ALL));
-		Assert.assertFalse(classLogger.isLoggable(Level.FINEST));
-		Assert.assertFalse(classLogger.isLoggable(Level.FINER));
-		Assert.assertFalse(classLogger.isLoggable(Level.FINE));
-		Assert.assertFalse(classLogger.isLoggable(Level.CONFIG));
-		Assert.assertFalse(classLogger.isLoggable(Level.INFO));
-		Assert.assertFalse(classLogger.isLoggable(Level.WARNING));
-		Assert.assertFalse(classLogger.isLoggable(Level.SEVERE));
-		Assert.assertTrue(classLogger.isLoggable(Level.OFF));
-		
-		//reset class logger level to ALL
-		classLogger.setLevel(Level.ALL);
-		Assert.assertTrue(classLogger.isLoggable(Level.ALL));
-		Assert.assertTrue(classLogger.isLoggable(Level.FINEST));
-		Assert.assertTrue(classLogger.isLoggable(Level.FINER));
-		Assert.assertTrue(classLogger.isLoggable(Level.FINE));
-		Assert.assertTrue(classLogger.isLoggable(Level.CONFIG));
-		Assert.assertTrue(classLogger.isLoggable(Level.INFO));
-		Assert.assertTrue(classLogger.isLoggable(Level.WARNING));
-		Assert.assertTrue(classLogger.isLoggable(Level.SEVERE));
-		Assert.assertTrue(classLogger.isLoggable(Level.OFF));
-	
-		//reset class logger level to WARNING
-		classLogger.setLevel(Level.WARNING);
-		Assert.assertFalse(classLogger.isLoggable(Level.ALL));
-		Assert.assertFalse(classLogger.isLoggable(Level.FINEST));
-		Assert.assertFalse(classLogger.isLoggable(Level.FINER));
-		Assert.assertFalse(classLogger.isLoggable(Level.FINE));
-		Assert.assertFalse(classLogger.isLoggable(Level.CONFIG));
-		Assert.assertFalse(classLogger.isLoggable(Level.INFO));
-		Assert.assertTrue(classLogger.isLoggable(Level.WARNING));
-		Assert.assertTrue(classLogger.isLoggable(Level.SEVERE));
-		Assert.assertTrue(classLogger.isLoggable(Level.OFF));
+    rootLogger.setLevel(Level.INFO);
 
-	}
+    // check default configuration
+    Assert.assertNotNull(rootLogger);
+    Assert.assertNotNull(classLogger);
+    Assert.assertTrue(rootLogger.isLoggable(Level.INFO));
+    Assert.assertTrue(classLogger.isLoggable(Level.INFO));
+
+    // check getInstance() calls
+    Assert.assertNotSame(classLogger, rootLogger);
+    Assert.assertEquals(rootLogger, rootLogger1);
+    Assert.assertNotSame(classLogger, classLogger1);
+  }
+
+  public void testMessageLeveling() throws Exception {
+    // create logger
+    org.apache.uima.util.Logger rootLogger = Logger_impl.getInstance();
+    org.apache.uima.util.Logger classLogger = Logger_impl.getInstance(this.getClass());
+
+    rootLogger.setLevel(Level.INFO);
+
+    // check message leveling root logger
+    Assert.assertFalse(rootLogger.isLoggable(Level.ALL));
+    Assert.assertFalse(rootLogger.isLoggable(Level.FINEST));
+    Assert.assertFalse(rootLogger.isLoggable(Level.FINER));
+    Assert.assertFalse(rootLogger.isLoggable(Level.FINE));
+    Assert.assertFalse(rootLogger.isLoggable(Level.CONFIG));
+    Assert.assertTrue(rootLogger.isLoggable(Level.INFO));
+    Assert.assertTrue(rootLogger.isLoggable(Level.WARNING));
+    Assert.assertTrue(rootLogger.isLoggable(Level.SEVERE));
+    Assert.assertTrue(rootLogger.isLoggable(Level.OFF));
+
+    // check message leveling class logger
+    Assert.assertFalse(rootLogger.isLoggable(Level.ALL));
+    Assert.assertFalse(rootLogger.isLoggable(Level.FINEST));
+    Assert.assertFalse(rootLogger.isLoggable(Level.FINER));
+    Assert.assertFalse(rootLogger.isLoggable(Level.FINE));
+    Assert.assertFalse(rootLogger.isLoggable(Level.CONFIG));
+    Assert.assertTrue(rootLogger.isLoggable(Level.INFO));
+    Assert.assertTrue(rootLogger.isLoggable(Level.WARNING));
+    Assert.assertTrue(rootLogger.isLoggable(Level.SEVERE));
+    Assert.assertTrue(rootLogger.isLoggable(Level.OFF));
+
+    // reset class logger level to OFF
+    classLogger.setLevel(Level.OFF);
+    Assert.assertFalse(classLogger.isLoggable(Level.ALL));
+    Assert.assertFalse(classLogger.isLoggable(Level.FINEST));
+    Assert.assertFalse(classLogger.isLoggable(Level.FINER));
+    Assert.assertFalse(classLogger.isLoggable(Level.FINE));
+    Assert.assertFalse(classLogger.isLoggable(Level.CONFIG));
+    Assert.assertFalse(classLogger.isLoggable(Level.INFO));
+    Assert.assertFalse(classLogger.isLoggable(Level.WARNING));
+    Assert.assertFalse(classLogger.isLoggable(Level.SEVERE));
+    Assert.assertTrue(classLogger.isLoggable(Level.OFF));
+
+    // reset class logger level to ALL
+    classLogger.setLevel(Level.ALL);
+    Assert.assertTrue(classLogger.isLoggable(Level.ALL));
+    Assert.assertTrue(classLogger.isLoggable(Level.FINEST));
+    Assert.assertTrue(classLogger.isLoggable(Level.FINER));
+    Assert.assertTrue(classLogger.isLoggable(Level.FINE));
+    Assert.assertTrue(classLogger.isLoggable(Level.CONFIG));
+    Assert.assertTrue(classLogger.isLoggable(Level.INFO));
+    Assert.assertTrue(classLogger.isLoggable(Level.WARNING));
+    Assert.assertTrue(classLogger.isLoggable(Level.SEVERE));
+    Assert.assertTrue(classLogger.isLoggable(Level.OFF));
+
+    // reset class logger level to WARNING
+    classLogger.setLevel(Level.WARNING);
+    Assert.assertFalse(classLogger.isLoggable(Level.ALL));
+    Assert.assertFalse(classLogger.isLoggable(Level.FINEST));
+    Assert.assertFalse(classLogger.isLoggable(Level.FINER));
+    Assert.assertFalse(classLogger.isLoggable(Level.FINE));
+    Assert.assertFalse(classLogger.isLoggable(Level.CONFIG));
+    Assert.assertFalse(classLogger.isLoggable(Level.INFO));
+    Assert.assertTrue(classLogger.isLoggable(Level.WARNING));
+    Assert.assertTrue(classLogger.isLoggable(Level.SEVERE));
+    Assert.assertTrue(classLogger.isLoggable(Level.OFF));
+
+  }
 }

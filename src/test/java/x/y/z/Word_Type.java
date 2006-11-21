@@ -26,37 +26,41 @@ import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.impl.JCas;
 
-  /* comment 4 of 14 */
+/* comment 4 of 14 */
 public class Word_Type extends TokenType_Type {
-  protected FSGenerator getFSGenerator() {return fsGenerator;};
-  private final FSGenerator fsGenerator = 
-    new FSGenerator() {
-      public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (instanceOf_Type.useExistingInstance) {
-  			   // Return eq fs instance if already created
-  		     FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
-  		     if (null == fs) {
-  		       fs = new Word(addr, instanceOf_Type);
-  			     instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
-  			     return fs;
-  		     }
-  		     return fs;
-        } else return new Word(addr, instanceOf_Type);
-  	  }
-    };
+  protected FSGenerator getFSGenerator() {
+    return fsGenerator;
+  };
+
+  private final FSGenerator fsGenerator = new FSGenerator() {
+    public FeatureStructure createFS(int addr, CASImpl cas) {
+      if (instanceOf_Type.useExistingInstance) {
+        // Return eq fs instance if already created
+        FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
+        if (null == fs) {
+          fs = new Word(addr, instanceOf_Type);
+          instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
+          return fs;
+        }
+        return fs;
+      } else
+        return new Word(addr, instanceOf_Type);
+    }
+  };
 
   public final static int typeIndexID = Word.typeIndexID;
 
   public final static boolean featOkTst = JCas.getFeatOkTst("x.y.z.Word");
 
-  //* initialize variables to correspond with Cas Type and Features
+  // * initialize variables to correspond with Cas Type and Features
   public Word_Type(JCas jcas, Type casType) {
     super(jcas, casType);
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
+    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
   }
 
-  protected Word_Type() { //block default new operator
-    throw new RuntimeException("Internal Error-this constructor should never be called.");  }
+  protected Word_Type() { // block default new operator
+    throw new RuntimeException("Internal Error-this constructor should never be called.");
+  }
 
 }

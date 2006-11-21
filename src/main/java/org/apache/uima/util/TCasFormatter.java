@@ -23,40 +23,40 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.text.TCAS;
 
-
 /**
  * Interface for components that generate a String representation of a TCAS.
  * 
  * 
  */
-public interface TCasFormatter 
-{
-  
+public interface TCasFormatter {
+
   /**
    * Produces a string representation of a TCAS.
    * 
-   * @param aTCAS the TCAS to be formatted
+   * @param aTCAS
+   *          the TCAS to be formatted
    * 
    * @return a string representation of <code>aTCAS</code>.
    * 
-   * @exception CASException if an exception occurs reading from the TCAS
+   * @exception CASException
+   *              if an exception occurs reading from the TCAS
    */
-  public String format(TCAS aTCAS)
-    throws CASException;
-
+  public String format(TCAS aTCAS) throws CASException;
 
   /**
-   * Produces a string representation of a TCAS.  Only those feature structures
-   * that satisfy the specified filter will appear in the string representation.
+   * Produces a string representation of a TCAS. Only those feature structures that satisfy the
+   * specified filter will appear in the string representation.
    * 
-   * @param aTCAS the TCAS to be formatted
-   * @param aFilter a constraint which FeatureStructures must satisfy in 
-   *   order to be included in the resulting string
+   * @param aTCAS
+   *          the TCAS to be formatted
+   * @param aFilter
+   *          a constraint which FeatureStructures must satisfy in order to be included in the
+   *          resulting string
    * 
    * @return a string representation of <code>aTCAS</code>.
    * 
-   * @exception CASException if an exception occurs reading from the TCAS
+   * @exception CASException
+   *              if an exception occurs reading from the TCAS
    */
-  public String format(TCAS aTCAS, FSMatchConstraint aFilter)
-    throws CASException;
+  public String format(TCAS aTCAS, FSMatchConstraint aFilter) throws CASException;
 }

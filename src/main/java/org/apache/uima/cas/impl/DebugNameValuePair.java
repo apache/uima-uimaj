@@ -25,77 +25,75 @@ import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.StringArrayFS;
 
 public class DebugNameValuePair {
-	
+
   /** Name */
   private String mName;
-  
+
   /** Value */
   private Object mValue;
 
   /**
    * Creates a new <code>NameValuePair_impl</code> with the specified name and value.
    * 
-   * @param aName a name
-   * @param aValue a value
+   * @param aName
+   *          a name
+   * @param aValue
+   *          a value
    */
-  public DebugNameValuePair(String aName, Object aValue)    
-  {
+  public DebugNameValuePair(String aName, Object aValue) {
     setName(aName);
     setValue(aValue);
   }
-  
+
   /**
    * Gets the name.
    * 
-   * @return the name 
+   * @return the name
    */
-  public String getName()
-  {
+  public String getName() {
     return mName;
   }
-  
+
   /**
    * Sets the name.
    * 
-   * @param aName a name
+   * @param aName
+   *          a name
    */
-  public void setName(String aName)
-  {
+  public void setName(String aName) {
     mName = aName;
   }
-
 
   /**
    * Gets the value.
    * 
-   * @return the value 
+   * @return the value
    */
-  public Object getValue()
-  {
+  public Object getValue() {
     return mValue;
   }
-  
+
   /**
    * Sets the value.
    * 
-   * @param aValue a value
+   * @param aValue
+   *          a value
    */
-  public void setValue(Object aValue)
-  {
+  public void setValue(Object aValue) {
     mValue = aValue;
   }
-  
+
   public String toString() {
-  	Object v = getValue();
-  	if (v instanceof StringArrayFS)
-  	  v = "StringArrayFS[" + ((StringArrayFS)v).size()	+ "]";
-  	else if (v instanceof FloatArrayFS)
-  	  v = "FloatArrayFS[" + ((FloatArrayFS)v).size()	+ "]";
-  	else if (v instanceof IntArrayFS)
-  		  v = "IntArrayFS[" + ((IntArrayFS)v).size()	+ "]";
-  	else if (v instanceof ArrayFS)
-  		  v = "ArrayFS[" + ((ArrayFS)v).size()	+ "]";
-  	return getName() + ": " + v;
+    Object v = getValue();
+    if (v instanceof StringArrayFS)
+      v = "StringArrayFS[" + ((StringArrayFS) v).size() + "]";
+    else if (v instanceof FloatArrayFS)
+      v = "FloatArrayFS[" + ((FloatArrayFS) v).size() + "]";
+    else if (v instanceof IntArrayFS)
+      v = "IntArrayFS[" + ((IntArrayFS) v).size() + "]";
+    else if (v instanceof ArrayFS)
+      v = "ArrayFS[" + ((ArrayFS) v).size() + "]";
+    return getName() + ": " + v;
   }
 
 }

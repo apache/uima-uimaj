@@ -27,66 +27,65 @@ package org.apache.uima.cas;
  */
 public interface FloatArrayFS extends CommonArrayFS {
 
-    /**
-     * Get the element at position <code>index</code>.
-     * 
-     * @return The element.
-     * @exception ArrayIndexOutOfBoundsException
-     *                If <code>index</code> is out of bounds.
-     */
-    float get(int index);
+  /**
+   * Get the element at position <code>index</code>.
+   * 
+   * @return The element.
+   * @exception ArrayIndexOutOfBoundsException
+   *              If <code>index</code> is out of bounds.
+   */
+  float get(int index);
 
-    /**
-     * Set a given element.
-     * 
-     * @param index
-     *            The index.
-     * @param value
-     *            The value.
-     * @exception ArrayIndexOutOfBoundsException
-     *                If <code>index</code> is out of bounds.
-     */
-    void set(int index, float value) throws ArrayIndexOutOfBoundsException;
+  /**
+   * Set a given element.
+   * 
+   * @param index
+   *          The index.
+   * @param value
+   *          The value.
+   * @exception ArrayIndexOutOfBoundsException
+   *              If <code>index</code> is out of bounds.
+   */
+  void set(int index, float value) throws ArrayIndexOutOfBoundsException;
 
-    /**
-     * Copy the contents of the array to an external array.
-     * 
-     * @param srcOffset
-     *            The index of the first element to copy.
-     * @param dest
-     *            The array to copy to.
-     * @param destOffset
-     *            Where to start copying into <code>dest</code>.
-     * @param length
-     *            The number of elements to copy.
-     * @exception ArrayIndexOutOfBoundsException
-     *                If <code>srcOffset &lt; 0</code> or
-     *                <code>length > size()</code> or
-     *                <code>destOffset + length > destArray.length</code>.
-     */
-    void copyToArray(int srcOffset, float[] dest, int destOffset, int length)
-            throws ArrayIndexOutOfBoundsException;
+  /**
+   * Copy the contents of the array to an external array.
+   * 
+   * @param srcOffset
+   *          The index of the first element to copy.
+   * @param dest
+   *          The array to copy to.
+   * @param destOffset
+   *          Where to start copying into <code>dest</code>.
+   * @param length
+   *          The number of elements to copy.
+   * @exception ArrayIndexOutOfBoundsException
+   *              If <code>srcOffset &lt; 0</code> or <code>length > size()</code> or
+   *              <code>destOffset + length > destArray.length</code>.
+   */
+  void copyToArray(int srcOffset, float[] dest, int destOffset, int length)
+                  throws ArrayIndexOutOfBoundsException;
 
-    /**
-     * Copy the contents of an external array into this array.
-     * 
-     * @param src
-     *            The source array.
-     * @param srcOffset
-     *            Where to start copying in the source array.
-     * @param destOffset
-     *            Where to start copying to in the destination array.
-     * @param length
-     *            The number of elements to copy.
-     */
-    void copyFromArray(float[] src, int srcOffset, int destOffset, int length)
-            throws ArrayIndexOutOfBoundsException;
+  /**
+   * Copy the contents of an external array into this array.
+   * 
+   * @param src
+   *          The source array.
+   * @param srcOffset
+   *          Where to start copying in the source array.
+   * @param destOffset
+   *          Where to start copying to in the destination array.
+   * @param length
+   *          The number of elements to copy.
+   */
+  void copyFromArray(float[] src, int srcOffset, int destOffset, int length)
+                  throws ArrayIndexOutOfBoundsException;
 
-    /**
-     * Create a Java array that is a copy of the internal CAS array.
-     * 
-     * @return An array copy.
-     */
-    float[] toArray();
+  /**
+   * Create a Java array that is a copy of the internal CAS array.
+   * 
+   * @return An array copy.
+   */
+  float[] toArray();
 
 }

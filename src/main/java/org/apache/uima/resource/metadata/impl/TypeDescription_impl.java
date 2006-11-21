@@ -25,186 +25,164 @@ import org.apache.uima.resource.metadata.FeatureDescription;
 import org.apache.uima.resource.metadata.TypeDescription;
 
 /**
- * Reference implementation of {@link TypeDescription}.  Under construction.
- *
+ * Reference implementation of {@link TypeDescription}. Under construction.
+ * 
  * 
  */
-public class TypeDescription_impl extends MetaDataObject_impl
-  implements TypeDescription
-{
-  
+public class TypeDescription_impl extends MetaDataObject_impl implements TypeDescription {
+
+  static final long serialVersionUID = 7505580429981863281L;
+
+  /** Name of this Type. */
+  private String mName;
+
+  /** Verbose description of this Type. */
+  private String mDescription;
+
+  /** Name of the Type from which this Type inherits. */
+  private String mSupertypeName;
+
+  /** Descriptions of all Features defined on this Type. */
+  private FeatureDescription[] mFeatures = new FeatureDescription[0];
+
+  /** Allowed Values for an Enumerated type. */
+  private AllowedValue[] mAllowedValues = new AllowedValue[0];
+
   /**
    * Creates a new TypeDescription_impl with null field values.
    */
-  public TypeDescription_impl()
-  {
+  public TypeDescription_impl() {
   }
-  
+
   /**
    * Creates a new TypeDescription_impl with the specified field values.
    * 
-   * @param aName name of the Type
-   * @param aSupertypeName name of the type's supertype
+   * @param aName
+   *          name of the Type
+   * @param aSupertypeName
+   *          name of the type's supertype
    */
-  public TypeDescription_impl(String aName, String aDescription, String aSupertypeName)
-  {
+  public TypeDescription_impl(String aName, String aDescription, String aSupertypeName) {
     setName(aName);
     setDescription(aDescription);
     setSupertypeName(aSupertypeName);
   }
-  
+
   /**
    * @see org.apache.uima.cas.TypeDescription#getName()
    */
-  public String getName()
-  {
+  public String getName() {
     return mName;
   }
 
   /**
    * @see org.apache.uima.cas.TypeDescription#setName(String)
    */
-  public void setName(String aName)
-  {
+  public void setName(String aName) {
     mName = aName;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.metadata.TypeDescription#getDescription()
    */
-  public String getDescription()
-  {
+  public String getDescription() {
     return mDescription;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.metadata.TypeDescription#setDescription(java.lang.String)
    */
-  public void setDescription(String aDescription)
-  {
+  public void setDescription(String aDescription) {
     mDescription = aDescription;
   }
-    
+
   /**
    * @see org.apache.uima.cas.TypeDescription#getSupertypeName()
    */
-  public String getSupertypeName()
-  {
+  public String getSupertypeName() {
     return mSupertypeName;
   }
 
   /**
    * @see org.apache.uima.cas.TypeDescription#setSupertypeName(String)
    */
-  public void setSupertypeName(String aTypeName)
-  {
+  public void setSupertypeName(String aTypeName) {
     mSupertypeName = aTypeName;
   }
 
   /**
    * @see org.apache.uima.cas.TypeDescription#getFeatures()
    */
-  public FeatureDescription[] getFeatures()
-  {
+  public FeatureDescription[] getFeatures() {
     return mFeatures;
   }
 
   /**
    * @see org.apache.uima.cas.TypeDescription#setFeatures(FeatureDescription[])
    */
-  public void setFeatures(FeatureDescription[] aFeatures)
-  {
-    if (aFeatures == null)
-    {
-      throw new UIMA_IllegalArgumentException(
-          UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-          new Object[]{"null", "aFeatures", "setFeatures"});            
-    }    
+  public void setFeatures(FeatureDescription[] aFeatures) {
+    if (aFeatures == null) {
+      throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
+                      new Object[] { "null", "aFeatures", "setFeatures" });
+    }
     mFeatures = aFeatures;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.metadata.TypeDescription#getAllowedValues()
    */
-  public AllowedValue[] getAllowedValues()
-  {
+  public AllowedValue[] getAllowedValues() {
     return mAllowedValues;
   }
 
   /**
    * @see org.apache.uima.analysis_engine.metadata.TypeDescription#setAllowedValues(org.apache.uima.analysis_engine.metadata.AllowedValue[])
    */
-  public void setAllowedValues(AllowedValue[] aAllowedValues)
-  {    
+  public void setAllowedValues(AllowedValue[] aAllowedValues) {
     mAllowedValues = aAllowedValues;
   }
-  
+
   /**
    * @see org.apache.uima.cas.TypeDescription#addFeature(String, String, String)
    */
   public FeatureDescription addFeature(String aFeatureName, String aDescription,
-    String aRangeTypeName)
-  {
+                  String aRangeTypeName) {
     return addFeature(aFeatureName, aDescription, aRangeTypeName, null, null);
   }
 
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.resource.metadata.TypeDescription#addFeature(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.resource.metadata.TypeDescription#addFeature(java.lang.String,
+   *      java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean)
    */
-  public FeatureDescription addFeature(String aFeatureName, String aDescription, String aRangeTypeName, String aElementTypeName, Boolean aMultipleReferencesAllowed)
-  {
-    //create new feature description
-    FeatureDescription newFeature = 
-      new FeatureDescription_impl(aFeatureName, aDescription, aRangeTypeName, aElementTypeName, aMultipleReferencesAllowed);
-    
-    //add to array
+  public FeatureDescription addFeature(String aFeatureName, String aDescription,
+                  String aRangeTypeName, String aElementTypeName, Boolean aMultipleReferencesAllowed) {
+    // create new feature description
+    FeatureDescription newFeature = new FeatureDescription_impl(aFeatureName, aDescription,
+                    aRangeTypeName, aElementTypeName, aMultipleReferencesAllowed);
+
+    // add to array
     FeatureDescription[] features = getFeatures();
-    if (features == null)
-    {
-      setFeatures(new FeatureDescription[]{newFeature});  
-    }
-    else
-    {
+    if (features == null) {
+      setFeatures(new FeatureDescription[] { newFeature });
+    } else {
       FeatureDescription[] newArray = new FeatureDescription[features.length + 1];
       System.arraycopy(features, 0, newArray, 0, features.length);
       newArray[features.length] = newFeature;
-      setFeatures(newArray);     
-    }  
+      setFeatures(newArray);
+    }
 
     return newFeature;
   }
 
-  protected XmlizationInfo getXmlizationInfo()
-  {
+  protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
-  
-  static final private XmlizationInfo XMLIZATION_INFO =
-    new XmlizationInfo("typeDescription",
-      new PropertyXmlInfo[]{
-         new PropertyXmlInfo("name"),
-         new PropertyXmlInfo("description",false),
-         new PropertyXmlInfo("supertypeName"),
-         new PropertyXmlInfo("features"),
-         new PropertyXmlInfo("allowedValues")
-      });
-        
 
-  /** Name of this Type. */
-  private String mName;
-  
-  /** Verbose description of this Type. */
-  private String mDescription;
-
-  /** Name of the Type from which this Type inherits. */
-  private String mSupertypeName;
-  
-  /** Descriptions of all Features defined on this Type. */
-  private FeatureDescription[] mFeatures = new FeatureDescription[0];
-  
-  /** Allowed Values for an Enumerated type. */
-  private AllowedValue[] mAllowedValues = new AllowedValue[0];  
-
-  static final long serialVersionUID = 7505580429981863281L;
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("typeDescription",
+                  new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
+                      new PropertyXmlInfo("description", false),
+                      new PropertyXmlInfo("supertypeName"), new PropertyXmlInfo("features"),
+                      new PropertyXmlInfo("allowedValues") });
 }

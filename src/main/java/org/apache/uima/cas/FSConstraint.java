@@ -22,10 +22,10 @@ package org.apache.uima.cas;
 import java.io.Serializable;
 
 /**
- * Interface for feature structure constraints. Doesn't do anything by itself,
- * just an umbrella for the constraint interfaces.
+ * Interface for feature structure constraints. Doesn't do anything by itself, just an umbrella for
+ * the constraint interfaces.
  */
 public interface FSConstraint extends Serializable {
-    // Does nothing.
+  // Does nothing.
 
 }

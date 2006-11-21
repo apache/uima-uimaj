@@ -29,67 +29,76 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.Feature;
 
-/** 
+/**
  * Updated by JCasGen Tue Feb 21 14:56:04 EST 2006
- * @generated */
+ * 
+ * @generated
+ */
 public class ConcreteType_Type extends AbstractType_Type {
   /** @generated */
-  protected FSGenerator getFSGenerator() {return fsGenerator;}
+  protected FSGenerator getFSGenerator() {
+    return fsGenerator;
+  }
+
   /** @generated */
-  private final FSGenerator fsGenerator = 
-    new FSGenerator() {
-      public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (ConcreteType_Type.this.useExistingInstance) {
-  			   // Return eq fs instance if already created
-  		     FeatureStructure fs = ConcreteType_Type.this.jcas.getJfsFromCaddr(addr);
-  		     if (null == fs) {
-  		       fs = new ConcreteType(addr, ConcreteType_Type.this);
-  			   ConcreteType_Type.this.jcas.putJfsFromCaddr(addr, fs);
-  			   return fs;
-  		     }
-  		     return fs;
-        } else return new ConcreteType(addr, ConcreteType_Type.this);
-  	  }
-    };
+  private final FSGenerator fsGenerator = new FSGenerator() {
+    public FeatureStructure createFS(int addr, CASImpl cas) {
+      if (ConcreteType_Type.this.useExistingInstance) {
+        // Return eq fs instance if already created
+        FeatureStructure fs = ConcreteType_Type.this.jcas.getJfsFromCaddr(addr);
+        if (null == fs) {
+          fs = new ConcreteType(addr, ConcreteType_Type.this);
+          ConcreteType_Type.this.jcas.putJfsFromCaddr(addr, fs);
+          return fs;
+        }
+        return fs;
+      } else
+        return new ConcreteType(addr, ConcreteType_Type.this);
+    }
+  };
+
   /** @generated */
   public final static int typeIndexID = ConcreteType.typeIndexID;
-  /** @generated 
-     @modifiable */
-  public final static boolean featOkTst = JCas.getFeatOkTst("aa.ConcreteType");
 
+  /**
+   * @generated
+   * @modifiable
+   */
+  public final static boolean featOkTst = JCas.getFeatOkTst("aa.ConcreteType");
 
   /** @generated */
   final Feature casFeat_concreteString;
+
   /** @generated */
-  final int     casFeatCode_concreteString;
-  /** @generated */ 
+  final int casFeatCode_concreteString;
+
+  /** @generated */
   public String getConcreteString(int addr) {
-        if (featOkTst && casFeat_concreteString == null)
+    if (featOkTst && casFeat_concreteString == null)
       JCas.throwFeatMissing("concreteString", "aa.ConcreteType");
     return ll_cas.ll_getStringValue(addr, casFeatCode_concreteString);
   }
-  /** @generated */    
+
+  /** @generated */
   public void setConcreteString(int addr, String v) {
-        if (featOkTst && casFeat_concreteString == null)
+    if (featOkTst && casFeat_concreteString == null)
       JCas.throwFeatMissing("concreteString", "aa.ConcreteType");
-    ll_cas.ll_setStringValue(addr, casFeatCode_concreteString, v);}
-    
-  
+    ll_cas.ll_setStringValue(addr, casFeatCode_concreteString, v);
+  }
 
-
-  /** initialize variables to correspond with Cas Type and Features
-	* @generated */
+  /**
+   * initialize variables to correspond with Cas Type and Features
+   * 
+   * @generated
+   */
   public ConcreteType_Type(JCas jcas, Type casType) {
     super(jcas, casType);
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
+    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
- 
-    casFeat_concreteString = jcas.getRequiredFeatureDE(casType, "concreteString", "uima.cas.String", featOkTst);
-    casFeatCode_concreteString  = (null == casFeat_concreteString) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_concreteString).getCode();
+    casFeat_concreteString = jcas.getRequiredFeatureDE(casType, "concreteString",
+                    "uima.cas.String", featOkTst);
+    casFeatCode_concreteString = (null == casFeat_concreteString) ? JCas.INVALID_FEATURE_CODE
+                    : ((FeatureImpl) casFeat_concreteString).getCode();
 
   }
 }
-
-
-
-    

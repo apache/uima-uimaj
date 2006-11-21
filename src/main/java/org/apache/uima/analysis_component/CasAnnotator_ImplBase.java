@@ -26,82 +26,78 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
 
 /**
- * Base class to be extended by Annotators that use the {@link CAS} interface.
- * An Annotator is an {@link AnalysisComponent} that may modify its input CAS,
- * but never creates any new CASes as output.
+ * Base class to be extended by Annotators that use the {@link CAS} interface. An Annotator is an
+ * {@link AnalysisComponent} that may modify its input CAS, but never creates any new CASes as
+ * output.
  */
-public abstract class CasAnnotator_ImplBase extends Annotator_ImplBase
-{
+public abstract class CasAnnotator_ImplBase extends Annotator_ImplBase {
   /**
-   * Stores the last type system that this component operated on, so
-   * we can tell when typeSystemInit needs to be called.
+   * Stores the last type system that this component operated on, so we can tell when typeSystemInit
+   * needs to be called.
    */
   private TypeSystem mLastTypeSystem = null;
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#getRequiredCasInterface()
    */
-  public Class getRequiredCasInterface()
-  {
+  public Class getRequiredCasInterface() {
     return CAS.class;
   }
-   
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#process(org.apache.uima.core.AbstractCas)
    */
-  public final void process(AbstractCas aCAS) throws AnalysisEngineProcessException
-  {
-    if (aCAS instanceof CAS)
-    {
-      checkTypeSystemChange((CAS)aCAS);
-      process((CAS)aCAS);
+  public final void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
+    if (aCAS instanceof CAS) {
+      checkTypeSystemChange((CAS) aCAS);
+      process((CAS) aCAS);
+    } else {
+      throw new AnalysisEngineProcessException(
+                      AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] {
+                          CAS.class, aCAS.getClass() });
     }
-    else
-    {
-      throw new AnalysisEngineProcessException(AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE,
-          new Object[]{CAS.class, aCAS.getClass()});    
-    } 
   }
-  
+
   /**
-   * Inputs a CAS to the AnalysisComponent.  This method should be 
-   * overriden by subclasses to perform analysis of the CAS.
-   *
-   * @param aCAS A CAS that this AnalysisComponent should process.
-   *   
-   * @throws AnalysisComponentException if a problem occurs during processing
+   * Inputs a CAS to the AnalysisComponent. This method should be overriden by subclasses to perform
+   * analysis of the CAS.
+   * 
+   * @param aCAS
+   *          A CAS that this AnalysisComponent should process.
+   * 
+   * @throws AnalysisComponentException
+   *           if a problem occurs during processing
    */
   public abstract void process(CAS aCAS) throws AnalysisEngineProcessException;
-  
+
   /**
-   * Informs this annotator that the CAS TypeSystem has changed.
-   * The Analysis Engine calls this method immediately following the call to
-   * {@link #initialize(AnnotatorContext)}, and will call it again 
-   * whenever the CAS TypeSystem changes.
+   * Informs this annotator that the CAS TypeSystem has changed. The Analysis Engine calls this
+   * method immediately following the call to {@link #initialize(AnnotatorContext)}, and will call
+   * it again whenever the CAS TypeSystem changes.
    * <p>
-   * In this method, the Annotator should use the {@link TypeSystem} to
-   * resolve the names of Type and Features to the actual
-   * {@link org.apache.uima.cas.Type} and {@link org.apache.uima.cas.Feature} objects,
-   * which can then be used during processing.
+   * In this method, the Annotator should use the {@link TypeSystem} to resolve the names of Type
+   * and Features to the actual {@link org.apache.uima.cas.Type} and
+   * {@link org.apache.uima.cas.Feature} objects, which can then be used during processing.
    * 
-   * @throws AnnotatorEngineProcessException  if the provided type system
-   *    is missing types or features required by this annotator
+   * @throws AnnotatorEngineProcessException
+   *           if the provided type system is missing types or features required by this annotator
    */
-  public void typeSystemInit(TypeSystem aTypeSystem) 
-    throws AnalysisEngineProcessException
-  {
+  public void typeSystemInit(TypeSystem aTypeSystem) throws AnalysisEngineProcessException {
+    //no default behavior
   }
-  
+
   /**
-   * Checks it the type system of the given CAS is different from the
-   * last type system this component was operating on.  If it is different,
-   * calls the typeSystemInit method on the component.
+   * Checks it the type system of the given CAS is different from the last type system this
+   * component was operating on. If it is different, calls the typeSystemInit method on the
+   * component.
    */
-  private void checkTypeSystemChange(CAS aCAS) throws AnalysisEngineProcessException
-  {
+  private void checkTypeSystemChange(CAS aCAS) throws AnalysisEngineProcessException {
     TypeSystem typeSystem = aCAS.getTypeSystem();
-    if (typeSystem != mLastTypeSystem)
-    {
+    if (typeSystem != mLastTypeSystem) {
       typeSystemInit(typeSystem);
       mLastTypeSystem = typeSystem;
     }

@@ -20,29 +20,28 @@
 package org.apache.uima.cas_data;
 
 /**
- * Represents a primitive feature value - a string, integer, or float.
- * Arrays are represented as FeatureStructures, not as primitive values.
- *
+ * Represents a primitive feature value - a string, integer, or float. Arrays are represented as
+ * FeatureStructures, not as primitive values.
+ * 
  * 
  */
-public interface PrimitiveValue extends FeatureValue
-{
+public interface PrimitiveValue extends FeatureValue {
   /**
-   * Gets this value as a string.  
+   * Gets this value as a string.
    * 
    * @return string value
    */
   public String toString();
 
   /**
-   * Gets this value as an integer.  
+   * Gets this value as an integer.
    * 
    * @return integer value, 0 if a non-integer
    */
   public int toInt();
 
   /**
-   * Gets this value as a float.  
+   * Gets this value as a float.
    * 
    * @return float value, 0 if a non-number.
    */

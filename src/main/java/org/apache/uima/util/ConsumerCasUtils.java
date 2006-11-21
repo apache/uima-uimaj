@@ -25,49 +25,48 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.TCAS;
 
 public class ConsumerCasUtils {
-	public static int getIntFeatValue( TCAS aTcas, String aTypeS, String aFeatS) {
-		int result = 0;
-		Type type = aTcas.getTypeSystem().getType(aTypeS);
-		if (type != null)
-		{
-		  FSIterator idIter = aTcas.getAnnotationIndex(type).iterator();
-		  while (idIter.isValid() ) {
-			  org.apache.uima.cas.FeatureStructure idFS = idIter.get();
-			  result = idFS.getIntValue(aTcas.getTypeSystem().getFeatureByFullName(aTypeS+":"+aFeatS));
-			  idIter.moveToNext();  	
-		  }
-		}  
-		return result;
-	}
-	
-	public static String getStringFeatValue( TCAS aTcas, String aTypeS, String aFeatS) {
-		String result = null;
-		Type type = aTcas.getTypeSystem().getType(aTypeS);
-		if (type != null)
-		{
-			FSIterator idIter = aTcas.getAnnotationIndex(type).iterator();
-  		while (idIter.isValid() ) {
-	  		org.apache.uima.cas.FeatureStructure idFS = idIter.get();
-		  	result = idFS.getStringValue(aTcas.getTypeSystem().getFeatureByFullName(aTypeS+":"+aFeatS));
-			  idIter.moveToNext();
-  		}    	
-		}
-		return result;
-	}
+  public static int getIntFeatValue(TCAS aTcas, String aTypeS, String aFeatS) {
+    int result = 0;
+    Type type = aTcas.getTypeSystem().getType(aTypeS);
+    if (type != null) {
+      FSIterator idIter = aTcas.getAnnotationIndex(type).iterator();
+      while (idIter.isValid()) {
+        org.apache.uima.cas.FeatureStructure idFS = idIter.get();
+        result = idFS
+                        .getIntValue(aTcas.getTypeSystem().getFeatureByFullName(
+                                        aTypeS + ":" + aFeatS));
+        idIter.moveToNext();
+      }
+    }
+    return result;
+  }
 
-	public static FeatureStructure getTcasFS(TCAS aTcas, String aTypeS) {
-		org.apache.uima.cas.FeatureStructure idFS = null;
-		Type type = aTcas.getTypeSystem().getType(aTypeS);
-		if (type != null)
-		{
-			FSIterator idIter = aTcas.getAnnotationIndex(type).iterator();
-  		while (idIter.isValid() ) {
-	  		idFS = idIter.get();
-		  	idIter.moveToNext();  	
-		  }	
-		}  	
-		return idFS;
-	}
+  public static String getStringFeatValue(TCAS aTcas, String aTypeS, String aFeatS) {
+    String result = null;
+    Type type = aTcas.getTypeSystem().getType(aTypeS);
+    if (type != null) {
+      FSIterator idIter = aTcas.getAnnotationIndex(type).iterator();
+      while (idIter.isValid()) {
+        org.apache.uima.cas.FeatureStructure idFS = idIter.get();
+        result = idFS.getStringValue(aTcas.getTypeSystem().getFeatureByFullName(
+                        aTypeS + ":" + aFeatS));
+        idIter.moveToNext();
+      }
+    }
+    return result;
+  }
 
+  public static FeatureStructure getTcasFS(TCAS aTcas, String aTypeS) {
+    org.apache.uima.cas.FeatureStructure idFS = null;
+    Type type = aTcas.getTypeSystem().getType(aTypeS);
+    if (type != null) {
+      FSIterator idIter = aTcas.getAnnotationIndex(type).iterator();
+      while (idIter.isValid()) {
+        idFS = idIter.get();
+        idIter.moveToNext();
+      }
+    }
+    return idFS;
+  }
 
 }

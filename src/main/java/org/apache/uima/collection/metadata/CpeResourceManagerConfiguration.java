@@ -22,24 +22,25 @@ package org.apache.uima.collection.metadata;
 import org.apache.uima.resource.metadata.MetaDataObject;
 
 /**
- * An object that holds configuration that is part of the CPE descriptor. Provides the
- * means of defining and obtaining configuration for 
+ * An object that holds configuration that is part of the CPE descriptor. Provides the means of
+ * defining and obtaining configuration for
  * {@link org.apache.uima.collection.metadata.CpeResourceManagerConfiguration}
- *  
+ * 
  * 
  */
-public interface CpeResourceManagerConfiguration extends MetaDataObject
-{
-	/** 
-	 * Sets a path of the Resource Manager configuration file
-	 *  
-	 * @param aPath  - file path
-	 */
-	public void set( String aPath);
-	/**
-	 * Returns a file path to the Resource Manager configuration file
-	 * 
-	 * @return - file path as String
-	 */
-	public String get();
+public interface CpeResourceManagerConfiguration extends MetaDataObject {
+  /**
+   * Sets a path of the Resource Manager configuration file
+   * 
+   * @param aPath -
+   *          file path
+   */
+  public void set(String aPath);
+
+  /**
+   * Returns a file path to the Resource Manager configuration file
+   * 
+   * @return - file path as String
+   */
+  public String get();
 }

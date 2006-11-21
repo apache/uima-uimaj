@@ -29,66 +29,76 @@ import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.cas.TOP_Type;
 
-/** 
+/**
  * Updated by JCasGen Tue Feb 21 14:56:04 EST 2006
- * @generated */
+ * 
+ * @generated
+ */
 public class AbstractType_Type extends TOP_Type {
   /** @generated */
-  protected FSGenerator getFSGenerator() {return fsGenerator;}
+  protected FSGenerator getFSGenerator() {
+    return fsGenerator;
+  }
+
   /** @generated */
-  private final FSGenerator fsGenerator = 
-    new FSGenerator() {
-      public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (AbstractType_Type.this.useExistingInstance) {
-  			   // Return eq fs instance if already created
-  		     FeatureStructure fs = AbstractType_Type.this.jcas.getJfsFromCaddr(addr);
-  		     if (null == fs) {
-  		       fs = new AbstractType(addr, AbstractType_Type.this);
-  			   AbstractType_Type.this.jcas.putJfsFromCaddr(addr, fs);
-  			   return fs;
-  		     }
-  		     return fs;
-        } else return new AbstractType(addr, AbstractType_Type.this);
-  	  }
-    };
+  private final FSGenerator fsGenerator = new FSGenerator() {
+    public FeatureStructure createFS(int addr, CASImpl cas) {
+      if (AbstractType_Type.this.useExistingInstance) {
+        // Return eq fs instance if already created
+        FeatureStructure fs = AbstractType_Type.this.jcas.getJfsFromCaddr(addr);
+        if (null == fs) {
+          fs = new AbstractType(addr, AbstractType_Type.this);
+          AbstractType_Type.this.jcas.putJfsFromCaddr(addr, fs);
+          return fs;
+        }
+        return fs;
+      } else
+        return new AbstractType(addr, AbstractType_Type.this);
+    }
+  };
+
   /** @generated */
   public final static int typeIndexID = AbstractType.typeIndexID;
-  /** @generated 
-     @modifiable */
+
+  /**
+   * @generated
+   * @modifiable
+   */
   public final static boolean featOkTst = JCas.getFeatOkTst("aa.AbstractType");
- 
+
   /** @generated */
   final Feature casFeat_abstractInt;
+
   /** @generated */
-  final int     casFeatCode_abstractInt;
-  /** @generated */ 
+  final int casFeatCode_abstractInt;
+
+  /** @generated */
   public int getAbstractInt(int addr) {
-        if (featOkTst && casFeat_abstractInt == null)
+    if (featOkTst && casFeat_abstractInt == null)
       JCas.throwFeatMissing("abstractInt", "aa.AbstractType");
     return ll_cas.ll_getIntValue(addr, casFeatCode_abstractInt);
   }
-  /** @generated */    
+
+  /** @generated */
   public void setAbstractInt(int addr, int v) {
-        if (featOkTst && casFeat_abstractInt == null)
+    if (featOkTst && casFeat_abstractInt == null)
       JCas.throwFeatMissing("abstractInt", "aa.AbstractType");
-    ll_cas.ll_setIntValue(addr, casFeatCode_abstractInt, v);}
-    
-  
+    ll_cas.ll_setIntValue(addr, casFeatCode_abstractInt, v);
+  }
 
-
-  /** initialize variables to correspond with Cas Type and Features
-	* @generated */
+  /**
+   * initialize variables to correspond with Cas Type and Features
+   * 
+   * @generated
+   */
   public AbstractType_Type(JCas jcas, Type casType) {
     super(jcas, casType);
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
+    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
- 
-    casFeat_abstractInt = jcas.getRequiredFeatureDE(casType, "abstractInt", "uima.cas.Integer", featOkTst);
-    casFeatCode_abstractInt  = (null == casFeat_abstractInt) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_abstractInt).getCode();
+    casFeat_abstractInt = jcas.getRequiredFeatureDE(casType, "abstractInt", "uima.cas.Integer",
+                    featOkTst);
+    casFeatCode_abstractInt = (null == casFeat_abstractInt) ? JCas.INVALID_FEATURE_CODE
+                    : ((FeatureImpl) casFeat_abstractInt).getCode();
 
   }
 }
-
-
-
-    

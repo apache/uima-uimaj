@@ -27,44 +27,51 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.Type;
 import org.apache.uima.jcas.cas.TOP_Type;
 
-/** 
+/**
  * Updated by JCasGen Tue Feb 21 14:56:04 EST 2006
- * @generated */
+ * 
+ * @generated
+ */
 public class MissingInCas_Type extends TOP_Type {
   /** @generated */
-  protected FSGenerator getFSGenerator() {return fsGenerator;}
+  protected FSGenerator getFSGenerator() {
+    return fsGenerator;
+  }
+
   /** @generated */
-  private final FSGenerator fsGenerator = 
-    new FSGenerator() {
-      public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (MissingInCas_Type.this.useExistingInstance) {
-  			   // Return eq fs instance if already created
-  		     FeatureStructure fs = MissingInCas_Type.this.jcas.getJfsFromCaddr(addr);
-  		     if (null == fs) {
-  		       fs = new MissingInCas(addr, MissingInCas_Type.this);
-  			   MissingInCas_Type.this.jcas.putJfsFromCaddr(addr, fs);
-  			   return fs;
-  		     }
-  		     return fs;
-        } else return new MissingInCas(addr, MissingInCas_Type.this);
-  	  }
-    };
+  private final FSGenerator fsGenerator = new FSGenerator() {
+    public FeatureStructure createFS(int addr, CASImpl cas) {
+      if (MissingInCas_Type.this.useExistingInstance) {
+        // Return eq fs instance if already created
+        FeatureStructure fs = MissingInCas_Type.this.jcas.getJfsFromCaddr(addr);
+        if (null == fs) {
+          fs = new MissingInCas(addr, MissingInCas_Type.this);
+          MissingInCas_Type.this.jcas.putJfsFromCaddr(addr, fs);
+          return fs;
+        }
+        return fs;
+      } else
+        return new MissingInCas(addr, MissingInCas_Type.this);
+    }
+  };
+
   /** @generated */
   public final static int typeIndexID = MissingInCas.typeIndexID;
-  /** @generated 
-     @modifiable */
+
+  /**
+   * @generated
+   * @modifiable
+   */
   public final static boolean featOkTst = JCas.getFeatOkTst("aa.MissingInCas");
 
-
-  /** initialize variables to correspond with Cas Type and Features
-	* @generated */
+  /**
+   * initialize variables to correspond with Cas Type and Features
+   * 
+   * @generated
+   */
   public MissingInCas_Type(JCas jcas, Type casType) {
     super(jcas, casType);
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
+    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
   }
 }
-
-
-
-    

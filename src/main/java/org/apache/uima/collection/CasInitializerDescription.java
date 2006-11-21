@@ -23,21 +23,19 @@ import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 
 /**
- * An <code>CasInitializerDescription</code> contains all of the information 
- * needed to instantiate and use an
- * {@link org.apache.uima.collection.CasInitializer}. 
- *  
- * @deprecated As of v2.0, CAS Initializers are deprecated.  A component that performs
- *   an operation like HTML detagging should instead be implemented as a "multi-Sofa"
- *   annotator.  See {@link org.apache.uima.examples.XmlDetagger} for an example.
+ * An <code>CasInitializerDescription</code> contains all of the information needed to instantiate
+ * and use an {@link org.apache.uima.collection.CasInitializer}.
+ * 
+ * @deprecated As of v2.0, CAS Initializers are deprecated. A component that performs an operation
+ *             like HTML detagging should instead be implemented as a "multi-Sofa" annotator. See
+ *             {@link org.apache.uima.examples.XmlDetagger} for an example.
  */
-public interface CasInitializerDescription extends ResourceCreationSpecifier
-{
+public interface CasInitializerDescription extends ResourceCreationSpecifier {
   /**
    * Retrieves the metadata that describes the CasInitializer.
    * 
-   * @return the <code>ProcessingResourceMetaData</code> object containing the 
-   *     CasInitializer's metadata.  This object can be modified.
+   * @return the <code>ProcessingResourceMetaData</code> object containing the CasInitializer's
+   *         metadata. This object can be modified.
    */
   public ProcessingResourceMetaData getCasInitializerMetaData();
 }

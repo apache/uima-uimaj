@@ -21,153 +21,123 @@ package org.apache.uima.util;
 
 import java.io.PrintStream;
 
-
 /**
- * A PrintStream implementation that writes to a UIMA logger.
- * Useful if you have a UIMA component that uses a 3rd-party package 
- * that logs to a PrintStream, and you want to redirect the output to 
+ * A PrintStream implementation that writes to a UIMA logger. Useful if you have a UIMA component
+ * that uses a 3rd-party package that logs to a PrintStream, and you want to redirect the output to
  * the UIMA log.
  * <p>
- * Note that only the output of <code>print</code> and <code>println</code>
- * calls goes to the logger.  Calls to the <code>write</code>
- * methods are ignored since they take binary data which cannot be
- * easily redirected to the logger.
+ * Note that only the output of <code>print</code> and <code>println</code> calls goes to the
+ * logger. Calls to the <code>write</code> methods are ignored since they take binary data which
+ * cannot be easily redirected to the logger.
  */
-public class LoggerPrintStream extends PrintStream
-{
+public class LoggerPrintStream extends PrintStream {
   Logger logger;
+
   Level level;
+
   StringBuffer buf = new StringBuffer();
 
-  
-  public LoggerPrintStream(Logger logger, Level level)
-  {
-    super(System.out); //hopefully nothing will actually reach stdout
+  public LoggerPrintStream(Logger logger, Level level) {
+    super(System.out); // hopefully nothing will actually reach stdout
     this.logger = logger;
     this.level = level;
   }
-  
-  
-  public void close()
-  {
+
+  public void close() {
     flush();
   }
 
-
-  public void flush()
-  {
-    if (buf.length() > 0)
-    {
+  public void flush() {
+    if (buf.length() > 0) {
       logger.log(level, buf.toString());
       buf.setLength(0);
     }
   }
 
-  public void print(boolean b)
-  {
-    print(""+b);
+  public void print(boolean b) {
+    print("" + b);
   }
 
-  public void print(char c)
-  {
-    print(""+c);
+  public void print(char c) {
+    print("" + c);
   }
 
-  public void print(char[] s)
-  {
+  public void print(char[] s) {
     print(new String(s));
   }
 
-  public void print(double d)
-  {
-    print(""+d);
+  public void print(double d) {
+    print("" + d);
   }
 
-  public void print(float f)
-  {
-    print(""+f);
+  public void print(float f) {
+    print("" + f);
   }
 
-  public void print(int i)
-  {
-    print(""+i);
+  public void print(int i) {
+    print("" + i);
   }
 
-  public void print(long l)
-  {
-    print(""+l);
+  public void print(long l) {
+    print("" + l);
   }
 
-  public void print(Object obj)
-  {
-    print(""+obj);
+  public void print(Object obj) {
+    print("" + obj);
 
   }
 
-  public void print(String s)
-  {
+  public void print(String s) {
     buf.append(s);
   }
 
-  public void println()
-  {
+  public void println() {
     flush();
   }
 
-  public void println(boolean x)
-  {
-    println(""+x);
+  public void println(boolean x) {
+    println("" + x);
   }
 
-  public void println(char x)
-  {
-    println(""+x);
+  public void println(char x) {
+    println("" + x);
   }
 
-  public void println(char[] x)
-  {
+  public void println(char[] x) {
     println(x);
   }
 
-  public void println(double x)
-  {
-    println(""+x);
+  public void println(double x) {
+    println("" + x);
   }
 
-  public void println(float x)
-  {
-    println(""+x);
+  public void println(float x) {
+    println("" + x);
   }
 
-  public void println(int x)
-  {
-    println(""+x);
+  public void println(int x) {
+    println("" + x);
   }
 
-  public void println(long x)
-  {
-    println(""+x);
+  public void println(long x) {
+    println("" + x);
   }
 
-  public void println(Object x)
-  {
-    println(""+x);
+  public void println(Object x) {
+    println("" + x);
   }
 
-  public void println(String x)
-  {
+  public void println(String x) {
     buf.append(x);
     flush();
   }
 
-  public void write(byte[] buf, int off, int len)
-  {
-    //raw bytes not supported
+  public void write(byte[] buf, int off, int len) {
+    // raw bytes not supported
   }
 
-  public void write(int b)
-  {
-    //raw bytes not supported
+  public void write(int b) {
+    // raw bytes not supported
   }
-  
+
 }

@@ -30,30 +30,29 @@ import org.apache.uima.cas.FeatureStructure;
  */
 class DisjunctiveConstraint implements FSMatchConstraint {
 
-    private FSMatchConstraint c1;
+  private FSMatchConstraint c1;
 
-    private FSMatchConstraint c2;
+  private FSMatchConstraint c2;
 
-    private DisjunctiveConstraint() {
-        super();
-    }
+  private DisjunctiveConstraint() {
+    super();
+  }
 
-    /**
-     * Create new disjunctive constraint.
-     */
-    DisjunctiveConstraint(FSMatchConstraint c1, FSMatchConstraint c2) {
-        this();
-        this.c1 = c1;
-        this.c2 = c2;
-    }
+  /**
+   * Create new disjunctive constraint.
+   */
+  DisjunctiveConstraint(FSMatchConstraint c1, FSMatchConstraint c2) {
+    this();
+    this.c1 = c1;
+    this.c2 = c2;
+  }
 
-    public boolean match(FeatureStructure fs) {
-        return (this.c1.match(fs) || this.c2.match(fs));
-    }
+  public boolean match(FeatureStructure fs) {
+    return (this.c1.match(fs) || this.c2.match(fs));
+  }
 
-    public String toString() {
-        return "(" + this.c1.toString() + " | " + this.c2.toString() + ")";
-    }
-
+  public String toString() {
+    return "(" + this.c1.toString() + " | " + this.c2.toString() + ")";
+  }
 
 }

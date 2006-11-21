@@ -27,46 +27,44 @@ import org.apache.uima.cas.FeatureStructure;
 import java.util.ArrayList;
 
 /**
- * Implement an embedded constraint. Basically just dispatches to specialized
- * implementation.
+ * Implement an embedded constraint. Basically just dispatches to specialized implementation.
  * 
  * 
  * @version $Revision: 1.1 $
  */
 class EmbeddedConstraint extends PathConstraint implements FSMatchConstraint {
 
-    private FSMatchConstraint cons;
+  private FSMatchConstraint cons;
 
-    private EmbeddedConstraint() {
-        super();
+  private EmbeddedConstraint() {
+    super();
+  }
+
+  // EmbeddedConstraint(FeaturePath path, FSConstraint cons) {
+  // super(path);
+  // this.cons = (FSMatchConstraint) cons;
+  // }
+
+  EmbeddedConstraint(ArrayList path, FSConstraint cons) {
+    super(path);
+    this.cons = (FSMatchConstraint) cons;
+  }
+
+  public boolean match(FeatureStructure fs) {
+    // compile(((FeatureStructureImpl) fs).getCAS().getTypeSystem());
+    final int max = this.featNames.size();
+    for (int i = 0; i < max; i++) {
+      Feature feat = fs.getType().getFeatureByBaseName((String) this.featNames.get(i));
+      if (feat == null) {
+        return false;
+      }
+      fs = fs.getFeatureValue(feat);
     }
+    return this.cons.match(fs);
+  }
 
-    // EmbeddedConstraint(FeaturePath path, FSConstraint cons) {
-    // super(path);
-    // this.cons = (FSMatchConstraint) cons;
-    // }
-
-    EmbeddedConstraint(ArrayList path, FSConstraint cons) {
-        super(path);
-        this.cons = (FSMatchConstraint) cons;
-    }
-
-    public boolean match(FeatureStructure fs) {
-        // compile(((FeatureStructureImpl) fs).getCAS().getTypeSystem());
-        final int max = this.featNames.size();
-        for (int i = 0; i < max; i++) {
-            Feature feat = fs.getType().getFeatureByBaseName(
-                    (String) this.featNames.get(i));
-            if (feat == null) {
-                return false;
-            }
-            fs = fs.getFeatureValue(feat);
-        }
-        return this.cons.match(fs);
-    }
-
-    public String toString() {
-        return super.toString() + ".( " + this.cons.toString() + " )";
-    }
+  public String toString() {
+    return super.toString() + ".( " + this.cons.toString() + " )";
+  }
 
 }

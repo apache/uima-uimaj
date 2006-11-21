@@ -24,11 +24,16 @@ import org.apache.uima.jcas.impl.JCas;
 public class EmptyIntegerList extends IntegerList {
 
   public final static int typeIndexID = JCas.getNextIndex();
-  public final static int type = typeIndexID;
-  public           int getTypeIndexID() {return typeIndexID;}
 
-  // Never called.  Disable default constructor
-  protected EmptyIntegerList() {}
+  public final static int type = typeIndexID;
+
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  // Never called. Disable default constructor
+  protected EmptyIntegerList() {
+  }
 
   /** Internal - Constructor used by generator */
   public EmptyIntegerList(int addr, TOP_Type type) {

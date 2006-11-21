@@ -21,39 +21,39 @@ package org.apache.uima.analysis_engine;
 
 import org.apache.uima.jcas.impl.JCas;
 
-
 /**
- * An iterator over a collection of JCAS objects.  One use for this interface is to
- * allow an application to iterate over all of the CASes produced by as output of the
+ * An iterator over a collection of JCAS objects. One use for this interface is to allow an
+ * application to iterate over all of the CASes produced by as output of the
  * {@link AnalysisEngine#processAndOutputNewCASes(JCas)} method.
  */
-public interface JCasIterator
-{
+public interface JCasIterator {
   /**
    * Checks if there are more JCASes to be returned by the iterator.
    * 
    * @return true if there are more JCASes to be returned, false if not
    * 
-   * @throws AnalysisEngineProcessException if a failure has occurred during processing.
-   *   If an exception is thrown, this indicates that processing has aborted,
-   *   so no further calls to the ResultIterator should be made.
+   * @throws AnalysisEngineProcessException
+   *           if a failure has occurred during processing. If an exception is thrown, this
+   *           indicates that processing has aborted, so no further calls to the ResultIterator
+   *           should be made.
    */
   boolean hasNext() throws AnalysisEngineProcessException;
-  
+
   /**
    * Gets the next JCAS from the iterator.
    * 
    * @return the next JCAS.
-   *
-   * @throws AnalysisEngineProcessException if a failure has occurred during processing.
-   *   If an exception is thrown, this indicates that processing has aborted,
-   *   so no further calls to the ResultIterator should be made.
+   * 
+   * @throws AnalysisEngineProcessException
+   *           if a failure has occurred during processing. If an exception is thrown, this
+   *           indicates that processing has aborted, so no further calls to the ResultIterator
+   *           should be made.
    */
   JCas next() throws AnalysisEngineProcessException;
 
   /**
-   * Releases any CASes owned by this CasIterator.  You only need to Call this method 
-   * if you stop using a CasIterator before you have iterated all the way through.
+   * Releases any CASes owned by this CasIterator. You only need to Call this method if you stop
+   * using a CasIterator before you have iterated all the way through.
    */
-  public void release();  
+  public void release();
 }

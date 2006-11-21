@@ -80,54 +80,48 @@ import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 
 /**
- * A factory used to create {@link org.apache.uima.resource.ResourceSpecifier} 
- * instances and instances of other objects needed to compose 
- * <code>ResourceSpecifier</code>s.
+ * A factory used to create {@link org.apache.uima.resource.ResourceSpecifier} instances and
+ * instances of other objects needed to compose <code>ResourceSpecifier</code>s.
  * <p>
- * The primary method on this class is {@link #createObject(Class)}.
- * Given the <code>Class</code> of a UIMA interface related to
- * Resource Specifiers, this method will construct an instance that
- * implements that interface.  Other methods are provided as a 
- * convenience for creating specific types of objects.
+ * The primary method on this class is {@link #createObject(Class)}. Given the <code>Class</code>
+ * of a UIMA interface related to Resource Specifiers, this method will construct an instance that
+ * implements that interface. Other methods are provided as a convenience for creating specific
+ * types of objects.
  * <p>
- * A UIMA developer who implements a new type of Resource Specifier
- * must register their implementation with this factory using the
- * {@link #addMapping(String, String)} method.
+ * A UIMA developer who implements a new type of Resource Specifier must register their
+ * implementation with this factory using the {@link #addMapping(String, String)} method.
  * 
  * 
  */
-public interface ResourceSpecifierFactory
-{
+public interface ResourceSpecifierFactory {
   /**
    * Creates an object that implements the given interface.
    * 
-   * @param aInterface the <code>Class</code> object representing the
-   *    type of interface to be instantiated.
+   * @param aInterface
+   *          the <code>Class</code> object representing the type of interface to be instantiated.
    * 
-   * @return an <code>Object</code> that implements <code>aInterface</code>.
-   *    Returns <code>null</code> if no object that implements
-   *    <code>aInterface</code> is known to this factory. 
+   * @return an <code>Object</code> that implements <code>aInterface</code>. Returns
+   *         <code>null</code> if no object that implements <code>aInterface</code> is known to
+   *         this factory.
    */
   public Object createObject(Class aInterface);
-  
 
   /**
-   * Adds a mapping from interface class to implementation class.  Applications
-   * do not typically need to use this method.  UIMA developers who implement
-   * new types of <code>ResourceSpecifier</code>, however, must register
-   * their implementations using this method so that this factory knows how
+   * Adds a mapping from interface class to implementation class. Applications do not typically need
+   * to use this method. UIMA developers who implement new types of <code>ResourceSpecifier</code>,
+   * however, must register their implementations using this method so that this factory knows how
    * to construct instances of those implementation classes.
    * 
-   * @param aInterfaceName the fully-qualified name of a UIMA interface
-   * @param aClassName the fully-qualified name of a class that implements
-   *    <code>aInterfaceName</code>.
+   * @param aInterfaceName
+   *          the fully-qualified name of a UIMA interface
+   * @param aClassName
+   *          the fully-qualified name of a class that implements <code>aInterfaceName</code>.
    * 
-   * @throws ClassNotFoundException if either of the classes named by
-   *   <code>aInterfaceName</code> or <code>aClassName</code> were not found.
+   * @throws ClassNotFoundException
+   *           if either of the classes named by <code>aInterfaceName</code> or
+   *           <code>aClassName</code> were not found.
    */
-  public void addMapping(String aInterfaceName, String aClassName)
-    throws ClassNotFoundException;
-
+  public void addMapping(String aInterfaceName, String aClassName) throws ClassNotFoundException;
 
   /**
    * Creates a <code>URISpecifier</code>.
@@ -136,14 +130,12 @@ public interface ResourceSpecifierFactory
    */
   public URISpecifier createURISpecifier();
 
-
   /**
    * Creates a <code>MQMessagingSpecifier</code>.
    * 
    * @return an instance of an object implementing <code>MQMessagingSpecifier</code>.
    */
   public MQMessagingSpecifier createMQMessagingSpecifier();
-
 
   /**
    * Creates a <code>JMSMessagingSpecifier</code>.
@@ -152,14 +144,12 @@ public interface ResourceSpecifierFactory
    */
   public JMSMessagingSpecifier createJMSMessagingSpecifier();
 
-
   /**
    * Creates a <code>MailMessagingSpecifier</code>.
    * 
    * @return an instance of an object implementing <code>MailMessagingSpecifier</code>.
    */
   public MailMessagingSpecifier createMailMessagingSpecifier();
-  
 
   /**
    * Creates a <code>FileResourceSpecifier</code>.
@@ -167,7 +157,6 @@ public interface ResourceSpecifierFactory
    * @return an instance of an object implementing <code>FileResourceSpecifier</code>.
    */
   public FileResourceSpecifier createFileResourceSpecifier();
-  
 
   /**
    * Creates a <code>FileLanguageResourceSpecifier</code>.
@@ -176,47 +165,44 @@ public interface ResourceSpecifierFactory
    */
   public FileLanguageResourceSpecifier createFileLanguageResourceSpecifier();
 
-
   /**
    * Creates a <code>AnalysisEngineDescription</code>.
    * 
    * @return an instance of an object implementing <code>AnalysisEngineDescription</code>.
    */
   public AnalysisEngineDescription createAnalysisEngineDescription();
- 
 
-	/**
-	 * Creates a <code>AnalysisEngineDescription</code>.
-	 * 
-	 * @return an instance of an object implementing <code>AnalysisEngineDescription</code>.
+  /**
+   * Creates a <code>AnalysisEngineDescription</code>.
    * 
-   * @deprecated As of v2.0, {@link #createAnalysisEngineDescription()} should be
-   *   used instead.
-	 */
-	public TaeDescription createTaeDescription();
+   * @return an instance of an object implementing <code>AnalysisEngineDescription</code>.
+   * 
+   * @deprecated As of v2.0, {@link #createAnalysisEngineDescription()} should be used instead.
+   */
+  public TaeDescription createTaeDescription();
 
-	/**
-	 * Creates a <code>ResourceMetaData</code>.
-	 * 
-	 * @return an instance of an object implementing <code>ResourceMetaData</code>.
-	 */
-	public ResourceMetaData createResourceMetaData();
- 
-	/**
-	 * Creates a <code>ProcessingResourceMetaData</code>.
-	 * 
-	 * @return an instance of an object implementing <code>ProcessingResourceMetaData</code>.
-	 */
-	public ProcessingResourceMetaData createProcessingResourceMetaData();
+  /**
+   * Creates a <code>ResourceMetaData</code>.
+   * 
+   * @return an instance of an object implementing <code>ResourceMetaData</code>.
+   */
+  public ResourceMetaData createResourceMetaData();
 
-	/**
-	 * Creates a <code>AnalysisEngineMetaData</code>.
-	 * 
-	 * @return an instance of an object implementing <code>AnalysisEngineMetaData</code>.
-	 */
-	public AnalysisEngineMetaData createAnalysisEngineMetaData();
+  /**
+   * Creates a <code>ProcessingResourceMetaData</code>.
+   * 
+   * @return an instance of an object implementing <code>ProcessingResourceMetaData</code>.
+   */
+  public ProcessingResourceMetaData createProcessingResourceMetaData();
 
-   /**
+  /**
+   * Creates a <code>AnalysisEngineMetaData</code>.
+   * 
+   * @return an instance of an object implementing <code>AnalysisEngineMetaData</code>.
+   */
+  public AnalysisEngineMetaData createAnalysisEngineMetaData();
+
+  /**
    * Creates a <code>ConfigurationParameterDeclarations</code>.
    * 
    * @return an instance of an object implementing <code>ConfigurationParameterDeclarations</code>.
@@ -230,14 +216,12 @@ public interface ResourceSpecifierFactory
    */
   public ConfigurationParameter createConfigurationParameter();
 
-
   /**
    * Creates a <code>ConfigurationGroup</code>.
    * 
    * @return an instance of an object implementing <code>ConfigurationGroup</code>.
    */
   public ConfigurationGroup createConfigurationGroup();
-
 
   /**
    * Creates a <code>ConfigurationParameterSettings</code>.
@@ -246,14 +230,12 @@ public interface ResourceSpecifierFactory
    */
   public ConfigurationParameterSettings createConfigurationParameterSettings();
 
-
   /**
    * Creates a <code>Capability</code>.
    * 
    * @return an instance of an object implementing <code>Capability</code>.
    */
   public Capability createCapability();
-  
 
   /**
    * Creates a <code>SimplePrecondition</code>.
@@ -262,12 +244,10 @@ public interface ResourceSpecifierFactory
    */
   public SimplePrecondition createSimplePrecondition();
 
-
   /**
    * Creates a <code>TypeSystemDescription</code>.
    * 
-   * @return an instance of an object implementing 
-   * <code>TypeSystemDescription</code>.
+   * @return an instance of an object implementing <code>TypeSystemDescription</code>.
    */
   public TypeSystemDescription createTypeSystemDescription();
 
@@ -277,7 +257,6 @@ public interface ResourceSpecifierFactory
    * @return an instance of an object implementing <code>TypeDescription</code>.
    */
   public TypeDescription createTypeDescription();
-  
 
   /**
    * Creates a <code>FeatureDescription</code>.
@@ -286,39 +265,34 @@ public interface ResourceSpecifierFactory
    */
   public FeatureDescription createFeatureDescription();
 
-
   /**
    * Creates an <code>FsIndexCollection</code>.
    * 
-   * @return an instance of an object implementing 
-   *   <code>FsIndexCollection</code>.
+   * @return an instance of an object implementing <code>FsIndexCollection</code>.
    */
   public FsIndexCollection createFsIndexCollection();
 
   /**
    * Creates an <code>FsIndexDescription</code>.
    * 
-   * @return an instance of an object implementing 
-   *   <code>FsIndexDescription</code>.
+   * @return an instance of an object implementing <code>FsIndexDescription</code>.
    */
   public FsIndexDescription createFsIndexDescription();
 
   /**
    * Creates an <code>FsIndexKeyDescription</code>.
    * 
-   * @return an instance of an object implementing 
-   *   <code>FsIndexKeyDescription</code>.
+   * @return an instance of an object implementing <code>FsIndexKeyDescription</code>.
    */
   public FsIndexKeyDescription createFsIndexKeyDescription();
-
 
   /**
    * Creates a <code>FixedFlow</code>.
    * 
    * @return an instance of an object implementing <code>FixedFlow</code>.
    */
-  public FixedFlow createFixedFlow();  
-  
+  public FixedFlow createFixedFlow();
+
   /**
    * Creates a <code>CapabilityLanguageFlow</code>.
    * 
@@ -333,7 +307,6 @@ public interface ResourceSpecifierFactory
    */
   public NameValuePair createNameValuePair();
 
-
   /**
    * Creates a <code>TypeOrFeature</code>.
    * 
@@ -341,14 +314,12 @@ public interface ResourceSpecifierFactory
    */
   public TypeOrFeature createTypeOrFeature();
 
-
   /**
    * Creates an <code>AllowedValue</code>.
    * 
    * @return an instance of an object implementing <code>AllowedValue</code>.
    */
   public AllowedValue createAllowedValue();
-  
 
   /**
    * Creates an <code>TypePriorities</code>.
@@ -357,7 +328,6 @@ public interface ResourceSpecifierFactory
    */
   public TypePriorities createTypePriorities();
 
-
   /**
    * Creates an <code>TypePriorityList</code>.
    * 
@@ -365,40 +335,33 @@ public interface ResourceSpecifierFactory
    */
   public TypePriorityList createTypePriorityList();
 
-
   /**
    * Creates an <code>ExternalResourceDependency</code>.
    * 
-   * @return an instance of an object implementing
-   *    <code>ExternalResourceDependency</code>.
+   * @return an instance of an object implementing <code>ExternalResourceDependency</code>.
    */
   public ExternalResourceDependency createExternalResourceDependency();
 
+  /**
+   * Creates an <code>ResourceManagerConfiguration</code>.
+   * 
+   * @return an instance of an object implementing <code>ResourceManagerConfiguration</code>.
+   */
+  public ResourceManagerConfiguration createResourceManagerConfiguration();
 
   /**
-	 * Creates an <code>ResourceManagerConfiguration</code>.
-	 * 
-	 * @return an instance of an object implementing
-	 *    <code>ResourceManagerConfiguration</code>.
-	 */
-	public ResourceManagerConfiguration createResourceManagerConfiguration();
-
-	/**
-	 * Creates an <code>ExternalResourceBinding</code>.
-	 * 
-	 * @return an instance of an object implementing
-	 *    <code>ExternalResourceBinding</code>.
-	 */
-	public ExternalResourceBinding createExternalResourceBinding();
+   * Creates an <code>ExternalResourceBinding</code>.
+   * 
+   * @return an instance of an object implementing <code>ExternalResourceBinding</code>.
+   */
+  public ExternalResourceBinding createExternalResourceBinding();
 
   /**
    * Creates an <code>ExternalResourceDescription</code>.
    * 
-   * @return an instance of an object implementing
-   *    <code>ExternalResourceDescription</code>.
+   * @return an instance of an object implementing <code>ExternalResourceDescription</code>.
    */
   public ExternalResourceDescription createExternalResourceDescription();
-
 
   /**
    * Creates a <code>CasConsumerDescription</code>.
@@ -415,69 +378,84 @@ public interface ResourceSpecifierFactory
   public CollectionReaderDescription createCollectionReaderDescription();
 
   /**
-	* Creates a <code>ResultSpecification</code>.
-	* 
-	* @return an instance of an object implementing <code>ResultSpecification</code>.
-	*/
-   public ResultSpecification createResultSpecification();
-
-  /** Creates a <code>SofaMapping</code>.
-     * 
-     * @return an instance of an object implementing <code>SofaMapping</code>.
+   * Creates a <code>ResultSpecification</code>.
+   * 
+   * @return an instance of an object implementing <code>ResultSpecification</code>.
    */
-   public SofaMapping createSofaMapping();
-   
+  public ResultSpecification createResultSpecification();
+
+  /**
+   * Creates a <code>SofaMapping</code>.
+   * 
+   * @return an instance of an object implementing <code>SofaMapping</code>.
+   */
+  public SofaMapping createSofaMapping();
+
   /**
    * Creates an <code>Import</code>
    * 
    * @return an instance of an object implementing <code>Import</code>.
    */
-   public Import createImport();
+  public Import createImport();
 
   /**
    * Creates an <code>OperationalProperties</code>
    * 
    * @return an instance of an object implementing <code>OperationalProperties</code>.
    */
-   public OperationalProperties createOperationalProperties();
+  public OperationalProperties createOperationalProperties();
 
-   /**
-    * Creates a <code>Parameter</code>
-    * 
-    * @return an instance of an object implementing <code>Parameter</code>.
-    */
-   public Parameter createParameter();
-   
-   /**
-    * Creates a <code>FlowControllerDeclaration</code>
-    * 
-    * @return an instance of an object implementing <code>FlowControllerDeclaration</code>.
-    */
-   public FlowControllerDeclaration createFlowControllerDeclaration();
+  /**
+   * Creates a <code>Parameter</code>
+   * 
+   * @return an instance of an object implementing <code>Parameter</code>.
+   */
+  public Parameter createParameter();
 
-   /**
-    * Creates a <code>FlowControllerDescription</code>
-    * 
-    * @return an instance of an object implementing <code>FlowControllerDescription</code>.
-    */
-   public FlowControllerDescription createFlowControllerDescription();
-   
-   
-	public CpeCollectionReaderCasInitializer createCasInitializer();
-	public CpeCasProcessors createCasProcessors();
-	public CpeCheckpoint createCheckpoint();
-	public CpeCollectionReaderIterator createCollectionIterator();
-	public CpeCollectionReader createCollectionReader();
-	public CpeConfiguration createCpeConfig();
-	public CpeDescription createCpeDescription();
-	public CpeComponentDescriptor createDescriptor();
-	public CasProcessorErrorHandling createErrorHandling();
-	public CpeInclude createInclude();
-	public CasProcessorRunInSeperateProcess createRunInSeperateProcess();
-	public CasProcessorDeploymentParams createDeploymentParameters();
-	public CasProcessorExecutable createExec();
-	public CasProcessorExecArg createArg();
-	public OutputQueue createOutputQueue();
-	public CasProcessorRuntimeEnvParam createEnv();
+  /**
+   * Creates a <code>FlowControllerDeclaration</code>
+   * 
+   * @return an instance of an object implementing <code>FlowControllerDeclaration</code>.
+   */
+  public FlowControllerDeclaration createFlowControllerDeclaration();
+
+  /**
+   * Creates a <code>FlowControllerDescription</code>
+   * 
+   * @return an instance of an object implementing <code>FlowControllerDescription</code>.
+   */
+  public FlowControllerDescription createFlowControllerDescription();
+
+  public CpeCollectionReaderCasInitializer createCasInitializer();
+
+  public CpeCasProcessors createCasProcessors();
+
+  public CpeCheckpoint createCheckpoint();
+
+  public CpeCollectionReaderIterator createCollectionIterator();
+
+  public CpeCollectionReader createCollectionReader();
+
+  public CpeConfiguration createCpeConfig();
+
+  public CpeDescription createCpeDescription();
+
+  public CpeComponentDescriptor createDescriptor();
+
+  public CasProcessorErrorHandling createErrorHandling();
+
+  public CpeInclude createInclude();
+
+  public CasProcessorRunInSeperateProcess createRunInSeperateProcess();
+
+  public CasProcessorDeploymentParams createDeploymentParameters();
+
+  public CasProcessorExecutable createExec();
+
+  public CasProcessorExecArg createArg();
+
+  public OutputQueue createOutputQueue();
+
+  public CasProcessorRuntimeEnvParam createEnv();
 
 }

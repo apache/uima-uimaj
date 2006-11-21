@@ -29,47 +29,52 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.XmiCasSerializer;
 
 /**
- * Serializes a CAS to inline XML format.  The output format conforms to
- * the XML Metadata Interchange (XMI) format, an OMG standard.
+ * Serializes a CAS to inline XML format. The output format conforms to the XML Metadata Interchange
+ * (XMI) format, an OMG standard.
  * <p>
  * For more options, see {@link XmiCasSerializer}.
  */
-public abstract class XmlCasSerializer
-{
+public abstract class XmlCasSerializer {
 
   /**
    * Serializes a CAS to XMI format and writes it to an output stream.
    * 
-   * @param aCAS CAS to serialize.
-   * @param aStream output stream to which to write the XMI document
+   * @param aCAS
+   *          CAS to serialize.
+   * @param aStream
+   *          output stream to which to write the XMI document
    * 
-   * @throws SAXException if a problem occurs during XMI serialization
-   * @throws IOException if an I/O failure occurs
+   * @throws SAXException
+   *           if a problem occurs during XMI serialization
+   * @throws IOException
+   *           if an I/O failure occurs
    */
-  public static void serialize(CAS aCAS, OutputStream aStream)
-    throws SAXException, IOException
-  {
-    XmiCasSerializer.serialize(aCAS, aStream);    
+  public static void serialize(CAS aCAS, OutputStream aStream) throws SAXException, IOException {
+    XmiCasSerializer.serialize(aCAS, aStream);
   }
 
   /**
-   * Serializes a CAS to XMI format and writes it to an output stream.
-   * Allows a TypeSystem to be specified, to which the produced XMI will 
-   * conform.  Any types or features not in the target type system will 
-   * not be serialized.
+   * Serializes a CAS to XMI format and writes it to an output stream. Allows a TypeSystem to be
+   * specified, to which the produced XMI will conform. Any types or features not in the target type
+   * system will not be serialized.
    * 
-   * @param aCAS CAS to serialize.
-   * @param aTargetTypeSystem type system to which the produced XMI will conform.  Any 
-   *   types or features not in the target type system will not be serialized.
-   * @param aCAS CAS to serialize.
-   * @param aStream output stream to which to write the XMI document
+   * @param aCAS
+   *          CAS to serialize.
+   * @param aTargetTypeSystem
+   *          type system to which the produced XMI will conform. Any types or features not in the
+   *          target type system will not be serialized.
+   * @param aCAS
+   *          CAS to serialize.
+   * @param aStream
+   *          output stream to which to write the XMI document
    * 
-   * @throws SAXException if a problem occurs during XMI serialization
-   * @throws IOException if an I/O failure occurs
+   * @throws SAXException
+   *           if a problem occurs during XMI serialization
+   * @throws IOException
+   *           if an I/O failure occurs
    */
   public static void serialize(CAS aCAS, TypeSystem aTargetTypeSystem, OutputStream aStream)
-    throws SAXException, IOException
-  {
-    XmiCasSerializer.serialize(aCAS, aTargetTypeSystem, aStream);    
+                  throws SAXException, IOException {
+    XmiCasSerializer.serialize(aCAS, aTargetTypeSystem, aStream);
   }
 }

@@ -28,60 +28,66 @@ import org.apache.uima.cas.CasOwner;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 
 /**
- * Manages creation and pooling of CAS instances within an AnalysisEngine. 
+ * Manages creation and pooling of CAS instances within an AnalysisEngine.
  */
-public interface CasManager extends CasOwner
-{
+public interface CasManager extends CasOwner {
   /**
    * Called by components when they initialize.
    * 
-   * @param aMetadata an object containing metadata for the
-   *   component, including Type System, Type Priorities, and
-   *   Index Definitions needed to create the CAS.
+   * @param aMetadata
+   *          an object containing metadata for the component, including Type System, Type
+   *          Priorities, and Index Definitions needed to create the CAS.
    */
   void addMetaData(ProcessingResourceMetaData aMetadata);
-  
+
   /**
-   * Gets the CasDefinition, as defined by merging all of the metadata supplied
-   * by calls {@link #addMetaData(ProcessingResourceMetaData)}.
+   * Gets the CasDefinition, as defined by merging all of the metadata supplied by calls
+   * {@link #addMetaData(ProcessingResourceMetaData)}.
    * 
    * @return the merged CasDefinition
-   * @throws ResourceInitializationException if metadata could not be merged
+   * @throws ResourceInitializationException
+   *           if metadata could not be merged
    */
   CasDefinition getCasDefinition() throws ResourceInitializationException;
-  
+
   /**
-   * Defines the CAS pool required by a particular AnalysisEngine. (The AnalysisEngine
-   * must contain a CAS Multiplier if it requires a CAS pool.)
+   * Defines the CAS pool required by a particular AnalysisEngine. (The AnalysisEngine must contain
+   * a CAS Multiplier if it requires a CAS pool.)
    * 
-   * @param aRequestorContextName the context name of the AE that will request the CASes
-   *   (AnalysisEngine.getUimaContextAdmin().getQualifiedContextName()).  
-   * @param aSize the minimum CAS pool size required
-   * @param aPerformanceTuningSettings settings, including initial CAS heap size, for the AE
-   * @throws ResourceInitializationException if a CAS could not be created.
+   * @param aRequestorContextName
+   *          the context name of the AE that will request the CASes
+   *          (AnalysisEngine.getUimaContextAdmin().getQualifiedContextName()).
+   * @param aSize
+   *          the minimum CAS pool size required
+   * @param aPerformanceTuningSettings
+   *          settings, including initial CAS heap size, for the AE
+   * @throws ResourceInitializationException
+   *           if a CAS could not be created.
    */
   void defineCasPool(String aRequestorContextName, int aSize, Properties aPerformanceTuningSettings)
-    throws ResourceInitializationException;
-  
+                  throws ResourceInitializationException;
+
   /**
-   * Gets an empty CAS.  An AnalysisEngine may only call this method after it has
-   * first called {@link #defineCasPool(String, int, Properties)} and established 
-   * a CAS Pool of size > 0.  The CAS Manager maintains a separate pool for each
-   * AnalysisEngine.  This method may block if the CAS pool does not contain
-   * any free instances.
+   * Gets an empty CAS. An AnalysisEngine may only call this method after it has first called
+   * {@link #defineCasPool(String, int, Properties)} and established a CAS Pool of size > 0. The CAS
+   * Manager maintains a separate pool for each AnalysisEngine. This method may block if the CAS
+   * pool does not contain any free instances.
    * 
-   * @param aRequestorContextName the context name of the AE requesting the CAS 
-   *   (AnalysisEngine.getUimaContextAdmin().getQualifiedContextName()).  
-   *   
+   * @param aRequestorContextName
+   *          the context name of the AE requesting the CAS
+   *          (AnalysisEngine.getUimaContextAdmin().getQualifiedContextName()).
+   * 
    * @return an empty CAS
    */
   CAS getCas(String aRequestorContextName);
 
   /**
    * Gets a specified interface to a CAS.
-   * @param cas The CAS
-   * @param requiredInterface interface to get.  Currently must be one
-   *    of CAS, TCAS, or JCas.
+   * 
+   * @param cas
+   *          The CAS
+   * @param requiredInterface
+   *          interface to get. Currently must be one of CAS, TCAS, or JCas.
    */
-  AbstractCas getCasInterface(CAS cas, Class requiredInterface); 
+  AbstractCas getCasInterface(CAS cas, Class requiredInterface);
 }
