@@ -88,6 +88,16 @@
 		</dependency>		
 	</dependencies>
 	<build>
+		<pluginManagement>
+			<plugins>
+				<!-- For some reason v2.1 doesn't seem to work with the "sourcepath"
+					 option, so require v2.0 here. -->
+				<plugin>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.0</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>		
 		<plugins>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -108,15 +118,30 @@
 							<goal>javadoc</goal>
 						</goals>
 						<configuration>
+							<aggregate>false</aggregate>
 							<source>1.4</source>
+							<groups>
+								<group>
+									<title>Packages</title>
+									<packages>*</packages>
+								</group>
+							</groups>
 							<sourcepath>../uimaj-core/src/main/java</sourcepath>
-							<excludePackageNames>*.internal.*:*.impl.*</excludePackageNames>
+							<excludePackageNames>*.internal.*:*.impl.*</excludePackageNames>-->
+							<!-- add a few classes in impl packages that are directly used by user code -->
 							<additionalparam>
+								${basedir}/../uimaj-core/src/main/java/org/apache/uima/jcas/impl/JCas.java
+								${basedir}/../uimaj-core/src/main/java/org/apache/uima/cas/impl/XCASDeserializer.java
+								${basedir}/../uimaj-core/src/main/java/org/apache/uima/cas/impl/XCASParsingException.java
+								${basedir}/../uimaj-core/src/main/java/org/apache/uima/cas/impl/XCASSerializer.java
+								${basedir}/../uimaj-core/src/main/java/org/apache/uima/cas/impl/XmiCasDeserializer.java
+								${basedir}/../uimaj-core/src/main/java/org/apache/uima/cas/impl/XmiCasSerializer.java
+								${basedir}/../uimaj-core/src/main/java/org/apache/uima/cas/impl/XmiSerializationSharedData.java
 								${basedir}/../uimaj-cpe/src/main/java/org/apache/uima/collection/impl/metadata/cpe/CpeDescriptorFactory.java
 								${basedir}/../uimaj-cpe/src/main/java/org/apache/uima/collection/impl/cpm/engine/CPMChunkTimeoutException.java
 							</additionalparam>
-							<doctitle>Apache UIMA Java SDK ${pom.version} API Documentation</doctitle>
-							<windowtitle>Apache UIMA Java SDK ${pom.version} API Documentation</windowtitle>
+							<doctitle>Apache UIMA Java SDK ${pom.version} User-Level API Documentation</doctitle>
+							<windowtitle>Apache UIMA Java SDK ${pom.version} User-Level API Documentation</windowtitle>
 						</configuration>
 					</execution>
 				</executions>
