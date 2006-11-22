@@ -26,25 +26,20 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
 public class EP_LogThrowErrorImpl implements IError {
-     
-  private static int logLevels [] = {IStatus.INFO, IStatus.WARNING, IStatus.ERROR};
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.jcas.jcasgen_gen.IError#newError(int, java.lang.String)
-	 */
-	public void newError(int severity, String message, Exception exception) {
-		String pluginId =
-			JgPlugin.getDefault().getDescriptor().getUniqueIdentifier();
-		ILog log = JgPlugin.getDefault().getLog();
-		log.log(
-			new Status(
-				logLevels[severity],
-				pluginId,
-				IStatus.OK,
-				message,
-				exception));
-		if (IError.WARN < severity)
-		  throw new ErrorExit();
-	}
-	
+  private static int logLevels[] = { IStatus.INFO, IStatus.WARNING, IStatus.ERROR };
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.jcas.jcasgen_gen.IError#newError(int, java.lang.String)
+   */
+  public void newError(int severity, String message, Exception exception) {
+    String pluginId = JgPlugin.getDefault().getDescriptor().getUniqueIdentifier();
+    ILog log = JgPlugin.getDefault().getLog();
+    log.log(new Status(logLevels[severity], pluginId, IStatus.OK, message, exception));
+    if (IError.WARN < severity)
+      throw new ErrorExit();
+  }
+
 }

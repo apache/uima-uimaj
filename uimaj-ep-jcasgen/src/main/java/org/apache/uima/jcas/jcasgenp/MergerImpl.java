@@ -31,73 +31,60 @@ import org.eclipse.emf.codegen.jmerge.JMerger;
 import org.eclipse.jdt.core.jdom.IDOMCompilationUnit;
 
 public class MergerImpl implements org.apache.uima.tools.jcasgen.IMerge {
-	static final String jControlModel = "jMergeCtl.xml";
-	static JControlModel jControlModelInstance = null;
-	public void doMerge(
-		Jg jg,
-		IProgressMonitor progressMonitor,
-		String sourceContents,
-		String targetContainer,
-		String targetPath,
-		String targetClassName,
-		File targetFile)
-		throws IOException {
-		JMerger jMerger = new JMerger();
-		IDOMCompilationUnit sourceCompilationUnit =
-			jMerger.createCompilationUnitForContents(sourceContents);
-		if (targetFile.exists()) {
-			progressMonitor.subTask(
-				jg.getString(
-					"updatingTarget",
-					new Object[] { targetClassName }));
+  static final String jControlModel = "jMergeCtl.xml";
 
-			synchronized (this) {
-				if (null == jControlModelInstance) {
-					String controlModelPath =
-						jg.getClass().getResource(jControlModel).toString();
-					jControlModelInstance =
-						(new JControlModel(controlModelPath));
-				}
-			}
-			jMerger.setControlModel(jControlModelInstance);
-			//			jMerger.setControlModel(
-			//				new JControlModel(
-			//					jg.getClass().getResource(jControlModel).toString()));
-			try {
+  static JControlModel jControlModelInstance = null;
 
-				jMerger.setSourceCompilationUnit(sourceCompilationUnit);
-				jMerger.setTargetCompilationUnit(
-					jMerger.createCompilationUnitForURI(targetPath));
-			} catch (NullPointerException e) {
-				jg.error.newError(
-					IError.ERROR,
-					jg.getString("nullPtr", new Object[] { targetClassName }),
-					e);
-			}
-            
-			//			jMerger.getTargetPatternDictionary().dump();
-			jMerger.merge();
+  public void doMerge(Jg jg, IProgressMonitor progressMonitor, String sourceContents,
+                  String targetContainer, String targetPath, String targetClassName, File targetFile)
+                  throws IOException {
+    JMerger jMerger = new JMerger();
+    IDOMCompilationUnit sourceCompilationUnit = jMerger
+                    .createCompilationUnitForContents(sourceContents);
+    if (targetFile.exists()) {
+      progressMonitor.subTask(jg.getString("updatingTarget", new Object[] { targetClassName }));
 
-			FileWriter fw = new FileWriter(targetPath);
-			fw.write(jMerger.getTargetCompilationUnit().getContents());
-			fw.close();
-			//								targetFile.setContents(
-			//									mergedContents,
-			//									true,
-			//									true,
-			//									new SubProgressMonitor(progressMonitor, 1));
-		} else {
-			progressMonitor.subTask(
-				jg.getString("creatingTarget", new Object[] { targetClassName }));
-			(new File(targetContainer)).mkdirs();
-			FileWriter fw = new FileWriter(targetPath);
-			fw.write(sourceContents);
-			fw.close();
-			//								targetFile.setContents(
-			//									new ByteArrayInputStream(sourceContents.getBytes()),
-			//									true,
-			//									true,
-			//									new SubProgressMonitor(progressMonitor, 1));
-		}
-	}
+      synchronized (this) {
+        if (null == jControlModelInstance) {
+          String controlModelPath = jg.getClass().getResource(jControlModel).toString();
+          jControlModelInstance = (new JControlModel(controlModelPath));
+        }
+      }
+      jMerger.setControlModel(jControlModelInstance);
+      // jMerger.setControlModel(
+      // new JControlModel(
+      // jg.getClass().getResource(jControlModel).toString()));
+      try {
+
+        jMerger.setSourceCompilationUnit(sourceCompilationUnit);
+        jMerger.setTargetCompilationUnit(jMerger.createCompilationUnitForURI(targetPath));
+      } catch (NullPointerException e) {
+        jg.error.newError(IError.ERROR, jg.getString("nullPtr", new Object[] { targetClassName }),
+                        e);
+      }
+
+      // jMerger.getTargetPatternDictionary().dump();
+      jMerger.merge();
+
+      FileWriter fw = new FileWriter(targetPath);
+      fw.write(jMerger.getTargetCompilationUnit().getContents());
+      fw.close();
+      // targetFile.setContents(
+      // mergedContents,
+      // true,
+      // true,
+      // new SubProgressMonitor(progressMonitor, 1));
+    } else {
+      progressMonitor.subTask(jg.getString("creatingTarget", new Object[] { targetClassName }));
+      (new File(targetContainer)).mkdirs();
+      FileWriter fw = new FileWriter(targetPath);
+      fw.write(sourceContents);
+      fw.close();
+      // targetFile.setContents(
+      // new ByteArrayInputStream(sourceContents.getBytes()),
+      // true,
+      // true,
+      // new SubProgressMonitor(progressMonitor, 1));
+    }
+  }
 }

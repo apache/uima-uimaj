@@ -23,50 +23,58 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 public class ProgressMonitorImpl implements org.apache.uima.tools.jcasgen.IProgressMonitor {
   private IProgressMonitor fwd;
-  
+
   ProgressMonitorImpl(IProgressMonitor pm) {
-  	fwd = pm;
+    fwd = pm;
   }
-  
-	public void done() {
-		fwd.done();
-	}
 
-	public void beginTask(String name, int totalWorked) {
+  public void done() {
+    fwd.done();
+  }
+
+  public void beginTask(String name, int totalWorked) {
     fwd.beginTask(name, totalWorked);
- 	}
+  }
 
-	public void subTask(String name) {
+  public void subTask(String name) {
     fwd.subTask(name);
-	}
+  }
 
-	public void worked(int work) {
+  public void worked(int work) {
     fwd.worked(work);
-	}
+  }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IProgressMonitor#internalWorked(double)
-	 */
-	public void internalWorked(double work) {		
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.eclipse.core.runtime.IProgressMonitor#internalWorked(double)
+   */
+  public void internalWorked(double work) {
+  }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IProgressMonitor#isCanceled()
-	 */
-	public boolean isCanceled() {
-		return false;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.eclipse.core.runtime.IProgressMonitor#isCanceled()
+   */
+  public boolean isCanceled() {
+    return false;
+  }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IProgressMonitor#setCanceled(boolean)
-	 */
-	public void setCanceled(boolean value) {	
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.eclipse.core.runtime.IProgressMonitor#setCanceled(boolean)
+   */
+  public void setCanceled(boolean value) {
+  }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IProgressMonitor#setTaskName(java.lang.String)
-	 */
-	public void setTaskName(String name) {
-	}
-		
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.eclipse.core.runtime.IProgressMonitor#setTaskName(java.lang.String)
+   */
+  public void setTaskName(String name) {
+  }
+
 }

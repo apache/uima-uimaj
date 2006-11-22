@@ -28,37 +28,34 @@ import org.eclipse.core.runtime.IPlatformRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * Class holds type plugin-wide collections and static methods.
- * Also implements the runnable that is called to do the processing
+ * Class holds type plugin-wide collections and static methods. Also implements the runnable that is
+ * called to do the processing
  */
 
 public class JgPluginRunner implements IPlatformRunnable {
 
-	public JgPluginRunner() {
-	}
+  public JgPluginRunner() {
+  }
 
-	public Object run(Object object) {
-		try {
-			final String[] arguments = (String[]) object;
-			final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-			final Jg jg = new Jg();
-			IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-				public void run(IProgressMonitor progressMonitor)
-					throws CoreException {
-						jg.main0(arguments, 
-						         new MergerImpl(), 
-										 null, // no progressMonitor, 
-										 new EP_LogThrowErrorImpl() );
-				}
-			};
-			workspace.run(runnable, null);
-			return new Integer(0);
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
-		
-		return new Integer(1);
+  public Object run(Object object) {
+    try {
+      final String[] arguments = (String[]) object;
+      final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+      final Jg jg = new Jg();
+      IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+        public void run(IProgressMonitor progressMonitor) throws CoreException {
+          jg.main0(arguments, new MergerImpl(), null, // no progressMonitor,
+                          new EP_LogThrowErrorImpl());
+        }
+      };
+      workspace.run(runnable, null);
+      return new Integer(0);
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
 
-	}
- 
+    return new Integer(1);
+
+  }
+
 }

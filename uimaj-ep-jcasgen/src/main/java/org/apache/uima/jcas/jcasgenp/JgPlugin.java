@@ -28,36 +28,37 @@ import org.eclipse.core.runtime.Plugin;
  * The main plugin class to be used in the desktop.
  */
 public class JgPlugin extends Plugin {
-	//The shared instance.
-	private static JgPlugin plugin;
+  // The shared instance.
+  private static JgPlugin plugin;
 
-	public static final String JCASGEN_ID = "org.apache.uima.jcas.jcasgenp"; //$NON-NLS-1$
-	
-	/**
-	 * The constructor.
-	 */
-	public JgPlugin(IPluginDescriptor descriptor) {
-		super(descriptor);
-		plugin = this;
-	}
+  public static final String JCASGEN_ID = "org.apache.uima.jcas.jcasgenp"; //$NON-NLS-1$
 
-	/**
-	 * Returns the shared instance.
-	 */
-	public static JgPlugin getDefault() {
-		return plugin;
-	}
+  /**
+   * The constructor.
+   */
+  public JgPlugin(IPluginDescriptor descriptor) {
+    super(descriptor);
+    plugin = this;
+  }
 
-	/**
-	 * Returns the workspace instance.
-	 */
-	public static IWorkspace getWorkspace() {
-		return ResourcesPlugin.getWorkspace();
-	}
-	/**
-	 * Convenience method which returns the unique identifier of this plugin.
-	 */
-	public static String getUniqueIdentifier() {
-		return JCASGEN_ID;
-	}
+  /**
+   * Returns the shared instance.
+   */
+  public static JgPlugin getDefault() {
+    return plugin;
+  }
+
+  /**
+   * Returns the workspace instance.
+   */
+  public static IWorkspace getWorkspace() {
+    return ResourcesPlugin.getWorkspace();
+  }
+
+  /**
+   * Convenience method which returns the unique identifier of this plugin.
+   */
+  public static String getUniqueIdentifier() {
+    return JCASGEN_ID;
+  }
 }
