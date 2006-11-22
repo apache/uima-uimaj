@@ -27,6 +27,7 @@ import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.CASFactory;
@@ -322,5 +323,48 @@ public class CasCreationUtilsTest extends TestCase {
     } catch (ResourceInitializationException e) {
       JUnitExtension.handleException(e);
     }
+  }
+  
+  public void testCreateCasCollectionPropertiesResourceManager() throws Exception {
+    try {
+      // parse an AE descriptor
+      File taeDescriptorWithImport = JUnitExtension
+                      .getFile("CasCreationUtilsTest/TaeWithImports.xml");
+      AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+                      new XMLInputSource(taeDescriptorWithImport));
+
+      // create Resource Manager & set data path - necessary to resolve imports
+      ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
+      String pathSep = System.getProperty("path.separator");
+      resMgr.setDataPath(JUnitExtension.getFile("TypeSystemDescriptionImplTest/dataPathDir")
+                      .getAbsolutePath()
+                      + pathSep
+                      + JUnitExtension.getFile("TypePrioritiesImplTest/dataPathDir")
+                                      .getAbsolutePath()
+                      + pathSep
+                      + JUnitExtension.getFile("FsIndexCollectionImplTest/dataPathDir")
+                                      .getAbsolutePath());
+               
+      // call method
+      ArrayList descList = new ArrayList();
+      descList.add(desc);
+      CAS cas = CasCreationUtils.createCas(descList, UIMAFramework
+                      .getDefaultPerformanceTuningProperties(), resMgr);
+      // check that imports were resolved correctly
+      assertNotNull(cas.getTypeSystem().getType("DocumentStructure"));
+      assertNotNull(cas.getTypeSystem().getType("NamedEntity"));
+      assertNotNull(cas.getTypeSystem().getType("TestType3"));
+
+      assertNotNull(cas.getIndexRepository().getIndex("TestIndex"));
+      assertNotNull(cas.getIndexRepository().getIndex("ReverseAnnotationIndex"));
+      assertNotNull(cas.getIndexRepository().getIndex("DocumentStructureIndex"));
+
+      // check of type priority
+      AnnotationFS fs1 = cas.createAnnotation(cas.getTypeSystem().getType("Paragraph"), 0, 1);
+      AnnotationFS fs2 = cas.createAnnotation(cas.getTypeSystem().getType("Sentence"), 0, 1);
+      assertTrue(cas.getAnnotationIndex().compare(fs1, fs2) < 0);
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }    
   }
 }
