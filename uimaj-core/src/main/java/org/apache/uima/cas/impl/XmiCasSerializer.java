@@ -768,9 +768,9 @@ public class XmiCasSerializer {
       attrs.addAttribute(null, null, attrName, cdataType, attrValue);
     }
 
-    private void startElement(XmlElementName name, Attributes attrs, int numChildren)
+    private void startElement(XmlElementName name, Attributes attrs, int aNumChildren)
                     throws SAXException {
-      XmiCasSerializer.this.numChildren = numChildren;
+      XmiCasSerializer.this.numChildren = aNumChildren;
       // don't include NS URI here. That causes XMI serializer to
       // include the xmlns attribute in every element. Instead we
       // explicitly added these attributes to the root element.

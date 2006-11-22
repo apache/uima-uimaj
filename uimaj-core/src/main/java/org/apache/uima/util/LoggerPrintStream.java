@@ -132,7 +132,7 @@ public class LoggerPrintStream extends PrintStream {
     flush();
   }
 
-  public void write(byte[] buf, int off, int len) {
+  public void write(byte[] aBuf, int off, int len) {
     // raw bytes not supported
   }
 

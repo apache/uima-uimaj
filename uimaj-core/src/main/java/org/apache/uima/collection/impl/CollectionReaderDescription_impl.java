@@ -48,6 +48,8 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
 public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_impl implements
                 CollectionReaderDescription {
 
+  private static final long serialVersionUID = -6654886877117758267L;
+
   /**
    * Creates a new ProcessingResourceMetaData_impl. Initializes the MetaData and
    * FrameworkImplementation attributes.

@@ -36,10 +36,8 @@ import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.TCASImpl;
 import org.apache.uima.impl.UimaContext_ImplBase;
 import org.apache.uima.internal.util.UUIDGenerator;
 import org.apache.uima.jcas.impl.JCas;
@@ -94,7 +92,6 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
   /**
    * For a primitive AnalysisEngine only, the Annotator instance that contains the analysis logic.
    */
-  // private BaseAnnotator mAnnotator;
   private UimacppAnalysisEngine mAnnotator;
 
   /**
@@ -102,17 +99,6 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
    * access its environment.
    */
   private AnnotatorContext_impl mAnnotatorContext;
-
-  /**
-   * The ResultSpecification to pass to the process call.
-   */
-  private ResultSpecification mDefaultResultSpecification;
-
-  /**
-   * For a primitive AE only, the last CAS TypeSystem that was sent to the Annotator's
-   * typeSystemInit() method.
-   */
-  private TypeSystem mLastAnnotatorTypeSystem;
 
   private boolean mSofaAware = false;
 
@@ -215,7 +201,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
     if (aResultSpec == null) {
       resetResultSpecificationToDefault();
     } else {
-      mDefaultResultSpecification = aResultSpec;
+      mAnnotator.setResultSpecification(aResultSpec);
     }
   }
 

@@ -21,13 +21,7 @@ package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.AnnotationBaseFS;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.SofaFS;
-import org.apache.uima.cas.impl.AnnotationImpl;
-import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.TCASImpl;
-import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.impl.JCas;
 
 /**

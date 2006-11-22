@@ -28,6 +28,8 @@ import java.util.MissingResourceException;
  */
 public class UtilError extends RuntimeException {
 
+  private static final long serialVersionUID = -6708991281527442356L;
+
   private static final String resource_file = "org.apache.uima.util.UtilError";
 
   private static final String missing_resource_error = "Could not load message catalog: "

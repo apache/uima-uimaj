@@ -19,7 +19,6 @@
 
 package org.apache.uima.cas;
 
-import java.util.Map;
 
 /**
  * Information that a CAS needs to know about the component that's currently operating on it.

@@ -26,25 +26,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.uima.UimaContext;
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.internal.util.IntStack;
+import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.StringUtils;
+import org.apache.uima.internal.util.rb_trees.IntRedBlackTree;
+import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-import org.apache.uima.UimaContext;
-import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.FSIndex;
-import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.SofaFS;
-import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.text.TCAS;
-import org.apache.uima.util.XMLSerializer;
-import org.apache.uima.internal.util.IntStack;
-import org.apache.uima.internal.util.IntVector;
-import org.apache.uima.internal.util.StringUtils;
-import org.apache.uima.internal.util.rb_trees.IntRedBlackTree;
-
-;
 
 /**
  * XCAS serializer. Create a serializer from a type system, then encode individual CASes by writing
@@ -117,8 +111,6 @@ public class XCASSerializer {
     // Out-Of-TypeSystem Data to be included in produced XCAS. (APL)
     private OutOfTypeSystemData mOutOfTypeSystemData;
 
-    FeatureStructureImplC fs;
-
     // We write to a SAXDocStack, a simplified interface to a
     // ContentHandler.
     private XCASDocSerializer(ContentHandler ch, CASImpl cas) {
@@ -134,7 +126,9 @@ public class XCASSerializer {
       this.indexReps = new IntVector();
       this.sofaTypeCode = cas.ll_getTypeSystem().ll_getCodeForType(
                       cas.getTypeSystem().getType(CAS.TYPE_NAME_SOFA));
-      fs = new FeatureStructureImplC(cas, 0);
+      
+      //Why was this here?  Was never being read anywhere:
+      //fs = new FeatureStructureImplC(cas, 0);
     }
 
     /**

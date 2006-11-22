@@ -31,6 +31,8 @@ import java.util.ArrayList;
  */
 class StringConstraint extends PathConstraint implements FSMatchConstraint {
 
+  private static final long serialVersionUID = 1443969254449621891L;
+  
   private FSStringConstraint stringConstraint;
 
   private StringConstraint() {

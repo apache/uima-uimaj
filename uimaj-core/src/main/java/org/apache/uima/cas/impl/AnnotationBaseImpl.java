@@ -22,7 +22,6 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.AnnotationBaseFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.text.AnnotationFS;
 
 /**
  * Class comment for AnnotationImpl.java goes here.

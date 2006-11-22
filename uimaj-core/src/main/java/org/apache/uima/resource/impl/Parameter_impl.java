@@ -31,6 +31,9 @@ import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLParser.ParsingOptions;
 
 public class Parameter_impl extends MetaDataObject_impl implements Parameter {
+
+  private static final long serialVersionUID = -853121388957306954L;
+
   String name;
 
   String value;

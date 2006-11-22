@@ -53,7 +53,6 @@ import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeaturePath;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.SofaID;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
@@ -766,7 +765,7 @@ public class JCas extends AbstractCas_ImplBase implements AbstractCas {
   }
 
   public JCas getJCas(Sofa sofa) throws CASException {
-    return (JCas) casImpl.getJCas(sofa);
+    return casImpl.getJCas(sofa);
   }
 
   public FSIterator getSofaIterator() {

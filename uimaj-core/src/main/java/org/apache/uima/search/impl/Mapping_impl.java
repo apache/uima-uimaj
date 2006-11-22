@@ -28,6 +28,9 @@ import org.apache.uima.search.Mapping;
  * 
  */
 public class Mapping_impl extends MetaDataObject_impl implements Mapping {
+  
+  private static final long serialVersionUID = -2371976614485187381L;
+
   private String mFeature;
 
   private String mIndexName;

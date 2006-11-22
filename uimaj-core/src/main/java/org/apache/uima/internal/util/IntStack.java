@@ -28,6 +28,8 @@ import org.apache.uima.internal.util.IntVector;
  */
 public class IntStack extends IntVector {
 
+  private static final long serialVersionUID = 6396213817151546621L;
+
   /** Creates an empty stack. */
   public IntStack() {
     super();

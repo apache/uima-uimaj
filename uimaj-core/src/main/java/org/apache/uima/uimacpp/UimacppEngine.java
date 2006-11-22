@@ -19,26 +19,25 @@
 
 package org.apache.uima.uimacpp;
 
-import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.TypeOrFeature;
-import org.apache.uima.cas.impl.CASMgrSerializer;
-import org.apache.uima.cas.impl.FeatureImpl;
-import org.apache.uima.cas.impl.Serialization;
-import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.TCASImpl;
-import org.apache.uima.cas.impl.CASSerializer;
-import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.text.TCAS;
-import org.apache.uima.cas.admin.CASMgr;
-import org.apache.uima.internal.util.IntVector;
-import org.apache.uima.cas.Type;
-import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.SofaFS;
+import org.apache.uima.cas.Type;
+import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.admin.CASMgr;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.CASMgrSerializer;
+import org.apache.uima.cas.impl.CASSerializer;
+import org.apache.uima.cas.impl.FeatureImpl;
+import org.apache.uima.cas.impl.Serialization;
+import org.apache.uima.cas.impl.TCASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
+import org.apache.uima.cas.text.TCAS;
+import org.apache.uima.internal.util.IntVector;
 
 public class UimacppEngine {
 
@@ -137,39 +136,40 @@ public class UimacppEngine {
 
   private native void releaseSegmentJNI() throws InternalTafException;
 
-  /**
+  /*
    * serialized CAS data components - supported args to getSerializedDataJNI and
-   * getSegmentSerializedDataJNI
+   * getSegmentSerializedDataJNI.  Many of these are unread and have been commented
+   * out but left here for documentation purposes.
    */
-  private static final int TYPE_INH = 0;
-
-  private static final int FEATURE_DEF = 1;
-
-  private static final int FEATURE_OFFSET = 2;
-
-  private static final int TYPE_SYMBOLS = 3;
-
-  private static final int FEATURE_SYMBOLS = 4;
-
-  private static final int TOPTYPE = 5;
-
-  private static final int TYPE_PRIORITIES = 6;
+//  private static final int TYPE_INH = 0;
+//
+//  private static final int FEATURE_DEF = 1;
+//
+//  private static final int FEATURE_OFFSET = 2;
+//
+//  private static final int TYPE_SYMBOLS = 3;
+//
+//  private static final int FEATURE_SYMBOLS = 4;
+//
+//  private static final int TOPTYPE = 5;
+//
+//  private static final int TYPE_PRIORITIES = 6;
 
   private static final int FSHEAP = 10;
 
   private static final int STRINGSYMBOL = 11;
 
-  private static final int DOCUMENT = 20;
+//  private static final int DOCUMENT = 20;
 
   private static final int INDEXEDFSS = 30;
 
-  private static final int INDEXID = 40;
-
-  private static final int INDEXKIND = 41;
-
-  private static final int COMPARATORDEF = 42;
-
-  private static final int COMPARATORSTART = 43;
+//  private static final int INDEXID = 40;
+//
+//  private static final int INDEXKIND = 41;
+//
+//  private static final int COMPARATORDEF = 42;
+//
+//  private static final int COMPARATORSTART = 43;
 
   private static final int BYTEHEAP = 12;
 
@@ -338,8 +338,6 @@ public class UimacppEngine {
     cas = aCas;
 
     try {
-      CASMgr casMgr = (CASMgr) cas;
-
       resetJNI();
 
       if (!casIsEmpty) {
@@ -508,8 +506,6 @@ public class UimacppEngine {
         case 5020:
         case 10000:
           throw new OutOfMemoryError();
-        default:
-          ;
       }
 
       // TafException tafException = new TafException(

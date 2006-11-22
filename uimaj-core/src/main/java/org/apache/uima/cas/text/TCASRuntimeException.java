@@ -29,6 +29,8 @@ import java.util.MissingResourceException;
  */
 public class TCASRuntimeException extends RuntimeException {
 
+  private static final long serialVersionUID = -4233241847620125372L;
+
   private static final String resource_file = "org.apache.uima.cas.text.tcas_runtime_exc";
 
   private static final String missing_resource_error = "Could not load message catalog: "

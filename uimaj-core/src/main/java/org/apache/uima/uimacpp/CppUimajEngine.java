@@ -25,8 +25,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 
-import org.xml.sax.SAXException;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -45,9 +43,8 @@ import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.Level;
-import org.apache.uima.util.Logger;
 import org.apache.uima.util.XMLInputSource;
+import org.xml.sax.SAXException;
 
 public class CppUimajEngine {
   private String exceptionString = "";
@@ -170,7 +167,7 @@ public class CppUimajEngine {
 
   public int process(String doc, int[] heapArray, int[] fsIndex, String[] stringTable,
                   int[] resultSpecTypes, int[] resultSpecFeatures, int sofaNum,
-                  byte[] byteHeapArray, short[] shortHeapArray, long[] longHeapArray) {
+                  byte[] aByteHeapArray, short[] aShortHeapArray, long[] aLongHeapArray) {
     int result = 0;
     try {
       // System.err.println("CppUimajEngine.process() called");
@@ -185,9 +182,9 @@ public class CppUimajEngine {
       serializer.fsIndex = fsIndex;
       serializer.stringTable = stringTable;
 
-      serializer.byteHeapArray = byteHeapArray;
-      serializer.shortHeapArray = shortHeapArray;
-      serializer.longHeapArray = longHeapArray;
+      serializer.byteHeapArray = aByteHeapArray;
+      serializer.shortHeapArray = aShortHeapArray;
+      serializer.longHeapArray = aLongHeapArray;
 
       casImpl.reinit(serializer);
 

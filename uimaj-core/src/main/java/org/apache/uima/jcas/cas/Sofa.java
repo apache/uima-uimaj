@@ -30,7 +30,6 @@ import org.apache.uima.cas.SofaID;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TCASImpl;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.jcas.impl.JCas;
 
 /**

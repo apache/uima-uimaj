@@ -32,6 +32,8 @@ import org.apache.uima.internal.util.IntVector;
  */
 class FSFloatConstraintImpl implements FSFloatConstraint {
 
+  private static final long serialVersionUID = 4649271745827863437L;
+
   private static final int LT = 0;
 
   private static final int LEQ = 1;

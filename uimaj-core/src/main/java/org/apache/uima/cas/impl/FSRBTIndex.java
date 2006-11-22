@@ -33,7 +33,7 @@ import org.apache.uima.internal.util.rb_trees.CompIntArrayRBT;
  * 
  * 
  */
-// may not be used - no refs to it on 6-2006
+// TODO: may not be used - no refs to it on 6-2006
 class FSRBTIndex extends FSLeafIndexImpl {
 
   private CompIntArrayRBT tree;
@@ -77,7 +77,7 @@ class FSRBTIndex extends FSLeafIndexImpl {
 
   public ComparableIntPointerIterator pointerIterator(IntComparator comp,
                   int[] detectIllegalIndexUpdates, int typeCode) {
-    return ((CompIntArrayRBT) this.tree).pointerIterator(comp, detectIllegalIndexUpdates, typeCode);
+    return this.tree.pointerIterator(comp, detectIllegalIndexUpdates, typeCode);
   }
 
   /**

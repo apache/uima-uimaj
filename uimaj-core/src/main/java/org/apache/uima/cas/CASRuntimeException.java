@@ -28,6 +28,8 @@ import java.util.MissingResourceException;
  */
 public class CASRuntimeException extends RuntimeException {
 
+  private static final long serialVersionUID = 2597111625069248081L;
+
   private static final String resource_file = "org.apache.uima.cas.cas_runtime_exception";
 
   private static final String missing_resource_error = "Could not load message catalog: "

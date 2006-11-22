@@ -152,8 +152,6 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       Assert.assertTrue(result);
 
       CAS cas1 = mtae.newCAS();
-      // should be a TCAS
-      Assert.assertTrue(cas1 instanceof CAS);
       // should have the type foo.Bar
       assertNotNull(cas1.getTypeSystem().getType("foo.Bar"));
 
@@ -177,13 +175,8 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       Assert.assertTrue(result);
 
       CAS cas5 = mtae2.newCAS();
-      // should be a TCAS
-      Assert.assertTrue(cas5 instanceof CAS);
       // should have the type foo.Bar
       assertNotNull(cas5.getTypeSystem().getType("foo.Bar"));
-    } catch (ResourceInitializationException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }

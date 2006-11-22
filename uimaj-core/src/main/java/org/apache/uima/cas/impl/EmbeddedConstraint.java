@@ -34,6 +34,8 @@ import java.util.ArrayList;
  */
 class EmbeddedConstraint extends PathConstraint implements FSMatchConstraint {
 
+  private static final long serialVersionUID = -4938331720540592033L;
+  
   private FSMatchConstraint cons;
 
   private EmbeddedConstraint() {

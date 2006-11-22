@@ -30,6 +30,8 @@ import org.apache.uima.cas.FeatureStructure;
  */
 class DisjunctiveConstraint implements FSMatchConstraint {
 
+  private static final long serialVersionUID = -6178223997976826183L;
+
   private FSMatchConstraint c1;
 
   private FSMatchConstraint c2;

@@ -32,12 +32,18 @@ import org.apache.uima.pear.util.*;
  */
 
 public class InstallationDescriptor implements Serializable {
+  
+  private static final long serialVersionUID = 4884186903126810934L;
+
   /**
    * The <code>ActionInfo</code> class defines 'installation action' attributes.
    * 
    * @author LK
    */
   public static class ActionInfo implements Serializable {
+    
+    private static final long serialVersionUID = -3459024334454685063L;
+
     /*
      * Action IDs
      */
@@ -115,6 +121,9 @@ public class InstallationDescriptor implements Serializable {
    * @author LK
    */
   public static class ComponentInfo implements Serializable {
+    
+    private static final long serialVersionUID = 3269238133625161794L;
+
     /**
      * Constructor that takes component ID as an argument.
      * 

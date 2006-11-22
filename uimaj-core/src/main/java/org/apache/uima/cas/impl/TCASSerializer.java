@@ -26,6 +26,8 @@ package org.apache.uima.cas.impl;
  */
 public class TCASSerializer extends CASSerializer {
 
+  private static final long serialVersionUID = 242121702771579810L;
+
   public String documentText;
 
   public String documentLanguage;
