@@ -89,6 +89,16 @@ public class UIMARuntimeException extends InternationalizedRuntimeException {
   public static final String INCOMPATIBLE_TAF_JNI_LIBRARY = "incompatible_taf_jni_library";
 
   /**
+   * Message key for a standard UIMA exception message: "Attempted to copy a FeatureStructure of type "{0}", which is not defined in the type system of the destination CAS."
+   */
+  public static final String TYPE_NOT_FOUND_DURING_CAS_COPY = "type_not_found_during_cas_copy";
+
+  /**
+   * Message key for a standard UIMA exception message: "Attempted to copy a Feature "{0}", which is not defined in the type system of the destination CAS."
+   */
+  public static final String FEATURE_NOT_FOUND_DURING_CAS_COPY = "feature_not_found_during_cas_copy";
+
+  /**
    * Creates a new exception with a null message.
    */
   public UIMARuntimeException() {
