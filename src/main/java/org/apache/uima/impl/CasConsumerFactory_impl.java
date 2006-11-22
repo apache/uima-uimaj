@@ -30,7 +30,7 @@ import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
-import org.apache.uima.uimacpp.UimacppAnalysisEngine;
+import org.apache.uima.uimacpp.UimacppAnalysisComponent;
 
 /**
  * Specialized Resource Factory for producing CasConsumers.
@@ -126,13 +126,13 @@ public class CasConsumerFactory_impl implements ResourceFactory {
         {
           throw new ResourceInitializationException(
                           ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR,
-                          new Object[] { UimacppAnalysisEngine.class.getName(),
+                          new Object[] { UimacppAnalysisComponent.class.getName(),
                               aSpecifier.getSourceUrlString() });
         }
       } else {
         throw new ResourceInitializationException(
                         ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR,
-                        new Object[] { UimacppAnalysisEngine.class.getName(),
+                        new Object[] { UimacppAnalysisComponent.class.getName(),
                             aSpecifier.getSourceUrlString() });
       }
     } else {

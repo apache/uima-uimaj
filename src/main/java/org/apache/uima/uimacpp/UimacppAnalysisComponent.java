@@ -50,7 +50,7 @@ import org.apache.uima.util.Logger;
 import org.apache.uima.util.ProcessTrace;
 import org.xml.sax.SAXException;
 
-public class UimacppAnalysisEngine extends AnalysisComponent_ImplBase {
+public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
 
   private UimacppEngine engine;
 
@@ -72,9 +72,9 @@ public class UimacppAnalysisEngine extends AnalysisComponent_ImplBase {
   /**
    * current class
    */
-  private static final Class CLASS_NAME = UimacppAnalysisEngine.class;
+  private static final Class CLASS_NAME = UimacppAnalysisComponent.class;
 
-  public UimacppAnalysisEngine(AnalysisEngineDescription aeDescription, AnalysisEngineImplBase ae) {
+  public UimacppAnalysisComponent(AnalysisEngineDescription aeDescription, AnalysisEngineImplBase ae) {
     super();
     this.ae = ae;
     this.aeDescription = aeDescription;
@@ -330,7 +330,7 @@ public class UimacppAnalysisEngine extends AnalysisComponent_ImplBase {
    */
   public static int getLoggingLevel() {
 
-    Logger tafLogger = UIMAFramework.getLogger(UimacppAnalysisEngine.class);
+    Logger tafLogger = UIMAFramework.getLogger(UimacppAnalysisComponent.class);
 
     if (tafLogger.isLoggable(Level.FINEST) || tafLogger.isLoggable(Level.FINER)
                     || tafLogger.isLoggable(Level.FINE) || tafLogger.isLoggable(Level.CONFIG)
@@ -350,7 +350,7 @@ public class UimacppAnalysisEngine extends AnalysisComponent_ImplBase {
     // System.out.println("CPPJEDIIEnging::log() level=" + msglevel + "src=" + sourceClass +
     // "method=" + sourceMethod + "message=" + message);
 
-    Logger tafLogger = UIMAFramework.getLogger(UimacppAnalysisEngine.class);
+    Logger tafLogger = UIMAFramework.getLogger(UimacppAnalysisComponent.class);
     Level level = Level.INFO; // default
     if (msglevel == TAF_LOGLEVEL_MESSAGE) {
       level = Level.INFO;
