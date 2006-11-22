@@ -64,12 +64,14 @@ public abstract class CasDataConsumer_ImplBase extends ConfigurableResource_Impl
    *           if a failure occurs during initialization.
    */
   public void initialize() throws ResourceInitializationException {
+    //no default behavior
   }
 
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
   public void destroy() {
+    //no default behavior
   }
 
   /**

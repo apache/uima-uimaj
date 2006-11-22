@@ -74,18 +74,21 @@ public abstract class CasConsumer_ImplBase extends ConfigurableResource_ImplBase
    *           if a failure occurs during initialization.
    */
   public void initialize() throws ResourceInitializationException {
+    //no default behavior
   }
 
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
   public void destroy() {
+    //no default behavior
   }
 
   /**
    * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#typeSystemInit(org.apache.uima.cas.TypeSystem)
    */
   public void typeSystemInit(TypeSystem arg0) throws ResourceInitializationException {
+    //no default behavior
   }
 
   /**
@@ -125,7 +128,7 @@ public abstract class CasConsumer_ImplBase extends ConfigurableResource_ImplBase
    * @see org.apache.uima.collection.base_cpm.CasProcessor#batchProcessComplete(org.apache.uima.util.ProcessTrace)
    */
   public void batchProcessComplete(ProcessTrace arg0) throws ResourceProcessException, IOException {
-
+    //no default behavior
   }
 
   /**
@@ -133,7 +136,7 @@ public abstract class CasConsumer_ImplBase extends ConfigurableResource_ImplBase
    */
   public void collectionProcessComplete(ProcessTrace arg0) throws ResourceProcessException,
                   IOException {
-
+    //no default behavior
   }
 
   /**

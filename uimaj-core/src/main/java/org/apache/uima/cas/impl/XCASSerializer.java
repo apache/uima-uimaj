@@ -708,8 +708,10 @@ public class XCASSerializer {
           String[] attr = (String[]) it.next();
           // remap ID if necessary
           if (attr[0].startsWith("_ref_")) {
-            if (attr[1].startsWith("a")) {
-            } else {// reference to ITS FS
+            // references whose ID starts with the character 'a' are references to out of type
+            // system FS.  All other references should be to in-typesystem FS, which we need to
+            // enqueue.
+            if (!attr[1].startsWith("a")) { 
               enqueue(Integer.parseInt(attr[1]));
             }
           }
@@ -738,8 +740,10 @@ public class XCASSerializer {
           String attrName = (String) entry.getKey();
           if (attrName.startsWith("_ref_")) {
             String attrVal = (String) entry.getValue();
-            if (attrVal.startsWith("a")) {
-            } else {
+            // references whose ID starts with the character 'a' are references to out of type
+            // system FS.  All other references should be to in-typesystem FS, which we need to
+            // enqueue.
+            if (!attrVal.startsWith("a")) { 
               enqueue(Integer.parseInt(attrVal));
             }
           }

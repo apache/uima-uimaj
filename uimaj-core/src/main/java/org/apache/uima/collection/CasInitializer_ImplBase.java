@@ -72,18 +72,21 @@ public abstract class CasInitializer_ImplBase extends ConfigurableResource_ImplB
    *           if a failure occurs during initialization.
    */
   public void initialize() throws ResourceInitializationException {
+    //no default behavior
   }
 
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
   public void destroy() {
+    //no default behavior
   }
 
   /**
    * @see org.apache.uima.collection.CasConsumer#typeSystemInit(org.apache.uima.cas.TypeSystem)
    */
   public void typeSystemInit(TypeSystem arg0) throws ResourceInitializationException {
+    //no default behavior
   }
 
   /**

@@ -82,6 +82,7 @@ public abstract class CollectionReader_ImplBase extends ConfigurableResource_Imp
    *           if a failure occurs during initialization.
    */
   public void initialize() throws ResourceInitializationException {
+    //no default behavior
   }
 
   /**

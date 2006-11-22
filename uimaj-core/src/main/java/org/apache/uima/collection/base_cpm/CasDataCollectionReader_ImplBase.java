@@ -73,6 +73,7 @@ public abstract class CasDataCollectionReader_ImplBase extends ConfigurableResou
    *           if a failure occurs during initialization.
    */
   public void initialize() throws ResourceInitializationException {
+    //no default behavior
   }
 
   /**
