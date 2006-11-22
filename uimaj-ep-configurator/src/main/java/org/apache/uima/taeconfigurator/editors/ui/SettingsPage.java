@@ -25,40 +25,40 @@ import org.eclipse.ui.forms.IManagedForm;
 
 public class SettingsPage extends HeaderPageWithSash {
 
-	private ParameterSettingsSection parameterSettingsSection;
-	private ValueSection valueSection;
+  private ParameterSettingsSection parameterSettingsSection;
 
-	public SettingsPage(MultiPageEditor editor) {
-		super(editor, "Parameter Value Settings");
-	}
-	
-	/**
-	 * Called by the framework to fill in the contents
-	 */
-	protected void createFormContent(IManagedForm managedForm) {
+  private ValueSection valueSection;
 
-		final Form2Panel form2Panel = setup2ColumnLayout(managedForm, EQUAL_WIDTH);
-		
-		managedForm.getForm().setText("Parameter Settings");	
-		managedForm.addPart(parameterSettingsSection = 
-		  new ParameterSettingsSection(editor, form2Panel.left));
-		managedForm.addPart(valueSection = 
-		  new ValueSection(editor, form2Panel.right));
-		createToolBarActions(managedForm);
-	}
-	
-	/**
-	 * @return
-	 */
-	public ParameterSettingsSection getParameterSettingsSection() {
-		return parameterSettingsSection;
-	}
+  public SettingsPage(MultiPageEditor editor) {
+    super(editor, "Parameter Value Settings");
+  }
 
-	/**
-	 * @return
-	 */
-	public ValueSection getValueSection() {
-		return valueSection;
-	}
+  /**
+   * Called by the framework to fill in the contents
+   */
+  protected void createFormContent(IManagedForm managedForm) {
+
+    final Form2Panel form2Panel = setup2ColumnLayout(managedForm, EQUAL_WIDTH);
+
+    managedForm.getForm().setText("Parameter Settings");
+    managedForm.addPart(parameterSettingsSection = new ParameterSettingsSection(editor,
+                    form2Panel.left));
+    managedForm.addPart(valueSection = new ValueSection(editor, form2Panel.right));
+    createToolBarActions(managedForm);
+  }
+
+  /**
+   * @return
+   */
+  public ParameterSettingsSection getParameterSettingsSection() {
+    return parameterSettingsSection;
+  }
+
+  /**
+   * @return
+   */
+  public ValueSection getValueSection() {
+    return valueSection;
+  }
 
 }

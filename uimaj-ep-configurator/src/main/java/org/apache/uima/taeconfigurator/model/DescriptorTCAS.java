@@ -36,58 +36,60 @@ import org.apache.uima.util.CasCreationUtils;
  */
 
 public class DescriptorTCAS extends AbstractModelPart {
-  
+
   private TCAS cachedResult;
+
   public DescriptorTCAS(MultiPageEditor modelRoot) {
     super(modelRoot);
   }
 
   public void validate() throws ResourceInitializationException {
-    
+
     Collection aes = new ArrayList(1);
-    
-    AnalysisEngineDescription ae = (AnalysisEngineDescription)modelRoot.getAeDescription().clone();
+
+    AnalysisEngineDescription ae = (AnalysisEngineDescription) modelRoot.getAeDescription().clone();
     // speedup = replace typeSystem with resolved imports version
     if (ae.isPrimitive()) {
-    	TypeSystemDescription tsd = modelRoot.getMergedTypeSystemDescription();
-    	if (null != tsd)
-    		tsd = (TypeSystemDescription)tsd.clone();
+      TypeSystemDescription tsd = modelRoot.getMergedTypeSystemDescription();
+      if (null != tsd)
+        tsd = (TypeSystemDescription) tsd.clone();
       ae.getAnalysisEngineMetaData().setTypeSystem(tsd);
     }
     ae.getAnalysisEngineMetaData().setFsIndexCollection(modelRoot.getMergedFsIndexCollection());
     ae.getAnalysisEngineMetaData().setTypePriorities(modelRoot.getMergedTypePriorities());
-    aes.add(ae);  
+    aes.add(ae);
     try {
-//      long time = System.currentTimeMillis();
-//      System.out.println("Creating TCas model");
-      cachedResult = CasCreationUtils.createTCas(aes, casCreateProperties, modelRoot.createResourceManager());
-//      System.out.println("Finished Creating TCas model; time= " + 
-//          (System.currentTimeMillis() - time));
+      // long time = System.currentTimeMillis();
+      // System.out.println("Creating TCas model");
+      cachedResult = CasCreationUtils.createTCas(aes, casCreateProperties, modelRoot
+                      .createResourceManager());
+      // System.out.println("Finished Creating TCas model; time= " +
+      // (System.currentTimeMillis() - time));
       if (null == cachedResult)
         throw new InternalErrorCDE("null result from createTCas");
     } catch (CASAdminException e) {
       throw new ResourceInitializationException(e);
     }
-      dirty = false;
+    dirty = false;
     modelRoot.allTypes.dirty = true;
   }
-   
+
   /**
-	 * @return a TCAS for the model descriptor
-	 */
-	public TCAS get() {
-		if(dirty) {
-		  update();
-		}
-		return cachedResult;
-	}
-	
-	public void set(TCAS tcas) {
-	  cachedResult = tcas;
-	  dirty = false;
-	}
-	
-	private void update() {
+   * @return a TCAS for the model descriptor
+   */
+  public TCAS get() {
+    if (dirty) {
+      update();
+    }
+    return cachedResult;
+  }
+
+  public void set(TCAS tcas) {
+    cachedResult = tcas;
+    dirty = false;
+  }
+
+  private void update() {
     try {
       validate();
     } catch (ResourceInitializationException e) {

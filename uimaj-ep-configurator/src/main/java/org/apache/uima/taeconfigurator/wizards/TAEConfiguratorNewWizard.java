@@ -22,54 +22,46 @@ package org.apache.uima.taeconfigurator.wizards;
 import org.eclipse.ui.INewWizard;
 
 /**
- * Create a new file resource in the provided container. 
- * If the container resource (a folder or a project) is selected 
- * in the workspace when the wizard is opened, it will accept 
- * it as the target container. If a sample multi-page editor 
- * is registered for the same extension, it will be able to open it.
+ * Create a new file resource in the provided container. If the container resource (a folder or a
+ * project) is selected in the workspace when the wizard is opened, it will accept it as the target
+ * container. If a sample multi-page editor is registered for the same extension, it will be able to
+ * open it.
  * 
- * Following Eclipse conventions, the new Wizard will actually create
- * the resource in the file system and in the Eclipse resource space,
- * with initial contents, and then open the resource with the CDE.
+ * Following Eclipse conventions, the new Wizard will actually create the resource in the file
+ * system and in the Eclipse resource space, with initial contents, and then open the resource with
+ * the CDE.
  */
 
 public class TAEConfiguratorNewWizard extends AbstractNewWizard implements INewWizard {
 
-  public TAEConfiguratorNewWizard () {
+  public TAEConfiguratorNewWizard() {
     super("New Analysis Engine Descriptor File");
   }
-  
-	public void addPages() {
-		page = new TAEConfiguratorNewWizardPage(selection);
-		addPage(page);
-	}
-	
-	public String getPrototypeDescriptor(String name) {
-	  return "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
-	  +  "<analysisEngineDescription " + XMLNS_PART
-	  +    "<frameworkImplementation>org.apache.uima.java</frameworkImplementation>\n"
-	  +    "<primitive>true</primitive>\n"
-	  +    "<annotatorImplementationName></annotatorImplementationName>\n"
-	  +    "<analysisEngineMetaData>\n"
-	  +      "<name>" + name + "</name>\n"
-    +      "<description></description>\n"
-    +      "<version>1.0</version>\n"
-    +      "<vendor></vendor>\n"
-	  +      "<configurationParameters></configurationParameters>\n"
-	  +      "<configurationParameterSettings></configurationParameterSettings>\n"
-	  +      "<typeSystemDescription></typeSystemDescription>\n"
-    +      "<typePriorities></typePriorities>\n"
-    +      "<fsIndexCollection></fsIndexCollection>\n"
-	  +      "<capabilities>\n"
-	  +        "<capability>\n"
-	  +          "<inputs></inputs>\n"
-	  +          "<outputs></outputs>\n"
-	  +          "<languagesSupported></languagesSupported>\n"
-	  +        "</capability>\n"
-	  +      "</capabilities>\n"
-	  +    "</analysisEngineMetaData>\n"
-    +    "<externalResourceDependencies></externalResourceDependencies>\n"
-    +    "<resourceManagerConfiguration></resourceManagerConfiguration>\n"
-	  +  "</analysisEngineDescription>\n";
-	}
+
+  public void addPages() {
+    page = new TAEConfiguratorNewWizardPage(selection);
+    addPage(page);
+  }
+
+  public String getPrototypeDescriptor(String name) {
+    return "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" + "<analysisEngineDescription "
+                    + XMLNS_PART
+                    + "<frameworkImplementation>org.apache.uima.java</frameworkImplementation>\n"
+                    + "<primitive>true</primitive>\n"
+                    + "<annotatorImplementationName></annotatorImplementationName>\n"
+                    + "<analysisEngineMetaData>\n" + "<name>" + name + "</name>\n"
+                    + "<description></description>\n" + "<version>1.0</version>\n"
+                    + "<vendor></vendor>\n"
+                    + "<configurationParameters></configurationParameters>\n"
+                    + "<configurationParameterSettings></configurationParameterSettings>\n"
+                    + "<typeSystemDescription></typeSystemDescription>\n"
+                    + "<typePriorities></typePriorities>\n"
+                    + "<fsIndexCollection></fsIndexCollection>\n" + "<capabilities>\n"
+                    + "<capability>\n" + "<inputs></inputs>\n" + "<outputs></outputs>\n"
+                    + "<languagesSupported></languagesSupported>\n" + "</capability>\n"
+                    + "</capabilities>\n" + "</analysisEngineMetaData>\n"
+                    + "<externalResourceDependencies></externalResourceDependencies>\n"
+                    + "<resourceManagerConfiguration></resourceManagerConfiguration>\n"
+                    + "</analysisEngineDescription>\n";
+  }
 }

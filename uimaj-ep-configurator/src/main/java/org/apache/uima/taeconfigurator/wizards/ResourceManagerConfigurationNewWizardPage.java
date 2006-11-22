@@ -22,19 +22,20 @@ package org.apache.uima.taeconfigurator.wizards;
 import org.eclipse.jface.viewers.ISelection;
 
 /**
- * The "New" wizard page allows setting the container for
- * the new file as well as the file name. Will only accept 
- * file name without the extension OR with the extension 
- * that matches the expected one (xml).
+ * The "New" wizard page allows setting the container for the new file as well as the file name.
+ * Will only accept file name without the extension OR with the extension that matches the expected
+ * one (xml).
  */
 
 public class ResourceManagerConfigurationNewWizardPage extends AbstractNewWizardPage {
 
-	public ResourceManagerConfigurationNewWizardPage(ISelection selection) {
-	  super(selection, "big_ae.gif",
-	      "External Resources and Bindings (Resource Manager Configuration) Descriptor File",
-	      "Create a new External Resource and Bindings (Resource Manager Configuration) Descriptor file",
-	      "extResAndBindingsDescriptor.xml");
-	}
+  public ResourceManagerConfigurationNewWizardPage(ISelection selection) {
+    super(
+                    selection,
+                    "big_ae.gif",
+                    "External Resources and Bindings (Resource Manager Configuration) Descriptor File",
+                    "Create a new External Resource and Bindings (Resource Manager Configuration) Descriptor file",
+                    "extResAndBindingsDescriptor.xml");
+  }
 
 }

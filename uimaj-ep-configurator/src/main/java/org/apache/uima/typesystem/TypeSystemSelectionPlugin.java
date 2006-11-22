@@ -30,58 +30,58 @@ import java.util.*;
  * The main plugin class to be used in the desktop.
  */
 public class TypeSystemSelectionPlugin extends AbstractUIPlugin {
-	private ResourceBundle resourceBundle;
-	
-	/**
-	 * The constructor.
-	 */
-	public TypeSystemSelectionPlugin() {
-		super();
-		try {
-			resourceBundle = ResourceBundle.getBundle("org.apache.uima.typesystem.TypeSystemSelectionPluginResources");
-		} catch (MissingResourceException x) {
-			resourceBundle = null;
-		}
-	}
+  private ResourceBundle resourceBundle;
 
-	/**
-	 * This method is called upon plug-in activation
-	 */
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-	}
+  /**
+   * The constructor.
+   */
+  public TypeSystemSelectionPlugin() {
+    super();
+    try {
+      resourceBundle = ResourceBundle
+                      .getBundle("org.apache.uima.typesystem.TypeSystemSelectionPluginResources");
+    } catch (MissingResourceException x) {
+      resourceBundle = null;
+    }
+  }
 
-	/**
-	 * This method is called when the plug-in is stopped
-	 */
-	public void stop(BundleContext context) throws Exception {
-		super.stop(context);
-	}
+  /**
+   * This method is called upon plug-in activation
+   */
+  public void start(BundleContext context) throws Exception {
+    super.start(context);
+  }
 
-	/**
-	 * Returns the shared instance.
-	 */
-	public static TAEConfiguratorPlugin getDefault() {
-	  return TAEConfiguratorPlugin.getDefault();
-	}
+  /**
+   * This method is called when the plug-in is stopped
+   */
+  public void stop(BundleContext context) throws Exception {
+    super.stop(context);
+  }
 
-	/**
-	 * Returns the string from the plugin's resource bundle,
-	 * or 'key' if not found.
-	 */
-	public static String getResourceString(String key) {
-		ResourceBundle bundle = TypeSystemSelectionPlugin.getDefault().getResourceBundle();
-		try {
-			return (bundle != null) ? bundle.getString(key) : key;
-		} catch (MissingResourceException e) {
-			return key;
-		}
-	}
+  /**
+   * Returns the shared instance.
+   */
+  public static TAEConfiguratorPlugin getDefault() {
+    return TAEConfiguratorPlugin.getDefault();
+  }
 
-	/**
-	 * Returns the plugin's resource bundle,
-	 */
-	public ResourceBundle getResourceBundle() {
-		return resourceBundle;
-	}
+  /**
+   * Returns the string from the plugin's resource bundle, or 'key' if not found.
+   */
+  public static String getResourceString(String key) {
+    ResourceBundle bundle = TypeSystemSelectionPlugin.getDefault().getResourceBundle();
+    try {
+      return (bundle != null) ? bundle.getString(key) : key;
+    } catch (MissingResourceException e) {
+      return key;
+    }
+  }
+
+  /**
+   * Returns the plugin's resource bundle,
+   */
+  public ResourceBundle getResourceBundle() {
+    return resourceBundle;
+  }
 }

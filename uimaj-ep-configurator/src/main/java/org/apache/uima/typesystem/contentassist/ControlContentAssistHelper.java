@@ -31,27 +31,30 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
 
 public class ControlContentAssistHelper {
-	
-	/**
-	 * @param text the text field to install ContentAssist
-	 * @param processor the <code>IContentAssistProcessor</code>
-	 */
-	public static void createTextContentAssistant(final Text text, IContentAssistProcessor processor) {
-		ContentAssistHandler.createHandlerForText(text, createTypeSystemContentAssistant(processor));
-	}
 
-	public static SubjectControlContentAssistant createTypeSystemContentAssistant(IContentAssistProcessor processor) {
-		final SubjectControlContentAssistant contentAssistant= new SubjectControlContentAssistant();
-		
-		contentAssistant.setContentAssistProcessor(processor, IDocument.DEFAULT_CONTENT_TYPE);
-		contentAssistant.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
-		contentAssistant.setInformationControlCreator(new IInformationControlCreator() {
-			public IInformationControl createInformationControl(Shell parent) {
-				return new DefaultInformationControl(parent, SWT.NONE, null);
-			}
-		});
-		
-		return contentAssistant;
-	}
-		
+  /**
+   * @param text
+   *          the text field to install ContentAssist
+   * @param processor
+   *          the <code>IContentAssistProcessor</code>
+   */
+  public static void createTextContentAssistant(final Text text, IContentAssistProcessor processor) {
+    ContentAssistHandler.createHandlerForText(text, createTypeSystemContentAssistant(processor));
+  }
+
+  public static SubjectControlContentAssistant createTypeSystemContentAssistant(
+                  IContentAssistProcessor processor) {
+    final SubjectControlContentAssistant contentAssistant = new SubjectControlContentAssistant();
+
+    contentAssistant.setContentAssistProcessor(processor, IDocument.DEFAULT_CONTENT_TYPE);
+    contentAssistant.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
+    contentAssistant.setInformationControlCreator(new IInformationControlCreator() {
+      public IInformationControl createInformationControl(Shell parent) {
+        return new DefaultInformationControl(parent, SWT.NONE, null);
+      }
+    });
+
+    return contentAssistant;
+  }
+
 }

@@ -25,66 +25,53 @@ import org.eclipse.ui.IWorkbench;
 import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-public class PreferencePage
-	extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage {
-	public static final String P_JCAS = "org.apache.uima.cde.autojcasgen";
-	public static final String P_SHOW_FULLY_QUALIFIED_NAMES = "org.apache.uima.cde.qualifiedtypes";
-	public static final String P_XML_TAB_SPACES = "org.apache.uima.cde.xmlIndentAmount";
-	public static final String P_VNS_HOST = "org.apache.uima.cde.vnsHost";
-	public static final String P_VNS_PORT = "org.apache.uima.cde.vnsPort";
+public class PreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+  public static final String P_JCAS = "org.apache.uima.cde.autojcasgen";
 
-	public PreferencePage() {
-		super(GRID);
-		setPreferenceStore(TAEConfiguratorPlugin.getDefault().getPreferenceStore());
-		setDescription("UIMA Component Descriptor Editor Preferences");
-		initializeDefaults();
-	}
-/**
- * Sets the default values of the preferences.
- */
-	private void initializeDefaults() {
-		IPreferenceStore store = getPreferenceStore();
-		store.setDefault(P_JCAS, true);
-		store.setDefault(P_SHOW_FULLY_QUALIFIED_NAMES, true);
-		store.setDefault(P_XML_TAB_SPACES, 2);
-		store.setDefault(P_VNS_HOST, "localhost");
-		store.setDefault(P_VNS_PORT, "9000");
-//		store.setDefault(P_DATA_PATH, "");
-	}
-	
-	public void createFieldEditors() {
-		addField(
-			new BooleanFieldEditor(
-				P_JCAS,
-				"&Automatically run JCasGen when Types change",
-				getFieldEditorParent()));
+  public static final String P_SHOW_FULLY_QUALIFIED_NAMES = "org.apache.uima.cde.qualifiedtypes";
 
-		addField(
-				new BooleanFieldEditor(
-				    P_SHOW_FULLY_QUALIFIED_NAMES,
-					"&Show fully qualified names",
-					getFieldEditorParent()));
+  public static final String P_XML_TAB_SPACES = "org.apache.uima.cde.xmlIndentAmount";
 
-		addField(
-				new IntegerFieldEditor(
-				    P_XML_TAB_SPACES,
-					"&XML indentation",
-					getFieldEditorParent()));
+  public static final String P_VNS_HOST = "org.apache.uima.cde.vnsHost";
 
-		addField(
-				new StringFieldEditor(
-						P_VNS_HOST,
-						"&Vinci Name Service Host IP address",
-						getFieldEditorParent()));
-		
-		addField(
-				new StringFieldEditor(
-						P_VNS_PORT,
-						"Vinci NameService &Port number",
-						getFieldEditorParent()));
-	}
-	
-	public void init(IWorkbench workbench) {
-	}
+  public static final String P_VNS_PORT = "org.apache.uima.cde.vnsPort";
+
+  public PreferencePage() {
+    super(GRID);
+    setPreferenceStore(TAEConfiguratorPlugin.getDefault().getPreferenceStore());
+    setDescription("UIMA Component Descriptor Editor Preferences");
+    initializeDefaults();
+  }
+
+  /**
+   * Sets the default values of the preferences.
+   */
+  private void initializeDefaults() {
+    IPreferenceStore store = getPreferenceStore();
+    store.setDefault(P_JCAS, true);
+    store.setDefault(P_SHOW_FULLY_QUALIFIED_NAMES, true);
+    store.setDefault(P_XML_TAB_SPACES, 2);
+    store.setDefault(P_VNS_HOST, "localhost");
+    store.setDefault(P_VNS_PORT, "9000");
+    // store.setDefault(P_DATA_PATH, "");
+  }
+
+  public void createFieldEditors() {
+    addField(new BooleanFieldEditor(P_JCAS, "&Automatically run JCasGen when Types change",
+                    getFieldEditorParent()));
+
+    addField(new BooleanFieldEditor(P_SHOW_FULLY_QUALIFIED_NAMES, "&Show fully qualified names",
+                    getFieldEditorParent()));
+
+    addField(new IntegerFieldEditor(P_XML_TAB_SPACES, "&XML indentation", getFieldEditorParent()));
+
+    addField(new StringFieldEditor(P_VNS_HOST, "&Vinci Name Service Host IP address",
+                    getFieldEditorParent()));
+
+    addField(new StringFieldEditor(P_VNS_PORT, "Vinci NameService &Port number",
+                    getFieldEditorParent()));
+  }
+
+  public void init(IWorkbench workbench) {
+  }
 }

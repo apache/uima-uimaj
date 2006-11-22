@@ -29,31 +29,31 @@ import org.eclipse.swt.widgets.Composite;
 /**
  */
 public class ImportResBindSection extends ImportSection {
-  
-	public ImportResBindSection(MultiPageEditor editor, Composite parent) {
-		super(editor, parent, "Imports for External Resources and Bindings",
-		    "The following definitions are included:");  // or ! DESCRIPTION
-	}
 
-	//**************************************
-	//* Code to support type import section
-	//**************************************
-	protected boolean isAppropriate(){
-	  return true;  // always show
-	}
-
-	/**
-	 * used when hovering
-	 */
-	protected String getDescriptionFromImport(String source) {
-	  return ""; // imports for resource bindings don't have descriptions
+  public ImportResBindSection(MultiPageEditor editor, Composite parent) {
+    super(editor, parent, "Imports for External Resources and Bindings",
+                    "The following definitions are included:"); // or ! DESCRIPTION
   }
 
-  protected Import [] getModelImportArray () {
+  // **************************************
+  // * Code to support type import section
+  // **************************************
+  protected boolean isAppropriate() {
+    return true; // always show
+  }
+
+  /**
+   * used when hovering
+   */
+  protected String getDescriptionFromImport(String source) {
+    return ""; // imports for resource bindings don't have descriptions
+  }
+
+  protected Import[] getModelImportArray() {
     return getResourceManagerConfiguration().getImports();
   }
-  
-  protected void setModelImportArray(Import [] imports) {
+
+  protected void setModelImportArray(Import[] imports) {
     getResourceManagerConfiguration().setImports(imports);
   }
 
@@ -61,40 +61,41 @@ public class ImportResBindSection extends ImportSection {
     getResourceManagerConfiguration().setExternalResourceBindings(externalResourceBinding0);
     getResourceManagerConfiguration().setExternalResources(externalResourceDescription0);
   }
-  
+
   // indexes are checked and merged when the TCAS is built
   protected boolean isValidImport(String title, String message) {
     ResourceManagerConfiguration savedRmc = editor.getResolvedExternalResourcesAndBindings();
     if (null != savedRmc)
-      savedRmc = (ResourceManagerConfiguration)((ResourceManagerConfiguration_impl)savedRmc).clone();
+      savedRmc = (ResourceManagerConfiguration) ((ResourceManagerConfiguration_impl) savedRmc)
+                      .clone();
     try {
       editor.setResolvedExternalResourcesAndBindings();
     } catch (InvalidXMLException e) {
-      Utility.popMessage(title,message + editor.getMessagesToRootCause(e),Utility.ERROR);
+      Utility.popMessage(title, message + editor.getMessagesToRootCause(e), Utility.ERROR);
       revert(savedRmc);
       return false;
     }
-    if ( ! isValidAe()) {
+    if (!isValidAe()) {
       revert(savedRmc);
       return false;
     }
     return true;
   }
-  
+
   private void revert(ResourceManagerConfiguration rmc) {
-    getResourceManagerConfiguration().setExternalResourceBindings(rmc.getExternalResourceBindings());
+    getResourceManagerConfiguration()
+                    .setExternalResourceBindings(rmc.getExternalResourceBindings());
     getResourceManagerConfiguration().setExternalResources(rmc.getExternalResources());
     editor.setResolvedExternalResourcesAndBindings(rmc);
   }
-  
+
   protected void finishImportChangeAction() {
     editor.getResourcesPage().getResourceDependencySection().refresh(); // to change Binding flag
   }
-  
+
   public void enable() {
     super.enable();
     addButton.setEnabled(true); // can add buttons even for aggregate
   }
-
 
 }

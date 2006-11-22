@@ -35,147 +35,178 @@ import org.apache.uima.typesystem.ITypeSystemInfo;
 import org.apache.uima.typesystem.StringMatcher;
 import org.apache.uima.typesystem.TypeSystemInfoLabelProvider;
 
+public class TypeSystemCompletionProcessor implements IContentAssistProcessor,
+                ISubjectControlContentAssistProcessor {
 
-public class TypeSystemCompletionProcessor implements IContentAssistProcessor, ISubjectControlContentAssistProcessor {
-	
-	private String fErrorMessage;
-	private char[] fProposalAutoActivationSet;
-	private TypeSystemCompletionProposalComparator fComparator;
-	
-	private ArrayList typeSystemInfoList;
-	
-	/**
-	 * Creates a <code>TypeSystemPositionCompletionProcessor</code>.
-	 * The completion context must be set via {@link #setCompletionContext(ICompilationUnit,String,String)}.
-	 * @param completionRequestor the completion requestor
-	 */
-	public TypeSystemCompletionProcessor(ArrayList typeSystemInfoList) {
-		this.typeSystemInfoList = typeSystemInfoList;
-		
-		fComparator= new TypeSystemCompletionProposalComparator();
-		fProposalAutoActivationSet = ".".toCharArray();
-	}
+  private String fErrorMessage;
 
-	/**
-	 * Computing proposals on a <code>ITextViewer</code> is not supported.
-	 * @see #computeCompletionProposals(IContentAssistSubjectControl, int)
-	 * @see IContentAssistProcessor#computeCompletionProposals(ITextViewer, int)
-	 */
-	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int documentOffset) {
-		return null;
-	}
-	
-	/**
-	 * Computing context information on a <code>ITextViewer</code> is not supported.
-	 * @see #computeContextInformation(IContentAssistSubjectControl, int)
-	 * @see IContentAssistProcessor#computeContextInformation(ITextViewer, int)
-	 */
-	public IContextInformation[] computeContextInformation(ITextViewer viewer, int documentOffset) {
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getCompletionProposalAutoActivationCharacters()
-	 */
-	public char[] getCompletionProposalAutoActivationCharacters() {
-		return fProposalAutoActivationSet;
-	}
+  private char[] fProposalAutoActivationSet;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getContextInformationAutoActivationCharacters()
-	 */
-	public char[] getContextInformationAutoActivationCharacters() {
-		return null;
-	}
+  private TypeSystemCompletionProposalComparator fComparator;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getErrorMessage()
-	 */
-	public String getErrorMessage() {
-//	  throw new InternalErrorCDE("not implemented, not used");
-		return fErrorMessage;
-	}
+  private ArrayList typeSystemInfoList;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getContextInformationValidator()
-	 */
-	public IContextInformationValidator getContextInformationValidator() {
-		return null; //no context
-	}
+  /**
+   * Creates a <code>TypeSystemPositionCompletionProcessor</code>. The completion context must be
+   * set via {@link #setCompletionContext(ICompilationUnit,String,String)}.
+   * 
+   * @param completionRequestor
+   *          the completion requestor
+   */
+  public TypeSystemCompletionProcessor(ArrayList typeSystemInfoList) {
+    this.typeSystemInfoList = typeSystemInfoList;
 
-	/*
-	 * @see ISubjectControlContentAssistProcessor#computeContextInformation(IContentAssistSubjectControl, int)
-	 */
-	public IContextInformation[] computeContextInformation(IContentAssistSubjectControl contentAssistSubjectControl, int documentOffset) {
-		return null;
-	}
+    fComparator = new TypeSystemCompletionProposalComparator();
+    fProposalAutoActivationSet = ".".toCharArray();
+  }
 
-	/*
-	 * @see ISubjectControlContentAssistProcessor#computeCompletionProposals(IContentAssistSubjectControl, int)
-	 */
-	public ICompletionProposal[] computeCompletionProposals(IContentAssistSubjectControl contentAssistSubjectControl, int documentOffset) {
-		String input= contentAssistSubjectControl.getDocument().get();
-		if (documentOffset == 0)
-			return null;
-		ICompletionProposal[] proposals= internalComputeCompletionProposals(documentOffset, input);
-		Arrays.sort(proposals, fComparator);
-		return proposals;
-	}
+  /**
+   * Computing proposals on a <code>ITextViewer</code> is not supported.
+   * 
+   * @see #computeCompletionProposals(IContentAssistSubjectControl, int)
+   * @see IContentAssistProcessor#computeCompletionProposals(ITextViewer, int)
+   */
+  public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int documentOffset) {
+    return null;
+  }
 
-	private ICompletionProposal[] internalComputeCompletionProposals(int documentOffset, String input) {
-		try {		
-			ICompletionProposal[] proposals= searchForProposals(documentOffset,input);
-			return proposals;
-		} catch (Exception e) {			
-			return null;
-		}
-	}
-	
-	private ICompletionProposal[] searchForProposals(int documentOffset, String input) {
-			 	
-		ICompletionProposal[] proposals = null;
-		ArrayList packageMatchProposalsList = new ArrayList();
-		ArrayList fullNameMatchProposalsList = new ArrayList();
-		ArrayList classMatchProposalsList = new ArrayList();
-		String realInput = null;
-		int replacementLength = input.length();
-		if (/*input!= null && */documentOffset > 0)
-			realInput = input.substring(0,documentOffset);
-		
-		if (realInput != null && realInput.length() > 0) {
-			StringMatcher fMatcher = new StringMatcher(realInput.trim() + '*', true, false);
-			Iterator itr = typeSystemInfoList.iterator();
-			while (itr.hasNext()) {
-				ITypeSystemInfo tsi = (ITypeSystemInfo)itr.next();
-				if (fMatcher.match(tsi.getPackageName())) {
-					String replacementString = tsi.getPackageName();	
-					String displayString = tsi.getPackageName();	
-					packageMatchProposalsList.add(new CompletionProposal(replacementString,0,replacementLength,replacementString.length(),TypeSystemInfoLabelProvider.PKG_ICON,displayString,null,null));
-				}
-				if (fMatcher.match(tsi.getFullName())) {
-					String replacementString = tsi.getFullName(); 
-					String displayString = tsi.getName() + " - " + tsi.getPackageName();
-					fullNameMatchProposalsList.add(new CompletionProposal(replacementString,0,replacementLength,replacementString.length(),TypeSystemInfoLabelProvider.CLASS_ICON,displayString,null,null));
-				}
-				if (fMatcher.match(tsi.getName())) {
-					String replacementString = tsi.getFullName();
-					String displayString = tsi.getName() + " - " + tsi.getPackageName();					
-					classMatchProposalsList.add(new CompletionProposal(replacementString,0,replacementLength,replacementString.length(),TypeSystemInfoLabelProvider.CLASS_ICON,displayString,null,null));
-				}				
-			}
-			ICompletionProposal[] packageMatchProposals = (CompletionProposal[])packageMatchProposalsList.toArray(new CompletionProposal[packageMatchProposalsList.size()]);
-			ICompletionProposal[] fullNameMatchProposals = (CompletionProposal[])fullNameMatchProposalsList.toArray(new CompletionProposal[fullNameMatchProposalsList.size()]);
-			ICompletionProposal[] classMatchProposals = (CompletionProposal[])classMatchProposalsList.toArray(new CompletionProposal[classMatchProposalsList.size()]);
-			
-			Arrays.sort(packageMatchProposals, fComparator);
-			Arrays.sort(fullNameMatchProposals, fComparator);
-			Arrays.sort(classMatchProposals, fComparator);
-			
-			proposals = new ICompletionProposal[packageMatchProposals.length+fullNameMatchProposals.length+classMatchProposals.length];
-			for (int i = 0; i < packageMatchProposals.length; i++) proposals[i] = packageMatchProposals[i]; 
-			for (int i = 0; i < fullNameMatchProposals.length; i++) proposals[i+packageMatchProposals.length] = fullNameMatchProposals[i];
-			for (int i = 0; i < classMatchProposals.length; i++) proposals[i+packageMatchProposals.length+fullNameMatchProposals.length] = classMatchProposals[i];
-		}
-		return proposals;
-	}	
+  /**
+   * Computing context information on a <code>ITextViewer</code> is not supported.
+   * 
+   * @see #computeContextInformation(IContentAssistSubjectControl, int)
+   * @see IContentAssistProcessor#computeContextInformation(ITextViewer, int)
+   */
+  public IContextInformation[] computeContextInformation(ITextViewer viewer, int documentOffset) {
+    return null;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getCompletionProposalAutoActivationCharacters()
+   */
+  public char[] getCompletionProposalAutoActivationCharacters() {
+    return fProposalAutoActivationSet;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getContextInformationAutoActivationCharacters()
+   */
+  public char[] getContextInformationAutoActivationCharacters() {
+    return null;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getErrorMessage()
+   */
+  public String getErrorMessage() {
+    // throw new InternalErrorCDE("not implemented, not used");
+    return fErrorMessage;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getContextInformationValidator()
+   */
+  public IContextInformationValidator getContextInformationValidator() {
+    return null; // no context
+  }
+
+  /*
+   * @see ISubjectControlContentAssistProcessor#computeContextInformation(IContentAssistSubjectControl,
+   *      int)
+   */
+  public IContextInformation[] computeContextInformation(
+                  IContentAssistSubjectControl contentAssistSubjectControl, int documentOffset) {
+    return null;
+  }
+
+  /*
+   * @see ISubjectControlContentAssistProcessor#computeCompletionProposals(IContentAssistSubjectControl,
+   *      int)
+   */
+  public ICompletionProposal[] computeCompletionProposals(
+                  IContentAssistSubjectControl contentAssistSubjectControl, int documentOffset) {
+    String input = contentAssistSubjectControl.getDocument().get();
+    if (documentOffset == 0)
+      return null;
+    ICompletionProposal[] proposals = internalComputeCompletionProposals(documentOffset, input);
+    Arrays.sort(proposals, fComparator);
+    return proposals;
+  }
+
+  private ICompletionProposal[] internalComputeCompletionProposals(int documentOffset, String input) {
+    try {
+      ICompletionProposal[] proposals = searchForProposals(documentOffset, input);
+      return proposals;
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  private ICompletionProposal[] searchForProposals(int documentOffset, String input) {
+
+    ICompletionProposal[] proposals = null;
+    ArrayList packageMatchProposalsList = new ArrayList();
+    ArrayList fullNameMatchProposalsList = new ArrayList();
+    ArrayList classMatchProposalsList = new ArrayList();
+    String realInput = null;
+    int replacementLength = input.length();
+    if (/* input!= null && */documentOffset > 0)
+      realInput = input.substring(0, documentOffset);
+
+    if (realInput != null && realInput.length() > 0) {
+      StringMatcher fMatcher = new StringMatcher(realInput.trim() + '*', true, false);
+      Iterator itr = typeSystemInfoList.iterator();
+      while (itr.hasNext()) {
+        ITypeSystemInfo tsi = (ITypeSystemInfo) itr.next();
+        if (fMatcher.match(tsi.getPackageName())) {
+          String replacementString = tsi.getPackageName();
+          String displayString = tsi.getPackageName();
+          packageMatchProposalsList.add(new CompletionProposal(replacementString, 0,
+                          replacementLength, replacementString.length(),
+                          TypeSystemInfoLabelProvider.PKG_ICON, displayString, null, null));
+        }
+        if (fMatcher.match(tsi.getFullName())) {
+          String replacementString = tsi.getFullName();
+          String displayString = tsi.getName() + " - " + tsi.getPackageName();
+          fullNameMatchProposalsList.add(new CompletionProposal(replacementString, 0,
+                          replacementLength, replacementString.length(),
+                          TypeSystemInfoLabelProvider.CLASS_ICON, displayString, null, null));
+        }
+        if (fMatcher.match(tsi.getName())) {
+          String replacementString = tsi.getFullName();
+          String displayString = tsi.getName() + " - " + tsi.getPackageName();
+          classMatchProposalsList.add(new CompletionProposal(replacementString, 0,
+                          replacementLength, replacementString.length(),
+                          TypeSystemInfoLabelProvider.CLASS_ICON, displayString, null, null));
+        }
+      }
+      ICompletionProposal[] packageMatchProposals = (CompletionProposal[]) packageMatchProposalsList
+                      .toArray(new CompletionProposal[packageMatchProposalsList.size()]);
+      ICompletionProposal[] fullNameMatchProposals = (CompletionProposal[]) fullNameMatchProposalsList
+                      .toArray(new CompletionProposal[fullNameMatchProposalsList.size()]);
+      ICompletionProposal[] classMatchProposals = (CompletionProposal[]) classMatchProposalsList
+                      .toArray(new CompletionProposal[classMatchProposalsList.size()]);
+
+      Arrays.sort(packageMatchProposals, fComparator);
+      Arrays.sort(fullNameMatchProposals, fComparator);
+      Arrays.sort(classMatchProposals, fComparator);
+
+      proposals = new ICompletionProposal[packageMatchProposals.length
+                      + fullNameMatchProposals.length + classMatchProposals.length];
+      for (int i = 0; i < packageMatchProposals.length; i++)
+        proposals[i] = packageMatchProposals[i];
+      for (int i = 0; i < fullNameMatchProposals.length; i++)
+        proposals[i + packageMatchProposals.length] = fullNameMatchProposals[i];
+      for (int i = 0; i < classMatchProposals.length; i++)
+        proposals[i + packageMatchProposals.length + fullNameMatchProposals.length] = classMatchProposals[i];
+    }
+    return proposals;
+  }
 }

@@ -26,87 +26,101 @@ import org.eclipse.jdt.ui.ISharedImages;
 import org.eclipse.jdt.ui.JavaUI;
 
 public class TypeSystemInfoLabelProvider extends LabelProvider {
-	
-	public static final int SHOW_FULLYQUALIFIED=	0x01;
-	public static final int SHOW_PACKAGE_POSTFIX=	0x02;
-	public static final int SHOW_PACKAGE_ONLY=		0x04;
-	public static final int SHOW_ROOT_POSTFIX=		0x08;
-	public static final int SHOW_TYPE_ONLY=			0x10;
-	public static final int SHOW_TYPE_CONTAINER_ONLY=	0x20;
-	
-	public static final Image CLASS_ICON= JavaUI.getSharedImages().getImage(ISharedImages.IMG_OBJS_CLASS);
-	public static final Image INTERFACE_ICON= JavaUI.getSharedImages().getImage(ISharedImages.IMG_OBJS_INTERFACE);
-	public static final Image PKG_ICON= JavaUI.getSharedImages().getImage(ISharedImages.IMG_OBJS_PACKAGE);
-	
-	private int fFlags;
-	
-	public TypeSystemInfoLabelProvider(int flags) {
-		fFlags= flags;
-	}	
-	
-	private boolean isSet(int flag) {
-		return (fFlags & flag) != 0;
-	}
 
-	private String getPackageName(String packName) {
-			return packName;
-	}
+  public static final int SHOW_FULLYQUALIFIED = 0x01;
 
-	/* non java-doc
-	 * @see ILabelProvider#getText
-	 */
-	public String getText(Object element) {
-		if (! (element instanceof ITypeSystemInfo)) 
-			return super.getText(element);
-		
-		ITypeSystemInfo typeRef= (ITypeSystemInfo) element;
-		StringBuffer buf= new StringBuffer();
-		if (isSet(SHOW_TYPE_ONLY)) {
-			buf.append(typeRef.getName());
-		} else if (isSet(SHOW_TYPE_CONTAINER_ONLY)) {
-			String containerName= typeRef.getPackageName();
-			buf.append(getPackageName(containerName));
-		} else if (isSet(SHOW_PACKAGE_ONLY)) {
-			String packName= typeRef.getPackageName();
-			buf.append(getPackageName(packName));
-		} else {
-			if (isSet(SHOW_FULLYQUALIFIED))
-				buf.append(typeRef.getFullName());
-			else
-				buf.append(typeRef.getFullName());
+  public static final int SHOW_PACKAGE_POSTFIX = 0x02;
 
-			if (isSet(SHOW_PACKAGE_POSTFIX)) {
-				buf.append(" - ");
-				String packName= typeRef.getPackageName();
-				buf.append(getPackageName(packName));
-			}
-		}
-		if (isSet(SHOW_ROOT_POSTFIX)) {
-			//buf.append(" - ");
-			//buf.append(typeRef.getPath());
-		}
-		return buf.toString();				
-	}
-	
-	/* non java-doc
-	 * @see ILabelProvider#getImage
-	 */	
-	public Image getImage(Object element) {
-		if (! (element instanceof ITypeSystemInfo)) 
-			return super.getImage(element);	
+  public static final int SHOW_PACKAGE_ONLY = 0x04;
 
-		if (isSet(SHOW_TYPE_CONTAINER_ONLY)) {
-			ITypeSystemInfo typeRef= (ITypeSystemInfo) element;
-			if (typeRef.getPackageName().equals(typeRef.getPackageName()))
-				return PKG_ICON;
+  public static final int SHOW_ROOT_POSTFIX = 0x08;
 
-			// XXX cannot check outer type for interface efficiently (5887)
-			return CLASS_ICON;
+  public static final int SHOW_TYPE_ONLY = 0x10;
 
-		} else if (isSet(SHOW_PACKAGE_ONLY)) {
-			return PKG_ICON;
-		} else {
-			return CLASS_ICON;
-		}
-	}	
+  public static final int SHOW_TYPE_CONTAINER_ONLY = 0x20;
+
+  public static final Image CLASS_ICON = JavaUI.getSharedImages().getImage(
+                  ISharedImages.IMG_OBJS_CLASS);
+
+  public static final Image INTERFACE_ICON = JavaUI.getSharedImages().getImage(
+                  ISharedImages.IMG_OBJS_INTERFACE);
+
+  public static final Image PKG_ICON = JavaUI.getSharedImages().getImage(
+                  ISharedImages.IMG_OBJS_PACKAGE);
+
+  private int fFlags;
+
+  public TypeSystemInfoLabelProvider(int flags) {
+    fFlags = flags;
+  }
+
+  private boolean isSet(int flag) {
+    return (fFlags & flag) != 0;
+  }
+
+  private String getPackageName(String packName) {
+    return packName;
+  }
+
+  /*
+   * non java-doc
+   * 
+   * @see ILabelProvider#getText
+   */
+  public String getText(Object element) {
+    if (!(element instanceof ITypeSystemInfo))
+      return super.getText(element);
+
+    ITypeSystemInfo typeRef = (ITypeSystemInfo) element;
+    StringBuffer buf = new StringBuffer();
+    if (isSet(SHOW_TYPE_ONLY)) {
+      buf.append(typeRef.getName());
+    } else if (isSet(SHOW_TYPE_CONTAINER_ONLY)) {
+      String containerName = typeRef.getPackageName();
+      buf.append(getPackageName(containerName));
+    } else if (isSet(SHOW_PACKAGE_ONLY)) {
+      String packName = typeRef.getPackageName();
+      buf.append(getPackageName(packName));
+    } else {
+      if (isSet(SHOW_FULLYQUALIFIED))
+        buf.append(typeRef.getFullName());
+      else
+        buf.append(typeRef.getFullName());
+
+      if (isSet(SHOW_PACKAGE_POSTFIX)) {
+        buf.append(" - ");
+        String packName = typeRef.getPackageName();
+        buf.append(getPackageName(packName));
+      }
+    }
+    if (isSet(SHOW_ROOT_POSTFIX)) {
+      // buf.append(" - ");
+      // buf.append(typeRef.getPath());
+    }
+    return buf.toString();
+  }
+
+  /*
+   * non java-doc
+   * 
+   * @see ILabelProvider#getImage
+   */
+  public Image getImage(Object element) {
+    if (!(element instanceof ITypeSystemInfo))
+      return super.getImage(element);
+
+    if (isSet(SHOW_TYPE_CONTAINER_ONLY)) {
+      ITypeSystemInfo typeRef = (ITypeSystemInfo) element;
+      if (typeRef.getPackageName().equals(typeRef.getPackageName()))
+        return PKG_ICON;
+
+      // XXX cannot check outer type for interface efficiently (5887)
+      return CLASS_ICON;
+
+    } else if (isSet(SHOW_PACKAGE_ONLY)) {
+      return PKG_ICON;
+    } else {
+      return CLASS_ICON;
+    }
+  }
 }

@@ -26,16 +26,16 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class Form2Panel {
 
-	public Composite form;
+  public Composite form;
 
-	public Composite left;
+  public Composite left;
 
-	public Composite right;
+  public Composite right;
 
-	public Form2Panel(Composite form, Composite left, Composite right) {
-		this.form = form;
-		this.left = left;
-		this.right = right;
-	}
+  public Form2Panel(Composite form, Composite left, Composite right) {
+    this.form = form;
+    this.left = left;
+    this.right = right;
+  }
 
 }

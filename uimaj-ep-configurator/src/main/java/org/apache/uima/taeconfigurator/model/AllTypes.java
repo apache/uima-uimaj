@@ -30,12 +30,11 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
 /**
- * Model part: Map of all defined types
- * Key = string = typename, fully qualified
- * Value = CAS TypeSystem Type object
+ * Model part: Map of all defined types Key = string = typename, fully qualified Value = CAS
+ * TypeSystem Type object
  */
 public class AllTypes extends AbstractModelPart {
-    
+
   private Map cachedResult;
 
   public AllTypes(MultiPageEditor pModelRoot) {
@@ -44,8 +43,8 @@ public class AllTypes extends AbstractModelPart {
   }
 
   /**
-   * @return a map of Types, keyed by type name, including not only types
-   * defined in this TAE, but also supertypes of said types.
+   * @return a map of Types, keyed by type name, including not only types defined in this TAE, but
+   *         also supertypes of said types.
    * @throws ResourceInitializationException
    */
   public Map get() {
@@ -61,13 +60,13 @@ public class AllTypes extends AbstractModelPart {
     cachedResult.clear();
 
     TCAS tcas = modelRoot.getTCAS();
-    if (null == tcas) 
+    if (null == tcas)
       return;
     TypeSystem typeSystem = tcas.getTypeSystem();
 
     if (typeSystem == null)
       return;
-    
+
     Iterator typeIterator = typeSystem.getTypeIterator();
 
     while (typeIterator.hasNext()) {

@@ -24,19 +24,19 @@ import org.eclipse.core.runtime.IPath;
 
 public class FileAndShortName {
   public String fileName;
+
   public String shortName;
-  
+
   public FileAndShortName(Object o) {
 
-		if (o instanceof IFile) {
-			IFile file = (IFile) o;
-			fileName = file.getLocation().toString();
-			shortName = file.getName();
-		}
-		else {
-			IPath path = (IPath) o;
-			fileName = path.toString();
-			shortName = path.toFile().getName();
-		}
+    if (o instanceof IFile) {
+      IFile file = (IFile) o;
+      fileName = file.getLocation().toString();
+      shortName = file.getName();
+    } else {
+      IPath path = (IPath) o;
+      fileName = path.toString();
+      shortName = path.toFile().getName();
+    }
   }
 }

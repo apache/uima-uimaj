@@ -26,30 +26,29 @@ import org.eclipse.ui.forms.IManagedForm;
 
 public class CapabilityPage extends HeaderPageWithSash {
 
-	private SofaMapSection sofaMapSection;
-	
-	public CapabilityPage(MultiPageEditor aEditor) {
-		super(aEditor, "Capabilities");	
-	}
-	
-	/**
-	 * Called by the framework to fill in the contents
-	 */
-	protected void createFormContent(IManagedForm managedForm) {
-		final Form2Panel form2Panel = setup2ColumnLayout(managedForm, 
-				editor.isAggregate() ? 50 : 90,
-		    editor.isAggregate() ? 50 : 10);
-		managedForm.getForm().setText("Capabilities: Inputs and Outputs");	
-		managedForm.addPart(/*inputSection =*/ new CapabilitySection(editor, form2Panel.left));	
-    managedForm.addPart(sofaMapSection = new SofaMapSection(editor, form2Panel.right));
-		createToolBarActions(managedForm);
-		sashForm.setOrientation(SWT.VERTICAL);
-		vaction.setChecked(true);
-		haction.setChecked(false);
-		managedForm.getForm().reflow(true);
-	}
+  private SofaMapSection sofaMapSection;
 
-	public SofaMapSection getSofaMapSection() {
-		return sofaMapSection;
-	}
+  public CapabilityPage(MultiPageEditor aEditor) {
+    super(aEditor, "Capabilities");
+  }
+
+  /**
+   * Called by the framework to fill in the contents
+   */
+  protected void createFormContent(IManagedForm managedForm) {
+    final Form2Panel form2Panel = setup2ColumnLayout(managedForm, editor.isAggregate() ? 50 : 90,
+                    editor.isAggregate() ? 50 : 10);
+    managedForm.getForm().setText("Capabilities: Inputs and Outputs");
+    managedForm.addPart(/* inputSection = */new CapabilitySection(editor, form2Panel.left));
+    managedForm.addPart(sofaMapSection = new SofaMapSection(editor, form2Panel.right));
+    createToolBarActions(managedForm);
+    sashForm.setOrientation(SWT.VERTICAL);
+    vaction.setChecked(true);
+    haction.setChecked(false);
+    managedForm.getForm().reflow(true);
+  }
+
+  public SofaMapSection getSofaMapSection() {
+    return sofaMapSection;
+  }
 }

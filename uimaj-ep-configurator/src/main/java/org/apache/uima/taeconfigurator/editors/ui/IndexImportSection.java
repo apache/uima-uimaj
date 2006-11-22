@@ -35,61 +35,62 @@ import org.eclipse.swt.widgets.Composite;
 /**
  */
 public class IndexImportSection extends ImportSection {
- 
-	public IndexImportSection(MultiPageEditor editor, Composite parent) {
-		super(editor, parent, "Index Imports", "The following index definitions are included as part of this one." );  // or ! DESCRIPTION
-	}
 
-	//**************************************
-	//* Code to support type import section
-	//**************************************
-	protected boolean isAppropriate(){
-	  return true;  // always show
-	}
-	
-	/**
-	 * used when hovering
-	 */
-	protected String getDescriptionFromImport(String source) throws InvalidXMLException, IOException {
-	  FsIndexCollection parsedImportItem = 
-	    UIMAFramework.getXMLParser().parseFsIndexCollection(
-        new XMLInputSource(source));
+  public IndexImportSection(MultiPageEditor editor, Composite parent) {
+    super(editor, parent, "Index Imports",
+                    "The following index definitions are included as part of this one."); // or !
+                                                                                          // DESCRIPTION
+  }
+
+  // **************************************
+  // * Code to support type import section
+  // **************************************
+  protected boolean isAppropriate() {
+    return true; // always show
+  }
+
+  /**
+   * used when hovering
+   */
+  protected String getDescriptionFromImport(String source) throws InvalidXMLException, IOException {
+    FsIndexCollection parsedImportItem = UIMAFramework.getXMLParser().parseFsIndexCollection(
+                    new XMLInputSource(source));
     return parsedImportItem.getDescription();
   }
 
-  protected Import [] getModelImportArray () {
+  protected Import[] getModelImportArray() {
     return getFsIndexCollection().getImports();
   }
-  
-  protected void setModelImportArray(Import [] imports) {
-  	if (imports == null)
-  		throw new InternalErrorCDE("invalid state");
+
+  protected void setModelImportArray(Import[] imports) {
+    if (imports == null)
+      throw new InternalErrorCDE("invalid state");
     getFsIndexCollection().setImports(imports);
   }
-  
+
   protected void clearModelBaseValue() {
     getAnalysisEngineMetaData().setFsIndexes(fsIndexDescription0);
   }
 
   // indexes are checked and merged when the TCAS is built
   protected boolean isValidImport(String title, String message) {
-  	
+
     FsIndexCollection savedIC = editor.getMergedFsIndexCollection();
     if (null != savedIC)
-    	savedIC = (FsIndexCollection)savedIC.clone();
+      savedIC = (FsIndexCollection) savedIC.clone();
     TCAS savedTCAS = editor.getTCAS();
     try {
       editor.setMergedFsIndexCollection();
-    	editor.descriptorTCAS.validate();
+      editor.descriptorTCAS.validate();
     } catch (ResourceInitializationException e) {
       revertMsg(title, message, editor.getMessagesToRootCause(e));
       editor.setMergedFsIndexCollection(savedIC);
-     	editor.descriptorTCAS.set(savedTCAS);
+      editor.descriptorTCAS.set(savedTCAS);
       return false;
     }
     return true;
   }
-  
+
   protected void finishImportChangeAction() {
   }
 

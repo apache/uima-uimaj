@@ -46,42 +46,43 @@ import org.apache.uima.util.CasCreationUtils;
 public class BuiltInTypes extends AbstractModelPart {
 
   public static final TypeSystem typeSystem;
+
   public static final Map typeDescriptions = new TreeMap();
 
-  static {  
+  static {
     TCAS tcas = null;
     try {
-        tcas = CasCreationUtils.createTCas(
-            (TypeSystemDescription)null, null, new FsIndexDescription[0], casCreateProperties);
-        
+      tcas = CasCreationUtils.createTCas((TypeSystemDescription) null, null,
+                      new FsIndexDescription[0], casCreateProperties);
+
     } catch (ResourceInitializationException e1) {
-        throw new InternalErrorCDE("invalid ResourceInitializationException", e1);
+      throw new InternalErrorCDE("invalid ResourceInitializationException", e1);
     }
-    ((CASImpl)tcas).commitTypeSystem();
+    ((CASImpl) tcas).commitTypeSystem();
     typeSystem = tcas.getTypeSystem();
 
     for (Iterator it = typeSystem.getTypeIterator(); it.hasNext();) {
-      Type type = (Type)it.next();
+      Type type = (Type) it.next();
       String typeName = type.getName();
       TypeDescription td = new TypeDescription_impl();
       td.setName(typeName);
       Type parent = typeSystem.getParent(type);
       td.setSupertypeName(null == parent ? null : parent.getName());
       List fs = type.getFeatures();
-      FeatureDescription [] fds = null;
+      FeatureDescription[] fds = null;
       if (null != fs) {
         List validFs = new ArrayList();
         for (int i = 0; i < fs.size(); i++) {
-          Feature f = (Feature)fs.get(i);
+          Feature f = (Feature) fs.get(i);
           String fName = f.getName();
           String fTypeName = fName.substring(0, fName.indexOf(':'));
           if (typeName.equals(fTypeName))
             validFs.add(f);
         }
-        fds = new FeatureDescription [validFs.size()];
+        fds = new FeatureDescription[validFs.size()];
         for (int i = 0; i < fds.length; i++) {
           fds[i] = new FeatureDescription_impl();
-          Feature f = (Feature)validFs.get(i);
+          Feature f = (Feature) validFs.get(i);
           fds[i].setName(f.getShortName());
           fds[i].setRangeTypeName(f.getRange().getName());
         }

@@ -24,50 +24,52 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.templates.TemplateProposal;
 
 public class TypeSystemCompletionProposalComparator implements Comparator {
-	
-	private static TypeSystemCompletionProposalComparator fgInstance= new TypeSystemCompletionProposalComparator();
 
-	public static TypeSystemCompletionProposalComparator getInstance() {
-		return fgInstance;
-	}
-	
-	private boolean fOrderAlphabetically;
+  private static TypeSystemCompletionProposalComparator fgInstance = new TypeSystemCompletionProposalComparator();
 
-	/**
-	 * Constructor for CompletionProposalComparator.
-	 */
-	public TypeSystemCompletionProposalComparator() {
-		fOrderAlphabetically= false;
-	}
-	
-	public void setOrderAlphabetically(boolean orderAlphabetically) {
-		fOrderAlphabetically= orderAlphabetically;
-	}
-	
-	/* (non-Javadoc)
-	 * @see Comparator#compare(Object, Object)
-	 */
-	public int compare(Object o1, Object o2) {
-		ICompletionProposal p1= (ICompletionProposal) o1;
-		ICompletionProposal p2= (ICompletionProposal) o2;
+  public static TypeSystemCompletionProposalComparator getInstance() {
+    return fgInstance;
+  }
 
-		if (!fOrderAlphabetically) {
-			int r1= getRelevance(p1);
-			int r2= getRelevance(p2);
-			int relevanceDif= r2 - r1;
-			if (relevanceDif != 0) {
-				return relevanceDif;
-			}
-		}
-		return p1.getDisplayString().compareToIgnoreCase(p2.getDisplayString());
-	}
+  private boolean fOrderAlphabetically;
 
-	private int getRelevance(ICompletionProposal obj) {
-		if (obj instanceof TemplateProposal) {
-			TemplateProposal tp= (TemplateProposal) obj;
-			return tp.getRelevance();
-		}
-		return 0;
-	}	
-	
+  /**
+   * Constructor for CompletionProposalComparator.
+   */
+  public TypeSystemCompletionProposalComparator() {
+    fOrderAlphabetically = false;
+  }
+
+  public void setOrderAlphabetically(boolean orderAlphabetically) {
+    fOrderAlphabetically = orderAlphabetically;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see Comparator#compare(Object, Object)
+   */
+  public int compare(Object o1, Object o2) {
+    ICompletionProposal p1 = (ICompletionProposal) o1;
+    ICompletionProposal p2 = (ICompletionProposal) o2;
+
+    if (!fOrderAlphabetically) {
+      int r1 = getRelevance(p1);
+      int r2 = getRelevance(p2);
+      int relevanceDif = r2 - r1;
+      if (relevanceDif != 0) {
+        return relevanceDif;
+      }
+    }
+    return p1.getDisplayString().compareToIgnoreCase(p2.getDisplayString());
+  }
+
+  private int getRelevance(ICompletionProposal obj) {
+    if (obj instanceof TemplateProposal) {
+      TemplateProposal tp = (TemplateProposal) obj;
+      return tp.getRelevance();
+    }
+    return 0;
+  }
+
 }

@@ -33,47 +33,47 @@ import org.apache.uima.taeconfigurator.Messages;
 import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
-public class MultiResourceSelectionDialogWithFlowOption
-	extends MultiResourceSelectionDialog {
+public class MultiResourceSelectionDialogWithFlowOption extends MultiResourceSelectionDialog {
 
-	private Button autoAddToFlowButton;
-	private boolean m_bAutoAddToFlow = true;
-	
-	/**
-	 * @param parentShell
-	 * @param rootElement
-	 * @param message
-	 * @param excludeDescriptor
-	 */
-	public MultiResourceSelectionDialogWithFlowOption(
-			Shell parentShell, IAdaptable rootElement, String message, IPath excludeDescriptor, MultiPageEditor editor) {
-		super(parentShell, rootElement, message, excludeDescriptor, editor);
-	}
-	
-	protected Control createDialogArea(Composite parent) {
-		Composite composite = (Composite) super.createDialogArea(parent);
-		
-		new Label(composite, SWT.WRAP).setText(""); //$NON-NLS-1$
-		
-		String sAddToFlowPrompt = Messages.getString("MultiResourceSelectionDialogWithFlowOption.addSelectedAEsToEndOfFlow"); //$NON-NLS-1$
-		FormToolkit factory = new FormToolkit(TAEConfiguratorPlugin.getDefault().getFormColors(parent.getDisplay()));
-		
-		autoAddToFlowButton = factory.createButton(composite, sAddToFlowPrompt, SWT.CHECK);
-		autoAddToFlowButton.setSelection(m_bAutoAddToFlow);
-		autoAddToFlowButton.setBackground(null);
-    
+  private Button autoAddToFlowButton;
 
-		return composite;
-	}
-	
-	protected void okPressed() {
-		m_bAutoAddToFlow = autoAddToFlowButton.getSelection();
-		super.okPressed();
-	}
-	
-	public boolean getAutoAddToFlow() {
-		return m_bAutoAddToFlow;
-	}
+  private boolean m_bAutoAddToFlow = true;
+
+  /**
+   * @param parentShell
+   * @param rootElement
+   * @param message
+   * @param excludeDescriptor
+   */
+  public MultiResourceSelectionDialogWithFlowOption(Shell parentShell, IAdaptable rootElement,
+                  String message, IPath excludeDescriptor, MultiPageEditor editor) {
+    super(parentShell, rootElement, message, excludeDescriptor, editor);
+  }
+
+  protected Control createDialogArea(Composite parent) {
+    Composite composite = (Composite) super.createDialogArea(parent);
+
+    new Label(composite, SWT.WRAP).setText(""); //$NON-NLS-1$
+
+    String sAddToFlowPrompt = Messages
+                    .getString("MultiResourceSelectionDialogWithFlowOption.addSelectedAEsToEndOfFlow"); //$NON-NLS-1$
+    FormToolkit factory = new FormToolkit(TAEConfiguratorPlugin.getDefault().getFormColors(
+                    parent.getDisplay()));
+
+    autoAddToFlowButton = factory.createButton(composite, sAddToFlowPrompt, SWT.CHECK);
+    autoAddToFlowButton.setSelection(m_bAutoAddToFlow);
+    autoAddToFlowButton.setBackground(null);
+
+    return composite;
+  }
+
+  protected void okPressed() {
+    m_bAutoAddToFlow = autoAddToFlowButton.getSelection();
+    super.okPressed();
+  }
+
+  public boolean getAutoAddToFlow() {
+    return m_bAutoAddToFlow;
+  }
 
 }
-

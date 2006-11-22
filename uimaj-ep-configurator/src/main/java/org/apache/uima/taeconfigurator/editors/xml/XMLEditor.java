@@ -48,162 +48,156 @@ import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
 public class XMLEditor extends TextEditor {
 
-	MultiPageEditor editor;
-	private ColorManager colorManager;  
-	private EditorsTextListener m_textListener = 
-		new EditorsTextListener();
-	//next set to true when we are setting the text of the
-	//editor so that just switching to source page doesn't
-	//cause editor to think source file is dirty
-	boolean m_bIgnoreTextEvent = false;
-	
-	public class EditorsTextListener implements ITextListener {
+  MultiPageEditor editor;
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.text.ITextListener#textChanged(org.eclipse.jface.text.TextEvent)
-		 */
-		public void textChanged(TextEvent event) {
-			if(!m_bIgnoreTextEvent) {
-			  editor.sourceChanged = true;
-				editor.setFileDirty();
-			}
-		}
-	}
+  private ColorManager colorManager;
 
-	public XMLEditor(MultiPageEditor editor) {
-		super();
-		colorManager = new ColorManager();
-		setSourceViewerConfiguration(new XMLConfiguration(colorManager));
-		setDocumentProvider(new XMLDocumentProvider());
-		this.editor = editor;
-	}
-	
-	public void createPartControl(Composite parent) {
-		super.createPartControl(parent);
-		getSourceViewer().addTextListener(m_textListener);
-	}
-	public void dispose() {
-		colorManager.dispose(); 
-		super.dispose();
-	}
-	
-	public void doSaveAs() {
-		IProgressMonitor progressMonitor = getProgressMonitor();
-		Shell shell = getSite().getShell();
-		IEditorInput input = getEditorInput();
+  private EditorsTextListener m_textListener = new EditorsTextListener();
 
-		SaveAsDialog dialog = new SaveAsDialog(shell);
+  // next set to true when we are setting the text of the
+  // editor so that just switching to source page doesn't
+  // cause editor to think source file is dirty
+  boolean m_bIgnoreTextEvent = false;
 
-		IFile original =
-			(input instanceof IFileEditorInput)
-				? ((IFileEditorInput) input).getFile()
-				: null;
-		if (original != null)
-			dialog.setOriginalFile(original);
+  public class EditorsTextListener implements ITextListener {
 
-		dialog.create();
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.text.ITextListener#textChanged(org.eclipse.jface.text.TextEvent)
+     */
+    public void textChanged(TextEvent event) {
+      if (!m_bIgnoreTextEvent) {
+        editor.sourceChanged = true;
+        editor.setFileDirty();
+      }
+    }
+  }
 
-		IDocumentProvider provider = getDocumentProvider();
-		if (provider == null) {
-			// editor has programatically been  closed while the dialog was open
-			return;
-		}
+  public XMLEditor(MultiPageEditor editor) {
+    super();
+    colorManager = new ColorManager();
+    setSourceViewerConfiguration(new XMLConfiguration(colorManager));
+    setDocumentProvider(new XMLDocumentProvider());
+    this.editor = editor;
+  }
 
-		if (provider.isDeleted(input) && original != null) {
-			String message = "The original file, '" + original.getName() +  "' has been deleted"; 
-			dialog.setErrorMessage(null);
-			dialog.setMessage(message, IMessageProvider.WARNING);
-		}
+  public void createPartControl(Composite parent) {
+    super.createPartControl(parent);
+    getSourceViewer().addTextListener(m_textListener);
+  }
 
-		if (dialog.open() == Dialog.CANCEL) {
-			if (progressMonitor != null)
-				progressMonitor.setCanceled(true);
-			editor.setSaveAsStatus(
-				MultiPageEditor.SAVE_AS_CANCELLED);
-			return;
-		}
+  public void dispose() {
+    colorManager.dispose();
+    super.dispose();
+  }
 
-		IPath filePath = dialog.getResult();
-		if (filePath == null) {
-			if (progressMonitor != null)
-				progressMonitor.setCanceled(true);
-			editor.setSaveAsStatus(
-				MultiPageEditor.SAVE_AS_CANCELLED);
-			return;
-		}
+  public void doSaveAs() {
+    IProgressMonitor progressMonitor = getProgressMonitor();
+    Shell shell = getSite().getShell();
+    IEditorInput input = getEditorInput();
 
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IFile file = workspace.getRoot().getFile(filePath);
-		final IEditorInput newInput = new FileEditorInput(file);
+    SaveAsDialog dialog = new SaveAsDialog(shell);
 
-		WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
-			public void execute(final IProgressMonitor monitor)
-				throws CoreException {
-				getDocumentProvider().saveDocument(
-					monitor,
-					newInput,
-					getDocumentProvider().getDocument(getEditorInput()),
-					true);
-			}
-		};
+    IFile original = (input instanceof IFileEditorInput) ? ((IFileEditorInput) input).getFile()
+                    : null;
+    if (original != null)
+      dialog.setOriginalFile(original);
 
-		boolean success = false;
-		try {
+    dialog.create();
 
-			provider.aboutToChange(newInput);
-			new ProgressMonitorDialog(shell).run(false, true, op);
-			success = true;
+    IDocumentProvider provider = getDocumentProvider();
+    if (provider == null) {
+      // editor has programatically been closed while the dialog was open
+      return;
+    }
 
-		}
-		catch (InterruptedException x) {
-		}
-		catch (InvocationTargetException x) {
+    if (provider.isDeleted(input) && original != null) {
+      String message = "The original file, '" + original.getName() + "' has been deleted";
+      dialog.setErrorMessage(null);
+      dialog.setMessage(message, IMessageProvider.WARNING);
+    }
 
-			Throwable targetException = x.getTargetException();
+    if (dialog.open() == Dialog.CANCEL) {
+      if (progressMonitor != null)
+        progressMonitor.setCanceled(true);
+      editor.setSaveAsStatus(MultiPageEditor.SAVE_AS_CANCELLED);
+      return;
+    }
 
-			String title = "Error saving"; //TextEditorMessages.getString("Editor.error.save.title"); //$NON-NLS-1$
-			String msg = "Error occurred during save operation"; //MessageFormat.format(TextEditorMessages.getString("Editor.error.save.message"), new Object[] { targetException.getMessage()}); //$NON-NLS-1$
+    IPath filePath = dialog.getResult();
+    if (filePath == null) {
+      if (progressMonitor != null)
+        progressMonitor.setCanceled(true);
+      editor.setSaveAsStatus(MultiPageEditor.SAVE_AS_CANCELLED);
+      return;
+    }
 
-			if (targetException instanceof CoreException) {
-				CoreException coreException = (CoreException) targetException;
-				IStatus status = coreException.getStatus();
-				if (status != null) {
-					switch (status.getSeverity()) {
-						case IStatus.INFO :
-							MessageDialog.openInformation(shell, title, msg);
-							break;
-						case IStatus.WARNING :
-							MessageDialog.openWarning(shell, title, msg);
-							break;
-						default :
-							MessageDialog.openError(shell, title, msg);
-					}
-				}
-				else {
-					MessageDialog.openError(shell, title, msg);
-				}
-			}
+    IWorkspace workspace = ResourcesPlugin.getWorkspace();
+    IFile file = workspace.getRoot().getFile(filePath);
+    final IEditorInput newInput = new FileEditorInput(file);
 
-		}
-		finally {
-			provider.changed(newInput);
-			if (success) {
-				setInput(newInput);	
-				editor.setSaveAsStatus(
-					MultiPageEditor.SAVE_AS_CONFIRMED);
-			}
-			else {
-				editor.setSaveAsStatus(
-					MultiPageEditor.SAVE_AS_CANCELLED);
-			}	
-		}
+    WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
+      public void execute(final IProgressMonitor monitor) throws CoreException {
+        getDocumentProvider().saveDocument(monitor, newInput,
+                        getDocumentProvider().getDocument(getEditorInput()), true);
+      }
+    };
 
-		if (progressMonitor != null)
-			progressMonitor.setCanceled(!success);
-	}
-	
-	public void setIgnoreTextEvent(boolean bIgnoreTextEvent) {
-		m_bIgnoreTextEvent = bIgnoreTextEvent;
-	}
+    boolean success = false;
+    try {
+
+      provider.aboutToChange(newInput);
+      new ProgressMonitorDialog(shell).run(false, true, op);
+      success = true;
+
+    } catch (InterruptedException x) {
+    } catch (InvocationTargetException x) {
+
+      Throwable targetException = x.getTargetException();
+
+      String title = "Error saving"; // TextEditorMessages.getString("Editor.error.save.title");
+                                      // //$NON-NLS-1$
+      String msg = "Error occurred during save operation"; // MessageFormat.format(TextEditorMessages.getString("Editor.error.save.message"),
+                                                            // new Object[] {
+                                                            // targetException.getMessage()});
+                                                            // //$NON-NLS-1$
+
+      if (targetException instanceof CoreException) {
+        CoreException coreException = (CoreException) targetException;
+        IStatus status = coreException.getStatus();
+        if (status != null) {
+          switch (status.getSeverity()) {
+            case IStatus.INFO:
+              MessageDialog.openInformation(shell, title, msg);
+              break;
+            case IStatus.WARNING:
+              MessageDialog.openWarning(shell, title, msg);
+              break;
+            default:
+              MessageDialog.openError(shell, title, msg);
+          }
+        } else {
+          MessageDialog.openError(shell, title, msg);
+        }
+      }
+
+    } finally {
+      provider.changed(newInput);
+      if (success) {
+        setInput(newInput);
+        editor.setSaveAsStatus(MultiPageEditor.SAVE_AS_CONFIRMED);
+      } else {
+        editor.setSaveAsStatus(MultiPageEditor.SAVE_AS_CANCELLED);
+      }
+    }
+
+    if (progressMonitor != null)
+      progressMonitor.setCanceled(!success);
+  }
+
+  public void setIgnoreTextEvent(boolean bIgnoreTextEvent) {
+    m_bIgnoreTextEvent = bIgnoreTextEvent;
+  }
 
 }

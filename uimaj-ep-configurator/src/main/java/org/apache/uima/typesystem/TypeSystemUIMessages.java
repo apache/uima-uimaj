@@ -24,27 +24,27 @@ import java.util.ResourceBundle;
 
 public class TypeSystemUIMessages {
 
-	private static final String RESOURCE_BUNDLE= "org.apache.uima.typesystem.TypeSystemUIMessages";//$NON-NLS-1$
+  private static final String RESOURCE_BUNDLE = "org.apache.uima.typesystem.TypeSystemUIMessages";//$NON-NLS-1$
 
-	private static ResourceBundle fgResourceBundle= ResourceBundle.getBundle(RESOURCE_BUNDLE);
+  private static ResourceBundle fgResourceBundle = ResourceBundle.getBundle(RESOURCE_BUNDLE);
 
-	private TypeSystemUIMessages() {
-	}
+  private TypeSystemUIMessages() {
+  }
 
-	public static String getString(String key) {
-		try {
-			return fgResourceBundle.getString(key);
-		} catch (MissingResourceException e) {
-			return '!' + key + '!';
-		}
-	}
-	
-	public static String getFormattedString(String key, String arg) {
-		return getFormattedString(key, new String[] { arg });
-	}
-	
-	public static String getFormattedString(String key, String[] args) {
-		return MessageFormat.format(getString(key), args);	
-	}	
-	
+  public static String getString(String key) {
+    try {
+      return fgResourceBundle.getString(key);
+    } catch (MissingResourceException e) {
+      return '!' + key + '!';
+    }
+  }
+
+  public static String getFormattedString(String key, String arg) {
+    return getFormattedString(key, new String[] { arg });
+  }
+
+  public static String getFormattedString(String key, String[] args) {
+    return MessageFormat.format(getString(key), args);
+  }
+
 }

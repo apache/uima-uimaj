@@ -29,70 +29,74 @@ import org.eclipse.swt.widgets.TableItem;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.apache.uima.taeconfigurator.editors.ui.Utility;
 
-
 public abstract class AbstractDialogMultiColTable extends AbstractDialog {
 
   protected String checkedIndicator(int col) {
-  	if (col == 1) 
-  		return "In";
-  	else
-  		return "Out";
+    if (col == 1)
+      return "In";
+    else
+      return "Out";
   }
-  
+
   protected static final String UNCHECKED = "";
-	Table table;
-	protected boolean enableCol1 = true;
-	protected boolean enableCol2 = true;
+
+  Table table;
+
+  protected boolean enableCol1 = true;
+
+  protected boolean enableCol2 = true;
+
   protected int numberChecked = 0;
-	
-  protected AbstractDialogMultiColTable(AbstractSection aSection,
-      String title, String description) {
+
+  protected AbstractDialogMultiColTable(AbstractSection aSection, String title, String description) {
     super(aSection, title, description);
   }
-		
-	public void handleEvent(Event event) {
-	  if (event.type == SWT.MouseDown && 
-	  		event.widget == table) {
-	    Point mousePosition = new Point(event.x, event.y);
-	    TableItem item = table.getItem(mousePosition);
-	    if (null == item) {
-	    	jitHowTo();
-	    	return;
-	    }
-	      
-	    int col = getHitColumn(item, mousePosition);
-	    if (col != 1 && col != 2) {
-	    	jitHowTo();
-	      return;
-	    }
-	    if (col == 1 && !enableCol1) {
-	    	setErrorMessage("This resource can't be marked as input");
-				return;
-	    }
-	    if (col == 2 && !enableCol2) {
-	    	setErrorMessage("This resource can't be marked as output");
-	    	return;
-	    }
-	    errorMessageUI.setText("");
-	    toggleValue(item, col);
-	  }
-	  enableOK();
-	}
-	
-	private void jitHowTo() {
-		Utility.popMessage("Where to mouse click", 
-				"Please click the mouse in the input or output columns to toggle the selection.",
-				MessageDialog.INFORMATION);
-	}
-	
-	protected void toggleValue(TableItem item, int col) {
-    item.setText(col, item.getText(col).equals(checkedIndicator(col)) ? UNCHECKED : checkedIndicator(col));
+
+  public void handleEvent(Event event) {
+    if (event.type == SWT.MouseDown && event.widget == table) {
+      Point mousePosition = new Point(event.x, event.y);
+      TableItem item = table.getItem(mousePosition);
+      if (null == item) {
+        jitHowTo();
+        return;
+      }
+
+      int col = getHitColumn(item, mousePosition);
+      if (col != 1 && col != 2) {
+        jitHowTo();
+        return;
+      }
+      if (col == 1 && !enableCol1) {
+        setErrorMessage("This resource can't be marked as input");
+        return;
+      }
+      if (col == 2 && !enableCol2) {
+        setErrorMessage("This resource can't be marked as output");
+        return;
+      }
+      errorMessageUI.setText("");
+      toggleValue(item, col);
+    }
+    enableOK();
+  }
+
+  private void jitHowTo() {
+    Utility
+                    .popMessage(
+                                    "Where to mouse click",
+                                    "Please click the mouse in the input or output columns to toggle the selection.",
+                                    MessageDialog.INFORMATION);
+  }
+
+  protected void toggleValue(TableItem item, int col) {
+    item.setText(col, item.getText(col).equals(checkedIndicator(col)) ? UNCHECKED
+                    : checkedIndicator(col));
     if (item.getText(col).equals(checkedIndicator(col)))
       numberChecked++;
     else
       numberChecked--;
   }
-	
+
   public boolean isValid() {
     return true;
   }
@@ -102,12 +106,12 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
     okButton.setEnabled(numberChecked > 0);
   }
 
-	protected void setChecked(TableItem item, int col, boolean value) {
-	  boolean prevChecked = checkedIndicator(col).equals(item.getText(col));
-	  item.setText(col, value ? checkedIndicator(col) : UNCHECKED);
-	  if (value && ! prevChecked)
-	    numberChecked++;
-	  else if ( ! value && prevChecked)
-	    numberChecked--;
-	}
+  protected void setChecked(TableItem item, int col, boolean value) {
+    boolean prevChecked = checkedIndicator(col).equals(item.getText(col));
+    item.setText(col, value ? checkedIndicator(col) : UNCHECKED);
+    if (value && !prevChecked)
+      numberChecked++;
+    else if (!value && prevChecked)
+      numberChecked--;
+  }
 }

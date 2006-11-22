@@ -57,346 +57,353 @@ import org.eclipse.ui.forms.IManagedForm;
 
 public class AggregateSection extends AbstractSection {
 
-	private Table filesTable;
-	private Button addButton;
-	private Button addRemoteButton;
-	private Button findAnalysisEngineButton;
-	private Button removeButton;
-	private Button addToFlowButton;
-	private Button removeFromFlowButton;
-	public Button getRemoveFromFlowButton() {return removeFromFlowButton;}
+  private Table filesTable;
 
-	private boolean bDisableToolTipHelp = false;
+  private Button addButton;
 
-	/**
-	 * Creates a section for aggregate specifiers to
-	 * add their delegates
-	 * @param editor backpointer to the main multipage editor
-   * @param parent the Composite where this section lives
-	 */
-	public AggregateSection (MultiPageEditor aEditor, Composite parent) {
-		super(aEditor, parent, "Component Engines", 
-		    "The following engines are included in this aggregate."); 
-	}
-	
-  /* Called by the page constructor after all sections are created, to initialize them.
-   *  (non-Javadoc)
+  private Button addRemoteButton;
+
+  private Button findAnalysisEngineButton;
+
+  private Button removeButton;
+
+  private Button addToFlowButton;
+
+  private Button removeFromFlowButton;
+
+  public Button getRemoveFromFlowButton() {
+    return removeFromFlowButton;
+  }
+
+  private boolean bDisableToolTipHelp = false;
+
+  /**
+   * Creates a section for aggregate specifiers to add their delegates
+   * 
+   * @param editor
+   *          backpointer to the main multipage editor
+   * @param parent
+   *          the Composite where this section lives
+   */
+  public AggregateSection(MultiPageEditor aEditor, Composite parent) {
+    super(aEditor, parent, "Component Engines",
+                    "The following engines are included in this aggregate.");
+  }
+
+  /*
+   * Called by the page constructor after all sections are created, to initialize them.
+   * (non-Javadoc)
+   * 
    * @see org.eclipse.ui.forms.IFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
-   */  
-	public void initialize(IManagedForm form) {
-	  super.initialize(form); 
-		
-		Composite sectionClient = new2ColumnComposite(this.getSection());
+   */
+  public void initialize(IManagedForm form) {
+    super.initialize(form);
 
-		//Table Container has table and buttons on bottom
-		Composite tableContainer = newComposite(sectionClient);
+    Composite sectionClient = new2ColumnComposite(this.getSection());
+
+    // Table Container has table and buttons on bottom
+    Composite tableContainer = newComposite(sectionClient);
     enableBorders(tableContainer);
-		toolkit.paintBordersFor(tableContainer);
-		
-		filesTable = newTable(tableContainer, SWT.FULL_SELECTION, 150);
+    toolkit.paintBordersFor(tableContainer);
 
-		filesTable.setHeaderVisible(true);
+    filesTable = newTable(tableContainer, SWT.FULL_SELECTION, 150);
 
-		newTableColumn(filesTable, 50, SWT.LEFT, "Delegate");
-		newTableColumn(filesTable, 75, SWT.LEFT, "Key Name");
+    filesTable.setHeaderVisible(true);
 
-		Composite bottomButtonContainer = newButtonContainer(tableContainer, HORIZONTAL_BUTTONS, 150);
+    newTableColumn(filesTable, 50, SWT.LEFT, "Delegate");
+    newTableColumn(filesTable, 75, SWT.LEFT, "Key Name");
 
-		addButton = newPushButton(bottomButtonContainer, S_ADD,
-		    "Click here to add a locally defined AE or CAS Consumer delegate", ENABLED);
-		removeButton = newPushButton(bottomButtonContainer, "Remove",
-		    "Click here to remove the selected item", ENABLED);
+    Composite bottomButtonContainer = newButtonContainer(tableContainer, HORIZONTAL_BUTTONS, 150);
 
-		Composite sideButtonContainer = newButtonContainer(sectionClient, VERTICAL_BUTTONS, 80);
+    addButton = newPushButton(bottomButtonContainer, S_ADD,
+                    "Click here to add a locally defined AE or CAS Consumer delegate", ENABLED);
+    removeButton = newPushButton(bottomButtonContainer, "Remove",
+                    "Click here to remove the selected item", ENABLED);
 
-		//this next just serves as a spacer
-		spacer(sideButtonContainer);
-		spacer(sideButtonContainer);
-		
-    addToFlowButton = newPushButton(sideButtonContainer, ">>", 
-		    "Click here to add the selected item to the flow", !ENABLED);
-		removeFromFlowButton = newPushButton(sideButtonContainer, "<<", 
-		    "Click here to remove the selected item from the flow", !ENABLED);
-		
-		spacer(sideButtonContainer);
+    Composite sideButtonContainer = newButtonContainer(sectionClient, VERTICAL_BUTTONS, 80);
 
-		addRemoteButton = newPushButton(sideButtonContainer, "AddRemote",
-		    "Click here to add a Remote Analysis Engine", ENABLED);
-		findAnalysisEngineButton = newPushButton(sideButtonContainer, "Find AE",
-		    "Click here to search for an Analysis Engine", ENABLED);
+    // this next just serves as a spacer
+    spacer(sideButtonContainer);
+    spacer(sideButtonContainer);
 
-		addButton.setSize(removeButton.getSize());
-		
-		filesTable.addListener(SWT.MouseDown, this);
-		filesTable.addListener(SWT.MouseHover, this);
-	}
+    addToFlowButton = newPushButton(sideButtonContainer, ">>",
+                    "Click here to add the selected item to the flow", !ENABLED);
+    removeFromFlowButton = newPushButton(sideButtonContainer, "<<",
+                    "Click here to remove the selected item from the flow", !ENABLED);
 
-/*
- *  (non-Javadoc)
- * @see org.eclipse.ui.forms.IFormPart#refresh()
- */
-	public void refresh() {
-	  super.refresh();
+    spacer(sideButtonContainer);
 
-		//if annotator is primitive -  page should be disabled
-		if ( ! isAggregate()) {
-			filesTable.removeAll();
-			getSection().setText("Not Used");
-			getSection().setDescription("This section is only applicable for Aggregate descriptors.");
-		}
-		else {
-			getSection().setText("Component Engines");
-			getSection().setDescription("The following engines are included in this aggregate.");
-		  
-			//these can be changed by direct editing of source
-			Map delegates = getDelegateAnalysisEngineSpecifiersWithImports();
-			
-			//first clear list
-			//(we do this carefully to preserve order)
-			String[] priorOrderedKeys = new String[filesTable.getItemCount()];
-			for (int i = 0; i < priorOrderedKeys.length; i++) {
-				priorOrderedKeys[i] = filesTable.getItem(i).getText(1);
-			}
-			filesTable.removeAll();
-			//get delegate keys
-			HashSet keys = new HashSet();
-			if (delegates != null) {
-				keys.addAll(delegates.keySet());
-			}
+    addRemoteButton = newPushButton(sideButtonContainer, "AddRemote",
+                    "Click here to add a Remote Analysis Engine", ENABLED);
+    findAnalysisEngineButton = newPushButton(sideButtonContainer, "Find AE",
+                    "Click here to search for an Analysis Engine", ENABLED);
 
-			//first add keys that we know about in order as we knew it
-			for (int i = 0; i < priorOrderedKeys.length; i++) {
-				if (keys.contains(priorOrderedKeys[i])) {
-				  Object o = delegates.get(priorOrderedKeys[i]);
-				  if (o instanceof Import)
-					  addFile( o, priorOrderedKeys[i]);
-					keys.remove(priorOrderedKeys[i]);
-				}
-			}
+    addButton.setSize(removeButton.getSize());
 
-			Iterator itKeys = keys.iterator();
-			//add what's left to list
-			while (itKeys.hasNext()) {
-				String key = (String) itKeys.next();
-				Object o = delegates.get(key);
-				if (o instanceof Import)
-				  addFile(o, key);
-			}
-			packTable(filesTable);
-		}
-		enable();
-	}
-	
+    filesTable.addListener(SWT.MouseDown, this);
+    filesTable.addListener(SWT.MouseHover, this);
+  }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-	 */
-	public void handleEvent(Event event) {
-		if (event.widget == addButton) handleAdd();
-		else if (event.widget == removeButton ||
-		    (event.type == SWT.KeyUp &&
-		     event.character == SWT.DEL)) handleRemove();
-		else if (event.widget == addToFlowButton) handleAddToFlow();
-		else if (event.widget == removeFromFlowButton) handleRemoveFromFlow();
-		else if (event.widget == addRemoteButton) handleAddRemote();
-		else if (event.widget == findAnalysisEngineButton) handleFindAnalysisEngine();
-		
-		//actions on table
-		else if (event.widget == filesTable) {
-			if (event.type == SWT.Selection) {
-				//if no delegate is selected disable edit and remove
-				boolean bEnableButtons = (filesTable.getSelectionCount() > 0);
-				removeButton.setEnabled(bEnableButtons);
-				addToFlowButton.setEnabled(bEnableButtons);
-			}
-			else if (event.type == SWT.MouseDown && event.button == 3) {
-				handleTableContextMenuRequest(event);
-			}
-			else if (event.type == SWT.MouseHover && !bDisableToolTipHelp) {
-				handleTableHoverHelp(event);
-			}
-			// Don't need this.  Next mouse hover kills tool tip anyway
-//			else if (event.type == SWT.MouseMove) {
-//				filesTable.setToolTipText("");
-//			}
-		}
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.eclipse.ui.forms.IFormPart#refresh()
+   */
+  public void refresh() {
+    super.refresh();
 
-	private void handleAdd() {
+    // if annotator is primitive - page should be disabled
+    if (!isAggregate()) {
+      filesTable.removeAll();
+      getSection().setText("Not Used");
+      getSection().setDescription("This section is only applicable for Aggregate descriptors.");
+    } else {
+      getSection().setText("Component Engines");
+      getSection().setDescription("The following engines are included in this aggregate.");
 
-		MultiResourceSelectionDialogWithFlowOption dialog =
-			new MultiResourceSelectionDialogWithFlowOption(
-			    getSection().getShell(),
-				editor.getFile().getProject().getParent(),
-				"Component Engine Selection",
-				editor.getFile().getLocation(), editor);
-		dialog.setTitle("Component Engine Selection");
-		dialog.setMessage(
-			"Select one or more component engines from the workspace:");
-		dialog.open();
-		Object[] files = dialog.getResult();
+      // these can be changed by direct editing of source
+      Map delegates = getDelegateAnalysisEngineSpecifiersWithImports();
 
-		if (files != null && files.length > 0) {
-			for (int i = 0; i < files.length; i++) {
-				FileAndShortName fsn = new FileAndShortName(files[i]);
-				produceKeyAddDelegate (fsn.shortName, fsn.fileName, dialog.getAutoAddToFlow(), dialog.isImportByName);
-			}
-		}		
-	}
-	
-  private void produceKeyAddDelegate (String shortName, String fullPathFileName,
-      boolean addToFlow, boolean isImportByName) {
-		boolean bSuccess = false;
-		
-		// key is shortName plus a suffix if needed to make it unique.
-		//   The set of existing keys is obtained from the model, 
-		//     not from the GUI table (as was the case in earlier design)
+      // first clear list
+      // (we do this carefully to preserve order)
+      String[] priorOrderedKeys = new String[filesTable.getItemCount()];
+      for (int i = 0; i < priorOrderedKeys.length; i++) {
+        priorOrderedKeys[i] = filesTable.getItem(i).getText(1);
+      }
+      filesTable.removeAll();
+      // get delegate keys
+      HashSet keys = new HashSet();
+      if (delegates != null) {
+        keys.addAll(delegates.keySet());
+      }
 
-		String keyName = produceUniqueComponentKey(shortName);
-		if (null != keyName) {
-		   bSuccess = addDelegate(fullPathFileName, shortName, keyName, isImportByName);
-	
-		  if(bSuccess) {
-		    editor.addDirtyTypeName("<Aggregate>");  // force running jcasgen
-			  refresh(); // refresh every time to capture the order of items added
-			  if(addToFlow) {
-				  addNodeToFlow(keyName);
-			  }
-		  }
+      // first add keys that we know about in order as we knew it
+      for (int i = 0; i < priorOrderedKeys.length; i++) {
+        if (keys.contains(priorOrderedKeys[i])) {
+          Object o = delegates.get(priorOrderedKeys[i]);
+          if (o instanceof Import)
+            addFile(o, priorOrderedKeys[i]);
+          keys.remove(priorOrderedKeys[i]);
+        }
+      }
+
+      Iterator itKeys = keys.iterator();
+      // add what's left to list
+      while (itKeys.hasNext()) {
+        String key = (String) itKeys.next();
+        Object o = delegates.get(key);
+        if (o instanceof Import)
+          addFile(o, key);
+      }
+      packTable(filesTable);
+    }
+    enable();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+   */
+  public void handleEvent(Event event) {
+    if (event.widget == addButton)
+      handleAdd();
+    else if (event.widget == removeButton
+                    || (event.type == SWT.KeyUp && event.character == SWT.DEL))
+      handleRemove();
+    else if (event.widget == addToFlowButton)
+      handleAddToFlow();
+    else if (event.widget == removeFromFlowButton)
+      handleRemoveFromFlow();
+    else if (event.widget == addRemoteButton)
+      handleAddRemote();
+    else if (event.widget == findAnalysisEngineButton)
+      handleFindAnalysisEngine();
+
+    // actions on table
+    else if (event.widget == filesTable) {
+      if (event.type == SWT.Selection) {
+        // if no delegate is selected disable edit and remove
+        boolean bEnableButtons = (filesTable.getSelectionCount() > 0);
+        removeButton.setEnabled(bEnableButtons);
+        addToFlowButton.setEnabled(bEnableButtons);
+      } else if (event.type == SWT.MouseDown && event.button == 3) {
+        handleTableContextMenuRequest(event);
+      } else if (event.type == SWT.MouseHover && !bDisableToolTipHelp) {
+        handleTableHoverHelp(event);
+      }
+      // Don't need this. Next mouse hover kills tool tip anyway
+      // else if (event.type == SWT.MouseMove) {
+      // filesTable.setToolTipText("");
+      // }
     }
   }
-  
-	private void handleRemove() {
-		//get the keyName to remove
-		int nSelectionIndex = filesTable.getSelectionIndex();
-		String key = filesTable.getItem(nSelectionIndex).getText(1);
 
-		//if delegate is still on flow list warn that it may be removed
-		if (editor.getAggregatePage().getFlowSection().containsNode(key)) {
-			String sCascadeDeleteTitle = "Cascade delete warning";
-			String sCascadeDeleteMessage = "This will cause a cascading deletion of an associated input, output, index, or type priority.  Ok to continue?";
-			boolean bContinue =
-				MessageDialog.openConfirm(
-				    getSection().getShell(),
-					sCascadeDeleteTitle,
-					sCascadeDeleteMessage);
-			if (!bContinue) {
-				return;
-			}
- 		}
-		ResourceSpecifier delegate = (ResourceSpecifier)editor.getResolvedDelegates().get(key);
-		//remove the selected delegate from delegate list
+  private void handleAdd() {
 
-		Map delegatesWithImport = editor.getAeDescription().
-			getDelegateAnalysisEngineSpecifiersWithImports();
+    MultiResourceSelectionDialogWithFlowOption dialog = new MultiResourceSelectionDialogWithFlowOption(
+                    getSection().getShell(), editor.getFile().getProject().getParent(),
+                    "Component Engine Selection", editor.getFile().getLocation(), editor);
+    dialog.setTitle("Component Engine Selection");
+    dialog.setMessage("Select one or more component engines from the workspace:");
+    dialog.open();
+    Object[] files = dialog.getResult();
+
+    if (files != null && files.length > 0) {
+      for (int i = 0; i < files.length; i++) {
+        FileAndShortName fsn = new FileAndShortName(files[i]);
+        produceKeyAddDelegate(fsn.shortName, fsn.fileName, dialog.getAutoAddToFlow(),
+                        dialog.isImportByName);
+      }
+    }
+  }
+
+  private void produceKeyAddDelegate(String shortName, String fullPathFileName, boolean addToFlow,
+                  boolean isImportByName) {
+    boolean bSuccess = false;
+
+    // key is shortName plus a suffix if needed to make it unique.
+    // The set of existing keys is obtained from the model,
+    // not from the GUI table (as was the case in earlier design)
+
+    String keyName = produceUniqueComponentKey(shortName);
+    if (null != keyName) {
+      bSuccess = addDelegate(fullPathFileName, shortName, keyName, isImportByName);
+
+      if (bSuccess) {
+        editor.addDirtyTypeName("<Aggregate>"); // force running jcasgen
+        refresh(); // refresh every time to capture the order of items added
+        if (addToFlow) {
+          addNodeToFlow(keyName);
+        }
+      }
+    }
+  }
+
+  private void handleRemove() {
+    // get the keyName to remove
+    int nSelectionIndex = filesTable.getSelectionIndex();
+    String key = filesTable.getItem(nSelectionIndex).getText(1);
+
+    // if delegate is still on flow list warn that it may be removed
+    if (editor.getAggregatePage().getFlowSection().containsNode(key)) {
+      String sCascadeDeleteTitle = "Cascade delete warning";
+      String sCascadeDeleteMessage = "This will cause a cascading deletion of an associated input, output, index, or type priority.  Ok to continue?";
+      boolean bContinue = MessageDialog.openConfirm(getSection().getShell(), sCascadeDeleteTitle,
+                      sCascadeDeleteMessage);
+      if (!bContinue) {
+        return;
+      }
+    }
+    ResourceSpecifier delegate = (ResourceSpecifier) editor.getResolvedDelegates().get(key);
+    // remove the selected delegate from delegate list
+
+    Map delegatesWithImport = editor.getAeDescription()
+                    .getDelegateAnalysisEngineSpecifiersWithImports();
     Object savedDelegate1 = delegatesWithImport.get(key);
-		delegatesWithImport.remove(key);
+    delegatesWithImport.remove(key);
 
-	  Object savedDelegate2 = getDelegateAnalysisEngineSpecifiersWithImports().get(key);
-	  getDelegateAnalysisEngineSpecifiersWithImports().remove(key);
-	
-    //  update the model: flow lists: remove the item from the flow list
-		// This has to be done before validation - otherwise get validation error.
-		// Support undo
-		
-		FlowNodes flow = new FlowNodes(getAnalysisEngineMetaData().getFlowConstraints());
-		String [] savedFlowNodes = flow.getFlow();
+    Object savedDelegate2 = getDelegateAnalysisEngineSpecifiersWithImports().get(key);
+    getDelegateAnalysisEngineSpecifiersWithImports().remove(key);
 
-		// item may be in the flow 0, 1 or more times
-		
-		List nodes = new ArrayList(savedFlowNodes.length);
-		for (int i = 0; i < savedFlowNodes.length; i++) {
-			String flowNode = savedFlowNodes[i];
-			if ( ! flowNode.equals(key)) {
-			  nodes.add(flowNode);
-			}
-		}
-		flow.setFlow((String [])nodes.toArray(stringArray0));
-		
-    if ( ! isValidAggregateChange()) {
+    // update the model: flow lists: remove the item from the flow list
+    // This has to be done before validation - otherwise get validation error.
+    // Support undo
+
+    FlowNodes flow = new FlowNodes(getAnalysisEngineMetaData().getFlowConstraints());
+    String[] savedFlowNodes = flow.getFlow();
+
+    // item may be in the flow 0, 1 or more times
+
+    List nodes = new ArrayList(savedFlowNodes.length);
+    for (int i = 0; i < savedFlowNodes.length; i++) {
+      String flowNode = savedFlowNodes[i];
+      if (!flowNode.equals(key)) {
+        nodes.add(flowNode);
+      }
+    }
+    flow.setFlow((String[]) nodes.toArray(stringArray0));
+
+    if (!isValidAggregateChange()) {
       getDelegateAnalysisEngineSpecifiersWithImports().put(key, savedDelegate2);
       delegatesWithImport.put(key, savedDelegate1);
-  		flow.setFlow(savedFlowNodes);
+      flow.setFlow(savedFlowNodes);
       return;
     }
-		
-		Map typeNameHash = editor.allTypes.get();
-			
-		boolean bInputsChanged = !editor.validateInputs(typeNameHash);
-		boolean bOutputsChanged = !editor.validateOutputs(typeNameHash);
-		
-		if(bInputsChanged || bOutputsChanged) {
-			String msg = "Some of the following are no longer valid and have been deleted (or appropriately altered): \n\n";
-			 if(bInputsChanged) {
-				msg += "Inputs \n";
-			 }
-			if(bOutputsChanged) {
-			   msg += "Outputs \n";
-			}
-			Utility.popMessage("Capabilities Changed", msg, MessageDialog.INFORMATION);
-		}
-    SofaMapSection.removeSofaMappings(key, delegate, editor);
-		editor.getAggregatePage().getFlowSection().refresh();
-		if(filesTable.getItemCount() > nSelectionIndex) {
-			filesTable.setSelection(nSelectionIndex);
-			filesTable.setFocus();
-			enable();
-		}
-		refresh(); 
-		finishAggregateChangeAction();
 
-		//remove still must handle removal of parameters and param settings
-		//removed delegate (if params dont appear elsewhere)
-	}
-	
-	private void handleAddToFlow() {
-		String node = filesTable.getSelection()[0].getText(1);		
-		addNodeToFlow(node);
-		getTable().setSelection(-1);
-		enable();
-		Table flowList = 
-			editor.getAggregatePage().getFlowSection().
-			getFlowList();
-		flowList.setSelection(flowList.getItemCount() - 1);
-		editor.getAggregatePage().getFlowSection().enable();
-		flowList.setFocus();
-	}
-	
-	/**
+    Map typeNameHash = editor.allTypes.get();
+
+    boolean bInputsChanged = !editor.validateInputs(typeNameHash);
+    boolean bOutputsChanged = !editor.validateOutputs(typeNameHash);
+
+    if (bInputsChanged || bOutputsChanged) {
+      String msg = "Some of the following are no longer valid and have been deleted (or appropriately altered): \n\n";
+      if (bInputsChanged) {
+        msg += "Inputs \n";
+      }
+      if (bOutputsChanged) {
+        msg += "Outputs \n";
+      }
+      Utility.popMessage("Capabilities Changed", msg, MessageDialog.INFORMATION);
+    }
+    SofaMapSection.removeSofaMappings(key, delegate, editor);
+    editor.getAggregatePage().getFlowSection().refresh();
+    if (filesTable.getItemCount() > nSelectionIndex) {
+      filesTable.setSelection(nSelectionIndex);
+      filesTable.setFocus();
+      enable();
+    }
+    refresh();
+    finishAggregateChangeAction();
+
+    // remove still must handle removal of parameters and param settings
+    // removed delegate (if params dont appear elsewhere)
+  }
+
+  private void handleAddToFlow() {
+    String node = filesTable.getSelection()[0].getText(1);
+    addNodeToFlow(node);
+    getTable().setSelection(-1);
+    enable();
+    Table flowList = editor.getAggregatePage().getFlowSection().getFlowList();
+    flowList.setSelection(flowList.getItemCount() - 1);
+    editor.getAggregatePage().getFlowSection().enable();
+    flowList.setFocus();
+  }
+
+  /**
    * @param node
    */
   private void addNodeToFlow(String node) {
     FlowSection fs = editor.getAggregatePage().getFlowSection();
     fs.addNode(node);
-		fs.refresh();
+    fs.refresh();
   }
 
   private void handleRemoveFromFlow() {
     FlowSection fs = editor.getAggregatePage().getFlowSection();
-		String selectedKey = fs.getFlowList().getSelection()[0].getText();
-		fs.handleRemove();
-		for(int i = 0; i < getTable().getItemCount(); i++) {
-			String thisKey = getTable().getItem(i).getText(1);
-			if(selectedKey.equals(thisKey)) {
-				getTable().setSelection(i);
-				enable();
-				getTable().setFocus();
-				break;
-			}
-		}
-	}
+    String selectedKey = fs.getFlowList().getSelection()[0].getText();
+    fs.handleRemove();
+    for (int i = 0; i < getTable().getItemCount(); i++) {
+      String thisKey = getTable().getItem(i).getText(1);
+      if (selectedKey.equals(thisKey)) {
+        getTable().setSelection(i);
+        enable();
+        getTable().setFocus();
+        break;
+      }
+    }
+  }
 
-  private final static String REMOTE_TEMPLATE = 
-	"<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
-	"<uriSpecifier xmlns=\"http://uima.apache.org/resourceSpecifier\">\n" +
-  "  <resourceType>{0}</resourceType>\n" +  //AnalysisEngine CasConsumer
-	"  <uri>{1}</uri> \n" + // sURI
-	"  <protocol>{2}</protocol>\n" + // SOAP or Vinci
-	"  <timeout>{3}</timeout>" + 
-  "  {4}" + // <parameters> for VNS </parameters>
-	"\n</uriSpecifier>";
-  
-	private void handleAddRemote() {
+  private final static String REMOTE_TEMPLATE = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
+                  + "<uriSpecifier xmlns=\"http://uima.apache.org/resourceSpecifier\">\n"
+                  + "  <resourceType>{0}</resourceType>\n" + // AnalysisEngine CasConsumer
+                  "  <uri>{1}</uri> \n" + // sURI
+                  "  <protocol>{2}</protocol>\n" + // SOAP or Vinci
+                  "  <timeout>{3}</timeout>" + "  {4}" + // <parameters> for VNS </parameters>
+                  "\n</uriSpecifier>";
+
+  private void handleAddRemote() {
     String sDescriptorPath = editor.getFile().getParent().getLocation().toString() + '/';
     AddRemoteServiceDialog dialog = new AddRemoteServiceDialog(this, sDescriptorPath);
     dialog.open();
@@ -404,16 +411,15 @@ public class AggregateSection extends AbstractSection {
       return;
 
     String sServiceType = dialog.getSelectedServiceTypeName();
-    if (sServiceType != null && !sServiceType.equals("SOAP")
-        && !sServiceType.equals("Vinci")) {
+    if (sServiceType != null && !sServiceType.equals("SOAP") && !sServiceType.equals("Vinci")) {
       return;
     }
     String sURI = dialog.getSelectedUri();
     String sKey = dialog.getSelectedKey();
 
     if (!isNewKey(sKey)) {
-      Utility.popMessage("Duplicate Key",
-          "You have specified a duplicate key.  Please try again.", MessageDialog.ERROR);
+      Utility.popMessage("Duplicate Key", "You have specified a duplicate key.  Please try again.",
+                      MessageDialog.ERROR);
       return;
     }
 
@@ -421,19 +427,17 @@ public class AggregateSection extends AbstractSection {
     if (null != printWriter) {
       String vnsHostPort = "";
       if (dialog.vnsHost.length() > 0) {
-        vnsHostPort = MessageFormat.format(
-            "    <parameter name=\"VNS_HOST\" value=\"{0}\"/>\n",
-            new Object[]{dialog.vnsHost});
+        vnsHostPort = MessageFormat.format("    <parameter name=\"VNS_HOST\" value=\"{0}\"/>\n",
+                        new Object[] { dialog.vnsHost });
       }
       if (dialog.vnsPort.length() > 0) {
-        vnsHostPort += MessageFormat.format(
-            "    <parameter name=\"VNS_PORT\" value=\"{0}\"/>\n",
-            new Object[] {dialog.vnsPort});
+        vnsHostPort += MessageFormat.format("    <parameter name=\"VNS_PORT\" value=\"{0}\"/>\n",
+                        new Object[] { dialog.vnsPort });
       }
       if (vnsHostPort.length() > 0)
         vnsHostPort = "\n  <parameters>" + vnsHostPort + "  </parameters>";
-      printWriter.println(MessageFormat.format(REMOTE_TEMPLATE, new Object[] {
-            dialog.aeOrCc, sURI, sServiceType, dialog.timeout, vnsHostPort }));
+      printWriter.println(MessageFormat.format(REMOTE_TEMPLATE, new Object[] { dialog.aeOrCc, sURI,
+          sServiceType, dialog.timeout, vnsHostPort }));
       printWriter.close();
 
       boolean bSuccess = addDelegate(dialog.genFilePath, sKey, sKey, dialog.isImportByName);
@@ -446,283 +450,250 @@ public class AggregateSection extends AbstractSection {
       }
     }
   }
-	
-  private static final String[] delegateComponentStringHeadersLC = 
-    new String[] {
-    "<analysisenginedescription",
-    "<casconsumerdescription",
-    "<taedescription"
-  };
-	private void handleFindAnalysisEngine() {
-		FindComponentDialog dialog1 =	new FindComponentDialog(this,
-        "Find an Analysis Engine (AE), CAS Consumer, or Remote Service Descriptor", 
-        "Specify a name pattern and/or additional constraints, and then push the Search button",
-        delegateComponentStringHeadersLC);
-		if (Window.CANCEL == dialog1.open())
-		  return;
 
-		List matchingDelegateComponentDescriptors = dialog1.getMatchingDelegateComponentDescriptors();
-		List matchingDelegateComponentDescriptions = dialog1.getMatchingDelegateComponentDescriptions();
+  private static final String[] delegateComponentStringHeadersLC = new String[] {
+      "<analysisenginedescription", "<casconsumerdescription", "<taedescription" };
 
-		if (matchingDelegateComponentDescriptors.size() == 0) {
-			Utility.popMessage(
-				"No matching Delegate Components",
-				"There are no Delegate Components matching your search criteria.",
-				MessageDialog.ERROR);
-			return;
-		}
-		
-		PickTaeForTypesDialog dialog2 =
-			new PickTaeForTypesDialog(this,
-				editor.getFile().getName(),
-				matchingDelegateComponentDescriptors,
-				matchingDelegateComponentDescriptions);
-		if (Window.CANCEL == dialog2.open())
-			return;
+  private void handleFindAnalysisEngine() {
+    FindComponentDialog dialog1 = new FindComponentDialog(
+                    this,
+                    "Find an Analysis Engine (AE), CAS Consumer, or Remote Service Descriptor",
+                    "Specify a name pattern and/or additional constraints, and then push the Search button",
+                    delegateComponentStringHeadersLC);
+    if (Window.CANCEL == dialog1.open())
+      return;
 
-		String[] selectedDelegateComponentDescriptors = dialog2.getSelectedDelegateComponentDescriptors();
+    List matchingDelegateComponentDescriptors = dialog1.getMatchingDelegateComponentDescriptors();
+    List matchingDelegateComponentDescriptions = dialog1.getMatchingDelegateComponentDescriptions();
 
-		if (selectedDelegateComponentDescriptors == null
-			|| selectedDelegateComponentDescriptors.length == 0) {
-			return;
-		}
+    if (matchingDelegateComponentDescriptors.size() == 0) {
+      Utility.popMessage("No matching Delegate Components",
+                      "There are no Delegate Components matching your search criteria.",
+                      MessageDialog.ERROR);
+      return;
+    }
 
+    PickTaeForTypesDialog dialog2 = new PickTaeForTypesDialog(this, editor.getFile().getName(),
+                    matchingDelegateComponentDescriptors, matchingDelegateComponentDescriptions);
+    if (Window.CANCEL == dialog2.open())
+      return;
 
-		for (int i = 0; i < selectedDelegateComponentDescriptors.length; i++) {
-			String fileName = selectedDelegateComponentDescriptors[i].replace('\\', '/');
-			int nLastSlashLoc = fileName.lastIndexOf('/');
-			String shortName;
-			if (nLastSlashLoc == -1) {
-				shortName = fileName;
-			}
-			else {
-				shortName = fileName.substring(nLastSlashLoc + 1);
-			}
-			produceKeyAddDelegate(
-			    shortName, 
-			    editor.getFullPathFromDescriptorRelativePath(fileName), 
-//			    dialog2.getAutoAddToFlow(),
-          true,
-			    dialog2.isImportByName);
-		}
-		finishAggregateChangeAction();
-	}
-	
-	private void handleTableContextMenuRequest(Event event) {
-	  TableItem item = filesTable.getItem(new Point(event.x, event.y));
-	  if (null == item) {
-  	  return;
-		}
-		
-		String thisKey = item.getText(1);
-		Import imp = (Import)getDelegateAnalysisEngineSpecifiersWithImports().get(thisKey); 
-		
+    String[] selectedDelegateComponentDescriptors = dialog2
+                    .getSelectedDelegateComponentDescriptors();
+
+    if (selectedDelegateComponentDescriptors == null
+                    || selectedDelegateComponentDescriptors.length == 0) {
+      return;
+    }
+
+    for (int i = 0; i < selectedDelegateComponentDescriptors.length; i++) {
+      String fileName = selectedDelegateComponentDescriptors[i].replace('\\', '/');
+      int nLastSlashLoc = fileName.lastIndexOf('/');
+      String shortName;
+      if (nLastSlashLoc == -1) {
+        shortName = fileName;
+      } else {
+        shortName = fileName.substring(nLastSlashLoc + 1);
+      }
+      produceKeyAddDelegate(shortName, editor.getFullPathFromDescriptorRelativePath(fileName),
+      // dialog2.getAutoAddToFlow(),
+                      true, dialog2.isImportByName);
+    }
+    finishAggregateChangeAction();
+  }
+
+  private void handleTableContextMenuRequest(Event event) {
+    TableItem item = filesTable.getItem(new Point(event.x, event.y));
+    if (null == item) {
+      return;
+    }
+
+    String thisKey = item.getText(1);
+    Import imp = (Import) getDelegateAnalysisEngineSpecifiersWithImports().get(thisKey);
+
     bDisableToolTipHelp = true;
-		requestPopUpOverImport(
-				imp,
-				filesTable,
-				event);
+    requestPopUpOverImport(imp, filesTable, event);
     bDisableToolTipHelp = false;
-	}
+  }
 
-	private void handleTableHoverHelp(Event event) {
-	  TableItem item = filesTable.getItem(new Point(event.x, event.y));
+  private void handleTableHoverHelp(Event event) {
+    TableItem item = filesTable.getItem(new Point(event.x, event.y));
     String sDesc = "";
-	  if (null != item) {
+    if (null != item) {
       Map dels = editor.getResolvedDelegates();
       if (null != dels) {
-      sDesc = getDescriptionForDescriptor(item.getText(0),
-          (ResourceSpecifier)dels.get(item.getText(0)));
+        sDesc = getDescriptionForDescriptor(item.getText(0), (ResourceSpecifier) dels.get(item
+                        .getText(0)));
       }
     }
-		filesTable.setToolTipText(sDesc);
-	}
+    filesTable.setToolTipText(sDesc);
+  }
 
-	private boolean addDelegate(String fileName, String shortName, String keyName, 
-			boolean isImportByName) {
-    Import imp; 
-	  Map delegatesWithImport = getDelegateAnalysisEngineSpecifiersWithImports();
+  private boolean addDelegate(String fileName, String shortName, String keyName,
+                  boolean isImportByName) {
+    Import imp;
+    Map delegatesWithImport = getDelegateAnalysisEngineSpecifiersWithImports();
 
     // if the delegate is not a remote, read / parse it and add ae to
-	  //   the delegate hash map
-	  //   -- also add the import
-	  // If it is a remote - try and get it's metadata (we can if it is running)
-	  
-	  // first: create import, needed in both cases
-	  imp = createImport(fileName, isImportByName);
-	  
+    // the delegate hash map
+    // -- also add the import
+    // If it is a remote - try and get it's metadata (we can if it is running)
+
+    // first: create import, needed in both cases
+    imp = createImport(fileName, isImportByName);
+
     // read the content and merge into our model
-  	XMLizable inputDescription = readImport(imp, fileName, isImportByName);
+    XMLizable inputDescription = readImport(imp, fileName, isImportByName);
     if (null == inputDescription)
       return false;
-    
-    if (!(inputDescription instanceof AnalysisEngineDescription) &&
-    		!(inputDescription instanceof CasConsumerDescription) &&
-    		!(inputDescription instanceof URISpecifier)) {
-    	Utility.popMessage("Invalid kind of descriptor",
-    			MessageFormat.format("Operation cancelled: The descriptor ''{0}'' being added is not an Analysis Engine or a CAS Consumer or a Remote Service.",
-    					new Object[] {maybeShortenFileName(fileName)}),
-    			MessageDialog.ERROR);
-    	return false;
+
+    if (!(inputDescription instanceof AnalysisEngineDescription)
+                    && !(inputDescription instanceof CasConsumerDescription)
+                    && !(inputDescription instanceof URISpecifier)) {
+      Utility
+                      .popMessage(
+                                      "Invalid kind of descriptor",
+                                      MessageFormat
+                                                      .format(
+                                                                      "Operation cancelled: The descriptor ''{0}'' being added is not an Analysis Engine or a CAS Consumer or a Remote Service.",
+                                                                      new Object[] { maybeShortenFileName(fileName) }),
+                                      MessageDialog.ERROR);
+      return false;
     }
-    
+
     editor.getResolvedDelegates().put(keyName, inputDescription);
     delegatesWithImport.put(keyName, imp);
-    	
-      // before adding the import, see if the merge type system is OK
-      if (!isValidAggregateChange()) {
-        // revert
-        editor.getResolvedDelegates().remove(keyName);
-        delegatesWithImport.remove(keyName);
-        return false;
-      }
- 
+
+    // before adding the import, see if the merge type system is OK
+    if (!isValidAggregateChange()) {
+      // revert
+      editor.getResolvedDelegates().remove(keyName);
+      delegatesWithImport.remove(keyName);
+      return false;
+    }
+
     finishAggregateChangeAction();
     return true;
   }
 
-	
-	private boolean isNewKey(String keyName) {
-		for (int i = 0; i < filesTable.getItemCount(); i++) {
-			if (filesTable.getItem(i).getText(1).equals(keyName)) {
-				return false;
-			}
-		}
-		return true;
-	}
+  private boolean isNewKey(String keyName) {
+    for (int i = 0; i < filesTable.getItemCount(); i++) {
+      if (filesTable.getItem(i).getText(1).equals(keyName)) {
+        return false;
+      }
+    }
+    return true;
+  }
 
+  public void addParametersForDelegate(AnalysisEngineDescription tae) {
+    ConfigurationParameter[] candidateNewParams = tae.getAnalysisEngineMetaData()
+                    .getConfigurationParameterDeclarations().getConfigurationParameters();
 
+    NameValuePair[] candidateSettings = tae.getAnalysisEngineMetaData()
+                    .getConfigurationParameterSettings().getParameterSettings();
 
-	public void addParametersForDelegate(AnalysisEngineDescription tae) {
-		ConfigurationParameter[] candidateNewParams =
-			tae
-				.getAnalysisEngineMetaData()
-				.getConfigurationParameterDeclarations()
-				.getConfigurationParameters();
+    ConfigurationParameter[] oldParams = getAnalysisEngineMetaData()
+                    .getConfigurationParameterDeclarations().getConfigurationParameters();
 
-		NameValuePair[] candidateSettings =
-			tae
-				.getAnalysisEngineMetaData()
-				.getConfigurationParameterSettings()
-				.getParameterSettings();
+    NameValuePair[] oldSettings = getAnalysisEngineMetaData().getConfigurationParameterSettings()
+                    .getParameterSettings();
 
-		ConfigurationParameter[] oldParams =
-			getAnalysisEngineMetaData()
-				.getConfigurationParameterDeclarations()
-				.getConfigurationParameters();
+    if (candidateNewParams == null || candidateNewParams.length == 0) {
+      return;
+    }
 
-		NameValuePair[] oldSettings =
-			getAnalysisEngineMetaData()
-				.getConfigurationParameterSettings()
-				.getParameterSettings();
+    if (oldParams == null || oldParams.length == 0) {
+      getAnalysisEngineMetaData().getConfigurationParameterDeclarations()
+                      .setConfigurationParameters(candidateNewParams);
+      getAnalysisEngineMetaData().getConfigurationParameterSettings().setParameterSettings(
+                      candidateSettings);
+    } else {
+      // first do parameters
+      Vector newParams = new Vector();
+      for (int i = 0; i < candidateNewParams.length; i++) {
+        boolean bNew = true;
+        for (int j = 0; j < oldParams.length; j++) {
+          if (candidateNewParams[i].getName().equals(oldParams[j].getName())
+                          && candidateNewParams[i].getType().equals(oldParams[j].getType())) {
+            bNew = false;
+          }
+        }
+        if (bNew) {
+          newParams.add(candidateNewParams[i]);
+        }
+      }
 
-		if (candidateNewParams == null || candidateNewParams.length == 0) {
-			return;
-		}
+      ConfigurationParameter[] newPlusOldParams = new ConfigurationParameter[oldParams.length
+                      + newParams.size()];
+      for (int i = 0; i < oldParams.length; i++) {
+        newPlusOldParams[i] = oldParams[i];
+      }
+      for (int i = 0; i < newParams.size(); i++) {
+        newPlusOldParams[oldParams.length + i] = (ConfigurationParameter) newParams.elementAt(i);
+      }
+      getAnalysisEngineMetaData().getConfigurationParameterDeclarations()
+                      .setConfigurationParameters(newPlusOldParams);
 
-		if (oldParams == null || oldParams.length == 0) {
-			getAnalysisEngineMetaData()
-				.getConfigurationParameterDeclarations()
-				.setConfigurationParameters(candidateNewParams);
-			getAnalysisEngineMetaData()
-				.getConfigurationParameterSettings()
-				.setParameterSettings(candidateSettings);
-		}
-		else {
-			//first do parameters
-			Vector newParams = new Vector();
-			for (int i = 0; i < candidateNewParams.length; i++) {
-				boolean bNew = true;
-				for (int j = 0; j < oldParams.length; j++) {
-					if (candidateNewParams[i]
-						.getName()
-						.equals(oldParams[j].getName())
-						&& candidateNewParams[i].getType().equals(
-							oldParams[j].getType())) {
-						bNew = false;
-					}
-				}
-				if (bNew) {
-					newParams.add(candidateNewParams[i]);
-				}
-			}
+      // next do settings
+      Vector newSettings = new Vector();
+      if (candidateSettings != null) {
+        for (int i = 0; i < candidateSettings.length; i++) {
+          boolean bNew = true;
+          for (int j = 0; j < oldSettings.length; j++) {
+            if (candidateSettings[i].getName().equals(oldSettings[j].getName())) {
+              bNew = false;
+            }
+          }
+          if (bNew) {
+            newSettings.add(candidateSettings[i]);
+          }
+        }
+      }
 
-			ConfigurationParameter[] newPlusOldParams =
-				new ConfigurationParameter[oldParams.length + newParams.size()];
-			for (int i = 0; i < oldParams.length; i++) {
-				newPlusOldParams[i] = oldParams[i];
-			}
-			for (int i = 0; i < newParams.size(); i++) {
-				newPlusOldParams[oldParams.length + i] =
-					(ConfigurationParameter) newParams.elementAt(i);
-			}
-			getAnalysisEngineMetaData()
-				.getConfigurationParameterDeclarations()
-				.setConfigurationParameters(newPlusOldParams);
+      NameValuePair[] newPlusOldSettings = new NameValuePair[oldSettings.length
+                      + newSettings.size()];
+      for (int i = 0; i < oldSettings.length; i++) {
+        newPlusOldSettings[i] = oldSettings[i];
+      }
+      for (int i = 0; i < newSettings.size(); i++) {
+        newPlusOldSettings[oldSettings.length + i] = (NameValuePair) newSettings.elementAt(i);
+      }
+      getAnalysisEngineMetaData().getConfigurationParameterSettings().setParameterSettings(
+                      newPlusOldSettings);
+    }
+  }
 
-			//next do settings
-			Vector newSettings = new Vector();
-			if (candidateSettings != null) {
-				for (int i = 0; i < candidateSettings.length; i++) {
-					boolean bNew = true;
-					for (int j = 0; j < oldSettings.length; j++) {
-						if (candidateSettings[i]
-							.getName()
-							.equals(oldSettings[j].getName())) {
-							bNew = false;
-						}
-					}
-					if (bNew) {
-						newSettings.add(candidateSettings[i]);
-					}
-				}
-			}
+  public void enable() {
+    boolean isPrimitive = isPrimitive();
+    boolean bEnable = (filesTable.getSelectionIndex() > -1);
 
-			NameValuePair[] newPlusOldSettings =
-				new NameValuePair[oldSettings.length + newSettings.size()];
-			for (int i = 0; i < oldSettings.length; i++) {
-				newPlusOldSettings[i] = oldSettings[i];
-			}
-			for (int i = 0; i < newSettings.size(); i++) {
-				newPlusOldSettings[oldSettings.length + i] =
-					(NameValuePair) newSettings.elementAt(i);
-			}
-			getAnalysisEngineMetaData()
-				.getConfigurationParameterSettings()
-				.setParameterSettings(newPlusOldSettings);
-		}
-	}
+    addButton.setEnabled(!isPrimitive);
+    addRemoteButton.setEnabled(!isPrimitive);
+    findAnalysisEngineButton.setEnabled(!isPrimitive);
+    removeButton.setEnabled(bEnable);
+    addToFlowButton.setEnabled(bEnable);
+  }
 
-	public void enable() {
-	  boolean isPrimitive = isPrimitive();
-		boolean bEnable = (filesTable.getSelectionIndex() > -1);
+  /**
+   * adds a tableItem to the table
+   * 
+   * @param fileName
+   * @param keyName
+   */
+  private void addFile(Object o, String keyName) {
+    Import impItem = (Import) o;
+    String fileName = impItem.getLocation();
+    if (null == fileName || (0 == fileName.length()))
+      fileName = impItem.getName();
+    // create new TableItem
+    TableItem item = new TableItem(filesTable, SWT.NONE);
+    item.setImage(TAEConfiguratorPlugin.getImage(TAEConfiguratorPlugin.IMAGE_ANNOTATOR));
+    item.setText(0, fileName);
+    item.setText(1, keyName);
+  }
 
-		addButton.setEnabled(!isPrimitive);
-		addRemoteButton.setEnabled(!isPrimitive);
-		findAnalysisEngineButton.setEnabled(!isPrimitive);
-		removeButton.setEnabled(bEnable);
-		addToFlowButton.setEnabled(bEnable);
-	}
-
-	/**
-	 * adds a tableItem to the table
-	 * @param fileName
-	 * @param keyName
-	 */
-	private void addFile(Object o, String keyName) {
-		Import impItem = (Import)o;
-		String fileName = impItem.getLocation();
-		if (null == fileName || (0 == fileName.length()))
-			fileName = impItem.getName();
-		//create new TableItem
-		TableItem item = new TableItem(filesTable, SWT.NONE);
-		item.setImage(TAEConfiguratorPlugin.getImage(TAEConfiguratorPlugin.IMAGE_ANNOTATOR));
-		item.setText(0, fileName);
-		item.setText(1, keyName);
-	}
-	
-	public Table getTable() {
-		return filesTable;
-	}
+  public Table getTable() {
+    return filesTable;
+  }
 
 }

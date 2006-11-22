@@ -24,38 +24,34 @@ import java.text.MessageFormat;
 import org.eclipse.ui.INewWizard;
 
 /**
- * Create a new file resource in the provided container. 
- * If the container resource (a folder or a project) is selected 
- * in the workspace when the wizard is opened, it will accept 
- * it as the target container. If a sample multi-page editor 
- * is registered for the same extension, it will be able to open it.
+ * Create a new file resource in the provided container. If the container resource (a folder or a
+ * project) is selected in the workspace when the wizard is opened, it will accept it as the target
+ * container. If a sample multi-page editor is registered for the same extension, it will be able to
+ * open it.
  */
 
 public class FsIndexCollectionNewWizard extends AbstractNewWizard implements INewWizard {
 
-  public static final String FSINDEXCOLLECTION_TEMPLATE = 
-    "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
-    + "<fsIndexCollection " + XMLNS_PART
-    + "<name>{0}</name>\n"
-    + "<description></description>\n"
-    + "<version>1.0</version>\n"
-    + "<vendor></vendor>\n"
-    + "{1}"
-    + "</fsIndexCollection>\n";
+  public static final String FSINDEXCOLLECTION_TEMPLATE = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
+                  + "<fsIndexCollection "
+                  + XMLNS_PART
+                  + "<name>{0}</name>\n"
+                  + "<description></description>\n"
+                  + "<version>1.0</version>\n"
+                  + "<vendor></vendor>\n" + "{1}" + "</fsIndexCollection>\n";
 
-  
-	public FsIndexCollectionNewWizard() {
-		super("New Index Collection Descriptor File");
-	}
-	
-	public void addPages() {
-		page = new FsIndexCollectionNewWizardPage(selection);
-		addPage(page);
-	}
+  public FsIndexCollectionNewWizard() {
+    super("New Index Collection Descriptor File");
+  }
 
-	public String getPrototypeDescriptor(String name) {
-	  return MessageFormat.format(FSINDEXCOLLECTION_TEMPLATE, new Object[] {
-        name, "<fsIndexDescription></fsIndexDescription>\n"});
-	}
+  public void addPages() {
+    page = new FsIndexCollectionNewWizardPage(selection);
+    addPage(page);
+  }
+
+  public String getPrototypeDescriptor(String name) {
+    return MessageFormat.format(FSINDEXCOLLECTION_TEMPLATE, new Object[] { name,
+        "<fsIndexDescription></fsIndexDescription>\n" });
+  }
 
 }

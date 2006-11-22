@@ -31,65 +31,76 @@ import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.apache.uima.taeconfigurator.editors.ui.ResourceDependencySection;
 
 public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerifyJavaNames {
- 
+
   private StyledText keyNameUI;
+
   public Button optionalUI;
+
   private StyledText interfaceNameUI;
+
   private Text descriptionUI;
-  
+
   public String keyName;
+
   private String originalKeyName;
+
   public boolean optional;
+
   public String interfaceName;
+
   public String description;
-  
+
   private ResourceDependencySection rdSection;
-  
+
   private ExternalResourceDependency existingXRD;
-  
-	public AddExternalResourceDependencyDialog(AbstractSection aSection) {
-		super(aSection, "Add External Resource Dependency",
-		    "Add an External Resource Dependency");
-		rdSection = (ResourceDependencySection)aSection;
+
+  public AddExternalResourceDependencyDialog(AbstractSection aSection) {
+    super(aSection, "Add External Resource Dependency", "Add an External Resource Dependency");
+    rdSection = (ResourceDependencySection) aSection;
   }
 
-	/**
-	 * Constructor for Editing an existing XRD
-	 * @param aSection
-	 * @param aExistingXRD
-	 */
-	public AddExternalResourceDependencyDialog(AbstractSection aSection, ExternalResourceDependency aExistingXRD) {
-		this(aSection);
-		existingXRD = aExistingXRD;
-	}
-	
-	protected Control createDialogArea(Composite parent) {
-		Composite mainArea = (Composite)super.createDialogArea(parent, existingXRD);
-		createWideLabel(mainArea, "The only required field is the key name,\nwhich must be unique within this primitive Analysis Engine descriptor.");
-		
-		// This part of the form looks like this sketch
-		//   
-		// keyName: Text field             << in 2 grid composite
-		// description: Text field 					<< in 2 grid composite
-		// impl Name: Text field           << in 2 grid composite
-		// (checkbox) is Optional  
-		// 
-		
+  /**
+   * Constructor for Editing an existing XRD
+   * 
+   * @param aSection
+   * @param aExistingXRD
+   */
+  public AddExternalResourceDependencyDialog(AbstractSection aSection,
+                  ExternalResourceDependency aExistingXRD) {
+    this(aSection);
+    existingXRD = aExistingXRD;
+  }
+
+  protected Control createDialogArea(Composite parent) {
+    Composite mainArea = (Composite) super.createDialogArea(parent, existingXRD);
+    createWideLabel(
+                    mainArea,
+                    "The only required field is the key name,\nwhich must be unique within this primitive Analysis Engine descriptor.");
+
+    // This part of the form looks like this sketch
+    //   
+    // keyName: Text field << in 2 grid composite
+    // description: Text field << in 2 grid composite
+    // impl Name: Text field << in 2 grid composite
+    // (checkbox) is Optional
+    // 
+
     Composite twoCol = new2ColumnComposite(mainArea);
 
-    keyNameUI = newLabeledSingleLineStyledText(twoCol, "Key", 
-        "Name used by the Primitive Analysis Engine to refer to the resource");
-    
-		descriptionUI = newDescription(twoCol, 
-		    "(Optional)Describes this resource dependency");
-	   
-    interfaceNameUI = newLabeledSingleLineStyledText(twoCol, "Interface",
-        "The fully qualified name of the Java Interface class used by the Analysis Engine to refer to the External Resource");
+    keyNameUI = newLabeledSingleLineStyledText(twoCol, "Key",
+                    "Name used by the Primitive Analysis Engine to refer to the resource");
+
+    descriptionUI = newDescription(twoCol, "(Optional)Describes this resource dependency");
+
+    interfaceNameUI = newLabeledSingleLineStyledText(
+                    twoCol,
+                    "Interface",
+                    "The fully qualified name of the Java Interface class used by the Analysis Engine to refer to the External Resource");
 
     newErrorMessage(twoCol, 2);
-    
+
     optionalUI = newButton(mainArea, SWT.CHECK, "Check this box if this resource is optional",
-        "Uncheck if this resource is required");
+                    "Uncheck if this resource is required");
 
     if (null != existingXRD) {
       descriptionUI.setText(convertNull(existingXRD.getDescription()));
@@ -98,27 +109,26 @@ public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerify
       interfaceNameUI.setText(convertNull(existingXRD.getInterfaceName()));
     }
 
- 		return mainArea;
-	}
-		
-	public void copyValuesFromGUI() {
-	  keyName = keyNameUI.getText();
-	  optional = optionalUI.getSelection();
+    return mainArea;
+  }
+
+  public void copyValuesFromGUI() {
+    keyName = keyNameUI.getText();
+    optional = optionalUI.getSelection();
     description = nullIf0lengthString(descriptionUI.getText());
     interfaceName = nullIf0lengthString(interfaceNameUI.getText());
-	}
-	
-	public boolean isValid() {
-	  if (keyName.length() == 0) 
-	    return false;
-	  if ( ! keyName.equals(originalKeyName)
-	      && rdSection.keyNameAlreadyDefined(keyName))
-	    return false;
-	  return true;
-	}
-	
-	public void enableOK() {
-	  copyValuesFromGUI();
-		okButton.setEnabled(keyName.length() > 0);
-	}
+  }
+
+  public boolean isValid() {
+    if (keyName.length() == 0)
+      return false;
+    if (!keyName.equals(originalKeyName) && rdSection.keyNameAlreadyDefined(keyName))
+      return false;
+    return true;
+  }
+
+  public void enableOK() {
+    copyValuesFromGUI();
+    okButton.setEnabled(keyName.length() > 0);
+  }
 }

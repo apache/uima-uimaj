@@ -33,16 +33,20 @@ import org.apache.uima.taeconfigurator.editors.ui.AbstractSectionParm;
 public class ConfigGroup {
 
   private ConfigurationParameterDeclarations cpd;
+
   private int kind;
+
   private ConfigurationGroup namedCg = null;
-  
+
   public final static int NOT_IN_ANY_GROUP = 1;
+
   public final static int COMMON = 2;
+
   public final static int NAMED_GROUP = 4;
-  
+
   public ConfigGroup(ConfigurationParameterDeclarations aCpd, int aKind) {
     cpd = aCpd;
-    kind = aKind; 
+    kind = aKind;
     fixupCpd();
   }
 
@@ -52,7 +56,7 @@ public class ConfigGroup {
     namedCg = aNamedCg;
     fixupCpd();
   }
-  
+
   private void fixupCpd() {
     if (null == cpd.getConfigurationParameters())
       cpd.setConfigurationParameters(AbstractSection.configurationParameterArray0);
@@ -60,62 +64,62 @@ public class ConfigGroup {
       cpd.setCommonParameters(AbstractSection.configurationParameterArray0);
     if (null == cpd.getConfigurationGroups())
       cpd.setConfigurationGroups(AbstractSection.configurationGroupArray0);
-    ConfigurationGroup [] cgs = cpd.getConfigurationGroups();
+    ConfigurationGroup[] cgs = cpd.getConfigurationGroups();
     for (int i = 0; i < cgs.length; i++) {
-      if (null == cgs[i].getConfigurationParameters()) 
+      if (null == cgs[i].getConfigurationParameters())
         cgs[i].setConfigurationParameters(AbstractSection.configurationParameterArray0);
     }
   }
-  
-  public ConfigurationParameter [] getConfigParms () {
+
+  public ConfigurationParameter[] getConfigParms() {
     switch (kind) {
-    case NOT_IN_ANY_GROUP:
-      return cpd.getConfigurationParameters();
-    case COMMON:
-      return cpd.getCommonParameters();
-    case NAMED_GROUP:
-      return namedCg.getConfigurationParameters();
-    default:
-      throw new InternalErrorCDE("invalid state");
+      case NOT_IN_ANY_GROUP:
+        return cpd.getConfigurationParameters();
+      case COMMON:
+        return cpd.getCommonParameters();
+      case NAMED_GROUP:
+        return namedCg.getConfigurationParameters();
+      default:
+        throw new InternalErrorCDE("invalid state");
     }
   }
-  
+
   public String getName() {
     switch (kind) {
-    case NOT_IN_ANY_GROUP:
-      return AbstractSectionParm.NOT_IN_ANY_GROUP;
-    case COMMON:
-      return AbstractSectionParm.COMMON_GROUP;
-    case NAMED_GROUP:
-      return AbstractSectionParm.groupNameArrayToString(namedCg.getNames());
-    default:
-      throw new InternalErrorCDE("invalid state");
+      case NOT_IN_ANY_GROUP:
+        return AbstractSectionParm.NOT_IN_ANY_GROUP;
+      case COMMON:
+        return AbstractSectionParm.COMMON_GROUP;
+      case NAMED_GROUP:
+        return AbstractSectionParm.groupNameArrayToString(namedCg.getNames());
+      default:
+        throw new InternalErrorCDE("invalid state");
     }
   }
-  
-  public String [] getNameArray() {
+
+  public String[] getNameArray() {
     switch (kind) {
-    case NOT_IN_ANY_GROUP:
-      return new String [] {AbstractSectionParm.NOT_IN_ANY_GROUP};
-    case COMMON:
-      return new String [] {AbstractSectionParm.COMMON_GROUP};
-    case NAMED_GROUP:
-      return namedCg.getNames();
-    default:
-      throw new InternalErrorCDE("invalid state");
-    } 
+      case NOT_IN_ANY_GROUP:
+        return new String[] { AbstractSectionParm.NOT_IN_ANY_GROUP };
+      case COMMON:
+        return new String[] { AbstractSectionParm.COMMON_GROUP };
+      case NAMED_GROUP:
+        return namedCg.getNames();
+      default:
+        throw new InternalErrorCDE("invalid state");
+    }
   }
-  
-  public void setNameArray(String [] names) {
+
+  public void setNameArray(String[] names) {
     if (kind != NAMED_GROUP)
       throw new InternalErrorCDE("invalid call");
     namedCg.setNames(names);
   }
-  
+
   public int getKind() {
     return kind;
   }
-  
+
   public ConfigurationParameterDeclarations getCPD() {
     return cpd;
   }

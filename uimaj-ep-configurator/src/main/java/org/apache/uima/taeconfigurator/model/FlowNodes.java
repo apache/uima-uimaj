@@ -29,29 +29,29 @@ import org.apache.uima.analysis_engine.metadata.FlowConstraints;
  */
 public class FlowNodes {
 
-  private FixedFlow  fixedFlow;
+  private FixedFlow fixedFlow;
+
   private CapabilityLanguageFlow capabilityLanguageFlow;
-  
-  
+
   public FlowNodes(FlowConstraints flow) {
     if (flow instanceof FixedFlow)
-      fixedFlow = (FixedFlow)flow;
+      fixedFlow = (FixedFlow) flow;
     else if (flow instanceof CapabilityLanguageFlow)
-      capabilityLanguageFlow = (CapabilityLanguageFlow)flow;
-    else 
+      capabilityLanguageFlow = (CapabilityLanguageFlow) flow;
+    else
       ;// can be null if omitted
   }
-  
-  public String [] getFlow() {
+
+  public String[] getFlow() {
     if (fixedFlow != null)
       return fixedFlow.getFixedFlow();
     if (capabilityLanguageFlow != null)
       return capabilityLanguageFlow.getCapabilityLanguageFlow();
     return null;
-//    throw new InternalErrorCDE("invalid state");
+    // throw new InternalErrorCDE("invalid state");
   }
-  
-  public void setFlow(String [] newFlow) {
+
+  public void setFlow(String[] newFlow) {
     if (fixedFlow != null) {
       fixedFlow.setFixedFlow(newFlow);
       return;
@@ -60,7 +60,7 @@ public class FlowNodes {
       capabilityLanguageFlow.setCapabilityLanguageFlow(newFlow);
       return;
     }
-//    throw new InternalErrorCDE("invalid state");
-    return;  // ignore in null case
+    // throw new InternalErrorCDE("invalid state");
+    return; // ignore in null case
   }
 }

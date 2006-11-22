@@ -51,6 +51,6 @@ public class InternalErrorCDE extends RuntimeException {
   public InternalErrorCDE(Throwable cause) {
     super(cause);
   }
-  
+
   static final long serialVersionUID = 1041388340406853782L;
 }

@@ -28,40 +28,38 @@ import org.apache.uima.taeconfigurator.model.BuiltInTypes;
 import org.eclipse.swt.custom.TableTreeItem;
 import org.eclipse.swt.widgets.Composite;
 
-
 public abstract class AbstractImportablePartSection extends AbstractSection {
 
-	/**
-	 * @param editor
-	 * @param parent
-	 * @param headerText
-	 * @param description
-	 */
-	public AbstractImportablePartSection(MultiPageEditor aEditor, Composite parent,
-			String headerText, String description) {
-		super(aEditor, parent, headerText, description);
-	}
-
-
-
-	//********************************
-	//* GUI methods
-	//********************************
-  protected boolean isLocalItem(TableTreeItem item) {
-    return ! item.getForeground().equals(editor.getFadeColor());
+  /**
+   * @param editor
+   * @param parent
+   * @param headerText
+   * @param description
+   */
+  public AbstractImportablePartSection(MultiPageEditor aEditor, Composite parent,
+                  String headerText, String description) {
+    super(aEditor, parent, headerText, description);
   }
 
-  //********************************
-  //* Universal Getters
-  //********************************
+  // ********************************
+  // * GUI methods
+  // ********************************
+  protected boolean isLocalItem(TableTreeItem item) {
+    return !item.getForeground().equals(editor.getFadeColor());
+  }
+
+  // ********************************
+  // * Universal Getters
+  // ********************************
   /**
    * returns null if no feature by this name
+   * 
    * @param name
    * @param td
    * @return
    */
   public FeatureDescription getFeatureFromTypeDescription(String name, TypeDescription td) {
-  	FeatureDescription[] fds = td.getFeatures();
+    FeatureDescription[] fds = td.getFeatures();
     if (fds == null)
       return null;
     for (int i = 0; i < fds.length; i++) {
@@ -72,7 +70,7 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
   }
 
   public AllowedValue getAllowedValue(String value, TypeDescription td) {
-    AllowedValue [] avs = td.getAllowedValues();
+    AllowedValue[] avs = td.getAllowedValues();
     if (null == avs)
       return null;
     for (int i = 0; i < avs.length; i++) {
@@ -81,20 +79,20 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
     }
     return null;
   }
-  
-	//********************************
-	//*  Local Getters
-  //********************************
-  
+
+  // ********************************
+  // * Local Getters
+  // ********************************
+
   protected TypeDescription getLocalTypeDefinition(TypeDescription td) {
-  	TypeSystemDescription tsdLocal = getTypeSystemDescription();
+    TypeSystemDescription tsdLocal = getTypeSystemDescription();
     if (null == tsdLocal)
       return null;
     return tsdLocal.getType(td.getName());
   }
 
   protected FeatureDescription getLocalFeatureDefinition(TypeDescription td, FeatureDescription fd) {
-  	return getLocalFeatureDefinition(td, fd.getName());
+    return getLocalFeatureDefinition(td, fd.getName());
   }
 
   protected FeatureDescription getLocalFeatureDefinition(TypeDescription td, String featureName) {
@@ -111,78 +109,78 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
     return getAllowedValue(unchangedAv.getString(), localTd);
   }
 
-  //********************************
-	//*  Built-in Getters
-  //*  used to do GUI "merge" with built-in things
-  //********************************
+  // ********************************
+  // * Built-in Getters
+  // * used to do GUI "merge" with built-in things
+  // ********************************
   public TypeDescription getBuiltInTypeDescription(TypeDescription td) {
-  	return (TypeDescription)BuiltInTypes.typeDescriptions.get(td.getName());
+    return (TypeDescription) BuiltInTypes.typeDescriptions.get(td.getName());
   }
 
-	//********************************
-  //* Local Testers
-	//********************************
+  // ********************************
+  // * Local Testers
+  // ********************************
   protected boolean isLocalType(TypeDescription td) {
-  	return (null != getLocalTypeDefinition(td));
+    return (null != getLocalTypeDefinition(td));
   }
-  
+
   protected boolean isLocalType(String typeName) {
-  	return null != editor.getTypeSystemDescription().getType(typeName);
+    return null != editor.getTypeSystemDescription().getType(typeName);
   }
-  
+
   protected boolean isLocalFeature(String featureName, TypeDescription td) {
-  	return (null != getLocalFeatureDefinition(td, featureName));
+    return (null != getLocalFeatureDefinition(td, featureName));
   }
 
   protected boolean isLocalAllowedValue(String avString, TypeDescription td) {
-  	TypeDescription localTd = getLocalTypeDefinition(td);
-  	if (null == localTd)
-  		return false;
-  	return Utility.arrayContains(localTd.getAllowedValues(), avString);
+    TypeDescription localTd = getLocalTypeDefinition(td);
+    if (null == localTd)
+      return false;
+    return Utility.arrayContains(localTd.getAllowedValues(), avString);
   }
- 
-	//********************************
-  //* Imported Testers
-	//********************************
+
+  // ********************************
+  // * Imported Testers
+  // ********************************
 
   public boolean isImportedType(String typeName) {
-  	return null != editor.getImportedTypeSystemDesription().getType(typeName);
+    return null != editor.getImportedTypeSystemDesription().getType(typeName);
   }
-  
+
   protected boolean isImportedType(TypeDescription td) {
-  	return null != editor.getImportedTypeSystemDesription().getType(td.getName());
+    return null != editor.getImportedTypeSystemDesription().getType(td.getName());
   }
 
   protected boolean isImportedFeature(String name, TypeDescription td) {
-  	TypeDescription importedTd = editor.getImportedTypeSystemDesription().getType(td.getName());
-  	if (null == importedTd)
-  		return false;
-  	return null != getFeatureFromTypeDescription(name, importedTd);
+    TypeDescription importedTd = editor.getImportedTypeSystemDesription().getType(td.getName());
+    if (null == importedTd)
+      return false;
+    return null != getFeatureFromTypeDescription(name, importedTd);
   }
-  
+
   protected boolean isImportedAllowedValue(TypeDescription td, AllowedValue av) {
-  	TypeDescription importedTd = editor.getImportedTypeSystemDesription().getType(td.getName());
-  	if (null == importedTd)
-  		return false;
-  	return null != getAllowedValue(av.getString(), importedTd);
+    TypeDescription importedTd = editor.getImportedTypeSystemDesription().getType(td.getName());
+    if (null == importedTd)
+      return false;
+    return null != getAllowedValue(av.getString(), importedTd);
   }
- 
-	//********************************
-	//* Built-in Testers
-  //********************************
+
+  // ********************************
+  // * Built-in Testers
+  // ********************************
   protected boolean isBuiltInType(TypeDescription td) {
-  	return null != getBuiltInTypeDescription(td);
+    return null != getBuiltInTypeDescription(td);
   }
-  
+
   protected boolean isBuiltInType(String typeName) {
-  	return null != BuiltInTypes.typeDescriptions.get(typeName);
+    return null != BuiltInTypes.typeDescriptions.get(typeName);
   }
-  
+
   protected boolean isBuiltInFeature(String name, TypeDescription td) {
-  	TypeDescription builtInTd = (TypeDescription)BuiltInTypes.typeDescriptions.get(td.getName());
-  	if (null == builtInTd)
-  		return false;
-  	return null != getFeatureFromTypeDescription(name, builtInTd);
+    TypeDescription builtInTd = (TypeDescription) BuiltInTypes.typeDescriptions.get(td.getName());
+    if (null == builtInTd)
+      return false;
+    return null != getFeatureFromTypeDescription(name, builtInTd);
   }
-  
+
 }

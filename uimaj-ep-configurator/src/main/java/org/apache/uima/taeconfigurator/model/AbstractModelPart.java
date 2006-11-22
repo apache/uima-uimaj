@@ -27,20 +27,21 @@ import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 /**
  */
 public class AbstractModelPart {
-  
+
   public static final Properties casCreateProperties = new Properties();
   static {
     casCreateProperties.setProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE, "200");
   }
-  
+
   protected MultiPageEditor modelRoot;
+
   protected boolean dirty;
-  
+
   public AbstractModelPart(MultiPageEditor pMPE) {
     modelRoot = pMPE;
     dirty = true;
   }
-  
+
   public void markDirty() {
     dirty = true;
   }

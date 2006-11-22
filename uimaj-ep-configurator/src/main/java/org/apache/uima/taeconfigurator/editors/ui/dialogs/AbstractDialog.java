@@ -55,16 +55,20 @@ import org.apache.uima.typesystem.OpenTypeSystemSelectionDialog;
 import org.apache.uima.typesystem.contentassist.ControlContentAssistHelper;
 import org.apache.uima.typesystem.contentassist.TypeSystemCompletionProcessor;
 
-
-public abstract class AbstractDialog extends Dialog 
-   implements Listener, StandardStrings {
+public abstract class AbstractDialog extends Dialog implements Listener, StandardStrings {
 
   protected MultiPageEditor editor;
+
   protected AbstractSection section;
+
   protected Button okButton;
+
   protected Label errorMessageUI;
+
   protected String title;
+
   protected String dialogDescription;
+
   /**
    * @param parentShell
    */
@@ -76,30 +80,30 @@ public abstract class AbstractDialog extends Dialog
     setShellStyle(getShellStyle() | SWT.RESIZE);
     this.title = title;
     this.dialogDescription = description;
-    }
- 
-		protected Control createDialogArea(Composite parent) {
-	// create composite
-  	Composite composite = (Composite)super.createDialogArea(parent);
-	  createWideLabel(composite, dialogDescription);
-	  return composite;
-	}
-	
-	protected Control createDialogArea(Composite parent, Object existing) {
-  	Composite composite = (Composite)super.createDialogArea(parent);
-	  createWideLabel(composite, dialogDescription);
-	  if (null != existing)
-		  getShell().setText(getShell().getText().replaceFirst("Add", "Edit"));
-	  return composite;
-	}
-	
-	protected void configureShell(Shell shell) {
-		super.configureShell(shell);
-		shell.setText(title);
-	}
-	
-	protected Label createWideLabel(Composite parent, String message) {
-	  Label label = null;
+  }
+
+  protected Control createDialogArea(Composite parent) {
+    // create composite
+    Composite composite = (Composite) super.createDialogArea(parent);
+    createWideLabel(composite, dialogDescription);
+    return composite;
+  }
+
+  protected Control createDialogArea(Composite parent, Object existing) {
+    Composite composite = (Composite) super.createDialogArea(parent);
+    createWideLabel(composite, dialogDescription);
+    if (null != existing)
+      getShell().setText(getShell().getText().replaceFirst("Add", "Edit"));
+    return composite;
+  }
+
+  protected void configureShell(Shell shell) {
+    super.configureShell(shell);
+    shell.setText(title);
+  }
+
+  protected Label createWideLabel(Composite parent, String message) {
+    Label label = null;
 
     label = new Label(parent, SWT.WRAP);
     label.setText(null != message ? message : "");
@@ -107,41 +111,41 @@ public abstract class AbstractDialog extends Dialog
     data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
     label.setLayoutData(data);
     return label;
-	}
-		
-	protected void createButtonsForButtonBar(Composite parent) {
-	  super.createButtonsForButtonBar(parent);
-	  okButton = getButton(IDialogConstants.OK_ID);
-	  okButton.setEnabled(false);
-	}
-	
-	public static final String [] stringArray0 = new String [0];
-	
-	protected void setTextAndTip(Button c, String label, String tip) {
-	  c.setText(label);
-	  c.setToolTipText(tip);
-	}
-	
-	protected void setTextAndTip(CCombo c, String label, String tip) {
+  }
+
+  protected void createButtonsForButtonBar(Composite parent) {
+    super.createButtonsForButtonBar(parent);
+    okButton = getButton(IDialogConstants.OK_ID);
+    okButton.setEnabled(false);
+  }
+
+  public static final String[] stringArray0 = new String[0];
+
+  protected void setTextAndTip(Button c, String label, String tip) {
     c.setText(label);
     c.setToolTipText(tip);
-	}
-		
-	protected void setTextAndTip(Label c, String label, String tip) {
+  }
+
+  protected void setTextAndTip(CCombo c, String label, String tip) {
     c.setText(label);
-	  c.setToolTipText(tip);
-	}
-	
-	protected Composite new2ColumnComposite(Composite parent) {
+    c.setToolTipText(tip);
+  }
+
+  protected void setTextAndTip(Label c, String label, String tip) {
+    c.setText(label);
+    c.setToolTipText(tip);
+  }
+
+  protected Composite new2ColumnComposite(Composite parent) {
     Composite twoCol = new Composite(parent, SWT.NONE);
     twoCol.setLayout(new GridLayout(2, false)); // false = not equal width
-    ((GridLayout)twoCol.getLayout()).marginHeight = 0;
-    ((GridLayout)twoCol.getLayout()).marginWidth = 0;
+    ((GridLayout) twoCol.getLayout()).marginHeight = 0;
+    ((GridLayout) twoCol.getLayout()).marginWidth = 0;
     twoCol.setLayoutData(new GridData(GridData.FILL_BOTH));
     return twoCol;
-	}
-	
-	protected Text newDescription(Composite twoCol, String tip) {
+  }
+
+  protected Text newDescription(Composite twoCol, String tip) {
     setTextAndTip(new Label(twoCol, SWT.NONE), S_DESCRIPTION, tip);
     Text t = new Text(twoCol, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
     t.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -150,32 +154,32 @@ public abstract class AbstractDialog extends Dialog
     return t;
   }
 
-	protected CCombo newLabeledCCombo(Composite parent, String label, String tip) {
-	  setTextAndTip(new Label(parent, SWT.NONE), label, tip);
-	  return newCCombo(parent, tip);
-	}
-	
-	protected CCombo newCCombo(Composite parent, String tip) {
-	  final CCombo cc = new CCombo(parent, SWT.FLAT | SWT.BORDER | SWT.READ_ONLY);
-	  cc.setBackground(getShell().getDisplay()
-	      .getSystemColor(SWT.COLOR_WHITE));
-	  cc.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-	  cc.addListener(SWT.Selection, this);
-	  cc.setToolTipText(tip);
-	  cc.addKeyListener(new KeyListener() {
-		  private final StringBuffer b = new StringBuffer();
-      public void keyPressed(KeyEvent e) {}
+  protected CCombo newLabeledCCombo(Composite parent, String label, String tip) {
+    setTextAndTip(new Label(parent, SWT.NONE), label, tip);
+    return newCCombo(parent, tip);
+  }
+
+  protected CCombo newCCombo(Composite parent, String tip) {
+    final CCombo cc = new CCombo(parent, SWT.FLAT | SWT.BORDER | SWT.READ_ONLY);
+    cc.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
+    cc.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    cc.addListener(SWT.Selection, this);
+    cc.setToolTipText(tip);
+    cc.addKeyListener(new KeyListener() {
+      private final StringBuffer b = new StringBuffer();
+
+      public void keyPressed(KeyEvent e) {
+      }
 
       public void keyReleased(KeyEvent e) {
         if (e.keyCode == SWT.BS) {
           if (b.length() > 0)
-            b.deleteCharAt(b.length()-1);
-        }
-        else if (Character.isJavaIdentifierPart(e.character) ||
-                 e.character == '.')
-          b.append(e.character); 
-        else return;
-        final String [] ccItems = cc.getItems();
+            b.deleteCharAt(b.length() - 1);
+        } else if (Character.isJavaIdentifierPart(e.character) || e.character == '.')
+          b.append(e.character);
+        else
+          return;
+        final String[] ccItems = cc.getItems();
         final String partial = b.toString();
         int iBefore = -1;
         for (int i = 0; i < ccItems.length; i++) {
@@ -186,224 +190,228 @@ public abstract class AbstractDialog extends Dialog
         }
         if (iBefore >= 0)
           cc.setText(cc.getItem(iBefore));
-      } 
-	  });
-	  return cc;
-	}
-	
-	protected Button newButton(Composite parent, int style, String name, String tip) {
-	  Button b = new Button(parent, style);
-	  setTextAndTip(b, name, tip);
-	  b.addListener(SWT.Selection, this);
-	  return b;
-	}
+      }
+    });
+    return cc;
+  }
 
-	protected Text newText(Composite parent, int style, String tip) {
-	  Text t = new Text(parent, style | SWT.BORDER);
-	  t.setToolTipText(tip);
+  protected Button newButton(Composite parent, int style, String name, String tip) {
+    Button b = new Button(parent, style);
+    setTextAndTip(b, name, tip);
+    b.addListener(SWT.Selection, this);
+    return b;
+  }
+
+  protected Text newText(Composite parent, int style, String tip) {
+    Text t = new Text(parent, style | SWT.BORDER);
+    t.setToolTipText(tip);
     t.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     t.addListener(SWT.KeyUp, this);
-    t.addListener(SWT.MouseUp, this);  // for paste operation
+    t.addListener(SWT.MouseUp, this); // for paste operation
     return t;
-	}
-	
-	protected Text newLabeledText(Composite parent, int style, String label, String tip) {
-	  setTextAndTip(new Label(parent, SWT.NONE), label, tip);
-	  return newText(parent, style, tip);
-	}
-  
-	/**
-	 * Styles = SWT.SINGLE / MULTI / CHECK / FULL_SELECTION / HIDE_SELECTION
-	 * @param parent
-	 * @param style
-	 * @return
-	 */
-	protected Table newTable(Composite parent, int style) {
-		Table table = new Table(parent, style);
-		GridData gd = new GridData(GridData.FILL_BOTH);
-		table.setLayoutData(gd);
-		table.addListener(SWT.Selection, this);
-		table.addListener(SWT.KeyUp, this); // delete key
-		return table;
   }
 
-	
-	public int getHitColumn (TableItem item, Point p) {
-	  for (int i = item.getParent().getColumnCount() - 1; i >= 0;  i--) {
-	    Rectangle columnBounds = item.getBounds(i);
-	    if (columnBounds.contains(p)) 
-	      return i;
-	  }
-	  return -1;
-	}	
+  protected Text newLabeledText(Composite parent, int style, String label, String tip) {
+    setTextAndTip(new Label(parent, SWT.NONE), label, tip);
+    return newText(parent, style, tip);
+  }
+
+  /**
+   * Styles = SWT.SINGLE / MULTI / CHECK / FULL_SELECTION / HIDE_SELECTION
+   * 
+   * @param parent
+   * @param style
+   * @return
+   */
+  protected Table newTable(Composite parent, int style) {
+    Table table = new Table(parent, style);
+    GridData gd = new GridData(GridData.FILL_BOTH);
+    table.setLayoutData(gd);
+    table.addListener(SWT.Selection, this);
+    table.addListener(SWT.KeyUp, this); // delete key
+    return table;
+  }
+
+  public int getHitColumn(TableItem item, Point p) {
+    for (int i = item.getParent().getColumnCount() - 1; i >= 0; i--) {
+      Rectangle columnBounds = item.getBounds(i);
+      if (columnBounds.contains(p))
+        return i;
+    }
+    return -1;
+  }
 
   public Composite newButtonContainer(Composite parent) {
-		Composite buttonContainer = new Composite(parent, SWT.NONE);
-		buttonContainer.setLayout(new GridLayout());
-		buttonContainer.setLayoutData(new GridData(
-		    GridData.VERTICAL_ALIGN_BEGINNING | GridData.HORIZONTAL_ALIGN_FILL));
+    Composite buttonContainer = new Composite(parent, SWT.NONE);
+    buttonContainer.setLayout(new GridLayout());
+    buttonContainer.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING
+                    | GridData.HORIZONTAL_ALIGN_FILL));
     return buttonContainer;
   }
-	
-	public Button newPushButton(Composite parent, String label, String tip) {
-		Button button = new Button(parent, SWT.PUSH);
-		button.setText(label);
-		button.setLayoutData(new GridData(
-		    GridData.VERTICAL_ALIGN_BEGINNING | GridData.HORIZONTAL_ALIGN_FILL));
-//		button.pack();
-		button.setToolTipText(tip);
-		button.addListener(SWT.Selection, this);
-		return button;
-	}
-	
-	protected void newErrorMessage(Composite c) {
-	  newErrorMessage(c, 1);
-	}
-  
-	protected void newErrorMessage(Composite twoCol, int span) {
-	  Label m = new Label(twoCol, SWT.WRAP);
-	  m.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-	  ((GridData)m.getLayoutData()).horizontalSpan = span;
-		((GridData)m.getLayoutData()).widthHint = 
-		  convertHorizontalDLUsToPixels(
-		      IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
-	  errorMessageUI = m;
-	}
 
-	protected void setErrorMessage(String msg) {
-	  errorMessageUI.setText(msg);
-	  Composite shell = errorMessageUI.getParent();
-	  while (! (shell instanceof Shell))
-	    shell = shell.getParent();
-	  shell.setSize(shell.computeSize(-1, -1));
-	}
-	
-	// overridden where needed
-	public void handleEvent(Event event) {
-	  enableOK();
-	}
+  public Button newPushButton(Composite parent, String label, String tip) {
+    Button button = new Button(parent, SWT.PUSH);
+    button.setText(label);
+    button.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING
+                    | GridData.HORIZONTAL_ALIGN_FILL));
+    // button.pack();
+    button.setToolTipText(tip);
+    button.addListener(SWT.Selection, this);
+    return button;
+  }
+
+  protected void newErrorMessage(Composite c) {
+    newErrorMessage(c, 1);
+  }
+
+  protected void newErrorMessage(Composite twoCol, int span) {
+    Label m = new Label(twoCol, SWT.WRAP);
+    m.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    ((GridData) m.getLayoutData()).horizontalSpan = span;
+    ((GridData) m.getLayoutData()).widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+    errorMessageUI = m;
+  }
+
+  protected void setErrorMessage(String msg) {
+    errorMessageUI.setText(msg);
+    Composite shell = errorMessageUI.getParent();
+    while (!(shell instanceof Shell))
+      shell = shell.getParent();
+    shell.setSize(shell.computeSize(-1, -1));
+  }
+
+  // overridden where needed
+  public void handleEvent(Event event) {
+    enableOK();
+  }
 
   protected void superButtonPressed(int buttonId) {
-    super.buttonPressed(buttonId); 
+    super.buttonPressed(buttonId);
   }
-  
+
   // overridden where needed
-	protected void buttonPressed(int buttonId) {
-		if (buttonId == IDialogConstants.OK_ID) {
-		  copyValuesFromGUI();
-		  if ( ! isValid())
-		    return;  // keeps dialog open
-		}
-		super.buttonPressed(buttonId);
-	}
-	
-	public abstract void copyValuesFromGUI();
-	
-	public abstract boolean isValid();
-	
-	protected Control createButtonBar(Composite c) {
-	  Control returnValue = super.createButtonBar(c);
-	  enableOK();
-	  return returnValue;
-	}
-	
-	public abstract void enableOK();
-	
-	public boolean useQualifiedTypes() {
-	  return MultiPageEditorContributor.getUseQualifiedTypes();
-	}
+  protected void buttonPressed(int buttonId) {
+    if (buttonId == IDialogConstants.OK_ID) {
+      copyValuesFromGUI();
+      if (!isValid())
+        return; // keeps dialog open
+    }
+    super.buttonPressed(buttonId);
+  }
+
+  public abstract void copyValuesFromGUI();
+
+  public abstract boolean isValid();
+
+  protected Control createButtonBar(Composite c) {
+    Control returnValue = super.createButtonBar(c);
+    enableOK();
+    return returnValue;
+  }
+
+  public abstract void enableOK();
+
+  public boolean useQualifiedTypes() {
+    return MultiPageEditorContributor.getUseQualifiedTypes();
+  }
 
   protected String[] getAllTypesAsSortedArray() {
-    String [] allTypes = (String [])section.editor.allTypes.get().keySet().toArray(stringArray0);
-  	Arrays.sort(allTypes, new Comparator() {
+    String[] allTypes = (String[]) section.editor.allTypes.get().keySet().toArray(stringArray0);
+    Arrays.sort(allTypes, new Comparator() {
       public int compare(Object o1, Object o2) {
-        String shortName1 = AbstractSection.getShortName((String)o1);
-        String shortName2 = AbstractSection.getShortName((String)o2);
-        if ( ! shortName1.equals(shortName2))
+        String shortName1 = AbstractSection.getShortName((String) o1);
+        String shortName2 = AbstractSection.getShortName((String) o2);
+        if (!shortName1.equals(shortName2))
           return shortName1.compareTo(shortName2);
-  	
-  	    String namespace1 = AbstractSection.getNameSpace((String)o1);
-        String namespace2 = AbstractSection.getNameSpace((String)o2);
+
+        String namespace1 = AbstractSection.getNameSpace((String) o1);
+        String namespace2 = AbstractSection.getNameSpace((String) o2);
         return namespace1.compareTo(namespace2);
       }
-  	});
+    });
     return allTypes;
   }
-  
+
   protected Text newLabeledTypeInput(Composite parent, String label, String tip) {
-	  setTextAndTip(new Label(parent, SWT.NONE), label, tip);
-	  return newTypeInput(parent);
+    setTextAndTip(new Label(parent, SWT.NONE), label, tip);
+    return newTypeInput(parent);
   }
-  
-	/**
+
+  /**
    * @param twoCol
    */
   protected Text newTypeInput(Composite twoCol) {
-		Composite tc = new2ColumnComposite(twoCol);
-    final Text text = newText(tc, SWT.NONE, 
-        "Enter a Type name. Content Assist is available (press Ctrl + Space)");
-    final ArrayList candidatesToPickFrom = getTypeSystemInfoList(); //provide an ArrayList of ITypeSystemInfo
-		Button browseButton = newPushButton(tc, "Browse", "Click here to browse possible types");
-		browseButton.removeListener(SWT.Selection, this);
-		browseButton.addListener(SWT.Selection, new Listener () {
+    Composite tc = new2ColumnComposite(twoCol);
+    final Text text = newText(tc, SWT.NONE,
+                    "Enter a Type name. Content Assist is available (press Ctrl + Space)");
+    final ArrayList candidatesToPickFrom = getTypeSystemInfoList(); // provide an ArrayList of
+                                                                    // ITypeSystemInfo
+    Button browseButton = newPushButton(tc, "Browse", "Click here to browse possible types");
+    browseButton.removeListener(SWT.Selection, this);
+    browseButton.addListener(SWT.Selection, new Listener() {
       public void handleEvent(Event event) {
-      	errorMessageUI.setText("");
-    	  ArrayList typeList = candidatesToPickFrom;			
-        OpenTypeSystemSelectionDialog dialog= new OpenTypeSystemSelectionDialog(getShell(), typeList);
+        errorMessageUI.setText("");
+        ArrayList typeList = candidatesToPickFrom;
+        OpenTypeSystemSelectionDialog dialog = new OpenTypeSystemSelectionDialog(getShell(),
+                        typeList);
         if (dialog.open() != IDialogConstants.OK_ID)
-        	return;
-        Object[] types= dialog.getResult();
+          return;
+        Object[] types = dialog.getResult();
         if (types != null && types.length > 0) {
-        	ITypeSystemInfo selectedType= (ITypeSystemInfo)types[0];
+          ITypeSystemInfo selectedType = (ITypeSystemInfo) types[0];
           text.setText(selectedType.getFullName());
           enableOK();
-        }  
-      }});
-    TypeSystemCompletionProcessor processor = new TypeSystemCompletionProcessor(candidatesToPickFrom);
+        }
+      }
+    });
+    TypeSystemCompletionProcessor processor = new TypeSystemCompletionProcessor(
+                    candidatesToPickFrom);
     ControlContentAssistHelper.createTextContentAssistant(text, processor);
     text.addListener(SWT.KeyDown, new Listener() {
-    	public void handleEvent(Event e) {
-    		errorMessageUI.setText("");
-    	}
+      public void handleEvent(Event e) {
+        errorMessageUI.setText("");
+      }
     });
     text.addListener(SWT.Modify, new Listener() {
-    	public void handleEvent(Event e) {
-    		textModifyCallback(e);
-    	}
+      public void handleEvent(Event e) {
+        textModifyCallback(e);
+      }
     });
     return text;
   }
 
-  public void textModifyCallback(Event e) {}
-  
+  public void textModifyCallback(Event e) {
+  }
+
   // default implementation - always overridden when used
   public ArrayList getTypeSystemInfoList() {
-    return new ArrayList(); 
+    return new ArrayList();
   }
-  
+
   protected boolean typeContainedInTypeSystemInfoList(String fullTypeName, List infoList) {
     for (Iterator it = infoList.iterator(); it.hasNext();) {
-      if (fullTypeName.equals(((ITypeSystemInfo)it.next()).getFullName()))
+      if (fullTypeName.equals(((ITypeSystemInfo) it.next()).getFullName()))
         return true;
     }
-   return false;
+    return false;
   }
-  
+
   /**
-   * In XML, a 0 - length string is represented as <xxx/>, while a null value 
-   * causes the element to be omitted.  Fix up values to be null if empty.
+   * In XML, a 0 - length string is represented as <xxx/>, while a null value causes the element to
+   * be omitted. Fix up values to be null if empty.
+   * 
    * @param v
    * @return
    */
   public static String nullIf0lengthString(String v) {
-  	if ("".equals(v))
-  		return null;
-  	return v;
+    if ("".equals(v))
+      return null;
+    return v;
   }
-  
-  public static String convertNull (String v) {
-  	if (null == v)
-  		return "";
-  	return v;
+
+  public static String convertNull(String v) {
+    if (null == v)
+      return "";
+    return v;
   }
 }

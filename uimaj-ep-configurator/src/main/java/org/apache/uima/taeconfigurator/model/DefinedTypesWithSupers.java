@@ -30,53 +30,53 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
 /**
- * Model part: names of the defined types, augmented with their supertypes
- * This means that some of the built-ins (those in the super chain) will be included.
+ * Model part: names of the defined types, augmented with their supertypes This means that some of
+ * the built-ins (those in the super chain) will be included.
  */
 public class DefinedTypesWithSupers extends AbstractModelPart {
-  
+
   private Set cachedResult;
-  
+
   public DefinedTypesWithSupers(MultiPageEditor pModelRoot) {
     super(pModelRoot);
     cachedResult = new HashSet(modelRoot.INITIAL_SIZE_TYPE_COLLECTIONS);
   }
-  
-	/**
-	 * @return a set of strings, including not only types
-	 * defined in this TAE, but also supertypes of said types.
-	 */
-	public Set get() {
-		if(dirty) {
-		  update();
-		  dirty = false;;
-		}
-		return cachedResult;
-	}
-	
-	private void update() {
+
+  /**
+   * @return a set of strings, including not only types defined in this TAE, but also supertypes of
+   *         said types.
+   */
+  public Set get() {
+    if (dirty) {
+      update();
+      dirty = false;      
+    }
+    return cachedResult;
+  }
+
+  private void update() {
     cachedResult.clear();
-		
-		// for aggregates, this is the fully-merged type system
-		// for all systems, it is the type system with imports resolved
-		TypeSystemDescription typeSystemDescription = modelRoot.getMergedTypeSystemDescription();
-			
-		if(typeSystemDescription == null) 
-		  return; // cleared table
-		
-		TypeDescription[] types = typeSystemDescription.getTypes();
-		TypeSystem typeSystem = modelRoot.descriptorTCAS.get().getTypeSystem();
-		
-    String typeName; 
+
+    // for aggregates, this is the fully-merged type system
+    // for all systems, it is the type system with imports resolved
+    TypeSystemDescription typeSystemDescription = modelRoot.getMergedTypeSystemDescription();
+
+    if (typeSystemDescription == null)
+      return; // cleared table
+
+    TypeDescription[] types = typeSystemDescription.getTypes();
+    TypeSystem typeSystem = modelRoot.descriptorTCAS.get().getTypeSystem();
+
+    String typeName;
     Map allTypes = modelRoot.allTypes.get();
-		for (int i = 0; i < types.length; i++) {
-			cachedResult.add(typeName = types[i].getName());			
-			Type nextType = (Type) allTypes.get(typeName);
-			while (nextType != null) {
-				nextType = typeSystem.getParent(nextType);
-				if (nextType != null) 
-					cachedResult.add(nextType.getName());
-			}
-		}
-	}
+    for (int i = 0; i < types.length; i++) {
+      cachedResult.add(typeName = types[i].getName());
+      Type nextType = (Type) allTypes.get(typeName);
+      while (nextType != null) {
+        nextType = typeSystem.getParent(nextType);
+        if (nextType != null)
+          cachedResult.add(nextType.getName());
+      }
+    }
+  }
 }

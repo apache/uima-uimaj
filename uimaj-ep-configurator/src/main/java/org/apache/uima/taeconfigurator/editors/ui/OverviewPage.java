@@ -25,16 +25,16 @@ import org.eclipse.swt.SWT;
 import org.eclipse.ui.forms.IManagedForm;
 
 /**
- *  
+ * 
  */
 public class OverviewPage extends HeaderPageWithSash {
 
-	private PrimitiveSection primitiveSection;
+  private PrimitiveSection primitiveSection;
 
-	/**
-	 */
+  /**
+   */
   public OverviewPage(MultiPageEditor aEditor) {
-	super(aEditor, "UID_OverviewPage" , "Overview");
+    super(aEditor, "UID_OverviewPage", "Overview");
   }
 
   /**
@@ -42,27 +42,26 @@ public class OverviewPage extends HeaderPageWithSash {
    */
   protected void createFormContent(IManagedForm managedForm) {
     final Form2Panel form = setup2ColumnLayout(managedForm, EQUAL_WIDTH);
-		managedForm.getForm().setText("Overview");	
+    managedForm.getForm().setText("Overview");
 
     if (isLocalProcessingDescriptor()) {
       managedForm.addPart(new GeneralSection(editor, form.left));
       managedForm.addPart(primitiveSection = new PrimitiveSection(editor, form.left));
       managedForm.addPart(new MetaDataSection(editor, form.right));
-		}
-		else {
-			managedForm.addPart(new MetaDataSection(editor, form.left));
-		}
-		createToolBarActions(managedForm);
-		sashForm.setOrientation(SWT.HORIZONTAL);
-		vaction.setChecked(false);
-		haction.setChecked(true);
+    } else {
+      managedForm.addPart(new MetaDataSection(editor, form.left));
+    }
+    createToolBarActions(managedForm);
+    sashForm.setOrientation(SWT.HORIZONTAL);
+    vaction.setChecked(false);
+    haction.setChecked(true);
     if (!isLocalProcessingDescriptor()) {
-  		sashForm.setWeights(new int [] {95, 5});
-    }	
-	}
+      sashForm.setWeights(new int[] { 95, 5 });
+    }
+  }
 
-	public PrimitiveSection getPrimitiveSection() {
-		return primitiveSection;
-	}
+  public PrimitiveSection getPrimitiveSection() {
+    return primitiveSection;
+  }
 
 }

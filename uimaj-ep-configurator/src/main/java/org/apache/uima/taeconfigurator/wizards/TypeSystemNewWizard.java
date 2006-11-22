@@ -24,37 +24,30 @@ import java.text.MessageFormat;
 import org.eclipse.ui.INewWizard;
 
 /**
- * Create a new file resource in the provided container. 
- * If the container resource (a folder or a project) is selected 
- * in the workspace when the wizard is opened, it will accept 
- * it as the target container. If a sample multi-page editor 
- * is registered for the same extension, it will be able to open it.
+ * Create a new file resource in the provided container. If the container resource (a folder or a
+ * project) is selected in the workspace when the wizard is opened, it will accept it as the target
+ * container. If a sample multi-page editor is registered for the same extension, it will be able to
+ * open it.
  */
 
 public class TypeSystemNewWizard extends AbstractNewWizard implements INewWizard {
 
-  public static final String TYPESYSTEM_TEMPLATE = 
-    "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
-    + "<typeSystemDescription " + XMLNS_PART
-    + "<name>{0}</name>\n"
-    + "<description></description>\n"
-    + "<version>1.0</version>\n"
-    + "<vendor></vendor>\n"
-    + "{1}"
-    + "</typeSystemDescription>\n";
-  
-	public TypeSystemNewWizard() {
-		super("New Type System Descriptor File");
-	}
-	
-	public void addPages() {
-		page = new TypeSystemNewWizardPage(selection);
-		addPage(page);
-	}
+  public static final String TYPESYSTEM_TEMPLATE = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
+                  + "<typeSystemDescription " + XMLNS_PART + "<name>{0}</name>\n"
+                  + "<description></description>\n" + "<version>1.0</version>\n"
+                  + "<vendor></vendor>\n" + "{1}" + "</typeSystemDescription>\n";
 
-	public String getPrototypeDescriptor(String name) {
-	  return MessageFormat.format(TYPESYSTEM_TEMPLATE, new Object[] {
-        name, "<types></types>\n"});
-	}
+  public TypeSystemNewWizard() {
+    super("New Type System Descriptor File");
+  }
+
+  public void addPages() {
+    page = new TypeSystemNewWizardPage(selection);
+    addPage(page);
+  }
+
+  public String getPrototypeDescriptor(String name) {
+    return MessageFormat.format(TYPESYSTEM_TEMPLATE, new Object[] { name, "<types></types>\n" });
+  }
 
 }

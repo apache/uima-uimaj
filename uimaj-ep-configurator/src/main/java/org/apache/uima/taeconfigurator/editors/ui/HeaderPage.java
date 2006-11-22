@@ -48,16 +48,25 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 public abstract class HeaderPage extends FormPage {
 
   final public static boolean EQUAL_WIDTH = true;
+
   protected SashForm sashForm;
 
   protected MultiPageEditor editor;
+
   protected FormToolkit toolkit;
+
   protected Composite leftPanel;
+
   protected Composite rightPanel;
+
   protected int sashFormWidth;
+
   protected float leftPanelPercent;
+
   protected float rightPanelPercent;
+
   protected int leftPanelWidth;
+
   protected int rightPanelWidth;
 
   public HeaderPage(MultiPageEditor formEditor, String id, String keyPageTitle) {
@@ -71,9 +80,10 @@ public abstract class HeaderPage extends FormPage {
   }
 
   protected void maybeInitialize(IManagedForm managedForm) {
-  	if (TAEConfiguratorPlugin.is30version)
-  		((ManagedForm)managedForm).initialize();
+    if (TAEConfiguratorPlugin.is30version)
+      ((ManagedForm) managedForm).initialize();
   }
+
   /*
    * General methods to create sub areas on pages
    */
@@ -110,9 +120,9 @@ public abstract class HeaderPage extends FormPage {
     xtra.setLayoutData(new GridData(GridData.FILL_BOTH));
 
     Control c = form.getParent();
-    while ( ! (c instanceof ScrolledComposite))
+    while (!(c instanceof ScrolledComposite))
       c = c.getParent();
-    ((GridData)xtra.getLayoutData()).widthHint = c.getSize().x; 
+    ((GridData) xtra.getLayoutData()).widthHint = c.getSize().x;
     return xtra;
   }
 
@@ -134,10 +144,10 @@ public abstract class HeaderPage extends FormPage {
     xtra.setLayout(new GridLayout(1, false));
     xtra.setLayoutData(new GridData(GridData.FILL_BOTH));
     Control c = xtra.getParent();
-    while ( ! (c instanceof ScrolledComposite))
+    while (!(c instanceof ScrolledComposite))
       c = c.getParent();
-    ((GridData)xtra.getLayoutData()).widthHint = c.getSize().x;
-    ((GridData)xtra.getLayoutData()).heightHint = c.getSize().y;
+    ((GridData) xtra.getLayoutData()).widthHint = c.getSize().x;
+    ((GridData) xtra.getLayoutData()).heightHint = c.getSize().y;
     sashForm = new SashForm(xtra, SWT.HORIZONTAL);
 
     sashForm.setLayoutData(new GridData(GridData.FILL_BOTH)); // needed
@@ -149,27 +159,27 @@ public abstract class HeaderPage extends FormPage {
     ((GridLayout) rightPanel.getLayout()).marginHeight = 5;
     ((GridLayout) rightPanel.getLayout()).marginWidth = 5;
     sashForm.setWeights(new int[] { w1, w2 });
-    leftPanelPercent = (float)w1 / (float)(w1 + w2);
-    rightPanelPercent = (float)w2 / (float)(w1 + w2);
-    
+    leftPanelPercent = (float) w1 / (float) (w1 + w2);
+    rightPanelPercent = (float) w2 / (float) (w1 + w2);
+
     rightPanel.addControlListener(new ControlAdapter() {
       public void controlResized(ControlEvent e) {
         setSashFormWidths();
       }
     });
-   
+
     return new Form2Panel(form, leftPanel, rightPanel);
   }
 
   void setSashFormWidths() {
 
     sashFormWidth = sashForm.getSize().x;
-    int [] ws = sashForm.getWeights();
-    
-    leftPanelWidth =  (int)(((float)ws[0]/(float)(ws[0] + ws[1])) * sashFormWidth);
-    rightPanelWidth = (int)(((float)ws[1]/(float)(ws[0] + ws[1])) * sashFormWidth);
+    int[] ws = sashForm.getWeights();
+
+    leftPanelWidth = (int) (((float) ws[0] / (float) (ws[0] + ws[1])) * sashFormWidth);
+    rightPanelWidth = (int) (((float) ws[1] / (float) (ws[0] + ws[1])) * sashFormWidth);
   }
-  
+
   /**
    * Sash impl
    * 
@@ -177,8 +187,7 @@ public abstract class HeaderPage extends FormPage {
    * @param equalWidth
    * @return
    */
-  public Form2Panel setup2ColumnLayout(IManagedForm managedForm,
-      boolean equalWidth) {
+  public Form2Panel setup2ColumnLayout(IManagedForm managedForm, boolean equalWidth) {
     if (equalWidth)
       return setup2ColumnLayout(managedForm, 50, 50);
     else
@@ -186,8 +195,7 @@ public abstract class HeaderPage extends FormPage {
       return setup2ColumnLayout(managedForm, 60, 40);
   }
 
-  public Form2Panel setup2ColumnLayoutNotSash(IManagedForm managedForm,
-      boolean equalWidth) {
+  public Form2Panel setup2ColumnLayoutNotSash(IManagedForm managedForm, boolean equalWidth) {
     final ScrolledForm sform = managedForm.getForm();
     final Composite form = sform.getBody();
     GridLayout layout = new GridLayout(2, equalWidth);
@@ -196,23 +204,22 @@ public abstract class HeaderPage extends FormPage {
     leftPanel = newComposite(form);
     rightPanel = newComposite(form);
     // strategy for setting size hints of right and left panels
-    //   Why set hints? Because they make the inner containing things
-    //     scroll horiz. if they're too wide (useful for aggregates having
-    //     long names).
-    //   What hint to set? The hint should be the smallest size you want
-    //     with child scrolling, before the tabbed page container itself
-    //     gets a scroll bar.
-    //   When in the life cycle to do this? Only need to do it once, but
-    //     after the Grid Layout has happened. This can be the first resizing
-    //     event (learned this by debugging)
+    // Why set hints? Because they make the inner containing things
+    // scroll horiz. if they're too wide (useful for aggregates having
+    // long names).
+    // What hint to set? The hint should be the smallest size you want
+    // with child scrolling, before the tabbed page container itself
+    // gets a scroll bar.
+    // When in the life cycle to do this? Only need to do it once, but
+    // after the Grid Layout has happened. This can be the first resizing
+    // event (learned this by debugging)
 
     sform.addListener(SWT.Resize, new Listener() {
       public void handleEvent(Event event) {
         float col1CurrentWidth = leftPanel.getSize().x;
         float col2CurrentWidth = rightPanel.getSize().x;
         final int minLeftPanelWidth = 250; // in pels
-        final int minRightPanelWidth = (int) (col2CurrentWidth
-            * minLeftPanelWidth / col1CurrentWidth);
+        final int minRightPanelWidth = (int) (col2CurrentWidth * minLeftPanelWidth / col1CurrentWidth);
         ((GridData) leftPanel.getLayoutData()).widthHint = minLeftPanelWidth;
         ((GridData) rightPanel.getLayoutData()).widthHint = minRightPanelWidth;
         sform.removeListener(SWT.Resize, this); // only do this one time
@@ -221,8 +228,7 @@ public abstract class HeaderPage extends FormPage {
     return new Form2Panel(form, leftPanel, rightPanel);
   }
 
-  public Form2Panel setup2ColumnLayoutOn4Grid(IManagedForm managedForm,
-      boolean equalWidth) {
+  public Form2Panel setup2ColumnLayoutOn4Grid(IManagedForm managedForm, boolean equalWidth) {
     Form2Panel f = setup2ColumnLayoutNotSash(managedForm, equalWidth);
     ((GridLayout) f.form.getLayout()).numColumns = 4;
     ((GridData) f.left.getLayoutData()).horizontalSpan = 2;
@@ -243,9 +249,9 @@ public abstract class HeaderPage extends FormPage {
     }
   }
 
-  //**************************************************
-  //* Model Access
-  //**************************************************
+  // **************************************************
+  // * Model Access
+  // **************************************************
 
   protected boolean isPrimitive() {
     return editor.getAeDescription().isPrimitive();
@@ -256,43 +262,43 @@ public abstract class HeaderPage extends FormPage {
   }
 
   public boolean isTypeSystemDescriptor() {
-  	return editor.isTypeSystemDescriptor();
+    return editor.isTypeSystemDescriptor();
   }
-  
+
   public boolean isIndexDescriptor() {
-  	return editor.isFsIndexCollection();
+    return editor.isFsIndexCollection();
   }
-  
+
   public boolean isTypePriorityDescriptor() {
-  	return editor.isTypePriorityDescriptor();
+    return editor.isTypePriorityDescriptor();
   }
-  
+
   public boolean isExtResAndBindingsDescriptor() {
-  	return editor.isExtResAndBindingsDescriptor();
+    return editor.isExtResAndBindingsDescriptor();
   }
-  
-	public boolean isCollectionReaderDescriptor() {
-		return editor.isCollectionReaderDescriptor();
-	}
-	
-	public boolean isCasInitializerDescriptor() {
-		return editor.isCasInitializerDescriptor();
-	}
-	
-	public boolean isCasConsumerDescriptor() {
-		return editor.isCasConsumerDescriptor();
-	}
-	
-	public boolean isLocalProcessingDescriptor() {
-		return editor.isLocalProcessingDescriptor();
-	}
+
+  public boolean isCollectionReaderDescriptor() {
+    return editor.isCollectionReaderDescriptor();
+  }
+
+  public boolean isCasInitializerDescriptor() {
+    return editor.isCasInitializerDescriptor();
+  }
+
+  public boolean isCasConsumerDescriptor() {
+    return editor.isCasConsumerDescriptor();
+  }
+
+  public boolean isLocalProcessingDescriptor() {
+    return editor.isLocalProcessingDescriptor();
+  }
 
   protected AnalysisEngineMetaData getAnalysisEngineMetaData() {
     return editor.getAeDescription().getAnalysisEngineMetaData();
   }
 
-  //**************************************************
-  //* Common Actions in Handlers
-  //**************************************************
+  // **************************************************
+  // * Common Actions in Handlers
+  // **************************************************
 
 }

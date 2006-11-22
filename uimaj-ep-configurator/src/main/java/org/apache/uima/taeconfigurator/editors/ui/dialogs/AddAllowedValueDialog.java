@@ -29,61 +29,64 @@ import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
 public class AddAllowedValueDialog extends AbstractDialogKeyVerify {
   private StyledText allowedValueUI;
+
   private Text descriptionUI;
-  
+
   public String allowedValue;
+
   public String description;
-  
+
   private AllowedValue existingAv;
 
-	/**
-	 * Constructor for Adding or Editing an Allowed Value.
-	 * @param aSection
-	 * @param aExistingTd
-	 */
-	public AddAllowedValueDialog(AbstractSection aSection, AllowedValue aExistingAv) {
-		super(aSection, "Add an Allowed Value for a String subtype",
-		    "Use this panel to add or edit an allowed value.  The allowed value is any string.");
-		existingAv = aExistingAv;
-	}
-	
-	protected Control createDialogArea(Composite parent) {
-		Composite mainArea = (Composite)super.createDialogArea(parent, existingAv);
-		
-		// This part of the form looks like this sketch
-		//   
-		// Allowed Value: Text field             << in 2 grid composite
-		// description: Text field 					<< in 2 grid composite
-		
+  /**
+   * Constructor for Adding or Editing an Allowed Value.
+   * 
+   * @param aSection
+   * @param aExistingTd
+   */
+  public AddAllowedValueDialog(AbstractSection aSection, AllowedValue aExistingAv) {
+    super(aSection, "Add an Allowed Value for a String subtype",
+                    "Use this panel to add or edit an allowed value.  The allowed value is any string.");
+    existingAv = aExistingAv;
+  }
+
+  protected Control createDialogArea(Composite parent) {
+    Composite mainArea = (Composite) super.createDialogArea(parent, existingAv);
+
+    // This part of the form looks like this sketch
+    //   
+    // Allowed Value: Text field << in 2 grid composite
+    // description: Text field << in 2 grid composite
+
     Composite twoCol = new2ColumnComposite(mainArea);
-    
+
     allowedValueUI = newLabeledSingleLineStyledText(twoCol, "Allowed Value",
-        "A literal string value which this string is allowed to have");
-		descriptionUI = newDescription(twoCol, "Description of the allowed value");
-		newErrorMessage(twoCol, 2);
-    
+                    "A literal string value which this string is allowed to have");
+    descriptionUI = newDescription(twoCol, "Description of the allowed value");
+    newErrorMessage(twoCol, 2);
+
     if (null != existingAv) {
       descriptionUI.setText(convertNull(existingAv.getDescription()));
       allowedValueUI.setText(convertNull(existingAv.getString()));
     }
 
- 		return mainArea;
-	}
-	
-	public void copyValuesFromGUI() {
-	  allowedValue = allowedValueUI.getText();
+    return mainArea;
+  }
+
+  public void copyValuesFromGUI() {
+    allowedValue = allowedValueUI.getText();
     description = nullIf0lengthString(descriptionUI.getText());
   }
-	
-	public boolean isValid() {
-	  if (allowedValue.length() == 0)
-	    return false; 
-	  return true;
-	}
-	
-	public void enableOK() {
-	  copyValuesFromGUI();
-		okButton.setEnabled(allowedValue.length() > 0);
-	}
-	
+
+  public boolean isValid() {
+    if (allowedValue.length() == 0)
+      return false;
+    return true;
+  }
+
+  public void enableOK() {
+    copyValuesFromGUI();
+    okButton.setEnabled(allowedValue.length() > 0);
+  }
+
 }

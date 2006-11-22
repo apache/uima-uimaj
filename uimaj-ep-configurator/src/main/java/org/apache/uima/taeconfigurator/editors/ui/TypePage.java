@@ -19,37 +19,35 @@
 
 package org.apache.uima.taeconfigurator.editors.ui;
 
-
-
 import org.apache.uima.taeconfigurator.editors.Form2Panel;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.eclipse.ui.forms.IManagedForm;
 
 public class TypePage extends HeaderPageWithSash {
 
-	private TypeSection typeSection;
+  private TypeSection typeSection;
+
   private TypeImportSection typeImportSection;
 
-	public TypePage(MultiPageEditor editor) {
-		super(editor, "Type Definitions");	
-	}
-	
-	/**
-	 * Called by the framework to fill in the contents
-	 */
-	protected void createFormContent(IManagedForm managedForm) { 
+  public TypePage(MultiPageEditor editor) {
+    super(editor, "Type Definitions");
+  }
+
+  /**
+   * Called by the framework to fill in the contents
+   */
+  protected void createFormContent(IManagedForm managedForm) {
     // always show same screen layout - user could dynamically switch
-  	managedForm.getForm().setText("Type System Definition");	
-		Form2Panel form2Panel =
-		setup2ColumnLayout(managedForm, 60, 40);
-		managedForm.addPart(typeSection = new TypeSection(editor, form2Panel.left));
-		managedForm.addPart(typeImportSection = new TypeImportSection(editor, form2Panel.right));  
-		createToolBarActions(managedForm);
-	}
-	
-	public TypeSection getTypeSection() {
-		return typeSection;
-	}
+    managedForm.getForm().setText("Type System Definition");
+    Form2Panel form2Panel = setup2ColumnLayout(managedForm, 60, 40);
+    managedForm.addPart(typeSection = new TypeSection(editor, form2Panel.left));
+    managedForm.addPart(typeImportSection = new TypeImportSection(editor, form2Panel.right));
+    createToolBarActions(managedForm);
+  }
+
+  public TypeSection getTypeSection() {
+    return typeSection;
+  }
 
   public TypeImportSection getTypeImportSection() {
     return typeImportSection;

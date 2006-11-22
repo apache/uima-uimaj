@@ -23,36 +23,33 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.widgets.Display;
 
 public class SearchMonitoringThread extends Thread {
-	private SearchThread m_searchThread;
-	FindComponentDialog m_dialog;
-	
-	public SearchMonitoringThread(FindComponentDialog dialog,
-		SearchThread searchThread) {
-		m_dialog = dialog;
-		m_searchThread = searchThread;
-	}
-	public void run() {
-		while(true) {
-			if(m_searchThread.isDone()) {
-				if(!m_dialog.getStatusLabel1().isDisposed()) {
-					Display display = m_dialog.getStatusLabel1().getDisplay();
-					display.syncExec(
-						new Runnable() {
-							public void run() {
-								m_dialog.buttonPressed(IDialogConstants.CANCEL_ID);
-							}
-						}
-					);
-				}
-				return;
-			}
+  private SearchThread m_searchThread;
 
-			try {
-				Thread.sleep(500);
-			}
-			catch(Exception ex) {
-			}
-		}
-	}
+  FindComponentDialog m_dialog;
+
+  public SearchMonitoringThread(FindComponentDialog dialog, SearchThread searchThread) {
+    m_dialog = dialog;
+    m_searchThread = searchThread;
+  }
+
+  public void run() {
+    while (true) {
+      if (m_searchThread.isDone()) {
+        if (!m_dialog.getStatusLabel1().isDisposed()) {
+          Display display = m_dialog.getStatusLabel1().getDisplay();
+          display.syncExec(new Runnable() {
+            public void run() {
+              m_dialog.buttonPressed(IDialogConstants.CANCEL_ID);
+            }
+          });
+        }
+        return;
+      }
+
+      try {
+        Thread.sleep(500);
+      } catch (Exception ex) {
+      }
+    }
+  }
 }
-

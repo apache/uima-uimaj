@@ -44,25 +44,29 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.forms.IManagedForm;
 
 /**
- * Declaration of primitive external resource dependencies A 4 col table:
- * bound/unbound, keys, opt flag, and interface name
+ * Declaration of primitive external resource dependencies A 4 col table: bound/unbound, keys, opt
+ * flag, and interface name
  */
 
 public class ResourceDependencySection extends AbstractSection {
 
   public final static int KEY_COL = 2;
+
   public final static int OPT_COL = 1;
-  
+
   private final static String BOUND = "Bound";
 
   public Table table; // accessed by inner class
 
   private Button addButton;
+
   private Button editButton;
+
   private Button removeButton;
 
   public ResourceDependencySection(MultiPageEditor editor, Composite parent) {
-    super(editor, parent, "Resource Dependencies", "Primitives declare what resources they need. A primitive can only bind to one external resource.");
+    super(editor, parent, "Resource Dependencies",
+                    "Primitives declare what resources they need. A primitive can only bind to one external resource.");
   }
 
   public void initialize(IManagedForm form) {
@@ -95,16 +99,15 @@ public class ResourceDependencySection extends AbstractSection {
   }
 
   public void refresh() {
-  	super.refresh();
+    super.refresh();
     table.getParent().setRedraw(false);
     table.removeAll();
     if (isPrimitive())
       addPrimitiveToGUI("", editor.getAeDescription());
     else { // is aggregate
-      for (Iterator it = editor.getResolvedDelegates().entrySet()
-          .iterator(); it.hasNext();) {
+      for (Iterator it = editor.getResolvedDelegates().entrySet().iterator(); it.hasNext();) {
         Map.Entry item = (Map.Entry) it.next();
-        addDelegateToGUI("", (String)item.getKey(), (ResourceSpecifier)item.getValue());
+        addDelegateToGUI("", (String) item.getKey(), (ResourceSpecifier) item.getValue());
       }
       FlowControllerDeclaration fcd = editor.getResolvedFlowControllerDeclaration();
       if (null != fcd) {
@@ -116,29 +119,28 @@ public class ResourceDependencySection extends AbstractSection {
   }
 
   private void addDelegateToGUI(String keys, String newKey, ResourceSpecifier o) {
-        if (o instanceof AnalysisEngineDescription) {
-            AnalysisEngineDescription aeDescription = (AnalysisEngineDescription) o;
-            if (aeDescription.isPrimitive())
-                addPrimitiveToGUI(keys + newKey + "/", aeDescription);
-            else {
-                for (Iterator it = editor.getDelegateAEdescriptions(
-                        aeDescription).entrySet().iterator(); it.hasNext();) {
-                  Map.Entry item = (Map.Entry) it.next();
-                    addDelegateToGUI(keys + newKey + "/",
-                            (String)item.getKey(), (ResourceSpecifier)item.getValue());
-                }
-                FlowControllerDeclaration fcd = getFlowControllerDeclaration();
-                if (null != fcd) {
-                  addPrimitiveToGUI(keys + fcd.getKey() + "/", 
-                      ((ResourceCreationSpecifier)editor.getResolvedFlowControllerDeclaration().getSpecifier())); 
-                }
-            }
+    if (o instanceof AnalysisEngineDescription) {
+      AnalysisEngineDescription aeDescription = (AnalysisEngineDescription) o;
+      if (aeDescription.isPrimitive())
+        addPrimitiveToGUI(keys + newKey + "/", aeDescription);
+      else {
+        for (Iterator it = editor.getDelegateAEdescriptions(aeDescription).entrySet().iterator(); it
+                        .hasNext();) {
+          Map.Entry item = (Map.Entry) it.next();
+          addDelegateToGUI(keys + newKey + "/", (String) item.getKey(), (ResourceSpecifier) item
+                          .getValue());
         }
+        FlowControllerDeclaration fcd = getFlowControllerDeclaration();
+        if (null != fcd) {
+          addPrimitiveToGUI(keys + fcd.getKey() + "/", ((ResourceCreationSpecifier) editor
+                          .getResolvedFlowControllerDeclaration().getSpecifier()));
+        }
+      }
     }
+  }
 
   private void addPrimitiveToGUI(String keys, ResourceCreationSpecifier aeDescription) {
-    ExternalResourceDependency[] xrd = aeDescription
-        .getExternalResourceDependencies();
+    ExternalResourceDependency[] xrd = aeDescription.getExternalResourceDependencies();
     if (null != xrd) {
       for (int i = 0; i < xrd.length; i++) {
         addXrdToGUI(keys, xrd[i]);
@@ -146,8 +148,7 @@ public class ResourceDependencySection extends AbstractSection {
     }
   }
 
-  private void updateXrdToGUI(TableItem item, ExternalResourceDependency xrd,
-      String keys) {
+  private void updateXrdToGUI(TableItem item, ExternalResourceDependency xrd, String keys) {
     String key = keys + xrd.getKey();
     item.setText(0, isBound(key) ? BOUND : "");
     item.setText(KEY_COL, key);
@@ -157,7 +158,8 @@ public class ResourceDependencySection extends AbstractSection {
   }
 
   private boolean isBound(String key) {
-    ExternalResourceBinding[] xrb = editor.getResolvedExternalResourcesAndBindings().getExternalResourceBindings();
+    ExternalResourceBinding[] xrb = editor.getResolvedExternalResourcesAndBindings()
+                    .getExternalResourceBindings();
     if (null != xrb)
       for (int i = 0; i < xrb.length; i++) {
         if (key.equals(xrb[i].getKey()))
@@ -171,12 +173,13 @@ public class ResourceDependencySection extends AbstractSection {
     if (null != xrb)
       for (int i = 0; i < xrb.length; i++) {
         if (oldKey.equals(xrb[i].getKey())) {
-        	xrb[i].setKey(newKey);
-        	editor.getResourcesPage().getResourceBindingsSection().markStale();
-        	return;  // only 1 binding at most
+          xrb[i].setKey(newKey);
+          editor.getResourcesPage().getResourceBindingsSection().markStale();
+          return; // only 1 binding at most
         }
       }
   }
+
   /**
    * 
    * @param keys
@@ -197,14 +200,14 @@ public class ResourceDependencySection extends AbstractSection {
     if (event.widget == addButton) {
       handleAdd();
     } else if (event.widget == removeButton
-        || (event.type == SWT.KeyUp && event.character == SWT.DEL)) {
+                    || (event.type == SWT.KeyUp && event.character == SWT.DEL)) {
       handleRemove();
     } else if (event.widget == editButton || event.type == SWT.MouseDoubleClick) {
       handleEdit();
     }
-    //		else if (event.type == SWT.MouseDown && event.button == 3) {
-    //			handleTableContextMenuRequest(event);
-    //		}
+    // else if (event.type == SWT.MouseDown && event.button == 3) {
+    // handleTableContextMenuRequest(event);
+    // }
     else if (event.type == SWT.MouseHover) {
       handleTableHoverHelp(event);
     } else if (event.type == SWT.Selection) {
@@ -214,13 +217,13 @@ public class ResourceDependencySection extends AbstractSection {
   }
 
   public ExternalResourceDependency getXRDependencyFromTableItem(TableItem item) {
-  	return (ExternalResourceDependency) item.getData();
+    return (ExternalResourceDependency) item.getData();
   }
-  
-  //*****************************************************
-  //* When hovering over an item in the table, show the
-  //* description
-  //*****************************************************
+
+  // *****************************************************
+  // * When hovering over an item in the table, show the
+  // * description
+  // *****************************************************
   private void handleTableHoverHelp(Event event) {
     TableItem item = table.getItem(new Point(event.x, event.y));
     if (null != item) {
@@ -234,8 +237,7 @@ public class ResourceDependencySection extends AbstractSection {
   private void handleEdit() {
     TableItem item = table.getSelection()[0];
     ExternalResourceDependency xrd = getXRDependencyFromTableItem(item);
-    AddExternalResourceDependencyDialog dialog = new AddExternalResourceDependencyDialog(
-        this, xrd);
+    AddExternalResourceDependencyDialog dialog = new AddExternalResourceDependencyDialog(this, xrd);
     if (dialog.open() == Window.CANCEL)
       return;
 
@@ -256,11 +258,11 @@ public class ResourceDependencySection extends AbstractSection {
   private void handleRemove() {
     TableItem item = table.getSelection()[0];
     editor.getAeDescription().setExternalResourceDependencies(
-    		(ExternalResourceDependency [])Utility.removeElementFromArray(
-    				getExternalResourceDependencies(),
-    				getXRDependencyFromTableItem(item),
-						ExternalResourceDependency.class));
-    
+                    (ExternalResourceDependency[]) Utility.removeElementFromArray(
+                                    getExternalResourceDependencies(),
+                                    getXRDependencyFromTableItem(item),
+                                    ExternalResourceDependency.class));
+
     table.setSelection(table.getSelectionIndices()[0] - 1);
     item.dispose();
     finishAction();
@@ -268,11 +270,10 @@ public class ResourceDependencySection extends AbstractSection {
 
   /**
    * add a external resource dependency to the model
-   *  
+   * 
    */
   private void handleAdd() {
-    AddExternalResourceDependencyDialog dialog = new AddExternalResourceDependencyDialog(
-        this);
+    AddExternalResourceDependencyDialog dialog = new AddExternalResourceDependencyDialog(this);
 
     if (dialog.open() == Window.CANCEL)
       return;
@@ -281,17 +282,15 @@ public class ResourceDependencySection extends AbstractSection {
     addXrdToGUI("", xrd);
   }
 
-  private void alterExistingExternalResourceDependency(
-      ExternalResourceDependency xrd, AddExternalResourceDependencyDialog dialog) {
+  private void alterExistingExternalResourceDependency(ExternalResourceDependency xrd,
+                  AddExternalResourceDependencyDialog dialog) {
     valueChanged = false;
     String oldKey = xrd.getKey();
     xrd.setKey(setValueChanged(dialog.keyName, xrd.getKey()));
     if (valueChanged)
-    	propagateKeyChange(dialog.keyName, oldKey);
-    xrd.setDescription(setValueChanged(multiLineFix(dialog.description), xrd
-        .getDescription()));
-    xrd.setInterfaceName(setValueChanged(dialog.interfaceName, xrd
-        .getInterfaceName()));
+      propagateKeyChange(dialog.keyName, oldKey);
+    xrd.setDescription(setValueChanged(multiLineFix(dialog.description), xrd.getDescription()));
+    xrd.setInterfaceName(setValueChanged(dialog.interfaceName, xrd.getInterfaceName()));
     if (dialog.optional != xrd.isOptional()) {
       xrd.setOptional(dialog.optional);
       valueChanged = true;
@@ -301,7 +300,7 @@ public class ResourceDependencySection extends AbstractSection {
   }
 
   private ExternalResourceDependency addNewExternalResourceDependency(
-      AddExternalResourceDependencyDialog dialog) {
+                  AddExternalResourceDependencyDialog dialog) {
     ExternalResourceDependency[] xrds = getExternalResourceDependencies();
 
     ExternalResourceDependency xrd = new ExternalResourceDependency_impl();
@@ -309,7 +308,7 @@ public class ResourceDependencySection extends AbstractSection {
 
     if (null == xrds)
       editor.getAeDescription().setExternalResourceDependencies(
-          new ExternalResourceDependency[] { xrd });
+                      new ExternalResourceDependency[] { xrd });
     else {
       ExternalResourceDependency[] newXrds = new ExternalResourceDependency[xrds.length + 1];
       System.arraycopy(xrds, 0, newXrds, 0, xrds.length);
@@ -338,9 +337,14 @@ public class ResourceDependencySection extends AbstractSection {
     if (null != xrds) {
       for (int i = 0; i < xrds.length; i++) {
         if (key.equals(xrds[i].getKey())) {
-          Utility.popMessage("Key Already Defined",
-          		MessageFormat.format("The key name you specified, ''{0}'', is already defined.  Please pick a different key name.",
-                  new String [] {key}), MessageDialog.ERROR);
+          Utility
+                          .popMessage(
+                                          "Key Already Defined",
+                                          MessageFormat
+                                                          .format(
+                                                                          "The key name you specified, ''{0}'', is already defined.  Please pick a different key name.",
+                                                                          new String[] { key }),
+                                          MessageDialog.ERROR);
           return true;
         }
 

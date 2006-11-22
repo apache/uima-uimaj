@@ -22,19 +22,16 @@ package org.apache.uima.taeconfigurator.wizards;
 import org.eclipse.jface.viewers.ISelection;
 
 /**
- * The "New" wizard page allows setting the container for
- * the new file as well as the file name. Will only accept 
- * file name without the extension OR with the extension 
- * that matches the expected one (xml).
+ * The "New" wizard page allows setting the container for the new file as well as the file name.
+ * Will only accept file name without the extension OR with the extension that matches the expected
+ * one (xml).
  */
 
 public class TypeSystemNewWizardPage extends AbstractNewWizardPage {
 
-	public TypeSystemNewWizardPage(ISelection selection) {
-	  super(selection, "big_t_s_.gif",
-	      "Type System Descriptor File",
-	      "Create a new Type System Descriptor file",
-	      "typeSystemDescriptor.xml");
-	}
+  public TypeSystemNewWizardPage(ISelection selection) {
+    super(selection, "big_t_s_.gif", "Type System Descriptor File",
+                    "Create a new Type System Descriptor file", "typeSystemDescriptor.xml");
+  }
 
 }

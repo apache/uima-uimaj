@@ -32,84 +32,78 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditorContributor;
 
 public class XMLConfiguration extends SourceViewerConfiguration {
-	private XMLDoubleClickStrategy doubleClickStrategy;
-	private XMLTagScanner tagScanner;
-	private XMLScanner scanner;
-	private ColorManager colorManager;
+  private XMLDoubleClickStrategy doubleClickStrategy;
 
-	public XMLConfiguration(ColorManager colorManager) {
-		this.colorManager = colorManager;
-	}
-	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
-		return new String[] {
-			IDocument.DEFAULT_CONTENT_TYPE,
-			XMLPartitionScanner.XML_COMMENT,
-			XMLPartitionScanner.XML_TAG };
-	}
-	public ITextDoubleClickStrategy getDoubleClickStrategy(
-		ISourceViewer sourceViewer,
-		String contentType) {
-		if (doubleClickStrategy == null)
-			doubleClickStrategy = new XMLDoubleClickStrategy();
-		return doubleClickStrategy;
-	}
+  private XMLTagScanner tagScanner;
 
-	protected XMLScanner getXMLScanner() {
-		if (scanner == null) {
-			scanner = new XMLScanner(colorManager);
-			scanner.setDefaultReturnToken(
-				new Token(
-					new TextAttribute(
-						colorManager.getColor(IXMLColorConstants.DEFAULT))));
-		}
-		return scanner;
-	}
-	protected XMLTagScanner getXMLTagScanner() {
-		if (tagScanner == null) {
-			tagScanner = new XMLTagScanner(colorManager);
-			tagScanner.setDefaultReturnToken(
-				new Token(
-					new TextAttribute(
-						colorManager.getColor(IXMLColorConstants.TAG))));
-		}
-		return tagScanner;
-	}
+  private XMLScanner scanner;
 
-	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
-		PresentationReconciler reconciler = new PresentationReconciler();
+  private ColorManager colorManager;
 
-		DefaultDamagerRepairer dr =
-			new DefaultDamagerRepairer(getXMLTagScanner());
-		reconciler.setDamager(dr, XMLPartitionScanner.XML_TAG);
-		reconciler.setRepairer(dr, XMLPartitionScanner.XML_TAG);
+  public XMLConfiguration(ColorManager colorManager) {
+    this.colorManager = colorManager;
+  }
 
-		dr = new DefaultDamagerRepairer(getXMLScanner());
-		reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
-		reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
+  public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
+    return new String[] { IDocument.DEFAULT_CONTENT_TYPE, XMLPartitionScanner.XML_COMMENT,
+        XMLPartitionScanner.XML_TAG };
+  }
 
-		NonRuleBasedDamagerRepairer ndr =
-			new NonRuleBasedDamagerRepairer(
-				new TextAttribute(
-					colorManager.getColor(IXMLColorConstants.XML_COMMENT)));
-		reconciler.setDamager(ndr, XMLPartitionScanner.XML_COMMENT);
-		reconciler.setRepairer(ndr, XMLPartitionScanner.XML_COMMENT);
+  public ITextDoubleClickStrategy getDoubleClickStrategy(ISourceViewer sourceViewer,
+                  String contentType) {
+    if (doubleClickStrategy == null)
+      doubleClickStrategy = new XMLDoubleClickStrategy();
+    return doubleClickStrategy;
+  }
 
-		return reconciler;
-	}
-	
-	// these 2 functions don't seem to control indent
-	public int getTabWidth(ISourceViewer sourceViewer) {
-		return MultiPageEditorContributor.getXMLindent();
-	}
- 	
-	public String[] getIndentPrefixes(ISourceViewer sourceViewer, String contentType) {
-	  StringBuffer spaces = new StringBuffer(4);
-	  int indent = getTabWidth(null);
-	  for (int i = 0; i < indent; i++)
-	    spaces.append(' ');
-		return new String[] { 
-		    "\t", 
-		    spaces.toString()/*, ""*/ }; //$NON-NLS-1$ //$NON-NLS-2$ 
-	}
-	
+  protected XMLScanner getXMLScanner() {
+    if (scanner == null) {
+      scanner = new XMLScanner(colorManager);
+      scanner.setDefaultReturnToken(new Token(new TextAttribute(colorManager
+                      .getColor(IXMLColorConstants.DEFAULT))));
+    }
+    return scanner;
+  }
+
+  protected XMLTagScanner getXMLTagScanner() {
+    if (tagScanner == null) {
+      tagScanner = new XMLTagScanner(colorManager);
+      tagScanner.setDefaultReturnToken(new Token(new TextAttribute(colorManager
+                      .getColor(IXMLColorConstants.TAG))));
+    }
+    return tagScanner;
+  }
+
+  public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
+    PresentationReconciler reconciler = new PresentationReconciler();
+
+    DefaultDamagerRepairer dr = new DefaultDamagerRepairer(getXMLTagScanner());
+    reconciler.setDamager(dr, XMLPartitionScanner.XML_TAG);
+    reconciler.setRepairer(dr, XMLPartitionScanner.XML_TAG);
+
+    dr = new DefaultDamagerRepairer(getXMLScanner());
+    reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
+    reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
+
+    NonRuleBasedDamagerRepairer ndr = new NonRuleBasedDamagerRepairer(new TextAttribute(
+                    colorManager.getColor(IXMLColorConstants.XML_COMMENT)));
+    reconciler.setDamager(ndr, XMLPartitionScanner.XML_COMMENT);
+    reconciler.setRepairer(ndr, XMLPartitionScanner.XML_COMMENT);
+
+    return reconciler;
+  }
+
+  // these 2 functions don't seem to control indent
+  public int getTabWidth(ISourceViewer sourceViewer) {
+    return MultiPageEditorContributor.getXMLindent();
+  }
+
+  public String[] getIndentPrefixes(ISourceViewer sourceViewer, String contentType) {
+    StringBuffer spaces = new StringBuffer(4);
+    int indent = getTabWidth(null);
+    for (int i = 0; i < indent; i++)
+      spaces.append(' ');
+    return new String[] { "\t", spaces.toString() /* , "" */}; //$NON-NLS-1$ //$NON-NLS-2$ 
+  }
+
 }

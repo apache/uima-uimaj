@@ -35,12 +35,12 @@ public class HeaderPageWithSash extends HeaderPage {
    * @param id
    * @param keyPageTitle
    */
-	
-	protected Action haction;
-	protected Action vaction;
-	
-  public HeaderPageWithSash(MultiPageEditor formEditor, String id,
-      String keyPageTitle) {
+
+  protected Action haction;
+
+  protected Action vaction;
+
+  public HeaderPageWithSash(MultiPageEditor formEditor, String id, String keyPageTitle) {
     super(formEditor, id, keyPageTitle);
   }
 
@@ -52,38 +52,38 @@ public class HeaderPageWithSash extends HeaderPage {
     super(formEditor, pageTitle);
   }
 
-	protected void createToolBarActions(IManagedForm managedForm) {
-		final ScrolledForm form = managedForm.getForm();
-	
-		haction = new Action("hor", Action.AS_RADIO_BUTTON) { //$NON-NLS-1$
-			public void run() {
-				sashForm.setOrientation(SWT.HORIZONTAL);
-				form.reflow(true);
-			}
-		};
-		haction.setChecked(true);
-		haction.setToolTipText("Horizontal Orientation");
-		haction.setImageDescriptor(TAEConfiguratorPlugin.
-				getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_HORIZONTAL));
-		haction.setDisabledImageDescriptor(TAEConfiguratorPlugin.
-				getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_HORIZONTAL));
+  protected void createToolBarActions(IManagedForm managedForm) {
+    final ScrolledForm form = managedForm.getForm();
 
-		vaction = new Action("ver", Action.AS_RADIO_BUTTON) { //$NON-NLS-1$
-			public void run() {
-				sashForm.setOrientation(SWT.VERTICAL);
-				form.reflow(true);
-			}
-		};
-		vaction.setChecked(false);
-		vaction.setToolTipText("Vertical Orientation"); 
-		vaction.setImageDescriptor(TAEConfiguratorPlugin.
-				getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_VERTICAL));
-		vaction.setDisabledImageDescriptor(TAEConfiguratorPlugin.
-				getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_VERTICAL));
-		form.getToolBarManager().add(haction);
-		form.getToolBarManager().add(vaction);
-		form.updateToolBar();
-		maybeInitialize(managedForm);
-	}
-	 
+    haction = new Action("hor", Action.AS_RADIO_BUTTON) { //$NON-NLS-1$
+      public void run() {
+        sashForm.setOrientation(SWT.HORIZONTAL);
+        form.reflow(true);
+      }
+    };
+    haction.setChecked(true);
+    haction.setToolTipText("Horizontal Orientation");
+    haction.setImageDescriptor(TAEConfiguratorPlugin
+                    .getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_HORIZONTAL));
+    haction.setDisabledImageDescriptor(TAEConfiguratorPlugin
+                    .getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_HORIZONTAL));
+
+    vaction = new Action("ver", Action.AS_RADIO_BUTTON) { //$NON-NLS-1$
+      public void run() {
+        sashForm.setOrientation(SWT.VERTICAL);
+        form.reflow(true);
+      }
+    };
+    vaction.setChecked(false);
+    vaction.setToolTipText("Vertical Orientation");
+    vaction.setImageDescriptor(TAEConfiguratorPlugin
+                    .getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_VERTICAL));
+    vaction.setDisabledImageDescriptor(TAEConfiguratorPlugin
+                    .getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_VERTICAL));
+    form.getToolBarManager().add(haction);
+    form.getToolBarManager().add(vaction);
+    form.updateToolBar();
+    maybeInitialize(managedForm);
+  }
+
 }

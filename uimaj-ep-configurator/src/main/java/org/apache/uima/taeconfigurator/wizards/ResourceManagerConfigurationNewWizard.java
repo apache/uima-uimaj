@@ -24,38 +24,37 @@ import java.text.MessageFormat;
 import org.eclipse.ui.INewWizard;
 
 /**
- * Create a new file resource in the provided container. 
- * If the container resource (a folder or a project) is selected 
- * in the workspace when the wizard is opened, it will accept 
- * it as the target container. If a sample multi-page editor 
- * is registered for the same extension, it will be able to open it.
+ * Create a new file resource in the provided container. If the container resource (a folder or a
+ * project) is selected in the workspace when the wizard is opened, it will accept it as the target
+ * container. If a sample multi-page editor is registered for the same extension, it will be able to
+ * open it.
  */
 
 public class ResourceManagerConfigurationNewWizard extends AbstractNewWizard implements INewWizard {
 
-  public static final String RESOURCEMANGERCONFIGURATION_TEMPLATE = 
-    "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
-    + "<resourceManagerConfiguration " + XMLNS_PART
-    + "<name>{0}</name>\n"
-    + "<description></description>\n"
-    + "<version>1.0</version>\n"
-    + "{1}"
-    + "</resourceManagerConfiguration>\n";
+  public static final String RESOURCEMANGERCONFIGURATION_TEMPLATE = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
+                  + "<resourceManagerConfiguration "
+                  + XMLNS_PART
+                  + "<name>{0}</name>\n"
+                  + "<description></description>\n"
+                  + "<version>1.0</version>\n"
+                  + "{1}"
+                  + "</resourceManagerConfiguration>\n";
 
-  
-	public ResourceManagerConfigurationNewWizard() {
-		super("External Resource and Bindings (Resource Manager Configuration) Descriptor File");
-	}
-	
-	public void addPages() {
-		page = new ResourceManagerConfigurationNewWizardPage(selection);
-		addPage(page);
-	}
+  public ResourceManagerConfigurationNewWizard() {
+    super("External Resource and Bindings (Resource Manager Configuration) Descriptor File");
+  }
 
-	public String getPrototypeDescriptor(String name) {
-	  return MessageFormat.format(RESOURCEMANGERCONFIGURATION_TEMPLATE, new Object[] {
-        name, "<externalResources></externalResources>\n" +
-            "<externalResourceBindings></externalResourceBindings>\n"}); 
-	}
+  public void addPages() {
+    page = new ResourceManagerConfigurationNewWizardPage(selection);
+    addPage(page);
+  }
+
+  public String getPrototypeDescriptor(String name) {
+    return MessageFormat.format(RESOURCEMANGERCONFIGURATION_TEMPLATE, new Object[] {
+        name,
+        "<externalResources></externalResources>\n"
+                        + "<externalResourceBindings></externalResourceBindings>\n" });
+  }
 
 }

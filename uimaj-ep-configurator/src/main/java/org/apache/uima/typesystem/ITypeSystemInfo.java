@@ -21,26 +21,25 @@ package org.apache.uima.typesystem;
 
 public interface ITypeSystemInfo {
 
-	/**
-	 * Returns the type system full name.
-	 * 
-	 * @return the type system full name.
-	 */
-	public String getFullName();
-	
-	/**
-	 * Returns the type system name.
-	 * 
-	 * @return the type system name.
-	 */
-	public String getName();
-	
-	/**
-	 * Returns the type system package name.
-	 * 
-	 * @return the type system package name.
-	 */ 
-	public String getPackageName();
-	
+  /**
+   * Returns the type system full name.
+   * 
+   * @return the type system full name.
+   */
+  public String getFullName();
+
+  /**
+   * Returns the type system name.
+   * 
+   * @return the type system name.
+   */
+  public String getName();
+
+  /**
+   * Returns the type system package name.
+   * 
+   * @return the type system package name.
+   */
+  public String getPackageName();
 
 }

@@ -25,26 +25,31 @@ import org.eclipse.ui.forms.IManagedForm;
 
 public class AggregatePage extends HeaderPageWithSash {
 
-	private FlowSection flowSection;
-	private AggregateSection aggregateSection;
- 
-	public AggregatePage(MultiPageEditor aEditor) {
+  private FlowSection flowSection;
+
+  private AggregateSection aggregateSection;
+
+  public AggregatePage(MultiPageEditor aEditor) {
     super(aEditor, "Aggregate Component Settings");
   }
 
   /** Called by the framework to fill in the contents */
   protected void createFormContent(IManagedForm managedForm) {
 
-
     final Form2Panel form = setup2ColumnLayout(managedForm, !EQUAL_WIDTH);
-		managedForm.getForm().setText("Aggregate Delegates and Flows");	
+    managedForm.getForm().setText("Aggregate Delegates and Flows");
 
     managedForm.addPart(aggregateSection = new AggregateSection(editor, form.left));
     managedForm.addPart(flowSection = new FlowSection(editor, form.right));
-		createToolBarActions(managedForm);
+    createToolBarActions(managedForm);
   }
-    	
-  public FlowSection      getFlowSection()      {return flowSection;}
-  public AggregateSection getAggregateSection() {return aggregateSection;}
+
+  public FlowSection getFlowSection() {
+    return flowSection;
+  }
+
+  public AggregateSection getAggregateSection() {
+    return aggregateSection;
+  }
 
 }

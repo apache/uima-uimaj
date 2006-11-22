@@ -34,46 +34,46 @@ import org.eclipse.swt.widgets.Composite;
 /**
  */
 public class TypePriorityImportSection extends ImportSection {
-  
-	public TypePriorityImportSection(MultiPageEditor editor, Composite parent) {
-		super(editor, parent, "Type Priority Imports", "The following type priority imports are included as part of the type priorities:");
-	}
 
-	//**************************************
-	//* Code to support type import section
-	//**************************************
-	protected boolean isAppropriate(){
-	  return true;  // always show
-	}
-		
-	/**
-	 * used when hovering
-	 */
-	protected String getDescriptionFromImport(String source) throws InvalidXMLException, IOException {
-	  TypePriorities parsedImportItem = 
-	    UIMAFramework.getXMLParser().parseTypePriorities(
-        new XMLInputSource(source));
+  public TypePriorityImportSection(MultiPageEditor editor, Composite parent) {
+    super(editor, parent, "Type Priority Imports",
+                    "The following type priority imports are included as part of the type priorities:");
+  }
+
+  // **************************************
+  // * Code to support type import section
+  // **************************************
+  protected boolean isAppropriate() {
+    return true; // always show
+  }
+
+  /**
+   * used when hovering
+   */
+  protected String getDescriptionFromImport(String source) throws InvalidXMLException, IOException {
+    TypePriorities parsedImportItem = UIMAFramework.getXMLParser().parseTypePriorities(
+                    new XMLInputSource(source));
     return parsedImportItem.getDescription();
   }
 
-  protected Import [] getModelImportArray () {
+  protected Import[] getModelImportArray() {
     return getTypePriorities().getImports();
   }
-  
-  protected void setModelImportArray(Import [] imports) {
+
+  protected void setModelImportArray(Import[] imports) {
     getTypePriorities().setImports(imports);
   }
 
   protected void clearModelBaseValue() {
     getTypePriorities().setPriorityLists(typePriorityList0);
   }
-  
+
   // indexes are checked and merged when the TCAS is built
   protected boolean isValidImport(String title, String message) {
     TCAS savedTCAS = editor.getTCAS();
     TypePriorities savedTP = editor.getMergedTypePriorities();
     if (null != savedTP)
-    	savedTP = (TypePriorities)savedTP.clone();
+      savedTP = (TypePriorities) savedTP.clone();
     try {
       editor.setMergedTypePriorities();
       editor.descriptorTCAS.validate();
@@ -85,9 +85,9 @@ public class TypePriorityImportSection extends ImportSection {
     }
     return true;
   }
- 
+
   protected void finishImportChangeAction() {
-		
+
   }
- 
+
 }

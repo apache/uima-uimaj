@@ -29,20 +29,18 @@ import org.eclipse.swt.widgets.Label;
 
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
-
-public abstract class AbstractDialogKeyVerify extends AbstractDialog
-    implements VerifyKeyListener {
+public abstract class AbstractDialogKeyVerify extends AbstractDialog implements VerifyKeyListener {
 
   protected AbstractDialogKeyVerify(AbstractSection aSection, String title, String description) {
     super(aSection, title, description);
   }
-			
-	protected StyledText newLabeledSingleLineStyledText(Composite twoCol, String label, String tip) {
+
+  protected StyledText newLabeledSingleLineStyledText(Composite twoCol, String label, String tip) {
     setTextAndTip(new Label(twoCol, SWT.NONE), label, tip);
     return newSingleLineStyledText(twoCol, tip);
-	}
-	
-	protected StyledText newSingleLineStyledText(Composite parent, String tip) {
+  }
+
+  protected StyledText newSingleLineStyledText(Composite parent, String tip) {
     StyledText w = new StyledText(parent, SWT.SINGLE | SWT.BORDER);
     w.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     w.setToolTipText(tip);
@@ -50,24 +48,24 @@ public abstract class AbstractDialogKeyVerify extends AbstractDialog
     w.addVerifyKeyListener(this);
     w.addListener(SWT.MouseUp, this); // for paste operation
     return w;
-	}
-	
-	public void verifyKey(VerifyEvent event) {
-	  event.doit = true;
-	  errorMessageUI.setText("");
-	  if (verifyKeyChecks(event))
-	    return;
-	  event.doit = false;
-	  setErrorMessage("An invalid key press was ignored. Please try again.");
-		return;
-	}
-	
-	// overridden in methods needing other key checks
-	/**
-	 * Default verify key checks
-	 */
-	public boolean verifyKeyChecks(VerifyEvent event) {
-		return true;
-	}
-   
+  }
+
+  public void verifyKey(VerifyEvent event) {
+    event.doit = true;
+    errorMessageUI.setText("");
+    if (verifyKeyChecks(event))
+      return;
+    event.doit = false;
+    setErrorMessage("An invalid key press was ignored. Please try again.");
+    return;
+  }
+
+  // overridden in methods needing other key checks
+  /**
+   * Default verify key checks
+   */
+  public boolean verifyKeyChecks(VerifyEvent event) {
+    return true;
+  }
+
 }

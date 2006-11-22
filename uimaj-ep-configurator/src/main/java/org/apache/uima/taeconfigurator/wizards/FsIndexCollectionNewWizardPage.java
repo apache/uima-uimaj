@@ -22,19 +22,17 @@ package org.apache.uima.taeconfigurator.wizards;
 import org.eclipse.jface.viewers.ISelection;
 
 /**
- * The "New" wizard page allows setting the container for
- * the new file as well as the file name. Will only accept 
- * file name without the extension OR with the extension 
- * that matches the expected one (xml).
+ * The "New" wizard page allows setting the container for the new file as well as the file name.
+ * Will only accept file name without the extension OR with the extension that matches the expected
+ * one (xml).
  */
 
 public class FsIndexCollectionNewWizardPage extends AbstractNewWizardPage {
 
-	public FsIndexCollectionNewWizardPage(ISelection selection) {
-	  super(selection, "big_ae.gif",
-	      "Index Collection Descriptor File",
-	      "Create a new Index Collection Descriptor file",
-	      "indexCollectionDescriptor.xml");
-	}
+  public FsIndexCollectionNewWizardPage(ISelection selection) {
+    super(selection, "big_ae.gif", "Index Collection Descriptor File",
+                    "Create a new Index Collection Descriptor file",
+                    "indexCollectionDescriptor.xml");
+  }
 
 }

@@ -28,8 +28,7 @@ import java.util.ResourceBundle;
 public class Messages {
   private static final String BUNDLE_NAME = "org.apache.uima.taeconfigurator.messages";//$NON-NLS-1$
 
-  private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
-      .getBundle(BUNDLE_NAME);
+  private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
   private Messages() {
   }
@@ -41,9 +40,9 @@ public class Messages {
       return '!' + key + '!';
     }
   }
-  
-  public static String getFormattedString (String key, String[] args) { 
-    return MessageFormat.format(RESOURCE_BUNDLE.getString(key), args); 
+
+  public static String getFormattedString(String key, String[] args) {
+    return MessageFormat.format(RESOURCE_BUNDLE.getString(key), args);
   }
 
 }

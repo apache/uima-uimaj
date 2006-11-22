@@ -25,25 +25,26 @@ import org.eclipse.ui.forms.IManagedForm;
 
 public class ParameterPage extends HeaderPageWithSash {
 
-	private ParameterSection parameterSection;
-	private ParameterDelegatesSection parameterDelegatesSection;
+  private ParameterSection parameterSection;
 
-	public ParameterPage(MultiPageEditor editor) {
-		super(editor, "Configuration Parameters");
-	}
-	
-	/**
-	 * Called by the framework to fill in the contents
-	 */
-	protected void createFormContent(IManagedForm managedForm) {
-		managedForm.getForm().setText("Parameter Definitions");	
+  private ParameterDelegatesSection parameterDelegatesSection;
+
+  public ParameterPage(MultiPageEditor editor) {
+    super(editor, "Configuration Parameters");
+  }
+
+  /**
+   * Called by the framework to fill in the contents
+   */
+  protected void createFormContent(IManagedForm managedForm) {
+    managedForm.getForm().setText("Parameter Definitions");
     Form2Panel form2Panel = setup2ColumnLayout(managedForm, 55, 45);
     managedForm.addPart(parameterSection = new ParameterSection(editor, form2Panel.left));
-    managedForm.addPart(parameterDelegatesSection =
-	      new ParameterDelegatesSection(editor, form2Panel.right));
-	 	createToolBarActions(managedForm);
-	}
- 
+    managedForm.addPart(parameterDelegatesSection = new ParameterDelegatesSection(editor,
+                    form2Panel.right));
+    createToolBarActions(managedForm);
+  }
+
   public ParameterDelegatesSection getParameterDelegatesSection() {
     return parameterDelegatesSection;
   }
@@ -51,6 +52,5 @@ public class ParameterPage extends HeaderPageWithSash {
   public ParameterSection getParameterSection() {
     return parameterSection;
   }
-
 
 }

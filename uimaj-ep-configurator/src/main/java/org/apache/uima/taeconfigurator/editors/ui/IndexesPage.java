@@ -27,42 +27,46 @@ import org.eclipse.ui.forms.IManagedForm;
  */
 public class IndexesPage extends HeaderPageWithSash {
 
-	private IndexSection indexSection;
+  private IndexSection indexSection;
+
   private IndexImportSection indexImportSection;
+
   private TypePriorityImportSection typePriorityImportSection;
-	private PriorityListSection priorityListSection;
 
-	public IndexesPage(MultiPageEditor editor) {
-		super(editor,  "Indexes");
-}
+  private PriorityListSection priorityListSection;
 
-	/**
-* Called by the 3.0 framework to fill in the contents
-*/
+  public IndexesPage(MultiPageEditor editor) {
+    super(editor, "Indexes");
+  }
+
+  /**
+   * Called by the 3.0 framework to fill in the contents
+   */
   protected void createFormContent(IManagedForm managedForm) {
-    
+
     final Form2Panel form2Panel = setup2ColumnLayout(managedForm, EQUAL_WIDTH);
-		managedForm.getForm().setText((isLocalProcessingDescriptor() || isIndexDescriptor()) ? 
-        "Indexes" : "Type Priorities");	
-		if (! isTypePriorityDescriptor()) {
-		  managedForm.addPart(indexSection = new IndexSection(editor, form2Panel.left));
-	    managedForm.addPart(indexImportSection = new IndexImportSection(editor, form2Panel.right));
-		}
-		if (! isIndexDescriptor()) {
-		  managedForm.addPart(priorityListSection = new PriorityListSection(editor, form2Panel.left));
-		  managedForm.addPart(typePriorityImportSection = new TypePriorityImportSection(editor, form2Panel.right));
-		}
-		createToolBarActions(managedForm);
-	}
+    managedForm.getForm().setText(
+                    (isLocalProcessingDescriptor() || isIndexDescriptor()) ? "Indexes"
+                                    : "Type Priorities");
+    if (!isTypePriorityDescriptor()) {
+      managedForm.addPart(indexSection = new IndexSection(editor, form2Panel.left));
+      managedForm.addPart(indexImportSection = new IndexImportSection(editor, form2Panel.right));
+    }
+    if (!isIndexDescriptor()) {
+      managedForm.addPart(priorityListSection = new PriorityListSection(editor, form2Panel.left));
+      managedForm.addPart(typePriorityImportSection = new TypePriorityImportSection(editor,
+                      form2Panel.right));
+    }
+    createToolBarActions(managedForm);
+  }
 
+  public IndexSection getIndexSection() {
+    return indexSection;
+  }
 
-	public IndexSection getIndexSection() {
-		return indexSection;
-	}
-	
-	public PriorityListSection getPriorityListSection() {
-		return priorityListSection;
-	}
+  public PriorityListSection getPriorityListSection() {
+    return priorityListSection;
+  }
 
   public IndexImportSection getIndexImportSection() {
     return indexImportSection;
@@ -71,5 +75,5 @@ public class IndexesPage extends HeaderPageWithSash {
   public TypePriorityImportSection getTypePriorityImportSection() {
     return typePriorityImportSection;
   }
-	
+
 }
