@@ -19,15 +19,14 @@
 
 package org.apache.uima.jcas.cas;
 
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.cas.Feature;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
-import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.FeatureImpl;
-import org.apache.uima.cas.Feature;
-import org.apache.uima.jcas.cas.TOP_Type;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.jcas.impl.JCas;
 
 /**
  * Updated by JCasGen Fri Apr 29 16:05:04 EDT 2005

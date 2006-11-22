@@ -19,16 +19,11 @@
 
 package org.apache.uima.util.impl;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.test.junit_extension.TestPropertyReader;
 import org.apache.uima.util.Level;
-import org.apache.uima.util.impl.JSR47Logger_impl;
 
 /**
  * UIMA Logging Test

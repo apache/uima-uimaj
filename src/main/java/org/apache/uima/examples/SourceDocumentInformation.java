@@ -19,9 +19,8 @@
 
 package org.apache.uima.examples;
 
-import org.apache.uima.jcas.impl.JCas;
 import org.apache.uima.jcas.cas.TOP_Type;
-
+import org.apache.uima.jcas.impl.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
 /**

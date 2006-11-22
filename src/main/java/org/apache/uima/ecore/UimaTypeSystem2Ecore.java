@@ -26,6 +26,18 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.uima.UIMAFramework;
+import org.apache.uima.UIMARuntimeException;
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.impl.XmiCasSerializer;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.metadata.AllowedValue;
+import org.apache.uima.resource.metadata.FeatureDescription;
+import org.apache.uima.resource.metadata.TypeDescription;
+import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.util.CasCreationUtils;
+import org.apache.uima.util.InvalidXMLException;
+import org.apache.uima.util.XMLInputSource;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAnnotation;
@@ -41,19 +53,6 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-
-import org.apache.uima.UIMAFramework;
-import org.apache.uima.UIMARuntimeException;
-import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.impl.XmiCasSerializer;
-import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.metadata.AllowedValue;
-import org.apache.uima.resource.metadata.FeatureDescription;
-import org.apache.uima.resource.metadata.TypeDescription;
-import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.apache.uima.util.CasCreationUtils;
-import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.XMLInputSource;
 
 /**
  * Converts a UIMA TypeSystemDescription to an Ecore model.

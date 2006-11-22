@@ -32,10 +32,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.w3c.dom.Element;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -64,6 +60,9 @@ import org.apache.uima.util.NameClassPair;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLParser.ParsingOptions;
+import org.w3c.dom.Element;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
 
 /**
  * Reference implementation of {@link AnalysisEngineDescription}. Note that this class contains two
@@ -817,8 +816,16 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
+  
+  /**
+   * Static method to get XmlizationInfo, used by subclasses to
+   * set up their own XmlizationInfo.
+   */
+  protected static XmlizationInfo getXmlizationInfoForClass() {
+    return XMLIZATION_INFO;
+  }
 
-  static final protected XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
                   "analysisEngineDescription", new PropertyXmlInfo[] {
                       new PropertyXmlInfo("frameworkImplementation"),
                       new PropertyXmlInfo("primitive"),

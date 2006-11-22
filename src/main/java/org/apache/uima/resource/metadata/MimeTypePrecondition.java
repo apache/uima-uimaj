@@ -19,6 +19,8 @@
 
 package org.apache.uima.resource.metadata;
 
+import org.apache.uima.UIMA_UnsupportedOperationException;
+
 /**
  * A precondition on the MIME Type of the entity. This interface is a kind of
  * <code>SimplePrecondition</code> to be used as a convenience.

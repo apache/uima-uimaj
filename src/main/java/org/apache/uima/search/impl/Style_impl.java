@@ -19,9 +19,6 @@
 
 package org.apache.uima.search.impl;
 
-import org.w3c.dom.Element;
-import org.xml.sax.helpers.AttributesImpl;
-
 import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
@@ -30,6 +27,8 @@ import org.apache.uima.search.Mapping;
 import org.apache.uima.search.Style;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
+import org.w3c.dom.Element;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * 

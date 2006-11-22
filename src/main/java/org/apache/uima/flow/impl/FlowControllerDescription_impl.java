@@ -19,8 +19,6 @@
 
 package org.apache.uima.flow.impl;
 
-import org.w3c.dom.Element;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.flow.FlowController;
 import org.apache.uima.flow.FlowControllerDescription;
@@ -35,6 +33,7 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLParser.ParsingOptions;
+import org.w3c.dom.Element;
 
 /**
  * Implementation of {@link FlowControllerDescription}.
@@ -119,7 +118,7 @@ public class FlowControllerDescription_impl extends ResourceCreationSpecifier_im
     return XMLIZATION_INFO;
   }
 
-  static final protected XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
                   "flowControllerDescription", new PropertyXmlInfo[] {
                       new PropertyXmlInfo("frameworkImplementation"),
                       new PropertyXmlInfo("implementationName"),

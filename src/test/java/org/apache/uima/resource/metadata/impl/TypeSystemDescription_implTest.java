@@ -32,7 +32,6 @@ import org.apache.uima.resource.metadata.FeatureDescription;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.apache.uima.resource.metadata.impl.Import_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;

@@ -19,6 +19,9 @@
 
 package org.apache.uima.resource.metadata;
 
+import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.cas.CAS;
+
 /**
  * Operational Properties for a UIMA component.
  */

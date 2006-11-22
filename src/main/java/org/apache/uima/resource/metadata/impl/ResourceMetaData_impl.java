@@ -24,8 +24,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.w3c.dom.Element;
-
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
@@ -35,6 +33,7 @@ import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
+import org.w3c.dom.Element;
 
 /**
  * Reference implementation of {@link org.apache.uima.resource.ResourceMetaData}.
@@ -370,8 +369,16 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
-
-  static final protected XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("resourceMetaData",
+  
+  /**
+   * Static method to get XmlizationInfo, used by subclasses to
+   * set up their own XmlizationInfo.
+   */
+  protected static XmlizationInfo getXmlizationInfoForClass() {
+    return XMLIZATION_INFO;
+  }
+  
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("resourceMetaData",
                   new PropertyXmlInfo[] { new PropertyXmlInfo("name", false),
                       new PropertyXmlInfo("description"), new PropertyXmlInfo("version"),
                       new PropertyXmlInfo("vendor"), new PropertyXmlInfo("copyright"),

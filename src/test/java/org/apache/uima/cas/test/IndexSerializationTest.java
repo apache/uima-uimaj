@@ -21,11 +21,9 @@ package org.apache.uima.cas.test;
 
 import junit.framework.TestCase;
 
-import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.Feature;
-import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASFactory;

@@ -19,8 +19,8 @@
 
 package org.apache.uima.internal.util;
 
-import java.io.Writer;
 import java.io.IOException;
+import java.io.Writer;
 
 /**
  * An assorted collection of string utilities.

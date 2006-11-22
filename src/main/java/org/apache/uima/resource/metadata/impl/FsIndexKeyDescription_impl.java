@@ -19,15 +19,14 @@
 
 package org.apache.uima.resource.metadata.impl;
 
-import org.w3c.dom.Element;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
-
 import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.resource.metadata.FsIndexKeyDescription;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
+import org.w3c.dom.Element;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * 

@@ -19,9 +19,9 @@
 
 package org.apache.uima.cas.impl;
 
-import org.apache.uima.cas.FSMatchConstraint;
-
 import java.util.ArrayList;
+
+import org.apache.uima.cas.FSMatchConstraint;
 
 /**
  * Implements a constraint embedded under a path. Optimize later.

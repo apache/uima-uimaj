@@ -24,11 +24,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
-
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -42,6 +37,10 @@ import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.TCAS;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Generates an inline XML representation of a TCAS. Annotation types are represented as XML tags,

@@ -20,21 +20,15 @@
 package org.apache.uima.resource.impl;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.StringWriter;
 
-import org.xml.sax.SAXException;
+import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.URISpecifier;
-import org.apache.uima.resource.impl.Parameter_impl;
-import org.apache.uima.resource.impl.URISpecifier_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
-
-import junit.framework.TestCase;
 
 public class URISpecifier_implTest extends TestCase {
   URISpecifier_impl uriSpec;

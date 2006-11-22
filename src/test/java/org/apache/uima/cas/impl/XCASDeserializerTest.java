@@ -32,15 +32,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import junit.framework.TestCase;
 
-import org.xml.sax.ContentHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
-
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.analysis_engine.TaeDescription;
-import org.apache.uima.analysis_engine.TextAnalysisEngine;
-import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.Feature;
@@ -51,16 +43,18 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.impl.SofaID_impl;
-import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
-import org.apache.uima.util.Level;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * 

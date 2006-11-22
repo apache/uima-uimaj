@@ -19,11 +19,10 @@
 
 package org.apache.uima.util.impl;
 
-import org.apache.uima.util.*;
-import org.apache.uima.util.impl.Logger_impl;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.apache.uima.util.Level;
 
 /**
  * UIMA Logging interface implementation test without using an logging toolkit

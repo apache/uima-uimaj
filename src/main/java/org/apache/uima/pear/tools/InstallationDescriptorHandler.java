@@ -19,15 +19,27 @@
 
 package org.apache.uima.pear.tools;
 
-import java.io.*;
-import java.util.*;
-import java.util.jar.JarFile;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Set;
 import java.util.jar.JarEntry;
-import javax.xml.parsers.*;
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
+import java.util.jar.JarFile;
 
-import org.apache.uima.pear.util.*;
+import javax.xml.parsers.SAXParser;
+
+import org.apache.uima.pear.util.XMLUtil;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * The <code>InstallationDescriptorHandler</code> class allows parsing XML installation descriptor

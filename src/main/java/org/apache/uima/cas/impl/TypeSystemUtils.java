@@ -19,9 +19,9 @@
 
 package org.apache.uima.cas.impl;
 
-import org.apache.uima.cas.TypeSystem;
-
 import java.util.StringTokenizer;
+
+import org.apache.uima.cas.TypeSystem;
 
 /**
  * Class comment for TypeSystemUtils.java goes here.

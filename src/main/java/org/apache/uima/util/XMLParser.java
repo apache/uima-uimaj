@@ -21,8 +21,6 @@ package org.apache.uima.util;
 
 import java.net.URL;
 
-import org.w3c.dom.Element;
-
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.TaeDescription;
@@ -38,6 +36,7 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.search.IndexBuildSpecification;
+import org.w3c.dom.Element;
 
 /**
  * A UIMA <code>XMLParser</code> parses XML documents and generates UIMA components represented by

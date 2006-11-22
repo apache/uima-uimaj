@@ -19,6 +19,8 @@
 
 package org.apache.uima.resource.metadata;
 
+import org.apache.uima.UIMA_UnsupportedOperationException;
+
 /**
  * A group of {@link ConfigurationParameter}s. Actually, a single <code>ConfigurationGroup</code>
  * object can have multiple group names, in which case it represents multiple groups that all share

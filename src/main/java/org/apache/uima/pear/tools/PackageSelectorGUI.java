@@ -19,14 +19,16 @@
 
 package org.apache.uima.pear.tools;
 
-import java.io.*;
-import java.net.*;
-import java.util.prefs.*;
+import java.io.File;
+import java.net.URL;
+import java.util.prefs.Preferences;
 
-import javax.swing.*;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
-import org.apache.uima.pear.util.*;
+import org.apache.uima.pear.util.FileUtil;
 
 /**
  * The <code>PackageSelectorGUI</code> class provides simple Swing-based file dialog windows for

@@ -19,6 +19,9 @@
 
 package org.apache.uima.internal.util.rb_trees;
 
+import java.util.NoSuchElementException;
+import java.util.Random;
+
 import org.apache.uima.internal.util.ComparableIntIterator;
 import org.apache.uima.internal.util.ComparableIntPointerIterator;
 import org.apache.uima.internal.util.IntArrayUtils;
@@ -26,9 +29,6 @@ import org.apache.uima.internal.util.IntComparator;
 import org.apache.uima.internal.util.IntListIterator;
 import org.apache.uima.internal.util.IntPointerIterator;
 import org.apache.uima.internal.util.StringUtils;
-
-import java.util.NoSuchElementException;
-import java.util.Random;
 
 /**
  * Red-black tree implementation based on integer arrays. Preliminary performance measurements on

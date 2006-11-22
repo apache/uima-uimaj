@@ -85,12 +85,6 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    */
   private boolean mVerificationMode = false;
 
-  /**
-   * Key that must be inserted into the aAdditionalParams map to turn on verification mode. Also
-   * passed down to delegates.
-   */
-  public static final String PARAM_VERIFICATION_MODE = "VERIFICATION_MODE";
-
   private boolean mSofaAware;
 
   /**
@@ -513,14 +507,18 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     }
   }
 
+  protected AnalysisComponent getAnalysisComponent() {
+    return mAnalysisComponent;
+  }
+
   /**
    * Implements the iterator that steps through all outputs from an AnalysisComponent.
    */
   class AnalysisComponentCasIterator implements CasIterator {
-    private AnalysisComponent mAnalysisComponent;
+    private AnalysisComponent mMyAnalysisComponent;
 
     AnalysisComponentCasIterator(AnalysisComponent aAnalysisComponent) {
-      mAnalysisComponent = aAnalysisComponent;
+      mMyAnalysisComponent = aAnalysisComponent;
     }
 
     /*
@@ -531,7 +529,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     public boolean hasNext() throws AnalysisEngineProcessException {
       enterProcess();
       try {
-        return mAnalysisComponent.hasNext();
+        return mMyAnalysisComponent.hasNext();
       } finally {
         exitProcess();
       }
@@ -546,7 +544,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       enterProcess();
       try {
         // Make sure that the AnalysisComponent has a next CAS to return
-        boolean analysisComponentHasNext = mAnalysisComponent.hasNext();
+        boolean analysisComponentHasNext = mMyAnalysisComponent.hasNext();
         if (!analysisComponentHasNext) {
           throw new UIMA_IllegalStateException(UIMA_IllegalStateException.NO_NEXT_CAS,
                           new Object[0]);
@@ -575,9 +573,5 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     public void release() {
       // nothing to do
     }
-  }
-
-  protected AnalysisComponent getAnalysisComponent() {
-    return mAnalysisComponent;
   }
 }

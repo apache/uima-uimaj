@@ -26,8 +26,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.xml.sax.SAXException;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -40,6 +38,7 @@ import org.apache.uima.examples.SourceDocumentInformation;
 import org.apache.uima.jcas.impl.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
+import org.xml.sax.SAXException;
 
 /**
  * A simple CAS consumer that generates inline XML and writes it to a file. UTF-8 encoding is used.

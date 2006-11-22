@@ -26,6 +26,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.uima.UimaContext;
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.SofaFS;
+import org.apache.uima.cas.Type;
+import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.StringUtils;
+import org.apache.uima.internal.util.rb_trees.RedBlackTree;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -35,15 +43,6 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
-
-import org.apache.uima.UimaContext;
-import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.SofaFS;
-import org.apache.uima.cas.Type;
-import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.internal.util.IntVector;
-import org.apache.uima.internal.util.StringUtils;
-import org.apache.uima.internal.util.rb_trees.RedBlackTree;
 
 /**
  * XCAS Deserializer. Takes an XCAS and reads it into a CAS.

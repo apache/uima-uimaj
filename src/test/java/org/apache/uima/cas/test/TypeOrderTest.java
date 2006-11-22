@@ -21,7 +21,6 @@ package org.apache.uima.cas.test;
 
 import junit.framework.TestCase;
 
-import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;

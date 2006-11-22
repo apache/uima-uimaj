@@ -34,16 +34,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.TreeMap;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
-
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
@@ -58,6 +48,15 @@ import org.apache.uima.internal.util.I18nUtil;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.rb_trees.IntRedBlackTree;
 import org.apache.uima.internal.util.rb_trees.IntRedBlackTree.IntRBTIterator;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * XMI CAS deserializer. Used to read in a CAS from XML Metadata Interchange (XMI) format.

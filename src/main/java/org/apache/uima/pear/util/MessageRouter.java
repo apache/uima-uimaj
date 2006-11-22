@@ -19,8 +19,10 @@
 
 package org.apache.uima.pear.util;
 
-import java.io.*;
-import java.util.*;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * The <code>MessageRouter</code> class facilitates intra-process message routing. It provides

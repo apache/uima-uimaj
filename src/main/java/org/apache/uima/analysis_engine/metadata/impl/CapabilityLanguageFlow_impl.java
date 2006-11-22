@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.analysis_engine.metadata.CapabilityLanguageFlow;
+import org.apache.uima.analysis_engine.metadata.FlowConstraints;
 import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;

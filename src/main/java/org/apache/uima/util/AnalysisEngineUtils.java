@@ -28,6 +28,7 @@ import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.ConstraintFactory;
 import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.FSTypeConstraint;
+import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.resource.metadata.Capability;
 
 /**

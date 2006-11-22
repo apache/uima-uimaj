@@ -19,9 +19,9 @@
 
 package org.apache.uima.cas;
 
-import org.apache.uima.cas.impl.ConstraintFactoryImpl;
-
 import java.util.ArrayList;
+
+import org.apache.uima.cas.impl.ConstraintFactoryImpl;
 
 /**
  * Methods to create {@link org.apache.uima.cas.FSMatchConstraint}s for filtered iterators or other

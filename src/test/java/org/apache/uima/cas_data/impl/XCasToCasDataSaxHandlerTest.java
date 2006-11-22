@@ -34,16 +34,9 @@ import javax.xml.parsers.SAXParserFactory;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.xml.sax.ContentHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.analysis_engine.TaeDescription;
-import org.apache.uima.analysis_engine.TextAnalysisEngine;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.SofaFS;
@@ -57,9 +50,6 @@ import org.apache.uima.cas_data.CasData;
 import org.apache.uima.cas_data.FeatureStructure;
 import org.apache.uima.cas_data.FeatureValue;
 import org.apache.uima.cas_data.PrimitiveValue;
-import org.apache.uima.cas_data.impl.CasDataImpl;
-import org.apache.uima.cas_data.impl.CasDataToXCas;
-import org.apache.uima.cas_data.impl.XCasToCasDataSaxHandler;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -69,6 +59,10 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 
 /**
  * Tests XCasToCasDataSaxHandler. Also Tests CasDataToXCas.

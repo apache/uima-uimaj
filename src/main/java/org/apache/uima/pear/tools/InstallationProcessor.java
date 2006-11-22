@@ -19,10 +19,19 @@
 
 package org.apache.uima.pear.tools;
 
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Properties;
 
-import org.apache.uima.pear.util.*;
+import org.apache.uima.pear.util.FileUtil;
+import org.apache.uima.pear.util.StringUtil;
 
 /**
  * The <code>InstallationProcessor</code> class implements operations specified in the

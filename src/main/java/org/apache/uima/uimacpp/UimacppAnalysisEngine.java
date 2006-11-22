@@ -22,8 +22,6 @@ package org.apache.uima.uimacpp;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import org.xml.sax.SAXException;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UimaContext;
@@ -50,6 +48,7 @@ import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.ProcessTrace;
+import org.xml.sax.SAXException;
 
 public class UimacppAnalysisEngine extends AnalysisComponent_ImplBase {
 

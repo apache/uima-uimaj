@@ -22,15 +22,14 @@ package org.apache.uima.resource.metadata.impl;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.w3c.dom.Element;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
-
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
+import org.w3c.dom.Element;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * 

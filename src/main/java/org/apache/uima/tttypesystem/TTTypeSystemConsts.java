@@ -19,8 +19,8 @@
 
 package org.apache.uima.tttypesystem;
 
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.text.TCAS;
 
 /**
  * Symbolic TT type system constants used by the tokenizer.

@@ -30,7 +30,6 @@ import org.apache.uima.analysis_engine.TaeDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
-import org.apache.uima.util.XMLizable;
 
 /**
  * @author alally

@@ -19,8 +19,12 @@
 
 package org.apache.uima.pear.tools;
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * The <code>SimplePackageSelector</code> class provides simple command line dialog for selecting

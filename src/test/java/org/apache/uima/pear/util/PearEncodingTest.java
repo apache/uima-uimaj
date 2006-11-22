@@ -21,11 +21,10 @@ package org.apache.uima.pear.util;
 
 import java.io.File;
 
-import org.apache.uima.pear.util.XMLUtil;
-import org.apache.uima.test.junit_extension.TestPropertyReader;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.apache.uima.test.junit_extension.TestPropertyReader;
 
 /**
  * Pear encoding tests

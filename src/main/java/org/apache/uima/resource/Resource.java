@@ -21,6 +21,7 @@ package org.apache.uima.resource;
 
 import java.util.Map;
 
+import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.resource.metadata.ResourceMetaData;

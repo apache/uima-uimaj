@@ -29,13 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.AttributesImpl;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
 import org.apache.uima.cas.ByteArrayFS;
@@ -44,12 +37,18 @@ import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.util.Level;
-import org.apache.uima.util.Logger;
-import org.apache.uima.util.XMLSerializer;
 import org.apache.uima.internal.util.IntStack;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.rb_trees.IntRedBlackTree;
+import org.apache.uima.util.Level;
+import org.apache.uima.util.Logger;
+import org.apache.uima.util.XMLSerializer;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * XMI CAS serializer. Used to write out a CAS in an XML Metadata Interchange (XMI) format. Create a

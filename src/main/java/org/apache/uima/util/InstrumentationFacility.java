@@ -19,6 +19,8 @@
 
 package org.apache.uima.util;
 
+import org.apache.uima.UIMA_IllegalStateException;
+
 /**
  * The <code>InstrumentationFacility</code> interface defines a standard way for UIMA components
  * to be instrumented for performance evaluation. The UIMA framework will provide each UIMA

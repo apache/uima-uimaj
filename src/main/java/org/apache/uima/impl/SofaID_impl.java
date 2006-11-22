@@ -19,6 +19,7 @@
 
 package org.apache.uima.impl;
 
+import org.apache.uima.UimaContext;
 import org.apache.uima.cas.SofaID;
 
 /**

@@ -19,13 +19,34 @@
 
 package org.apache.uima.pear.tools;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.jar.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Set;
+import java.util.jar.JarFile;
 
-import org.apache.uima.pear.util.*;
 import org.apache.uima.internal.util.SystemEnvReader;
+import org.apache.uima.pear.util.FileUtil;
+import org.apache.uima.pear.util.MessageRouter;
+import org.apache.uima.pear.util.StringUtil;
 
 /**
  * The <code>InstallationController</code> class allows installing PEAR files that contain UIMA

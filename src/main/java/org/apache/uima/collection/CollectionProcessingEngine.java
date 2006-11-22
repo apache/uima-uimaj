@@ -21,6 +21,7 @@ package org.apache.uima.collection;
 
 import java.util.Map;
 
+import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.collection.base_cpm.BaseCollectionReader;
 import org.apache.uima.collection.base_cpm.CasProcessor;
 import org.apache.uima.collection.metadata.CpeDescription;

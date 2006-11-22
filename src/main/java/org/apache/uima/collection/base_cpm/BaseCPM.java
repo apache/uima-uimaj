@@ -19,6 +19,9 @@
 
 package org.apache.uima.collection.base_cpm;
 
+import java.io.IOException;
+
+import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.ProcessTrace;

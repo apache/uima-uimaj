@@ -19,6 +19,7 @@
 
 package org.apache.uima.analysis_engine.metadata;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.metadata.MetaDataObject;
 
 /**

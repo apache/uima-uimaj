@@ -19,10 +19,21 @@
 
 package org.apache.uima.pear.tools;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.StringTokenizer;
 
-import org.apache.uima.pear.util.*;
+import org.apache.uima.pear.util.FileUtil;
 
 /**
  * The <code>InstallationDescriptor</code> class encapsulates all elements and parameters included

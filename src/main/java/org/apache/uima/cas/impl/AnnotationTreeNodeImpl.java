@@ -19,11 +19,11 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.ArrayList;
+
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationTreeNode;
-
-import java.util.ArrayList;
 
 /**
  * TODO: Create type comment for AnnotationTreeNodeImpl.

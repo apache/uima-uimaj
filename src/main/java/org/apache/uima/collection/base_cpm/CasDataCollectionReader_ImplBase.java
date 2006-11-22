@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.cas_data.CasData;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.resource.ConfigurableResource_ImplBase;
 import org.apache.uima.resource.ResourceInitializationException;

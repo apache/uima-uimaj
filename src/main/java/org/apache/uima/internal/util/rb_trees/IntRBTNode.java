@@ -19,10 +19,10 @@
 
 package org.apache.uima.internal.util.rb_trees;
 
+import java.util.Stack;
+
 import org.apache.uima.internal.util.IntStack;
 import org.apache.uima.internal.util.IntVector;
-
-import java.util.Stack;
 
 /**
  * Integer Red-Black Tree node. Not for public use. Use the interface in IntRedBlackTree instead.

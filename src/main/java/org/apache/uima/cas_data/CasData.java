@@ -22,6 +22,8 @@ package org.apache.uima.cas_data;
 import java.io.Serializable;
 import java.util.Iterator;
 
+import org.apache.uima.cas.ArrayFS;
+
 /**
  * Interface for directly accessing and manipulating the data in the Common Analysis Structure.
  * <p>

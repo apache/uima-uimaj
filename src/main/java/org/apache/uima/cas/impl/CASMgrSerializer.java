@@ -19,6 +19,13 @@
 
 package org.apache.uima.cas.impl;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Vector;
+
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.Feature;
@@ -27,13 +34,6 @@ import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.SymbolTable;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Vector;
 
 /**
  * Container for serialized CAS typing information. Contains information about the type system, as

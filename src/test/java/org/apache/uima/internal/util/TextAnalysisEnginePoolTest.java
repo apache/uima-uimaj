@@ -32,14 +32,11 @@ import org.apache.uima.analysis_engine.impl.TestAnnotator;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.impl.FixedFlow_impl;
 import org.apache.uima.cas.text.TCAS;
-import org.apache.uima.internal.util.TextAnalysisEnginePool;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
 import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.apache.uima.util.ProcessTrace;
-import org.apache.uima.util.ProcessTraceEvent;
 
 /**
  * 

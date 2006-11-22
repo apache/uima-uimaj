@@ -19,10 +19,10 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.Arrays;
+
 import org.apache.uima.internal.util.IntArrayUtils;
 import org.apache.uima.internal.util.SortedIntSet;
-
-import java.util.Arrays;
 
 /**
  * A heap for CAS. Actually provides two heaps: a temporary one for per-document structures, and a

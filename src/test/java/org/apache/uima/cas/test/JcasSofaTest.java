@@ -29,18 +29,9 @@ import java.util.StringTokenizer;
 
 import junit.framework.TestCase;
 
-import org.xml.sax.SAXException;
-
-import org.apache.uima.cas.ArrayFS;
-import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.DoubleArrayFS;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.FloatArrayFS;
-import org.apache.uima.cas.IntArrayFS;
-import org.apache.uima.cas.LongArrayFS;
-import org.apache.uima.cas.ShortArrayFS;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.CASFactory;
@@ -52,7 +43,6 @@ import org.apache.uima.cas.impl.CASSerializer;
 import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XCASSerializer;
-import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.impl.SofaID_impl;
 import org.apache.uima.jcas.JFSIndexRepository;
@@ -70,7 +60,7 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLSerializer;
-import org.apache.uima.cas.test.CrossAnnotation;
+import org.xml.sax.SAXException;
 
 /**
  * @author Eddie Epstein

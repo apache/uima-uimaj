@@ -19,12 +19,12 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.ArrayList;
+
 import org.apache.uima.cas.FSConstraint;
 import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
-
-import java.util.ArrayList;
 
 /**
  * Implement an embedded constraint. Basically just dispatches to specialized implementation.

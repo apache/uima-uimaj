@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.uima.analysis_engine.AnalysisEngineManagement;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.ComponentInfo;
 import org.apache.uima.resource.ConfigurationManager;
 import org.apache.uima.resource.ResourceInitializationException;

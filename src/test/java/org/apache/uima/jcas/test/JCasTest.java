@@ -23,14 +23,7 @@ package org.apache.uima.jcas.test;
  * @author schor
  * 
  */
-import java.util.Iterator;
-
 import junit.framework.TestCase;
-import x.y.z.EndOfSentence;
-import x.y.z.Token;
-import aa.ConcreteType;
-import aa.MissingFeatureInCas;
-import aa.Root;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -45,7 +38,6 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelException;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
-import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.cas.EmptyFSList;
 import org.apache.uima.jcas.cas.EmptyFloatList;
@@ -65,6 +57,12 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 import org.apache.uima.jcas.tcas.DocumentAnnotation;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+
+import x.y.z.EndOfSentence;
+import x.y.z.Token;
+import aa.ConcreteType;
+import aa.MissingFeatureInCas;
+import aa.Root;
 
 /**
  * Class comment for CASTest.java goes here.

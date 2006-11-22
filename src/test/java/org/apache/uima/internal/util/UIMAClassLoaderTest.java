@@ -22,13 +22,12 @@ package org.apache.uima.internal.util;
 import java.io.File;
 import java.net.URL;
 
-import org.apache.uima.UIMAFramework;
-import org.apache.uima.internal.util.UIMAClassLoader;
-import org.apache.uima.resource.ResourceManager;
-import org.apache.uima.test.junit_extension.TestPropertyReader;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.apache.uima.UIMAFramework;
+import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.test.junit_extension.TestPropertyReader;
 
 /*
  * UIMA ClassLoader test

@@ -30,7 +30,6 @@ import junit.framework.TestCase;
 
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -41,10 +40,6 @@ import org.apache.uima.analysis_engine.TaeDescription;
 import org.apache.uima.analysis_engine.TextAnalysisEngine;
 import org.apache.uima.analysis_engine.asb.impl.ASB_impl;
 import org.apache.uima.analysis_engine.asb.impl.FlowControllerContainer;
-import org.apache.uima.analysis_engine.impl.AggregateAnalysisEngine_impl;
-import org.apache.uima.analysis_engine.impl.PrimitiveAnalysisEngine_impl;
-import org.apache.uima.analysis_engine.impl.ResultSpecification_impl;
-import org.apache.uima.analysis_engine.impl.TaeDescription_impl;
 import org.apache.uima.analysis_engine.metadata.FixedFlow;
 import org.apache.uima.analysis_engine.metadata.impl.FixedFlow_impl;
 import org.apache.uima.cas.CAS;
