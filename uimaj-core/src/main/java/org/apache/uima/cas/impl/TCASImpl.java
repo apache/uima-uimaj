@@ -202,16 +202,7 @@ public class TCASImpl extends CASImpl implements TCAS, TCASMgr {
    * @see org.apache.uima.cas.text.TCASMgr#setDocumentText(String)
    */
   public void setDocumentText(String text) throws TCASRuntimeException {
-    if (!this.canSetText) {
-      throw new TCASRuntimeException(TCASRuntimeException.SET_DOC_TEXT_DISABLED);
-    }
-
-    if (!mySofaIsValid()) {
-      this.createInitialSofa("text");
-    }
-    // try to put the document into the SofaString ...
-    // ... will fail if previously set
-    getSofa(this.mySofaRef).setLocalSofaData(text);
+    setSofaDataString(text, "text");
   }
 
   /**
@@ -223,7 +214,7 @@ public class TCASImpl extends CASImpl implements TCAS, TCASMgr {
     }
 
     if (!mySofaIsValid()) {
-      this.baseCAS.createInitialSofa(mime);
+      this.createInitialSofa(mime);
     }
     // try to put the document into the SofaString ...
     // ... will fail if previously set
