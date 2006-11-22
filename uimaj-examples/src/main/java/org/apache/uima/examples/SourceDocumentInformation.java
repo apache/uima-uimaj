@@ -26,7 +26,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** Stores detailed information about the original source document from which the current CAS was initialized. All information (like size) refers to the source document and not to the document in the CAS which may be converted and filtered by a CAS Initializer. For example this information will be written to the Semantic Search index so that the original document contents can be retrieved by queries.
- * Updated by JCasGen Thu Dec 02 11:37:07 EST 2004
+ * Updated by JCasGen Wed Nov 22 16:51:13 EST 2006
+ * XML source: C:/alally/dev/workspace_apache/uimaj-examples/src/main/resources/org/apache/uima/examples/SourceDocumentInformation.xml
  * @generated */
 public class SourceDocumentInformation extends Annotation {
   /** @generated
@@ -57,6 +58,7 @@ public class SourceDocumentInformation extends Annotation {
     readObject();   
   } 
   
+  /** @generated */
   public SourceDocumentInformation(JCas jcas, int begin, int end) {
     super(jcas);
     setBegin(begin);
@@ -82,7 +84,7 @@ public class SourceDocumentInformation extends Annotation {
       JCas.throwFeatMissing("uri", "org.apache.uima.examples.SourceDocumentInformation");
     return jcasType.ll_cas.ll_getStringValue(addr, ((SourceDocumentInformation_Type)jcasType).casFeatCode_uri);}
     
-  /** setter for uri - sets URI of document. (For example, file:///MyDirectory/myFile.txt for a simple file or http://incubator.apache.org/uima/index.html for content from a web source) 
+  /** setter for uri - sets URI of document. (For example, file:///MyDirectory/myFile.txt for a simple file or http://incubator.apache.org/uima/index.html for content from a web source.) 
    * @generated */
   public void setUri(String v) {
     if (SourceDocumentInformation_Type.featOkTst && ((SourceDocumentInformation_Type)jcasType).casFeat_uri == null)
@@ -124,6 +126,24 @@ public class SourceDocumentInformation extends Annotation {
     if (SourceDocumentInformation_Type.featOkTst && ((SourceDocumentInformation_Type)jcasType).casFeat_documentSize == null)
       JCas.throwFeatMissing("documentSize", "org.apache.uima.examples.SourceDocumentInformation");
     jcasType.ll_cas.ll_setIntValue(addr, ((SourceDocumentInformation_Type)jcasType).casFeatCode_documentSize, v);}    
+   
+    
+  //*--------------*
+  //* Feature: lastSegment
+
+  /** getter for lastSegment - gets For a CAS that represents a segment of a larger source document, this flag indicates whether this CAS is the final segment of the source document.  This is useful for downstream components that want to take some action after having seen all of the segments of a particular source document.
+   * @generated */
+  public boolean getLastSegment() {
+    if (SourceDocumentInformation_Type.featOkTst && ((SourceDocumentInformation_Type)jcasType).casFeat_lastSegment == null)
+      JCas.throwFeatMissing("lastSegment", "org.apache.uima.examples.SourceDocumentInformation");
+    return jcasType.ll_cas.ll_getBooleanValue(addr, ((SourceDocumentInformation_Type)jcasType).casFeatCode_lastSegment);}
+    
+  /** setter for lastSegment - sets For a CAS that represents a segment of a larger source document, this flag indicates whether this CAS is the final segment of the source document.  This is useful for downstream components that want to take some action after having seen all of the segments of a particular source document. 
+   * @generated */
+  public void setLastSegment(boolean v) {
+    if (SourceDocumentInformation_Type.featOkTst && ((SourceDocumentInformation_Type)jcasType).casFeat_lastSegment == null)
+      JCas.throwFeatMissing("lastSegment", "org.apache.uima.examples.SourceDocumentInformation");
+    jcasType.ll_cas.ll_setBooleanValue(addr, ((SourceDocumentInformation_Type)jcasType).casFeatCode_lastSegment, v);}    
   }
 
     

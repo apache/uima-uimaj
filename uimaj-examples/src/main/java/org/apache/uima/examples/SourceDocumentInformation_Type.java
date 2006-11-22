@@ -30,7 +30,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** Stores detailed information about the original source document from which the current CAS was initialized. All information (like size) refers to the source document and not to the document in the CAS which may be converted and filtered by a CAS Initializer. For example this information will be written to the Semantic Search index so that the original document contents can be retrieved by queries.
- * Updated by JCasGen Thu Dec 02 11:37:08 EST 2004
+ * Updated by JCasGen Wed Nov 22 16:51:13 EST 2006
  * @generated */
 public class SourceDocumentInformation_Type extends Annotation_Type {
   /** @generated */
@@ -39,20 +39,20 @@ public class SourceDocumentInformation_Type extends Annotation_Type {
   private final FSGenerator fsGenerator = 
     new FSGenerator() {
       public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (instanceOf_Type.useExistingInstance) {
+  			 if (SourceDocumentInformation_Type.this.useExistingInstance) {
   			   // Return eq fs instance if already created
-  		     FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
+  		     FeatureStructure fs = SourceDocumentInformation_Type.this.jcas.getJfsFromCaddr(addr);
   		     if (null == fs) {
-  		       fs = new SourceDocumentInformation(addr, instanceOf_Type);
-  			   instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
+  		       fs = new SourceDocumentInformation(addr, SourceDocumentInformation_Type.this);
+  			   SourceDocumentInformation_Type.this.jcas.putJfsFromCaddr(addr, fs);
   			   return fs;
   		     }
   		     return fs;
-        } else return new SourceDocumentInformation(addr, instanceOf_Type);
+        } else return new SourceDocumentInformation(addr, SourceDocumentInformation_Type.this);
   	  }
     };
   /** @generated */
-  public final static int typeIndexID = SourceDocumentInformation.type;
+  public final static int typeIndexID = SourceDocumentInformation.typeIndexID;
   /** @generated 
      @modifiable */
   public final static boolean featOkTst = JCas.getFeatOkTst("org.apache.uima.examples.SourceDocumentInformation");
@@ -110,6 +110,24 @@ public class SourceDocumentInformation_Type extends Annotation_Type {
     ll_cas.ll_setIntValue(addr, casFeatCode_documentSize, v);}
     
   
+ 
+  /** @generated */
+  final Feature casFeat_lastSegment;
+  /** @generated */
+  final int     casFeatCode_lastSegment;
+  /** @generated */ 
+  public boolean getLastSegment(int addr) {
+        if (featOkTst && casFeat_lastSegment == null)
+      JCas.throwFeatMissing("lastSegment", "org.apache.uima.examples.SourceDocumentInformation");
+    return ll_cas.ll_getBooleanValue(addr, casFeatCode_lastSegment);
+  }
+  /** @generated */    
+  public void setLastSegment(int addr, boolean v) {
+        if (featOkTst && casFeat_lastSegment == null)
+      JCas.throwFeatMissing("lastSegment", "org.apache.uima.examples.SourceDocumentInformation");
+    ll_cas.ll_setBooleanValue(addr, casFeatCode_lastSegment, v);}
+    
+  
 
 
   /** initialize variables to correspond with Cas Type and Features
@@ -129,6 +147,10 @@ public class SourceDocumentInformation_Type extends Annotation_Type {
  
     casFeat_documentSize = jcas.getRequiredFeatureDE(casType, "documentSize", "uima.cas.Integer", featOkTst);
     casFeatCode_documentSize  = (null == casFeat_documentSize) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_documentSize).getCode();
+
+ 
+    casFeat_lastSegment = jcas.getRequiredFeatureDE(casType, "lastSegment", "uima.cas.Boolean", featOkTst);
+    casFeatCode_lastSegment  = (null == casFeat_lastSegment) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_lastSegment).getCode();
 
   }
 }

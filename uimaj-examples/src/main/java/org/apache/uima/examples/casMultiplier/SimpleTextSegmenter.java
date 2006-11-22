@@ -110,6 +110,10 @@ public class SimpleTextSegmenter extends JCasMultiplier_ImplBase {
         sdi.setOffsetInSource(mPos);
         sdi.setDocumentSize(breakAt - mPos);
         sdi.addToIndexes();
+
+        if (breakAt == mDoc.length()) {
+          sdi.setLastSegment(true);
+        }
       }
 
       mPos = breakAt;
