@@ -28,45 +28,36 @@ import javax.swing.JTable;
 import javax.swing.border.Border;
 import javax.swing.table.TableCellRenderer;
 
-class ColorRenderer extends JLabel implements TableCellRenderer
-{
+class ColorRenderer extends JLabel implements TableCellRenderer {
 
-	private Border unselectedBorder = null;
-	private Border selectedBorder = null;
-	
-	public ColorRenderer(StyleMapTable sTable)
-	{
-		super();
+  private static final long serialVersionUID = 4260743930100354668L;
 
-		setOpaque(true);
-		//MUST do this for background to show up.
+  private Border unselectedBorder = null;
 
-		if (selectedBorder == null)
-			selectedBorder =
-				BorderFactory.createMatteBorder(2, 2, 2, 2, 
-          sTable.getSelectionBackground());
+  private Border selectedBorder = null;
 
-		if (unselectedBorder == null)
-			unselectedBorder =
-				BorderFactory.createMatteBorder(2, 2, 2, 2, 
-          sTable.getBackground());
-	}
+  public ColorRenderer(StyleMapTable sTable) {
+    super();
 
-	public Component getTableCellRendererComponent(
-		JTable table,
-		Object color,
-		boolean isSelected,
-		boolean hasFocus,
-		int row,
-		int column)
-	{
-		setBackground((Color) color);
+    setOpaque(true);
+    // MUST do this for background to show up.
 
-		if (isSelected)
-			setBorder(selectedBorder);
-		else
-			setBorder(unselectedBorder);
+    if (selectedBorder == null)
+      selectedBorder = BorderFactory.createMatteBorder(2, 2, 2, 2, sTable.getSelectionBackground());
 
-		return this;
-	}
+    if (unselectedBorder == null)
+      unselectedBorder = BorderFactory.createMatteBorder(2, 2, 2, 2, sTable.getBackground());
+  }
+
+  public Component getTableCellRendererComponent(JTable table, Object color, boolean isSelected,
+                  boolean hasFocus, int row, int column) {
+    setBackground((Color) color);
+
+    if (isSelected)
+      setBorder(selectedBorder);
+    else
+      setBorder(unselectedBorder);
+
+    return this;
+  }
 }

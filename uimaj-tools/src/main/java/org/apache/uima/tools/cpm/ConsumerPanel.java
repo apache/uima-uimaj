@@ -28,53 +28,48 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
-public class ConsumerPanel extends MetaDataPanel
-{
-	ResourceSpecifier casConsumerSpecifier;
-	File specifierFile;
-	long lastFileSyncTimestamp;
-		
-	public ConsumerPanel(ResourceSpecifier casConsumerSpecifier, File specifierFile, long fileModStamp)
-	{
-		super(4);		// 4 columns
-		this.casConsumerSpecifier = casConsumerSpecifier;
-		
-		this.specifierFile = specifierFile;
-		this.lastFileSyncTimestamp = fileModStamp;	
-	}
+public class ConsumerPanel extends MetaDataPanel {
+  private static final long serialVersionUID = -6822046781435538398L;
 
-	public ResourceSpecifier getCasConsumerSpecifier()
-	{
-		return this.casConsumerSpecifier;
-	}
-	
-	public long getLastFileSyncTimestamp()
-	{
-		return this.lastFileSyncTimestamp;
-	}
-	
-	public void setLastFileSyncTimestamp(long timestamp)
-	{
-		this.lastFileSyncTimestamp = timestamp;
-	}
-	
-	public boolean hasFileChanged(long lastCheck)
-	{
-		return specifierFile.lastModified() > this.lastFileSyncTimestamp &&
-					 specifierFile.lastModified() > lastCheck;
-	}
-	
-	public void refreshFromFile()
-		throws InvalidXMLException, IOException
-	{
-		clearAll();
-		this.casConsumerSpecifier =
-			UIMAFramework.getXMLParser().parseResourceSpecifier(new XMLInputSource(this.specifierFile));
-		if (casConsumerSpecifier instanceof CasConsumerDescription)
-		{
-			CasConsumerDescription consumerDescription = (CasConsumerDescription) casConsumerSpecifier;
-			populate(consumerDescription.getMetaData(),null);
-		}
-		this.lastFileSyncTimestamp = this.specifierFile.lastModified();		
-	}	
+  ResourceSpecifier casConsumerSpecifier;
+
+  File specifierFile;
+
+  long lastFileSyncTimestamp;
+
+  public ConsumerPanel(ResourceSpecifier casConsumerSpecifier, File specifierFile, long fileModStamp) {
+    super(4); // 4 columns
+    this.casConsumerSpecifier = casConsumerSpecifier;
+
+    this.specifierFile = specifierFile;
+    this.lastFileSyncTimestamp = fileModStamp;
+  }
+
+  public ResourceSpecifier getCasConsumerSpecifier() {
+    return this.casConsumerSpecifier;
+  }
+
+  public long getLastFileSyncTimestamp() {
+    return this.lastFileSyncTimestamp;
+  }
+
+  public void setLastFileSyncTimestamp(long timestamp) {
+    this.lastFileSyncTimestamp = timestamp;
+  }
+
+  public boolean hasFileChanged(long lastCheck) {
+    return specifierFile.lastModified() > this.lastFileSyncTimestamp
+                    && specifierFile.lastModified() > lastCheck;
+  }
+
+  public void refreshFromFile() throws InvalidXMLException, IOException {
+    clearAll();
+    this.casConsumerSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
+                    new XMLInputSource(this.specifierFile));
+    if (casConsumerSpecifier instanceof CasConsumerDescription) {
+      CasConsumerDescription consumerDescription = (CasConsumerDescription) casConsumerSpecifier;
+      populate(consumerDescription.getMetaData(), null);
+    }
+    this.lastFileSyncTimestamp = this.specifierFile.lastModified();
+  }
 }

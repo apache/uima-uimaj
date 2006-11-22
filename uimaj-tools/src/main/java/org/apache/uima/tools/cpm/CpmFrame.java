@@ -46,11 +46,18 @@ import org.apache.uima.tools.util.gui.FileChooserBugWorkarounds;
 import org.apache.uima.tools.util.gui.SplashScreenDialog;
 
 public class CpmFrame extends JFrame implements ActionListener {
+  private static final long serialVersionUID = 756368351780483658L;
+
   private CpmPanel cpmPanel;
+
   private JMenuBar menuBar;
+
   private JMenuItem exitMenuItem;
+
   private JMenuItem aboutMenuItem;
+
   private JMenuItem helpMenuItem;
+
   private JDialog aboutDialog;
 
   public CpmFrame() {
@@ -59,20 +66,20 @@ public class CpmFrame extends JFrame implements ActionListener {
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     } catch (Exception e) {
-      //I don't think this should ever happen, but if it does just print error and continue
-      //with defalt look and feel
+      // I don't think this should ever happen, but if it does just print error and continue
+      // with defalt look and feel
       System.err.println("Could not set look and feel: " + e.getMessage());
     }
-    //		UIManager.put("Panel.background",Color.WHITE);
+    // UIManager.put("Panel.background",Color.WHITE);
     // Need to set other colors as well
 
-    //Workaround for bug #4711700
+    // Workaround for bug #4711700
     FileChooserBugWorkarounds.fix();
 
-    //Set frame icon image 
+    // Set frame icon image
     try {
       this.setIconImage(Images.getImage(Images.MICROSCOPE));
-      //new ImageIcon(getClass().getResource(FRAME_ICON_IMAGE)).getImage());
+      // new ImageIcon(getClass().getResource(FRAME_ICON_IMAGE)).getImage());
     } catch (IOException e) {
       System.err.println("Image could not be loaded: " + e.getMessage());
     }
@@ -128,11 +135,8 @@ public class CpmFrame extends JFrame implements ActionListener {
     if (source == aboutMenuItem) {
       aboutDialog.setVisible(true);
     } else if (source == helpMenuItem) {
-      JOptionPane.showMessageDialog(
-        CpmFrame.this,
-        CpmPanel.HELP_MESSAGE,
-        "Collection Processing Engine Configurator Help",
-        JOptionPane.PLAIN_MESSAGE);
+      JOptionPane.showMessageDialog(CpmFrame.this, CpmPanel.HELP_MESSAGE,
+                      "Collection Processing Engine Configurator Help", JOptionPane.PLAIN_MESSAGE);
     } else if (source == exitMenuItem) {
       this.processWindowEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }
@@ -147,7 +151,7 @@ public class CpmFrame extends JFrame implements ActionListener {
    * Runs the application.
    */
   public static void main(String[] args) {
-    try {      
+    try {
       final CpmFrame frame = new CpmFrame();
       frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 

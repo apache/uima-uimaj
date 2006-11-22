@@ -30,17 +30,29 @@ import javax.swing.ImageIcon;
  */
 public class Images {
   public static final String SPLASH = "/org/apache/uima/tools/images/Splash_screen.gif";
+
   public static final String BANNER = "/org/apache/uima/tools/images/Banner_UIMA.gif";
+
   public static final String MICROSCOPE = "/org/apache/uima/tools/images/Micro_16.gif";
+
   public static final String ROW_DELETE = "/org/apache/uima/tools/images/RowDelete_24.gif";
+
   public static final String DOWN = "/org/apache/uima/tools/images/down_24.gif";
+
   public static final String FORWARD = "/org/apache/uima/tools/images/forward_24.gif";
+
   public static final String PAUSE = "/org/apache/uima/tools/images/pause_24.gif";
+
   public static final String PLAY = "/org/apache/uima/tools/images/play_24.gif";
+
   public static final String SMALL_ARROW = "/org/apache/uima/tools/images/smallarrow_16.gif";
+
   public static final String STOP = "/org/apache/uima/tools/images/stop_24.gif";
+
   public static final String TEXT_DOC = "/org/apache/uima/tools/images/text_16.gif";
+
   public static final String UP = "/org/apache/uima/tools/images/up_24.gif";
+
   public static final String XML_DOC = "/org/apache/uima/tools/images/xml_16.gif";
 
   public static Image getImage(String fileName) throws IOException {

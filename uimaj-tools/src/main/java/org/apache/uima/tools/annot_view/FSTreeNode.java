@@ -28,37 +28,36 @@ import java.util.ArrayList;
  */
 public abstract class FSTreeNode {
 
-    protected ArrayList children = null;
+  protected ArrayList children = null;
 
-    /**
-     * 
-     */
-    public FSTreeNode() {
-        super();
-        // TODO Auto-generated constructor stub
+  /**
+   * 
+   */
+  public FSTreeNode() {
+    super();
+    // TODO Auto-generated constructor stub
+  }
+
+  void removeAllChildren() {
+    this.children = new ArrayList();
+  }
+
+  void setChildren(ArrayList children) {
+    this.children = children;
+  }
+
+  ArrayList getChildren() {
+    return this.children;
+  }
+
+  int getChildCount() {
+    initChildren();
+    if (this.children == null) {
+      return 0;
     }
+    return this.children.size();
+  }
 
-    void removeAllChildren() {
-        this.children = new ArrayList();
-    }
-
-    void setChildren(ArrayList children) {
-        this.children = children;
-    }
-
-    ArrayList getChildren() {
-        return this.children;
-    }
-
-    int getChildCount() {
-        initChildren();
-        if (this.children == null) {
-            return 0;
-        }
-        return this.children.size();
-    }
-
-    protected abstract void initChildren();
-
+  protected abstract void initChildren();
 
 }

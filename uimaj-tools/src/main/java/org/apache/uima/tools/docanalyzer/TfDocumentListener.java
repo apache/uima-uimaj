@@ -23,34 +23,40 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 /**
- *  * This class tells the Mediator to check the length
- * of the 3 text fields and adjust whether the 3 buttons are enabeld or not.
+ * * This class tells the Mediator to check the length of the 3 text fields and adjust whether the 3
+ * buttons are enabeld or not.
  * 
  */
 public class TfDocumentListener implements DocumentListener {
-	private PrefsMediator med;
-	public TfDocumentListener(PrefsMediator med) {
-		this.med = med;
-	}
+  private PrefsMediator med;
 
- /* (non-Javadoc)
+  public TfDocumentListener(PrefsMediator med) {
+    this.med = med;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.DocumentEvent)
    */
-  public void changedUpdate(DocumentEvent e)
-  {
+  public void changedUpdate(DocumentEvent e) {
   }
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
    */
-  public void insertUpdate(DocumentEvent e)
-  {
+  public void insertUpdate(DocumentEvent e) {
     med.fieldFocusLost();
   }
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
    */
-  public void removeUpdate(DocumentEvent e)
-  {
+  public void removeUpdate(DocumentEvent e) {
     med.fieldFocusLost();
   }
 

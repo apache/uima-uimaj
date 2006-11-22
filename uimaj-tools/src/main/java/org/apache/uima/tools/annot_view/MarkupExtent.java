@@ -20,51 +20,49 @@
 package org.apache.uima.tools.annot_view;
 
 /**
- * Represents an element in a list of markup extents. Knows about the length of
- * the extent, as well as the depth of markup. Depth of markup means, how many
- * annotations cover this extent?
+ * Represents an element in a list of markup extents. Knows about the length of the extent, as well
+ * as the depth of markup. Depth of markup means, how many annotations cover this extent?
  * 
  * 
  */
 public class MarkupExtent {
 
-    private int start;
+  private int start;
 
-    private int end;
+  private int end;
 
-    private int markupDepth;
+  private int markupDepth;
 
-    /**
-     * 
-     */
-    public MarkupExtent(int start, int end, int markupDepth) {
-        super();
-        this.start = start;
-        this.end = end;
-        this.markupDepth = markupDepth;
-    }
+  /**
+   * 
+   */
+  public MarkupExtent(int start, int end, int markupDepth) {
+    super();
+    this.start = start;
+    this.end = end;
+    this.markupDepth = markupDepth;
+  }
 
-    public int getLength() {
-        return this.end - this.start;
-    }
+  public int getLength() {
+    return this.end - this.start;
+  }
 
-    public int getMarkupDepth() {
-        return this.markupDepth;
-    }
+  public int getMarkupDepth() {
+    return this.markupDepth;
+  }
 
-    /**
-     * @return int
-     */
-    public int getEnd() {
-        return this.end;
-    }
+  /**
+   * @return int
+   */
+  public int getEnd() {
+    return this.end;
+  }
 
-    /**
-     * @return int
-     */
-    public int getStart() {
-        return this.start;
-    }
-
+  /**
+   * @return int
+   */
+  public int getStart() {
+    return this.start;
+  }
 
 }

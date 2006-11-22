@@ -28,58 +28,57 @@ import org.apache.uima.cas.Type;
  */
 public class IndexTreeNode {
 
-    private final String name;
+  private final String name;
 
-    private final Type type;
+  private final Type type;
 
-    private final int size;
+  private final int size;
 
-    public IndexTreeNode(String name, Type type, int size) {
-        super();
-        this.name = name;
-        this.type = type;
-        this.size = size;
-    }
+  public IndexTreeNode(String name, Type type, int size) {
+    super();
+    this.name = name;
+    this.type = type;
+    this.size = size;
+  }
 
-    /**
-     * Constructor for IndexTreeNode.
-     */
-    public IndexTreeNode() {
-        super();
-        this.name = null;
-        this.type = null;
-        this.size = 0;
-    }
+  /**
+   * Constructor for IndexTreeNode.
+   */
+  public IndexTreeNode() {
+    super();
+    this.name = null;
+    this.type = null;
+    this.size = 0;
+  }
 
-    public String toString() {
-        return "<html><font color=green>" + this.name + "</font> [" + this.size
-                + "]</html>";
-    }
+  public String toString() {
+    return "<html><font color=green>" + this.name + "</font> [" + this.size + "]</html>";
+  }
 
-    /**
-     * Returns the name.
-     * 
-     * @return String
-     */
-    public String getName() {
-        return this.name;
-    }
+  /**
+   * Returns the name.
+   * 
+   * @return String
+   */
+  public String getName() {
+    return this.name;
+  }
 
-    /**
-     * Returns the type.
-     * 
-     * @return Type
-     */
-    public Type getType() {
-        return this.type;
-    }
+  /**
+   * Returns the type.
+   * 
+   * @return Type
+   */
+  public Type getType() {
+    return this.type;
+  }
 
-    public boolean equals(Object o) {
-        return (this == o);
-    }
+  public boolean equals(Object o) {
+    return (this == o);
+  }
 
-    public int hashCode() {
-        return super.hashCode();
-    }
+  public int hashCode() {
+    return super.hashCode();
+  }
 
 }

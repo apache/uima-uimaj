@@ -18,29 +18,28 @@
  */
 
 package org.apache.uima.tools.jcasgen;
+
 import java.util.prefs.Preferences;
 
 public class Prefs {
-	static final Preferences prefs = Preferences.userRoot().
-	     node("org/apache/uima/tools/JCasGen");
-	     
+  static final Preferences prefs = Preferences.userRoot().node("org/apache/uima/tools/JCasGen");
+
   static void set(GUI gui) {
-  	prefs.putInt("WindowPos X", gui.getLocation().x);
-  	prefs.putInt("WindowPos Y", gui.getLocation().y);
-  	prefs.putInt("WindowH",     gui.getHeight());
-  	prefs.putInt("WindowW",     gui.getWidth());
-  	prefs.put   ("outDir",      gui.pnG.tfOutDirName.getText());
-  	prefs.put   ("inFile",      gui.pnG.tfInputFileName.getText());
+    prefs.putInt("WindowPos X", gui.getLocation().x);
+    prefs.putInt("WindowPos Y", gui.getLocation().y);
+    prefs.putInt("WindowH", gui.getHeight());
+    prefs.putInt("WindowW", gui.getWidth());
+    prefs.put("outDir", gui.pnG.tfOutDirName.getText());
+    prefs.put("inFile", gui.pnG.tfInputFileName.getText());
   }
-  
+
   static void get(GUI gui) {
-  	gui.setBounds(prefs.getInt("WindowPos X", 200),
-  	                        prefs.getInt("WindowPos Y", 200),
-  	                      prefs.getInt("WindowW",520),
-  	                      prefs.getInt("WindowH", 400));
-		gui.pnG.tfOutDirName.setText(prefs.get("outDir","/temp"));
-		String userDir = System.getProperty("user.dir").replaceAll("\\\\", "/");
-		
-		gui.pnG.tfInputFileName.setText(prefs.get("inFile",userDir + "/examples/descriptors/tutorial/ex1/TutorialTypeSystem.xml"));	
-  } 
+    gui.setBounds(prefs.getInt("WindowPos X", 200), prefs.getInt("WindowPos Y", 200), prefs.getInt(
+                    "WindowW", 520), prefs.getInt("WindowH", 400));
+    gui.pnG.tfOutDirName.setText(prefs.get("outDir", "/temp"));
+    String userDir = System.getProperty("user.dir").replaceAll("\\\\", "/");
+
+    gui.pnG.tfInputFileName.setText(prefs.get("inFile", userDir
+                    + "/examples/descriptors/tutorial/ex1/TutorialTypeSystem.xml"));
+  }
 }

@@ -19,51 +19,65 @@
 
 package org.apache.uima.klt;
 
-import org.apache.uima.jcas.impl.JCas; 
-import org.apache.uima.jcas.cas.TOP_Type;
-
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.cas.TOP_Type;
+import org.apache.uima.jcas.impl.JCas;
 
-
-/** An aggregation of EntityAnnotation or RelationAnnotation instances that refer to the arguments of some relation
- * Updated by JCasGen Thu Apr 21 11:20:08 EDT 2005
- * XML source: descriptors/types/hutt.xml
- * @generated */
+/**
+ * An aggregation of EntityAnnotation or RelationAnnotation instances that refer to the arguments of
+ * some relation Updated by JCasGen Thu Apr 21 11:20:08 EDT 2005 XML source:
+ * descriptors/types/hutt.xml
+ * 
+ * @generated
+ */
 public class RelationArgs extends TOP {
-  /** @generated
-   * @ordered 
+  /**
+   * @generated
+   * @ordered
    */
   public final static int typeIndexID = JCas.getNextIndex();
-  /** @generated
-   * @ordered 
+
+  /**
+   * @generated
+   * @ordered
    */
   public final static int type = typeIndexID;
-  /** @generated  */
-  public              int getTypeIndexID() {return typeIndexID;}
- 
-  /** Never called.  Disable default constructor
-   * @generated */
-  protected RelationArgs() {}
-    
-  /** Internal - constructor used by generator 
-   * @generated */
+
+  /** @generated */
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  /**
+   * Never called. Disable default constructor
+   * 
+   * @generated
+   */
+  protected RelationArgs() {
+  }
+
+  /**
+   * Internal - constructor used by generator
+   * 
+   * @generated
+   */
   public RelationArgs(int addr, TOP_Type type) {
     super(addr, type);
     readObject();
   }
-  
+
   /** @generated */
   public RelationArgs(JCas jcas) {
     super(jcas);
-    readObject();   
-  } 
+    readObject();
+  }
 
-  /** <!-- begin-user-doc -->
-    * Write your own initialization here
-    * <!-- end-user-doc -->
-  @generated modifiable */
-  private void readObject() {}
-     
+  /**
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
+   * 
+   * @generated modifiable
+   */
+  private void readObject() {
+  }
+
 }
-
-    

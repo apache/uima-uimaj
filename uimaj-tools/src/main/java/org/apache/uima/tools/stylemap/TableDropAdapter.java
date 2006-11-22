@@ -25,27 +25,28 @@ import java.awt.dnd.DropTargetContext;
 import java.awt.dnd.DropTargetDropEvent;
 
 class TableDropAdapter extends DropTargetAdapter {
-	private AnnotationFeaturesViewer annotationFeaturesViewer;
-	private StyleMapEditor edit;
-	
-	public TableDropAdapter(AnnotationFeaturesViewer av, StyleMapEditor edit) {
-		annotationFeaturesViewer = av;
-		this.edit = edit;
-	}
-	
-	public void drop(DropTargetDropEvent e){
-		DropTargetContext targetContext = e.getDropTargetContext();
+  private AnnotationFeaturesViewer annotationFeaturesViewer;
 
-				if ((e.getSourceActions() & DnDConstants.ACTION_COPY) != 0)
-					e.acceptDrop(DnDConstants.ACTION_COPY);
-				else {
-					e.rejectDrop();
-					return;
-				}
+  private StyleMapEditor edit;
 
-				// We know drag is coming from tree so just get selection:
-				String typeName = annotationFeaturesViewer.getSelection();
-				edit.addRow(typeName);
-  			targetContext.dropComplete(true);
-	}
+  public TableDropAdapter(AnnotationFeaturesViewer av, StyleMapEditor edit) {
+    annotationFeaturesViewer = av;
+    this.edit = edit;
+  }
+
+  public void drop(DropTargetDropEvent e) {
+    DropTargetContext targetContext = e.getDropTargetContext();
+
+    if ((e.getSourceActions() & DnDConstants.ACTION_COPY) != 0)
+      e.acceptDrop(DnDConstants.ACTION_COPY);
+    else {
+      e.rejectDrop();
+      return;
+    }
+
+    // We know drag is coming from tree so just get selection:
+    String typeName = annotationFeaturesViewer.getSelection();
+    edit.addRow(typeName);
+    targetContext.dropComplete(true);
+  }
 }

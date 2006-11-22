@@ -20,26 +20,28 @@
 package org.apache.uima.tools.jcasgen;
 
 public class Waiter {
-	private boolean wokeUpIntentionally = false;
-	private Object waitObject = new Object();
+  private boolean wokeUpIntentionally = false;
+
+  private Object waitObject = new Object();
+
   void waitforGUI() {
-		synchronized (waitObject) {
-			wokeUpIntentionally = false;
-			while (wokeUpIntentionally == false) {
-				try {
-					waitObject.wait();
-				} catch (InterruptedException e) {
-					// this will never occur
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-  
+    synchronized (waitObject) {
+      wokeUpIntentionally = false;
+      while (wokeUpIntentionally == false) {
+        try {
+          waitObject.wait();
+        } catch (InterruptedException e) {
+          // this will never occur
+          e.printStackTrace();
+        }
+      }
+    }
+  }
+
   void finished() {
-  	synchronized (waitObject) {
-			wokeUpIntentionally = true;
-			waitObject.notifyAll();
-		}
+    synchronized (waitObject) {
+      wokeUpIntentionally = true;
+      waitObject.notifyAll();
+    }
   }
 }

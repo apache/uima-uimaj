@@ -24,35 +24,31 @@ import java.awt.dnd.DropTarget;
 
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 
-
 /**
-* Data structure used by the editor, which represents an entry in the
-* style map.
-*/
-public class StyleMapTable extends JTable
-{
-	private TableGUIMediator med;
-	public StyleMapTable(TableModel model, AnnotationFeaturesViewer av, StyleMapEditor edit, TableGUIMediator tmed)
-	{
-		super(model);
-		med = tmed;
-		setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		setDropTarget( new DropTarget(this, new TableDropAdapter(av, edit)) );
-		
-		JTableHeader tableHeader = getTableHeader();
-		tableHeader.setReorderingAllowed( false );
-		ListSelectionModel lsm = this.getSelectionModel() ;
-		lsm.addListSelectionListener( new TableSelectionListener (med));
-	}
+ * Data structure used by the editor, which represents an entry in the style map.
+ */
+public class StyleMapTable extends JTable {
+  private static final long serialVersionUID = 3556134276343308170L;
 
-	public Dimension getPreferredScrollableViewportSize()
-	{
-		return this.getPreferredSize();
-	}
-	
+  private TableGUIMediator med;
+
+  public StyleMapTable(TableModel model, AnnotationFeaturesViewer av, StyleMapEditor edit,
+                  TableGUIMediator tmed) {
+    super(model);
+    med = tmed;
+    setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    setDropTarget(new DropTarget(this, new TableDropAdapter(av, edit)));
+
+    getTableHeader().setReorderingAllowed(false);
+    ListSelectionModel lsm = this.getSelectionModel();
+    lsm.addListSelectionListener(new TableSelectionListener(med));
+  }
+
+  public Dimension getPreferredScrollableViewportSize() {
+    return this.getPreferredSize();
+  }
+
 }
-

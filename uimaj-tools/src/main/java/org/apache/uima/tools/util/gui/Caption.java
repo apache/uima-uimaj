@@ -24,16 +24,15 @@ import javax.swing.SwingConstants;
 
 /**
  * 
- *
- * A simple right-aligned label for field captioning.
- * Useful in input form displays.
+ * 
+ * A simple right-aligned label for field captioning. Useful in input form displays.
  */
 
-public class Caption extends JLabel
-{
-	public Caption(String s)
-	{
-		super(s);
-		setHorizontalAlignment(SwingConstants.RIGHT);
-	}
+public class Caption extends JLabel {
+  private static final long serialVersionUID = -2255251900300316894L;
+
+  public Caption(String s) {
+    super(s);
+    setHorizontalAlignment(SwingConstants.RIGHT);
+  }
 }

@@ -33,79 +33,79 @@ import org.apache.uima.cas.Type;
  */
 public class FeatureTableModel extends AbstractTableModel {
 
-    static final String[] columnHeaders = { "Feature", "Value Type",
-            "Defined On" };
+  private static final long serialVersionUID = -6010925680514336742L;
 
-    private Type type = null;
+  static final String[] columnHeaders = { "Feature", "Value Type", "Defined On" };
 
-    public FeatureTableModel() {
-        super();
+  private Type type = null;
+
+  public FeatureTableModel() {
+    super();
+  }
+
+  /**
+   * Constructor for FeatureTableModel.
+   */
+  public FeatureTableModel(Type type) {
+    super();
+    this.type = type;
+  }
+
+  public void setType(Type type) {
+    this.type = type;
+    fireTableDataChanged();
+  }
+
+  public String getColumnName(int i) {
+    if (i < 0 || i >= columnHeaders.length) {
+      return "";
     }
+    return columnHeaders[i];
+  }
 
-    /**
-     * Constructor for FeatureTableModel.
-     */
-    public FeatureTableModel(Type type) {
-        super();
-        this.type = type;
+  /**
+   * @see javax.swing.table.TableModel#getRowCount()
+   */
+  public int getRowCount() {
+    if (this.type == null) {
+      return 0;
     }
+    return this.type.getNumberOfFeatures();
+  }
 
-    public void setType(Type type) {
-        this.type = type;
-        fireTableDataChanged();
+  /**
+   * @see javax.swing.table.TableModel#getColumnCount()
+   */
+  public int getColumnCount() {
+    return 3;
+  }
+
+  /**
+   * @see javax.swing.table.TableModel#getValueAt(int, int)
+   */
+  public Object getValueAt(int rowIndex, int columnIndex) {
+    if (this.type == null) {
+      return null;
     }
-
-    public String getColumnName(int i) {
-        if (i < 0 || i >= columnHeaders.length) {
-            return "";
-        }
-        return columnHeaders[i];
+    List feats = this.type.getFeatures();
+    if (rowIndex < 0 || rowIndex >= feats.size()) {
+      return null;
     }
-
-    /**
-     * @see javax.swing.table.TableModel#getRowCount()
-     */
-    public int getRowCount() {
-        if (this.type == null) {
-            return 0;
-        }
-        return this.type.getNumberOfFeatures();
+    Feature feat = (Feature) feats.get(rowIndex);
+    switch (columnIndex) {
+      case 0: {
+        return feat.getShortName();
+      }
+      case 1: {
+        return feat.getRange().getName();
+      }
+      case 2: {
+        return feat.getDomain().getName();
+      }
+      default: {
+        return null;
+      }
     }
-
-    /**
-     * @see javax.swing.table.TableModel#getColumnCount()
-     */
-    public int getColumnCount() {
-        return 3;
-    }
-
-    /**
-     * @see javax.swing.table.TableModel#getValueAt(int, int)
-     */
-    public Object getValueAt(int rowIndex, int columnIndex) {
-        if (this.type == null) {
-            return null;
-        }
-        List feats = this.type.getFeatures();
-        if (rowIndex < 0 || rowIndex >= feats.size()) {
-            return null;
-        }
-        Feature feat = (Feature) feats.get(rowIndex);
-        switch (columnIndex) {
-        case 0: {
-            return feat.getShortName();
-        }
-        case 1: {
-            return feat.getRange().getName();
-        }
-        case 2: {
-            return feat.getDomain().getName();
-        }
-        default: {
-            return null;
-        }
-        }
-    }
-
+  }
 
 }

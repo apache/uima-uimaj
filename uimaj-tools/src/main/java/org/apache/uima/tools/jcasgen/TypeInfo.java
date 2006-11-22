@@ -21,26 +21,31 @@ package org.apache.uima.tools.jcasgen;
 
 public class TypeInfo {
 
-		String xmlName;
-		String javaNameWithPkg;
-		String javaName;  // name without package prefix if in this package
-		boolean isArray = false;
-		String arrayElNameWithPkg;
-		boolean used = false;
-  
-		TypeInfo(String xmlName, String javaName) {
-			this.xmlName = xmlName;
-			this.javaNameWithPkg = javaName;
-			this.javaName = Jg.removePkg(javaName);
-			this.isArray = false;
-			this.arrayElNameWithPkg = "";			
-		}
-		
-		TypeInfo(String xmlName, String javaName, String arrayElNameWithPkg) {
-			this(xmlName, javaName);
-      if (null != arrayElNameWithPkg) {
-		 	  this.isArray = true;
-			  this.arrayElNameWithPkg = arrayElNameWithPkg;
-      }
-		}
+  String xmlName;
+
+  String javaNameWithPkg;
+
+  String javaName; // name without package prefix if in this package
+
+  boolean isArray = false;
+
+  String arrayElNameWithPkg;
+
+  boolean used = false;
+
+  TypeInfo(String xmlName, String javaName) {
+    this.xmlName = xmlName;
+    this.javaNameWithPkg = javaName;
+    this.javaName = Jg.removePkg(javaName);
+    this.isArray = false;
+    this.arrayElNameWithPkg = "";
+  }
+
+  TypeInfo(String xmlName, String javaName, String arrayElNameWithPkg) {
+    this(xmlName, javaName);
+    if (null != arrayElNameWithPkg) {
+      this.isArray = true;
+      this.arrayElNameWithPkg = arrayElNameWithPkg;
+    }
+  }
 }

@@ -19,10 +19,12 @@
 
 package org.apache.uima.tools.util.gui;
 
-public interface TransportControlListener
-{
-	public void controlStarted();
-	public void controlPaused();
-	public void controlResumed();	// Following pause.
-	public void controlStopped();
+public interface TransportControlListener {
+  public void controlStarted();
+
+  public void controlPaused();
+
+  public void controlResumed(); // Following pause.
+
+  public void controlStopped();
 }

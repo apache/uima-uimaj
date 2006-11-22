@@ -59,327 +59,302 @@ import org.apache.uima.cas.text.TCAS;
  */
 public class AnnotationDisplayCustomizationFrame extends JFrame {
 
-    private class TypeTreeSelectionListener implements TreeSelectionListener {
-        /**
-         * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
-         */
-        public void valueChanged(TreeSelectionEvent event) {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) AnnotationDisplayCustomizationFrame.this.tree
-                    .getLastSelectedPathComponent();
-            String typeName = (String) node.getUserObject();
-            if (typeName
-                    .equals(AnnotationDisplayCustomizationFrame.this.currentTypeName)) {
-                return;
-            }
-            setCustomizationPanel(typeName);
-        }
+  private static final long serialVersionUID = -6695661439132793537L;
 
+  private class TypeTreeSelectionListener implements TreeSelectionListener {
+    /**
+     * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
+     */
+    public void valueChanged(TreeSelectionEvent event) {
+      DefaultMutableTreeNode node = (DefaultMutableTreeNode) AnnotationDisplayCustomizationFrame.this.tree
+                      .getLastSelectedPathComponent();
+      String typeName = (String) node.getUserObject();
+      if (typeName.equals(AnnotationDisplayCustomizationFrame.this.currentTypeName)) {
+        return;
+      }
+      setCustomizationPanel(typeName);
     }
 
-    private class CustomizeBgButtonHandler implements ActionListener {
+  }
 
-        public void actionPerformed(ActionEvent event) {
-            Color color = JColorChooser.showDialog(
-                    AnnotationDisplayCustomizationFrame.this, "Choose color",
-                    AnnotationDisplayCustomizationFrame.this.bgColor);
-            if (color != null) {
-                AnnotationDisplayCustomizationFrame.this.bgColor = color;
-                AnnotationDisplayCustomizationFrame.this.bgIcon.setColor(color);
-                StyleConstants.setBackground(
-                        AnnotationDisplayCustomizationFrame.this.currentStyle,
-                        color);
-                setTextPane();
-                enableButtons(true);
-                AnnotationDisplayCustomizationFrame.this.repaint();
-            }
-        }
+  private class CustomizeBgButtonHandler implements ActionListener {
 
+    public void actionPerformed(ActionEvent event) {
+      Color color = JColorChooser.showDialog(AnnotationDisplayCustomizationFrame.this,
+                      "Choose color", AnnotationDisplayCustomizationFrame.this.bgColor);
+      if (color != null) {
+        AnnotationDisplayCustomizationFrame.this.bgColor = color;
+        AnnotationDisplayCustomizationFrame.this.bgIcon.setColor(color);
+        StyleConstants.setBackground(AnnotationDisplayCustomizationFrame.this.currentStyle, color);
+        setTextPane();
+        enableButtons(true);
+        AnnotationDisplayCustomizationFrame.this.repaint();
+      }
     }
 
-    private class CustomizeFgButtonHandler implements ActionListener {
+  }
 
-        public void actionPerformed(ActionEvent event) {
-            Color color = JColorChooser.showDialog(
-                    AnnotationDisplayCustomizationFrame.this, "Choose color",
-                    AnnotationDisplayCustomizationFrame.this.fgColor);
-            if (color != null) {
-                AnnotationDisplayCustomizationFrame.this.fgColor = color;
-                AnnotationDisplayCustomizationFrame.this.fgIcon.setColor(color);
-                StyleConstants.setForeground(
-                        AnnotationDisplayCustomizationFrame.this.currentStyle,
-                        color);
-                setTextPane();
-                enableButtons(true);
-                AnnotationDisplayCustomizationFrame.this.repaint();
-            }
-        }
+  private class CustomizeFgButtonHandler implements ActionListener {
 
+    public void actionPerformed(ActionEvent event) {
+      Color color = JColorChooser.showDialog(AnnotationDisplayCustomizationFrame.this,
+                      "Choose color", AnnotationDisplayCustomizationFrame.this.fgColor);
+      if (color != null) {
+        AnnotationDisplayCustomizationFrame.this.fgColor = color;
+        AnnotationDisplayCustomizationFrame.this.fgIcon.setColor(color);
+        StyleConstants.setForeground(AnnotationDisplayCustomizationFrame.this.currentStyle, color);
+        setTextPane();
+        enableButtons(true);
+        AnnotationDisplayCustomizationFrame.this.repaint();
+      }
     }
 
-    private class AcceptButtonHandler implements ActionListener {
+  }
 
-        public void actionPerformed(ActionEvent event) {
-            Style style = (Style) AnnotationDisplayCustomizationFrame.this.styleMap
-                    .get(AnnotationDisplayCustomizationFrame.this.currentTypeName);
-            if (style == null) {
-                style = AnnotationDisplayCustomizationFrame.this.textPane
-                        .addStyle(
-                                AnnotationDisplayCustomizationFrame.this.currentTypeName,
-                                (Style) AnnotationDisplayCustomizationFrame.this.styleMap
+  private class AcceptButtonHandler implements ActionListener {
+
+    public void actionPerformed(ActionEvent event) {
+      Style style = (Style) AnnotationDisplayCustomizationFrame.this.styleMap
+                      .get(AnnotationDisplayCustomizationFrame.this.currentTypeName);
+      if (style == null) {
+        style = AnnotationDisplayCustomizationFrame.this.textPane.addStyle(
+                        AnnotationDisplayCustomizationFrame.this.currentTypeName,
+                        (Style) AnnotationDisplayCustomizationFrame.this.styleMap
                                         .get(TCAS.TYPE_NAME_ANNOTATION));
-            }
-            StyleConstants
-                    .setForeground(
-                            style,
-                            StyleConstants
-                                    .getForeground(AnnotationDisplayCustomizationFrame.this.currentStyle));
-            StyleConstants
-                    .setBackground(
-                            style,
-                            StyleConstants
-                                    .getBackground(AnnotationDisplayCustomizationFrame.this.currentStyle));
-            AnnotationDisplayCustomizationFrame.this.styleMap.put(
-                    AnnotationDisplayCustomizationFrame.this.currentTypeName,
-                    style);
-            enableButtons(false);
-            AnnotationDisplayCustomizationFrame.this.repaint();
-        }
-
+      }
+      StyleConstants.setForeground(style, StyleConstants
+                      .getForeground(AnnotationDisplayCustomizationFrame.this.currentStyle));
+      StyleConstants.setBackground(style, StyleConstants
+                      .getBackground(AnnotationDisplayCustomizationFrame.this.currentStyle));
+      AnnotationDisplayCustomizationFrame.this.styleMap.put(
+                      AnnotationDisplayCustomizationFrame.this.currentTypeName, style);
+      enableButtons(false);
+      AnnotationDisplayCustomizationFrame.this.repaint();
     }
 
-    private class CancelButtonHandler implements ActionListener {
+  }
 
-        public void actionPerformed(ActionEvent event) {
-            Style style = (Style) AnnotationDisplayCustomizationFrame.this.styleMap
-                    .get(AnnotationDisplayCustomizationFrame.this.currentTypeName);
-            if (style == null) {
-                style = (Style) AnnotationDisplayCustomizationFrame.this.styleMap
+  private class CancelButtonHandler implements ActionListener {
+
+    public void actionPerformed(ActionEvent event) {
+      Style style = (Style) AnnotationDisplayCustomizationFrame.this.styleMap
+                      .get(AnnotationDisplayCustomizationFrame.this.currentTypeName);
+      if (style == null) {
+        style = (Style) AnnotationDisplayCustomizationFrame.this.styleMap
                         .get(TCAS.TYPE_NAME_ANNOTATION);
-            }
-            // assert(style != null);
-            AnnotationDisplayCustomizationFrame.this.fgColor = StyleConstants
-                    .getForeground(style);
-            AnnotationDisplayCustomizationFrame.this.fgIcon.setColor(AnnotationDisplayCustomizationFrame.this.fgColor);
-            AnnotationDisplayCustomizationFrame.this.bgColor = StyleConstants
-                    .getBackground(style);
-            AnnotationDisplayCustomizationFrame.this.bgIcon
-                    .setColor(AnnotationDisplayCustomizationFrame.this.bgColor);
-            setCurrentStyle(
-                    style);
-            setTextPane();
-            enableButtons(false);
-            AnnotationDisplayCustomizationFrame.this.repaint();
-        }
-
+      }
+      // assert(style != null);
+      AnnotationDisplayCustomizationFrame.this.fgColor = StyleConstants.getForeground(style);
+      AnnotationDisplayCustomizationFrame.this.fgIcon
+                      .setColor(AnnotationDisplayCustomizationFrame.this.fgColor);
+      AnnotationDisplayCustomizationFrame.this.bgColor = StyleConstants.getBackground(style);
+      AnnotationDisplayCustomizationFrame.this.bgIcon
+                      .setColor(AnnotationDisplayCustomizationFrame.this.bgColor);
+      setCurrentStyle(style);
+      setTextPane();
+      enableButtons(false);
+      AnnotationDisplayCustomizationFrame.this.repaint();
     }
 
-    private static final int FG = 0;
+  }
 
-    private static final int BG = 1;
+  private static final int FG = 0;
 
-    private JSplitPane splitPane;
+  private static final int BG = 1;
 
-    private Color fgColor;
+  private JSplitPane splitPane;
 
-    private Color bgColor;
+  private Color fgColor;
 
-    private ColorIcon fgIcon;
+  private Color bgColor;
 
-    private ColorIcon bgIcon;
+  private ColorIcon fgIcon;
 
-    private JTextPane textPane;
+  private ColorIcon bgIcon;
 
-    private static final String defaultStyleName = "defaultUnannotStyle";
+  private JTextPane textPane;
 
-    private static final String currentStyleName = "currentStyle";
+  private static final String defaultStyleName = "defaultUnannotStyle";
 
-    private Style currentStyle;
+  private static final String currentStyleName = "currentStyle";
 
-    private String currentTypeName;
+  private Style currentStyle;
 
-    private JButton acceptButton;
+  private String currentTypeName;
 
-    private JButton cancelButton;
+  private JButton acceptButton;
 
-    private HashMap styleMap;
+  private JButton cancelButton;
 
-    private JTree tree;
+  private HashMap styleMap;
 
-    /**
-     * @throws java.awt.HeadlessException
-     */
-    public AnnotationDisplayCustomizationFrame() {
-        super();
+  private JTree tree;
+
+  /**
+   * @throws java.awt.HeadlessException
+   */
+  public AnnotationDisplayCustomizationFrame() {
+    super();
+  }
+
+  /**
+   * @param arg0
+   */
+  public AnnotationDisplayCustomizationFrame(GraphicsConfiguration arg0) {
+    super(arg0);
+  }
+
+  /**
+   * @param arg0
+   * @throws java.awt.HeadlessException
+   */
+  public AnnotationDisplayCustomizationFrame(String arg0) {
+    super(arg0);
+  }
+
+  /**
+   * @param arg0
+   * @param arg1
+   */
+  public AnnotationDisplayCustomizationFrame(String arg0, GraphicsConfiguration arg1) {
+    super(arg0, arg1);
+  }
+
+  private void setCurrentStyle(Style style) {
+    // Copy style.
+    this.currentStyle = this.textPane.addStyle(currentStyleName, style);
+    StyleConstants.setForeground(this.currentStyle, StyleConstants.getForeground(style));
+    StyleConstants.setBackground(this.currentStyle, StyleConstants.getBackground(style));
+  }
+
+  private void enableButtons(boolean flag) {
+    this.acceptButton.setEnabled(flag);
+    this.cancelButton.setEnabled(flag);
+  }
+
+  public void init(HashMap styleMap1, CAS cas) {
+    this.styleMap = styleMap1;
+    this.splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+    this.setContentPane(this.splitPane);
+    this.tree = new JTree(createTreeModel(cas.getTypeSystem()));
+    this.tree.addTreeSelectionListener(new TypeTreeSelectionListener());
+    JScrollPane treeScrollPane = new JScrollPane(this.tree);
+    this.splitPane.setLeftComponent(treeScrollPane);
+    this.splitPane.setRightComponent(createCustomizationPanel(TCAS.TYPE_NAME_ANNOTATION));
+  }
+
+  private JPanel createCustomizationPanel(String typeName) {
+    this.currentTypeName = typeName;
+    String defaultAnnotStyleName = TCAS.TYPE_NAME_ANNOTATION;
+    Style defaultAnnotStyle = (Style) this.styleMap.get(defaultAnnotStyleName);
+    GridLayout layout = new GridLayout(0, 1);
+    JPanel topPanel = new JPanel(layout);
+    this.textPane = new JTextPane();
+    Style style = (Style) this.styleMap.get(typeName);
+    if (style == null) {
+      style = defaultAnnotStyle;
     }
+    Style defaultStyle = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
+    this.textPane.addStyle(defaultStyleName, defaultStyle);
+    setCurrentStyle(style);
+    this.fgColor = StyleConstants.getForeground(this.currentStyle);
+    this.bgColor = StyleConstants.getBackground(this.currentStyle);
+    this.fgIcon = new ColorIcon(this.fgColor);
+    this.bgIcon = new ColorIcon(this.bgColor);
+    topPanel.add(createColorPanel("Foreground: ", this.fgIcon, FG));
+    topPanel.add(createColorPanel("Background: ", this.bgIcon, BG));
+    setTextPane();
+    topPanel.add(this.textPane);
+    JPanel buttonPanel = new JPanel();
+    createButtonPanel(buttonPanel);
+    topPanel.add(buttonPanel);
+    return topPanel;
+  }
 
-    /**
-     * @param arg0
-     */
-    public AnnotationDisplayCustomizationFrame(GraphicsConfiguration arg0) {
-        super(arg0);
+  private void setCustomizationPanel(String typeName) {
+    this.currentTypeName = typeName;
+    Style defaultAnnotStyle = (Style) this.styleMap.get(TCAS.TYPE_NAME_ANNOTATION);
+    Style style = (Style) this.styleMap.get(typeName);
+    if (style == null) {
+      style = defaultAnnotStyle;
     }
+    // Style defaultStyle = StyleContext.getDefaultStyleContext().getStyle(
+    // StyleContext.DEFAULT_STYLE);
+    setCurrentStyle(style);
+    this.fgColor = StyleConstants.getForeground(this.currentStyle);
+    this.bgColor = StyleConstants.getBackground(this.currentStyle);
+    this.fgIcon.setColor(this.fgColor);
+    this.bgIcon.setColor(this.bgColor);
+    setTextPane();
+    enableButtons(false);
+    this.repaint();
+  }
 
-    /**
-     * @param arg0
-     * @throws java.awt.HeadlessException
-     */
-    public AnnotationDisplayCustomizationFrame(String arg0) {
-        super(arg0);
+  private void createButtonPanel(JPanel buttonPanel) {
+    this.acceptButton = new JButton("OK");
+    this.acceptButton.addActionListener(new AcceptButtonHandler());
+    buttonPanel.add(this.acceptButton);
+    this.cancelButton = new JButton("Cancel");
+    this.cancelButton.addActionListener(new CancelButtonHandler());
+    buttonPanel.add(this.cancelButton);
+    enableButtons(false);
+  }
+
+  private void setTextPane() {
+    Style defaultStyle = this.textPane.getStyle(defaultStyleName);
+    // Style style = textPane.getStyle(typeName);
+    // if (style == null || defaultStyle == null) {
+    // System.out.println("Style is null.");
+    // }
+    Document doc = this.textPane.getDocument();
+    try {
+      doc.remove(0, doc.getLength());
+      doc.insertString(doc.getLength(), "This is what an ", defaultStyle);
+      doc.insertString(doc.getLength(), "annotation", this.currentStyle);
+      doc.insertString(doc.getLength(), " of type ", defaultStyle);
+      doc.insertString(doc.getLength(), this.currentTypeName, this.currentStyle);
+      doc.insertString(doc.getLength(), " will look like.", defaultStyle);
+    } catch (BadLocationException e) {
+      // assert(false);
     }
+    this.textPane.repaint();
+  }
 
-    /**
-     * @param arg0
-     * @param arg1
-     */
-    public AnnotationDisplayCustomizationFrame(String arg0,
-            GraphicsConfiguration arg1) {
-        super(arg0, arg1);
+  private JPanel createColorPanel(String text, ColorIcon icon, int buttonType) {
+    JPanel colorPanel = new JPanel();
+    JLabel label = new JLabel(text);
+    colorPanel.add(label);
+    label = new JLabel(icon);
+    colorPanel.add(label);
+    JButton button = new JButton("Customize");
+    if (buttonType == FG) {
+      button.addActionListener(new CustomizeFgButtonHandler());
+    } else {
+      button.addActionListener(new CustomizeBgButtonHandler());
     }
+    colorPanel.add(button);
+    return colorPanel;
+  }
 
-    private void setCurrentStyle(Style style) {
-        // Copy style.
-        this.currentStyle = this.textPane.addStyle(currentStyleName, style);
-        StyleConstants.setForeground(this.currentStyle, StyleConstants
-                .getForeground(style));
-        StyleConstants.setBackground(this.currentStyle, StyleConstants
-                .getBackground(style));
+  private TreeModel createTreeModel(TypeSystem ts) {
+    String typeName = TCAS.TYPE_NAME_ANNOTATION;
+    DefaultMutableTreeNode node = new DefaultMutableTreeNode(typeName);
+    Type type = ts.getType(typeName);
+    addChildren(node, type, ts);
+    DefaultTreeModel treeModel = new DefaultTreeModel(node);
+    return treeModel;
+  }
+
+  private static void addChildren(DefaultMutableTreeNode node, Type type, TypeSystem ts) {
+    List dtrs = ts.getDirectSubtypes(type);
+    DefaultMutableTreeNode dtrNode;
+    Type dtrType;
+    for (int i = 0; i < dtrs.size(); i++) {
+      dtrType = (Type) dtrs.get(i);
+      dtrNode = new DefaultMutableTreeNode(dtrType.getName());
+      node.add(dtrNode);
+      addChildren(dtrNode, dtrType, ts);
     }
-
-    private void enableButtons(boolean flag) {
-        this.acceptButton.setEnabled(flag);
-        this.cancelButton.setEnabled(flag);
-    }
-
-    public void init(HashMap styleMap1, CAS cas) {
-        this.styleMap = styleMap1;
-        this.splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        this.setContentPane(this.splitPane);
-        this.tree = new JTree(createTreeModel(cas.getTypeSystem()));
-        this.tree.addTreeSelectionListener(new TypeTreeSelectionListener());
-        JScrollPane treeScrollPane = new JScrollPane(this.tree);
-        this.splitPane.setLeftComponent(treeScrollPane);
-        this.splitPane
-                .setRightComponent(createCustomizationPanel(TCAS.TYPE_NAME_ANNOTATION));
-    }
-
-    private JPanel createCustomizationPanel(String typeName) {
-        this.currentTypeName = typeName;
-        String defaultAnnotStyleName = TCAS.TYPE_NAME_ANNOTATION;
-        Style defaultAnnotStyle = (Style) this.styleMap
-                .get(defaultAnnotStyleName);
-        GridLayout layout = new GridLayout(0, 1);
-        JPanel topPanel = new JPanel(layout);
-        this.textPane = new JTextPane();
-        Style style = (Style) this.styleMap.get(typeName);
-        if (style == null) {
-            style = defaultAnnotStyle;
-        }
-        Style defaultStyle = StyleContext.getDefaultStyleContext().getStyle(
-                StyleContext.DEFAULT_STYLE);
-        this.textPane.addStyle(defaultStyleName, defaultStyle);
-        setCurrentStyle(style);
-        this.fgColor = StyleConstants.getForeground(this.currentStyle);
-        this.bgColor = StyleConstants.getBackground(this.currentStyle);
-        this.fgIcon = new ColorIcon(this.fgColor);
-        this.bgIcon = new ColorIcon(this.bgColor);
-        topPanel.add(createColorPanel("Foreground: ", this.fgIcon, FG));
-        topPanel.add(createColorPanel("Background: ", this.bgIcon, BG));
-        setTextPane();
-        topPanel.add(this.textPane);
-        JPanel buttonPanel = new JPanel();
-        createButtonPanel(buttonPanel);
-        topPanel.add(buttonPanel);
-        return topPanel;
-    }
-
-    private void setCustomizationPanel(String typeName) {
-        this.currentTypeName = typeName;
-        Style defaultAnnotStyle = (Style) this.styleMap
-                .get(TCAS.TYPE_NAME_ANNOTATION);
-        Style style = (Style) this.styleMap.get(typeName);
-        if (style == null) {
-            style = defaultAnnotStyle;
-        }
-        // Style defaultStyle = StyleContext.getDefaultStyleContext().getStyle(
-        // StyleContext.DEFAULT_STYLE);
-        setCurrentStyle(style);
-        this.fgColor = StyleConstants.getForeground(this.currentStyle);
-        this.bgColor = StyleConstants.getBackground(this.currentStyle);
-        this.fgIcon.setColor(this.fgColor);
-        this.bgIcon.setColor(this.bgColor);
-        setTextPane();
-        enableButtons(false);
-        this.repaint();
-    }
-
-    private void createButtonPanel(JPanel buttonPanel) {
-        this.acceptButton = new JButton("OK");
-        this.acceptButton.addActionListener(new AcceptButtonHandler());
-        buttonPanel.add(this.acceptButton);
-        this.cancelButton = new JButton("Cancel");
-        this.cancelButton.addActionListener(new CancelButtonHandler());
-        buttonPanel.add(this.cancelButton);
-        enableButtons(false);
-    }
-
-    private void setTextPane() {
-        Style defaultStyle = this.textPane.getStyle(defaultStyleName);
-        // Style style = textPane.getStyle(typeName);
-        // if (style == null || defaultStyle == null) {
-        // System.out.println("Style is null.");
-        // }
-        Document doc = this.textPane.getDocument();
-        try {
-            doc.remove(0, doc.getLength());
-            doc.insertString(doc.getLength(), "This is what an ", defaultStyle);
-            doc.insertString(doc.getLength(), "annotation", this.currentStyle);
-            doc.insertString(doc.getLength(), " of type ", defaultStyle);
-            doc.insertString(doc.getLength(), this.currentTypeName,
-                    this.currentStyle);
-            doc.insertString(doc.getLength(), " will look like.", defaultStyle);
-        } catch (BadLocationException e) {
-            // assert(false);
-        }
-        this.textPane.repaint();
-    }
-
-    private JPanel createColorPanel(String text, ColorIcon icon, int buttonType) {
-        JPanel colorPanel = new JPanel();
-        JLabel label = new JLabel(text);
-        colorPanel.add(label);
-        label = new JLabel(icon);
-        colorPanel.add(label);
-        JButton button = new JButton("Customize");
-        if (buttonType == FG) {
-            button.addActionListener(new CustomizeFgButtonHandler());
-        } else {
-            button.addActionListener(new CustomizeBgButtonHandler());
-        }
-        colorPanel.add(button);
-        return colorPanel;
-    }
-
-    private TreeModel createTreeModel(TypeSystem ts) {
-        String typeName = TCAS.TYPE_NAME_ANNOTATION;
-        DefaultMutableTreeNode node = new DefaultMutableTreeNode(typeName);
-        Type type = ts.getType(typeName);
-        addChildren(node, type, ts);
-        DefaultTreeModel treeModel = new DefaultTreeModel(node);
-        return treeModel;
-    }
-
-    private static void addChildren(DefaultMutableTreeNode node, Type type,
-            TypeSystem ts) {
-        List dtrs = ts.getDirectSubtypes(type);
-        DefaultMutableTreeNode dtrNode;
-        Type dtrType;
-        for (int i = 0; i < dtrs.size(); i++) {
-            dtrType = (Type) dtrs.get(i);
-            dtrNode = new DefaultMutableTreeNode(dtrType.getName());
-            node.add(dtrNode);
-            addChildren(dtrNode, dtrType, ts);
-        }
-    }
-
+  }
 
 }

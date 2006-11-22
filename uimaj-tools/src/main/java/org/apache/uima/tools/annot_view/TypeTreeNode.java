@@ -28,51 +28,49 @@ import org.apache.uima.cas.Type;
  */
 public class TypeTreeNode {
 
-    private final Type type;
+  private final Type type;
 
-    private final String label;
+  private final String label;
 
-    private final int size;
+  private final int size;
 
-    /**
-     * Constructor for TypeTreeNode.
-     */
-    public TypeTreeNode() {
-        super();
-        this.type = null;
-        this.label = null;
-        this.size = -1;
-    }
+  /**
+   * Constructor for TypeTreeNode.
+   */
+  public TypeTreeNode() {
+    super();
+    this.type = null;
+    this.label = null;
+    this.size = -1;
+  }
 
-    public TypeTreeNode(Type type, String label, int size) {
-        super();
-        this.type = type;
-        this.label = label;
-        this.size = size;
-    }
+  public TypeTreeNode(Type type, String label, int size) {
+    super();
+    this.type = type;
+    this.label = label;
+    this.size = size;
+  }
 
-    public String toString() {
-        return "<html><font color=blue>" + this.type.getName() + "</font> ["
-                + this.size + "]</html>";
-    }
+  public String toString() {
+    return "<html><font color=blue>" + this.type.getName() + "</font> [" + this.size + "]</html>";
+  }
 
-    /**
-     * Returns the label.
-     * 
-     * @return String
-     */
-    public String getLabel() {
-        return this.label;
-    }
+  /**
+   * Returns the label.
+   * 
+   * @return String
+   */
+  public String getLabel() {
+    return this.label;
+  }
 
-    /**
-     * Returns the type.
-     * 
-     * @return Type
-     */
-    public Type getType() {
-        return this.type;
-    }
-
+  /**
+   * Returns the type.
+   * 
+   * @return Type
+   */
+  public Type getType() {
+    return this.type;
+  }
 
 }

@@ -29,39 +29,34 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import org.apache.uima.tools.images.Images;
 
-//cell renderer for the JTable
-class MyCellRenderer extends DefaultTableCellRenderer
-{
-	private ImageIcon smallArrowIcon = Images.getImageIcon(Images.SMALL_ARROW);
-	public Component getTableCellRendererComponent(
-		JTable table,
-		Object value,
-		boolean isSelected,
-		boolean hasFocus,
-		int row,
-		int column, ArrayList styleList)
-	{
-		Component cell =
-			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			
-		StyleMapEntry e = (StyleMapEntry) styleList.get(row);
-		if (e != null)
-		{
-			int modelColumnNr = table.convertColumnIndexToModel(column);
-			//if (modelColumnNr == StyleConstants.FEATURE_VALUE_COLUMN &&
-			//	!table.getModel().isCellEditable(row, modelColumnNr))
-			//{
-			//	cell.setBackground(table.getParent().getBackground());
-			//	((JLabel) cell).setIcon(null);
-			//}
-			//else
-			{
-				((JLabel) cell).setIcon(((modelColumnNr == 0 && isSelected) ? smallArrowIcon : null));
-				cell.setForeground(e.getForeground());
-				cell.setBackground(e.getBackground());
-			}
-		}
+// cell renderer for the JTable
+class MyCellRenderer extends DefaultTableCellRenderer {
+  private static final long serialVersionUID = 8130948041146818381L;
 
-		return cell;
-	}
+  private ImageIcon smallArrowIcon = Images.getImageIcon(Images.SMALL_ARROW);
+
+  public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                  boolean hasFocus, int row, int column, ArrayList styleList) {
+    Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
+                    column);
+
+    StyleMapEntry e = (StyleMapEntry) styleList.get(row);
+    if (e != null) {
+      int modelColumnNr = table.convertColumnIndexToModel(column);
+      // if (modelColumnNr == StyleConstants.FEATURE_VALUE_COLUMN &&
+      // !table.getModel().isCellEditable(row, modelColumnNr))
+      // {
+      // cell.setBackground(table.getParent().getBackground());
+      // ((JLabel) cell).setIcon(null);
+      // }
+      // else
+      {
+        ((JLabel) cell).setIcon(((modelColumnNr == 0 && isSelected) ? smallArrowIcon : null));
+        cell.setForeground(e.getForeground());
+        cell.setBackground(e.getBackground());
+      }
+    }
+
+    return cell;
+  }
 }

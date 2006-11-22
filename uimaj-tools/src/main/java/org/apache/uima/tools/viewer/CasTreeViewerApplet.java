@@ -42,93 +42,86 @@ import org.apache.uima.internal.util.SerializationUtils;
  * 
  * 
  */
-public class CasTreeViewerApplet extends JApplet
-{
+public class CasTreeViewerApplet extends JApplet {
+
+  private static final long serialVersionUID = 7539612752281789849L;
 
   /** The CAS Tree Viewer panel */
-  private CasTreeViewer mTreeViewer; 
- 
+  private CasTreeViewer mTreeViewer;
+
   /**
    * Called when the applet is initialized.
    */
-  public void init()
-  {
-    try
-    {
-      //get applet parameter - URL from which to get the CAS 
+  public void init() {
+    try {
+      // get applet parameter - URL from which to get the CAS
       String casURL = getParameter("CasUrl");
-    
-      //open URL connection to get the serialized CAS
+
+      // open URL connection to get the serialized CAS
       URLConnection con = new URL(casURL).openConnection();
 
       con.setDoInput(true);
       con.setDoOutput(true);
       con.setUseCaches(false);
       con.setDefaultUseCaches(false);
-      con.setRequestProperty("Content-Type","application/octet-stream");
-//      con.connect();
+      con.setRequestProperty("Content-Type", "application/octet-stream");
+      // con.connect();
 
       InputStream in = con.getInputStream();
       ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
       byte[] buf = new byte[2048];
       int bytesRead = in.read(buf);
-      while (bytesRead > 0)
-      {
-        byteStream.write(buf,0,bytesRead);  
+      while (bytesRead > 0) {
+        byteStream.write(buf, 0, bytesRead);
         bytesRead = in.read(buf);
       }
       byte[] bytes = byteStream.toByteArray();
       in.close();
-      byteStream.close();        
+      byteStream.close();
       System.out.println("Got " + bytes.length + " bytes.");
-             
-      //deserialize CAS
+
+      // deserialize CAS
       CASMgr casMgr = CASFactory.createCAS();
-      CASCompleteSerializer serializer = 
-          (CASCompleteSerializer)SerializationUtils.deserialize(bytes);
+      CASCompleteSerializer serializer = (CASCompleteSerializer) SerializationUtils
+                      .deserialize(bytes);
       Serialization.deserializeCASComplete(serializer, casMgr);
-  
-      //create tree viewer component and add to this applet
+
+      // create tree viewer component and add to this applet
       mTreeViewer = new CasTreeViewer(casMgr.getCAS().getView(CAS.NAME_DEFAULT_SOFA));
       getContentPane().add(mTreeViewer);
 
-      //add a listener that detects resize events
+      // add a listener that detects resize events
       addComponentListener(new MyComponentListener());
 
-      //set initial size of tree viewer panel
+      // set initial size of tree viewer panel
       resizeTreeViewer();
-      
-    }
-    catch(Exception e)
-    {
+
+    } catch (Exception e) {
       e.printStackTrace();
-    }            
-    
-  }  
-  
+    }
+
+  }
+
   /**
    * Sets the size of the tree viewer so that it fits within the applet.
    */
-  private void resizeTreeViewer()
-  {
+  private void resizeTreeViewer() {
     Dimension appletSize = getSize();
     Insets insets = getInsets();
     Dimension panelSize = new Dimension(appletSize.width - insets.left - insets.right - 10,
-      appletSize.height - insets.top - insets.bottom - 10);
+                    appletSize.height - insets.top - insets.bottom - 10);
 
     mTreeViewer.setPreferredSize(panelSize);
     mTreeViewer.setSize(panelSize);
     validate();
   }
-   
- /**
-  * A listener for detecting resize events.  Sets the size of the
-  * TreeViewer panel whenever the applet's size changes.
-  */
-  class MyComponentListener extends ComponentAdapter 
-  {
-    public void componentResized(ComponentEvent e) 
-    {
+
+  /**
+   * A listener for detecting resize events. Sets the size of the TreeViewer panel whenever the
+   * applet's size changes.
+   */
+  class MyComponentListener extends ComponentAdapter {
+    public void componentResized(ComponentEvent e) {
       resizeTreeViewer();
     }
   }

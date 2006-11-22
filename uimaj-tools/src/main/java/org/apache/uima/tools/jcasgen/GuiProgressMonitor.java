@@ -23,46 +23,54 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.util.Level;
 
 public class GuiProgressMonitor implements IProgressMonitor {
-  
-	public void beginTask(String name, int totalWork) {  // do nothing
-	}
- 
-	public void done() {
-		UIMAFramework.getLogger().log(Level.INFO,GUI.theGUI.pnG.showInStatus(" ** JCasGen Done."));
-		GUI.theGUI.pnG.lbResult.setText("Finished");
-	}
 
-	public void subTask(String message) {
-		GUI.theGUI.pnG.showInStatus(message);
-		UIMAFramework.getLogger().log(Level.INFO," >>JCasGen " + message);
-	}
+  public void beginTask(String name, int totalWork) { // do nothing
+  }
 
-	public void worked(int work) {  // do nothing
-	}
+  public void done() {
+    UIMAFramework.getLogger().log(Level.INFO, GUI.theGUI.pnG.showInStatus(" ** JCasGen Done."));
+    GUI.theGUI.pnG.lbResult.setText("Finished");
+  }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IProgressMonitor#internalWorked(double)
-	 */
-	public void internalWorked(double work) {  // do nothing
-	}
+  public void subTask(String message) {
+    GUI.theGUI.pnG.showInStatus(message);
+    UIMAFramework.getLogger().log(Level.INFO, " >>JCasGen " + message);
+  }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IProgressMonitor#isCanceled()
-	 */
-	public boolean isCanceled() {
-		return false;
-	}
+  public void worked(int work) { // do nothing
+  }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IProgressMonitor#setCanceled(boolean)
-	 */
-	public void setCanceled(boolean value) {  // do nothing
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.eclipse.core.runtime.IProgressMonitor#internalWorked(double)
+   */
+  public void internalWorked(double work) { // do nothing
+  }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IProgressMonitor#setTaskName(java.lang.String)
-	 */
-	public void setTaskName(String name) {  // do nothing
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.eclipse.core.runtime.IProgressMonitor#isCanceled()
+   */
+  public boolean isCanceled() {
+    return false;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.eclipse.core.runtime.IProgressMonitor#setCanceled(boolean)
+   */
+  public void setCanceled(boolean value) { // do nothing
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.eclipse.core.runtime.IProgressMonitor#setTaskName(java.lang.String)
+   */
+  public void setTaskName(String name) { // do nothing
+  }
 
 }

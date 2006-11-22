@@ -23,20 +23,22 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
 /**
- * Listens for tree selections and tells the mediator it is OK
- * to enable the class selction button
+ * Listens for tree selections and tells the mediator it is OK to enable the class selction button
  * 
  */
 public class AnTreeListener implements TreeSelectionListener {
-	private TableGUIMediator med;
-	public AnTreeListener(TableGUIMediator med) {
-		this.med =med;
-	}
-	/* This tells the mediator to turn on the button
-	 * 
-	 */
-		public void valueChanged(TreeSelectionEvent ev) {
-		 		med.treeClicked() ;	
-	}
+  private TableGUIMediator med;
+
+  public AnTreeListener(TableGUIMediator med) {
+    this.med = med;
+  }
+
+  /*
+   * This tells the mediator to turn on the button
+   * 
+   */
+  public void valueChanged(TreeSelectionEvent ev) {
+    med.treeClicked();
+  }
 
 }

@@ -29,43 +29,37 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JTable;
 
-class ColorEditor extends DefaultCellEditor
-{
-	Color currentColor = null;
+class ColorEditor extends DefaultCellEditor {
+  private static final long serialVersionUID = 4766162815461077066L;
 
-	public ColorEditor(JButton button)
-	{
-		super(new JCheckBox());
-		//Unfortunately, the constructor expects a check box,
-		// combo box, or text field.
-		editorComponent = button;
-		
-		// Must do the following to ensure editing stops:
-		button.addActionListener( new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				fireEditingStopped();
-			}
-		});
-	}
-	
-	public void fireEditingStopped() {
-		super.fireEditingStopped();
-	}
+  Color currentColor = null;
 
-	public Object getCellEditorValue()
-	{
-		return currentColor;
-	}
+  public ColorEditor(JButton button) {
+    super(new JCheckBox());
+    // Unfortunately, the constructor expects a check box,
+    // combo box, or text field.
+    editorComponent = button;
 
-	public Component getTableCellEditorComponent(
-		JTable table,
-		Object value,
-		boolean isSelected,
-		int row,
-		int column)
-	{
-//		((JButton) editorComponent).setText(value.toString());
-		currentColor = (Color) value;
-		return editorComponent;
-	}
+    // Must do the following to ensure editing stops:
+    button.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        fireEditingStopped();
+      }
+    });
+  }
+
+  public void fireEditingStopped() {
+    super.fireEditingStopped();
+  }
+
+  public Object getCellEditorValue() {
+    return currentColor;
+  }
+
+  public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,
+                  int row, int column) {
+    // ((JButton) editorComponent).setText(value.toString());
+    currentColor = (Color) value;
+    return editorComponent;
+  }
 }

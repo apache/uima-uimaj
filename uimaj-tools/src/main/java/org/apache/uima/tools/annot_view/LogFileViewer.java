@@ -19,8 +19,6 @@
 
 package org.apache.uima.tools.annot_view;
 
-import org.apache.uima.internal.util.FileUtils;
-
 import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 import java.awt.event.ActionEvent;
@@ -41,6 +39,8 @@ import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.text.DefaultEditorKit;
 
+import org.apache.uima.internal.util.FileUtils;
+
 /**
  * Simple file viewer for viewing log files.
  * 
@@ -48,102 +48,101 @@ import javax.swing.text.DefaultEditorKit;
  */
 public class LogFileViewer extends JFrame {
 
-    private File logFile;
+  private static final long serialVersionUID = 3599235286749804258L;
 
-    private JScrollPane scrollPane;
+  private File logFile;
 
-    private JTextArea textArea;
+  private JScrollPane scrollPane;
 
-    /**
-     * @throws java.awt.HeadlessException
-     */
-    public LogFileViewer() {
-        super();
-    }
+  private JTextArea textArea;
 
-    /**
-     * @param arg0
-     */
-    public LogFileViewer(GraphicsConfiguration arg0) {
-        super(arg0);
-    }
+  /**
+   * @throws java.awt.HeadlessException
+   */
+  public LogFileViewer() {
+    super();
+  }
 
-    /**
-     * @param arg0
-     * @throws java.awt.HeadlessException
-     */
-    public LogFileViewer(String arg0) {
-        super(arg0);
-    }
+  /**
+   * @param arg0
+   */
+  public LogFileViewer(GraphicsConfiguration arg0) {
+    super(arg0);
+  }
 
-    /**
-     * @param arg0
-     * @param arg1
-     */
-    public LogFileViewer(String arg0, GraphicsConfiguration arg1) {
-        super(arg0, arg1);
-    }
+  /**
+   * @param arg0
+   * @throws java.awt.HeadlessException
+   */
+  public LogFileViewer(String arg0) {
+    super(arg0);
+  }
 
-    public void init(File file, Dimension d) {
-        createMenus();
-        this.logFile = file;
-        this.textArea = new JTextArea();
-        // Copy
-        Action copyAction = this.textArea.getActionMap().get(
-                DefaultEditorKit.copyAction);
-        copyAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(
-                KeyEvent.VK_C, InputEvent.CTRL_MASK));
-        copyAction.setEnabled(true);
-        this.scrollPane = new JScrollPane(this.textArea);
-        this.setContentPane(this.scrollPane);
-        this.scrollPane.setPreferredSize(d);
+  /**
+   * @param arg0
+   * @param arg1
+   */
+  public LogFileViewer(String arg0, GraphicsConfiguration arg1) {
+    super(arg0, arg1);
+  }
+
+  public void init(File file, Dimension d) {
+    createMenus();
+    this.logFile = file;
+    this.textArea = new JTextArea();
+    // Copy
+    Action copyAction = this.textArea.getActionMap().get(DefaultEditorKit.copyAction);
+    copyAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C,
+                    InputEvent.CTRL_MASK));
+    copyAction.setEnabled(true);
+    this.scrollPane = new JScrollPane(this.textArea);
+    this.setContentPane(this.scrollPane);
+    this.scrollPane.setPreferredSize(d);
+    loadFile();
+    this.pack();
+    this.show();
+  }
+
+  private void createMenus() {
+    JMenuBar menuBar = new JMenuBar();
+    this.setJMenuBar(menuBar);
+    JMenu fileMenu = new JMenu("File");
+    menuBar.add(fileMenu);
+    JMenuItem reload = new JMenuItem("Reload Log File");
+    reload.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent event) {
         loadFile();
-        this.pack();
-        this.show();
+      }
+    });
+    fileMenu.add(reload);
+    JMenuItem exit = new JMenuItem("Close Window");
+    exit.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent event) {
+        LogFileViewer.this.dispose();
+      }
+    });
+    fileMenu.add(exit);
+  }
+
+  private void loadFile() {
+    String text = null;
+    try {
+      text = FileUtils.file2String(this.logFile, "UTF-8");
+    } catch (IOException e) {
+      handleException(e);
+      return;
     }
+    this.textArea.setText(text);
+  }
 
-    private void createMenus() {
-        JMenuBar menuBar = new JMenuBar();
-        this.setJMenuBar(menuBar);
-        JMenu fileMenu = new JMenu("File");
-        menuBar.add(fileMenu);
-        JMenuItem reload = new JMenuItem("Reload Log File");
-        reload.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                loadFile();
-            }
-        });
-        fileMenu.add(reload);
-        JMenuItem exit = new JMenuItem("Close Window");
-        exit.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                LogFileViewer.this.dispose();
-            }
-        });
-        fileMenu.add(exit);
+  protected void handleException(Exception e) {
+    boolean hasAsserts = false;
+    // assert(hasAsserts = true);
+    if (hasAsserts) {
+      e.printStackTrace();
     }
+    JOptionPane.showMessageDialog(this, e.getMessage(), "Exception", JOptionPane.ERROR_MESSAGE);
 
-    private void loadFile() {
-        String text = null;
-        try {
-            text = FileUtils.file2String(this.logFile, "UTF-8");
-        } catch (IOException e) {
-            handleException(e);
-            return;
-        }
-        this.textArea.setText(text);
-    }
-
-    protected void handleException(Exception e) {
-        boolean hasAsserts = false;
-        // assert(hasAsserts = true);
-        if (hasAsserts) {
-            e.printStackTrace();
-        }
-        JOptionPane.showMessageDialog(this, e.getMessage(), "Exception",
-                JOptionPane.ERROR_MESSAGE);
-
-    }
-
+  }
 
 }

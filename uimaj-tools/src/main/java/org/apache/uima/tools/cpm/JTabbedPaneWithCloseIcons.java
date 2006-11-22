@@ -30,40 +30,36 @@ import javax.swing.Icon;
 import javax.swing.JTabbedPane;
 
 /**
- * A JTabbedPane which has a close ('X') icon on each tab.
- * To add a tab, use the method addTab(String, Component)
- * To have an extra icon on each tab (e.g. showing the file type) use
- * the method addTab(String, Component, Icon). Clicking the 'X' closes the tab.
+ * A JTabbedPane which has a close ('X') icon on each tab. To add a tab, use the method
+ * addTab(String, Component) To have an extra icon on each tab (e.g. showing the file type) use the
+ * method addTab(String, Component, Icon). Clicking the 'X' closes the tab.
+ * 
  * @see org.apache.uima.tools.cpm.TabClosedListener
  */
 
-public class JTabbedPaneWithCloseIcons extends JTabbedPane implements MouseListener
-{
+public class JTabbedPaneWithCloseIcons extends JTabbedPane implements MouseListener {
+  private static final long serialVersionUID = 7680554379341154297L;
+
   private TabClosedListener tabClosedListener;
 
-  public JTabbedPaneWithCloseIcons()
-  {
+  public JTabbedPaneWithCloseIcons() {
     super();
     addMouseListener(this);
   }
 
-  public void addTabClosedListener(TabClosedListener tabClosedListener)
-  {
-    this.tabClosedListener = tabClosedListener;
+  public void addTabClosedListener(TabClosedListener aTabClosedListener) {
+    this.tabClosedListener = aTabClosedListener;
   }
 
-  public void addTab(String title, Component component)
-  {
+  public void addTab(String title, Component component) {
     this.addTab(title, component, null);
   }
 
-  public void addTab(String title, Component component, Icon extraIcon)
-  {
+  public void addTab(String title, Component component, Icon extraIcon) {
     super.addTab(title, new CloseTabIcon(extraIcon), component);
   }
 
-  public void moveTab(int fromIndex, int toIndex)
-  {
+  public void moveTab(int fromIndex, int toIndex) {
     Component componentToMove = this.getComponentAt(fromIndex);
     String title = this.getTitleAt(fromIndex);
     Icon icon = this.getIconAt(fromIndex);
@@ -72,44 +68,37 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements MouseListe
     this.setTitleAt(toIndex, title);
   }
 
-  public void mouseClicked(MouseEvent e)
-  {
+  public void mouseClicked(MouseEvent e) {
     int tabIndex = getUI().tabForCoordinate(this, e.getX(), e.getY());
     if (tabIndex < 0)
       return;
     Rectangle rect = ((CloseTabIcon) getIconAt(tabIndex)).getBounds();
-    if (rect.contains(e.getX(), e.getY()))
-    {
+    if (rect.contains(e.getX(), e.getY())) {
       removeTabAt(tabIndex);
       if (tabClosedListener != null)
         tabClosedListener.tabClosed(this, tabIndex);
     }
   }
 
-  public void mouseEntered(MouseEvent e)
-  {
+  public void mouseEntered(MouseEvent e) {
   }
 
-  public void mouseExited(MouseEvent e)
-  {
+  public void mouseExited(MouseEvent e) {
   }
 
-  public void mousePressed(MouseEvent e)
-  {
+  public void mousePressed(MouseEvent e) {
   }
 
-  public void mouseReleased(MouseEvent e)
-  {
+  public void mouseReleased(MouseEvent e) {
   }
 }
 
 /**
- * The class which generates the 'X' icon for the tabs. The constructor
- * accepts an icon which is extra to the 'X' icon, so you can have tabs
- * like in JBuilder. This value is null if no extra icon is required.
+ * The class which generates the 'X' icon for the tabs. The constructor accepts an icon which is
+ * extra to the 'X' icon, so you can have tabs like in JBuilder. This value is null if no extra icon
+ * is required.
  */
-class CloseTabIcon implements Icon
-{
+class CloseTabIcon implements Icon {
   private int x_pos;
 
   private int y_pos;
@@ -120,15 +109,13 @@ class CloseTabIcon implements Icon
 
   private Icon fileIcon;
 
-  public CloseTabIcon(Icon fileIcon)
-  {
+  public CloseTabIcon(Icon fileIcon) {
     this.fileIcon = fileIcon;
     width = 16;
     height = 16;
   }
 
-  public void paintIcon(Component c, Graphics g, int x, int y)
-  {
+  public void paintIcon(Component c, Graphics g, int x, int y) {
     this.x_pos = x;
     this.y_pos = y;
     Color col = g.getColor();
@@ -149,18 +136,15 @@ class CloseTabIcon implements Icon
       fileIcon.paintIcon(c, g, x + width, y_p);
   }
 
-  public int getIconWidth()
-  {
+  public int getIconWidth() {
     return width + (fileIcon != null ? fileIcon.getIconWidth() : 0);
   }
 
-  public int getIconHeight()
-  {
+  public int getIconHeight() {
     return height;
   }
 
-  public Rectangle getBounds()
-  {
+  public Rectangle getBounds() {
     return new Rectangle(x_pos, y_pos, width, height);
   }
 }

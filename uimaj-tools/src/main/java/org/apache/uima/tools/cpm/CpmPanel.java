@@ -92,15 +92,16 @@ import org.apache.uima.util.Progress;
 import org.apache.uima.util.XMLInputSource;
 
 public class CpmPanel extends JPanel implements ActionListener, FileSelectorListener,
-    TabClosedListener, TransportControlListener
-{
+                TabClosedListener, TransportControlListener {
+  private static final long serialVersionUID = -5096300176103368922L;
+
   public static final String HELP_MESSAGE = "Instructions for using UIMA Collection Processing Engine Configurator:\n\n"
-      + "Select a Collection Reader descriptor and optionally a CAS Initializer descriptor\n"
-      + "using the Browse buttons.  On the Analyis Engines panel and the CAS Consumers panel,\n"
-      + "use the Add button to select Analysis Engine (AE) and CAS Consumer descriptors.\n"
-      + "Press the Play button to start collection processing.\n"
-      + "A progress bar in the lower left corner of the window will indicate the processing progress.\n"
-      + "When running, you may use the Pause or Stop button to pause or stop the processing.\n\n";
+                  + "Select a Collection Reader descriptor and optionally a CAS Initializer descriptor\n"
+                  + "using the Browse buttons.  On the Analyis Engines panel and the CAS Consumers panel,\n"
+                  + "use the Add button to select Analysis Engine (AE) and CAS Consumer descriptors.\n"
+                  + "Press the Play button to start collection processing.\n"
+                  + "A progress bar in the lower left corner of the window will indicate the processing progress.\n"
+                  + "When running, you may use the Pause or Stop button to pause or stop the processing.\n\n";
 
   private static final String PREFS_CPE_DESCRIPTOR_FILE = "cpeDescriptorFile";
 
@@ -156,9 +157,9 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
   private Vector consumerSpecifiers = new Vector();
 
-  //private static LogDialog logDialog;
+  // private static LogDialog logDialog;
   private JProgressBar progressBar;
-  
+
   private TransportControlPanel transportControlPanel;
 
   private AbstractButton startButton;
@@ -195,35 +196,32 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
   private long lastFileSyncUserPromptTime;
 
-  /**Stores user preferences */
+  /** Stores user preferences */
   private Preferences prefs = Preferences.userRoot().node("org/apache/uima/tools/CPE_GUI");
 
   private boolean mShuttingDown;
 
   private boolean mPaused;
-  
+
   private boolean selectedComponentsChanged = false;
 
-  public CpmPanel()
-  {
+  public CpmPanel() {
     super();
 
     // The following is VERY flaky:
     // Don't 'try' this at home:
     /*
-     try {
-     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-     } catch (Exception e) { }
+     * try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); } catch (Exception
+     * e) { }
      */
 
     String fileChooserRootDirPath = System.getProperty("uima.file_chooser_root");
-    if (fileChooserRootDirPath == null)
-    {
+    if (fileChooserRootDirPath == null) {
       fileChooserRootDirPath = System.getProperty("user.dir");
     }
     fileChooserRootDir = new File(fileChooserRootDirPath);
 
-    //		setResizable(false);
+    // setResizable(false);
     this.setLayout(new BorderLayout());
 
     mainSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -241,7 +239,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
     Border bevelBorder = BorderFactory.createRaisedBevelBorder();
     collectionReaderTitledBorder = BorderFactory.createTitledBorder(bevelBorder,
-        "Collection Reader");
+                    "Collection Reader");
     collectionReaderPanel.setBorder(collectionReaderTitledBorder);
 
     JScrollPane collectionReaderScrollPane = new JScrollPane(collectionReaderPanel);
@@ -257,7 +255,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
     mainSplitPane.setTopComponent(baseReaderPanel);
 
-    //AE Panel
+    // AE Panel
     aeMainPanel = new JPanel();
     aeMainPanel.setLayout(new BorderLayout());
     aeTitledBorder = BorderFactory.createTitledBorder(bevelBorder, "Analysis Engines");
@@ -288,7 +286,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     JScrollPane aeScrollPane = new JScrollPane(aeMainPanel);
     bottomSplitPane.setTopComponent(aeScrollPane);
 
-    //Consumers panel
+    // Consumers panel
     consumersPanel = new JPanel();
     consumersPanel.setLayout(new BorderLayout());
     consumerTitledBorder = BorderFactory.createTitledBorder(bevelBorder, "CAS Consumers");
@@ -319,7 +317,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     JScrollPane consumerScrollPane = new JScrollPane(consumersPanel);
     bottomSplitPane.setBottomComponent(consumerScrollPane);
 
-    //logDialog = new LogDialog();
+    // logDialog = new LogDialog();
 
     this.add(mainSplitPane, BorderLayout.CENTER);
 
@@ -343,11 +341,11 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
     transportControlPanel = new TransportControlPanel(this);
     transportControlPanel.setButtonTooltipText(TransportControlPanel.PLAY_BUTTON,
-        "Run Collection Processing");
+                    "Run Collection Processing");
     transportControlPanel.setButtonTooltipText(TransportControlPanel.PAUSE_BUTTON,
-        "Pause Collection Processing");
+                    "Pause Collection Processing");
     transportControlPanel.setButtonTooltipText(TransportControlPanel.STOP_BUTTON,
-        "Stop Collection Processing");
+                    "Stop Collection Processing");
 
     gbc.gridx = 1;
     gbc.weightx = 0.0;
@@ -370,66 +368,56 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
     performanceQueryTimer = new Timer(2000, this);
 
-    //set up AE file chooser to point to directory containing last
-    //selected AE    
+    // set up AE file chooser to point to directory containing last
+    // selected AE
     aeFileChooser = new JFileChooser(fileChooserRootDir);
     aeFileChooser.setDialogTitle("Add Analysis Engine");
     aeFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     aeFileChooser.addChoosableFileFilter(new XMLFileFilter());
     File aeDescDir = fileChooserRootDir;
-    if (aeSpecifiers.size() > 0)
-    {
+    if (aeSpecifiers.size() > 0) {
       File lastAeFile = new File((String) aeSpecifiers.get(aeSpecifiers.size() - 1));
       aeDescDir = lastAeFile.getParentFile();
     }
-    if (aeDescDir.exists())
-    {
+    if (aeDescDir.exists()) {
       FileChooserBugWorkarounds.setCurrentDirectory(aeFileChooser, aeDescDir);
     }
 
-    //set up CAS consumer file chooser to point to directory containing last
-    //selected consumer    
+    // set up CAS consumer file chooser to point to directory containing last
+    // selected consumer
     consumerFileChooser = new JFileChooser(fileChooserRootDir);
     consumerFileChooser.setDialogTitle("Add CAS Consumer");
     consumerFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     consumerFileChooser.addChoosableFileFilter(new XMLFileFilter());
     File consumerDescDir = fileChooserRootDir;
-    if (consumerSpecifiers.size() > 0)
-    {
+    if (consumerSpecifiers.size() > 0) {
       File lastConsumerFile = new File((String) consumerSpecifiers
-          .get(consumerSpecifiers.size() - 1));
+                      .get(consumerSpecifiers.size() - 1));
       consumerDescDir = lastConsumerFile.getParentFile();
     }
-    if (consumerDescDir.exists())
-    {
+    if (consumerDescDir.exists()) {
       FileChooserBugWorkarounds.setCurrentDirectory(consumerFileChooser, consumerDescDir);
     }
 
     this.openSaveFileChooser = new JFileChooser(fileChooserRootDir);
     openSaveFileChooser.setFileFilter(new XMLFileFilter());
 
-    //initialize empty CollectionReader and CAS Initializer panels
-    try
-    {
-      populateCollectionReaderPanel(null,null);
-      populateCasInitializerPanel(null,null);
-    }
-    catch(Exception e)
-    {
+    // initialize empty CollectionReader and CAS Initializer panels
+    try {
+      populateCollectionReaderPanel(null, null);
+      populateCasInitializerPanel(null, null);
+    } catch (Exception e) {
       e.printStackTrace();
     }
-    //read preferences (loads last opened CPE descriptor)
-    if (System.getProperty("uima.noprefs") == null)
-    {
+    // read preferences (loads last opened CPE descriptor)
+    if (System.getProperty("uima.noprefs") == null) {
       readPreferences();
     }
   }
 
-  private Frame getParentFrame()
-  {
+  private Frame getParentFrame() {
     Component parent = this.getParent();
-    while (parent != null && !(parent instanceof Frame))
-    {
+    while (parent != null && !(parent instanceof Frame)) {
       parent = parent.getParent();
     }
     return (Frame) parent;
@@ -437,11 +425,10 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
   /**
    * Creates JMenuItems that should be added to the File menu
-   *  
+   * 
    * @return a List of JMenuItems
    */
-  public List createFileMenuItems()
-  {
+  public List createFileMenuItems() {
     List menuItemList = new ArrayList();
 
     openCpeDescMenuItem = new JMenuItem("Open CPE Descriptor");
@@ -463,21 +450,15 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     return menuItemList;
   }
 
-  private void readPreferences()
-  {
+  private void readPreferences() {
     String cpeDescFileString = prefs.get(PREFS_CPE_DESCRIPTOR_FILE, null);
-    if (cpeDescFileString != null)
-    {
+    if (cpeDescFileString != null) {
       File cpeDescFile = new File(cpeDescFileString);
-      if (cpeDescFile.exists())
-      {
+      if (cpeDescFile.exists()) {
         openSaveFileChooser.setSelectedFile(cpeDescFile);
-        try
-        {
+        try {
           openCpeDescriptor(cpeDescFile);
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
           System.err.println("Error loading last known CPE Descriptor " + cpeDescFileString);
           e.printStackTrace();
         }
@@ -485,35 +466,30 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     }
   }
 
-  private void startProcessing()
-  {
-    //Check that Collection Reader is selected
-    if (collectionReaderDesc == null)
-    {
+  private void startProcessing() {
+    // Check that Collection Reader is selected
+    if (collectionReaderDesc == null) {
       JOptionPane.showMessageDialog(CpmPanel.this, "No Collection Reader has been selected",
-          "Error", JOptionPane.ERROR_MESSAGE);
+                      "Error", JOptionPane.ERROR_MESSAGE);
       transportControlPanel.reset();
       resetScreen();
       return;
     }
 
-    try
-    {
-      //build a CPE description from the settings in the GUI
+    try {
+      // build a CPE description from the settings in the GUI
       CpeDescription cpeDesc = createCpeDescription();
 
-      //intantiate CPE
+      // intantiate CPE
       mCPE = UIMAFramework.produceCollectionProcessingEngine(cpeDesc);
-      
-      //attach callback listener      
+
+      // attach callback listener
       StatusCallbackListenerImpl statCbL = new StatusCallbackListenerImpl();
       mCPE.addStatusCallbackListener(statCbL);
-      
-      //start processing
+
+      // start processing
       mCPE.process();
-    }
-    catch (Exception ex)
-    {
+    } catch (Exception ex) {
       resetScreen();
       displayError(ex);
     }
@@ -523,37 +499,32 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   /**
    * Creates a CpeDescription based on all of the settings in the GUI.
    */
-  private CpeDescription createCpeDescription() throws Exception
-  {
-    //first check for descriptors out of sync with filesystem
+  private CpeDescription createCpeDescription() throws Exception {
+    // first check for descriptors out of sync with filesystem
     checkForOutOfSyncFiles();
 
     CpeDescription cpeDesc = CpeDescriptorFactory.produceDescriptor();
-    //Collection Reader
+    // Collection Reader
     cpeDesc.addCollectionReader(readerFileSelector.getSelected());
-    if (collectionReaderPanel.isModified())
-    {
-      CasProcessorConfigurationParameterSettings crSettings =
-        CpeDescriptorFactory.produceCasProcessorConfigurationParameterSettings();
+    if (collectionReaderPanel.isModified()) {
+      CasProcessorConfigurationParameterSettings crSettings = CpeDescriptorFactory
+                      .produceCasProcessorConfigurationParameterSettings();
       cpeDesc.getAllCollectionCollectionReaders()[0].setConfigurationParameterSettings(crSettings);
       createParameterOverrides(crSettings, collectionReaderPanel);
-    }  
-    //CAS Initializer
-    if (casInitializerFileSelector.getSelected().length() > 0)
-    {
+    }
+    // CAS Initializer
+    if (casInitializerFileSelector.getSelected().length() > 0) {
       cpeDesc.addCasInitializer(casInitializerFileSelector.getSelected());
-      if (casInitializerPanel.isModified())
-      {
-        CasProcessorConfigurationParameterSettings casIniSettings =
-          CpeDescriptorFactory.produceCasProcessorConfigurationParameterSettings();
-        cpeDesc.getAllCollectionCollectionReaders()[0].getCasInitializer().
-        setConfigurationParameterSettings(casIniSettings);
+      if (casInitializerPanel.isModified()) {
+        CasProcessorConfigurationParameterSettings casIniSettings = CpeDescriptorFactory
+                        .produceCasProcessorConfigurationParameterSettings();
+        cpeDesc.getAllCollectionCollectionReaders()[0].getCasInitializer()
+                        .setConfigurationParameterSettings(casIniSettings);
         createParameterOverrides(casIniSettings, casInitializerPanel);
       }
     }
-    //Analysis Engines
-    for (int i = 0; i < aeSpecifiers.size(); i++)
-    {
+    // Analysis Engines
+    for (int i = 0; i < aeSpecifiers.size(); i++) {
       String aeName = aeTabbedPane.getTitleAt(i);
       String aeFile = (String) aeSpecifiers.get(i);
       CpeCasProcessor casProc = CpeDescriptorFactory.produceCasProcessor(aeName);
@@ -561,142 +532,118 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       casProc.setBatchSize(10000);
       casProc.getErrorHandling().getErrorRateThreshold().setMaxErrorCount(0);
       cpeDesc.addCasProcessor(casProc);
-      //deal with configuration parameter overrides      
+      // deal with configuration parameter overrides
       AnalysisEnginePanel aePanel = (AnalysisEnginePanel) aeTabbedPane.getComponentAt(i);
-      if (aePanel.isModified())
-      {
-        CasProcessorConfigurationParameterSettings settings =
-          CpeDescriptorFactory.produceCasProcessorConfigurationParameterSettings();
+      if (aePanel.isModified()) {
+        CasProcessorConfigurationParameterSettings settings = CpeDescriptorFactory
+                        .produceCasProcessorConfigurationParameterSettings();
         casProc.setConfigurationParameterSettings(settings);
         createParameterOverrides(settings, aePanel);
-      }  
+      }
     }
-    // CAS Consumers        
-    for (int i = 0; i < consumerSpecifiers.size(); i++)
-    {
+    // CAS Consumers
+    for (int i = 0; i < consumerSpecifiers.size(); i++) {
       String consumerName = consumerTabbedPane.getTitleAt(i);
       String consumerFile = (String) consumerSpecifiers.get(i);
       CpeCasProcessor casProc = CpeDescriptorFactory.produceCasProcessor(consumerName);
       casProc.setDescriptor(consumerFile);
       casProc.setBatchSize(10000);
       casProc.getErrorHandling().getErrorRateThreshold().setMaxErrorCount(0);
-      cpeDesc.addCasProcessor(casProc);      
-      //deal with configuration parameter overrides
+      cpeDesc.addCasProcessor(casProc);
+      // deal with configuration parameter overrides
       ConsumerPanel consumerPanel = (ConsumerPanel) consumerTabbedPane.getComponentAt(i);
-      if (consumerPanel.isModified())
-      {
-        CasProcessorConfigurationParameterSettings settings =
-          CpeDescriptorFactory.produceCasProcessorConfigurationParameterSettings();
+      if (consumerPanel.isModified()) {
+        CasProcessorConfigurationParameterSettings settings = CpeDescriptorFactory
+                        .produceCasProcessorConfigurationParameterSettings();
         casProc.setConfigurationParameterSettings(settings);
         createParameterOverrides(settings, consumerPanel);
       }
     }
-    //CAS pool size hardcoded at the moment
+    // CAS pool size hardcoded at the moment
     cpeDesc.getCpeCasProcessors().setPoolSize(3);
-    
+
     return cpeDesc;
   }
 
   /**
-   * Called by createCpeDescription to add configuration parameter overrides to the
-   * CpeDescription being constructed, based on the user's changes in the GUI.
+   * Called by createCpeDescription to add configuration parameter overrides to the CpeDescription
+   * being constructed, based on the user's changes in the GUI.
    * 
-   * @param aSettings the CasProcessorConfigurationParameterSettings element
-   *    that will be modified
-   * @param aPanel the GUI panel representing settings for the CAS Processor
-   * @param aClearDirty whether to clear the dirty bit of each field.
-   *    This should be set to true when this method is called during the
-   *    act of saving the CPE descriptor.
+   * @param aSettings
+   *          the CasProcessorConfigurationParameterSettings element that will be modified
+   * @param aPanel
+   *          the GUI panel representing settings for the CAS Processor
+   * @param aClearDirty
+   *          whether to clear the dirty bit of each field. This should be set to true when this
+   *          method is called during the act of saving the CPE descriptor.
    */
-  private void createParameterOverrides(CasProcessorConfigurationParameterSettings aSettings, MetaDataPanel aPanel)
-    throws CpeDescriptorException
-  {
+  private void createParameterOverrides(CasProcessorConfigurationParameterSettings aSettings,
+                  MetaDataPanel aPanel) throws CpeDescriptorException {
     List values = aPanel.getValues();
     Iterator iterator = values.iterator();
-    while (iterator.hasNext())
-    {
+    while (iterator.hasNext()) {
       ConfigField configField = (ConfigField) iterator.next();
-      if (configField.isModified())
-      {
+      if (configField.isModified()) {
         String name = configField.getParameterName();
         Object value = configField.getFieldValue();
 
-        if (value != null)
-        {          
-          aSettings.setParameterValue(name,value);
+        if (value != null) {
+          aSettings.setParameterValue(name, value);
         }
       }
-    }   
+    }
   }
 
   /**
-   * Marks all fields as not dirty.  To be called when CPE descriptor is
-   * opened or saved.
+   * Marks all fields as not dirty. To be called when CPE descriptor is opened or saved.
    */
-  private void clearDirty()
-  {
+  private void clearDirty() {
     collectionReaderPanel.clearDirty();
     casInitializerPanel.clearDirty();
-    for (int i = 0; i < aeTabbedPane.getTabCount(); i++)
-    {
-      ((MetaDataPanel)aeTabbedPane.getComponentAt(i)).clearDirty();
-    }  
-    for (int i = 0; i < consumerTabbedPane.getTabCount(); i++)
-    {
-      ((MetaDataPanel)consumerTabbedPane.getComponentAt(i)).clearDirty();
+    for (int i = 0; i < aeTabbedPane.getTabCount(); i++) {
+      ((MetaDataPanel) aeTabbedPane.getComponentAt(i)).clearDirty();
+    }
+    for (int i = 0; i < consumerTabbedPane.getTabCount(); i++) {
+      ((MetaDataPanel) consumerTabbedPane.getComponentAt(i)).clearDirty();
     }
     selectedComponentsChanged = false;
   }
-  
-  public void actionPerformed(ActionEvent ev)
-  {
+
+  public void actionPerformed(ActionEvent ev) {
     Object source = ev.getSource();
 
-    if (source == progressTimer)
-    {
+    if (source == progressTimer) {
       elapsedTime++;
-      //      menuBarLabel.setText(ElapsedTimeFormatter.format(elapsedTime));
+      // menuBarLabel.setText(ElapsedTimeFormatter.format(elapsedTime));
 
       displayProgress();
-    }
-    else if (source == performanceQueryTimer && mCPE != null)
-    {
-      //printStats();
-    }
-    else if (source == startButton)
-    {
+    } else if (source == performanceQueryTimer && mCPE != null) {
+      // printStats();
+    } else if (source == startButton) {
       statusLabel.setText("Initializing");
-      //logDialog.clear();
+      // logDialog.clear();
       progressBar.setValue(0);
 
-      final SwingWorker worker = new SwingWorker()
-      {
-        public Object construct()
-        {
+      final SwingWorker worker = new SwingWorker() {
+        public Object construct() {
           startProcessing();
           return null;
         }
       };
       worker.start();
-    }
-    else if (source == addAeButton)
-    {
+    } else if (source == addAeButton) {
       int rv = aeFileChooser.showOpenDialog(addAeButton);
 
-      if (rv == JFileChooser.APPROVE_OPTION)
-      {
+      if (rv == JFileChooser.APPROVE_OPTION) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
         File file = aeFileChooser.getSelectedFile();
 
         // Create AE panel on the tabbed pane for this AE specifier file
 
-        try
-        {
+        try {
           addAE(file.getPath(), null);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
           displayError(e);
         }
 
@@ -705,35 +652,26 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
         setCursor(Cursor.getDefaultCursor());
       }
-    }
-    else if (source == moveAeLeftButton)
-    {
+    } else if (source == moveAeLeftButton) {
       int index = aeTabbedPane.getSelectedIndex();
-      if (index > 0)
-      {
+      if (index > 0) {
         aeTabbedPane.moveTab(index, index - 1);
         aeTabbedPane.setSelectedIndex(index - 1);
         Object specifierToMove = aeSpecifiers.remove(index);
         aeSpecifiers.add(index - 1, specifierToMove);
       }
-    }
-    else if (source == moveAeRightButton)
-    {
+    } else if (source == moveAeRightButton) {
       int index = aeTabbedPane.getSelectedIndex();
-      if (index > -1 && index < aeTabbedPane.getTabCount() - 1)
-      {
+      if (index > -1 && index < aeTabbedPane.getTabCount() - 1) {
         aeTabbedPane.moveTab(index, index + 1);
         aeTabbedPane.setSelectedIndex(index + 1);
         Object specifierToMove = aeSpecifiers.remove(index);
         aeSpecifiers.add(index + 1, specifierToMove);
       }
-    }
-    else if (source == addConsumerButton)
-    {
+    } else if (source == addConsumerButton) {
       int rv = consumerFileChooser.showOpenDialog(addConsumerButton);
 
-      if (rv == JFileChooser.APPROVE_OPTION)
-      {
+      if (rv == JFileChooser.APPROVE_OPTION) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
         File file = consumerFileChooser.getSelectedFile();
@@ -741,12 +679,9 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
         // Create consumer panel on the tabbed pane
         // for this consumer specifier file:
 
-        try
-        {
+        try {
           addConsumer(file.getPath(), null);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
           displayError(e);
         }
 
@@ -755,60 +690,40 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
         setCursor(Cursor.getDefaultCursor());
       }
-    }
-    else if (source == moveConsumerLeftButton)
-    {
+    } else if (source == moveConsumerLeftButton) {
       int index = consumerTabbedPane.getSelectedIndex();
-      if (index > 0)
-      {
+      if (index > 0) {
         consumerTabbedPane.moveTab(index, index - 1);
         consumerTabbedPane.setSelectedIndex(index - 1);
         Object specifierToMove = consumerSpecifiers.remove(index);
         consumerSpecifiers.add(index - 1, specifierToMove);
       }
-    }
-    else if (source == moveConsumerRightButton)
-    {
+    } else if (source == moveConsumerRightButton) {
       int index = consumerTabbedPane.getSelectedIndex();
-      if (index > -1 && index < consumerTabbedPane.getTabCount() - 1)
-      {
+      if (index > -1 && index < consumerTabbedPane.getTabCount() - 1) {
         consumerTabbedPane.moveTab(index, index + 1);
         consumerTabbedPane.setSelectedIndex(index + 1);
         Object specifierToMove = consumerSpecifiers.remove(index);
         consumerSpecifiers.add(index + 1, specifierToMove);
       }
-    }
-    else if (source == saveCpeDescMenuItem)
-    {
+    } else if (source == saveCpeDescMenuItem) {
       saveCpeDescriptor();
-    }
-    else if (source == openCpeDescMenuItem)
-    {
+    } else if (source == openCpeDescMenuItem) {
       int returnVal = this.openSaveFileChooser.showOpenDialog(this);
-      if (returnVal == JFileChooser.APPROVE_OPTION)
-      {
+      if (returnVal == JFileChooser.APPROVE_OPTION) {
         File f = this.openSaveFileChooser.getSelectedFile();
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        try
-        {
+        try {
           openCpeDescriptor(f);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
           displayError(e);
-        }
-        finally
-        {
+        } finally {
           setCursor(Cursor.getDefaultCursor());
         }
       }
-    }
-    else if (source == refreshMenuItem)
-    {
+    } else if (source == refreshMenuItem) {
       refreshOutOfSyncFiles();
-    }
-    else if (source == clearAllMenuItem)
-    {
+    } else if (source == clearAllMenuItem) {
       collectionReaderPanel.reset();
       readerFileSelector.setSelected("");
       casInitializerPanel.reset();
@@ -827,86 +742,65 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   /**
    * Prompt user for file to save CPE Descriptor to, and do the save.
    */
-  private void saveCpeDescriptor()
-  {
+  private void saveCpeDescriptor() {
     int returnVal = this.openSaveFileChooser.showSaveDialog(this);
-    if (returnVal == JFileChooser.APPROVE_OPTION)
-    {
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
       File f = this.openSaveFileChooser.getSelectedFile();
-      //if .xml filter was seleted, add .xml extension if user did not specify an extension
+      // if .xml filter was seleted, add .xml extension if user did not specify an extension
       if (this.openSaveFileChooser.getFileFilter() instanceof XMLFileFilter
-          && f.getAbsolutePath().indexOf('.') == -1)
-      {
+                      && f.getAbsolutePath().indexOf('.') == -1) {
         f = new File(f.getAbsolutePath() + ".xml");
       }
       setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-      try
-      {
+      try {
         doSaveCpeDescriptor(f);
         prefs.put(PREFS_CPE_DESCRIPTOR_FILE, f.getAbsolutePath());
-      }
-      catch (Exception e)
-      {
+      } catch (Exception e) {
         displayError(e);
-      }
-      finally
-      {
+      } finally {
         setCursor(Cursor.getDefaultCursor());
       }
     }
   }
-  
-  private void doSaveCpeDescriptor(File aFile) throws Exception
-  {
-    //construct a CPE Descriptor based on the state of the GUI
+
+  private void doSaveCpeDescriptor(File aFile) throws Exception {
+    // construct a CPE Descriptor based on the state of the GUI
     CpeDescription cpeDesc = createCpeDescription();
 
-    //save descriptor
+    // save descriptor
     OutputStream out = null;
-    try
-    {
+    try {
       File parentFile = aFile.getParentFile();
-      if (parentFile != null)
-      {
+      if (parentFile != null) {
         parentFile.mkdirs();
       }
       out = new FileOutputStream(aFile);
       cpeDesc.toXML(out);
-    }
-    finally
-    {
-      if (out != null)
-      {
+    } finally {
+      if (out != null) {
         out.close();
       }
     }
     clearDirty();
-  }  
+  }
 
-  private void displayProgress()
-  {
-    if (mCPE != null)
-    {
-      try
-      {
+  private void displayProgress() {
+    if (mCPE != null) {
+      try {
         Progress progress[] = mCPE.getProgress();
-        if (progress != null && progress.length > 0)
-        {
+        if (progress != null && progress.length > 0) {
           int FILE_ENTITY_PROGRESS_INDEX = -1;
 
-          if (FILE_ENTITY_PROGRESS_INDEX == -1)
-          {
-            for (int i = 0; i < progress.length; i++)
-            {
-              if (progress[i].getUnit().equals(Progress.ENTITIES))
-              {
+          if (FILE_ENTITY_PROGRESS_INDEX == -1) {
+            for (int i = 0; i < progress.length; i++) {
+              if (progress[i].getUnit().equals(Progress.ENTITIES)) {
                 FILE_ENTITY_PROGRESS_INDEX = i;
                 break;
               }
             }
           }
 
-          int value = (int)progress[FILE_ENTITY_PROGRESS_INDEX].getCompleted();
+          int value = (int) progress[FILE_ENTITY_PROGRESS_INDEX].getCompleted();
           progressBar.setValue(value);
 
           if (progressBar.isIndeterminate())
@@ -914,189 +808,144 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
           else
             statusLabel.setText("Processed " + value + " of " + progressBar.getMaximum());
         }
-      }
-      catch (Exception e)
-      {
+      } catch (Exception e) {
         displayError(e);
       }
     }
   }
 
-  /** Ask user to confirm exist.  Return true if they confirm, false if not. */
-  public boolean confirmExit()
-  {
+  /** Ask user to confirm exist. Return true if they confirm, false if not. */
+  public boolean confirmExit() {
     mShuttingDown = true;
-    //ask for confirm if CPM is processing
-    if (mCPE != null && mCPE.isProcessing())
-    {
+    // ask for confirm if CPM is processing
+    if (mCPE != null && mCPE.isProcessing()) {
       int rv = JOptionPane.showConfirmDialog(this,
-          "Collection Processing is currently running.  Do you wish to abort?", "Exit",
-          JOptionPane.YES_NO_OPTION);
-      if (rv == JOptionPane.NO_OPTION)
-      {
+                      "Collection Processing is currently running.  Do you wish to abort?", "Exit",
+                      JOptionPane.YES_NO_OPTION);
+      if (rv == JOptionPane.NO_OPTION) {
         mShuttingDown = false;
         return false;
-      }
-      else
-      {
+      } else {
         mCPE.stop();
         resetScreen();
       }
     }
 
-    //ask for confirm if configuration settings have been modified
-    try
-    {
-      if (isDirty())
-      {
-        int rv = JOptionPane.showConfirmDialog(this,
-            "Configuration settings have been modified. "
-                + "Would you like to save the CPE descriptor?",
-            "Exit", JOptionPane.YES_NO_CANCEL_OPTION);
+    // ask for confirm if configuration settings have been modified
+    try {
+      if (isDirty()) {
+        int rv = JOptionPane.showConfirmDialog(this, "Configuration settings have been modified. "
+                        + "Would you like to save the CPE descriptor?", "Exit",
+                        JOptionPane.YES_NO_CANCEL_OPTION);
 
-        if (rv == JOptionPane.CANCEL_OPTION)
-        {
+        if (rv == JOptionPane.CANCEL_OPTION) {
           mShuttingDown = false;
           return false;
         }
-        if (rv == JOptionPane.YES_OPTION)
-        {
+        if (rv == JOptionPane.YES_OPTION) {
           saveCpeDescriptor();
         }
       }
 
-      //exit
+      // exit
       return true;
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       displayError(e);
       return true;
     }
   }
 
-  public void checkForOutOfSyncFiles()
-  {
+  public void checkForOutOfSyncFiles() {
     StringBuffer componentNames = new StringBuffer();
 
-    if (collectionReaderDesc != null)
-    {
+    if (collectionReaderDesc != null) {
       File readerSpecifierFile = new File(readerFileSelector.getSelected());
       if (readerSpecifierFile.lastModified() > this.collectionReaderLastFileSyncTimestamp
-          && readerSpecifierFile.lastModified() > this.lastFileSyncUserPromptTime)
-      {
+                      && readerSpecifierFile.lastModified() > this.lastFileSyncUserPromptTime) {
         componentNames.append(collectionReaderDesc.getMetaData().getName()).append('\n');
       }
     }
 
-    if (casInitializerDesc != null)
-    {
+    if (casInitializerDesc != null) {
       File casInitializerSpecifierFile = new File(casInitializerFileSelector.getSelected());
       if (casInitializerSpecifierFile.lastModified() > this.casInitializerLastFileSyncTimestamp
-          && casInitializerSpecifierFile.lastModified() > this.lastFileSyncUserPromptTime)
-      {
+                      && casInitializerSpecifierFile.lastModified() > this.lastFileSyncUserPromptTime) {
         componentNames.append(casInitializerDesc.getMetaData().getName()).append('\n');
       }
     }
 
     int nrTabs = aeTabbedPane.getTabCount();
-    for (int i = 0; i < nrTabs; i++)
-    {
+    for (int i = 0; i < nrTabs; i++) {
       AnalysisEnginePanel aePanel = (AnalysisEnginePanel) aeTabbedPane.getComponentAt(i);
-      if (aePanel.hasFileChanged(this.lastFileSyncUserPromptTime))
-      {
+      if (aePanel.hasFileChanged(this.lastFileSyncUserPromptTime)) {
         componentNames.append(aeTabbedPane.getTitleAt(i)).append('\n');
       }
     }
 
     nrTabs = consumerTabbedPane.getTabCount();
-    for (int i = 0; i < nrTabs; i++)
-    {
+    for (int i = 0; i < nrTabs; i++) {
       ConsumerPanel consumerPanel = (ConsumerPanel) consumerTabbedPane.getComponentAt(i);
-      if (consumerPanel.hasFileChanged(this.lastFileSyncUserPromptTime))
-      {
+      if (consumerPanel.hasFileChanged(this.lastFileSyncUserPromptTime)) {
         componentNames.append(consumerTabbedPane.getTitleAt(i)).append('\n');
       }
     }
 
-    if (componentNames.length() > 0)
-    {
+    if (componentNames.length() > 0) {
       int rv = JOptionPane.showConfirmDialog(this,
-          "The following descriptor(s) have changed on the file system:\n"
-              + componentNames.toString() + "\n\nDo you want to refresh them?",
-          "Descriptors Changed On File System", JOptionPane.YES_NO_OPTION);
-      if (rv == JOptionPane.YES_OPTION)
-      {
+                      "The following descriptor(s) have changed on the file system:\n"
+                                      + componentNames.toString()
+                                      + "\n\nDo you want to refresh them?",
+                      "Descriptors Changed On File System", JOptionPane.YES_NO_OPTION);
+      if (rv == JOptionPane.YES_OPTION) {
         refreshOutOfSyncFiles();
       }
-      //record this time so that we don't re-prompt user continuously
+      // record this time so that we don't re-prompt user continuously
       this.lastFileSyncUserPromptTime = System.currentTimeMillis();
     }
   }
 
-  public void refreshOutOfSyncFiles()
-  {
-    if (collectionReaderDesc != null)
-    {
+  public void refreshOutOfSyncFiles() {
+    if (collectionReaderDesc != null) {
       File readerSpecifierFile = new File(readerFileSelector.getSelected());
-      if (readerSpecifierFile.lastModified() > this.collectionReaderLastFileSyncTimestamp)
-      {
-        try
-        {
-          populateCollectionReaderPanel(readerFileSelector.getSelected(),null);
-        }
-        catch (Exception e)
-        {
+      if (readerSpecifierFile.lastModified() > this.collectionReaderLastFileSyncTimestamp) {
+        try {
+          populateCollectionReaderPanel(readerFileSelector.getSelected(), null);
+        } catch (Exception e) {
           displayError(e);
         }
       }
     }
 
-    if (casInitializerDesc != null)
-    {
+    if (casInitializerDesc != null) {
       File casInitializerSpecifierFile = new File(casInitializerFileSelector.getSelected());
-      if (casInitializerSpecifierFile.lastModified() > this.casInitializerLastFileSyncTimestamp)
-      {
-        try
-        {
-          populateCasInitializerPanel(casInitializerFileSelector.getSelected(),null);
-        }
-        catch (Exception e)
-        {
+      if (casInitializerSpecifierFile.lastModified() > this.casInitializerLastFileSyncTimestamp) {
+        try {
+          populateCasInitializerPanel(casInitializerFileSelector.getSelected(), null);
+        } catch (Exception e) {
           displayError(e);
         }
       }
     }
 
     int nrTabs = aeTabbedPane.getTabCount();
-    for (int i = 0; i < nrTabs; i++)
-    {
+    for (int i = 0; i < nrTabs; i++) {
       AnalysisEnginePanel aePanel = (AnalysisEnginePanel) aeTabbedPane.getComponentAt(i);
-      if (aePanel.hasFileChanged(0))
-      {
-        try
-        {
+      if (aePanel.hasFileChanged(0)) {
+        try {
           aePanel.refreshFromFile();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
           displayError(e);
         }
       }
     }
 
     nrTabs = consumerTabbedPane.getTabCount();
-    for (int i = 0; i < nrTabs; i++)
-    {
+    for (int i = 0; i < nrTabs; i++) {
       ConsumerPanel consumerPanel = (ConsumerPanel) consumerTabbedPane.getComponentAt(i);
-      if (consumerPanel.hasFileChanged(0))
-      {
-        try
-        {
+      if (consumerPanel.hasFileChanged(0)) {
+        try {
           consumerPanel.refreshFromFile();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
           displayError(e);
         }
       }
@@ -1105,33 +954,27 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
   /**
    * Displays an error message to the user.
-   *
-   * @param aErrorString error message to display
+   * 
+   * @param aErrorString
+   *          error message to display
    */
-  public void displayError(String aErrorString)
-  {
-    //word-wrap long mesages
+  public void displayError(String aErrorString) {
+    // word-wrap long mesages
     StringBuffer buf = new StringBuffer(aErrorString.length());
     final int CHARS_PER_LINE = 80;
     int charCount = 0;
     StringTokenizer tokenizer = new StringTokenizer(aErrorString, " \n", true);
 
-    while (tokenizer.hasMoreTokens())
-    {
+    while (tokenizer.hasMoreTokens()) {
       String tok = tokenizer.nextToken();
 
-      if (tok.equals("\n"))
-      {
+      if (tok.equals("\n")) {
         buf.append("\n");
         charCount = 0;
-      }
-      else if ((charCount > 0) && ((charCount + tok.length()) > CHARS_PER_LINE))
-      {
+      } else if ((charCount > 0) && ((charCount + tok.length()) > CHARS_PER_LINE)) {
         buf.append("\n").append(tok);
         charCount = tok.length();
-      }
-      else
-      {
+      } else {
         buf.append(tok);
         charCount += tok.length();
       }
@@ -1142,32 +985,27 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
   /**
    * Displays an error message to the user.
-   *
-   * @param aThrowable Throwable whose message is to be displayed.
+   * 
+   * @param aThrowable
+   *          Throwable whose message is to be displayed.
    */
-  public void displayError(Throwable aThrowable)
-  {
+  public void displayError(Throwable aThrowable) {
     aThrowable.printStackTrace();
 
     String message = aThrowable.toString();
 
-    //For UIMAExceptions or UIMARuntimeExceptions, add cause info.
-    //We have to go through this nonsense to support Java 1.3.
-    //In 1.4 all exceptions can have a cause, so this wouldn't involve
-    //all of this typecasting.
-    while ((aThrowable instanceof UIMAException) || (aThrowable instanceof UIMARuntimeException))
-    {
-      if (aThrowable instanceof UIMAException)
-      {
+    // For UIMAExceptions or UIMARuntimeExceptions, add cause info.
+    // We have to go through this nonsense to support Java 1.3.
+    // In 1.4 all exceptions can have a cause, so this wouldn't involve
+    // all of this typecasting.
+    while ((aThrowable instanceof UIMAException) || (aThrowable instanceof UIMARuntimeException)) {
+      if (aThrowable instanceof UIMAException) {
         aThrowable = ((UIMAException) aThrowable).getCause();
-      }
-      else if (aThrowable instanceof UIMARuntimeException)
-      {
+      } else if (aThrowable instanceof UIMARuntimeException) {
         aThrowable = ((UIMARuntimeException) aThrowable).getCause();
       }
 
-      if (aThrowable != null)
-      {
+      if (aThrowable != null) {
         message += ("\nCausedBy: " + aThrowable.toString());
       }
     }
@@ -1176,51 +1014,40 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   private boolean populateCollectionReaderPanel(String specifierFile,
-      CasProcessorConfigurationParameterSettings overrides) throws InvalidXMLException,
-      IOException
-  {
-    try
-    {
-      if (collectionReaderPanel.getNrComponents() == 0)
-      {
+                  CasProcessorConfigurationParameterSettings overrides) throws InvalidXMLException,
+                  IOException {
+    try {
+      if (collectionReaderPanel.getNrComponents() == 0) {
         collectionReaderPanel.add(new JLabel("Descriptor:"));
         readerFileSelector = new FileSelector(specifierFile, "Collection Reader Descriptor",
-            JFileChooser.FILES_ONLY, fileChooserRootDir);
+                        JFileChooser.FILES_ONLY, fileChooserRootDir);
 
         collectionReaderPanel.add(readerFileSelector);
         readerFileSelector.addChoosableFileFilter(new XMLFileFilter());
         readerFileSelector.addFileSelectorListener(this, collectionReaderPanel);
-      }
-      else
-      {
+      } else {
         collectionReaderPanel.reset();
       }
 
-      if (specifierFile != null && specifierFile.length() > 0)
-      {
+      if (specifierFile != null && specifierFile.length() > 0) {
         File f = new File(specifierFile);
-        if (!f.exists())
-        {
+        if (!f.exists()) {
           String errorMsg = "Descriptor file " + f.getAbsolutePath() + " does not exist";
           JOptionPane.showMessageDialog(this, errorMsg, null, JOptionPane.ERROR_MESSAGE);
           transportControlPanel.reset();
           resetScreen();
           return false;
-        }
-        else
-        {
+        } else {
           collectionReaderLastFileSyncTimestamp = f.lastModified();
           XMLInputSource readerInputSource = new XMLInputSource(f);
           collectionReaderDesc = UIMAFramework.getXMLParser().parseCollectionReaderDescription(
-              readerInputSource);
+                          readerInputSource);
 
           collectionReaderPanel.populate(collectionReaderDesc.getMetaData(), overrides);
         }
       }
       return true;
-    }
-    finally
-    {
+    } finally {
       collectionReaderPanel.validate();
       collectionReaderPanel.validate();
       mainSplitPane.validate();
@@ -1228,80 +1055,65 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   private boolean populateCasInitializerPanel(String specifierFile,
-      CasProcessorConfigurationParameterSettings overrides) throws InvalidXMLException,
-      IOException
-  {
-    try
-    {
-      if (casInitializerPanel.getNrComponents() == 0)
-      {
+                  CasProcessorConfigurationParameterSettings overrides) throws InvalidXMLException,
+                  IOException {
+    try {
+      if (casInitializerPanel.getNrComponents() == 0) {
         casInitializerPanel.add(new JLabel("Descriptor:"));
         casInitializerFileSelector = new FileSelector(specifierFile, "CAS Initializer Descriptor",
-            JFileChooser.FILES_ONLY, fileChooserRootDir);
+                        JFileChooser.FILES_ONLY, fileChooserRootDir);
 
         casInitializerPanel.add(casInitializerFileSelector);
         casInitializerFileSelector.addChoosableFileFilter(new XMLFileFilter());
         casInitializerFileSelector.addFileSelectorListener(this, casInitializerPanel);
-      }
-      else
-      {
+      } else {
         casInitializerPanel.reset();
       }
 
-      if (specifierFile == null || specifierFile.length() == 0)
-      {
-        //no CAS initializer selected - this is OK
+      if (specifierFile == null || specifierFile.length() == 0) {
+        // no CAS initializer selected - this is OK
         casInitializerDesc = null;
         return true;
       }
 
       File f = new File(specifierFile);
-      if (!f.exists())
-      {
+      if (!f.exists()) {
         String errorMsg = "Descriptor file " + f.getAbsolutePath() + " does not exist";
         JOptionPane.showMessageDialog(this, errorMsg, null, JOptionPane.ERROR_MESSAGE);
         transportControlPanel.reset();
         resetScreen();
         return false;
-      }
-      else
-      {
+      } else {
         casInitializerLastFileSyncTimestamp = f.lastModified();
         XMLInputSource casIniInputSource = new XMLInputSource(f);
         casInitializerDesc = UIMAFramework.getXMLParser().parseCasInitializerDescription(
-            casIniInputSource);
+                        casIniInputSource);
 
         casInitializerPanel.populate(casInitializerDesc.getMetaData(), overrides);
         return true;
       }
-    }
-    finally
-    {
+    } finally {
       casInitializerPanel.validate();
       mainSplitPane.validate();
     }
   }
 
-  private void addAE(String aeSpecifierFile,
-      CasProcessorConfigurationParameterSettings overrides) throws InvalidXMLException, IOException
-  {
+  private void addAE(String aeSpecifierFile, CasProcessorConfigurationParameterSettings overrides)
+                  throws InvalidXMLException, IOException {
     File f = new File(aeSpecifierFile);
-    long fileModStamp = f.lastModified(); //get mod stamp before parsing, to prevent race condition
+    long fileModStamp = f.lastModified(); // get mod stamp before parsing, to prevent race condition
     XMLInputSource aeInputSource = new XMLInputSource(aeSpecifierFile);
     ResourceSpecifier aeSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-        aeInputSource);
+                    aeInputSource);
 
     AnalysisEnginePanel aePanel = new AnalysisEnginePanel(aeSpecifier, f, fileModStamp);
     String tabName;
-    if (aeSpecifier instanceof AnalysisEngineDescription)
-    {
+    if (aeSpecifier instanceof AnalysisEngineDescription) {
       AnalysisEngineDescription aeDescription = (AnalysisEngineDescription) aeSpecifier;
       ResourceMetaData md = aeDescription.getMetaData();
       aePanel.populate(md, overrides);
       tabName = md.getName();
-    }
-    else
-    {
+    } else {
       tabName = f.getName();
     }
 
@@ -1313,25 +1125,22 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   private void addConsumer(String consumerSpecifierFile,
-      CasProcessorConfigurationParameterSettings overrides) throws InvalidXMLException, IOException
-  {
+                  CasProcessorConfigurationParameterSettings overrides) throws InvalidXMLException,
+                  IOException {
     File f = new File(consumerSpecifierFile);
-    long fileModStamp = f.lastModified(); //get mod stamp before parsing, to prevent race condition
+    long fileModStamp = f.lastModified(); // get mod stamp before parsing, to prevent race condition
     XMLInputSource consumerInputSource = new XMLInputSource(consumerSpecifierFile);
     ResourceSpecifier casConsumerSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-        consumerInputSource);
+                    consumerInputSource);
     ConsumerPanel consumerPanel = new ConsumerPanel(casConsumerSpecifier, f, fileModStamp);
 
     String tabName;
-    if (casConsumerSpecifier instanceof CasConsumerDescription)
-    {
+    if (casConsumerSpecifier instanceof CasConsumerDescription) {
       ResourceMetaData md = ((CasConsumerDescription) casConsumerSpecifier)
-          .getCasConsumerMetaData();
+                      .getCasConsumerMetaData();
       consumerPanel.populate(md, overrides);
       tabName = md.getName();
-    }
-    else
-    {
+    } else {
       tabName = f.getName();
     }
 
@@ -1340,26 +1149,21 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     consumerSpecifiers.add(f.getAbsolutePath());
     selectedComponentsChanged = true;
   }
-  
-  private String makeUniqueCasProcessorName(String baseName)
-  {
-    if (aeTabbedPane.indexOfTab(baseName) == -1 &&
-        consumerTabbedPane.indexOfTab(baseName) == -1)
+
+  private String makeUniqueCasProcessorName(String baseName) {
+    if (aeTabbedPane.indexOfTab(baseName) == -1 && consumerTabbedPane.indexOfTab(baseName) == -1)
       return baseName;
-    
+
     int num = 2;
-    while (true)
-    {
+    while (true) {
       String name = baseName + " " + num;
-      if (aeTabbedPane.indexOfTab(name) == -1 &&
-          consumerTabbedPane.indexOfTab(name) == -1)
+      if (aeTabbedPane.indexOfTab(name) == -1 && consumerTabbedPane.indexOfTab(name) == -1)
         return name;
       num++;
     }
   }
 
-  private void removeAllAEsAndConsumers()
-  {
+  private void removeAllAEsAndConsumers() {
     aeTabbedPane.removeAll();
     aeSpecifiers.clear();
 
@@ -1368,27 +1172,20 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   // FileSelectorListener:
-  public boolean fileSelected(JComponent source, String fileString)
-  {
+  public boolean fileSelected(JComponent source, String fileString) {
 
     setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
     boolean rv = false;
 
-    try
-    {
-      if (source == collectionReaderPanel)
-      {
-        rv = populateCollectionReaderPanel(fileString,null);
+    try {
+      if (source == collectionReaderPanel) {
+        rv = populateCollectionReaderPanel(fileString, null);
+        selectedComponentsChanged = true;
+      } else if (source == casInitializerPanel) {
+        rv = populateCasInitializerPanel(fileString, null);
         selectedComponentsChanged = true;
       }
-      else if (source == casInitializerPanel)
-      {
-        rv = populateCasInitializerPanel(fileString,null);
-        selectedComponentsChanged = true;
-      }
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       displayError(e);
       rv = false;
     }
@@ -1399,28 +1196,22 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   // TabClosedListener:
-  public void tabClosed(JTabbedPaneWithCloseIcons source, int tabPos)
-  {
-    if (source == consumerTabbedPane)
-    {
+  public void tabClosed(JTabbedPaneWithCloseIcons source, int tabPos) {
+    if (source == consumerTabbedPane) {
       consumerSpecifiers.remove(tabPos);
-    }
-    else if (source == aeTabbedPane)
-    {
+    } else if (source == aeTabbedPane) {
       aeSpecifiers.remove(tabPos);
     }
     selectedComponentsChanged = true;
   }
 
-  public void controlStarted()
-  {
+  public void controlStarted() {
     statusLabel.setText("Initializing");
-    progressBar.setIndeterminate(true);    
-    setFrameEnabled(false);  
+    progressBar.setIndeterminate(true);
+    setFrameEnabled(false);
   }
 
-  public void controlPaused()
-  {
+  public void controlPaused() {
     mPaused = true;
     statusLabel.setText("Paused");
 
@@ -1434,14 +1225,13 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     progressTimer.stop();
     performanceQueryTimer.stop();
 
-    PerformanceReportDialog perfReportDlg =
-      new PerformanceReportDialog(CpmPanel.this.getParentFrame());
+    PerformanceReportDialog perfReportDlg = new PerformanceReportDialog(CpmPanel.this
+                    .getParentFrame());
     perfReportDlg.displayStats(mCPE.getPerformanceReport(), progressBar.getValue(),
-        "Processing is paused.");      
+                    "Processing is paused.");
   }
 
-  public void controlResumed()
-  {
+  public void controlResumed() {
     mPaused = false;
     statusLabel.setText("Resumed");
     if (indeterminateProgressPause)
@@ -1453,20 +1243,15 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     performanceQueryTimer.restart();
   }
 
-  public void controlStopped()
-  {
-    try
-    {
+  public void controlStopped() {
+    try {
       mCPE.stop();
-    }
-    catch (UIMA_IllegalStateException e)
-    {
-      //already stopped - OK
+    } catch (UIMA_IllegalStateException e) {
+      // already stopped - OK
     }
   }
 
-  private void resetScreen()
-  {
+  private void resetScreen() {
     progressTimer.stop();
     performanceQueryTimer.stop();
     transportControlPanel.reset();
@@ -1480,21 +1265,20 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     statusLabel.setText("");
   }
 
-  /** 
-   * Called to lock the GUI while processing is occurring.
-   * We don't actually disable the JFrame, because we don't
-   * want to disable the stop/pause buttons.  Instead we
-   * disable all of the controls that the user shouldn't mess
-   * with while processing is occurring.
-   * @param onOff true to enable, false to disable
+  /**
+   * Called to lock the GUI while processing is occurring. We don't actually disable the JFrame,
+   * because we don't want to disable the stop/pause buttons. Instead we disable all of the controls
+   * that the user shouldn't mess with while processing is occurring.
+   * 
+   * @param onOff
+   *          true to enable, false to disable
    */
-  private void setFrameEnabled(boolean onOff)
-  {
+  private void setFrameEnabled(boolean onOff) {
     Color titleColor = (onOff ? Color.black : Color.gray);
 
-    //    int nrMenuItems = menuBar.getMenuCount();
-    //    for (int i = 0; i < (nrMenuItems - 2); i++)
-    //      menuBar.getMenu(i).setEnabled(onOff);
+    // int nrMenuItems = menuBar.getMenuCount();
+    // for (int i = 0; i < (nrMenuItems - 2); i++)
+    // menuBar.getMenu(i).setEnabled(onOff);
 
     baseReaderPanel.setEnabled(onOff);
     collectionReaderPanel.setEnabled(onOff);
@@ -1510,8 +1294,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
     // Cycle through each of the AE panels:
     int nrTabs = aeTabbedPane.getTabCount();
-    for (int i = 0; i < nrTabs; i++)
-    {
+    for (int i = 0; i < nrTabs; i++) {
       AnalysisEnginePanel aePanel = (AnalysisEnginePanel) aeTabbedPane.getComponentAt(i);
       aePanel.setEnabled(onOff);
     }
@@ -1526,26 +1309,23 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
     // Cycle through each of the consumer panels:
     nrTabs = consumerTabbedPane.getTabCount();
-    for (int i = 0; i < nrTabs; i++)
-    {
+    for (int i = 0; i < nrTabs; i++) {
       ConsumerPanel consumerPanel = (ConsumerPanel) consumerTabbedPane.getComponentAt(i);
       consumerPanel.setEnabled(onOff);
     }
 
-//    Cursor cursor = (onOff ? Cursor.getDefaultCursor() : Cursor
-//        .getPredefinedCursor(Cursor.WAIT_CURSOR));
-//    setCursor(cursor);
+    // Cursor cursor = (onOff ? Cursor.getDefaultCursor() : Cursor
+    // .getPredefinedCursor(Cursor.WAIT_CURSOR));
+    // setCursor(cursor);
     openCpeDescMenuItem.setEnabled(onOff);
     saveCpeDescMenuItem.setEnabled(onOff);
     refreshMenuItem.setEnabled(onOff);
     clearAllMenuItem.setEnabled(onOff);
   }
 
-  public void onCompletion()
-  {
-    try
-    {
-      //			statusLabel.setText("Completed (" + statusLabel.getText() + ")");
+  public void onCompletion() {
+    try {
+      // statusLabel.setText("Completed (" + statusLabel.getText() + ")");
       setFrameEnabled(true);
       transportControlPanel.reset();
       displayProgress();
@@ -1556,50 +1336,41 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
       performanceQueryTimer.stop();
 
-      PerformanceReportDialog perfReportDlg =
-         new PerformanceReportDialog(this.getParentFrame());
+      PerformanceReportDialog perfReportDlg = new PerformanceReportDialog(this.getParentFrame());
       perfReportDlg.displayStats(mCPE.getPerformanceReport(), progressBar.getValue(),
-          "Processing completed successfully.");
+                      "Processing completed successfully.");
 
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
-  public void printStats()
-  {
-    //logDialog.write( mCPM.getPerformanceReport().toString());        
+  public void printStats() {
+    // logDialog.write( mCPM.getPerformanceReport().toString());
   }
 
-
   /**
-   * Returns whether the GUI is dirty; that is, whether configuration
-   * settings have been modified since the last save.
+   * Returns whether the GUI is dirty; that is, whether configuration settings have been modified
+   * since the last save.
+   * 
    * @return
    */
-  private boolean isDirty()
-  {
-    //have components been added or removed?
+  private boolean isDirty() {
+    // have components been added or removed?
     if (selectedComponentsChanged)
       return true;
-    
-    //has configuration of any component changed?
-    if (collectionReaderPanel.isDirty() ||
-        casInitializerPanel.isDirty())
-    {
+
+    // has configuration of any component changed?
+    if (collectionReaderPanel.isDirty() || casInitializerPanel.isDirty()) {
       return true;
     }
-    for (int i = 0; i < aeTabbedPane.getTabCount(); i++)
-    {
-      MetaDataPanel panel = (MetaDataPanel)aeTabbedPane.getComponentAt(i);
+    for (int i = 0; i < aeTabbedPane.getTabCount(); i++) {
+      MetaDataPanel panel = (MetaDataPanel) aeTabbedPane.getComponentAt(i);
       if (panel.isDirty())
         return true;
     }
-    for (int i = 0; i < consumerTabbedPane.getTabCount(); i++)
-    {
-      MetaDataPanel panel = (MetaDataPanel)consumerTabbedPane.getComponentAt(i);
+    for (int i = 0; i < consumerTabbedPane.getTabCount(); i++) {
+      MetaDataPanel panel = (MetaDataPanel) consumerTabbedPane.getComponentAt(i);
       if (panel.isDirty())
         return true;
     }
@@ -1608,64 +1379,51 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   private void openCpeDescriptor(File aFile) throws InvalidXMLException, IOException,
-      CpeDescriptorException
-  {
-    //parse
+                  CpeDescriptorException {
+    // parse
     CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
-        new XMLInputSource(aFile));
+                    new XMLInputSource(aFile));
 
-    //update GUI
-    //Collection Reader
-    CpeCollectionReader[] collRdrs = cpeDesc.getAllCollectionCollectionReaders(); //more than one??
+    // update GUI
+    // Collection Reader
+    CpeCollectionReader[] collRdrs = cpeDesc.getAllCollectionCollectionReaders(); // more than one??
     CpeCollectionReader collRdr = null;
-    if (collRdrs != null && collRdrs.length > 0)
-    {
+    if (collRdrs != null && collRdrs.length > 0) {
       collRdr = collRdrs[0];
       collectionReaderPanel.clearAll();
-      populateCollectionReaderPanel(collRdr.getDescriptor().getInclude().get(),
-          collRdr.getConfigurationParameterSettings());
-    }
-    else
-    {
+      populateCollectionReaderPanel(collRdr.getDescriptor().getInclude().get(), collRdr
+                      .getConfigurationParameterSettings());
+    } else {
       collectionReaderPanel.reset();
     }
-    //CAS Initializer 	
+    // CAS Initializer
     CpeCollectionReaderCasInitializer casIni = null;
-    if (collRdr != null)
-    {
+    if (collRdr != null) {
       casIni = collRdr.getCasInitializer();
     }
-    if (casIni != null)
-    {
+    if (casIni != null) {
       String casIniDescFile = casIni.getDescriptor().getInclude().get();
       casInitializerPanel.clearAll();
-      populateCasInitializerPanel(casIniDescFile,
-         casIni.getConfigurationParameterSettings());
-    }
-    else
-    {
+      populateCasInitializerPanel(casIniDescFile, casIni.getConfigurationParameterSettings());
+    } else {
       casInitializerPanel.reset();
     }
 
-    //CAS Processors
+    // CAS Processors
     removeAllAEsAndConsumers();
     CpeCasProcessor[] casProcs = cpeDesc.getCpeCasProcessors().getAllCpeCasProcessors();
-    for (int i = 0; i < casProcs.length; i++)
-    {
+    for (int i = 0; i < casProcs.length; i++) {
       String specifierFile = casProcs[i].getDescriptor();
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-          new XMLInputSource(specifierFile));
-      if (isCasConsumerSpecifier(specifier))
-      {
+                      new XMLInputSource(specifierFile));
+      if (isCasConsumerSpecifier(specifier)) {
         addConsumer(specifierFile, casProcs[i].getConfigurationParameterSettings());
-      }
-      else
-      {
+      } else {
         addAE(specifierFile, casProcs[i].getConfigurationParameterSettings());
       }
     }
 
-    //nothing should be dirty when we first open
+    // nothing should be dirty when we first open
     clearDirty();
   }
 
@@ -1673,91 +1431,70 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
    * @param specifier
    * @return
    */
-  private boolean isCasConsumerSpecifier(ResourceSpecifier specifier)
-  {
-    if (specifier instanceof CasConsumerDescription)
-    {
+  private boolean isCasConsumerSpecifier(ResourceSpecifier specifier) {
+    if (specifier instanceof CasConsumerDescription) {
       return true;
-    }
-    else if (specifier instanceof URISpecifier)
-    {
+    } else if (specifier instanceof URISpecifier) {
       URISpecifier uriSpec = (URISpecifier) specifier;
       return URISpecifier.RESOURCE_TYPE_CAS_CONSUMER.equals(uriSpec.getResourceType());
-    }
-    else
+    } else
       return false;
   }
 
-
-  class StatusCallbackListenerImpl implements StatusCallbackListener
-  {
-    public void initializationComplete()
-    {
-      //init progress bar
+  class StatusCallbackListenerImpl implements StatusCallbackListener {
+    public void initializationComplete() {
+      // init progress bar
       int nrFiles = -1;
       Progress progress[] = mCPE.getProgress();
-      if (progress != null)
-      {
-        for (int i = 0; i < progress.length; i++)
-        {
-          if (progress[i].getUnit().equals(Progress.ENTITIES))
-          {
-            nrFiles = (int)progress[i].getTotal();
+      if (progress != null) {
+        for (int i = 0; i < progress.length; i++) {
+          if (progress[i].getUnit().equals(Progress.ENTITIES)) {
+            nrFiles = (int) progress[i].getTotal();
             break;
           }
         }
       }
-      if (nrFiles != -1)
-      {
+      if (nrFiles != -1) {
         progressBar.setMaximum(nrFiles);
         progressBar.setIndeterminate(false);
-      }
-      else
+      } else
         progressBar.setIndeterminate(true);
 
       progressBar.setValue(0);
-      
-      //start progress timer which will update the progress bar
+
+      // start progress timer which will update the progress bar
       progressTimer.start();
     }
 
-    public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus)
-    {
-      //report an error if it occurred
-      if (aStatus.isException())
-      {
+    public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
+      // report an error if it occurred
+      if (aStatus.isException()) {
         List ex = aStatus.getExceptions();
         displayError((Throwable) ex.get(0));
       }
     }
 
-    public void batchProcessComplete()
-    {
+    public void batchProcessComplete() {
     }
 
-    public void collectionProcessComplete()
-    {
+    public void collectionProcessComplete() {
       onCompletion();
     }
 
-    public void paused()
-    {
+    public void paused() {
       System.out.println("StatusCallbackListenerImpl::paused()");
     }
 
-    public void resumed()
-    {
+    public void resumed() {
       System.out.println("StatusCallbackListenerImpl::resumed");
     }
 
-    public void aborted()
-    {
-      if (!mShuttingDown && !mPaused)
-      {
-        PerformanceReportDialog perfReportDlg =
-          new PerformanceReportDialog(CpmPanel.this.getParentFrame());
+    public void aborted() {
+      if (!mShuttingDown && !mPaused) {
+        PerformanceReportDialog perfReportDlg = new PerformanceReportDialog(CpmPanel.this
+                        .getParentFrame());
         perfReportDlg.displayStats(mCPE.getPerformanceReport(), progressBar.getValue(),
-            "Processing aborted.");
+                        "Processing aborted.");
       }
       resetScreen();
       mPaused = false;
@@ -1765,30 +1502,26 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   /**
-   * MetaDataPanel used for Collection Reader & AE selection and configuration.
-   * Adds a reset method to clear out related components when specifier file
-   * selection changes.
+   * MetaDataPanel used for Collection Reader & AE selection and configuration. Adds a reset method
+   * to clear out related components when specifier file selection changes.
    */
-  static class ResetableMetaDataPanel extends MetaDataPanel
-  {
-    public ResetableMetaDataPanel()
-    {
+  static class ResetableMetaDataPanel extends MetaDataPanel {
+    private static final long serialVersionUID = -4573780175511175666L;
+
+    public ResetableMetaDataPanel() {
       super();
     }
 
-    public ResetableMetaDataPanel(int nrColumns)
-    {
+    public ResetableMetaDataPanel(int nrColumns) {
       super(nrColumns);
     }
 
     /**
      * Clears all but the first 2 components from the panel.
      */
-    public void reset()
-    {
+    public void reset() {
       Component components[] = gridBagPanel.getComponents();
-      if (components.length > 2)
-      {
+      if (components.length > 2) {
         for (int i = (components.length - 1); i >= 2; i--)
           gridBagPanel.remove(i);
 
@@ -1797,6 +1530,5 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       fieldsList.clear();
     }
   }
-
 
 }

@@ -26,38 +26,33 @@ import javax.swing.filechooser.FileFilter;
 /**
  * File filter to accept only xml files (.xml extension)
  */
-public class XMLFileFilter extends FileFilter
-{
-	private static final String XML = "xml";
-	
-	public boolean accept(File file)
-	{
-		if (file.isDirectory())
-			return true;
-		else
-		{
-			String extension = getExtension(file);
-			if (extension != null)
-				return (extension.equals(XML));
-			else
-				return false;
-		}
-	}
+public class XMLFileFilter extends FileFilter {
+  private static final String XML = "xml";
 
-	public String getDescription()
-	{
-		return ".xml";
-	}
+  public boolean accept(File file) {
+    if (file.isDirectory())
+      return true;
+    else {
+      String extension = getExtension(file);
+      if (extension != null)
+        return (extension.equals(XML));
+      else
+        return false;
+    }
+  }
 
-	private String getExtension(File f)
-	{
-		String ext = null;
-		String s = f.getName();
-		int i = s.lastIndexOf('.');
+  public String getDescription() {
+    return ".xml";
+  }
 
-		if (i > 0 &&  i < s.length() - 1)
-			ext = s.substring(i+1).toLowerCase();
+  private String getExtension(File f) {
+    String ext = null;
+    String s = f.getName();
+    int i = s.lastIndexOf('.');
 
-		return ext;
-	}
+    if (i > 0 && i < s.length() - 1)
+      ext = s.substring(i + 1).toLowerCase();
+
+    return ext;
+  }
 }

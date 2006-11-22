@@ -65,12 +65,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
-import org.xml.sax.SAXException;
-
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
@@ -93,15 +87,21 @@ import org.apache.uima.util.CasToInlineXml;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XmlCasDeserializer;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+import org.xml.sax.SAXException;
 
 /**
- * Dialog that loads analyzed documents stored in XMI or XCAS format and
- * allows them to be viewed using the Java-based CAS viewer or a web browser, 
- * in either an HTML/Javascript format or in the inline XML format.
- *  
+ * Dialog that loads analyzed documents stored in XMI or XCAS format and allows them to be viewed
+ * using the Java-based CAS viewer or a web browser, in either an HTML/Javascript format or in the
+ * inline XML format.
+ * 
  */
-public class XCasAnnotationViewerDialog extends JDialog implements ActionListener
-{
+public class XCasAnnotationViewerDialog extends JDialog implements ActionListener {
+
+  private static final long serialVersionUID = -7259891069111863433L;
 
   /*
    * (non-Javadoc)
@@ -138,23 +138,19 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
 
   private boolean processedStyleMap = false;
 
-  //unwound from small anonymous inner class
-  public void actionPerformed(ActionEvent arg0)
-  {
-    //		read style map XML file if it exists
+  // unwound from small anonymous inner class
+  public void actionPerformed(ActionEvent arg0) {
+    // read style map XML file if it exists
     String styleMapXml = null;
     AnalysisEngineDescription selectedAE = null;
-    try
-    {
-      if (styleMapFile.exists())
-      {
+    try {
+      if (styleMapFile.exists()) {
         FileReader reader = new FileReader(styleMapFile);
         StringBuffer buf = new StringBuffer();
         char[] chars = new char[2048];
         int charsRead = reader.read(chars);
 
-        while (charsRead > 0)
-        {
+        while (charsRead > 0) {
           buf.append(chars, 0, charsRead);
           charsRead = reader.read(chars);
         }
@@ -163,33 +159,28 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
         reader.close();
       }
 
-      //have user select AE if they haven't done so already
-      if (selectedAE == null)
-      {
+      // have user select AE if they haven't done so already
+      if (selectedAE == null) {
         selectedAE = promptForAE();
       }
-      if (selectedAE != null)
-      {
+      if (selectedAE != null) {
         styleMapEditor.setAnalysisEngine(selectedAE);
-        //launch StyleMapEditor GUI
+        // launch StyleMapEditor GUI
         String newStyleMap = styleMapEditor.launchEditor(selectedAE.getAnalysisEngineMetaData(),
-            styleMapXml, cas);
+                        styleMapXml, cas);
 
-        if (newStyleMap != null)
-        {
-          //write new file using AE+StyleMap convention
+        if (newStyleMap != null) {
+          // write new file using AE+StyleMap convention
           styleMapFile = med1.getStylemapFile();
-          //write new style map to disk
+          // write new style map to disk
           FileWriter writer = new FileWriter(styleMapFile);
           writer.write(newStyleMap);
           writer.close();
-          //process generated style map
+          // process generated style map
           annotationViewGenerator.processStyleMap(styleMapFile);
         }
       }
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       displayError(e);
     }
 
@@ -199,46 +190,43 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
    * Create an AnnotationViewer Dialog
    * 
    * @param aParentFrame
-   *            frame containing this panel
+   *          frame containing this panel
    * @param aTitle
-   *            title to display for the dialog
+   *          title to display for the dialog
    * @param aInputDir
-   *            directory containing input files (in XCAS foramt) to read
+   *          directory containing input files (in XCAS foramt) to read
    * @param aStyleMapFile
-   *            filename of style map to be used to view files in HTML
+   *          filename of style map to be used to view files in HTML
    * @param aPerformanceStats
-   *            string representaiton of performance statistics, optional.
+   *          string representaiton of performance statistics, optional.
    * @param aTypeSystem
-   *            the CAS Type System to which the XCAS files must conform.
+   *          the CAS Type System to which the XCAS files must conform.
    * @param aTypesToDisplay
-   *            array of types that should be highlighted in the viewer. This
-   *            can be set to the output types of the Analysis Engine. A value
-   *            of null means to display all types.
+   *          array of types that should be highlighted in the viewer. This can be set to the output
+   *          types of the Analysis Engine. A value of null means to display all types.
    */
   public XCasAnnotationViewerDialog(JFrame aParentFrame, String aDialogTitle, PrefsMediator med,
-      File aStyleMapFile, String aPerformanceStats, TypeSystem aTypeSystem,
-      final String[] aTypesToDisplay, String interactiveTempFN, boolean javaViewerRBisSelected,
-      boolean javaViewerUCRBisSelected, boolean xmlRBisSelected, TCAS cas)
-  {
+                  File aStyleMapFile, String aPerformanceStats, TypeSystem aTypeSystem,
+                  final String[] aTypesToDisplay, String interactiveTempFN,
+                  boolean javaViewerRBisSelected, boolean javaViewerUCRBisSelected,
+                  boolean xmlRBisSelected, TCAS cas) {
     super(aParentFrame, aDialogTitle);
-    //create the AnnotationViewGenerator (for HTML view generation)
+    // create the AnnotationViewGenerator (for HTML view generation)
     this.med1 = med;
     this.cas = cas;
     annotationViewGenerator = new AnnotationViewGenerator(tempDir);
 
     launchThatViewer(med.getOutputDir(), interactiveTempFN, aTypeSystem, aTypesToDisplay,
-        javaViewerRBisSelected, javaViewerUCRBisSelected, xmlRBisSelected, aStyleMapFile,
-        tempDir);
+                    javaViewerRBisSelected, javaViewerUCRBisSelected, xmlRBisSelected,
+                    aStyleMapFile, tempDir);
   }
 
   /**
    * Filter to not show the two interactive-mode directories in the file list
    */
 
-  static class InteractiveFilter implements FilenameFilter
-  {
-    public boolean accept(File dir, String name)
-    {
+  static class InteractiveFilter implements FilenameFilter {
+    public boolean accept(File dir, String name) {
       if (name.equals("interactive_temp"))
         return false;
       if (name.equals("interactive_out"))
@@ -248,9 +236,8 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
   }
 
   public XCasAnnotationViewerDialog(JFrame aParentFrame, String aDialogTitle, PrefsMediator med,
-      File aStyleMapFile, String aPerformanceStats, TypeSystem aTypeSystem,
-      final String[] aTypesToDisplay, boolean generatedStyleMap, TCAS cas)
-  {
+                  File aStyleMapFile, String aPerformanceStats, TypeSystem aTypeSystem,
+                  final String[] aTypesToDisplay, boolean generatedStyleMap, TCAS cas) {
 
     super(aParentFrame, aDialogTitle);
     this.med1 = med;
@@ -261,10 +248,10 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
     typeSystem = aTypeSystem;
     typesToDisplay = aTypesToDisplay;
 
-    //create the AnnotationViewGenerator (for HTML view generation)
+    // create the AnnotationViewGenerator (for HTML view generation)
     annotationViewGenerator = new AnnotationViewGenerator(tempDir);
 
-    //create StyleMapEditor dialog
+    // create StyleMapEditor dialog
     styleMapEditor = new StyleMapEditor(aParentFrame, cas);
     JPanel resultsTitlePanel = new JPanel();
     resultsTitlePanel.setLayout(new BoxLayout(resultsTitlePanel, BoxLayout.Y_AXIS));
@@ -272,17 +259,16 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
     resultsTitlePanel.add(new JLabel("These are the Analyzed Documents."));
     resultsTitlePanel.add(new JLabel("Select viewer type and double-click file to open."));
 
-    //create an jlist to list the the analyzed documents
+    // create an jlist to list the the analyzed documents
     inputDirPath = med.getOutputDir();
     File dir = new File(inputDirPath);
-    //  Select documents via filter. JMP
+    // Select documents via filter. JMP
     FilenameFilter iFilter = new InteractiveFilter();
     String[] documents = dir.list(iFilter);
     analyzedResultsList = new JList(documents);
     /*
-     * File[] documents = dir.listFiles(); Vector docVector = new
-     * Vector(); for (int i = 0; i < documents.length; i++) { if
-     * (documents[i].isFile()) { docVector.add(documents[i].getName()); } }
+     * File[] documents = dir.listFiles(); Vector docVector = new Vector(); for (int i = 0; i <
+     * documents.length; i++) { if (documents[i].isFile()) { docVector.add(documents[i].getName()); } }
      * final JList analyzedResultsList = new JList(docVector);
      */
     JScrollPane scrollPane = new JScrollPane();
@@ -311,22 +297,15 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
     displayFormatButtonGroup.add(htmlRB);
     displayFormatButtonGroup.add(xmlRB);
 
-    //select the appropraite viewer button according to user's prefs
-    javaViewerRB.setSelected(true); //default, overriden below
-    if ("Java Viewer".equals(med.getViewType()))
-    {
+    // select the appropraite viewer button according to user's prefs
+    javaViewerRB.setSelected(true); // default, overriden below
+    if ("Java Viewer".equals(med.getViewType())) {
       javaViewerRB.setSelected(true);
-    }
-    else if ("JV User Colors".equals(med.getViewType()))
-    {
+    } else if ("JV User Colors".equals(med.getViewType())) {
       javaViewerUCRB.setSelected(true);
-    }
-    else if ("HTML".equals(med.getViewType()))
-    {
+    } else if ("HTML".equals(med.getViewType())) {
       htmlRB.setSelected(true);
-    }
-    else if ("XML".equals(med.getViewType()))
-    {
+    } else if ("XML".equals(med.getViewType())) {
       xmlRB.setSelected(true);
     }
 
@@ -337,34 +316,31 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
 
     controlsPanel.add(displayFormatPanel);
 
-    SpringUtilities.makeCompactGrid(controlsPanel, 1, 2, //rows, cols
-        4, 4, //initX, initY
-        0, 0); //xPad, yPad
+    SpringUtilities.makeCompactGrid(controlsPanel, 1, 2, // rows, cols
+                    4, 4, // initX, initY
+                    0, 0); // xPad, yPad
 
     JButton editStyleMapButton = new JButton("Edit Style Map");
 
-    //event for the editStyleMapButton button
+    // event for the editStyleMapButton button
     editStyleMapButton.addActionListener(this);
 
     southernPanel.add(controlsPanel);
 
-    //      southernPanel.add( new JSeparator() );
+    // southernPanel.add( new JSeparator() );
 
     JPanel buttonsPanel = new JPanel();
     buttonsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
-    //APL: edit style map feature disabled for SDK
+    // APL: edit style map feature disabled for SDK
     buttonsPanel.add(editStyleMapButton);
 
-    if (performanceStats != null)
-    {
+    if (performanceStats != null) {
       JButton perfStatsButton = new JButton("Performance Stats");
-      perfStatsButton.addActionListener(new ActionListener()
-      {
-        public void actionPerformed(ActionEvent ae)
-        {
+      perfStatsButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent ae) {
           JOptionPane.showMessageDialog((Component) ae.getSource(), performanceStats, null,
-              JOptionPane.PLAIN_MESSAGE);
+                          JOptionPane.PLAIN_MESSAGE);
         }
       });
       buttonsPanel.add(perfStatsButton);
@@ -375,33 +351,31 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
 
     southernPanel.add(buttonsPanel);
 
-    //add jlist and panel container to Dialog
+    // add jlist and panel container to Dialog
     getContentPane().add(resultsTitlePanel, BorderLayout.NORTH);
     getContentPane().add(scrollPane, BorderLayout.CENTER);
     getContentPane().add(southernPanel, BorderLayout.SOUTH);
 
-    //event for the closeButton button
-    closeButton.addActionListener(new ActionListener()
-    {
-      public void actionPerformed(ActionEvent ae)
-      {
+    // event for the closeButton button
+    closeButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
         XCasAnnotationViewerDialog.this.setVisible(false);
       }
     });
 
-    //event for analyzedResultsDialog window closing
+    // event for analyzedResultsDialog window closing
     this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    setLF(); //set default look and feel
+    setLF(); // set default look and feel
     analyzedResultsList.setCellRenderer(new MyListCellRenderer());
 
-    //doubleclicking on document shows the annotated result
+    // doubleclicking on document shows the annotated result
     MouseListener mouseListener = new ListMouseAdapter();
-    //			styleMapFile, analyzedResultsList, 
-    //					inputDirPath,typeSystem , typesToDisplay ,
-    //					javaViewerRB , javaViewerUCRB ,xmlRB ,
-    //					viewerDirectory , this);
+    // styleMapFile, analyzedResultsList,
+    // inputDirPath,typeSystem , typesToDisplay ,
+    // javaViewerRB , javaViewerUCRB ,xmlRB ,
+    // viewerDirectory , this);
 
-    //add mouse Listener to the list
+    // add mouse Listener to the list
     analyzedResultsList.addMouseListener(mouseListener);
 
   }
@@ -411,61 +385,52 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
   // JMP
 
   public void launchThatViewer(String inputDirPath, String fileName, TypeSystem typeSystem,
-      final String[] aTypesToDisplay, boolean javaViewerRBisSelected,
-      boolean javaViewerUCRBisSelected, boolean xmlRBisSelected, File styleMapFile,
-      File viewerDirectory)
-  {
-    try
-    {
+                  final String[] aTypesToDisplay, boolean javaViewerRBisSelected,
+                  boolean javaViewerUCRBisSelected, boolean xmlRBisSelected, File styleMapFile,
+                  File viewerDirectory) {
+    try {
 
       File xcasFile = new File(inputDirPath, fileName);
-      //create a new TCAS
+      // create a new TCAS
       CAS cas = CasCreationUtils.createCas(Collections.EMPTY_LIST, typeSystem, UIMAFramework
-          .getDefaultPerformanceTuningProperties());
-      //deserialize XCAS into CAS
+                      .getDefaultPerformanceTuningProperties());
+      // deserialize XCAS into CAS
       FileInputStream xcasInStream = null;
-      try
-      {
+      try {
         xcasInStream = new FileInputStream(xcasFile);
         XmlCasDeserializer.deserialize(xcasInStream, cas, true);
-      }
-      finally
-      {
+      } finally {
         if (xcasInStream != null)
           xcasInStream.close();
       }
 
-      //launch appropriate viewer
-      if (javaViewerRBisSelected || javaViewerUCRBisSelected)
-      { // JMP
-        //record preference for next time
+      // launch appropriate viewer
+      if (javaViewerRBisSelected || javaViewerUCRBisSelected) { // JMP
+        // record preference for next time
         med1.setViewType(javaViewerRBisSelected ? "Java Viewer" : "JV User Colors");
 
-        //create tree viewer component
+        // create tree viewer component
         CasAnnotationViewer viewer = new CasAnnotationViewer();
         viewer.setDisplayedTypes(aTypesToDisplay);
         if (javaViewerUCRBisSelected)
           getColorsForTypesFromFile(viewer, styleMapFile);
         else
           viewer.setHiddenTypes(new String[] { "uima.cpm.FileLocation" });
-        //launch viewer in a new dialog
+        // launch viewer in a new dialog
         viewer.setCAS(cas);
         JDialog dialog = new JDialog(XCasAnnotationViewerDialog.this, "Annotation Results for "
-            + fileName + " in " + inputDirPath); // JMP
+                        + fileName + " in " + inputDirPath); // JMP
         dialog.getContentPane().add(viewer);
         dialog.setSize(850, 630);
         dialog.pack();
         dialog.show();
-      }
-      else
-      {
+      } else {
         CAS defaultView = cas.getView(CAS.NAME_DEFAULT_SOFA);
-        if (defaultView.getDocumentText() == null)
-        {
+        if (defaultView.getDocumentText() == null) {
           displayError("The HTML and XML Viewers can only view the default text document, which was not found in this CAS.");
           return;
         }
-        //generate inline XML
+        // generate inline XML
         File inlineXmlFile = new File(viewerDirectory, "inline.xml");
         String xmlAnnotations = new CasToInlineXml().generateXML(defaultView);
         FileOutputStream outStream = new FileOutputStream(inlineXmlFile);
@@ -474,34 +439,30 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
 
         if (xmlRBisSelected) // JMP passed in
         {
-          //record preference for next time
+          // record preference for next time
           med1.setViewType("XML");
 
           BrowserUtil.openUrlInDefaultBrowser(inlineXmlFile.getAbsolutePath());
-        }
-        else
-        //HTML view
+        } else
+        // HTML view
         {
           med1.setViewType("HTML");
-          //generate HTML view
-          //first process style map if not done already
-          if (!processedStyleMap)
-          {
+          // generate HTML view
+          // first process style map if not done already
+          if (!processedStyleMap) {
             annotationViewGenerator.processStyleMap(styleMapFile);
             processedStyleMap = true;
           }
           annotationViewGenerator.processDocument(inlineXmlFile);
           File genFile = new File(viewerDirectory, "index.html");
-          //open in browser
+          // open in browser
           BrowserUtil.openUrlInDefaultBrowser(genFile.getAbsolutePath());
         }
       }
 
       // end LTV here
 
-    }
-    catch (Exception ex)
-    {
+    } catch (Exception ex) {
       displayError(ex);
     }
   }
@@ -510,48 +471,41 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
    * Create an AnnotationViewer Dialog
    * 
    * @param aParentFrame
-   *            frame containing this panel
+   *          frame containing this panel
    * @param aTitle
-   *            title to display for the dialog
+   *          title to display for the dialog
    * @param aInputDir
-   *            directory containing input files (in XCAS foramt) to read
+   *          directory containing input files (in XCAS foramt) to read
    * @param aStyleMapFile
-   *            filename of style map to be used to view files in HTML
+   *          filename of style map to be used to view files in HTML
    * @param aPerformanceStats
-   *            string representaiton of performance statistics, optional.
+   *          string representaiton of performance statistics, optional.
    * @param aTypeSystem
-   *            the CAS Type System to which the XCAS files must conform.
+   *          the CAS Type System to which the XCAS files must conform.
    */
   /*
-   * public XCasAnnotationViewerDialog(JFrame aParentFrame, String
-   * aDialogTitle, File aInputDir, File aStyleMapFile, String
-   * aPerformanceStats, TypeSystem aTypeSystem) { this(aParentFrame,
-   * aDialogTitle, aInputDir, aStyleMapFile, aPerformanceStats, aTypeSystem,
-   * null); }
+   * public XCasAnnotationViewerDialog(JFrame aParentFrame, String aDialogTitle, File aInputDir,
+   * File aStyleMapFile, String aPerformanceStats, TypeSystem aTypeSystem) { this(aParentFrame,
+   * aDialogTitle, aInputDir, aStyleMapFile, aPerformanceStats, aTypeSystem, null); }
    */
   /**
    * Assumes node has a text field and extracts its value. JMP
    */
-  static public String getTextValue(Node node)
-  {
+  static public String getTextValue(Node node) {
     Node first = node.getFirstChild();
-    if (first != null)
-    {
+    if (first != null) {
       Text text = (Text) node.getFirstChild();
       return text.getNodeValue().trim();
-    }
-    else
+    } else
       return null;
   }
 
   /**
    * Gets the first child with a given name. JMP
    */
-  static public Node getFirstChildByName(Node node, String name)
-  {
+  static public Node getFirstChildByName(Node node, String name) {
     NodeList children = node.getChildNodes();
-    for (int c = 0; c < children.getLength(); ++c)
-    {
+    for (int c = 0; c < children.getLength(); ++c) {
       Node n = children.item(c);
       if (n.getNodeName().equals(name))
         return n;
@@ -560,97 +514,74 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
   }
 
   /**
-   * Reads in annotation-color associations from stylemap file. JMP Also reads
-   * checked value if present.
+   * Reads in annotation-color associations from stylemap file. JMP Also reads checked value if
+   * present.
    */
 
-  public void getColorsForTypesFromFile(CasAnnotationViewer viewer, File aStyleMapFile)
-  {
+  public void getColorsForTypesFromFile(CasAnnotationViewer viewer, File aStyleMapFile) {
     List colorList = new ArrayList();
     ArrayList typeList = new ArrayList();
     ArrayList notCheckedList = new ArrayList();
     ArrayList hiddenList = new ArrayList();
     hiddenList.add("uima.cpm.FileLocation");
 
-    if (aStyleMapFile.exists())
-    {
+    if (aStyleMapFile.exists()) {
 
       FileInputStream stream = null;
       Document parse = null;
-      try
-      {
+      try {
         stream = new FileInputStream(aStyleMapFile);
         DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         parse = db.parse(stream);
-      }
-      catch (FileNotFoundException e)
-      {
+      } catch (FileNotFoundException e) {
         throw new UIMARuntimeException(e);
-      }
-      catch (ParserConfigurationException e)
-      {
+      } catch (ParserConfigurationException e) {
         throw new UIMARuntimeException(e);
-      }
-      catch (FactoryConfigurationError e)
-      {
+      } catch (FactoryConfigurationError e) {
         throw new UIMARuntimeException(e);
-      }
-      catch (SAXException e)
-      {
+      } catch (SAXException e) {
         throw new UIMARuntimeException(e);
-      }
-      catch (IOException e)
-      {
+      } catch (IOException e) {
         throw new UIMARuntimeException(e);
       }
       Node node0 = parse.getDocumentElement();
-      //			Node node1 = getFirstChildByName(parse.getDocumentElement(),
+      // Node node1 = getFirstChildByName(parse.getDocumentElement(),
       // "styleMap");
-      //			String node1Name = node1.getNodeName();
+      // String node1Name = node1.getNodeName();
 
       NodeList nodeList = node0.getChildNodes();
       ColorParser cParser = new ColorParser();
-      for (int i = 0; i < nodeList.getLength(); i++)
-      {
+      for (int i = 0; i < nodeList.getLength(); i++) {
         Node node = nodeList.item(i);
         String nodeName = node.getNodeName();
-        if (nodeName.equals("rule"))
-        {
+        if (nodeName.equals("rule")) {
           NodeList childrenList = node.getChildNodes();
           String type = "";
           String label = "";
           StyleMapEntry sme = null;
           String colorText = "";
-          for (int j = 0; j < childrenList.getLength(); j++)
-          {
+          for (int j = 0; j < childrenList.getLength(); j++) {
             Node child = childrenList.item(j);
             String childName = child.getNodeName();
-            if (childName.equals("pattern"))
-            {
+            if (childName.equals("pattern")) {
               type = getTextValue(child);
             }
-            if (childName.equals("label"))
-            {
+            if (childName.equals("label")) {
               label = getTextValue(child);
             }
-            if (childName.equals("style"))
-            {
+            if (childName.equals("style")) {
               colorText = getTextValue(child);
             }
 
           }
           sme = cParser.parseAndAssignColors(type, label, label, colorText);
-          if (!sme.getChecked())
-          {
+          if (!sme.getChecked()) {
             notCheckedList.add(sme.getAnnotationTypeName());
           }
-          if (!sme.getHidden())
-          {
+          if (!sme.getHidden()) {
             colorList.add(sme.getBackground());
             typeList.add(sme.getAnnotationTypeName());
-          }
-          else
-          {
+          } else {
             hiddenList.add(sme.getAnnotationTypeName());
           }
 
@@ -658,12 +589,9 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
       }
 
       if (stream != null)
-        try
-        {
+        try {
           stream.close();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
           e.printStackTrace();
         }
       viewer.assignColorsFromList(colorList, typeList);
@@ -679,70 +607,57 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
    * Displays an error message to the user.
    * 
    * @param aErrorString
-   *            error message to display
+   *          error message to display
    */
-  public void displayError(String aErrorString)
-  {
-    //word-wrap long mesages
+  public void displayError(String aErrorString) {
+    // word-wrap long mesages
     StringBuffer buf = new StringBuffer(aErrorString.length());
     final int CHARS_PER_LINE = 80;
     int charCount = 0;
     StringTokenizer tokenizer = new StringTokenizer(aErrorString, " \n", true);
 
-    while (tokenizer.hasMoreTokens())
-    {
+    while (tokenizer.hasMoreTokens()) {
       String tok = tokenizer.nextToken();
 
-      if (tok.equals("\n"))
-      {
+      if (tok.equals("\n")) {
         buf.append("\n");
         charCount = 0;
-      }
-      else if ((charCount > 0) && ((charCount + tok.length()) > CHARS_PER_LINE))
-      {
+      } else if ((charCount > 0) && ((charCount + tok.length()) > CHARS_PER_LINE)) {
         buf.append("\n").append(tok);
         charCount = tok.length();
-      }
-      else
-      {
+      } else {
         buf.append(tok);
         charCount += tok.length();
       }
     }
 
     JOptionPane.showMessageDialog(XCasAnnotationViewerDialog.this, buf.toString(), "Error",
-        JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
   }
 
   /**
    * Displays an error message to the user.
    * 
    * @param aThrowable
-   *            Throwable whose message is to be displayed.
+   *          Throwable whose message is to be displayed.
    */
-  public void displayError(Throwable aThrowable)
-  {
+  public void displayError(Throwable aThrowable) {
     aThrowable.printStackTrace();
 
     String message = aThrowable.toString();
 
-    //For UIMAExceptions or UIMARuntimeExceptions, add cause info.
-    //We have to go through this nonsense to support Java 1.3.
-    //In 1.4 all exceptions can have a cause, so this wouldn't involve
-    //all of this typecasting.
-    while ((aThrowable instanceof UIMAException) || (aThrowable instanceof UIMARuntimeException))
-    {
-      if (aThrowable instanceof UIMAException)
-      {
+    // For UIMAExceptions or UIMARuntimeExceptions, add cause info.
+    // We have to go through this nonsense to support Java 1.3.
+    // In 1.4 all exceptions can have a cause, so this wouldn't involve
+    // all of this typecasting.
+    while ((aThrowable instanceof UIMAException) || (aThrowable instanceof UIMARuntimeException)) {
+      if (aThrowable instanceof UIMAException) {
         aThrowable = ((UIMAException) aThrowable).getCause();
-      }
-      else if (aThrowable instanceof UIMARuntimeException)
-      {
+      } else if (aThrowable instanceof UIMARuntimeException) {
         aThrowable = ((UIMARuntimeException) aThrowable).getCause();
       }
 
-      if (aThrowable != null)
-      {
+      if (aThrowable != null) {
         message += ("\nCausedBy: " + aThrowable.toString());
       }
     }
@@ -751,71 +666,58 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
   }
 
   /**
-   * If the current AE filename is not know ask for it.  Then parse the
-   * selected file and return the AnalysisEngineDescription object.
+   * If the current AE filename is not know ask for it. Then parse the selected file and return the
+   * AnalysisEngineDescription object.
    * 
    * @return the selected AnalysisEngineDescription, null if the user cancelled
    */
   protected AnalysisEngineDescription promptForAE() throws IOException, InvalidXMLException,
-      ResourceInitializationException
-  {
-    if (med1.getTAEfile() != null)
-    {
+                  ResourceInitializationException {
+    if (med1.getTAEfile() != null) {
       File taeFile = new File(med1.getTAEfile());
       XMLInputSource in = new XMLInputSource(taeFile);
-      AnalysisEngineDescription aed = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
+      AnalysisEngineDescription aed = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+                      in);
       return aed;
-    }
-    else
-    {
+    } else {
       String taeDir = med1.getTAEfile();
       JFileChooser chooser = new JFileChooser(taeDir);
       chooser.setDialogTitle("Select the Analysis Engine that Generated this Output");
       chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
       int returnVal = chooser.showOpenDialog(this);
-      if (returnVal == JFileChooser.APPROVE_OPTION)
-      {
+      if (returnVal == JFileChooser.APPROVE_OPTION) {
         XMLInputSource in = new XMLInputSource(chooser.getSelectedFile());
         return UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
-      }
-      else
-      {
+      } else {
         return null;
       }
     }
   }
 
   /** set default look and feel */
-  private static void setLF()
-  {
+  private static void setLF() {
     // Force SwingApp to come up in the System L&F
     String laf = UIManager.getSystemLookAndFeelClassName();
-    try
-    {
+    try {
       UIManager.setLookAndFeel(laf);
-    }
-    catch (UnsupportedLookAndFeelException exc)
-    {
+    } catch (UnsupportedLookAndFeelException exc) {
       System.err.println("Warning: UnsupportedLookAndFeel: " + laf);
-    }
-    catch (Exception exc)
-    {
+    } catch (Exception exc) {
       System.err.println("Error loading " + laf + ": " + exc);
     }
   }
 
-  //create and call the list cell renderer to set the selected color and
+  // create and call the list cell renderer to set the selected color and
   // image icon
-  static class MyListCellRenderer extends JLabel implements ListCellRenderer
-  {
-    public MyListCellRenderer()
-    {
+  static class MyListCellRenderer extends JLabel implements ListCellRenderer {
+    private static final long serialVersionUID = 7231915634689270693L;
+
+    public MyListCellRenderer() {
       setOpaque(true);
     }
 
     public Component getListCellRendererComponent(JList analyzedResultsList, Object value,
-        int index, boolean isSelected, boolean cellHasFocus)
-    {
+                    int index, boolean isSelected, boolean cellHasFocus) {
       ImageIcon xmlIcon = Images.getImageIcon(Images.XML_DOC);
       setIcon(xmlIcon);
       setText(value.toString());
@@ -825,34 +727,26 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
     }
   }
 
-  class ListMouseAdapter extends MouseAdapter
-  {
+  class ListMouseAdapter extends MouseAdapter {
 
-    public void mouseClicked(MouseEvent e)
-    {
-      try
-      {
-        if (e.getClickCount() == 2)
-        {
+    public void mouseClicked(MouseEvent e) {
+      try {
+        if (e.getClickCount() == 2) {
           String fileName = ((String) analyzedResultsList.getSelectedValue());
-          if (fileName != null)
-          {
+          if (fileName != null) {
             analyzedResultsList.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             // Start LTV here
             launchThatViewer(inputDirPath, fileName, typeSystem, typesToDisplay, javaViewerRB
-              .isSelected(), javaViewerUCRB.isSelected(), xmlRB.isSelected(), styleMapFile,
-              tempDir);
+                            .isSelected(), javaViewerUCRB.isSelected(), xmlRB.isSelected(),
+                            styleMapFile, tempDir);
 
             analyzedResultsList.setCursor(Cursor.getDefaultCursor());
           }
         }
-      }
-      catch (Exception ex)
-      {
+      } catch (Exception ex) {
         displayError(ex);
       }
     }
   }
-
 
 }

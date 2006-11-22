@@ -49,10 +49,11 @@ import org.apache.uima.resource.metadata.Capability;
 
 /**
  * A tree view of Annotations and associated features.
- *
+ * 
  */
-public class AnnotationFeaturesViewer extends JPanel implements ActionListener
-{
+public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
+
+  private static final long serialVersionUID = -2455669190592868013L;
 
   public static final String ROOT = "Root";
 
@@ -64,8 +65,7 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener
 
   private JButton collapseAllButton;
 
-  public AnnotationFeaturesViewer()
-  {
+  public AnnotationFeaturesViewer() {
     super();
 
     setLayout(new BorderLayout());
@@ -91,8 +91,7 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener
   }
 
   public void populate(AnalysisEngineDescription analysisEngine, AnalysisEngineMetaData aeMetaData,
-      TCAS cas)
-  {
+                  TCAS cas) {
     tree = generateTreeView(analysisEngine, aeMetaData, cas);
 
     tree.setDragEnabled(true); // To allow drag to stylemap table.
@@ -112,22 +111,18 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener
   }
 
   private JTree generateTreeView(AnalysisEngineDescription analysisEngine,
-      AnalysisEngineMetaData aeMetaData, TCAS cas)
-  {
+                  AnalysisEngineMetaData aeMetaData, TCAS cas) {
 
     DefaultMutableTreeNode root = new DefaultMutableTreeNode(ROOT);
     // We won't actually see this.
 
     ArrayList annotationTypes = new ArrayList();
     Capability[] capabilities = aeMetaData.getCapabilities();
-    for (int i = 0; i < capabilities.length; i++)
-    {
+    for (int i = 0; i < capabilities.length; i++) {
       TypeOrFeature[] outputs = capabilities[i].getOutputs();
 
-      for (int j = 0; j < outputs.length; j++)
-      {
-        if (outputs[j].isType() && !annotationTypes.contains(outputs[j].getName()))
-        {
+      for (int j = 0; j < outputs.length; j++) {
+        if (outputs[j].isType() && !annotationTypes.contains(outputs[j].getName())) {
           annotationTypes.add(outputs[j].getName());
         }
       }
@@ -135,105 +130,83 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener
 
     Iterator it = annotationTypes.iterator();
     String annotationTypeName = "";
-    while (it.hasNext())
-    {
+    while (it.hasNext()) {
       annotationTypeName = (String) it.next();
 
       DefaultMutableTreeNode annotationTreeNode = new DefaultMutableTreeNode(annotationTypeName);
-      //make sure we actally are getting a node
-      if (annotationTreeNode != null)
-      {
-      String[] featureNames = getFeatureNamesForType(annotationTypeName, cas);
-        //make sure there are any feature names
-        if (featureNames != null)
-        {
-      for (int i = 0; i < featureNames.length; i++)
-      {
-        DefaultMutableTreeNode featureTreeNode = new DefaultMutableTreeNode(featureNames[i]);
-        annotationTreeNode.add(featureTreeNode);
-      }
+      // make sure we actally are getting a node
+      if (annotationTreeNode != null) {
+        String[] featureNames = getFeatureNamesForType(annotationTypeName, cas);
+        // make sure there are any feature names
+        if (featureNames != null) {
+          for (int i = 0; i < featureNames.length; i++) {
+            DefaultMutableTreeNode featureTreeNode = new DefaultMutableTreeNode(featureNames[i]);
+            annotationTreeNode.add(featureTreeNode);
+          }
 
-      root.add(annotationTreeNode);
-    }
-        else
-        {
-          //	System.out.println("Can\'t get feature names for: "
-          //		+ annotationTypeName);
+          root.add(annotationTreeNode);
+        } else {
+          // System.out.println("Can\'t get feature names for: "
+          // + annotationTypeName);
           JOptionPane.showMessageDialog(null,
-              "Can\'t get feature names for: " + annotationTypeName, "XML error",
-              JOptionPane.ERROR_MESSAGE);
+                          "Can\'t get feature names for: " + annotationTypeName, "XML error",
+                          JOptionPane.ERROR_MESSAGE);
         }
-      }
-      else
-      {
-        //System.out.println("Annotation type does not exist: "
-        //	+ annotationTypeName);
+      } else {
+        // System.out.println("Annotation type does not exist: "
+        // + annotationTypeName);
         JOptionPane.showMessageDialog(null,
-            "Annotation type does not exist: " + annotationTypeName, "XML error",
-            JOptionPane.ERROR_MESSAGE);
+                        "Annotation type does not exist: " + annotationTypeName, "XML error",
+                        JOptionPane.ERROR_MESSAGE);
       }
     }
     return new JTree(root);
   }
 
-  //untimely ripped from UIMA since it does not work with a taeDescription
-  private String[] getFeatureNamesForType(String aTypeName, CAS cas)
-  {
+  // untimely ripped from UIMA since it does not work with a taeDescription
+  private String[] getFeatureNamesForType(String aTypeName, CAS cas) {
     TypeSystem ts = cas.getTypeSystem();
     Type t = ts.getType(aTypeName);
-    if (t != null)
-    {
+    if (t != null) {
       List features = t.getFeatures();
       String[] featNames = new String[features.size()];
-      for (int i = 0; i < features.size(); i++)
-      {
+      for (int i = 0; i < features.size(); i++) {
         Feature f = (Feature) features.get(i);
         featNames[i] = f.getShortName();
       }
       return featNames;
-    }
-    else
-    {
+    } else {
       return null;
     }
   }
 
-  public String getSelection()
-  {
+  public String getSelection() {
     TreePath treePath = tree.getSelectionPath();
-    if (treePath != null)
-    {
+    if (treePath != null) {
       String parentPath = treePath.getParentPath().getLastPathComponent().toString();
       String lastPath = treePath.getLastPathComponent().toString();
       if (parentPath.equals(AnnotationFeaturesViewer.ROOT))
         return lastPath;
       else
         return parentPath + ":" + lastPath;
-    }
-    else
+    } else
       return null;
   }
 
-  //add a tree selection listener to the JTree
-  public void addTreeSelectionListener(TreeSelectionListener sel)
-  {
+  // add a tree selection listener to the JTree
+  public void addTreeSelectionListener(TreeSelectionListener sel) {
     tree.addTreeSelectionListener(sel);
   }
 
-  public void actionPerformed(ActionEvent e)
-  {
+  public void actionPerformed(ActionEvent e) {
     Object source = e.getSource();
-    if (source == expandAllButton)
-    {
+    if (source == expandAllButton) {
       for (int i = 0; i < tree.getRowCount(); i++)
         tree.expandRow(i);
-    }
-    else if (source == collapseAllButton)
-    {
+    } else if (source == collapseAllButton) {
       for (int i = 0; i < tree.getRowCount(); i++)
         tree.collapseRow(i);
     }
   }
-
 
 }

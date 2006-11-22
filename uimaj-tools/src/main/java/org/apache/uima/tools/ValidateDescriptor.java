@@ -25,54 +25,44 @@ import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.util.XMLInputSource;
 
 /**
- * Command-line utility for validating a descriptor.
- * Supports CollectionReader, CasInitializer, AnalysisEngine, and 
- * CasConsumer descriptors.
+ * Command-line utility for validating a descriptor. Supports CollectionReader, CasInitializer,
+ * AnalysisEngine, and CasConsumer descriptors.
  * 
  * @param args
  */
-public class ValidateDescriptor
-{
+public class ValidateDescriptor {
 
   /**
    * Runs the ValidateDescriptor tool.
    * 
-   * @param args takes one argument, the path to a descriptor file.
+   * @param args
+   *          takes one argument, the path to a descriptor file.
    */
-  public static void main(String[] args) throws Exception
-  {
-    if (args.length != 1)
-    {
-      System.err.println("Usage: java " + ValidateDescriptor.class.getName() + " <descriptor file>");
+  public static void main(String[] args) throws Exception {
+    if (args.length != 1) {
+      System.err
+                      .println("Usage: java " + ValidateDescriptor.class.getName()
+                                      + " <descriptor file>");
       System.exit(1);
     }
     System.out.println("Parsing...");
-    try
-    {
-      Object desc = UIMAFramework.getXMLParser().parse(
-        new XMLInputSource(args[0]));
-      if (desc instanceof ResourceCreationSpecifier)
-      {
+    try {
+      Object desc = UIMAFramework.getXMLParser().parse(new XMLInputSource(args[0]));
+      if (desc instanceof ResourceCreationSpecifier) {
         System.out.println("Validating...");
-        ((ResourceCreationSpecifier)desc).doFullValidation();
+        ((ResourceCreationSpecifier) desc).doFullValidation();
         System.out.println("Descriptor is valid.");
-      }
-      else
-      {
+      } else {
         System.err.println("This type of descriptor is not supported by this tool.");
       }
-    }  
-    catch(UIMA_IllegalStateException e)
-    {
-      //this is unforunately the type of Exception we get if you try to parse a CPE descriptor this way
+    } catch (UIMA_IllegalStateException e) {
+      // this is unforunately the type of Exception we get if you try to parse a CPE descriptor this
+      // way
       System.err.println("This type of descriptor is not supported by this tool.");
-    }
-    catch(Exception e)
-    {
+    } catch (Exception e) {
       System.err.println("Descriptor is invalid.");
       e.printStackTrace();
     }
-   }
-
+  }
 
 }

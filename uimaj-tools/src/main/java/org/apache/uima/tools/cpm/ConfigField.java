@@ -29,12 +29,12 @@ import org.apache.uima.tools.util.gui.FileSelector;
 import org.apache.uima.tools.util.gui.ListSelector;
 
 /**
- * Configuration Field class used for representation of resource parameters
- * in dynamically created MetaDataPanels.
+ * Configuration Field class used for representation of resource parameters in dynamically created
+ * MetaDataPanels.
+ * 
  * @see org.apache.uima.tools.cpm.MetaDataPanel
  */
-public class ConfigField
-{
+public class ConfigField {
   private String parameterName;
 
   private String classString;
@@ -44,17 +44,21 @@ public class ConfigField
   private JComponent fieldComponent;
 
   private Object originalValue;
-  
+
   private Object lastSavedValue;
 
   /**
-   * @param pn Resource parameter name e.g. outputDir
-   * @param cs String value of Java type used for value e.g. Integer
-   * @param mv true if the value is a multi-value array
-   * @param c Component used to represent field - Could be JTextField, JCheckBox, FileSelector or ListSelector
+   * @param pn
+   *          Resource parameter name e.g. outputDir
+   * @param cs
+   *          String value of Java type used for value e.g. Integer
+   * @param mv
+   *          true if the value is a multi-value array
+   * @param c
+   *          Component used to represent field - Could be JTextField, JCheckBox, FileSelector or
+   *          ListSelector
    */
-  public ConfigField(String pn, String cs, boolean mv, JComponent c)
-  {
+  public ConfigField(String pn, String cs, boolean mv, JComponent c) {
     parameterName = pn;
     classString = cs;
     isMultiValued = mv;
@@ -63,184 +67,129 @@ public class ConfigField
     lastSavedValue = originalValue;
   }
 
-  public String getParameterName()
-  {
+  public String getParameterName() {
     return parameterName;
   }
 
-  public String getClassString()
-  {
+  public String getClassString() {
     return classString;
   }
 
-  public JComponent getFieldComponent()
-  {
+  public JComponent getFieldComponent() {
     return fieldComponent;
   }
 
-  public boolean isMultiValued()
-  {
+  public boolean isMultiValued() {
     return isMultiValued;
   }
 
-  public Object getFieldValue()
-  {
-    if (fieldComponent instanceof JTextField)
-    {
+  public Object getFieldValue() {
+    if (fieldComponent instanceof JTextField) {
       String fieldString = ((JTextField) fieldComponent).getText();
-      if (classString.equals("Integer"))
-      {
-        try
-        {
+      if (classString.equals("Integer")) {
+        try {
           return Integer.valueOf(fieldString);
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
           return fieldString;
         }
-      }
-      else if (classString.equals("Float"))
-      {
-        try
-        {
+      } else if (classString.equals("Float")) {
+        try {
           return Float.valueOf(fieldString);
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
           return fieldString;
         }
-      }
-      else
+      } else
         return fieldString;
-    }
-    else if (fieldComponent instanceof JCheckBox)
+    } else if (fieldComponent instanceof JCheckBox)
       return Boolean.valueOf(((JCheckBox) fieldComponent).isSelected());
     else if (fieldComponent instanceof FileSelector)
       return ((FileSelector) fieldComponent).getSelected();
-    else if (fieldComponent instanceof ListSelector)
-    {
+    else if (fieldComponent instanceof ListSelector) {
       String[] valueStrings = ((ListSelector) fieldComponent).getValues();
-      if (valueStrings == null)
-      {
+      if (valueStrings == null) {
         return null;
       }
-      try
-      {
-        if (classString.equals("Integer"))
-        {
+      try {
+        if (classString.equals("Integer")) {
           Integer[] intValues = new Integer[valueStrings.length];
-          for (int i = 0; i < valueStrings.length; i++)
-          {
+          for (int i = 0; i < valueStrings.length; i++) {
             intValues[i] = Integer.valueOf(valueStrings[i]);
           }
           return intValues;
-        }
-        else if (classString.equals("Float"))
-        {
+        } else if (classString.equals("Float")) {
           Float[] floatValues = new Float[valueStrings.length];
-          for (int i = 0; i < valueStrings.length; i++)
-          {
+          for (int i = 0; i < valueStrings.length; i++) {
             floatValues[i] = Float.valueOf(valueStrings[i]);
           }
           return floatValues;
-        }
-        else
-        {
+        } else {
           return valueStrings;
         }
-      }
-      catch (NumberFormatException e)
-      {
+      } catch (NumberFormatException e) {
         return valueStrings;
       }
-    }
-    else
+    } else
       return null;
   }
 
-  public void setFieldValue(Object fieldValue)
-  {
-    if (fieldComponent instanceof JTextField)
-    {
+  public void setFieldValue(Object fieldValue) {
+    if (fieldComponent instanceof JTextField) {
       ((JTextField) fieldComponent).setText(fieldValue.toString());
-    }
-    else if (fieldComponent instanceof JCheckBox)
-    {
+    } else if (fieldComponent instanceof JCheckBox) {
       boolean onOff = "true".equalsIgnoreCase(fieldValue.toString());
       ((JCheckBox) fieldComponent).setSelected(onOff);
-    }
-    else if (fieldComponent instanceof FileSelector)
+    } else if (fieldComponent instanceof FileSelector)
       ((FileSelector) fieldComponent).setSelected(fieldValue.toString());
-    else if (isMultiValued)
-    {
+    else if (isMultiValued) {
       Object[] vals;
-      if (fieldValue instanceof Object[])
-      {
-        vals = (Object[])fieldValue;
-      }
-      else if (fieldValue == null)
-      {
+      if (fieldValue instanceof Object[]) {
+        vals = (Object[]) fieldValue;
+      } else if (fieldValue == null) {
         vals = new Object[0];
-      }
-      else
-      {
-        vals = new Object[]{fieldValue};
+      } else {
+        vals = new Object[] { fieldValue };
       }
       ((ListSelector) fieldComponent).populate(vals);
     }
   }
 
   /**
-   * Returns whether this field has been modified from its original value.
-   * This is not affected by whether the user has saved the new value;
-   * for that use isDirty().
+   * Returns whether this field has been modified from its original value. This is not affected by
+   * whether the user has saved the new value; for that use isDirty().
    */
-  public boolean isModified()
-  {
+  public boolean isModified() {
     Object currentValue = getFieldValue();
-    if (originalValue == null)
-    {
+    if (originalValue == null) {
       return (currentValue != null);
     }
-    if (originalValue instanceof Object[] && currentValue instanceof Object[])
-    {
+    if (originalValue instanceof Object[] && currentValue instanceof Object[]) {
       return !Arrays.equals((Object[]) originalValue, (Object[]) currentValue);
-    }
-    else
-    {
+    } else {
       return !originalValue.equals(currentValue);
     }
   }
 
-   /**
-   * Returns whether this field has been modified since the last time
-   * the CPE descriptor was saved.
+  /**
+   * Returns whether this field has been modified since the last time the CPE descriptor was saved.
    */
-  public boolean isDirty()
-  {
+  public boolean isDirty() {
     Object currentValue = getFieldValue();
-    if (lastSavedValue == null)
-    {
+    if (lastSavedValue == null) {
       return (currentValue != null);
     }
-    if (lastSavedValue instanceof Object[] && currentValue instanceof Object[])
-    {
+    if (lastSavedValue instanceof Object[] && currentValue instanceof Object[]) {
       return !Arrays.equals((Object[]) lastSavedValue, (Object[]) currentValue);
-    }
-    else
-    {
+    } else {
       return !lastSavedValue.equals(currentValue);
     }
   }
 
   /**
-   * To be called when the CPE descriptor is saved.  Sets this field to
-   * be not dirty, until it is next modified.
+   * To be called when the CPE descriptor is saved. Sets this field to be not dirty, until it is
+   * next modified.
    */
-  public void clearDirty()
-  {
+  public void clearDirty() {
     lastSavedValue = getFieldValue();
   }
-
 
 }

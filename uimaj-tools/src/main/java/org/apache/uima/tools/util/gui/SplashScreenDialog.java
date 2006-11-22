@@ -32,11 +32,13 @@ import javax.swing.JPanel;
 import org.apache.uima.tools.images.Images;
 
 /**
- * Dialog showing standard UIMA splash screen and OK button.
- * To be used for "About" menu item in GUIs.
- *   
-  */
+ * Dialog showing standard UIMA splash screen and OK button. To be used for "About" menu item in
+ * GUIs.
+ * 
+ */
 public class SplashScreenDialog extends JDialog {
+  private static final long serialVersionUID = -3901327861122722078L;
+
   public SplashScreenDialog(JFrame aParentFrame, String aDialogTitle) {
     super(aParentFrame, aDialogTitle);
 
@@ -50,7 +52,7 @@ public class SplashScreenDialog extends JDialog {
     this.pack();
     this.setResizable(false);
     this.setModal(true);
-    //event for the closeButton button
+    // event for the closeButton button
     closeButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
         SplashScreenDialog.this.setVisible(false);

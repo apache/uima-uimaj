@@ -19,51 +19,59 @@
 
 package org.apache.uima.klt;
 
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.cas.Type;
+import org.apache.uima.jcas.impl.JCas;
 
-/** An atomic referent, e.g., a person, place, thing, event, idea.
- * Updated by JCasGen Thu Apr 21 11:20:08 EDT 2005
- * @generated */
+/**
+ * An atomic referent, e.g., a person, place, thing, event, idea. Updated by JCasGen Thu Apr 21
+ * 11:20:08 EDT 2005
+ * 
+ * @generated
+ */
 public class Entity_Type extends Referent_Type {
   /** @generated */
-  protected FSGenerator getFSGenerator() {return fsGenerator;}
+  protected FSGenerator getFSGenerator() {
+    return fsGenerator;
+  }
+
   /** @generated */
-  private final FSGenerator fsGenerator = 
-    new FSGenerator() {
-      public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (instanceOf_Type.useExistingInstance) {
-  			   // Return eq fs instance if already created
-  		     FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
-  		     if (null == fs) {
-  		       fs = new Entity(addr, instanceOf_Type);
-  			   instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
-  			   return fs;
-  		     }
-  		     return fs;
-        } else return new Entity(addr, instanceOf_Type);
-  	  }
-    };
+  private final FSGenerator fsGenerator = new FSGenerator() {
+    public FeatureStructure createFS(int addr, CASImpl cas) {
+      if (instanceOf_Type.useExistingInstance) {
+        // Return eq fs instance if already created
+        FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
+        if (null == fs) {
+          fs = new Entity(addr, instanceOf_Type);
+          instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
+          return fs;
+        }
+        return fs;
+      } else
+        return new Entity(addr, instanceOf_Type);
+    }
+  };
+
   /** @generated */
   public final static int typeIndexID = Entity.typeIndexID;
-  /** @generated 
-     @modifiable */
+
+  /**
+   * @generated
+   * @modifiable
+   */
   public final static boolean featOkTst = JCas.getFeatOkTst("org.apache.uima.klt.Entity");
 
-
-  /** initialize variables to correspond with Cas Type and Features
-	* @generated */
+  /**
+   * initialize variables to correspond with Cas Type and Features
+   * 
+   * @generated
+   */
   public Entity_Type(JCas jcas, Type casType) {
     super(jcas, casType);
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
+    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
   }
 }
-
-
-
-    

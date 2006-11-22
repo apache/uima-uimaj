@@ -35,37 +35,34 @@ import org.apache.uima.tools.images.Images;
  */
 public class SplashScreen extends Thread {
 
+  private JWindow window;
 
+  /**
+   * 
+   */
+  public SplashScreen(JWindow window) {
+    super();
+    this.window = window;
+  }
 
-    private JWindow window;
+  public void run() {
+    // this.window = new JWindow();
+    JLabel splashLabel = new JLabel(Images.getImageIcon(Images.SPLASH));
+    splashLabel.setBorder(null);
+    JPanel panel = new JPanel();
+    panel.setBackground(Color.WHITE);
+    panel.add(splashLabel);
+    panel.setBorder(null);
+    this.window.setContentPane(panel);
+    this.window.pack();
+    this.window.setLocationRelativeTo(null);
+    this.window.show();
+  }
 
-    /**
-     * 
-     */
-    public SplashScreen(JWindow window) {
-        super();
-        this.window = window;
+  public void close() {
+    if (this.window != null) {
+      this.window.dispose();
     }
-
-    public void run() {
-//        this.window = new JWindow();
-        JLabel splashLabel = new JLabel(
-            Images.getImageIcon(Images.SPLASH));
-        splashLabel.setBorder(null);
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.WHITE);
-        panel.add(splashLabel);
-        panel.setBorder(null);
-        this.window.setContentPane(panel);
-        this.window.pack();
-        this.window.setLocationRelativeTo(null);
-        this.window.show();
-    }
-
-    public void close() {
-        if (this.window != null) {
-            this.window.dispose();
-        }
-    }
+  }
 
 }

@@ -23,134 +23,116 @@ import java.util.Vector;
 
 import javax.swing.table.AbstractTableModel;
 
-public class StyleMapTableModel extends AbstractTableModel
-{
-	Vector v;
-	// Data is held as a Vector of Vectors.
-	String[] columnNames = new String[StyleConstants.NR_TABLE_COLUMNS];
-	boolean DEBUG = false;
+public class StyleMapTableModel extends AbstractTableModel {
+  private static final long serialVersionUID = 7573410680191060690L;
 
-	StyleMapTableModel(String[] columnNames)
-	{
-		this.columnNames = columnNames;
-	}
+  Vector v;
 
-	public int getColumnCount()
-	{
-		return columnNames.length;
-	}
-	
-	
-	
-	public int getRowCount()
-	{
-		if (v != null)
-			return v.size();
-		else
-			return 0;
+  // Data is held as a Vector of Vectors.
+  String[] columnNames = new String[StyleConstants.NR_TABLE_COLUMNS];
 
-	}
+  boolean DEBUG = false;
 
-	public String getColumnName(int col)
-	{
-		return columnNames[col];
-	}
+  StyleMapTableModel(String[] columnNames) {
+    this.columnNames = columnNames;
+  }
 
-	public Object getValueAt(int row, int col)
-	{
-		
-		return ((Vector) v.elementAt(row)).elementAt(col);
-	}
+  public int getColumnCount() {
+    return columnNames.length;
+  }
 
-	public Class getColumnClass(int c)
-	{
-		return getValueAt(0, c).getClass();
-	}
+  public int getRowCount() {
+    if (v != null)
+      return v.size();
+    else
+      return 0;
 
-	public boolean isCellEditable(int row, int col)
-	{
-		if (col == StyleConstants.TYPE_NAME_COLUMN) 
-			return false;
-		else
-			return true;
-	}
+  }
 
+  public String getColumnName(int col) {
+    return columnNames[col];
+  }
 
-	public void setValueAt(Object value, int row, int col)
-	{
+  public Object getValueAt(int row, int col) {
 
-		Vector rowVector = (Vector) v.elementAt(row);
-		rowVector.setElementAt(value, col);
-		fireTableCellUpdated(row, col);
+    return ((Vector) v.elementAt(row)).elementAt(col);
+  }
 
-		if (DEBUG)
-			printDebugData();
-	}
+  public Class getColumnClass(int c) {
+    return getValueAt(0, c).getClass();
+  }
 
-	private void printDebugData()
-	{
-		int numRows = getRowCount();
-		int numCols = getColumnCount();
+  public boolean isCellEditable(int row, int col) {
+    if (col == StyleConstants.TYPE_NAME_COLUMN)
+      return false;
+    else
+      return true;
+  }
 
-		for (int row = 0; row < numRows; row++)
-		{
-			System.out.print("    row " + row + ":");
-			for (int column = 0; column < numCols; column++)
-			{
-				Object value = getValueAt(row, column);
-				if (value != null)
-					System.out.println("  " + value);
-			}
-		}
+  public void setValueAt(Object value, int row, int col) {
 
-		System.out.println("--------------------------");
-	}
+    Vector rowVector = (Vector) v.elementAt(row);
+    rowVector.setElementAt(value, col);
+    fireTableCellUpdated(row, col);
 
-	public void set(Object[][] data)
-	{
-		if (data.length <= 0)
-			return;
+    if (DEBUG)
+      printDebugData();
+  }
 
-		v = new Vector(data.length);
-		for (int row = 0; row < data.length; row++)
-		{
-			Vector rowVector = new Vector(columnNames.length);
-			for (int column = 0; column < columnNames.length; column++)
-				rowVector.addElement(data[row][column]);
+  private void printDebugData() {
+    int numRows = getRowCount();
+    int numCols = getColumnCount();
 
-			v.addElement(rowVector);
-		}
-	}
+    for (int row = 0; row < numRows; row++) {
+      System.out.print("    row " + row + ":");
+      for (int column = 0; column < numCols; column++) {
+        Object value = getValueAt(row, column);
+        if (value != null)
+          System.out.println("  " + value);
+      }
+    }
 
-	public void removeRow(int row)
-	{
-		v.removeElementAt(row);
-		fireTableRowsDeleted(row, row);
-	}
+    System.out.println("--------------------------");
+  }
 
-	public void addRow(Vector rowVector)
-	{
-		v.addElement(rowVector);
-		fireTableRowsInserted(v.size(), v.size());
-	}
+  public void set(Object[][] data) {
+    if (data.length <= 0)
+      return;
 
-	public void moveRowUp(int row)
-	{
-		Vector rowVector = (Vector) v.elementAt(row);
-		v.removeElementAt(row);
-		v.insertElementAt(rowVector, row - 1);
+    v = new Vector(data.length);
+    for (int row = 0; row < data.length; row++) {
+      Vector rowVector = new Vector(columnNames.length);
+      for (int column = 0; column < columnNames.length; column++)
+        rowVector.addElement(data[row][column]);
 
-		fireTableDataChanged();
-	}
+      v.addElement(rowVector);
+    }
+  }
 
-	public void moveRowDown(int row)
-	{
-		Vector rowVector = (Vector) v.elementAt(row);
-		v.removeElementAt(row);
-		v.insertElementAt(rowVector, row + 1);
+  public void removeRow(int row) {
+    v.removeElementAt(row);
+    fireTableRowsDeleted(row, row);
+  }
 
-		fireTableDataChanged();
-	}
+  public void addRow(Vector rowVector) {
+    v.addElement(rowVector);
+    fireTableRowsInserted(v.size(), v.size());
+  }
+
+  public void moveRowUp(int row) {
+    Vector rowVector = (Vector) v.elementAt(row);
+    v.removeElementAt(row);
+    v.insertElementAt(rowVector, row - 1);
+
+    fireTableDataChanged();
+  }
+
+  public void moveRowDown(int row) {
+    Vector rowVector = (Vector) v.elementAt(row);
+    v.removeElementAt(row);
+    v.insertElementAt(rowVector, row + 1);
+
+    fireTableDataChanged();
+  }
 
 }
-

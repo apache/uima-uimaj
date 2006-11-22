@@ -20,9 +20,11 @@
 package org.apache.uima.tools.jcasgen;
 
 public interface IError {
-	public static final int ERROR = 2;
-	public static final int WARN = 1;
-	public static final int INFO = 0;
-	
+  public static final int ERROR = 2;
+
+  public static final int WARN = 1;
+
+  public static final int INFO = 0;
+
   public void newError(int Severity, String message, Exception e);
 }

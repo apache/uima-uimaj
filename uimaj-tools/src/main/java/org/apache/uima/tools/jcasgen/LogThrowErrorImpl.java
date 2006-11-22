@@ -25,15 +25,17 @@ import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 
 public class LogThrowErrorImpl implements IError {
-  private static Level logLevels [] = {Level.INFO, Level.WARNING, Level.SEVERE};
+  private static Level logLevels[] = { Level.INFO, Level.WARNING, Level.SEVERE };
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.jcas.jcasgen_gen.IError#newError(int, java.lang.String)
-	 */
-	public void newError(int severity, String message, Exception exception) {
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.jcas.jcasgen_gen.IError#newError(int, java.lang.String)
+   */
+  public void newError(int severity, String message, Exception exception) {
     Logger log = UIMAFramework.getLogger();
-    log.log(logLevels[severity],"JCasGen: " + message, exception);
- 		if (IError.WARN < severity) 
-		  throw new ErrorExit();
-	}
+    log.log(logLevels[severity], "JCasGen: " + message, exception);
+    if (IError.WARN < severity)
+      throw new ErrorExit();
+  }
 }

@@ -41,253 +41,217 @@ import javax.swing.filechooser.FileFilter;
 
 /**
  * 
- *
- * Composite component to allow file or directory input or selection.
- * Comprises a JTextField, and a browse button associated with a JFileChooser.
+ * 
+ * Composite component to allow file or directory input or selection. Comprises a JTextField, and a
+ * browse button associated with a JFileChooser.
  */
 
-public class FileSelector extends JPanel implements FocusListener
-{
-	private JTextField field;
-	private BrowseButton browseButton;
-	private JFileChooser fileChooser;
-	private JComponent source;
-	private FileSelectorListener fileSelectorListener = null;
-	private String previousValue;
+public class FileSelector extends JPanel implements FocusListener {
+  private static final long serialVersionUID = -1438950608628876422L;
 
-  public FileSelector(
-    String initialValue,
-    String fileChooserTitle,
-    int selectionMode) // Can be either JFileChooser.FILES_ONLY,
-                // JFileChooser.DIRECTORIES_ONLY or
-                // JFileChooser.FILES_AND_DIRECTORIES
+  private JTextField field;
+
+  private BrowseButton browseButton;
+
+  private JFileChooser fileChooser;
+
+  private JComponent source;
+
+  private FileSelectorListener fileSelectorListener = null;
+
+  private String previousValue;
+
+  public FileSelector(String initialValue, String fileChooserTitle, int selectionMode) // Can be
+  // either
+  // JFileChooser.FILES_ONLY,
+  // JFileChooser.DIRECTORIES_ONLY or
+  // JFileChooser.FILES_AND_DIRECTORIES
   {
     this(initialValue, fileChooserTitle, selectionMode, null);
   }
-     
 
-	public FileSelector(
-		String initialValue,
-		String fileChooserTitle,
-		int selectionMode,	// Can be either JFileChooser.FILES_ONLY,
-								// JFileChooser.DIRECTORIES_ONLY or
-								// JFileChooser.FILES_AND_DIRECTORIES
-    File currentDir) 
-	{
-		if (currentDir == null && initialValue != null)
-		{
-			currentDir = new File(initialValue).getAbsoluteFile();
-		}
-		
-		setLayout( new BoxLayout(this, BoxLayout.X_AXIS) );
-		
-		field = new JTextField(initialValue, 20);
-		field.addFocusListener(this);
-		add(field);
-		
-		previousValue = initialValue == null ? "" : initialValue;
-		
-		add(Box.createHorizontalStrut(8));
-		
-		browseButton = new BrowseButton("Browse..");
-		add(browseButton);
+  public FileSelector(String initialValue, String fileChooserTitle, int selectionMode, // Can be
+                  // either
+                  // JFileChooser.FILES_ONLY,
+                  // JFileChooser.DIRECTORIES_ONLY or
+                  // JFileChooser.FILES_AND_DIRECTORIES
+                  File currentDir) {
+    if (currentDir == null && initialValue != null) {
+      currentDir = new File(initialValue).getAbsoluteFile();
+    }
+
+    setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+
+    field = new JTextField(initialValue, 20);
+    field.addFocusListener(this);
+    add(field);
+
+    previousValue = initialValue == null ? "" : initialValue;
+
+    add(Box.createHorizontalStrut(8));
+
+    browseButton = new BrowseButton("Browse..");
+    add(browseButton);
 
     final File selected = (initialValue == null) ? null : new File(initialValue);
-		fileChooser = new JFileChooser(currentDir);
-		fileChooser.setDialogTitle(fileChooserTitle);      
+    fileChooser = new JFileChooser(currentDir);
+    fileChooser.setDialogTitle(fileChooserTitle);
     fileChooser.setFileSelectionMode(selectionMode);
 
-    //hoping this will fix ArrayIndexOutOfBoundsException
-    SwingUtilities.invokeLater(
-       new Runnable(){
-         public void run()
-         {
-           if (selected != null && selected.exists())
-           {
-             fileChooser.setSelectedFile( selected );
-           }
-         }
-       });  
+    // hoping this will fix ArrayIndexOutOfBoundsException
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        if (selected != null && selected.exists()) {
+          fileChooser.setSelectedFile(selected);
+        }
+      }
+    });
 
-		browseButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				int returnVal = fileChooser.showOpenDialog(browseButton);
+    browseButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        int returnVal = fileChooser.showOpenDialog(browseButton);
 
-				if (returnVal == JFileChooser.APPROVE_OPTION)
-				{
-					File file = fileChooser.getSelectedFile();
-					String fileString = file.getAbsolutePath();
-					
-					if (fileSelectorListener != null)
-					{
-						boolean result = fileSelectorListener.fileSelected(source, fileString);
-													// Only update textField is successful:
-						if (result == true)			// Success
-						{
-							field.setText(fileString);
-							previousValue = fileString;
-						}
-						else						// Failure - restore previous value:
-							fileChooser.setSelectedFile( new File(previousValue) );
-					}
-					else
-					{
-						field.setText(fileString);
-						previousValue = fileString;
-					}
-				}
-			}
-		});
-    
-    field.addFocusListener(new FocusAdapter()
-      {
-        public void focusLost(FocusEvent e)
-        {  
-          //did text change?
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+          File file = fileChooser.getSelectedFile();
+          String fileString = file.getAbsolutePath();
+
+          if (fileSelectorListener != null) {
+            boolean result = fileSelectorListener.fileSelected(source, fileString);
+            // Only update textField is successful:
+            if (result == true) // Success
+            {
+              field.setText(fileString);
+              previousValue = fileString;
+            } else
+              // Failure - restore previous value:
+              fileChooser.setSelectedFile(new File(previousValue));
+          } else {
+            field.setText(fileString);
+            previousValue = fileString;
+          }
+        }
+      }
+    });
+
+    field.addFocusListener(new FocusAdapter() {
+      public void focusLost(FocusEvent e) {
+        // did text change?
+        String fileString = field.getText();
+        if (!fileString.equals(previousValue)) {
+          if (fileSelectorListener != null) {
+            boolean result = fileSelectorListener.fileSelected(source, fileString);
+            // Only update textField is successful:
+            if (result == true) // Success
+            {
+              previousValue = fileString;
+            } else
+              // Failure - restore previous value:
+              fileChooser.setSelectedFile(previousValue == null ? null : new File(previousValue));
+          } else {
+            previousValue = fileString;
+          }
+        }
+      }
+    });
+
+    field.addKeyListener(new KeyAdapter() {
+      public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
           String fileString = field.getText();
-          if (!fileString.equals(previousValue))
-          {
-            if (fileSelectorListener != null)
+          if (fileSelectorListener != null) {
+            String oldValue = previousValue;
+            // have to set previousValue to new value here to avoid
+            // focusLost event triggering infinite loop
+            previousValue = fileString;
+
+            boolean result = fileSelectorListener.fileSelected(source, fileString);
+            if (!result) // undo
             {
-              boolean result = fileSelectorListener.fileSelected(source, fileString);
-                            // Only update textField is successful:
-              if (result == true)     // Success
-              {
-                previousValue = fileString;
-              }
-              else            // Failure - restore previous value:
-                fileChooser.setSelectedFile( previousValue == null ? null : new File(previousValue) );
+              previousValue = oldValue;
+              fileChooser.setSelectedFile(previousValue == null ? null : new File(previousValue));
             }
-            else
-            {
-              previousValue = fileString;
-            }                        
-          }          
+          } else {
+            previousValue = fileString;
+          }
         }
-      });
-      
-    field.addKeyListener(new KeyAdapter()
-      {
-        public void keyPressed(KeyEvent e)
-        {
-          if (e.getKeyCode() == KeyEvent.VK_ENTER)
-          {
-            String fileString = field.getText();
-            if (fileSelectorListener != null)
-            {
-              String oldValue = previousValue;
-              //have to set previousValue to new value here to avoid
-              //focusLost event triggering infinite loop
-              previousValue = fileString;
-
-              boolean result = fileSelectorListener.fileSelected(source, fileString);
-              if (!result)     // undo
-              {
-                previousValue = oldValue;
-                fileChooser.setSelectedFile( previousValue == null ? null : new File(previousValue) );
-              }  
-            }
-            else
-            {
-              previousValue = fileString;
-            }                        
-          }           
-        }
-      });        
-	}
-	
-	public void addFileSelectorListener(FileSelectorListener fileSelectorListener, JComponent source)
-	{
-		this.fileSelectorListener = fileSelectorListener;
-		this.source = source;
-	}
-	
-	public void addChoosableFileFilter(FileFilter ff)
-	{
-		fileChooser.addChoosableFileFilter(ff);
-	}
-
-	public String getSelected()
-	{
-		return field.getText();
-	}
-	
-	public void setSelected(String s)
-	{
-		field.setText(s);
-		if (s.length() == 0)
-		{
-			s = System.getProperty("user.dir");
-		}  
-		File file = new File(s);
-    	
-		if (this.fileChooser.getFileSelectionMode() == JFileChooser.FILES_ONLY &&
-				file.isDirectory())
-		{
-			 this.fileChooser.setCurrentDirectory(file);
-		}
-		else
-		{
-			this.fileChooser.setSelectedFile(file);
-		}	
- 	}
-	
-	public void setEnabled(boolean onOff)
-	{
-		field.setEnabled(onOff);
-		browseButton.setEnabled(onOff);
-	}
-	
-	public void clear()
-	{
-		field.setText("");
-	}
-
-	static class BrowseButton extends JButton
-	{
-		public BrowseButton(String s)
-		{
-			super(s);
-		}
-		
-		public Insets getInsets()
-		{
-			return new Insets(3, 6, 3, 6);
-		}
-	}
-
-  /* (non-Javadoc)
-   * @see java.awt.event.FocusListener#focusGained(java.awt.event.FocusEvent)
-   */
-  public void focusGained(FocusEvent aEvent)
-  {
+      }
+    });
   }
 
-  /* (non-Javadoc)
+  public void addFileSelectorListener(FileSelectorListener fileSelectorListener, JComponent source) {
+    this.fileSelectorListener = fileSelectorListener;
+    this.source = source;
+  }
+
+  public void addChoosableFileFilter(FileFilter ff) {
+    fileChooser.addChoosableFileFilter(ff);
+  }
+
+  public String getSelected() {
+    return field.getText();
+  }
+
+  public void setSelected(String s) {
+    field.setText(s);
+    if (s.length() == 0) {
+      s = System.getProperty("user.dir");
+    }
+    File file = new File(s);
+
+    if (this.fileChooser.getFileSelectionMode() == JFileChooser.FILES_ONLY && file.isDirectory()) {
+      this.fileChooser.setCurrentDirectory(file);
+    } else {
+      this.fileChooser.setSelectedFile(file);
+    }
+  }
+
+  public void setEnabled(boolean onOff) {
+    field.setEnabled(onOff);
+    browseButton.setEnabled(onOff);
+  }
+
+  public void clear() {
+    field.setText("");
+  }
+
+  static class BrowseButton extends JButton {
+    private static final long serialVersionUID = 1086776109494251334L;
+
+    public BrowseButton(String s) {
+      super(s);
+    }
+
+    public Insets getInsets() {
+      return new Insets(3, 6, 3, 6);
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.awt.event.FocusListener#focusGained(java.awt.event.FocusEvent)
+   */
+  public void focusGained(FocusEvent aEvent) {
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
    */
-  public void focusLost(FocusEvent aEvent)
-  {
-    if (aEvent.getComponent() == this.field)
-    {
-    	String path = this.getSelected();
-    	if (path.length() == 0)
-    	{
-    	  path = System.getProperty("user.dir");
-    	}  
-    	File file = new File(path);
-    	
-    	if (this.fileChooser.getFileSelectionMode() == JFileChooser.FILES_ONLY &&
-    	    file.isDirectory())
-    	{
-    	   this.fileChooser.setCurrentDirectory(file);
-    	}
-    	else
-    	{
-      	this.fileChooser.setSelectedFile(file);
-    	}	
+  public void focusLost(FocusEvent aEvent) {
+    if (aEvent.getComponent() == this.field) {
+      String path = this.getSelected();
+      if (path.length() == 0) {
+        path = System.getProperty("user.dir");
+      }
+      File file = new File(path);
+
+      if (this.fileChooser.getFileSelectionMode() == JFileChooser.FILES_ONLY && file.isDirectory()) {
+        this.fileChooser.setCurrentDirectory(file);
+      } else {
+        this.fileChooser.setSelectedFile(file);
+      }
     }
 
   }

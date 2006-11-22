@@ -19,50 +19,64 @@
 
 package org.apache.uima.klt;
 
-import org.apache.uima.jcas.impl.JCas; 
 import org.apache.uima.jcas.cas.TOP_Type;
+import org.apache.uima.jcas.impl.JCas;
 
-
-
-/** A link from an Entity to an EntityAnnotation or from a Relation to a RelationAnnotation; indicates that the latter covers text that refers to the former
- * Updated by JCasGen Thu Apr 21 11:20:08 EDT 2005
- * XML source: descriptors/types/hutt.xml
- * @generated */
+/**
+ * A link from an Entity to an EntityAnnotation or from a Relation to a RelationAnnotation;
+ * indicates that the latter covers text that refers to the former Updated by JCasGen Thu Apr 21
+ * 11:20:08 EDT 2005 XML source: descriptors/types/hutt.xml
+ * 
+ * @generated
+ */
 public class HasOccurrence extends Link {
-  /** @generated
-   * @ordered 
+  /**
+   * @generated
+   * @ordered
    */
   public final static int typeIndexID = JCas.getNextIndex();
-  /** @generated
-   * @ordered 
+
+  /**
+   * @generated
+   * @ordered
    */
   public final static int type = typeIndexID;
-  /** @generated  */
-  public              int getTypeIndexID() {return typeIndexID;}
- 
-  /** Never called.  Disable default constructor
-   * @generated */
-  protected HasOccurrence() {}
-    
-  /** Internal - constructor used by generator 
-   * @generated */
+
+  /** @generated */
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  /**
+   * Never called. Disable default constructor
+   * 
+   * @generated
+   */
+  protected HasOccurrence() {
+  }
+
+  /**
+   * Internal - constructor used by generator
+   * 
+   * @generated
+   */
   public HasOccurrence(int addr, TOP_Type type) {
     super(addr, type);
     readObject();
   }
-  
+
   /** @generated */
   public HasOccurrence(JCas jcas) {
     super(jcas);
-    readObject();   
-  } 
+    readObject();
+  }
 
-  /** <!-- begin-user-doc -->
-    * Write your own initialization here
-    * <!-- end-user-doc -->
-  @generated modifiable */
-  private void readObject() {}
-     
+  /**
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
+   * 
+   * @generated modifiable
+   */
+  private void readObject() {
+  }
+
 }
-
-    

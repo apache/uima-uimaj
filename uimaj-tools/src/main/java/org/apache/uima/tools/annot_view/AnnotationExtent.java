@@ -27,43 +27,42 @@ import javax.swing.text.Style;
  */
 public class AnnotationExtent {
 
-    private int start;
+  private int start;
 
-    private int end;
+  private int end;
 
-    private Style style;
+  private Style style;
 
-    /**
-     * 
-     */
-    public AnnotationExtent(int start, int end, Style style) {
-        super();
-        this.start = start;
-        this.end = end;
-        this.style = style;
-    }
+  /**
+   * 
+   */
+  public AnnotationExtent(int start, int end, Style style) {
+    super();
+    this.start = start;
+    this.end = end;
+    this.style = style;
+  }
 
-    public int getLength() {
-        return this.end - this.start;
-    }
+  public int getLength() {
+    return this.end - this.start;
+  }
 
-    public Style getStyle() {
-        return this.style;
-    }
+  public Style getStyle() {
+    return this.style;
+  }
 
-    /**
-     * @return int
-     */
-    public int getEnd() {
-        return this.end;
-    }
+  /**
+   * @return int
+   */
+  public int getEnd() {
+    return this.end;
+  }
 
-    /**
-     * @return int
-     */
-    public int getStart() {
-        return this.start;
-    }
-
+  /**
+   * @return int
+   */
+  public int getStart() {
+    return this.start;
+  }
 
 }

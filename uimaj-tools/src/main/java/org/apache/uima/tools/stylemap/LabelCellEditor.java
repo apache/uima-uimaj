@@ -25,24 +25,19 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
-public class LabelCellEditor extends DefaultCellEditor
-{
-	public LabelCellEditor()
-	{
-		super(new JTextField());
-	}
+public class LabelCellEditor extends DefaultCellEditor {
+  private static final long serialVersionUID = 7810191917704574202L;
 
-	public Component getTableCellEditorComponent(
-		JTable table,
-		Object value,
-		boolean isSelected,
-		int row,
-		int column)
-	{
-		JTextField textField = (JTextField) getComponent();
-		if (isSelected)
-			textField.selectAll();
-			
-		return textField;
-	}
+  public LabelCellEditor() {
+    super(new JTextField());
+  }
+
+  public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,
+                  int row, int column) {
+    JTextField textField = (JTextField) getComponent();
+    if (isSelected)
+      textField.selectAll();
+
+    return textField;
+  }
 }

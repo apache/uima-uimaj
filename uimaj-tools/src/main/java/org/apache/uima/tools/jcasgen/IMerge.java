@@ -23,13 +23,7 @@ import java.io.File;
 import java.io.IOException;
 
 public interface IMerge {
-	public void doMerge(
-	  Jg jg,
-		IProgressMonitor progressMonitor,
-		String sourceContents,
-		String targetContainer,
-		String targetPath,
-	  String targetClassName,
-		File targetFile)
-		throws IOException ;
+  public void doMerge(Jg jg, IProgressMonitor progressMonitor, String sourceContents,
+                  String targetContainer, String targetPath, String targetClassName, File targetFile)
+                  throws IOException;
 }

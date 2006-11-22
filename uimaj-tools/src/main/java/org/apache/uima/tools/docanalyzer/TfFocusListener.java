@@ -23,28 +23,34 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
 /**
- * This class tells the Mediator to check the lenght
- * of the 3 text fields and adjust whether the 3 buttons are enabeld or not.
+ * This class tells the Mediator to check the lenght of the 3 text fields and adjust whether the 3
+ * buttons are enabeld or not.
  * 
  */
 public class TfFocusListener implements FocusListener {
-	private PrefsMediator med;
-	public TfFocusListener(PrefsMediator med) {
-		this.med = med;
-	}
-	/* (non-Javadoc)
-	 * @see java.awt.event.FocusListener#focusGained(java.awt.event.FocusEvent)
-	 */
-	public void focusGained(FocusEvent arg0) {
-	
+  private PrefsMediator med;
 
-	}
-	/* (non-Javadoc)
-	 * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
-	 */
-	public void focusLost(FocusEvent arg0) {
-		// Tell the mediator the text may have changed.
-		med.fieldFocusLost() ;
-	}
+  public TfFocusListener(PrefsMediator med) {
+    this.med = med;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.awt.event.FocusListener#focusGained(java.awt.event.FocusEvent)
+   */
+  public void focusGained(FocusEvent arg0) {
+
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
+   */
+  public void focusLost(FocusEvent arg0) {
+    // Tell the mediator the text may have changed.
+    med.fieldFocusLost();
+  }
 
 }

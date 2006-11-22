@@ -22,21 +22,23 @@ package org.apache.uima.tools.docanalyzer;
 import javax.swing.JComponent;
 
 /**
- *  * This class tells the Mediator to check the length
- * of the 3 text fields and adjust whether the 3 buttons are enabeld or not.
+ * * This class tells the Mediator to check the length of the 3 text fields and adjust whether the 3
+ * buttons are enabeld or not.
  * 
  */
 public class TfFileSelectorListener implements FileSelectorListener {
-	private PrefsMediator med;
-	public TfFileSelectorListener(PrefsMediator med) {
-		this.med = med;
-	}
+  private PrefsMediator med;
 
-	/* (non-Javadoc)
+  public TfFileSelectorListener(PrefsMediator med) {
+    this.med = med;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see FileSelectorListener#fileSelected(javax.swing.JComponent, java.lang.String)
    */
-  public boolean fileSelected(JComponent source, String fileString)
-  {
+  public boolean fileSelected(JComponent source, String fileString) {
     med.fieldFocusLost();
     return true;
   }

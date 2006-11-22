@@ -25,15 +25,14 @@ import javax.swing.JButton;
 
 import org.apache.uima.tools.images.Images;
 
-public class ImageButton extends JButton
-{
-	public ImageButton(String imageFile)
-	{
-		super(Images.getImageIcon(imageFile));
-	}
+public class ImageButton extends JButton {
+  private static final long serialVersionUID = -8908984308731809496L;
 
-	public Insets getInsets()
-	{
-		return new Insets(2, 2, 2, 2);
-	}
+  public ImageButton(String imageFile) {
+    super(Images.getImageIcon(imageFile));
+  }
+
+  public Insets getInsets() {
+    return new Insets(2, 2, 2, 2);
+  }
 }

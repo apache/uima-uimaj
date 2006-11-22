@@ -30,57 +30,51 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
-public class TaePanel extends MetaDataPanel
-{
-	JCheckBox shouldRunCheckBox = new JCheckBox((String) null, true);
-	ResourceSpecifier taeSpecifier;
-	File specifierFile;
-	long lastFileSyncTimestamp;
-	
-	public TaePanel(ResourceSpecifier taeSpecifier, File specifierFile, long fileModStamp)
-	{
-		super(4);		// 4 columns
-		this.taeSpecifier = taeSpecifier;
-		this.specifierFile = specifierFile;
-		this.lastFileSyncTimestamp = fileModStamp;
-	}
+public class TaePanel extends MetaDataPanel {
+  private static final long serialVersionUID = 2143164171395854388L;
 
-	public ResourceSpecifier getTaeSpecifier()
-	{
-		return this.taeSpecifier;
-	}
-	
-	public long getLastFileSyncTimestamp()
-	{
-		return this.lastFileSyncTimestamp;
-	}
-	
-	public void setLastFileSyncTimestamp(long timestamp)
-	{
-		this.lastFileSyncTimestamp = timestamp;
-	}
-	
-	public boolean hasFileChanged(long lastCheck)
-	{
-		return specifierFile.lastModified() > this.lastFileSyncTimestamp &&
-		       specifierFile.lastModified() > lastCheck;
-	}
-	
-	public void refreshFromFile()
-	  throws InvalidXMLException, IOException
-	{
-		clearAll();
-		this.taeSpecifier =
-			UIMAFramework.getXMLParser().parseResourceSpecifier(new XMLInputSource(this.specifierFile));
-		if (taeSpecifier instanceof TaeDescription)
-		{
-			TaeDescription taeDescription = (TaeDescription) taeSpecifier;
-			populate(taeDescription.getMetaData(), null);
-		}
-		else
-		{
-			this.removeAll();		
-		}
-	  this.lastFileSyncTimestamp = this.specifierFile.lastModified();		
-	}
+  JCheckBox shouldRunCheckBox = new JCheckBox((String) null, true);
+
+  ResourceSpecifier taeSpecifier;
+
+  File specifierFile;
+
+  long lastFileSyncTimestamp;
+
+  public TaePanel(ResourceSpecifier taeSpecifier, File specifierFile, long fileModStamp) {
+    super(4); // 4 columns
+    this.taeSpecifier = taeSpecifier;
+    this.specifierFile = specifierFile;
+    this.lastFileSyncTimestamp = fileModStamp;
+  }
+
+  public ResourceSpecifier getTaeSpecifier() {
+    return this.taeSpecifier;
+  }
+
+  public long getLastFileSyncTimestamp() {
+    return this.lastFileSyncTimestamp;
+  }
+
+  public void setLastFileSyncTimestamp(long timestamp) {
+    this.lastFileSyncTimestamp = timestamp;
+  }
+
+  public boolean hasFileChanged(long lastCheck) {
+    return specifierFile.lastModified() > this.lastFileSyncTimestamp
+                    && specifierFile.lastModified() > lastCheck;
+  }
+
+  public void refreshFromFile() throws InvalidXMLException, IOException {
+    clearAll();
+    this.taeSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
+                    new XMLInputSource(this.specifierFile));
+    if (taeSpecifier instanceof TaeDescription) {
+      TaeDescription taeDescription = (TaeDescription) taeSpecifier;
+      populate(taeDescription.getMetaData(), null);
+    } else {
+      this.removeAll();
+    }
+    this.lastFileSyncTimestamp = this.specifierFile.lastModified();
+  }
 }

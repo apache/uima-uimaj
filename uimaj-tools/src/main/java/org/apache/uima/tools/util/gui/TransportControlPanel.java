@@ -35,18 +35,28 @@ import javax.swing.border.BevelBorder;
 import org.apache.uima.tools.images.Images;
 
 public class TransportControlPanel extends JPanel implements ActionListener {
+  private static final long serialVersionUID = -2176626241850938032L;
+
   static public final int PLAY_BUTTON = 0;
+
   static public final int PAUSE_BUTTON = 1;
+
   static public final int STOP_BUTTON = 2;
 
   private ToggleButton playButton;
+
   private ToggleButton pauseButton;
+
   private ToggleButton stopButton;
+
   private JToggleButton invisibleButton; // Used as part of ButtonGroup to give
+
   // visual effect of no button selected
   // if Stop is pressed.
   private ToggleButton lastButtonSelected;
+
   private boolean allowStop = true;
+
   final TransportControlListener controlListener;
 
   public TransportControlPanel(TransportControlListener controlListener) {
@@ -173,6 +183,8 @@ public class TransportControlPanel extends JPanel implements ActionListener {
   }
 
   static class ToggleButton extends JToggleButton {
+
+    private static final long serialVersionUID = 334131406404068987L;
 
     public ToggleButton(ImageIcon imageIcon) {
       super(imageIcon);

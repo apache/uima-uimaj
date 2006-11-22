@@ -24,18 +24,21 @@ import javax.swing.event.ListSelectionListener;
 
 public class TableSelectionListener implements ListSelectionListener {
 
-	/* (non-Javadoc)
-	 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
-	 */
-	private TableGUIMediator med;
-	
-	public TableSelectionListener(TableGUIMediator med) {
-		this.med = med;
-	}
-	public void valueChanged(ListSelectionEvent ev) {
-		
-		med.tableClicked(ev);	//table row was selected 
-		//System.out.println(med.getRowSelected() +" "+med.getColumnSelected());
+  /*
+   * (non-Javadoc)
+   * 
+   * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
+   */
+  private TableGUIMediator med;
 
-	}
+  public TableSelectionListener(TableGUIMediator med) {
+    this.med = med;
+  }
+
+  public void valueChanged(ListSelectionEvent ev) {
+
+    med.tableClicked(ev); // table row was selected
+    // System.out.println(med.getRowSelected() +" "+med.getColumnSelected());
+
+  }
 }

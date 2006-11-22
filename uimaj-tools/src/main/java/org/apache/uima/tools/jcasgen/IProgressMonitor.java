@@ -20,8 +20,11 @@
 package org.apache.uima.tools.jcasgen;
 
 public interface IProgressMonitor {
-	public void done();
-	public void beginTask(String name, int totalWorked);
-	public void subTask(String name);
-	public void worked(int work);
+  public void done();
+
+  public void beginTask(String name, int totalWorked);
+
+  public void subTask(String name);
+
+  public void worked(int work);
 }

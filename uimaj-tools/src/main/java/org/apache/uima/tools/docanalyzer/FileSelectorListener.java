@@ -21,7 +21,6 @@ package org.apache.uima.tools.docanalyzer;
 
 import javax.swing.JComponent;
 
-public interface FileSelectorListener
-{
-	public boolean fileSelected(JComponent source, String fileString);
+public interface FileSelectorListener {
+  public boolean fileSelected(JComponent source, String fileString);
 }

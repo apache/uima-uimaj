@@ -41,136 +41,123 @@ import org.apache.uima.resource.metadata.Capability;
 
 /**
  * A tree view of Annotations and associated features.
- *
-  */
-public class AnnotationFeaturesViewer extends JPanel implements ActionListener
-{
-	
-	public static final String ROOT = "Root";
-	private JScrollPane scrollPane;
-	private JTree tree;
-	private JButton expandAllButton;
-	private JButton collapseAllButton;
+ * 
+ */
+public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
 
-	public AnnotationFeaturesViewer()
-	{
+  private static final long serialVersionUID = -8028169177689821008L;
 
-		super();
+  public static final String ROOT = "Root";
 
-		setLayout(new BorderLayout());
+  private JScrollPane scrollPane;
 
-		scrollPane = new JScrollPane();
-		// We'll add a tree to this later through a call to populate.
+  private JTree tree;
 
-		add(scrollPane, BorderLayout.CENTER);
+  private JButton expandAllButton;
 
-		JPanel buttonsPanel = new JPanel();
+  private JButton collapseAllButton;
 
-		expandAllButton = new JButton("Expand All");
-		expandAllButton.setToolTipText("Expand all tree nodes");
-		expandAllButton.addActionListener(this);
-		buttonsPanel.add(expandAllButton);
+  public AnnotationFeaturesViewer() {
 
-		collapseAllButton = new JButton("Collapse All");
-		collapseAllButton.setToolTipText("Collapse all tree nodes");
-		collapseAllButton.addActionListener(this);
-		buttonsPanel.add(collapseAllButton);
+    super();
 
-		add(buttonsPanel, BorderLayout.NORTH);
-	}
+    setLayout(new BorderLayout());
 
-	public void populate(AnalysisEngine analysisEngine, AnalysisEngineMetaData aeMetaData)
-	{
-		tree = generateTreeView(analysisEngine, aeMetaData);
-		
-		tree.setDragEnabled(true);		// To allow drag to stylemap table.
-		tree.setRootVisible(false);
-		tree.setShowsRootHandles(true);	// Displays node expansion glyphs.
+    scrollPane = new JScrollPane();
+    // We'll add a tree to this later through a call to populate.
 
-		TreeSelectionModel selectionModel = tree.getSelectionModel();
-		selectionModel.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+    add(scrollPane, BorderLayout.CENTER);
 
-		DefaultTreeCellRenderer cellRenderer = new DefaultTreeCellRenderer();
-		cellRenderer.setLeafIcon(null);
-		cellRenderer.setClosedIcon(null);
-		cellRenderer.setOpenIcon(null);
-		tree.setCellRenderer(cellRenderer);
+    JPanel buttonsPanel = new JPanel();
 
-		scrollPane.getViewport().add(tree, null);
-	}
+    expandAllButton = new JButton("Expand All");
+    expandAllButton.setToolTipText("Expand all tree nodes");
+    expandAllButton.addActionListener(this);
+    buttonsPanel.add(expandAllButton);
 
-	private JTree generateTreeView(
-		AnalysisEngine analysisEngine,
-		AnalysisEngineMetaData aeMetaData)
-	{
+    collapseAllButton = new JButton("Collapse All");
+    collapseAllButton.setToolTipText("Collapse all tree nodes");
+    collapseAllButton.addActionListener(this);
+    buttonsPanel.add(collapseAllButton);
 
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode(ROOT);
-		// We won't actually see this.
+    add(buttonsPanel, BorderLayout.NORTH);
+  }
 
-		ArrayList annotationTypes = new ArrayList();
-		Capability[] capabilities = aeMetaData.getCapabilities();
-		for (int i = 0; i < capabilities.length; i++)
-		{
-			TypeOrFeature[] outputs = capabilities[i].getOutputs();
+  public void populate(AnalysisEngine analysisEngine, AnalysisEngineMetaData aeMetaData) {
+    tree = generateTreeView(analysisEngine, aeMetaData);
 
-			for (int j = 0; j < outputs.length; j++)
-			{
-				if (outputs[j].isType() && !annotationTypes.contains(outputs[j].getName()))
-				{
-					annotationTypes.add(outputs[j].getName());
-				}
-			}
-		}
+    tree.setDragEnabled(true); // To allow drag to stylemap table.
+    tree.setRootVisible(false);
+    tree.setShowsRootHandles(true); // Displays node expansion glyphs.
 
-		Iterator it = annotationTypes.iterator();
-		while (it.hasNext())
-		{
-			String annotationTypeName = (String) it.next();
+    TreeSelectionModel selectionModel = tree.getSelectionModel();
+    selectionModel.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
-			DefaultMutableTreeNode annotationTreeNode = new DefaultMutableTreeNode(annotationTypeName);
-			String[] featureNames = analysisEngine.getFeatureNamesForType(annotationTypeName);
+    DefaultTreeCellRenderer cellRenderer = new DefaultTreeCellRenderer();
+    cellRenderer.setLeafIcon(null);
+    cellRenderer.setClosedIcon(null);
+    cellRenderer.setOpenIcon(null);
+    tree.setCellRenderer(cellRenderer);
 
-			for (int i = 0; i < featureNames.length; i++)
-			{
-				DefaultMutableTreeNode featureTreeNode = 
-            new DefaultMutableTreeNode(featureNames[i]);
-				annotationTreeNode.add(featureTreeNode);
-			}
+    scrollPane.getViewport().add(tree, null);
+  }
 
-			root.add(annotationTreeNode);
-		}
+  private JTree generateTreeView(AnalysisEngine analysisEngine, AnalysisEngineMetaData aeMetaData) {
 
-		return new JTree(root);
-	}
+    DefaultMutableTreeNode root = new DefaultMutableTreeNode(ROOT);
+    // We won't actually see this.
 
-	public String getSelection()
-	{
-		TreePath treePath = tree.getSelectionPath();
-		if (treePath != null)
-		{
-			String parentPath = treePath.getParentPath().getLastPathComponent().toString();
-			String lastPath = treePath.getLastPathComponent().toString();
-			if (parentPath.equals(AnnotationFeaturesViewer.ROOT))
-				return lastPath;
-			else
-				return parentPath + ":" + lastPath;
-		}
-		else
-			return null;
-	}
+    ArrayList annotationTypes = new ArrayList();
+    Capability[] capabilities = aeMetaData.getCapabilities();
+    for (int i = 0; i < capabilities.length; i++) {
+      TypeOrFeature[] outputs = capabilities[i].getOutputs();
 
-	public void actionPerformed(ActionEvent e)
-	{
-		Object source = e.getSource();
-		if (source == expandAllButton)
-		{
-			for (int i = 0; i < tree.getRowCount(); i++)
-				tree.expandRow(i);
-		}
-		else if (source == collapseAllButton)
-		{
-			for (int i = 0; i < tree.getRowCount(); i++)
-				tree.collapseRow(i);
-		}
-	}
+      for (int j = 0; j < outputs.length; j++) {
+        if (outputs[j].isType() && !annotationTypes.contains(outputs[j].getName())) {
+          annotationTypes.add(outputs[j].getName());
+        }
+      }
+    }
+
+    Iterator it = annotationTypes.iterator();
+    while (it.hasNext()) {
+      String annotationTypeName = (String) it.next();
+
+      DefaultMutableTreeNode annotationTreeNode = new DefaultMutableTreeNode(annotationTypeName);
+      String[] featureNames = analysisEngine.getFeatureNamesForType(annotationTypeName);
+
+      for (int i = 0; i < featureNames.length; i++) {
+        DefaultMutableTreeNode featureTreeNode = new DefaultMutableTreeNode(featureNames[i]);
+        annotationTreeNode.add(featureTreeNode);
+      }
+
+      root.add(annotationTreeNode);
+    }
+
+    return new JTree(root);
+  }
+
+  public String getSelection() {
+    TreePath treePath = tree.getSelectionPath();
+    if (treePath != null) {
+      String parentPath = treePath.getParentPath().getLastPathComponent().toString();
+      String lastPath = treePath.getLastPathComponent().toString();
+      if (parentPath.equals(AnnotationFeaturesViewer.ROOT))
+        return lastPath;
+      else
+        return parentPath + ":" + lastPath;
+    } else
+      return null;
+  }
+
+  public void actionPerformed(ActionEvent e) {
+    Object source = e.getSource();
+    if (source == expandAllButton) {
+      for (int i = 0; i < tree.getRowCount(); i++)
+        tree.expandRow(i);
+    } else if (source == collapseAllButton) {
+      for (int i = 0; i < tree.getRowCount(); i++)
+        tree.collapseRow(i);
+    }
+  }
 }
