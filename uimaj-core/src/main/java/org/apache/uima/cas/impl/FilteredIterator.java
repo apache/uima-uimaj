@@ -21,7 +21,9 @@ package org.apache.uima.cas.impl;
 
 import java.util.NoSuchElementException;
 
-import org.apache.uima.cas.*;
+import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.FSMatchConstraint;
+import org.apache.uima.cas.FeatureStructure;
 
 /**
  * Implements a filtered iterator.

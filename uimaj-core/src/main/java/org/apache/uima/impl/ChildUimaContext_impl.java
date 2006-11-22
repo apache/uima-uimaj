@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.apache.uima.UIMA_UnsupportedOperationException;
 import org.apache.uima.UimaContextAdmin;
+import org.apache.uima.analysis_engine.annotator.AnnotatorContext;
 import org.apache.uima.resource.ConfigurationManager;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.Session;

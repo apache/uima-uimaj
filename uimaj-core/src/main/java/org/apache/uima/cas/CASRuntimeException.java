@@ -20,8 +20,8 @@
 package org.apache.uima.cas;
 
 import java.text.MessageFormat;
-import java.util.ResourceBundle;
 import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 /**
  * Exception class for package org.apache.uima.cas. Automatically generated from message catalog.

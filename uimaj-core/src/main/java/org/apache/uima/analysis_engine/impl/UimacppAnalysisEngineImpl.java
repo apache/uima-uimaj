@@ -61,17 +61,6 @@ import org.apache.uima.util.ProcessTrace;
  */
 public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements AnalysisEngine {
   /**
-   * Key that must be inserted into the aAdditionalParams map to turn on verification mode. Also
-   * passed down to delegates.
-   */
-  public static final String PARAM_VERIFICATION_MODE = "VERIFICATION_MODE";
-
-  /**
-   * resource bundle for log messages
-   */
-  private static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";
-
-  /**
    * current class
    */
   private static final Class CLASS_NAME = UimacppAnalysisEngineImpl.class;

@@ -39,12 +39,12 @@ public class ProcessingResourceMetaData_impl extends AnalysisEngineMetaData_impl
     return XMLIZATION_INFO;
   }
 
-  static final protected XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
                   "processingResourceMetaData", null); // properties assigned below
 
   static {
     // this class's Xmlization info is derived from that of its superclass
-    XmlizationInfo superclassInfo = AnalysisEngineMetaData_impl.XMLIZATION_INFO;
+    XmlizationInfo superclassInfo = AnalysisEngineMetaData_impl.getXmlizationInfoForClass();
 
     XMLIZATION_INFO.propertyInfo = new PropertyXmlInfo[superclassInfo.propertyInfo.length];
     System.arraycopy(superclassInfo.propertyInfo, 0, XMLIZATION_INFO.propertyInfo, 0,

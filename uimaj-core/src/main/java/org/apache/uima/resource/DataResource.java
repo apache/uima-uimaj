@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.Map;
 
 /**
  * <code>DataResource</code> is a simple resource that provides access to data. All

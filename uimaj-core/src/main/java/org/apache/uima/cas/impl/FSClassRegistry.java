@@ -19,11 +19,11 @@
 
 package org.apache.uima.cas.impl;
 
-import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.Type;
-
 import java.util.Arrays;
 import java.util.Iterator;
+
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.Type;
 
 /**
  * 

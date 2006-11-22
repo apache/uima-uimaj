@@ -24,8 +24,8 @@ import java.io.PrintStream;
 import java.text.MessageFormat;
 import java.util.Date;
 
-import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.internal.util.I18nUtil;
+import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 

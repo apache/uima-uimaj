@@ -19,13 +19,16 @@
 
 package org.apache.uima.pear.tools;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.TreeSet;
 import java.util.jar.JarFile;
 
+import org.apache.uima.pear.util.FileUtil;
+import org.apache.uima.pear.util.StringUtil;
 import org.xml.sax.SAXException;
-
-import org.apache.uima.pear.util.*;
 
 /**
  * The <code>PackageBrowser</code> class allows browsing both archived and unarchived PEAR

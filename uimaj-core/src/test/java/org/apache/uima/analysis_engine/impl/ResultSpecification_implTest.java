@@ -31,8 +31,6 @@ import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.TypeOrFeature;
-import org.apache.uima.analysis_engine.impl.ResultSpecification_impl;
-import org.apache.uima.analysis_engine.impl.TypeOrFeature_impl;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.CASMgr;

@@ -21,6 +21,7 @@ package org.apache.uima.resource.metadata;
 
 import java.util.Collection;
 
+import org.apache.uima.UIMA_UnsupportedOperationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.util.InvalidXMLException;
 

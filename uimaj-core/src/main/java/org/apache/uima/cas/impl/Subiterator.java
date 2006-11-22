@@ -19,13 +19,13 @@
 
 package org.apache.uima.cas.impl;
 
-import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.text.AnnotationFS;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.NoSuchElementException;
+
+import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.text.AnnotationFS;
 
 /**
  * Subiterator implementation.

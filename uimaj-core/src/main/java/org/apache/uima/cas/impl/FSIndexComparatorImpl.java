@@ -19,14 +19,14 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.Vector;
+
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.internal.util.IntVector;
-
-import java.util.Vector;
 
 public class FSIndexComparatorImpl implements FSIndexComparator {
 

@@ -25,7 +25,6 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.util.ProcessTraceEvent;
-import org.apache.uima.util.impl.ProcessTrace_impl;
 
 /**
  * 

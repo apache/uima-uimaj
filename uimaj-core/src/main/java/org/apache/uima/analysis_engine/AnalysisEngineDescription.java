@@ -24,9 +24,6 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.util.Map;
 
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration;
 import org.apache.uima.analysis_engine.metadata.SofaMapping;
@@ -35,6 +32,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.InvalidXMLException;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
 
 /**
  * An <code>AnalysisEngineDescription</code> contains all of the information needed to instantiate

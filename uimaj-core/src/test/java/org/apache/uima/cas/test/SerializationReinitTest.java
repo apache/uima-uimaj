@@ -50,7 +50,6 @@ import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.cas.text.TCASException;
 import org.apache.uima.cas.text.TCASMgr;
 import org.apache.uima.internal.util.TextStringTokenizer;
-import org.apache.uima.internal.util.TimeSpan;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.TestPropertyReader;

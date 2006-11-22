@@ -22,15 +22,14 @@ package org.apache.uima.resource.metadata.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Reference implementation of {@link org.apache.uima.resource.ConfigurationParameter}.

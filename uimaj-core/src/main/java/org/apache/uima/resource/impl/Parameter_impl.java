@@ -19,9 +19,6 @@
 
 package org.apache.uima.resource.impl;
 
-import org.w3c.dom.Element;
-import org.xml.sax.helpers.AttributesImpl;
-
 import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
@@ -29,6 +26,8 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLParser.ParsingOptions;
+import org.w3c.dom.Element;
+import org.xml.sax.helpers.AttributesImpl;
 
 public class Parameter_impl extends MetaDataObject_impl implements Parameter {
 

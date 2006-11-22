@@ -22,6 +22,8 @@ package org.apache.uima.resource.metadata;
 import java.net.URL;
 import java.util.List;
 
+import org.apache.uima.UIMA_IllegalArgumentException;
+import org.apache.uima.UIMA_UnsupportedOperationException;
 import org.apache.uima.util.XMLizable;
 
 /**

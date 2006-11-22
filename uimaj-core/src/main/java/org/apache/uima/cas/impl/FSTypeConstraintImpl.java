@@ -19,15 +19,15 @@
 
 package org.apache.uima.cas.impl;
 
-import org.apache.uima.cas.CASRuntimeException;
-import org.apache.uima.cas.FSTypeConstraint;
-import org.apache.uima.cas.Type;
-import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.internal.util.SortedIntSet;
-
 import java.util.HashMap;
 import java.util.Iterator;
+
+import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.FSTypeConstraint;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.Type;
+import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.internal.util.SortedIntSet;
 
 /**
  * An implementation of the type constraint interface.

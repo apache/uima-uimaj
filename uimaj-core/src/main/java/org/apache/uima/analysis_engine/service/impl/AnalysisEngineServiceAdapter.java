@@ -56,11 +56,6 @@ public abstract class AnalysisEngineServiceAdapter extends AnalysisEngineImplBas
                 TextAnalysisEngine, CasConsumer {
 
   /**
-   * resource bundle for log messages
-   */
-  private static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";
-
-  /**
    * current class
    */
   private static final Class CLASS_NAME = AnalysisEngineServiceAdapter.class;

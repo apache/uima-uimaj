@@ -19,6 +19,8 @@
 
 package org.apache.uima.resource.metadata;
 
+import org.apache.uima.UIMA_IllegalArgumentException;
+import org.apache.uima.UIMA_UnsupportedOperationException;
 import org.apache.uima.cas.FSMatchConstraint;
 
 /**

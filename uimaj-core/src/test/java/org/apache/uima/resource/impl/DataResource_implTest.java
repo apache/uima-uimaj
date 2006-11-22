@@ -30,8 +30,6 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.impl.DataResource_impl;
-import org.apache.uima.resource.impl.FileResourceSpecifier_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 /**

@@ -30,7 +30,6 @@ import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CasInitializerDescription;
-import org.apache.uima.collection.impl.CasInitializerDescription_impl;
 import org.apache.uima.internal.util.SerializationUtils;
 import org.apache.uima.resource.ExternalResourceDependency;
 import org.apache.uima.resource.ExternalResourceDescription;

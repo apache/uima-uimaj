@@ -20,6 +20,7 @@
 package org.apache.uima.analysis_engine;
 
 import org.apache.uima.UIMAException;
+import org.apache.uima.cas.CAS;
 
 /**
  * This exception is thrown by an Analysis Engine when it receives a request to generate results

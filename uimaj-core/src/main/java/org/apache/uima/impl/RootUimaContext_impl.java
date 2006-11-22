@@ -21,6 +21,7 @@ package org.apache.uima.impl;
 
 import java.util.TreeMap;
 
+import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.internal.util.InstrumentationFacility_impl;
 import org.apache.uima.resource.ConfigurationManager;

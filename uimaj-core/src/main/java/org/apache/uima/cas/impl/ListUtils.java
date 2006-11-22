@@ -23,15 +23,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.apache.uima.cas.CAS;
+import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.rb_trees.IntRedBlackTree;
+import org.apache.uima.util.Level;
+import org.apache.uima.util.Logger;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
-import org.apache.uima.cas.CAS;
-import org.apache.uima.util.Level;
-import org.apache.uima.util.Logger;
-import org.apache.uima.internal.util.IntVector;
-import org.apache.uima.internal.util.rb_trees.IntRedBlackTree;
 
 /**
  * Utilities for dealing with CAS List types.

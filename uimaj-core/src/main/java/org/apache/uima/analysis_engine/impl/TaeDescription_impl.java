@@ -35,10 +35,10 @@ public class TaeDescription_impl extends AnalysisEngineDescription_impl implemen
     return XMLIZATION_INFO;
   }
 
-  static final protected XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("taeDescription", null); 
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("taeDescription", null); 
   // property info set below
 
   static {
-    XMLIZATION_INFO.propertyInfo = AnalysisEngineDescription_impl.XMLIZATION_INFO.propertyInfo;
+    XMLIZATION_INFO.propertyInfo = AnalysisEngineDescription_impl.getXmlizationInfoForClass().propertyInfo;
   }
 }

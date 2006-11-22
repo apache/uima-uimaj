@@ -19,9 +19,9 @@
 
 package org.apache.uima.cas.text;
 
-import org.apache.uima.cas.CASRuntimeException;
-
 import java.util.ArrayList;
+
+import org.apache.uima.cas.CASRuntimeException;
 
 /**
  * Represents a node in an annotation tree.

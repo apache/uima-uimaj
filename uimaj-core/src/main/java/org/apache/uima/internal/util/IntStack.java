@@ -19,7 +19,6 @@
 
 package org.apache.uima.internal.util;
 
-import org.apache.uima.internal.util.IntVector;
 
 /**
  * A stack of integers. Follows {@link java.util.Stack Stack} pretty closely, except that push()

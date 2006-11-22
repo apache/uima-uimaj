@@ -19,8 +19,10 @@
 
 package org.apache.uima.pear.util;
 
-import java.io.*;
-import java.util.*;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Enumeration;
+import java.util.Properties;
 
 /**
  * The <code>StringUtil</code> class provides utility methods for working with strings.

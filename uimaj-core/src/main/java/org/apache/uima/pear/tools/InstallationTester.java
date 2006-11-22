@@ -19,18 +19,29 @@
 
 package org.apache.uima.pear.tools;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 
-import org.apache.uima.*;
+import org.apache.uima.UIMAException;
+import org.apache.uima.UIMAFramework;
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.collection.*;
+import org.apache.uima.collection.CasConsumer;
+import org.apache.uima.collection.CasInitializer;
+import org.apache.uima.collection.CollectionProcessingEngine;
+import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.metadata.CpeDescription;
-import org.apache.uima.resource.*;
-import org.apache.uima.resource.metadata.*;
-import org.apache.uima.util.*;
-
 import org.apache.uima.pear.util.UIMAUtil;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceSpecifier;
+import org.apache.uima.resource.metadata.FsIndexDescription;
+import org.apache.uima.resource.metadata.TypePriorities;
+import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.util.CasCreationUtils;
+import org.apache.uima.util.InvalidXMLException;
+import org.apache.uima.util.Level;
+import org.apache.uima.util.XMLInputSource;
 
 /**
  * The <code>InstallationTester</code> application allows performing simple verification of the

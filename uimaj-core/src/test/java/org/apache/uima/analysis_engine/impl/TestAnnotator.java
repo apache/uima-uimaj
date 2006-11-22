@@ -27,9 +27,9 @@ import org.apache.uima.analysis_engine.annotator.AnnotatorInitializationExceptio
 import org.apache.uima.analysis_engine.annotator.AnnotatorProcessException;
 import org.apache.uima.analysis_engine.annotator.Annotator_ImplBase;
 import org.apache.uima.analysis_engine.annotator.TextAnnotator;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.TCAS;
-import org.apache.uima.util.ProcessTraceEvent;
 
 /**
  * Annotator class used for testing

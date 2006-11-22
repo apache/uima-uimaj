@@ -19,12 +19,6 @@
 
 package org.apache.uima.cas_data.impl;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.DefaultHandler;
-
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.XCASParsingException;
 import org.apache.uima.cas.impl.XCASSerializer;
@@ -32,6 +26,11 @@ import org.apache.uima.cas_data.CasData;
 import org.apache.uima.cas_data.PrimitiveArrayFS;
 import org.apache.uima.cas_data.ReferenceArrayFS;
 import org.apache.uima.internal.util.StringUtils;
+import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * A SAX ContentHandler that reads XCAS and creates a CasData.

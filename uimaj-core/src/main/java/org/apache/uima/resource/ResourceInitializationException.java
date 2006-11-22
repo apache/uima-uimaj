@@ -19,6 +19,8 @@
 
 package org.apache.uima.resource;
 
+import java.util.Map;
+
 import org.apache.uima.UIMAException;
 
 /**

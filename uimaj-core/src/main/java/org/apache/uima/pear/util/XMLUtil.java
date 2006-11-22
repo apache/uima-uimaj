@@ -19,12 +19,24 @@
 
 package org.apache.uima.pear.util;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.CharConversionException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.StringTokenizer;
 
-import javax.xml.parsers.*;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
-import org.xml.sax.*;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**

@@ -19,6 +19,8 @@
 
 package org.apache.uima.resource.metadata;
 
+import org.apache.uima.UIMA_UnsupportedOperationException;
+
 /**
  * The declarations of configuration parameters in a Resource. A Resource can either declare a
  * single list of {@link ConfigurationParameter}s or a list of {@link ConfigurationGroup}s, where

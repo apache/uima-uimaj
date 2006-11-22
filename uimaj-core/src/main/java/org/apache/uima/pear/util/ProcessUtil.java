@@ -19,8 +19,13 @@
 
 package org.apache.uima.pear.util;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * The <code>ProcessUtil</code> class encapsulates utilities that help in dealing with

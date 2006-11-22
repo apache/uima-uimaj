@@ -27,7 +27,6 @@ import org.apache.uima.analysis_engine.impl.TaeDescription_impl;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
-import org.apache.uima.resource.service.impl.ResourceService_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 /**

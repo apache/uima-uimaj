@@ -19,20 +19,11 @@
 
 package org.apache.uima.resource.impl;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URI;
-import java.net.URL;
 import java.util.Collections;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.impl.ConfigurableDataResourceSpecifier_impl;
-import org.apache.uima.resource.impl.ConfigurableDataResource_impl;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.ConfigurationParameterDeclarations;
 import org.apache.uima.resource.metadata.ResourceMetaData;

@@ -73,11 +73,6 @@ import org.apache.uima.util.impl.ProcessTraceEvent_impl;
 public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase implements AnalysisEngine {
 
   /**
-   * resource bundle for log messages
-   */
-  private static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";
-
-  /**
    * current class
    */
   private static final Class CLASS_NAME = AggregateAnalysisEngine_impl.class;

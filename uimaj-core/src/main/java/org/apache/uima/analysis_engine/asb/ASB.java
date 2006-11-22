@@ -31,6 +31,7 @@ import org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 
 /**
  * The Analysis Structure Broker (<code>ASB</code>) is the component responsible for the details

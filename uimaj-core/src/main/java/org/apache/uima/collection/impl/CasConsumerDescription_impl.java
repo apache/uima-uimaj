@@ -21,8 +21,6 @@ package org.apache.uima.collection.impl;
 
 import java.util.ArrayList;
 
-import org.w3c.dom.Element;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.CasConsumer;
 import org.apache.uima.collection.CasConsumerDescription;
@@ -38,6 +36,7 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLParser.ParsingOptions;
+import org.w3c.dom.Element;
 
 /**
  * 
@@ -131,7 +130,7 @@ public class CasConsumerDescription_impl extends ResourceCreationSpecifier_impl 
     return XMLIZATION_INFO;
   }
 
-  static final protected XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
                   "casConsumerDescription", new PropertyXmlInfo[] {
                       new PropertyXmlInfo("frameworkImplementation"),
                       new PropertyXmlInfo("implementationName"),

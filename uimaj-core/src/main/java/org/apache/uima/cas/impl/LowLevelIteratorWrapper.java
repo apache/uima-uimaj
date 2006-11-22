@@ -19,9 +19,9 @@
 
 package org.apache.uima.cas.impl;
 
-import org.apache.uima.internal.util.IntPointerIterator;
-
 import java.util.NoSuchElementException;
+
+import org.apache.uima.internal.util.IntPointerIterator;
 
 /**
  * Implements the LowLevelIterator interface.

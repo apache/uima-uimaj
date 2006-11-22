@@ -25,7 +25,6 @@ import junit.framework.TestCase;
 import org.apache.uima.analysis_engine.TaeDescription;
 import org.apache.uima.analysis_engine.TextAnalysisEngine;
 import org.apache.uima.analysis_engine.impl.TaeDescription_impl;
-import org.apache.uima.internal.util.ResourcePool;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.test.junit_extension.JUnitExtension;

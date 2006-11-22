@@ -19,8 +19,6 @@
 
 package org.apache.uima.cas.test;
 
-import java.util.Iterator;
-
 import junit.framework.TestCase;
 
 import org.apache.uima.cas.CASException;
@@ -38,7 +36,6 @@ import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.LinearTypeOrderBuilderImpl;
 import org.apache.uima.cas.impl.TCASImpl;
 import org.apache.uima.cas.text.TCAS;
-import org.apache.uima.cas.text.TCASException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 /**

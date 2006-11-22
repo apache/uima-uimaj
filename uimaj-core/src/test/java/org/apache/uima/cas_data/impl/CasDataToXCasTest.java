@@ -22,17 +22,12 @@ package org.apache.uima.cas_data.impl;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.uima.cas_data.CasData;
+import org.apache.uima.cas_data.FeatureStructure;
+import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
-import org.apache.uima.cas_data.CasData;
-import org.apache.uima.cas_data.FeatureStructure;
-import org.apache.uima.cas_data.impl.CasDataImpl;
-import org.apache.uima.cas_data.impl.CasDataToXCas;
-import org.apache.uima.cas_data.impl.FeatureStructureImpl;
-import org.apache.uima.cas_data.impl.PrimitiveValueImpl;
-import org.apache.uima.test.junit_extension.JUnitExtension;
 
 /**
  * 

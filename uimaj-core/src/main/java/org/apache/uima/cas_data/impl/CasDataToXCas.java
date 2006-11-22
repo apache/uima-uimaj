@@ -23,10 +23,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
-
 import org.apache.uima.cas_data.CasData;
 import org.apache.uima.cas_data.FeatureStructure;
 import org.apache.uima.cas_data.FeatureValue;
@@ -35,6 +31,9 @@ import org.apache.uima.cas_data.PrimitiveValue;
 import org.apache.uima.cas_data.ReferenceArrayFS;
 import org.apache.uima.cas_data.ReferenceValue;
 import org.apache.uima.internal.util.StringUtils;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Takes a CasData and generates XCAS SAX events.

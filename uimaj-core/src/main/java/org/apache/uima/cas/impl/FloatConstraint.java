@@ -19,9 +19,12 @@
 
 package org.apache.uima.cas.impl;
 
-import org.apache.uima.cas.*;
-
 import java.util.ArrayList;
+
+import org.apache.uima.cas.FSFloatConstraint;
+import org.apache.uima.cas.FSMatchConstraint;
+import org.apache.uima.cas.Feature;
+import org.apache.uima.cas.FeatureStructure;
 
 /**
  * Implement an embedded float constraint.

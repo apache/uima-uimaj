@@ -38,11 +38,6 @@ import org.apache.uima.collection.EntityProcessStatus;
 import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
-import org.apache.uima.util.AnalysisEnginePerformanceReports;
-import org.apache.uima.util.FileSystemCollectionReader;
-import org.apache.uima.util.InlineXmlCasConsumer;
-import org.apache.uima.util.SimpleXmlCasInitializer;
-import org.apache.uima.util.XMLInputSource;
 
 /**
  * An example application that reads documents from the file system, sends them though an Analysis

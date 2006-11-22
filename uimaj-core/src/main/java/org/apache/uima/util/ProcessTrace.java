@@ -21,6 +21,8 @@ package org.apache.uima.util;
 
 import java.util.List;
 
+import org.apache.uima.UIMA_IllegalStateException;
+
 /**
  * A <code>ProcessTrace</code> object keeps a record of events that have occurred and information,
  * such as timing, about those events.

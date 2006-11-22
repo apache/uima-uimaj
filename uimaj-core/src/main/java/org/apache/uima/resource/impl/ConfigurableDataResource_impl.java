@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.apache.uima.resource.ConfigurableDataResourceSpecifier;
 import org.apache.uima.resource.DataResource;
+import org.apache.uima.resource.FileResourceSpecifier;
 import org.apache.uima.resource.RelativePathResolver;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;

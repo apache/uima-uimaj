@@ -30,10 +30,9 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TemplatesHandler;
 import javax.xml.transform.sax.TransformerHandler;
 
+import org.apache.uima.UIMARuntimeException;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
-
-import org.apache.uima.UIMARuntimeException;
 
 /**
  * Provides access to XInclude processing functionality, which is implemented using an XSL

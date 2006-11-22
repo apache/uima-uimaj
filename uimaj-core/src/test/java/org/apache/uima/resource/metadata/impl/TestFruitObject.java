@@ -22,9 +22,6 @@ package org.apache.uima.resource.metadata.impl;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
-import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
-import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.util.NameClassPair;
 
 /**

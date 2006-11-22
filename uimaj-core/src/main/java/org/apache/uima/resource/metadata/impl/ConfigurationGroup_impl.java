@@ -22,13 +22,12 @@ package org.apache.uima.resource.metadata.impl;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import org.w3c.dom.Element;
-import org.xml.sax.helpers.AttributesImpl;
-
 import org.apache.uima.resource.metadata.ConfigurationGroup;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
+import org.w3c.dom.Element;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Reference implementation of {@link ConfigurationGroup}.

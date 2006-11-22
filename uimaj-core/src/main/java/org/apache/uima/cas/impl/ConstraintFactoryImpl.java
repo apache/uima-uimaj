@@ -19,6 +19,8 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.ArrayList;
+
 import org.apache.uima.cas.ConstraintFactory;
 import org.apache.uima.cas.FSConstraint;
 import org.apache.uima.cas.FSFloatConstraint;
@@ -27,8 +29,6 @@ import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.FSStringConstraint;
 import org.apache.uima.cas.FSTypeConstraint;
 import org.apache.uima.cas.FeaturePath;
-
-import java.util.ArrayList;
 
 /**
  * Implementation of the ConstraintFactory interface.

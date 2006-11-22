@@ -32,10 +32,7 @@ import java.util.StringTokenizer;
 
 import junit.framework.TestCase;
 
-import org.xml.sax.SAXException;
-
 import org.apache.uima.cas.ArrayFS;
-import org.apache.uima.cas.BooleanArrayFS;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.DoubleArrayFS;
@@ -64,6 +61,7 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLSerializer;
+import org.xml.sax.SAXException;
 
 /**
  * @author Eddie Epstein

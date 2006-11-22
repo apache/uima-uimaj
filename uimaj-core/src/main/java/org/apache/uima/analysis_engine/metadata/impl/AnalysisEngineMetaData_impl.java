@@ -21,10 +21,6 @@ package org.apache.uima.analysis_engine.metadata.impl;
 
 import java.util.List;
 
-import org.w3c.dom.Element;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
@@ -43,6 +39,9 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLParser.ParsingOptions;
+import org.w3c.dom.Element;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
 
 /**
  * Reference implementation of {@link AnalysisEngineMetaData}.
@@ -293,15 +292,23 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
+    
+  /**
+   * Static method to get XmlizationInfo, used by subclasses to
+   * set up their own XmlizationInfo.
+   */
+  protected static XmlizationInfo getXmlizationInfoForClass() {
+    return XMLIZATION_INFO;
+  }  
 
-  static final protected XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
                   "analysisEngineMetaData", null); // properties assigned below
 
   static {
     // this class's Xmlization info is derived from that of its superclass
     // (would derive from ProcessingResourceMetaData_impl but preexisting XML
     // schema requires that flowConstraints come before type system.)
-    XmlizationInfo superclassInfo = ResourceMetaData_impl.XMLIZATION_INFO;
+    XmlizationInfo superclassInfo = ResourceMetaData_impl.getXmlizationInfoForClass();
 
     PropertyXmlInfo[] newProperties = new PropertyXmlInfo[] {
         new PropertyXmlInfo("flowConstraints"), new PropertyXmlInfo("typeSystem", null),

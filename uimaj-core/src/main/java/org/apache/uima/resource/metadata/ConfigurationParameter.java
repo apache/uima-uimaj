@@ -19,6 +19,8 @@
 
 package org.apache.uima.resource.metadata;
 
+import org.apache.uima.UIMA_UnsupportedOperationException;
+
 /**
  * Completely specifies a configuration parameter on a UIMA resource.
  * <p>

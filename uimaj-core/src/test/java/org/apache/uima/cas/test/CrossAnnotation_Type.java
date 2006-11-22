@@ -19,17 +19,15 @@
 
 package org.apache.uima.cas.test;
 
-import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.uima.jcas.tcas.Annotation_Type;
-import org.apache.uima.jcas.impl.JCas;
-import org.apache.uima.cas.CASException;
-import org.apache.uima.cas.impl.FSGenerator;
-import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.Type;
-import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.cas.impl.FeatureImpl;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Feature;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.Type;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.FSGenerator;
+import org.apache.uima.cas.impl.FeatureImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /**
  * This class is part of the JCas internals. The Get/Set accessors are for low-level CAS access,

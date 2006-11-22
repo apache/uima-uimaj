@@ -33,10 +33,9 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.uima.UIMARuntimeException;
 import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
-
-import org.apache.uima.UIMARuntimeException;
 
 /**
  * Utility class that generates XML output from SAX events or DOM nodes.

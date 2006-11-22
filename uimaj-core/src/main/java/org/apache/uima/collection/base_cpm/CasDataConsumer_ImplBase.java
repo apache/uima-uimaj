@@ -21,6 +21,7 @@ package org.apache.uima.collection.base_cpm;
 
 import java.util.Map;
 
+import org.apache.uima.cas_data.CasData;
 import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.resource.ConfigurableResource_ImplBase;
 import org.apache.uima.resource.ResourceInitializationException;

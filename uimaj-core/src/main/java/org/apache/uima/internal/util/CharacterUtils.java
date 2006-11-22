@@ -19,8 +19,6 @@
 
 package org.apache.uima.internal.util;
 
-import org.apache.uima.internal.util.StringUtils;
-
 import java.util.ArrayList;
 
 /**

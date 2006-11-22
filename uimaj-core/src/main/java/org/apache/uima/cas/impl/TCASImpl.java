@@ -19,26 +19,26 @@
 
 package org.apache.uima.cas.impl;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.TCAS;
-import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.text.Language;
+import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.cas.text.TCASException;
 import org.apache.uima.cas.text.TCASMgr;
 import org.apache.uima.cas.text.TCASRuntimeException;
-import org.apache.uima.cas.admin.CASAdminException;
-import org.apache.uima.cas.SofaFS;
 import org.apache.uima.jcas.impl.JCas;
-
-import java.io.InputStream;
-import java.util.ArrayList;
 
 /**
  * TCAS: Text Common Analysis System Implementation. These APIs are internal. Note: even though the

@@ -25,10 +25,10 @@ import java.text.MessageFormat;
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
 
-import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.internal.util.I18nUtil;
 import org.apache.uima.internal.util.UIMALogFormatter;
 import org.apache.uima.internal.util.UIMAStreamHandler;
+import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 

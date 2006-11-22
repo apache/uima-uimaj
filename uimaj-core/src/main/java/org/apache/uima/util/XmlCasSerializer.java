@@ -22,11 +22,10 @@ package org.apache.uima.util;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.xml.sax.SAXException;
-
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.XmiCasSerializer;
+import org.xml.sax.SAXException;
 
 /**
  * Serializes a CAS to inline XML format. The output format conforms to the XML Metadata Interchange

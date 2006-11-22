@@ -19,10 +19,16 @@
 
 package org.apache.uima.pear.tools;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Properties;
 
-import org.apache.uima.pear.util.*;
+import org.apache.uima.pear.util.FileUtil;
 
 /**
  * The <code>LocalInstallationAgent</code> allows localizing files of UIMA compliant components

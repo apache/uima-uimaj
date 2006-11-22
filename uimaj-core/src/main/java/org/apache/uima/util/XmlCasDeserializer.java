@@ -22,6 +22,10 @@ package org.apache.uima.util;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.impl.OutOfTypeSystemData;
+import org.apache.uima.cas.impl.XCASDeserializer;
+import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -30,11 +34,6 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
-
-import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.impl.OutOfTypeSystemData;
-import org.apache.uima.cas.impl.XCASDeserializer;
-import org.apache.uima.cas.impl.XmiCasDeserializer;
 
 /**
  * Deserializes a CAS from a standoff-XML format. This class can read the XMI format introduced in

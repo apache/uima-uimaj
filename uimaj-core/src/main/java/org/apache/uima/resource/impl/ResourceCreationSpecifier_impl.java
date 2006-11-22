@@ -337,7 +337,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
     return XMLIZATION_INFO;
   }
 
-  static final protected XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
                   "resourceCreationSpecifier", new PropertyXmlInfo[] {
                       new PropertyXmlInfo("frameworkImplementation"),
                       new PropertyXmlInfo("implementationName"),
@@ -347,6 +347,6 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
                       new PropertyXmlInfo("resourceManagerConfiguration", null), });
 
   // used by doFullValidation
-  protected static class DummyResource extends Resource_ImplBase {
+  private static class DummyResource extends Resource_ImplBase {
   }
 }

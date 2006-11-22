@@ -28,21 +28,12 @@ import junit.framework.TestCase;
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.TaeDescription;
-import org.apache.uima.analysis_engine.impl.MultiprocessingAnalysisEngine_impl;
-import org.apache.uima.analysis_engine.impl.ResultSpecification_impl;
-import org.apache.uima.analysis_engine.impl.TaeDescription_impl;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.impl.FixedFlow_impl;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.CASRuntimeException;
-import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.text.TCAS;
-import org.apache.uima.cas.text.TCASRuntimeException;
-import org.apache.uima.resource.ResourceConfigurationException;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -50,8 +41,6 @@ import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
 import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.apache.uima.util.ProcessTrace;
-import org.apache.uima.util.ProcessTraceEvent;
 
 /**
  * 

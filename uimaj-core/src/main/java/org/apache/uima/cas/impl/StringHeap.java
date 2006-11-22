@@ -19,10 +19,10 @@
 
 package org.apache.uima.cas.impl;
 
-import org.apache.uima.internal.util.IntArrayUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import org.apache.uima.internal.util.IntArrayUtils;
 
 /**
  * Encapsulate string storage for the CAS.

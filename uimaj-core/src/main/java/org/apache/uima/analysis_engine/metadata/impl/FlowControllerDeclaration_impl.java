@@ -23,9 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.w3c.dom.Element;
-import org.xml.sax.helpers.AttributesImpl;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration;
 import org.apache.uima.resource.ResourceManager;
@@ -39,6 +36,8 @@ import org.apache.uima.util.Level;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLParser.ParsingOptions;
+import org.w3c.dom.Element;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Declares which FlowController is used by the Aggregate Analysis Engine.
@@ -177,7 +176,7 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl implemen
     return XMLIZATION_INFO;
   }
 
-  static final protected XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("flowController",
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("flowController",
                   new PropertyXmlInfo[] { new PropertyXmlInfo("import", null),
                       new PropertyXmlInfo("specifier", null) });
 }
