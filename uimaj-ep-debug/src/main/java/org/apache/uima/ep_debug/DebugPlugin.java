@@ -28,62 +28,68 @@ import org.osgi.framework.BundleContext;
 /**
  * The main plugin class to be used in the desktop.
  */
-public class DebugPlugin extends Plugin implements IStartup{
-	
-	public static final String PREF_ALREADY_SET_PREF_SHOW_DETAILS = "org.apache.uima.ep_debug.already_set_pref_show_details"; 
-	public static final String ALREADY_SET_PREF_SHOW_DETAILS = "already_set_pref_show_details";
-	//The shared instance.
-	private static DebugPlugin plugin;
-	
-	/**
-	 * The constructor.
-	 */
-	public DebugPlugin() {
-		plugin = this;
-	}
+public class DebugPlugin extends Plugin implements IStartup {
 
-	/**   
-	 * This method is called upon plug-in activation
-	 */ 
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-		// Intent of next code
-		//   For users installing this plugin for the first time, set the pref-show-details preference,
-		//   but only once (per fresh workspace) - to allow it to be set to the value which makes debugging 
-		//   display work, initially, but allowing the user to set it to something else without having this
-		//   be overridden every time the pluging starts.
-		String doneOnce = JDIDebugUIPlugin.getDefault().getPreferenceStore().getString(PREF_ALREADY_SET_PREF_SHOW_DETAILS);
-		if (ALREADY_SET_PREF_SHOW_DETAILS.equals(doneOnce))
-			return;
-		JDIDebugUIPlugin.getDefault().getPreferenceStore().setValue(PREF_ALREADY_SET_PREF_SHOW_DETAILS, ALREADY_SET_PREF_SHOW_DETAILS);
-		 
-		String preference= JDIDebugUIPlugin.getDefault().getPreferenceStore().getString(IJDIPreferencesConstants.PREF_SHOW_DETAILS);
-		if (IJDIPreferencesConstants.INLINE_ALL.equals(preference))
-		 return;
-		JDIDebugUIPlugin.getDefault().getPreferenceStore().setValue(IJDIPreferencesConstants.PREF_SHOW_DETAILS, IJDIPreferencesConstants.INLINE_ALL); 
-	}
+  public static final String PREF_ALREADY_SET_PREF_SHOW_DETAILS = "org.apache.uima.ep_debug.already_set_pref_show_details";
 
-	/**
-	 * This method is called when the plug-in is stopped
-	 */
-	public void stop(BundleContext context) throws Exception {
-		super.stop(context);
-		plugin = null;
-	}
+  public static final String ALREADY_SET_PREF_SHOW_DETAILS = "already_set_pref_show_details";
 
-	/**
-	 * Returns the shared instance.
-	 */
-	public static DebugPlugin getDefault() {
-		return plugin;
-	}
+  // The shared instance.
+  private static DebugPlugin plugin;
 
-	// this method is required by the Startup extension, which, in turn, is required
-	// to get the plugin started (no other event gets it started)
-	public void earlyStartup() {		
-	}
+  /**
+   * The constructor.
+   */
+  public DebugPlugin() {
+    plugin = this;
+  }
 
+  /**
+   * This method is called upon plug-in activation
+   */
+  public void start(BundleContext context) throws Exception {
+    super.start(context);
+    // Intent of next code
+    // For users installing this plugin for the first time, set the pref-show-details preference,
+    // but only once (per fresh workspace) - to allow it to be set to the value which makes
+    // debugging
+    // display work, initially, but allowing the user to set it to something else without having
+    // this
+    // be overridden every time the pluging starts.
+    String doneOnce = JDIDebugUIPlugin.getDefault().getPreferenceStore().getString(
+                    PREF_ALREADY_SET_PREF_SHOW_DETAILS);
+    if (ALREADY_SET_PREF_SHOW_DETAILS.equals(doneOnce))
+      return;
+    JDIDebugUIPlugin.getDefault().getPreferenceStore().setValue(PREF_ALREADY_SET_PREF_SHOW_DETAILS,
+                    ALREADY_SET_PREF_SHOW_DETAILS);
 
+    String preference = JDIDebugUIPlugin.getDefault().getPreferenceStore().getString(
+                    IJDIPreferencesConstants.PREF_SHOW_DETAILS);
+    if (IJDIPreferencesConstants.INLINE_ALL.equals(preference))
+      return;
+    JDIDebugUIPlugin.getDefault().getPreferenceStore()
+                    .setValue(IJDIPreferencesConstants.PREF_SHOW_DETAILS,
+                                    IJDIPreferencesConstants.INLINE_ALL);
+  }
 
+  /**
+   * This method is called when the plug-in is stopped
+   */
+  public void stop(BundleContext context) throws Exception {
+    super.stop(context);
+    plugin = null;
+  }
+
+  /**
+   * Returns the shared instance.
+   */
+  public static DebugPlugin getDefault() {
+    return plugin;
+  }
+
+  // this method is required by the Startup extension, which, in turn, is required
+  // to get the plugin started (no other event gets it started)
+  public void earlyStartup() {
+  }
 
 }
