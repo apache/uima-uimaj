@@ -48,7 +48,7 @@ import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.apache.uima.uimacpp.UimacppAnalysisEngine;
+import org.apache.uima.uimacpp.UimacppAnalysisComponent;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
@@ -81,7 +81,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
   /**
    * For a primitive AnalysisEngine only, the Annotator instance that contains the analysis logic.
    */
-  private UimacppAnalysisEngine mAnnotator;
+  private UimacppAnalysisComponent mAnnotator;
 
   /**
    * For a primitive AnalysisEngine only, the AnnotatorContext instance that the Annotator uses to
@@ -319,11 +319,11 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
                   throws ResourceInitializationException {
     // create Annotator Context and set Logger
     UimaContextAdmin uimaContext = getUimaContextAdmin();
-    uimaContext.setLogger(UIMAFramework.getLogger(UimacppAnalysisEngine.class));
+    uimaContext.setLogger(UIMAFramework.getLogger(UimacppAnalysisComponent.class));
     mAnnotatorContext = new AnnotatorContext_impl(uimaContext);
 
     if (!mVerificationMode) {
-      mAnnotator = new UimacppAnalysisEngine(aDescription, this);
+      mAnnotator = new UimacppAnalysisComponent(aDescription, this);
 
       getUimaContextAdmin().defineCasPool(mAnnotator.getCasInstancesRequired(),
                       getPerformanceTuningSettings(), mSofaAware);
