@@ -36,16 +36,16 @@ import org.apache.uima.adapter.soap.axis11.BinarySerializer_Axis11;
  */
 public class BinarySerializerFactory implements SerializerFactory {
 
-  private Vector mechanisms;
+  private static final long serialVersionUID = 2914831356701203129L;
 
-  private boolean mUseAttachments;
+  private Vector mechanisms;
 
   public BinarySerializerFactory() {
     this(true);
   }
 
   public BinarySerializerFactory(boolean aUseAttachments) {
-    mUseAttachments = aUseAttachments;
+    //TODO: attachments never used?
   }
 
   public Serializer getSerializerAs(String mechanismType) {
