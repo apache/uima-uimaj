@@ -37,6 +37,8 @@ import org.apache.uima.analysis_engine.AnalysisEngineManagement;
 public class AnalysisEngineManagementImpl implements AnalysisEngineManagementImplMBean,
                 AnalysisEngineManagement {
 
+  private static final long serialVersionUID = 1988620286191379887L;
+
   static final DecimalFormat format = new DecimalFormat("0.##");
 
   /**

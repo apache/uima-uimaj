@@ -19,7 +19,6 @@
 
 package org.apache.uima.analysis_engine.impl;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,10 +31,8 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.internal.util.AnalysisEnginePool;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.Logger;
-import org.apache.uima.util.ProcessTrace;
 
 /**
  * An {@link AnalysisEngine} implementation that can process multiple {@link CAS} objects

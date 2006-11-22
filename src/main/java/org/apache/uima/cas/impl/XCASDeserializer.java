@@ -173,13 +173,6 @@ public class XCASDeserializer {
     // working with initial view
     private int nextIndex;
 
-    // private FeatureStructureImplC currentFS;
-
-    private XCASDeserializerHandler(CASImpl cas) {
-      this(cas, null);
-    }
-
-    // APL
     private XCASDeserializerHandler(CASImpl aCAS, OutOfTypeSystemData ootsData) {
       super();
       this.cas = aCAS.getBaseCAS();

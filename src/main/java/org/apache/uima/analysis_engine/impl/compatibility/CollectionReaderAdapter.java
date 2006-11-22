@@ -36,7 +36,6 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.jcas.impl.JCas;
-import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -50,8 +49,6 @@ public class CollectionReaderAdapter implements AnalysisComponent {
   private TypeSystem mLastTypeSystem;
 
   private UimaContext mUimaContext;
-
-  private CasManager mCasManager;
 
   private boolean mSofaAware;
 
@@ -86,8 +83,6 @@ public class CollectionReaderAdapter implements AnalysisComponent {
     paramsMap.put(Resource.PARAM_UIMA_CONTEXT, aContext);
     mCollectionReader.initialize(desc, paramsMap);
     mUimaContext = aContext;
-    mCasManager = mCollectionReader.getResourceManager().getCasManager();
-
   }
 
   /*

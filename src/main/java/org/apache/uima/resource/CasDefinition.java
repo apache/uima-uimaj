@@ -57,7 +57,7 @@ public class CasDefinition {
                   throws ResourceInitializationException {
     // extract TypeSystems, TypePriorities, and FsIndexes from metadata
     List typeSystems = new ArrayList();
-    List typePriorities = new ArrayList();
+    List typePrioritiesList = new ArrayList();
     List fsIndexes = new ArrayList();
     Iterator it = aMetaDataToMerge.iterator();
     while (it.hasNext()) {
@@ -65,13 +65,13 @@ public class CasDefinition {
       if (md.getTypeSystem() != null)
         typeSystems.add(md.getTypeSystem());
       if (md.getTypePriorities() != null)
-        typePriorities.add(md.getTypePriorities());
+        typePrioritiesList.add(md.getTypePriorities());
       if (md.getFsIndexCollection() != null)
         fsIndexes.add(md.getFsIndexCollection());
     }
 
     // merge TypePriorities and FsIndexes
-    TypePriorities aggTypePriorities = CasCreationUtils.mergeTypePriorities(typePriorities,
+    TypePriorities aggTypePriorities = CasCreationUtils.mergeTypePriorities(typePrioritiesList,
                     aResourceManager);
     FsIndexCollection aggIndexColl = CasCreationUtils.mergeFsIndexes(fsIndexes, aResourceManager);
     TypeSystemDescription aggTypeDesc = CasCreationUtils.mergeTypeSystems(typeSystems,

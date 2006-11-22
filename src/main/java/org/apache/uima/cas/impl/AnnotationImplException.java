@@ -29,6 +29,8 @@ import java.util.MissingResourceException;
  */
 public class AnnotationImplException extends Exception {
 
+  private static final long serialVersionUID = 2924905396059850361L;
+
   private static final String resource_file = "org.apache.uima.cas.impl.annot_impl";
 
   private static final String missing_resource_error = "Could not load message catalog: "

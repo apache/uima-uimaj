@@ -51,7 +51,7 @@ final class LongHeap extends CommonAuxHeap {
   }
 
   void resetToZeros() {
-    Arrays.fill(this.heap, 0, this.heapPos, (long) NULL);
+    Arrays.fill(this.heap, 0, this.heapPos, NULL);
   }
 
   // Getters

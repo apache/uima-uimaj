@@ -470,10 +470,10 @@ public class XmiCasDeserializer {
     }
 
     private void handleFeature(final Type type, int addr, String featName, String featVal,
-                    boolean lenient) throws SAXParseException {
+                    boolean aLenient) throws SAXParseException {
       final FeatureImpl feat = (FeatureImpl) type.getFeatureByBaseName(featName);
       if (feat == null) {
-        if (!lenient) {
+        if (!aLenient) {
           throw createException(XCASParsingException.UNKNOWN_FEATURE, featName);
         }
         return;
@@ -482,10 +482,10 @@ public class XmiCasDeserializer {
     }
 
     private void handleFeature(final Type type, int addr, String featName, List featVals,
-                    boolean lenient) throws SAXParseException {
+                    boolean aLenient) throws SAXParseException {
       final FeatureImpl feat = (FeatureImpl) type.getFeatureByBaseName(featName);
       if (feat == null) {
-        if (!lenient) {
+        if (!aLenient) {
           throw createException(XCASParsingException.UNKNOWN_FEATURE, featName);
         }
         return;

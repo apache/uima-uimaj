@@ -149,7 +149,7 @@ public class TOP_Type {
     this.jcas = jcas;
     this.casImpl = jcas.getCasImpl();
     this.ll_cas = this.casImpl;
-    this.casType = (TypeImpl) casType;
+    this.casType = casType;
     this.instanceOf_Type = this;
     this.casTypeCode = ((TypeImpl) this.casType).getCode();
     this.lowLevelTypeChecks = false;

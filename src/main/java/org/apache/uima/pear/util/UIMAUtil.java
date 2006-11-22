@@ -19,18 +19,21 @@
 
 package org.apache.uima.pear.util;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Hashtable;
 
-import org.apache.uima.*;
+import org.apache.uima.UIMAException;
+import org.apache.uima.UIMAFramework;
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.collection.*;
-import org.apache.uima.collection.metadata.CpeDescription;
-import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
-import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.collection.CasConsumerDescription;
+import org.apache.uima.collection.CasInitializerDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.resource.ResourceSpecifier;
-import org.apache.uima.util.*;
+import org.apache.uima.util.XMLInputSource;
+import org.apache.uima.util.XMLParser;
 
 /**
  * The <code>UIMAUtil</code> class provides convenient methods for handling UIMA specific objects.
@@ -202,7 +205,7 @@ public class UIMAUtil {
                         xmlDescUrl);
         try {
           // try parsing CPE configuration
-          CpeDescription cpeDesc = xmlParser.parseCpeDescription(xmlSource);
+          xmlParser.parseCpeDescription(xmlSource);
           uimaCompCtg = CPE_CONFIGURATION_CTG;
           __errTableByUri.remove(xmlDescFile);
         } catch (UIMAException err) {
@@ -221,7 +224,7 @@ public class UIMAUtil {
                         xmlDescUrl);
         try {
           // try parsing TS description
-          TypeSystemDescription tsDesc = xmlParser.parseTypeSystemDescription(xmlSource);
+          xmlParser.parseTypeSystemDescription(xmlSource);
           uimaCompCtg = TYPE_SYSTEM_CTG;
           __errTableByUri.remove(xmlDescFile);
         } catch (UIMAException err) {
@@ -239,8 +242,7 @@ public class UIMAUtil {
         xmlSource = new XMLInputSource(xmlDescFile);
         try {
           // try parsing RES manager configuration
-          ResourceManagerConfiguration rmDesc = xmlParser
-                          .parseResourceManagerConfiguration(xmlSource);
+          xmlParser.parseResourceManagerConfiguration(xmlSource);
           uimaCompCtg = REUSABLE_RESOURCE_CTG;
           __errTableByUri.remove(xmlDescFile);
         } catch (UIMAException err) {

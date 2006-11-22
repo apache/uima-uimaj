@@ -30,6 +30,8 @@ import org.apache.uima.internal.util.IntVector;
  */
 class FSIntConstraintImpl implements FSIntConstraint {
 
+  private static final long serialVersionUID = -4828985717069908575L;
+
   private static final int LT = 0;
 
   private static final int LEQ = 1;

@@ -45,6 +45,9 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
  */
 public class CasConsumerDescription_impl extends ResourceCreationSpecifier_impl implements
                 CasConsumerDescription {
+  
+  private static final long serialVersionUID = -3876854246385758053L;
+
   /**
    * Creates a new CasConsumerDescription_impl. Initializes the MetaData and FrameworkImplementation
    * attributes.

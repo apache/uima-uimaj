@@ -29,6 +29,8 @@ import java.util.MissingResourceException;
  */
 public class CASAdminException extends RuntimeException {
 
+  private static final long serialVersionUID = 3968205828762300170L;
+
   private static final String resource_file = "org.apache.uima.cas.admin.admin_errors";
 
   private static final String missing_resource_error = "Could not load message catalog: "

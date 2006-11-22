@@ -19,22 +19,14 @@
 
 package org.apache.uima.cas.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.ByteBuffer;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.FloatArrayFS;
-import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.text.TCAS;
 
 /**
  * Implementation of the {@link org.apache.uima.cas.SofaFS SofaFS} interface.

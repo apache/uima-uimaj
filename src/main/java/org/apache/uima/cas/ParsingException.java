@@ -26,6 +26,8 @@ package org.apache.uima.cas;
  */
 public class ParsingException extends Exception {
 
+  private static final long serialVersionUID = -8526988900901941980L;
+
   /**
    * 
    */

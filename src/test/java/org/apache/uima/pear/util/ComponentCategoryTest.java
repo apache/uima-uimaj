@@ -47,7 +47,7 @@ public class ComponentCategoryTest extends TestCase {
 
   private static String CI_DESC_NAME = "ci.xml";
 
-  private static String CPE_DESC_NAME = "cpe.xml";
+//  private static String CPE_DESC_NAME = "cpe.xml";
 
   private static String CR_DESC_NAME = "cr.xml";
 
@@ -120,15 +120,15 @@ public class ComponentCategoryTest extends TestCase {
     Assert.assertTrue(UIMAUtil.COLLECTION_READER_CTG.equals(UIMAUtil
                     .identifyUimaComponentCategory(crDescFile)));
   }
-  // /**
-  // * Runs test case for Type System descriptor.
-  // */
-  // public void testTsDescriptor() throws Exception {
-  // File tsDescFile =
-  // new File( _junitTestBasePath, TEST_FOLDER + "/" + TS_DESC_NAME );
-  // if( ! tsDescFile.isFile() )
-  // throw new FileNotFoundException( "TS descriptor not found" );
-  // Assert.assertTrue( UIMAUtil.TYPE_SYSTEM_CTG.equals(
-  // UIMAUtil.identifyUimaComponentCategory( tsDescFile ) ) );
-  // }
+   /**
+   * Runs test case for Type System descriptor.
+   */
+   public void testTsDescriptor() throws Exception {
+   File tsDescFile =
+   new File( _junitTestBasePath, TEST_FOLDER + "/" + TS_DESC_NAME );
+   if( ! tsDescFile.isFile() )
+   throw new FileNotFoundException( "TS descriptor not found" );
+   Assert.assertTrue( UIMAUtil.TYPE_SYSTEM_CTG.equals(
+   UIMAUtil.identifyUimaComponentCategory( tsDescFile ) ) );
+   }
 }

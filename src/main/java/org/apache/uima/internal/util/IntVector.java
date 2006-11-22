@@ -30,6 +30,8 @@ import java.io.Serializable;
  */
 public class IntVector implements Serializable {
 
+  private static final long serialVersionUID = 4829243434421992519L;
+
   private static final int default_size = 16;
 
   private static final int default_growth_factor = 2;

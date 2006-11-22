@@ -21,7 +21,6 @@ package org.apache.uima.resource;
 
 import java.util.Properties;
 
-import org.apache.uima.UimaContext;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CasOwner;

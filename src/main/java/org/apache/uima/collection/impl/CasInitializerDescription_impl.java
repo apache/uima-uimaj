@@ -44,6 +44,9 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
  */
 public class CasInitializerDescription_impl extends ResourceCreationSpecifier_impl implements
                 CasInitializerDescription {
+  
+  private static final long serialVersionUID = -4559482063745943204L;
+
   /**
    * Creates a new CasInitializerDescription_impl. Initializes the MetaData and
    * FrameworkImplementation attributes.

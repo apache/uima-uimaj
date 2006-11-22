@@ -29,6 +29,8 @@ import java.util.MissingResourceException;
  */
 public class LowLevelException extends RuntimeException {
 
+  private static final long serialVersionUID = -3115614380676282900L;
+
   private static final String resource_file = "org.apache.uima.cas.impl.ll_runtimeException";
 
   private static final String missing_resource_error = "Could not load message catalog: "
