@@ -48,10 +48,6 @@ import org.apache.uima.jcas.impl.JCas;
  */
 public class TCASImpl extends CASImpl implements TCAS, TCASMgr {
 
-  protected int startFeatCode;
-
-  protected int endFeatCode;
-
   protected Type docType;
 
   protected Feature langFeat;
