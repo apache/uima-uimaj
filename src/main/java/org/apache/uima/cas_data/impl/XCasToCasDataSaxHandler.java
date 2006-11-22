@@ -450,6 +450,7 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
    * @see org.xml.sax.ContentHandler#endDocument()
    */
   public void endDocument() throws SAXException {
+    //nothing to do
   }
 
   private XCASParsingException createException(int code) {

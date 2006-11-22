@@ -339,6 +339,8 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#typeSystemInit(org.apache.uima.cas.TypeSystem)
    */
   public void typeSystemInit(TypeSystem aTypeSystem) throws ResourceInitializationException {
+    // does not need to do anything since the annotators' typeSystemInit methods are automatically
+    // called prior to processing whenever it is necessary.
   }
 
   /**

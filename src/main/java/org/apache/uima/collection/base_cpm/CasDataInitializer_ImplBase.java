@@ -74,6 +74,7 @@ public abstract class CasDataInitializer_ImplBase extends ConfigurableResource_I
    *           if a failure occurs during initialization.
    */
   public void initialize() throws ResourceInitializationException {
+    //no default behavior
   }
 
   /**

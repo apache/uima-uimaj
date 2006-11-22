@@ -208,6 +208,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * @see org.apache.uima.core.AnalysisComponent#batchProcessComplete()
    */
   public void batchProcessComplete() throws AnalysisEngineProcessException {
+    //v1.x annotators cannot implement batchProcessComplete
   }
 
   /*
@@ -216,6 +217,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * @see org.apache.uima.core.AnalysisComponent#collectionProcessComplete()
    */
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
+    //v1.x annotators cannot implement collectionProcessComplete
   }
 
   /*
