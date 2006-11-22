@@ -18,6 +18,14 @@
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version='1.0'>
+  <!-- next 3 cause the role="xxx" to be propagated as class="xxx" in the output html -->
+  <xsl:param name="para.propagates.style" select="1"/>
+  <xsl:param name="emphasis.propagates.style" select="1"/>
+  <xsl:param name="phrase.propagates.style" select="1"/>
+ 
+  <!-- turn on id attributes for major components --> 
+  <xsl:param name="generate.id.attributes" select="1"/>
+
   <xsl:param name="chunker.output.indent" select="'yes'"/>
   <xsl:param name="chunker.output.doctype-public" select="'-//W3C//DTD HTML 4.0 Transitional//EN'"/>
   <xsl:param name="table.frame.border.color" select="'black'"/>

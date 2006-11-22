@@ -37,3 +37,8 @@ The qandaset functionality works but the FOP processor 0.20.5 seems to have trou
 handling id= attributes; it's giving an incorrect error message about a duplicate id tag,
 when, in fact, there is no duplicate.  Work-around: give up using qandaset - just use
 variablelist instead.
+
+Parameters for Docbook are described in the FO ref:
+http://docbook.sourceforge.net/release/xsl/current/doc/fo/index.html
+
+body.start.indent fails on FOP - use title.margin.left instead

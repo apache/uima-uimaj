@@ -184,7 +184,7 @@ about them.</para>
 
   </section>
   </section>
-<section>
+<section id="ugr.eclipse_setup.example_code">
   <title>Setting up Eclipse to view Example Code</title>
 <para>Later chapters refer to example code. You can create a
 special project in Eclipse to hold the examples.  Here's how:</para>

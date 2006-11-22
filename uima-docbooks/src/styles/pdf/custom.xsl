@@ -34,7 +34,7 @@
   <xsl:param name="body.margin.bottom" select="'1.5cm'"/>
   <xsl:param name="region.after.extent" select="'1cm'"/>
   <xsl:param name="page.margin.bottom" select="'1cm'"/>
-  <xsl:param name="title.margin.left" select="'0cm'"/>
+  <xsl:param name="title.margin.left" select="'-4pc'"/>
 
 <!--###################################################
                       Header
@@ -60,7 +60,9 @@
 <!--###################################################
                       Custom Footer
     ################################################### -->
-
+    <!-- inside, center, outside -->
+    <xsl:param name="footer.column.widths">2 6 1</xsl:param>
+  
     <xsl:template name="footer.content">
         <xsl:param name="pageclass" select="''"/>
         <xsl:param name="sequence" select="''"/>
@@ -199,7 +201,32 @@
     <xsl:param name="section.autolabel.max.depth" select="3"/>
 
     <xsl:param name="section.label.includes.component.label" select="1"/>
+  
     <xsl:param name="table.footnote.number.format" select="'1'"/>
+ 
+    <xsl:attribute-set name="chapter.title.properties">
+      <xsl:attribute name="border-top">
+        <xsl:text>solid black 2pt</xsl:text>
+      </xsl:attribute> 
+    </xsl:attribute-set>
+ 
+    <xsl:attribute-set name="section.title.level1.properties">
+      <xsl:attribute name="border-top">
+        <xsl:text>solid black 1pt</xsl:text>
+      </xsl:attribute> 
+    </xsl:attribute-set>
+
+      <xsl:attribute-set name="section.title.level2.properties">
+      <xsl:attribute name="border-top">
+        <xsl:text>solid black .75pt</xsl:text>
+      </xsl:attribute> 
+    </xsl:attribute-set>
+
+      <xsl:attribute-set name="section.title.level3.properties">
+      <xsl:attribute name="border-top">
+        <xsl:text>solid black .5pt</xsl:text>
+      </xsl:attribute> 
+    </xsl:attribute-set>
 
 <!--###################################################
                       Programlistings
@@ -295,8 +322,10 @@
   <!-- Format Variable Lists as Blocks (prevents horizontal overflow) -->
   <xsl:param name="variablelist.as.blocks">1</xsl:param>
 
-  <xsl:param name="body.start.indent">0pt</xsl:param>
-
+  <!-- FOP 0.25 doens't support body.start.indent 
+  <xsl:param name="body.start.indent">.75in</xsl:param>
+   -->
+  
   <!-- Remove "Chapter" from the Chapter titles... -->
   <xsl:param name="local.l10n.xml" select="document('')"/>
   <l:i18n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0">
