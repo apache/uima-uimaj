@@ -23,79 +23,81 @@ import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.swt.widgets.TableItem;
 
 /**
- * This class implements an ICellModifier
- * An ICellModifier is called when the user modifes a cell in the 
- * tableViewer
+ * This class implements an ICellModifier An ICellModifier is called when the user modifes a cell in
+ * the tableViewer
  * 
  * 
  */
 class VarValCellModifier implements ICellModifier {
-	private VarValViewerHandler tableViewerExample;
-	VarValList tableRowList;
-	
-	/**
-	 * Constructor  
-	 */
-	public VarValCellModifier(VarValViewerHandler tableViewerExample, String[] columnNames, VarValList tableRowList) {
-		super();
-		this.tableRowList = tableRowList;
-		this.tableViewerExample = tableViewerExample;
-	}
+  private VarValViewerHandler tableViewerExample;
 
-	/**
-	 * @see org.eclipse.jface.viewers.ICellModifier#canModify(java.lang.Object, java.lang.String)
-	 */
-	public boolean canModify(Object element, String property) {
-		return true;
-	}
+  VarValList tableRowList;
 
-	/**
-	 * @see org.eclipse.jface.viewers.ICellModifier#getValue(java.lang.Object, java.lang.String)
-	 */
-	public Object getValue(Object element, String property) {
+  /**
+   * Constructor
+   */
+  public VarValCellModifier(VarValViewerHandler tableViewerExample, String[] columnNames,
+                  VarValList tableRowList) {
+    super();
+    this.tableRowList = tableRowList;
+    this.tableViewerExample = tableViewerExample;
+  }
 
-		// Find the index of the column
-		int columnIndex = tableViewerExample.getColumnNames().indexOf(property);
+  /**
+   * @see org.eclipse.jface.viewers.ICellModifier#canModify(java.lang.Object, java.lang.String)
+   */
+  public boolean canModify(Object element, String property) {
+    return true;
+  }
 
-		Object result = null;
-		VarVal tableRow = (VarVal) element;
+  /**
+   * @see org.eclipse.jface.viewers.ICellModifier#getValue(java.lang.Object, java.lang.String)
+   */
+  public Object getValue(Object element, String property) {
 
-		switch (columnIndex) {
-			case 0 :  
-				result = tableRow.getVarName();
-				break;
-			case 1 :  
-				result = tableRow.getVarValue();
-				break;
-			default :
-				result = "";
-		}
-		return result;	
-	}
+    // Find the index of the column
+    int columnIndex = tableViewerExample.getColumnNames().indexOf(property);
 
-	/**
-	 * @see org.eclipse.jface.viewers.ICellModifier#modify(java.lang.Object, java.lang.String, java.lang.Object)
-	 */
-	public void modify(Object element, String property, Object value) {	
+    Object result = null;
+    VarVal tableRow = (VarVal) element;
 
-		// Find the index of the column 
-		int columnIndex	= tableViewerExample.getColumnNames().indexOf(property);
-			
-		TableItem item = (TableItem) element;
-		VarVal tableRow = (VarVal) item.getData();
-		String valueString;
+    switch (columnIndex) {
+      case 0:
+        result = tableRow.getVarName();
+        break;
+      case 1:
+        result = tableRow.getVarValue();
+        break;
+      default:
+        result = "";
+    }
+    return result;
+  }
 
-		switch (columnIndex) {
-			case 0 :  
-				valueString = ((String) value).trim();
-				tableRow.setVarName(valueString);
-				break;
-			case 1 :  
-				valueString = ((String) value).trim();
-				tableRow.setVarValue(valueString);
-				break;
-			default :
-			}
-		tableViewerExample.getTableRowList().tableRowChanged(tableRow);
-	}
+  /**
+   * @see org.eclipse.jface.viewers.ICellModifier#modify(java.lang.Object, java.lang.String,
+   *      java.lang.Object)
+   */
+  public void modify(Object element, String property, Object value) {
+
+    // Find the index of the column
+    int columnIndex = tableViewerExample.getColumnNames().indexOf(property);
+
+    TableItem item = (TableItem) element;
+    VarVal tableRow = (VarVal) item.getData();
+    String valueString;
+
+    switch (columnIndex) {
+      case 0:
+        valueString = ((String) value).trim();
+        tableRow.setVarName(valueString);
+        break;
+      case 1:
+        valueString = ((String) value).trim();
+        tableRow.setVarValue(valueString);
+        break;
+      default:
+    }
+    tableViewerExample.getTableRowList().tableRowChanged(tableRow);
+  }
 }

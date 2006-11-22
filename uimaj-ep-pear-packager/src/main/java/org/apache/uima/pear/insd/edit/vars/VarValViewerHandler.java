@@ -31,53 +31,54 @@ import org.eclipse.swt.widgets.*;
  * 
  */
 public class VarValViewerHandler extends AbstractVarValViewerHandler {
-	
-	public VarValViewerHandler(Composite parent, String[] columnNames, int numParentColumns, VarValList tableRowList) {
-		super(parent,columnNames,numParentColumns,tableRowList,new VarValLabelProvider());
-	}
-	
-	protected ICellModifier createCellModifiers() {
-		return new VarValCellModifier(this, columnNames, tableRowList);
-	}
-	
-	protected ViewerSorter createSorter() {
-		return new VarValSorter(VarValSorter.VAR_NAME);
-	}
-	
-	protected void createTableColumns() {
-		 //	1st column with image/checkboxes - NOTE: The SWT.CENTER has no effect!!
-		TableColumn column = new TableColumn(table, SWT.LEFT, 0);
-		column.setText("Property Name");
-		column.setWidth(200);
-		// Add listener to column so tableRows are sorted by description when clicked 
-		column.addSelectionListener(new SelectionAdapter() {       	
-			public void widgetSelected(SelectionEvent e) {
-				tableViewer.setSorter(new VarValSorter(VarValSorter.VAR_NAME));
-			}
-		});
 
-		 // 2nd column with tableRow Description
-		 column = new TableColumn(table, SWT.LEFT, 1);
-		 column.setText("Property Value");
-		 column.setWidth(250);
-		 // Add listener to column so tableRows are sorted by description when clicked 
-		 column.addSelectionListener(new SelectionAdapter() {       	
-			 public void widgetSelected(SelectionEvent e) {
-				 tableViewer.setSorter(new VarValSorter(VarValSorter.VAR_VALUE));
-			 }
-		 });
+  public VarValViewerHandler(Composite parent, String[] columnNames, int numParentColumns,
+                  VarValList tableRowList) {
+    super(parent, columnNames, numParentColumns, tableRowList, new VarValLabelProvider());
+  }
 
-	}
-	
-	protected CellEditor[] createCellEditors() {
-	
-		CellEditor[] editors = new CellEditor[columnNames.length];
-		TextCellEditor textEditor = new TextCellEditor(table);
-		editors[0] = textEditor;
+  protected ICellModifier createCellModifiers() {
+    return new VarValCellModifier(this, columnNames, tableRowList);
+  }
 
-		textEditor = new TextCellEditor(table);
-		editors[1] = textEditor;
+  protected ViewerSorter createSorter() {
+    return new VarValSorter(VarValSorter.VAR_NAME);
+  }
 
-		return editors;
-	}
+  protected void createTableColumns() {
+    // 1st column with image/checkboxes - NOTE: The SWT.CENTER has no effect!!
+    TableColumn column = new TableColumn(table, SWT.LEFT, 0);
+    column.setText("Property Name");
+    column.setWidth(200);
+    // Add listener to column so tableRows are sorted by description when clicked
+    column.addSelectionListener(new SelectionAdapter() {
+      public void widgetSelected(SelectionEvent e) {
+        tableViewer.setSorter(new VarValSorter(VarValSorter.VAR_NAME));
+      }
+    });
+
+    // 2nd column with tableRow Description
+    column = new TableColumn(table, SWT.LEFT, 1);
+    column.setText("Property Value");
+    column.setWidth(250);
+    // Add listener to column so tableRows are sorted by description when clicked
+    column.addSelectionListener(new SelectionAdapter() {
+      public void widgetSelected(SelectionEvent e) {
+        tableViewer.setSorter(new VarValSorter(VarValSorter.VAR_VALUE));
+      }
+    });
+
+  }
+
+  protected CellEditor[] createCellEditors() {
+
+    CellEditor[] editors = new CellEditor[columnNames.length];
+    TextCellEditor textEditor = new TextCellEditor(table);
+    editors[0] = textEditor;
+
+    textEditor = new TextCellEditor(table);
+    editors[1] = textEditor;
+
+    return editors;
+  }
 }

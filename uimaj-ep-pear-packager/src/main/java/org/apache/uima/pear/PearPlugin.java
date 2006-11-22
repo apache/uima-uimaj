@@ -31,52 +31,51 @@ import org.osgi.framework.BundleContext;
  * 
  */
 public class PearPlugin extends AbstractUIPlugin {
-	
-	/**
-	 * Identifies the PEAR plugin.
-	 */
-	public static final String PLUGIN_ID = "org.apache.uima.pear";//$NON-NLS-1$
-	
-	//The shared instance.
-	private static PearPlugin plugin;
-	
-	/**
-	 * The constructor.
-	 */
-	public PearPlugin() {
-		super();
-		plugin = this;
-	}
 
-	/**
-	 * Returns the shared instance.
-	 */
-	public static PearPlugin getDefault() {
-		return plugin;
-	}
+  /**
+   * Identifies the PEAR plugin.
+   */
+  public static final String PLUGIN_ID = "org.apache.uima.pear";//$NON-NLS-1$
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(final BundleContext context) throws Exception {
-		plugin = null;
-		super.stop(context);
-	}
-	
-	/**
-	 * Returns the workspace instance.
-	 */
-	public static IWorkspace getWorkspace() {
-		return ResourcesPlugin.getWorkspace();
-	}
+  // The shared instance.
+  private static PearPlugin plugin;
 
-	/**
-	 * Returns the image descriptor with the given path relative to the icons/ directory
-	 */
-	public static ImageDescriptor getImageDescriptor(final String relativePath) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID,
-				"icons/" + relativePath); //$NON-NLS-1$
-	}
+  /**
+   * The constructor.
+   */
+  public PearPlugin() {
+    super();
+    plugin = this;
+  }
+
+  /**
+   * Returns the shared instance.
+   */
+  public static PearPlugin getDefault() {
+    return plugin;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+   */
+  public void stop(final BundleContext context) throws Exception {
+    plugin = null;
+    super.stop(context);
+  }
+
+  /**
+   * Returns the workspace instance.
+   */
+  public static IWorkspace getWorkspace() {
+    return ResourcesPlugin.getWorkspace();
+  }
+
+  /**
+   * Returns the image descriptor with the given path relative to the icons/ directory
+   */
+  public static ImageDescriptor getImageDescriptor(final String relativePath) {
+    return AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, "icons/" + relativePath); //$NON-NLS-1$
+  }
 }

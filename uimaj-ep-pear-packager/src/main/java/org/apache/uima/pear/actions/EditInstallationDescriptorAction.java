@@ -31,66 +31,68 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
-
 /**
  * 
- * This class handles the "Edit Installation Descriptor" action, which appear in the context menu of a PEAR installation descriptor (install.xml) 
- *  
+ * This class handles the "Edit Installation Descriptor" action, which appear in the context menu of
+ * a PEAR installation descriptor (install.xml)
  * 
- *
+ * 
+ * 
  */
 public class EditInstallationDescriptorAction implements IObjectActionDelegate {
 
-	private IStructuredSelection ssel;
-	
-	/**
-	 * Constructor
-	 */
-	public EditInstallationDescriptorAction() {
-		super();
-	}
+  private IStructuredSelection ssel;
 
-	/**
-	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
-	 */
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-	}
+  /**
+   * Constructor
+   */
+  public EditInstallationDescriptorAction() {
+    super();
+  }
 
-	/**
-	 * See IActionDelegate#run(IAction)
-	 */
-	public void run(IAction action) {
-		Shell shell = new Shell();
-		
-		try {
-				
-			IFile installFile = (IFile)ssel.getFirstElement();
+  /**
+   * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
+   */
+  public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+  }
 
-			// create the wizard 
-			EditInstallationDescriptorWizard wizard = new EditInstallationDescriptorWizard(installFile.getProject());
-				
-			// Initialize the wizard
-			wizard.init(PlatformUI.getWorkbench(), ssel);
-		
-			// Create the dialog to wrap the wizard
-			WizardDialog dialog = new WizardDialog(shell, wizard);
-		
-			// Open Wizard Dialog
-			dialog.open();
-		
-		} catch (Throwable e) {
-			e.printStackTrace();
-			MessageDialog.openWarning(shell,"Action not supported","This action was not supported for the selected item. ");
-		}
-	}
+  /**
+   * See IActionDelegate#run(IAction)
+   */
+  public void run(IAction action) {
+    Shell shell = new Shell();
 
-	/**
-	 * See IActionDelegate#selectionChanged(IAction, ISelection)
-	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-		ssel = null;
-		if (selection instanceof IStructuredSelection)
-			ssel = (IStructuredSelection) selection;
-	}
+    try {
+
+      IFile installFile = (IFile) ssel.getFirstElement();
+
+      // create the wizard
+      EditInstallationDescriptorWizard wizard = new EditInstallationDescriptorWizard(installFile
+                      .getProject());
+
+      // Initialize the wizard
+      wizard.init(PlatformUI.getWorkbench(), ssel);
+
+      // Create the dialog to wrap the wizard
+      WizardDialog dialog = new WizardDialog(shell, wizard);
+
+      // Open Wizard Dialog
+      dialog.open();
+
+    } catch (Throwable e) {
+      e.printStackTrace();
+      MessageDialog.openWarning(shell, "Action not supported",
+                      "This action was not supported for the selected item. ");
+    }
+  }
+
+  /**
+   * See IActionDelegate#selectionChanged(IAction, ISelection)
+   */
+  public void selectionChanged(IAction action, ISelection selection) {
+    ssel = null;
+    if (selection instanceof IStructuredSelection)
+      ssel = (IStructuredSelection) selection;
+  }
 
 }

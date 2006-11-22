@@ -23,33 +23,32 @@ import java.io.File;
 
 import org.apache.uima.pear.PearException;
 
-
 /**
  * 
  * A util class for PEAR export operations
  * 
  * 
- *
+ * 
  */
 public class PearExport {
-			
-			
-	/**
-	 * @param targetFile
-	 * @return
-	 * @throws PearException
-	 */
-	protected boolean ensureTargetFileIsValid(File targetFile) throws PearException {
-		if (targetFile.exists() && targetFile.isDirectory()) {
-			throw new PearException("The target pear File must not be a directory",new PearException("The target pear File must not be a directory")); 
-		}
-		if (targetFile.exists()) {
-			if (!targetFile.canWrite()) {
-				throw new PearException("The pear File exists, but is not writable",new PearException("The pear File exists, but is not writable"));
-			}
-		}
-		return true;
-	}
-	
+
+  /**
+   * @param targetFile
+   * @return
+   * @throws PearException
+   */
+  protected boolean ensureTargetFileIsValid(File targetFile) throws PearException {
+    if (targetFile.exists() && targetFile.isDirectory()) {
+      throw new PearException("The target pear File must not be a directory", new PearException(
+                      "The target pear File must not be a directory"));
+    }
+    if (targetFile.exists()) {
+      if (!targetFile.canWrite()) {
+        throw new PearException("The pear File exists, but is not writable", new PearException(
+                        "The pear File exists, but is not writable"));
+      }
+    }
+    return true;
+  }
 
 }

@@ -18,62 +18,62 @@
  */
 
 package org.apache.uima.pear.nature;
- 
+
 import org.apache.uima.pear.PearException;
 import org.apache.uima.pear.PearPlugin;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 
-
 public class UimaNature implements IProjectNature {
 
-   private IProject project;
+  private IProject project;
 
-   /**
-    * constructor.
-    */
-   public UimaNature() {
-      super();
-   }
-   
-   /** 
-    * 
-    * @see org.eclipse.core.resources.IProjectNature#configure()
-    */
-   public void configure() throws CoreException {
-		try {
-			ProjectCustomizer.customizeProject(project);
-		} catch (PearException e) {
-			e.printStackTrace();
-			e.openErrorDialog(PearPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell());
-		}
-   }
-      
-   /** 
-    * 
-    * 
-    * @see org.eclipse.core.resources.IProjectNature#deconfigure()
-    */
-   public void deconfigure() throws CoreException {
-   }
-   
-   /**
-    * Returns local reference to associated project 
-    * 
-    * @see org.eclipse.core.resources.IProjectNature#getProject()
-    */
-   public IProject getProject() {
-      return project;
-   }
-   
-   /**
-    * Sets local reference to associated project.
-    * 
-    * @see org.eclipse.core.resources.IProjectNature#setProject(IProject)
-    */
-   public void setProject(IProject value) {
-      project = value;
-   }
+  /**
+   * constructor.
+   */
+  public UimaNature() {
+    super();
+  }
+
+  /**
+   * 
+   * @see org.eclipse.core.resources.IProjectNature#configure()
+   */
+  public void configure() throws CoreException {
+    try {
+      ProjectCustomizer.customizeProject(project);
+    } catch (PearException e) {
+      e.printStackTrace();
+      e.openErrorDialog(PearPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow()
+                      .getShell());
+    }
+  }
+
+  /**
+   * 
+   * 
+   * @see org.eclipse.core.resources.IProjectNature#deconfigure()
+   */
+  public void deconfigure() throws CoreException {
+  }
+
+  /**
+   * Returns local reference to associated project
+   * 
+   * @see org.eclipse.core.resources.IProjectNature#getProject()
+   */
+  public IProject getProject() {
+    return project;
+  }
+
+  /**
+   * Sets local reference to associated project.
+   * 
+   * @see org.eclipse.core.resources.IProjectNature#setProject(IProject)
+   */
+  public void setProject(IProject value) {
+    project = value;
+  }
 
 }

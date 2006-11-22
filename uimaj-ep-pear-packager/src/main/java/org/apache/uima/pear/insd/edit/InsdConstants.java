@@ -19,30 +19,40 @@
 
 package org.apache.uima.pear.insd.edit;
 
-
 /**
  * 
- * this interface defines common constants used in classes related to handling PEAR Installation Descriptor.
+ * this interface defines common constants used in classes related to handling PEAR Installation
+ * Descriptor.
  * 
  * 
  */
 public interface InsdConstants {
-	
-	public final String COMP_ID = "compID"; 
-	public final String COMP_DESCRIPTOR_PATH = "compDescriptorPath";  
-	public final String COMP_NAME = "compName"; 	
-	public final String COLLECTION_ITERATOR_DESCRIPTOR_PATH = "collectionIteratorDescriptorPath"; 
-	public final String CAS_INITIALIZER_DESCRIPTOR_PATH = "casInitializerDescriptorPath"; 
-	public final String CAS_CONSUMER_DESCRIPTOR_PATH = "casConsumerDescriptorPath";
-	
-	public final String COMP_TYPE_ANALYSIS_ENGINE = "analysis_engine"; 
-	public final String COMP_TYPE_CAS_CONSUMER = "cas_consumer"; 
-	public final String COMP_TYPE_CAS_INITIALIZER = "cas_initializer"; 
-	public final String COMP_TYPE_COLLECTION_READER = "collection_reader";
-	public final String COMP_TYPE_CPE = "cpe";
-	 
-	//public final String PEAR_DEPLOYMENT_TYPE_STANDARD_JEDII = InstallationDescriptorHandler.STANDARD_TAG;
-	//public final String PEAR_DEPLOYMENT_TYPE_NETWORK = InstallationDescriptorHandler.NETWORK_TAG;
-	//public final String PEAR_DEPLOYMENT_TYPE_SERVICE = InstallationDescriptorHandler.SERVICE_TAG;
-	
+
+  public final String COMP_ID = "compID";
+
+  public final String COMP_DESCRIPTOR_PATH = "compDescriptorPath";
+
+  public final String COMP_NAME = "compName";
+
+  public final String COLLECTION_ITERATOR_DESCRIPTOR_PATH = "collectionIteratorDescriptorPath";
+
+  public final String CAS_INITIALIZER_DESCRIPTOR_PATH = "casInitializerDescriptorPath";
+
+  public final String CAS_CONSUMER_DESCRIPTOR_PATH = "casConsumerDescriptorPath";
+
+  public final String COMP_TYPE_ANALYSIS_ENGINE = "analysis_engine";
+
+  public final String COMP_TYPE_CAS_CONSUMER = "cas_consumer";
+
+  public final String COMP_TYPE_CAS_INITIALIZER = "cas_initializer";
+
+  public final String COMP_TYPE_COLLECTION_READER = "collection_reader";
+
+  public final String COMP_TYPE_CPE = "cpe";
+
+  // public final String PEAR_DEPLOYMENT_TYPE_STANDARD_JEDII =
+  // InstallationDescriptorHandler.STANDARD_TAG;
+  // public final String PEAR_DEPLOYMENT_TYPE_NETWORK = InstallationDescriptorHandler.NETWORK_TAG;
+  // public final String PEAR_DEPLOYMENT_TYPE_SERVICE = InstallationDescriptorHandler.SERVICE_TAG;
+
 }

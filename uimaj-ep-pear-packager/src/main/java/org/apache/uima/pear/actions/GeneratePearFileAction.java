@@ -38,102 +38,106 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
-
 /**
  * 
- * This class handles the "Generate PEAR" action, which appear in the context menu of a project with the UIMA nature.
+ * This class handles the "Generate PEAR" action, which appear in the context menu of a project with
+ * the UIMA nature.
  * 
  * 
- *
+ * 
  */
 public class GeneratePearFileAction implements IObjectActionDelegate {
 
-	private IStructuredSelection ssel;
-	
-	/**
-	 * Constructor
-	 */
-	public GeneratePearFileAction() {
-		super();
-	}
+  private IStructuredSelection ssel;
 
-	/**
-	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
-	 */
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-	}
+  /**
+   * Constructor
+   */
+  public GeneratePearFileAction() {
+    super();
+  }
 
-	/**
-	 * See IActionDelegate#run(IAction)
-	 */
-	public void run(IAction action) {
-		Shell shell = new Shell();
-				
-		try {
-			IAdaptable a = (IAdaptable)ssel.getFirstElement();
-			IProject selectedProject = (IProject)a.getAdapter(IProject.class);
-			ssel = convertToResources(ssel);					
-			if (selectedProject!=null) {
-				try {
-					// create the wizard 
-					//PearExportWizard wizard = new PearExportWizard();
-					GeneratePearWizard wizard = new GeneratePearWizard(selectedProject);
-				
-					// Initialize the wizard
-					wizard.init(PlatformUI.getWorkbench(), ssel);
-		
-					// Create the dialog to wrap the wizard
-					WizardDialog dialog = new WizardDialog(shell, wizard);
-		
-					// Open Wizard Dialog
-					dialog.open();
-				} catch (Throwable e) {
-					PearProjectCustomizationException pcEx = new PearProjectCustomizationException("An error occured during the PEAR generation process.",e);
-					pcEx.openErrorDialog(shell);
-				}
-			} else MessageDialog.openWarning(shell,"Action not supported","This action is not supported for the selected item. ");		
-		} catch (Throwable e) {
-			MessageDialog.openWarning(shell,"Action not supported","This action was not supported for the selected item. ");
-		}
-	}
+  /**
+   * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
+   */
+  public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+  }
 
-	/**
-	 * See IActionDelegate#selectionChanged(IAction, ISelection)
-	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-		ssel = null;
-		if (selection instanceof IStructuredSelection)
-			ssel = (IStructuredSelection) selection;
-	}
+  /**
+   * See IActionDelegate#run(IAction)
+   */
+  public void run(IAction action) {
+    Shell shell = new Shell();
 
-	/**
-	 * Attempt to convert the elements in the passed selection into resources
-	 * by asking each for its IResource property (iff it isn't already a resource).
-	 * If all elements in the initial selection can be converted to resources then
-	 * answer a new selection containing these resources; otherwise answer a new
-	 * empty selection
-	 *
-	 * @param originalSelection IStructuredSelection
-	 * @return IStructuredSelection
-	 */
-	private IStructuredSelection convertToResources(IStructuredSelection originalSelection) {
-		List result = new ArrayList();
-		Iterator elements = originalSelection.iterator();
+    try {
+      IAdaptable a = (IAdaptable) ssel.getFirstElement();
+      IProject selectedProject = (IProject) a.getAdapter(IProject.class);
+      ssel = convertToResources(ssel);
+      if (selectedProject != null) {
+        try {
+          // create the wizard
+          // PearExportWizard wizard = new PearExportWizard();
+          GeneratePearWizard wizard = new GeneratePearWizard(selectedProject);
 
-		while (elements.hasNext()) {
-			Object currentElement = elements.next();
-			if (currentElement instanceof IResource) {				// already a resource
-				result.add(currentElement);
-			} else if (!(currentElement instanceof IAdaptable))	{	// cannot be converted to resource
-			return StructuredSelection.EMPTY;					// so fail
-			} else {
-				Object adapter = ((IAdaptable)currentElement).getAdapter(IResource.class);
-				if (!(adapter instanceof IResource))				// chose not to be converted to resource
-					return StructuredSelection.EMPTY;				// so fail
-				result.add(adapter);							    // add the converted resource
-			}
-		}	
-		return new StructuredSelection(result.toArray());			// all converted fine, answer new selection
-	}
+          // Initialize the wizard
+          wizard.init(PlatformUI.getWorkbench(), ssel);
+
+          // Create the dialog to wrap the wizard
+          WizardDialog dialog = new WizardDialog(shell, wizard);
+
+          // Open Wizard Dialog
+          dialog.open();
+        } catch (Throwable e) {
+          PearProjectCustomizationException pcEx = new PearProjectCustomizationException(
+                          "An error occured during the PEAR generation process.", e);
+          pcEx.openErrorDialog(shell);
+        }
+      } else
+        MessageDialog.openWarning(shell, "Action not supported",
+                        "This action is not supported for the selected item. ");
+    } catch (Throwable e) {
+      MessageDialog.openWarning(shell, "Action not supported",
+                      "This action was not supported for the selected item. ");
+    }
+  }
+
+  /**
+   * See IActionDelegate#selectionChanged(IAction, ISelection)
+   */
+  public void selectionChanged(IAction action, ISelection selection) {
+    ssel = null;
+    if (selection instanceof IStructuredSelection)
+      ssel = (IStructuredSelection) selection;
+  }
+
+  /**
+   * Attempt to convert the elements in the passed selection into resources by asking each for its
+   * IResource property (iff it isn't already a resource). If all elements in the initial selection
+   * can be converted to resources then answer a new selection containing these resources; otherwise
+   * answer a new empty selection
+   * 
+   * @param originalSelection
+   *          IStructuredSelection
+   * @return IStructuredSelection
+   */
+  private IStructuredSelection convertToResources(IStructuredSelection originalSelection) {
+    List result = new ArrayList();
+    Iterator elements = originalSelection.iterator();
+
+    while (elements.hasNext()) {
+      Object currentElement = elements.next();
+      if (currentElement instanceof IResource) { // already a resource
+        result.add(currentElement);
+      } else if (!(currentElement instanceof IAdaptable)) { // cannot be converted to resource
+        return StructuredSelection.EMPTY; // so fail
+      } else {
+        Object adapter = ((IAdaptable) currentElement).getAdapter(IResource.class);
+        if (!(adapter instanceof IResource)) // chose not to be converted to resource
+          return StructuredSelection.EMPTY; // so fail
+        result.add(adapter); // add the converted resource
+      }
+    }
+    return new StructuredSelection(result.toArray()); // all converted fine, answer new selection
+  }
 
 }

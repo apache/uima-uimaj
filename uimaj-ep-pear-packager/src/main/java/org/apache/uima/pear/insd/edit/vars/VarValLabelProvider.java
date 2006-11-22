@@ -31,33 +31,31 @@ import org.eclipse.swt.graphics.Image;
  * 
  */
 class VarValLabelProvider extends LabelProvider implements ITableLabelProvider {
-	
-	
 
-	/**
-	 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
-	 */
-	public String getColumnText(Object element, int columnIndex) {
-		String result = "";
-		VarVal tableRow = (VarVal) element;
-		switch (columnIndex) {
-			case 0:
-				result = tableRow.getVarName();
-				break;
-			case 1 :
-				result = tableRow.getVarValue();
-				break;
-			default :
-				break; 	
-		}
-		return result;
-	}
+  /**
+   * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
+   */
+  public String getColumnText(Object element, int columnIndex) {
+    String result = "";
+    VarVal tableRow = (VarVal) element;
+    switch (columnIndex) {
+      case 0:
+        result = tableRow.getVarName();
+        break;
+      case 1:
+        result = tableRow.getVarValue();
+        break;
+      default:
+        break;
+    }
+    return result;
+  }
 
-	/**
-	 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
-	 */
-	public Image getColumnImage(Object element, int columnIndex) {
-		return null;
-	}
+  /**
+   * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
+   */
+  public Image getColumnImage(Object element, int columnIndex) {
+    return null;
+  }
 
 }

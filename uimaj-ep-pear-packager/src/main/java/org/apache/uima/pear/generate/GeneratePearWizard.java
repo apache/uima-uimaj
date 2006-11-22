@@ -52,188 +52,170 @@ import org.apache.uima.pear.tools.InstallationDescriptorHandler;
  * 
  * 
  */
-public class GeneratePearWizard extends Wizard implements IWizard,
-		InsdConstants {
-	private IContainer currentContainer;
+public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants {
+  private IContainer currentContainer;
 
-	private InstallationDescriptor insd;
+  private InstallationDescriptor insd;
 
-	private Hashtable wizardData = new Hashtable();
+  private Hashtable wizardData = new Hashtable();
 
-	// WIZARD PAGES
-	// private WizardNewProjectCreationPage projectPage;
-	private INSDComponentPage componentPage;
+  // WIZARD PAGES
+  // private WizardNewProjectCreationPage projectPage;
+  private INSDComponentPage componentPage;
 
-	private INSDEnvironmentPage environmentPage;
+  private INSDEnvironmentPage environmentPage;
 
-	private PearFileResourceExportPage pearExportPage;
+  private PearFileResourceExportPage pearExportPage;
 
-	/**
-	 * Constructor
-	 */
-	public GeneratePearWizard(IContainer container) {
-		super();
-		try {
-			setWindowTitle("PEAR Generation Wizard");
-			setDefaultPageImageDescriptor(PearPlugin
-					.getImageDescriptor("generatePearWiz.gif"));
-			setNeedsProgressMonitor(true);
-			currentContainer = container;
-		} catch (Throwable e) {
-			PearException subEx = new PearException(
-					"Operation failed because the wizard could not be initialized.\nPlease report this error.",
-					e);
-			subEx.openErrorDialog(getShell());
-			this.dispose();
-		}
-		try {
-			AbstractUIPlugin plugin = PearPlugin.getDefault();
-			IDialogSettings workbenchSettings = plugin.getDialogSettings();
-			IDialogSettings section = workbenchSettings
-					.getSection("PearFileExportWizard");//$NON-NLS-1$
-			if (section == null)
-				section = workbenchSettings
-						.addNewSection("PearFileExportWizard");//$NON-NLS-1$
-			setDialogSettings(section);
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-		try {
-			insd = PearInstallationDescriptor
-					.getInstallationDescriptor(currentContainer);
-		} catch (Throwable e) {
-			e.printStackTrace();
-			insd = new InstallationDescriptor();
-		}
-		try {
-			ProjectCustomizer.customizeProject(currentContainer, insd);
-		} catch (Throwable e) {
-			PearException subEx = new PearException(
-					"Operation failed because the wizard could not customize your project as a UIMA project.",
-					e);
-			subEx.openErrorDialog(getShell());
-			this.dispose();
-		}
-	}
+  /**
+   * Constructor
+   */
+  public GeneratePearWizard(IContainer container) {
+    super();
+    try {
+      setWindowTitle("PEAR Generation Wizard");
+      setDefaultPageImageDescriptor(PearPlugin.getImageDescriptor("generatePearWiz.gif"));
+      setNeedsProgressMonitor(true);
+      currentContainer = container;
+    } catch (Throwable e) {
+      PearException subEx = new PearException(
+                      "Operation failed because the wizard could not be initialized.\nPlease report this error.",
+                      e);
+      subEx.openErrorDialog(getShell());
+      this.dispose();
+    }
+    try {
+      AbstractUIPlugin plugin = PearPlugin.getDefault();
+      IDialogSettings workbenchSettings = plugin.getDialogSettings();
+      IDialogSettings section = workbenchSettings.getSection("PearFileExportWizard");//$NON-NLS-1$
+      if (section == null)
+        section = workbenchSettings.addNewSection("PearFileExportWizard");//$NON-NLS-1$
+      setDialogSettings(section);
+    } catch (Throwable e) {
+      e.printStackTrace();
+    }
+    try {
+      insd = PearInstallationDescriptor.getInstallationDescriptor(currentContainer);
+    } catch (Throwable e) {
+      e.printStackTrace();
+      insd = new InstallationDescriptor();
+    }
+    try {
+      ProjectCustomizer.customizeProject(currentContainer, insd);
+    } catch (Throwable e) {
+      PearException subEx = new PearException(
+                      "Operation failed because the wizard could not customize your project as a UIMA project.",
+                      e);
+      subEx.openErrorDialog(getShell());
+      this.dispose();
+    }
+  }
 
-	/**
-	 * Adds the wizaed pages.
-	 * 
-	 * @see org.eclipse.jface.wizard.IWizard#addPages()
-	 */
-	public void addPages() {
-		try {
-			componentPage = new INSDComponentPage(currentContainer, insd,
-					wizardData);
-			addPage(componentPage);
+  /**
+   * Adds the wizaed pages.
+   * 
+   * @see org.eclipse.jface.wizard.IWizard#addPages()
+   */
+  public void addPages() {
+    try {
+      componentPage = new INSDComponentPage(currentContainer, insd, wizardData);
+      addPage(componentPage);
 
-			environmentPage = new INSDEnvironmentPage(currentContainer, insd,
-					wizardData);
-			addPage(environmentPage);
-			pearExportPage = new PearFileResourceExportPage(
-					new StructuredSelection(currentContainer.members()),
-					currentContainer);
-			addPage(pearExportPage);
+      environmentPage = new INSDEnvironmentPage(currentContainer, insd, wizardData);
+      addPage(environmentPage);
+      pearExportPage = new PearFileResourceExportPage(new StructuredSelection(currentContainer
+                      .members()), currentContainer);
+      addPage(pearExportPage);
 
-		} catch (Throwable e) {
-			PearException subEx = new PearException(
-					"Operation failed because the wizard's pages could not be initialized properly.",
-					e);
-			subEx.openErrorDialog(getShell());
-			this.dispose();
-		}
-	}
+    } catch (Throwable e) {
+      PearException subEx = new PearException(
+                      "Operation failed because the wizard's pages could not be initialized properly.",
+                      e);
+      subEx.openErrorDialog(getShell());
+      this.dispose();
+    }
+  }
 
-	/**
-	 * This method is called when 'Finish' button is pressed in the wizard.
-	 * 
-	 * @see org.eclipse.jface.wizard.IWizard#performFinish()
-	 * 
-	 */
-	public boolean performFinish() {
-		try {
-			// currentContainer.refreshLocal(IResource.DEPTH_INFINITE,null);
-			editInstallationDescriptor();
-			final String file = pearExportPage.getDestinationValue();
-			if (new File(file).exists()
-					&& !MessageDialog
-							.openConfirm(
-									getShell(),
-									"File exists",
-									"The file "
-											+ file
-											+ " already exists. Do you want to overwrite it?")) {
-				return false;
-			}
-			getContainer().run(false, true, pearExportPage.getExportRunnable());
-			MessageDialog.openInformation(getShell(), "Done.",
-					"The PEAR file export operation is done.");
-			return true;
-		} catch (Throwable e) {
-			PearException.openErrorDialog(e, getShell());
-			return false;
-		}
-	}
+  /**
+   * This method is called when 'Finish' button is pressed in the wizard.
+   * 
+   * @see org.eclipse.jface.wizard.IWizard#performFinish()
+   * 
+   */
+  public boolean performFinish() {
+    try {
+      // currentContainer.refreshLocal(IResource.DEPTH_INFINITE,null);
+      editInstallationDescriptor();
+      final String file = pearExportPage.getDestinationValue();
+      if (new File(file).exists()
+                      && !MessageDialog.openConfirm(getShell(), "File exists", "The file " + file
+                                      + " already exists. Do you want to overwrite it?")) {
+        return false;
+      }
+      getContainer().run(false, true, pearExportPage.getExportRunnable());
+      MessageDialog.openInformation(getShell(), "Done.", "The PEAR file export operation is done.");
+      return true;
+    } catch (Throwable e) {
+      PearException.openErrorDialog(e, getShell());
+      return false;
+    }
+  }
 
-	private void editInstallationDescriptor() throws CoreException,
-			IOException {
-		handleComponentInformation();
-		addEnvOptions();
-		addEnvVars();
-		PearInstallationDescriptor.saveInstallationDescriptor(currentContainer,
-				insd);
-	}
+  private void editInstallationDescriptor() throws CoreException, IOException {
+    handleComponentInformation();
+    addEnvOptions();
+    addEnvVars();
+    PearInstallationDescriptor.saveInstallationDescriptor(currentContainer, insd);
+  }
 
-	private void handleComponentInformation() {
-		insd.setMainComponent(componentPage.compID);
-		insd.setMainComponentDesc(PearInstallationDescriptor
-				.addMacro(componentPage.compDescriptorPath));
-	}
+  private void handleComponentInformation() {
+    insd.setMainComponent(componentPage.compID);
+    insd
+                    .setMainComponentDesc(PearInstallationDescriptor
+                                    .addMacro(componentPage.compDescriptorPath));
+  }
 
-	private void addEnvOptions() {
-		insd.clearOSSpecs();
-		insd.clearToolkitsSpecs();
-		insd.clearFrameworkSpecs();
+  private void addEnvOptions() {
+    insd.clearOSSpecs();
+    insd.clearToolkitsSpecs();
+    insd.clearFrameworkSpecs();
 
-		String os = environmentPage.osCombo.getText();
-		if (os != null && os.trim().length() > 0)
-			insd.addOSSpec(InstallationDescriptorHandler.NAME_TAG, os);
+    String os = environmentPage.osCombo.getText();
+    if (os != null && os.trim().length() > 0)
+      insd.addOSSpec(InstallationDescriptorHandler.NAME_TAG, os);
 
-		String jdkVersion = environmentPage.jdkVersionCombo.getText();
-		if (jdkVersion != null && jdkVersion.trim().length() > 0)
-			insd.addToolkitsSpec(InstallationDescriptorHandler.JDK_VERSION_TAG,
-					jdkVersion);
+    String jdkVersion = environmentPage.jdkVersionCombo.getText();
+    if (jdkVersion != null && jdkVersion.trim().length() > 0)
+      insd.addToolkitsSpec(InstallationDescriptorHandler.JDK_VERSION_TAG, jdkVersion);
 
-	}
+  }
 
-	private void addEnvVars() {
-		insd
-				.deleteInstallationActions(InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
-		Iterator envVarsItr = environmentPage.envVarList.tableRows.iterator();
-		while (envVarsItr.hasNext()) {
-			VarVal vv = (VarVal) envVarsItr.next();
-			String envVarName = vv.getVarName();
-			String envVarValue = vv.getVarValue();
+  private void addEnvVars() {
+    insd.deleteInstallationActions(InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
+    Iterator envVarsItr = environmentPage.envVarList.tableRows.iterator();
+    while (envVarsItr.hasNext()) {
+      VarVal vv = (VarVal) envVarsItr.next();
+      String envVarName = vv.getVarName();
+      String envVarValue = vv.getVarValue();
 
-			if (envVarName != null && envVarValue != null
-					&& envVarName.trim().length() > 0
-					&& envVarValue.trim().length() > 0) {
-				InstallationDescriptor.ActionInfo actionInfo = new InstallationDescriptor.ActionInfo(
-						InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
-				actionInfo.params.put("VAR_NAME", envVarName);
-				actionInfo.params.put("VAR_VALUE", envVarValue);
-				actionInfo.params.put("COMMENTS", "");
+      if (envVarName != null && envVarValue != null && envVarName.trim().length() > 0
+                      && envVarValue.trim().length() > 0) {
+        InstallationDescriptor.ActionInfo actionInfo = new InstallationDescriptor.ActionInfo(
+                        InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
+        actionInfo.params.put("VAR_NAME", envVarName);
+        actionInfo.params.put("VAR_VALUE", envVarValue);
+        actionInfo.params.put("COMMENTS", "");
 
-				insd.addInstallationAction(actionInfo);
-			}
-		}
-	}
+        insd.addInstallationAction(actionInfo);
+      }
+    }
+  }
 
-	/*
-	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
-	 *      org.eclipse.jface.viewers.IStructuredSelection)
-	 */
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		// nothing to do
-	}
+  /*
+   * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
+   *      org.eclipse.jface.viewers.IStructuredSelection)
+   */
+  public void init(IWorkbench workbench, IStructuredSelection selection) {
+    // nothing to do
+  }
 }

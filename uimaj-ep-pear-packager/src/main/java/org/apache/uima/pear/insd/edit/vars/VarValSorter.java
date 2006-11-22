@@ -28,60 +28,60 @@ import org.eclipse.jface.viewers.ViewerSorter;
  * <code>VAR_NAME</code>: (String)
  * </p>
  * <p>
- * <code>VAR_VALUE</code>:  (String)
+ * <code>VAR_VALUE</code>: (String)
  * </p>
  * 
  * 
  */
 class VarValSorter extends ViewerSorter {
 
-	public static final int VAR_NAME  = 0;
-	public static final int VAR_VALUE = 1;
-	
-	/**
-	 * Constructor argument values that indicate to sort items by 
-	 * description, owner or percent complete.
-	 */
-	
-	// Criteria that the instance uses 
-	private int criteria;
+  public static final int VAR_NAME = 0;
 
-	/**
-	 * Creates a resource sorter that will use the given sort criteria.
-	 *
-	 * @param criteria the sort criterion to use: one of <code>NAME</code> or 
-	 *   <code>TYPE</code>
-	 */
-	public VarValSorter(int criteria) {
-		super();
-		this.criteria = criteria;
-	}
+  public static final int VAR_VALUE = 1;
 
-	/* (non-Javadoc)
-	 * Method declared on ViewerSorter.
-	 */
-	public int compare(Viewer viewer, Object o1, Object o2) {
+  /**
+   * Constructor argument values that indicate to sort items by description, owner or percent
+   * complete.
+   */
 
-		VarVal tableRow1 = (VarVal) o1;
-		VarVal tableRow2 = (VarVal) o2;
-				
-		switch (criteria) {
-			case VAR_NAME :
-				return collator.compare(tableRow1.getVarName(), tableRow2.getVarName());
-			case VAR_VALUE :
-				return collator.compare(tableRow1.getVarValue(), tableRow2.getVarValue());
-			default:
-				return 0;
-		}
-	}
+  // Criteria that the instance uses
+  private int criteria;
 
-	
-	/**
-	 * Returns the sort criteria of this this sorter.
-	 *
-	 * @return the sort criterion
-	 */
-	public int getCriteria() {
-		return criteria;
-	}
+  /**
+   * Creates a resource sorter that will use the given sort criteria.
+   * 
+   * @param criteria
+   *          the sort criterion to use: one of <code>NAME</code> or <code>TYPE</code>
+   */
+  public VarValSorter(int criteria) {
+    super();
+    this.criteria = criteria;
+  }
+
+  /*
+   * (non-Javadoc) Method declared on ViewerSorter.
+   */
+  public int compare(Viewer viewer, Object o1, Object o2) {
+
+    VarVal tableRow1 = (VarVal) o1;
+    VarVal tableRow2 = (VarVal) o2;
+
+    switch (criteria) {
+      case VAR_NAME:
+        return collator.compare(tableRow1.getVarName(), tableRow2.getVarName());
+      case VAR_VALUE:
+        return collator.compare(tableRow1.getVarValue(), tableRow2.getVarValue());
+      default:
+        return 0;
+    }
+  }
+
+  /**
+   * Returns the sort criteria of this this sorter.
+   * 
+   * @return the sort criterion
+   */
+  public int getCriteria() {
+    return criteria;
+  }
 }

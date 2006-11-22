@@ -39,78 +39,93 @@ import org.apache.uima.pear.tools.InstallationDescriptor;
  * This class handles the "Add UIMA Nature" action, which appear in the context menu of a project
  * 
  * 
- *
+ * 
  */
 public class AddUimaNatureAction implements IObjectActionDelegate {
 
-	private IStructuredSelection ssel;
-	
-	/**
-	 * Constructor
-	 */
-	public AddUimaNatureAction() {
-		super();
-	}
+  private IStructuredSelection ssel;
 
-	/**
-	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
-	 */
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-	}
+  /**
+   * Constructor
+   */
+  public AddUimaNatureAction() {
+    super();
+  }
 
-	/**
-	 * See IActionDelegate#run(IAction)
-	 */
-	public void run(IAction action) {
-		Shell shell = new Shell();
-		
-		try {
-			
-			IAdaptable a = (IAdaptable)ssel.getFirstElement();
-			IProject currentProject = (IProject)a.getAdapter(IProject.class);
-		
-			if (currentProject!=null) {
-				boolean addNature = false;
-				if (currentProject.hasNature(ProjectCustomizer.UIMA_NATURE_ID)) {
-					addNature = MessageDialog.openQuestion(shell,"UIMA Nature","The UIMA Nature was previously added to '"+currentProject.getName()+"'.\nWould you like to rebuild it without overwriting existing files and folders?");
-				} else {				
-					addNature = MessageDialog.openQuestion(shell,"Adding UIMA custom Nature","Would you like to add a UIMA Nature to the project '"+currentProject.getName()+"' ?");
-				}
-				if (addNature) {
-					InstallationDescriptor insd = null; 
-					try {
-						insd = PearInstallationDescriptor.getInstallationDescriptor(currentProject);
-					} catch (Throwable e) {
-						e.printStackTrace();
-						insd = new InstallationDescriptor();
-					}
-					try {
-						ProjectCustomizer.customizeProject(currentProject,insd);
-						if (currentProject.hasNature(ProjectCustomizer.UIMA_NATURE_ID)) {
-							MessageDialog.openInformation(shell,"UIMA Nature","The UIMA Nature was added successfully to the '"+currentProject.getName()+"' project.");
-						}
-					} catch (PearException subEx) {
-						PearProjectCustomizationException pcEx = new PearProjectCustomizationException("The project customization did not finish properly.",subEx.getCause());
-						pcEx.openErrorDialog(shell);
-					} catch (Throwable e) {
-						PearProjectCustomizationException pcEx = new PearProjectCustomizationException("The project customization did not finish properly.",e);
-						pcEx.openErrorDialog(shell);
-					}
-				}
-			} else MessageDialog.openWarning(shell,"Action not supported","This action is not supported for the selected item. ");	
-		} catch (Throwable e) {
-			e.printStackTrace();
-			MessageDialog.openWarning(shell,"Action not supported","This action is not supported for the selected item. ");
-		}	
-	}
+  /**
+   * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
+   */
+  public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+  }
 
-	/**
-	 * See IActionDelegate#selectionChanged(IAction, ISelection)
-	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-		ssel = null;
-		if (selection instanceof IStructuredSelection)
-			ssel = (IStructuredSelection) selection;
-	}
+  /**
+   * See IActionDelegate#run(IAction)
+   */
+  public void run(IAction action) {
+    Shell shell = new Shell();
+
+    try {
+
+      IAdaptable a = (IAdaptable) ssel.getFirstElement();
+      IProject currentProject = (IProject) a.getAdapter(IProject.class);
+
+      if (currentProject != null) {
+        boolean addNature = false;
+        if (currentProject.hasNature(ProjectCustomizer.UIMA_NATURE_ID)) {
+          addNature = MessageDialog
+                          .openQuestion(
+                                          shell,
+                                          "UIMA Nature",
+                                          "The UIMA Nature was previously added to '"
+                                                          + currentProject.getName()
+                                                          + "'.\nWould you like to rebuild it without overwriting existing files and folders?");
+        } else {
+          addNature = MessageDialog.openQuestion(shell, "Adding UIMA custom Nature",
+                          "Would you like to add a UIMA Nature to the project '"
+                                          + currentProject.getName() + "' ?");
+        }
+        if (addNature) {
+          InstallationDescriptor insd = null;
+          try {
+            insd = PearInstallationDescriptor.getInstallationDescriptor(currentProject);
+          } catch (Throwable e) {
+            e.printStackTrace();
+            insd = new InstallationDescriptor();
+          }
+          try {
+            ProjectCustomizer.customizeProject(currentProject, insd);
+            if (currentProject.hasNature(ProjectCustomizer.UIMA_NATURE_ID)) {
+              MessageDialog.openInformation(shell, "UIMA Nature",
+                              "The UIMA Nature was added successfully to the '"
+                                              + currentProject.getName() + "' project.");
+            }
+          } catch (PearException subEx) {
+            PearProjectCustomizationException pcEx = new PearProjectCustomizationException(
+                            "The project customization did not finish properly.", subEx.getCause());
+            pcEx.openErrorDialog(shell);
+          } catch (Throwable e) {
+            PearProjectCustomizationException pcEx = new PearProjectCustomizationException(
+                            "The project customization did not finish properly.", e);
+            pcEx.openErrorDialog(shell);
+          }
+        }
+      } else
+        MessageDialog.openWarning(shell, "Action not supported",
+                        "This action is not supported for the selected item. ");
+    } catch (Throwable e) {
+      e.printStackTrace();
+      MessageDialog.openWarning(shell, "Action not supported",
+                      "This action is not supported for the selected item. ");
+    }
+  }
+
+  /**
+   * See IActionDelegate#selectionChanged(IAction, ISelection)
+   */
+  public void selectionChanged(IAction action, ISelection selection) {
+    ssel = null;
+    if (selection instanceof IStructuredSelection)
+      ssel = (IStructuredSelection) selection;
+  }
 
 }

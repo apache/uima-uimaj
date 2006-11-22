@@ -28,95 +28,101 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- *
  * 
- *
+ * 
+ * 
  */
 public class PearProjectCustomizationException extends Exception {
 
+  public static final String PLUGIN_ID = "org.apache.uima.pear";
 
-	public static final String PLUGIN_ID = "org.apache.uima.pear";
-	private static final long serialVersionUID = 1L;
-		
-	public PearProjectCustomizationException() {
-		super();
-	}
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * @param message
-	 */
-	public PearProjectCustomizationException(String message) {
-		super(message);
-	}
+  public PearProjectCustomizationException() {
+    super();
+  }
 
-	/**
-	 * @param cause
-	 */
-	public PearProjectCustomizationException(Throwable cause) {
-		super(cause);
-	}
+  /**
+   * @param message
+   */
+  public PearProjectCustomizationException(String message) {
+    super(message);
+  }
 
-	/**
-	 * @param message
-	 * @param cause
-	 */
-	public PearProjectCustomizationException(String message, Throwable cause) {
-		super(message, cause);
-	}
-	
-	public IStatus[] getCustomStackTrace() {
-		Object[] o = getCustomStackTrace(getCause()).toArray();
-		if (o!=null) {
-			IStatus[] sa = new IStatus[o.length];
-			for (int i=0; i<o.length; i++) sa[i]=(IStatus)o[i];
-			return sa;
-		} else return new IStatus[0];
-	}
-	
-	synchronized ArrayList getCustomStackTrace(Throwable e) {
-		ArrayList a = new ArrayList();
-		if (e!=null) {
-			String msg = e.getMessage();
-			msg = msg==null?"":msg;
-			a.add(new Status(Status.ERROR,PLUGIN_ID,Status.ERROR,msg,e));
-			StackTraceElement[] trace = e.getStackTrace();
-			for (int i=0; i < trace.length; i++) {
-				a.add(new Status(Status.ERROR,PLUGIN_ID,Status.ERROR,"   at " + trace[i],e));
-			} 
+  /**
+   * @param cause
+   */
+  public PearProjectCustomizationException(Throwable cause) {
+    super(cause);
+  }
 
-			Throwable aCause = e.getCause();
-			if (aCause != null) a.addAll(getCustomStackTrace(aCause));
-		}		
-		return a;			
-	}
-	
-	/**
-	 * Opens an Error dialog for this exception
-	 * 
-	 * @param shell
-	 */
-	public void openErrorDialog(Shell shell) {
-		try {	
-			getCause().printStackTrace();
-			String msg = getCause().getMessage();
-			msg = msg==null?"":msg;
-			MultiStatus status = 
-				new MultiStatus(PLUGIN_ID,Status.ERROR,getCustomStackTrace(),msg,getCause());
-			ErrorDialog.openError(shell,"Project Customization Error",getMessage()+" \nPlease see the details (below).",status,0xFFFF);
-		} catch (Throwable th) {
-			th.printStackTrace();			
-		}
-	}
-	
-	/**
-	 * Opens an Error dialog for a given exception
-	 * 
-	 * @param e A Throwable instance
-	 * @param shell Ashell
-	 */
-	public static void openErrorDialog(Throwable e, Shell shell) {	
-		PearProjectCustomizationException subEx = 
-			new PearProjectCustomizationException("A error occured during the project customization process.",e);
-		subEx.openErrorDialog(shell);
-	}
+  /**
+   * @param message
+   * @param cause
+   */
+  public PearProjectCustomizationException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
+  public IStatus[] getCustomStackTrace() {
+    Object[] o = getCustomStackTrace(getCause()).toArray();
+    if (o != null) {
+      IStatus[] sa = new IStatus[o.length];
+      for (int i = 0; i < o.length; i++)
+        sa[i] = (IStatus) o[i];
+      return sa;
+    } else
+      return new IStatus[0];
+  }
+
+  synchronized ArrayList getCustomStackTrace(Throwable e) {
+    ArrayList a = new ArrayList();
+    if (e != null) {
+      String msg = e.getMessage();
+      msg = msg == null ? "" : msg;
+      a.add(new Status(Status.ERROR, PLUGIN_ID, Status.ERROR, msg, e));
+      StackTraceElement[] trace = e.getStackTrace();
+      for (int i = 0; i < trace.length; i++) {
+        a.add(new Status(Status.ERROR, PLUGIN_ID, Status.ERROR, "   at " + trace[i], e));
+      }
+
+      Throwable aCause = e.getCause();
+      if (aCause != null)
+        a.addAll(getCustomStackTrace(aCause));
+    }
+    return a;
+  }
+
+  /**
+   * Opens an Error dialog for this exception
+   * 
+   * @param shell
+   */
+  public void openErrorDialog(Shell shell) {
+    try {
+      getCause().printStackTrace();
+      String msg = getCause().getMessage();
+      msg = msg == null ? "" : msg;
+      MultiStatus status = new MultiStatus(PLUGIN_ID, Status.ERROR, getCustomStackTrace(), msg,
+                      getCause());
+      ErrorDialog.openError(shell, "Project Customization Error", getMessage()
+                      + " \nPlease see the details (below).", status, 0xFFFF);
+    } catch (Throwable th) {
+      th.printStackTrace();
+    }
+  }
+
+  /**
+   * Opens an Error dialog for a given exception
+   * 
+   * @param e
+   *          A Throwable instance
+   * @param shell
+   *          Ashell
+   */
+  public static void openErrorDialog(Throwable e, Shell shell) {
+    PearProjectCustomizationException subEx = new PearProjectCustomizationException(
+                    "A error occured during the project customization process.", e);
+    subEx.openErrorDialog(shell);
+  }
 }

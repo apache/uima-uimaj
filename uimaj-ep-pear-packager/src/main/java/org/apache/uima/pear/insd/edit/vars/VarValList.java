@@ -29,107 +29,112 @@ import java.util.Vector;
  * Represents a list of environment variable to be displayed in a table
  * 
  * 
- *
+ * 
  */
 public class VarValList {
 
-	public Vector tableRows = new Vector(10);
-	private Set changeListeners = new HashSet();
+  public Vector tableRows = new Vector(10);
 
-	/**
-	 * Constructor
-	 */
-	public VarValList() {
-		super();
-		this.initData();
-	}
-	
-	/*
-	 * Initialize the table data.
-	 */
-	private void initData() {
-	}
+  private Set changeListeners = new HashSet();
 
-	/**
-	 * Returns a vector of VarVal objects
-	 */
-	public Vector getTableRows() {
-		return tableRows;
-	}
-	
-	/**
-	 * Adds a new table Row 
-	 */
-	public boolean addTableRow(VarVal tableRow) {
-		if (!isDuplicate(tableRow)) {
-			tableRows.add(tableRow);
-			return true;
-		} else return false;
-	}
+  /**
+   * Constructor
+   */
+  public VarValList() {
+    super();
+    this.initData();
+  }
 
-	/**
-	 * Adds a sample tableRow to the table
-	 */
-	public boolean addTableRow() {
-		VarVal tableRow = new VarVal("New_Variable","Value");
-		if (!isDuplicate(tableRow)) {
-			tableRows.add(tableRows.size(), tableRow);
-			Iterator iterator = changeListeners.iterator();
-			while (iterator.hasNext())
-				((IVarValListViewer) iterator.next()).addTableRow(tableRow);
-			return true;	
-		} else return false;
-	}
-	
-	private boolean isDuplicate(VarVal tableRow) {
-		boolean duplicate = false;
-		String varName = tableRow.getVarName(); 
-		Iterator itr = tableRows.iterator();
-		while (itr.hasNext()) {
-			VarVal vv = (VarVal)itr.next();
-			if (vv.getVarName().equals(varName)) duplicate = true;
-		}		
-		return duplicate;
-	}
+  /*
+   * Initialize the table data.
+   */
+  private void initData() {
+  }
 
-	/**
-	 * @param tableRow
-	 */
-	public void removeTableRow(VarVal tableRow) {
-		tableRows.remove(tableRow);
-		Iterator iterator = changeListeners.iterator();
-		while (iterator.hasNext())
-			((IVarValListViewer) iterator.next()).removeTableRow(tableRow);
-	}
+  /**
+   * Returns a vector of VarVal objects
+   */
+  public Vector getTableRows() {
+    return tableRows;
+  }
 
-	/**
-	 * Notify listeners by calling their updateTableRow() method
-	 * 
-	 * @param tableRow
-	 */
-	public void tableRowChanged(VarVal tableRow) {
-		Iterator iterator = changeListeners.iterator();
-		while (iterator.hasNext())
-			((IVarValListViewer) iterator.next()).updateTableRow(tableRow);
-	}
+  /**
+   * Adds a new table Row
+   */
+  public boolean addTableRow(VarVal tableRow) {
+    if (!isDuplicate(tableRow)) {
+      tableRows.add(tableRow);
+      return true;
+    } else
+      return false;
+  }
 
-	/**
-	 * Removes a Change Listener
-	 * 
-	 * @param viewer A Chnage listener
-	 */
-	public void removeChangeListener(IVarValListViewer viewer) {
-		changeListeners.remove(viewer);
-	}
+  /**
+   * Adds a sample tableRow to the table
+   */
+  public boolean addTableRow() {
+    VarVal tableRow = new VarVal("New_Variable", "Value");
+    if (!isDuplicate(tableRow)) {
+      tableRows.add(tableRows.size(), tableRow);
+      Iterator iterator = changeListeners.iterator();
+      while (iterator.hasNext())
+        ((IVarValListViewer) iterator.next()).addTableRow(tableRow);
+      return true;
+    } else
+      return false;
+  }
 
-	/**
-	 * 
-	 * Adds a change listener
-	 * 
-	 * @param viewer
-	 */
-	public void addChangeListener(IVarValListViewer viewer) {
-		changeListeners.add(viewer);
-	}
+  private boolean isDuplicate(VarVal tableRow) {
+    boolean duplicate = false;
+    String varName = tableRow.getVarName();
+    Iterator itr = tableRows.iterator();
+    while (itr.hasNext()) {
+      VarVal vv = (VarVal) itr.next();
+      if (vv.getVarName().equals(varName))
+        duplicate = true;
+    }
+    return duplicate;
+  }
+
+  /**
+   * @param tableRow
+   */
+  public void removeTableRow(VarVal tableRow) {
+    tableRows.remove(tableRow);
+    Iterator iterator = changeListeners.iterator();
+    while (iterator.hasNext())
+      ((IVarValListViewer) iterator.next()).removeTableRow(tableRow);
+  }
+
+  /**
+   * Notify listeners by calling their updateTableRow() method
+   * 
+   * @param tableRow
+   */
+  public void tableRowChanged(VarVal tableRow) {
+    Iterator iterator = changeListeners.iterator();
+    while (iterator.hasNext())
+      ((IVarValListViewer) iterator.next()).updateTableRow(tableRow);
+  }
+
+  /**
+   * Removes a Change Listener
+   * 
+   * @param viewer
+   *          A Chnage listener
+   */
+  public void removeChangeListener(IVarValListViewer viewer) {
+    changeListeners.remove(viewer);
+  }
+
+  /**
+   * 
+   * Adds a change listener
+   * 
+   * @param viewer
+   */
+  public void addChangeListener(IVarValListViewer viewer) {
+    changeListeners.add(viewer);
+  }
 
 }
