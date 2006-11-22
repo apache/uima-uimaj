@@ -21,10 +21,10 @@
 	 ***************************************************************
    -->
    
-<deployment name="Vinci Service for XCAS Writer with Tutorial Type System">
-  <service name="uima.consumer.XCasWriterWithTutorialTypeSystem" provider="vinci">
+<deployment name="Vinci Service for XMI Writer CAS Consumer with Tutorial Type System">
+  <service name="uima.consumer.XmiWriterWithTutorialTypeSystem" provider="vinci">
     <parameter name="serializerClassName" value="org.apache.uima.adapter.vinci.VinciXCASSerializer_NoDocText"/>
-    <parameter name="resourceSpecifierPath" value="C:/Program Files/apache/uima/examples/descriptors/cas_consumer/XCasWriterWithTutorialTypeSystem.xml"/>
+    <parameter name="resourceSpecifierPath" value="C:/Program Files/apache/uima/examples/descriptors/cas_consumer/XmiWriterWithTutorialTypeSystem.xml"/>
     <parameter name="numInstances" value="1"/>
     <parameter name="timeoutPeriod" value="30000"/>
   </service>

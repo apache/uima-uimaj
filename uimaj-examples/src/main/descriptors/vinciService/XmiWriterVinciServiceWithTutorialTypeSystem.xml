@@ -23,6 +23,6 @@
    
 <uriSpecifier xmlns="http://uima.apache.org/resourceSpecifier">
 	<resourceType>CasConsumer</resourceType>
-	<uri>uima.consumer.XCasWriterWithTutorialTypeSystem</uri>
+	<uri>uima.consumer.XmiWriterWithTutorialTypeSystem</uri>
 	<protocol>Vinci</protocol>
 </uriSpecifier>

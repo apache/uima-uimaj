@@ -59,22 +59,9 @@
 			</errorHandling>
 			<checkpoint batch="10000"/>
 		</casProcessor>
-        <casProcessor deployment="integrated" name="Semantic Search CAS Indexer">
+        <casProcessor deployment="integrated" name="XMI Writer CAS Consumer">
             <descriptor>
-                <include href="descriptors/cas_consumer/SemanticSearchCasIndexer.xml"/>
-            </descriptor>
-            <deploymentParameters/>
-            <filter></filter>
-            <errorHandling>
-                <errorRateThreshold action="terminate" value="100/1000"/>
-                <maxConsecutiveRestarts action="terminate" value="30"/>
-                <timeout max="100000"/>
-            </errorHandling>
-            <checkpoint batch="10000"/>
-        </casProcessor>
-        <casProcessor deployment="integrated" name="XCAS Writer CAS Consumer">
-            <descriptor>
-                <include href="descriptors/cas_consumer/XCasWriterCasConsumer.xml"/>
+                <include href="descriptors/cas_consumer/XmiWriterCasConsumer.xml"/>
             </descriptor>
             <deploymentParameters/>
             <filter></filter>
