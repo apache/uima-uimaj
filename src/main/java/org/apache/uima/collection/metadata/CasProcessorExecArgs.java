@@ -19,12 +19,14 @@
 
 package org.apache.uima.collection.metadata;
 
+import java.io.Serializable;
+
 /**
  * An object containing all {@link org.apache.uima.collection.metadata.CasProcessorExecArg}
  * instances. It provides the means of adding new program arguments, retrieving them, and removing
  * them.
  */
-public interface CasProcessorExecArgs // extends MetaDataObject
+public interface CasProcessorExecArgs extends Serializable// extends MetaDataObject
 {
   /**
    * Adds new {@link org.apache.uima.collection.metadata.CasProcessorExecArg} instance to the list.
