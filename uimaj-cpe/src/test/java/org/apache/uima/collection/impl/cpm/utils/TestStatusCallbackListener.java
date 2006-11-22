@@ -24,151 +24,167 @@ import org.apache.uima.collection.EntityProcessStatus;
 import org.apache.uima.collection.StatusCallbackListener;
 
 /*
- * @author Michael Baessler  
+ * @author Michael Baessler
  * 
  */
 /**
- * Callback Listener.  Receives event notifications from CPE.
+ * Callback Listener. Receives event notifications from CPE.
  */
 public class TestStatusCallbackListener implements StatusCallbackListener {
-	
-	private boolean isFinished = false;
-	private boolean isAborted = false;
-	private boolean isInitialized = false;
-   
-	// counters for function calls
-	private int initializationCount = 0;
-	private int batchCompletCount = 0;
-	private int collProcessingCount = 0;
-	private int pausedCount = 0;
-	private int resumedCount = 0;
-	private int abortedCount = 0;
-	private int entityProcessCompleteCount = 0;
-	private CAS lastCas = null;
-	private EntityProcessStatus lastStatus = null;
 
-	/*
-	 *  Interface methodes from {@link StatusCallbackListener}
-	 */
-	 
-	/** 
-	 * Called when the initialization is completed.
-	 * @see org.apache.uima.collection.processing.StatusCallbackListener#initializationComplete()
-	 **/
-	public void initializationComplete() {
-		isInitialized = true;
-	}
+  private boolean isFinished = false;
 
-	/**
-	 * Called when the batchProcessing is completed. 
-	 * @see org.apache.uima.collection.processing.StatusCallbackListener#batchProcessComplete()
-	 * 
-	 **/
-	public void batchProcessComplete() {
-		batchCompletCount++;
-	}
+  private boolean isAborted = false;
 
-	/** 
-	 * Called when the collection processing is completed.
-	 * @see org.apache.uima.collection.processing.StatusCallbackListener#collectionProcessComplete()
-	 **/
-	public void collectionProcessComplete() {
-		isFinished = true;
-		collProcessingCount++;
-	}
+  private boolean isInitialized = false;
 
-	/** 
-	 * Called when the CPM is paused.
-	 * @see org.apache.uima.collection.processing.StatusCallbackListener#paused()
-	 **/
-	public void paused() {
-		pausedCount++;
-	}
+  // counters for function calls
+  private int initializationCount = 0;
 
-	/** 
-	 * Called when the CPM is resumed after a pause.
-	 * @see org.apache.uima.collection.processing.StatusCallbackListener#resumed()
-	 **/
-	public void resumed() {
-		resumedCount++;
-	}
+  private int batchCompletCount = 0;
 
-	/**
-	 * Called when the CPM is stopped abruptly due to errors.
-	 * @see org.apache.uima.collection.processing.StatusCallbackListener#aborted()
-	 **/
-	public void aborted() {
-		isAborted = true;
-		abortedCount++;
-	}
+  private int collProcessingCount = 0;
 
-	/**
-	 * Called when the processing of a Document is completed. 
-	 * <br>The process status can be looked at and corresponding 
-	 * actions taken.
-	 * 
-	 * @param aCas CAS corresponding to the completed processing
-	 * @param aStatus EntityProcessStatus that holds the status of all 
-	 * 	the events for aEntity
-	 */
-	public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
-		entityProcessCompleteCount++;
-		lastCas = aCas;
-		lastStatus = aStatus;
-	}
-   
-	/*
-	 * getters for methodecounts
-	 */
-    
-	public int getAbortedCount() {
-		return abortedCount;
-	}
+  private int pausedCount = 0;
 
-	public int getBatchCompletCount() {
-		return batchCompletCount;
-	}
+  private int resumedCount = 0;
 
-	public int getCollProcessingCount() {
-		return collProcessingCount;
-	}
+  private int abortedCount = 0;
 
-	public int getInitializationCount() {
-		return initializationCount;
-	}
+  private int entityProcessCompleteCount = 0;
 
-	public int getPausedCount() {
-		return pausedCount;
-	}
+  private CAS lastCas = null;
 
-	public int getResumedCount() {
-		return resumedCount;
-	}
+  private EntityProcessStatus lastStatus = null;
 
-	public int getEntityProcessCompleteCount() {
-		return entityProcessCompleteCount;
-	}
+  /*
+   * Interface methodes from {@link StatusCallbackListener}
+   */
 
-	public EntityProcessStatus getLastStatus(){
-		return lastStatus;
-	}
-	
-	public CAS getLastCas(){
-		return lastCas;
-	}
-	
-	/*
-	 * status methods
-	 */
-	public boolean isFinished() {
-		return isFinished;
-	}
+  /**
+   * Called when the initialization is completed.
+   * 
+   * @see org.apache.uima.collection.processing.StatusCallbackListener#initializationComplete()
+   */
+  public void initializationComplete() {
+    isInitialized = true;
+  }
 
-	public boolean isAborted() {
-		return isAborted;
-	}
+  /**
+   * Called when the batchProcessing is completed.
+   * 
+   * @see org.apache.uima.collection.processing.StatusCallbackListener#batchProcessComplete()
+   * 
+   */
+  public void batchProcessComplete() {
+    batchCompletCount++;
+  }
 
-	public boolean isInitialized() {
-		return isInitialized;
-	}
+  /**
+   * Called when the collection processing is completed.
+   * 
+   * @see org.apache.uima.collection.processing.StatusCallbackListener#collectionProcessComplete()
+   */
+  public void collectionProcessComplete() {
+    isFinished = true;
+    collProcessingCount++;
+  }
+
+  /**
+   * Called when the CPM is paused.
+   * 
+   * @see org.apache.uima.collection.processing.StatusCallbackListener#paused()
+   */
+  public void paused() {
+    pausedCount++;
+  }
+
+  /**
+   * Called when the CPM is resumed after a pause.
+   * 
+   * @see org.apache.uima.collection.processing.StatusCallbackListener#resumed()
+   */
+  public void resumed() {
+    resumedCount++;
+  }
+
+  /**
+   * Called when the CPM is stopped abruptly due to errors.
+   * 
+   * @see org.apache.uima.collection.processing.StatusCallbackListener#aborted()
+   */
+  public void aborted() {
+    isAborted = true;
+    abortedCount++;
+  }
+
+  /**
+   * Called when the processing of a Document is completed. <br>
+   * The process status can be looked at and corresponding actions taken.
+   * 
+   * @param aCas
+   *          CAS corresponding to the completed processing
+   * @param aStatus
+   *          EntityProcessStatus that holds the status of all the events for aEntity
+   */
+  public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
+    entityProcessCompleteCount++;
+    lastCas = aCas;
+    lastStatus = aStatus;
+  }
+
+  /*
+   * getters for methodecounts
+   */
+
+  public int getAbortedCount() {
+    return abortedCount;
+  }
+
+  public int getBatchCompletCount() {
+    return batchCompletCount;
+  }
+
+  public int getCollProcessingCount() {
+    return collProcessingCount;
+  }
+
+  public int getInitializationCount() {
+    return initializationCount;
+  }
+
+  public int getPausedCount() {
+    return pausedCount;
+  }
+
+  public int getResumedCount() {
+    return resumedCount;
+  }
+
+  public int getEntityProcessCompleteCount() {
+    return entityProcessCompleteCount;
+  }
+
+  public EntityProcessStatus getLastStatus() {
+    return lastStatus;
+  }
+
+  public CAS getLastCas() {
+    return lastCas;
+  }
+
+  /*
+   * status methods
+   */
+  public boolean isFinished() {
+    return isFinished;
+  }
+
+  public boolean isAborted() {
+    return isAborted;
+  }
+
+  public boolean isInitialized() {
+    return isInitialized;
+  }
 }

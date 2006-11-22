@@ -20,59 +20,60 @@
 package org.apache.uima.collection.impl.metadata.cpe;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.uima.collection.metadata.CasProcessorExecArg;
 import org.apache.uima.collection.metadata.CasProcessorExecArgs;
 import org.apache.uima.collection.metadata.CpeDescriptorException;
-import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 
+public class CasProcessorExecArgsImpl implements CasProcessorExecArgs {
+  private static final long serialVersionUID = -719956786158518508L;
 
-public class CasProcessorExecArgsImpl  implements CasProcessorExecArgs
-{
-	private ArrayList args = new ArrayList();
-	
-	public CasProcessorExecArgsImpl() { }
-	
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CASProcessorExecArgs#add(org.apache.uima.collection.metadata.CASProcessorExecArg)
-	 */
-	public void add(CasProcessorExecArg aArg)
-	{
-		args.add(aArg);
-	}
+  private ArrayList args = new ArrayList();
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CASProcessorExecArgs#get(java.lang.String)
-	 */
-	public CasProcessorExecArg get(int aIndex) throws CpeDescriptorException
-	{
-			if ( args.size() <= aIndex )
-			{
-				return (CasProcessorExecArg)args.get(aIndex);
-			}
-		return null;
-	}
+  public CasProcessorExecArgsImpl() {
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CASProcessorExecArgs#getAll()
-	 */
-	public CasProcessorExecArg[] getAll()
-	{
-		CasProcessorExecArgImpl[] argArray = new CasProcessorExecArgImpl[args.size()];
-		args.toArray(argArray);
-		return argArray;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CASProcessorExecArgs#add(org.apache.uima.collection.metadata.CASProcessorExecArg)
+   */
+  public void add(CasProcessorExecArg aArg) {
+    args.add(aArg);
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CASProcessorExecArgs#remove(org.apache.uima.collection.metadata.CASProcessorExecArg)
-	 */
-	public void remove(int aIndex)
-	{
-		if ( args.size() <= aIndex )
-		{
-			args.remove(aIndex);
-		}
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CASProcessorExecArgs#get(java.lang.String)
+   */
+  public CasProcessorExecArg get(int aIndex) throws CpeDescriptorException {
+    if (args.size() <= aIndex) {
+      return (CasProcessorExecArg) args.get(aIndex);
+    }
+    return null;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CASProcessorExecArgs#getAll()
+   */
+  public CasProcessorExecArg[] getAll() {
+    CasProcessorExecArgImpl[] argArray = new CasProcessorExecArgImpl[args.size()];
+    args.toArray(argArray);
+    return argArray;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CASProcessorExecArgs#remove(org.apache.uima.collection.metadata.CASProcessorExecArg)
+   */
+  public void remove(int aIndex) {
+    if (args.size() <= aIndex) {
+      args.remove(aIndex);
+    }
+  }
 
 }

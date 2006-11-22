@@ -27,19 +27,19 @@ import org.apache.uima.collection.CollectionException;
 
 /**
  * @author alally
- *
+ * 
  * To change the template for this generated type comment go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
-public class TestCasInitializer extends CasInitializer_ImplBase
-{
+public class TestCasInitializer extends CasInitializer_ImplBase {
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.collection.CasInitializer#initializeCas(java.lang.Object, org.apache.uima.cas.CAS)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.CasInitializer#initializeCas(java.lang.Object,
+   *      org.apache.uima.cas.CAS)
    */
-  public void initializeCas(Object aObj, CAS aCAS)
-    throws CollectionException, IOException
-  {
+  public void initializeCas(Object aObj, CAS aCAS) throws CollectionException, IOException {
     // TODO Auto-generated method stub
 
   }

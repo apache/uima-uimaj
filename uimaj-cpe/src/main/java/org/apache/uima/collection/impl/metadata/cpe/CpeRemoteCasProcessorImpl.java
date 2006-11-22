@@ -20,43 +20,34 @@
 package org.apache.uima.collection.impl.metadata.cpe;
 
 import org.apache.uima.collection.metadata.CasProcessorDeploymentParams;
-import org.apache.uima.collection.metadata.CpeDescriptorException;
 import org.apache.uima.collection.metadata.CpeRemoteCasProcessor;
 
+public class CpeRemoteCasProcessorImpl extends CasProcessorCpeObject implements
+                CpeRemoteCasProcessor {
+  private static final long serialVersionUID = -1290194910813284905L;
 
-public class CpeRemoteCasProcessorImpl extends CasProcessorCpeObject implements CpeRemoteCasProcessor
-{
-	public CpeRemoteCasProcessorImpl()
-	{
-		super();
-		try
-		{
-			addDefaults();
-			super.setDeployment("remote");
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	};
+  public CpeRemoteCasProcessorImpl() {
+    super();
+    try {
+      addDefaults();
+      super.setDeployment("remote");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
 
-	/**
-	 * 
-	 */
-	protected void addDefaults()
-	{
-		try
-		{
-			if ( super.getDeploymentParams() == null )
-			{
-				CasProcessorDeploymentParams deployParams = CpeDescriptorFactory.produceDeployParams();
-				super.setDeploymentParams(deployParams);
-			}
-			super.addDefaults();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
+  /**
+   * 
+   */
+  protected void addDefaults() {
+    try {
+      if (super.getDeploymentParams() == null) {
+        CasProcessorDeploymentParams deployParams = CpeDescriptorFactory.produceDeployParams();
+        super.setDeploymentParams(deployParams);
+      }
+      super.addDefaults();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
 }

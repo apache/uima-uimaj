@@ -24,235 +24,219 @@ import org.apache.uima.collection.metadata.CpeConfiguration;
 import org.apache.uima.collection.metadata.CpeDescriptorException;
 import org.apache.uima.collection.metadata.CpeTimer;
 import org.apache.uima.collection.metadata.OutputQueue;
-
-import org.w3c.dom.Element;
-import org.xml.sax.helpers.AttributesImpl;
 import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
-import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.XMLParser;
-import org.apache.uima.util.XMLParser.ParsingOptions;
 
+public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConfiguration {
+  private static final long serialVersionUID = 1153815602567127240L;
 
-public class CpeConfigurationImpl extends MetaDataObject_impl implements CpeConfiguration
-{
-	private String startAt;
-	
-	private long num2Process;
-	
-	private CpeCheckpoint checkpoint;
-	
-	private String timerImpl;
-	
-	private String deployAs;
-	
-	private OutputQueue outputQueue;
-	
-	
-	public CpeConfigurationImpl() {}
-	
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CpeConfiguration#setDeployment(java.lang.String)
-	 */
-	public void setDeployment(String aDeploy) throws CpeDescriptorException
-	{
-		deployAs = aDeploy;
-	}
+  private String startAt;
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CpeConfiguration#getDeployment()
-	 */
-	public String getDeployment()
-	{
-		return deployAs;
-	}
+  private long num2Process;
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CpeConfiguration#setNumToProcess(int)
-	 */
-	public void setNumToProcess(int aNumToProcess) throws CpeDescriptorException
-	{
-		num2Process = aNumToProcess;
-	}
+  private CpeCheckpoint checkpoint;
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CpeConfiguration#getNumToProcess()
-	 */
-	public int getNumToProcess()
-	{
-		return (int)num2Process;
-	}
+  private String timerImpl;
 
-	public void setStartingEntityId(String aStartAt)
-	{
-		startAt = aStartAt;
-	}
+  private String deployAs;
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CpeConfiguration#getStartingEntityId()
-	 */
-	public String getStartingEntityId()
-	{
-		return startAt;
-	}
+  private OutputQueue outputQueue;
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CpeConfiguration#setCheckpoint(org.apache.uima.collection.metadata.CpeCheckpoint)
-	 */
-	public void setCheckpoint(CpeCheckpoint aCheckpoint) throws CpeDescriptorException
-	{
-		checkpoint = aCheckpoint;
-	}
+  public CpeConfigurationImpl() {
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CpeConfiguration#getCheckpoint()
-	 */
-	public CpeCheckpoint getCheckpoint()
-	{
-		return checkpoint;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CpeConfiguration#setDeployment(java.lang.String)
+   */
+  public void setDeployment(String aDeploy) throws CpeDescriptorException {
+    deployAs = aDeploy;
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CpeConfiguration#removeCheckpoint()
-	 */
-	public void removeCheckpoint()
-	{
-		checkpoint = null;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CpeConfiguration#getDeployment()
+   */
+  public String getDeployment() {
+    return deployAs;
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CpeConfiguration#setCpeTimer(org.apache.uima.collection.metadata.CpeTimer)
-	 */
-	public void setCpeTimer(CpeTimer aTimer)
-	{
-		timerImpl =  aTimer.get();
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CpeConfiguration#setNumToProcess(int)
+   */
+  public void setNumToProcess(int aNumToProcess) throws CpeDescriptorException {
+    num2Process = aNumToProcess;
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CpeConfiguration#getCpeTimer()
-	 */
-	public CpeTimer getCpeTimer()
-	{
-		return new CpeTimerImpl(timerImpl);
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CpeConfiguration#getNumToProcess()
+   */
+  public int getNumToProcess() {
+    return (int) num2Process;
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CpeConfiguration#removeCpeTimer()
-	 */
-	public void removeCpeTimer()
-	{
-		timerImpl = "";
-	}
-	
-	
-	
-	/**     **/
-	
+  public void setStartingEntityId(String aStartAt) {
+    startAt = aStartAt;
+  }
 
-	/**
-	 * @return
-	 */
-	public String getDeployAs()
-	{
-		return deployAs;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CpeConfiguration#getStartingEntityId()
+   */
+  public String getStartingEntityId() {
+    return startAt;
+  }
 
-	/**
-	 * @return
-	 */
-	public long getNum2Process()
-	{
-		return num2Process;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CpeConfiguration#setCheckpoint(org.apache.uima.collection.metadata.CpeCheckpoint)
+   */
+  public void setCheckpoint(CpeCheckpoint aCheckpoint) throws CpeDescriptorException {
+    checkpoint = aCheckpoint;
+  }
 
-	/**
-	 * @return
-	 */
-	public String getStartAt()
-	{
-		return startAt;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CpeConfiguration#getCheckpoint()
+   */
+  public CpeCheckpoint getCheckpoint() {
+    return checkpoint;
+  }
 
-	/**
-	 * @return
-	 */
-	public String getTimerImpl()
-	{
-		return timerImpl;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CpeConfiguration#removeCheckpoint()
+   */
+  public void removeCheckpoint() {
+    checkpoint = null;
+  }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CpeConfiguration#setCpeTimer(org.apache.uima.collection.metadata.CpeTimer)
+   */
+  public void setCpeTimer(CpeTimer aTimer) {
+    timerImpl = aTimer.get();
+  }
 
-	/**
-	 * @param string
-	 */
-	public void setDeployAs(String string)
-	{
-		deployAs = string;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CpeConfiguration#getCpeTimer()
+   */
+  public CpeTimer getCpeTimer() {
+    return new CpeTimerImpl(timerImpl);
+  }
 
-	/**
-	 * @param l
-	 */
-	public void setNumToProcess(long l)
-	{
-		num2Process = l;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CpeConfiguration#removeCpeTimer()
+   */
+  public void removeCpeTimer() {
+    timerImpl = "";
+  }
 
-	/**
-	 * @param i
-	 */
-	public void setStartAt(String aStartAt)
-	{
-		
-		startAt = aStartAt;
-	}
+  /** * */
 
-	/**
-	 * @param string
-	 */
-	public void setTimerImpl(String string)
-	{
-		timerImpl = string;
-	}
+  /**
+   * @return
+   */
+  public String getDeployAs() {
+    return deployAs;
+  }
 
-	/**
-	 * @return
-	 */
-	public OutputQueue getOutputQueue()
-	{
-		return outputQueue;
-	}
+  /**
+   * @return
+   */
+  public long getNum2Process() {
+    return num2Process;
+  }
 
-	public int getMaxTimeToWait()
-	{
-		if ( getOutputQueue() == null )
-		{
-			return 0;
-		}
-		return getOutputQueue().getDequeueTimeout();
-	}
-	/**
-	 * @param queue
-	 */
-	public void setOutputQueue(OutputQueue queue)
-	{
-		outputQueue = queue;
-	}
-	protected XmlizationInfo getXmlizationInfo()
-	{
-	  return XMLIZATION_INFO;
-	}
-	
-	static final private XmlizationInfo XMLIZATION_INFO =
-	  new XmlizationInfo("cpeConfig",
-		new PropertyXmlInfo[]{
-			new PropertyXmlInfo("numToProcess"),
-			new PropertyXmlInfo("deployAs"),
-			new PropertyXmlInfo("checkpoint",null),
-			new PropertyXmlInfo("timerImpl"),
-			new PropertyXmlInfo("outputQueue",null),
-			new PropertyXmlInfo("startAt"),
-		});
-      
+  /**
+   * @return
+   */
+  public String getStartAt() {
+    return startAt;
+  }
+
+  /**
+   * @return
+   */
+  public String getTimerImpl() {
+    return timerImpl;
+  }
+
+  /**
+   * @param string
+   */
+  public void setDeployAs(String string) {
+    deployAs = string;
+  }
+
+  /**
+   * @param l
+   */
+  public void setNumToProcess(long l) {
+    num2Process = l;
+  }
+
+  /**
+   * @param i
+   */
+  public void setStartAt(String aStartAt) {
+
+    startAt = aStartAt;
+  }
+
+  /**
+   * @param string
+   */
+  public void setTimerImpl(String string) {
+    timerImpl = string;
+  }
+
+  /**
+   * @return
+   */
+  public OutputQueue getOutputQueue() {
+    return outputQueue;
+  }
+
+  public int getMaxTimeToWait() {
+    if (getOutputQueue() == null) {
+      return 0;
+    }
+    return getOutputQueue().getDequeueTimeout();
+  }
+
+  /**
+   * @param queue
+   */
+  public void setOutputQueue(OutputQueue queue) {
+    outputQueue = queue;
+  }
+
+  protected XmlizationInfo getXmlizationInfo() {
+    return XMLIZATION_INFO;
+  }
+
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("cpeConfig",
+                  new PropertyXmlInfo[] { new PropertyXmlInfo("numToProcess"),
+                      new PropertyXmlInfo("deployAs"), new PropertyXmlInfo("checkpoint", null),
+                      new PropertyXmlInfo("timerImpl"), new PropertyXmlInfo("outputQueue", null),
+                      new PropertyXmlInfo("startAt"), });
+
 }

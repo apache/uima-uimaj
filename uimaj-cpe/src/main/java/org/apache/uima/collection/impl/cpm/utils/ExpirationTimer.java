@@ -25,61 +25,61 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.impl.cpm.engine.CPMEngine;
 import org.apache.uima.util.Level;
 
-
 /**
  * Facilitates cleaning up resources associated with chunking/sequencing logic.
  * 
  */
-public class ExpirationTimer extends Thread
-{
-	private long timeOut=1;
-	private HashMap map = null;
-	private String key="";
-	private String monitor = "";
-	CPMEngine cpm = null;
-	/**
-	 * Constructs a Timer that expires after a given interval. It keeps the 
-	 * map from growing indefinitely. Its main purpose is to remove entries
-	 * from a given map using a provided key.
-	 */
-	public ExpirationTimer(long aTimeout, HashMap aMap, String aKey, CPMEngine aCpm)
-	{
-		super();
-		timeOut = aTimeout;
-		map = aMap;
-		key = aKey;
-		cpm = aCpm;
-	}
-	/**
-	 * Sleeps until a given timeout occurs. When awaken this timer deletes
-	 * an entry in the shared HashMap using provided key. The map holds 
-	 * docId's that have been split into chunks. 
-	 * 
-	 */
-	public void run()
-	{
-		try
-		{
-			synchronized( monitor )
-			{
-				monitor.wait( timeOut );
-			}
-		}
-		catch( InterruptedException e) {}
-		
-		if ( map.containsKey(key))
-		{
-			if ( UIMAFramework.getLogger().isLoggable(Level.FINEST) )
-			{
-				UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(), "process",
-				        CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_timer_expired__FINEST",
-				        new Object[] {Thread.currentThread().getName(), key, String.valueOf(map.size())});
-			}
-			synchronized( map )
-			{
-				map.remove(key);
-			}
-		}
-	}
-	
+public class ExpirationTimer extends Thread {
+  private long timeOut = 1;
+
+  private HashMap map = null;
+
+  private String key = "";
+
+  private String monitor = "";
+
+  CPMEngine cpm = null;
+
+  /**
+   * Constructs a Timer that expires after a given interval. It keeps the map from growing
+   * indefinitely. Its main purpose is to remove entries from a given map using a provided key.
+   */
+  public ExpirationTimer(long aTimeout, HashMap aMap, String aKey, CPMEngine aCpm) {
+    super();
+    timeOut = aTimeout;
+    map = aMap;
+    key = aKey;
+    cpm = aCpm;
+  }
+
+  /**
+   * Sleeps until a given timeout occurs. When awaken this timer deletes an entry in the shared
+   * HashMap using provided key. The map holds docId's that have been split into chunks.
+   * 
+   */
+  public void run() {
+    try {
+      synchronized (monitor) {
+        monitor.wait(timeOut);
+      }
+    } catch (InterruptedException e) {
+    }
+
+    if (map.containsKey(key)) {
+      if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+        UIMAFramework.getLogger(this.getClass()).logrb(
+                        Level.FINEST,
+                        this.getClass().getName(),
+                        "process",
+                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                        "UIMA_CPM_timer_expired__FINEST",
+                        new Object[] { Thread.currentThread().getName(), key,
+                            String.valueOf(map.size()) });
+      }
+      synchronized (map) {
+        map.remove(key);
+      }
+    }
+  }
+
 }

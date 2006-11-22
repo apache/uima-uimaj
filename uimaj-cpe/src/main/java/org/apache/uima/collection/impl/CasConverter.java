@@ -39,128 +39,112 @@ import org.apache.uima.collection.CollectionException;
  * 
  * 
  */
-public class CasConverter 
-{
-  
-	private String mDocumentTextTypeName = "uima.cpm.DocumentText";
-  
+public class CasConverter {
+
+  private String mDocumentTextTypeName = "uima.cpm.DocumentText";
+
   private String mDocumentTextFeatureName = "value";
-  
+
   /**
-   * Gets the name of the CASData FeatureStructure Type that stores the
-   * document text.
-   *  
+   * Gets the name of the CASData FeatureStructure Type that stores the document text.
+   * 
    * @return the document text type name
    */
-  public String getDocumentTextTypeName()
-  {
+  public String getDocumentTextTypeName() {
     return mDocumentTextTypeName;
   }
 
   /**
-   * Sets the name of the CASData FeatureStructure Type that stores the
-   * document text.
-   *  
+   * Sets the name of the CASData FeatureStructure Type that stores the document text.
+   * 
    * @parma aDocumentTextTypeName the document text type name
    */
-  public void setDocumentTextTypeName(String aDocumentTextTypeName)
-  {
+  public void setDocumentTextTypeName(String aDocumentTextTypeName) {
     mDocumentTextTypeName = aDocumentTextTypeName;
   }
 
   /**
-   * Gets the name of the CASData Feature that stores the
-   * document text.
-   *  
+   * Gets the name of the CASData Feature that stores the document text.
+   * 
    * @return the document text feature name
    */
-  public String getDocumentTextFeatureName()
-  {
+  public String getDocumentTextFeatureName() {
     return mDocumentTextFeatureName;
   }
 
   /**
-   * Sets the name of the CASData Feature that stores the
-   * document text.
-   *  
-   * @param aDocumentTextFeatureName the document text feature name
+   * Sets the name of the CASData Feature that stores the document text.
+   * 
+   * @param aDocumentTextFeatureName
+   *          the document text feature name
    */
-  public void setDocumentTextFeatureName(String aDocumentTextFeatureName)
-  {
+  public void setDocumentTextFeatureName(String aDocumentTextFeatureName) {
     mDocumentTextFeatureName = aDocumentTextFeatureName;
   }
 
-  
   /**
    * Convert CAS Data to CAS Container (aka CAS Object)
-   *  
-   * @param aData CAS Data to convert
-   * @param aContainer CAS to convert into
-   * @param aLenient if true, data that does not fit into CAS type system will
-   *    be ignored.  If false, an exception will be thrown in that case.
    * 
-   * @throws CollectionException if <code>aLenient</code> is false and a type
-   *   system incompatibility is found
+   * @param aData
+   *          CAS Data to convert
+   * @param aContainer
+   *          CAS to convert into
+   * @param aLenient
+   *          if true, data that does not fit into CAS type system will be ignored. If false, an
+   *          exception will be thrown in that case.
+   * 
+   * @throws CollectionException
+   *           if <code>aLenient</code> is false and a type system incompatibility is found
    */
   public void casDataToCasContainer(CasData aData, CAS aContainer, boolean aLenient)
-    throws CollectionException
-  {
-    //clear existing contents of container
+                  throws CollectionException {
+    // clear existing contents of container
     aContainer.reset();
 
-    //Generate XCAS events and pipe them to XCASDeserializer   
-		CasDataToXCas generator = new CasDataToXCas();
-		generator.setDocumentTextTypeName(this.getDocumentTextTypeName());
-		generator.setDocumentTextFeatureName(this.getDocumentTextFeatureName());
+    // Generate XCAS events and pipe them to XCASDeserializer
+    CasDataToXCas generator = new CasDataToXCas();
+    generator.setDocumentTextTypeName(this.getDocumentTextTypeName());
+    generator.setDocumentTextFeatureName(this.getDocumentTextFeatureName());
     XCASDeserializer xcasDeser = new XCASDeserializer(aContainer.getTypeSystem());
     xcasDeser.setDocumentTypeName(this.getDocumentTextTypeName());
-    //xcasDeser.setDocumentTextFeautre(this.getDocumentTextFeatureName()); NOT NEEDED
-    
-    //to be lenient, install OutOfTypeSystemData object to collect data that doesn't
-    //fit into target CAS's type system.  
+    // xcasDeser.setDocumentTextFeautre(this.getDocumentTextFeatureName()); NOT NEEDED
+
+    // to be lenient, install OutOfTypeSystemData object to collect data that doesn't
+    // fit into target CAS's type system.
     OutOfTypeSystemData ootsd = null;
-    if (aLenient)
-    {
-    	ootsd = new OutOfTypeSystemData();
+    if (aLenient) {
+      ootsd = new OutOfTypeSystemData();
     }
-    generator.setContentHandler(xcasDeser.getXCASHandler(aContainer, ootsd));    
-		try
-		{
-			generator.generateXCas(aData);
-		}
-		catch(Exception e)
-		{
-			throw new CollectionException(e);
-		}
+    generator.setContentHandler(xcasDeser.getXCASHandler(aContainer, ootsd));
+    try {
+      generator.generateXCas(aData);
+    } catch (Exception e) {
+      throw new CollectionException(e);
+    }
   }
-  
+
   /**
    * Convert CAS Container (aka CAS Object) to CAS Data
-   *  
-   * @param aContainer CAS to convert
+   * 
+   * @param aContainer
+   *          CAS to convert
    * 
    * @return CasData object containing all information from the CAS
    */
-  public CasData casContainerToCasData(CAS aContainer)
-  {
-		//generate XCAS events and pipe them to XCasToCasDataSaxHandler
-		CasData result = new CasDataImpl();
-		XCasToCasDataSaxHandler handler = new XCasToCasDataSaxHandler(result);
-		XCASSerializer xcasSer = new XCASSerializer(aContainer.getTypeSystem());
-		xcasSer.setDocumentTypeName(this.getDocumentTextTypeName());
-		xcasSer.setDocumentTextFeature(this.getDocumentTextFeatureName());
-		try
-    {
+  public CasData casContainerToCasData(CAS aContainer) {
+    // generate XCAS events and pipe them to XCasToCasDataSaxHandler
+    CasData result = new CasDataImpl();
+    XCasToCasDataSaxHandler handler = new XCasToCasDataSaxHandler(result);
+    XCASSerializer xcasSer = new XCASSerializer(aContainer.getTypeSystem());
+    xcasSer.setDocumentTypeName(this.getDocumentTextTypeName());
+    xcasSer.setDocumentTextFeature(this.getDocumentTextFeatureName());
+    try {
       xcasSer.serialize(aContainer, handler);
-    }
-    catch (IOException e)
-    {
+    } catch (IOException e) {
+      throw new UIMARuntimeException(e);
+    } catch (SAXException e) {
       throw new UIMARuntimeException(e);
     }
-    catch (SAXException e)
-    {
-			throw new UIMARuntimeException(e);
-    }
-		return result;
+    return result;
   }
 }

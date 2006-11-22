@@ -31,52 +31,54 @@ import org.apache.uima.collection.CollectionReader_ImplBase;
 import org.apache.uima.util.Progress;
 
 /**
- * A test collection reader that just Asserts the CAS heap size to
- * be a specified value.
+ * A test collection reader that just Asserts the CAS heap size to be a specified value.
  * 
- * @author Adam Lally 
+ * @author Adam Lally
  */
-public class CasHeapSizeTestCollectionReader extends CollectionReader_ImplBase
-{
+public class CasHeapSizeTestCollectionReader extends CollectionReader_ImplBase {
   static final int EXPECTED_HEAP_SIZE = 100000;
 
   private int numChecks = 10;
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.CollectionReader#getNext(org.apache.uima.cas.CAS)
    */
-  public void getNext(CAS aCAS) throws IOException, CollectionException
-  {
+  public void getNext(CAS aCAS) throws IOException, CollectionException {
     int actualHeapSize = CasTestUtil.getHeapSize(aCAS);
-    
-    Assert.assertEquals(EXPECTED_HEAP_SIZE, actualHeapSize);
-    numChecks --;
 
-    //populate with doc to avoid error
-     ((TCAS) aCAS).setDocumentText("This is a test");
+    Assert.assertEquals(EXPECTED_HEAP_SIZE, actualHeapSize);
+    numChecks--;
+
+    // populate with doc to avoid error
+    ((TCAS) aCAS).setDocumentText("This is a test");
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#close()
    */
-  public void close() throws IOException
-  {
+  public void close() throws IOException {
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#getProgress()
    */
-  public Progress[] getProgress()
-  {
+  public Progress[] getProgress() {
     return null;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#hasNext()
    */
-  public boolean hasNext() throws IOException, CollectionException
-  {
+  public boolean hasNext() throws IOException, CollectionException {
     return numChecks > 0;
   }
- 
+
 }

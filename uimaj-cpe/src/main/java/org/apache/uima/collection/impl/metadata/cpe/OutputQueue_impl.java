@@ -18,89 +18,86 @@
  */
 
 package org.apache.uima.collection.impl.metadata.cpe;
-import org.w3c.dom.Element;
-import org.xml.sax.helpers.AttributesImpl;
 
 import org.apache.uima.collection.metadata.OutputQueue;
-import org.apache.uima.resource.Parameter;
-import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLParser.ParsingOptions;
+import org.w3c.dom.Element;
+import org.xml.sax.helpers.AttributesImpl;
 
-public class OutputQueue_impl extends MetaDataObject_impl implements OutputQueue
-{
-	private int dequeueTimeout;
-	private String queueClass;
-	
-	/**
-	 * Overridden to read "queueClass" and "dequeueTimeout" attributes.
-	 * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element, org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
-	 */
-	public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions) throws InvalidXMLException
-	{
-	  setQueueClass(aElement.getAttribute("queueClass"));
-	  String timeout = aElement.getAttribute("dequeueTimeout"); 
-	  if ( timeout != null && timeout.trim().length() > 0 )
-	  {
-		setDequeueTimeout(Integer.parseInt(timeout));
-	  }
-	  
-	}
-	/**
-	  * Overridden to handle "queueClass" and "dequeueTimeout" attributes.
-	  * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
-	  */
-	 protected AttributesImpl getXMLAttributes()
-	 {
-	   AttributesImpl attrs = super.getXMLAttributes();
-	   attrs.addAttribute("","dequeueTimeout","dequeueTimeout","CDATA",String.valueOf(getDequeueTimeout()));
-	   attrs.addAttribute("","queueClass","queueClass","CDATA",String.valueOf(getQueueClass()));
-	   return attrs;
-	 }
-	protected XmlizationInfo getXmlizationInfo()
-	{
-	  return XMLIZATION_INFO;
-	}
-  
-  
-	static final private XmlizationInfo XMLIZATION_INFO =
-	new XmlizationInfo("outputQueue",
-		new PropertyXmlInfo[0]);
+public class OutputQueue_impl extends MetaDataObject_impl implements OutputQueue {
+  private static final long serialVersionUID = -3001016349004832820L;
 
-	/**
-	 * @return
-	 */
-	public int getDequeueTimeout()
-	{
-		return dequeueTimeout;
-	}
+  private int dequeueTimeout;
 
-	/**
-	 * @return
-	 */
-	public String getQueueClass()
-	{
-		return queueClass;
-	}
+  private String queueClass;
 
-	/**
-	 * @param i
-	 */
-	public void setDequeueTimeout(int i)
-	{
-		dequeueTimeout = i;
-	}
+  /**
+   * Overridden to read "queueClass" and "dequeueTimeout" attributes.
+   * 
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
+   *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
+   */
+  public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+                  throws InvalidXMLException {
+    setQueueClass(aElement.getAttribute("queueClass"));
+    String timeout = aElement.getAttribute("dequeueTimeout");
+    if (timeout != null && timeout.trim().length() > 0) {
+      setDequeueTimeout(Integer.parseInt(timeout));
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setQueueClass(String string)
-	{
-		queueClass = string;
-	}
+  }
+
+  /**
+   * Overridden to handle "queueClass" and "dequeueTimeout" attributes.
+   * 
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
+   */
+  protected AttributesImpl getXMLAttributes() {
+    AttributesImpl attrs = super.getXMLAttributes();
+    attrs.addAttribute("", "dequeueTimeout", "dequeueTimeout", "CDATA", String
+                    .valueOf(getDequeueTimeout()));
+    attrs.addAttribute("", "queueClass", "queueClass", "CDATA", String.valueOf(getQueueClass()));
+    return attrs;
+  }
+
+  protected XmlizationInfo getXmlizationInfo() {
+    return XMLIZATION_INFO;
+  }
+
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("outputQueue",
+                  new PropertyXmlInfo[0]);
+
+  /**
+   * @return
+   */
+  public int getDequeueTimeout() {
+    return dequeueTimeout;
+  }
+
+  /**
+   * @return
+   */
+  public String getQueueClass() {
+    return queueClass;
+  }
+
+  /**
+   * @param i
+   */
+  public void setDequeueTimeout(int i) {
+    dequeueTimeout = i;
+  }
+
+  /**
+   * @param string
+   */
+  public void setQueueClass(String string) {
+    queueClass = string;
+  }
 
 }

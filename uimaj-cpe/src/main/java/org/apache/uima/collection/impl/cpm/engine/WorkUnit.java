@@ -22,40 +22,40 @@ package org.apache.uima.collection.impl.cpm.engine;
 import org.apache.uima.cas.CAS;
 
 /**
- *
+ * 
  */
-public class WorkUnit
-{
-	private Object payload = null;
-	private CAS[] cas = null;
-	private boolean timedout = false;
-	/**
-	 * 
-	 */
-	public WorkUnit(Object aPayload)
-	{
-		super();
-		payload = aPayload;
-	}
-	public Object get()
-	{
-		return payload;
-	}
-	public void setCas( CAS[] aCas )
-	{
-		cas = aCas;
-	}
-	
-	public CAS[] getCas()
-	{
-		return cas;
-	}
-	public void setTimedOut()
-	{
-		timedout = true;
-	}
-	public boolean isTimedOut()
-	{
-		return timedout;
-	}
+public class WorkUnit {
+  private Object payload = null;
+
+  private CAS[] cas = null;
+
+  private boolean timedout = false;
+
+  /**
+   * 
+   */
+  public WorkUnit(Object aPayload) {
+    super();
+    payload = aPayload;
+  }
+
+  public Object get() {
+    return payload;
+  }
+
+  public void setCas(CAS[] aCas) {
+    cas = aCas;
+  }
+
+  public CAS[] getCas() {
+    return cas;
+  }
+
+  public void setTimedOut() {
+    timedout = true;
+  }
+
+  public boolean isTimedOut() {
+    return timedout;
+  }
 }

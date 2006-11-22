@@ -21,40 +21,33 @@ package org.apache.uima.collection.impl.metadata.cpe;
 
 import org.apache.uima.collection.metadata.NameValuePair;
 
+public class NameValuePairImpl implements NameValuePair {
+  private String name;
 
-public class NameValuePairImpl implements NameValuePair
-{
-	private String name;
-	private Object value;
-	
-	public NameValuePairImpl()
-	{
-	}
+  private Object value;
 
-    public NameValuePairImpl(String aName, Object aValue)
-    {
-        name = aName;
-        value = aValue;
-    }
-    
-  public String getName()
-  {
+  public NameValuePairImpl() {
+  }
+
+  public NameValuePairImpl(String aName, Object aValue) {
+    name = aName;
+    value = aValue;
+  }
+
+  public String getName() {
     return name;
   }
 
-  public void setName(String aName)
-  {
-  	name = aName;
+  public void setName(String aName) {
+    name = aName;
   }
 
-  public Object getValue()
-  {
+  public Object getValue() {
     return value;
   }
 
-  public void setValue(Object aValue)
-  {
-  	value = aValue;
+  public void setValue(Object aValue) {
+    value = aValue;
   }
 
 }

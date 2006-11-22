@@ -18,116 +18,112 @@
  */
 
 package org.apache.uima.collection.impl.metadata.cpe;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
+
+import org.apache.uima.collection.metadata.CasProcessorTimeout;
 import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLParser.ParsingOptions;
-import org.apache.uima.collection.metadata.CasProcessorTimeout;
+import org.w3c.dom.Element;
+import org.xml.sax.helpers.AttributesImpl;
 
+public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasProcessorTimeout {
+  private static final long serialVersionUID = -8276573951395652039L;
 
-public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasProcessorTimeout
-{	
-	private String defaultTimeout="-1";
-	private String max;
-	
-	public CasProcessorTimeoutImpl() {}
+  private String defaultTimeout = "-1";
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CasProcessorTimeout#set(int)
-	 */
-	public void set(int aFrequency)
-	{
-		max = String.valueOf(aFrequency);
-	}
+  private String max;
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CasProcessorTimeout#get()
-	 */
-	public int get()
-	{
-		return Integer.parseInt(max);
-	}
-	/**
-	 * Overridden to read "max" and "default" attributes.
-	 * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element, org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
-	 */
-	public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions) throws InvalidXMLException
-	{
-	  setMax(aElement.getAttribute("max"));
-	  setDefaultTimeout(aElement.getAttribute("default"));
-	}
-	/**
-	  * Overridden to handle "max" and "default" attributes.
-	  * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
-	  */
-	 protected AttributesImpl getXMLAttributes()
-	 {
-	   AttributesImpl attrs = super.getXMLAttributes();
-	   attrs.addAttribute("","max","max","CDATA",getMax());
-	   if ( getDefaultTimeout() != null && getDefaultTimeout().trim().length() > 0 )
-	   {
-			attrs.addAttribute("","default","default","CDATA",getDefaultTimeout());
-	   }	   	
-	   return attrs;
-	 }
-	protected XmlizationInfo getXmlizationInfo()
-	{
-	  return XMLIZATION_INFO;
-	}
-  
-  
-	static final private XmlizationInfo XMLIZATION_INFO =
-	new XmlizationInfo("timeout",
-		new PropertyXmlInfo[0]);
+  public CasProcessorTimeoutImpl() {
+  }
 
-	/**
-	 * @return
-	 */
-	public static XmlizationInfo getXMLIZATION_INFO()
-	{
-		return XMLIZATION_INFO;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CasProcessorTimeout#set(int)
+   */
+  public void set(int aFrequency) {
+    max = String.valueOf(aFrequency);
+  }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CasProcessorTimeout#get()
+   */
+  public int get() {
+    return Integer.parseInt(max);
+  }
 
-	/** PROTECTED METHODS USED BY THE PARSER */
-	/**
-	 * @return
-	 */
-	public String getMax()
-	{
-		return max;
-	}
+  /**
+   * Overridden to read "max" and "default" attributes.
+   * 
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
+   *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
+   */
+  public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+                  throws InvalidXMLException {
+    setMax(aElement.getAttribute("max"));
+    setDefaultTimeout(aElement.getAttribute("default"));
+  }
 
-	/**
-	 * @return
-	 */
-	public String getDefaultTimeout()
-	{
-		return defaultTimeout;
-	}
+  /**
+   * Overridden to handle "max" and "default" attributes.
+   * 
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
+   */
+  protected AttributesImpl getXMLAttributes() {
+    AttributesImpl attrs = super.getXMLAttributes();
+    attrs.addAttribute("", "max", "max", "CDATA", getMax());
+    if (getDefaultTimeout() != null && getDefaultTimeout().trim().length() > 0) {
+      attrs.addAttribute("", "default", "default", "CDATA", getDefaultTimeout());
+    }
+    return attrs;
+  }
 
-	/**
-	 * @param string
-	 */
-	public void setDefaultTimeout(String string)
-	{
-		defaultTimeout = string;
-	}
+  protected XmlizationInfo getXmlizationInfo() {
+    return XMLIZATION_INFO;
+  }
 
-	/**
-	 * @param string
-	 */
-	public void setMax(String string)
-	{
-		max = string;
-	}
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("timeout",
+                  new PropertyXmlInfo[0]);
+
+  /**
+   * @return
+   */
+  public static XmlizationInfo getXMLIZATION_INFO() {
+    return XMLIZATION_INFO;
+  }
+
+  /** PROTECTED METHODS USED BY THE PARSER */
+  /**
+   * @return
+   */
+  public String getMax() {
+    return max;
+  }
+
+  /**
+   * @return
+   */
+  public String getDefaultTimeout() {
+    return defaultTimeout;
+  }
+
+  /**
+   * @param string
+   */
+  public void setDefaultTimeout(String string) {
+    defaultTimeout = string;
+  }
+
+  /**
+   * @param string
+   */
+  public void setMax(String string) {
+    max = string;
+  }
 
 }

@@ -23,41 +23,36 @@ import org.apache.uima.cas_data.PrimitiveValue;
 import org.apache.uima.cas_data.impl.PrimitiveValueImpl;
 
 /**
- * @deprecated  Use PrimitiveValueImpl instaed.  This is just here for backwards compatibility.
+ * @deprecated Use PrimitiveValueImpl instead. This is just here for backwards compatibility.
  */
-public class VinciPrimitiveValue extends PrimitiveValueImpl implements PrimitiveValue
-{
+public class VinciPrimitiveValue extends PrimitiveValueImpl implements PrimitiveValue {
 
-	public VinciPrimitiveValue(String aValue)
-	{
-		super(aValue);
-	}
+  private static final long serialVersionUID = 1668126114372701948L;
 
-	public VinciPrimitiveValue(int aValue)
-	{
-		super(aValue);
-	}
+  public VinciPrimitiveValue(String aValue) {
+    super(aValue);
+  }
 
-	public VinciPrimitiveValue(float aValue)
-	{
-		super(aValue);
-	}
+  public VinciPrimitiveValue(int aValue) {
+    super(aValue);
+  }
 
-	public VinciPrimitiveValue(int[] aValue)
-	{
-		super(null);
-		throw new UnsupportedOperationException("Arrays are not primitive values");
-	}
+  public VinciPrimitiveValue(float aValue) {
+    super(aValue);
+  }
 
-	public VinciPrimitiveValue(float[] aValue)
-	{
-		super(null);
-		throw new UnsupportedOperationException("Arrays are not primitive values");
-	}
+  public VinciPrimitiveValue(int[] aValue) {
+    super(null);
+    throw new UnsupportedOperationException("Arrays are not primitive values");
+  }
 
-	public VinciPrimitiveValue(String[] aValue)
-	{
-		super(null);
-		throw new UnsupportedOperationException("Arrays are not primitive values");
-	}
+  public VinciPrimitiveValue(float[] aValue) {
+    super(null);
+    throw new UnsupportedOperationException("Arrays are not primitive values");
+  }
+
+  public VinciPrimitiveValue(String[] aValue) {
+    super(null);
+    throw new UnsupportedOperationException("Arrays are not primitive values");
+  }
 }

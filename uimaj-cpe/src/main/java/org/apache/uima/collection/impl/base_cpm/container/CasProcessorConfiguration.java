@@ -27,38 +27,51 @@ import org.apache.uima.resource.ResourceConfigurationException;
 
 /**
  * 
- * Interface for setter and getter methods for the Cas Processor
- * configuration as defined in the CPE descriptor. Through these
- * methods an implmentation gets access to individual Cas Processor
- * configuration settings. 
+ * Interface for setter and getter methods for the Cas Processor configuration as defined in the CPE
+ * descriptor. Through these methods an implmentation gets access to individual Cas Processor
+ * configuration settings.
  */
-public interface CasProcessorConfiguration
-{
-	public String getName();
-	public long getTimeout();
-	
-	public boolean runInSeparateProcess();
-	public boolean isJavaProcess();
-	public int getErrorRate();
-	public int getMaxErrorCount();
-	public long getErrorSampleSize();
-	public String getActionOnError();
+public interface CasProcessorConfiguration {
+  public String getName();
 
-	public String getActionOnMaxRestart();
-	public int getMaxRestartCount();
-	public int getMaxRetryCount();
+  public long getTimeout();
 
-	public List getDeploymentParameters();
-	public String getDeploymentParameter( String aDeployParameter);	
-	public String getDeploymentType();
-	public String getFilterString();
-	public LinkedList getFilter() throws ResourceConfigurationException;
-	public String[] getKeysToDrop() throws ResourceConfigurationException;
-	public int getBatchSize();
-	
-	public String getDescriptor();	
-	public Execute getExecSpec();
-	
-	public int getMaxTimeToWaitBetweenRetries();
+  public boolean runInSeparateProcess();
+
+  public boolean isJavaProcess();
+
+  public int getErrorRate();
+
+  public int getMaxErrorCount();
+
+  public long getErrorSampleSize();
+
+  public String getActionOnError();
+
+  public String getActionOnMaxRestart();
+
+  public int getMaxRestartCount();
+
+  public int getMaxRetryCount();
+
+  public List getDeploymentParameters();
+
+  public String getDeploymentParameter(String aDeployParameter);
+
+  public String getDeploymentType();
+
+  public String getFilterString();
+
+  public LinkedList getFilter() throws ResourceConfigurationException;
+
+  public String[] getKeysToDrop() throws ResourceConfigurationException;
+
+  public int getBatchSize();
+
+  public String getDescriptor();
+
+  public Execute getExecSpec();
+
+  public int getMaxTimeToWaitBetweenRetries();
 
 }

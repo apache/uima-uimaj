@@ -24,56 +24,53 @@ package org.apache.uima.collection.impl.cpm.utils;
  * 
  * 
  */
-public class Execute
-{
-	private String[] environment;
-	private String[] cmdLine;
-	
-	/**
-	 * 
-	 */
-	public Execute()
-	{
-		super();
-	}
+public class Execute {
+  private String[] environment;
 
-	/**
-	 * Returns command line as String Array
-	 * 
-	 * @return - command line
-	 */
-	public String[] getCmdLine()
-	{
-		return cmdLine;
-	}
+  private String[] cmdLine;
 
-	/**
-	 * Returns Cas Processor environment
-	 * 
-	 * @return - environment
-	 */
-	public String[] getEnvironment()
-	{
-		return environment;
-	}
+  /**
+   * 
+   */
+  public Execute() {
+    super();
+  }
 
-	/**
-	 * Copies Cas Processor command line
-	 * 
-	 * @param strings - command line 
-	 */
-	public void setCmdLine(String[] strings)
-	{
-		cmdLine = strings;
-	}
+  /**
+   * Returns command line as String Array
+   * 
+   * @return - command line
+   */
+  public String[] getCmdLine() {
+    return cmdLine;
+  }
 
-	/**
-	 * Copies Cas Processor environment
-	 * @param strings
-	 */
-	public void setEnvironment(String[] strings)
-	{
-		environment = strings;
-	}
+  /**
+   * Returns Cas Processor environment
+   * 
+   * @return - environment
+   */
+  public String[] getEnvironment() {
+    return environment;
+  }
+
+  /**
+   * Copies Cas Processor command line
+   * 
+   * @param strings -
+   *          command line
+   */
+  public void setCmdLine(String[] strings) {
+    cmdLine = strings;
+  }
+
+  /**
+   * Copies Cas Processor environment
+   * 
+   * @param strings
+   */
+  public void setEnvironment(String[] strings) {
+    environment = strings;
+  }
 
 }

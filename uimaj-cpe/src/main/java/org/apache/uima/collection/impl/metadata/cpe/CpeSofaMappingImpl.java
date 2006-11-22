@@ -20,95 +20,87 @@
 package org.apache.uima.collection.impl.metadata.cpe;
 
 import org.apache.uima.collection.metadata.CpeSofaMapping;
-
-
-import org.xml.sax.ContentHandler;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
 import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLParser.ParsingOptions;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.xml.sax.helpers.AttributesImpl;
 
-public class CpeSofaMappingImpl extends MetaDataObject_impl implements CpeSofaMapping
-{
-	private String componentSofaName;
-	private String cpeSofaName;
+public class CpeSofaMappingImpl extends MetaDataObject_impl implements CpeSofaMapping {
+  private static final long serialVersionUID = -2488866857646083657L;
 
-	protected XmlizationInfo getXmlizationInfo()
-	{
-		return XMLIZATION_INFO;
-	}
+  private String componentSofaName;
 
-	static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("cpeSofaMapping", new PropertyXmlInfo[0]);
+  private String cpeSofaName;
 
-	/**
-	 * Overridden to handle "name" and "value" attributes.
-	 * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
-	 */
-	protected AttributesImpl getXMLAttributes()
-	{
-		AttributesImpl attrs = super.getXMLAttributes();
-		try
-		{
-			attrs.addAttribute("", "cpeSofaName", "cpeSofaName", "CDATA", getCpeSofaName());
-			attrs.addAttribute("", "componentSofaName", "componentSofaName", "CDATA", getComponentSofaName());
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		return attrs;
-	}
+  protected XmlizationInfo getXmlizationInfo() {
+    return XMLIZATION_INFO;
+  }
 
-	/**
-	 * Overridden to read "name" and "value" attributes.
-	 * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element, org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
-	 */
-	public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions) throws InvalidXMLException
-	{
-		//assumes all children are parameter elements
-		NamedNodeMap nodeMap = aElement.getAttributes();
-		setCpeSofaName( nodeMap.getNamedItem("cpeSofaName").getNodeValue());
-		setComponentSofaName(nodeMap.getNamedItem("componentSofaName").getNodeValue());
-	}
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("cpeSofaMapping",
+                  new PropertyXmlInfo[0]);
 
-	/**
-	 * @return
-	 */
-	public String getComponentSofaName()
-	{
-		return componentSofaName;
-	}
+  /**
+   * Overridden to handle "name" and "value" attributes.
+   * 
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
+   */
+  protected AttributesImpl getXMLAttributes() {
+    AttributesImpl attrs = super.getXMLAttributes();
+    try {
+      attrs.addAttribute("", "cpeSofaName", "cpeSofaName", "CDATA", getCpeSofaName());
+      attrs.addAttribute("", "componentSofaName", "componentSofaName", "CDATA",
+                      getComponentSofaName());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return attrs;
+  }
 
-	/**
-	 * @return
-	 */
-	public String getCpeSofaName()
-	{
-		return cpeSofaName;
-	}
+  /**
+   * Overridden to read "name" and "value" attributes.
+   * 
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
+   *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
+   */
+  public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
+                  throws InvalidXMLException {
+    // assumes all children are parameter elements
+    NamedNodeMap nodeMap = aElement.getAttributes();
+    setCpeSofaName(nodeMap.getNamedItem("cpeSofaName").getNodeValue());
+    setComponentSofaName(nodeMap.getNamedItem("componentSofaName").getNodeValue());
+  }
 
-	/**
-	 * @param string
-	 */
-	public void setComponentSofaName(String string)
-	{
-		componentSofaName = string;
-	}
+  /**
+   * @return
+   */
+  public String getComponentSofaName() {
+    return componentSofaName;
+  }
 
-	/**
-	 * @param string
-	 */
-	public void setCpeSofaName(String string)
-	{
-		cpeSofaName = string;
-	}
+  /**
+   * @return
+   */
+  public String getCpeSofaName() {
+    return cpeSofaName;
+  }
+
+  /**
+   * @param string
+   */
+  public void setComponentSofaName(String string) {
+    componentSofaName = string;
+  }
+
+  /**
+   * @param string
+   */
+  public void setCpeSofaName(String string) {
+    cpeSofaName = string;
+  }
 
 }

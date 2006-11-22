@@ -19,16 +19,15 @@
 
 package org.apache.uima.collection.impl.base_cpm.container;
 
-public class ServiceConnectionException extends Exception
-{
-	public ServiceConnectionException( String msg )
-	{
-		super(msg);
-	}
-	public ServiceConnectionException( Throwable aThrowable )
-	{
-		super(aThrowable);
-	}
+public class ServiceConnectionException extends Exception {
+  private static final long serialVersionUID = 2965580005726446212L;
 
- 	
+  public ServiceConnectionException(String msg) {
+    super(msg);
+  }
+
+  public ServiceConnectionException(Throwable aThrowable) {
+    super(aThrowable);
+  }
+
 }

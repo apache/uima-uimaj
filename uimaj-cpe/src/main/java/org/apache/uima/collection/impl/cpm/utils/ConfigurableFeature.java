@@ -21,83 +21,67 @@ package org.apache.uima.collection.impl.cpm.utils;
 
 import java.util.ArrayList;
 
-public class ConfigurableFeature
-{
-	private ValuePair value;
-	private ArrayList attributeList = new ArrayList();
-	
-	public ConfigurableFeature(String oldV, String newV)
-	{
-		value = new ValuePair( oldV, newV);
-	}
-	
-	public String getOldFeatureName()
-	{
-		return value.getOldV();
-	}
-	
-	public String getNewFeatureName()
-	{
-		return value.getNewV();
-	}
+public class ConfigurableFeature {
+  private ValuePair value;
 
-	public void addAttribute( ValuePair value )
-	{
-		attributeList.add( value);
-	}
-	public void addAttributes( ArrayList attList )
-	{
-		attributeList = attList;
-	}
-	
-	public String getOldAttributeValue( int index )
-	{
-		if ( index < 0 || attributeList.size() == 0 || attributeList.size() < index )
-		{
-			return null;
-		}
-		return (String)((ValuePair)attributeList.get(index)).getOldV();
-	}	
+  private ArrayList attributeList = new ArrayList();
 
-	public String getOldAttributeValue( String key )
-	{
-		for( int i=0; i < attributeList.size(); i++ )
-		{
-			if ( ((ValuePair)attributeList.get(i)).getOldV().equals( key ) )
-			{
-				return ((ValuePair)attributeList.get(i)).getOldV();
-			}		
-		}
-		return null;
-	}	
+  public ConfigurableFeature(String oldV, String newV) {
+    value = new ValuePair(oldV, newV);
+  }
 
-	public String getNewAttributeValue( int index )
-	{
-		if ( index < 0 || attributeList.size() == 0 || attributeList.size() < index )
-		{
-			return null;
-		}
-		return (String)((ValuePair)attributeList.get(index)).getNewV();
-	}	
-	
-	public String getNewAttributeValue( String key )
-	{
-		for( int i=0; i < attributeList.size(); i++ )
-		{
-			if ( ((ValuePair)attributeList.get(i)).getOldV().equals( key ) )
-			{
-				return ((ValuePair)attributeList.get(i)).getNewV();
-			}		
-		}
-		return null;
-	}	
+  public String getOldFeatureName() {
+    return value.getOldV();
+  }
 
-	public int attributeListSize()
-	{
-		if ( attributeList == null )
-		{
-			return 0;
-		}
-		return attributeList.size();
-	}
+  public String getNewFeatureName() {
+    return value.getNewV();
+  }
+
+  public void addAttribute(ValuePair value) {
+    attributeList.add(value);
+  }
+
+  public void addAttributes(ArrayList attList) {
+    attributeList = attList;
+  }
+
+  public String getOldAttributeValue(int index) {
+    if (index < 0 || attributeList.size() == 0 || attributeList.size() < index) {
+      return null;
+    }
+    return ((ValuePair) attributeList.get(index)).getOldV();
+  }
+
+  public String getOldAttributeValue(String key) {
+    for (int i = 0; i < attributeList.size(); i++) {
+      if (((ValuePair) attributeList.get(i)).getOldV().equals(key)) {
+        return ((ValuePair) attributeList.get(i)).getOldV();
+      }
+    }
+    return null;
+  }
+
+  public String getNewAttributeValue(int index) {
+    if (index < 0 || attributeList.size() == 0 || attributeList.size() < index) {
+      return null;
+    }
+    return ((ValuePair) attributeList.get(index)).getNewV();
+  }
+
+  public String getNewAttributeValue(String key) {
+    for (int i = 0; i < attributeList.size(); i++) {
+      if (((ValuePair) attributeList.get(i)).getOldV().equals(key)) {
+        return ((ValuePair) attributeList.get(i)).getNewV();
+      }
+    }
+    return null;
+  }
+
+  public int attributeListSize() {
+    if (attributeList == null) {
+      return 0;
+    }
+    return attributeList.size();
+  }
 }

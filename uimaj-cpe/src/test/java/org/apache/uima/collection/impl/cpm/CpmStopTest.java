@@ -31,198 +31,191 @@ import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
 import org.apache.uima.test.junit_extension.TestPropertyReader;
 
-public class CpmStopTest extends TestCase
-{
-   private static final String separator = System.getProperties().getProperty("file.separator");
+public class CpmStopTest extends TestCase {
+  private static final String separator = System.getProperties().getProperty("file.separator");
 
-   private static String junitTestBasePath;
-   
-   /**
-    * @see junit.framework.TestCase#setUp()
-    */
-   protected void setUp() throws Exception
-   {
-      //get test base path setting
-      junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
-   }
+  private static String junitTestBasePath;
 
-   /**
-   	* @see junit.framework.TestCase#tearDown()
-   	*/
-   protected void tearDown() throws Exception
-   {
-      super.tearDown();
-      FunctionErrorStore.resetCount();
-   }
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    // get test base path setting
+    junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
+  }
 
-   public void testCpmStopSingleThread() throws Exception
-   {
-      int documentCount = 100000; //hopefully enough that we won't finish before we abort
-		  int threadCount = 1;
+  /**
+   * @see junit.framework.TestCase#tearDown()
+   */
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    FunctionErrorStore.resetCount();
+  }
 
-      //setup CPM to process 100 documents
-      CollectionProcessingEngine cpe = setupCpm(documentCount, threadCount, false);
+  public void testCpmStopSingleThread() throws Exception {
+    int documentCount = 100000; // hopefully enough that we won't finish before we abort
+    int threadCount = 1;
 
-      //create and register a status callback listener
-      TestStatusCallbackListener listener = new TestStatusCallbackListener();
-      cpe.addStatusCallbackListener(listener);
-
-      //run CPM
-      cpe.process();
-
-      //sleep a bit
-      Thread.sleep(1000);
-      
-      //stop CPM
-      cpe.stop();
-      
-      //wait until CPM has aborted
-      while (!listener.isAborted())
-      {
-         Thread.sleep(5);
-      }
-   }
-
-	public void testCpmStopMultipleThreads() throws Exception
-	{
-    int documentCount = 100000; //hopefully enough that we won't finish before we abort
-	  int threadCount = 5;
-
-    //setup CPM to process 100 documents
+    // setup CPM to process 100 documents
     CollectionProcessingEngine cpe = setupCpm(documentCount, threadCount, false);
 
-    //create and register a status callback listener
+    // create and register a status callback listener
     TestStatusCallbackListener listener = new TestStatusCallbackListener();
     cpe.addStatusCallbackListener(listener);
 
-    //run CPM
+    // run CPM
     cpe.process();
 
-    //sleep a bit
+    // sleep a bit
     Thread.sleep(1000);
-    
-    //stop CPM
+
+    // stop CPM
     cpe.stop();
-    
-	//wait until CPM has aborted
-    while (!listener.isAborted())
-    {
-       Thread.sleep(5);
+
+    // wait until CPM has aborted
+    while (!listener.isAborted()) {
+      Thread.sleep(5);
     }
   }
- 
-	public void testCpmStopSlowAnnotator() throws Exception
-	{   
-    int documentCount = 1000; //hopefully enough that we won't finish before we abort
+
+  public void testCpmStopMultipleThreads() throws Exception {
+    int documentCount = 100000; // hopefully enough that we won't finish before we abort
+    int threadCount = 5;
+
+    // setup CPM to process 100 documents
+    CollectionProcessingEngine cpe = setupCpm(documentCount, threadCount, false);
+
+    // create and register a status callback listener
+    TestStatusCallbackListener listener = new TestStatusCallbackListener();
+    cpe.addStatusCallbackListener(listener);
+
+    // run CPM
+    cpe.process();
+
+    // sleep a bit
+    Thread.sleep(1000);
+
+    // stop CPM
+    cpe.stop();
+
+    // wait until CPM has aborted
+    while (!listener.isAborted()) {
+      Thread.sleep(5);
+    }
+  }
+
+  public void testCpmStopSlowAnnotator() throws Exception {
+    int documentCount = 1000; // hopefully enough that we won't finish before we abort
     int threadCount = 1;
 
-    //setup CPM to process 100 documents
+    // setup CPM to process 100 documents
     final CollectionProcessingEngine cpe = setupCpm(documentCount, threadCount, true);
 
-    //register status callback listener
+    // register status callback listener
     final TestStatusCallbackListener listener = new TestStatusCallbackListener();
     cpe.addStatusCallbackListener(listener);
 
-    //run CPM
+    // run CPM
     cpe.process();
 
-    //sleep a bit
+    // sleep a bit
     Thread.sleep(1000);
-    
-    //stop CPM
+
+    // stop CPM
     cpe.stop();
 
-    //wait until CPM has aborted
-    while (!listener.isAborted())
-    {
-       Thread.sleep(5);
+    // wait until CPM has aborted
+    while (!listener.isAborted()) {
+      Thread.sleep(5);
     }
   }
 
-  public void testCpmStopImmediate() throws Exception
-  {
-     int documentCount = 100000; //hopefully enough that we won't finish before we abort
-		  int threadCount = 1;
+  public void testCpmStopImmediate() throws Exception {
+    int documentCount = 100000; // hopefully enough that we won't finish before we abort
+    int threadCount = 1;
 
-     //setup CPM to process 100 documents
-     CollectionProcessingEngine cpe = setupCpm(documentCount, threadCount, false);
+    // setup CPM to process 100 documents
+    CollectionProcessingEngine cpe = setupCpm(documentCount, threadCount, false);
 
-     //create and register a status callback listener
-     TestStatusCallbackListener listener = new TestStatusCallbackListener();
-     cpe.addStatusCallbackListener(listener);
+    // create and register a status callback listener
+    TestStatusCallbackListener listener = new TestStatusCallbackListener();
+    cpe.addStatusCallbackListener(listener);
 
-     //run CPM
-     cpe.process();
+    // run CPM
+    cpe.process();
 
-     //stop CPM immediately
-     cpe.stop();
-     
-     //wait until CPM has aborted
-     while (!listener.isAborted())
-     {
-        Thread.sleep(5);
-     }
+    // stop CPM immediately
+    cpe.stop();
+
+    // wait until CPM has aborted
+    while (!listener.isAborted()) {
+      Thread.sleep(5);
+    }
   }
-  
-   /**
-    * setup the CPM with base functionality.
-    * 
-    * @param documentCount how many documents should be processed
-    * @param threadCount how many threads are used by the cpm
-    *  
-    * @return CollectionProcessingEngine - initialized cpe
-    */
-   private CollectionProcessingEngine setupCpm(int documentCount, int threadCount, boolean useSlowAnnotator) throws Exception
-   {
-      CpeDescription cpeDesc = null;
-      CollectionProcessingEngine cpe = null;
 
-      try
-      {
-         String colReaderBase = junitTestBasePath + "CpmTests" + separator + "ErrorTestCollectionReader.xml";
-         String taeBase = junitTestBasePath + "CpmTests" + separator + "ErrorTestAnnotator.xml";
-         String casConsumerBase = junitTestBasePath + "CpmTests" + separator + "ErrorTestCasConsumer.xml";
+  /**
+   * setup the CPM with base functionality.
+   * 
+   * @param documentCount
+   *          how many documents should be processed
+   * @param threadCount
+   *          how many threads are used by the cpm
+   * 
+   * @return CollectionProcessingEngine - initialized cpe
+   */
+  private CollectionProcessingEngine setupCpm(int documentCount, int threadCount,
+                  boolean useSlowAnnotator) throws Exception {
+    CpeDescription cpeDesc = null;
+    CollectionProcessingEngine cpe = null;
 
-         // created needed descriptors
-         String colReaderDesc = DescriptorMakeUtil.makeCollectionReader(colReaderBase, documentCount);
-         String taeDesc = DescriptorMakeUtil.makeAnalysisEngine(taeBase);
-         String casConsumerDesc = DescriptorMakeUtil.makeCasConsumer(casConsumerBase);
+    try {
+      String colReaderBase = junitTestBasePath + "CpmTests" + separator
+                      + "ErrorTestCollectionReader.xml";
+      String taeBase = junitTestBasePath + "CpmTests" + separator + "ErrorTestAnnotator.xml";
+      String casConsumerBase = junitTestBasePath + "CpmTests" + separator
+                      + "ErrorTestCasConsumer.xml";
 
-         //	create cpm descriptor
-         cpeDesc = CpeDescriptorFactory.produceDescriptor();
-         cpeDesc.setInputQueueSize(2);
-         cpeDesc.setOutputQueueSize(2);
-         cpeDesc.setProcessingUnitThreadCount(threadCount);
+      // created needed descriptors
+      String colReaderDesc = DescriptorMakeUtil.makeCollectionReader(colReaderBase, documentCount);
+      String taeDesc = DescriptorMakeUtil.makeAnalysisEngine(taeBase);
+      String casConsumerDesc = DescriptorMakeUtil.makeCasConsumer(casConsumerBase);
 
-         // add tae
-         CpeIntegratedCasProcessor integratedProcessor = CpeDescriptorFactory.produceCasProcessor("ErrorTestAnnotator");
-         integratedProcessor.setDescriptor(taeDesc);
-         cpeDesc.addCasProcessor(integratedProcessor);
-         
-         //add slow annotator if requested
-         if (useSlowAnnotator)
-         {
-           CpeIntegratedCasProcessor slowProcessor = CpeDescriptorFactory.produceCasProcessor("SlowAnnotator");
-           slowProcessor.setDescriptor(junitTestBasePath + "CpmTests" + separator + "SlowAnnotator.xml");
-           cpeDesc.addCasProcessor(slowProcessor);          
-         }
+      // create cpm descriptor
+      cpeDesc = CpeDescriptorFactory.produceDescriptor();
+      cpeDesc.setInputQueueSize(2);
+      cpeDesc.setOutputQueueSize(2);
+      cpeDesc.setProcessingUnitThreadCount(threadCount);
 
-         // add casConsumer
-         CpeIntegratedCasProcessor casConsumer = CpeDescriptorFactory.produceCasProcessor("ErrorTest CasConsumer");
-         casConsumer.setDescriptor(casConsumerDesc);
-         cpeDesc.addCasProcessor(casConsumer);
+      // add tae
+      CpeIntegratedCasProcessor integratedProcessor = CpeDescriptorFactory
+                      .produceCasProcessor("ErrorTestAnnotator");
+      integratedProcessor.setDescriptor(taeDesc);
+      cpeDesc.addCasProcessor(integratedProcessor);
 
-         //	add collectionReader
-         cpeDesc.addCollectionReader(colReaderDesc);
-
-         //produce cpe
-         cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc, null, null);
-      }
-      catch (Exception e)
-      {
-         e.printStackTrace();
+      // add slow annotator if requested
+      if (useSlowAnnotator) {
+        CpeIntegratedCasProcessor slowProcessor = CpeDescriptorFactory
+                        .produceCasProcessor("SlowAnnotator");
+        slowProcessor.setDescriptor(junitTestBasePath + "CpmTests" + separator
+                        + "SlowAnnotator.xml");
+        cpeDesc.addCasProcessor(slowProcessor);
       }
 
-      return cpe;
-   }
+      // add casConsumer
+      CpeIntegratedCasProcessor casConsumer = CpeDescriptorFactory
+                      .produceCasProcessor("ErrorTest CasConsumer");
+      casConsumer.setDescriptor(casConsumerDesc);
+      cpeDesc.addCasProcessor(casConsumer);
+
+      // add collectionReader
+      cpeDesc.addCollectionReader(colReaderDesc);
+
+      // produce cpe
+      cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc, null, null);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    return cpe;
+  }
 }

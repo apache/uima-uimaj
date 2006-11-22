@@ -23,18 +23,16 @@ import org.apache.uima.cas.CAS;
 
 /**
  * 
- * @author Adam Lally 
+ * @author Adam Lally
  */
-public class CasTestUtil
-{
+public class CasTestUtil {
 
   /**
    * @param aCAS
    * @return
    */
-  public static int getHeapSize(CAS aCAS)
-  {
-		return ((CASImpl)aCAS).getHeap().heap.length;
+  public static int getHeapSize(CAS aCAS) {
+    return ((CASImpl) aCAS).getHeap().heap.length;
   }
 
 }

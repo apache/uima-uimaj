@@ -18,123 +18,110 @@
  */
 
 package org.apache.uima.collection.impl.base_cpm.container.deployer;
+
 import org.apache.uima.resource.ResourceProcessException;
 
-public class CasProcessorDeploymentException extends ResourceProcessException
-{
+public class CasProcessorDeploymentException extends ResourceProcessException {
   private static final long serialVersionUID = 8743293497493826997L;
 
   /**
-	* Creates a new exception with a null
-	* message.
-	*/
-	public CasProcessorDeploymentException()
-	{
-	  super();
-	}
+   * Message key for a standard UIMA exception message: "Annotator processing failed."
+   */
+  public static final String DEPLOYER_EXCEPTION = "deployer_exception";
 
- 
-   /**
-	* Creates a new exception with the specified cause and a null message.
-	* 
-	* @param aCause  the original exception that caused this exception
-	*     to be thrown, if any
-	*/
-	public CasProcessorDeploymentException(Throwable aCause)
-	{
-	  super(aCause);
-	}
-  
-  
-  
-   /**
-	* Creates a new exception with a the specified message.
-	* 
-	* @param aResourceBundleName the base name of the resource bundle in which 
-	*        the message for this exception is located.
-	* @param aMessageKey an identifier that maps to the message for
-	*        this exception.  The message may contain placeholders for
-	*        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-	*        class.   
-	* @param aArguments  The arguments to the message.  <code>null</code> may
-	*        be used if the message has no arguments.
-	*/
-	public CasProcessorDeploymentException(String aResourceBundleName,
-	   String aMessageKey, Object[] aArguments)
-	{
-	  super(aResourceBundleName, aMessageKey, aArguments);   
-	}
-  
-  
-   /**
-	* Creates a new exception with the specified message and cause.
-	* 
-	* @param aResourceBundleName the base name of the resource bundle in which 
-	*        the message for this exception is located.
-	* @param aMessageKey an identifier that maps to the message for
-	*        this exception.  The message may contain placeholders for
-	*        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-	*        class.   
-	* @param aArguments  The arguments to the message.  <code>null</code> may
-	*        be used if the message has no arguments.
-	* @param aCause  the original exception that caused this exception
-	*     to be thrown, if any
-	*/
-	public CasProcessorDeploymentException(String aResourceBundleName, 
-	   String aMessageKey, Object[] aArguments, Throwable aCause)
-	{
-	  super(aResourceBundleName, aMessageKey, aArguments, aCause);
-	}  
- 
-  
-   /**
-	* Creates a new exception with a message from the 
-	* {@link #STANDARD_MESSAGE_CATALOG}.
-	* 
-	* @param aMessageKey an identifier that maps to the message for
-	*        this exception.  The message may contain placeholders for
-	*        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-	*        class.   
-	* @param aArguments  The arguments to the message.  <code>null</code> may
-	*        be used if the message has no arguments.
-	*/
-	public CasProcessorDeploymentException(String aMessageKey, Object[] aArguments)
-	{
-	  super(aMessageKey, aArguments);   
-	}
-  
- 
-  
-   /**
-	* Creates a new exception with the specified cause and a message from the
-	* {@link #STANDARD_MESSAGE_CATALOG}.
-	*  
-	* @param aMessageKey an identifier that maps to the message for
-	*        this exception.  The message may contain placeholders for
-	*        arguments as defined by the {@link java.text.MessageFormat MessageFormat}
-	*        class.   
-	* @param aArguments  The arguments to the message.  <code>null</code> may
-	*        be used if the message has no arguments.
-	* @param aCause  the original exception that caused this exception
-	*     to be thrown, if any
-	*/
-	public CasProcessorDeploymentException(String aMessageKey, Object[] aArguments, 
-						  Throwable aCause)
-	{
-	  super(aMessageKey, aArguments, aCause);
-	}  
-
-   /**
-	* Message key for a standard UIMA exception message:
-	* "Annotator processing failed."
-	*/
-	public static final String DEPLOYER_EXCEPTION =
-		"deployer_exception";
-      
   /**
-	* Message key for a standard UIMA exception message:
-	* "AnalysisEngine subclass {0} does not support CAS class {1}."
-	*/
-	public static final String UNSUPPORTED_CAS_TYPE = "unsupported_cas_type";
+   * Message key for a standard UIMA exception message: "AnalysisEngine subclass {0} does not
+   * support CAS class {1}."
+   */
+  public static final String UNSUPPORTED_CAS_TYPE = "unsupported_cas_type";
 
+  /**
+   * Creates a new exception with a null message.
+   */
+  public CasProcessorDeploymentException() {
+    super();
+  }
+
+  /**
+   * Creates a new exception with the specified cause and a null message.
+   * 
+   * @param aCause
+   *          the original exception that caused this exception to be thrown, if any
+   */
+  public CasProcessorDeploymentException(Throwable aCause) {
+    super(aCause);
+  }
+
+  /**
+   * Creates a new exception with a the specified message.
+   * 
+   * @param aResourceBundleName
+   *          the base name of the resource bundle in which the message for this exception is
+   *          located.
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
+   */
+  public CasProcessorDeploymentException(String aResourceBundleName, String aMessageKey,
+                  Object[] aArguments) {
+    super(aResourceBundleName, aMessageKey, aArguments);
+  }
+
+  /**
+   * Creates a new exception with the specified message and cause.
+   * 
+   * @param aResourceBundleName
+   *          the base name of the resource bundle in which the message for this exception is
+   *          located.
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
+   * @param aCause
+   *          the original exception that caused this exception to be thrown, if any
+   */
+  public CasProcessorDeploymentException(String aResourceBundleName, String aMessageKey,
+                  Object[] aArguments, Throwable aCause) {
+    super(aResourceBundleName, aMessageKey, aArguments, aCause);
+  }
+
+  /**
+   * Creates a new exception with a message from the {@link #STANDARD_MESSAGE_CATALOG}.
+   * 
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
+   */
+  public CasProcessorDeploymentException(String aMessageKey, Object[] aArguments) {
+    super(aMessageKey, aArguments);
+  }
+
+  /**
+   * Creates a new exception with the specified cause and a message from the
+   * {@link #STANDARD_MESSAGE_CATALOG}.
+   * 
+   * @param aMessageKey
+   *          an identifier that maps to the message for this exception. The message may contain
+   *          placeholders for arguments as defined by the
+   *          {@link java.text.MessageFormat MessageFormat} class.
+   * @param aArguments
+   *          The arguments to the message. <code>null</code> may be used if the message has no
+   *          arguments.
+   * @param aCause
+   *          the original exception that caused this exception to be thrown, if any
+   */
+  public CasProcessorDeploymentException(String aMessageKey, Object[] aArguments, Throwable aCause) {
+    super(aMessageKey, aArguments, aCause);
+  }
 }

@@ -39,165 +39,173 @@ import org.apache.uima.util.Progress;
 /**
  * 
  */
-public class CollectionProcessingEngine_impl
-	implements CollectionProcessingEngine
-{
-	/**
-	 * CPM instance that handles the processing
-	 */
-	private BaseCPMImpl mCPM = null; 
-  
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.CollectionProcessingEngine#initialize(org.apache.uima.collection.metadata.cpeDescription, java.util.Map)
-	 */
-	public void initialize(CpeDescription aCpeDescription, Map aAdditionalParams)
-		throws ResourceInitializationException
-	{
-		if (mCPM != null) //repeat initialization - not allowed
-		{
-			throw new UIMA_IllegalStateException(UIMA_IllegalStateException.RESOURCE_ALREADY_INITIALIZED,
-				new Object[]{getClass().getName()});
-		}
-    
-		//get the ResourceManager (if any) supplied in the aAdditionalParams map
-		ResourceManager resMgr = aAdditionalParams == null ? null :
-				(ResourceManager)aAdditionalParams.get(Resource.PARAM_RESOURCE_MANAGER);
+public class CollectionProcessingEngine_impl implements CollectionProcessingEngine {
+  /**
+   * CPM instance that handles the processing
+   */
+  private BaseCPMImpl mCPM = null;
 
-		//get performance tuning settings (if any) supplied in the aAdditionalParams map
-		Properties perfSettings = aAdditionalParams == null ? null : 
-		    (Properties)aAdditionalParams.get(Resource.PARAM_PERFORMANCE_TUNING_SETTINGS);
-    	
-    	//	get ProcessControllerAdapter responsible for launching fenced services
-        ProcessControllerAdapter pca = aAdditionalParams == null ? null : 
-		(ProcessControllerAdapter)aAdditionalParams.get("ProcessControllerAdapter");
-		//instantiate CPM from Descriptor                
-		try
-		{
-			mCPM = new BaseCPMImpl(aCpeDescription, resMgr, false, perfSettings);
-			if (perfSettings != null)
-			{
-				mCPM.setPerformanceTuningSettings(perfSettings);
-			}
-			if ( pca != null )
-			{
-				mCPM.setProcessControllerAdapter(pca);
-			}
-		} 
-		catch (Exception e)
-		{
-			throw new ResourceInitializationException(e);
-		}
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.CollectionProcessingEngine#initialize(org.apache.uima.collection.metadata.cpeDescription,
+   *      java.util.Map)
+   */
+  public void initialize(CpeDescription aCpeDescription, Map aAdditionalParams)
+                  throws ResourceInitializationException {
+    if (mCPM != null) // repeat initialization - not allowed
+    {
+      throw new UIMA_IllegalStateException(UIMA_IllegalStateException.RESOURCE_ALREADY_INITIALIZED,
+                      new Object[] { getClass().getName() });
+    }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.CollectionProcessingEngine#addStatusCallbackListener(org.apache.uima.collection.StatusCallbackListener)
-	 */
-	public void addStatusCallbackListener(StatusCallbackListener aListener)
-	{
-		mCPM.addStatusCallbackListener(aListener);
-	}
+    // get the ResourceManager (if any) supplied in the aAdditionalParams map
+    ResourceManager resMgr = aAdditionalParams == null ? null : (ResourceManager) aAdditionalParams
+                    .get(Resource.PARAM_RESOURCE_MANAGER);
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.CollectionProcessingEngine#removeStatusCallbackListener(org.apache.uima.collection.StatusCallbackListener)
-	 */
-	public void removeStatusCallbackListener(StatusCallbackListener aListener)
-	{
-		mCPM.removeStatusCallbackListener(aListener);
-	}
+    // get performance tuning settings (if any) supplied in the aAdditionalParams map
+    Properties perfSettings = aAdditionalParams == null ? null : (Properties) aAdditionalParams
+                    .get(Resource.PARAM_PERFORMANCE_TUNING_SETTINGS);
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.CollectionProcessingEngine#process()
-	 */
-	public void process() throws ResourceInitializationException
-	{
-		mCPM.process();  
-	}
+    // get ProcessControllerAdapter responsible for launching fenced services
+    ProcessControllerAdapter pca = aAdditionalParams == null ? null
+                    : (ProcessControllerAdapter) aAdditionalParams.get("ProcessControllerAdapter");
+    // instantiate CPM from Descriptor
+    try {
+      mCPM = new BaseCPMImpl(aCpeDescription, resMgr, false, perfSettings);
+      if (perfSettings != null) {
+        mCPM.setPerformanceTuningSettings(perfSettings);
+      }
+      if (pca != null) {
+        mCPM.setProcessControllerAdapter(pca);
+      }
+    } catch (Exception e) {
+      throw new ResourceInitializationException(e);
+    }
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.CollectionProcessingEngine#isProcessing()
-	 */
-	public boolean isProcessing()
-	{
-		return mCPM.isProcessing();
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.CollectionProcessingEngine#addStatusCallbackListener(org.apache.uima.collection.StatusCallbackListener)
+   */
+  public void addStatusCallbackListener(StatusCallbackListener aListener) {
+    mCPM.addStatusCallbackListener(aListener);
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.CollectionProcessingEngine#pause()
-	 */
-	public void pause()
-	{
-		mCPM.pause();
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.CollectionProcessingEngine#removeStatusCallbackListener(org.apache.uima.collection.StatusCallbackListener)
+   */
+  public void removeStatusCallbackListener(StatusCallbackListener aListener) {
+    mCPM.removeStatusCallbackListener(aListener);
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.CollectionProcessingEngine#isPaused()
-	 */
-	public boolean isPaused()
-	{
-		return mCPM.isPaused();
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.CollectionProcessingEngine#process()
+   */
+  public void process() throws ResourceInitializationException {
+    mCPM.process();
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.CollectionProcessingEngine#resume()
-	 */
-	public void resume()
-	{
-		mCPM.resume();
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.CollectionProcessingEngine#isProcessing()
+   */
+  public boolean isProcessing() {
+    return mCPM.isProcessing();
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.CollectionProcessingEngine#stop()
-	 */
-	public void stop()
-	{
-		mCPM.stop();
-	}
-	public void kill()
-	{
-		mCPM.kill();
-	}
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.CollectionProcessingEngine#stop()
-	 */
-	public void asynchStop()
-	{
-		mCPM.asynchStop();
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.CollectionProcessingEngine#pause()
+   */
+  public void pause() {
+    mCPM.pause();
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.CollectionProcessingEngine#getPerformanceReport()
-	 */
-	public ProcessTrace getPerformanceReport()
-	{
-		return mCPM.getPerformanceReport();
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.CollectionProcessingEngine#isPaused()
+   */
+  public boolean isPaused() {
+    return mCPM.isPaused();
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.CollectionProcessingEngine#getProgress()
-	 */
-	public Progress[] getProgress()
-	{
-		return mCPM.getProgress();
-	}
-	
-	protected BaseCPMImpl getCPM()
-	{
-		return mCPM;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.CollectionProcessingEngine#resume()
+   */
+  public void resume() {
+    mCPM.resume();
+  }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.CollectionProcessingEngine#stop()
+   */
+  public void stop() {
+    mCPM.stop();
+  }
+
+  public void kill() {
+    mCPM.kill();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.CollectionProcessingEngine#stop()
+   */
+  public void asynchStop() {
+    mCPM.asynchStop();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.CollectionProcessingEngine#getPerformanceReport()
+   */
+  public ProcessTrace getPerformanceReport() {
+    return mCPM.getPerformanceReport();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.CollectionProcessingEngine#getProgress()
+   */
+  public Progress[] getProgress() {
+    return mCPM.getProgress();
+  }
+
+  protected BaseCPMImpl getCPM() {
+    return mCPM;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.CollectionProcessingEngine#getCasProcessors()
    */
-  public CasProcessor[] getCasProcessors()
-  {
+  public CasProcessor[] getCasProcessors() {
     return mCPM.getCasProcessors();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.collection.CollectionProcessingEngine#getCollectionReader()
    */
-  public BaseCollectionReader getCollectionReader()
-  {
+  public BaseCollectionReader getCollectionReader() {
     return mCPM.getCollectionReader();
   }
 

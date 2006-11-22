@@ -19,22 +19,19 @@
 
 package org.apache.uima.collection.impl.metadata.cpe;
 
+public class CpeObject {
+  private Object internalObject = null;
 
-public class CpeObject
-{
-	private Object internalObject = null;
+  protected CpeObject(Object aObject) {
+    internalObject = aObject;
+  }
 
-	protected CpeObject(Object aObject)
-	{
-		internalObject = aObject;
-	}
-	protected void set( Object aObject )
-	{
-		internalObject = aObject;
-	}
-	public Object getInternalObject()
-	{
-		return internalObject;
-	}
-	
+  protected void set(Object aObject) {
+    internalObject = aObject;
+  }
+
+  public Object getInternalObject() {
+    return internalObject;
+  }
+
 }

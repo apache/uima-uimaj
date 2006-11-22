@@ -37,28 +37,23 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
 
 /**
  * 
- * @author Adam Lally 
+ * @author Adam Lally
  */
-public class TestResourceInterface_impl extends Resource_ImplBase
-  implements SharedResourceObject, TestResourceInterface
-{  
+public class TestResourceInterface_impl extends Resource_ImplBase implements SharedResourceObject,
+                TestResourceInterface {
   private String mString;
-  
+
   /**
    * @see org.apache.uima.resource.SharedResourceObject#load(DataResource)
    */
-  public void load(DataResource aData) throws ResourceInitializationException
-  {
-    try
-    {
-      //try to get an input stream and read from the file
+  public void load(DataResource aData) throws ResourceInitializationException {
+    try {
+      // try to get an input stream and read from the file
       InputStream inStr = aData.getInputStream();
       BufferedReader bufRdr = new BufferedReader(new InputStreamReader(inStr));
       mString = bufRdr.readLine();
       inStr.close();
-    }
-    catch(IOException e)  
-    {
+    } catch (IOException e) {
       throw new ResourceInitializationException(e);
     }
   }
@@ -66,34 +61,28 @@ public class TestResourceInterface_impl extends Resource_ImplBase
   /**
    * @see org.apache.uima.resource.impl.TestResourceInterface#readString()
    */
-  public String readString()
-  {
+  public String readString() {
     return mString;
   }
 
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
-  public void destroy()
-  {
+  public void destroy() {
   }
 
   /**
    * @see org.apache.uima.resource.Resource#getMetaData()
    */
-  public ResourceMetaData getMetaData()
-  {
+  public ResourceMetaData getMetaData() {
     return null;
   }
 
   /**
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
-  public boolean initialize(
-    ResourceSpecifier aSpecifier,
-    Map aAdditionalParams)
-    throws ResourceInitializationException
-  {
+  public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
+                  throws ResourceInitializationException {
     return true;
   }
 
@@ -101,8 +90,7 @@ public class TestResourceInterface_impl extends Resource_ImplBase
    * @see org.apache.uima.resource.Resource#setConfigurationParameters(NameValuePair[])
    */
   public void setConfigurationParameters(NameValuePair[] aSettings)
-    throws ResourceConfigurationException
-  {
+                  throws ResourceConfigurationException {
   }
 
 }

@@ -30,87 +30,82 @@ import org.apache.uima.util.Level;
 import org.apache.uima.util.ProcessTrace;
 
 /**
- * This component catches uncaught errors in the CPM. 
- * All critical threads in the CPM are part of this
- * ThreadGroup. If OutOfMemory Error is thrown this
- * component is notified by the JVM and its job is to
- * notify registered listeners.
- *
+ * This component catches uncaught errors in the CPM. All critical threads in the CPM are part of
+ * this ThreadGroup. If OutOfMemory Error is thrown this component is notified by the JVM and its
+ * job is to notify registered listeners.
+ * 
  */
-public class CPMThreadGroup extends ThreadGroup
-{
-	private ArrayList callbackListeners = null;
-	private ProcessTrace procTr = null;
-	/**
-	 * @param name
-	 */
-	public CPMThreadGroup(String name)
-	{
-		super(name);
-	}
+public class CPMThreadGroup extends ThreadGroup {
+  private ArrayList callbackListeners = null;
 
-	/**
-	 * @param parent - parent thread group
-	 * @param name - name of this thread group
-	 */
-	public CPMThreadGroup(ThreadGroup parent, String name)
-	{
-		super(parent, name);
-	}
-	/**
-	 * Sets listeners to be used in notifications
-	 *
-	 * @param aListenerList - list of registered listners
-	 */
-	public void setListeners(ArrayList aListenerList)
-	{
-		callbackListeners = aListenerList;
-	}
-	public void setProcessTrace(ProcessTrace aProcessTrace)
-	{
-		procTr = aProcessTrace;
-	}
-	public void uncaughtException(Thread t, Throwable e)
-	{
-		System.out.println("ThreadGroup.uncaughtException()-Got Error");
-		if ( UIMAFramework.getLogger().isLoggable(Level.SEVERE) )
-		{
-			UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(), "process",
-			        CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_unhandled_error__SEVERE",
-			        new Object[] {Thread.currentThread().getName(),e.getClass().getName() });
+  private ProcessTrace procTr = null;
 
-		}
-		try
-		{
-			//	Notify listeners
-			for (int i = 0; callbackListeners != null && i < callbackListeners.size(); i++)
-			{
-//				System.out.println("ThreadGroup.uncaughtException()-Got Error - Notifying Listener");
-				notifyListener((BaseStatusCallbackListener) callbackListeners.get(i), e);
-			}
-			
-		}
-		catch (Throwable tr)
-		{
-			if ( UIMAFramework.getLogger().isLoggable(Level.FINER) )
-			{
-				UIMAFramework.getLogger(this.getClass()).logrb(Level.FINER, this.getClass().getName(), "process",
-				        CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
-				        new Object[] {Thread.currentThread().getName(),tr.getClass().getName() });
-                tr.printStackTrace();
-			}
-		}
-//		System.out.println("ThreadGroup.uncaughtException()-Done Handling Error");
-	}
-	private void notifyListener(BaseStatusCallbackListener aStatCL, Throwable e)
-	{
-		EntityProcessStatusImpl enProcSt = new EntityProcessStatusImpl(procTr);
-		enProcSt.addEventStatus("Process", "Failed", e);
-		((StatusCallbackListener) aStatCL).entityProcessComplete(null, enProcSt);
-	}
-	public void cleanup()
-	{
-		callbackListeners = null;
-		procTr = null;
-	}
+  /**
+   * @param name
+   */
+  public CPMThreadGroup(String name) {
+    super(name);
+  }
+
+  /**
+   * @param parent -
+   *          parent thread group
+   * @param name -
+   *          name of this thread group
+   */
+  public CPMThreadGroup(ThreadGroup parent, String name) {
+    super(parent, name);
+  }
+
+  /**
+   * Sets listeners to be used in notifications
+   * 
+   * @param aListenerList -
+   *          list of registered listners
+   */
+  public void setListeners(ArrayList aListenerList) {
+    callbackListeners = aListenerList;
+  }
+
+  public void setProcessTrace(ProcessTrace aProcessTrace) {
+    procTr = aProcessTrace;
+  }
+
+  public void uncaughtException(Thread t, Throwable e) {
+    System.out.println("ThreadGroup.uncaughtException()-Got Error");
+    if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
+                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_unhandled_error__SEVERE",
+                      new Object[] { Thread.currentThread().getName(), e.getClass().getName() });
+
+    }
+    try {
+      // Notify listeners
+      for (int i = 0; callbackListeners != null && i < callbackListeners.size(); i++) {
+        // System.out.println("ThreadGroup.uncaughtException()-Got Error - Notifying Listener");
+        notifyListener((BaseStatusCallbackListener) callbackListeners.get(i), e);
+      }
+
+    } catch (Throwable tr) {
+      if (UIMAFramework.getLogger().isLoggable(Level.FINER)) {
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINER, this.getClass().getName(),
+                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
+                        new Object[] { Thread.currentThread().getName(), tr.getClass().getName() });
+        tr.printStackTrace();
+      }
+    }
+    // System.out.println("ThreadGroup.uncaughtException()-Done Handling Error");
+  }
+
+  private void notifyListener(BaseStatusCallbackListener aStatCL, Throwable e) {
+    EntityProcessStatusImpl enProcSt = new EntityProcessStatusImpl(procTr);
+    enProcSt.addEventStatus("Process", "Failed", e);
+    ((StatusCallbackListener) aStatCL).entityProcessComplete(null, enProcSt);
+  }
+
+  public void cleanup() {
+    callbackListeners = null;
+    procTr = null;
+  }
 }

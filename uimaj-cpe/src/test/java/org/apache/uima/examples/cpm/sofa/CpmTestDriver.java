@@ -30,32 +30,34 @@ import org.apache.uima.util.XMLInputSource;
 
 /*
  * Created on Jul 31, 2004
- *
- 
+ * 
+ * 
  */
 
 /**
- * Runs a CPE that processes a text SofA.  
+ * Runs a CPE that processes a text SofA.
+ * 
  * @author Bhavani Iyer
- *
+ * 
  */
 public class CpmTestDriver {
 
-	public static void main(String[] args) {			
-			try {			
-				//read in the cpe descriptor
-				CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
-					  new XMLInputSource("CpeSofaTest/SofaCPE.xml"));
-				//instantiate a cpe			
-				CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc, null);
-				//run the cpe
-				cpe.process();											    
-			} catch (IOException e) {				
-				e.printStackTrace();
-			} catch (InvalidXMLException e) {				
-				e.printStackTrace();			
-			} catch (ResourceInitializationException e) {				
-				e.printStackTrace();			
-			}		
-	}
+  public static void main(String[] args) {
+    try {
+      // read in the cpe descriptor
+      CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
+                      new XMLInputSource("CpeSofaTest/SofaCPE.xml"));
+      // instantiate a cpe
+      CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc,
+                      null);
+      // run the cpe
+      cpe.process();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (InvalidXMLException e) {
+      e.printStackTrace();
+    } catch (ResourceInitializationException e) {
+      e.printStackTrace();
+    }
+  }
 }

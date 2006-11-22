@@ -24,32 +24,34 @@ import org.apache.uima.collection.metadata.CpeTimer;
 
 /**
  * This class provides an API to plug in custom timers.
- *
+ * 
  */
-public class CpeTimerImpl implements CpeTimer
-{
-	private CpeTimerImpl() {};
-	private String timer;
-	
-	public CpeTimerImpl(String aTimerClass)
-	{
-		timer = aTimerClass;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CpeTimer#set(java.lang.String)
-	 */
-	public void set( String aTimerClass) throws CpeDescriptorException
-	{
-		timer = aTimerClass;
-	}
+public class CpeTimerImpl implements CpeTimer {
+  private CpeTimerImpl() {
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CpeTimer#get()
-	 */
-	public String get()
-	{
-		return timer;
-	}
+  private String timer;
+
+  public CpeTimerImpl(String aTimerClass) {
+    timer = aTimerClass;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CpeTimer#set(java.lang.String)
+   */
+  public void set(String aTimerClass) throws CpeDescriptorException {
+    timer = aTimerClass;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CpeTimer#get()
+   */
+  public String get() {
+    return timer;
+  }
 
 }

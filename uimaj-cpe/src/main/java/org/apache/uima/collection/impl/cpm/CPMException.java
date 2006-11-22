@@ -19,11 +19,10 @@
 
 package org.apache.uima.collection.impl.cpm;
 
+public class CPMException extends Exception {
+  private static final long serialVersionUID = -8398570626529912770L;
 
-public class CPMException extends Exception
-{
-	public CPMException( String msg )
-	{
-		super( msg );	
-	}
+  public CPMException(String msg) {
+    super(msg);
+  }
 }

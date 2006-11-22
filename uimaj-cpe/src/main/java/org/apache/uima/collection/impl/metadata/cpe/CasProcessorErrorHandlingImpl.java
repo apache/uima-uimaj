@@ -19,91 +19,88 @@
 
 package org.apache.uima.collection.impl.metadata.cpe;
 
-
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
-import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
-import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
-import org.apache.uima.resource.metadata.impl.XmlizationInfo;
-import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.XMLParser;
-import org.apache.uima.util.XMLParser.ParsingOptions;
-
 import org.apache.uima.collection.metadata.CasProcessorErrorHandling;
 import org.apache.uima.collection.metadata.CasProcessorErrorRateThreshold;
 import org.apache.uima.collection.metadata.CasProcessorMaxRestarts;
 import org.apache.uima.collection.metadata.CasProcessorTimeout;
+import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
+import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
+import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 
-public class CasProcessorErrorHandlingImpl extends MetaDataObject_impl implements CasProcessorErrorHandling
-{
-	
-	private CasProcessorTimeout timeout; 
-	private CasProcessorErrorRateThreshold errorRateThrashold;
-	private CasProcessorMaxRestarts maxRestarts;
+public class CasProcessorErrorHandlingImpl extends MetaDataObject_impl implements
+                CasProcessorErrorHandling {
 
-	public CasProcessorErrorHandlingImpl() {}
-	
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CasProcessorErrorHandling#setMaxConsecutiveRestarts(org.apache.uima.collection.metadata.CasProcessorMaxRestarts)
-	 */
-	public void setMaxConsecutiveRestarts(CasProcessorMaxRestarts aCasPRestarts)
-	{
-		maxRestarts = aCasPRestarts;
-	}
+  private static final long serialVersionUID = 1677062861920690715L;
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CasProcessorErrorHandling#getMaxConsecutiveRestarts()
-	 */
-	public CasProcessorMaxRestarts getMaxConsecutiveRestarts()
-	{
-		return maxRestarts;
-	}
+  private CasProcessorTimeout timeout;
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CasProcessorErrorHandling#setErrorRateThreshold(org.apache.uima.collection.metadata.CasProcessorErrorRateThreshold)
-	 */
-	public void setErrorRateThreshold(CasProcessorErrorRateThreshold aCasPErrorThreshold)
-	{
-		errorRateThrashold = aCasPErrorThreshold;
-	}
+  private CasProcessorErrorRateThreshold errorRateThrashold;
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CasProcessorErrorHandling#getErrorRateThreshold()
-	 */
-	public CasProcessorErrorRateThreshold getErrorRateThreshold()
-	{
-		return errorRateThrashold;
-	}
+  private CasProcessorMaxRestarts maxRestarts;
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CasProcessorErrorHandling#setTimeout(org.apache.uima.collection.metadata.CasProcessorTimeout)
-	 */
-	public void setTimeout(CasProcessorTimeout aTimeout)
-	{
-		timeout = aTimeout;
-	}
+  public CasProcessorErrorHandlingImpl() {
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CasProcessorErrorHandling#setTimeout()
-	 */
-	public CasProcessorTimeout getTimeout()
-	{
-		return timeout;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CasProcessorErrorHandling#setMaxConsecutiveRestarts(org.apache.uima.collection.metadata.CasProcessorMaxRestarts)
+   */
+  public void setMaxConsecutiveRestarts(CasProcessorMaxRestarts aCasPRestarts) {
+    maxRestarts = aCasPRestarts;
+  }
 
-	protected XmlizationInfo getXmlizationInfo()
-	{
-	  return XMLIZATION_INFO;
-	}
-	static final private XmlizationInfo XMLIZATION_INFO =
-	  new XmlizationInfo("errorHandling",
-	  new PropertyXmlInfo[]{
-		new PropertyXmlInfo("errorRateThreshold",null),
-		new PropertyXmlInfo("maxConsecutiveRestarts",null),
-		new PropertyXmlInfo("timeout",null),
-	  });
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CasProcessorErrorHandling#getMaxConsecutiveRestarts()
+   */
+  public CasProcessorMaxRestarts getMaxConsecutiveRestarts() {
+    return maxRestarts;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CasProcessorErrorHandling#setErrorRateThreshold(org.apache.uima.collection.metadata.CasProcessorErrorRateThreshold)
+   */
+  public void setErrorRateThreshold(CasProcessorErrorRateThreshold aCasPErrorThreshold) {
+    errorRateThrashold = aCasPErrorThreshold;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CasProcessorErrorHandling#getErrorRateThreshold()
+   */
+  public CasProcessorErrorRateThreshold getErrorRateThreshold() {
+    return errorRateThrashold;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CasProcessorErrorHandling#setTimeout(org.apache.uima.collection.metadata.CasProcessorTimeout)
+   */
+  public void setTimeout(CasProcessorTimeout aTimeout) {
+    timeout = aTimeout;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CasProcessorErrorHandling#setTimeout()
+   */
+  public CasProcessorTimeout getTimeout() {
+    return timeout;
+  }
+
+  protected XmlizationInfo getXmlizationInfo() {
+    return XMLIZATION_INFO;
+  }
+
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("errorHandling",
+                  new PropertyXmlInfo[] { new PropertyXmlInfo("errorRateThreshold", null),
+                      new PropertyXmlInfo("maxConsecutiveRestarts", null),
+                      new PropertyXmlInfo("timeout", null), });
 }

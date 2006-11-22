@@ -19,15 +19,14 @@
 
 package org.apache.uima.collection.impl.base_cpm.container;
 
-public class KillPipelineException extends Exception
-{
+public class KillPipelineException extends Exception {
 
-	/**
-	 * 
-	 */
-	public KillPipelineException(String msg)
-	{
-		super(msg);
-	}
+  private static final long serialVersionUID = -4105689778536046179L;
+
+  /**
+   * 
+   */
+  public KillPipelineException(String msg) {
+    super(msg);
+  }
 }
-

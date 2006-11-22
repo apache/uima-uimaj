@@ -25,140 +25,140 @@ package org.apache.uima.collection.impl.cpm;
  * 
  */
 
-public class CPEConfig
-{
-	private CheckpointConfig chConfig = null;
-	private long numToProcess = 0;
-	private String deployAs = "";
-	private String timerClass = null;
-	private String startWith = "";
-	private long inputQueueMaxMemoryThreshold = 0;
-	private long maxTimeToWait = -1;
-	private String outputQueueClass = null;
-	
-	/**
-	 * Returns CPE checkpoint configuration
-	 * 
-	 * @return CheckpointConfig object
-	 */
-	public CheckpointConfig getChConfig()
-	{
-		return chConfig;
-	}
+public class CPEConfig {
+  private CheckpointConfig chConfig = null;
 
-	/**
-	 * Returns CPE statup mode as defined in the CPE descriptor
-	 * 
-	 * @return - statup mode
-	 */
-	public String getDeployAs()
-	{
-		return deployAs;
-	}
+  private long numToProcess = 0;
 
-	/**
-	 * Returns number of entities to process by the CPE.
-	 * 
-	 * @return - number of entities to process
-	 */
-	public long getNumToProcess()
-	{
-		return numToProcess;
-	}
+  private String deployAs = "";
 
-	/**
-	 * Returns an id of the first entity the {@link CollectionReader} will be told to read
-	 * 
-	 * @return - id of the first entity to read
-	 */
-	public String getStartWith()
-	{
-		return startWith;
-	}
+  private String timerClass = null;
 
-	/**
-	 * Returns the name of custom {@link UimaTimer} class.
-	 * 
-	 * @return - class as String
-	 */
-	public String getTimerClass()
-	{
-		return timerClass;
-	}
+  private String startWith = "";
 
-	/**
-	 * Copies Checkpoint configuration
-	 * 
-	 * @param config - checkpoint configuration
-	 */
-	public void setChConfig(CheckpointConfig config)
-	{
-		chConfig = config;
-	}
+  private long inputQueueMaxMemoryThreshold = 0;
 
-	/**
-	 * Copies CPE startup mode
-	 * 
-	 * @param string - startup mode
-	 */
-	public void setDeployAs(String aCpeDeployMode)
-	{
-		deployAs = aCpeDeployMode;
-	}
+  private long maxTimeToWait = -1;
 
-	/**
-	 * Copies number of entities to process
-	 * 
-	 * @param aTotalCount - total number of entities to process
-	 */
-	public void setNumToProcess(long aTotalCount)
-	{
-		numToProcess = aTotalCount;
-	}
+  private String outputQueueClass = null;
 
-	/**
-	 * Copies ind of the first entity to start reading
-	 *  
-	 * @param string - id of entity
-	 */
-	public void setStartWith(String aStartEntityId)
-	{
-		startWith = aStartEntityId;
-	}
+  /**
+   * Returns CPE checkpoint configuration
+   * 
+   * @return CheckpointConfig object
+   */
+  public CheckpointConfig getChConfig() {
+    return chConfig;
+  }
 
-	/**
-	 * Copies a name of the custom {@link UimaTimer} class 
-	 * 
-	 * @param string - timer class
-	 */
-	public void setTimerClass(String aTimerClass)
-	{
-		timerClass = aTimerClass;
-	}
-	public long getInputQueueMaxMemoryThreshold()
-	{
-		return inputQueueMaxMemoryThreshold;
-	}
-	public void setInputQueueMaxMemoryThreshold(long aInputQueueMaxMemoryThreshold)
-	{
-		inputQueueMaxMemoryThreshold = aInputQueueMaxMemoryThreshold;
-	}
-	public long getMaxTimeToWait()
-	{
-		return maxTimeToWait;
-	}
-	public void setMaxTimeToWait(long aMaxTimeToWait)
-	{
-		maxTimeToWait = aMaxTimeToWait;
-	}
-	public String getOutputQueueClass()
-	{
-		return outputQueueClass;
-	}
-	public void setOutputQueueClass(String aOutputQueueClass)
-	{
-		outputQueueClass = aOutputQueueClass;
-	}
+  /**
+   * Returns CPE statup mode as defined in the CPE descriptor
+   * 
+   * @return - statup mode
+   */
+  public String getDeployAs() {
+    return deployAs;
+  }
 
+  /**
+   * Returns number of entities to process by the CPE.
+   * 
+   * @return - number of entities to process
+   */
+  public long getNumToProcess() {
+    return numToProcess;
+  }
+
+  /**
+   * Returns an id of the first entity the {@link CollectionReader} will be told to read
+   * 
+   * @return - id of the first entity to read
+   */
+  public String getStartWith() {
+    return startWith;
+  }
+
+  /**
+   * Returns the name of custom {@link UimaTimer} class.
+   * 
+   * @return - class as String
+   */
+  public String getTimerClass() {
+    return timerClass;
+  }
+
+  /**
+   * Copies Checkpoint configuration
+   * 
+   * @param config -
+   *          checkpoint configuration
+   */
+  public void setChConfig(CheckpointConfig config) {
+    chConfig = config;
+  }
+
+  /**
+   * Copies CPE startup mode
+   * 
+   * @param string -
+   *          startup mode
+   */
+  public void setDeployAs(String aCpeDeployMode) {
+    deployAs = aCpeDeployMode;
+  }
+
+  /**
+   * Copies number of entities to process
+   * 
+   * @param aTotalCount -
+   *          total number of entities to process
+   */
+  public void setNumToProcess(long aTotalCount) {
+    numToProcess = aTotalCount;
+  }
+
+  /**
+   * Copies ind of the first entity to start reading
+   * 
+   * @param string -
+   *          id of entity
+   */
+  public void setStartWith(String aStartEntityId) {
+    startWith = aStartEntityId;
+  }
+
+  /**
+   * Copies a name of the custom {@link UimaTimer} class
+   * 
+   * @param string -
+   *          timer class
+   */
+  public void setTimerClass(String aTimerClass) {
+    timerClass = aTimerClass;
+  }
+
+  public long getInputQueueMaxMemoryThreshold() {
+    return inputQueueMaxMemoryThreshold;
+  }
+
+  public void setInputQueueMaxMemoryThreshold(long aInputQueueMaxMemoryThreshold) {
+    inputQueueMaxMemoryThreshold = aInputQueueMaxMemoryThreshold;
+  }
+
+  public long getMaxTimeToWait() {
+    return maxTimeToWait;
+  }
+
+  public void setMaxTimeToWait(long aMaxTimeToWait) {
+    maxTimeToWait = aMaxTimeToWait;
+  }
+
+  public String getOutputQueueClass() {
+    return outputQueueClass;
+  }
+
+  public void setOutputQueueClass(String aOutputQueueClass) {
+    outputQueueClass = aOutputQueueClass;
+  }
 
 }

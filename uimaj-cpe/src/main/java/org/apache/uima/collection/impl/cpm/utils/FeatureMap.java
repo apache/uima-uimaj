@@ -21,51 +21,42 @@ package org.apache.uima.collection.impl.cpm.utils;
 
 import java.util.ArrayList;
 
-public class FeatureMap
-{
-	ArrayList entities = null;
-	
-	public FeatureMap()
-	{
-		entities = new ArrayList();
-	}
-	
-	public void add( ConfigurableFeature entity )
-	{
-		entities.add( entity);
-	}
-	
-	public ConfigurableFeature get( int index )
-	{
-		if ( entities.size() < index )
-		{
-			return null;
-		}
-		
-		return (ConfigurableFeature)entities.get( index);
-	}
-	
-	public ConfigurableFeature get( String key )
-	{
-		for( int i=0; i < entities.size(); i++ )
-		{
-			if ( ((ConfigurableFeature)entities.get(i)).getOldFeatureName().equals(key) )
-				return (ConfigurableFeature)entities.get(i);
-		}	
-		return null;
-	}
+public class FeatureMap {
+  ArrayList entities = null;
 
-	public boolean contains( String key )
-	{
-		for( int i=0; i < entities.size(); i++ )
-		{
-			if ( ((ConfigurableFeature)entities.get(i)).getOldFeatureName().equals(key) )
-				return true;
-		}	
-		return false;
-	}
-	public int size()
-	{
-		return entities.size();
-	}
+  public FeatureMap() {
+    entities = new ArrayList();
+  }
+
+  public void add(ConfigurableFeature entity) {
+    entities.add(entity);
+  }
+
+  public ConfigurableFeature get(int index) {
+    if (entities.size() < index) {
+      return null;
+    }
+
+    return (ConfigurableFeature) entities.get(index);
+  }
+
+  public ConfigurableFeature get(String key) {
+    for (int i = 0; i < entities.size(); i++) {
+      if (((ConfigurableFeature) entities.get(i)).getOldFeatureName().equals(key))
+        return (ConfigurableFeature) entities.get(i);
+    }
+    return null;
+  }
+
+  public boolean contains(String key) {
+    for (int i = 0; i < entities.size(); i++) {
+      if (((ConfigurableFeature) entities.get(i)).getOldFeatureName().equals(key))
+        return true;
+    }
+    return false;
+  }
+
+  public int size() {
+    return entities.size();
+  }
 }

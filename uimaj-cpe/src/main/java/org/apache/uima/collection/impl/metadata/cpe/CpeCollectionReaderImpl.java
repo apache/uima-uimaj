@@ -19,114 +19,107 @@
 
 package org.apache.uima.collection.impl.metadata.cpe;
 
-import org.w3c.dom.Element;
-import org.xml.sax.helpers.AttributesImpl;
-import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
-import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
-import org.apache.uima.resource.metadata.impl.XmlizationInfo;
-import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.XMLParser;
-import org.apache.uima.util.XMLParser.ParsingOptions;
-
 import org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings;
-import org.apache.uima.collection.metadata.CpeCollectionReaderIterator;
 import org.apache.uima.collection.metadata.CpeCollectionReader;
 import org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer;
 import org.apache.uima.collection.metadata.CpeCollectionReaderIterator;
 import org.apache.uima.collection.metadata.CpeComponentDescriptor;
 import org.apache.uima.collection.metadata.CpeDescriptorException;
-
+import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
+import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
+import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 
 /**
  * @deprecated As of v2.0, CAS Initializers are deprecated.
  */
-public class CpeCollectionReaderImpl extends MetaDataObject_impl implements CpeCollectionReader
-{
-	private CpeCollectionReaderIterator collectionIterator;
-	
-	private CpeCollectionReaderCasInitializer casInitializer;
+public class CpeCollectionReaderImpl extends MetaDataObject_impl implements CpeCollectionReader {
+  private static final long serialVersionUID = -7663775553359776495L;
 
-	public CpeCollectionReaderImpl() {};
-	
+  private CpeCollectionReaderIterator collectionIterator;
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CpeCollectionReader#setCasInitializer(org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer)
-	 */
-	public void setCasInitializer(CpeCollectionReaderCasInitializer aCasInitializer) throws CpeDescriptorException
-	{
-		casInitializer = aCasInitializer;
-	}
+  private CpeCollectionReaderCasInitializer casInitializer;
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CpeCollectionReader#getCasInitializer()
-	 */
-	public CpeCollectionReaderCasInitializer getCasInitializer() throws CpeDescriptorException
-	{
-		return casInitializer;
-	}
+  public CpeCollectionReaderImpl() {
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CpeCollectionReader#removeCasInitializer()
-	 */
-	public void removeCasInitializer()
-	{
-		casInitializer = null;	
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CpeCollectionReader#setCasInitializer(org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer)
+   */
+  public void setCasInitializer(CpeCollectionReaderCasInitializer aCasInitializer)
+                  throws CpeDescriptorException {
+    casInitializer = aCasInitializer;
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer#setDescriptorPath(java.lang.String)
-	 */
-	public void setDescriptor(CpeComponentDescriptor aDescriptor)
-	{
-		collectionIterator.setDescriptor(aDescriptor);
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CpeCollectionReader#getCasInitializer()
+   */
+  public CpeCollectionReaderCasInitializer getCasInitializer() throws CpeDescriptorException {
+    return casInitializer;
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer#getDescriptorPath()
-	 */
-	public CpeComponentDescriptor getDescriptor()
-	{
-		return collectionIterator.getDescriptor();
-	}	
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CpeCollectionReader#removeCasInitializer()
+   */
+  public void removeCasInitializer() {
+    casInitializer = null;
+  }
 
-    /**
-     * Returns configuration parameter settings for this CollectionReader.
-     */
-    public CasProcessorConfigurationParameterSettings getConfigurationParameterSettings()
-    {
-        return collectionIterator.getConfigurationParameterSettings();
-    }   
-    
-    /**
-     * Sets configuration parameter settings for this CollectionReader.
-     */
-    public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aParams) 
-    throws CpeDescriptorException
-    {
-		collectionIterator.setConfigurationParameterSettings(aParams);
-    }  
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer#setDescriptorPath(java.lang.String)
+   */
+  public void setDescriptor(CpeComponentDescriptor aDescriptor) {
+    collectionIterator.setDescriptor(aDescriptor);
+  }
 
-	protected XmlizationInfo getXmlizationInfo()
-	{
-	  return XMLIZATION_INFO;
-	}
- 
- 	static final private XmlizationInfo XMLIZATION_INFO =
-	  new XmlizationInfo("collectionReader",
-		new PropertyXmlInfo[]{
-					new PropertyXmlInfo("collectionIterator",null),
-					new PropertyXmlInfo("casInitializer", null),
-		});
- 	/**
-	 * @param iterator
-	 */
-	public void setCollectionIterator(CpeCollectionReaderIterator iterator)
-	{
-		collectionIterator = iterator;
-	}
-	public CpeCollectionReaderIterator getCollectionIterator()
-	{
-		return collectionIterator;
-	}
-    
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer#getDescriptorPath()
+   */
+  public CpeComponentDescriptor getDescriptor() {
+    return collectionIterator.getDescriptor();
+  }
+
+  /**
+   * Returns configuration parameter settings for this CollectionReader.
+   */
+  public CasProcessorConfigurationParameterSettings getConfigurationParameterSettings() {
+    return collectionIterator.getConfigurationParameterSettings();
+  }
+
+  /**
+   * Sets configuration parameter settings for this CollectionReader.
+   */
+  public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aParams)
+                  throws CpeDescriptorException {
+    collectionIterator.setConfigurationParameterSettings(aParams);
+  }
+
+  protected XmlizationInfo getXmlizationInfo() {
+    return XMLIZATION_INFO;
+  }
+
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("collectionReader",
+                  new PropertyXmlInfo[] { new PropertyXmlInfo("collectionIterator", null),
+                      new PropertyXmlInfo("casInitializer", null), });
+
+  /**
+   * @param iterator
+   */
+  public void setCollectionIterator(CpeCollectionReaderIterator iterator) {
+    collectionIterator = iterator;
+  }
+
+  public CpeCollectionReaderIterator getCollectionIterator() {
+    return collectionIterator;
+  }
+
 }

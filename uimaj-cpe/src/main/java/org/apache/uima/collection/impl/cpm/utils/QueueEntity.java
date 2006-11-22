@@ -20,41 +20,38 @@
 package org.apache.uima.collection.impl.cpm.utils;
 
 /**
- * Convenience wrapper that is internally used by the CPM. Created in the
- * OutputQueue this wrapper contains the CAS and additional information
- * needed to determine if the CAS contained has arrived later than expected
- * Normally the CAS would be marked as NOT timed out. In case of chunking,
- * the CAS may come after a timeout occurs. In this case the CPM needs to
- * know this and take appropriate action.
+ * Convenience wrapper that is internally used by the CPM. Created in the OutputQueue this wrapper
+ * contains the CAS and additional information needed to determine if the CAS contained has arrived
+ * later than expected Normally the CAS would be marked as NOT timed out. In case of chunking, the
+ * CAS may come after a timeout occurs. In this case the CPM needs to know this and take appropriate
+ * action.
  * 
  */
-public class QueueEntity
-{
-	private boolean timedOut = false;
-	private Object entity = null;
-	/**
-	 * Initialize the instance with the Entity (CAS) and the timeout
-	 */
-	public QueueEntity(Object anEntity, boolean hasTimedOut)
-	{
-		timedOut = hasTimedOut;
-		entity = anEntity;
-	}
+public class QueueEntity {
+  private boolean timedOut = false;
 
-	/**
-	 * @return
-	 */
-	public Object getEntity()
-	{
-		return entity;
-	}
+  private Object entity = null;
 
-	/**
-	 * @return
-	 */
-	public boolean isTimedOut()
-	{
-		return timedOut;
-	}
+  /**
+   * Initialize the instance with the Entity (CAS) and the timeout
+   */
+  public QueueEntity(Object anEntity, boolean hasTimedOut) {
+    timedOut = hasTimedOut;
+    entity = anEntity;
+  }
+
+  /**
+   * @return
+   */
+  public Object getEntity() {
+    return entity;
+  }
+
+  /**
+   * @return
+   */
+  public boolean isTimedOut() {
+    return timedOut;
+  }
 
 }

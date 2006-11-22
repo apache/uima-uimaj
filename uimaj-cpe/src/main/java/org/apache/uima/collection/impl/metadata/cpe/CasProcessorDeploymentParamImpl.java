@@ -19,113 +19,101 @@
 
 package org.apache.uima.collection.impl.metadata.cpe;
 
-import java.util.ArrayList;
-
 import org.apache.uima.collection.metadata.CasProcessorDeploymentParam;
 import org.apache.uima.collection.metadata.CpeDescriptorException;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
 import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
-import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.XMLParser;
-import org.apache.uima.util.XMLParser.ParsingOptions;
+import org.xml.sax.helpers.AttributesImpl;
 
+public class CasProcessorDeploymentParamImpl extends MetaDataObject_impl implements
+                CasProcessorDeploymentParam {
+  private static final long serialVersionUID = 8950620301535742630L;
 
-public class CasProcessorDeploymentParamImpl extends MetaDataObject_impl implements CasProcessorDeploymentParam
-{
-	private String name;
-	private String value;
-	private String type;
-	
-	public CasProcessorDeploymentParamImpl() 
-	{
-	}
+  private String name;
 
-	public CasProcessorDeploymentParamImpl(String aName, String aValue, String aType) 
-	{
-		name = aName;
-		value = aValue;
-		type = aType;
-	}
-	
+  private String value;
 
-	public void setParameterName(String aParamName) throws CpeDescriptorException
-	{
-		name = aParamName;
-	}
+  private String type;
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CasProcessorDeploymentParam#getParameterName()
-	 */
-	public String getParameterName() throws CpeDescriptorException
-	{
-		return name;
-	}
-	/**
-	 * 
-	 */
-	public void setParameterValue(String aParamValue) throws CpeDescriptorException
-	{
-		value = aParamValue;
-	}
+  public CasProcessorDeploymentParamImpl() {
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CasProcessorDeploymentParam#getParameterValue()
-	 */
-	public String getParameterValue() throws CpeDescriptorException
-	{
-		return value;
-	}
+  public CasProcessorDeploymentParamImpl(String aName, String aValue, String aType) {
+    name = aName;
+    value = aValue;
+    type = aType;
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.metadata.CasProcessorDeploymentParam#setParameterType(java.lang.String)
-	 */
-	public void setParameterType(String aParamType) throws CpeDescriptorException
-	{
-		type = aParamType;
-	}
-	/**
-	 * 
-	 */
-	public String getParameterType() throws CpeDescriptorException
-	{
-		return type;
-	}
-	/**
-	 * Overridden to handle "name" and "value" attributes.
-	 * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
-	 */
-	protected AttributesImpl getXMLAttributes()
-	{
-	  AttributesImpl attrs = super.getXMLAttributes();
-	  try
-	  {
-		attrs.addAttribute("","name","name","CDATA",getParameterName());
-		if ( getParameterType() != null && getParameterType().trim().length() > 0 )
-		{
-			attrs.addAttribute("","type","type","CDATA",getParameterType());
-		}
-		attrs.addAttribute("","value","value","CDATA",getParameterValue());
-	  }
-		catch( Exception e)
-		{
-			e.printStackTrace();
-		}
-	  return attrs;
-	}
-	protected XmlizationInfo getXmlizationInfo()
-	{
-		return XMLIZATION_INFO;
-	}
-	static final private XmlizationInfo XMLIZATION_INFO =
-	new XmlizationInfo("parameter",
-		new PropertyXmlInfo[0]);
-	
+  public void setParameterName(String aParamName) throws CpeDescriptorException {
+    name = aParamName;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CasProcessorDeploymentParam#getParameterName()
+   */
+  public String getParameterName() throws CpeDescriptorException {
+    return name;
+  }
+
+  /**
+   * 
+   */
+  public void setParameterValue(String aParamValue) throws CpeDescriptorException {
+    value = aParamValue;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CasProcessorDeploymentParam#getParameterValue()
+   */
+  public String getParameterValue() throws CpeDescriptorException {
+    return value;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.metadata.CasProcessorDeploymentParam#setParameterType(java.lang.String)
+   */
+  public void setParameterType(String aParamType) throws CpeDescriptorException {
+    type = aParamType;
+  }
+
+  /**
+   * 
+   */
+  public String getParameterType() throws CpeDescriptorException {
+    return type;
+  }
+
+  /**
+   * Overridden to handle "name" and "value" attributes.
+   * 
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
+   */
+  protected AttributesImpl getXMLAttributes() {
+    AttributesImpl attrs = super.getXMLAttributes();
+    try {
+      attrs.addAttribute("", "name", "name", "CDATA", getParameterName());
+      if (getParameterType() != null && getParameterType().trim().length() > 0) {
+        attrs.addAttribute("", "type", "type", "CDATA", getParameterType());
+      }
+      attrs.addAttribute("", "value", "value", "CDATA", getParameterValue());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return attrs;
+  }
+
+  protected XmlizationInfo getXmlizationInfo() {
+    return XMLIZATION_INFO;
+  }
+
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("parameter",
+                  new PropertyXmlInfo[0]);
+
 }

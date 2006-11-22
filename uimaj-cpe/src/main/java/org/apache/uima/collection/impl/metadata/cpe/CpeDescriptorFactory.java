@@ -59,409 +59,396 @@ import org.apache.uima.util.XMLInputSource;
  * 
  * 
  */
-public class CpeDescriptorFactory
-{
+public class CpeDescriptorFactory {
 
-	public CpeDescriptorFactory()
-	{
-	};
+  public CpeDescriptorFactory() {
+  }
 
-	/**
-	 * Produce a new CpeDescription from scratch.  This CpeDescription will
-	 * contain no components and will have default settings.
-	 * 
-	 * @return An empty CpeDescription object with default settings 
-	 */
-	public static CpeDescription produceDescriptor()
-	{
-		CpeDescription descriptor = null;
-		descriptor = new CpeDescriptionImpl();
-		
-		try
-		{
-			descriptor.setCpeConfiguration(produceCpeConfiguration(descriptor));
-			descriptor.getCpeConfiguration().setNumToProcess((int)CpeDefaultValues.NUM_TO_PROCESS);
-			descriptor.getCpeConfiguration().setDeployment(CpeDefaultValues.DEPLOY_AS);
-			descriptor.getCpeConfiguration().setCheckpoint(produceCpeCheckpoint());
-			descriptor.getCpeConfiguration().getCheckpoint().setFilePath("");
-			descriptor.getCpeConfiguration().getCheckpoint().setFrequency(300000, true);
-			descriptor.getCpeConfiguration().setCpeTimer(new CpeTimerImpl(""));
-			return descriptor;
-			
-		}
-		catch( Exception e)
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
+  /**
+   * Produce a new CpeDescription from scratch. This CpeDescription will contain no components and
+   * will have default settings.
+   * 
+   * @return An empty CpeDescription object with default settings
+   */
+  public static CpeDescription produceDescriptor() {
+    CpeDescription descriptor = null;
+    descriptor = new CpeDescriptionImpl();
 
-	/**
-	 * Parse a CpeDescription from a descriptor file.
-	 * 
-	 * @param aInput identifies the input file
-	 * 
-	 * @return The CpeDescription object parsed from the input
-	 * 
-	 * @throws InvalidXMLException if the descriptor is invalid
-	 */
-	public static CpeDescription produceDescriptor(XMLInputSource aInput) throws InvalidXMLException
-	{
-		Object o;
-		try
-		{
-			o = UIMAFramework.getXMLParser().parse( aInput ); 
-			if ( o instanceof CpeDescription )
-			{
-				return (CpeDescription)o;
-			}
-		}
-		catch( Exception e)
-		{
-			throw new InvalidXMLException(e);
-		}
-		
-		
-		throw new InvalidXMLException(new Exception("Unexpected Object Type Produced By the XMLParser"));
-	}
+    try {
+      descriptor.setCpeConfiguration(produceCpeConfiguration(descriptor));
+      descriptor.getCpeConfiguration().setNumToProcess((int) CpeDefaultValues.NUM_TO_PROCESS);
+      descriptor.getCpeConfiguration().setDeployment(CpeDefaultValues.DEPLOY_AS);
+      descriptor.getCpeConfiguration().setCheckpoint(produceCpeCheckpoint());
+      descriptor.getCpeConfiguration().getCheckpoint().setFilePath("");
+      descriptor.getCpeConfiguration().getCheckpoint().setFrequency(300000, true);
+      descriptor.getCpeConfiguration().setCpeTimer(new CpeTimerImpl(""));
+      return descriptor;
 
-	/**
-	 * Parse a CpeDescription from a given input stream.
-	 * 
-	 * @param aInput identifies the input stream
-	 * 
-	 * @return The CpeDescription object parsed from the input
-	 * 
-	 * @throws InvalidXMLException if the descriptor is invalid
-	 */
-	public static CpeDescription produceDescriptor(InputStream aInput) throws InvalidXMLException
-	{
-		return produceDescriptor(new XMLInputSource(aInput,null));
-	}
-	/**
-	 * 
-	 * @param aCollectionReaderDescriptorPath
-	 * @param aDescriptor
-	 * @throws CpeDescriptorException
-	 */
-	public static CpeCollectionReader produceCollectionReader(String aCollectionReaderDescriptorPath, CpeDescription aDescriptor) throws CpeDescriptorException
-	{
-		CpeCollectionReader[] colR = null;
-		if (aDescriptor == null)
-		{
-			aDescriptor = produceDescriptor();
-		}
-		
-		if ((colR = aDescriptor.getAllCollectionCollectionReaders()).length == 0)
-		{
-			colR = new CpeCollectionReader[1];
-			colR[0] = produceCollectionReader(aCollectionReaderDescriptorPath);
-		}
-		aDescriptor.addCollectionReader(colR[0]);
-		return colR[0];
-	}
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
 
-	public static CpeCollectionReader produceCollectionReader(String aCollectionReaderDescriptorPath) throws CpeDescriptorException
-	{
-		CpeCollectionReader colR = produceCollectionReader();
-		colR.getCollectionIterator().getDescriptor().getInclude().set(aCollectionReaderDescriptorPath);
-		return colR;
-	}
-	public static CpeCollectionReader produceCollectionReader() throws CpeDescriptorException
-	{
-		CpeCollectionReader colR = new CpeCollectionReaderImpl();
-		colR.setCollectionIterator(produceCollectionReaderIterator(""));
-		return colR;
-	}
-	
-	public static CpeCollectionReaderIterator produceCollectionReaderIterator( String aPath) throws CpeDescriptorException
-	{
-		CpeCollectionReaderIterator iterator = new CpeCollectionReaderIteratorImpl();
-		iterator.setDescriptor( produceComponentDescriptor(aPath) );
-		return iterator;
-	}
-	/**
-	 * 
-	 * @param aInitializerDescriptorPath
-	 * @param aDescriptor
-	 * @throws CpeDescriptorException
-   *
-   * @deprecated As of v2.0, CAS Initializers are deprecated.
-	 */
-	public static CpeCollectionReaderCasInitializer produceCollectionReaderCasInitializer(String aPath, CpeDescription aDescriptor) throws CpeDescriptorException
-	{
-		if (aDescriptor == null)
-		{
-			aDescriptor = produceDescriptor();
-		}
-		CpeCollectionReaderCasInitializer initializer = new CpeCollectionReaderCasInitializerImpl();
-		initializer.setDescriptor(produceComponentDescriptor(aPath));
-		return initializer;
-	}
-	/**
-	 * 
-	 * @param aInitializerDescriptorPath
-   * @deprecated As of v2.0, CAS Initializers are deprecated.
-	 */
-	protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasInitializer(String aInitializerDescriptorPath)
-	{
-		try
-		{
-			return produceCollectionReaderCasInitializer(aInitializerDescriptorPath, null);
-		}
-		catch( Exception e)
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
-	/**
-	 * 
-	 * @param aDescriptorPath
-	 */
-	public static CpeComponentDescriptor produceComponentDescriptor(String aPath)
-	{
-
-		CpeComponentDescriptor componentDescriptor = new CpeComponentDescriptorImpl();
-		CpeInclude include = new CpeIncludeImpl();
-		include.set(aPath);
-		componentDescriptor.setInclude(include);
-		return componentDescriptor;
-	}
-	/**
-	 * 
-	 * @param aDescriptor
-	 * @throws CpeDescriptorException
-	 */
-	public static CpeConfiguration produceCpeConfiguration(CpeDescription aDescriptor) throws CpeDescriptorException
-	{
-		if (aDescriptor == null)
-		{
-			aDescriptor = produceDescriptor();
-		}
-		CpeConfiguration config = new CpeConfigurationImpl();
-		aDescriptor.setCpeConfiguration(config);
-		return config;
-	}
-	public static CpeConfiguration produceCpeConfiguration() throws CpeDescriptorException
-	{
-		return new CpeConfigurationImpl();
-	}
-	/**
-	 * 
-	 */
-	public static CasProcessorRuntimeEnvParam produceRuntimeEnvParam()
-	{
-		
-		return new CasProcessorRuntimeEnvParamImpl();
-	}
-	/**
-	 * 
-	 */
-	public static CasProcessorDeploymentParams produceDeployParams()
-	{
-		return new CasProcessorDeploymentParamsImpl();
-	}
-	/**
-	 * 
-	 */
-	public static CasProcessorDeploymentParam produceDeployParam()
-	{
-		return new CasProcessorDeploymentParamImpl();
-	}
-	/**
-	 * 
-	 */
-	public static CpeInclude produceComponentDescriptorInclude()
-	{
-		return new CpeIncludeImpl();
-	}
-	/**
-	 * 
-	 * @param aDescriptor
-	 * @throws CpeDescriptorException
-	 */
-	public static CpeCasProcessors produceCasProcessors(CpeDescription aDescriptor) throws CpeDescriptorException
-	{
-		if (aDescriptor == null)
-		{
-			aDescriptor = produceDescriptor();
-		}
-		CpeCasProcessors processors = new CpeCasProcessorsImpl(); 
-		aDescriptor.setCpeCasProcessors(processors);
-		return processors;
-	}
-	public static CpeCasProcessors produceCasProcessors() throws CpeDescriptorException
-	{
-		return new CpeCasProcessorsImpl(); 
-	}
-	/**
-	 * 
-	 * @param aInputQSize
-	 * @param aOutputQSize
-	 * @param aPuCount
-	 * @param aDescriptor
-	 * @throws CpeDescriptorException
-	 */
-	public static CpeCasProcessors produceCasProcessors(int aInputQSize, int aOutputQSize, int aPuCount, CpeDescription aDescriptor) throws CpeDescriptorException
-	{
-		if (aDescriptor == null)
-		{
-			aDescriptor = produceDescriptor();
-		}
-		CpeCasProcessors processors = new CpeCasProcessorsImpl(); 
-		processors.setConcurrentPUCount(aPuCount);
-		processors.setInputQueueSize(aInputQSize);
-		processors.setOutputQueueSize(aOutputQSize);
-		aDescriptor.setCpeCasProcessors(processors);
-		return processors;
-	}
-	// Default deployment=integrated
-	public static CpeIntegratedCasProcessor produceCasProcessor(String aName)
-	{
-		CpeIntegratedCasProcessor processor = new CpeIntegratedCasProcessorImpl();
-		try
-		{
-			processor.setName(aName);
-		}
-		catch( Exception e)
-		{
-			e.printStackTrace();
-		}
-		return processor;
-	}
-	/**
-	 * 
-	 * @param aName
-	 * @param aSoFa
-	 * @throws CpeDescriptorException
-	 */
-	public static CpeLocalCasProcessor produceLocalCasProcessor(String aName, String aSoFa) throws CpeDescriptorException
-	{
-		CpeLocalCasProcessor processor = new CpeLocalCasProcessorImpl();
-		processor.setName(aName);
-		processor.setSOFA(aSoFa);
-		return processor;
-	}
-	/**
-	 * 
-	 * @param aName
-	 * @throws CpeDescriptorException
-	 */
-	public static CpeRemoteCasProcessor produceRemoteCasProcessor(String aName) throws CpeDescriptorException
-	{
-		CpeRemoteCasProcessor processor = new CpeRemoteCasProcessorImpl();
-		processor.setName(aName);
-		return processor;
-	}
-	public static CpeTimer produceCpeTimer(String aTimerClass)
-	{
-		return new CpeTimerImpl(aTimerClass);
-	}
-	public static CpeResourceManagerConfiguration produceResourceManagerConfiguration(String aResourceMgrConfigurationPath, CpeDescription aDescriptor) throws CpeDescriptorException
-	{
-		if (aDescriptor == null)
-		{
-			aDescriptor = produceDescriptor();
-		}
-		CpeResourceManagerConfiguration resMgr = produceResourceManagerConfiguration(aResourceMgrConfigurationPath);
-		aDescriptor.setCpeResourceManagerConfiguration(resMgr);
-		return resMgr;
-	}
-	public static CpeResourceManagerConfiguration produceResourceManagerConfiguration(String aResourceMgrConfigurationPath) throws CpeDescriptorException
-	{
-		CpeResourceManagerConfiguration resMgr = new CpeResourceManagerConfigurationImpl();
-		resMgr.set(aResourceMgrConfigurationPath);
-		return resMgr;
-	}
-	/**
-	 * 
-	 */
-	public static CasProcessorTimeout produceCasProcessorTimeout()
-	{
-		return new CasProcessorTimeoutImpl();
-	}
-	/**
-	 * 
-	 */
-	public static CasProcessorMaxRestarts produceCasProcessorMaxRestarts()
-	{
-		return new CasProcessorMaxRestartsImpl();
-	}
-	/**
-	 * 
-	 */
-	public static CasProcessorErrorRateThreshold produceCasProcessorErrorRateThreshold()
-	{
-		return new CasProcessorErrorRateThresholdImpl();
-	}
-	/**
-	 * 
-	 * @param aFilter
-	 */
-	public static CasProcessorFilter produceCasProcessorFilter(String aFilter)
-	{
-		CasProcessorFilter filter = new CasProcessorFilterImpl();
-		filter.setFilterString(aFilter);
-		return filter;
-	}
-	/**
-	 * 
-	 */
-	public static CasProcessorErrorHandling produceCasProcessorErrorHandling()
-	{
-		return new CasProcessorErrorHandlingImpl();
-	}
-	/**
-	 * 
-	 */
-	public static CpeCheckpoint produceCpeCheckpoint()
-	{
-		return new CpeCheckpointImpl();
-	}
-	/**
-	 * 
-	 */
-	public static CasProcessorDeploymentParams produceCasProcessorDeploymentParams()
-	{
-		return new CasProcessorDeploymentParamsImpl();
-	}
-	/**
-	 * 
-	 */
-	public static CasProcessorExecArg produceCasProcessorExecArg()
-	{
-		return new CasProcessorExecArgImpl();
-	}
-	/**
-	 * 
-	 */
-	public static CasProcessorExecutable produceCasProcessorExecutable()
-	{
-		return new CasProcessorExecutableImpl();
-	}
-	/**
-	 * 
-	 */
-	public static CasProcessorRunInSeperateProcess produceRunInSeperateProcess()
-	{
-		return new CasProcessorRunInSeperateProcessImpl();
-	}
-
-    /**
-     * 
-     */
-    public static CasProcessorConfigurationParameterSettings produceCasProcessorConfigurationParameterSettings()
-    {
-        return new CasProcessorConfigurationParameterSettingsImpl();
+  /**
+   * Parse a CpeDescription from a descriptor file.
+   * 
+   * @param aInput
+   *          identifies the input file
+   * 
+   * @return The CpeDescription object parsed from the input
+   * 
+   * @throws InvalidXMLException
+   *           if the descriptor is invalid
+   */
+  public static CpeDescription produceDescriptor(XMLInputSource aInput) throws InvalidXMLException {
+    Object o;
+    try {
+      o = UIMAFramework.getXMLParser().parse(aInput);
+      if (o instanceof CpeDescription) {
+        return (CpeDescription) o;
+      }
+    } catch (Exception e) {
+      throw new InvalidXMLException(e);
     }
 
-    /**
-     * 
-     */
-    public static NameValuePair produceNameValuePair()
-    {
-        return new NameValuePairImpl();
+    throw new InvalidXMLException(new Exception("Unexpected Object Type Produced By the XMLParser"));
+  }
+
+  /**
+   * Parse a CpeDescription from a given input stream.
+   * 
+   * @param aInput
+   *          identifies the input stream
+   * 
+   * @return The CpeDescription object parsed from the input
+   * 
+   * @throws InvalidXMLException
+   *           if the descriptor is invalid
+   */
+  public static CpeDescription produceDescriptor(InputStream aInput) throws InvalidXMLException {
+    return produceDescriptor(new XMLInputSource(aInput, null));
+  }
+
+  /**
+   * 
+   * @param aCollectionReaderDescriptorPath
+   * @param aDescriptor
+   * @throws CpeDescriptorException
+   */
+  public static CpeCollectionReader produceCollectionReader(String aCollectionReaderDescriptorPath,
+                  CpeDescription aDescriptor) throws CpeDescriptorException {
+    CpeCollectionReader[] colR = null;
+    if (aDescriptor == null) {
+      aDescriptor = produceDescriptor();
     }
-    
+
+    if ((colR = aDescriptor.getAllCollectionCollectionReaders()).length == 0) {
+      colR = new CpeCollectionReader[1];
+      colR[0] = produceCollectionReader(aCollectionReaderDescriptorPath);
+    }
+    aDescriptor.addCollectionReader(colR[0]);
+    return colR[0];
+  }
+
+  public static CpeCollectionReader produceCollectionReader(String aCollectionReaderDescriptorPath)
+                  throws CpeDescriptorException {
+    CpeCollectionReader colR = produceCollectionReader();
+    colR.getCollectionIterator().getDescriptor().getInclude().set(aCollectionReaderDescriptorPath);
+    return colR;
+  }
+
+  public static CpeCollectionReader produceCollectionReader() throws CpeDescriptorException {
+    CpeCollectionReader colR = new CpeCollectionReaderImpl();
+    colR.setCollectionIterator(produceCollectionReaderIterator(""));
+    return colR;
+  }
+
+  public static CpeCollectionReaderIterator produceCollectionReaderIterator(String aPath)
+                  throws CpeDescriptorException {
+    CpeCollectionReaderIterator iterator = new CpeCollectionReaderIteratorImpl();
+    iterator.setDescriptor(produceComponentDescriptor(aPath));
+    return iterator;
+  }
+
+  /**
+   * 
+   * @param aInitializerDescriptorPath
+   * @param aDescriptor
+   * @throws CpeDescriptorException
+   * 
+   * @deprecated As of v2.0, CAS Initializers are deprecated.
+   */
+  public static CpeCollectionReaderCasInitializer produceCollectionReaderCasInitializer(
+                  String aPath, CpeDescription aDescriptor) throws CpeDescriptorException {
+    if (aDescriptor == null) {
+      aDescriptor = produceDescriptor();
+    }
+    CpeCollectionReaderCasInitializer initializer = new CpeCollectionReaderCasInitializerImpl();
+    initializer.setDescriptor(produceComponentDescriptor(aPath));
+    return initializer;
+  }
+
+  /**
+   * 
+   * @param aInitializerDescriptorPath
+   * @deprecated As of v2.0, CAS Initializers are deprecated.
+   */
+  protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasInitializer(
+                  String aInitializerDescriptorPath) {
+    try {
+      return produceCollectionReaderCasInitializer(aInitializerDescriptorPath, null);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  /**
+   * 
+   * @param aDescriptorPath
+   */
+  public static CpeComponentDescriptor produceComponentDescriptor(String aPath) {
+
+    CpeComponentDescriptor componentDescriptor = new CpeComponentDescriptorImpl();
+    CpeInclude include = new CpeIncludeImpl();
+    include.set(aPath);
+    componentDescriptor.setInclude(include);
+    return componentDescriptor;
+  }
+
+  /**
+   * 
+   * @param aDescriptor
+   * @throws CpeDescriptorException
+   */
+  public static CpeConfiguration produceCpeConfiguration(CpeDescription aDescriptor)
+                  throws CpeDescriptorException {
+    if (aDescriptor == null) {
+      aDescriptor = produceDescriptor();
+    }
+    CpeConfiguration config = new CpeConfigurationImpl();
+    aDescriptor.setCpeConfiguration(config);
+    return config;
+  }
+
+  public static CpeConfiguration produceCpeConfiguration() throws CpeDescriptorException {
+    return new CpeConfigurationImpl();
+  }
+
+  /**
+   * 
+   */
+  public static CasProcessorRuntimeEnvParam produceRuntimeEnvParam() {
+
+    return new CasProcessorRuntimeEnvParamImpl();
+  }
+
+  /**
+   * 
+   */
+  public static CasProcessorDeploymentParams produceDeployParams() {
+    return new CasProcessorDeploymentParamsImpl();
+  }
+
+  /**
+   * 
+   */
+  public static CasProcessorDeploymentParam produceDeployParam() {
+    return new CasProcessorDeploymentParamImpl();
+  }
+
+  /**
+   * 
+   */
+  public static CpeInclude produceComponentDescriptorInclude() {
+    return new CpeIncludeImpl();
+  }
+
+  /**
+   * 
+   * @param aDescriptor
+   * @throws CpeDescriptorException
+   */
+  public static CpeCasProcessors produceCasProcessors(CpeDescription aDescriptor)
+                  throws CpeDescriptorException {
+    if (aDescriptor == null) {
+      aDescriptor = produceDescriptor();
+    }
+    CpeCasProcessors processors = new CpeCasProcessorsImpl();
+    aDescriptor.setCpeCasProcessors(processors);
+    return processors;
+  }
+
+  public static CpeCasProcessors produceCasProcessors() throws CpeDescriptorException {
+    return new CpeCasProcessorsImpl();
+  }
+
+  /**
+   * 
+   * @param aInputQSize
+   * @param aOutputQSize
+   * @param aPuCount
+   * @param aDescriptor
+   * @throws CpeDescriptorException
+   */
+  public static CpeCasProcessors produceCasProcessors(int aInputQSize, int aOutputQSize,
+                  int aPuCount, CpeDescription aDescriptor) throws CpeDescriptorException {
+    if (aDescriptor == null) {
+      aDescriptor = produceDescriptor();
+    }
+    CpeCasProcessors processors = new CpeCasProcessorsImpl();
+    processors.setConcurrentPUCount(aPuCount);
+    processors.setInputQueueSize(aInputQSize);
+    processors.setOutputQueueSize(aOutputQSize);
+    aDescriptor.setCpeCasProcessors(processors);
+    return processors;
+  }
+
+  // Default deployment=integrated
+  public static CpeIntegratedCasProcessor produceCasProcessor(String aName) {
+    CpeIntegratedCasProcessor processor = new CpeIntegratedCasProcessorImpl();
+    try {
+      processor.setName(aName);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return processor;
+  }
+
+  /**
+   * 
+   * @param aName
+   * @param aSoFa
+   * @throws CpeDescriptorException
+   */
+  public static CpeLocalCasProcessor produceLocalCasProcessor(String aName, String aSoFa)
+                  throws CpeDescriptorException {
+    CpeLocalCasProcessor processor = new CpeLocalCasProcessorImpl();
+    processor.setName(aName);
+    processor.setSOFA(aSoFa);
+    return processor;
+  }
+
+  /**
+   * 
+   * @param aName
+   * @throws CpeDescriptorException
+   */
+  public static CpeRemoteCasProcessor produceRemoteCasProcessor(String aName)
+                  throws CpeDescriptorException {
+    CpeRemoteCasProcessor processor = new CpeRemoteCasProcessorImpl();
+    processor.setName(aName);
+    return processor;
+  }
+
+  public static CpeTimer produceCpeTimer(String aTimerClass) {
+    return new CpeTimerImpl(aTimerClass);
+  }
+
+  public static CpeResourceManagerConfiguration produceResourceManagerConfiguration(
+                  String aResourceMgrConfigurationPath, CpeDescription aDescriptor)
+                  throws CpeDescriptorException {
+    if (aDescriptor == null) {
+      aDescriptor = produceDescriptor();
+    }
+    CpeResourceManagerConfiguration resMgr = produceResourceManagerConfiguration(aResourceMgrConfigurationPath);
+    aDescriptor.setCpeResourceManagerConfiguration(resMgr);
+    return resMgr;
+  }
+
+  public static CpeResourceManagerConfiguration produceResourceManagerConfiguration(
+                  String aResourceMgrConfigurationPath) throws CpeDescriptorException {
+    CpeResourceManagerConfiguration resMgr = new CpeResourceManagerConfigurationImpl();
+    resMgr.set(aResourceMgrConfigurationPath);
+    return resMgr;
+  }
+
+  /**
+   * 
+   */
+  public static CasProcessorTimeout produceCasProcessorTimeout() {
+    return new CasProcessorTimeoutImpl();
+  }
+
+  /**
+   * 
+   */
+  public static CasProcessorMaxRestarts produceCasProcessorMaxRestarts() {
+    return new CasProcessorMaxRestartsImpl();
+  }
+
+  /**
+   * 
+   */
+  public static CasProcessorErrorRateThreshold produceCasProcessorErrorRateThreshold() {
+    return new CasProcessorErrorRateThresholdImpl();
+  }
+
+  /**
+   * 
+   * @param aFilter
+   */
+  public static CasProcessorFilter produceCasProcessorFilter(String aFilter) {
+    CasProcessorFilter filter = new CasProcessorFilterImpl();
+    filter.setFilterString(aFilter);
+    return filter;
+  }
+
+  /**
+   * 
+   */
+  public static CasProcessorErrorHandling produceCasProcessorErrorHandling() {
+    return new CasProcessorErrorHandlingImpl();
+  }
+
+  /**
+   * 
+   */
+  public static CpeCheckpoint produceCpeCheckpoint() {
+    return new CpeCheckpointImpl();
+  }
+
+  /**
+   * 
+   */
+  public static CasProcessorDeploymentParams produceCasProcessorDeploymentParams() {
+    return new CasProcessorDeploymentParamsImpl();
+  }
+
+  /**
+   * 
+   */
+  public static CasProcessorExecArg produceCasProcessorExecArg() {
+    return new CasProcessorExecArgImpl();
+  }
+
+  /**
+   * 
+   */
+  public static CasProcessorExecutable produceCasProcessorExecutable() {
+    return new CasProcessorExecutableImpl();
+  }
+
+  /**
+   * 
+   */
+  public static CasProcessorRunInSeperateProcess produceRunInSeperateProcess() {
+    return new CasProcessorRunInSeperateProcessImpl();
+  }
+
+  /**
+   * 
+   */
+  public static CasProcessorConfigurationParameterSettings produceCasProcessorConfigurationParameterSettings() {
+    return new CasProcessorConfigurationParameterSettingsImpl();
+  }
+
+  /**
+   * 
+   */
+  public static NameValuePair produceNameValuePair() {
+    return new NameValuePairImpl();
+  }
+
 }

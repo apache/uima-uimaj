@@ -24,141 +24,121 @@ import org.apache.uima.collection.metadata.CpeCollectionReaderIterator;
 import org.apache.uima.collection.metadata.CpeComponentDescriptor;
 import org.apache.uima.collection.metadata.CpeSofaMappings;
 import org.apache.uima.collection.metadata.NameValuePair;
-
-import org.w3c.dom.Element;
-import org.xml.sax.helpers.AttributesImpl;
-
-import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.impl.ConfigurationParameterSettings_impl;
 import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
-import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.XMLParser;
-import org.apache.uima.util.XMLParser.ParsingOptions;
 
-public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl implements CpeCollectionReaderIterator
-{
-	private CpeComponentDescriptor descriptor;
-	private CasProcessorConfigurationParameterSettings configurationParameterSettings;
-	private CpeSofaMappings sofaNameMappings;
-	private ConfigurationParameterSettings configParameterSettings;
-	
-	/**
-	 * @return
-	 */
-	public CpeComponentDescriptor getDescriptor()
-	{
-		return descriptor;
-	}
+public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl implements
+                CpeCollectionReaderIterator {
+  private static final long serialVersionUID = -9208074797482603808L;
 
-	/**
-	 * @param descriptor
-	 */
-	public void setDescriptor(CpeComponentDescriptor descriptor)
-	{
-		this.descriptor = descriptor;
-	}
-	protected XmlizationInfo getXmlizationInfo()
-	{
-	  return XMLIZATION_INFO;
-	}
-  
-  
-	static final private XmlizationInfo XMLIZATION_INFO =
-	  new XmlizationInfo("collectionIterator",
-		new PropertyXmlInfo[]{
-			new PropertyXmlInfo("descriptor",null),
-			new PropertyXmlInfo("configParameterSettings",null),
-			new PropertyXmlInfo("sofaNameMappings",null),
-			
-		});
-  
-	/**
-	 * @return
-	 */
-	
-	
-	public  CasProcessorConfigurationParameterSettings getConfigurationParameterSettings()
-	{
-		return configurationParameterSettings;
-		
-	}
+  private CpeComponentDescriptor descriptor;
 
-	/**
-	 * @param settings
-	 */
-	public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings settings)
-	{
-		configurationParameterSettings = settings;
-		if ( settings != null  && settings.getParameterSettings() != null )
-		{
-			int length = settings.getParameterSettings().length;
-			if ( length > 0 )
-			{
-				configParameterSettings = new ConfigurationParameterSettings_impl();
-				org.apache.uima.resource.metadata.NameValuePair[] nvp = new NameValuePair_impl[settings.getParameterSettings().length];
-				for ( int i=0; i < settings.getParameterSettings().length; i++)
-				{
-					nvp[i] = new NameValuePair_impl(settings.getParameterSettings()[i].getName(),settings.getParameterSettings()[i].getValue());
-				}
-				configParameterSettings.setParameterSettings(nvp);
-			}
-			
-		}
-	}
+  private CasProcessorConfigurationParameterSettings configurationParameterSettings;
 
-	/**
-	 * @return
-	 */
-	public ConfigurationParameterSettings getConfigParameterSettings()
-	{
-		ConfigurationParameterSettings local = null;
-		if ( configurationParameterSettings != null )
-		{
-			local = new ConfigurationParameterSettings_impl();
-			
-			NameValuePair[] nvp = configurationParameterSettings.getParameterSettings();
-			
-		
-			for( int i=0; nvp != null && i < nvp.length; i++ )
-			{
-				local.setParameterValue(nvp[i].getName(),nvp[i].getValue());
-			}
-		}
-		else
-			local = configParameterSettings;
+  private CpeSofaMappings sofaNameMappings;
 
-		return local;
-	}
+  private ConfigurationParameterSettings configParameterSettings;
 
-	/**
-	 * @param settings
-	 */
-	public void setConfigParameterSettings(ConfigurationParameterSettings settings)
-	{
-		configParameterSettings = settings;
-		if ( configParameterSettings != null )
-		{
-			configurationParameterSettings = new CasProcessorConfigurationParameterSettingsImpl(configParameterSettings);
-		}		
-	}
+  /**
+   * @return
+   */
+  public CpeComponentDescriptor getDescriptor() {
+    return descriptor;
+  }
 
-	/**
-	 * @return
-	 */
-	public CpeSofaMappings getSofaNameMappings()
-	{
-		return sofaNameMappings;
-	}
+  /**
+   * @param descriptor
+   */
+  public void setDescriptor(CpeComponentDescriptor descriptor) {
+    this.descriptor = descriptor;
+  }
 
-	/**
-	 * @param mappings
-	 */
-	public void setSofaNameMappings(CpeSofaMappings mappings)
-	{
-		sofaNameMappings = mappings;
-	}
+  protected XmlizationInfo getXmlizationInfo() {
+    return XMLIZATION_INFO;
+  }
+
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("collectionIterator",
+                  new PropertyXmlInfo[] { new PropertyXmlInfo("descriptor", null),
+                      new PropertyXmlInfo("configParameterSettings", null),
+                      new PropertyXmlInfo("sofaNameMappings", null),
+
+                  });
+
+  /**
+   * @return
+   */
+
+  public CasProcessorConfigurationParameterSettings getConfigurationParameterSettings() {
+    return configurationParameterSettings;
+
+  }
+
+  /**
+   * @param settings
+   */
+  public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings settings) {
+    configurationParameterSettings = settings;
+    if (settings != null && settings.getParameterSettings() != null) {
+      int length = settings.getParameterSettings().length;
+      if (length > 0) {
+        configParameterSettings = new ConfigurationParameterSettings_impl();
+        org.apache.uima.resource.metadata.NameValuePair[] nvp = new NameValuePair_impl[settings
+                        .getParameterSettings().length];
+        for (int i = 0; i < settings.getParameterSettings().length; i++) {
+          nvp[i] = new NameValuePair_impl(settings.getParameterSettings()[i].getName(), settings
+                          .getParameterSettings()[i].getValue());
+        }
+        configParameterSettings.setParameterSettings(nvp);
+      }
+
+    }
+  }
+
+  /**
+   * @return
+   */
+  public ConfigurationParameterSettings getConfigParameterSettings() {
+    ConfigurationParameterSettings local = null;
+    if (configurationParameterSettings != null) {
+      local = new ConfigurationParameterSettings_impl();
+
+      NameValuePair[] nvp = configurationParameterSettings.getParameterSettings();
+
+      for (int i = 0; nvp != null && i < nvp.length; i++) {
+        local.setParameterValue(nvp[i].getName(), nvp[i].getValue());
+      }
+    } else
+      local = configParameterSettings;
+
+    return local;
+  }
+
+  /**
+   * @param settings
+   */
+  public void setConfigParameterSettings(ConfigurationParameterSettings settings) {
+    configParameterSettings = settings;
+    if (configParameterSettings != null) {
+      configurationParameterSettings = new CasProcessorConfigurationParameterSettingsImpl(
+                      configParameterSettings);
+    }
+  }
+
+  /**
+   * @return
+   */
+  public CpeSofaMappings getSofaNameMappings() {
+    return sofaNameMappings;
+  }
+
+  /**
+   * @param mappings
+   */
+  public void setSofaNameMappings(CpeSofaMappings mappings) {
+    sofaNameMappings = mappings;
+  }
 }

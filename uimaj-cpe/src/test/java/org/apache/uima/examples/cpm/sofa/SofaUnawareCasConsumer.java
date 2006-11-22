@@ -31,38 +31,40 @@ import org.apache.uima.collection.CasConsumer_ImplBase;
 import org.apache.uima.resource.ResourceProcessException;
 
 /**
- * Sofa-unaware CAS Consumer for Sofa test cases.  Expects German CAS view to be
- * passed to process method
+ * Sofa-unaware CAS Consumer for Sofa test cases. Expects German CAS view to be passed to process
+ * method
  */
 public class SofaUnawareCasConsumer extends CasConsumer_ImplBase {
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#processCas(org.apache.uima.cas.CAS)
-	 */
-	public void processCas(CAS cas) throws ResourceProcessException {
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#processCas(org.apache.uima.cas.CAS)
+   */
+  public void processCas(CAS cas) throws ResourceProcessException {
     Assert.assertNotNull(cas);
     Assert.assertEquals("das bier ist gut", cas.getDocumentText());
     Type cross = cas.getTypeSystem().getType("sofa.test.CrossAnnotation");
     Feature other = cross.getFeatureByBaseName("otherAnnotation");
-		FSIndex anIndex = cas.getAnnotationIndex(cross);
-		FSIterator anIter = anIndex.iterator();
-    AnnotationFS annot = (AnnotationFS)anIter.next();
+    FSIndex anIndex = cas.getAnnotationIndex(cross);
+    FSIterator anIter = anIndex.iterator();
+    AnnotationFS annot = (AnnotationFS) anIter.next();
     Assert.assertEquals("das", annot.getCoveredText());
     AnnotationFS crossAnnot = (AnnotationFS) annot.getFeatureValue(other);
     Assert.assertEquals("this", crossAnnot.getCoveredText());
-    annot = (AnnotationFS)anIter.next();
+    annot = (AnnotationFS) anIter.next();
     Assert.assertEquals("bier", annot.getCoveredText());
     crossAnnot = (AnnotationFS) annot.getFeatureValue(other);
     Assert.assertEquals("beer", crossAnnot.getCoveredText());
-    annot = (AnnotationFS)anIter.next();
+    annot = (AnnotationFS) anIter.next();
     Assert.assertEquals("ist", annot.getCoveredText());
     crossAnnot = (AnnotationFS) annot.getFeatureValue(other);
     Assert.assertEquals("is", crossAnnot.getCoveredText());
-    annot = (AnnotationFS)anIter.next();
+    annot = (AnnotationFS) anIter.next();
     Assert.assertEquals("gut", annot.getCoveredText());
     crossAnnot = (AnnotationFS) annot.getFeatureValue(other);
     Assert.assertEquals("good", crossAnnot.getCoveredText());
-    Assert.assertFalse(anIter.hasNext());    
-	}
+    Assert.assertFalse(anIter.hasNext());
+  }
 
 }

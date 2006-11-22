@@ -30,54 +30,47 @@ import org.apache.uima.util.Level;
 
 /**
  * 
- *
+ * 
  */
-public class CasMetaData implements Serializable
-{
-	Object casObject;
-	NameValuePair[] casMetaData = null;
-	
-	public void setCasMetaData( Object aCas )
-	{
-		if ( aCas != null && aCas instanceof CasData )
-		{
-			casObject = aCas;
-		    casMetaData = DATACasUtils.getCasDataFeatures( (CasData)aCas, Constants.METADATA_KEY); 
-		}
-		else
-		{
-			if ( UIMAFramework.getLogger().isLoggable(Level.FINEST) )
-			{
-				UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(), "process",
-				        CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cas_not_valid__FINEST",
-				        new Object[] {Thread.currentThread().getName()});
-			}
-		}
-	}
-	
-	public NameValuePair[] getCasMetaData()
-	{
-		if ( casMetaData == null )
-		{
-			return new NameValuePair[0];
-		}
-		return casMetaData;
-	}
-	
-	public Object getValue( String aName )
-	{
-		if ( casMetaData == null || aName == null )
-		{
-			return null;
-		}
-		
-		for( int i=0; i < casMetaData.length && casMetaData[i] != null ; i++ )
-		{
-			if ( casMetaData[i].getName().equals( aName ))
-			{
-				return casMetaData[i].getValue();
-			}
-		}
-		return null;
-	}
+public class CasMetaData implements Serializable {
+
+  private static final long serialVersionUID = 836775023988205201L;
+
+  Object casObject;
+
+  NameValuePair[] casMetaData = null;
+
+  public void setCasMetaData(Object aCas) {
+    if (aCas != null && aCas instanceof CasData) {
+      casObject = aCas;
+      casMetaData = DATACasUtils.getCasDataFeatures((CasData) aCas, Constants.METADATA_KEY);
+    } else {
+      if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                        "UIMA_CPM_cas_not_valid__FINEST",
+                        new Object[] { Thread.currentThread().getName() });
+      }
+    }
+  }
+
+  public NameValuePair[] getCasMetaData() {
+    if (casMetaData == null) {
+      return new NameValuePair[0];
+    }
+    return casMetaData;
+  }
+
+  public Object getValue(String aName) {
+    if (casMetaData == null || aName == null) {
+      return null;
+    }
+
+    for (int i = 0; i < casMetaData.length && casMetaData[i] != null; i++) {
+      if (casMetaData[i].getName().equals(aName)) {
+        return casMetaData[i].getValue();
+      }
+    }
+    return null;
+  }
 }

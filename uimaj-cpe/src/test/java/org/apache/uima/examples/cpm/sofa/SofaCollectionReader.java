@@ -31,70 +31,69 @@ import org.apache.uima.util.Progress;
 
 /*
  * Created on Aug 11, 2004
- *
- * To change the template for this generated file go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
+ * 
+ * To change the template for this generated file go to Window&gt;Preferences&gt;Java&gt;Code
+ * Generation&gt;Code and Comments
  */
 
 /**
  * Creates a Text SofA in the cas.
+ * 
  * @author Bhavani Iyer
- *
+ * 
  */
 public class SofaCollectionReader extends CollectionReader_ImplBase {
-     boolean hasMore = true;
+  boolean hasMore = true;
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.CollectionReader#getNext(org.apache.uima.cas.CAS)
+   */
+  public void getNext(CAS aCAS) throws IOException, CollectionException {
+    // TODO Auto-generated method stub
+    String text = "this beer is good";
+    try {
+      this.getCasInitializer().initializeCas(text, aCAS);
+    } catch (NullPointerException e) {
+      // Create the Source text Sofa
+      SofaID sofaid = getUimaContext().mapToSofaID("InputText");
+      // System.out.println("COLLECTIONREADER: real sofa name for InputText " + sofaid.getSofaID());
 
-	
+      SofaFS ls = aCAS.createSofa(sofaid, "text");
+      ls.setLocalSofaData(text);
+    }
+    hasMore = false;
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.CollectionReader#getNext(org.apache.uima.cas.CAS)
-	 */
-	public void getNext(CAS aCAS) throws IOException, CollectionException {
-		// TODO Auto-generated method stub
-		String text="this beer is good";
-		try {
-			this.getCasInitializer().initializeCas(text, aCAS);
-		} catch (NullPointerException e) {
-			// Create the Source text Sofa
-			SofaID sofaid = getUimaContext().mapToSofaID("InputText");
-			//System.out.println("COLLECTIONREADER: real sofa name for InputText " + sofaid.getSofaID());
-			 
-			 SofaFS ls = aCAS.createSofa(sofaid, "text");
-			 ls.setLocalSofaData(text);					
-		}
-        hasMore=false;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#hasNext()
+   */
+  public boolean hasNext() throws IOException, CollectionException {
+    // TODO Auto-generated method stub
+    return hasMore;
+  }
 
-	
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#getProgress()
+   */
+  public Progress[] getProgress() {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#hasNext()
-	 */
-	public boolean hasNext() throws IOException, CollectionException {
-		// TODO Auto-generated method stub
-		return hasMore;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#close()
+   */
+  public void close() throws IOException {
+    // TODO Auto-generated method stub
 
+  }
 
-
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#getProgress()
-	 */
-	public Progress[] getProgress() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-
-	/* (non-Javadoc)
-	 * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#close()
-	 */
-	public void close() throws IOException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	
 }

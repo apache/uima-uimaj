@@ -24,56 +24,67 @@ import org.apache.uima.collection.base_cpm.CasProcessor;
 /**
  * 
  * 
- *
+ * 
  */
-public interface CasProcessorController 
-{
-	public static final int NOTINITIALIZED = 0;
-	public static final int INITIALIZED = 1;
-	public static final int RUNNING = 2;
-	public static final int DISABLED = 3;
-	public static final int KILLED = 4;
-	
-	/**
-	 * Returns instance of CasProcessor
-	 * 
-	 * @return CasProcessor
-	 */
-	public CasProcessor getCasProcessor();
-	
-	/**
-	 * Returns status of CasProcessor
-	 * 
-	 * @return int status
-	 */
-	public int getStatus();
+public interface CasProcessorController {
+  public static final int NOTINITIALIZED = 0;
 
-	/**
-	 * Sets status of CasProcessor
-	 * 
-	 * @param int aStatus
-	 */	
-	public void setStatus( int aStatus );	
-	/**
-	 * Returns true if this is a Locally Deployed CasProcessor ( Same machine, different JVM )
-	 * @return true if Local, false otherwise
-	 */
-	public boolean isLocal();
-	/**
-	 * Returns true if this is a Remotely Deployed CasProcessor
-	 * @return true if Remote, false otherwise
-	 */
-	public boolean isRemote();
-	/**
-	 * Returns true if this is a Integrated CasProcessor
-	 * @return true if Integrated, false otherwise
-	 */
-	public boolean isIntegrated();
-	/**
-	 * Returns true if CasProcessor can be Aborted/Disabled.
-	 * 
-	 * @return true if abortable, false otherwise
-	 */
-	public boolean isAbortable();
-	
+  public static final int INITIALIZED = 1;
+
+  public static final int RUNNING = 2;
+
+  public static final int DISABLED = 3;
+
+  public static final int KILLED = 4;
+
+  /**
+   * Returns instance of CasProcessor
+   * 
+   * @return CasProcessor
+   */
+  public CasProcessor getCasProcessor();
+
+  /**
+   * Returns status of CasProcessor
+   * 
+   * @return int status
+   */
+  public int getStatus();
+
+  /**
+   * Sets status of CasProcessor
+   * 
+   * @param int
+   *          aStatus
+   */
+  public void setStatus(int aStatus);
+
+  /**
+   * Returns true if this is a Locally Deployed CasProcessor ( Same machine, different JVM )
+   * 
+   * @return true if Local, false otherwise
+   */
+  public boolean isLocal();
+
+  /**
+   * Returns true if this is a Remotely Deployed CasProcessor
+   * 
+   * @return true if Remote, false otherwise
+   */
+  public boolean isRemote();
+
+  /**
+   * Returns true if this is a Integrated CasProcessor
+   * 
+   * @return true if Integrated, false otherwise
+   */
+  public boolean isIntegrated();
+
+  /**
+   * Returns true if CasProcessor can be Aborted/Disabled.
+   * 
+   * @return true if abortable, false otherwise
+   */
+  public boolean isAbortable();
+
 }

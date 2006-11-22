@@ -19,53 +19,52 @@
 
 package org.apache.uima.collection.impl.cpm.utils;
 
+public class ValuePair {
+  private String oldV;
 
+  private String newV;
 
-public class ValuePair
-{
-	private String oldV;
-	private String newV;
-	
-	public ValuePair( String oldValue, String newValue)
-	{
-		oldV = oldValue;
-		newV = newValue;
-	}
+  public ValuePair(String oldValue, String newValue) {
+    oldV = oldValue;
+    newV = newValue;
+  }
 
-	/**
-	 * Returns the newV.
-	 * @return String
-	 */
-	public String getNewV()
-	{
-		return newV;
-	}
+  /**
+   * Returns the newV.
+   * 
+   * @return String
+   */
+  public String getNewV() {
+    return newV;
+  }
 
-	/**
-	 * Returns the oldV.
-	 * @return String
-	 */
-	public String getOldV()
-	{
-		return oldV;
-	}
+  /**
+   * Returns the oldV.
+   * 
+   * @return String
+   */
+  public String getOldV() {
+    return oldV;
+  }
 
-	/**
-	 * Sets the newV.
-	 * @param newV The newV to set
-	 */
-	public void setNewV(String newV)
-	{
-		this.newV = newV;
-	}
+  /**
+   * Sets the newV.
+   * 
+   * @param newV
+   *          The newV to set
+   */
+  public void setNewV(String newV) {
+    this.newV = newV;
+  }
 
-	/**
-	 * Sets the oldV.
-	 * @param oldV The oldV to set
-	 */
-	public void setOldV(String oldV)
-	{
-		this.oldV = oldV;
-	}
+  /**
+   * Sets the oldV.
+   * 
+   * @param oldV
+   *          The oldV to set
+   */
+  public void setOldV(String oldV) {
+    this.oldV = oldV;
+  }
 
 }

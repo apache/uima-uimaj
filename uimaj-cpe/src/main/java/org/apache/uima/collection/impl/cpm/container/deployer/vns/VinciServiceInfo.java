@@ -22,44 +22,46 @@ package org.apache.uima.collection.impl.cpm.container.deployer.vns;
 /**
  * 
  * Vinci service information
- *
+ * 
  */
-public class VinciServiceInfo
-{
-	private String serviceName;
-	private String host;
-	private int port;
-	private boolean available = true;
+public class VinciServiceInfo {
+  private String serviceName;
 
-	public VinciServiceInfo(String aServiceName, String aHost, int aPort)
-	{
-		serviceName = aServiceName;
-		host = aHost;
-		port = aPort;
-	}
-	public String getServiceName()
-	{
-		return serviceName;
-	}
-	public String getHost()
-	{
-		return host;
-	}
-	public int getPort()
-	{
-		return port;
-	}
-	public void setAvailable(boolean isAvailable)
-	{
-		available = isAvailable;
-	}
-	public boolean isAvailable()
-	{
-		return available;
-	}
-	public String toString()
-	{
-		StringBuffer sb = new StringBuffer("SERVICE:").append(serviceName).append("\nIP:").append(host).append("\nPORT:").append(port);
-		return sb.toString();
-	}
+  private String host;
+
+  private int port;
+
+  private boolean available = true;
+
+  public VinciServiceInfo(String aServiceName, String aHost, int aPort) {
+    serviceName = aServiceName;
+    host = aHost;
+    port = aPort;
+  }
+
+  public String getServiceName() {
+    return serviceName;
+  }
+
+  public String getHost() {
+    return host;
+  }
+
+  public int getPort() {
+    return port;
+  }
+
+  public void setAvailable(boolean isAvailable) {
+    available = isAvailable;
+  }
+
+  public boolean isAvailable() {
+    return available;
+  }
+
+  public String toString() {
+    StringBuffer sb = new StringBuffer("SERVICE:").append(serviceName).append("\nIP:").append(host)
+                    .append("\nPORT:").append(port);
+    return sb.toString();
+  }
 }

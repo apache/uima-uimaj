@@ -20,12 +20,10 @@
 package org.apache.uima.collection.impl.cpm.engine;
 
 /**
- * Special class interpreted by the CPM's ProcessingUnit as the
- * end of processing. It is enqueued onto a queue from which 
- * the ProcessingUnit gets entities to process. The EOFToken is
- * placed in the queue by the ArtifactProducer when the either
- * the CollectionReader is done reading the collection or the
- * CPM has been instructed to terminate. 
+ * Special class interpreted by the CPM's ProcessingUnit as the end of processing. It is enqueued
+ * onto a queue from which the ProcessingUnit gets entities to process. The EOFToken is placed in
+ * the queue by the ArtifactProducer when the either the CollectionReader is done reading the
+ * collection or the CPM has been instructed to terminate.
  * 
  * 
  */

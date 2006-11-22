@@ -25,73 +25,74 @@ import org.apache.uima.collection.base_cpm.SynchPoint;
 import org.apache.uima.util.ProcessTrace;
 
 /**
- * Serializable containing the checkpoint. The checkpoint contains both
- * {@link ProcessTrace} and {@link SynchPoint} objects. It is serialized
- * to file system by {@link Checkpoint} thread at predefined intervals.
+ * Serializable containing the checkpoint. The checkpoint contains both {@link ProcessTrace} and
+ * {@link SynchPoint} objects. It is serialized to file system by {@link Checkpoint} thread at
+ * predefined intervals.
  * 
  * 
  */
-public class CheckpointData implements Serializable
-{
-	private ProcessTrace processTrace; 
-	private SynchPoint synchPoint;
-	
-	public CheckpointData() {};
-	
-	public CheckpointData( ProcessTrace aProcessTrace )
-	{
-		processTrace = aProcessTrace;
-	}
-	/**
-	 * Initialize instance with ProcessTrace and SynchPoint
-	 * 
-	 * @param aProcessTrace - events and timers accumulated so far
-	 * @param aSynchPoint - 
-	 */
-	public CheckpointData( ProcessTrace aProcessTrace, SynchPoint aSynchPoint )
-	{
-		processTrace = aProcessTrace;
-		synchPoint = aSynchPoint;
-	}
-	
-	
-	/**
-	 * Returns current ProcessTrace object
-	 * @return - ProcessTrace object
-	 */
-	public ProcessTrace getProcessTrace()
-	{
-		return processTrace;
-	}
+public class CheckpointData implements Serializable {
+  private static final long serialVersionUID = -3261502844386898304L;
 
-	/**
-	 * Returns current SynchPoint object
-	 * 
-	 * @return - SynchPoint object
-	 */
-	public SynchPoint getSynchPoint()
-	{
-		return synchPoint;
-	}
+  private ProcessTrace processTrace;
 
-	/**
-	 * Adds ProcessTrace to save in a checkpoint
-	 * 
-	 * @param trace - ProcessTrace to save
-	 */
-	public void setProcessTrace(ProcessTrace trace)
-	{
-		processTrace = trace;
-	}
+  private SynchPoint synchPoint;
 
-	/**
-	 * Adds SynchPoint to save in a checkpoint
-	 * 
-	 * @param point - SynchPoint to save
-	 */
-	public void setSynchPoint(SynchPoint point)
-	{
-		synchPoint = point;
-	}
+  public CheckpointData() {
+  }
+
+  public CheckpointData(ProcessTrace aProcessTrace) {
+    processTrace = aProcessTrace;
+  }
+
+  /**
+   * Initialize instance with ProcessTrace and SynchPoint
+   * 
+   * @param aProcessTrace -
+   *          events and timers accumulated so far
+   * @param aSynchPoint -
+   */
+  public CheckpointData(ProcessTrace aProcessTrace, SynchPoint aSynchPoint) {
+    processTrace = aProcessTrace;
+    synchPoint = aSynchPoint;
+  }
+
+  /**
+   * Returns current ProcessTrace object
+   * 
+   * @return - ProcessTrace object
+   */
+  public ProcessTrace getProcessTrace() {
+    return processTrace;
+  }
+
+  /**
+   * Returns current SynchPoint object
+   * 
+   * @return - SynchPoint object
+   */
+  public SynchPoint getSynchPoint() {
+    return synchPoint;
+  }
+
+  /**
+   * Adds ProcessTrace to save in a checkpoint
+   * 
+   * @param trace -
+   *          ProcessTrace to save
+   */
+  public void setProcessTrace(ProcessTrace trace) {
+    processTrace = trace;
+  }
+
+  /**
+   * Adds SynchPoint to save in a checkpoint
+   * 
+   * @param point -
+   *          SynchPoint to save
+   */
+  public void setSynchPoint(SynchPoint point) {
+    synchPoint = point;
+  }
 
 }

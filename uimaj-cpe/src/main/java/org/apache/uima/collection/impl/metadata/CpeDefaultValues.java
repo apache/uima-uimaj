@@ -19,32 +19,45 @@
 
 package org.apache.uima.collection.impl.metadata;
 
-
 public class CpeDefaultValues {
-	public static final String TIMER_IMPL ="org.apache.uima.internal.util.JavaTimer";
-	public static final String START_AT ="1";
-	public static final long NUM_TO_PROCESS = -1;
-	
-	public static final String DEPLOY_AS ="immediate";
-	
-	public static final String FILE = "C:/resporator/CpmConverged/checkpoint.dat";
-	public static final  String TIME = "100000s";
-	public static final  short BATCH = 1000;
-	
-	public static final String INPUT_Q_SIZE = new String ("5");
-	public static final String OUTPUT_Q_SIZE =new String ("5");
-	public static final String PROCESSING_UNIT_THREAD_COUNT="1";
-	
-	public static final String DEPLOYMENT= "integrated";
-	public static final short MAX_CONSEQUTIVE_RESTART_VAL = 1;
-	public static final String MAX_CONSEQUTIVE_RESTART_ACTION="terminate";
-	public static final String ERROR_THRESHOLD_VAL= "3/1000";
-	public static final String ERROR_THRESHOLD_ACTION = "disable";
-	public static final String TIMEOUT_DEFAULT ="3000";
-	public static final String TIMEOUT_MAX ="5000";
-	public static final String PROCESSOR_CHECKPOINT_FILE = "";
-	public static final String PROCESSOR_CHECKPOINT_TIME = "3000ms";
-	public static final short PROCESSOR_CHECKPOINT_BATCH = 2;
-	
-	
+  public static final String TIMER_IMPL = "org.apache.uima.internal.util.JavaTimer";
+
+  public static final String START_AT = "1";
+
+  public static final long NUM_TO_PROCESS = -1;
+
+  public static final String DEPLOY_AS = "immediate";
+
+  public static final String FILE = "C:/resporator/CpmConverged/checkpoint.dat";
+
+  public static final String TIME = "100000s";
+
+  public static final short BATCH = 1000;
+
+  public static final String INPUT_Q_SIZE = new String("5");
+
+  public static final String OUTPUT_Q_SIZE = new String("5");
+
+  public static final String PROCESSING_UNIT_THREAD_COUNT = "1";
+
+  public static final String DEPLOYMENT = "integrated";
+
+  public static final short MAX_CONSEQUTIVE_RESTART_VAL = 1;
+
+  public static final String MAX_CONSEQUTIVE_RESTART_ACTION = "terminate";
+
+  public static final String ERROR_THRESHOLD_VAL = "3/1000";
+
+  public static final String ERROR_THRESHOLD_ACTION = "disable";
+
+  public static final String TIMEOUT_DEFAULT = "3000";
+
+  public static final String TIMEOUT_MAX = "5000";
+
+  public static final String PROCESSOR_CHECKPOINT_FILE = "";
+
+  public static final String PROCESSOR_CHECKPOINT_TIME = "3000ms";
+
+  public static final short PROCESSOR_CHECKPOINT_BATCH = 2;
+
 }

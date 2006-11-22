@@ -26,72 +26,77 @@ import org.apache.uima.cas.text.TCAS;
 
 /**
  * 
- *
+ * 
  * 
  * 
  */
-public class ConsumerCasUtils
-{
-	/**
-	 * Returns an int value of a given Feature Structure
-	 * 
-	 * @param aTcas - CAS instance to retrieve data from
-	 * @param aTypeS - Feature Type
-	 * @param aFeatS - Feature Structure
-	 * 
-	 * @return - feature value as int
-	 */
-	public static int getIntFeatValue(TCAS aTcas, String aTypeS, String aFeatS)
-	{
-		int result = 0;
-		FSIterator idIter = aTcas.getAnnotationIndex(aTcas.getTypeSystem().getType(aTypeS)).iterator();
-		while (idIter != null && idIter.isValid())
-		{
-			org.apache.uima.cas.FeatureStructure idFS = idIter.get();
-			result = idFS.getIntValue(aTcas.getTypeSystem().getFeatureByFullName(aTypeS + ":" + aFeatS));
-			idIter.moveToNext();
-		}
-		return result;
-	}
-	/**
-	 * Returns a string value of a given Feature Structure
-	 * 
-	 * @param aCasView - CAS view to retrieve data from
-	 * @param aTypeS - Feature Type
-	 * @param aFeatS - Feature Structure
-	 * 
-	 * @return feature value as string
-	 */
-	public static String getStringFeatValue(CAS aCasView, String aTypeS, String aFeatS)
-	{
-		String result = null;
-		FSIterator idIter = aCasView.getAnnotationIndex(aCasView.getTypeSystem().getType(aTypeS)).iterator();
-		while (idIter != null && idIter.isValid())
-		{
-			org.apache.uima.cas.FeatureStructure idFS = idIter.get();
-			result = idFS.getStringValue(aCasView.getTypeSystem().getFeatureByFullName(aTypeS + ":" + aFeatS));
-			idIter.moveToNext();
-		}
-		return result;
-	}
-	/**
-	 * Returns a Feature Structure of a given type
-	 * 
-	 * @param aTcas - CAS instance to retrieve data from
-	 * @param aTypeS - Feature Type
-	 * 
-	 * @return
-	 */
-	public static FeatureStructure getTcasFS(TCAS aTcas, String aTypeS)
-	{
-		org.apache.uima.cas.FeatureStructure idFS = null;
-		FSIterator idIter = aTcas.getAnnotationIndex(aTcas.getTypeSystem().getType(aTypeS)).iterator();
-		while (idIter != null && idIter.isValid())
-		{
-			idFS = idIter.get();
-			idIter.moveToNext();
-		}
-		return idFS;
-	}
+public class ConsumerCasUtils {
+  /**
+   * Returns an int value of a given Feature Structure
+   * 
+   * @param aTcas -
+   *          CAS instance to retrieve data from
+   * @param aTypeS -
+   *          Feature Type
+   * @param aFeatS -
+   *          Feature Structure
+   * 
+   * @return - feature value as int
+   */
+  public static int getIntFeatValue(TCAS aTcas, String aTypeS, String aFeatS) {
+    int result = 0;
+    FSIterator idIter = aTcas.getAnnotationIndex(aTcas.getTypeSystem().getType(aTypeS)).iterator();
+    while (idIter != null && idIter.isValid()) {
+      org.apache.uima.cas.FeatureStructure idFS = idIter.get();
+      result = idFS.getIntValue(aTcas.getTypeSystem().getFeatureByFullName(aTypeS + ":" + aFeatS));
+      idIter.moveToNext();
+    }
+    return result;
+  }
+
+  /**
+   * Returns a string value of a given Feature Structure
+   * 
+   * @param aCasView -
+   *          CAS view to retrieve data from
+   * @param aTypeS -
+   *          Feature Type
+   * @param aFeatS -
+   *          Feature Structure
+   * 
+   * @return feature value as string
+   */
+  public static String getStringFeatValue(CAS aCasView, String aTypeS, String aFeatS) {
+    String result = null;
+    FSIterator idIter = aCasView.getAnnotationIndex(aCasView.getTypeSystem().getType(aTypeS))
+                    .iterator();
+    while (idIter != null && idIter.isValid()) {
+      org.apache.uima.cas.FeatureStructure idFS = idIter.get();
+      result = idFS.getStringValue(aCasView.getTypeSystem().getFeatureByFullName(
+                      aTypeS + ":" + aFeatS));
+      idIter.moveToNext();
+    }
+    return result;
+  }
+
+  /**
+   * Returns a Feature Structure of a given type
+   * 
+   * @param aTcas -
+   *          CAS instance to retrieve data from
+   * @param aTypeS -
+   *          Feature Type
+   * 
+   * @return
+   */
+  public static FeatureStructure getTcasFS(TCAS aTcas, String aTypeS) {
+    org.apache.uima.cas.FeatureStructure idFS = null;
+    FSIterator idIter = aTcas.getAnnotationIndex(aTcas.getTypeSystem().getType(aTypeS)).iterator();
+    while (idIter != null && idIter.isValid()) {
+      idFS = idIter.get();
+      idIter.moveToNext();
+    }
+    return idFS;
+  }
 
 }

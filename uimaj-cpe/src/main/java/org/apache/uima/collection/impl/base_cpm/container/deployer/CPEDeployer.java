@@ -23,8 +23,8 @@ import org.apache.uima.collection.base_cpm.CasProcessor;
 import org.apache.uima.collection.impl.base_cpm.container.ProcessingContainer;
 import org.apache.uima.resource.ResourceConfigurationException;
 
-public interface CPEDeployer
-{
-	public ProcessingContainer deployCasProcessor(ProcessingContainer aProcessingContainer, CasProcessor aCasProcessor, boolean redeploy)
-	throws ResourceConfigurationException;
+public interface CPEDeployer {
+  public ProcessingContainer deployCasProcessor(ProcessingContainer aProcessingContainer,
+                  CasProcessor aCasProcessor, boolean redeploy)
+                  throws ResourceConfigurationException;
 }

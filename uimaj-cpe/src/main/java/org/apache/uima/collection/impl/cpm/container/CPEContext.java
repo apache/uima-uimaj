@@ -21,27 +21,26 @@ package org.apache.uima.collection.impl.cpm.container;
 
 /**
  * 
- *
+ * 
  * To change the template for this generated type comment go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
-public class CPEContext
-{
-    private String cpeDesctriptorPath = null;
-    /**
-     * 
-     * @param aDescriptorPath
-     */
-    public CPEContext(String aDescriptorPath )
-    {
-    	cpeDesctriptorPath = aDescriptorPath;
-    }
-    /**
-     * 
-     * @return
-     */
-    public String getCPEDescriptorPath()
-    {
-    	return cpeDesctriptorPath;
-    }
+public class CPEContext {
+  private String cpeDesctriptorPath = null;
+
+  /**
+   * 
+   * @param aDescriptorPath
+   */
+  public CPEContext(String aDescriptorPath) {
+    cpeDesctriptorPath = aDescriptorPath;
+  }
+
+  /**
+   * 
+   * @return
+   */
+  public String getCPEDescriptorPath() {
+    return cpeDesctriptorPath;
+  }
 }

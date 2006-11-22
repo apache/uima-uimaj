@@ -21,22 +21,22 @@ package org.apache.uima.collection.impl.base_cpm.container;
 
 /**
  * The <code>RunnableContainer</code> interface. Provides means to start and stop a Container
- * hosting {@link org.apache.uima.collection.base_cpm.CasProcessor}. 
+ * hosting {@link org.apache.uima.collection.base_cpm.CasProcessor}.
  * 
  * 
- *
+ * 
  */
-public interface RunnableContainer extends Runnable
-{
-	/**
-	 * Starts the container
-	 *
-	 */
-	public void start();
-	/**
-	 * Stops the container
-	 *
-	 */
-	public void stop();
+public interface RunnableContainer extends Runnable {
+  /**
+   * Starts the container
+   * 
+   */
+  public void start();
+
+  /**
+   * Stops the container
+   * 
+   */
+  public void stop();
 
 }

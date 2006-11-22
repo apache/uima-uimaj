@@ -19,82 +19,85 @@
 
 package org.apache.uima.collection.impl.cpm.utils;
 
-
 /**
- * Convenience class that is used to hold metadata associated with chunking and
- * sequencing of documents. It allows the OutputQueue to manage sequencing of
- * chunks destined for the CasConsumer.
+ * Convenience class that is used to hold metadata associated with chunking and sequencing of
+ * documents. It allows the OutputQueue to manage sequencing of chunks destined for the CasConsumer.
  */
-public class ChunkMetadata
-{
-	public static final String SEQUENCE = "sequenceNumber";
-	public static final String DOCUMENTID = "documentId";
-	public static final String ISCOMPLETED = "isCompleted";
-	public static final String DOCUMENTURL = "url";
-	public static final String THROTTLEID = "throttleID";
-	 
-	private String docId;
-	private int sequence;
-	private boolean last = true; 	
-	private boolean timedOut = false;
-	private String url;
-	private String throttleID;
+public class ChunkMetadata {
+  public static final String SEQUENCE = "sequenceNumber";
 
+  public static final String DOCUMENTID = "documentId";
 
-	/**
-	 * 
-	 */
-	public ChunkMetadata(String aDocId, int aSequence, boolean aLast)
-	{
-		docId = aDocId;
-		sequence = aSequence;
-		last = aLast;			
-	}
-	public boolean isLast()
-	{
-		return last;
-	}
-	public int getSequence()
-	{
-		return sequence;
-	}
-	public boolean isOneOfMany()
-	{
-		return sequence==0 ? false : true;
-	}
-	public String getDocId()
-	{
-		return docId;
-	}
-	public String getThrottleID()
-	{
-		return throttleID;
-	}
-	public String getURL()
-	{
-		return url;
-	}
-	/**
-	 * @return
-	 */
-	public boolean isTimedOut()
-	{
-		return timedOut;
-	}
+  public static final String ISCOMPLETED = "isCompleted";
 
-	/**
-	 * @param b
-	 */
-	public void setTimedOut(boolean b)
-	{
-		timedOut = b;
-	}
-	public void setThrottleID( String aThrottleID)
-	{
-		throttleID = aThrottleID;
-	}
-	public void setURL( String aURL )
-	{
-		url = aURL;
-	}
+  public static final String DOCUMENTURL = "url";
+
+  public static final String THROTTLEID = "throttleID";
+
+  private String docId;
+
+  private int sequence;
+
+  private boolean last = true;
+
+  private boolean timedOut = false;
+
+  private String url;
+
+  private String throttleID;
+
+  /**
+   * 
+   */
+  public ChunkMetadata(String aDocId, int aSequence, boolean aLast) {
+    docId = aDocId;
+    sequence = aSequence;
+    last = aLast;
+  }
+
+  public boolean isLast() {
+    return last;
+  }
+
+  public int getSequence() {
+    return sequence;
+  }
+
+  public boolean isOneOfMany() {
+    return sequence == 0 ? false : true;
+  }
+
+  public String getDocId() {
+    return docId;
+  }
+
+  public String getThrottleID() {
+    return throttleID;
+  }
+
+  public String getURL() {
+    return url;
+  }
+
+  /**
+   * @return
+   */
+  public boolean isTimedOut() {
+    return timedOut;
+  }
+
+  /**
+   * @param b
+   */
+  public void setTimedOut(boolean b) {
+    timedOut = b;
+  }
+
+  public void setThrottleID(String aThrottleID) {
+    throttleID = aThrottleID;
+  }
+
+  public void setURL(String aURL) {
+    url = aURL;
+  }
 }

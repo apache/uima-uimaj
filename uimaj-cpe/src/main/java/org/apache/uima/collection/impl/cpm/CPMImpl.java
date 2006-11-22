@@ -32,125 +32,113 @@ import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 
-public class CPMImpl extends BaseCPMImpl implements CollectionProcessingManager
-{
-	private CasConsumer consumers[];
+public class CPMImpl extends BaseCPMImpl implements CollectionProcessingManager {
+  private CasConsumer consumers[];
 
-    public CPMImpl() throws Exception
-	{
-		this(UIMAFramework.newDefaultResourceManager());
-	}
+  public CPMImpl() throws Exception {
+    this(UIMAFramework.newDefaultResourceManager());
+  }
 
-    public CPMImpl(ResourceManager aResourceManager) throws Exception
-    {
-        super(null, null, aResourceManager);
+  public CPMImpl(ResourceManager aResourceManager) throws Exception {
+    super(null, null, aResourceManager);
+  }
+
+  /**
+   * 
+   */
+  public AnalysisEngine getAnalysisEngine() {
+    if (super.getCasProcessors()[0] != null) {
+      try {
+        if (super.getCasProcessors()[0] instanceof AnalysisEngine) {
+          return (AnalysisEngine) super.getCasProcessors()[0];
+        }
+      } catch (ClassCastException cE) {
+        cE.printStackTrace();
+        return null;
+      }
     }
-    
-    /**
-	 * 
-	 */
-	public AnalysisEngine getAnalysisEngine()
-	{
-		if (super.getCasProcessors()[0] != null)
-		{
-			try
-			{
-				if (super.getCasProcessors()[0] instanceof AnalysisEngine)
-				{
-					return (AnalysisEngine) super.getCasProcessors()[0];
-				}
-			}
-			catch (ClassCastException cE)
-			{
-				cE.printStackTrace();
-				return null;
-			}
-		}
-		return null;
-	}
-	/**
-	 * 
-	 */
-	public void setAnalysisEngine(AnalysisEngine aAnalysisEngine) throws ResourceConfigurationException
-	{
-		if (super.getCasProcessors().length > 0 && super.getCasProcessors()[0] instanceof AnalysisEngine)
-		{
-			super.removeCasProcessor(super.getCasProcessors()[0]);
-			super.addCasProcessor(aAnalysisEngine, 0);
-		}
-		else
-		{
-			super.addCasProcessor(aAnalysisEngine, 0);
-		}
-	}
-	/**
-	 * 
-	 */
-	public CasConsumer[] getCasConsumers()
-	{
-		if (consumers != null)
-		{
-			return consumers;
-		}
-		ArrayList consumerList = new ArrayList();
-		CasProcessor[] casProcs = getCasProcessors();
-		for (int i = 0; i < casProcs.length; i++)
-		{
-			if (casProcs[i] instanceof CasConsumer)
-			{
-				consumerList.add(casProcs[i]);
-			}
-		}
-		consumers = new CasConsumer[consumerList.size()];
-		consumerList.toArray(consumers);
-		return consumers;
-	}
-	/**
-	 * 
-	 */
-	public void addCasConsumer(CasConsumer aCasConsumer) throws ResourceConfigurationException
-	{
-		super.addCasProcessor(aCasConsumer);
+    return null;
+  }
 
-	}
-	/**
-	 * 
-	 */
-	public void removeCasConsumer(CasConsumer aCasConsumer)
-	{
-		super.removeCasProcessor(aCasConsumer);
+  /**
+   * 
+   */
+  public void setAnalysisEngine(AnalysisEngine aAnalysisEngine)
+                  throws ResourceConfigurationException {
+    if (super.getCasProcessors().length > 0
+                    && super.getCasProcessors()[0] instanceof AnalysisEngine) {
+      super.removeCasProcessor(super.getCasProcessors()[0]);
+      super.addCasProcessor(aAnalysisEngine, 0);
+    } else {
+      super.addCasProcessor(aAnalysisEngine, 0);
+    }
+  }
 
-	}
-	/**
-	 * 
-	 */
-	public void addStatusCallbackListener(StatusCallbackListener aListener)
-	{
-		super.addStatusCallbackListener(aListener);
+  /**
+   * 
+   */
+  public CasConsumer[] getCasConsumers() {
+    if (consumers != null) {
+      return consumers;
+    }
+    ArrayList consumerList = new ArrayList();
+    CasProcessor[] casProcs = getCasProcessors();
+    for (int i = 0; i < casProcs.length; i++) {
+      if (casProcs[i] instanceof CasConsumer) {
+        consumerList.add(casProcs[i]);
+      }
+    }
+    consumers = new CasConsumer[consumerList.size()];
+    consumerList.toArray(consumers);
+    return consumers;
+  }
 
-	}
-	/**
-	 * 
-	 */
-	public void removeStatusCallbackListener(StatusCallbackListener aListener)
-	{
-		super.removeStatusCallbackListener(aListener);
-	}
-	/**
-	 * 
-	 */
-	public void process(CollectionReader aCollectionReader) throws ResourceInitializationException
-	{
-		super.process(aCollectionReader);
+  /**
+   * 
+   */
+  public void addCasConsumer(CasConsumer aCasConsumer) throws ResourceConfigurationException {
+    super.addCasProcessor(aCasConsumer);
 
-	}
-	/**
-	 * 
-	 */
-	public void process(CollectionReader aCollectionReader, int aBatchSize) throws ResourceInitializationException
-	{
-		super.process(aCollectionReader, aBatchSize);
+  }
 
-	}
+  /**
+   * 
+   */
+  public void removeCasConsumer(CasConsumer aCasConsumer) {
+    super.removeCasProcessor(aCasConsumer);
+
+  }
+
+  /**
+   * 
+   */
+  public void addStatusCallbackListener(StatusCallbackListener aListener) {
+    super.addStatusCallbackListener(aListener);
+
+  }
+
+  /**
+   * 
+   */
+  public void removeStatusCallbackListener(StatusCallbackListener aListener) {
+    super.removeStatusCallbackListener(aListener);
+  }
+
+  /**
+   * 
+   */
+  public void process(CollectionReader aCollectionReader) throws ResourceInitializationException {
+    super.process(aCollectionReader);
+
+  }
+
+  /**
+   * 
+   */
+  public void process(CollectionReader aCollectionReader, int aBatchSize)
+                  throws ResourceInitializationException {
+    super.process(aCollectionReader, aBatchSize);
+
+  }
 
 }

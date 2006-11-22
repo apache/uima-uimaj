@@ -30,102 +30,98 @@ import org.apache.uima.util.UimaTimer;
  * 
  * 
  */
-public class TimerFactory
-{
-	private static UimaTimer timer = null;
-	/**
-	 * Instantiate UimaTimer object from a given class
-	 * 
-	 * @param aClassName - UimaTimer implemetation class
-	 */
-	public TimerFactory(String aClassName)
-	{
-		try
-		{
-			initialize(aClassName );
-		}
-		catch (Exception e)
-		{
-			if ( UIMAFramework.getLogger().isLoggable(Level.CONFIG) )
-			{
-				UIMAFramework.getLogger(TimerFactory.class).logrb(Level.CONFIG, TimerFactory.class.getName(), "initialize",
-				        CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_java_timer__CONFIG",
-				        new Object[] {Thread.currentThread().getName()});
-			}
-			timer = new JavaTimer();
-		}
-	}
-	/**
-	 * Returns instance of {@link UimaTimer}
-	 * 
-	 * @return UimaTimer instance
-	 */
-	public static UimaTimer getTimer()
-	{
-		if ( timer == null )
-		{
-			if ( UIMAFramework.getLogger().isLoggable(Level.CONFIG) )
-			{
-				UIMAFramework.getLogger(TimerFactory.class).logrb(Level.CONFIG, TimerFactory.class.getName(), "initialize",
-				        CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_java_timer__CONFIG",
-				        new Object[] {Thread.currentThread().getName()});
-			}
-			timer = new JavaTimer();
-		}	
+public class TimerFactory {
+  private static UimaTimer timer = null;
 
-		return timer;	
-		
-	}
-	/**
-	 * Instantiates dynamically a UimaTimer object
-	 * 
-	 * @param aClassName - class implementing UimaTimer
-	 * 
-	 * @throws ResourceInitializationException
-	 */
-	private void initialize(String aClassName) throws ResourceInitializationException
-	{
+  /**
+   * Instantiate UimaTimer object from a given class
+   * 
+   * @param aClassName -
+   *          UimaTimer implemetation class
+   */
+  public TimerFactory(String aClassName) {
+    try {
+      initialize(aClassName);
+    } catch (Exception e) {
+      if (UIMAFramework.getLogger().isLoggable(Level.CONFIG)) {
+        UIMAFramework.getLogger(TimerFactory.class).logrb(Level.CONFIG,
+                        TimerFactory.class.getName(), "initialize",
+                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_java_timer__CONFIG",
+                        new Object[] { Thread.currentThread().getName() });
+      }
+      timer = new JavaTimer();
+    }
+  }
 
-		if (aClassName != null)
-		{
+  /**
+   * Returns instance of {@link UimaTimer}
+   * 
+   * @return UimaTimer instance
+   */
+  public static UimaTimer getTimer() {
+    if (timer == null) {
+      if (UIMAFramework.getLogger().isLoggable(Level.CONFIG)) {
+        UIMAFramework.getLogger(TimerFactory.class).logrb(Level.CONFIG,
+                        TimerFactory.class.getName(), "initialize",
+                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_java_timer__CONFIG",
+                        new Object[] { Thread.currentThread().getName() });
+      }
+      timer = new JavaTimer();
+    }
 
-			try
-			{
-				Class currentClass = Class.forName(aClassName);
-				Object anObject = currentClass.newInstance();
-				if (anObject instanceof UimaTimer)
-				{
-					timer = (UimaTimer) anObject;
-					if ( UIMAFramework.getLogger().isLoggable(Level.CONFIG) )
-					{
-						UIMAFramework.getLogger(TimerFactory.class).logrb(Level.CONFIG, TimerFactory.class.getName(), "initialize",
-						        CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_show_timer_class__CONFIG",
-						        new Object[] {Thread.currentThread().getName(),timer.getClass().getName()});
-					}
-					return;
-				}
-			}
-			catch (ClassNotFoundException e)
-			{
-				throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND, new Object[] { aClassName, "CPE" }, e);
-			}
-			catch (IllegalAccessException e)
-			{
-				throw new ResourceInitializationException(ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] { aClassName, "CPE" }, e);
-			}
-			catch (InstantiationException e)
-			{
-				throw new ResourceInitializationException(ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] { aClassName, "CPE" }, e);
-			}
-			
+    return timer;
 
-			if ( UIMAFramework.getLogger().isLoggable(Level.CONFIG) )
-			{
-				UIMAFramework.getLogger(TimerFactory.class).logrb(Level.CONFIG, TimerFactory.class.getName(), "initialize",
-				        CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_java_timer__CONFIG",
-				        new Object[] {Thread.currentThread().getName()});
-			}
-			timer = new JavaTimer();
-		}
-	}
+  }
+
+  /**
+   * Instantiates dynamically a UimaTimer object
+   * 
+   * @param aClassName -
+   *          class implementing UimaTimer
+   * 
+   * @throws ResourceInitializationException
+   */
+  private void initialize(String aClassName) throws ResourceInitializationException {
+
+    if (aClassName != null) {
+
+      try {
+        Class currentClass = Class.forName(aClassName);
+        Object anObject = currentClass.newInstance();
+        if (anObject instanceof UimaTimer) {
+          timer = (UimaTimer) anObject;
+          if (UIMAFramework.getLogger().isLoggable(Level.CONFIG)) {
+            UIMAFramework.getLogger(TimerFactory.class).logrb(
+                            Level.CONFIG,
+                            TimerFactory.class.getName(),
+                            "initialize",
+                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                            "UIMA_CPM_show_timer_class__CONFIG",
+                            new Object[] { Thread.currentThread().getName(),
+                                timer.getClass().getName() });
+          }
+          return;
+        }
+      } catch (ClassNotFoundException e) {
+        throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
+                        new Object[] { aClassName, "CPE" }, e);
+      } catch (IllegalAccessException e) {
+        throw new ResourceInitializationException(
+                        ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
+                            aClassName, "CPE" }, e);
+      } catch (InstantiationException e) {
+        throw new ResourceInitializationException(
+                        ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
+                            aClassName, "CPE" }, e);
+      }
+
+      if (UIMAFramework.getLogger().isLoggable(Level.CONFIG)) {
+        UIMAFramework.getLogger(TimerFactory.class).logrb(Level.CONFIG,
+                        TimerFactory.class.getName(), "initialize",
+                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_java_timer__CONFIG",
+                        new Object[] { Thread.currentThread().getName() });
+      }
+      timer = new JavaTimer();
+    }
+  }
 }

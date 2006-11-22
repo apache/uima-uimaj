@@ -24,48 +24,44 @@ import org.apache.uima.collection.impl.cpm.utils.CPMUtils;
 import org.apache.uima.util.Level;
 
 /**
- * Sends kill -9 to a process 
+ * Sends kill -9 to a process
  */
-public class FencedProcessReaper
-{
+public class FencedProcessReaper {
 
-	/**
-	 * 
-	 */
-	public FencedProcessReaper()
-	{
-		super();
+  /**
+   * 
+   */
+  public FencedProcessReaper() {
+    super();
 
-	}
-	/**
-	 * When running on linux this method kill a process identified by a given PID.
-	 * 
-	 * @param aPid - process id to kill
-	 */
-	public void killProcess(String aPid)
-	{
-		try
-		{
-			String cmd[] = new String[] { "kill", "-9", aPid };
+  }
 
-			if (System.getProperty("os.name").equalsIgnoreCase("linux"))
-			{
-				if (UIMAFramework.getLogger().isLoggable(Level.FINEST))
-				{
-					UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(), "process",
-					        CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_killing_process__FINEST",
-					        new Object[] {Thread.currentThread().getName(), aPid});				
-				}
-				Runtime.getRuntime().exec(cmd);
-			}
-		}
-		catch (Exception e)
-		{
-			//	non-fatal exception
-			UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(), "process",
-			        CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_killing_process_failed__WARNING",
-			        new Object[] {Thread.currentThread().getName(), aPid, e});				
-		}
+  /**
+   * When running on linux this method kill a process identified by a given PID.
+   * 
+   * @param aPid -
+   *          process id to kill
+   */
+  public void killProcess(String aPid) {
+    try {
+      String cmd[] = new String[] { "kill", "-9", aPid };
 
-	}
+      if (System.getProperty("os.name").equalsIgnoreCase("linux")) {
+        if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                          "UIMA_CPM_killing_process__FINEST",
+                          new Object[] { Thread.currentThread().getName(), aPid });
+        }
+        Runtime.getRuntime().exec(cmd);
+      }
+    } catch (Exception e) {
+      // non-fatal exception
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
+                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_killing_process_failed__WARNING",
+                      new Object[] { Thread.currentThread().getName(), aPid, e });
+    }
+
+  }
 }

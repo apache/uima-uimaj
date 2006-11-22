@@ -30,57 +30,61 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 
 /**
  * 
- *
+ * 
  */
-public interface SocketTransport
-{
-	/**
-	 * Returns transport identifier
-	 *
-	 * @return - String uniquely identifying the transport. 
-	 */
-	public String getName();
+public interface SocketTransport {
+  /**
+   * Returns transport identifier
+   * 
+   * @return - String uniquely identifying the transport.
+   */
+  public String getName();
 
-	/**
-	 * Creates a socket connection to a given endpoint.
-	 * This method blocks until all Connections are resolved or an 
-	 * error occurs. 
-	 * 
-	 * @param - aURI - URI containing service endpoint info: host&port
-	 * @param - aTimeout - max time in millis to wait for response
-	 *          
-	 * @return - Socket bound to a given endpoint
-	 * 
-	 * @throws - SocketException - Failed to connect
-	 */
-	public Socket connect(URL aURI, long aTimeout) throws 
-		   SocketException;
-	/**
-	 * Invokes fenced CasProcessor.
-	 * 
-	 * @param - aSocket - Socket bound to fenced CasProcessor
-	 * @param - aCas - CAS to be sent to the CasProcessor for analysis
-	 * 
-	 * @return - CAS - CAS returned from the fenced CasProcessor
-	 * 
-	 * @throws - SocketTimeoutException - Socket timesout before   
-	 *           receiving response from the fenced CasProcessor
-	 * @throws - SocketException - connection broken
+  /**
+   * Creates a socket connection to a given endpoint. This method blocks until all Connections are
+   * resolved or an error occurs.
+   * 
+   * @param -
+   *          aURI - URI containing service endpoint info: host&port
+   * @param -
+   *          aTimeout - max time in millis to wait for response
+   * 
+   * @return - Socket bound to a given endpoint
+   * 
+   * @throws -
+   *           SocketException - Failed to connect
+   */
+  public Socket connect(URL aURI, long aTimeout) throws SocketException;
 
-	 */
-	public CAS process(Socket aSocket, CAS aCas) throws 
-		  SocketTimeoutException, SocketException, AnalysisEngineProcessException;
-	
-	/**
-	 * Returns metadata associated with the fenced CasProcessor
-	 * 
-	 * @param aSocket - socket to the fenced CasProcessor
-	 * @return - metadata
-	 * @throws SocketException
-	 */
-	public ProcessingResourceMetaData getProcessingResourceMetaData(Socket aSocket) throws
-		  SocketException, AnalysisEngineProcessException;
+  /**
+   * Invokes fenced CasProcessor.
+   * 
+   * @param -
+   *          aSocket - Socket bound to fenced CasProcessor
+   * @param -
+   *          aCas - CAS to be sent to the CasProcessor for analysis
+   * 
+   * @return - CAS - CAS returned from the fenced CasProcessor
+   * 
+   * @throws -
+   *           SocketTimeoutException - Socket timesout before receiving response from the fenced
+   *           CasProcessor
+   * @throws -
+   *           SocketException - connection broken
+   * 
+   */
+  public CAS process(Socket aSocket, CAS aCas) throws SocketTimeoutException, SocketException,
+                  AnalysisEngineProcessException;
 
+  /**
+   * Returns metadata associated with the fenced CasProcessor
+   * 
+   * @param aSocket -
+   *          socket to the fenced CasProcessor
+   * @return - metadata
+   * @throws SocketException
+   */
+  public ProcessingResourceMetaData getProcessingResourceMetaData(Socket aSocket)
+                  throws SocketException, AnalysisEngineProcessException;
 
 }
-

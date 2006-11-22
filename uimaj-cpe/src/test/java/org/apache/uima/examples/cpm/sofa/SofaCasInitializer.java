@@ -31,22 +31,23 @@ import org.apache.uima.collection.CasInitializer_ImplBase;
 import org.apache.uima.collection.CollectionException;
 
 /**
- * Creates a Text SofA in the cas 
+ * Creates a Text SofA in the cas
+ * 
  * @author Bhavani Iyer
- **/
+ */
 public class SofaCasInitializer extends CasInitializer_ImplBase {
-	
 
-	/**
-	 * @see org.apache.uima.collection.CasInitializer#initializeCas(java.lang.Object, org.apache.uima.cas.CAS)
-	 */
-	public void initializeCas(Object aObject, CAS aCAS)
-		throws CollectionException, IOException {
-//	    Assert.assertFalse(aCAS instanceof TCAS);
-			// Create the English document Sofa
-			SofaID realSofaName = getUimaContext().mapToSofaID("InputText");
-			//System.out.println("CASINITIALIZER: real sofa name for InputText " + realSofaName.getSofaID());
-			SofaFS ls = aCAS.createSofa(realSofaName, "text");
-			ls.setLocalSofaData("this beer is good");			     
-	}
+  /**
+   * @see org.apache.uima.collection.CasInitializer#initializeCas(java.lang.Object,
+   *      org.apache.uima.cas.CAS)
+   */
+  public void initializeCas(Object aObject, CAS aCAS) throws CollectionException, IOException {
+    // Assert.assertFalse(aCAS instanceof TCAS);
+    // Create the English document Sofa
+    SofaID realSofaName = getUimaContext().mapToSofaID("InputText");
+    // System.out.println("CASINITIALIZER: real sofa name for InputText " +
+    // realSofaName.getSofaID());
+    SofaFS ls = aCAS.createSofa(realSofaName, "text");
+    ls.setLocalSofaData("this beer is good");
+  }
 }
