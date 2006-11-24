@@ -33,7 +33,6 @@ import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.test.junit_extension.TestPropertyReader;
-import org.apache.uima.tttypesystem.TTTypeSystemConsts;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
@@ -101,7 +100,7 @@ public class UnambiguousIteratorTest extends TestCase {
        */
       LowLevelCAS llc = cas.getLowLevelCAS();
       final int tokType = llc.ll_getTypeSystem().ll_getCodeForTypeName(
-                      TTTypeSystemConsts.TYPE_NAME_TOKEN_ANNOTATION);
+                      "uima.tt.TokenAnnotation");
       LowLevelIndex annotIdx = llc.ll_getIndexRepository().ll_getIndex(TCAS.STD_ANNOTATION_INDEX,
                       tokType);
       final int annotSizeA1 = iteratorSize(annotIdx.ll_iterator());
