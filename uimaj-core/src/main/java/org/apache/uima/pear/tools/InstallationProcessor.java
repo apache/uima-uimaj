@@ -384,10 +384,14 @@ public class InstallationProcessor {
     Enumeration paramNames = params.propertyNames();
     while (paramNames.hasMoreElements()) {
       String paramName = (String) paramNames.nextElement();
+      String paramValue = params.getProperty(paramName);
+      // replace all ';' with OS-dependent separator
+      // in VAR_VALUE_TAG value
+      if (paramName.equals(InstallationDescriptorHandler.VAR_VALUE_TAG))
+        paramValue = paramValue.replace(';', File.pathSeparatorChar);
       if (paramName.equals(InstallationDescriptorHandler.FILE_TAG)
                       || paramName.equals(InstallationDescriptorHandler.REPLACE_WITH_TAG)
                       || paramName.equals(InstallationDescriptorHandler.VAR_VALUE_TAG)) {
-        String paramValue = params.getProperty(paramName);
         // substitute '$main_root_url' and '$main_root'
         paramValue = substituteMainRootInString(paramValue, _mainRootPath);
         // substitute '$dlg_comp_id$root_url'
