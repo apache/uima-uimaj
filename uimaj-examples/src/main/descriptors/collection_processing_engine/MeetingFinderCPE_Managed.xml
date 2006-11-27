@@ -50,7 +50,7 @@
 			<runInSeparateProcess>
 				<exec dir="." executable="java">
 					<env key="CLASSPATH" 
-						value="src;C:/Program Files/apache/uima/lib/uima_core.jar;C:/Program Files/apache/uima/lib/uima_cpe.jar;C:/Program Files/apache/uima/lib/uima_examples.jar;C:/Program Files/apache/uima/lib/uima_adapter_vinci.jar;C:/Program Files/apache/uima/lib/uima_jcas_builtin_types.jar;C:/Program Files/apache/uima/lib/vinci/jVinci.jar;C:/Program Files/apache/uima/lib/xml.jar"/>
+						value="src;C:/Program Files/apache/uima/lib/uima-core.jar;C:/Program Files/apache/uima/lib/uima-cpe.jar;C:/Program Files/apache/uima/lib/uima-examples.jar;C:/Program Files/apache/uima/lib/uima-adapter-vinci.jar;C:/Program Files/apache/uima/lib/jVinci.jar"/>
 					<arg>-DLOG=C:/Temp/service.log</arg>
 					<arg>org.apache.uima.adapter.vinci.VinciCasObjectProcessorService_impl</arg>
 					<arg>${descriptor}</arg>
