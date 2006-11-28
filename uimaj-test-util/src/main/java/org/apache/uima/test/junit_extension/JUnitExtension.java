@@ -26,30 +26,24 @@ import junit.framework.Assert;
 /**
  * Contains static convenience methods for using the UIMA JUnit extensions.
  * 
- * @author Adam Lally 
+ * @author Adam Lally
  */
-public class JUnitExtension
-{
+public class JUnitExtension {
   private static String junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
-  
-  public static File getFile(String aRelativeFilePath)
-  {
-  	return new File(junitTestBasePath,aRelativeFilePath);
+
+  public static File getFile(String aRelativeFilePath) {
+    return new File(junitTestBasePath, aRelativeFilePath);
   }
-  
-  public static void handleException(Exception e) throws Exception
-  {
-	//check command line setting
-	if (System.getProperty("isCommandLine", "false").equals("true"))
-	{
-		//print exception
-		ExceptionPrinter.printException(e);
-		Assert.fail(e.getMessage());
-	}
-	else
-	{
-		//thow exception to the JUnit framework
-		throw e;
-	}
+
+  public static void handleException(Exception e) throws Exception {
+    // check command line setting
+    if (System.getProperty("isCommandLine", "false").equals("true")) {
+      // print exception
+      ExceptionPrinter.printException(e);
+      Assert.fail(e.getMessage());
+    } else {
+      // thow exception to the JUnit framework
+      throw e;
+    }
   }
 }

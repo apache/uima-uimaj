@@ -22,37 +22,32 @@ package org.apache.uima.test.junit_extension;
 import java.io.File;
 import java.net.URL;
 
-
 /**
- * TestPropertyReader reads the parameters for the JUnit tests.
- * Source is the JUnitTestConfig.properties file.
+ * TestPropertyReader reads the parameters for the JUnit tests. Source is the
+ * JUnitTestConfig.properties file.
  * 
- * @author Michael Baessler 
+ * @author Michael Baessler
  */
-public class TestPropertyReader
-{
+public class TestPropertyReader {
 
-	/**
-	 * Return the current user directory
-	 * (user.dir)
-	 *  
-	 * @return String JUnitTestBasePath
-	 */
-	public static String getJUnitTestBasePath()
-	{
-    //Changed this to classpath lookup so we can run in Maven
-    //String basePath = System.getProperty("user.dir");
+  /**
+   * Return the current user directory (user.dir)
+   * 
+   * @return String JUnitTestBasePath
+   */
+  public static String getJUnitTestBasePath() {
+    // Changed this to classpath lookup so we can run in Maven
+    // String basePath = System.getProperty("user.dir");
     URL url = TestPropertyReader.class.getClassLoader().getResource("testResources");
     File file = new File(url.getFile());
     String basePath = file.getParentFile().getAbsolutePath();
 
-    if(!(basePath.endsWith("\\") || basePath.endsWith("/")))
-    {
+    if (!(basePath.endsWith("\\") || basePath.endsWith("/"))) {
       basePath = basePath + System.getProperty("file.separator");
     }
-    
+
     return basePath;
 
-	}
+  }
 
 }
