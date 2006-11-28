@@ -35,7 +35,7 @@ import org.apache.uima.adapter.soap.axis11.XmlDeserializer_Axis11;
 public class XmlDeserializerFactory implements DeserializerFactory {
 
   private static final long serialVersionUID = -414711394032045305L;
-  
+
   private Vector mechanisms;
 
   public javax.xml.rpc.encoding.Deserializer getDeserializerAs(String mechanismType) {

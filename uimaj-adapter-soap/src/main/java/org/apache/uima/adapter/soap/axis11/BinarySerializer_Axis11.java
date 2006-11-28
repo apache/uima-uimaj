@@ -50,6 +50,7 @@ import org.xml.sax.helpers.AttributesImpl;
 public class BinarySerializer_Axis11 implements Serializer {
 
   private static final long serialVersionUID = -1968145589342023832L;
+
   /**
    * 
    * Whether attachments should be used to send binary-serialized data
@@ -77,7 +78,7 @@ public class BinarySerializer_Axis11 implements Serializer {
    *          is the SerializationContext
    */
   public void serialize(QName name, Attributes attributes, Object value,
-                  SerializationContext context) throws IOException {
+          SerializationContext context) throws IOException {
     if (value instanceof Serializable) {
       byte[] bytes = SerializationUtils.serialize((Serializable) value);
 
@@ -90,15 +91,14 @@ public class BinarySerializer_Axis11 implements Serializer {
       boolean useAttachments = (attachments != null) && mUseAttachments;
       if (useAttachments) {
         useAttachments = !context.getMessageContext().getPastPivot()
-                        || context.getMessageContext().getRequestMessage().getAttachments()
-                                        .hasNext();
+                || context.getMessageContext().getRequestMessage().getAttachments().hasNext();
       }
       // if we have attachment support, do this as an attachment
       if (useAttachments) {
         // System.out.println("Creating attachment"); //DEBUG
         SOAPConstants soapConstants = context.getMessageContext().getSOAPConstants();
         DataHandler dataHandler = new DataHandler(new OctetStreamDataSource("test",
-                        new OctetStream(bytes)));
+                new OctetStream(bytes)));
         Part attachmentPart = attachments.createAttachmentPart(dataHandler);
 
         AttributesImpl attrs = new AttributesImpl();
@@ -112,7 +112,7 @@ public class BinarySerializer_Axis11 implements Serializer {
         }
 
         attrs.addAttribute("", soapConstants.getAttrHref(), soapConstants.getAttrHref(), "CDATA",
-                        attachmentPart.getContentIdRef());
+                attachmentPart.getContentIdRef());
         context.startElement(name, attrs);
         context.endElement();
       } else {

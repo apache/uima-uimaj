@@ -36,13 +36,13 @@ public class AxisAnalysisEngineService_impl {
    * Class that will actually implement functionality for this service.
    */
   private AnalysisEngineService_impl mServiceImpl;
-  
+
   /**
    * Constructor, responsible for initializing the service.
    */
   public AxisAnalysisEngineService_impl() throws AxisFault {
     mServiceImpl = (AnalysisEngineService_impl) AxisResourceServiceManager
-                    .getServiceImpl(AnalysisEngineService_impl.class);
+            .getServiceImpl(AnalysisEngineService_impl.class);
   }
 
   /**
@@ -73,7 +73,7 @@ public class AxisAnalysisEngineService_impl {
    * @return the results of analysis
    */
   public ServiceDataCargo process(ServiceDataCargo aData, ResultSpecification aResultSpec)
-                  throws ResourceServiceException {
+          throws ResourceServiceException {
     try {
       return mServiceImpl.process(aData, aResultSpec);
     } catch (ResourceServiceException e) {

@@ -114,7 +114,7 @@ public class AxisResourceServiceManager {
 
       // see if we have a ResourceService_impl registered for that name
       ResourceService_impl serviceImpl = (ResourceService_impl) mResourceServiceImplMap
-                      .get(serviceName);
+              .get(serviceName);
       if (serviceImpl != null) {
         return serviceImpl;
       }
@@ -126,11 +126,11 @@ public class AxisResourceServiceManager {
       String resourceSpecifierPath = (String) self.getOption(PARAM_RESOURCE_SPECIFIER_PATH);
       if (resourceSpecifierPath == null || resourceSpecifierPath.trim().length() == 0) {
         throw new Exception("Invalid Configuration - " + PARAM_RESOURCE_SPECIFIER_PATH
-                        + " not Defined.  Check your deployment descriptor file (WSDD)");
+                + " not Defined.  Check your deployment descriptor file (WSDD)");
       }
       // parse ResourceSpecifier
       ResourceSpecifier resourceSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-                      new XMLInputSource(resourceSpecifierPath));
+              new XMLInputSource(resourceSpecifierPath));
 
       // Get the number of instances to create
       String numInstancesStr = (String) self.getOption(PARAM_NUM_INSTANCES);
@@ -139,7 +139,7 @@ public class AxisResourceServiceManager {
         numInstances = Integer.parseInt(numInstancesStr);
       } catch (NumberFormatException e) {
         throw new Exception("Invalid Configuration - " + PARAM_NUM_INSTANCES
-                        + " not valid.  Check your deployment descriptor file (WSDD)");
+                + " not valid.  Check your deployment descriptor file (WSDD)");
       }
 
       // Get the timeout period
@@ -152,7 +152,7 @@ public class AxisResourceServiceManager {
           timeout = Integer.parseInt(timeoutStr);
         } catch (NumberFormatException e) {
           throw new Exception("Invalid Configuration - " + PARAM_TIMEOUT_PERIOD
-                          + " not valid.  Check your deployment descriptor file (WSDD)");
+                  + " not valid.  Check your deployment descriptor file (WSDD)");
         }
       }
 

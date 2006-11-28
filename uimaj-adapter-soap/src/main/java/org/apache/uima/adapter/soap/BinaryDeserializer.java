@@ -47,11 +47,11 @@ import org.xml.sax.SAXException;
 public class BinaryDeserializer extends DeserializerImpl {
 
   private static final long serialVersionUID = 1351090281481173811L;
-  
+
   private StringBuffer buf = new StringBuffer();
 
   public void startElement(String namespace, String localName, String prefix,
-                  Attributes attributes, DeserializationContext context) throws SAXException {
+          Attributes attributes, DeserializationContext context) throws SAXException {
 
     // System.out.println("startElement(" + namespace + "," + localName + "," + prefix + ")");
     if (!context.isDoneParsing()) {
@@ -89,7 +89,7 @@ public class BinaryDeserializer extends DeserializerImpl {
       if (ref instanceof org.apache.axis.Part) {
         try {
           DataHandler dataHandler = AttachmentUtils
-                          .getActivationDataHandler((org.apache.axis.Part) ref);
+                  .getActivationDataHandler((org.apache.axis.Part) ref);
           Object content = dataHandler.getContent();
           // System.out.println(content.getClass().getName());
           ObjectInputStream objStream = new ObjectInputStream((InputStream) content);
@@ -120,7 +120,7 @@ public class BinaryDeserializer extends DeserializerImpl {
    *      java.lang.String, org.xml.sax.Attributes, org.apache.axis.encoding.DeserializationContext)
    */
   public void onStartElement(String namespace, String localName, String prefix,
-                  Attributes attributes, DeserializationContext context) throws SAXException {
+          Attributes attributes, DeserializationContext context) throws SAXException {
     buf.setLength(0);
   }
 
@@ -129,7 +129,7 @@ public class BinaryDeserializer extends DeserializerImpl {
    *      org.apache.axis.encoding.DeserializationContext)
    */
   public void onEndElement(String arg0, String arg1, DeserializationContext arg2)
-                  throws SAXException {
+          throws SAXException {
     try {
       // System.out.println("onEndElement(" + arg0 + "," + arg1 + ")");
 

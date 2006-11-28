@@ -55,7 +55,7 @@ public class XmlSerializer implements Serializer {
    *          is the SerializationContext
    */
   public void serialize(QName name, Attributes attributes, Object value,
-                  SerializationContext context) throws IOException {
+          SerializationContext context) throws IOException {
     if (value instanceof XMLizable) {
       try {
         // System.out.println("AxisResourceServiceSerializer::serialize(" + name + ")");
@@ -69,7 +69,7 @@ public class XmlSerializer implements Serializer {
       }
     } else {
       throw new IOException("Can't serialize a " + value.getClass().getName()
-                      + " with an XmlSerializer.");
+              + " with an XmlSerializer.");
     }
   }
 
@@ -128,7 +128,7 @@ public class XmlSerializer implements Serializer {
      *      java.lang.String, org.xml.sax.Attributes)
      */
     public void startElement(String uri, String localName, String qName, Attributes attributes)
-                    throws SAXException {
+            throws SAXException {
       try {
         // System.out.println("Calling SerializationContext.startElement(" + qName + ")");
         mContext.startElement(new QName(uri, localName), attributes);

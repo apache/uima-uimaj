@@ -45,7 +45,7 @@ public class BinarySerializerFactory implements SerializerFactory {
   }
 
   public BinarySerializerFactory(boolean aUseAttachments) {
-    //TODO: attachments never used?
+    // TODO: attachments never used?
   }
 
   public Serializer getSerializerAs(String mechanismType) {

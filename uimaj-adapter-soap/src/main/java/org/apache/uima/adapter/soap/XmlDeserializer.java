@@ -50,7 +50,7 @@ public class XmlDeserializer extends DeserializerImpl {
     try {
       mNesting = 0;
       mDeser = new SaxDeserializer_impl(UIMAFramework.getXMLParser(), null, null,
-                      new XMLParser.ParsingOptions(false, false));
+              new XMLParser.ParsingOptions(false, false));
       LocatorImpl loc = new LocatorImpl();
       loc.setSystemId(new File(System.getProperty("user.dir")).toURL().toString());
       mDeser.setDocumentLocator(loc);
@@ -75,7 +75,7 @@ public class XmlDeserializer extends DeserializerImpl {
    *          is the DeserializationContext
    */
   public SOAPHandler onStartChild(String namespace, String localName, String prefix,
-                  Attributes attributes, DeserializationContext context) throws SAXException {
+          Attributes attributes, DeserializationContext context) throws SAXException {
     return this;
   }
 
@@ -84,7 +84,7 @@ public class XmlDeserializer extends DeserializerImpl {
    *      java.lang.String, org.xml.sax.Attributes, org.apache.axis.encoding.DeserializationContext)
    */
   public void onStartElement(String arg0, String arg1, String arg2, Attributes arg3,
-                  DeserializationContext arg4) throws SAXException {
+          DeserializationContext arg4) throws SAXException {
     // System.out.println("AxisResourceServiceDeserializer::onStartElement(" + arg0 + "," + arg1 +
     // "," + arg2 + ")");
 
@@ -110,7 +110,7 @@ public class XmlDeserializer extends DeserializerImpl {
    *      org.apache.axis.encoding.DeserializationContext)
    */
   public void onEndElement(String arg0, String arg1, DeserializationContext arg2)
-                  throws SAXException {
+          throws SAXException {
     // System.out.println("AxisResourceServiceDeserializer::onEndElement(" + arg0 + "," + arg1);
     mNesting--;
 

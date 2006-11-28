@@ -37,7 +37,7 @@ import org.apache.uima.adapter.soap.axis11.XmlSerializer_Axis11;
 public class XmlSerializerFactory implements SerializerFactory {
 
   private static final long serialVersionUID = -6341240975976459158L;
-  
+
   private Vector mechanisms;
 
   public Serializer getSerializerAs(String mechanismType) {

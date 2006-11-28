@@ -47,7 +47,7 @@ public abstract class AxisResourceServiceStub implements ResourceServiceStub {
    * Timeout in milliseconds; null to use Axis's default value.
    */
   private Integer mTimeout;
-  
+
   /**
    * Sets the endpoint of the service with which this proxy communicates.
    * 
@@ -70,7 +70,7 @@ public abstract class AxisResourceServiceStub implements ResourceServiceStub {
   public ResourceMetaData callGetMetaData() throws ResourceServiceException {
     final QName operationQName = new QName("http://uima.apache.org/resource", "getMetaData");
     final QName resourceMetaDataTypeQName = new QName("http://uima.apache.org/resourceSpecifier",
-                    "resourceMetaData");
+            "resourceMetaData");
 
     try {
       Service service = new Service();
@@ -80,7 +80,7 @@ public abstract class AxisResourceServiceStub implements ResourceServiceStub {
       call.setOperationName(operationQName);
 
       call.registerTypeMapping(ResourceMetaData.class, resourceMetaDataTypeQName,
-                      new XmlSerializerFactory(), new XmlDeserializerFactory());
+              new XmlSerializerFactory(), new XmlDeserializerFactory());
 
       return (ResourceMetaData) call.invoke(new Object[0]);
     } catch (ServiceException e) {

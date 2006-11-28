@@ -48,7 +48,7 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
  * 
  */
 public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub implements
-                AnalysisEngineServiceStub {
+        AnalysisEngineServiceStub {
 
   /**
    * Whether attachments should be used to send binary-serialized data
@@ -67,7 +67,7 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
    *           if <code>aEndpoint</code> is not a valid URL
    */
   public AxisAnalysisEngineServiceStub(String aEndpoint, Integer aTimeout)
-                  throws MalformedURLException {
+          throws MalformedURLException {
     this(aEndpoint, aTimeout, false);
   }
 
@@ -85,7 +85,7 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
    *           if <code>aEndpoint</code> is not a valid URL
    */
   public AxisAnalysisEngineServiceStub(String aEndpoint, Integer aTimeout, boolean aUseAttachments)
-                  throws MalformedURLException {
+          throws MalformedURLException {
     super(aEndpoint, aTimeout);
     mUseAttachments = aUseAttachments;
   }
@@ -95,9 +95,9 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
    */
   public AnalysisEngineMetaData callGetAnalysisEngineMetaData() throws ResourceServiceException {
     final QName mOperationQName = new QName("http://uima.apache.org/analysis_engine",
-                    "getAnalysisEngineMetaData");
+            "getAnalysisEngineMetaData");
     final QName mResourceMetaDataTypeQName = new QName("http://uima.apache.org/resourceSpecifier",
-                    "resourceMetaData");
+            "resourceMetaData");
 
     try {
       Service service = new Service();
@@ -107,7 +107,7 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
       call.setOperationName(mOperationQName);
 
       call.registerTypeMapping(ResourceMetaData.class, mResourceMetaDataTypeQName,
-                      new XmlSerializerFactory(), new XmlDeserializerFactory());
+              new XmlSerializerFactory(), new XmlDeserializerFactory());
 
       return (AnalysisEngineMetaData) call.invoke(new Object[0]);
     } catch (ServiceException e) {
@@ -123,9 +123,9 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
   public void callProcess(CAS aCAS) throws ResourceServiceException {
     final QName operationQName = new QName("http://uima.apache.org/analysis_engine", "process");
     final QName resultSpecTypeQName = new QName("http://uima.apache.org/analysis_engine",
-                    "resultSpecification");
+            "resultSpecification");
     final QName serviceDataCargoTypeQName = new QName("http://uima.apache.org/analysis_engine",
-                    "serviceDataCargo");
+            "serviceDataCargo");
 
     try {
       Service service = new Service();
@@ -136,11 +136,9 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
       call.setOperationName(operationQName);
 
       call.registerTypeMapping(ResultSpecification.class, resultSpecTypeQName,
-                      new XmlSerializerFactory(), new XmlDeserializerFactory());
-      call
-                      .registerTypeMapping(ServiceDataCargo.class, serviceDataCargoTypeQName,
-                                      new BinarySerializerFactory(mUseAttachments),
-                                      new BinaryDeserializerFactory());
+              new XmlSerializerFactory(), new XmlDeserializerFactory());
+      call.registerTypeMapping(ServiceDataCargo.class, serviceDataCargoTypeQName,
+              new BinarySerializerFactory(mUseAttachments), new BinaryDeserializerFactory());
 
       // extract data from CAS to prepare for binary serialization
       // (do not send process trace)
@@ -154,7 +152,7 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
         ObjectInputStream objStream = null;
         try {
           DataHandler dataHandler = AttachmentUtils
-                          .getActivationDataHandler((AttachmentPart) result);
+                  .getActivationDataHandler((AttachmentPart) result);
           Object content = dataHandler.getContent();
           // System.out.println(content.getClass().getName());
           objStream = new ObjectInputStream((InputStream) content);
@@ -177,9 +175,9 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
         resultCargo = (ServiceDataCargo) result;
       } else {
         throw new ResourceServiceException(
-                        ResourceServiceException.UNEXPECTED_SERVICE_RETURN_VALUE_TYPE,
-                        new Object[] { ServiceDataCargo.class.getName(),
-                            resultCargo == null ? "null" : resultCargo.getClass().getName() });
+                ResourceServiceException.UNEXPECTED_SERVICE_RETURN_VALUE_TYPE, new Object[] {
+                    ServiceDataCargo.class.getName(),
+                    resultCargo == null ? "null" : resultCargo.getClass().getName() });
       }
 
       // unmarshal analysis results into the original AnalysisProcessData object
@@ -199,7 +197,7 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
    * @see org.apache.uima.reference_impl.resource.service.ResourceServiceStub#destroy()
    */
   public void destroy() {
-    //no resources to clean up
+    // no resources to clean up
   }
 
   public void callBatchProcessComplete() throws ResourceServiceException {
