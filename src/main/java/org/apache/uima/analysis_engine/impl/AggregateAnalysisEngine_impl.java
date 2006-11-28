@@ -503,19 +503,16 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    * not specify one.
    */
   protected FlowControllerDeclaration getDefaultFlowControllerDeclaration() {
-    FlowControllerDescription flowControllerSpecifier = new FlowControllerDescription_impl();
-    flowControllerSpecifier.setFrameworkImplementation("org.apache.uima.java");
+    FlowControllerDescription flowControllerDesc;
     if (getAnalysisEngineMetaData().getFlowConstraints() instanceof CapabilityLanguageFlow) {
-      flowControllerSpecifier.setImplementationName(CapabilityLanguageFlowController.class
-                      .getName());
+      flowControllerDesc = CapabilityLanguageFlowController.getDescription();
     } else {
-      flowControllerSpecifier.setImplementationName(FixedFlowController.class.getName());
+      flowControllerDesc= FixedFlowController.getDescription();
     }
-    flowControllerSpecifier.getMetaData().setName("Fixed Flow Controller");
 
     FlowControllerDeclaration decl = new FlowControllerDeclaration_impl();
     decl.setKey("_FlowController");
-    decl.setSpecifier(flowControllerSpecifier);
+    decl.setSpecifier(flowControllerDesc);
     return decl;
   }
 

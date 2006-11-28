@@ -19,6 +19,8 @@
 
 package org.apache.uima.flow.impl;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.TypeOrFeature;
@@ -37,8 +40,11 @@ import org.apache.uima.cas.text.Language;
 import org.apache.uima.flow.CasFlowController_ImplBase;
 import org.apache.uima.flow.Flow;
 import org.apache.uima.flow.FlowControllerContext;
+import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.Capability;
+import org.apache.uima.util.InvalidXMLException;
+import org.apache.uima.util.XMLInputSource;
 
 /**
  * FlowController for the CapabilityLanguageFlow, which uses a linear fow but may skip some of the
@@ -241,4 +247,18 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
 
     return newSequence;
   }
+  
+  public static FlowControllerDescription getDescription() {
+    URL descUrl = FixedFlowController.class.getResource("/org/apache/uima/flow/CapabilityLanguageFlowController.xml");
+    FlowControllerDescription desc;
+    try {
+      desc = (FlowControllerDescription)
+        UIMAFramework.getXMLParser().parse(new XMLInputSource(descUrl));
+    } catch (InvalidXMLException e) {
+      throw new UIMARuntimeException(e);
+    } catch (IOException e) {
+      throw new UIMARuntimeException(e);
+    }
+    return desc;
+  }  
 }

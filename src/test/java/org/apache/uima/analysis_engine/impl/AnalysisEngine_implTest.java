@@ -125,7 +125,7 @@ public class AnalysisEngine_implTest extends TestCase {
       primitiveDesc.setFrameworkImplementation("org.apache.uima.java");
       primitiveDesc.setPrimitive(true);
       primitiveDesc
-                      .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
+              .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       result = tae1.initialize(primitiveDesc, null);
       Assert.assertTrue(result);
 
@@ -154,68 +154,66 @@ public class AnalysisEngine_implTest extends TestCase {
       // try some descriptors that are invalid due to config. param problems
       for (int i = 1; i <= 13; i++) {
         _testInvalidDescriptor(JUnitExtension
-                        .getFile("TextAnalysisEngineImplTest/InvalidConfigParams" + i + ".xml"));
+                .getFile("TextAnalysisEngineImplTest/InvalidConfigParams" + i + ".xml"));
       }
 
       // try a descriptor with configuration parameter overrides - should work
-      XMLInputSource in = new XMLInputSource(
-                      JUnitExtension
-                                      .getFile("TextAnalysisEngineImplTest/AggregateTaeWithConfigParamOverrides.xml"));
+      XMLInputSource in = new XMLInputSource(JUnitExtension
+              .getFile("TextAnalysisEngineImplTest/AggregateTaeWithConfigParamOverrides.xml"));
 
       TaeDescription desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
       AggregateAnalysisEngine_impl tae = new AggregateAnalysisEngine_impl();
       tae.initialize(desc, Collections.EMPTY_MAP);
 
       PrimitiveAnalysisEngine_impl delegate1 = (PrimitiveAnalysisEngine_impl) tae._getASB()
-                      .getComponentAnalysisEngines().get("Annotator1");
+              .getComponentAnalysisEngines().get("Annotator1");
       PrimitiveAnalysisEngine_impl delegate2 = (PrimitiveAnalysisEngine_impl) tae._getASB()
-                      .getComponentAnalysisEngines().get("Annotator2");
+              .getComponentAnalysisEngines().get("Annotator2");
       FlowControllerContainer flowController = ((ASB_impl) tae._getASB())
-                      .getFlowControllerContainer();
+              .getFlowControllerContainer();
       String strVal1 = (String) delegate1.getUimaContext().getConfigParameterValue("en",
-                      "StringParam");
+              "StringParam");
       Assert.assertEquals("override", strVal1);
       String strVal2 = (String) delegate2.getUimaContext().getConfigParameterValue("en",
-                      "StringParam");
+              "StringParam");
       Assert.assertEquals("en", strVal2);
       String strVal3 = (String) flowController.getUimaContext().getConfigParameterValue("en",
-                      "StringParam");
+              "StringParam");
       Assert.assertEquals("en", strVal3);
 
       Assert.assertEquals("en", strVal2);
       Integer intVal1 = (Integer) delegate1.getUimaContext().getConfigParameterValue("en",
-                      "IntegerParam");
+              "IntegerParam");
       Assert.assertEquals(100, intVal1.intValue());
       Integer intVal2 = (Integer) delegate1.getUimaContext().getConfigParameterValue("en",
-                      "IntegerParam");
+              "IntegerParam");
       Assert.assertEquals(100, intVal2.intValue());
       Integer intVal3 = (Integer) flowController.getUimaContext().getConfigParameterValue("en",
-                      "IntegerParam");
+              "IntegerParam");
       Assert.assertEquals(100, intVal3.intValue());
 
       String[] strArrVal1 = (String[]) delegate1.getUimaContext().getConfigParameterValue("en",
-                      "StringArrayParam");
+              "StringArrayParam");
       Assert.assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal1));
       String[] strArrVal2 = (String[]) delegate2.getUimaContext().getConfigParameterValue("en",
-                      "StringArrayParam");
+              "StringArrayParam");
       Assert.assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal2));
       String[] strArrVal3 = (String[]) flowController.getUimaContext().getConfigParameterValue(
-                      "en", "StringArrayParam");
+              "en", "StringArrayParam");
       Assert.assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal3));
 
       // anotherdescriptor with configuration parameter overrides (this time no groups)
-      in = new XMLInputSource(
-                      JUnitExtension
-                                      .getFile("TextAnalysisEngineImplTest/AggregateTaeWithConfigParamOverrides2.xml"));
+      in = new XMLInputSource(JUnitExtension
+              .getFile("TextAnalysisEngineImplTest/AggregateTaeWithConfigParamOverrides2.xml"));
 
       desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
       tae = new AggregateAnalysisEngine_impl();
       tae.initialize(desc, Collections.EMPTY_MAP);
 
       delegate1 = (PrimitiveAnalysisEngine_impl) tae._getASB().getComponentAnalysisEngines().get(
-                      "Annotator1");
+              "Annotator1");
       delegate2 = (PrimitiveAnalysisEngine_impl) tae._getASB().getComponentAnalysisEngines().get(
-                      "Annotator2");
+              "Annotator2");
       flowController = ((ASB_impl) tae._getASB()).getFlowControllerContainer();
 
       strVal1 = (String) delegate1.getUimaContext().getConfigParameterValue("StringParam");
@@ -233,35 +231,35 @@ public class AnalysisEngine_implTest extends TestCase {
       Assert.assertEquals(100, intVal3.intValue());
 
       strArrVal1 = (String[]) delegate1.getUimaContext()
-                      .getConfigParameterValue("StringArrayParam");
+              .getConfigParameterValue("StringArrayParam");
       Assert.assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal1));
       strArrVal2 = (String[]) delegate2.getUimaContext()
-                      .getConfigParameterValue("StringArrayParam");
+              .getConfigParameterValue("StringArrayParam");
       Assert.assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal2));
       strArrVal3 = (String[]) flowController.getUimaContext().getConfigParameterValue(
-                      "StringArrayParam");
+              "StringArrayParam");
       Assert.assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal3));
 
       // try a descriptor that's invalid due to an unsatisfied resource dependency
       _testInvalidDescriptor(JUnitExtension
-                      .getFile("TextAnalysisEngineImplTest/UnsatisfiedResourceDependency.xml"));
+              .getFile("TextAnalysisEngineImplTest/UnsatisfiedResourceDependency.xml"));
 
       // test an aggregate TAE containing a CAS Consumer
       in = new XMLInputSource(JUnitExtension
-                      .getFile("TextAnalysisEngineImplTest/AggregateTaeWithCasConsumer.xml"));
+              .getFile("TextAnalysisEngineImplTest/AggregateTaeWithCasConsumer.xml"));
       desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
       tae = new AggregateAnalysisEngine_impl();
       tae.initialize(desc, Collections.EMPTY_MAP);
       delegate1 = (PrimitiveAnalysisEngine_impl) tae._getASB().getComponentAnalysisEngines().get(
-                      "Annotator");
+              "Annotator");
       delegate2 = (PrimitiveAnalysisEngine_impl) tae._getASB().getComponentAnalysisEngines().get(
-                      "CasConsumer");
+              "CasConsumer");
       assertTrue(delegate1.getAnalysisEngineMetaData().getOperationalProperties().getModifiesCas());
       assertFalse(delegate2.getAnalysisEngineMetaData().getOperationalProperties().getModifiesCas());
 
       // try an aggregate with no components (tests that empty flow works)
       in = new XMLInputSource(JUnitExtension
-                      .getFile("TextAnalysisEngineImplTest/EmptyAggregate.xml"));
+              .getFile("TextAnalysisEngineImplTest/EmptyAggregate.xml"));
       desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
       FixedFlow emptyFlow = (FixedFlow) desc.getAnalysisEngineMetaData().getFlowConstraints();
       assertNotNull(emptyFlow.getFixedFlow());
@@ -270,25 +268,24 @@ public class AnalysisEngine_implTest extends TestCase {
       tae.initialize(desc, Collections.EMPTY_MAP);
 
       // aggregate with duplicate group overrides
-      in = new XMLInputSource(
-                      JUnitExtension
-                                      .getFile("TextAnalysisEngineImplTest/AggregateWithDuplicateGroupOverrides.xml"));
+      in = new XMLInputSource(JUnitExtension
+              .getFile("TextAnalysisEngineImplTest/AggregateWithDuplicateGroupOverrides.xml"));
       desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
       tae = new AggregateAnalysisEngine_impl();
       tae.initialize(desc, Collections.EMPTY_MAP);
 
       delegate1 = (PrimitiveAnalysisEngine_impl) tae._getASB().getComponentAnalysisEngines().get(
-                      "Annotator1");
+              "Annotator1");
       delegate2 = (PrimitiveAnalysisEngine_impl) tae._getASB().getComponentAnalysisEngines().get(
-                      "Annotator2");
+              "Annotator2");
       String commonParamA = (String) delegate1.getUimaContext().getConfigParameterValue("a",
-                      "CommonParam");
+              "CommonParam");
       Assert.assertEquals("AggregateParam1a", commonParamA);
       String ann1_groupBParamBC = (String) delegate1.getUimaContext().getConfigParameterValue("b",
-                      "BCParam");
+              "BCParam");
       Assert.assertEquals("AggregateParam2b", ann1_groupBParamBC);
       String ann2_groupBParamBC = (String) delegate2.getUimaContext().getConfigParameterValue("b",
-                      "BCParam");
+              "BCParam");
       Assert.assertEquals("AggregateParam3b", ann2_groupBParamBC);
 
     } catch (Exception e) {
@@ -320,7 +317,7 @@ public class AnalysisEngine_implTest extends TestCase {
       TaeDescription primitiveDesc = new TaeDescription_impl();
       primitiveDesc.setPrimitive(true);
       primitiveDesc
-                      .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
+              .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       primitiveDesc.getMetaData().setName("Test Primitive TAE");
       _testProcess(primitiveDesc);
 
@@ -335,12 +332,9 @@ public class AnalysisEngine_implTest extends TestCase {
       _testProcess(aggDesc);
 
       // test aggregate TAE containing a CAS Consumer
-      TaeDescription aggWithCcDesc = UIMAFramework
-                      .getXMLParser()
-                      .parseTaeDescription(
-                                      new XMLInputSource(
-                                                      JUnitExtension
-                                                                      .getFile("TextAnalysisEngineImplTest/AggregateTaeWithCasConsumer.xml")));
+      TaeDescription aggWithCcDesc = UIMAFramework.getXMLParser().parseTaeDescription(
+              new XMLInputSource(JUnitExtension
+                      .getFile("TextAnalysisEngineImplTest/AggregateTaeWithCasConsumer.xml")));
       long startTime = System.currentTimeMillis();
       _testProcess(aggWithCcDesc);
       // test that CAS Consumer ran
@@ -390,15 +384,15 @@ public class AnalysisEngine_implTest extends TestCase {
       primitiveDesc.setPrimitive(true);
       primitiveDesc.getMetaData().setName("Test Primitive TAE");
       primitiveDesc
-                      .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
+              .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       ConfigurationParameter p1 = new ConfigurationParameter_impl();
       p1.setName("StringParam");
       p1.setDescription("parameter with String data type");
       p1.setType(ConfigurationParameter.TYPE_STRING);
       primitiveDesc.getMetaData().getConfigurationParameterDeclarations()
-                      .setConfigurationParameters(new ConfigurationParameter[] { p1 });
+              .setConfigurationParameters(new ConfigurationParameter[] { p1 });
       primitiveDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
-                      new NameValuePair[] { new NameValuePair_impl("StringParam", "Test1") });
+              new NameValuePair[] { new NameValuePair_impl("StringParam", "Test1") });
 
       // instantiate TextAnalysisEngine
       PrimitiveAnalysisEngine_impl tae = new PrimitiveAnalysisEngine_impl();
@@ -428,9 +422,9 @@ public class AnalysisEngine_implTest extends TestCase {
       p2.setDescription("parameter with String data type");
       p2.setType(ConfigurationParameter.TYPE_STRING);
       aggDesc.getMetaData().getConfigurationParameterDeclarations().setConfigurationParameters(
-                      new ConfigurationParameter[] { p2 });
+              new ConfigurationParameter[] { p2 });
       aggDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
-                      new NameValuePair[] { new NameValuePair_impl("StringParam", "Test3") });
+              new NameValuePair[] { new NameValuePair_impl("StringParam", "Test3") });
       // instantiate TextAnalysisEngine
       AggregateAnalysisEngine_impl aggTae = new AggregateAnalysisEngine_impl();
       aggTae.initialize(aggDesc, null);
@@ -451,7 +445,7 @@ public class AnalysisEngine_implTest extends TestCase {
 
       // test aggregate TAE that does NOT override parameter
       primitiveDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
-                      new NameValuePair[] { new NameValuePair_impl("StringParam", "Test1") });
+              new NameValuePair[] { new NameValuePair_impl("StringParam", "Test1") });
       TaeDescription aggDesc2 = new TaeDescription_impl();
       aggDesc2.setFrameworkImplementation("org.apache.uima.java");
       aggDesc2.setPrimitive(false);
@@ -465,9 +459,9 @@ public class AnalysisEngine_implTest extends TestCase {
       p3.setDescription("parameter with Integer data type");
       p3.setType(ConfigurationParameter.TYPE_INTEGER);
       aggDesc2.getMetaData().getConfigurationParameterDeclarations().setConfigurationParameters(
-                      new ConfigurationParameter[] { p3 });
+              new ConfigurationParameter[] { p3 });
       aggDesc2.getMetaData().getConfigurationParameterSettings().setParameterSettings(
-                      new NameValuePair[] { new NameValuePair_impl("IntParam", new Integer(42)) });
+              new NameValuePair[] { new NameValuePair_impl("IntParam", new Integer(42)) });
       // instantiate TextAnalysisEngine
       AggregateAnalysisEngine_impl aggTae2 = new AggregateAnalysisEngine_impl();
       aggTae2.initialize(aggDesc2, null);
@@ -495,19 +489,19 @@ public class AnalysisEngine_implTest extends TestCase {
 
       TypeSystemDescription typeSystem = new TypeSystemDescription_impl();
       TypeDescription type1 = typeSystem.addType("Type1", "Test Type One",
-                      TCAS.TYPE_NAME_ANNOTATION);
+              TCAS.TYPE_NAME_ANNOTATION);
       FeatureDescription feat1 = new FeatureDescription_impl();
       feat1.setName("Feature1");
       feat1.setRangeTypeName(CAS.TYPE_NAME_INTEGER);
       type1.setFeatures(new FeatureDescription[] { feat1 });
       TypeDescription type2 = typeSystem.addType("Type2", "Test Type Two",
-                      TCAS.TYPE_NAME_ANNOTATION);
+              TCAS.TYPE_NAME_ANNOTATION);
       FeatureDescription feat2 = new FeatureDescription_impl();
       feat2.setName("Feature2");
       feat2.setRangeTypeName("EnumType");
       type2.setFeatures(new FeatureDescription[] { feat2 });
       TypeDescription enumType = typeSystem.addType("EnumType", "Test Enumerated Type",
-                      "uima.cas.String");
+              "uima.cas.String");
       enumType.setAllowedValues(new AllowedValue[] { new AllowedValue_impl("One", "First Value"),
           new AllowedValue_impl("Two", "Second Value") });
       desc.getAnalysisEngineMetaData().setTypeSystem(typeSystem);
@@ -544,7 +538,7 @@ public class AnalysisEngine_implTest extends TestCase {
       key4.setTypePriority(true);
       index3.setKeys(new FsIndexKeyDescription[] { key3, key4 });
       desc.getAnalysisEngineMetaData().setFsIndexes(
-                      new FsIndexDescription[] { index1, index2, index3 });
+              new FsIndexDescription[] { index1, index2, index3 });
 
       // instantiate TextAnalysisEngine
       PrimitiveAnalysisEngine_impl tae = new PrimitiveAnalysisEngine_impl();
@@ -628,7 +622,7 @@ public class AnalysisEngine_implTest extends TestCase {
       // create aggregate analysis engine whose delegates each declare
       // type system, type priorities, and indexes
       XMLInputSource in = new XMLInputSource(JUnitExtension
-                      .getFile("TextAnalysisEngineImplTest/AggregateTaeForMergeTest.xml"));
+              .getFile("TextAnalysisEngineImplTest/AggregateTaeForMergeTest.xml"));
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
       AggregateAnalysisEngine_impl tae = new AggregateAnalysisEngine_impl();
       tae.initialize(desc, Collections.EMPTY_MAP);
@@ -689,8 +683,8 @@ public class AnalysisEngine_implTest extends TestCase {
       String[] list2 = priLists[2].getTypes();
       // order of the three lists is not defined
       Assert.assertTrue((list0.length == 2 && list1.length == 2 && list2.length == 3)
-                      || (list0.length == 2 && list1.length == 3 && list2.length == 2)
-                      || (list0.length == 3 && list1.length == 2 && list2.length == 2));
+              || (list0.length == 2 && list1.length == 3 && list2.length == 2)
+              || (list0.length == 3 && list1.length == 2 && list2.length == 2));
 
       // Indexes
       FsIndexDescription[] indexes = tae.getAnalysisEngineMetaData().getFsIndexes();
@@ -700,12 +694,12 @@ public class AnalysisEngine_implTest extends TestCase {
       String label1 = indexes[1].getLabel();
       String label2 = indexes[2].getLabel();
       Assert.assertTrue(label0.equals("DocStructIndex") || label1.equals("DocStructIndex")
-                      || label2.equals("DocStructIndex"));
+              || label2.equals("DocStructIndex"));
       Assert.assertTrue(label0.equals("PlaceIndex") || label1.equals("PlaceIndex")
-                      || label2.equals("PlaceIndex"));
+              || label2.equals("PlaceIndex"));
       Assert.assertTrue(label0.equals("FlowControllerTestIndex")
-                      || label1.equals("FlowControllerTestIndex")
-                      || label2.equals("FlowControllerTestIndex"));
+              || label1.equals("FlowControllerTestIndex")
+              || label2.equals("FlowControllerTestIndex"));
 
       // test that we can create a CAS
       CAS cas = tae.newCAS();
@@ -729,7 +723,7 @@ public class AnalysisEngine_implTest extends TestCase {
       TaeDescription primitiveDesc = new TaeDescription_impl();
       primitiveDesc.setPrimitive(true);
       primitiveDesc
-                      .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
+              .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       primitiveDesc.getMetaData().setName("Test Primitive TAE");
       PrimitiveAnalysisEngine_impl tae = new PrimitiveAnalysisEngine_impl();
       tae.initialize(primitiveDesc, null);
@@ -757,7 +751,7 @@ public class AnalysisEngine_implTest extends TestCase {
       TaeDescription primitiveDesc = new TaeDescription_impl();
       primitiveDesc.setPrimitive(true);
       primitiveDesc
-                      .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
+              .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       primitiveDesc.getMetaData().setName("Test Primitive TAE");
       PrimitiveAnalysisEngine_impl tae = new PrimitiveAnalysisEngine_impl();
       tae.initialize(primitiveDesc, null);
@@ -781,12 +775,9 @@ public class AnalysisEngine_implTest extends TestCase {
 
   public void testTypeSystemInit() throws Exception {
     try {
-      TaeDescription aggWithCcDesc = UIMAFramework
-                      .getXMLParser()
-                      .parseTaeDescription(
-                                      new XMLInputSource(
-                                                      JUnitExtension
-                                                                      .getFile("TextAnalysisEngineImplTest/AggregateTaeWithCasConsumer.xml")));
+      TaeDescription aggWithCcDesc = UIMAFramework.getXMLParser().parseTaeDescription(
+              new XMLInputSource(JUnitExtension
+                      .getFile("TextAnalysisEngineImplTest/AggregateTaeWithCasConsumer.xml")));
       AggregateAnalysisEngine_impl aggTae = new AggregateAnalysisEngine_impl();
       aggTae.initialize(aggWithCcDesc, null);
       TCAS tcas = aggTae.newTCAS();
@@ -802,12 +793,10 @@ public class AnalysisEngine_implTest extends TestCase {
   public void testProcessAndOutputNewCASes() throws Exception {
     try {
       // primitive
-      AnalysisEngineDescription segmenterDesc = UIMAFramework
-                      .getXMLParser()
-                      .parseAnalysisEngineDescription(
-                                      new XMLInputSource(
-                                                      JUnitExtension
-                                                                      .getFile("TextAnalysisEngineImplTest/NewlineSegmenter.xml")));
+      AnalysisEngineDescription segmenterDesc = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(
+                      new XMLInputSource(JUnitExtension
+                              .getFile("TextAnalysisEngineImplTest/NewlineSegmenter.xml")));
       AnalysisEngine tae = UIMAFramework.produceAnalysisEngine(segmenterDesc);
       CAS cas = tae.newCAS();
       cas.setDocumentText("Line one\nLine two\nLine three");
@@ -827,12 +816,10 @@ public class AnalysisEngine_implTest extends TestCase {
       assertFalse(iter.hasNext());
 
       // aggregate
-      AnalysisEngineDescription aggSegDesc = UIMAFramework
-                      .getXMLParser()
-                      .parseAnalysisEngineDescription(
-                                      new XMLInputSource(
-                                                      JUnitExtension
-                                                                      .getFile("TextAnalysisEngineImplTest/AggregateWithSegmenter.xml")));
+      AnalysisEngineDescription aggSegDesc = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(
+                      new XMLInputSource(JUnitExtension
+                              .getFile("TextAnalysisEngineImplTest/AggregateWithSegmenter.xml")));
       tae = UIMAFramework.produceAnalysisEngine(aggSegDesc);
       cas = tae.newCAS();
       cas.setDocumentText("Line one\nLine two\nLine three");
@@ -858,11 +845,11 @@ public class AnalysisEngine_implTest extends TestCase {
 
       // nested aggregate
       AnalysisEngineDescription nestedAggSegDesc = UIMAFramework
-                      .getXMLParser()
-                      .parseAnalysisEngineDescription(
-                                      new XMLInputSource(
-                                                      JUnitExtension
-                                                                      .getFile("TextAnalysisEngineImplTest/AggregateContainingAggregateSegmenter.xml")));
+              .getXMLParser()
+              .parseAnalysisEngineDescription(
+                      new XMLInputSource(
+                              JUnitExtension
+                                      .getFile("TextAnalysisEngineImplTest/AggregateContainingAggregateSegmenter.xml")));
       tae = UIMAFramework.produceAnalysisEngine(nestedAggSegDesc);
       cas = tae.newCAS();
       cas.setDocumentText("Line one\nLine two\nLine three");
@@ -887,12 +874,10 @@ public class AnalysisEngine_implTest extends TestCase {
       assertEquals("Line three", TestAnnotator.lastDocument);
 
       // two segmenters
-      AnalysisEngineDescription twoSegDesc = UIMAFramework
-                      .getXMLParser()
-                      .parseAnalysisEngineDescription(
-                                      new XMLInputSource(
-                                                      JUnitExtension
-                                                                      .getFile("TextAnalysisEngineImplTest/AggregateWith2Segmenters.xml")));
+      AnalysisEngineDescription twoSegDesc = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(
+                      new XMLInputSource(JUnitExtension
+                              .getFile("TextAnalysisEngineImplTest/AggregateWith2Segmenters.xml")));
       tae = UIMAFramework.produceAnalysisEngine(twoSegDesc);
       cas = tae.newCAS();
       cas.setDocumentText("One\tTwo\nThree\tFour");
@@ -909,11 +894,6 @@ public class AnalysisEngine_implTest extends TestCase {
       outCas.release();
       assertTrue(iter.hasNext());
       outCas = iter.next();
-      assertEquals("One\tTwo", outCas.getDocumentText());
-      assertEquals("Two", TestAnnotator.lastDocument);
-      outCas.release();
-      assertTrue(iter.hasNext());
-      outCas = iter.next();
       assertEquals("Three", outCas.getDocumentText());
       assertEquals("Three", TestAnnotator.lastDocument);
       outCas.release();
@@ -922,22 +902,14 @@ public class AnalysisEngine_implTest extends TestCase {
       assertEquals("Four", outCas.getDocumentText());
       assertEquals("Four", TestAnnotator.lastDocument);
       outCas.release();
-      assertTrue(iter.hasNext());
-      outCas = iter.next();
-      assertEquals("Three\tFour", outCas.getDocumentText());
-      assertEquals("Four", TestAnnotator.lastDocument);
-      outCas.release();
       assertFalse(iter.hasNext());
       // Annotator should NOT get the original CAS according to the default flow
       assertEquals("Four", TestAnnotator.lastDocument);
 
       // dropping segments
-      aggSegDesc = UIMAFramework
-                      .getXMLParser()
-                      .parseAnalysisEngineDescription(
-                                      new XMLInputSource(
-                                                      JUnitExtension
-                                                                      .getFile("TextAnalysisEngineImplTest/AggregateSegmenterForDropTest.xml")));
+      aggSegDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+              new XMLInputSource(JUnitExtension
+                      .getFile("TextAnalysisEngineImplTest/AggregateSegmenterForDropTest.xml")));
       tae = UIMAFramework.produceAnalysisEngine(aggSegDesc);
       cas = tae.newCAS();
       cas.setDocumentText("Line one\nDROP\nLine two\nDROP\nLine three");
@@ -971,11 +943,11 @@ public class AnalysisEngine_implTest extends TestCase {
     try {
       // aggregate
       AnalysisEngineDescription aggSegDesc = UIMAFramework
-                      .getXMLParser()
-                      .parseAnalysisEngineDescription(
-                                      new XMLInputSource(
-                                                      JUnitExtension
-                                                                      .getFile("TextAnalysisEngineImplTest/AggregateWithSegmenterForErrorTest.xml")));
+              .getXMLParser()
+              .parseAnalysisEngineDescription(
+                      new XMLInputSource(
+                              JUnitExtension
+                                      .getFile("TextAnalysisEngineImplTest/AggregateWithSegmenterForErrorTest.xml")));
       AnalysisEngine tae = UIMAFramework.produceAnalysisEngine(aggSegDesc);
       CAS cas = tae.newCAS();
       for (int i = 0; i < 2; i++) // verify we can do this more than once
@@ -1001,11 +973,11 @@ public class AnalysisEngine_implTest extends TestCase {
 
       // nested aggregate
       AnalysisEngineDescription nestedAggSegDesc = UIMAFramework
-                      .getXMLParser()
-                      .parseAnalysisEngineDescription(
-                                      new XMLInputSource(
-                                                      JUnitExtension
-                                                                      .getFile("TextAnalysisEngineImplTest/NestedAggregateSegmenterForErrorTest.xml")));
+              .getXMLParser()
+              .parseAnalysisEngineDescription(
+                      new XMLInputSource(
+                              JUnitExtension
+                                      .getFile("TextAnalysisEngineImplTest/NestedAggregateSegmenterForErrorTest.xml")));
       tae = UIMAFramework.produceAnalysisEngine(nestedAggSegDesc);
       cas = tae.newCAS();
       for (int i = 0; i < 2; i++) // verify we can do this more than once
@@ -1031,11 +1003,11 @@ public class AnalysisEngine_implTest extends TestCase {
 
       // 2 segmenters
       AnalysisEngineDescription twoSegDesc = UIMAFramework
-                      .getXMLParser()
-                      .parseAnalysisEngineDescription(
-                                      new XMLInputSource(
-                                                      JUnitExtension
-                                                                      .getFile("TextAnalysisEngineImplTest/AggregateWith2SegmentersForErrorTest.xml")));
+              .getXMLParser()
+              .parseAnalysisEngineDescription(
+                      new XMLInputSource(
+                              JUnitExtension
+                                      .getFile("TextAnalysisEngineImplTest/AggregateWith2SegmentersForErrorTest.xml")));
       tae = UIMAFramework.produceAnalysisEngine(twoSegDesc);
       cas = tae.newCAS();
       for (int i = 0; i < 2; i++) // verify we can do this more than once
@@ -1052,10 +1024,6 @@ public class AnalysisEngine_implTest extends TestCase {
         outCas.release();
         assertTrue(iter.hasNext());
         outCas = iter.next();
-        assertEquals("One\tTwo", outCas.getDocumentText());
-        outCas.release();
-        assertTrue(iter.hasNext());
-        outCas = iter.next();
         assertEquals("Three", outCas.getDocumentText());
         outCas.release();
         try {
@@ -1068,12 +1036,10 @@ public class AnalysisEngine_implTest extends TestCase {
       }
 
       // segmenter that requests too many CASes
-      AnalysisEngineDescription segmenterDesc = UIMAFramework
-                      .getXMLParser()
-                      .parseAnalysisEngineDescription(
-                                      new XMLInputSource(
-                                                      JUnitExtension
-                                                                      .getFile("TextAnalysisEngineImplTest/BadSegmenter.xml")));
+      AnalysisEngineDescription segmenterDesc = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(
+                      new XMLInputSource(JUnitExtension
+                              .getFile("TextAnalysisEngineImplTest/BadSegmenter.xml")));
       tae = UIMAFramework.produceAnalysisEngine(segmenterDesc);
       cas = tae.newCAS();
       cas.setDocumentText("Line one\nLine two\nLine three");
@@ -1097,16 +1063,14 @@ public class AnalysisEngine_implTest extends TestCase {
   public void testResegment() throws Exception {
     try {
       // primitive
-      AnalysisEngineDescription segmenterDesc = UIMAFramework
-                      .getXMLParser()
-                      .parseAnalysisEngineDescription(
-                                      new XMLInputSource(
-                                                      JUnitExtension
-                                                                      .getFile("TextAnalysisEngineImplTest/NewlineResegmenter.xml")));
+      AnalysisEngineDescription segmenterDesc = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(
+                      new XMLInputSource(JUnitExtension
+                              .getFile("TextAnalysisEngineImplTest/NewlineResegmenter.xml")));
       AnalysisEngine tae = UIMAFramework.produceAnalysisEngine(segmenterDesc);
       CAS inputCas1 = tae.newCAS();
       Type sdiType = inputCas1.getTypeSystem().getType(
-                      "org.apache.uima.examples.SourceDocumentInformation");
+              "org.apache.uima.examples.SourceDocumentInformation");
       Feature uriFeat = sdiType.getFeatureByBaseName("uri");
       inputCas1.setDocumentText("This is");
       FeatureStructure sdiFS = inputCas1.createFS(sdiType);
@@ -1171,17 +1135,16 @@ public class AnalysisEngine_implTest extends TestCase {
   public void testComputeAnalysisComponentResultSpec() throws Exception {
     try {
       AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()
-                      .parseAnalysisEngineDescription(
-                                      new XMLInputSource(JUnitExtension
-                                                      .getFile("SequencerTest/Annotator1.xml")));
+              .parseAnalysisEngineDescription(
+                      new XMLInputSource(JUnitExtension.getFile("SequencerTest/Annotator1.xml")));
       PrimitiveAnalysisEngine_impl ae = (PrimitiveAnalysisEngine_impl) UIMAFramework
-                      .produceAnalysisEngine(aeDesc);
+              .produceAnalysisEngine(aeDesc);
       CAS cas = ae.newCAS();
       ResultSpecification resultSpec = new ResultSpecification_impl();
       resultSpec.addResultType("uima.tt.TokenLikeAnnotation", true);
       resultSpec.compile(cas.getTypeSystem());
       ResultSpecification acResultSpec = ae.computeAnalysisComponentResultSpec(resultSpec, ae
-                      .getAnalysisEngineMetaData().getCapabilities());
+              .getAnalysisEngineMetaData().getCapabilities());
       assertTrue(acResultSpec.containsType("uima.tt.TokenAnnotation"));
       assertFalse(acResultSpec.containsType("uima.tt.SentenceAnnotation"));
       assertFalse(acResultSpec.containsType("uima.tt.Lemma"));
