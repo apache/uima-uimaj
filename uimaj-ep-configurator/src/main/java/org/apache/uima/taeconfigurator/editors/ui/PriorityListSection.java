@@ -69,14 +69,14 @@ public class PriorityListSection extends AbstractSection {
 
     final Composite buttonContainer = newButtonContainer(sectionClient);
     addSetButton = newPushButton(buttonContainer, "Add Set",
-                    "Click here to add another priority list.");
+            "Click here to add another priority list.");
     addButton = newPushButton(buttonContainer, S_ADD, "Click here to add a type");
     removeButton = newPushButton(buttonContainer, S_REMOVE, S_REMOVE_TIP);
     new Button(buttonContainer, SWT.PUSH).setVisible(false); // spacer
     upButton = newPushButton(buttonContainer, S_UP,
-                    "Click here to move the selected item up in the priority order.");
+            "Click here to move the selected item up in the priority order.");
     downButton = newPushButton(buttonContainer, S_DOWN,
-                    "Click here to move the selected item down in the priority order");
+            "Click here to move the selected item down in the priority order");
     exportButton = newPushButton(buttonContainer, S_EXPORT, S_EXPORT_TIP);
 
     toolkit.paintBordersFor(sectionClient);
@@ -118,14 +118,14 @@ public class PriorityListSection extends AbstractSection {
 
   public TypePriorityList getTypePriorityListFromTreeItem(TreeItem item) {
     TypePriorityList[] typePriorityLists = getAnalysisEngineMetaData().getTypePriorities()
-                    .getPriorityLists();
+            .getPriorityLists();
     return typePriorityLists[tree.indexOf(item)];
   }
 
   public void handleEvent(Event event) {
     if (event.widget == addSetButton) {
       TypePriorityList typePriorityList = UIMAFramework.getResourceSpecifierFactory()
-                      .createTypePriorityList();
+              .createTypePriorityList();
 
       TypePriorities typePriorities = getTypePriorities();
       if (typePriorities == null) {
@@ -143,18 +143,18 @@ public class PriorityListSection extends AbstractSection {
     } else if (event.widget == addButton) { // add type to set
       if (editor.isTypePriorityDescriptor() && !editor.getIsContextLoaded()) {
         Utility
-                        .popMessage(
-                                        "Can''t add types here",
-                                        "Types cannot be added here, because there is no loaded context type system to pick the types from",
-                                        MessageDialog.WARNING);
+                .popMessage(
+                        "Can''t add types here",
+                        "Types cannot be added here, because there is no loaded context type system to pick the types from",
+                        MessageDialog.WARNING);
         return;
       }
       TreeItem parent = tree.getSelection()[0];
       if (null != parent.getParentItem())
         parent = parent.getParentItem();
       AddTypeToPriorityListDialog dialog = new AddTypeToPriorityListDialog(this,
-                      editor.definedTypesWithSupers.get(), // types
-                      getTypePriorityListFromTreeItem(parent).getTypes()); // types already in list
+              editor.definedTypesWithSupers.get(), // types
+              getTypePriorityListFromTreeItem(parent).getTypes()); // types already in list
 
       if (dialog.open() == Window.CANCEL)
         return;
@@ -175,11 +175,11 @@ public class PriorityListSection extends AbstractSection {
 
       if (null == parent) { // removing a priority set
         if (Window.CANCEL == Utility.popOkCancel("ConfirmRemove", "ConfirmRemoveSet",
-                        MessageDialog.WARNING))
+                MessageDialog.WARNING))
           return;
         TypePriorityList removedTypePriorityList = getTypePriorityListFromTreeItem(item);
         TypePriorityList[] oldPriorityLists = getAnalysisEngineMetaData().getTypePriorities()
-                        .getPriorityLists();
+                .getPriorityLists();
         TypePriorityList[] newPriorityLists = new TypePriorityList[oldPriorityLists.length - 1];
 
         for (int i = 0, j = 0; i < oldPriorityLists.length; i++) {
@@ -192,14 +192,14 @@ public class PriorityListSection extends AbstractSection {
 
       } else { // removing a type
         if (Window.CANCEL == Utility.popOkCancel("ConfirmRemove", "ConfirmRemoveType",
-                        MessageDialog.WARNING))
+                MessageDialog.WARNING))
           return;
         TypePriorityList typePriorityList = getTypePriorityListFromTreeItem(parent);
         typePriorityList.removeType(item.getText());
       }
 
       TreeItem previousSelection = getPreviousSelection(parent == null ? tree.getItems() : parent
-                      .getItems(), item);
+              .getItems(), item);
       if (null != previousSelection)
         tree.setSelection(new TreeItem[] { previousSelection });
       item.dispose();
@@ -246,7 +246,7 @@ public class PriorityListSection extends AbstractSection {
       getTypePriorities().setPriorityLists(tpl);
     } else if (event.widget == exportButton) {
       typePriorityImportSection.exportImportablePart("<typePriorities>",
-                      TypePrioritiesNewWizard.TYPEPRIORITIES_TEMPLATE);
+              TypePrioritiesNewWizard.TYPEPRIORITIES_TEMPLATE);
       refresh();
     }
     enable();

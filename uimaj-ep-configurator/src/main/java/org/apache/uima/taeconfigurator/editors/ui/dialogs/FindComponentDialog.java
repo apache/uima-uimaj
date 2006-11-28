@@ -59,7 +59,7 @@ public class FindComponentDialog extends AbstractDialog {
    * @param parentShell
    */
   public FindComponentDialog(AbstractSection aSection, String title, String header,
-                  String[] componentHeaders) {
+          String[] componentHeaders) {
     super(aSection, title, header);
     this.componentHeaders = componentHeaders;
   }
@@ -131,9 +131,9 @@ public class FindComponentDialog extends AbstractDialog {
     } else { // cancel in-progress search
       if (m_searchThread.isDone()) {
         m_matchingDelegateComponetDescriptors = m_searchThread
-                        .getMatchingDelegateComponentDescriptors();
+                .getMatchingDelegateComponentDescriptors();
         m_matchingDelegateComponentDescriptions = m_searchThread
-                        .getMatchingDelegateComponentDescriptions();
+                .getMatchingDelegateComponentDescriptions();
         m_searchThread = null;
         super.superButtonPressed(IDialogConstants.OK_ID);
       } else {
@@ -193,7 +193,7 @@ public class FindComponentDialog extends AbstractDialog {
     String outputTypeSearch = convertToRegexSearchPattern(outputTypeText.getText());
     String projectToSearch = lookInCombo.getText().substring(1);
     m_searchThread = new SearchThread(this, section, fileNameSearch, inputTypeSearch,
-                    outputTypeSearch, projectToSearch, componentHeaders);
+            outputTypeSearch, projectToSearch, componentHeaders);
     cancelButton.setEnabled(true);
     Thread searchThreadThread = new Thread(m_searchThread);
     searchThreadThread.start();

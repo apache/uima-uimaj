@@ -111,7 +111,7 @@ public class AddRemoteServiceDialog extends AbstractDialog {
     public void verifyText(VerifyEvent e) {
       if (0 <= e.text.indexOf('.')) {
         setErrorMessage(MessageFormat.format("invalid character(s): ''{0}''",
-                        new Object[] { e.text }));
+                new Object[] { e.text }));
         e.doit = false;
       } else
         setErrorMessage("");
@@ -120,7 +120,7 @@ public class AddRemoteServiceDialog extends AbstractDialog {
 
   public AddRemoteServiceDialog(AbstractSection aSection, String aRootPath) {
     super(aSection, "Add Remote Service",
-                    "Fill in the information about the remote service and press OK");
+            "Fill in the information about the remote service and press OK");
     rootPath = aRootPath;
   }
 
@@ -131,7 +131,7 @@ public class AddRemoteServiceDialog extends AbstractDialog {
     createWideLabel(composite, "Service kind: Analysis Engine or Cas Consumer:");
 
     aeOrCcCombo = newCCombo(composite,
-                    "Specify whether the Service is an Analysis Engine or a Cas Consumer");
+            "Specify whether the Service is an Analysis Engine or a Cas Consumer");
     aeOrCcCombo.add("AnalysisEngine");
     aeOrCcCombo.add("CasConsumer");
     aeOrCcCombo.select(0);
@@ -163,16 +163,16 @@ public class AddRemoteServiceDialog extends AbstractDialog {
     genFilePathUI.setText(rootPath + ".xml");
 
     createWideLabel(
-                    composite,
-                    "Timeout, in milliseconds.  This is ignored for the Vinci protocol.  Specify 0 to wait forever. If not specified, a default timeout is used.");
+            composite,
+            "Timeout, in milliseconds.  This is ignored for the Vinci protocol.  Specify 0 to wait forever. If not specified, a default timeout is used.");
     timeoutText = new Text(composite, SWT.BORDER);
     timeoutText.setEnabled(false);
 
     createWideLabel(composite,
-                    "For the Vinci protocol, you can optionally specify the Host/Port for the Vinci Name Service");
+            "For the Vinci protocol, you can optionally specify the Host/Port for the Vinci Name Service");
     Composite tc = new2ColumnComposite(composite);
     setTextAndTip(vnsHostLabel = new Label(tc, SWT.NONE), "VNS HOST",
-                    "An IP name or address, e.g. localhost");
+            "An IP name or address, e.g. localhost");
     vnsHostUI = newText(tc, SWT.NONE, "An IP name or address, e.g. localhost");
     setTextAndTip(vnsPortLabel = new Label(tc, SWT.NONE), "VNS PORT", "A port number, e.g. 9000");
     vnsPortUI = newText(tc, SWT.NONE, "A port number, e.g. 9000");
@@ -187,7 +187,7 @@ public class AddRemoteServiceDialog extends AbstractDialog {
     importByNameUI = new Button(composite, SWT.RADIO);
     importByNameUI.setText("Import by Name");
     importByNameUI
-                    .setToolTipText("Importing by name looks up the name on the classpath and datapath.");
+            .setToolTipText("Importing by name looks up the name on the classpath and datapath.");
     importByNameUI.setSelection(true);
 
     importByLocationUI = new Button(composite, SWT.RADIO);
@@ -215,9 +215,9 @@ public class AddRemoteServiceDialog extends AbstractDialog {
     timeoutText.setEnabled(!isVinci);
 
     boolean bEnableOk = (serviceTypeCombo.getText() != null && !serviceTypeCombo.getText().equals(
-                    ""))
-                    && (uriText != null && !uriText.getText().trim().equals(""))
-                    && (keyText != null && !keyText.getText().trim().equals(""));
+            ""))
+            && (uriText != null && !uriText.getText().trim().equals(""))
+            && (keyText != null && !keyText.getText().trim().equals(""));
 
     portNumberIsOK = true;
     if (isVinci && vnsPortUI.getText().length() > 0) {

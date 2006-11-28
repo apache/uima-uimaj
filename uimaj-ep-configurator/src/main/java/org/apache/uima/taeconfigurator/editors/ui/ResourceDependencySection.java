@@ -66,7 +66,7 @@ public class ResourceDependencySection extends AbstractSection {
 
   public ResourceDependencySection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Resource Dependencies",
-                    "Primitives declare what resources they need. A primitive can only bind to one external resource.");
+            "Primitives declare what resources they need. A primitive can only bind to one external resource.");
   }
 
   public void initialize(IManagedForm form) {
@@ -125,15 +125,15 @@ public class ResourceDependencySection extends AbstractSection {
         addPrimitiveToGUI(keys + newKey + "/", aeDescription);
       else {
         for (Iterator it = editor.getDelegateAEdescriptions(aeDescription).entrySet().iterator(); it
-                        .hasNext();) {
+                .hasNext();) {
           Map.Entry item = (Map.Entry) it.next();
           addDelegateToGUI(keys + newKey + "/", (String) item.getKey(), (ResourceSpecifier) item
-                          .getValue());
+                  .getValue());
         }
         FlowControllerDeclaration fcd = getFlowControllerDeclaration();
         if (null != fcd) {
           addPrimitiveToGUI(keys + fcd.getKey() + "/", ((ResourceCreationSpecifier) editor
-                          .getResolvedFlowControllerDeclaration().getSpecifier()));
+                  .getResolvedFlowControllerDeclaration().getSpecifier()));
         }
       }
     }
@@ -159,7 +159,7 @@ public class ResourceDependencySection extends AbstractSection {
 
   private boolean isBound(String key) {
     ExternalResourceBinding[] xrb = editor.getResolvedExternalResourcesAndBindings()
-                    .getExternalResourceBindings();
+            .getExternalResourceBindings();
     if (null != xrb)
       for (int i = 0; i < xrb.length; i++) {
         if (key.equals(xrb[i].getKey()))
@@ -200,7 +200,7 @@ public class ResourceDependencySection extends AbstractSection {
     if (event.widget == addButton) {
       handleAdd();
     } else if (event.widget == removeButton
-                    || (event.type == SWT.KeyUp && event.character == SWT.DEL)) {
+            || (event.type == SWT.KeyUp && event.character == SWT.DEL)) {
       handleRemove();
     } else if (event.widget == editButton || event.type == SWT.MouseDoubleClick) {
       handleEdit();
@@ -258,10 +258,9 @@ public class ResourceDependencySection extends AbstractSection {
   private void handleRemove() {
     TableItem item = table.getSelection()[0];
     editor.getAeDescription().setExternalResourceDependencies(
-                    (ExternalResourceDependency[]) Utility.removeElementFromArray(
-                                    getExternalResourceDependencies(),
-                                    getXRDependencyFromTableItem(item),
-                                    ExternalResourceDependency.class));
+            (ExternalResourceDependency[]) Utility.removeElementFromArray(
+                    getExternalResourceDependencies(), getXRDependencyFromTableItem(item),
+                    ExternalResourceDependency.class));
 
     table.setSelection(table.getSelectionIndices()[0] - 1);
     item.dispose();
@@ -283,7 +282,7 @@ public class ResourceDependencySection extends AbstractSection {
   }
 
   private void alterExistingExternalResourceDependency(ExternalResourceDependency xrd,
-                  AddExternalResourceDependencyDialog dialog) {
+          AddExternalResourceDependencyDialog dialog) {
     valueChanged = false;
     String oldKey = xrd.getKey();
     xrd.setKey(setValueChanged(dialog.keyName, xrd.getKey()));
@@ -300,7 +299,7 @@ public class ResourceDependencySection extends AbstractSection {
   }
 
   private ExternalResourceDependency addNewExternalResourceDependency(
-                  AddExternalResourceDependencyDialog dialog) {
+          AddExternalResourceDependencyDialog dialog) {
     ExternalResourceDependency[] xrds = getExternalResourceDependencies();
 
     ExternalResourceDependency xrd = new ExternalResourceDependency_impl();
@@ -308,7 +307,7 @@ public class ResourceDependencySection extends AbstractSection {
 
     if (null == xrds)
       editor.getAeDescription().setExternalResourceDependencies(
-                      new ExternalResourceDependency[] { xrd });
+              new ExternalResourceDependency[] { xrd });
     else {
       ExternalResourceDependency[] newXrds = new ExternalResourceDependency[xrds.length + 1];
       System.arraycopy(xrds, 0, newXrds, 0, xrds.length);
@@ -338,13 +337,12 @@ public class ResourceDependencySection extends AbstractSection {
       for (int i = 0; i < xrds.length; i++) {
         if (key.equals(xrds[i].getKey())) {
           Utility
-                          .popMessage(
-                                          "Key Already Defined",
-                                          MessageFormat
-                                                          .format(
-                                                                          "The key name you specified, ''{0}'', is already defined.  Please pick a different key name.",
-                                                                          new String[] { key }),
-                                          MessageDialog.ERROR);
+                  .popMessage(
+                          "Key Already Defined",
+                          MessageFormat
+                                  .format(
+                                          "The key name you specified, ''{0}'', is already defined.  Please pick a different key name.",
+                                          new String[] { key }), MessageDialog.ERROR);
           return true;
         }
 

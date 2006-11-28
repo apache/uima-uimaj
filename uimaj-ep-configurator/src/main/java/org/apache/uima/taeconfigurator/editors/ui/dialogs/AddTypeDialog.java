@@ -83,7 +83,7 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
   protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite) super.createDialogArea(parent, existingTd);
     createWideLabel(mainArea,
-                    "Type names must be globally unique, unless you are intentionally redefining another type.");
+            "Type names must be globally unique, unless you are intentionally redefining another type.");
 
     // This part of the form looks like this sketch
     //   
@@ -178,14 +178,14 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
     }
     if (!typeContainedInTypeSystemInfoList(supertypeName, allTypesList)) {
       setErrorMessage("SuperType '" + supertypeName
-                      + "' is unknown. If this is intended, please define it first.");
+              + "' is unknown. If this is intended, please define it first.");
       return false;
     }
     TypeDescription importedType = editor.getImportedTypeSystemDesription().getType(typeName);
     if (null != importedType) {
       if (!supertypeName.equals(importedType.getSupertypeName())) {
         setErrorMessage("The supertype specified must be '" + importedType.getSupertypeName()
-                        + "' due to merging with imported types.  Please change it to this type.");
+                + "' due to merging with imported types.  Please change it to this type.");
         return false;
       }
     }

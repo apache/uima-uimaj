@@ -69,7 +69,7 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
   }
 
   public AddExternalResourceDialog(AbstractSection aSection,
-                  ExternalResourceDescription aExistingXRD) {
+          ExternalResourceDescription aExistingXRD) {
     this(aSection);
     existingXRD = aExistingXRD;
     originalXrName = existingXRD.getName();
@@ -91,24 +91,24 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
     // (optional)
 
     createWideLabel(
-                    composite,
-                    "The first URL field is used to identify the external resource.\nIf both URL fields are used, they form a name by concatenating the first with the document language and then with the second (suffix) URL.\nThe (optional) Implementation specifies a Java class which implements the interface used by the Analysis Engine to access the resource.");
+            composite,
+            "The first URL field is used to identify the external resource.\nIf both URL fields are used, they form a name by concatenating the first with the document language and then with the second (suffix) URL.\nThe (optional) Implementation specifies a Java class which implements the interface used by the Analysis Engine to access the resource.");
 
     Composite twoCol = new2ColumnComposite(composite);
 
     xrNameUI = newLabeledSingleLineStyledText(twoCol, "Name:",
-                    "(Required) The name of this resource; it must be unique in this Analysis Engine.");
+            "(Required) The name of this resource; it must be unique in this Analysis Engine.");
     xrDescriptionUI = newDescription(twoCol, "(Optional) Description of the External Resource");
     xrUrlUI = newLabeledSingleLineStyledText(twoCol, "URL:",
-                    "(Required) A URL for this resource, or the URL prefix if a suffix is being used");
+            "(Required) A URL for this resource, or the URL prefix if a suffix is being used");
     xrUrlSuffixUI = newLabeledSingleLineStyledText(
-                    twoCol,
-                    "URL Suffix",
-                    "(Optional) A URL part that will be suffixed to the prefix with the language being used inserted in-between");
+            twoCol,
+            "URL Suffix",
+            "(Optional) A URL part that will be suffixed to the prefix with the language being used inserted in-between");
     xrImplementationUI = newLabeledSingleLineStyledText(
-                    twoCol,
-                    "Implementation",
-                    "(Optional) The name of a Java class implementing the interface used by the Analysis Engine to access this resource.");
+            twoCol,
+            "Implementation",
+            "(Optional) The name of a Java class implementing the interface used by the Analysis Engine to access this resource.");
     newErrorMessage(twoCol, 2);
 
     if (null != existingXRD) {
@@ -122,8 +122,8 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
         xrUrlSuffixUI.setText(((FileLanguageResourceSpecifier) rs).getFileUrlSuffix());
       } else {
         Utility.popMessage("Unknown resource type", "The resource type '" + rs.getClass().getName()
-                        + "' is unknown.  Editing should be done by hand in the source view.",
-                        MessageDialog.WARNING);
+                + "' is unknown.  Editing should be done by hand in the source view.",
+                MessageDialog.WARNING);
       }
       String impName = existingXRD.getImplementationName();
       xrImplementationUI.setText(convertNull(impName));
@@ -150,7 +150,7 @@ public class AddExternalResourceDialog extends AbstractDialogKeyVerify {
       return true;
 
     if ((event.widget == xrUrlUI || event.widget == xrUrlSuffixUI)
-                    && (event.character == '/' || event.character == ':'))
+            && (event.character == '/' || event.character == ':'))
       return true;
     return false;
   }

@@ -32,7 +32,7 @@ public class ImportResBindSection extends ImportSection {
 
   public ImportResBindSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Imports for External Resources and Bindings",
-                    "The following definitions are included:"); // or ! DESCRIPTION
+            "The following definitions are included:"); // or ! DESCRIPTION
   }
 
   // **************************************
@@ -67,7 +67,7 @@ public class ImportResBindSection extends ImportSection {
     ResourceManagerConfiguration savedRmc = editor.getResolvedExternalResourcesAndBindings();
     if (null != savedRmc)
       savedRmc = (ResourceManagerConfiguration) ((ResourceManagerConfiguration_impl) savedRmc)
-                      .clone();
+              .clone();
     try {
       editor.setResolvedExternalResourcesAndBindings();
     } catch (InvalidXMLException e) {
@@ -84,7 +84,7 @@ public class ImportResBindSection extends ImportSection {
 
   private void revert(ResourceManagerConfiguration rmc) {
     getResourceManagerConfiguration()
-                    .setExternalResourceBindings(rmc.getExternalResourceBindings());
+            .setExternalResourceBindings(rmc.getExternalResourceBindings());
     getResourceManagerConfiguration().setExternalResources(rmc.getExternalResources());
     editor.setResolvedExternalResourcesAndBindings(rmc);
   }

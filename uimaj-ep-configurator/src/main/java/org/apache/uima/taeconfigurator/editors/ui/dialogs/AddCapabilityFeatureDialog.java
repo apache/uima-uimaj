@@ -63,9 +63,9 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
 
   public AddCapabilityFeatureDialog(AbstractSection aSection, Type aSelectedType, Capability c) {
     super(
-                    aSection,
-                    "Specify features input and / or output",
-                    "Designate by mouse clicking one or more features in the Input and/or Output column, to designate as Input and/or Output press \"OK\"");
+            aSection,
+            "Specify features input and / or output",
+            "Designate by mouse clicking one or more features in the Input and/or Output column, to designate as Input and/or Output press \"OK\"");
     selectedType = aSelectedType;
     allFeatures = (Feature[]) selectedType.getFeatures().toArray(featureArray0);
     Arrays.sort(allFeatures);
@@ -97,7 +97,7 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
     TableItem item = new TableItem(table, SWT.NONE);
     item.setText(0, CapabilitySection.ALL_FEATURES);
     TypeOrFeature tof = CapabilitySection.getTypeOrFeature(capability.getInputs(), selectedType
-                    .getName());
+            .getName());
     setChecked(item, 1, null == tof ? false : tof.isAllAnnotatorFeatures());
     tof = CapabilitySection.getTypeOrFeature(capability.getOutputs(), selectedType.getName());
     setChecked(item, 2, null == tof ? false : tof.isAllAnnotatorFeatures());
@@ -129,8 +129,8 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
   protected void toggleValue(TableItem item, int col) {
     if (1 == col && inputNotAllowed) {
       Utility.popMessage("Input not allowed",
-                      "Input not allowed unless the type itself is also marked as an input.",
-                      MessageDialog.ERROR);
+              "Input not allowed unless the type itself is also marked as an input.",
+              MessageDialog.ERROR);
       return;
     }
     super.toggleValue(item, col); // updates numberChecked for this item
@@ -156,7 +156,7 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
     for (int i = table.getItemCount() - 1; i >= 1; i--) {
       TableItem item = table.getItem(i);
       if (item.getText(1).equals(checkedIndicator(1))
-                      || item.getText(2).equals(checkedIndicator(2))) {
+              || item.getText(2).equals(checkedIndicator(2))) {
         names.add(item.getText(0));
         ins.add(Boolean.valueOf(item.getText(1).equals(checkedIndicator(1))));
         outs.add(Boolean.valueOf(item.getText(2).equals(checkedIndicator(2))));

@@ -88,7 +88,7 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
    * @param aExistingTd
    */
   public AddFeatureDialog(AbstractSection aSection, TypeDescription aTd,
-                  FeatureDescription aExistingFd) {
+          FeatureDescription aExistingFd) {
     super(aSection, "Add a Feature", "Use this panel to add or edit a feature");
     typeSection = (TypeSection) aSection;
     td = aTd;
@@ -113,12 +113,12 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
 
     typeFilter = ALL_TYPES;
     featureRangeNameUI = newLabeledTypeInput(twoCol, "Range Type:",
-                    "The range type specifies the type of value this feature can hold.");
+            "The range type specifies the type of value this feature can hold.");
 
     multiRefComposite = new2ColumnComposite(twoCol);
     ((GridData) multiRefComposite.getLayoutData()).horizontalSpan = 2;
     multiRefUI = newLabeledCCombo(multiRefComposite, "References:",
-                    "Specify if this reference is the only reference to the collection object");
+            "Specify if this reference is the only reference to the collection object");
     multiRefUI.add("Not Specified - defaults to multiple references not allowed");
     multiRefUI.add("Multiple references not allowed");
     multiRefUI.add("Multiple references allowed");
@@ -128,7 +128,7 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
     ((GridData) elementTypeComposite.getLayoutData()).horizontalSpan = 2;
     typeFilter = ONLY_NON_PRIMITIVE_TYPES;
     elementRangeNameUI = newLabeledTypeInput(elementTypeComposite, "Element Type:",
-                    "The element type of each element in the Array or List object");
+            "The element type of each element in the Array or List object");
 
     descriptionUI = newDescription(twoCol, S_);
     newErrorMessage(twoCol, 2);
@@ -193,7 +193,7 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
     description = nullIf0lengthString(descriptionUI.getText());
     featureRangeName = featureRangeNameUI.getText();
     multiRef = (1 == multiRefUI.getSelectionIndex()) ? Boolean.FALSE : (2 == multiRefUI
-                    .getSelectionIndex()) ? Boolean.TRUE : null;
+            .getSelectionIndex()) ? Boolean.TRUE : null;
     if (TypeSection.isFSArrayOrListType(featureRangeName)) {
       elementRangeName = elementRangeNameUI.getText();
       if ("".equals(elementRangeName)) {
@@ -227,7 +227,7 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
     }
     if (!typeContainedInTypeSystemInfoList(featureRangeName, allTypesList)) {
       setErrorMessage("RangeType '" + featureRangeName
-                      + "' is unknown. If this is intended, please define it first.");
+              + "' is unknown. If this is intended, please define it first.");
       return false;
     }
     return true;

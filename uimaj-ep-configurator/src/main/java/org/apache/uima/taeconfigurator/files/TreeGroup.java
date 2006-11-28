@@ -58,7 +58,7 @@ import org.eclipse.swt.widgets.Tree;
  * selection-driven interactions are handled within this object
  */
 public class TreeGroup implements ICheckStateListener, SelectionListener,
-                ISelectionChangedListener, ITreeViewerListener {
+        ISelectionChangedListener, ITreeViewerListener {
   Object root;
 
   Object currentTreeSelection;
@@ -111,25 +111,25 @@ public class TreeGroup implements ICheckStateListener, SelectionListener,
    *          int
    */
   public TreeGroup(Composite parent, Object rootObject, ITreeContentProvider treeContentProvider,
-                  ILabelProvider treeLabelProvider, IStructuredContentProvider listContentProvider,
-                  ILabelProvider listLabelProvider, int style, int width, int height) {
+          ILabelProvider treeLabelProvider, IStructuredContentProvider listContentProvider,
+          ILabelProvider listLabelProvider, int style, int width, int height) {
     commonSetup(parent, rootObject, treeContentProvider, treeLabelProvider, listContentProvider,
-                    listLabelProvider, style, width, height);
+            listLabelProvider, style, width, height);
   }
 
   public TreeGroup(Composite parent, Object rootObject, ITreeContentProvider treeContentProvider,
-                  ILabelProvider treeLabelProvider, IStructuredContentProvider listContentProvider,
-                  ILabelProvider listLabelProvider, int style, int width, int height,
-                  boolean aSingleSelectionMode) {
+          ILabelProvider treeLabelProvider, IStructuredContentProvider listContentProvider,
+          ILabelProvider listLabelProvider, int style, int width, int height,
+          boolean aSingleSelectionMode) {
     singleSelectionMode = aSingleSelectionMode;
     commonSetup(parent, rootObject, treeContentProvider, treeLabelProvider, listContentProvider,
-                    listLabelProvider, style, width, height);
+            listLabelProvider, style, width, height);
   }
 
   private void commonSetup(Composite parent, Object rootObject,
-                  ITreeContentProvider aTreeContentProvider, ILabelProvider aTreeLabelProvider,
-                  IStructuredContentProvider aListContentProvider,
-                  ILabelProvider aListLabelProvider, int style, int width, int height) {
+          ITreeContentProvider aTreeContentProvider, ILabelProvider aTreeLabelProvider,
+          IStructuredContentProvider aListContentProvider, ILabelProvider aListLabelProvider,
+          int style, int width, int height) {
     root = rootObject;
     treeContentProvider = aTreeContentProvider;
     listContentProvider = aListContentProvider;
@@ -225,7 +225,7 @@ public class TreeGroup implements ICheckStateListener, SelectionListener,
       boolean checked = checkedStateStore.containsKey(currentElement);
       treeViewer.setChecked(currentElement, checked);
       treeViewer.setGrayed(currentElement, checked
-                      && !whiteCheckedTreeItems.contains(currentElement));
+              && !whiteCheckedTreeItems.contains(currentElement));
     }
   }
 
@@ -502,7 +502,7 @@ public class TreeGroup implements ICheckStateListener, SelectionListener,
     item.setChecked(!item.getChecked());
     listItemChecked(listViewer.getElementAt(selectionIndex), item.getChecked(), true);
     notifyCheckStateChangeListeners(new CheckStateChangedEvent(listViewer, listViewer
-                    .getElementAt(selectionIndex), item.getChecked()));
+            .getElementAt(selectionIndex), item.getChecked()));
   }
 
   public void widgetDefaultSelected(SelectionEvent event) {
@@ -514,7 +514,7 @@ public class TreeGroup implements ICheckStateListener, SelectionListener,
    * Do not try and update the hierarchy if we are building the initial list.
    */
   protected void listItemChecked(Object listElement, // is instance of "File"
-                  boolean state, boolean updatingFromSelection) {
+          boolean state, boolean updatingFromSelection) {
     List checkedListItems = (List) checkedStateStore.get(currentTreeSelection);
 
     if (state) {
@@ -653,7 +653,7 @@ public class TreeGroup implements ICheckStateListener, SelectionListener,
    *          ILabelProvider
    */
   public void setListProviders(IStructuredContentProvider contentProvider,
-                  ILabelProvider labelProvider) {
+          ILabelProvider labelProvider) {
     listViewer.setContentProvider(contentProvider);
     listViewer.setLabelProvider(labelProvider);
   }

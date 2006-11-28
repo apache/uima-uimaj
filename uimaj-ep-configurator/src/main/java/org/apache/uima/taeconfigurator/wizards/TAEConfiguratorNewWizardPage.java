@@ -31,6 +31,6 @@ public class TAEConfiguratorNewWizardPage extends AbstractNewWizardPage {
 
   public TAEConfiguratorNewWizardPage(ISelection selection) {
     super(selection, "big_ae.gif", "Analysis Engine (AE) Descriptor File",
-                    "Create a new AE Descriptor File", "aeDescriptor.xml");
+            "Create a new AE Descriptor File", "aeDescriptor.xml");
   }
 }

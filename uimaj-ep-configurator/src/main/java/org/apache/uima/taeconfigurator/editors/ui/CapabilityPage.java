@@ -37,7 +37,7 @@ public class CapabilityPage extends HeaderPageWithSash {
    */
   protected void createFormContent(IManagedForm managedForm) {
     final Form2Panel form2Panel = setup2ColumnLayout(managedForm, editor.isAggregate() ? 50 : 90,
-                    editor.isAggregate() ? 50 : 10);
+            editor.isAggregate() ? 50 : 10);
     managedForm.getForm().setText("Capabilities: Inputs and Outputs");
     managedForm.addPart(/* inputSection = */new CapabilitySection(editor, form2Panel.left));
     managedForm.addPart(sofaMapSection = new SofaMapSection(editor, form2Panel.right));

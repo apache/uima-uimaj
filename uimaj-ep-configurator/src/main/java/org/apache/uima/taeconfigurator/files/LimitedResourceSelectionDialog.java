@@ -49,11 +49,11 @@ import org.apache.uima.taeconfigurator.Messages;
  * Example:
  * 
  * <pre>
- *  	ResourceSelectionDialog dialog =
- * 		new ResourceSelectionDialog(getShell(), rootResource, msg);
- * 	dialog.setInitialSelections(selectedResources));
- * 	dialog.open();
- * 	return dialog.getResult();
+ *   	ResourceSelectionDialog dialog =
+ *  		new ResourceSelectionDialog(getShell(), rootResource, msg);
+ *  	dialog.setInitialSelections(selectedResources));
+ *  	dialog.open();
+ *  	return dialog.getResult();
  * </pre>
  * 
  * </p>
@@ -162,13 +162,13 @@ public class LimitedResourceSelectionDialog extends SelectionDialog {
 
   protected TreeGroup createTreeGroup(Composite composite, Object rootObject) {
     return new TreeGroup(composite, rootObject, getResourceProvider(IResource.FOLDER
-                    | IResource.PROJECT | IResource.ROOT), WorkbenchLabelProvider
-                    .getDecoratingWorkbenchLabelProvider(), getResourceProvider(IResource.FILE),
-                    WorkbenchLabelProvider.getDecoratingWorkbenchLabelProvider(), SWT.NONE,
-                    // since this page has no other significantly-sized
-                    // widgets we need to hardcode the combined widget's
-                    // size, otherwise it will open too small
-                    SIZING_SELECTION_WIDGET_WIDTH, SIZING_SELECTION_WIDGET_HEIGHT);
+            | IResource.PROJECT | IResource.ROOT), WorkbenchLabelProvider
+            .getDecoratingWorkbenchLabelProvider(), getResourceProvider(IResource.FILE),
+            WorkbenchLabelProvider.getDecoratingWorkbenchLabelProvider(), SWT.NONE,
+            // since this page has no other significantly-sized
+            // widgets we need to hardcode the combined widget's
+            // size, otherwise it will open too small
+            SIZING_SELECTION_WIDGET_WIDTH, SIZING_SELECTION_WIDGET_HEIGHT);
   }
 
   /**

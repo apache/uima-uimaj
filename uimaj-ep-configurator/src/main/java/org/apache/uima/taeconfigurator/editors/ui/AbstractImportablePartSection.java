@@ -37,7 +37,7 @@ public abstract class AbstractImportablePartSection extends AbstractSection {
    * @param description
    */
   public AbstractImportablePartSection(MultiPageEditor aEditor, Composite parent,
-                  String headerText, String description) {
+          String headerText, String description) {
     super(aEditor, parent, headerText, description);
   }
 

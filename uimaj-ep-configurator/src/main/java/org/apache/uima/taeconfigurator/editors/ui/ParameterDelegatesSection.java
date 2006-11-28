@@ -59,10 +59,10 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
 
   public ParameterDelegatesSection(MultiPageEditor editor, Composite parent) {
     super(
-                    editor,
-                    parent,
-                    "Delegate Component Parameters",
-                    "This section shows all delegate components by their Key names, and what parameters they have.\nDouble-click a parameter or a group if you want to specify overrides for these parameters in this aggregate; this will add a default Configuration Parameter in this Aggregate for that parameter, and set the overrides.");
+            editor,
+            parent,
+            "Delegate Component Parameters",
+            "This section shows all delegate components by their Key names, and what parameters they have.\nDouble-click a parameter or a group if you want to specify overrides for these parameters in this aggregate; this will add a default Configuration Parameter in this Aggregate for that parameter, and set the overrides.");
   }
 
   /*
@@ -82,9 +82,9 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
     Composite buttonContainer = new2ColumnComposite(sectionClient);
     ((GridData) buttonContainer.getLayoutData()).grabExcessVerticalSpace = false;
     createOverrideButton = newPushButton(buttonContainer, "Create Override",
-                    "Click here to create a new override for this parameter");
+            "Click here to create a new override for this parameter");
     createNonSharedOverrideButton = newPushButton(buttonContainer, "Create non-shared Override",
-                    "Click here to create a non-shared override for this parameter");
+            "Click here to create a non-shared override for this parameter");
 
     tree.addListener(SWT.MouseDoubleClick, this); // edit gesture
     tree.addListener(SWT.MouseHover, this); // hover
@@ -109,8 +109,8 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
     } else {
       getSection().setText("Delegate Component Parameters");
       getSection()
-                      .setDescription(
-                                      "This section shows all delegate components by their Key names, and what parameters they have.\nDouble-click a parameter or a group if you want to specify overrides for these parameters in this aggregate; this will add a default Configuration Parameter in this Aggregate for that parameter, and set the overrides.");
+              .setDescription(
+                      "This section shows all delegate components by their Key names, and what parameters they have.\nDouble-click a parameter or a group if you want to specify overrides for these parameters in this aggregate; this will add a default Configuration Parameter in this Aggregate for that parameter, and set the overrides.");
 
       cpd = getAnalysisEngineMetaData().getConfigurationParameterDeclarations();
       for (Iterator it = editor.getResolvedDelegates().entrySet().iterator(); it.hasNext();) {
@@ -144,11 +144,11 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
 
   private void addDelegateToGUI(String key, ResourceSpecifier delegate) {
     if (delegate instanceof AnalysisEngineDescription || delegate instanceof CasConsumerDescription
-                    || delegate instanceof FlowControllerDescription) {
+            || delegate instanceof FlowControllerDescription) {
       TreeItem d = new TreeItem(tree, SWT.NONE);
       d.setText(((delegate instanceof FlowControllerDescription) ? FLOWCTLR_HEADER
-                      : DELEGATE_HEADER)
-                      + key);
+              : DELEGATE_HEADER)
+              + key);
       d.setData(key);
       addDelegateGroupsToGUI(d, (ResourceCreationSpecifier) delegate);
       d.setExpanded(true);
@@ -157,7 +157,7 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
 
   private void addDelegateGroupsToGUI(TreeItem parent, ResourceCreationSpecifier delegate) {
     ConfigurationParameterDeclarations cpd1 = delegate.getMetaData()
-                    .getConfigurationParameterDeclarations();
+            .getConfigurationParameterDeclarations();
     // if (delegate instanceof AnalysisEngineDescription)
     // cpd1 = ((AnalysisEngineDescription)delegate)
     // .getAnalysisEngineMetaData().getConfigurationParameterDeclarations();
@@ -255,7 +255,7 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
 
   private void addNewParameter(TreeItem item) {
     addNewParameter(getConfigurationParameterFromTreeItem(item), getConfigGroupFromTreeItem(item
-                    .getParentItem()), getKeyNameFromTreeItem(item.getParentItem().getParentItem()));
+            .getParentItem()), getKeyNameFromTreeItem(item.getParentItem().getParentItem()));
   }
 
   private void addAllParameters(TreeItem[] items) {
@@ -282,10 +282,10 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
     String overrideParmName;
     if (null != (overrideParmName = getOverridingParmName(override, cpd))) {
       Utility.popMessage("Only one override allowed",
-                      "This delegate parameter already is being overridden by '" + overrideParmName
-                                      + "'.  To override "
-                                      + "with a different parameter, first remove this override",
-                      MessageDialog.ERROR);
+              "This delegate parameter already is being overridden by '" + overrideParmName
+                      + "'.  To override "
+                      + "with a different parameter, first remove this override",
+              MessageDialog.ERROR);
       return;
     }
     if (null != (parmInGroup = getSameNamedParmInGroup(parm, group))) {
@@ -302,7 +302,7 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
       }
     } else {
       if (ParameterSection.parameterNameAlreadyDefinedNoMsg(parm.getName(),
-                      getConfigurationParameterDeclarations())) {
+              getConfigurationParameterDeclarations())) {
         // parm names must be unique across this descriptor, even among different groups
         String newName = generateUniqueName(parm.getName());
         parmSection.addParm(newName, parm, group, override);
@@ -323,7 +323,7 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
     if (null != groups)
       for (int i = 0; i < groups.length; i++) {
         if (null != (result = getOverridingParmName(override, groups[i]
-                        .getConfigurationParameters())))
+                .getConfigurationParameters())))
           return result;
       }
     return null;
@@ -385,7 +385,7 @@ public class ParameterDelegatesSection extends AbstractSectionParm {
   }
 
   private ConfigurationParameter getSameNamedParmInGroup(ConfigurationParameter parm,
-                  ConfigGroup group) {
+          ConfigGroup group) {
     ConfigurationParameter[] cps = group.getConfigParms();
     String parmName = parm.getName();
     for (int i = 0; i < cps.length; i++) {

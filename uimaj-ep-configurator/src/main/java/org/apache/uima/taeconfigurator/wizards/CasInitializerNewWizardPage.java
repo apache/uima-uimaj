@@ -31,7 +31,7 @@ public class CasInitializerNewWizardPage extends AbstractNewWizardPage {
 
   public CasInitializerNewWizardPage(ISelection selection) {
     super(selection, "big_ae.gif", "Cas Initializer Descriptor File",
-                    "Create a new Cas Initializer Descriptor file", "casInitializerDescriptor.xml");
+            "Create a new Cas Initializer Descriptor file", "casInitializerDescriptor.xml");
   }
 
 }

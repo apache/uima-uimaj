@@ -85,7 +85,7 @@ public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPrese
    * @see IPresentationDamager#getDamageRegion(ITypedRegion, DocumentEvent, boolean)
    */
   public IRegion getDamageRegion(ITypedRegion partition, DocumentEvent event,
-                  boolean documentPartitioningChanged) {
+          boolean documentPartitioningChanged) {
     if (!documentPartitioningChanged) {
       try {
 
@@ -93,7 +93,7 @@ public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPrese
         int start = Math.max(partition.getOffset(), info.getOffset());
 
         int end = event.getOffset()
-                        + (event.getText() == null ? event.getLength() : event.getText().length());
+                + (event.getText() == null ? event.getLength() : event.getText().length());
 
         if (info.getOffset() <= end && end <= info.getOffset() + info.getLength()) {
           // optimize the case of the same line
@@ -133,6 +133,6 @@ public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPrese
   protected void addRange(TextPresentation presentation, int offset, int length, TextAttribute attr) {
     if (attr != null)
       presentation.addStyleRange(new StyleRange(offset, length, attr.getForeground(), attr
-                      .getBackground(), attr.getStyle()));
+              .getBackground(), attr.getStyle()));
   }
 }

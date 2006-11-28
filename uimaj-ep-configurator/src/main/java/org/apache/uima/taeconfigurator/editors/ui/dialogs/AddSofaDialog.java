@@ -68,7 +68,7 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
    * @param aExistingTd
    */
   public AddSofaDialog(AbstractSection aSection, Capability c, String aExistingSofa,
-                  boolean aIsInput) {
+          boolean aIsInput) {
     this(aSection, c);
     existingSofa = aExistingSofa;
     existingIsInput = aIsInput;
@@ -76,12 +76,10 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
 
   protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite) super.createDialogArea(parent, existingSofa);
-    createWideLabel(
-                    mainArea,
-                    "Sofa names must be unique within a Capability Set, and are"
-                                    + " simple names without name spaces (no dots in the name).\n\n"
-                                    + "Type the name in the box below, and specify if it is an input Sofa\n"
-                                    + "(created outside of this component), or an output Sofa (created by this component).");
+    createWideLabel(mainArea, "Sofa names must be unique within a Capability Set, and are"
+            + " simple names without name spaces (no dots in the name).\n\n"
+            + "Type the name in the box below, and specify if it is an input Sofa\n"
+            + "(created outside of this component), or an output Sofa (created by this component).");
 
     // This part of the form looks like this sketch
     //   
@@ -105,7 +103,7 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
     io.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     inputButton = newButton(io, SWT.RADIO, "Input", "Click here to specify this Sofa is an input.");
     outputButton = newButton(io, SWT.RADIO, "Output",
-                    "Click here to specify this Sofa as an output.");
+            "Click here to specify this Sofa as an output.");
     inputButton.setSelection(true);
     outputButton.setSelection(false);
 
@@ -137,8 +135,8 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
     if (sofaName.length() == 0)
       return false;
     if (!sofaName.equals(originalSofa) || // true for adding new sofa, or sofa name changed on edit
-                    isInput != existingIsInput) { // true if input / output switched for editing
-                                                  // sofa, not changed name
+            isInput != existingIsInput) { // true if input / output switched for editing
+      // sofa, not changed name
       String errMsg = checkDuplSofaName();
       if (null != errMsg) {
         setErrorMessage(errMsg);
@@ -167,14 +165,14 @@ public class AddSofaDialog extends AbstractDialogKeyVerify {
         for (int j = 0; j < sofaNames.length; j++) {
           if (sofaName.equals(sofaNames[j]))
             return "This name exists as an " + (isInput ? "output" : "input")
-                            + " in some capability set.  Please choose another name, or "
-                            + "switch the input/output specification to the opposite setting.";
+                    + " in some capability set.  Please choose another name, or "
+                    + "switch the input/output specification to the opposite setting.";
         }
     }
     // check for duplicates in this capability
     if (!sofaName.equals(originalSofa)) { // means adding new sofa or changing name of existing one
       if (checkDuplSofaName1(sofaName, capability.getInputSofas())
-                      || checkDuplSofaName1(sofaName, capability.getOutputSofas()))
+              || checkDuplSofaName1(sofaName, capability.getOutputSofas()))
         return "This name already in use; please choose a different name.";
     }
     return null;

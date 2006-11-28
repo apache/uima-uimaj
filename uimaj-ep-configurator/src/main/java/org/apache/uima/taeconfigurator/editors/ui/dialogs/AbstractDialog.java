@@ -245,7 +245,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     Composite buttonContainer = new Composite(parent, SWT.NONE);
     buttonContainer.setLayout(new GridLayout());
     buttonContainer.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING
-                    | GridData.HORIZONTAL_ALIGN_FILL));
+            | GridData.HORIZONTAL_ALIGN_FILL));
     return buttonContainer;
   }
 
@@ -253,7 +253,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     Button button = new Button(parent, SWT.PUSH);
     button.setText(label);
     button.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING
-                    | GridData.HORIZONTAL_ALIGN_FILL));
+            | GridData.HORIZONTAL_ALIGN_FILL));
     // button.pack();
     button.setToolTipText(tip);
     button.addListener(SWT.Selection, this);
@@ -343,9 +343,9 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
   protected Text newTypeInput(Composite twoCol) {
     Composite tc = new2ColumnComposite(twoCol);
     final Text text = newText(tc, SWT.NONE,
-                    "Enter a Type name. Content Assist is available (press Ctrl + Space)");
+            "Enter a Type name. Content Assist is available (press Ctrl + Space)");
     final ArrayList candidatesToPickFrom = getTypeSystemInfoList(); // provide an ArrayList of
-                                                                    // ITypeSystemInfo
+    // ITypeSystemInfo
     Button browseButton = newPushButton(tc, "Browse", "Click here to browse possible types");
     browseButton.removeListener(SWT.Selection, this);
     browseButton.addListener(SWT.Selection, new Listener() {
@@ -353,7 +353,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
         errorMessageUI.setText("");
         ArrayList typeList = candidatesToPickFrom;
         OpenTypeSystemSelectionDialog dialog = new OpenTypeSystemSelectionDialog(getShell(),
-                        typeList);
+                typeList);
         if (dialog.open() != IDialogConstants.OK_ID)
           return;
         Object[] types = dialog.getResult();
@@ -365,7 +365,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
       }
     });
     TypeSystemCompletionProcessor processor = new TypeSystemCompletionProcessor(
-                    candidatesToPickFrom);
+            candidatesToPickFrom);
     ControlContentAssistHelper.createTextContentAssistant(text, processor);
     text.addListener(SWT.KeyDown, new Listener() {
       public void handleEvent(Event e) {

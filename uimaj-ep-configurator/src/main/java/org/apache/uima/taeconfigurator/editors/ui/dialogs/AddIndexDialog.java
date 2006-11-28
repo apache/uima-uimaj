@@ -119,10 +119,10 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
     Composite twoCol = new2ColumnComposite(mainArea);
 
     indexNameUI = newLabeledSingleLineStyledText(twoCol, "Index Name:",
-                    "The globally unique index name");
+            "The globally unique index name");
 
     indexKindUI = newLabeledCCombo(twoCol, "Index Kind:",
-                    "Specify the kind of index - sorted, set, or bag");
+            "Specify the kind of index - sorted, set, or bag");
     indexKindUI.add("sorted");
     indexKindUI.add("bag");
     indexKindUI.add("set");
@@ -131,9 +131,9 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
     indexTypeUI = newTypeInput(twoCol);
 
     setTextAndTip(
-                    keyTable = new Label(twoCol, SWT.NONE),
-                    "Index Keys:",
-                    "For Set and Sorted index kinds, specify the keys; for Sorted indexes specify also the sort direction.");
+            keyTable = new Label(twoCol, SWT.NONE),
+            "Index Keys:",
+            "For Set and Sorted index kinds, specify the keys; for Sorted indexes specify also the sort direction.");
     tableContainer = new2ColumnComposite(twoCol);
     table = newTable(tableContainer, SWT.SINGLE | SWT.FULL_SELECTION);
     table.setHeaderVisible(true);
@@ -170,7 +170,7 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
     section.packTable(table);
     indexKindUI.addListener(SWT.Modify, this);
     boolean showKeys = "sorted".equals(indexKindUI.getText())
-                    || "set".equals(indexKindUI.getText());
+            || "set".equals(indexKindUI.getText());
     tableContainer.setVisible(showKeys);
     keyTable.setVisible(showKeys);
     return mainArea;
@@ -201,25 +201,25 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
     } else {
       item.setText(0, key.getFeatureName());
       item.setText(1, key.getComparator() == FSIndexComparator.STANDARD_COMPARE ? STANDARD
-                      : REVERSE);
+              : REVERSE);
     }
   }
 
   public void handleEvent(Event event) {
     if (event.widget == indexKindUI) {
       boolean showKeys = "sorted".equals(indexKindUI.getText())
-                      || "set".equals(indexKindUI.getText());
+              || "set".equals(indexKindUI.getText());
       tableContainer.setVisible(showKeys);
       keyTable.setVisible(showKeys);
     } else if (event.widget == addButton) {
       AddIndexKeyDialog dialog = new AddIndexKeyDialog(section, indexTypeUI.getText(), indexKindUI
-                      .getText(), alreadyDefined(table.getItems()));
+              .getText(), alreadyDefined(table.getItems()));
       addKey(indexSection.addOrEditIndexKey(dialog, null));
       section.packTable(table);
     } else if (event.widget == editButton || event.type == SWT.MouseDoubleClick) {
       TableItem item = table.getItem(table.getSelectionIndex());
       AddIndexKeyDialog dialog = new AddIndexKeyDialog(section, indexTypeUI.getText(), indexKindUI
-                      .getText(), alreadyDefined(table.getItems()), makeKey(item));
+              .getText(), alreadyDefined(table.getItems()), makeKey(item));
       FsIndexKeyDescription key = indexSection.addOrEditIndexKey(dialog, null);
       updateKey(item, key);
       section.packTable(table);
@@ -265,13 +265,13 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
 
   private FsIndexKeyDescription makeKey(TableItem item) {
     FsIndexKeyDescription key = UIMAFramework.getResourceSpecifierFactory()
-                    .createFsIndexKeyDescription();
+            .createFsIndexKeyDescription();
     boolean typePriority = TYPE_PRIORITY.equals(item.getText(1));
     key.setTypePriority(typePriority);
     if (!typePriority) {
       key.setFeatureName(item.getText(0));
       key.setComparator(STANDARD.equals(item.getText(1)) ? FSIndexComparator.STANDARD_COMPARE
-                      : FSIndexComparator.REVERSE_STANDARD_COMPARE);
+              : FSIndexComparator.REVERSE_STANDARD_COMPARE);
     }
     return key;
   }
@@ -281,7 +281,7 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
       return false;
     if (!indexName.equals(originalIndexName) && indexSection.isDuplicateIndexLabel(indexName)) {
       errorMessageUI
-                      .setText("The name on this index duplicates anexisting name.  Please specify a globally unique name.");
+              .setText("The name on this index duplicates anexisting name.  Please specify a globally unique name.");
       return false;
     }
     return true;

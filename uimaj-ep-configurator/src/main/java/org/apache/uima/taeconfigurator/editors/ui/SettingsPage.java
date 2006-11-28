@@ -42,7 +42,7 @@ public class SettingsPage extends HeaderPageWithSash {
 
     managedForm.getForm().setText("Parameter Settings");
     managedForm.addPart(parameterSettingsSection = new ParameterSettingsSection(editor,
-                    form2Panel.left));
+            form2Panel.left));
     managedForm.addPart(valueSection = new ValueSection(editor, form2Panel.right));
     createToolBarActions(managedForm);
   }

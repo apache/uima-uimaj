@@ -36,7 +36,7 @@ import org.apache.uima.typesystem.StringMatcher;
 import org.apache.uima.typesystem.TypeSystemInfoLabelProvider;
 
 public class TypeSystemCompletionProcessor implements IContentAssistProcessor,
-                ISubjectControlContentAssistProcessor {
+        ISubjectControlContentAssistProcessor {
 
   private String fErrorMessage;
 
@@ -122,7 +122,7 @@ public class TypeSystemCompletionProcessor implements IContentAssistProcessor,
    *      int)
    */
   public IContextInformation[] computeContextInformation(
-                  IContentAssistSubjectControl contentAssistSubjectControl, int documentOffset) {
+          IContentAssistSubjectControl contentAssistSubjectControl, int documentOffset) {
     return null;
   }
 
@@ -131,7 +131,7 @@ public class TypeSystemCompletionProcessor implements IContentAssistProcessor,
    *      int)
    */
   public ICompletionProposal[] computeCompletionProposals(
-                  IContentAssistSubjectControl contentAssistSubjectControl, int documentOffset) {
+          IContentAssistSubjectControl contentAssistSubjectControl, int documentOffset) {
     String input = contentAssistSubjectControl.getDocument().get();
     if (documentOffset == 0)
       return null;
@@ -169,37 +169,37 @@ public class TypeSystemCompletionProcessor implements IContentAssistProcessor,
           String replacementString = tsi.getPackageName();
           String displayString = tsi.getPackageName();
           packageMatchProposalsList.add(new CompletionProposal(replacementString, 0,
-                          replacementLength, replacementString.length(),
-                          TypeSystemInfoLabelProvider.PKG_ICON, displayString, null, null));
+                  replacementLength, replacementString.length(),
+                  TypeSystemInfoLabelProvider.PKG_ICON, displayString, null, null));
         }
         if (fMatcher.match(tsi.getFullName())) {
           String replacementString = tsi.getFullName();
           String displayString = tsi.getName() + " - " + tsi.getPackageName();
           fullNameMatchProposalsList.add(new CompletionProposal(replacementString, 0,
-                          replacementLength, replacementString.length(),
-                          TypeSystemInfoLabelProvider.CLASS_ICON, displayString, null, null));
+                  replacementLength, replacementString.length(),
+                  TypeSystemInfoLabelProvider.CLASS_ICON, displayString, null, null));
         }
         if (fMatcher.match(tsi.getName())) {
           String replacementString = tsi.getFullName();
           String displayString = tsi.getName() + " - " + tsi.getPackageName();
           classMatchProposalsList.add(new CompletionProposal(replacementString, 0,
-                          replacementLength, replacementString.length(),
-                          TypeSystemInfoLabelProvider.CLASS_ICON, displayString, null, null));
+                  replacementLength, replacementString.length(),
+                  TypeSystemInfoLabelProvider.CLASS_ICON, displayString, null, null));
         }
       }
       ICompletionProposal[] packageMatchProposals = (CompletionProposal[]) packageMatchProposalsList
-                      .toArray(new CompletionProposal[packageMatchProposalsList.size()]);
+              .toArray(new CompletionProposal[packageMatchProposalsList.size()]);
       ICompletionProposal[] fullNameMatchProposals = (CompletionProposal[]) fullNameMatchProposalsList
-                      .toArray(new CompletionProposal[fullNameMatchProposalsList.size()]);
+              .toArray(new CompletionProposal[fullNameMatchProposalsList.size()]);
       ICompletionProposal[] classMatchProposals = (CompletionProposal[]) classMatchProposalsList
-                      .toArray(new CompletionProposal[classMatchProposalsList.size()]);
+              .toArray(new CompletionProposal[classMatchProposalsList.size()]);
 
       Arrays.sort(packageMatchProposals, fComparator);
       Arrays.sort(fullNameMatchProposals, fComparator);
       Arrays.sort(classMatchProposals, fComparator);
 
       proposals = new ICompletionProposal[packageMatchProposals.length
-                      + fullNameMatchProposals.length + classMatchProposals.length];
+              + fullNameMatchProposals.length + classMatchProposals.length];
       for (int i = 0; i < packageMatchProposals.length; i++)
         proposals[i] = packageMatchProposals[i];
       for (int i = 0; i < fullNameMatchProposals.length; i++)

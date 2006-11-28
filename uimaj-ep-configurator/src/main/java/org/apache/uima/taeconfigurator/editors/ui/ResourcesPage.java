@@ -54,7 +54,7 @@ public class ResourcesPage extends HeaderPageWithSash {
     managedForm.addPart(extnlResBindSection = new ExtnlResBindSection(editor, form2panel.left));
     managedForm.addPart(resBindImportSection = new ImportResBindSection(editor, form2panel.left));
     managedForm.addPart(resourceDependencySection = new ResourceDependencySection(editor,
-                    form2panel.right));
+            form2panel.right));
     createToolBarActions(managedForm);
   }
 

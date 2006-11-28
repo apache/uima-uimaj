@@ -68,7 +68,7 @@ public class PrimitiveSection extends AbstractSection {
    */
   public PrimitiveSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Runtime Information",
-                    "This section describes information about how to run this component");
+            "This section describes information about how to run this component");
   }
 
   public void initialize(IManagedForm form) {
@@ -78,18 +78,18 @@ public class PrimitiveSection extends AbstractSection {
     enableBorders(sectionClient);
 
     modifiesCas = newCheckBox(sectionClient, "updates the CAS",
-                    "check this if this component updates the CAS");
+            "check this if this component updates the CAS");
     spacer(sectionClient);
     if (isAeDescriptor() || isCasConsumerDescriptor() || isFlowControllerDescriptor()) {
       multipleDeploymentAllowed = newCheckBox(sectionClient, "multiple deployment allowed",
-                      "check this to allow multiple instances of this engine to be deployed that can run in parallel");
+              "check this to allow multiple instances of this engine to be deployed that can run in parallel");
       spacer(sectionClient);
     }
     if (isAeDescriptor()) {
       outputsNewCASes = newCheckBox(sectionClient, "Outputs new CASes",
-                      "check this for primitive components that output new CASes, "
-                                      + "or for aggregates which contain a CAS Multiplier, "
-                                      + "where the new CASes are returned out of the aggregate.");
+              "check this for primitive components that output new CASes, "
+                      + "or for aggregates which contain a CAS Multiplier, "
+                      + "where the new CASes are returned out of the aggregate.");
       spacer(sectionClient);
     }
 
@@ -172,11 +172,10 @@ public class PrimitiveSection extends AbstractSection {
 
         } else {
           SelectionDialog typeDialog = JavaUI.createTypeDialog(getSection().getShell(), editor
-                          .getEditorSite().getWorkbenchWindow(), editor
-                          .getSearchScopeForDescriptorType(),
-                          IJavaElementSearchConstants.CONSIDER_CLASSES, false, "*");
+                  .getEditorSite().getWorkbenchWindow(), editor.getSearchScopeForDescriptorType(),
+                  IJavaElementSearchConstants.CONSIDER_CLASSES, false, "*");
           typeDialog.setTitle(MessageFormat.format("Choose the {0} implementation class",
-                          new Object[] { editor.descriptorTypeString() }));
+                  new Object[] { editor.descriptorTypeString() }));
           typeDialog.setMessage("Filter/mask:");
           if (typeDialog.open() == Window.CANCEL)
             return;
@@ -196,14 +195,14 @@ public class PrimitiveSection extends AbstractSection {
       ops.setModifiesCas(setValueChangedBoolean(modifiesCas.getSelection(), ops.getModifiesCas()));
     } else if (event.widget == multipleDeploymentAllowed) {
       ops.setMultipleDeploymentAllowed(setValueChangedBoolean(multipleDeploymentAllowed
-                      .getSelection(), ops.isMultipleDeploymentAllowed()));
+              .getSelection(), ops.isMultipleDeploymentAllowed()));
     } else if (event.widget == outputsNewCASes) {
       ops.setOutputsNewCASes(setValueChangedBoolean(outputsNewCASes.getSelection(), ops
-                      .getOutputsNewCASes()));
+              .getOutputsNewCASes()));
     } else if (event.widget == implName) {
       editor.getAeDescription().setAnnotatorImplementationName(
-                      setValueChanged(implName.getText(), editor.getAeDescription()
-                                      .getAnnotatorImplementationName()));
+              setValueChanged(implName.getText(), editor.getAeDescription()
+                      .getAnnotatorImplementationName()));
     }
     if (valueChanged)
       editor.setFileDirty();

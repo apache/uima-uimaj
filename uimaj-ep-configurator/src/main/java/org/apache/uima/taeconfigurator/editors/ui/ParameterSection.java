@@ -177,7 +177,7 @@ public class ParameterSection extends AbstractSectionParm {
    */
   public ParameterSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Configuration Parameters",
-                    "This section shows all configuration parameters defined for this engine.");
+            "This section shows all configuration parameters defined for this engine.");
   }
 
   // This page shows the configuration parameters
@@ -208,7 +208,7 @@ public class ParameterSection extends AbstractSectionParm {
     Composite sectionClient = newComposite(getSection());
 
     usingGroupsButton = newCheckBox(sectionClient, "Use Parameter Groups",
-                    "Check this box if Groups are being used with Parameters");
+            "Check this box if Groups are being used with Parameters");
 
     groupingControl = new2ColumnComposite(sectionClient);
     ((GridData) groupingControl.getLayoutData()).grabExcessVerticalSpace = false;
@@ -216,7 +216,7 @@ public class ParameterSection extends AbstractSectionParm {
     toolkit.paintBordersFor(groupingControl);
 
     defaultGroup = newLabeledTextField(groupingControl, "Default Group",
-                    "Specify the name of the default group.");
+            "Specify the name of the default group.");
     newLabelWithData(groupingControl, "SearchStrategy");
     searchStrategy = newCComboWithTip(groupingControl, "SearchStrategyToolTip");
     searchStrategy.add("language_fallback");
@@ -237,7 +237,7 @@ public class ParameterSection extends AbstractSectionParm {
     Composite buttonContainer = newButtonContainer(tableContainer);
     addButton = newPushButton(buttonContainer, S_ADD, "Click here to add a new parameter");
     addGroupButton = newPushButton(buttonContainer, "AddGroup",
-                    "Click here to add a group specification.  A group specification names one or more group names.");
+            "Click here to add a group specification.  A group specification names one or more group names.");
     editButton = newPushButton(buttonContainer, S_EDIT, S_EDIT_TIP);
     removeButton = newPushButton(buttonContainer, S_REMOVE, S_REMOVE_TIP);
 
@@ -260,7 +260,7 @@ public class ParameterSection extends AbstractSectionParm {
     cpd = getAnalysisEngineMetaData().getConfigurationParameterDeclarations();
 
     if ((firstTime && isParmGroup()) || isAggregate()
-                    || (!firstTime && usingGroupsButton.getSelection())) {
+            || (!firstTime && usingGroupsButton.getSelection())) {
       usingGroupsButton.setSelection(true);
       groupingControl.setVisible(true);
 
@@ -283,7 +283,7 @@ public class ParameterSection extends AbstractSectionParm {
     // sync settings page to catch use case of switching from sourceEditor
     // to this page after having shown settings page - may be out of date
     ParameterSettingsSection settingsSection = editor.getSettingsPage()
-                    .getParameterSettingsSection();
+            .getParameterSettingsSection();
 
     if (null != settingsSection) {
       setSettings(settingsSection);
@@ -305,10 +305,10 @@ public class ParameterSection extends AbstractSectionParm {
       if (usingGroupsButton.getSelection()) {
       } else {
         if (Window.CANCEL == Utility
-                        .popOkCancel(
-                                        "Confirm Remove Groups",
-                                        "This action will delete any group information that may be present in this descriptor.  Proceed?",
-                                        MessageDialog.WARNING)) {
+                .popOkCancel(
+                        "Confirm Remove Groups",
+                        "This action will delete any group information that may be present in this descriptor.  Proceed?",
+                        MessageDialog.WARNING)) {
           usingGroupsButton.setSelection(true);
           return;
         }
@@ -335,10 +335,10 @@ public class ParameterSection extends AbstractSectionParm {
         setFileDirty();
     } else if (event.widget == addGroupButton) {
       CommonInputDialog dialog = new CommonInputDialog(
-                      this,
-                      "Add Group",
-                      "Specify one or more unique group names, separated by 1 space character, and press OK",
-                      CommonInputDialog.GROUP_NAMES);
+              this,
+              "Add Group",
+              "Specify one or more unique group names, separated by 1 space character, and press OK",
+              CommonInputDialog.GROUP_NAMES);
 
       for (;;) { // stay in loop until get "true" return from add below
         // used for looping while group name set is duplicate
@@ -359,12 +359,12 @@ public class ParameterSection extends AbstractSectionParm {
       if (!valid) {
         if (isPrimitive())
           Utility.popMessage("Wrong item selected",
-                          "Please first select the group under which to add a parameter",
-                          MessageDialog.ERROR);
+                  "Please first select the group under which to add a parameter",
+                  MessageDialog.ERROR);
         else
           Utility.popMessage("Wrong item selected",
-                          "Please first select the parameter under which to add an override",
-                          MessageDialog.ERROR);
+                  "Please first select the parameter under which to add an override",
+                  MessageDialog.ERROR);
         return;
       }
 
@@ -393,7 +393,7 @@ public class ParameterSection extends AbstractSectionParm {
       TreeItem editItem = tree.getSelection()[0];
       if (isParameter(editItem) && isPrimitive()) {
         AddParameterDialog dialog = new AddParameterDialog(this,
-                        getCorrespondingModelParm(editItem));
+                getCorrespondingModelParm(editItem));
         if (dialog.open() == Window.CANCEL)
           return;
 
@@ -422,10 +422,10 @@ public class ParameterSection extends AbstractSectionParm {
           return; // can't change the name of these groups
 
         CommonInputDialog dialog = new CommonInputDialog(
-                        this,
-                        "Edit group",
-                        "Specify one or more unique group names, separated by 1 space character, and press OK",
-                        CommonInputDialog.GROUP_NAMES, groupNames);
+                this,
+                "Edit group",
+                "Specify one or more unique group names, separated by 1 space character, and press OK",
+                CommonInputDialog.GROUP_NAMES, groupNames);
 
         for (;;) {
           if (dialog.open() == Window.CANCEL)
@@ -437,7 +437,7 @@ public class ParameterSection extends AbstractSectionParm {
         commonActionFinishDirtyIfChange();
       }
     } else if ((event.widget == removeButton)
-                    || (event.widget == tree && event.type == SWT.KeyUp && event.character == SWT.DEL)) {
+            || (event.widget == tree && event.type == SWT.KeyUp && event.character == SWT.DEL)) {
 
       // handle remove - of all selected items
       // if a group is selected, removing the group also removes all the parms in the group
@@ -475,12 +475,11 @@ public class ParameterSection extends AbstractSectionParm {
     // only picks one override key - but code is from earlier design where multiple keys were
     // possible
     PickOverrideKeysAndParmName dialog = new PickOverrideKeysAndParmName(getSection().getShell(),
-                    delegateMap, "Override Keys and Parameter Name Selection", cp, cpd,
-                    overrideIndex == -1);
+            delegateMap, "Override Keys and Parameter Name Selection", cp, cpd, overrideIndex == -1);
 
     dialog.setTitle("Delegate Keys and Parameter Name Selection");
     dialog
-                    .setMessage("Select the override key path from the left panel, and the overridden parameter from the right panel.\nOnly valid parameters will be shown.");
+            .setMessage("Select the override key path from the left panel, and the overridden parameter from the right panel.\nOnly valid parameters will be shown.");
     if (dialog.open() == Window.CANCEL)
       return;
     Object[] keysAndParms = dialog.getResult();
@@ -501,7 +500,7 @@ public class ParameterSection extends AbstractSectionParm {
       // cloned array
       valueChanged = false;
       String overrideSpec = keyNames.append('/').append((String) ((Object[]) keysAndParms[1])[0])
-                      .toString();
+              .toString();
       // updateOneOverride(cp, overrideIndex, dialog.overrideSpec);
       if (overrideIndex < 0) {
         addOverride(cp, overrideSpec);
@@ -530,16 +529,16 @@ public class ParameterSection extends AbstractSectionParm {
       if (isGroup[i]) {
         if (NOT_IN_ANY_GROUP.equals(namesToRemove[i]))
           msgGroup
-                          .append("\nThis action removes all parameter descriptions in the <Not in any group> section.");
+                  .append("\nThis action removes all parameter descriptions in the <Not in any group> section.");
         else {
           if (i > 0)
             msgGroup.append(", ");
           else if (COMMON_GROUP.equals(namesToRemove[i]))
             msgGroup
-                            .append("\nThis action removes all parameter descriptions in the <Common> section.");
+                    .append("\nThis action removes all parameter descriptions in the <Common> section.");
           else
             msgGroup
-                            .append("\nGroups being removed, together with their parameter definitions defined here: \n");
+                    .append("\nGroups being removed, together with their parameter definitions defined here: \n");
           if (!COMMON_GROUP.equals(namesToRemove[i]))
             msgGroup.append(namesToRemove[i]);
         }
@@ -560,10 +559,9 @@ public class ParameterSection extends AbstractSectionParm {
     }
 
     if (giveWarningMsg
-                    && Window.CANCEL == Utility.popOkCancel("Confirm Remove",
-                                    "Please confirm remove, or Cancel.\n" + msgGroup.toString()
-                                                    + msg.toString() + oMsg.toString(),
-                                    MessageDialog.WARNING))
+            && Window.CANCEL == Utility.popOkCancel("Confirm Remove",
+                    "Please confirm remove, or Cancel.\n" + msgGroup.toString() + msg.toString()
+                            + oMsg.toString(), MessageDialog.WARNING))
       return false;
 
     // loop thru all things being removed, and remove them
@@ -593,14 +591,14 @@ public class ParameterSection extends AbstractSectionParm {
     String parentGroupName = getName(parentItem.getText());
     if (parentGroupName.equals(NOT_IN_ANY_GROUP))
       cpd.setConfigurationParameters(removeConfigurationParameter(cpd.getConfigurationParameters(),
-                      nameToRemove));
+              nameToRemove));
     else if (parentGroupName.equals(COMMON_GROUP))
       cpd.setCommonParameters(commonParms = removeConfigurationParameter(cpd.getCommonParameters(),
-                      nameToRemove));
+              nameToRemove));
     else {
       cg = getConfigurationGroup(parentGroupName);
       cg.setConfigurationParameters(removeConfigurationParameter(cg.getConfigurationParameters(),
-                      nameToRemove));
+              nameToRemove));
 
     }
     removeParmSettingFromMultipleGroups(itemToRemove, REMOVE_FROM_GUI);
@@ -640,7 +638,7 @@ public class ParameterSection extends AbstractSectionParm {
   }
 
   public void addParm(String name, ConfigurationParameter modelParm, ConfigGroup group,
-                  String override) {
+          String override) {
     TreeItem parentGroup = getTreeItemGroup(group);
     AddParameterDialog dialog = new AddParameterDialog(this);
     dialog.parmName = name;
@@ -667,13 +665,13 @@ public class ParameterSection extends AbstractSectionParm {
   }
 
   private ConfigurationGroup[] removeConfigurationGroup(ConfigurationGroup[] groups,
-                  ConfigurationGroup cg) {
+          ConfigurationGroup cg) {
     return (ConfigurationGroup[]) Utility.removeElementFromArray(groups, cg,
-                    ConfigurationGroup.class);
+            ConfigurationGroup.class);
   }
 
   private ConfigurationParameter[] removeConfigurationParameter(ConfigurationParameter[] parms,
-                  String nameToRemove) {
+          String nameToRemove) {
     ConfigurationParameter[] newParms = new ConfigurationParameter[parms.length - 1];
     for (int i = 0, j = 0; i < newParms.length; i++, j++) {
       if (parms[j].getName().equals(nameToRemove))
@@ -745,8 +743,8 @@ public class ParameterSection extends AbstractSectionParm {
     // shouldn't be defined more than once
     if (groupNameAlreadyDefined(newGroupNames)) {
       Utility.popMessage("Group Already Defined",
-                      "This set of group names has already been defined." + "\n\nGroup: " + names,
-                      MessageDialog.ERROR);
+              "This set of group names has already been defined." + "\n\nGroup: " + names,
+              MessageDialog.ERROR);
       return false;
     }
 
@@ -878,7 +876,7 @@ public class ParameterSection extends AbstractSectionParm {
   }
 
   private void alterExistingConfigurationParameter(AddParameterDialog dialog,
-                  TreeItem existingTreeItem) {
+          TreeItem existingTreeItem) {
     ConfigurationParameter existingCP = getCorrespondingModelParm(existingTreeItem);
     ConfigurationParameter previousCP = existingCP;
     previousCP = (ConfigurationParameter) previousCP.clone();
@@ -895,7 +893,7 @@ public class ParameterSection extends AbstractSectionParm {
     // If the name changes, change existing settings for that parm name in all groups
 
     if ((!previousCP.getType().equals(existingCP.getType()))
-                    || (previousCP.isMultiValued() != existingCP.isMultiValued())) {
+            || (previousCP.isMultiValued() != existingCP.isMultiValued())) {
       removeParmSettingFromMultipleGroups(existingTreeItem, !REMOVE_FROM_GUI);
     }
 
@@ -903,7 +901,7 @@ public class ParameterSection extends AbstractSectionParm {
   }
 
   private void commonParmUpdate(TreeItem existingTreeItem, ConfigurationParameter existingCP,
-                  String prevName) {
+          String prevName) {
     updateParmInSettingsGUI(existingCP, existingTreeItem, prevName);
 
     String newName = existingCP.getName();
@@ -913,7 +911,7 @@ public class ParameterSection extends AbstractSectionParm {
       String[] allGroupNames = new String[] { null };
       if (usingGroupsButton.getSelection()) {
         allGroupNames = (String[]) Utility
-                        .addElementToArray(getAllGroupNames(), null, String.class);
+                .addElementToArray(getAllGroupNames(), null, String.class);
       }
       Object value;
 
@@ -937,11 +935,10 @@ public class ParameterSection extends AbstractSectionParm {
     valueChanged = false;
     existingCP.setName(setValueChanged(dialog.parmName, existingCP.getName()));
     existingCP.setDescription(setValueChanged(multiLineFix(dialog.description), existingCP
-                    .getDescription()));
+            .getDescription()));
     existingCP.setMandatory(setValueChangedBoolean(dialog.mandatory, existingCP.isMandatory()));
     existingCP
-                    .setMultiValued(setValueChangedBoolean(dialog.multiValue, existingCP
-                                    .isMultiValued()));
+            .setMultiValued(setValueChangedBoolean(dialog.multiValue, existingCP.isMultiValued()));
     existingCP.setType(setValueChanged(dialog.parmType, existingCP.getType()));
     if (valueChanged)
       setFileDirty();
@@ -956,7 +953,7 @@ public class ParameterSection extends AbstractSectionParm {
    * @return
    */
   private ConfigurationParameter addNewConfigurationParameter(AddParameterDialog dialog,
-                  TreeItem group) {
+          TreeItem group) {
     ConfigurationParameter newCP = new ConfigurationParameter_impl();
     fillModelParm(dialog, newCP);
 
@@ -1000,7 +997,7 @@ public class ParameterSection extends AbstractSectionParm {
   }
 
   private ConfigurationParameter[] addParmToArray(ConfigurationParameter[] cps,
-                  ConfigurationParameter newCP) {
+          ConfigurationParameter newCP) {
 
     if (null == cps) {
       return new ConfigurationParameter[] { newCP };
@@ -1028,7 +1025,7 @@ public class ParameterSection extends AbstractSectionParm {
   }
 
   public static boolean parameterNameAlreadyDefinedNoMsg(String name,
-                  ConfigurationParameterDeclarations pCpd) {
+          ConfigurationParameterDeclarations pCpd) {
     if (pCpd.getCommonParameters() != null) {
       if (parameterInArray(name, pCpd.getCommonParameters()))
         return true;
@@ -1051,8 +1048,8 @@ public class ParameterSection extends AbstractSectionParm {
     boolean alreadyDefined = parameterNameAlreadyDefinedNoMsg(name, cpd);
     if (alreadyDefined) {
       Utility.popMessage("Parameter Already Defined",
-                      "The following parameter is already defined in the list. Parameter names must be unique."
-                                      + "\n\nParameter: " + name, MessageDialog.ERROR);
+              "The following parameter is already defined in the list. Parameter names must be unique."
+                      + "\n\nParameter: " + name, MessageDialog.ERROR);
     }
     return alreadyDefined;
   }
@@ -1088,18 +1085,17 @@ public class ParameterSection extends AbstractSectionParm {
     groupingControl.setVisible(usingGroups);
 
     addButton.setEnabled(isPrimitive() || tree.getSelectionCount() == 1
-                    && (isParmSelection() || isOverrideSelection()));
+            && (isParmSelection() || isOverrideSelection()));
 
     addGroupButton.setEnabled(isPrimitive() && usingGroups);
 
     removeButton.setEnabled(tree.getSelectionCount() == 1
-                    && (isParmSelection() || isGroupSelection() || isOverrideSelection()));
+            && (isParmSelection() || isGroupSelection() || isOverrideSelection()));
 
     editButton
-                    .setEnabled(tree.getSelectionCount() == 1
-                                    && ((/* isPrimitive() && */isParmSelection())
-                                                    || isOverrideSelection() || (isPrimitive()
-                                                    && isGroupSelection() && !isCommonGroupSelection())));
+            .setEnabled(tree.getSelectionCount() == 1
+                    && ((/* isPrimitive() && */isParmSelection()) || isOverrideSelection() || (isPrimitive()
+                            && isGroupSelection() && !isCommonGroupSelection())));
   }
 
   public Tree getTree() {

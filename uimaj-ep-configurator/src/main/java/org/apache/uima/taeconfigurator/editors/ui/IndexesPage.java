@@ -46,8 +46,7 @@ public class IndexesPage extends HeaderPageWithSash {
 
     final Form2Panel form2Panel = setup2ColumnLayout(managedForm, EQUAL_WIDTH);
     managedForm.getForm().setText(
-                    (isLocalProcessingDescriptor() || isIndexDescriptor()) ? "Indexes"
-                                    : "Type Priorities");
+            (isLocalProcessingDescriptor() || isIndexDescriptor()) ? "Indexes" : "Type Priorities");
     if (!isTypePriorityDescriptor()) {
       managedForm.addPart(indexSection = new IndexSection(editor, form2Panel.left));
       managedForm.addPart(indexImportSection = new IndexImportSection(editor, form2Panel.right));
@@ -55,7 +54,7 @@ public class IndexesPage extends HeaderPageWithSash {
     if (!isIndexDescriptor()) {
       managedForm.addPart(priorityListSection = new PriorityListSection(editor, form2Panel.left));
       managedForm.addPart(typePriorityImportSection = new TypePriorityImportSection(editor,
-                      form2Panel.right));
+              form2Panel.right));
     }
     createToolBarActions(managedForm);
   }

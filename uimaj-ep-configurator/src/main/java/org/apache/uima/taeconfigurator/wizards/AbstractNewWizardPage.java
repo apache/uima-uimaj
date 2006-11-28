@@ -53,7 +53,7 @@ public abstract class AbstractNewWizardPage extends WizardPage {
   private String defaultNewName;
 
   public AbstractNewWizardPage(ISelection pSelection, String image, String title,
-                  String description, String defaultNewName) {
+          String description, String defaultNewName) {
     super("wizardPage");
     setTitle(title);
     setDescription(description);
@@ -107,7 +107,7 @@ public abstract class AbstractNewWizardPage extends WizardPage {
   private void initialize() {
 
     if (selection != null && selection.isEmpty() == false
-                    && selection instanceof IStructuredSelection) {
+            && selection instanceof IStructuredSelection) {
       IStructuredSelection ssel = (IStructuredSelection) selection;
       if (ssel.size() > 1)
         return;
@@ -131,7 +131,7 @@ public abstract class AbstractNewWizardPage extends WizardPage {
 
   void handleBrowse() {
     ContainerSelectionDialog dialog = new ContainerSelectionDialog(getShell(), ResourcesPlugin
-                    .getWorkspace().getRoot(), false, "Select a containing folder");
+            .getWorkspace().getRoot(), false, "Select a containing folder");
     if (dialog.open() == ContainerSelectionDialog.OK) {
       Object[] result = dialog.getResult();
       if (result.length == 1) {

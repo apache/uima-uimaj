@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
 public abstract class AbstractDialogKeyVerifyJavaNames extends AbstractDialogKeyVerify implements
-                VerifyKeyListener, VerifyListener {
+        VerifyKeyListener, VerifyListener {
 
   protected StyledText newSingleLineStyledText(Composite parent, String tip) {
     StyledText w = super.newSingleLineStyledText(parent, tip);
@@ -38,7 +38,7 @@ public abstract class AbstractDialogKeyVerifyJavaNames extends AbstractDialogKey
   }
 
   protected AbstractDialogKeyVerifyJavaNames(AbstractSection aSection, String title,
-                  String description) {
+          String description) {
     super(aSection, title, description);
   }
 
@@ -93,7 +93,7 @@ public abstract class AbstractDialogKeyVerifyJavaNames extends AbstractDialogKey
     if (Character.isDigit(s.charAt(testloc)))
       return true;
     for (testloc = 1 + s.indexOf('.', testloc); testloc > 0 && testloc < s.length(); testloc = 1 + s
-                    .indexOf('.', testloc))
+            .indexOf('.', testloc))
       if (Character.isDigit(s.charAt(testloc)))
         return true;
     return false;

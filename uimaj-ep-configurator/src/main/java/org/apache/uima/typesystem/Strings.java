@@ -305,7 +305,7 @@ public class Strings {
    * @throws Exception
    */
   public static int computeIndentLength(String line, int numberOfIndents, int tabWidth)
-                  throws Exception {
+          throws Exception {
     if (!(numberOfIndents >= 0) || !(tabWidth >= 0)) {
       throw new Exception("Assert Failed");
     }
@@ -358,7 +358,7 @@ public class Strings {
    * indent as it might start in the middle of a line)
    */
   public static String changeIndent(String code, int codeIndentLevel, int tabWidth,
-                  String newIndent, String lineDelim) {
+          String newIndent, String lineDelim) {
     try {
       ILineTracker tracker = new DefaultLineTracker();
       tracker.set(code);
@@ -391,7 +391,7 @@ public class Strings {
   }
 
   public static String trimIndentation(String source, int tabWidth, boolean considerFirstLine)
-                  throws Exception {
+          throws Exception {
     try {
       ILineTracker tracker = new DefaultLineTracker();
       tracker.set(source);

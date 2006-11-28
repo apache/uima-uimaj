@@ -43,7 +43,7 @@ public class ControlContentAssistHelper {
   }
 
   public static SubjectControlContentAssistant createTypeSystemContentAssistant(
-                  IContentAssistProcessor processor) {
+          IContentAssistProcessor processor) {
     final SubjectControlContentAssistant contentAssistant = new SubjectControlContentAssistant();
 
     contentAssistant.setContentAssistProcessor(processor, IDocument.DEFAULT_CONTENT_TYPE);

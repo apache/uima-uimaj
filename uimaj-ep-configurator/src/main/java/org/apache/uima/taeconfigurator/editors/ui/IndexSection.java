@@ -76,7 +76,7 @@ public class IndexSection extends AbstractSection {
 
   public IndexSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Indexes",
-                    "The following indexes are defined on the type system for this engine.");
+            "The following indexes are defined on the type system for this engine.");
   }
 
   public void initialize(IManagedForm form) {
@@ -97,7 +97,7 @@ public class IndexSection extends AbstractSection {
     final Composite buttonContainer = newButtonContainer(sectionClient);
     addIndexButton = newPushButton(buttonContainer, "Add Index", "Click here to add a new index.");
     addKeyButton = newPushButton(buttonContainer, "Add Key",
-                    "Click here to add a new key for the selected index.");
+            "Click here to add a new key for the selected index.");
     editButton = newPushButton(buttonContainer, S_EDIT, S_EDIT_TIP);
     removeButton = newPushButton(buttonContainer, S_REMOVE, S_REMOVE_TIP);
     upButton = newPushButton(buttonContainer, S_UP, S_UP_TIP);
@@ -152,8 +152,7 @@ public class IndexSection extends AbstractSection {
     String name = key.getFeatureName();
     item.setText(INDEX_NAME_COL, null == name ? "TYPE PRIORITY" : name);
     item.setText(ASC_DES_COL,
-                    key.getComparator() == FSIndexComparator.STANDARD_COMPARE ? "Standard"
-                                    : "Reverse");
+            key.getComparator() == FSIndexComparator.STANDARD_COMPARE ? "Standard" : "Reverse");
     item.setData(key);
   }
 
@@ -164,7 +163,7 @@ public class IndexSection extends AbstractSection {
   public FsIndexDescription getBuiltInIndexDescription() {
     if (m_builtInIndexDescription == null) {
       m_builtInIndexDescription = UIMAFramework.getResourceSpecifierFactory()
-                      .createFsIndexDescription();
+              .createFsIndexDescription();
 
       m_builtInIndexDescription.setLabel(ANNOTATION_INDEX_BUILT_IN);
       m_builtInIndexDescription.setTypeName(CAS.TYPE_NAME_ANNOTATION);
@@ -188,10 +187,10 @@ public class IndexSection extends AbstractSection {
   private boolean notAllowed(String message) {
     if (isIndexDescriptor() && !editor.getIsContextLoaded()) {
       Utility
-                      .popMessage(
-                                      "Not Allowed",
-                                      "Editing or Adding Indexes can't be done here because the information about the type system is missing.",
-                                      MessageDialog.INFORMATION);
+              .popMessage(
+                      "Not Allowed",
+                      "Editing or Adding Indexes can't be done here because the information about the type system is missing.",
+                      MessageDialog.INFORMATION);
       return true;
     }
     return false;
@@ -213,7 +212,7 @@ public class IndexSection extends AbstractSection {
         return;
 
       FsIndexDescription id = UIMAFramework.getResourceSpecifierFactory()
-                      .createFsIndexDescription();
+              .createFsIndexDescription();
 
       id.setLabel(dialog.indexName);
       id.setTypeName(dialog.indexType);
@@ -237,7 +236,7 @@ public class IndexSection extends AbstractSection {
         return;
       FsIndexDescription fsid = getFsIndexDescriptionFromTableTreeItem(parent);
       AddIndexKeyDialog dialog = new AddIndexKeyDialog(this, fsid.getTypeName(),
-                      handleDefaultIndexKind(fsid.getKind()), getAlreadyUsedFeatures(fsid));
+              handleDefaultIndexKind(fsid.getKind()), getAlreadyUsedFeatures(fsid));
       FsIndexKeyDescription newKey = addOrEditIndexKey(dialog, null);
       if (null != newKey) {
         addFsIndexKeyDescription(fsid, newKey);
@@ -252,12 +251,12 @@ public class IndexSection extends AbstractSection {
       Object o = item.getData();
       if (o instanceof FsIndexDescription) {
         if (Window.CANCEL == Utility.popOkCancel("Confirm Remove",
-                        "Do you want to remove this index?", MessageDialog.WARNING))
+                "Do you want to remove this index?", MessageDialog.WARNING))
           return;
         removeFsIndexDescription((FsIndexDescription) o);
       } else {
         if (Window.CANCEL == Utility.popOkCancel("Confirm Remove",
-                        "Do you want to remove this key?", MessageDialog.WARNING))
+                "Do you want to remove this key?", MessageDialog.WARNING))
           return;
         TableTreeItem parent = item.getParentItem();
         FsIndexDescription fsid = getFsIndexDescriptionFromTableTreeItem(parent);
@@ -300,7 +299,7 @@ public class IndexSection extends AbstractSection {
         TableTreeItem parent = item.getParentItem();
         FsIndexDescription fsid = getFsIndexDescriptionFromTableTreeItem(parent);
         AddIndexKeyDialog dialog = new AddIndexKeyDialog(this, fsid.getTypeName(),
-                        handleDefaultIndexKind(fsid.getKind()), getAlreadyUsedFeatures(fsid), key);
+                handleDefaultIndexKind(fsid.getKind()), getAlreadyUsedFeatures(fsid), key);
         valueChanged = false;
         addOrEditIndexKey(dialog, key);
         if (valueChanged) {
@@ -321,7 +320,7 @@ public class IndexSection extends AbstractSection {
     } else if (event.widget == exportButton) {
       try {
         indexImportSection.exportImportablePart("<fsIndexCollection>",
-                        FsIndexCollectionNewWizard.FSINDEXCOLLECTION_TEMPLATE);
+                FsIndexCollectionNewWizard.FSINDEXCOLLECTION_TEMPLATE);
       } finally {
         refresh(); // update in case of throw, even
       }
@@ -335,8 +334,8 @@ public class IndexSection extends AbstractSection {
 
     if (ANNOTATION_INDEX_BUILT_IN.equals(item.getText(0))) {
       Utility.popMessage("Not Allowed",
-                      "You cannot edit or delete the built-in Annotation Index or its keys",
-                      MessageDialog.ERROR);
+              "You cannot edit or delete the built-in Annotation Index or its keys",
+              MessageDialog.ERROR);
       return true;
     }
     return false;
@@ -345,7 +344,7 @@ public class IndexSection extends AbstractSection {
   public void addFsIndexKeyDescription(FsIndexDescription fsid, FsIndexKeyDescription key) {
     FsIndexKeyDescription[] prevKeys = fsid.getKeys();
     FsIndexKeyDescription[] newKeys = new FsIndexKeyDescription[prevKeys == null ? 1
-                    : prevKeys.length + 1];
+            : prevKeys.length + 1];
     if (null != prevKeys)
       System.arraycopy(prevKeys, 0, newKeys, 0, prevKeys.length);
     newKeys[newKeys.length - 1] = key;
@@ -355,7 +354,7 @@ public class IndexSection extends AbstractSection {
   public void addFsIndexDescription(FsIndexDescription fsid) {
     FsIndexDescription[] oldFsIndexes = getAnalysisEngineMetaData().getFsIndexes();
     FsIndexDescription[] newFsIndexes = new FsIndexDescription[oldFsIndexes == null ? 1
-                    : oldFsIndexes.length + 1];
+            : oldFsIndexes.length + 1];
     if (null != oldFsIndexes)
       System.arraycopy(oldFsIndexes, 0, newFsIndexes, 0, oldFsIndexes.length);
     newFsIndexes[newFsIndexes.length - 1] = fsid;
@@ -364,14 +363,13 @@ public class IndexSection extends AbstractSection {
 
   public void removeFsIndexDescription(FsIndexDescription fsid) {
     getAnalysisEngineMetaData().setFsIndexes(
-                    (FsIndexDescription[]) Utility.removeElementFromArray(
-                                    getAnalysisEngineMetaData().getFsIndexes(), fsid,
-                                    FsIndexDescription.class));
+            (FsIndexDescription[]) Utility.removeElementFromArray(getAnalysisEngineMetaData()
+                    .getFsIndexes(), fsid, FsIndexDescription.class));
   }
 
   public void removeFsIndexKeyDescription(FsIndexDescription fsid, FsIndexKeyDescription key) {
     fsid.setKeys((FsIndexKeyDescription[]) Utility.removeElementFromArray(fsid.getKeys(), key,
-                    FsIndexKeyDescription.class));
+            FsIndexKeyDescription.class));
   }
 
   public List getAlreadyUsedFeatures(FsIndexDescription ndx) {
@@ -434,8 +432,8 @@ public class IndexSection extends AbstractSection {
 
     addIndexButton.setEnabled(true);
     addKeyButton.setEnabled(notBuiltInSelected
-                    && (null != parent || /* null == parent && */!"bag".equals(item
-                                    .getText(INDEX_KIND_COL))));
+            && (null != parent || /* null == parent && */!"bag".equals(item
+                    .getText(INDEX_KIND_COL))));
     editButton.setEnabled(notBuiltInSelected);
     removeButton.setEnabled(notBuiltInSelected);
     exportButton.setEnabled(tt.getItemCount() > 1); // always one "built-in"

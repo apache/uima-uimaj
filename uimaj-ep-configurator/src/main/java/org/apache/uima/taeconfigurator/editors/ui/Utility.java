@@ -42,10 +42,9 @@ public class Utility extends MessageDialog {
    * @param defaultIndex
    */
   public Utility(Shell parentShell, String dialogTitle, Image dialogTitleImage,
-                  String dialogMessage, int dialogImageType, String[] dialogButtonLabels,
-                  int defaultIndex) {
+          String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
     super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType,
-                    dialogButtonLabels, defaultIndex);
+            dialogButtonLabels, defaultIndex);
     // TODO Auto-generated constructor stub
   }
 
@@ -106,7 +105,7 @@ public class Utility extends MessageDialog {
    */
 
   public static Object[] removeElementFromArray(Object[] source, Object element,
-                  Class componentClass) {
+          Class componentClass) {
     Object[] result = (Object[]) Array.newInstance(componentClass, source.length - 1);
     for (int i = 0, j = 0; i < source.length; i++) {
       if (element != source[i])
@@ -125,7 +124,7 @@ public class Utility extends MessageDialog {
    */
 
   public static Object[] removeEqualElementFromArray(Object[] source, Object element,
-                  Class componentClass) {
+          Class componentClass) {
     Object[] result = (Object[]) Array.newInstance(componentClass, source.length - 1);
     for (int i = 0, j = 0; i < source.length; i++) {
       if (element == null && source[i] == null)
@@ -138,7 +137,7 @@ public class Utility extends MessageDialog {
   }
 
   public static Object[] removeElementsFromArray(Object[] source, Object element,
-                  Class componentClass) {
+          Class componentClass) {
     if (null == source)
       return null;
     int count = 0;
@@ -158,7 +157,7 @@ public class Utility extends MessageDialog {
   }
 
   public static Object[] removeElementsFromArray(Object[] source, Object element,
-                  Class componentClass, Comparator comp) {
+          Class componentClass, Comparator comp) {
     if (null == source)
       return null;
     int count = 0;

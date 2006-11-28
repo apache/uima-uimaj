@@ -31,7 +31,7 @@ public class CasConsumerNewWizardPage extends AbstractNewWizardPage {
 
   public CasConsumerNewWizardPage(ISelection selection) {
     super(selection, "big_ae.gif", "Cas Consumer Descriptor File",
-                    "Create a new Cas Consumer Descriptor file", "casConsumerDescriptor.xml");
+            "Create a new Cas Consumer Descriptor file", "casConsumerDescriptor.xml");
   }
 
 }

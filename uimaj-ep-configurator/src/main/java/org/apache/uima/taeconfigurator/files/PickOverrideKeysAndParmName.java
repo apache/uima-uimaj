@@ -65,10 +65,10 @@ public class PickOverrideKeysAndParmName extends LimitedResourceSelectionDialog 
   // rootElement is the map returned from getDelegateAnalysisEngineSpecifiers()
 
   public PickOverrideKeysAndParmName(Shell parentShell,
-                  Object rootElement, // is editor.getResolvedDelegates(), a Map, key = keyname,
-                                      // value = delegate description object
-                  String message, ConfigurationParameter aCp,
-                  ConfigurationParameterDeclarations aCpd, boolean aAdding) {
+          Object rootElement, // is editor.getResolvedDelegates(), a Map, key = keyname,
+          // value = delegate description object
+          String message, ConfigurationParameter aCp, ConfigurationParameterDeclarations aCpd,
+          boolean aAdding) {
     super(parentShell, rootElement, message);
     cp = aCp;
     cpd = aCpd;
@@ -77,9 +77,9 @@ public class PickOverrideKeysAndParmName extends LimitedResourceSelectionDialog 
 
   protected TreeGroup createTreeGroup(Composite composite, Object rootObject) {
     return new TreeGroup(composite, rootObject, (keyTreeProvider = new KeyTreeProvider()),
-                    new KeyTreeLabelProvider(), new ParmNameProvider(),
-                    new ParmNameLabelProvider(), SWT.NONE, -1, -1, true); // set single selection
-                                                                          // mode
+            new KeyTreeLabelProvider(), new ParmNameProvider(), new ParmNameLabelProvider(),
+            SWT.NONE, -1, -1, true); // set single selection
+    // mode
   }
 
   protected void okPressed() {
@@ -128,7 +128,7 @@ public class PickOverrideKeysAndParmName extends LimitedResourceSelectionDialog 
       if (inputElement instanceof ArrayList)
         inputElement = ((ArrayList) inputElement).get(0);
       Map delegatesMap = (Map) inputElement;
-      
+
       for (Iterator it = delegatesMap.entrySet().iterator(); it.hasNext();) {
         items.add(it.next());
       }
@@ -205,9 +205,9 @@ public class PickOverrideKeysAndParmName extends LimitedResourceSelectionDialog 
 
       ResourceSpecifier rs = (ResourceSpecifier) entry.getValue();
       if (rs instanceof AnalysisEngineDescription || rs instanceof CasConsumerDescription
-                      || rs instanceof FlowControllerDescription) {
+              || rs instanceof FlowControllerDescription) {
         ConfigurationParameterDeclarations delegateCpd = ((ResourceCreationSpecifier) rs)
-                        .getMetaData().getConfigurationParameterDeclarations();
+                .getMetaData().getConfigurationParameterDeclarations();
         addSelectedParms(delegateCpd.getCommonParameters(), items, keyName);
 
         ConfigurationGroup[] groups = delegateCpd.getConfigurationGroups();
@@ -223,13 +223,12 @@ public class PickOverrideKeysAndParmName extends LimitedResourceSelectionDialog 
     }
 
     /*
-     * Filter overridable parameters to exclude:
-     *  - already overridden (can't override same parameter twice) - those with different type or
-     * multi-valued-ness (Group match not required)
+     * Filter overridable parameters to exclude: - already overridden (can't override same parameter
+     * twice) - those with different type or multi-valued-ness (Group match not required)
      */
     private void addSelectedParms(ConfigurationParameter[] parms, AbstractList items, String keyName) {
       boolean isMultiValued = (null != parameterDialog) ? parameterDialog.multiValueUI
-                      .getSelection() : cp.isMultiValued();
+              .getSelection() : cp.isMultiValued();
       String type = (null != parameterDialog) ? parameterDialog.parmTypeUI.getText() : cp.getType();
 
       if (null != parms) {

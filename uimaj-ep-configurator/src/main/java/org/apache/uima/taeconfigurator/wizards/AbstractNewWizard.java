@@ -119,7 +119,7 @@ public abstract class AbstractNewWizard extends Wizard implements INewWizard {
   public abstract String getPrototypeDescriptor(String name);
 
   void doFinish(String containerName, String fileName, IProgressMonitor monitor)
-                  throws CoreException {
+          throws CoreException {
     // create a sample file
     monitor.beginTask("Creating " + fileName, 2);
     IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();

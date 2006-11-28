@@ -54,7 +54,7 @@ public class MultiResourceSelectionDialog extends LimitedResourceSelectionDialog
   private MultiPageEditor editor;
 
   public MultiResourceSelectionDialog(Shell parentShell, IAdaptable rootElement, String message,
-                  IPath aExcludeDescriptor, MultiPageEditor aEditor) {
+          IPath aExcludeDescriptor, MultiPageEditor aEditor) {
 
     super(parentShell, rootElement, message);
     editor = aEditor;
@@ -71,12 +71,12 @@ public class MultiResourceSelectionDialog extends LimitedResourceSelectionDialog
     // page group
     Composite composite = (Composite) super.createDialogArea(parent);
     FormToolkit factory = new FormToolkit(TAEConfiguratorPlugin.getDefault().getFormColors(
-                    parent.getDisplay()));
+            parent.getDisplay()));
     Label label = new Label(composite, SWT.WRAP /* SWT.CENTER */);
     label.setText(Messages.getString("MultiResourceSelectionDialog.Or")); //$NON-NLS-1$
     browseButton = factory.createButton(composite, Messages
-                    .getString("MultiResourceSelectionDialog.BrowseFileSys"), //$NON-NLS-1$
-                    SWT.PUSH);
+            .getString("MultiResourceSelectionDialog.BrowseFileSys"), //$NON-NLS-1$
+            SWT.PUSH);
     browseButton.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
     browseButton.pack(false);
     browseButton.addListener(SWT.MouseUp, new Listener() {
@@ -86,7 +86,7 @@ public class MultiResourceSelectionDialog extends LimitedResourceSelectionDialog
         String[] extensions = { Messages.getString("MultiResourceSelectionDialog.starDotXml") }; //$NON-NLS-1$
         dialog.setFilterExtensions(extensions);
         String sStartDir = TAEConfiguratorPlugin.getWorkspace().getRoot().getLocation()
-                        .toOSString();
+                .toOSString();
         dialog.setFilterPath(sStartDir);
         String file = dialog.open();
 
@@ -106,7 +106,7 @@ public class MultiResourceSelectionDialog extends LimitedResourceSelectionDialog
     importByNameUI = new Button(composite, SWT.RADIO);
     importByNameUI.setText("Import by Name");
     importByNameUI
-                    .setToolTipText("Importing by name looks up the name on the datapath, and if not found there, on the classpath.");
+            .setToolTipText("Importing by name looks up the name on the datapath, and if not found there, on the classpath.");
 
     importByLocationUI = new Button(composite, SWT.RADIO);
     importByLocationUI.setText("Import By Location");

@@ -41,7 +41,7 @@ public class ParameterPage extends HeaderPageWithSash {
     Form2Panel form2Panel = setup2ColumnLayout(managedForm, 55, 45);
     managedForm.addPart(parameterSection = new ParameterSection(editor, form2Panel.left));
     managedForm.addPart(parameterDelegatesSection = new ParameterDelegatesSection(editor,
-                    form2Panel.right));
+            form2Panel.right));
     createToolBarActions(managedForm);
   }
 

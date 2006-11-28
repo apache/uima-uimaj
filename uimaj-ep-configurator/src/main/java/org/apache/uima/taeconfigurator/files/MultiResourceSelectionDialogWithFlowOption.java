@@ -46,7 +46,7 @@ public class MultiResourceSelectionDialogWithFlowOption extends MultiResourceSel
    * @param excludeDescriptor
    */
   public MultiResourceSelectionDialogWithFlowOption(Shell parentShell, IAdaptable rootElement,
-                  String message, IPath excludeDescriptor, MultiPageEditor editor) {
+          String message, IPath excludeDescriptor, MultiPageEditor editor) {
     super(parentShell, rootElement, message, excludeDescriptor, editor);
   }
 
@@ -56,9 +56,9 @@ public class MultiResourceSelectionDialogWithFlowOption extends MultiResourceSel
     new Label(composite, SWT.WRAP).setText(""); //$NON-NLS-1$
 
     String sAddToFlowPrompt = Messages
-                    .getString("MultiResourceSelectionDialogWithFlowOption.addSelectedAEsToEndOfFlow"); //$NON-NLS-1$
+            .getString("MultiResourceSelectionDialogWithFlowOption.addSelectedAEsToEndOfFlow"); //$NON-NLS-1$
     FormToolkit factory = new FormToolkit(TAEConfiguratorPlugin.getDefault().getFormColors(
-                    parent.getDisplay()));
+            parent.getDisplay()));
 
     autoAddToFlowButton = factory.createButton(composite, sAddToFlowPrompt, SWT.CHECK);
     autoAddToFlowButton.setSelection(m_bAutoAddToFlow);

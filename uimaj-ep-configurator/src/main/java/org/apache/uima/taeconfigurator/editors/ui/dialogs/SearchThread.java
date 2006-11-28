@@ -55,8 +55,8 @@ public class SearchThread implements Runnable /* extends Thread */{
   private String[] m_componentHeaders;
 
   public SearchThread(FindComponentDialog dialog, AbstractSection aggregateSection,
-                  String fileNameSearch, String inputTypeSearch, String outputTypeSearch,
-                  String projectToSearch, String[] componentHeaders) {
+          String fileNameSearch, String inputTypeSearch, String outputTypeSearch,
+          String projectToSearch, String[] componentHeaders) {
 
     m_dialog = dialog;
     m_aggregateSection = aggregateSection;
@@ -96,15 +96,14 @@ public class SearchThread implements Runnable /* extends Thread */{
     switch (resource.getType()) {
       case IResource.FILE:
         if (resource.getName().toLowerCase().endsWith(".xml")
-                        // exclude potentially many data files, not descriptors
-                        && !resource.getName().toLowerCase().endsWith(".txt.xml")
-                        && (m_fileNameSearch == null || resource.getName()
-                                        .matches(m_fileNameSearch))) {
+                // exclude potentially many data files, not descriptors
+                && !resource.getName().toLowerCase().endsWith(".txt.xml")
+                && (m_fileNameSearch == null || resource.getName().matches(m_fileNameSearch))) {
           String fileDescriptorRelPath = m_aggregateSection.editor
-                          .getDescriptorRelativePath(resource.getLocation().toString());
+                  .getDescriptorRelativePath(resource.getLocation().toString());
           setStatusMsg(2, "Examining " + getBriefDisplayVersion(fileDescriptorRelPath));
           ResourceSpecifier rs = MultiPageEditor.getDelegateResourceSpecifier((IFile) resource,
-                          m_componentHeaders);
+                  m_componentHeaders);
           // rs == null if wrong kind of descriptor
           if (null == rs)
             return;
@@ -113,8 +112,8 @@ public class SearchThread implements Runnable /* extends Thread */{
               return; // don't find remote descriptors when types are wanted
 
           if (!(rs instanceof ResourceCreationSpecifier) || // is a remote descriptor
-                          delegateComponentMatchesCapabilityReqs((ResourceCreationSpecifier) rs,
-                                          m_inputTypeSearch, m_outputTypeSearch)) {
+                  delegateComponentMatchesCapabilityReqs((ResourceCreationSpecifier) rs,
+                          m_inputTypeSearch, m_outputTypeSearch)) {
             m_matchingDelegateComponentDescriptors.add(fileDescriptorRelPath);
             m_matchingDelegateComponentDescriptions.add(rs);
           }
@@ -140,7 +139,7 @@ public class SearchThread implements Runnable /* extends Thread */{
     for (int i = 0; i < projects.length; i++) {
       try {
         if (projectToSearch.equals(FindComponentDialog.ALL_PROJECTS)
-                        || projects[i].getName().equals(projectToSearch)) {
+                || projects[i].getName().equals(projectToSearch)) {
 
           if (projectToSearch.equals(FindComponentDialog.ALL_PROJECTS)) {
             setStatusMsg(2, "Looking in " + projects[i].getName() + "....");
@@ -181,7 +180,7 @@ public class SearchThread implements Runnable /* extends Thread */{
   }
 
   private boolean delegateComponentMatchesCapabilityReqs(ResourceCreationSpecifier rs,
-                  String inputTypeSearch, String outputTypeSearch) {
+          String inputTypeSearch, String outputTypeSearch) {
 
     if (inputTypeSearch == null && outputTypeSearch == null) {
       return true;
@@ -206,7 +205,7 @@ public class SearchThread implements Runnable /* extends Thread */{
       return true;
     for (int i = 0; i < capabilities.length; i++) {
       TypeOrFeature[] typeOrFeatures = isInput ? capabilities[i].getInputs() : capabilities[i]
-                      .getOutputs();
+              .getOutputs();
       if (null != typeOrFeatures) {
         for (int j = 0; j < typeOrFeatures.length; j++) {
           if (typeOrFeatures[j].getName().matches(search)) {

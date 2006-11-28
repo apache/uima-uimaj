@@ -439,7 +439,7 @@ public class MultiPageEditor extends FormEditor {
 
   public boolean isLocalProcessingDescriptor() {
     return 0 != (descriptorType & (DESCRIPTOR_AE | DESCRIPTOR_COLLECTIONREADER
-                    | DESCRIPTOR_CASINITIALIZER | DESCRIPTOR_CASCONSUMER | DESCRIPTOR_FLOWCONTROLLER));
+            | DESCRIPTOR_CASINITIALIZER | DESCRIPTOR_CASCONSUMER | DESCRIPTOR_FLOWCONTROLLER));
   }
 
   public boolean isPrimitive() {
@@ -505,7 +505,7 @@ public class MultiPageEditor extends FormEditor {
   }
 
   private int addPageAndSetTabTitle(IEditorPart page, IEditorInput input, String keyTabTitle)
-                  throws PartInitException {
+          throws PartInitException {
     int pageIndex = addPage(page, input);
     // set the text on the tab used to select the page in the multipage editor
     setPageText(pageIndex, keyTabTitle);
@@ -525,40 +525,40 @@ public class MultiPageEditor extends FormEditor {
     boolean allPages = isLocalProcessingDescriptor();
     try {
       overviewIndex = addPageAndSetTabTitle(overviewPage = new OverviewPage(this), Messages
-                      .getString("MultiPageEditor.overviewTab")); //$NON-NLS-1$
+              .getString("MultiPageEditor.overviewTab")); //$NON-NLS-1$
 
       if (allPages) {
         if (isAeDescriptor())
           aggregateIndex = addPageAndSetTabTitle(aggregatePage = new AggregatePage(this), Messages
-                          .getString("MultiPageEditor.aggregateTab")); //$NON-NLS-1$
+                  .getString("MultiPageEditor.aggregateTab")); //$NON-NLS-1$
         parameterIndex = addPageAndSetTabTitle(parameterPage = new ParameterPage(this), Messages
-                        .getString("MultiPageEditor.parameterTab")); //$NON-NLS-1$
+                .getString("MultiPageEditor.parameterTab")); //$NON-NLS-1$
         settingsIndex = addPageAndSetTabTitle(settingsPage = new SettingsPage(this), Messages
-                        .getString("MultiPageEditor.settingsTab")); //$NON-NLS-1$
+                .getString("MultiPageEditor.settingsTab")); //$NON-NLS-1$
       }
 
       if (allPages || isTypeSystemDescriptor()) {
         typeIndex = addPageAndSetTabTitle(typePage = new TypePage(this), Messages
-                        .getString("MultiPageEditor.typeTab")); //$NON-NLS-1$
+                .getString("MultiPageEditor.typeTab")); //$NON-NLS-1$
       }
 
       if (allPages) {
         capabilityIndex = addPageAndSetTabTitle(capabilityPage = new CapabilityPage(this), Messages
-                        .getString("MultiPageEditor.capabilityTab")); //$NON-NLS-1$
+                .getString("MultiPageEditor.capabilityTab")); //$NON-NLS-1$
       }
 
       if (allPages || isTypePriorityDescriptor() || isFsIndexCollection()) {
         indexesIndex = addPageAndSetTabTitle(indexesPage = new IndexesPage(this), Messages
-                        .getString("MultiPageEditor.indexesTab")); //$NON-NLS-1$
+                .getString("MultiPageEditor.indexesTab")); //$NON-NLS-1$
       }
 
       if (allPages || isExtResAndBindingsDescriptor()) {
         resourcesIndex = addPageAndSetTabTitle(resourcesPage = new ResourcesPage(this), Messages
-                        .getString("MultiPageEditor.resourcesTab")); //$NON-NLS-1$
+                .getString("MultiPageEditor.resourcesTab")); //$NON-NLS-1$
       }
 
       sourceIndex = addPageAndSetTabTitle(sourceTextEditor = new XMLEditor(this), getEditorInput(),
-                      Messages.getString("MultiPageEditor.sourceTab")); //$NON-NLS-1$
+              Messages.getString("MultiPageEditor.sourceTab")); //$NON-NLS-1$
 
     } catch (PartInitException e) {
       e.printStackTrace(); // TODO fix this
@@ -613,34 +613,30 @@ public class MultiPageEditor extends FormEditor {
     // use clones because validation modifies (imports get imported)
     if (isCollectionReaderDescriptor()) {
       CollectionReaderDescription collRdr = (CollectionReaderDescription) collectionReaderDescription
-                      .clone();
+              .clone();
       try {
         collRdr.doFullValidation(createResourceManager());
       } catch (Throwable e) { // all these are Throwable to catch errors like
         // UnsupportedClassVersionError, which happens if the annotator
         // class is compiled for Java 5.0, but the CDE is running Java 1.4.2
         Utility
-                        .popMessage(
-                                        Messages
-                                                        .getString("MultiPageEditor.failedCollRdrValidation"), //$NON-NLS-1$
-                                        Messages
-                                                        .getString("MultiPageEditor.failedCollRdrValidationMsg") + "\n" + getMessagesToRootCause(e), //$NON-NLS-1$ //$NON-NLS-2$
-                                        MessageDialog.ERROR);
+                .popMessage(
+                        Messages.getString("MultiPageEditor.failedCollRdrValidation"), //$NON-NLS-1$
+                        Messages.getString("MultiPageEditor.failedCollRdrValidationMsg") + "\n" + getMessagesToRootCause(e), //$NON-NLS-1$ //$NON-NLS-2$
+                        MessageDialog.ERROR);
         return false;
       }
     } else if (isCasInitializerDescriptor()) {
       CasInitializerDescription casInit = (CasInitializerDescription) casInitializerDescription
-                      .clone();
+              .clone();
       try {
         casInit.doFullValidation(createResourceManager());
       } catch (Throwable e) {
         Utility
-                        .popMessage(
-                                        Messages
-                                                        .getString("MultiPageEditor.failedCasInitValidation"), //$NON-NLS-1$
-                                        Messages
-                                                        .getString("MultiPageEditor.failedCasInitValidationMsg") + "\n" + getMessagesToRootCause(e), //$NON-NLS-1$ //$NON-NLS-2$
-                                        MessageDialog.ERROR);
+                .popMessage(
+                        Messages.getString("MultiPageEditor.failedCasInitValidation"), //$NON-NLS-1$
+                        Messages.getString("MultiPageEditor.failedCasInitValidationMsg") + "\n" + getMessagesToRootCause(e), //$NON-NLS-1$ //$NON-NLS-2$
+                        MessageDialog.ERROR);
         return false;
       }
     } else if (isCasConsumerDescriptor()) {
@@ -649,12 +645,10 @@ public class MultiPageEditor extends FormEditor {
         casCons.doFullValidation(createResourceManager());
       } catch (Throwable e) {
         Utility
-                        .popMessage(
-                                        Messages
-                                                        .getString("MultiPageEditor.failedCasConsValidation"), //$NON-NLS-1$
-                                        Messages
-                                                        .getString("MultiPageEditor.failedCasConsValidationMsg") + "\n" + getMessagesToRootCause(e), //$NON-NLS-1$ //$NON-NLS-2$
-                                        MessageDialog.ERROR);
+                .popMessage(
+                        Messages.getString("MultiPageEditor.failedCasConsValidation"), //$NON-NLS-1$
+                        Messages.getString("MultiPageEditor.failedCasConsValidationMsg") + "\n" + getMessagesToRootCause(e), //$NON-NLS-1$ //$NON-NLS-2$
+                        MessageDialog.ERROR);
         return false;
       }
 
@@ -664,8 +658,8 @@ public class MultiPageEditor extends FormEditor {
         fc.doFullValidation(createResourceManager());
       } catch (Throwable e) {
         Utility.popMessage("Error in Flow Controller Descriptor",
-                        "The Descriptor is invalid for the following reason:" + "\n"
-                                        + getMessagesToRootCause(e), MessageDialog.ERROR);
+                "The Descriptor is invalid for the following reason:" + "\n"
+                        + getMessagesToRootCause(e), MessageDialog.ERROR);
         return false;
       }
     } else {
@@ -685,10 +679,10 @@ public class MultiPageEditor extends FormEditor {
         ae.doFullValidation(createResourceManager());
       } catch (Throwable e) {
         Utility
-                        .popMessage(
-                                        Messages.getString("MultiPageEditor.failedAeValidation"), //$NON-NLS-1$
-                                        Messages.getString("MultiPageEditor.failedAeValidationMsg") + "\n" + getMessagesToRootCause(e), //$NON-NLS-1$ //$NON-NLS-2$
-                                        MessageDialog.ERROR);
+                .popMessage(
+                        Messages.getString("MultiPageEditor.failedAeValidation"), //$NON-NLS-1$
+                        Messages.getString("MultiPageEditor.failedAeValidationMsg") + "\n" + getMessagesToRootCause(e), //$NON-NLS-1$ //$NON-NLS-2$
+                        MessageDialog.ERROR);
         return false;
       }
     }
@@ -777,8 +771,8 @@ public class MultiPageEditor extends FormEditor {
       input = new XMLInputSource(filePathName);
     } catch (IOException e) {
       String m = Messages.getFormattedString("MultiPageEditor.IOError", //$NON-NLS-1$
-                      new String[] { AbstractSection.maybeShortenFileName(filePathName) })
-                      + Messages.getString("MultiPageEditor.10") + getMessagesToRootCause(e); //$NON-NLS-1$
+              new String[] { AbstractSection.maybeShortenFileName(filePathName) })
+              + Messages.getString("MultiPageEditor.10") + getMessagesToRootCause(e); //$NON-NLS-1$
       // skip showing a message because the partInitException
       // shows it
       throw new PartInitException(m);
@@ -834,37 +828,33 @@ public class MultiPageEditor extends FormEditor {
         setFlowControllerDescription((FlowControllerDescription) inputDescription);
       } else {
         throw new PartInitException(Messages.getFormattedString(
-                        "MultiPageEditor.unrecognizedDescType", //$NON-NLS-1$
-                        new String[] { AbstractSection.maybeShortenFileName(filePathName) })
-                        + Messages.getString("MultiPageEditor.11")); //$NON-NLS-1$
+                "MultiPageEditor.unrecognizedDescType", //$NON-NLS-1$
+                new String[] { AbstractSection.maybeShortenFileName(filePathName) })
+                + Messages.getString("MultiPageEditor.11")); //$NON-NLS-1$
       }
       isBadXML = false;
     } catch (InvalidXMLException e) {
       e.printStackTrace();
       Utility
-                      .popMessage(
-                                      Messages
-                                                      .getString("MultiPageEditor.XMLerrorInDescriptorTitle"), //$NON-NLS-1$
-                                      Messages.getString("MultiPageEditor.XMLerrorInDescriptor") + "\n" + getMessagesToRootCause(e), //$NON-NLS-1$ //$NON-NLS-2$
-                                      MessageDialog.ERROR);
+              .popMessage(
+                      Messages.getString("MultiPageEditor.XMLerrorInDescriptorTitle"), //$NON-NLS-1$
+                      Messages.getString("MultiPageEditor.XMLerrorInDescriptor") + "\n" + getMessagesToRootCause(e), //$NON-NLS-1$ //$NON-NLS-2$
+                      MessageDialog.ERROR);
 
     } catch (ResourceInitializationException e) {
       // occurs if bad xml
       // leave isBadXML flag set to true
-      Utility
-                      .popMessage(
-                                      Messages.getString("MultiPageEditor.errorInDescTitle"), //$NON-NLS-1$
-                                      Messages.getString("MultiPageEditor.errorInDesc") + "\n" + getMessagesToRootCause(e), //$NON-NLS-1$ //$NON-NLS-2$
-                                      MessageDialog.ERROR);
+      Utility.popMessage(Messages.getString("MultiPageEditor.errorInDescTitle"), //$NON-NLS-1$
+              Messages.getString("MultiPageEditor.errorInDesc") + "\n" + getMessagesToRootCause(e), //$NON-NLS-1$ //$NON-NLS-2$
+              MessageDialog.ERROR);
     }
   }
 
   private void validateDescriptorType(int newDescriptorType) throws ResourceInitializationException {
     if (0 != descriptorType && !openingContext && ((descriptorType & newDescriptorType) == 0))
       throw new ResourceInitializationException(Messages.getString("MultiPageEditor.12"), //$NON-NLS-1$
-                      Messages.getString("MultiPageEditor.13"), //$NON-NLS-1$
-                      new String[] { descriptorTypeString(),
-                          descriptorTypeString(newDescriptorType) });
+              Messages.getString("MultiPageEditor.13"), //$NON-NLS-1$
+              new String[] { descriptorTypeString(), descriptorTypeString(newDescriptorType) });
     if (!openingContext)
       descriptorType = newDescriptorType;
   }
@@ -923,9 +913,9 @@ public class MultiPageEditor extends FormEditor {
         }
       } else if (oldPageIndex == indexesIndex &&
       // could be the same page if users chose to
-                      // edit current descriptor when validateIndexes detected a
-                      // bad type priorities set
-                      newPageIndex != indexesIndex) // could be the same
+              // edit current descriptor when validateIndexes detected a
+              // bad type priorities set
+              newPageIndex != indexesIndex) // could be the same
         if (!validateIndexes())
           return;
         else if (newPageIndex != indexesIndex) {
@@ -976,7 +966,7 @@ public class MultiPageEditor extends FormEditor {
     buttonLabels[0] = Messages.getString("MultiPageEditor.revertToLastValid"); //$NON-NLS-1$
     buttonLabels[1] = Messages.getString("MultiPageEditor.EditExisting"); //$NON-NLS-1$
     MessageDialog dialog = new MessageDialog(getEditorSite().getShell(), msg, null, msgDetails,
-                    MessageDialog.WARNING, buttonLabels, 0);
+            MessageDialog.WARNING, buttonLabels, 0);
     dialog.open();
     // next line depends on return code for button 1 (which is 1)
     // and CANCEL code both being == 1
@@ -1002,8 +992,8 @@ public class MultiPageEditor extends FormEditor {
     } catch (Exception ex) {
       descriptorTCAS.set(localTCAS);
       if (!revertToLastValid(Messages.getString("MultiPageEditor.indexDefProblemTitle"), //$NON-NLS-1$
-                      Messages.getString("MultiPageEditor.indexDefProblem") + //$NON-NLS-1$
-                                      getMessagesToRootCause(ex))) {
+              Messages.getString("MultiPageEditor.indexDefProblem") + //$NON-NLS-1$
+                      getMessagesToRootCause(ex))) {
         // currentIndex = -1; //irrelevent, but not sourceIndex
         super.setActivePage(indexesIndex);
         // currentIndex = indexesIndex;
@@ -1034,14 +1024,14 @@ public class MultiPageEditor extends FormEditor {
       return true;
     isBadXML = true; // preset
     IDocument doc = sourceTextEditor.getDocumentProvider().getDocument(
-                    sourceTextEditor.getEditorInput());
+            sourceTextEditor.getEditorInput());
     String text = doc.get();
     InputStream is;
     try {
       is = new ByteArrayInputStream(text.getBytes(getCharSet(text)));
     } catch (UnsupportedEncodingException e2) {
       Utility.popMessage(Messages.getString("MultiPageEditor.19"), //$NON-NLS-1$
-                      getMessagesToRootCause(e2), MessageDialog.ERROR);
+              getMessagesToRootCause(e2), MessageDialog.ERROR);
       super.setActivePage(sourceIndex);
       return false;
     }
@@ -1056,7 +1046,7 @@ public class MultiPageEditor extends FormEditor {
       parseSource(input, filePathName); // sets isBadXML to false if OK
     } catch (PartInitException e1) { // if user switched the kind of descriptor
       Utility.popMessage(Messages.getString("MultiPageEditor.20"), //$NON-NLS-1$
-                      getMessagesToRootCause(e1), MessageDialog.ERROR);
+              getMessagesToRootCause(e1), MessageDialog.ERROR);
       super.setActivePage(sourceIndex);
       return false;
     }
@@ -1068,7 +1058,7 @@ public class MultiPageEditor extends FormEditor {
       checkForNewlyDirtyTypes(oldTsdWithResolvedImports);
 
     checkForNewlyStaleSections(oldAe.getAnalysisEngineMetaData(), aeDescription
-                    .getAnalysisEngineMetaData());
+            .getAnalysisEngineMetaData());
     return true;
   }
 
@@ -1106,7 +1096,7 @@ public class MultiPageEditor extends FormEditor {
 
     // an array of TypeDescription objects (not TCAS), including imported ones
     TypeDescription[] oldTypes = (null == oldTsd || null == oldTsd.getTypes()) ? new TypeDescription[0]
-                    : oldTsd.getTypes();
+            : oldTsd.getTypes();
     HashMap oldTypeHash = new HashMap(oldTypes.length);
 
     for (int i = 0, length = oldTypes.length; i < length; i++) {
@@ -1176,7 +1166,7 @@ public class MultiPageEditor extends FormEditor {
     try {
       XMLSerializer xmlSerializer = new XMLSerializer(true);
       xmlSerializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", new Integer(
-                      MultiPageEditorContributor.getXMLindent()).toString());
+              MultiPageEditorContributor.getXMLindent()).toString());
       xmlSerializer.setWriter(writer);
       ContentHandler contentHandler = xmlSerializer.getContentHandler();
       contentHandler.startDocument();
@@ -1201,7 +1191,7 @@ public class MultiPageEditor extends FormEditor {
   public void updateSourceFromModel() {
     sourceTextEditor.setIgnoreTextEvent(true);
     IDocument doc = sourceTextEditor.getDocumentProvider().getDocument(
-                    sourceTextEditor.getEditorInput());
+            sourceTextEditor.getEditorInput());
     doc.set(prettyPrintModel());
     sourceTextEditor.setIgnoreTextEvent(false);
   }
@@ -1215,7 +1205,7 @@ public class MultiPageEditor extends FormEditor {
    * @throws ResourceInitializationException
    */
   public void setAeDescription(AnalysisEngineDescription aAnalysisEngineDescription)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     if (null == aAnalysisEngineDescription)
       throw new InternalErrorCDE(Messages.getString("MultiPageEditor.24")); //$NON-NLS-1$
     aeDescription = aAnalysisEngineDescription;
@@ -1224,7 +1214,7 @@ public class MultiPageEditor extends FormEditor {
       // we do this to keep resolvedDelegates update-able
       // The value from getDeletageAESpecs is an unmodifiable hash map
       resolvedDelegates.putAll(aeDescription
-                      .getDelegateAnalysisEngineSpecifiers(createResourceManager()));
+              .getDelegateAnalysisEngineSpecifiers(createResourceManager()));
     } catch (InvalidXMLException e) {
       throw new ResourceInitializationException(e);
     }
@@ -1237,10 +1227,10 @@ public class MultiPageEditor extends FormEditor {
     resolvedFlowControllerDeclaration = aeDescription.getFlowControllerDeclaration();
 
     setTypeSystemDescription(aeDescription.isPrimitive() ? aeDescription
-                    .getAnalysisEngineMetaData().getTypeSystem() : null); // aggregates have null
-                                                                          // tsd. If passed in one
-                                                                          // isn't null, make it
-                                                                          // null.
+            .getAnalysisEngineMetaData().getTypeSystem() : null); // aggregates have null
+    // tsd. If passed in one
+    // isn't null, make it
+    // null.
 
     // These come after setTypeSystemDescription call, even though
     // that call invokeds tcas validate, which uses the merged values for speedup
@@ -1265,7 +1255,7 @@ public class MultiPageEditor extends FormEditor {
   // note that this also updates merged type system
   // Also called for aggregate TAEs
   public void setTypeSystemDescription(TypeSystemDescription typeSystemDescription)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     boolean doValidation = true;
 
     this.typeSystemDescription = typeSystemDescription;
@@ -1275,7 +1265,7 @@ public class MultiPageEditor extends FormEditor {
     if (typeSystemDescription == null) {
       if (!isAggregate()) {
         this.typeSystemDescription = UIMAFramework.getResourceSpecifierFactory()
-                        .createTypeSystemDescription();
+                .createTypeSystemDescription();
         doValidation = false; // speed up by 1/3 second
       }
     }
@@ -1329,7 +1319,7 @@ public class MultiPageEditor extends FormEditor {
   // *********************************************************
 
   private void createAndLinkLocalProcessingDescriptorsToAe(CollectionReaderDescription d)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     aeDescription = UIMAFramework.getResourceSpecifierFactory().createAnalysisEngineDescription();
     aeDescription.setAnnotatorImplementationName(d.getImplementationName());
     aeDescription.setFrameworkImplementation(d.getFrameworkImplementation());
@@ -1337,7 +1327,7 @@ public class MultiPageEditor extends FormEditor {
   }
 
   private void createAndLinkLocalProcessingDescriptorsToAe(CasInitializerDescription d)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     aeDescription = UIMAFramework.getResourceSpecifierFactory().createAnalysisEngineDescription();
     aeDescription.setAnnotatorImplementationName(d.getImplementationName());
     aeDescription.setFrameworkImplementation(d.getFrameworkImplementation());
@@ -1345,7 +1335,7 @@ public class MultiPageEditor extends FormEditor {
   }
 
   private void createAndLinkLocalProcessingDescriptorsToAe(CasConsumerDescription d)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     aeDescription = UIMAFramework.getResourceSpecifierFactory().createAnalysisEngineDescription();
     aeDescription.setAnnotatorImplementationName(d.getImplementationName());
     aeDescription.setFrameworkImplementation(d.getFrameworkImplementation());
@@ -1353,7 +1343,7 @@ public class MultiPageEditor extends FormEditor {
   }
 
   private void createAndLinkLocalProcessingDescriptorsToAe(FlowControllerDescription d)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     aeDescription = UIMAFramework.getResourceSpecifierFactory().createAnalysisEngineDescription();
     aeDescription.setAnnotatorImplementationName(d.getImplementationName());
     aeDescription.setFrameworkImplementation(d.getFrameworkImplementation());
@@ -1361,7 +1351,7 @@ public class MultiPageEditor extends FormEditor {
   }
 
   private void linkLocalProcessingDescriptorsToAe(ResourceCreationSpecifier r)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     aeDescription.setExternalResourceDependencies(r.getExternalResourceDependencies());
     aeDescription.setMetaData(convertToAeMetaData(r.getMetaData()));
     aeDescription.setPrimitive(true);
@@ -1372,7 +1362,7 @@ public class MultiPageEditor extends FormEditor {
   private AnalysisEngineMetaData convertToAeMetaData(ResourceMetaData r) {
     ProcessingResourceMetaData p = (ProcessingResourceMetaData) r;
     AnalysisEngineMetaData d = UIMAFramework.getResourceSpecifierFactory()
-                    .createAnalysisEngineMetaData();
+            .createAnalysisEngineMetaData();
     d.setCapabilities(p.getCapabilities());
     d.setConfigurationParameterDeclarations(p.getConfigurationParameterDeclarations());
     d.setConfigurationParameterSettings(p.getConfigurationParameterSettings());
@@ -1390,7 +1380,7 @@ public class MultiPageEditor extends FormEditor {
 
   private ProcessingResourceMetaData convertFromAeMetaData(AnalysisEngineMetaData p) {
     ProcessingResourceMetaData d = UIMAFramework.getResourceSpecifierFactory()
-                    .createProcessingResourceMetaData();
+            .createProcessingResourceMetaData();
     d.setCapabilities(p.getCapabilities());
     d.setConfigurationParameterDeclarations(p.getConfigurationParameterDeclarations());
     d.setConfigurationParameterSettings(p.getConfigurationParameterSettings());
@@ -1407,31 +1397,31 @@ public class MultiPageEditor extends FormEditor {
   }
 
   private void setCollectionReaderDescription(CollectionReaderDescription d)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     collectionReaderDescription = d;
     createAndLinkLocalProcessingDescriptorsToAe(d);
   }
 
   private void setCasInitializerDescription(CasInitializerDescription d)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     casInitializerDescription = d;
     createAndLinkLocalProcessingDescriptorsToAe(d);
   }
 
   private void setCasConsumerDescription(CasConsumerDescription d)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     casConsumerDescription = d;
     createAndLinkLocalProcessingDescriptorsToAe(d);
   }
 
   private void setFlowControllerDescription(FlowControllerDescription d)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     flowControllerDescription = d;
     createAndLinkLocalProcessingDescriptorsToAe(d);
   }
 
   private void setTypePriorities(TypePriorities typePriorities)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     loadContext(typePriorities);
     aeDescription.getAnalysisEngineMetaData().setTypePriorities(typePriorities);
     setMergedTypePriorities();
@@ -1454,14 +1444,13 @@ public class MultiPageEditor extends FormEditor {
     try {
       try {
         contextFile = fileNeedingContext.getPersistentProperty(new QualifiedName(
-                        AbstractSection.PLUGIN_ID, AbstractSection.IMPORTABLE_PART_CONTEXT));
+                AbstractSection.PLUGIN_ID, AbstractSection.IMPORTABLE_PART_CONTEXT));
       } catch (CoreException e) {
         throw new InternalErrorCDE("unexpected exception", e);
       }
-      ContextForPartDialog dialog = new ContextForPartDialog(
-                      PlatformUI.getWorkbench().getDisplay().getShells()[0], // ok in Eclipse 3.0
-                      getFile().getProject().getParent(), thing, getFile().getLocation(), this,
-                      contextFile);
+      ContextForPartDialog dialog = new ContextForPartDialog(PlatformUI.getWorkbench().getDisplay()
+              .getShells()[0], // ok in Eclipse 3.0
+              getFile().getProject().getParent(), thing, getFile().getLocation(), this, contextFile);
       dialog.setTitle("File specifying context for editing importable part");
       if (dialog.open() == Window.CANCEL)
         throw new MultilevelCancel();
@@ -1470,10 +1459,10 @@ public class MultiPageEditor extends FormEditor {
 
       if (null == contextFile) {
         Utility
-                        .popMessage(
-                                        "Context Info",
-                                        "A context is required to edit this part.  However no context was supplied.  Editing will be cancelled",
-                                        Utility.INFORMATION);
+                .popMessage(
+                        "Context Info",
+                        "A context is required to edit this part.  However no context was supplied.  Editing will be cancelled",
+                        Utility.INFORMATION);
         throw new MultilevelCancel();
       } else {
         try {
@@ -1499,17 +1488,17 @@ public class MultiPageEditor extends FormEditor {
     } else {
       try {
         file.setPersistentProperty(new QualifiedName(AbstractSection.PLUGIN_ID,
-                        AbstractSection.IMPORTABLE_PART_CONTEXT), contextFile);
+                AbstractSection.IMPORTABLE_PART_CONTEXT), contextFile);
       } catch (CoreException e) {
         Utility.popMessage("Unexpected Exception", "While loading Context"
-                        + getMessagesToRootCause(e), Utility.ERROR);
+                + getMessagesToRootCause(e), Utility.ERROR);
         throw new InternalErrorCDE("Unexpected Exception:" + getMessagesToRootCause(e), e);
       }
     }
   }
 
   private void setFsIndexCollection(FsIndexCollection indexCollection)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     loadContext(indexCollection);
     aeDescription.getAnalysisEngineMetaData().setFsIndexCollection(indexCollection);
     setMergedFsIndexCollection();
@@ -1519,15 +1508,11 @@ public class MultiPageEditor extends FormEditor {
 
   private void showContextLoadFailureMessage(Exception e, String contextFile) {
     String m = Messages.getFormattedString("MultiPageEditor.IOError", //$NON-NLS-1$
-                    new String[] { AbstractSection.maybeShortenFileName(contextFile) })
-                    + Messages.getString("MultiPageEditor.10") + getMessagesToRootCause(e); //$NON-NLS-1$
-    Utility
-                    .popMessage(
-                                    "Cannot load context",
-                                    m
-                                                    + "\nCannot load the context file for this importable part due to an I/O exception"
-                                                    + " - proceeding without context",
-                                    Utility.WARNING);
+            new String[] { AbstractSection.maybeShortenFileName(contextFile) })
+            + Messages.getString("MultiPageEditor.10") + getMessagesToRootCause(e); //$NON-NLS-1$
+    Utility.popMessage("Cannot load context", m
+            + "\nCannot load the context file for this importable part due to an I/O exception"
+            + " - proceeding without context", Utility.WARNING);
   }
 
   /**
@@ -1537,7 +1522,7 @@ public class MultiPageEditor extends FormEditor {
    * @throws ResourceInitializationException
    */
   private void setExtResAndBindings(ResourceManagerConfiguration rb)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     loadContext(rb);
     aeDescription.setResourceManagerConfiguration(rb);
     try {
@@ -1622,7 +1607,7 @@ public class MultiPageEditor extends FormEditor {
   public Map getDelegateAEdescriptions(AnalysisEngineDescription aed) {
     Map result = new HashMap();
     AnalysisEngineDescription aedClone = (AnalysisEngineDescription) ((AnalysisEngineDescription_impl) aed)
-                    .clone();
+            .clone();
     try {
       result = aedClone.getDelegateAnalysisEngineSpecifiers(createResourceManager());
     } catch (InvalidXMLException e) {
@@ -1644,7 +1629,7 @@ public class MultiPageEditor extends FormEditor {
   public IProject getProject() {
     IFile iFile = getFile();
     if (null == iFile) // can be null when just creating the instance of the MPE, before init()
-                        // call
+      // call
       return null;
     return getFile().getProject();
   }
@@ -1696,7 +1681,7 @@ public class MultiPageEditor extends FormEditor {
     int commonPrefixLength = 0;
     for (int i = 0; i < maxLength; i++) {
       if (sFile1.charAt(i) != sFile2.charAt(i) || (i == maxLength - 1)) { // catch files which have
-                                                                          // same prefix
+        // same prefix
         for (int j = i; j >= 0; j--) {
           if (sFile1.charAt(j) == '/' || sFile1.charAt(j) == '\\') {
             commonPrefixLength = j + 1;
@@ -1766,8 +1751,8 @@ public class MultiPageEditor extends FormEditor {
     }
 
     return sEditorFileFullPath.substring(0,
-                    subDirMarkerLocs[nSubDirCount - nCountDirsToBackup - 1] + 1)
-                    + sFinalFragment;
+            subDirMarkerLocs[nSubDirCount - nCountDirsToBackup - 1] + 1)
+            + sFinalFragment;
   }
 
   public void open(IFile fileToOpen) {
@@ -1854,11 +1839,11 @@ public class MultiPageEditor extends FormEditor {
         public void run(IProgressMonitor progressMonitor) {
           try {
             jg.mainForCde(new MergerImpl(), new JCasGenProgressMonitor(progressMonitor),
-                            jCasGenThrower, inputFile, outputDirectory, types, (CASImpl) getTCAS());
+                    jCasGenThrower, inputFile, outputDirectory, types, (CASImpl) getTCAS());
           } catch (IOException e) {
             Utility.popMessage(Messages.getString("MultiPageEditor.25"), //$NON-NLS-1$
-                            Messages.getString("MultiPageEditor.26") //$NON-NLS-1$
-                                            + getMessagesToRootCause(e), MessageDialog.ERROR);
+                    Messages.getString("MultiPageEditor.26") //$NON-NLS-1$
+                            + getMessagesToRootCause(e), MessageDialog.ERROR);
           }
         }
       };
@@ -1868,16 +1853,14 @@ public class MultiPageEditor extends FormEditor {
       String jcasMsg = jCasGenThrower.getMessage();
       if (null != jcasMsg && jcasMsg.length() > 0) {
         Utility.popMessage(Messages.getString("MultiPageEditor.JCasGenErrorTitle"), //$NON-NLS-1$
-                        Messages.getFormattedString("MultiPageEditor.jcasGenErr", //$NON-NLS-1$
-                                        new String[] { jcasMsg }), MessageDialog.ERROR);
+                Messages.getFormattedString("MultiPageEditor.jcasGenErr", //$NON-NLS-1$
+                        new String[] { jcasMsg }), MessageDialog.ERROR);
         System.out.println(jcasMsg);
       }
     } catch (Exception ex) {
-      Utility.popMessage(
-                      Messages.getString("MultiPageEditor.JCasGenErrorTitle"), //$NON-NLS-1$
-                      Messages.getFormattedString("MultiPageEditor.jcasGenErr", //$NON-NLS-1$
-                                      new String[] { jCasGenThrower.getMessage() }),
-                      MessageDialog.ERROR);
+      Utility.popMessage(Messages.getString("MultiPageEditor.JCasGenErrorTitle"), //$NON-NLS-1$
+              Messages.getFormattedString("MultiPageEditor.jcasGenErr", //$NON-NLS-1$
+                      new String[] { jCasGenThrower.getMessage() }), MessageDialog.ERROR);
       ex.printStackTrace();
     }
   }
@@ -1921,8 +1904,7 @@ public class MultiPageEditor extends FormEditor {
       }
       if (null == checker
       // || null != checker.findResource("java/lang/Object.class") //$NON-NLS-1$
-                      || null != checker
-                                      .findResource("org/apache/uima/impl/UIMAFramework_impl.class")) //$NON-NLS-1$
+              || null != checker.findResource("org/apache/uima/impl/UIMAFramework_impl.class")) //$NON-NLS-1$
         continue;
       if (result.length() > 0)
         result = result.append(PATH_SEPARATOR);
@@ -1944,7 +1926,7 @@ public class MultiPageEditor extends FormEditor {
       for (int i = 0; i < frs.length; i++) {
         frs[i].open(null);
         IResource resource = frs[i].getResource(); // first folder resource will always be first
-                                                    // source folder
+        // source folder
         if (resource instanceof IFolder || resource instanceof IProject) {
           return resource;
         }
@@ -1998,7 +1980,7 @@ public class MultiPageEditor extends FormEditor {
       }
 
       TypeOrFeature[] oldIOs = (isValidateInputs) ? capabilities[0].getInputs() : capabilities[0]
-                      .getOutputs();
+              .getOutputs();
       Vector validIOs = new Vector();
       for (int i = 0; i < oldIOs.length; i++) {
         String typeName;
@@ -2070,7 +2052,7 @@ public class MultiPageEditor extends FormEditor {
    * Used by code to get lists of delegate components by input/output type specs.
    */
   public static ResourceSpecifier getDelegateResourceSpecifier(IFile iFile,
-                  String[] componentHeaders) {
+          String[] componentHeaders) {
     if (!iFile.getName().toLowerCase().endsWith(".xml")) { //$NON-NLS-1$
       return null;
     }
@@ -2106,8 +2088,8 @@ public class MultiPageEditor extends FormEditor {
       XMLInputSource input = new XMLInputSource(iFile.getLocation().toFile());
       XMLizable inputDescription = AbstractSection.parseDescriptor(input);
       if (inputDescription instanceof AnalysisEngineDescription
-                      || inputDescription instanceof CasConsumerDescription
-                      || inputDescription instanceof FlowControllerDescription)
+              || inputDescription instanceof CasConsumerDescription
+              || inputDescription instanceof FlowControllerDescription)
         return (ResourceCreationSpecifier) inputDescription;
       else if (inputDescription instanceof ResourceServiceSpecifier)
         return (ResourceSpecifier) inputDescription;
@@ -2159,7 +2141,7 @@ public class MultiPageEditor extends FormEditor {
   }
 
   public static class JCasGenProgressMonitor implements
-                  org.apache.uima.tools.jcasgen.IProgressMonitor {
+          org.apache.uima.tools.jcasgen.IProgressMonitor {
     IProgressMonitor m_progressMonitor;
 
     public JCasGenProgressMonitor(IProgressMonitor progressMonitor) {
@@ -2219,7 +2201,7 @@ public class MultiPageEditor extends FormEditor {
       Logger log = UIMAFramework.getLogger();
       log.log(logLevels[severity], "JCasGen: " + message); //$NON-NLS-1$
       System.out.println(Messages.getString("MultiPageEditor.JCasGenErr") //$NON-NLS-1$
-                      + message);
+              + message);
       if (null != ex)
         ex.printStackTrace();
       if (IError.WARN < severity) {
@@ -2261,13 +2243,13 @@ public class MultiPageEditor extends FormEditor {
     tsdc.clear();
     tsdc.add(tsd);
     importedTypeSystemDescription = CasCreationUtils
-                    .mergeTypeSystems(tsdc, createResourceManager());
+            .mergeTypeSystems(tsdc, createResourceManager());
   }
 
   public void setMergedTypeSystemDescription() throws ResourceInitializationException {
     if (isAggregate())
       mergedTypeSystemDescription = CasCreationUtils.mergeDelegateAnalysisEngineTypeSystems(
-                      (AnalysisEngineDescription) aeDescription.clone(), createResourceManager());
+              (AnalysisEngineDescription) aeDescription.clone(), createResourceManager());
     else {
       if (null == typeSystemDescription) {
         mergedTypeSystemDescription = null;
@@ -2295,7 +2277,7 @@ public class MultiPageEditor extends FormEditor {
 
   public void setMergedFsIndexCollection() throws ResourceInitializationException {
     mergedFsIndexCollection = CasCreationUtils.mergeDelegateAnalysisEngineFsIndexCollections(
-                    (AnalysisEngineDescription) aeDescription.clone(), createResourceManager());
+            (AnalysisEngineDescription) aeDescription.clone(), createResourceManager());
   }
 
   public void setMergedFsIndexCollection(FsIndexCollection saved) {
@@ -2309,7 +2291,7 @@ public class MultiPageEditor extends FormEditor {
   // full merge - including locally defined and imported ones
   public void setMergedTypePriorities() throws ResourceInitializationException {
     mergedTypePriorities = CasCreationUtils.mergeDelegateAnalysisEngineTypePriorities(
-                    (AnalysisEngineDescription) aeDescription.clone(), createResourceManager());
+            (AnalysisEngineDescription) aeDescription.clone(), createResourceManager());
   }
 
   public void setMergedTypePriorities(TypePriorities saved) {
@@ -2361,7 +2343,7 @@ public class MultiPageEditor extends FormEditor {
     AnalysisEngineDescription localAe = (AnalysisEngineDescription) aeDescription.clone();
     localAe.getAnalysisEngineMetaData().setFsIndexCollection(null);
     importedFsIndexCollection = CasCreationUtils.mergeDelegateAnalysisEngineFsIndexCollections(
-                    localAe, createResourceManager());
+            localAe, createResourceManager());
   }
 
   public FsIndexCollection getImportedFsIndexCollection() {
@@ -2375,7 +2357,7 @@ public class MultiPageEditor extends FormEditor {
     AnalysisEngineDescription localAe = (AnalysisEngineDescription) aeDescription.clone();
     localAe.getAnalysisEngineMetaData().setTypePriorities(null);
     importedTypePriorities = CasCreationUtils.mergeDelegateAnalysisEngineTypePriorities(localAe,
-                    createResourceManager());
+            createResourceManager());
   }
 
   public TypePriorities getImportedTypePriorities() {
@@ -2424,16 +2406,9 @@ public class MultiPageEditor extends FormEditor {
       try {
         return jp.findType(typename);
       } catch (JavaModelException e) {
-        Utility
-                        .popMessage(
-                                        "Unexpected Exception",
-                                        MessageFormat
-                                                        .format(
-                                                                        "Unexpected exception while getting type information for type ''{0}''. {1}",
-                                                                        new Object[] {
-                                                                            typename,
-                                                                            getMessagesToRootCause(e) }),
-                                        Utility.ERROR);
+        Utility.popMessage("Unexpected Exception", MessageFormat.format(
+                "Unexpected exception while getting type information for type ''{0}''. {1}",
+                new Object[] { typename, getMessagesToRootCause(e) }), Utility.ERROR);
         throw new InternalErrorCDE("unexpected exception", e);
       }
     return null;
@@ -2509,7 +2484,7 @@ public class MultiPageEditor extends FormEditor {
       }
       if (!resourcePath.startsWith("C:\\p\\j"))
         System.out.println(MessageFormat.format(" FALSE encloses resourcepath: ''{0}''",
-                        new Object[] { resourcePath }));
+                new Object[] { resourcePath }));
       return false;
     }
 

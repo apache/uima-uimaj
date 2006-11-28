@@ -58,13 +58,13 @@ public class CommonInputDialog extends AbstractDialogKeyVerify {
   private String result;
 
   public CommonInputDialog(AbstractSection aSection, String title, String dialogDescription,
-                  int aKind) {
+          int aKind) {
     super(aSection, title, dialogDescription);
     validation = aKind;
   }
 
   public CommonInputDialog(AbstractSection aSection, String title, String dialogDescription,
-                  int aKind, String aExisting) {
+          int aKind, String aExisting) {
     this(aSection, title, dialogDescription, aKind);
     existing = aExisting;
   }
@@ -109,7 +109,7 @@ public class CommonInputDialog extends AbstractDialogKeyVerify {
       return true;
 
     if ((!validateTrueFalse) && (!validateInteger) && (!validateFloat)
-                    && Character.isJavaIdentifierPart(ch))
+            && Character.isJavaIdentifierPart(ch))
       return true;
 
     if (validateLanguage && ch == '-')

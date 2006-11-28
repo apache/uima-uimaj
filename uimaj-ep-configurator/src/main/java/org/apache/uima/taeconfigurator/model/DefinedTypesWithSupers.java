@@ -49,7 +49,7 @@ public class DefinedTypesWithSupers extends AbstractModelPart {
   public Set get() {
     if (dirty) {
       update();
-      dirty = false;      
+      dirty = false;
     }
     return cachedResult;
   }

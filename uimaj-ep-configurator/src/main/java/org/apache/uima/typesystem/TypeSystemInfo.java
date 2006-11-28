@@ -43,7 +43,7 @@ public class TypeSystemInfo implements ITypeSystemInfo {
     fPackage = pkg;
     fName = name;
     fFullName = (fPackage != null && fPackage.length() > 0) ? fPackage + EXTENSION_SEPARATOR
-                    + fName : fName;
+            + fName : fName;
     // fPath = path;
   }
 

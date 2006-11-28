@@ -38,8 +38,8 @@ public class IndexImportSection extends ImportSection {
 
   public IndexImportSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Index Imports",
-                    "The following index definitions are included as part of this one."); // or !
-                                                                                          // DESCRIPTION
+            "The following index definitions are included as part of this one."); // or !
+    // DESCRIPTION
   }
 
   // **************************************
@@ -54,7 +54,7 @@ public class IndexImportSection extends ImportSection {
    */
   protected String getDescriptionFromImport(String source) throws InvalidXMLException, IOException {
     FsIndexCollection parsedImportItem = UIMAFramework.getXMLParser().parseFsIndexCollection(
-                    new XMLInputSource(source));
+            new XMLInputSource(source));
     return parsedImportItem.getDescription();
   }
 

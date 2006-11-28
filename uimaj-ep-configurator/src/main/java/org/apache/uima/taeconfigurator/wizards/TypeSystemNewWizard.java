@@ -33,9 +33,9 @@ import org.eclipse.ui.INewWizard;
 public class TypeSystemNewWizard extends AbstractNewWizard implements INewWizard {
 
   public static final String TYPESYSTEM_TEMPLATE = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
-                  + "<typeSystemDescription " + XMLNS_PART + "<name>{0}</name>\n"
-                  + "<description></description>\n" + "<version>1.0</version>\n"
-                  + "<vendor></vendor>\n" + "{1}" + "</typeSystemDescription>\n";
+          + "<typeSystemDescription " + XMLNS_PART + "<name>{0}</name>\n"
+          + "<description></description>\n" + "<version>1.0</version>\n" + "<vendor></vendor>\n"
+          + "{1}" + "</typeSystemDescription>\n";
 
   public TypeSystemNewWizard() {
     super("New Type System Descriptor File");

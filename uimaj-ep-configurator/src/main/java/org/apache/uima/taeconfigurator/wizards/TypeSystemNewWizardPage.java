@@ -31,7 +31,7 @@ public class TypeSystemNewWizardPage extends AbstractNewWizardPage {
 
   public TypeSystemNewWizardPage(ISelection selection) {
     super(selection, "big_t_s_.gif", "Type System Descriptor File",
-                    "Create a new Type System Descriptor file", "typeSystemDescriptor.xml");
+            "Create a new Type System Descriptor file", "typeSystemDescriptor.xml");
   }
 
 }

@@ -80,11 +80,10 @@ public class PickTaeForTypesDialog extends AbstractDialog {
    * @param parentShell
    */
   public PickTaeForTypesDialog(AbstractSection aSection, String aggregateFileName,
-                  java.util.List delegateComponentDescriptors,
-                  java.util.List delegateComponentDescriptions) {
+          java.util.List delegateComponentDescriptors, java.util.List delegateComponentDescriptions) {
 
     super(aSection, "Select Delegate Component Descriptor(s)",
-                    "Select one or more delegate components to add and press OK");
+            "Select one or more delegate components to add and press OK");
     m_aggregateFileName = aggregateFileName;
     m_DelegateComponentDescriptors = delegateComponentDescriptors;
     m_delegateComponentDescriptions = delegateComponentDescriptions;
@@ -116,7 +115,7 @@ public class PickTaeForTypesDialog extends AbstractDialog {
 
     if (bContainsConstituentsAlreadyInAggregate && bContainsAggregate) {
       specialMsgLabel
-                      .setText("(* indicates delegate component is already part of aggregate, ** is aggregate currently being configured)");
+              .setText("(* indicates delegate component is already part of aggregate, ** is aggregate currently being configured)");
     } else if (bContainsConstituentsAlreadyInAggregate) {
       specialMsgLabel.setText("(* indicates delegate component is already part of aggregate)");
     } else if (bContainsAggregate) {
@@ -126,7 +125,7 @@ public class PickTaeForTypesDialog extends AbstractDialog {
     createWideLabel(composite, "Delegate Component Description:");
 
     delegateComponentDescriptionText = new Text(composite, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL
-                    | SWT.BORDER);
+            | SWT.BORDER);
     delegateComponentDescriptionText.setLayoutData(new GridData(GridData.FILL_BOTH));
     GridData dcgd = new GridData(GridData.FILL_HORIZONTAL);
     dcgd.heightHint = 50;
@@ -149,9 +148,9 @@ public class PickTaeForTypesDialog extends AbstractDialog {
     // autoAddToFlowButton.setBackground(null);
 
     importByNameUI = newButton(composite, SWT.RADIO, "Import by Name",
-                    "Importing by name looks up the name on the classpath and datapath.");
+            "Importing by name looks up the name on the classpath and datapath.");
     importByLocationUI = newButton(composite, SWT.RADIO, "Import by Location",
-                    "Importing by location requires a relative or absolute URL");
+            "Importing by location requires a relative or absolute URL");
 
     String defaultBy = CDEpropertyPage.getImportByDefault(editor.getProject());
     if (defaultBy.equals("location")) {
@@ -168,10 +167,10 @@ public class PickTaeForTypesDialog extends AbstractDialog {
 
     int nSelectedAeIndex = delegateComponentListGUI.getSelectionIndices()[0];
     ResourceSpecifier rs = (ResourceSpecifier) m_delegateComponentDescriptions
-                    .get(nSelectedAeIndex);
+            .get(nSelectedAeIndex);
 
     String description = rs instanceof ResourceCreationSpecifier ? ((ResourceCreationSpecifier) rs)
-                    .getMetaData().getDescription() : "No Description - remote service descriptor";
+            .getMetaData().getDescription() : "No Description - remote service descriptor";
     delegateComponentDescriptionText.setText(convertNull(description));
 
     inputTypesList.removeAll();
@@ -241,7 +240,7 @@ public class PickTaeForTypesDialog extends AbstractDialog {
     for (int i = 0, j = 0; i < selIndices.length; i++) {
       if (!delegateComponentListGUI.getItem(selIndices[i]).endsWith("*")) {
         m_selectedDelegateComponentDescriptors[j] = (String) m_DelegateComponentDescriptors
-                        .get(selIndices[i]);
+                .get(selIndices[i]);
       }
     }
 

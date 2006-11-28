@@ -50,7 +50,7 @@ public class XMLConfiguration extends SourceViewerConfiguration {
   }
 
   public ITextDoubleClickStrategy getDoubleClickStrategy(ISourceViewer sourceViewer,
-                  String contentType) {
+          String contentType) {
     if (doubleClickStrategy == null)
       doubleClickStrategy = new XMLDoubleClickStrategy();
     return doubleClickStrategy;
@@ -60,7 +60,7 @@ public class XMLConfiguration extends SourceViewerConfiguration {
     if (scanner == null) {
       scanner = new XMLScanner(colorManager);
       scanner.setDefaultReturnToken(new Token(new TextAttribute(colorManager
-                      .getColor(IXMLColorConstants.DEFAULT))));
+              .getColor(IXMLColorConstants.DEFAULT))));
     }
     return scanner;
   }
@@ -69,7 +69,7 @@ public class XMLConfiguration extends SourceViewerConfiguration {
     if (tagScanner == null) {
       tagScanner = new XMLTagScanner(colorManager);
       tagScanner.setDefaultReturnToken(new Token(new TextAttribute(colorManager
-                      .getColor(IXMLColorConstants.TAG))));
+              .getColor(IXMLColorConstants.TAG))));
     }
     return tagScanner;
   }
@@ -86,7 +86,7 @@ public class XMLConfiguration extends SourceViewerConfiguration {
     reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 
     NonRuleBasedDamagerRepairer ndr = new NonRuleBasedDamagerRepairer(new TextAttribute(
-                    colorManager.getColor(IXMLColorConstants.XML_COMMENT)));
+            colorManager.getColor(IXMLColorConstants.XML_COMMENT)));
     reconciler.setDamager(ndr, XMLPartitionScanner.XML_COMMENT);
     reconciler.setRepairer(ndr, XMLPartitionScanner.XML_COMMENT);
 

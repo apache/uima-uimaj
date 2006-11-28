@@ -44,7 +44,7 @@ import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.apache.uima.util.XMLizable;
 
 public class ContextForPartDialog extends LimitedResourceSelectionDialog implements
-                ICheckStateListener {
+        ICheckStateListener {
 
   // private MultiPageEditor editor;
   private Text contextPathGUI;
@@ -56,8 +56,8 @@ public class ContextForPartDialog extends LimitedResourceSelectionDialog impleme
   private XMLizable tbe;
 
   public ContextForPartDialog(Shell parentShell, IAdaptable rootElement,
-                  XMLizable thingBeingEdited, IPath aExcludeDescriptor, MultiPageEditor aEditor,
-                  String aInitialPath) {
+          XMLizable thingBeingEdited, IPath aExcludeDescriptor, MultiPageEditor aEditor,
+          String aInitialPath) {
 
     super(parentShell, rootElement, "Context for importable part");
     // editor = aEditor;
@@ -77,31 +77,31 @@ public class ContextForPartDialog extends LimitedResourceSelectionDialog impleme
     AbstractSection.spacer(parent);
     Label instructions = new Label(parent, SWT.WRAP);
     instructions
-                    .setText(MessageFormat
-                                    .format(
-                                                    "You are about to edit a UIMA {0} descriptor.  \n"
-                                                                    + "In order to do this, you need to specify another UIMA descriptor, which will supply "
-                                                                    + "the needed context for this file.\n"
-                                                                    + "It can be any of the following kinds of descriptors:\n\n    "
-                                                                    + "{1}\n\n"
-                                                                    + "The file below is a suggested context.  \n\n"
-                                                                    + "     >>>  If it is correct, just push OK.  <<<\n\n"
-                                                                    + "Otherwise you can change it by overtyping it,\n"
-                                                                    + "or use the project explorer window below to pick the context file to use.",
-                                                    new Object[] {
-                                                        (tbe instanceof FsIndexCollection) ? "Index Definition"
-                                                                        : (tbe instanceof TypePriorities) ? "Type Priority Definition"
-                                                                                        : (tbe instanceof ResourceManagerConfiguration) ? "Resource Manager Configuration"
-                                                                                                        : "unhandled - error",
+            .setText(MessageFormat
+                    .format(
+                            "You are about to edit a UIMA {0} descriptor.  \n"
+                                    + "In order to do this, you need to specify another UIMA descriptor, which will supply "
+                                    + "the needed context for this file.\n"
+                                    + "It can be any of the following kinds of descriptors:\n\n    "
+                                    + "{1}\n\n"
+                                    + "The file below is a suggested context.  \n\n"
+                                    + "     >>>  If it is correct, just push OK.  <<<\n\n"
+                                    + "Otherwise you can change it by overtyping it,\n"
+                                    + "or use the project explorer window below to pick the context file to use.",
+                            new Object[] {
+                                (tbe instanceof FsIndexCollection) ? "Index Definition"
+                                        : (tbe instanceof TypePriorities) ? "Type Priority Definition"
+                                                : (tbe instanceof ResourceManagerConfiguration) ? "Resource Manager Configuration"
+                                                        : "unhandled - error",
 
-                                                        (tbe instanceof FsIndexCollection) ? "A Type System or any descriptor containing or "
-                                                                        + "importing the type system associated with this Index Definition,\n    other than a Collection Processing Engine"
-                                                                        : (tbe instanceof TypePriorities) ? "A Type System or any descriptor containing or "
-                                                                                        + "importing the type system associated with this TypePriority Definition,\n    other than a Collection Processing Engine"
-                                                                                        : (tbe instanceof ResourceManagerConfiguration) ? "A descriptor (such as an Analysis Engine) containing "
-                                                                                                        + "(directly or via aggregate delegates)\n    "
-                                                                                                        + "the External Resource Dependencies referenced by this Resource Manager Configuration"
-                                                                                                        : "unhandled - error" }));
+                                (tbe instanceof FsIndexCollection) ? "A Type System or any descriptor containing or "
+                                        + "importing the type system associated with this Index Definition,\n    other than a Collection Processing Engine"
+                                        : (tbe instanceof TypePriorities) ? "A Type System or any descriptor containing or "
+                                                + "importing the type system associated with this TypePriority Definition,\n    other than a Collection Processing Engine"
+                                                : (tbe instanceof ResourceManagerConfiguration) ? "A descriptor (such as an Analysis Engine) containing "
+                                                        + "(directly or via aggregate delegates)\n    "
+                                                        + "the External Resource Dependencies referenced by this Resource Manager Configuration"
+                                                        : "unhandled - error" }));
 
     AbstractSection.spacer(parent);
 
@@ -196,8 +196,7 @@ public class ContextForPartDialog extends LimitedResourceSelectionDialog impleme
       contextPathGUI.setText(((IFile) event.getElement()).getLocation().toString());
     }
     getOkButton().setEnabled(
-                    selectionGroup.getCheckedElementCount() > 0
-                                    || contextPathGUI.getText().length() > 0);
+            selectionGroup.getCheckedElementCount() > 0 || contextPathGUI.getText().length() > 0);
   }
 
   protected void initializeDialog() {

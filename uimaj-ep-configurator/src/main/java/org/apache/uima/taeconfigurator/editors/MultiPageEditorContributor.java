@@ -100,23 +100,23 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
       MultiPageEditorPart editor = (MultiPageEditorPart) part;
 
       actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), getAction(editor,
-                      ITextEditorActionConstants.DELETE));
+              ITextEditorActionConstants.DELETE));
       actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(), getAction(editor,
-                      ITextEditorActionConstants.UNDO));
+              ITextEditorActionConstants.UNDO));
       actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(), getAction(editor,
-                      ITextEditorActionConstants.REDO));
+              ITextEditorActionConstants.REDO));
       actionBars.setGlobalActionHandler(ActionFactory.CUT.getId(), getAction(editor,
-                      ITextEditorActionConstants.CUT));
+              ITextEditorActionConstants.CUT));
       actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), getAction(editor,
-                      ITextEditorActionConstants.COPY));
+              ITextEditorActionConstants.COPY));
       actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(), getAction(editor,
-                      ITextEditorActionConstants.PASTE));
+              ITextEditorActionConstants.PASTE));
       actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(), getAction(editor,
-                      ITextEditorActionConstants.SELECT_ALL));
+              ITextEditorActionConstants.SELECT_ALL));
       actionBars.setGlobalActionHandler(ActionFactory.FIND.getId(), getAction(editor,
-                      ITextEditorActionConstants.FIND));
+              ITextEditorActionConstants.FIND));
       actionBars.setGlobalActionHandler(IDEActionFactory.BOOKMARK.getId(), getAction(editor,
-                      IDEActionFactory.BOOKMARK.getId()));
+              IDEActionFactory.BOOKMARK.getId()));
       actionBars.updateActionBars();
     }
   }
@@ -134,23 +134,23 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
       ITextEditor textEditor = (part instanceof XMLEditor) ? (ITextEditor) part : null;
 
       actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), getAction1(textEditor,
-                      ITextEditorActionConstants.DELETE));
+              ITextEditorActionConstants.DELETE));
       actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(), getAction1(textEditor,
-                      ITextEditorActionConstants.UNDO));
+              ITextEditorActionConstants.UNDO));
       actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(), getAction1(textEditor,
-                      ITextEditorActionConstants.REDO));
+              ITextEditorActionConstants.REDO));
       actionBars.setGlobalActionHandler(ActionFactory.CUT.getId(), getAction1(textEditor,
-                      ITextEditorActionConstants.CUT));
+              ITextEditorActionConstants.CUT));
       actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), getAction1(textEditor,
-                      ITextEditorActionConstants.COPY));
+              ITextEditorActionConstants.COPY));
       actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(), getAction1(textEditor,
-                      ITextEditorActionConstants.PASTE));
+              ITextEditorActionConstants.PASTE));
       actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(), getAction1(textEditor,
-                      ITextEditorActionConstants.SELECT_ALL));
+              ITextEditorActionConstants.SELECT_ALL));
       actionBars.setGlobalActionHandler(ActionFactory.FIND.getId(), getAction1(textEditor,
-                      ITextEditorActionConstants.FIND));
+              ITextEditorActionConstants.FIND));
       actionBars.setGlobalActionHandler(IDEActionFactory.BOOKMARK.getId(), getAction1(textEditor,
-                      IDEActionFactory.BOOKMARK.getId()));
+              IDEActionFactory.BOOKMARK.getId()));
       actionBars.updateActionBars();
     }
   }
@@ -170,7 +170,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     runJCasGenAction = new Action() {
       public void run() {
         ((MultiPageEditor) activeEditorPart).doJCasGenChkSrc(null); // don't know how to get
-                                                                    // progress monitor
+        // progress monitor
       }
     };
 
@@ -179,7 +179,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
         TAEConfiguratorPlugin plugin = TAEConfiguratorPlugin.getDefault();
         Preferences prefs = plugin.getPluginPreferences();
         boolean bFullyQualifiedTypeNames = !prefs
-                        .getBoolean(PreferencePage.P_SHOW_FULLY_QUALIFIED_NAMES); //$NON-NLS-1$
+                .getBoolean(PreferencePage.P_SHOW_FULLY_QUALIFIED_NAMES); //$NON-NLS-1$
         qualifiedTypesAction.setChecked(bFullyQualifiedTypeNames);
         prefs.setValue(PreferencePage.P_SHOW_FULLY_QUALIFIED_NAMES, bFullyQualifiedTypeNames); //$NON-NLS-1$
 

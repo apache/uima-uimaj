@@ -51,7 +51,7 @@ public class MetaDataSection extends AbstractSection {
    */
   public MetaDataSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Overall Identification Information",
-                    "This section specifies the basic identification information for this descriptor");
+            "This section specifies the basic identification information for this descriptor");
   }
 
   public void initialize(IManagedForm form) {
@@ -64,7 +64,7 @@ public class MetaDataSection extends AbstractSection {
 
     // description enter field
     descriptionText = newDescriptionTextBox(sectionClient,
-                    "Enter a description of this component here.");
+            "Enter a description of this component here.");
     toolkit.paintBordersFor(sectionClient);
 
   }
@@ -106,7 +106,7 @@ public class MetaDataSection extends AbstractSection {
     dmd.setVersion(setValueChanged(versionText.getText(), dmd.getVersion()));
     dmd.setVendor(setValueChanged(vendorText.getText(), dmd.getVendor()));
     dmd.setDescription(setValueChanged(multiLineFix(descriptionText.getText()), dmd
-                    .getDescription()));
+            .getDescription()));
 
     if (valueChanged)
       setFileDirty();

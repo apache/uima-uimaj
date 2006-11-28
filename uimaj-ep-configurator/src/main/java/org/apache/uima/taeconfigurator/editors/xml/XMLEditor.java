@@ -100,7 +100,7 @@ public class XMLEditor extends TextEditor {
     SaveAsDialog dialog = new SaveAsDialog(shell);
 
     IFile original = (input instanceof IFileEditorInput) ? ((IFileEditorInput) input).getFile()
-                    : null;
+            : null;
     if (original != null)
       dialog.setOriginalFile(original);
 
@@ -140,7 +140,7 @@ public class XMLEditor extends TextEditor {
     WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
       public void execute(final IProgressMonitor monitor) throws CoreException {
         getDocumentProvider().saveDocument(monitor, newInput,
-                        getDocumentProvider().getDocument(getEditorInput()), true);
+                getDocumentProvider().getDocument(getEditorInput()), true);
       }
     };
 
@@ -157,11 +157,11 @@ public class XMLEditor extends TextEditor {
       Throwable targetException = x.getTargetException();
 
       String title = "Error saving"; // TextEditorMessages.getString("Editor.error.save.title");
-                                      // //$NON-NLS-1$
+      // //$NON-NLS-1$
       String msg = "Error occurred during save operation"; // MessageFormat.format(TextEditorMessages.getString("Editor.error.save.message"),
-                                                            // new Object[] {
-                                                            // targetException.getMessage()});
-                                                            // //$NON-NLS-1$
+      // new Object[] {
+      // targetException.getMessage()});
+      // //$NON-NLS-1$
 
       if (targetException instanceof CoreException) {
         CoreException coreException = (CoreException) targetException;

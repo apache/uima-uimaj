@@ -49,33 +49,34 @@ import org.eclipse.swt.widgets.TreeItem;
 public abstract class AbstractSectionParm extends AbstractSection {
 
   public final static String NOT_IN_ANY_GROUP = Messages
-                  .getString("AbstractSectionParm.notInAnyGroup"); //$NON-NLS-1$
+          .getString("AbstractSectionParm.notInAnyGroup"); //$NON-NLS-1$
 
   public final static String COMMON_GROUP = Messages.getString("AbstractSectionParm.common"); //$NON-NLS-1$
 
   // maintainers note: names below have extra trailing blanks to get them to approximately line up
   // where possible
   protected final static String DELEGATE_HEADER = Messages
-                  .getString("AbstractSectionParm.delegateKeyName"); //$NON-NLS-1$
+          .getString("AbstractSectionParm.delegateKeyName"); //$NON-NLS-1$
 
   protected final static String FLOWCTLR_HEADER = "Flow Controller Key Name: ";
 
   protected final static String GROUP_HEADER = Messages
-                  .getString("AbstractSectionParm.headerGroupNames"); //$NON-NLS-1$
+          .getString("AbstractSectionParm.headerGroupNames"); //$NON-NLS-1$
 
   protected final static String COMMON_GROUP_HEADER = Messages
-                  .getString("AbstractSectionParm.headerCommon"); //$NON-NLS-1$
+          .getString("AbstractSectionParm.headerCommon"); //$NON-NLS-1$
 
   protected final static String NOT_IN_ANY_GROUP_HEADER = Messages
-                  .getString("AbstractSectionParm.headerNotInAnyGroup"); //$NON-NLS-1$
+          .getString("AbstractSectionParm.headerNotInAnyGroup"); //$NON-NLS-1$
 
   protected final String OVERRIDE_HEADER = Messages.getString("AbstractSectionParm.overrides"); // nonstatic
-                                                                                                // for
-                                                                                                // easy
-                                                                                                // ref
-                                                                                                // in
-                                                                                                // subclass
-                                                                                                // //$NON-NLS-1$
+
+  // for
+  // easy
+  // ref
+  // in
+  // subclass
+  // //$NON-NLS-1$
 
   protected final static String MULTI_VALUE_INDICATOR = "Multi   "; //$NON-NLS-1$
 
@@ -125,7 +126,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
    * @param hasDescription
    */
   public AbstractSectionParm(MultiPageEditor aEditor, Composite parent, String header,
-                  String description) {
+          String description) {
     super(aEditor, parent, header, description);
   }
 
@@ -337,9 +338,9 @@ public abstract class AbstractSectionParm extends AbstractSection {
 
   protected String parmGuiString(ConfigurationParameter parm) {
     return ((parm.isMultiValued()) ? MULTI_VALUE_INDICATOR : SINGLE_VALUE_INDICATOR)
-                    + ((parm.isMandatory()) ? REQUIRED_INDICATOR : OPTIONAL_INDICATOR)
-                    + typeNamesW.get(parm.getType()) + " " + nameHeader + //$NON-NLS-1$
-                    (parm.getName());
+            + ((parm.isMandatory()) ? REQUIRED_INDICATOR : OPTIONAL_INDICATOR)
+            + typeNamesW.get(parm.getType()) + " " + nameHeader + //$NON-NLS-1$
+            (parm.getName());
   }
 
   protected void setGroupText(TreeItem groupItem, String names) {
@@ -403,13 +404,13 @@ public abstract class AbstractSectionParm extends AbstractSection {
     // is part of group but could be NOT_IN_ANY_GROUP
     if (null != settingsTree) {
       boolean isCommonOrNotInAnyGrp = COMMON_GROUP.equals(getName(group))
-                      || NOT_IN_ANY_GROUP.equals(getName(group));
+              || NOT_IN_ANY_GROUP.equals(getName(group));
       TreeItem[] groups = getSettingsGroups(group);
       for (int i = 0; i < groups.length; i++) {
         // this next test tries to add parms so that common ones come at the end,
         // and non-common ones come before the start of common ones.
         TreeItem newParmGuiItem = (isCommonOrNotInAnyGrp) ? new TreeItem(groups[i], SWT.NONE)
-                        : new TreeItem(groups[i], SWT.NONE, 0);
+                : new TreeItem(groups[i], SWT.NONE, 0);
         fillParmItem(newParmGuiItem, newCP);
       }
     }
@@ -437,14 +438,14 @@ public abstract class AbstractSectionParm extends AbstractSection {
   protected boolean isParameter(TreeItem item) {
     String s = item.getText();
     return (!isGroup(item) && !s.startsWith(DELEGATE_HEADER) && !s.startsWith(FLOWCTLR_HEADER) && !item
-                    .getText().startsWith(OVERRIDE_HEADER));
+            .getText().startsWith(OVERRIDE_HEADER));
   }
 
   // Note: rest of code considers NOT_IN_ANY_GROUP to be a kind of group
   protected boolean isGroup(TreeItem item) {
     String s = item.getText();
     return s.startsWith(GROUP_HEADER) || s.startsWith(COMMON_GROUP_HEADER)
-                    || s.startsWith(NOT_IN_ANY_GROUP_HEADER);
+            || s.startsWith(NOT_IN_ANY_GROUP_HEADER);
   }
 
   protected boolean isNOT_IN_ANY_GROUP(TreeItem item) {
@@ -519,16 +520,16 @@ public abstract class AbstractSectionParm extends AbstractSection {
       return new TreeItem[] { findMatchingParm(settingsTree.getItems()[0], sourceItemName) };
 
     TreeItem[] groups = getSettingsGroups((null == containingGroup) ? tree.getItems()[1] // use
-                                                                                          // common
-                                                                                          // group,
-                                                                                          // will
-                                                                                          // return
-                                                                                          // all
-                                                                                          // groups
-                                                                                          // in
-                                                                                          // settings
-                                                                                          // pg
-                    : containingGroup);
+            // common
+            // group,
+            // will
+            // return
+            // all
+            // groups
+            // in
+            // settings
+            // pg
+            : containingGroup);
     TreeItem[] results = new TreeItem[groups.length];
 
     for (int i = 0; i < groups.length; i++) {
@@ -639,7 +640,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
     String groupName = getName(parent.getText());
     if (!groupName.equals(NOT_IN_ANY_GROUP)) {
       String[] groupNames = (getName(parent.getText()).equals(COMMON_GROUP)) ? getAllGroupNames()
-                      : getCorrespondingModelGroup(parent).getNameArray();
+              : getCorrespondingModelGroup(parent).getNameArray();
 
       for (int i = 0; i < groupNames.length; i++) {
         modelSettings.setParameterValue(groupNames[i], parmName, null);
@@ -661,10 +662,10 @@ public abstract class AbstractSectionParm extends AbstractSection {
   }
 
   public void updateParmInSettingsGUI(ConfigurationParameter existingCP, TreeItem existingTreeItem,
-                  String prevName) {
+          String prevName) {
     if (null != settings) {
       TreeItem[] settingsTreeParms = getSettingsParameter(existingTreeItem.getParentItem(),
-                      prevName);
+              prevName);
       for (int i = 0; i < settingsTreeParms.length; i++) {
         fillParmItem(settingsTreeParms[i], existingCP);
       }
@@ -734,7 +735,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
    * @param cps
    */
   public void removeIncludedParmSettingsFromMultipleGroups(String[] groupNames,
-                  ConfigurationParameter[] cps) {
+          ConfigurationParameter[] cps) {
     for (int j = 0; j < groupNames.length; j++) {
       removeIncludedParmSettingsFromSingleGroup(groupNames[j], cps);
     }
@@ -747,7 +748,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
    *          particular group, or a set of items from different groups
    */
   public void removeIncludedParmSettingsFromSingleGroup(String groupName,
-                  ConfigurationParameter[] cps) {
+          ConfigurationParameter[] cps) {
     ConfigurationParameterSettings modelSettings = getModelSettings();
     // modelSettings.setParameterValue()
     if (groupName.equals(COMMON_GROUP))

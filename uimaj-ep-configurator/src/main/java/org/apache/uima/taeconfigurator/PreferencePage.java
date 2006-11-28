@@ -58,18 +58,18 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 
   public void createFieldEditors() {
     addField(new BooleanFieldEditor(P_JCAS, "&Automatically run JCasGen when Types change",
-                    getFieldEditorParent()));
+            getFieldEditorParent()));
 
     addField(new BooleanFieldEditor(P_SHOW_FULLY_QUALIFIED_NAMES, "&Show fully qualified names",
-                    getFieldEditorParent()));
+            getFieldEditorParent()));
 
     addField(new IntegerFieldEditor(P_XML_TAB_SPACES, "&XML indentation", getFieldEditorParent()));
 
     addField(new StringFieldEditor(P_VNS_HOST, "&Vinci Name Service Host IP address",
-                    getFieldEditorParent()));
+            getFieldEditorParent()));
 
     addField(new StringFieldEditor(P_VNS_PORT, "Vinci NameService &Port number",
-                    getFieldEditorParent()));
+            getFieldEditorParent()));
   }
 
   public void init(IWorkbench workbench) {

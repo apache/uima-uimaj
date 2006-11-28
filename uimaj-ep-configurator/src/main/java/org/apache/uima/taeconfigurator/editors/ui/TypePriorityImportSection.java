@@ -37,7 +37,7 @@ public class TypePriorityImportSection extends ImportSection {
 
   public TypePriorityImportSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Type Priority Imports",
-                    "The following type priority imports are included as part of the type priorities:");
+            "The following type priority imports are included as part of the type priorities:");
   }
 
   // **************************************
@@ -52,7 +52,7 @@ public class TypePriorityImportSection extends ImportSection {
    */
   protected String getDescriptionFromImport(String source) throws InvalidXMLException, IOException {
     TypePriorities parsedImportItem = UIMAFramework.getXMLParser().parseTypePriorities(
-                    new XMLInputSource(source));
+            new XMLInputSource(source));
     return parsedImportItem.getDescription();
   }
 

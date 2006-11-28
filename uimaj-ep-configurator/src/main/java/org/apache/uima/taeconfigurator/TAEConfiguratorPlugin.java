@@ -74,7 +74,7 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
   static {
     Bundle bundle = Platform.getBundle("org.eclipse.platform");
     String versionString = (String) bundle.getHeaders().get(
-                    org.osgi.framework.Constants.BUNDLE_VERSION);
+            org.osgi.framework.Constants.BUNDLE_VERSION);
     PluginVersionIdentifier version = new PluginVersionIdentifier(versionString);
     eclipseVersionMajor = version.getMajorComponent();
     eclipseVersionMinor = version.getMinorComponent();

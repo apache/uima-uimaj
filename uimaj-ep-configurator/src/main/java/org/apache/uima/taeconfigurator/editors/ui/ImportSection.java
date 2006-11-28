@@ -61,7 +61,7 @@ public abstract class ImportSection extends AbstractSection {
   protected abstract void finishImportChangeAction();
 
   protected abstract String getDescriptionFromImport(String source) throws InvalidXMLException,
-                  IOException;
+          IOException;
 
   protected abstract boolean isAppropriate(); // if false, don't show section
 
@@ -107,9 +107,9 @@ public abstract class ImportSection extends AbstractSection {
 
     addButton = newPushButton(buttonContainer, "Add...", "Click here to add an import");
     removeButton = newPushButton(buttonContainer, "Remove",
-                    "Click here to remove the selected import.");
+            "Click here to remove the selected import.");
     setDataPathButton = newPushButton(buttonContainer, "Set DataPath",
-                    "Click here to view or set the data path to use when resolving imports by name.");
+            "Click here to view or set the data path to use when resolving imports by name.");
     importTable = newTable(sectionClient, SWT.FULL_SELECTION, NO_MIN_HEIGHT);
 
     newTableColumn(importTable).setText("Kind");
@@ -184,7 +184,7 @@ public abstract class ImportSection extends AbstractSection {
     Import[] oldImports = getModelImportArray();
 
     setModelImportArray((Import[]) Utility.removeElementFromArray(oldImports,
-                    oldImports[nSelectedIndex], Import.class));
+            oldImports[nSelectedIndex], Import.class));
 
     if (!isValidImport("Error Removing Import", "An error was caused by removing an import.")) {
       setModelImportArray(oldImports);
@@ -201,10 +201,10 @@ public abstract class ImportSection extends AbstractSection {
 
   private void handleSetDataPath() {
     CommonInputDialog dialog = new CommonInputDialog(
-                    this,
-                    "Set DataPath",
-                    "The DataPath is a series of locations which will be used when looking up imports and external resources.\nEnter a series of absolute path names, separated by the character used to separate classpath names on this platform.",
-                    CommonInputDialog.ALLOK, CDEpropertyPage.getDataPath(editor.getProject()));
+            this,
+            "Set DataPath",
+            "The DataPath is a series of locations which will be used when looking up imports and external resources.\nEnter a series of absolute path names, separated by the character used to separate classpath names on this platform.",
+            CommonInputDialog.ALLOK, CDEpropertyPage.getDataPath(editor.getProject()));
     if (dialog.open() == Window.CANCEL)
       return;
     CDEpropertyPage.setDataPath(editor.getProject(), dialog.getValue());
@@ -213,8 +213,8 @@ public abstract class ImportSection extends AbstractSection {
   private void handleAdd() {
     Shell shell = getSection().getShell();
     MultiResourceSelectionDialog dialog = new MultiResourceSelectionDialog(shell, editor.getFile()
-                    .getProject().getParent(), "Select one or more descriptor files to import:",
-                    editor.getFile().getLocation(), editor);
+            .getProject().getParent(), "Select one or more descriptor files to import:", editor
+            .getFile().getLocation(), editor);
     dialog.setTitle("Import File(s) Selection");
     if (dialog.open() == Window.CANCEL)
       return;
@@ -266,8 +266,8 @@ public abstract class ImportSection extends AbstractSection {
     setModelImportArray(newImports);
 
     if (!isValidImport(
-                    "Error Adding Import(s)",
-                    "An error was caused by adding Import(s); operation cancelled.  Please correct the error and retry.")) {
+            "Error Adding Import(s)",
+            "An error was caused by adding Import(s); operation cancelled.  Please correct the error and retry.")) {
       setModelImportArray(currentImports);
       return false;
     }
@@ -279,14 +279,12 @@ public abstract class ImportSection extends AbstractSection {
     currentFileBeingEdited = editor.getDescriptorRelativePath(currentFileBeingEdited);
     if (currentFileBeingEdited.equals(imp.getLocation())) {
       Utility
-                      .popMessage(
-                                      "Error - importing self",
-                                      MessageFormat
-                                                      .format(
-                                                                      "The import {0} is the same as the current file being edited. A file can''t be imported into itself.",
-                                                                      new Object[] { imp
-                                                                                      .getLocation() }),
-                                      MessageDialog.ERROR);
+              .popMessage(
+                      "Error - importing self",
+                      MessageFormat
+                              .format(
+                                      "The import {0} is the same as the current file being edited. A file can''t be imported into itself.",
+                                      new Object[] { imp.getLocation() }), MessageDialog.ERROR);
       return true;
     }
 
@@ -295,10 +293,9 @@ public abstract class ImportSection extends AbstractSection {
       return false;
     for (int i = 0; i < currentImports.length; i++) {
       if (currentImports[i].equals(imp)) {
-        Utility.popMessage("Error - duplicate import",
-                        MessageFormat.format("The import {0} is already present",
-                                        new Object[] { null != imp.getName() ? imp.getName() : imp
-                                                        .getLocation() }), MessageDialog.ERROR);
+        Utility.popMessage("Error - duplicate import", MessageFormat.format(
+                "The import {0} is already present", new Object[] { null != imp.getName() ? imp
+                        .getName() : imp.getLocation() }), MessageDialog.ERROR);
         return true;
       }
     }
@@ -328,7 +325,7 @@ public abstract class ImportSection extends AbstractSection {
 
       long lCurrentTimeInMillis = System.currentTimeMillis();
       if (item == lastTableHoverItem
-                      && lCurrentTimeInMillis - lLastTableHoverMillis < TABLE_HOVER_REQUERY_TIME) {
+              && lCurrentTimeInMillis - lLastTableHoverMillis < TABLE_HOVER_REQUERY_TIME) {
         sDesc = sLastTableHoverHelp;
       } else {
         int itemIndex = (event.y - importTable.getHeaderHeight()) / importTable.getItemHeight();
@@ -338,7 +335,7 @@ public abstract class ImportSection extends AbstractSection {
         Import[] importItems = getModelImportArray();
         if (itemIndex < 0 || itemIndex >= importItems.length) {
           System.err.println("***ERROR Item index hover out of range" + itemIndex
-                          + ", size of array = " + importItems.length);
+                  + ", size of array = " + importItems.length);
           System.err.println(this.getClass().getName());
           return;
         }
@@ -398,9 +395,9 @@ public abstract class ImportSection extends AbstractSection {
       setFileDirty(); // do as soon as file changes, in case later error aborts processing
       Import imp = createImport(dialog.genFilePath, dialog.isImportByName);
       setModelImportArray((Import[]) Utility.addElementToArray(getModelImportArray(), imp,
-                      Import.class));
+              Import.class));
       isValidImport("Error Exporting a part and Importing it",
-                      "An unexpected error was caused by the export operation");
+              "An unexpected error was caused by the export operation");
       refresh();
       Object file = editor.getIFileOrFile(dialog.genFilePath);
       if (file instanceof IFile) {
@@ -408,8 +405,8 @@ public abstract class ImportSection extends AbstractSection {
           IFile ifile = (IFile) file;
           ifile.refreshLocal(1, null);
           ((IFile) file).setPersistentProperty(
-                          new QualifiedName(PLUGIN_ID, IMPORTABLE_PART_CONTEXT), editor.getFile()
-                                          .getLocation().toString());
+                  new QualifiedName(PLUGIN_ID, IMPORTABLE_PART_CONTEXT), editor.getFile()
+                          .getLocation().toString());
         } catch (CoreException e) {
           throw new InternalErrorCDE("unexpected exception", e);
         }

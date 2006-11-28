@@ -58,9 +58,9 @@ public class CDEpropertyPage extends PropertyPage {
 
     Label instructions = new Label(composite, SWT.WRAP);
     instructions
-                    .setText("Enter the data path to use for finding resources by name;\n"
-                                    + "This is a series of absolute paths, separated by\n"
-                                    + "whatever character this platform uses for path separation (similar to class paths).\n\n");
+            .setText("Enter the data path to use for finding resources by name;\n"
+                    + "This is a series of absolute paths, separated by\n"
+                    + "whatever character this platform uses for path separation (similar to class paths).\n\n");
     GridData gd = new GridData(GridData.FILL_HORIZONTAL);
     gd.horizontalSpan = 2;
     gd.grabExcessHorizontalSpace = true;
@@ -74,7 +74,7 @@ public class CDEpropertyPage extends PropertyPage {
 
     try {
       String dataPath = ((IResource) getElement()).getPersistentProperty(new QualifiedName("",
-                      DATAPATH_PROPERTY_KEY));
+              DATAPATH_PROPERTY_KEY));
       dataPathUI.setText((dataPath != null) ? dataPath : DEFAULT_DATAPATH);
     } catch (CoreException e) {
       dataPathUI.setText(DEFAULT_DATAPATH);
@@ -104,7 +104,7 @@ public class CDEpropertyPage extends PropertyPage {
     // store the value in the owner text field
     try {
       ((IResource) getElement()).setPersistentProperty(
-                      new QualifiedName("", DATAPATH_PROPERTY_KEY), dataPathUI.getText());
+              new QualifiedName("", DATAPATH_PROPERTY_KEY), dataPathUI.getText());
     } catch (CoreException e) {
       return false;
     }

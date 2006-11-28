@@ -122,10 +122,10 @@ public class CapabilitySection extends AbstractSection {
 
   public CapabilitySection(MultiPageEditor aEditor, Composite parent) {
     super(
-                    aEditor,
-                    parent,
-                    "Component Capabilities",
-                    "This section describes the languages handled, and the inputs needed and outputs provided in terms of the Types and Features.");
+            aEditor,
+            parent,
+            "Component Capabilities",
+            "This section describes the languages handled, and the inputs needed and outputs provided in terms of the Types and Features.");
   }
 
   public void initialize(IManagedForm form) {
@@ -151,21 +151,21 @@ public class CapabilitySection extends AbstractSection {
 
     final Composite buttonContainer = newButtonContainer(sectionClient);
     addCapabilityButton = newPushButton(
-                    buttonContainer,
-                    "Add Capability Set",
-                    "Analysis Engines can have one or more sets of capabilities; each one describes a set of outputs that are produced, given a particular set of inputs. Click here to add a capability set.");
+            buttonContainer,
+            "Add Capability Set",
+            "Analysis Engines can have one or more sets of capabilities; each one describes a set of outputs that are produced, given a particular set of inputs. Click here to add a capability set.");
     addLangButton = newPushButton(buttonContainer, "Add Language",
-                    "Click here to add a Language Capability to the selected set.");
+            "Click here to add a Language Capability to the selected set.");
     addTypeButton = newPushButton(buttonContainer, "Add Type",
-                    "Click here to add a Type to the selected capability set.");
+            "Click here to add a Type to the selected capability set.");
     addSofaButton = newPushButton(buttonContainer, "Add Sofa",
-                    "Click here to add a Subject of Analysis (Sofa) to the selected capability set.");
+            "Click here to add a Subject of Analysis (Sofa) to the selected capability set.");
     addEditFeatureButton = newPushButton(buttonContainer, "Add/Edit Features",
-                    "Click here to specify the features of a selected type as input or output");
+            "Click here to specify the features of a selected type as input or output");
     editButton = newPushButton(buttonContainer, S_EDIT,
-                    "Edit the selected item. You can also double-click the item to edit it.");
+            "Edit the selected item. You can also double-click the item to edit it.");
     removeButton = newPushButton(buttonContainer, "Remove",
-                    "Remove the selected item.  You can also press the Delete key to remove an item.");
+            "Remove the selected item.  You can also press the Delete key to remove an item.");
   }
 
   /*
@@ -286,7 +286,7 @@ public class CapabilitySection extends AbstractSection {
           }
         } else {
           tc = getTypeCapability(getTypeNameFromFullFeatureName(name)); // create a typecapability
-                                                                        // if one doesn't exist
+          // if one doesn't exist
           fc = getFeatureCapability(tc, getShortFeatureName(name));
           fc.isInputFeature = true;
         }
@@ -408,7 +408,7 @@ public class CapabilitySection extends AbstractSection {
     } else if (event.widget == editButton || event.type == SWT.MouseDoubleClick) {
       handleEdit(selItem, itemKind);
     } else if (event.widget == removeButton
-                    || (event.widget == tt.getTable() && event.type == SWT.KeyUp && event.character == SWT.DEL)) {
+            || (event.widget == tt.getTable() && event.type == SWT.KeyUp && event.character == SWT.DEL)) {
       handleRemove(selItem, itemKind);
     }
 
@@ -484,10 +484,10 @@ public class CapabilitySection extends AbstractSection {
         // if switch from input to output, delete from one array, add to other,
         // mappings: no change (maybe the user switches the other items too).
         if (Window.CANCEL == Utility
-                        .popOkCancel(
-                                        "Confirm Change to all Capability Sets",
-                                        "This edit operation will change the Sofa in all Capability Sets in which it is defined.  Please confirm.",
-                                        MessageDialog.WARNING))
+                .popOkCancel(
+                        "Confirm Change to all Capability Sets",
+                        "This edit operation will change the Sofa in all Capability Sets in which it is defined.  Please confirm.",
+                        MessageDialog.WARNING))
           return;
         final Capability[] cSets = getCapabilities();
         for (int i = 0; i < cSets.length; i++) {
@@ -495,11 +495,11 @@ public class CapabilitySection extends AbstractSection {
           String[] prevSofas;
           if (existingIsInput) {
             cSets[i].setInputSofas((String[]) Utility.removeElementsFromArray(prevSofas = cSets[i]
-                            .getInputSofas(), existingSofaName, String.class));
+                    .getInputSofas(), existingSofaName, String.class));
             wasRemoved = prevSofas != cSets[i].getInputSofas();
           } else {
             cSets[i].setOutputSofas((String[]) Utility.removeElementsFromArray(prevSofas = cSets[i]
-                            .getOutputSofas(), existingSofaName, String.class));
+                    .getOutputSofas(), existingSofaName, String.class));
             wasRemoved = prevSofas != cSets[i].getOutputSofas();
           }
           if (wasRemoved) {
@@ -570,10 +570,10 @@ public class CapabilitySection extends AbstractSection {
       }
       case LANG_ITEM: {
         CommonInputDialog dialog = new CommonInputDialog(
-                        this,
-                        "Edit Language",
-                        "Enter a two letter ISO-639 language code, followed optionally by a two-letter ISO-3166 country code (Examples: fr or fr-CA)",
-                        CommonInputDialog.LANGUAGE, editItem.getText(NAME_COL));
+                this,
+                "Edit Language",
+                "Enter a two letter ISO-639 language code, followed optionally by a two-letter ISO-3166 country code (Examples: fr or fr-CA)",
+                CommonInputDialog.LANGUAGE, editItem.getText(NAME_COL));
         if (dialogForLanguage(c, dialog) == Window.CANCEL)
           return;
         c.getLanguagesSupported()[getIndex(editItem)] = dialog.getValue();
@@ -621,8 +621,8 @@ public class CapabilitySection extends AbstractSection {
     switch (itemKind) {
       case CS: {
         if (Window.CANCEL == Utility.popOkCancel("Confirm Remove",
-                        "This action will remove an entire capability set.  Please confirm.",
-                        MessageDialog.WARNING)) {
+                "This action will remove an entire capability set.  Please confirm.",
+                MessageDialog.WARNING)) {
           table.setSelection(table.getSelectionIndex() + 1);
           return;
         }
@@ -632,17 +632,16 @@ public class CapabilitySection extends AbstractSection {
       }
       case LANG_ITEM: {
         c.setLanguagesSupported(stringArrayRemove(c.getLanguagesSupported(), removeItem
-                        .getText(NAME_COL)));
+                .getText(NAME_COL)));
         removeItem.dispose();
         break;
       }
       case SOFA_ITEM: {
         if (Window.CANCEL == Utility
-                        .popOkCancel(
-                                        "Confirm Removal of Sofa",
-                                        "This action will remove this Sofa as a capability, and delete its mappings if no other capability set declares this Sofa."
-                                                        + "  Please confirm.",
-                                        MessageDialog.WARNING)) {
+                .popOkCancel(
+                        "Confirm Removal of Sofa",
+                        "This action will remove this Sofa as a capability, and delete its mappings if no other capability set declares this Sofa."
+                                + "  Please confirm.", MessageDialog.WARNING)) {
           table.setSelection(table.getSelectionIndex() + 1);
           return;
         }
@@ -650,10 +649,10 @@ public class CapabilitySection extends AbstractSection {
         boolean isInput = INPUT.equals(removeItem.getText(INPUT_COL));
         if (isInput)
           c.setInputSofas((String[]) Utility.removeElementFromArray(c.getInputSofas(), sofaName,
-                          String.class));
+                  String.class));
         else
           c.setOutputSofas((String[]) Utility.removeElementFromArray(c.getOutputSofas(), sofaName,
-                          String.class));
+                  String.class));
         removeItem.dispose();
 
         if (!anyCapabilitySetDeclaresSofa(sofaName, isInput)) {
@@ -667,8 +666,8 @@ public class CapabilitySection extends AbstractSection {
             }
           };
           editor.getAeDescription().setSofaMappings(
-                          (SofaMapping[]) Utility.removeElementsFromArray(getSofaMappings(),
-                                          sofaName, SofaMapping.class, comparator));
+                  (SofaMapping[]) Utility.removeElementsFromArray(getSofaMappings(), sofaName,
+                          SofaMapping.class, comparator));
 
           sofaMapSection.markStale();
         }
@@ -676,8 +675,8 @@ public class CapabilitySection extends AbstractSection {
       }
       case TYPE: {
         if (Window.CANCEL == Utility.popOkCancel("Confirm Removal of Type",
-                        "This action will remove this type as a capability.  Please confirm.",
-                        MessageDialog.WARNING)) {
+                "This action will remove this type as a capability.  Please confirm.",
+                MessageDialog.WARNING)) {
           table.setSelection(table.getSelectionIndex() + 1);
           return;
         }
@@ -738,17 +737,17 @@ public class CapabilitySection extends AbstractSection {
     if (shortFeatureName.equals(ALL_FEATURES)) {
       if (isInput(removeItem)) {
         TypeOrFeature tfItem = getTypeOrFeature(c.getInputs(), getFullyQualifiedName(removeItem
-                        .getParentItem()));
+                .getParentItem()));
         tfItem.setAllAnnotatorFeatures(false);
       }
       if (isOutput(removeItem) /* || isUpdate(removeItem) */) {
         TypeOrFeature tfItem = getTypeOrFeature(c.getOutputs(), getFullyQualifiedName(removeItem
-                        .getParentItem()));
+                .getParentItem()));
         tfItem.setAllAnnotatorFeatures(false);
       }
     } else {
       String featureNameToRemove = getFullyQualifiedName(removeItem.getParentItem()) + ":"
-                      + removeItem.getText(NAME_COL);
+              + removeItem.getText(NAME_COL);
       if (isInput(removeItem))
         c.setInputs(typeOrFeatureArrayRemove(c.getInputs(), featureNameToRemove));
       if (isOutput(removeItem) /* || isUpdate(removeItem) */)
@@ -772,10 +771,10 @@ public class CapabilitySection extends AbstractSection {
       selItem = selItem.getParentItem().getParentItem().getItems()[0];
     Capability c = getCapabilityFromTableTreeItem(selItem.getParentItem());
     CommonInputDialog dialog = new CommonInputDialog(
-                    this,
-                    "Add Language",
-                    "Enter a two letter ISO-639 language code, followed optionally by a two-letter ISO-3166 country code (Examples: fr or fr-CA)",
-                    CommonInputDialog.LANGUAGE);
+            this,
+            "Add Language",
+            "Enter a two letter ISO-639 language code, followed optionally by a two-letter ISO-3166 country code (Examples: fr or fr-CA)",
+            CommonInputDialog.LANGUAGE);
     if (dialogForLanguage(c, dialog) == Window.CANCEL)
       return;
 
@@ -872,8 +871,8 @@ public class CapabilitySection extends AbstractSection {
   }
 
   private void addOrEditFeature(AddCapabilityFeatureDialog dialog, String typeName, // fully
-                                                                                    // qualified
-                  TableTreeItem parentItem, Capability c) {
+          // qualified
+          TableTreeItem parentItem, Capability c) {
     // set the <all features> flag on the type in the model, for input and output
     c.setInputs(setAllFeatures(c.getInputs(), typeName, dialog.allFeaturesInput));
     // The logic for output features is complicated. Output features are always listed in the
@@ -888,11 +887,11 @@ public class CapabilitySection extends AbstractSection {
     // For the "all features" case, we can't set an output state for all features on an input type.
     if (dialog.allFeaturesOutput && (null == getTypeOrFeature(c.getOutputs(), typeName))) {
       Utility
-                      .popMessage(
-                                      "Unable to set AllFeatures",
-                                      "Skipping setting of <All Features> for output, because you must have the type specified itself"
-                                                      + " as an output in order to set the <All Features>.  You can individually set all the features, instead.",
-                                      MessageDialog.WARNING);
+              .popMessage(
+                      "Unable to set AllFeatures",
+                      "Skipping setting of <All Features> for output, because you must have the type specified itself"
+                              + " as an output in order to set the <All Features>.  You can individually set all the features, instead.",
+                      MessageDialog.WARNING);
       dialog.allFeaturesOutput = false;
     } else
       c.setOutputs(setAllFeatures(c.getOutputs(), typeName, dialog.allFeaturesOutput));
@@ -968,7 +967,7 @@ public class CapabilitySection extends AbstractSection {
    * @return
    */
   private TypeOrFeature[] replaceFeaturesKeepingTypes(TypeOrFeature[] items, String typeName,
-                  List features) {
+          List features) {
     List newItems = new ArrayList();
     typeName = typeName + ':';
     if (null != items)
@@ -993,7 +992,7 @@ public class CapabilitySection extends AbstractSection {
    * @return
    */
   private TypeOrFeature[] setAllFeatures(TypeOrFeature[] items, String typeName,
-                  boolean isAllFeatures) {
+          boolean isAllFeatures) {
 
     TypeOrFeature type = getTypeOrFeature(items, typeName);
 
@@ -1066,11 +1065,10 @@ public class CapabilitySection extends AbstractSection {
       for (int i = 0; i < languages.length; i++) {
         if (languages[i].equals(dialog.getValue())) {
           Utility
-                          .popMessage(
-                                          "Language spec already defined",
-                                          "The language specification you entered is already specified.\nPlease enter a different specification, or Cancel this operation."
-                                                          + "\n\nLanguage: " + dialog.getValue(),
-                                          MessageDialog.ERROR);
+                  .popMessage(
+                          "Language spec already defined",
+                          "The language specification you entered is already specified.\nPlease enter a different specification, or Cancel this operation."
+                                  + "\n\nLanguage: " + dialog.getValue(), MessageDialog.ERROR);
           alreadySpecified = true;
           break;
         }

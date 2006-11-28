@@ -45,9 +45,9 @@ public class EditSofaBindingsDialog extends AbstractDialog {
    * @param parentShell
    */
   public EditSofaBindingsDialog(AbstractSection aSection, String aAggrSofaName,
-                  Map aAvailAndBoundSofas) {
+          Map aAvailAndBoundSofas) {
     super(aSection, "Assign Components and their sofas to an Aggregate Sofa Name",
-                    "Change the selection as needed to reflect bindings.");
+            "Change the selection as needed to reflect bindings.");
     availAndBoundSofas = aAvailAndBoundSofas;
     aggrSofaName = aAggrSofaName;
   }
@@ -64,8 +64,8 @@ public class EditSofaBindingsDialog extends AbstractDialog {
     Composite composite = (Composite) super.createDialogArea(parent);
     Label info = new Label(composite, SWT.NONE);
     info.setText("Select all the delegate sofas from the list below which should be "
-                    + "associated with the aggregate sofa name \"" + aggrSofaName + "\".\n"
-                    + "Hold down the Shift or Control keys to select multiple items.");
+            + "associated with the aggregate sofa name \"" + aggrSofaName + "\".\n"
+            + "Hold down the Shift or Control keys to select multiple items.");
 
     table = newTable(composite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL);
 

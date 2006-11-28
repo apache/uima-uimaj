@@ -82,8 +82,8 @@ import org.eclipse.ui.forms.IManagedForm;
 
 public class TypeSection extends AbstractImportablePartSection {
   public static final String CASCADE_MESSAGE = "This will cause a cascading deletion of an associated "
-                  + "input, output, index, or type priority, unless this deletion exposes a "
-                  + "built-in or imported type or feature of the same name.  Ok to continue?";
+          + "input, output, index, or type priority, unless this deletion exposes a "
+          + "built-in or imported type or feature of the same name.  Ok to continue?";
 
   public static final String CASCADE_DELETE_WARNING = "Cascade Delete Warning";
 
@@ -121,10 +121,10 @@ public class TypeSection extends AbstractImportablePartSection {
 
   public TypeSection(MultiPageEditor editor, Composite parent) {
     super(
-                    editor,
-                    parent,
-                    "Types (or Classes)",
-                    "The following types (classes) are defined in this analysis engine descriptor.\nThe grayed out items are imported or merged from other descriptors, and cannot be edited here. (To edit them, edit their source files).");
+            editor,
+            parent,
+            "Types (or Classes)",
+            "The following types (classes) are defined in this analysis engine descriptor.\nThe grayed out items are imported or merged from other descriptors, and cannot be edited here. (To edit them, edit their source files).");
   }
 
   // **********************************************************************
@@ -153,14 +153,14 @@ public class TypeSection extends AbstractImportablePartSection {
     Composite buttonContainer = newButtonContainer(sectionClient);
     addTypeButton = newPushButton(buttonContainer, "Add Type", "Click here to add a new type.");
     addButton = newPushButton(buttonContainer, S_ADD,
-                    "Click here to add a feature or allowed-value to the selected type.");
+            "Click here to add a feature or allowed-value to the selected type.");
     editButton = newPushButton(buttonContainer, S_EDIT, S_EDIT_TIP);
     removeButton = newPushButton(buttonContainer, S_REMOVE, S_REMOVE_TIP);
     exportButton = newPushButton(buttonContainer, S_EXPORT, S_EXPORT_TIP);
 
     spacer(buttonContainer);
     jcasGenButton = newPushButton(buttonContainer, "JCasGen",
-                    "Click here to run JCasGen on this type system.");
+            "Click here to run JCasGen on this type system.");
   }
 
   /*
@@ -219,7 +219,7 @@ public class TypeSection extends AbstractImportablePartSection {
     TypeDescription builtInTd = getBuiltInTypeDescription(td);
     if (null != builtInTd) {
       FeatureDescription[] additionalBuiltInFeatures = setDifference(builtInTd.getFeatures(), td
-                      .getFeatures());
+              .getFeatures());
       addFeaturesToGui(td, item, additionalBuiltInFeatures);
     }
 
@@ -238,7 +238,7 @@ public class TypeSection extends AbstractImportablePartSection {
   }
 
   private void addFeaturesToGui(TypeDescription td, TableTreeItem item,
-                  FeatureDescription[] features) {
+          FeatureDescription[] features) {
     if (null != features) {
       for (int i = 0; i < features.length; i++) {
         TableTreeItem fItem = new TableTreeItem(item, SWT.NONE);
@@ -255,20 +255,17 @@ public class TypeSection extends AbstractImportablePartSection {
     setItemColor(fItem, null != getLocalFeatureDefinition(td, fd));
     if (isArrayOrListType(rangeType)) {
       Boolean mra = fd.getMultipleReferencesAllowed();
-      fItem
-                      .setImage(
-                                      MULTIPLE_REF_OK_COL,
-                                      (null != mra && mra.booleanValue()) ? TAEConfiguratorPlugin
-                                                      .getImage(TAEConfiguratorPlugin.IMAGE_MREFOK)
-                                                      : TAEConfiguratorPlugin
-                                                                      .getImage(TAEConfiguratorPlugin.IMAGE_NOMREF));
+      fItem.setImage(MULTIPLE_REF_OK_COL,
+              (null != mra && mra.booleanValue()) ? TAEConfiguratorPlugin
+                      .getImage(TAEConfiguratorPlugin.IMAGE_MREFOK) : TAEConfiguratorPlugin
+                      .getImage(TAEConfiguratorPlugin.IMAGE_NOMREF));
     } else {
       fItem.setImage(MULTIPLE_REF_OK_COL, null);
     }
 
     String ert = fd.getElementType();
     fItem.setText(ELEMENT_TYPE_COL,
-                    (isFSArrayOrListType(rangeType) && ert != null) ? formatName(ert) : "");
+            (isFSArrayOrListType(rangeType) && ert != null) ? formatName(ert) : "");
 
   }
 
@@ -299,13 +296,13 @@ public class TypeSection extends AbstractImportablePartSection {
     } else if (event.widget == editButton) {
       handleEdit();
     } else if (event.type == SWT.MouseDoubleClick && (!isAggregate()) && // can't edit aggregates
-                    isLocalItem(tt.getSelection()[0])) {
+            isLocalItem(tt.getSelection()[0])) {
       handleEdit();
     } else if (event.widget == removeButton) {
       handleRemove();
     } else if (event.widget == exportButton) {
       editor.getTypePage().getTypeImportSection().exportImportablePart("<typeSystemDescription>",
-                      TypeSystemNewWizard.TYPESYSTEM_TEMPLATE);
+              TypeSystemNewWizard.TYPESYSTEM_TEMPLATE);
       refresh();
     } else if (event.widget == jcasGenButton) {
       editor.doJCasGenChkSrc(null);
@@ -328,10 +325,10 @@ public class TypeSection extends AbstractImportablePartSection {
       } else if (o instanceof FeatureDescription) {
         FeatureDescription fd = (FeatureDescription) o;
         if (item.getBounds(MULTIPLE_REF_OK_COL).contains(event.x, event.y)
-                        && isArrayOrListType(fd.getRangeTypeName())) {
+                && isArrayOrListType(fd.getRangeTypeName())) {
           Boolean mra = fd.getMultipleReferencesAllowed();
           setToolTipText(tt, (mra != null && mra.booleanValue()) ? "Multiple References Allowed"
-                          : "Multiple References Not Allowed");
+                  : "Multiple References Not Allowed");
         } else
           setToolTipText(tt, fd.getDescription());
       } else if (o instanceof AllowedValue) {
@@ -385,7 +382,7 @@ public class TypeSection extends AbstractImportablePartSection {
 
   private void addAllowedValue(TypeDescription td, AllowedValue av) {
     td.setAllowedValues((AllowedValue[]) Utility.addElementToArray(td.getAllowedValues(), av,
-                    AllowedValue.class));
+            AllowedValue.class));
   }
 
   /**
@@ -396,7 +393,7 @@ public class TypeSection extends AbstractImportablePartSection {
    */
   private void removeAllowedValue(TypeDescription td, AllowedValue av) {
     td.setAllowedValues((AllowedValue[]) Utility.removeEqualElementFromArray(td.getAllowedValues(),
-                    av, AllowedValue.class));
+            av, AllowedValue.class));
   }
 
   // disabled unless type is selected
@@ -490,7 +487,7 @@ public class TypeSection extends AbstractImportablePartSection {
     TypeSystemDescription localTsd = getTypeSystemDescription();
 
     TypeDescription td = localTsd.addType(dialog.typeName, multiLineFix(dialog.description),
-                    dialog.supertypeName);
+            dialog.supertypeName);
 
     if (!isImportedType(dialog.typeName)) {
       td = tsd.addType(dialog.typeName, multiLineFix(dialog.description), dialog.supertypeName);
@@ -557,29 +554,29 @@ public class TypeSection extends AbstractImportablePartSection {
     if (!dialog.featureName.equals(oldFeatureName)) {
       if (isImportedFeature(oldFeatureName, td)) {
         Utility
-                        .popMessage(
-                                        "Imported Feature not changed",
-                                        "Changing the feature name from '"
-                                                        + oldFeatureName
-                                                        + "' to '"
-                                                        + dialog.featureName
-                                                        + "' will not affect the corresponding imported type with the previous feature name.  "
-                                                        + "Both features will be included in the type.",
-                                        MessageDialog.INFORMATION);
+                .popMessage(
+                        "Imported Feature not changed",
+                        "Changing the feature name from '"
+                                + oldFeatureName
+                                + "' to '"
+                                + dialog.featureName
+                                + "' will not affect the corresponding imported type with the previous feature name.  "
+                                + "Both features will be included in the type.",
+                        MessageDialog.INFORMATION);
         remergeNeeded = true;
         refreshNeeded = true;
       }
       if (isBuiltInFeature(oldFeatureName, td)) {
         Utility
-                        .popMessage(
-                                        "BuiltIn Feature not changed",
-                                        "Changing the feature name from '"
-                                                        + oldFeatureName
-                                                        + "' to '"
-                                                        + dialog.featureName
-                                                        + "' will not affect the corresponding built-in type with the previous feature name.  "
-                                                        + "Both features will be included in the type.",
-                                        MessageDialog.INFORMATION);
+                .popMessage(
+                        "BuiltIn Feature not changed",
+                        "Changing the feature name from '"
+                                + oldFeatureName
+                                + "' to '"
+                                + dialog.featureName
+                                + "' will not affect the corresponding built-in type with the previous feature name.  "
+                                + "Both features will be included in the type.",
+                        MessageDialog.INFORMATION);
         refreshNeeded = true; // no remerge needed - builtins not merged
       }
     }
@@ -709,25 +706,25 @@ public class TypeSection extends AbstractImportablePartSection {
         return;
 
       if (isImportedType(oldTypeName)
-                      && MessageDialog.CANCEL == Utility
-                                      .popOkCancel(
-                                                      "Type define via Import",
-                                                      "The type '"
-                                                                      + oldTypeName
-                                                                      + "' is also defined in 1 or more imports.  Changing the type name here will not change it in the imported type file, causing both types to be in the type system, together. Please confirm this is what you intend.",
-                                                      MessageDialog.WARNING))
+              && MessageDialog.CANCEL == Utility
+                      .popOkCancel(
+                              "Type define via Import",
+                              "The type '"
+                                      + oldTypeName
+                                      + "' is also defined in 1 or more imports.  Changing the type name here will not change it in the imported type file, causing both types to be in the type system, together. Please confirm this is what you intend.",
+                              MessageDialog.WARNING))
         return;
       if (isBuiltInType(oldTypeName)
-                      && MessageDialog.CANCEL == Utility
-                                      .popOkCancel(
-                                                      "Type was extending a built-in",
-                                                      "The type '"
-                                                                      + oldTypeName
-                                                                      + "' was extending a builtin type of the same name. Changing the type name here will not change the built-in type, causing both types to be in the type system, together. Please confirm this is what you intend.",
-                                                      MessageDialog.WARNING))
+              && MessageDialog.CANCEL == Utility
+                      .popOkCancel(
+                              "Type was extending a built-in",
+                              "The type '"
+                                      + oldTypeName
+                                      + "' was extending a builtin type of the same name. Changing the type name here will not change the built-in type, causing both types to be in the type system, together. Please confirm this is what you intend.",
+                              MessageDialog.WARNING))
         return;
       if (isImportedType(oldTypeName) || isImportedType(newTypeName) || isBuiltInType(oldTypeName)
-                      || isBuiltInType(newTypeName))
+              || isBuiltInType(newTypeName))
         mergeAndRefreshNeeded = true;
     }
     valueChanged = false;
@@ -841,7 +838,7 @@ public class TypeSection extends AbstractImportablePartSection {
       String sCascadeDeleteTitle = CASCADE_DELETE_WARNING;
       String sCascadeDeleteMessage = CASCADE_MESSAGE;
       boolean bContinue = MessageDialog.openConfirm(getSection().getShell(), sCascadeDeleteTitle,
-                      sCascadeDeleteMessage);
+              sCascadeDeleteMessage);
       if (!bContinue)
         return;
     }
@@ -863,7 +860,7 @@ public class TypeSection extends AbstractImportablePartSection {
     }
 
     if (bFeatureInUseElsewhere && !isImportedFeature(featureName, td)
-                    && !isBuiltInFeature(featureName, td)) {
+            && !isBuiltInFeature(featureName, td)) {
       deleteTypeOrFeatureMentions(featureName, FEATURES, localTd.getName());
     }
 
@@ -955,7 +952,7 @@ public class TypeSection extends AbstractImportablePartSection {
       String sCascadeDeleteTitle = CASCADE_DELETE_WARNING;
       String sCascadeDeleteMessage = CASCADE_MESSAGE;
       boolean bContinue = MessageDialog.openConfirm(getSection().getShell(), sCascadeDeleteTitle,
-                      sCascadeDeleteMessage);
+              sCascadeDeleteMessage);
       if (!bContinue) {
         return;
       }
@@ -978,7 +975,7 @@ public class TypeSection extends AbstractImportablePartSection {
     }
 
     TypeFeature[] featuresToRemove = computeFeaturesToRemove(localTd,
-                    getMergedTypeSystemDescription().getType(td.getName()));
+            getMergedTypeSystemDescription().getType(td.getName()));
 
     if (bTypeInUseElsewhere && !isImportedType(td) && !isBuiltInType(td)) {
       deleteTypeOrFeatureMentions(sTypeNameToRemove, TYPES, null);
@@ -990,7 +987,7 @@ public class TypeSection extends AbstractImportablePartSection {
     if (null != featuresToRemove)
       for (int i = 0; i < featuresToRemove.length; i++) {
         deleteTypeOrFeatureMentions(featuresToRemove[i].featureName, FEATURES,
-                        featuresToRemove[i].typeName);
+                featuresToRemove[i].typeName);
       }
 
     editor.removeDirtyTypeName(sTypeNameToRemove);
@@ -1024,9 +1021,9 @@ public class TypeSection extends AbstractImportablePartSection {
         return null;
       }
       sMsg += ".  If you proceed, the dependent types which are updatable will be updated."
-                      + " Non-updatable types (imported, etc.) you will have to update manually.  Please confirm.";
+              + " Non-updatable types (imported, etc.) you will have to update manually.  Please confirm.";
       if (MessageDialog.OK == Utility.popOkCancel("Confirm renaming type update actions", sMsg,
-                      MessageDialog.WARNING))
+              MessageDialog.WARNING))
         return typesRequiringThisOne;
       return null;
     }
@@ -1035,12 +1032,12 @@ public class TypeSection extends AbstractImportablePartSection {
 
   private void removeType(TypeDescription td, TypeSystemDescription tsd) {
     tsd.setTypes((TypeDescription[]) Utility.removeElementFromArray(tsd.getTypes(), td,
-                    TypeDescription.class));
+            TypeDescription.class));
   }
 
   private void removeFeature(TypeDescription td, FeatureDescription fd) {
     td.setFeatures((FeatureDescription[]) Utility.removeElementFromArray(td.getFeatures(), fd,
-                    FeatureDescription.class));
+            FeatureDescription.class));
   }
 
   private String[] getTypesRequiringThisOne(String typeName) {
@@ -1186,7 +1183,7 @@ public class TypeSection extends AbstractImportablePartSection {
               }
             } else if (kind == REMOVE_EQUAL_TYPE) {
               Object[] newTypeNames = Utility.removeElementsFromArray(typeNames, typeName,
-                              String.class);
+                      String.class);
               if (newTypeNames != typeNames) {
                 priorityLists[i].setTypes((String[]) newTypeNames);
                 returnValue = true;
@@ -1201,12 +1198,12 @@ public class TypeSection extends AbstractImportablePartSection {
   }
 
   private TypeOrFeature[] deleteTypeOrFeatureFromCapability(TypeOrFeature[] io_s,
-                  final boolean isType, String name, String typeName) {
+          final boolean isType, String name, String typeName) {
 
     if (!isType) // is feature
       name = typeName + ':' + name;
     return (TypeOrFeature[]) Utility.removeElementsFromArray(io_s, name, TypeOrFeature.class,
-                    isType ? capabilityTypeCompare : capabilityFeatureCompare);
+            isType ? capabilityTypeCompare : capabilityFeatureCompare);
   }
 
   private final static boolean TYPES = true;
@@ -1251,16 +1248,16 @@ public class TypeSection extends AbstractImportablePartSection {
    *          type name (used when feature name passed above
    */
   private void deleteTypeOrFeatureMentions(final String typeOrFeatureName, boolean isType,
-                  final String typeName) {
+          final String typeName) {
     if (!isLocalProcessingDescriptor()) {
       return;
     }
     Capability[] c = getCapabilities();
     for (int ic = 0; ic < c.length; ic++) {
       c[ic].setInputs(deleteTypeOrFeatureFromCapability(c[ic].getInputs(), isType,
-                      typeOrFeatureName, typeName));
+              typeOrFeatureName, typeName));
       c[ic].setOutputs(deleteTypeOrFeatureFromCapability(c[ic].getOutputs(), isType,
-                      typeOrFeatureName, typeName));
+              typeOrFeatureName, typeName));
     }
 
     CapabilityPage p = editor.getCapabilityPage();
@@ -1270,13 +1267,13 @@ public class TypeSection extends AbstractImportablePartSection {
     final FsIndexCollection indexCollection = editor.getFsIndexCollection();
 
     FsIndexDescription[] indexes = (null == indexCollection) ? null : indexCollection
-                    .getFsIndexes();
+            .getFsIndexes();
 
     boolean somethingChanged = false;
     if (indexes != null) {
       if (isType) {
         FsIndexDescription[] newFsid = (FsIndexDescription[]) Utility.removeElementsFromArray(
-                        indexes, typeOrFeatureName, FsIndexDescription.class, fsIndexDescCompare);
+                indexes, typeOrFeatureName, FsIndexDescription.class, fsIndexDescCompare);
         if (newFsid != indexes) {
           somethingChanged = true;
           indexCollection.setFsIndexes(newFsid);
@@ -1285,8 +1282,8 @@ public class TypeSection extends AbstractImportablePartSection {
         for (int i = 0; i < indexes.length; i++) {
           if (typeName.equals(indexes[i].getTypeName())) {
             FsIndexKeyDescription[] newFsKeys = (FsIndexKeyDescription[]) Utility
-                            .removeElementsFromArray(indexes[i].getKeys(), typeOrFeatureName,
-                                            FsIndexKeyDescription.class, fsIndexKeyDescCompare);
+                    .removeElementsFromArray(indexes[i].getKeys(), typeOrFeatureName,
+                            FsIndexKeyDescription.class, fsIndexKeyDescCompare);
             if (newFsKeys != indexes[i].getKeys()) {
               somethingChanged = true;
               indexes[i].setKeys(newFsKeys);
@@ -1340,13 +1337,13 @@ public class TypeSection extends AbstractImportablePartSection {
         if (null != localTd) { // is a local type
           if (isImportedType(typeName)) {
             Utility
-                            .popMessage(
-                                            "Imported type won't be changed",
-                                            "There is both a local and imported version of type, '"
-                                                            + typeName
-                                                            + "', which has a supertype which is the item being renamed.  Although the local version will be updated, but the imported one won't."
-                                                            + "This may cause an error when you save.",
-                                            MessageDialog.WARNING);
+                    .popMessage(
+                            "Imported type won't be changed",
+                            "There is both a local and imported version of type, '"
+                                    + typeName
+                                    + "', which has a supertype which is the item being renamed.  Although the local version will be updated, but the imported one won't."
+                                    + "This may cause an error when you save.",
+                            MessageDialog.WARNING);
           }
           if (isBuiltInType(typeName)) {
             // invalid: changed some type name which was a supertype of a built in - but
@@ -1356,13 +1353,13 @@ public class TypeSection extends AbstractImportablePartSection {
         } else { // is not a local type
           // can't be a built-in type because all the supertypes of built-ins are unchangeable
           Utility
-                          .popMessage(
-                                          "Imported type not changed",
-                                          "There is an imported type, '"
-                                                          + typeName
-                                                          + "', which has a supertype which is the item being renamed.  It won't be updated - this may cause an error when you save this descriptor."
-                                                          + "  If it does, you will need to edit the imported type to change it.",
-                                          MessageDialog.WARNING);
+                  .popMessage(
+                          "Imported type not changed",
+                          "There is an imported type, '"
+                                  + typeName
+                                  + "', which has a supertype which is the item being renamed.  It won't be updated - this may cause an error when you save this descriptor."
+                                  + "  If it does, you will need to edit the imported type to change it.",
+                          MessageDialog.WARNING);
           continue;
         }
         // guaranteed to have local type def here
@@ -1404,7 +1401,7 @@ public class TypeSection extends AbstractImportablePartSection {
 
   // this function to set the corresponding feature in the "local" type's fd array
   private void setNamedFeatureDescriptionRange(FeatureDescription[] localFds, String featureName,
-                  final String rangeName) {
+          final String rangeName) {
     if (null != localFds) {
       for (int i = 0; i < localFds.length; i++) {
         FeatureDescription fd = localFds[i];
@@ -1420,24 +1417,23 @@ public class TypeSection extends AbstractImportablePartSection {
     if (isLocalType(typeName)) {
       if (isImportedType(typeName)) {
         Utility
-                        .popMessage(
-                                        "Imported type won't be changed",
-                                        "There is both a local and imported version of type, '"
-                                                        + typeName
-                                                        + "', which has a feature whose range type is the item being renamed.  Although the local version will be updated, but the imported one won't."
-                                                        + "This may cause an error when you save.",
-                                        MessageDialog.WARNING);
+                .popMessage(
+                        "Imported type won't be changed",
+                        "There is both a local and imported version of type, '"
+                                + typeName
+                                + "', which has a feature whose range type is the item being renamed.  Although the local version will be updated, but the imported one won't."
+                                + "This may cause an error when you save.", MessageDialog.WARNING);
       }
       return false;
     } else { // is not a local type
       Utility
-                      .popMessage(
-                                      "Imported feature range not changed",
-                                      "There is an imported type, '"
-                                                      + typeName
-                                                      + "', which has a a feature whose range which is the item being renamed.  It won't be updated - this may cause an error when you save this descriptor."
-                                                      + "  If it does, you will need to edit the imported type to change it.",
-                                      MessageDialog.WARNING);
+              .popMessage(
+                      "Imported feature range not changed",
+                      "There is an imported type, '"
+                              + typeName
+                              + "', which has a a feature whose range which is the item being renamed.  It won't be updated - this may cause an error when you save this descriptor."
+                              + "  If it does, you will need to edit the imported type to change it.",
+                      MessageDialog.WARNING);
       return true;
     }
   }
@@ -1474,7 +1470,7 @@ public class TypeSection extends AbstractImportablePartSection {
     FsIndexCollection indexCollection = getAnalysisEngineMetaData().getFsIndexCollection();
 
     FsIndexDescription[] indexes = (null == indexCollection) ? null : indexCollection
-                    .getFsIndexes();
+            .getFsIndexes();
 
     boolean somethingChanged = false;
     boolean markStale = false;
@@ -1588,7 +1584,7 @@ public class TypeSection extends AbstractImportablePartSection {
   }
 
   private void alterFeatureMentions(final String sOldFeatureName, final String sNewFeatureName,
-                  final String typeName) {
+          final String typeName) {
     final boolean[] somethingChanged = new boolean[1];
     somethingChanged[0] = false;
     if (sOldFeatureName.equals(sNewFeatureName) || (!isLocalProcessingDescriptor()))

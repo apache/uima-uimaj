@@ -68,10 +68,10 @@ public class ExtnlResBindSection extends AbstractSection {
 
   public ExtnlResBindSection(MultiPageEditor aEditor, Composite parent) {
     super(
-                    aEditor,
-                    parent,
-                    "Resources Needs, Definitions and Bindings",
-                    "Specify External Resources; Bind them to dependencies on the right panel by selecting the corresponding dependency and clicking Bind.");
+            aEditor,
+            parent,
+            "Resources Needs, Definitions and Bindings",
+            "Specify External Resources; Bind them to dependencies on the right panel by selecting the corresponding dependency and clicking Bind.");
   }
 
   public void initialize(IManagedForm form) {
@@ -84,13 +84,13 @@ public class ExtnlResBindSection extends AbstractSection {
     Composite buttonContainer = newButtonContainer(sectionClient);
 
     addButton = newPushButton(buttonContainer, S_ADD,
-                    "Click to add a new External Resource definition");
+            "Click to add a new External Resource definition");
     editButton = newPushButton(buttonContainer, S_EDIT,
-                    "Click to edit an External Resource definition");
+            "Click to edit an External Resource definition");
     removeButton = newPushButton(buttonContainer, "Remove",
-                    "Click to remove selected binding or External Resource");
+            "Click to remove selected binding or External Resource");
     bindButton = newPushButton(buttonContainer, "Bind",
-                    "Click to bind selected dependency with selected Resource");
+            "Click to bind selected dependency with selected Resource");
     exportButton = newPushButton(buttonContainer, S_EXPORT, S_EXPORT_TIP);
 
     buttonContainer.pack();
@@ -122,7 +122,7 @@ public class ExtnlResBindSection extends AbstractSection {
   }
 
   private void addExternalResourceDescriptionToGUI(ExternalResourceDescription xrd,
-                  ExternalResourceBinding[] bindings) {
+          ExternalResourceBinding[] bindings) {
     TreeItem item = new TreeItem(tree, SWT.NONE);
     fillXrdItem(item, xrd);
     fillBindings(item, xrd, bindings);
@@ -136,7 +136,7 @@ public class ExtnlResBindSection extends AbstractSection {
     if (rs instanceof FileLanguageResourceSpecifier) {
       FileLanguageResourceSpecifier flrs = (FileLanguageResourceSpecifier) rs;
       text.append("  URL_Prefix: ").append(flrs.getFileUrlPrefix()).append("  URL_Suffix: ")
-                      .append(flrs.getFileUrlSuffix());
+              .append(flrs.getFileUrlSuffix());
     } else if (rs instanceof FileResourceSpecifier) {
       FileResourceSpecifier frs = (FileResourceSpecifier) rs;
       text.append("  URL: ").append(frs.getFileUrl());
@@ -152,7 +152,7 @@ public class ExtnlResBindSection extends AbstractSection {
   }
 
   private void fillBindings(TreeItem parent, ExternalResourceDescription xrd,
-                  ExternalResourceBinding[] bindings) {
+          ExternalResourceBinding[] bindings) {
     if (null != bindings) {
       for (int i = 0; i < bindings.length; i++) {
         if (bindings[i].getResourceName().equals(xrd.getName())) {
@@ -179,14 +179,14 @@ public class ExtnlResBindSection extends AbstractSection {
     else if (event.widget == editButton || event.type == SWT.MouseDoubleClick)
       handleEdit();
     else if (event.widget == removeButton
-                    || (event.widget == tree && event.type == SWT.KeyUp && event.character == SWT.DEL))
+            || (event.widget == tree && event.type == SWT.KeyUp && event.character == SWT.DEL))
       handleRemove();
     else if (event.widget == bindButton)
       handleBind();
     else if (event.widget == exportButton) {
       try {
         resBindImportSection.exportImportablePart("<resourceManagerConfiguration>",
-                        ResourceManagerConfigurationNewWizard.RESOURCEMANGERCONFIGURATION_TEMPLATE);
+                ResourceManagerConfigurationNewWizard.RESOURCEMANGERCONFIGURATION_TEMPLATE);
       } finally {
         refresh(); // update in case of throw, even
       }
@@ -213,9 +213,9 @@ public class ExtnlResBindSection extends AbstractSection {
     ResourceSpecifier rs = xrd.getResourceSpecifier();
     if (!((rs instanceof FileResourceSpecifier) || (rs instanceof FileLanguageResourceSpecifier))) {
       Utility.popMessage("Can''t edit custom resource", "This resource is a '"
-                      + rs.getClass().getName()
-                      + "', and any edits have to be done directly in the XML in the Source view.",
-                      MessageDialog.INFORMATION);
+              + rs.getClass().getName()
+              + "', and any edits have to be done directly in the XML in the Source view.",
+              MessageDialog.INFORMATION);
       return;
     }
 
@@ -242,13 +242,13 @@ public class ExtnlResBindSection extends AbstractSection {
   }
 
   private void alterExistingXRD(AddExternalResourceDialog dialog, ExternalResourceDescription xrd,
-                  TreeItem item) {
+          TreeItem item) {
     valueChanged = false;
     xrd.setName(setValueChanged(dialog.xrName, xrd.getName()));
     xrd.setDescription(setValueChanged(dialog.xrDescription, xrd.getDescription()));
     xrd
-                    .setImplementationName(setValueChanged(dialog.xrImplementation, xrd
-                                    .getImplementationName()));
+            .setImplementationName(setValueChanged(dialog.xrImplementation, xrd
+                    .getImplementationName()));
 
     ResourceSpecifier rs = xrd.getResourceSpecifier();
     if (null == dialog.xrUrlSuffix || "".equals(dialog.xrUrlSuffix)) {
@@ -311,9 +311,10 @@ public class ExtnlResBindSection extends AbstractSection {
       return;
     TreeItem item = tree.getSelection()[0];
     if (null == item.getParentItem()) { // case of removing a resource
-      if (Window.CANCEL == Utility.popOkCancel("Removing Resource",
+      if (Window.CANCEL == Utility
+              .popOkCancel("Removing Resource",
                       "Removing an External Resource and all its bindings. Resource name:"
-                                      + item.getText(), MessageDialog.WARNING))
+                              + item.getText(), MessageDialog.WARNING))
         return;
       removeAllBindings(item);
       removeResource(item);
@@ -359,11 +360,10 @@ public class ExtnlResBindSection extends AbstractSection {
 
   public void enable() {
     // bind enabled when one item in tree and one in table is selected
-    bindButton
-                    .setEnabled(tree.getSelectionCount() == 1
-                                    && resourceDependencySection.getTable().getSelectionCount() == 1
-                                    && "".equals(resourceDependencySection.getTable()
-                                                    .getSelection()[0].getText(0))); // not bound
+    bindButton.setEnabled(tree.getSelectionCount() == 1
+            && resourceDependencySection.getTable().getSelectionCount() == 1
+            && "".equals(resourceDependencySection.getTable().getSelection()[0].getText(0))); // not
+                                                                                              // bound
 
     removeButton.setEnabled(tree.getSelectionCount() > 0);
     editButton.setEnabled(tree.getSelectionCount() == 1 && !isBoundSpec(tree.getSelection()[0]));
@@ -380,8 +380,7 @@ public class ExtnlResBindSection extends AbstractSection {
       for (int i = 0; i < xrds.length; i++) {
         if (xrds[i].getName().equals(name)) {
           Utility.popMessage("Name Already Defined",
-                          "The External Resource Name specified is already defined",
-                          MessageDialog.ERROR);
+                  "The External Resource Name specified is already defined", MessageDialog.ERROR);
           return true;
         }
       }

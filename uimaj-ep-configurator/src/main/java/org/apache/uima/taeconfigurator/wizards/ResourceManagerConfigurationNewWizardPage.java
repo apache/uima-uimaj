@@ -31,11 +31,11 @@ public class ResourceManagerConfigurationNewWizardPage extends AbstractNewWizard
 
   public ResourceManagerConfigurationNewWizardPage(ISelection selection) {
     super(
-                    selection,
-                    "big_ae.gif",
-                    "External Resources and Bindings (Resource Manager Configuration) Descriptor File",
-                    "Create a new External Resource and Bindings (Resource Manager Configuration) Descriptor file",
-                    "extResAndBindingsDescriptor.xml");
+            selection,
+            "big_ae.gif",
+            "External Resources and Bindings (Resource Manager Configuration) Descriptor File",
+            "Create a new External Resource and Bindings (Resource Manager Configuration) Descriptor file",
+            "extResAndBindingsDescriptor.xml");
   }
 
 }

@@ -31,8 +31,7 @@ public class FsIndexCollectionNewWizardPage extends AbstractNewWizardPage {
 
   public FsIndexCollectionNewWizardPage(ISelection selection) {
     super(selection, "big_ae.gif", "Index Collection Descriptor File",
-                    "Create a new Index Collection Descriptor file",
-                    "indexCollectionDescriptor.xml");
+            "Create a new Index Collection Descriptor file", "indexCollectionDescriptor.xml");
   }
 
 }

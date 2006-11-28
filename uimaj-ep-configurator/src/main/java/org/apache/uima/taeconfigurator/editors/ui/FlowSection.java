@@ -93,7 +93,7 @@ public class FlowSection extends AbstractSection {
    */
   public FlowSection(MultiPageEditor aEditor, Composite parent) {
     super(aEditor, parent, Messages.getString("FlowSection.ComponentEngineFlowTitle"), //$NON-NLS-1$
-                    Messages.getString("FlowSection.ComponentEngineFlowDescription")); //$NON-NLS-1$
+            Messages.getString("FlowSection.ComponentEngineFlowDescription")); //$NON-NLS-1$
   }
 
   /*
@@ -115,9 +115,9 @@ public class FlowSection extends AbstractSection {
     ((GridData) sectionClient.getLayoutData()).grabExcessHorizontalSpace = false;
 
     flowChoiceLabel = newLabelWithTip(sectionClient, Messages.getString("FlowSection.FlowKind"), //$NON-NLS-1$
-                    Messages.getString("FlowSection.FlowKindTip")); //$NON-NLS-1$ 
+            Messages.getString("FlowSection.FlowKindTip")); //$NON-NLS-1$ 
     flowControllerChoice = newCComboWithTip(sectionClient, Messages
-                    .getString("FlowSection.FlowKindTip")); //$NON-NLS-1$ 
+            .getString("FlowSection.FlowKindTip")); //$NON-NLS-1$ 
 
     flowControllerChoice.add(FIXED_FLOW);
     flowControllerChoice.add(CAPABILITY_LANGUAGE_FLOW);
@@ -131,25 +131,25 @@ public class FlowSection extends AbstractSection {
     Composite fcButtonContainer = newButtonContainer(comp2, VERTICAL_BUTTONS, 0);
 
     flowControllerLabel = newLabelWithTip(comp2a, "Flow Controller:",
-                    "The XML descriptor for the Custom Flow Controller");
+            "The XML descriptor for the Custom Flow Controller");
     flowControllerGUI = newUnUpdatableTextWithTip(comp2a, "",
-                    "The XML descriptor for the Custom Flow Controller");
+            "The XML descriptor for the Custom Flow Controller");
 
     flowControllerGUI.addListener(SWT.MouseDown, this);
     flowControllerGUI.addListener(SWT.MouseHover, this);
 
     flowControllerKeyLabel = newLabelWithTip(comp2a, "Key Name:",
-                    "A unique key name for this Flow Controller");
+            "A unique key name for this Flow Controller");
     flowControllerKeyGUI = newUnUpdatableTextWithTip(comp2a, "",
-                    "A unique key name for this Flow Controller");
+            "A unique key name for this Flow Controller");
 
     // flowControllerSpecifierLabel = newLabelWithTip(sectionClient, "Specify:",
     // "Click the Browse or Search button to specify a Flow Controller");
     // Composite fcButtonContainer = newButtonContainer(sectionClient, HORIZONTAL_BUTTONS, 150);
     specifyFlowControllerImportButton = newPushButton(fcButtonContainer, "Browse...",
-                    "Click here to specify a locally defined Flow Controller", ENABLED);
+            "Click here to specify a locally defined Flow Controller", ENABLED);
     findFlowControllerDescriptorButton = newPushButton(fcButtonContainer, "Search",
-                    "Click here to search for a Flow Controller", ENABLED);
+            "Click here to search for a Flow Controller", ENABLED);
 
     // flow list
 
@@ -164,9 +164,9 @@ public class FlowSection extends AbstractSection {
     final Composite buttonContainer = newButtonContainer(flowComposite, VERTICAL_BUTTONS, 70);
 
     upButton = newPushButton(buttonContainer, S_UP,
-                    Messages.getString("FlowSection.upTip"), !ENABLED); //$NON-NLS-1$
+            Messages.getString("FlowSection.upTip"), !ENABLED); //$NON-NLS-1$
     downButton = newPushButton(buttonContainer, S_DOWN,
-                    Messages.getString("FlowSection.downTip"), !ENABLED); //$NON-NLS-1$
+            Messages.getString("FlowSection.downTip"), !ENABLED); //$NON-NLS-1$
     enableBorders(sectionClient);
     toolkit.paintBordersFor(sectionClient);
   }
@@ -198,7 +198,7 @@ public class FlowSection extends AbstractSection {
       for (int i = 0; i < nodes.length; i++) {
         TableItem item = new TableItem(flowList, SWT.NONE);
         item.setImage(TAEConfiguratorPlugin.getImage(TAEConfiguratorPlugin.IMAGE_ANNOTATOR) //$NON-NLS-1$
-                        );
+                );
         item.setText(0, nodes[i]);
       }
       packTable(flowList);
@@ -209,14 +209,14 @@ public class FlowSection extends AbstractSection {
         if (null == flowConstraints) {
           // force fixed flow if nothing is specified
           getAnalysisEngineMetaData().setFlowConstraints(
-                          flowConstraints = ff = new FixedFlow_impl());
+                  flowConstraints = ff = new FixedFlow_impl());
           ff.setFixedFlow(stringArray0);
         }
         String modelFlowType = flowConstraints.getFlowConstraintsType();
 
-        flowControllerChoice
-                        .setText(modelFlowType.equals(CapabilityLanguageFlow.FLOW_CONSTRAINTS_TYPE) ? CAPABILITY_LANGUAGE_FLOW
-                                        : FIXED_FLOW);
+        flowControllerChoice.setText(modelFlowType
+                .equals(CapabilityLanguageFlow.FLOW_CONSTRAINTS_TYPE) ? CAPABILITY_LANGUAGE_FLOW
+                : FIXED_FLOW);
 
         enableFlowControllerGUI(false);
       } else {
@@ -354,10 +354,10 @@ public class FlowSection extends AbstractSection {
     } else if (event.widget == findFlowControllerDescriptorButton) {
       handleFindFlowController();
     } else if (event.widget == flowControllerGUI && event.type == SWT.MouseDown
-                    && event.button == 3) {
+            && event.button == 3) {
       handleContextMenuRequest(event);
     } else if (event.widget == flowControllerGUI && event.type == SWT.MouseHover
-                    && !bDisableToolTipHelp) {
+            && !bDisableToolTipHelp) {
       handleHoverHelp(event);
     }
 
@@ -530,21 +530,20 @@ public class FlowSection extends AbstractSection {
   }
 
   private static final String[] flowControllerHeadersLC = new String[] { "<flowcontrollerdescription" }; // don't
-                                                                                                          // end
-                                                                                                          // in a
-                                                                                                          // blank
-                                                                                                          // -
-                                                                                                          // could
-                                                                                                          // mismatch
-                                                                                                          // a
-                                                                                                          // cr/lf
+
+  // end
+  // in a
+  // blank
+  // -
+  // could
+  // mismatch
+  // a
+  // cr/lf
 
   private void handleFindFlowController() {
-    FindComponentDialog dialog1 = new FindComponentDialog(
-                    this,
-                    "Find a Flow Controller",
-                    "Specify a name pattern and/or other constraints, and then push the Search button",
-                    flowControllerHeadersLC);
+    FindComponentDialog dialog1 = new FindComponentDialog(this, "Find a Flow Controller",
+            "Specify a name pattern and/or other constraints, and then push the Search button",
+            flowControllerHeadersLC);
     if (Window.CANCEL == dialog1.open())
       return;
 
@@ -552,23 +551,21 @@ public class FlowSection extends AbstractSection {
     List matchingDelegateComponentDescriptions = dialog1.getMatchingDelegateComponentDescriptions();
 
     if (matchingDelegateComponentDescriptors.size() == 0) {
-      Utility
-                      .popMessage("No matching Components",
-                                      "There are no Components matching your search criteria.",
-                                      MessageDialog.ERROR);
+      Utility.popMessage("No matching Components",
+              "There are no Components matching your search criteria.", MessageDialog.ERROR);
       return;
     }
 
     PickTaeForTypesDialog dialog2 = new PickTaeForTypesDialog(this, editor.getFile().getName(),
-                    matchingDelegateComponentDescriptors, matchingDelegateComponentDescriptions);
+            matchingDelegateComponentDescriptors, matchingDelegateComponentDescriptions);
     if (Window.CANCEL == dialog2.open())
       return;
 
     String[] selectedDelegateComponentDescriptors = dialog2
-                    .getSelectedDelegateComponentDescriptors();
+            .getSelectedDelegateComponentDescriptors();
 
     if (selectedDelegateComponentDescriptors == null
-                    || selectedDelegateComponentDescriptors.length == 0) {
+            || selectedDelegateComponentDescriptors.length == 0) {
       return;
     }
     if (checkForOneSelection(selectedDelegateComponentDescriptors.length)) {
@@ -581,13 +578,12 @@ public class FlowSection extends AbstractSection {
         shortName = fileName.substring(nLastSlashLoc + 1);
       }
       produceKeyAddFlowController(shortName,
-                      editor.getFullPathFromDescriptorRelativePath(fileName),
-                      dialog2.isImportByName);
+              editor.getFullPathFromDescriptorRelativePath(fileName), dialog2.isImportByName);
     }
   }
 
   private void produceKeyAddFlowController(String shortName, String fullPathFileName,
-                  boolean isImportByName) {
+          boolean isImportByName) {
     Import imp = createImport(fullPathFileName, isImportByName);
 
     // key is shortName plus a suffix if needed to make it unique.
@@ -609,14 +605,9 @@ public class FlowSection extends AbstractSection {
     }
 
     if (!(inputDescription instanceof FlowControllerDescription)) {
-      Utility
-                      .popMessage(
-                                      "Invalid kind of descriptor",
-                                      MessageFormat
-                                                      .format(
-                                                                      "Operation cancelled: The descriptor ''{0}'' being added is not a FlowController.",
-                                                                      new Object[] { maybeShortenFileName(fullPathFileName) }),
-                                      MessageDialog.ERROR);
+      Utility.popMessage("Invalid kind of descriptor", MessageFormat.format(
+              "Operation cancelled: The descriptor ''{0}'' being added is not a FlowController.",
+              new Object[] { maybeShortenFileName(fullPathFileName) }), MessageDialog.ERROR);
       setFlowControllerDeclaration(oldFcd); // revert
       return;
     }
@@ -639,8 +630,8 @@ public class FlowSection extends AbstractSection {
 
   private void handleSpecifyFlowController() {
     MultiResourceSelectionDialog dialog = new MultiResourceSelectionDialog(getSection().getShell(),
-                    editor.getFile().getProject().getParent(), "Flow Controller Selection", editor
-                                    .getFile().getLocation(), editor);
+            editor.getFile().getProject().getParent(), "Flow Controller Selection", editor
+                    .getFile().getLocation(), editor);
     dialog.setTitle("Flow Controller Selection");
     dialog.setMessage("Select a Flow Controller descriptor from the workspace:");
     dialog.open();
@@ -655,8 +646,7 @@ public class FlowSection extends AbstractSection {
   private boolean checkForOneSelection(int numberSelected) {
     if (numberSelected > 1) {
       Utility.popMessage("Error - Multiple selection",
-                      "Only one Flow Controller can be selected. Please try again.",
-                      MessageDialog.ERROR);
+              "Only one Flow Controller can be selected. Please try again.", MessageDialog.ERROR);
       return false;
     }
     return true;

@@ -164,9 +164,9 @@ implements Listener, StandardStrings {
   protected int initialFormWidth; // width of the form before putting controls in it
 
   public AbstractSection(MultiPageEditor aEditor, Composite parent, String headerText,
-                  String description) {
+          String description) {
     super(parent, aEditor.getToolkit(), ((null != description) ? Section.DESCRIPTION : 0)
-                    | Section.TWISTIE | Section.EXPANDED);
+            | Section.TWISTIE | Section.EXPANDED);
     toolkit = aEditor.getToolkit();
     getSection().setText(headerText);
     getSection().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -300,7 +300,7 @@ implements Listener, StandardStrings {
   }
 
   protected Text newLabeledTextField(Composite parent, String labelKey, String textToolTip,
-                  int style) {
+          int style) {
     enableBorders(parent);
     Label label = toolkit.createLabel(parent, labelKey);
     label.setToolTipText(textToolTip);
@@ -416,7 +416,7 @@ implements Listener, StandardStrings {
   public Button newCheckBox(Composite parent, String label, String tip) {
     Button button = toolkit.createButton(parent, label, SWT.CHECK);
     button.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING
-                    | GridData.HORIZONTAL_ALIGN_FILL));
+            | GridData.HORIZONTAL_ALIGN_FILL));
     button.pack();
     button.setToolTipText(tip);
     button.addListener(SWT.Selection, this);
@@ -677,7 +677,7 @@ implements Listener, StandardStrings {
     TypePriorities tps = getAnalysisEngineMetaData().getTypePriorities();
     if (null == tps) {
       getAnalysisEngineMetaData().setTypePriorities(
-                      tps = UIMAFramework.getResourceSpecifierFactory().createTypePriorities());
+              tps = UIMAFramework.getResourceSpecifierFactory().createTypePriorities());
     }
     return tps;
   }
@@ -707,14 +707,14 @@ implements Listener, StandardStrings {
   // ************
   public boolean isParmGroup() {
     ConfigurationParameterDeclarations lcpd = getAnalysisEngineMetaData()
-                    .getConfigurationParameterDeclarations();
+            .getConfigurationParameterDeclarations();
     return (lcpd.getCommonParameters() != null && lcpd.getCommonParameters().length > 0)
-                    || (lcpd.getConfigurationGroups() != null && lcpd.getConfigurationGroups().length > 0);
+            || (lcpd.getConfigurationGroups() != null && lcpd.getConfigurationGroups().length > 0);
   }
 
   public ConfigurationParameterDeclarations getConfigurationParameterDeclarations() {
     return editor.getAeDescription().getAnalysisEngineMetaData()
-                    .getConfigurationParameterDeclarations();
+            .getConfigurationParameterDeclarations();
   }
 
   // **************************************************
@@ -742,7 +742,7 @@ implements Listener, StandardStrings {
     ExternalResourceBinding[] erb = getResourceManagerConfiguration().getExternalResourceBindings();
     if (null == erb)
       getResourceManagerConfiguration().setExternalResourceBindings(
-                      erb = new ExternalResourceBinding[0]);
+              erb = new ExternalResourceBinding[0]);
     return erb;
   }
 
@@ -750,7 +750,7 @@ implements Listener, StandardStrings {
     ExternalResourceDescription[] erd = getResourceManagerConfiguration().getExternalResources();
     if (null == erd)
       getResourceManagerConfiguration().setExternalResources(
-                      erd = new ExternalResourceDescription[0]);
+              erd = new ExternalResourceDescription[0]);
     return erd;
   }
 
@@ -799,7 +799,7 @@ implements Listener, StandardStrings {
   }
 
   protected FsIndexKeyDescription[] setValueChangedKeys(FsIndexKeyDescription[] newKeys,
-                  FsIndexKeyDescription[] oldKeys) {
+          FsIndexKeyDescription[] oldKeys) {
     if (valueChanged) {
     } else if (oldKeys == null && newKeys == null) {
     } else if (oldKeys != null && Arrays.equals(oldKeys, newKeys)) {
@@ -826,7 +826,7 @@ implements Listener, StandardStrings {
 
   protected void revertMsg(String msgTitle, String msgTxt, String exceptionMessage) {
     Utility.popMessage(msgTitle, msgTxt + "\r\n" + exceptionMessage, //$NON-NLS-1$
-                    MessageDialog.ERROR);
+            MessageDialog.ERROR);
     return;
   }
 
@@ -838,8 +838,8 @@ implements Listener, StandardStrings {
    */
   public static boolean revertOrContinue(String msg, String msgDetails) {
     if (Window.CANCEL == Utility.popMessage(msg, msgDetails
-                    + "\nDo you want to continue, or Abort the last action?",
-                    MessageDialog.QUESTION, new String[] { "Continue", "Abort" }))
+            + "\nDo you want to continue, or Abort the last action?", MessageDialog.QUESTION,
+            new String[] { "Continue", "Abort" }))
       return true; // for closing the window or hitting Undo
     return false;
   }
@@ -1019,11 +1019,9 @@ implements Listener, StandardStrings {
   // means is this range allowed in the UIMA Index Spec as a Key
   public static boolean isIndexableRange(String rangeName) {
     return CAS.TYPE_NAME_BYTE.equals(rangeName) || CAS.TYPE_NAME_SHORT.equals(rangeName)
-                    || CAS.TYPE_NAME_INTEGER.equals(rangeName)
-                    || CAS.TYPE_NAME_LONG.equals(rangeName)
-                    || CAS.TYPE_NAME_FLOAT.equals(rangeName)
-                    || CAS.TYPE_NAME_DOUBLE.equals(rangeName)
-                    || CAS.TYPE_NAME_STRING.equals(rangeName);
+            || CAS.TYPE_NAME_INTEGER.equals(rangeName) || CAS.TYPE_NAME_LONG.equals(rangeName)
+            || CAS.TYPE_NAME_FLOAT.equals(rangeName) || CAS.TYPE_NAME_DOUBLE.equals(rangeName)
+            || CAS.TYPE_NAME_STRING.equals(rangeName);
   }
 
   public static void setToolTipText(Control w, String text) {
@@ -1036,7 +1034,7 @@ implements Listener, StandardStrings {
       String pathName = filePathName.replace('\\', '/');
       int nLoc = pathName.lastIndexOf('/');
       return filePathName.substring(0, 61 - (pathName.length() - nLoc)) + ".../"
-                      + filePathName.substring(nLoc + 1);
+              + filePathName.substring(nLoc + 1);
     }
     return filePathName;
   }
@@ -1120,7 +1118,7 @@ implements Listener, StandardStrings {
   public static Capability[] getCapabilities(ResourceSpecifier rs) {
     if (rs instanceof ResourceCreationSpecifier)
       return ((ProcessingResourceMetaData) ((ResourceCreationSpecifier) rs).getMetaData())
-                      .getCapabilities();
+              .getCapabilities();
     return null;
   }
 
@@ -1294,7 +1292,7 @@ implements Listener, StandardStrings {
     // If a path starts with "C:", it must be preceeded by
     // file:/ so the C: is not interpreted as a "scheme".
     if (sDescriptorRelativePath.indexOf("file:/") == -1 //$NON-NLS-1$
-                    && sDescriptorRelativePath.indexOf(":/") > -1) { //$NON-NLS-1$
+            && sDescriptorRelativePath.indexOf(":/") > -1) { //$NON-NLS-1$
       sDescriptorRelativePath = "file:/" + sDescriptorRelativePath; //$NON-NLS-1$
     }
 
@@ -1341,24 +1339,24 @@ implements Listener, StandardStrings {
   // subtype of FSLists should not match
   public static boolean isFSArrayOrListType(String type) {
     return (null != type)
-                    && (type.equals(CAS.TYPE_NAME_FS_ARRAY) || type.equals(CAS.TYPE_NAME_FS_LIST));
+            && (type.equals(CAS.TYPE_NAME_FS_ARRAY) || type.equals(CAS.TYPE_NAME_FS_LIST));
   }
 
   public static boolean isArrayOrListType(String type) {
     return (null != type)
-                    && (type.equals(CAS.TYPE_NAME_FS_ARRAY) || type.equals(CAS.TYPE_NAME_FS_LIST)
-                                    || type.equals(CAS.TYPE_NAME_STRING_LIST)
-                                    || type.equals(CAS.TYPE_NAME_FLOAT_LIST)
-                                    || type.equals(CAS.TYPE_NAME_INTEGER_LIST)
-                                    || type.equals(CAS.TYPE_NAME_STRING_ARRAY)
-                                    || type.equals(CAS.TYPE_NAME_FLOAT_ARRAY)
+            && (type.equals(CAS.TYPE_NAME_FS_ARRAY) || type.equals(CAS.TYPE_NAME_FS_LIST)
+                    || type.equals(CAS.TYPE_NAME_STRING_LIST)
+                    || type.equals(CAS.TYPE_NAME_FLOAT_LIST)
+                    || type.equals(CAS.TYPE_NAME_INTEGER_LIST)
+                    || type.equals(CAS.TYPE_NAME_STRING_ARRAY)
+                    || type.equals(CAS.TYPE_NAME_FLOAT_ARRAY)
 
-                                    || type.equals(CAS.TYPE_NAME_BOOLEAN_ARRAY)
-                                    || type.equals(CAS.TYPE_NAME_BYTE_ARRAY)
-                                    || type.equals(CAS.TYPE_NAME_SHORT_ARRAY)
-                                    || type.equals(CAS.TYPE_NAME_INTEGER_ARRAY)
-                                    || type.equals(CAS.TYPE_NAME_LONG_ARRAY) || type
-                                    .equals(CAS.TYPE_NAME_DOUBLE_ARRAY));
+                    || type.equals(CAS.TYPE_NAME_BOOLEAN_ARRAY)
+                    || type.equals(CAS.TYPE_NAME_BYTE_ARRAY)
+                    || type.equals(CAS.TYPE_NAME_SHORT_ARRAY)
+                    || type.equals(CAS.TYPE_NAME_INTEGER_ARRAY)
+                    || type.equals(CAS.TYPE_NAME_LONG_ARRAY) || type
+                    .equals(CAS.TYPE_NAME_DOUBLE_ARRAY));
   }
 
   private final static int RIDICULOUSLY_LARGE = 10000;
@@ -1389,9 +1387,9 @@ implements Listener, StandardStrings {
       }
     }
     Utility.popMessage("Failed to create unique key", "The Flow Controller name, '" + fileName
-                    + "', could not be "
-                    + "converted to a unique key name -- tried with 10000 different suffixes",
-                    MessageDialog.ERROR);
+            + "', could not be "
+            + "converted to a unique key name -- tried with 10000 different suffixes",
+            MessageDialog.ERROR);
     return null;
   }
 
@@ -1411,14 +1409,14 @@ implements Listener, StandardStrings {
     // disabled - error messages from XML validation not very helpful
     // parser.enableSchemaValidation(true);
     return parser.parse(input, "http://uima.apache.org/resourceSpecifier",
-                    urlForResourceSpecifierSchema, parsingOptions);
+            urlForResourceSpecifierSchema, parsingOptions);
   }
 
   protected void showExceptionReadingImportedDescriptor(Exception e) {
     StringBuffer msg = new StringBuffer(1000);
     msg
-                    .append("There was an exception raised while reading and parsing an imported descriptor. "
-                                    + "If this is a ''not found'' message for a remote descriptor imported by name, insure that the class path or data path includes an entry where this file should be found.\n");
+            .append("There was an exception raised while reading and parsing an imported descriptor. "
+                    + "If this is a ''not found'' message for a remote descriptor imported by name, insure that the class path or data path includes an entry where this file should be found.\n");
     msg.append(editor.getMessagesToRootCause(e));
     Utility.popMessage("Exception reading Imported File", msg.toString(), MessageDialog.ERROR);
   }
@@ -1433,7 +1431,7 @@ implements Listener, StandardStrings {
     // doing this check here is expensive, but gives the best error location information
     if (!editor.isValidAE(editor.getAeDescription()))
       if (revertOrContinue("Continue or Abort",
-                      "Because of errors in validating the resulting Analysis Engine:\n"))
+              "Because of errors in validating the resulting Analysis Engine:\n"))
         return false; // want to revert
 
     try {
@@ -1490,7 +1488,7 @@ implements Listener, StandardStrings {
 
       try {
         input = new XMLInputSource(byNameURL.openStream(), new File(byNameURL.getFile())
-                        .getParentFile());
+                .getParentFile());
       } catch (IOException e) {
         showExceptionReadingImportedDescriptor(e);
         return null;
@@ -1544,7 +1542,7 @@ implements Listener, StandardStrings {
     String sDesc;
     long lCurrentTimeInMillis = System.currentTimeMillis();
     if (rs == lastResourceForDescription
-                    && ((lCurrentTimeInMillis - lastTimeDescriptionRequested) < TABLE_HOVER_REQUERY_TIME)) {
+            && ((lCurrentTimeInMillis - lastTimeDescriptionRequested) < TABLE_HOVER_REQUERY_TIME)) {
       return lastDescriptionFromDescriptor;
     } else {
       sDesc = fileRef + ":\n";
@@ -1567,14 +1565,9 @@ implements Listener, StandardStrings {
 
   protected PrintWriter setupToPrintFile(String filePath) {
     if (new File(filePath).exists())
-      if (Window.CANCEL == Utility
-                      .popOkCancel(
-                                      "File exists, OK to replace?",
-                                      MessageFormat
-                                                      .format(
-                                                                      "The file ''{0}'' exists. Press OK if it can be replaced; otherwise press Cancel.",
-                                                                      new Object[] { filePath }),
-                                      MessageDialog.WARNING))
+      if (Window.CANCEL == Utility.popOkCancel("File exists, OK to replace?", MessageFormat.format(
+              "The file ''{0}'' exists. Press OK if it can be replaced; otherwise press Cancel.",
+              new Object[] { filePath }), MessageDialog.WARNING))
         return null;
     FileOutputStream fos = null;
     try {
@@ -1590,7 +1583,7 @@ implements Listener, StandardStrings {
     FsIndexCollection fsic = getAnalysisEngineMetaData().getFsIndexCollection();
     if (null == fsic)
       getAnalysisEngineMetaData().setFsIndexCollection(
-                      fsic = UIMAFramework.getResourceSpecifierFactory().createFsIndexCollection());
+              fsic = UIMAFramework.getResourceSpecifierFactory().createFsIndexCollection());
     return fsic;
   }
 

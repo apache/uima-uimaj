@@ -31,7 +31,7 @@ public class TypePrioritiesNewWizardPage extends AbstractNewWizardPage {
 
   public TypePrioritiesNewWizardPage(ISelection selection) {
     super(selection, "big_t_s_.gif", "Type Priorities Descriptor File",
-                    "Create a new Type Priorities Descriptor file", "typePrioritiesDescriptor.xml");
+            "Create a new Type Priorities Descriptor file", "typePrioritiesDescriptor.xml");
   }
 
 }

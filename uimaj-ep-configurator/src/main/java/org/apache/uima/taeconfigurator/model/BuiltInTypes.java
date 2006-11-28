@@ -53,7 +53,7 @@ public class BuiltInTypes extends AbstractModelPart {
     TCAS tcas = null;
     try {
       tcas = CasCreationUtils.createTCas((TypeSystemDescription) null, null,
-                      new FsIndexDescription[0], casCreateProperties);
+              new FsIndexDescription[0], casCreateProperties);
 
     } catch (ResourceInitializationException e1) {
       throw new InternalErrorCDE("invalid ResourceInitializationException", e1);

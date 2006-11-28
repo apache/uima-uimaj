@@ -31,6 +31,6 @@ public class FlowControllerNewWizardPage extends AbstractNewWizardPage {
 
   public FlowControllerNewWizardPage(ISelection selection) {
     super(selection, "big_ae.gif", "Flow Controller Descriptor File",
-                    "Create a new Flow Controller Descriptor file", "flowControllerDescriptor.xml");
+            "Create a new Flow Controller Descriptor file", "flowControllerDescriptor.xml");
   }
 }

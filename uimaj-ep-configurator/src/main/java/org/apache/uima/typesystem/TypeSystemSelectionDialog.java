@@ -59,9 +59,9 @@ public class TypeSystemSelectionDialog extends TwoPaneElementSelector {
         // qualified type
       } else {
         fQualifierMatcher = new StringMatcher(pattern.substring(0, qualifierIndex), ignoreCase,
-                        igoreWildCards);
+                igoreWildCards);
         fMatcher = new StringMatcher(adjustPattern(pattern.substring(qualifierIndex + 1)),
-                        ignoreCase, igoreWildCards);
+                ignoreCase, igoreWildCards);
       }
     }
 
@@ -135,17 +135,14 @@ public class TypeSystemSelectionDialog extends TwoPaneElementSelector {
    *          the parent shell.
    */
   public TypeSystemSelectionDialog(Shell parent, ArrayList itemList) {
-    super(
-                    parent,
-                    new TypeSystemInfoLabelProvider(TypeSystemInfoLabelProvider.SHOW_TYPE_ONLY),
-                    new TypeSystemInfoLabelProvider(
-                                    TypeSystemInfoLabelProvider.SHOW_TYPE_CONTAINER_ONLY
-                                                    + TypeSystemInfoLabelProvider.SHOW_ROOT_POSTFIX));
+    super(parent, new TypeSystemInfoLabelProvider(TypeSystemInfoLabelProvider.SHOW_TYPE_ONLY),
+            new TypeSystemInfoLabelProvider(TypeSystemInfoLabelProvider.SHOW_TYPE_CONTAINER_ONLY
+                    + TypeSystemInfoLabelProvider.SHOW_ROOT_POSTFIX));
 
     typeList = itemList;
 
     setUpperListLabel(TypeSystemUIMessages
-                    .getString("TypeSystem.SelectionDialog.matchingTypesLabel")); //$NON-NLS-1$
+            .getString("TypeSystem.SelectionDialog.matchingTypesLabel")); //$NON-NLS-1$
     setLowerListLabel(TypeSystemUIMessages.getString("TypeSystem.SelectionDialog.qualifierLabel")); //$NON-NLS-1$
 
     setMatchEmptyString(true);
@@ -179,7 +176,7 @@ public class TypeSystemSelectionDialog extends TwoPaneElementSelector {
     }
 
     ITypeSystemInfo[] typeRefs = (ITypeSystemInfo[]) typeList.toArray(new ITypeSystemInfo[typeList
-                    .size()]);
+            .size()]);
     setElements(typeRefs);
 
     return super.open();

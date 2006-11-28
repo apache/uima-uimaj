@@ -99,10 +99,10 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
     Composite twoCol = new2ColumnComposite(mainArea);
 
     parmNameUI = newLabeledSingleLineStyledText(twoCol, "Parameter Name",
-                    "The unique name of the parameter");
+            "The unique name of the parameter");
 
     parmTypeUI = newLabeledCCombo(twoCol, "Parameter Type",
-                    "Select the type of the parameter from the pull-down list");
+            "Select the type of the parameter from the pull-down list");
     parmTypeUI.add("String");
     parmTypeUI.add("Float");
     parmTypeUI.add("Integer");
@@ -111,10 +111,10 @@ public class AddParameterDialog extends AbstractDialogKeyVerifyJavaNames {
     descriptionUI = newDescription(twoCol, S_);
 
     multiValueUI = newButton(mainArea, SWT.CHECK, "Parameter is multi-valued",
-                    "Check the box if the parameter is multi-valued");
+            "Check the box if the parameter is multi-valued");
 
     mandatoryUI = newButton(mainArea, SWT.CHECK, "Parameter is mandatory",
-                    "Check the box if the parameter is mandatory");
+            "Check the box if the parameter is mandatory");
 
     if (section.isAggregate()) {
       multiValueUI.setEnabled(false); // can't change this

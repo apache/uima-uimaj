@@ -43,7 +43,7 @@ public class TypeImportSection extends ImportSection {
 
   public TypeImportSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Imported Type Systems",
-                    "The following type systems are included as part of this one.");
+            "The following type systems are included as part of this one.");
   }
 
   // **************************************
@@ -63,7 +63,7 @@ public class TypeImportSection extends ImportSection {
 
   protected String getDescriptionFromImport(String source) throws InvalidXMLException, IOException {
     TypeSystemDescription parsedImportItem = UIMAFramework.getXMLParser()
-                    .parseTypeSystemDescription(new XMLInputSource(source));
+            .parseTypeSystemDescription(new XMLInputSource(source));
     return parsedImportItem.getDescription();
   }
 
@@ -97,13 +97,11 @@ public class TypeImportSection extends ImportSection {
       return false;
     }
     if (importWasRemoved)
-      if (Window.CANCEL == Utility
-                      .popOkCancel(
-                                      "May need to remove dependencies",
-                                      "A type import is being removed.  If this would removed some types or features in the"
-                                                      + " merged type system, which are referenced in the Capabilities or Indexes "
-                                                      + "section, you will need to update those sections as appropriate.",
-                                      MessageDialog.INFORMATION)) {
+      if (Window.CANCEL == Utility.popOkCancel("May need to remove dependencies",
+              "A type import is being removed.  If this would removed some types or features in the"
+                      + " merged type system, which are referenced in the Capabilities or Indexes "
+                      + "section, you will need to update those sections as appropriate.",
+              MessageDialog.INFORMATION)) {
         revertMsg(title, msg, "Cancelled by user.");
         editor.setMergedTypeSystemDescription(savedTSD);
         editor.setImportedTypeSystemDescription(savedITSD);

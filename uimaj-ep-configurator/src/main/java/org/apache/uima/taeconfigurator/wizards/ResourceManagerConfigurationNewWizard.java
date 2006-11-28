@@ -33,13 +33,13 @@ import org.eclipse.ui.INewWizard;
 public class ResourceManagerConfigurationNewWizard extends AbstractNewWizard implements INewWizard {
 
   public static final String RESOURCEMANGERCONFIGURATION_TEMPLATE = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
-                  + "<resourceManagerConfiguration "
-                  + XMLNS_PART
-                  + "<name>{0}</name>\n"
-                  + "<description></description>\n"
-                  + "<version>1.0</version>\n"
-                  + "{1}"
-                  + "</resourceManagerConfiguration>\n";
+          + "<resourceManagerConfiguration "
+          + XMLNS_PART
+          + "<name>{0}</name>\n"
+          + "<description></description>\n"
+          + "<version>1.0</version>\n"
+          + "{1}"
+          + "</resourceManagerConfiguration>\n";
 
   public ResourceManagerConfigurationNewWizard() {
     super("External Resource and Bindings (Resource Manager Configuration) Descriptor File");
@@ -54,7 +54,7 @@ public class ResourceManagerConfigurationNewWizard extends AbstractNewWizard imp
     return MessageFormat.format(RESOURCEMANGERCONFIGURATION_TEMPLATE, new Object[] {
         name,
         "<externalResources></externalResources>\n"
-                        + "<externalResourceBindings></externalResourceBindings>\n" });
+                + "<externalResourceBindings></externalResourceBindings>\n" });
   }
 
 }

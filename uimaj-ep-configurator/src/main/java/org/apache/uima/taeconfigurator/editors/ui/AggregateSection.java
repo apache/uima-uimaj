@@ -87,7 +87,7 @@ public class AggregateSection extends AbstractSection {
    */
   public AggregateSection(MultiPageEditor aEditor, Composite parent) {
     super(aEditor, parent, "Component Engines",
-                    "The following engines are included in this aggregate.");
+            "The following engines are included in this aggregate.");
   }
 
   /*
@@ -116,9 +116,9 @@ public class AggregateSection extends AbstractSection {
     Composite bottomButtonContainer = newButtonContainer(tableContainer, HORIZONTAL_BUTTONS, 150);
 
     addButton = newPushButton(bottomButtonContainer, S_ADD,
-                    "Click here to add a locally defined AE or CAS Consumer delegate", ENABLED);
+            "Click here to add a locally defined AE or CAS Consumer delegate", ENABLED);
     removeButton = newPushButton(bottomButtonContainer, "Remove",
-                    "Click here to remove the selected item", ENABLED);
+            "Click here to remove the selected item", ENABLED);
 
     Composite sideButtonContainer = newButtonContainer(sectionClient, VERTICAL_BUTTONS, 80);
 
@@ -127,16 +127,16 @@ public class AggregateSection extends AbstractSection {
     spacer(sideButtonContainer);
 
     addToFlowButton = newPushButton(sideButtonContainer, ">>",
-                    "Click here to add the selected item to the flow", !ENABLED);
+            "Click here to add the selected item to the flow", !ENABLED);
     removeFromFlowButton = newPushButton(sideButtonContainer, "<<",
-                    "Click here to remove the selected item from the flow", !ENABLED);
+            "Click here to remove the selected item from the flow", !ENABLED);
 
     spacer(sideButtonContainer);
 
     addRemoteButton = newPushButton(sideButtonContainer, "AddRemote",
-                    "Click here to add a Remote Analysis Engine", ENABLED);
+            "Click here to add a Remote Analysis Engine", ENABLED);
     findAnalysisEngineButton = newPushButton(sideButtonContainer, "Find AE",
-                    "Click here to search for an Analysis Engine", ENABLED);
+            "Click here to search for an Analysis Engine", ENABLED);
 
     addButton.setSize(removeButton.getSize());
 
@@ -209,7 +209,7 @@ public class AggregateSection extends AbstractSection {
     if (event.widget == addButton)
       handleAdd();
     else if (event.widget == removeButton
-                    || (event.type == SWT.KeyUp && event.character == SWT.DEL))
+            || (event.type == SWT.KeyUp && event.character == SWT.DEL))
       handleRemove();
     else if (event.widget == addToFlowButton)
       handleAddToFlow();
@@ -242,8 +242,8 @@ public class AggregateSection extends AbstractSection {
   private void handleAdd() {
 
     MultiResourceSelectionDialogWithFlowOption dialog = new MultiResourceSelectionDialogWithFlowOption(
-                    getSection().getShell(), editor.getFile().getProject().getParent(),
-                    "Component Engine Selection", editor.getFile().getLocation(), editor);
+            getSection().getShell(), editor.getFile().getProject().getParent(),
+            "Component Engine Selection", editor.getFile().getLocation(), editor);
     dialog.setTitle("Component Engine Selection");
     dialog.setMessage("Select one or more component engines from the workspace:");
     dialog.open();
@@ -253,13 +253,13 @@ public class AggregateSection extends AbstractSection {
       for (int i = 0; i < files.length; i++) {
         FileAndShortName fsn = new FileAndShortName(files[i]);
         produceKeyAddDelegate(fsn.shortName, fsn.fileName, dialog.getAutoAddToFlow(),
-                        dialog.isImportByName);
+                dialog.isImportByName);
       }
     }
   }
 
   private void produceKeyAddDelegate(String shortName, String fullPathFileName, boolean addToFlow,
-                  boolean isImportByName) {
+          boolean isImportByName) {
     boolean bSuccess = false;
 
     // key is shortName plus a suffix if needed to make it unique.
@@ -290,7 +290,7 @@ public class AggregateSection extends AbstractSection {
       String sCascadeDeleteTitle = "Cascade delete warning";
       String sCascadeDeleteMessage = "This will cause a cascading deletion of an associated input, output, index, or type priority.  Ok to continue?";
       boolean bContinue = MessageDialog.openConfirm(getSection().getShell(), sCascadeDeleteTitle,
-                      sCascadeDeleteMessage);
+              sCascadeDeleteMessage);
       if (!bContinue) {
         return;
       }
@@ -299,7 +299,7 @@ public class AggregateSection extends AbstractSection {
     // remove the selected delegate from delegate list
 
     Map delegatesWithImport = editor.getAeDescription()
-                    .getDelegateAnalysisEngineSpecifiersWithImports();
+            .getDelegateAnalysisEngineSpecifiersWithImports();
     Object savedDelegate1 = delegatesWithImport.get(key);
     delegatesWithImport.remove(key);
 
@@ -396,12 +396,12 @@ public class AggregateSection extends AbstractSection {
   }
 
   private final static String REMOTE_TEMPLATE = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
-                  + "<uriSpecifier xmlns=\"http://uima.apache.org/resourceSpecifier\">\n"
-                  + "  <resourceType>{0}</resourceType>\n" + // AnalysisEngine CasConsumer
-                  "  <uri>{1}</uri> \n" + // sURI
-                  "  <protocol>{2}</protocol>\n" + // SOAP or Vinci
-                  "  <timeout>{3}</timeout>" + "  {4}" + // <parameters> for VNS </parameters>
-                  "\n</uriSpecifier>";
+          + "<uriSpecifier xmlns=\"http://uima.apache.org/resourceSpecifier\">\n"
+          + "  <resourceType>{0}</resourceType>\n" + // AnalysisEngine CasConsumer
+          "  <uri>{1}</uri> \n" + // sURI
+          "  <protocol>{2}</protocol>\n" + // SOAP or Vinci
+          "  <timeout>{3}</timeout>" + "  {4}" + // <parameters> for VNS </parameters>
+          "\n</uriSpecifier>";
 
   private void handleAddRemote() {
     String sDescriptorPath = editor.getFile().getParent().getLocation().toString() + '/';
@@ -419,7 +419,7 @@ public class AggregateSection extends AbstractSection {
 
     if (!isNewKey(sKey)) {
       Utility.popMessage("Duplicate Key", "You have specified a duplicate key.  Please try again.",
-                      MessageDialog.ERROR);
+              MessageDialog.ERROR);
       return;
     }
 
@@ -428,11 +428,11 @@ public class AggregateSection extends AbstractSection {
       String vnsHostPort = "";
       if (dialog.vnsHost.length() > 0) {
         vnsHostPort = MessageFormat.format("    <parameter name=\"VNS_HOST\" value=\"{0}\"/>\n",
-                        new Object[] { dialog.vnsHost });
+                new Object[] { dialog.vnsHost });
       }
       if (dialog.vnsPort.length() > 0) {
         vnsHostPort += MessageFormat.format("    <parameter name=\"VNS_PORT\" value=\"{0}\"/>\n",
-                        new Object[] { dialog.vnsPort });
+                new Object[] { dialog.vnsPort });
       }
       if (vnsHostPort.length() > 0)
         vnsHostPort = "\n  <parameters>" + vnsHostPort + "  </parameters>";
@@ -456,10 +456,10 @@ public class AggregateSection extends AbstractSection {
 
   private void handleFindAnalysisEngine() {
     FindComponentDialog dialog1 = new FindComponentDialog(
-                    this,
-                    "Find an Analysis Engine (AE), CAS Consumer, or Remote Service Descriptor",
-                    "Specify a name pattern and/or additional constraints, and then push the Search button",
-                    delegateComponentStringHeadersLC);
+            this,
+            "Find an Analysis Engine (AE), CAS Consumer, or Remote Service Descriptor",
+            "Specify a name pattern and/or additional constraints, and then push the Search button",
+            delegateComponentStringHeadersLC);
     if (Window.CANCEL == dialog1.open())
       return;
 
@@ -468,21 +468,21 @@ public class AggregateSection extends AbstractSection {
 
     if (matchingDelegateComponentDescriptors.size() == 0) {
       Utility.popMessage("No matching Delegate Components",
-                      "There are no Delegate Components matching your search criteria.",
-                      MessageDialog.ERROR);
+              "There are no Delegate Components matching your search criteria.",
+              MessageDialog.ERROR);
       return;
     }
 
     PickTaeForTypesDialog dialog2 = new PickTaeForTypesDialog(this, editor.getFile().getName(),
-                    matchingDelegateComponentDescriptors, matchingDelegateComponentDescriptions);
+            matchingDelegateComponentDescriptors, matchingDelegateComponentDescriptions);
     if (Window.CANCEL == dialog2.open())
       return;
 
     String[] selectedDelegateComponentDescriptors = dialog2
-                    .getSelectedDelegateComponentDescriptors();
+            .getSelectedDelegateComponentDescriptors();
 
     if (selectedDelegateComponentDescriptors == null
-                    || selectedDelegateComponentDescriptors.length == 0) {
+            || selectedDelegateComponentDescriptors.length == 0) {
       return;
     }
 
@@ -497,7 +497,7 @@ public class AggregateSection extends AbstractSection {
       }
       produceKeyAddDelegate(shortName, editor.getFullPathFromDescriptorRelativePath(fileName),
       // dialog2.getAutoAddToFlow(),
-                      true, dialog2.isImportByName);
+              true, dialog2.isImportByName);
     }
     finishAggregateChangeAction();
   }
@@ -523,14 +523,14 @@ public class AggregateSection extends AbstractSection {
       Map dels = editor.getResolvedDelegates();
       if (null != dels) {
         sDesc = getDescriptionForDescriptor(item.getText(0), (ResourceSpecifier) dels.get(item
-                        .getText(0)));
+                .getText(0)));
       }
     }
     filesTable.setToolTipText(sDesc);
   }
 
   private boolean addDelegate(String fileName, String shortName, String keyName,
-                  boolean isImportByName) {
+          boolean isImportByName) {
     Import imp;
     Map delegatesWithImport = getDelegateAnalysisEngineSpecifiersWithImports();
 
@@ -548,16 +548,16 @@ public class AggregateSection extends AbstractSection {
       return false;
 
     if (!(inputDescription instanceof AnalysisEngineDescription)
-                    && !(inputDescription instanceof CasConsumerDescription)
-                    && !(inputDescription instanceof URISpecifier)) {
+            && !(inputDescription instanceof CasConsumerDescription)
+            && !(inputDescription instanceof URISpecifier)) {
       Utility
-                      .popMessage(
-                                      "Invalid kind of descriptor",
-                                      MessageFormat
-                                                      .format(
-                                                                      "Operation cancelled: The descriptor ''{0}'' being added is not an Analysis Engine or a CAS Consumer or a Remote Service.",
-                                                                      new Object[] { maybeShortenFileName(fileName) }),
-                                      MessageDialog.ERROR);
+              .popMessage(
+                      "Invalid kind of descriptor",
+                      MessageFormat
+                              .format(
+                                      "Operation cancelled: The descriptor ''{0}'' being added is not an Analysis Engine or a CAS Consumer or a Remote Service.",
+                                      new Object[] { maybeShortenFileName(fileName) }),
+                      MessageDialog.ERROR);
       return false;
     }
 
@@ -587,16 +587,16 @@ public class AggregateSection extends AbstractSection {
 
   public void addParametersForDelegate(AnalysisEngineDescription tae) {
     ConfigurationParameter[] candidateNewParams = tae.getAnalysisEngineMetaData()
-                    .getConfigurationParameterDeclarations().getConfigurationParameters();
+            .getConfigurationParameterDeclarations().getConfigurationParameters();
 
     NameValuePair[] candidateSettings = tae.getAnalysisEngineMetaData()
-                    .getConfigurationParameterSettings().getParameterSettings();
+            .getConfigurationParameterSettings().getParameterSettings();
 
     ConfigurationParameter[] oldParams = getAnalysisEngineMetaData()
-                    .getConfigurationParameterDeclarations().getConfigurationParameters();
+            .getConfigurationParameterDeclarations().getConfigurationParameters();
 
     NameValuePair[] oldSettings = getAnalysisEngineMetaData().getConfigurationParameterSettings()
-                    .getParameterSettings();
+            .getParameterSettings();
 
     if (candidateNewParams == null || candidateNewParams.length == 0) {
       return;
@@ -604,9 +604,9 @@ public class AggregateSection extends AbstractSection {
 
     if (oldParams == null || oldParams.length == 0) {
       getAnalysisEngineMetaData().getConfigurationParameterDeclarations()
-                      .setConfigurationParameters(candidateNewParams);
+              .setConfigurationParameters(candidateNewParams);
       getAnalysisEngineMetaData().getConfigurationParameterSettings().setParameterSettings(
-                      candidateSettings);
+              candidateSettings);
     } else {
       // first do parameters
       Vector newParams = new Vector();
@@ -614,7 +614,7 @@ public class AggregateSection extends AbstractSection {
         boolean bNew = true;
         for (int j = 0; j < oldParams.length; j++) {
           if (candidateNewParams[i].getName().equals(oldParams[j].getName())
-                          && candidateNewParams[i].getType().equals(oldParams[j].getType())) {
+                  && candidateNewParams[i].getType().equals(oldParams[j].getType())) {
             bNew = false;
           }
         }
@@ -624,7 +624,7 @@ public class AggregateSection extends AbstractSection {
       }
 
       ConfigurationParameter[] newPlusOldParams = new ConfigurationParameter[oldParams.length
-                      + newParams.size()];
+              + newParams.size()];
       for (int i = 0; i < oldParams.length; i++) {
         newPlusOldParams[i] = oldParams[i];
       }
@@ -632,7 +632,7 @@ public class AggregateSection extends AbstractSection {
         newPlusOldParams[oldParams.length + i] = (ConfigurationParameter) newParams.elementAt(i);
       }
       getAnalysisEngineMetaData().getConfigurationParameterDeclarations()
-                      .setConfigurationParameters(newPlusOldParams);
+              .setConfigurationParameters(newPlusOldParams);
 
       // next do settings
       Vector newSettings = new Vector();
@@ -651,7 +651,7 @@ public class AggregateSection extends AbstractSection {
       }
 
       NameValuePair[] newPlusOldSettings = new NameValuePair[oldSettings.length
-                      + newSettings.size()];
+              + newSettings.size()];
       for (int i = 0; i < oldSettings.length; i++) {
         newPlusOldSettings[i] = oldSettings[i];
       }
@@ -659,7 +659,7 @@ public class AggregateSection extends AbstractSection {
         newPlusOldSettings[oldSettings.length + i] = (NameValuePair) newSettings.elementAt(i);
       }
       getAnalysisEngineMetaData().getConfigurationParameterSettings().setParameterSettings(
-                      newPlusOldSettings);
+              newPlusOldSettings);
     }
   }
 

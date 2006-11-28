@@ -66,7 +66,7 @@ public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerify
    * @param aExistingXRD
    */
   public AddExternalResourceDependencyDialog(AbstractSection aSection,
-                  ExternalResourceDependency aExistingXRD) {
+          ExternalResourceDependency aExistingXRD) {
     this(aSection);
     existingXRD = aExistingXRD;
   }
@@ -74,8 +74,8 @@ public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerify
   protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite) super.createDialogArea(parent, existingXRD);
     createWideLabel(
-                    mainArea,
-                    "The only required field is the key name,\nwhich must be unique within this primitive Analysis Engine descriptor.");
+            mainArea,
+            "The only required field is the key name,\nwhich must be unique within this primitive Analysis Engine descriptor.");
 
     // This part of the form looks like this sketch
     //   
@@ -88,19 +88,19 @@ public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerify
     Composite twoCol = new2ColumnComposite(mainArea);
 
     keyNameUI = newLabeledSingleLineStyledText(twoCol, "Key",
-                    "Name used by the Primitive Analysis Engine to refer to the resource");
+            "Name used by the Primitive Analysis Engine to refer to the resource");
 
     descriptionUI = newDescription(twoCol, "(Optional)Describes this resource dependency");
 
     interfaceNameUI = newLabeledSingleLineStyledText(
-                    twoCol,
-                    "Interface",
-                    "The fully qualified name of the Java Interface class used by the Analysis Engine to refer to the External Resource");
+            twoCol,
+            "Interface",
+            "The fully qualified name of the Java Interface class used by the Analysis Engine to refer to the External Resource");
 
     newErrorMessage(twoCol, 2);
 
     optionalUI = newButton(mainArea, SWT.CHECK, "Check this box if this resource is optional",
-                    "Uncheck if this resource is required");
+            "Uncheck if this resource is required");
 
     if (null != existingXRD) {
       descriptionUI.setText(convertNull(existingXRD.getDescription()));

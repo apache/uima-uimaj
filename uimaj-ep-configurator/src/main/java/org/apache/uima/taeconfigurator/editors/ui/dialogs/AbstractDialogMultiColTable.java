@@ -81,16 +81,14 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
   }
 
   private void jitHowTo() {
-    Utility
-                    .popMessage(
-                                    "Where to mouse click",
-                                    "Please click the mouse in the input or output columns to toggle the selection.",
-                                    MessageDialog.INFORMATION);
+    Utility.popMessage("Where to mouse click",
+            "Please click the mouse in the input or output columns to toggle the selection.",
+            MessageDialog.INFORMATION);
   }
 
   protected void toggleValue(TableItem item, int col) {
     item.setText(col, item.getText(col).equals(checkedIndicator(col)) ? UNCHECKED
-                    : checkedIndicator(col));
+            : checkedIndicator(col));
     if (item.getText(col).equals(checkedIndicator(col)))
       numberChecked++;
     else

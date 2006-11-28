@@ -69,7 +69,7 @@ public class AddIndexKeyDialog extends AbstractDialog {
   // private Composite tc;
 
   public AddIndexKeyDialog(AbstractSection aSection, String typeName, String indexKind,
-                  List alreadyUsedKeys) {
+          List alreadyUsedKeys) {
     super(aSection, "Add index key", "Add or edit an index key for a type");
     this.indexKind = indexKind;
     this.alreadyUsedKeys = alreadyUsedKeys;
@@ -77,7 +77,7 @@ public class AddIndexKeyDialog extends AbstractDialog {
   }
 
   public AddIndexKeyDialog(AbstractSection aSection, String typeName, String indexKind,
-                  List alreadyUsedKeys, FsIndexKeyDescription existingKey) {
+          List alreadyUsedKeys, FsIndexKeyDescription existingKey) {
     this(aSection, typeName, indexKind, alreadyUsedKeys);
     this.existingKey = existingKey;
   }
@@ -116,7 +116,7 @@ public class AddIndexKeyDialog extends AbstractDialog {
 
     if ("sorted".equals(indexKind)) {
       kindUI = newLabeledCCombo(twoCol, "Sort order, or Type Priority",
-                      "Specify the sort direction, or specify Type Priorities");
+              "Specify the sort direction, or specify Type Priorities");
       kindUI.add(ASCENDING);
       kindUI.add(DESCENDING);
       kindUI.add(TYPE_PRIORITY);
@@ -133,10 +133,9 @@ public class AddIndexKeyDialog extends AbstractDialog {
       if ("sorted".equals(indexKind))
         kindUI.setText(kindUI.getItem(0));
     } else if ("sorted".equals(indexKind)) {
-      kindUI
-                      .setText(existingKey.isTypePriority() ? TYPE_PRIORITY
-                                      : existingKey.getComparator() == FSIndexComparator.STANDARD_COMPARE ? ASCENDING
-                                                      : DESCENDING);
+      kindUI.setText(existingKey.isTypePriority() ? TYPE_PRIORITY
+              : existingKey.getComparator() == FSIndexComparator.STANDARD_COMPARE ? ASCENDING
+                      : DESCENDING);
       if (!existingKey.isTypePriority())
         featureUI.setText(existingKey.getFeatureName());
     } else
@@ -153,7 +152,7 @@ public class AddIndexKeyDialog extends AbstractDialog {
   public void handleEvent(Event event) {
     if (event.widget == kindUI) {
       boolean makeFeatureVisible = "set".equals(indexKind)
-                      || !TYPE_PRIORITY.equals(kindUI.getText());
+              || !TYPE_PRIORITY.equals(kindUI.getText());
       featureUI.setVisible(makeFeatureVisible);
       featureLabel.setVisible(makeFeatureVisible);
     }
@@ -174,7 +173,7 @@ public class AddIndexKeyDialog extends AbstractDialog {
       typePriority = false;
       if ("sorted".equals(indexKind)) {
         direction = ASCENDING.equals(kindUI.getText()) ? FSIndexComparator.STANDARD_COMPARE
-                        : FSIndexComparator.REVERSE_STANDARD_COMPARE;
+                : FSIndexComparator.REVERSE_STANDARD_COMPARE;
       } else
         direction = FSIndexComparator.STANDARD_COMPARE;
       featureName = featureUI.getText();

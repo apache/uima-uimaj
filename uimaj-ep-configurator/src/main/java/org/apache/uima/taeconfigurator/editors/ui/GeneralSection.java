@@ -75,7 +75,7 @@ public class GeneralSection extends AbstractSection {
     // FrameworkImplementation choose, 2 radio buttons
     if (isAeDescriptor() || isCasConsumerDescriptor()) {
       toolkit.createLabel(sectionClient, "Implementation Language").setToolTipText(
-                      "Choose the implementation language here.");
+              "Choose the implementation language here.");
 
       Composite buttons = new2ColumnComposite(sectionClient);
       tafButton = newRadioButton(buttons, "C/C++", "C/C++", NOT_SELECTED);
@@ -83,7 +83,7 @@ public class GeneralSection extends AbstractSection {
 
       // DescriptorType choose, 2 radio buttons
       toolkit.createLabel(sectionClient, "Engine Type").setToolTipText(
-                      "Choose the type of the engine here.");
+              "Choose the type of the engine here.");
 
       buttons = new2ColumnComposite(sectionClient);
 
@@ -108,10 +108,10 @@ public class GeneralSection extends AbstractSection {
       // select C++ or Java
       String implType = editor.getAeDescription().getFrameworkImplementation();
       tafButton.setSelection("TAF".equals(implType) || // TAF is deprecated
-                      "org.apache.uima.cpp".equals(implType));
+              "org.apache.uima.cpp".equals(implType));
       jediiButton.setSelection("org.apache.uima.java".equals(implType) || "JEDII".equals(implType)); // JEDII
-                                                                                                      // is
-                                                                                                      // deprecated
+      // is
+      // deprecated
     }
   }
 
@@ -133,13 +133,11 @@ public class GeneralSection extends AbstractSection {
       if (!isPrimitive && isAggregate())
         return; // nothing changed
       if (isPrimitive) {
-        if (Window.CANCEL == Utility
-                        .popOkCancel(
-                                        "Switching from Aggregate",
-                                        "This action will clear the capabilities, reset the delegates, "
-                                                        + "reset the flow, reset the parameters, reset any resource information "
-                                                        + "and start with an empty type system.  Are you sure?",
-                                        MessageDialog.WARNING)) {
+        if (Window.CANCEL == Utility.popOkCancel("Switching from Aggregate",
+                "This action will clear the capabilities, reset the delegates, "
+                        + "reset the flow, reset the parameters, reset any resource information "
+                        + "and start with an empty type system.  Are you sure?",
+                MessageDialog.WARNING)) {
           aggregateButton.setSelection(true);
           primitiveButton.setSelection(false);
           return;
@@ -156,10 +154,9 @@ public class GeneralSection extends AbstractSection {
         // return;
         // }
         if (Window.CANCEL == Utility.popOkCancel("Switching from Primitive AE",
-                        "This action will clear the capabilities, reset the delegates, "
-                                        + "reset the parameters, reset any resource information "
-                                        + "and reset the type system.  Are you sure?",
-                        MessageDialog.WARNING)) {
+                "This action will clear the capabilities, reset the delegates, "
+                        + "reset the parameters, reset any resource information "
+                        + "and reset the type system.  Are you sure?", MessageDialog.WARNING)) {
           primitiveButton.setSelection(true);
           aggregateButton.setSelection(false);
           return;
@@ -201,12 +198,12 @@ public class GeneralSection extends AbstractSection {
       valueChanged = false;
       if (tafButton.getSelection()) {
         editor.getAeDescription().setFrameworkImplementation(
-                        setValueChanged("org.apache.uima.cpp", editor.getAeDescription()
-                                        .getFrameworkImplementation()));
+                setValueChanged("org.apache.uima.cpp", editor.getAeDescription()
+                        .getFrameworkImplementation()));
       } else {
         editor.getAeDescription().setFrameworkImplementation(
-                        setValueChanged("org.apache.uima.java", editor.getAeDescription()
-                                        .getFrameworkImplementation()));
+                setValueChanged("org.apache.uima.java", editor.getAeDescription()
+                        .getFrameworkImplementation()));
       }
       if (!valueChanged)
         return;
@@ -227,7 +224,7 @@ public class GeneralSection extends AbstractSection {
     if (isAggregate()) {
       // reset the flow to fixed flow with null as the set
       FlowConstraints flowConstraints = UIMAFramework.getResourceSpecifierFactory()
-                      .createFixedFlow();
+              .createFixedFlow();
       flowConstraints.setAttributeValue("fixedFlow", stringArray0);
       getAnalysisEngineMetaData().setFlowConstraints(flowConstraints);
     } else
@@ -238,10 +235,10 @@ public class GeneralSection extends AbstractSection {
     // reset parameters
     // reset the parameters not declared in a group
     getConfigurationParameterDeclarations().setConfigurationParameters(
-                    new ConfigurationParameter[0]);
+            new ConfigurationParameter[0]);
     // reset groups
     getConfigurationParameterDeclarations().setConfigurationGroups(
-                    AbstractSection.configurationGroupArray0);
+            AbstractSection.configurationGroupArray0);
     // reset common parameters
     getConfigurationParameterDeclarations().setCommonParameters(new ConfigurationParameter[0]);
     // reset default group name
@@ -251,7 +248,7 @@ public class GeneralSection extends AbstractSection {
 
     // reset the parm settings
     ConfigurationParameterSettings configParmSettings = UIMAFramework.getResourceSpecifierFactory()
-                    .createConfigurationParameterSettings();
+            .createConfigurationParameterSettings();
     getAnalysisEngineMetaData().setConfigurationParameterSettings(configParmSettings);
     // reset typesystem, needed when going from primitive to aggregate
     getAnalysisEngineMetaData().setTypeSystem(null);

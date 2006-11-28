@@ -39,7 +39,7 @@ public class TypeSystemSelectionPlugin extends AbstractUIPlugin {
     super();
     try {
       resourceBundle = ResourceBundle
-                      .getBundle("org.apache.uima.typesystem.TypeSystemSelectionPluginResources");
+              .getBundle("org.apache.uima.typesystem.TypeSystemSelectionPluginResources");
     } catch (MissingResourceException x) {
       resourceBundle = null;
     }

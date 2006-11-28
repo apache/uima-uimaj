@@ -33,12 +33,13 @@ import org.eclipse.ui.INewWizard;
 public class FsIndexCollectionNewWizard extends AbstractNewWizard implements INewWizard {
 
   public static final String FSINDEXCOLLECTION_TEMPLATE = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
-                  + "<fsIndexCollection "
-                  + XMLNS_PART
-                  + "<name>{0}</name>\n"
-                  + "<description></description>\n"
-                  + "<version>1.0</version>\n"
-                  + "<vendor></vendor>\n" + "{1}" + "</fsIndexCollection>\n";
+          + "<fsIndexCollection "
+          + XMLNS_PART
+          + "<name>{0}</name>\n"
+          + "<description></description>\n"
+          + "<version>1.0</version>\n"
+          + "<vendor></vendor>\n"
+          + "{1}" + "</fsIndexCollection>\n";
 
   public FsIndexCollectionNewWizard() {
     super("New Index Collection Descriptor File");

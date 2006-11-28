@@ -41,10 +41,10 @@ public class ParameterSettingsSection extends AbstractSectionParm {
 
   public ParameterSettingsSection(MultiPageEditor editor, Composite parent) {
     super(
-                    editor,
-                    parent,
-                    "Configuration Parameters",
-                    "This section list all configuration parameters, either as plain parameters, or as part of one or more groups.  Select one to show, or set the value in the right hand panel.");
+            editor,
+            parent,
+            "Configuration Parameters",
+            "This section list all configuration parameters, either as plain parameters, or as part of one or more groups.  Select one to show, or set the value in the right hand panel.");
   }
 
   /*

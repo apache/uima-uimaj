@@ -72,7 +72,7 @@ public class ExportImportablePartDialog extends AbstractDialog {
     public void verifyText(VerifyEvent e) {
       if (0 <= e.text.indexOf('.')) {
         setErrorMessage(MessageFormat.format("invalid character(s): ''{0}''",
-                        new Object[] { e.text }));
+                new Object[] { e.text }));
         e.doit = false;
       } else
         setErrorMessage("");
@@ -81,7 +81,7 @@ public class ExportImportablePartDialog extends AbstractDialog {
 
   public ExportImportablePartDialog(AbstractSection aSection) {
     super(aSection, "Export an importable part",
-                    "Specify a base file name, and perhaps alter the path where it should be stored, and press OK");
+            "Specify a base file name, and perhaps alter the path where it should be stored, and press OK");
     rootPath = aSection.editor.getFile().getParent().getLocation().toString() + '/';
   }
 
@@ -109,7 +109,7 @@ public class ExportImportablePartDialog extends AbstractDialog {
     importByNameUI = new Button(composite, SWT.RADIO);
     importByNameUI.setText("Import by Name");
     importByNameUI
-                    .setToolTipText("Importing by name looks up the name on the classpath and datapath.");
+            .setToolTipText("Importing by name looks up the name on the classpath and datapath.");
 
     importByLocationUI = new Button(composite, SWT.RADIO);
     importByLocationUI.setText("Import By Location");

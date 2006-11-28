@@ -45,7 +45,7 @@ public class AddTypeToPriorityListDialog extends AbstractDialog {
    * @param parentShell
    */
   public AddTypeToPriorityListDialog(AbstractSection aSection, Set allowableTypeNameHash,
-                  String[] typesInList) {
+          String[] typesInList) {
     super(aSection, "Add Types to Priority List", "Select one or more types and press OK");
 
     m_availableTypeNames = getAvailableTypeNames(allowableTypeNameHash, typesInList);
@@ -61,7 +61,7 @@ public class AddTypeToPriorityListDialog extends AbstractDialog {
     while (typeNameIterator.hasNext()) {
       String sTypeName = (String) typeNameIterator.next();
       if (0 > Arrays.binarySearch(alreadyUsedTypes, sTypeName)
-                      && !CAS.TYPE_NAME_TOP.equals(sTypeName)) {
+              && !CAS.TYPE_NAME_TOP.equals(sTypeName)) {
         availableHash.add(sTypeName);
       }
     }

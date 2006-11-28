@@ -40,13 +40,13 @@ public class TypeSystemInfoLabelProvider extends LabelProvider {
   public static final int SHOW_TYPE_CONTAINER_ONLY = 0x20;
 
   public static final Image CLASS_ICON = JavaUI.getSharedImages().getImage(
-                  ISharedImages.IMG_OBJS_CLASS);
+          ISharedImages.IMG_OBJS_CLASS);
 
   public static final Image INTERFACE_ICON = JavaUI.getSharedImages().getImage(
-                  ISharedImages.IMG_OBJS_INTERFACE);
+          ISharedImages.IMG_OBJS_INTERFACE);
 
   public static final Image PKG_ICON = JavaUI.getSharedImages().getImage(
-                  ISharedImages.IMG_OBJS_PACKAGE);
+          ISharedImages.IMG_OBJS_PACKAGE);
 
   private int fFlags;
 

@@ -96,11 +96,10 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
 
   public AddCapabilityTypeDialog(AbstractSection aSection, Capability c) {
     super(aSection, "Add Types to a Capability Set", "Mark one or more types as "
-                    + ((aSection.isCasConsumerDescriptor()) ? "Input" : (aSection
-                                    .isCasInitializerDescriptor() || aSection
-                                    .isCollectionReaderDescriptor()) ? "Output"
-                                    : "Input and/or Output")
-                    + " by clicking the mouse in the corresponding column, and press OK");
+            + ((aSection.isCasConsumerDescriptor()) ? "Input"
+                    : (aSection.isCasInitializerDescriptor() || aSection
+                            .isCollectionReaderDescriptor()) ? "Output" : "Input and/or Output")
+            + " by clicking the mouse in the corresponding column, and press OK");
     capabilitySection = (CapabilitySection) aSection;
     capability = c;
     enableCol1 = !aSection.isCasInitializerDescriptor() && !aSection.isCollectionReaderDescriptor();
@@ -129,7 +128,7 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
 
       for (int i = 0; i < allTypes.length; i++) {
         if (!excludedTypes.contains(allTypes[i]) && !hasType(capability.getInputs(), allTypes[i])
-                        && !hasType(capability.getOutputs(), allTypes[i])) {
+                && !hasType(capability.getOutputs(), allTypes[i])) {
           TableItem item = new TableItem(table, SWT.NONE);
           setGuiTypeName(item, allTypes[i]);
         }
@@ -139,10 +138,10 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
       item.setText(NAME, existing.getText(CapabilitySection.NAME_COL));
       item.setText(NAMESPACE, existing.getText(CapabilitySection.NAMESPACE_COL));
       TypeOrFeature tof = CapabilitySection.getTypeOrFeature(capability.getInputs(),
-                      capabilitySection.getFullyQualifiedName(existing));
+              capabilitySection.getFullyQualifiedName(existing));
       setChecked(item, 1, null != tof);
       tof = CapabilitySection.getTypeOrFeature(capability.getOutputs(), capabilitySection
-                      .getFullyQualifiedName(existing));
+              .getFullyQualifiedName(existing));
       setChecked(item, 2, null != tof);
     }
 
@@ -175,9 +174,9 @@ public class AddCapabilityTypeDialog extends AbstractDialogMultiColTable {
     for (int i = table.getItemCount() - 1; i >= 0; i--) {
       TableItem item = table.getItem(i);
       if (item.getText(INPUT).equals(checkedIndicator(INPUT))
-                      || item.getText(OUTPUT).equals(checkedIndicator(OUTPUT))) {
+              || item.getText(OUTPUT).equals(checkedIndicator(OUTPUT))) {
         names.add(capabilitySection.getFullyQualifiedName(item.getText(NAMESPACE), item
-                        .getText(NAME)));
+                .getText(NAME)));
         ins.add(Boolean.valueOf(item.getText(INPUT).equals(checkedIndicator(INPUT))));
         outs.add(Boolean.valueOf(item.getText(OUTPUT).equals(checkedIndicator(OUTPUT))));
       }
