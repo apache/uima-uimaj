@@ -33,8 +33,7 @@ public class ConsumerCasUtils {
       while (idIter.isValid()) {
         org.apache.uima.cas.FeatureStructure idFS = idIter.get();
         result = idFS
-                        .getIntValue(aTcas.getTypeSystem().getFeatureByFullName(
-                                        aTypeS + ":" + aFeatS));
+                .getIntValue(aTcas.getTypeSystem().getFeatureByFullName(aTypeS + ":" + aFeatS));
         idIter.moveToNext();
       }
     }
@@ -49,7 +48,7 @@ public class ConsumerCasUtils {
       while (idIter.isValid()) {
         org.apache.uima.cas.FeatureStructure idFS = idIter.get();
         result = idFS.getStringValue(aTcas.getTypeSystem().getFeatureByFullName(
-                        aTypeS + ":" + aFeatS));
+                aTypeS + ":" + aFeatS));
         idIter.moveToNext();
       }
     }

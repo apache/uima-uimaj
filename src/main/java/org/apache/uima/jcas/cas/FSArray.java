@@ -101,7 +101,7 @@ public final class FSArray extends TOP implements ArrayFS {
     jcasType.casImpl.checkArrayBounds(addr, destOffset, length);
     for (int i = 0; i < length; i++) {
       jcasType.ll_cas.ll_setRefArrayValue(addr, i + destOffset, jcasType.ll_cas.ll_getFSRef(src[i
-                      + srcOffset]));
+              + srcOffset]));
     }
   }
 
@@ -112,7 +112,7 @@ public final class FSArray extends TOP implements ArrayFS {
     jcasType.casImpl.checkArrayBounds(addr, srcOffset, length);
     for (int i = 0; i < length; i++) {
       dest[i + destOffset] = jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefArrayValue(
-                      addr, i + srcOffset));
+              addr, i + srcOffset));
     }
   }
 

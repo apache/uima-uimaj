@@ -302,8 +302,8 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   int ll_computeArrayParentFromComponentType(int componentType) {
     if (ll_isPrimitiveType(componentType) ||
     // note: not using this.top - until we can confirm this is set
-                    // in all cases
-                    (ll_getTypeForCode(componentType).getName().equals(CAS.TYPE_NAME_TOP))) {
+            // in all cases
+            (ll_getTypeForCode(componentType).getName().equals(CAS.TYPE_NAME_TOP))) {
       return ll_getCodeForTypeName(CAS.TYPE_NAME_ARRAY_BASE);
     }
     // is a subtype of FSArray.
@@ -498,7 +498,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   }
 
   public Feature addFeature(String featureName, Type domainType, Type rangeType)
-                  throws CASAdminException {
+          throws CASAdminException {
     return addFeature(featureName, domainType, rangeType, true);
   }
 
@@ -506,7 +506,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    * @see TypeSystemMgr#addFeature(String, Type, Type)
    */
   public Feature addFeature(String featureName, Type domainType, Type rangeType,
-                  boolean multipleReferencesAllowed) throws CASAdminException {
+          boolean multipleReferencesAllowed) throws CASAdminException {
     // assert(featureName != null);
     // assert(domainType != null);
     // assert(rangeType != null);
@@ -524,7 +524,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     }
     checkFeatureNameSyntax(featureName);
     final int featCode = this.addFeature(featureName, ((TypeImpl) domainType).getCode(),
-                    ((TypeImpl) rangeType).getCode(), multipleReferencesAllowed);
+            ((TypeImpl) rangeType).getCode(), multipleReferencesAllowed);
     if (featCode < this.featureNameST.getStart()) {
       return null;
     }
@@ -749,7 +749,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     // Add entries for all subtypes.
     for (int i = 0; i < max; i++) {
       this.featureMap.put(((Type) typesLocal.get(i)).getName() + FEATURE_SEPARATOR + shortName,
-                      feat);
+              feat);
     }
     this.intro.add(domain);
     this.featRange.add(range);
@@ -802,9 +802,9 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   private boolean ll_isPrimitiveArrayType(int type) {
     return type == this.floatArrayTypeCode || type == this.intArrayTypeCode
-                    || type == this.booleanArrayTypeCode || type == this.shortArrayTypeCode
-                    || type == this.byteArrayTypeCode || type == this.longArrayTypeCode
-                    || type == this.doubleArrayTypeCode || type == this.stringArrayTypeCode;
+            || type == this.booleanArrayTypeCode || type == this.shortArrayTypeCode
+            || type == this.byteArrayTypeCode || type == this.longArrayTypeCode
+            || type == this.doubleArrayTypeCode || type == this.stringArrayTypeCode;
   }
 
   public boolean ll_subsumes(int superType, int type) {
@@ -833,7 +833,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
     if (type == this.fsArrayTypeCode) {
       return superType == this.top || superType == this.arrayBaseTypeCode
-                      || (!ll_isPrimitiveArrayType(superType) && ll_isArrayType(superType));
+              || (!ll_isPrimitiveArrayType(superType) && ll_isArrayType(superType));
     }
 
     // at this point, we could have arrays of other primitive types, or
@@ -919,7 +919,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     for (int i = 1; i <= numFeats; i++) {
       f = this.getFeature(i);
       buf.append(getFeatureString(f) + ": " + getTypeString(f.getDomain()) + " > "
-                      + getTypeString(f.getRange()) + ";\n");
+              + getTypeString(f.getRange()) + ";\n");
     }
     return buf.toString();
   }
@@ -1206,7 +1206,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
       return this.componentToArrayTypeMap.get(componentTypeCode);
     }
     return addArrayType(ll_getTypeForCode(componentTypeCode),
-                    ll_getTypeForCode(ll_computeArrayParentFromComponentType(componentTypeCode)));
+            ll_getTypeForCode(ll_computeArrayParentFromComponentType(componentTypeCode)));
   }
 
   int addArrayType(Type componentType, Type mother) {
@@ -1248,7 +1248,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   public boolean ll_isValidTypeCode(int typeCode) {
     return (this.typeNameST.getSymbol(typeCode) != null)
-                    || this.arrayToComponentTypeMap.containsKey(typeCode);
+            || this.arrayToComponentTypeMap.containsKey(typeCode);
   }
 
   public boolean ll_isArrayType(int typeCode) {

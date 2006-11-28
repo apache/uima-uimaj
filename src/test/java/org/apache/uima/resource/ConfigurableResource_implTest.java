@@ -96,7 +96,7 @@ public class ConfigurableResource_implTest extends TestCase {
       p8.setType(ConfigurationParameter.TYPE_FLOAT);
       p8.setMultiValued(true);
       md.getConfigurationParameterDeclarations().setConfigurationParameters(
-                      new ConfigurationParameter[] { p1, p2, p3, p4, p5, p6, p7, p8 });
+              new ConfigurationParameter[] { p1, p2, p3, p4, p5, p6, p7, p8 });
       ConfigurableResource testResource1 = new MyTestResource();
       testResource1.initialize(specifier, null);
 
@@ -181,7 +181,7 @@ public class ConfigurableResource_implTest extends TestCase {
       // Now try a resource that defines configuration groups
       // (instantiate metadata from XML TAE descriptor because it's convenient)
       XMLInputSource in = new XMLInputSource(JUnitExtension
-                      .getFile("ConfigurableResourceImplTest/AnnotatorWithConfigurationGroups.xml"));
+              .getFile("ConfigurableResourceImplTest/AnnotatorWithConfigurationGroups.xml"));
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
       ResourceMetaData metadata = desc.getMetaData();
       MyTestSpecifier spec = new MyTestSpecifier();
@@ -232,9 +232,9 @@ public class ConfigurableResource_implTest extends TestCase {
   public void testGetConfigParameterValueString() throws Exception {
     try {
       XMLInputSource in = new XMLInputSource(JUnitExtension
-                      .getFile("ConfigurableResourceImplTest/AnnotatorWithConfigurationGroups.xml"));
+              .getFile("ConfigurableResourceImplTest/AnnotatorWithConfigurationGroups.xml"));
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-                      in);
+              in);
       TextAnalysisEngine test = UIMAFramework.produceTAE(desc);
 
       // test default fallback
@@ -272,7 +272,7 @@ public class ConfigurableResource_implTest extends TestCase {
  */
 class MyTestResource extends ConfigurableResource_ImplBase {
   public boolean initialize(ResourceSpecifier aSpecifier, Map aParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     return super.initialize(aSpecifier, aParams);
     // if (aSpecifier instanceof ResourceCreationSpecifier)
     // {
@@ -297,6 +297,6 @@ class MyTestSpecifier extends ResourceCreationSpecifier_impl {
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("testSpecifier",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("metaData", null, false), });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("metaData", null, false), });
 
 }

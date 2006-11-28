@@ -57,7 +57,7 @@ public class AnalysisComponentAdapterFactory {
    * @throws ResourceInitializationException
    */
   public static AnalysisComponent createAdapter(Object aAdaptee, AnalysisEngineMetaData aMetaData,
-                  Map aAdditionalParams) throws ResourceInitializationException {
+          Map aAdditionalParams) throws ResourceInitializationException {
     if (aAdaptee instanceof BaseAnnotator) {
       return new AnnotatorAdapter((BaseAnnotator) aAdaptee, aMetaData, aAdditionalParams);
     } else if (aAdaptee instanceof CasConsumer) {
@@ -66,8 +66,8 @@ public class AnalysisComponentAdapterFactory {
       return new CollectionReaderAdapter((CollectionReader) aAdaptee, aMetaData);
     } else {
       throw new ResourceInitializationException(
-                      ResourceInitializationException.NOT_AN_ANALYSIS_COMPONENT, new Object[] {
-                          aAdaptee.getClass().getName(), aMetaData.getSourceUrlString() });
+              ResourceInitializationException.NOT_AN_ANALYSIS_COMPONENT, new Object[] {
+                  aAdaptee.getClass().getName(), aMetaData.getSourceUrlString() });
     }
   }
 
@@ -81,7 +81,7 @@ public class AnalysisComponentAdapterFactory {
    */
   public static boolean isAdaptable(Class cls) {
     return BaseAnnotator.class.isAssignableFrom(cls) || CasConsumer.class.isAssignableFrom(cls)
-                    || CollectionReader.class.isAssignableFrom(cls);
+            || CollectionReader.class.isAssignableFrom(cls);
   }
 
 }

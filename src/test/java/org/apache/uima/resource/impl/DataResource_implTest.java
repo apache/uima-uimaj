@@ -60,7 +60,7 @@ public class DataResource_implTest extends TestCase {
       // create a FileResourceSpecifier
       FileResourceSpecifier_impl spec = new FileResourceSpecifier_impl();
       File tempDataFile = JUnitExtension
-                      .getFile("ResourceTest/DataResource_implTest_tempDataFile.dat");
+              .getFile("ResourceTest/DataResource_implTest_tempDataFile.dat");
       String fileUrl = tempDataFile.toURL().toString();
       String localCacheFile = "c:\\temp\\cache";
       spec.setFileUrl(fileUrl);
@@ -94,7 +94,7 @@ public class DataResource_implTest extends TestCase {
     try {
       // write a File (APL: changed to use preexisting file - 6/28/04)
       File tempDataFile = JUnitExtension
-                      .getFile("ResourceTest/DataResource_implTest_tempDataFile.dat");
+              .getFile("ResourceTest/DataResource_implTest_tempDataFile.dat");
       // FileWriter writer = new FileWriter(tempDataFile);
       String testString = "This is a test.  This is only a test.";
       // writer.write(testString);

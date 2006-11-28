@@ -33,7 +33,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * 
  */
 public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
-                FsIndexKeyDescription {
+        FsIndexKeyDescription {
 
   static final long serialVersionUID = -4015997042353963398L;
 
@@ -97,12 +97,12 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
    * @see org.apache.uima.MetaDataObject_impl#writeAttributeAsElement(String,Class,Object,String,ContentHandler)
    */
   protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace,
-                  ContentHandler aContentHandler) throws SAXException {
+          ContentHandler aContentHandler) throws SAXException {
     if ("typePriority".equals(aPropInfo.propertyName)) {
       // if property is true, just write an empty tag, if false omit
       if (isTypePriority()) {
         aContentHandler.startElement(getXmlizationInfo().namespace, "typePriority", "typePriority",
-                        new AttributesImpl());
+                new AttributesImpl());
         aContentHandler.endElement(getXmlizationInfo().namespace, "typePriority", "typePriority");
       }
     } else if (!isTypePriority()) // don't write other properties for a type priority key
@@ -112,7 +112,7 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
         // as a more user-friendly string.
 
         aContentHandler.startElement(getXmlizationInfo().namespace, "comparator", "comparator",
-                        new AttributesImpl());
+                new AttributesImpl());
 
         // write value as string
         String str = COMPARATOR_STRINGS[getComparator()];
@@ -134,7 +134,7 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
    *      org.w3c.dom.Element, org.apache.uima.util.XMLParser)
    */
   protected void readPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo, Element aElement,
-                  XMLParser aParser, XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
+          XMLParser aParser, XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     if ("typePriority".equals(aPropXmlInfo.propertyName)) {
       // The mere presence of a <typePriority/> element in the XML indicates
       // that this property is true
@@ -166,11 +166,11 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fsIndexKey",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("typePriority"), // NOTE: custom
-                                                                                // XMLization
-                      new PropertyXmlInfo("featureName"), new PropertyXmlInfo("comparator") // NOTE:
-                                                                                            // custom
-                                                                                            // XMLization
-                  });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("typePriority"), // NOTE: custom
+              // XMLization
+              new PropertyXmlInfo("featureName"), new PropertyXmlInfo("comparator") // NOTE:
+          // custom
+          // XMLization
+          });
 
 }

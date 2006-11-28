@@ -52,10 +52,10 @@ public class ResourceService_impl {
    *          additional parameters to be passed on to the Resource Factory.
    */
   public void initialize(ResourceSpecifier aResourceSpecifier, Map aResourceInitParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     // create Resource
     mResource = UIMAFramework.produceResource(getResourceClass(), aResourceSpecifier,
-                    aResourceInitParams);
+            aResourceInitParams);
   }
 
   /**

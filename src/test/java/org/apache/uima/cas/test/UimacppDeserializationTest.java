@@ -85,10 +85,9 @@ public class UimacppDeserializationTest extends TestCase {
    * i++) { System.out.println(" " + ((Feature)featVector.get(i)).getShortName()); }
    * assertTrue(docIndex != null); it = docIndex.iterator(); for (it.moveToFirst(); it.isValid();
    * it.moveToNext()) { annot = (AnnotationFS) it.get(); System.out.println( annot.getType() + ": " +
-   * annot.getBegin() + " - " + annot.getEnd()); System.out.println(" " + annot.getCoveredText()); }
-   *  // String text = null; // try { // text = cas.getDocumentText(); // } catch (CASException e) { //
-   * assertTrue(false); // } // assertTrue(text != null);
-   *  }
+   * annot.getBegin() + " - " + annot.getEnd()); System.out.println(" " + annot.getCoveredText()); } //
+   * String text = null; // try { // text = cas.getDocumentText(); // } catch (CASException e) { //
+   * assertTrue(false); // } // assertTrue(text != null); }
    */
   public static void main(String[] args) {
     junit.textui.TestRunner.run(UimacppDeserializationTest.class);

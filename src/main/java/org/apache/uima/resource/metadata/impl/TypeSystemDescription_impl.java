@@ -42,7 +42,7 @@ import org.apache.uima.util.XMLInputSource;
  * 
  */
 public class TypeSystemDescription_impl extends MetaDataObject_impl implements
-                TypeSystemDescription {
+        TypeSystemDescription {
 
   static final long serialVersionUID = -3372766232454730201L;
 
@@ -138,7 +138,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   public void setImports(Import[] aImports) {
     if (aImports == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-                      new Object[] { "null", "aImports", "setImports" });
+              new Object[] { "null", "aImports", "setImports" });
     }
     mImports = aImports;
   }
@@ -156,7 +156,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   public void setTypes(TypeDescription[] aTypes) {
     if (aTypes == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-                      new Object[] { "null", "aTypes", "setTypes" });
+              new Object[] { "null", "aTypes", "setTypes" });
     }
     mTypes = aTypes;
   }
@@ -207,7 +207,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   }
 
   public void resolveImports(Collection aAlreadyImportedTypeSystemURLs,
-                  ResourceManager aResourceManager) throws InvalidXMLException {
+          ResourceManager aResourceManager) throws InvalidXMLException {
     List importedTypes = new ArrayList();
     Import[] imports = getImports();
     for (int i = 0; i < imports.length; i++) {
@@ -223,7 +223,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
           resolveImport(url, aAlreadyImportedTypeSystemURLs, importedTypes, aResourceManager);
         } catch (IOException e) {
           throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
-                          new Object[] { url, imports[i].getSourceUrlString() }, e);
+                  new Object[] { url, imports[i].getSourceUrlString() }, e);
         }
       }
     }
@@ -244,8 +244,8 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   }
 
   private void resolveImport(URL aURL, Collection aAlreadyImportedTypeSystemURLs,
-                  Collection aResults, ResourceManager aResourceManager)
-                  throws InvalidXMLException, IOException {
+          Collection aResults, ResourceManager aResourceManager) throws InvalidXMLException,
+          IOException {
     XMLInputSource input;
     input = new XMLInputSource(aURL);
     TypeSystemDescription desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(input);
@@ -258,8 +258,8 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("typeSystemDescription",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("name", true),
-                      new PropertyXmlInfo("description", true),
-                      new PropertyXmlInfo("version", true), new PropertyXmlInfo("vendor", true),
-                      new PropertyXmlInfo("imports", true), new PropertyXmlInfo("types", true) });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("name", true),
+              new PropertyXmlInfo("description", true), new PropertyXmlInfo("version", true),
+              new PropertyXmlInfo("vendor", true), new PropertyXmlInfo("imports", true),
+              new PropertyXmlInfo("types", true) });
 }

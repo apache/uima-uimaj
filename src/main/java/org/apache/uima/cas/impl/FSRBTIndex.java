@@ -76,7 +76,7 @@ class FSRBTIndex extends FSLeafIndexImpl {
   }
 
   public ComparableIntPointerIterator pointerIterator(IntComparator comp,
-                  int[] detectIllegalIndexUpdates, int typeCode) {
+          int[] detectIllegalIndexUpdates, int typeCode) {
     return this.tree.pointerIterator(comp, detectIllegalIndexUpdates, typeCode);
   }
 

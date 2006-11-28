@@ -99,10 +99,9 @@ public class UnambiguousIteratorTest extends TestCase {
        * cas.getAnnotationIndex().size());
        */
       LowLevelCAS llc = cas.getLowLevelCAS();
-      final int tokType = llc.ll_getTypeSystem().ll_getCodeForTypeName(
-                      "uima.tt.TokenAnnotation");
+      final int tokType = llc.ll_getTypeSystem().ll_getCodeForTypeName("uima.tt.TokenAnnotation");
       LowLevelIndex annotIdx = llc.ll_getIndexRepository().ll_getIndex(TCAS.STD_ANNOTATION_INDEX,
-                      tokType);
+              tokType);
       final int annotSizeA1 = iteratorSize(annotIdx.ll_iterator());
       final int annotSizeU1 = iteratorSize(annotIdx.ll_iterator(false));
       assertEquals(annotSizeA1, annotSizeU1);

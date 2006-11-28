@@ -141,7 +141,7 @@ public class NewlineResegmenter extends JCasMultiplier_ImplBase {
 
   private String getCasSourceUri(JCas jcas) {
     Iterator iter = jcas.getJFSIndexRepository().getAnnotationIndex(SourceDocumentInformation.type)
-                    .iterator();
+            .iterator();
     if (iter.hasNext()) {
       SourceDocumentInformation sdi = (SourceDocumentInformation) iter.next();
       return sdi.getUri();

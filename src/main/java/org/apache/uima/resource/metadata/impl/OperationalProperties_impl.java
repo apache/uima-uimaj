@@ -22,7 +22,7 @@ package org.apache.uima.resource.metadata.impl;
 import org.apache.uima.resource.metadata.OperationalProperties;
 
 public class OperationalProperties_impl extends MetaDataObject_impl implements
-                OperationalProperties {
+        OperationalProperties {
 
   private static final long serialVersionUID = 8649608701550531026L;
 
@@ -82,7 +82,7 @@ public class OperationalProperties_impl extends MetaDataObject_impl implements
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("operationalProperties",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("modifiesCas"),
-                      new PropertyXmlInfo("multipleDeploymentAllowed"),
-                      new PropertyXmlInfo("outputsNewCASes") });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("modifiesCas"),
+              new PropertyXmlInfo("multipleDeploymentAllowed"),
+              new PropertyXmlInfo("outputsNewCASes") });
 }

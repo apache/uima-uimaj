@@ -111,7 +111,7 @@ public class TypeSystemUtil {
    */
   public static FeatureDescription feature2FeatureDescription(Feature aFeature) {
     FeatureDescription featDesc = UIMAFramework.getResourceSpecifierFactory()
-                    .createFeatureDescription();
+            .createFeatureDescription();
     featDesc.setName(aFeature.getShortName());
     featDesc.setRangeTypeName(aFeature.getRange().getName());
     return featDesc;

@@ -49,16 +49,16 @@ public class NonEmptyFloatList extends FloatList {
   /** getter for head * */
   public float getHead() {
     if (NonEmptyFloatList_Type.featOkTst
-                    && ((NonEmptyFloatList_Type) jcasType).casFeat_head == null)
+            && ((NonEmptyFloatList_Type) jcasType).casFeat_head == null)
       JCas.throwFeatMissing("head", "uima.cas.NonEmptyFloatList");
     return jcasType.ll_cas.ll_getFloatValue(addr,
-                    ((NonEmptyFloatList_Type) jcasType).casFeatCode_head);
+            ((NonEmptyFloatList_Type) jcasType).casFeatCode_head);
   }
 
   /** setter for head * */
   public void setHead(float v) {
     if (NonEmptyFloatList_Type.featOkTst
-                    && ((NonEmptyFloatList_Type) jcasType).casFeat_head == null)
+            && ((NonEmptyFloatList_Type) jcasType).casFeat_head == null)
       JCas.throwFeatMissing("head", "uima.cas.NonEmptyFloatList");
     jcasType.ll_cas.ll_setFloatValue(addr, ((NonEmptyFloatList_Type) jcasType).casFeatCode_head, v);
   }
@@ -68,18 +68,18 @@ public class NonEmptyFloatList extends FloatList {
   /** getter for tail * */
   public FloatList getTail() {
     if (NonEmptyFloatList_Type.featOkTst
-                    && ((NonEmptyFloatList_Type) jcasType).casFeat_tail == null)
+            && ((NonEmptyFloatList_Type) jcasType).casFeat_tail == null)
       JCas.throwFeatMissing("tail", "uima.cas.NonEmptyFloatList");
     return (FloatList) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((NonEmptyFloatList_Type) jcasType).casFeatCode_tail)));
+            ((NonEmptyFloatList_Type) jcasType).casFeatCode_tail)));
   }
 
   /** setter for tail * */
   public void setTail(FloatList v) {
     if (NonEmptyFloatList_Type.featOkTst
-                    && ((NonEmptyFloatList_Type) jcasType).casFeat_tail == null)
+            && ((NonEmptyFloatList_Type) jcasType).casFeat_tail == null)
       JCas.throwFeatMissing("tail", "uima.cas.NonEmptyFloatList");
     jcasType.ll_cas.ll_setRefValue(addr, ((NonEmptyFloatList_Type) jcasType).casFeatCode_tail,
-                    jcasType.ll_cas.ll_getFSRef(v));
+            jcasType.ll_cas.ll_getFSRef(v));
   }
 }

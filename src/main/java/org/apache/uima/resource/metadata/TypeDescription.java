@@ -122,7 +122,7 @@ public interface TypeDescription extends MetaDataObject {
    * @return description of the new Feature
    */
   public FeatureDescription addFeature(String aFeatureName, String aDescription,
-                  String aRangeTypeName);
+          String aRangeTypeName);
 
   /**
    * Convenience method which adds a FeatureDescription to this TypeDescription. Used for array or
@@ -144,5 +144,5 @@ public interface TypeDescription extends MetaDataObject {
    * @return description of the new Feature
    */
   public FeatureDescription addFeature(String aFeatureName, String aDescription,
-                  String aRangeTypeName, String aElementTypeName, Boolean aMultipleReferencesAllowed);
+          String aRangeTypeName, String aElementTypeName, Boolean aMultipleReferencesAllowed);
 }

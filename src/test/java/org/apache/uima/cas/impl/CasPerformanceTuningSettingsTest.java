@@ -52,16 +52,13 @@ public class CasPerformanceTuningSettingsTest extends TestCase {
     try {
       Properties defaultProps = UIMAFramework.getDefaultPerformanceTuningProperties();
       int expectedHeapSizeDefault = Integer.parseInt(defaultProps
-                      .getProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE));
+              .getProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE));
       Properties newProps = UIMAFramework.getDefaultPerformanceTuningProperties();
       newProps.setProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE, "100000");
 
-      TaeDescription testDescriptor = UIMAFramework
-                      .getXMLParser()
-                      .parseTaeDescription(
-                                      new XMLInputSource(
-                                                      JUnitExtension
-                                                                      .getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml")));
+      TaeDescription testDescriptor = UIMAFramework.getXMLParser().parseTaeDescription(
+              new XMLInputSource(JUnitExtension
+                      .getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml")));
 
       // check default setting
       TextAnalysisEngine taeDefault = UIMAFramework.produceTAE(testDescriptor);

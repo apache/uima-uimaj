@@ -31,7 +31,7 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  * @lt;analysisEngienMetaData>, for compatibility with existing descriptors.
  */
 public class ProcessingResourceMetaData_impl extends AnalysisEngineMetaData_impl implements
-                ProcessingResourceMetaData {
+        ProcessingResourceMetaData {
 
   static final long serialVersionUID = -4839907155580879702L;
 
@@ -40,7 +40,7 @@ public class ProcessingResourceMetaData_impl extends AnalysisEngineMetaData_impl
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-                  "processingResourceMetaData", null); // properties assigned below
+          "processingResourceMetaData", null); // properties assigned below
 
   static {
     // this class's Xmlization info is derived from that of its superclass
@@ -48,6 +48,6 @@ public class ProcessingResourceMetaData_impl extends AnalysisEngineMetaData_impl
 
     XMLIZATION_INFO.propertyInfo = new PropertyXmlInfo[superclassInfo.propertyInfo.length];
     System.arraycopy(superclassInfo.propertyInfo, 0, XMLIZATION_INFO.propertyInfo, 0,
-                    superclassInfo.propertyInfo.length);
+            superclassInfo.propertyInfo.length);
   }
 }

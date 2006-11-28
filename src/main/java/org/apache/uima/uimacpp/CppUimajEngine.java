@@ -81,10 +81,10 @@ public class CppUimajEngine {
   }
 
   public int initialize(String config, String dataPath, int[] typeInheritance,
-                  int[] typePriorities, int[] featureDefs, int[] featureOffset, String[] typeNames,
-                  String[] featureNames, int[] stringSubTypes, String[] stringSubTypeValues,
-                  int[] stringSubTypeValuePos, String[] indexIDs, int[] indexKinds,
-                  int[] compStarts, int[] compDefs) {
+          int[] typePriorities, int[] featureDefs, int[] featureOffset, String[] typeNames,
+          String[] featureNames, int[] stringSubTypes, String[] stringSubTypeValues,
+          int[] stringSubTypeValuePos, String[] indexIDs, int[] indexKinds, int[] compStarts,
+          int[] compDefs) {
     int result = 0;
     try {
       // System.out.println("CppUimajEngine::initialize()");
@@ -166,8 +166,8 @@ public class CppUimajEngine {
   }
 
   public int process(String doc, int[] heapArray, int[] fsIndex, String[] stringTable,
-                  int[] resultSpecTypes, int[] resultSpecFeatures, int sofaNum,
-                  byte[] aByteHeapArray, short[] aShortHeapArray, long[] aLongHeapArray) {
+          int[] resultSpecTypes, int[] resultSpecFeatures, int sofaNum, byte[] aByteHeapArray,
+          short[] aShortHeapArray, long[] aLongHeapArray) {
     int result = 0;
     try {
       // System.err.println("CppUimajEngine.process() called");
@@ -195,12 +195,12 @@ public class CppUimajEngine {
         for (int i = 0; i < resultSpecTypes.length; ++i) {
           // allAnnotatorFeatures is not considere here! (TODO)
           rs
-                          .addResultType(casImpl.getTypeSystemImpl().getType(resultSpecTypes[i])
-                                          .getName(), false);
+                  .addResultType(casImpl.getTypeSystemImpl().getType(resultSpecTypes[i]).getName(),
+                          false);
         }
         for (int i = 0; i < resultSpecFeatures.length; ++i) {
           rs.addResultFeature(casImpl.getTypeSystemImpl().getFeature(resultSpecFeatures[i])
-                          .getName());
+                  .getName());
         }
         // 3. call process with cas
         ae.process(casImpl, rs);

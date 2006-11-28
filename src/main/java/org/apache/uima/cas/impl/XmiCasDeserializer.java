@@ -176,7 +176,7 @@ public class XmiCasDeserializer {
     private int nextSofaNum;
 
     private XmiCasDeserializerHandler(CASImpl aCAS, boolean lenient,
-                    XmiSerializationSharedData sharedData) {
+            XmiSerializationSharedData sharedData) {
       super();
       this.cas = aCAS.getBaseCAS();
       this.lenient = lenient;
@@ -236,7 +236,7 @@ public class XmiCasDeserializer {
      *      java.lang.String, org.xml.sax.Attributes)
      */
     public void startElement(String nameSpaceURI, String localName, String qualifiedName,
-                    Attributes attrs) throws SAXException {
+            Attributes attrs) throws SAXException {
       // org.apache.vinci.debug.Debug.p("startElement: " + qualifiedName);
       // if (attrs != null) {
       // for (int i=0; i<attrs.getLength(); i++) {
@@ -469,7 +469,7 @@ public class XmiCasDeserializer {
     }
 
     private void handleFeature(final Type type, int addr, String featName, String featVal,
-                    boolean aLenient) throws SAXParseException {
+            boolean aLenient) throws SAXParseException {
       final FeatureImpl feat = (FeatureImpl) type.getFeatureByBaseName(featName);
       if (feat == null) {
         if (!aLenient) {
@@ -481,7 +481,7 @@ public class XmiCasDeserializer {
     }
 
     private void handleFeature(final Type type, int addr, String featName, List featVals,
-                    boolean aLenient) throws SAXParseException {
+            boolean aLenient) throws SAXParseException {
       final FeatureImpl feat = (FeatureImpl) type.getFeatureByBaseName(featName);
       if (feat == null) {
         if (!aLenient) {
@@ -664,9 +664,9 @@ public class XmiCasDeserializer {
         case LowLevelCAS.TYPE_CLASS_FS:
           if (featVals.size() != 1) {
             throw new SAXParseException(I18nUtil.localizeMessage(
-                            UIMAException.STANDARD_MESSAGE_CATALOG, Locale.getDefault(),
-                            "multiple_values_unexpected", new Object[] { ts.getFeature(featCode)
-                                            .getName() }), locator);
+                    UIMAException.STANDARD_MESSAGE_CATALOG, Locale.getDefault(),
+                    "multiple_values_unexpected",
+                    new Object[] { ts.getFeature(featCode).getName() }), locator);
           } else {
             handleFeature(addr, featCode, (String) featVals.get(0));
           }
@@ -836,7 +836,7 @@ public class XmiCasDeserializer {
      *      java.lang.String)
      */
     public void endElement(String nsURI, String localName, String qualifiedName)
-                    throws SAXException {
+            throws SAXException {
       switch (this.state) {
         case DOC_STATE: {
           // Do nothing.
@@ -956,8 +956,8 @@ public class XmiCasDeserializer {
         feat = ts.getFeature(feats[i]);
         int typeCode = ts.ll_getRangeType(feats[i]);
         if (cas.ll_isRefType(typeCode)
-                        && (featureType[feats[i]] == LowLevelCAS.TYPE_CLASS_FS || feat
-                                        .isMultipleReferencesAllowed())) {
+                && (featureType[feats[i]] == LowLevelCAS.TYPE_CLASS_FS || feat
+                        .isMultipleReferencesAllowed())) {
           int featVal = cas.getFeatureValue(addr, feats[i]);
           if (featVal != CASImpl.NULL) {
             int fsValAddr = CASImpl.NULL;
@@ -1203,7 +1203,7 @@ public class XmiCasDeserializer {
    * @return The <code>DefaultHandler</code> to pass to the SAX parser.
    */
   public DefaultHandler getXmiCasHandler(CAS cas, boolean lenient,
-                  XmiSerializationSharedData sharedData) {
+          XmiSerializationSharedData sharedData) {
     return new XmiCasDeserializerHandler((CASImpl) cas, lenient, sharedData);
   }
 
@@ -1243,7 +1243,7 @@ public class XmiCasDeserializer {
    *           if an I/O failure occurs
    */
   public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient)
-                  throws SAXException, IOException {
+          throws SAXException, IOException {
     XMLReader xmlReader = XMLReaderFactory.createXMLReader();
     XmiCasDeserializer deser = new XmiCasDeserializer(aCAS.getTypeSystem());
     ContentHandler handler = deser.getXmiCasHandler(aCAS, aLenient);

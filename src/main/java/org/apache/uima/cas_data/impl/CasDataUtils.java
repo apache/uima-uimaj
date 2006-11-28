@@ -83,15 +83,15 @@ public class CasDataUtils {
       if (object instanceof FeatureStructure) {
         FeatureStructure fs = (FeatureStructure) object;
         UIMAFramework.getLogger(CLASS_NAME).logrb(Level.FINE, CLASS_NAME.getName(), "dumpFeatures",
-                        LOG_RESOURCE_BUNDLE, "UIMA_cas_feature_structure_type__FINE", fs.getType());
+                LOG_RESOURCE_BUNDLE, "UIMA_cas_feature_structure_type__FINE", fs.getType());
 
         String[] names = fs.getFeatureNames();
         for (int i = 0; names != null && i < names.length; i++) {
           FeatureValue fValue = fs.getFeatureValue(names[i]);
           if (fValue != null) {
             UIMAFramework.getLogger(CLASS_NAME).logrb(Level.FINE, CLASS_NAME.getName(),
-                            "dumpFeatures", LOG_RESOURCE_BUNDLE, "UIMA_cas_feature_name__FINE",
-                            new Object[] { names[i], fValue.toString() });
+                    "dumpFeatures", LOG_RESOURCE_BUNDLE, "UIMA_cas_feature_name__FINE",
+                    new Object[] { names[i], fValue.toString() });
           }
         }
       }
@@ -108,7 +108,7 @@ public class CasDataUtils {
         FeatureStructure fs = (FeatureStructure) object;
         if (System.getProperty("DEBUG") != null)
           System.out.println("FeatureName::::::::::::::::::::::::::::::::::::::::::>"
-                          + fs.getType() + " Searching For::" + featureName);
+                  + fs.getType() + " Searching For::" + featureName);
         if (featureName.equals(fs.getType())) {
           String[] names = fs.getFeatureNames();
           for (int i = 0; names != null && i < names.length; i++) {
@@ -142,7 +142,7 @@ public class CasDataUtils {
   }
 
   public static String[] getFeatureStructureValues(CasData aCAS, String featureStructureName,
-                  String featureName) {
+          String featureName) {
     Iterator it = aCAS.getFeatureStructures();
     String featureValue = null;
     Vector v = new Vector();
@@ -171,13 +171,13 @@ public class CasDataUtils {
   }
 
   public static String getFeatureValueByType(CasData aCAS, String aFeatureStructure,
-                  String featureName) {
+          String featureName) {
     Iterator it = aCAS.getFeatureStructures();
     String featureValue = null;
     while (it.hasNext()) {
       Object object = it.next();
       if (object instanceof FeatureStructure
-                      && ((FeatureStructure) object).getType().equals(aFeatureStructure)) {
+              && ((FeatureStructure) object).getType().equals(aFeatureStructure)) {
         FeatureStructure fs = (FeatureStructure) object;
         FeatureValue fValue = fs.getFeatureValue(featureName);
         if (fValue != null) {
@@ -196,7 +196,7 @@ public class CasDataUtils {
     while (it.hasNext()) {
       Object object = it.next();
       if (object instanceof FeatureStructure
-                      && ((FeatureStructure) object).getType().equals(aFeatureStructureName)) {
+              && ((FeatureStructure) object).getType().equals(aFeatureStructureName)) {
         FeatureStructure fs = (FeatureStructure) object;
         String[] featureNames = fs.getFeatureNames();
         if (featureNames == null) {

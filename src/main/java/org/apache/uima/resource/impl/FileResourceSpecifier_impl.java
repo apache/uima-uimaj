@@ -30,7 +30,7 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  * 
  */
 public class FileResourceSpecifier_impl extends MetaDataObject_impl implements
-                FileResourceSpecifier {
+        FileResourceSpecifier {
 
   static final long serialVersionUID = -4595981135298755811L;
 
@@ -79,6 +79,6 @@ public class FileResourceSpecifier_impl extends MetaDataObject_impl implements
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fileResourceSpecifier",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("fileUrl"),
-                      new PropertyXmlInfo("localCache"), });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("fileUrl"),
+              new PropertyXmlInfo("localCache"), });
 }

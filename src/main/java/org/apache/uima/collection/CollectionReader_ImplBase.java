@@ -40,7 +40,7 @@ import org.apache.uima.util.Level;
  */
 
 public abstract class CollectionReader_ImplBase extends ConfigurableResource_ImplBase implements
-                CollectionReader {
+        CollectionReader {
   /**
    * @deprecated
    */
@@ -62,7 +62,7 @@ public abstract class CollectionReader_ImplBase extends ConfigurableResource_Imp
    *      java.util.Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     if (aSpecifier instanceof ResourceCreationSpecifier) {
       // do framework intitialiation
       if (super.initialize(aSpecifier, aAdditionalParams)) {
@@ -82,7 +82,7 @@ public abstract class CollectionReader_ImplBase extends ConfigurableResource_Imp
    *           if a failure occurs during initialization.
    */
   public void initialize() throws ResourceInitializationException {
-    //no default behavior
+    // no default behavior
   }
 
   /**

@@ -72,7 +72,7 @@ public class ResourcePool {
    *           if the Resource instances could not be created
    */
   public ResourcePool(int aNumInstances, ResourceSpecifier aResourceSpecifier, Class aResourceClass)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     this(aNumInstances, aResourceSpecifier, aResourceClass, null);
   }
 
@@ -94,8 +94,7 @@ public class ResourcePool {
    *           if the Resource instances could not be created
    */
   public ResourcePool(int aNumInstances, ResourceSpecifier aResourceSpecifier,
-                  Class aResourceClass, Map aResourceInitParams)
-                  throws ResourceInitializationException {
+          Class aResourceClass, Map aResourceInitParams) throws ResourceInitializationException {
     mNumInstances = aNumInstances;
 
     fillPool(aResourceSpecifier, aResourceClass, aResourceInitParams);
@@ -134,8 +133,7 @@ public class ResourcePool {
     // make sure this Resource was actually belongs to this pool and is checked out
     if (!mAllInstances.contains(aResource) || mFreeInstances.contains(aResource)) {
       UIMAFramework.getLogger(CLASS_NAME).logrb(Level.WARNING, CLASS_NAME.getName(),
-                      "releaseResource", LOG_RESOURCE_BUNDLE,
-                      "UIMA_return_resource_to_pool__WARNING");
+              "releaseResource", LOG_RESOURCE_BUNDLE, "UIMA_return_resource_to_pool__WARNING");
     } else {
       /*
        * UIMAFramework.getLogger().log( "Returned resource " + aResource.getMetaData().getUUID() + "
@@ -224,11 +222,11 @@ public class ResourcePool {
    *           if the Resource instances could not be created
    */
   protected void fillPool(ResourceSpecifier aResourceSpecifier, Class aResourceClass,
-                  Map aResourceInitParams) throws ResourceInitializationException {
+          Map aResourceInitParams) throws ResourceInitializationException {
     // fill the pool
     for (int i = 0; i < mNumInstances; i++) {
       Resource_ImplBase resource = (Resource_ImplBase) UIMAFramework.produceResource(
-                      aResourceClass, aResourceSpecifier, aResourceInitParams);
+              aResourceClass, aResourceSpecifier, aResourceInitParams);
 
       mAllInstances.add(resource);
       mFreeInstances.add(resource);

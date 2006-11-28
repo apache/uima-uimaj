@@ -124,7 +124,8 @@ public class XmiCasSerializer {
     private XmiSerializationSharedData sharedData;
 
     private XmlElementName[] xmiTypeNames; // array, indexed by type code, giving XMI names for
-                                            // each type
+
+    // each type
 
     private Map nsUriToPrefixMap = new HashMap();
 
@@ -137,7 +138,7 @@ public class XmiCasSerializer {
     boolean isFiltering;
 
     private XmiCasDocSerializer(ContentHandler ch, ErrorHandler eh, CASImpl cas,
-                    XmiSerializationSharedData sharedData) {
+            XmiSerializationSharedData sharedData) {
       super();
       this.ch = ch;
       this.eh = eh;
@@ -192,7 +193,7 @@ public class XmiCasSerializer {
       workAttrs.clear();
       computeNamespaceDeclarationAttrs(workAttrs);
       workAttrs.addAttribute(XMI_NS_URI, XMI_VERSION_LOCAL_NAME, XMI_VERSION_QNAME, "CDATA",
-                      XMI_VERSION_VALUE);
+              XMI_VERSION_VALUE);
 
       startElement(XMI_TAG, workAttrs, iElementCount);
       writeNullObject(); // encodes 1 element
@@ -208,7 +209,7 @@ public class XmiCasSerializer {
       String sofaXmiId = null;
       for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
         FSIndexRepositoryImpl loopIR = (FSIndexRepositoryImpl) cas.getBaseCAS()
-                        .getSofaIndexRepository(sofaNum);
+                .getSofaIndexRepository(sofaNum);
         if (sofaNum != 1 || cas.isInitialSofaCreated()) {
           FeatureStructureImpl sofa = (FeatureStructureImpl) cas.getTCAS(sofaNum).getSofa();
           sofaXmiId = getXmiId((sofa).getAddress());
@@ -303,7 +304,7 @@ public class XmiCasSerializer {
         // int sofaNum = sofa.getSofaRef();
         // iterator.moveToNext();
         FSIndexRepositoryImpl loopIR = (FSIndexRepositoryImpl) cas.getBaseCAS()
-                        .getSofaIndexRepository(sofaNum);
+                .getSofaIndexRepository(sofaNum);
         if (loopIR != null) {
           fsarray = loopIR.getIndexedFSs();
           for (int k = 0; k < fsarray.length; k++) {
@@ -540,7 +541,7 @@ public class XmiCasSerializer {
           // populates the child elements list with features that are to be encoded
           // as child elements (currently required for string arrays).
           List childElements = encodeFeatures(addr, workAttrs,
-                          (typeClass != LowLevelCAS.TYPE_CLASS_FS));
+                  (typeClass != LowLevelCAS.TYPE_CLASS_FS));
           startElement(xmlElementName, workAttrs, childElements.size());
           sendElementEvents(childElements);
           endElement(xmlElementName);
@@ -637,7 +638,7 @@ public class XmiCasSerializer {
      *         should be added as a child of the FS
      */
     private List encodeFeatures(int addr, AttributesImpl attrs, boolean insideListNode)
-                    throws SAXException {
+            throws SAXException {
       List childElements = new ArrayList();
       int heapValue = cas.getHeapValue(addr);
       int[] feats = cas.ts.getAppropriateFeatures(heapValue);
@@ -740,7 +741,7 @@ public class XmiCasSerializer {
               }
               for (int j = 0; j < array.length; j++) {
                 childElements.add(new XmlElementNameAndContents(new XmlElementName(null, featName,
-                                featName), array[j]));
+                        featName), array[j]));
               }
               attrValue = null;
             }
@@ -768,7 +769,7 @@ public class XmiCasSerializer {
     }
 
     private void startElement(XmlElementName name, Attributes attrs, int aNumChildren)
-                    throws SAXException {
+            throws SAXException {
       XmiCasSerializer.this.numChildren = aNumChildren;
       // don't include NS URI here. That causes XMI serializer to
       // include the xmlns attribute in every element. Instead we
@@ -787,7 +788,7 @@ public class XmiCasSerializer {
      * @throws SAXException
      */
     private void stringArrayToElementList(String featName, int addr, List resultList)
-                    throws SAXException {
+            throws SAXException {
       if (addr == CASImpl.NULL) {
         return;
       }
@@ -802,7 +803,7 @@ public class XmiCasSerializer {
       for (int j = 0; j < size; j++) {
         String s = cas.getStringForCode(cas.getHeapValue(pos));
         resultList.add(new XmlElementNameAndContents(new XmlElementName(null, featName, featName),
-                        s));
+                s));
         ++pos;
       }
     }
@@ -1066,7 +1067,7 @@ public class XmiCasSerializer {
   public static final String XMI_TAG_QNAME = "xmi:XMI";
 
   public static final XmlElementName XMI_TAG = new XmlElementName(XMI_NS_URI, XMI_TAG_LOCAL_NAME,
-                  XMI_TAG_QNAME);
+          XMI_TAG_QNAME);
 
   public static final String INDEXED_ATTR_NAME = "_indexed";
 
@@ -1191,10 +1192,10 @@ public class XmiCasSerializer {
    * @throws SAXException
    */
   public void serialize(CAS cas, ContentHandler contentHandler, ErrorHandler errorHandler)
-                  throws IOException, SAXException {
+          throws IOException, SAXException {
     contentHandler.startDocument();
     XmiCasDocSerializer ser = new XmiCasDocSerializer(contentHandler, errorHandler, ((CASImpl) cas)
-                    .getBaseCAS(), null);
+            .getBaseCAS(), null);
     ser.serialize();
     contentHandler.endDocument();
   }
@@ -1214,10 +1215,10 @@ public class XmiCasSerializer {
    * @throws SAXException
    */
   public void serialize(CAS cas, ContentHandler contentHandler, ErrorHandler errorHandler,
-                  XmiSerializationSharedData sharedData) throws IOException, SAXException {
+          XmiSerializationSharedData sharedData) throws IOException, SAXException {
     contentHandler.startDocument();
     XmiCasDocSerializer ser = new XmiCasDocSerializer(contentHandler, errorHandler, ((CASImpl) cas)
-                    .getBaseCAS(), sharedData);
+            .getBaseCAS(), sharedData);
     ser.serialize();
     contentHandler.endDocument();
   }
@@ -1259,7 +1260,7 @@ public class XmiCasSerializer {
    *           if an I/O failure occurs
    */
   public static void serialize(CAS aCAS, TypeSystem aTargetTypeSystem, OutputStream aStream)
-                  throws SAXException, IOException {
+          throws SAXException, IOException {
     XmiCasSerializer xmiCasSerializer = new XmiCasSerializer(aTargetTypeSystem);
     XMLSerializer sax2xml = new XMLSerializer(aStream, false);
     xmiCasSerializer.serialize(aCAS, sax2xml.getContentHandler());

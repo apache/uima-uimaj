@@ -34,7 +34,7 @@ public class CASAdminException extends RuntimeException {
   private static final String resource_file = "org.apache.uima.cas.admin.admin_errors";
 
   private static final String missing_resource_error = "Could not load message catalog: "
-                  + resource_file;
+          + resource_file;
 
   private static final int MESSAGES_NOT_FOUND = -1;
 
@@ -129,7 +129,7 @@ public class CASAdminException extends RuntimeException {
     // Retrieve message from resource bundle, format using arguments,
     // and return resulting string.
     return (new MessageFormat(this.resource.getString(identifiers[this.error])))
-                    .format(this.arguments);
+            .format(this.arguments);
   }
 
   /** @return The same as getMessage(), but prefixed with <code>"CASAdminException: "</code>. */

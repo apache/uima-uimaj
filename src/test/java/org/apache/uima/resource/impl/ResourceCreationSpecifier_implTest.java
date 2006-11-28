@@ -36,7 +36,7 @@ public class ResourceCreationSpecifier_implTest extends TestCase {
     try {
       File descFile = JUnitExtension.getFile("UimaContextTest/CasConsumerForUimaContextTest.xml");
       ResourceCreationSpecifier resCreaSpec = (ResourceCreationSpecifier) UIMAFramework
-                      .getXMLParser().parseResourceSpecifier(new XMLInputSource(descFile));
+              .getXMLParser().parseResourceSpecifier(new XMLInputSource(descFile));
       resCreaSpec.doFullValidation();
     } catch (Exception e) {
       JUnitExtension.handleException(e);

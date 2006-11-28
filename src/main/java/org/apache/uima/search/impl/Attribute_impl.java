@@ -94,7 +94,7 @@ public class Attribute_impl extends MetaDataObject_impl implements Attribute {
    *      org.apache.uima.util.XMLParser)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
-                  XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
+          XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     setName(aElement.getAttribute("name"));
     setValue(aElement.getAttribute("value"));
 
@@ -112,8 +112,8 @@ public class Attribute_impl extends MetaDataObject_impl implements Attribute {
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("attribute",
-                  new PropertyXmlInfo[] {
-                  // name and value are attributes, not elements
-                  });
+          new PropertyXmlInfo[] {
+          // name and value are attributes, not elements
+          });
 
 }

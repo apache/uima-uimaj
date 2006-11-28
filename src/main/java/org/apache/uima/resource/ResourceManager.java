@@ -200,7 +200,7 @@ public interface ResourceManager {
    *           if a failure occurs in accessing the resource
    */
   public InputStream getResourceAsStream(String aKey, String[] aParams)
-                  throws ResourceAccessException;
+          throws ResourceAccessException;
 
   /**
    * Initializes all external resources declared in a ResourceCreationSpecifier.
@@ -217,8 +217,8 @@ public interface ResourceManager {
    *           if an initialization failure occurs
    */
   public void initializeExternalResources(ResourceManagerConfiguration aConfiguration,
-                  String aQualifiedContextName, Map aAdditionalParams)
-                  throws ResourceInitializationException;
+          String aQualifiedContextName, Map aAdditionalParams)
+          throws ResourceInitializationException;
 
   /**
    * Resolves a component's external resource dependencies using this resource manager. Throws an
@@ -234,7 +234,7 @@ public interface ResourceManager {
    *           if a required dependency is not satisfied
    */
   public void resolveAndValidateResourceDependencies(ExternalResourceDependency[] aDependencies,
-                  String aQualifiedContextName) throws ResourceInitializationException;
+          String aQualifiedContextName) throws ResourceInitializationException;
 
   /**
    * Sets the classpath for the UIMA extension ClassLoader and specifies if the extension
@@ -249,7 +249,7 @@ public interface ResourceManager {
    *           if a malformed URL has occurred in the classpath string.
    */
   public void setExtensionClassPath(String classpath, boolean resolveResource)
-                  throws MalformedURLException;
+          throws MalformedURLException;
 
   /**
    * Sets the classpath for the UIMA extension ClassLoader and specifies if the extension
@@ -267,7 +267,7 @@ public interface ResourceManager {
    *           if a malformed URL has occurred in the classpath string.
    */
   public void setExtensionClassPath(ClassLoader parent, String classpath, boolean resolveResource)
-                  throws MalformedURLException;
+          throws MalformedURLException;
 
   /**
    * Returns the UIMA extension class loader.

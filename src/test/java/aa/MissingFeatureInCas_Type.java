@@ -136,19 +136,19 @@ public class MissingFeatureInCas_Type extends TOP_Type {
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
     casFeat_haveThisOne = jcas.getRequiredFeatureDE(casType, "haveThisOne", "uima.cas.Integer",
-                    featOkTst);
+            featOkTst);
     casFeatCode_haveThisOne = (null == casFeat_haveThisOne) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_haveThisOne).getCode();
+            : ((FeatureImpl) casFeat_haveThisOne).getCode();
 
     casFeat_missingThisOne = jcas.getRequiredFeatureDE(casType, "missingThisOne", "uima.cas.Float",
-                    featOkTst);
+            featOkTst);
     casFeatCode_missingThisOne = (null == casFeat_missingThisOne) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_missingThisOne).getCode();
+            : ((FeatureImpl) casFeat_missingThisOne).getCode();
 
     casFeat_changedFType = jcas.getRequiredFeatureDE(casType, "changedFType", "uima.cas.String",
-                    featOkTst);
+            featOkTst);
     casFeatCode_changedFType = (null == casFeat_changedFType) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_changedFType).getCode();
+            : ((FeatureImpl) casFeat_changedFType).getCode();
 
   }
 }

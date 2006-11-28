@@ -49,13 +49,13 @@ public class FlowContainer {
   }
 
   public FlowContainer newCasProduced(CAS newCAS, String producedBy)
-                  throws AnalysisEngineProcessException {
+          throws AnalysisEngineProcessException {
     mTimer.startIt();
     try {
       // set the current component info of the CAS, so that it knows the sofa
       // mappings for the component that's about to process it (the FlowController)
       newCAS.setCurrentComponentInfo(mFlowControllerContainer.getUimaContextAdmin()
-                      .getComponentInfo());
+              .getComponentInfo());
 
       // Get the right view of the CAS. Sofa-aware components get the base CAS.
       // Sofa-unaware components get whatever is mapped to the default text sofa.
@@ -96,6 +96,6 @@ public class FlowContainer {
    */
   public AnalysisEngineManagementImpl getMBean() {
     return (AnalysisEngineManagementImpl) mFlowControllerContainer.getUimaContextAdmin()
-                    .getManagementInterface();
+            .getManagementInterface();
   }
 }

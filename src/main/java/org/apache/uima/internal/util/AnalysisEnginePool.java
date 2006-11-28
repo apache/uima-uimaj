@@ -57,7 +57,7 @@ public class AnalysisEnginePool {
    *           if the Resource instances could not be created
    */
   public AnalysisEnginePool(String aName, int aNumInstances, ResourceSpecifier aResourceSpecifier)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     this(aName, aNumInstances, aResourceSpecifier, null);
   }
 
@@ -79,7 +79,7 @@ public class AnalysisEnginePool {
    *           if the Resource instances could not be created
    */
   public AnalysisEnginePool(String aName, int aNumInstances, ResourceSpecifier aResourceSpecifier,
-                  Map aResourceInitParams) throws ResourceInitializationException {
+          Map aResourceInitParams) throws ResourceInitializationException {
     if (aResourceInitParams == null) {
       aResourceInitParams = new HashMap();
     } else {
@@ -88,7 +88,7 @@ public class AnalysisEnginePool {
 
     // initialize ResourcePool
     mPool = new ResourcePool(aNumInstances, aResourceSpecifier, getResourceClass(),
-                    aResourceInitParams);
+            aResourceInitParams);
 
   }
 

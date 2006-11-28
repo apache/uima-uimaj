@@ -159,7 +159,7 @@ public class AnnotatorContext_impl implements AnnotatorContext {
    *      java.lang.String[])
    */
   public InputStream getResourceAsStream(String aKey, String[] aParams)
-                  throws AnnotatorContextException {
+          throws AnnotatorContextException {
     try {
       return mUimaContext.getResourceAsStream(aKey, aParams);
     } catch (ResourceAccessException e) {

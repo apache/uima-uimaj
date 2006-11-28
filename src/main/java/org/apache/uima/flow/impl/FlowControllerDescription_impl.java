@@ -39,7 +39,7 @@ import org.w3c.dom.Element;
  * Implementation of {@link FlowControllerDescription}.
  */
 public class FlowControllerDescription_impl extends ResourceCreationSpecifier_impl implements
-                FlowControllerDescription {
+        FlowControllerDescription {
   private static final long serialVersionUID = 7478890390021821535L;
 
   /**
@@ -51,7 +51,7 @@ public class FlowControllerDescription_impl extends ResourceCreationSpecifier_im
     setFrameworkImplementation("org.apache.uima.java");
     // set default operational properties (may be overrriden during parsing)
     OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory()
-                    .createOperationalProperties();
+            .createOperationalProperties();
     opProps.setModifiesCas(false);
     opProps.setMultipleDeploymentAllowed(true);
     opProps.setOutputsNewCASes(false);
@@ -68,12 +68,12 @@ public class FlowControllerDescription_impl extends ResourceCreationSpecifier_im
    * @see org.apache.uima.resource.ResourceCreationSpecifier#doFullValidation(org.apache.uima.resource.ResourceManager)
    */
   public void doFullValidation(ResourceManager aResourceManager)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     // check that user class was specified
     if (getImplementationName() == null || getImplementationName().length() == 0) {
       throw new ResourceInitializationException(
-                      ResourceInitializationException.MISSING_IMPLEMENTATION_CLASS_NAME,
-                      new Object[] { getSourceUrlString() });
+              ResourceInitializationException.MISSING_IMPLEMENTATION_CLASS_NAME,
+              new Object[] { getSourceUrlString() });
     }
     // try to load user class
     // ust UIMA extension ClassLoader if available
@@ -87,14 +87,13 @@ public class FlowControllerDescription_impl extends ResourceCreationSpecifier_im
       }
     } catch (ClassNotFoundException e) {
       throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
-                      new Object[] { getImplementationName(), getSourceUrlString() }, e);
+              new Object[] { getImplementationName(), getSourceUrlString() }, e);
     }
     // verify the user class implements FlowController
     if (!FlowController.class.isAssignableFrom(implClass)) {
       throw new ResourceInitializationException(
-                      ResourceInitializationException.RESOURCE_DOES_NOT_IMPLEMENT_INTERFACE,
-                      new Object[] { getImplementationName(), FlowController.class.getName(),
-                          getSourceUrlString() });
+              ResourceInitializationException.RESOURCE_DOES_NOT_IMPLEMENT_INTERFACE, new Object[] {
+                  getImplementationName(), FlowController.class.getName(), getSourceUrlString() });
     }
   }
 
@@ -102,11 +101,11 @@ public class FlowControllerDescription_impl extends ResourceCreationSpecifier_im
    * Overridden to set default operational properties if they are not specified in descriptor.
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
     if (getFlowControllerMetaData().getOperationalProperties() == null) {
       OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory()
-                      .createOperationalProperties();
+              .createOperationalProperties();
       opProps.setModifiesCas(false);
       opProps.setMultipleDeploymentAllowed(true);
       opProps.setOutputsNewCASes(false);
@@ -119,10 +118,9 @@ public class FlowControllerDescription_impl extends ResourceCreationSpecifier_im
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-                  "flowControllerDescription", new PropertyXmlInfo[] {
-                      new PropertyXmlInfo("frameworkImplementation"),
-                      new PropertyXmlInfo("implementationName"),
-                      new PropertyXmlInfo("metaData", null),
-                      new PropertyXmlInfo("externalResourceDependencies"),
-                      new PropertyXmlInfo("resourceManagerConfiguration", null) });
+          "flowControllerDescription", new PropertyXmlInfo[] {
+              new PropertyXmlInfo("frameworkImplementation"),
+              new PropertyXmlInfo("implementationName"), new PropertyXmlInfo("metaData", null),
+              new PropertyXmlInfo("externalResourceDependencies"),
+              new PropertyXmlInfo("resourceManagerConfiguration", null) });
 }

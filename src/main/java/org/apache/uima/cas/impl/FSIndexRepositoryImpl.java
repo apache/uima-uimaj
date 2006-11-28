@@ -86,7 +86,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       }
       final IndexIteratorCachePair iicp = (IndexIteratorCachePair) o;
       return this.index.getComparator().equals(iicp.index.getComparator())
-                      && (this.index.getIndexingStrategy() == iicp.index.getIndexingStrategy());
+              && (this.index.getIndexingStrategy() == iicp.index.getIndexingStrategy());
     }
 
     public int hashCode() {
@@ -101,7 +101,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       this.iteratorCache = new ArrayList();
       final Type rootType = this.index.getComparator().getType();
       final ArrayList allTypes = getAllSubsumedTypes(rootType,
-                      FSIndexRepositoryImpl.this.typeSystem);
+              FSIndexRepositoryImpl.this.typeSystem);
       final int len = allTypes.size();
       int typeCode, indexPos;
       ArrayList indexList;
@@ -229,8 +229,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       for (int i = 0; i < this.indexesSize; i++) {
         final FSLeafIndexImpl leafIndex = ((FSLeafIndexImpl) iteratorCache.get(i));
         it = leafIndex.pointerIterator(this.iteratorComparator,
-                        FSIndexRepositoryImpl.this.detectIllegalIndexUpdates, ((TypeImpl) leafIndex
-                                        .getType()).getCode());
+                FSIndexRepositoryImpl.this.detectIllegalIndexUpdates, ((TypeImpl) leafIndex
+                        .getType()).getCode());
         this.indexes[i] = it;
       }
     }
@@ -405,8 +405,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
             // at something
             // smaller than the current element.
             while (it.isValid()
-                            && (this.iteratorComparator.compare(it.get(),
-                                            this.indexes[this.currentIndex].get()) < 0)) {
+                    && (this.iteratorComparator.compare(it.get(), this.indexes[this.currentIndex]
+                            .get()) < 0)) {
               it.inc();
             }
           }
@@ -461,8 +461,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
               it.moveToLast();
             }
             while (it.isValid()
-                            && (this.iteratorComparator.compare(it.get(),
-                                            this.indexes[this.currentIndex].get()) > 0)) {
+                    && (this.iteratorComparator.compare(it.get(), this.indexes[this.currentIndex]
+                            .get()) > 0)) {
               it.dec();
             }
           }
@@ -619,7 +619,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
      */
     public FSIterator iterator(FeatureStructure fs) {
       return new FSIteratorWrapper(new PointerIterator(this.iicp, ((FeatureStructureImpl) fs)
-                      .getAddress()), FSIndexRepositoryImpl.this.cas);
+              .getAddress()), FSIndexRepositoryImpl.this.cas);
     }
 
     public IntPointerIterator getIntIterator() {
@@ -765,7 +765,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         String key = (String) keysIter.next();
         IndexIteratorCachePair iicp = (IndexIteratorCachePair) baseIndexRepo.name2indexMap.get(key);
         createIndexNoQuestionsAsked(iicp.index.getComparator(), key, iicp.index
-                        .getIndexingStrategy());
+                .getIndexingStrategy());
       }
     }
     this.defaultOrderBuilder = baseIndexRepo.defaultOrderBuilder;
@@ -821,7 +821,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * This is where the actual index gets created.
    */
   private IndexIteratorCachePair addNewIndex(FSIndexComparator comparator, int initialSize,
-                  int indexType) {
+          int indexType) {
     final Type type = comparator.getType();
     final int typeCode = ((TypeImpl) type).getCode();
     if (typeCode >= this.indexArray.length) {
@@ -971,7 +971,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * @see org.apache.uima.cas.admin.FSIndexRepositoryMgr#createIndex(FSIndexComparator, String)
    */
   public boolean createIndex(FSIndexComparator comp, String label, int indexType)
-                  throws CASAdminException {
+          throws CASAdminException {
     if (this.locked) {
       throw new CASAdminException(CASAdminException.REPOSITORY_LOCKED);
     }
@@ -1063,7 +1063,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     while (it.hasNext()) {
       label = (String) it.next();
       if (((IndexIteratorCachePair) this.name2indexMap.get(label)).index.getComparator().equals(
-                      comp)) {
+              comp)) {
         labels.add(label);
       }
     }
@@ -1081,7 +1081,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     if (type.isArray()) {
       Type componentType = type.getComponentType();
       if (componentType != null && !componentType.isPrimitive()
-                      && !componentType.getName().equals(CAS.TYPE_NAME_TOP)) {
+              && !componentType.getName().equals(CAS.TYPE_NAME_TOP)) {
         return null;
       }
     }
@@ -1257,7 +1257,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
   private void incrementIllegalIndexUpdateDetector(int typeCode) {
     this.detectIllegalIndexUpdates[typeCode] = (this.detectIllegalIndexUpdates[typeCode] == Integer.MAX_VALUE) ? Integer.MIN_VALUE
-                    : this.detectIllegalIndexUpdates[typeCode] + 1;
+            : this.detectIllegalIndexUpdates[typeCode] + 1;
   }
 
   /**
@@ -1369,7 +1369,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       String label = (String) iter.next();
       FSIndex index = getIndex(label);
       if (index.getIndexingStrategy() != FSIndex.SET_INDEX
-                      && this.typeSystem.subsumes(index.getType(), aType)) {
+              && this.typeSystem.subsumes(index.getType(), aType)) {
         return getIndex(label, aType).iterator();
       }
     }

@@ -130,8 +130,8 @@ public class JSR47Logger_impl implements Logger {
       String[] sourceInfo = getStackTraceInfo(new Throwable());
 
       logger.logp(java.util.logging.Level.INFO, sourceInfo[0], sourceInfo[1], I18nUtil
-                      .localizeMessage(aResourceBundleName, aMessageKey, aArguments,
-                                      getExtensionClassLoader()));
+              .localizeMessage(aResourceBundleName, aMessageKey, aArguments,
+                      getExtensionClassLoader()));
     }
   }
 
@@ -152,7 +152,7 @@ public class JSR47Logger_impl implements Logger {
 
       // log exception
       logger.logp(java.util.logging.Level.INFO, sourceInfo[0], sourceInfo[1], EXCEPTION_MESSAGE,
-                      aException);
+              aException);
     }
   }
 
@@ -268,7 +268,7 @@ public class JSR47Logger_impl implements Logger {
       String[] sourceInfo = getStackTraceInfo(new Throwable());
 
       logger.logp(jsr47Level, sourceInfo[0], sourceInfo[1], MessageFormat.format(aMessage,
-                      new Object[] { param1 }));
+              new Object[] { param1 }));
     }
   }
 
@@ -329,7 +329,7 @@ public class JSR47Logger_impl implements Logger {
    *      java.lang.String, java.lang.String, java.lang.String, java.lang.Object)
    */
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
-                  String msgKey, Object param1) {
+          String msgKey, Object param1) {
     if (isLoggable(level)) {
       if (msgKey == null || msgKey.equals(""))
         return;
@@ -338,7 +338,7 @@ public class JSR47Logger_impl implements Logger {
       java.util.logging.Level jsr47Level = getJSR47Level(level);
 
       logger.logp(jsr47Level, sourceClass, sourceMethod, I18nUtil.localizeMessage(bundleName,
-                      msgKey, new Object[] { param1 }, getExtensionClassLoader()));
+              msgKey, new Object[] { param1 }, getExtensionClassLoader()));
     }
   }
 
@@ -349,7 +349,7 @@ public class JSR47Logger_impl implements Logger {
    *      java.lang.String, java.lang.String, java.lang.String, java.lang.Object[])
    */
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
-                  String msgKey, Object[] params) {
+          String msgKey, Object[] params) {
     if (isLoggable(level)) {
       if (msgKey == null || msgKey.equals(""))
         return;
@@ -358,7 +358,7 @@ public class JSR47Logger_impl implements Logger {
       java.util.logging.Level jsr47Level = getJSR47Level(level);
 
       logger.logp(jsr47Level, sourceClass, sourceMethod, I18nUtil.localizeMessage(bundleName,
-                      msgKey, params, getExtensionClassLoader()));
+              msgKey, params, getExtensionClassLoader()));
     }
   }
 
@@ -369,14 +369,14 @@ public class JSR47Logger_impl implements Logger {
    *      java.lang.String, java.lang.String, java.lang.String, java.lang.Throwable)
    */
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
-                  String msgKey, Throwable thrown) {
+          String msgKey, Throwable thrown) {
     if (isLoggable(level)) {
       if (msgKey != null && !msgKey.equals("")) {
         // get corresponding JSR-47 level
         java.util.logging.Level jsr47Level = getJSR47Level(level);
 
         logger.logp(jsr47Level, sourceClass, sourceMethod, I18nUtil.localizeMessage(bundleName,
-                        msgKey, null, getExtensionClassLoader()), thrown);
+                msgKey, null, getExtensionClassLoader()), thrown);
       }
 
       if (thrown != null && (msgKey == null || msgKey.equals(""))) {
@@ -396,7 +396,7 @@ public class JSR47Logger_impl implements Logger {
    *      java.lang.String, java.lang.String, java.lang.String)
    */
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
-                  String msgKey) {
+          String msgKey) {
     if (isLoggable(level)) {
       if (msgKey == null || msgKey.equals(""))
         return;
@@ -405,7 +405,7 @@ public class JSR47Logger_impl implements Logger {
       java.util.logging.Level jsr47Level = getJSR47Level(level);
 
       logger.logp(jsr47Level, sourceClass, sourceMethod, I18nUtil.localizeMessage(bundleName,
-                      msgKey, null, getExtensionClassLoader()));
+              msgKey, null, getExtensionClassLoader()));
     }
   }
 

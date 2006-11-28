@@ -42,13 +42,13 @@ public interface TCAS extends CAS {
    * Name of annotation type.
    */
   static final String TYPE_NAME_ANNOTATION = NAME_SPACE_UIMA_TCAS + TypeSystem.NAMESPACE_SEPARATOR
-                  + "Annotation";
+          + "Annotation";
 
   /**
    * Name of document annotation type.
    */
   static final String TYPE_NAME_DOCUMENT_ANNOTATION = NAME_SPACE_UIMA_TCAS
-                  + TypeSystem.NAMESPACE_SEPARATOR + "DocumentAnnotation";
+          + TypeSystem.NAMESPACE_SEPARATOR + "DocumentAnnotation";
 
   /**
    * Sofa ID feature that is the handle to a text Sofa.
@@ -74,25 +74,25 @@ public interface TCAS extends CAS {
    * Fully qualified name of annotation begin feature.
    */
   static final String FEATURE_FULL_NAME_BEGIN = TYPE_NAME_ANNOTATION + TypeSystem.FEATURE_SEPARATOR
-                  + FEATURE_BASE_NAME_BEGIN;
+          + FEATURE_BASE_NAME_BEGIN;
 
   /**
    * Fully qualified name of annotation sofa feature.
    */
   static final String FEATURE_FULL_NAME_SOFA = TYPE_NAME_ANNOTATION + TypeSystem.FEATURE_SEPARATOR
-                  + FEATURE_BASE_NAME_SOFA;
+          + FEATURE_BASE_NAME_SOFA;
 
   /**
    * Fully qualified name of annotation end feature.
    */
   static final String FEATURE_FULL_NAME_END = TYPE_NAME_ANNOTATION + TypeSystem.FEATURE_SEPARATOR
-                  + FEATURE_BASE_NAME_END;
+          + FEATURE_BASE_NAME_END;
 
   /**
    * Fully qualified name of document language feature.
    */
   static final String FEATURE_FULL_NAME_LANGUAGE = TYPE_NAME_DOCUMENT_ANNOTATION
-                  + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_LANGUAGE;
+          + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_LANGUAGE;
 
   // //////////////////////////////////////////////////////////
   // Feature names

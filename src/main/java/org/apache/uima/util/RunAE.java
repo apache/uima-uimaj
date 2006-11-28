@@ -126,23 +126,23 @@ public class RunAE implements StatusCallbackListener {
 
       // create and configure collection reader that will read input docs
       CollectionReaderDescription collectionReaderDesc = FileSystemCollectionReader
-                      .getDescription();
+              .getDescription();
       ConfigurationParameterSettings paramSettings = collectionReaderDesc.getMetaData()
-                      .getConfigurationParameterSettings();
+              .getConfigurationParameterSettings();
       paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_INPUTDIR, inputDir
-                      .getAbsolutePath());
+              .getAbsolutePath());
       paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_ENCODING, encoding);
       paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_LANGUAGE, language);
       paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_XCAS, Boolean
-                      .toString(xcasInput));
+              .toString(xcasInput));
       CollectionReader collectionReader = UIMAFramework
-                      .produceCollectionReader(collectionReaderDesc);
+              .produceCollectionReader(collectionReaderDesc);
 
       // if XML tag was specified, also create SimpleXmlCasInitializer to handle this
       if (xmlTagName != null && xmlTagName.length() > 0) {
         CasInitializerDescription casIniDesc = SimpleXmlCasInitializer.getDescription();
         ConfigurationParameterSettings casIniParamSettings = casIniDesc.getMetaData()
-                        .getConfigurationParameterSettings();
+                .getConfigurationParameterSettings();
         casIniParamSettings.setParameterValue(SimpleXmlCasInitializer.PARAM_XMLTAG, xmlTagName);
         CasInitializer casInitializer = UIMAFramework.produceCasInitializer(casIniDesc);
         collectionReader.setCasInitializer(casInitializer);
@@ -152,11 +152,11 @@ public class RunAE implements StatusCallbackListener {
       if (outputDir != null) {
         CasConsumerDescription casConsumerDesc = InlineXmlCasConsumer.getDescription();
         ConfigurationParameterSettings consumerParamSettings = casConsumerDesc.getMetaData()
-                        .getConfigurationParameterSettings();
+                .getConfigurationParameterSettings();
         consumerParamSettings.setParameterValue(InlineXmlCasConsumer.PARAM_OUTPUTDIR, outputDir
-                        .getAbsolutePath());
+                .getAbsolutePath());
         consumerParamSettings.setParameterValue(InlineXmlCasConsumer.PARAM_XCAS, Boolean
-                        .toString(xcasInput));
+                .toString(xcasInput));
         mCPM.addCasConsumer(UIMAFramework.produceCasConsumer(casConsumerDesc));
       }
 
@@ -190,7 +190,7 @@ public class RunAE implements StatusCallbackListener {
       // (it was put there by the FileSystemCollectionReader)
       if (!xcasInput) {
         Type fileLocType = aCas.getTypeSystem().getType(
-                        "org.apache.uima.examples.SourceDocumentInformation");
+                "org.apache.uima.examples.SourceDocumentInformation");
         Feature fileNameFeat = fileLocType.getFeatureByBaseName("uri");
         FSIterator it = aCas.getAnnotationIndex(fileLocType).iterator();
         FeatureStructure fileLoc = it.get();
@@ -223,7 +223,7 @@ public class RunAE implements StatusCallbackListener {
     // output performance stats
     if (statsLevel > 0) {
       AnalysisEnginePerformanceReports performanceReports = new AnalysisEnginePerformanceReports(
-                      mCPM.getPerformanceReport());
+              mCPM.getPerformanceReport());
       System.out.println("\n\nPERFORMANCE STATS\n-----------------\n\n");
       if (statsLevel > 1) {
         System.out.println(performanceReports.getFullReport());
@@ -250,21 +250,20 @@ public class RunAE implements StatusCallbackListener {
    */
   private void printUsageMessage() {
     System.err.println("\nUsage: java " + this.getClass().getName()
-                    + " [OPTIONS] <AE descriptor or JAR file name> <input dir> [<output dir>] ");
+            + " [OPTIONS] <AE descriptor or JAR file name> <input dir> [<output dir>] ");
     System.err.println("\nIf <output dir> is not specified, the analysis "
-                    + "results will not be output.  This can be useful when only interested "
-                    + "in performance statistics.");
+            + "results will not be output.  This can be useful when only interested "
+            + "in performance statistics.");
     System.err.println("\nOPTIONS\n-------");
     System.err.println("-t <TagName> (XML Text Tag) - specifies the name of "
-                    + "an XML tag, found within the input documents, that contains the text "
-                    + "to be analyzed.  Documents not containing this tag will not be "
-                    + "processed.  If this option is not specified, the entire document text "
-                    + "will be processed.");
+            + "an XML tag, found within the input documents, that contains the text "
+            + "to be analyzed.  Documents not containing this tag will not be "
+            + "processed.  If this option is not specified, the entire document text "
+            + "will be processed.");
     System.err.println("-q (Quiet) - supresses progress messages that are "
-                    + "normally printed as each document is processed.");
-    System.err
-                    .println("-s<x> (Stats level) - determines the verboseness of "
-                                    + "performance statistics.  s0=none, s1=brief, s2=full.  The default is brief.");
+            + "normally printed as each document is processed.");
+    System.err.println("-s<x> (Stats level) - determines the verboseness of "
+            + "performance statistics.  s0=none, s1=brief, s2=full.  The default is brief.");
     System.err.println("-x - process input files as XCAS files.");
 
   }

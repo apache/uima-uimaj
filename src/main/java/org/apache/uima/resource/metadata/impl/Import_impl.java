@@ -101,18 +101,18 @@ public class Import_impl extends MetaDataObject_impl implements Import {
         url = aResourceManager.resolveRelativePath(filename);
       } catch (MalformedURLException e) {
         throw new InvalidXMLException(InvalidXMLException.IMPORT_BY_NAME_TARGET_NOT_FOUND,
-                        new Object[] { getName(), getSourceUrlString() }, e);
+                new Object[] { getName(), getSourceUrlString() }, e);
       }
       if (url == null) {
         throw new InvalidXMLException(InvalidXMLException.IMPORT_BY_NAME_TARGET_NOT_FOUND,
-                        new Object[] { getName(), getSourceUrlString() });
+                new Object[] { getName(), getSourceUrlString() });
       }
       return url;
     } else {
       // no name or location -- this should be caught at XML parse time but we still need to
       // check here in case object was modified or was created progrmatically.
       throw new InvalidXMLException(InvalidXMLException.IMPORT_MUST_HAVE_NAME_XOR_LOCATION,
-                      new Object[] { getSourceUrlString() });
+              new Object[] { getSourceUrlString() });
     }
   }
 
@@ -123,7 +123,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    *      org.apache.uima.util.XMLParser)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
-                  XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
+          XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     String name = aElement.getAttribute("name");
     setName(name.length() == 0 ? null : name);
     String location = aElement.getAttribute("location");
@@ -132,7 +132,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
     // validate that at exactly one of name or location is specified
     if (!((getName() == null) ^ (getLocation() == null))) {
       throw new InvalidXMLException(InvalidXMLException.IMPORT_MUST_HAVE_NAME_XOR_LOCATION,
-                      new Object[0]);
+              new Object[0]);
     }
   }
 
@@ -142,7 +142,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    * @see org.apache.uima.util.XMLizable#toXML(ContentHandler)
    */
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
-                  throws SAXException {
+          throws SAXException {
     AttributesImpl attrs = new AttributesImpl();
     if (getName() != null) {
       attrs.addAttribute("", "name", "name", null, getName());

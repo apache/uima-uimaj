@@ -73,12 +73,13 @@ import org.xml.sax.SAXException;
  * 
  */
 public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_impl implements
-                AnalysisEngineDescription {
+        AnalysisEngineDescription {
 
   /**
    * resource bundle for log messages
    */
   private static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";
+
   /**
    * Name of the "delegateAnalysisEngineSpecifiers" property. Change this if interface changes.
    */
@@ -121,7 +122,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
     // Set default operational properties. These are used if the
     // descriptor is constructed programatically, rather than parsed.
     OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory()
-                    .createOperationalProperties();
+            .createOperationalProperties();
     opProps.setModifiesCas(true);
     opProps.setMultipleDeploymentAllowed(true);
     opProps.setOutputsNewCASes(false);
@@ -182,7 +183,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#getDelegateAnalysisEngineSpecifiers()
    */
   public Map getDelegateAnalysisEngineSpecifiers(ResourceManager aResourceManager)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     resolveDelegateAnalysisEngineImports(aResourceManager);
     return Collections.unmodifiableMap(mDelegateAnalysisEngineSpecifiers);
   }
@@ -221,7 +222,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
     if (getFlowControllerDeclaration() != null) {
       getFlowControllerDeclaration().resolveImports(aResourceManager);
       map.put(getFlowControllerDeclaration().getKey(), getFlowControllerDeclaration()
-                      .getSpecifier());
+              .getSpecifier());
     }
     return Collections.unmodifiableMap(map);
   }
@@ -271,7 +272,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#doFullValidation(org.apache.uima.resource.ResourceManager)
    */
   public void doFullValidation(ResourceManager aResourceManager)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     // attempt to instantiate AE in "verification mode"
     Map m = new HashMap();
     m.put(AnalysisEngineImplBase.PARAM_VERIFICATION_MODE, Boolean.TRUE);
@@ -301,8 +302,8 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
     // TypeSystem may not be specified for an Aggregate Analysis Engine
     if (!isPrimitive() && getAnalysisEngineMetaData().getTypeSystem() != null) {
       throw new ResourceInitializationException(
-                      ResourceInitializationException.AGGREGATE_AE_TYPE_SYSTEM,
-                      new Object[] { getSourceUrlString() });
+              ResourceInitializationException.AGGREGATE_AE_TYPE_SYSTEM,
+              new Object[] { getSourceUrlString() });
     }
   }
 
@@ -323,27 +324,27 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    *           if there is an invalid parameter override declaration
    */
   protected void checkForInvalidParameterOverrides(ConfigurationParameter[] aParams,
-                  String aGroupName) throws ResourceInitializationException {
+          String aGroupName) throws ResourceInitializationException {
     for (int i = 0; i < aParams.length; i++) {
       String[] overrides = aParams[i].getOverrides();
       if (overrides.length > 0 && isPrimitive()) {
         throw new ResourceInitializationException(
-                        ResourceInitializationException.PARAM_OVERRIDE_IN_PRIMITIVE, new Object[] {
-                            aParams[i].getName(), getMetaData().getName(), getSourceUrlString() });
+                ResourceInitializationException.PARAM_OVERRIDE_IN_PRIMITIVE, new Object[] {
+                    aParams[i].getName(), getMetaData().getName(), getSourceUrlString() });
       } else if (overrides.length == 0 && !isPrimitive()) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
-                        "checkForInvalidParameterOverrides", LOG_RESOURCE_BUNDLE,
-                        "UIMA_aggregate_param_no_overrides__WARNING",
-                        new Object[] { getMetaData().getName(), aParams[i].getName() });
+                "checkForInvalidParameterOverrides", LOG_RESOURCE_BUNDLE,
+                "UIMA_aggregate_param_no_overrides__WARNING",
+                new Object[] { getMetaData().getName(), aParams[i].getName() });
       }
       for (int j = 0; j < overrides.length; j++) {
         // overrides should be of form delegateKey/paramName
         int slashPos = overrides[j].indexOf('/');
         if (slashPos <= 0 || slashPos >= overrides[j].length()) {
           throw new ResourceInitializationException(
-                          ResourceInitializationException.INVALID_PARAM_OVERRIDE_SYNTAX,
-                          new Object[] { overrides[j], aParams[i].getName(),
-                              getMetaData().getName(), getSourceUrlString() });
+                  ResourceInitializationException.INVALID_PARAM_OVERRIDE_SYNTAX, new Object[] {
+                      overrides[j], aParams[i].getName(), getMetaData().getName(),
+                      getSourceUrlString() });
         }
         String delegateKey = overrides[j].substring(0, slashPos);
         String paramName = overrides[j].substring(slashPos + 1);
@@ -351,23 +352,22 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
         ResourceSpecifier componentSpecifier = getComponentSpecifier(delegateKey);
         if (componentSpecifier == null) {
           throw new ResourceInitializationException(
-                          ResourceInitializationException.INVALID_PARAM_OVERRIDE_NONEXISTENT_DELEGATE,
-                          new Object[] { overrides[j], aParams[i].getName(),
-                              getMetaData().getName(), delegateKey, getSourceUrlString() });
+                  ResourceInitializationException.INVALID_PARAM_OVERRIDE_NONEXISTENT_DELEGATE,
+                  new Object[] { overrides[j], aParams[i].getName(), getMetaData().getName(),
+                      delegateKey, getSourceUrlString() });
         }
         if (componentSpecifier instanceof ResourceCreationSpecifier) {
           ConfigurationParameter overriddenParam = null;
           ConfigurationParameterDeclarations delegateParamDecls = ((ResourceCreationSpecifier) componentSpecifier)
-                          .getMetaData().getConfigurationParameterDeclarations();
+                  .getMetaData().getConfigurationParameterDeclarations();
           if (aGroupName == null) // param not in group
           {
             overriddenParam = delegateParamDecls.getConfigurationParameter(null, paramName);
             if (overriddenParam == null) {
               throw new ResourceInitializationException(
-                              ResourceInitializationException.INVALID_PARAM_OVERRIDE_NONEXISTENT_PARAMETER,
-                              new Object[] { overrides[j], aParams[i].getName(),
-                                  getMetaData().getName(), delegateKey, paramName,
-                                  getSourceUrlString() });
+                      ResourceInitializationException.INVALID_PARAM_OVERRIDE_NONEXISTENT_PARAMETER,
+                      new Object[] { overrides[j], aParams[i].getName(), getMetaData().getName(),
+                          delegateKey, paramName, getSourceUrlString() });
 
             }
           } else {
@@ -375,10 +375,9 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
             overriddenParam = delegateParamDecls.getConfigurationParameter(aGroupName, paramName);
             if (overriddenParam == null) {
               throw new ResourceInitializationException(
-                              ResourceInitializationException.INVALID_PARAM_OVERRIDE_NONEXISTENT_PARAMETER_IN_GROUP,
-                              new Object[] { overrides[j], aParams[i].getName(),
-                                  getMetaData().getName(), delegateKey, paramName, aGroupName,
-                                  getSourceUrlString() });
+                      ResourceInitializationException.INVALID_PARAM_OVERRIDE_NONEXISTENT_PARAMETER_IN_GROUP,
+                      new Object[] { overrides[j], aParams[i].getName(), getMetaData().getName(),
+                          delegateKey, paramName, aGroupName, getSourceUrlString() });
             }
           }
         }
@@ -400,7 +399,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   public ResourceSpecifier getComponentSpecifier(String key) throws ResourceInitializationException {
     ResourceSpecifier componentSpecifier;
     if (getFlowControllerDeclaration() != null
-                    && key.equals(getFlowControllerDeclaration().getKey())) {
+            && key.equals(getFlowControllerDeclaration().getKey())) {
       try {
         getFlowControllerDeclaration().resolveImports();
       } catch (InvalidXMLException e) {
@@ -436,34 +435,32 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
         ResourceSpecifier componentSpec = getComponentSpecifier(componentKey);
         if (componentSpec == null) {
           throw new ResourceInitializationException(
-                          ResourceInitializationException.SOFA_MAPPING_HAS_UNDEFINED_COMPONENT_KEY,
-                          new Object[] { componentKey, sofaMappings[s].getAggregateSofaName(),
-                              aggName, getSourceUrlString() });
+                  ResourceInitializationException.SOFA_MAPPING_HAS_UNDEFINED_COMPONENT_KEY,
+                  new Object[] { componentKey, sofaMappings[s].getAggregateSofaName(), aggName,
+                      getSourceUrlString() });
         }
         String componentSofaName = sofaMappings[s].getComponentSofaName();
         if (componentSofaName == null) {
           componentSofaName = CAS.NAME_DEFAULT_SOFA;
         } else if (componentSpec instanceof AnalysisEngineDescription
-                        && !CAS.NAME_DEFAULT_SOFA.equals(componentSofaName)
-                        && !declaresSofa((AnalysisEngineDescription) componentSpec,
-                                        componentSofaName)) {
+                && !CAS.NAME_DEFAULT_SOFA.equals(componentSofaName)
+                && !declaresSofa((AnalysisEngineDescription) componentSpec, componentSofaName)) {
           throw new ResourceInitializationException(
-                          ResourceInitializationException.SOFA_MAPPING_HAS_UNDEFINED_COMPONENT_SOFA,
-                          new Object[] { componentKey, componentSofaName,
-                              sofaMappings[s].getAggregateSofaName(), aggName, getSourceUrlString() });
+                  ResourceInitializationException.SOFA_MAPPING_HAS_UNDEFINED_COMPONENT_SOFA,
+                  new Object[] { componentKey, componentSofaName,
+                      sofaMappings[s].getAggregateSofaName(), aggName, getSourceUrlString() });
         }
 
         String compoundKey = sofaMappings[s].getComponentKey() + "@/@"
-                        + sofaMappings[s].getComponentSofaName();
+                + sofaMappings[s].getComponentSofaName();
         String aggSofaName = sofaMappings[s].getAggregateSofaName();
         // check for double-mapping
         String existingMapping = (String) sofamap.get(compoundKey);
         if (existingMapping != null && !existingMapping.equals(aggSofaName)) {
           throw new ResourceInitializationException(
-                          ResourceInitializationException.SOFA_MAPPING_CONFLICT, new Object[] {
-                              sofaMappings[s].getComponentSofaName(),
-                              sofaMappings[s].getComponentKey(), aggName, existingMapping,
-                              aggSofaName, getSourceUrlString() });
+                  ResourceInitializationException.SOFA_MAPPING_CONFLICT, new Object[] {
+                      sofaMappings[s].getComponentSofaName(), sofaMappings[s].getComponentKey(),
+                      aggName, existingMapping, aggSofaName, getSourceUrlString() });
         } else {
           sofamap.put(compoundKey, aggSofaName);
         }
@@ -502,7 +499,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
 
       if (delegateSpec instanceof AnalysisEngineDescription) {
         Capability[] caps = ((AnalysisEngineDescription) delegateSpec).getAnalysisEngineMetaData()
-                        .getCapabilities();
+                .getCapabilities();
         for (int i = 0; i < caps.length; i++) {
           // all component output sofas must be mapped to aggregate output sofas
           String[] outputSofas = caps[i].getOutputSofas();
@@ -514,9 +511,8 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
             }
             if (!capabilitiesContainSofa(aggSofa, true)) {
               throw new ResourceInitializationException(
-                              ResourceInitializationException.OUTPUT_SOFA_NOT_DECLARED_IN_AGGREGATE,
-                              new Object[] { outputSofas[j], componentKey, aggName,
-                                  getSourceUrlString() });
+                      ResourceInitializationException.OUTPUT_SOFA_NOT_DECLARED_IN_AGGREGATE,
+                      new Object[] { outputSofas[j], componentKey, aggName, getSourceUrlString() });
             }
             correctlyMappedAggregateOutputs.add(aggSofa);
           }
@@ -531,9 +527,8 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
             }
             if (!capabilitiesContainSofa(aggSofa, false) && !capabilitiesContainSofa(aggSofa, true)) {
               throw new ResourceInitializationException(
-                              ResourceInitializationException.INPUT_SOFA_HAS_NO_SOURCE,
-                              new Object[] { inputSofas[j], componentKey, aggName,
-                                  getSourceUrlString() });
+                      ResourceInitializationException.INPUT_SOFA_HAS_NO_SOURCE, new Object[] {
+                          inputSofas[j], componentKey, aggName, getSourceUrlString() });
             }
             correctlyMappedAggregateInputs.add(aggSofa);
           }
@@ -563,16 +558,16 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
         for (int j = 0; j < sofas.length; j++) {
           if (!correctlyMappedAggregateOutputs.contains(sofas[j])) {
             throw new ResourceInitializationException(
-                            ResourceInitializationException.AGGREGATE_SOFA_NOT_MAPPED,
-                            new Object[] { sofas[j], aggName, getSourceUrlString() });
+                    ResourceInitializationException.AGGREGATE_SOFA_NOT_MAPPED, new Object[] {
+                        sofas[j], aggName, getSourceUrlString() });
           }
         }
         sofas = caps[i].getInputSofas();
         for (int j = 0; j < sofas.length; j++) {
           if (!correctlyMappedAggregateInputs.contains(sofas[j])) {
             throw new ResourceInitializationException(
-                            ResourceInitializationException.AGGREGATE_SOFA_NOT_MAPPED,
-                            new Object[] { sofas[j], aggName, getSourceUrlString() });
+                    ResourceInitializationException.AGGREGATE_SOFA_NOT_MAPPED, new Object[] {
+                        sofas[j], aggName, getSourceUrlString() });
           }
         }
       }
@@ -621,7 +616,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   public List listAttributes() {
     List result = super.listAttributes();
     result.add(new NameClassPair(PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS, Map.class
-                    .getName()));
+            .getName()));
     return result;
   }
 
@@ -632,7 +627,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    *      boolean)
    */
   public void toXML(OutputStream aOutputStream, boolean aPreserveDelegateAnalysisEngineImports)
-                  throws SAXException, IOException {
+          throws SAXException, IOException {
     if (aPreserveDelegateAnalysisEngineImports) {
       // trick the writePropertyAsElement method into thinking that
       // imports haven't been resolved yet
@@ -651,7 +646,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#toXML(java.io.Writer, boolean)
    */
   public void toXML(Writer aWriter, boolean aPreserveDelegateAnalysisEngineImports)
-                  throws SAXException, IOException {
+          throws SAXException, IOException {
     if (aPreserveDelegateAnalysisEngineImports) {
       // trick the writePropertyAsElement method into thinking that
       // imports haven't been resolved yet
@@ -671,7 +666,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    *      boolean, boolean)
    */
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute,
-                  boolean aPreserveDelegateAnalysisEngineImports) throws SAXException {
+          boolean aPreserveDelegateAnalysisEngineImports) throws SAXException {
     if (aPreserveDelegateAnalysisEngineImports) {
       // trick the writePropertyAsElement method into thinking that
       // imports haven't been resolved yet
@@ -690,7 +685,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#resolveDelegateAnalysisEngineImports(org.apache.uima.resource.ResourceManager)
    */
   protected void resolveDelegateAnalysisEngineImports(ResourceManager aResourceManager)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     HashSet keys = new HashSet(); // keep track of keys we've encountered
     // so we can remove stale entries
     Iterator entryIterator = getDelegateAnalysisEngineSpecifiersWithImports().entrySet().iterator();
@@ -718,7 +713,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
           input = new XMLInputSource(url);
         } catch (IOException e) {
           throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
-                          new Object[] { url, aeImport.getSourceUrlString() }, e);
+                  new Object[] { url, aeImport.getSourceUrlString() }, e);
         }
         ResourceSpecifier spec = UIMAFramework.getXMLParser().parseResourceSpecifier(input);
 
@@ -757,7 +752,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @see org.apache.uima.MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo,String,ContentHandler)
    */
   protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace,
-                  ContentHandler aContentHandler) throws SAXException {
+          ContentHandler aContentHandler) throws SAXException {
     if (PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS.equals(aPropInfo.propertyName)) {
       // special logic here -- if imports have been resolved, then we want
       // to write
@@ -771,7 +766,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
         propName = PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS;
       }
       writeMapPropertyToXml(propName, ELEM_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS, "key",
-                      "delegateAnalysisEngine", aPropInfo.omitIfNull, aNamespace, aContentHandler);
+              "delegateAnalysisEngine", aPropInfo.omitIfNull, aNamespace, aContentHandler);
     } else {
       // for all other attributes, use the default superclass behavior
       super.writePropertyAsElement(aPropInfo, aNamespace, aContentHandler);
@@ -787,11 +782,11 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    *      org.w3c.dom.Element, org.apache.uima.util.XMLParser)
    */
   protected void readPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo, Element aElement,
-                  XMLParser aParser, XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
+          XMLParser aParser, XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     String propName = aPropXmlInfo.propertyName;
     if (PROP_DELEGATE_ANALYSIS_ENGINE_SPECIFIERS_WITH_IMPORTS.equals(propName)) {
       readMapPropertyFromXml(propName, aElement, "key", "delegateAnalysisEngine", aParser,
-                      aOptions, false);
+              aOptions, false);
     } else {
       // for all other attributes, use the default superclass behavior
       super.readPropertyValueFromXMLElement(aPropXmlInfo, aElement, aParser, aOptions);
@@ -802,11 +797,11 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * Overridden to set default operational properties if they are not specified in descriptor.
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
     if (getAnalysisEngineMetaData().getOperationalProperties() == null) {
       OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory()
-                      .createOperationalProperties();
+              .createOperationalProperties();
       opProps.setModifiesCas(true);
       opProps.setMultipleDeploymentAllowed(true);
       getAnalysisEngineMetaData().setOperationalProperties(opProps);
@@ -816,26 +811,25 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
-  
+
   /**
-   * Static method to get XmlizationInfo, used by subclasses to
-   * set up their own XmlizationInfo.
+   * Static method to get XmlizationInfo, used by subclasses to set up their own XmlizationInfo.
    */
   protected static XmlizationInfo getXmlizationInfoForClass() {
     return XMLIZATION_INFO;
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-                  "analysisEngineDescription", new PropertyXmlInfo[] {
-                      new PropertyXmlInfo("frameworkImplementation"),
-                      new PropertyXmlInfo("primitive"),
-                      new PropertyXmlInfo("annotatorImplementationName"),
-                      new PropertyXmlInfo("delegateAnalysisEngineSpecifiersWithImports",
-                                      "delegateAnalysisEngineSpecifiers"), // NOTE: custom
-                                                                            // XMLization
-                      new PropertyXmlInfo("flowControllerDeclaration", null),
-                      new PropertyXmlInfo("metaData", null),
-                      new PropertyXmlInfo("externalResourceDependencies"),
-                      new PropertyXmlInfo("resourceManagerConfiguration", null),
-                      new PropertyXmlInfo("sofaMappings") });
+          "analysisEngineDescription", new PropertyXmlInfo[] {
+              new PropertyXmlInfo("frameworkImplementation"),
+              new PropertyXmlInfo("primitive"),
+              new PropertyXmlInfo("annotatorImplementationName"),
+              new PropertyXmlInfo("delegateAnalysisEngineSpecifiersWithImports",
+                      "delegateAnalysisEngineSpecifiers"), // NOTE: custom
+              // XMLization
+              new PropertyXmlInfo("flowControllerDeclaration", null),
+              new PropertyXmlInfo("metaData", null),
+              new PropertyXmlInfo("externalResourceDependencies"),
+              new PropertyXmlInfo("resourceManagerConfiguration", null),
+              new PropertyXmlInfo("sofaMappings") });
 }

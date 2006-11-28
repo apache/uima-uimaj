@@ -155,7 +155,6 @@ public interface ConfigurationParameter extends MetaDataObject {
    * @return true if and only if this parameter is published
    */
   // public boolean isPublished();
-
   /**
    * Sets whether this parameter is published to clients. A non-published parameter is used only for
    * initialization of the resource, and thereafter is not accessible to clients.

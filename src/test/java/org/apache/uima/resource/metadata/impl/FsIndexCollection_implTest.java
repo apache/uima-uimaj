@@ -67,9 +67,9 @@ public class FsIndexCollection_implTest extends TestCase {
   public void testBuildFromXmlElement() throws Exception {
     try {
       File descriptor = JUnitExtension
-                      .getFile("FsIndexCollectionImplTest/TestFsIndexCollection.xml");
+              .getFile("FsIndexCollectionImplTest/TestFsIndexCollection.xml");
       FsIndexCollection indexColl = UIMAFramework.getXMLParser().parseFsIndexCollection(
-                      new XMLInputSource(descriptor));
+              new XMLInputSource(descriptor));
 
       assertEquals("TestFsIndexCollection", indexColl.getName());
       assertEquals("This is a test.", indexColl.getDescription());
@@ -92,9 +92,9 @@ public class FsIndexCollection_implTest extends TestCase {
   public void testResolveImports() throws Exception {
     try {
       File descriptor = JUnitExtension
-                      .getFile("FsIndexCollectionImplTest/TestFsIndexCollection.xml");
+              .getFile("FsIndexCollectionImplTest/TestFsIndexCollection.xml");
       FsIndexCollection ic = UIMAFramework.getXMLParser().parseFsIndexCollection(
-                      new XMLInputSource(descriptor));
+              new XMLInputSource(descriptor));
 
       FsIndexDescription[] indexes = ic.getFsIndexes();
       assertEquals(2, indexes.length);
@@ -108,12 +108,12 @@ public class FsIndexCollection_implTest extends TestCase {
       }
       assertNotNull(ex);
       assertEquals(2, ic.getFsIndexes().length); // should be no side effects when exception is
-                                                  // thrown
+      // thrown
 
       // set data path correctly and it should work
       ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
       resMgr.setDataPath(JUnitExtension.getFile("FsIndexCollectionImplTest/dataPathDir")
-                      .getAbsolutePath());
+              .getAbsolutePath());
       ic.resolveImports(resMgr);
 
       indexes = ic.getFsIndexes();

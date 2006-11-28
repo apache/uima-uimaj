@@ -133,7 +133,7 @@ public class Import_implTest extends TestCase {
       resMgr.setDataPath(workingDir);
       absUrl = importObj.findAbsoluteUrl(resMgr);
       expectedUrl = new File(workingDir, "TypeSystemDescriptionImplTest/TestTypeSystem.xml")
-                      .toURL();
+              .toURL();
       assertEquals(expectedUrl, absUrl);
 
       // name not found
@@ -155,15 +155,15 @@ public class Import_implTest extends TestCase {
   public void testNestedImports() throws Exception {
     try {
       File baseDescriptorFile = JUnitExtension
-                      .getFile("ImportImplTest/subdir/subdir2/AggregateTaeForNestedImportTest.xml");
+              .getFile("ImportImplTest/subdir/subdir2/AggregateTaeForNestedImportTest.xml");
       File importedFile = JUnitExtension
-                      .getFile("ImportImplTest/subdir/PrimitiveTaeForNestedImportTest.xml");
+              .getFile("ImportImplTest/subdir/PrimitiveTaeForNestedImportTest.xml");
       TaeDescription_impl agg = (TaeDescription_impl) UIMAFramework.getXMLParser()
-                      .parseTaeDescription(new XMLInputSource(baseDescriptorFile));
+              .parseTaeDescription(new XMLInputSource(baseDescriptorFile));
       assertEquals(baseDescriptorFile.toURL(), agg.getSourceUrl());
 
       TaeDescription_impl prim = (TaeDescription_impl) agg.getDelegateAnalysisEngineSpecifiers()
-                      .get("Annotator1");
+              .get("Annotator1");
       assertEquals(importedFile.toURL(), prim.getSourceUrl());
 
       prim.getAnalysisEngineMetaData().getTypeSystem().resolveImports();

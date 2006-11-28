@@ -80,7 +80,7 @@ public interface CollectionProcessingEngine {
    *           if this method is called more than once on a single instance.
    */
   public void initialize(CpeDescription aCpeDescription, Map aAdditionalParams)
-                  throws ResourceInitializationException;
+          throws ResourceInitializationException;
 
   /**
    * Registers a listsner to receive status callbacks.

@@ -107,7 +107,7 @@ public interface CpeCasProcessors extends MetaDataObject {
    * @throws CpeDescriptorException
    */
   public void addCpeCasProcessor(CpeCasProcessor aCasProcessor, int aInsertPosition)
-                  throws CpeDescriptorException;
+          throws CpeDescriptorException;
 
   /**
    * Appends new CasProcessor to existing list of CasProcessors

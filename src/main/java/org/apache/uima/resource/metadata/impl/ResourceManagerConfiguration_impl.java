@@ -44,7 +44,7 @@ import org.xml.sax.SAXException;
  * 
  */
 public class ResourceManagerConfiguration_impl extends MetaDataObject_impl implements
-                ResourceManagerConfiguration {
+        ResourceManagerConfiguration {
   private static final long serialVersionUID = -8326190554827990517L;
 
   private String mName;
@@ -134,7 +134,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
   public void setImports(Import[] aImports) {
     if (aImports == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-                      new Object[] { "null", "aImports", "setImports" });
+              new Object[] { "null", "aImports", "setImports" });
     }
     mImports = aImports;
   }
@@ -155,7 +155,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    */
   public void setExternalResources(ExternalResourceDescription[] aDescriptions) {
     mExternalResources = (aDescriptions != null) ? aDescriptions
-                    : new ExternalResourceDescription[0];
+            : new ExternalResourceDescription[0];
   }
 
   /*
@@ -276,7 +276,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
   }
 
   public void resolveImports(Collection aAlreadyImportedURLs, ResourceManager aResourceManager)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     List importedResources = new ArrayList();
     List importedBindings = new ArrayList();
     Import[] imports = getImports();
@@ -291,10 +291,10 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
         aAlreadyImportedURLs.add(url.toString());
         try {
           resolveImport(url, aAlreadyImportedURLs, importedResources, importedBindings,
-                          aResourceManager);
+                  aResourceManager);
         } catch (IOException e) {
           throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
-                          new Object[] { url, imports[i].getSourceUrlString() }, e);
+                  new Object[] { url, imports[i].getSourceUrlString() }, e);
         }
       }
     }
@@ -305,11 +305,11 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
       existingResources = new ExternalResourceDescription[0];
     }
     ExternalResourceDescription[] newResources = new ExternalResourceDescription[existingResources.length
-                    + importedResources.size()];
+            + importedResources.size()];
     System.arraycopy(existingResources, 0, newResources, 0, existingResources.length);
     for (int i = 0; i < importedResources.size(); i++) {
       newResources[existingResources.length + i] = (ExternalResourceDescription) importedResources
-                      .get(i);
+              .get(i);
     }
     this.setExternalResources(newResources);
 
@@ -318,7 +318,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
       existingBindings = new ExternalResourceBinding[0];
     }
     ExternalResourceBinding[] newBindings = new ExternalResourceBinding[existingBindings.length
-                    + importedBindings.size()];
+            + importedBindings.size()];
     System.arraycopy(existingBindings, 0, newBindings, 0, existingBindings.length);
     for (int i = 0; i < importedBindings.size(); i++) {
       newBindings[existingBindings.length + i] = (ExternalResourceBinding) importedBindings.get(i);
@@ -329,11 +329,11 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
   }
 
   private void resolveImport(URL aURL, Collection aAlreadyImportedURLs,
-                  Collection aResultResources, Collection aResultBindings,
-                  ResourceManager aResourceManager) throws InvalidXMLException, IOException {
+          Collection aResultResources, Collection aResultBindings, ResourceManager aResourceManager)
+          throws InvalidXMLException, IOException {
     XMLInputSource input = new XMLInputSource(aURL);
     ResourceManagerConfiguration desc = UIMAFramework.getXMLParser()
-                    .parseResourceManagerConfiguration(input);
+            .parseResourceManagerConfiguration(input);
     desc.resolveImports(aAlreadyImportedURLs, aResourceManager);
     aResultResources.addAll(Arrays.asList(desc.getExternalResources()));
     aResultBindings.addAll(Arrays.asList(desc.getExternalResourceBindings()));
@@ -346,7 +346,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
    *      java.lang.String, org.xml.sax.ContentHandler)
    */
   protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace,
-                  ContentHandler aContentHandler) throws SAXException {
+          ContentHandler aContentHandler) throws SAXException {
     // Prevent the import property from being written to XML - it exists only so old-style XML
     // can be read.
     if (!"import".equals(aPropInfo.propertyName)) {
@@ -359,14 +359,14 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-                  "resourceManagerConfiguration", new PropertyXmlInfo[] {
-                      new PropertyXmlInfo("import", null), new PropertyXmlInfo("name", true),
-                      new PropertyXmlInfo("description", true),
-                      new PropertyXmlInfo("version", true), new PropertyXmlInfo("vendor", true),
-                      new PropertyXmlInfo("imports", true),
-                      new PropertyXmlInfo("import", true), // for backwards compatibility; not
-                                                            // written to XML
-                      new PropertyXmlInfo("externalResources"),
-                      new PropertyXmlInfo("externalResourceBindings"), });
+          "resourceManagerConfiguration", new PropertyXmlInfo[] {
+              new PropertyXmlInfo("import", null), new PropertyXmlInfo("name", true),
+              new PropertyXmlInfo("description", true), new PropertyXmlInfo("version", true),
+              new PropertyXmlInfo("vendor", true),
+              new PropertyXmlInfo("imports", true),
+              new PropertyXmlInfo("import", true), // for backwards compatibility; not
+              // written to XML
+              new PropertyXmlInfo("externalResources"),
+              new PropertyXmlInfo("externalResourceBindings"), });
 
 }

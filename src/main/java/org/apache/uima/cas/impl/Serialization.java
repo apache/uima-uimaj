@@ -45,7 +45,7 @@ public class Serialization {
     CASMgrSerializer ser = new CASMgrSerializer();
     ser.addTypeSystem((TypeSystemImpl) casMgr.getCAS().getTypeSystem());
     ser.addIndexRepository((FSIndexRepositoryImpl) ((CASImpl) casMgr.getCAS())
-                    .getBaseIndexRepository());
+            .getBaseIndexRepository());
     return ser;
   }
 

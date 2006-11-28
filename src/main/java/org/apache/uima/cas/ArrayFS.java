@@ -72,7 +72,7 @@ public interface ArrayFS extends FeatureStructure {
    *              <code>destOffset + length > destArray.length</code>.
    */
   void copyToArray(int srcOffset, FeatureStructure[] dest, int destOffset, int length)
-                  throws ArrayIndexOutOfBoundsException;
+          throws ArrayIndexOutOfBoundsException;
 
   /**
    * Copy the contents of an external array into this array.
@@ -87,7 +87,7 @@ public interface ArrayFS extends FeatureStructure {
    *          The number of elements to copy.
    */
   void copyFromArray(FeatureStructure[] src, int srcOffset, int destOffset, int length)
-                  throws ArrayIndexOutOfBoundsException;
+          throws ArrayIndexOutOfBoundsException;
 
   /**
    * Creates a new array the this array is copied to.

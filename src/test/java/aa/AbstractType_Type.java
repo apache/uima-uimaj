@@ -96,9 +96,9 @@ public class AbstractType_Type extends TOP_Type {
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
     casFeat_abstractInt = jcas.getRequiredFeatureDE(casType, "abstractInt", "uima.cas.Integer",
-                    featOkTst);
+            featOkTst);
     casFeatCode_abstractInt = (null == casFeat_abstractInt) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_abstractInt).getCode();
+            : ((FeatureImpl) casFeat_abstractInt).getCode();
 
   }
 }

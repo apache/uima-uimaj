@@ -100,8 +100,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
     // if input directory does not exist or is not a directory, throw exception
     if (!directory.exists() || !directory.isDirectory()) {
       throw new ResourceInitializationException(ResourceConfigurationException.DIRECTORY_NOT_FOUND,
-                      new Object[] { PARAM_INPUTDIR, this.getMetaData().getName(),
-                          directory.getPath() });
+              new Object[] { PARAM_INPUTDIR, this.getMetaData().getName(), directory.getPath() });
     }
 
     // get list of files (not subdirectories) in the specified directory
@@ -172,7 +171,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
       srcDocInfo.setUri(file.getAbsoluteFile().toURL().toString());
       srcDocInfo.setOffsetInSource(0);
       srcDocInfo.setDocumentSize((int) file.length());
-      srcDocInfo.setLastSegment(mCurrentIndex == mFiles.size());      
+      srcDocInfo.setLastSegment(mCurrentIndex == mFiles.size());
       srcDocInfo.addToIndexes();
     }
     // XCAS input files
@@ -221,9 +220,9 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
    */
   public static CollectionReaderDescription getDescription() throws InvalidXMLException {
     InputStream descStream = FileSystemCollectionReader.class
-                    .getResourceAsStream("FileSystemCollectionReader.xml");
+            .getResourceAsStream("FileSystemCollectionReader.xml");
     return UIMAFramework.getXMLParser().parseCollectionReaderDescription(
-                    new XMLInputSource(descStream, null));
+            new XMLInputSource(descStream, null));
   }
 
 }

@@ -54,7 +54,6 @@ public class UIMA_UnsupportedOperationException extends UIMARuntimeException {
    */
   public static final String CAS_MULTIPLIER_NOT_SUPPORTED = "cas_multiplier_not_supported";
 
-
   /**
    * Creates a new exception with a null message.
    */
@@ -87,7 +86,7 @@ public class UIMA_UnsupportedOperationException extends UIMARuntimeException {
    *          arguments.
    */
   public UIMA_UnsupportedOperationException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments) {
+          Object[] aArguments) {
     super(aResourceBundleName, aMessageKey, aArguments);
   }
 
@@ -108,7 +107,7 @@ public class UIMA_UnsupportedOperationException extends UIMARuntimeException {
    *          the original exception that caused this exception to be thrown, if any
    */
   public UIMA_UnsupportedOperationException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments, Throwable aCause) {
+          Object[] aArguments, Throwable aCause) {
     super(aResourceBundleName, aMessageKey, aArguments, aCause);
   }
 
@@ -142,7 +141,7 @@ public class UIMA_UnsupportedOperationException extends UIMARuntimeException {
    *          the original exception that caused this exception to be thrown, if any
    */
   public UIMA_UnsupportedOperationException(String aMessageKey, Object[] aArguments,
-                  Throwable aCause) {
+          Throwable aCause) {
     super(aMessageKey, aArguments, aCause);
   }
 }

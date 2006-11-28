@@ -43,33 +43,33 @@ public class PackageBrowser {
   public static final String BINARY_DIR = File.separator + InstallationController.PACKAGE_BIN_DIR;
 
   public static final String CONFIGURATION_DIR = File.separator
-                  + InstallationController.PACKAGE_CONF_DIR;
+          + InstallationController.PACKAGE_CONF_DIR;
 
   public static final String DATA_DIR = File.separator + InstallationController.PACKAGE_DATA_DIR;
 
   public static final String DESCRIPTORS_DIR = File.separator
-                  + InstallationController.PACKAGE_DESC_DIR;
+          + InstallationController.PACKAGE_DESC_DIR;
 
   public static final String DOCUMENTATION_DIR = File.separator
-                  + InstallationController.PACKAGE_DOC_DIR;
+          + InstallationController.PACKAGE_DOC_DIR;
 
   public static final String LIBRARY_DIR = File.separator + InstallationController.PACKAGE_LIB_DIR;
 
   public static final String METADATA_DIR = File.separator
-                  + InstallationController.PACKAGE_METADATA_DIR;
+          + InstallationController.PACKAGE_METADATA_DIR;
 
   public static final String RESOURCES_DIR = File.separator
-                  + InstallationController.PACKAGE_RESOURCES_DIR;
+          + InstallationController.PACKAGE_RESOURCES_DIR;
 
   public static final String SOURCES_DIR = File.separator
-                  + InstallationController.PACKAGE_SOURCES_DIR;
+          + InstallationController.PACKAGE_SOURCES_DIR;
 
   // standard files
   public static final String INSTALLATION_DESCRIPTOR_FILE = File.separator
-                  + InstallationProcessor.INSD_FILE_PATH;
+          + InstallationProcessor.INSD_FILE_PATH;
 
   public static final String PEAR_PROPERTIES_FILE = File.separator
-                  + InstallationController.PACKAGE_CONFIG_FILE;
+          + InstallationController.PACKAGE_CONFIG_FILE;
 
   public static final String SUBMISSION_PROPERTIES_FILE = METADATA_DIR + "/submission.properties";
 
@@ -100,7 +100,7 @@ public class PackageBrowser {
     int nameEndIndex = _pearFile.getAbsolutePath().lastIndexOf('.');
     // set root dir = PEAR file path (w/o file name extension)
     String rootDirPath = (nameEndIndex > 0) ? _pearFile.getAbsolutePath()
-                    .substring(0, nameEndIndex) : _pearFile.getAbsolutePath();
+            .substring(0, nameEndIndex) : _pearFile.getAbsolutePath();
     _rootDir = new File(rootDirPath);
     _archived = true;
     // add directories and files to the lists
@@ -160,11 +160,11 @@ public class PackageBrowser {
       InstallationDescriptor insdObject = getInstallationDescriptor();
       if (insdObject != null) {
         String absoluteClassPath = InstallationController.buildComponentClassPath(
-                        getRootDirectory().getAbsolutePath(), insdObject);
+                getRootDirectory().getAbsolutePath(), insdObject);
         String absoluteRootDirPathExp = StringUtil.toRegExpReplacement(getRootDirectory()
-                        .getAbsolutePath().replace('\\', '/'));
+                .getAbsolutePath().replace('\\', '/'));
         return relativePath ? absoluteClassPath.replaceAll(absoluteRootDirPathExp, "\\.")
-                        : absoluteClassPath;
+                : absoluteClassPath;
       }
     }
     return null;
@@ -204,9 +204,9 @@ public class PackageBrowser {
       InstallationDescriptor insdObject = getInstallationDescriptor();
       if (insdObject != null) {
         String absolutePath = InstallationController.buildComponentPath(getRootDirectory()
-                        .getAbsolutePath(), insdObject);
+                .getAbsolutePath(), insdObject);
         String absoluteRootDirPathExp = StringUtil.toRegExpReplacement(getRootDirectory()
-                        .getAbsolutePath().replace('\\', '/'));
+                .getAbsolutePath().replace('\\', '/'));
         return relativePath ? absolutePath.replaceAll(absoluteRootDirPathExp, "\\.") : absolutePath;
       }
     }
@@ -231,7 +231,7 @@ public class PackageBrowser {
     while (list.hasNext()) {
       File dir = (File) list.next();
       String dirName = dir.getAbsolutePath().substring(_rootDir.getAbsolutePath().length())
-                      .replace('\\', '/');
+              .replace('\\', '/');
       if (pattern.startsWith(File.separator)) {
         if (dirName.startsWith(pattern))
           foundDirList.add(dir);
@@ -263,7 +263,7 @@ public class PackageBrowser {
     while (list.hasNext()) {
       File file = (File) list.next();
       String fileName = file.getAbsolutePath().substring(_rootDir.getAbsolutePath().length())
-                      .replace('\\', '/');
+              .replace('\\', '/');
       if (pattern.startsWith(File.separator)) {
         if (fileName.startsWith(pattern))
           foundFileList.add(file);
@@ -305,7 +305,7 @@ public class PackageBrowser {
    */
   public File findStandardFile(String stdFileName) {
     String fileName = stdFileName.replace('\\', File.separatorChar)
-                    .replace('/', File.separatorChar);
+            .replace('/', File.separatorChar);
     File file = new File(_rootDir, fileName);
     File foundFile = (_allFiles.contains(file)) ? file : null;
     return foundFile;

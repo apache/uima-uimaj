@@ -47,12 +47,9 @@ public class CasResetResizeTest extends TestCase {
 
   public void testInitialHeapSize() throws Exception {
     try {
-      TaeDescription testDescriptor = UIMAFramework
-                      .getXMLParser()
-                      .parseTaeDescription(
-                                      new XMLInputSource(
-                                                      JUnitExtension
-                                                                      .getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml")));
+      TaeDescription testDescriptor = UIMAFramework.getXMLParser().parseTaeDescription(
+              new XMLInputSource(JUnitExtension
+                      .getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml")));
 
       // check default setting
       TextAnalysisEngine taeDefault = UIMAFramework.produceTAE(testDescriptor);

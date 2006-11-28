@@ -80,9 +80,9 @@ public class CrossAnnotation_Type extends Annotation_Type {
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
     casFeat_otherAnnotation = jcas.getRequiredFeatureDE(casType, "otherAnnotation",
-                    "uima.tcas.Annotation", featOkTst);
+            "uima.tcas.Annotation", featOkTst);
     casFeatCode_otherAnnotation = (null == casFeat_otherAnnotation) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_otherAnnotation).getCode();
+            : ((FeatureImpl) casFeat_otherAnnotation).getCode();
   }
 
   protected CrossAnnotation_Type() { // block default new operator

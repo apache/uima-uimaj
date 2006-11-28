@@ -64,7 +64,7 @@ public class SimpleResourceFactory implements ResourceFactory {
    * first.
    */
   protected Map mClassMap = Collections.synchronizedMap(new HashMap());
-  
+
   /**
    * Produces an appropriate <code>Resource</code> instance from a <code>ResourceSpecifier</code>.
    * 
@@ -87,7 +87,7 @@ public class SimpleResourceFactory implements ResourceFactory {
    * @see org.apache.uima.ResourceFactory#produceResource(Class, ResourceSpecifier,Map)
    */
   public Resource produceResource(Class aResourceClass, ResourceSpecifier aSpecifier,
-                  Map aAdditionalParams) throws ResourceInitializationException {
+          Map aAdditionalParams) throws ResourceInitializationException {
     ResourceInitializationException lastException = null;
 
     // get all interfaces implemented by aSpecifier
@@ -116,8 +116,8 @@ public class SimpleResourceFactory implements ResourceFactory {
             Resource resource = (Resource) currentClass.newInstance();
             // attempt to initialize it
             UIMAFramework.getLogger(CLASS_NAME).logrb(Level.CONFIG, CLASS_NAME.getName(),
-                            "produceResource", LOG_RESOURCE_BUNDLE,
-                            "UIMA_trying_resource_class__CONFIG", currentClass.getName());
+                    "produceResource", LOG_RESOURCE_BUNDLE, "UIMA_trying_resource_class__CONFIG",
+                    currentClass.getName());
 
             if (resource.initialize(aSpecifier, aAdditionalParams)) {
               // success!
@@ -128,17 +128,16 @@ public class SimpleResourceFactory implements ResourceFactory {
         // if an exception occurs, log it but do not throw it... yet
         catch (IllegalAccessException e) {
           currentException = new ResourceInitializationException(
-                          ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
-                              currentClass.getName(), aSpecifier.getSourceUrlString() }, e);
+                  ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
+                      currentClass.getName(), aSpecifier.getSourceUrlString() }, e);
         } catch (InstantiationException e) {
           currentException = new ResourceInitializationException(
-                          ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
-                              currentClass.getName(), aSpecifier.getSourceUrlString() }, e);
+                  ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
+                      currentClass.getName(), aSpecifier.getSourceUrlString() }, e);
         } catch (Throwable t) {
           currentException = new ResourceInitializationException(
-                          ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR,
-                          new Object[] { currentClass.getName(), aSpecifier.getSourceUrlString() },
-                          t);
+                  ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
+                      currentClass.getName(), aSpecifier.getSourceUrlString() }, t);
         } finally {
           if (currentException != null) {
             currentException.fillInStackTrace();
@@ -193,7 +192,7 @@ public class SimpleResourceFactory implements ResourceFactory {
    *          resource specifiers of the given class.
    */
   public void addMapping(String aSpecifierInterfaceName, String aResourceClassName)
-                  throws ClassNotFoundException {
+          throws ClassNotFoundException {
     addMapping(Class.forName(aSpecifierInterfaceName), Class.forName(aResourceClassName));
 
   }

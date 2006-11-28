@@ -131,7 +131,7 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
    *      org.apache.uima.util.XMLParser)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
-                  XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
+          XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     String names = aElement.getAttribute("names");
     if (names.length() == 0) {
       throw new InvalidXMLException(InvalidXMLException.REQUIRED_ATTRIBUTE_MISSING, new Object[] {
@@ -159,7 +159,7 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("configurationGroup",
-                  new PropertyXmlInfo[] {
-                  // NOTE: names property is XMLized as an attribute
-                  new PropertyXmlInfo("configurationParameters", null), });
+          new PropertyXmlInfo[] {
+          // NOTE: names property is XMLized as an attribute
+          new PropertyXmlInfo("configurationParameters", null), });
 }

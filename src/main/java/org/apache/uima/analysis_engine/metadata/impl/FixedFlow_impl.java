@@ -35,7 +35,7 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 public class FixedFlow_impl extends MetaDataObject_impl implements FixedFlow {
 
   static final long serialVersionUID = -3582926806264514233L;
- 
+
   /** Array of AnalysisEngine identifiers indicating the fixed flow. */
   private String[] mFixedFlow = new String[0];
 
@@ -59,7 +59,7 @@ public class FixedFlow_impl extends MetaDataObject_impl implements FixedFlow {
   public void setFixedFlow(String[] aFlow) {
     if (aFlow == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-                      new Object[] { "null", "aFlow", "setFixedFlow" });
+              new Object[] { "null", "aFlow", "setFixedFlow" });
     }
     mFixedFlow = aFlow;
   }
@@ -90,6 +90,6 @@ public class FixedFlow_impl extends MetaDataObject_impl implements FixedFlow {
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fixedFlow",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("fixedFlow", null, true, "node") });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("fixedFlow", null, true, "node") });
 
 }

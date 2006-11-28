@@ -73,7 +73,7 @@ public abstract class XmlCasSerializer {
    *           if an I/O failure occurs
    */
   public static void serialize(CAS aCAS, TypeSystem aTargetTypeSystem, OutputStream aStream)
-                  throws SAXException, IOException {
+          throws SAXException, IOException {
     XmiCasSerializer.serialize(aCAS, aTargetTypeSystem, aStream);
   }
 }

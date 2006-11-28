@@ -86,7 +86,7 @@ public interface ProcessTrace extends java.io.Serializable {
    *          result message of event
    */
   public void addEvent(String aResourceName, String aType, String aDescription, int aDuration,
-                  String aResultMsg);
+          String aResultMsg);
 
   /**
    * Adds a completed event object to this <code>ProcessTrace</code>. This method is useful for

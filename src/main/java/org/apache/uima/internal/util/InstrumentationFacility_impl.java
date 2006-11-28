@@ -64,7 +64,7 @@ public class InstrumentationFacility_impl implements InstrumentationFacility {
    *      java.lang.String, int, java.lang.String)
    */
   public void addEvent(String aResourceName, String aType, String aDescription, int aDuration,
-                  String aResultMsg) {
+          String aResultMsg) {
     if (mProcessTrace != null) {
       mProcessTrace.addEvent(aResourceName, aType, aDescription, aDuration, aResultMsg);
     }

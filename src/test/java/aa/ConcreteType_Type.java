@@ -95,9 +95,9 @@ public class ConcreteType_Type extends AbstractType_Type {
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
     casFeat_concreteString = jcas.getRequiredFeatureDE(casType, "concreteString",
-                    "uima.cas.String", featOkTst);
+            "uima.cas.String", featOkTst);
     casFeatCode_concreteString = (null == casFeat_concreteString) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_concreteString).getCode();
+            : ((FeatureImpl) casFeat_concreteString).getCode();
 
   }
 }

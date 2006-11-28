@@ -55,7 +55,7 @@ public final class StringArray extends TOP implements StringArrayFS {
   public StringArray(JCas jcas, int length) {
     this(
     /* addr */jcas.getLowLevelCas().ll_createArray(jcas.getType(typeIndexID).casTypeCode, length,
-                    true),
+            true),
     /* type */jcas.getType(typeIndexID));
   }
 

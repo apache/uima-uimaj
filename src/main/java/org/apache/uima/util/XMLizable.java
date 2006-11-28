@@ -90,7 +90,7 @@ public interface XMLizable {
    *           if an I/O failure occurs
    */
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
-                  throws SAXException;
+          throws SAXException;
 
   /**
    * Initializes this object from its XML DOM representation. This method is typically called from
@@ -123,5 +123,5 @@ public interface XMLizable {
    *           if the input XML element does not specify a valid object
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
-                  XMLParser.ParsingOptions aOptions) throws InvalidXMLException;
+          XMLParser.ParsingOptions aOptions) throws InvalidXMLException;
 }

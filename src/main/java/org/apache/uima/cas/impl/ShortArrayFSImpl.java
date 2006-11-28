@@ -102,7 +102,7 @@ public class ShortArrayFSImpl extends CommonAuxArrayFSImpl implements ShortArray
    * @see org.apache.uima.cas.ShortArrayFS#copyFromArray(String[], int, int, int)
    */
   public void copyFromArray(String[] src, int srcOffset, int destOffset, int length)
-                  throws ArrayIndexOutOfBoundsException {
+          throws ArrayIndexOutOfBoundsException {
     short[] bArray = new short[length];
     for (int i = 0; i < length; i++) {
       bArray[i] = Short.parseShort(src[i]);

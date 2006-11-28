@@ -106,7 +106,7 @@ public class CasComparer {
       String rangeTypeName = rangeType1.getName();
 
       if (fs1.getCAS().getTypeSystem().subsumes(
-                      fs1.getCAS().getTypeSystem().getType(CAS.TYPE_NAME_STRING), rangeType1)) {
+              fs1.getCAS().getTypeSystem().getType(CAS.TYPE_NAME_STRING), rangeType1)) {
         Assert.assertEquals(fs1.getStringValue(feat1), fs2.getStringValue(feat2));
       } else if (CAS.TYPE_NAME_INTEGER.equals(rangeTypeName)) {
         Assert.assertEquals(fs1.getIntValue(feat1), fs2.getIntValue(feat2));

@@ -157,7 +157,7 @@ public class CapabilityLanguageFlowObject extends CasFlow_ImplBase implements Cl
 
             // get array of output capabilities only for the language without country extension
             ouputCapabilities = mResultSpec.getResultTypesAndFeatures(documentLanguage.substring(0,
-                            index));
+                    index));
 
             // add language output capabilities to the outputSpec
             for (int i = 0; i < ouputCapabilities.length; i++) {
@@ -171,7 +171,7 @@ public class CapabilityLanguageFlowObject extends CasFlow_ImplBase implements Cl
           {
             // get array of output capabilities with the new main language without country extension
             ouputCapabilities = mResultSpec.getResultTypesAndFeatures(documentLanguage.substring(0,
-                            index));
+                    index));
           }
         }
 
@@ -194,13 +194,13 @@ public class CapabilityLanguageFlowObject extends CasFlow_ImplBase implements Cl
 
           // create current analysis result spec without any language information
           currentAnalysisResultSpec = UIMAFramework.getResourceSpecifierFactory()
-                          .createResultSpecification();
+                  .createResultSpecification();
 
           // check if engine should be called - loop over all ouput capabilities of the result spec
           for (int i = 0; i < ouputCapabilities.length; i++) {
             // check if current ToF can be produced by the current analysis engine
             if (capabilityContainer.hasOutputTypeOrFeature(ouputCapabilities[i], documentLanguage,
-                            true)) {
+                    true)) {
               currentAnalysisResultSpec.addResultTypeOrFeature(ouputCapabilities[i]);
               shouldEngineBeCalled = true;
 

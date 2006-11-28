@@ -145,7 +145,7 @@ public class TypeSystemTest extends TestCase {
       // by name on types more than one level removed from the introducing
       // type.
       assertTrue(tsm.getFeatureByFullName(annot2name + TypeSystem.FEATURE_SEPARATOR
-                      + TCAS.FEATURE_BASE_NAME_BEGIN) != null);
+              + TCAS.FEATURE_BASE_NAME_BEGIN) != null);
 
       String inhTestFeat = "inhTestFeat";
       tsm.addFeature(inhTestFeat, annot1, nameTest);
@@ -340,7 +340,7 @@ public class TypeSystemTest extends TestCase {
     Feature start1 = annot.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_BEGIN);
     assertTrue(start == start1);
     Feature start2 = this.ts.getType(CASTestSetup.TOKEN_TYPE).getFeatureByBaseName(
-                    TCAS.FEATURE_BASE_NAME_BEGIN);
+            TCAS.FEATURE_BASE_NAME_BEGIN);
     assertTrue(start == start2);
   }
 

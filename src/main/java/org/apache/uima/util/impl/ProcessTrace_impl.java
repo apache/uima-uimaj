@@ -78,7 +78,7 @@ public class ProcessTrace_impl implements ProcessTrace {
       aPerformanceTuningSettings = UIMAFramework.getDefaultPerformanceTuningProperties();
     }
     mEnabled = "true".equalsIgnoreCase(aPerformanceTuningSettings
-                    .getProperty(UIMAFramework.PROCESS_TRACE_ENABLED));
+            .getProperty(UIMAFramework.PROCESS_TRACE_ENABLED));
     if (mEnabled) {
       mTimer = UIMAFramework.newTimer();
     }
@@ -109,7 +109,7 @@ public class ProcessTrace_impl implements ProcessTrace {
       aPerformanceTuningSettings = UIMAFramework.getDefaultPerformanceTuningProperties();
     }
     mEnabled = "true".equalsIgnoreCase(aPerformanceTuningSettings
-                    .getProperty(UIMAFramework.PROCESS_TRACE_ENABLED));
+            .getProperty(UIMAFramework.PROCESS_TRACE_ENABLED));
   }
 
   /**
@@ -120,7 +120,7 @@ public class ProcessTrace_impl implements ProcessTrace {
     if (mEnabled) {
       // DEBUG System.out.println("startEvent(" + aComponentName + "," + aEventType + ")");
       ProcessTraceEvent_impl evt = new ProcessTraceEvent_impl(aComponentName, aEventType,
-                      aDescription);
+              aDescription);
       evt.setStartTime(mTimer.getTimeInMillis());
       mOpenEvents.push(evt);
     }
@@ -178,7 +178,7 @@ public class ProcessTrace_impl implements ProcessTrace {
         }
         // throw exception
         throw new UIMA_IllegalStateException(UIMA_IllegalStateException.REQUIRED_METHOD_CALL,
-                        new Object[] { "startEvent", "endEvent" });
+                new Object[] { "startEvent", "endEvent" });
       }
     }
   }
@@ -187,7 +187,7 @@ public class ProcessTrace_impl implements ProcessTrace {
    * @see org.apache.uima.util.ProcessTrace#addEvent(String, String, String, int, String)
    */
   public void addEvent(String aComponentName, String aType, String aDescription, int aDuration,
-                  String aResultMsg) {
+          String aResultMsg) {
     if (mEnabled) {
       // create event
       ProcessTraceEvent_impl evt = new ProcessTraceEvent_impl(aComponentName, aType, aDescription);
@@ -339,7 +339,7 @@ public class ProcessTrace_impl implements ProcessTrace {
    * Utility method used by getEventsByComponentName(String)
    */
   protected void getEventsByComponentName(ProcessTraceEvent aEvent, String aComponentName,
-                  boolean aRecurseAfterMatch, List aResultList) {
+          boolean aRecurseAfterMatch, List aResultList) {
     if (aComponentName.equals(aEvent.getComponentName())) {
       aResultList.add(aEvent);
       if (!aRecurseAfterMatch) {
@@ -359,7 +359,7 @@ public class ProcessTrace_impl implements ProcessTrace {
    * Utility method used by getEventsByType(String)
    */
   protected void getEventsByType(ProcessTraceEvent aEvent, String aType,
-                  boolean aRecurseAfterMatch, List aResultList) {
+          boolean aRecurseAfterMatch, List aResultList) {
     if (aType.equals(aEvent.getType())) {
       aResultList.add(aEvent);
       if (!aRecurseAfterMatch) {
@@ -379,12 +379,12 @@ public class ProcessTrace_impl implements ProcessTrace {
    * Utility method used by aggregate(ProcessTrace)
    */
   protected ProcessTraceEvent_impl findCorrespondingEvent(List aEventList,
-                  ProcessTraceEvent_impl aEvent) {
+          ProcessTraceEvent_impl aEvent) {
     Iterator it = aEventList.iterator();
     while (it.hasNext()) {
       ProcessTraceEvent_impl evt = (ProcessTraceEvent_impl) it.next();
       if (evt.getComponentName().equals(aEvent.getComponentName())
-                      && evt.getType().equals(aEvent.getType())) {
+              && evt.getType().equals(aEvent.getType())) {
         return evt;
       }
     }

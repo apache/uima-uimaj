@@ -68,7 +68,7 @@ public class SofaFSImpl extends FeatureStructureImplC implements SofaFS {
    */
   public void setLocalSofaData(FeatureStructure aFS) {
     final Feature arrayFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-                    CAS.FEATURE_FULL_NAME_SOFAARRAY);
+            CAS.FEATURE_FULL_NAME_SOFAARRAY);
     if (isSofaDataSet()) {
       CASRuntimeException e = new CASRuntimeException(CASRuntimeException.SOFADATA_ALREADY_SET);
       e.addArgument("SetLocalSofaData()");
@@ -82,11 +82,11 @@ public class SofaFSImpl extends FeatureStructureImplC implements SofaFS {
       throw e;
     }
     if (!type.getName().equals(CAS.TYPE_NAME_BYTE_ARRAY)
-                    && !type.getName().equals(CAS.TYPE_NAME_DOUBLE_ARRAY)
-                    && !type.getName().equals(CAS.TYPE_NAME_FLOAT_ARRAY)
-                    && !type.getName().equals(CAS.TYPE_NAME_INTEGER_ARRAY)
-                    && !type.getName().equals(CAS.TYPE_NAME_LONG_ARRAY)
-                    && !type.getName().equals(CAS.TYPE_NAME_SHORT_ARRAY)) {
+            && !type.getName().equals(CAS.TYPE_NAME_DOUBLE_ARRAY)
+            && !type.getName().equals(CAS.TYPE_NAME_FLOAT_ARRAY)
+            && !type.getName().equals(CAS.TYPE_NAME_INTEGER_ARRAY)
+            && !type.getName().equals(CAS.TYPE_NAME_LONG_ARRAY)
+            && !type.getName().equals(CAS.TYPE_NAME_SHORT_ARRAY)) {
       CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INAPPROP_TYPE);
       e.addArgument("Byte/Float/Integer/Short/String/Long/Double Array");
       e.addArgument(type.getName());
@@ -102,7 +102,7 @@ public class SofaFSImpl extends FeatureStructureImplC implements SofaFS {
    */
   public void setLocalSofaData(String aString) {
     final Feature stringFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-                    CAS.FEATURE_FULL_NAME_SOFASTRING);
+            CAS.FEATURE_FULL_NAME_SOFASTRING);
     if (isSofaDataSet()) {
       CASRuntimeException e = new CASRuntimeException(CASRuntimeException.SOFADATA_ALREADY_SET);
       e.addArgument("SetLocalSofaData()");
@@ -120,7 +120,7 @@ public class SofaFSImpl extends FeatureStructureImplC implements SofaFS {
    */
   public void setRemoteSofaURI(String aURI) {
     final Feature uriFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-                    CAS.FEATURE_FULL_NAME_SOFAURI);
+            CAS.FEATURE_FULL_NAME_SOFAURI);
 
     if (isSofaDataSet()) {
       CASRuntimeException e = new CASRuntimeException(CASRuntimeException.SOFADATA_ALREADY_SET);
@@ -132,14 +132,14 @@ public class SofaFSImpl extends FeatureStructureImplC implements SofaFS {
 
   private boolean isSofaDataSet() {
     final Feature uriFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-                    CAS.FEATURE_FULL_NAME_SOFAURI);
+            CAS.FEATURE_FULL_NAME_SOFAURI);
     final Feature arrayFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-                    CAS.FEATURE_FULL_NAME_SOFAARRAY);
+            CAS.FEATURE_FULL_NAME_SOFAARRAY);
     final Feature stringFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-                    CAS.FEATURE_FULL_NAME_SOFASTRING);
+            CAS.FEATURE_FULL_NAME_SOFASTRING);
 
     if (null != this.getStringValue(uriFeat) || null != this.getFeatureValue(arrayFeat)
-                    || null != this.getStringValue(stringFeat)) {
+            || null != this.getStringValue(stringFeat)) {
       return true;
     }
     return false;
@@ -151,7 +151,7 @@ public class SofaFSImpl extends FeatureStructureImplC implements SofaFS {
    */
   public FeatureStructure getLocalFSData() {
     final Feature arrayFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-                    CAS.FEATURE_FULL_NAME_SOFAARRAY);
+            CAS.FEATURE_FULL_NAME_SOFAARRAY);
     return this.getFeatureValue(arrayFeat);
   }
 
@@ -161,7 +161,7 @@ public class SofaFSImpl extends FeatureStructureImplC implements SofaFS {
    */
   public String getLocalStringData() {
     final Feature stringFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-                    CAS.FEATURE_FULL_NAME_SOFASTRING);
+            CAS.FEATURE_FULL_NAME_SOFASTRING);
     return this.getStringValue(stringFeat);
   }
 
@@ -185,27 +185,27 @@ public class SofaFSImpl extends FeatureStructureImplC implements SofaFS {
   // should be made in both places.
   public String getSofaMime() {
     final Feature mimeFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-                    CAS.FEATURE_FULL_NAME_SOFAMIME);
+            CAS.FEATURE_FULL_NAME_SOFAMIME);
     return this.casImpl.getLowLevelCAS().ll_getStringValue(super.addr,
-                    ((FeatureImpl) mimeFeat).getCode());
+            ((FeatureImpl) mimeFeat).getCode());
   }
 
   // This method is duplicated in org.apache.uima.jcas.cas.Sofa. Any changes
   // should be made in both places.
   public String getSofaURI() {
     final Feature uriFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-                    CAS.FEATURE_FULL_NAME_SOFAURI);
+            CAS.FEATURE_FULL_NAME_SOFAURI);
     return this.casImpl.getLowLevelCAS().ll_getStringValue(super.addr,
-                    ((FeatureImpl) uriFeat).getCode());
+            ((FeatureImpl) uriFeat).getCode());
   }
 
   // This method is duplicated in org.apache.uima.jcas.cas.Sofa. Any changes
   // should be made in both places.
   public int getSofaRef() {
     final Feature numFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-                    CAS.FEATURE_FULL_NAME_SOFANUM);
+            CAS.FEATURE_FULL_NAME_SOFANUM);
     return this.casImpl.getLowLevelCAS().ll_getIntValue(super.addr,
-                    ((FeatureImpl) numFeat).getCode());
+            ((FeatureImpl) numFeat).getCode());
   }
 
   public InputStream getSofaDataStream() {
@@ -219,7 +219,7 @@ public class SofaFSImpl extends FeatureStructureImplC implements SofaFS {
 
   public String getSofaID() {
     final Feature sofaIDFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-                    CAS.FEATURE_FULL_NAME_SOFAID);
+            CAS.FEATURE_FULL_NAME_SOFAID);
     return this.getStringValue(sofaIDFeat);
   }
 }

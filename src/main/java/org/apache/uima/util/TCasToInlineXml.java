@@ -143,9 +143,8 @@ public class TCasToInlineXml implements TCasFormatter {
             try {
               handler.characters(docCharArray, pos, nextAnnot.getBegin() - pos);
               pos = nextAnnot.getBegin();
-              handler
-                              .startElement("", nextAnnot.getType().getName(), nextAnnot.getType()
-                                              .getName(), getFeatureAttributes(nextAnnot, aTCAS));
+              handler.startElement("", nextAnnot.getType().getName(),
+                      nextAnnot.getType().getName(), getFeatureAttributes(nextAnnot, aTCAS));
 
               // push parent annotation on stack
               stack.add(curAnnot);
@@ -153,7 +152,7 @@ public class TCasToInlineXml implements TCasFormatter {
               curAnnot = nextAnnot;
             } catch (StringIndexOutOfBoundsException e) {
               System.err.println("Invalid annotation range: " + nextAnnot.getBegin() + ","
-                              + nextAnnot.getEnd() + " in document of length " + docText.length());
+                      + nextAnnot.getEnd() + " in document of length " + docText.length());
             }
           }
           iterator.moveToNext();
@@ -165,7 +164,7 @@ public class TCasToInlineXml implements TCasFormatter {
             pos = curAnnot.getEnd();
           } catch (StringIndexOutOfBoundsException e) {
             System.err.println("Invalid annotation range: " + curAnnot.getBegin() + ","
-                            + curAnnot.getEnd() + " in document of length " + docText.length());
+                    + curAnnot.getEnd() + " in document of length " + docText.length());
           }
           handler.endElement("", curAnnot.getType().getName(), curAnnot.getType().getName());
 
@@ -181,7 +180,7 @@ public class TCasToInlineXml implements TCasFormatter {
           pos = curAnnot.getEnd();
         } catch (StringIndexOutOfBoundsException e) {
           System.err.println("Invalid annotation range: " + curAnnot.getBegin() + ","
-                          + curAnnot.getEnd() + "in document of length " + docText.length());
+                  + curAnnot.getEnd() + "in document of length " + docText.length());
         }
         handler.endElement("", curAnnot.getType().getName(), curAnnot.getType().getName());
 
@@ -195,7 +194,7 @@ public class TCasToInlineXml implements TCasFormatter {
             pos = curAnnot.getEnd();
           } catch (StringIndexOutOfBoundsException e) {
             System.err.println("Invalid annotation range: " + curAnnot.getBegin() + ","
-                            + curAnnot.getEnd() + "in document of length " + docText.length());
+                    + curAnnot.getEnd() + "in document of length " + docText.length());
           }
           handler.endElement("", curAnnot.getType().getName(), curAnnot.getType().getName());
         }
@@ -227,7 +226,7 @@ public class TCasToInlineXml implements TCasFormatter {
       // how we get feature value depends on feature's range type)
       String rangeTypeName = feat.getRange().getName();
       if (aTCAS.getTypeSystem().subsumes(stringType, feat.getRange())) // must check for subtypes
-                                                                        // of string
+      // of string
       {
         String str = aFS.getStringValue(feat);
         if (str == null) {
@@ -240,12 +239,12 @@ public class TCasToInlineXml implements TCasFormatter {
         }
       } else if (CAS.TYPE_NAME_INTEGER.equals(rangeTypeName)) {
         attrs
-                        .addAttribute("", featName, featName, "CDATA", Integer.toString(aFS
-                                        .getIntValue(feat)));
+                .addAttribute("", featName, featName, "CDATA", Integer.toString(aFS
+                        .getIntValue(feat)));
       } else if (CAS.TYPE_NAME_FLOAT.equals(rangeTypeName)) {
         attrs
-                        .addAttribute("", featName, featName, "CDATA", Float.toString(aFS
-                                        .getFloatValue(feat)));
+                .addAttribute("", featName, featName, "CDATA", Float.toString(aFS
+                        .getFloatValue(feat)));
       } else if (CAS.TYPE_NAME_STRING_ARRAY.equals(rangeTypeName)) {
         StringArrayFS arrayFS = (StringArrayFS) aFS.getFeatureValue(feat);
         if (arrayFS == null) {
@@ -329,8 +328,8 @@ public class TCasToInlineXml implements TCasFormatter {
   private void replaceInvalidXmlChars(char[] aChars) {
     for (int i = 0; i < aChars.length; i++) {
       if ((aChars[i] < 0x20 && aChars[i] != 0x09 && aChars[i] != 0x0A && aChars[i] != 0x0D)
-                      || (aChars[i] > 0xD7FF && aChars[i] < 0xE000) || aChars[i] == 0xFFFE
-                      || aChars[i] == 0xFFFF) {
+              || (aChars[i] > 0xD7FF && aChars[i] < 0xE000) || aChars[i] == 0xFFFE
+              || aChars[i] == 0xFFFF) {
         // System.out.println("Found invalid XML character: " + (int)aChars[i] + " at position " +
         // i); //temp
         aChars[i] = ' ';

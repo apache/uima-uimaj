@@ -525,7 +525,7 @@ public class FileUtil {
     // set root_dir_path = archive_file_path (w/o file name extension)
     int nameEndIndex = archive.getName().lastIndexOf('.');
     String rootDirPath = (nameEndIndex > 0) ? archive.getName().substring(0, nameEndIndex)
-                    : archive.getName();
+            : archive.getName();
     File rootDir = new File(rootDirPath);
     // add directories to the list
     Enumeration entries = archive.entries();
@@ -609,7 +609,7 @@ public class FileUtil {
     // set root_dir_path = archive_file_path (w/o file name extension)
     int nameEndIndex = archive.getName().lastIndexOf('.');
     String rootDirPath = (nameEndIndex > 0) ? archive.getName().substring(0, nameEndIndex)
-                    : archive.getName();
+            : archive.getName();
     File rootDir = new File(rootDirPath);
     // add directories to the list
     Enumeration entries = archive.entries();
@@ -698,7 +698,7 @@ public class FileUtil {
    *           If any I/O exception occurred.
    */
   public static long extractDirectoryFromJar(JarFile jarFile, String dirPath, File targetDir)
-                  throws IOException {
+          throws IOException {
     return extractFilesFromJar(jarFile, targetDir, new DirFileFilter(dirPath, null));
   }
 
@@ -718,7 +718,7 @@ public class FileUtil {
    *           If any I/O exception occurred.
    */
   public static long extractFilesWithExtFromJar(JarFile jarFile, String fileExt, File targetDir)
-                  throws IOException {
+          throws IOException {
     return extractFilesFromJar(jarFile, targetDir, new DirFileFilter(null, fileExt));
   }
 
@@ -752,7 +752,7 @@ public class FileUtil {
    *           If any I/O exception occurred.
    */
   public static long extractFilesFromJar(JarFile jarFile, File targetDir, FileFilter filter)
-                  throws IOException {
+          throws IOException {
     long totalBytes = 0;
     byte[] block = new byte[4096];
     Enumeration jarList = jarFile.entries();
@@ -1073,7 +1073,7 @@ public class FileUtil {
    *           If any I/O exception occurred.
    */
   public static Properties loadPropertiesFromJar(String propFilePath, JarFile jarFile)
-                  throws IOException {
+          throws IOException {
     Properties properties = null;
     String name = propFilePath.replace('\\', '/');
     JarEntry jarEntry = jarFile.getJarEntry(name);
@@ -1323,7 +1323,7 @@ public class FileUtil {
    *           If any I/O exception occurs.
    */
   public static int replaceStringInFile(File textFile, String subStringRegex, String replacement)
-                  throws IOException {
+          throws IOException {
     int counter = 0;
     // for general text file - supporting ASCII encoding only
     String encoding = "ASCII";
@@ -1337,7 +1337,7 @@ public class FileUtil {
         encoding = xmlEncoding;
       else
         throw new UnsupportedEncodingException("can't detect encoding in "
-                        + textFile.getAbsolutePath());
+                + textFile.getAbsolutePath());
     }
     // load text file, using supported encoding
     String fileContent = loadTextFile(textFile, encoding);
@@ -1481,7 +1481,7 @@ public class FileUtil {
    *           If any I/O exception occurred.
    */
   public static ZipOutputStream zipDirectory(File dir2zip, ZipOutputStream zoStream,
-                  File referenceDir, File[] excludeFiles) throws IOException {
+          File referenceDir, File[] excludeFiles) throws IOException {
     byte[] block = new byte[4096];
     int inBytes = 0;
     FileInputStream iStream = null;
@@ -1507,7 +1507,7 @@ public class FileUtil {
           iStream = new FileInputStream(entry);
           // put ZipEntry for the file
           String zipEntryName = (referenceDir != null) ? getRelativePath(referenceDir, entry
-                          .getAbsolutePath()) : getRelativePath(dir2zip, entry.getAbsolutePath());
+                  .getAbsolutePath()) : getRelativePath(dir2zip, entry.getAbsolutePath());
           ZipEntry zipEntry = new ZipEntry(zipEntryName);
           zoStream.putNextEntry(zipEntry);
           // read input stream and write to output stream
@@ -1544,7 +1544,7 @@ public class FileUtil {
     String zipFileName = file2zip.getName();
     int extIndex = zipFileName.lastIndexOf('.');
     zipFileName = (extIndex >= 0) ? zipFileName.substring(0, extIndex) + ".zip" : zipFileName
-                    + ".zip";
+            + ".zip";
     File zipFile = new File(file2zip.getParentFile(), zipFileName);
     return zipFile(file2zip, zipFile);
   }

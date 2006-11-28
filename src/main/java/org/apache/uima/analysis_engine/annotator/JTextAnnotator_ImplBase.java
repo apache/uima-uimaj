@@ -24,5 +24,5 @@ package org.apache.uima.analysis_engine.annotator;
  * {@link org.apache.uima.analysis_component.JCasAnnotator_ImplBase}.
  */
 public abstract class JTextAnnotator_ImplBase extends Annotator_ImplBase implements JTextAnnotator {
-  //overrides no methods
+  // overrides no methods
 }

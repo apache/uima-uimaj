@@ -48,13 +48,13 @@ public class FloatList extends org.apache.uima.jcas.cas.TOP {
   public float getNthElement(int i) {
     if (this instanceof EmptyFloatList) {
       CASRuntimeException casEx = new CASRuntimeException(
-                      CASRuntimeException.JCAS_GET_NTH_ON_EMPTY_LIST);
+              CASRuntimeException.JCAS_GET_NTH_ON_EMPTY_LIST);
       casEx.addArgument("EmptyFloatList");
       throw casEx;
     }
     if (i < 0) {
       CASRuntimeException casEx = new CASRuntimeException(
-                      CASRuntimeException.JCAS_GET_NTH_NEGATIVE_INDEX);
+              CASRuntimeException.JCAS_GET_NTH_NEGATIVE_INDEX);
       casEx.addArgument(new Integer(i).toString());
       throw casEx;
     }
@@ -64,7 +64,7 @@ public class FloatList extends org.apache.uima.jcas.cas.TOP {
     for (;; i--) {
       if (cg instanceof EmptyFloatList) {
         CASRuntimeException casEx = new CASRuntimeException(
-                        CASRuntimeException.JCAS_GET_NTH_PAST_END);
+                CASRuntimeException.JCAS_GET_NTH_PAST_END);
         casEx.addArgument(new Integer(originali).toString());
         throw casEx;
       }

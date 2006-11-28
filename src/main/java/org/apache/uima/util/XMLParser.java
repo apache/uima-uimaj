@@ -98,7 +98,7 @@ public interface XMLParser {
    *           if the input XML is not valid or does not specify a valid object
    */
   public XMLizable parse(XMLInputSource aInput, String aNamespaceForSchema, URL aSchemaUrl,
-                  boolean aExpandXIncludes) throws InvalidXMLException;
+          boolean aExpandXIncludes) throws InvalidXMLException;
 
   /**
    * Parses an XML input stream and produces an object. This method will expand XInclude (<code>xi:include</code>)
@@ -122,7 +122,7 @@ public interface XMLParser {
    *           if the input XML is not valid or does not specify a valid object
    */
   public XMLizable parse(XMLInputSource aInput, String aNamespaceForSchema, URL aSchemaUrl)
-                  throws InvalidXMLException;
+          throws InvalidXMLException;
 
   /**
    * Parses an XML input stream and produces an object.
@@ -147,7 +147,7 @@ public interface XMLParser {
    *           if the input XML is not valid or does not specify a valid object
    */
   public XMLizable parse(XMLInputSource aInput, String aNamespaceForSchema, URL aSchemaUrl,
-                  ParsingOptions aOptions) throws InvalidXMLException;
+          ParsingOptions aOptions) throws InvalidXMLException;
 
   /**
    * Parses an XML input stream and produces an object. XIncludes will be expanded but no schema
@@ -205,7 +205,7 @@ public interface XMLParser {
    *           if the input XML is not valid or does not specify a valid ResourceSpecifier
    */
   public ResourceSpecifier parseResourceSpecifier(XMLInputSource aInput, ParsingOptions aOptions)
-                  throws InvalidXMLException;
+          throws InvalidXMLException;
 
   /**
    * Parses a ResourceMetaData object from an XML input stream. XML schema validation will be done
@@ -236,7 +236,7 @@ public interface XMLParser {
    *           if the input XML is not valid or does not specify a valid ResourceSpecifier
    */
   public ResourceMetaData parseResourceMetaData(XMLInputSource aInput, ParsingOptions aOptions)
-                  throws InvalidXMLException;
+          throws InvalidXMLException;
 
   /**
    * Parses a URISpecifier from an XML input stream.
@@ -265,7 +265,7 @@ public interface XMLParser {
    *           if the input XML is not valid or does not specify a valid URISpecifier
    */
   public URISpecifier parseURISpecifier(XMLInputSource aInput, ParsingOptions aOptions)
-                  throws InvalidXMLException;
+          throws InvalidXMLException;
 
   /**
    * Parses an AnalysisEngineDescription from an XML input stream.
@@ -281,7 +281,7 @@ public interface XMLParser {
    *           if the input XML is not valid or does not specify a valid AnalysisEngineDescription
    */
   public AnalysisEngineDescription parseAnalysisEngineDescription(XMLInputSource aInput,
-                  ParsingOptions aOptions) throws InvalidXMLException;
+          ParsingOptions aOptions) throws InvalidXMLException;
 
   /**
    * Parses an AnalysisEngineDescription from an XML input stream.
@@ -295,7 +295,7 @@ public interface XMLParser {
    *           if the input XML is not valid or does not specify a valid AnalysisEngineDescription
    */
   public AnalysisEngineDescription parseAnalysisEngineDescription(XMLInputSource aInput)
-                  throws InvalidXMLException;
+          throws InvalidXMLException;
 
   /**
    * Parses a TaeDescription from an XML input stream.
@@ -330,7 +330,7 @@ public interface XMLParser {
    *             should be used instead.
    */
   public TaeDescription parseTaeDescription(XMLInputSource aInput, ParsingOptions aOptions)
-                  throws InvalidXMLException;
+          throws InvalidXMLException;
 
   /**
    * Parses a CasConsumerDescription from an XML input stream.
@@ -344,7 +344,7 @@ public interface XMLParser {
    *           if the input XML is not valid or does not specify a valid CasConsumerDescription
    */
   public CasConsumerDescription parseCasConsumerDescription(XMLInputSource aInput)
-                  throws InvalidXMLException;
+          throws InvalidXMLException;
 
   /**
    * Parses a CasConsumerDescription from an XML input stream.
@@ -360,7 +360,7 @@ public interface XMLParser {
    *           if the input XML is not valid or does not specify a valid CasConsumerDescription
    */
   public CasConsumerDescription parseCasConsumerDescription(XMLInputSource aInput,
-                  ParsingOptions aOptions) throws InvalidXMLException;
+          ParsingOptions aOptions) throws InvalidXMLException;
 
   /**
    * Parses a CasInitializerDescription from an XML input stream.
@@ -374,7 +374,7 @@ public interface XMLParser {
    *           if the input XML is not valid or does not specify a valid CasInitializerDescription
    */
   public CasInitializerDescription parseCasInitializerDescription(XMLInputSource aInput)
-                  throws InvalidXMLException;
+          throws InvalidXMLException;
 
   /**
    * Parses a CasInitializerDescription from an XML input stream.
@@ -390,7 +390,7 @@ public interface XMLParser {
    *           if the input XML is not valid or does not specify a valid CasInitializerDescription
    */
   public CasInitializerDescription parseCasInitializerDescription(XMLInputSource aInput,
-                  ParsingOptions aOptions) throws InvalidXMLException;
+          ParsingOptions aOptions) throws InvalidXMLException;
 
   /**
    * Parses a CollectionReaderDescription from an XML input stream.
@@ -404,7 +404,7 @@ public interface XMLParser {
    *           if the input XML is not valid or does not specify a valid CollectionReaderDescription
    */
   public CollectionReaderDescription parseCollectionReaderDescription(XMLInputSource aInput)
-                  throws InvalidXMLException;
+          throws InvalidXMLException;
 
   /**
    * Parses a CollectionReaderDescription from an XML input stream.
@@ -420,7 +420,7 @@ public interface XMLParser {
    *           if the input XML is not valid or does not specify a valid CollectionReaderDescription
    */
   public CollectionReaderDescription parseCollectionReaderDescription(XMLInputSource aInput,
-                  ParsingOptions aOptions) throws InvalidXMLException;
+          ParsingOptions aOptions) throws InvalidXMLException;
 
   /**
    * Parses a CpeDescription from an XML input stream.
@@ -450,7 +450,7 @@ public interface XMLParser {
    *           if the input XML is not valid or does not specify a valid ResultSpecification
    */
   public ResultSpecification parseResultSpecification(XMLInputSource aInput)
-                  throws InvalidXMLException;
+          throws InvalidXMLException;
 
   /**
    * Parses a ResultSpecification from an XML input stream.
@@ -466,7 +466,7 @@ public interface XMLParser {
    *           if the input XML is not valid or does not specify a valid ResultSpecification
    */
   public ResultSpecification parseResultSpecification(XMLInputSource aInput, ParsingOptions aOptions)
-                  throws InvalidXMLException;
+          throws InvalidXMLException;
 
   /**
    * Parses a TypeSystemDescription from an XML input stream.
@@ -480,7 +480,7 @@ public interface XMLParser {
    *           if the input XML is not valid or does not specify a valid TypeSystemDescription
    */
   public TypeSystemDescription parseTypeSystemDescription(XMLInputSource aInput)
-                  throws InvalidXMLException;
+          throws InvalidXMLException;
 
   /**
    * Parses a TypeSystemDescription from an XML input stream.
@@ -496,7 +496,7 @@ public interface XMLParser {
    *           if the input XML is not valid or does not specify a valid TypeSystemDescription
    */
   public TypeSystemDescription parseTypeSystemDescription(XMLInputSource aInput,
-                  ParsingOptions aOptions) throws InvalidXMLException;
+          ParsingOptions aOptions) throws InvalidXMLException;
 
   /**
    * Parses a TypePriorities declaration from an XML input stream.
@@ -525,7 +525,7 @@ public interface XMLParser {
    *           if the input XML is not valid or does not specify a valid TypePriorities
    */
   public TypePriorities parseTypePriorities(XMLInputSource aInput, ParsingOptions aOptions)
-                  throws InvalidXMLException;
+          throws InvalidXMLException;
 
   /**
    * Parses a FsIndexCollection from an XML input stream.
@@ -554,7 +554,7 @@ public interface XMLParser {
    *           if the input XML is not valid or does not specify a valid FsIndexCollection
    */
   public FsIndexCollection parseFsIndexCollection(XMLInputSource aInput, ParsingOptions aOptions)
-                  throws InvalidXMLException;
+          throws InvalidXMLException;
 
   /**
    * Parses a ResourceManagerConfiguration from an XML input stream.
@@ -569,7 +569,7 @@ public interface XMLParser {
    *           ResourceManagerConfiguration
    */
   public ResourceManagerConfiguration parseResourceManagerConfiguration(XMLInputSource aInput)
-                  throws InvalidXMLException;
+          throws InvalidXMLException;
 
   /**
    * Parses a ResourceManagerConfiguration from an XML input stream.
@@ -586,7 +586,7 @@ public interface XMLParser {
    *           ResourceManagerConfiguration
    */
   public ResourceManagerConfiguration parseResourceManagerConfiguration(XMLInputSource aInput,
-                  ParsingOptions aOptions) throws InvalidXMLException;
+          ParsingOptions aOptions) throws InvalidXMLException;
 
   /**
    * Parses an IndexBuildSpecification from an XML input stream.
@@ -600,7 +600,7 @@ public interface XMLParser {
    *           if the input XML is not valid or does not specify a valid IndexBuildSpecification
    */
   public IndexBuildSpecification parseIndexBuildSpecification(XMLInputSource aInput)
-                  throws InvalidXMLException;
+          throws InvalidXMLException;
 
   /**
    * Parses an IndexBuildSpecification from an XML input stream.
@@ -616,7 +616,7 @@ public interface XMLParser {
    *           if the input XML is not valid or does not specify a valid IndexBuildSpecification
    */
   public IndexBuildSpecification parseIndexBuildSpecification(XMLInputSource aInput,
-                  ParsingOptions aOptions) throws InvalidXMLException;
+          ParsingOptions aOptions) throws InvalidXMLException;
 
   /**
    * Builds an object from its XML DOM representation. This method is not typically called by
@@ -649,7 +649,7 @@ public interface XMLParser {
    *           if the XML element does not specify a valid object
    */
   public XMLizable buildObject(Element aElement, ParsingOptions aOptions)
-                  throws InvalidXMLException;
+          throws InvalidXMLException;
 
   /**
    * Builds an object from its XML DOM representation. This method is not typically called by
@@ -673,7 +673,7 @@ public interface XMLParser {
    *           if the XML element does not specify a valid object
    */
   public Object buildObjectOrPrimitive(Element aElement, ParsingOptions aOptions)
-                  throws InvalidXMLException;
+          throws InvalidXMLException;
 
   /**
    * Creates a new <code>SaxDeserializer</code> object, which implements the SAX
@@ -714,7 +714,7 @@ public interface XMLParser {
    * @see #newSaxDeserializer()
    */
   public SaxDeserializer newSaxDeserializer(String aNamespaceForSchema, URL aSchemaUrl,
-                  boolean aExpandXIncludes);
+          boolean aExpandXIncludes);
 
   /**
    * Creates a new <code>SaxDeserializer</code>.
@@ -736,7 +736,7 @@ public interface XMLParser {
    * @see #newSaxDeserializer()
    */
   public SaxDeserializer newSaxDeserializer(String aNamespaceForSchema, URL aSchemaUrl,
-                  ParsingOptions aOptions);
+          ParsingOptions aOptions);
 
   /**
    * Configures this XMLParser by registering a mapping between the name of an XML element and the

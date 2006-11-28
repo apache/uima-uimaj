@@ -434,7 +434,7 @@ public class ResourceInitializationException extends UIMAException {
    *          arguments.
    */
   public ResourceInitializationException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments) {
+          Object[] aArguments) {
     super(aResourceBundleName, aMessageKey, aArguments);
   }
 
@@ -455,7 +455,7 @@ public class ResourceInitializationException extends UIMAException {
    *          the original exception that caused this exception to be thrown, if any
    */
   public ResourceInitializationException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments, Throwable aCause) {
+          Object[] aArguments, Throwable aCause) {
     super(aResourceBundleName, aMessageKey, aArguments, aCause);
   }
 

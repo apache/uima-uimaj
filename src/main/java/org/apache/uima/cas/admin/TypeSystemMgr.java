@@ -104,7 +104,7 @@ public interface TypeSystemMgr extends TypeSystem {
    *              (or a supertype) with a different range than <code>rangeType</code>.
    */
   Feature addFeature(String featureName, Type domainType, Type rangeType,
-                  boolean multipleReferencesAllowed) throws CASAdminException;
+          boolean multipleReferencesAllowed) throws CASAdminException;
 
   /**
    * Commit the type system. The type system will be locked and no longer writable. WARNING: Users

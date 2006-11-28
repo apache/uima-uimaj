@@ -92,10 +92,10 @@ public class NonEmptyFSList_Type extends FSList_Type {
 
     casFeat_head = jcas.getRequiredFeatureDE(casType, "head", "uima.cas.TOP", featOkTst);
     casFeatCode_head = (null == casFeat_head) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_head).getCode();
+            : ((FeatureImpl) casFeat_head).getCode();
     casFeat_tail = jcas.getRequiredFeatureDE(casType, "tail", "uima.cas.FSList", featOkTst);
     casFeatCode_tail = (null == casFeat_tail) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_tail).getCode();
+            : ((FeatureImpl) casFeat_tail).getCode();
   }
 
   protected NonEmptyFSList_Type() { // block default new operator

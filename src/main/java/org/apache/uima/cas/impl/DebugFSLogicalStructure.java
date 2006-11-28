@@ -193,7 +193,7 @@ public class DebugFSLogicalStructure {
       while (it.hasNext()) {
         Type stype = (Type) it.next();
         r[i++] = new DebugNameValuePair("Type: " + stype.getName(),
-                        new UnexpandedFeatureStructures(ir.getIndex(indexName, stype)));
+                new UnexpandedFeatureStructures(ir.getIndex(indexName, stype)));
       }
       return r;
     }
@@ -254,7 +254,7 @@ public class DebugFSLogicalStructure {
     }
 
     result = new DebugNameValuePair[(isJCasClass ? 0 : 1) // slot for type name if not JCas
-                    + (isAnnotation ? 3 : nbrFeats) // annotations have 4 slot display
+            + (isAnnotation ? 3 : nbrFeats) // annotations have 4 slot display
     ];
     int i = 0;
     if (!isJCasClass) {
@@ -267,7 +267,7 @@ public class DebugFSLogicalStructure {
       result[i++] = new DebugNameValuePair("Features", featResults);
       result[i++] = new DebugNameValuePair("Covered Text", ((AnnotationFS) fs).getCoveredText());
       result[i++] = new DebugNameValuePair("SubAnnotations", new UnexpandedFeatureStructures(
-                      (AnnotationFS) fs));
+              (AnnotationFS) fs));
     } else {
       fillFeatures(result, isJCasClass ? 0 : 1, fs, features);
     }
@@ -276,7 +276,7 @@ public class DebugFSLogicalStructure {
   }
 
   private static void fillFeatures(DebugNameValuePair[] result, int startOffset,
-                  FeatureStructure fs, List features) {
+          FeatureStructure fs, List features) {
     int nbrFeats = features.size();
     int i = startOffset;
     for (int j = 0; j < nbrFeats; j++) {
@@ -315,8 +315,8 @@ public class DebugFSLogicalStructure {
     }
 
     DebugNameValuePair[] result = new DebugNameValuePair[3 + (isJCasClass ? 0 : 1)]; // slot for
-                                                                                      // type name
-                                                                                      // if not JCas
+    // type name
+    // if not JCas
     int i = 0;
     if (!isJCasClass) {
       result[i++] = new DebugNameValuePair("CasType", typeName);
@@ -329,8 +329,8 @@ public class DebugFSLogicalStructure {
     // uses sub iterators - may cause apparant skipping of initial annotations due to type
     // priorities.
     return getIndexContents(((AnnotationIndex) fs.getCAS().getAnnotationIndex()).subiterator(fs)); // built-in
-                                                                                                    // annotation
-                                                                                                    // index
+    // annotation
+    // index
   }
 
   private static FeatureStructure[] getIndexContents(FSIterator it) {
@@ -531,7 +531,7 @@ public class DebugFSLogicalStructure {
     for (int i = 0; i < list.size(); i++) {
       Object v = list.get(i);
       array[i] = (v instanceof Integer) ? ((Integer) v).toString()
-                      : (v instanceof Float) ? ((Float) v).toString() : list.get(i);
+              : (v instanceof Float) ? ((Float) v).toString() : list.get(i);
     }
     array[list.size()] = "... loop in list";
     return array;

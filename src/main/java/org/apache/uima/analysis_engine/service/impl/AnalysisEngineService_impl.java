@@ -51,7 +51,7 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
    * Timeout period, in milliseocnds, to wait when attempting to get CAS from the pool.
    */
   private int mTimeout;
-  
+
   /**
    * Initialize this service. This is where the CAS pool is created.
    * 
@@ -59,10 +59,10 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
    *      int, java.util.Map, int)
    */
   public void initialize(ResourceSpecifier aResourceSpecifier, Map aResourceInitParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     super.initialize(aResourceSpecifier, aResourceInitParams);
     Integer numInstances = (Integer) aResourceInitParams
-                    .get(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS);
+            .get(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS);
     if (numInstances == null) {
       numInstances = new Integer(1);
     }
@@ -82,10 +82,10 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
    * period as explicit arguments.
    */
   public void initialize(ResourceSpecifier aResourceSpecifier, int aNumSimultaneousRequests,
-                  int aTimeout) throws ResourceInitializationException {
+          int aTimeout) throws ResourceInitializationException {
     Map initParams = new HashMap();
     initParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, new Integer(
-                    aNumSimultaneousRequests));
+            aNumSimultaneousRequests));
     initParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, new Integer(aTimeout));
     this.initialize(aResourceSpecifier, initParams);
   }
@@ -101,7 +101,7 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
    * @return the results of analysis
    */
   public ServiceDataCargo process(ServiceDataCargo aData, ResultSpecification aResultSpec)
-                  throws ResourceServiceException {
+          throws ResourceServiceException {
     ProcessTrace trace = aData.getProcessTrace();
     if (trace == null) {
       trace = new ProcessTrace_impl();
@@ -118,7 +118,7 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
 
       if (cas == null) {
         throw new ResourceServiceException(ResourceServiceException.RESOURCE_UNAVAILABLE,
-                        new Object[0]);
+                new Object[0]);
       }
 
       // deserialize CAS data into this CAS instance

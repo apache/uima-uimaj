@@ -28,7 +28,7 @@ package org.apache.uima.resource;
  * 
  */
 public abstract class ConfigurableResource_ImplBase extends Resource_ImplBase implements
-                ConfigurableResource {
+        ConfigurableResource {
 
   /**
    * @see org.apache.uima.resource.ConfigurableResource#getConfigParameterValue(java.lang.String)
@@ -51,7 +51,7 @@ public abstract class ConfigurableResource_ImplBase extends Resource_ImplBase im
    */
   public void setConfigParameterValue(String aParamName, Object aValue) {
     getUimaContextAdmin().getConfigurationManager().setConfigParameterValue(
-                    getUimaContextAdmin().getQualifiedContextName() + aParamName, aValue);
+            getUimaContextAdmin().getQualifiedContextName() + aParamName, aValue);
   }
 
   /**
@@ -60,8 +60,7 @@ public abstract class ConfigurableResource_ImplBase extends Resource_ImplBase im
    */
   public void setConfigParameterValue(String aGroupName, String aParamName, Object aValue) {
     getUimaContextAdmin().getConfigurationManager().setConfigParameterValue(
-                    getUimaContextAdmin().getQualifiedContextName() + aParamName, aGroupName,
-                    aValue);
+            getUimaContextAdmin().getQualifiedContextName() + aParamName, aGroupName, aValue);
   }
 
   /**
@@ -69,7 +68,7 @@ public abstract class ConfigurableResource_ImplBase extends Resource_ImplBase im
    */
   public void reconfigure() throws ResourceConfigurationException {
     getUimaContextAdmin().getConfigurationManager().reconfigure(
-                    getUimaContextAdmin().getQualifiedContextName());
+            getUimaContextAdmin().getQualifiedContextName());
   }
 
 }

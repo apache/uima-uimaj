@@ -57,10 +57,10 @@ import org.apache.uima.cas.impl.LowLevelTypeSystem;
  * can be omitted, and only the array access operator can be used. Examples:
  * 
  * <pre>
- *  
- *       []/somepackage.Person:coveredText()
- *        [last]/somepackage.Person:fsId()
  *   
+ *        []/somepackage.Person:coveredText()
+ *         [last]/somepackage.Person:fsId()
+ *    
  * </pre>
  * 
  * If the feature path is defined directly, for a String, integer or float array, the array access

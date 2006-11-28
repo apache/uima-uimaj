@@ -505,7 +505,7 @@ public class ResultSpecification_implTest extends TestCase {
       // parse object back from XML
       InputStream is = new ByteArrayInputStream(rsXml.getBytes());
       ResultSpecification newRS = UIMAFramework.getXMLParser().parseResultSpecification(
-                      new XMLInputSource(is, null));
+              new XMLInputSource(is, null));
       TypeOrFeature[] tofs = newRS.getResultTypesAndFeatures();
       Arrays.sort(tofs);
       newRS.setResultTypesAndFeatures(tofs);

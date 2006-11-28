@@ -192,7 +192,7 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
    *           if import resolution failed
    */
   public Map getDelegateAnalysisEngineSpecifiers(ResourceManager aResourceManager)
-                  throws InvalidXMLException;
+          throws InvalidXMLException;
 
   /**
    * Retrieves a Map whose keys are string identifiers and whose values are the either
@@ -324,7 +324,7 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
    *           if validation failed
    */
   public void doFullValidation(ResourceManager aResourceManager)
-                  throws ResourceInitializationException;
+          throws ResourceInitializationException;
 
   /**
    * Writes this object's XML representation as a string. Note that if you want to write the XML to
@@ -344,7 +344,7 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
    *           if an I/O failure occurs
    */
   public void toXML(Writer aWriter, boolean aPreserveDelegateAnalysisEngineImports)
-                  throws SAXException, IOException;
+          throws SAXException, IOException;
 
   /**
    * Writes this object's XML representation as a string in UTF-8 encoding.
@@ -361,7 +361,7 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
    *           if an I/O failure occurs
    */
   public void toXML(OutputStream aOutputStream, boolean aPreserveDelegateAnalysisEngineImports)
-                  throws SAXException, IOException;
+          throws SAXException, IOException;
 
   /**
    * Writes this object's XML representation by making calls on a SAX {@link ContentHandler}.
@@ -382,6 +382,6 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
    *           if an I/O failure occurs
    */
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute,
-                  boolean aPreserveDelegateAnalysisEngineImports) throws SAXException;
+          boolean aPreserveDelegateAnalysisEngineImports) throws SAXException;
 
 }

@@ -76,7 +76,7 @@ final class StringHeap {
 
   StringHeap() {
     this(DEFAULT_REF_HEAP_BASE_SIZE, DEFAULT_REF_HEAP_MULT_LIMIT, DEFAULT_STRING_HEAP_BASE_SIZE,
-                    DEFAULT_STRING_HEAP_MULT_LIMIT);
+            DEFAULT_STRING_HEAP_MULT_LIMIT);
   }
 
   StringHeap(int refHeapBaseSize, int refHeapMultLimit, int strHeapBaseSize, int strHeapMultLimit) {
@@ -223,7 +223,7 @@ final class StringHeap {
 
   private final void ensureRefHeapSize() {
     this.refHeap = IntArrayUtils.ensure_size(this.refHeap, this.refHeapPos, GROWTH_FACTOR,
-                    this.refHeapMultLimit);
+            this.refHeapMultLimit);
   }
 
   int addCharBuffer(char[] buffer, int start, int length) {
@@ -244,7 +244,7 @@ final class StringHeap {
 
   private void ensureCharHeapSize() {
     this.stringHeap = IntArrayUtils.ensure_size(this.stringHeap, this.charHeapPos, GROWTH_FACTOR,
-                    this.strHeapMultLimit);
+            this.strHeapMultLimit);
   }
 
   // Informational

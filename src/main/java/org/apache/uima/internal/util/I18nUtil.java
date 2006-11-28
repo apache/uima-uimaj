@@ -42,7 +42,7 @@ public class I18nUtil {
    *         followed by the exception message.
    */
   public static String localizeMessage(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments) {
+          Object[] aArguments) {
     return localizeMessage(aResourceBundleName, Locale.getDefault(), aMessageKey, aArguments, null);
   }
 
@@ -63,9 +63,9 @@ public class I18nUtil {
    *         followed by the exception message.
    */
   public static String localizeMessage(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments, ClassLoader aLoader) {
+          Object[] aArguments, ClassLoader aLoader) {
     return localizeMessage(aResourceBundleName, Locale.getDefault(), aMessageKey, aArguments,
-                    aLoader);
+            aLoader);
   }
 
   /**
@@ -84,7 +84,7 @@ public class I18nUtil {
    *         followed by the exception message.
    */
   public static String localizeMessage(String aResourceBundleName, Locale aLocale,
-                  String aMessageKey, Object[] aArguments) {
+          String aMessageKey, Object[] aArguments) {
     return localizeMessage(aResourceBundleName, aLocale, aMessageKey, aArguments, null);
   }
 
@@ -107,7 +107,7 @@ public class I18nUtil {
    *         followed by the exception message.
    */
   public static String localizeMessage(String aResourceBundleName, Locale aLocale,
-                  String aMessageKey, Object[] aArguments, ClassLoader aLoader) {
+          String aMessageKey, Object[] aArguments, ClassLoader aLoader) {
     try {
       // if aLoader is null, replace with the I18nUtil.class.getClassLoader()
       if (aLoader == null) {

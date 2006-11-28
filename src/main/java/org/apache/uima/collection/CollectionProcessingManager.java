@@ -78,7 +78,7 @@ public interface CollectionProcessingManager {
    *           if this CPM is currently processing
    */
   public void setAnalysisEngine(AnalysisEngine aAnalysisEngine)
-                  throws ResourceConfigurationException;
+          throws ResourceConfigurationException;
 
   /**
    * Gets the <code>CasConsumers</code>s assigned to this CPM.
@@ -206,7 +206,7 @@ public interface CollectionProcessingManager {
    *           if this CPM is currently processing
    */
   public void process(CollectionReader aCollectionReader, int aBatchSize)
-                  throws ResourceInitializationException;
+          throws ResourceInitializationException;
 
   /**
    * Determines whether this CPM is currently processing. This means that a processing request has

@@ -65,7 +65,7 @@ public interface ShortArrayFS extends CommonArrayFS {
    *              <code>destOffset + length > destArray.length</code>.
    */
   void copyToArray(int srcOffset, short[] dest, int destOffset, int length)
-                  throws ArrayIndexOutOfBoundsException;
+          throws ArrayIndexOutOfBoundsException;
 
   /**
    * Copy the contents of an external array into this array.
@@ -80,7 +80,7 @@ public interface ShortArrayFS extends CommonArrayFS {
    *          The number of elements to copy.
    */
   void copyFromArray(short[] src, int srcOffset, int destOffset, int length)
-                  throws ArrayIndexOutOfBoundsException;
+          throws ArrayIndexOutOfBoundsException;
 
   /**
    * Creates a new array the this array is copied to.

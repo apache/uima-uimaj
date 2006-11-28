@@ -67,7 +67,7 @@ public class SerializationReinitTest extends TestCase {
   public static final String TOKEN_TYPE_FEAT = "type";
 
   public static final String TOKEN_TYPE_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
-                  + TOKEN_TYPE_FEAT;
+          + TOKEN_TYPE_FEAT;
 
   public static final String TOKEN_TYPE_TYPE = "TokenType";
 
@@ -230,7 +230,7 @@ public class SerializationReinitTest extends TestCase {
     AnnotationFS tokenAnnot;
     while (tokenizer.isValid()) {
       tokenAnnot = cas.createAnnotation(tokenType, tokenizer.getTokenStart(), tokenizer
-                      .getTokenEnd());
+              .getTokenEnd());
       tokenTypeCode = tokenizer.getTokenType();
       switch (tokenTypeCode) {
         case TextStringTokenizer.EOS: {

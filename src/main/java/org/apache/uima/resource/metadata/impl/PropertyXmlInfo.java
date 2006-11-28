@@ -117,7 +117,7 @@ public class PropertyXmlInfo {
    *          array element to have a tag determined by its class.
    */
   public PropertyXmlInfo(String aPropName, String aXmlElementName, boolean aOmitIfNull,
-                  String aArrayElementTagName) {
+          String aArrayElementTagName) {
     propertyName = aPropName;
     xmlElementName = aXmlElementName;
     omitIfNull = aOmitIfNull;

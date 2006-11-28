@@ -34,12 +34,12 @@ public class ConstraintParserFactory {
   }
 
   public static ConstraintParser getDefaultConstraintParser() throws ClassNotFoundException,
-                  InstantiationException, IllegalAccessException {
+          InstantiationException, IllegalAccessException {
     return getConstraintParser("org.apache.uima.cas.constraint_compiler.SableConstraintParser");
   }
 
   public static ConstraintParser getConstraintParser(String className)
-                  throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+          throws ClassNotFoundException, InstantiationException, IllegalAccessException {
     ClassLoader loader = getAvailableClassLoader();
     if (loader == null) {
       throw new ClassNotFoundException("No class loader accessible.");

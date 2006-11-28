@@ -44,7 +44,7 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
   private String mName;
 
   private boolean mAllAnnotatorFeatures;
-  
+
   /**
    * @see org.apache.uima.analysis_engine.TypeOrFeature#isType()
    */
@@ -94,7 +94,7 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
    *      org.apache.uima.util.XMLParser)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
-                  XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
+          XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     // element tag determines whether this is a type or a feature
     if (aElement.getTagName().equals("type")) {
       setType(true);
@@ -115,7 +115,7 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
    * @see org.apache.uima.util.XMLizable#toXML(ContentHandler)
    */
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
-                  throws SAXException {
+          throws SAXException {
     if (isType()) {
       // tag is "type"
       // if allAnnotatorFeatures is true, write that as an attribute
@@ -125,7 +125,7 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
         aContentHandler.startElement(getXmlizationInfo().namespace, "type", "type", attrs);
       } else {
         aContentHandler.startElement(getXmlizationInfo().namespace, "type", "type",
-                        new AttributesImpl());
+                new AttributesImpl());
       }
       // write type name here
       aContentHandler.characters(getName().toCharArray(), 0, getName().length());
@@ -134,7 +134,7 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
     } else // feature
     {
       aContentHandler.startElement(getXmlizationInfo().namespace, "feature", "feature",
-                      new AttributesImpl());
+              new AttributesImpl());
 
       aContentHandler.characters(getName().toCharArray(), 0, getName().length());
 

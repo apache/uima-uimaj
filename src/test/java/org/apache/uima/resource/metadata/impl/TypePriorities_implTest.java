@@ -67,7 +67,7 @@ public class TypePriorities_implTest extends TestCase {
       // simple type priorties (backwards compatibility check)
       File descriptor = JUnitExtension.getFile("TypePrioritiesImplTest/SimpleTypePriorities.xml");
       TypePriorities pri = UIMAFramework.getXMLParser().parseTypePriorities(
-                      new XMLInputSource(descriptor));
+              new XMLInputSource(descriptor));
       assertEquals(null, pri.getName());
       assertEquals(null, pri.getDescription());
       assertEquals(null, pri.getVendor());
@@ -102,7 +102,7 @@ public class TypePriorities_implTest extends TestCase {
     try {
       File descriptor = JUnitExtension.getFile("TypePrioritiesImplTest/TestTypePriorities.xml");
       TypePriorities pri = UIMAFramework.getXMLParser().parseTypePriorities(
-                      new XMLInputSource(descriptor));
+              new XMLInputSource(descriptor));
 
       TypePriorityList[] priLists = pri.getPriorityLists();
       assertEquals(1, priLists.length);
@@ -116,12 +116,12 @@ public class TypePriorities_implTest extends TestCase {
       }
       assertNotNull(ex);
       assertEquals(1, pri.getPriorityLists().length); // should be no side effects when exception is
-                                                      // thrown
+      // thrown
 
       // set data path correctly and it should work
       ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
       resMgr.setDataPath(JUnitExtension.getFile("TypePrioritiesImplTest/dataPathDir")
-                      .getAbsolutePath());
+              .getAbsolutePath());
       pri.resolveImports(resMgr);
 
       priLists = pri.getPriorityLists();
@@ -150,7 +150,7 @@ public class TypePriorities_implTest extends TestCase {
     try {
       File descriptor = JUnitExtension.getFile("TypePrioritiesImplTest/TestTypePriorities.xml");
       TypePriorities pri = UIMAFramework.getXMLParser().parseTypePriorities(
-                      new XMLInputSource(descriptor));
+              new XMLInputSource(descriptor));
 
       TypePriorities clone = (TypePriorities) pri.clone();
 

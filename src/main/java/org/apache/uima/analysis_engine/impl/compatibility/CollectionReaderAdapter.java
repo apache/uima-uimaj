@@ -61,7 +61,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
    *          metadata for the annotator. Needed to compute ResultSpecification.
    */
   public CollectionReaderAdapter(CollectionReader aCollectionReader,
-                  AnalysisEngineMetaData aMetaData) {
+          AnalysisEngineMetaData aMetaData) {
     mCollectionReader = aCollectionReader;
     mSofaAware = aMetaData.isSofaAware();
   }
@@ -205,8 +205,8 @@ public class CollectionReaderAdapter implements AnalysisComponent {
   public void next(AbstractCas aEmptyCas) throws AnalysisEngineProcessException {
     if (!CAS.class.isAssignableFrom(aEmptyCas.getClass())) {
       throw new AnalysisEngineProcessException(
-                      AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] {
-                          CAS.class, aEmptyCas.getClass() });
+              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { CAS.class,
+                  aEmptyCas.getClass() });
     }
 
   }

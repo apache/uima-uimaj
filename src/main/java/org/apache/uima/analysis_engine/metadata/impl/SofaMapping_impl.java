@@ -39,7 +39,7 @@ public class SofaMapping_impl extends MetaDataObject_impl implements SofaMapping
   private String mComponentSofaName;
 
   private String mAggregateSofaName;
-  
+
   /*
    * (non-Javadoc)
    * 
@@ -99,7 +99,6 @@ public class SofaMapping_impl extends MetaDataObject_impl implements SofaMapping
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("sofaMapping",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("componentKey"),
-                      new PropertyXmlInfo("componentSofaName"),
-                      new PropertyXmlInfo("aggregateSofaName") });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("componentKey"),
+              new PropertyXmlInfo("componentSofaName"), new PropertyXmlInfo("aggregateSofaName") });
 }

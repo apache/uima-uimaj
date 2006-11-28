@@ -85,5 +85,5 @@ public interface InstrumentationFacility {
    * @return the new event
    */
   public void addEvent(String aResourceName, String aType, String aDescription, int aDuration,
-                  String aResultMsg);
+          String aResultMsg);
 }

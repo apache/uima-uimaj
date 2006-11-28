@@ -121,7 +121,7 @@ public class CharArraySpanMap {
   }
 
   private final int isInList(final char[] inputArray, final int start, final int strLen,
-                  ArrayList entryList) {
+          ArrayList entryList) {
     final int listLen = entryList.size();
     Entry entry;
     boolean found = false;

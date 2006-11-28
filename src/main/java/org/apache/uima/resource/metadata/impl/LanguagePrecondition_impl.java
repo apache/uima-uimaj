@@ -35,7 +35,7 @@ import org.apache.uima.resource.metadata.LanguagePrecondition;
  * 
  */
 public class LanguagePrecondition_impl extends SimplePrecondition_impl implements
-                LanguagePrecondition {
+        LanguagePrecondition {
 
   private static final long serialVersionUID = -5526826405334750929L;
 
@@ -68,7 +68,7 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl implement
     // value must be a string array
     if (!(aValue instanceof String[])) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-                      new Object[] { aValue, "aValue", "setComparisonValue" });
+              new Object[] { aValue, "aValue", "setComparisonValue" });
     }
     super.setComparisonValue(aValue);
   }
@@ -78,8 +78,8 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl implement
    */
   public void setFeatureName(String aFeatureName) {
     throw new UIMA_UnsupportedOperationException(
-                    UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
-                        this.getClass().getName(), "setFeatureName" });
+            UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
+                this.getClass().getName(), "setFeatureName" });
   }
 
   /**
@@ -87,8 +87,8 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl implement
    */
   public void setFsIndexName(String aIndexName) {
     throw new UIMA_UnsupportedOperationException(
-                    UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
-                        this.getClass().getName(), "setFsIndexName" });
+            UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
+                this.getClass().getName(), "setFsIndexName" });
   }
 
   /**
@@ -96,8 +96,8 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl implement
    */
   public void setFsMatchConstraint(FSMatchConstraint aConstraint) {
     throw new UIMA_UnsupportedOperationException(
-                    UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
-                        this.getClass().getName(), "setFsMatchConstraint" });
+            UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
+                this.getClass().getName(), "setFsMatchConstraint" });
   }
 
   /**
@@ -105,8 +105,8 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl implement
    */
   public void setPredicate(String aPredicate) {
     throw new UIMA_UnsupportedOperationException(
-                    UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
-                        this.getClass().getName(), "setPredicate" });
+            UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
+                this.getClass().getName(), "setPredicate" });
   }
 
   public boolean equals(Object aObject) {

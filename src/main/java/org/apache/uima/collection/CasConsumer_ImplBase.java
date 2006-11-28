@@ -41,7 +41,7 @@ import org.apache.uima.util.ProcessTrace;
  * 
  */
 public abstract class CasConsumer_ImplBase extends ConfigurableResource_ImplBase implements
-                CasConsumer {
+        CasConsumer {
   /**
    * Called by the framework to initialize this CAS Consumer. Subclasses should NOT override this
    * method; instead they should override the zero-argument {@link #initialize()} method and access
@@ -53,7 +53,7 @@ public abstract class CasConsumer_ImplBase extends ConfigurableResource_ImplBase
    *      java.util.Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     // aSpecifier must be a CasConsumerDescription
     if (aSpecifier instanceof ResourceCreationSpecifier) {
       // do framework intitialiation
@@ -74,21 +74,21 @@ public abstract class CasConsumer_ImplBase extends ConfigurableResource_ImplBase
    *           if a failure occurs during initialization.
    */
   public void initialize() throws ResourceInitializationException {
-    //no default behavior
+    // no default behavior
   }
 
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
   public void destroy() {
-    //no default behavior
+    // no default behavior
   }
 
   /**
    * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#typeSystemInit(org.apache.uima.cas.TypeSystem)
    */
   public void typeSystemInit(TypeSystem arg0) throws ResourceInitializationException {
-    //no default behavior
+    // no default behavior
   }
 
   /**
@@ -128,15 +128,15 @@ public abstract class CasConsumer_ImplBase extends ConfigurableResource_ImplBase
    * @see org.apache.uima.collection.base_cpm.CasProcessor#batchProcessComplete(org.apache.uima.util.ProcessTrace)
    */
   public void batchProcessComplete(ProcessTrace arg0) throws ResourceProcessException, IOException {
-    //no default behavior
+    // no default behavior
   }
 
   /**
    * @see org.apache.uima.collection.base_cpm.CasProcessor#collectionProcessComplete(org.apache.uima.util.ProcessTrace)
    */
   public void collectionProcessComplete(ProcessTrace arg0) throws ResourceProcessException,
-                  IOException {
-    //no default behavior
+          IOException {
+    // no default behavior
   }
 
   /**

@@ -91,7 +91,7 @@ public class AbstractType extends TOP {
     if (AbstractType_Type.featOkTst && ((AbstractType_Type) jcasType).casFeat_abstractInt == null)
       JCas.throwFeatMissing("abstractInt", "aa.AbstractType");
     return jcasType.ll_cas.ll_getIntValue(addr,
-                    ((AbstractType_Type) jcasType).casFeatCode_abstractInt);
+            ((AbstractType_Type) jcasType).casFeatCode_abstractInt);
   }
 
   /**

@@ -35,7 +35,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineManagement;
  * 
  */
 public class AnalysisEngineManagementImpl implements AnalysisEngineManagementImplMBean,
-                AnalysisEngineManagement {
+        AnalysisEngineManagement {
 
   private static final long serialVersionUID = 1988620286191379887L;
 
@@ -46,7 +46,7 @@ public class AnalysisEngineManagementImpl implements AnalysisEngineManagementImp
    * (those representing top-level AEs and CPEs).
    */
   private static Set usedRootNames = new HashSet();
-  
+
   private String name;
 
   private long numProcessed;
@@ -214,7 +214,7 @@ public class AnalysisEngineManagementImpl implements AnalysisEngineManagementImp
     // compute the unique name
     // first get the rootMBean and assign it a unique name if it doesn't already have one)
     AnalysisEngineManagementImpl rootMBean = (AnalysisEngineManagementImpl) aContext
-                    .getRootContext().getManagementInterface();
+            .getRootContext().getManagementInterface();
     if (rootMBean.getUniqueMBeanName() == null) {
       // try to find a unique name for the root MBean
       String baseRootName = rootMBean.getName();
@@ -251,7 +251,7 @@ public class AnalysisEngineManagementImpl implements AnalysisEngineManagementImp
       return prefix + "name=" + contextName.substring(0, contextName.length() - 1);
     } else {
       String newPrefix = prefix + "p" + depth + "=" + contextName.substring(0, firstSlash)
-                      + " Components,";
+              + " Components,";
       return makeMBeanName(newPrefix, contextName.substring(firstSlash + 1), depth + 1);
     }
   }

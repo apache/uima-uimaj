@@ -79,7 +79,7 @@ public interface AnnotatorContext {
    *           if an internal failure has occurred in the <code>AnnotatorContext</code>.
    */
   public Object getConfigParameterValue(String aGroupName, String aParamName)
-                  throws AnnotatorContextException;
+          throws AnnotatorContextException;
 
   /**
    * Gets the names of all configuration parameter groups.
@@ -249,7 +249,7 @@ public interface AnnotatorContext {
    * @see org.apache.uima.UimaContext#getResourceAsStream(String,String[])
    */
   public InputStream getResourceAsStream(String aKey, String[] aParams)
-                  throws AnnotatorContextException;
+          throws AnnotatorContextException;
 
   /**
    * Retrieves the named resource object. This can be used to acquire references to external

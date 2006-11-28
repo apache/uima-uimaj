@@ -289,6 +289,6 @@ public interface ResourceManagerConfiguration extends MetaDataObject {
    *           if either the import target does not exist or is invalid
    */
   public void resolveImports(Collection aAlreadyImportedURLs, ResourceManager aResourceManager)
-                  throws InvalidXMLException;
+          throws InvalidXMLException;
 
 }

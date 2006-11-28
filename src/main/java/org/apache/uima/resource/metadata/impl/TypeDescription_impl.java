@@ -123,7 +123,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
   public void setFeatures(FeatureDescription[] aFeatures) {
     if (aFeatures == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-                      new Object[] { "null", "aFeatures", "setFeatures" });
+              new Object[] { "null", "aFeatures", "setFeatures" });
     }
     mFeatures = aFeatures;
   }
@@ -146,7 +146,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
    * @see org.apache.uima.cas.TypeDescription#addFeature(String, String, String)
    */
   public FeatureDescription addFeature(String aFeatureName, String aDescription,
-                  String aRangeTypeName) {
+          String aRangeTypeName) {
     return addFeature(aFeatureName, aDescription, aRangeTypeName, null, null);
   }
 
@@ -157,10 +157,10 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
    *      java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean)
    */
   public FeatureDescription addFeature(String aFeatureName, String aDescription,
-                  String aRangeTypeName, String aElementTypeName, Boolean aMultipleReferencesAllowed) {
+          String aRangeTypeName, String aElementTypeName, Boolean aMultipleReferencesAllowed) {
     // create new feature description
     FeatureDescription newFeature = new FeatureDescription_impl(aFeatureName, aDescription,
-                    aRangeTypeName, aElementTypeName, aMultipleReferencesAllowed);
+            aRangeTypeName, aElementTypeName, aMultipleReferencesAllowed);
 
     // add to array
     FeatureDescription[] features = getFeatures();
@@ -181,8 +181,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("typeDescription",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
-                      new PropertyXmlInfo("description", false),
-                      new PropertyXmlInfo("supertypeName"), new PropertyXmlInfo("features"),
-                      new PropertyXmlInfo("allowedValues") });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
+              new PropertyXmlInfo("description", false), new PropertyXmlInfo("supertypeName"),
+              new PropertyXmlInfo("features"), new PropertyXmlInfo("allowedValues") });
 }

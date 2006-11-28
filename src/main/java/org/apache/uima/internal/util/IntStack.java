@@ -19,7 +19,6 @@
 
 package org.apache.uima.internal.util;
 
-
 /**
  * A stack of integers. Follows {@link java.util.Stack Stack} pretty closely, except that push()
  * returns the position of the added element in the stack. Inherits from IntVector, so those methods

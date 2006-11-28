@@ -58,8 +58,8 @@ public abstract class JCasMultiplier_ImplBase extends AnalysisComponent_ImplBase
       process((JCas) aCAS);
     } else {
       throw new AnalysisEngineProcessException(
-                      AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] {
-                          JCas.class, aCAS.getClass() });
+              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { JCas.class,
+                  aCAS.getClass() });
     }
   }
 

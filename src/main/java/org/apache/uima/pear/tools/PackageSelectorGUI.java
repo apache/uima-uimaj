@@ -132,9 +132,9 @@ public class PackageSelectorGUI implements InstallationController.PackageSelecto
     fileChooser.setDialogTitle("Select " + componentId + " root directory");
     // show information dialog
     String message = "Select the root directory of installed\n" + "\n" + componentId + "\n"
-                    + "\ncomponent using the following file dialog,\n"
-                    + "or press 'Cancel' in the file dialog, if this\n"
-                    + "component is not installed in your file system.";
+            + "\ncomponent using the following file dialog,\n"
+            + "or press 'Cancel' in the file dialog, if this\n"
+            + "component is not installed in your file system.";
     JOptionPane.showMessageDialog(_dialogFrame, message);
     // open dialog window
     File selectedDir = null;
@@ -173,7 +173,7 @@ public class PackageSelectorGUI implements InstallationController.PackageSelecto
     fileChooser.setDialogTitle("Select " + componentId + " PEAR file");
     // show information dialog
     String message = "Select the PEAR file of the\n" + "\n" + componentId + "\n"
-                    + "\ncomponent using the following file dialog.";
+            + "\ncomponent using the following file dialog.";
     JOptionPane.showMessageDialog(_dialogFrame, message);
     // open dialog window
     File selectedFile = null;

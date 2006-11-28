@@ -48,7 +48,7 @@ public class AnalysisEnginePerformanceReports {
   private int mTotalTime = 0;
 
   private NumberFormat pctFormat;
-  
+
   public AnalysisEnginePerformanceReports(ProcessTrace aProcessTrace) {
     mProcessTrace = aProcessTrace;
 
@@ -60,7 +60,7 @@ public class AnalysisEnginePerformanceReports {
     while (it.hasNext()) {
       ProcessTraceEvent evt = (ProcessTraceEvent) it.next();
       if (ProcessTraceEvent.ANALYSIS_ENGINE.equals(evt.getType())
-                      || ProcessTraceEvent.SERVICE_CALL.equals(evt.getType())) {
+              || ProcessTraceEvent.SERVICE_CALL.equals(evt.getType())) {
         mTotalTime += evt.getDuration();
       }
       addEventData(evt);
@@ -152,15 +152,15 @@ public class AnalysisEnginePerformanceReports {
     }
     if (frameworkOver > 0) {
       buf.append("Framework Overhead: " + frameworkOver + "ms (" + toPct(frameworkOver, total)
-                      + ")\n");
+              + ")\n");
     } else {
       buf.append("Framework Overhead: <10ms\n");
     }
     if (serviceCallOver > 0) {
       buf.append("Service Wrapper Overhead: " + serviceWrapperOver + "ms ("
-                      + toPct(serviceWrapperOver, total) + ")\n");
+              + toPct(serviceWrapperOver, total) + ")\n");
       buf.append("Service Call Overhead: " + serviceCallOver + "ms ("
-                      + toPct(serviceCallOver, total) + ")\n");
+              + toPct(serviceCallOver, total) + ")\n");
     }
 
     return buf.toString();

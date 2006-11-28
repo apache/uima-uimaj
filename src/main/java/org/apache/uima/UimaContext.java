@@ -252,7 +252,7 @@ public interface UimaContext {
    *           if a failure occurs in accessing the resource
    */
   public InputStream getResourceAsStream(String aKey, String[] aParams)
-                  throws ResourceAccessException;
+          throws ResourceAccessException;
 
   /**
    * Retrieves the named resource object. This can be used to acquire references to external

@@ -95,7 +95,7 @@ public class Root extends TOP {
     if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayInt == null)
       JCas.throwFeatMissing("arrayInt", "aa.Root");
     return (IntegerArray) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Root_Type) jcasType).casFeatCode_arrayInt)));
+            ((Root_Type) jcasType).casFeatCode_arrayInt)));
   }
 
   /**
@@ -107,7 +107,7 @@ public class Root extends TOP {
     if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayInt == null)
       JCas.throwFeatMissing("arrayInt", "aa.Root");
     jcasType.ll_cas.ll_setRefValue(addr, ((Root_Type) jcasType).casFeatCode_arrayInt,
-                    jcasType.ll_cas.ll_getFSRef(v));
+            jcasType.ll_cas.ll_getFSRef(v));
   }
 
   /**
@@ -119,9 +119,9 @@ public class Root extends TOP {
     if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayInt == null)
       JCas.throwFeatMissing("arrayInt", "aa.Root");
     jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Root_Type) jcasType).casFeatCode_arrayInt), i);
+            ((Root_Type) jcasType).casFeatCode_arrayInt), i);
     return jcasType.ll_cas.ll_getIntArrayValue(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Root_Type) jcasType).casFeatCode_arrayInt), i);
+            ((Root_Type) jcasType).casFeatCode_arrayInt), i);
   }
 
   /**
@@ -133,9 +133,9 @@ public class Root extends TOP {
     if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayInt == null)
       JCas.throwFeatMissing("arrayInt", "aa.Root");
     jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Root_Type) jcasType).casFeatCode_arrayInt), i);
+            ((Root_Type) jcasType).casFeatCode_arrayInt), i);
     jcasType.ll_cas.ll_setIntArrayValue(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Root_Type) jcasType).casFeatCode_arrayInt), i, v);
+            ((Root_Type) jcasType).casFeatCode_arrayInt), i, v);
   }
 
   // *--------------*
@@ -150,7 +150,7 @@ public class Root extends TOP {
     if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayRef == null)
       JCas.throwFeatMissing("arrayRef", "aa.Root");
     return (FSArray) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Root_Type) jcasType).casFeatCode_arrayRef)));
+            ((Root_Type) jcasType).casFeatCode_arrayRef)));
   }
 
   /**
@@ -162,7 +162,7 @@ public class Root extends TOP {
     if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayRef == null)
       JCas.throwFeatMissing("arrayRef", "aa.Root");
     jcasType.ll_cas.ll_setRefValue(addr, ((Root_Type) jcasType).casFeatCode_arrayRef,
-                    jcasType.ll_cas.ll_getFSRef(v));
+            jcasType.ll_cas.ll_getFSRef(v));
   }
 
   /**
@@ -174,10 +174,9 @@ public class Root extends TOP {
     if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayRef == null)
       JCas.throwFeatMissing("arrayRef", "aa.Root");
     jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Root_Type) jcasType).casFeatCode_arrayRef), i);
+            ((Root_Type) jcasType).casFeatCode_arrayRef), i);
     return (TOP) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefArrayValue(
-                    jcasType.ll_cas.ll_getRefValue(addr,
-                                    ((Root_Type) jcasType).casFeatCode_arrayRef), i)));
+            jcasType.ll_cas.ll_getRefValue(addr, ((Root_Type) jcasType).casFeatCode_arrayRef), i)));
   }
 
   /**
@@ -189,11 +188,9 @@ public class Root extends TOP {
     if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayRef == null)
       JCas.throwFeatMissing("arrayRef", "aa.Root");
     jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Root_Type) jcasType).casFeatCode_arrayRef), i);
-    jcasType.ll_cas
-                    .ll_setRefArrayValue(jcasType.ll_cas.ll_getRefValue(addr,
-                                    ((Root_Type) jcasType).casFeatCode_arrayRef), i,
-                                    jcasType.ll_cas.ll_getFSRef(v));
+            ((Root_Type) jcasType).casFeatCode_arrayRef), i);
+    jcasType.ll_cas.ll_setRefArrayValue(jcasType.ll_cas.ll_getRefValue(addr,
+            ((Root_Type) jcasType).casFeatCode_arrayRef), i, jcasType.ll_cas.ll_getFSRef(v));
   }
 
   // *--------------*
@@ -208,7 +205,7 @@ public class Root extends TOP {
     if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayFloat == null)
       JCas.throwFeatMissing("arrayFloat", "aa.Root");
     return (FloatArray) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Root_Type) jcasType).casFeatCode_arrayFloat)));
+            ((Root_Type) jcasType).casFeatCode_arrayFloat)));
   }
 
   /**
@@ -220,7 +217,7 @@ public class Root extends TOP {
     if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayFloat == null)
       JCas.throwFeatMissing("arrayFloat", "aa.Root");
     jcasType.ll_cas.ll_setRefValue(addr, ((Root_Type) jcasType).casFeatCode_arrayFloat,
-                    jcasType.ll_cas.ll_getFSRef(v));
+            jcasType.ll_cas.ll_getFSRef(v));
   }
 
   /**
@@ -232,9 +229,9 @@ public class Root extends TOP {
     if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayFloat == null)
       JCas.throwFeatMissing("arrayFloat", "aa.Root");
     jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Root_Type) jcasType).casFeatCode_arrayFloat), i);
+            ((Root_Type) jcasType).casFeatCode_arrayFloat), i);
     return jcasType.ll_cas.ll_getFloatArrayValue(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Root_Type) jcasType).casFeatCode_arrayFloat), i);
+            ((Root_Type) jcasType).casFeatCode_arrayFloat), i);
   }
 
   /**
@@ -246,9 +243,9 @@ public class Root extends TOP {
     if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayFloat == null)
       JCas.throwFeatMissing("arrayFloat", "aa.Root");
     jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Root_Type) jcasType).casFeatCode_arrayFloat), i);
+            ((Root_Type) jcasType).casFeatCode_arrayFloat), i);
     jcasType.ll_cas.ll_setFloatArrayValue(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Root_Type) jcasType).casFeatCode_arrayFloat), i, v);
+            ((Root_Type) jcasType).casFeatCode_arrayFloat), i, v);
   }
 
   // *--------------*
@@ -263,7 +260,7 @@ public class Root extends TOP {
     if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayString == null)
       JCas.throwFeatMissing("arrayString", "aa.Root");
     return (StringArray) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Root_Type) jcasType).casFeatCode_arrayString)));
+            ((Root_Type) jcasType).casFeatCode_arrayString)));
   }
 
   /**
@@ -275,7 +272,7 @@ public class Root extends TOP {
     if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayString == null)
       JCas.throwFeatMissing("arrayString", "aa.Root");
     jcasType.ll_cas.ll_setRefValue(addr, ((Root_Type) jcasType).casFeatCode_arrayString,
-                    jcasType.ll_cas.ll_getFSRef(v));
+            jcasType.ll_cas.ll_getFSRef(v));
   }
 
   /**
@@ -287,9 +284,9 @@ public class Root extends TOP {
     if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayString == null)
       JCas.throwFeatMissing("arrayString", "aa.Root");
     jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Root_Type) jcasType).casFeatCode_arrayString), i);
+            ((Root_Type) jcasType).casFeatCode_arrayString), i);
     return jcasType.ll_cas.ll_getStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Root_Type) jcasType).casFeatCode_arrayString), i);
+            ((Root_Type) jcasType).casFeatCode_arrayString), i);
   }
 
   /**
@@ -301,9 +298,9 @@ public class Root extends TOP {
     if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayString == null)
       JCas.throwFeatMissing("arrayString", "aa.Root");
     jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Root_Type) jcasType).casFeatCode_arrayString), i);
+            ((Root_Type) jcasType).casFeatCode_arrayString), i);
     jcasType.ll_cas.ll_setStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Root_Type) jcasType).casFeatCode_arrayString), i, v);
+            ((Root_Type) jcasType).casFeatCode_arrayString), i, v);
   }
 
   // *--------------*
@@ -393,7 +390,7 @@ public class Root extends TOP {
     if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_plainRef == null)
       JCas.throwFeatMissing("plainRef", "aa.Root");
     return (Root) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Root_Type) jcasType).casFeatCode_plainRef)));
+            ((Root_Type) jcasType).casFeatCode_plainRef)));
   }
 
   /**
@@ -405,7 +402,7 @@ public class Root extends TOP {
     if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_plainRef == null)
       JCas.throwFeatMissing("plainRef", "aa.Root");
     jcasType.ll_cas.ll_setRefValue(addr, ((Root_Type) jcasType).casFeatCode_plainRef,
-                    jcasType.ll_cas.ll_getFSRef(v));
+            jcasType.ll_cas.ll_getFSRef(v));
   }
 
   // *--------------*
@@ -420,7 +417,7 @@ public class Root extends TOP {
     if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_concreteString == null)
       JCas.throwFeatMissing("concreteString", "aa.Root");
     return jcasType.ll_cas.ll_getStringValue(addr,
-                    ((Root_Type) jcasType).casFeatCode_concreteString);
+            ((Root_Type) jcasType).casFeatCode_concreteString);
   }
 
   /**

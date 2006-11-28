@@ -142,7 +142,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
     if (mClassLoader != null) {
       absURL = mClassLoader.getResource(f);
     } else // if no ClassLoader specified (could be the bootstrap classloader), try the system
-            // classloader
+    // classloader
     {
       absURL = ClassLoader.getSystemClassLoader().getResource(f);
     }

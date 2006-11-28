@@ -87,7 +87,7 @@ public class ResourceServiceException extends UIMAException {
    *          arguments.
    */
   public ResourceServiceException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments) {
+          Object[] aArguments) {
     super(aResourceBundleName, aMessageKey, aArguments);
   }
 
@@ -108,7 +108,7 @@ public class ResourceServiceException extends UIMAException {
    *          the original exception that caused this exception to be thrown, if any
    */
   public ResourceServiceException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments, Throwable aCause) {
+          Object[] aArguments, Throwable aCause) {
     super(aResourceBundleName, aMessageKey, aArguments, aCause);
   }
 

@@ -114,7 +114,7 @@ public final class LongArray extends TOP implements LongArrayFS {
     jcasType.casImpl.checkArrayBounds(addr, srcOffset, length);
     for (int i = 0; i < length; i++) {
       dest[i + destOffset] = Long.toString(jcasType.ll_cas
-                      .ll_getLongArrayValue(addr, i + srcOffset));
+              .ll_getLongArrayValue(addr, i + srcOffset));
     }
   }
 
@@ -125,8 +125,7 @@ public final class LongArray extends TOP implements LongArrayFS {
     jcasType.casImpl.checkArrayBounds(addr, destOffset, length);
     for (int i = 0; i < length; i++) {
       jcasType.ll_cas
-                      .ll_setLongArrayValue(addr, i + destOffset, Long
-                                      .parseLong(src[i + srcOffset]));
+              .ll_setLongArrayValue(addr, i + destOffset, Long.parseLong(src[i + srcOffset]));
     }
   }
 

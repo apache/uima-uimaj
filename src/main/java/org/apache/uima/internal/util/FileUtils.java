@@ -147,7 +147,7 @@ public class FileUtils {
     char[] buf = new char[10000];
     int charsRead;
     BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file),
-                    fileEncoding));
+            fileEncoding));
     StringBuffer strbuf = new StringBuffer();
     while ((charsRead = reader.read(buf)) >= 0) {
       strbuf.append(buf, 0, charsRead);
@@ -187,7 +187,7 @@ public class FileUtils {
    */
   public static void saveString2File(String s, File file, String encoding) throws IOException {
     BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file),
-                    encoding));
+            encoding));
     writer.write(s);
     writer.close();
   }
@@ -279,7 +279,7 @@ public class FileUtils {
   }
 
   public static final File createTempFile(String prefix, String suffix, File tempDir)
-                  throws IOException {
+          throws IOException {
     File file = File.createTempFile(prefix, suffix, tempDir);
     file.deleteOnExit();
     return file;
@@ -310,7 +310,7 @@ public class FileUtils {
     }
     if (!dir.exists() || !dir.isDirectory()) {
       throw new IOException("Destination does not exist or is not a directory: "
-                      + dir.getAbsolutePath());
+              + dir.getAbsolutePath());
     }
     File outFile = new File(dir, file.getName());
     if (outFile.exists() && !outFile.canWrite()) {

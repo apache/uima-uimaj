@@ -59,7 +59,7 @@ public class UimacppEngine {
         createResourceManager();
       } else {
         throw new UIMARuntimeException(UIMARuntimeException.INCOMPATIBLE_TAF_JNI_LIBRARY,
-                        new Object[] { jniVersion });
+                new Object[] { jniVersion });
       }
 
     } catch (UimacppException exc) {
@@ -84,7 +84,7 @@ public class UimacppEngine {
 
   // configuration of the TAF resource manager
   private static native void configureResourceManagerJNI(String workDir, String dataDir)
-                  throws InternalTafException;
+          throws InternalTafException;
 
   // constructor
   private native void constructorJNI() throws InternalTafException;
@@ -96,11 +96,11 @@ public class UimacppEngine {
   private native void initializeJNI(String configFile) throws InternalTafException;
 
   private native void typeSystemInitJNI(String[] typeNames, String[] featureNames,
-                  int[] typeInheritance, int[] featDecls, int topTypeCode, int[] featureOffsets,
-                  int[] typeOrder, int[] stringSubTypes, String[] stringSubTypeValues,
-                  int[] stringSubTypeValuePos, String[] indexNames, int[] nameToIndexMap,
-                  int[] indexingStrategy, int[] comparatorIndex, int[] comparators)
-                  throws InternalTafException;
+          int[] typeInheritance, int[] featDecls, int topTypeCode, int[] featureOffsets,
+          int[] typeOrder, int[] stringSubTypes, String[] stringSubTypeValues,
+          int[] stringSubTypeValuePos, String[] indexNames, int[] nameToIndexMap,
+          int[] indexingStrategy, int[] comparatorIndex, int[] comparators)
+          throws InternalTafException;
 
   private native void destroyJNI() throws InternalTafException;
 
@@ -110,10 +110,10 @@ public class UimacppEngine {
    * private native void fillCASJNI(int[] heapArray, int[] fsIndex, String[] stringTable);
    */
   private native void fillCASJNI(int[] heapArray, int[] fsIndex, String[] stringTable,
-                  byte[] byteArray, short[] shortArray, long[] longArray);
+          byte[] byteArray, short[] shortArray, long[] longArray);
 
   private native void processJNI(int isTCas, String sofaName, int[] resultSpecTypes,
-                  int[] resultSpecFeatures) throws InternalTafException;
+          int[] resultSpecFeatures) throws InternalTafException;
 
   // set the parameter to true if you want per document data to be serialized
   // false only for type system and index definitions serialization
@@ -138,38 +138,37 @@ public class UimacppEngine {
 
   /*
    * serialized CAS data components - supported args to getSerializedDataJNI and
-   * getSegmentSerializedDataJNI.  Many of these are unread and have been commented
-   * out but left here for documentation purposes.
+   * getSegmentSerializedDataJNI. Many of these are unread and have been commented out but left here
+   * for documentation purposes.
    */
-//  private static final int TYPE_INH = 0;
-//
-//  private static final int FEATURE_DEF = 1;
-//
-//  private static final int FEATURE_OFFSET = 2;
-//
-//  private static final int TYPE_SYMBOLS = 3;
-//
-//  private static final int FEATURE_SYMBOLS = 4;
-//
-//  private static final int TOPTYPE = 5;
-//
-//  private static final int TYPE_PRIORITIES = 6;
-
+  // private static final int TYPE_INH = 0;
+  //
+  // private static final int FEATURE_DEF = 1;
+  //
+  // private static final int FEATURE_OFFSET = 2;
+  //
+  // private static final int TYPE_SYMBOLS = 3;
+  //
+  // private static final int FEATURE_SYMBOLS = 4;
+  //
+  // private static final int TOPTYPE = 5;
+  //
+  // private static final int TYPE_PRIORITIES = 6;
   private static final int FSHEAP = 10;
 
   private static final int STRINGSYMBOL = 11;
 
-//  private static final int DOCUMENT = 20;
+  // private static final int DOCUMENT = 20;
 
   private static final int INDEXEDFSS = 30;
 
-//  private static final int INDEXID = 40;
-//
-//  private static final int INDEXKIND = 41;
-//
-//  private static final int COMPARATORDEF = 42;
-//
-//  private static final int COMPARATORSTART = 43;
+  // private static final int INDEXID = 40;
+  //
+  // private static final int INDEXKIND = 41;
+  //
+  // private static final int COMPARATORDEF = 42;
+  //
+  // private static final int COMPARATORSTART = 43;
 
   private static final int BYTEHEAP = 12;
 
@@ -197,7 +196,7 @@ public class UimacppEngine {
    * Configure the TAF Resource Manager.
    */
   public static void configureResourceManager(String workDirectory, String dataDirectory)
-                  throws UimacppException {
+          throws UimacppException {
     try {
       configureResourceManagerJNI(workDirectory, dataDirectory);
     } catch (Exception exc) {
@@ -276,13 +275,13 @@ public class UimacppEngine {
 
     try {
       typeSystemInitJNI(casMgrSerializer.typeNames, casMgrSerializer.featureNames,
-                      casMgrSerializer.typeInheritance, casMgrSerializer.featDecls,
-                      casMgrSerializer.topTypeCode, casMgrSerializer.featureOffsets,
-                      casMgrSerializer.typeOrder, casMgrSerializer.stringSubtypes,
-                      casMgrSerializer.stringSubtypeValues, casMgrSerializer.stringSubtypeValuePos,
-                      casMgrSerializer.indexNames, casMgrSerializer.nameToIndexMap,
-                      casMgrSerializer.indexingStrategy, casMgrSerializer.comparatorIndex,
-                      casMgrSerializer.comparators);
+              casMgrSerializer.typeInheritance, casMgrSerializer.featDecls,
+              casMgrSerializer.topTypeCode, casMgrSerializer.featureOffsets,
+              casMgrSerializer.typeOrder, casMgrSerializer.stringSubtypes,
+              casMgrSerializer.stringSubtypeValues, casMgrSerializer.stringSubtypeValuePos,
+              casMgrSerializer.indexNames, casMgrSerializer.nameToIndexMap,
+              casMgrSerializer.indexingStrategy, casMgrSerializer.comparatorIndex,
+              casMgrSerializer.comparators);
     } catch (Exception exc) {
       throwJTafException(exc);
     }
@@ -300,7 +299,7 @@ public class UimacppEngine {
   }
 
   private static void serializeResultSpecification(ResultSpecification rs, CASImpl cas,
-                  IntVector resultSpecTypes, IntVector resultSpecFeatures) {
+          IntVector resultSpecTypes, IntVector resultSpecFeatures) {
     TypeOrFeature[] tofs = rs.getResultTypesAndFeatures();
     TypeSystemImpl tsImpl = cas.getTypeSystemImpl();
     for (int i = 0; i < tofs.length; ++i) {
@@ -348,8 +347,8 @@ public class UimacppEngine {
          */
 
         fillCASJNI(casSerializerIn.heapArray, casSerializerIn.fsIndex, casSerializerIn.stringTable,
-                        casSerializerIn.byteHeapArray, casSerializerIn.shortHeapArray,
-                        casSerializerIn.longHeapArray);
+                casSerializerIn.byteHeapArray, casSerializerIn.shortHeapArray,
+                casSerializerIn.longHeapArray);
       }
 
       IntVector resultSpecTypes = new IntVector();

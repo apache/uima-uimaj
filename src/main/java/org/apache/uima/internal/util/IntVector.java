@@ -363,7 +363,7 @@ public class IntVector implements Serializable {
 
   public void ensure_size(int req) {
     this.array = IntArrayUtils.ensure_size(this.array, req, this.growth_factor,
-                    this.multiplication_limit);
+            this.multiplication_limit);
     if (this.pos < req) {
       this.pos = req;
     }

@@ -97,7 +97,7 @@ public class NameValuePair_impl extends MetaDataObject_impl implements NameValue
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("nameValuePair",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
-                      new PropertyXmlInfo("value", false), });
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+          "nameValuePair",
+          new PropertyXmlInfo[] { new PropertyXmlInfo("name"), new PropertyXmlInfo("value", false), });
 }

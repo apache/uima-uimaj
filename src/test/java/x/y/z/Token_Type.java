@@ -134,7 +134,7 @@ public class Token_Type extends Annotation_Type {
       JCas.throwFeatMissing("lemmaList", "x.y.z.Token");
     if (lowLevelTypeChecks)
       return ll_cas.ll_getStringArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_lemmaList), i,
-                      true);
+              true);
     jcas.checkArrayBounds(ll_cas.ll_getRefValue(addr, casFeatCode_lemmaList), i);
     return ll_cas.ll_getStringArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_lemmaList), i);
   }
@@ -161,22 +161,22 @@ public class Token_Type extends Annotation_Type {
 
     casFeat_ttype = jcas.getRequiredFeatureDE(casType, "ttype", "x.y.z.TokenType", featOkTst);
     casFeatCode_ttype = (null == casFeat_ttype) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_ttype).getCode();
+            : ((FeatureImpl) casFeat_ttype).getCode();
     casFeat_tokenFloatFeat = jcas.getRequiredFeatureDE(casType, "tokenFloatFeat", "uima.cas.Float",
-                    featOkTst);
+            featOkTst);
     casFeatCode_tokenFloatFeat = (null == casFeat_tokenFloatFeat) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_tokenFloatFeat).getCode();
+            : ((FeatureImpl) casFeat_tokenFloatFeat).getCode();
     casFeat_lemma = jcas.getRequiredFeatureDE(casType, "lemma", "uima.cas.String", featOkTst);
     casFeatCode_lemma = (null == casFeat_lemma) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_lemma).getCode();
+            : ((FeatureImpl) casFeat_lemma).getCode();
     casFeat_sentenceLength = jcas.getRequiredFeatureDE(casType, "sentenceLength",
-                    "uima.cas.Integer", featOkTst);
+            "uima.cas.Integer", featOkTst);
     casFeatCode_sentenceLength = (null == casFeat_sentenceLength) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_sentenceLength).getCode();
+            : ((FeatureImpl) casFeat_sentenceLength).getCode();
     casFeat_lemmaList = jcas.getRequiredFeatureDE(casType, "lemmaList", "uima.cas.StringArray",
-                    featOkTst);
+            featOkTst);
     casFeatCode_lemmaList = (null == casFeat_lemmaList) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_lemmaList).getCode();
+            : ((FeatureImpl) casFeat_lemmaList).getCode();
   }
 
   protected Token_Type() { // block default new operator

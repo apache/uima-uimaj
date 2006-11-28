@@ -104,7 +104,7 @@ public class CasDataToXCasTest extends TestCase {
      *      java.lang.String, org.xml.sax.Attributes)
      */
     public void startElement(String arg0, String arg1, String arg2, Attributes arg3)
-                    throws SAXException {
+            throws SAXException {
       this.inElement = arg1;
       this.buf = new StringBuffer();
 

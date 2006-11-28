@@ -138,7 +138,7 @@ public class ListUtils {
 
   public boolean isListType(int type) {
     return isIntListType(type) || isFloatListType(type) || isStringListType(type)
-                    || isFsListType(type);
+            || isFsListType(type);
   }
 
   public String[] intListToStringArray(int addr) throws SAXException {
@@ -166,7 +166,7 @@ public class ListUtils {
     }
     if (foundCycle) {
       reportWarning("Found a cycle in an IntegerList.  List truncated to "
-                      + Arrays.asList(array).toString());
+              + Arrays.asList(array).toString());
     }
     return array;
   }
@@ -192,12 +192,12 @@ public class ListUtils {
     curNode = addr;
     for (int i = 0; i < length; i++) {
       array[i] = Float.toString(CASImpl.int2float(cas.getHeapValue(curNode
-                      + cas.getFeatureOffset(floatHeadFeat))));
+              + cas.getFeatureOffset(floatHeadFeat))));
       curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(floatTailFeat));
     }
     if (foundCycle) {
       reportWarning("Found a cycle in a FloatList.  List truncated to "
-                      + Arrays.asList(array).toString() + ".");
+              + Arrays.asList(array).toString() + ".");
     }
     return array;
   }
@@ -223,18 +223,18 @@ public class ListUtils {
     curNode = addr;
     for (int i = 0; i < length; i++) {
       array[i] = cas.getStringForCode(cas.getHeapValue(curNode
-                      + cas.getFeatureOffset(stringHeadFeat)));
+              + cas.getFeatureOffset(stringHeadFeat)));
       curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(stringTailFeat));
     }
     if (foundCycle) {
       reportWarning("Found a cycle in a StringList.  List truncated to "
-                      + Arrays.asList(array).toString() + ".");
+              + Arrays.asList(array).toString() + ".");
     }
     return array;
   }
 
   public String[] fsListToXmiIdStringArray(int addr, XmiSerializationSharedData sharedData)
-                  throws SAXException {
+          throws SAXException {
     boolean foundCycle = false;
     IntRedBlackTree visited = new IntRedBlackTree();
     // first count length of list so we can allocate array
@@ -269,7 +269,7 @@ public class ListUtils {
     }
     if (foundCycle) {
       reportWarning("Found a cycle in an FSList.  List truncated to "
-                      + Arrays.asList(strArray).toString() + ".");
+              + Arrays.asList(strArray).toString() + ".");
     }
     return strArray;
   }

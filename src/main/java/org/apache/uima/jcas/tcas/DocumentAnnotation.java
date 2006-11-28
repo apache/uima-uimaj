@@ -59,10 +59,10 @@ public class DocumentAnnotation extends Annotation {
    */
   public String getLanguage() {
     if (DocumentAnnotation_Type.featOkTst
-                    && ((DocumentAnnotation_Type) jcasType).casFeat_language == null)
+            && ((DocumentAnnotation_Type) jcasType).casFeat_language == null)
       JCas.throwFeatMissing("language", "uima.tcas.DocumentAnnotation");
     return jcasType.ll_cas.ll_getStringValue(addr,
-                    ((DocumentAnnotation_Type) jcasType).casFeatCode_language);
+            ((DocumentAnnotation_Type) jcasType).casFeatCode_language);
   }
 
   /**
@@ -70,9 +70,9 @@ public class DocumentAnnotation extends Annotation {
    */
   public void setLanguage(String v) {
     if (DocumentAnnotation_Type.featOkTst
-                    && ((DocumentAnnotation_Type) jcasType).casFeat_language == null)
+            && ((DocumentAnnotation_Type) jcasType).casFeat_language == null)
       JCas.throwFeatMissing("language", "uima.tcas.DocumentAnnotation");
     jcasType.ll_cas.ll_setStringValue(addr,
-                    ((DocumentAnnotation_Type) jcasType).casFeatCode_language, v);
+            ((DocumentAnnotation_Type) jcasType).casFeatCode_language, v);
   }
 }

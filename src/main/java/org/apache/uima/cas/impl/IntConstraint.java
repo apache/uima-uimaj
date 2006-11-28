@@ -35,7 +35,7 @@ import org.apache.uima.cas.FeatureStructure;
 class IntConstraint extends PathConstraint implements FSMatchConstraint {
 
   private static final long serialVersionUID = 1661917047353431836L;
-  
+
   private FSIntConstraint intConstraint;
 
   private IntConstraint() {

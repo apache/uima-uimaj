@@ -53,7 +53,7 @@ import org.apache.uima.util.UimaTimer;
  * 
  */
 public abstract class AnalysisEngineServiceAdapter extends AnalysisEngineImplBase implements
-                TextAnalysisEngine, CasConsumer {
+        TextAnalysisEngine, CasConsumer {
 
   /**
    * current class
@@ -123,16 +123,14 @@ public abstract class AnalysisEngineServiceAdapter extends AnalysisEngineImplBas
     // logging and instrumentation
     mTimer.startIt();
     UIMAFramework.getLogger(CLASS_NAME).logrb(Level.FINE, CLASS_NAME.getName(), "process",
-                    LOG_RESOURCE_BUNDLE, "UIMA_analysis_engine_process_begin__FINE",
-                    getResourceName());
+            LOG_RESOURCE_BUNDLE, "UIMA_analysis_engine_process_begin__FINE", getResourceName());
     try {
       // invoke service
       getStub().callProcess(aCAS);
 
       // log end of event
       UIMAFramework.getLogger(CLASS_NAME).logrb(Level.FINE, CLASS_NAME.getName(), "process",
-                      LOG_RESOURCE_BUNDLE, "UIMA_analysis_engine_process_end__FINE",
-                      getResourceName());
+              LOG_RESOURCE_BUNDLE, "UIMA_analysis_engine_process_end__FINE", getResourceName());
 
       // we don't support CasMultiplier services yet, so this always returns
       // an empty iterator
@@ -153,8 +151,7 @@ public abstract class AnalysisEngineServiceAdapter extends AnalysisEngineImplBas
    */
   public void reconfigure() throws ResourceConfigurationException {
     throw new UIMA_UnsupportedOperationException(
-                    UIMA_UnsupportedOperationException.SHARED_RESOURCE_NOT_RECONFIGURABLE,
-                    new Object[] {});
+            UIMA_UnsupportedOperationException.SHARED_RESOURCE_NOT_RECONFIGURABLE, new Object[] {});
   }
 
   /**
@@ -163,7 +160,7 @@ public abstract class AnalysisEngineServiceAdapter extends AnalysisEngineImplBas
    */
   public Object getConfigParameterValue(String aGroupName, String aParamName) {
     return getMetaData().getConfigurationParameterSettings().getParameterValue(aGroupName,
-                    aParamName);
+            aParamName);
   }
 
   /**
@@ -179,8 +176,7 @@ public abstract class AnalysisEngineServiceAdapter extends AnalysisEngineImplBas
    */
   public void setConfigParameterValue(String aParamName, Object aValue) {
     throw new UIMA_UnsupportedOperationException(
-                    UIMA_UnsupportedOperationException.SHARED_RESOURCE_NOT_RECONFIGURABLE,
-                    new Object[] {});
+            UIMA_UnsupportedOperationException.SHARED_RESOURCE_NOT_RECONFIGURABLE, new Object[] {});
   }
 
   /**
@@ -189,8 +185,7 @@ public abstract class AnalysisEngineServiceAdapter extends AnalysisEngineImplBas
    */
   public void setConfigParameterValue(String aGroupName, String aParamName, Object aValue) {
     throw new UIMA_UnsupportedOperationException(
-                    UIMA_UnsupportedOperationException.SHARED_RESOURCE_NOT_RECONFIGURABLE,
-                    new Object[] {});
+            UIMA_UnsupportedOperationException.SHARED_RESOURCE_NOT_RECONFIGURABLE, new Object[] {});
   }
 
   public void batchProcessComplete() throws AnalysisEngineProcessException {

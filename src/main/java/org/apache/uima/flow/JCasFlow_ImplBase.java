@@ -49,13 +49,13 @@ public abstract class JCasFlow_ImplBase implements Flow {
    * @see Flow#newCasProduced(AbstractCas, String)
    */
   public final Flow newCasProduced(AbstractCas newCas, String producedBy)
-                  throws AnalysisEngineProcessException {
+          throws AnalysisEngineProcessException {
     if (newCas instanceof JCas) {
       return newCasProduced((JCas) newCas, producedBy);
     } else {
       throw new AnalysisEngineProcessException(
-                      AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] {
-                          JCas.class, newCas.getClass() });
+              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { JCas.class,
+                  newCas.getClass() });
     }
   }
 
@@ -73,10 +73,10 @@ public abstract class JCasFlow_ImplBase implements Flow {
    * @see Flow#newCasProduced(AbstractCas, String)
    */
   protected Flow newCasProduced(JCas newCas, String producedBy)
-                  throws AnalysisEngineProcessException {
+          throws AnalysisEngineProcessException {
     throw new UIMA_UnsupportedOperationException(
-                    UIMA_UnsupportedOperationException.CAS_MULTIPLIER_NOT_SUPPORTED,
-                    new Object[] { this.getClass().getName() });
+            UIMA_UnsupportedOperationException.CAS_MULTIPLIER_NOT_SUPPORTED, new Object[] { this
+                    .getClass().getName() });
   }
 
   /**

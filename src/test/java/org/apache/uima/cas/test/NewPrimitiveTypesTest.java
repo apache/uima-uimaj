@@ -134,31 +134,31 @@ public class NewPrimitiveTypesTest extends TestCase {
 
       floatFeature = tsa.addFeature("floatFeature", exampleType, tsa.getType(CAS.TYPE_NAME_FLOAT));
       stringFeature = tsa.addFeature("stringFeature", exampleType, tsa
-                      .getType(CAS.TYPE_NAME_STRING));
+              .getType(CAS.TYPE_NAME_STRING));
       booleanFeature = tsa.addFeature("boolFeature", exampleType, tsa
-                      .getType(CAS.TYPE_NAME_BOOLEAN));
+              .getType(CAS.TYPE_NAME_BOOLEAN));
       byteFeature = tsa.addFeature("byteFeature", exampleType, tsa.getType(CAS.TYPE_NAME_BYTE));
       shortFeature = tsa.addFeature("shortFeature", exampleType, tsa.getType(CAS.TYPE_NAME_SHORT));
       longFeature = tsa.addFeature("longFeature", exampleType, tsa.getType(CAS.TYPE_NAME_LONG));
       doubleFeature = tsa.addFeature("doubleFeature", exampleType, tsa
-                      .getType(CAS.TYPE_NAME_DOUBLE));
+              .getType(CAS.TYPE_NAME_DOUBLE));
 
       intArrayFeature = tsa.addFeature("intArrayFeature", exampleType, tsa
-                      .getType(CAS.TYPE_NAME_INTEGER_ARRAY));
+              .getType(CAS.TYPE_NAME_INTEGER_ARRAY));
       floatArrayFeature = tsa.addFeature("floatArrayFeature", exampleType, tsa
-                      .getType(CAS.TYPE_NAME_FLOAT_ARRAY), false);
+              .getType(CAS.TYPE_NAME_FLOAT_ARRAY), false);
       stringArrayFeature = tsa.addFeature("stringArrayFeature", exampleType, tsa
-                      .getType(CAS.TYPE_NAME_STRING_ARRAY), false);
+              .getType(CAS.TYPE_NAME_STRING_ARRAY), false);
       booleanArrayFeature = tsa.addFeature("boolArrayFeature", exampleType, tsa
-                      .getType(CAS.TYPE_NAME_BOOLEAN_ARRAY));
+              .getType(CAS.TYPE_NAME_BOOLEAN_ARRAY));
       byteArrayFeature = tsa.addFeature("byteArrayFeature", exampleType, tsa
-                      .getType(CAS.TYPE_NAME_BYTE_ARRAY), false);
+              .getType(CAS.TYPE_NAME_BYTE_ARRAY), false);
       shortArrayFeature = tsa.addFeature("shortArrayFeature", exampleType, tsa
-                      .getType(CAS.TYPE_NAME_SHORT_ARRAY));
+              .getType(CAS.TYPE_NAME_SHORT_ARRAY));
       longArrayFeature = tsa.addFeature("longArrayFeature", exampleType, tsa
-                      .getType(CAS.TYPE_NAME_LONG_ARRAY));
+              .getType(CAS.TYPE_NAME_LONG_ARRAY));
       doubleArrayFeature = tsa.addFeature("doubleArrayFeature", exampleType, tsa
-                      .getType(CAS.TYPE_NAME_DOUBLE_ARRAY), false);
+              .getType(CAS.TYPE_NAME_DOUBLE_ARRAY), false);
 
       // Commit the type system.
       ((CASImpl) casMgr).commitTypeSystem();
@@ -231,7 +231,7 @@ public class NewPrimitiveTypesTest extends TestCase {
     // serialize
     XCASSerializer ser = new XCASSerializer(cas.getTypeSystem());
     OutputStream outputXCAS = new FileOutputStream(JUnitExtension
-                    .getFile("ExampleCas/newprimitives.xcas"));
+            .getFile("ExampleCas/newprimitives.xcas"));
     XMLSerializer xmlSer = new XMLSerializer(outputXCAS);
     ser.serialize(cas, xmlSer.getContentHandler());
 
@@ -240,7 +240,7 @@ public class NewPrimitiveTypesTest extends TestCase {
 
     // deserialize
     InputStream inputXCAS = new FileInputStream(JUnitExtension
-                    .getFile("ExampleCas/newprimitives.xcas"));
+            .getFile("ExampleCas/newprimitives.xcas"));
     XCASDeserializer.deserialize(inputXCAS, cas, false);
 
     // check values

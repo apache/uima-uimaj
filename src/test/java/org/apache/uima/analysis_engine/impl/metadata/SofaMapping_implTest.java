@@ -65,10 +65,10 @@ public class SofaMapping_implTest extends TestCase {
       // parse from XML
       InputStream is = new ByteArrayInputStream(sm1Xml.getBytes());
       SofaMapping_impl newSm1 = (SofaMapping_impl) UIMAFramework.getXMLParser().parse(
-                      new XMLInputSource(is, null));
+              new XMLInputSource(is, null));
       is = new ByteArrayInputStream(sm2Xml.getBytes());
       SofaMapping_impl newSm2 = (SofaMapping_impl) UIMAFramework.getXMLParser().parse(
-                      new XMLInputSource(is, null));
+              new XMLInputSource(is, null));
 
       Assert.assertEquals(sm1, newSm1);
       Assert.assertEquals(sm2, newSm2);

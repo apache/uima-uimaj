@@ -59,7 +59,7 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements TextAn
    * method to read configuration parameter for the annotator
    */
   private static String secureGetConfigParameterValue(AnnotatorContext context, String param,
-                  String defaultValue) throws AnnotatorContextException {
+          String defaultValue) throws AnnotatorContextException {
     String name = (String) context.getConfigParameterValue(param);
     if (name != null) {
       return name;
@@ -71,7 +71,7 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements TextAn
    * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#initialize(org.apache.uima.analysis_engine.annotator.AnnotatorContext)
    */
   public void initialize(AnnotatorContext context) throws AnnotatorInitializationException,
-                  AnnotatorConfigurationException {
+          AnnotatorConfigurationException {
 
     try {
       // read annotator name from configuration parameter 'AnnotatorName'
@@ -112,7 +112,7 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements TextAn
         writer.close();
       } else {
         throw new IOException("Cannot write to " + junitTestBasePath
-                        + "SequencerTest/SequencerTest.txt");
+                + "SequencerTest/SequencerTest.txt");
       }
     } catch (IOException e) {
       // If an error occours, throw new annotator exception

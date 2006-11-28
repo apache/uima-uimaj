@@ -71,7 +71,7 @@ public class ReplaceStringInFiles {
    *          The given string argument.
    */
   public static int indexOfCaseSensitive(String mainStr, String argStr, int start,
-                  boolean caseSensitive) {
+          boolean caseSensitive) {
     if (caseSensitive) {
       return mainStr.indexOf(argStr, start);
     }
@@ -96,7 +96,7 @@ public class ReplaceStringInFiles {
    *          happened.
    */
   public static final void replaceStringInString(String text, String toReplace, String replacement,
-                  ReplacementResult res, boolean caseSensitive) {
+          ReplacementResult res, boolean caseSensitive) {
     StringBuffer buf = new StringBuffer();
     int current = 0;
     int next;
@@ -127,7 +127,7 @@ public class ReplaceStringInFiles {
    *           Whenever anything goes wrong reading or writing a file.
    */
   public static final void replaceStringInFiles(File dir, FileFilter fileFilter, String toReplace,
-                  String replacement, boolean caseSensitive) throws IOException {
+          String replacement, boolean caseSensitive) throws IOException {
     // Get all files with correct extension.
     File[] fileList = null;
     if (fileFilter == null) {
@@ -182,7 +182,7 @@ public class ReplaceStringInFiles {
   public static void main(String[] args) {
     if (args.length != 4 && args.length != 5) {
       System.out
-                      .println("Usage: java org.apache.uima.util.ReplaceStringInFile <Dir> <Extension> <ToReplace> <Replacement> [-ignorecase]");
+              .println("Usage: java org.apache.uima.util.ReplaceStringInFile <Dir> <Extension> <ToReplace> <Replacement> [-ignorecase]");
       System.exit(1);
     }
     try {
@@ -203,7 +203,7 @@ public class ReplaceStringInFiles {
       File dir = new File(dirName);
       if (dir.isDirectory()) {
         replaceStringInFiles(dir, new ExtFileFilter(extension), toReplace, replacement,
-                        caseSensitive);
+                caseSensitive);
       }
 
     } catch (Exception e) {

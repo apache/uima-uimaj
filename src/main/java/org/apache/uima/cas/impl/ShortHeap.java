@@ -45,7 +45,7 @@ final class ShortHeap extends CommonAuxHeap {
       return;
 
     short[] new_array = new short[computeNewArraySize(heap.length, heapPos, GROWTH_FACTOR,
-                    heapMultLimit)];
+            heapMultLimit)];
     System.arraycopy(heap, 0, new_array, 0, heap.length);
     heap = new_array;
   }

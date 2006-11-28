@@ -39,9 +39,9 @@ public class DefaultAnnotationComparator implements FSImplComparator {
     super();
     this.cas = cas;
     this.startCode = ((FeatureImpl) cas.getTypeSystem().getFeatureByFullName(
-                    TCAS.FEATURE_BASE_NAME_BEGIN)).getCode();
+            TCAS.FEATURE_BASE_NAME_BEGIN)).getCode();
     this.endCode = ((FeatureImpl) cas.getTypeSystem().getFeatureByFullName(
-                    TCAS.FEATURE_BASE_NAME_END)).getCode();
+            TCAS.FEATURE_BASE_NAME_END)).getCode();
   }
 
   /**

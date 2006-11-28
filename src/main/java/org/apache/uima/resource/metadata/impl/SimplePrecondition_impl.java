@@ -42,7 +42,7 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
    * Predicate used to compare.
    */
   private String mPredicate;
-  
+
   private FSMatchConstraint mFsMatchConstraint;
 
   private String mFsIndexName;
@@ -150,8 +150,8 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
     // check to make sure value is legal
     if (!isValidPredicateName(aPredicate)) {
       throw new UIMA_IllegalArgumentException(
-                      UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH, new Object[] {
-                          aPredicate, "predicate" });
+              UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH, new Object[] {
+                  aPredicate, "predicate" });
     }
     mPredicate = aPredicate;
   }
@@ -175,8 +175,8 @@ public class SimplePrecondition_impl extends MetaDataObject_impl implements Simp
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("simplePrecondition",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("featureDescription", null),
-                      new PropertyXmlInfo("comparisonValue"),
-                      new PropertyXmlInfo("predicate", "predicate") });
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
+          "simplePrecondition",
+          new PropertyXmlInfo[] { new PropertyXmlInfo("featureDescription", null),
+              new PropertyXmlInfo("comparisonValue"), new PropertyXmlInfo("predicate", "predicate") });
 }

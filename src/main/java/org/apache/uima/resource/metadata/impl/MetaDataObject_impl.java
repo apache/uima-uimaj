@@ -109,7 +109,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
         // and don't include the SourceUrl property, which is for
         // internal bookkeeping and shouldn't affect object equality
         if (props[i].getReadMethod() != null && props[i].getWriteMethod() != null
-                        && !props[i].getName().equals(PROP_NAME_SOURCE_URL)) {
+                && !props[i].getName().equals(PROP_NAME_SOURCE_URL)) {
           String propName = props[i].getName();
           Class propClass = props[i].getPropertyType();
           // translate primitive types (int, boolean, etc.) to wrapper classes
@@ -194,13 +194,13 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
               writer.invoke(this, new Object[] { aValue });
             } catch (IllegalArgumentException e) {
               throw new UIMA_IllegalArgumentException(
-                              UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH,
-                              new Object[] { aValue, aName }, e);
+                      UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH, new Object[] {
+                          aValue, aName }, e);
             }
           } else {
             throw new UIMA_UnsupportedOperationException(
-                            UIMA_UnsupportedOperationException.NOT_MODIFIABLE, new Object[] {
-                                aName, this.getClass().getName() });
+                    UIMA_UnsupportedOperationException.NOT_MODIFIABLE, new Object[] { aName,
+                        this.getClass().getName() });
           }
         }
       }
@@ -542,7 +542,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @see org.apache.uima.util.XMLizable#toXML(org.xml.sax.ContentHandler, boolean)
    */
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
-                  throws SAXException {
+          throws SAXException {
     XmlizationInfo inf = getXmlizationInfo();
 
     // write the element's start tag
@@ -617,19 +617,19 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          representation
    */
   protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace,
-                  ContentHandler aContentHandler) throws SAXException {
+          ContentHandler aContentHandler) throws SAXException {
     // get value of property
     Object val = getAttributeValue(aPropInfo.propertyName);
 
     // if null or empty array, check to see if we're supposed to omit it
     if (aPropInfo.omitIfNull
-                    && (val == null || (val.getClass().isArray() && ((Object[]) val).length == 0)))
+            && (val == null || (val.getClass().isArray() && ((Object[]) val).length == 0)))
       return;
 
     // if XML element name was supplied, write a tag
     if (aPropInfo.xmlElementName != null) {
       aContentHandler.startElement(aNamespace, aPropInfo.xmlElementName, aPropInfo.xmlElementName,
-                      EMPTY_ATTRIBUTES);
+              EMPTY_ATTRIBUTES);
     }
 
     // get class of property
@@ -640,7 +640,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       // if value is an array then we have to treat that specially
       if (val.getClass().isArray()) {
         writeArrayPropertyAsElement(aPropInfo.propertyName, propClass, val,
-                        aPropInfo.arrayElementTagName, aNamespace, aContentHandler);
+                aPropInfo.arrayElementTagName, aNamespace, aContentHandler);
       } else {
         // if value is an XMLizable object, call its toXML method
         if (val instanceof XMLizable) {
@@ -686,8 +686,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          representation
    */
   protected void writeArrayPropertyAsElement(String aPropName, Class aPropClass, Object aValue,
-                  String aArrayElementTagName, String aNamespace, ContentHandler aContentHandler)
-                  throws SAXException {
+          String aArrayElementTagName, String aNamespace, ContentHandler aContentHandler)
+          throws SAXException {
     // if aPropClass is generic Object, reader won't know whether to expect
     // an array, so we tell it be writing an "array" element here.
     if (aPropClass == Object.class) {
@@ -703,7 +703,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
       // if a particular array element tag has been specified, write it
       if (aArrayElementTagName != null) {
         aContentHandler.startElement(aNamespace, aArrayElementTagName, aArrayElementTagName,
-                        EMPTY_ATTRIBUTES);
+                EMPTY_ATTRIBUTES);
       }
 
       // if attribute's value is an XMLizable object, call its toXML method
@@ -755,8 +755,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          ContentHandler to which this object will send events describing its XML representation
    */
   protected void writeMapPropertyToXml(String aPropName, String aXmlElementName,
-                  String aKeyXmlAttribute, String aValueTagName, boolean aOmitIfNull,
-                  String aNamespace, ContentHandler aContentHandler) throws SAXException {
+          String aKeyXmlAttribute, String aValueTagName, boolean aOmitIfNull, String aNamespace,
+          ContentHandler aContentHandler) throws SAXException {
     // get map
     Map theMap = (Map) getAttributeValue(aPropName);
 
@@ -764,16 +764,14 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     if (theMap == null || theMap.isEmpty()) {
       if (!aOmitIfNull && aXmlElementName != null) {
         aContentHandler
-                        .startElement(aNamespace, aXmlElementName, aXmlElementName,
-                                        EMPTY_ATTRIBUTES);
+                .startElement(aNamespace, aXmlElementName, aXmlElementName, EMPTY_ATTRIBUTES);
         aContentHandler.endElement(aNamespace, aXmlElementName, aXmlElementName);
       }
     } else {
       // write start tag for attribute if desired
       if (aXmlElementName != null) {
         aContentHandler
-                        .startElement(aNamespace, aXmlElementName, aXmlElementName,
-                                        EMPTY_ATTRIBUTES);
+                .startElement(aNamespace, aXmlElementName, aXmlElementName, EMPTY_ATTRIBUTES);
       }
 
       // iterate over entries in the Map
@@ -786,7 +784,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
         // write a tag for the value, with a "key" attribute
         AttributesImpl attrs = new AttributesImpl();
         attrs.addAttribute("", aKeyXmlAttribute, aKeyXmlAttribute, null, key); // are these nulls
-                                                                                // OK?
+        // OK?
         aContentHandler.startElement(aNamespace, aValueTagName, aValueTagName, attrs);
 
         // write the value (must be XMLizable or an array of XMLizable)
@@ -826,7 +824,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *           if the input XML element does not specify a valid object
    */
   public final void buildFromXMLElement(Element aElement, XMLParser aParser)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     buildFromXMLElement(aElement, aParser, new XMLParser.ParsingOptions(true, true));
   }
 
@@ -846,7 +844,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *           if the input XML element does not specify a valid object
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
-                  XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
+          XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     // check element type
     if (!aElement.getTagName().equals(getXmlizationInfo().elementTagName))
       throw new InvalidXMLException(InvalidXMLException.INVALID_ELEMENT_TYPE, new Object[] {
@@ -876,7 +874,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
           // specifying the property name as an XML element.
           if (getXmlizationInfo().propertyInfo.length == 1) {
             readPropertyValueFromXMLElement(getXmlizationInfo().propertyInfo[0], aElement, aParser,
-                            aOptions);
+                    aOptions);
           } else {
             // (2) if an object can be constructed from the unknown element,
             // attempt to assign this object to any null-valued property
@@ -901,7 +899,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          option settings
    */
   protected void readPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo, Element aElement,
-                  XMLParser aParser, XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
+          XMLParser aParser, XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     String propName = aPropXmlInfo.propertyName;
     // get class of the property
     Class propClass = getAttributeClass(propName);
@@ -921,7 +919,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
         // is it an array? (This can happen if aAttrClass is generic Object)
         if (objElem.getTagName().equals("array")) {
           readArrayPropertyValueFromXMLElement(aPropXmlInfo, Object.class, objElem, aParser,
-                          aOptions);
+                  aOptions);
         } else {
           setAttributeValue(propName, aParser.buildObjectOrPrimitive(objElem, aOptions));
         }
@@ -938,7 +936,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
             setAttributeValue(propName, val);
           } catch (Exception e) {
             throw new InvalidXMLException(InvalidXMLException.UNKNOWN_ELEMENT,
-                            new Object[] { aElement.getTagName() }, e);
+                    new Object[] { aElement.getTagName() }, e);
           }
         }
       }
@@ -960,10 +958,10 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          option settings
    */
   protected void readArrayPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo,
-                  Class aPropClass, Element aElement, XMLParser aParser,
-                  XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
+          Class aPropClass, Element aElement, XMLParser aParser, XMLParser.ParsingOptions aOptions)
+          throws InvalidXMLException {
     Constructor primitiveElementStringConstructor = null; // may be used to build objects from
-                                                          // strings
+    // strings
 
     // get all child nodes (note not all may be elements)
     NodeList elems = aElement.getChildNodes();
@@ -988,11 +986,11 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
               // must have a constructor that takes a String parameter
               if (primitiveElementStringConstructor == null) {
                 primitiveElementStringConstructor = aPropClass.getComponentType().getConstructor(
-                                new Class[] { String.class });
+                        new Class[] { String.class });
               }
               // construct the object and add to list
               valueList.add(primitiveElementStringConstructor
-                              .newInstance(new Object[] { elemText }));
+                      .newInstance(new Object[] { elemText }));
             } catch (Exception e) {
               throw new InvalidXMLException(e);
             }
@@ -1061,8 +1059,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *           if no acceptable object is described by aElement
    */
   protected void readUnknownPropertyValueFromXMLElement(Element aElement, XMLParser aParser,
-                  XMLParser.ParsingOptions aOptions, List aKnownPropertyNames)
-                  throws InvalidXMLException {
+          XMLParser.ParsingOptions aOptions, List aKnownPropertyNames) throws InvalidXMLException {
     boolean success = false;
     try {
       Object valueObj = aParser.buildObjectOrPrimitive(aElement, aOptions);
@@ -1083,7 +1080,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
               break;
             }
           } else if (propClass.isArray()
-                          && propClass.getComponentType().isAssignableFrom(valueObj.getClass())) {
+                  && propClass.getComponentType().isAssignableFrom(valueObj.getClass())) {
             // it's an array - get current value and append
             Object curVal = getAttributeValue(propName);
             int curLen = curVal == null ? 0 : Array.getLength(curVal);
@@ -1110,7 +1107,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     // throw exception if we did not succeed
     if (!success) {
       throw new InvalidXMLException(InvalidXMLException.UNKNOWN_ELEMENT, new Object[] { aElement
-                      .getTagName() });
+              .getTagName() });
     }
   }
 
@@ -1135,9 +1132,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          homogeneous arrays.
    */
   protected void readMapPropertyFromXml(String aPropName, Element aElement,
-                  String aKeyXmlAttribute, String aValueTagName, XMLParser aParser,
-                  XMLParser.ParsingOptions aOptions, boolean aValueIsArray)
-                  throws InvalidXMLException {
+          String aKeyXmlAttribute, String aValueTagName, XMLParser aParser,
+          XMLParser.ParsingOptions aOptions, boolean aValueIsArray) throws InvalidXMLException {
     // get the Map to which we add entries (it should already exist)
     Map theMap = (Map) getAttributeValue(aPropName);
 
@@ -1156,7 +1152,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
         String key = curElem.getAttribute(aKeyXmlAttribute);
         if (key.equals("")) {
           throw new InvalidXMLException(InvalidXMLException.REQUIRED_ATTRIBUTE_MISSING,
-                          new Object[] { "key", aValueTagName });
+                  new Object[] { "key", aValueTagName });
         }
         // build value object
         Object val = null;
@@ -1238,7 +1234,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   protected PropertyDescriptor[] getPropertyDescriptors() throws IntrospectionException {
     if (mPropertyDescriptors == null) {
       mPropertyDescriptors = Introspector.getBeanInfo(this.getClass(),
-                      Introspector.IGNORE_ALL_BEANINFO).getPropertyDescriptors();
+              Introspector.IGNORE_ALL_BEANINFO).getPropertyDescriptors();
     }
     return mPropertyDescriptors;
   }

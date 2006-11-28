@@ -147,8 +147,8 @@ public class BrowserUtil {
         // Add quotes around the URL to allow ampersands and other
         // special characters to work.
         process = Runtime.getRuntime().exec(
-                        new String[] { __browserLauncher, FIRST_WINDOWS_PARAMETER,
-                            SECOND_WINDOWS_PARAMETER, THIRD_WINDOWS_PARAMETER, '"' + url + '"' });
+                new String[] { __browserLauncher, FIRST_WINDOWS_PARAMETER,
+                    SECOND_WINDOWS_PARAMETER, THIRD_WINDOWS_PARAMETER, '"' + url + '"' });
         // This avoids a memory leak on some versions of Java on
         // Windows. That's hinted at in
         // <http://developer.java.sun.com/developer/qow/archive/68/>.
@@ -164,8 +164,8 @@ public class BrowserUtil {
         // First, attempt to open the URL in a currently running
         // session of Mozilla
         process = Runtime.getRuntime().exec(
-                        new String[] { __browserLauncher, MOZILLA_REMOTE_PARAMETER,
-                            MOZILLA_OPEN_PARAMETER_START + url + MOZILLA_OPEN_PARAMETER_END });
+                new String[] { __browserLauncher, MOZILLA_REMOTE_PARAMETER,
+                    MOZILLA_OPEN_PARAMETER_START + url + MOZILLA_OPEN_PARAMETER_END });
         try {
           int exitCode = process.waitFor();
           if (exitCode != 0) {
@@ -187,8 +187,8 @@ public class BrowserUtil {
         // First, attempt to open the URL in a currently running
         // session of Netscape
         process = Runtime.getRuntime().exec(
-                        new String[] { __browserLauncher, NETSCAPE_REMOTE_PARAMETER,
-                            NETSCAPE_OPEN_PARAMETER_START + url + NETSCAPE_OPEN_PARAMETER_END });
+                new String[] { __browserLauncher, NETSCAPE_REMOTE_PARAMETER,
+                    NETSCAPE_OPEN_PARAMETER_START + url + NETSCAPE_OPEN_PARAMETER_END });
         try {
           int exitCode = process.waitFor();
           if (exitCode != 0) { // if Netscape was not open

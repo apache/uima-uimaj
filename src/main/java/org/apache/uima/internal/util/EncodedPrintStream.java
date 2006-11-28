@@ -65,7 +65,7 @@ public class EncodedPrintStream extends PrintStream {
    *           If the character encoding is not supported by the JVM.
    */
   public EncodedPrintStream(OutputStream out, boolean autoFlush, String encoding)
-                  throws UnsupportedEncodingException {
+          throws UnsupportedEncodingException {
     super(out, autoFlush);
     this.encoding = encoding;
     // Possibly trigger Unsupported encoding exception.

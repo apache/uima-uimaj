@@ -82,7 +82,7 @@ public class IndexingException extends UIMAException {
    *          the original exception that caused this exception to be thrown, if any
    */
   public IndexingException(String aResourceBundleName, String aMessageKey, Object[] aArguments,
-                  Throwable aCause) {
+          Throwable aCause) {
     super(aResourceBundleName, aMessageKey, aArguments, aCause);
   }
 

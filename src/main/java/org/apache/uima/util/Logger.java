@@ -153,7 +153,7 @@ public interface Logger {
    *          message key
    */
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
-                  String msgKey);
+          String msgKey);
 
   /**
    * Logs a message with a message key and one parameter. The real message is extracted from a
@@ -173,7 +173,7 @@ public interface Logger {
    *          message parameter
    */
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
-                  String msgKey, Object param1);
+          String msgKey, Object param1);
 
   /**
    * Logs a message with a message key and an arbitrary number of parameters. The real message is
@@ -193,7 +193,7 @@ public interface Logger {
    *          message parameter array with an arbitrary number of parameters
    */
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
-                  String msgKey, Object[] params);
+          String msgKey, Object[] params);
 
   /**
    * Logs a message with a message key and a throwable object. The real message is extracted from a
@@ -213,7 +213,7 @@ public interface Logger {
    *          throwable object
    */
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
-                  String msgKey, Throwable thrown);
+          String msgKey, Throwable thrown);
 
   /**
    * Checks if the argument level is greater or equal to the specified level

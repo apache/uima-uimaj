@@ -54,13 +54,12 @@ public class TCasPool {
    */
   private static final Class CLASS_NAME = TCasPool.class;
 
-
   private Vector mAllInstances = new Vector();
 
   private Vector mFreeInstances = new Vector();
 
   private int mNumInstances;
-  
+
   /**
    * Creates a new TCasPool
    * 
@@ -77,7 +76,7 @@ public class TCasPool {
    *             {@link #TCasPool(int, AnalysisEngine)} instead.
    */
   public TCasPool(int aNumInstances, TextAnalysisEngine aTextAnalysisEngine)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     mNumInstances = aNumInstances;
 
     fillPool(aTextAnalysisEngine.getAnalysisEngineMetaData());
@@ -96,7 +95,7 @@ public class TCasPool {
    *           if the TCAS instances could not be created
    */
   public TCasPool(int aNumInstances, AnalysisEngine aAnalysisEngine)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     mNumInstances = aNumInstances;
 
     fillPool(aAnalysisEngine.getAnalysisEngineMetaData());
@@ -114,7 +113,7 @@ public class TCasPool {
    *           if the CAS instances could not be created
    */
   public TCasPool(int aNumInstances, ProcessingResourceMetaData aMetaData)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     mNumInstances = aNumInstances;
 
     fillPool(aMetaData);
@@ -165,7 +164,7 @@ public class TCasPool {
     // make sure this CAS actually belongs to this pool and is checked out
     if (!mAllInstances.contains(aTCas) || mFreeInstances.contains(aTCas)) {
       UIMAFramework.getLogger(CLASS_NAME).logrb(Level.WARNING, CLASS_NAME.getName(), "releaseTCas",
-                      LOG_RESOURCE_BUNDLE, "UIMA_return_tcas_to_pool__WARNING");
+              LOG_RESOURCE_BUNDLE, "UIMA_return_tcas_to_pool__WARNING");
     } else {
       // reset CAS
       aTCas.reset();
@@ -222,7 +221,7 @@ public class TCasPool {
    *           if the Resource instances could not be created
    */
   protected void fillPool(ProcessingResourceMetaData aMetaData)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     // create first CAS from metadata
     ArrayList mdList = new ArrayList();
     mdList.add(aMetaData);
@@ -232,7 +231,7 @@ public class TCasPool {
     // create additional CASes that share same type system
     for (int i = 1; i < mNumInstances; i++) {
       TCAS c = CasCreationUtils.createTCas(c0.getTypeSystem(), aMetaData.getTypePriorities(),
-                      aMetaData.getFsIndexes());
+              aMetaData.getFsIndexes());
       mAllInstances.add(c);
       mFreeInstances.add(c);
     }

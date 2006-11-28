@@ -65,7 +65,7 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     // aSpecifier must be a FileResourceSpecifier
     if (!(aSpecifier instanceof FileResourceSpecifier))
       return false;
@@ -99,8 +99,8 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
     }
     if (mFileUrl == null) {
       throw new ResourceInitializationException(
-                      ResourceInitializationException.COULD_NOT_ACCESS_DATA, new Object[] { spec
-                                      .getFileUrl() }, ioEx);
+              ResourceInitializationException.COULD_NOT_ACCESS_DATA, new Object[] { spec
+                      .getFileUrl() }, ioEx);
     }
 
     return true;

@@ -70,7 +70,7 @@ public class Token extends Annotation {
     if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_ttype == null)
       JCas.throwFeatMissing("ttype", "x.y.z.Token");
     return (TokenType) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Token_Type) jcasType).casFeatCode_ttype)));
+            ((Token_Type) jcasType).casFeatCode_ttype)));
   }
 
   /** setter for ttype * */
@@ -78,7 +78,7 @@ public class Token extends Annotation {
     if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_ttype == null)
       JCas.throwFeatMissing("ttype", "x.y.z.Token");
     jcasType.ll_cas.ll_setRefValue(addr, ((Token_Type) jcasType).casFeatCode_ttype, jcasType.ll_cas
-                    .ll_getFSRef(v));
+            .ll_getFSRef(v));
   }
 
   // *------------------*
@@ -88,7 +88,7 @@ public class Token extends Annotation {
     if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_tokenFloatFeat == null)
       JCas.throwFeatMissing("tokenFloatFeat", "x.y.z.Token");
     return jcasType.ll_cas.ll_getFloatValue(addr,
-                    ((Token_Type) jcasType).casFeatCode_tokenFloatFeat);
+            ((Token_Type) jcasType).casFeatCode_tokenFloatFeat);
   }
 
   /** setter for tokenFloatFeat * */
@@ -137,7 +137,7 @@ public class Token extends Annotation {
     if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_lemmaList == null)
       JCas.throwFeatMissing("lemmaList", "x.y.z.Token");
     return (StringArray) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Token_Type) jcasType).casFeatCode_lemmaList)));
+            ((Token_Type) jcasType).casFeatCode_lemmaList)));
   }
 
   /** indexed getter for lemmaList * */
@@ -145,9 +145,9 @@ public class Token extends Annotation {
     if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_lemmaList == null)
       JCas.throwFeatMissing("lemmaList", "x.y.z.Token");
     jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Token_Type) jcasType).casFeatCode_lemmaList), i);
+            ((Token_Type) jcasType).casFeatCode_lemmaList), i);
     return jcasType.ll_cas.ll_getStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Token_Type) jcasType).casFeatCode_lemmaList), i);
+            ((Token_Type) jcasType).casFeatCode_lemmaList), i);
   }
 
   /** setter for lemmaList * */
@@ -155,7 +155,7 @@ public class Token extends Annotation {
     if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_lemmaList == null)
       JCas.throwFeatMissing("lemmaList", "x.y.z.Token");
     jcasType.ll_cas.ll_setRefValue(addr, ((Token_Type) jcasType).casFeatCode_lemmaList,
-                    jcasType.ll_cas.ll_getFSRef(v));
+            jcasType.ll_cas.ll_getFSRef(v));
   }
 
   /** indexed setter for lemmaList * */
@@ -163,8 +163,8 @@ public class Token extends Annotation {
     if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_lemmaList == null)
       JCas.throwFeatMissing("lemmaList", "x.y.z.Token");
     jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Token_Type) jcasType).casFeatCode_lemmaList), i);
+            ((Token_Type) jcasType).casFeatCode_lemmaList), i);
     jcasType.ll_cas.ll_setStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Token_Type) jcasType).casFeatCode_lemmaList), i, v);
+            ((Token_Type) jcasType).casFeatCode_lemmaList), i, v);
   }
 }

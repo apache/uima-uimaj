@@ -45,7 +45,7 @@ public interface BaseAnnotator {
    *           if the configuration specified for this annotator is invalid.
    */
   public void initialize(AnnotatorContext aContext) throws AnnotatorInitializationException,
-                  AnnotatorConfigurationException;
+          AnnotatorConfigurationException;
 
   /**
    * Informs this annotator that the CAS TypeSystem has changed. The Analysis Engine calls this
@@ -62,7 +62,7 @@ public interface BaseAnnotator {
    *           if the configuration specified for this annotator is invalid.
    */
   public void typeSystemInit(TypeSystem aTypeSystem) throws AnnotatorInitializationException,
-                  AnnotatorConfigurationException;
+          AnnotatorConfigurationException;
 
   /**
    * Alerts this annotator that the values of its configuration parameters or external resources
@@ -78,7 +78,7 @@ public interface BaseAnnotator {
    *           if the annotator fails to reinitialize itself based on the new configuration.
    */
   public void reconfigure() throws AnnotatorConfigurationException,
-                  AnnotatorInitializationException;
+          AnnotatorInitializationException;
 
   /**
    * Frees all resources held by this annotator. The Analysis Engine calls this method only once,

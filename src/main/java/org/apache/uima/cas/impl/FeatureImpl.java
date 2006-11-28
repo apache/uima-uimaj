@@ -86,7 +86,7 @@ public class FeatureImpl implements Feature {
 
   public String getShortName() {
     return this.name.substring(this.name.indexOf(TypeSystem.FEATURE_SEPARATOR) + 1, this.name
-                    .length());
+            .length());
   }
 
   /**

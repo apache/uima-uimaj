@@ -67,7 +67,7 @@ public class SaxDeserializer_impl implements SaxDeserializer {
   static final String JAXP_SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";
 
   private static final SAXTransformerFactory transformerFactory = (SAXTransformerFactory) SAXTransformerFactory
-                  .newInstance();
+          .newInstance();
 
   private boolean mValidate;
 
@@ -102,7 +102,7 @@ public class SaxDeserializer_impl implements SaxDeserializer {
    *          option settings
    */
   public SaxDeserializer_impl(XMLParser aUimaXmlParser, String aNamespaceForSchema, URL aSchemaUrl,
-                  XMLParser.ParsingOptions aOptions) {
+          XMLParser.ParsingOptions aOptions) {
     mUimaXmlParser = aUimaXmlParser;
     mOptions = aOptions;
 
@@ -143,9 +143,9 @@ public class SaxDeserializer_impl implements SaxDeserializer {
           factory.setValidating(true);
         } catch (Exception e) {
           UIMAFramework
-                          .getLogger()
-                          .log(Level.INFO,
-                                          "The installed XML Parser does not support schema validation.  No validation will occur.");
+                  .getLogger()
+                  .log(Level.INFO,
+                          "The installed XML Parser does not support schema validation.  No validation will occur.");
           factory.setValidating(false);
         }
         mDocumentBuilder = factory.newDocumentBuilder();
@@ -281,7 +281,7 @@ public class SaxDeserializer_impl implements SaxDeserializer {
    *      java.lang.String, org.xml.sax.Attributes)
    */
   public void startElement(String namespaceURI, String localName, String qName, Attributes atts)
-                  throws SAXException {
+          throws SAXException {
     // System.out.println("SaxDeserializer_impl::startElement("+namespaceURI+","+localName+","+qName+","+atts+")");
     mXIncludeTransformerHandler.startElement(namespaceURI, localName, qName, atts);
   }

@@ -76,9 +76,9 @@ public class UimaTypeSystem2Ecore {
    *           if an failure occur while reading the descriptor file
    */
   public static void uimaTypeSystem2Ecore(String aUimaTypeSystemFilePath, Resource aOutputResource,
-                  Map aOptions) throws InvalidXMLException, IOException {
+          Map aOptions) throws InvalidXMLException, IOException {
     TypeSystemDescription tsDesc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-                    new XMLInputSource(aUimaTypeSystemFilePath));
+            new XMLInputSource(aUimaTypeSystemFilePath));
     uimaTypeSystem2Ecore(tsDesc, aOutputResource, aOptions);
   }
 
@@ -99,7 +99,7 @@ public class UimaTypeSystem2Ecore {
    *           type.
    */
   public static void uimaTypeSystem2Ecore(TypeSystemDescription aTypeSystem,
-                  Resource aOutputResource, Map aOptions) throws InvalidXMLException {
+          Resource aOutputResource, Map aOptions) throws InvalidXMLException {
     uimaTypeSystem2Ecore(aTypeSystem, aOutputResource, aOptions, null);
   }
 
@@ -119,15 +119,15 @@ public class UimaTypeSystem2Ecore {
    *          XMI instance documents.
    */
   public static void uimaTypeSystem2Ecore(TypeSystemDescription aTypeSystem,
-                  Resource aOutputResource, Map aOptions, Map aSchemaLocationMap)
-                  throws InvalidXMLException {
+          Resource aOutputResource, Map aOptions, Map aSchemaLocationMap)
+          throws InvalidXMLException {
     // Add the default definition of uima.tcas.DocumentAnnotation. If the
     // user also defines this type (with additional features), it will be merged
     // with this. First clone the aTypeSystem object so user won't notice
     // we have added a new type definition to their TypeSystemDescription.
     aTypeSystem = (TypeSystemDescription) aTypeSystem.clone();
     TypeDescription docAnnotType = aTypeSystem.addType("uima.tcas.DocumentAnnotation", "",
-                    "uima.tcas.Annotation");
+            "uima.tcas.Annotation");
     docAnnotType.addFeature("language", "", "uima.cas.String");
 
     // resolve imports
@@ -167,7 +167,7 @@ public class UimaTypeSystem2Ecore {
       aOutputResource.getContents().add(rootPackage);
       if (aSchemaLocationMap != null) {
         String schemaLoc = aOutputResource.getURI() + "#"
-                        + aOutputResource.getURIFragment(eclassifier.getEPackage());
+                + aOutputResource.getURIFragment(eclassifier.getEPackage());
         aSchemaLocationMap.put(eclassifier.getEPackage().getNsURI(), schemaLoc);
       }
       if (firstPackage == null) {
@@ -184,14 +184,14 @@ public class UimaTypeSystem2Ecore {
         // set supertype
         String supertypeName = type.getSupertypeName();
         EClassifier superclass = lookupEClassifierForType(supertypeName); // creates EClass if not
-                                                                          // already existing
+        // already existing
         eclass.getESuperTypes().add(superclass);
 
         // set features
         FeatureDescription[] features = type.getFeatures();
         for (int j = 0; j < features.length; j++) {
           eclass.getEStructuralFeatures()
-                          .add(uimaFeature2EStructuralFeature(features[j], aOptions));
+                  .add(uimaFeature2EStructuralFeature(features[j], aOptions));
         }
       }
     }
@@ -217,7 +217,7 @@ public class UimaTypeSystem2Ecore {
       throw new UIMARuntimeException(UIMARuntimeException.UIMA_ECORE_NOT_FOUND, new Object[0]);
     }
     Resource uimaEcoreResource = resourceSet.getResource(URI.createURI(uimaEcoreUrl.toString()),
-                    true);
+            true);
     // register core UIMA packages (I'm surprised I need to do this manually)
     TreeIterator iter = uimaEcoreResource.getAllContents();
     while (iter.hasNext()) {
@@ -227,7 +227,7 @@ public class UimaTypeSystem2Ecore {
         EPackage.Registry.INSTANCE.put(pkg.getNsURI(), pkg);
         if (aSchemaLocationMap != null) {
           String schemaLoc = uimaEcoreResource.getURI() + "#"
-                          + uimaEcoreResource.getURIFragment(pkg);
+                  + uimaEcoreResource.getURIFragment(pkg);
           aSchemaLocationMap.put(pkg.getNsURI(), schemaLoc);
         }
       }
@@ -288,10 +288,10 @@ public class UimaTypeSystem2Ecore {
   }
 
   private static EStructuralFeature uimaFeature2EStructuralFeature(FeatureDescription aFeature,
-                  Map aOptions) {
+          Map aOptions) {
     String range = aFeature.getRangeTypeName();
     boolean multiRefAllowed = aFeature.getMultipleReferencesAllowed() == null ? false : aFeature
-                    .getMultipleReferencesAllowed().booleanValue();
+            .getMultipleReferencesAllowed().booleanValue();
     EStructuralFeature efeat;
     // map primitive types to EAttributes
     if (CAS.TYPE_NAME_STRING.equals(range)) {
@@ -321,18 +321,18 @@ public class UimaTypeSystem2Ecore {
     }
     // map arrays and lists to multivalued EAttributes if multiple references not allowed
     else if ((CAS.TYPE_NAME_STRING_ARRAY.equals(range) || CAS.TYPE_NAME_STRING_LIST.equals(range))
-                    && !multiRefAllowed) {
+            && !multiRefAllowed) {
       efeat = EcoreFactory.eINSTANCE.createEAttribute();
       efeat.setEType(EcorePackage.eINSTANCE.getEString());
       efeat.setUpperBound(-1);
     } else if ((CAS.TYPE_NAME_INTEGER_ARRAY.equals(range) || CAS.TYPE_NAME_INTEGER_LIST
-                    .equals(range))
-                    && !multiRefAllowed) {
+            .equals(range))
+            && !multiRefAllowed) {
       efeat = EcoreFactory.eINSTANCE.createEAttribute();
       efeat.setEType(EcorePackage.eINSTANCE.getEInt());
       efeat.setUpperBound(-1);
     } else if ((CAS.TYPE_NAME_FLOAT_ARRAY.equals(range) || CAS.TYPE_NAME_FLOAT_LIST.equals(range))
-                    && !multiRefAllowed) {
+            && !multiRefAllowed) {
       efeat = EcoreFactory.eINSTANCE.createEAttribute();
       efeat.setEType(EcorePackage.eINSTANCE.getEFloat());
       efeat.setUpperBound(-1);
@@ -362,7 +362,7 @@ public class UimaTypeSystem2Ecore {
     }
     // FSArrays and FSLists map to multivalued references if multiple references not allowed
     else if ((CAS.TYPE_NAME_FS_ARRAY.equals(range) || CAS.TYPE_NAME_FS_LIST.equals(range))
-                    && !multiRefAllowed) {
+            && !multiRefAllowed) {
       efeat = EcoreFactory.eINSTANCE.createEReference();
       String elementType = aFeature.getElementType();
       if (elementType == null) {
@@ -391,7 +391,7 @@ public class UimaTypeSystem2Ecore {
     // - for FSList or FSArray that are NOT represented by multi-valued
     // properties, the element type
     if ((aFeature.getDescription() != null && aFeature.getDescription().length() > 0)
-                    || efeat.isMany() || aFeature.getElementType() != null) {
+            || efeat.isMany() || aFeature.getElementType() != null) {
       EAnnotation eannot = EcoreFactory.eINSTANCE.createEAnnotation();
       eannot.setSource("http://uima.apache.org");
       if (aFeature.getDescription() != null && aFeature.getDescription().length() > 0) {
@@ -490,7 +490,7 @@ public class UimaTypeSystem2Ecore {
   public static void main(String[] args) throws Exception {
     // register default resource factory
     Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("*",
-                    new XMIResourceFactoryImpl());
+            new XMIResourceFactoryImpl());
 
     ResourceSet resourceSet = new ResourceSetImpl();
     URI outputURI = URI.createFileURI(args[1]);

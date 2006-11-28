@@ -51,8 +51,8 @@ public abstract class CasFlowController_ImplBase extends FlowController_ImplBase
       return computeFlow((CAS) aCAS);
     } else {
       throw new AnalysisEngineProcessException(
-                      AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] {
-                          CAS.class, aCAS.getClass() });
+              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { CAS.class,
+                  aCAS.getClass() });
     }
   }
 
@@ -95,7 +95,7 @@ public abstract class CasFlowController_ImplBase extends FlowController_ImplBase
    *           if a problem occurs during processing
    */
   public void typeSystemInit(TypeSystem aTypeSystem) throws AnalysisEngineProcessException {
-    //no default behavior
+    // no default behavior
   }
 
   /*

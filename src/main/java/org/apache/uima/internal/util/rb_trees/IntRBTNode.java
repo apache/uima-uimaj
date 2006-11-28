@@ -62,7 +62,7 @@ class IntRBTNode {
    * The real constructor, used only internally.
    */
   private IntRBTNode(int key, boolean color, IntRBTNode parent, IntRBTNode left, IntRBTNode right,
-                  int element) {
+          int element) {
     this.key = key;
     this.color = color;
     this.parent = parent;

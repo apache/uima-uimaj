@@ -89,7 +89,7 @@ public class CasCreationUtils {
    *           if CAS creation fails
    */
   public static CAS createCas(AnalysisEngineMetaData aMetaData)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     List list = new ArrayList();
     list.add(aMetaData);
     return createCas(list);
@@ -108,7 +108,7 @@ public class CasCreationUtils {
    *           if CAS creation fails
    */
   public static CAS createCas(ProcessingResourceMetaData aMetaData)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     List list = new ArrayList();
     list.add(aMetaData);
     return createCas(list);
@@ -128,7 +128,7 @@ public class CasCreationUtils {
    *           if CAS creation fails
    */
   public static CAS createCas(AnalysisEngineDescription aDescription)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     return createCas(aDescription, UIMAFramework.getDefaultPerformanceTuningProperties());
   }
 
@@ -149,7 +149,7 @@ public class CasCreationUtils {
    *           if CAS creation fails
    */
   public static CAS createCas(AnalysisEngineDescription aDescription,
-                  Properties aPerformanceTuningSettings) throws ResourceInitializationException {
+          Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     List list = new ArrayList();
     list.add(aDescription);
     return createCas(list, aPerformanceTuningSettings);
@@ -170,9 +170,9 @@ public class CasCreationUtils {
    *           if CAS creation fails
    */
   public static CAS createCas(Collection aComponentDescriptionsOrMetaData)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     return createCas(aComponentDescriptionsOrMetaData, UIMAFramework
-                    .getDefaultPerformanceTuningProperties());
+            .getDefaultPerformanceTuningProperties());
   }
 
   /**
@@ -193,9 +193,9 @@ public class CasCreationUtils {
    *           if CAS creation fails
    */
   public static CAS createCas(Collection aComponentDescriptionsOrMetaData,
-                  Properties aPerformanceTuningSettings) throws ResourceInitializationException {
+          Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     return createCas(aComponentDescriptionsOrMetaData, aPerformanceTuningSettings, UIMAFramework
-                    .newDefaultResourceManager());
+            .newDefaultResourceManager());
   }
 
   /**
@@ -218,8 +218,8 @@ public class CasCreationUtils {
    *           if CAS creation fails
    */
   public static CAS createCas(Collection aComponentDescriptionsOrMetaData,
-                  Properties aPerformanceTuningSettings, ResourceManager aResourceManager)
-                  throws ResourceInitializationException {
+          Properties aPerformanceTuningSettings, ResourceManager aResourceManager)
+          throws ResourceInitializationException {
     // build a list of metadata objects
     List mdList = getMetaDataList(aComponentDescriptionsOrMetaData, aResourceManager);
 
@@ -244,7 +244,7 @@ public class CasCreationUtils {
     FsIndexCollection aggIndexColl = mergeFsIndexes(fsIndexes, aResourceManager);
 
     return createCas(aggTypeDesc, aggTypePriorities, aggIndexColl.getFsIndexes(),
-                    aPerformanceTuningSettings, aResourceManager);
+            aPerformanceTuningSettings, aResourceManager);
   }
 
   /**
@@ -263,7 +263,7 @@ public class CasCreationUtils {
    *           if CAS creation fails
    */
   public static CAS createCas(TypeSystemDescription aTypeSystem, TypePriorities aTypePriorities,
-                  FsIndexDescription[] aFsIndexes) throws ResourceInitializationException {
+          FsIndexDescription[] aFsIndexes) throws ResourceInitializationException {
     return createCas(aTypeSystem, aTypePriorities, aFsIndexes, null, null);
   }
 
@@ -286,8 +286,8 @@ public class CasCreationUtils {
    *           if CAS creation fails
    */
   public static CAS createCas(TypeSystemDescription aTypeSystem, TypePriorities aTypePriorities,
-                  FsIndexDescription[] aFsIndexes, Properties aPerformanceTuningSettings)
-                  throws ResourceInitializationException {
+          FsIndexDescription[] aFsIndexes, Properties aPerformanceTuningSettings)
+          throws ResourceInitializationException {
     return createCas(aTypeSystem, aTypePriorities, aFsIndexes, aPerformanceTuningSettings, null);
   }
 
@@ -310,10 +310,10 @@ public class CasCreationUtils {
    *           if CAS creation fails
    */
   public static CAS createCas(TypeSystemDescription aTypeSystem, TypePriorities aTypePriorities,
-                  FsIndexDescription[] aFsIndexes, Properties aPerformanceTuningSettings,
-                  ResourceManager aResourceManager) throws ResourceInitializationException {
+          FsIndexDescription[] aFsIndexes, Properties aPerformanceTuningSettings,
+          ResourceManager aResourceManager) throws ResourceInitializationException {
     return doCreateCas(null, aTypeSystem, aTypePriorities, aFsIndexes, aPerformanceTuningSettings,
-                    aResourceManager);
+            aResourceManager);
   }
 
   /**
@@ -338,9 +338,9 @@ public class CasCreationUtils {
    *           if CAS creation fails
    */
   public static CAS createCas(Collection aComponentDescriptionsOrMetaData, TypeSystem aTypeSystem,
-                  Properties aPerformanceTuningSettings) throws ResourceInitializationException {
+          Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     return createCas(aComponentDescriptionsOrMetaData, aTypeSystem, aPerformanceTuningSettings,
-                    UIMAFramework.newDefaultResourceManager());
+            UIMAFramework.newDefaultResourceManager());
   }
 
   /**
@@ -368,8 +368,8 @@ public class CasCreationUtils {
    *           if CAS creation fails
    */
   public static CAS createCas(Collection aComponentDescriptionsOrMetaData, TypeSystem aTypeSystem,
-                  Properties aPerformanceTuningSettings, ResourceManager aResourceManager)
-                  throws ResourceInitializationException {
+          Properties aPerformanceTuningSettings, ResourceManager aResourceManager)
+          throws ResourceInitializationException {
     // build a list of metadata objects
     List mdList = getMetaDataList(aComponentDescriptionsOrMetaData, aResourceManager);
 
@@ -395,12 +395,12 @@ public class CasCreationUtils {
     if (aTypeSystem != null) // existing type system object was specified; use that
     {
       return createCas(aTypeSystem, aggTypePriorities, aggIndexColl.getFsIndexes(),
-                      aPerformanceTuningSettings, aResourceManager);
+              aPerformanceTuningSettings, aResourceManager);
     } else {
       // no type system object specified; merge type system descriptions in metadata
       TypeSystemDescription aggTypeDesc = mergeTypeSystems(typeSystems);
       return createCas(aggTypeDesc, aggTypePriorities, aggIndexColl.getFsIndexes(),
-                      aPerformanceTuningSettings, aResourceManager);
+              aPerformanceTuningSettings, aResourceManager);
     }
   }
 
@@ -421,8 +421,8 @@ public class CasCreationUtils {
    *           if CAS creation fails
    */
   public static CAS createCas(TypeSystem aTypeSystem, TypePriorities aTypePriorities,
-                  FsIndexDescription[] aFsIndexes, Properties aPerformanceTuningSettings)
-                  throws ResourceInitializationException {
+          FsIndexDescription[] aFsIndexes, Properties aPerformanceTuningSettings)
+          throws ResourceInitializationException {
     return createCas(aTypeSystem, aTypePriorities, aFsIndexes, aPerformanceTuningSettings, null);
   }
 
@@ -445,10 +445,10 @@ public class CasCreationUtils {
    *           if CAS creation fails
    */
   public static CAS createCas(TypeSystem aTypeSystem, TypePriorities aTypePriorities,
-                  FsIndexDescription[] aFsIndexes, Properties aPerformanceTuningSettings,
-                  ResourceManager aResourceManager) throws ResourceInitializationException {
+          FsIndexDescription[] aFsIndexes, Properties aPerformanceTuningSettings,
+          ResourceManager aResourceManager) throws ResourceInitializationException {
     return doCreateCas(aTypeSystem, null, aTypePriorities, aFsIndexes, aPerformanceTuningSettings,
-                    aResourceManager);
+            aResourceManager);
   }
 
   /**
@@ -475,9 +475,9 @@ public class CasCreationUtils {
    *           if CAS creation fails
    */
   private static CAS doCreateCas(TypeSystem aTypeSystem, TypeSystemDescription aTypeSystemDesc,
-                  TypePriorities aTypePriorities, FsIndexDescription[] aFsIndexes,
-                  Properties aPerformanceTuningSettings, ResourceManager aResourceManager)
-                  throws ResourceInitializationException {
+          TypePriorities aTypePriorities, FsIndexDescription[] aFsIndexes,
+          Properties aPerformanceTuningSettings, ResourceManager aResourceManager)
+          throws ResourceInitializationException {
     if (aResourceManager == null) {
       aResourceManager = UIMAFramework.newDefaultResourceManager();
     }
@@ -498,7 +498,7 @@ public class CasCreationUtils {
     String initialHeapSizeStr = null;
     if (aPerformanceTuningSettings != null) {
       initialHeapSizeStr = aPerformanceTuningSettings
-                      .getProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE);
+              .getProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE);
     }
 
     // create CAS using either aTypeSystem or aTypeSystemDesc
@@ -562,7 +562,7 @@ public class CasCreationUtils {
    *             TCAS interface have been moved to CAS.
    */
   public static TCAS createTCas(AnalysisEngineMetaData aMetaData)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     List list = new ArrayList();
     list.add(aMetaData);
     return createTCas(list);
@@ -584,7 +584,7 @@ public class CasCreationUtils {
    *             TCAS interface have been moved to CAS.
    */
   public static TCAS createTCas(ProcessingResourceMetaData aMetaData)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     List list = new ArrayList();
     list.add(aMetaData);
     return createTCas(list);
@@ -595,7 +595,7 @@ public class CasCreationUtils {
    *             TCAS interface have been moved to CAS.
    */
   public static TCAS createTCas(AnalysisEngineDescription aDescription)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     return createTCas(aDescription, UIMAFramework.getDefaultPerformanceTuningProperties());
   }
 
@@ -604,7 +604,7 @@ public class CasCreationUtils {
    *             TCAS interface have been moved to CAS.
    */
   public static TCAS createTCas(AnalysisEngineDescription aDescription,
-                  Properties aPerformanceTuningSettings) throws ResourceInitializationException {
+          Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     List list = new ArrayList();
     list.add(aDescription);
     return createTCas(list, aPerformanceTuningSettings);
@@ -615,9 +615,9 @@ public class CasCreationUtils {
    *             TCAS interface have been moved to CAS.
    */
   public static TCAS createTCas(Collection aComponentDescriptionsOrMetaData)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     return createTCas(aComponentDescriptionsOrMetaData, UIMAFramework
-                    .getDefaultPerformanceTuningProperties());
+            .getDefaultPerformanceTuningProperties());
   }
 
   /**
@@ -625,9 +625,9 @@ public class CasCreationUtils {
    *             TCAS interface have been moved to CAS.
    */
   public static TCAS createTCas(Collection aComponentDescriptionsOrMetaData,
-                  Properties aPerformanceTuningSettings) throws ResourceInitializationException {
+          Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     return createTCas(aComponentDescriptionsOrMetaData, aPerformanceTuningSettings, UIMAFramework
-                    .newDefaultResourceManager());
+            .newDefaultResourceManager());
   }
 
   /**
@@ -635,8 +635,8 @@ public class CasCreationUtils {
    *             TCAS interface have been moved to CAS.
    */
   public static TCAS createTCas(Collection aComponentDescriptionsOrMetaData,
-                  Properties aPerformanceTuningSettings, ResourceManager aResourceManager)
-                  throws ResourceInitializationException {
+          Properties aPerformanceTuningSettings, ResourceManager aResourceManager)
+          throws ResourceInitializationException {
     // build a list of metadata objects
     List mdList = getMetaDataList(aComponentDescriptionsOrMetaData, aResourceManager);
 
@@ -661,7 +661,7 @@ public class CasCreationUtils {
     FsIndexCollection aggIndexColl = mergeFsIndexes(fsIndexes, aResourceManager);
 
     return createTCas(aggTypeDesc, aggTypePriorities, aggIndexColl.getFsIndexes(),
-                    aPerformanceTuningSettings, aResourceManager);
+            aPerformanceTuningSettings, aResourceManager);
   }
 
   /**
@@ -669,9 +669,9 @@ public class CasCreationUtils {
    *             TCAS interface have been moved to CAS.
    */
   public static TCAS createTCas(Collection aComponentDescriptionsOrMetaData, TypeSystem aTypeSystem)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     return createTCas(aComponentDescriptionsOrMetaData, aTypeSystem, UIMAFramework
-                    .getDefaultPerformanceTuningProperties());
+            .getDefaultPerformanceTuningProperties());
   }
 
   /**
@@ -679,10 +679,10 @@ public class CasCreationUtils {
    *             TCAS interface have been moved to CAS.
    */
   public static TCAS createTCas(Collection aComponentDescriptionsOrMetaData,
-                  TypeSystem aTypeSystem, Properties aPerformanceTuningSettings)
-                  throws ResourceInitializationException {
+          TypeSystem aTypeSystem, Properties aPerformanceTuningSettings)
+          throws ResourceInitializationException {
     return createTCas(aComponentDescriptionsOrMetaData, aTypeSystem, aPerformanceTuningSettings,
-                    UIMAFramework.newDefaultResourceManager());
+            UIMAFramework.newDefaultResourceManager());
   }
 
   /**
@@ -690,8 +690,8 @@ public class CasCreationUtils {
    *             TCAS interface have been moved to CAS.
    */
   public static TCAS createTCas(Collection aComponentDescriptionsOrMetaData,
-                  TypeSystem aTypeSystem, Properties aPerformanceTuningSettings,
-                  ResourceManager aResourceManager) throws ResourceInitializationException {
+          TypeSystem aTypeSystem, Properties aPerformanceTuningSettings,
+          ResourceManager aResourceManager) throws ResourceInitializationException {
     // build a list of metadata objects
     List mdList = getMetaDataList(aComponentDescriptionsOrMetaData, aResourceManager);
 
@@ -717,12 +717,12 @@ public class CasCreationUtils {
     if (aTypeSystem != null) // existing type system object was specified; use that
     {
       return createTCas(aTypeSystem, aggTypePriorities, aggIndexColl.getFsIndexes(),
-                      aPerformanceTuningSettings, aResourceManager);
+              aPerformanceTuningSettings, aResourceManager);
     } else {
       // no type system object specified; merge type system descriptions in metadata
       TypeSystemDescription aggTypeDesc = mergeTypeSystems(typeSystems);
       return createTCas(aggTypeDesc, aggTypePriorities, aggIndexColl.getFsIndexes(),
-                      aPerformanceTuningSettings, aResourceManager);
+              aPerformanceTuningSettings, aResourceManager);
     }
   }
 
@@ -731,9 +731,9 @@ public class CasCreationUtils {
    *             TCAS interface have been moved to CAS.
    */
   public static TCAS createTCas(TypeSystemDescription aTypeSystem, TypePriorities aTypePriorities,
-                  FsIndexDescription[] aFsIndexes) throws ResourceInitializationException {
+          FsIndexDescription[] aFsIndexes) throws ResourceInitializationException {
     return createTCas(aTypeSystem, aTypePriorities, aFsIndexes, UIMAFramework
-                    .getDefaultPerformanceTuningProperties());
+            .getDefaultPerformanceTuningProperties());
   }
 
   /**
@@ -741,8 +741,8 @@ public class CasCreationUtils {
    *             TCAS interface have been moved to CAS.
    */
   public static TCAS createTCas(TypeSystemDescription aTypeSystem, TypePriorities aTypePriorities,
-                  FsIndexDescription[] aFsIndexes, Properties aPerformanceTuningSettings)
-                  throws ResourceInitializationException {
+          FsIndexDescription[] aFsIndexes, Properties aPerformanceTuningSettings)
+          throws ResourceInitializationException {
     return createTCas(aTypeSystem, aTypePriorities, aFsIndexes, aPerformanceTuningSettings, null);
   }
 
@@ -751,11 +751,11 @@ public class CasCreationUtils {
    *             TCAS interface have been moved to CAS.
    */
   public static TCAS createTCas(TypeSystemDescription aTypeSystem, TypePriorities aTypePriorities,
-                  FsIndexDescription[] aFsIndexes, Properties aPerformanceTuningSettings,
-                  ResourceManager aResourceManager) throws ResourceInitializationException {
+          FsIndexDescription[] aFsIndexes, Properties aPerformanceTuningSettings,
+          ResourceManager aResourceManager) throws ResourceInitializationException {
     // Create CAS, then create default text Sofa and return TCAS view
     CAS cas = createCas(aTypeSystem, aTypePriorities, aFsIndexes, aPerformanceTuningSettings,
-                    aResourceManager);
+            aResourceManager);
     return (TCAS) cas;
   }
 
@@ -764,9 +764,9 @@ public class CasCreationUtils {
    *             TCAS interface have been moved to CAS.
    */
   public static TCAS createTCas(TypeSystem aTypeSystem, TypePriorities aTypePriorities,
-                  FsIndexDescription[] aFsIndexes) throws ResourceInitializationException {
+          FsIndexDescription[] aFsIndexes) throws ResourceInitializationException {
     return createTCas(aTypeSystem, aTypePriorities, aFsIndexes, UIMAFramework
-                    .getDefaultPerformanceTuningProperties());
+            .getDefaultPerformanceTuningProperties());
   }
 
   /**
@@ -774,8 +774,8 @@ public class CasCreationUtils {
    *             TCAS interface have been moved to CAS.
    */
   public static TCAS createTCas(TypeSystem aTypeSystem, TypePriorities aTypePriorities,
-                  FsIndexDescription[] aFsIndexes, Properties aPerformanceTuningSettings)
-                  throws ResourceInitializationException {
+          FsIndexDescription[] aFsIndexes, Properties aPerformanceTuningSettings)
+          throws ResourceInitializationException {
     return createTCas(aTypeSystem, aTypePriorities, aFsIndexes, aPerformanceTuningSettings, null);
   }
 
@@ -784,11 +784,11 @@ public class CasCreationUtils {
    *             TCAS interface have been moved to CAS.
    */
   public static TCAS createTCas(TypeSystem aTypeSystem, TypePriorities aTypePriorities,
-                  FsIndexDescription[] aFsIndexes, Properties aPerformanceTuningSettings,
-                  ResourceManager aResourceManager) throws ResourceInitializationException {
+          FsIndexDescription[] aFsIndexes, Properties aPerformanceTuningSettings,
+          ResourceManager aResourceManager) throws ResourceInitializationException {
     // Create CAS, then create default text Sofa and return TCAS view
     CAS cas = createCas(aTypeSystem, aTypePriorities, aFsIndexes, aPerformanceTuningSettings,
-                    aResourceManager);
+            aResourceManager);
     return (TCAS) cas;
   }
 
@@ -804,10 +804,9 @@ public class CasCreationUtils {
    * @return a new CAS matching the given CasDefinition
    */
   public static CAS createCas(CasDefinition casDef, Properties performanceTuningSettings)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     return createCas(casDef.getTypeSystemDescription(), casDef.getTypePriorities(), casDef
-                    .getFsIndexDescriptions(), performanceTuningSettings, casDef
-                    .getResourceManager());
+            .getFsIndexDescriptions(), performanceTuningSettings, casDef.getResourceManager());
   }
 
   /**
@@ -824,9 +823,9 @@ public class CasCreationUtils {
    * @return a new CAS matching the given CasDefinition
    */
   public static CAS createCas(CasDefinition casDef, Properties performanceTuningSettings,
-                  TypeSystem typeSystem) throws ResourceInitializationException {
+          TypeSystem typeSystem) throws ResourceInitializationException {
     return createCas(typeSystem, casDef.getTypePriorities(), casDef.getFsIndexDescriptions(),
-                    performanceTuningSettings, casDef.getResourceManager());
+            performanceTuningSettings, casDef.getResourceManager());
   }
 
   /**
@@ -841,7 +840,7 @@ public class CasCreationUtils {
    *           if an error occurs during modification of the type system
    */
   public static void setupTypeSystem(CASMgr aCASMgr, TypeSystemDescription aTypeSystem)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     TypeSystemMgr typeSystemMgr = aCASMgr.getTypeSystemMgr();
     if (aTypeSystem != null) {
       TypeDescription[] types = aTypeSystem.getTypes();
@@ -869,8 +868,8 @@ public class CasCreationUtils {
             String superTypeName = curTypeDesc.getSupertypeName();
             if (superTypeName == null) {
               throw new ResourceInitializationException(
-                              ResourceInitializationException.NO_SUPERTYPE, new Object[] {
-                                  typeName, curTypeDesc.getSourceUrlString() });
+                      ResourceInitializationException.NO_SUPERTYPE, new Object[] { typeName,
+                          curTypeDesc.getSourceUrlString() });
             }
             Type supertype = typeSystemMgr.getType(superTypeName);
             if (supertype != null) {
@@ -880,8 +879,8 @@ public class CasCreationUtils {
                 AllowedValue[] vals = curTypeDesc.getAllowedValues();
                 if (vals == null) {
                   throw new ResourceInitializationException(
-                                  ResourceInitializationException.MISSING_ALLOWED_VALUES,
-                                  new Object[] { typeName, curTypeDesc.getSourceUrlString() });
+                          ResourceInitializationException.MISSING_ALLOWED_VALUES, new Object[] {
+                              typeName, curTypeDesc.getSourceUrlString() });
                 }
                 String[] valStrs = new String[vals.length];
                 for (int i = 0; i < valStrs.length; i++) {
@@ -892,10 +891,10 @@ public class CasCreationUtils {
               {
                 // make sure that allowed values are NOT specified for non-string subtypes
                 if (curTypeDesc.getAllowedValues() != null
-                                && curTypeDesc.getAllowedValues().length > 0) {
+                        && curTypeDesc.getAllowedValues().length > 0) {
                   throw new ResourceInitializationException(
-                                  ResourceInitializationException.ALLOWED_VALUES_ON_NON_STRING_TYPE,
-                                  new Object[] { typeName, curTypeDesc.getSourceUrlString() });
+                          ResourceInitializationException.ALLOWED_VALUES_ON_NON_STRING_TYPE,
+                          new Object[] { typeName, curTypeDesc.getSourceUrlString() });
                 }
                 typeSystemMgr.addType(typeName, supertype);
               }
@@ -913,9 +912,9 @@ public class CasCreationUtils {
         if (numTypes > 0) {
           TypeDescription firstFailed = (TypeDescription) typeList.getFirst();
           throw new ResourceInitializationException(
-                          ResourceInitializationException.UNDEFINED_SUPERTYPE, new Object[] {
-                              firstFailed.getSupertypeName(), firstFailed.getName(),
-                              firstFailed.getSourceUrlString() });
+                  ResourceInitializationException.UNDEFINED_SUPERTYPE, new Object[] {
+                      firstFailed.getSupertypeName(), firstFailed.getName(),
+                      firstFailed.getSourceUrlString() });
         }
 
         // now for each type, add its features. We add features to supertypes before subtypes. This
@@ -939,9 +938,9 @@ public class CasCreationUtils {
               Type rangeType = typeSystemMgr.getType(rangeTypeName);
               if (rangeType == null) {
                 throw new ResourceInitializationException(
-                                ResourceInitializationException.UNDEFINED_RANGE_TYPE, new Object[] {
-                                    rangeTypeName, featName, typeDesc.getName(),
-                                    features[j].getSourceUrlString() });
+                        ResourceInitializationException.UNDEFINED_RANGE_TYPE, new Object[] {
+                            rangeTypeName, featName, typeDesc.getName(),
+                            features[j].getSourceUrlString() });
               }
               if (rangeType.isArray()) // TODO: also List?
               {
@@ -952,9 +951,9 @@ public class CasCreationUtils {
                   Type elementType = typeSystemMgr.getType(elementTypeName);
                   if (elementType == null) {
                     throw new ResourceInitializationException(
-                                    ResourceInitializationException.UNDEFINED_RANGE_TYPE,
-                                    new Object[] { elementTypeName, featName, typeDesc.getName(),
-                                        features[j].getSourceUrlString() });
+                            ResourceInitializationException.UNDEFINED_RANGE_TYPE, new Object[] {
+                                elementTypeName, featName, typeDesc.getName(),
+                                features[j].getSourceUrlString() });
                   }
                   rangeType = typeSystemMgr.getArrayType(elementType);
                 }
@@ -983,10 +982,10 @@ public class CasCreationUtils {
    *           if an error occurs during type priority setup
    */
   public static void setupTypePriorities(CASMgr aCASMgr, TypePriorities aTypePriorities)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     if (aTypePriorities != null) {
       LinearTypeOrderBuilder typeOrderBuilder = aCASMgr.getIndexRepositoryMgr()
-                      .getDefaultOrderBuilder();
+              .getDefaultOrderBuilder();
       TypePriorityList[] priorityLists = aTypePriorities.getPriorityLists();
       for (int i = 0; i < priorityLists.length; i++) {
         // check that all types exist. This error would be caught in
@@ -996,8 +995,8 @@ public class CasCreationUtils {
         for (int j = 0; j < typeList.length; j++) {
           if (aCASMgr.getTypeSystemMgr().getType(typeList[j]) == null) {
             throw new ResourceInitializationException(
-                            ResourceInitializationException.UNDEFINED_TYPE_FOR_PRIORITY_LIST,
-                            new Object[] { typeList[j], priorityLists[i].getSourceUrlString() });
+                    ResourceInitializationException.UNDEFINED_TYPE_FOR_PRIORITY_LIST, new Object[] {
+                        typeList[j], priorityLists[i].getSourceUrlString() });
           }
         }
         try {
@@ -1006,8 +1005,8 @@ public class CasCreationUtils {
           // typically caused by a cycle in the priorities - the caused-by message
           // will clarify.
           throw new ResourceInitializationException(
-                          ResourceInitializationException.INVALID_TYPE_PRIORITIES,
-                          new Object[] { priorityLists[i].getSourceUrlString() }, e);
+                  ResourceInitializationException.INVALID_TYPE_PRIORITIES,
+                  new Object[] { priorityLists[i].getSourceUrlString() }, e);
         }
       }
     }
@@ -1025,7 +1024,7 @@ public class CasCreationUtils {
    *           if an error occurs during index creation
    */
   public static void setupIndexes(CASMgr aCASMgr, FsIndexDescription[] aIndexes)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     if (aIndexes != null) {
       TypeSystemMgr tsm = aCASMgr.getTypeSystemMgr();
       FSIndexRepositoryMgr irm = aCASMgr.getIndexRepositoryMgr();
@@ -1045,9 +1044,9 @@ public class CasCreationUtils {
         Type type = tsm.getType(aIndexes[i].getTypeName());
         if (type == null) {
           throw new ResourceInitializationException(
-                          ResourceInitializationException.UNDEFINED_TYPE_FOR_INDEX, new Object[] {
-                              aIndexes[i].getTypeName(), aIndexes[i].getLabel(),
-                              aIndexes[i].getSourceUrlString() });
+                  ResourceInitializationException.UNDEFINED_TYPE_FOR_INDEX, new Object[] {
+                      aIndexes[i].getTypeName(), aIndexes[i].getLabel(),
+                      aIndexes[i].getSourceUrlString() });
         }
         FSIndexComparator comparator = irm.createComparator();
         comparator.setType(type);
@@ -1061,9 +1060,9 @@ public class CasCreationUtils {
               Feature feature = type.getFeatureByBaseName(keys[j].getFeatureName());
               if (feature == null) {
                 throw new ResourceInitializationException(
-                                ResourceInitializationException.INDEX_KEY_FEATURE_NOT_FOUND,
-                                new Object[] { keys[j].getFeatureName(), aIndexes[i].getLabel(),
-                                    aIndexes[i].getSourceUrlString() });
+                        ResourceInitializationException.INDEX_KEY_FEATURE_NOT_FOUND, new Object[] {
+                            keys[j].getFeatureName(), aIndexes[i].getLabel(),
+                            aIndexes[i].getSourceUrlString() });
               }
               comparator.addKey(feature, keys[j].getComparator());
             }
@@ -1085,7 +1084,7 @@ public class CasCreationUtils {
    */
   public static TypeSystemDescription convertData2TypeSystem(CasData aCasData) {
     TypeSystemDescription result = UIMAFramework.getResourceSpecifierFactory()
-                    .createTypeSystemDescription();
+            .createTypeSystemDescription();
     Iterator iter = aCasData.getFeatureStructures();
     ArrayList typesArr = new ArrayList();
     while (iter.hasNext()) {
@@ -1133,7 +1132,7 @@ public class CasCreationUtils {
    *           if an incompatibiliy exists or if an import could not be resolved
    */
   public static TypeSystemDescription mergeTypeSystems(Collection aTypeSystems)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     return mergeTypeSystems(aTypeSystems, UIMAFramework.newDefaultResourceManager());
   }
 
@@ -1153,10 +1152,10 @@ public class CasCreationUtils {
    *           if an incompatibiliy exists or if an import could not be resolved
    */
   public static TypeSystemDescription mergeTypeSystems(Collection aTypeSystems,
-                  ResourceManager aResourceManager) throws ResourceInitializationException {
+          ResourceManager aResourceManager) throws ResourceInitializationException {
     // create the type system into which we are merging
     TypeSystemDescription result = UIMAFramework.getResourceSpecifierFactory()
-                    .createTypeSystemDescription();
+            .createTypeSystemDescription();
     // also build a Map from Type names to Types
     Map typeNameMap = new HashMap();
 
@@ -1179,7 +1178,7 @@ public class CasCreationUtils {
             if (existingType == null) {
               // create new type
               existingType = result.addType(types[i].getName(), types[i].getDescription(), types[i]
-                              .getSupertypeName());
+                      .getSupertypeName());
               existingType.setAllowedValues(types[i].getAllowedValues());
               existingType.setSourceUrl(types[i].getSourceUrl());
               typeNameMap.put(types[i].getName(), existingType);
@@ -1199,9 +1198,9 @@ public class CasCreationUtils {
                 } else {
                   // error
                   throw new ResourceInitializationException(
-                                  ResourceInitializationException.INCOMPATIBLE_SUPERTYPES,
-                                  new Object[] { typeName, supertypeName, existingSupertypeName,
-                                      types[i].getSourceUrlString() });
+                          ResourceInitializationException.INCOMPATIBLE_SUPERTYPES, new Object[] {
+                              typeName, supertypeName, existingSupertypeName,
+                              types[i].getSourceUrlString() });
                 }
 
               }
@@ -1232,10 +1231,9 @@ public class CasCreationUtils {
    *           if an incompatibiliy exists or if an import could not be resolved
    */
   public static TypeSystemDescription mergeDelegateAnalysisEngineTypeSystems(
-                  AnalysisEngineDescription aAggregateDescription)
-                  throws ResourceInitializationException {
+          AnalysisEngineDescription aAggregateDescription) throws ResourceInitializationException {
     return mergeDelegateAnalysisEngineTypeSystems(aAggregateDescription, UIMAFramework
-                    .newDefaultResourceManager());
+            .newDefaultResourceManager());
   }
 
   /**
@@ -1254,8 +1252,8 @@ public class CasCreationUtils {
    *           if an incompatibiliy exists or if an import could not be resolved
    */
   public static TypeSystemDescription mergeDelegateAnalysisEngineTypeSystems(
-                  AnalysisEngineDescription aAggregateDescription, ResourceManager aResourceManager)
-                  throws ResourceInitializationException {
+          AnalysisEngineDescription aAggregateDescription, ResourceManager aResourceManager)
+          throws ResourceInitializationException {
     // expand the aggregate AE description into the individual delegates
     ArrayList l = new ArrayList();
     l.add(aAggregateDescription);
@@ -1285,7 +1283,7 @@ public class CasCreationUtils {
    *           if an incompatibiliy exists or if an import could not be resolved
    */
   public static FsIndexCollection mergeFsIndexes(List aFsIndexCollections,
-                  ResourceManager aResourceManager) throws ResourceInitializationException {
+          ResourceManager aResourceManager) throws ResourceInitializationException {
     Map aggIndexes = new HashMap();
     Iterator it = aFsIndexCollections.iterator();
     while (it.hasNext()) {
@@ -1301,16 +1299,16 @@ public class CasCreationUtils {
         for (int i = 0; i < indexes.length; i++) {
           // does an index with this label already exist?
           FsIndexDescription duplicateIndex = (FsIndexDescription) aggIndexes.get(indexes[i]
-                          .getLabel());
+                  .getLabel());
           if (duplicateIndex == null) {
             // no, so add it
             aggIndexes.put(indexes[i].getLabel(), indexes[i]);
           } else if (!duplicateIndex.equals(indexes[i])) {
             // index with same label exists, they better be equal!
             throw new ResourceInitializationException(
-                            ResourceInitializationException.DUPLICATE_INDEX_NAME, new Object[] {
-                                duplicateIndex.getLabel(), duplicateIndex.getSourceUrlString(),
-                                indexes[i].getSourceUrlString() });
+                    ResourceInitializationException.DUPLICATE_INDEX_NAME, new Object[] {
+                        duplicateIndex.getLabel(), duplicateIndex.getSourceUrlString(),
+                        indexes[i].getSourceUrlString() });
           }
         }
       }
@@ -1318,7 +1316,7 @@ public class CasCreationUtils {
 
     // convert index map to FsIndexCollection
     FsIndexCollection aggIndexColl = UIMAFramework.getResourceSpecifierFactory()
-                    .createFsIndexCollection();
+            .createFsIndexCollection();
     Collection indexes = aggIndexes.values();
     FsIndexDescription[] indexArray = new FsIndexDescription[indexes.size()];
     indexes.toArray(indexArray);
@@ -1340,10 +1338,9 @@ public class CasCreationUtils {
    *           if an incompatibiliy exists or if an import could not be resolved
    */
   public static FsIndexCollection mergeDelegateAnalysisEngineFsIndexCollections(
-                  AnalysisEngineDescription aAggregateDescription)
-                  throws ResourceInitializationException {
+          AnalysisEngineDescription aAggregateDescription) throws ResourceInitializationException {
     return mergeDelegateAnalysisEngineFsIndexCollections(aAggregateDescription, UIMAFramework
-                    .newDefaultResourceManager());
+            .newDefaultResourceManager());
   }
 
   /**
@@ -1362,8 +1359,8 @@ public class CasCreationUtils {
    *           if an incompatibiliy exists or if an import could not be resolved
    */
   public static FsIndexCollection mergeDelegateAnalysisEngineFsIndexCollections(
-                  AnalysisEngineDescription aAggregateDescription, ResourceManager aResourceManager)
-                  throws ResourceInitializationException {
+          AnalysisEngineDescription aAggregateDescription, ResourceManager aResourceManager)
+          throws ResourceInitializationException {
     // expand the aggregate AE description into the individual delegates
     ArrayList l = new ArrayList();
     l.add(aAggregateDescription);
@@ -1393,9 +1390,9 @@ public class CasCreationUtils {
    *           if an import could not be resolved
    */
   public static TypePriorities mergeTypePriorities(List aTypePriorities,
-                  ResourceManager aResourceManager) throws ResourceInitializationException {
+          ResourceManager aResourceManager) throws ResourceInitializationException {
     TypePriorities aggTypePriorities = UIMAFramework.getResourceSpecifierFactory()
-                    .createTypePriorities();
+            .createTypePriorities();
     Iterator it = aTypePriorities.iterator();
     while (it.hasNext()) {
       TypePriorities tp = (TypePriorities) it.next();
@@ -1428,10 +1425,9 @@ public class CasCreationUtils {
    *           if an incompatibility exists
    */
   public static TypePriorities mergeDelegateAnalysisEngineTypePriorities(
-                  AnalysisEngineDescription aAggregateDescription)
-                  throws ResourceInitializationException {
+          AnalysisEngineDescription aAggregateDescription) throws ResourceInitializationException {
     return mergeDelegateAnalysisEngineTypePriorities(aAggregateDescription, UIMAFramework
-                    .newDefaultResourceManager());
+            .newDefaultResourceManager());
   }
 
   /**
@@ -1450,8 +1446,8 @@ public class CasCreationUtils {
    *           if an incompatibility exists
    */
   public static TypePriorities mergeDelegateAnalysisEngineTypePriorities(
-                  AnalysisEngineDescription aAggregateDescription, ResourceManager aResourceManager)
-                  throws ResourceInitializationException {
+          AnalysisEngineDescription aAggregateDescription, ResourceManager aResourceManager)
+          throws ResourceInitializationException {
     // expand the aggregate AE description into the individual delegates
     ArrayList l = new ArrayList();
     l.add(aAggregateDescription);
@@ -1513,7 +1509,7 @@ public class CasCreationUtils {
    *           if an incompatibility exists
    */
   protected static void mergeFeatures(TypeDescription aType, FeatureDescription[] aFeatures)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     FeatureDescription[] existingFeatures = aType.getFeatures();
     if (existingFeatures == null) {
       existingFeatures = new FeatureDescription[0];
@@ -1537,16 +1533,16 @@ public class CasCreationUtils {
       if (feat == null) {
         // doesn't exist; add it
         FeatureDescription featDesc = aType.addFeature(featName, aFeatures[i].getDescription(),
-                        rangeTypeName, elementTypeName, multiRefsAllowed);
+                rangeTypeName, elementTypeName, multiRefsAllowed);
         featDesc.setSourceUrl(aFeatures[i].getSourceUrl());
       } else // feature does exist
       {
         // check that the range types match
         if (!feat.getRangeTypeName().equals(rangeTypeName)) {
           throw new ResourceInitializationException(
-                          ResourceInitializationException.INCOMPATIBLE_RANGE_TYPES, new Object[] {
-                              aType.getName() + ":" + feat.getName(), rangeTypeName,
-                              feat.getRangeTypeName(), aType.getSourceUrlString() });
+                  ResourceInitializationException.INCOMPATIBLE_RANGE_TYPES, new Object[] {
+                      aType.getName() + ":" + feat.getName(), rangeTypeName,
+                      feat.getRangeTypeName(), aType.getSourceUrlString() });
         }
       }
     }
@@ -1571,7 +1567,7 @@ public class CasCreationUtils {
    *           if a failure occurs because an import could not be resolved
    */
   public static List getMetaDataList(Collection aComponentDescriptionOrMetaData,
-                  ResourceManager aResourceManager) throws ResourceInitializationException {
+          ResourceManager aResourceManager) throws ResourceInitializationException {
     List mdList = new ArrayList();
     if (null == aComponentDescriptionOrMetaData) {
       return mdList;

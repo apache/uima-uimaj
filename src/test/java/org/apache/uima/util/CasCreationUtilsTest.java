@@ -63,15 +63,13 @@ public class CasCreationUtilsTest extends TestCase {
   public void testMergeTypeSystems() throws Exception {
     try {
       TypeSystemDescription ts1desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-                      new XMLInputSource(JUnitExtension
-                                      .getFile("CasCreationUtilsTest/TypeSystem1.xml")));
+              new XMLInputSource(JUnitExtension.getFile("CasCreationUtilsTest/TypeSystem1.xml")));
 
       Assert.assertEquals(1, ts1desc.getType("Type1").getFeatures().length);
       Assert.assertEquals(1, ts1desc.getType("Type2").getFeatures().length);
 
       TypeSystemDescription ts2desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-                      new XMLInputSource(JUnitExtension
-                                      .getFile("CasCreationUtilsTest/TypeSystem2.xml")));
+              new XMLInputSource(JUnitExtension.getFile("CasCreationUtilsTest/TypeSystem2.xml")));
       Assert.assertEquals(1, ts2desc.getType("Type1").getFeatures().length);
       Assert.assertEquals(1, ts2desc.getType("Type2").getFeatures().length);
 
@@ -91,27 +89,25 @@ public class CasCreationUtilsTest extends TestCase {
     try {
       // parse descriptor
       File taeDescriptorWithImport = JUnitExtension
-                      .getFile("CasCreationUtilsTest/TaeWithImports.xml");
+              .getFile("CasCreationUtilsTest/TaeWithImports.xml");
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-                      new XMLInputSource(taeDescriptorWithImport));
+              new XMLInputSource(taeDescriptorWithImport));
 
       // create Resource Manager & set data path - necessary to resolve imports
       ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
       String pathSep = System.getProperty("path.separator");
       resMgr.setDataPath(JUnitExtension.getFile("TypeSystemDescriptionImplTest/dataPathDir")
-                      .getAbsolutePath()
-                      + pathSep
-                      + JUnitExtension.getFile("TypePrioritiesImplTest/dataPathDir")
-                                      .getAbsolutePath()
-                      + pathSep
-                      + JUnitExtension.getFile("FsIndexCollectionImplTest/dataPathDir")
-                                      .getAbsolutePath());
+              .getAbsolutePath()
+              + pathSep
+              + JUnitExtension.getFile("TypePrioritiesImplTest/dataPathDir").getAbsolutePath()
+              + pathSep
+              + JUnitExtension.getFile("FsIndexCollectionImplTest/dataPathDir").getAbsolutePath());
 
       // call method
       ArrayList descList = new ArrayList();
       descList.add(desc);
       TCAS tcas = CasCreationUtils.createTCas(descList, UIMAFramework
-                      .getDefaultPerformanceTuningProperties(), resMgr);
+              .getDefaultPerformanceTuningProperties(), resMgr);
       // check that imports were resolved correctly
       assertNotNull(tcas.getTypeSystem().getType("DocumentStructure"));
       assertNotNull(tcas.getTypeSystem().getType("NamedEntity"));
@@ -135,22 +131,20 @@ public class CasCreationUtilsTest extends TestCase {
       String pathSep = System.getProperty("path.separator");
       ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
       resMgr.setDataPath(JUnitExtension.getFile("TypeSystemDescriptionImplTest/dataPathDir")
-                      .getAbsolutePath()
-                      + pathSep
-                      + JUnitExtension.getFile("TypePrioritiesImplTest/dataPathDir")
-                                      .getAbsolutePath()
-                      + pathSep
-                      + JUnitExtension.getFile("FsIndexCollectionImplTest/dataPathDir")
-                                      .getAbsolutePath());
+              .getAbsolutePath()
+              + pathSep
+              + JUnitExtension.getFile("TypePrioritiesImplTest/dataPathDir").getAbsolutePath()
+              + pathSep
+              + JUnitExtension.getFile("FsIndexCollectionImplTest/dataPathDir").getAbsolutePath());
 
       File taeDescriptorWithImport = JUnitExtension
-                      .getFile("CasCreationUtilsTest/AggregateTaeWithImports.xml");
+              .getFile("CasCreationUtilsTest/AggregateTaeWithImports.xml");
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-                      new XMLInputSource(taeDescriptorWithImport));
+              new XMLInputSource(taeDescriptorWithImport));
       ArrayList mdList = new ArrayList();
       mdList.add(desc);
       TCAS tcas = CasCreationUtils.createTCas(mdList, UIMAFramework
-                      .getDefaultPerformanceTuningProperties(), resMgr);
+              .getDefaultPerformanceTuningProperties(), resMgr);
       // check that imports were resolved correctly
       assertNotNull(tcas.getTypeSystem().getType("DocumentStructure"));
       assertNotNull(tcas.getTypeSystem().getType("NamedEntity"));
@@ -171,7 +165,7 @@ public class CasCreationUtilsTest extends TestCase {
       assertEquals(tcas.getTypeSystem().getType("Sentence"), sentenceArrayType.getComponentType());
 
       Feature arrayFeat2 = tcas.getTypeSystem().getFeatureByFullName(
-                      "Paragraph:testMultiRefAllowedFeature");
+              "Paragraph:testMultiRefAllowedFeature");
       assertNotNull(arrayFeat2);
       assertTrue(arrayFeat2.isMultipleReferencesAllowed());
 
@@ -192,9 +186,9 @@ public class CasCreationUtilsTest extends TestCase {
   public void testMergeDelegateAnalysisEngineMetaData() throws Exception {
     try {
       File descFile = JUnitExtension
-                      .getFile("TextAnalysisEngineImplTest/AggregateTaeForMergeTest.xml");
+              .getFile("TextAnalysisEngineImplTest/AggregateTaeForMergeTest.xml");
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-                      new XMLInputSource(descFile));
+              new XMLInputSource(descFile));
       TypeSystemDescription typeSys = CasCreationUtils.mergeDelegateAnalysisEngineTypeSystems(desc);
 
       // test results of merge
@@ -247,9 +241,9 @@ public class CasCreationUtilsTest extends TestCase {
   public void testMergeDelegateAnalysisEngineTypePriorities() throws Exception {
     try {
       File descFile = JUnitExtension
-                      .getFile("TextAnalysisEngineImplTest/AggregateTaeForMergeTest.xml");
+              .getFile("TextAnalysisEngineImplTest/AggregateTaeForMergeTest.xml");
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-                      new XMLInputSource(descFile));
+              new XMLInputSource(descFile));
       TypePriorities pri = CasCreationUtils.mergeDelegateAnalysisEngineTypePriorities(desc);
 
       // test results of merge
@@ -261,8 +255,8 @@ public class CasCreationUtilsTest extends TestCase {
       String[] list2 = priLists[2].getTypes();
       // order of the three lists is not defined
       Assert.assertTrue((list0.length == 2 && list1.length == 2 && list2.length == 3)
-                      || (list0.length == 2 && list1.length == 3 && list2.length == 2)
-                      || (list0.length == 3 && list1.length == 2 && list2.length == 2));
+              || (list0.length == 2 && list1.length == 3 && list2.length == 2)
+              || (list0.length == 3 && list1.length == 2 && list2.length == 2));
 
     } catch (Exception e) {
       JUnitExtension.handleException(e);
@@ -272,11 +266,11 @@ public class CasCreationUtilsTest extends TestCase {
   public void testMergeDelegateAnalysisEngineFsIndexCollections() throws Exception {
     try {
       File descFile = JUnitExtension
-                      .getFile("TextAnalysisEngineImplTest/AggregateTaeForMergeTest.xml");
+              .getFile("TextAnalysisEngineImplTest/AggregateTaeForMergeTest.xml");
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-                      new XMLInputSource(descFile));
+              new XMLInputSource(descFile));
       FsIndexCollection indexColl = CasCreationUtils
-                      .mergeDelegateAnalysisEngineFsIndexCollections(desc);
+              .mergeDelegateAnalysisEngineFsIndexCollections(desc);
 
       // test results of merge
       FsIndexDescription[] indexes = indexColl.getFsIndexes();
@@ -286,12 +280,12 @@ public class CasCreationUtilsTest extends TestCase {
       String label1 = indexes[1].getLabel();
       String label2 = indexes[2].getLabel();
       Assert.assertTrue(label0.equals("DocStructIndex") || label1.equals("DocStructIndex")
-                      || label2.equals("DocStructIndex"));
+              || label2.equals("DocStructIndex"));
       Assert.assertTrue(label0.equals("PlaceIndex") || label1.equals("PlaceIndex")
-                      || label2.equals("PlaceIndex"));
+              || label2.equals("PlaceIndex"));
       Assert.assertTrue(label0.equals("FlowControllerTestIndex")
-                      || label1.equals("FlowControllerTestIndex")
-                      || label2.equals("FlowControllerTestIndex"));
+              || label1.equals("FlowControllerTestIndex")
+              || label2.equals("FlowControllerTestIndex"));
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -310,7 +304,7 @@ public class CasCreationUtilsTest extends TestCase {
       CASMgr casMgr = CASFactory.createCAS();
       CasCreationUtils.setupTypeSystem(casMgr, tsd1);
       assertNotNull(casMgr.getTypeSystemMgr().getType("test.Super")
-                      .getFeatureByBaseName("testfeat"));
+              .getFeatureByBaseName("testfeat"));
 
       TypeSystemDescription tsd2 = new TypeSystemDescription_impl();
       tsd2.setTypes(new TypeDescription[] { subtype, supertype });
@@ -318,38 +312,36 @@ public class CasCreationUtilsTest extends TestCase {
       casMgr = CASFactory.createCAS();
       CasCreationUtils.setupTypeSystem(casMgr, tsd2);
       assertNotNull(casMgr.getTypeSystemMgr().getType("test.Super")
-                      .getFeatureByBaseName("testfeat"));
+              .getFeatureByBaseName("testfeat"));
 
     } catch (ResourceInitializationException e) {
       JUnitExtension.handleException(e);
     }
   }
-  
+
   public void testCreateCasCollectionPropertiesResourceManager() throws Exception {
     try {
       // parse an AE descriptor
       File taeDescriptorWithImport = JUnitExtension
-                      .getFile("CasCreationUtilsTest/TaeWithImports.xml");
+              .getFile("CasCreationUtilsTest/TaeWithImports.xml");
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-                      new XMLInputSource(taeDescriptorWithImport));
+              new XMLInputSource(taeDescriptorWithImport));
 
       // create Resource Manager & set data path - necessary to resolve imports
       ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
       String pathSep = System.getProperty("path.separator");
       resMgr.setDataPath(JUnitExtension.getFile("TypeSystemDescriptionImplTest/dataPathDir")
-                      .getAbsolutePath()
-                      + pathSep
-                      + JUnitExtension.getFile("TypePrioritiesImplTest/dataPathDir")
-                                      .getAbsolutePath()
-                      + pathSep
-                      + JUnitExtension.getFile("FsIndexCollectionImplTest/dataPathDir")
-                                      .getAbsolutePath());
-               
+              .getAbsolutePath()
+              + pathSep
+              + JUnitExtension.getFile("TypePrioritiesImplTest/dataPathDir").getAbsolutePath()
+              + pathSep
+              + JUnitExtension.getFile("FsIndexCollectionImplTest/dataPathDir").getAbsolutePath());
+
       // call method
       ArrayList descList = new ArrayList();
       descList.add(desc);
       CAS cas = CasCreationUtils.createCas(descList, UIMAFramework
-                      .getDefaultPerformanceTuningProperties(), resMgr);
+              .getDefaultPerformanceTuningProperties(), resMgr);
       // check that imports were resolved correctly
       assertNotNull(cas.getTypeSystem().getType("DocumentStructure"));
       assertNotNull(cas.getTypeSystem().getType("NamedEntity"));
@@ -365,6 +357,6 @@ public class CasCreationUtilsTest extends TestCase {
       assertTrue(cas.getAnnotationIndex().compare(fs1, fs2) < 0);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
-    }    
+    }
   }
 }

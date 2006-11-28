@@ -67,7 +67,7 @@ public class InstallationTester {
   public static void main(String[] args) throws Exception {
     if (System.getProperty("DEBUG") != null) {
       System.out.println("<DBG> [InstallationTester]: arg=" + args[0] + "; CP="
-                      + System.getProperty("java.class.path"));
+              + System.getProperty("java.class.path"));
     }
     UIMAFramework.getLogger().setLevel(Level.OFF);
     try {
@@ -107,7 +107,7 @@ public class InstallationTester {
    *           if this exception occurred while identifying UIMA component category.
    */
   public InstallationTester(String compDescFilePath) throws IOException, InvalidXMLException,
-                  ResourceInitializationException, UIMAException, UIMARuntimeException {
+          ResourceInitializationException, UIMAException, UIMARuntimeException {
     // check UIMA category of the main component
     File compDescFile = new File(compDescFilePath);
     String uimaCategory = UIMAUtil.identifyUimaComponentCategory(compDescFile);
@@ -152,7 +152,7 @@ public class InstallationTester {
    *           If the specified AE cannot be instantiated.
    */
   public static boolean testAnalysisEngine(File aeSpecifierFile) throws IOException,
-                  InvalidXMLException, ResourceInitializationException {
+          InvalidXMLException, ResourceInitializationException {
     try {
       XMLInputSource xmlIn = new XMLInputSource(aeSpecifierFile);
       ResourceSpecifier aeSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(xmlIn);
@@ -164,8 +164,7 @@ public class InstallationTester {
         return false;
     } catch (IOException ioE) {
       System.err
-                      .println("Error on creating XML source from descriptor file :: "
-                                      + ioE.getMessage());
+              .println("Error on creating XML source from descriptor file :: " + ioE.getMessage());
       throw ioE;
     } catch (InvalidXMLException inxE) {
       System.err.println("Error on parsing the XML source file :: " + inxE.getMessage());
@@ -191,7 +190,7 @@ public class InstallationTester {
    *           If the specified CC cannot be instantiated.
    */
   public static boolean testCasConsumer(File ccSpecifierFile) throws IOException,
-                  InvalidXMLException, ResourceInitializationException {
+          InvalidXMLException, ResourceInitializationException {
     try {
       XMLInputSource xmlIn = new XMLInputSource(ccSpecifierFile);
       ResourceSpecifier ccSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(xmlIn);
@@ -199,8 +198,7 @@ public class InstallationTester {
       return cc != null;
     } catch (IOException ioE) {
       System.err
-                      .println("Error on creating XML source from descriptor file :: "
-                                      + ioE.getMessage());
+              .println("Error on creating XML source from descriptor file :: " + ioE.getMessage());
       throw ioE;
     } catch (InvalidXMLException inxE) {
       System.err.println("Error on parsing the XML source file :: " + inxE.getMessage());
@@ -226,7 +224,7 @@ public class InstallationTester {
    *           If the specified CI cannot be instantiated.
    */
   public static boolean testCasInitializer(File ciSpecifierFile) throws IOException,
-                  InvalidXMLException, ResourceInitializationException {
+          InvalidXMLException, ResourceInitializationException {
     try {
       XMLInputSource xmlIn = new XMLInputSource(ciSpecifierFile);
       ResourceSpecifier ciSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(xmlIn);
@@ -234,8 +232,7 @@ public class InstallationTester {
       return ci != null;
     } catch (IOException ioE) {
       System.err
-                      .println("Error on creating XML source from descriptor file :: "
-                                      + ioE.getMessage());
+              .println("Error on creating XML source from descriptor file :: " + ioE.getMessage());
       throw ioE;
     } catch (InvalidXMLException inxE) {
       System.err.println("Error on parsing the XML source file :: " + inxE.getMessage());
@@ -261,7 +258,7 @@ public class InstallationTester {
    *           If the specified CR cannot be instantiated.
    */
   public static boolean testCollectionReader(File crSpecifierFile) throws IOException,
-                  InvalidXMLException, ResourceInitializationException {
+          InvalidXMLException, ResourceInitializationException {
     try {
       XMLInputSource xmlIn = new XMLInputSource(crSpecifierFile);
       ResourceSpecifier crSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(xmlIn);
@@ -269,8 +266,7 @@ public class InstallationTester {
       return cr != null;
     } catch (IOException ioE) {
       System.err
-                      .println("Error on creating XML source from descriptor file :: "
-                                      + ioE.getMessage());
+              .println("Error on creating XML source from descriptor file :: " + ioE.getMessage());
       throw ioE;
     } catch (InvalidXMLException inxE) {
       System.err.println("Error on parsing the XML source file :: " + inxE.getMessage());
@@ -296,17 +292,16 @@ public class InstallationTester {
    *           If the specified CPE cannot be instantiated.
    */
   public static boolean testCpeCongifuration(File cpeSpecifierFile) throws IOException,
-                  InvalidXMLException, ResourceInitializationException {
+          InvalidXMLException, ResourceInitializationException {
     try {
       XMLInputSource xmlIn = new XMLInputSource(cpeSpecifierFile);
       CpeDescription cpeDescription = UIMAFramework.getXMLParser().parseCpeDescription(xmlIn);
       CollectionProcessingEngine cpe = UIMAFramework
-                      .produceCollectionProcessingEngine(cpeDescription);
+              .produceCollectionProcessingEngine(cpeDescription);
       return cpe != null;
     } catch (IOException ioE) {
       System.err
-                      .println("Error on creating XML source from descriptor file :: "
-                                      + ioE.getMessage());
+              .println("Error on creating XML source from descriptor file :: " + ioE.getMessage());
       throw ioE;
     } catch (InvalidXMLException inxE) {
       System.err.println("Error on parsing the XML source file :: " + inxE.getMessage());
@@ -333,20 +328,19 @@ public class InstallationTester {
    *           If the specified TS cannot be used to create a CAS.
    */
   public static boolean testTypeSystem(File tsSpecifierFile) throws IOException,
-                  InvalidXMLException, ResourceInitializationException {
+          InvalidXMLException, ResourceInitializationException {
     try {
       XMLInputSource xmlIn = new XMLInputSource(tsSpecifierFile);
       TypeSystemDescription tsDescription = UIMAFramework.getXMLParser()
-                      .parseTypeSystemDescription(xmlIn);
+              .parseTypeSystemDescription(xmlIn);
       TypePriorities tPriorities = UIMAFramework.getResourceSpecifierFactory()
-                      .createTypePriorities();
+              .createTypePriorities();
       FsIndexDescription[] fsIndexes = new FsIndexDescription[0];
       CAS cas = CasCreationUtils.createCas(tsDescription, tPriorities, fsIndexes);
       return cas != null;
     } catch (IOException ioE) {
       System.err
-                      .println("Error on creating XML source from descriptor file :: "
-                                      + ioE.getMessage());
+              .println("Error on creating XML source from descriptor file :: " + ioE.getMessage());
       throw ioE;
     } catch (InvalidXMLException inxE) {
       System.err.println("Error on parsing the XML source file :: " + inxE.getMessage());

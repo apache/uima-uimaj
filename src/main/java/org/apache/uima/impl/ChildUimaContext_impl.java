@@ -52,17 +52,17 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
    * This Context's view of the Session object
    */
   private SessionNamespaceView_impl mSessionNamespaceView;
-  
+
   /*
    * (non-Javadoc) Creates a child context.
    */
   public ChildUimaContext_impl(UimaContextAdmin aParentContext, String aContextName,
-                  Map aSofaMappings) {
+          Map aSofaMappings) {
     mRootContext = aParentContext.getRootContext();
     mLogger = aParentContext.getRootContext().getLogger();
     mQualifiedContextName = aParentContext.getQualifiedContextName() + aContextName + '/';
     mSessionNamespaceView = new SessionNamespaceView_impl(mRootContext.getSession(),
-                    mQualifiedContextName);
+            mQualifiedContextName);
     mSofaMappings = aSofaMappings;
   }
 
@@ -74,7 +74,7 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
    *      ConfigurationManager)
    */
   public void initializeRoot(Logger aLogger, ResourceManager aResourceManager,
-                  ConfigurationManager aConfigurationManager) {
+          ConfigurationManager aConfigurationManager) {
     throw new UIMA_UnsupportedOperationException();
   }
 

@@ -141,7 +141,7 @@ public class IndexComparitorTest extends TestCase {
       irm.createIndex(newComparator(type1), "SetType1", FSIndex.SET_INDEX);
       irm.createIndex(newComparator(type1), "BagType1", FSIndex.BAG_INDEX);
       irm.createIndex(newComparatorTypePriority(type1), "SortedType1TypeOrder",
-                      FSIndex.SORTED_INDEX);
+              FSIndex.SORTED_INDEX);
       irm.createIndex(newComparatorTypePriority(type1), "SetType1TypeOrder", FSIndex.SET_INDEX);
       irm.createIndex(newComparatorTypePriority(type1), "BagType1TypeOrder", FSIndex.BAG_INDEX);
 
@@ -149,11 +149,11 @@ public class IndexComparitorTest extends TestCase {
       irm.createIndex(newComparator(type1Sub1), "SetType1Sub1", FSIndex.SET_INDEX);
       irm.createIndex(newComparator(type1Sub1), "BagType1Sub1", FSIndex.BAG_INDEX);
       irm.createIndex(newComparatorTypePriority(type1Sub1), "SortedType1Sub1TypeOrder",
-                      FSIndex.SORTED_INDEX);
+              FSIndex.SORTED_INDEX);
       irm.createIndex(newComparatorTypePriority(type1Sub1), "SetType1Sub1TypeOrder",
-                      FSIndex.SET_INDEX);
+              FSIndex.SET_INDEX);
       irm.createIndex(newComparatorTypePriority(type1Sub1), "BagType1Sub1TypeOrder",
-                      FSIndex.BAG_INDEX);
+              FSIndex.BAG_INDEX);
 
     }
 

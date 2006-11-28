@@ -55,7 +55,7 @@ public class FileLanguageResource_implTest extends TestCase {
 
       FileLanguageResourceSpecifier spec = new FileLanguageResourceSpecifier_impl();
       spec.setFileUrlPrefix(JUnitExtension.getFile(
-                      "ResourceTest/FileLanguageResource_implTest_data_").toURL().toString());
+              "ResourceTest/FileLanguageResource_implTest_data_").toURL().toString());
       spec.setFileUrlSuffix(".dat");
       mResource = new FileLanguageResource_impl();
       mResource.initialize(spec, Collections.EMPTY_MAP);

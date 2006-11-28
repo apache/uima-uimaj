@@ -131,7 +131,7 @@ public final class IntegerArray extends TOP implements IntArrayFS {
     jcasType.casImpl.checkArrayBounds(addr, srcOffset, length);
     for (int i = 0; i < length; i++) {
       dest[i + destOffset] = Integer.toString(jcasType.ll_cas.ll_getIntArrayValue(addr, i
-                      + srcOffset));
+              + srcOffset));
     }
   }
 
@@ -142,7 +142,7 @@ public final class IntegerArray extends TOP implements IntArrayFS {
     jcasType.casImpl.checkArrayBounds(addr, destOffset, length);
     for (int i = 0; i < length; i++) {
       jcasType.ll_cas.ll_setIntArrayValue(addr, i + destOffset, Integer
-                      .parseInt(src[i + srcOffset]));
+              .parseInt(src[i + srcOffset]));
     }
   }
 

@@ -136,7 +136,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    * {@link #initialize(ResourceSpecifier,Map)} method.
    */
   public static final String PARAM_MBEAN_SERVER = "MBEAN_SERVER";
-  
+
   /**
    * Initializes this <code>Resource</code> from a <code>ResourceSpecifier</code>. Applications
    * do not need to call this method. It is called automatically by the <code>ResourceFactory</code>
@@ -149,7 +149,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier,Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-                  throws ResourceInitializationException;
+          throws ResourceInitializationException;
 
   /**
    * Gets the metadata that describes this <code>AnalysisEngine</code>. This is just a
@@ -233,7 +233,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    *           if a failure occurs during processing.
    */
   public ProcessTrace process(CAS aCAS, ResultSpecification aResultSpec)
-                  throws ResultNotSupportedException, AnalysisEngineProcessException;
+          throws ResultNotSupportedException, AnalysisEngineProcessException;
 
   /**
    * Invokes this AnalysisEngine's analysis logic. Prior to calling this method, the caller must
@@ -281,7 +281,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    *           if a failure occurs during processing.
    */
   public void process(CAS aCAS, ResultSpecification aResultSpec, ProcessTrace aTrace)
-                  throws ResultNotSupportedException, AnalysisEngineProcessException;
+          throws ResultNotSupportedException, AnalysisEngineProcessException;
 
   /**
    * Invokes this AnalysisEngine's analysis logic. Prior to calling this method, the caller must
@@ -311,7 +311,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    *             Use {#link #process(CAS)} instead.
    */
   public void process(AnalysisProcessData aProcessData, ResultSpecification aResultSpec)
-                  throws ResultNotSupportedException, AnalysisEngineProcessException;
+          throws ResultNotSupportedException, AnalysisEngineProcessException;
 
   /**
    * Similar to {@link #process(CAS)} but uses the Java-object-based {@link JCas} interface instead
@@ -349,7 +349,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    *           if a failure occurs during processing.
    */
   public ProcessTrace process(JCas aJCas, ResultSpecification aResultSpec)
-                  throws ResultNotSupportedException, AnalysisEngineProcessException;
+          throws ResultNotSupportedException, AnalysisEngineProcessException;
 
   /**
    * Similar to {@link #process(CAS)} but uses the Java-object-based {@link JCas} interface instead
@@ -370,7 +370,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    *           if a failure occurs during processing.
    */
   public void process(JCas aJCas, ResultSpecification aResultSpec, ProcessTrace aTrace)
-                  throws ResultNotSupportedException, AnalysisEngineProcessException;
+          throws ResultNotSupportedException, AnalysisEngineProcessException;
 
   /**
    * Processes a CAS, possibly producing multiple CASes as a result. The application uses the
