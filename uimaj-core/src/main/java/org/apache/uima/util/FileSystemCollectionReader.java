@@ -172,6 +172,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
       srcDocInfo.setUri(file.getAbsoluteFile().toURL().toString());
       srcDocInfo.setOffsetInSource(0);
       srcDocInfo.setDocumentSize((int) file.length());
+      srcDocInfo.setLastSegment(mCurrentIndex == mFiles.size());      
       srcDocInfo.addToIndexes();
     }
     // XCAS input files
