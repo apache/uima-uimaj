@@ -42,7 +42,7 @@ public class VinciXCASSerializer implements VinciCASSerializer {
    *      vinci.transport.VinciFrame,OutOfTypeSystemData)
    */
   public void serialize(CAS aCAS, AFrame aParentFrame, OutOfTypeSystemData aOutOfTypeSystemData)
-                  throws IOException, SAXException {
+          throws IOException, SAXException {
     // Serialize CAS to XCAS
     // Would be nice to serialize straight to parent frame frame, but we have
     // to change the tag name to KEYS to satisfy the TAE interface

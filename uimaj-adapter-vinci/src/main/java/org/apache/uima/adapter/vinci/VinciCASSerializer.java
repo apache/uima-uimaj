@@ -46,6 +46,6 @@ public interface VinciCASSerializer {
    *          May be null.
    */
   public void serialize(CAS aCAS, AFrame aParentFrame, OutOfTypeSystemData aOutOfTypeSystemData)
-                  throws IOException, SAXException;
+          throws IOException, SAXException;
 
 }

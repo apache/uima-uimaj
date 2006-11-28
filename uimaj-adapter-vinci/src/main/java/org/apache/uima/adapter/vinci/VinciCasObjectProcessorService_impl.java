@@ -32,7 +32,7 @@ public class VinciCasObjectProcessorService_impl extends VinciAnalysisEngineServ
    *          descriptor location
    */
   public VinciCasObjectProcessorService_impl(String serviceConfigPath, boolean debug)
-                  throws Exception {
+          throws Exception {
     super(serviceConfigPath, debug);
   }
 

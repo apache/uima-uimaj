@@ -33,7 +33,7 @@ import org.xml.sax.Attributes;
  */
 public class UimaSaxVinciFrameBuilder extends SaxVinciFrameBuilder {
   public UimaSaxVinciFrameBuilder(boolean aSupressDocumentText,
-                  boolean aIncludeSpannedTextInAnnotations, String aDocText) {
+          boolean aIncludeSpannedTextInAnnotations, String aDocText) {
     mSupressDocumentText = aSupressDocumentText;
     mIncludeSpannedTextInAnnotations = aIncludeSpannedTextInAnnotations;
     mDocText = aDocText;
@@ -51,10 +51,10 @@ public class UimaSaxVinciFrameBuilder extends SaxVinciFrameBuilder {
    * @see SaxVinciFrameBuilder#getLeafContent(String, Attibutes, StringBuffer)
    */
   protected String getLeafContent(String aFrameName, Attributes aAttributes,
-                  StringBuffer aContentBuf) {
+          StringBuffer aContentBuf) {
     // supress documen text if requested
     if ("uima.tcas.Document".equals(aFrameName)
-                    || "uima.tcas.DocumentAnnotation".equals(aFrameName)) {
+            || "uima.tcas.DocumentAnnotation".equals(aFrameName)) {
       if (mSupressDocumentText)
         return "";
     } else if (mIncludeSpannedTextInAnnotations && aContentBuf.length() == 0 && mDocText != null) {

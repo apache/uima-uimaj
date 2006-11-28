@@ -79,7 +79,7 @@ public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandl
    *          available.
    */
   public void startElement(String namespaceURI, String localName, String qualifiedName,
-                  org.xml.sax.Attributes attributes) throws SAXException {
+          org.xml.sax.Attributes attributes) throws SAXException {
     // I would like to create a VinciFrame here and put it on the
     // mOpenFrames stack, but I don't know whether to create a VinciFrame or
     // a FrameLeaf until I see whether there are child elements. So instead
@@ -101,7 +101,7 @@ public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandl
       if (mCurrentFrameAttrs != null) {
         for (int i = 0; i < mCurrentFrameAttrs.getLength(); i++) {
           String attrName = getName(mCurrentFrameAttrs.getLocalName(i), mCurrentFrameAttrs
-                          .getQName(i));
+                  .getQName(i));
           vinciAttrs.fadd(attrName, mCurrentFrameAttrs.getValue(i));
         }
       }
@@ -139,13 +139,13 @@ public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandl
       // add leaf to parent frame
       AFrame parent = (AFrame) mOpenFrames.peek();
       org.apache.vinci.transport.Attributes vinciAttrs = parent
-                      .aadd(mCurrentFrameName, leafContent);
+              .aadd(mCurrentFrameName, leafContent);
 
       // set attributes
       if (mCurrentFrameAttrs != null) {
         for (int i = 0; i < mCurrentFrameAttrs.getLength(); i++) {
           String attrName = getName(mCurrentFrameAttrs.getLocalName(i), mCurrentFrameAttrs
-                          .getQName(i));
+                  .getQName(i));
           vinciAttrs.fadd(attrName, mCurrentFrameAttrs.getValue(i));
         }
       }
@@ -174,7 +174,7 @@ public class SaxVinciFrameBuilder extends DefaultHandler implements ContentHandl
    * @return the data to be included in the Vinci FrameLeaf
    */
   protected String getLeafContent(String aFrameName, Attributes aAttributes,
-                  StringBuffer aContentBuf) {
+          StringBuffer aContentBuf) {
     return aContentBuf.toString();
   }
 

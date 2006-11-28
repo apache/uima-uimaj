@@ -78,7 +78,7 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
    *          descriptor location
    */
   public VinciAnalysisEngineService_impl(String serviceConfigPath, boolean debug, String instanceId)
-                  throws Exception {
+          throws Exception {
     this(serviceConfigPath, debug);
     serviceInstanceId = Integer.parseInt(instanceId);
   }
@@ -99,17 +99,17 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
     descriptor = new Descriptor(serviceConfigPath);
     String aResourceSpecifierPath = descriptor.getResourceSpecifierPath();
     UIMAFramework.getLogger().log(Level.CONFIG,
-                    "Resource Specifier Path::" + aResourceSpecifierPath);
+            "Resource Specifier Path::" + aResourceSpecifierPath);
 
     ResourceSpecifier resourceSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-                    new XMLInputSource(aResourceSpecifierPath));
+            new XMLInputSource(aResourceSpecifierPath));
 
     // create CAS Object Processor
     if (mAE == null) {
       UIMAFramework.getLogger().log(Level.FINE,
-                      "VinciAnalysisEngineService_impl: creating CAS Processor");
+              "VinciAnalysisEngineService_impl: creating CAS Processor");
       mAE = UIMAFramework
-                      .produceAnalysisEngine(resourceSpecifier, descriptor.getInstanceCount(), 0);
+              .produceAnalysisEngine(resourceSpecifier, descriptor.getInstanceCount(), 0);
     }
     // create pool of CASes
     if (mCasPool == null) {
@@ -199,7 +199,7 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
     } catch (Exception ex) {
       ct.cleanup();
       throw ex;
-    } 
+    }
   }
 
   /**
@@ -280,19 +280,19 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
         _server = new VinciServer(serviceName, serviceHost, this);
       }
       UIMAFramework.getLogger().log(
-                      Level.FINEST,
-                      "VinciCasObjectProcessorService_impl: Starting Server with Socket Timeout:"
-                                      + descriptor.getServerSocketTimeout());
+              Level.FINEST,
+              "VinciCasObjectProcessorService_impl: Starting Server with Socket Timeout:"
+                      + descriptor.getServerSocketTimeout());
       System.out
-                      .println("VinciCasObjectProcessorService_impl: Starting Server with Socket Timeout:"
-                                      + descriptor.getServerSocketTimeout());
+              .println("VinciCasObjectProcessorService_impl: Starting Server with Socket Timeout:"
+                      + descriptor.getServerSocketTimeout());
       _server.setSocketTimeout(descriptor.getServerSocketTimeout());
 
       _server.serve();
     } catch (ServiceDownException e) {
       UIMAFramework.getLogger().log(Level.SEVERE, e.getMessage());
       System.out.println("\nFailed to contact VNS! Make sure you've specified the correct "
-                      + "VNS_HOST and that VNS is up and running.");
+              + "VNS_HOST and that VNS is up and running.");
     }
 
     catch (Exception e) {
@@ -321,7 +321,7 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
       // check arguments
       if (args.length < 1) {
         System.err.println("Usage: java " + VinciAnalysisEngineService_impl.class.getName()
-                        + " <deployment descriptor file>");
+                + " <deployment descriptor file>");
         System.exit(1);
       }
       File descriptorFile = new File(args[0]);
@@ -350,7 +350,7 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
 
       if (args != null && args.length > 1) {
         vinciService = new VinciAnalysisEngineService_impl(descriptorFile.toString(), debug,
-                        args[1]);
+                args[1]);
       } else {
 
         vinciService = new VinciAnalysisEngineService_impl(descriptorFile.toString(), debug);

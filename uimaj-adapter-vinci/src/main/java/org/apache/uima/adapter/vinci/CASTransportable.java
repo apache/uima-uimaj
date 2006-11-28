@@ -84,7 +84,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
    * @param includeDocText
    */
   public CASTransportable(CasPool casPool, OutOfTypeSystemData outOfTypeSystemData,
-                  UimaContext uimaContext, boolean includeDocText) {
+          UimaContext uimaContext, boolean includeDocText) {
     // Debug.p("Creating new CASTransportable.");
     this.myCasPool = casPool;
     this.myCas = null;
@@ -104,7 +104,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
    * @param includeDocText
    */
   public CASTransportable(CAS cas, OutOfTypeSystemData outOfTypeSystemData,
-                  UimaContext uimaContext, boolean includeDocText) {
+          UimaContext uimaContext, boolean includeDocText) {
     // Debug.p("Creating new CASTransportable.");
     this.myCas = cas;
     this.myCasPool = null;
@@ -205,7 +205,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
     }
 
     public void startElement(String uri, String name, String qName, org.xml.sax.Attributes atts)
-                    throws SAXException {
+            throws SAXException {
       try {
         // Debug.p("Start element: " + qName + " : " + serializer.getNumChildren());
         os.write(XTalkTransporter.ELEMENT_MARKER);
@@ -220,7 +220,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
         }
         attributesToXTalk(atts);
         XTalkTransporter.writeInt(serializer.getNumChildren(), os); // HACK to find out # of
-                                                                    // children
+        // children
       } catch (IOException e) {
         throw new SAXException("IOException: " + e);
       }
@@ -312,7 +312,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
   }
 
   public void startElement(String uri, String name, String qName, org.xml.sax.Attributes atts)
-                  throws SAXException {
+          throws SAXException {
     // Debug.p("Start element: " + qName);
     if (ready > 0) {
       handler.startElement(uri, name, qName, atts);

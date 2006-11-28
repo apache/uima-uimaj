@@ -54,13 +54,13 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
   private AnalysisEngineServiceAdapter mOwner;
 
   public VinciBinaryAnalysisEngineServiceStub(String endpointURI, AnalysisEngineServiceAdapter owner)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     this(endpointURI, null, owner, null);
   }
 
   public VinciBinaryAnalysisEngineServiceStub(String endpointURI, Integer timeout,
-                  AnalysisEngineServiceAdapter owner, Parameter[] parameters)
-                  throws ResourceInitializationException {
+          AnalysisEngineServiceAdapter owner, Parameter[] parameters)
+          throws ResourceInitializationException {
     mOwner = owner;
 
     // open Vinci connection
@@ -79,7 +79,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
 
         if (debug) {
           System.out.println("Establishing connnection to " + endpointURI + " using VNS_HOST:"
-                          + vnsHost + " and VNS_PORT=" + ((vnsPort == null) ? "9000" : vnsPort));
+                  + vnsHost + " and VNS_PORT=" + ((vnsPort == null) ? "9000" : vnsPort));
         }
         // establish connection to service
         mVinciClient = new VinciClient(endpointURI, AFrame.getAFrameFactory(), vctx);
@@ -194,14 +194,14 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
       // deserialize CAS from response frame
       byte[] responseCasBytes = responseFrame.fgetTrueBinary("BinaryCAS");
       CASSerializer responseSerializer = (CASSerializer) SerializationUtils
-                      .deserialize(responseCasBytes);
+              .deserialize(responseCasBytes);
       ((CASImpl) cas).reinit(responseSerializer);
 
       // also read annotation time and enter into AnalysisEngineManagementMBean
       int annotationTime = responseFrame.fgetInt(Constants.ANNOTATION_TIME);
       if (annotationTime > 0) {
         AnalysisEngineManagementImpl mbean = (AnalysisEngineManagementImpl) mOwner
-                        .getManagementInterface();
+                .getManagementInterface();
         mbean.reportAnalysisTime(annotationTime);
       }
     } catch (Exception e) {

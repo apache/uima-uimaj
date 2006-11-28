@@ -87,7 +87,7 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
    *          descriptor location
    */
   public VinciBinaryAnalysisEngineService_impl(String serviceConfigPath, boolean debug,
-                  String instanceId) throws Exception {
+          String instanceId) throws Exception {
     this(serviceConfigPath, debug);
     serviceInstanceId = Integer.parseInt(instanceId);
 
@@ -100,11 +100,11 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
    *          descriptor location
    */
   public VinciBinaryAnalysisEngineService_impl(String serviceConfigPath, boolean debug)
-                  throws Exception {
+          throws Exception {
     this.debug = debug;
 
     UIMAFramework.getLogger().log(Level.FINEST,
-                    "VinciBinaryCasObjectProcessorService_impl: constructor");
+            "VinciBinaryCasObjectProcessorService_impl: constructor");
     // Instantiate an object which holds configuration data: resource
     // specifier path,
     // serializer class, service name, etc
@@ -113,14 +113,14 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
     UIMAFramework.getLogger().log(Level.FINE, "Resource Specifier Path::" + aResourceSpecifierPath);
 
     ResourceSpecifier resourceSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-                    new XMLInputSource(aResourceSpecifierPath));
+            new XMLInputSource(aResourceSpecifierPath));
 
     // create CAS Object Processor
     if (mAE == null) {
       UIMAFramework.getLogger().log(Level.FINEST,
-                      "VinciBinaryAnalysisEngineService_impl: creating CAS Processor");
+              "VinciBinaryAnalysisEngineService_impl: creating CAS Processor");
       mAE = UIMAFramework
-                      .produceAnalysisEngine(resourceSpecifier, descriptor.getInstanceCount(), 0);
+              .produceAnalysisEngine(resourceSpecifier, descriptor.getInstanceCount(), 0);
     }
     // create pool of CASes
     if (mCasPool == null) {
@@ -184,7 +184,7 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
       // deserialize into CAS object
       byte[] casBytes = aRequestFrame.fgetTrueBinary("BinaryCAS");
       CASCompleteSerializer serializer = (CASCompleteSerializer) SerializationUtils
-                      .deserialize(casBytes);
+              .deserialize(casBytes);
       Serialization.deserializeCASComplete(serializer, (CASMgr) cas);
 
       long annotStartTime = System.currentTimeMillis();
@@ -304,18 +304,18 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
         _server = new VinciServer(serviceName, serviceHost, this);
       }
       UIMAFramework.getLogger().log(
-                      Level.FINEST,
-                      "VinciCasObjectProcessorService_impl: Starting Server with Socket Timeout:"
-                                      + descriptor.getServerSocketTimeout());
+              Level.FINEST,
+              "VinciCasObjectProcessorService_impl: Starting Server with Socket Timeout:"
+                      + descriptor.getServerSocketTimeout());
       System.out
-                      .println("VinciCasObjectProcessorService_impl: Starting Server with Socket Timeout:"
-                                      + descriptor.getServerSocketTimeout());
+              .println("VinciCasObjectProcessorService_impl: Starting Server with Socket Timeout:"
+                      + descriptor.getServerSocketTimeout());
       _server.setSocketTimeout(descriptor.getServerSocketTimeout());
       _server.serve();
     } catch (ServiceDownException e) {
       UIMAFramework.getLogger().log(Level.SEVERE, e.getMessage());
       System.out.println("\nFailed to contact VNS! Make sure you've specified the correct "
-                      + "VNS_HOST and that VNS is up and running.");
+              + "VNS_HOST and that VNS is up and running.");
     }
 
     catch (Exception e) {

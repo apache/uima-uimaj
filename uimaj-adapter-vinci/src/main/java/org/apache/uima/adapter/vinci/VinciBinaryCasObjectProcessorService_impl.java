@@ -25,7 +25,7 @@ package org.apache.uima.adapter.vinci;
  * exist as separate classes only for historical reasons.
  */
 public class VinciBinaryCasObjectProcessorService_impl extends
-                VinciBinaryAnalysisEngineService_impl {
+        VinciBinaryAnalysisEngineService_impl {
   /**
    * Instantiate Analysis Engine service from a given descriptor - possibly in debug mode.
    * 
@@ -33,7 +33,7 @@ public class VinciBinaryCasObjectProcessorService_impl extends
    *          descriptor location
    */
   public VinciBinaryCasObjectProcessorService_impl(String serviceConfigPath, boolean debug)
-                  throws Exception {
+          throws Exception {
     super(serviceConfigPath, debug);
   }
 

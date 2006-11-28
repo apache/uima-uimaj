@@ -51,25 +51,25 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   private static final boolean debug = System.getProperty("DEBUG") != null;
 
   public VinciAnalysisEngineServiceStub(String endpointURI, Resource owner)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     this(endpointURI, null, owner, null);
   }
 
   public VinciAnalysisEngineServiceStub(String endpointURI, Integer timeout, Resource owner,
-                  Parameter[] parameters) throws ResourceInitializationException {
+          Parameter[] parameters) throws ResourceInitializationException {
     mOwner = owner;
 
     // open Vinci connection
     try {
       String vnsHost;
       if (parameters != null
-                      && (vnsHost = VinciBinaryAnalysisEngineServiceStub.getParameterValueFor(
-                                      "VNS_HOST", parameters)) != null) {
+              && (vnsHost = VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_HOST",
+                      parameters)) != null) {
         // Override vinci default VNS settings
         VinciContext vctx = new VinciContext(InetAddress.getLocalHost().getCanonicalHostName(), 0);
         vctx.setVNSHost(vnsHost);
         String vnsPort = VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_PORT",
-                        parameters);
+                parameters);
         if (vnsPort != null) {
           vctx.setVNSPort(Integer.parseInt(vnsPort));
         } else {
@@ -77,7 +77,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
         }
         if (debug) {
           System.out.println("Establishing connnection to " + endpointURI + " using VNS_HOST:"
-                          + vnsHost + " and VNS_PORT=" + ((vnsPort == null) ? "9000" : vnsPort));
+                  + vnsHost + " and VNS_PORT=" + ((vnsPort == null) ? "9000" : vnsPort));
         }
         // establish connection to service
         mVinciClient = new VinciClient(endpointURI, AFrame.getAFrameFactory(), vctx);
@@ -198,7 +198,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
       int annotationTime = query.getExtraDataFrame().fgetInt("TAE:AnnotationTime");
       if (annotationTime > 0) {
         AnalysisEngineManagementImpl mbean = (AnalysisEngineManagementImpl) mOwner
-                        .getUimaContextAdmin().getManagementInterface();
+                .getUimaContextAdmin().getManagementInterface();
         mbean.reportAnalysisTime(annotationTime);
       }
     } catch (Exception e) {

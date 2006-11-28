@@ -86,7 +86,7 @@ public class Descriptor extends DefaultHandler {
       UIMAFramework.getLogger().log(Level.CONFIG, "Filter String::" + getFilterString());
       UIMAFramework.getLogger().log(Level.CONFIG, "Naming Service Host::" + getNamingServiceHost());
       UIMAFramework.getLogger().log(Level.CONFIG,
-                      "Server Socket Timeout::" + getServerSocketTimeout());
+              "Server Socket Timeout::" + getServerSocketTimeout());
 
     } catch (Exception ex) {
       ex.printStackTrace();
@@ -148,9 +148,9 @@ public class Descriptor extends DefaultHandler {
         } catch (NumberFormatException nbe) {
           setNamingServiceHost("localhost");
         }
-      } 
+      }
     }
-    // if none of the above, it is an unexpected element.  we ignore these for now
+    // if none of the above, it is an unexpected element. we ignore these for now
   }
 
   /**
