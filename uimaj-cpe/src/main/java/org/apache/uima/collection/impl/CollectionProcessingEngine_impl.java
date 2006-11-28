@@ -52,24 +52,24 @@ public class CollectionProcessingEngine_impl implements CollectionProcessingEngi
    *      java.util.Map)
    */
   public void initialize(CpeDescription aCpeDescription, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     if (mCPM != null) // repeat initialization - not allowed
     {
       throw new UIMA_IllegalStateException(UIMA_IllegalStateException.RESOURCE_ALREADY_INITIALIZED,
-                      new Object[] { getClass().getName() });
+              new Object[] { getClass().getName() });
     }
 
     // get the ResourceManager (if any) supplied in the aAdditionalParams map
     ResourceManager resMgr = aAdditionalParams == null ? null : (ResourceManager) aAdditionalParams
-                    .get(Resource.PARAM_RESOURCE_MANAGER);
+            .get(Resource.PARAM_RESOURCE_MANAGER);
 
     // get performance tuning settings (if any) supplied in the aAdditionalParams map
     Properties perfSettings = aAdditionalParams == null ? null : (Properties) aAdditionalParams
-                    .get(Resource.PARAM_PERFORMANCE_TUNING_SETTINGS);
+            .get(Resource.PARAM_PERFORMANCE_TUNING_SETTINGS);
 
     // get ProcessControllerAdapter responsible for launching fenced services
     ProcessControllerAdapter pca = aAdditionalParams == null ? null
-                    : (ProcessControllerAdapter) aAdditionalParams.get("ProcessControllerAdapter");
+            : (ProcessControllerAdapter) aAdditionalParams.get("ProcessControllerAdapter");
     // instantiate CPM from Descriptor
     try {
       mCPM = new BaseCPMImpl(aCpeDescription, resMgr, false, perfSettings);

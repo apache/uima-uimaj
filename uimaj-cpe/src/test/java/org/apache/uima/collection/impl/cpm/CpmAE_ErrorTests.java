@@ -100,7 +100,7 @@ public class CpmAE_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToNirvana();
     // setup CPM
     CollectionProcessingEngine cpe = setupCpm(documentCount, "AnnotatorProcessException",
-                    exceptionSequence, "process");
+            exceptionSequence, "process");
 
     // Create and register a Status Callback Listener
     TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -114,13 +114,13 @@ public class CpmAE_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
-                    "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
-                    true, listener.isFinished());
+            "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
+            true, listener.isFinished());
     assertEquals(
-                    "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
-                    false, listener.isAborted());
+            "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
+            false, listener.isAborted());
     assertEquals("There are not as much exceptions as expected! ", countExceptions(documentCount,
-                    exceptionSequence), FunctionErrorStore.getCount());
+            exceptionSequence), FunctionErrorStore.getCount());
 
   }
 
@@ -139,7 +139,7 @@ public class CpmAE_ErrorTests extends TestCase {
 
     // setup CPM
     CollectionProcessingEngine cpe = setupCpm(documentCount, "OutOfMemoryException",
-                    exceptionSequence, "process");
+            exceptionSequence, "process");
 
     // Create and register a Status Callback Listener
     TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -153,13 +153,13 @@ public class CpmAE_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
-                    "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
-                    true, listener.isFinished());
+            "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
+            true, listener.isFinished());
     assertEquals(
-                    "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
-                    false, listener.isAborted());
+            "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
+            false, listener.isAborted());
     assertEquals("There are not as much exceptions as expected! ",
-                    (documentCount / exceptionSequence), FunctionErrorStore.getCount());
+            (documentCount / exceptionSequence), FunctionErrorStore.getCount());
     // that's it.
   }
 
@@ -178,7 +178,7 @@ public class CpmAE_ErrorTests extends TestCase {
 
     // setup CPM
     CollectionProcessingEngine cpe = setupCpm(documentCount, "NullPointerException",
-                    exceptionSequence, "process");
+            exceptionSequence, "process");
 
     // Create and register a Status Callback Listener
     TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -192,13 +192,13 @@ public class CpmAE_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
-                    "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
-                    true, listener.isFinished());
+            "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
+            true, listener.isFinished());
     assertEquals(
-                    "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
-                    false, listener.isAborted());
+            "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
+            false, listener.isAborted());
     assertEquals("There are not as much exceptions as expected! ", countExceptions(documentCount,
-                    exceptionSequence), FunctionErrorStore.getCount());
+            exceptionSequence), FunctionErrorStore.getCount());
     // that's it.
   }
 
@@ -220,7 +220,7 @@ public class CpmAE_ErrorTests extends TestCase {
     try {
       // setup CPM
       CollectionProcessingEngine cpe = setupCpm(documentCount, "NullPointerException",
-                      exceptionSequence, "initialize");
+              exceptionSequence, "initialize");
 
       // Create and register a Status Callback Listener
       listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -240,10 +240,10 @@ public class CpmAE_ErrorTests extends TestCase {
     // check the results, if everything worked as expected
     assertEquals("The expected NullPointerException wasn't thrown!", true, exceptionThrown);
     assertEquals(
-                    "The cpm called the listener, that the cpm has finished - which normally could not be.",
-                    false, listener.isFinished());
+            "The cpm called the listener, that the cpm has finished - which normally could not be.",
+            false, listener.isFinished());
     assertEquals("The aborted-method of the listener was called. (new behaviour?)", false, listener
-                    .isAborted());
+            .isAborted());
     assertEquals("There are not as much exceptions as expected! ", 1, FunctionErrorStore.getCount());
   }
 
@@ -264,7 +264,7 @@ public class CpmAE_ErrorTests extends TestCase {
 
     // setup CPM
     CollectionProcessingEngine cpe = setupCpm(documentCount, "OutOfMemoryException",
-                    exceptionSequence, "initialize");
+            exceptionSequence, "initialize");
 
     // Create and register a Status Callback Listener
     listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -278,11 +278,11 @@ public class CpmAE_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
-                    "The cpm is still working or the collectionProcessComplete-method of listener was not called.",
-                    true, listener.isFinished());
+            "The cpm is still working or the collectionProcessComplete-method of listener was not called.",
+            true, listener.isFinished());
     assertEquals(
-                    "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
-                    false, listener.isAborted());
+            "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
+            false, listener.isAborted());
     assertEquals("There are not as much exceptions as expected! ", 1, FunctionErrorStore.getCount());
     // that's it.
   }
@@ -306,7 +306,7 @@ public class CpmAE_ErrorTests extends TestCase {
     try {
       // setup CPM
       CollectionProcessingEngine cpe = setupCpm(documentCount, "AnnotatorInitializationException",
-                      exceptionSequence, "initialize");
+              exceptionSequence, "initialize");
 
       // Create and register a Status Callback Listener
       listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -326,10 +326,10 @@ public class CpmAE_ErrorTests extends TestCase {
     // check the results, if everything worked as expected
     assertEquals("The expected NullPointerException wasn't thrown!", true, exceptionThrown);
     assertEquals(
-                    "The cpm called the listener, that the cpm has finished - which normally could not be.",
-                    false, listener.isFinished());
+            "The cpm called the listener, that the cpm has finished - which normally could not be.",
+            false, listener.isFinished());
     assertEquals("The aborted-method of the listener was called. (new behaviour?)", false, listener
-                    .isAborted());
+            .isAborted());
     assertEquals("There are not as much exceptions as expected! ", 1, FunctionErrorStore.getCount());
   }
 
@@ -352,7 +352,7 @@ public class CpmAE_ErrorTests extends TestCase {
     try {
       // setup CPM
       CollectionProcessingEngine cpe = setupCpm(documentCount, "AnnotatorConfigurationException",
-                      exceptionSequence, "initialize");
+              exceptionSequence, "initialize");
 
       // Create and register a Status Callback Listener
       listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -372,10 +372,10 @@ public class CpmAE_ErrorTests extends TestCase {
     // check the results, if everything worked as expected
     assertEquals("The expected NullPointerException wasn't thrown!", true, exceptionThrown);
     assertEquals(
-                    "The cpm called the listener, that the cpm has finished - which normally could not be.",
-                    false, listener.isFinished());
+            "The cpm called the listener, that the cpm has finished - which normally could not be.",
+            false, listener.isFinished());
     assertEquals("The aborted-method of the listener was called. (new behaviour?)", false, listener
-                    .isAborted());
+            .isAborted());
     assertEquals("There are not as much exceptions as expected! ", 1, FunctionErrorStore.getCount());
   }
 
@@ -438,7 +438,7 @@ public class CpmAE_ErrorTests extends TestCase {
     cpeDesc.setProcessingUnitThreadCount(count);
 
     CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc, null,
-                    null);
+            null);
 
     // Create and register a Status Callback Listener
     listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -452,7 +452,7 @@ public class CpmAE_ErrorTests extends TestCase {
     assertEquals("The cpm didn't finish correctly! Abort was called.", false, listener.isAborted());
     assertEquals("The cpm didn't finish by calling the Listener.", true, listener.isFinished());
     assertEquals("There are not as much ae's running as expected ", count, FunctionErrorStore
-                    .getAnnotatorCount());
+            .getAnnotatorCount());
     // that's it.
   }
 
@@ -476,14 +476,14 @@ public class CpmAE_ErrorTests extends TestCase {
 
     // setup CPM
     Object[] objs = setupConfigurableCpm(documentCount, exceptionName, exceptionSequence,
-                    functionName);
+            functionName);
 
     CpeDescription cpeDesc = (CpeDescription) objs[0];
     cpeDesc.setProcessingUnitThreadCount(1);
     CpeIntegratedCasProcessor integratedProcessor = (CpeIntegratedCasProcessor) objs[1];
     integratedProcessor.setActionOnMaxError("terminate");
     CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc, null,
-                    null);
+            null);
 
     // register a Status Callback Listener
     cpe.addStatusCallbackListener(listener);
@@ -496,11 +496,11 @@ public class CpmAE_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
-                    "The cpm called the listener, that the cpm has finished - which normally could not be.",
-                    false, listener.isFinished());
+            "The cpm called the listener, that the cpm has finished - which normally could not be.",
+            false, listener.isFinished());
     assertEquals("The aborted-method of the listener wasn't called.", true, listener.isAborted());
     assertEquals("There are not as much exceptions as expected! ", (100 + 1), FunctionErrorStore
-                    .getCount());
+            .getCount());
     // that's it.
   }
 
@@ -523,7 +523,7 @@ public class CpmAE_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToNirvana();
 
     Object[] objs = setupConfigurableCpm(documentCount, exceptionName, exceptionSequence,
-                    functionName);
+            functionName);
 
     CpeDescription cpeDesc = (CpeDescription) objs[0];
     cpeDesc.setProcessingUnitThreadCount(1);
@@ -531,7 +531,7 @@ public class CpmAE_ErrorTests extends TestCase {
     integratedProcessor.setActionOnMaxError("terminate");
     integratedProcessor.setMaxErrorCount(5);
     CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc, null,
-                    null);
+            null);
 
     // Create and register a Status Callback Listener
     // listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -545,11 +545,11 @@ public class CpmAE_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
-                    "The cpm called the listener, that the cpm has finished - which normally could not be.",
-                    false, listener.isFinished());
+            "The cpm called the listener, that the cpm has finished - which normally could not be.",
+            false, listener.isFinished());
     assertEquals("The aborted-method of the listener wasn't called.", true, listener.isAborted());
     assertEquals("There are not as much exceptions as expected! ", (5 + 1), FunctionErrorStore
-                    .getCount());
+            .getCount());
   }
 
   /**
@@ -571,7 +571,7 @@ public class CpmAE_ErrorTests extends TestCase {
 
     // setup CPM
     Object[] objs = setupConfigurableCpm(documentCount, exceptionName, exceptionSequence,
-                    functionName);
+            functionName);
 
     CpeDescription cpeDesc = (CpeDescription) objs[0];
     cpeDesc.setProcessingUnitThreadCount(1);
@@ -580,7 +580,7 @@ public class CpmAE_ErrorTests extends TestCase {
     integratedProcessor.setMaxErrorCount(5);
     integratedProcessor.setMaxErrorSampleSize(10);
     CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc, null,
-                    null);
+            null);
 
     // Create and register a Status Callback Listener
     // listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -594,12 +594,12 @@ public class CpmAE_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
-                    "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
-                    true, listener.isFinished());
+            "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
+            true, listener.isFinished());
     assertEquals("The cpm didn't finish correctly! Abort in the listener was called.", false,
-                    listener.isAborted());
+            listener.isAborted());
     assertEquals("There are not as much exceptions as expected! ", countExceptions(documentCount,
-                    exceptionSequence), FunctionErrorStore.getCount());
+            exceptionSequence), FunctionErrorStore.getCount());
     // that's it.
   }
 
@@ -621,7 +621,7 @@ public class CpmAE_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToNirvana();
 
     Object[] objs = setupConfigurableCpm(documentCount, exceptionName, exceptionSequence,
-                    functionName);
+            functionName);
 
     CpeDescription cpeDesc = (CpeDescription) objs[0];
     cpeDesc.setProcessingUnitThreadCount(1);
@@ -630,7 +630,7 @@ public class CpmAE_ErrorTests extends TestCase {
     integratedProcessor.setMaxErrorCount(5);
     integratedProcessor.setMaxErrorSampleSize(15);
     CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc, null,
-                    null);
+            null);
 
     // Create and register a Status Callback Listener
     // listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -644,8 +644,8 @@ public class CpmAE_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
-                    "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
-                    false, listener.isAborted());
+            "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
+            false, listener.isAborted());
     assertEquals("The cpm didn't finish by calling the Listener.", true, listener.isFinished());
     // TODO: write a function which calculates the expected number of occuring errors
     // assertEquals("There are not as much exceptions as expected! ", 44,
@@ -671,7 +671,7 @@ public class CpmAE_ErrorTests extends TestCase {
 
     // setup CPM
     Object[] objs = setupConfigurableCpm(documentCount, exceptionName, exceptionSequence,
-                    functionName);
+            functionName);
 
     CpeDescription cpeDesc = (CpeDescription) objs[0];
     cpeDesc.setProcessingUnitThreadCount(1);
@@ -680,7 +680,7 @@ public class CpmAE_ErrorTests extends TestCase {
     integratedProcessor.setMaxErrorCount(5);
     integratedProcessor.setMaxErrorSampleSize(15);
     CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc, null,
-                    null);
+            null);
 
     // Create and register a Status Callback Listener
     // listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -694,8 +694,8 @@ public class CpmAE_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
-                    "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
-                    false, listener.isAborted());
+            "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
+            false, listener.isAborted());
     assertEquals("The cpm didn't finish by calling the Listener.", true, listener.isFinished());
     assertEquals("There are not as much exceptions as expected! ", 6, FunctionErrorStore.getCount());
   }
@@ -709,7 +709,7 @@ public class CpmAE_ErrorTests extends TestCase {
     // disable System.out
     ManageOutputDevice.setAllSystemOutputToNirvana();
     Object[] objs = setupConfigurableCpm(documentCount, exceptionName, exceptionSequence,
-                    functionName);
+            functionName);
 
     CpeDescription cpeDesc = (CpeDescription) objs[0];
     cpeDesc.setProcessingUnitThreadCount(1);
@@ -721,7 +721,7 @@ public class CpmAE_ErrorTests extends TestCase {
     integratedProcessor.setActionOnMaxRestart("continue");
     integratedProcessor.setMaxRestartCount(0);
     CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc, null,
-                    null);
+            null);
 
     // Create and register a Status Callback Listener
     cpe.addStatusCallbackListener(listener);
@@ -734,8 +734,8 @@ public class CpmAE_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
-                    "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
-                    false, listener.isAborted());
+            "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
+            false, listener.isAborted());
     assertEquals("The cpm didn't finish by calling the Listener.", true, listener.isFinished());
     assertEquals("There are not as many exceptions as expected:", 40, FunctionErrorStore.getCount());
   }
@@ -758,7 +758,7 @@ public class CpmAE_ErrorTests extends TestCase {
 
     // setup CPM
     Object[] objs = setupConfigurableCpm(documentCount, exceptionName, exceptionSequence,
-                    functionName);
+            functionName);
 
     CpeDescription cpeDesc = (CpeDescription) objs[0];
     cpeDesc.setProcessingUnitThreadCount(1);
@@ -766,7 +766,7 @@ public class CpmAE_ErrorTests extends TestCase {
     CpeIntegratedCasProcessor integratedProcessor = (CpeIntegratedCasProcessor) objs[1];
     integratedProcessor.setActionOnMaxError("terminate");
     CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc, null,
-                    null);
+            null);
 
     // Create and register a Status Callback Listener
     // listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -780,12 +780,12 @@ public class CpmAE_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
-                    "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
-                    false, listener.isAborted());
+            "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
+            false, listener.isAborted());
     assertEquals("The cpm didn't finish by calling the Listener.", true, listener.isFinished());
     assertEquals("There are not as much exceptions as expected! ", 0, FunctionErrorStore.getCount());
     assertEquals("There is a difference between the expected and the processed document number. ",
-                    20, FunctionErrorStore.getAnnotatorProcessCount());
+            20, FunctionErrorStore.getAnnotatorProcessCount());
   }
 
   /**
@@ -831,7 +831,7 @@ public class CpmAE_ErrorTests extends TestCase {
    * @return CollectionProcessingEngine - initialized cpe
    */
   private CollectionProcessingEngine setupCpm(int documentCount, String exceptionName,
-                  int exceptionSequence, String functionName) {
+          int exceptionSequence, String functionName) {
     CpeDescription cpeDesc = null;
     CollectionProcessingEngine cpe = null;
 
@@ -843,7 +843,7 @@ public class CpmAE_ErrorTests extends TestCase {
       // first, prepare all descriptors as needed
       String colReaderDesc = DescriptorMakeUtil.makeCollectionReader(colReaderBase, documentCount);
       String taeDesc = DescriptorMakeUtil.makeAnalysisEngine(taeBase, true, functionName,
-                      exceptionSequence, exceptionName);
+              exceptionSequence, exceptionName);
       String casConsumerDesc = DescriptorMakeUtil.makeCasConsumer(casConsumerBase);
 
       // secondly, create the cpm based on the descriptors
@@ -851,11 +851,11 @@ public class CpmAE_ErrorTests extends TestCase {
 
       // managing the default behaviour of this client
       CpeIntegratedCasProcessor integratedProcessor = CpeDescriptorFactory
-                      .produceCasProcessor("ErrorTestAnnotator");
+              .produceCasProcessor("ErrorTestAnnotator");
       integratedProcessor.setDescriptor(taeDesc);
 
       CpeIntegratedCasProcessor casConsumer = CpeDescriptorFactory
-                      .produceCasProcessor("ErrorTest CasConsumer");
+              .produceCasProcessor("ErrorTest CasConsumer");
       casConsumer.setDescriptor(casConsumerDesc);
 
       // - add all descriptors
@@ -906,7 +906,7 @@ public class CpmAE_ErrorTests extends TestCase {
    * @return Object[] with the cpe-Descriptor at index 0 and the integratedProcessor at index 1
    */
   private Object[] setupConfigurableCpm(int documentCount, String exceptionName,
-                  int exceptionSequence, String functionName) {
+          int exceptionSequence, String functionName) {
     CpeDescription cpeDesc = null;
     CpeIntegratedCasProcessor integratedProcessor = null;
     try {
@@ -921,7 +921,7 @@ public class CpmAE_ErrorTests extends TestCase {
         taeDesc = DescriptorMakeUtil.makeAnalysisEngine(taeBase);
       } else {
         taeDesc = DescriptorMakeUtil.makeAnalysisEngine(taeBase, true, functionName,
-                        exceptionSequence, exceptionName);
+                exceptionSequence, exceptionName);
       }
       String casConsumerDesc = DescriptorMakeUtil.makeCasConsumer(casConsumerBase);
 
@@ -933,7 +933,7 @@ public class CpmAE_ErrorTests extends TestCase {
       integratedProcessor.setDescriptor(taeDesc);
 
       CpeIntegratedCasProcessor casConsumer = CpeDescriptorFactory
-                      .produceCasProcessor("ErrorTest CasConsumer");
+              .produceCasProcessor("ErrorTest CasConsumer");
       casConsumer.setDescriptor(casConsumerDesc);
 
       // - add all descriptors

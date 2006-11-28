@@ -67,7 +67,7 @@ public class CasProcessorDeploymentException extends ResourceProcessException {
    *          arguments.
    */
   public CasProcessorDeploymentException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments) {
+          Object[] aArguments) {
     super(aResourceBundleName, aMessageKey, aArguments);
   }
 
@@ -88,7 +88,7 @@ public class CasProcessorDeploymentException extends ResourceProcessException {
    *          the original exception that caused this exception to be thrown, if any
    */
   public CasProcessorDeploymentException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments, Throwable aCause) {
+          Object[] aArguments, Throwable aCause) {
     super(aResourceBundleName, aMessageKey, aArguments, aCause);
   }
 

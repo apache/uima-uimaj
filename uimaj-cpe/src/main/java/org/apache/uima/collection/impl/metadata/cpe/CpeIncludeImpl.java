@@ -62,7 +62,7 @@ public class CpeIncludeImpl extends MetaDataObject_impl implements CpeInclude {
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     setHref(aElement.getAttribute("href"));
 
   }
@@ -83,7 +83,7 @@ public class CpeIncludeImpl extends MetaDataObject_impl implements CpeInclude {
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("include",
-                  new PropertyXmlInfo[0]);
+          new PropertyXmlInfo[0]);
 
   /** METHODS CALLED BY THE PARSER * */
   /**

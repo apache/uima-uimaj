@@ -65,7 +65,7 @@ public class DATACasUtils {
    * @param featureValue
    */
   public static void addFeatureStructure(CasData dataCas, String featureType, String featureName,
-                  String featureValue) {
+          String featureValue) {
     FeatureStructure vfs = new FeatureStructureImpl();
     vfs.setType(featureType);
     PrimitiveValue pv = new VinciPrimitiveValue(featureValue);
@@ -94,7 +94,7 @@ public class DATACasUtils {
    * @param featureValue
    */
   public static void addFeature(CasData dataCas, String featureType, String featureName,
-                  String featureValue) {
+          String featureValue) {
     Iterator it = dataCas.getFeatureStructures();
     while (it.hasNext()) {
       FeatureStructure fs = (FeatureStructure) it.next();
@@ -149,9 +149,9 @@ public class DATACasUtils {
         // this case, the feature MUST be null.
 
         if ((filterExpression.getOperand() == null && featureValue == null || featureValue.trim()
-                        .length() == 0)
-                        || // this means that the feature must exist in CAS
-                        ("!".equals(filterExpression.getOperand().getOperand()) && featureValue != null) // this
+                .length() == 0)
+                || // this means that the feature must exist in CAS
+                ("!".equals(filterExpression.getOperand().getOperand()) && featureValue != null) // this
         // means
         // that
         // the
@@ -191,7 +191,7 @@ public class DATACasUtils {
    */
   public static boolean dropIt(String aKey, String[] dropKeyList) {
     for (int i = 0; aKey != null && dropKeyList != null && i < dropKeyList.length
-                    && dropKeyList[i] != null; i++) {
+            && dropKeyList[i] != null; i++) {
       if (dropKeyList[i].equals(aKey)) {
         return true;
       }
@@ -209,13 +209,13 @@ public class DATACasUtils {
 
     if (aKey.indexOf(org.apache.uima.collection.impl.cpm.Constants.SHORT_DASH_TERM) > -1) {
       aKey = StringUtils.replaceAll(aKey,
-                      org.apache.uima.collection.impl.cpm.Constants.SHORT_DASH_TERM,
-                      org.apache.uima.collection.impl.cpm.Constants.LONG_DASH_TERM);
+              org.apache.uima.collection.impl.cpm.Constants.SHORT_DASH_TERM,
+              org.apache.uima.collection.impl.cpm.Constants.LONG_DASH_TERM);
     }
     if (aKey.indexOf(org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM) > -1) {
       aKey = StringUtils.replaceAll(aKey,
-                      org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM,
-                      org.apache.uima.collection.impl.cpm.Constants.LONG_COLON_TERM);
+              org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM,
+              org.apache.uima.collection.impl.cpm.Constants.LONG_COLON_TERM);
     }
 
     for (int i = 0; aKey != null && typeList != null && i < typeList.length && typeList[i] != null; i++) {
@@ -260,7 +260,7 @@ public class DATACasUtils {
       if (object instanceof FeatureStructure) {
         FeatureStructure fs = (FeatureStructure) object;
         String type = StringUtils.replaceAll(fs.getType(), Constants.LONG_COLON_TERM,
-                        Constants.SHORT_COLON_TERM);
+                Constants.SHORT_COLON_TERM);
         if (type.equals(aName)) {
           return true;
         }
@@ -281,9 +281,9 @@ public class DATACasUtils {
         FeatureStructure fs = (FeatureStructure) object;
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(DATACasUtils.class).logrb(Level.FINEST,
-                          DATACasUtils.class.getName(), "process",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_show_cas_fs_type__FINEST",
-                          new Object[] { Thread.currentThread().getName(), fs.getType() });
+                  DATACasUtils.class.getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_show_cas_fs_type__FINEST",
+                  new Object[] { Thread.currentThread().getName(), fs.getType() });
 
         }
         String[] names = fs.getFeatureNames();
@@ -291,7 +291,8 @@ public class DATACasUtils {
           FeatureValue fValue = fs.getFeatureValue(names[i]);
           if (fValue != null) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-              UIMAFramework.getLogger(DATACasUtils.class).logrb(
+              UIMAFramework.getLogger(DATACasUtils.class)
+                      .logrb(
                               Level.FINEST,
                               DATACasUtils.class.getName(),
                               "process",
@@ -321,27 +322,19 @@ public class DATACasUtils {
       if (object instanceof FeatureStructure) {
         FeatureStructure fs = (FeatureStructure) object;
         if (System.getProperty("SHOWFEATURES") != null) {
-          UIMAFramework.getLogger(DATACasUtils.class).logrb(
-                          Level.FINEST,
-                          DATACasUtils.class.getName(),
-                          "process",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_search_cas_by_value__FINEST",
-                          new Object[] { Thread.currentThread().getName(), featureName,
-                              fs.getType() });
+          UIMAFramework.getLogger(DATACasUtils.class).logrb(Level.FINEST,
+                  DATACasUtils.class.getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_search_cas_by_value__FINEST",
+                  new Object[] { Thread.currentThread().getName(), featureName, fs.getType() });
         }
         if (featureName.equals(fs.getType())) {
           String[] names = fs.getFeatureNames();
           for (int i = 0; names != null && i < names.length; i++) {
             if (System.getProperty("SHOWFEATURES") != null) {
-              UIMAFramework.getLogger(DATACasUtils.class).logrb(
-                              Level.FINEST,
-                              DATACasUtils.class.getName(),
-                              "process",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_show_type_value__FINEST",
-                              new Object[] { Thread.currentThread().getName(), names[i],
-                                  fs.getType() });
+              UIMAFramework.getLogger(DATACasUtils.class).logrb(Level.FINEST,
+                      DATACasUtils.class.getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_show_type_value__FINEST",
+                      new Object[] { Thread.currentThread().getName(), names[i], fs.getType() });
             }
 
           }
@@ -379,7 +372,7 @@ public class DATACasUtils {
    * @return
    */
   public static String[] getFeatureStructureValues(CasData aCAS, String featureStructureName,
-                  String featureName) {
+          String featureName) {
     Iterator it = aCAS.getFeatureStructures();
     String featureValue = null;
     Vector v = new Vector();
@@ -415,7 +408,7 @@ public class DATACasUtils {
    * @return
    */
   public static String getFeatureValueByType(CasData aCAS, String aFeatureStructure,
-                  String featureName) {
+          String featureName) {
     Iterator it = aCAS.getFeatureStructures();
     String featureValue = null;
     while (it.hasNext()) {
@@ -479,7 +472,7 @@ public class DATACasUtils {
     while (it.hasNext()) {
       Object object = it.next();
       if (object instanceof FeatureStructure
-                      && ((FeatureStructure) object).getType().equals(aFeatureStructureName)) {
+              && ((FeatureStructure) object).getType().equals(aFeatureStructureName)) {
         FeatureStructure fs = (FeatureStructure) object;
         String[] featureNames = fs.getFeatureNames();
         if (featureNames == null) {

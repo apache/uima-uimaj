@@ -67,7 +67,7 @@ public class OFSocketTransportImpl implements SocketTransport {
     try {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
-                        Thread.currentThread().getName() + "-Created Connection to Fenced Service");
+                Thread.currentThread().getName() + "-Created Connection to Fenced Service");
       }
       return new Socket(aURI.getHost(), aURI.getPort());
     } catch (SocketException e) {
@@ -91,18 +91,18 @@ public class OFSocketTransportImpl implements SocketTransport {
     try {
       if (aSocket.isClosed()) {
         aSocket = connect(new URL("http", aSocket.getInetAddress().getHostName(),
-                        aSocket.getPort(), ""), 100000);
+                aSocket.getPort(), ""), 100000);
       }
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
-                        Thread.currentThread().getName() + "-Sending Request to Fenced Service.");
+                Thread.currentThread().getName() + "-Sending Request to Fenced Service.");
       }
       os = new DataOutputStream(aSocket.getOutputStream());
       is = new DataInputStream(aSocket.getInputStream());
 
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
-                        Thread.currentThread().getName() + "-Processing Response");
+                Thread.currentThread().getName() + "-Processing Response");
       }
       BufferedReader reader = new BufferedReader(new InputStreamReader(is));
       os.writeBytes("HELLO\n");
@@ -110,14 +110,14 @@ public class OFSocketTransportImpl implements SocketTransport {
       String responseLine;
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
-                        Thread.currentThread().getName() + "-Showing Response");
+                Thread.currentThread().getName() + "-Showing Response");
       }
       if ((responseLine = reader.readLine()) != null) {
         UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
-                        "Server Response: " + responseLine);
+                "Server Response: " + responseLine);
       }
       UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
-                      Thread.currentThread().getName() + "-Done Showing Response");
+              Thread.currentThread().getName() + "-Done Showing Response");
 
     } catch (SocketException e) {
       e.printStackTrace();
@@ -146,7 +146,7 @@ public class OFSocketTransportImpl implements SocketTransport {
    * @see org.apache.uima.collection.impl.cpm.container.deployer.socket.SocketTransport#getProcessingResourceMetaData()
    */
   public ProcessingResourceMetaData getProcessingResourceMetaData(Socket aSocket)
-                  throws SocketException {
+          throws SocketException {
 
     return null;
   }

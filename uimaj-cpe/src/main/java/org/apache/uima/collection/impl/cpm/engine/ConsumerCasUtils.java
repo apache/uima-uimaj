@@ -69,11 +69,11 @@ public class ConsumerCasUtils {
   public static String getStringFeatValue(CAS aCasView, String aTypeS, String aFeatS) {
     String result = null;
     FSIterator idIter = aCasView.getAnnotationIndex(aCasView.getTypeSystem().getType(aTypeS))
-                    .iterator();
+            .iterator();
     while (idIter != null && idIter.isValid()) {
       org.apache.uima.cas.FeatureStructure idFS = idIter.get();
       result = idFS.getStringValue(aCasView.getTypeSystem().getFeatureByFullName(
-                      aTypeS + ":" + aFeatS));
+              aTypeS + ":" + aFeatS));
       idIter.moveToNext();
     }
     return result;

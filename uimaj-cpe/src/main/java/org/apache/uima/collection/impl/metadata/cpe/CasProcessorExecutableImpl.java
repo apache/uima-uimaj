@@ -39,7 +39,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
-                CasProcessorExecutable {
+        CasProcessorExecutable {
   private static final long serialVersionUID = 6897788743141912586L;
 
   private String executable;
@@ -147,7 +147,7 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     // TODO Auto-generated method stub
     setExecutable(aElement.getAttribute("executable"));
     setDir(aElement.getAttribute("dir"));
@@ -159,12 +159,12 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
         if ("arg".equals(node.getNodeName())) {
           // assumes all children are CasProcessor elements
           CasProcessorExecArg arg = (CasProcessorExecArg) aParser.buildObject((Element) node,
-                          aOptions);
+                  aOptions);
           args.add(arg);
         } else if ("env".equals(node.getNodeName())) {
           // assumes all children are CasProcessor elements
           CasProcessorRuntimeEnvParam env = (CasProcessorRuntimeEnvParam) aParser.buildObject(
-                          (Element) node, aOptions);
+                  (Element) node, aOptions);
           envs.add(env);
         }
       }
@@ -173,7 +173,7 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
   }
 
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
-                  throws SAXException {
+          throws SAXException {
     XmlizationInfo inf = getXmlizationInfo();
 
     // write the element's start tag
@@ -191,7 +191,7 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
     // write child elements
     for (int i = 0; i < envs.size(); i++) {
       ((CasProcessorRuntimeEnvParam) envs.get(i)).toXML(aContentHandler,
-                      aWriteDefaultNamespaceAttribute);
+              aWriteDefaultNamespaceAttribute);
     }
     CasProcessorExecArg[] argList = args.getAll();
     // write child elements
@@ -223,7 +223,7 @@ public class CasProcessorExecutableImpl extends MetaDataObject_impl implements
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("exec",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("arg"), new PropertyXmlInfo("env"), });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("arg"), new PropertyXmlInfo("env"), });
 
   /**
    * @return

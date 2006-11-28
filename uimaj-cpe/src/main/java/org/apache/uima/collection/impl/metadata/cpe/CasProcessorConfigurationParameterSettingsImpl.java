@@ -26,7 +26,7 @@ import org.apache.uima.collection.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 
 public class CasProcessorConfigurationParameterSettingsImpl implements
-                CasProcessorConfigurationParameterSettings {
+        CasProcessorConfigurationParameterSettings {
   private NameValuePair[] params = new NameValuePair[0];
 
   private ArrayList paramList = new ArrayList(0);
@@ -43,7 +43,7 @@ public class CasProcessorConfigurationParameterSettingsImpl implements
     }
     for (int i = 0; i < size; i++) {
       paramList.add(new NameValuePairImpl(aCps.getParameterSettings()[i].getName(), aCps
-                      .getParameterSettings()[i].getValue()));
+              .getParameterSettings()[i].getValue()));
     }
   }
 

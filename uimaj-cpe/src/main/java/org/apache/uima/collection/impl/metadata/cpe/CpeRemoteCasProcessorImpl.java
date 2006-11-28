@@ -23,7 +23,7 @@ import org.apache.uima.collection.metadata.CasProcessorDeploymentParams;
 import org.apache.uima.collection.metadata.CpeRemoteCasProcessor;
 
 public class CpeRemoteCasProcessorImpl extends CasProcessorCpeObject implements
-                CpeRemoteCasProcessor {
+        CpeRemoteCasProcessor {
   private static final long serialVersionUID = -1290194910813284905L;
 
   public CpeRemoteCasProcessorImpl() {

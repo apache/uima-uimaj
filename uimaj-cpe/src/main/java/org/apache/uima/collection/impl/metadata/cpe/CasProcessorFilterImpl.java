@@ -55,13 +55,13 @@ public class CasProcessorFilterImpl extends MetaDataObject_impl implements CasPr
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     filter = XMLUtils.getText(aElement);
 
   }
 
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
-                  throws SAXException {
+          throws SAXException {
     XmlizationInfo inf = getXmlizationInfo();
 
     // write the element's start tag
@@ -88,7 +88,7 @@ public class CasProcessorFilterImpl extends MetaDataObject_impl implements CasPr
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("filter",
-                  new PropertyXmlInfo[0]);
+          new PropertyXmlInfo[0]);
 
   /**
    * @return

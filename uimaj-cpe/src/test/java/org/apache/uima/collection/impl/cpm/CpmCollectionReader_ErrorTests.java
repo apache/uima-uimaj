@@ -92,11 +92,11 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
 
     // setup CPM
     CollectionProcessingEngine cpe = setupCpm(documentCount, "OutOfMemoryError", exceptionSequence,
-                    "getNext");
+            "getNext");
 
     // Create and register a Status Callback Listener
     CollectionReaderStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(
-                    cpe);
+            cpe);
     cpe.addStatusCallbackListener(listener);
 
     cpe.process();
@@ -108,8 +108,8 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     assertEquals("Abort was not called as expected.", true, listener.isAborted());
     assertEquals(
-                    "The cpm called the listener, that the cpm has finished - which normally could not be.",
-                    false, listener.isFinished());
+            "The cpm called the listener, that the cpm has finished - which normally could not be.",
+            false, listener.isFinished());
     assertEquals("There are not as much exceptions as expected! ", 1, FunctionErrorStore.getCount());
     checkForOutOfMemoryError(listener);
   }
@@ -129,7 +129,7 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
 
     // setup CPM
     CollectionProcessingEngine cpe = setupCpm(documentCount, "CollectionException",
-                    exceptionSequence, "getNext");
+            exceptionSequence, "getNext");
 
     // Create and register a Status Callback Listener
     TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -145,13 +145,13 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
-                    "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
-                    true, listener.isFinished());
+            "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
+            true, listener.isFinished());
     assertEquals(
-                    "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
-                    false, listener.isAborted());
+            "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
+            false, listener.isAborted());
     assertEquals("There are not as much exceptions as expected! ", documentCount
-                    / exceptionSequence, FunctionErrorStore.getCount());
+            / exceptionSequence, FunctionErrorStore.getCount());
   }
 
   /**
@@ -170,7 +170,7 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
 
     // setup CPM
     CollectionProcessingEngine cpe = setupCpm(documentCount, "IOException", exceptionSequence,
-                    "getNext");
+            "getNext");
 
     // Create and register a Status Callback Listener
     TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -198,13 +198,13 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
-                    "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
-                    true, listener.isFinished());
+            "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
+            true, listener.isFinished());
     assertEquals(
-                    "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
-                    false, listener.isAborted());
+            "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
+            false, listener.isAborted());
     assertEquals("There are not as much exceptions as expected! ", documentCount
-                    / exceptionSequence, FunctionErrorStore.getCount());
+            / exceptionSequence, FunctionErrorStore.getCount());
   }
 
   /**
@@ -222,7 +222,7 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
 
     // setup CPM
     CollectionProcessingEngine cpe = setupCpm(documentCount, "NullPointerException",
-                    exceptionSequence, "getNext");
+            exceptionSequence, "getNext");
 
     // Create and register a Status Callback Listener
     TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -238,13 +238,13 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
-                    "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
-                    true, listener.isFinished());
+            "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
+            true, listener.isFinished());
     assertEquals(
-                    "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
-                    false, listener.isAborted());
+            "The cpm propably didn't finish correctly! The aborted method of the listener was called.",
+            false, listener.isAborted());
     assertEquals("There are not as much exceptions as expected! ", documentCount
-                    / exceptionSequence, FunctionErrorStore.getCount());
+            / exceptionSequence, FunctionErrorStore.getCount());
   }
 
   /**
@@ -262,11 +262,11 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
 
     // setup CPM
     CollectionProcessingEngine cpe = setupCpm(documentCount, "OutOfMemoryError", exceptionSequence,
-                    "hasNext");
+            "hasNext");
 
     // Create and register a Status Callback Listener
     CollectionReaderStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(
-                    cpe);
+            cpe);
     cpe.addStatusCallbackListener(listener);
 
     cpe.process();
@@ -279,8 +279,8 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToDefault();
     // check the results, if everything worked as expected
     assertEquals(
-                    "The cpm called the listener, that the cpm has finished - which normally could not be.",
-                    false, listener.isFinished());
+            "The cpm called the listener, that the cpm has finished - which normally could not be.",
+            false, listener.isFinished());
     assertEquals("Abort was not called.", true, listener.isAborted());
     assertEquals("There are not as much exceptions as expected! ", 1, FunctionErrorStore.getCount());
     checkForOutOfMemoryError(listener);
@@ -302,7 +302,7 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
 
     // setup CPM
     CollectionProcessingEngine cpe = setupCpm(documentCount, "NullPointerException",
-                    exceptionSequence, "hasNext");
+            exceptionSequence, "hasNext");
 
     // Create and register a Status Callback Listener
     TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -331,7 +331,7 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
     // check the results, if everything worked as expected
     assertEquals("The cpm didn't finish correctly! Abort was called.", false, listener.isAborted());
     assertEquals("The cpm didn't finish correctly! Finish was not called.", true, listener
-                    .isFinished());
+            .isFinished());
     assertEquals("The cpm was manually aborted.", false, manuallyAborted);
   }
 
@@ -353,7 +353,7 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
     try {
       // setup CPM
       CollectionProcessingEngine cpe = setupCpm(documentCount, "ResourceInitializationException",
-                      exceptionSequence, "initialize");
+              exceptionSequence, "initialize");
 
       // Create and register a Status Callback Listener
       listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -372,15 +372,15 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
       ManageOutputDevice.setAllSystemOutputToDefault();
       // check the results, if everything worked as expected
       assertEquals("The cpm didn't finish correctly! Abort was called.", false, listener
-                      .isAborted());
+              .isAborted());
       assertEquals(
-                      "The cpm called the listener, that the cpm has finished - which normally could not be.",
-                      false, listener.isFinished());
+              "The cpm called the listener, that the cpm has finished - which normally could not be.",
+              false, listener.isFinished());
       assertEquals("There are not as much exceptions as expected! ", 1, FunctionErrorStore
-                      .getCount());
+              .getCount());
       assertEquals(
-                      "The expected ResourceInitializationException was not fiven back to the programm. ",
-                      true, exceptionThrown);
+              "The expected ResourceInitializationException was not fiven back to the programm. ",
+              true, exceptionThrown);
       // that's it.
     }
   }
@@ -402,7 +402,7 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
     try {
       // setup CPM
       CollectionProcessingEngine cpe = setupCpm(documentCount, "NullPointerException",
-                      exceptionSequence, "initialize");
+              exceptionSequence, "initialize");
 
       // Create and register a Status Callback Listener
       listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -422,13 +422,13 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
       // check the results, if everything worked as expected
       assertEquals("Abort was called.", false, listener.isAborted());
       assertEquals(
-                      "The cpm called the listener, that the cpm has finished - which normally could not be.",
-                      false, listener.isFinished());
+              "The cpm called the listener, that the cpm has finished - which normally could not be.",
+              false, listener.isFinished());
       assertEquals("There are not as much exceptions as expected! ", 1, FunctionErrorStore
-                      .getCount());
+              .getCount());
       assertEquals(
-                      "The expected ResourceInitializationException was not fiven back to the programm. ",
-                      true, exceptionThrown);
+              "The expected ResourceInitializationException was not fiven back to the programm. ",
+              true, exceptionThrown);
     }
   }
 
@@ -450,7 +450,7 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
     try {
       // setup CPM
       CollectionProcessingEngine cpe = setupCpm(documentCount, "OutOfMemoryError",
-                      exceptionSequence, "initialize");
+              exceptionSequence, "initialize");
 
       // Create and register a Status Callback Listener
       listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -470,10 +470,10 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
       assertEquals("The OutOfMemoryError is not given back to the caller.", true, outOfMemoryError);
       assertEquals("Abort was called.", false, listener.isAborted());
       assertEquals(
-                      "The cpm called the listener, that the cpm has finished - which normally could not be.",
-                      false, listener.isFinished());
+              "The cpm called the listener, that the cpm has finished - which normally could not be.",
+              false, listener.isFinished());
       assertEquals("There are not as much exceptions as expected! ", 1, FunctionErrorStore
-                      .getCount());
+              .getCount());
     }
 
   }
@@ -493,7 +493,7 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
 
     // setup CPM
     CollectionProcessingEngine cpe = setupCpm(documentCount, "IOException", exceptionSequence,
-                    "getProgress");
+            "getProgress");
 
     // Create and register a Status Callback Listener
     TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -510,10 +510,10 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
     // check the results, if everything worked as expected
     assertEquals("Abort was called.", false, listener.isAborted());
     assertEquals(
-                    "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
-                    true, listener.isFinished());
+            "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
+            true, listener.isFinished());
     assertEquals("There are not as much exceptions as expected! ",
-                    (documentCount / exceptionSequence), FunctionErrorStore.getCount());
+            (documentCount / exceptionSequence), FunctionErrorStore.getCount());
     // that's it.
   }
 
@@ -532,11 +532,11 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
 
     // setup CPM
     CollectionProcessingEngine cpe = setupCpm(documentCount, "OutOfMemoryError", exceptionSequence,
-                    "getProgress");
+            "getProgress");
 
     // Create and register a Status Callback Listener
     CollectionReaderStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(
-                    cpe);
+            cpe);
     cpe.addStatusCallbackListener(listener);
 
     cpe.process();
@@ -550,7 +550,7 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
     // check the results, if everything worked as expected
     assertEquals("Abort was not called.", true, listener.isAborted());
     assertEquals("The collectionProcessComplete-method of the listener was called. - Unexpected!",
-                    false, listener.isFinished());
+            false, listener.isFinished());
     assertEquals("There are not as much exceptions as expected! ", 1, FunctionErrorStore.getCount());
     checkForOutOfMemoryError(listener);
   }
@@ -570,7 +570,7 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
 
     // setup CPM
     CollectionProcessingEngine cpe = setupCpm(documentCount, "NullPointerException",
-                    exceptionSequence, "getProgress");
+            exceptionSequence, "getProgress");
 
     // Create and register a Status Callback Listener
     TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -587,10 +587,10 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
     // check the results, if everything worked as expected
     assertEquals("Abort was called.", false, listener.isAborted());
     assertEquals(
-                    "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
-                    true, listener.isFinished());
+            "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
+            true, listener.isFinished());
     assertEquals("There are not as much exceptions as expected! ",
-                    (documentCount / exceptionSequence), FunctionErrorStore.getCount());
+            (documentCount / exceptionSequence), FunctionErrorStore.getCount());
 
   }
 
@@ -642,13 +642,13 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
   private void checkForOutOfMemoryError(CollectionReaderStatusCallbackListener listener) {
     assertEquals("The indication failed, that an error was thrown.", true, listener.isAborted());
     assertEquals("No Error was thrown (and no Exception) - expected was an OutOfMemoryError.",
-                    true, listener.hasError());
+            true, listener.hasError());
     assertEquals("The expected null for the failed cas is missing.", true,
-                    (listener.getLastCas() == null));
+            (listener.getLastCas() == null));
     assertEquals("There are not as much exceptions as expected! ", 1, FunctionErrorStore.getCount());
     assertEquals(
-                    "The cpm called the listener, that the cpm has finished - which normally could not be.",
-                    false, listener.isFinished());
+            "The cpm called the listener, that the cpm has finished - which normally could not be.",
+            false, listener.isFinished());
 
   }
 
@@ -667,7 +667,7 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
    * @return CollectionProcessingEngine - initialized cpe
    */
   private CollectionProcessingEngine setupCpm(int documentCount, String exceptionName,
-                  int exceptionSequence, String functionName) {
+          int exceptionSequence, String functionName) {
     CpeDescription cpeDesc = null;
     CollectionProcessingEngine cpe = null;
 
@@ -678,7 +678,7 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
 
       // first, prepare all descriptors as needed
       String colReaderDesc = DescriptorMakeUtil.makeCollectionReader(colReaderBase, true,
-                      functionName, exceptionSequence, exceptionName, documentCount);
+              functionName, exceptionSequence, exceptionName, documentCount);
       String taeDesc = DescriptorMakeUtil.makeAnalysisEngine(taeBase);
       String casConsumerDesc = DescriptorMakeUtil.makeCasConsumer(casConsumerBase);
 
@@ -687,11 +687,11 @@ public class CpmCollectionReader_ErrorTests extends TestCase {
 
       // managing the default behaviour of this client
       CpeIntegratedCasProcessor integratedProcessor = CpeDescriptorFactory
-                      .produceCasProcessor("ErrorTestAnnotator");
+              .produceCasProcessor("ErrorTestAnnotator");
       integratedProcessor.setDescriptor(taeDesc);
 
       CpeIntegratedCasProcessor casConsumer = CpeDescriptorFactory
-                      .produceCasProcessor("ErrorTest CasConsumer");
+              .produceCasProcessor("ErrorTest CasConsumer");
       casConsumer.setDescriptor(casConsumerDesc);
 
       // - add all descriptors

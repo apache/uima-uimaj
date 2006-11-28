@@ -26,7 +26,7 @@ import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 
 public class CasProcessorRunInSeperateProcessImpl extends MetaDataObject_impl implements
-                CasProcessorRunInSeperateProcess {
+        CasProcessorRunInSeperateProcess {
 
   private static final long serialVersionUID = 1074137401279020375L;
 
@@ -58,7 +58,7 @@ public class CasProcessorRunInSeperateProcessImpl extends MetaDataObject_impl im
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("runInSeparateProcess",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("exec", null), });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("exec", null), });
 
   /**
    * @return

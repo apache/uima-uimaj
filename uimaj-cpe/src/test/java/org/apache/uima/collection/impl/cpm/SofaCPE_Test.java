@@ -68,7 +68,7 @@ public class SofaCPE_Test extends TestCase {
     System.setProperty("CPM_HOME", JUnitExtension.getFile(".").getAbsolutePath());
     cpeSpecifierFile = JUnitExtension.getFile("CpeSofaTest/SofaCPE.xml");
     cpeDesc = UIMAFramework.getXMLParser()
-                    .parseCpeDescription(new XMLInputSource(cpeSpecifierFile));
+            .parseCpeDescription(new XMLInputSource(cpeSpecifierFile));
     // instantiate a cpe
     cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc, null);
     // add status callback

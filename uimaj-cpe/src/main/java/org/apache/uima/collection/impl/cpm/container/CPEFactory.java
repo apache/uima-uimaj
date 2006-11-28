@@ -129,7 +129,7 @@ public class CPEFactory {
    */
   public CPEFactory(ResourceManager aResourceManager) {
     uimaContext = UIMAFramework.newUimaContext(UIMAFramework.getLogger(), aResourceManager,
-                    UIMAFramework.newConfigurationManager());
+            UIMAFramework.newConfigurationManager());
   }
 
   /**
@@ -141,12 +141,12 @@ public class CPEFactory {
    *          ResourceManager will be created.
    */
   public CPEFactory(CpeDescription aDescriptor, ResourceManager aResourceManager)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     if (aDescriptor == null) {
       throw new UIMARuntimeException(new InvalidObjectException(CpmLocalizedMessage
-                      .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                      "UIMA_CPM_EXP_no_cpe_descriptor__WARNING",
-                                      new Object[] { Thread.currentThread().getName() })));
+              .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_EXP_no_cpe_descriptor__WARNING", new Object[] { Thread
+                              .currentThread().getName() })));
     }
 
     if (aResourceManager == null) {
@@ -158,7 +158,7 @@ public class CPEFactory {
     }
 
     uimaContext = UIMAFramework.newUimaContext(UIMAFramework.getLogger(), aResourceManager,
-                    UIMAFramework.newConfigurationManager());
+            UIMAFramework.newConfigurationManager());
     // if CpeDescription contains a ResourceManagerConfiguration, parse it and use it
     // to configure the ResourceManager
     CpeResourceManagerConfiguration resMgrCfgDesc = aDescriptor.getResourceManagerConfiguration();
@@ -167,9 +167,9 @@ public class CPEFactory {
       try {
         if (resMgrCfgDesc.get().length() > 0) {
           String descriptorPath = CPMUtils.convertToAbsolutePath(System.getProperty("CPM_HOME"),
-                          CPM_HOME, resMgrCfgDesc.get());
+                  CPM_HOME, resMgrCfgDesc.get());
           resMgrCfg = UIMAFramework.getXMLParser().parseResourceManagerConfiguration(
-                          new XMLInputSource(descriptorPath));
+                  new XMLInputSource(descriptorPath));
           aResourceManager.initializeExternalResources(resMgrCfg, "/", null);
         }
       } catch (InvalidXMLException e) {
@@ -193,18 +193,18 @@ public class CPEFactory {
 
     if (aDescriptor == null || aDescriptor.trim().length() == 0) {
       throw new UIMARuntimeException(new FileNotFoundException(CpmLocalizedMessage
-                      .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                      "UIMA_CPM_EXP_no_cpe_descriptor__WARNING",
-                                      new Object[] { Thread.currentThread().getName() })));
+              .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_EXP_no_cpe_descriptor__WARNING", new Object[] { Thread
+                              .currentThread().getName() })));
     }
 
     try {
       setCpeDescriptor(CpeDescriptorFactory.produceDescriptor(new FileInputStream(new File(
-                      aDescriptor))));
+              aDescriptor))));
 
     } catch (Exception e) {
       throw new UIMARuntimeException(InvalidXMLException.INVALID_DESCRIPTOR_FILE,
-                      new Object[] { aDescriptor }, e);
+              new Object[] { aDescriptor }, e);
     }
   }
 
@@ -220,9 +220,9 @@ public class CPEFactory {
 
     if (aDescriptorStream == null) {
       throw new UIMARuntimeException(new IOException(CpmLocalizedMessage.getLocalizedMessage(
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_EXP_invalid_cpe_descriptor_stream__WARNING", new Object[] { Thread
-                                      .currentThread().getName() })));
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_EXP_invalid_cpe_descriptor_stream__WARNING", new Object[] { Thread
+                      .currentThread().getName() })));
     }
 
     try {
@@ -265,9 +265,9 @@ public class CPEFactory {
   private void checkForErrors() throws ResourceConfigurationException {
     if (cpeDescriptor == null) {
       throw new ResourceConfigurationException(new Exception(CpmLocalizedMessage
-                      .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                      "UIMA_CPM_EXP_no_cpe_descriptor__WARNING",
-                                      new Object[] { Thread.currentThread().getName() })));
+              .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_EXP_no_cpe_descriptor__WARNING", new Object[] { Thread
+                              .currentThread().getName() })));
     }
   }
 
@@ -287,43 +287,38 @@ public class CPEFactory {
       CpeCollectionReader reader = (getCpeDescriptor().getAllCollectionCollectionReaders())[0];
       if (reader == null) {
         throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND,
-                        new Object[] { "<collectionReader>", "<cpeDescriptor>" },
-                        new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                        "UIMA_CPM_EXP_missing_required_element__WARNING",
-                                        new Object[] { Thread.currentThread().getName(),
-                                            "<collectionReader>" })));
+                new Object[] { "<collectionReader>", "<cpeDescriptor>" }, new Exception(
+                        CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                                "UIMA_CPM_EXP_missing_required_element__WARNING", new Object[] {
+                                    Thread.currentThread().getName(), "<collectionReader>" })));
       }
 
       CpeCollectionReaderIterator cit = reader.getCollectionIterator();
       if (cit == null || cit.getDescriptor() == null || cit.getDescriptor().getInclude() == null) {
         throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND,
-                        new Object[] { "<include>", "<collectionIterator>" },
-                        new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                        "UIMA_CPM_EXP_missing_required_element__WARNING",
-                                        new Object[] { Thread.currentThread().getName(),
-                                            "<include>" })));
+                new Object[] { "<include>", "<collectionIterator>" }, new Exception(
+                        CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                                "UIMA_CPM_EXP_missing_required_element__WARNING", new Object[] {
+                                    Thread.currentThread().getName(), "<include>" })));
       }
       if (cit.getDescriptor().getInclude().get() == null) {
         throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND,
-                        new Object[] { "<href>", "<collectionIterator>" },
-                        new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                        "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING",
-                                        new Object[] { Thread.currentThread().getName(), "<href>",
-                                            "<collectionIterator>" })));
+                new Object[] { "<href>", "<collectionIterator>" }, new Exception(
+                        CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                                "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING",
+                                new Object[] { Thread.currentThread().getName(), "<href>",
+                                    "<collectionIterator>" })));
       }
 
       String descriptorPath = CPMUtils.convertToAbsolutePath(System.getProperty("CPM_HOME"),
-                      CPM_HOME, cit.getDescriptor().getInclude().get());
+              CPM_HOME, cit.getDescriptor().getInclude().get());
       // create new collection reader from the descriptor
       XMLInputSource in1 = new XMLInputSource(descriptorPath);
       ResourceSpecifier colReaderSp = UIMAFramework.getXMLParser()
-                      .parseCollectionReaderDescription(in1);
+              .parseCollectionReaderDescription(in1);
 
       overrideParameterSettings(colReaderSp, cit.getConfigurationParameterSettings(),
-                      descriptorPath, "Collection Reader");
+              descriptorPath, "Collection Reader");
 
       // compute sofa mapping for the CAS Initializer
       CpeSofaMappings sofanamemappings = cit.getSofaNameMappings();
@@ -341,60 +336,48 @@ public class CPEFactory {
 
       // create child UimaContext for the CollectionReader
       UimaContextAdmin collectionReaderContext = uimaContext.createChild("_CollectionReader",
-                      sofamap);
+              sofamap);
       Map additionalParams = new HashMap();
       additionalParams.put(Resource.PARAM_UIMA_CONTEXT, collectionReaderContext);
       colreader = (BaseCollectionReader) UIMAFramework.produceResource(BaseCollectionReader.class,
-                      colReaderSp, getResourceManager(), additionalParams);
+              colReaderSp, getResourceManager(), additionalParams);
 
       CpeCollectionReaderCasInitializer casInit = reader.getCasInitializer();
       if (casInit != null) {
         if (casInit.getDescriptor() == null) {
           throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND,
-                          new Object[] { "<descriptor>", "<casInitializer>" },
-                          new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                          "UIMA_CPM_EXP_missing_required_element__WARNING",
-                                          new Object[] { Thread.currentThread().getName(),
-                                              "<descriptor>" })));
+                  new Object[] { "<descriptor>", "<casInitializer>" }, new Exception(
+                          CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                                  "UIMA_CPM_EXP_missing_required_element__WARNING", new Object[] {
+                                      Thread.currentThread().getName(), "<descriptor>" })));
         }
         if (casInit.getDescriptor().getInclude() == null) {
           throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND,
-                          new Object[] { "<include>", "<casInitializer>" },
-                          new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                          "UIMA_CPM_EXP_missing_required_element__WARNING",
-                                          new Object[] { Thread.currentThread().getName(),
-                                              "<include>" })));
+                  new Object[] { "<include>", "<casInitializer>" }, new Exception(
+                          CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                                  "UIMA_CPM_EXP_missing_required_element__WARNING", new Object[] {
+                                      Thread.currentThread().getName(), "<include>" })));
         }
         if (casInit.getDescriptor().getInclude().get() == null
-                        || casInit.getDescriptor().getInclude().get().length() == 0) {
-          throw new ResourceConfigurationException(
-                          InvalidXMLException.ELEMENT_NOT_FOUND,
-                          new Object[] { "<href>", "<casInitializer>" },
-                          new Exception(
-                                          CpmLocalizedMessage
-                                                          .getLocalizedMessage(
-                                                                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                                                          "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING",
-                                                                          new Object[] {
-                                                                              Thread
-                                                                                              .currentThread()
-                                                                                              .getName(),
-                                                                              "<href>",
-                                                                              "<casInitializer>" })));
+                || casInit.getDescriptor().getInclude().get().length() == 0) {
+          throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND,
+                  new Object[] { "<href>", "<casInitializer>" }, new Exception(CpmLocalizedMessage
+                          .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                                  "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING",
+                                  new Object[] { Thread.currentThread().getName(), "<href>",
+                                      "<casInitializer>" })));
         }
 
         descriptorPath = CPMUtils.convertToAbsolutePath(System.getProperty("CPM_HOME"), CPM_HOME,
-                        casInit.getDescriptor().getInclude().get());
+                casInit.getDescriptor().getInclude().get());
 
         File casInitializerSpecifierFile = new File(descriptorPath);
         XMLInputSource in4 = new XMLInputSource(casInitializerSpecifierFile);
         ResourceSpecifier casIniSp = UIMAFramework.getXMLParser().parseCasInitializerDescription(
-                        in4);
+                in4);
 
         overrideParameterSettings(casIniSp, casInit.getConfigurationParameterSettings(),
-                        descriptorPath, "Cas Initializer");
+                descriptorPath, "Cas Initializer");
 
         // compute sofa mapping for the CAS Initializer
         CpeSofaMappings sofaNamemappings = casInit.getSofaNameMappings();
@@ -422,61 +405,52 @@ public class CPEFactory {
           ((CollectionReader) colreader).setCasInitializer((CasInitializer) initializer);
         } else {
           throw new ResourceConfigurationException(InvalidXMLException.INVALID_ELEMENT_TYPE,
-                          new Object[] { "CasDataInitializer", initializer.getClass().getName() },
-                          new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                          "UIMA_CPM_EXP_incompatible_component__WARNING",
-                                          new Object[] { Thread.currentThread().getName(),
-                                              "CasInitializer", "CasDataInitializer",
-                                              initializer.getClass().getName() })));
+                  new Object[] { "CasDataInitializer", initializer.getClass().getName() },
+                  new Exception(CpmLocalizedMessage.getLocalizedMessage(
+                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                          "UIMA_CPM_EXP_incompatible_component__WARNING", new Object[] {
+                              Thread.currentThread().getName(), "CasInitializer",
+                              "CasDataInitializer", initializer.getClass().getName() })));
         }
       }
       // Retrieve number of entities to process from CPE configuration
       long numDocs2Process = getCPEConfig().getNumToProcess();
       if (UIMAFramework.getLogger().isLoggable(Level.CONFIG)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.CONFIG,
-                        this.getClass().getName(),
-                        "process",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_show_docs_to_process__CONFIG",
-                        new Object[] { Thread.currentThread().getName(),
-                            String.valueOf(numDocs2Process) });
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_show_docs_to_process__CONFIG",
+                new Object[] { Thread.currentThread().getName(), String.valueOf(numDocs2Process) });
       }
       // Provide CollectionReader with the number of documents to process
       ((ConfigurableResource_ImplBase) colreader).setConfigParameterValue("processSize",
-                      new Integer(new Long(numDocs2Process).intValue()));
+              new Integer(new Long(numDocs2Process).intValue()));
       CpeConfiguration cpeType = getCpeDescriptor().getCpeConfiguration();
       if (cpeType != null && cpeType.getStartingEntityId() != null
-                      && cpeType.getStartingEntityId().trim().length() > 0) {
+              && cpeType.getStartingEntityId().trim().length() > 0) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "process",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_show_start_doc_id__FINEST",
-                          new Object[] { Thread.currentThread().getName(),
-                              cpeType.getStartingEntityId() });
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_show_start_doc_id__FINEST",
+                  new Object[] { Thread.currentThread().getName(), cpeType.getStartingEntityId() });
         }
         colreader.getProcessingResourceMetaData().getConfigurationParameterSettings()
-                        .setParameterValue("startNumber", cpeType.getStartingEntityId().trim());
+                .setParameterValue("startNumber", cpeType.getStartingEntityId().trim());
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).log(
-                          Level.FINEST,
-                          "Retrieved Documents Starting with DocId ::"
-                                          + colreader.getProcessingResourceMetaData()
-                                                          .getConfigurationParameterSettings()
-                                                          .getParameterValue("startNumber"));
+                  Level.FINEST,
+                  "Retrieved Documents Starting with DocId ::"
+                          + colreader.getProcessingResourceMetaData()
+                                  .getConfigurationParameterSettings().getParameterValue(
+                                          "startNumber"));
         }
       }
 
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).log(
-                        Level.FINEST,
-                        "Retrieved processSize ::"
-                                        + ((ConfigurableResource_ImplBase) colreader)
-                                                        .getConfigParameterValue("processSize"));
+                Level.FINEST,
+                "Retrieved processSize ::"
+                        + ((ConfigurableResource_ImplBase) colreader)
+                                .getConfigParameterValue("processSize"));
       }
       return colreader;
     } catch (ResourceConfigurationException e) {
@@ -498,12 +472,10 @@ public class CPEFactory {
     try {
       if (getCpeDescriptor().getCpeCasProcessors() == null) {
         throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND,
-                        new Object[] { "<casProcessors>", "<cpeDescriptor>" }, new Exception(
-                                        CpmLocalizedMessage.getLocalizedMessage(
-                                                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                                        "UIMA_CPM_EXP_bad_cpe_descriptor__WARNING",
-                                                        new Object[] { Thread.currentThread()
-                                                                        .getName() })));
+                new Object[] { "<casProcessors>", "<cpeDescriptor>" }, new Exception(
+                        CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                                "UIMA_CPM_EXP_bad_cpe_descriptor__WARNING", new Object[] { Thread
+                                        .currentThread().getName() })));
       }
       CpeCasProcessors ct = getCpeDescriptor().getCpeCasProcessors();
 
@@ -511,12 +483,10 @@ public class CPEFactory {
       Vector v = new Vector();
       if (casProcessorList == null || casProcessorList.length == 0) {
         throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND,
-                        new Object[] { "<casProcessor>", "<casProcessors>" }, new Exception(
-                                        CpmLocalizedMessage.getLocalizedMessage(
-                                                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                                        "UIMA_CPM_EXP_bad_cpe_descriptor__WARNING",
-                                                        new Object[] { Thread.currentThread()
-                                                                        .getName() })));
+                new Object[] { "<casProcessor>", "<casProcessors>" }, new Exception(
+                        CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                                "UIMA_CPM_EXP_bad_cpe_descriptor__WARNING", new Object[] { Thread
+                                        .currentThread().getName() })));
       }
 
       Hashtable namesMap = new Hashtable();
@@ -524,45 +494,31 @@ public class CPEFactory {
         CpeCasProcessor processorType = casProcessorList[i];
         if (processorType == null) {
           throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND,
-                          new Object[] { "<casProcessor>", "<casProcessors>" },
-                          new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                          "UIMA_CPM_EXP_bad_cpe_descriptor__WARNING",
-                                          new Object[] { Thread.currentThread().getName() })));
+                  new Object[] { "<casProcessor>", "<casProcessors>" }, new Exception(
+                          CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                                  "UIMA_CPM_EXP_bad_cpe_descriptor__WARNING", new Object[] { Thread
+                                          .currentThread().getName() })));
         }
 
         // Check for duplicate Cas Processor names. Names must be unique
         if (namesMap.containsKey(processorType.getName())) {
           throw new ResourceConfigurationException(InvalidXMLException.INVALID_CPE_DESCRIPTOR,
-                          new Object[] { "casProcessor", "name" }, new CPMException(
-                                          CpmLocalizedMessage.getLocalizedMessage(
-                                                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                                          "UIMA_CPM_EXP_duplicate_name__WARNING",
-                                                          new Object[] {
-                                                              Thread.currentThread().getName(),
-                                                              processorType.getName() })));
+                  new Object[] { "casProcessor", "name" }, new CPMException(CpmLocalizedMessage
+                          .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                                  "UIMA_CPM_EXP_duplicate_name__WARNING", new Object[] {
+                                      Thread.currentThread().getName(), processorType.getName() })));
         } else {
           namesMap.put(processorType.getName(), processorType.getName());
         }
 
         String deploymentType = processorType.getDeployment();
         if (deploymentType == null) {
-          throw new ResourceConfigurationException(
-                          InvalidXMLException.REQUIRED_ATTRIBUTE_MISSING,
-                          new Object[] { "deployment", "<casProcessor>" },
-                          new Exception(
-                                          CpmLocalizedMessage
-                                                          .getLocalizedMessage(
-                                                                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                                                          "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING",
-                                                                          new Object[] {
-                                                                              Thread
-                                                                                              .currentThread()
-                                                                                              .getName(),
-                                                                              processorType
-                                                                                              .getName(),
-                                                                              "deployment",
-                                                                              "casProcessor" })));
+          throw new ResourceConfigurationException(InvalidXMLException.REQUIRED_ATTRIBUTE_MISSING,
+                  new Object[] { "deployment", "<casProcessor>" }, new Exception(
+                          CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                                  "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING",
+                                  new Object[] { Thread.currentThread().getName(),
+                                      processorType.getName(), "deployment", "casProcessor" })));
         }
         CasProcessor casProcessor = null;
         String deployModel = "";
@@ -578,7 +534,7 @@ public class CPEFactory {
           casProcessor = (CasProcessor) cpMap.get(processorType.getName());
           // Check operational parameters to determine if multiple instances of the CP are allowed
           if (!casProcessor.getProcessingResourceMetaData().getOperationalProperties()
-                          .isMultipleDeploymentAllowed()) {
+                  .isMultipleDeploymentAllowed()) {
             continue; // one instance already created. Multiple instances of this CP not allowed
           }
         }
@@ -595,12 +551,11 @@ public class CPEFactory {
           deployModel = Constants.DEPLOYMENT_REMOTE;
         } else {
           throw new ResourceConfigurationException(InvalidXMLException.REQUIRED_ATTRIBUTE_MISSING,
-                          new Object[] { "deployment", "<casProcessor>" },
-                          new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                          "UIMA_CPM_Exception_invalid_deployment__WARNING",
-                                          new Object[] { Thread.currentThread().getName(),
-                                              processorType.getName(), deploymentType })));
+                  new Object[] { "deployment", "<casProcessor>" }, new Exception(
+                          CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                                  "UIMA_CPM_Exception_invalid_deployment__WARNING", new Object[] {
+                                      Thread.currentThread().getName(), processorType.getName(),
+                                      deploymentType })));
         }
 
         // Add the casProcessor instantiated above to the map. The map is used to check if
@@ -625,10 +580,9 @@ public class CPEFactory {
           // CPE descriptor
           if (firstTime && Constants.DEPLOYMENT_INTEGRATED.equalsIgnoreCase(deployModel)) {
             throw new ResourceConfigurationException(new CPMException(CpmLocalizedMessage
-                            .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                            "UIMA_CPM_EXP_duplicate_name__WARNING", new Object[] {
-                                                Thread.currentThread().getName(),
-                                                processorType.getName() })));
+                    .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                            "UIMA_CPM_EXP_duplicate_name__WARNING", new Object[] {
+                                Thread.currentThread().getName(), processorType.getName() })));
           }
         }
 
@@ -662,16 +616,16 @@ public class CPEFactory {
    * @throws ResourceConfigurationException
    */
   public boolean isDefinitionInstanceOf(Class aResourceClass, ResourceSpecifier resourceSpecifier,
-                  String aDescriptor) throws ResourceConfigurationException {
+          String aDescriptor) throws ResourceConfigurationException {
     boolean validDefinition = false;
     String implementationClass = null;
     try {
       String frameworkName = null;
       if (resourceSpecifier instanceof AnalysisEngineDescription) {
         frameworkName = ((AnalysisEngineDescription) resourceSpecifier)
-                        .getFrameworkImplementation();
+                .getFrameworkImplementation();
         implementationClass = ((AnalysisEngineDescription) resourceSpecifier)
-                        .getImplementationName();
+                .getImplementationName();
       } else if (resourceSpecifier instanceof CasConsumerDescription) {
         frameworkName = ((CasConsumerDescription) resourceSpecifier).getFrameworkImplementation();
         implementationClass = ((CasConsumerDescription) resourceSpecifier).getImplementationName();
@@ -702,7 +656,7 @@ public class CPEFactory {
       }
     } catch (Exception e) {
       throw new ResourceConfigurationException(ResourceInitializationException.CLASS_NOT_FOUND,
-                      new Object[] { implementationClass, aDescriptor }, e);
+              new Object[] { implementationClass, aDescriptor }, e);
     }
     return validDefinition;
   }
@@ -721,7 +675,7 @@ public class CPEFactory {
    * @throws ResourceInitializationException
    */
   public CasProcessor produceCasDataConsumer(Class aResourceClass, ResourceSpecifier aSpecifier,
-                  Map aAdditionalParams) throws ResourceInitializationException {
+          Map aAdditionalParams) throws ResourceInitializationException {
     String className = null;
     try {
       className = ((CasConsumerDescription) aSpecifier).getImplementationName();
@@ -750,15 +704,15 @@ public class CPEFactory {
     // if an exception occurs, log it but do not throw it... yet
     catch (ClassNotFoundException e) {
       throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
-                      new Object[] { className, aSpecifier.getSourceUrlString() }, e);
+              new Object[] { className, aSpecifier.getSourceUrlString() }, e);
     } catch (IllegalAccessException e) {
       throw new ResourceInitializationException(
-                      ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
-                          className, aSpecifier.getSourceUrlString() }, e);
+              ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] { className,
+                  aSpecifier.getSourceUrlString() }, e);
     } catch (InstantiationException e) {
       throw new ResourceInitializationException(
-                      ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
-                          className, aSpecifier.getSourceUrlString() }, e);
+              ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] { className,
+                  aSpecifier.getSourceUrlString() }, e);
     }
 
     return null;
@@ -776,7 +730,7 @@ public class CPEFactory {
    * @throws ResourceInitializationException
    */
   private Object produceInitializer(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     String className = null;
     try {
       className = ((CasInitializerDescription) aSpecifier).getImplementationName();
@@ -800,21 +754,21 @@ public class CPEFactory {
         return initializer;
       } else {
         throw new InstantiationException("Unexpected CasInitializer-"
-                        + initializer.getClass().getName());
+                + initializer.getClass().getName());
       }
     }
     // if an exception occurs, log it but do not throw it... yet
     catch (ClassNotFoundException e) {
       throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
-                      new Object[] { className, aSpecifier.getSourceUrlString() }, e);
+              new Object[] { className, aSpecifier.getSourceUrlString() }, e);
     } catch (IllegalAccessException e) {
       throw new ResourceInitializationException(
-                      ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
-                          className, aSpecifier.getSourceUrlString() }, e);
+              ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] { className,
+                  aSpecifier.getSourceUrlString() }, e);
     } catch (InstantiationException e) {
       throw new ResourceInitializationException(
-                      ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
-                          className, aSpecifier.getSourceUrlString() }, e);
+              ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] { className,
+                  aSpecifier.getSourceUrlString() }, e);
     }
   }
 
@@ -828,14 +782,13 @@ public class CPEFactory {
    * @throws ResourceConfigurationException
    */
   public String getDescriptor(CpeCasProcessor aCasProcessorCfg)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     if (aCasProcessorCfg.getDescriptor() == null) {
       throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND, new Object[] {
           "descriptor", "casProcessor" }, new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_EXP_missing_xml_element__WARNING", new Object[] {
-                          Thread.currentThread().getName(), aCasProcessorCfg.getName(),
-                          "descriptor" })));
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_missing_xml_element__WARNING",
+              new Object[] { Thread.currentThread().getName(), aCasProcessorCfg.getName(),
+                  "descriptor" })));
     }
     return aCasProcessorCfg.getDescriptor();
   }
@@ -866,13 +819,12 @@ public class CPEFactory {
    * @throws ResourceConfigurationException
    */
   private CasProcessor produceLocalCasProcessor(CpeCasProcessor aCasProcessorCfg)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     if (aCasProcessorCfg == null) {
       throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND, new Object[] {
           "casProcessor", "casProcessors" }, new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_EXP_bad_cpe_descriptor_no_cp__WARNING", new Object[] { Thread
-                                      .currentThread().getName() })));
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_bad_cpe_descriptor_no_cp__WARNING",
+              new Object[] { Thread.currentThread().getName() })));
     }
     CasProcessor casProcessor = new NetworkCasProcessorImpl(aCasProcessorCfg);
     return casProcessor;
@@ -892,7 +844,7 @@ public class CPEFactory {
    *           any error
    */
   private NameValuePair findMatchingNameValuePair(ConfigurationParameterSettings aCps,
-                  String aParamName) throws Exception {
+          String aParamName) throws Exception {
 
     NameValuePair[] nvp = aCps.getParameterSettings();
 
@@ -919,9 +871,9 @@ public class CPEFactory {
    * @throws Exception
    */
   private void replacePrimitive(String aType, boolean aMandatoryParam,
-                  ConfigurationParameterSettings aCps,
-                  org.apache.uima.collection.metadata.NameValuePair aCPE_nvp,
-                  String aDescriptorPath, String aComponentName) throws Exception {
+          ConfigurationParameterSettings aCps,
+          org.apache.uima.collection.metadata.NameValuePair aCPE_nvp, String aDescriptorPath,
+          String aComponentName) throws Exception {
     boolean newParamSetting = false;
 
     // Get a new value for the primitive param
@@ -967,9 +919,9 @@ public class CPEFactory {
    *           any error
    */
   private void replaceArray(String aType, boolean aMandatoryParam,
-                  ConfigurationParameterSettings aCps,
-                  org.apache.uima.collection.metadata.NameValuePair aCPE_nvp,
-                  String aDescriptorPath, String aComponentName) throws Exception {
+          ConfigurationParameterSettings aCps,
+          org.apache.uima.collection.metadata.NameValuePair aCPE_nvp, String aDescriptorPath,
+          String aComponentName) throws Exception {
     boolean newParamSetting = false;
     Object valueObject = aCPE_nvp.getValue();
     String param_name = aCPE_nvp.getName();
@@ -1011,11 +963,11 @@ public class CPEFactory {
    *           error during processing
    */
   private boolean overrideParameterIfExists(ResourceSpecifier aResourceSpecifier,
-                  org.apache.uima.collection.metadata.NameValuePair aCPE_nvp,
-                  String aDescriptorPath, String aComponentName) throws Exception {
+          org.apache.uima.collection.metadata.NameValuePair aCPE_nvp, String aDescriptorPath,
+          String aComponentName) throws Exception {
     // Retrieve component's parameter settings from the in-memory descriptor
     ConfigurationParameterDeclarations cpd = ((ResourceCreationSpecifier) aResourceSpecifier)
-                    .getMetaData().getConfigurationParameterDeclarations();
+            .getMetaData().getConfigurationParameterDeclarations();
     // Get the name of the parameter to find in the component's parameter list
     String param_name = aCPE_nvp.getName().trim();
     // Extract parameter with a matching name from the parameter declaration section of the
@@ -1024,7 +976,7 @@ public class CPEFactory {
     if (cparam != null) {
       // Retrieve component's parameter settings from the in-memory descriptor
       ConfigurationParameterSettings cps = ((ResourceCreationSpecifier) aResourceSpecifier)
-                      .getMetaData().getConfigurationParameterSettings();
+              .getMetaData().getConfigurationParameterSettings();
       // Determie if it is a multi-value parameter (array)
       boolean isMultiValue = cparam.isMultiValued();
       // Check if there is a match based on param name
@@ -1036,7 +988,7 @@ public class CPEFactory {
         } else {
           // Override primitive parameter with value from the CPE descriptor
           replacePrimitive(cparam.getType(), mandatory, cps, aCPE_nvp, aDescriptorPath,
-                          aComponentName);
+                  aComponentName);
         }
         return true; // Found a match and did the override
       }
@@ -1058,8 +1010,8 @@ public class CPEFactory {
    *           failure during processing
    */
   private void overrideParameterSettings(ResourceSpecifier aResourceSpecifier,
-                  CasProcessorConfigurationParameterSettings aCpe_cps, String aDescriptorPath,
-                  String aComponentName) throws Exception {
+          CasProcessorConfigurationParameterSettings aCpe_cps, String aDescriptorPath,
+          String aComponentName) throws Exception {
 
     if (aCpe_cps != null && aCpe_cps.getParameterSettings() != null) {
       // Extract new parameters from the CPE descriptor
@@ -1084,14 +1036,14 @@ public class CPEFactory {
    * @throws ResourceConfigurationException
    */
   private CasProcessor produceIntegratedCasProcessor(CpeCasProcessor aCasProcessorType)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     CasProcessor casProcessor = null;
     ResourceSpecifier resourceSpecifier = null;
     try {
       if (aCasProcessorType != null) {
         String descriptor = getDescriptor(aCasProcessorType);
         String descriptorPath = CPMUtils.convertToAbsolutePath(System.getProperty("CPM_HOME"),
-                        CPM_HOME, descriptor);
+                CPM_HOME, descriptor);
         resourceSpecifier = getSpecifier(descriptorPath);
 
         CpeSofaMappings sofanamemappings = aCasProcessorType.getSofaNameMappings();
@@ -1109,52 +1061,50 @@ public class CPEFactory {
 
         // Replace parameters in component descriptor with values defined in the CPE descriptor
         overrideParameterSettings(resourceSpecifier, aCasProcessorType
-                        .getConfigurationParameterSettings(), descriptorPath, "CasProcessor:"
-                        + aCasProcessorType.getName());
+                .getConfigurationParameterSettings(), descriptorPath, "CasProcessor:"
+                + aCasProcessorType.getName());
 
         // create child UimaContext and insert into mInitParams map
         UimaContextAdmin childContext = uimaContext.createChild(aCasProcessorType.getName(),
-                        sofamap);
+                sofamap);
         Map additionalParams = new HashMap();
         additionalParams.put(Resource.PARAM_UIMA_CONTEXT, childContext);
 
         // need this check to do specific CasDataConsumer processing
         if (resourceSpecifier instanceof CasConsumerDescription
-                        && !isDefinitionInstanceOf(CasConsumer.class, resourceSpecifier,
-                                        descriptorPath)) {
+                && !isDefinitionInstanceOf(CasConsumer.class, resourceSpecifier, descriptorPath)) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                            "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_producing_cas_data_consumer__FINEST",
-                            new Object[] { Thread.currentThread().getName() });
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_producing_cas_data_consumer__FINEST",
+                    new Object[] { Thread.currentThread().getName() });
           }
           casProcessor = produceCasDataConsumer(CasProcessor.class, resourceSpecifier,
-                          additionalParams);
+                  additionalParams);
         } else {
           // Except for CasDataConsumers, everything else is treated as an AnalysisEngine.
           // This includes CAS Consumers, which will automatically be wrapped inside AnalysisEngines
           // by the produceAnalysisEngine method. It also handles UriSpecifiers for
           // remote services (for either AE or CAS Consumer)
           casProcessor = UIMAFramework.produceAnalysisEngine(resourceSpecifier,
-                          getResourceManager(), additionalParams);
+                  getResourceManager(), additionalParams);
         }
 
         // Check if CasProcesser has been instantiated
         if (casProcessor == null) {
 
           throw new ResourceConfigurationException(new Exception(CpmLocalizedMessage
-                          .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                          "UIMA_CPM_EXP_instantiation_exception__WARNING",
-                                          new Object[] { Thread.currentThread().getName(),
-                                              aCasProcessorType.getName() })));
+                  .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                          "UIMA_CPM_EXP_instantiation_exception__WARNING", new Object[] {
+                              Thread.currentThread().getName(), aCasProcessorType.getName() })));
         }
       }
     } catch (ResourceConfigurationException e) {
       throw e;
     } catch (Exception e) {
       throw new ResourceConfigurationException(
-                      ResourceInitializationException.CAS_PROCESSOR_INITIALIZE_FAILED,
-                      new Object[] { aCasProcessorType.getName() }, e);
+              ResourceInitializationException.CAS_PROCESSOR_INITIALIZE_FAILED,
+              new Object[] { aCasProcessorType.getName() }, e);
     }
     // Override the name of the component with the name specified in the cpe descriptor
     // Uniqueness of names is enforced on names in the cpe descriptor not those defined
@@ -1175,7 +1125,7 @@ public class CPEFactory {
    * @throws ResourceConfigurationException
    */
   private CasProcessor produceRemoteCasProcessor(CpeCasProcessor aCasProcessorType)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     String protocol = DeployFactory.getProtocol(aCasProcessorType);
     CasProcessor casProcessor = null;
     if (Constants.SOCKET_PROTOCOL.equalsIgnoreCase(protocol)) {
@@ -1223,13 +1173,11 @@ public class CPEFactory {
     } catch (Exception e) {
 
       throw new ResourceConfigurationException(InvalidXMLException.REQUIRED_ATTRIBUTE_MISSING,
-                      new Object[] { "processingUnitThreadCount" },
-                      new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                      "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING",
-                                      new Object[] { Thread.currentThread().getName(),
-                                          "casProcessors", "processingUnitThreadCount",
-                                          "<casProcessors>", })));
+              new Object[] { "processingUnitThreadCount" }, new Exception(CpmLocalizedMessage
+                      .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                              "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING",
+                              new Object[] { Thread.currentThread().getName(), "casProcessors",
+                                  "processingUnitThreadCount", "<casProcessors>", })));
     }
 
     return threadCount;
@@ -1273,7 +1221,7 @@ public class CPEFactory {
   private boolean isUniqueName(String aName) throws CpeDescriptorException {
     int index = 0;
     if (getCpeDescriptor().getCpeCasProcessors() != null
-                    && getCpeDescriptor().getCpeCasProcessors().getAllCpeCasProcessors() != null) {
+            && getCpeDescriptor().getCpeCasProcessors().getAllCpeCasProcessors() != null) {
       index = getCpeDescriptor().getCpeCasProcessors().getAllCpeCasProcessors().length;
     }
     for (int i = 0; i < index; i++) {
@@ -1296,13 +1244,13 @@ public class CPEFactory {
    * @throws ResourceConfigurationException
    */
   private void verifyDeploymentParams(String aCasProcessorName,
-                  CasProcessorDeploymentParams aDepParams) throws ResourceConfigurationException {
+          CasProcessorDeploymentParams aDepParams) throws ResourceConfigurationException {
     if (aDepParams == null) {
       throw new ResourceConfigurationException(new Exception(CpmLocalizedMessage
-                      .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                      "UIMA_CPM_EXP_missing_xml_element__WARNING", new Object[] {
-                                          Thread.currentThread().getName(), aCasProcessorName,
-                                          "<deploymentParameters>" })));
+              .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_EXP_missing_xml_element__WARNING", new Object[] {
+                          Thread.currentThread().getName(), aCasProcessorName,
+                          "<deploymentParameters>" })));
     }
     if (aDepParams == null || aDepParams.getAll() == null) {
       return; // nothing to do
@@ -1311,28 +1259,26 @@ public class CPEFactory {
     try {
       CasProcessorDeploymentParam param = aDepParams.get(Constants.VNS_HOST);
       if (param == null || param.getParameterValue() == null
-                      || param.getParameterValue().trim().length() == 0) {
+              || param.getParameterValue().trim().length() == 0) {
         throw new ResourceConfigurationException(
-                        ResourceInitializationException.CONFIG_SETTING_ABSENT,
-                        new Object[] { "parameter" },
-                        new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                        "UIMA_CPM_EXP_deploy_params_not_defined__WARNING",
-                                        new Object[] { Thread.currentThread().getName(),
-                                            aCasProcessorName, Constants.VNS_HOST })));
+                ResourceInitializationException.CONFIG_SETTING_ABSENT,
+                new Object[] { "parameter" }, new Exception(CpmLocalizedMessage
+                        .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                                "UIMA_CPM_EXP_deploy_params_not_defined__WARNING", new Object[] {
+                                    Thread.currentThread().getName(), aCasProcessorName,
+                                    Constants.VNS_HOST })));
 
       }
       param = aDepParams.get(Constants.VNS_PORT);
       if (param == null || param.getParameterValue() == null
-                      || param.getParameterValue().trim().length() == 0) {
+              || param.getParameterValue().trim().length() == 0) {
         throw new ResourceConfigurationException(
-                        ResourceInitializationException.CONFIG_SETTING_ABSENT,
-                        new Object[] { "parameter" },
-                        new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                        "UIMA_CPM_EXP_deploy_params_not_defined__WARNING",
-                                        new Object[] { Thread.currentThread().getName(),
-                                            aCasProcessorName, Constants.VNS_PORT })));
+                ResourceInitializationException.CONFIG_SETTING_ABSENT,
+                new Object[] { "parameter" }, new Exception(CpmLocalizedMessage
+                        .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                                "UIMA_CPM_EXP_deploy_params_not_defined__WARNING", new Object[] {
+                                    Thread.currentThread().getName(), aCasProcessorName,
+                                    Constants.VNS_PORT })));
 
       }
     } catch (ResourceConfigurationException e) {
@@ -1399,38 +1345,37 @@ public class CPEFactory {
    * @return -
    */
   private CpeCasProcessor addCasProcessor(String aCasProcessorName)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     CpeCasProcessor newProcessor = null;
     try {
       if (!isUniqueName(aCasProcessorName)) {
         throw new ResourceConfigurationException(new Exception(CpmLocalizedMessage
-                        .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                        "UIMA_CPM_EXP_duplicate_name__WARNING", new Object[] {
-                                            Thread.currentThread().getName(), aCasProcessorName })));
+                .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                        "UIMA_CPM_EXP_duplicate_name__WARNING", new Object[] {
+                            Thread.currentThread().getName(), aCasProcessorName })));
       }
       int index = getCpeDescriptor().getCpeCasProcessors().getAllCpeCasProcessors().length; // getcasProcessorCount();
 
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "initialize",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_add_cp_with_index__FINEST",
-                        new Object[] { Thread.currentThread().getName(), aCasProcessorName,
-                            String.valueOf(index) });
+                Level.FINEST,
+                this.getClass().getName(),
+                "initialize",
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_add_cp_with_index__FINEST",
+                new Object[] { Thread.currentThread().getName(), aCasProcessorName,
+                    String.valueOf(index) });
       }
       CpeCasProcessor processor = getCpeDescriptor().getCpeCasProcessors().getCpeCasProcessor(
-                      index - 1);
+              index - 1);
 
       if (processor.getCheckpoint() == null) {
         throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND,
-                        new Object[] { "checkpoint", "casProcessor" },
-                        new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                        "UIMA_CPM_EXP_missing_xml_element__WARNING", new Object[] {
-                                            Thread.currentThread().getName(), aCasProcessorName,
-                                            "<checkpoint>" })));
+                new Object[] { "checkpoint", "casProcessor" }, new Exception(CpmLocalizedMessage
+                        .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                                "UIMA_CPM_EXP_missing_xml_element__WARNING", new Object[] {
+                                    Thread.currentThread().getName(), aCasProcessorName,
+                                    "<checkpoint>" })));
       }
 
       // For remote Cas Processor make sure that the required parameters are defined.
@@ -1460,30 +1405,25 @@ public class CPEFactory {
       }
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).log(
-                        Level.FINEST,
-                        "getCpeDescriptor().getCasProcessors().getCasProcessor.getAttributeValue(name) "
-                                        + " "
-                                        + getCpeDescriptor().getCpeCasProcessors()
-                                                        .getCpeCasProcessor(processorCount)
-                                                        .getAttributeValue("name"));
+                Level.FINEST,
+                "getCpeDescriptor().getCasProcessors().getCasProcessor.getAttributeValue(name) "
+                        + " "
+                        + getCpeDescriptor().getCpeCasProcessors().getCpeCasProcessor(
+                                processorCount).getAttributeValue("name"));
         UIMAFramework
-                        .getLogger(this.getClass())
-                        .log(
-                                        Level.FINEST,
-                                        "getCpeDescriptor().getCasProcessors().getCasProcessor("
-                                                        + "processorCount).getErrorHandling().getMaxConsecutiveRestarts().getAction() "
-                                                        + " "
-                                                        + getCpeDescriptor()
-                                                                        .getCpeCasProcessors()
-                                                                        .getCpeCasProcessor(
-                                                                                        processorCount)
-                                                                        .getErrorHandling()
-                                                                        .getMaxConsecutiveRestarts()
-                                                                        .getAction());
+                .getLogger(this.getClass())
+                .log(
+                        Level.FINEST,
+                        "getCpeDescriptor().getCasProcessors().getCasProcessor("
+                                + "processorCount).getErrorHandling().getMaxConsecutiveRestarts().getAction() "
+                                + " "
+                                + getCpeDescriptor().getCpeCasProcessors().getCpeCasProcessor(
+                                        processorCount).getErrorHandling()
+                                        .getMaxConsecutiveRestarts().getAction());
       }
       if (!casProcessorConfigMap.containsKey(aCasProcessorName)) {
         casProcessorConfigMap.put(aCasProcessorName, getCpeDescriptor().getCpeCasProcessors()
-                        .getCpeCasProcessor(processorCount));
+                .getCpeCasProcessor(processorCount));
       }
     } catch (Exception e) {
       throw new ResourceConfigurationException(e);
@@ -1508,12 +1448,12 @@ public class CPEFactory {
       String[] casInitializer = (String[]) aList.get(1);
 
       getCpeDescriptor().getAllCollectionCollectionReaders()[0].getCollectionIterator()
-                      .getDescriptor().getInclude().set(colReader[0]);
+              .getDescriptor().getInclude().set(colReader[0]);
       // Populate collection iterator descriptor path
       // Populate collection initializer descriptor path
       if (casInitializer[0].length() > 0) {
         getCpeDescriptor().getAllCollectionCollectionReaders()[0].getCasInitializer()
-                        .getDescriptor().getInclude().set(casInitializer[0]);
+                .getDescriptor().getInclude().set(casInitializer[0]);
       } else {
         getCpeDescriptor().getAllCollectionCollectionReaders()[0].removeCasInitializer();
       }
@@ -1543,18 +1483,18 @@ public class CPEFactory {
         if (create) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                            "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_create_new_cp_from_list__FINEST",
-                            new Object[] { Thread.currentThread().getName(), casProcInfo[0] });
+                    "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_create_new_cp_from_list__FINEST",
+                    new Object[] { Thread.currentThread().getName(), casProcInfo[0] });
           }
           // The list suppose to contain an array of Strings of size 2.
           // Where the the first element is the name of the CasProcessor
           // and the second is the descriptor path
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                            "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_add_cp_from_list__FINEST",
-                            new Object[] { Thread.currentThread().getName(), casProcInfo[0] });
+                    "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_add_cp_from_list__FINEST",
+                    new Object[] { Thread.currentThread().getName(), casProcInfo[0] });
           }
           newProcessor = addCasProcessor(casProcInfo[0]);
         } else {
@@ -1588,7 +1528,8 @@ public class CPEFactory {
     try {
       aProcDesc.setName(aName);
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
+        UIMAFramework.getLogger(this.getClass())
+                .logrb(
                         Level.FINEST,
                         this.getClass().getName(),
                         "initialize",

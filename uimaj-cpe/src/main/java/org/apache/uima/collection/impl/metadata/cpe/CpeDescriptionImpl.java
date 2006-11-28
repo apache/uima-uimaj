@@ -97,12 +97,12 @@ public class CpeDescriptionImpl extends MetaDataObject_impl implements CpeDescri
   }
 
   public void addCollectionReader(CpeCollectionReader aCollectionReader)
-                  throws CpeDescriptorException {
+          throws CpeDescriptorException {
     collectionReader = aCollectionReader;
   }
 
   public CpeCollectionReader addCollectionReader(String aCollectionReaderPath)
-                  throws CpeDescriptorException {
+          throws CpeDescriptorException {
     if (collectionReader == null) {
       collectionReader = CpeDescriptorFactory.produceCollectionReader(aCollectionReaderPath);
     } else {
@@ -115,16 +115,16 @@ public class CpeDescriptionImpl extends MetaDataObject_impl implements CpeDescri
    * @deprecated As of v2.0, CAS Initializers are deprecated.
    */
   public CpeCollectionReaderCasInitializer addCasInitializer(String aInitializerDescriptorPath)
-                  throws CpeDescriptorException {
+          throws CpeDescriptorException {
     if (collectionReader == null) {
       collectionReader = CpeDescriptorFactory.produceCollectionReader();
     }
     if (collectionReader.getCasInitializer() == null) {
       collectionReader.setCasInitializer(CpeDescriptorFactory
-                      .produceCollectionReaderCasInitializer(aInitializerDescriptorPath, this));
+              .produceCollectionReaderCasInitializer(aInitializerDescriptorPath, this));
     } else {
       collectionReader.getCasInitializer().getDescriptor().getInclude().set(
-                      aInitializerDescriptorPath);
+              aInitializerDescriptorPath);
     }
     return collectionReader.getCasInitializer();
   }
@@ -139,7 +139,7 @@ public class CpeDescriptionImpl extends MetaDataObject_impl implements CpeDescri
   }
 
   public void setAllCollectionCollectionReaders(CpeCollectionReader[] areaders)
-                  throws CpeDescriptorException {
+          throws CpeDescriptorException {
     collectionReader = areaders[0];
   }
 
@@ -200,7 +200,7 @@ public class CpeDescriptionImpl extends MetaDataObject_impl implements CpeDescri
   }
 
   public void addCasProcessor(int index, CpeCasProcessor aCasProcessor)
-                  throws CpeDescriptorException {
+          throws CpeDescriptorException {
 
     if (casProcessors == null) {
       casProcessors = CpeDescriptorFactory.produceCasProcessors();
@@ -288,14 +288,14 @@ public class CpeDescriptionImpl extends MetaDataObject_impl implements CpeDescri
    *      java.util.List)
    */
   protected void readUnknownPropertyValueFromXMLElement(Element aElement, XMLParser aParser,
-                  ParsingOptions aOptions, List aKnownPropertyNames) throws InvalidXMLException {
+          ParsingOptions aOptions, List aKnownPropertyNames) throws InvalidXMLException {
     if (aElement.getNodeName().equals("resourceManagerConfiguration")) {
       resourceMgrConfig = new CpeResourceManagerConfigurationImpl();
       resourceMgrConfig.buildFromXMLElement(aElement, aParser, aOptions);
     } else {
       super
-                      .readUnknownPropertyValueFromXMLElement(aElement, aParser, aOptions,
-                                      aKnownPropertyNames);
+              .readUnknownPropertyValueFromXMLElement(aElement, aParser, aOptions,
+                      aKnownPropertyNames);
     }
   }
 
@@ -304,12 +304,11 @@ public class CpeDescriptionImpl extends MetaDataObject_impl implements CpeDescri
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("cpeDescription",
-                  new PropertyXmlInfo[] {
-                      new PropertyXmlInfo("allCollectionCollectionReaders", null),
-                      new PropertyXmlInfo("cpeCasProcessors", null),
-                      new PropertyXmlInfo("cpeConfig", null),
-                      new PropertyXmlInfo("cpeResourceManagerConfiguration", null),
+          new PropertyXmlInfo[] { new PropertyXmlInfo("allCollectionCollectionReaders", null),
+              new PropertyXmlInfo("cpeCasProcessors", null),
+              new PropertyXmlInfo("cpeConfig", null),
+              new PropertyXmlInfo("cpeResourceManagerConfiguration", null),
 
-                  });
+          });
 
 }

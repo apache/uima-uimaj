@@ -46,10 +46,10 @@ public class CpmTestDriver {
     try {
       // read in the cpe descriptor
       CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
-                      new XMLInputSource("CpeSofaTest/SofaCPE.xml"));
+              new XMLInputSource("CpeSofaTest/SofaCPE.xml"));
       // instantiate a cpe
       CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc,
-                      null);
+              null);
       // run the cpe
       cpe.process();
     } catch (IOException e) {

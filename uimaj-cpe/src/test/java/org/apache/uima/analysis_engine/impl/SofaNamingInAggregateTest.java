@@ -68,7 +68,7 @@ public class SofaNamingInAggregateTest extends TestCase {
       UIMAFramework.getXMLParser().enableSchemaValidation(true);
       // create aggregate analysis engine with sofa name mappings
       XMLInputSource in1 = new XMLInputSource(JUnitExtension
-                      .getFile("CpeSofaTest/TransAnnotatorAggregate.xml"));
+              .getFile("CpeSofaTest/TransAnnotatorAggregate.xml"));
       // parse XML descriptor
       aeDescriptor = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in1);
       additionalParams = new HashMap();
@@ -80,19 +80,19 @@ public class SofaNamingInAggregateTest extends TestCase {
 
       // get the delegate AE and the Flow Controller
       delegateAE = (PrimitiveAnalysisEngine_impl) aggregateAE._getASB()
-                      .getComponentAnalysisEngines().get("Translator1");
+              .getComponentAnalysisEngines().get("Translator1");
       flowController = ((ASB_impl) aggregateAE._getASB()).getFlowControllerContainer();
 
       // also try an aggregate that contains a sofa mapping for a
       // sofa-unaware component
       XMLInputSource in2 = new XMLInputSource(JUnitExtension
-                      .getFile("CpeSofaTest/TCasTransAnnotatorAggregate.xml"));
+              .getFile("CpeSofaTest/TCasTransAnnotatorAggregate.xml"));
       AnalysisEngineDescription aeDescriptor2 = UIMAFramework.getXMLParser()
-                      .parseAnalysisEngineDescription(in2);
+              .parseAnalysisEngineDescription(in2);
       aggregateAE2 = (AggregateAnalysisEngine_impl) UIMAFramework
-                      .produceAnalysisEngine(aeDescriptor2);
+              .produceAnalysisEngine(aeDescriptor2);
       delegateAE2 = (PrimitiveAnalysisEngine_impl) aggregateAE2._getASB()
-                      .getComponentAnalysisEngines().get("Translator1");
+              .getComponentAnalysisEngines().get("Translator1");
 
     } catch (Exception e) {
       JUnitExtension.handleException(e);
@@ -225,10 +225,10 @@ public class SofaNamingInAggregateTest extends TestCase {
     try {
       // create aggregate analysis engine with sofa name mappings
       XMLInputSource in1 = new XMLInputSource(JUnitExtension
-                      .getFile("CpeSofaTest/TransAnnotatorAggregateWithoutSofaNameMapping.xml"));
+              .getFile("CpeSofaTest/TransAnnotatorAggregateWithoutSofaNameMapping.xml"));
       // parse XML descriptor
       AnalysisEngineDescription desc1 = UIMAFramework.getXMLParser()
-                      .parseAnalysisEngineDescription(in1);
+              .parseAnalysisEngineDescription(in1);
 
       // provide sofa name mappings for sofas in each component AE
       SofaMapping_impl[] sofamappings = new SofaMapping_impl[4];
@@ -261,17 +261,17 @@ public class SofaNamingInAggregateTest extends TestCase {
 
       // get the first delegate AE
       AnalysisEngine delegateAE1 = (PrimitiveAnalysisEngine_impl) aggregateAE._getASB()
-                      .getComponentAnalysisEngines().get("Translator1");
+              .getComponentAnalysisEngines().get("Translator1");
       Assert.assertEquals(2, delegateAE1.getUimaContext().getSofaMappings().length);
       Assert.assertEquals("SourceDocument", delegateAE1.getUimaContext().mapToSofaID(
-                      "EnglishDocument").getSofaID());
+              "EnglishDocument").getSofaID());
 
       // get the second delegate AE
       AnalysisEngine delegateAE2 = (PrimitiveAnalysisEngine_impl) aggregateAE._getASB()
-                      .getComponentAnalysisEngines().get("Translator2");
+              .getComponentAnalysisEngines().get("Translator2");
       Assert.assertEquals(2, delegateAE2.getUimaContext().getSofaMappings().length);
       Assert.assertEquals("SourceDocument", delegateAE2.getUimaContext().mapToSofaID(
-                      "EnglishDocument").getSofaID());
+              "EnglishDocument").getSofaID());
 
     } catch (Exception e) {
       JUnitExtension.handleException(e);

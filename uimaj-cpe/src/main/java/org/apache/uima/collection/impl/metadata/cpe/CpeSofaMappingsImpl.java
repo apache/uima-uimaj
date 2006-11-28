@@ -53,7 +53,7 @@ public class CpeSofaMappingsImpl extends MetaDataObject_impl implements CpeSofaM
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     NodeList nodes = aElement.getChildNodes();
     for (int i = 0; i < nodes.getLength(); i++) {
       Node node = nodes.item(i);
@@ -61,11 +61,11 @@ public class CpeSofaMappingsImpl extends MetaDataObject_impl implements CpeSofaM
         CpeSofaMapping sofaMapping = new CpeSofaMappingImpl();
         NamedNodeMap atts = node.getAttributes();
         if (atts.getNamedItem("componentSofaName") != null
-                        && atts.getNamedItem("componentSofaName").getNodeValue() != null) {
+                && atts.getNamedItem("componentSofaName").getNodeValue() != null) {
           sofaMapping.setComponentSofaName(atts.getNamedItem("componentSofaName").getNodeValue());
         }
         if (atts.getNamedItem("cpeSofaName") != null
-                        && atts.getNamedItem("cpeSofaName").getNodeValue() != null) {
+                && atts.getNamedItem("cpeSofaName").getNodeValue() != null) {
           sofaMapping.setCpeSofaName(atts.getNamedItem("cpeSofaName").getNodeValue());
         }
         sofaNameMappings.add(sofaMapping);
@@ -74,7 +74,7 @@ public class CpeSofaMappingsImpl extends MetaDataObject_impl implements CpeSofaM
   }
 
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
-                  throws SAXException {
+          throws SAXException {
     XmlizationInfo inf = getXmlizationInfo();
 
     // write the element's start tag
@@ -93,7 +93,7 @@ public class CpeSofaMappingsImpl extends MetaDataObject_impl implements CpeSofaM
     // write child elements
     for (int i = 0; i < sofaNameMappings.size(); i++) {
       ((CpeSofaMapping) sofaNameMappings.get(i)).toXML(aContentHandler,
-                      aWriteDefaultNamespaceAttribute);
+              aWriteDefaultNamespaceAttribute);
     }
 
     // end element
@@ -101,7 +101,7 @@ public class CpeSofaMappingsImpl extends MetaDataObject_impl implements CpeSofaM
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("sofaNameMappings",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("sofaNameMapping", null), });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("sofaNameMapping", null), });
 
   /**
    * @return

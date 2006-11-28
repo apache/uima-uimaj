@@ -140,7 +140,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
 
     // generate a new casProcessor
     CpeCasProcessor casProcessor = CpeDescriptorFactory
-                    .produceRemoteCasProcessor("myTestCasPocessor");
+            .produceRemoteCasProcessor("myTestCasPocessor");
     // set specifier path
     casProcessor.setDescriptor("any kind of string");
     // add CasProcessor to the CPM descriptor
@@ -177,7 +177,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
 
     // Create Detag CasProcessor
     CpeLocalCasProcessor localProcessor = CpeDescriptorFactory.produceLocalCasProcessor(
-                    "DupShingle Miner", "Detag:DetagContent");
+            "DupShingle Miner", "Detag:DetagContent");
     localProcessor.setDescriptor("c://cpm/annotators/example.xml");
     localProcessor.setExecutable("/some/path/executable.sh");
     localProcessor.addDeployParam("Parm1", "Value1x");
@@ -211,7 +211,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
 
     // add a new iCpe
     CpeIntegratedCasProcessor integratedProcessor = CpeDescriptorFactory
-                    .produceCasProcessor("WF Writer_X");
+            .produceCasProcessor("WF Writer_X");
     integratedProcessor.setDescriptor("c://cpm/conf/consumers/bla.xml");
     integratedProcessor.setBatchSize(99);
     cpeDesc.addCasProcessor(integratedProcessor);
@@ -238,20 +238,20 @@ public class CpeDescriptorSerialization_Test extends TestCase {
       CpeCollectionReader[] readers = referenceDesc.getAllCollectionCollectionReaders();
       if (readers[0] != null) {
         if (aGeneratedDescriptor.getAllCollectionCollectionReaders() == null
-                        || aGeneratedDescriptor.getAllCollectionCollectionReaders()[0] == null) {
+                || aGeneratedDescriptor.getAllCollectionCollectionReaders()[0] == null) {
 
           fail("<collectionReader> element not found in generated CPE Descriptor");
         } else {
           // Collection Reader element is present in the generated descriptor
           if (readers[0].getCollectionIterator() != null) {
             assertTrue(isCollectionIteratorTheSame(readers[0].getCollectionIterator(),
-                            aGeneratedDescriptor.getAllCollectionCollectionReaders()[0]
-                                            .getCollectionIterator()));
+                    aGeneratedDescriptor.getAllCollectionCollectionReaders()[0]
+                            .getCollectionIterator()));
           }
 
           if (readers[0].getCasInitializer() != null) {
             assertTrue(isCasInitializerTheSame(readers[0].getCasInitializer(), aGeneratedDescriptor
-                            .getAllCollectionCollectionReaders()[0].getCasInitializer()));
+                    .getAllCollectionCollectionReaders()[0].getCasInitializer()));
 
           }
         }
@@ -271,7 +271,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
           fail("<casProcessors> element not found in generated CPE Descriptor");
         } else {
           compareCasProcessors(referenceDesc.getCpeCasProcessors(), aGeneratedDescriptor
-                          .getCpeCasProcessors());
+                  .getCpeCasProcessors());
         }
       }
     } catch (Exception e) {
@@ -280,135 +280,133 @@ public class CpeDescriptorSerialization_Test extends TestCase {
   }
 
   public void compareCasProcessors(CpeCasProcessors aRefCasProcessors,
-                  CpeCasProcessors aGenCasProcessors) {
+          CpeCasProcessors aGenCasProcessors) {
     assertEquals(aRefCasProcessors.getCasPoolSize(), aGenCasProcessors.getCasPoolSize());
     assertEquals(aRefCasProcessors.getConcurrentPUCount(), aGenCasProcessors.getConcurrentPUCount());
     try {
       int expectedCasProcessorCount = aRefCasProcessors.getAllCpeCasProcessors().length;
       if (aGenCasProcessors.getAllCpeCasProcessors() == null) {
         fail("Generated CPE Descriptor does not have any Cas Processors. Expected <"
-                        + expectedCasProcessorCount + "> Cas Processors");
+                + expectedCasProcessorCount + "> Cas Processors");
       } else {
         assertEquals("Generated CPE Descriptor does not have expected number of Cas Processors. "
-                        + "Expected <" + expectedCasProcessorCount + "> Cas Processors. Got <"
-                        + aGenCasProcessors.getAllCpeCasProcessors().length + ">",
-                        expectedCasProcessorCount,
-                        aGenCasProcessors.getAllCpeCasProcessors().length);
+                + "Expected <" + expectedCasProcessorCount + "> Cas Processors. Got <"
+                + aGenCasProcessors.getAllCpeCasProcessors().length + ">",
+                expectedCasProcessorCount, aGenCasProcessors.getAllCpeCasProcessors().length);
       }
       CpeCasProcessor[] refCasProcessorList = aRefCasProcessors.getAllCpeCasProcessors();
       for (int i = 0; i < aRefCasProcessors.getAllCpeCasProcessors().length; i++) {
         if (refCasProcessorList[i].getDeployment().equals("integrated")) {
           compareIntegratedCasProcessors(refCasProcessorList[i], aGenCasProcessors
-                          .getAllCpeCasProcessors()[i]);
+                  .getAllCpeCasProcessors()[i]);
         } else if (refCasProcessorList[i].getDeployment().equals("remote")) {
           compareRemoteCasProcessors(refCasProcessorList[i], aGenCasProcessors
-                          .getAllCpeCasProcessors()[i]);
+                  .getAllCpeCasProcessors()[i]);
         } else if (refCasProcessorList[i].getDeployment().equals("local")) {
           compareLocalCasProcessors(refCasProcessorList[i], aGenCasProcessors
-                          .getAllCpeCasProcessors()[i]);
+                  .getAllCpeCasProcessors()[i]);
         }
       }
     } catch (Exception e) {
       fail("Exception::" + e.getMessage()
-                      + " thrown while retrieving Cas Processors From CPE Descriptor");
+              + " thrown while retrieving Cas Processors From CPE Descriptor");
     }
   }
 
   public void compareCommonElements(CpeCasProcessor aRefCasProcessor,
-                  CpeCasProcessor aGenCasProcessor) {
+          CpeCasProcessor aGenCasProcessor) {
     assertEquals(aRefCasProcessor.getDeployment(), aGenCasProcessor.getDeployment());
     assertEquals(aRefCasProcessor.getName(), aGenCasProcessor.getName());
     assertEquals(aRefCasProcessor.getDescriptor(), aGenCasProcessor.getDescriptor());
     if (aRefCasProcessor.getDeploymentParams() == null) {
       if (aGenCasProcessor.getDeploymentParams() != null) {
         fail(aRefCasProcessor.getDeployment()
-                        + " Cas Processor with name="
-                        + aGenCasProcessor.getName()
-                        + " contains <deploymentParameters> element. Expected to find empty <deploymentParameters> element");
+                + " Cas Processor with name="
+                + aGenCasProcessor.getName()
+                + " contains <deploymentParameters> element. Expected to find empty <deploymentParameters> element");
       }
     }
     if (aRefCasProcessor.getCasProcessorFilter() == null) {
       if (aGenCasProcessor.getCasProcessorFilter() != null) {
         fail(aRefCasProcessor.getDeployment() + " Cas Processor with name="
-                        + aGenCasProcessor.getName()
-                        + " contains <filter> element. Expected to find empty <filter> element");
+                + aGenCasProcessor.getName()
+                + " contains <filter> element. Expected to find empty <filter> element");
       }
     }
     if (aRefCasProcessor.getErrorHandling() != null) {
       compareErrorHandling(aRefCasProcessor.getErrorHandling(),
-                      aGenCasProcessor.getErrorHandling(), aRefCasProcessor.getName());
+              aGenCasProcessor.getErrorHandling(), aRefCasProcessor.getName());
     }
     if (aRefCasProcessor.getCheckpoint() != null) {
       if (aGenCasProcessor.getCheckpoint() == null) {
         fail(aRefCasProcessor.getDeployment() + " Cas Processor with name="
-                        + aGenCasProcessor.getName() + " is missing <checkpoint> element.");
+                + aGenCasProcessor.getName() + " is missing <checkpoint> element.");
       } else {
         assertEquals("Generated Cas Processor:" + aGenCasProcessor.getName()
-                        + " batch size does match expected value", aRefCasProcessor.getCheckpoint()
-                        .getBatchSize(), aGenCasProcessor.getCheckpoint().getBatchSize());
+                + " batch size does match expected value", aRefCasProcessor.getCheckpoint()
+                .getBatchSize(), aGenCasProcessor.getCheckpoint().getBatchSize());
       }
     }
 
   }
 
   public void compareLocalCasProcessors(CpeCasProcessor aRefCasProcessor,
-                  CpeCasProcessor aGenCasProcessor) {
+          CpeCasProcessor aGenCasProcessor) {
     compareCommonElements(aRefCasProcessor, aGenCasProcessor);
 
   }
 
   public void compareRemoteCasProcessors(CpeCasProcessor aRefCasProcessor,
-                  CpeCasProcessor aGenCasProcessor) {
+          CpeCasProcessor aGenCasProcessor) {
     compareCommonElements(aRefCasProcessor, aGenCasProcessor);
   }
 
   public void compareIntegratedCasProcessors(CpeCasProcessor aRefCasProcessor,
-                  CpeCasProcessor aGenCasProcessor) {
+          CpeCasProcessor aGenCasProcessor) {
     compareCommonElements(aRefCasProcessor, aGenCasProcessor);
   }
 
   public void compareErrorHandling(CasProcessorErrorHandling aRefCasProcessorErrorHandling,
-                  CasProcessorErrorHandling aGenCasProcessorErrorHandling, String aComponentName) {
+          CasProcessorErrorHandling aGenCasProcessorErrorHandling, String aComponentName) {
     if (aGenCasProcessorErrorHandling == null) {
       fail("Integrated Cas Processor with name=" + aComponentName
-                      + " is missing <errorHandling> element.");
+              + " is missing <errorHandling> element.");
     } else {
       if (aRefCasProcessorErrorHandling.getErrorRateThreshold() != null) {
         if (aGenCasProcessorErrorHandling.getErrorRateThreshold() == null) {
           fail("Expected element <errorRateThreshold> is missing from the CPE Descriptor for Cas Processor with name:"
-                          + aComponentName);
+                  + aComponentName);
         } else {
           assertEquals(aRefCasProcessorErrorHandling.getErrorRateThreshold().getAction(),
-                          aGenCasProcessorErrorHandling.getErrorRateThreshold().getAction());
+                  aGenCasProcessorErrorHandling.getErrorRateThreshold().getAction());
           assertEquals(aRefCasProcessorErrorHandling.getErrorRateThreshold().getMaxErrorCount(),
-                          aGenCasProcessorErrorHandling.getErrorRateThreshold().getMaxErrorCount());
+                  aGenCasProcessorErrorHandling.getErrorRateThreshold().getMaxErrorCount());
           assertEquals(aRefCasProcessorErrorHandling.getErrorRateThreshold()
-                          .getMaxErrorSampleSize(), aGenCasProcessorErrorHandling
-                          .getErrorRateThreshold().getMaxErrorSampleSize());
+                  .getMaxErrorSampleSize(), aGenCasProcessorErrorHandling.getErrorRateThreshold()
+                  .getMaxErrorSampleSize());
         }
       }
       if (aRefCasProcessorErrorHandling.getMaxConsecutiveRestarts() != null) {
         if (aGenCasProcessorErrorHandling.getMaxConsecutiveRestarts() == null) {
           fail("Expected element <maxConsecutiveRestarts> is missing from the CPE Descriptor for Cas Processor with name:"
-                          + aComponentName);
+                  + aComponentName);
         } else {
           assertEquals(aRefCasProcessorErrorHandling.getMaxConsecutiveRestarts().getAction(),
-                          aGenCasProcessorErrorHandling.getMaxConsecutiveRestarts().getAction());
+                  aGenCasProcessorErrorHandling.getMaxConsecutiveRestarts().getAction());
           assertEquals(aRefCasProcessorErrorHandling.getMaxConsecutiveRestarts().getRestartCount(),
-                          aGenCasProcessorErrorHandling.getMaxConsecutiveRestarts()
-                                          .getRestartCount());
+                  aGenCasProcessorErrorHandling.getMaxConsecutiveRestarts().getRestartCount());
           assertEquals(aRefCasProcessorErrorHandling.getMaxConsecutiveRestarts()
-                          .getWaitTimeBetweenRetries(), aGenCasProcessorErrorHandling
-                          .getMaxConsecutiveRestarts().getWaitTimeBetweenRetries());
+                  .getWaitTimeBetweenRetries(), aGenCasProcessorErrorHandling
+                  .getMaxConsecutiveRestarts().getWaitTimeBetweenRetries());
         }
       }
       if (aRefCasProcessorErrorHandling.getTimeout() != null) {
         if (aGenCasProcessorErrorHandling.getTimeout() == null) {
           fail("Expected element <timeout> is missing from the CPE Descriptor for Cas Processor with name:"
-                          + aComponentName);
+                  + aComponentName);
         } else {
           assertEquals(aRefCasProcessorErrorHandling.getTimeout().get(),
-                          aGenCasProcessorErrorHandling.getTimeout().get());
+                  aGenCasProcessorErrorHandling.getTimeout().get());
         }
       }
     }
@@ -425,9 +423,9 @@ public class CpeDescriptorSerialization_Test extends TestCase {
       } else {
         if (aGenCpeConfig.getStartingEntityId() != null) {
           assertTrue(
-                          "Generated Cpe Descriptor has an invalid value for <startAt> in <cpeConfig>.Expected no value OR empty string. Instead got value of:"
-                                          + aGenCpeConfig.getStartingEntityId(), aGenCpeConfig
-                                          .getStartingEntityId().trim().length() == 0);
+                  "Generated Cpe Descriptor has an invalid value for <startAt> in <cpeConfig>.Expected no value OR empty string. Instead got value of:"
+                          + aGenCpeConfig.getStartingEntityId(), aGenCpeConfig
+                          .getStartingEntityId().trim().length() == 0);
         }
       }
       if (aRefCpeConfig.getCheckpoint() != null) {
@@ -439,43 +437,43 @@ public class CpeDescriptorSerialization_Test extends TestCase {
               fail("Expected attribute 'file' in <checkpoint> element in <cpeConfig> not found in generated Cpe Descriptor.");
             } else {
               assertEquals(aRefCpeConfig.getCheckpoint().getFilePath(), aGenCpeConfig
-                              .getCheckpoint().getFilePath());
+                      .getCheckpoint().getFilePath());
             }
           }
           assertEquals(aRefCpeConfig.getCheckpoint().getBatchSize(), aGenCpeConfig.getCheckpoint()
-                          .getBatchSize());
+                  .getBatchSize());
           assertEquals(aRefCpeConfig.getCheckpoint().getFrequency(), aGenCpeConfig.getCheckpoint()
-                          .getFrequency());
+                  .getFrequency());
         }
       }
     } catch (Exception e) {
       fail("Exception::" + e.getMessage()
-                      + " thrown comparing configuration <cpeConfig> in CPE Descriptor");
+              + " thrown comparing configuration <cpeConfig> in CPE Descriptor");
     }
   }
 
   public void compareDescriptors(CpeComponentDescriptor aRefDescriptor,
-                  CpeComponentDescriptor aGenDescritptor, String aComponentName) {
+          CpeComponentDescriptor aGenDescritptor, String aComponentName) {
     if (aRefDescriptor.getInclude() != null) {
       if (aGenDescritptor.getInclude() == null) {
         fail("Component Descriptor of " + aComponentName
-                        + " missing from a generated CPE Descriptor");
+                + " missing from a generated CPE Descriptor");
       } else {
         String refFilePath = aRefDescriptor.getInclude().get();
         String genFilePath = aGenDescritptor.getInclude().get();
 
         if (refFilePath != null) {
           assertEquals(
-                          "Component Descriptor in Generated CPE Descriptor has unexpected value. Expected:"
-                                          + refFilePath + " Got:" + genFilePath + " Instead.",
-                          refFilePath, genFilePath);
+                  "Component Descriptor in Generated CPE Descriptor has unexpected value. Expected:"
+                          + refFilePath + " Got:" + genFilePath + " Instead.", refFilePath,
+                  genFilePath);
         }
       }
     }
   }
 
   public boolean isCollectionIteratorTheSame(CpeCollectionReaderIterator aRefIterator,
-                  CpeCollectionReaderIterator aGenIterator) {
+          CpeCollectionReaderIterator aGenIterator) {
     if (aRefIterator.getDescriptor() != null) {
       if (aGenIterator.getDescriptor() == null) {
         return false;
@@ -500,7 +498,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
   }
 
   public boolean isCasInitializerTheSame(CpeCollectionReaderCasInitializer aRefCasInitializer,
-                  CpeCollectionReaderCasInitializer aGenCasInitializer) {
+          CpeCollectionReaderCasInitializer aGenCasInitializer) {
     if (aRefCasInitializer.getDescriptor() != null) {
       if (aGenCasInitializer.getDescriptor() == null) {
         return false;

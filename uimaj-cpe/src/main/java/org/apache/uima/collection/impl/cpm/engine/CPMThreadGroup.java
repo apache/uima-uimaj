@@ -75,9 +75,8 @@ public class CPMThreadGroup extends ThreadGroup {
     System.out.println("ThreadGroup.uncaughtException()-Got Error");
     if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_unhandled_error__SEVERE",
-                      new Object[] { Thread.currentThread().getName(), e.getClass().getName() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_unhandled_error__SEVERE",
+              new Object[] { Thread.currentThread().getName(), e.getClass().getName() });
 
     }
     try {
@@ -90,8 +89,8 @@ public class CPMThreadGroup extends ThreadGroup {
     } catch (Throwable tr) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINER)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINER, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
-                        new Object[] { Thread.currentThread().getName(), tr.getClass().getName() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
+                new Object[] { Thread.currentThread().getName(), tr.getClass().getName() });
         tr.printStackTrace();
       }
     }

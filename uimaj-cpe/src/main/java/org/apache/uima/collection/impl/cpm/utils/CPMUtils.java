@@ -154,10 +154,10 @@ public class CPMUtils {
       if (System.getProperty("DEBUG_EVENTS") != null) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(CPMUtils.class).log(
-                          Level.FINEST,
-                          "Returning Report With Event::" + aEvType + " For Component:::"
-                                          + prEvent.getComponentName() + " Duration:::"
-                                          + prEvent.getDurationExcludingSubEvents());
+                  Level.FINEST,
+                  "Returning Report With Event::" + aEvType + " For Component:::"
+                          + prEvent.getComponentName() + " Duration:::"
+                          + prEvent.getDurationExcludingSubEvents());
         }
       }
     }
@@ -211,7 +211,7 @@ public class CPMUtils {
    * @throws ConfigurationException
    */
   private static ConfigurableFeature getConfigurableFeature(Node entityNode)
-                  throws ConfigurationException // SITHException
+          throws ConfigurationException // SITHException
   {
     ConfigurableFeature featureStructure = null;
     try {
@@ -311,8 +311,8 @@ public class CPMUtils {
   public static File findDeployDirectory(String aServiceName) throws Exception {
     if (aServiceName == null) {
       throw new Exception(CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_EXP_service_not_defined__WARNING", new Object[] {
-                          Thread.currentThread().getName(), "NULL" }));
+              "UIMA_CPM_EXP_service_not_defined__WARNING", new Object[] {
+                  Thread.currentThread().getName(), "NULL" }));
     }
 
     File[] dirList = getDirectories();
@@ -320,7 +320,7 @@ public class CPMUtils {
     for (int i = 0; dirList != null && i < dirList.length; i++) {
 
       String taeDescriptor = dirList[i].getAbsolutePath() + System.getProperty("file.separator")
-                      + "bin" + System.getProperty("file.separator") + "desc.xml";
+              + "bin" + System.getProperty("file.separator") + "desc.xml";
       Descriptor descriptor = null;
       try {
         descriptor = new Descriptor(taeDescriptor);
@@ -349,8 +349,8 @@ public class CPMUtils {
     File rootDir = new File(rootPath, appRoot);
     if (rootDir.isDirectory() == false) {
       throw new Exception(CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_EXP_not_directory__WARNING", new Object[] {
-                          Thread.currentThread().getName(), appRoot }));
+              "UIMA_CPM_EXP_not_directory__WARNING", new Object[] {
+                  Thread.currentThread().getName(), appRoot }));
     }
     String[] list = rootDir.list();
     String currentFile;
@@ -359,7 +359,7 @@ public class CPMUtils {
     for (int i = 0; i < list.length; i++) {
       currentFile = list[i];
       aFile = new File(rootDir.getAbsolutePath() + System.getProperty("file.separator")
-                      + currentFile);
+              + currentFile);
       if (aFile.isDirectory()) {
         dirList.add(aFile);
       }
@@ -373,7 +373,7 @@ public class CPMUtils {
   public static int getFeatureAsInt(CAS aCas, Feature aFeature, String aName) throws Exception {
     Feature seqNo2 = aFeature.getRange().getFeatureByBaseName(aName);
     FeatureStructure documentMetaData = aCas.getView(CAS.NAME_DEFAULT_SOFA).getDocumentAnnotation()
-                    .getFeatureValue(aFeature);
+            .getFeatureValue(aFeature);
     return documentMetaData.getIntValue(seqNo2);
   }
 
@@ -389,10 +389,10 @@ public class CPMUtils {
    * @return - value as String
    */
   public static String getFeatureAsString(CAS aCas, Feature aFeature, String aName)
-                  throws Exception {
+          throws Exception {
     Feature seqNo2 = aFeature.getRange().getFeatureByBaseName(aName);
     FeatureStructure documentMetaData = aCas.getView(CAS.NAME_DEFAULT_SOFA).getDocumentAnnotation()
-                    .getFeatureValue(aFeature);
+            .getFeatureValue(aFeature);
     return documentMetaData.getStringValue(seqNo2);
 
   }
@@ -406,7 +406,7 @@ public class CPMUtils {
    */
   public static synchronized ChunkMetadata getChunkMetadata(CAS aCas) {
     Feature feat = aCas.getTypeSystem().getFeatureByFullName(
-                    "uima.tcas.DocumentAnnotation:esDocumentMetaData");
+            "uima.tcas.DocumentAnnotation:esDocumentMetaData");
     if (feat != null) {
       try {
         int sequenceNo = getFeatureAsInt(aCas, feat, ChunkMetadata.SEQUENCE); // "sequenceNumber");
@@ -416,14 +416,13 @@ public class CPMUtils {
         String url = getFeatureAsString(aCas, feat, ChunkMetadata.DOCUMENTURL); // "isCompleted");
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(CPMUtils.class).log(
-                          Level.FINEST,
-                          Thread.currentThread().getName() + "===========================>SeqNo::"
-                                          + sequenceNo + " docId::" + docId + " isComplete::"
-                                          + isCompleted + " ThrottleID:" + throttleID
-                                          + " Document URL:" + url);
+                  Level.FINEST,
+                  Thread.currentThread().getName() + "===========================>SeqNo::"
+                          + sequenceNo + " docId::" + docId + " isComplete::" + isCompleted
+                          + " ThrottleID:" + throttleID + " Document URL:" + url);
         }
         ChunkMetadata cm = new ChunkMetadata(String.valueOf(docId), sequenceNo,
-                        isCompleted == 1 ? true : false);
+                isCompleted == 1 ? true : false);
         if (throttleID != null && throttleID.trim().length() > 0) {
           cm.setThrottleID(throttleID);
         }
@@ -434,16 +433,16 @@ public class CPMUtils {
       } catch (NullPointerException e) {
         if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
           Exception newE = new CPMException(
-                          "Possible misconfiguration. CPM configured to use chunking but chunk metadata is not present in the CAS. Check if the CAS has been properly initialized by the CollectionReader.");
+                  "Possible misconfiguration. CPM configured to use chunking but chunk metadata is not present in the CAS. Check if the CAS has been properly initialized by the CollectionReader.");
           UIMAFramework.getLogger(CPMUtils.class).log(Level.WARNING,
-                          Thread.currentThread().getName(), newE);
+                  Thread.currentThread().getName(), newE);
         }
       }
 
       catch (Exception e) {
         if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
           UIMAFramework.getLogger(CPMUtils.class).log(Level.WARNING,
-                          Thread.currentThread().getName(), e);
+                  Thread.currentThread().getName(), e);
         }
       }
     }

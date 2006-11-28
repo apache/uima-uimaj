@@ -112,9 +112,8 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
       }
     }
     throw new CpeDescriptorException(CpmLocalizedMessage.getLocalizedMessage(
-                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                    "UIMA_CPM_Exception_invalid_deployment__WARNING", new Object[] {
-                        Thread.currentThread().getName(), "", aDeployMode }));
+            CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_Exception_invalid_deployment__WARNING",
+            new Object[] { Thread.currentThread().getName(), "", aDeployMode }));
   }
 
   /**
@@ -136,7 +135,7 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
   public void setDescriptor(String aDescriptorPath) throws CpeDescriptorException {
     if (descriptor == null) {
       CpeComponentDescriptor comp_desc = CpeDescriptorFactory
-                      .produceComponentDescriptor(aDescriptorPath);
+              .produceComponentDescriptor(aDescriptorPath);
       this.setCpeComponentDescriptor(comp_desc);
     } else {
       descriptor.getInclude().set(aDescriptorPath);
@@ -194,13 +193,13 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
     if (filter != null) {
       if (filterString.indexOf(org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM) > -1) {
         filterString = StringUtils.replaceAll(filterString,
-                        org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM,
-                        org.apache.uima.collection.impl.cpm.Constants.LONG_COLON_TERM);
+                org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM,
+                org.apache.uima.collection.impl.cpm.Constants.LONG_COLON_TERM);
       }
       if (filterString.indexOf(org.apache.uima.collection.impl.cpm.Constants.LONG_DASH_TERM) > -1) {
         filterString = StringUtils.replaceAll(filterString,
-                        org.apache.uima.collection.impl.cpm.Constants.SHORT_DASH_TERM,
-                        org.apache.uima.collection.impl.cpm.Constants.LONG_DASH_TERM);
+                org.apache.uima.collection.impl.cpm.Constants.SHORT_DASH_TERM,
+                org.apache.uima.collection.impl.cpm.Constants.LONG_DASH_TERM);
       }
     }
     return filterString;
@@ -218,7 +217,7 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
     }
     if (getErrorHandling() == null) {
       CasProcessorErrorHandling errorHandling = CpeDescriptorFactory
-                      .produceCasProcessorErrorHandling();
+              .produceCasProcessorErrorHandling();
       CasProcessorMaxRestarts maxRestart = CpeDescriptorFactory.produceCasProcessorMaxRestarts();
       maxRestart.setRestartCount(30);
       maxRestart.setAction("terminate");
@@ -227,7 +226,7 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
       timeout.set(100000);
       errorHandling.setTimeout(timeout);
       CasProcessorErrorRateThreshold errorThreshold = CpeDescriptorFactory
-                      .produceCasProcessorErrorRateThreshold();
+              .produceCasProcessorErrorRateThreshold();
       errorThreshold.setMaxErrorCount(100);
       errorThreshold.setMaxErrorSampleSize(1000);
       errorThreshold.setAction("terminate");
@@ -309,7 +308,7 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
     }
     if (!found) {
       deploymentParameters.add(new CasProcessorDeploymentParamImpl(aParamName, aParamValue,
-                      "string"));
+              "string"));
     }
   }
 
@@ -319,7 +318,7 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
    * @throws CpeDescriptorException
    */
   protected void setDeploymentParams(CasProcessorDeploymentParams aParams)
-                  throws CpeDescriptorException {
+          throws CpeDescriptorException {
     deploymentParameters = aParams;
   }
 
@@ -345,8 +344,8 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
 
     if (aName == null || aName.trim().length() == 0) {
       throw new CpeDescriptorException(CpmLocalizedMessage.getLocalizedMessage(
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_reference__WARNING",
-                      new Object[] { Thread.currentThread().getName(), "casProcessor name=NULL" }));
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_reference__WARNING",
+              new Object[] { Thread.currentThread().getName(), "casProcessor name=NULL" }));
     }
     name = aName;
   }
@@ -392,7 +391,7 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
    * @see org.apache.uima.collection.metadata.CpeCasProcessor#setDescriptorPath(java.lang.String)
    */
   public void setCpeComponentDescriptor(CpeComponentDescriptor aDescriptor)
-                  throws CpeDescriptorException {
+          throws CpeDescriptorException {
     descriptor = aDescriptor;
   }
 
@@ -406,7 +405,7 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
    * @see org.apache.uima.collection.metadata.CpeCasProcessor#setErrorHandling(org.apache.uima.collection.metadata.CasProcessorErrorHandling)
    */
   public void setErrorHandling(CasProcessorErrorHandling aErrorHandling)
-                  throws CpeDescriptorException {
+          throws CpeDescriptorException {
     errorHandling = aErrorHandling;
   }
 
@@ -617,17 +616,17 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
    * Sets configuration parameter settings for this CasProcessor.
    */
   public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings settings)
-                  throws CpeDescriptorException {
+          throws CpeDescriptorException {
     configurationParameterSettings = settings;
     if (settings != null && settings.getParameterSettings() != null) {
       int length = settings.getParameterSettings().length;
       if (length > 0) {
         parameterSettings = new ConfigurationParameterSettings_impl();
         org.apache.uima.resource.metadata.NameValuePair[] nvp = new NameValuePair_impl[settings
-                        .getParameterSettings().length];
+                .getParameterSettings().length];
         for (int i = 0; i < settings.getParameterSettings().length; i++) {
           nvp[i] = new NameValuePair_impl(settings.getParameterSettings()[i].getName(), settings
-                          .getParameterSettings()[i].getValue());
+                  .getParameterSettings()[i].getValue());
         }
         parameterSettings.setParameterSettings(nvp);
       }
@@ -650,7 +649,7 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
     parameterSettings = settings;
     if (parameterSettings != null) {
       configurationParameterSettings = new CasProcessorConfigurationParameterSettingsImpl(
-                      parameterSettings);
+              parameterSettings);
     }
   }
 
@@ -744,7 +743,7 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
     String field = "name";
     try {
@@ -753,8 +752,8 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
       setDeployment(aElement.getAttribute("deployment"));
     } catch (Exception e) {
       throw new InvalidXMLException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING", new Object[] {
-                          Thread.currentThread().getName(), "casProcessor", field, "casProcessor" });
+              "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING", new Object[] {
+                  Thread.currentThread().getName(), "casProcessor", field, "casProcessor" });
 
     }
   }
@@ -778,14 +777,13 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("casProcessor",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("cpeComponentDescriptor", null),
-                      new PropertyXmlInfo("deploymentParameters", null),
-                      new PropertyXmlInfo("runInSeparateProcess", null),
-                      new PropertyXmlInfo("filter", null),
-                      new PropertyXmlInfo("errorHandling", null),
-                      new PropertyXmlInfo("checkpoint", null),
-                      new PropertyXmlInfo("sofaNameMappings", null),
-                      new PropertyXmlInfo("parameterSettings", null), });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("cpeComponentDescriptor", null),
+              new PropertyXmlInfo("deploymentParameters", null),
+              new PropertyXmlInfo("runInSeparateProcess", null),
+              new PropertyXmlInfo("filter", null), new PropertyXmlInfo("errorHandling", null),
+              new PropertyXmlInfo("checkpoint", null),
+              new PropertyXmlInfo("sofaNameMappings", null),
+              new PropertyXmlInfo("parameterSettings", null), });
 
   /**
    * @return

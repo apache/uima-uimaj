@@ -122,7 +122,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    *      int)
    */
   public void addCpeCasProcessor(CpeCasProcessor aCasProcessor, int aInsertPosition)
-                  throws CpeDescriptorException {
+          throws CpeDescriptorException {
     casProcessors.add(aInsertPosition, aCasProcessor);
   }
 
@@ -147,8 +147,8 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
     }
 
     throw new CpeDescriptorException(CpmLocalizedMessage.getLocalizedMessage(
-                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_array_index__WARNING",
-                    new Object[] { Thread.currentThread().getName(), "CpeCasProcessor" }));
+            CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_array_index__WARNING",
+            new Object[] { Thread.currentThread().getName(), "CpeCasProcessor" }));
   }
 
   /*
@@ -168,7 +168,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    * @see org.apache.uima.collection.metadata.CpeCasProcessors#getAllCpeCasProcessors()
    */
   public void setAllCpeCasProcessors(CpeCasProcessor[] aCpeProcessors)
-                  throws CpeDescriptorException {
+          throws CpeDescriptorException {
 
     for (int i = 0; aCpeProcessors != null && i < aCpeProcessors.length; i++) {
       casProcessors.add(aCpeProcessors[i]);
@@ -185,22 +185,22 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
       casProcessors.remove(aPosition);
     }
     throw new CpeDescriptorException(CpmLocalizedMessage.getLocalizedMessage(
-                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_array_index__WARNING",
-                    new Object[] { Thread.currentThread().getName() }));
+            CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_array_index__WARNING",
+            new Object[] { Thread.currentThread().getName() }));
   }
 
   /**
    * New API 01/06/2006
    */
   public CpeCasProcessor[] removeCpeCasProcessor(int aPosition, boolean flag)
-                  throws CpeDescriptorException {
+          throws CpeDescriptorException {
     if (aPosition <= casProcessors.size()) {
       casProcessors.remove(aPosition);
       return getAllCpeCasProcessors();
     }
     throw new CpeDescriptorException(CpmLocalizedMessage.getLocalizedMessage(
-                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_array_index__WARNING",
-                    new Object[] { Thread.currentThread().getName() }));
+            CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_array_index__WARNING",
+            new Object[] { Thread.currentThread().getName() }));
   }
 
   /*
@@ -255,15 +255,15 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     try {
       setDropCasOnException(Boolean.valueOf(aElement.getAttribute("dropCasOnException"))
-                      .booleanValue());
+              .booleanValue());
     } catch (Exception e) {
       throw new InvalidXMLException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING", new Object[] {
-                          Thread.currentThread().getName(), "casProcessors", "dropCasOnException",
-                          "casProcessors" });
+              "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING", new Object[] {
+                  Thread.currentThread().getName(), "casProcessors", "dropCasOnException",
+                  "casProcessors" });
 
     }
     String cps = aElement.getAttribute("casPoolSize");
@@ -272,9 +272,9 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
         setPoolSize(Integer.parseInt(cps));
       } catch (Exception e) {
         throw new InvalidXMLException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING", new Object[] {
-                            Thread.currentThread().getName(), "casProcessors", "casPoolSize",
-                            "casProcessors" });
+                "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING", new Object[] {
+                    Thread.currentThread().getName(), "casProcessors", "casPoolSize",
+                    "casProcessors" });
 
       }
     }
@@ -284,16 +284,16 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
         setConcurrentPUCount(Integer.parseInt(aElement.getAttribute("processingUnitThreadCount")));
       } catch (Exception e) {
         throw new InvalidXMLException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING", new Object[] {
-                            Thread.currentThread().getName(), "casProcessors",
-                            "processingUnitThreadCount", "casProcessors" });
+                "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING", new Object[] {
+                    Thread.currentThread().getName(), "casProcessors", "processingUnitThreadCount",
+                    "casProcessors" });
 
       }
     } else {
       throw new InvalidXMLException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING", new Object[] {
-                          Thread.currentThread().getName(), "casProcessors",
-                          "processingUnitThreadCount", "casProcessors" });
+              "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING", new Object[] {
+                  Thread.currentThread().getName(), "casProcessors", "processingUnitThreadCount",
+                  "casProcessors" });
     }
     // populate inputQueueSize and outputQueueSize ONLY if casPoolSize is not defined.
     // Both of these attributes have been deprecated and should not be used
@@ -310,9 +310,8 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
       }
     } catch (Exception e) {
       throw new InvalidXMLException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING", new Object[] {
-                          Thread.currentThread().getName(), "casProcessors", "field",
-                          "casProcessors" });
+              "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING", new Object[] {
+                  Thread.currentThread().getName(), "casProcessors", "field", "casProcessors" });
 
     }
 
@@ -355,7 +354,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
   }
 
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
-                  throws SAXException {
+          throws SAXException {
     XmlizationInfo inf = getXmlizationInfo();
 
     // write the element's start tag
@@ -374,7 +373,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
     // write child elements
     for (int i = 0; i < casProcessors.size(); i++) {
       ((CpeCasProcessor) casProcessors.get(i)).toXML(aContentHandler,
-                      aWriteDefaultNamespaceAttribute);
+              aWriteDefaultNamespaceAttribute);
     }
 
     // end element
@@ -390,18 +389,18 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
     AttributesImpl attrs = super.getXMLAttributes();
     if (isDropCasOnException() == true) {
       attrs.addAttribute("", "dropCasOnException", "dropCasOnException", "CDATA", String
-                      .valueOf(isDropCasOnException()));
+              .valueOf(isDropCasOnException()));
     }
     attrs.addAttribute("", "casPoolSize", "casPoolSize", "CDATA", String.valueOf(getCasPoolSize()));
     attrs.addAttribute("", "processingUnitThreadCount", "processingUnitThreadCount", "CDATA",
-                    String.valueOf(getConcurrentPUCount()));
+            String.valueOf(getConcurrentPUCount()));
     // populate inputQueueSize and outputQueueSize ONLY if casPoolSize is not defined.
     // Both of these attributes have been deprecated and should not be used
     if (getCasPoolSize() == 0) {
       attrs.addAttribute("", "inputQueueSize", "inputQueueSize", "CDATA", String
-                      .valueOf(getInputQueueSize()));
+              .valueOf(getInputQueueSize()));
       attrs.addAttribute("", "outputQueueSize", "outputQueueSize", "CDATA", String
-                      .valueOf(getOutputQueueSize()));
+              .valueOf(getOutputQueueSize()));
     }
 
     return attrs;
@@ -412,7 +411,7 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("casProcessors",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("allCpeCasProcessors", null), });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("allCpeCasProcessors", null), });
 
   public int getCasPoolSize() {
     // Indirection needed to handle the exception. xsdbeans based implementation of this API

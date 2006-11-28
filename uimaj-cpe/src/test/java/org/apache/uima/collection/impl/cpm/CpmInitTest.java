@@ -133,7 +133,7 @@ public class CpmInitTest extends TestCase {
       Thread.sleep(10);
     }
     System.out.println("testInitMultiThreadCPM()-Initialize was called: "
-                    + listener.isInitialized());
+            + listener.isInitialized());
     // Let the CPM process some docs, before calling stop
     Thread.sleep(500);
 
@@ -157,16 +157,16 @@ public class CpmInitTest extends TestCase {
    * @return CollectionProcessingEngine - initialized cpe
    */
   private CollectionProcessingEngine setupCpm(int documentCount, int threadCount,
-                  boolean useSlowAnnotator, boolean singleThreaded) throws Exception {
+          boolean useSlowAnnotator, boolean singleThreaded) throws Exception {
     CpeDescription cpeDesc = null;
     CollectionProcessingEngine cpe = null;
 
     try {
       String colReaderBase = junitTestBasePath + "CpmTests" + separator
-                      + "ErrorTestCollectionReader.xml";
+              + "ErrorTestCollectionReader.xml";
       String taeBase = junitTestBasePath + "CpmTests" + separator + "ErrorTestAnnotator.xml";
       String casConsumerBase = junitTestBasePath + "CpmTests" + separator
-                      + "ErrorTestCasConsumer.xml";
+              + "ErrorTestCasConsumer.xml";
 
       // created needed descriptors
       String colReaderDesc = DescriptorMakeUtil.makeCollectionReader(colReaderBase, documentCount);
@@ -185,22 +185,22 @@ public class CpmInitTest extends TestCase {
 
       // add tae
       CpeIntegratedCasProcessor integratedProcessor = CpeDescriptorFactory
-                      .produceCasProcessor("ErrorTestAnnotator");
+              .produceCasProcessor("ErrorTestAnnotator");
       integratedProcessor.setDescriptor(taeDesc);
       cpeDesc.addCasProcessor(integratedProcessor);
 
       // add slow annotator if requested
       if (useSlowAnnotator) {
         CpeIntegratedCasProcessor slowProcessor = CpeDescriptorFactory
-                        .produceCasProcessor("SlowAnnotator");
+                .produceCasProcessor("SlowAnnotator");
         slowProcessor.setDescriptor(junitTestBasePath + "CpmTests" + separator
-                        + "SlowAnnotator.xml");
+                + "SlowAnnotator.xml");
         cpeDesc.addCasProcessor(slowProcessor);
       }
 
       // add casConsumer
       CpeIntegratedCasProcessor casConsumer = CpeDescriptorFactory
-                      .produceCasProcessor("ErrorTest CasConsumer");
+              .produceCasProcessor("ErrorTest CasConsumer");
       casConsumer.setDescriptor(casConsumerDesc);
       cpeDesc.addCasProcessor(casConsumer);
 

@@ -41,8 +41,8 @@ import org.apache.uima.util.XMLInputSource;
  */
 public class CollectionProcessingEngine_implTest extends TestCase {
   protected final String TEST_DATAPATH = JUnitExtension.getFile(
-                  "CollectionProcessingEngineImplTest").getPath()
-                  + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
+          "CollectionProcessingEngineImplTest").getPath()
+          + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
 
   /**
    * Constructor for CollectionProcessingEngine_implTest.
@@ -70,13 +70,13 @@ public class CollectionProcessingEngine_implTest extends TestCase {
       params.put(Resource.PARAM_PERFORMANCE_TUNING_SETTINGS, newProps);
 
       CpeDescription cpeDesc = UIMAFramework
-                      .getXMLParser()
-                      .parseCpeDescription(
-                                      new XMLInputSource(
-                                                      JUnitExtension
-                                                                      .getFile("CollectionProcessingEngineImplTest/performanceTuningSettingsTestCpe.xml")));
+              .getXMLParser()
+              .parseCpeDescription(
+                      new XMLInputSource(
+                              JUnitExtension
+                                      .getFile("CollectionProcessingEngineImplTest/performanceTuningSettingsTestCpe.xml")));
       CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc,
-                      params);
+              params);
       cpe.process();
       // Need to give CPE time to do its work. The following should work, but doesn't
       // while (cpe.isProcessing())
@@ -93,23 +93,20 @@ public class CollectionProcessingEngine_implTest extends TestCase {
     try {
       ResourceManager rm = UIMAFramework.newDefaultResourceManager();
       rm.setDataPath(TEST_DATAPATH);
-      CpeDescription cpeDesc = UIMAFramework
-                      .getXMLParser()
-                      .parseCpeDescription(
-                                      new XMLInputSource(
-                                                      JUnitExtension
-                                                                      .getFile("CollectionProcessingEngineImplTest/externalResourceTestCpe.xml")));
+      CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
+              new XMLInputSource(JUnitExtension
+                      .getFile("CollectionProcessingEngineImplTest/externalResourceTestCpe.xml")));
       CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc, rm,
-                      null);
+              null);
       CollectionReader colRdr = (CollectionReader) cpe.getCollectionReader();
       assertNotNull(colRdr.getUimaContext().getResourceObject("TestFileResource"));
       CasInitializer casIni = colRdr.getCasInitializer();
       assertNotNull(casIni.getUimaContext().getResourceObject("TestFileLanguageResource",
-                      new String[] { "en" }));
+              new String[] { "en" }));
       AnalysisEngine ae = (AnalysisEngine) cpe.getCasProcessors()[0];
       assertNotNull(ae.getUimaContext().getResourceObject("TestResourceObject"));
       assertNotNull(ae.getUimaContext().getResourceObject("TestLanguageResourceObject",
-                      new String[] { "en" }));
+              new String[] { "en" }));
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }

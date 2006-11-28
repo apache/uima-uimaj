@@ -42,7 +42,7 @@ public class CpeSofaMappingImpl extends MetaDataObject_impl implements CpeSofaMa
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("cpeSofaMapping",
-                  new PropertyXmlInfo[0]);
+          new PropertyXmlInfo[0]);
 
   /**
    * Overridden to handle "name" and "value" attributes.
@@ -54,7 +54,7 @@ public class CpeSofaMappingImpl extends MetaDataObject_impl implements CpeSofaMa
     try {
       attrs.addAttribute("", "cpeSofaName", "cpeSofaName", "CDATA", getCpeSofaName());
       attrs.addAttribute("", "componentSofaName", "componentSofaName", "CDATA",
-                      getComponentSofaName());
+              getComponentSofaName());
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -68,7 +68,7 @@ public class CpeSofaMappingImpl extends MetaDataObject_impl implements CpeSofaMa
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     // assumes all children are parameter elements
     NamedNodeMap nodeMap = aElement.getAttributes();
     setCpeSofaName(nodeMap.getNamedItem("cpeSofaName").getNodeValue());

@@ -120,7 +120,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * @throws Exception
    */
   public BaseCPMImpl(CpeDescription aDescriptor, ResourceManager aResourceManager,
-                  boolean aDefaultProcessTrace, Properties aProps) throws Exception {
+          boolean aDefaultProcessTrace, Properties aProps) throws Exception {
     cpeFactory = new CPEFactory(aDescriptor, aResourceManager);
     defaultProcessTrace = aDefaultProcessTrace;
     cpmThreadGroup = new CPMThreadGroup("CPM Thread Group");
@@ -140,7 +140,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * @throws Exception
    */
   public BaseCPMImpl(Boolean mode, String aDescriptor, ResourceManager aResourceManager)
-                  throws Exception {
+          throws Exception {
     cpmThreadGroup = new CPMThreadGroup("CPM Thread Group");
     cpeFactory = new CPEFactory(aResourceManager);
     if (mode == null) {
@@ -203,28 +203,22 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
       // e.printStackTrace();
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_use_default_timer__FINEST",
-                        new Object[] { Thread.currentThread().getName() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_use_default_timer__FINEST",
+                new Object[] { Thread.currentThread().getName() });
 
       }
     }
     UimaTimer uimaTimer = TimerFactory.getTimer();
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_use_custom_timer__FINEST",
-                      new Object[] { Thread.currentThread().getName(),
-                          uimaTimer.getClass().getName() });
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_use_custom_timer__FINEST",
+              new Object[] { Thread.currentThread().getName(), uimaTimer.getClass().getName() });
     }
 
     procTr = new ProcessTrace_impl(uimaTimer, aProps);
     String checkpointFileName = null;
     if (cpeFactory.getCPEConfig().getCheckpoint() != null
-                    && cpeFactory.getCPEConfig().getCheckpoint().getFilePath() != null) {
+            && cpeFactory.getCPEConfig().getCheckpoint().getFilePath() != null) {
       // Retrieve from CPM configuration a name of the checkpoint file where the
       // CPM's runtime stats be deposited.
       checkpointFileName = cpeFactory.getCPEConfig().getCheckpoint().getFilePath();
@@ -232,7 +226,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
     if (checkpointFileName != null && checkpointFileName.trim().length() > 0) {
       File checkpointFile = new File(checkpointFileName);
       checkpoint = new Checkpoint(this, checkpointFileName, cpeFactory.getCPEConfig()
-                      .getCheckpoint().getFrequency());
+              .getCheckpoint().getFrequency());
       // Check if the checkpoint file already exists. If it does, the CPM did not complete
       // successfully during the previous run and CPM will start in recovery mode, restoring all
       // totals and status's from the recovered checkpoint. The processing pipeline state will
@@ -254,19 +248,19 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
     cpEngine = new CPMEngine(cpmThreadGroup, cpeFactory, procTr, checkpointData);
     if (!aDummyCasProcessor) {
       int concurrentThreadCount = cpeFactory.getCpeDescriptor().getCpeCasProcessors()
-                      .getConcurrentPUCount();
+              .getConcurrentPUCount();
       for (int threadCount = 0; threadCount < concurrentThreadCount; threadCount++) {
         CasProcessor[] casProcessors = cpeFactory.getCasProcessors();
         for (int i = 0; i < casProcessors.length; i++) {
           if (UIMAFramework.getLogger().isLoggable(Level.CONFIG)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
-                            Level.CONFIG,
-                            this.getClass().getName(),
-                            "process",
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_add_cp__CONFIG",
-                            new Object[] { Thread.currentThread().getName(),
-                                casProcessors[i].getProcessingResourceMetaData().getName() });
+                    Level.CONFIG,
+                    this.getClass().getName(),
+                    "process",
+                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_add_cp__CONFIG",
+                    new Object[] { Thread.currentThread().getName(),
+                        casProcessors[i].getProcessingResourceMetaData().getName() });
           }
           addCasProcessor(casProcessors[i]);
         }
@@ -291,8 +285,8 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
       cpEngine.setInputQueueSize(casPoolSize == 0 ? iqSize : casPoolSize);
     } catch (NumberFormatException e) {
       throw new Exception(CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_EXP_queue_size_not_defined__WARNING", new Object[] {
-                          Thread.currentThread().getName(), "inputQueueSize" }));
+              "UIMA_CPM_EXP_queue_size_not_defined__WARNING", new Object[] {
+                  Thread.currentThread().getName(), "inputQueueSize" }));
     }
     try {
       int oqSize = 0;
@@ -302,17 +296,16 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
       cpEngine.setOutputQueueSize(casPoolSize == 0 ? oqSize : casPoolSize + 2);
     } catch (NumberFormatException e) {
       throw new Exception(CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_EXP_queue_size_not_defined__WARNING", new Object[] {
-                          Thread.currentThread().getName(), "outputQueueSize" }));
+              "UIMA_CPM_EXP_queue_size_not_defined__WARNING", new Object[] {
+                  Thread.currentThread().getName(), "outputQueueSize" }));
     }
     try {
       int threadCount = cpeFactory.getCpeDescriptor().getCpeCasProcessors().getConcurrentPUCount();
       cpEngine.setConcurrentThreadSize(threadCount);
     } catch (NumberFormatException e) {
       throw new Exception(CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_EXP_invalid_component_reference__WARNING", new Object[] {
-                          Thread.currentThread().getName(), "casProcessors",
-                          "processingUnitThreadCount" }));
+              "UIMA_CPM_EXP_invalid_component_reference__WARNING", new Object[] {
+                  Thread.currentThread().getName(), "casProcessors", "processingUnitThreadCount" }));
     }
   }
 
@@ -355,7 +348,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    *      int)
    */
   public void addCasProcessor(CasProcessor aCasProcessor, int aIndex)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     cpEngine.addCasProcessor(aCasProcessor, aIndex);
   }
 
@@ -491,14 +484,10 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
       }
       end = System.currentTimeMillis();
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "process",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_show_total_time_in_cpm__FINEST",
-                        new Object[] { Thread.currentThread().getName(),
-                            String.valueOf(end - start) });
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_show_total_time_in_cpm__FINEST",
+                new Object[] { Thread.currentThread().getName(), String.valueOf(end - start) });
       }
     } catch (AbortCPMException e) {
       if (!useJediiReport) {
@@ -537,8 +526,8 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
 
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cpm_stopped__FINEST",
-                      new Object[] { Thread.currentThread().getName(), String.valueOf(killed) });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cpm_stopped__FINEST",
+              new Object[] { Thread.currentThread().getName(), String.valueOf(killed) });
     }
     ArrayList statusCbL = cpEngine.getCallbackListeners();
     // Notify all listeners that the CPM has finished processing
@@ -570,7 +559,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * @deprecated
    */
   public void process(BaseCollectionReader aCollectionReader)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     // Retrieve number of entities to process from the CPM configuration
     try {
       num2Process = cpeFactory.getCPEConfig().getNumToProcess();
@@ -623,7 +612,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * @deprecated
    */
   public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     // Let the application define the size of Collection.
     num2Process = aBatchSize;
     collectionReader = aCollectionReader;
@@ -726,8 +715,8 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
   public void kill() {
     if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_killing_cpm__WARNING",
-                      new Object[] { Thread.currentThread().getName() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_killing_cpm__WARNING",
+              new Object[] { Thread.currentThread().getName() });
     }
     killed = true;
     // Stop processing pipeline. The CPMWorker will finish processing of the current
@@ -753,8 +742,8 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
   public void stop() {
     if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_stop_cpm__WARNING",
-                      new Object[] { Thread.currentThread().getName() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_stop_cpm__WARNING",
+              new Object[] { Thread.currentThread().getName() });
     }
     killed = true;
     // Stop processing pipeline. The CPMWorker will finish processing of the current
@@ -780,9 +769,8 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
   public void asynchStop() {
     if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_asynch_stop_cpm__WARNING",
-                      new Object[] { Thread.currentThread().getName() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_asynch_stop_cpm__WARNING",
+              new Object[] { Thread.currentThread().getName() });
     }
     killed = true;
     // Stop processing pipeline. The CPMWorker will finish processing of the current
@@ -832,7 +820,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * 
    */
   private void copyComponentEvents(String aEvType, List aList, ProcessTrace aPTr)
-                  throws IOException {
+          throws IOException {
     for (int i = 0; i < aList.size(); i++) {
       ProcessTraceEvent prEvent = (ProcessTraceEvent) aList.get(i);
       if (aEvType != null && aEvType.equals(prEvent.getType())) {
@@ -854,7 +842,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
   public void displayStats(ProcessTrace aProcessTrace, int aNumDocsProcessed) {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
-                      "Documents Processed: " + aNumDocsProcessed);
+              "Documents Processed: " + aNumDocsProcessed);
     }
     // count total time
     int totalTime = 0;
@@ -866,28 +854,28 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
       if ("CPM".equals(event.getComponentName())) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).log(
-                          Level.FINEST,
-                          "Current Component::" + event.getComponentName() + " Time::"
-                                          + event.getDuration());
+                  Level.FINEST,
+                  "Current Component::" + event.getComponentName() + " Time::"
+                          + event.getDuration());
         }
         continue;
       }
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
-                        "Current Component::" + event.getComponentName());
+                "Current Component::" + event.getComponentName());
       }
       totalTime += event.getDuration();
     }
     float totalTimeSeconds = (float) totalTime / 1000;
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
-                      "Total Time: " + totalTimeSeconds + " seconds");
+              "Total Time: " + totalTimeSeconds + " seconds");
     }
 
     // create root tree node
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
-                      "100% (" + totalTime + "ms) - Collection Processing Engine");
+              "100% (" + totalTime + "ms) - Collection Processing Engine");
     }
     // build tree
     it = aProcessTrace.getEvents().iterator();
@@ -920,9 +908,9 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
 
     if (System.getProperty("DEBUG") != null)
       UIMAFramework.getLogger(this.getClass()).log(
-                      Level.FINEST,
-                      "" + pct + "% (" + duration + "ms) - " + aEvent.getComponentName() + " ("
-                                      + type + ")");
+              Level.FINEST,
+              "" + pct + "% (" + duration + "ms) - " + aEvent.getComponentName() + " (" + type
+                      + ")");
     Iterator it = aEvent.getSubEvents().iterator();
     while (it.hasNext()) {
       ProcessTraceEvent event = (ProcessTraceEvent) it.next();
@@ -941,7 +929,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
     ProcessTrace processTrace = new ProcessTrace_impl(cpEngine.getPerformanceTuningSettings());
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
-                      "-------------------------------------------");
+              "-------------------------------------------");
     }
     if (useJediiReport) {
       try {
@@ -1001,15 +989,15 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
         String readerName = collectionReader.getProcessingResourceMetaData().getName();
         if (totalCollectionReaderTime != null) {
           processTrace.addEvent(readerName, "COLLECTION_READER_TIME", String
-                          .valueOf(totalCollectionReaderTime), 0, null);
+                  .valueOf(totalCollectionReaderTime), 0, null);
         }
         for (int i = 0; i < colReaderProgress.length; i++) {
           if (Progress.BYTES.equals(colReaderProgress[i].getUnit())) {
             processTrace.addEvent(readerName, Constants.COLLECTION_READER_BYTES_PROCESSED, String
-                            .valueOf(colReaderProgress[i].getCompleted()), 0, null);
+                    .valueOf(colReaderProgress[i].getCompleted()), 0, null);
           } else if (Progress.ENTITIES.equals(colReaderProgress[i].getUnit())) {
             processTrace.addEvent(readerName, Constants.COLLECTION_READER_DOCS_PROCESSED, String
-                            .valueOf(colReaderProgress[i].getCompleted()), 0, null);
+                    .valueOf(colReaderProgress[i].getCompleted()), 0, null);
           }
         }
 
@@ -1019,7 +1007,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
         copyComponentEvents("COLLECTION READER PROCESSING TIME", eList, processTrace);
         eList.clear();
         processTrace.addEvent(readerName, "Last Entity ID Read", cpEngine.getLastProcessedDocId(),
-                        0, null);
+                0, null);
       }
 
       LinkedList processors = cpEngine.getAllProcessingContainers();
@@ -1031,33 +1019,33 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
         copyComponentEvents("Process", eList, processTrace);
 
         processTrace.addEvent(container.getName(), "Documents Processed", String.valueOf(container
-                        .getProcessed()), 0, null);
+                .getProcessed()), 0, null);
         String status = decodeStatus(container.getStatus());
         processTrace.addEvent(container.getName(), "Processor Status", status, 0, null);
 
         long bytesIn = container.getBytesIn();
         processTrace.addEvent(container.getName(), "Processor BYTESIN", String.valueOf(bytesIn), 0,
-                        null);
+                null);
 
         long bytesOut = container.getBytesOut();
         processTrace.addEvent(container.getName(), "Processor BYTESOUT", String.valueOf(bytesOut),
-                        0, null);
+                0, null);
 
         int restartCount = container.getRestartCount();
         processTrace.addEvent(container.getName(), "Processor Restarts", String
-                        .valueOf(restartCount), 0, null);
+                .valueOf(restartCount), 0, null);
 
         int retryCount = container.getRetryCount();
         processTrace.addEvent(container.getName(), "Processor Retries", String.valueOf(retryCount),
-                        0, null);
+                0, null);
 
         int filteredCount = container.getFilteredCount();
         processTrace.addEvent(container.getName(), "Filtered Entities", String
-                        .valueOf(filteredCount), 0, null);
+                .valueOf(filteredCount), 0, null);
 
         long remainingCount = container.getRemaining();
         processTrace.addEvent(container.getName(), "Processor Remaining", String
-                        .valueOf(remainingCount), 0, null);
+                .valueOf(remainingCount), 0, null);
 
         HashMap aMap = container.getAllStats();
 
@@ -1074,26 +1062,20 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
                 processTrace.addEvent(container.getName(), key, (String) o, 0, null);
                 if (System.getProperty("SHOW_CUSTOM_STATS") != null)
                   UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
-                                  "Custom String Stat-" + key + " Value=" + (String) o);
+                          "Custom String Stat-" + key + " Value=" + (String) o);
               } else if (o instanceof Integer) {
                 processTrace.addEvent(container.getName(), key, String.valueOf(((Integer) o)
-                                .intValue()), 0, null);
+                        .intValue()), 0, null);
                 if (System.getProperty("SHOW_CUSTOM_STATS") != null)
-                  UIMAFramework.getLogger(this.getClass()).log(
-                                  Level.FINEST,
-                                  "Custom Integer Stat-" + key + " Value="
-                                                  + ((Integer) o).intValue());
+                  UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
+                          "Custom Integer Stat-" + key + " Value=" + ((Integer) o).intValue());
               } else {
                 if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-                  UIMAFramework
-                                  .getLogger(this.getClass())
-                                  .log(
-                                                  Level.FINEST,
-                                                  "Invalid Type Found When Generating Status For "
-                                                                  + key
-                                                                  + ". Type::"
-                                                                  + o.getClass().getName()
-                                                                  + " Not supported. Use Integer or String instead.");
+                  UIMAFramework.getLogger(this.getClass()).log(
+                          Level.FINEST,
+                          "Invalid Type Found When Generating Status For " + key + ". Type::"
+                                  + o.getClass().getName()
+                                  + " Not supported. Use Integer or String instead.");
                 }
               }
             }
@@ -1103,7 +1085,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
           String lastDocId = container.getLastProcessedEntityId();
           if (lastDocId != null) {
             processTrace.addEvent(container.getName(), "Processor Last EntityId", lastDocId, 0,
-                            null);
+                    null);
           }
         } catch (Exception e) {
           e.printStackTrace();
@@ -1121,7 +1103,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * @param processTrace
    */
   private void createDefaultProcessTrace(CasProcessor[] aProcessors, ProcessTrace srcProcTr,
-                  ProcessTrace aProcessTrace) {
+          ProcessTrace aProcessTrace) {
     for (int i = 0; aProcessors != null && i < aProcessors.length; i++) {
       String name = aProcessors[i].getProcessingResourceMetaData().getName();
       if (name == null) {

@@ -74,7 +74,7 @@ public interface SocketTransport {
    * 
    */
   public CAS process(Socket aSocket, CAS aCas) throws SocketTimeoutException, SocketException,
-                  AnalysisEngineProcessException;
+          AnalysisEngineProcessException;
 
   /**
    * Returns metadata associated with the fenced CasProcessor
@@ -85,6 +85,6 @@ public interface SocketTransport {
    * @throws SocketException
    */
   public ProcessingResourceMetaData getProcessingResourceMetaData(Socket aSocket)
-                  throws SocketException, AnalysisEngineProcessException;
+          throws SocketException, AnalysisEngineProcessException;
 
 }

@@ -115,7 +115,7 @@ public class ErrorTestCollectionReader extends CollectionReader_ImplBase {
       System.out.println("adding error!");
       // add the error object to the corresponding HashMap Entry
       addError(errorFunction, new FunctionErrorStore(errorExceptionName, errorCountName,
-                      errorFunction));
+              errorFunction));
     }
 
     logger.log(LOG_LEVEL, "initialize() was called");

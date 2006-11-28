@@ -42,7 +42,7 @@ import org.apache.uima.util.Level;
 public class NonJavaApplication extends RunnableApplication {
 
   public NonJavaApplication(CasProcessorConfiguration aCasProcessorConfiguration,
-                  CpeCasProcessor aCasProcessorConfig) throws ResourceConfigurationException {
+          CpeCasProcessor aCasProcessorConfig) throws ResourceConfigurationException {
     addApplicationInfo(aCasProcessorConfiguration, aCasProcessorConfig);
   }
 
@@ -56,11 +56,11 @@ public class NonJavaApplication extends RunnableApplication {
    * @throws ResourceConfigurationException
    */
   protected void addApplicationInfo(CasProcessorConfiguration aCasProcessorConfiguration,
-                  CpeCasProcessor aCasProcessor) throws ResourceConfigurationException {
+          CpeCasProcessor aCasProcessor) throws ResourceConfigurationException {
     super.addApplicationInfo(aCasProcessorConfiguration, aCasProcessor);
     if ("local".equals(aCasProcessor.getDeployment())) {
       String[] cmdLine = addApplicationCmdLineArguments(aCasProcessorConfiguration, argList,
-                      executable);
+              executable);
       exec.setCmdLine(cmdLine);
     }
 
@@ -78,8 +78,11 @@ public class NonJavaApplication extends RunnableApplication {
    * @return - command line as array of Strings
    */
   protected String[] addApplicationCmdLineArguments(
-                  CasProcessorConfiguration aCasProcessorConfiguration, List argList,
-                  String aExecutable) // String[] cmdLine) //, String aDescriptor,List
+          CasProcessorConfiguration aCasProcessorConfiguration, List argList, String aExecutable) // String[]
+                                                                                                  // cmdLine)
+                                                                                                  // //,
+                                                                                                  // String
+                                                                                                  // aDescriptor,List
   // aDeploymentParameters )
   {
     ArrayList cmdArgs = new ArrayList();
@@ -91,13 +94,12 @@ public class NonJavaApplication extends RunnableApplication {
 
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_show_cmd_arg__FINEST",
-                        new Object[] { Thread.currentThread().getName(), String.valueOf(i), arg });
+                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_show_cmd_arg__FINEST",
+                new Object[] { Thread.currentThread().getName(), String.valueOf(i), arg });
       }
       if ("${descriptor}".equals(arg.trim())) {
         String descriptor = CPMUtils.convertToAbsolutePath(System.getProperty("CPM_HOME"),
-                        CPEFactory.CPM_HOME, aCasProcessorConfiguration.getDescriptor());
+                CPEFactory.CPM_HOME, aCasProcessorConfiguration.getDescriptor());
 
         cmdArgs.add("\"" + descriptor + "\"");
       } else {

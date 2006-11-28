@@ -69,8 +69,8 @@ public class Filter {
       }
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_expression__FINEST",
-                        new Object[] { Thread.currentThread().getName(), sb.toString() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_expression__FINEST",
+                new Object[] { Thread.currentThread().getName(), sb.toString() });
 
       }
       sb.setLength(0);
@@ -224,8 +224,8 @@ public class Filter {
       // supported
       if (filter.isAndFilter) {
         throw new ParseException(
-                        "Filter.Expression.setIsOrFilter()-Mixing <AND> and <OR> currently not supported. Choose one conjunction <AND> or disjunction <OR> in your filter.",
-                        0);
+                "Filter.Expression.setIsOrFilter()-Mixing <AND> and <OR> currently not supported. Choose one conjunction <AND> or disjunction <OR> in your filter.",
+                0);
       }
       filter.isOrFilter = true;
       filter.filterInitialized = true;
@@ -236,8 +236,8 @@ public class Filter {
       // supported
       if (filter.filterInitialized && filter.isOrFilter) {
         throw new ParseException(
-                        "Filter.Expression.setIsOrFilter()-Mixing <AND> and <OR> currently not supported. Choose one conjunction <AND> or disjunction <OR> in your filter.",
-                        0);
+                "Filter.Expression.setIsOrFilter()-Mixing <AND> and <OR> currently not supported. Choose one conjunction <AND> or disjunction <OR> in your filter.",
+                0);
       }
       filter.isAndFilter = true;
       filter.isOrFilter = false; // turnoff default

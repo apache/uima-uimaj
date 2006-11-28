@@ -44,7 +44,7 @@ public interface CasProcessorDeployer {
    *           failed to deploy Cas Processor
    */
   public ProcessingContainer deployCasProcessor(List aCasProcessorList, boolean redeploy)
-                  throws ResourceConfigurationException;
+          throws ResourceConfigurationException;
 
   /**
    * Method used to redeploy a single instance of a Cas Processor.
@@ -56,7 +56,7 @@ public interface CasProcessorDeployer {
    *           failed to deploy Cas Processor
    */
   public void deployCasProcessor(ProcessingContainer aProcessingContainer)
-                  throws ResourceConfigurationException;
+          throws ResourceConfigurationException;
 
   /**
    * 

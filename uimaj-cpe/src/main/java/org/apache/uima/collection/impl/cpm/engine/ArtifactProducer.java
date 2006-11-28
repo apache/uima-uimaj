@@ -195,12 +195,11 @@ public class ArtifactProducer extends Thread {
   public void setCollectionReader(BaseCollectionReader aCollectionReader) {
     collectionReader = aCollectionReader;
     if (collectionReader.getProcessingResourceMetaData().getConfigurationParameterSettings()
-                    .getParameterValue("fetchSize") != null) {
+            .getParameterValue("fetchSize") != null) {
       // Determines how many at a time this Collection Reader will return
       // for each fetch
       readerFetchSize = ((Integer) collectionReader.getProcessingResourceMetaData()
-                      .getConfigurationParameterSettings().getParameterValue("fetchSize"))
-                      .intValue();
+              .getConfigurationParameterSettings().getParameterValue("fetchSize")).intValue();
     }
   }
 
@@ -259,15 +258,9 @@ public class ArtifactProducer extends Thread {
     if (capacity > maxToProcess) {
       capacity = maxToProcess;
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass())
-                        .logrb(
-                                        Level.FINEST,
-                                        this.getClass().getName(),
-                                        "process",
-                                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                        "UIMA_CPM_reset_queue_size__FINEST",
-                                        new Object[] { Thread.currentThread().getName(),
-                                            String.valueOf(capacity) });
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_reset_queue_size__FINEST",
+                new Object[] { Thread.currentThread().getName(), String.valueOf(capacity) });
       }
     }
 
@@ -286,13 +279,13 @@ public class ArtifactProducer extends Thread {
           casObjectList = readNext(readerFetchSize);
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
-                            Level.FINEST,
-                            this.getClass().getName(),
-                            "process",
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_enqueue_cas_bundle__FINEST",
-                            new Object[] { Thread.currentThread().getName(),
-                                String.valueOf(casObjectList.length) });
+                    Level.FINEST,
+                    this.getClass().getName(),
+                    "process",
+                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_enqueue_cas_bundle__FINEST",
+                    new Object[] { Thread.currentThread().getName(),
+                        String.valueOf(casObjectList.length) });
           }
           // Count number of entities fetched so far
           entityCount += casObjectList.length;
@@ -314,13 +307,13 @@ public class ArtifactProducer extends Thread {
         if (progress != null) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
-                            Level.FINEST,
-                            this.getClass().getName(),
-                            "process",
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_show_cr_progress__FINEST",
-                            new Object[] { Thread.currentThread().getName(),
-                                String.valueOf(progress[0].getCompleted()) });
+                    Level.FINEST,
+                    this.getClass().getName(),
+                    "process",
+                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_show_cr_progress__FINEST",
+                    new Object[] { Thread.currentThread().getName(),
+                        String.valueOf(progress[0].getCompleted()) });
           }
         }
         cpmStatTable.put("COLLECTION_READER_PROGRESS", progress);
@@ -390,9 +383,8 @@ public class ArtifactProducer extends Thread {
 
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_cr_fetch_new_cas__FINEST",
-                          new Object[] { Thread.currentThread().getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cr_fetch_new_cas__FINEST",
+                  new Object[] { Thread.currentThread().getName() });
         }
 
         threadState = 1001; // Waiting for CAS
@@ -402,13 +394,13 @@ public class ArtifactProducer extends Thread {
 
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "process",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_cr_check_cas_for_null__FINEST",
-                          new Object[] { Thread.currentThread().getName(),
-                              String.valueOf((casList[i] == null)) });
+                  Level.FINEST,
+                  this.getClass().getName(),
+                  "process",
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_cr_check_cas_for_null__FINEST",
+                  new Object[] { Thread.currentThread().getName(),
+                      String.valueOf((casList[i] == null)) });
         }
         if (cpm.isRunning() == false) {
           // CPM is in shutdown stage. No need to enqueue additional
@@ -420,7 +412,7 @@ public class ArtifactProducer extends Thread {
             totalFetchTime += (timer.getTimeInMillis() - start);
           }
           for (int listCounter = 0; casList != null && casList[i] != null
-                          && listCounter < casList.length; listCounter++) {
+                  && listCounter < casList.length; listCounter++) {
             casPool.releaseCas(casList[listCounter]);
             synchronized (casPool) {
               casPool.notifyAll();
@@ -433,9 +425,9 @@ public class ArtifactProducer extends Thread {
           }
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                            "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_in_shutdown_state__FINEST",
-                            new Object[] { Thread.currentThread().getName() });
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_in_shutdown_state__FINEST",
+                    new Object[] { Thread.currentThread().getName() });
           }
           return null;
         }
@@ -444,15 +436,13 @@ public class ArtifactProducer extends Thread {
         }
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_got_new_cas__FINEST",
-                          new Object[] { Thread.currentThread().getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_got_new_cas__FINEST",
+                  new Object[] { Thread.currentThread().getName() });
         }
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_call_cas_reset__FINEST",
-                          new Object[] { Thread.currentThread().getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_call_cas_reset__FINEST",
+                  new Object[] { Thread.currentThread().getName() });
         }
         casList[i].reset();
 
@@ -465,7 +455,7 @@ public class ArtifactProducer extends Thread {
           capabilities = casIni.getProcessingResourceMetaData().getCapabilities();
         else
           capabilities = ((CollectionReader) collectionReader).getProcessingResourceMetaData()
-                          .getCapabilities();
+                  .getCapabilities();
 
         boolean sofaUnaware = true;
         for (int j = 0; j < capabilities.length; j++) {
@@ -489,23 +479,22 @@ public class ArtifactProducer extends Thread {
             CAS view = casList[i].getView(CAS.NAME_DEFAULT_SOFA);
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                              this.getClass().getName(), "process",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_call_cr_next__FINEST",
-                              new Object[] { Thread.currentThread().getName(), "TCAS" });
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_call_cr_next__FINEST",
+                      new Object[] { Thread.currentThread().getName(), "TCAS" });
             }
             localTrace.startEvent(collectionReader.getProcessingResourceMetaData().getName(),
-                            "Process", "");
+                    "Process", "");
             eventStarted = true;
             ((CollectionReader) collectionReader).getNext(view);
             localTrace.endEvent(collectionReader.getProcessingResourceMetaData().getName(),
-                            "Process", "success");
+                    "Process", "success");
 
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                              this.getClass().getName(), "process",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_call_cr_next_finished__FINEST",
-                              new Object[] { Thread.currentThread().getName(), "TCAS" });
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_call_cr_next_finished__FINEST",
+                      new Object[] { Thread.currentThread().getName(), "TCAS" });
             }
           } else
           // sofa-aware CR, give it the base CAS
@@ -513,24 +502,23 @@ public class ArtifactProducer extends Thread {
             CAS baseCas = ((CASImpl) casList[i]).getBaseCAS();
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                              this.getClass().getName(), "process",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_call_cr_next__FINEST",
-                              new Object[] { Thread.currentThread().getName(), "CAS" });
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_call_cr_next__FINEST",
+                      new Object[] { Thread.currentThread().getName(), "CAS" });
 
             }
             localTrace.startEvent(collectionReader.getProcessingResourceMetaData().getName(),
-                            "Process", "");
+                    "Process", "");
             eventStarted = true;
             ((CollectionReader) collectionReader).getNext(baseCas);
             localTrace.endEvent(collectionReader.getProcessingResourceMetaData().getName(),
-                            "Process", "success");
+                    "Process", "success");
 
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                              this.getClass().getName(), "process",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_call_cr_next_finished__FINEST",
-                              new Object[] { Thread.currentThread().getName(), "CAS" });
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_call_cr_next_finished__FINEST",
+                      new Object[] { Thread.currentThread().getName(), "CAS" });
             }
           }
           success = true;
@@ -544,7 +532,7 @@ public class ArtifactProducer extends Thread {
           {
             if (!success) {
               localTrace.endEvent(collectionReader.getProcessingResourceMetaData().getName(),
-                              "Process", "failure");
+                      "Process", "failure");
 
             }
             synchronized (globalSharedProcessTrace) {
@@ -561,7 +549,7 @@ public class ArtifactProducer extends Thread {
           if (((CASImpl) casList[0]).isBackwardCompatibleCas()) {
             CAS view = casList[0].getView(CAS.NAME_DEFAULT_SOFA);
             lastDocId[0] = ConsumerCasUtils.getStringFeatValue(view, Constants.METADATA_KEY,
-                            Constants.DOC_ID);
+                    Constants.DOC_ID);
           } else {
             lastDocId[0] = "";
           }
@@ -580,23 +568,22 @@ public class ArtifactProducer extends Thread {
 
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_call_cr_next__FINEST",
-                        new Object[] { Thread.currentThread().getName(), "CasData" });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_call_cr_next__FINEST",
+                new Object[] { Thread.currentThread().getName(), "CasData" });
       }
       localTrace.startEvent(collectionReader.getProcessingResourceMetaData().getName(), "Process",
-                      "");
+              "");
       try {
         casObjects = ((CasDataCollectionReader) collectionReader).getNext(fetchSize);
         success = true;
       } finally {
         if (!success) {
           localTrace.endEvent(collectionReader.getProcessingResourceMetaData().getName(),
-                          "Process", "failure");
+                  "Process", "failure");
 
         } else {
           localTrace.endEvent(collectionReader.getProcessingResourceMetaData().getName(),
-                          "Process", "success");
+                  "Process", "success");
 
         }
         synchronized (globalSharedProcessTrace) {
@@ -606,13 +593,13 @@ public class ArtifactProducer extends Thread {
       }
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_call_cr_next_finished__FINEST",
-                        new Object[] { Thread.currentThread().getName(), "CasData" });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_call_cr_next_finished__FINEST",
+                new Object[] { Thread.currentThread().getName(), "CasData" });
       }
       if (casObjects != null && casObjects.length > 0) {
         lastDocId = DATACasUtils.getFeatureStructureValues((CasData) casObjects[0],
-                        Constants.METADATA_KEY, Constants.DOC_ID);
+                Constants.METADATA_KEY, Constants.DOC_ID);
       }
     }
     if (timer != null) {
@@ -626,9 +613,8 @@ public class ArtifactProducer extends Thread {
     }
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_return_cases_from_cr__FINEST",
-                      new Object[] { Thread.currentThread().getName(), "CAS" });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_return_cases_from_cr__FINEST",
+              new Object[] { Thread.currentThread().getName(), "CAS" });
     }
     return casObjects;
   }
@@ -642,9 +628,8 @@ public class ArtifactProducer extends Thread {
     // ProcessTrace event
     if (!cpm.isRunning()) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_cpm_not_running__WARNING",
-                      new Object[] { Thread.currentThread().getName() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cpm_not_running__WARNING",
+              new Object[] { Thread.currentThread().getName() });
       return;
     }
 
@@ -653,16 +638,15 @@ public class ArtifactProducer extends Thread {
     if (endOfProcessingReached()) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_cr_done_producing__FINEST",
-                        new Object[] { Thread.currentThread().getName() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cr_done_producing__FINEST",
+                new Object[] { Thread.currentThread().getName() });
       }
       placeEOFToken();
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_eof_marker_enqueued__FINEST",
-                        new Object[] { Thread.currentThread().getName() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_eof_marker_enqueued__FINEST",
+                new Object[] { Thread.currentThread().getName() });
       }
       return;
     }
@@ -677,9 +661,9 @@ public class ArtifactProducer extends Thread {
           try {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                              this.getClass().getName(), "process",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_pausing_cr__FINEST",
-                              new Object[] { Thread.currentThread().getName() });
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_pausing_cr__FINEST",
+                      new Object[] { Thread.currentThread().getName() });
             }
             // Wait until resumed
             cpm.monitor.wait();
@@ -691,34 +675,32 @@ public class ArtifactProducer extends Thread {
         }
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_resume_cr__FINEST",
-                          new Object[] { Thread.currentThread().getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_resume_cr__FINEST",
+                  new Object[] { Thread.currentThread().getName() });
         }
       }
       try {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_call_hasnext__FINEST",
-                          new Object[] { Thread.currentThread().getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_call_hasnext__FINEST",
+                  new Object[] { Thread.currentThread().getName() });
         }
         threadState = 1004; // Entering hasNext()
 
         // start the CR event
         localTrace.startEvent(collectionReader.getProcessingResourceMetaData().getName(),
-                        "Process", "");
+                "Process", "");
         crEventCompleted = false;
         if (collectionReader.hasNext()) {
           localTrace.endEvent(collectionReader.getProcessingResourceMetaData().getName(),
-                          "Process", "success");
+                  "Process", "success");
           crEventCompleted = true;
 
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                            "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_get_cas_from_cr__FINEST",
-                            new Object[] { Thread.currentThread().getName() });
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_get_cas_from_cr__FINEST",
+                    new Object[] { Thread.currentThread().getName() });
           }
           casObjectList = readNext(readerFetchSize);
           if (casObjectList != null) {
@@ -729,8 +711,8 @@ public class ArtifactProducer extends Thread {
                 if (meta != null) {
                   if (timedoutDocs.containsKey(meta.getDocId())) {
                     notifyListeners(casList[i], new ResourceProcessException(new SkipCasException(
-                                    "Dropping CAS due chunk Timeout. Doc Id::" + meta.getDocId()
-                                                    + " Sequence:" + meta.getSequence())));
+                            "Dropping CAS due chunk Timeout. Doc Id::" + meta.getDocId()
+                                    + " Sequence:" + meta.getSequence())));
 
                     casPool.releaseCas((CAS) casObjectList[i]);
                     synchronized (casPool) {
@@ -746,13 +728,13 @@ public class ArtifactProducer extends Thread {
             }
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(
-                              Level.FINEST,
-                              this.getClass().getName(),
-                              "process",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_place_cas_in_queue__FINEST",
-                              new Object[] { Thread.currentThread().getName(),
-                                  String.valueOf(casObjectList.length) });
+                      Level.FINEST,
+                      this.getClass().getName(),
+                      "process",
+                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_place_cas_in_queue__FINEST",
+                      new Object[] { Thread.currentThread().getName(),
+                          String.valueOf(casObjectList.length) });
             }
             // Prevent processing of new CASes if the CPM has been
             // killed hard. Allow processing of CASes
@@ -760,7 +742,7 @@ public class ArtifactProducer extends Thread {
             // (Moved this code inside if (casObjectList != null)
             // block to avoid NullPointerException. -Adam
             if (cpm.isRunning() == true
-                            || (cpm.isRunning() == false && cpm.isHardKilled() == false)) {
+                    || (cpm.isRunning() == false && cpm.isHardKilled() == false)) {
               threadState = 1005; // Entering enqueue
               workQueue.enqueue(casObjectList);
               synchronized (workQueue) {
@@ -770,13 +752,13 @@ public class ArtifactProducer extends Thread {
               entityCount += casObjectList.length;
               if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
                 UIMAFramework.getLogger(this.getClass()).logrb(
-                                Level.FINEST,
-                                this.getClass().getName(),
-                                "process",
-                                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                "UIMA_CPM_placed_cas_in_queue__FINEST",
-                                new Object[] { Thread.currentThread().getName(),
-                                    String.valueOf(casObjectList.length) });
+                        Level.FINEST,
+                        this.getClass().getName(),
+                        "process",
+                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                        "UIMA_CPM_placed_cas_in_queue__FINEST",
+                        new Object[] { Thread.currentThread().getName(),
+                            String.valueOf(casObjectList.length) });
               }
             } else {
               break; // CPM has been killed
@@ -784,10 +766,9 @@ public class ArtifactProducer extends Thread {
           } else {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                              this.getClass().getName(), "process",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_terminate_cr_thread__FINEST",
-                              new Object[] { Thread.currentThread().getName() });
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_terminate_cr_thread__FINEST",
+                      new Object[] { Thread.currentThread().getName() });
             }
             break; // Null should not be returned from getNext
             // unless the CPM is in shutdown mode
@@ -795,9 +776,8 @@ public class ArtifactProducer extends Thread {
         } else {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                            "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_processed_all__FINEST",
-                            new Object[] { Thread.currentThread().getName() });
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_processed_all__FINEST",
+                    new Object[] { Thread.currentThread().getName() });
           }
           // Stops the CPM and all of the running threads.
           // cpm.stopIt(); APL - don't stop, just terminate this
@@ -812,9 +792,9 @@ public class ArtifactProducer extends Thread {
 
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                            "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_end_of_processing__FINEST",
-                            new Object[] { Thread.currentThread().getName() });
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_end_of_processing__FINEST",
+                    new Object[] { Thread.currentThread().getName() });
           }
           break;
         }
@@ -822,13 +802,13 @@ public class ArtifactProducer extends Thread {
         // The following conditional is true if hasNext() has failed
         if (!crEventCompleted) {
           localTrace.endEvent(collectionReader.getProcessingResourceMetaData().getName(),
-                          "Process", "failure");
+                  "Process", "failure");
         }
         // e.printStackTrace();
         if (UIMAFramework.getLogger().isLoggable(Level.FINER)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINER, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
-                          new Object[] { Thread.currentThread().getName(), e.getMessage() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
+                  new Object[] { Thread.currentThread().getName(), e.getMessage() });
 
           UIMAFramework.getLogger(this.getClass()).log(Level.FINER, e.getMessage(), e);
         }
@@ -860,26 +840,18 @@ public class ArtifactProducer extends Thread {
         localTrace.clear();
       }
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "process",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_show_cpm_running_status__FINEST",
-                        new Object[] { Thread.currentThread().getName(),
-                            String.valueOf(cpm.isRunning()) });
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_show_cpm_running_status__FINEST",
+                new Object[] { Thread.currentThread().getName(), String.valueOf(cpm.isRunning()) });
       }
     }
 
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_show_cpm_running_status__FINEST",
-                      new Object[] { Thread.currentThread().getName(),
-                          String.valueOf(cpm.isRunning()) });
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_show_cpm_running_status__FINEST",
+              new Object[] { Thread.currentThread().getName(), String.valueOf(cpm.isRunning()) });
     }
     // Done with processing. Create a "special" EOF token and place it in
     // the queue.
@@ -927,25 +899,16 @@ public class ArtifactProducer extends Thread {
       // only need one member in the array
       eofToken[0] = new EOFToken();
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "process",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_enqueue_eof_token__FINEST",
-                        new Object[] { Thread.currentThread().getName(),
-                            String.valueOf(cpm.isRunning()) });
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_enqueue_eof_token__FINEST",
+                new Object[] { Thread.currentThread().getName(), String.valueOf(cpm.isRunning()) });
       }
       workQueue.enqueue(eofToken);
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "process",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_done_enqueue_eof_token__FINEST",
-                        new Object[] { Thread.currentThread().getName(),
-                            String.valueOf(cpm.isRunning()) });
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_done_enqueue_eof_token__FINEST",
+                new Object[] { Thread.currentThread().getName(), String.valueOf(cpm.isRunning()) });
 
       }
       synchronized (workQueue) {
@@ -955,8 +918,8 @@ public class ArtifactProducer extends Thread {
       e.printStackTrace();
       if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
-                        new Object[] { Thread.currentThread().getName(), e.getMessage() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
+                new Object[] { Thread.currentThread().getName(), e.getMessage() });
         UIMAFramework.getLogger(this.getClass()).log(Level.SEVERE, "", e);
       }
     }

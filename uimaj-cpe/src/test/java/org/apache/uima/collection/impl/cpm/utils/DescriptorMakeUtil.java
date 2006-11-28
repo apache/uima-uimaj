@@ -46,17 +46,17 @@ public class DescriptorMakeUtil {
   }
 
   public static String makeAnalysisEngine(String descFileName, boolean shouldCrash,
-                  String functionName, int errorCount, String exceptionName) throws Exception {
+          String functionName, int errorCount, String exceptionName) throws Exception {
     XMLInputSource in = new XMLInputSource(descFileName);
     AnalysisEngineDescription aed = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
     // set the function to crash, if desired
     aed.getMetaData().getConfigurationParameterSettings().setParameterValue("default",
-                    "TestAnnotator", new Boolean(shouldCrash));
+            "TestAnnotator", new Boolean(shouldCrash));
     if (shouldCrash) {
       aed.getMetaData().getConfigurationParameterSettings().setParameterValue(functionName,
-                      "ErrorCount", new Integer(errorCount));
+              "ErrorCount", new Integer(errorCount));
       aed.getMetaData().getConfigurationParameterSettings().setParameterValue(functionName,
-                      "Exception", exceptionName);
+              "Exception", exceptionName);
     }
     File baseDir = new File(junitTestBasePath, "CpmTests" + FS + "CpeDesc");
 
@@ -79,18 +79,18 @@ public class DescriptorMakeUtil {
   }
 
   public static String makeCasConsumer(String descFileName, boolean shouldCrash,
-                  String functionName, int errorCount, String exceptionName) throws Exception {
+          String functionName, int errorCount, String exceptionName) throws Exception {
 
     XMLInputSource in = new XMLInputSource(descFileName);
     CasConsumerDescription ccd = UIMAFramework.getXMLParser().parseCasConsumerDescription(in);
     // set the function to crash, if desired
     if (shouldCrash) {
       ccd.getCasConsumerMetaData().getConfigurationParameterSettings().setParameterValue(
-                      "ErrorFunction", functionName);
+              "ErrorFunction", functionName);
       ccd.getCasConsumerMetaData().getConfigurationParameterSettings().setParameterValue(
-                      "ErrorCount", new Integer(errorCount));
+              "ErrorCount", new Integer(errorCount));
       ccd.getCasConsumerMetaData().getConfigurationParameterSettings().setParameterValue(
-                      "ErrorException", exceptionName);
+              "ErrorException", exceptionName);
     }
     File baseDir = new File(junitTestBasePath, "CpmTests" + FS + "CpeDesc");
 
@@ -107,28 +107,28 @@ public class DescriptorMakeUtil {
   }
 
   public static String makeCollectionReader(String descFileName, int documentCount)
-                  throws Exception {
+          throws Exception {
 
     return makeCollectionReader(descFileName, false, null, 0, null, documentCount);
   }
 
   public static String makeCollectionReader(String descFileName, boolean shouldCrash,
-                  String functionName, int errorCount, String exceptionName, int documentCount)
-                  throws Exception {
+          String functionName, int errorCount, String exceptionName, int documentCount)
+          throws Exception {
 
     XMLInputSource in = new XMLInputSource(descFileName);
     CollectionReaderDescription crd = UIMAFramework.getXMLParser()
-                    .parseCollectionReaderDescription(in);
+            .parseCollectionReaderDescription(in);
     crd.getCollectionReaderMetaData().getConfigurationParameterSettings().setParameterValue(
-                    "DocumentCount", new Integer(documentCount));
+            "DocumentCount", new Integer(documentCount));
     // set the function to crash, if desired
     if (shouldCrash) {
       crd.getCollectionReaderMetaData().getConfigurationParameterSettings().setParameterValue(
-                      "ErrorFunction", functionName);
+              "ErrorFunction", functionName);
       crd.getCollectionReaderMetaData().getConfigurationParameterSettings().setParameterValue(
-                      "ErrorCount", new Integer(errorCount));
+              "ErrorCount", new Integer(errorCount));
       crd.getCollectionReaderMetaData().getConfigurationParameterSettings().setParameterValue(
-                      "ErrorException", exceptionName);
+              "ErrorException", exceptionName);
     }
     File baseDir = new File(junitTestBasePath, "CpmTests" + FS + "CpeDesc");
 
@@ -143,7 +143,7 @@ public class DescriptorMakeUtil {
   }
 
   private static void serializeDescriptor(ResourceCreationSpecifier specifier, OutputStream out)
-                  throws Exception {
+          throws Exception {
     specifier.toXML(out);
 
   }

@@ -56,34 +56,32 @@ public class ServiceProxyPool {
     if (!mFreeInstances.isEmpty()) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_checking_out_cp_from_pool__FINEST",
-                        new Object[] { Thread.currentThread().getName() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_checking_out_cp_from_pool__FINEST",
+                new Object[] { Thread.currentThread().getName() });
       }
       CasProcessor r = (CasProcessor) mFreeInstances.remove(0);
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "process",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_show_cp_pool_size__FINEST",
-                        new Object[] { Thread.currentThread().getName(),
-                            String.valueOf(mAllInstances.size()),
-                            String.valueOf(mFreeInstances.size()) });
+                Level.FINEST,
+                this.getClass().getName(),
+                "process",
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_show_cp_pool_size__FINEST",
+                new Object[] { Thread.currentThread().getName(),
+                    String.valueOf(mAllInstances.size()), String.valueOf(mFreeInstances.size()) });
       }
       return r;
     } else {
       if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
         UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.WARNING,
-                        this.getClass().getName(),
-                        "process",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_cp_pool_empty__WARNING",
-                        new Object[] { Thread.currentThread().getName(),
-                            String.valueOf(mAllInstances.size()),
-                            String.valueOf(mFreeInstances.size()) });
+                Level.WARNING,
+                this.getClass().getName(),
+                "process",
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_cp_pool_empty__WARNING",
+                new Object[] { Thread.currentThread().getName(),
+                    String.valueOf(mAllInstances.size()), String.valueOf(mFreeInstances.size()) });
       }
       return null;
     }
@@ -99,36 +97,34 @@ public class ServiceProxyPool {
   public synchronized void checkIn(CasProcessor aResource) {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_checking_in_cp_to_pool__FINEST",
-                      new Object[] { Thread.currentThread().getName(),
-                          String.valueOf(mAllInstances.size()),
-                          String.valueOf(mFreeInstances.size()) });
+              Level.FINEST,
+              this.getClass().getName(),
+              "process",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_checking_in_cp_to_pool__FINEST",
+              new Object[] { Thread.currentThread().getName(),
+                  String.valueOf(mAllInstances.size()), String.valueOf(mFreeInstances.size()) });
     }
     // make sure this Resource was actually belongs to this pool and is checked out
     if (!mAllInstances.contains(aResource) || mFreeInstances.contains(aResource)) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_checking_in_invalid_cp_to_pool__FINEST",
-                        new Object[] { Thread.currentThread().getName() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_checking_in_invalid_cp_to_pool__FINEST",
+                new Object[] { Thread.currentThread().getName() });
       }
       if (!mAllInstances.contains(aResource)) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_cp_not_in_pool__FINEST",
-                          new Object[] { Thread.currentThread().getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cp_not_in_pool__FINEST",
+                  new Object[] { Thread.currentThread().getName() });
         }
       } else {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_cp_already_checked_in__FINEST",
-                          new Object[] { Thread.currentThread().getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_cp_already_checked_in__FINEST",
+                  new Object[] { Thread.currentThread().getName() });
         }
       }
     } else {
@@ -137,14 +133,13 @@ public class ServiceProxyPool {
     }
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_show_cp_pool_size__FINEST",
-                      new Object[] { Thread.currentThread().getName(),
-                          String.valueOf(mAllInstances.size()),
-                          String.valueOf(mFreeInstances.size()) });
+              Level.FINEST,
+              this.getClass().getName(),
+              "process",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_show_cp_pool_size__FINEST",
+              new Object[] { Thread.currentThread().getName(),
+                  String.valueOf(mAllInstances.size()), String.valueOf(mFreeInstances.size()) });
     }
     // Notify any threads waiting on this object
     notifyAll();
@@ -197,26 +192,25 @@ public class ServiceProxyPool {
   public void addCasProcessor(CasProcessor aCasProcessor) {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_add_cp_to_pool__FINEST",
-                      new Object[] { Thread.currentThread().getName(),
-                          aCasProcessor.getProcessingResourceMetaData().getName() });
+              Level.FINEST,
+              this.getClass().getName(),
+              "process",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_add_cp_to_pool__FINEST",
+              new Object[] { Thread.currentThread().getName(),
+                  aCasProcessor.getProcessingResourceMetaData().getName() });
     }
     mAllInstances.add(aCasProcessor);
     mFreeInstances.add(aCasProcessor);
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_show_cp_pool_size__FINEST",
-                      new Object[] { Thread.currentThread().getName(),
-                          String.valueOf(mAllInstances.size()),
-                          String.valueOf(mFreeInstances.size()) });
+              Level.FINEST,
+              this.getClass().getName(),
+              "process",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_show_cp_pool_size__FINEST",
+              new Object[] { Thread.currentThread().getName(),
+                  String.valueOf(mAllInstances.size()), String.valueOf(mFreeInstances.size()) });
     }
   }
 
@@ -236,7 +230,7 @@ public class ServiceProxyPool {
    *           if the Resource instances could not be created
    */
   protected void fillPool(BoundedWorkQueue portQueue, Map initParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     boolean isServiceLocal = false;
     if (initParams != null && initParams.containsKey("SERVICE_NAME")) {
       isServiceLocal = true;

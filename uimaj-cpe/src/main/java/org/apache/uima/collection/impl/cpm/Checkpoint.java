@@ -92,9 +92,8 @@ public class Checkpoint implements Runnable {
     // isRunning = false;
     if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_stop_checkpoint_thread__INFO",
-                      new Object[] { Thread.currentThread().getName() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_stop_checkpoint_thread__INFO",
+              new Object[] { Thread.currentThread().getName() });
 
     }
   }
@@ -117,8 +116,8 @@ public class Checkpoint implements Runnable {
       }
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_checkpoint__FINEST",
-                        new Object[] { Thread.currentThread().getName() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_checkpoint__FINEST",
+                new Object[] { Thread.currentThread().getName() });
       }
       doCheckpoint();
 
@@ -126,14 +125,14 @@ public class Checkpoint implements Runnable {
         try {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                            "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_sleep__FINEST",
-                            new Object[] { Thread.currentThread().getName() });
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_sleep__FINEST",
+                    new Object[] { Thread.currentThread().getName() });
           }
           sleepMonitor.wait(checkpointFrequency);
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                            "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_wakeup__FINEST",
-                            new Object[] { Thread.currentThread().getName() });
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_wakeup__FINEST",
+                    new Object[] { Thread.currentThread().getName() });
           }
         } catch (Exception e) {
         }
@@ -189,8 +188,8 @@ public class Checkpoint implements Runnable {
     try {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_checkpoint__FINEST",
-                        new Object[] { Thread.currentThread().getName() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_checkpoint__FINEST",
+                new Object[] { Thread.currentThread().getName() });
       }
       // 02/08/05 Checkpoint has been broken up into two files. One containing the
       // ProcessTrace saved as binary object, and second containing the SynchPoint
@@ -215,19 +214,17 @@ public class Checkpoint implements Runnable {
           if (synchPoint != null) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                              this.getClass().getName(), "process",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_checkpoint_with_synchpoint__FINEST",
-                              new Object[] { Thread.currentThread().getName() });
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_checkpoint_with_synchpoint__FINEST",
+                      new Object[] { Thread.currentThread().getName() });
             }
             targetToSave = new CheckpointData(pTrace, synchPoint);
           } else {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                              this.getClass().getName(), "process",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_checkpoint_with_pt__FINEST",
-                              new Object[] { Thread.currentThread().getName() });
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_checkpoint_with_pt__FINEST",
+                      new Object[] { Thread.currentThread().getName() });
             }
             targetToSave = new CheckpointData(pTrace);
           }
@@ -243,9 +240,9 @@ public class Checkpoint implements Runnable {
         }
       } catch (Exception e) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_exception_when_checkpointing__FINEST",
-                        new Object[] { Thread.currentThread().getName(), e.getMessage() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_exception_when_checkpointing__FINEST",
+                new Object[] { Thread.currentThread().getName(), e.getMessage() });
       } finally {
         if (out != null) {
           try {
@@ -265,9 +262,9 @@ public class Checkpoint implements Runnable {
 
     } catch (Exception e) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_exception_when_checkpointing__FINEST",
-                      new Object[] { Thread.currentThread().getName(), e.getMessage() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_exception_when_checkpointing__FINEST",
+              new Object[] { Thread.currentThread().getName(), e.getMessage() });
     }
   }
 
@@ -286,17 +283,17 @@ public class Checkpoint implements Runnable {
   public static void printStats(ProcessTrace prT) {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(Checkpoint.class).log(Level.FINEST,
-                      "\n\t\t\t----------------------------------------");
+              "\n\t\t\t----------------------------------------");
       UIMAFramework.getLogger(Checkpoint.class).log(Level.FINEST, "\t\t\t\t PERFORMANCE REPORT ");
       UIMAFramework.getLogger(Checkpoint.class).log(Level.FINEST,
-                      "\t\t\t----------------------------------------\n");
+              "\t\t\t----------------------------------------\n");
     }
     // get the list of events from the processTrace
     List eveList = prT.getEvents();
     printEveList(eveList, 0);
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(Checkpoint.class).log(Level.FINEST,
-                      "_________________________________________________________________\n");
+              "_________________________________________________________________\n");
     }
   }
 
@@ -328,11 +325,11 @@ public class Checkpoint implements Runnable {
       subEveList = prEvent.getSubEvents();
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(Checkpoint.class).log(
-                        Level.FINEST,
-                        tabS + "COMPONENT : " + compNameS + "\tTYPE : " + typeS
-                                        + "\tDescription : " + prEvent.getDescription());
+                Level.FINEST,
+                tabS + "COMPONENT : " + compNameS + "\tTYPE : " + typeS + "\tDescription : "
+                        + prEvent.getDescription());
         UIMAFramework.getLogger(Checkpoint.class).log(Level.FINEST,
-                        tabS + "TOTAL_TIME : " + totDur + "\tTIME_EXCLUDING_SUBEVENTS : " + dur);
+                tabS + "TOTAL_TIME : " + totDur + "\tTIME_EXCLUDING_SUBEVENTS : " + dur);
       }
       if (subEveList != null) {
         printEveList(subEveList, (tabCnt + 1));
@@ -376,9 +373,9 @@ public class Checkpoint implements Runnable {
 
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_restoring_from_checkpoint__FINEST",
-                          new Object[] { Thread.currentThread().getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_restoring_from_checkpoint__FINEST",
+                  new Object[] { Thread.currentThread().getName() });
         }
         FileInputStream in = new FileInputStream(file);
         stream = new ObjectInputStream(in);
@@ -396,9 +393,9 @@ public class Checkpoint implements Runnable {
       if (file.exists()) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_synchpoint_from_file__FINEST",
-                          new Object[] { Thread.currentThread().getName(), synchPointFileName });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_synchpoint_from_file__FINEST",
+                  new Object[] { Thread.currentThread().getName(), synchPointFileName });
         }
         synchPointStream = new FileInputStream(file);
         if (synchPointStream != null) {

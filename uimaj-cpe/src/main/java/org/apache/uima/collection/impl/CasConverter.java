@@ -97,7 +97,7 @@ public class CasConverter {
    *           if <code>aLenient</code> is false and a type system incompatibility is found
    */
   public void casDataToCasContainer(CasData aData, CAS aContainer, boolean aLenient)
-                  throws CollectionException {
+          throws CollectionException {
     // clear existing contents of container
     aContainer.reset();
 

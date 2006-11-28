@@ -48,9 +48,8 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
   public void initializationComplete() {
     if (UIMAFramework.getLogger().isLoggable(Level.CONFIG)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_cpm_init_complete__CONFIG",
-                      new Object[] { Thread.currentThread().getName() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cpm_init_complete__CONFIG",
+              new Object[] { Thread.currentThread().getName() });
     }
   }
 
@@ -63,8 +62,8 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
   public synchronized void batchProcessComplete() {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_method_ping__FINEST",
-                      new Object[] { Thread.currentThread().getName() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_method_ping__FINEST",
+              new Object[] { Thread.currentThread().getName() });
     }
   }
 
@@ -76,8 +75,8 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
   public synchronized void collectionProcessComplete() {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_method_ping__FINEST",
-                      new Object[] { Thread.currentThread().getName() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_method_ping__FINEST",
+              new Object[] { Thread.currentThread().getName() });
     }
   }
 
@@ -89,8 +88,8 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
   public synchronized void paused() {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_paused__FINEST",
-                      new Object[] { Thread.currentThread().getName() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_paused__FINEST",
+              new Object[] { Thread.currentThread().getName() });
     }
   }
 
@@ -102,8 +101,8 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
   public synchronized void resumed() {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_resumed__FINEST",
-                      new Object[] { Thread.currentThread().getName() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_resumed__FINEST",
+              new Object[] { Thread.currentThread().getName() });
     }
   }
 
@@ -115,8 +114,8 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
   public void aborted() {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_stopped__FINEST",
-                      new Object[] { Thread.currentThread().getName() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_stopped__FINEST",
+              new Object[] { Thread.currentThread().getName() });
     }
   }
 
@@ -137,25 +136,25 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
       for (int i = 0; i < aStatus.getFailedComponentNames().size(); i++) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "process",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_failed_component__FINEST",
-                          new Object[] { Thread.currentThread().getName(),
-                              ((String) aStatus.getFailedComponentNames().get(i)) });
+                  Level.FINEST,
+                  this.getClass().getName(),
+                  "process",
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_failed_component__FINEST",
+                  new Object[] { Thread.currentThread().getName(),
+                      ((String) aStatus.getFailedComponentNames().get(i)) });
         }
       }
       for (int i = 0; i < aStatus.getExceptions().size(); i++) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "process",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_component_exception__FINEST",
-                          new Object[] { Thread.currentThread().getName(),
-                              (aStatus.getExceptions().get(i)).toString() });
+                  Level.FINEST,
+                  this.getClass().getName(),
+                  "process",
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_component_exception__FINEST",
+                  new Object[] { Thread.currentThread().getName(),
+                      (aStatus.getExceptions().get(i)).toString() });
         }
       }
       return;

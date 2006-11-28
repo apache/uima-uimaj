@@ -96,9 +96,9 @@ public class SequencedQueue extends BoundedWorkQueue {
     notifyAll();
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_chunk_state_false_timeout__FINEST",
-                      new Object[] { Thread.currentThread().getName(), getName() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_chunk_state_false_timeout__FINEST",
+              new Object[] { Thread.currentThread().getName(), getName() });
 
     }
     chunkState = false;
@@ -123,9 +123,8 @@ public class SequencedQueue extends BoundedWorkQueue {
     if (numberElementsInQueue == 0) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_queue_empty__FINEST",
-                        new Object[] { Thread.currentThread().getName(), getName() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_queue_empty__FINEST",
+                new Object[] { Thread.currentThread().getName(), getName() });
       }
       return null;
     }
@@ -137,13 +136,13 @@ public class SequencedQueue extends BoundedWorkQueue {
 
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_expected_chunk_sequenece__FINEST",
-                      new Object[] { Thread.currentThread().getName(), getName(),
-                          String.valueOf(chunkSequence) });
+              Level.FINEST,
+              this.getClass().getName(),
+              "process",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_expected_chunk_sequenece__FINEST",
+              new Object[] { Thread.currentThread().getName(), getName(),
+                  String.valueOf(chunkSequence) });
     }
     try {
       // This does not remove the object from the queue
@@ -154,9 +153,8 @@ public class SequencedQueue extends BoundedWorkQueue {
         notifyAll();
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_got_eof_token__FINEST",
-                          new Object[] { Thread.currentThread().getName(), getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_got_eof_token__FINEST",
+                  new Object[] { Thread.currentThread().getName(), getName() });
         }
         return anObject;
       }
@@ -168,16 +166,15 @@ public class SequencedQueue extends BoundedWorkQueue {
           // Create metadata from the CAS. This convenience object is used internally and keeps
           // track of the last chunks sequence processed here
           ChunkMetadata chunkMetadata = CPMUtils.getChunkMetadata(((CAS[]) ((WorkUnit) anObject)
-                          .get())[0]);
+                  .get())[0]);
           // Chunking is not strictly required. In such cases the sequence metadata will not be in
           // the CAS and thus there is no ChunkMetaData
           if (chunkMetadata == null) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                              this.getClass().getName(), "process",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_chunk_meta_is_null__FINEST",
-                              new Object[] { Thread.currentThread().getName(), getName() });
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_chunk_meta_is_null__FINEST",
+                      new Object[] { Thread.currentThread().getName(), getName() });
             }
             break;
           }
@@ -195,43 +192,42 @@ public class SequencedQueue extends BoundedWorkQueue {
           if (chunkMetadata.isOneOfMany() && sequenceTimedOut(chunkMetadata)) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(
-                              Level.FINEST,
-                              this.getClass().getName(),
-                              "process",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_sequence_timed_out__FINEST",
-                              new Object[] { Thread.currentThread().getName(), getName(),
-                                  String.valueOf(chunkMetadata.getSequence()) });
+                      Level.FINEST,
+                      this.getClass().getName(),
+                      "process",
+                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_sequence_timed_out__FINEST",
+                      new Object[] { Thread.currentThread().getName(), getName(),
+                          String.valueOf(chunkMetadata.getSequence()) });
             }
             return timedOutCas(queueIndex);
           }
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                            "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_iscas__FINEST",
-                            new Object[] { Thread.currentThread().getName(), getName() });
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_iscas__FINEST",
+                    new Object[] { Thread.currentThread().getName(), getName() });
           }
           // The queue gets into a chunk state IFF the CAS is part of the larger document that has
           // been "chopped" up into smaller chunks.
           if (chunkState) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(
-                              Level.FINEST,
-                              this.getClass().getName(),
-                              "process",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_in_chunk_state__FINEST",
-                              new Object[] { Thread.currentThread().getName(), getName(),
-                                  nextChunkMetadata.getDocId(), chunkMetadata.getDocId(),
-                                  String.valueOf(chunkSequence),
-                                  String.valueOf(chunkMetadata.getSequence()) });
+                      Level.FINEST,
+                      this.getClass().getName(),
+                      "process",
+                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_in_chunk_state__FINEST",
+                      new Object[] { Thread.currentThread().getName(), getName(),
+                          nextChunkMetadata.getDocId(), chunkMetadata.getDocId(),
+                          String.valueOf(chunkSequence),
+                          String.valueOf(chunkMetadata.getSequence()) });
             }
             // Is it the expected sequence?
             if (chunkMetadata.getSequence() == chunkSequence) {
               // Make sure to cross-reference with expected document id. This CAS could be part of a
               // different document!
               if (chunkSequence > 1
-                              && !nextChunkMetadata.getDocId().equalsIgnoreCase(
-                                              chunkMetadata.getDocId())) {
+                      && !nextChunkMetadata.getDocId().equalsIgnoreCase(chunkMetadata.getDocId())) {
                 // Sequence number is a match BUT this sequence belongs to another document. So skip
                 // and get the next CAS from the queue
                 queueIndex++;
@@ -242,10 +238,9 @@ public class SequencedQueue extends BoundedWorkQueue {
               if (chunkMetadata.isLast()) {
                 if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
                   UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                                  this.getClass().getName(), "process",
-                                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                  "UIMA_CPM_change_chunk_state__FINEST",
-                                  new Object[] { Thread.currentThread().getName(), getName() });
+                          this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                          "UIMA_CPM_change_chunk_state__FINEST",
+                          new Object[] { Thread.currentThread().getName(), getName() });
                 }
                 chunkState = false;
                 nextChunkMetadata = new ChunkMetadata("", 0, false);
@@ -262,46 +257,44 @@ public class SequencedQueue extends BoundedWorkQueue {
             // Currently NOT in a chunk state
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                              this.getClass().getName(), "process",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_not_in_chunk_state__FINEST",
-                              new Object[] { Thread.currentThread().getName(), getName() });
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_not_in_chunk_state__FINEST",
+                      new Object[] { Thread.currentThread().getName(), getName() });
             }
 
             if (chunkMetadata.isOneOfMany()) // sequence > 0
             {
               if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
                 UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                                this.getClass().getName(), "process",
-                                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                "UIMA_CPM_begin_chunk_state__FINEST",
-                                new Object[] { Thread.currentThread().getName(), getName() });
+                        this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                        "UIMA_CPM_begin_chunk_state__FINEST",
+                        new Object[] { Thread.currentThread().getName(), getName() });
               }
               chunkState = true;
               if (chunkMetadata.getSequence() == chunkSequence) {
                 if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
                   UIMAFramework.getLogger(this.getClass()).logrb(
-                                  Level.FINEST,
-                                  this.getClass().getName(),
-                                  "process",
-                                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                  "UIMA_CPM_in_chunk_state__FINEST",
-                                  new Object[] { Thread.currentThread().getName(), getName(),
-                                      nextChunkMetadata.getDocId(), chunkMetadata.getDocId(),
-                                      String.valueOf(chunkSequence),
-                                      String.valueOf(chunkMetadata.getSequence()) });
+                          Level.FINEST,
+                          this.getClass().getName(),
+                          "process",
+                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                          "UIMA_CPM_in_chunk_state__FINEST",
+                          new Object[] { Thread.currentThread().getName(), getName(),
+                              nextChunkMetadata.getDocId(), chunkMetadata.getDocId(),
+                              String.valueOf(chunkSequence),
+                              String.valueOf(chunkMetadata.getSequence()) });
                 }
 
                 if (sequenceTimedOut(chunkMetadata)) {
                   if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
                     UIMAFramework.getLogger(this.getClass()).logrb(
-                                    Level.FINEST,
-                                    this.getClass().getName(),
-                                    "process",
-                                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                    "UIMA_CPM_sequence_timed_out__FINEST",
-                                    new Object[] { Thread.currentThread().getName(), getName(),
-                                        String.valueOf(chunkMetadata.getSequence()) });
+                            Level.FINEST,
+                            this.getClass().getName(),
+                            "process",
+                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                            "UIMA_CPM_sequence_timed_out__FINEST",
+                            new Object[] { Thread.currentThread().getName(), getName(),
+                                String.valueOf(chunkMetadata.getSequence()) });
                   }
                   return timedOutCas(queueIndex);
                 }
@@ -322,20 +315,20 @@ public class SequencedQueue extends BoundedWorkQueue {
           if (anObject == null) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                              this.getClass().getName(), "process",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_null_cas__FINEST",
-                              new Object[] { Thread.currentThread().getName(), getName() });
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_null_cas__FINEST",
+                      new Object[] { Thread.currentThread().getName(), getName() });
             }
           } else {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(
-                              Level.FINEST,
-                              this.getClass().getName(),
-                              "process",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_not_cas__FINEST",
-                              new Object[] { Thread.currentThread().getName(), getName(),
-                                  anObject.getClass().getName() });
+                      Level.FINEST,
+                      this.getClass().getName(),
+                      "process",
+                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_not_cas__FINEST",
+                      new Object[] { Thread.currentThread().getName(), getName(),
+                          anObject.getClass().getName() });
             }
             break;
           }
@@ -356,38 +349,37 @@ public class SequencedQueue extends BoundedWorkQueue {
 
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_done_scanning_q__FINEST",
-                      new Object[] { Thread.currentThread().getName(), getName() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_done_scanning_q__FINEST",
+              new Object[] { Thread.currentThread().getName(), getName() });
     }
     // We scanned the queue and the expected sequence chunk has not been found.
     if (queueIndex == queueSize) {
       if (chunkSequence > 0) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "process",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_expecte_seq_not_found__FINEST",
-                          new Object[] { Thread.currentThread().getName(), getName(),
-                              String.valueOf(queue.size()) });
+                  Level.FINEST,
+                  this.getClass().getName(),
+                  "process",
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_expecte_seq_not_found__FINEST",
+                  new Object[] { Thread.currentThread().getName(), getName(),
+                      String.valueOf(queue.size()) });
         }
         // Reset expected sequence to the same number. The caller most likely will sleep for awhile
         // and retry. During the retry we need to
         // look for the same sequence we failed to find during this iteration.
         nextChunkMetadata = new ChunkMetadata(nextChunkMetadata.getDocId(), chunkSequence - 1,
-                        false);
+                false);
       }
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "process",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_expecte_seq_not_found__FINEST",
-                        new Object[] { Thread.currentThread().getName(), getName(),
-                            String.valueOf(queue.size()) });
+                Level.FINEST,
+                this.getClass().getName(),
+                "process",
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_expecte_seq_not_found__FINEST",
+                new Object[] { Thread.currentThread().getName(), getName(),
+                    String.valueOf(queue.size()) });
       }
       // Return null to indicate the expected CAS was not found. It is the responsibility of the
       // caller to wait and invoke this method again.
@@ -402,13 +394,13 @@ public class SequencedQueue extends BoundedWorkQueue {
     notifyAll();
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_show_queue_capacity__FINEST",
-                      new Object[] { Thread.currentThread().getName(), getName(),
-                          String.valueOf(queueSize), String.valueOf(numberElementsInQueue) });
+              Level.FINEST,
+              this.getClass().getName(),
+              "process",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_show_queue_capacity__FINEST",
+              new Object[] { Thread.currentThread().getName(), getName(),
+                  String.valueOf(queueSize), String.valueOf(numberElementsInQueue) });
     }
     return anObject;
   }
@@ -429,9 +421,8 @@ public class SequencedQueue extends BoundedWorkQueue {
       try {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_wait_for_chunk__FINEST",
-                          new Object[] { Thread.currentThread().getName(), getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_wait_for_chunk__FINEST",
+                  new Object[] { Thread.currentThread().getName(), getName() });
         }
         wait(20);
       } catch (InterruptedException e) {
@@ -442,29 +433,29 @@ public class SequencedQueue extends BoundedWorkQueue {
 
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_timedout_waiting_for_chunk__FINEST",
-                          new Object[] { Thread.currentThread().getName(), getName(), docId });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_timedout_waiting_for_chunk__FINEST",
+                  new Object[] { Thread.currentThread().getName(), getName(), docId });
         }
         if (docId != null && docId.trim().length() > 0 && !timedOutDocs.containsKey(docId)) {
           // cache the docId in the list of documents that have been marked as invalid
           addDocToTimedOutDocs(10000, docId);
           // Notify the listeners of the timeout
           CPMChunkTimeoutException toe = new CPMChunkTimeoutException(Long.parseLong(docId),
-                          nextChunkMetadata.getThrottleID(), nextChunkMetadata.getURL());
+                  nextChunkMetadata.getThrottleID(), nextChunkMetadata.getURL());
           EntityProcessStatusImpl enProcSt = new EntityProcessStatusImpl(null);
           enProcSt.addEventStatus("Process", "Failed", toe);
           doNotifyListeners(null, enProcSt);
         }
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "process",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_chunk_didnt_arrive__FINEST",
-                          new Object[] { Thread.currentThread().getName(), getName(),
-                              String.valueOf(aTimeout) });
+                  Level.FINEST,
+                  this.getClass().getName(),
+                  "process",
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_chunk_didnt_arrive__FINEST",
+                  new Object[] { Thread.currentThread().getName(), getName(),
+                      String.valueOf(aTimeout) });
         }
         chunkState = false;
         nextChunkMetadata = new ChunkMetadata("", 0, false);
@@ -475,13 +466,13 @@ public class SequencedQueue extends BoundedWorkQueue {
 
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_return_chunk__FINEST",
-                      new Object[] { Thread.currentThread().getName(), getName(),
-                          String.valueOf(queueSize), String.valueOf(numberElementsInQueue) });
+              Level.FINEST,
+              this.getClass().getName(),
+              "process",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_return_chunk__FINEST",
+              new Object[] { Thread.currentThread().getName(), getName(),
+                  String.valueOf(queueSize), String.valueOf(numberElementsInQueue) });
     }
 
     return resource;
@@ -489,7 +480,7 @@ public class SequencedQueue extends BoundedWorkQueue {
 
   public synchronized void invalidate(CAS[] aCasObjectList) {
     for (int i = 0; aCasObjectList != null && i < aCasObjectList.length
-                    && aCasObjectList[i] != null; i++) {
+            && aCasObjectList[i] != null; i++) {
       ChunkMetadata meta = CPMUtils.getChunkMetadata(aCasObjectList[i]);
       if (meta != null && meta.getDocId().trim().length() > 0 && meta.getSequence() > 0) {
         if (!timedOutDocs.containsKey(meta.getDocId())) {
@@ -535,7 +526,7 @@ public class SequencedQueue extends BoundedWorkQueue {
     for (int j = 0; j < statusCbL.size(); j++) {
       BaseStatusCallbackListener statCL = (BaseStatusCallbackListener) statusCbL.get(j);
       ((StatusCallbackListener) statCL).entityProcessComplete((CAS) casObjectCopy,
-                      aEntityProcStatus);
+              aEntityProcStatus);
     }
 
   }

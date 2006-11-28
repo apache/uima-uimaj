@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class CasProcessorErrorRateThresholdImpl extends MetaDataObject_impl implements
-                CasProcessorErrorRateThreshold {
+        CasProcessorErrorRateThreshold {
   private static final long serialVersionUID = -9214395691914383261L;
 
   private String value;
@@ -121,7 +121,7 @@ public class CasProcessorErrorRateThresholdImpl extends MetaDataObject_impl impl
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     setAction(aElement.getAttribute("action"));
     setValue(aElement.getAttribute("value"));
   }
@@ -143,7 +143,7 @@ public class CasProcessorErrorRateThresholdImpl extends MetaDataObject_impl impl
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("errorRateThreshold",
-                  new PropertyXmlInfo[0]);
+          new PropertyXmlInfo[0]);
 
   /**
    * @return

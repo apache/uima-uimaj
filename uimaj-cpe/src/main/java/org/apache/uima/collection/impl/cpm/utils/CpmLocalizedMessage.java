@@ -26,7 +26,7 @@ import java.util.ResourceBundle;
 public class CpmLocalizedMessage {
 
   public static String getLocalizedMessage(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments) {
+          Object[] aArguments) {
     if (aMessageKey == null)
       return null;
 

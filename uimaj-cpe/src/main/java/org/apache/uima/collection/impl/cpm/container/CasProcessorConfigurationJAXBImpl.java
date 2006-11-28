@@ -105,27 +105,24 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * @throws ResourceConfigurationException
    */
   public CasProcessorConfigurationJAXBImpl(CpeCasProcessor aCasProcessorConfig)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     if (aCasProcessorConfig == null) {
       throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND, new Object[] {
           "<casProcessor>", "<casProcessors>" }, new Exception(CpmLocalizedMessage
-                      .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                      "UIMA_CPM_EXP_bad_cpe_descriptor__WARNING",
-                                      new Object[] { Thread.currentThread().getName() })));
+              .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_EXP_bad_cpe_descriptor__WARNING", new Object[] { Thread
+                              .currentThread().getName() })));
     }
     name = aCasProcessorConfig.getName();// getAttributeValue("name");
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "initialize",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_max_restart_action__FINEST",
-                      new Object[] {
-                          Thread.currentThread().getName(),
-                          name,
-                          aCasProcessorConfig.getErrorHandling().getMaxConsecutiveRestarts()
-                                          .getAction() });
+              Level.FINEST,
+              this.getClass().getName(),
+              "initialize",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_max_restart_action__FINEST",
+              new Object[] { Thread.currentThread().getName(), name,
+                  aCasProcessorConfig.getErrorHandling().getMaxConsecutiveRestarts().getAction() });
     }
     parallelizable = aCasProcessorConfig.getIsParallelizable();
     // readOnly = aCasProcessorConfig.getReadOnly();
@@ -140,9 +137,9 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
     if (!isJavaProcess()) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_config_non_java_service__FINEST",
-                        new Object[] { Thread.currentThread().getName(), name });
+                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_config_non_java_service__FINEST",
+                new Object[] { Thread.currentThread().getName(), name });
       }
       nonJavaApp = new NonJavaApplication(this, aCasProcessorConfig); // aJaxbCasProcessorConfig,
       // getDescriptor(),
@@ -150,9 +147,9 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
     } else {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_config_java_service__FINEST",
-                        new Object[] { Thread.currentThread().getName(), name });
+                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_config_java_service__FINEST",
+                new Object[] { Thread.currentThread().getName(), name });
       }
       javaApp = new JavaApplication(this, aCasProcessorConfig);
     }
@@ -202,9 +199,9 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   private void addIsJavaProcess(CpeCasProcessor aCasProcessorConfig) {
     isJavaProcess = false;
     CasProcessorRunInSeperateProcess runInProcessType = aCasProcessorConfig
-                    .getRunInSeparateProcess();
+            .getRunInSeparateProcess();
     if (runInProcessType != null && runInProcessType.getExecutable() != null
-                    && "java".equals(runInProcessType.getExecutable().getExecutable().trim())) {
+            && "java".equals(runInProcessType.getExecutable().getExecutable().trim())) {
       isJavaProcess = true;
     }
   }
@@ -216,26 +213,24 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    *          configuration object containing Cas Processor configuration
    */
   private void addErrorHandling(CpeCasProcessor aCasProcessorConfig)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     CasProcessorErrorHandling casProcessorErrorHandling = aCasProcessorConfig.getErrorHandling();
 
     if (casProcessorErrorHandling == null) {
       throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND, new Object[] {
           "errorHandling", "casProcessor" }, new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_EXP_missing_xml_element__WARNING", new Object[] {
-                          Thread.currentThread().getName(), name, "<errorHandling>" })));
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_missing_xml_element__WARNING",
+              new Object[] { Thread.currentThread().getName(), name, "<errorHandling>" })));
     }
     CasProcessorMaxRestarts maxRestarts = casProcessorErrorHandling.getMaxConsecutiveRestarts();
     if (maxRestarts == null) {
       throw new ResourceConfigurationException(
-                      ResourceConfigurationException.MANDATORY_VALUE_MISSING, new Object[] {
-                          "maxConsecutiveRestarts", "CPE" }, new Exception(CpmLocalizedMessage
-                                      .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                                      "UIMA_CPM_EXP_missing_xml_element__WARNING",
-                                                      new Object[] {
-                                                          Thread.currentThread().getName(), name,
-                                                          "<maxConsecutiveRestarts>" })));
+              ResourceConfigurationException.MANDATORY_VALUE_MISSING, new Object[] {
+                  "maxConsecutiveRestarts", "CPE" }, new Exception(CpmLocalizedMessage
+                      .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                              "UIMA_CPM_EXP_missing_xml_element__WARNING", new Object[] {
+                                  Thread.currentThread().getName(), name,
+                                  "<maxConsecutiveRestarts>" })));
     }
     maxRetryThreshold = maxRestarts.getRestartCount();
     waitTimeBetweenRestarts = maxRestarts.getWaitTimeBetweenRetries();
@@ -244,27 +239,25 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
 
     if (!validActionOnError(maxRestarts.getAction())) {
       throw new ResourceConfigurationException(
-                      ResourceConfigurationException.MANDATORY_VALUE_MISSING, new Object[] {
-                          "action", "CPE" }, new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                      "UIMA_CPM_EXP_bad_action_string__WARNING", new Object[] {
-                                          Thread.currentThread().getName(), name,
-                                          "<maxConsecutiveRestarts>", maxRestarts.getAction() })));
+              ResourceConfigurationException.MANDATORY_VALUE_MISSING, new Object[] { "action",
+                  "CPE" }, new Exception(CpmLocalizedMessage.getLocalizedMessage(
+                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_bad_action_string__WARNING",
+                      new Object[] { Thread.currentThread().getName(), name,
+                          "<maxConsecutiveRestarts>", maxRestarts.getAction() })));
     }
     actionOnMaxRestarts = maxRestarts.getAction();
 
     // Setup Error rate Threshold in terms of (count)/(sample size) eg. 3/1000
     CasProcessorErrorRateThreshold errorRateThresholdType = casProcessorErrorHandling
-                    .getErrorRateThreshold();
+            .getErrorRateThreshold();
     if (errorRateThresholdType == null) {
       throw new ResourceConfigurationException(
-                      ResourceConfigurationException.MANDATORY_VALUE_MISSING, new Object[] {
-                          "errorRateThreshold", "CPE" }, new Exception(CpmLocalizedMessage
-                                      .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                                      "UIMA_CPM_EXP_missing_xml_element__WARNING",
-                                                      new Object[] {
-                                                          Thread.currentThread().getName(), name,
-                                                          "<errorRateThreshold>" })));
+              ResourceConfigurationException.MANDATORY_VALUE_MISSING, new Object[] {
+                  "errorRateThreshold", "CPE" },
+              new Exception(CpmLocalizedMessage.getLocalizedMessage(
+                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_EXP_missing_xml_element__WARNING", new Object[] {
+                          Thread.currentThread().getName(), name, "<errorRateThreshold>" })));
     }
 
     errorRate = errorRateThresholdType.getMaxErrorCount();
@@ -272,12 +265,11 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
 
     if (!validActionOnError(errorRateThresholdType.getAction())) {
       throw new ResourceConfigurationException(
-                      ResourceConfigurationException.MANDATORY_VALUE_MISSING, new Object[] {
-                          "action", "CPE" }, new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                      "UIMA_CPM_EXP_bad_action_string__WARNING", new Object[] {
-                                          Thread.currentThread().getName(), name,
-                                          "<errorRateThreshold>", maxRestarts.getAction() })));
+              ResourceConfigurationException.MANDATORY_VALUE_MISSING, new Object[] { "action",
+                  "CPE" }, new Exception(CpmLocalizedMessage.getLocalizedMessage(
+                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_bad_action_string__WARNING",
+                      new Object[] { Thread.currentThread().getName(), name,
+                          "<errorRateThreshold>", maxRestarts.getAction() })));
 
     }
     actionOnMaxError = errorRateThresholdType.getAction();
@@ -295,13 +287,13 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    *          configuration object containing Cas Processor configuration
    */
   private void addDeploymentParameters(CpeCasProcessor aCasProcessorConfig)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     if (aCasProcessorConfig == null) {
       throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND, new Object[] {
           "<casProcessor>", "<casProcessors>" }, new Exception(CpmLocalizedMessage
-                      .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                      "UIMA_CPM_EXP_bad_cpe_descriptor_no_cp__WARNING",
-                                      new Object[] { Thread.currentThread().getName() })));
+              .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_EXP_bad_cpe_descriptor_no_cp__WARNING", new Object[] { Thread
+                              .currentThread().getName() })));
     }
     CasProcessorDeploymentParams deployParams = aCasProcessorConfig.getDeploymentParams();
 
@@ -310,16 +302,14 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
       for (int i = 0; parameters != null && i < parameters.length; i++) {
         try {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            UIMAFramework.getLogger(this.getClass())
-                            .logrb(
-                                            Level.FINEST,
-                                            this.getClass().getName(),
-                                            "initialize",
-                                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                            "UIMA_CPM_show_cp_deploy_params__FINEST",
-                                            new Object[] { Thread.currentThread().getName(), name,
-                                                parameters[i].getParameterName(),
-                                                parameters[i].getParameterValue() });
+            UIMAFramework.getLogger(this.getClass()).logrb(
+                    Level.FINEST,
+                    this.getClass().getName(),
+                    "initialize",
+                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_show_cp_deploy_params__FINEST",
+                    new Object[] { Thread.currentThread().getName(), name,
+                        parameters[i].getParameterName(), parameters[i].getParameterValue() });
           }
           NameValuePair nvp = new NameValuePair_impl();
           nvp.setName(parameters[i].getParameterName());
@@ -327,7 +317,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
           // If a value is a path to a file and IS a relative path convert to absolute path using
           // CPE_HOME variable
           String value = CPMUtils.convertToAbsolutePath(System.getProperty("CPM_HOME"),
-                          CPEFactory.CPM_HOME, parameters[i].getParameterValue());
+                  CPEFactory.CPM_HOME, parameters[i].getParameterValue());
           nvp.setValue(value);
           if (deploymentParameters == null) {
             deploymentParameters = new ArrayList();
@@ -341,7 +331,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
     }
     CasProcessorRunInSeperateProcess rsp = null;
     if ((rsp = aCasProcessorConfig.getRunInSeparateProcess()) != null
-                    && rsp.getExecutable() != null) {
+            && rsp.getExecutable() != null) {
       // List args = rsp.getExecutable().getArg();
       if (deploymentParameters == null) {
         deploymentParameters = new ArrayList();
@@ -357,24 +347,22 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * @throws ResourceConfigurationException
    */
   private void addDeploymentType(CpeCasProcessor aCasProcessorConfig)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     if (aCasProcessorConfig == null) {
       throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND, new Object[] {
           "<casProcessor>", "<casProcessors>" }, new Exception(CpmLocalizedMessage
-                      .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                      "UIMA_CPM_EXP_bad_cpe_descriptor_no_cp__WARNING",
-                                      new Object[] { Thread.currentThread().getName() })));
+              .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_EXP_bad_cpe_descriptor_no_cp__WARNING", new Object[] { Thread
+                              .currentThread().getName() })));
     }
     String deployType = aCasProcessorConfig.getDeployment();
     if (deployType == null || deployType.trim().length() == 0) {
       throw new ResourceConfigurationException(InvalidXMLException.REQUIRED_ATTRIBUTE_MISSING,
-                      new Object[] { "deployment", "casProcessor" },
-                      new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                      "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING",
-                                      new Object[] { Thread.currentThread().getName(),
-                                          aCasProcessorConfig.getName(), "deployment",
-                                          "<casProcessor>" })));
+              new Object[] { "deployment", "casProcessor" }, new Exception(CpmLocalizedMessage
+                      .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                              "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING",
+                              new Object[] { Thread.currentThread().getName(),
+                                  aCasProcessorConfig.getName(), "deployment", "<casProcessor>" })));
     }
     deploymentType = deployType;
   }
@@ -386,13 +374,13 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    *          configuration object containing Cas Processor configuration
    */
   private void addFiltering(CpeCasProcessor aCasProcessorConfig)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     if (aCasProcessorConfig == null) {
       throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND, new Object[] {
           "<casProcessor>", "<casProcessors>" }, new Exception(CpmLocalizedMessage
-                      .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                      "UIMA_CPM_EXP_bad_cpe_descriptor_no_cp__WARNING",
-                                      new Object[] { Thread.currentThread().getName() })));
+              .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_EXP_bad_cpe_descriptor_no_cp__WARNING", new Object[] { Thread
+                              .currentThread().getName() })));
     }
     filterString = aCasProcessorConfig.getCasProcessorFilter();
   }
@@ -404,22 +392,22 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    *          configuration object containing Cas Processor configuration
    */
   private void addBatchSize(CpeCasProcessor aCasProcessorConfig)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     if (aCasProcessorConfig == null) {
       throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND, new Object[] {
           "<casProcessor>", "<casProcessors>" }, new Exception(CpmLocalizedMessage
-                      .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                      "UIMA_CPM_EXP_bad_cpe_descriptor_no_cp__WARNING",
-                                      new Object[] { Thread.currentThread().getName() })));
+              .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_EXP_bad_cpe_descriptor_no_cp__WARNING", new Object[] { Thread
+                              .currentThread().getName() })));
     }
     CpeCheckpoint checkpoint = aCasProcessorConfig.getCheckpoint();
     if (checkpoint == null) {
       throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND, new Object[] {
           "<checkpoint>", "<casProcessor>" }, new Exception(CpmLocalizedMessage
-                      .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                      "UIMA_CPM_EXP_missing_xml_element__WARNING", new Object[] {
-                                          Thread.currentThread().getName(),
-                                          aCasProcessorConfig.getName(), "<checkpoint>" })));
+              .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_EXP_missing_xml_element__WARNING", new Object[] {
+                          Thread.currentThread().getName(), aCasProcessorConfig.getName(),
+                          "<checkpoint>" })));
     }
 
     try {
@@ -427,14 +415,12 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
         batchSize = checkpoint.getBatchSize();
       }
     } catch (NumberFormatException e) {
-      throw new ResourceConfigurationException(
-                      InvalidXMLException.REQUIRED_ATTRIBUTE_MISSING,
-                      new Object[] { "batch", "<checkpoint>" },
-                      new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                      "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING",
-                                      new Object[] { Thread.currentThread().getName(),
-                                          aCasProcessorConfig.getName(), "batch", "<checkpoint>" })));
+      throw new ResourceConfigurationException(InvalidXMLException.REQUIRED_ATTRIBUTE_MISSING,
+              new Object[] { "batch", "<checkpoint>" }, new Exception(CpmLocalizedMessage
+                      .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                              "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING",
+                              new Object[] { Thread.currentThread().getName(),
+                                  aCasProcessorConfig.getName(), "batch", "<checkpoint>" })));
     }
 
   }
@@ -448,22 +434,22 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    * @throws ResourceConfigurationException
    */
   private void addDescriptor(CpeCasProcessor aCasProcessorConfig)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     if (aCasProcessorConfig == null) {
       throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND, new Object[] {
           "<casProcessor>", "<casProcessors>" }, new Exception(CpmLocalizedMessage
-                      .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                      "UIMA_CPM_EXP_bad_cpe_descriptor_no_cp__WARNING",
-                                      new Object[] { Thread.currentThread().getName() })));
+              .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_EXP_bad_cpe_descriptor_no_cp__WARNING", new Object[] { Thread
+                              .currentThread().getName() })));
     }
     descriptor = aCasProcessorConfig.getDescriptor();
     if (descriptor == null || descriptor.trim().length() == 0) {
       throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND, new Object[] {
           "href", "include" }, new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING", new Object[] {
-                          Thread.currentThread().getName(), aCasProcessorConfig.getName(), "href",
-                          "<include>" })));
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING", new Object[] {
+                  Thread.currentThread().getName(), aCasProcessorConfig.getName(), "href",
+                  "<include>" })));
     }
 
   }
@@ -484,9 +470,9 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
    */
   private boolean validActionOnError(String aActionOnError) {
     if (Constants.CONTINUE_DESPITE_ERROR.equals(aActionOnError.toLowerCase())
-                    || Constants.DISABLE_CASPROCESSOR.equals(aActionOnError.toLowerCase())
-                    || Constants.TERMINATE_CPE.equals(aActionOnError.toLowerCase())
-                    || Constants.KILL_PROCESSING_PIPELINE.equals(aActionOnError.toLowerCase())) {
+            || Constants.DISABLE_CASPROCESSOR.equals(aActionOnError.toLowerCase())
+            || Constants.TERMINATE_CPE.equals(aActionOnError.toLowerCase())
+            || Constants.KILL_PROCESSING_PIPELINE.equals(aActionOnError.toLowerCase())) {
       return true;
     }
     return false;
@@ -616,27 +602,20 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
       filterExpression = getFilterString();
       if (filterExpression != null) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass())
-                          .logrb(
-                                          Level.FINEST,
-                                          this.getClass().getName(),
-                                          "initialize",
-                                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                          "UIMA_CPM_show_cp_filter__FINEST",
-                                          new Object[] { Thread.currentThread().getName(), name,
-                                              filterExpression });
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_show_cp_filter__FINEST",
+                  new Object[] { Thread.currentThread().getName(), name, filterExpression });
         }
         Filter filter = new Filter();
         return filter.parse(filterExpression);
       }
     } catch (Exception e) {
       throw new ResourceConfigurationException(InvalidXMLException.INVALID_ELEMENT_TEXT,
-                      new Object[] { "filter" }, new Exception(CpmLocalizedMessage
-                                      .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                                      "UIMA_CPM_EXP_missing_xml_element__WARNING",
-                                                      new Object[] {
-                                                          Thread.currentThread().getName(), name,
-                                                          "filer" })));
+              new Object[] { "filter" }, new Exception(CpmLocalizedMessage.getLocalizedMessage(
+                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_EXP_missing_xml_element__WARNING", new Object[] {
+                          Thread.currentThread().getName(), name, "filer" })));
     }
     return null;
   }
@@ -654,7 +633,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
       String[] keysToDrop = null;
       if (dropFeatureFile != null && dropFeatureFile.trim().length() > 0) {
         String descriptorPath = CPMUtils.convertToAbsolutePath(System.getProperty("CPM_HOME"),
-                        CPEFactory.CPM_HOME, dropFeatureFile);
+                CPEFactory.CPM_HOME, dropFeatureFile);
         try {
           keysToDrop = CPMUtils.getKeys2Drop(descriptorPath); // CPMUtils.scrubThePath(dropFeatureFile));
           return keysToDrop;
@@ -664,12 +643,10 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
       }
     } catch (Exception e) {
       throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND,
-                      new Object[] { "parameter" }, new Exception(CpmLocalizedMessage
-                                      .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                                      "UIMA_CPM_EXP_missing_xml_element__WARNING",
-                                                      new Object[] {
-                                                          Thread.currentThread().getName(), name,
-                                                          "parameter" })));
+              new Object[] { "parameter" }, new Exception(CpmLocalizedMessage.getLocalizedMessage(
+                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_EXP_missing_xml_element__WARNING", new Object[] {
+                          Thread.currentThread().getName(), name, "parameter" })));
     }
     return null;
   }

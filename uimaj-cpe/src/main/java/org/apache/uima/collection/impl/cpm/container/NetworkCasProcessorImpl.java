@@ -153,9 +153,9 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
   public CasData process(CasData aCas) throws ResourceProcessException {
     if (textAnalysisProxy == null) {
       throw new ResourceProcessException(new Exception(Thread.currentThread().getName()
-                      + CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                      "UIMA_CPM_EXP_no_proxy__WARNING", new Object[] { Thread
-                                                      .currentThread().getName() })));
+              + CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_EXP_no_proxy__WARNING", new Object[] { Thread.currentThread()
+                              .getName() })));
     }
 
     CasData casWithAnalysis = null;
@@ -171,15 +171,14 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
       if (textAnalysisProxy.isConnected() == false) {
         if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_service_down__INFO",
-                          new Object[] { Thread.currentThread().getName(), name });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_service_down__INFO",
+                  new Object[] { Thread.currentThread().getName(), name });
         }
         throw new ResourceProcessException(new ServiceConnectionException(Thread.currentThread()
-                        .getName()
-                        + CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                        "UIMA_CPM_EXP_service_down__WARNING", new Object[] {
-                                            Thread.currentThread().getName(), name })));
+                .getName()
+                + CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                        "UIMA_CPM_EXP_service_down__WARNING", new Object[] {
+                            Thread.currentThread().getName(), name })));
       }
       throw new ResourceProcessException(e);
     } catch (ServiceConnectionException e) {
@@ -201,15 +200,15 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
   public CasData[] process(CasData[] aCasList) throws ResourceProcessException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).log(
-                      Level.FINEST,
-                      Thread.currentThread().getName()
-                                      + " ===================================Calling Proxy");
+              Level.FINEST,
+              Thread.currentThread().getName()
+                      + " ===================================Calling Proxy");
     }
     if (textAnalysisProxy == null) {
       throw new ResourceProcessException(new Exception(Thread.currentThread().getName()
-                      + CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                      "UIMA_CPM_EXP_no_proxy__WARNING", new Object[] { Thread
-                                                      .currentThread().getName() })));
+              + CpmLocalizedMessage.getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_EXP_no_proxy__WARNING", new Object[] { Thread.currentThread()
+                              .getName() })));
     }
     try {
       ProcessTrace pt = new ProcessTrace_impl();
@@ -248,24 +247,23 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
     if (textAnalysisProxy == null) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_use_default_metadata__FINEST",
-                        new Object[] { Thread.currentThread().getName(), name });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_use_default_metadata__FINEST",
+                new Object[] { Thread.currentThread().getName(), name });
       }
       if (metadata == null) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_no_metadata__FINEST",
-                          new Object[] { Thread.currentThread().getName(), name });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_no_metadata__FINEST",
+                  new Object[] { Thread.currentThread().getName(), name });
         }
       } else if (metadata.getConfigurationParameterSettings().getParameterValue(
-                      Constants.CAS_PROCESSOR_CONFIG) == null) {
+              Constants.CAS_PROCESSOR_CONFIG) == null) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_no_cp_configuration_in_metadata__FINEST",
-                          new Object[] { Thread.currentThread().getName(), name });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_no_cp_configuration_in_metadata__FINEST",
+                  new Object[] { Thread.currentThread().getName(), name });
         }
       }
       return metadata;
@@ -275,12 +273,11 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
       if (textAnalysisProxy.isConnected() == false) {
         if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_service_down__INFO",
-                          new Object[] { Thread.currentThread().getName(), name });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_service_down__INFO",
+                  new Object[] { Thread.currentThread().getName(), name });
         }
         throw new ResourceProcessException(new ServiceConnectionException("Service::" + name
-                        + " appears to be down"));
+                + " appears to be down"));
       }
 
       if (resourceMetadata == null) {
@@ -290,9 +287,9 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
     } catch (Exception e) {
       if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_unable_to_read_meta__SEVERE",
-                        new Object[] { Thread.currentThread().getName(), e });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_unable_to_read_meta__SEVERE",
+                new Object[] { Thread.currentThread().getName(), e });
       }
     }
     return metadata;
@@ -305,7 +302,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
    * @see org.apache.uima.collection.base_cpm.CasProcessor#batchProcessComplete(org.apache.uima.util.ProcessTrace)
    */
   public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
-                  IOException {
+          IOException {
     // Check if batch noitification is disabled == 0
     if (!doSendNotification()) {
       return;
@@ -327,11 +324,11 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
    * @see org.apache.uima.collection.base_cpm.CasProcessor#collectionProcessComplete(org.apache.uima.util.ProcessTrace)
    */
   public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
-                  IOException {
+          IOException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_stopping_cp__FINEST",
-                      new Object[] { Thread.currentThread().getName(), name });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_stopping_cp__FINEST",
+              new Object[] { Thread.currentThread().getName(), name });
     }
     // Send shutdown command to Local services, meaning services started by the CPM on the same
     // machine in a different JVM. Remote services will not be shutdown since these may be started
@@ -361,7 +358,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
     // <checkpoint> element
     // in the Cpe descriptor for this Cas Processor.
     if (casProcessorType.getCheckpoint() != null
-                    && casProcessorType.getCheckpoint().getBatchSize() == 0) {
+            && casProcessorType.getCheckpoint().getBatchSize() == 0) {
       return false;
     }
     return true;
@@ -376,12 +373,12 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
     String desc = casProcessorType.getDescriptor();
     if (desc != null) {
       String descriptorPath = CPMUtils.convertToAbsolutePath(System.getProperty("CPM_HOME"),
-                      CPEFactory.CPM_HOME, desc);
+              CPEFactory.CPM_HOME, desc);
       if (Constants.DEPLOYMENT_REMOTE.equals(casProcessorType.getDeployment())) {
         // parse the descriptor, expecting it to be a URISpecifier, and get the resource type from
         // there
         ResourceSpecifier resourceSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-                        new XMLInputSource(descriptorPath));
+                new XMLInputSource(descriptorPath));
         if (resourceSpecifier instanceof URISpecifier) {
           String casProcType = ((URISpecifier) resourceSpecifier).getResourceType();
           isCasConsumer = URISpecifier.RESOURCE_TYPE_CAS_CONSUMER.equals(casProcType);
@@ -392,7 +389,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
         // from there get the UIMA component descriptor, and check its path
         String componentDescPath = deployDesc.getResourceSpecifierPath();
         ResourceSpecifier resourceSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-                        new XMLInputSource(componentDescPath));
+                new XMLInputSource(componentDescPath));
         isCasConsumer = (resourceSpecifier instanceof CasConsumerDescription);
       }
     }

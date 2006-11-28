@@ -56,22 +56,22 @@ public class RunnableApplication {
    * @throws ResourceConfigurationException
    */
   protected void addApplicationInfo(CasProcessorConfiguration aCasProcessorConfiguration,
-                  CpeCasProcessor aCasProcessor) throws ResourceConfigurationException {
+          CpeCasProcessor aCasProcessor) throws ResourceConfigurationException {
     try {
       if (aCasProcessor instanceof CpeLocalCasProcessor) {
         CasProcessorRunInSeperateProcess rip = ((CpeLocalCasProcessor) aCasProcessor)
-                        .getRunInSeperateProcess();
+                .getRunInSeperateProcess();
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
-                          "+++++++++++++++++++++++++++++++++++++++++++++++++");
+                  "+++++++++++++++++++++++++++++++++++++++++++++++++");
           UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
-                          "+++++++++++++++++++++++++++++++++++++++++++++++++");
+                  "+++++++++++++++++++++++++++++++++++++++++++++++++");
           UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
-                          "Operating System is::::" + System.getProperty("os.name"));
+                  "Operating System is::::" + System.getProperty("os.name"));
           UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
-                          "+++++++++++++++++++++++++++++++++++++++++++++++++");
+                  "+++++++++++++++++++++++++++++++++++++++++++++++++");
           UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
-                          "+++++++++++++++++++++++++++++++++++++++++++++++++");
+                  "+++++++++++++++++++++++++++++++++++++++++++++++++");
         }
         executable = rip.getExecutable().getExecutable();
         List envList = rip.getExecutable().getEnvs();
@@ -115,7 +115,7 @@ public class RunnableApplication {
               String classpath = getEnvVarValue(key);
               if (classpath != null) {
                 environment.add(key + "=" + value + System.getProperty("path.separator")
-                                + classpath);
+                        + classpath);
               } else {
                 environment.add(key + "=" + value + System.getProperty("path.separator"));
               }
@@ -164,14 +164,10 @@ public class RunnableApplication {
       while (sysKeys.hasMoreElements()) {
         String key = (String) sysKeys.nextElement();
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "initialize",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_launching_with_service_env__FINEST",
-                          new Object[] { Thread.currentThread().getName(), key,
-                              sysEnv.getProperty(key) });
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_launching_with_service_env__FINEST",
+                  new Object[] { Thread.currentThread().getName(), key, sysEnv.getProperty(key) });
         }
       }
     } catch (Throwable e) {

@@ -63,7 +63,7 @@ public class CPECasPool {
    * @throws ResourceInitializationException
    */
   public CPECasPool(int aNumInstances, List aList, ResourceManager aResourceManager)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     mNumInstances = aNumInstances;
     fillPool(aList, UIMAFramework.getDefaultPerformanceTuningProperties(), aResourceManager);
   }
@@ -81,7 +81,7 @@ public class CPECasPool {
    * @throws ResourceInitializationException
    */
   public CPECasPool(int aNumInstances, List aList, Properties aPerformanceTuningSettings,
-                  ResourceManager aResourceManager) throws ResourceInitializationException {
+          ResourceManager aResourceManager) throws ResourceInitializationException {
     mNumInstances = aNumInstances;
     fillPool(aList, aPerformanceTuningSettings, aResourceManager);
   }
@@ -97,7 +97,7 @@ public class CPECasPool {
    * @throws ResourceInitializationException
    */
   protected void fillPool(List aList, Properties aPerformanceTuningSettings,
-                  ResourceManager aResourceManager) throws ResourceInitializationException {
+          ResourceManager aResourceManager) throws ResourceInitializationException {
     // create first CAS from metadata
     CAS c0 = CasCreationUtils.createCas(aList, aPerformanceTuningSettings, aResourceManager);
     mAllInstances.add(c0);
@@ -105,7 +105,7 @@ public class CPECasPool {
     // create additional CASes that share same type system
     for (int i = 1; i < mNumInstances; i++) {
       CAS c = CasCreationUtils.createCas(aList, c0.getTypeSystem(), aPerformanceTuningSettings,
-                      aResourceManager);
+              aResourceManager);
       mAllInstances.add(c);
       mFreeInstances.add(c);
     }
@@ -147,13 +147,13 @@ public class CPECasPool {
         checkedOutInstances.add(cas);
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "process",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_add_cas_to_checkedout_list__FINEST",
-                          new Object[] { Thread.currentThread().getName(),
-                              String.valueOf(checkedOutInstances.size()) });
+                  Level.FINEST,
+                  this.getClass().getName(),
+                  "process",
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_add_cas_to_checkedout_list__FINEST",
+                  new Object[] { Thread.currentThread().getName(),
+                      String.valueOf(checkedOutInstances.size()) });
 
         }
       }
@@ -177,9 +177,8 @@ public class CPECasPool {
     if (!mAllInstances.contains(aCas) || mFreeInstances.contains(aCas)) {
       if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_invalid_checkin__WARNING",
-                        new Object[] { Thread.currentThread().getName() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_invalid_checkin__WARNING",
+                new Object[] { Thread.currentThread().getName() });
       }
     } else {
       // reset CAS
@@ -193,25 +192,25 @@ public class CPECasPool {
         checkedOutInstances.remove(index);
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "process",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_removed_from_checkedout_list__FINEST",
-                          new Object[] { Thread.currentThread().getName(),
-                              String.valueOf(checkedOutInstances.size()) });
+                  Level.FINEST,
+                  this.getClass().getName(),
+                  "process",
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_removed_from_checkedout_list__FINEST",
+                  new Object[] { Thread.currentThread().getName(),
+                      String.valueOf(checkedOutInstances.size()) });
         }
       }
 
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "process",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_return_cas_to_pool__FINEST",
-                        new Object[] { Thread.currentThread().getName(),
-                            String.valueOf(checkedOutInstances.size()) });
+                Level.FINEST,
+                this.getClass().getName(),
+                "process",
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_return_cas_to_pool__FINEST",
+                new Object[] { Thread.currentThread().getName(),
+                    String.valueOf(checkedOutInstances.size()) });
       }
     }
 

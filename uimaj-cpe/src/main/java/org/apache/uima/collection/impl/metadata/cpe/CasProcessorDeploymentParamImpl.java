@@ -27,7 +27,7 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class CasProcessorDeploymentParamImpl extends MetaDataObject_impl implements
-                CasProcessorDeploymentParam {
+        CasProcessorDeploymentParam {
   private static final long serialVersionUID = 8950620301535742630L;
 
   private String name;
@@ -114,6 +114,6 @@ public class CasProcessorDeploymentParamImpl extends MetaDataObject_impl impleme
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("parameter",
-                  new PropertyXmlInfo[0]);
+          new PropertyXmlInfo[0]);
 
 }

@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
-                CasProcessorMaxRestarts {
+        CasProcessorMaxRestarts {
   private static final long serialVersionUID = 2863741219504239020L;
 
   private String value = "1";
@@ -99,7 +99,7 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     setAction(aElement.getAttribute("action"));
     setValue(aElement.getAttribute("value"));
 
@@ -124,7 +124,7 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
     attrs.addAttribute("", "value", "value", "CDATA", getValue());
     if (getWaitTimeBetweenRetries() != 0) {
       attrs.addAttribute("", "waitTimeBetweenRetries", "waitTimeBetweenRetries", "CDATA", String
-                      .valueOf(getWaitTimeBetweenRetries()));
+              .valueOf(getWaitTimeBetweenRetries()));
     }
     return attrs;
   }
@@ -134,7 +134,7 @@ public class CasProcessorMaxRestartsImpl extends MetaDataObject_impl implements
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-                  "maxConsecutiveRestarts", new PropertyXmlInfo[0]);
+          "maxConsecutiveRestarts", new PropertyXmlInfo[0]);
 
   /**
    * @return

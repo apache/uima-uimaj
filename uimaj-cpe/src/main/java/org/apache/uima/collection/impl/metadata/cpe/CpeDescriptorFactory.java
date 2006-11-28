@@ -137,7 +137,7 @@ public class CpeDescriptorFactory {
    * @throws CpeDescriptorException
    */
   public static CpeCollectionReader produceCollectionReader(String aCollectionReaderDescriptorPath,
-                  CpeDescription aDescriptor) throws CpeDescriptorException {
+          CpeDescription aDescriptor) throws CpeDescriptorException {
     CpeCollectionReader[] colR = null;
     if (aDescriptor == null) {
       aDescriptor = produceDescriptor();
@@ -152,7 +152,7 @@ public class CpeDescriptorFactory {
   }
 
   public static CpeCollectionReader produceCollectionReader(String aCollectionReaderDescriptorPath)
-                  throws CpeDescriptorException {
+          throws CpeDescriptorException {
     CpeCollectionReader colR = produceCollectionReader();
     colR.getCollectionIterator().getDescriptor().getInclude().set(aCollectionReaderDescriptorPath);
     return colR;
@@ -165,7 +165,7 @@ public class CpeDescriptorFactory {
   }
 
   public static CpeCollectionReaderIterator produceCollectionReaderIterator(String aPath)
-                  throws CpeDescriptorException {
+          throws CpeDescriptorException {
     CpeCollectionReaderIterator iterator = new CpeCollectionReaderIteratorImpl();
     iterator.setDescriptor(produceComponentDescriptor(aPath));
     return iterator;
@@ -180,7 +180,7 @@ public class CpeDescriptorFactory {
    * @deprecated As of v2.0, CAS Initializers are deprecated.
    */
   public static CpeCollectionReaderCasInitializer produceCollectionReaderCasInitializer(
-                  String aPath, CpeDescription aDescriptor) throws CpeDescriptorException {
+          String aPath, CpeDescription aDescriptor) throws CpeDescriptorException {
     if (aDescriptor == null) {
       aDescriptor = produceDescriptor();
     }
@@ -195,7 +195,7 @@ public class CpeDescriptorFactory {
    * @deprecated As of v2.0, CAS Initializers are deprecated.
    */
   protected static CpeCollectionReaderCasInitializer produceCollectionReaderCasInitializer(
-                  String aInitializerDescriptorPath) {
+          String aInitializerDescriptorPath) {
     try {
       return produceCollectionReaderCasInitializer(aInitializerDescriptorPath, null);
     } catch (Exception e) {
@@ -223,7 +223,7 @@ public class CpeDescriptorFactory {
    * @throws CpeDescriptorException
    */
   public static CpeConfiguration produceCpeConfiguration(CpeDescription aDescriptor)
-                  throws CpeDescriptorException {
+          throws CpeDescriptorException {
     if (aDescriptor == null) {
       aDescriptor = produceDescriptor();
     }
@@ -271,7 +271,7 @@ public class CpeDescriptorFactory {
    * @throws CpeDescriptorException
    */
   public static CpeCasProcessors produceCasProcessors(CpeDescription aDescriptor)
-                  throws CpeDescriptorException {
+          throws CpeDescriptorException {
     if (aDescriptor == null) {
       aDescriptor = produceDescriptor();
     }
@@ -293,7 +293,7 @@ public class CpeDescriptorFactory {
    * @throws CpeDescriptorException
    */
   public static CpeCasProcessors produceCasProcessors(int aInputQSize, int aOutputQSize,
-                  int aPuCount, CpeDescription aDescriptor) throws CpeDescriptorException {
+          int aPuCount, CpeDescription aDescriptor) throws CpeDescriptorException {
     if (aDescriptor == null) {
       aDescriptor = produceDescriptor();
     }
@@ -323,7 +323,7 @@ public class CpeDescriptorFactory {
    * @throws CpeDescriptorException
    */
   public static CpeLocalCasProcessor produceLocalCasProcessor(String aName, String aSoFa)
-                  throws CpeDescriptorException {
+          throws CpeDescriptorException {
     CpeLocalCasProcessor processor = new CpeLocalCasProcessorImpl();
     processor.setName(aName);
     processor.setSOFA(aSoFa);
@@ -336,7 +336,7 @@ public class CpeDescriptorFactory {
    * @throws CpeDescriptorException
    */
   public static CpeRemoteCasProcessor produceRemoteCasProcessor(String aName)
-                  throws CpeDescriptorException {
+          throws CpeDescriptorException {
     CpeRemoteCasProcessor processor = new CpeRemoteCasProcessorImpl();
     processor.setName(aName);
     return processor;
@@ -347,8 +347,8 @@ public class CpeDescriptorFactory {
   }
 
   public static CpeResourceManagerConfiguration produceResourceManagerConfiguration(
-                  String aResourceMgrConfigurationPath, CpeDescription aDescriptor)
-                  throws CpeDescriptorException {
+          String aResourceMgrConfigurationPath, CpeDescription aDescriptor)
+          throws CpeDescriptorException {
     if (aDescriptor == null) {
       aDescriptor = produceDescriptor();
     }
@@ -358,7 +358,7 @@ public class CpeDescriptorFactory {
   }
 
   public static CpeResourceManagerConfiguration produceResourceManagerConfiguration(
-                  String aResourceMgrConfigurationPath) throws CpeDescriptorException {
+          String aResourceMgrConfigurationPath) throws CpeDescriptorException {
     CpeResourceManagerConfiguration resMgr = new CpeResourceManagerConfigurationImpl();
     resMgr.set(aResourceMgrConfigurationPath);
     return resMgr;

@@ -26,7 +26,7 @@ import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 
 public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
-                CpeComponentDescriptor {
+        CpeComponentDescriptor {
   private static final long serialVersionUID = 1607312024379882416L;
 
   private CpeInclude include;
@@ -57,6 +57,6 @@ public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("descriptor",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("include", null), });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("include", null), });
 
 }

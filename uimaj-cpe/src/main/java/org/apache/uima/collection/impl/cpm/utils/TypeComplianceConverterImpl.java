@@ -59,10 +59,10 @@ public class TypeComplianceConverterImpl {
 
   public static void main(String[] args) {
     System.out.println(TypeComplianceConverterImpl.replace("Detag_colon_DetagContent", "_colon_",
-                    ":"));
+            ":"));
     System.out.println(TypeComplianceConverterImpl.replace("Detag:DetagContent", ":", "_colon_"));
     System.out.println(TypeComplianceConverterImpl
-                    .replace("Detag_dash_DetagContent", "_dash_", "-"));
+            .replace("Detag_dash_DetagContent", "_dash_", "-"));
     System.out.println(TypeComplianceConverterImpl.replace("Detag-DetagContent", "-", "_dash_"));
   }
 

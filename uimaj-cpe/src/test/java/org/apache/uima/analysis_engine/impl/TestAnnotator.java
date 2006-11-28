@@ -51,7 +51,7 @@ public class TestAnnotator extends Annotator_ImplBase implements TextAnnotator {
    * @see org.apache.uima.analysis_engine.annotator.Annotator#initialize(CAS, AnnotatorContext)
    */
   public void initialize(AnnotatorContext aContext) throws AnnotatorConfigurationException,
-                  AnnotatorInitializationException {
+          AnnotatorInitializationException {
     super.initialize(aContext);
     typeSystemInitCalled = false;
     lastResultSpec = null;

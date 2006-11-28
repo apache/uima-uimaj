@@ -69,8 +69,8 @@ public class VinciCasDataConverter {
    *          will be included as the content of the XCas element.
    */
   public VinciCasDataConverter(String aUeidType, String aUeidFeature, String aCasDataDocTextType,
-                  String aCasDataDocTextFeature, String aXCasDocTextTag,
-                  boolean aIncludeAnnotationSpannedText) {
+          String aCasDataDocTextFeature, String aXCasDocTextTag,
+          boolean aIncludeAnnotationSpannedText) {
     mUeidType = aUeidType;
     mUeidFeature = aUeidFeature;
     mCasDataDocTextType = aCasDataDocTextType;
@@ -88,7 +88,7 @@ public class VinciCasDataConverter {
    *          VinciFrame to be the parent of the frame created from the CasData
    */
   public void casDataToVinciFrame(CasData aCasData, AFrame aParentFrame) throws IOException,
-                  SAXException {
+          SAXException {
     // get UEID if necessary
     String ueid = null;
     if (mUeidType != null && mUeidFeature != null) {

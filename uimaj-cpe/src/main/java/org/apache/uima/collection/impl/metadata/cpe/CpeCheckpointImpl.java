@@ -132,7 +132,7 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     setFile(aElement.getAttribute("file"));
     String batch = aElement.getAttribute("batch");
     if (batch != null && batch.trim().length() > 0) {
@@ -164,7 +164,7 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("checkpoint",
-                  new PropertyXmlInfo[0]);
+          new PropertyXmlInfo[0]);
 
   /** METHODS CALLED BY THE PARSER * */
   /**

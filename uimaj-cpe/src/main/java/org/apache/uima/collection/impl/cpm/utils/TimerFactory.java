@@ -45,9 +45,8 @@ public class TimerFactory {
     } catch (Exception e) {
       if (UIMAFramework.getLogger().isLoggable(Level.CONFIG)) {
         UIMAFramework.getLogger(TimerFactory.class).logrb(Level.CONFIG,
-                        TimerFactory.class.getName(), "initialize",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_java_timer__CONFIG",
-                        new Object[] { Thread.currentThread().getName() });
+                TimerFactory.class.getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_java_timer__CONFIG", new Object[] { Thread.currentThread().getName() });
       }
       timer = new JavaTimer();
     }
@@ -62,9 +61,8 @@ public class TimerFactory {
     if (timer == null) {
       if (UIMAFramework.getLogger().isLoggable(Level.CONFIG)) {
         UIMAFramework.getLogger(TimerFactory.class).logrb(Level.CONFIG,
-                        TimerFactory.class.getName(), "initialize",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_java_timer__CONFIG",
-                        new Object[] { Thread.currentThread().getName() });
+                TimerFactory.class.getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_java_timer__CONFIG", new Object[] { Thread.currentThread().getName() });
       }
       timer = new JavaTimer();
     }
@@ -91,35 +89,30 @@ public class TimerFactory {
         if (anObject instanceof UimaTimer) {
           timer = (UimaTimer) anObject;
           if (UIMAFramework.getLogger().isLoggable(Level.CONFIG)) {
-            UIMAFramework.getLogger(TimerFactory.class).logrb(
-                            Level.CONFIG,
-                            TimerFactory.class.getName(),
-                            "initialize",
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_show_timer_class__CONFIG",
-                            new Object[] { Thread.currentThread().getName(),
-                                timer.getClass().getName() });
+            UIMAFramework.getLogger(TimerFactory.class).logrb(Level.CONFIG,
+                    TimerFactory.class.getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_show_timer_class__CONFIG",
+                    new Object[] { Thread.currentThread().getName(), timer.getClass().getName() });
           }
           return;
         }
       } catch (ClassNotFoundException e) {
         throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
-                        new Object[] { aClassName, "CPE" }, e);
+                new Object[] { aClassName, "CPE" }, e);
       } catch (IllegalAccessException e) {
         throw new ResourceInitializationException(
-                        ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
-                            aClassName, "CPE" }, e);
+                ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] { aClassName,
+                    "CPE" }, e);
       } catch (InstantiationException e) {
         throw new ResourceInitializationException(
-                        ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
-                            aClassName, "CPE" }, e);
+                ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] { aClassName,
+                    "CPE" }, e);
       }
 
       if (UIMAFramework.getLogger().isLoggable(Level.CONFIG)) {
         UIMAFramework.getLogger(TimerFactory.class).logrb(Level.CONFIG,
-                        TimerFactory.class.getName(), "initialize",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_java_timer__CONFIG",
-                        new Object[] { Thread.currentThread().getName() });
+                TimerFactory.class.getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_java_timer__CONFIG", new Object[] { Thread.currentThread().getName() });
       }
       timer = new JavaTimer();
     }

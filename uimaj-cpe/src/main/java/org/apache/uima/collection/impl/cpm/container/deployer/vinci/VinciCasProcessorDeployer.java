@@ -156,7 +156,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @return - ProcessingContainer containing pool of CasProcessors
    */
   public ProcessingContainer deployCasProcessor(List aCasProcessorList, CPMEngine aEngine,
-                  boolean redeploy) throws ResourceConfigurationException {
+          boolean redeploy) throws ResourceConfigurationException {
     return deployCasProcessor(aCasProcessorList, redeploy);
   }
 
@@ -168,16 +168,16 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    *          container for deployed CasProcessor.
    */
   public void deployCasProcessor(ProcessingContainer aProcessingContainer)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     try {
       CasProcessorConfiguration casProcessorConfig = aProcessingContainer
-                      .getCasProcessorConfiguration();
+              .getCasProcessorConfiguration();
       String name = casProcessorConfig.getName();
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_reeploying_service__FINEST",
-                        new Object[] { Thread.currentThread().getName(), name });
+                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_reeploying_service__FINEST",
+                new Object[] { Thread.currentThread().getName(), name });
       }
       // re-deploy failed Cas Processor according to mode defined in the cpe descriptor. true -
       // stands for re-launch or restart
@@ -186,9 +186,9 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
       throw e;
     } catch (Exception e) {
       throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_unable_to_deploy_service__SEVERE", new Object[] {
-                          Thread.currentThread().getName(),
-                          aProcessingContainer.getCasProcessorConfiguration().getName() });
+              "UIMA_CPM_unable_to_deploy_service__SEVERE", new Object[] {
+                  Thread.currentThread().getName(),
+                  aProcessingContainer.getCasProcessorConfiguration().getName() });
     }
   }
 
@@ -207,7 +207,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @return ProcessinContainer - instance of Container
    */
   public ProcessingContainer deployCasProcessor(List aCasProcessorList, boolean redeploy)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     String name = null;
     CasProcessor casProcessor = null;
     CasProcessorConfiguration casProcessorConfig = null;
@@ -230,7 +230,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
         if (processingContainer == null) {
           ProcessingResourceMetaData metaData = casProcessor.getProcessingResourceMetaData();
           CpeCasProcessor casProcessorType = (CpeCasProcessor) cpeFactory.casProcessorConfigMap
-                          .get(metaData.getName());
+                  .get(metaData.getName());
           // Create a pool to hold instances of CasProcessors. Instances are managed by a container
           // through
           // getCasProcessor() and releaseProcessor() methods.
@@ -240,7 +240,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
 
           // Associate CasProcessor configuration from CPE descriptor with this container
           processingContainer = new ProcessingContainer_Impl(casProcessorConfig, metaData,
-                          casProcessorPool);
+                  casProcessorPool);
           processingContainer.setCasProcessorDeployer(this);
           // Instantiate an object that encapsulates CasProcessor configuration
           // Determine deployment model for this CasProcessor
@@ -249,14 +249,12 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           if (name == null) {
             if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE,
-                              this.getClass().getName(), "initialize",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_unable_to_read_meta__SEVERE",
-                              Thread.currentThread().getName());
+                      this.getClass().getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_unable_to_read_meta__SEVERE", Thread.currentThread().getName());
             }
             throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_casprocessor_no_name_found__SEVERE", new Object[] { Thread
-                                            .currentThread().getName() });
+                    "UIMA_CPM_casprocessor_no_name_found__SEVERE", new Object[] { Thread
+                            .currentThread().getName() });
           }
         }
         // Add CasProcess to the instance pool
@@ -266,15 +264,15 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
       // There is one instance of ProcessingContainer for set of CasProcessors
       if (processingContainer == null) {
         throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_invalid_container__SEVERE", new Object[] { Thread.currentThread()
-                                        .getName() });
+                "UIMA_CPM_invalid_container__SEVERE", new Object[] { Thread.currentThread()
+                        .getName() });
       }
       // Assumption is that the container already exists and it contains CasProcessor configuration
       casProcessorConfig = processingContainer.getCasProcessorConfiguration();
       if (casProcessorConfig == null) {
         throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_container_configuration_not_found__SEVERE", new Object[] { Thread
-                                        .currentThread().getName() });
+                "UIMA_CPM_container_configuration_not_found__SEVERE", new Object[] { Thread
+                        .currentThread().getName() });
       }
       deployBasedOnModel(processingContainer, casProcessorConfig, false);
 
@@ -299,16 +297,15 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws ResourceConfigurationException
    */
   private void deployBasedOnModel(ProcessingContainer aProcessingContainer,
-                  CasProcessorConfiguration aCasProcessorConfig, boolean redeploy)
-                  throws ResourceConfigurationException {
+          CasProcessorConfiguration aCasProcessorConfig, boolean redeploy)
+          throws ResourceConfigurationException {
     String deployModel = aCasProcessorConfig.getDeploymentType();
     String name = aCasProcessorConfig.getName();
 
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                      "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_deploy_with_mode__FINEST",
-                      new Object[] { Thread.currentThread().getName(), name, deployModel });
+              "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_deploy_with_mode__FINEST",
+              new Object[] { Thread.currentThread().getName(), name, deployModel });
     }
     // Deploy CasProcessor as configured in the CPE descriptor
     if (Constants.DEPLOYMENT_LOCAL.equals(deployModel)) {
@@ -324,13 +321,13 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
     } else {
       if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                        "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_unsupported_deploy_mode__SEVERE",
-                        new Object[] { Thread.currentThread().getName(), name, deployModel });
+                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_unsupported_deploy_mode__SEVERE",
+                new Object[] { Thread.currentThread().getName(), name, deployModel });
       }
       throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_unsupported_deploy_mode__SEVERE", new Object[] {
-                          Thread.currentThread().getName(), name, deployModel });
+              "UIMA_CPM_unsupported_deploy_mode__SEVERE", new Object[] {
+                  Thread.currentThread().getName(), name, deployModel });
     }
 
   }
@@ -351,14 +348,14 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws ResourceConfigurationException
    */
   private void deployLocal(ProcessingContainer aProcessingContainer, boolean redeploy)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     // Cas Processor configuration is associated with the container. There is a container per Cas
     // Processor type.
     // All Cas Processors that are replicated are manages by a single container. The configuration
     // is shared accross
     // all instances of Cas Processors. To the CPE each instance is exactly the same.
     CasProcessorConfiguration casProcessorConfig = aProcessingContainer
-                    .getCasProcessorConfiguration();
+            .getCasProcessorConfiguration();
     String name = casProcessorConfig.getName();
     // If CasProcessor defined to run in a seperate process, extract all runtime info as
     // defined in the cpe descriptor for this casProcessor
@@ -380,9 +377,9 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           if (vns == null) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                              this.getClass().getName(), "initialize",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_deploy_vns__FINEST",
-                              new Object[] { Thread.currentThread().getName() });
+                      this.getClass().getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_deploy_vns__FINEST",
+                      new Object[] { Thread.currentThread().getName() });
             }
             // 08/16/04 added to facilitate sharing of single queue across multiple instances of
             // this class.
@@ -393,19 +390,18 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
 
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
-                            Level.FINEST,
-                            this.getClass().getName(),
-                            "initialize",
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_deploy_with_mode__FINEST",
-                            new Object[] { Thread.currentThread().getName(),
-                                casProcessorConfig.getName(),
-                                casProcessorConfig.getDeploymentType() });
+                    Level.FINEST,
+                    this.getClass().getName(),
+                    "initialize",
+                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_deploy_with_mode__FINEST",
+                    new Object[] { Thread.currentThread().getName(), casProcessorConfig.getName(),
+                        casProcessorConfig.getDeploymentType() });
           }
           // Do the actual deployment of the application. Actually, the deployer will deploy as
           // many application instances as there are processing pipeline threads.
           launchLocalService(aProcessingContainer, casProcessorConfig, redeploy,
-                          concurrentThreadCount);
+                  concurrentThreadCount);
         } else {
           // Re-deploy one instance of the service
           launchLocalService(aProcessingContainer, casProcessorConfig, redeploy, 1);
@@ -413,8 +409,8 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
         associateMetadataWithContainer(aProcessingContainer);
       } else {
         throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_invalid_cpe_descriptor__SEVERE", new Object[] {
-                            Thread.currentThread().getName(), name, "runInSeparateProcess" });
+                "UIMA_CPM_invalid_cpe_descriptor__SEVERE", new Object[] {
+                    Thread.currentThread().getName(), name, "runInSeparateProcess" });
       }
     } catch (Exception e) {
       throw new ResourceConfigurationException(e);
@@ -461,8 +457,8 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws CasProcessorDeploymentException
    */
   private void launchLocalService(ProcessingContainer aProcessingContainer,
-                  CasProcessorConfiguration casProcessorConfig, boolean redeploy, int howMany)
-                  throws CasProcessorDeploymentException {
+          CasProcessorConfiguration casProcessorConfig, boolean redeploy, int howMany)
+          throws CasProcessorDeploymentException {
     try {
       Execute exec = casProcessorConfig.getExecSpec();
       String cmd[] = exec.getCmdLine();
@@ -496,18 +492,13 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
         }
       }
       sb.append(" >> " + logDir + "\"" + casProcessorConfig.getName() + System.currentTimeMillis()
-                      + ".log\"" + " 2>&1");
+              + ".log\"" + " 2>&1");
       execCommand[2] = sb.toString();
 
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "initialize",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_vns_started__FINEST",
-                        new Object[] { Thread.currentThread().getName(),
-                            casProcessorConfig.getName() });
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_vns_started__FINEST",
+                new Object[] { Thread.currentThread().getName(), casProcessorConfig.getName() });
 
       }
       int serviceCount = howMany;
@@ -519,13 +510,13 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
         for (int i = 0; cmd != null && i < cmd.length; i++) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
-                            Level.FINEST,
-                            this.getClass().getName(),
-                            "initialize",
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_launching_with_service_cmd__FINEST",
-                            new Object[] { Thread.currentThread().getName(),
-                                casProcessorConfig.getName(), String.valueOf(i), cmd[i] });
+                    Level.FINEST,
+                    this.getClass().getName(),
+                    "initialize",
+                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_launching_with_service_cmd__FINEST",
+                    new Object[] { Thread.currentThread().getName(), casProcessorConfig.getName(),
+                        String.valueOf(i), cmd[i] });
           }
         }
 
@@ -534,29 +525,27 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           for (int i = 0; i < env.length; i++) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(
-                              Level.FINEST,
-                              this.getClass().getName(),
-                              "initialize",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_launching_with_service_env__FINEST",
-                              new Object[] { Thread.currentThread().getName(),
-                                  casProcessorConfig.getName(), String.valueOf(i), env[i] });
+                      Level.FINEST,
+                      this.getClass().getName(),
+                      "initialize",
+                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_launching_with_service_env__FINEST",
+                      new Object[] { Thread.currentThread().getName(),
+                          casProcessorConfig.getName(), String.valueOf(i), env[i] });
             }
           }
 
           if (System.getProperty("os.name").equalsIgnoreCase("linux")) {
             for (int i = 0; execCommand != null && i < execCommand.length; i++) {
               if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-                UIMAFramework.getLogger(this.getClass())
-                                .logrb(
-                                                Level.FINEST,
-                                                this.getClass().getName(),
-                                                "initialize",
-                                                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                                "UIMA_CPM_launching_with_service_exec__FINEST",
-                                                new Object[] { Thread.currentThread().getName(),
-                                                    casProcessorConfig.getName(),
-                                                    String.valueOf(i), execCommand[i] });
+                UIMAFramework.getLogger(this.getClass()).logrb(
+                        Level.FINEST,
+                        this.getClass().getName(),
+                        "initialize",
+                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                        "UIMA_CPM_launching_with_service_exec__FINEST",
+                        new Object[] { Thread.currentThread().getName(),
+                            casProcessorConfig.getName(), String.valueOf(i), execCommand[i] });
               }
             }
 
@@ -568,16 +557,14 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           if (System.getProperty("os.name").equalsIgnoreCase("linux")) {
             for (int i = 0; execCommand != null && i < execCommand.length; i++) {
               if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-                UIMAFramework.getLogger(this.getClass())
-                                .logrb(
-                                                Level.FINEST,
-                                                this.getClass().getName(),
-                                                "initialize",
-                                                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                                "UIMA_CPM_launching_with_service_exec__FINEST",
-                                                new Object[] { Thread.currentThread().getName(),
-                                                    casProcessorConfig.getName(),
-                                                    String.valueOf(i), execCommand[i] });
+                UIMAFramework.getLogger(this.getClass()).logrb(
+                        Level.FINEST,
+                        this.getClass().getName(),
+                        "initialize",
+                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                        "UIMA_CPM_launching_with_service_exec__FINEST",
+                        new Object[] { Thread.currentThread().getName(),
+                            casProcessorConfig.getName(), String.valueOf(i), execCommand[i] });
               }
             }
             Runtime.getRuntime().exec(execCommand);
@@ -587,14 +574,10 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
         }
       }
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "initialize",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_connecting_to_services__FINEST",
-                        new Object[] { Thread.currentThread().getName(),
-                            casProcessorConfig.getName() });
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_connecting_to_services__FINEST",
+                new Object[] { Thread.currentThread().getName(), casProcessorConfig.getName() });
       }
 
       // Services has been started so now connect proxies to them.
@@ -617,7 +600,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws ResourceConfigurationException
    */
   private void deployIntegrated(ProcessingContainer aProcessingContainer, boolean redeploy)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     // Integrated CasProcessors are deployed in the CPEFactory
   }
 
@@ -634,20 +617,20 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws ResourceConfigurationException
    */
   private void deployRemote(ProcessingContainer aProcessingContainer, boolean redeploy)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     CasProcessorConfiguration casProcessorConfig = aProcessingContainer
-                    .getCasProcessorConfiguration();
+            .getCasProcessorConfiguration();
     String name = casProcessorConfig.getName();
 
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "initialize",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_deploy_with_mode__FINEST",
-                      new Object[] { Thread.currentThread().getName(), name,
-                          casProcessorConfig.getDeploymentType() });
+              Level.FINEST,
+              this.getClass().getName(),
+              "initialize",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_deploy_with_mode__FINEST",
+              new Object[] { Thread.currentThread().getName(), name,
+                  casProcessorConfig.getDeploymentType() });
     }
 
     try {
@@ -692,13 +675,13 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
             if (((NetworkCasProcessorImpl) processor).getProxy() == null) {
               if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
                 UIMAFramework.getLogger(this.getClass()).logrb(
-                                Level.FINEST,
-                                this.getClass().getName(),
-                                "initialize",
-                                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                "UIMA_CPM_reducing_cp_instance_count__FINEST",
-                                new Object[] { Thread.currentThread().getName(), name,
-                                    casProcessorConfig.getDeploymentType() });
+                        Level.FINEST,
+                        this.getClass().getName(),
+                        "initialize",
+                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                        "UIMA_CPM_reducing_cp_instance_count__FINEST",
+                        new Object[] { Thread.currentThread().getName(), name,
+                            casProcessorConfig.getDeploymentType() });
               }
               processor = null;
             } else {
@@ -737,13 +720,13 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    *           error
    */
   private int attachToServices(boolean redeploy, String aServiceUri, int howMany,
-                  ProcessingContainer aProcessingContainer) throws Exception {
+          ProcessingContainer aProcessingContainer) throws Exception {
     VinciServiceInfo serviceInfo = null;
 
     // Retrieve configuration information for the CasProcessor. This is the configuration from the
     // CPE descriptor
     CasProcessorConfiguration casProcessorConfig = aProcessingContainer
-                    .getCasProcessorConfiguration();
+            .getCasProcessorConfiguration();
     ArrayList serviceList = null;
     // Check if this Cas Processor has exclusive service access. Meaning it requires service per
     // proxy.
@@ -751,16 +734,14 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
     String serviceAccess = casProcessorConfig.getDeploymentParameter("service-access");
     if (serviceAccess != null && serviceAccess.equalsIgnoreCase("exclusive")) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass())
-                        .logrb(
-                                        Level.FINEST,
-                                        this.getClass().getName(),
-                                        "initialize",
-                                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                        "UIMA_CPM_cp_with_exclusive_access__FINEST",
-                                        new Object[] { Thread.currentThread().getName(),
-                                            aProcessingContainer.getName(),
-                                            casProcessorConfig.getDeploymentType() });
+        UIMAFramework.getLogger(this.getClass()).logrb(
+                Level.FINEST,
+                this.getClass().getName(),
+                "initialize",
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_cp_with_exclusive_access__FINEST",
+                new Object[] { Thread.currentThread().getName(), aProcessingContainer.getName(),
+                    casProcessorConfig.getDeploymentType() });
       }
       exclusiveAccess = true;
       // The following is true if the service just crashed and we are trying to recover. The
@@ -771,17 +752,16 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
         // available in the current service list
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "initialize",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_retrieve_cp_from_failed_cplist__FINEST",
-                          new Object[] { Thread.currentThread().getName(),
-                              aProcessingContainer.getName(),
-                              casProcessorConfig.getDeploymentType() });
+                  Level.FINEST,
+                  this.getClass().getName(),
+                  "initialize",
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_retrieve_cp_from_failed_cplist__FINEST",
+                  new Object[] { Thread.currentThread().getName(), aProcessingContainer.getName(),
+                      casProcessorConfig.getDeploymentType() });
         }
         CasProcessor processor = (CasProcessor) ((ProcessingContainer_Impl) aProcessingContainer).failedCasProcessorList
-                        .get(0);
+                .get(0);
         // Extract old (stale) proxy from the CAS Processor
         VinciTAP tap = ((NetworkCasProcessorImpl) processor).getProxy();
         if (tap != null) {
@@ -808,11 +788,11 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
 
       if (serviceList == null || serviceList.size() == 0 && redeploy == false) {
         throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_no_service_in_vns__FINEST", new Object[] {
-                            Thread.currentThread().getName(), aServiceUri,
-                            casProcessorConfig.getDeploymentType(),
-                            casProcessorConfig.getDeploymentParameter(Constants.VNS_HOST),
-                            casProcessorConfig.getDeploymentParameter(Constants.VNS_PORT) });
+                "UIMA_CPM_no_service_in_vns__FINEST", new Object[] {
+                    Thread.currentThread().getName(), aServiceUri,
+                    casProcessorConfig.getDeploymentType(),
+                    casProcessorConfig.getDeploymentParameter(Constants.VNS_HOST),
+                    casProcessorConfig.getDeploymentParameter(Constants.VNS_PORT) });
       }
       // When redeploying/reconnecting, we only interested in one proxy
       if (redeploy) {
@@ -847,14 +827,13 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
     for (int i = 0; i < howMany; i++) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "initialize",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_activating_service__FINEST",
-                        new Object[] { Thread.currentThread().getName(),
-                            aProcessingContainer.getName(), String.valueOf(i),
-                            String.valueOf(howMany) });
+                Level.FINEST,
+                this.getClass().getName(),
+                "initialize",
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_activating_service__FINEST",
+                new Object[] { Thread.currentThread().getName(), aProcessingContainer.getName(),
+                    String.valueOf(i), String.valueOf(howMany) });
       }
       int restartCount = 0;
       // flag to indicate that we should sleep between retries when connecting to a fenced service.
@@ -900,7 +879,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           }
           if (exclusiveAccess) {
             activateProcessor(casProcessorConfig, serviceInfo.getHost(), serviceInfo.getPort(),
-                            aProcessingContainer, redeploy);
+                    aProcessingContainer, redeploy);
             serviceInfo.setAvailable(false);
           } else {
             // Create and connect a new proxy to the service
@@ -911,16 +890,16 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           break;
         } catch (ResourceInitializationException ex) {
           if (ex.getCause() instanceof ServiceException
-                          || ex.getCause() instanceof ServiceDownException) {
+                  || ex.getCause() instanceof ServiceDownException) {
             if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
               UIMAFramework.getLogger(this.getClass()).logrb(
-                              Level.WARNING,
-                              this.getClass().getName(),
-                              "initialize",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_activating_service__WARNING",
-                              new Object[] { Thread.currentThread().getName(),
-                                  aProcessingContainer.getName() });
+                      Level.WARNING,
+                      this.getClass().getName(),
+                      "initialize",
+                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_activating_service__WARNING",
+                      new Object[] { Thread.currentThread().getName(),
+                          aProcessingContainer.getName() });
             }
             // Increment number of CasProcessor restarts (redeploys)
             restartCount++;
@@ -968,7 +947,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws Exception
    */
   private ArrayList getNewServiceList(String aServiceUri,
-                  CasProcessorConfiguration aCasProcessorConfig) throws Exception {
+          CasProcessorConfiguration aCasProcessorConfig) throws Exception {
     String vnsHost = getVNSSettingFor("VNS_HOST", aCasProcessorConfig, "localhost");
     String vnsPort = getVNSSettingFor("VNS_PORT", aCasProcessorConfig, "9000");
     VNSQuery vnsQuery = new VNSQuery(vnsHost, Integer.parseInt(vnsPort));
@@ -986,88 +965,68 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws ResourceConfigurationException
    */
   private void handleMaxRestartThresholdReached(ProcessingContainer aProcessingContainer)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     CasProcessorConfiguration casProcessorConfig = aProcessingContainer
-                    .getCasProcessorConfiguration();
+            .getCasProcessorConfiguration();
     String name = casProcessorConfig.getName();
     if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.WARNING,
-                      this.getClass().getName(),
-                      "initialize",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_restart_exceeded__WARNING",
-                      new Object[] { Thread.currentThread().getName(),
-                          aProcessingContainer.getName(),
-                          String.valueOf(casProcessorConfig.getMaxRestartCount()) });
+              Level.WARNING,
+              this.getClass().getName(),
+              "initialize",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_restart_exceeded__WARNING",
+              new Object[] { Thread.currentThread().getName(), aProcessingContainer.getName(),
+                  String.valueOf(casProcessorConfig.getMaxRestartCount()) });
     }
 
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "initialize",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_restart_exceeded__WARNING",
-                      new Object[] { Thread.currentThread().getName(),
-                          aProcessingContainer.getName(),
-                          casProcessorConfig.getActionOnMaxRestart() });
+              Level.FINEST,
+              this.getClass().getName(),
+              "initialize",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_restart_exceeded__WARNING",
+              new Object[] { Thread.currentThread().getName(), aProcessingContainer.getName(),
+                  casProcessorConfig.getActionOnMaxRestart() });
     }
     // Throw appropriate exception based on configured action when max restarts are reached
     if (Constants.TERMINATE_CPE.equals(casProcessorConfig.getActionOnMaxRestart())) {
       if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.INFO,
-                        this.getClass().getName(),
-                        "initialize",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_terminate_onerrors__INFO",
-                        new Object[] { Thread.currentThread().getName(),
-                            aProcessingContainer.getName() });
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_terminate_onerrors__INFO",
+                new Object[] { Thread.currentThread().getName(), aProcessingContainer.getName() });
       }
       throw new ResourceConfigurationException(new AbortCPMException(CpmLocalizedMessage
-                      .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                      "UIMA_CPM_EXP_configured_to_abort__WARNING", new Object[] {
-                                          Thread.currentThread().getName(), name })));
+              .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_EXP_configured_to_abort__WARNING", new Object[] {
+                          Thread.currentThread().getName(), name })));
     }
     if (Constants.KILL_PROCESSING_PIPELINE.equals(casProcessorConfig.getActionOnMaxRestart())) {
       if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.INFO,
-                        this.getClass().getName(),
-                        "initialize",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_terminate_pipeline__INFO",
-                        new Object[] { Thread.currentThread().getName(),
-                            aProcessingContainer.getName() });
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_terminate_pipeline__INFO",
+                new Object[] { Thread.currentThread().getName(), aProcessingContainer.getName() });
       }
       throw new ResourceConfigurationException(new KillPipelineException(CpmLocalizedMessage
-                      .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                      "UIMA_CPM_EXP_configured_to_kill_pipeline__WARNING",
-                                      new Object[] { Thread.currentThread().getName(), name })));
+              .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_EXP_configured_to_kill_pipeline__WARNING", new Object[] {
+                          Thread.currentThread().getName(), name })));
     } else if (Constants.DISABLE_CASPROCESSOR.equals(casProcessorConfig.getActionOnMaxRestart())) {
       aProcessingContainer.setStatus(Constants.CAS_PROCESSOR_DISABLED);
       if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.INFO,
-                        this.getClass().getName(),
-                        "initialize",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_disable_cp__INFO",
-                        new Object[] { Thread.currentThread().getName(),
-                            aProcessingContainer.getName() });
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_disable_cp__INFO",
+                new Object[] { Thread.currentThread().getName(), aProcessingContainer.getName() });
       }
       return;
     }
     if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.INFO,
-                      this.getClass().getName(),
-                      "initialize",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_disable_cp__INFO",
-                      new Object[] { Thread.currentThread().getName(),
-                          aProcessingContainer.getName() });
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+              "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_disable_cp__INFO",
+              new Object[] { Thread.currentThread().getName(), aProcessingContainer.getName() });
     }
   }
 
@@ -1080,15 +1039,15 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws ResourceConfigurationException
    */
   private String getServiceUri(CasProcessorConfiguration aCasProcessorConfig)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     String descriptor = aCasProcessorConfig.getDescriptor();
 
     URISpecifier uriSpecifier = getURISpecifier(descriptor);
     String uri = uriSpecifier.getUri();
     if (uri == null || uri.trim().length() == 0) {
       throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_invalid_deployment__SEVERE", new Object[] {
-                          Thread.currentThread().getName(), descriptor, uri });
+              "UIMA_CPM_invalid_deployment__SEVERE", new Object[] {
+                  Thread.currentThread().getName(), descriptor, uri });
     }
 
     return uri;
@@ -1103,13 +1062,13 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    */
   private URISpecifier getURISpecifier(String aDescriptor) throws ResourceConfigurationException {
     String descriptorPath = CPMUtils.convertToAbsolutePath(System.getProperty("CPM_HOME"),
-                    CPEFactory.CPM_HOME, aDescriptor);
+            CPEFactory.CPM_HOME, aDescriptor);
     ResourceSpecifier resourceSpecifier = getSpecifier(descriptorPath);
 
     if (!(resourceSpecifier instanceof URISpecifier)) {
       throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_invalid_deployment__SEVERE", new Object[] {
-                          Thread.currentThread().getName(), descriptorPath, null });
+              "UIMA_CPM_invalid_deployment__SEVERE", new Object[] {
+                  Thread.currentThread().getName(), descriptorPath, null });
     }
     return (URISpecifier) resourceSpecifier;
   }
@@ -1131,8 +1090,8 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
     } catch (Exception e) {
       e.printStackTrace();
       throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_invalid_deployment__SEVERE", new Object[] {
-                          Thread.currentThread().getName(), aFileName, null });
+              "UIMA_CPM_invalid_deployment__SEVERE", new Object[] {
+                  Thread.currentThread().getName(), aFileName, null });
     }
   }
 
@@ -1146,16 +1105,16 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws CasProcessorDeploymentException
    */
   private void deployVNS(CasProcessorConfiguration casProcessorConfig, boolean redeploy)
-                  throws CasProcessorDeploymentException {
+          throws CasProcessorDeploymentException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.SEVERE,
-                      this.getClass().getName(),
-                      "initialize",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_deploy_vns_redeploy__FINEST",
-                      new Object[] { Thread.currentThread().getName(), String.valueOf(redeploy),
-                          String.valueOf(restartCount) });
+              Level.SEVERE,
+              this.getClass().getName(),
+              "initialize",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_deploy_vns_redeploy__FINEST",
+              new Object[] { Thread.currentThread().getName(), String.valueOf(redeploy),
+                  String.valueOf(restartCount) });
     }
     int vnsPort = Integer.parseInt(DEFAULT_VNS_PORT);
     int startPort = DEFAULT_SERVICE_PORT;
@@ -1208,15 +1167,15 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws ResourceConfigurationException
    */
   private synchronized boolean activateProcessor(CasProcessorConfiguration aCasProcessorConfig,
-                  String aHost, int aPort) throws ResourceInitializationException,
-                  ResourceConfigurationException {
+          String aHost, int aPort) throws ResourceInitializationException,
+          ResourceConfigurationException {
     // Instantiate proxy from given configuration
     VinciTAP tap = getTextAnalysisProxy(aCasProcessorConfig);
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                      "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_activating_service_on_port__FINEST",
-                      new Object[] { Thread.currentThread().getName(), String.valueOf(aPort) });
+              "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_activating_service_on_port__FINEST",
+              new Object[] { Thread.currentThread().getName(), String.valueOf(aPort) });
     }
     boolean tryAgain = true;
     int maxCount = aCasProcessorConfig.getMaxRestartCount();
@@ -1231,12 +1190,12 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           e.printStackTrace();
           if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
             UIMAFramework.getLogger(this.getClass()).log(Level.SEVERE,
-                            Thread.currentThread().getName() + "", e);
+                    Thread.currentThread().getName() + "", e);
           }
           throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_no_service_connection__SEVERE", new Object[] {
-                              Thread.currentThread().getName(), String.valueOf(aPort), aHost,
-                              aCasProcessorConfig.getName() });
+                  "UIMA_CPM_no_service_connection__SEVERE", new Object[] {
+                      Thread.currentThread().getName(), String.valueOf(aPort), aHost,
+                      aCasProcessorConfig.getName() });
         }
         try {
           synchronized (monitor) {
@@ -1266,15 +1225,15 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws ResourceConfigurationException
    */
   private synchronized boolean activateProcessor(CasProcessorConfiguration aCasProcessorConfig,
-                  String aHost, int aPort, ProcessingContainer aProcessingContainer,
-                  boolean redeploy) throws Exception {
+          String aHost, int aPort, ProcessingContainer aProcessingContainer, boolean redeploy)
+          throws Exception {
     // Instantiate proxy from given configuration
     VinciTAP tap = getTextAnalysisProxy(aCasProcessorConfig);
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                      "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_activating_service_on_port__FINEST",
-                      new Object[] { Thread.currentThread().getName(), String.valueOf(aPort) });
+              "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_activating_service_on_port__FINEST",
+              new Object[] { Thread.currentThread().getName(), String.valueOf(aPort) });
     }
     boolean tryAgain = true;
     int maxCount = aCasProcessorConfig.getMaxRestartCount();
@@ -1289,12 +1248,12 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           e.printStackTrace();
           if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
             UIMAFramework.getLogger(this.getClass()).log(Level.SEVERE,
-                            Thread.currentThread().getName() + "", e);
+                    Thread.currentThread().getName() + "", e);
           }
           throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_no_service_connection__SEVERE", new Object[] {
-                              Thread.currentThread().getName(), String.valueOf(aPort), aHost,
-                              aCasProcessorConfig.getName() });
+                  "UIMA_CPM_no_service_connection__SEVERE", new Object[] {
+                      Thread.currentThread().getName(), String.valueOf(aPort), aHost,
+                      aCasProcessorConfig.getName() });
         }
         try {
           synchronized (monitor) {
@@ -1323,16 +1282,16 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws ResourceConfigurationException
    */
   private synchronized boolean activateProcessor(CasProcessorConfiguration aCasProcessorConfig,
-                  String aService, ProcessingContainer aProcessingContainer, boolean redeploy) // throws
-                  // ResourceInitializationException,
-                  // ResourceConfigurationException
-                  throws Exception {
+          String aService, ProcessingContainer aProcessingContainer, boolean redeploy) // throws
+          // ResourceInitializationException,
+          // ResourceConfigurationException
+          throws Exception {
     VinciTAP tap = getTextAnalysisProxy(aCasProcessorConfig);
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                      "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_activating_service_on_port__FINEST",
-                      new Object[] { Thread.currentThread().getName(), aService });
+              "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_activating_service_on_port__FINEST",
+              new Object[] { Thread.currentThread().getName(), aService });
 
     }
     boolean tryAgain = true;
@@ -1343,36 +1302,35 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
         wait(SLEEP_TIME);
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_connecting_to_service__FINEST",
-                          new Object[] { Thread.currentThread().getName(), aService });
+                  "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_connecting_to_service__FINEST",
+                  new Object[] { Thread.currentThread().getName(), aService });
         }
         // Try to connect to service using its service name
         tap.connect(aService);
         tryAgain = false;
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_connection_established__FINEST",
-                          new Object[] { Thread.currentThread().getName(), aService });
+                  "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_connection_established__FINEST",
+                  new Object[] { Thread.currentThread().getName(), aService });
         }
       } catch (Exception e) {
         if (maxCount-- == 0) {
           e.printStackTrace();
           if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
-                            Level.WARNING,
-                            this.getClass().getName(),
-                            "initialize",
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_max_connect_retries_exceeded__FINEST",
-                            new Object[] { Thread.currentThread().getName(), aService,
-                                String.valueOf(maxCount) });
+                    Level.WARNING,
+                    this.getClass().getName(),
+                    "initialize",
+                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_max_connect_retries_exceeded__FINEST",
+                    new Object[] { Thread.currentThread().getName(), aService,
+                        String.valueOf(maxCount) });
           }
           throw new ResourceInitializationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE, new Object[] {
               Thread.currentThread().getName(), aService, String.valueOf(maxCount) },
-                          new ServiceConnectionException("Unable to connect to service :::"
-                                          + aService));
+                  new ServiceConnectionException("Unable to connect to service :::" + aService));
         }
       }
 
@@ -1390,7 +1348,8 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    */
   private void bindProxyToNetworkCasProcessor(VinciTAP aTap) {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(
+      UIMAFramework.getLogger(this.getClass())
+              .logrb(
                       Level.FINEST,
                       this.getClass().getName(),
                       "initialize",
@@ -1403,14 +1362,14 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
     synchronized (casProcessorPool) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "initialize",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_get_cp_from_pool__FINEST",
-                        new Object[] { Thread.currentThread().getName(), aTap.getServiceHost(),
-                            String.valueOf(aTap.getServicePort()),
-                            String.valueOf(casProcessorPool.getSize()) });
+                Level.FINEST,
+                this.getClass().getName(),
+                "initialize",
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_get_cp_from_pool__FINEST",
+                new Object[] { Thread.currentThread().getName(), aTap.getServiceHost(),
+                    String.valueOf(aTap.getServicePort()),
+                    String.valueOf(casProcessorPool.getSize()) });
       }
       CasProcessor processor = null;
       // There are as many Cas Processors as there are Procesing Threads. All of them have been
@@ -1426,14 +1385,14 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           if (processor == null) {
             if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
               UIMAFramework.getLogger(this.getClass()).logrb(
-                              Level.SEVERE,
-                              this.getClass().getName(),
-                              "initialize",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_get_cp_from_pool_error__SEVERE",
-                              new Object[] { Thread.currentThread().getName(),
-                                  aTap.getServiceHost(), String.valueOf(aTap.getServicePort()),
-                                  String.valueOf(casProcessorPool.getSize()) });
+                      Level.SEVERE,
+                      this.getClass().getName(),
+                      "initialize",
+                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_get_cp_from_pool_error__SEVERE",
+                      new Object[] { Thread.currentThread().getName(), aTap.getServiceHost(),
+                          String.valueOf(aTap.getServicePort()),
+                          String.valueOf(casProcessorPool.getSize()) });
             }
             continue;
           }
@@ -1444,27 +1403,22 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
             // get the next Cas Processor
             if (netProcessor.getProxy() != null && netProcessor.getProxy().isConnected()) {
               if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-                UIMAFramework.getLogger(this.getClass())
-                                .logrb(
-                                                Level.FINEST,
-                                                this.getClass().getName(),
-                                                "initialize",
-                                                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                                "UIMA_CPM_already_allocated__FINEST",
-                                                new Object[] { Thread.currentThread().getName(),
-                                                    String.valueOf(i) });
+                UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+                        this.getClass().getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                        "UIMA_CPM_already_allocated__FINEST",
+                        new Object[] { Thread.currentThread().getName(), String.valueOf(i) });
               }
               continue;
             }
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(
-                              Level.FINEST,
-                              this.getClass().getName(),
-                              "initialize",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_assign_cp_to_service__FINEST",
-                              new Object[] { Thread.currentThread().getName(), String.valueOf(i),
-                                  aTap.getServiceHost(), String.valueOf(aTap.getServicePort()) });
+                      Level.FINEST,
+                      this.getClass().getName(),
+                      "initialize",
+                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_assign_cp_to_service__FINEST",
+                      new Object[] { Thread.currentThread().getName(), String.valueOf(i),
+                          aTap.getServiceHost(), String.valueOf(aTap.getServicePort()) });
             }
             // Associate the proxy with this Cas Processor
             ((NetworkCasProcessorImpl) processor).setProxy(aTap);
@@ -1480,24 +1434,24 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           if (processor != null) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(
-                              Level.FINEST,
-                              this.getClass().getName(),
-                              "initialize",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_checkin_cp_to_pool__FINEST",
-                              new Object[] { Thread.currentThread().getName(), String.valueOf(i),
-                                  aTap.getServiceHost(), String.valueOf(aTap.getServicePort()) });
+                      Level.FINEST,
+                      this.getClass().getName(),
+                      "initialize",
+                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_checkin_cp_to_pool__FINEST",
+                      new Object[] { Thread.currentThread().getName(), String.valueOf(i),
+                          aTap.getServiceHost(), String.valueOf(aTap.getServicePort()) });
             }
             casProcessorPool.checkIn(processor);
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(
-                              Level.FINEST,
-                              this.getClass().getName(),
-                              "initialize",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_checked_in_cp_to_pool__FINEST",
-                              new Object[] { Thread.currentThread().getName(), String.valueOf(i),
-                                  aTap.getServiceHost(), String.valueOf(aTap.getServicePort()) });
+                      Level.FINEST,
+                      this.getClass().getName(),
+                      "initialize",
+                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_checked_in_cp_to_pool__FINEST",
+                      new Object[] { Thread.currentThread().getName(), String.valueOf(i),
+                          aTap.getServiceHost(), String.valueOf(aTap.getServicePort()) });
             }
           }
         }
@@ -1512,17 +1466,16 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    *          connected proxy
    */
   private void bindProxyToNetworkCasProcessor(VinciTAP aTap,
-                  ProcessingContainer aProcessingContainer, boolean redeploy) throws Exception {
+          ProcessingContainer aProcessingContainer, boolean redeploy) throws Exception {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "initialize",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_checked_in_cp_to_pool__FINEST",
-                      new Object[] { Thread.currentThread().getName(),
-                          aProcessingContainer.getName(), aTap.getServiceHost(),
-                          String.valueOf(aTap.getServicePort()) });
+              Level.FINEST,
+              this.getClass().getName(),
+              "initialize",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_checked_in_cp_to_pool__FINEST",
+              new Object[] { Thread.currentThread().getName(), aProcessingContainer.getName(),
+                  aTap.getServiceHost(), String.valueOf(aTap.getServicePort()) });
     }
     CasProcessor processor = null;
     boolean processorAssigned = false;
@@ -1531,31 +1484,30 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
         // Check out the next Cas Processor from the pool
         if (((ProcessingContainer_Impl) aProcessingContainer).failedCasProcessorList.isEmpty()) {
           throw new ResourceProcessException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_no_cp_instance_in_failed_list__FINEST", new Object[] {
-                              Thread.currentThread().getName(), aProcessingContainer.getName(),
-                              aTap.getServiceHost(), String.valueOf(aTap.getServicePort()) },
-                          new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                          "UIMA_CPM_EXP_cp_not_in_failed_list__WARNING",
-                                          new Object[] { Thread.currentThread().getName(),
-                                              aProcessingContainer.getName() })));
+                  "UIMA_CPM_no_cp_instance_in_failed_list__FINEST", new Object[] {
+                      Thread.currentThread().getName(), aProcessingContainer.getName(),
+                      aTap.getServiceHost(), String.valueOf(aTap.getServicePort()) },
+                  new Exception(CpmLocalizedMessage.getLocalizedMessage(
+                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                          "UIMA_CPM_EXP_cp_not_in_failed_list__WARNING", new Object[] {
+                              Thread.currentThread().getName(), aProcessingContainer.getName() })));
 
         }
         processor = (CasProcessor) ((ProcessingContainer_Impl) aProcessingContainer).failedCasProcessorList
-                        .get(0);
+                .get(0);
         // Add proxy only to instances of NetworkCasProcessorImpl
         if (processor instanceof NetworkCasProcessorImpl) {
           // NetworkCasProcessorImpl netProcessor = (NetworkCasProcessorImpl) processor;
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
-                            Level.FINEST,
-                            this.getClass().getName(),
-                            "initialize",
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_assign_cp_to_service__FINEST",
-                            new Object[] { Thread.currentThread().getName(),
-                                aProcessingContainer.getName(), aTap.getServiceHost(),
-                                String.valueOf(aTap.getServicePort()) });
+                    Level.FINEST,
+                    this.getClass().getName(),
+                    "initialize",
+                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_assign_cp_to_service__FINEST",
+                    new Object[] { Thread.currentThread().getName(),
+                        aProcessingContainer.getName(), aTap.getServiceHost(),
+                        String.valueOf(aTap.getServicePort()) });
           }
           // Associate the proxy with this Cas Processor
           ((NetworkCasProcessorImpl) processor).setProxy(aTap);
@@ -1574,14 +1526,14 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           if (processor == null) {
             if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
               UIMAFramework.getLogger(this.getClass()).logrb(
-                              Level.SEVERE,
-                              this.getClass().getName(),
-                              "initialize",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_get_cp_from_pool_error__SEVERE",
-                              new Object[] { Thread.currentThread().getName(),
-                                  aTap.getServiceHost(), String.valueOf(aTap.getServicePort()),
-                                  String.valueOf(casProcessorPool.getAllInstanceCount()) });
+                      Level.SEVERE,
+                      this.getClass().getName(),
+                      "initialize",
+                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_get_cp_from_pool_error__SEVERE",
+                      new Object[] { Thread.currentThread().getName(), aTap.getServiceHost(),
+                          String.valueOf(aTap.getServicePort()),
+                          String.valueOf(casProcessorPool.getAllInstanceCount()) });
             }
             continue;
           }
@@ -1593,27 +1545,22 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
             if (netProcessor.getProxy() != null && netProcessor.getProxy().isConnected()) {
               if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
 
-                UIMAFramework.getLogger(this.getClass())
-                                .logrb(
-                                                Level.FINEST,
-                                                this.getClass().getName(),
-                                                "initialize",
-                                                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                                "UIMA_CPM_already_allocated__FINEST",
-                                                new Object[] { Thread.currentThread().getName(),
-                                                    String.valueOf(i) });
+                UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+                        this.getClass().getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                        "UIMA_CPM_already_allocated__FINEST",
+                        new Object[] { Thread.currentThread().getName(), String.valueOf(i) });
               }
               continue;
             }
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(
-                              Level.FINEST,
-                              this.getClass().getName(),
-                              "initialize",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_assign_cp_to_service__FINEST",
-                              new Object[] { Thread.currentThread().getName(), String.valueOf(i),
-                                  aTap.getServiceHost(), String.valueOf(aTap.getServicePort()) });
+                      Level.FINEST,
+                      this.getClass().getName(),
+                      "initialize",
+                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_assign_cp_to_service__FINEST",
+                      new Object[] { Thread.currentThread().getName(), String.valueOf(i),
+                          aTap.getServiceHost(), String.valueOf(aTap.getServicePort()) });
             }
             // Associate the proxy with this Cas Processor
             ((NetworkCasProcessorImpl) processor).setProxy(aTap);
@@ -1635,27 +1582,27 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
         if (processorAssigned) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
-                            Level.FINEST,
-                            this.getClass().getName(),
-                            "initialize",
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_checkin_cp_to_pool__FINEST",
-                            new Object[] { Thread.currentThread().getName(),
-                                aProcessingContainer.getName(), aTap.getServiceHost(),
-                                String.valueOf(aTap.getServicePort()) });
+                    Level.FINEST,
+                    this.getClass().getName(),
+                    "initialize",
+                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_checkin_cp_to_pool__FINEST",
+                    new Object[] { Thread.currentThread().getName(),
+                        aProcessingContainer.getName(), aTap.getServiceHost(),
+                        String.valueOf(aTap.getServicePort()) });
           }
           casProcessorPool.checkIn(processor);
 
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
-                            Level.FINEST,
-                            this.getClass().getName(),
-                            "initialize",
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_checked_in_cp_to_pool__FINEST",
-                            new Object[] { Thread.currentThread().getName(),
-                                aProcessingContainer.getName(), aTap.getServiceHost(),
-                                String.valueOf(aTap.getServicePort()) });
+                    Level.FINEST,
+                    this.getClass().getName(),
+                    "initialize",
+                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_checked_in_cp_to_pool__FINEST",
+                    new Object[] { Thread.currentThread().getName(),
+                        aProcessingContainer.getName(), aTap.getServiceHost(),
+                        String.valueOf(aTap.getServicePort()) });
           }
         } else {
           // Put it back into the failed Cas Processor List for subsequent retries
@@ -1676,15 +1623,14 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @throws ResourceConfigurationException
    */
   private VinciTAP getTextAnalysisProxy(CasProcessorConfiguration aCasProcessorConfig)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     VinciTAP tap = new VinciTAP();
     String vnsHost = null;
     String vnsPort = null;
 
     // For 'local' or managed Cas Processor, get the VNS port
     if (aCasProcessorConfig.getDeploymentType() != null
-                    && Constants.DEPLOYMENT_LOCAL.equalsIgnoreCase(aCasProcessorConfig
-                                    .getDeploymentType())) {
+            && Constants.DEPLOYMENT_LOCAL.equalsIgnoreCase(aCasProcessorConfig.getDeploymentType())) {
       vnsHost = "localhost"; // default for local deployment
       vnsPort = ""; // intialize
       try {
@@ -1749,8 +1695,8 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @return - value for a named VNS parameter
    */
   private String getVNSSettingFor(String aVNSParamKey,
-                  CasProcessorConfiguration aCasProcessorConfig, String aDefault)
-                  throws ResourceConfigurationException {
+          CasProcessorConfiguration aCasProcessorConfig, String aDefault)
+          throws ResourceConfigurationException {
     String vnsParam = null;
 
     String descriptor = aCasProcessorConfig.getDescriptor();
@@ -1802,17 +1748,17 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    *           unable to establish connection to Cas Processor
    */
   private void connectToServices(ProcessingContainer aProcessingContainer,
-                  CasProcessorConfiguration casProcessorConfig, boolean redeploy, int howMany)
-                  throws ConnectException {
+          CasProcessorConfiguration casProcessorConfig, boolean redeploy, int howMany)
+          throws ConnectException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "initialize",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_thread_count__FINEST",
-                      new Object[] { Thread.currentThread().getName(),
-                          aProcessingContainer.getName(), String.valueOf(howMany) });
+              Level.FINEST,
+              this.getClass().getName(),
+              "initialize",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_thread_count__FINEST",
+              new Object[] { Thread.currentThread().getName(), aProcessingContainer.getName(),
+                  String.valueOf(howMany) });
     }
     // Create as many proxies as there are concurrent processing pipelines
     // The assumption is that the services have started up and retrieved ports to run on from the
@@ -1821,14 +1767,13 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
     for (int i = 0; i < howMany; i++) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "initialize",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_activating_service_on_port2__FINEST",
-                        new Object[] { Thread.currentThread().getName(),
-                            aProcessingContainer.getName(), String.valueOf(i),
-                            String.valueOf(howMany) });
+                Level.FINEST,
+                this.getClass().getName(),
+                "initialize",
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_activating_service_on_port2__FINEST",
+                new Object[] { Thread.currentThread().getName(), aProcessingContainer.getName(),
+                    String.valueOf(i), String.valueOf(howMany) });
       }
       Object portObject = null;
       int port = -1;
@@ -1842,33 +1787,29 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
       } catch (TimeLimitExceededException e) {
         e.printStackTrace();
         throw new ConnectException(CpmLocalizedMessage.getLocalizedMessage(
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_no_service_port__WARNING",
-                        new Object[] { Thread.currentThread().getName() }));
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_no_service_port__WARNING",
+                new Object[] { Thread.currentThread().getName() }));
       } catch (NumberFormatException e) {
         e.printStackTrace();
         if (portObject != null && portObject instanceof String) {
           throw new ConnectException(CpmLocalizedMessage.getLocalizedMessage(
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_EXP_invalid_service_port__WARNING", new Object[] {
-                              Thread.currentThread().getName(), (String) portObject }));
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_service_port__WARNING",
+                  new Object[] { Thread.currentThread().getName(), (String) portObject }));
         } else {
           throw new ConnectException(CpmLocalizedMessage.getLocalizedMessage(
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_EXP_invalid_service_port__WARNING", new Object[] {
-                              Thread.currentThread().getName(), "Not Available" }));
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_service_port__WARNING",
+                  new Object[] { Thread.currentThread().getName(), "Not Available" }));
         }
       } catch (Exception e) {
         e.printStackTrace();
         if (portObject != null && portObject instanceof String) {
           throw new ConnectException(CpmLocalizedMessage.getLocalizedMessage(
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_EXP_invalid_service_port__WARNING", new Object[] {
-                              Thread.currentThread().getName(), (String) portObject }));
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_service_port__WARNING",
+                  new Object[] { Thread.currentThread().getName(), (String) portObject }));
         } else {
           throw new ConnectException(CpmLocalizedMessage.getLocalizedMessage(
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_EXP_invalid_service_port__WARNING", new Object[] {
-                              Thread.currentThread().getName(), "Not Available" }));
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_service_port__WARNING",
+                  new Object[] { Thread.currentThread().getName(), "Not Available" }));
         }
       }
       // Activate the CasProcessor by instantiating a proxy to the vinci service running
@@ -1876,13 +1817,13 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
       try {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "initialize",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_activating_service_on_port__FINEST",
-                          new Object[] { Thread.currentThread().getName(),
-                              aProcessingContainer.getName(), String.valueOf(port) });
+                  Level.FINEST,
+                  this.getClass().getName(),
+                  "initialize",
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_activating_service_on_port__FINEST",
+                  new Object[] { Thread.currentThread().getName(), aProcessingContainer.getName(),
+                      String.valueOf(port) });
         }
         // There is a valid port, so connect to it
         activateProcessor(casProcessorConfig, "127.0.0.1", port, aProcessingContainer, redeploy);
@@ -1909,45 +1850,40 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
     int waitCount = MAX_WAIT_TRIES; // default
     try {
       waitCount = System.getProperty(CONN_RETRY_COUNT) != null ? Integer.parseInt(System
-                      .getProperty(CONN_RETRY_COUNT)) : MAX_WAIT_TRIES;
+              .getProperty(CONN_RETRY_COUNT)) : MAX_WAIT_TRIES;
     } catch (NumberFormatException e) {
       if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
-                        "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_invalid_retry_count__INFO",
-                        new Object[] { Thread.currentThread().getName() });
+                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_invalid_retry_count__INFO",
+                new Object[] { Thread.currentThread().getName() });
       }
       waitCount = MAX_WAIT_TRIES; // restore default
     }
     String localMonitor = "";
     if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
-                      "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_got_port_from_queue__INFO",
-                      new Object[] { Thread.currentThread().getName(), "" });
+              "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_got_port_from_queue__INFO",
+              new Object[] { Thread.currentThread().getName(), "" });
     }
     while (portQueue.getCurrentSize() == 0) {
       synchronized (localMonitor) {
         try {
           if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
-            UIMAFramework.getLogger(this.getClass()).logrb(
-                            Level.INFO,
-                            this.getClass().getName(),
-                            "initialize",
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_service_port_not_allocated__INFO",
-                            new Object[] { Thread.currentThread().getName(),
-                                String.valueOf(waitCount) });
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+                    "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_service_port_not_allocated__INFO",
+                    new Object[] { Thread.currentThread().getName(), String.valueOf(waitCount) });
           }
           localMonitor.wait(WAIT_TIME);
         } catch (InterruptedException e) {
         }
         if (waitCount-- <= 0) {
           throw new TimeLimitExceededException(CpmLocalizedMessage.getLocalizedMessage(
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_EXP_timeout_no_service_port__WARNING", new Object[] {
-                              Thread.currentThread().getName(),
-                              String.valueOf(waitCount * WAIT_TIME + " millis") }));
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_EXP_timeout_no_service_port__WARNING", new Object[] {
+                      Thread.currentThread().getName(),
+                      String.valueOf(waitCount * WAIT_TIME + " millis") }));
 
         }
       }
@@ -1955,9 +1891,8 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
     Object portObject = portQueue.dequeue();
     if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
-                      "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_got_port_from_queue__INFO",
-                      new Object[] { Thread.currentThread().getName(), (String) portObject });
+              "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_got_port_from_queue__INFO",
+              new Object[] { Thread.currentThread().getName(), (String) portObject });
     }
     return (String) portObject;
   }

@@ -61,7 +61,7 @@ public class VinciServiceInfo {
 
   public String toString() {
     StringBuffer sb = new StringBuffer("SERVICE:").append(serviceName).append("\nIP:").append(host)
-                    .append("\nPORT:").append(port);
+            .append("\nPORT:").append(port);
     return sb.toString();
   }
 }

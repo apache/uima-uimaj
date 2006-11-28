@@ -49,18 +49,17 @@ public class FencedProcessReaper {
       if (System.getProperty("os.name").equalsIgnoreCase("linux")) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_killing_process__FINEST",
-                          new Object[] { Thread.currentThread().getName(), aPid });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_killing_process__FINEST",
+                  new Object[] { Thread.currentThread().getName(), aPid });
         }
         Runtime.getRuntime().exec(cmd);
       }
     } catch (Exception e) {
       // non-fatal exception
       UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_killing_process_failed__WARNING",
-                      new Object[] { Thread.currentThread().getName(), aPid, e });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_killing_process_failed__WARNING",
+              new Object[] { Thread.currentThread().getName(), aPid, e });
     }
 
   }

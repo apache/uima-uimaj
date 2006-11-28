@@ -73,7 +73,7 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
   }
 
   private CasProcessorRunInSeperateProcess getBaseRunInSeperateProcess()
-                  throws CpeDescriptorException {
+          throws CpeDescriptorException {
     CasProcessorRunInSeperateProcess sepProcess = getRunInSeperateProcess();
     if (sepProcess == null) {
       sepProcess = CpeDescriptorFactory.produceRunInSeperateProcess();
@@ -125,7 +125,7 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
     }
     if (getRunInSeperateProcess() == null) {
       CasProcessorRunInSeperateProcess sepProcess = CpeDescriptorFactory
-                      .produceRunInSeperateProcess();
+              .produceRunInSeperateProcess();
       CasProcessorExecutable exe = CpeDescriptorFactory.produceCasProcessorExecutable();
       exe.setExecutable("default");
 
@@ -261,7 +261,7 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
   }
 
   public void setRunInSeperateProcess(CasProcessorRunInSeperateProcess aSepProcess)
-                  throws CpeDescriptorException {
+          throws CpeDescriptorException {
     super.setRunInSeparateProcess(aSepProcess);
   }
 

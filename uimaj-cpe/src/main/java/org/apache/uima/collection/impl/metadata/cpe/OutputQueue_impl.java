@@ -43,7 +43,7 @@ public class OutputQueue_impl extends MetaDataObject_impl implements OutputQueue
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     setQueueClass(aElement.getAttribute("queueClass"));
     String timeout = aElement.getAttribute("dequeueTimeout");
     if (timeout != null && timeout.trim().length() > 0) {
@@ -60,7 +60,7 @@ public class OutputQueue_impl extends MetaDataObject_impl implements OutputQueue
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = super.getXMLAttributes();
     attrs.addAttribute("", "dequeueTimeout", "dequeueTimeout", "CDATA", String
-                    .valueOf(getDequeueTimeout()));
+            .valueOf(getDequeueTimeout()));
     attrs.addAttribute("", "queueClass", "queueClass", "CDATA", String.valueOf(getQueueClass()));
     return attrs;
   }
@@ -70,7 +70,7 @@ public class OutputQueue_impl extends MetaDataObject_impl implements OutputQueue
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("outputQueue",
-                  new PropertyXmlInfo[0]);
+          new PropertyXmlInfo[0]);
 
   /**
    * @return

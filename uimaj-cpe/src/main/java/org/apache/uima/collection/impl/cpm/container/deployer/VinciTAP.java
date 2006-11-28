@@ -105,10 +105,10 @@ public class VinciTAP {
   private String[] keys2Drop = { "" };
 
   private VinciCasDataConverter vinciCasDataConverter = new VinciCasDataConverter(
-                  org.apache.uima.collection.impl.cpm.Constants.METADATA_KEY,
-                  org.apache.uima.collection.impl.cpm.Constants.DOC_ID,
-                  org.apache.uima.collection.impl.cpm.Constants.CONTENT_TAG,
-                  org.apache.uima.collection.impl.cpm.Constants.CONTENT_TAG_VALUE, contentTag, true);
+          org.apache.uima.collection.impl.cpm.Constants.METADATA_KEY,
+          org.apache.uima.collection.impl.cpm.Constants.DOC_ID,
+          org.apache.uima.collection.impl.cpm.Constants.CONTENT_TAG,
+          org.apache.uima.collection.impl.cpm.Constants.CONTENT_TAG_VALUE, contentTag, true);
 
   private String monitor = "";
 
@@ -164,28 +164,23 @@ public class VinciTAP {
         maxConnectRetryCount = Integer.parseInt(System.getProperty("CONNECT_RETRY_COUNT"));
       } catch (Exception e) {
         throw new ConnectException(CpmLocalizedMessage.getLocalizedMessage(
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_EXP_invalid_retry_count__WARNING", new Object[] {
-                            Thread.currentThread().getName(), aHost, String.valueOf(aPort) }));
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_retry_count__WARNING",
+                new Object[] { Thread.currentThread().getName(), aHost, String.valueOf(aPort) }));
       }
     }
     while (attemptCount++ < maxConnectRetryCount) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_set_service_timeout__FINEST",
-                        new Object[] { Thread.currentThread().getName(), String.valueOf(timeout) });
+                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_set_service_timeout__FINEST",
+                new Object[] { Thread.currentThread().getName(), String.valueOf(timeout) });
       }
       try {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "initialize",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_connect_to_service__FINEST",
-                          new Object[] { Thread.currentThread().getName(), aHost,
-                              String.valueOf(aPort) });
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_connect_to_service__FINEST",
+                  new Object[] { Thread.currentThread().getName(), aHost, String.valueOf(aPort) });
         }
         conn = new BaseClient(aHost, aPort);
         conn.setSocketTimeout(timeout);
@@ -194,21 +189,17 @@ public class VinciTAP {
         serviceHost = conn.getHost();
         servicePort = String.valueOf(conn.getPort());
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "initialize",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_connected_to_service__FINEST",
-                          new Object[] { Thread.currentThread().getName(), aHost,
-                              String.valueOf(aPort) });
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_connected_to_service__FINEST",
+                  new Object[] { Thread.currentThread().getName(), aHost, String.valueOf(aPort) });
         }
         if (conn.isOpen()) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                            "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_testing_connection__FINEST",
-                            new Object[] { Thread.currentThread().getName() });
+                    "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_testing_connection__FINEST",
+                    new Object[] { Thread.currentThread().getName() });
           }
           try {
             synchronized (monitor) {
@@ -225,18 +216,13 @@ public class VinciTAP {
             // Send shutdown request to the TAE service
             AFrame resp = (AFrame) conn.sendAndReceive(query);
             if (resp.fgetString("vinci:STATUS") != null
-                            && resp.fgetString("vinci:STATUS").equals("OK")) {
+                    && resp.fgetString("vinci:STATUS").equals("OK")) {
               fencedProcessPID = resp.fgetString("PID");
               if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-                UIMAFramework.getLogger(this.getClass())
-                                .logrb(
-                                                Level.FINEST,
-                                                this.getClass().getName(),
-                                                "initialize",
-                                                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                                "UIMA_CPM_service_pid__FINEST",
-                                                new Object[] { Thread.currentThread().getName(),
-                                                    fencedProcessPID });
+                UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+                        this.getClass().getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                        "UIMA_CPM_service_pid__FINEST",
+                        new Object[] { Thread.currentThread().getName(), fencedProcessPID });
               }
             }
           } catch (Exception ex) {
@@ -245,26 +231,23 @@ public class VinciTAP {
         } else {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                            "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_connection_closed__FINEST",
-                            new Object[] { Thread.currentThread().getName() });
+                    "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_connection_closed__FINEST",
+                    new Object[] { Thread.currentThread().getName() });
           }
         }
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "initialize",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_connection_validated__FINEST",
-                          new Object[] { Thread.currentThread().getName(), aHost,
-                              String.valueOf(aPort) });
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_connection_validated__FINEST",
+                  new Object[] { Thread.currentThread().getName(), aHost, String.valueOf(aPort) });
         }
         return;
       } catch (Exception e) {
         if (e instanceof ConnectException) {
           if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
-            UIMAFramework.getLogger(this.getClass()).logrb(
+            UIMAFramework.getLogger(this.getClass())
+                    .logrb(
                             Level.WARNING,
                             this.getClass().getName(),
                             "initialize",
@@ -288,21 +271,14 @@ public class VinciTAP {
       }
     }
     if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
-      UIMAFramework.getLogger(this.getClass())
-                      .logrb(
-                                      Level.WARNING,
-                                      this.getClass().getName(),
-                                      "initialize",
-                                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                      "UIMA_CPM_connection_failed__WARNING",
-                                      new Object[] { Thread.currentThread().getName(), aHost,
-                                          String.valueOf(aPort) });
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
+              "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_connection_failed__WARNING",
+              new Object[] { Thread.currentThread().getName(), aHost, String.valueOf(aPort) });
     }
-    throw new ConnectException(CpmLocalizedMessage
-                    .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                    "UIMA_CPM_EXP_unable_to_connect__WARNING", new Object[] {
-                                        Thread.currentThread().getName(), aHost,
-                                        String.valueOf(aPort) }));
+    throw new ConnectException(CpmLocalizedMessage.getLocalizedMessage(
+            CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_unable_to_connect__WARNING",
+            new Object[] { Thread.currentThread().getName(), aHost, String.valueOf(aPort) }));
   }
 
   /**
@@ -327,14 +303,13 @@ public class VinciTAP {
 
       if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                        "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_vns_not_provided__SEVERE",
-                        new Object[] { Thread.currentThread().getName() });
+                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_vns_not_provided__SEVERE",
+                new Object[] { Thread.currentThread().getName() });
       }
       throw new ServiceConnectionException(CpmLocalizedMessage.getLocalizedMessage(
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_EXP_vinci_vns_cfg_invalid__WARNING", new Object[] { Thread
-                                      .currentThread().getName() }));
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_vinci_vns_cfg_invalid__WARNING",
+              new Object[] { Thread.currentThread().getName() }));
     }
 
     System.setProperty("VNS_HOST", getVNSHost());
@@ -343,13 +318,13 @@ public class VinciTAP {
     try {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "initialize",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_locating_service__FINEST",
-                        new Object[] { Thread.currentThread().getName(), aServiceName,
-                            System.getProperty("VNS_HOST"), System.getProperty("VNS_PORT") });
+                Level.FINEST,
+                this.getClass().getName(),
+                "initialize",
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_locating_service__FINEST",
+                new Object[] { Thread.currentThread().getName(), aServiceName,
+                    System.getProperty("VNS_HOST"), System.getProperty("VNS_PORT") });
       }
       // Override vinci default VNS settings
       VinciContext vctx = new VinciContext(InetAddress.getLocalHost().getCanonicalHostName(), 0);
@@ -358,10 +333,10 @@ public class VinciTAP {
 
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).log(
-                        Level.FINEST,
-                        Thread.currentThread().getName() + " Connecting to::" + aServiceName
-                                        + " VinciContext.getVNSHost():" + vctx.getVNSHost()
-                                        + " VinciContext.getVNSPort():" + vctx.getVNSPort()); // getVNSHost());
+                Level.FINEST,
+                Thread.currentThread().getName() + " Connecting to::" + aServiceName
+                        + " VinciContext.getVNSHost():" + vctx.getVNSHost()
+                        + " VinciContext.getVNSPort():" + vctx.getVNSPort()); // getVNSHost());
       }
       // establish connection to service
       conn = new VinciClient(aServiceName, vctx);
@@ -369,13 +344,13 @@ public class VinciTAP {
       conn.setRetry(false);
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "initialize",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_set_service_timeout__FINEST",
-                        new Object[] { Thread.currentThread().getName(),
-                            aServiceName + ":" + String.valueOf(timeout) });
+                Level.FINEST,
+                this.getClass().getName(),
+                "initialize",
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_set_service_timeout__FINEST",
+                new Object[] { Thread.currentThread().getName(),
+                    aServiceName + ":" + String.valueOf(timeout) });
       }
       serviceHost = conn.getHost();
       servicePort = String.valueOf(conn.getPort());
@@ -386,20 +361,19 @@ public class VinciTAP {
     } catch (Exception e) {
       if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
-                        "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_connection_failed__WARNING",
-                        new Object[] { Thread.currentThread().getName(), aServiceName, "" });
+                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_connection_failed__WARNING",
+                new Object[] { Thread.currentThread().getName(), aServiceName, "" });
 
         UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
-                        Thread.currentThread().getName(), e);
+                Thread.currentThread().getName(), e);
       }
     }
 
     // If we are here there was a problem connecting to Vinci service
     throw new ServiceConnectionException(CpmLocalizedMessage.getLocalizedMessage(
-                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                    "UIMA_CPM_EXP_unable_to_connect_toservice__WARNING", new Object[] {
-                        Thread.currentThread().getName(), aServiceName }));
+            CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_unable_to_connect_toservice__WARNING",
+            new Object[] { Thread.currentThread().getName(), aServiceName }));
   }
 
   private void testAndReconnect() throws ServiceException, ServiceConnectionException {
@@ -409,34 +383,27 @@ public class VinciTAP {
         if (serviceName != null) {
           if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
-                            "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_service_down__INFO",
-                            new Object[] { Thread.currentThread().getName(), serviceName });
+                    "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_service_down__INFO",
+                    new Object[] { Thread.currentThread().getName(), serviceName });
           }
           connect(serviceName);
         } else if (serviceHost != null && servicePort != null) {
-          UIMAFramework.getLogger(this.getClass())
-                          .logrb(
-                                          Level.INFO,
-                                          this.getClass().getName(),
-                                          "initialize",
-                                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                          "UIMA_CPM_service_down_onhost__INFO",
-                                          new Object[] { Thread.currentThread().getName(),
-                                              serviceHost, servicePort });
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+                  "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_service_down_onhost__INFO",
+                  new Object[] { Thread.currentThread().getName(), serviceHost, servicePort });
           connect(serviceHost, Integer.parseInt(servicePort));
         }
       } catch (ConnectException ce) {
         if (serviceName != null) {
           throw new ServiceException(CpmLocalizedMessage.getLocalizedMessage(
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_EXP_unable_to_connect_toservice__WARNING", new Object[] {
-                              Thread.currentThread().getName(), serviceName }));
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_EXP_unable_to_connect_toservice__WARNING", new Object[] {
+                      Thread.currentThread().getName(), serviceName }));
         } else {
           throw new ServiceException(CpmLocalizedMessage.getLocalizedMessage(
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_EXP_unable_to_connect__WARNING", new Object[] {
-                              Thread.currentThread().getName(), serviceHost, servicePort }));
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_unable_to_connect__WARNING",
+                  new Object[] { Thread.currentThread().getName(), serviceHost, servicePort }));
 
         }
 
@@ -460,13 +427,13 @@ public class VinciTAP {
     currentTimeout = conn.getSocketTimeout();
     if (UIMAFramework.getLogger().isLoggable(Level.FINE)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINE,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_sending_process_req__FINEST",
-                      new Object[] { Thread.currentThread().getName(), serviceHost, servicePort,
-                          String.valueOf(currentTimeout) });
+              Level.FINE,
+              this.getClass().getName(),
+              "process",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_sending_process_req__FINEST",
+              new Object[] { Thread.currentThread().getName(), serviceHost, servicePort,
+                  String.valueOf(currentTimeout) });
     }
     try {
       AFrame responseFrame = null;
@@ -480,118 +447,110 @@ public class VinciTAP {
       long memStart = Runtime.getRuntime().freeMemory();
       if (System.getProperty("SHOW_MEMORY") != null) {
         UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "process",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_show_memory_before_call__FINEST",
-                        new Object[] { Thread.currentThread().getName(),
-                            String.valueOf(Runtime.getRuntime().totalMemory() / 1024),
-                            String.valueOf(memStart / 1024) });
+                Level.FINEST,
+                this.getClass().getName(),
+                "process",
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_show_memory_before_call__FINEST",
+                new Object[] { Thread.currentThread().getName(),
+                    String.valueOf(Runtime.getRuntime().totalMemory() / 1024),
+                    String.valueOf(memStart / 1024) });
       }
       responseFrame = (AFrame) conn.sendAndReceive(aFrame, AFrame.getAFrameFactory(), timeout);
       if (System.getProperty("SHOW_MEMORY") != null) {
         UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "process",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_show_memory_after_call__FINEST",
-                        new Object[] { Thread.currentThread().getName(),
-                            String.valueOf(Runtime.getRuntime().totalMemory() / 1024),
-                            String.valueOf(Runtime.getRuntime().freeMemory() / 1024) });
+                Level.FINEST,
+                this.getClass().getName(),
+                "process",
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_show_memory_after_call__FINEST",
+                new Object[] { Thread.currentThread().getName(),
+                    String.valueOf(Runtime.getRuntime().totalMemory() / 1024),
+                    String.valueOf(Runtime.getRuntime().freeMemory() / 1024) });
       }
       if (UIMAFramework.getLogger().isLoggable(Level.FINE)) {
-        UIMAFramework.getLogger(this.getClass())
-                        .logrb(
-                                        Level.FINE,
-                                        this.getClass().getName(),
-                                        "process",
-                                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                        "UIMA_CPM_received_response__FINEST",
-                                        new Object[] { Thread.currentThread().getName(),
-                                            serviceHost, servicePort });
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINE, this.getClass().getName(),
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_received_response__FINEST",
+                new Object[] { Thread.currentThread().getName(), serviceHost, servicePort });
       }
       return responseFrame;
     } catch (VNSException vnse) {
       UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.WARNING,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_failed_service_request__WARNING",
-                      new Object[] { Thread.currentThread().getName(), conn.getHost(),
-                          String.valueOf(conn.getPort()) });
+              Level.WARNING,
+              this.getClass().getName(),
+              "process",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_failed_service_request__WARNING",
+              new Object[] { Thread.currentThread().getName(), conn.getHost(),
+                  String.valueOf(conn.getPort()) });
 
       UIMAFramework.getLogger(this.getClass()).log(Level.WARNING, Thread.currentThread().getName(),
-                      vnse);
+              vnse);
       conn.close();
       throw new ServiceException(vnse.getMessage());
     } catch (ServiceDownException sde) {
       UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.WARNING,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_failed_service_request__WARNING",
-                      new Object[] { Thread.currentThread().getName(), conn.getHost(),
-                          String.valueOf(conn.getPort()) });
+              Level.WARNING,
+              this.getClass().getName(),
+              "process",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_failed_service_request__WARNING",
+              new Object[] { Thread.currentThread().getName(), conn.getHost(),
+                  String.valueOf(conn.getPort()) });
       UIMAFramework.getLogger(this.getClass()).log(Level.WARNING, Thread.currentThread().getName(),
-                      sde);
+              sde);
       conn.close();
       throw new ServiceConnectionException(sde.getMessage());
     } catch (ServiceException sde) {
       UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.WARNING,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_failed_service_request__WARNING",
-                      new Object[] { Thread.currentThread().getName(), conn.getHost(),
-                          String.valueOf(conn.getPort()) });
+              Level.WARNING,
+              this.getClass().getName(),
+              "process",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_failed_service_request__WARNING",
+              new Object[] { Thread.currentThread().getName(), conn.getHost(),
+                  String.valueOf(conn.getPort()) });
       UIMAFramework.getLogger(this.getClass()).log(Level.WARNING, Thread.currentThread().getName(),
-                      sde);
+              sde);
       if (sde.getMessage().equals("Unknown command") && aFrame != null) {
         UIMAFramework.getLogger(this.getClass()).log(Level.INFO, aFrame.toXML());
       }
       throw new ServiceConnectionException(sde.getMessage());
     } catch (IOException e) {
       UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.WARNING,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_failed_service_request__WARNING",
-                      new Object[] { Thread.currentThread().getName(), conn.getHost(),
-                          String.valueOf(conn.getPort()) });
+              Level.WARNING,
+              this.getClass().getName(),
+              "process",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_failed_service_request__WARNING",
+              new Object[] { Thread.currentThread().getName(), conn.getHost(),
+                  String.valueOf(conn.getPort()) });
       UIMAFramework.getLogger(this.getClass()).log(Level.WARNING, Thread.currentThread().getName(),
-                      e);
+              e);
       conn.close();
       if (System.getProperty("TEST_BEFORE_SEND") != null) {
         testAndReconnect();
       }
       if (e instanceof SocketTimeoutException) {
-        UIMAFramework.getLogger(this.getClass()).log(
-                        Level.WARNING,
-                        Thread.currentThread().getName() + "  Exception Cause::"
-                                        + e.getClass().getName());
+        UIMAFramework.getLogger(this.getClass()).log(Level.WARNING,
+                Thread.currentThread().getName() + "  Exception Cause::" + e.getClass().getName());
         throw new ServiceConnectionException(e);
       }
       throw new ServiceConnectionException(CpmLocalizedMessage.getLocalizedMessage(
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_service_timeout__WARNING",
-                      new Object[] { Thread.currentThread().getName(), conn.getHost(),
-                          String.valueOf(conn.getPort()), String.valueOf(currentTimeout) }));
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_service_timeout__WARNING",
+              new Object[] { Thread.currentThread().getName(), conn.getHost(),
+                  String.valueOf(conn.getPort()), String.valueOf(currentTimeout) }));
     } catch (Exception e) {
       UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.WARNING,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_failed_service_request__WARNING",
-                      new Object[] { Thread.currentThread().getName(), conn.getHost(),
-                          String.valueOf(conn.getPort()) });
+              Level.WARNING,
+              this.getClass().getName(),
+              "process",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_failed_service_request__WARNING",
+              new Object[] { Thread.currentThread().getName(), conn.getHost(),
+                  String.valueOf(conn.getPort()) });
       UIMAFramework.getLogger(this.getClass()).log(Level.WARNING, Thread.currentThread().getName(),
-                      e);
+              e);
 
       conn.close();
       throw new ServiceException(e.getMessage());
@@ -620,17 +579,17 @@ public class VinciTAP {
         String featureStructureType = kvp.getKey();
         // Convert WF keys from ':' representation to '_colon_'
         if (featureStructureType
-                        .indexOf(org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM) > -1) {
+                .indexOf(org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM) > -1) {
           featureStructureType = StringUtils.replaceAll(featureStructureType,
-                          org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM,
-                          org.apache.uima.collection.impl.cpm.Constants.LONG_COLON_TERM);
+                  org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM,
+                  org.apache.uima.collection.impl.cpm.Constants.LONG_COLON_TERM);
         }
         // Convert WF keys from '-' representation to '_dash_'
         if (featureStructureType
-                        .indexOf(org.apache.uima.collection.impl.cpm.Constants.SHORT_DASH_TERM) > -1) {
+                .indexOf(org.apache.uima.collection.impl.cpm.Constants.SHORT_DASH_TERM) > -1) {
           featureStructureType = StringUtils.replaceAll(featureStructureType,
-                          org.apache.uima.collection.impl.cpm.Constants.SHORT_DASH_TERM,
-                          org.apache.uima.collection.impl.cpm.Constants.LONG_DASH_TERM);
+                  org.apache.uima.collection.impl.cpm.Constants.SHORT_DASH_TERM,
+                  org.apache.uima.collection.impl.cpm.Constants.LONG_DASH_TERM);
         }
 
         FeatureStructure vfs = new FeatureStructureImpl();
@@ -669,7 +628,7 @@ public class VinciTAP {
             FeatureValue fValue = fs.getFeatureValue(names[i]);
             if (fValue != null) {
               s = "\n\t\tCAS FEATURE NAME::" + names[i] + " CAS FEATURE VALUE::"
-                              + fValue.toString();
+                      + fValue.toString();
               if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
                 UIMAFramework.getLogger(VinciTAP.class).log(Level.FINEST, s);
               }
@@ -696,13 +655,13 @@ public class VinciTAP {
    * @throws Exception
    */
   private void produceXCASRequestFrame(CasData aCasData, AFrame dataFrame, String[] aDropKeyList)
-                  throws Exception {
+          throws Exception {
 
     AFrame keysFrame = new AFrame();
     dataFrame.fadd("KEYS", keysFrame);
     String ueid = DATACasUtils.getFeatureValueByType(aCasData,
-                    org.apache.uima.collection.impl.cpm.Constants.METADATA_KEY,
-                    org.apache.uima.collection.impl.cpm.Constants.DOC_ID);
+            org.apache.uima.collection.impl.cpm.Constants.METADATA_KEY,
+            org.apache.uima.collection.impl.cpm.Constants.DOC_ID);
     keysFrame.fadd("UEID", ueid);
 
     AFrame keyFrame = null;
@@ -736,13 +695,13 @@ public class VinciTAP {
         String type = fs.getType();
         if (type.indexOf(org.apache.uima.collection.impl.cpm.Constants.LONG_COLON_TERM) > -1) {
           type = StringUtils.replaceAll(type,
-                          org.apache.uima.collection.impl.cpm.Constants.LONG_COLON_TERM,
-                          org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM);
+                  org.apache.uima.collection.impl.cpm.Constants.LONG_COLON_TERM,
+                  org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM);
         }
         if (type.indexOf(org.apache.uima.collection.impl.cpm.Constants.LONG_DASH_TERM) > -1) {
           type = StringUtils.replaceAll(type,
-                          org.apache.uima.collection.impl.cpm.Constants.LONG_DASH_TERM,
-                          org.apache.uima.collection.impl.cpm.Constants.SHORT_DASH_TERM);
+                  org.apache.uima.collection.impl.cpm.Constants.LONG_DASH_TERM,
+                  org.apache.uima.collection.impl.cpm.Constants.SHORT_DASH_TERM);
         }
         keysFrame.fadd(type, keyFrame);
       }
@@ -762,8 +721,7 @@ public class VinciTAP {
    */
   private static boolean isText(String feature) {
     if ("Doc:SpannedText".equals(feature) || "Detag:Content".equals(feature)
-                    || "Detag:DetagContent".equals(feature)
-                    || "uima.cpm.DocumentText".equals(feature)) {
+            || "Detag:DetagContent".equals(feature) || "uima.cpm.DocumentText".equals(feature)) {
       return true;
     }
     return false;
@@ -784,7 +742,7 @@ public class VinciTAP {
    * @throws ServiceConnectionException
    */
   public CasData analyze(CasData aCas, ProcessTrace aPT, String aResourceName)
-                  throws ServiceException, ServiceConnectionException {
+          throws ServiceException, ServiceConnectionException {
     AFrame query = new AFrame();
 
     try {
@@ -810,13 +768,13 @@ public class VinciTAP {
         newCasData.addFeatureStructure(casDataFs);
       }
       vinciCasDataConverter.appendVinciFrameToCasData(responseFrame.fgetAFrame("DATA").fgetAFrame(
-                      "KEYS"), newCasData);
+              "KEYS"), newCasData);
       aCas = newCasData;
 
       aPT.endEvent(aResourceName, "Vinci Response Frame to CAS", "");
       // Get the times reported by service and add to process trace
       int frameToCasTime = responseFrame.fgetVinciFrame("DATA")
-                      .fgetInt(Constants.FRAME_TO_CAS_TIME);
+              .fgetInt(Constants.FRAME_TO_CAS_TIME);
       if (frameToCasTime > 0) {
         totalFrameToCasTime += frameToCasTime;
         aPT.addEvent(aResourceName, Constants.FRAME_TO_CAS_TIME, "", frameToCasTime, "success");
@@ -827,7 +785,7 @@ public class VinciTAP {
         aPT.addEvent(aResourceName, ProcessTraceEvent.ANALYSIS, "", annotationTime, "success");
       }
       int casToFrameTime = responseFrame.fgetVinciFrame("DATA")
-                      .fgetInt(Constants.CAS_TO_FRAME_TIME);
+              .fgetInt(Constants.CAS_TO_FRAME_TIME);
       if (casToFrameTime > 0) {
         totalCasToFrameTime += casToFrameTime;
         aPT.addEvent(aResourceName, Constants.CAS_TO_FRAME_TIME, "", casToFrameTime, "success");
@@ -838,23 +796,23 @@ public class VinciTAP {
     } catch (ServiceException e) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINER)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINER, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
-                        new Object[] { Thread.currentThread().getName(), e.getMessage() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
+                new Object[] { Thread.currentThread().getName(), e.getMessage() });
       }
       throw e;
     } catch (ServiceConnectionException e) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINER)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINER, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
-                        new Object[] { Thread.currentThread().getName(), e.getMessage() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
+                new Object[] { Thread.currentThread().getName(), e.getMessage() });
       }
       throw e;
     } catch (Exception ex) {
       ex.printStackTrace();
       if (UIMAFramework.getLogger().isLoggable(Level.FINER)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINER, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
-                        new Object[] { Thread.currentThread().getName(), ex.getMessage() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
+                new Object[] { Thread.currentThread().getName(), ex.getMessage() });
         UIMAFramework.getLogger(this.getClass()).log(Level.FINER, "", ex);
       }
       throw new ServiceException(ex.getMessage());
@@ -868,14 +826,9 @@ public class VinciTAP {
       for (int inx = 0; inx < keyList.size(); inx++) {
         if (System.getProperty("SHOWKEYS") != null) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            UIMAFramework.getLogger(this.getClass()).logrb(
-                            Level.FINEST,
-                            this.getClass().getName(),
-                            "process",
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_drop_key__FINEST",
-                            new Object[] { Thread.currentThread().getName(),
-                                (String) keyList.get(inx) });
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_drop_key__FINEST",
+                    new Object[] { Thread.currentThread().getName(), (String) keyList.get(inx) });
           }
         }
         if (DATACasUtils.dropIt((String) keyList.get(inx), aDropKeyList)) {
@@ -914,16 +867,11 @@ public class VinciTAP {
    * @throws ServiceConnectionException
    */
   public CasData[] analyze(CasData[] aCasList, ProcessTrace aPT, String aResourceName)
-                  throws ServiceException, ServiceConnectionException {
+          throws ServiceException, ServiceConnectionException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_analyze_bundle__FINEST",
-                      new Object[] { Thread.currentThread().getName(),
-                          String.valueOf(aCasList.length) });
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_analyze_bundle__FINEST",
+              new Object[] { Thread.currentThread().getName(), String.valueOf(aCasList.length) });
     }
     AFrame query = new AFrame();
 
@@ -943,17 +891,17 @@ public class VinciTAP {
             FeatureStructure fs = (FeatureStructure) it.next();
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                              this.getClass().getName(), "process",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_dump_casdata__FINEST",
-                              new Object[] { Thread.currentThread().getName(), fs.getType() });
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_dump_casdata__FINEST",
+                      new Object[] { Thread.currentThread().getName(), fs.getType() });
             }
           }
         }
         if (DATACasUtils.isCasEmpty(aCasList[i])) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                            "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_no_cas__FINEST",
-                            new Object[] { Thread.currentThread().getName() });
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_no_cas__FINEST",
+                    new Object[] { Thread.currentThread().getName() });
           }
           continue;
         }
@@ -973,9 +921,9 @@ public class VinciTAP {
       if (serviceName != null && System.getProperty("SHOW_NAME") != null)
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_send_casdata_to_service__FINEST",
-                          new Object[] { Thread.currentThread().getName(), serviceName });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_send_casdata_to_service__FINEST",
+                  new Object[] { Thread.currentThread().getName(), serviceName });
         }
       if (System.getProperty("SHOW_REQFRAME") != null) {
         UIMAFramework.getLogger(this.getClass()).log(Level.INFO, " queryFrame-" + query.toXML());
@@ -991,10 +939,8 @@ public class VinciTAP {
       }
 
       if (System.getProperty("SHOW_RAW_RESPFRAME") != null) {
-        UIMAFramework.getLogger(this.getClass()).log(
-                        Level.INFO,
-                        " responseFrame from service::" + serviceName + "\n"
-                                        + responseFrame.toXML());
+        UIMAFramework.getLogger(this.getClass()).log(Level.INFO,
+                " responseFrame from service::" + serviceName + "\n" + responseFrame.toXML());
       }
 
       if (responseFrame.fgetAFrame("DATA") == null) {
@@ -1010,10 +956,8 @@ public class VinciTAP {
         dataFrame = (AFrame) d.remove(0);
         try {
           if (System.getProperty("SHOW_RESPFRAME") != null) {
-            UIMAFramework.getLogger(this.getClass()).log(
-                            Level.INFO,
-                            " Converting XCAS in responseFrame to CasData.XCAS="
-                                            + dataFrame.toXML());
+            UIMAFramework.getLogger(this.getClass()).log(Level.INFO,
+                    " Converting XCAS in responseFrame to CasData.XCAS=" + dataFrame.toXML());
           }
           long eTime = uimaTimer.getTimeInMillis();
           // When configured use WF serializer which is faster than the alternative SAX based one
@@ -1029,7 +973,7 @@ public class VinciTAP {
               newCasData.addFeatureStructure(casDataFs);
             }
             vinciCasDataConverter.appendVinciFrameToCasData(dataFrame.fgetAFrame("KEYS"),
-                            newCasData);
+                    newCasData);
             aCasList[instanceCount] = newCasData;
           }
           totalDeSerializeTime += (uimaTimer.getTimeInMillis() - eTime);
@@ -1064,13 +1008,13 @@ public class VinciTAP {
         } catch (Exception e) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINER)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
-                            Level.FINER,
-                            this.getClass().getName(),
-                            "process",
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_exception__FINER",
-                            new Object[] { Thread.currentThread().getName(), e.getMessage(),
-                                dataFrame.toXML() });
+                    Level.FINER,
+                    this.getClass().getName(),
+                    "process",
+                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_exception__FINER",
+                    new Object[] { Thread.currentThread().getName(), e.getMessage(),
+                        dataFrame.toXML() });
             e.printStackTrace();
           }
           dataFrame.toXML();
@@ -1078,32 +1022,27 @@ public class VinciTAP {
       }
       aPT.endEvent(aResourceName, "Vinci Call", "");
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "process",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_done_analyzing_bundle__FINEST",
-                        new Object[] { Thread.currentThread().getName(),
-                            String.valueOf(aCasList.length) });
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_done_analyzing_bundle__FINEST",
+                new Object[] { Thread.currentThread().getName(), String.valueOf(aCasList.length) });
       }
       return aCasList;
 
     } catch (ServiceException e) {
       if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_service_exception__SEVERE",
-                        new Object[] { Thread.currentThread().getName(), e.getMessage() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_service_exception__SEVERE",
+                new Object[] { Thread.currentThread().getName(), e.getMessage() });
       }
       e.printStackTrace();
       throw e;
     } catch (ServiceConnectionException e) {
       if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_service_connection_exception__SEVERE",
-                        new Object[] { Thread.currentThread().getName(), e.getMessage() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_service_connection_exception__SEVERE",
+                new Object[] { Thread.currentThread().getName(), e.getMessage() });
       }
       e.printStackTrace();
       throw e;
@@ -1121,13 +1060,13 @@ public class VinciTAP {
   public ProcessingResourceMetaData getAnalysisEngineMetaData() throws ResourceServiceException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_request_metadata__FINEST",
-                      new Object[] { Thread.currentThread().getName(), serviceName, conn.getHost(),
-                          String.valueOf(conn.getPort()) });
+              Level.FINEST,
+              this.getClass().getName(),
+              "process",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_request_metadata__FINEST",
+              new Object[] { Thread.currentThread().getName(), serviceName, conn.getHost(),
+                  String.valueOf(conn.getPort()) });
     }
     // Added to support WF Miners that have descriptors.
     AFrame resultFrame = null;
@@ -1140,13 +1079,13 @@ public class VinciTAP {
       resultFrame = (AFrame) conn.sendAndReceive(queryFrame, AFrame.getAFrameFactory(), timeout);
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "process",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_return_meta__FINEST",
-                        new Object[] { Thread.currentThread().getName(), serviceName,
-                            conn.getHost(), String.valueOf(conn.getPort()) });
+                Level.FINEST,
+                this.getClass().getName(),
+                "process",
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_return_meta__FINEST",
+                new Object[] { Thread.currentThread().getName(), serviceName, conn.getHost(),
+                    String.valueOf(conn.getPort()) });
       }
       // Parse the XML into the ProcessingResourceMetaData object
       SaxDeserializer saxDeser = UIMAFramework.getXMLParser().newSaxDeserializer(null, null, false);
@@ -1159,21 +1098,20 @@ public class VinciTAP {
 
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "process",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_done_parsing_meta__FINEST",
-                        new Object[] { Thread.currentThread().getName(), serviceName,
-                            conn.getHost(), String.valueOf(conn.getPort()) });
+                Level.FINEST,
+                this.getClass().getName(),
+                "process",
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_done_parsing_meta__FINEST",
+                new Object[] { Thread.currentThread().getName(), serviceName, conn.getHost(),
+                    String.valueOf(conn.getPort()) });
       }
       return metadata;
     } catch (ServiceException e) {
       if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_service_exception__SEVERE",
-                        new Object[] { Thread.currentThread().getName(), e.getMessage() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_service_exception__SEVERE",
+                new Object[] { Thread.currentThread().getName(), e.getMessage() });
       }
       if ("No Such Command supported.".equals(e.getMessage().trim())) {
         return null;
@@ -1183,7 +1121,8 @@ public class VinciTAP {
     } catch (Exception e) {
       if ("No Such Command supported".equals(e.getMessage())) {
         if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
+          UIMAFramework.getLogger(this.getClass())
+                  .logrb(
                           Level.WARNING,
                           this.getClass().getName(),
                           "process",
@@ -1196,9 +1135,8 @@ public class VinciTAP {
       }
       if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_service_exception__SEVERE",
-                        new Object[] { Thread.currentThread().getName(), e.getMessage() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_service_exception__SEVERE",
+                new Object[] { Thread.currentThread().getName(), e.getMessage() });
       }
       e.printStackTrace();
       throw new ResourceServiceException(e);
@@ -1221,22 +1159,21 @@ public class VinciTAP {
         query.fadd("vinci:COMMAND", Constants.BATCH_PROCESS_COMPLETE);
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "process",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_send_batch_complete__FINEST",
-                          new Object[] { Thread.currentThread().getName(), conn.getHost(),
-                              String.valueOf(conn.getPort()), query.toXML() });
+                  Level.FINEST,
+                  this.getClass().getName(),
+                  "process",
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_send_batch_complete__FINEST",
+                  new Object[] { Thread.currentThread().getName(), conn.getHost(),
+                      String.valueOf(conn.getPort()), query.toXML() });
         }
         // Send notification to service
         conn.send(query);
       }
     } catch (Exception e) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_service_exception__SEVERE",
-                      new Object[] { Thread.currentThread().getName(), e.getMessage() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_service_exception__SEVERE",
+              new Object[] { Thread.currentThread().getName(), e.getMessage() });
       e.printStackTrace();
       throw new ResourceServiceException(e);
     }
@@ -1257,25 +1194,24 @@ public class VinciTAP {
         query.fadd("vinci:COMMAND", Constants.COLLECTION_PROCESS_COMPLETE);
         if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "process",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_send_collection_complete__FINEST",
-                          new Object[] { Thread.currentThread().getName(), conn.getHost(),
-                              String.valueOf(conn.getPort()), query.toXML() });
+                  Level.FINEST,
+                  this.getClass().getName(),
+                  "process",
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_send_collection_complete__FINEST",
+                  new Object[] { Thread.currentThread().getName(), conn.getHost(),
+                      String.valueOf(conn.getPort()), query.toXML() });
 
           UIMAFramework.getLogger(this.getClass()).log(Level.INFO,
-                          " Sending COLLECTION PROCESS COMPLETE TO Service\n" + query.toXML());
+                  " Sending COLLECTION PROCESS COMPLETE TO Service\n" + query.toXML());
         }
         // Send notification to service
         conn.sendAndReceive(query);
       }
     } catch (Exception e) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_service_exception__SEVERE",
-                      new Object[] { Thread.currentThread().getName(), e.getMessage() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_service_exception__SEVERE",
+              new Object[] { Thread.currentThread().getName(), e.getMessage() });
 
       e.printStackTrace();
       throw new ResourceServiceException(e);
@@ -1296,7 +1232,8 @@ public class VinciTAP {
    */
   public boolean shutdown(boolean shutdownService, boolean aDoSendNotification) {
     if (System.getProperty("SHOW_STATS") != null) {
-      UIMAFramework.getLogger(this.getClass()).logrb(
+      UIMAFramework.getLogger(this.getClass())
+              .logrb(
                       Level.FINEST,
                       this.getClass().getName(),
                       "process",
@@ -1305,7 +1242,8 @@ public class VinciTAP {
                       new Object[] { Thread.currentThread().getName(),
                           String.valueOf(totalSerializeTime) });
 
-      UIMAFramework.getLogger(this.getClass()).logrb(
+      UIMAFramework.getLogger(this.getClass())
+              .logrb(
                       Level.FINEST,
                       this.getClass().getName(),
                       "process",
@@ -1314,7 +1252,8 @@ public class VinciTAP {
                       new Object[] { Thread.currentThread().getName(),
                           String.valueOf(totalDeSerializeTime) });
 
-      UIMAFramework.getLogger(this.getClass()).logrb(
+      UIMAFramework.getLogger(this.getClass())
+              .logrb(
                       Level.FINEST,
                       this.getClass().getName(),
                       "process",
@@ -1337,13 +1276,13 @@ public class VinciTAP {
             query.fadd("vinci:COMMAND", Constants.SHUTDOWN);
             if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
               UIMAFramework.getLogger(this.getClass()).logrb(
-                              Level.INFO,
-                              this.getClass().getName(),
-                              "process",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_stopping_service__INFO",
-                              new Object[] { Thread.currentThread().getName(), conn.getHost(),
-                                  String.valueOf(conn.getPort()), query.toXML() });
+                      Level.INFO,
+                      this.getClass().getName(),
+                      "process",
+                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_stopping_service__INFO",
+                      new Object[] { Thread.currentThread().getName(), conn.getHost(),
+                          String.valueOf(conn.getPort()), query.toXML() });
             }
             // Send shutdown request to the TAE service
             conn.send(query);
@@ -1361,9 +1300,8 @@ public class VinciTAP {
       ex.printStackTrace();
 
       UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_service_exception__SEVERE",
-                      new Object[] { Thread.currentThread().getName(), ex.getMessage() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_service_exception__SEVERE",
+              new Object[] { Thread.currentThread().getName(), ex.getMessage() });
       return false;
     } finally {
       if (conn != null) {
@@ -1400,18 +1338,18 @@ public class VinciTAP {
         synchronized (monitor) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
-                            Level.FINEST,
-                            this.getClass().getName(),
-                            "process",
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_waiting_for_service_shutdown__FINEST",
-                            new Object[] { Thread.currentThread().getName(),
-                                String.valueOf(10 - retry), String.valueOf(10) });
+                    Level.FINEST,
+                    this.getClass().getName(),
+                    "process",
+                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_waiting_for_service_shutdown__FINEST",
+                    new Object[] { Thread.currentThread().getName(), String.valueOf(10 - retry),
+                        String.valueOf(10) });
           }
           monitor.wait(100); // wait for 50ms to give the service time to exit cleanly
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
-                            " Resuming CPE shutdown.Service should be down now.");
+                    " Resuming CPE shutdown.Service should be down now.");
           }
         }
       } catch (InterruptedException e) {
@@ -1423,9 +1361,9 @@ public class VinciTAP {
 
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_service_shutdown_completed__FINEST",
-                      new Object[] { Thread.currentThread().getName() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_service_shutdown_completed__FINEST",
+              new Object[] { Thread.currentThread().getName() });
     }
   }
 

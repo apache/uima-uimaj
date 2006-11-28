@@ -32,7 +32,7 @@ import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 
 public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl implements
-                CpeCollectionReaderIterator {
+        CpeCollectionReaderIterator {
   private static final long serialVersionUID = -9208074797482603808L;
 
   private CpeComponentDescriptor descriptor;
@@ -62,11 +62,11 @@ public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl impleme
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("collectionIterator",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("descriptor", null),
-                      new PropertyXmlInfo("configParameterSettings", null),
-                      new PropertyXmlInfo("sofaNameMappings", null),
+          new PropertyXmlInfo[] { new PropertyXmlInfo("descriptor", null),
+              new PropertyXmlInfo("configParameterSettings", null),
+              new PropertyXmlInfo("sofaNameMappings", null),
 
-                  });
+          });
 
   /**
    * @return
@@ -87,10 +87,10 @@ public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl impleme
       if (length > 0) {
         configParameterSettings = new ConfigurationParameterSettings_impl();
         org.apache.uima.resource.metadata.NameValuePair[] nvp = new NameValuePair_impl[settings
-                        .getParameterSettings().length];
+                .getParameterSettings().length];
         for (int i = 0; i < settings.getParameterSettings().length; i++) {
           nvp[i] = new NameValuePair_impl(settings.getParameterSettings()[i].getName(), settings
-                          .getParameterSettings()[i].getValue());
+                  .getParameterSettings()[i].getValue());
         }
         configParameterSettings.setParameterSettings(nvp);
       }
@@ -124,7 +124,7 @@ public class CpeCollectionReaderIteratorImpl extends MetaDataObject_impl impleme
     configParameterSettings = settings;
     if (configParameterSettings != null) {
       configurationParameterSettings = new CasProcessorConfigurationParameterSettingsImpl(
-                      configParameterSettings);
+              configParameterSettings);
     }
   }
 

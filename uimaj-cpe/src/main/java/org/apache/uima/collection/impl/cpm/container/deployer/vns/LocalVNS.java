@@ -72,7 +72,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
    *          port on which this VNS will listen on
    */
   public LocalVNS(String aStartPort, String aEndPort, String aVNSPort)
-                  throws PortUnreachableException {
+          throws PortUnreachableException {
     if (aStartPort != null) {
       try {
         startport = Integer.parseInt(aStartPort);
@@ -93,14 +93,9 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
         int currentRetryCount = 0;
         while (!vnsPortAvailable) {
           if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
-            UIMAFramework.getLogger(this.getClass()).logrb(
-                            Level.INFO,
-                            this.getClass().getName(),
-                            "initialize",
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_test_vns_port__INFO",
-                            new Object[] { Thread.currentThread().getName(),
-                                String.valueOf(vnsPort) });
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+                    "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_test_vns_port__INFO",
+                    new Object[] { Thread.currentThread().getName(), String.valueOf(vnsPort) });
           }
           vnsPortAvailable = isAvailable(vnsPort);
 
@@ -118,9 +113,8 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
     }
     if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
-                      "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_activating_vns_port__INFO",
-                      new Object[] { Thread.currentThread().getName(), String.valueOf(vnsPort) });
+              "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_activating_vns_port__INFO",
+              new Object[] { Thread.currentThread().getName(), String.valueOf(vnsPort) });
     }
     onport = startport;
   }
@@ -149,17 +143,16 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
     while (!vnsPortAvailable) {
       if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
-                        "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_test_vns_port__INFO",
-                        new Object[] { Thread.currentThread().getName(), String.valueOf(vnsPort) });
+                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_test_vns_port__INFO",
+                new Object[] { Thread.currentThread().getName(), String.valueOf(vnsPort) });
       }
       vnsPortAvailable = isAvailable(vnsPort);
 
       if (currentRetryCount > 100) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                        "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_vns_port_not_available__SEVERE",
-                        new Object[] { Thread.currentThread().getName(), String.valueOf(vnsPort) });
+                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_vns_port_not_available__SEVERE",
+                new Object[] { Thread.currentThread().getName(), String.valueOf(vnsPort) });
 
         throw new PortUnreachableException("Unable to aquire a port for VNS Service");
       }
@@ -170,9 +163,8 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
     }
     if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
-                      "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_activating_vns_port__INFO",
-                      new Object[] { Thread.currentThread().getName(), String.valueOf(vnsPort) });
+              "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_activating_vns_port__INFO",
+              new Object[] { Thread.currentThread().getName(), String.valueOf(vnsPort) });
     }
     onport = startport;
   }
@@ -206,15 +198,10 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
       if (socket != null) {
         try {
           if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
-            UIMAFramework.getLogger(this.getClass())
-                            .logrb(
-                                            Level.INFO,
-                                            this.getClass().getName(),
-                                            "initialize",
-                                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                            "UIMA_CPM_test_local_port__INFO",
-                                            new Object[] { Thread.currentThread().getName(),
-                                                String.valueOf(port) });
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+                    "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_test_local_port__INFO",
+                    new Object[] { Thread.currentThread().getName(), String.valueOf(port) });
           }
           socket.close();
         } catch (IOException ioe) {
@@ -252,9 +239,8 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
       }
       if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
-                        "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_test_local_port__INFO",
-                        new Object[] { Thread.currentThread().getName(), String.valueOf(onport) });
+                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_test_local_port__INFO",
+                new Object[] { Thread.currentThread().getName(), String.valueOf(onport) });
       }
       // Check port availability
       portAvailable = isAvailable(onport);
@@ -262,8 +248,8 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
       // to acquire any of the ports in configured range
       if (retryCount > 3) {
         throw new PortUnreachableException(
-                        "Unable to aquire any of the ports in configured range:[" + startport
-                                        + ".." + maxport + "]");
+                "Unable to aquire any of the ports in configured range:[" + startport + ".."
+                        + maxport + "]");
       }
     }
     return onport;
@@ -287,18 +273,18 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
       if (cmd.equals("shutdown")) {
         if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
-                          "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_deactivating_vns_port__INFO",
-                          new Object[] { Thread.currentThread().getName() });
+                  "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_deactivating_vns_port__INFO",
+                  new Object[] { Thread.currentThread().getName() });
         }
         this.cleanExit();
         return input;
       } else if (cmd.equals("serveon")) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_vns_process_serveon__FINEST",
-                          new Object[] { Thread.currentThread().getName() });
+                  "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_vns_process_serveon__FINEST",
+                  new Object[] { Thread.currentThread().getName() });
         }
         // String serviceName = input.fgetString("SERVICE");
         int port = getPort();
@@ -308,27 +294,17 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
 
         try {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            UIMAFramework.getLogger(this.getClass())
-                            .logrb(
-                                            Level.FINEST,
-                                            this.getClass().getName(),
-                                            "initialize",
-                                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                            "UIMA_CPM_assign_service_port__FINEST",
-                                            new Object[] { Thread.currentThread().getName(),
-                                                String.valueOf(port) });
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                    "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_assign_service_port__FINEST",
+                    new Object[] { Thread.currentThread().getName(), String.valueOf(port) });
           }
           portQueue.enqueue(String.valueOf(port));
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            UIMAFramework.getLogger(this.getClass())
-                            .logrb(
-                                            Level.FINEST,
-                                            this.getClass().getName(),
-                                            "initialize",
-                                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                            "UIMA_CPM_assign_service_port_complete__FINEST",
-                                            new Object[] { Thread.currentThread().getName(),
-                                                String.valueOf(port) });
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                    "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_assign_service_port_complete__FINEST",
+                    new Object[] { Thread.currentThread().getName(), String.valueOf(port) });
           }
         } catch (Exception e) {
           e.printStackTrace();
@@ -342,18 +318,17 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
         String publicVNSHost = System.getProperty("PVNS_HOST");
         String publicVNSPort = System.getProperty("PVNS_PORT");
         if (publicVNSHost == null || publicVNSHost.trim().length() == 0 || publicVNSPort == null
-                        || publicVNSPort.trim().length() == 0) {
+                || publicVNSPort.trim().length() == 0) {
           if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING,
-                            this.getClass().getName(), "initialize",
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_unknown_vns_command__WARNING",
-                            new Object[] { Thread.currentThread().getName() });
+                    this.getClass().getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_unknown_vns_command__WARNING",
+                    new Object[] { Thread.currentThread().getName() });
           }
           VinciFrame rtn = new VinciFrame();
           rtn
-                          .fadd("vinci:EXCEPTION",
-                                          "CPM Reply:Public VNS not known. Verify CPMs startup param include -DVNS_HOST and -DVNS_PORT");
+                  .fadd("vinci:EXCEPTION",
+                          "CPM Reply:Public VNS not known. Verify CPMs startup param include -DVNS_HOST and -DVNS_PORT");
           return rtn;
         }
         int pvnsPort = -1;
@@ -362,33 +337,27 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
         } catch (NumberFormatException e) {
           if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING,
-                            this.getClass().getName(), "initialize",
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_unknown_vns_command__WARNING",
-                            new Object[] { Thread.currentThread().getName() });
+                    this.getClass().getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_unknown_vns_command__WARNING",
+                    new Object[] { Thread.currentThread().getName() });
           }
           VinciFrame rtn = new VinciFrame();
           rtn.fadd("vinci:EXCEPTION", "CPM Reply: Invalid VNS Port value::" + publicVNSPort);
           return rtn;
         }
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "initialize",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_vns_redirect__FINEST",
-                          new Object[] { Thread.currentThread().getName(), publicVNSHost,
-                              publicVNSPort });
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_vns_redirect__FINEST",
+                  new Object[] { Thread.currentThread().getName(), publicVNSHost, publicVNSPort });
         }
         BaseClient client = new BaseClient(publicVNSHost, pvnsPort);
         return client.sendAndReceive(in);
       } else {
         if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
-                          "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_unknown_vns_command__WARNING",
-                          new Object[] { Thread.currentThread().getName() });
+                  "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_unknown_vns_command__WARNING",
+                  new Object[] { Thread.currentThread().getName() });
         }
         VinciFrame rtn = new VinciFrame();
         rtn.fadd("vinci:EXCEPTION", "Unknown command");
@@ -407,8 +376,8 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
   public void shutdown() {
     if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_vns_shutdown__INFO",
-                      new Object[] { Thread.currentThread().getName() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_vns_shutdown__INFO",
+              new Object[] { Thread.currentThread().getName() });
     }
     try {
       this.cleanExit();
@@ -416,9 +385,9 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
         server.shutdownServing();
         if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_vns_stopped_serving__INFO",
-                          new Object[] { Thread.currentThread().getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_vns_stopped_serving__INFO",
+                  new Object[] { Thread.currentThread().getName() });
         }
       }
     } catch (Exception e) {
@@ -430,7 +399,7 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
   protected void finalize() throws Throwable {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
-                      "*************Finalizing VNS***************");
+              "*************Finalizing VNS***************");
     }
     try {
       shutdown();
@@ -449,15 +418,10 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
     while (!done) {
       try {
         if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
-          UIMAFramework.getLogger(this.getClass())
-                          .logrb(
-                                          Level.INFO,
-                                          this.getClass().getName(),
-                                          "process",
-                                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                          "UIMA_CPM_launching_local_vns__INFO",
-                                          new Object[] { Thread.currentThread().getName(),
-                                              String.valueOf(vnsPort) });
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_launching_local_vns__INFO",
+                  new Object[] { Thread.currentThread().getName(), String.valueOf(vnsPort) });
         }
         server = new VinciServer(this);
         server.serve(vnsPort);
@@ -468,9 +432,9 @@ public class LocalVNS extends VinciServableAdapter implements Runnable {
 
         if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_launching_local_vns_failed__SEVERE",
-                          new Object[] { Thread.currentThread().getName(), e.getMessage() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_launching_local_vns_failed__SEVERE",
+                  new Object[] { Thread.currentThread().getName(), e.getMessage() });
         }
         e.printStackTrace();
 

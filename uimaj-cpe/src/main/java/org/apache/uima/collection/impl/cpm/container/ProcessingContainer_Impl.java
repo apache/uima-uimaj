@@ -164,8 +164,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    *          pool of CasProcessor instances
    */
   public ProcessingContainer_Impl(CasProcessorConfiguration aCasProcessorConfig,
-                  ProcessingResourceMetaData aMetaData, ServiceProxyPool aCasProcessorPool)
-                  throws ResourceConfigurationException {
+          ProcessingResourceMetaData aMetaData, ServiceProxyPool aCasProcessorPool)
+          throws ResourceConfigurationException {
     isRemote = Constants.DEPLOYMENT_REMOTE.equals(aCasProcessorConfig.getDeploymentType());
 
     casProcessorPool = aCasProcessorPool;
@@ -205,17 +205,17 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
         for (int i = 0; i < tORf.length; i++) {
           newKey = tORf[i].getName();
           if (tORf[i].getName().indexOf(
-                          org.apache.uima.collection.impl.cpm.Constants.SHORT_DASH_TERM) > -1) {
+                  org.apache.uima.collection.impl.cpm.Constants.SHORT_DASH_TERM) > -1) {
             newKey = StringUtils.replaceAll(tORf[i].getName(),
-                            org.apache.uima.collection.impl.cpm.Constants.SHORT_DASH_TERM,
-                            org.apache.uima.collection.impl.cpm.Constants.LONG_DASH_TERM);
+                    org.apache.uima.collection.impl.cpm.Constants.SHORT_DASH_TERM,
+                    org.apache.uima.collection.impl.cpm.Constants.LONG_DASH_TERM);
             modified = true;
           }
           if (tORf[i].getName().indexOf(
-                          org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM) > -1) {
+                  org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM) > -1) {
             newKey = StringUtils.replaceAll(tORf[i].getName(),
-                            org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM,
-                            org.apache.uima.collection.impl.cpm.Constants.LONG_COLON_TERM);
+                    org.apache.uima.collection.impl.cpm.Constants.SHORT_COLON_TERM,
+                    org.apache.uima.collection.impl.cpm.Constants.LONG_COLON_TERM);
             modified = true;
           }
           if (modified) {
@@ -256,9 +256,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   private void deployLogger() {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_deploy_logger__FINEST",
-                      new Object[] { Thread.currentThread().getName(), getName() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_deploy_logger__FINEST",
+              new Object[] { Thread.currentThread().getName(), getName() });
     }
     logPath = casProcessorCPEConfiguration.getDeploymentParameter("containerLogPath");
 
@@ -290,9 +289,9 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
     } else {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_logpath_not_defined__FINEST",
-                        new Object[] { Thread.currentThread().getName(), getName() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_logpath_not_defined__FINEST",
+                new Object[] { Thread.currentThread().getName(), getName() });
       }
     }
 
@@ -316,13 +315,12 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
       for (int i = 0; i < abortedCasList.length; i++) {
         if (abortedCasList[i] != null && abortedCasList[i] instanceof CasData) {
           String value = DATACasUtils.getFeatureValueByType((CasData) abortedCasList[i],
-                          org.apache.uima.collection.impl.cpm.Constants.METADATA_KEY,
-                          org.apache.uima.collection.impl.cpm.Constants.DOC_ID);
+                  org.apache.uima.collection.impl.cpm.Constants.METADATA_KEY,
+                  org.apache.uima.collection.impl.cpm.Constants.DOC_ID);
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                            "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_log_docid__FINEST",
-                            new Object[] { Thread.currentThread().getName(), getName(), value });
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_log_docid__FINEST",
+                    new Object[] { Thread.currentThread().getName(), getName(), value });
 
           }
           logger.info(value);
@@ -639,20 +637,19 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
     errorCounter++;
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_increment_cp_errors__FINEST",
-                      new Object[] { Thread.currentThread().getName(), getName() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_increment_cp_errors__FINEST",
+              new Object[] { Thread.currentThread().getName(), getName() });
     }
     if (System.getProperty("DEBUG_EXCEPTIONS") != null) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "process",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_show_cp_error_count__FINEST",
-                        new Object[] { Thread.currentThread().getName(), getName(),
-                            String.valueOf(errorCounter), aThrowable.getCause().getMessage() });
+                Level.FINEST,
+                this.getClass().getName(),
+                "process",
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_show_cp_error_count__FINEST",
+                new Object[] { Thread.currentThread().getName(), getName(),
+                    String.valueOf(errorCounter), aThrowable.getCause().getMessage() });
       }
 
     }
@@ -661,30 +658,28 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
       if (aThrowable.getCause() instanceof AbortCPMException) {
         if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_abort_cpm__SEVERE",
-                          new Object[] { Thread.currentThread().getName(), getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_abort_cpm__SEVERE",
+                  new Object[] { Thread.currentThread().getName(), getName() });
         }
         throw (AbortCPMException) aThrowable.getCause();
       } else if (aThrowable.getCause() instanceof AbortCasProcessorException) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_disable_cp__SEVERE",
-                          new Object[] { Thread.currentThread().getName(), getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_disable_cp__SEVERE",
+                  new Object[] { Thread.currentThread().getName(), getName() });
         }
         throw (AbortCasProcessorException) aThrowable.getCause();
       }
       // If the errors dont exceed configurable threshold already try to ServiceConnection
       // exception.
       else if ((errorCounter < configuredErrorRate)
-                      && aThrowable.getCause() instanceof ServiceConnectionException
-                      && !isTimeout(aThrowable)) {
+              && aThrowable.getCause() instanceof ServiceConnectionException
+              && !isTimeout(aThrowable)) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_service_connection_exception__SEVERE",
-                          new Object[] { Thread.currentThread().getName(), getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_service_connection_exception__SEVERE",
+                  new Object[] { Thread.currentThread().getName(), getName() });
         }
         // Increment number of CasProcessor restarts (redeploys)
         restartCount++;
@@ -694,7 +689,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
         // Check if configured max restart count has been reached
         if (restartCount > rC) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            UIMAFramework.getLogger(this.getClass()).logrb(
+            UIMAFramework.getLogger(this.getClass())
+                    .logrb(
                             Level.FINEST,
                             this.getClass().getName(),
                             "process",
@@ -710,53 +706,48 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
           if (Constants.TERMINATE_CPE.equals(actionOnMaxRestarts)) {
             if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE,
-                              this.getClass().getName(), "process",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_terminate_due_to_action__SEVERE",
-                              new Object[] { Thread.currentThread().getName(), getName() });
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_terminate_due_to_action__SEVERE",
+                      new Object[] { Thread.currentThread().getName(), getName() });
             }
             throw new AbortCPMException(CpmLocalizedMessage.getLocalizedMessage(
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_EXP_configured_to_abort__WARNING", new Object[] {
-                                Thread.currentThread().getName(), getName() }));
+                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_configured_to_abort__WARNING",
+                    new Object[] { Thread.currentThread().getName(), getName() }));
           } else if (Constants.DISABLE_CASPROCESSOR.equals(actionOnMaxRestarts)) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                              this.getClass().getName(), "process",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_disable_due_to_action__FINEST",
-                              new Object[] { Thread.currentThread().getName(), getName() });
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_disable_due_to_action__FINEST",
+                      new Object[] { Thread.currentThread().getName(), getName() });
             }
             throw new AbortCasProcessorException(CpmLocalizedMessage.getLocalizedMessage(
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_EXP_configured_to_disable__WARNING", new Object[] {
-                                Thread.currentThread().getName(), getName() }));
+                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_EXP_configured_to_disable__WARNING", new Object[] {
+                        Thread.currentThread().getName(), getName() }));
           } else if (Constants.KILL_PROCESSING_PIPELINE.equals(actionOnMaxRestarts)) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                              this.getClass().getName(), "process",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_kill_pipeline__FINEST",
-                              new Object[] { Thread.currentThread().getName(), getName() });
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_kill_pipeline__FINEST",
+                      new Object[] { Thread.currentThread().getName(), getName() });
             }
             throw new KillPipelineException(CpmLocalizedMessage.getLocalizedMessage(
-                            CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_EXP_configured_to_kill_pipeline__WARNING", new Object[] {
-                                Thread.currentThread().getName(), getName() }));
+                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_EXP_configured_to_kill_pipeline__WARNING", new Object[] {
+                        Thread.currentThread().getName(), getName() }));
           }
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                            "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_skip_CAS__FINEST",
-                            new Object[] { Thread.currentThread().getName(), getName() });
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_skip_CAS__FINEST",
+                    new Object[] { Thread.currentThread().getName(), getName() });
           }
           throw new SkipCasException("");
         }
 
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_force_reconnect__FINEST",
-                          new Object[] { Thread.currentThread().getName(), getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_force_reconnect__FINEST",
+                  new Object[] { Thread.currentThread().getName(), getName() });
         }
 
         throw (ServiceConnectionException) aThrowable.getCause();
@@ -764,13 +755,13 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
       if (aThrowable.getCause() != null) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "process",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_other_exception__FINEST",
-                          new Object[] { Thread.currentThread().getName(), getName(),
-                              aThrowable.getCause().getClass().getName() });
+                  Level.FINEST,
+                  this.getClass().getName(),
+                  "process",
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_other_exception__FINEST",
+                  new Object[] { Thread.currentThread().getName(), getName(),
+                      aThrowable.getCause().getClass().getName() });
         }
       }
 
@@ -782,9 +773,9 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
       // since it is difficult to know what the nature of the failure is.
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_no_resource_exception__FINEST",
-                        new Object[] { Thread.currentThread().getName(), getName(), aThrowable });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_no_resource_exception__FINEST",
+                new Object[] { Thread.currentThread().getName(), getName(), aThrowable });
       }
     }
 
@@ -797,31 +788,30 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
       if (abortCPMOnError()) {
         if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.SEVERE,
-                          this.getClass().getName(),
-                          "process",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_abort_exceeded_error_threshold__SEVERE",
-                          new Object[] { Thread.currentThread().getName(), getName(),
-                              String.valueOf(configuredErrorRate) });
+                  Level.SEVERE,
+                  this.getClass().getName(),
+                  "process",
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_abort_exceeded_error_threshold__SEVERE",
+                  new Object[] { Thread.currentThread().getName(), getName(),
+                      String.valueOf(configuredErrorRate) });
         }
         throw new AbortCPMException("");
       }
       if (isAbortable()) {
         if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.SEVERE,
-                          this.getClass().getName(),
-                          "process",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_disable_exceeded_error_threshold__SEVERE",
-                          new Object[] { Thread.currentThread().getName(), getName(),
-                              String.valueOf(configuredErrorRate) });
+                  Level.SEVERE,
+                  this.getClass().getName(),
+                  "process",
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_disable_exceeded_error_threshold__SEVERE",
+                  new Object[] { Thread.currentThread().getName(), getName(),
+                      String.valueOf(configuredErrorRate) });
         }
         throw new AbortCasProcessorException(CpmLocalizedMessage.getLocalizedMessage(
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_EXP_configured_to_disable__WARNING", new Object[] {
-                            Thread.currentThread().getName(), getName() }));
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_configured_to_disable__WARNING",
+                new Object[] { Thread.currentThread().getName(), getName() }));
       }
       // CasProcessor configured to ignore errors. So just reset error counter
       resetErrorCounter();
@@ -829,9 +819,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
       if (continueOnError()) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_skipping_cas__FINEST",
-                          new Object[] { Thread.currentThread().getName(), getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_skipping_cas__FINEST",
+                  new Object[] { Thread.currentThread().getName(), getName() });
         }
         throw new SkipCasException("");
       }
@@ -847,9 +836,10 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    *      int)
    */
   public synchronized boolean isEndOfBatch(CasProcessor aCasProcessor, int aProcessedSize)
-                  throws ResourceProcessException, IOException {
+          throws ResourceProcessException, IOException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(
+      UIMAFramework.getLogger(this.getClass())
+              .logrb(
                       Level.FINEST,
                       this.getClass().getName(),
                       "process",
@@ -875,7 +865,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
     // Increment the total number of entities processed so far through this container
     processed += aProcessedSize;
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(
+      UIMAFramework.getLogger(this.getClass())
+              .logrb(
                       Level.FINEST,
                       this.getClass().getName(),
                       "process",
@@ -889,14 +880,12 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
       if (aCasProcessor == null) {
         if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_cp_is_null__SEVERE",
-                          new Object[] { Thread.currentThread().getName(), getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_cp_is_null__SEVERE",
+                  new Object[] { Thread.currentThread().getName(), getName() });
         }
         throw new ResourceProcessException(new Exception(CpmLocalizedMessage.getLocalizedMessage(
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_EXP_invalid_reference__WARNING", new Object[] {
-                            Thread.currentThread().getName(), "NULL" })));
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_reference__WARNING",
+                new Object[] { Thread.currentThread().getName(), "NULL" })));
       }
 
       // endOfBatch must be done on all CAS Processor, not just CAS Consumers
@@ -959,23 +948,21 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
     if (System.getProperty("DEBUG_FILTER") != null) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_check_filter__FINEST",
-                        new Object[] { Thread.currentThread().getName(), getName() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_check_filter__FINEST",
+                new Object[] { Thread.currentThread().getName(), getName() });
       }
       if (filterList == null) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_filtering_disabled__FINEST",
-                          new Object[] { Thread.currentThread().getName(), getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_filtering_disabled__FINEST",
+                  new Object[] { Thread.currentThread().getName(), getName() });
         }
       } else if (filterList.size() == 0) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_filter_empty__FINEST",
-                          new Object[] { Thread.currentThread().getName(), getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_filter_empty__FINEST",
+                  new Object[] { Thread.currentThread().getName(), getName() });
         }
       }
     }
@@ -983,21 +970,20 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
       if (System.getProperty("DEBUG_FILTER") != null) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_filter_enabled__FINEST",
-                          new Object[] { Thread.currentThread().getName(), getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_filter_enabled__FINEST",
+                  new Object[] { Thread.currentThread().getName(), getName() });
         }
       }
       Filter.Expression filterExpression = (Filter.Expression) filterList.get(i);
       String featureValue = DATACasUtils.getFeatureValueByType(aCas, filterExpression.getLeftPart()
-                      .get());
+              .get());
       // This evaluates if the Feature with a given name exist
       if (filterExpression.getRightPart() == null) {
         if (System.getProperty("DEBUG_FILTER") != null) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_filter_enabled_no_right_operand__FINEST",
-                          new Object[] { Thread.currentThread().getName(), getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_filter_enabled_no_right_operand__FINEST",
+                  new Object[] { Thread.currentThread().getName(), getName() });
 
         }
         // The first check is to see if the feature exists in the CAS. In this case,
@@ -1005,22 +991,22 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
         // The second check is to see if the the feature does NOT exist in the CAS. In
         // this case, the feature MUST be null.
         boolean exists = DATACasUtils.hasFeatureStructure(aCas, filterExpression.getLeftPart()
-                        .get());
+                .get());
         if (System.getProperty("DEBUG_FILTER") != null) {
           UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "process",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_filter_enabled_left_part__FINEST",
-                          new Object[] { Thread.currentThread().getName(), getName(),
-                              filterExpression.getLeftPart().get(), String.valueOf(exists) });
+                  Level.FINEST,
+                  this.getClass().getName(),
+                  "process",
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_filter_enabled_left_part__FINEST",
+                  new Object[] { Thread.currentThread().getName(), getName(),
+                      filterExpression.getLeftPart().get(), String.valueOf(exists) });
         }
 
         if ((filterExpression.getOperand() == null
-                        && filterExpression.getOperand().getOperand() == null && !exists)
-                        || // this means that the feature must exist in CAS
-                        ("!".equals(filterExpression.getOperand().getOperand()) && exists)) // this
+                && filterExpression.getOperand().getOperand() == null && !exists)
+                || // this means that the feature must exist in CAS
+                ("!".equals(filterExpression.getOperand().getOperand()) && exists)) // this
         // means
         // that
         // the
@@ -1034,9 +1020,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
         {
           if (System.getProperty("DEBUG_FILTER") != null) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                            "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_filter_false__FINEST",
-                            new Object[] { Thread.currentThread().getName(), getName() });
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_filter_false__FINEST",
+                    new Object[] { Thread.currentThread().getName(), getName() });
           }
           return false;
         }
@@ -1118,9 +1103,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
       try {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_container_paused__FINEST",
-                          new Object[] { Thread.currentThread().getName(), getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_container_paused__FINEST",
+                  new Object[] { Thread.currentThread().getName(), getName() });
         }
         synchronized (monitor) {
           monitor.wait(CONTAINER_SLEEP_TIME);
@@ -1131,13 +1115,13 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
       if (!isPaused) {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(
-                          Level.FINEST,
-                          this.getClass().getName(),
-                          "process",
-                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_resuming_container__FINEST",
-                          new Object[] { Thread.currentThread().getName(), getName(),
-                              String.valueOf(CONTAINER_SLEEP_TIME) });
+                  Level.FINEST,
+                  this.getClass().getName(),
+                  "process",
+                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_resuming_container__FINEST",
+                  new Object[] { Thread.currentThread().getName(), getName(),
+                      String.valueOf(CONTAINER_SLEEP_TIME) });
         }
       }
     }
@@ -1150,9 +1134,9 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
         if (processor == null) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                            "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_wait_no_processor__FINEST",
-                            new Object[] { Thread.currentThread().getName(), getName() });
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_wait_no_processor__FINEST",
+                    new Object[] { Thread.currentThread().getName(), getName() });
           }
           synchronized (casProcessorPool) {
             casProcessorPool.wait();
@@ -1164,9 +1148,9 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
       } while (true);
     } catch (Exception e) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_failed_waiting_for_processor__SEVERE",
-                      new Object[] { Thread.currentThread().getName(), getName(), e.getMessage() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_failed_waiting_for_processor__SEVERE",
+              new Object[] { Thread.currentThread().getName(), getName(), e.getMessage() });
     }
 
     return null;
@@ -1254,36 +1238,36 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
       anAction = casProcessorCPEConfiguration.getActionOnError();
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "process",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_show_cp_action_on_error__FINEST",
-                        new Object[] { Thread.currentThread().getName(), getName(),
-                            casProcessorCPEConfiguration.getActionOnError() });
+                Level.FINEST,
+                this.getClass().getName(),
+                "process",
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_show_cp_action_on_error__FINEST",
+                new Object[] { Thread.currentThread().getName(), getName(),
+                    casProcessorCPEConfiguration.getActionOnError() });
       }
       if (anAction == null) {
         if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_action_on_error_not_defined__SEVERE",
-                          new Object[] { Thread.currentThread().getName(), getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_action_on_error_not_defined__SEVERE",
+                  new Object[] { Thread.currentThread().getName(), getName() });
         }
       }
     } catch (Exception e) {
       if (casProcessorCPEConfiguration == null) {
         if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_cp_configuration_not_defined__SEVERE",
-                          new Object[] { Thread.currentThread().getName(), getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_cp_configuration_not_defined__SEVERE",
+                  new Object[] { Thread.currentThread().getName(), getName() });
         }
       } else if (casProcessorCPEConfiguration.getActionOnError() == null) {
         if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-                          "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_action_on_error_not_defined__SEVERE",
-                          new Object[] { Thread.currentThread().getName(), getName() });
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_action_on_error_not_defined__SEVERE",
+                  new Object[] { Thread.currentThread().getName(), getName() });
         }
       } else {
         UIMAFramework.getLogger(this.getClass()).log(Level.SEVERE, e.getMessage(), e);
@@ -1300,7 +1284,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
    * 
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     try {
       if (aSpecifier instanceof CasConsumerDescription_impl) {
         CasConsumerDescription_impl mDescription = (CasConsumerDescription_impl) aSpecifier;
@@ -1330,13 +1314,13 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   public void destroy() {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "process",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_show_cp_proxy_pool_size__FINEST",
-                      new Object[] { Thread.currentThread().getName(), getName(),
-                          String.valueOf(casProcessorPool.getSize()) });
+              Level.FINEST,
+              this.getClass().getName(),
+              "process",
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_show_cp_proxy_pool_size__FINEST",
+              new Object[] { Thread.currentThread().getName(), getName(),
+                  String.valueOf(casProcessorPool.getSize()) });
     }
     try {
       synchronized (casProcessorPool) {
@@ -1346,19 +1330,18 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
           if (cp == null) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                              this.getClass().getName(), "process",
-                              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                              "UIMA_CPM_wait_no_processor__FINEST",
-                              new Object[] { Thread.currentThread().getName(), getName() });
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_wait_no_processor__FINEST",
+                      new Object[] { Thread.currentThread().getName(), getName() });
             }
             break;
           }
 
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                            "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                            "UIMA_CPM_destroy_processor__FINEST",
-                            new Object[] { Thread.currentThread().getName(), getName() });
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_destroy_processor__FINEST",
+                    new Object[] { Thread.currentThread().getName(), getName() });
           }
           ProcessTrace pt = new ProcessTrace_impl();
           cp.collectionProcessComplete(pt);
@@ -1370,12 +1353,12 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
     } catch (Exception e) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINER)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINER, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
-                        new Object[] { Thread.currentThread().getName(), getName() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
+                new Object[] { Thread.currentThread().getName(), getName() });
 
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINER, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
-                        new Object[] { Thread.currentThread().getName(), e.getMessage() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_exception__FINER",
+                new Object[] { Thread.currentThread().getName(), e.getMessage() });
       }
     }
   }
@@ -1443,9 +1426,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
   public String getName() {
     if (processorName == null) {
       if (metadata != null
-                      && Constants.DEPLOYMENT_INTEGRATED
-                                      .equalsIgnoreCase(casProcessorCPEConfiguration
-                                                      .getDeploymentType())) {
+              && Constants.DEPLOYMENT_INTEGRATED.equalsIgnoreCase(casProcessorCPEConfiguration
+                      .getDeploymentType())) {
         processorName = metadata.getName().trim();
       } else {
         processorName = casProcessorCPEConfiguration.getName().trim();
@@ -1525,9 +1507,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
 
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_pause_container__FINEST",
-                      new Object[] { Thread.currentThread().getName(), getName() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_pause_container__FINEST",
+              new Object[] { Thread.currentThread().getName(), getName() });
     }
     isPaused = true;
   }
@@ -1536,9 +1517,8 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
     synchronized (monitor) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_resuming_container__FINEST",
-                        new Object[] { Thread.currentThread().getName(), getName() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_resuming_container__FINEST",
+                new Object[] { Thread.currentThread().getName(), getName() });
       }
       isPaused = false;
       monitor.notifyAll();

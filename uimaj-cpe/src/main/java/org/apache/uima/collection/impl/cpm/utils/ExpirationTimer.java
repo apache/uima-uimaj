@@ -67,14 +67,9 @@ public class ExpirationTimer extends Thread {
 
     if (map.containsKey(key)) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                        Level.FINEST,
-                        this.getClass().getName(),
-                        "process",
-                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_timer_expired__FINEST",
-                        new Object[] { Thread.currentThread().getName(), key,
-                            String.valueOf(map.size()) });
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_timer_expired__FINEST",
+                new Object[] { Thread.currentThread().getName(), key, String.valueOf(map.size()) });
       }
       synchronized (map) {
         map.remove(key);

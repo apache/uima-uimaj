@@ -96,7 +96,7 @@ public class CpmCasConsumer_ErrorTests extends TestCase {
     try {
       // setup CPM
       CollectionProcessingEngine cpe = setupCpm(documentCount, "ResourceInitializationException",
-                      exceptionSequence, "initialize");
+              exceptionSequence, "initialize");
 
       // Create and register a Status Callback Listener
       listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -113,12 +113,12 @@ public class CpmCasConsumer_ErrorTests extends TestCase {
       ManageOutputDevice.setAllSystemOutputToDefault();
       assertEquals("The expected NullPointerException wasn't thrown!", true, exceptionThrown);
       assertEquals(
-                      "The cpm called the listener, that the cpm has finished - which normally could not be.",
-                      false, listener.isFinished());
+              "The cpm called the listener, that the cpm has finished - which normally could not be.",
+              false, listener.isFinished());
       assertEquals("The aborted-method of the listener was called. (new behaviour?)", false,
-                      listener.isAborted());
+              listener.isAborted());
       assertEquals("There are not as much exceptions as expected! ", 1, FunctionErrorStore
-                      .getCount());
+              .getCount());
     }
   }
 
@@ -139,7 +139,7 @@ public class CpmCasConsumer_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToNirvana();
     try {
       CollectionProcessingEngine cpe = setupCpm(documentCount, "NullPointerException",
-                      exceptionSequence, "initialize");
+              exceptionSequence, "initialize");
 
       // Create and register a Status Callback Listener
       listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -157,12 +157,12 @@ public class CpmCasConsumer_ErrorTests extends TestCase {
       ManageOutputDevice.setAllSystemOutputToDefault();
       assertEquals("The expected NullPointerException wasn't thrown!", true, exceptionThrown);
       assertEquals(
-                      "The cpm called the listener, that the cpm has finished - which normally could not be.",
-                      false, listener.isFinished());
+              "The cpm called the listener, that the cpm has finished - which normally could not be.",
+              false, listener.isFinished());
       assertEquals("The aborted-method of the listener was called. (new behaviour?)", false,
-                      listener.isAborted());
+              listener.isAborted());
       assertEquals("There are not as much exceptions as expected! ", 1, FunctionErrorStore
-                      .getCount());
+              .getCount());
     }
   }
 
@@ -183,7 +183,7 @@ public class CpmCasConsumer_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToNirvana();
     try {
       CollectionProcessingEngine cpe = setupCpm(documentCount, "OutOfMemoryError",
-                      exceptionSequence, "initialize");
+              exceptionSequence, "initialize");
 
       // Create and register a Status Callback Listener
       listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -199,12 +199,12 @@ public class CpmCasConsumer_ErrorTests extends TestCase {
       // check the results, if everything worked as expected
       ManageOutputDevice.setAllSystemOutputToDefault();
       assertEquals(
-                      "The cpm called the listener, that the cpm has finished - which normally could not be.",
-                      false, listener.isFinished());
+              "The cpm called the listener, that the cpm has finished - which normally could not be.",
+              false, listener.isFinished());
       assertEquals("The aborted-method of the listener was called. (new behaviour?)", false,
-                      listener.isAborted());
+              listener.isAborted());
       assertEquals("There are not as much exceptions as expected! ", 1, FunctionErrorStore
-                      .getCount());
+              .getCount());
       assertEquals("The expected Error wasn't thrown! ", true, errorThrown);
     }
   }
@@ -222,7 +222,7 @@ public class CpmCasConsumer_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToNirvana();
     // setup CPM
     CollectionProcessingEngine cpe = setupCpm(documentCount, "IOException", exceptionSequence,
-                    "processCas");
+            "processCas");
 
     // Create and register a Status Callback Listener
     TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -235,15 +235,15 @@ public class CpmCasConsumer_ErrorTests extends TestCase {
     // check the results, if everything worked as expected
     ManageOutputDevice.setAllSystemOutputToDefault();
     assertEquals(
-                    "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
-                    true, listener.isFinished());
+            "The cpm is still working or the collectionProcessComplete-method of the listener was not called.",
+            true, listener.isFinished());
     assertEquals("The aborted-method of the listener was called. (new behaviour?)", false, listener
-                    .isAborted());
+            .isAborted());
     assertEquals("There are not as much exceptions  thrown as expected! ",
-                    ((documentCount) / exceptionSequence), FunctionErrorStore.getCount());
+            ((documentCount) / exceptionSequence), FunctionErrorStore.getCount());
     assertEquals(
-                    "The CAS which causes the error wasn't given to the process methode. Null was returned.",
-                    false, null == listener.getLastCas());
+            "The CAS which causes the error wasn't given to the process methode. Null was returned.",
+            false, null == listener.getLastCas());
   }
 
   /**
@@ -259,7 +259,7 @@ public class CpmCasConsumer_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToNirvana();
     // setup CPM
     CollectionProcessingEngine cpe = setupCpm(documentCount, "ResourceProcessException",
-                    exceptionSequence, "processCas");
+            exceptionSequence, "processCas");
 
     // Create and register a Status Callback Listener
     TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -272,10 +272,10 @@ public class CpmCasConsumer_ErrorTests extends TestCase {
     // check the results, if everything worked as expected
     ManageOutputDevice.setAllSystemOutputToDefault();
     assertEquals("The cpm did not call the listener, that the cpm has finished.", true, listener
-                    .isFinished());
+            .isFinished());
     assertEquals("The aborted-method of the listener was called!", false, listener.isAborted());
     assertEquals("There are not as much exceptions as expected! ", countExceptions(documentCount,
-                    exceptionSequence), FunctionErrorStore.getCount());
+            exceptionSequence), FunctionErrorStore.getCount());
   }
 
   /**
@@ -296,7 +296,7 @@ public class CpmCasConsumer_ErrorTests extends TestCase {
     // setup CPM
     CollectionReaderStatusCallbackListener listener = null;
     CollectionProcessingEngine cpe = setupCpm(documentCount, "OutOfMemoryError", exceptionSequence,
-                    "processCas");
+            "processCas");
 
     // Create and register a Status Callback Listener
     listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -328,7 +328,7 @@ public class CpmCasConsumer_ErrorTests extends TestCase {
     ManageOutputDevice.setAllSystemOutputToNirvana();
     // setup CPM
     CollectionProcessingEngine cpe = setupCpm(documentCount, "NullPointerException",
-                    exceptionSequence, "processCas");
+            exceptionSequence, "processCas");
 
     // Create and register a Status Callback Listener
     TestStatusCallbackListener listener = new CollectionReaderStatusCallbackListener(cpe);
@@ -341,10 +341,10 @@ public class CpmCasConsumer_ErrorTests extends TestCase {
     // check the results, if everything worked as expected
     ManageOutputDevice.setAllSystemOutputToDefault();
     assertEquals("The cpm did not call the listener, that the cpm has finished.", true, listener
-                    .isFinished());
+            .isFinished());
     assertEquals("The aborted-method of the listener was called!", false, listener.isAborted());
     assertEquals("There are not as much exceptions as expected! ", countExceptions(documentCount,
-                    exceptionSequence), FunctionErrorStore.getCount());
+            exceptionSequence), FunctionErrorStore.getCount());
   }
 
   /**
@@ -370,7 +370,7 @@ public class CpmCasConsumer_ErrorTests extends TestCase {
    * @return CollectionProcessingEngine - initialized cpe
    */
   private CollectionProcessingEngine setupCpm(int documentCount, String exceptionName,
-                  int exceptionSequence, String functionName) {
+          int exceptionSequence, String functionName) {
     CpeDescription cpeDesc = null;
     CollectionProcessingEngine cpe = null;
 
@@ -383,19 +383,19 @@ public class CpmCasConsumer_ErrorTests extends TestCase {
       String colReaderDesc = DescriptorMakeUtil.makeCollectionReader(colReaderBase, documentCount);
       String taeDesc = DescriptorMakeUtil.makeAnalysisEngine(taeBase);
       String casConsumerDesc = DescriptorMakeUtil.makeCasConsumer(casConsumerBase, true,
-                      functionName, exceptionSequence, exceptionName);
+              functionName, exceptionSequence, exceptionName);
 
       // secondly, create the cpm based on the descriptors
       cpeDesc = CpeDescriptorFactory.produceDescriptor();
 
       // managing the default behaviour of this client
       CpeIntegratedCasProcessor integratedProcessor = CpeDescriptorFactory
-                      .produceCasProcessor("ErrorTestAnnotator");
+              .produceCasProcessor("ErrorTestAnnotator");
       integratedProcessor.setDescriptor(taeDesc);
       integratedProcessor.setActionOnMaxError("terminate");
 
       CpeIntegratedCasProcessor casConsumer = CpeDescriptorFactory
-                      .produceCasProcessor("ErrorTest CasConsumer");
+              .produceCasProcessor("ErrorTest CasConsumer");
       casConsumer.setDescriptor(casConsumerDesc);
 
       // - add all descriptors

@@ -129,7 +129,7 @@ public class VNSQuery {
       VinciServiceInfo service = (VinciServiceInfo) oldList.get(i);
 
       if (aService.getHost().equals(service.getHost()) && aService.getPort() == service.getPort()
-                      && service.isAvailable() == false) {
+              && service.isAvailable() == false) {
         return false;
       }
     }
@@ -205,14 +205,14 @@ public class VNSQuery {
               if (client.isOpen()) {
                 if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
                   UIMAFramework.getLogger(this.getClass()).logrb(
-                                  Level.FINEST,
-                                  this.getClass().getName(),
-                                  "initialize",
-                                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                  "UIMA_CPM_service_active_on_port__FINEST",
-                                  new Object[] { Thread.currentThread().getName(),
-                                      serviceInfo.getServiceName(), serviceInfo.getHost(),
-                                      String.valueOf(serviceInfo.getPort()) });
+                          Level.FINEST,
+                          this.getClass().getName(),
+                          "initialize",
+                          CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                          "UIMA_CPM_service_active_on_port__FINEST",
+                          new Object[] { Thread.currentThread().getName(),
+                              serviceInfo.getServiceName(), serviceInfo.getHost(),
+                              String.valueOf(serviceInfo.getPort()) });
                 }
                 // Service is ok, so add it to the list
                 serviceList.add(serviceInfo);
@@ -220,14 +220,14 @@ public class VNSQuery {
             } catch (ConnectException ce) {
               if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
                 UIMAFramework.getLogger(this.getClass()).logrb(
-                                Level.WARNING,
-                                this.getClass().getName(),
-                                "initialize",
-                                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                "UIMA_CPM_service_not_active_on_port__WARNING",
-                                new Object[] { Thread.currentThread().getName(),
-                                    serviceInfo.getServiceName(), serviceInfo.getHost(),
-                                    String.valueOf(serviceInfo.getPort()) });
+                        Level.WARNING,
+                        this.getClass().getName(),
+                        "initialize",
+                        CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                        "UIMA_CPM_service_not_active_on_port__WARNING",
+                        new Object[] { Thread.currentThread().getName(),
+                            serviceInfo.getServiceName(), serviceInfo.getHost(),
+                            String.valueOf(serviceInfo.getPort()) });
               }
             } finally {
               // Drop the connection if necessary.
@@ -259,7 +259,7 @@ public class VNSQuery {
       int service_port = aServiceFrame.fgetInt("PORT");
 
       VinciServiceInfo serviceInfo = new VinciServiceInfo(serviceName, service_host_IP,
-                      service_port);
+              service_port);
       return serviceInfo;
     }
   }

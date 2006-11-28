@@ -50,7 +50,7 @@ public class JavaApplication extends RunnableApplication {
    * @throws ResourceConfigurationException
    */
   public JavaApplication(CasProcessorConfiguration aCasProcessorConfiguration,
-                  CpeCasProcessor aJaxbCasProcessorConfig) throws ResourceConfigurationException {
+          CpeCasProcessor aJaxbCasProcessorConfig) throws ResourceConfigurationException {
     addApplicationInfo(aCasProcessorConfiguration, aJaxbCasProcessorConfig); // aJaxbCasProcessorConfig,
     // aDescriptor,aDeploymentParameters
     // );
@@ -66,10 +66,10 @@ public class JavaApplication extends RunnableApplication {
    * @throws ResourceConfigurationException
    */
   protected void addApplicationInfo(CasProcessorConfiguration aCasProcessorConfiguration,
-                  CpeCasProcessor aCasProcessor) throws ResourceConfigurationException {
+          CpeCasProcessor aCasProcessor) throws ResourceConfigurationException {
     super.addApplicationInfo(aCasProcessorConfiguration, aCasProcessor);
     String[] cmdLine = addApplicationCmdLineArguments(aCasProcessorConfiguration, argList,
-                    executable);
+            executable);
     exec.setCmdLine(cmdLine);
   }
 
@@ -87,8 +87,7 @@ public class JavaApplication extends RunnableApplication {
    * @return - complete command line ready for use
    */
   protected String[] addApplicationCmdLineArguments(
-                  CasProcessorConfiguration aCasProcessorConfiguration, List argList,
-                  String aExecutable) {
+          CasProcessorConfiguration aCasProcessorConfiguration, List argList, String aExecutable) {
     ArrayList cmdArgs = new ArrayList();
     // build commandline
     cmdArgs.add(aExecutable);
@@ -117,15 +116,14 @@ public class JavaApplication extends RunnableApplication {
         continue; // ignore
       }
       if (argValue == null || argValue.trim().length() == 0 || argValue.startsWith("-DVNS_HOST")
-                      || argValue.startsWith("-DVNS_PORT")) {
+              || argValue.startsWith("-DVNS_PORT")) {
         continue; // skip
       }
 
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_show_cmd_arg__FINEST",
-                        new Object[] { Thread.currentThread().getName(), String.valueOf(i), arg });
+                "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_show_cmd_arg__FINEST",
+                new Object[] { Thread.currentThread().getName(), String.valueOf(i), arg });
       }
       // Special case: if arg=-cp <classpath> we need to split this string into 2 due to the way
       // Java Runtime
@@ -148,18 +146,18 @@ public class JavaApplication extends RunnableApplication {
         argList.add(i + 1, classpath + System.getProperty("path.separator") + systemClasspath);
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                          "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                          "UIMA_CPM_show_cmd_classpath__FINEST",
-                          new Object[] { Thread.currentThread().getName(), classpath });
+                  "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                  "UIMA_CPM_show_cmd_classpath__FINEST",
+                  new Object[] { Thread.currentThread().getName(), classpath });
         }
         continue; // next iteration will copy the classpath into cmdArgs
       }
       if ("${descriptor}".equals(argValue.trim())) {
 
         String descriptor = CPMUtils.convertToAbsolutePath(System.getProperty("CPM_HOME"),
-                        CPEFactory.CPM_HOME, aCasProcessorConfiguration.getDescriptor());
+                CPEFactory.CPM_HOME, aCasProcessorConfiguration.getDescriptor());
         if (System.getProperty("os.name") != null
-                        && System.getProperty("os.name").toLowerCase().startsWith("linux")) {
+                && System.getProperty("os.name").toLowerCase().startsWith("linux")) {
           cmdArgs.add(descriptor);
         } else {
           cmdArgs.add("\"" + descriptor + "\"");

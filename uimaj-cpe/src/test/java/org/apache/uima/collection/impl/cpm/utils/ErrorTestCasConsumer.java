@@ -82,7 +82,7 @@ public class ErrorTestCasConsumer extends CasConsumer_ImplBase {
       }
       // add the error object to the corresponding HashMap Entry
       addError(errorFunction, new FunctionErrorStore(errorExceptionName, errorCountName,
-                      errorFunction));
+              errorFunction));
     }
     logger.log(LOG_LEVEL, "initialize() was called");
     if (errorConfig.containsKey(FUNC_INITIALIZE_KEY)) {

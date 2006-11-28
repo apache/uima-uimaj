@@ -55,25 +55,25 @@ public class DebugControlThread implements Runnable {
     if (fileName == null) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_checkpoint_target_not_defined__FINEST",
-                        new Object[] { Thread.currentThread().getName() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_checkpoint_target_not_defined__FINEST",
+                new Object[] { Thread.currentThread().getName() });
       }
       throw new RuntimeException(CpmLocalizedMessage.getLocalizedMessage(
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_EXP_target_checkpoint_not_defined__WARNING", new Object[] { Thread
-                                      .currentThread().getName() }));
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+              "UIMA_CPM_EXP_target_checkpoint_not_defined__WARNING", new Object[] { Thread
+                      .currentThread().getName() }));
     }
     if (cpm == null) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_invalid_cpm_instance__FINEST",
-                        new Object[] { Thread.currentThread().getName() });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_invalid_cpm_instance__FINEST",
+                new Object[] { Thread.currentThread().getName() });
       }
       throw new RuntimeException(CpmLocalizedMessage.getLocalizedMessage(
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_cpm__WARNING",
-                      new Object[] { Thread.currentThread().getName() }));
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_cpm__WARNING",
+              new Object[] { Thread.currentThread().getName() }));
     } else {
       new Thread(this).start();
     }
@@ -107,9 +107,8 @@ public class DebugControlThread implements Runnable {
     }
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_thread_terminating__FINEST",
-                      new Object[] { Thread.currentThread().getName() });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_thread_terminating__FINEST",
+              new Object[] { Thread.currentThread().getName() });
     }
   }
 
@@ -144,19 +143,19 @@ public class DebugControlThread implements Runnable {
             if (value.trim().equalsIgnoreCase("off") && System.getProperties().containsKey(key)) {
               if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
                 UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                                this.getClass().getName(), "process",
-                                CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_disabling_key__FINEST",
-                                new Object[] { Thread.currentThread().getName(), key, value });
+                        this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                        "UIMA_CPM_disabling_key__FINEST",
+                        new Object[] { Thread.currentThread().getName(), key, value });
 
               }
               System.getProperties().remove(key);
             } else if (value.trim().equalsIgnoreCase("on")
-                            && !System.getProperties().containsKey(key)) {
+                    && !System.getProperties().containsKey(key)) {
               if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
                 UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                                this.getClass().getName(), "process",
-                                CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_enabling_key__FINEST",
-                                new Object[] { Thread.currentThread().getName(), key, value });
+                        this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                        "UIMA_CPM_enabling_key__FINEST",
+                        new Object[] { Thread.currentThread().getName(), key, value });
               }
               System.getProperties().put(key, value);
             }
@@ -206,9 +205,9 @@ public class DebugControlThread implements Runnable {
     try {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_show_access_control_file__FINEST",
-                        new Object[] { Thread.currentThread().getName(), fileName });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_show_access_control_file__FINEST",
+                new Object[] { Thread.currentThread().getName(), fileName });
       }
       inF = new File(fileName);
       byte[] content = new byte[(int) inF.length()];
@@ -220,9 +219,9 @@ public class DebugControlThread implements Runnable {
     } catch (FileNotFoundException e) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                        "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_access_control_file_not_found__FINEST",
-                        new Object[] { Thread.currentThread().getName(), fileName });
+                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_access_control_file_not_found__FINEST",
+                new Object[] { Thread.currentThread().getName(), fileName });
       }
       return NOTFOUND;
     } catch (Exception e) {

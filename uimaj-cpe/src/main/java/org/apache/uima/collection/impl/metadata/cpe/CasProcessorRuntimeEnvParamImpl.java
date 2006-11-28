@@ -31,7 +31,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl implements
-                CasProcessorRuntimeEnvParam {
+        CasProcessorRuntimeEnvParam {
   private static final long serialVersionUID = -6750487360818463790L;
 
   private String key;
@@ -84,7 +84,7 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     setKey(aElement.getAttribute("key"));
     setValue(aElement.getAttribute("value"));
 
@@ -108,7 +108,7 @@ public class CasProcessorRuntimeEnvParamImpl extends MetaDataObject_impl impleme
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("env",
-                  new PropertyXmlInfo[0]);
+          new PropertyXmlInfo[0]);
 
   /**
    * @return

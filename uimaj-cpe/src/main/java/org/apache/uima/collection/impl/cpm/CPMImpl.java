@@ -64,9 +64,9 @@ public class CPMImpl extends BaseCPMImpl implements CollectionProcessingManager 
    * 
    */
   public void setAnalysisEngine(AnalysisEngine aAnalysisEngine)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     if (super.getCasProcessors().length > 0
-                    && super.getCasProcessors()[0] instanceof AnalysisEngine) {
+            && super.getCasProcessors()[0] instanceof AnalysisEngine) {
       super.removeCasProcessor(super.getCasProcessors()[0]);
       super.addCasProcessor(aAnalysisEngine, 0);
     } else {
@@ -136,7 +136,7 @@ public class CPMImpl extends BaseCPMImpl implements CollectionProcessingManager 
    * 
    */
   public void process(CollectionReader aCollectionReader, int aBatchSize)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     super.process(aCollectionReader, aBatchSize);
 
   }

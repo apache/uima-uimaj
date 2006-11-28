@@ -91,7 +91,7 @@ public class Vinci {
    * @return {@link org.apache.vinci.transport.VinciFrame} VinciData frame.
    */
   public static AFrame replyWithAnalysis(VinciClient conn, VinciFrame requestFrame)
-                  throws Exception {
+          throws Exception {
     AFFactory af = new AFFactory();
     return (AFrame) conn.sendAndReceive(requestFrame, af);
   }
@@ -118,7 +118,7 @@ public class Vinci {
     String frameAsString = frame.toXML();
     if (frameAsString.indexOf("KEYS") > -1 && frameAsString.indexOf("</KEYS>") > -1) {
       keys = frameAsString.substring(frameAsString.indexOf("KEYS") + 5, frameAsString
-                      .indexOf("</KEYS>"));
+              .indexOf("</KEYS>"));
     }
     return keys;
   }
@@ -146,8 +146,8 @@ public class Vinci {
       FeatureStructure fs = (FeatureStructure) it.next();
       if (org.apache.uima.collection.impl.cpm.Constants.CONTENT_TAG.equals(fs.getType())) {
         return ((PrimitiveValue) fs
-                        .getFeatureValue(org.apache.uima.collection.impl.cpm.Constants.CONTENT_TAG_VALUE))
-                        .toString();
+                .getFeatureValue(org.apache.uima.collection.impl.cpm.Constants.CONTENT_TAG_VALUE))
+                .toString();
       }
     }
     return "";

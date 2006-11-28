@@ -23,7 +23,7 @@ import org.apache.uima.collection.metadata.CasProcessorDeploymentParams;
 import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
 
 public class CpeIntegratedCasProcessorImpl extends CasProcessorCpeObject implements
-                CpeIntegratedCasProcessor {
+        CpeIntegratedCasProcessor {
   private static final long serialVersionUID = 6076012896926381047L;
 
   public CpeIntegratedCasProcessorImpl()

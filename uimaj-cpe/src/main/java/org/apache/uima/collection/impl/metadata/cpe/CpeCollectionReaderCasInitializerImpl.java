@@ -36,7 +36,7 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  * @deprecated As of v2.0, CAS Initializers are deprecated.
  */
 public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl implements
-                CpeCollectionReaderCasInitializer {
+        CpeCollectionReaderCasInitializer {
   private static final long serialVersionUID = -6284616239685904940L;
 
   private CpeComponentDescriptor descriptor;
@@ -79,7 +79,7 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
    * Sets configuration parameter settings for this CasInitializer.
    */
   public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings settings)
-                  throws CpeDescriptorException {
+          throws CpeDescriptorException {
     cfps = settings;
 
     if (settings != null && settings.getParameterSettings() != null) {
@@ -87,10 +87,10 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
       if (length > 0) {
         configurationParameterSettings = new ConfigurationParameterSettings_impl();
         org.apache.uima.resource.metadata.NameValuePair[] nvp = new NameValuePair_impl[settings
-                        .getParameterSettings().length];
+                .getParameterSettings().length];
         for (int i = 0; i < settings.getParameterSettings().length; i++) {
           nvp[i] = new NameValuePair_impl(settings.getParameterSettings()[i].getName(), settings
-                          .getParameterSettings()[i].getValue());
+                  .getParameterSettings()[i].getValue());
         }
         configurationParameterSettings.setParameterSettings(nvp);
       }
@@ -135,11 +135,11 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("casInitializer",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("descriptor", null),
-                      new PropertyXmlInfo("parameterSettings", null),
-                      new PropertyXmlInfo("sofaNameMappings", null),
+          new PropertyXmlInfo[] { new PropertyXmlInfo("descriptor", null),
+              new PropertyXmlInfo("parameterSettings", null),
+              new PropertyXmlInfo("sofaNameMappings", null),
 
-                  });
+          });
 
   /**
    * @return

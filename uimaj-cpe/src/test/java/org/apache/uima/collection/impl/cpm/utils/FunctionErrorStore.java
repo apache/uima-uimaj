@@ -79,7 +79,7 @@ public class FunctionErrorStore {
     if (functionCounted >= functionCounter) {
       exceptionThrown();
       logger.log(LOG_LEVEL, "the function " + functionName
-                      + " is trying to throw the following exception: " + functionError);
+              + " is trying to throw the following exception: " + functionError);
       if (functionError.equals("AnnotatorProcessException")) {
         throw new AnnotatorProcessException();
       } else {
@@ -90,13 +90,13 @@ public class FunctionErrorStore {
 
   // exceptions from JTextAnnotator_ImplBase.initialize and JTextAnnotator_ImplBase.reconfigure
   public synchronized void methodeCalled2() throws AnnotatorConfigurationException,
-                  AnnotatorInitializationException {
+          AnnotatorInitializationException {
     functionCounted++;
 
     if (functionCounted >= functionCounter) {
       exceptionThrown();
       logger.log(LOG_LEVEL, "the function " + functionName
-                      + " is trying to throw the following exception: " + functionError);
+              + " is trying to throw the following exception: " + functionError);
       if (functionError.equals("AnnotatorConfigurationException")) {
         throw new AnnotatorConfigurationException();
       } else if (functionError.equals("AnnotatorInitializationException")) {
@@ -114,7 +114,7 @@ public class FunctionErrorStore {
     if (functionCounted >= functionCounter) {
       exceptionThrown();
       logger.log(LOG_LEVEL, "the function " + functionName
-                      + " is trying to throw the following exception: " + functionError);
+              + " is trying to throw the following exception: " + functionError);
       if (functionError.equals("ResourceProcessException")) {
         throw new ResourceProcessException();
       } else {
@@ -130,7 +130,7 @@ public class FunctionErrorStore {
     if (functionCounted >= functionCounter) {
       exceptionThrown();
       logger.log(LOG_LEVEL, "the function " + functionName
-                      + " is trying to throw the following exception: " + functionError);
+              + " is trying to throw the following exception: " + functionError);
       if (functionError.equals("ResourceInitializationException")) {
         throw new ResourceInitializationException();
       } else {
@@ -146,7 +146,7 @@ public class FunctionErrorStore {
     if (functionCounted >= functionCounter) {
       exceptionThrown();
       logger.log(LOG_LEVEL, "the function " + functionName
-                      + " is trying to throw the following exception: " + functionError);
+              + " is trying to throw the following exception: " + functionError);
       if (functionError.equals("ResourceInitializationException")) {
         throw new ResourceInitializationException();
       } else {
@@ -162,7 +162,7 @@ public class FunctionErrorStore {
     if (functionCounted >= functionCounter) {
       exceptionThrown();
       logger.log(LOG_LEVEL, "the function " + functionName
-                      + " is trying to throw the following exception: " + functionError);
+              + " is trying to throw the following exception: " + functionError);
       if (functionError.equals("IOException")) {
         throw new IOException();
       } else if (functionError.equals("CollectionException")) {
@@ -180,7 +180,7 @@ public class FunctionErrorStore {
     if (functionCounted >= functionCounter) {
       exceptionThrown();
       logger.log(LOG_LEVEL, "the function " + functionName
-                      + " is trying to throw the following exception: " + functionError);
+              + " is trying to throw the following exception: " + functionError);
       if (functionError.equals("IOException")) {
         throw new IOException();
       } else {
@@ -196,7 +196,7 @@ public class FunctionErrorStore {
     if (functionCounted >= functionCounter) {
       exceptionThrown();
       logger.log(LOG_LEVEL, "the function " + functionName
-                      + " is trying to throw the following exception: " + functionError);
+              + " is trying to throw the following exception: " + functionError);
       throwAnException(functionError);
     }
   }
@@ -332,8 +332,8 @@ public class FunctionErrorStore {
     sb.append("All counted Exceptions: " + allCountedExceptions + LS);
     sb.append("CollectionReader instances: " + collectionReaderCount + LS);
     sb
-                    .append("CollectionReader 'getNext'-methode call count: "
-                                    + collectionReaderGetNextCount + LS);
+            .append("CollectionReader 'getNext'-methode call count: "
+                    + collectionReaderGetNextCount + LS);
     sb.append("Annotator instances: " + annotatorCount + LS);
     sb.append("Annotator 'process'-methode call count: " + annotatorProcessCount + LS);
     sb.append("CasConsumer instances: " + casConsumerCount + LS);

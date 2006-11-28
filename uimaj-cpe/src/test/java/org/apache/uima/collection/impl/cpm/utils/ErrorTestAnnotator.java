@@ -86,7 +86,7 @@ public class ErrorTestAnnotator extends JTextAnnotator_ImplBase {
    * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#initialize(org.apache.uima.analysis_engine.annotator.AnnotatorContext)
    */
   public void initialize(AnnotatorContext aContext) throws AnnotatorInitializationException,
-                  AnnotatorConfigurationException {
+          AnnotatorConfigurationException {
     super.initialize(aContext);
     try {
       // set logger
@@ -107,7 +107,7 @@ public class ErrorTestAnnotator extends JTextAnnotator_ImplBase {
           try {
             String exceptionName = (String) aContext.getConfigParameterValue(aGroups[i], EXCEPTION);
             int errorCount = ((Integer) aContext.getConfigParameterValue(aGroups[i], ERROR_COUNT))
-                            .intValue();
+                    .intValue();
             // add the error object to the corresponding HashMap Entry
             addError(functionName, new FunctionErrorStore(exceptionName, errorCount, functionName));
           } catch (NullPointerException e) {
@@ -129,7 +129,7 @@ public class ErrorTestAnnotator extends JTextAnnotator_ImplBase {
    * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#reconfigure()
    */
   public void reconfigure() throws AnnotatorConfigurationException,
-                  AnnotatorInitializationException {
+          AnnotatorInitializationException {
     super.reconfigure();
     logger.log(LOG_LEVEL, "reconfigure was called");
     if (errorConfig.containsKey(FUNC_RECONFIGURE_KEY)) {
@@ -141,7 +141,7 @@ public class ErrorTestAnnotator extends JTextAnnotator_ImplBase {
    * helper functions
    */
   private static boolean safeGetConfigParameterValue(AnnotatorContext context, String param,
-                  boolean defaultValue) throws AnnotatorContextException {
+          boolean defaultValue) throws AnnotatorContextException {
     Boolean v = (Boolean) context.getConfigParameterValue(param);
     if (v != null) {
       return v.booleanValue();

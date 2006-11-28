@@ -71,7 +71,7 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
    *          Cas Process configuration from the CPE descriptor
    */
   public CasObjectNetworkCasProcessorImpl(CpeCasProcessor aCasProcessor)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     if (aCasProcessor.getDeploymentParams() != null) {
       CasProcessorDeploymentParams params = aCasProcessor.getDeploymentParams();
       try {
@@ -79,7 +79,7 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
         transport = pluginTransport(transportParameter.getParameterValue());
       } catch (Exception e) {
         throw new ResourceConfigurationException(InvalidXMLException.INVALID_CLASS,
-                        new Object[] { "transport" }, e);
+                new Object[] { "transport" }, e);
       }
 
       CasProcessorDeploymentParam[] deployParameters = params.getAll();
@@ -92,17 +92,15 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
           }
         } catch (Exception e) {
           throw new ResourceConfigurationException(InvalidXMLException.INVALID_CLASS,
-                          new Object[] { "transport" }, e);
+                  new Object[] { "transport" }, e);
         }
 
       }
     } else {
       throw new ResourceConfigurationException(InvalidXMLException.INVALID_CPE_DESCRIPTOR,
-                      new Object[] { "transport" }, new Exception(CpmLocalizedMessage
-                                      .getLocalizedMessage(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                                                      "UIMA_CPM_EXP_bad_transport__WARNING",
-                                                      new Object[] { Thread.currentThread()
-                                                                      .getName() })));
+              new Object[] { "transport" }, new Exception(CpmLocalizedMessage.getLocalizedMessage(
+                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_bad_transport__WARNING",
+                      new Object[] { Thread.currentThread().getName() })));
 
     }
     timeout = aCasProcessor.getErrorHandling().getTimeout().get();
@@ -259,7 +257,7 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
    * @see org.apache.uima.collection.base_cpm.CasProcessor#batchProcessComplete(org.apache.uima.util.ProcessTrace)
    */
   public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
-                  IOException {
+          IOException {
     // noop
 
   }
@@ -269,11 +267,11 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
    * 
    */
   public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
-                  IOException {
+          IOException {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                      "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_stopping_cp__FINEST",
-                      new Object[] { Thread.currentThread().getName(), name });
+              "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_stopping_cp__FINEST",
+              new Object[] { Thread.currentThread().getName(), name });
     }
     if (socket != null && !socket.isClosed()) {
       socket.close();

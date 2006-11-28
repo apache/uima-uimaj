@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class CpeResourceManagerConfigurationImpl extends MetaDataObject_impl implements
-                CpeResourceManagerConfiguration {
+        CpeResourceManagerConfiguration {
   private static final long serialVersionUID = -8905321767282361433L;
 
   private String href;
@@ -63,7 +63,7 @@ public class CpeResourceManagerConfigurationImpl extends MetaDataObject_impl imp
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     setHref(aElement.getAttribute("href"));
   }
 
@@ -79,7 +79,7 @@ public class CpeResourceManagerConfigurationImpl extends MetaDataObject_impl imp
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-                  "resourceManagerConfiguration", new PropertyXmlInfo[0]);
+          "resourceManagerConfiguration", new PropertyXmlInfo[0]);
 
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;

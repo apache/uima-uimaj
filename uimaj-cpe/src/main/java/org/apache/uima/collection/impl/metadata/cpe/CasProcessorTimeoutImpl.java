@@ -64,7 +64,7 @@ public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasP
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     setMax(aElement.getAttribute("max"));
     setDefaultTimeout(aElement.getAttribute("default"));
   }
@@ -88,7 +88,7 @@ public class CasProcessorTimeoutImpl extends MetaDataObject_impl implements CasP
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("timeout",
-                  new PropertyXmlInfo[0]);
+          new PropertyXmlInfo[0]);
 
   /**
    * @return

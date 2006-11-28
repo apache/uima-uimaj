@@ -39,7 +39,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implements
-                CasProcessorDeploymentParams {
+        CasProcessorDeploymentParams {
   private static final long serialVersionUID = 4871710283477856271L;
 
   private ArrayList params = new ArrayList();
@@ -101,7 +101,7 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implem
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     NodeList nodes = aElement.getChildNodes();
     for (int i = 0; i < nodes.getLength(); i++) {
       Node node = nodes.item(i);
@@ -116,14 +116,14 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implem
         }
         // nodeMap.getNamedItem("type").getNodeValue();
         CasProcessorDeploymentParam p = new CasProcessorDeploymentParamImpl(paramName, paramValue,
-                        paramType);
+                paramType);
         params.add(p);
       }
     }
   }
 
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
-                  throws SAXException {
+          throws SAXException {
     XmlizationInfo inf = getXmlizationInfo();
 
     // write the element's start tag
@@ -142,7 +142,7 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implem
     // write child elements
     for (int i = 0; i < params.size(); i++) {
       ((CasProcessorDeploymentParam) params.get(i)).toXML(aContentHandler,
-                      aWriteDefaultNamespaceAttribute);
+              aWriteDefaultNamespaceAttribute);
     }
 
     // end element
@@ -154,6 +154,6 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implem
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("deploymentParameters",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("parameter"), });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("parameter"), });
 
 }

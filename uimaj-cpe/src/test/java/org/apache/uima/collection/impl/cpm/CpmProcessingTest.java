@@ -90,13 +90,13 @@ public class CpmProcessingTest extends TestCase {
 
     // check if CasConsumer was called
     Assert.assertEquals("StatusCallbackListener", documentCount, listener
-                    .getEntityProcessCompleteCount());
+            .getEntityProcessCompleteCount());
     Assert.assertEquals("CasConsumer process Count", documentCount, FunctionErrorStore
-                    .getCasConsumerProcessCount());
+            .getCasConsumerProcessCount());
     Assert.assertEquals("Annotator process count", documentCount, FunctionErrorStore
-                    .getAnnotatorProcessCount());
+            .getAnnotatorProcessCount());
     Assert.assertEquals("Collection reader getNext count", documentCount, FunctionErrorStore
-                    .getCollectionReaderGetNextCount());
+            .getCollectionReaderGetNextCount());
     Assert.assertEquals("number of annoators", threadCount, FunctionErrorStore.getAnnotatorCount());
   }
 
@@ -127,13 +127,13 @@ public class CpmProcessingTest extends TestCase {
 
     // check if CasConsumer was called
     Assert.assertEquals("StatusCallbackListener", documentCount, listener
-                    .getEntityProcessCompleteCount());
+            .getEntityProcessCompleteCount());
     Assert.assertEquals("CasConsumer process Count", documentCount, FunctionErrorStore
-                    .getCasConsumerProcessCount());
+            .getCasConsumerProcessCount());
     Assert.assertEquals("Annotator process count", documentCount, FunctionErrorStore
-                    .getAnnotatorProcessCount());
+            .getAnnotatorProcessCount());
     Assert.assertEquals("Collection reader getNext count", documentCount, FunctionErrorStore
-                    .getCollectionReaderGetNextCount());
+            .getCollectionReaderGetNextCount());
     Assert.assertEquals("number of annoators", threadCount, FunctionErrorStore.getAnnotatorCount());
   }
 
@@ -164,13 +164,13 @@ public class CpmProcessingTest extends TestCase {
 
     // check if CasConsumer was called
     Assert.assertEquals("StatusCallbackListener", documentCount, listener
-                    .getEntityProcessCompleteCount());
+            .getEntityProcessCompleteCount());
     Assert.assertEquals("CasConsumer process Count", documentCount, FunctionErrorStore
-                    .getCasConsumerProcessCount());
+            .getCasConsumerProcessCount());
     Assert.assertEquals("Annotator process count", documentCount, FunctionErrorStore
-                    .getAnnotatorProcessCount());
+            .getAnnotatorProcessCount());
     Assert.assertEquals("Collection reader getNext count", documentCount, FunctionErrorStore
-                    .getCollectionReaderGetNextCount());
+            .getCollectionReaderGetNextCount());
     Assert.assertEquals("number of annoators", threadCount, FunctionErrorStore.getAnnotatorCount());
   }
 
@@ -201,13 +201,13 @@ public class CpmProcessingTest extends TestCase {
 
     // check if CasConsumer was called
     Assert.assertEquals("StatusCallbackListener", documentCount, listener
-                    .getEntityProcessCompleteCount());
+            .getEntityProcessCompleteCount());
     Assert.assertEquals("CasConsumer process Count", documentCount, FunctionErrorStore
-                    .getCasConsumerProcessCount());
+            .getCasConsumerProcessCount());
     Assert.assertEquals("Annotator process count", documentCount, FunctionErrorStore
-                    .getAnnotatorProcessCount());
+            .getAnnotatorProcessCount());
     Assert.assertEquals("Collection reader getNext count", documentCount, FunctionErrorStore
-                    .getCollectionReaderGetNextCount());
+            .getCollectionReaderGetNextCount());
     Assert.assertEquals("number of annoators", threadCount, FunctionErrorStore.getAnnotatorCount());
   }
 
@@ -227,10 +227,10 @@ public class CpmProcessingTest extends TestCase {
 
     try {
       String colReaderBase = junitTestBasePath + "CpmTests" + separator
-                      + "ErrorTestCollectionReader.xml";
+              + "ErrorTestCollectionReader.xml";
       String taeBase = junitTestBasePath + "CpmTests" + separator + "ErrorTestAnnotator.xml";
       String casConsumerBase = junitTestBasePath + "CpmTests" + separator
-                      + "ErrorTestCasConsumer.xml";
+              + "ErrorTestCasConsumer.xml";
 
       // created needed descriptors
       String colReaderDesc = DescriptorMakeUtil.makeCollectionReader(colReaderBase, documentCount);
@@ -245,13 +245,13 @@ public class CpmProcessingTest extends TestCase {
 
       // add tae
       CpeIntegratedCasProcessor integratedProcessor = CpeDescriptorFactory
-                      .produceCasProcessor("ErrorTestAnnotator");
+              .produceCasProcessor("ErrorTestAnnotator");
       integratedProcessor.setDescriptor(taeDesc);
       cpeDesc.addCasProcessor(integratedProcessor);
 
       // add casConsumer
       CpeIntegratedCasProcessor casConsumer = CpeDescriptorFactory
-                      .produceCasProcessor("ErrorTest CasConsumer");
+              .produceCasProcessor("ErrorTest CasConsumer");
       casConsumer.setDescriptor(casConsumerDesc);
       cpeDesc.addCasProcessor(casConsumer);
 

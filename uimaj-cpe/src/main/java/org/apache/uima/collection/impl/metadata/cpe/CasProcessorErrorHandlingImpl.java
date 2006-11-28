@@ -28,7 +28,7 @@ import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 
 public class CasProcessorErrorHandlingImpl extends MetaDataObject_impl implements
-                CasProcessorErrorHandling {
+        CasProcessorErrorHandling {
 
   private static final long serialVersionUID = 1677062861920690715L;
 
@@ -100,7 +100,7 @@ public class CasProcessorErrorHandlingImpl extends MetaDataObject_impl implement
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("errorHandling",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("errorRateThreshold", null),
-                      new PropertyXmlInfo("maxConsecutiveRestarts", null),
-                      new PropertyXmlInfo("timeout", null), });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("errorRateThreshold", null),
+              new PropertyXmlInfo("maxConsecutiveRestarts", null),
+              new PropertyXmlInfo("timeout", null), });
 }
