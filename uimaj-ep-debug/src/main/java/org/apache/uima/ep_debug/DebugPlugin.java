@@ -57,19 +57,18 @@ public class DebugPlugin extends Plugin implements IStartup {
     // this
     // be overridden every time the pluging starts.
     String doneOnce = JDIDebugUIPlugin.getDefault().getPreferenceStore().getString(
-                    PREF_ALREADY_SET_PREF_SHOW_DETAILS);
+            PREF_ALREADY_SET_PREF_SHOW_DETAILS);
     if (ALREADY_SET_PREF_SHOW_DETAILS.equals(doneOnce))
       return;
     JDIDebugUIPlugin.getDefault().getPreferenceStore().setValue(PREF_ALREADY_SET_PREF_SHOW_DETAILS,
-                    ALREADY_SET_PREF_SHOW_DETAILS);
+            ALREADY_SET_PREF_SHOW_DETAILS);
 
     String preference = JDIDebugUIPlugin.getDefault().getPreferenceStore().getString(
-                    IJDIPreferencesConstants.PREF_SHOW_DETAILS);
+            IJDIPreferencesConstants.PREF_SHOW_DETAILS);
     if (IJDIPreferencesConstants.INLINE_ALL.equals(preference))
       return;
-    JDIDebugUIPlugin.getDefault().getPreferenceStore()
-                    .setValue(IJDIPreferencesConstants.PREF_SHOW_DETAILS,
-                                    IJDIPreferencesConstants.INLINE_ALL);
+    JDIDebugUIPlugin.getDefault().getPreferenceStore().setValue(
+            IJDIPreferencesConstants.PREF_SHOW_DETAILS, IJDIPreferencesConstants.INLINE_ALL);
   }
 
   /**
