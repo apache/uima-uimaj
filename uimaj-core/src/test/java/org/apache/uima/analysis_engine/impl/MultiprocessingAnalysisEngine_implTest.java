@@ -71,7 +71,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       mSimpleDesc.setFrameworkImplementation("org.apache.uima.java");
       mSimpleDesc.setPrimitive(true);
       mSimpleDesc
-                      .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
+              .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       mSimpleDesc.getMetaData().setName("Simple Test");
       TypeSystemDescription typeSys = new TypeSystemDescription_impl();
       typeSys.addType("foo.Bar", "test", "uima.tcas.Annotation");
@@ -204,16 +204,16 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       TaeDescription primitiveDesc = new TaeDescription_impl();
       primitiveDesc.setPrimitive(true);
       primitiveDesc
-                      .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
+              .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       primitiveDesc.getMetaData().setName("Reconfigure Test 1");
       ConfigurationParameter p1 = new ConfigurationParameter_impl();
       p1.setName("StringParam");
       p1.setDescription("parameter with String data type");
       p1.setType(ConfigurationParameter.TYPE_STRING);
       primitiveDesc.getMetaData().getConfigurationParameterDeclarations()
-                      .setConfigurationParameters(new ConfigurationParameter[] { p1 });
+              .setConfigurationParameters(new ConfigurationParameter[] { p1 });
       primitiveDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
-                      new NameValuePair[] { new NameValuePair_impl("StringParam", "Test1") });
+              new NameValuePair[] { new NameValuePair_impl("StringParam", "Test1") });
 
       // instantiate MultiprocessingTextAnalysisEngine
       MultiprocessingAnalysisEngine_impl tae = new MultiprocessingAnalysisEngine_impl();
@@ -243,9 +243,9 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       p2.setDescription("parameter with String data type");
       p2.setType(ConfigurationParameter.TYPE_STRING);
       aggDesc.getMetaData().getConfigurationParameterDeclarations().setConfigurationParameters(
-                      new ConfigurationParameter[] { p2 });
+              new ConfigurationParameter[] { p2 });
       aggDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
-                      new NameValuePair[] { new NameValuePair_impl("StringParam", "Test3") });
+              new NameValuePair[] { new NameValuePair_impl("StringParam", "Test3") });
       // instantiate TextAnalysisEngine
       MultiprocessingAnalysisEngine_impl aggTae = new MultiprocessingAnalysisEngine_impl();
       aggTae.initialize(aggDesc, null);

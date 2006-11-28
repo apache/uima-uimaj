@@ -70,7 +70,7 @@ public class ComponentCategoryTest extends TestCase {
     if (!aeDescFile.isFile())
       throw new FileNotFoundException("AE descriptor not found");
     Assert.assertTrue(UIMAUtil.ANALYSIS_ENGINE_CTG.equals(UIMAUtil
-                    .identifyUimaComponentCategory(aeDescFile)));
+            .identifyUimaComponentCategory(aeDescFile)));
   }
 
   /**
@@ -81,7 +81,7 @@ public class ComponentCategoryTest extends TestCase {
     if (!ccDescFile.isFile())
       throw new FileNotFoundException("CC descriptor not found");
     Assert.assertTrue(UIMAUtil.CAS_CONSUMER_CTG.equals(UIMAUtil
-                    .identifyUimaComponentCategory(ccDescFile)));
+            .identifyUimaComponentCategory(ccDescFile)));
   }
 
   /**
@@ -92,7 +92,7 @@ public class ComponentCategoryTest extends TestCase {
     if (!ciDescFile.isFile())
       throw new FileNotFoundException("CI descriptor not found");
     Assert.assertTrue(UIMAUtil.CAS_INITIALIZER_CTG.equals(UIMAUtil
-                    .identifyUimaComponentCategory(ciDescFile)));
+            .identifyUimaComponentCategory(ciDescFile)));
   }
 
   // TODO: test currently fails because CPE descriptor can't be parsed without uimaj-cpe
@@ -116,7 +116,7 @@ public class ComponentCategoryTest extends TestCase {
     if (!crDescFile.isFile())
       throw new FileNotFoundException("CR descriptor not found");
     Assert.assertTrue(UIMAUtil.COLLECTION_READER_CTG.equals(UIMAUtil
-                    .identifyUimaComponentCategory(crDescFile)));
+            .identifyUimaComponentCategory(crDescFile)));
   }
 
   /**
@@ -127,6 +127,6 @@ public class ComponentCategoryTest extends TestCase {
     if (!tsDescFile.isFile())
       throw new FileNotFoundException("TS descriptor not found");
     Assert.assertTrue(UIMAUtil.TYPE_SYSTEM_CTG.equals(UIMAUtil
-                    .identifyUimaComponentCategory(tsDescFile)));
+            .identifyUimaComponentCategory(tsDescFile)));
   }
 }

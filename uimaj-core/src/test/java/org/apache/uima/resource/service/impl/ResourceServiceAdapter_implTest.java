@@ -75,7 +75,7 @@ public class ResourceServiceAdapter_implTest extends TestCase {
       p1.setType(ConfigurationParameter.TYPE_INTEGER);
       p1.setMultiValued(true);
       md.getConfigurationParameterDeclarations().setConfigurationParameters(
-                      new ConfigurationParameter[] { p1 });
+              new ConfigurationParameter[] { p1 });
 
       mServiceStub.getMetaDataReturnValue = md;
       ResourceMetaData result = mAdapter.getMetaData();

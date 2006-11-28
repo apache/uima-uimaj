@@ -167,7 +167,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
    *           if any I/O exception occurred.
    */
   public static InputStream getInstallationDescriptorAsStream(InstallationDescriptor insdObject)
-                  throws IOException {
+          throws IOException {
     InputStream iStream = null;
     StringBuffer xmlBuffer = new StringBuffer();
     xmlBuffer.append(XML_HEADER);
@@ -190,7 +190,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
    *           if any I/O exception occurred.
    */
   public static void printInstallationDescriptor(InstallationDescriptor insdObject,
-                  PrintWriter oWriter) throws IOException {
+          PrintWriter oWriter) throws IOException {
     String[] tagOrder = null;
     // ROOT - 0th level
     XMLUtil.printXMLTag(ROOT_TAG, oWriter, false, 0);
@@ -203,7 +203,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
     tagOrder[0] = NAME_TAG;
     if (insdObject.getOSSpecs().size() > 0)
       XMLUtil.printAllXMLElements(insdObject.getOSSpecs(),
-                      InstallationDescriptor.PROPERTY_DELIMITER, tagOrder, oWriter, 2);
+              InstallationDescriptor.PROPERTY_DELIMITER, tagOrder, oWriter, 2);
     // OS specs end - 1st level
     XMLUtil.printXMLTag(OS_TAG, oWriter, true, 1);
     oWriter.println();
@@ -213,7 +213,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
     // 2nd level elements (multi-value properties) - no order
     if (insdObject.getToolkitsSpecs().size() > 0)
       XMLUtil.printAllXMLElements(insdObject.getToolkitsSpecs(),
-                      InstallationDescriptor.PROPERTY_DELIMITER, null, oWriter, 2);
+              InstallationDescriptor.PROPERTY_DELIMITER, null, oWriter, 2);
     // TOOLKITS specs end - 1st level
     XMLUtil.printXMLTag(TOOLKITS_TAG, oWriter, true, 1);
     oWriter.println();
@@ -223,7 +223,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
     // 2nd level elements (multi-value properties) - no order
     if (insdObject.getFrameworkSpecs().size() > 0)
       XMLUtil.printAllXMLElements(insdObject.getFrameworkSpecs(),
-                      InstallationDescriptor.PROPERTY_DELIMITER, null, oWriter, 2);
+              InstallationDescriptor.PROPERTY_DELIMITER, null, oWriter, 2);
     // UIMA_FRAMEWORK specs end - 1st level
     XMLUtil.printXMLTag(UIMA_FRAMEWORK_TAG, oWriter, true, 1);
     oWriter.println();
@@ -342,7 +342,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
       // 3rd level elements
       String dlgId = (String) dlgList.next();
       InstallationDescriptor.ComponentInfo dlgInfo = (InstallationDescriptor.ComponentInfo) dlgTable
-                      .get(dlgId);
+              .get(dlgId);
       XMLUtil.printXMLElement(ID_TAG, dlgId, oWriter, 3);
       oWriter.println();
       XMLUtil.printXMLElement(NAME_TAG, dlgInfo.name, oWriter, 3);
@@ -355,7 +355,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
     Iterator actList = insdObject.getInstallationActions().iterator();
     while (actList.hasNext()) {
       InstallationDescriptor.ActionInfo actInfo = (InstallationDescriptor.ActionInfo) actList
-                      .next();
+              .next();
       // PROCESS specs - 2nd level
       XMLUtil.printXMLTag(PROCESS_TAG, oWriter, false, 2);
       oWriter.println();
@@ -394,7 +394,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
    *           if any I/O exception occurred.
    */
   public static void saveInstallationDescriptor(InstallationDescriptor insdObject, File xmlFile)
-                  throws IOException {
+          throws IOException {
     PrintWriter oWriter = null;
     try {
       oWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(xmlFile), "UTF-8"));
@@ -506,8 +506,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
           _activeArg.value = elemValue;
       } else if (localName.equalsIgnoreCase(ARGUMENT_TAG)) {
         if (SERVICE_COMMAND_ARGS_TAG.equals(_activeSubSection) && _activeService != null
-                        && _activeArg != null && _activeArg.value != null
-                        && _activeArg.value.length() > 0)
+                && _activeArg != null && _activeArg.value != null && _activeArg.value.length() > 0)
           _activeService.addArg(_activeArg);
         _activeArg = null;
       } else if (localName.equalsIgnoreCase(NETWORK_PARAMETERS_TAG)) {
@@ -628,7 +627,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
    *           Any SAX exception, possibly wrapping another exception.
    */
   public synchronized void parseInstallationDescriptor(JarFile pearFile) throws IOException,
-                  SAXException {
+          SAXException {
     String insdFilePath = InstallationProcessor.INSD_FILE_PATH;
     JarEntry insdJarEntry = pearFile.getJarEntry(insdFilePath);
     if (insdJarEntry != null) {
@@ -674,7 +673,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
    *              Any SAX exception, possibly wrapping another exception.
    */
   public void startElement(String uri, String localName, String qName, Attributes attributes)
-                  throws SAXException {
+          throws SAXException {
     _mainTag = localName;
     _activeBuffer.setLength(0);
     if (_mainTag.equalsIgnoreCase(OS_TAG)) {
@@ -691,7 +690,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
         _activeSubSection = SERVICE_COMMAND_ARGS_TAG;
     } else if (_mainTag.equalsIgnoreCase(ARGUMENT_TAG)) {
       if (SUBMITTED_COMPONENT_TAG.equals(_activeSection)
-                      && SERVICE_COMMAND_ARGS_TAG.equals(_activeSubSection))
+              && SERVICE_COMMAND_ARGS_TAG.equals(_activeSubSection))
         _activeArg = new InstallationDescriptor.ArgInfo();
     } else if (_mainTag.equalsIgnoreCase(NETWORK_PARAMETERS_TAG)) {
       if (SUBMITTED_COMPONENT_TAG.equals(_activeSection))

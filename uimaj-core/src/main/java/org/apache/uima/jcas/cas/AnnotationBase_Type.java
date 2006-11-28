@@ -76,7 +76,7 @@ public class AnnotationBase_Type extends org.apache.uima.jcas.cas.TOP_Type {
 
     casFeat_sofa = jcas.getRequiredFeatureDE(casType, "sofa", "uima.cas.Sofa", featOkTst);
     casFeatCode_sofa = (null == casFeat_sofa) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_sofa).getCode();
+            : ((FeatureImpl) casFeat_sofa).getCode();
   }
 
   protected AnnotationBase_Type() { // block default new operator

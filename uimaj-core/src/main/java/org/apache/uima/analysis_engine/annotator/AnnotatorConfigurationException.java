@@ -54,7 +54,6 @@ public class AnnotatorConfigurationException extends UIMAException {
    */
   public static final String RESOURCE_NOT_FOUND = "annotator_resource_not_found";
 
-
   /**
    * Creates a new exception with a null message.
    */
@@ -87,7 +86,7 @@ public class AnnotatorConfigurationException extends UIMAException {
    *          arguments.
    */
   public AnnotatorConfigurationException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments) {
+          Object[] aArguments) {
     super(aResourceBundleName, aMessageKey, aArguments);
   }
 
@@ -108,7 +107,7 @@ public class AnnotatorConfigurationException extends UIMAException {
    *          the original exception that caused this exception to be thrown, if any
    */
   public AnnotatorConfigurationException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments, Throwable aCause) {
+          Object[] aArguments, Throwable aCause) {
     super(aResourceBundleName, aMessageKey, aArguments, aCause);
   }
 

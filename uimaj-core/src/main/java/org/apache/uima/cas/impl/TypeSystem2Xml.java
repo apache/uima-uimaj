@@ -56,7 +56,7 @@ public class TypeSystem2Xml {
    *           if an error occurs during the translation of the type system to XML
    */
   public static void typeSystem2Xml(TypeSystem aTypeSystem, OutputStream aOutputStream)
-                  throws SAXException, IOException {
+          throws SAXException, IOException {
     XMLSerializer sax2xml = new XMLSerializer(aOutputStream);
     typeSystem2Xml(aTypeSystem, sax2xml.getContentHandler());
   }
@@ -73,7 +73,7 @@ public class TypeSystem2Xml {
    *           if an exception is thrown by the ContentHandler
    */
   public static void typeSystem2Xml(TypeSystem aTypeSystem, ContentHandler aContentHandler)
-                  throws SAXException {
+          throws SAXException {
     ResourceSpecifierFactory factory = UIMAFramework.getResourceSpecifierFactory();
     TypeSystemDescription tsDesc = factory.createTypeSystemDescription();
 

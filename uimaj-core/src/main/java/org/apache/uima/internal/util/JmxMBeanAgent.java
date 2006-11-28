@@ -52,8 +52,8 @@ public class JmxMBeanAgent {
         aMBeanServer = platformMBeanServer;
       } else {
         UIMAFramework.getLogger().logrb(Level.CONFIG, JmxMBeanAgent.class.getName(),
-                        "registerMBean", LOG_RESOURCE_BUNDLE,
-                        "UIMA_JMX_platform_mbean_server_not_available__CONFIG");
+                "registerMBean", LOG_RESOURCE_BUNDLE,
+                "UIMA_JMX_platform_mbean_server_not_available__CONFIG");
         return;
       }
     }
@@ -64,16 +64,16 @@ public class JmxMBeanAgent {
       // all share an identical UimaContext). If that happens, we only register the
       // MBean the first time and just skip the registration each subsequent time.
       Object mbeanName = objectNameConstructor.newInstance(new Object[] { aMBean
-                      .getUniqueMBeanName() });
+              .getUniqueMBeanName() });
       if (!(((Boolean) isRegistered.invoke(aMBeanServer, new Object[] { mbeanName }))
-                      .booleanValue())) {
+              .booleanValue())) {
         registerMBean.invoke(aMBeanServer, new Object[] { aMBean, mbeanName });
       }
     } catch (Exception e) {
       // don't fail catastrophically if we can't register with JMX. Just log a warning and continue.
-      UIMAFramework.getLogger().logrb(Level.WARNING, JmxMBeanAgent.class.getName(),
-                      "registerMBean", LOG_RESOURCE_BUNDLE,
-                      "UIMA_JMX_failed_to_register_mbean__WARNING", e);
+      UIMAFramework.getLogger()
+              .logrb(Level.WARNING, JmxMBeanAgent.class.getName(), "registerMBean",
+                      LOG_RESOURCE_BUNDLE, "UIMA_JMX_failed_to_register_mbean__WARNING", e);
       return;
     }
   }
@@ -99,8 +99,8 @@ public class JmxMBeanAgent {
         aMBeanServer = platformMBeanServer;
       } else {
         UIMAFramework.getLogger().logrb(Level.CONFIG, JmxMBeanAgent.class.getName(),
-                        "unregisterMBean", LOG_RESOURCE_BUNDLE,
-                        "UIMA_JMX_platform_mbean_server_not_available__CONFIG");
+                "unregisterMBean", LOG_RESOURCE_BUNDLE,
+                "UIMA_JMX_platform_mbean_server_not_available__CONFIG");
         return;
       }
     }
@@ -118,8 +118,8 @@ public class JmxMBeanAgent {
     } catch (Exception e) {
       // don't fail catastrophically if we can't unregister. Just log a warning and continue.
       UIMAFramework.getLogger().logrb(Level.WARNING, JmxMBeanAgent.class.getName(),
-                      "unregisterMBean", LOG_RESOURCE_BUNDLE,
-                      "UIMA_JMX_failed_to_unregister_mbean__WARNING", e);
+              "unregisterMBean", LOG_RESOURCE_BUNDLE,
+              "UIMA_JMX_failed_to_unregister_mbean__WARNING", e);
       return;
     }
   }
@@ -157,7 +157,7 @@ public class JmxMBeanAgent {
       registerMBean = mbeanServerClass.getMethod("registerMBean", new Class[] { Object.class,
           objectNameClass });
       unregisterMBean = mbeanServerClass.getMethod("unregisterMBean",
-                      new Class[] { objectNameClass });
+              new Class[] { objectNameClass });
       jmxAvailable = true;
     } catch (Exception e) {
       // JMX not available
@@ -168,7 +168,7 @@ public class JmxMBeanAgent {
     try {
       Class managementFactory = Class.forName("java.lang.management.ManagementFactory");
       Method getPlatformMBeanServer = managementFactory.getMethod("getPlatformMBeanServer",
-                      new Class[0]);
+              new Class[0]);
       platformMBeanServer = getPlatformMBeanServer.invoke(null, null);
     } catch (Exception e) {
       platformMBeanServer = null;

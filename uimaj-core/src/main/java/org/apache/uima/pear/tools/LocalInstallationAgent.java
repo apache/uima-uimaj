@@ -106,7 +106,7 @@ public class LocalInstallationAgent {
    *         installation descriptor, <code>false</code> otherwise.
    */
   public static boolean checkPackageConfig(Properties packageConfig,
-                  InstallationDescriptor insdObject) {
+          InstallationDescriptor insdObject) {
     boolean isOk = false;
     if (packageConfig.getProperty(MAIN_ROOT) != null) {
       Hashtable dlgTable = insdObject.getDelegateComponents();
@@ -138,7 +138,7 @@ public class LocalInstallationAgent {
    *           if any I/O exception occurred.
    */
   public static void localizeComponentFile(File file, InstallationDescriptor insdObject,
-                  Properties packageConfig) throws IOException {
+          Properties packageConfig) throws IOException {
     // substitute $main_root macros in the file
     String mainRootPath = packageConfig.getProperty(MAIN_ROOT);
     if (mainRootPath != null) {
@@ -157,18 +157,18 @@ public class LocalInstallationAgent {
       String compRootPath = packageConfig.getProperty(idRoot);
       // substitute '$dlg_comp_id$root_rel'
       String regExp = InstallationProcessor.componentIdRootRegExp(id,
-                      InstallationProcessor.DELEGATE_ROOT_REL_SUFFIX_REGEX);
+              InstallationProcessor.DELEGATE_ROOT_REL_SUFFIX_REGEX);
       String replacement = FileUtil.computeRelativePath(file.getParentFile(),
-                      new File(compRootPath));
+              new File(compRootPath));
       FileUtil.replaceStringInFile(file, regExp, replacement);
       // substitute '$dlg_comp_id$root_url'
       regExp = InstallationProcessor.componentIdRootRegExp(id,
-                      InstallationProcessor.DELEGATE_ROOT_URL_SUFFIX_REGEX);
+              InstallationProcessor.DELEGATE_ROOT_URL_SUFFIX_REGEX);
       replacement = FileUtil.localPathToFileUrl(compRootPath);
       FileUtil.replaceStringInFile(file, regExp, replacement);
       // substitute '$dlg_comp__id$root'
       regExp = InstallationProcessor.componentIdRootRegExp(id,
-                      InstallationProcessor.DELEGATE_ROOT_SUFFIX_REGEX);
+              InstallationProcessor.DELEGATE_ROOT_SUFFIX_REGEX);
       replacement = compRootPath;
       FileUtil.replaceStringInFile(file, regExp, replacement);
     }
@@ -182,7 +182,7 @@ public class LocalInstallationAgent {
    * @param packageConfig
    */
   public static void localizeInstallationDescriptor(InstallationDescriptor insdObject,
-                  Properties packageConfig) {
+          Properties packageConfig) {
     // set main root
     String mainRootPath = packageConfig.getProperty(MAIN_ROOT);
     insdObject.setMainComponentRoot(mainRootPath);
@@ -233,7 +233,7 @@ public class LocalInstallationAgent {
       } catch (Throwable e) {
         System.err.println("Error trying to undo component localization: " + e);
         System.out.println("> Please, make sure that all *.$ files " + "in conf and desc dirs\n"
-                        + "> are renamed back to their original names");
+                + "> are renamed back to their original names");
       }
     }
   }
@@ -304,7 +304,7 @@ public class LocalInstallationAgent {
       completed = true;
     } else
       System.err.println("[LocalInstallationAgent]: "
-                      + "PEAR properties do not comply with installation descriptor");
+              + "PEAR properties do not comply with installation descriptor");
     return completed;
   }
 
@@ -375,7 +375,7 @@ public class LocalInstallationAgent {
         counter++;
       } else {
         System.err.println("[LocalInstallationAgent]: " + "failed to undo changes for the file "
-                        + orgFile.getAbsolutePath());
+                + orgFile.getAbsolutePath());
       }
     }
     completed = (counter == _localizedFiles.length);
@@ -408,7 +408,7 @@ public class LocalInstallationAgent {
       throw new RuntimeException(InstallationController.UIMA_HOME_ENV + " variable not specified");
     // build component classpath
     String compClassPath = InstallationController.buildComponentClassPath(mainRootDirPath,
-                    _insdObject);
+            _insdObject);
     // build UIMA classpath
     String uimaClassPath = InstallationController.buildUIMAClassPath(_uimaHomePath);
     // set java.library.path
@@ -424,8 +424,8 @@ public class LocalInstallationAgent {
     }
     // deploy and run installation verification test
     InstallationController.TestStatus status = InstallationController
-                    .deployInstallationVerificationTest(mainRootDirPath, _insdObject, mainDescPath,
-                                    compClassPath, javaLibPath, tableOfEnvVars, uimaClassPath);
+            .deployInstallationVerificationTest(mainRootDirPath, _insdObject, mainDescPath,
+                    compClassPath, javaLibPath, tableOfEnvVars, uimaClassPath);
     if (status.retCode != 0) {
       System.err.println("[LocalInstallationAgent]: " + "localization test failed =>");
       System.out.println("> Error message: " + status.message);

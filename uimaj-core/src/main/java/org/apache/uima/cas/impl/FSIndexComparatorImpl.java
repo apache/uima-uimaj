@@ -131,7 +131,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
     }
     for (int i = 0; i < max; i++) {
       if ((this.getKeyFeature(i) != comp.getKeyFeature(i))
-                      || (this.getKeyComparator(i) != comp.getKeyComparator(i))) {
+              || (this.getKeyComparator(i) != comp.getKeyComparator(i))) {
         return false;
       }
     }

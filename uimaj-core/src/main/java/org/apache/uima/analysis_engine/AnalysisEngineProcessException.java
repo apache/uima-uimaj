@@ -106,7 +106,7 @@ public class AnalysisEngineProcessException extends ResourceProcessException {
    *          arguments.
    */
   public AnalysisEngineProcessException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments) {
+          Object[] aArguments) {
     super(aResourceBundleName, aMessageKey, aArguments);
   }
 
@@ -127,7 +127,7 @@ public class AnalysisEngineProcessException extends ResourceProcessException {
    *          the original exception that caused this exception to be thrown, if any
    */
   public AnalysisEngineProcessException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments, Throwable aCause) {
+          Object[] aArguments, Throwable aCause) {
     super(aResourceBundleName, aMessageKey, aArguments, aCause);
   }
 

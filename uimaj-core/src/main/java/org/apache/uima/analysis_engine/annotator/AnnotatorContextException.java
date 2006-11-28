@@ -63,7 +63,7 @@ public class AnnotatorContextException extends UIMAException {
    *          arguments.
    */
   public AnnotatorContextException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments) {
+          Object[] aArguments) {
     super(aResourceBundleName, aMessageKey, aArguments);
   }
 
@@ -84,7 +84,7 @@ public class AnnotatorContextException extends UIMAException {
    *          the original exception that caused this exception to be thrown, if any
    */
   public AnnotatorContextException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments, Throwable aCause) {
+          Object[] aArguments, Throwable aCause) {
     super(aResourceBundleName, aMessageKey, aArguments, aCause);
   }
 

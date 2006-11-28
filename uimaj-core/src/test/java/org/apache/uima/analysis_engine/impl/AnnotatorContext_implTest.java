@@ -45,7 +45,7 @@ import org.apache.uima.util.XMLInputSource;
  */
 public class AnnotatorContext_implTest extends TestCase {
   protected final String TEST_DATAPATH = JUnitExtension.getFile("AnnotatorContextTest").getPath()
-                  + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
+          + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
 
   private AnnotatorContext mAC1;
 
@@ -74,7 +74,7 @@ public class AnnotatorContext_implTest extends TestCase {
       super.setUp();
       // create primitive analysis engine with configuration groups
       XMLInputSource in = new XMLInputSource(JUnitExtension
-                      .getFile("AnnotatorContextTest/AnnotatorWithConfigurationGroups.xml"));
+              .getFile("AnnotatorContextTest/AnnotatorWithConfigurationGroups.xml"));
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
       PrimitiveAnalysisEngine_impl tae = new PrimitiveAnalysisEngine_impl();
       // set data path just to test that we can get it later
@@ -88,19 +88,19 @@ public class AnnotatorContext_implTest extends TestCase {
 
       // create aggregate analysis engine with configuration parameter overrides
       XMLInputSource in2 = new XMLInputSource(JUnitExtension
-                      .getFile("AnnotatorContextTest/AggregateTaeWithConfigParamOverrides.xml"));
+              .getFile("AnnotatorContextTest/AggregateTaeWithConfigParamOverrides.xml"));
       AnalysisEngineDescription aggDesc = UIMAFramework.getXMLParser().parseTaeDescription(in2);
       AggregateAnalysisEngine_impl aggTae = new AggregateAnalysisEngine_impl();
       aggTae.initialize(aggDesc, map);
       // get the primitive TAE
       PrimitiveAnalysisEngine_impl primTae = (PrimitiveAnalysisEngine_impl) aggTae._getASB()
-                      .getComponentAnalysisEngines().values().toArray()[0];
+              .getComponentAnalysisEngines().values().toArray()[0];
       // this should include an annotator context
       mAC2 = new AnnotatorContext_impl(primTae.getUimaContextAdmin());
 
       // create primitive analysis engine for resource testing
       XMLInputSource in3 = new XMLInputSource(JUnitExtension
-                      .getFile("AnnotatorContextTest/ResourceTestAnnotator.xml"));
+              .getFile("AnnotatorContextTest/ResourceTestAnnotator.xml"));
       AnalysisEngineDescription resTestDesc = UIMAFramework.getXMLParser().parseTaeDescription(in3);
       PrimitiveAnalysisEngine_impl resTestTae = new PrimitiveAnalysisEngine_impl();
       resTestTae.initialize(resTestDesc, map);
@@ -108,9 +108,8 @@ public class AnnotatorContext_implTest extends TestCase {
       mAC3 = new AnnotatorContext_impl(resTestTae.getUimaContextAdmin());
 
       // create primitive TAE with configuration groups and default fallback
-      XMLInputSource in4 = new XMLInputSource(
-                      JUnitExtension
-                                      .getFile("AnnotatorContextTest/AnnotatorWithDefaultFallbackConfiguration.xml"));
+      XMLInputSource in4 = new XMLInputSource(JUnitExtension
+              .getFile("AnnotatorContextTest/AnnotatorWithDefaultFallbackConfiguration.xml"));
       AnalysisEngineDescription desc4 = UIMAFramework.getXMLParser().parseTaeDescription(in4);
       PrimitiveAnalysisEngine_impl tae4 = new PrimitiveAnalysisEngine_impl();
       // set data path just to test that we can get it later
@@ -120,7 +119,7 @@ public class AnnotatorContext_implTest extends TestCase {
 
       // create primitive TAE with configuration parameters (no groups)
       XMLInputSource in5 = new XMLInputSource(JUnitExtension
-                      .getFile("AnnotatorContextTest/AnnotatorWithConfigurationParameters.xml"));
+              .getFile("AnnotatorContextTest/AnnotatorWithConfigurationParameters.xml"));
       AnalysisEngineDescription desc5 = UIMAFramework.getXMLParser().parseTaeDescription(in5);
       PrimitiveAnalysisEngine_impl tae5 = new PrimitiveAnalysisEngine_impl();
       // set data path just to test that we can get it later
@@ -263,7 +262,7 @@ public class AnnotatorContext_implTest extends TestCase {
 
       // test empty string array
       String[] strArr4 = (String[]) mAC2.getConfigParameterValue("x-unspecified",
-                      "StringArrayParam");
+              "StringArrayParam");
       Assert.assertTrue(Arrays.equals(strArr4, new String[0]));
 
       // test nonexistent group
@@ -442,7 +441,7 @@ public class AnnotatorContext_implTest extends TestCase {
 
       // passthrough to class loader
       InputStream strm4 = mAC3
-                      .getResourceAsStream("org/apache/uima/analysis_engine/impl/testDataFile3.dat");
+              .getResourceAsStream("org/apache/uima/analysis_engine/impl/testDataFile3.dat");
       Assert.assertNotNull(strm4);
       // for directory
       InputStream strm5 = mAC3.getResourceAsStream("subdir");
@@ -522,17 +521,17 @@ public class AnnotatorContext_implTest extends TestCase {
     try {
       // standard data resource
       InputStream strm = mAC3
-                      .getResourceAsStream("TestFileLanguageResource", new String[] { "en" });
+              .getResourceAsStream("TestFileLanguageResource", new String[] { "en" });
       Assert.assertNotNull(strm);
 
       InputStream strm2 = mAC3.getResourceAsStream("TestFileLanguageResource",
-                      new String[] { "de" });
+              new String[] { "de" });
       Assert.assertNotNull(strm2);
       Assert.assertFalse(strm2.equals(strm));
 
       // custom object (should return null)
       InputStream strm3 = mAC3.getResourceAsStream("TestLanguageResourceObject",
-                      new String[] { "en" });
+              new String[] { "en" });
       Assert.assertNull(strm3);
 
       // parameter values for which no resource exists (should fail)

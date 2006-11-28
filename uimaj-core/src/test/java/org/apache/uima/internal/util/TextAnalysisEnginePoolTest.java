@@ -64,7 +64,7 @@ public class TextAnalysisEnginePoolTest extends TestCase {
       mSimpleDesc.setPrimitive(true);
       mSimpleDesc.getMetaData().setName("Test Primitive TAE");
       mSimpleDesc
-                      .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
+              .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       mSimpleDesc.getMetaData().setName("Simple Test");
     } catch (Exception e) {
       JUnitExtension.handleException(e);
@@ -131,15 +131,15 @@ public class TextAnalysisEnginePoolTest extends TestCase {
       primitiveDesc.setPrimitive(true);
       primitiveDesc.getMetaData().setName("Test Primitive TAE");
       primitiveDesc
-                      .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
+              .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       ConfigurationParameter p1 = new ConfigurationParameter_impl();
       p1.setName("StringParam");
       p1.setDescription("parameter with String data type");
       p1.setType(ConfigurationParameter.TYPE_STRING);
       primitiveDesc.getMetaData().getConfigurationParameterDeclarations()
-                      .setConfigurationParameters(new ConfigurationParameter[] { p1 });
+              .setConfigurationParameters(new ConfigurationParameter[] { p1 });
       primitiveDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
-                      new NameValuePair[] { new NameValuePair_impl("StringParam", "Test1") });
+              new NameValuePair[] { new NameValuePair_impl("StringParam", "Test1") });
 
       // create pool
       TextAnalysisEnginePool pool = new TextAnalysisEnginePool("taePool", 3, primitiveDesc);
@@ -177,7 +177,7 @@ public class TextAnalysisEnginePoolTest extends TestCase {
    *          description of TextAnalysisEngine to test
    */
   protected void _testProcess(TextAnalysisEnginePool aPool, int i, boolean isAggregate)
-                  throws UIMAException {
+          throws UIMAException {
     TextAnalysisEngine tae = aPool.getTAE(0);
     try {
       // Test each form of the process method. When TestAnnotator executes, it

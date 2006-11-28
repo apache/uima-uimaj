@@ -474,7 +474,7 @@ public class CASMgrSerializer implements Serializable {
     final FSIndexRepositoryImpl ir = new FSIndexRepositoryImpl(cas);
     // Get the type order.
     ir.setDefaultTypeOrder(LinearTypeOrderBuilderImpl.createTypeOrder(this.typeOrder, cas
-                    .getTypeSystem()));
+            .getTypeSystem()));
     FSIndexComparator comp;
     final int max = this.indexNames.length;
     int pos = 0, next, maxComp;

@@ -45,12 +45,9 @@ import org.apache.uima.util.XMLInputSource;
 public class TypeSystemReinitTest extends TestCase {
   public void testReinitCASCompleteSerializer() throws Exception {
     try {
-      AnalysisEngineDescription aed = UIMAFramework
-                      .getXMLParser()
-                      .parseAnalysisEngineDescription(
-                                      new XMLInputSource(
-                                                      JUnitExtension
-                                                                      .getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml")));
+      AnalysisEngineDescription aed = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+              new XMLInputSource(JUnitExtension
+                      .getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml")));
       CollectionReaderDescription crd = FileSystemCollectionReader.getDescription();
 
       ArrayList l = new ArrayList();

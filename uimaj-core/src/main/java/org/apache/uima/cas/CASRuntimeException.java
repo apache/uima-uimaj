@@ -33,7 +33,7 @@ public class CASRuntimeException extends RuntimeException {
   private static final String resource_file = "org.apache.uima.cas.cas_runtime_exception";
 
   private static final String missing_resource_error = "Could not load message catalog: "
-                  + resource_file;
+          + resource_file;
 
   private static final int MESSAGES_NOT_FOUND = -1;
 

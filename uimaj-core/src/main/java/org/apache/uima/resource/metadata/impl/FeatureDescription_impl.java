@@ -83,7 +83,7 @@ public class FeatureDescription_impl extends MetaDataObject_impl implements Feat
    *          represent the case where the user has not specified a value.
    */
   public FeatureDescription_impl(String aName, String aDescription, String aRangeTypeName,
-                  String aElementTypeName, Boolean aMultipleReferencesAllowed) {
+          String aElementTypeName, Boolean aMultipleReferencesAllowed) {
     setName(aName);
     setDescription(aDescription);
     setRangeTypeName(aRangeTypeName);
@@ -174,9 +174,8 @@ public class FeatureDescription_impl extends MetaDataObject_impl implements Feat
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("featureDescription",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
-                      new PropertyXmlInfo("description", false),
-                      new PropertyXmlInfo("rangeTypeName", true),
-                      new PropertyXmlInfo("elementType", true),
-                      new PropertyXmlInfo("multipleReferencesAllowed") });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
+              new PropertyXmlInfo("description", false),
+              new PropertyXmlInfo("rangeTypeName", true), new PropertyXmlInfo("elementType", true),
+              new PropertyXmlInfo("multipleReferencesAllowed") });
 }

@@ -46,8 +46,8 @@ public class URISpecifier_implTest extends TestCase {
       StringWriter sw = new StringWriter();
       uriSpec.toXML(sw);
       URISpecifier uriSpec2 = (URISpecifier) UIMAFramework.getXMLParser().parse(
-                      new XMLInputSource(new ByteArrayInputStream(sw.getBuffer().toString()
-                                      .getBytes()), null));
+              new XMLInputSource(new ByteArrayInputStream(sw.getBuffer().toString().getBytes()),
+                      null));
       assertEquals(uriSpec, uriSpec2);
     } catch (Exception e) {
       JUnitExtension.handleException(e);

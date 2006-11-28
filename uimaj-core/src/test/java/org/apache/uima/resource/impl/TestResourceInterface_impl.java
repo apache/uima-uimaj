@@ -39,7 +39,7 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
  * @author Adam Lally
  */
 public class TestResourceInterface_impl extends Resource_ImplBase implements SharedResourceObject,
-                TestResourceInterface {
+        TestResourceInterface {
   private String mString;
 
   /**
@@ -81,7 +81,7 @@ public class TestResourceInterface_impl extends Resource_ImplBase implements Sha
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     return true;
   }
 
@@ -89,7 +89,7 @@ public class TestResourceInterface_impl extends Resource_ImplBase implements Sha
    * @see org.apache.uima.resource.Resource#setConfigurationParameters(NameValuePair[])
    */
   public void setConfigurationParameters(NameValuePair[] aSettings)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
   }
 
 }

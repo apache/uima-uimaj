@@ -62,7 +62,7 @@ public class LanguagePair extends TOP {
     if (LanguagePair_Type.featOkTst && ((LanguagePair_Type) jcasType).casFeat_lang1 == null)
       JCas.throwFeatMissing("lang1", "org.apache.lang.LanguagePair");
     return jcasType.ll_cas
-                    .ll_getStringValue(addr, ((LanguagePair_Type) jcasType).casFeatCode_lang1);
+            .ll_getStringValue(addr, ((LanguagePair_Type) jcasType).casFeatCode_lang1);
   }
 
   /** setter for lang1 * */
@@ -79,7 +79,7 @@ public class LanguagePair extends TOP {
     if (LanguagePair_Type.featOkTst && ((LanguagePair_Type) jcasType).casFeat_lang2 == null)
       JCas.throwFeatMissing("lang2", "org.apache.lang.LanguagePair");
     return jcasType.ll_cas
-                    .ll_getStringValue(addr, ((LanguagePair_Type) jcasType).casFeatCode_lang2);
+            .ll_getStringValue(addr, ((LanguagePair_Type) jcasType).casFeatCode_lang2);
   }
 
   /** setter for lang2 * */
@@ -96,7 +96,7 @@ public class LanguagePair extends TOP {
     if (LanguagePair_Type.featOkTst && ((LanguagePair_Type) jcasType).casFeat_description == null)
       JCas.throwFeatMissing("description", "org.apache.lang.LanguagePair");
     return jcasType.ll_cas.ll_getStringValue(addr,
-                    ((LanguagePair_Type) jcasType).casFeatCode_description);
+            ((LanguagePair_Type) jcasType).casFeatCode_description);
   }
 
   /** setter for description * */
@@ -104,6 +104,6 @@ public class LanguagePair extends TOP {
     if (LanguagePair_Type.featOkTst && ((LanguagePair_Type) jcasType).casFeat_description == null)
       JCas.throwFeatMissing("description", "org.apache.lang.LanguagePair");
     jcasType.ll_cas.ll_setStringValue(addr, ((LanguagePair_Type) jcasType).casFeatCode_description,
-                    v);
+            v);
   }
 }

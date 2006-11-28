@@ -169,7 +169,7 @@ public class CasDataToXCas {
    *           if the ContentHandler throws a SAX Exception
    */
   public void generateXCas(CasData aCasData, String aUEID, boolean aSendStartAndEndDocEvents)
-                  throws SAXException {
+          throws SAXException {
     if (aSendStartAndEndDocEvents) {
       mHandler.startDocument();
     }
@@ -239,7 +239,7 @@ public class CasDataToXCas {
         } else {
           if (!"value".equals(features[i])) {
             attrs.addAttribute("", "_ref_" + features[i], "_ref_" + features[i], "CDATA",
-                            ((ReferenceValue) featVal).getTargetId());
+                    ((ReferenceValue) featVal).getTargetId());
           } else {
             contentValue = ((ReferenceValue) featVal).getTargetId();
           }
@@ -272,7 +272,7 @@ public class CasDataToXCas {
       }
       // encode annotation spanned text, if this FS has valid begin and end features
       else if (mIncludeAnnotationSpannedText && aDocTextHolder.docText != null
-                      && aDocTextHolder.docText.length > 0) {
+              && aDocTextHolder.docText.length > 0) {
         FeatureValue begin = aFS.getFeatureValue("begin");
         FeatureValue end = aFS.getFeatureValue("end");
         if (begin instanceof PrimitiveValue && end instanceof PrimitiveValue) {
@@ -301,14 +301,14 @@ public class CasDataToXCas {
    */
   private String getXCasElementName(FeatureStructure aFS) {
     return StringUtils.replaceAll(StringUtils.replaceAll(aFS.getType(), "_colon_", ":"), "_dash_",
-                    "-");
+            "-");
   }
 
   /**
    * @param aFS
    */
   private void _generateDocFS(FeatureStructure aFS, DocTextHolder aDocTextHolder)
-                  throws SAXException {
+          throws SAXException {
     AttributesImpl attrs = new AttributesImpl();
     String textFeature = this.getDocumentTextFeatureName();
     FeatureValue docTextValue = aFS.getFeatureValue(textFeature);

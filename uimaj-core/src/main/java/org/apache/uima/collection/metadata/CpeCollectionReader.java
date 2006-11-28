@@ -39,7 +39,7 @@ public interface CpeCollectionReader extends MetaDataObject {
    * @deprecated As of v2.0 CAS Initializers are deprecated.
    */
   public void setCasInitializer(CpeCollectionReaderCasInitializer aCasInitializer)
-                  throws CpeDescriptorException;
+          throws CpeDescriptorException;
 
   /**
    * Returns CasInitializer associated with CollectionReader. This object initializes the CAS with
@@ -91,7 +91,7 @@ public interface CpeCollectionReader extends MetaDataObject {
    *          object containing parameter setting overrides
    */
   public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aSettings)
-                  throws CpeDescriptorException;
+          throws CpeDescriptorException;
 
   public void setCollectionIterator(CpeCollectionReaderIterator iterator);
 

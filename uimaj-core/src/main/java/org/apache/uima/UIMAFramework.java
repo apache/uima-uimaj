@@ -195,7 +195,7 @@ public abstract class UIMAFramework {
    *         application.
    */
   public static CollectionProcessingManager newCollectionProcessingManager(
-                  ResourceManager aResourceManager) {
+          ResourceManager aResourceManager) {
     return getInstance()._newCollectionProcessingManager(aResourceManager);
   }
 
@@ -218,7 +218,7 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static Resource produceResource(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     return produceResource(Resource.class, aSpecifier, aAdditionalParams);
   }
 
@@ -244,12 +244,12 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static Resource produceResource(Class aResourceClass, ResourceSpecifier aSpecifier,
-                  Map aAdditionalParams) throws ResourceInitializationException {
+          Map aAdditionalParams) throws ResourceInitializationException {
     Resource resource = getResourceFactory().produceResource(aResourceClass, aSpecifier,
-                    aAdditionalParams);
+            aAdditionalParams);
     if (resource == null) {
       throw new ResourceInitializationException(ResourceInitializationException.DO_NOT_KNOW_HOW,
-                      new Object[] { aResourceClass.getName(), aSpecifier.getSourceUrlString() });
+              new Object[] { aResourceClass.getName(), aSpecifier.getSourceUrlString() });
     }
     return resource;
   }
@@ -280,8 +280,8 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static Resource produceResource(Class aResourceClass, ResourceSpecifier aSpecifier,
-                  ResourceManager aResourceManager, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          ResourceManager aResourceManager, Map aAdditionalParams)
+          throws ResourceInitializationException {
     // add ResourceManager to aAdditionalParams map
     if (aResourceManager != null) {
       if (aAdditionalParams == null) {
@@ -312,7 +312,7 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static AnalysisEngine produceAnalysisEngine(ResourceSpecifier aSpecifier)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     return (AnalysisEngine) produceResource(AnalysisEngine.class, aSpecifier, null);
   }
 
@@ -338,7 +338,7 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static AnalysisEngine produceAnalysisEngine(ResourceSpecifier aSpecifier,
-                  Map aAdditionalParams) throws ResourceInitializationException {
+          Map aAdditionalParams) throws ResourceInitializationException {
     return (AnalysisEngine) produceResource(AnalysisEngine.class, aSpecifier, aAdditionalParams);
   }
 
@@ -368,10 +368,10 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static AnalysisEngine produceAnalysisEngine(ResourceSpecifier aSpecifier,
-                  ResourceManager aResourceManager, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          ResourceManager aResourceManager, Map aAdditionalParams)
+          throws ResourceInitializationException {
     return (AnalysisEngine) produceResource(AnalysisEngine.class, aSpecifier, aResourceManager,
-                    aAdditionalParams);
+            aAdditionalParams);
   }
 
   /**
@@ -405,13 +405,12 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static AnalysisEngine produceAnalysisEngine(ResourceSpecifier aSpecifier,
-                  int aMaxSimultaneousRequests, int aTimeoutPeriod)
-                  throws ResourceInitializationException {
+          int aMaxSimultaneousRequests, int aTimeoutPeriod) throws ResourceInitializationException {
     // add parameters to the aAdditionalParams map
     Map aAdditionalParams = new HashMap();
 
     aAdditionalParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, new Integer(
-                    aMaxSimultaneousRequests));
+            aMaxSimultaneousRequests));
     aAdditionalParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, new Integer(aTimeoutPeriod));
 
     return (AnalysisEngine) produceResource(AnalysisEngine.class, aSpecifier, aAdditionalParams);
@@ -439,7 +438,7 @@ public abstract class UIMAFramework {
    *             instead.
    */
   public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     return (TextAnalysisEngine) produceResource(TextAnalysisEngine.class, aSpecifier, null);
   }
 
@@ -468,9 +467,9 @@ public abstract class UIMAFramework {
    *             instead.
    */
   public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     return (TextAnalysisEngine) produceResource(TextAnalysisEngine.class, aSpecifier,
-                    aAdditionalParams);
+            aAdditionalParams);
   }
 
   /**
@@ -502,10 +501,10 @@ public abstract class UIMAFramework {
    *             should be used instead.
    */
   public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier,
-                  ResourceManager aResourceManager, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          ResourceManager aResourceManager, Map aAdditionalParams)
+          throws ResourceInitializationException {
     return (TextAnalysisEngine) produceResource(TextAnalysisEngine.class, aSpecifier,
-                    aResourceManager, aAdditionalParams);
+            aResourceManager, aAdditionalParams);
   }
 
   /**
@@ -542,17 +541,16 @@ public abstract class UIMAFramework {
    *             used instead.
    */
   public static TextAnalysisEngine produceTAE(ResourceSpecifier aSpecifier,
-                  int aMaxSimultaneousRequests, int aTimeoutPeriod)
-                  throws ResourceInitializationException {
+          int aMaxSimultaneousRequests, int aTimeoutPeriod) throws ResourceInitializationException {
     // add parameters to the aAdditionalParams map
     Map aAdditionalParams = new HashMap();
 
     aAdditionalParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, new Integer(
-                    aMaxSimultaneousRequests));
+            aMaxSimultaneousRequests));
     aAdditionalParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, new Integer(aTimeoutPeriod));
 
     return (TextAnalysisEngine) produceResource(TextAnalysisEngine.class, aSpecifier,
-                    aAdditionalParams);
+            aAdditionalParams);
   }
 
   /**
@@ -570,7 +568,7 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static CasConsumer produceCasConsumer(ResourceSpecifier aSpecifier)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     return (CasConsumer) produceResource(CasConsumer.class, aSpecifier, null);
   }
 
@@ -594,7 +592,7 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static CasConsumer produceCasConsumer(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     return (CasConsumer) produceResource(CasConsumer.class, aSpecifier, aAdditionalParams);
   }
 
@@ -622,10 +620,10 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static CasConsumer produceCasConsumer(ResourceSpecifier aSpecifier,
-                  ResourceManager aResourceManager, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          ResourceManager aResourceManager, Map aAdditionalParams)
+          throws ResourceInitializationException {
     return (CasConsumer) produceResource(CasConsumer.class, aSpecifier, aResourceManager,
-                    aAdditionalParams);
+            aAdditionalParams);
   }
 
   /**
@@ -643,7 +641,7 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static CollectionReader produceCollectionReader(ResourceSpecifier aSpecifier)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     return (CollectionReader) produceResource(CollectionReader.class, aSpecifier, null);
   }
 
@@ -667,7 +665,7 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static CollectionReader produceCollectionReader(ResourceSpecifier aSpecifier,
-                  Map aAdditionalParams) throws ResourceInitializationException {
+          Map aAdditionalParams) throws ResourceInitializationException {
     return (CollectionReader) produceResource(CollectionReader.class, aSpecifier, aAdditionalParams);
   }
 
@@ -697,10 +695,10 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static CollectionReader produceCollectionReader(ResourceSpecifier aSpecifier,
-                  ResourceManager aResourceManager, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          ResourceManager aResourceManager, Map aAdditionalParams)
+          throws ResourceInitializationException {
     return (CollectionReader) produceResource(CollectionReader.class, aSpecifier, aResourceManager,
-                    aAdditionalParams);
+            aAdditionalParams);
   }
 
   /**
@@ -722,7 +720,7 @@ public abstract class UIMAFramework {
    *             {@link org.apache.uima.examples.XmlDetagger} for an example.
    */
   public static CasInitializer produceCasInitializer(ResourceSpecifier aSpecifier)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     return (CasInitializer) produceResource(CasInitializer.class, aSpecifier, null);
   }
 
@@ -746,7 +744,7 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static CasInitializer produceCasInitializer(ResourceSpecifier aSpecifier,
-                  Map aAdditionalParams) throws ResourceInitializationException {
+          Map aAdditionalParams) throws ResourceInitializationException {
     return (CasInitializer) produceResource(CasInitializer.class, aSpecifier, aAdditionalParams);
   }
 
@@ -776,10 +774,10 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the resource.
    */
   public static CasInitializer produceCasInitializer(ResourceSpecifier aSpecifier,
-                  ResourceManager aResourceManager, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          ResourceManager aResourceManager, Map aAdditionalParams)
+          throws ResourceInitializationException {
     return (CasInitializer) produceResource(CasInitializer.class, aSpecifier, aResourceManager,
-                    aAdditionalParams);
+            aAdditionalParams);
   }
 
   /**
@@ -795,7 +793,7 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the CPE.
    */
   public static CollectionProcessingEngine produceCollectionProcessingEngine(
-                  CpeDescription aCpeDescription) throws ResourceInitializationException {
+          CpeDescription aCpeDescription) throws ResourceInitializationException {
     return getInstance()._produceCollectionProcessingEngine(aCpeDescription, null);
   }
 
@@ -818,8 +816,8 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the CPE.
    */
   public static CollectionProcessingEngine produceCollectionProcessingEngine(
-                  CpeDescription aCpeDescription, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          CpeDescription aCpeDescription, Map aAdditionalParams)
+          throws ResourceInitializationException {
     return getInstance()._produceCollectionProcessingEngine(aCpeDescription, aAdditionalParams);
   }
 
@@ -846,8 +844,8 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the CPE.
    */
   public static CollectionProcessingEngine produceCollectionProcessingEngine(
-                  CpeDescription aCpeDescription, ResourceManager aResourceManager,
-                  Map aAdditionalParams) throws ResourceInitializationException {
+          CpeDescription aCpeDescription, ResourceManager aResourceManager, Map aAdditionalParams)
+          throws ResourceInitializationException {
     if (aResourceManager != null) {
       if (aAdditionalParams == null) {
         aAdditionalParams = new HashMap();
@@ -953,7 +951,7 @@ public abstract class UIMAFramework {
    * @return a new UIMA Context to be used by the application.
    */
   public static UimaContextAdmin newUimaContext(Logger aLogger, ResourceManager aResourceManager,
-                  ConfigurationManager aConfigManager) {
+          ConfigurationManager aConfigManager) {
     UimaContextAdmin context = getInstance()._newUimaContext();
     context.initializeRoot(aLogger, aResourceManager, aConfigManager);
     return context;
@@ -1066,7 +1064,7 @@ public abstract class UIMAFramework {
    * @return a new <code>CollectionProcessingManager</code> to be used by the application.
    */
   protected abstract CollectionProcessingManager _newCollectionProcessingManager(
-                  ResourceManager aResourceManager);
+          ResourceManager aResourceManager);
 
   /**
    * To be implemented by subclasses; this should return a reference to the default UIMA
@@ -1142,8 +1140,8 @@ public abstract class UIMAFramework {
    *           if a failure occurred during production of the CPE.
    */
   protected abstract CollectionProcessingEngine _produceCollectionProcessingEngine(
-                  CpeDescription aCpeDescription, Map aAdditionalParams)
-                  throws ResourceInitializationException;
+          CpeDescription aCpeDescription, Map aAdditionalParams)
+          throws ResourceInitializationException;
 
   static {
     // intall framework implementation
@@ -1164,7 +1162,7 @@ public abstract class UIMAFramework {
     } catch (Exception e) {
       // could not load reference implementation
       throw new UIMA_IllegalStateException(UIMA_IllegalStateException.COULD_NOT_CREATE_FRAMEWORK,
-                      new Object[] { frameworkClassName }, e);
+              new Object[] { frameworkClassName }, e);
     }
   }
 }

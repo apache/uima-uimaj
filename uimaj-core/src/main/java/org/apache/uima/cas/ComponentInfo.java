@@ -19,7 +19,6 @@
 
 package org.apache.uima.cas;
 
-
 /**
  * Information that a CAS needs to know about the component that's currently operating on it.
  * Intended for internal framework usage.

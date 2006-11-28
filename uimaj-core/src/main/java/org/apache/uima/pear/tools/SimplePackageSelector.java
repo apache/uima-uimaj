@@ -74,12 +74,12 @@ public class SimplePackageSelector implements InstallationController.PackageSele
   public File selectPackageDirectory(String componentId) {
     if (_stdOut != null) {
       _stdOut.println("> If the " + componentId
-                      + " component is already installed in your file system,");
+              + " component is already installed in your file system,");
       _stdOut.print("> enter the " + componentId + " root directory: ");
       _stdOut.flush();
     } else {
       System.out.println("> If the " + componentId
-                      + " component is already installed in your file system,");
+              + " component is already installed in your file system,");
       System.out.print("> enter the " + componentId + " root directory: ");
       System.out.flush();
     }

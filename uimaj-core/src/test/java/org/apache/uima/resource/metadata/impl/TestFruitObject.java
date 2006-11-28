@@ -84,10 +84,9 @@ public class TestFruitObject extends MetaDataObject_impl {
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fruit",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
-                      new PropertyXmlInfo("color"), new PropertyXmlInfo("avgWeightLbs"),
-                      new PropertyXmlInfo("avgCostCents"), new PropertyXmlInfo("citrus"),
-                      new PropertyXmlInfo("commonUses"), });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("name"), new PropertyXmlInfo("color"),
+              new PropertyXmlInfo("avgWeightLbs"), new PropertyXmlInfo("avgCostCents"),
+              new PropertyXmlInfo("citrus"), new PropertyXmlInfo("commonUses"), });
 
   /**
    * For testing purposes - a hardcoded attribute set. Should be compared with the results of

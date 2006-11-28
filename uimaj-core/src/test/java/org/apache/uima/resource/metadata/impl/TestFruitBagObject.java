@@ -54,7 +54,7 @@ public class TestFruitBagObject extends MetaDataObject_impl {
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fruitBag",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("fruits") });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("fruits") });
 
   private String mName;
 

@@ -37,7 +37,7 @@ public interface FixedFlow extends FlowConstraints {
    * of {@link #getFlowConstraintsType()}.
    */
   public static final String FLOW_CONSTRAINTS_TYPE = "FIXED";
-  
+
   /**
    * Gets the type of this <code>FlowConstraints</code> object. Each sub-interface of
    * <code>FlowConstraints</code> has its own standard type identifier String. These identifier

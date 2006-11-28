@@ -60,6 +60,6 @@ public interface ConstraintParser {
    *           If the input string is not a well-formed string representation of a match constraint.
    */
   public FSMatchConstraint parse(String s, String src, int line, int col) throws IOException,
-                  ParsingException;
+          ParsingException;
 
 }

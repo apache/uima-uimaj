@@ -43,7 +43,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * Declares which FlowController is used by the Aggregate Analysis Engine.
  */
 public class FlowControllerDeclaration_impl extends MetaDataObject_impl implements
-                FlowControllerDeclaration {
+        FlowControllerDeclaration {
   private static final long serialVersionUID = 1526130202197517743L;
 
   private String mKey;
@@ -152,7 +152,7 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl implemen
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
     // set key from attributes
     mKey = aElement.getAttribute("key");
@@ -177,6 +177,6 @@ public class FlowControllerDeclaration_impl extends MetaDataObject_impl implemen
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("flowController",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("import", null),
-                      new PropertyXmlInfo("specifier", null) });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("import", null),
+              new PropertyXmlInfo("specifier", null) });
 }

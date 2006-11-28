@@ -198,8 +198,8 @@ public class ProcessUtil {
       try {
         // create appropriate standard stream reader
         reader = (threadId.equals("ERR")) ? new BufferedReader(new InputStreamReader(_process
-                        .getErrorStream())) : new BufferedReader(new InputStreamReader(_process
-                        .getInputStream()));
+                .getErrorStream())) : new BufferedReader(new InputStreamReader(_process
+                .getInputStream()));
         // create appropriate string writer
         StringWriter sWriter = (threadId.equals("ERR")) ? _stdErr : _stdOut;
         writer = new PrintWriter(sWriter);

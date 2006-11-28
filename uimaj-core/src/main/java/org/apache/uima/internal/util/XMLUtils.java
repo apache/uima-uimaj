@@ -119,7 +119,7 @@ public abstract class XMLUtils {
    *           if an I/O failure occurs when writing to <code>aWriter</code>
    */
   public static void writeNormalizedString(String aStr, Writer aWriter, boolean aNewlinesToSpaces)
-                  throws IOException {
+          throws IOException {
     if (aStr == null)
       return;
 
@@ -207,7 +207,7 @@ public abstract class XMLUtils {
    *           if the ContentHandler throws an exception
    */
   public static void writePrimitiveValue(Object aObj, ContentHandler aContentHandler)
-                  throws SAXException {
+          throws SAXException {
     final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
 
     String className = aObj.getClass().getName();

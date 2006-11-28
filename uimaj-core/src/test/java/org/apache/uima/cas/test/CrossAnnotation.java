@@ -54,19 +54,19 @@ public class CrossAnnotation extends Annotation {
   /** getter for otherAnnotation * */
   public Annotation getOtherAnnotation() {
     if (CrossAnnotation_Type.featOkTst
-                    && ((CrossAnnotation_Type) jcasType).casFeat_otherAnnotation == null)
+            && ((CrossAnnotation_Type) jcasType).casFeat_otherAnnotation == null)
       JCas.throwFeatMissing("otherAnnotation", "uima.tcas.CrossAnnotation");
     return (Annotation) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((CrossAnnotation_Type) jcasType).casFeatCode_otherAnnotation)));
+            ((CrossAnnotation_Type) jcasType).casFeatCode_otherAnnotation)));
   }
 
   /** setter for otherAnnotation * */
   public void setOtherAnnotation(Annotation v) {
     if (CrossAnnotation_Type.featOkTst
-                    && ((CrossAnnotation_Type) jcasType).casFeat_otherAnnotation == null)
+            && ((CrossAnnotation_Type) jcasType).casFeat_otherAnnotation == null)
       JCas.throwFeatMissing("otherAnnotation", "uima.tcas.CrossAnnotation");
     jcasType.ll_cas.ll_setRefValue(addr,
-                    ((CrossAnnotation_Type) jcasType).casFeatCode_otherAnnotation, jcasType.ll_cas
-                                    .ll_getFSRef(v));
+            ((CrossAnnotation_Type) jcasType).casFeatCode_otherAnnotation, jcasType.ll_cas
+                    .ll_getFSRef(v));
   }
 }

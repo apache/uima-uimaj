@@ -38,7 +38,7 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  * 
  */
 public abstract class CasDataInitializer_ImplBase extends ConfigurableResource_ImplBase implements
-                CasDataInitializer {
+        CasDataInitializer {
   public CasDataInitializer_ImplBase() {
     super();
   }
@@ -54,7 +54,7 @@ public abstract class CasDataInitializer_ImplBase extends ConfigurableResource_I
    *      java.util.Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     // aSpecifier must be a CasInitializerDescription
     if (aSpecifier instanceof CasInitializerDescription) {
       // do framework intitialiation
@@ -75,7 +75,7 @@ public abstract class CasDataInitializer_ImplBase extends ConfigurableResource_I
    *           if a failure occurs during initialization.
    */
   public void initialize() throws ResourceInitializationException {
-    //no default behavior
+    // no default behavior
   }
 
   /**

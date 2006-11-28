@@ -172,7 +172,7 @@ public class Root_Type extends TOP_Type {
       JCas.throwFeatMissing("arrayFloat", "aa.Root");
     if (lowLevelTypeChecks)
       return ll_cas.ll_getFloatArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_arrayFloat), i,
-                      true);
+              true);
     jcas.checkArrayBounds(ll_cas.ll_getRefValue(addr, casFeatCode_arrayFloat), i);
     return ll_cas.ll_getFloatArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_arrayFloat), i);
   }
@@ -213,7 +213,7 @@ public class Root_Type extends TOP_Type {
       JCas.throwFeatMissing("arrayString", "aa.Root");
     if (lowLevelTypeChecks)
       return ll_cas.ll_getStringArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_arrayString), i,
-                      true);
+              true);
     jcas.checkArrayBounds(ll_cas.ll_getRefValue(addr, casFeatCode_arrayString), i);
     return ll_cas.ll_getStringArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_arrayString), i);
   }
@@ -224,7 +224,7 @@ public class Root_Type extends TOP_Type {
       JCas.throwFeatMissing("arrayString", "aa.Root");
     if (lowLevelTypeChecks)
       ll_cas.ll_setStringArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_arrayString), i, v,
-                      true);
+              true);
     jcas.checkArrayBounds(ll_cas.ll_getRefValue(addr, casFeatCode_arrayString), i);
     ll_cas.ll_setStringArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_arrayString), i, v);
   }
@@ -339,48 +339,48 @@ public class Root_Type extends TOP_Type {
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
     casFeat_arrayInt = jcas.getRequiredFeatureDE(casType, "arrayInt", "uima.cas.IntegerArray",
-                    featOkTst);
+            featOkTst);
     casFeatCode_arrayInt = (null == casFeat_arrayInt) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_arrayInt).getCode();
+            : ((FeatureImpl) casFeat_arrayInt).getCode();
 
     casFeat_arrayRef = jcas
-                    .getRequiredFeatureDE(casType, "arrayRef", "uima.cas.FSArray", featOkTst);
+            .getRequiredFeatureDE(casType, "arrayRef", "uima.cas.FSArray", featOkTst);
     casFeatCode_arrayRef = (null == casFeat_arrayRef) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_arrayRef).getCode();
+            : ((FeatureImpl) casFeat_arrayRef).getCode();
 
     casFeat_arrayFloat = jcas.getRequiredFeatureDE(casType, "arrayFloat", "uima.cas.FloatArray",
-                    featOkTst);
+            featOkTst);
     casFeatCode_arrayFloat = (null == casFeat_arrayFloat) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_arrayFloat).getCode();
+            : ((FeatureImpl) casFeat_arrayFloat).getCode();
 
     casFeat_arrayString = jcas.getRequiredFeatureDE(casType, "arrayString", "uima.cas.StringArray",
-                    featOkTst);
+            featOkTst);
     casFeatCode_arrayString = (null == casFeat_arrayString) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_arrayString).getCode();
+            : ((FeatureImpl) casFeat_arrayString).getCode();
 
     casFeat_plainInt = jcas
-                    .getRequiredFeatureDE(casType, "plainInt", "uima.cas.Integer", featOkTst);
+            .getRequiredFeatureDE(casType, "plainInt", "uima.cas.Integer", featOkTst);
     casFeatCode_plainInt = (null == casFeat_plainInt) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_plainInt).getCode();
+            : ((FeatureImpl) casFeat_plainInt).getCode();
 
     casFeat_plainFloat = jcas.getRequiredFeatureDE(casType, "plainFloat", "uima.cas.Float",
-                    featOkTst);
+            featOkTst);
     casFeatCode_plainFloat = (null == casFeat_plainFloat) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_plainFloat).getCode();
+            : ((FeatureImpl) casFeat_plainFloat).getCode();
 
     casFeat_plainString = jcas.getRequiredFeatureDE(casType, "plainString", "uima.cas.String",
-                    featOkTst);
+            featOkTst);
     casFeatCode_plainString = (null == casFeat_plainString) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_plainString).getCode();
+            : ((FeatureImpl) casFeat_plainString).getCode();
 
     casFeat_plainRef = jcas.getRequiredFeatureDE(casType, "plainRef", "aa.Root", featOkTst);
     casFeatCode_plainRef = (null == casFeat_plainRef) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_plainRef).getCode();
+            : ((FeatureImpl) casFeat_plainRef).getCode();
 
     casFeat_concreteString = jcas.getRequiredFeatureDE(casType, "concreteString",
-                    "uima.cas.String", featOkTst);
+            "uima.cas.String", featOkTst);
     casFeatCode_concreteString = (null == casFeat_concreteString) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_concreteString).getCode();
+            : ((FeatureImpl) casFeat_concreteString).getCode();
 
   }
 }

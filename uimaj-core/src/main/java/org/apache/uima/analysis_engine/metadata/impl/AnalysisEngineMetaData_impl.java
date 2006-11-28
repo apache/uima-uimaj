@@ -49,7 +49,7 @@ import org.xml.sax.SAXException;
  * 
  */
 public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implements
-                AnalysisEngineMetaData {
+        AnalysisEngineMetaData {
   static final long serialVersionUID = -3030574527767871396L;
 
   private boolean mAsynchronousModeSupported;
@@ -67,7 +67,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
   private FsIndexCollection mFsIndexCollection;
 
   private OperationalProperties mOperationalProperties;
-  
+
   /*
    * (non-Javadoc)
    * 
@@ -107,7 +107,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
   public void setCapabilities(Capability[] aCapabilities) {
     if (aCapabilities == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-                      new Object[] { "null", "aCapabilities", "setCapabilities" });
+              new Object[] { "null", "aCapabilities", "setCapabilities" });
     }
     mCapabilities = aCapabilities;
   }
@@ -190,7 +190,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
    *      java.lang.String, org.xml.sax.ContentHandler)
    */
   protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace,
-                  ContentHandler aContentHandler) throws SAXException {
+          ContentHandler aContentHandler) throws SAXException {
     // Prevent the fsIndexes property from being written to XML - it exists only so old-style XML
     // can be read.
     if (!"fsIndexes".equals(aPropInfo.propertyName)) {
@@ -199,26 +199,26 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
   }
 
   protected void readPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo, Element aElement,
-                  XMLParser aParser, ParsingOptions aOptions) throws InvalidXMLException {
+          XMLParser aParser, ParsingOptions aOptions) throws InvalidXMLException {
     // Catch the case where both fsIndexes and fsIndexCollection are specified
     if ("fsIndexes".equals(aPropXmlInfo.xmlElementName)
-                    || "fsIndexCollection".equals(aPropXmlInfo.xmlElementName)) {
+            || "fsIndexCollection".equals(aPropXmlInfo.xmlElementName)) {
       if (mFsIndexCollection != null) {
         throw new InvalidXMLException(InvalidXMLException.FS_INDEXES_OUTSIDE_FS_INDEX_COLLECTION,
-                        null);
+                null);
       }
     }
     super.readPropertyValueFromXMLElement(aPropXmlInfo, aElement, aParser, aOptions);
   }
 
   protected void readUnknownPropertyValueFromXMLElement(Element aElement, XMLParser aParser,
-                  ParsingOptions aOptions, List aKnownPropertyNames) throws InvalidXMLException {
+          ParsingOptions aOptions, List aKnownPropertyNames) throws InvalidXMLException {
     // Catch the case where both fsIndexes and fsIndexCollection are specified
     if ("fsIndexes".equals(aElement.getTagName())
-                    || "fsIndexCollection".equals(aElement.getTagName())) {
+            || "fsIndexCollection".equals(aElement.getTagName())) {
       if (mFsIndexCollection != null) {
         throw new InvalidXMLException(InvalidXMLException.FS_INDEXES_OUTSIDE_FS_INDEX_COLLECTION,
-                        null);
+                null);
       }
     }
     super.readUnknownPropertyValueFromXMLElement(aElement, aParser, aOptions, aKnownPropertyNames);
@@ -281,7 +281,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
     if (capabilities != null) {
       for (int i = 0; i < capabilities.length; i++) {
         if (capabilities[i].getInputSofas().length > 0
-                        || capabilities[i].getOutputSofas().length > 0) {
+                || capabilities[i].getOutputSofas().length > 0) {
           return true;
         }
       }
@@ -292,17 +292,16 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
-    
+
   /**
-   * Static method to get XmlizationInfo, used by subclasses to
-   * set up their own XmlizationInfo.
+   * Static method to get XmlizationInfo, used by subclasses to set up their own XmlizationInfo.
    */
   protected static XmlizationInfo getXmlizationInfoForClass() {
     return XMLIZATION_INFO;
-  }  
+  }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-                  "analysisEngineMetaData", null); // properties assigned below
+          "analysisEngineMetaData", null); // properties assigned below
 
   static {
     // this class's Xmlization info is derived from that of its superclass
@@ -318,10 +317,10 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
         new PropertyXmlInfo("operationalProperties", null), new PropertyXmlInfo("casInterface") };
 
     XMLIZATION_INFO.propertyInfo = new PropertyXmlInfo[superclassInfo.propertyInfo.length
-                    + newProperties.length];
+            + newProperties.length];
     System.arraycopy(superclassInfo.propertyInfo, 0, XMLIZATION_INFO.propertyInfo, 0,
-                    superclassInfo.propertyInfo.length);
+            superclassInfo.propertyInfo.length);
     System.arraycopy(newProperties, 0, XMLIZATION_INFO.propertyInfo,
-                    superclassInfo.propertyInfo.length, newProperties.length);
+            superclassInfo.propertyInfo.length, newProperties.length);
   }
 }

@@ -188,7 +188,7 @@ public class XCASDeserializer {
       // There should always be another index for the Initial View
       indexRepositories.add(this.cas.getView(CAS.NAME_DEFAULT_SOFA).getIndexRepository());
       this.sofaTypeCode = cas.ll_getTypeSystem().ll_getCodeForType(
-                      cas.getTypeSystem().getType(CAS.TYPE_NAME_SOFA));
+              cas.getTypeSystem().getType(CAS.TYPE_NAME_SOFA));
       this.annotBaseType = this.cas.getAnnotationType();
       this.sofaRefMap = new IntVector();
       this.indexMap = new IntVector();
@@ -222,7 +222,7 @@ public class XCASDeserializer {
      *      java.lang.String, org.xml.sax.Attributes)
      */
     public void startElement(String nameSpaceURI, String localName, String qualifiedName,
-                    Attributes attrs) throws SAXException {
+            Attributes attrs) throws SAXException {
       // org.apache.vinci.debug.Debug.p("startElement: " + qualifiedName);
       // if (attrs != null) {
       // for (int i=0; i<attrs.getLength(); i++) {
@@ -554,14 +554,14 @@ public class XCASDeserializer {
 
     // Create a feature value from a string representation.
     private void handleFeature(int addr, String featName, String featVal, boolean lenient)
-                    throws SAXParseException {
+            throws SAXParseException {
       int typeCode = cas.ll_getFSRefType(addr);
       Type type = cas.ll_getTypeSystem().ll_getTypeForCode(typeCode);
       handleFeature(type, addr, featName, featVal, lenient);
     }
 
     private void handleFeature(final Type type, int addr, String featName, String featVal,
-                    boolean lenient) throws SAXParseException {
+            boolean lenient) throws SAXParseException {
       // The FeatureMap approach is broken because it assumes feature short names
       // are unique. This is my quick fix. -APL
       // final FeatureImpl feat = (FeatureImpl) featureMap.get(featName);
@@ -573,10 +573,10 @@ public class XCASDeserializer {
 
       // handle v1.x sofanum values, remapping so that _InitialView always == 1
       if (featName.equals(CAS.FEATURE_BASE_NAME_SOFAID)
-                      && this.sofaTypeCode == cas.getHeapValue(addr)) {
+              && this.sofaTypeCode == cas.getHeapValue(addr)) {
         Type sofaType = ts.getType(this.sofaTypeCode);
         final FeatureImpl sofaNumFeat = (FeatureImpl) sofaType
-                        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFANUM);
+                .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFANUM);
         int sofaNum = cas.getFeatureValue(addr, sofaNumFeat.getCode());
         cas.setFeatureValue(addr, sofaNumFeat.getCode(), this.indexMap.get(sofaNum));
       }
@@ -647,7 +647,7 @@ public class XCASDeserializer {
      *      java.lang.String)
      */
     public void endElement(String nsURI, String localName, String qualifiedName)
-                    throws SAXException {
+            throws SAXException {
       switch (this.state) {
         case DOC_STATE: {
           // Do nothing.
@@ -794,7 +794,7 @@ public class XCASDeserializer {
             ((FSIndexRepositoryImpl) indexRepositories.get(fsInfo.indexRep.get(i))).addFS(addr);
           } else {
             ((FSIndexRepositoryImpl) indexRepositories.get(indexMap.get(fsInfo.indexRep.get(i))))
-                            .addFS(addr);
+                    .addFS(addr);
           }
         }
       }
@@ -1007,7 +1007,7 @@ public class XCASDeserializer {
      * appropriately. (APL)
      */
     private void addToOutOfTypeSystemData(String typeName, Attributes attrs)
-                    throws XCASParsingException {
+            throws XCASParsingException {
       if (this.outOfTypeSystemData != null) {
         FSData fs = new FSData();
         fs.type = typeName;
@@ -1071,7 +1071,7 @@ public class XCASDeserializer {
       } else {
         // Note: This is really slow so we avoid if possible. -- RJB
         return StringUtils.replaceAll(StringUtils.replaceAll(aTagName, ":", "_colon_"), "-",
-                        "_dash_");
+                "_dash_");
       }
     }
   }
@@ -1198,7 +1198,7 @@ public class XCASDeserializer {
    *           if an I/O failure occurs
    */
   public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient)
-                  throws SAXException, IOException {
+          throws SAXException, IOException {
     XMLReader xmlReader = XMLReaderFactory.createXMLReader();
     XCASDeserializer deser = new XCASDeserializer(aCAS.getTypeSystem());
     ContentHandler handler;

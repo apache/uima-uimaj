@@ -75,7 +75,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
     // build a list of AnalysisSequenceNodes from the capabilityLanguageFlow
     mStaticSequence = new ArrayList();
     CapabilityLanguageFlow flowConstraints = (CapabilityLanguageFlow) aContext
-                    .getAggregateMetadata().getFlowConstraints();
+            .getAggregateMetadata().getFlowConstraints();
     String[] flow = flowConstraints.getCapabilityLanguageFlow();
     for (int i = 0; i < flow.length; i++) {
       AnalysisEngineMetaData md = (AnalysisEngineMetaData) mComponentMetaDataMap.get(flow[i]);
@@ -147,7 +147,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
 
     // create resultSpec from the current aggregate capabilities
     ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-                    .createResultSpecification();
+            .createResultSpecification();
 
     if (aCapabilities != null) {
       resultSpec.addCapabilities(aCapabilities);
@@ -215,7 +215,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
 
       // create current analysis result spec without any language information
       currentAnalysisResultSpec = UIMAFramework.getResourceSpecifierFactory()
-                      .createResultSpecification();
+              .createResultSpecification();
 
       // check if engine should be called - loop over all ouput capabilities of the result spec
       for (int i = 0; i < ouputCapabilities.length; i++) {
@@ -247,18 +247,19 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
 
     return newSequence;
   }
-  
+
   public static FlowControllerDescription getDescription() {
-    URL descUrl = FixedFlowController.class.getResource("/org/apache/uima/flow/CapabilityLanguageFlowController.xml");
+    URL descUrl = FixedFlowController.class
+            .getResource("/org/apache/uima/flow/CapabilityLanguageFlowController.xml");
     FlowControllerDescription desc;
     try {
-      desc = (FlowControllerDescription)
-        UIMAFramework.getXMLParser().parse(new XMLInputSource(descUrl));
+      desc = (FlowControllerDescription) UIMAFramework.getXMLParser().parse(
+              new XMLInputSource(descUrl));
     } catch (InvalidXMLException e) {
       throw new UIMARuntimeException(e);
     } catch (IOException e) {
       throw new UIMARuntimeException(e);
     }
     return desc;
-  }  
+  }
 }

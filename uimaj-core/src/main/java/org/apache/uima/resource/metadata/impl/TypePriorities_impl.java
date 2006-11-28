@@ -133,7 +133,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   public void setImports(Import[] aImports) {
     if (aImports == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-                      new Object[] { "null", "aImports", "setImports" });
+              new Object[] { "null", "aImports", "setImports" });
     }
     mImports = aImports;
   }
@@ -194,7 +194,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   }
 
   public void resolveImports(Collection aAlreadyImportedTypePrioritiesURLs,
-                  ResourceManager aResourceManager) throws InvalidXMLException {
+          ResourceManager aResourceManager) throws InvalidXMLException {
     List importedPriorityLists = new ArrayList();
     Import[] imports = getImports();
     for (int i = 0; i < imports.length; i++) {
@@ -209,10 +209,10 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
         aAlreadyImportedTypePrioritiesURLs.add(url.toString());
         try {
           resolveImport(url, aAlreadyImportedTypePrioritiesURLs, importedPriorityLists,
-                          aResourceManager);
+                  aResourceManager);
         } catch (IOException e) {
           throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
-                          new Object[] { url, imports[i].getSourceUrlString() }, e);
+                  new Object[] { url, imports[i].getSourceUrlString() }, e);
         }
       }
     }
@@ -222,11 +222,11 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
       existingPriorityLists = new TypePriorityList[0];
     }
     TypePriorityList[] newPriorityLists = new TypePriorityList[existingPriorityLists.length
-                    + importedPriorityLists.size()];
+            + importedPriorityLists.size()];
     System.arraycopy(existingPriorityLists, 0, newPriorityLists, 0, existingPriorityLists.length);
     for (int i = 0; i < importedPriorityLists.size(); i++) {
       newPriorityLists[existingPriorityLists.length + i] = (TypePriorityList) importedPriorityLists
-                      .get(i);
+              .get(i);
     }
     this.setPriorityLists(newPriorityLists);
     // clear imports
@@ -234,8 +234,8 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   }
 
   private void resolveImport(URL aURL, Collection aAlreadyImportedTypePrioritiesURLs,
-                  Collection aResults, ResourceManager aResourceManager)
-                  throws InvalidXMLException, IOException {
+          Collection aResults, ResourceManager aResourceManager) throws InvalidXMLException,
+          IOException {
     XMLInputSource input = new XMLInputSource(aURL);
     TypePriorities desc = UIMAFramework.getXMLParser().parseTypePriorities(input);
     desc.resolveImports(aAlreadyImportedTypePrioritiesURLs, aResourceManager);
@@ -249,12 +249,12 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
    *      java.lang.String, org.xml.sax.ContentHandler)
    */
   protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace,
-                  ContentHandler aContentHandler) throws SAXException {
+          ContentHandler aContentHandler) throws SAXException {
     if ("priorityLists".equals(aPropInfo.propertyName)) {
       // call writeArrayPropertyAsElement directly, which will not generate the
       // <priorityLists> tag
       writeArrayPropertyAsElement(aPropInfo.propertyName, TypePriorityList[].class,
-                      getPriorityLists(), null, aNamespace, aContentHandler);
+              getPriorityLists(), null, aNamespace, aContentHandler);
     } else // normal handling
     {
       super.writePropertyAsElement(aPropInfo, aNamespace, aContentHandler);

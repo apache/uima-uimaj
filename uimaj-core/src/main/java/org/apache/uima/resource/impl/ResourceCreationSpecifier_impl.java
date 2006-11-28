@@ -47,7 +47,7 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  * 
  */
 public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implements
-                ResourceCreationSpecifier {
+        ResourceCreationSpecifier {
 
   private String mImplementationName;
 
@@ -114,7 +114,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    */
   public ExternalResourceDependency[] getExternalResourceDependencies() {
     ExternalResourceDependency[] result = new ExternalResourceDependency[mExternalResourceDependencies
-                    .size()];
+            .size()];
     mExternalResourceDependencies.toArray(result);
     return result;
   }
@@ -160,7 +160,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    * @see org.apache.uima.resource.ResourceCreationSpecifier#setResourceManagerConfiguration(org.apache.uima.resource.metadata.ResourceManagerConfiguration)
    */
   public void setResourceManagerConfiguration(
-                  ResourceManagerConfiguration aResourceManagerConfiguration) {
+          ResourceManagerConfiguration aResourceManagerConfiguration) {
     mResourceManagerConfiguration = aResourceManagerConfiguration;
   }
 
@@ -179,7 +179,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    * @see org.apache.uima.resource.ResourceCreationSpecifier#doFullValidation(org.apache.uima.resource.ResourceManager)
    */
   public void doFullValidation(ResourceManager aResourceManager)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     // try to instantiate dummy resource - this checks config params
     // and resources
     DummyResource dummy = new DummyResource();
@@ -227,7 +227,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    */
   protected void validateConfigurationParameters() throws ResourceInitializationException {
     ConfigurationParameterDeclarations cfgParamDecls = getMetaData()
-                    .getConfigurationParameterDeclarations();
+            .getConfigurationParameterDeclarations();
     ConfigurationParameter[] params = cfgParamDecls.getConfigurationParameters();
     if (params.length > 0) {
       // check for duplicate names
@@ -241,9 +241,9 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
         for (int i = 0; i < commonParams.length; i++) {
           if (!commonParamNames.add(commonParams[i].getName())) {
             throw new ResourceInitializationException(
-                            ResourceInitializationException.DUPLICATE_CONFIGURATION_PARAMETER_NAME,
-                            new Object[] { commonParams[i].getName(), getMetaData().getName(),
-                                commonParams[i].getSourceUrlString() });
+                    ResourceInitializationException.DUPLICATE_CONFIGURATION_PARAMETER_NAME,
+                    new Object[] { commonParams[i].getName(), getMetaData().getName(),
+                        commonParams[i].getSourceUrlString() });
           }
         }
       }
@@ -251,7 +251,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
       ConfigurationGroup[] groups = cfgParamDecls.getConfigurationGroups();
       if (groups != null) {
         HashMap groupToParamSetMap = new HashMap(); // map from group name to HashSet of param names
-                                                    // in that group
+        // in that group
         for (int i = 0; i < groups.length; i++) {
           String[] names = groups[i].getNames();
           for (int j = 0; j < names.length; j++) {
@@ -267,10 +267,9 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
               for (int k = 0; k < paramsInGroup.length; k++) {
                 if (!paramNamesInGroup.add(paramsInGroup[k].getName())) {
                   throw new ResourceInitializationException(
-                                  ResourceInitializationException.DUPLICATE_CONFIGURATION_PARAMETER_NAME,
-                                  new Object[] { paramsInGroup[k].getName(),
-                                      getMetaData().getName(),
-                                      paramsInGroup[k].getSourceUrlString() });
+                          ResourceInitializationException.DUPLICATE_CONFIGURATION_PARAMETER_NAME,
+                          new Object[] { paramsInGroup[k].getName(), getMetaData().getName(),
+                              paramsInGroup[k].getSourceUrlString() });
                 }
               }
             }
@@ -294,14 +293,14 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    *           if there is a duplicate parameter name in the arrays
    */
   protected void checkForDuplicateParameterNames(ConfigurationParameter[] aParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     HashSet paramNames = new HashSet();
     for (int i = 0; i < aParams.length; i++) {
       if (!paramNames.add(aParams[i].getName())) {
         throw new ResourceInitializationException(
-                        ResourceInitializationException.DUPLICATE_CONFIGURATION_PARAMETER_NAME,
-                        new Object[] { aParams[i].getName(), getMetaData().getName(),
-                            aParams[i].getSourceUrlString() });
+                ResourceInitializationException.DUPLICATE_CONFIGURATION_PARAMETER_NAME,
+                new Object[] { aParams[i].getName(), getMetaData().getName(),
+                    aParams[i].getSourceUrlString() });
       }
     }
   }
@@ -321,14 +320,14 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    *           if there is an invalid parameter override declaration
    */
   protected void checkForInvalidParameterOverrides(ConfigurationParameter[] aParams,
-                  String aGroupName) throws ResourceInitializationException {
+          String aGroupName) throws ResourceInitializationException {
     for (int i = 0; i < aParams.length; i++) {
       String[] overrides = aParams[i].getOverrides();
       if (overrides.length > 0) {
         throw new ResourceInitializationException(
-                        ResourceInitializationException.PARAM_OVERRIDE_IN_PRIMITIVE, new Object[] {
-                            aParams[i].getName(), getMetaData().getName(),
-                            aParams[i].getSourceUrlString() });
+                ResourceInitializationException.PARAM_OVERRIDE_IN_PRIMITIVE,
+                new Object[] { aParams[i].getName(), getMetaData().getName(),
+                    aParams[i].getSourceUrlString() });
       }
     }
   }
@@ -338,13 +337,12 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-                  "resourceCreationSpecifier", new PropertyXmlInfo[] {
-                      new PropertyXmlInfo("frameworkImplementation"),
-                      new PropertyXmlInfo("implementationName"),
-                      new PropertyXmlInfo("metaData", null),
-                      new PropertyXmlInfo("externalResourceDependencies"),
-                      new PropertyXmlInfo("externalResources"),
-                      new PropertyXmlInfo("resourceManagerConfiguration", null), });
+          "resourceCreationSpecifier", new PropertyXmlInfo[] {
+              new PropertyXmlInfo("frameworkImplementation"),
+              new PropertyXmlInfo("implementationName"), new PropertyXmlInfo("metaData", null),
+              new PropertyXmlInfo("externalResourceDependencies"),
+              new PropertyXmlInfo("externalResources"),
+              new PropertyXmlInfo("resourceManagerConfiguration", null), });
 
   // used by doFullValidation
   private static class DummyResource extends Resource_ImplBase {

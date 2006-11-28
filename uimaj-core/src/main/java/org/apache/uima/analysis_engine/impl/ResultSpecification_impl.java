@@ -71,7 +71,7 @@ public class ResultSpecification_impl extends MetaDataObject_impl implements Res
    * Default language set to use if nothing else is specified
    */
   private HashSet mDefaultLanguage = new HashSet();
-  
+
   /**
    * constructor init the default languge set with the language x-unspecified
    */
@@ -109,7 +109,7 @@ public class ResultSpecification_impl extends MetaDataObject_impl implements Res
       // get value for the current key
       Set values = (HashSet) mTypesAndFeatures.get(tof);
       if (values.contains(language) || values.contains(UNSPECIFIED_LANGUAGE)
-                      || values.contains(baseLanguage)) {
+              || values.contains(baseLanguage)) {
         // add tof to the TypeOfFeature array
         vec.add(tof);
       }
@@ -310,7 +310,7 @@ public class ResultSpecification_impl extends MetaDataObject_impl implements Res
    * @param t
    */
   private void addTypeRecursive(Type type, TypeSystem typeSystem, HashSet languages,
-                  boolean allFeatures) {
+          boolean allFeatures) {
     mCompiledNameToLanguageMap.put(type.getName(), languages);
     if (allFeatures) {
       List features = type.getFeatures();
@@ -376,8 +376,7 @@ public class ResultSpecification_impl extends MetaDataObject_impl implements Res
       if (languages != null) {
         // check if tof is supported for the current language
         if (UNSPECIFIED_LANGUAGE.equals(language) || languages.contains(language)
-                        || languages.contains(UNSPECIFIED_LANGUAGE)
-                        || languages.contains(baseLanguage)) {
+                || languages.contains(UNSPECIFIED_LANGUAGE) || languages.contains(baseLanguage)) {
           // mark item found
           found = true;
         }
@@ -392,8 +391,7 @@ public class ResultSpecification_impl extends MetaDataObject_impl implements Res
           if (languages != null) {
             // check if tof is supported for the current language
             if (UNSPECIFIED_LANGUAGE.equals(language) || languages.contains(language)
-                            || languages.contains(UNSPECIFIED_LANGUAGE)
-                            || languages.contains(baseLanguage)) {
+                    || languages.contains(UNSPECIFIED_LANGUAGE) || languages.contains(baseLanguage)) {
               // mark item found
               return true;
             }
@@ -428,8 +426,8 @@ public class ResultSpecification_impl extends MetaDataObject_impl implements Res
       while (it.hasNext()) {
         TypeOrFeature elem = (TypeOrFeature) it.next();
         if ((!elem.isType() && aFullFeatureName.equals(elem.getName()))
-                        || (elem.isType() && elem.isAllAnnotatorFeatures() && typeName.equals(elem
-                                        .getName()))) {
+                || (elem.isType() && elem.isAllAnnotatorFeatures() && typeName.equals(elem
+                        .getName()))) {
           return true;
         }
       }
@@ -463,8 +461,7 @@ public class ResultSpecification_impl extends MetaDataObject_impl implements Res
       if (languages != null) {
         // check if tof is supported for the current language
         if (UNSPECIFIED_LANGUAGE.equals(language) || languages.contains(language)
-                        || languages.contains(UNSPECIFIED_LANGUAGE)
-                        || languages.contains(baseLanguage)) {
+                || languages.contains(UNSPECIFIED_LANGUAGE) || languages.contains(baseLanguage)) {
           // mark item found
           found = true;
         }
@@ -482,14 +479,13 @@ public class ResultSpecification_impl extends MetaDataObject_impl implements Res
       while (it.hasNext()) {
         TypeOrFeature elem = (TypeOrFeature) it.next();
         if ((!elem.isType() && aFullFeatureName.equals(elem.getName()))
-                        || (elem.isType() && elem.isAllAnnotatorFeatures() && typeName.equals(elem
-                                        .getName()))) {
+                || (elem.isType() && elem.isAllAnnotatorFeatures() && typeName.equals(elem
+                        .getName()))) {
           HashSet languages = (HashSet) mTypesAndFeatures.get(elem);
           if (languages != null) {
             // check if tof is supported for the current language
             if (UNSPECIFIED_LANGUAGE.equals(language) || languages.contains(language)
-                            || languages.contains(UNSPECIFIED_LANGUAGE)
-                            || languages.contains(baseLanguage)) {
+                    || languages.contains(UNSPECIFIED_LANGUAGE) || languages.contains(baseLanguage)) {
               // mark item found
               return true;
             }
@@ -506,7 +502,7 @@ public class ResultSpecification_impl extends MetaDataObject_impl implements Res
    */
   protected XmlizationInfo getXmlizationInfo() {
     return new XmlizationInfo("resultSpecification", null,
-                    new PropertyXmlInfo[] { new PropertyXmlInfo("resultTypesAndFeatures", null) });
+            new PropertyXmlInfo[] { new PropertyXmlInfo("resultTypesAndFeatures", null) });
   }
 
   /**

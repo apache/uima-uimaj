@@ -73,7 +73,7 @@ public interface Resource {
    *           if this method is called more than once on a single Resource instance.
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-                  throws ResourceInitializationException;
+          throws ResourceInitializationException;
 
   /**
    * Gets the metadata that describes this <code>Resource</code>.

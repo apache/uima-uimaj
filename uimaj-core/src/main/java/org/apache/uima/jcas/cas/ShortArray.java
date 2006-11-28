@@ -114,7 +114,7 @@ public final class ShortArray extends TOP implements ShortArrayFS {
     jcasType.casImpl.checkArrayBounds(addr, srcOffset, length);
     for (int i = 0; i < length; i++) {
       dest[i + destOffset] = Short.toString(jcasType.ll_cas.ll_getShortArrayValue(addr, i
-                      + srcOffset));
+              + srcOffset));
     }
   }
 
@@ -125,7 +125,7 @@ public final class ShortArray extends TOP implements ShortArrayFS {
     jcasType.casImpl.checkArrayBounds(addr, destOffset, length);
     for (int i = 0; i < length; i++) {
       jcasType.ll_cas.ll_setShortArrayValue(addr, i + destOffset, Short.parseShort(src[i
-                      + srcOffset]));
+              + srcOffset]));
     }
   }
 

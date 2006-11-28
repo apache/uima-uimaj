@@ -46,7 +46,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 
   public Type getType() {
     return this.getCASImpl().getTypeSystemImpl().getType(
-                    this.getCASImpl().getHeapValue(this.getAddress()));
+            this.getCASImpl().getHeapValue(this.getAddress()));
   }
 
   public void setFeatureValue(Feature feat, FeatureStructure fs) {
@@ -77,7 +77,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 
   private final void setNullValue(int featCode, int rangeType) {
     if (this.getCASImpl().isIntType(rangeType) || this.getCASImpl().isFloatType(rangeType)
-                    || this.getCASImpl().isStringType(rangeType)) {
+            || this.getCASImpl().isStringType(rangeType)) {
       CASRuntimeException e = new CASRuntimeException(CASRuntimeException.PRIMITIVE_VAL_FEAT);
       e.addArgument(this.getCASImpl().getTypeSystemImpl().getFeature(featCode).getName());
       throw e;
@@ -88,11 +88,11 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
   public void setIntValue(Feature feat, int val) {
     final TypeSystemImpl ts = this.getCASImpl().getTypeSystemImpl();
     if (!ts.subsumes(((TypeImpl) feat.getDomain()).getCode(), this.getCASImpl().getHeapValue(
-                    this.getAddress()))) {
+            this.getAddress()))) {
       throwUndefinedFeatureExc(feat, getType());
     }
     if (!ts.subsumes(((TypeImpl) feat.getRange()).getCode(), ((TypeImpl) ts
-                    .getType(CAS.TYPE_NAME_INTEGER)).getCode())) {
+            .getType(CAS.TYPE_NAME_INTEGER)).getCode())) {
       throwIllegalRangeExc(feat, ts.getType(CAS.TYPE_NAME_INTEGER));
     }
     final int featCode = ((FeatureImpl) feat).getCode();
@@ -102,11 +102,11 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
   public void setFloatValue(Feature feat, float val) {
     final TypeSystemImpl ts = this.getCASImpl().getTypeSystemImpl();
     if (!ts.subsumes(((TypeImpl) feat.getDomain()).getCode(), this.getCASImpl().getHeapValue(
-                    this.getAddress()))) {
+            this.getAddress()))) {
       throwUndefinedFeatureExc(feat, getType());
     }
     if (!ts.subsumes(((TypeImpl) feat.getRange()).getCode(), ((TypeImpl) ts
-                    .getType(CAS.TYPE_NAME_FLOAT)).getCode())) {
+            .getType(CAS.TYPE_NAME_FLOAT)).getCode())) {
       throwIllegalRangeExc(feat, ts.getType(CAS.TYPE_NAME_FLOAT));
     }
     final int featCode = ((FeatureImpl) feat).getCode();
@@ -119,7 +119,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
     final int rangeType = ts.range(featCode);
     final int thisType = this.getCASImpl().getHeapValue(this.getAddress());
     final int stringType = ((TypeImpl) this.getCASImpl().getTypeSystem().getType(
-                    CAS.TYPE_NAME_STRING)).getCode();
+            CAS.TYPE_NAME_STRING)).getCode();
     if (!ts.isApprop(thisType, featCode)) {
       CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INAPPROP_FEAT);
       e.addArgument(feat.getName());
@@ -151,11 +151,11 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 
     final TypeSystemImpl ts = this.getCASImpl().getTypeSystemImpl();
     if (!ts.subsumes(((TypeImpl) feat.getDomain()).getCode(), this.getCASImpl().getHeapValue(
-                    this.getAddress()))) {
+            this.getAddress()))) {
       throwUndefinedFeatureExc(feat, getType());
     }
     if (!ts.subsumes(((TypeImpl) feat.getRange()).getCode(), ((TypeImpl) ts
-                    .getType(CAS.TYPE_NAME_BYTE)).getCode())) {
+            .getType(CAS.TYPE_NAME_BYTE)).getCode())) {
       throwIllegalRangeExc(feat, ts.getType(CAS.TYPE_NAME_BYTE));
     }
     final int featCode = ((FeatureImpl) feat).getCode();
@@ -167,11 +167,11 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 
     final TypeSystemImpl ts = this.getCASImpl().getTypeSystemImpl();
     if (!ts.subsumes(((TypeImpl) feat.getDomain()).getCode(), this.getCASImpl().getHeapValue(
-                    this.getAddress()))) {
+            this.getAddress()))) {
       throwUndefinedFeatureExc(feat, getType());
     }
     if (!ts.subsumes(((TypeImpl) feat.getRange()).getCode(), ((TypeImpl) ts
-                    .getType(CAS.TYPE_NAME_BOOLEAN)).getCode())) {
+            .getType(CAS.TYPE_NAME_BOOLEAN)).getCode())) {
       throwIllegalRangeExc(feat, ts.getType(CAS.TYPE_NAME_BOOLEAN));
     }
     final int featCode = ((FeatureImpl) feat).getCode();
@@ -183,11 +183,11 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
   public void setShortValue(Feature feat, short val) throws CASRuntimeException {
     final TypeSystemImpl ts = this.getCASImpl().getTypeSystemImpl();
     if (!ts.subsumes(((TypeImpl) feat.getDomain()).getCode(), this.getCASImpl().getHeapValue(
-                    this.getAddress()))) {
+            this.getAddress()))) {
       throwUndefinedFeatureExc(feat, getType());
     }
     if (!ts.subsumes(((TypeImpl) feat.getRange()).getCode(), ((TypeImpl) ts
-                    .getType(CAS.TYPE_NAME_SHORT)).getCode())) {
+            .getType(CAS.TYPE_NAME_SHORT)).getCode())) {
       throwIllegalRangeExc(feat, ts.getType(CAS.TYPE_NAME_SHORT));
     }
     final int featCode = ((FeatureImpl) feat).getCode();
@@ -197,11 +197,11 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
   public void setLongValue(Feature feat, long val) throws CASRuntimeException {
     final TypeSystemImpl ts = this.getCASImpl().getTypeSystemImpl();
     if (!ts.subsumes(((TypeImpl) feat.getDomain()).getCode(), this.getCASImpl().getHeapValue(
-                    this.getAddress()))) {
+            this.getAddress()))) {
       throwUndefinedFeatureExc(feat, getType());
     }
     if (!ts.subsumes(((TypeImpl) feat.getRange()).getCode(), ((TypeImpl) ts
-                    .getType(CAS.TYPE_NAME_LONG)).getCode())) {
+            .getType(CAS.TYPE_NAME_LONG)).getCode())) {
       throwIllegalRangeExc(feat, ts.getType(CAS.TYPE_NAME_LONG));
     }
     final int featCode = ((FeatureImpl) feat).getCode();
@@ -211,11 +211,11 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
   public void setDoubleValue(Feature feat, double val) throws CASRuntimeException {
     final TypeSystemImpl ts = this.getCASImpl().getTypeSystemImpl();
     if (!ts.subsumes(((TypeImpl) feat.getDomain()).getCode(), this.getCASImpl().getHeapValue(
-                    this.getAddress()))) {
+            this.getAddress()))) {
       throwUndefinedFeatureExc(feat, getType());
     }
     if (!ts.subsumes(((TypeImpl) feat.getRange()).getCode(), ((TypeImpl) ts
-                    .getType(CAS.TYPE_NAME_DOUBLE)).getCode())) {
+            .getType(CAS.TYPE_NAME_DOUBLE)).getCode())) {
       throwIllegalRangeExc(feat, ts.getType(CAS.TYPE_NAME_DOUBLE));
     }
     final int featCode = ((FeatureImpl) feat).getCode();
@@ -225,7 +225,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
   public void setFeatureValueFromString(Feature feat, String s) throws CASRuntimeException {
 
     this.getCASImpl().setFeatureValueFromString(this.getAddress(), ((FeatureImpl) feat).getCode(),
-                    s);
+            s);
 
   }
 
@@ -285,7 +285,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
     final int thisType = ((TypeImpl) this.getType()).getCode();
     final int domType = ((TypeImpl) f.getDomain()).getCode();
     final int stringType = ((TypeImpl) this.getCASImpl().getTypeSystem().getType(
-                    CAS.TYPE_NAME_STRING)).getCode();
+            CAS.TYPE_NAME_STRING)).getCode();
     final int rangeType = ((TypeImpl) f.getRange()).getCode();
     final TypeSystemImpl ts = (TypeSystemImpl) this.getCASImpl().getTypeSystem();
     if (!ts.subsumes(domType, thisType)) {
@@ -364,7 +364,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
   public String getFeatureValueAsString(Feature feat) throws CASRuntimeException {
 
     return this.getCASImpl().getFeatureValueAsString(this.getAddress(),
-                    ((FeatureImpl) feat).getCode());
+            ((FeatureImpl) feat).getCode());
 
   }
 
@@ -488,7 +488,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
   }
 
   public void prettyPrint(int indent, int incr, StringBuffer buf, boolean useShortNames, String s,
-                  PrintReferences printRefs) {
+          PrintReferences printRefs) {
     indent += incr;
     final int printInfo = printRefs.printInfo(this.getAddress());
     if (printInfo != PrintReferences.NO_LABEL) {
@@ -562,10 +562,10 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
         buf.append("]\n");
       }
     } else if (typeClass == LowLevelCAS.TYPE_CLASS_BYTEARRAY
-                    || typeClass == LowLevelCAS.TYPE_CLASS_BOOLEANARRAY
-                    || typeClass == LowLevelCAS.TYPE_CLASS_SHORTARRAY
-                    || typeClass == LowLevelCAS.TYPE_CLASS_LONGARRAY
-                    || typeClass == LowLevelCAS.TYPE_CLASS_DOUBLEARRAY) {
+            || typeClass == LowLevelCAS.TYPE_CLASS_BOOLEANARRAY
+            || typeClass == LowLevelCAS.TYPE_CLASS_SHORTARRAY
+            || typeClass == LowLevelCAS.TYPE_CLASS_LONGARRAY
+            || typeClass == LowLevelCAS.TYPE_CLASS_DOUBLEARRAY) {
       if (typeClass == LowLevelCAS.TYPE_CLASS_BOOLEANARRAY)
         arrayFS = new ByteArrayFSImpl(this.getAddress(), this.getCASImpl());
       else if (typeClass == LowLevelCAS.TYPE_CLASS_BYTEARRAY)
@@ -618,10 +618,9 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
       approp = feat.getRange();
       // System.out.println("Range type: " + approp);
       if (approp.equals(this.getCASImpl().getTypeSystem().getType(CAS.TYPE_NAME_STRING))
-                      || (this.getCAS().getTypeSystem().getParent(approp) != null && this.getCAS()
-                                      .getTypeSystem().getParent(approp).equals(
-                                                      this.getCASImpl().getTypeSystem().getType(
-                                                                      CAS.TYPE_NAME_STRING)))) {
+              || (this.getCAS().getTypeSystem().getParent(approp) != null && this.getCAS()
+                      .getTypeSystem().getParent(approp).equals(
+                              this.getCASImpl().getTypeSystem().getType(CAS.TYPE_NAME_STRING)))) {
         stringVal = getStringValue(feat);
         if (stringVal == null) {
           stringVal = "<null>";

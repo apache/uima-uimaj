@@ -96,7 +96,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    *      org.apache.uima.resource.metadata.ResourceMetaData)
    */
   public void createContext(String aContextName, ResourceMetaData aResourceMetaData)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     // first internally validate settings in the ResourceMetaData (catches data type problems,
     // settings for undefined parameters, etc.)
     aResourceMetaData.validateConfigurationParameterSettings();
@@ -105,7 +105,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
     // concrete ConfigurationManager implementations to set up data structures to
     // provide access to the parameter values
     ConfigurationParameterDeclarations paramDecls = aResourceMetaData
-                    .getConfigurationParameterDeclarations();
+            .getConfigurationParameterDeclarations();
     String parentContext = computeParentContextName(aContextName);
     ConfigurationParameterSettings settings = aResourceMetaData.getConfigurationParameterSettings();
 
@@ -161,7 +161,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
     // if that fails, look up in default group if one is defined
     String defaultGroup = null;
     ConfigurationParameterDeclarations decls = (ConfigurationParameterDeclarations) mContextNameToParamDeclsMap
-                    .get(computeParentContextName(aQualifiedParameterName));
+            .get(computeParentContextName(aQualifiedParameterName));
     if (decls != null) {
       defaultGroup = decls.getDefaultGroupName();
     }
@@ -180,10 +180,10 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
   public Object getConfigParameterValue(String aQualifiedParameterName, String aGroupName) {
     // get parameter search strategy for this context
     ConfigurationParameterDeclarations decls = (ConfigurationParameterDeclarations) mContextNameToParamDeclsMap
-                    .get(computeParentContextName(aQualifiedParameterName));
+            .get(computeParentContextName(aQualifiedParameterName));
     if (decls != null) {
       return getConfigParameterValue(aQualifiedParameterName, aGroupName,
-                      decls.getSearchStrategy(), decls.getDefaultGroupName());
+              decls.getSearchStrategy(), decls.getDefaultGroupName());
     } else {
       return getConfigParameterValue(aQualifiedParameterName, aGroupName, null, null);
     }
@@ -253,10 +253,10 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
   public ConfigurationParameterSettings getCurrentConfigParameterSettings(String aContextName) {
     // get declarations
     ConfigurationParameterDeclarations decls = (ConfigurationParameterDeclarations) mContextNameToParamDeclsMap
-                    .get(aContextName);
+            .get(aContextName);
 
     ConfigurationParameterSettings settings = UIMAFramework.getResourceSpecifierFactory()
-                    .createConfigurationParameterSettings();
+            .createConfigurationParameterSettings();
 
     ConfigurationParameter[] paramsInNoGroup = decls.getConfigurationParameters();
     if (paramsInNoGroup.length > 0) // no groups declared
@@ -273,15 +273,15 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
             for (int j = 0; j < names.length; j++) {
               // common params
               NameValuePair[] commonParamSettings = getParamSettings(names[j], decls
-                              .getCommonParameters(), aContextName);
+                      .getCommonParameters(), aContextName);
               NameValuePair[] specificParamSettings = getParamSettings(names[j], groups[i]
-                              .getConfigurationParameters(), aContextName);
+                      .getConfigurationParameters(), aContextName);
               NameValuePair[] mergedSettings = new NameValuePair[commonParamSettings.length
-                              + specificParamSettings.length];
+                      + specificParamSettings.length];
               System.arraycopy(commonParamSettings, 0, mergedSettings, 0,
-                              commonParamSettings.length);
+                      commonParamSettings.length);
               System.arraycopy(specificParamSettings, 0, mergedSettings,
-                              commonParamSettings.length, specificParamSettings.length);
+                      commonParamSettings.length, specificParamSettings.length);
               settings.getSettingsForGroups().put(names[j], mergedSettings);
             }
           }
@@ -335,8 +335,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    *          name of parent context, null if none
    */
   protected void declareParameters(String aGroupName, ConfigurationParameter[] aParams,
-                  ConfigurationParameterSettings aSettings, String aContextName,
-                  String aParentContextName) {
+          ConfigurationParameterSettings aSettings, String aContextName, String aParentContextName) {
     // iterate over config. param _declarations_
     if (aParams != null) {
       for (int i = 0; i < aParams.length; i++) {
@@ -349,9 +348,9 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
           // no explicit override. Check for implicit override (a parameter with same
           // name declared in parent aggregate with no explicit overrides)
           String nameInParentContext = makeQualifiedName(aParentContextName, param.getName(),
-                          aGroupName);
+                  aGroupName);
           if (lookup(nameInParentContext) != null
-                          && !mExplicitlyOverridingParameters.contains(nameInParentContext)) {
+                  && !mExplicitlyOverridingParameters.contains(nameInParentContext)) {
             // create a link (but collapse multiple links)
             // String parentLink = getLink(nameInParentContext);
             // overriddenBy = parentLink != null ? parentLink : nameInParentContext;
@@ -413,7 +412,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * @return array containing settings of the specific parameters
    */
   private NameValuePair[] getParamSettings(String aGroupName, ConfigurationParameter[] aParams,
-                  String aContextName) {
+          String aContextName) {
     ArrayList result = new ArrayList();
     // iterate over config. param _declarations_
     if (aParams != null) {
@@ -481,10 +480,10 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    *           if the configuration parameter settings are invalid
    */
   private void validateConfigurationParameterSettings(String aContext)
-                  throws ResourceConfigurationException {
+          throws ResourceConfigurationException {
     // get declarations
     ConfigurationParameterDeclarations decls = (ConfigurationParameterDeclarations) mContextNameToParamDeclsMap
-                    .get(aContext);
+            .get(aContext);
     // check that all required parameters have values
     ConfigurationParameter[] params = decls.getConfigurationParameters();
     if (params.length > 0) {
@@ -525,8 +524,8 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    *           if the configuration parameter settings are invalid
    */
   private void validateConfigurationParameterSettings(String aContext,
-                  ConfigurationParameter[] aParams, String aGroupName)
-                  throws ResourceConfigurationException {
+          ConfigurationParameter[] aParams, String aGroupName)
+          throws ResourceConfigurationException {
     for (int i = 0; i < aParams.length; i++) {
       // get value
       Object val = this.getConfigParameterValue(aContext + aParams[i].getName(), aGroupName);
@@ -534,12 +533,12 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
       if (val == null && aParams[i].isMandatory()) {
         if (aGroupName != null) {
           throw new ResourceConfigurationException(
-                          ResourceConfigurationException.MANDATORY_VALUE_MISSING_IN_GROUP,
-                          new Object[] { aParams[i].getName(), aGroupName, aContext });
+                  ResourceConfigurationException.MANDATORY_VALUE_MISSING_IN_GROUP, new Object[] {
+                      aParams[i].getName(), aGroupName, aContext });
         } else {
           throw new ResourceConfigurationException(
-                          ResourceConfigurationException.MANDATORY_VALUE_MISSING, new Object[] {
-                              aParams[i].getName(), aContext });
+                  ResourceConfigurationException.MANDATORY_VALUE_MISSING, new Object[] {
+                      aParams[i].getName(), aContext });
         }
       }
       // check datatype
@@ -561,18 +560,18 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    *           if the data types do not match
    */
   private void validateConfigurationParameterDataTypeMatch(ConfigurationParameter aParam,
-                  Object aValue, String aContextName) throws ResourceConfigurationException {
+          Object aValue, String aContextName) throws ResourceConfigurationException {
     if (aValue != null) {
       Class valClass = aValue.getClass();
       if (aParam.isMultiValued() && !valClass.isArray()) {
         throw new ResourceConfigurationException(ResourceConfigurationException.ARRAY_REQUIRED,
-                        new Object[] { aParam.getName(), aContextName });
+                new Object[] { aParam.getName(), aContextName });
       }
 
       if (!valClass.equals(getParameterExpectedValueClass(aParam))) {
         throw new ResourceConfigurationException(
-                        ResourceConfigurationException.PARAMETER_TYPE_MISMATCH, new Object[] {
-                            aContextName, valClass.getName(), aParam.getName(), aParam.getType() });
+                ResourceConfigurationException.PARAMETER_TYPE_MISMATCH, new Object[] {
+                    aContextName, valClass.getName(), aParam.getName(), aParam.getType() });
       }
     }
   }
@@ -630,22 +629,22 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * @return the value of the specified parameter, <code>null</code> if none
    */
   private Object getConfigParameterValue(String aQualifiedParameterName, String aGroupName,
-                  String aSearchStrategy, String aDefaultGroup) {
+          String aSearchStrategy, String aDefaultGroup) {
     if (ConfigurationParameterDeclarations.SEARCH_STRATEGY_DEFAULT_FALLBACK.equals(aSearchStrategy)) {
       // try in specified group then in default group
       Object value = getConfigParameterValue(aQualifiedParameterName, aGroupName,
-                      ConfigurationParameterDeclarations.SEARCH_STRATEGY_NONE, null);
+              ConfigurationParameterDeclarations.SEARCH_STRATEGY_NONE, null);
       if (value != null) {
         return value;
       } else {
         return getConfigParameterValue(aQualifiedParameterName, aDefaultGroup,
-                        ConfigurationParameterDeclarations.SEARCH_STRATEGY_NONE, null);
+                ConfigurationParameterDeclarations.SEARCH_STRATEGY_NONE, null);
       }
     } else if (ConfigurationParameterDeclarations.SEARCH_STRATEGY_LANGUAGE_FALLBACK
-                    .equals(aSearchStrategy)) {
+            .equals(aSearchStrategy)) {
       // try in specified group first
       Object value = getConfigParameterValue(aQualifiedParameterName, aGroupName,
-                      ConfigurationParameterDeclarations.SEARCH_STRATEGY_NONE, null);
+              ConfigurationParameterDeclarations.SEARCH_STRATEGY_NONE, null);
 
       while (value == null && aGroupName != null) {
         // truncate group name at the last _ or - character
@@ -659,13 +658,13 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
         }
         if (aGroupName != null) {
           value = getConfigParameterValue(aQualifiedParameterName, aGroupName,
-                          ConfigurationParameterDeclarations.SEARCH_STRATEGY_NONE, null);
+                  ConfigurationParameterDeclarations.SEARCH_STRATEGY_NONE, null);
         }
       }
       // if we still haen't found a value, try the default group
       if (value == null) {
         value = getConfigParameterValue(aQualifiedParameterName, aDefaultGroup,
-                        ConfigurationParameterDeclarations.SEARCH_STRATEGY_NONE, null);
+                ConfigurationParameterDeclarations.SEARCH_STRATEGY_NONE, null);
       }
       return value;
     } else
@@ -673,7 +672,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
     {
       // just to direct look up in the specified group
       return lookup(aGroupName == null ? aQualifiedParameterName : (aQualifiedParameterName
-                      + GROUP_SEPARATOR + aGroupName));
+              + GROUP_SEPARATOR + aGroupName));
     }
   }
 

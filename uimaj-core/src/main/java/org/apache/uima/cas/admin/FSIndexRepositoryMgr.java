@@ -50,7 +50,7 @@ public interface FSIndexRepositoryMgr extends FSIndexRepository {
    *           If the repository is locked (after calling {@link #commit() commit()}).
    */
   boolean createIndex(FSIndexComparator comp, String label, int indexingStrategy)
-                  throws CASAdminException;
+          throws CASAdminException;
 
   /**
    * Create a new sorted index.

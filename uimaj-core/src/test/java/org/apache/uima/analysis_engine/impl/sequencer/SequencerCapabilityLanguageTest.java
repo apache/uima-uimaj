@@ -70,7 +70,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
       // Create an XML input source from the specifier file.
       XMLInputSource in = new XMLInputSource(junitTestBasePath
-                      + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
+              + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -86,13 +86,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       // Process the sample document.
       tae.process(cas);
       // check fileoutput
-      Assert
-                      .assertTrue(FileCompare
-                                      .compare(
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerTest.txt",
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerCapabilityLanguageExpectedEsEn.txt"));
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+              junitTestBasePath + "SequencerTest/SequencerCapabilityLanguageExpectedEsEn.txt"));
       outputReferenceFile.delete();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
@@ -115,7 +110,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
       // Create an XML input source from the specifier file.
       XMLInputSource in = new XMLInputSource(junitTestBasePath
-                      + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
+              + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -130,17 +125,13 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       cas.setDocumentLanguage("en");
       // Process the sample document.
       ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-                      .createResultSpecification();
+              .createResultSpecification();
       resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
       tae.process(cas, resultSpec);
       // check fileoutput
-      Assert
-                      .assertTrue(FileCompare
-                                      .compare(
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerTest.txt",
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerCapabilityLanguageExpectedEsEnResultSpec.txt"));
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+              junitTestBasePath
+                      + "SequencerTest/SequencerCapabilityLanguageExpectedEsEnResultSpec.txt"));
       outputReferenceFile.delete();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
@@ -163,7 +154,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
       // Create an XML input source from the specifier file.
       XMLInputSource in = new XMLInputSource(junitTestBasePath
-                      + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
+              + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -179,13 +170,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       // Process the sample document.
       tae.process(cas);
       // check fileoutput
-      Assert
-                      .assertTrue(FileCompare
-                                      .compare(
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerTest.txt",
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerCapabilityLanguageExpectedEsEn.txt"));
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+              junitTestBasePath + "SequencerTest/SequencerCapabilityLanguageExpectedEsEn.txt"));
       outputReferenceFile.delete();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
@@ -208,7 +194,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
       // Create an XML input source from the specifier file.
       XMLInputSource in = new XMLInputSource(junitTestBasePath
-                      + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
+              + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -223,17 +209,12 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       cas.setDocumentLanguage("en-US");
       // Process the sample document.
       ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-                      .createResultSpecification();
+              .createResultSpecification();
       resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
       tae.process(cas, resultSpec);
       // check fileoutput
-      Assert
-                      .assertTrue(FileCompare
-                                      .compare(
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerTest.txt",
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerCapabilityLanguageExpectedEsEn.txt"));
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+              junitTestBasePath + "SequencerTest/SequencerCapabilityLanguageExpectedEsEn.txt"));
       outputReferenceFile.delete();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
@@ -256,7 +237,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
       // Create an XML input source from the specifier file.
       XMLInputSource in = new XMLInputSource(junitTestBasePath
-                      + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
+              + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -272,13 +253,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       // Process the sample document.
       tae.process(cas);
       // check fileoutput
-      Assert
-                      .assertTrue(FileCompare
-                                      .compare(
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerTest.txt",
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerCapabilityLanguageExpectedEsAr.txt"));
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+              junitTestBasePath + "SequencerTest/SequencerCapabilityLanguageExpectedEsAr.txt"));
       outputReferenceFile.delete();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
@@ -301,7 +277,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
       // Create an XML input source from the specifier file.
       XMLInputSource in = new XMLInputSource(junitTestBasePath
-                      + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
+              + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -316,17 +292,12 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       cas.setDocumentLanguage("ar");
       // Process the sample document.
       ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-                      .createResultSpecification();
+              .createResultSpecification();
       resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
       tae.process(cas, resultSpec);
       // check fileoutput
-      Assert
-                      .assertTrue(FileCompare
-                                      .compare(
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerTest.txt",
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerCapabilityLanguageExpectedEsAr.txt"));
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+              junitTestBasePath + "SequencerTest/SequencerCapabilityLanguageExpectedEsAr.txt"));
       outputReferenceFile.delete();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
@@ -349,7 +320,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
       // Create an XML input source from the specifier file.
       XMLInputSource in = new XMLInputSource(junitTestBasePath
-                      + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
+              + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -366,12 +337,9 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       tae.process(cas);
       // check fileoutput
       Assert
-                      .assertTrue(FileCompare
-                                      .compare(
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerTest.txt",
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt"));
+              .assertTrue(FileCompare.compare(
+                      junitTestBasePath + "SequencerTest/SequencerTest.txt", junitTestBasePath
+                              + "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt"));
       outputReferenceFile.delete();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
@@ -394,7 +362,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
       // Create an XML input source from the specifier file.
       XMLInputSource in = new XMLInputSource(junitTestBasePath
-                      + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
+              + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -409,17 +377,14 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       cas.setDocumentLanguage("unknown");
       // Process the sample document.
       ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-                      .createResultSpecification();
+              .createResultSpecification();
       resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
       tae.process(cas, resultSpec);
       // check fileoutput
       Assert
-                      .assertTrue(FileCompare
-                                      .compare(
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerTest.txt",
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt"));
+              .assertTrue(FileCompare.compare(
+                      junitTestBasePath + "SequencerTest/SequencerTest.txt", junitTestBasePath
+                              + "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt"));
       outputReferenceFile.delete();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
@@ -442,7 +407,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
       // Create an XML input source from the specifier file.
       XMLInputSource in = new XMLInputSource(junitTestBasePath
-                      + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
+              + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -458,13 +423,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       // Process the sample document.
       tae.process(cas);
       // check fileoutput
-      Assert
-                      .assertTrue(FileCompare
-                                      .compare(
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerTest.txt",
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerCapabilityLanguageExpectedEsZhCN.txt"));
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+              junitTestBasePath + "SequencerTest/SequencerCapabilityLanguageExpectedEsZhCN.txt"));
       outputReferenceFile.delete();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
@@ -487,7 +447,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
       // Create an XML input source from the specifier file.
       XMLInputSource in = new XMLInputSource(junitTestBasePath
-                      + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
+              + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -502,17 +462,13 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       cas.setDocumentLanguage("zh-CN");
       // Process the sample document.
       ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-                      .createResultSpecification();
+              .createResultSpecification();
       resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
       tae.process(cas, resultSpec);
       // check fileoutput
-      Assert
-                      .assertTrue(FileCompare
-                                      .compare(
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerTest.txt",
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerCapabilityLanguageExpectedEsZhCNResultSpec.txt"));
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+              junitTestBasePath
+                      + "SequencerTest/SequencerCapabilityLanguageExpectedEsZhCNResultSpec.txt"));
       outputReferenceFile.delete();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
@@ -535,7 +491,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
       // Create an XML input source from the specifier file.
       XMLInputSource in = new XMLInputSource(junitTestBasePath
-                      + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
+              + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -552,12 +508,9 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       tae.process(cas);
       // check fileoutput
       Assert
-                      .assertTrue(FileCompare
-                                      .compare(
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerTest.txt",
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt"));
+              .assertTrue(FileCompare.compare(
+                      junitTestBasePath + "SequencerTest/SequencerTest.txt", junitTestBasePath
+                              + "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt"));
       outputReferenceFile.delete();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
@@ -580,7 +533,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
       // Create an XML input source from the specifier file.
       XMLInputSource in = new XMLInputSource(junitTestBasePath
-                      + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
+              + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -595,17 +548,14 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       cas.setDocumentLanguage("x-unspecified");
       // Process the sample document.
       ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-                      .createResultSpecification();
+              .createResultSpecification();
       resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
       tae.process(cas, resultSpec);
       // check fileoutput
       Assert
-                      .assertTrue(FileCompare
-                                      .compare(
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerTest.txt",
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt"));
+              .assertTrue(FileCompare.compare(
+                      junitTestBasePath + "SequencerTest/SequencerTest.txt", junitTestBasePath
+                              + "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt"));
       outputReferenceFile.delete();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
@@ -628,7 +578,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
       // Create an XML input source from the specifier file.
       XMLInputSource in = new XMLInputSource(junitTestBasePath
-                      + "SequencerTest/SequencerCapabilityLanguageAggregate.xml");
+              + "SequencerTest/SequencerCapabilityLanguageAggregate.xml");
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -644,10 +594,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       // Process the sample document.
       tae.process(cas);
       // check fileoutput
-      Assert
-                      .assertTrue(FileCompare.compare(junitTestBasePath
-                                      + "SequencerTest/SequencerTest.txt", junitTestBasePath
-                                      + "SequencerTest/SequencerCapabilityLanguageExpectedEn.txt"));
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+              junitTestBasePath + "SequencerTest/SequencerCapabilityLanguageExpectedEn.txt"));
       outputReferenceFile.delete();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
@@ -670,7 +618,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
       // Create an XML input source from the specifier file.
       XMLInputSource in = new XMLInputSource(junitTestBasePath
-                      + "SequencerTest/SequencerCapabilityLanguageAggregate.xml");
+              + "SequencerTest/SequencerCapabilityLanguageAggregate.xml");
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -685,17 +633,13 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       cas.setDocumentLanguage("en");
       // Process the sample document.
       ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-                      .createResultSpecification();
+              .createResultSpecification();
       resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
       tae.process(cas, resultSpec);
       // check fileoutput
-      Assert
-                      .assertTrue(FileCompare
-                                      .compare(
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerTest.txt",
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerCapabilityLanguageExpectedEnResultSpec.txt"));
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+              junitTestBasePath
+                      + "SequencerTest/SequencerCapabilityLanguageExpectedEnResultSpec.txt"));
       outputReferenceFile.delete();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
@@ -718,7 +662,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
       // Create an XML input source from the specifier file.
       XMLInputSource in = new XMLInputSource(junitTestBasePath
-                      + "SequencerTest/SequencerCapabilityLanguageAggregate.xml");
+              + "SequencerTest/SequencerCapabilityLanguageAggregate.xml");
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -733,17 +677,13 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       cas.setDocumentLanguage("EN");
       // Process the sample document.
       ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-                      .createResultSpecification();
+              .createResultSpecification();
       resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
       tae.process(cas, resultSpec);
       // check fileoutput
-      Assert
-                      .assertTrue(FileCompare
-                                      .compare(
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerTest.txt",
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerCapabilityLanguageExpectedEnResultSpec.txt"));
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+              junitTestBasePath
+                      + "SequencerTest/SequencerCapabilityLanguageExpectedEnResultSpec.txt"));
       outputReferenceFile.delete();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
@@ -766,7 +706,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
       // Create an XML input source from the specifier file.
       XMLInputSource in = new XMLInputSource(junitTestBasePath
-                      + "SequencerTest/SequencerCapabilityLanguageAggregate.xml");
+              + "SequencerTest/SequencerCapabilityLanguageAggregate.xml");
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -782,10 +722,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       // Process the sample document.
       tae.process(cas);
       // check fileoutput
-      Assert
-                      .assertTrue(FileCompare.compare(junitTestBasePath
-                                      + "SequencerTest/SequencerTest.txt", junitTestBasePath
-                                      + "SequencerTest/SequencerCapabilityLanguageExpectedJa.txt"));
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+              junitTestBasePath + "SequencerTest/SequencerCapabilityLanguageExpectedJa.txt"));
       outputReferenceFile.delete();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
@@ -808,7 +746,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
       // Create an XML input source from the specifier file.
       XMLInputSource in = new XMLInputSource(junitTestBasePath
-                      + "SequencerTest/SequencerCapabilityLanguageAggregate.xml");
+              + "SequencerTest/SequencerCapabilityLanguageAggregate.xml");
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -823,17 +761,13 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       cas.setDocumentLanguage("ja");
       // Process the sample document.
       ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-                      .createResultSpecification();
+              .createResultSpecification();
       resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
       tae.process(cas, resultSpec);
       // check fileoutput
-      Assert
-                      .assertTrue(FileCompare
-                                      .compare(
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerTest.txt",
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerCapabilityLanguageExpectedJaResultSpec.txt"));
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+              junitTestBasePath
+                      + "SequencerTest/SequencerCapabilityLanguageExpectedJaResultSpec.txt"));
       outputReferenceFile.delete();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
@@ -856,7 +790,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
       // Create an XML input source from the specifier file.
       XMLInputSource in = new XMLInputSource(junitTestBasePath
-                      + "SequencerTest/SequencerCapabilityLanguageAggregate.xml");
+              + "SequencerTest/SequencerCapabilityLanguageAggregate.xml");
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -872,13 +806,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       // Process the sample document.
       tae.process(cas);
       // check fileoutput
-      Assert
-                      .assertTrue(FileCompare
-                                      .compare(
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerTest.txt",
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerCapabilityLanguageExpectedXunSpec.txt"));
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+              junitTestBasePath + "SequencerTest/SequencerCapabilityLanguageExpectedXunSpec.txt"));
       outputReferenceFile.delete();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
@@ -901,7 +830,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
       // Create an XML input source from the specifier file.
       XMLInputSource in = new XMLInputSource(junitTestBasePath
-                      + "SequencerTest/SequencerCapabilityLanguageAggregate.xml");
+              + "SequencerTest/SequencerCapabilityLanguageAggregate.xml");
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -916,17 +845,12 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       cas.setDocumentLanguage("x-unspecified");
       // Process the sample document.
       ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-                      .createResultSpecification();
+              .createResultSpecification();
       resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
       tae.process(cas, resultSpec);
       // check fileoutput
-      Assert
-                      .assertTrue(FileCompare
-                                      .compare(
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerTest.txt",
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerCapabilityLanguageExpectedXunSpec.txt"));
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+              junitTestBasePath + "SequencerTest/SequencerCapabilityLanguageExpectedXunSpec.txt"));
       outputReferenceFile.delete();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
@@ -949,7 +873,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
       // Create an XML input source from the specifier file.
       XMLInputSource in = new XMLInputSource(junitTestBasePath
-                      + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
+              + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -966,12 +890,9 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       tae.process(cas);
       // check fileoutput
       Assert
-                      .assertTrue(FileCompare
-                                      .compare(
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerTest.txt",
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt"));
+              .assertTrue(FileCompare.compare(
+                      junitTestBasePath + "SequencerTest/SequencerTest.txt", junitTestBasePath
+                              + "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt"));
       outputReferenceFile.delete();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
@@ -994,7 +915,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
       // Create an XML input source from the specifier file.
       XMLInputSource in = new XMLInputSource(junitTestBasePath
-                      + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
+              + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -1009,17 +930,14 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       cas.setDocumentLanguage("foo-BAR");
       // Process the sample document.
       ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-                      .createResultSpecification();
+              .createResultSpecification();
       resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
       tae.process(cas, resultSpec);
       // check fileoutput
       Assert
-                      .assertTrue(FileCompare
-                                      .compare(
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerTest.txt",
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt"));
+              .assertTrue(FileCompare.compare(
+                      junitTestBasePath + "SequencerTest/SequencerTest.txt", junitTestBasePath
+                              + "SequencerTest/SequencerCapabilityLanguageExpectedEsUnknown.txt"));
       outputReferenceFile.delete();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
@@ -1042,7 +960,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
       // Create an XML input source from the specifier file.
       XMLInputSource in = new XMLInputSource(junitTestBasePath
-                      + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
+              + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -1058,13 +976,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       // Process the sample document.
       tae.process(cas);
       // check fileoutput
-      Assert
-                      .assertTrue(FileCompare
-                                      .compare(
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerTest.txt",
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerCapabilityLanguageExpectedEsZhCN.txt"));
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+              junitTestBasePath + "SequencerTest/SequencerCapabilityLanguageExpectedEsZhCN.txt"));
       outputReferenceFile.delete();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
@@ -1087,7 +1000,7 @@ public class SequencerCapabilityLanguageTest extends TestCase {
 
       // Create an XML input source from the specifier file.
       XMLInputSource in = new XMLInputSource(junitTestBasePath
-                      + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
+              + "SequencerTest/SequencerCapabilityLanguageAggregateES.xml");
       // Parse the specifier.
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
@@ -1102,17 +1015,13 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       cas.setDocumentLanguage("zh-cn");
       // Process the sample document.
       ResultSpecification resultSpec = UIMAFramework.getResourceSpecifierFactory()
-                      .createResultSpecification();
+              .createResultSpecification();
       resultSpec.addCapabilities(tae.getAnalysisEngineMetaData().getCapabilities());
       tae.process(cas, resultSpec);
       // check fileoutput
-      Assert
-                      .assertTrue(FileCompare
-                                      .compare(
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerTest.txt",
-                                                      junitTestBasePath
-                                                                      + "SequencerTest/SequencerCapabilityLanguageExpectedEsZhCNResultSpec.txt"));
+      Assert.assertTrue(FileCompare.compare(junitTestBasePath + "SequencerTest/SequencerTest.txt",
+              junitTestBasePath
+                      + "SequencerTest/SequencerCapabilityLanguageExpectedEsZhCNResultSpec.txt"));
       outputReferenceFile.delete();
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);

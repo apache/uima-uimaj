@@ -533,8 +533,7 @@ public class FilteredIteratorTest extends TestCase {
    * tokenTypeFeat.getShortName() + " isa (" + sepType.getName() + "|" + eosType.getName() + ")"); }
    * catch (Exception e) { assertTrue(false); } it = this.cas.createFilteredIterator(it, cons); int
    * count = 0; for (it.moveToFirst(); it.isValid(); it.moveToNext()) { ++count; } assertTrue(count ==
-   * 4);
-   *  } catch (Exception e) { e.printStackTrace(); assertTrue(false); } }
+   * 4); } catch (Exception e) { e.printStackTrace(); assertTrue(false); } }
    * 
    * public static void main(String[] args) { FilteredIteratorTest test = new
    * FilteredIteratorTest(null); test.run(); }

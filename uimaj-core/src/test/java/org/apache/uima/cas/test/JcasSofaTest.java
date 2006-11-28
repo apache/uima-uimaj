@@ -259,7 +259,7 @@ public class JcasSofaTest extends TestCase {
       assertTrue((TCAS.TYPE_NAME_ANNOTATION).equals(frAnnot.getType().getName()));
       assertTrue(("cette").equals(frAnnot.getCoveredText()));
       assertTrue(("org.apache.uima.cas.test.CrossAnnotation").equals(gerCrossAnnot.getType()
-                      .getName()));
+              .getName()));
       assertTrue(("das").equals(gerCrossAnnot.getCoveredText()));
 
       // Test that the other annotation feature of cross annotations works

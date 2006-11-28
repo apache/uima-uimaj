@@ -206,7 +206,7 @@ public class MetaDataObject_implTest extends TestCase {
 
       // single-property object where propety name is ommitted from XML
       String xmlStr = "<fruitBag><fruit><name>banana</name><color>yellow</color></fruit>"
-                      + "<fruit><name>raspberry</name><color>red</color></fruit></fruitBag>";
+              + "<fruit><name>raspberry</name><color>red</color></fruit></fruitBag>";
       Document xmlDoc = docBuilder.parse(new ByteArrayInputStream(xmlStr.getBytes()));
       TestFruitBagObject bag = new TestFruitBagObject();
       bag.buildFromXMLElement(xmlDoc.getDocumentElement(), xmlp);

@@ -101,7 +101,7 @@ public class FsIndexDescription_impl extends MetaDataObject_impl implements FsIn
   public void setKeys(FsIndexKeyDescription[] aKeys) {
     if (aKeys == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-                      new Object[] { "null", "aKeys", "setKeys" });
+              new Object[] { "null", "aKeys", "setKeys" });
     }
     mKeys = aKeys;
   }
@@ -111,9 +111,8 @@ public class FsIndexDescription_impl extends MetaDataObject_impl implements FsIn
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fsIndexDescription",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("label"),
-                      new PropertyXmlInfo("typeName"), new PropertyXmlInfo("kind"),
-                      new PropertyXmlInfo("keys", true)
+          new PropertyXmlInfo[] { new PropertyXmlInfo("label"), new PropertyXmlInfo("typeName"),
+              new PropertyXmlInfo("kind"), new PropertyXmlInfo("keys", true)
 
-                  });
+          });
 }

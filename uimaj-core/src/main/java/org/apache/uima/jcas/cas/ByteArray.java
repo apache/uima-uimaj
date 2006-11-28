@@ -114,7 +114,7 @@ public final class ByteArray extends TOP implements ByteArrayFS {
     jcasType.casImpl.checkArrayBounds(addr, srcOffset, length);
     for (int i = 0; i < length; i++) {
       dest[i + destOffset] = Byte.toString(jcasType.ll_cas
-                      .ll_getByteArrayValue(addr, i + srcOffset));
+              .ll_getByteArrayValue(addr, i + srcOffset));
     }
   }
 
@@ -125,8 +125,7 @@ public final class ByteArray extends TOP implements ByteArrayFS {
     jcasType.casImpl.checkArrayBounds(addr, destOffset, length);
     for (int i = 0; i < length; i++) {
       jcasType.ll_cas
-                      .ll_setByteArrayValue(addr, i + destOffset, Byte
-                                      .parseByte(src[i + srcOffset]));
+              .ll_setByteArrayValue(addr, i + destOffset, Byte.parseByte(src[i + srcOffset]));
     }
   }
 

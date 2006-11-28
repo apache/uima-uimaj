@@ -70,7 +70,7 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
    * @see org.apache.uima.AnalysisComponent.AnalysisComponent#batchProcessComplete()
    */
   public void batchProcessComplete() throws AnalysisEngineProcessException {
-    //no default behavior
+    // no default behavior
   }
 
   /*
@@ -79,7 +79,7 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
    * @see org.apache.uima.AnalysisComponent.AnalysisComponent#collectionProcessComplete()
    */
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
-    //no default behavior
+    // no default behavior
   }
 
   /*
@@ -88,7 +88,7 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
    * @see org.apache.uima.AnalysisComponent.AnalysisComponent#destroy()
    */
   public void destroy() {
-    //no default behavior
+    // no default behavior
   }
 
   /**

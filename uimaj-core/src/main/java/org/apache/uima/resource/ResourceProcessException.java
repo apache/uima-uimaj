@@ -73,7 +73,7 @@ public class ResourceProcessException extends UIMAException {
    *          arguments.
    */
   public ResourceProcessException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments) {
+          Object[] aArguments) {
     super(aResourceBundleName, aMessageKey, aArguments);
   }
 
@@ -94,7 +94,7 @@ public class ResourceProcessException extends UIMAException {
    *          the original exception that caused this exception to be thrown, if any
    */
   public ResourceProcessException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments, Throwable aCause) {
+          Object[] aArguments, Throwable aCause) {
     super(aResourceBundleName, aMessageKey, aArguments, aCause);
   }
 

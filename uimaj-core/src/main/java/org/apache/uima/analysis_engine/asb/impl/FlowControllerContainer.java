@@ -61,15 +61,14 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    *      java.util.Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     try {
       // specifier must be a FlowControllerDescription. (Eventually, we
       // might support remote specifiers, but not yet)
       if (!(aSpecifier instanceof FlowControllerDescription)) {
         throw new ResourceInitializationException(
-                        ResourceInitializationException.NOT_A_FLOW_CONTROLLER_DESCRIPTOR,
-                        new Object[] { aSpecifier.getSourceUrlString(),
-                            aSpecifier.getClass().getName() });
+                ResourceInitializationException.NOT_A_FLOW_CONTROLLER_DESCRIPTOR, new Object[] {
+                    aSpecifier.getSourceUrlString(), aSpecifier.getClass().getName() });
       }
       ResourceCreationSpecifier desc = (ResourceCreationSpecifier) aSpecifier;
 
@@ -77,10 +76,10 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
       // org.apache.uima.java (new style) or JEDII (old style)
       final String fwImpl = desc.getFrameworkImplementation();
       if (fwImpl == null
-                      || !(fwImpl.startsWith("org.apache.uima.java") || fwImpl.startsWith("JEDII"))) {
+              || !(fwImpl.startsWith("org.apache.uima.java") || fwImpl.startsWith("JEDII"))) {
         throw new ResourceInitializationException(
-                        ResourceInitializationException.UNSUPPORTED_FRAMEWORK_IMPLEMENTATION,
-                        new Object[] { fwImpl, aSpecifier.getSourceUrlString() });
+                ResourceInitializationException.UNSUPPORTED_FRAMEWORK_IMPLEMENTATION, new Object[] {
+                    fwImpl, aSpecifier.getSourceUrlString() });
       }
 
       super.initialize(aSpecifier, aAdditionalParams);
@@ -226,14 +225,14 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * Instantiates the FlowController class specified in the descriptor.
    */
   private FlowController instantiateFlowController(ResourceCreationSpecifier aDescriptor)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     String flowControllerClassName;
     flowControllerClassName = aDescriptor.getImplementationName();
 
     if (flowControllerClassName == null || flowControllerClassName.length() == 0) {
       throw new ResourceInitializationException(
-                      ResourceInitializationException.MISSING_IMPLEMENTATION_CLASS_NAME,
-                      new Object[] { aDescriptor.getSourceUrlString() });
+              ResourceInitializationException.MISSING_IMPLEMENTATION_CLASS_NAME,
+              new Object[] { aDescriptor.getSourceUrlString() });
     }
     // load annotator class
     Class flowControllerClass = null;
@@ -250,7 +249,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
       }
     } catch (ClassNotFoundException e) {
       throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
-                      new Object[] { flowControllerClassName, aDescriptor.getSourceUrlString() }, e);
+              new Object[] { flowControllerClassName, aDescriptor.getSourceUrlString() }, e);
     }
 
     Object userObject;
@@ -258,14 +257,13 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
       userObject = flowControllerClass.newInstance();
     } catch (Exception e) {
       throw new ResourceInitializationException(
-                      ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
-                          flowControllerClassName, aDescriptor.getSourceUrlString() }, e);
+              ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
+                  flowControllerClassName, aDescriptor.getSourceUrlString() }, e);
     }
     if (!(userObject instanceof FlowController)) {
       throw new ResourceInitializationException(
-                      ResourceInitializationException.RESOURCE_DOES_NOT_IMPLEMENT_INTERFACE,
-                      new Object[] { flowControllerClassName, FlowController.class,
-                          aDescriptor.getSourceUrlString() });
+              ResourceInitializationException.RESOURCE_DOES_NOT_IMPLEMENT_INTERFACE, new Object[] {
+                  flowControllerClassName, FlowController.class, aDescriptor.getSourceUrlString() });
     }
     return (FlowController) userObject;
   }

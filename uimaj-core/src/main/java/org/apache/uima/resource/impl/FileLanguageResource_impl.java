@@ -38,7 +38,7 @@ import org.apache.uima.resource.Resource_ImplBase;
  * 
  */
 public class FileLanguageResource_impl extends Resource_ImplBase implements
-                ParameterizedDataResource {
+        ParameterizedDataResource {
 
   /** URL prefix */
   private String mFileUrlPrefix;
@@ -48,13 +48,13 @@ public class FileLanguageResource_impl extends Resource_ImplBase implements
 
   /** Initialization parameters to be passed to DataResources. */
   private Map mResourceInitParams;
-  
+
   /**
    * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier,
    *      java.util.Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     // aSpecifier must be a FileLanguageResourceSpecifier
     if (!(aSpecifier instanceof FileLanguageResourceSpecifier))
       return false;
@@ -68,7 +68,7 @@ public class FileLanguageResource_impl extends Resource_ImplBase implements
 
     // store initialization parameters to be passed on to DataReources
     mResourceInitParams = (aAdditionalParams == null) ? new HashMap() : new HashMap(
-                    aAdditionalParams);
+            aAdditionalParams);
 
     return true;
   }
@@ -86,8 +86,7 @@ public class FileLanguageResource_impl extends Resource_ImplBase implements
     // one parameter - the language - is required
     if (aParams.length != 1) {
       throw new ResourceInitializationException(
-                      ResourceInitializationException.INCORRECT_NUMBER_OF_PARAMETERS,
-                      new Object[] { "1" });
+              ResourceInitializationException.INCORRECT_NUMBER_OF_PARAMETERS, new Object[] { "1" });
     }
 
     String lang = aParams[0];
@@ -99,12 +98,12 @@ public class FileLanguageResource_impl extends Resource_ImplBase implements
       String urlString = mFileUrlPrefix + lang + mFileUrlSuffix;
       // build FileResource specifier and attempt to create DataResource
       FileResourceSpecifier fileSpec = UIMAFramework.getResourceSpecifierFactory()
-                      .createFileResourceSpecifier();
+              .createFileResourceSpecifier();
       fileSpec.setFileUrl(urlString);
 
       try {
         resource = (DataResource) UIMAFramework.produceResource(DataResource.class, fileSpec,
-                        mResourceInitParams);
+                mResourceInitParams);
       } catch (ResourceInitializationException e) {
         // this is expected if the data file cannot be found - record first
         // such exception only
@@ -131,8 +130,8 @@ public class FileLanguageResource_impl extends Resource_ImplBase implements
       return resource;
     } else {
       throw new ResourceInitializationException(
-                      ResourceInitializationException.NO_RESOURCE_FOR_PARAMETERS,
-                      new Object[] { "[" + aParams[0] + "]" }, firstException);
+              ResourceInitializationException.NO_RESOURCE_FOR_PARAMETERS, new Object[] { "["
+                      + aParams[0] + "]" }, firstException);
     }
   }
 }

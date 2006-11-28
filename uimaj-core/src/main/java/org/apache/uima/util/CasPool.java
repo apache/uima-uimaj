@@ -86,8 +86,8 @@ public class CasPool {
    *           if the CAS instances could not be created
    */
   public CasPool(int aNumInstances, Collection aComponentDescriptionsOrMetaData,
-                  Properties aPerformanceTuningSettings, ResourceManager aResourceManager)
-                  throws ResourceInitializationException {
+          Properties aPerformanceTuningSettings, ResourceManager aResourceManager)
+          throws ResourceInitializationException {
     mNumInstances = aNumInstances;
 
     fillPool(aComponentDescriptionsOrMetaData, aPerformanceTuningSettings, aResourceManager);
@@ -106,12 +106,12 @@ public class CasPool {
    *           if the CAS instances could not be created
    */
   public CasPool(int aNumInstances, AnalysisEngine aAnalysisEngine)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     mNumInstances = aNumInstances;
     ArrayList mdList = new ArrayList();
     mdList.add(aAnalysisEngine.getMetaData());
     fillPool(mdList, aAnalysisEngine.getPerformanceTuningSettings(), aAnalysisEngine
-                    .getResourceManager());
+            .getResourceManager());
   }
 
   /**
@@ -126,7 +126,7 @@ public class CasPool {
    *           if the CAS instances could not be created
    */
   public CasPool(int aNumInstances, ProcessingResourceMetaData aMetaData)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     mNumInstances = aNumInstances;
     ArrayList mdList = new ArrayList();
     mdList.add(aMetaData);
@@ -145,7 +145,7 @@ public class CasPool {
    *           if the CAS instances could not be created
    */
   public CasPool(int aNumInstances, ProcessingResourceMetaData aMetaData,
-                  ResourceManager aResourceManager) throws ResourceInitializationException {
+          ResourceManager aResourceManager) throws ResourceInitializationException {
     mNumInstances = aNumInstances;
 
     ArrayList mdList = new ArrayList();
@@ -166,7 +166,7 @@ public class CasPool {
    *          defined on {@link UIMAFramework} interface
    */
   public CasPool(int aNumInstances, CasDefinition aCasDefinition,
-                  Properties aPerformanceTuningSettings) throws ResourceInitializationException {
+          Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     mNumInstances = aNumInstances;
     fillPool(aCasDefinition, aPerformanceTuningSettings);
   }
@@ -202,7 +202,7 @@ public class CasPool {
     // make sure this CAS actually belongs to this pool and is checked out
     if (!mAllInstances.contains(cas) || mFreeInstances.contains(cas)) {
       UIMAFramework.getLogger(CLASS_NAME).logrb(Level.WARNING, CLASS_NAME.getName(), "releaseCas",
-                      LOG_RESOURCE_BUNDLE, "UIMA_return_cas_to_pool__WARNING");
+              LOG_RESOURCE_BUNDLE, "UIMA_return_cas_to_pool__WARNING");
     } else {
       // reset CAS
       cas.reset();
@@ -255,13 +255,13 @@ public class CasPool {
    * @param resourceManager
    */
   private void fillPool(Collection mdList, Properties performanceTuningSettings,
-                  ResourceManager resourceManager) throws ResourceInitializationException {
+          ResourceManager resourceManager) throws ResourceInitializationException {
     CasDefinition casDef = new CasDefinition(mdList, resourceManager);
     fillPool(casDef, performanceTuningSettings);
   }
 
   private void fillPool(CasDefinition casDef, Properties performanceTuningSettings)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     // create first CAS from metadata
     CAS c0 = CasCreationUtils.createCas(casDef, performanceTuningSettings);
     // set owner so cas.release() can return it to the pool

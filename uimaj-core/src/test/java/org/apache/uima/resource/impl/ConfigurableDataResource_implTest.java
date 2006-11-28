@@ -76,7 +76,7 @@ public class ConfigurableDataResource_implTest extends TestCase {
       assertEquals(new URI("jdbc:db2:MyDatabase"), cdr.getUri());
       assertEquals("foo", cdr.getMetaData().getName());
       ConfigurationParameter param0 = cdr.getMetaData().getConfigurationParameterDeclarations()
-                      .getConfigurationParameters()[0];
+              .getConfigurationParameters()[0];
       assertEquals("param", param0.getName());
       assertEquals("String", param0.getType());
 

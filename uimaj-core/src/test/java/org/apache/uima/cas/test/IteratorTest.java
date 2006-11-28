@@ -145,27 +145,27 @@ public class IteratorTest extends TestCase {
   public void testIterator() {
     for (int i = 0; i < 10; i++) {
       this.cas.getIndexRepository().addFS(
-                      this.cas.createAnnotation(this.annotationType, i * 2, (i * 2) + 1));
+              this.cas.createAnnotation(this.annotationType, i * 2, (i * 2) + 1));
       this.cas.getIndexRepository().addFS(
-                      this.cas.createAnnotation(this.sentenceType, i * 2, (i * 2) + 1));
+              this.cas.createAnnotation(this.sentenceType, i * 2, (i * 2) + 1));
       this.cas.getIndexRepository().addFS(
-                      this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+              this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
       this.cas.getIndexRepository().addFS(
-                      this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+              this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
       this.cas.getIndexRepository().addFS(
-                      this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+              this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
     }
     for (int i = 19; i >= 10; i--) {
       this.cas.getIndexRepository().addFS(
-                      this.cas.createAnnotation(this.annotationType, i * 2, (i * 2) + 1));
+              this.cas.createAnnotation(this.annotationType, i * 2, (i * 2) + 1));
       this.cas.getIndexRepository().addFS(
-                      this.cas.createAnnotation(this.sentenceType, i * 2, (i * 2) + 1));
+              this.cas.createAnnotation(this.sentenceType, i * 2, (i * 2) + 1));
       this.cas.getIndexRepository().addFS(
-                      this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+              this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
       this.cas.getIndexRepository().addFS(
-                      this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+              this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
       this.cas.getIndexRepository().addFS(
-                      this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+              this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
     }
 
     // /////////////////////////////////////////////////////////////////////////
@@ -569,7 +569,7 @@ public class IteratorTest extends TestCase {
       ir.addFS(fsArray[i]);
     }
     FSIndex setIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SET_INDEX,
-                    this.tokenType);
+            this.tokenType);
     FSIterator setIt = setIndex.iterator();
     FSIndex sortedIndex = this.cas.getAnnotationIndex(this.tokenType);
     FSIterator sortedIt = sortedIndex.iterator();

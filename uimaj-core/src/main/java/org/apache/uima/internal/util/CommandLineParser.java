@@ -29,7 +29,7 @@ import java.util.HashMap;
  * lines like
  * 
  * <pre>
- *   doit -f -i file1 -o file2 --dir file3 /h file4 file5 file6
+ *    doit -f -i file1 -o file2 --dir file3 /h file4 file5 file6
  * </pre>
  * 
  * <p>

@@ -49,7 +49,7 @@ import org.apache.uima.util.XMLInputSource;
  */
 public class UimaContext_implTest extends TestCase {
   protected final String TEST_DATAPATH = JUnitExtension.getFile("AnnotatorContextTest").getPath()
-                  + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
+          + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
 
   private UimaContext mContext;
 
@@ -81,33 +81,29 @@ public class UimaContext_implTest extends TestCase {
 
       // create a UimaContext with Config Params and Resources
       UIMAFramework.getXMLParser().enableSchemaValidation(true);
-      CasConsumerDescription ccDesc = UIMAFramework
-                      .getXMLParser()
-                      .parseCasConsumerDescription(
-                                      new XMLInputSource(
-                                                      JUnitExtension
-                                                                      .getFile("UimaContextTest/CasConsumerForUimaContextTest.xml")));
+      CasConsumerDescription ccDesc = UIMAFramework.getXMLParser().parseCasConsumerDescription(
+              new XMLInputSource(JUnitExtension
+                      .getFile("UimaContextTest/CasConsumerForUimaContextTest.xml")));
       CasConsumer cc = UIMAFramework.produceCasConsumer(ccDesc, rm, null);
       mContext = cc.getUimaContext();
 
       // create a UimaContext with Config Params in Groups but no resources
       XMLInputSource in = new XMLInputSource(JUnitExtension
-                      .getFile("AnnotatorContextTest/AnnotatorWithConfigurationGroups.xml"));
+              .getFile("AnnotatorContextTest/AnnotatorWithConfigurationGroups.xml"));
       AnalysisEngineDescription taeDesc = UIMAFramework.getXMLParser().parseTaeDescription(in);
       AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(taeDesc, rm, null);
       mContext2 = ae.getUimaContext();
 
       // create a UimaContext with Groups and Groupless Parameters
       XMLInputSource in2 = new XMLInputSource(JUnitExtension
-                      .getFile("AnnotatorContextTest/AnnotatorWithGroupsAndNonGroupParams.xml"));
+              .getFile("AnnotatorContextTest/AnnotatorWithGroupsAndNonGroupParams.xml"));
       AnalysisEngineDescription taeDesc2 = UIMAFramework.getXMLParser().parseTaeDescription(in2);
       AnalysisEngine ae2 = UIMAFramework.produceAnalysisEngine(taeDesc2, rm, null);
       mContext3 = ae2.getUimaContext();
 
       // create a UimaContext with duplicate configuration groups
-      XMLInputSource in3 = new XMLInputSource(
-                      JUnitExtension
-                                      .getFile("TextAnalysisEngineImplTest/AnnotatorWithDuplicateConfigurationGroups.xml"));
+      XMLInputSource in3 = new XMLInputSource(JUnitExtension
+              .getFile("TextAnalysisEngineImplTest/AnnotatorWithDuplicateConfigurationGroups.xml"));
       AnalysisEngineDescription taeDesc3 = UIMAFramework.getXMLParser().parseTaeDescription(in3);
       AnalysisEngine ae3 = UIMAFramework.produceAnalysisEngine(taeDesc3, rm, null);
       mContext4 = ae3.getUimaContext();
@@ -167,7 +163,7 @@ public class UimaContext_implTest extends TestCase {
       Assert.assertEquals(1776, intVal.intValue());
 
       Integer[] intArr = (Integer[]) mContext2
-                      .getConfigParameterValue("en-US", "IntegerArrayParam");
+              .getConfigParameterValue("en-US", "IntegerArrayParam");
       Assert.assertEquals(3, intArr.length); // language fallback
       Assert.assertEquals(1, intArr[0].intValue());
       Assert.assertEquals(2, intArr[1].intValue());
@@ -424,7 +420,7 @@ public class UimaContext_implTest extends TestCase {
 
       // passthrough to class loader
       InputStream strm4 = mContext
-                      .getResourceAsStream("org/apache/uima/analysis_engine/impl/testDataFile3.dat");
+              .getResourceAsStream("org/apache/uima/analysis_engine/impl/testDataFile3.dat");
       Assert.assertNotNull(strm4);
 
       // passthrough to data path
@@ -505,17 +501,17 @@ public class UimaContext_implTest extends TestCase {
     try {
       // standard data resource
       InputStream strm = mContext.getResourceAsStream("TestFileLanguageResource",
-                      new String[] { "en" });
+              new String[] { "en" });
       Assert.assertNotNull(strm);
 
       InputStream strm2 = mContext.getResourceAsStream("TestFileLanguageResource",
-                      new String[] { "de" });
+              new String[] { "de" });
       Assert.assertNotNull(strm2);
       Assert.assertFalse(strm2.equals(strm));
 
       // custom object (should return null)
       InputStream strm3 = mContext.getResourceAsStream("TestLanguageResourceObject",
-                      new String[] { "en" });
+              new String[] { "en" });
       Assert.assertNull(strm3);
 
       // parameter values for which no resource exists (should fail)
@@ -637,6 +633,6 @@ class MyTestSpecifier extends ResourceCreationSpecifier_impl {
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("testSpecifier",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("metaData", null, false), });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("metaData", null, false), });
 
 }

@@ -58,7 +58,7 @@ class RBTNode {
    * The real constructor, used only internally.
    */
   private RBTNode(int key, boolean color, RBTNode parent, RBTNode left, RBTNode right,
-                  Object element) {
+          Object element) {
     this.key = key;
     this.color = color;
     this.parent = parent;

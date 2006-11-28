@@ -47,17 +47,16 @@ public class AnalysisEngineFactory_impl implements ResourceFactory {
    *      org.apache.uima.resource.ResourceSpecifier, java.util.Map)
    */
   public Resource produceResource(Class aResourceClass, ResourceSpecifier aSpecifier,
-                  Map aAdditionalParams) throws ResourceInitializationException {
+          Map aAdditionalParams) throws ResourceInitializationException {
     // It is important to know whether we need a Multiprocessing-capable
     // Analysis Engine implementation - this is determined by whether there
     // is a value for the PARAM_NUM_SIMULTANEOUS_REQUESTS parameter.
     boolean multiprocessing = (aAdditionalParams != null)
-                    && aAdditionalParams
-                                    .containsKey(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS);
+            && aAdditionalParams.containsKey(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS);
 
     Resource resource = null;
     if (aSpecifier instanceof ResourceCreationSpecifier
-                    && aResourceClass.isAssignableFrom(TextAnalysisEngine.class))
+            && aResourceClass.isAssignableFrom(TextAnalysisEngine.class))
     // NOTE: for backwards-compatibility, we have to check TextAnalysisEngine,
     // not AnalysisEngine. Otherwise produceTAE would fail becasue
     // TextAnalysisEngien.class.isAssignableFrom(AnalysisEngine.class) is false.
@@ -66,11 +65,11 @@ public class AnalysisEngineFactory_impl implements ResourceFactory {
       if (multiprocessing) {
         resource = new MultiprocessingAnalysisEngine_impl();
       } else if ("org.apache.uima.cpp".equals(spec.getFrameworkImplementation())
-                      || "TAF".equals(spec.getFrameworkImplementation())) {
+              || "TAF".equals(spec.getFrameworkImplementation())) {
         resource = new UimacppAnalysisEngineImpl();
       } else {
         if (spec instanceof AnalysisEngineDescription
-                        && !((AnalysisEngineDescription) spec).isPrimitive()) {
+                && !((AnalysisEngineDescription) spec).isPrimitive()) {
           resource = new AggregateAnalysisEngine_impl();
         } else {
           resource = new PrimitiveAnalysisEngine_impl();

@@ -80,9 +80,9 @@ public class XmiCasDeserializerTest extends TestCase {
     File indexesFile = JUnitExtension.getFile("ExampleCas/kltIndexes.xml");
 
     typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-                    new XMLInputSource(typeSystemFile));
+            new XMLInputSource(typeSystemFile));
     indexes = UIMAFramework.getXMLParser().parseFsIndexCollection(new XMLInputSource(indexesFile))
-                    .getFsIndexes();
+            .getFsIndexes();
   }
 
   public void testDeserializeAndReserialize() throws Exception {
@@ -144,7 +144,7 @@ public class XmiCasDeserializerTest extends TestCase {
 
     // test that lenient mode does not report errors
     CAS cas3 = CasCreationUtils.createCas(new TypeSystemDescription_impl(),
-                    new TypePriorities_impl(), new FsIndexDescription[0]);
+            new TypePriorities_impl(), new FsIndexDescription[0]);
     XmiCasDeserializer deser3 = new XmiCasDeserializer(cas3.getTypeSystem());
     ContentHandler deserHandler3 = deser3.getXmiCasHandler(cas3, true);
     xmlReader.setContentHandler(deserHandler3);
@@ -154,7 +154,7 @@ public class XmiCasDeserializerTest extends TestCase {
   public void testMultipleSofas() throws Exception {
     try {
       CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-                      new FsIndexDescription[0]);
+              new FsIndexDescription[0]);
       // set document text for the initial view
       cas.setDocumentText("This is a test");
       // create a new view and set its document text
@@ -179,7 +179,7 @@ public class XmiCasDeserializerTest extends TestCase {
 
       // deserialize into another CAS (repeat twice to check it still works after reset)
       CAS newCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-                      new FsIndexDescription[0]);
+              new FsIndexDescription[0]);
       for (int i = 0; i < 2; i++) {
         XmiCasDeserializer newDeser = new XmiCasDeserializer(newCas.getTypeSystem());
         ContentHandler newDeserHandler = newDeser.getXmiCasHandler(newCas);
@@ -203,7 +203,7 @@ public class XmiCasDeserializerTest extends TestCase {
 
       // test same thing but with a TCAS
       TCAS newTcas = CasCreationUtils.createTCas(typeSystem, new TypePriorities_impl(),
-                      new FsIndexDescription[0]);
+              new FsIndexDescription[0]);
       for (int i = 0; i < 2; i++) {
         XmiCasDeserializer newDeser = new XmiCasDeserializer(newTcas.getTypeSystem());
         ContentHandler newDeserHandler = newDeser.getXmiCasHandler(newTcas);
@@ -240,14 +240,12 @@ public class XmiCasDeserializerTest extends TestCase {
       serCasStream.close();
 
       // now read in a TypeSystem that's a subset of those types
-      TypeSystemDescription partialTypeSystemDesc = UIMAFramework
-                      .getXMLParser()
-                      .parseTypeSystemDescription(
-                                      new XMLInputSource(
-                                                      JUnitExtension
-                                                                      .getFile("ExampleCas/partialTestTypeSystem.xml")));
+      TypeSystemDescription partialTypeSystemDesc = UIMAFramework.getXMLParser()
+              .parseTypeSystemDescription(
+                      new XMLInputSource(JUnitExtension
+                              .getFile("ExampleCas/partialTestTypeSystem.xml")));
       TypeSystem partialTypeSystem = CasCreationUtils.createCas(partialTypeSystemDesc, null, null)
-                      .getTypeSystem();
+              .getTypeSystem();
 
       // reserialize as XMI, filtering out anything that doesn't fit in the
       // partialTypeSystem
@@ -288,7 +286,7 @@ public class XmiCasDeserializerTest extends TestCase {
 
   public void testNoInitialSofa() throws Exception {
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-                    new FsIndexDescription[0]);
+            new FsIndexDescription[0]);
     // create non-annotation type so as not to create the _InitialView Sofa
     IntArrayFS intArrayFS = cas.createIntArrayFS(5);
     intArrayFS.set(0, 1);
@@ -307,7 +305,7 @@ public class XmiCasDeserializerTest extends TestCase {
 
     // deserialize into another CAS
     CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-                    new FsIndexDescription[0]);
+            new FsIndexDescription[0]);
 
     XmiCasDeserializer deser2 = new XmiCasDeserializer(cas2.getTypeSystem());
     ContentHandler deserHandler2 = deser2.getXmiCasHandler(cas2);
@@ -331,9 +329,9 @@ public class XmiCasDeserializerTest extends TestCase {
 
   public void testv1FormatXcas() throws Exception {
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-                    new FsIndexDescription[0]);
+            new FsIndexDescription[0]);
     CAS v1cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-                    new FsIndexDescription[0]);
+            new FsIndexDescription[0]);
 
     // get a complex CAS
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));

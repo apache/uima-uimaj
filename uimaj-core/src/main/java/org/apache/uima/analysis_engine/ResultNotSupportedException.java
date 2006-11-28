@@ -39,7 +39,7 @@ public class ResultNotSupportedException extends UIMAException {
    * constructed to satisfy the requested result."
    */
   public static final String NO_SEQUENCE_FOUND = "no_sequence_found";
-  
+
   /**
    * Creates a new exception with a null message.
    */
@@ -72,7 +72,7 @@ public class ResultNotSupportedException extends UIMAException {
    *          arguments.
    */
   public ResultNotSupportedException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments) {
+          Object[] aArguments) {
     super(aResourceBundleName, aMessageKey, aArguments);
   }
 
@@ -93,7 +93,7 @@ public class ResultNotSupportedException extends UIMAException {
    *          the original exception that caused this exception to be thrown, if any
    */
   public ResultNotSupportedException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments, Throwable aCause) {
+          Object[] aArguments, Throwable aCause) {
     super(aResourceBundleName, aMessageKey, aArguments, aCause);
   }
 

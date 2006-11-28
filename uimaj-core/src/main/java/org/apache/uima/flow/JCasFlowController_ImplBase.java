@@ -45,8 +45,8 @@ public abstract class JCasFlowController_ImplBase extends FlowController_ImplBas
       return computeFlow((JCas) aCAS);
     } else {
       throw new AnalysisEngineProcessException(
-                      AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] {
-                          JCas.class, aCAS.getClass() });
+              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { JCas.class,
+                  aCAS.getClass() });
     }
   }
 

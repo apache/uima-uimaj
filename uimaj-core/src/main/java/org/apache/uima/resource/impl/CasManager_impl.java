@@ -88,7 +88,7 @@ public class CasManager_impl implements CasManager {
     CasPool pool = (CasPool) mRequestorToCasPoolMap.get(aRequestorContextName);
     if (pool == null) {
       throw new UIMARuntimeException(UIMARuntimeException.REQUESTED_TOO_MANY_CAS_INSTANCES,
-                      new Object[] { aRequestorContextName, "1", "0" });
+              new Object[] { aRequestorContextName, "1", "0" });
     }
     return pool.getCas(0);
   }
@@ -103,7 +103,7 @@ public class CasManager_impl implements CasManager {
     if (pool == null) {
       // CAS doesn't belong to this CasManager!
       throw new UIMARuntimeException(UIMARuntimeException.CAS_RELEASED_TO_WRONG_CAS_MANAGER,
-                      new Object[0]);
+              new Object[0]);
     } else {
       pool.releaseCas((CAS) aCAS);
     }
@@ -115,7 +115,7 @@ public class CasManager_impl implements CasManager {
    * @see org.apache.uima.resource.CasManager#setMinimumCasPoolSize(java.lang.String, int)
    */
   public void defineCasPool(String aRequestorContextName, int aSize,
-                  Properties aPerformanceTuningSettings) throws ResourceInitializationException {
+          Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     if (aSize > 0) {
       CasPool pool = (CasPool) mRequestorToCasPoolMap.get(aRequestorContextName);
       if (pool == null) {
@@ -125,7 +125,7 @@ public class CasManager_impl implements CasManager {
         mRequestorToCasPoolMap.put(aRequestorContextName, pool);
       } else {
         throw new UIMARuntimeException(UIMARuntimeException.DEFINE_CAS_POOL_CALLED_TWICE,
-                        new Object[] { aRequestorContextName });
+                new Object[] { aRequestorContextName });
       }
     }
   }
@@ -153,7 +153,7 @@ public class CasManager_impl implements CasManager {
     }
     {
       throw new UIMARuntimeException(UIMARuntimeException.UNSUPPORTED_CAS_INTERFACE,
-                      new Object[] { requiredInterface });
+              new Object[] { requiredInterface });
     }
   }
 

@@ -54,7 +54,7 @@ public interface CommonArrayFS extends FeatureStructure {
    *              <code>destOffset + length > destArray.length</code>.
    */
   void copyToArray(int srcOffset, String[] dest, int destOffset, int length)
-                  throws ArrayIndexOutOfBoundsException;
+          throws ArrayIndexOutOfBoundsException;
 
   /**
    * Copy the contents of an external string array into this array. The strings are parsed and
@@ -74,6 +74,6 @@ public interface CommonArrayFS extends FeatureStructure {
    *              When the input strings do not represent valid floats.
    */
   void copyFromArray(String[] src, int srcOffset, int destOffset, int length)
-                  throws ArrayIndexOutOfBoundsException, NumberFormatException;
+          throws ArrayIndexOutOfBoundsException, NumberFormatException;
 
 }

@@ -33,7 +33,7 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
  * to access the CAS.
  */
 public abstract class CasDataConsumer_ImplBase extends ConfigurableResource_ImplBase implements
-                CasDataConsumer {
+        CasDataConsumer {
   /**
    * Called by the framework to initialize this CAS Consumer. Subclasses should NOT override this
    * method; instead they should override the zero-argument {@link #initialize()} method and access
@@ -45,7 +45,7 @@ public abstract class CasDataConsumer_ImplBase extends ConfigurableResource_Impl
    *      java.util.Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     // aSpecifier must be a CasConsumerDescription
     if (aSpecifier instanceof CasConsumerDescription) {
       if (super.initialize(aSpecifier, aAdditionalParams)) {
@@ -65,14 +65,14 @@ public abstract class CasDataConsumer_ImplBase extends ConfigurableResource_Impl
    *           if a failure occurs during initialization.
    */
   public void initialize() throws ResourceInitializationException {
-    //no default behavior
+    // no default behavior
   }
 
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
   public void destroy() {
-    //no default behavior
+    // no default behavior
   }
 
   /**

@@ -143,7 +143,7 @@ public class CasToInlineXml {
               handler.characters(docCharArray, pos, nextAnnot.getBegin() - pos);
               pos = nextAnnot.getBegin();
               handler.startElement("", nextAnnot.getType().getName(),
-                              nextAnnot.getType().getName(), getFeatureAttributes(nextAnnot, aCAS));
+                      nextAnnot.getType().getName(), getFeatureAttributes(nextAnnot, aCAS));
 
               // push parent annotation on stack
               stack.add(curAnnot);
@@ -151,7 +151,7 @@ public class CasToInlineXml {
               curAnnot = nextAnnot;
             } catch (StringIndexOutOfBoundsException e) {
               System.err.println("Invalid annotation range: " + nextAnnot.getBegin() + ","
-                              + nextAnnot.getEnd() + " in document of length " + docText.length());
+                      + nextAnnot.getEnd() + " in document of length " + docText.length());
             }
           }
           iterator.moveToNext();
@@ -163,7 +163,7 @@ public class CasToInlineXml {
             pos = curAnnot.getEnd();
           } catch (StringIndexOutOfBoundsException e) {
             System.err.println("Invalid annotation range: " + curAnnot.getBegin() + ","
-                            + curAnnot.getEnd() + " in document of length " + docText.length());
+                    + curAnnot.getEnd() + " in document of length " + docText.length());
           }
           handler.endElement("", curAnnot.getType().getName(), curAnnot.getType().getName());
 
@@ -179,7 +179,7 @@ public class CasToInlineXml {
           pos = curAnnot.getEnd();
         } catch (StringIndexOutOfBoundsException e) {
           System.err.println("Invalid annotation range: " + curAnnot.getBegin() + ","
-                          + curAnnot.getEnd() + "in document of length " + docText.length());
+                  + curAnnot.getEnd() + "in document of length " + docText.length());
         }
         handler.endElement("", curAnnot.getType().getName(), curAnnot.getType().getName());
 
@@ -193,7 +193,7 @@ public class CasToInlineXml {
             pos = curAnnot.getEnd();
           } catch (StringIndexOutOfBoundsException e) {
             System.err.println("Invalid annotation range: " + curAnnot.getBegin() + ","
-                            + curAnnot.getEnd() + "in document of length " + docText.length());
+                    + curAnnot.getEnd() + "in document of length " + docText.length());
           }
           handler.endElement("", curAnnot.getType().getName(), curAnnot.getType().getName());
         }
@@ -225,7 +225,7 @@ public class CasToInlineXml {
       // how we get feature value depends on feature's range type)
       String rangeTypeName = feat.getRange().getName();
       if (aCAS.getTypeSystem().subsumes(stringType, feat.getRange())) // must check for subtypes of
-                                                                      // string
+      // string
       {
         String str = aFS.getStringValue(feat);
         if (str == null) {
@@ -238,12 +238,12 @@ public class CasToInlineXml {
         }
       } else if (CAS.TYPE_NAME_INTEGER.equals(rangeTypeName)) {
         attrs
-                        .addAttribute("", featName, featName, "CDATA", Integer.toString(aFS
-                                        .getIntValue(feat)));
+                .addAttribute("", featName, featName, "CDATA", Integer.toString(aFS
+                        .getIntValue(feat)));
       } else if (CAS.TYPE_NAME_FLOAT.equals(rangeTypeName)) {
         attrs
-                        .addAttribute("", featName, featName, "CDATA", Float.toString(aFS
-                                        .getFloatValue(feat)));
+                .addAttribute("", featName, featName, "CDATA", Float.toString(aFS
+                        .getFloatValue(feat)));
       } else if (CAS.TYPE_NAME_STRING_ARRAY.equals(rangeTypeName)) {
         StringArrayFS arrayFS = (StringArrayFS) aFS.getFeatureValue(feat);
         if (arrayFS == null) {
@@ -327,8 +327,8 @@ public class CasToInlineXml {
   private void replaceInvalidXmlChars(char[] aChars) {
     for (int i = 0; i < aChars.length; i++) {
       if ((aChars[i] < 0x20 && aChars[i] != 0x09 && aChars[i] != 0x0A && aChars[i] != 0x0D)
-                      || (aChars[i] > 0xD7FF && aChars[i] < 0xE000) || aChars[i] == 0xFFFE
-                      || aChars[i] == 0xFFFF) {
+              || (aChars[i] > 0xD7FF && aChars[i] < 0xE000) || aChars[i] == 0xFFFE
+              || aChars[i] == 0xFFFF) {
         // System.out.println("Found invalid XML character: " + (int)aChars[i] + " at position " +
         // i); //temp
         aChars[i] = ' ';

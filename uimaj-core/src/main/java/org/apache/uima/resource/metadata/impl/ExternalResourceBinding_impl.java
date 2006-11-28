@@ -26,7 +26,7 @@ import org.apache.uima.resource.metadata.ExternalResourceBinding;
  * 
  */
 public class ExternalResourceBinding_impl extends MetaDataObject_impl implements
-                ExternalResourceBinding {
+        ExternalResourceBinding {
 
   /**
    * 
@@ -78,6 +78,6 @@ public class ExternalResourceBinding_impl extends MetaDataObject_impl implements
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-                  "externalResourceBinding", new PropertyXmlInfo[] { new PropertyXmlInfo("key"),
-                      new PropertyXmlInfo("resourceName"), });
+          "externalResourceBinding", new PropertyXmlInfo[] { new PropertyXmlInfo("key"),
+              new PropertyXmlInfo("resourceName"), });
 }

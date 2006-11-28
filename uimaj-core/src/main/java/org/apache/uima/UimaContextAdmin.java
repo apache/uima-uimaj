@@ -34,8 +34,7 @@ import org.apache.uima.util.ProcessTrace;
 
 /**
  * Admin interface to the UIMA Context. Developer code should only use the {@link UimaContext}
- * interface. The methods on this interface are for the framework's use only.
- *  *
+ * interface. The methods on this interface are for the framework's use only. *
  */
 public interface UimaContextAdmin extends UimaContext {
   /**
@@ -51,7 +50,7 @@ public interface UimaContextAdmin extends UimaContext {
    *          configuration parameter settings.
    */
   public void initializeRoot(Logger aLogger, ResourceManager aResourceManager,
-                  ConfigurationManager aConfigurationManager);
+          ConfigurationManager aConfigurationManager);
 
   /**
    * Creates a UimaContext that is a child of this UimaContext.
@@ -142,7 +141,7 @@ public interface UimaContextAdmin extends UimaContext {
    *           if a CAS could not be created.
    */
   void defineCasPool(int aSize, Properties aPerformanceTuningSettings, boolean aSofaAware)
-                  throws ResourceInitializationException;
+          throws ResourceInitializationException;
 
   /**
    * Gets an object that can be used to do monitoring or management of this AnalysisEngine.

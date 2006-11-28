@@ -281,13 +281,13 @@ public class JCas extends AbstractCas_ImplBase implements AbstractCas {
         if (this.casImpl.getTypeSystem().getType(typeName) == null) {
           // no - report error that JCAS type was not defined in XML descriptor
           CASRuntimeException casEx = new CASRuntimeException(
-                          CASRuntimeException.JCAS_TYPE_NOT_IN_CAS);
+                  CASRuntimeException.JCAS_TYPE_NOT_IN_CAS);
           casEx.addArgument(typeName);
           throw casEx;
         } else {
           // yes - there was some problem loading the _Type object
           CASRuntimeException casEx = new CASRuntimeException(
-                          CASRuntimeException.JCAS_MISSING_COVERCLASS);
+                  CASRuntimeException.JCAS_MISSING_COVERCLASS);
           casEx.addArgument(typeName + "_Type");
           throw casEx;
         }
@@ -411,7 +411,7 @@ public class JCas extends AbstractCas_ImplBase implements AbstractCas {
             String nameBase = "org.apache.uima.jcas." + casName.substring(5);
             name_Type = nameBase + "_Type";
             jcasTypes.put(nameBase, new LoadedJCasType(t, Class.forName(name_Type, true, cas
-                            .getJCasClassLoader())));
+                    .getJCasClassLoader())));
           } catch (ClassNotFoundException e1) {
             // never get here because built-ins have java cover types
             e1.printStackTrace();
@@ -422,7 +422,7 @@ public class JCas extends AbstractCas_ImplBase implements AbstractCas {
         try {
           name_Type = casName + "_Type";
           jcasTypes.put(casName, new LoadedJCasType(t, Class.forName(name_Type, true, cas
-                          .getJCasClassLoader())));
+                  .getJCasClassLoader())));
           // also force the load the plain name without _Type for old-style - that's where
           // the index is incremented
           Class.forName(casName, true, cas.getJCasClassLoader());
@@ -566,7 +566,7 @@ public class JCas extends AbstractCas_ImplBase implements AbstractCas {
           // old version has the index in the base type
           String name = clas.getName();
           Class clas2 = Class.forName(name.substring(0, name.length() - 5), true, cas
-                          .getJCasClassLoader()); // drop _Type
+                  .getJCasClassLoader()); // drop _Type
           typeIndexField = clas2.getDeclaredField("typeIndexID");
         } catch (NoSuchFieldException e2) {
           logAndThrow(e2);
@@ -755,7 +755,7 @@ public class JCas extends AbstractCas_ImplBase implements AbstractCas {
     if (casImpl instanceof TCAS)
       return (Sofa) ((TCAS) casImpl).getSofa();
     CASRuntimeException casEx = new CASRuntimeException(
-                    CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
+            CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
     casEx.addArgument("getSofa()");
     throw casEx;
   }
@@ -798,7 +798,7 @@ public class JCas extends AbstractCas_ImplBase implements AbstractCas {
     if (casImpl instanceof TCAS)
       return (DocumentAnnotation) ((TCAS) casImpl).getDocumentAnnotation();
     CASRuntimeException casEx = new CASRuntimeException(
-                    CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
+            CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
     casEx.addArgument("getDocumentAnnotation()");
     throw casEx;
   }
@@ -819,7 +819,7 @@ public class JCas extends AbstractCas_ImplBase implements AbstractCas {
     if (casImpl instanceof TCAS)
       return (TOP) ((TCAS) casImpl).getDocumentAnnotation();
     CASRuntimeException casEx = new CASRuntimeException(
-                    CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
+            CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
     casEx.addArgument("getDocumentAnnotationFs()");
     throw casEx;
   }
@@ -833,7 +833,7 @@ public class JCas extends AbstractCas_ImplBase implements AbstractCas {
     if (casImpl instanceof TCAS)
       return ((TCAS) casImpl).getDocumentText();
     CASRuntimeException casEx = new CASRuntimeException(
-                    CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
+            CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
     casEx.addArgument("getDocumentText()");
     throw casEx;
   }
@@ -847,7 +847,7 @@ public class JCas extends AbstractCas_ImplBase implements AbstractCas {
     if (casImpl instanceof TCAS)
       return (FSArray) ((TCAS) casImpl).getSofaDataArray();
     CASRuntimeException casEx = new CASRuntimeException(
-                    CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
+            CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
     casEx.addArgument("getSofaDataArray()");
     throw casEx;
   }
@@ -861,7 +861,7 @@ public class JCas extends AbstractCas_ImplBase implements AbstractCas {
     if (casImpl instanceof TCAS)
       return ((TCAS) casImpl).getSofaDataURI();
     CASRuntimeException casEx = new CASRuntimeException(
-                    CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
+            CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
     casEx.addArgument("getSofaDataURI()");
     throw casEx;
   }
@@ -875,7 +875,7 @@ public class JCas extends AbstractCas_ImplBase implements AbstractCas {
       ((TCAS) casImpl).setDocumentText(text);
     else {
       CASRuntimeException casEx = new CASRuntimeException(
-                      CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
+              CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
       casEx.addArgument("setDocumentText(...)");
       throw casEx;
     }
@@ -890,7 +890,7 @@ public class JCas extends AbstractCas_ImplBase implements AbstractCas {
       ((TCAS) casImpl).setSofaDataString(text, mime);
     else {
       CASRuntimeException casEx = new CASRuntimeException(
-                      CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
+              CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
       casEx.addArgument("setSofaDataString(...)");
       throw casEx;
     }
@@ -905,7 +905,7 @@ public class JCas extends AbstractCas_ImplBase implements AbstractCas {
       ((TCAS) casImpl).setSofaDataArray(array, mime);
     else {
       CASRuntimeException casEx = new CASRuntimeException(
-                      CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
+              CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
       casEx.addArgument("setSofaDataArray(...)");
       throw casEx;
     }
@@ -920,7 +920,7 @@ public class JCas extends AbstractCas_ImplBase implements AbstractCas {
       ((TCAS) casImpl).setSofaDataURI(uri, mime);
     else {
       CASRuntimeException casEx = new CASRuntimeException(
-                      CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
+              CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
       casEx.addArgument("setSofaDataURI(...)");
       throw casEx;
     }
@@ -935,7 +935,7 @@ public class JCas extends AbstractCas_ImplBase implements AbstractCas {
     if (casImpl instanceof TCAS)
       return ((TCAS) casImpl).getDocumentLanguage();
     CASRuntimeException casEx = new CASRuntimeException(
-                    CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
+            CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
     casEx.addArgument("getDocumentLanguage()");
     throw casEx;
   }
@@ -949,7 +949,7 @@ public class JCas extends AbstractCas_ImplBase implements AbstractCas {
       ((TCAS) casImpl).setDocumentLanguage(language);
     else {
       CASRuntimeException casEx = new CASRuntimeException(
-                      CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
+              CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
       casEx.addArgument("setDocumentLanguage(" + language + ")");
       throw casEx;
     }
@@ -964,7 +964,7 @@ public class JCas extends AbstractCas_ImplBase implements AbstractCas {
     if (casImpl instanceof TCAS)
       return ((TCAS) casImpl).getSofaDataStream();
     CASRuntimeException casEx = new CASRuntimeException(
-                    CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
+            CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
     casEx.addArgument("getSofaDataArray()");
     throw casEx;
   }

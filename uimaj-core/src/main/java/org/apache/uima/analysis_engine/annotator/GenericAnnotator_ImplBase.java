@@ -25,6 +25,6 @@ package org.apache.uima.analysis_engine.annotator;
  * {@link org.apache.uima.analysis_component.JCasAnnotator_ImplBase}.
  */
 public abstract class GenericAnnotator_ImplBase extends Annotator_ImplBase implements
-                GenericAnnotator {
-  //overrides no methods
+        GenericAnnotator {
+  // overrides no methods
 }

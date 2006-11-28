@@ -72,7 +72,7 @@ public class ConfigurableDataResourceSpecifier_implTest extends TestCase {
       ByteArrayInputStream inStream = new ByteArrayInputStream(xmlStr.getBytes("UTF-8"));
       XMLInputSource in = new XMLInputSource(inStream, null);
       ConfigurableDataResourceSpecifier_impl parsedSpec = (ConfigurableDataResourceSpecifier_impl) UIMAFramework
-                      .getXMLParser().parse(in);
+              .getXMLParser().parse(in);
 
       assertEquals(cspec, parsedSpec);
 

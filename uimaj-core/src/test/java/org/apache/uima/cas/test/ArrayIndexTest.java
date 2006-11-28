@@ -51,7 +51,7 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
     super.setUp();
     // Start up TAE
     XMLInputSource input = new XMLInputSource(JUnitExtension
-                    .getFile("CASTests/desc/ArrayIndexTest.xml"));
+            .getFile("CASTests/desc/ArrayIndexTest.xml"));
     TaeDescription desc = UIMAFramework.getXMLParser().parseTaeDescription(input);
     this.tae = UIMAFramework.produceTAE(desc);
 
@@ -95,17 +95,17 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
   }
 
   public void initialize(AnnotatorContext aContext) throws AnnotatorInitializationException,
-                  AnnotatorConfigurationException {
+          AnnotatorConfigurationException {
     // do nothing
   }
 
   public void typeSystemInit(TypeSystem aTypeSystem) throws AnnotatorInitializationException,
-                  AnnotatorConfigurationException {
+          AnnotatorConfigurationException {
     // do nothing
   }
 
   public void reconfigure() throws AnnotatorConfigurationException,
-                  AnnotatorInitializationException {
+          AnnotatorInitializationException {
     // do nothing
   }
 

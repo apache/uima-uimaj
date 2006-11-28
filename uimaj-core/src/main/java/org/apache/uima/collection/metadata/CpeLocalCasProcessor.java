@@ -69,7 +69,7 @@ public interface CpeLocalCasProcessor extends CpeCasProcessor {
   public void addExecArg(String aArgValue) throws CpeDescriptorException;
 
   public void setRunInSeperateProcess(CasProcessorRunInSeperateProcess aSepProcess)
-                  throws CpeDescriptorException;
+          throws CpeDescriptorException;
 
   public CasProcessorRunInSeperateProcess getRunInSeperateProcess() throws CpeDescriptorException;
 

@@ -32,27 +32,27 @@ import org.apache.uima.util.XMLizable;
  * representation. The XML representation is as follows:
  * 
  * <pre>
- *  &lt;indexBuildSpecification&gt;
- *    &lt;indexBuildItem&gt;
- *      &lt;name&gt; CAS_TYPE_NAME | CAS_TYPE_NAMESPACE_WILDCARD &lt;/name&gt;
- *      &lt;indexRule&gt;
- *        &lt;style name=&quot;NAME&quot;&gt;
- *          &lt;attribute name=&quot;NAME&quot; value=&quot;STRING&quot;/&gt;
- *          ...
- *          [&lt;attributeMappings&gt;
- *            &lt;mapping&gt;
- *              &lt;feature&gt; STRING &lt;/feature&gt;
- *              &lt;indexName&gt; STRING &lt;/indexName&gt;
- *            &lt;/mapping&gt;
- *            ...
- *          &lt;/attributeMappings&gt;]
- *        &lt;/style&gt;
- *        ... 
- *      &lt;/indexRule&gt;
- *      [&lt;filter syntax=&quot;NAME&quot;&gt; FILTER_EXPRESSION &lt;/filter&gt;]
- *    &lt;/indexBuildItem&gt;
- *    ...
- *  &lt;/indexBuildSpecification&gt;
+ *   &lt;indexBuildSpecification&gt;
+ *     &lt;indexBuildItem&gt;
+ *       &lt;name&gt; CAS_TYPE_NAME | CAS_TYPE_NAMESPACE_WILDCARD &lt;/name&gt;
+ *       &lt;indexRule&gt;
+ *         &lt;style name=&quot;NAME&quot;&gt;
+ *           &lt;attribute name=&quot;NAME&quot; value=&quot;STRING&quot;/&gt;
+ *           ...
+ *           [&lt;attributeMappings&gt;
+ *             &lt;mapping&gt;
+ *               &lt;feature&gt; STRING &lt;/feature&gt;
+ *               &lt;indexName&gt; STRING &lt;/indexName&gt;
+ *             &lt;/mapping&gt;
+ *             ...
+ *           &lt;/attributeMappings&gt;]
+ *         &lt;/style&gt;
+ *         ... 
+ *       &lt;/indexRule&gt;
+ *       [&lt;filter syntax=&quot;NAME&quot;&gt; FILTER_EXPRESSION &lt;/filter&gt;]
+ *     &lt;/indexBuildItem&gt;
+ *     ...
+ *   &lt;/indexBuildSpecification&gt;
  * </pre>
  * 
  * <p>

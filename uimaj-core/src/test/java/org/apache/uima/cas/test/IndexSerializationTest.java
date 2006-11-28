@@ -57,7 +57,7 @@ public class IndexSerializationTest extends TestCase {
   public static final String TOKEN_TYPE_FEAT = "type";
 
   public static final String TOKEN_TYPE_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
-                  + TOKEN_TYPE_FEAT;
+          + TOKEN_TYPE_FEAT;
 
   public static final String TOKEN_TYPE_TYPE = "TokenType";
 
@@ -157,9 +157,9 @@ public class IndexSerializationTest extends TestCase {
     Type annotation = tsa.getType(TCAS.TYPE_NAME_ANNOTATION);
     comp.setType(annotation);
     comp.addKey(annotation.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_BEGIN),
-                    FSIndexComparator.STANDARD_COMPARE);
+            FSIndexComparator.STANDARD_COMPARE);
     comp.addKey(annotation.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_END),
-                    FSIndexComparator.REVERSE_STANDARD_COMPARE);
+            FSIndexComparator.REVERSE_STANDARD_COMPARE);
     irm.createIndex(comp, ANNOT_BAG_INDEX, FSIndex.BAG_INDEX);
     irm.createIndex(comp, ANNOT_SET_INDEX, FSIndex.SET_INDEX);
 

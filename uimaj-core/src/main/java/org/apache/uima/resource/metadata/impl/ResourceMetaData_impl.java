@@ -263,8 +263,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
    *           if the configuration parameter settings are invalid
    */
   protected void validateConfigurationParameterSettings(NameValuePair[] aNVPs, String aGroupName,
-                  ConfigurationParameterDeclarations aParamDecls)
-                  throws ResourceConfigurationException {
+          ConfigurationParameterDeclarations aParamDecls) throws ResourceConfigurationException {
     for (int i = 0; i < aNVPs.length; i++) {
       // look up the parameter info
       String name = aNVPs[i].getName();
@@ -272,12 +271,12 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
       if (param == null) {
         if (aGroupName == null) {
           throw new ResourceConfigurationException(
-                          ResourceConfigurationException.NONEXISTENT_PARAMETER, new Object[] {
-                              name, getName() });
+                  ResourceConfigurationException.NONEXISTENT_PARAMETER, new Object[] { name,
+                      getName() });
         } else {
           throw new ResourceConfigurationException(
-                          ResourceConfigurationException.NONEXISTENT_PARAMETER_IN_GROUP,
-                          new Object[] { name, aGroupName, getName() });
+                  ResourceConfigurationException.NONEXISTENT_PARAMETER_IN_GROUP, new Object[] {
+                      name, aGroupName, getName() });
         }
       } else {
         // check datatype
@@ -302,7 +301,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
    *           if the data types do not match
    */
   protected void validateConfigurationParameterDataTypeMatch(ConfigurationParameter aParam,
-                  NameValuePair aNVP) throws ResourceConfigurationException {
+          NameValuePair aNVP) throws ResourceConfigurationException {
     String paramName = aParam.getName();
     String paramType = aParam.getType();
     Class valClass = aNVP.getValue().getClass();
@@ -311,7 +310,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
     {
       if (!valClass.isArray()) {
         throw new ResourceConfigurationException(ResourceConfigurationException.ARRAY_REQUIRED,
-                        new Object[] { paramName, getName() });
+                new Object[] { paramName, getName() });
       }
       valClass = valClass.getComponentType();
       // check for zero-length array special case
@@ -323,8 +322,8 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
 
     if (valClass != getClassForParameterType(paramType)) {
       throw new ResourceConfigurationException(
-                      ResourceConfigurationException.PARAMETER_TYPE_MISMATCH, new Object[] {
-                          getName(), valClass.getName(), paramName, paramType });
+              ResourceConfigurationException.PARAMETER_TYPE_MISMATCH, new Object[] { getName(),
+                  valClass.getName(), paramName, paramType });
     }
   }
 
@@ -357,7 +356,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
    *      org.apache.uima.util.XMLParser)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
-                  XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
+          XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
     try {
       validateConfigurationParameterSettings();
@@ -369,20 +368,19 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
-  
+
   /**
-   * Static method to get XmlizationInfo, used by subclasses to
-   * set up their own XmlizationInfo.
+   * Static method to get XmlizationInfo, used by subclasses to set up their own XmlizationInfo.
    */
   protected static XmlizationInfo getXmlizationInfoForClass() {
     return XMLIZATION_INFO;
   }
-  
+
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("resourceMetaData",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("name", false),
-                      new PropertyXmlInfo("description"), new PropertyXmlInfo("version"),
-                      new PropertyXmlInfo("vendor"), new PropertyXmlInfo("copyright"),
-                      new PropertyXmlInfo("configurationParameterDeclarations", null),
-                      new PropertyXmlInfo("configurationParameterSettings", null) });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("name", false),
+              new PropertyXmlInfo("description"), new PropertyXmlInfo("version"),
+              new PropertyXmlInfo("vendor"), new PropertyXmlInfo("copyright"),
+              new PropertyXmlInfo("configurationParameterDeclarations", null),
+              new PropertyXmlInfo("configurationParameterSettings", null) });
 
 }

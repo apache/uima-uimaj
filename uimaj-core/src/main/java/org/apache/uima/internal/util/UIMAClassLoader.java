@@ -138,7 +138,7 @@ public class UIMAClassLoader extends URLClassLoader {
    * Try to load the class itself before delegate the class loading to its parent
    */
   protected synchronized Class loadClass(String name, boolean resolve)
-                  throws ClassNotFoundException {
+          throws ClassNotFoundException {
     // First, check if the class has already been loaded
     Class c = findLoadedClass(name);
     if (c == null) {

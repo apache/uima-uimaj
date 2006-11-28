@@ -53,7 +53,7 @@ public class ConfigurationParameterDeclarations_implTest extends TestCase {
     DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
 
     InputStream str = new FileInputStream(JUnitExtension
-                    .getFile("org/apache/uima/resource/metadata/impl/ConfigParamEmptyGroup.xml"));
+            .getFile("org/apache/uima/resource/metadata/impl/ConfigParamEmptyGroup.xml"));
     Document doc = docBuilder.parse(str);
 
     ConfigurationParameterDeclarations_impl obj = new ConfigurationParameterDeclarations_impl();

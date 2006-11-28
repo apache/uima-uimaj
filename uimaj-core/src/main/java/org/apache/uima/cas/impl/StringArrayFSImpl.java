@@ -84,7 +84,7 @@ public class StringArrayFSImpl extends FeatureStructureImplC implements StringAr
    * @see org.apache.uima.cas.ArrayFS#copyFromArray(FeatureStructure[], int, int, int)
    */
   public void copyFromArray(String[] src, int srcOffset, int destOffset, int length)
-                  throws ArrayIndexOutOfBoundsException {
+          throws ArrayIndexOutOfBoundsException {
     if ((destOffset < 0) || ((destOffset + length) > size())) {
       throw new ArrayIndexOutOfBoundsException();
     }
@@ -102,7 +102,7 @@ public class StringArrayFSImpl extends FeatureStructureImplC implements StringAr
    * @see org.apache.uima.cas.ArrayFS#copyToArray(int, FeatureStructure[], int, int)
    */
   public void copyToArray(int srcOffset, String[] dest, int destOffset, int length)
-                  throws ArrayIndexOutOfBoundsException {
+          throws ArrayIndexOutOfBoundsException {
     if ((srcOffset < 0) || ((srcOffset + length) > size())) {
       throw new ArrayIndexOutOfBoundsException();
     }

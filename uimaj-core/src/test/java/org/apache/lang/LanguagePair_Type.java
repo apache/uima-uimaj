@@ -109,17 +109,17 @@ public class LanguagePair_Type extends TOP_Type {
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
     casFeat_lang1 = jcas
-                    .getRequiredFeatureDE(casType, "lang1", "org.apache.lang.Group1", featOkTst);
+            .getRequiredFeatureDE(casType, "lang1", "org.apache.lang.Group1", featOkTst);
     casFeatCode_lang1 = (null == casFeat_lang1) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_lang1).getCode();
+            : ((FeatureImpl) casFeat_lang1).getCode();
     casFeat_lang2 = jcas
-                    .getRequiredFeatureDE(casType, "lang2", "org.apache.lang.Group2", featOkTst);
+            .getRequiredFeatureDE(casType, "lang2", "org.apache.lang.Group2", featOkTst);
     casFeatCode_lang2 = (null == casFeat_lang2) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_lang2).getCode();
+            : ((FeatureImpl) casFeat_lang2).getCode();
     casFeat_description = jcas.getRequiredFeatureDE(casType, "description", "uima.cas.String",
-                    featOkTst);
+            featOkTst);
     casFeatCode_description = (null == casFeat_description) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_description).getCode();
+            : ((FeatureImpl) casFeat_description).getCode();
   }
 
   protected LanguagePair_Type() { // block default new operator

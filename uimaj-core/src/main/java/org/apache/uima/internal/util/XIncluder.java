@@ -78,7 +78,7 @@ public final class XIncluder {
    *           if the XInclude transformer could not be constructed
    */
   public static TransformerHandler newXIncludeHandler(boolean aLeavePlaceholderElements)
-                  throws TransformerConfigurationException {
+          throws TransformerConfigurationException {
     // Xinclude resolution is not supported in the Xalan bundled with Java 1.5.
     // If we're in that situation, just return the identity transformer. Later,
     // unresolved xi:includes will be reported and a meaningful error message generated.
@@ -155,7 +155,7 @@ public final class XIncluder {
         // see if proper Xalan class exists
         if (null != debug) {
           URL url = XIncluder.class.getResource('/' + XALAN_FACTORY_CLASSNAME.replace('.', '/')
-                          + ".class");
+                  + ".class");
           if (null == url) {
             dPrint("getResource returned a null URL");
           } else {
@@ -164,7 +164,7 @@ public final class XIncluder {
         }
 
         Class transformerFactoryClass = Class.forName(XALAN_FACTORY_CLASSNAME, true,
-                        XIncluder.class.getClassLoader());
+                XIncluder.class.getClassLoader());
         dPrint("Loaded the TransformerFactoryImpl class OK");
         sTFactory = (SAXTransformerFactory) transformerFactoryClass.newInstance();
         dPrint("Created the TransformerFactoryClass instance OK");

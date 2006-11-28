@@ -132,7 +132,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   public void setImports(Import[] aImports) {
     if (aImports == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-                      new Object[] { "null", "aImports", "setImports" });
+              new Object[] { "null", "aImports", "setImports" });
     }
     mImports = aImports;
   }
@@ -157,7 +157,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   public void setFsIndexes(FsIndexDescription[] aFSIndexes) {
     if (aFSIndexes == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-                      new Object[] { "null", "aFSIndexes", "setImports" });
+              new Object[] { "null", "aFSIndexes", "setImports" });
     }
     mFsIndexes = aFSIndexes;
   }
@@ -197,7 +197,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   }
 
   public void resolveImports(Collection aAlreadyImportedFsIndexURLs,
-                  ResourceManager aResourceManager) throws InvalidXMLException {
+          ResourceManager aResourceManager) throws InvalidXMLException {
     List importedIndexes = new ArrayList();
     Import[] imports = getImports();
     for (int i = 0; i < imports.length; i++) {
@@ -214,7 +214,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
           resolveImport(url, aAlreadyImportedFsIndexURLs, importedIndexes, aResourceManager);
         } catch (IOException e) {
           throw new InvalidXMLException(InvalidXMLException.IMPORT_FAILED_COULD_NOT_READ_FROM_URL,
-                          new Object[] { url, imports[i].getSourceUrlString() }, e);
+                  new Object[] { url, imports[i].getSourceUrlString() }, e);
         }
       }
     }
@@ -224,7 +224,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
       existingIndexes = new FsIndexDescription[0];
     }
     FsIndexDescription[] newIndexes = new FsIndexDescription[existingIndexes.length
-                    + importedIndexes.size()];
+            + importedIndexes.size()];
     System.arraycopy(existingIndexes, 0, newIndexes, 0, existingIndexes.length);
     for (int i = 0; i < importedIndexes.size(); i++) {
       newIndexes[existingIndexes.length + i] = (FsIndexDescription) importedIndexes.get(i);
@@ -235,8 +235,8 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   }
 
   private void resolveImport(URL aURL, Collection aAlreadyImportedFsIndexCollectionURLs,
-                  Collection aResults, ResourceManager aResourceManager)
-                  throws InvalidXMLException, IOException {
+          Collection aResults, ResourceManager aResourceManager) throws InvalidXMLException,
+          IOException {
     XMLInputSource input = new XMLInputSource(aURL);
     FsIndexCollection desc = UIMAFramework.getXMLParser().parseFsIndexCollection(input);
     desc.resolveImports(aAlreadyImportedFsIndexCollectionURLs, aResourceManager);
@@ -248,10 +248,9 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("fsIndexCollection",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("name", true),
-                      new PropertyXmlInfo("description", true),
-                      new PropertyXmlInfo("version", true), new PropertyXmlInfo("vendor", true),
-                      new PropertyXmlInfo("imports", true),
-                      new PropertyXmlInfo("fsIndexes", "fsIndexes") });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("name", true),
+              new PropertyXmlInfo("description", true), new PropertyXmlInfo("version", true),
+              new PropertyXmlInfo("vendor", true), new PropertyXmlInfo("imports", true),
+              new PropertyXmlInfo("fsIndexes", "fsIndexes") });
 
 }

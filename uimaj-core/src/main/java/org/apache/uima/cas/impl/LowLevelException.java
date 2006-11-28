@@ -34,7 +34,7 @@ public class LowLevelException extends RuntimeException {
   private static final String resource_file = "org.apache.uima.cas.impl.ll_runtimeException";
 
   private static final String missing_resource_error = "Could not load message catalog: "
-                  + resource_file;
+          + resource_file;
 
   private static final int MESSAGES_NOT_FOUND = -1;
 

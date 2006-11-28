@@ -310,7 +310,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    *          object containing parameter setting overrides
    */
   public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings aSettings)
-                  throws CpeDescriptorException;
+          throws CpeDescriptorException;
 
   public CpeSofaMappings getSofaNameMappings();
 

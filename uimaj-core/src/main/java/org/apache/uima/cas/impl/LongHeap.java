@@ -45,7 +45,7 @@ final class LongHeap extends CommonAuxHeap {
       return;
 
     long[] new_array = new long[computeNewArraySize(heap.length, heapPos, GROWTH_FACTOR,
-                    heapMultLimit)];
+            heapMultLimit)];
     System.arraycopy(heap, 0, new_array, 0, heap.length);
     heap = new_array;
   }

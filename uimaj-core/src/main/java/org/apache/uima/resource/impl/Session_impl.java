@@ -34,7 +34,6 @@ public class Session_impl implements Session {
 
   private Map mMap = Collections.synchronizedMap(new HashMap());
 
-
   /*
    * (non-Javadoc)
    * 

@@ -103,7 +103,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
         if (aggSofaMapping != null && aggSofaMapping.length > 0) {
           for (int i = 0; i < aggSofaMapping.length; i++) {
             String absoluteSofaName = compInfo
-                            .mapToSofaID(aggSofaMapping[i].getAggregateSofaName());
+                    .mapToSofaID(aggSofaMapping[i].getAggregateSofaName());
             aggSofaMapping[i].setAggregateSofaName(absoluteSofaName);
           }
         }
@@ -111,7 +111,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
       this.log = context.getLogger();
       if (engine == null) {
         UimacppEngine.configureResourceManager(System.getProperty("java.io.tmpdir"), ae
-                        .getResourceManager().getDataPath());
+                .getResourceManager().getDataPath());
 
         StringWriter strWriter = new StringWriter();
         aeDescription.toXML(strWriter);
@@ -121,19 +121,19 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
     } catch (UimacppException e) {
       logJTafException(e);
       throw new ResourceInitializationException(
-                      ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR,
-                      new Object[] { aeDescription.getAnalysisEngineMetaData().getName(),
-                          aeDescription.getSourceUrlString() });
+              ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
+                  aeDescription.getAnalysisEngineMetaData().getName(),
+                  aeDescription.getSourceUrlString() });
     } catch (SAXException e) {
       throw new ResourceInitializationException(
-                      ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR,
-                      new Object[] { aeDescription.getAnalysisEngineMetaData().getName(),
-                          aeDescription.getSourceUrlString() });
+              ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
+                  aeDescription.getAnalysisEngineMetaData().getName(),
+                  aeDescription.getSourceUrlString() });
     } catch (IOException e) {
       throw new ResourceInitializationException(
-                      ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR,
-                      new Object[] { aeDescription.getAnalysisEngineMetaData().getName(),
-                          aeDescription.getSourceUrlString() });
+              ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
+                  aeDescription.getAnalysisEngineMetaData().getName(),
+                  aeDescription.getSourceUrlString() });
     }
   }
 
@@ -141,7 +141,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
    * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#typeSystemInit()
    */
   public void typeSystemInit(TypeSystem ts) throws AnnotatorConfigurationException,
-                  AnnotatorInitializationException {
+          AnnotatorInitializationException {
     // set flag to update TAF type system on next call to process
     this.tsReinit = true;
   }
@@ -155,8 +155,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
     engine = null;
     // get new config. settings
     ConfigurationParameterSettings settings = ae.getUimaContextAdmin().getConfigurationManager()
-                    .getCurrentConfigParameterSettings(
-                                    ae.getUimaContextAdmin().getQualifiedContextName());
+            .getCurrentConfigParameterSettings(ae.getUimaContextAdmin().getQualifiedContextName());
     aeDescription.getAnalysisEngineMetaData().setConfigurationParameterSettings(settings);
   }
 
@@ -167,7 +166,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
     try {
       if (engine == null) {
         UimacppEngine.configureResourceManager(System.getProperty("java.io.tmpdir"), ae
-                        .getResourceManager().getDataPath());
+                .getResourceManager().getDataPath());
 
         StringWriter strWriter = new StringWriter();
         aeDescription.toXML(strWriter);
@@ -283,7 +282,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
    * @see org.apache.uima.collection.base_cpm.CasProcessor#collectionProcessComplete(org.apache.uima.util.ProcessTrace)
    */
   public void collectionProcessComplete(ProcessTrace arg0) throws ResourceProcessException,
-                  IOException {
+          IOException {
     try {
       if (engine != null) {
         engine.collectionProcessComplete();
@@ -333,8 +332,8 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
     Logger tafLogger = UIMAFramework.getLogger(UimacppAnalysisComponent.class);
 
     if (tafLogger.isLoggable(Level.FINEST) || tafLogger.isLoggable(Level.FINER)
-                    || tafLogger.isLoggable(Level.FINE) || tafLogger.isLoggable(Level.CONFIG)
-                    || tafLogger.isLoggable(Level.INFO)) {
+            || tafLogger.isLoggable(Level.FINE) || tafLogger.isLoggable(Level.CONFIG)
+            || tafLogger.isLoggable(Level.INFO)) {
       return TAF_LOGLEVEL_MESSAGE;
     } else if (tafLogger.isLoggable(Level.WARNING)) {
       return TAF_LOGLEVEL_WARNING;
@@ -384,13 +383,13 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
         errorName = UimacppEngine.getErrorMessage(errorCode);
       } catch (UimacppException jtafexc) {
         log.logrb(Level.SEVERE, CLASS_NAME.getName(), "logJTafException", LOG_RESOURCE_BUNDLE,
-                        "UIMA_error_while_getting_name__SEVERE", jtafexc.getMessage());
+                "UIMA_error_while_getting_name__SEVERE", jtafexc.getMessage());
         errorName = "";
       }
 
       log.logrb(Level.SEVERE, CLASS_NAME.getName(), "logJTafException", LOG_RESOURCE_BUNDLE,
-                      "UIMA_taf_internal_exception__SEVERE", new Object[] { new Long(errorCode),
-                          errorName });
+              "UIMA_taf_internal_exception__SEVERE",
+              new Object[] { new Long(errorCode), errorName });
     }
     Exception et = e.getEmbeddedException();
 

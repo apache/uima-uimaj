@@ -149,7 +149,7 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
    *          are bound to actual resources.
    */
   public void setResourceManagerConfiguration(
-                  ResourceManagerConfiguration aResourceManagerConfiguration);
+          ResourceManagerConfiguration aResourceManagerConfiguration);
 
   /**
    * Checks that this specifier is valid. An exception is thrown if it is not valid. This only does
@@ -187,6 +187,6 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
    *           if validation failed
    */
   public void doFullValidation(ResourceManager aResourceManager)
-                  throws ResourceInitializationException;
+          throws ResourceInitializationException;
 
 }

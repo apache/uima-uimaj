@@ -88,8 +88,8 @@ public class CasConsumerAdapter implements AnalysisComponent {
   public void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
     if (!CAS.class.isAssignableFrom(aCAS.getClass())) {
       throw new AnalysisEngineProcessException(
-                      AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] {
-                          CAS.class, aCAS.getClass() });
+              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { CAS.class,
+                  aCAS.getClass() });
     }
 
     // check if type system changed; if so, notify Annotator
@@ -189,8 +189,8 @@ public class CasConsumerAdapter implements AnalysisComponent {
    */
   public AbstractCas next() throws AnalysisEngineProcessException {
     throw new UIMA_UnsupportedOperationException(
-                    UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
-                        AnnotatorAdapter.class, "next" });
+            UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
+                AnnotatorAdapter.class, "next" });
   }
 
   /**

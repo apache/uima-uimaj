@@ -90,7 +90,7 @@ public class XmiWriterCasConsumer extends CasConsumer_ImplBase {
 
     // retreive the filename of the input file from the CAS
     FSIterator it = jcas.getJFSIndexRepository().getAnnotationIndex(SourceDocumentInformation.type)
-                    .iterator();
+            .iterator();
     File outFile = null;
     if (it.hasNext()) {
       SourceDocumentInformation fileLoc = (SourceDocumentInformation) it.next();
@@ -160,8 +160,8 @@ public class XmiWriterCasConsumer extends CasConsumer_ImplBase {
    */
   public static CasConsumerDescription getDescription() throws InvalidXMLException {
     InputStream descStream = XCasWriterCasConsumer.class
-                    .getResourceAsStream("XmiWriterCasConsumer.xml");
+            .getResourceAsStream("XmiWriterCasConsumer.xml");
     return UIMAFramework.getXMLParser().parseCasConsumerDescription(
-                    new XMLInputSource(descStream, null));
+            new XMLInputSource(descStream, null));
   }
 }

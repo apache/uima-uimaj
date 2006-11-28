@@ -94,15 +94,15 @@ public class Sofa_Type extends TOP_Type {
 
     casFeat_sofaNum = jcas.getRequiredFeatureDE(casType, "sofaNum", "uima.cas.Integer", featOkTst);
     casFeatCode_sofaNum = (null == casFeat_sofaNum) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_sofaNum).getCode();
+            : ((FeatureImpl) casFeat_sofaNum).getCode();
 
     casFeat_sofaID = jcas.getRequiredFeatureDE(casType, "sofaID", "uima.cas.String", featOkTst);
     casFeatCode_sofaID = (null == casFeat_sofaID) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_sofaID).getCode();
+            : ((FeatureImpl) casFeat_sofaID).getCode();
 
     casFeat_mimeType = jcas.getRequiredFeatureDE(casType, "mimeType", "uima.cas.String", featOkTst);
     casFeatCode_mimeType = (null == casFeat_mimeType) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_mimeType).getCode();
+            : ((FeatureImpl) casFeat_mimeType).getCode();
 
   }
 }

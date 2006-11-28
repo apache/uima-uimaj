@@ -447,7 +447,7 @@ public interface LowLevelCAS {
   void ll_setStringValue(int fsRef, int featureCode, String value, boolean doTypeChecks);
 
   void ll_setCharBufferValue(int fsRef, int featureCode, char[] buffer, int start, int length,
-                  boolean doChecks);
+          boolean doChecks);
 
   void ll_setCharBufferValue(int fsRef, int featureCode, char[] buffer, int start, int length);
 

@@ -37,7 +37,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * 
  */
 public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl implements
-                ConfigurationParameterDeclarations {
+        ConfigurationParameterDeclarations {
 
   static final long serialVersionUID = -2248322904617280983L;
 
@@ -69,7 +69,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
   public void setConfigurationParameters(ConfigurationParameter[] aParams) {
     if (aParams == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-                      new Object[] { "null", "aParams", "setConfigurationParameters" });
+              new Object[] { "null", "aParams", "setConfigurationParameters" });
     }
     mConfigurationParameters = aParams;
   }
@@ -108,7 +108,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
   public void setCommonParameters(ConfigurationParameter[] aParams) {
     if (aParams == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-                      new Object[] { "null", "aParams", "setCommonParameters" });
+              new Object[] { "null", "aParams", "setCommonParameters" });
     }
     mCommonParameters = aParams;
   }
@@ -119,7 +119,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
   public void setConfigurationGroups(ConfigurationGroup[] aGroups) {
     if (aGroups == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-                      new Object[] { "null", "aGroups", "setConfigurationGroups" });
+              new Object[] { "null", "aGroups", "setConfigurationGroups" });
     }
     mConfigurationGroups = aGroups;
   }
@@ -282,7 +282,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
 
   /** Utility method */
   protected ConfigurationParameter _getConfigurationParameter(ConfigurationParameter[] aParams,
-                  String aName) {
+          String aName) {
     if (aParams != null) {
       for (int i = 0; i < aParams.length; i++) {
         if (aName.equals(aParams[i].getName()))
@@ -299,7 +299,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
    *      org.apache.uima.util.XMLParser)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
-                  XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
+          XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     // read defaultGroup and searchStrategy from attributes
     String defaultGroup = aElement.getAttribute("defaultGroup");
     if (defaultGroup.length() > 0) {
@@ -332,7 +332,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
           groups.add(aParser.buildObject(elem, aOptions));
         } else {
           throw new InvalidXMLException(InvalidXMLException.UNKNOWN_ELEMENT, new Object[] { elem
-                          .getTagName() });
+                  .getTagName() });
         }
       }
     }

@@ -102,7 +102,7 @@ public class LoggingTest extends TestCase {
       // get class logger
       Logger logger = UIMAFramework.getLogger(this.getClass());
       Logger uimaLogger = UIMAFramework.getLogger(); // should affect everything in
-                                                      // org.apache.uima.*
+      // org.apache.uima.*
 
       // set level to WARNING
       uimaLogger.setLevel(Level.WARNING);

@@ -75,20 +75,19 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * @throws ResourceInitializationException
    */
   public AnnotatorAdapter(BaseAnnotator aAnnotator, AnalysisEngineMetaData aMetaData,
-                  Map aAdditionalParams) throws ResourceInitializationException {
+          Map aAdditionalParams) throws ResourceInitializationException {
     mAnnotator = aAnnotator;
 
     // check for the invalid case where a TextAnnotator or JTextAnnotator
     // declares sofa input/output capabilities. Text annotators should not be
     // "sofa-aware".
     if (aMetaData.isSofaAware()
-                    && (mAnnotator instanceof TextAnnotator || mAnnotator instanceof JTextAnnotator)) {
+            && (mAnnotator instanceof TextAnnotator || mAnnotator instanceof JTextAnnotator)) {
       throw new ResourceInitializationException(
-                      ResourceInitializationException.TEXT_ANNOTATOR_CANNOT_BE_SOFA_AWARE,
-                      new Object[] {
-                          aMetaData.getName(),
-                          (mAnnotator instanceof TextAnnotator) ? "TextAnnotator"
-                                          : "JTextAnnotator", aMetaData.getSourceUrlString() });
+              ResourceInitializationException.TEXT_ANNOTATOR_CANNOT_BE_SOFA_AWARE, new Object[] {
+                  aMetaData.getName(),
+                  (mAnnotator instanceof TextAnnotator) ? "TextAnnotator" : "JTextAnnotator",
+                  aMetaData.getSourceUrlString() });
     }
 
     // determine which CAS interface this Annotator needs
@@ -128,8 +127,8 @@ public class AnnotatorAdapter implements AnalysisComponent {
   public void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
     if (!mCasInterface.isAssignableFrom(aCAS.getClass())) {
       throw new AnalysisEngineProcessException(
-                      AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] {
-                          mCasInterface, aCAS.getClass() });
+              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { mCasInterface,
+                  aCAS.getClass() });
     }
 
     // check if type system changed; if so, notify Annotator
@@ -208,7 +207,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * @see org.apache.uima.core.AnalysisComponent#batchProcessComplete()
    */
   public void batchProcessComplete() throws AnalysisEngineProcessException {
-    //v1.x annotators cannot implement batchProcessComplete
+    // v1.x annotators cannot implement batchProcessComplete
   }
 
   /*
@@ -217,7 +216,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * @see org.apache.uima.core.AnalysisComponent#collectionProcessComplete()
    */
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
-    //v1.x annotators cannot implement collectionProcessComplete
+    // v1.x annotators cannot implement collectionProcessComplete
   }
 
   /*
@@ -260,8 +259,8 @@ public class AnnotatorAdapter implements AnalysisComponent {
    */
   public AbstractCas next() throws AnalysisEngineProcessException {
     throw new UIMA_UnsupportedOperationException(
-                    UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
-                        AnnotatorAdapter.class, "next" });
+            UIMA_UnsupportedOperationException.UNSUPPORTED_METHOD, new Object[] {
+                AnnotatorAdapter.class, "next" });
   }
 
   /**

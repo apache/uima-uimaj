@@ -49,16 +49,16 @@ public class NonEmptyIntegerList extends IntegerList {
   /** getter for head * */
   public int getHead() {
     if (NonEmptyIntegerList_Type.featOkTst
-                    && ((NonEmptyIntegerList_Type) jcasType).casFeat_head == null)
+            && ((NonEmptyIntegerList_Type) jcasType).casFeat_head == null)
       JCas.throwFeatMissing("head", "uima.cas.NonEmptyIntegerList");
     return jcasType.ll_cas.ll_getIntValue(addr,
-                    ((NonEmptyIntegerList_Type) jcasType).casFeatCode_head);
+            ((NonEmptyIntegerList_Type) jcasType).casFeatCode_head);
   }
 
   /** setter for head * */
   public void setHead(int v) {
     if (NonEmptyIntegerList_Type.featOkTst
-                    && ((NonEmptyIntegerList_Type) jcasType).casFeat_head == null)
+            && ((NonEmptyIntegerList_Type) jcasType).casFeat_head == null)
       JCas.throwFeatMissing("head", "uima.cas.NonEmptyIntegerList");
     jcasType.ll_cas.ll_setIntValue(addr, ((NonEmptyIntegerList_Type) jcasType).casFeatCode_head, v);
   }
@@ -68,18 +68,18 @@ public class NonEmptyIntegerList extends IntegerList {
   /** getter for tail * */
   public IntegerList getTail() {
     if (NonEmptyIntegerList_Type.featOkTst
-                    && ((NonEmptyIntegerList_Type) jcasType).casFeat_tail == null)
+            && ((NonEmptyIntegerList_Type) jcasType).casFeat_tail == null)
       JCas.throwFeatMissing("tail", "uima.cas.NonEmptyIntegerList");
     return (IntegerList) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((NonEmptyIntegerList_Type) jcasType).casFeatCode_tail)));
+            ((NonEmptyIntegerList_Type) jcasType).casFeatCode_tail)));
   }
 
   /** setter for tail * */
   public void setTail(IntegerList v) {
     if (NonEmptyIntegerList_Type.featOkTst
-                    && ((NonEmptyIntegerList_Type) jcasType).casFeat_tail == null)
+            && ((NonEmptyIntegerList_Type) jcasType).casFeat_tail == null)
       JCas.throwFeatMissing("tail", "uima.cas.NonEmptyIntegerList");
     jcasType.ll_cas.ll_setRefValue(addr, ((NonEmptyIntegerList_Type) jcasType).casFeatCode_tail,
-                    jcasType.ll_cas.ll_getFSRef(v));
+            jcasType.ll_cas.ll_getFSRef(v));
   }
 }

@@ -121,7 +121,7 @@ public class UIMAUtil {
    *           If any I/O exception occurred.
    */
   public static synchronized String identifyUimaComponentCategory(File xmlDescFile)
-                  throws IOException {
+          throws IOException {
     return identifyUimaComponentCategory(xmlDescFile, null);
   }
 
@@ -140,7 +140,7 @@ public class UIMAUtil {
    *           If any I/O exception occurred.
    */
   public static synchronized String identifyUimaComponentCategory(URL xmlDescUrl)
-                  throws IOException {
+          throws IOException {
     return identifyUimaComponentCategory(null, xmlDescUrl);
   }
 
@@ -161,19 +161,19 @@ public class UIMAUtil {
    *           If any I/O exception occurred.
    */
   private static synchronized String identifyUimaComponentCategory(File xmlDescFile, URL xmlDescUrl)
-                  throws IOException {
+          throws IOException {
     String uimaCompCtg = null;
     XMLInputSource xmlSource = null;
     try {
       String xmlDescUri = (xmlDescFile != null) ? xmlDescFile.getAbsolutePath() : xmlDescUrl
-                      .toString();
+              .toString();
       // clean error message
       __errTableByUri.remove(xmlDescUri);
       // get XMLParser
       XMLParser xmlParser = UIMAFramework.getXMLParser();
       // create XML source
       xmlSource = (xmlDescFile != null) ? new XMLInputSource(xmlDescFile) : new XMLInputSource(
-                      xmlDescUrl);
+              xmlDescUrl);
       // parse XML source and create resource specifier
       ResourceSpecifier resourceSpec = null;
       try {
@@ -202,7 +202,7 @@ public class UIMAUtil {
         } catch (Exception e) {
         }
         xmlSource = (xmlDescFile != null) ? new XMLInputSource(xmlDescFile) : new XMLInputSource(
-                        xmlDescUrl);
+                xmlDescUrl);
         try {
           // try parsing CPE configuration
           xmlParser.parseCpeDescription(xmlSource);
@@ -221,7 +221,7 @@ public class UIMAUtil {
         } catch (Exception e) {
         }
         xmlSource = (xmlDescFile != null) ? new XMLInputSource(xmlDescFile) : new XMLInputSource(
-                        xmlDescUrl);
+                xmlDescUrl);
         try {
           // try parsing TS description
           xmlParser.parseTypeSystemDescription(xmlSource);

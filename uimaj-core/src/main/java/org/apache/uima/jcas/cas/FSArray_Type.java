@@ -105,7 +105,7 @@ public class FSArray_Type extends CommonArray_Type {
    * @see org.apache.uima.cas.ArrayFS#copyFromArray(FeatureStructure[], int, int, int)
    */
   public void copyFromArray(int addr, FeatureStructure[] src, int srcOffset, int destOffset,
-                  int length) throws ArrayIndexOutOfBoundsException {
+          int length) throws ArrayIndexOutOfBoundsException {
     if (lowLevelArrayBoundChecks)
       if ((destOffset < 0) || ((destOffset + length) > size(addr)))
         throw new ArrayIndexOutOfBoundsException();
@@ -122,7 +122,7 @@ public class FSArray_Type extends CommonArray_Type {
    * @see org.apache.uima.cas.ArrayFS#copyToArray(int, FeatureStructure[], int, int)
    */
   public void copyToArray(int addr, int srcOffset, FeatureStructure[] dest, int destOffset,
-                  int length) throws ArrayIndexOutOfBoundsException {
+          int length) throws ArrayIndexOutOfBoundsException {
     if (lowLevelArrayBoundChecks)
       if ((srcOffset < 0) || ((srcOffset + length) > size(addr)))
         throw new ArrayIndexOutOfBoundsException();

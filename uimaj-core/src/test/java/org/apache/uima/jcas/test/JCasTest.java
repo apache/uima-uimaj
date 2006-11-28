@@ -109,7 +109,7 @@ public class JCasTest extends TestCase {
       String m = e1.getMessage();
       System.out.println(m);
       if (!m
-                      .equals("Error initializing JCas: Error: can't access feature information from CAS in initializing JCas type: aa.Root, feature: testMissingImport\n")) {
+              .equals("Error initializing JCas: Error: can't access feature information from CAS in initializing JCas type: aa.Root, feature: testMissingImport\n")) {
         assertTrue(false);
       }
     } else
@@ -365,7 +365,6 @@ public class JCasTest extends TestCase {
       // oI.moveToNext();
       // assertTrue(oI.isValid());
       // assertTrue(r1 == oI.get());
-
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -769,10 +768,9 @@ public class JCasTest extends TestCase {
    * 
    * long [] times = new long [12]; CAS cas = jcas.getCas(); FSIndexRepository ir =
    * cas.getIndexRepository(); TypeSystem ts = cas.getTypeSystem(); Type tokenType =
-   * ts.getType(CASTestSetup.TOKEN_TYPE);
-   *  // make a lot of FS, without adding to indexes // save in array final FeatureStructure []
-   * results = new FeatureStructure [largeN]; jcas.reset(); System.gc(); long startTime =
-   * System.currentTimeMillis();
+   * ts.getType(CASTestSetup.TOKEN_TYPE); // make a lot of FS, without adding to indexes // save in
+   * array final FeatureStructure [] results = new FeatureStructure [largeN]; jcas.reset();
+   * System.gc(); long startTime = System.currentTimeMillis();
    * 
    * for (int i = 0; i < results.length; i++) { results[i] = cas.createFS(tokenType); } times[0] =
    * System.currentTimeMillis() - startTime; int j = 0; for (int i = 0; i < results.length; i++) {
@@ -782,11 +780,10 @@ public class JCasTest extends TestCase {
    * jcas.reset(); System.gc(); startTime = System.currentTimeMillis(); for (int i = 0; i <
    * results.length; i++) { results[i] = new Token(jcas); } times[1] = System.currentTimeMillis() -
    * startTime; j = 0; for (int i = 0; i < results.length; i++) { if (results[i].equals(results[0]))
-   * j ++; } times[3] = j; // this code an attempt to fool JIT into keeping the results
-   *  // run with low-level jcas.reset(); System.gc(); final int [] iresults = new int[largeN]; int
-   * tokenTypeCode = ((TypeImpl)tokenType).getCode(); LowLevelCAS llCas = (LowLevelCAS)cas;
-   * LowLevelIndexRepository llir = llCas.ll_getIndexRepository(); startTime =
-   * System.currentTimeMillis();
+   * j ++; } times[3] = j; // this code an attempt to fool JIT into keeping the results // run with
+   * low-level jcas.reset(); System.gc(); final int [] iresults = new int[largeN]; int tokenTypeCode =
+   * ((TypeImpl)tokenType).getCode(); LowLevelCAS llCas = (LowLevelCAS)cas; LowLevelIndexRepository
+   * llir = llCas.ll_getIndexRepository(); startTime = System.currentTimeMillis();
    * 
    * for (int i = 0; i < iresults.length; i++) { iresults[i] = llCas.ll_createFS(tokenTypeCode); }
    * times[2] = System.currentTimeMillis() - startTime; j = 0; for (int i = 0; i < iresults.length;
@@ -806,8 +803,8 @@ public class JCasTest extends TestCase {
    * for (int i = 0; i < results.length; i++) { results[i] = new Token(jcas);
    * ((Token)results[i]).addToIndexes(); } times[7] = System.currentTimeMillis() - startTime; j = 0;
    * for (int i = 0; i < results.length; i++) { if (results[i].equals(results[0])) j ++; } times[9] =
-   * j; // this code an attempt to fool JIT into keeping the results
-   *  // run with low-level jcas.reset(); System.gc();
+   * j; // this code an attempt to fool JIT into keeping the results // run with low-level
+   * jcas.reset(); System.gc();
    * 
    * startTime = System.currentTimeMillis();
    * 
@@ -828,8 +825,7 @@ public class JCasTest extends TestCase {
   }
 
   /*
-   * public void testCreateFS() {
-   *  // Can create FS of type "Top"
+   * public void testCreateFS() { // Can create FS of type "Top"
    * assertTrue(this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_TOP)) != null); boolean caughtExc =
    * false; // Can't create int FS. try { this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_INTEGER)); }
    * catch (CASRuntimeException e) { caughtExc = true; assertTrue(e.getError() ==
@@ -846,10 +842,10 @@ public class JCasTest extends TestCase {
    * 
    * public void testCreateIntArrayFS() { // Has its own test class. }
    * 
-   * public void testCreateStringArrayFS() { // Has its own test class. }
-   *  // public void testCreateFilteredIterator() { // } // // public void testCommitFS() { // } // //
-   * public void testGetConstraintFactory() { // } // // public void testCreateFeaturePath() { // } // //
-   * public void testGetIndexRepository() { // } // // public void testFs2listIterator() { // } //
+   * public void testCreateStringArrayFS() { // Has its own test class. } // public void
+   * testCreateFilteredIterator() { // } // // public void testCommitFS() { // } // // public void
+   * testGetConstraintFactory() { // } // // public void testCreateFeaturePath() { // } // // public
+   * void testGetIndexRepository() { // } // // public void testFs2listIterator() { // } //
    * 
    */
   public static void main(String[] args) {

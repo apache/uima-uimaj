@@ -71,7 +71,7 @@ public class TypeSystemDescription_implTest extends TestCase {
     try {
       File descriptor = JUnitExtension.getFile("TypeSystemDescriptionImplTest/TestTypeSystem.xml");
       TypeSystemDescription ts = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-                      new XMLInputSource(descriptor));
+              new XMLInputSource(descriptor));
 
       assertEquals("TestTypeSystem", ts.getName());
       assertEquals("This is a test.", ts.getDescription());
@@ -80,7 +80,7 @@ public class TypeSystemDescription_implTest extends TestCase {
       Import[] imports = ts.getImports();
       assertEquals(3, imports.length);
       assertEquals("org.apache.uima.resource.metadata.impl.TypeSystemImportedByName", imports[0]
-                      .getName());
+              .getName());
       assertNull(imports[0].getLocation());
       assertNull(imports[1].getName());
       assertEquals("TypeSystemImportedByLocation.xml", imports[1].getLocation());
@@ -109,7 +109,7 @@ public class TypeSystemDescription_implTest extends TestCase {
     try {
       File descriptor = JUnitExtension.getFile("TypeSystemDescriptionImplTest/TestTypeSystem.xml");
       TypeSystemDescription ts = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-                      new XMLInputSource(descriptor));
+              new XMLInputSource(descriptor));
 
       TypeDescription[] types = ts.getTypes();
       assertEquals(6, types.length);
@@ -127,7 +127,7 @@ public class TypeSystemDescription_implTest extends TestCase {
       // set data path correctly and it should work
       ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
       resMgr.setDataPath(JUnitExtension.getFile("TypeSystemDescriptionImplTest/dataPathDir")
-                      .getAbsolutePath());
+              .getAbsolutePath());
       ts.resolveImports(resMgr);
 
       types = ts.getTypes();
@@ -146,7 +146,7 @@ public class TypeSystemDescription_implTest extends TestCase {
 
       // calling resolveImports when there are none should do nothing
       descriptor = JUnitExtension
-                      .getFile("TypeSystemDescriptionImplTest/TypeSystemImportedByLocation.xml");
+              .getFile("TypeSystemDescriptionImplTest/TypeSystemImportedByLocation.xml");
       ts = UIMAFramework.getXMLParser().parseTypeSystemDescription(new XMLInputSource(descriptor));
       assertEquals(2, ts.getTypes().length);
       ts.resolveImports();
@@ -154,7 +154,7 @@ public class TypeSystemDescription_implTest extends TestCase {
 
       // test import from programatically created TypeSystemDescription
       TypeSystemDescription typeSystemDescription = UIMAFramework.getResourceSpecifierFactory()
-                      .createTypeSystemDescription();
+              .createTypeSystemDescription();
       Import[] imports = new Import[1];
       imports[0] = new Import_impl();
       URL url = JUnitExtension.getFile("TypeSystemDescriptionImplTest").toURL();
@@ -162,7 +162,7 @@ public class TypeSystemDescription_implTest extends TestCase {
       imports[0].setLocation("TypeSystemImportedByLocation.xml");
       typeSystemDescription.setImports(imports);
       TypeSystemDescription typeSystemWithResolvedImports = (TypeSystemDescription) typeSystemDescription
-                      .clone();
+              .clone();
       typeSystemWithResolvedImports.resolveImports();
       assertTrue(typeSystemWithResolvedImports.getTypes().length > 0);
     } catch (Exception e) {
@@ -173,7 +173,7 @@ public class TypeSystemDescription_implTest extends TestCase {
   public void testInvalidTypeSystem() throws Exception {
     File file = JUnitExtension.getFile("TypeSystemDescriptionImplTest/InvalidTypeSystem1.xml");
     TypeSystemDescription tsDesc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-                    new XMLInputSource(file));
+            new XMLInputSource(file));
     try {
       CasCreationUtils.createCas(tsDesc, null, null);
       // the above line should throw an exception

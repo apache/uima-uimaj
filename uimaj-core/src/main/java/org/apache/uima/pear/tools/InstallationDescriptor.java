@@ -43,7 +43,7 @@ import org.apache.uima.pear.util.FileUtil;
  */
 
 public class InstallationDescriptor implements Serializable {
-  
+
   private static final long serialVersionUID = 4884186903126810934L;
 
   /**
@@ -52,7 +52,7 @@ public class InstallationDescriptor implements Serializable {
    * @author LK
    */
   public static class ActionInfo implements Serializable {
-    
+
     private static final long serialVersionUID = -3459024334454685063L;
 
     /*
@@ -132,7 +132,7 @@ public class InstallationDescriptor implements Serializable {
    * @author LK
    */
   public static class ComponentInfo implements Serializable {
-    
+
     private static final long serialVersionUID = 3269238133625161794L;
 
     /**
@@ -287,7 +287,7 @@ public class InstallationDescriptor implements Serializable {
    * @return The relative path of the given component object.
    */
   protected static String getRelativePathForComponentObject(String absolutePath,
-                  ComponentInfo component) {
+          ComponentInfo component) {
     String path = absolutePath;
     if (component.rootDirPath != null && path != null) {
       File rootDir = new File(component.rootDirPath);
@@ -362,12 +362,12 @@ public class InstallationDescriptor implements Serializable {
         String key = (String) keys.nextElement();
         String value = mAction.params.getProperty(key);
         if (key.equals(InstallationDescriptorHandler.FILE_TAG)
-                        || key.equals(InstallationDescriptorHandler.REPLACE_WITH_TAG)
-                        || key.equals(InstallationDescriptorHandler.VAR_VALUE_TAG)) {
+                || key.equals(InstallationDescriptorHandler.REPLACE_WITH_TAG)
+                || key.equals(InstallationDescriptorHandler.VAR_VALUE_TAG)) {
           if (_mainComponent.rootDirPath != null) {
             // substitute '$main_root' macros
             value = InstallationProcessor.substituteMainRootInString(value,
-                            _mainComponent.rootDirPath);
+                    _mainComponent.rootDirPath);
             mAction.params.setProperty(key, value);
           }
           Iterator dlgEntries = getDelegateComponents().entrySet().iterator();
@@ -377,7 +377,7 @@ public class InstallationDescriptor implements Serializable {
             if (dlgInfo.rootDirPath != null) {
               // substitute '$dlg_comp_id$root' macros
               value = InstallationProcessor.substituteCompIdRootInString(value, dlgInfo.getId(),
-                              dlgInfo.rootDirPath);
+                      dlgInfo.rootDirPath);
               mAction.params.setProperty(key, value);
             }
           }
@@ -601,8 +601,8 @@ public class InstallationDescriptor implements Serializable {
   public synchronized String getMainCasConsumerDesc(boolean relativePath) {
     if (_mainComponent != null)
       return relativePath ? getRelativePathForComponentObject(
-                      _mainComponent.casConsumerDescFilePath, _mainComponent)
-                      : _mainComponent.casConsumerDescFilePath;
+              _mainComponent.casConsumerDescFilePath, _mainComponent)
+              : _mainComponent.casConsumerDescFilePath;
     return null;
   }
 
@@ -628,8 +628,8 @@ public class InstallationDescriptor implements Serializable {
   public synchronized String getMainCasInitializerDesc(boolean relativePath) {
     if (_mainComponent != null)
       return relativePath ? getRelativePathForComponentObject(
-                      _mainComponent.casInitializerDescFilePath, _mainComponent)
-                      : _mainComponent.casInitializerDescFilePath;
+              _mainComponent.casInitializerDescFilePath, _mainComponent)
+              : _mainComponent.casInitializerDescFilePath;
     return null;
   }
 
@@ -655,8 +655,8 @@ public class InstallationDescriptor implements Serializable {
   public synchronized String getMainCollIteratorDesc(boolean relativePath) {
     if (_mainComponent != null)
       return relativePath ? getRelativePathForComponentObject(
-                      _mainComponent.collIteratorDescFilePath, _mainComponent)
-                      : _mainComponent.collIteratorDescFilePath;
+              _mainComponent.collIteratorDescFilePath, _mainComponent)
+              : _mainComponent.collIteratorDescFilePath;
     return null;
   }
 
@@ -697,7 +697,7 @@ public class InstallationDescriptor implements Serializable {
             return _mainComponent.descFilePath;
         } else {
           return relativePath ? getRelativePathForComponentObject(_mainComponent.descFilePath,
-                          _mainComponent) : _mainComponent.descFilePath;
+                  _mainComponent) : _mainComponent.descFilePath;
         }
       } else
         return _mainComponent.descFilePath;
@@ -728,8 +728,8 @@ public class InstallationDescriptor implements Serializable {
    */
   public synchronized Properties getMainComponentNetworkParam(String paramName) {
     return (_mainComponent != null && _mainComponent.networkParams != null) ? (Properties) _mainComponent.networkParams
-                    .get(paramName)
-                    : null;
+            .get(paramName)
+            : null;
   }
 
   /**
@@ -737,8 +737,8 @@ public class InstallationDescriptor implements Serializable {
    */
   public synchronized Set getMainComponentNetworkParamNames() {
     return (_mainComponent != null && _mainComponent.networkParams != null) ? _mainComponent.networkParams
-                    .keySet()
-                    : null;
+            .keySet()
+            : null;
   }
 
   /**
@@ -808,7 +808,7 @@ public class InstallationDescriptor implements Serializable {
       else {
         // substitute '$dlg_comp_id$root' macros
         dCompInfo.descFilePath = InstallationProcessor.substituteCompIdRootInString(
-                        dCompInfo.descFilePath, dlgId, dCompInfo.rootDirPath);
+                dCompInfo.descFilePath, dlgId, dCompInfo.rootDirPath);
       }
     }
   }
@@ -865,7 +865,7 @@ public class InstallationDescriptor implements Serializable {
       // delegate descriptor path
       if (dCompInfo.descFilePath != null) {
         dCompInfo.descFilePath = InstallationProcessor.substituteCompIdRootInString(
-                        dCompInfo.descFilePath, dlgId, dCompInfo.rootDirPath);
+                dCompInfo.descFilePath, dlgId, dCompInfo.rootDirPath);
       }
     }
     // substitute $dlg_comp_id$root macros in apropriate
@@ -878,10 +878,10 @@ public class InstallationDescriptor implements Serializable {
         String key = (String) keys.nextElement();
         String value = action.params.getProperty(key);
         if (key.equals(InstallationDescriptorHandler.FILE_TAG)
-                        || key.equals(InstallationDescriptorHandler.REPLACE_WITH_TAG)
-                        || key.equals(InstallationDescriptorHandler.VAR_VALUE_TAG)) {
+                || key.equals(InstallationDescriptorHandler.REPLACE_WITH_TAG)
+                || key.equals(InstallationDescriptorHandler.VAR_VALUE_TAG)) {
           value = InstallationProcessor.substituteCompIdRootInString(value, dlgId,
-                          dCompInfo.rootDirPath);
+                  dCompInfo.rootDirPath);
           action.params.setProperty(key, value);
         }
       }
@@ -900,7 +900,7 @@ public class InstallationDescriptor implements Serializable {
         _mainComponent.casConsumerDescFilePath = descFilePath.trim().replace('\\', '/');
       else { // substitute $main_root macros in descriptor path
         _mainComponent.casConsumerDescFilePath = InstallationProcessor.substituteMainRootInString(
-                        descFilePath, _mainComponent.rootDirPath);
+                descFilePath, _mainComponent.rootDirPath);
       }
     }
   }
@@ -917,7 +917,7 @@ public class InstallationDescriptor implements Serializable {
         _mainComponent.casInitializerDescFilePath = descFilePath.trim().replace('\\', '/');
       else { // substitute $main_root macros in descriptor path
         _mainComponent.casInitializerDescFilePath = InstallationProcessor
-                        .substituteMainRootInString(descFilePath, _mainComponent.rootDirPath);
+                .substituteMainRootInString(descFilePath, _mainComponent.rootDirPath);
       }
     }
   }
@@ -934,7 +934,7 @@ public class InstallationDescriptor implements Serializable {
         _mainComponent.collIteratorDescFilePath = descFilePath.trim().replace('\\', '/');
       else { // substitute $main_root macros in descriptor path
         _mainComponent.collIteratorDescFilePath = InstallationProcessor.substituteMainRootInString(
-                        descFilePath, _mainComponent.rootDirPath);
+                descFilePath, _mainComponent.rootDirPath);
       }
     }
   }
@@ -988,7 +988,7 @@ public class InstallationDescriptor implements Serializable {
         _mainComponent.descFilePath = descFilePath.trim().replace('\\', '/');
       else { // substitute $main_root macros in descriptor path
         _mainComponent.descFilePath = InstallationProcessor.substituteMainRootInString(
-                        descFilePath, _mainComponent.rootDirPath);
+                descFilePath, _mainComponent.rootDirPath);
       }
     }
   }
@@ -1060,17 +1060,17 @@ public class InstallationDescriptor implements Serializable {
       // substitute $main_root macros in all specs of descriptor files
       if (_mainComponent.descFilePath != null)
         _mainComponent.descFilePath = InstallationProcessor.substituteMainRootInString(
-                        _mainComponent.descFilePath, _mainComponent.rootDirPath);
+                _mainComponent.descFilePath, _mainComponent.rootDirPath);
       if (_mainComponent.collIteratorDescFilePath != null)
         _mainComponent.collIteratorDescFilePath = InstallationProcessor.substituteMainRootInString(
-                        _mainComponent.collIteratorDescFilePath, _mainComponent.rootDirPath);
+                _mainComponent.collIteratorDescFilePath, _mainComponent.rootDirPath);
       if (_mainComponent.casInitializerDescFilePath != null)
         _mainComponent.casInitializerDescFilePath = InstallationProcessor
-                        .substituteMainRootInString(_mainComponent.casInitializerDescFilePath,
-                                        _mainComponent.rootDirPath);
+                .substituteMainRootInString(_mainComponent.casInitializerDescFilePath,
+                        _mainComponent.rootDirPath);
       if (_mainComponent.casConsumerDescFilePath != null)
         _mainComponent.casConsumerDescFilePath = InstallationProcessor.substituteMainRootInString(
-                        _mainComponent.casConsumerDescFilePath, _mainComponent.rootDirPath);
+                _mainComponent.casConsumerDescFilePath, _mainComponent.rootDirPath);
       // substitute $main_root macros in all specs of actions
       Iterator list = getInstallationActions().iterator();
       while (list.hasNext()) {
@@ -1080,10 +1080,10 @@ public class InstallationDescriptor implements Serializable {
           String key = (String) keys.nextElement();
           String value = action.params.getProperty(key);
           if (key.equals(InstallationDescriptorHandler.FILE_TAG)
-                          || key.equals(InstallationDescriptorHandler.REPLACE_WITH_TAG)
-                          || key.equals(InstallationDescriptorHandler.VAR_VALUE_TAG)) {
+                  || key.equals(InstallationDescriptorHandler.REPLACE_WITH_TAG)
+                  || key.equals(InstallationDescriptorHandler.VAR_VALUE_TAG)) {
             value = InstallationProcessor.substituteMainRootInString(value,
-                            _mainComponent.rootDirPath);
+                    _mainComponent.rootDirPath);
             action.params.setProperty(key, value);
           }
         }

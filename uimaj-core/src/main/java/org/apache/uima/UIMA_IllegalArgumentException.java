@@ -78,7 +78,7 @@ public class UIMA_IllegalArgumentException extends UIMARuntimeException {
    *          arguments.
    */
   public UIMA_IllegalArgumentException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments) {
+          Object[] aArguments) {
     super(aResourceBundleName, aMessageKey, aArguments);
   }
 
@@ -99,7 +99,7 @@ public class UIMA_IllegalArgumentException extends UIMARuntimeException {
    *          the original exception that caused this exception to be thrown, if any
    */
   public UIMA_IllegalArgumentException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments, Throwable aCause) {
+          Object[] aArguments, Throwable aCause) {
     super(aResourceBundleName, aMessageKey, aArguments, aCause);
   }
 

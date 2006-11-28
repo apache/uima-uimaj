@@ -91,9 +91,9 @@ public class TaeDescription_implTest extends TestCase {
       TypeSystemDescription typeSystem = new TypeSystemDescription_impl();
       TypeDescription type1 = typeSystem.addType("Fake", "A Fake Type", "Annotation");
       FeatureDescription feature1 = type1.addFeature("TestFeature", "For Testing Only",
-                      CAS.TYPE_NAME_STRING);
+              CAS.TYPE_NAME_STRING);
       TypeDescription enumType = typeSystem.addType("EnumType", "Test Enumerated Type",
-                      "uima.cas.String");
+              "uima.cas.String");
       enumType.setAllowedValues(new AllowedValue[] { new AllowedValue_impl("One", "First Value"),
           new AllowedValue_impl("Two", "Second Value") });
 
@@ -168,7 +168,7 @@ public class TaeDescription_implTest extends TestCase {
       cfgGrp2.setNames(new String[] { "cfgGrp2a", "cfgGrp2b" });
       cfgGrp2.setConfigurationParameters(new ConfigurationParameter[] { cfgParam3 });
       md.getConfigurationParameterDeclarations().setConfigurationGroups(
-                      new ConfigurationGroup[] { cfgGrp1, cfgGrp2 });
+              new ConfigurationGroup[] { cfgGrp1, cfgGrp2 });
       md.getConfigurationParameterDeclarations().setDefaultGroupName("cfgGrp1");
 
       NameValuePair nvp1 = new NameValuePair_impl("param1", "test");
@@ -191,26 +191,26 @@ public class TaeDescription_implTest extends TestCase {
       primDesc2.setAnnotatorImplementationName("fakeClass");
       primDesc2.getAnalysisEngineMetaData().setName("fakeAnnotator");
       primDesc2.getAnalysisEngineMetaData().setCapabilities(
-                      new Capability[] { new Capability_impl() });
+              new Capability[] { new Capability_impl() });
       delegateTaeMap.put("Empty", primDesc2);
       URISpecifier uriSpec = new URISpecifier_impl();
       uriSpec.setUri("http://www.incubator.apache.org/uima");
       uriSpec.setProtocol(Constants.PROTOCOL_SOAP);
       ExternalResourceDependency dep = UIMAFramework.getResourceSpecifierFactory()
-                      .createExternalResourceDependency();
+              .createExternalResourceDependency();
       dep.setKey("ResourceKey");
       dep.setDescription("Test");
       aggregateDesc.setExternalResourceDependencies(new ExternalResourceDependency[] { dep });
       ResourceManagerConfiguration resMgrCfg = UIMAFramework.getResourceSpecifierFactory()
-                      .createResourceManagerConfiguration();
+              .createResourceManagerConfiguration();
       ExternalResourceDescription extRes = UIMAFramework.getResourceSpecifierFactory()
-                      .createExternalResourceDescription();
+              .createExternalResourceDescription();
       extRes.setResourceSpecifier(uriSpec);
       extRes.setName("Resource1");
       extRes.setDescription("Test");
       resMgrCfg.setExternalResources(new ExternalResourceDescription[] { extRes });
       ExternalResourceBinding binding = UIMAFramework.getResourceSpecifierFactory()
-                      .createExternalResourceBinding();
+              .createExternalResourceBinding();
       binding.setKey("ResourceKey");
       binding.setResourceName("Resource1");
       aggregateDesc.setResourceManagerConfiguration(resMgrCfg);
@@ -255,10 +255,10 @@ public class TaeDescription_implTest extends TestCase {
       UIMAFramework.getXMLParser().enableSchemaValidation(true);
       InputStream is = new ByteArrayInputStream(primitiveDescXml.getBytes());
       TaeDescription newPrimitiveDesc = UIMAFramework.getXMLParser().parseTaeDescription(
-                      new XMLInputSource(is, null));
+              new XMLInputSource(is, null));
       is = new ByteArrayInputStream(aggregateDescXml.getBytes());
       TaeDescription newAggregateDesc = UIMAFramework.getXMLParser().parseTaeDescription(
-                      new XMLInputSource(is, null));
+              new XMLInputSource(is, null));
       UIMAFramework.getXMLParser().enableSchemaValidation(false);
 
       Assert.assertEquals(primitiveDesc, newPrimitiveDesc);
@@ -272,12 +272,12 @@ public class TaeDescription_implTest extends TestCase {
     try {
       byte[] primitiveDescBytes = SerializationUtils.serialize(primitiveDesc);
       TaeDescription_impl primitiveDesc2 = (TaeDescription_impl) SerializationUtils
-                      .deserialize(primitiveDescBytes);
+              .deserialize(primitiveDescBytes);
       Assert.assertEquals(primitiveDesc, primitiveDesc2);
 
       byte[] aggregateDescBytes = SerializationUtils.serialize(aggregateDesc);
       TaeDescription_impl aggregateDesc2 = (TaeDescription_impl) SerializationUtils
-                      .deserialize(aggregateDescBytes);
+              .deserialize(aggregateDescBytes);
       Assert.assertEquals(aggregateDesc, aggregateDesc2);
 
       // make sure XMLization still works

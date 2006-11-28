@@ -65,7 +65,7 @@ public class ArrayFSImpl extends FeatureStructureImplC implements ArrayFS {
    * @see org.apache.uima.cas.ArrayFS#copyFromArray(FeatureStructure[], int, int, int)
    */
   public void copyFromArray(FeatureStructure[] src, int srcOffset, int destOffset, int length)
-                  throws ArrayIndexOutOfBoundsException {
+          throws ArrayIndexOutOfBoundsException {
     if ((destOffset < 0) || ((destOffset + length) > size())) {
       throw new ArrayIndexOutOfBoundsException();
     }
@@ -83,7 +83,7 @@ public class ArrayFSImpl extends FeatureStructureImplC implements ArrayFS {
    * @see org.apache.uima.cas.ArrayFS#copyToArray(int, FeatureStructure[], int, int)
    */
   public void copyToArray(int srcOffset, FeatureStructure[] dest, int destOffset, int length)
-                  throws ArrayIndexOutOfBoundsException {
+          throws ArrayIndexOutOfBoundsException {
     if ((srcOffset < 0) || ((srcOffset + length) > size())) {
       throw new ArrayIndexOutOfBoundsException();
     }

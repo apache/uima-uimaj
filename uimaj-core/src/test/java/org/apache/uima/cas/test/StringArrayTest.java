@@ -160,7 +160,7 @@ public class StringArrayTest extends TestCase {
 
   public void testStringArrayValue() {
     String lemmaListName = CASTestSetup.TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
-                    + CASTestSetup.LEMMA_LIST_FEAT;
+            + CASTestSetup.LEMMA_LIST_FEAT;
     final Feature lemmaList = this.ts.getFeatureByFullName(lemmaListName);
     assertTrue(lemmaList != null);
     String[] javaArray = { "1", "2", "3" };

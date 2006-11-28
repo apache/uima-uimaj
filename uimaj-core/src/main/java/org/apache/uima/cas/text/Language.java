@@ -85,7 +85,7 @@ public class Language {
 
   public String toString() {
     return "Full language string: " + this.getFullLanguage() + ", language part: "
-                    + this.getLanguagePart() + ", territory part: " + this.getTerritoryPart();
+            + this.getLanguagePart() + ", territory part: " + this.getTerritoryPart();
   }
 
   public static void main(String[] args) {

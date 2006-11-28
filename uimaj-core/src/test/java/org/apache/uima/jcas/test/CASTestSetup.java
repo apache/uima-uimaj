@@ -57,7 +57,7 @@ public class CASTestSetup extends TestCase implements AnnotatorInitializer {
   public static final String TOKEN_TYPE_FEAT = "ttype";
 
   public static final String TOKEN_TYPE_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
-                  + TOKEN_TYPE_FEAT;
+          + TOKEN_TYPE_FEAT;
 
   public static final String TOKEN_TYPE_TYPE = "x.y.z.TokenType";
 
@@ -79,17 +79,17 @@ public class CASTestSetup extends TestCase implements AnnotatorInitializer {
   public static final String SENT_LEN_FEAT = "sentenceLength";
 
   public static final String SENT_LEN_FEAT_Q = SENT_TYPE + TypeSystem.FEATURE_SEPARATOR
-                  + SENT_LEN_FEAT;
+          + SENT_LEN_FEAT;
 
   public static final String TOKEN_FLOAT_FEAT = "tokenFloatFeat";
 
   public static final String TOKEN_FLOAT_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
-                  + TOKEN_FLOAT_FEAT;
+          + TOKEN_FLOAT_FEAT;
 
   public static final String LEMMA_LIST_FEAT = "lemmaList";
 
   public static final String LEMMA_LIST_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
-                  + LEMMA_LIST_FEAT;
+          + LEMMA_LIST_FEAT;
 
   public static final String LANG_PAIR = "org.apache.lang.LanguagePair";
 
@@ -193,7 +193,7 @@ public class CASTestSetup extends TestCase implements AnnotatorInitializer {
       tsm.addFeature("missingThisOne", typeMissingFeat, typeFloat);
 
     tsm.addFeature("changedFType", typeMissingFeat, (bad != BAD_CHANGED_FEATURE_TYPE) ? typeString
-                    : typeFloat);
+            : typeFloat);
 
     Type abstractType = tsm.addType("aa.AbstractType", topType);
     tsm.addFeature("abstractInt", abstractType, typeInteger);
@@ -231,9 +231,9 @@ public class CASTestSetup extends TestCase implements AnnotatorInitializer {
     Type annotation = ts.getType(TCAS.TYPE_NAME_ANNOTATION);
     comp.setType(annotation);
     comp.addKey(annotation.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_BEGIN),
-                    FSIndexComparator.STANDARD_COMPARE);
+            FSIndexComparator.STANDARD_COMPARE);
     comp.addKey(annotation.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_END),
-                    FSIndexComparator.REVERSE_STANDARD_COMPARE);
+            FSIndexComparator.REVERSE_STANDARD_COMPARE);
     irm.createIndex(comp, ANNOT_BAG_INDEX, FSIndex.BAG_INDEX);
     irm.createIndex(comp, ANNOT_SET_INDEX, FSIndex.SET_INDEX);
 

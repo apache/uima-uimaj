@@ -43,8 +43,8 @@ import org.w3c.dom.Element;
  * 
  */
 public class CasConsumerDescription_impl extends ResourceCreationSpecifier_impl implements
-                CasConsumerDescription {
-  
+        CasConsumerDescription {
+
   private static final long serialVersionUID = -3876854246385758053L;
 
   /**
@@ -56,7 +56,7 @@ public class CasConsumerDescription_impl extends ResourceCreationSpecifier_impl 
     setFrameworkImplementation("org.apache.uima.java");
     // set default operational properties (may be overrriden during parsing)
     OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory()
-                    .createOperationalProperties();
+            .createOperationalProperties();
     opProps.setModifiesCas(false);
     opProps.setMultipleDeploymentAllowed(false);
     opProps.setOutputsNewCASes(false);
@@ -76,12 +76,12 @@ public class CasConsumerDescription_impl extends ResourceCreationSpecifier_impl 
    * @see org.apache.uima.resource.ResourceCreationSpecifier#doFullValidation(org.apache.uima.resource.ResourceManager)
    */
   public void doFullValidation(ResourceManager aResourceManager)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     // check that user class was specified
     if (getImplementationName() == null || getImplementationName().length() == 0) {
       throw new ResourceInitializationException(
-                      ResourceInitializationException.MISSING_IMPLEMENTATION_CLASS_NAME,
-                      new Object[] { getSourceUrlString() });
+              ResourceInitializationException.MISSING_IMPLEMENTATION_CLASS_NAME,
+              new Object[] { getSourceUrlString() });
     }
     // try to load user class
     // ust UIMA extension ClassLoader if available
@@ -95,14 +95,13 @@ public class CasConsumerDescription_impl extends ResourceCreationSpecifier_impl 
       }
     } catch (ClassNotFoundException e) {
       throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
-                      new Object[] { getImplementationName(), getSourceUrlString() }, e);
+              new Object[] { getImplementationName(), getSourceUrlString() }, e);
     }
     // verify the user class implements CasConsumer
     if (!CasConsumer.class.isAssignableFrom(implClass)) {
       throw new ResourceInitializationException(
-                      ResourceInitializationException.RESOURCE_DOES_NOT_IMPLEMENT_INTERFACE,
-                      new Object[] { getImplementationName(), CasConsumer.class.getName(),
-                          getSourceUrlString() });
+              ResourceInitializationException.RESOURCE_DOES_NOT_IMPLEMENT_INTERFACE, new Object[] {
+                  getImplementationName(), CasConsumer.class.getName(), getSourceUrlString() });
     }
     // try to create a CAS
     ArrayList metadata = new ArrayList();
@@ -114,11 +113,11 @@ public class CasConsumerDescription_impl extends ResourceCreationSpecifier_impl 
    * Overridden to set default operational properties if they are not specified in descriptor.
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
     if (getCasConsumerMetaData().getOperationalProperties() == null) {
       OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory()
-                      .createOperationalProperties();
+              .createOperationalProperties();
       opProps.setModifiesCas(false);
       opProps.setMultipleDeploymentAllowed(false);
       opProps.setOutputsNewCASes(false);
@@ -131,10 +130,9 @@ public class CasConsumerDescription_impl extends ResourceCreationSpecifier_impl 
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-                  "casConsumerDescription", new PropertyXmlInfo[] {
-                      new PropertyXmlInfo("frameworkImplementation"),
-                      new PropertyXmlInfo("implementationName"),
-                      new PropertyXmlInfo("metaData", null),
-                      new PropertyXmlInfo("externalResourceDependencies"),
-                      new PropertyXmlInfo("resourceManagerConfiguration", null) });
+          "casConsumerDescription", new PropertyXmlInfo[] {
+              new PropertyXmlInfo("frameworkImplementation"),
+              new PropertyXmlInfo("implementationName"), new PropertyXmlInfo("metaData", null),
+              new PropertyXmlInfo("externalResourceDependencies"),
+              new PropertyXmlInfo("resourceManagerConfiguration", null) });
 }

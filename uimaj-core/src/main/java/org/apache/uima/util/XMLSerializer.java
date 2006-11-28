@@ -42,7 +42,7 @@ import org.xml.sax.ContentHandler;
  */
 public class XMLSerializer {
   private static final SAXTransformerFactory transformerFactory = (SAXTransformerFactory) SAXTransformerFactory
-                  .newInstance();
+          .newInstance();
 
   private TransformerHandler mHandler;
 

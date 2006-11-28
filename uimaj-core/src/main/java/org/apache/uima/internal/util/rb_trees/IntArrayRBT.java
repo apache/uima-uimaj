@@ -50,7 +50,7 @@ public class IntArrayRBT {
    * 
    */
   private class ComparablePointerIterator extends PointerIterator implements
-                  ComparableIntPointerIterator {
+          ComparableIntPointerIterator {
 
     private final IntComparator comp;
 
@@ -245,7 +245,7 @@ public class IntArrayRBT {
     public int compareTo(Object o) {
       ComparableIterator it = (ComparableIterator) o;
       return this.comparator.compare(IntArrayRBT.this.key[this.currentNode], it
-                      .getKey(it.currentNode));
+              .getKey(it.currentNode));
     }
 
   }
@@ -847,7 +847,7 @@ public class IntArrayRBT {
   }
 
   public ComparableIntPointerIterator pointerIterator(IntComparator comp,
-                  int[] detectIllegalIndexUpdates, int typeCode) {
+          int[] detectIllegalIndexUpdates, int typeCode) {
     // assert(comp != null);
     ComparablePointerIterator cpi = new ComparablePointerIterator(comp);
     cpi.modificationSnapshot = detectIllegalIndexUpdates[typeCode];
@@ -884,7 +884,7 @@ public class IntArrayRBT {
       ++currentBlack;
     }
     return (satisfiesRBProps(this.left[node], blackDepth, currentBlack) && satisfiesRBProps(
-                    this.right[node], blackDepth, currentBlack));
+            this.right[node], blackDepth, currentBlack));
   }
 
   public int maxDepth() {

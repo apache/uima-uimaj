@@ -45,8 +45,8 @@ public class CasDefinition {
   private ResourceManager resourceManager;
 
   public CasDefinition(TypeSystemDescription aTypeSystem, TypePriorities aTypePriorities,
-                  FsIndexDescription[] aFsIndexes, ResourceManager aResourceManager,
-                  Properties aPerformanceTuningSettings) {
+          FsIndexDescription[] aFsIndexes, ResourceManager aResourceManager,
+          Properties aPerformanceTuningSettings) {
     this.typeSystemDescription = aTypeSystem;
     this.typePriorities = aTypePriorities;
     this.fsIndexDescriptions = aFsIndexes;
@@ -54,7 +54,7 @@ public class CasDefinition {
   }
 
   public CasDefinition(Collection aMetaDataToMerge, ResourceManager aResourceManager)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     // extract TypeSystems, TypePriorities, and FsIndexes from metadata
     List typeSystems = new ArrayList();
     List typePrioritiesList = new ArrayList();
@@ -72,10 +72,10 @@ public class CasDefinition {
 
     // merge TypePriorities and FsIndexes
     TypePriorities aggTypePriorities = CasCreationUtils.mergeTypePriorities(typePrioritiesList,
-                    aResourceManager);
+            aResourceManager);
     FsIndexCollection aggIndexColl = CasCreationUtils.mergeFsIndexes(fsIndexes, aResourceManager);
     TypeSystemDescription aggTypeDesc = CasCreationUtils.mergeTypeSystems(typeSystems,
-                    aResourceManager);
+            aResourceManager);
 
     this.typeSystemDescription = aggTypeDesc;
     this.typePriorities = aggTypePriorities;

@@ -73,7 +73,7 @@ public class CasInitializerDescription_implTest extends TestCase {
       TypeDescription type1 = typeSystem.addType("Fake", "<b>Fake</b> Type", "Annotation");
       type1.addFeature("TestFeature", "For Testing Only", CAS.TYPE_NAME_STRING);
       TypeDescription enumType = typeSystem.addType("EnumType", "Test Enumerated Type",
-                      "uima.cas.String");
+              "uima.cas.String");
       enumType.setAllowedValues(new AllowedValue[] { new AllowedValue_impl("One", "First Value"),
           new AllowedValue_impl("Two", "Second Value") });
 
@@ -142,7 +142,7 @@ public class CasInitializerDescription_implTest extends TestCase {
       cfgGrp2.setNames(new String[] { "cfgGrp2a", "cfgGrp2b" });
       cfgGrp2.setConfigurationParameters(new ConfigurationParameter[] { cfgParam3 });
       md.getConfigurationParameterDeclarations().setConfigurationGroups(
-                      new ConfigurationGroup[] { cfgGrp1, cfgGrp2 });
+              new ConfigurationGroup[] { cfgGrp1, cfgGrp2 });
 
       NameValuePair nvp1 = new NameValuePair_impl("param1", "test");
       NameValuePair nvp2 = new NameValuePair_impl("param2", Integer.valueOf("42"));
@@ -157,21 +157,21 @@ public class CasInitializerDescription_implTest extends TestCase {
       uriSpec.setUri("http://www.incubator.apache.org/uima");
       uriSpec.setProtocol(Constants.PROTOCOL_SOAP);
       ExternalResourceDependency dep = UIMAFramework.getResourceSpecifierFactory()
-                      .createExternalResourceDependency();
+              .createExternalResourceDependency();
       dep.setKey("ResourceKey");
       dep.setDescription("Test");
       mTestDesc.setExternalResourceDependencies(new ExternalResourceDependency[] { dep });
       ResourceManagerConfiguration resMgrCfg = UIMAFramework.getResourceSpecifierFactory()
-                      .createResourceManagerConfiguration();
+              .createResourceManagerConfiguration();
       ExternalResourceDescription extRes = UIMAFramework.getResourceSpecifierFactory()
-                      .createExternalResourceDescription();
+              .createExternalResourceDescription();
       extRes.setResourceSpecifier(uriSpec);
       extRes.setName("Resource1");
       extRes.setDescription("Test");
       resMgrCfg.setExternalResources(new ExternalResourceDescription[] { extRes });
 
       ExternalResourceBinding binding = UIMAFramework.getResourceSpecifierFactory()
-                      .createExternalResourceBinding();
+              .createExternalResourceBinding();
       binding.setKey("ResourceKey");
       binding.setResourceName("Resource1");
       mTestDesc.setResourceManagerConfiguration(resMgrCfg);
@@ -191,7 +191,7 @@ public class CasInitializerDescription_implTest extends TestCase {
       // parse objects from XML (no schema validation)
       InputStream is = new ByteArrayInputStream(testDescXml.getBytes());
       CasInitializerDescription newDesc = (CasInitializerDescription) UIMAFramework.getXMLParser()
-                      .parse(new XMLInputSource(is, null));
+              .parse(new XMLInputSource(is, null));
 
       // compare
       Assert.assertEquals(mTestDesc, newDesc);
@@ -208,7 +208,7 @@ public class CasInitializerDescription_implTest extends TestCase {
 
       // deserialize
       CasInitializerDescription newDesc = (CasInitializerDescription) SerializationUtils
-                      .deserialize(testDescBytes);
+              .deserialize(testDescBytes);
 
       Assert.assertEquals(mTestDesc, newDesc);
     } catch (Exception e) {

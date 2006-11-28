@@ -120,7 +120,7 @@ public class Style_impl extends MetaDataObject_impl implements Style {
    *      org.apache.uima.util.XMLParser)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
-                  XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
+          XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     setName(aElement.getAttribute("name"));
 
     // call superclass method to parse the "attributes" property, which is stored
@@ -138,8 +138,7 @@ public class Style_impl extends MetaDataObject_impl implements Style {
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("style",
-                  new PropertyXmlInfo[] {
-                      // name is an attribute, not an element
-                      new PropertyXmlInfo("attributes", null),
-                      new PropertyXmlInfo("attributeMappings") });
+          new PropertyXmlInfo[] {
+          // name is an attribute, not an element
+              new PropertyXmlInfo("attributes", null), new PropertyXmlInfo("attributeMappings") });
 }

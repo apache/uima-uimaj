@@ -42,7 +42,7 @@ import org.xml.sax.SAXException;
  * 
  */
 public class ConfigurationParameterSettings_impl extends MetaDataObject_impl implements
-                ConfigurationParameterSettings {
+        ConfigurationParameterSettings {
 
   static final long serialVersionUID = 3476535733588304983L;
 
@@ -70,7 +70,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
   public void setParameterSettings(NameValuePair[] aSettings) {
     if (aSettings == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-                      new Object[] { "null", "aSettings", "setParameterSettings" });
+              new Object[] { "null", "aSettings", "setParameterSettings" });
     }
     mParameterSettings = aSettings;
   }
@@ -235,7 +235,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
    *      org.apache.uima.util.XMLParser)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser,
-                  XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
+          XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     ArrayList nvps = new ArrayList();
     // get all child nodes
     NodeList childNodes = aElement.getChildNodes();
@@ -265,7 +265,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
           }
         } else {
           throw new InvalidXMLException(InvalidXMLException.UNKNOWN_ELEMENT, new Object[] { elem
-                          .getTagName() });
+                  .getTagName() });
         }
       }
     }
@@ -283,18 +283,18 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
    *      java.lang.String, ContentHandler)
    */
   protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace,
-                  ContentHandler aContentHandler) throws SAXException {
+          ContentHandler aContentHandler) throws SAXException {
     if ("settingsForGroups".equals(aPropInfo.propertyName)) {
       this.writeMapPropertyToXml("settingsForGroups", null, "name", "settingsForGroup", true,
-                      aNamespace, aContentHandler);
+              aNamespace, aContentHandler);
     } else {
       super.writePropertyAsElement(aPropInfo, aNamespace, aContentHandler);
     }
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-                  "configurationParameterSettings", new PropertyXmlInfo[] {
-                      new PropertyXmlInfo("parameterSettings", null),
-                      new PropertyXmlInfo("settingsForGroups", null) // NOTE: custom XMLization
-                  });
+          "configurationParameterSettings", new PropertyXmlInfo[] {
+              new PropertyXmlInfo("parameterSettings", null),
+              new PropertyXmlInfo("settingsForGroups", null) // NOTE: custom XMLization
+          });
 }

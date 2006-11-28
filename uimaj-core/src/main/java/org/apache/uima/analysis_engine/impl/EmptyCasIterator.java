@@ -50,6 +50,6 @@ public class EmptyCasIterator implements CasIterator {
    * @see org.apache.uima.analysis_engine.CasIterator#release()
    */
   public void release() {
-    //nothing to do
+    // nothing to do
   }
 }

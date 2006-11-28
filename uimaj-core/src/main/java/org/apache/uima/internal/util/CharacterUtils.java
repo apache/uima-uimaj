@@ -182,7 +182,7 @@ public class CharacterUtils {
         System.out.print(" '" + toUnicodeChar(range.start) + "'");
       } else {
         System.out.print(" '" + toUnicodeChar(range.start) + "' .. '" + toUnicodeChar(range.end)
-                        + "' ");
+                + "' ");
       }
     }
     System.out.println("\n" + spaces + " ;");

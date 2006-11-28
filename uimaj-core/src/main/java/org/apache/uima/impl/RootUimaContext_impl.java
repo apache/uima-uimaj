@@ -59,13 +59,13 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
    * Instrumentation Facility (wraps ProcessTrace)
    */
   private InstrumentationFacility_impl mInstrumentationFacility = new InstrumentationFacility_impl(
-                  null);
+          null);
 
   /**
    * Current Session
    */
   private Session mSession;
-  
+
   /*
    * (non-Javadoc)
    * 
@@ -74,7 +74,7 @@ public class RootUimaContext_impl extends UimaContext_ImplBase {
    *      ConfigurationManager)
    */
   public void initializeRoot(Logger aLogger, ResourceManager aResourceManager,
-                  ConfigurationManager aConfigurationManager) {
+          ConfigurationManager aConfigurationManager) {
     mLogger = aLogger;
     mResourceManager = aResourceManager;
     mConfigurationManager = aConfigurationManager;

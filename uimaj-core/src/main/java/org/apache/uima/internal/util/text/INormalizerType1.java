@@ -42,6 +42,6 @@ public interface INormalizerType1 {
   public INormalizationResult normalize(char[] text, int from, int length);
 
   public INormalizationResult normalize(char[] text, int from, int length,
-                  boolean cjRemoveWhitespace);
+          boolean cjRemoveWhitespace);
 
 }

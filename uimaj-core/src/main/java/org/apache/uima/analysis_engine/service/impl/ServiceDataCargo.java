@@ -60,7 +60,7 @@ public class ServiceDataCargo implements Serializable {
   private CASCompleteSerializer mCasSer;
 
   private ProcessTrace mProcessTrace;
-  
+
   /**
    * Creates a new <code>SerializableAnalysisProcessData</code> that contains information
    * extracted from the specified <code>AnalysisProcessData</code>.
@@ -100,7 +100,7 @@ public class ServiceDataCargo implements Serializable {
    *          the AnalysisProcessData to unmarshal into
    */
   public void unmarshalInto(AnalysisProcessData aDataContainer, boolean aReplaceCasTypeSystem)
-                  throws TCASException {
+          throws TCASException {
     unmarshalCas(aDataContainer.getCAS(), aReplaceCasTypeSystem);
     aDataContainer.getProcessTrace().addAll(mProcessTrace.getEvents());
   }

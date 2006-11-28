@@ -49,7 +49,7 @@ public class ConfigurableDataResource_impl extends Resource_ImplBase implements 
 
   /** URL of file. This is formed from the URI, if possible. */
   private URL mFileUrl;
-  
+
   /**
    * Initializes this DataResource.
    * 
@@ -65,7 +65,7 @@ public class ConfigurableDataResource_impl extends Resource_ImplBase implements 
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     // aSpecifier must be a ConfigurableDataResourceSpecifier
     if (!(aSpecifier instanceof ConfigurableDataResourceSpecifier)) {
       return false;

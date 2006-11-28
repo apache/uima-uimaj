@@ -27,5 +27,5 @@ package org.apache.uima.analysis_engine;
  *             defines any additional methods beyond those in AnalysisEngine.
  */
 public interface TextAnalysisEngine extends AnalysisEngine {
-  //As of 2.0, no longer defines any additional methods beyond those in AnalysisEngineDescription
+  // As of 2.0, no longer defines any additional methods beyond those in AnalysisEngineDescription
 }

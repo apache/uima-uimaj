@@ -77,8 +77,8 @@ public interface ASB extends Resource {
    *           <code>aComponentSpecifiers</code>.
    */
   public void setup(Map aComponentSpecifiers, UimaContextAdmin aParentContext,
-                  FlowControllerDeclaration aFlowControllerDeclaration,
-                  AnalysisEngineMetaData aAggregateMetadata) throws ResourceInitializationException;
+          FlowControllerDeclaration aFlowControllerDeclaration,
+          AnalysisEngineMetaData aAggregateMetadata) throws ResourceInitializationException;
 
   /**
    * Gets metadata for all of the component AnalysisEngines known to this <code>ASB</code>.

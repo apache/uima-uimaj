@@ -66,8 +66,8 @@ public abstract class CasMultiplier_ImplBase extends AnalysisComponent_ImplBase 
       process((CAS) aCAS);
     } else {
       throw new AnalysisEngineProcessException(
-                      AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] {
-                          CAS.class, aCAS.getClass() });
+              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { CAS.class,
+                  aCAS.getClass() });
     }
   }
 
@@ -98,7 +98,7 @@ public abstract class CasMultiplier_ImplBase extends AnalysisComponent_ImplBase 
    *           if the provided type system is missing types or features required by this annotator
    */
   public void typeSystemInit(TypeSystem aTypeSystem) throws AnalysisEngineProcessException {
-    //no default behavior
+    // no default behavior
   }
 
   /**

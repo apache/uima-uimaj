@@ -42,7 +42,7 @@ import org.apache.uima.util.Logger;
  * instances to put in the pool.
  */
 public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase implements
-                TextAnalysisEngine {
+        TextAnalysisEngine {
 
   /**
    * AnalysisEngine pool used to serve process requests.
@@ -60,7 +60,7 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
    *      java.util.Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     super.initialize(aSpecifier, aAdditionalParams);
 
     // Read parameters from the aAdditionalParams map.
@@ -75,7 +75,7 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
     // determine size of Analysis Engine pool and timeout period
     Integer poolSizeInteger = (Integer) aAdditionalParams.get(PARAM_NUM_SIMULTANEOUS_REQUESTS);
     int poolSize = (poolSizeInteger != null) ? poolSizeInteger.intValue()
-                    : DEFAULT_NUM_SIMULTANEOUS_REQUESTS;
+            : DEFAULT_NUM_SIMULTANEOUS_REQUESTS;
 
     Integer timeoutInteger = (Integer) aAdditionalParams.get(PARAM_TIMEOUT_PERIOD);
     mTimeout = (timeoutInteger != null) ? timeoutInteger.intValue() : DEFAULT_TIMEOUT_PERIOD;
@@ -101,7 +101,7 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
       if (ae == null) // timeout elapsed
       {
         throw new AnalysisEngineProcessException(AnalysisEngineProcessException.TIMEOUT_ELAPSED,
-                        new Object[] { new Integer(getTimeout()) });
+                new Object[] { new Integer(getTimeout()) });
       }
 
       return ae.processAndOutputNewCASes(aCAS);

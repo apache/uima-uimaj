@@ -90,6 +90,6 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
    */
   protected XmlizationInfo getXmlizationInfo() {
     return new XmlizationInfo("priorityList", new PropertyXmlInfo[] { new PropertyXmlInfo("types",
-                    null, false, "type") });
+            null, false, "type") });
   }
 }

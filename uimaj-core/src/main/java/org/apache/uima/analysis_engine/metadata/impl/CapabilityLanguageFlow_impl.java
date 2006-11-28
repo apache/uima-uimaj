@@ -39,11 +39,11 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  * 
  */
 public class CapabilityLanguageFlow_impl extends MetaDataObject_impl implements
-                CapabilityLanguageFlow {
+        CapabilityLanguageFlow {
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-                  "capabilityLanguageFlow", new PropertyXmlInfo[] { new PropertyXmlInfo(
-                                  "capabilityLanguageFlow", null, true, "node") });
+          "capabilityLanguageFlow", new PropertyXmlInfo[] { new PropertyXmlInfo(
+                  "capabilityLanguageFlow", null, true, "node") });
 
   /** Array of AnalysisEngine identifiers indicating the capabilityLanguage flow. */
   private String[] mCapabilityLanguageFlow = new String[0];
@@ -70,7 +70,7 @@ public class CapabilityLanguageFlow_impl extends MetaDataObject_impl implements
   public void setCapabilityLanguageFlow(String[] aFlow) {
     if (aFlow == null) {
       throw new UIMA_IllegalArgumentException(UIMA_IllegalArgumentException.ILLEGAL_ARGUMENT,
-                      new Object[] { "null", "aFlow", "setCapabilityLanguageFlow" });
+              new Object[] { "null", "aFlow", "setCapabilityLanguageFlow" });
     }
     mCapabilityLanguageFlow = aFlow;
   }

@@ -83,7 +83,7 @@ public class ResourceManager_impl implements ResourceManager {
    * internally during resource initialization.
    */
   private Map mInternalParameterizedResourceImplClassMap = Collections
-                  .synchronizedMap(new HashMap());
+          .synchronizedMap(new HashMap());
 
   /**
    * Map from ArrayList(0:String,1:DataResource) keys to Resource objects. For
@@ -112,7 +112,7 @@ public class ResourceManager_impl implements ResourceManager {
    * @see org.apache.uima.resource.ResourceManager#setExtensionClassPath(java.lang.String, boolean)
    */
   public void setExtensionClassPath(String classpath, boolean resolveResource)
-                  throws MalformedURLException {
+          throws MalformedURLException {
     // create UIMA extension ClassLoader with the given classpath
     uimaCL = new UIMAClassLoader(classpath, this.getClass().getClassLoader());
 
@@ -127,7 +127,7 @@ public class ResourceManager_impl implements ResourceManager {
    *      boolean)
    */
   public void setExtensionClassPath(ClassLoader parent, String classpath, boolean resolveResource)
-                  throws MalformedURLException {
+          throws MalformedURLException {
     // create UIMA extension ClassLoader with the given classpath
     uimaCL = new UIMAClassLoader(classpath, parent);
 
@@ -189,7 +189,7 @@ public class ResourceManager_impl implements ResourceManager {
     // if this is a ParameterizedDataResource, it is an error
     if (r instanceof ParameterizedDataResource) {
       throw new ResourceAccessException(ResourceAccessException.PARAMETERS_REQUIRED,
-                      new Object[] { aName });
+              new Object[] { aName });
     }
     return r;
 
@@ -208,7 +208,7 @@ public class ResourceManager_impl implements ResourceManager {
     // if not a ParameterizedDataResource, it is an error
     if (!(r instanceof ParameterizedDataResource)) {
       throw new ResourceAccessException(ResourceAccessException.PARAMETERS_NOT_ALLOWED,
-                      new Object[] { aName });
+              new Object[] { aName });
     }
     ParameterizedDataResource pdr = (ParameterizedDataResource) r;
 
@@ -284,7 +284,7 @@ public class ResourceManager_impl implements ResourceManager {
    *      java.lang.String[])
    */
   public InputStream getResourceAsStream(String aKey, String[] aParams)
-                  throws ResourceAccessException {
+          throws ResourceAccessException {
     try {
       // see if this resource is registered in the ResourceManager
       Object r = getResource(aKey, aParams);
@@ -397,8 +397,8 @@ public class ResourceManager_impl implements ResourceManager {
    *      java.lang.String, java.util.Map)
    */
   public void initializeExternalResources(ResourceManagerConfiguration aConfiguration,
-                  String aQualifiedContextName, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          String aQualifiedContextName, Map aAdditionalParams)
+          throws ResourceInitializationException {
     // register resources
     ExternalResourceDescription[] resources = aConfiguration.getExternalResources();
     for (int i = 0; i < resources.length; i++) {
@@ -406,7 +406,7 @@ public class ResourceManager_impl implements ResourceManager {
 
       // check for existing resource registration under this name
       ResourceRegistration registration = (ResourceRegistration) mInternalResourceRegistrationMap
-                      .get(name);
+              .get(name);
       if (registration == null) {
         registerResource(name, resources[i], aQualifiedContextName, aAdditionalParams);
       } else {
@@ -415,23 +415,15 @@ public class ResourceManager_impl implements ResourceManager {
           // if the resource was overridden in an enclosing aggregate, use an INFO level message.
           // if not (e.g. sibling annotators declare the same resource name), it's a WARNING.
           if (aQualifiedContextName.startsWith(registration.definingContext)) {
-            UIMAFramework.getLogger().logrb(
-                            Level.CONFIG,
-                            ResourceManager_impl.class.getName(),
-                            "initializeExternalResources",
-                            LOG_RESOURCE_BUNDLE,
-                            "UIMA_overridden_resource__CONFIG",
-                            new Object[] { name, registration.definingContext,
-                                aQualifiedContextName });
+            UIMAFramework.getLogger().logrb(Level.CONFIG, ResourceManager_impl.class.getName(),
+                    "initializeExternalResources", LOG_RESOURCE_BUNDLE,
+                    "UIMA_overridden_resource__CONFIG",
+                    new Object[] { name, registration.definingContext, aQualifiedContextName });
           } else {
-            UIMAFramework.getLogger().logrb(
-                            Level.WARNING,
-                            ResourceManager_impl.class.getName(),
-                            "initializeExternalResources",
-                            LOG_RESOURCE_BUNDLE,
-                            "UIMA_duplicate_resource_name__WARNING",
-                            new Object[] { name, aQualifiedContextName,
-                                registration.definingContext });
+            UIMAFramework.getLogger().logrb(Level.WARNING, ResourceManager_impl.class.getName(),
+                    "initializeExternalResources", LOG_RESOURCE_BUNDLE,
+                    "UIMA_duplicate_resource_name__WARNING",
+                    new Object[] { name, aQualifiedContextName, registration.definingContext });
           }
         }
       }
@@ -440,18 +432,16 @@ public class ResourceManager_impl implements ResourceManager {
     ExternalResourceBinding[] bindings = aConfiguration.getExternalResourceBindings();
     for (int i = 0; i < bindings.length; i++) {
       ResourceRegistration registration = (ResourceRegistration) mInternalResourceRegistrationMap
-                      .get(bindings[i].getResourceName());
+              .get(bindings[i].getResourceName());
       if (registration == null) {
         throw new ResourceInitializationException(
-                        ResourceInitializationException.UNKNOWN_RESOURCE_NAME, new Object[] {
-                            bindings[i].getResourceName(), bindings[i].getSourceUrlString() });
+                ResourceInitializationException.UNKNOWN_RESOURCE_NAME, new Object[] {
+                    bindings[i].getResourceName(), bindings[i].getSourceUrlString() });
       }
       mResourceMap.put(aQualifiedContextName + bindings[i].getKey(), registration.resource);
       // record the link from key to resource class (for parameterized resources only)
-      mParameterizedResourceImplClassMap
-                      .put(aQualifiedContextName + bindings[i].getKey(),
-                                      mInternalParameterizedResourceImplClassMap.get(bindings[i]
-                                                      .getResourceName()));
+      mParameterizedResourceImplClassMap.put(aQualifiedContextName + bindings[i].getKey(),
+              mInternalParameterizedResourceImplClassMap.get(bindings[i].getResourceName()));
 
     }
   }
@@ -463,7 +453,7 @@ public class ResourceManager_impl implements ResourceManager {
    *      java.lang.String)
    */
   public void resolveAndValidateResourceDependencies(ExternalResourceDependency[] aDependencies,
-                  String aQualifiedContextName) throws ResourceInitializationException {
+          String aQualifiedContextName) throws ResourceInitializationException {
     for (int i = 0; i < aDependencies.length; i++) {
       // get resource
       String qname = aQualifiedContextName + aDependencies[i].getKey();
@@ -490,15 +480,14 @@ public class ResourceManager_impl implements ResourceManager {
       {
         if (!aDependencies[i].isOptional()) {
           throw new ResourceInitializationException(
-                          ResourceInitializationException.RESOURCE_DEPENDENCY_NOT_SATISFIED,
-                          new Object[] { aDependencies[i].getKey(),
-                              aDependencies[i].getSourceUrlString() });
+                  ResourceInitializationException.RESOURCE_DEPENDENCY_NOT_SATISFIED, new Object[] {
+                      aDependencies[i].getKey(), aDependencies[i].getSourceUrlString() });
         }
       } else {
         // make sure resource exists and implements the correct interface
         try {
           if (aDependencies[i].getInterfaceName() != null
-                          && aDependencies[i].getInterfaceName().length() > 0) {
+                  && aDependencies[i].getInterfaceName().length() > 0) {
             // get UIMA extension ClassLoader if available
             ClassLoader cl = getExtensionClassLoader();
             Class theInterface = null;
@@ -514,16 +503,15 @@ public class ResourceManager_impl implements ResourceManager {
             Class resourceClass = getResourceClass(qname);
             if (!theInterface.isAssignableFrom(resourceClass)) {
               throw new ResourceInitializationException(
-                              ResourceInitializationException.RESOURCE_DOES_NOT_IMPLEMENT_INTERFACE,
-                              new Object[] { qname, aDependencies[i].getInterfaceName(),
-                                  aDependencies[i].getSourceUrlString() });
+                      ResourceInitializationException.RESOURCE_DOES_NOT_IMPLEMENT_INTERFACE,
+                      new Object[] { qname, aDependencies[i].getInterfaceName(),
+                          aDependencies[i].getSourceUrlString() });
             }
           }
         } catch (ClassNotFoundException e) {
           throw new ResourceInitializationException(
-                          ResourceInitializationException.CLASS_NOT_FOUND, new Object[] {
-                              aDependencies[i].getInterfaceName(),
-                              aDependencies[i].getSourceUrlString() });
+                  ResourceInitializationException.CLASS_NOT_FOUND, new Object[] {
+                      aDependencies[i].getInterfaceName(), aDependencies[i].getSourceUrlString() });
         }
       }
     }
@@ -533,16 +521,15 @@ public class ResourceManager_impl implements ResourceManager {
    * Instantiates a resource and inserts it in the internal resource map.
    */
   private void registerResource(String aName, ExternalResourceDescription aResourceDescription,
-                  String aDefiningContext, Map aResourceInitParams)
-                  throws ResourceInitializationException {
+          String aDefiningContext, Map aResourceInitParams) throws ResourceInitializationException {
     // add the relative path resolver to the resource init. params
     Map initParams = (aResourceInitParams == null) ? new HashMap() : new HashMap(
-                    aResourceInitParams);
+            aResourceInitParams);
     initParams.put(DataResource.PARAM_RELATIVE_PATH_RESOLVER, mRelativePathResolver);
 
     // create the initial resource using the resource factory
     Object r = UIMAFramework.produceResource(aResourceDescription.getResourceSpecifier(),
-                    initParams);
+            initParams);
 
     // load implementation class (if any) and ensure that it implements
     // SharedResourceObject
@@ -562,14 +549,13 @@ public class ResourceManager_impl implements ResourceManager {
         }
       } catch (ClassNotFoundException e) {
         throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
-                        new Object[] { implementationName,
-                            aResourceDescription.getSourceUrlString() }, e);
+                new Object[] { implementationName, aResourceDescription.getSourceUrlString() }, e);
       }
 
       if (!SharedResourceObject.class.isAssignableFrom(implClass)) {
         throw new ResourceInitializationException(
-                        ResourceInitializationException.NOT_A_SHARED_RESOURCE_OBJECT, new Object[] {
-                            implementationName, aResourceDescription.getSourceUrlString() });
+                ResourceInitializationException.NOT_A_SHARED_RESOURCE_OBJECT, new Object[] {
+                    implementationName, aResourceDescription.getSourceUrlString() });
       }
     }
 
@@ -583,12 +569,12 @@ public class ResourceManager_impl implements ResourceManager {
           r = sro;
         } catch (InstantiationException e) {
           throw new ResourceInitializationException(
-                          ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
-                              implClass.getName(), aResourceDescription.getSourceUrlString() }, e);
+                  ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
+                      implClass.getName(), aResourceDescription.getSourceUrlString() }, e);
         } catch (IllegalAccessException e) {
           throw new ResourceInitializationException(
-                          ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
-                              implClass.getName(), aResourceDescription.getSourceUrlString() }, e);
+                  ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
+                      implClass.getName(), aResourceDescription.getSourceUrlString() }, e);
         }
       }
     }
@@ -603,15 +589,15 @@ public class ResourceManager_impl implements ResourceManager {
       // it is an error to specify an implementation class in this case
       if (implClass != null) {
         throw new ResourceInitializationException(
-                        ResourceInitializationException.NOT_A_DATA_RESOURCE, new Object[] {
-                            implClass.getName(), aName, r.getClass().getName(),
-                            aResourceDescription.getSourceUrlString() });
+                ResourceInitializationException.NOT_A_DATA_RESOURCE, new Object[] {
+                    implClass.getName(), aName, r.getClass().getName(),
+                    aResourceDescription.getSourceUrlString() });
       }
     }
 
     // put resource in internal map for later retrieval
     ResourceRegistration registration = new ResourceRegistration(r, aResourceDescription,
-                    aDefiningContext);
+            aDefiningContext);
     mInternalResourceRegistrationMap.put(aName, registration);
   }
 
@@ -632,7 +618,7 @@ public class ResourceManager_impl implements ResourceManager {
     String definingContext;
 
     ResourceRegistration(Object resource, ExternalResourceDescription description,
-                    String definingContext) {
+            String definingContext) {
       this.resource = resource;
       this.description = description;
       this.definingContext = definingContext;

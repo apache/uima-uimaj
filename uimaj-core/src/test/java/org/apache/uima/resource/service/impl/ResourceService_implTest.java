@@ -54,14 +54,14 @@ public class ResourceService_implTest extends TestCase {
       TaeDescription primitiveDesc = new TaeDescription_impl();
       primitiveDesc.setPrimitive(true);
       primitiveDesc
-                      .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
+              .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       primitiveDesc.getMetaData().setName("Test Annotator");
       ConfigurationParameter p1 = new ConfigurationParameter_impl();
       p1.setName("StringParam");
       p1.setDescription("parameter with String data type");
       p1.setType(ConfigurationParameter.TYPE_STRING);
       primitiveDesc.getMetaData().getConfigurationParameterDeclarations()
-                      .setConfigurationParameters(new ConfigurationParameter[] { p1 });
+              .setConfigurationParameters(new ConfigurationParameter[] { p1 });
       // create a ResourceService_impl
       service = new ResourceService_impl();
       service.initialize(primitiveDesc, null);

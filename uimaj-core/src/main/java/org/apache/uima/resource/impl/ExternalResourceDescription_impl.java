@@ -34,7 +34,7 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  * 
  */
 public class ExternalResourceDescription_impl extends MetaDataObject_impl implements
-                ExternalResourceDescription {
+        ExternalResourceDescription {
 
   static final long serialVersionUID = -6995615796561255268L;
 
@@ -107,8 +107,8 @@ public class ExternalResourceDescription_impl extends MetaDataObject_impl implem
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("externalResource",
-                  new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
-                      new PropertyXmlInfo("description", false),
-                      new PropertyXmlInfo("resourceSpecifier", null),
-                      new PropertyXmlInfo("implementationName") });
+          new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
+              new PropertyXmlInfo("description", false),
+              new PropertyXmlInfo("resourceSpecifier", null),
+              new PropertyXmlInfo("implementationName") });
 }

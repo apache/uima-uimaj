@@ -32,10 +32,10 @@ import org.apache.uima.cas.FeatureStructure;
  * 
  * @version $Revision: 1.1 $
  */
-class FloatConstraint extends PathConstraint implements FSMatchConstraint {  
+class FloatConstraint extends PathConstraint implements FSMatchConstraint {
 
   private static final long serialVersionUID = -6954254545913068934L;
-  
+
   private FSFloatConstraint floatConstraint;
 
   private FloatConstraint() {

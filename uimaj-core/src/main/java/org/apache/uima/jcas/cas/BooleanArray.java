@@ -114,7 +114,7 @@ public final class BooleanArray extends TOP implements BooleanArrayFS {
     jcasType.casImpl.checkArrayBounds(addr, srcOffset, length);
     for (int i = 0; i < length; i++) {
       dest[i + destOffset] = Boolean.toString(jcasType.ll_cas.ll_getBooleanArrayValue(addr, i
-                      + srcOffset));
+              + srcOffset));
     }
   }
 
@@ -125,7 +125,7 @@ public final class BooleanArray extends TOP implements BooleanArrayFS {
     jcasType.casImpl.checkArrayBounds(addr, destOffset, length);
     for (int i = 0; i < length; i++) {
       jcasType.ll_cas.ll_setBooleanArrayValue(addr, i + destOffset, "true".equalsIgnoreCase(src[i
-                      + srcOffset]));
+              + srcOffset]));
     }
   }
 

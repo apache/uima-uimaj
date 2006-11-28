@@ -104,7 +104,7 @@ public class InternationalizedRuntimeException extends RuntimeException {
    *          arguments.
    */
   public InternationalizedRuntimeException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments) {
+          Object[] aArguments) {
     this(aResourceBundleName, aMessageKey, aArguments, null);
   }
 
@@ -126,7 +126,7 @@ public class InternationalizedRuntimeException extends RuntimeException {
    *          the original exception that caused this exception to be thrown, if any
    */
   public InternationalizedRuntimeException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments, Throwable aCause) {
+          Object[] aArguments, Throwable aCause) {
     super();
     mCause = aCause;
     mResourceBundleName = aResourceBundleName;

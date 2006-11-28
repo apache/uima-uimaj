@@ -41,7 +41,7 @@ public class ResourceAccessException extends UIMAException {
    * parameters."
    */
   public static final String PARAMETERS_NOT_ALLOWED = "parameters_not_allowed";
-  
+
   /**
    * Creates a new exception with a null message.
    */
@@ -94,7 +94,7 @@ public class ResourceAccessException extends UIMAException {
    *          the original exception that caused this exception to be thrown, if any
    */
   public ResourceAccessException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments, Throwable aCause) {
+          Object[] aArguments, Throwable aCause) {
     super(aResourceBundleName, aMessageKey, aArguments, aCause);
   }
 

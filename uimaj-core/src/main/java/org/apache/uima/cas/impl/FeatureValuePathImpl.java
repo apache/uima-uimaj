@@ -68,7 +68,6 @@ import org.apache.uima.cas.text.TCAS;
  * can be omitted, and only the array access operator can be used. Examples:
  * 
  * <pre>
- *                
  *                 
  *                  
  *                   
@@ -78,8 +77,10 @@ import org.apache.uima.cas.text.TCAS;
  *                       
  *                        
  *                         
- *                                                                    []/somepackage.Person:coveredText()
- *                                                                     [last]/somepackage.Person:fsId()
+ *                          
+ *                                                                     []/somepackage.Person:coveredText()
+ *                                                                      [last]/somepackage.Person:fsId()
+ *                           
  *                          
  *                         
  *                        
@@ -89,7 +90,6 @@ import org.apache.uima.cas.text.TCAS;
  *                    
  *                   
  *                  
- *                 
  * </pre>
  * 
  * <br/><b>Usage </b>
@@ -198,10 +198,10 @@ public class FeatureValuePathImpl implements FeatureValuePath {
    * @throws ParserTokenizerException
    */
   private FeatureValuePathImpl(String pathSnippet, FeatureValuePathImpl child)
-                  throws CASRuntimeException {
+          throws CASRuntimeException {
     if (pathSnippet == null || pathSnippet.length() == 0) {
       CASRuntimeException exception = new CASRuntimeException(
-                      CASRuntimeException.INVALID_FEATURE_PATH);
+              CASRuntimeException.INVALID_FEATURE_PATH);
       exception.addArgument(pathSnippet);
       throw exception;
     }
@@ -223,9 +223,9 @@ public class FeatureValuePathImpl implements FeatureValuePath {
     // coveredText() asf. is only valid as the last snippet in a feature
     // path
     if ((this.isCoveredTextFeature || this.isFsIdFeature || this.isUniqueIdFeature || this.isTypeNameFeature)
-                    && child != null) {
+            && child != null) {
       CASRuntimeException exception = new CASRuntimeException(
-                      CASRuntimeException.INVALID_FEATURE_PATH);
+              CASRuntimeException.INVALID_FEATURE_PATH);
       exception.addArgument(pathSnippet);
       throw exception;
     }
@@ -260,7 +260,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
         throw new IllegalStateException("feature path denotes an array");
       }
       int arrayFS = (this.isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS,
-                      this.featureCode));
+              this.featureCode));
 
       int arraySize = ((CASImpl) cas).getArraySize(arrayFS);
       // if the user specified name[1000], but the array has only 5
@@ -287,7 +287,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
         throw new IllegalStateException("feature path denotes an array");
       }
       int listFS = (this.isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS,
-                      this.featureCode));
+              this.featureCode));
 
       switch (this.listType) {
         case TYPE_CLASS_FLOATLIST:
@@ -307,7 +307,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       int childFS = cas.ll_getRefValue(currentFS, this.featureCode, CAS_TYPE_CHECKS);
       return this.childPath.evaluateAsFloat(childFS, cas);
     } else if (this.isCoveredTextFeature || this.isUniqueIdFeature || this.isFsIdFeature
-                    || this.isTypeNameFeature) {
+            || this.isTypeNameFeature) {
       throw new IllegalStateException("feature path does not denote a float");
     } else {
       int typeClass = cas.ll_getTypeClass(this.featureRangeType);
@@ -334,7 +334,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       // the path snippet is like authors[], the "authors" feature
       // contains the array
       int arrayFS = (this.isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS,
-                      this.featureCode));
+              this.featureCode));
 
       int arraySize = ((CASImpl) cas).getArraySize(arrayFS);
 
@@ -372,7 +372,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       // the path snippet is like authors[], the "authors" feature
       // contains the list
       int listFS = (this.isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS,
-                      this.featureCode));
+              this.featureCode));
 
       if (this.arrayIndex == USE_ALL_ENTRIES) {
         ArrayList resultList = (ArrayList) getValueAtListIndex(cas, listFS);
@@ -418,7 +418,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
         throw new IllegalStateException("feature path denotes an array");
       }
       int arrayFS = (this.isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS,
-                      this.featureCode));
+              this.featureCode));
 
       int arraySize = ((CASImpl) cas).getArraySize(arrayFS);
       // if the user specified name[1000], but the array has only 5
@@ -444,7 +444,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
         throw new IllegalStateException("feature path denotes an array");
       }
       int listFS = (this.isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS,
-                      this.featureCode));
+              this.featureCode));
 
       switch (this.listType) {
         case TYPE_CLASS_INTEGERLIST:
@@ -494,7 +494,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       // the path snippet is like authors[], the "authors" feature
       // contains the array
       int arrayFS = (this.isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS,
-                      this.featureCode));
+              this.featureCode));
 
       int arraySize = ((CASImpl) cas).getArraySize(arrayFS);
 
@@ -532,7 +532,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       // the path snippet is like authors[], the "authors" feature
       // contains the list
       int listFS = (this.isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS,
-                      this.featureCode));
+              this.featureCode));
 
       if (this.arrayIndex == USE_ALL_ENTRIES) {
         ArrayList resultList = (ArrayList) getValueAtListIndex(cas, listFS);
@@ -588,7 +588,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
         throw new IllegalStateException("feature path denotes an array");
       }
       int arrayFS = (this.isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS,
-                      this.featureCode));
+              this.featureCode));
 
       int arraySize = ((CASImpl) cas).getArraySize(arrayFS);
       // if the user specified name[1000], but the array has only 5
@@ -614,7 +614,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
         throw new IllegalStateException("feature path denotes an array");
       }
       int listFS = (this.isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS,
-                      this.featureCode));
+              this.featureCode));
 
       switch (this.listType) {
         case TYPE_CLASS_STRINGLIST:
@@ -671,7 +671,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       // the path snippet is like authors[], the "authors" feature
       // contains the array
       int arrayFS = (this.isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS,
-                      this.featureCode));
+              this.featureCode));
 
       int arraySize = ((CASImpl) cas).getArraySize(arrayFS);
 
@@ -713,7 +713,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       // the path snippet is like authors[], the "authors" feature
       // contains the list
       int listFS = (this.isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS,
-                      this.featureCode));
+              this.featureCode));
 
       if (this.arrayIndex == USE_ALL_ENTRIES) {
         ArrayList resultList = (ArrayList) getValueAtListIndex(cas, listFS);
@@ -837,7 +837,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 
     if (fsType == LowLevelTypeSystem.UNKNOWN_TYPE_CODE) {
       CASRuntimeException exception = new CASRuntimeException(
-                      CASRuntimeException.INVALID_FEATURE_PATH);
+              CASRuntimeException.INVALID_FEATURE_PATH);
       exception.addArgument(this.typeNameInSnippet);
       throw exception;
     }
@@ -929,7 +929,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
         this.emptyListTypes = new Type[EMPTY_LIST_TYPE_NAMES.length];
         for (int i = 0; i < EMPTY_LIST_TYPE_NAMES.length; i++) {
           this.emptyListTypes[i] = ts.ll_getTypeForCode(ts
-                          .ll_getCodeForTypeName(EMPTY_LIST_TYPE_NAMES[i]));
+                  .ll_getCodeForTypeName(EMPTY_LIST_TYPE_NAMES[i]));
         }
 
       }
@@ -940,9 +940,9 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       // for simple range types, only [] and fsId() are allowed as child
       // path
       if (this.isSimpleRangeType
-                      & !(this.childPath.isBracketsOnly() || this.childPath.isFsIdFeature)) {
+              & !(this.childPath.isBracketsOnly() || this.childPath.isFsIdFeature)) {
         CASRuntimeException exception = new CASRuntimeException(
-                        CASRuntimeException.INVALID_FEATURE_PATH);
+                CASRuntimeException.INVALID_FEATURE_PATH);
         exception.addArgument(this.featureName);
         throw exception;
       }
@@ -954,26 +954,26 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       int annotationType = ts.ll_getCodeForTypeName(TCAS.TYPE_NAME_ANNOTATION);
       if (!((TypeSystemImpl) ts).subsumes(annotationType, fsType)) {
         CASRuntimeException exception = new CASRuntimeException(
-                        CASRuntimeException.INVALID_FEATURE_PATH);
+                CASRuntimeException.INVALID_FEATURE_PATH);
         exception.addArgument(this.typeNameInSnippet);
         throw exception;
       }
 
       this.valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES,
-                      CAS.TYPE_NAME_STRING)];
+              CAS.TYPE_NAME_STRING)];
     } else if (this.isFsIdFeature) {
       this.valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES,
-                      CAS.TYPE_NAME_INTEGER)];
+              CAS.TYPE_NAME_INTEGER)];
     } else if (this.isUniqueIdFeature) {
       this.valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES,
-                      CAS.TYPE_NAME_INTEGER)];
+              CAS.TYPE_NAME_INTEGER)];
     } else if (this.isTypeNameFeature) {
       this.valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES,
-                      CAS.TYPE_NAME_STRING)];
+              CAS.TYPE_NAME_STRING)];
     } else {
       if (!this.isSimpleRangeType) {
         CASRuntimeException exception = new CASRuntimeException(
-                        CASRuntimeException.NO_PRIMITIVE_TAIL);
+                CASRuntimeException.NO_PRIMITIVE_TAIL);
         throw exception;
       }
 
@@ -995,7 +995,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 
   private boolean isBuiltInFeature() {
     return this.isFsIdFeature || this.isUniqueIdFeature || this.isCoveredTextFeature
-                    || this.isTypeNameFeature;
+            || this.isTypeNameFeature;
   }
 
   /**
@@ -1014,7 +1014,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
     int endIndex = this.featureName.indexOf(']');
     if (endIndex == -1) { // we're missing the ending bracket
       CASRuntimeException exception = new CASRuntimeException(
-                      CASRuntimeException.INVALID_FEATURE_PATH);
+              CASRuntimeException.INVALID_FEATURE_PATH);
       exception.addArgument(this.toString());
       throw exception;
     }
@@ -1038,7 +1038,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
         this.arrayIndex = Integer.parseInt(arrayIndexString);
       } catch (NumberFormatException e) {
         CASRuntimeException exception = new CASRuntimeException(
-                        CASRuntimeException.INVALID_FEATURE_PATH);
+                CASRuntimeException.INVALID_FEATURE_PATH);
         exception.addArgument(this.toString());
         throw exception;
       }
@@ -1084,7 +1084,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
   private int getFsAtListIndex(LowLevelCAS cas, int listFS) {
     if (this.arrayIndex == USE_ALL_ENTRIES || this.listType != TYPE_CLASS_FSLIST) {
       throw new IllegalStateException(
-                      "feature does not denote an fs list, or does not denote a singel array entry");
+              "feature does not denote an fs list, or does not denote a singel array entry");
     }
     Object valueAtListIndex = getValueAtListIndex(cas, listFS);
     if (valueAtListIndex != null) {

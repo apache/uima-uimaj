@@ -67,7 +67,7 @@ public class InternationalizedException extends Exception {
    * The exception that caused this exception to occur.
    */
   private Throwable mCause;
-  
+
   /**
    * Creates a new <code>InternationalizedException</code> with a null message.
    */
@@ -101,7 +101,7 @@ public class InternationalizedException extends Exception {
    *          arguments.
    */
   public InternationalizedException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments) {
+          Object[] aArguments) {
     this(aResourceBundleName, aMessageKey, aArguments, null);
   }
 
@@ -122,7 +122,7 @@ public class InternationalizedException extends Exception {
    *          the original exception that caused this exception to be thrown, if any
    */
   public InternationalizedException(String aResourceBundleName, String aMessageKey,
-                  Object[] aArguments, Throwable aCause) {
+          Object[] aArguments, Throwable aCause) {
     super();
     mCause = aCause;
     mResourceBundleName = aResourceBundleName;

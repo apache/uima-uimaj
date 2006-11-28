@@ -71,7 +71,7 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
     if (aCas instanceof TCAS)
       return ((TCAS) aCas).getAnnotationIndex();
     CASRuntimeException casEx = new CASRuntimeException(
-                    CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
+            CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
     casEx.addArgument("JFSIndexRepostory: getAnnotationIndex()");
     throw casEx;
   }
@@ -86,7 +86,7 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
     if (aCas instanceof TCAS)
       return ((TCAS) aCas).getAnnotationIndex(jcas.getCasType(type));
     CASRuntimeException casEx = new CASRuntimeException(
-                    CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
+            CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
     casEx.addArgument("JFSIndexRepostory: getAnnotationIndex(type)");
     throw casEx;
   }

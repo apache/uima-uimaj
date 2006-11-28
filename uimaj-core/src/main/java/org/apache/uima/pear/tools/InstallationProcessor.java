@@ -116,7 +116,7 @@ public class InstallationProcessor {
    *           if any I/O exception occurred.
    */
   public static void generateVSDescriptor(InstallationDescriptor insdObject, File mainRootDir)
-                  throws IOException {
+          throws IOException {
     File vsDescriptorFile = new File(mainRootDir, VS_DESCRIPTOR_PATH);
     PrintWriter oWriter = null;
     try {
@@ -146,7 +146,7 @@ public class InstallationProcessor {
    *           if any I/O exception occurred.
    */
   public static InputStream generateVSDescriptorAsStream(InstallationDescriptor insdObject)
-                  throws IOException {
+          throws IOException {
     InputStream iStream = null;
     String xmlContent = generateVSDescriptorContent(insdObject);
     byte[] xmlContentBytes = xmlContent.getBytes();
@@ -193,7 +193,7 @@ public class InstallationProcessor {
    *           if any I/O exception occurred.
    */
   protected static void findAndReplacePath(InstallationDescriptor.ActionInfo action)
-                  throws IOException {
+          throws IOException {
     // get action parameters
     String filePath = action.params.getProperty(InstallationDescriptorHandler.FILE_TAG);
     if (filePath == null)
@@ -204,7 +204,7 @@ public class InstallationProcessor {
     String replaceWith = action.params.getProperty(InstallationDescriptorHandler.REPLACE_WITH_TAG);
     if (replaceWith == null)
       throw new RuntimeException("no " + InstallationDescriptorHandler.REPLACE_WITH_TAG
-                      + " defined");
+              + " defined");
     // replace all specified path-strings in specified file
     File inputFile = new File(filePath);
     FileUtil.replaceStringInFile(inputFile, StringUtil.toRegExpString(findString), replaceWith);
@@ -224,7 +224,7 @@ public class InstallationProcessor {
    *         replaced with '/' characters.
    */
   protected static String substituteCompIdRootInString(String source, String compId,
-                  String compRootPath) {
+          String compRootPath) {
     String result = source;
     // substitute '$dlg_comp_id$root_url'
     String regExp = componentIdRootRegExp(compId, DELEGATE_ROOT_URL_SUFFIX_REGEX);
@@ -284,7 +284,7 @@ public class InstallationProcessor {
    *          The given <code>InstallationController</code> requestor.
    */
   public InstallationProcessor(String mainRootPath, Hashtable installationTable,
-                  InstallationController controller) {
+          InstallationController controller) {
     _controller = controller;
     _mainRootPath = mainRootPath.replace('\\', '/');
     _installationTable = installationTable;
@@ -333,11 +333,11 @@ public class InstallationProcessor {
     File xmlInsDFile = new File(mainRootDir, INSD_FILE_PATH);
     if (_controller != null)
       _controller.getOutMsgWriter().println(
-                      "[InstallationProcessor]: " + "start processing InsD file - "
-                                      + xmlInsDFile.getAbsolutePath());
+              "[InstallationProcessor]: " + "start processing InsD file - "
+                      + xmlInsDFile.getAbsolutePath());
     else
       System.out.println("[InstallationProcessor]: " + "start processing InsD file - "
-                      + xmlInsDFile.getAbsolutePath());
+              + xmlInsDFile.getAbsolutePath());
     InstallationDescriptorHandler insdHandler = new InstallationDescriptorHandler();
     try {
       insdHandler.parse(xmlInsDFile);
@@ -353,7 +353,7 @@ public class InstallationProcessor {
     Iterator actionList = _insdObject.getInstallationActions().iterator();
     while (actionList.hasNext()) {
       InstallationDescriptor.ActionInfo action = (InstallationDescriptor.ActionInfo) actionList
-                      .next();
+              .next();
       // substitute string 'variables' in action parameters
       substituteStringVariablesInAction(action.params);
       // perform FIND_AND_REPLACE_PATH_ACT action
@@ -390,8 +390,8 @@ public class InstallationProcessor {
       if (paramName.equals(InstallationDescriptorHandler.VAR_VALUE_TAG))
         paramValue = paramValue.replace(';', File.pathSeparatorChar);
       if (paramName.equals(InstallationDescriptorHandler.FILE_TAG)
-                      || paramName.equals(InstallationDescriptorHandler.REPLACE_WITH_TAG)
-                      || paramName.equals(InstallationDescriptorHandler.VAR_VALUE_TAG)) {
+              || paramName.equals(InstallationDescriptorHandler.REPLACE_WITH_TAG)
+              || paramName.equals(InstallationDescriptorHandler.VAR_VALUE_TAG)) {
         // substitute '$main_root_url' and '$main_root'
         paramValue = substituteMainRootInString(paramValue, _mainRootPath);
         // substitute '$dlg_comp_id$root_url'

@@ -281,7 +281,7 @@ public class CASSerializer implements Serializable {
       }
     } catch (IOException e) {
       CASRuntimeException exception = new CASRuntimeException(
-                      CASRuntimeException.BLOB_SERIALIZATION);
+              CASRuntimeException.BLOB_SERIALIZATION);
       exception.addArgument(e.getMessage());
       throw exception;
     }

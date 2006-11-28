@@ -80,7 +80,7 @@ public class UnambiguousIteratorImpl extends FSIteratorImplBase {
   }
 
   private void initUnambiguousSubiterator(FSIterator it, final int start, final int end,
-                  final boolean strict) {
+          final boolean strict) {
     this.list = new ArrayList();
     it.moveToFirst();
     // Skip annotations with begin positions before the given start

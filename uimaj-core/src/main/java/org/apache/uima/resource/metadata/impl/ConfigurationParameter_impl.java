@@ -38,7 +38,7 @@ import org.w3c.dom.NodeList;
  */
 
 public class ConfigurationParameter_impl extends MetaDataObject_impl implements
-                ConfigurationParameter {
+        ConfigurationParameter {
 
   static final long serialVersionUID = 4234432343384779535L;
 
@@ -105,8 +105,8 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
     // check to make sure value is legal
     if (!isValidDataTypeName(aType)) {
       throw new UIMA_IllegalArgumentException(
-                      UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH, new Object[] {
-                          aType, "type" });
+              UIMA_IllegalArgumentException.METADATA_ATTRIBUTE_TYPE_MISMATCH, new Object[] { aType,
+                  "type" });
     }
     mType = aType;
   }
@@ -257,7 +257,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
    */
   protected static boolean isValidDataTypeName(Object aTypeName) {
     return TYPE_STRING.equals(aTypeName) || TYPE_BOOLEAN.equals(aTypeName)
-                    || TYPE_INTEGER.equals(aTypeName) || TYPE_FLOAT.equals(aTypeName);
+            || TYPE_INTEGER.equals(aTypeName) || TYPE_FLOAT.equals(aTypeName);
   }
 
   /**
@@ -276,8 +276,8 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
    *          option settings
    */
   protected void readArrayPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo,
-                  Class aPropClass, Element aElement, XMLParser aParser,
-                  XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
+          Class aPropClass, Element aElement, XMLParser aParser, XMLParser.ParsingOptions aOptions)
+          throws InvalidXMLException {
     if ("overrides".equals(aPropXmlInfo.propertyName)) {
       // get all child nodes (note not all may be elements)
       NodeList elems = aElement.getChildNodes();
@@ -308,7 +308,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
       this.setOverrides(overridesArray);
     } else {
       super.readArrayPropertyValueFromXMLElement(aPropXmlInfo, aPropClass, aElement, aParser,
-                      aOptions);
+              aOptions);
     }
   }
 
@@ -317,8 +317,8 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo(
-                  "configurationParameter", new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
-                      new PropertyXmlInfo("description"), new PropertyXmlInfo("type"),
-                      new PropertyXmlInfo("multiValued"), new PropertyXmlInfo("mandatory"),
-                      new PropertyXmlInfo("overrides", "overrides", true, "parameter"), });
+          "configurationParameter", new PropertyXmlInfo[] { new PropertyXmlInfo("name"),
+              new PropertyXmlInfo("description"), new PropertyXmlInfo("type"),
+              new PropertyXmlInfo("multiValued"), new PropertyXmlInfo("mandatory"),
+              new PropertyXmlInfo("overrides", "overrides", true, "parameter"), });
 }

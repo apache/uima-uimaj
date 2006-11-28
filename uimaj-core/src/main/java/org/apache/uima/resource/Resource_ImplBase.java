@@ -53,13 +53,13 @@ public abstract class Resource_ImplBase implements Resource {
    * Whether this Resource's {@link #initialize(ResourceSpecifier,Map)} method has been called.
    */
   private boolean mInitialized = false;
-  
+
   /**
    * @see org.apache.uima.resource.Resource#initialize(org.apache.uima.resource.ResourceSpecifier,
    *      java.util.Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
 
     // get name of resource, to be used in error messages
     String name;
@@ -72,7 +72,7 @@ public abstract class Resource_ImplBase implements Resource {
     // check for repeat initialization
     if (mInitialized) {
       throw new UIMA_IllegalStateException(UIMA_IllegalStateException.RESOURCE_ALREADY_INITIALIZED,
-                      new Object[] { name });
+              new Object[] { name });
     }
 
     // is there a UIMAContext provided in the aAdditionalParams map?
@@ -97,7 +97,7 @@ public abstract class Resource_ImplBase implements Resource {
 
       // create and initialize UIMAContext
       mUimaContextAdmin = UIMAFramework.newUimaContext(logger, resMgr, UIMAFramework
-                      .newConfigurationManager());
+              .newConfigurationManager());
 
     } else {
       // configure logger of the UIMA context so that class-specific logging
@@ -126,17 +126,17 @@ public abstract class Resource_ImplBase implements Resource {
       // initialize configuration
       try {
         mUimaContextAdmin.getConfigurationManager().createContext(
-                        mUimaContextAdmin.getQualifiedContextName(), getMetaData());
+                mUimaContextAdmin.getQualifiedContextName(), getMetaData());
         mUimaContextAdmin.getConfigurationManager().setSession(mUimaContextAdmin.getSession());
       } catch (ResourceConfigurationException e) {
         throw new ResourceInitializationException(
-                        ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR,
-                        new Object[] { name, metadata.getSourceUrlString() }, e);
+                ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
+                    name, metadata.getSourceUrlString() }, e);
       }
 
       // initialize any external resource declared in this descriptor
       ResourceManagerConfiguration resMgrCfg = ((ResourceCreationSpecifier) aSpecifier)
-                      .getResourceManagerConfiguration();
+              .getResourceManagerConfiguration();
       if (resMgrCfg != null) {
         try {
           resMgrCfg.resolveImports(getResourceManager());
@@ -144,15 +144,15 @@ public abstract class Resource_ImplBase implements Resource {
           throw new ResourceInitializationException(e);
         }
         mUimaContextAdmin.getResourceManager().initializeExternalResources(resMgrCfg,
-                        mUimaContextAdmin.getQualifiedContextName(), aAdditionalParams);
+                mUimaContextAdmin.getQualifiedContextName(), aAdditionalParams);
       }
 
       // resolve and validate this component's external resource dependencies
       ExternalResourceDependency[] resourceDependencies = ((ResourceCreationSpecifier) aSpecifier)
-                      .getExternalResourceDependencies();
+              .getExternalResourceDependencies();
       if (resourceDependencies != null) {
         mUimaContextAdmin.getResourceManager().resolveAndValidateResourceDependencies(
-                        resourceDependencies, mUimaContextAdmin.getQualifiedContextName());
+                resourceDependencies, mUimaContextAdmin.getQualifiedContextName());
       }
     }
     mInitialized = true;

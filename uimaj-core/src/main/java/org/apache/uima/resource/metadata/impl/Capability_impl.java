@@ -376,16 +376,12 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("capability",
-                  new PropertyXmlInfo[] {
-                      new PropertyXmlInfo("description"),
-                      new PropertyXmlInfo("inputs", false),
-                      new PropertyXmlInfo("outputs", false),
-                      new PropertyXmlInfo("inputSofas", "inputSofas", true, "sofaName"),
-                      new PropertyXmlInfo("outputSofas", "outputSofas", true, "sofaName"),
-                      new PropertyXmlInfo("languagesSupported", "languagesSupported", false,
-                                      "language"),
-                      new PropertyXmlInfo("mimeTypesSupported", "mimeTypesSupported", true,
-                                      "mimeType")
+          new PropertyXmlInfo[] { new PropertyXmlInfo("description"),
+              new PropertyXmlInfo("inputs", false), new PropertyXmlInfo("outputs", false),
+              new PropertyXmlInfo("inputSofas", "inputSofas", true, "sofaName"),
+              new PropertyXmlInfo("outputSofas", "outputSofas", true, "sofaName"),
+              new PropertyXmlInfo("languagesSupported", "languagesSupported", false, "language"),
+              new PropertyXmlInfo("mimeTypesSupported", "mimeTypesSupported", true, "mimeType")
 
-                  });
+          });
 }

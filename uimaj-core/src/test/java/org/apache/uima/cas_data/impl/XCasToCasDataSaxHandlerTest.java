@@ -99,9 +99,9 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
         if ("Crawl_colon_URL".equals(fs.getType())) {
           // System.out.println("[" + fs.getFeatureValue("value") + "]");
           Assert
-                          .assertEquals(
-                                          "http://www.nolimitmedia.com/index.php?act=group&gro=1&gron=Flash&PHPSESSID=5dcc31fb425c4a204b70d9eab92531a5",
-                                          fs.getFeatureValue("value").toString());
+                  .assertEquals(
+                          "http://www.nolimitmedia.com/index.php?act=group&gro=1&gron=Flash&PHPSESSID=5dcc31fb425c4a204b70d9eab92531a5",
+                          fs.getFeatureValue("value").toString());
           foundCrawlUrl = true;
         }
       }
@@ -116,9 +116,9 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
       // complex CAS obtained by deserialization
       File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
       TypeSystemDescription typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-                      new XMLInputSource(typeSystemFile));
+              new XMLInputSource(typeSystemFile));
       TCAS tcas2 = CasCreationUtils.createTCas(typeSystem, new TypePriorities_impl(),
-                      new FsIndexDescription[0]);
+              new FsIndexDescription[0]);
 
       InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
       XCASDeserializer deser = new XCASDeserializer(tcas2.getTypeSystem());
@@ -133,13 +133,13 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
 
       // a CAS with multiple Sofas
       InputStream translatorAeStream = new FileInputStream(JUnitExtension
-                      .getFile("CpeSofaTest/TransAnnotator.xml"));
+              .getFile("CpeSofaTest/TransAnnotator.xml"));
       AnalysisEngineDescription translatorAeDesc = UIMAFramework.getXMLParser()
-                      .parseAnalysisEngineDescription(new XMLInputSource(translatorAeStream, null));
+              .parseAnalysisEngineDescription(new XMLInputSource(translatorAeStream, null));
       AnalysisEngine transAnnotator = UIMAFramework.produceAnalysisEngine(translatorAeDesc);
       CAS cas = transAnnotator.newCAS();
       SofaFS ls = cas.createSofa(transAnnotator.getUimaContext().mapToSofaID("EnglishDocument"),
-                      "text");
+              "text");
       ls.setLocalSofaData("this beer is good");
       transAnnotator.process(cas);
       _testConversions(cas);
@@ -150,8 +150,8 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
   }
 
   private void _testConversions(CAS aCAS) throws TCASException, IOException,
-                  ParserConfigurationException, SAXException, ResourceInitializationException,
-                  CASRuntimeException {
+          ParserConfigurationException, SAXException, ResourceInitializationException,
+          CASRuntimeException {
     // generate XCAS events and pipe them to XCasToCasDataSaxHandler
     CasData casData = new CasDataImpl();
     XCasToCasDataSaxHandler handler = new XCasToCasDataSaxHandler(casData);
@@ -202,7 +202,7 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
     Iterator fsIter = casData.getFeatureStructures();
     while (fsIter.hasNext()) {
       org.apache.uima.cas_data.FeatureStructure fs = (org.apache.uima.cas_data.FeatureStructure) fsIter
-                      .next();
+              .next();
       String typeName = fs.getType();
 
       // don't do tests on the "fake" document text FS

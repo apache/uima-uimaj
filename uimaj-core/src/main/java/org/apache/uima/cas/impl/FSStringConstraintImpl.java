@@ -30,7 +30,7 @@ import org.apache.uima.cas.FSStringConstraint;
 class FSStringConstraintImpl implements FSStringConstraint {
 
   private static final long serialVersionUID = -7167266553385439718L;
-  
+
   private String string;
 
   /**

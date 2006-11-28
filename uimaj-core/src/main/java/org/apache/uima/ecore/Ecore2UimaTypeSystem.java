@@ -95,10 +95,10 @@ public class Ecore2UimaTypeSystem {
    *           if there is a problem finding or reading the .ecore file
    */
   public static TypeSystemDescription ecore2UimaTypeSystem(String aEcoreFilePath, Map aOptions)
-                  throws URISyntaxException {
+          throws URISyntaxException {
     // register default resource factory
     Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("*",
-                    new XMIResourceFactoryImpl());
+            new XMIResourceFactoryImpl());
     // create resource set to hold the resource we're loading and its dependent resources
     ResourceSet resourceSet = new ResourceSetImpl();
     // convert file path to absolute path -- seems to be required for propery proxy resolution
@@ -124,7 +124,7 @@ public class Ecore2UimaTypeSystem {
    *           if there is a problem reading from the resource
    */
   public static TypeSystemDescription ecore2UimaTypeSystem(Resource aEcoreResource, Map aOptions)
-                  throws URISyntaxException {
+          throws URISyntaxException {
     if (aOptions == null) {
       aOptions = Collections.EMPTY_MAP;
     }
@@ -158,7 +158,7 @@ public class Ecore2UimaTypeSystem {
   }
 
   private static void ePackage2UimaTypes(EPackage aEPackage, List aResultTypes, Map aOptions)
-                  throws URISyntaxException {
+          throws URISyntaxException {
     String nsUri = aEPackage.getNsURI();
     String uimaNamespace = namespaceUri2UimaNamespace(nsUri);
     // skip the uima.cas package, since it contains only feature-final built-ins
@@ -190,7 +190,7 @@ public class Ecore2UimaTypeSystem {
   }
 
   private static TypeDescription eclass2UimaType(EClass aEClass, String aUimaNamespace, Map aOptions)
-                  throws URISyntaxException {
+          throws URISyntaxException {
     TypeDescription type = uimaFactory.createTypeDescription();
     // set name
     if (aUimaNamespace != null) {
@@ -215,7 +215,7 @@ public class Ecore2UimaTypeSystem {
         EStructuralFeature begin = aEClass.getEStructuralFeature("begin");
         EStructuralFeature end = aEClass.getEStructuralFeature("end");
         if (begin != null && end != null && begin.getEType() == EcorePackage.eINSTANCE.getEInt()
-                        && end.getEType() == EcorePackage.eINSTANCE.getEInt()) {
+                && end.getEType() == EcorePackage.eINSTANCE.getEInt()) {
           type.setSupertypeName(TCAS.TYPE_NAME_ANNOTATION);
         } else {
           type.setSupertypeName(CAS.TYPE_NAME_TOP);
@@ -235,9 +235,9 @@ public class Ecore2UimaTypeSystem {
       // as the single supertype for the UIMA type. Other features are copied-down.
       if (supertypes.size() > 1) {
         System.err.println("Warning: EClass " + aEClass.getName()
-                        + " defines multiple supertypes. " + "The UIMA supertype will be "
-                        + type.getSupertypeName()
-                        + "; features inherited from other supertypes will be copied down.");
+                + " defines multiple supertypes. " + "The UIMA supertype will be "
+                + type.getSupertypeName()
+                + "; features inherited from other supertypes will be copied down.");
       }
     }
     // set features
@@ -261,7 +261,7 @@ public class Ecore2UimaTypeSystem {
         EList locallyDefinedFeatures = aEClass.getEStructuralFeatures();
         EList firstSupertypesFeatures = ((EClass) supertypes.get(0)).getEAllStructuralFeatures();
         if (!containsNamedElement(locallyDefinedFeatures, eFeat.getName())
-                        && !containsNamedElement(firstSupertypesFeatures, eFeat.getName())) {
+                && !containsNamedElement(firstSupertypesFeatures, eFeat.getName())) {
           FeatureDescription uimaFeat = eStructuralFeature2UimaFeature(eFeat, aOptions);
           uimaFeatures.add(uimaFeat);
         }
@@ -288,7 +288,7 @@ public class Ecore2UimaTypeSystem {
   }
 
   private static TypeDescription eenum2UimaType(EEnum aEEnum, String aUimaNamespace, Map aOptions)
-                  throws URISyntaxException {
+          throws URISyntaxException {
     TypeDescription type = uimaFactory.createTypeDescription();
     // set name
     if (aUimaNamespace != null) {
@@ -324,7 +324,7 @@ public class Ecore2UimaTypeSystem {
    * @return
    */
   private static FeatureDescription eStructuralFeature2UimaFeature(
-                  EStructuralFeature aStructuralFeature, Map aOptions) throws URISyntaxException {
+          EStructuralFeature aStructuralFeature, Map aOptions) throws URISyntaxException {
     FeatureDescription feat = uimaFactory.createFeatureDescription();
     feat.setName(aStructuralFeature.getName());
     String rangeTypeName = null;
@@ -354,14 +354,14 @@ public class Ecore2UimaTypeSystem {
       // (except primitive, or TOP, which are assumed)
       String uimaElementType = getUimaTypeName(attrRangeType, false, aOptions);
       if (!CAS.TYPE_NAME_INTEGER.equals(uimaElementType)
-                      && !CAS.TYPE_NAME_FLOAT.equals(uimaElementType)
-                      && !CAS.TYPE_NAME_STRING.equals(uimaElementType)
-                      && !CAS.TYPE_NAME_TOP.equals(uimaElementType)
-                      && !CAS.TYPE_NAME_BYTE.equals(uimaElementType)
-                      && !CAS.TYPE_NAME_SHORT.equals(uimaElementType)
-                      && !CAS.TYPE_NAME_LONG.equals(uimaElementType)
-                      && !CAS.TYPE_NAME_DOUBLE.equals(uimaElementType)
-                      && !CAS.TYPE_NAME_BOOLEAN.equals(uimaElementType)) {
+              && !CAS.TYPE_NAME_FLOAT.equals(uimaElementType)
+              && !CAS.TYPE_NAME_STRING.equals(uimaElementType)
+              && !CAS.TYPE_NAME_TOP.equals(uimaElementType)
+              && !CAS.TYPE_NAME_BYTE.equals(uimaElementType)
+              && !CAS.TYPE_NAME_SHORT.equals(uimaElementType)
+              && !CAS.TYPE_NAME_LONG.equals(uimaElementType)
+              && !CAS.TYPE_NAME_DOUBLE.equals(uimaElementType)
+              && !CAS.TYPE_NAME_BOOLEAN.equals(uimaElementType)) {
         feat.setElementType(uimaElementType);
       }
     } else if (!aStructuralFeature.getEType().equals(EcorePackage.eINSTANCE.getEByteArray())) {
@@ -380,23 +380,23 @@ public class Ecore2UimaTypeSystem {
 
   private static boolean isArrayOrList(String rangeTypeName) {
     return CAS.TYPE_NAME_FS_LIST.equals(rangeTypeName)
-                    || CAS.TYPE_NAME_INTEGER_LIST.equals(rangeTypeName)
-                    || CAS.TYPE_NAME_FLOAT_LIST.equals(rangeTypeName)
-                    || CAS.TYPE_NAME_STRING_LIST.equals(rangeTypeName)
-                    || CAS.TYPE_NAME_FS_ARRAY.equals(rangeTypeName)
-                    || CAS.TYPE_NAME_INTEGER_ARRAY.equals(rangeTypeName)
-                    || CAS.TYPE_NAME_FLOAT_ARRAY.equals(rangeTypeName)
-                    || CAS.TYPE_NAME_STRING_ARRAY.equals(rangeTypeName)
-                    || CAS.TYPE_NAME_BYTE_ARRAY.equals(rangeTypeName)
-                    || CAS.TYPE_NAME_SHORT_ARRAY.equals(rangeTypeName)
-                    || CAS.TYPE_NAME_LONG_ARRAY.equals(rangeTypeName)
-                    || CAS.TYPE_NAME_DOUBLE_ARRAY.equals(rangeTypeName)
-                    || CAS.TYPE_NAME_BOOLEAN_ARRAY.equals(rangeTypeName);
+            || CAS.TYPE_NAME_INTEGER_LIST.equals(rangeTypeName)
+            || CAS.TYPE_NAME_FLOAT_LIST.equals(rangeTypeName)
+            || CAS.TYPE_NAME_STRING_LIST.equals(rangeTypeName)
+            || CAS.TYPE_NAME_FS_ARRAY.equals(rangeTypeName)
+            || CAS.TYPE_NAME_INTEGER_ARRAY.equals(rangeTypeName)
+            || CAS.TYPE_NAME_FLOAT_ARRAY.equals(rangeTypeName)
+            || CAS.TYPE_NAME_STRING_ARRAY.equals(rangeTypeName)
+            || CAS.TYPE_NAME_BYTE_ARRAY.equals(rangeTypeName)
+            || CAS.TYPE_NAME_SHORT_ARRAY.equals(rangeTypeName)
+            || CAS.TYPE_NAME_LONG_ARRAY.equals(rangeTypeName)
+            || CAS.TYPE_NAME_DOUBLE_ARRAY.equals(rangeTypeName)
+            || CAS.TYPE_NAME_BOOLEAN_ARRAY.equals(rangeTypeName);
 
   }
 
   private static String getUimaTypeName(EClassifier aEcoreType, boolean aMultiValued, Map aOptions)
-                  throws URISyntaxException {
+          throws URISyntaxException {
     boolean useUimaLists = Boolean.TRUE.equals(aOptions.get(OPTION_GENERATE_UIMA_LIST_TYPES));
 
     if (aEcoreType.eIsProxy()) {
@@ -404,7 +404,7 @@ public class Ecore2UimaTypeSystem {
       aEcoreType = (EClassifier) EcoreUtil.resolve(aEcoreType, aEcoreType);
       if (aEcoreType.eIsProxy()) {
         throw new UIMARuntimeException(UIMARuntimeException.ECORE_UNRESOLVED_PROXY,
-                        new Object[] { aEcoreType.toString() });
+                new Object[] { aEcoreType.toString() });
       }
     }
 
@@ -430,7 +430,7 @@ public class Ecore2UimaTypeSystem {
     {
       if (aEcoreType.equals(EcorePackage.eINSTANCE.getEInt())) {
         return aMultiValued ? (useUimaLists ? CAS.TYPE_NAME_INTEGER_LIST
-                        : CAS.TYPE_NAME_INTEGER_ARRAY) : CAS.TYPE_NAME_INTEGER;
+                : CAS.TYPE_NAME_INTEGER_ARRAY) : CAS.TYPE_NAME_INTEGER;
       } else if (aEcoreType.equals(EcorePackage.eINSTANCE.getEShort())) {
         return aMultiValued ? CAS.TYPE_NAME_SHORT_ARRAY : CAS.TYPE_NAME_SHORT;
       } else if (aEcoreType.equals(EcorePackage.eINSTANCE.getELong())) {
@@ -439,7 +439,7 @@ public class Ecore2UimaTypeSystem {
         return aMultiValued ? CAS.TYPE_NAME_BYTE_ARRAY : CAS.TYPE_NAME_BYTE;
       } else if (aEcoreType.equals(EcorePackage.eINSTANCE.getEFloat())) {
         return aMultiValued ? (useUimaLists ? CAS.TYPE_NAME_FLOAT_LIST : CAS.TYPE_NAME_FLOAT_ARRAY)
-                        : CAS.TYPE_NAME_FLOAT;
+                : CAS.TYPE_NAME_FLOAT;
       } else if (aEcoreType.equals(EcorePackage.eINSTANCE.getEDouble())) {
         return aMultiValued ? CAS.TYPE_NAME_DOUBLE_ARRAY : CAS.TYPE_NAME_DOUBLE;
       } else if (aEcoreType.equals(EcorePackage.eINSTANCE.getEBoolean())) {
@@ -454,10 +454,10 @@ public class Ecore2UimaTypeSystem {
       {
         if (!aEcoreType.equals(EcorePackage.eINSTANCE.getEString())) {
           System.err.println("Warning: unknown EDataType " + aEcoreType.getName()
-                          + " being mapped to uima.cas.String.");
+                  + " being mapped to uima.cas.String.");
         }
         return aMultiValued ? (useUimaLists ? CAS.TYPE_NAME_STRING_LIST
-                        : CAS.TYPE_NAME_STRING_ARRAY) : CAS.TYPE_NAME_STRING;
+                : CAS.TYPE_NAME_STRING_ARRAY) : CAS.TYPE_NAME_STRING;
       }
     }
   }
@@ -487,7 +487,7 @@ public class Ecore2UimaTypeSystem {
   public static void main(String[] args) throws Exception {
     if (args.length != 2) {
       System.err.println("Usage: java " + Ecore2UimaTypeSystem.class.getName()
-                      + " <ecore filename> <filename of UIMA TypeSystem file to generate>");
+              + " <ecore filename> <filename of UIMA TypeSystem file to generate>");
       return;
     }
     if (!new File(args[0]).exists()) {
@@ -511,7 +511,7 @@ public class Ecore2UimaTypeSystem {
       CasCreationUtils.createCas(tsDesc, null, new FsIndexDescription[0]);
     } catch (Exception e) {
       System.err
-                      .println("Warning: CAS could not be created from the output type system.  The following problem occurred:");
+              .println("Warning: CAS could not be created from the output type system.  The following problem occurred:");
       System.err.println(e.getMessage());
     }
   }

@@ -76,7 +76,7 @@ public class DocumentAnnotation_Type extends Annotation_Type {
 
     casFeat_language = jcas.getRequiredFeatureDE(casType, "language", "uima.cas.String", featOkTst);
     casFeatCode_language = (null == casFeat_language) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_language).getCode();
+            : ((FeatureImpl) casFeat_language).getCode();
   }
 
   protected DocumentAnnotation_Type() { // block default new operator

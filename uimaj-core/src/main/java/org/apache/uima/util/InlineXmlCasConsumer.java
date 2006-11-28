@@ -123,7 +123,7 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
         jcas = aCAS.getView(CAS.NAME_DEFAULT_SOFA).getJCas();
         hasDefaultView = true;
         FSIterator it = jcas.getJFSIndexRepository().getAnnotationIndex(
-                        SourceDocumentInformation.type).iterator();
+                SourceDocumentInformation.type).iterator();
         if (it.hasNext()) {
           // get the output file name from the annotation in the CAS ...
           // ... note this is a little flakey if processing an XCAS file,
@@ -186,9 +186,9 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
    */
   public static CasConsumerDescription getDescription() throws InvalidXMLException {
     InputStream descStream = InlineXmlCasConsumer.class
-                    .getResourceAsStream("InlineXmlCasConsumer.xml");
+            .getResourceAsStream("InlineXmlCasConsumer.xml");
     return UIMAFramework.getXMLParser().parseCasConsumerDescription(
-                    new XMLInputSource(descStream, null));
+            new XMLInputSource(descStream, null));
   }
 
 }

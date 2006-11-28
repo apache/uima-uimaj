@@ -221,37 +221,37 @@ public interface CAS extends AbstractCas {
    * Qualified name of Sofa number feature.
    */
   static final String FEATURE_FULL_NAME_SOFANUM = TYPE_NAME_SOFA + TypeSystem.FEATURE_SEPARATOR
-                  + FEATURE_BASE_NAME_SOFANUM;
+          + FEATURE_BASE_NAME_SOFANUM;
 
   /**
    * Qualified name of Sofa id feature.
    */
   static final String FEATURE_FULL_NAME_SOFAID = TYPE_NAME_SOFA + TypeSystem.FEATURE_SEPARATOR
-                  + FEATURE_BASE_NAME_SOFAID;
+          + FEATURE_BASE_NAME_SOFAID;
 
   /**
    * Qualified name of Sofa mime type feature.
    */
   static final String FEATURE_FULL_NAME_SOFAMIME = TYPE_NAME_SOFA + TypeSystem.FEATURE_SEPARATOR
-                  + FEATURE_BASE_NAME_SOFAMIME;
+          + FEATURE_BASE_NAME_SOFAMIME;
 
   /**
    * Qualified name of Sofa URI feature.
    */
   static final String FEATURE_FULL_NAME_SOFAURI = TYPE_NAME_SOFA + TypeSystem.FEATURE_SEPARATOR
-                  + FEATURE_BASE_NAME_SOFAURI;
+          + FEATURE_BASE_NAME_SOFAURI;
 
   /**
    * Qualified name of Sofa string data feature.
    */
   static final String FEATURE_FULL_NAME_SOFASTRING = TYPE_NAME_SOFA + TypeSystem.FEATURE_SEPARATOR
-                  + FEATURE_BASE_NAME_SOFASTRING;
+          + FEATURE_BASE_NAME_SOFASTRING;
 
   /**
    * Qualified name of Sofa array fs data feature.
    */
   static final String FEATURE_FULL_NAME_SOFAARRAY = TYPE_NAME_SOFA + TypeSystem.FEATURE_SEPARATOR
-                  + FEATURE_BASE_NAME_SOFAARRAY;
+          + FEATURE_BASE_NAME_SOFAARRAY;
 
   // ////////////////////////////////////////////////////////////////////////
   // Other Sofa names
@@ -353,49 +353,49 @@ public interface CAS extends AbstractCas {
    * Qualified name of fs list head feature.
    */
   static final String FEATURE_FULL_NAME_FS_LIST_HEAD = TYPE_NAME_NON_EMPTY_FS_LIST
-                  + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_HEAD;
+          + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_HEAD;
 
   /**
    * Qualified name of integer list head feature.
    */
   static final String FEATURE_FULL_NAME_INTEGER_LIST_HEAD = TYPE_NAME_NON_EMPTY_INTEGER_LIST
-                  + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_HEAD;
+          + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_HEAD;
 
   /**
    * Qualified name of float list head feature.
    */
   static final String FEATURE_FULL_NAME_FLOAT_LIST_HEAD = TYPE_NAME_NON_EMPTY_FLOAT_LIST
-                  + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_HEAD;
+          + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_HEAD;
 
   /**
    * Qualified name of string list head feature.
    */
   static final String FEATURE_FULL_NAME_STRING_LIST_HEAD = TYPE_NAME_NON_EMPTY_STRING_LIST
-                  + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_HEAD;
+          + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_HEAD;
 
   /**
    * Qualified name of fs list tail feature.
    */
   static final String FEATURE_FULL_NAME_FS_LIST_TAIL = TYPE_NAME_NON_EMPTY_FS_LIST
-                  + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_TAIL;
+          + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_TAIL;
 
   /**
    * Qualified name of integer list tail feature.
    */
   static final String FEATURE_FULL_NAME_INTEGER_LIST_TAIL = TYPE_NAME_NON_EMPTY_INTEGER_LIST
-                  + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_TAIL;
+          + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_TAIL;
 
   /**
    * Qualified name of float list tail feature.
    */
   static final String FEATURE_FULL_NAME_FLOAT_LIST_TAIL = TYPE_NAME_NON_EMPTY_FLOAT_LIST
-                  + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_TAIL;
+          + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_TAIL;
 
   /**
    * Qualified name of string list tail feature.
    */
   static final String FEATURE_FULL_NAME_STRING_LIST_TAIL = TYPE_NAME_NON_EMPTY_STRING_LIST
-                  + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_TAIL;
+          + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_TAIL;
 
   /**
    * Name of TCAS (Text CAS) name space.
@@ -406,13 +406,13 @@ public interface CAS extends AbstractCas {
    * Name of annotation type.
    */
   static final String TYPE_NAME_ANNOTATION = NAME_SPACE_UIMA_TCAS + TypeSystem.NAMESPACE_SEPARATOR
-                  + "Annotation";
+          + "Annotation";
 
   /**
    * Name of document annotation type.
    */
   static final String TYPE_NAME_DOCUMENT_ANNOTATION = NAME_SPACE_UIMA_TCAS
-                  + TypeSystem.NAMESPACE_SEPARATOR + "DocumentAnnotation";
+          + TypeSystem.NAMESPACE_SEPARATOR + "DocumentAnnotation";
 
   /**
    * Sofa ID feature that is the handle to a text Sofa.
@@ -438,25 +438,25 @@ public interface CAS extends AbstractCas {
    * Fully qualified name of annotation begin feature.
    */
   static final String FEATURE_FULL_NAME_BEGIN = TYPE_NAME_ANNOTATION + TypeSystem.FEATURE_SEPARATOR
-                  + FEATURE_BASE_NAME_BEGIN;
+          + FEATURE_BASE_NAME_BEGIN;
 
   /**
    * Fully qualified name of annotation sofa feature.
    */
   static final String FEATURE_FULL_NAME_SOFA = TYPE_NAME_ANNOTATION + TypeSystem.FEATURE_SEPARATOR
-                  + FEATURE_BASE_NAME_SOFA;
+          + FEATURE_BASE_NAME_SOFA;
 
   /**
    * Fully qualified name of annotation end feature.
    */
   static final String FEATURE_FULL_NAME_END = TYPE_NAME_ANNOTATION + TypeSystem.FEATURE_SEPARATOR
-                  + FEATURE_BASE_NAME_END;
+          + FEATURE_BASE_NAME_END;
 
   /**
    * Fully qualified name of document language feature.
    */
   static final String FEATURE_FULL_NAME_LANGUAGE = TYPE_NAME_DOCUMENT_ANNOTATION
-                  + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_LANGUAGE;
+          + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_LANGUAGE;
 
   /**
    * Name of the standard index on annotations. The standard index is automatically defined if you

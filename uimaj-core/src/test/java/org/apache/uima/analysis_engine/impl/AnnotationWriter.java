@@ -130,7 +130,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    * @see org.apache.uima.collection.CasConsumer#batchProcessComplete(ProcessTrace)
    */
   public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
-                  IOException {
+          IOException {
     // nothing to do in this case as AnnotationPrinter doesnot do
     // anything cumulatively
   }
@@ -147,7 +147,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    * @see org.apache.uima.collection.CasConsumer#collectionProcessComplete(ProcessTrace)
    */
   public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
-                  IOException {
+          IOException {
     if (fileWriter != null) {
       fileWriter.close();
     }

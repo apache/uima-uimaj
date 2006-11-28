@@ -64,7 +64,7 @@ public interface FloatArrayFS extends CommonArrayFS {
    *              <code>destOffset + length > destArray.length</code>.
    */
   void copyToArray(int srcOffset, float[] dest, int destOffset, int length)
-                  throws ArrayIndexOutOfBoundsException;
+          throws ArrayIndexOutOfBoundsException;
 
   /**
    * Copy the contents of an external array into this array.
@@ -79,7 +79,7 @@ public interface FloatArrayFS extends CommonArrayFS {
    *          The number of elements to copy.
    */
   void copyFromArray(float[] src, int srcOffset, int destOffset, int length)
-                  throws ArrayIndexOutOfBoundsException;
+          throws ArrayIndexOutOfBoundsException;
 
   /**
    * Create a Java array that is a copy of the internal CAS array.

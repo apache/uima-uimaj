@@ -115,7 +115,7 @@ public interface BaseCPM {
    *           if aIndex is out of range
    */
   public void addCasProcessor(CasProcessor aCasProcessor, int aIndex)
-                  throws ResourceConfigurationException;
+          throws ResourceConfigurationException;
 
   /**
    * Removes a <code>CasProcessor</code> to this CPM's list of consumers.

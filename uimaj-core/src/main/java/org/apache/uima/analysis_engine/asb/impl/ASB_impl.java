@@ -115,7 +115,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
    * UimaContext of the Aggregate AE containing this ASB.
    */
   private UimaContextAdmin mAggregateUimaContext;
-  
+
   /**
    * Initializes this ASB.
    * 
@@ -131,9 +131,9 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     UIMAFramework.getLogger(CLASS_NAME).logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize",
-                    LOG_RESOURCE_BUNDLE, "UIMA_asb_init_begin__CONFIG");
+            LOG_RESOURCE_BUNDLE, "UIMA_asb_init_begin__CONFIG");
     if (!(aSpecifier instanceof ResourceCreationSpecifier)) {
       return false;
     }
@@ -151,7 +151,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
     // mInitParams.remove(mInitParams.get(Resource.PARAM_AGGREGATE_SOFA_MAPPINGS));
 
     UIMAFramework.getLogger(CLASS_NAME).logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize",
-                    LOG_RESOURCE_BUNDLE, "UIMA_asb_init_successful__CONFIG");
+            LOG_RESOURCE_BUNDLE, "UIMA_asb_init_successful__CONFIG");
     return true;
   }
 
@@ -186,8 +186,8 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
    * @throws ResourceInitializationException
    */
   public void setup(Map aSpecifiers, UimaContextAdmin aParentContext,
-                  FlowControllerDeclaration aFlowControllerDeclaration,
-                  AnalysisEngineMetaData aAggregateMetadata) throws ResourceInitializationException {
+          FlowControllerDeclaration aFlowControllerDeclaration,
+          AnalysisEngineMetaData aAggregateMetadata) throws ResourceInitializationException {
     mAggregateUimaContext = aParentContext;
 
     // clear the delegate AnalysisEngine and AnalysisEngineMetaData maps
@@ -214,7 +214,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
             if (mSofaMappings[s].getComponentSofaName() == null)
               mSofaMappings[s].setComponentSofaName(CAS.NAME_DEFAULT_TEXT_SOFA);
             sofamap.put(mSofaMappings[s].getComponentSofaName(), mSofaMappings[s]
-                            .getAggregateSofaName());
+                    .getAggregateSofaName());
           }
         }
       }
@@ -229,7 +229,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
 
       // if running in "validation mode", don't try to connnect to any services
       if (mInitParams.containsKey(AnalysisEngineImplBase.PARAM_VERIFICATION_MODE)
-                      && !(spec instanceof ResourceCreationSpecifier)) {
+              && !(spec instanceof ResourceCreationSpecifier)) {
         // but we need placeholder entries in maps to satisfy later checking
         ae = new DummyAnalysisEngine();
       } else {
@@ -248,7 +248,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
     // make Maps unmodifiable
     mComponentAnalysisEngineMap = Collections.unmodifiableMap(mComponentAnalysisEngineMap);
     mComponentAnalysisEngineMetaDataMap = Collections
-                    .unmodifiableMap(mComponentAnalysisEngineMetaDataMap);
+            .unmodifiableMap(mComponentAnalysisEngineMetaDataMap);
 
     mOutputNewCASes = aAggregateMetadata.getOperationalProperties().getOutputsNewCASes();
 
@@ -258,7 +258,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
     // initialize the AllComponentMetaData map to include AEs plus the FlowController
     mAllComponentMetaDataMap = new HashMap(mComponentAnalysisEngineMetaDataMap);
     mAllComponentMetaDataMap.put(aFlowControllerDeclaration.getKey(), mFlowControllerContainer
-                    .getMetaData());
+            .getMetaData());
     mAllComponentMetaDataMap = Collections.unmodifiableMap(mAllComponentMetaDataMap);
   }
 
@@ -266,8 +266,8 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
    * Initializes the FlowController for this aggregate.
    */
   protected void initFlowController(FlowControllerDeclaration aFlowControllerDeclaration,
-                  UimaContextAdmin aParentContext, AnalysisEngineMetaData aAggregateMetadata)
-                  throws ResourceInitializationException {
+          UimaContextAdmin aParentContext, AnalysisEngineMetaData aAggregateMetadata)
+          throws ResourceInitializationException {
     String key = aFlowControllerDeclaration.getKey();
     if (key == null || key.length() == 0) {
       key = "_FlowController"; // default key
@@ -286,17 +286,17 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
           if (mSofaMappings[s].getComponentSofaName() == null)
             mSofaMappings[s].setComponentSofaName(CAS.NAME_DEFAULT_TEXT_SOFA);
           sofamap.put(mSofaMappings[s].getComponentSofaName(), mSofaMappings[s]
-                          .getAggregateSofaName());
+                  .getAggregateSofaName());
         }
       }
     }
     FlowControllerContext ctxt = new FlowControllerContext_impl(aParentContext, key, sofamap,
-                    getComponentAnalysisEngineMetaData(), aAggregateMetadata);
+            getComponentAnalysisEngineMetaData(), aAggregateMetadata);
     flowControllerParams.put(PARAM_UIMA_CONTEXT, ctxt);
     flowControllerParams.put(PARAM_RESOURCE_MANAGER, getResourceManager());
     mFlowControllerContainer = new FlowControllerContainer();
     mFlowControllerContainer.initialize(aFlowControllerDeclaration.getSpecifier(),
-                    flowControllerParams);
+            flowControllerParams);
   }
 
   /**
@@ -422,7 +422,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
           toReturn = processUntilNextOutputCas();
         if (toReturn == null) {
           throw new UIMA_IllegalStateException(UIMA_IllegalStateException.NO_NEXT_CAS,
-                          new Object[0]);
+                  new Object[0]);
         }
         nextCas = null;
         getMBean().incrementCASesProcessed();
@@ -491,7 +491,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
               cas = frame.originalCas;
               flow = frame.originalCasFlow;
               cas.setCurrentComponentInfo(null); // this CAS is done being processed by the
-                                                  // previous AnalysisComponent
+              // previous AnalysisComponent
               casIteratorStack.pop(); // remove this state from the stack now
             }
           }
@@ -530,13 +530,13 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
                 }
               } else {
                 throw new AnalysisEngineProcessException(
-                                AnalysisEngineProcessException.UNKNOWN_ID_IN_SEQUENCE,
-                                new Object[] { nextAeKey });
+                        AnalysisEngineProcessException.UNKNOWN_ID_IN_SEQUENCE,
+                        new Object[] { nextAeKey });
               }
             } else {
               throw new AnalysisEngineProcessException(
-                              AnalysisEngineProcessException.UNSUPPORTED_STEP_TYPE,
-                              new Object[] { nextStep.getClass() });
+                      AnalysisEngineProcessException.UNSUPPORTED_STEP_TYPE, new Object[] { nextStep
+                              .getClass() });
             }
             nextStep = flow.next();
           }
@@ -550,7 +550,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
           if (cas == mInputCas) {
             if (finalStep.getForceCasToBeDropped()) {
               throw new AnalysisEngineProcessException(
-                              AnalysisEngineProcessException.ILLEGAL_DROP_CAS, new Object[0]);
+                      AnalysisEngineProcessException.ILLEGAL_DROP_CAS, new Object[0]);
             }
             return null;
           }
@@ -581,7 +581,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
    */
   static class StackFrame {
     StackFrame(CasIterator casIterator, CAS originalCas, FlowContainer originalCasFlow,
-                    String lastAeKey) {
+            String lastAeKey) {
       this.casIterator = casIterator;
       this.originalCas = originalCas;
       this.originalCasFlow = originalCasFlow;

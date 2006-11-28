@@ -159,7 +159,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   public Object getConfigParameterValue(String aGroupName, String aParamName) {
     return getConfigurationManager().getConfigParameterValue(makeQualifiedName(aParamName),
-                    aGroupName);
+            aGroupName);
   }
 
   /**
@@ -181,8 +181,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
       }
       if (unmanagedResourceUrl != null) {
         UIMAFramework.getLogger().logrb(Level.WARNING, this.getClass().getName(), "getResourceURL",
-                        LOG_RESOURCE_BUNDLE, "UIMA_unmanaged_resource__WARNING",
-                        new Object[] { aKey });
+                LOG_RESOURCE_BUNDLE, "UIMA_unmanaged_resource__WARNING", new Object[] { aKey });
         return unmanagedResourceUrl;
       }
       return null;
@@ -208,8 +207,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
       }
       if (unmanagedResourceUrl != null) {
         UIMAFramework.getLogger().logrb(Level.WARNING, this.getClass().getName(),
-                        "getResourceAsStream", LOG_RESOURCE_BUNDLE,
-                        "UIMA_unmanaged_resource__WARNING", new Object[] { aKey });
+                "getResourceAsStream", LOG_RESOURCE_BUNDLE, "UIMA_unmanaged_resource__WARNING",
+                new Object[] { aKey });
         try {
           return unmanagedResourceUrl.openStream();
         } catch (IOException e) {
@@ -234,7 +233,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    *      java.lang.String[])
    */
   public InputStream getResourceAsStream(String aKey, String[] aParams)
-                  throws ResourceAccessException {
+          throws ResourceAccessException {
     InputStream result = getResourceManager().getResourceAsStream(makeQualifiedName(aKey), aParams);
     if (result != null) {
       return result;
@@ -248,8 +247,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
       }
       if (unmanagedResourceUrl != null) {
         UIMAFramework.getLogger().logrb(Level.WARNING, this.getClass().getName(),
-                        "getResourceAsStream", LOG_RESOURCE_BUNDLE,
-                        "UIMA_unmanaged_resource__WARNING", new Object[] { aKey });
+                "getResourceAsStream", LOG_RESOURCE_BUNDLE, "UIMA_unmanaged_resource__WARNING",
+                new Object[] { aKey });
         try {
           return unmanagedResourceUrl.openStream();
         } catch (IOException e) {
@@ -286,8 +285,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
       }
       if (unmanagedResourceUrl != null) {
         UIMAFramework.getLogger().logrb(Level.WARNING, this.getClass().getName(), "getResourceURL",
-                        LOG_RESOURCE_BUNDLE, "UIMA_unmanaged_resource__WARNING",
-                        new Object[] { aKey });
+                LOG_RESOURCE_BUNDLE, "UIMA_unmanaged_resource__WARNING", new Object[] { aKey });
         return unmanagedResourceUrl;
       }
       return null;
@@ -316,7 +314,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   public String[] getConfigurationGroupNames() {
     ConfigurationGroup[] groups = getConfigurationManager().getConfigParameterDeclarations(
-                    getQualifiedContextName()).getConfigurationGroups();
+            getQualifiedContextName()).getConfigurationGroups();
     if (groups == null) {
       return new String[0];
     } else {
@@ -337,7 +335,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   public String[] getConfigParameterNames() {
     ConfigurationParameter[] params = getConfigurationManager().getConfigParameterDeclarations(
-                    getQualifiedContextName()).getConfigurationParameters();
+            getQualifiedContextName()).getConfigurationParameters();
     if (params == null) {
       return new String[0];
     } else {
@@ -356,14 +354,13 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   public String[] getConfigParameterNames(String aGroup) {
     ConfigurationGroup[] groups = getConfigurationManager().getConfigParameterDeclarations(
-                    getQualifiedContextName()).getConfigurationGroupDeclarations(aGroup);
+            getQualifiedContextName()).getConfigurationGroupDeclarations(aGroup);
     if (groups.length == 0) {
       return new String[0];
     } else {
       ArrayList names = new ArrayList();
       ConfigurationParameter[] commonParams = getConfigurationManager()
-                      .getConfigParameterDeclarations(getQualifiedContextName())
-                      .getCommonParameters();
+              .getConfigParameterDeclarations(getQualifiedContextName()).getCommonParameters();
       if (commonParams != null) {
         for (int i = 0; i < commonParams.length; i++) {
           names.add(commonParams[i].getName());
@@ -446,7 +443,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   }
 
   public void defineCasPool(int aSize, Properties aPerformanceTuningSettings, boolean aSofaAware)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     mCasPoolSize = aSize;
     mPerformanceTuningSettings = aPerformanceTuningSettings;
     mSofaAware = aSofaAware;
@@ -473,7 +470,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
       // define CAS Pool in the CasManager
       try {
         getResourceManager().getCasManager().defineCasPool(getQualifiedContextName(), mCasPoolSize,
-                        mPerformanceTuningSettings);
+                mPerformanceTuningSettings);
       } catch (ResourceInitializationException e) {
         throw new UIMARuntimeException(e);
       }
@@ -482,10 +479,9 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
 
     mOutstandingCasRequests++;
     if (mOutstandingCasRequests > mCasPoolSize) {
-      throw new UIMARuntimeException(
-                      UIMARuntimeException.REQUESTED_TOO_MANY_CAS_INSTANCES,
-                      new Object[] { getQualifiedContextName(),
-                          Integer.toString(mOutstandingCasRequests), Integer.toString(mCasPoolSize) });
+      throw new UIMARuntimeException(UIMARuntimeException.REQUESTED_TOO_MANY_CAS_INSTANCES,
+              new Object[] { getQualifiedContextName(), Integer.toString(mOutstandingCasRequests),
+                  Integer.toString(mCasPoolSize) });
     }
     CasManager casManager = getResourceManager().getCasManager();
     CAS cas = casManager.getCas(getQualifiedContextName());

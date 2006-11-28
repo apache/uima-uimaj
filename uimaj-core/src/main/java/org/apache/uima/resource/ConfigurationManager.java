@@ -49,7 +49,7 @@ public interface ConfigurationManager {
    *           if the configuration settings are invalid
    */
   public void createContext(String aContextName, ResourceMetaData aResourceMetaData)
-                  throws ResourceConfigurationException;
+          throws ResourceConfigurationException;
 
   /**
    * Sets the current <code>Session</code>. The Configuration Manager uses the

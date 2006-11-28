@@ -174,10 +174,10 @@ public class XMLUtil {
         if (nextByte < 0)
           throw new IOException("cannot read file");
       } while (nextByte == 0xEF || nextByte == 0xBB || nextByte == 0xBF || nextByte == 0xFE
-                      || nextByte == 0xFF || nextByte == 0x00);
+              || nextByte == 0xFF || nextByte == 0x00);
       int prefixLength = byteCounter < 17 ? byteCounter - 1 : 16;
       String utfSignature = (prefixLength > 0) ? FileUtil
-                      .identifyUtfSignature(prefix, prefixLength) : null;
+              .identifyUtfSignature(prefix, prefixLength) : null;
       boolean utf8Signature = false;
       boolean utf16Signature = false;
       boolean utf32Signature = false;
@@ -270,7 +270,7 @@ public class XMLUtil {
         if (encoding == null) {
           // check 1st non-space XML character for UTF-16
           fReader = new BufferedReader(
-                          new InputStreamReader(new FileInputStream(xmlFile), "UTF-16"));
+                  new InputStreamReader(new FileInputStream(xmlFile), "UTF-16"));
           try {
             while ((line = fReader.readLine()) != null) {
               String xmlLine = line.trim();
@@ -378,7 +378,7 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printAllXMLElements(Properties elements, PrintWriter oWriter, int level)
-                  throws IOException {
+          throws IOException {
     printAllXMLElements(elements, null, oWriter, level);
   }
 
@@ -402,7 +402,7 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printAllXMLElements(Properties elements, String valueDelimiter,
-                  String[] tagOrder, PrintWriter oWriter, int level) throws IOException {
+          String[] tagOrder, PrintWriter oWriter, int level) throws IOException {
     // check if elements might be multi- valued
     boolean multiValue = valueDelimiter != null && valueDelimiter.length() > 0;
     if (elements != null) {
@@ -468,7 +468,7 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printAllXMLElements(Properties elements, String[] tagOrder,
-                  PrintWriter oWriter, int level) throws IOException {
+          PrintWriter oWriter, int level) throws IOException {
     printAllXMLElements(elements, null, tagOrder, oWriter, level);
   }
 
@@ -488,7 +488,7 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printXMLElement(String tag, Properties attributes, PrintWriter oWriter,
-                  int level) throws IOException {
+          int level) throws IOException {
     printXMLElement(tag, attributes, null, oWriter, level);
   }
 
@@ -511,7 +511,7 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printXMLElement(String tag, Properties attributes, String elemValue,
-                  PrintWriter oWriter, int level) throws IOException {
+          PrintWriter oWriter, int level) throws IOException {
     printXMLElement(tag, attributes, elemValue, false, oWriter, level, false);
   }
 
@@ -538,7 +538,7 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printXMLElement(String tag, Properties attributes, String elemValue,
-                  boolean putInCdataSection, PrintWriter oWriter, int level) throws IOException {
+          boolean putInCdataSection, PrintWriter oWriter, int level) throws IOException {
     printXMLElement(tag, attributes, elemValue, putInCdataSection, oWriter, level, false);
   }
 
@@ -570,8 +570,8 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printXMLElement(String tag, Properties attributes, String elemValue,
-                  boolean putInCdataSection, PrintWriter oWriter, int level,
-                  boolean useNewLine4Value) throws IOException {
+          boolean putInCdataSection, PrintWriter oWriter, int level, boolean useNewLine4Value)
+          throws IOException {
     // print XML tag beginning
     printXMLTag(tag, attributes, oWriter, false, level);
     if (useNewLine4Value) {
@@ -606,7 +606,7 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printXMLElement(String tag, String elemValue, PrintWriter oWriter, int level)
-                  throws IOException {
+          throws IOException {
     printXMLElement(tag, null, elemValue, oWriter, level);
   }
 
@@ -631,7 +631,7 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printXMLElement(String tag, String elemValue, boolean putInCdataSection,
-                  PrintWriter oWriter, int level) throws IOException {
+          PrintWriter oWriter, int level) throws IOException {
     printXMLElement(tag, null, elemValue, putInCdataSection, oWriter, level);
   }
 
@@ -654,7 +654,7 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printXMLElements(String tag, String elemValue, String valueDelimiter,
-                  PrintWriter oWriter, int level) throws IOException {
+          PrintWriter oWriter, int level) throws IOException {
     if (elemValue != null) {
       // get list of tokens in the element value
       StringTokenizer elemTokens = new StringTokenizer(elemValue, valueDelimiter);
@@ -682,7 +682,7 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printXMLElementValue(String elemValue, PrintWriter oWriter, int level)
-                  throws IOException {
+          throws IOException {
     printXMLElementValue(elemValue, false, oWriter, level);
   }
 
@@ -705,7 +705,7 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printXMLElementValue(String elemValue, boolean putInCdataSection,
-                  PrintWriter oWriter, int level) throws IOException {
+          PrintWriter oWriter, int level) throws IOException {
     // add marginal tabs
     for (int l = 0; l < level; l++)
       oWriter.print('\t');
@@ -756,7 +756,7 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printXMLTag(String tag, PrintWriter oWriter, boolean tagEnd, int level)
-                  throws IOException {
+          throws IOException {
     printXMLTag(tag, null, oWriter, tagEnd, level);
   }
 
@@ -779,7 +779,7 @@ public class XMLUtil {
    *           if any I/O exception occurred.
    */
   public static void printXMLTag(String tag, Properties attributes, PrintWriter oWriter,
-                  boolean tagEnd, int level) throws IOException {
+          boolean tagEnd, int level) throws IOException {
     // add marginal tabs
     for (int l = 0; l < level; l++)
       oWriter.print('\t');

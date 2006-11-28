@@ -80,9 +80,9 @@ public class XCASDeserializerTest extends TestCase {
     File indexesFile = JUnitExtension.getFile("ExampleCas/kltIndexes.xml");
 
     typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-                    new XMLInputSource(typeSystemFile));
+            new XMLInputSource(typeSystemFile));
     indexes = UIMAFramework.getXMLParser().parseFsIndexCollection(new XMLInputSource(indexesFile))
-                    .getFsIndexes();
+            .getFsIndexes();
   }
 
   // Not a good test since it has a dependency on an annotator from uimaj-examples.
@@ -252,7 +252,7 @@ public class XCASDeserializerTest extends TestCase {
   public void testOutOfTypeSystem2() throws Exception {
     // deserialize a complex CAS into one with no TypeSystem
     CAS cas = CasCreationUtils.createCas(new TypeSystemDescription_impl(),
-                    new TypePriorities_impl(), new FsIndexDescription[0]);
+            new TypePriorities_impl(), new FsIndexDescription[0]);
     OutOfTypeSystemData ootsd = new OutOfTypeSystemData();
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
     XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());
@@ -298,11 +298,11 @@ public class XCASDeserializerTest extends TestCase {
   public void testOutOfTypeSystem3() throws Exception {
     // deserialize an XCAS using the implicit value feature into a CAS with no TypeSystem
     CAS cas = CasCreationUtils.createCas(new TypeSystemDescription_impl(),
-                    new TypePriorities_impl(), new FsIndexDescription[0]);
+            new TypePriorities_impl(), new FsIndexDescription[0]);
     String xcas = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><CAS>"
-                    + "<uima.tcas.Document _content=\"text\">Test Document</uima.tcas.Document>"
-                    + "<uima.tcas.DocumentAnnotation _indexed=\"1\" _id=\"8\" sofa=\"1\" begin=\"0\" end=\"13\" language=\"en\"/>"
-                    + "<foo.Bar _indexed=\"1\" _id=\"2\" sofa=\"1\" begin=\"0\" end=\"0\" baz=\"blah\">this is the value feature</foo.Bar></CAS>";
+            + "<uima.tcas.Document _content=\"text\">Test Document</uima.tcas.Document>"
+            + "<uima.tcas.DocumentAnnotation _indexed=\"1\" _id=\"8\" sofa=\"1\" begin=\"0\" end=\"13\" language=\"en\"/>"
+            + "<foo.Bar _indexed=\"1\" _id=\"2\" sofa=\"1\" begin=\"0\" end=\"0\" baz=\"blah\">this is the value feature</foo.Bar></CAS>";
     OutOfTypeSystemData ootsd = new OutOfTypeSystemData();
     XMLReader xmlReader = XMLReaderFactory.createXMLReader();
     XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());

@@ -39,7 +39,6 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /**
  * XCAS serializer. Create a serializer from a type system, then encode individual CASes by writing
  * to a SAX content handler. This class is thread safe.
@@ -125,10 +124,10 @@ public class XCASSerializer {
       this.indexedFSs = new IntVector();
       this.indexReps = new IntVector();
       this.sofaTypeCode = cas.ll_getTypeSystem().ll_getCodeForType(
-                      cas.getTypeSystem().getType(CAS.TYPE_NAME_SOFA));
-      
-      //Why was this here?  Was never being read anywhere:
-      //fs = new FeatureStructureImplC(cas, 0);
+              cas.getTypeSystem().getType(CAS.TYPE_NAME_SOFA));
+
+      // Why was this here? Was never being read anywhere:
+      // fs = new FeatureStructureImplC(cas, 0);
     }
 
     /**
@@ -244,7 +243,7 @@ public class XCASSerializer {
      * @throws SAXException
      */
     private void serialize(boolean encodeDoc, OutOfTypeSystemData outOfTypeSystemData)
-                    throws IOException, SAXException {
+            throws IOException, SAXException {
       mOutOfTypeSystemData = outOfTypeSystemData;
 
       int iElementCount = 0;
@@ -368,7 +367,7 @@ public class XCASSerializer {
       int numViews = cas.getBaseSofaCount();
       for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
         FSIndexRepositoryImpl loopIR = (FSIndexRepositoryImpl) cas.getBaseCAS()
-                        .getSofaIndexRepository(sofaNum);
+                .getSofaIndexRepository(sofaNum);
         if (loopIR != null) {
           fsarray = loopIR.getIndexedFSs();
           for (int k = 0; k < fsarray.length; k++) {
@@ -535,7 +534,7 @@ public class XCASSerializer {
     }
 
     private void encodePrimitiveTypeArrayFS(String[] data, String typeName, AttributesImpl attrs)
-                    throws SAXException {
+            throws SAXException {
 
       addAttribute(attrs, ARRAY_SIZE_ATTR, Integer.toString(data.length));
       startElement(typeName, attrs, data.length);
@@ -703,9 +702,9 @@ public class XCASSerializer {
           // remap ID if necessary
           if (attr[0].startsWith("_ref_")) {
             // references whose ID starts with the character 'a' are references to out of type
-            // system FS.  All other references should be to in-typesystem FS, which we need to
+            // system FS. All other references should be to in-typesystem FS, which we need to
             // enqueue.
-            if (!attr[1].startsWith("a")) { 
+            if (!attr[1].startsWith("a")) {
               enqueue(Integer.parseInt(attr[1]));
             }
           }
@@ -735,9 +734,9 @@ public class XCASSerializer {
           if (attrName.startsWith("_ref_")) {
             String attrVal = (String) entry.getValue();
             // references whose ID starts with the character 'a' are references to out of type
-            // system FS.  All other references should be to in-typesystem FS, which we need to
+            // system FS. All other references should be to in-typesystem FS, which we need to
             // enqueue.
-            if (!attrVal.startsWith("a")) { 
+            if (!attrVal.startsWith("a")) {
               enqueue(Integer.parseInt(attrVal));
             }
           }
@@ -799,7 +798,7 @@ public class XCASSerializer {
     } else {
       // Note: This is really slow so we avoid if possible. -- RJB
       return StringUtils
-                      .replaceAll(StringUtils.replaceAll(aTagName, ":", "_colon_"), "-", "_dash_");
+              .replaceAll(StringUtils.replaceAll(aTagName, ":", "_colon_"), "-", "_dash_");
     }
   }
 
@@ -890,7 +889,7 @@ public class XCASSerializer {
    * @throws SAXException
    */
   public void serialize(CAS cas, ContentHandler contentHandler, boolean encodeDoc)
-                  throws IOException, SAXException {
+          throws IOException, SAXException {
     serialize(cas, contentHandler, encodeDoc, null);
   }
 
@@ -911,7 +910,7 @@ public class XCASSerializer {
    * @throws SAXException
    */
   public void serialize(CAS cas, ContentHandler contentHandler, boolean encodeDoc,
-                  OutOfTypeSystemData outOfTypeSystemData) throws IOException, SAXException {
+          OutOfTypeSystemData outOfTypeSystemData) throws IOException, SAXException {
     contentHandler.startDocument();
     XCASDocSerializer ser = new XCASDocSerializer(contentHandler, ((CASImpl) cas).getBaseCAS());
     ser.serialize(encodeDoc, outOfTypeSystemData);
@@ -996,7 +995,7 @@ public class XCASSerializer {
    *           if an I/O failure occurs
    */
   public static void serialize(CAS aCAS, OutputStream aStream, boolean isFormattedOutput)
-                  throws SAXException, IOException {
+          throws SAXException, IOException {
     XCASSerializer xcasSerializer = new XCASSerializer(aCAS.getTypeSystem());
     XMLSerializer sax2xml = new XMLSerializer(aStream, isFormattedOutput);
     xcasSerializer.serialize(aCAS, sax2xml.getContentHandler());

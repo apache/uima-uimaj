@@ -47,8 +47,7 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
    *      java.lang.String)
    */
   protected void declareParameters(String aGroupName, ConfigurationParameter[] aParams,
-                  ConfigurationParameterSettings aSettings, String aContextName,
-                  String aParentContextName) {
+          ConfigurationParameterSettings aSettings, String aContextName, String aParentContextName) {
     super.declareParameters(aGroupName, aParams, aSettings, aContextName, aParentContextName);
     // iterate over config. param _declarations_ and build mSharedParamNap
     if (aParams != null) {

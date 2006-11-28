@@ -64,7 +64,7 @@ public interface CasManager extends CasOwner {
    *           if a CAS could not be created.
    */
   void defineCasPool(String aRequestorContextName, int aSize, Properties aPerformanceTuningSettings)
-                  throws ResourceInitializationException;
+          throws ResourceInitializationException;
 
   /**
    * Gets an empty CAS. An AnalysisEngine may only call this method after it has first called

@@ -67,18 +67,18 @@ public class XMLParser_implTest extends TestCase {
       // JTalentAndStringMatch_Expanded.xml has had them manually expanded
       File withImports = JUnitExtension.getFile("XmlParserTest/JTalentAndStringMatch.xml");
       File manuallyExpanded = JUnitExtension
-                      .getFile("XmlParserTest/JTalentAndStringMatch_Expanded.xml");
+              .getFile("XmlParserTest/JTalentAndStringMatch_Expanded.xml");
 
       // After parsing both files and calling resolveImports,
       // we should then be able to parse both files and get identical results.
       AnalysisEngineDescription desc1 = (AnalysisEngineDescription) mXmlParser
-                      .parse(new XMLInputSource(withImports));
+              .parse(new XMLInputSource(withImports));
       AnalysisEngineDescription desc2 = (AnalysisEngineDescription) mXmlParser
-                      .parse(new XMLInputSource(manuallyExpanded));
+              .parse(new XMLInputSource(manuallyExpanded));
       Assert.assertNotNull(desc1);
       Assert.assertNotNull(desc2);
       Assert.assertEquals(desc1.getDelegateAnalysisEngineSpecifiers(), desc2
-                      .getDelegateAnalysisEngineSpecifiers());
+              .getDelegateAnalysisEngineSpecifiers());
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     } finally {
@@ -93,16 +93,15 @@ public class XMLParser_implTest extends TestCase {
       System.setProperty("uima.test.var1", "foo");
       System.setProperty("uima.test.var2", "bar");
       TaeDescription taeDesc = UIMAFramework.getXMLParser().parseTaeDescription(
-                      new XMLInputSource(envVarRefTest), new XMLParser.ParsingOptions(true, true));
+              new XMLInputSource(envVarRefTest), new XMLParser.ParsingOptions(true, true));
       Assert.assertEquals("foo-bar", taeDesc.getMetaData().getName());
 
       // parse with env var ref expansion disabled
       taeDesc = UIMAFramework.getXMLParser().parseTaeDescription(new XMLInputSource(envVarRefTest),
-                      new XMLParser.ParsingOptions(true, false));
-      Assert
-                      .assertEquals(
-                                      "<envVarRef>uima.test.var1</envVarRef>-<envVarRef>uima.test.var2</envVarRef>",
-                                      taeDesc.getMetaData().getName());
+              new XMLParser.ParsingOptions(true, false));
+      Assert.assertEquals(
+              "<envVarRef>uima.test.var1</envVarRef>-<envVarRef>uima.test.var2</envVarRef>",
+              taeDesc.getMetaData().getName());
 
     } catch (Exception e) {
       JUnitExtension.handleException(e);

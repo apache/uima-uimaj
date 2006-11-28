@@ -76,13 +76,13 @@ public class TCASImpl extends CASImpl implements TCAS, TCASMgr {
 
     // get the indexRepository for this Sofa
     this.indexRepository = (this.mySofaRef == -1) ? (FSIndexRepositoryImpl) ((CASImpl) cas)
-                    .getSofaIndexRepository(1) : (FSIndexRepositoryImpl) ((CASImpl) cas)
-                    .getSofaIndexRepository(aSofa);
+            .getSofaIndexRepository(1) : (FSIndexRepositoryImpl) ((CASImpl) cas)
+            .getSofaIndexRepository(aSofa);
     if (null == this.indexRepository) {
       // create the indexRepository for this TCAS
       // use the baseIR to create a lightweight IR copy
       this.indexRepository = new FSIndexRepositoryImpl((CASImpl) this,
-                      (FSIndexRepositoryImpl) ((CASImpl) cas).getBaseIndexRepository());
+              (FSIndexRepositoryImpl) ((CASImpl) cas).getBaseIndexRepository());
       this.indexRepository.commit();
       // save new sofa index
       if (this.mySofaRef == -1) {
@@ -117,7 +117,7 @@ public class TCASImpl extends CASImpl implements TCAS, TCASMgr {
 
     // create the indexRepository for this Sofa
     this.indexRepository = new FSIndexRepositoryImpl((CASImpl) this,
-                    (FSIndexRepositoryImpl) ((CASImpl) cas).getBaseIndexRepository());
+            (FSIndexRepositoryImpl) ((CASImpl) cas).getBaseIndexRepository());
     this.indexRepository.commit();
     // save new sofa index
     if (this.mySofaRef == -1) {
@@ -191,7 +191,7 @@ public class TCASImpl extends CASImpl implements TCAS, TCASMgr {
   protected void setDocTextFromDeserializtion(String text) {
     if (mySofaIsValid()) {
       final int SofaStringCode = ll_getTypeSystem().ll_getCodeForFeature(
-                      this.getTypeSystem().getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFASTRING));
+              this.getTypeSystem().getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFASTRING));
       final int llsofa = getLowLevelCAS().ll_getFSRef(this.getSofa());
       getLowLevelCAS().ll_setStringValue(llsofa, SofaStringCode, text);
       this.documentText = text;

@@ -94,7 +94,6 @@ public class Annotation_Type extends org.apache.uima.jcas.cas.AnnotationBase_Typ
   // if (text == null) return null;
   // return text.substring(getBegin(inst), getEnd(inst));
   // }
-
   // * initialize variables to correspond with Cas Type and Features
   public Annotation_Type(JCas jcas, Type casType) {
     super(jcas, casType);
@@ -102,10 +101,10 @@ public class Annotation_Type extends org.apache.uima.jcas.cas.AnnotationBase_Typ
 
     casFeat_begin = jcas.getRequiredFeatureDE(casType, "begin", "uima.cas.Integer", featOkTst);
     casFeatCode_begin = (null == casFeat_begin) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_begin).getCode();
+            : ((FeatureImpl) casFeat_begin).getCode();
     casFeat_end = jcas.getRequiredFeatureDE(casType, "end", "uima.cas.Integer", featOkTst);
     casFeatCode_end = (null == casFeat_end) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_end).getCode();
+            : ((FeatureImpl) casFeat_end).getCode();
   }
 
   protected Annotation_Type() { // block default new operator

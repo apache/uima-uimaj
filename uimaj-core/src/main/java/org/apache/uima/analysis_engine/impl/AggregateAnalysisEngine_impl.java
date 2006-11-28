@@ -101,7 +101,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     try {
       // aSpecifier must be a AnalysisEngineDescription
       if (!(aSpecifier instanceof AnalysisEngineDescription)) {
@@ -126,7 +126,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       AnalysisEngineMetaData md = mDescription.getAnalysisEngineMetaData();
 
       getLogger().logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
-                      "UIMA_analysis_engine_init_begin__CONFIG", md.getName());
+              "UIMA_analysis_engine_init_begin__CONFIG", md.getName());
 
       // Normalize language codes. Need to do this since a wide variety of
       // spellings are acceptable according to ISO.
@@ -145,10 +145,10 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
         mDescription.getDelegateAnalysisEngineSpecifiers(getResourceManager());
         if (mDescription.getFlowControllerDeclaration() != null) {
           if (mDescription.getFlowControllerDeclaration().getImport() == null
-                          && mDescription.getFlowControllerDeclaration().getSpecifier() == null) {
+                  && mDescription.getFlowControllerDeclaration().getSpecifier() == null) {
             throw new ResourceInitializationException(
-                            ResourceInitializationException.EMPTY_FLOW_CONTROLLER_DECLARATION,
-                            new Object[] { getMetaData().getName(), mDescription.getSourceUrl() });
+                    ResourceInitializationException.EMPTY_FLOW_CONTROLLER_DECLARATION,
+                    new Object[] { getMetaData().getName(), mDescription.getSourceUrl() });
           }
 
           mDescription.getFlowControllerDeclaration().resolveImports(getResourceManager());
@@ -173,7 +173,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       // put configuration parameter settings into the aAdditionalParams map to be
       // passed on to delegate AEs
       aAdditionalParams.put(Resource.PARAM_CONFIG_PARAM_SETTINGS,
-                      getCurrentConfigParameterSettings());
+              getCurrentConfigParameterSettings());
 
       // add resource manager (initialized by superclass) to aAdditionalParams map
       // so that delegate AEs will share it
@@ -186,12 +186,12 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       resetResultSpecificationToDefault();
 
       getLogger().logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
-                      "UIMA_analysis_engine_init_successful__CONFIG", md.getName());
+              "UIMA_analysis_engine_init_successful__CONFIG", md.getName());
       return true;
     } catch (ResourceConfigurationException e) {
       throw new ResourceInitializationException(
-                      ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR,
-                      new Object[] { getMetaData().getName(), aSpecifier.getSourceUrlString() });
+              ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
+                  getMetaData().getName(), aSpecifier.getSourceUrlString() });
     }
   }
 
@@ -244,7 +244,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     if (mASB != null)
       mASB.destroy();
     getLogger().logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
-                    "UIMA_analysis_engine_destroyed__CONFIG", getMetaData().getName());
+            "UIMA_analysis_engine_destroyed__CONFIG", getMetaData().getName());
     super.destroy();
   }
 
@@ -255,13 +255,13 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     // logging and instrumentation
     String resourceName = getMetaData().getName();
     getLogger().logrb(Level.FINE, CLASS_NAME.getName(), "process", LOG_RESOURCE_BUNDLE,
-                    "UIMA_analysis_engine_process_begin__FINE", resourceName);
+            "UIMA_analysis_engine_process_begin__FINE", resourceName);
     try {
       CasIterator iterator = _getASB().process(aCAS);
 
       // log end of event
       getLogger().logrb(Level.FINE, CLASS_NAME.getName(), "process", LOG_RESOURCE_BUNDLE,
-                      "UIMA_analysis_engine_process_end__FINE", resourceName);
+              "UIMA_analysis_engine_process_end__FINE", resourceName);
       return iterator;
     } catch (Exception e) {
       // log and rethrow exception
@@ -327,7 +327,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    *           if an initialization failure occurs
    */
   protected void initializeAggregateAnalysisEngine(AnalysisEngineDescription aDescription,
-                  Map aAdditionalParams) throws ResourceInitializationException {
+          Map aAdditionalParams) throws ResourceInitializationException {
     // Create and configure the ASB - the ASB will create and initialize
     // the component AnalysisEngines and the FlowController. This method also retrieves
     // the component AnalysisEngines' metadata from the ASB, so it can be access via the
@@ -353,7 +353,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    *           if the ASB or a delegate AnalysisEngine could not be created.
    */
   protected void initASB(AnalysisEngineDescription aAnalysisEngineDescription, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     // add this analysis engine's name to the parameters sent to the ASB
     Map asbParams = new HashMap(aAdditionalParams);
     asbParams.put(ASB.PARAM_AGGREGATE_ANALYSIS_ENGINE_NAME, this.getMetaData().getName());
@@ -362,16 +362,16 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     // Pass sofa mappings defined in this aggregate as additional ASB parameters
     // System.out.println("remapping sofa names");
     asbParams.put(Resource.PARAM_AGGREGATE_SOFA_MAPPINGS, aAnalysisEngineDescription
-                    .getSofaMappings());
+            .getSofaMappings());
 
     // Get FlowController specifier from the aggregate descriptor. If none, use
     // default FixedFlow specifier.
     FlowControllerDeclaration flowControllerDecl = aAnalysisEngineDescription
-                    .getFlowControllerDeclaration();
+            .getFlowControllerDeclaration();
     if (flowControllerDecl != null) {
       try {
         aAnalysisEngineDescription.getFlowControllerDeclaration().resolveImports(
-                        getResourceManager());
+                getResourceManager());
       } catch (InvalidXMLException e) {
         throw new ResourceInitializationException(e);
       }
@@ -385,7 +385,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     dummyAsbSpecifier.setMetaData(new ResourceMetaData_impl());
     mASB.initialize(dummyAsbSpecifier, asbParams);
     mASB.setup(_getComponentCasProcessorSpecifierMap(), getUimaContextAdmin(), flowControllerDecl,
-                    getAnalysisEngineMetaData());
+            getAnalysisEngineMetaData());
 
     // Get delegate AnalysisEngine metadata from the ASB
     mComponentMetaData = _getASB().getAllComponentMetaData();
@@ -434,11 +434,11 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
 
     // now do merge
     TypeSystemDescription aggTypeDesc = CasCreationUtils.mergeTypeSystems(typeSystems,
-                    getResourceManager());
+            getResourceManager());
     TypePriorities aggTypePriorities = CasCreationUtils.mergeTypePriorities(typePriorities,
-                    getResourceManager());
+            getResourceManager());
     FsIndexCollection aggIndexColl = CasCreationUtils.mergeFsIndexes(fsIndexCollections,
-                    getResourceManager());
+            getResourceManager());
 
     // assign results of merge to this aggregate AE's metadata
     AnalysisEngineMetaData aggregateMD = this.getAnalysisEngineMetaData();
@@ -472,17 +472,17 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
         OperationalProperties componentProps = md.getOperationalProperties();
         if (componentProps != null) {
           if (aggProps.isMultipleDeploymentAllowed()
-                          && !componentProps.isMultipleDeploymentAllowed()) {
+                  && !componentProps.isMultipleDeploymentAllowed()) {
             throw new ResourceInitializationException(
-                            ResourceInitializationException.INVALID_MULTIPLE_DEPLOYMENT_ALLOWED,
-                            new Object[] { getAnalysisEngineMetaData().getName(), md.getName(),
-                                getAnalysisEngineMetaData().getSourceUrlString() });
+                    ResourceInitializationException.INVALID_MULTIPLE_DEPLOYMENT_ALLOWED,
+                    new Object[] { getAnalysisEngineMetaData().getName(), md.getName(),
+                        getAnalysisEngineMetaData().getSourceUrlString() });
           }
           if (!aggProps.getModifiesCas() && componentProps.getModifiesCas()) {
             throw new ResourceInitializationException(
-                            ResourceInitializationException.INVALID_MODIFIES_CAS, new Object[] {
-                                getAnalysisEngineMetaData().getName(), md.getName(),
-                                getAnalysisEngineMetaData().getSourceUrlString() });
+                    ResourceInitializationException.INVALID_MODIFIES_CAS, new Object[] {
+                        getAnalysisEngineMetaData().getName(), md.getName(),
+                        getAnalysisEngineMetaData().getSourceUrlString() });
           }
           if (componentProps.getOutputsNewCASes()) {
             atLeastOneCasMultiplier = true;
@@ -491,9 +491,9 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       }
       if (aggProps.getOutputsNewCASes() && !atLeastOneCasMultiplier) {
         throw new ResourceInitializationException(
-                        ResourceInitializationException.INVALID_OUTPUTS_NEW_CASES, new Object[] {
-                            getAnalysisEngineMetaData().getName(),
-                            getAnalysisEngineMetaData().getSourceUrlString() });
+                ResourceInitializationException.INVALID_OUTPUTS_NEW_CASES, new Object[] {
+                    getAnalysisEngineMetaData().getName(),
+                    getAnalysisEngineMetaData().getSourceUrlString() });
       }
     }
   }
@@ -507,7 +507,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     if (getAnalysisEngineMetaData().getFlowConstraints() instanceof CapabilityLanguageFlow) {
       flowControllerDesc = CapabilityLanguageFlowController.getDescription();
     } else {
-      flowControllerDesc= FixedFlowController.getDescription();
+      flowControllerDesc = FixedFlowController.getDescription();
     }
 
     FlowControllerDeclaration decl = new FlowControllerDeclaration_impl();
@@ -559,7 +559,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   protected void buildProcessTraceFromMBeanStats(ProcessTrace trace) {
     if (isProcessTraceEnabled()) {
       ProcessTraceEvent_impl procEvt = new ProcessTraceEvent_impl(getMetaData().getName(),
-                      "Analysis", "");
+              "Analysis", "");
       procEvt.setDuration((int) getMBean().getAnalysisTimeSinceMark());
       trace.addEvent(procEvt);
 
@@ -578,7 +578,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       FlowControllerContainer fcc = ((ASB_impl) _getASB()).getFlowControllerContainer();
       int flowControllerTime = (int) fcc.getMBean().getAnalysisTimeSinceMark();
       ProcessTraceEvent_impl flowControllerEvent = new ProcessTraceEvent_impl(fcc.getMetaData()
-                      .getName(), "Analysis", "");
+              .getName(), "Analysis", "");
       flowControllerEvent.setDuration(flowControllerTime);
       procEvt.addSubEvent(flowControllerEvent);
 

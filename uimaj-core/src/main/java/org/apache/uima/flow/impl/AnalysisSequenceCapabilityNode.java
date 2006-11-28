@@ -69,7 +69,7 @@ public class AnalysisSequenceCapabilityNode implements Cloneable {
    *          result specification to be passed to this AnalysisEngine
    */
   public AnalysisSequenceCapabilityNode(String aKey, CasObjectProcessor aCasProcessor,
-                  ResultSpecification aResultSpec) {
+          ResultSpecification aResultSpec) {
     mCasProcessorKey = aKey;
     mCasProcessor = aCasProcessor;
     mResultSpec = aResultSpec;
@@ -98,7 +98,7 @@ public class AnalysisSequenceCapabilityNode implements Cloneable {
    *          result specification to be passed to this AnalysisEngine
    */
   public AnalysisSequenceCapabilityNode(String aCasProcessorKey,
-                  Capability[] aCasProcessorCapabilities, ResultSpecification aResultSpec) {
+          Capability[] aCasProcessorCapabilities, ResultSpecification aResultSpec) {
     mCasProcessorKey = aCasProcessorKey;
     mResultSpec = aResultSpec;
     mCasProcessor = null;

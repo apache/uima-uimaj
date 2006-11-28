@@ -163,7 +163,7 @@ public class CasCopier {
     Type destType = mDestCasView.getTypeSystem().getType(srcType.getName());
     if (destType == null) {
       throw new UIMARuntimeException(UIMARuntimeException.TYPE_NOT_FOUND_DURING_CAS_COPY,
-                      new Object[]{srcType.getName()});
+              new Object[] { srcType.getName() });
     }
     FeatureStructure destFs = mDestCasView.createFS(destType);
 
@@ -192,18 +192,17 @@ public class CasCopier {
       // TODO: could optimize type lookup if type systems are identical
       Feature destFeat;
       if (destType == aSrcFS.getType()) {
-        //sharing same type system, so destFeat == srcFeat
+        // sharing same type system, so destFeat == srcFeat
         destFeat = srcFeat;
-      }
-      else {
-        //not sharing same type system, so do a name loop up in destination type system
+      } else {
+        // not sharing same type system, so do a name loop up in destination type system
         destFeat = destType.getFeatureByBaseName(srcFeat.getShortName());
         if (destFeat == null) {
           throw new UIMARuntimeException(UIMARuntimeException.TYPE_NOT_FOUND_DURING_CAS_COPY,
-                          new Object[]{srcFeat.getName()});
+                  new Object[] { srcFeat.getName() });
         }
       }
-      
+
       // copy primitive values using their string representation
       // TODO: could be optimized but this code would be very messy if we have to
       // enumerate all possible primitive types. Maybe LowLevel CAS API could help?

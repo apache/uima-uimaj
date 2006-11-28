@@ -113,7 +113,7 @@ public class BooleanArrayFSImpl extends CommonAuxArrayFSImpl implements BooleanA
     for (int i = 0; i < length; i++) {
       final String item = src[srcOffset + i];
       casImpl.ll_setBooleanArrayValue(addr, destOffset + i, null != item
-                      && item.equalsIgnoreCase("true"));
+              && item.equalsIgnoreCase("true"));
     }
   }
 }

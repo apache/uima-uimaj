@@ -168,7 +168,7 @@ public class TOP_Type {
 
     if (installGenerator) {
       ((CASImpl) ll_cas).getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType,
-                      getFSGenerator());
+              getFSGenerator());
     }
   }
 

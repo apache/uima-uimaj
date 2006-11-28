@@ -72,7 +72,7 @@ public interface DoubleArrayFS extends CommonArrayFS {
    *              <code>destOffset + length > destArray.length</code>.
    */
   void copyToArray(int srcOffset, double[] dest, int destOffset, int length)
-                  throws ArrayIndexOutOfBoundsException;
+          throws ArrayIndexOutOfBoundsException;
 
   /**
    * Copy the contents of an external array into this array.
@@ -87,6 +87,6 @@ public interface DoubleArrayFS extends CommonArrayFS {
    *          The number of elements to copy.
    */
   void copyFromArray(double[] src, int srcOffset, int destOffset, int length)
-                  throws ArrayIndexOutOfBoundsException;
+          throws ArrayIndexOutOfBoundsException;
 
 }

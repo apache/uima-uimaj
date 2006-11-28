@@ -64,7 +64,7 @@ import org.apache.uima.util.impl.ProcessTrace_impl;
  * 
  */
 public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBase implements
-                TextAnalysisEngine {
+        TextAnalysisEngine {
 
   /**
    * resource bundle for log messages
@@ -81,7 +81,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * Performance Tuning setting in effect for this Analysis Engine.
    */
   private Properties mPerformanceTuningSettings = UIMAFramework
-                  .getDefaultPerformanceTuningProperties();
+          .getDefaultPerformanceTuningProperties();
 
   private UimaTimer mProcessTimer = UIMAFramework.newTimer();
 
@@ -99,7 +99,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    *      java.util.Map)
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     boolean result = super.initialize(aSpecifier, aAdditionalParams);
     if (result) {
       // add our metadata to the CasManager, so that it will pick up our
@@ -190,7 +190,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    *      org.apache.uima.analysis_engine.ResultSpecification)
    */
   public ProcessTrace process(CAS aCAS, ResultSpecification aResultSpec)
-                  throws ResultNotSupportedException, AnalysisEngineProcessException {
+          throws ResultNotSupportedException, AnalysisEngineProcessException {
     setResultSpecification(aResultSpec);
     return process(aCAS);
   }
@@ -200,7 +200,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    *      org.apache.uima.analysis_engine.ResultSpecification, org.apache.uima.util.ProcessTrace)
    */
   public void process(CAS aCAS, ResultSpecification aResultSpec, ProcessTrace aTrace)
-                  throws ResultNotSupportedException, AnalysisEngineProcessException {
+          throws ResultNotSupportedException, AnalysisEngineProcessException {
     setResultSpecification(aResultSpec);
     process(aCAS);
     buildProcessTraceFromMBeanStats(aTrace);
@@ -228,7 +228,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    *      org.apache.uima.analysis_engine.ResultSpecification)
    */
   public ProcessTrace process(JCas aJCas, ResultSpecification aResultSpec)
-                  throws ResultNotSupportedException, AnalysisEngineProcessException {
+          throws ResultNotSupportedException, AnalysisEngineProcessException {
     return process(aJCas.getCas(), aResultSpec);
   }
 
@@ -237,7 +237,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    *      org.apache.uima.analysis_engine.ResultSpecification, org.apache.uima.util.ProcessTrace)
    */
   public void process(JCas aJCas, ResultSpecification aResultSpec, ProcessTrace aTrace)
-                  throws ResultNotSupportedException, AnalysisEngineProcessException {
+          throws ResultNotSupportedException, AnalysisEngineProcessException {
     process(aJCas.getCas(), aResultSpec, aTrace);
   }
 
@@ -245,8 +245,8 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * @deprecated
    */
   public void process(org.apache.uima.analysis_engine.AnalysisProcessData aProcessData,
-                  ResultSpecification aResultSpec) throws ResultNotSupportedException,
-                  AnalysisEngineProcessException {
+          ResultSpecification aResultSpec) throws ResultNotSupportedException,
+          AnalysisEngineProcessException {
     process(aProcessData.getCAS(), aResultSpec, aProcessData.getProcessTrace());
   }
 
@@ -374,13 +374,13 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   }
 
   public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
-                  IOException {
+          IOException {
     batchProcessComplete();
 
   }
 
   public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
-                  IOException {
+          IOException {
     collectionProcessComplete();
   }
 
@@ -394,7 +394,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   protected void setPerformanceTuningSettings(Properties aSettings) {
     mPerformanceTuningSettings = (Properties) aSettings.clone();
     String procTrEnabled = mPerformanceTuningSettings
-                    .getProperty(UIMAFramework.PROCESS_TRACE_ENABLED);
+            .getProperty(UIMAFramework.PROCESS_TRACE_ENABLED);
     mProcessTraceEnabled = procTrEnabled == null || procTrEnabled.equalsIgnoreCase("true");
   }
 
@@ -423,7 +423,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    */
   protected ConfigurationParameterSettings getCurrentConfigParameterSettings() {
     return getUimaContextAdmin().getConfigurationManager().getCurrentConfigParameterSettings(
-                    getUimaContextAdmin().getQualifiedContextName());
+            getUimaContextAdmin().getQualifiedContextName());
   }
 
   /**
@@ -493,7 +493,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
       int analysisTime = (int) getMBean().getAnalysisTimeSinceMark();
       if (analysisTime > 0) {
         ProcessTraceEvent_impl analysisEvent = new ProcessTraceEvent_impl(getMetaData().getName(),
-                        "Analysis", "");
+                "Analysis", "");
         analysisEvent.setDuration(analysisTime);
         if (serviceCallEvent != null) {
           serviceCallEvent.addSubEvent(analysisEvent);

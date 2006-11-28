@@ -98,7 +98,7 @@ public class Filter_impl extends MetaDataObject_impl implements Filter {
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
-                  throws InvalidXMLException {
+          throws InvalidXMLException {
     super.buildFromXMLElement(aElement, aParser, aOptions);
     setSyntax(aElement.getAttribute("syntax"));
     setExpression(XMLUtils.getText(aElement));
@@ -110,7 +110,7 @@ public class Filter_impl extends MetaDataObject_impl implements Filter {
    * @see org.apache.uima.util.XMLizable#toXML(org.xml.sax.ContentHandler, boolean)
    */
   public void toXML(ContentHandler aContentHandler, boolean aWriteDefaultNamespaceAttribute)
-                  throws SAXException {
+          throws SAXException {
     // write the element's start tag
     AttributesImpl attrs = new AttributesImpl();
     attrs.addAttribute("", "syntax", "syntax", null, getSyntax());
@@ -136,8 +136,8 @@ public class Filter_impl extends MetaDataObject_impl implements Filter {
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("filter",
-                  new PropertyXmlInfo[] {
-                  // custom XMLization -- syntax is an attribute, expression is content
-                  });
+          new PropertyXmlInfo[] {
+          // custom XMLization -- syntax is an attribute, expression is content
+          });
 
 }

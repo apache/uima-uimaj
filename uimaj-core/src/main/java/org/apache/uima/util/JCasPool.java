@@ -77,7 +77,7 @@ public class JCasPool {
    *             {@link #JCasPool(int, AnalysisEngine)} instead.
    */
   public JCasPool(int aNumInstances, TextAnalysisEngine aTextAnalysisEngine)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     mNumInstances = aNumInstances;
 
     fillPool(aTextAnalysisEngine.getAnalysisEngineMetaData());
@@ -96,7 +96,7 @@ public class JCasPool {
    *           if the JCas instances could not be created
    */
   public JCasPool(int aNumInstances, AnalysisEngine aAnalysisEngine)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     mNumInstances = aNumInstances;
 
     fillPool(aAnalysisEngine.getAnalysisEngineMetaData());
@@ -114,7 +114,7 @@ public class JCasPool {
    *           if the CAS instances could not be created
    */
   public JCasPool(int aNumInstances, ProcessingResourceMetaData aMetaData)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     mNumInstances = aNumInstances;
 
     fillPool(aMetaData);
@@ -148,7 +148,7 @@ public class JCasPool {
     // make sure this CAS actually belongs to this pool and is checked out
     if (!mAllInstances.contains(aJCas) || mFreeInstances.contains(aJCas)) {
       UIMAFramework.getLogger(CLASS_NAME).logrb(Level.WARNING, CLASS_NAME.getName(), "releaseJCas",
-                      LOG_RESOURCE_BUNDLE, "UIMA_return_jcas_to_pool__WARNING");
+              LOG_RESOURCE_BUNDLE, "UIMA_return_jcas_to_pool__WARNING");
     } else {
       // reset CAS
       aJCas.reset();
@@ -205,7 +205,7 @@ public class JCasPool {
    *           if the Resource instances could not be created
    */
   protected void fillPool(ProcessingResourceMetaData aMetaData)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     // fill the pool
     ArrayList mdList = new ArrayList();
     mdList.add(aMetaData);

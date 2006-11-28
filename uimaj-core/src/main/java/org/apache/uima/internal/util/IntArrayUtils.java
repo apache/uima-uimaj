@@ -33,7 +33,7 @@ public final class IntArrayUtils {
   }
 
   public static final int[] ensure_size(int[] array, int req, int growth_factor,
-                  int multiplication_limit) {
+          int multiplication_limit) {
     if (array.length < req) {
       int new_array_size;
       if (array.length > 0) {
@@ -56,7 +56,7 @@ public final class IntArrayUtils {
   }
 
   public static final boolean[] ensure_size(boolean[] array, int req, int growth_factor,
-                  int multiplication_limit) {
+          int multiplication_limit) {
     if (array.length < req) {
       int new_array_size;
       if (array.length > 0) {
@@ -79,7 +79,7 @@ public final class IntArrayUtils {
   }
 
   public static final char[] ensure_size(char[] array, int req, int growth_factor,
-                  int multiplication_limit) {
+          int multiplication_limit) {
     if (array.length < req) {
       int new_array_size;
       if (array.length > 0) {

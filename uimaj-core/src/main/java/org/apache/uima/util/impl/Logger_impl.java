@@ -115,7 +115,7 @@ public class Logger_impl implements Logger {
   public void log(String aResourceBundleName, String aMessageKey, Object[] aArguments) {
     if (isLoggable(Level.INFO)) {
       log(I18nUtil.localizeMessage(aResourceBundleName, aMessageKey, aArguments,
-                      getExtensionClassLoader()));
+              getExtensionClassLoader()));
     }
   }
 
@@ -256,10 +256,10 @@ public class Logger_impl implements Logger {
    *      java.lang.String, java.lang.String, java.lang.String, java.lang.Object)
    */
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
-                  String msgKey, Object param1) {
+          String msgKey, Object param1) {
     if (isLoggable(level)) {
       logMessage(level, I18nUtil.localizeMessage(bundleName, msgKey, new Object[] { param1 },
-                      getExtensionClassLoader()));
+              getExtensionClassLoader()));
     }
   }
 
@@ -270,10 +270,10 @@ public class Logger_impl implements Logger {
    *      java.lang.String, java.lang.String, java.lang.String, java.lang.Object[])
    */
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
-                  String msgKey, Object[] params) {
+          String msgKey, Object[] params) {
     if (isLoggable(level)) {
       logMessage(level, I18nUtil.localizeMessage(bundleName, msgKey, params,
-                      getExtensionClassLoader()));
+              getExtensionClassLoader()));
     }
   }
 
@@ -284,10 +284,10 @@ public class Logger_impl implements Logger {
    *      java.lang.String, java.lang.String, java.lang.String, java.lang.Throwable)
    */
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
-                  String msgKey, Throwable thrown) {
+          String msgKey, Throwable thrown) {
     if (isLoggable(level)) {
       logMessage(level, I18nUtil.localizeMessage(bundleName, msgKey, null,
-                      getExtensionClassLoader()));
+              getExtensionClassLoader()));
 
       logException(level, thrown);
     }
@@ -300,10 +300,10 @@ public class Logger_impl implements Logger {
    *      java.lang.String, java.lang.String, java.lang.String)
    */
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
-                  String msgKey) {
+          String msgKey) {
     if (isLoggable(level)) {
       logMessage(level, I18nUtil.localizeMessage(bundleName, msgKey, null,
-                      getExtensionClassLoader()));
+              getExtensionClassLoader()));
     }
   }
 

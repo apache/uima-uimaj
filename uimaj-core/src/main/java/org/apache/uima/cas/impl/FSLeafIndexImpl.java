@@ -109,7 +109,7 @@ public abstract class FSLeafIndexImpl implements IntComparator, FSIndex, FSIndex
   // public abstract ComparableIntIterator iterator(IntComparator comp);
 
   public abstract ComparableIntPointerIterator pointerIterator(IntComparator comp,
-                  int[] detectIllegalIndexUpdates, int typeCode);
+          int[] detectIllegalIndexUpdates, int typeCode);
 
   public FSIndexComparator getComparator() {
     return this.comparator;
@@ -362,7 +362,7 @@ public abstract class FSLeafIndexImpl implements IntComparator, FSIndex, FSIndex
    */
   public int compare(FeatureStructure fs1, FeatureStructure fs2) {
     return compare(((FeatureStructureImpl) fs1).getAddress(), ((FeatureStructureImpl) fs2)
-                    .getAddress());
+            .getAddress());
   }
 
   /**
@@ -400,7 +400,7 @@ public abstract class FSLeafIndexImpl implements IntComparator, FSIndex, FSIndex
    */
   public FSIterator iterator(FeatureStructure fs) {
     return new FSIteratorWrapper(refIterator(((FeatureStructureImpl) fs).getAddress()),
-                    this.lowLevelCAS);
+            this.lowLevelCAS);
   }
 
   /**

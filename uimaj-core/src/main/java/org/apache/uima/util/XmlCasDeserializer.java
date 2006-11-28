@@ -76,7 +76,7 @@ public abstract class XmlCasDeserializer {
    *           if an I/O failure occurs
    */
   public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient)
-                  throws SAXException, IOException {
+          throws SAXException, IOException {
     XMLReader xmlReader = XMLReaderFactory.createXMLReader();
     ContentHandler handler = new XmlCasDeserializerHandler(aCAS, aLenient);
     xmlReader.setContentHandler(handler);
@@ -96,7 +96,7 @@ public abstract class XmlCasDeserializer {
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes)
-                    throws SAXException {
+            throws SAXException {
       if (mDelegateHandler == null) {
         // try to find out whether we should use the XCAS or XMI deserializers
         // if there's an xmi:version attribute, always use XMI
@@ -108,7 +108,7 @@ public abstract class XmlCasDeserializer {
         {
           XCASDeserializer deser = new XCASDeserializer(mCAS.getTypeSystem());
           mDelegateHandler = deser
-                          .getXCASHandler(mCAS, mLenient ? new OutOfTypeSystemData() : null);
+                  .getXCASHandler(mCAS, mLenient ? new OutOfTypeSystemData() : null);
         } else // default to XMI
         {
           XmiCasDeserializer deser = new XmiCasDeserializer(mCAS.getTypeSystem());

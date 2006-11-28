@@ -26,5 +26,5 @@ package org.apache.uima.analysis_engine;
  *             no longer defines any additional methods beyond those in AnalysisEngineDescription.
  */
 public interface TaeDescription extends AnalysisEngineDescription {
-  //As of 2.0, no longer defines any additional methods beyond those in AnalysisEngineDescription
+  // As of 2.0, no longer defines any additional methods beyond those in AnalysisEngineDescription
 }
