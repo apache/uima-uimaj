@@ -36,11 +36,11 @@ public class MergerImpl implements org.apache.uima.tools.jcasgen.IMerge {
   static JControlModel jControlModelInstance = null;
 
   public void doMerge(Jg jg, IProgressMonitor progressMonitor, String sourceContents,
-                  String targetContainer, String targetPath, String targetClassName, File targetFile)
-                  throws IOException {
+          String targetContainer, String targetPath, String targetClassName, File targetFile)
+          throws IOException {
     JMerger jMerger = new JMerger();
     IDOMCompilationUnit sourceCompilationUnit = jMerger
-                    .createCompilationUnitForContents(sourceContents);
+            .createCompilationUnitForContents(sourceContents);
     if (targetFile.exists()) {
       progressMonitor.subTask(jg.getString("updatingTarget", new Object[] { targetClassName }));
 
@@ -60,7 +60,7 @@ public class MergerImpl implements org.apache.uima.tools.jcasgen.IMerge {
         jMerger.setTargetCompilationUnit(jMerger.createCompilationUnitForURI(targetPath));
       } catch (NullPointerException e) {
         jg.error.newError(IError.ERROR, jg.getString("nullPtr", new Object[] { targetClassName }),
-                        e);
+                e);
       }
 
       // jMerger.getTargetPatternDictionary().dump();

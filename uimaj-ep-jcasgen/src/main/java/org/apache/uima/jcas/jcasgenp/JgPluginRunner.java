@@ -45,7 +45,7 @@ public class JgPluginRunner implements IPlatformRunnable {
       IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
         public void run(IProgressMonitor progressMonitor) throws CoreException {
           jg.main0(arguments, new MergerImpl(), null, // no progressMonitor,
-                          new EP_LogThrowErrorImpl());
+                  new EP_LogThrowErrorImpl());
         }
       };
       workspace.run(runnable, null);
