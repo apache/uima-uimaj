@@ -58,7 +58,7 @@ public class ProjectCustomizer {
    *           If a problem occurs
    */
   public static void customizeProject(IContainer container, InstallationDescriptor insd)
-                  throws PearException {
+          throws PearException {
     createPearFolderStructure(container);
     PearInstallationDescriptor.createInstallationDescriptor(container, insd, false);
     // only add UIMA Nature to projects
@@ -133,7 +133,7 @@ public class ProjectCustomizer {
       }
     } catch (Throwable e) {
       PearException subEx = new PearException(
-                      "The PEAR folder structure could not be created properly.", e);
+              "The PEAR folder structure could not be created properly.", e);
       throw subEx;
     }
   }
@@ -182,7 +182,7 @@ public class ProjectCustomizer {
    *           If a problem occurs
    */
   public static IFile createFile(IProject project, String fileName, String s,
-                  boolean overrideContentIfExist) throws PearException {
+          boolean overrideContentIfExist) throws PearException {
     InputStream is = null;
     try {
       is = new ByteArrayInputStream(s.getBytes("UTF-8"));
@@ -209,7 +209,7 @@ public class ProjectCustomizer {
    *           If a problem occurs
    */
   public static IFile createFile(IContainer container, String fileName, InputStream is,
-                  boolean overrideContentIfExist) throws PearException {
+          boolean overrideContentIfExist) throws PearException {
     try {
       createPearFolderStructure(container);
       // if we have a container

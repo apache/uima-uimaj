@@ -46,7 +46,7 @@ public class UimaNature implements IProjectNature {
     } catch (PearException e) {
       e.printStackTrace();
       e.openErrorDialog(PearPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow()
-                      .getShell());
+              .getShell());
     }
   }
 

@@ -77,11 +77,11 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
    * Constructor
    */
   public INSDComponentPage(IContainer currentContainer, InstallationDescriptor insd,
-                  Hashtable wizardData) {
+          Hashtable wizardData) {
     super("wizardPage");
     setTitle("UIMA - Installation Descriptor - Component Information");
     setDescription("Enter information about your UIMA component. The required fields are indicated with a (*).\n"
-                    + "The descriptor must be specified using paths relative to the project's root (e.g. \"desc/MyTAE.xml\").\n");
+            + "The descriptor must be specified using paths relative to the project's root (e.g. \"desc/MyTAE.xml\").\n");
     this.wizardData = wizardData;
     this.insd = insd;
     this.currentContainer = currentContainer;
@@ -91,8 +91,8 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
       validateCompInfo();
     } catch (Throwable e) {
       PearException subEx = new PearException(
-                      "The operation failed because the wizard's pages could not be initialized properly.",
-                      e);
+              "The operation failed because the wizard's pages could not be initialized properly.",
+              e);
       subEx.openErrorDialog(getShell());
       this.dispose();
     }
@@ -176,7 +176,7 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
       compIDLabel.setText(" ");
 
       compDescriptorPathText = addTextField(gr, "&Component Descriptor*:         ",
-                      compDescriptorPath, true);
+              compDescriptorPath, true);
       addButton(gr, "   &Browse...   ", true, compDescriptorPathText);
 
       String fileValidationMsg = validateFiles();
@@ -186,8 +186,8 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
       setControl(container);
     } catch (Throwable e) {
       PearException subEx = new PearException(
-                      "The operation failed because the wizard's pages could not be initialized properly.",
-                      e);
+              "The operation failed because the wizard's pages could not be initialized properly.",
+              e);
       subEx.openErrorDialog(getShell());
       this.dispose();
     }
@@ -206,7 +206,7 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
 
     saveWizardData();
     if (compID == null || compID.trim().length() == 0 || compDescriptorPath == null
-                    || compDescriptorPath.trim().length() == 0) {
+            || compDescriptorPath.trim().length() == 0) {
 
       setPageComplete(false);
       setErrorMessage(null);
@@ -217,7 +217,7 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
 
   void validateCompInfo() {
     if (compID == null || compID.trim().length() == 0 || compDescriptorPath == null
-                    || compDescriptorPath.trim().length() == 0) {
+            || compDescriptorPath.trim().length() == 0) {
 
       setPageComplete(false);
       setErrorMessage(null);
@@ -301,7 +301,7 @@ public class INSDComponentPage extends WizardPage implements InsdConstants {
       public void widgetSelected(SelectionEvent e) {
 
         ResourceSelectionDialog dialog = new ResourceSelectionDialog(getShell(), currentContainer,
-                        "Selection Dialog");
+                "Selection Dialog");
         dialog.setTitle("Selection Dialog");
         dialog.setMessage("Please select a file:");
         dialog.open();

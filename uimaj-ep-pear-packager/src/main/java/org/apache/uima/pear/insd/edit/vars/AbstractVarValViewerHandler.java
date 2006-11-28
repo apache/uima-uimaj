@@ -52,7 +52,7 @@ abstract class AbstractVarValViewerHandler {
   protected String[] columnNames;
 
   public AbstractVarValViewerHandler(Composite parent, String[] columnNames, int numParentColumns,
-                  VarValList tableRowList, ITableLabelProvider labelProvider) {
+          VarValList tableRowList, ITableLabelProvider labelProvider) {
     this.tableRowList = tableRowList;
     this.columnNames = columnNames;
     this.labelProvider = labelProvider;
@@ -106,7 +106,7 @@ abstract class AbstractVarValViewerHandler {
    */
   protected void createTable(Composite parent) {
     int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION
-                    | SWT.HIDE_SELECTION;
+            | SWT.HIDE_SELECTION;
 
     table = new Table(parent, style);
 
@@ -222,7 +222,7 @@ abstract class AbstractVarValViewerHandler {
       public void widgetSelected(SelectionEvent e) {
         if (!tableRowList.addTableRow()) {
           MessageDialog.openWarning(new Shell(), "Duplicate Variable",
-                          "The variable 'New_Variable' already exists");
+                  "The variable 'New_Variable' already exists");
         }
       }
     });
@@ -239,7 +239,7 @@ abstract class AbstractVarValViewerHandler {
       // Remove the selection and refresh the view
       public void widgetSelected(SelectionEvent e) {
         VarVal tableRow = (VarVal) ((IStructuredSelection) tableViewer.getSelection())
-                        .getFirstElement();
+                .getFirstElement();
         if (tableRow != null) {
           tableRowList.removeTableRow(tableRow);
         }

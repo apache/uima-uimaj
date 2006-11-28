@@ -79,8 +79,8 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
       currentContainer = container;
     } catch (Throwable e) {
       PearException subEx = new PearException(
-                      "Operation failed because the wizard could not be initialized.\nPlease report this error.",
-                      e);
+              "Operation failed because the wizard could not be initialized.\nPlease report this error.",
+              e);
       subEx.openErrorDialog(getShell());
       this.dispose();
     }
@@ -104,8 +104,8 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
       ProjectCustomizer.customizeProject(currentContainer, insd);
     } catch (Throwable e) {
       PearException subEx = new PearException(
-                      "Operation failed because the wizard could not customize your project as a UIMA project.",
-                      e);
+              "Operation failed because the wizard could not customize your project as a UIMA project.",
+              e);
       subEx.openErrorDialog(getShell());
       this.dispose();
     }
@@ -124,13 +124,12 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
       environmentPage = new INSDEnvironmentPage(currentContainer, insd, wizardData);
       addPage(environmentPage);
       pearExportPage = new PearFileResourceExportPage(new StructuredSelection(currentContainer
-                      .members()), currentContainer);
+              .members()), currentContainer);
       addPage(pearExportPage);
 
     } catch (Throwable e) {
       PearException subEx = new PearException(
-                      "Operation failed because the wizard's pages could not be initialized properly.",
-                      e);
+              "Operation failed because the wizard's pages could not be initialized properly.", e);
       subEx.openErrorDialog(getShell());
       this.dispose();
     }
@@ -148,8 +147,8 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
       editInstallationDescriptor();
       final String file = pearExportPage.getDestinationValue();
       if (new File(file).exists()
-                      && !MessageDialog.openConfirm(getShell(), "File exists", "The file " + file
-                                      + " already exists. Do you want to overwrite it?")) {
+              && !MessageDialog.openConfirm(getShell(), "File exists", "The file " + file
+                      + " already exists. Do you want to overwrite it?")) {
         return false;
       }
       getContainer().run(false, true, pearExportPage.getExportRunnable());
@@ -171,8 +170,8 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
   private void handleComponentInformation() {
     insd.setMainComponent(componentPage.compID);
     insd
-                    .setMainComponentDesc(PearInstallationDescriptor
-                                    .addMacro(componentPage.compDescriptorPath));
+            .setMainComponentDesc(PearInstallationDescriptor
+                    .addMacro(componentPage.compDescriptorPath));
   }
 
   private void addEnvOptions() {
@@ -199,9 +198,9 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
       String envVarValue = vv.getVarValue();
 
       if (envVarName != null && envVarValue != null && envVarName.trim().length() > 0
-                      && envVarValue.trim().length() > 0) {
+              && envVarValue.trim().length() > 0) {
         InstallationDescriptor.ActionInfo actionInfo = new InstallationDescriptor.ActionInfo(
-                        InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
+                InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
         actionInfo.params.put("VAR_NAME", envVarName);
         actionInfo.params.put("VAR_VALUE", envVarValue);
         actionInfo.params.put("COMMENTS", "");

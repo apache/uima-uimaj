@@ -55,10 +55,10 @@ public class PearInstallationDescriptor {
    *           if there is problem writing to the corresponding resource
    */
   public static void saveInstallationDescriptor(IContainer currentContainer,
-                  InstallationDescriptor insd) throws CoreException, IOException {
+          InstallationDescriptor insd) throws CoreException, IOException {
     IFile installFile = currentContainer.getFile(new Path(INSTALLATION_DESCRIPTOR_PATH));
     installFile.setContents(InstallationDescriptorHandler.getInstallationDescriptorAsStream(insd),
-                    false, true, null);
+            false, true, null);
   }
 
   /**
@@ -80,7 +80,7 @@ public class PearInstallationDescriptor {
    * 
    */
   public static InstallationDescriptor getInstallationDescriptor(IContainer currentContainer)
-                  throws IOException, SAXException, CoreException, PearException {
+          throws IOException, SAXException, CoreException, PearException {
     InstallationDescriptor insd = new InstallationDescriptor();
     InstallationDescriptorHandler insdh = new InstallationDescriptorHandler();
     IFile installFile = currentContainer.getFile(new Path(INSTALLATION_DESCRIPTOR_PATH));
@@ -106,14 +106,14 @@ public class PearInstallationDescriptor {
    *           If a problem occurs.
    */
   public static void createInstallationDescriptor(IContainer newContainer,
-                  InstallationDescriptor insd, boolean overrideContentIfExist) throws PearException {
+          InstallationDescriptor insd, boolean overrideContentIfExist) throws PearException {
     try {
       ProjectCustomizer.createFile(newContainer, INSTALLATION_DESCRIPTOR_PATH,
-                      InstallationDescriptorHandler.getInstallationDescriptorAsStream(insd),
-                      overrideContentIfExist);
+              InstallationDescriptorHandler.getInstallationDescriptorAsStream(insd),
+              overrideContentIfExist);
     } catch (Throwable e) {
       PearException subEx = new PearException("The Installation Descriptor ("
-                      + INSTALLATION_DESCRIPTOR_PATH + ") could not be created/saved properly.", e);
+              + INSTALLATION_DESCRIPTOR_PATH + ") could not be created/saved properly.", e);
       throw subEx;
     }
   }

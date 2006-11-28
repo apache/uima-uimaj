@@ -93,12 +93,12 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
    *          a hash table with shared information between wizard pages
    */
   public INSDEnvironmentPage(IContainer currentContainer, InstallationDescriptor insd,
-                  Hashtable wizardData) {
+          Hashtable wizardData) {
     super("wizardPage");
     setTitle("UIMA - Installation Descriptor - Installation Environment");
     setDescription("Set the installation environment parameters"
-                    + " and the system properties (e.g. classpath) for your component.\n"
-                    + "Note: ClassPath entries must start with $main_root/");
+            + " and the system properties (e.g. classpath) for your component.\n"
+            + "Note: ClassPath entries must start with $main_root/");
     this.insd = insd;
     this.currentContainer = currentContainer;
   }
@@ -148,8 +148,8 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
       setControl(container);
     } catch (Throwable e) {
       PearException subEx = new PearException(
-                      "The operation failed because the wizard's pages could not be initialized properly.",
-                      e);
+              "The operation failed because the wizard's pages could not be initialized properly.",
+              e);
       subEx.openErrorDialog(getShell());
       this.dispose();
     }
@@ -195,7 +195,7 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
 
     selectedOS = getFirstItem(insd.getOSSpecs().getProperty(InstallationDescriptorHandler.NAME_TAG));
     selectedJdkVersion = getFirstItem(insd.getToolkitsSpecs().getProperty(
-                    InstallationDescriptorHandler.JDK_VERSION_TAG));
+            InstallationDescriptorHandler.JDK_VERSION_TAG));
 
     String[] items = { "Windows", "Linux", "Windows and Linux", "AIX" };
     String selectedItem = selectedOS;
@@ -219,14 +219,14 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
     try {
       envVarList = new VarValList();
       Collection actionInfos = insd
-                      .getInstallationActions(InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
+              .getInstallationActions(InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
 
       Iterator itr = actionInfos.iterator();
       String classPath = null;
       boolean classPathDefined = false;
       while (itr.hasNext()) {
         InstallationDescriptor.ActionInfo actionInfo = (InstallationDescriptor.ActionInfo) itr
-                        .next();
+                .next();
         String varName = actionInfo.params.getProperty(InstallationDescriptorHandler.VAR_NAME_TAG);
         String varValue = null;
         if (varName != null && varName.trim().equalsIgnoreCase("classpath")) {
@@ -247,7 +247,7 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
       }
     } catch (Throwable e) {
       PearException subEx = new PearException(
-                      "Error. Cause: the environment page could not be initialized properly.", e);
+              "Error. Cause: the environment page could not be initialized properly.", e);
       subEx.openErrorDialog(getShell());
       this.dispose();
     }
@@ -275,14 +275,14 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
 
         // add output Location
         System.out.println("Output Location (normal): "
-                        + javaProject.getOutputLocation().toOSString());
+                + javaProject.getOutputLocation().toOSString());
         System.out.println("Output Location (relative): "
-                        + javaProject.getOutputLocation().makeRelative().toOSString());
+                + javaProject.getOutputLocation().makeRelative().toOSString());
         System.out.println("Output Location (absolute): "
-                        + javaProject.getOutputLocation().makeAbsolute().toOSString());
+                + javaProject.getOutputLocation().makeAbsolute().toOSString());
         String outputLocation = "$main_root/"
-                        + javaProject.getOutputLocation().makeRelative().removeFirstSegments(1)
-                                        .toOSString();
+                + javaProject.getOutputLocation().makeRelative().removeFirstSegments(1)
+                        .toOSString();
         outputLocation = outputLocation.replace('\\', '/');
         outputLocation = outputLocation.trim();
         System.out.println("Output Location (to class path): " + outputLocation);
@@ -305,19 +305,19 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
           while (itr.hasNext())
             sb.append("\n- ").append((String) itr.next());
           MessageDialog
-                          .openWarning(
-                                          getShell(),
-                                          "Missing class path entries",
-                                          "The following class path entries corresponds to resources not included in your project. Please make sure all the required class path resources (except JRE and UIMA jars) are included in this project and in the PEAR class path (in the environment page of the wizard):"
-                                                          + sb.toString());
+                  .openWarning(
+                          getShell(),
+                          "Missing class path entries",
+                          "The following class path entries corresponds to resources not included in your project. Please make sure all the required class path resources (except JRE and UIMA jars) are included in this project and in the PEAR class path (in the environment page of the wizard):"
+                                  + sb.toString());
         }
       }
     } catch (Throwable e) {
       MessageDialog
-                      .openWarning(
-                                      getShell(),
-                                      "Class Path Initialization",
-                                      "The class path could not be initialized properly. Please edit the class path variable in the environment page of the wizard.");
+              .openWarning(
+                      getShell(),
+                      "Class Path Initialization",
+                      "The class path could not be initialized properly. Please edit the class path variable in the environment page of the wizard.");
       e.printStackTrace();
     }
 
@@ -382,10 +382,10 @@ public class INSDEnvironmentPage extends WizardPage implements InsdConstants {
       case IClasspathEntry.CPE_LIBRARY:
         path = classPathEntry.getPath();
         boolean inProject = currentContainer.getFullPath().makeAbsolute().isPrefixOf(
-                        path.makeAbsolute());
+                path.makeAbsolute());
 
         System.out.println("\tProject (full absolute): "
-                        + currentContainer.getFullPath().makeAbsolute());
+                + currentContainer.getFullPath().makeAbsolute());
         System.out.println(inProject ? "\tinProject" : "Not in Project");
 
         String temp = "";

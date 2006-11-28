@@ -104,9 +104,9 @@ public class PearProjectCustomizationException extends Exception {
       String msg = getCause().getMessage();
       msg = msg == null ? "" : msg;
       MultiStatus status = new MultiStatus(PLUGIN_ID, Status.ERROR, getCustomStackTrace(), msg,
-                      getCause());
+              getCause());
       ErrorDialog.openError(shell, "Project Customization Error", getMessage()
-                      + " \nPlease see the details (below).", status, 0xFFFF);
+              + " \nPlease see the details (below).", status, 0xFFFF);
     } catch (Throwable th) {
       th.printStackTrace();
     }
@@ -122,7 +122,7 @@ public class PearProjectCustomizationException extends Exception {
    */
   public static void openErrorDialog(Throwable e, Shell shell) {
     PearProjectCustomizationException subEx = new PearProjectCustomizationException(
-                    "A error occured during the project customization process.", e);
+            "A error occured during the project customization process.", e);
     subEx.openErrorDialog(shell);
   }
 }

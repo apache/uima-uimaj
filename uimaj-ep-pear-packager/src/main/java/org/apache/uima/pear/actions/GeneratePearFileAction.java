@@ -89,15 +89,15 @@ public class GeneratePearFileAction implements IObjectActionDelegate {
           dialog.open();
         } catch (Throwable e) {
           PearProjectCustomizationException pcEx = new PearProjectCustomizationException(
-                          "An error occured during the PEAR generation process.", e);
+                  "An error occured during the PEAR generation process.", e);
           pcEx.openErrorDialog(shell);
         }
       } else
         MessageDialog.openWarning(shell, "Action not supported",
-                        "This action is not supported for the selected item. ");
+                "This action is not supported for the selected item. ");
     } catch (Throwable e) {
       MessageDialog.openWarning(shell, "Action not supported",
-                      "This action was not supported for the selected item. ");
+              "This action was not supported for the selected item. ");
     }
   }
 

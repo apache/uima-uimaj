@@ -107,9 +107,9 @@ public class PearException extends Exception {
       String msg = getCause().getMessage();
       msg = msg == null ? "" : msg; //$NON-NLS-1$
       MultiStatus status = new MultiStatus(PLUGIN_ID, IStatus.ERROR, getCustomStackTrace(), msg,
-                      getCause());
+              getCause());
       ErrorDialog.openError(shell, "Operation Error", getMessage()
-                      + " \nPlease see the details (below).", status, 0xFFFF);
+              + " \nPlease see the details (below).", status, 0xFFFF);
     } catch (Throwable th) {
       th.printStackTrace();
     }

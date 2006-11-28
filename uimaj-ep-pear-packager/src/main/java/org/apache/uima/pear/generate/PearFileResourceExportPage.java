@@ -92,7 +92,7 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
    *          Container (project or folder) with Pear structure
    */
   public PearFileResourceExportPage(final IStructuredSelection selection,
-                  final IContainer currentContainer) {
+          final IContainer currentContainer) {
     super("pearFileResourceExportPage"); //$NON-NLS-1$
     final PearPlugin plugin = PearPlugin.getDefault();
     fPreferenceStore = plugin.getPreferenceStore();
@@ -125,7 +125,7 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
     if (filename == null || filename.trim().equals("")) { //$NON-NLS-1$
       setErrorMessage(null);
       setMessage(PearExportMessages.getString("PearFileResourceExportPage.SelectFile"), //$NON-NLS-1$
-                      IMessageProvider.INFORMATION);
+              IMessageProvider.INFORMATION);
       setPageComplete(false);
       return;
     }
@@ -134,8 +134,8 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
     if (new File(filename).exists()) {
       setErrorMessage(null);
       setMessage(PearExportMessages.format(PearExportMessages
-                      .getString("PearFileResourceExportPage.FileExistsInfo"), //$NON-NLS-1$
-                      new Object[] { filename }), IMessageProvider.INFORMATION);
+              .getString("PearFileResourceExportPage.FileExistsInfo"), //$NON-NLS-1$
+              new Object[] { filename }), IMessageProvider.INFORMATION);
       setPageComplete(true);
       return;
     }
@@ -256,7 +256,7 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
     fCompressCheckbox = new Button(group, SWT.CHECK);
     fCompressCheckbox.setSelection(true);
     fCompressCheckbox.setText(PearExportMessages
-                    .getString("PearFileResourceExportPage.CompressContents")); //$NON-NLS-1$
+            .getString("PearFileResourceExportPage.CompressContents")); //$NON-NLS-1$
   }
 
   /**
@@ -295,7 +295,7 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
 
     final Button deselectAllButton = new Button(buttonsComposite, SWT.PUSH);
     deselectAllButton.setText(PearExportMessages
-                    .getString("PearFileResourceExportPage.DeselectAll")); //$NON-NLS-1$
+            .getString("PearFileResourceExportPage.DeselectAll")); //$NON-NLS-1$
     deselectAllButton.addSelectionListener(new SelectionAdapter() {
       public void widgetSelected(SelectionEvent e) {
         setAllChecked(fTreeViewer.getTree().getItems(), false);
@@ -345,7 +345,7 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
 
     final Button destinationBrowseButton = new Button(container, SWT.PUSH);
     destinationBrowseButton.setText(PearExportMessages
-                    .getString("PearFileResourceExportPage.Browse")); //$NON-NLS-1$
+            .getString("PearFileResourceExportPage.Browse")); //$NON-NLS-1$
     destinationBrowseButton.addSelectionListener(new SelectionAdapter() {
       public void widgetSelected(final SelectionEvent e) {
         handleDestinationBrowseButtonPressed();
@@ -395,6 +395,6 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
     }
 
     return new PearExportOperation(exports, fCurrentContainer, getDestinationValue(),
-                    fCompressCheckbox.getSelection());
+            fCompressCheckbox.getSelection());
   }
 }

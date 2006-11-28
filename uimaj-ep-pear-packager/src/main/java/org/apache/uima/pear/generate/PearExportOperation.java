@@ -71,7 +71,7 @@ public class PearExportOperation implements IRunnableWithProgress {
    *          otherwise
    */
   public PearExportOperation(final IFile[] exports, final IContainer virtualRoot,
-                  final String filename, final boolean compress) {
+          final String filename, final boolean compress) {
     fExports = exports;
     fRoot = virtualRoot;
     fFilename = filename;
@@ -84,11 +84,11 @@ public class PearExportOperation implements IRunnableWithProgress {
    * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
    */
   public void run(final IProgressMonitor monitor) throws InvocationTargetException,
-                  InterruptedException {
+          InterruptedException {
     try {
       final int SCALE = 100;
       final String jobName = "Exporting " + fExports.length + " files to Pear file " + fFilename
-                      + "...";
+              + "...";
       monitor.beginTask(jobName, 2 * SCALE * fExports.length);
 
       // Create output zip stream

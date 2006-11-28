@@ -68,7 +68,7 @@ public class EditInstallationDescriptorAction implements IObjectActionDelegate {
 
       // create the wizard
       EditInstallationDescriptorWizard wizard = new EditInstallationDescriptorWizard(installFile
-                      .getProject());
+              .getProject());
 
       // Initialize the wizard
       wizard.init(PlatformUI.getWorkbench(), ssel);
@@ -82,7 +82,7 @@ public class EditInstallationDescriptorAction implements IObjectActionDelegate {
     } catch (Throwable e) {
       e.printStackTrace();
       MessageDialog.openWarning(shell, "Action not supported",
-                      "This action was not supported for the selected item. ");
+              "This action was not supported for the selected item. ");
     }
   }
 

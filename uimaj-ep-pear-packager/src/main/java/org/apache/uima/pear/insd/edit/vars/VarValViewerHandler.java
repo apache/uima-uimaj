@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.*;
 public class VarValViewerHandler extends AbstractVarValViewerHandler {
 
   public VarValViewerHandler(Composite parent, String[] columnNames, int numParentColumns,
-                  VarValList tableRowList) {
+          VarValList tableRowList) {
     super(parent, columnNames, numParentColumns, tableRowList, new VarValLabelProvider());
   }
 

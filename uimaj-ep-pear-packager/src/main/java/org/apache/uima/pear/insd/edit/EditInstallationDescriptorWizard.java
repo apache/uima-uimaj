@@ -72,8 +72,8 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
       currentProject = project;
     } catch (Throwable e) {
       PearException subEx = new PearException(
-                      "Operation failed because the wizard could not be initialized.\nPlease report this error.",
-                      e);
+              "Operation failed because the wizard could not be initialized.\nPlease report this error.",
+              e);
       subEx.openErrorDialog(getShell());
       this.dispose();
     }
@@ -87,8 +87,8 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
       ProjectCustomizer.customizeProject(currentProject, insd);
     } catch (Throwable e) {
       PearException subEx = new PearException(
-                      "Operation failed because the wizard could not customize your project as a UIMA project.",
-                      e);
+              "Operation failed because the wizard could not customize your project as a UIMA project.",
+              e);
       subEx.openErrorDialog(getShell());
       this.dispose();
     }
@@ -109,8 +109,7 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
 
     } catch (Throwable e) {
       PearException subEx = new PearException(
-                      "Operation failed because the wizard's pages could not be initialized properly.",
-                      e);
+              "Operation failed because the wizard's pages could not be initialized properly.", e);
       subEx.openErrorDialog(getShell());
       this.dispose();
     }
@@ -129,8 +128,8 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
     } catch (Throwable e) {
       e.printStackTrace();
       MessageDialog.openError(getShell(), "Error",
-                      "An error happened while trying to execute the wizard operetions: \n\nDetails:\n "
-                                      + e.getMessage());
+              "An error happened while trying to execute the wizard operetions: \n\nDetails:\n "
+                      + e.getMessage());
     }
     return true;
   }
@@ -145,8 +144,8 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
   private void handleComponentInformation() {
     insd.setMainComponent(componentPage.compID);
     insd
-                    .setMainComponentDesc(PearInstallationDescriptor
-                                    .addMacro(componentPage.compDescriptorPath));
+            .setMainComponentDesc(PearInstallationDescriptor
+                    .addMacro(componentPage.compDescriptorPath));
   }
 
   private void addEnvOptions() {
@@ -173,9 +172,9 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
       String envVarValue = vv.getVarValue();
 
       if (envVarName != null && envVarValue != null && envVarName.trim().length() > 0
-                      && envVarValue.trim().length() > 0) {
+              && envVarValue.trim().length() > 0) {
         InstallationDescriptor.ActionInfo actionInfo = new InstallationDescriptor.ActionInfo(
-                        InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
+                InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
         actionInfo.params.put("VAR_NAME", envVarName);
         actionInfo.params.put("VAR_VALUE", envVarValue);
         actionInfo.params.put("COMMENTS", "");
