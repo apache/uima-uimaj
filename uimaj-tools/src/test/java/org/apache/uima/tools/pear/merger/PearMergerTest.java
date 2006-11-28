@@ -115,7 +115,7 @@ public class PearMergerTest extends TestCase {
     Assert.assertTrue(outPearFile.isFile());
     // install the output PEAR file and check the results
     InstallationController insController = new InstallationController(OUT_PEAR_ID, outPearFile,
-                    _tempWorkingDir);
+            _tempWorkingDir);
     InstallationDescriptor insDesc = insController.installComponent();
     Assert.assertTrue(insDesc != null);
     Assert.assertTrue(OUT_PEAR_ID.equals(insDesc.getMainComponentId()));
@@ -123,7 +123,7 @@ public class PearMergerTest extends TestCase {
     // customize ResourceManager by adding component CLASSPATH
     ResourceManager resMngr = UIMAFramework.newDefaultResourceManager();
     String compClassPath = InstallationController.buildComponentClassPath(insDesc
-                    .getMainComponentRoot(), insDesc);
+            .getMainComponentRoot(), insDesc);
     // instantiate the aggregate TAE
     resMngr.setExtensionClassPath(compClassPath, true);
     String compDescFilePath = insDesc.getMainComponentDesc();

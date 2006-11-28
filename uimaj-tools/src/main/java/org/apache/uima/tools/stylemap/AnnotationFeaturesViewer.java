@@ -91,7 +91,7 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
   }
 
   public void populate(AnalysisEngineDescription analysisEngine, AnalysisEngineMetaData aeMetaData,
-                  TCAS cas) {
+          TCAS cas) {
     tree = generateTreeView(analysisEngine, aeMetaData, cas);
 
     tree.setDragEnabled(true); // To allow drag to stylemap table.
@@ -111,7 +111,7 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
   }
 
   private JTree generateTreeView(AnalysisEngineDescription analysisEngine,
-                  AnalysisEngineMetaData aeMetaData, TCAS cas) {
+          AnalysisEngineMetaData aeMetaData, TCAS cas) {
 
     DefaultMutableTreeNode root = new DefaultMutableTreeNode(ROOT);
     // We won't actually see this.
@@ -149,15 +149,15 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
           // System.out.println("Can\'t get feature names for: "
           // + annotationTypeName);
           JOptionPane.showMessageDialog(null,
-                          "Can\'t get feature names for: " + annotationTypeName, "XML error",
-                          JOptionPane.ERROR_MESSAGE);
+                  "Can\'t get feature names for: " + annotationTypeName, "XML error",
+                  JOptionPane.ERROR_MESSAGE);
         }
       } else {
         // System.out.println("Annotation type does not exist: "
         // + annotationTypeName);
         JOptionPane.showMessageDialog(null,
-                        "Annotation type does not exist: " + annotationTypeName, "XML error",
-                        JOptionPane.ERROR_MESSAGE);
+                "Annotation type does not exist: " + annotationTypeName, "XML error",
+                JOptionPane.ERROR_MESSAGE);
       }
     }
     return new JTree(root);

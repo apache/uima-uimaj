@@ -50,7 +50,7 @@ public class Gladis {
   }
 
   public static MainFrame createMainFrame() throws ClassNotFoundException, InstantiationException,
-                  IllegalAccessException, UnsupportedLookAndFeelException {
+          IllegalAccessException, UnsupportedLookAndFeelException {
     // Set look-and-feel.
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     final MainFrame frame = new MainFrame();
@@ -80,7 +80,7 @@ public class Gladis {
 
   private static final void printUsage() {
     System.out
-                    .println("Usage: java org.apache.uima.annot_view.Gladis [-text <TextFile>] [-desc <XmlDescriptor>] [-datapath <DataPath>] [-exec]");
+            .println("Usage: java org.apache.uima.annot_view.Gladis [-text <TextFile>] [-desc <XmlDescriptor>] [-datapath <DataPath>] [-exec]");
   }
 
   private static final boolean checkCmdLineSyntax(CommandLineParser clp) {

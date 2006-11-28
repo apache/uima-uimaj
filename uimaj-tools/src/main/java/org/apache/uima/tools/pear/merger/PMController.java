@@ -231,7 +231,7 @@ public class PMController {
     // verify command line args (min 4 args: p_1 p_2 -n name)
     if (args.length < 4) {
       logErrorMessage(PEAR_MERGER + " args: " + "pear_file_1 ... pear_file_n -n agg_name "
-                      + "[-f agg_pear_file] [-ae]");
+              + "[-f agg_pear_file] [-ae]");
       return false;
     }
     ArrayList listOfPears = new ArrayList();
@@ -305,7 +305,7 @@ public class PMController {
           getLogger().addHandler(fileHandler);
         } catch (Throwable err) {
           System.err.println("Error initializing log file " + PMController.class.getName() + ": "
-                          + err.toString());
+                  + err.toString());
         }
       }
     }
@@ -426,7 +426,7 @@ public class PMController {
       _dlgInstDescs[i] = PMControllerHelper.processDescriptors(_outDlgRootDirs[i]);
       if (_dlgInstDescs[i] == null) {
         logErrorMessage("[" + PEAR_MERGER + "]: " + "failed to process input package in "
-                        + _outDlgRootDirs[i] + "directory");
+                + _outDlgRootDirs[i] + "directory");
         break;
       }
     }
@@ -440,7 +440,7 @@ public class PMController {
     // 4th step: generate aggregate component descriptor
     File aggDescFile = new File(pkgDescDir, _outAggCompName + ".xml");
     AnalysisEngineDescription aggDescription = PMUimaAgent.createAggregateDescription(
-                    _outAggCompName, _outAggRootDir, _dlgInstDescs, _aeModeEnabled);
+            _outAggCompName, _outAggRootDir, _dlgInstDescs, _aeModeEnabled);
     if (aggDescription != null) {
       PMUimaAgent.saveAggregateDescription(aggDescription, aggDescFile);
       logInfoMessage("[" + PEAR_MERGER + "]: " + "generated aggregate component descriptor");
@@ -450,16 +450,16 @@ public class PMController {
       throw new IOException("cannot generate aggregate component descriptor");
     // 5th step: generate merged installation descriptor
     _outAggInstDesc = PMControllerHelper.generateMergedInstallationDescriptor(_outAggRootDir,
-                    _outAggCompName, aggDescFile, _dlgInstDescs, _outDlgRootDirs);
+            _outAggCompName, aggDescFile, _dlgInstDescs, _outDlgRootDirs);
     if (_outAggInstDesc != null) {
       logInfoMessage("[" + PEAR_MERGER + "]: "
-                      + "generated aggregate package installation descriptor");
+              + "generated aggregate package installation descriptor");
       if (System.getProperty("DEBUG") != null)
         logInfoMessage(_outAggInstDesc.toString());
       // 6th step: create merged PEAR file
       File outPearFile = FileUtil.zipDirectory(_outAggRootDir, _outAggPearFile);
       logInfoMessage("[" + PEAR_MERGER + "]: " + "created output aggregate PEAR file - "
-                      + outPearFile.getAbsolutePath());
+              + outPearFile.getAbsolutePath());
       done = true;
     }
     return done;

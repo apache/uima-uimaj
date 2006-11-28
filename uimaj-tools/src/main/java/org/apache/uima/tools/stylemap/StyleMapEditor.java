@@ -144,7 +144,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
     tablePanel.setLayout(new BorderLayout());
 
     JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
-                    annotationFeaturesPanel, tablePanel);
+            annotationFeaturesPanel, tablePanel);
     Dimension screenDimension = getToolkit().getScreenSize();
     splitPane.setDividerLocation((int) (screenDimension.width * 0.28));
 
@@ -202,9 +202,9 @@ public class StyleMapEditor extends JDialog implements ActionListener {
     tc.setCellRenderer(cellRenderer);
 
     TableColumn labelTableColumn = annotationsTable.getColumnModel().getColumn(
-                    StyleConstants.LABEL_COLUMN);
+            StyleConstants.LABEL_COLUMN);
     TableColumn typeNameTableColumn = annotationsTable.getColumnModel().getColumn(
-                    StyleConstants.TYPE_NAME_COLUMN);
+            StyleConstants.TYPE_NAME_COLUMN);
     // TableColumn featureValueTableColumn =
     // annotationsTable.getColumnModel().getColumn(StyleConstants.FEATURE_VALUE_COLUMN);
 
@@ -233,8 +233,8 @@ public class StyleMapEditor extends JDialog implements ActionListener {
           if ((obj != null) && !obj.equals("")) {
             if (noDups.contains(obj)) {
               JOptionPane.showMessageDialog(StyleMapEditor.this, ("Duplicate Label :  " + obj
-                              + "\n" + "Change the Label and click OK!"), "Duplicate Values",
-                              JOptionPane.PLAIN_MESSAGE);
+                      + "\n" + "Change the Label and click OK!"), "Duplicate Values",
+                      JOptionPane.PLAIN_MESSAGE);
               buttonPress = false;
               break;
             } else {
@@ -295,7 +295,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
    * @return a new style map XML document. If the user cancels, null is returned.
    */
   public String launchEditor(AnalysisEngineMetaData aAnalysisEngineMetaData, String aStyleMapXml,
-                  TCAS cas) {
+          TCAS cas) {
     analysisEngineMetaData = aAnalysisEngineMetaData;
     // create an ArrayList of style entries used by the GUI
     ArrayList styleList = createStyleList(aAnalysisEngineMetaData, aStyleMapXml);
@@ -323,7 +323,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
    *         in <code>aTaeMetaData</code>.
    */
   public ArrayList createStyleList(AnalysisEngineMetaData aAnalysisEngineMetaData,
-                  String aStyleMapXml) {
+          String aStyleMapXml) {
     styleList = new ArrayList();
 
     // Parse the style map XML and create StyleMapEntry elements appropriately.
@@ -369,7 +369,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
       int selectedRow = annotationsTable.getSelectedRow();
       if (selectedRow == -1) {
         JOptionPane.showMessageDialog(source, "Select table row", "Error",
-                        JOptionPane.ERROR_MESSAGE);
+                JOptionPane.ERROR_MESSAGE);
         return;
       } else if (selectedRow == 0) {
         Toolkit.getDefaultToolkit().beep();
@@ -387,7 +387,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
       int selectedRow = annotationsTable.getSelectedRow();
       if (selectedRow == -1) {
         JOptionPane.showMessageDialog(source, "Select table row", "Error",
-                        JOptionPane.ERROR_MESSAGE);
+                JOptionPane.ERROR_MESSAGE);
         return;
       } else if (selectedRow == (tableModel.getRowCount() - 1)) {
         Toolkit.getDefaultToolkit().beep();
@@ -405,8 +405,8 @@ public class StyleMapEditor extends JDialog implements ActionListener {
       String typeName = annotationFeaturesViewer.getSelection();
       if (typeName == null) {
         JOptionPane.showMessageDialog(source,
-                        "You must first select an annotation type or feature", "Error",
-                        JOptionPane.ERROR_MESSAGE);
+                "You must first select an annotation type or feature", "Error",
+                JOptionPane.ERROR_MESSAGE);
         return;
       }
 
@@ -415,9 +415,9 @@ public class StyleMapEditor extends JDialog implements ActionListener {
       int row = annotationsTable.getSelectedRow();
       if (row >= 0) {
         String message = "Are you sure you want to remove "
-                        + tableModel.getValueAt(row, StyleConstants.LABEL_COLUMN);
+                + tableModel.getValueAt(row, StyleConstants.LABEL_COLUMN);
         int rv = JOptionPane.showConfirmDialog(removeTableRowButton, message, "Remove Table Row",
-                        JOptionPane.YES_NO_OPTION);
+                JOptionPane.YES_NO_OPTION);
         if (rv == JOptionPane.YES_OPTION) {
           styleList.remove(row);
           styleList.trimToSize();
@@ -429,7 +429,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
         }
       } else {
         JOptionPane.showMessageDialog(source, "You must first select a table row to remove",
-                        "Error", JOptionPane.ERROR_MESSAGE);
+                "Error", JOptionPane.ERROR_MESSAGE);
       }
     } else if (source == resetButton) {
       styleList = createStyleList(analysisEngineMetaData, null);
@@ -478,9 +478,9 @@ public class StyleMapEditor extends JDialog implements ActionListener {
       // maxColumnWidths[StyleConstants.FEATURE_VALUE_COLUMN] =
       // fm.stringWidth(StyleConstants.columnNames[StyleConstants.FEATURE_VALUE_COLUMN]);
       maxColumnWidths[StyleConstants.BG_COLUMN] = fm
-                      .stringWidth(StyleConstants.columnNames[StyleConstants.BG_COLUMN]);
+              .stringWidth(StyleConstants.columnNames[StyleConstants.BG_COLUMN]);
       maxColumnWidths[StyleConstants.FG_COLUMN] = fm
-                      .stringWidth(StyleConstants.columnNames[StyleConstants.FG_COLUMN]);
+              .stringWidth(StyleConstants.columnNames[StyleConstants.FG_COLUMN]);
       maxColumnWidths[StyleConstants.CHECK_COLUMN] = 60;
       maxColumnWidths[StyleConstants.HIDDEN_COLUMN] = 60;
 
@@ -573,7 +573,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
       }
     };
     final JDialog dialog = JColorChooser.createDialog(button, "Pick a Color", true, colorChooser,
-                    okListener, null);
+            okListener, null);
 
     // Here's the code that brings up the dialog.
     button.addActionListener(new ActionListener() {
@@ -628,9 +628,9 @@ public class StyleMapEditor extends JDialog implements ActionListener {
           newStyle.append("<style>");
 
           String foregroundColor = "#"
-                          + Integer.toHexString(e.getForeground().getRGB()).substring(2);
+                  + Integer.toHexString(e.getForeground().getRGB()).substring(2);
           String backgroundColor = "#"
-                          + Integer.toHexString(e.getBackground().getRGB()).substring(2);
+                  + Integer.toHexString(e.getBackground().getRGB()).substring(2);
 
           if (colorNameMap.containsKey(foregroundColor)) {
             newStyle.append("color:" + colorNameMap.get(foregroundColor) + ";");
@@ -682,7 +682,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
       StyleMapEntry e = (StyleMapEntry) styleList.get(i);
       if (typeName.equals(e.getAnnotationTypeName()) && typeName.indexOf(":") == -1) {
         JOptionPane.showMessageDialog(StyleMapEditor.this, "Duplicate Annotation Type", "Error",
-                        JOptionPane.ERROR_MESSAGE);
+                JOptionPane.ERROR_MESSAGE);
         return;
       }
     }

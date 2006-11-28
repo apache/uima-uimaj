@@ -65,7 +65,7 @@ public class MainFrame extends JFrame {
     public void valueChanged(TreeSelectionEvent event) {
       // System.out.println("");
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) MainFrame.this.typeTree
-                      .getLastSelectedPathComponent();
+              .getLastSelectedPathComponent();
       if (node == null) {
         return;
       }

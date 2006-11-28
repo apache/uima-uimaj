@@ -33,7 +33,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 public class RelationAnnotation extends Annotation {
   public String toString() {
     return "(RELATION-ANN " + getComponentId() + " " + getClass().getName() + ":"
-                    + getRelationArgs() + ")";
+            + getRelationArgs() + ")";
   }
 
   /**
@@ -102,10 +102,10 @@ public class RelationAnnotation extends Annotation {
    */
   public FSList getLinks() {
     if (RelationAnnotation_Type.featOkTst
-                    && ((RelationAnnotation_Type) jcasType).casFeat_links == null)
+            && ((RelationAnnotation_Type) jcasType).casFeat_links == null)
       JCas.throwFeatMissing("links", "org.apache.uima.klt.RelationAnnotation");
     return (FSList) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((RelationAnnotation_Type) jcasType).casFeatCode_links)));
+            ((RelationAnnotation_Type) jcasType).casFeatCode_links)));
   }
 
   /**
@@ -115,10 +115,10 @@ public class RelationAnnotation extends Annotation {
    */
   public void setLinks(FSList v) {
     if (RelationAnnotation_Type.featOkTst
-                    && ((RelationAnnotation_Type) jcasType).casFeat_links == null)
+            && ((RelationAnnotation_Type) jcasType).casFeat_links == null)
       JCas.throwFeatMissing("links", "org.apache.uima.klt.RelationAnnotation");
     jcasType.ll_cas.ll_setRefValue(addr, ((RelationAnnotation_Type) jcasType).casFeatCode_links,
-                    jcasType.ll_cas.ll_getFSRef(v));
+            jcasType.ll_cas.ll_getFSRef(v));
   }
 
   // *--------------*
@@ -131,10 +131,10 @@ public class RelationAnnotation extends Annotation {
    */
   public Annotation getPredicate() {
     if (RelationAnnotation_Type.featOkTst
-                    && ((RelationAnnotation_Type) jcasType).casFeat_predicate == null)
+            && ((RelationAnnotation_Type) jcasType).casFeat_predicate == null)
       JCas.throwFeatMissing("predicate", "org.apache.uima.klt.RelationAnnotation");
     return (Annotation) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((RelationAnnotation_Type) jcasType).casFeatCode_predicate)));
+            ((RelationAnnotation_Type) jcasType).casFeatCode_predicate)));
   }
 
   /**
@@ -144,11 +144,11 @@ public class RelationAnnotation extends Annotation {
    */
   public void setPredicate(Annotation v) {
     if (RelationAnnotation_Type.featOkTst
-                    && ((RelationAnnotation_Type) jcasType).casFeat_predicate == null)
+            && ((RelationAnnotation_Type) jcasType).casFeat_predicate == null)
       JCas.throwFeatMissing("predicate", "org.apache.uima.klt.RelationAnnotation");
     jcasType.ll_cas.ll_setRefValue(addr,
-                    ((RelationAnnotation_Type) jcasType).casFeatCode_predicate, jcasType.ll_cas
-                                    .ll_getFSRef(v));
+            ((RelationAnnotation_Type) jcasType).casFeatCode_predicate, jcasType.ll_cas
+                    .ll_getFSRef(v));
   }
 
   // *--------------*
@@ -161,10 +161,10 @@ public class RelationAnnotation extends Annotation {
    */
   public RelationArgs getRelationArgs() {
     if (RelationAnnotation_Type.featOkTst
-                    && ((RelationAnnotation_Type) jcasType).casFeat_relationArgs == null)
+            && ((RelationAnnotation_Type) jcasType).casFeat_relationArgs == null)
       JCas.throwFeatMissing("relationArgs", "org.apache.uima.klt.RelationAnnotation");
     return (RelationArgs) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((RelationAnnotation_Type) jcasType).casFeatCode_relationArgs)));
+            ((RelationAnnotation_Type) jcasType).casFeatCode_relationArgs)));
   }
 
   /**
@@ -174,11 +174,11 @@ public class RelationAnnotation extends Annotation {
    */
   public void setRelationArgs(RelationArgs v) {
     if (RelationAnnotation_Type.featOkTst
-                    && ((RelationAnnotation_Type) jcasType).casFeat_relationArgs == null)
+            && ((RelationAnnotation_Type) jcasType).casFeat_relationArgs == null)
       JCas.throwFeatMissing("relationArgs", "org.apache.uima.klt.RelationAnnotation");
     jcasType.ll_cas.ll_setRefValue(addr,
-                    ((RelationAnnotation_Type) jcasType).casFeatCode_relationArgs, jcasType.ll_cas
-                                    .ll_getFSRef(v));
+            ((RelationAnnotation_Type) jcasType).casFeatCode_relationArgs, jcasType.ll_cas
+                    .ll_getFSRef(v));
   }
 
   // *--------------*
@@ -191,10 +191,10 @@ public class RelationAnnotation extends Annotation {
    */
   public String getComponentId() {
     if (RelationAnnotation_Type.featOkTst
-                    && ((RelationAnnotation_Type) jcasType).casFeat_componentId == null)
+            && ((RelationAnnotation_Type) jcasType).casFeat_componentId == null)
       JCas.throwFeatMissing("componentId", "org.apache.uima.klt.RelationAnnotation");
     return jcasType.ll_cas.ll_getStringValue(addr,
-                    ((RelationAnnotation_Type) jcasType).casFeatCode_componentId);
+            ((RelationAnnotation_Type) jcasType).casFeatCode_componentId);
   }
 
   /**
@@ -204,10 +204,10 @@ public class RelationAnnotation extends Annotation {
    */
   public void setComponentId(String v) {
     if (RelationAnnotation_Type.featOkTst
-                    && ((RelationAnnotation_Type) jcasType).casFeat_componentId == null)
+            && ((RelationAnnotation_Type) jcasType).casFeat_componentId == null)
       JCas.throwFeatMissing("componentId", "org.apache.uima.klt.RelationAnnotation");
     jcasType.ll_cas.ll_setStringValue(addr,
-                    ((RelationAnnotation_Type) jcasType).casFeatCode_componentId, v);
+            ((RelationAnnotation_Type) jcasType).casFeatCode_componentId, v);
   }
 
 }

@@ -130,7 +130,7 @@ class FSNode extends FSTreeNode {
       }
       ArrayList arrayNodes = new ArrayList(arrayLength);
       if (nodeClass1 == INT_FS || nodeClass1 == FLOAT_FS || nodeClass1 == STRING_FS
-                      || nodeClass1 == STD_FS) {
+              || nodeClass1 == STD_FS) {
         for (int i = 0; i < arrayLength; i++) {
           node = new FSNode(this.fSTreeModel, nodeClass1, cas.getHeapValue(arrayPos), i);
           arrayNodes.add(node);
@@ -139,14 +139,14 @@ class FSNode extends FSTreeNode {
       } else if (nodeClass1 == BYTE_FS) {
         for (int i = 0; i < arrayLength; i++) {
           node = new FSNode(this.fSTreeModel, nodeClass1, cas.ll_getByteArrayValue((int) this.addr,
-                          i), i);
+                  i), i);
           arrayNodes.add(node);
           ++arrayPos;
         }
       } else if (nodeClass1 == SHORT_FS) {
         for (int i = 0; i < arrayLength; i++) {
           node = new FSNode(this.fSTreeModel, nodeClass1, cas.ll_getShortArrayValue(
-                          (int) this.addr, i), i);
+                  (int) this.addr, i), i);
           arrayNodes.add(node);
           ++arrayPos;
         }
@@ -183,7 +183,7 @@ class FSNode extends FSTreeNode {
           featAddr = cas.ll_getLongValue((int) featAddr);
         }
         FSNode childNode = new FSNode(this.fSTreeModel, this.fSTreeModel.getNodeType(
-                        (int) this.addr, feat1), featAddr, feat1);
+                (int) this.addr, feat1), featAddr, feat1);
         this.children.add(childNode);
       }
     }
@@ -243,7 +243,7 @@ class FSNode extends FSTreeNode {
           return getNullString();
         }
         return "<font color=blue>" + getType().getName() + "</font>["
-                        + cas.getArraySize((int) this.addr) + "]";
+                + cas.getArraySize((int) this.addr) + "]";
       }
       case STD_FS: {
         if (cas.getHeapValue((int) this.addr) == 0) {

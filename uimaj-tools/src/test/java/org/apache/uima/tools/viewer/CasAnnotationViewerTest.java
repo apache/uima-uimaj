@@ -110,21 +110,21 @@ public class CasAnnotationViewerTest extends TestCase {
     doubleFeature = tsa.addFeature("doubleFeature", exampleType, tsa.getType(CAS.TYPE_NAME_DOUBLE));
 
     intArrayFeature = tsa.addFeature("intArrayFeature", exampleType, tsa
-                    .getType(CAS.TYPE_NAME_INTEGER_ARRAY));
+            .getType(CAS.TYPE_NAME_INTEGER_ARRAY));
     floatArrayFeature = tsa.addFeature("floatArrayFeature", exampleType, tsa
-                    .getType(CAS.TYPE_NAME_FLOAT_ARRAY), false);
+            .getType(CAS.TYPE_NAME_FLOAT_ARRAY), false);
     stringArrayFeature = tsa.addFeature("stringArrayFeature", exampleType, tsa
-                    .getType(CAS.TYPE_NAME_STRING_ARRAY), false);
+            .getType(CAS.TYPE_NAME_STRING_ARRAY), false);
     booleanArrayFeature = tsa.addFeature("boolArrayFeature", exampleType, tsa
-                    .getType(CAS.TYPE_NAME_BOOLEAN_ARRAY));
+            .getType(CAS.TYPE_NAME_BOOLEAN_ARRAY));
     byteArrayFeature = tsa.addFeature("byteArrayFeature", exampleType, tsa
-                    .getType(CAS.TYPE_NAME_BYTE_ARRAY), false);
+            .getType(CAS.TYPE_NAME_BYTE_ARRAY), false);
     shortArrayFeature = tsa.addFeature("shortArrayFeature", exampleType, tsa
-                    .getType(CAS.TYPE_NAME_SHORT_ARRAY));
+            .getType(CAS.TYPE_NAME_SHORT_ARRAY));
     longArrayFeature = tsa.addFeature("longArrayFeature", exampleType, tsa
-                    .getType(CAS.TYPE_NAME_LONG_ARRAY));
+            .getType(CAS.TYPE_NAME_LONG_ARRAY));
     doubleArrayFeature = tsa.addFeature("doubleArrayFeature", exampleType, tsa
-                    .getType(CAS.TYPE_NAME_DOUBLE_ARRAY), false);
+            .getType(CAS.TYPE_NAME_DOUBLE_ARRAY), false);
 
     // Commit the type system.
     ((CASImpl) casMgr).commitTypeSystem();
@@ -161,49 +161,47 @@ public class CasAnnotationViewerTest extends TestCase {
       DefaultMutableTreeNode fsNode = (DefaultMutableTreeNode) typeNode.getChildAt(0);
       Enumeration children = fsNode.children();
       assertEquals("begin = 1", ((DefaultMutableTreeNode) children.nextElement()).getUserObject()
-                      .toString());
+              .toString());
       assertEquals("end = 5", ((DefaultMutableTreeNode) children.nextElement()).getUserObject()
-                      .toString());
+              .toString());
       assertEquals("floatFeature = " + (float) 99.99, ((DefaultMutableTreeNode) children
-                      .nextElement()).getUserObject().toString());
+              .nextElement()).getUserObject().toString());
       assertEquals("stringFeature = aaaaaaa", ((DefaultMutableTreeNode) children.nextElement())
-                      .getUserObject().toString());
+              .getUserObject().toString());
       assertEquals("boolFeature = true", ((DefaultMutableTreeNode) children.nextElement())
-                      .getUserObject().toString());
+              .getUserObject().toString());
       assertEquals("byteFeature = 122", ((DefaultMutableTreeNode) children.nextElement())
-                      .getUserObject().toString());
+              .getUserObject().toString());
       assertEquals("shortFeature = " + Short.MIN_VALUE, ((DefaultMutableTreeNode) children
-                      .nextElement()).getUserObject().toString());
+              .nextElement()).getUserObject().toString());
       assertEquals("longFeature = " + Long.MIN_VALUE, ((DefaultMutableTreeNode) children
-                      .nextElement()).getUserObject().toString());
+              .nextElement()).getUserObject().toString());
       assertEquals("doubleFeature = " + Double.MAX_VALUE, ((DefaultMutableTreeNode) children
-                      .nextElement()).getUserObject().toString());
+              .nextElement()).getUserObject().toString());
 
       assertEquals("intArrayFeature = [" + Integer.MAX_VALUE + "," + (Integer.MAX_VALUE - 1)
-                      + ",42," + (Integer.MIN_VALUE + 1) + "," + Integer.MIN_VALUE + "]",
-                      ((DefaultMutableTreeNode) children.nextElement()).getUserObject().toString());
+              + ",42," + (Integer.MIN_VALUE + 1) + "," + Integer.MIN_VALUE + "]",
+              ((DefaultMutableTreeNode) children.nextElement()).getUserObject().toString());
       assertEquals("floatArrayFeature = [" + Float.MAX_VALUE + ","
-                      + (float) (Float.MAX_VALUE / 1000.0) + "," + 42.0 + ","
-                      + (float) (Float.MIN_VALUE * 1000) + "," + Float.MIN_VALUE + "]",
-                      ((DefaultMutableTreeNode) children.nextElement()).getUserObject().toString());
+              + (float) (Float.MAX_VALUE / 1000.0) + "," + 42.0 + ","
+              + (float) (Float.MIN_VALUE * 1000) + "," + Float.MIN_VALUE + "]",
+              ((DefaultMutableTreeNode) children.nextElement()).getUserObject().toString());
       assertEquals("stringArrayFeature = [zzzzzz,yyyyyy,xxxxxx,wwwwww,vvvvvv]",
-                      ((DefaultMutableTreeNode) children.nextElement()).getUserObject().toString());
+              ((DefaultMutableTreeNode) children.nextElement()).getUserObject().toString());
       assertEquals("boolArrayFeature = [true,false,true,false,true,false,true,false]",
-                      ((DefaultMutableTreeNode) children.nextElement()).getUserObject().toString());
+              ((DefaultMutableTreeNode) children.nextElement()).getUserObject().toString());
       assertEquals("byteArrayFeature = [8,16,64,-128,-1]", ((DefaultMutableTreeNode) children
-                      .nextElement()).getUserObject().toString());
+              .nextElement()).getUserObject().toString());
       assertEquals("shortArrayFeature = [" + Short.MAX_VALUE + "," + (Short.MAX_VALUE - 1) + ","
-                      + (Short.MAX_VALUE - 2) + "," + (Short.MAX_VALUE - 3) + ","
-                      + (Short.MAX_VALUE - 4) + "]", ((DefaultMutableTreeNode) children
-                      .nextElement()).getUserObject().toString());
+              + (Short.MAX_VALUE - 2) + "," + (Short.MAX_VALUE - 3) + "," + (Short.MAX_VALUE - 4)
+              + "]", ((DefaultMutableTreeNode) children.nextElement()).getUserObject().toString());
       assertEquals("longArrayFeature = [" + Long.MAX_VALUE + "," + (Long.MAX_VALUE - 1) + ","
-                      + (Long.MAX_VALUE - 2) + "," + (Long.MAX_VALUE - 3) + ","
-                      + (Long.MAX_VALUE - 4) + "]", ((DefaultMutableTreeNode) children
-                      .nextElement()).getUserObject().toString());
+              + (Long.MAX_VALUE - 2) + "," + (Long.MAX_VALUE - 3) + "," + (Long.MAX_VALUE - 4)
+              + "]", ((DefaultMutableTreeNode) children.nextElement()).getUserObject().toString());
       assertEquals("doubleArrayFeature = [" + Double.MAX_VALUE + "," + Double.MIN_VALUE + ","
-                      + Double.parseDouble("1.5555") + "," + Double.parseDouble("99.000000005")
-                      + "," + Double.parseDouble("4.44444444444444444") + "]",
-                      ((DefaultMutableTreeNode) children.nextElement()).getUserObject().toString());
+              + Double.parseDouble("1.5555") + "," + Double.parseDouble("99.000000005") + ","
+              + Double.parseDouble("4.44444444444444444") + "]", ((DefaultMutableTreeNode) children
+              .nextElement()).getUserObject().toString());
 
     } catch (Exception e) {
       JUnitExtension.handleException(e);

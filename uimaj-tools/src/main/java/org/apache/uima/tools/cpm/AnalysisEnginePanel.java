@@ -62,13 +62,13 @@ public class AnalysisEnginePanel extends MetaDataPanel {
 
   public boolean hasFileChanged(long lastCheck) {
     return specifierFile.lastModified() > this.lastFileSyncTimestamp
-                    && specifierFile.lastModified() > lastCheck;
+            && specifierFile.lastModified() > lastCheck;
   }
 
   public void refreshFromFile() throws InvalidXMLException, IOException {
     clearAll();
     this.aeSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-                    new XMLInputSource(this.specifierFile));
+            new XMLInputSource(this.specifierFile));
     if (aeSpecifier instanceof AnalysisEngineDescription) {
       AnalysisEngineDescription aeDescription = (AnalysisEngineDescription) aeSpecifier;
       populate(aeDescription.getMetaData(), null);

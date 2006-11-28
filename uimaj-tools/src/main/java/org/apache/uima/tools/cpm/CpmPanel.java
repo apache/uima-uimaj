@@ -92,16 +92,16 @@ import org.apache.uima.util.Progress;
 import org.apache.uima.util.XMLInputSource;
 
 public class CpmPanel extends JPanel implements ActionListener, FileSelectorListener,
-                TabClosedListener, TransportControlListener {
+        TabClosedListener, TransportControlListener {
   private static final long serialVersionUID = -5096300176103368922L;
 
   public static final String HELP_MESSAGE = "Instructions for using UIMA Collection Processing Engine Configurator:\n\n"
-                  + "Select a Collection Reader descriptor and optionally a CAS Initializer descriptor\n"
-                  + "using the Browse buttons.  On the Analyis Engines panel and the CAS Consumers panel,\n"
-                  + "use the Add button to select Analysis Engine (AE) and CAS Consumer descriptors.\n"
-                  + "Press the Play button to start collection processing.\n"
-                  + "A progress bar in the lower left corner of the window will indicate the processing progress.\n"
-                  + "When running, you may use the Pause or Stop button to pause or stop the processing.\n\n";
+          + "Select a Collection Reader descriptor and optionally a CAS Initializer descriptor\n"
+          + "using the Browse buttons.  On the Analyis Engines panel and the CAS Consumers panel,\n"
+          + "use the Add button to select Analysis Engine (AE) and CAS Consumer descriptors.\n"
+          + "Press the Play button to start collection processing.\n"
+          + "A progress bar in the lower left corner of the window will indicate the processing progress.\n"
+          + "When running, you may use the Pause or Stop button to pause or stop the processing.\n\n";
 
   private static final String PREFS_CPE_DESCRIPTOR_FILE = "cpeDescriptorFile";
 
@@ -239,7 +239,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
     Border bevelBorder = BorderFactory.createRaisedBevelBorder();
     collectionReaderTitledBorder = BorderFactory.createTitledBorder(bevelBorder,
-                    "Collection Reader");
+            "Collection Reader");
     collectionReaderPanel.setBorder(collectionReaderTitledBorder);
 
     JScrollPane collectionReaderScrollPane = new JScrollPane(collectionReaderPanel);
@@ -341,11 +341,11 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
     transportControlPanel = new TransportControlPanel(this);
     transportControlPanel.setButtonTooltipText(TransportControlPanel.PLAY_BUTTON,
-                    "Run Collection Processing");
+            "Run Collection Processing");
     transportControlPanel.setButtonTooltipText(TransportControlPanel.PAUSE_BUTTON,
-                    "Pause Collection Processing");
+            "Pause Collection Processing");
     transportControlPanel.setButtonTooltipText(TransportControlPanel.STOP_BUTTON,
-                    "Stop Collection Processing");
+            "Stop Collection Processing");
 
     gbc.gridx = 1;
     gbc.weightx = 0.0;
@@ -392,7 +392,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     File consumerDescDir = fileChooserRootDir;
     if (consumerSpecifiers.size() > 0) {
       File lastConsumerFile = new File((String) consumerSpecifiers
-                      .get(consumerSpecifiers.size() - 1));
+              .get(consumerSpecifiers.size() - 1));
       consumerDescDir = lastConsumerFile.getParentFile();
     }
     if (consumerDescDir.exists()) {
@@ -470,7 +470,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     // Check that Collection Reader is selected
     if (collectionReaderDesc == null) {
       JOptionPane.showMessageDialog(CpmPanel.this, "No Collection Reader has been selected",
-                      "Error", JOptionPane.ERROR_MESSAGE);
+              "Error", JOptionPane.ERROR_MESSAGE);
       transportControlPanel.reset();
       resetScreen();
       return;
@@ -508,7 +508,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     cpeDesc.addCollectionReader(readerFileSelector.getSelected());
     if (collectionReaderPanel.isModified()) {
       CasProcessorConfigurationParameterSettings crSettings = CpeDescriptorFactory
-                      .produceCasProcessorConfigurationParameterSettings();
+              .produceCasProcessorConfigurationParameterSettings();
       cpeDesc.getAllCollectionCollectionReaders()[0].setConfigurationParameterSettings(crSettings);
       createParameterOverrides(crSettings, collectionReaderPanel);
     }
@@ -517,9 +517,9 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       cpeDesc.addCasInitializer(casInitializerFileSelector.getSelected());
       if (casInitializerPanel.isModified()) {
         CasProcessorConfigurationParameterSettings casIniSettings = CpeDescriptorFactory
-                        .produceCasProcessorConfigurationParameterSettings();
+                .produceCasProcessorConfigurationParameterSettings();
         cpeDesc.getAllCollectionCollectionReaders()[0].getCasInitializer()
-                        .setConfigurationParameterSettings(casIniSettings);
+                .setConfigurationParameterSettings(casIniSettings);
         createParameterOverrides(casIniSettings, casInitializerPanel);
       }
     }
@@ -536,7 +536,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       AnalysisEnginePanel aePanel = (AnalysisEnginePanel) aeTabbedPane.getComponentAt(i);
       if (aePanel.isModified()) {
         CasProcessorConfigurationParameterSettings settings = CpeDescriptorFactory
-                        .produceCasProcessorConfigurationParameterSettings();
+                .produceCasProcessorConfigurationParameterSettings();
         casProc.setConfigurationParameterSettings(settings);
         createParameterOverrides(settings, aePanel);
       }
@@ -554,7 +554,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       ConsumerPanel consumerPanel = (ConsumerPanel) consumerTabbedPane.getComponentAt(i);
       if (consumerPanel.isModified()) {
         CasProcessorConfigurationParameterSettings settings = CpeDescriptorFactory
-                        .produceCasProcessorConfigurationParameterSettings();
+                .produceCasProcessorConfigurationParameterSettings();
         casProc.setConfigurationParameterSettings(settings);
         createParameterOverrides(settings, consumerPanel);
       }
@@ -578,7 +578,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
    *          method is called during the act of saving the CPE descriptor.
    */
   private void createParameterOverrides(CasProcessorConfigurationParameterSettings aSettings,
-                  MetaDataPanel aPanel) throws CpeDescriptorException {
+          MetaDataPanel aPanel) throws CpeDescriptorException {
     List values = aPanel.getValues();
     Iterator iterator = values.iterator();
     while (iterator.hasNext()) {
@@ -748,7 +748,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       File f = this.openSaveFileChooser.getSelectedFile();
       // if .xml filter was seleted, add .xml extension if user did not specify an extension
       if (this.openSaveFileChooser.getFileFilter() instanceof XMLFileFilter
-                      && f.getAbsolutePath().indexOf('.') == -1) {
+              && f.getAbsolutePath().indexOf('.') == -1) {
         f = new File(f.getAbsolutePath() + ".xml");
       }
       setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -820,8 +820,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     // ask for confirm if CPM is processing
     if (mCPE != null && mCPE.isProcessing()) {
       int rv = JOptionPane.showConfirmDialog(this,
-                      "Collection Processing is currently running.  Do you wish to abort?", "Exit",
-                      JOptionPane.YES_NO_OPTION);
+              "Collection Processing is currently running.  Do you wish to abort?", "Exit",
+              JOptionPane.YES_NO_OPTION);
       if (rv == JOptionPane.NO_OPTION) {
         mShuttingDown = false;
         return false;
@@ -835,8 +835,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     try {
       if (isDirty()) {
         int rv = JOptionPane.showConfirmDialog(this, "Configuration settings have been modified. "
-                        + "Would you like to save the CPE descriptor?", "Exit",
-                        JOptionPane.YES_NO_CANCEL_OPTION);
+                + "Would you like to save the CPE descriptor?", "Exit",
+                JOptionPane.YES_NO_CANCEL_OPTION);
 
         if (rv == JOptionPane.CANCEL_OPTION) {
           mShuttingDown = false;
@@ -861,7 +861,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     if (collectionReaderDesc != null) {
       File readerSpecifierFile = new File(readerFileSelector.getSelected());
       if (readerSpecifierFile.lastModified() > this.collectionReaderLastFileSyncTimestamp
-                      && readerSpecifierFile.lastModified() > this.lastFileSyncUserPromptTime) {
+              && readerSpecifierFile.lastModified() > this.lastFileSyncUserPromptTime) {
         componentNames.append(collectionReaderDesc.getMetaData().getName()).append('\n');
       }
     }
@@ -869,7 +869,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     if (casInitializerDesc != null) {
       File casInitializerSpecifierFile = new File(casInitializerFileSelector.getSelected());
       if (casInitializerSpecifierFile.lastModified() > this.casInitializerLastFileSyncTimestamp
-                      && casInitializerSpecifierFile.lastModified() > this.lastFileSyncUserPromptTime) {
+              && casInitializerSpecifierFile.lastModified() > this.lastFileSyncUserPromptTime) {
         componentNames.append(casInitializerDesc.getMetaData().getName()).append('\n');
       }
     }
@@ -892,10 +892,9 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
     if (componentNames.length() > 0) {
       int rv = JOptionPane.showConfirmDialog(this,
-                      "The following descriptor(s) have changed on the file system:\n"
-                                      + componentNames.toString()
-                                      + "\n\nDo you want to refresh them?",
-                      "Descriptors Changed On File System", JOptionPane.YES_NO_OPTION);
+              "The following descriptor(s) have changed on the file system:\n"
+                      + componentNames.toString() + "\n\nDo you want to refresh them?",
+              "Descriptors Changed On File System", JOptionPane.YES_NO_OPTION);
       if (rv == JOptionPane.YES_OPTION) {
         refreshOutOfSyncFiles();
       }
@@ -1014,13 +1013,13 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   private boolean populateCollectionReaderPanel(String specifierFile,
-                  CasProcessorConfigurationParameterSettings overrides) throws InvalidXMLException,
-                  IOException {
+          CasProcessorConfigurationParameterSettings overrides) throws InvalidXMLException,
+          IOException {
     try {
       if (collectionReaderPanel.getNrComponents() == 0) {
         collectionReaderPanel.add(new JLabel("Descriptor:"));
         readerFileSelector = new FileSelector(specifierFile, "Collection Reader Descriptor",
-                        JFileChooser.FILES_ONLY, fileChooserRootDir);
+                JFileChooser.FILES_ONLY, fileChooserRootDir);
 
         collectionReaderPanel.add(readerFileSelector);
         readerFileSelector.addChoosableFileFilter(new XMLFileFilter());
@@ -1041,7 +1040,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
           collectionReaderLastFileSyncTimestamp = f.lastModified();
           XMLInputSource readerInputSource = new XMLInputSource(f);
           collectionReaderDesc = UIMAFramework.getXMLParser().parseCollectionReaderDescription(
-                          readerInputSource);
+                  readerInputSource);
 
           collectionReaderPanel.populate(collectionReaderDesc.getMetaData(), overrides);
         }
@@ -1055,13 +1054,13 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   private boolean populateCasInitializerPanel(String specifierFile,
-                  CasProcessorConfigurationParameterSettings overrides) throws InvalidXMLException,
-                  IOException {
+          CasProcessorConfigurationParameterSettings overrides) throws InvalidXMLException,
+          IOException {
     try {
       if (casInitializerPanel.getNrComponents() == 0) {
         casInitializerPanel.add(new JLabel("Descriptor:"));
         casInitializerFileSelector = new FileSelector(specifierFile, "CAS Initializer Descriptor",
-                        JFileChooser.FILES_ONLY, fileChooserRootDir);
+                JFileChooser.FILES_ONLY, fileChooserRootDir);
 
         casInitializerPanel.add(casInitializerFileSelector);
         casInitializerFileSelector.addChoosableFileFilter(new XMLFileFilter());
@@ -1087,7 +1086,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
         casInitializerLastFileSyncTimestamp = f.lastModified();
         XMLInputSource casIniInputSource = new XMLInputSource(f);
         casInitializerDesc = UIMAFramework.getXMLParser().parseCasInitializerDescription(
-                        casIniInputSource);
+                casIniInputSource);
 
         casInitializerPanel.populate(casInitializerDesc.getMetaData(), overrides);
         return true;
@@ -1099,12 +1098,12 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   private void addAE(String aeSpecifierFile, CasProcessorConfigurationParameterSettings overrides)
-                  throws InvalidXMLException, IOException {
+          throws InvalidXMLException, IOException {
     File f = new File(aeSpecifierFile);
     long fileModStamp = f.lastModified(); // get mod stamp before parsing, to prevent race condition
     XMLInputSource aeInputSource = new XMLInputSource(aeSpecifierFile);
     ResourceSpecifier aeSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-                    aeInputSource);
+            aeInputSource);
 
     AnalysisEnginePanel aePanel = new AnalysisEnginePanel(aeSpecifier, f, fileModStamp);
     String tabName;
@@ -1125,19 +1124,19 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   private void addConsumer(String consumerSpecifierFile,
-                  CasProcessorConfigurationParameterSettings overrides) throws InvalidXMLException,
-                  IOException {
+          CasProcessorConfigurationParameterSettings overrides) throws InvalidXMLException,
+          IOException {
     File f = new File(consumerSpecifierFile);
     long fileModStamp = f.lastModified(); // get mod stamp before parsing, to prevent race condition
     XMLInputSource consumerInputSource = new XMLInputSource(consumerSpecifierFile);
     ResourceSpecifier casConsumerSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-                    consumerInputSource);
+            consumerInputSource);
     ConsumerPanel consumerPanel = new ConsumerPanel(casConsumerSpecifier, f, fileModStamp);
 
     String tabName;
     if (casConsumerSpecifier instanceof CasConsumerDescription) {
       ResourceMetaData md = ((CasConsumerDescription) casConsumerSpecifier)
-                      .getCasConsumerMetaData();
+              .getCasConsumerMetaData();
       consumerPanel.populate(md, overrides);
       tabName = md.getName();
     } else {
@@ -1226,9 +1225,9 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     performanceQueryTimer.stop();
 
     PerformanceReportDialog perfReportDlg = new PerformanceReportDialog(CpmPanel.this
-                    .getParentFrame());
+            .getParentFrame());
     perfReportDlg.displayStats(mCPE.getPerformanceReport(), progressBar.getValue(),
-                    "Processing is paused.");
+            "Processing is paused.");
   }
 
   public void controlResumed() {
@@ -1338,7 +1337,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
       PerformanceReportDialog perfReportDlg = new PerformanceReportDialog(this.getParentFrame());
       perfReportDlg.displayStats(mCPE.getPerformanceReport(), progressBar.getValue(),
-                      "Processing completed successfully.");
+              "Processing completed successfully.");
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -1379,10 +1378,10 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   private void openCpeDescriptor(File aFile) throws InvalidXMLException, IOException,
-                  CpeDescriptorException {
+          CpeDescriptorException {
     // parse
     CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
-                    new XMLInputSource(aFile));
+            new XMLInputSource(aFile));
 
     // update GUI
     // Collection Reader
@@ -1392,7 +1391,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       collRdr = collRdrs[0];
       collectionReaderPanel.clearAll();
       populateCollectionReaderPanel(collRdr.getDescriptor().getInclude().get(), collRdr
-                      .getConfigurationParameterSettings());
+              .getConfigurationParameterSettings());
     } else {
       collectionReaderPanel.reset();
     }
@@ -1415,7 +1414,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     for (int i = 0; i < casProcs.length; i++) {
       String specifierFile = casProcs[i].getDescriptor();
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-                      new XMLInputSource(specifierFile));
+              new XMLInputSource(specifierFile));
       if (isCasConsumerSpecifier(specifier)) {
         addConsumer(specifierFile, casProcs[i].getConfigurationParameterSettings());
       } else {
@@ -1492,9 +1491,9 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     public void aborted() {
       if (!mShuttingDown && !mPaused) {
         PerformanceReportDialog perfReportDlg = new PerformanceReportDialog(CpmPanel.this
-                        .getParentFrame());
+                .getParentFrame());
         perfReportDlg.displayStats(mCPE.getPerformanceReport(), progressBar.getValue(),
-                        "Processing aborted.");
+                "Processing aborted.");
       }
       resetScreen();
       mPaused = false;

@@ -83,7 +83,7 @@ public class CasTreeViewerApplet extends JApplet {
       // deserialize CAS
       CASMgr casMgr = CASFactory.createCAS();
       CASCompleteSerializer serializer = (CASCompleteSerializer) SerializationUtils
-                      .deserialize(bytes);
+              .deserialize(bytes);
       Serialization.deserializeCASComplete(serializer, casMgr);
 
       // create tree viewer component and add to this applet
@@ -109,7 +109,7 @@ public class CasTreeViewerApplet extends JApplet {
     Dimension appletSize = getSize();
     Insets insets = getInsets();
     Dimension panelSize = new Dimension(appletSize.width - insets.left - insets.right - 10,
-                    appletSize.height - insets.top - insets.bottom - 10);
+            appletSize.height - insets.top - insets.bottom - 10);
 
     mTreeViewer.setPreferredSize(panelSize);
     mTreeViewer.setSize(panelSize);

@@ -246,9 +246,9 @@ public class InstallPear extends JFrame {
     String selectedFileName = null;
     fileChooser.addChoosableFileFilter(new PEARFilter());
     String lastFileName = (pearFileTextField.getText().length() > 0) ? pearFileTextField.getText()
-                    : userPrefs.get(LAST_FILE_NAME_CHOOSEN_KEY, "./");
+            : userPrefs.get(LAST_FILE_NAME_CHOOSEN_KEY, "./");
     File directory = (lastFileName.length() > 0) ? new File(lastFileName).getParentFile()
-                    : new File("./");
+            : new File("./");
     fileChooser.setCurrentDirectory(directory);
     fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     int result = fileChooser.showDialog(new JFrame(), "Select");
@@ -284,10 +284,10 @@ public class InstallPear extends JFrame {
     JFileChooser fileChooser = new JFileChooser();
     fileChooser.addChoosableFileFilter(new PEARFilter());
     String lastDirName = (installDirTextField.getText().length() > 0) ? installDirTextField
-                    .getText() : userPrefs.get(LAST_DIRECTORY_CHOOSEN_KEY, "./");
+            .getText() : userPrefs.get(LAST_DIRECTORY_CHOOSEN_KEY, "./");
     String selectedDirName = null;
     File directory = (lastDirName.length() > 0) ? new File(lastDirName).getParentFile() : new File(
-                    "./");
+            "./");
     fileChooser.setCurrentDirectory(directory);
     fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     int result = fileChooser.showDialog(new JFrame(), "Select");
@@ -331,8 +331,7 @@ public class InstallPear extends JFrame {
     if (installationDir == null) {
       installationDir = new File("./");
       pearConsole
-                      .append("installation directory is => " + installationDir.getAbsolutePath()
-                                      + "\n");
+              .append("installation directory is => " + installationDir.getAbsolutePath() + "\n");
     }
     try {
       JarFile jarFile = new JarFile(localPearFile);
@@ -357,7 +356,7 @@ public class InstallPear extends JFrame {
       return;
     }
     InstallationController installationController = new InstallationController(mainComponentId,
-                    localPearFile, installationDir);
+            localPearFile, installationDir);
     // adding installation controller message listener
     installationController.addMsgListener(new MessageRouter.StdChannelListener() {
       public void errMsgPosted(String errMsg) {
@@ -374,7 +373,7 @@ public class InstallPear extends JFrame {
       /* installation failed */
       errorFlag = true;
       message = " \nInstallation of " + mainComponentId + " failed => \n "
-                      + installationController.getInstallationMsg();
+              + installationController.getInstallationMsg();
       printInConsole(errorFlag, message);
 
     } else {
@@ -387,8 +386,7 @@ public class InstallPear extends JFrame {
         message = " \nInstallation of " + mainComponentId + " completed \n";
         printInConsole(errorFlag, message);
         message = "The " + mainComponentRootPath + "/" + SET_ENV_FILE
-                        + " \n    file contains required "
-                        + "environment variables for this component\n";
+                + " \n    file contains required " + "environment variables for this component\n";
         printInConsole(errorFlag, message);
         /* 2nd step: verification of main component installation */
         if (installationController.verifyComponent()) {
@@ -407,7 +405,7 @@ public class InstallPear extends JFrame {
           runButton.setEnabled(false);
           errorFlag = true;
           message = "Verification of " + mainComponentId + " failed => \n "
-                          + installationController.getVerificationMsg();
+                  + installationController.getVerificationMsg();
           printInConsole(errorFlag, message);
         }
       } catch (Exception exc) {
@@ -469,7 +467,7 @@ public class InstallPear extends JFrame {
         gladisPath = gladisPath.replace('\\', '/');
         gladisPath = gladisPath.replace(';', File.pathSeparatorChar);
         gladisPath = gladisPath.replaceAll("%UIMA_HOME%", System.getProperty("uima.home").replace(
-                        '\\', '/'));
+                '\\', '/'));
       } else
         gladisPath = "";
       // get Gladis specific CLASSPATH
@@ -479,19 +477,19 @@ public class InstallPear extends JFrame {
         gladisClassPath = gladisClassPath.replace('\\', '/');
         gladisClassPath = gladisClassPath.replace(';', File.pathSeparatorChar);
         gladisClassPath = gladisClassPath.replaceAll("%UIMA_HOME%", System.getProperty("uima.home")
-                        .replace('\\', '/'));
+                .replace('\\', '/'));
       } else
         gladisClassPath = "";
       if (System.getProperty("DEBUG") != null) {
         System.out.println("[DEBUG:runGladis()]:\n\tgladisPath = " + gladisPath
-                        + "\n\tgladisClasspath = " + gladisClassPath);
+                + "\n\tgladisClasspath = " + gladisClassPath);
       }
       // get component specific PATH
       String compPath = InstallationController
-                      .buildComponentPath(mainComponentRootPath, insdObject);
+              .buildComponentPath(mainComponentRootPath, insdObject);
       // get component specific CLASSPATH
       String compClassPath = InstallationController.buildComponentClassPath(mainComponentRootPath,
-                      insdObject);
+              insdObject);
       // get the rest of component specific env. vars
       Properties compEnvVars = InstallationController.buildTableOfEnvVars(insdObject);
 
@@ -505,12 +503,12 @@ public class InstallPear extends JFrame {
       File javaExeFile = null;
       // 1st - try 'java.home'/bin folder
       javaExePath = javaHome + java.io.File.separator + "bin" + java.io.File.separator
-                      + javaExeName;
+              + javaExeName;
       javaExeFile = new File(javaExePath);
       if (!javaExeFile.isFile()) {
         // 2nd - try 'java.home'/jre/bin folder
         javaExePath = javaHome + java.io.File.separator + "jre" + java.io.File.separator + "bin"
-                        + java.io.File.separator + javaExeName;
+                + java.io.File.separator + javaExeName;
         javaExeFile = new java.io.File(javaExePath);
       }
       // start command with executable
@@ -536,7 +534,7 @@ public class InstallPear extends JFrame {
           String token = tokenList.nextToken();
           // substitute UIMA_HOME
           cmdArrayList.add(token.replaceAll("%UIMA_HOME%", System.getProperty("uima.home").replace(
-                          '\\', '/')));
+                  '\\', '/')));
         }
       }
       // add component-specific JVM options (env.vars)
@@ -569,7 +567,7 @@ public class InstallPear extends JFrame {
           String arg = key.substring(8).trim();
           // substitute UIMA_HOME
           String value = gladisProperties.getProperty(key).replaceAll("%UIMA_HOME%",
-                          System.getProperty("uima.home").replace('\\', '/'));
+                  System.getProperty("uima.home").replace('\\', '/'));
           // if arg = java.library.path, add component path
           if (arg.equals("java.library.path")) {
             if (addJavaLibPath) {
@@ -594,7 +592,7 @@ public class InstallPear extends JFrame {
         if (key.startsWith("main.class.arg.")) {
           // substitute UIMA_HOME
           String value = gladisProperties.getProperty(key).replaceAll("%UIMA_HOME%",
-                          System.getProperty("uima.home").replace('\\', '/'));
+                  System.getProperty("uima.home").replace('\\', '/'));
           // substitute DESCRIPTOR
           if (value.equals("%DESCRIPTOR%"))
             value = insdObject.getMainComponentDesc();
@@ -644,7 +642,7 @@ public class InstallPear extends JFrame {
         // append component/gladis path and classpath
         if (sysKey.equalsIgnoreCase("CLASSPATH")) {
           value = compClassPath + File.pathSeparator + gladisClassPath + File.pathSeparator
-                          + sysValue;
+                  + sysValue;
           classPathAdded = true;
         } else if (sysKey.equalsIgnoreCase("PATH") || sysKey.equalsIgnoreCase("LD_LIBRARY_PATH")) {
           value = compPath + File.pathSeparator + gladisPath + File.pathSeparator + sysValue;
@@ -683,7 +681,7 @@ public class InstallPear extends JFrame {
         if (key.startsWith("env.") && !key.equals("env.PATH") && !key.equals("env.CLASSPATH")) {
           String arg = key.substring(4).trim();
           String value = gladisProperties.getProperty(key).replaceAll("%UIMA_HOME%",
-                          System.getProperty("uima.home").replace('\\', '/'));
+                  System.getProperty("uima.home").replace('\\', '/'));
           envArrayList.add(arg + "=" + value);
         }
       }
@@ -828,7 +826,7 @@ public class InstallPear extends JFrame {
               installationDir = new File("./");
               installDirTextField.setText(installationDir.getAbsolutePath().toString());
               pearConsole.append(" If you choose to install pear file, installation directory is: "
-                              + installationDir.getAbsolutePath() + "\n");
+                      + installationDir.getAbsolutePath() + "\n");
             } else {
               installDirTextField.setText(dir.toString());
               pearConsole.append("installation directory => " + dir + "\n\n");
@@ -955,7 +953,7 @@ public class InstallPear extends JFrame {
   private JScrollPane getJScrollPane() {
     if (jScrollPane == null) {
       jScrollPane = new JScrollPane(getPearConsole(), JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-                      JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+              JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
       jScrollPane.setBounds(10, 190, 708, 352);
       jScrollPane.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
       jScrollPane.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -982,7 +980,7 @@ public class InstallPear extends JFrame {
             if (piHelp_URL == null)
               try {
                 throw new IOException(
-                                "PEAR Installer help file does not exist: %UIMA_HOME%/docs/sith/piHelp.html");
+                        "PEAR Installer help file does not exist: %UIMA_HOME%/docs/sith/piHelp.html");
               } catch (IOException e2) {
                 errorFlag = true;
                 message = e2.toString();
@@ -1098,7 +1096,7 @@ public class InstallPear extends JFrame {
           if (piHelp_URL == null)
             try {
               throw new IOException(
-                              "PEAR Installer help file does not exist: %UIMA_HOME%/docs/sith/piHelp.html");
+                      "PEAR Installer help file does not exist: %UIMA_HOME%/docs/sith/piHelp.html");
             } catch (IOException e2) {
               errorFlag = true;
               message = e2.toString();
@@ -1123,7 +1121,7 @@ public class InstallPear extends JFrame {
           aboutMenuItemPanel = new JPanel();
           JLabel frameLabel = new JLabel(new ImageIcon(getClass().getResource(Images.SPLASH)));
           JOptionPane.showMessageDialog(messageFrame, aboutMenuItemPanel.add(frameLabel),
-                          "About PEAR Installer Version 1.0", JOptionPane.PLAIN_MESSAGE);
+                  "About PEAR Installer Version 1.0", JOptionPane.PLAIN_MESSAGE);
         }
       }
     });

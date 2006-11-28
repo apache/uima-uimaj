@@ -114,25 +114,25 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   private static final long serialVersionUID = 8795969283257780425L;
 
   private static final String HELP_MESSAGE = "Instructions for using UIMA Document Analyzer:\n\n"
-                  + "1) In the \"Input Directory\" field, either type or use the browse\n"
-                  + "button to select a directory containing the documents that you want\n"
-                  + "to analyze.\n\n"
-                  + "2) In the \"Output Directory\" field, either type or use the browse\n"
-                  + "button to select a directory where you would like the analyzed\n"
-                  + "documents to be placed.\n\n"
-                  + "3) In the \"Location of Analysis Engine XML Descriptor\" field, either type or use\n"
-                  + "the browse button to select the XML Descriptor file for the Analysis Engine you\n"
-                  + "want to use.\n\n"
-                  + "4) Optionally, if your input documents are XML files and you only\n"
-                  + "want to analyze the contents of a particular tag within those files,\n"
-                  + "you may enter in the \"XML Tag Containing Text\" field the name of\n"
-                  + "the XML tag that contains the text to be analyzed.\n\n "
-                  + "5) In the \"Language\" field, you may select or type the language \n"
-                  + "of your input documents.  Some Analysis Engines may require this.\n\n"
-                  + "6) Click the \"Run\" button at the buttom of the window.\n\n\n"
-                  + "When processing is complete, a list of the analyzed documents will\n"
-                  + "be displayed.  Select the view format (Java Viewer is recommended),\n"
-                  + "and double-click on a document to view it.\n\n";
+          + "1) In the \"Input Directory\" field, either type or use the browse\n"
+          + "button to select a directory containing the documents that you want\n"
+          + "to analyze.\n\n"
+          + "2) In the \"Output Directory\" field, either type or use the browse\n"
+          + "button to select a directory where you would like the analyzed\n"
+          + "documents to be placed.\n\n"
+          + "3) In the \"Location of Analysis Engine XML Descriptor\" field, either type or use\n"
+          + "the browse button to select the XML Descriptor file for the Analysis Engine you\n"
+          + "want to use.\n\n"
+          + "4) Optionally, if your input documents are XML files and you only\n"
+          + "want to analyze the contents of a particular tag within those files,\n"
+          + "you may enter in the \"XML Tag Containing Text\" field the name of\n"
+          + "the XML tag that contains the text to be analyzed.\n\n "
+          + "5) In the \"Language\" field, you may select or type the language \n"
+          + "of your input documents.  Some Analysis Engines may require this.\n\n"
+          + "6) Click the \"Run\" button at the buttom of the window.\n\n\n"
+          + "When processing is complete, a list of the analyzed documents will\n"
+          + "be displayed.  Select the view format (Java Viewer is recommended),\n"
+          + "and double-click on a document to view it.\n\n";
 
   private FileSelector inputFileSelector;
 
@@ -188,7 +188,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   private final JRadioButton javaViewerRB = new JRadioButton("Java Viewer");
 
   private final JRadioButton javaViewerUCRB = new JRadioButton(
-                  "<html><font color=maroon>JV user colors</font></html>");
+          "<html><font color=maroon>JV user colors</font></html>");
 
   private final JRadioButton htmlRB = new JRadioButton("HTML");
 
@@ -319,19 +319,19 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     TfFileSelectorListener fsl = new TfFileSelectorListener(prefsMed);
     TfDocumentListener dl = new TfDocumentListener(prefsMed);
     inputFileSelector = new FileSelector(prefsMed.getInputDir(), "Input Directory",
-                    JFileChooser.DIRECTORIES_ONLY, browserRootDir);
+            JFileChooser.DIRECTORIES_ONLY, browserRootDir);
     // inputFileSelector.addFocusListener(tlf);
     inputFileSelector.addFileSelectorListener(fsl);
     inputFileSelector.addDocumentListener(dl);
 
     outputFileSelector = new FileSelector(prefsMed.getOutputDir(), "Output Directory",
-                    JFileChooser.DIRECTORIES_ONLY, browserRootDir);
+            JFileChooser.DIRECTORIES_ONLY, browserRootDir);
     // outputFileSelector.addFocusListener( tlf);
     outputFileSelector.addFileSelectorListener(fsl);
     outputFileSelector.addDocumentListener(dl);
 
     xmlFileSelector = new FileSelector(prefsMed.getTAEfile(),
-                    "Analysis Engine Descriptor XML file", JFileChooser.FILES_ONLY, browserRootDir);
+            "Analysis Engine Descriptor XML file", JFileChooser.FILES_ONLY, browserRootDir);
     // xmlFileSelector.addFocusListener( tlf);
     xmlFileSelector.addFileSelectorListener(fsl);
     xmlFileSelector.addDocumentListener(dl);
@@ -374,8 +374,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     controlPanel.add(encodingPanel);
 
     SpringUtilities.makeCompactGrid(controlPanel, 6, 2, // rows, cols
-                    4, 4, // initX, initY
-                    4, 4); // xPad, yPad
+            4, 4, // initX, initY
+            4, 4); // xPad, yPad
 
     // Event Handlling of "Exit" Menu Item
     exitMenuItem.addActionListener(new ActionListener() {
@@ -396,7 +396,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     helpMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         JOptionPane.showMessageDialog(DocumentAnalyzer.this, HELP_MESSAGE,
-                        "Document Analyzer Help", JOptionPane.PLAIN_MESSAGE);
+                "Document Analyzer Help", JOptionPane.PLAIN_MESSAGE);
       }
     });
 
@@ -503,12 +503,12 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       // ResourceSpecifier aeSpecifier = UIMAFramework.getXMLParser()
       // .parseResourceSpecifier(in);
       AnalysisEngineDescription aed = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-                      in);
+              in);
 
       // this generates style map file if one does not currently exist
       if (!prefsMed.getStylemapFile().exists()) {
         annotationViewGenerator.autoGenerateStyleMapFile(aed.getAnalysisEngineMetaData(), prefsMed
-                        .getStylemapFile());
+                .getStylemapFile());
       }
     } catch (InvalidXMLException e1) {
       e1.printStackTrace();
@@ -564,22 +564,22 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       displayError("An Analysis Engine Descriptor is Required");
     } else if (!aeSpecifierFile.exists()) {
       displayError("Analysis Engine Descriptor \"" + xmlFileSelector.getSelected()
-                      + "\" does not exist.");
+              + "\" does not exist.");
     } else if (aeSpecifierFile.isDirectory()) {
       displayError("The Analysis Engine Descriptor (" + xmlFileSelector.getSelected()
-                      + ") must be a file, not a directory.");
+              + ") must be a file, not a directory.");
     } else if (inputDir.getName().equals("")) {
       displayError("An Input Directory is Required");
     } else if (!inputDir.exists()) {
       displayError("The input directory \"" + inputFileSelector.getSelected()
-                      + "\" does not exist.");
+              + "\" does not exist.");
     } else if (!inputDir.isDirectory()) {
       displayError("The input directory (" + inputFileSelector.getSelected()
-                      + ") must be a directory, not a file.");
+              + ") must be a directory, not a file.");
     } else if (outputDirectory != null && (!outputDirectory.exists() && !outputDirectory.mkdirs())
-                    || !outputDirectory.isDirectory()) {
+            || !outputDirectory.isDirectory()) {
       displayError("The output directory \"" + outputFileSelector.getSelected()
-                      + "\" does not exist and could not be created.");
+              + "\" does not exist and could not be created.");
     } else if (inputDir.equals(outputDirectory)) {
       displayError("The input directory and the output directory must be different.");
     } else
@@ -619,9 +619,9 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
           }
           if (!new File(inputDir, filename).exists()) {
             int choice = JOptionPane.showConfirmDialog(DocumentAnalyzer.this, "All files in "
-                            + outputDirectory.getPath() + " will be deleted.  These files don't "
-                            + "appear to match the files in the input directory.  Is this OK?",
-                            "Confirm", JOptionPane.YES_NO_OPTION);
+                    + outputDirectory.getPath() + " will be deleted.  These files don't "
+                    + "appear to match the files in the input directory.  Is this OK?", "Confirm",
+                    JOptionPane.YES_NO_OPTION);
             if (choice == JOptionPane.NO_OPTION) {
               return;
             } else {
@@ -643,7 +643,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       // start separate thread to do component initialization and
       // processing
       ProcessingThread thread = new ProcessingThread(inputDir, outputDirectory, aeSpecifierFile,
-                      xmlTag, language, encoding);
+              xmlTag, language, encoding);
       thread.start();
     }
   }
@@ -718,7 +718,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     // if everything works, output performance stats and print them to a
     // pane. Allow users to open generated files.
     showAnalysisResults(new AnalysisEnginePerformanceReports(mCPM.getPerformanceReport()),
-                    outputDirectory);
+            outputDirectory);
   }
 
   /**
@@ -792,9 +792,9 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
    * @throws IOException
    */
   protected TCAS createTCasFromDescriptor(String aDescriptorFile) // JMP
-                  throws ResourceInitializationException, InvalidXMLException, IOException {
+          throws ResourceInitializationException, InvalidXMLException, IOException {
     ResourceSpecifier spec = UIMAFramework.getXMLParser().parseResourceSpecifier(
-                    new XMLInputSource(aDescriptorFile));
+            new XMLInputSource(aDescriptorFile));
     if (spec instanceof AnalysisEngineDescription) {
       return CasCreationUtils.createTCas((AnalysisEngineDescription) spec);
     } else {
@@ -843,14 +843,14 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       // this version of the XCasAnnotationViewerDialog automatically
       // calls setVisible(true) to make the dialog visible
       new XCasAnnotationViewerDialog(this, "Analysis Results", prefsMed, styleMapFile, statsString,
-                      currentTypeSystem, currentTaeOutputTypes, interactiveTempFN + ".xmi",
-                      javaViewerRBisSelected, javaViewerUCRBisSelected, xmlRB.isSelected(), tcas);
+              currentTypeSystem, currentTaeOutputTypes, interactiveTempFN + ".xmi",
+              javaViewerRBisSelected, javaViewerUCRBisSelected, xmlRB.isSelected(), tcas);
     } else {
       // this version of the XCasAnnotationViewerDialog constructor does
       // not automatically launch the viewer.
       XCasAnnotationViewerDialog viewerDialog = new XCasAnnotationViewerDialog(this,
-                      "Analysis Results", prefsMed, styleMapFile, statsString, currentTypeSystem,
-                      currentTaeOutputTypes, useGeneratedStyleMap, tcas);
+              "Analysis Results", prefsMed, styleMapFile, statsString, currentTypeSystem,
+              currentTaeOutputTypes, useGeneratedStyleMap, tcas);
       viewerDialog.pack();
       viewerDialog.setModal(true);
       viewerDialog.setVisible(true);
@@ -907,7 +907,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     }
 
     JOptionPane.showMessageDialog(DocumentAnalyzer.this, buf.toString(), "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.ERROR_MESSAGE);
   }
 
   /**
@@ -1078,19 +1078,19 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   }
 
   public void runProcessingThread(File inputDir, File outputDir, File aeSpecifierFile,
-                  String xmlTag, String language, String encoding) {
+          String xmlTag, String language, String encoding) {
     try {
       // create and configure collection reader that will read input docs
       CollectionReaderDescription collectionReaderDesc = FileSystemCollectionReader
-                      .getDescription();
+              .getDescription();
       ConfigurationParameterSettings paramSettings = collectionReaderDesc.getMetaData()
-                      .getConfigurationParameterSettings();
+              .getConfigurationParameterSettings();
       paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_INPUTDIR, inputDir
-                      .getAbsolutePath());
+              .getAbsolutePath());
       paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_LANGUAGE, language);
       paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_ENCODING, encoding);
       collectionReader = (FileSystemCollectionReader) UIMAFramework
-                      .produceCollectionReader(collectionReaderDesc);
+              .produceCollectionReader(collectionReaderDesc);
 
       // JMP commented out pending update by Jennifer
       // if XML tag was specified, also create SimpleXmlCasInitializer to
@@ -1098,7 +1098,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       if (xmlTag != null && xmlTag.length() > 0) {
         CasInitializerDescription casIniDesc = SimpleXmlCasInitializer.getDescription();
         ConfigurationParameterSettings casIniParamSettings = casIniDesc.getMetaData()
-                        .getConfigurationParameterSettings();
+                .getConfigurationParameterSettings();
         casIniParamSettings.setParameterValue(SimpleXmlCasInitializer.PARAM_XMLTAG, xmlTag);
         CasInitializer casInitializer = UIMAFramework.produceCasInitializer(casIniDesc);
         collectionReader.setCasInitializer(casInitializer);
@@ -1106,7 +1106,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
       // show progress Monitor
       String progressMsg = "  Processing " + collectionReader.getNumberOfDocuments()
-                      + " Documents.";
+              + " Documents.";
 
       numDocs = collectionReader.getNumberOfDocuments();
       progressMonitor = new ProgressMonitor(DocumentAnalyzer.this, progressMsg, "", 0, numDocs + 2);
@@ -1134,20 +1134,20 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       // XMI format)
       CasConsumerDescription casConsumerDesc = XmiWriterCasConsumer.getDescription();
       ConfigurationParameterSettings consumerParamSettings = casConsumerDesc.getMetaData()
-                      .getConfigurationParameterSettings();
+              .getConfigurationParameterSettings();
       consumerParamSettings.setParameterValue(XmiWriterCasConsumer.PARAM_OUTPUTDIR, outputDir
-                      .getAbsolutePath());
+              .getAbsolutePath());
       // declare uima.cas.TOP as an input so that ResultSpec on user's AE will be set to produce all
       // types
       casConsumerDesc.getCasConsumerMetaData().getCapabilities()[0].addInputType("uima.cas.TOP",
-                      true);
+              true);
 
       // create an aggregate AE that includes user's AE descriptor followed
       // by the XMI Writer CAS Consumer, using fixed flow. We use an aggregate AE here,
       // rather than just adding the CAS Consumer to the CPE, so that we
       // can support the user's AE being a CAS Multiplier.
       AnalysisEngineDescription aggDesc = UIMAFramework.getResourceSpecifierFactory()
-                      .createAnalysisEngineDescription();
+              .createAnalysisEngineDescription();
       aggDesc.setPrimitive(false);
       aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("UserAE", aeSpecifier);
       aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("XmiWriter", casConsumerDesc);
@@ -1156,7 +1156,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       aggDesc.getAnalysisEngineMetaData().setName("DocumentAnalyzerAE");
       aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
       aggDesc.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(
-                      false);
+              false);
 
       progressMonitor.setProgress(++progress);
 
@@ -1185,7 +1185,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       if (aeSpecifier instanceof AnalysisEngineDescription) {
         ArrayList outputTypeList = new ArrayList();
         Capability[] capabilities = ((AnalysisEngineDescription) aeSpecifier)
-                        .getAnalysisEngineMetaData().getCapabilities();
+                .getAnalysisEngineMetaData().getCapabilities();
         for (int i = 0; i < capabilities.length; i++) {
           TypeOrFeature[] outputs = capabilities[i].getOutputs();
           for (int j = 0; j < outputs.length; j++) {
@@ -1242,7 +1242,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     String encoding;
 
     ProcessingThread(File inputDir, File outputDir, File taeSpecifierFile, String xmlTag,
-                    String language, String encoding) {
+            String language, String encoding) {
       this.inputDir = inputDir;
       this.outputDir = outputDir;
       this.taeSpecifierFile = taeSpecifierFile;

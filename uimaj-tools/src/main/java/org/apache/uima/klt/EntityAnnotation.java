@@ -33,7 +33,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 public class EntityAnnotation extends Annotation {
   public String toString() {
     return "(ENTITY-ANN \"" + getCoveredText() + "\" " + getComponentId() + " "
-                    + getClass().getName() + ":" + getMentionType() + ")";
+            + getClass().getName() + ":" + getMentionType() + ")";
   }
 
   /**
@@ -104,7 +104,7 @@ public class EntityAnnotation extends Annotation {
     if (EntityAnnotation_Type.featOkTst && ((EntityAnnotation_Type) jcasType).casFeat_links == null)
       JCas.throwFeatMissing("links", "org.apache.uima.klt.EntityAnnotation");
     return (FSList) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((EntityAnnotation_Type) jcasType).casFeatCode_links)));
+            ((EntityAnnotation_Type) jcasType).casFeatCode_links)));
   }
 
   /**
@@ -116,7 +116,7 @@ public class EntityAnnotation extends Annotation {
     if (EntityAnnotation_Type.featOkTst && ((EntityAnnotation_Type) jcasType).casFeat_links == null)
       JCas.throwFeatMissing("links", "org.apache.uima.klt.EntityAnnotation");
     jcasType.ll_cas.ll_setRefValue(addr, ((EntityAnnotation_Type) jcasType).casFeatCode_links,
-                    jcasType.ll_cas.ll_getFSRef(v));
+            jcasType.ll_cas.ll_getFSRef(v));
   }
 
   // *--------------*
@@ -129,10 +129,10 @@ public class EntityAnnotation extends Annotation {
    */
   public String getComponentId() {
     if (EntityAnnotation_Type.featOkTst
-                    && ((EntityAnnotation_Type) jcasType).casFeat_componentId == null)
+            && ((EntityAnnotation_Type) jcasType).casFeat_componentId == null)
       JCas.throwFeatMissing("componentId", "org.apache.uima.klt.EntityAnnotation");
     return jcasType.ll_cas.ll_getStringValue(addr,
-                    ((EntityAnnotation_Type) jcasType).casFeatCode_componentId);
+            ((EntityAnnotation_Type) jcasType).casFeatCode_componentId);
   }
 
   /**
@@ -142,10 +142,10 @@ public class EntityAnnotation extends Annotation {
    */
   public void setComponentId(String v) {
     if (EntityAnnotation_Type.featOkTst
-                    && ((EntityAnnotation_Type) jcasType).casFeat_componentId == null)
+            && ((EntityAnnotation_Type) jcasType).casFeat_componentId == null)
       JCas.throwFeatMissing("componentId", "org.apache.uima.klt.EntityAnnotation");
     jcasType.ll_cas.ll_setStringValue(addr,
-                    ((EntityAnnotation_Type) jcasType).casFeatCode_componentId, v);
+            ((EntityAnnotation_Type) jcasType).casFeatCode_componentId, v);
   }
 
   // *--------------*
@@ -158,10 +158,10 @@ public class EntityAnnotation extends Annotation {
    */
   public String getMentionType() {
     if (EntityAnnotation_Type.featOkTst
-                    && ((EntityAnnotation_Type) jcasType).casFeat_mentionType == null)
+            && ((EntityAnnotation_Type) jcasType).casFeat_mentionType == null)
       JCas.throwFeatMissing("mentionType", "org.apache.uima.klt.EntityAnnotation");
     return jcasType.ll_cas.ll_getStringValue(addr,
-                    ((EntityAnnotation_Type) jcasType).casFeatCode_mentionType);
+            ((EntityAnnotation_Type) jcasType).casFeatCode_mentionType);
   }
 
   /**
@@ -171,9 +171,9 @@ public class EntityAnnotation extends Annotation {
    */
   public void setMentionType(String v) {
     if (EntityAnnotation_Type.featOkTst
-                    && ((EntityAnnotation_Type) jcasType).casFeat_mentionType == null)
+            && ((EntityAnnotation_Type) jcasType).casFeat_mentionType == null)
       JCas.throwFeatMissing("mentionType", "org.apache.uima.klt.EntityAnnotation");
     jcasType.ll_cas.ll_setStringValue(addr,
-                    ((EntityAnnotation_Type) jcasType).casFeatCode_mentionType, v);
+            ((EntityAnnotation_Type) jcasType).casFeatCode_mentionType, v);
   }
 }

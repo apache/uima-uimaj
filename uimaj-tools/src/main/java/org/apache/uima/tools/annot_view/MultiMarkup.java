@@ -64,7 +64,7 @@ public abstract class MultiMarkup {
   }
 
   public static AnnotationExtent[] createAnnotationMarkups(FSIterator it, int textLen,
-                  HashMap styleMap) {
+          HashMap styleMap) {
     ArrayList list = new ArrayList();
     list.add(new AnnotExtent(0, textLen, 0, null));
     AnnotationFS fs;
@@ -87,8 +87,7 @@ public abstract class MultiMarkup {
       if (ext.start < fs.getBegin()) {
         ++pos;
         list.add(pos,
-                        new AnnotExtent(fs.getBegin(), ext.end, ext.depth + 1, fs.getType()
-                                        .getName()));
+                new AnnotExtent(fs.getBegin(), ext.end, ext.depth + 1, fs.getType().getName()));
         ext.end = fs.getBegin();
         ext = (AnnotExtent) list.get(pos);
       } else {
@@ -132,7 +131,7 @@ public abstract class MultiMarkup {
 
     }
     Style unmarkedStyle = StyleContext.getDefaultStyleContext()
-                    .getStyle(StyleContext.DEFAULT_STYLE);
+            .getStyle(StyleContext.DEFAULT_STYLE);
     Style annotStyle = (Style) styleMap.get(TCAS.TYPE_NAME_ANNOTATION);
     // Copy our internal extents to the public representation.
     final int size = list.size();

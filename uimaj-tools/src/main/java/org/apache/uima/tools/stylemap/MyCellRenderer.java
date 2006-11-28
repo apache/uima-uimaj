@@ -36,9 +36,9 @@ class MyCellRenderer extends DefaultTableCellRenderer {
   private ImageIcon smallArrowIcon = Images.getImageIcon(Images.SMALL_ARROW);
 
   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                  boolean hasFocus, int row, int column, ArrayList styleList) {
+          boolean hasFocus, int row, int column, ArrayList styleList) {
     Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
-                    column);
+            column);
 
     StyleMapEntry e = (StyleMapEntry) styleList.get(row);
     if (e != null) {

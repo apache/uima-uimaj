@@ -352,7 +352,7 @@ public class MainFrame extends JFrame {
     private void maybeShowPopup(MouseEvent e) {
       if (e.isPopupTrigger()) {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) MainFrame.this.indexTree
-                        .getLastSelectedPathComponent();
+                .getLastSelectedPathComponent();
         if (node == null) {
           return;
         }
@@ -456,7 +456,7 @@ public class MainFrame extends JFrame {
     public void valueChanged(TreeSelectionEvent arg0) {
       // System.out.println("Tree selection value changed");
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) MainFrame.this.indexTree
-                      .getLastSelectedPathComponent();
+              .getLastSelectedPathComponent();
       if (node == null) {
         return;
       }
@@ -479,7 +479,7 @@ public class MainFrame extends JFrame {
       MainFrame.this.index = MainFrame.this.cas.getIndexRepository().getIndex(label, type);
       updateFSTree(label, MainFrame.this.index);
       MainFrame.this.allAnnotViewerItem.setEnabled(((TCASImpl) MainFrame.this.cas)
-                      .isAnnotationType(type));
+              .isAnnotationType(type));
       MainFrame.this.textArea.getCaret().setVisible(true);
     }
 
@@ -550,7 +550,7 @@ public class MainFrame extends JFrame {
         MainFrame.this.undoMgr.discardAllEdits();
         setFileStatusMessage();
         setStatusbarMessage("Done loading text file " + MainFrame.this.textFile.getName() + " in "
-                        + time.getTimeSpan() + ".");
+                + time.getTimeSpan() + ".");
       }
     }
   }
@@ -681,7 +681,7 @@ public class MainFrame extends JFrame {
             time.start();
             SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
             XCASDeserializer xcasDeserializer = new XCASDeserializer(MainFrame.this.cas
-                            .getTypeSystem());
+                    .getTypeSystem());
             MainFrame.this.cas.reset();
             parser.parse(xcasFile, xcasDeserializer.getXCASHandler(MainFrame.this.cas));
             time.stop();
@@ -693,7 +693,7 @@ public class MainFrame extends JFrame {
             MainFrame.this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
             Iterator sofas = ((CASImpl) MainFrame.this.cas).getBaseCAS().getSofaIterator();
             Feature sofaIdFeat = MainFrame.this.cas.getTypeSystem().getFeatureByFullName(
-                            CAS.FEATURE_FULL_NAME_SOFAID);
+                    CAS.FEATURE_FULL_NAME_SOFAID);
             boolean nonDefaultSofaFound = false;
             while (sofas.hasNext()) {
               SofaFS sofa = (SofaFS) sofas.next();
@@ -728,7 +728,7 @@ public class MainFrame extends JFrame {
               } else {
                 if (null != MainFrame.this.cas.getSofaDataArray()) {
                   text = "Sofa array with mime type = "
-                                  + MainFrame.this.cas.getSofa().getSofaMime();
+                          + MainFrame.this.cas.getSofa().getSofaMime();
                 }
               }
             }
@@ -784,7 +784,7 @@ public class MainFrame extends JFrame {
               MainFrame.this.ae = null;
             }
             MainFrame.this.cas = CasCreationUtils
-                            .createCas(tsDesc, null, new FsIndexDescription[0]);
+                    .createCas(tsDesc, null, new FsIndexDescription[0]);
             MainFrame.this.runOnCasMenuItem.setEnabled(false);
             MainFrame.this.reRunMenu.setEnabled(false);
             MainFrame.this.textArea.setText("");
@@ -1070,7 +1070,7 @@ public class MainFrame extends JFrame {
     internalRunAE(doCasReset);
     timer.stop();
     setStatusbarMessage("Done running AE " + this.ae.getAnalysisEngineMetaData().getName() + " in "
-                    + timer.getTimeSpan() + ".");
+            + timer.getTimeSpan() + ".");
     updateIndexTree(true);
     this.allAnnotViewerItem.setEnabled(false);
     this.isDirty = false;
@@ -1139,8 +1139,7 @@ public class MainFrame extends JFrame {
 
     public void actionPerformed(ActionEvent arg0) {
       String result = (String) JOptionPane.showInputDialog(MainFrame.this, "Specify the data path",
-                      "Set data path", JOptionPane.PLAIN_MESSAGE, null, null,
-                      MainFrame.this.dataPathName);
+              "Set data path", JOptionPane.PLAIN_MESSAGE, null, null, MainFrame.this.dataPathName);
 
       if (result != null) {
         MainFrame.this.setDataPath(result);
@@ -1229,7 +1228,7 @@ public class MainFrame extends JFrame {
       final String text = MainFrame.this.cas.getDocumentText();
       System.out.println("Creating extents.");
       AnnotationExtent[] extents = MultiMarkup.createAnnotationMarkups(it, text.length(),
-                      MainFrame.this.styleMap);
+              MainFrame.this.styleMap);
       System.out.println("Initializing text frame.");
       f.init(text, extents, getDimension(MainFrame.annotViewSizePref));
       System.out.println("Done.");
@@ -1241,7 +1240,7 @@ public class MainFrame extends JFrame {
 
     public void actionPerformed(ActionEvent event) {
       AnnotationDisplayCustomizationFrame acd = new AnnotationDisplayCustomizationFrame(
-                      "Customize Annotation Display");
+              "Customize Annotation Display");
       acd.init(MainFrame.this.styleMap, MainFrame.this.cas);
       acd.pack();
       acd.show();
@@ -1284,15 +1283,15 @@ public class MainFrame extends JFrame {
         versionInfo = "Running Java " + javaVersion + " from " + javaVendor;
       }
       String msg = "CVD (CAS Visual Debugger)\n" + "Apache UIMA Version "
-                      + UIMAFramework.getVersionString() + "\n"
-                      + "Copyright 2006 The Apache Software Foundation\n" + versionInfo + "\n";
+              + UIMAFramework.getVersionString() + "\n"
+              + "Copyright 2006 The Apache Software Foundation\n" + versionInfo + "\n";
       Icon icon = Images.getImageIcon(Images.MICROSCOPE);
       if (icon == null) {
         JOptionPane.showMessageDialog(MainFrame.this, msg, "About CVD",
-                        JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.INFORMATION_MESSAGE);
       } else {
         JOptionPane.showMessageDialog(MainFrame.this, msg, "About CVD",
-                        JOptionPane.INFORMATION_MESSAGE, icon);
+                JOptionPane.INFORMATION_MESSAGE, icon);
       }
     }
 
@@ -1375,9 +1374,9 @@ public class MainFrame extends JFrame {
         String manFileName = "/html_manual/casvisualdebugger.htm";
         if (manFileName == null) {
           String msg = "Can't find manual since system property\n"
-                          + "gladis.manual.file is not set.";
+                  + "gladis.manual.file is not set.";
           JOptionPane.showMessageDialog(MainFrame.this, msg, "Error loading manual",
-                          JOptionPane.ERROR_MESSAGE);
+                  JOptionPane.ERROR_MESSAGE);
           return;
         }
         JFrame manFrame = new JFrame("CVD Manual");
@@ -1402,8 +1401,8 @@ public class MainFrame extends JFrame {
 
     public void actionPerformed(ActionEvent event) {
       String msg = "There is currently no online help."
-                      + "\nPlease find documentation on CVD and UIMA"
-                      + "\nin the doc directory of the UIMA installation";
+              + "\nPlease find documentation on CVD and UIMA"
+              + "\nin the doc directory of the UIMA installation";
       JOptionPane.showMessageDialog(MainFrame.this, msg, "Help", JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -1448,7 +1447,7 @@ public class MainFrame extends JFrame {
   private static final String indexReposRootLabel = "<html><b>CAS Index Repository</b></html>";
 
   private static final String noIndexReposLabel = "<html><b>" + htmlGrayColor
-                  + "CAS Index Repository</b></html>";
+          + "CAS Index Repository</b></html>";
 
   // private static final String noIndexReposLabel = indexReposRootLabel;
 
@@ -1752,7 +1751,7 @@ public class MainFrame extends JFrame {
         addRecentTextFile(this.textFile);
       } else {
         handleException(new IOException("File does not exist or is not readable: "
-                        + this.textFile.getAbsolutePath()));
+                + this.textFile.getAbsolutePath()));
       }
       // Add the loaded file to the recently used files list.
     } catch (UnsupportedEncodingException e) {
@@ -1962,7 +1961,7 @@ public class MainFrame extends JFrame {
     this.cutAction.putValue(Action.NAME, "Cut");
     this.cutAction.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_T));
     this.cutAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_X,
-                    InputEvent.CTRL_MASK));
+            InputEvent.CTRL_MASK));
     this.cutAction.setEnabled(false);
     this.editMenu.add(this.cutAction);
     // Copy
@@ -1970,7 +1969,7 @@ public class MainFrame extends JFrame {
     this.copyAction.putValue(Action.NAME, "Copy");
     this.copyAction.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
     this.copyAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C,
-                    InputEvent.CTRL_MASK));
+            InputEvent.CTRL_MASK));
     this.copyAction.setEnabled(false);
     this.editMenu.add(this.copyAction);
     // Paste
@@ -1978,7 +1977,7 @@ public class MainFrame extends JFrame {
     pasteAction.putValue(Action.NAME, "Paste");
     pasteAction.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_P));
     pasteAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_V,
-                    InputEvent.CTRL_MASK));
+            InputEvent.CTRL_MASK));
     this.editMenu.add(pasteAction);
   }
 
@@ -2272,7 +2271,7 @@ public class MainFrame extends JFrame {
     this.reRunMenu.setEnabled(false);
     this.runOnCasMenuItem = new JMenuItem("Run AE on CAS", KeyEvent.VK_Y);
     this.runOnCasMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y,
-                    ActionEvent.CTRL_MASK));
+            ActionEvent.CTRL_MASK));
     runMenu.add(this.runOnCasMenuItem);
     this.runOnCasMenuItem.addActionListener(new AnnotatorRunOnCasEventHandler());
     this.runOnCasMenuItem.setEnabled(false);
@@ -2316,7 +2315,7 @@ public class MainFrame extends JFrame {
           MainFrame.this.logStream.flush();
         }
         LogFileViewer viewer = new LogFileViewer("Log file: "
-                        + MainFrame.this.logFile.getAbsolutePath());
+                + MainFrame.this.logFile.getAbsolutePath());
         viewer.addWindowListener(new CloseLogViewHandler());
         Dimension dim = getDimension(logViewSizePref);
         if (dim == null) {
@@ -2335,14 +2334,14 @@ public class MainFrame extends JFrame {
     this.statusPanel.setLayout(new BoxLayout(this.statusPanel, BoxLayout.X_AXIS));
     this.statusBar = new JTextField();
     Border innerCompound = BorderFactory.createCompoundBorder(BorderFactory.createBevelBorder(
-                    BevelBorder.LOWERED, Color.lightGray, Color.darkGray), BorderFactory
-                    .createEmptyBorder(0, 3, 0, 3));
+            BevelBorder.LOWERED, Color.lightGray, Color.darkGray), BorderFactory.createEmptyBorder(
+            0, 3, 0, 3));
     Border leftCompoundBorder = BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(
-                    0, 0, 0, 1), innerCompound);
+            0, 0, 0, 1), innerCompound);
     Border middleCompoundBorder = BorderFactory.createCompoundBorder(BorderFactory
-                    .createEmptyBorder(0, 1, 0, 1), innerCompound);
+            .createEmptyBorder(0, 1, 0, 1), innerCompound);
     Border rightCompoundBorder = BorderFactory.createCompoundBorder(BorderFactory
-                    .createEmptyBorder(0, 1, 0, 0), innerCompound);
+            .createEmptyBorder(0, 1, 0, 0), innerCompound);
     // statusBar.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
     this.statusBar.setBorder(leftCompoundBorder);
     this.statusBar.setEditable(false);
@@ -2410,7 +2409,7 @@ public class MainFrame extends JFrame {
       // textBorder.setTitleJustification(TitledBorder.ABOVE_TOP);
     } else {
       textBorder = BorderFactory.createTitledBorder(this.textTitleBorder, this.textFile
-                      .getAbsolutePath());
+              .getAbsolutePath());
     }
     this.textScrollPane.setBorder(textBorder);
     this.textScrollPane.revalidate();
@@ -2423,7 +2422,7 @@ public class MainFrame extends JFrame {
     } else {
       this.aeStatus.setText(this.aeDescriptorFile.getName());
       this.aeStatus.setToolTipText("<html>Currently loaded AE descriptor file:<br>"
-                      + this.aeDescriptorFile.getAbsolutePath() + "</html>");
+              + this.aeDescriptorFile.getAbsolutePath() + "</html>");
     }
     this.statusPanel.revalidate();
   }
@@ -2504,7 +2503,7 @@ public class MainFrame extends JFrame {
     this.sofaSelectionPanel.setVisible(false);
     this.sofaSelectionComboBox.addItemListener(new SofaSelectionListener());
     this.sofaSelectionComboBox
-                    .setToolTipText("This CAS has multiple Views. Select the View to display.");
+            .setToolTipText("This CAS has multiple Views. Select the View to display.");
 
     JSplitPane treePairPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
     treePairPane.setDividerSize(dividerSize);
@@ -2554,13 +2553,13 @@ public class MainFrame extends JFrame {
     int max = (numFiles < maxRecentSize) ? numFiles : maxRecentSize;
     for (int i = 0; i < max; i++) {
       this.recentTextFileMenu.add(createRecentTextFileItem(i + 1, new File(
-                      (String) this.textFileNameList.get(i))));
+              (String) this.textFileNameList.get(i))));
     }
     numFiles = this.descFileNameList.size();
     max = (numFiles < maxRecentSize) ? numFiles : maxRecentSize;
     for (int i = 0; i < max; i++) {
       this.recentDescFileMenu.add(createRecentDescFileItem(i + 1, new File(
-                      (String) this.descFileNameList.get(i))));
+              (String) this.descFileNameList.get(i))));
     }
   }
 
@@ -2583,7 +2582,7 @@ public class MainFrame extends JFrame {
 
       this.log = UIMAFramework.getLogger();
       this.logStream = new EncodedPrintStream(new BufferedOutputStream(new FileOutputStream(
-                      this.logFile)), "UTF-8");
+              this.logFile)), "UTF-8");
 
       this.log.setOutputStream(this.logStream);
       // System.out.println("Logging to: " + logFile.getAbsolutePath());
@@ -2655,7 +2654,7 @@ public class MainFrame extends JFrame {
       this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
       Iterator sofas = ((CASImpl) MainFrame.this.cas).getBaseCAS().getSofaIterator();
       Feature sofaIdFeat = MainFrame.this.cas.getTypeSystem().getFeatureByFullName(
-                      CAS.FEATURE_FULL_NAME_SOFAID);
+              CAS.FEATURE_FULL_NAME_SOFAID);
       boolean nonDefaultSofaFound = false;
       while (sofas.hasNext()) {
         SofaFS sofa = (SofaFS) sofas.next();
@@ -2678,7 +2677,7 @@ public class MainFrame extends JFrame {
   private void setLanguage() {
     if (this.language != null) {
       Feature langFeat = this.cas.getTypeSystem().getFeatureByFullName(
-                      TCAS.FEATURE_FULL_NAME_LANGUAGE);
+              TCAS.FEATURE_FULL_NAME_LANGUAGE);
       AnnotationFS doc = this.cas.getDocumentAnnotation();
       if (doc != null) {
         doc.setStringValue(langFeat, this.language);
@@ -2754,7 +2753,7 @@ public class MainFrame extends JFrame {
     DefaultTreeModel model = (DefaultTreeModel) this.indexTree.getModel();
     // 1.3 workaround
     TreeModelListener[] listeners = org.apache.uima.tools.annot_view.ts_editor.MainFrame
-                    .getTreeModelListeners(model);
+            .getTreeModelListeners(model);
     // TreeModelListener[] listeners = model.getTreeModelListeners();
     // System.out.println("Number of tree model listeners: " +
     // listeners.length);
@@ -2788,7 +2787,7 @@ public class MainFrame extends JFrame {
   }
 
   private DefaultMutableTreeNode createTypeTree(Type type, TypeSystem ts, String label,
-                  FSIndexRepository ir) {
+          FSIndexRepository ir) {
     int size = ir.getIndex(label, type).size();
     TypeTreeNode typeNode = new TypeTreeNode(type, label, size);
     DefaultMutableTreeNode node = new DefaultMutableTreeNode(typeNode);
@@ -3034,27 +3033,25 @@ public class MainFrame extends JFrame {
     Action focusIRAction = new FocusIRAction();
     String focusIRActionName = "focusIRAction";
     getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-                    KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_MASK), focusIRActionName);
+            KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_MASK), focusIRActionName);
     getRootPane().getActionMap().put(focusIRActionName, focusIRAction);
     // Create a key map for focussing the FS tree panel.
     Action focusFSAction = new FocusFSAction();
     String focusFSActionName = "focusFSAction";
     getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-                    KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_MASK), focusFSActionName);
+            KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_MASK), focusFSActionName);
     getRootPane().getActionMap().put(focusFSActionName, focusFSAction);
     // Create a key map for focussing the text area.
     Action focusTextAction = new FocusTextAction();
     String focusTextActionName = "focusTextAction";
     getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-                    KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK),
-                    focusTextActionName);
+            KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK), focusTextActionName);
     getRootPane().getActionMap().put(focusTextActionName, focusTextAction);
     // Create a key map for bringing up the text area context menu.
     Action textContextAction = new TextContextMenuAction();
     String textContextActionName = "textContextAction";
     this.textArea.getInputMap(JComponent.WHEN_FOCUSED).put(
-                    KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.ALT_MASK),
-                    textContextActionName);
+            KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.ALT_MASK), textContextActionName);
     this.textArea.getActionMap().put(textContextActionName, textContextAction);
   }
 

@@ -167,7 +167,7 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
         styleMapEditor.setAnalysisEngine(selectedAE);
         // launch StyleMapEditor GUI
         String newStyleMap = styleMapEditor.launchEditor(selectedAE.getAnalysisEngineMetaData(),
-                        styleMapXml, cas);
+                styleMapXml, cas);
 
         if (newStyleMap != null) {
           // write new file using AE+StyleMap convention
@@ -206,10 +206,9 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
    *          types of the Analysis Engine. A value of null means to display all types.
    */
   public XCasAnnotationViewerDialog(JFrame aParentFrame, String aDialogTitle, PrefsMediator med,
-                  File aStyleMapFile, String aPerformanceStats, TypeSystem aTypeSystem,
-                  final String[] aTypesToDisplay, String interactiveTempFN,
-                  boolean javaViewerRBisSelected, boolean javaViewerUCRBisSelected,
-                  boolean xmlRBisSelected, TCAS cas) {
+          File aStyleMapFile, String aPerformanceStats, TypeSystem aTypeSystem,
+          final String[] aTypesToDisplay, String interactiveTempFN, boolean javaViewerRBisSelected,
+          boolean javaViewerUCRBisSelected, boolean xmlRBisSelected, TCAS cas) {
     super(aParentFrame, aDialogTitle);
     // create the AnnotationViewGenerator (for HTML view generation)
     this.med1 = med;
@@ -217,8 +216,8 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
     annotationViewGenerator = new AnnotationViewGenerator(tempDir);
 
     launchThatViewer(med.getOutputDir(), interactiveTempFN, aTypeSystem, aTypesToDisplay,
-                    javaViewerRBisSelected, javaViewerUCRBisSelected, xmlRBisSelected,
-                    aStyleMapFile, tempDir);
+            javaViewerRBisSelected, javaViewerUCRBisSelected, xmlRBisSelected, aStyleMapFile,
+            tempDir);
   }
 
   /**
@@ -236,8 +235,8 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
   }
 
   public XCasAnnotationViewerDialog(JFrame aParentFrame, String aDialogTitle, PrefsMediator med,
-                  File aStyleMapFile, String aPerformanceStats, TypeSystem aTypeSystem,
-                  final String[] aTypesToDisplay, boolean generatedStyleMap, TCAS cas) {
+          File aStyleMapFile, String aPerformanceStats, TypeSystem aTypeSystem,
+          final String[] aTypesToDisplay, boolean generatedStyleMap, TCAS cas) {
 
     super(aParentFrame, aDialogTitle);
     this.med1 = med;
@@ -317,8 +316,8 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
     controlsPanel.add(displayFormatPanel);
 
     SpringUtilities.makeCompactGrid(controlsPanel, 1, 2, // rows, cols
-                    4, 4, // initX, initY
-                    0, 0); // xPad, yPad
+            4, 4, // initX, initY
+            0, 0); // xPad, yPad
 
     JButton editStyleMapButton = new JButton("Edit Style Map");
 
@@ -340,7 +339,7 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
       perfStatsButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent ae) {
           JOptionPane.showMessageDialog((Component) ae.getSource(), performanceStats, null,
-                          JOptionPane.PLAIN_MESSAGE);
+                  JOptionPane.PLAIN_MESSAGE);
         }
       });
       buttonsPanel.add(perfStatsButton);
@@ -385,15 +384,15 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
   // JMP
 
   public void launchThatViewer(String inputDirPath, String fileName, TypeSystem typeSystem,
-                  final String[] aTypesToDisplay, boolean javaViewerRBisSelected,
-                  boolean javaViewerUCRBisSelected, boolean xmlRBisSelected, File styleMapFile,
-                  File viewerDirectory) {
+          final String[] aTypesToDisplay, boolean javaViewerRBisSelected,
+          boolean javaViewerUCRBisSelected, boolean xmlRBisSelected, File styleMapFile,
+          File viewerDirectory) {
     try {
 
       File xcasFile = new File(inputDirPath, fileName);
       // create a new TCAS
       CAS cas = CasCreationUtils.createCas(Collections.EMPTY_LIST, typeSystem, UIMAFramework
-                      .getDefaultPerformanceTuningProperties());
+              .getDefaultPerformanceTuningProperties());
       // deserialize XCAS into CAS
       FileInputStream xcasInStream = null;
       try {
@@ -419,7 +418,7 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
         // launch viewer in a new dialog
         viewer.setCAS(cas);
         JDialog dialog = new JDialog(XCasAnnotationViewerDialog.this, "Annotation Results for "
-                        + fileName + " in " + inputDirPath); // JMP
+                + fileName + " in " + inputDirPath); // JMP
         dialog.getContentPane().add(viewer);
         dialog.setSize(850, 630);
         dialog.pack();
@@ -632,7 +631,7 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
     }
 
     JOptionPane.showMessageDialog(XCasAnnotationViewerDialog.this, buf.toString(), "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.ERROR_MESSAGE);
   }
 
   /**
@@ -672,12 +671,12 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
    * @return the selected AnalysisEngineDescription, null if the user cancelled
    */
   protected AnalysisEngineDescription promptForAE() throws IOException, InvalidXMLException,
-                  ResourceInitializationException {
+          ResourceInitializationException {
     if (med1.getTAEfile() != null) {
       File taeFile = new File(med1.getTAEfile());
       XMLInputSource in = new XMLInputSource(taeFile);
       AnalysisEngineDescription aed = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-                      in);
+              in);
       return aed;
     } else {
       String taeDir = med1.getTAEfile();
@@ -717,7 +716,7 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
     }
 
     public Component getListCellRendererComponent(JList analyzedResultsList, Object value,
-                    int index, boolean isSelected, boolean cellHasFocus) {
+            int index, boolean isSelected, boolean cellHasFocus) {
       ImageIcon xmlIcon = Images.getImageIcon(Images.XML_DOC);
       setIcon(xmlIcon);
       setText(value.toString());
@@ -737,8 +736,8 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
             analyzedResultsList.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             // Start LTV here
             launchThatViewer(inputDirPath, fileName, typeSystem, typesToDisplay, javaViewerRB
-                            .isSelected(), javaViewerUCRB.isSelected(), xmlRB.isSelected(),
-                            styleMapFile, tempDir);
+                    .isSelected(), javaViewerUCRB.isSelected(), xmlRB.isSelected(), styleMapFile,
+                    tempDir);
 
             analyzedResultsList.setCursor(Cursor.getDefaultCursor());
           }

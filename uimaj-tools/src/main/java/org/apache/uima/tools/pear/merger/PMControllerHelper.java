@@ -52,9 +52,9 @@ public class PMControllerHelper {
    *         'set_env_variable' action.
    */
   private static InstallationDescriptor.ActionInfo createEnvAction(String envVarName,
-                  String envVarValue) {
+          String envVarValue) {
     InstallationDescriptor.ActionInfo action = new InstallationDescriptor.ActionInfo(
-                    InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
+            InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
     action.params.setProperty(InstallationDescriptorHandler.VAR_NAME_TAG, envVarName);
     action.params.setProperty(InstallationDescriptorHandler.VAR_VALUE_TAG, envVarValue);
     return action;
@@ -73,9 +73,9 @@ public class PMControllerHelper {
    *         'find_and_replace_path' action.
    */
   private static InstallationDescriptor.ActionInfo createFileAction(String filePath,
-                  String macroPath) {
+          String macroPath) {
     InstallationDescriptor.ActionInfo action = new InstallationDescriptor.ActionInfo(
-                    InstallationDescriptor.ActionInfo.FIND_AND_REPLACE_PATH_ACT);
+            InstallationDescriptor.ActionInfo.FIND_AND_REPLACE_PATH_ACT);
     action.params.setProperty(InstallationDescriptorHandler.FILE_TAG, filePath);
     action.params.setProperty(InstallationDescriptorHandler.FIND_STRING_TAG, macroPath);
     action.params.setProperty(InstallationDescriptorHandler.REPLACE_WITH_TAG, macroPath);
@@ -103,15 +103,15 @@ public class PMControllerHelper {
    *           If an I/O exception occurred.
    */
   static InstallationDescriptor generateMergedInstallationDescriptor(File rootDir,
-                  String aggCompName, File aggDescFile, InstallationDescriptor[] dlgInstDescs,
-                  File[] dlgRootDirs) throws IOException {
+          String aggCompName, File aggDescFile, InstallationDescriptor[] dlgInstDescs,
+          File[] dlgRootDirs) throws IOException {
     // create aggregate installation descriptor
     File aggInsdFile = new File(rootDir, PackageBrowser.INSTALLATION_DESCRIPTOR_FILE);
     InstallationDescriptor aggInsdObject = new InstallationDescriptor(aggInsdFile);
     aggInsdObject.setMainComponent(aggCompName);
     // 1st step: set aggregate component descriptor
     String aggDescPath = MAIN_ROOT + "/"
-                    + FileUtil.getRelativePath(rootDir, aggDescFile.getAbsolutePath());
+            + FileUtil.getRelativePath(rootDir, aggDescFile.getAbsolutePath());
     aggInsdObject.setMainComponentDesc(aggDescPath);
     // 2nd step: collect installation actions from delegates
     for (int i = 0; i < dlgInstDescs.length; i++) {
@@ -131,7 +131,7 @@ public class PMControllerHelper {
           if (cpBuffer.length() > 0)
             cpBuffer.append(File.pathSeparatorChar);
           cpBuffer.append(adjMainRoot + "/"
-                          + FileUtil.getRelativePath(dlgRootDir, jarFiles[n].getAbsolutePath()));
+                  + FileUtil.getRelativePath(dlgRootDir, jarFiles[n].getAbsolutePath()));
         }
         // add 'set_env_variable' action
         if (cpBuffer.length() > 0)
@@ -141,7 +141,7 @@ public class PMControllerHelper {
       File dlgBinDir = new File(dlgRootDir, PackageBrowser.BINARY_DIR);
       if (dlgBinDir.isDirectory()) {
         String adjBinDirPath = adjMainRoot + "/"
-                        + FileUtil.getRelativePath(dlgRootDir, dlgBinDir.getAbsolutePath());
+                + FileUtil.getRelativePath(dlgRootDir, dlgBinDir.getAbsolutePath());
         aggInsdObject.addInstallationAction(createEnvAction("CLASSPATH", adjBinDirPath));
         aggInsdObject.addInstallationAction(createEnvAction("PATH", adjBinDirPath));
       }
@@ -183,7 +183,7 @@ public class PMControllerHelper {
     InstallationDescriptor insdObject = insdHandler.getInstallationDescriptor();
     // add installation descriptor file to 'find_and_replace_path' actions
     insdObject.addInstallationAction(createFileAction(adjMainRoot + "/"
-                    + InstallationProcessor.INSD_FILE_PATH, MAIN_ROOT));
+            + InstallationProcessor.INSD_FILE_PATH, MAIN_ROOT));
     // 2nd: process files under 'desc' folder, if exists
     processFiles(rootDir, PackageBrowser.DESCRIPTORS_DIR, insdObject);
     // 3rd: process files under 'conf' folder, if exists
@@ -206,7 +206,7 @@ public class PMControllerHelper {
    *           If an I/O exception occurred.
    */
   static void processFiles(File rootDir, String targetDirName, InstallationDescriptor insdObject)
-                  throws IOException {
+          throws IOException {
     // build adjusted string for $main_root replacement
     String adjMainRoot = MAIN_ROOT + "/" + rootDir.getName();
     // build list of files in target dir, including sub-dirs
@@ -222,7 +222,7 @@ public class PMControllerHelper {
         // add this file to 'find_and_replace_path' actions
         String relFilePath = FileUtil.getRelativePath(rootDir, file.getAbsolutePath());
         insdObject.addInstallationAction(createFileAction(adjMainRoot + "/" + relFilePath,
-                        MAIN_ROOT));
+                MAIN_ROOT));
       }
     }
   }

@@ -99,7 +99,7 @@ public class PerformanceReportDialog extends JDialog {
 
     // create root tree node
     DefaultMutableTreeNode root = new DefaultMutableTreeNode("100% (" + totalTime
-                    + "ms) - Collection Processing Engine");
+            + "ms) - Collection Processing Engine");
     // build tree
     it = aProcessTrace.getEvents().iterator();
     while (it.hasNext()) {
@@ -112,7 +112,7 @@ public class PerformanceReportDialog extends JDialog {
   }
 
   public void buildEventTree(ProcessTraceEvent aEvent, DefaultMutableTreeNode aParentNode,
-                  long aTotalTime) {
+          long aTotalTime) {
     final DecimalFormat pctFmt = new DecimalFormat("##.##%");
     long duration = aEvent.getDuration();
     double pct;
@@ -129,7 +129,7 @@ public class PerformanceReportDialog extends JDialog {
     }
 
     DefaultMutableTreeNode node = new DefaultMutableTreeNode(pctStr + " (" + duration + "ms) - "
-                    + aEvent.getComponentName() + " (" + type + ")");
+            + aEvent.getComponentName() + " (" + type + ")");
     aParentNode.add(node);
     Iterator it = aEvent.getSubEvents().iterator();
     while (it.hasNext()) {

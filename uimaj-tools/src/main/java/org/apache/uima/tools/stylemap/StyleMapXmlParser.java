@@ -80,7 +80,7 @@ public class StyleMapXmlParser extends DefaultHandler {
   }
 
   public void startElement(String namespaceURI, String localName, String qName, Attributes atts)
-                  throws SAXException {
+          throws SAXException {
   }
 
   public void endElement(String namespaceURI, String localName, String qName) throws SAXException {

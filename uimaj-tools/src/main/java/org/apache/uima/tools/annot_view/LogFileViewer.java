@@ -93,7 +93,7 @@ public class LogFileViewer extends JFrame {
     // Copy
     Action copyAction = this.textArea.getActionMap().get(DefaultEditorKit.copyAction);
     copyAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C,
-                    InputEvent.CTRL_MASK));
+            InputEvent.CTRL_MASK));
     copyAction.setEnabled(true);
     this.scrollPane = new JScrollPane(this.textArea);
     this.setContentPane(this.scrollPane);

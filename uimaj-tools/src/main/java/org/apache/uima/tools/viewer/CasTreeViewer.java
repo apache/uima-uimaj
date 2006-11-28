@@ -112,7 +112,7 @@ public class CasTreeViewer extends JPanel {
         TreePath selPath = tree.getSelectionPath();
         if (selPath != null) {
           DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) selPath
-                          .getLastPathComponent();
+                  .getLastPathComponent();
           Object userObj = selectedNode.getUserObject();
           if (userObj instanceof AnnotationTreeNodeObject) {
             AnnotationFS annotation = ((AnnotationTreeNodeObject) userObj).getAnnotation();
@@ -259,7 +259,7 @@ public class CasTreeViewer extends JPanel {
    *          text position at which to end processing
    */
   private void _buildTree(DefaultMutableTreeNode aParentNode, FSIterator aIterator, int aStartPos,
-                  int aEndPos) {
+          int aEndPos) {
     while (aIterator.isValid()) {
       AnnotationFS curAnnot = (AnnotationFS) aIterator.get();
       int curAnnotStart = curAnnot.getBegin();
@@ -272,7 +272,7 @@ public class CasTreeViewer extends JPanel {
         {
           // add this annotation as a child of aParentNode
           DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(new AnnotationTreeNodeObject(
-                          curAnnot));
+                  curAnnot));
           aParentNode.add(newNode);
           // recursively add children to this node
           _buildTree(newNode, aIterator, curAnnotStart, curAnnotEnd);
@@ -301,7 +301,7 @@ public class CasTreeViewer extends JPanel {
         taeDescriptor = new File(args[0]);
         inputFile = new File(args[1]);
         validArgs = taeDescriptor.exists() && !taeDescriptor.isDirectory() && inputFile.exists()
-                        && !inputFile.isDirectory();
+                && !inputFile.isDirectory();
       }
       if (!validArgs) {
         printUsageMessage();
@@ -401,7 +401,7 @@ public class CasTreeViewer extends JPanel {
    */
   private static void printUsageMessage() {
     System.err.println("Usage: UimaFrameworkTreeViewer "
-                    + "<TAE descriptor or TEAR file name> <input file>");
+            + "<TAE descriptor or TEAR file name> <input file>");
   }
 
   /**
@@ -411,7 +411,7 @@ public class CasTreeViewer extends JPanel {
     super.setSize(d);
     Insets insets = getInsets();
     Dimension paneSize = new Dimension(d.width - insets.left - insets.right, d.height - insets.top
-                    - insets.bottom);
+            - insets.bottom);
 
     splitPane.setPreferredSize(paneSize);
     splitPane.setSize(paneSize);

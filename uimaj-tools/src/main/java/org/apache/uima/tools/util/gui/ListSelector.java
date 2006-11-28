@@ -77,7 +77,7 @@ public class ListSelector extends JPanel implements ActionListener {
     list.setBorder(etchedBorder);
 
     JScrollPane scrollPane = new JScrollPane(list, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-                    JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
     add(scrollPane, BorderLayout.CENTER);
 
     JPanel controlPanel = new JPanel();
@@ -164,15 +164,15 @@ public class ListSelector extends JPanel implements ActionListener {
     } else if (source == removeButton) {
       Object selectedValue = list.getSelectedValue();
       if (selectedValue != null) {
-        int rv = JOptionPane.showConfirmDialog((Component) source,
-                        "Are you sure you want to remove " + selectedValue, null,
-                        JOptionPane.YES_NO_OPTION);
+        int rv = JOptionPane
+                .showConfirmDialog((Component) source, "Are you sure you want to remove "
+                        + selectedValue, null, JOptionPane.YES_NO_OPTION);
 
         if (rv == JOptionPane.YES_OPTION)
           listModel.remove(list.getSelectedIndex());
       } else {
         JOptionPane.showMessageDialog(this, "You must first select an item to be removed", null,
-                        JOptionPane.WARNING_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
       }
     } else // It's a move button
     {
@@ -181,7 +181,7 @@ public class ListSelector extends JPanel implements ActionListener {
       int maxIndex = (listModel.getSize() - 1);
       if (selectedValue != null) {
         if ((source == moveUpButton && selectedIndex == 0)
-                        || (source == moveDownButton && selectedIndex == maxIndex)) {
+                || (source == moveDownButton && selectedIndex == maxIndex)) {
           Toolkit.getDefaultToolkit().beep();
           list.clearSelection();
           return;
@@ -199,7 +199,7 @@ public class ListSelector extends JPanel implements ActionListener {
         }
       } else {
         JOptionPane.showMessageDialog(this, "You must first select an item to reorder", null,
-                        JOptionPane.WARNING_MESSAGE);
+                JOptionPane.WARNING_MESSAGE);
       }
     }
   }

@@ -136,7 +136,7 @@ public class CpmFrame extends JFrame implements ActionListener {
       aboutDialog.setVisible(true);
     } else if (source == helpMenuItem) {
       JOptionPane.showMessageDialog(CpmFrame.this, CpmPanel.HELP_MESSAGE,
-                      "Collection Processing Engine Configurator Help", JOptionPane.PLAIN_MESSAGE);
+              "Collection Processing Engine Configurator Help", JOptionPane.PLAIN_MESSAGE);
     } else if (source == exitMenuItem) {
       this.processWindowEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }

@@ -96,7 +96,7 @@ public class ColorParser {
 
   // --------------------
   public StyleMapEntry parseAndAssignColors(String typeName, String featureValue,
-                  String labelString, String styleColor) {
+          String labelString, String styleColor) {
     StyleMapEntry sme = new StyleMapEntry();
     sme.setAnnotationTypeName(typeName);
     sme.setFeatureValue(featureValue);

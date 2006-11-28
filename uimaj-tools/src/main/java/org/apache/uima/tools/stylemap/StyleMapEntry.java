@@ -55,10 +55,10 @@ public class StyleMapEntry {
 
   public String toString() {
     return "(" + annotationTypeName + ";" + label + ";" + featureValue + ";"
-                    + Integer.toHexString(foreground.getRGB()) + ";"
-                    + Integer.toHexString(background.getRGB())
+            + Integer.toHexString(foreground.getRGB()) + ";"
+            + Integer.toHexString(background.getRGB())
 
-                    + ")";
+            + ")";
   }
 
   public boolean getHidden() {

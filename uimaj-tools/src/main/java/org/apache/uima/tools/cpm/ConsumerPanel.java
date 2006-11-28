@@ -59,13 +59,13 @@ public class ConsumerPanel extends MetaDataPanel {
 
   public boolean hasFileChanged(long lastCheck) {
     return specifierFile.lastModified() > this.lastFileSyncTimestamp
-                    && specifierFile.lastModified() > lastCheck;
+            && specifierFile.lastModified() > lastCheck;
   }
 
   public void refreshFromFile() throws InvalidXMLException, IOException {
     clearAll();
     this.casConsumerSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-                    new XMLInputSource(this.specifierFile));
+            new XMLInputSource(this.specifierFile));
     if (casConsumerSpecifier instanceof CasConsumerDescription) {
       CasConsumerDescription consumerDescription = (CasConsumerDescription) casConsumerSpecifier;
       populate(consumerDescription.getMetaData(), null);

@@ -132,7 +132,7 @@ import org.apache.uima.klt.Link;
  * </ul>
  */
 public class CasAnnotationViewer extends JPanel implements ActionListener, MouseListener,
-                TreeWillExpandListener, TreeExpansionListener, ItemListener {
+        TreeWillExpandListener, TreeExpansionListener, ItemListener {
   private static final long serialVersionUID = 3559118488371946999L;
 
   // Mode constants
@@ -518,7 +518,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    */
   public void setRightToLeftTextOrientation(boolean aRightToLeft) {
     textPane.applyComponentOrientation(aRightToLeft ? ComponentOrientation.RIGHT_TO_LEFT
-                    : ComponentOrientation.LEFT_TO_RIGHT);
+            : ComponentOrientation.LEFT_TO_RIGHT);
   }
 
   /**
@@ -580,7 +580,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
     // present (if user has not called setEntityViewEnalbed)
     if (mEntityViewEnabled == null) {
       boolean entityTypeExists = mCAS.getTypeSystem().getType(
-                      "org.apache.uima.klt.EntityAnnotation") != null;
+              "org.apache.uima.klt.EntityAnnotation") != null;
       this.viewModePanel.setVisible(entityTypeExists);
     }
 
@@ -852,7 +852,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
       if (checkbox == null) {
         // check that type should be displayed
         if ((mDisplayedTypeNames == null || typeNamesContains(mDisplayedTypeNames, type.getName()))
-                        && !typeNamesContains(mHiddenTypeNames, type.getName())) {
+                && !typeNamesContains(mHiddenTypeNames, type.getName())) {
           // if mTypeNameToColorMap exists, get color from there
           Color c = (Color) mTypeNameToColorMap.get(type.getName());
           if (c == null) // assign next available color
@@ -875,10 +875,10 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
           // should type be initially selected?
           boolean selected = ((mInitiallySelectedTypeNames == null &&
           // document annotation is not initially selected in default case
-                          !CAS.TYPE_NAME_DOCUMENT_ANNOTATION.equals(type.getName()) && !noCheckSet
-                          .contains(type.getName()) // priorities JMP
+                  !CAS.TYPE_NAME_DOCUMENT_ANNOTATION.equals(type.getName()) && !noCheckSet
+                  .contains(type.getName()) // priorities JMP
           ) || (mInitiallySelectedTypeNames != null && typeNamesContains(
-                          mInitiallySelectedTypeNames, type.getName())));
+                  mInitiallySelectedTypeNames, type.getName())));
 
           // add checkbox
           checkbox = new JCheckBox(type.getShortName(), selected);
@@ -934,7 +934,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
     Collections.sort(checkboxes, new Comparator() {
       public int compare(Object o1, Object o2) {
         return ((JCheckBox) o1).getText().toLowerCase().compareTo(
-                        ((JCheckBox) o2).getText().toLowerCase());
+                ((JCheckBox) o2).getText().toLowerCase());
       }
     });
     Iterator iterC = checkboxes.iterator();
@@ -993,7 +993,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
       throw new RuntimeException(e);
     }
     FSIterator iter = jcas.getJFSIndexRepository().getAnnotationIndex(EntityAnnotation.type)
-                    .iterator();
+            .iterator();
     while (iter.isValid()) {
       EntityAnnotation entityAnnot = (EntityAnnotation) iter.get();
       iter.moveToNext();
@@ -1077,7 +1077,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    */
   private void updateSelectedAnnotationTree(int aPosition) {
     DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.selectedAnnotationTreeModel
-                    .getRoot();
+            .getRoot();
     root.removeAllChildren();
     FSIterator annotIter = this.mCAS.getAnnotationIndex().iterator();
     while (annotIter.isValid()) {
@@ -1123,7 +1123,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    */
   protected void addAnnotationToTree(AnnotationFS aAnnotation) {
     DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.selectedAnnotationTreeModel
-                    .getRoot();
+            .getRoot();
     // try to find a node for the type
     DefaultMutableTreeNode typeNode = null;
     Enumeration typeNodes = root.children();
@@ -1141,7 +1141,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
 
     // add annotation node
     DefaultMutableTreeNode annotationNode = new DefaultMutableTreeNode(new FsTreeNodeObject(
-                    aAnnotation, null));
+            aAnnotation, null));
     typeNode.insert(annotationNode, 0);
     // add child nodes for features
     addFeatureTreeNodes(annotationNode, aAnnotation);
@@ -1181,7 +1181,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
               // Add the FS node and a dummy child, so that user can expand it.
               // When user expands it, new nodes for feature values will be created.
               DefaultMutableTreeNode fsValNode = new DefaultMutableTreeNode(new FsTreeNodeObject(
-                              fsVal, featName));
+                      fsVal, featName));
               if (!fsVal.getType().getFeatures().isEmpty()) {
                 fsValNode.add(new DefaultMutableTreeNode(null));
               }
@@ -1253,7 +1253,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
           // Add the FS node and a dummy child, so that user can expand it.
           // When user expands it, new nodes for feature values will be created.
           DefaultMutableTreeNode fsValNode = new DefaultMutableTreeNode(new FsTreeNodeObject(fsVal,
-                          featName));
+                  featName));
           if (!fsVal.getType().getFeatures().isEmpty()) {
             fsValNode.add(new DefaultMutableTreeNode(null));
           }
@@ -1314,7 +1314,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
         regexpPatternBuffer.append('\\');
       if (Character.isLetter(c)) {
         regexpPatternBuffer.append('(').append(Character.toLowerCase(c)).append('|').append(
-                        Character.toUpperCase(c)).append(')');
+                Character.toUpperCase(c)).append(')');
       } else {
         regexpPatternBuffer.append(c);
       }
@@ -1330,7 +1330,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
     super.setSize(d);
     Insets insets = getInsets();
     Dimension paneSize = new Dimension(d.width - insets.left - insets.right, d.height - insets.top
-                    - insets.bottom);
+            - insets.bottom);
 
     horizSplitPane.setPreferredSize(paneSize);
     horizSplitPane.setSize(paneSize);
@@ -1344,14 +1344,14 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == selectAllButton) {
       Iterator cbIter = (mViewMode == MODE_ANNOTATIONS) ? mTypeToCheckboxMap.values().iterator()
-                      : mEntityToCheckboxMap.values().iterator();
+              : mEntityToCheckboxMap.values().iterator();
       while (cbIter.hasNext()) {
         ((JCheckBox) cbIter.next()).setSelected(true);
       }
       display();
     } else if (e.getSource() == deselectAllButton) {
       Iterator cbIter = (mViewMode == MODE_ANNOTATIONS) ? mTypeToCheckboxMap.values().iterator()
-                      : mEntityToCheckboxMap.values().iterator();
+              : mEntityToCheckboxMap.values().iterator();
       while (cbIter.hasNext()) {
         ((JCheckBox) cbIter.next()).setSelected(false);
       }
@@ -1479,7 +1479,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
      *      java.lang.Object, boolean, boolean, boolean, int, boolean)
      */
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel,
-                    boolean expanded, boolean leaf, int row, boolean hasFocus) {
+            boolean expanded, boolean leaf, int row, boolean hasFocus) {
 
       // set background color if this is an Annotation or a Type
       Color background = null;
@@ -1504,7 +1504,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
       this.setBackgroundSelectionColor(background);
 
       Component component = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
-                      row, hasFocus);
+              row, hasFocus);
       return component;
     }
   }
@@ -1532,7 +1532,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
       if (userObj instanceof FsTreeNodeObject) {
         TreeNode firstChild = expandedNode.getFirstChild();
         if (firstChild instanceof DefaultMutableTreeNode
-                        && ((DefaultMutableTreeNode) firstChild).getUserObject() == null) {
+                && ((DefaultMutableTreeNode) firstChild).getUserObject() == null) {
           expandedNode.removeAllChildren();
           FeatureStructure fs = ((FsTreeNodeObject) userObj).getFS();
           addFeatureTreeNodes(expandedNode, fs);
@@ -1608,7 +1608,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
           char c = word.charAt(j);
           if (Character.isLetter(c)) {
             regEx.append('[').append(Character.toLowerCase(c)).append(Character.toUpperCase(c))
-                            .append(']');
+                    .append(']');
           } else if (c == '.' || c == '^' || c == '&' || c == '\\' || c == '(' || c == ')') {
             regEx.append('\\').append(c);
           } else {

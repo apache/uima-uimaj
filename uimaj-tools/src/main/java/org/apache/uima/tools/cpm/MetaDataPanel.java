@@ -87,8 +87,8 @@ public class MetaDataPanel extends FormPanel {
 
       boolean requiresFileSelector = false;
       if ((name.endsWith("Dir") || name.endsWith("Directory") || name.endsWith("Descriptor") || name
-                      .indexOf("File") != -1)
-                      && type.equals("String"))
+              .indexOf("File") != -1)
+              && type.equals("String"))
         requiresFileSelector = true;
 
       boolean justDirectories = false;
@@ -105,7 +105,7 @@ public class MetaDataPanel extends FormPanel {
 
       if (type.equals("Boolean"))
         field = new JCheckBox((String) null, (parameterValue == null) ? false
-                        : ((Boolean) parameterValue).booleanValue());
+                : ((Boolean) parameterValue).booleanValue());
       else if (multiValued == false) {
         if (requiresFileSelector == false) {
           String stringValue = (parameterValue == null) ? "" : parameterValue.toString();
@@ -119,7 +119,7 @@ public class MetaDataPanel extends FormPanel {
             filePath = file.getPath();
           }
           int selectionMode = justDirectories ? JFileChooser.DIRECTORIES_ONLY
-                          : JFileChooser.FILES_AND_DIRECTORIES;
+                  : JFileChooser.FILES_AND_DIRECTORIES;
 
           field = new FileSelector(filePath, caption, selectionMode);
         }

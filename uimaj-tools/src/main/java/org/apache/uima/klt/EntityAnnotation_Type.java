@@ -138,17 +138,17 @@ public class EntityAnnotation_Type extends Annotation_Type {
 
     casFeat_links = jcas.getRequiredFeatureDE(casType, "links", "uima.cas.FSList", featOkTst);
     casFeatCode_links = (null == casFeat_links) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_links).getCode();
+            : ((FeatureImpl) casFeat_links).getCode();
 
     casFeat_componentId = jcas.getRequiredFeatureDE(casType, "componentId", "uima.cas.String",
-                    featOkTst);
+            featOkTst);
     casFeatCode_componentId = (null == casFeat_componentId) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_componentId).getCode();
+            : ((FeatureImpl) casFeat_componentId).getCode();
 
     casFeat_mentionType = jcas.getRequiredFeatureDE(casType, "mentionType", "uima.cas.String",
-                    featOkTst);
+            featOkTst);
     casFeatCode_mentionType = (null == casFeat_mentionType) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_mentionType).getCode();
+            : ((FeatureImpl) casFeat_mentionType).getCode();
 
   }
 }

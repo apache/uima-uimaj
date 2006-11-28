@@ -81,7 +81,7 @@ public class CasAnnotationViewerApplet extends JApplet {
       // deserialize CAS
       CASMgr casMgr = CASFactory.createCAS();
       CASCompleteSerializer serializer = (CASCompleteSerializer) SerializationUtils
-                      .deserialize(bytes);
+              .deserialize(bytes);
       Serialization.deserializeCASComplete(serializer, casMgr);
 
       // get 2nd applet parameter - right-to-left text orientation
@@ -121,7 +121,7 @@ public class CasAnnotationViewerApplet extends JApplet {
     Dimension appletSize = getSize();
     Insets insets = getInsets();
     Dimension panelSize = new Dimension(appletSize.width - insets.left - insets.right - 10,
-                    appletSize.height - insets.top - insets.bottom - 10);
+            appletSize.height - insets.top - insets.bottom - 10);
 
     mViewer.setPreferredSize(panelSize);
     mViewer.setSize(panelSize);

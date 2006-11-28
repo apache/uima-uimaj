@@ -76,7 +76,7 @@ public class PMUimaAgent {
    * @return The UIMA aggregate component description object.
    */
   static AnalysisEngineDescription createAggregateDescription(String aggCompName, File aggRootDir,
-                  InstallationDescriptor[] dlgInstDescs, boolean aeModeEnabled) {
+          InstallationDescriptor[] dlgInstDescs, boolean aeModeEnabled) {
     AnalysisEngineDescription aggDescription = null;
     int lastInputNo = 0;
     try {
@@ -84,7 +84,7 @@ public class PMUimaAgent {
       ResourceSpecifierFactory rsFactory = UIMAFramework.getResourceSpecifierFactory();
       // create aggregate AE description
       aggDescription = aeModeEnabled ? rsFactory.createAnalysisEngineDescription() : rsFactory
-                      .createTaeDescription();
+              .createTaeDescription();
       aggDescription.setPrimitive(false);
       // get Map of delegate specifiers with imports
       Map delegatesMap = aggDescription.getDelegateAnalysisEngineSpecifiersWithImports();
@@ -98,7 +98,7 @@ public class PMUimaAgent {
         Import dlgImport = rsFactory.createImport();
         // set relative delegate descriptor location
         String dlgDescRelPath = dlgDescPath.replaceAll(PMControllerHelper.MAIN_ROOT_REGEX,
-                        StringUtil.toRegExpReplacement(".."));
+                StringUtil.toRegExpReplacement(".."));
         dlgImport.setLocation(dlgDescRelPath);
         // add delegate Import to the Map
         delegatesMap.put(dlgName, dlgImport);
@@ -108,7 +108,7 @@ public class PMUimaAgent {
       // set AE name and textual description
       aggMetadata.setName(aggCompName);
       aggMetadata.setDescription("Merged aggregate component" + "(" + PMController.PEAR_MERGER
-                      + ")");
+              + ")");
       // set fixed flow constraints
       FixedFlow aggFixedFlow = rsFactory.createFixedFlow();
       String[] aggFlowSpecs = new String[dlgInstDescs.length];
@@ -126,7 +126,7 @@ public class PMUimaAgent {
         if (dlgSpecifier instanceof AnalysisEngineDescription) {
           // get AE metadata
           AnalysisEngineMetaData dlgAeMetadata = ((AnalysisEngineDescription) dlgSpecifier)
-                          .getAnalysisEngineMetaData();
+                  .getAnalysisEngineMetaData();
           // collect AE capabilities
           Capability[] dlgCapabilities = dlgAeMetadata.getCapabilities();
           if (dlgCapabilities != null)
@@ -145,7 +145,7 @@ public class PMUimaAgent {
         } else if (dlgSpecifier instanceof CasConsumerDescription) {
           // get CC metadata
           ProcessingResourceMetaData dlgCcMetadata = ((CasConsumerDescription) dlgSpecifier)
-                          .getCasConsumerMetaData();
+                  .getCasConsumerMetaData();
           // collect CC capabilities
           Capability[] dlgCapabilities = dlgCcMetadata.getCapabilities();
           if (dlgCapabilities != null)
@@ -200,7 +200,7 @@ public class PMUimaAgent {
    * object.
    */
   private static Capability[] mergeCapabilities(ArrayList allCapabilities,
-                  ResourceSpecifierFactory rsFactory) {
+          ResourceSpecifierFactory rsFactory) {
     // collect all the inputs and all the outputs in 2 Hashtables
     Hashtable mergedInputs = new Hashtable();
     Hashtable mergedOutputs = new Hashtable();
@@ -288,12 +288,11 @@ public class PMUimaAgent {
    *           descriptor.
    */
   private static ResourceSpecifier retrieveDelegateSpecifier(File aggRootDir,
-                  InstallationDescriptor dlgInstDesc) throws IOException, InvalidXMLException {
+          InstallationDescriptor dlgInstDesc) throws IOException, InvalidXMLException {
     // get delegate desciptor path
     String aggRootDirPath = aggRootDir.getAbsolutePath().replace('\\', '/');
     String dlgDescPath = dlgInstDesc.getMainComponentDesc().replaceAll(
-                    PMControllerHelper.MAIN_ROOT_REGEX,
-                    StringUtil.toRegExpReplacement(aggRootDirPath));
+            PMControllerHelper.MAIN_ROOT_REGEX, StringUtil.toRegExpReplacement(aggRootDirPath));
     // parse component descriptor
     XMLInputSource xmlSource = null;
     ResourceSpecifier dlgSpecifier = null;
@@ -339,7 +338,7 @@ public class PMUimaAgent {
    *           If an I/O exception occurrs.
    */
   static void saveAggregateDescription(AnalysisEngineDescription aggDescription, File aggDescFile)
-                  throws IOException {
+          throws IOException {
     FileWriter fWriter = null;
     try {
       fWriter = new FileWriter(aggDescFile);

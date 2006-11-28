@@ -50,7 +50,7 @@ class ColorRenderer extends JLabel implements TableCellRenderer {
   }
 
   public Component getTableCellRendererComponent(JTable table, Object color, boolean isSelected,
-                  boolean hasFocus, int row, int column) {
+          boolean hasFocus, int row, int column) {
     setBackground((Color) color);
 
     if (isSelected)

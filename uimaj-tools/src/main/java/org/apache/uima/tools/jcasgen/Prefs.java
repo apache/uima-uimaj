@@ -35,11 +35,11 @@ public class Prefs {
 
   static void get(GUI gui) {
     gui.setBounds(prefs.getInt("WindowPos X", 200), prefs.getInt("WindowPos Y", 200), prefs.getInt(
-                    "WindowW", 520), prefs.getInt("WindowH", 400));
+            "WindowW", 520), prefs.getInt("WindowH", 400));
     gui.pnG.tfOutDirName.setText(prefs.get("outDir", "/temp"));
     String userDir = System.getProperty("user.dir").replaceAll("\\\\", "/");
 
     gui.pnG.tfInputFileName.setText(prefs.get("inFile", userDir
-                    + "/examples/descriptors/tutorial/ex1/TutorialTypeSystem.xml"));
+            + "/examples/descriptors/tutorial/ex1/TutorialTypeSystem.xml"));
   }
 }

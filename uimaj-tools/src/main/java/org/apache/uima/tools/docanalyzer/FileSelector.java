@@ -71,11 +71,11 @@ public class FileSelector extends JPanel implements FocusListener {
   }
 
   public FileSelector(String initialValue, String fileChooserTitle, int selectionMode, // Can be
-                  // either
-                  // JFileChooser.FILES_ONLY,
-                  // JFileChooser.DIRECTORIES_ONLY or
-                  // JFileChooser.FILES_AND_DIRECTORIES
-                  File currentDir) {
+          // either
+          // JFileChooser.FILES_ONLY,
+          // JFileChooser.DIRECTORIES_ONLY or
+          // JFileChooser.FILES_AND_DIRECTORIES
+          File currentDir) {
     if (currentDir == null && initialValue != null) {
       currentDir = new File(initialValue).getAbsoluteFile();
     }

@@ -41,8 +41,7 @@ public class ValidateDescriptor {
   public static void main(String[] args) throws Exception {
     if (args.length != 1) {
       System.err
-                      .println("Usage: java " + ValidateDescriptor.class.getName()
-                                      + " <descriptor file>");
+              .println("Usage: java " + ValidateDescriptor.class.getName() + " <descriptor file>");
       System.exit(1);
     }
     System.out.println("Parsing...");

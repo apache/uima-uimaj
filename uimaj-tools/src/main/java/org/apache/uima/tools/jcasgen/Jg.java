@@ -124,7 +124,7 @@ public class Jg {
     TCAS tcas = null;
     try {
       tcas = CasCreationUtils.createTCas((TypeSystemDescription) null, null,
-                      new FsIndexDescription[0], casCreateProperties);
+              new FsIndexDescription[0], casCreateProperties);
 
     } catch (ResourceInitializationException e1) {
       // never get here
@@ -152,7 +152,7 @@ public class Jg {
         FeatureDescription[] fds = new FeatureDescription[features.size()];
         for (int i = 0; i < features.size(); i++) {
           FeatureDescription fd = UIMAFramework.getResourceSpecifierFactory()
-                          .createFeatureDescription();
+                  .createFeatureDescription();
           Feature f = (Feature) features.get(i);
           fd.setName(f.getShortName());
           fd.setRangeTypeName(f.getRange().getName());
@@ -191,23 +191,23 @@ public class Jg {
     addBuiltInTypeInfo("uima.cas.TOP", "org.apache.uima.jcas.cas.TOP");
     addBuiltInTypeInfo("uima.cas.FSArray", "org.apache.uima.jcas.cas.FSArray", "uima.cas.TOP");
     addBuiltInTypeInfo("uima.cas.IntegerArray", "org.apache.uima.jcas.cas.IntegerArray",
-                    "uima.cas.Integer");
+            "uima.cas.Integer");
     addBuiltInTypeInfo("uima.cas.FloatArray", "org.apache.uima.jcas.cas.FloatArray",
-                    "uima.cas.Float");
+            "uima.cas.Float");
     addBuiltInTypeInfo("uima.cas.StringArray", "org.apache.uima.jcas.cas.StringArray",
-                    "uima.cas.String");
+            "uima.cas.String");
     addBuiltInTypeInfo("uima.cas.BooleanArray", "org.apache.uima.jcas.cas.BooleanArray",
-                    "uima.cas.Boolean");
+            "uima.cas.Boolean");
     addBuiltInTypeInfo("uima.cas.ByteArray", "org.apache.uima.jcas.cas.ByteArray", "uima.cas.Byte");
     addBuiltInTypeInfo("uima.cas.ShortArray", "org.apache.uima.jcas.cas.ShortArray",
-                    "uima.cas.Short");
+            "uima.cas.Short");
     addBuiltInTypeInfo("uima.cas.LongArray", "org.apache.uima.jcas.cas.LongArray", "uima.cas.Long");
     addBuiltInTypeInfo("uima.cas.DoubleArray", "org.apache.uima.jcas.cas.DoubleArray",
-                    "uima.cas.Double");
+            "uima.cas.Double");
     addBuiltInTypeInfo("uima.cas.AnnotationBase", "org.apache.uima.jcas.cas.AnnotationBase");
     addBuiltInTypeInfo("uima.tcas.Annotation", "org.apache.uima.jcas.tcas.Annotation");
     addBuiltInTypeInfo("uima.tcas.DocumentAnnotation",
-                    "org.apache.uima.jcas.tcas.DocumentAnnotation");
+            "org.apache.uima.jcas.tcas.DocumentAnnotation");
     addBuiltInTypeInfo("uima.cas.EmptyFloatList", "org.apache.uima.jcas.cas.EmptyFloatList");
     addBuiltInTypeInfo("uima.cas.EmptyFSList", "org.apache.uima.jcas.cas.EmptyFSList");
     addBuiltInTypeInfo("uima.cas.EmptyIntegerList", "org.apache.uima.jcas.cas.EmptyIntegerList");
@@ -219,7 +219,7 @@ public class Jg {
     addBuiltInTypeInfo("uima.cas.NonEmptyFloatList", "org.apache.uima.jcas.cas.NonEmptyFloatList");
     addBuiltInTypeInfo("uima.cas.NonEmptyFSList", "org.apache.uima.jcas.cas.NonEmptyFSList");
     addBuiltInTypeInfo("uima.cas.NonEmptyIntegerList",
-                    "org.apache.uima.jcas.cas.NonEmptyIntegerList");
+            "org.apache.uima.jcas.cas.NonEmptyIntegerList");
     addBuiltInTypeInfo("uima.cas.NonEmptyStringList", "org.apache.uima.jcas.cas.NonEmptyStringList");
     addBuiltInTypeInfo("uima.cas.Sofa", "org.apache.uima.jcas.cas.Sofa");
   }
@@ -229,7 +229,7 @@ public class Jg {
   static {
     try {
       resourceBundle = ResourceBundle
-                      .getBundle("org.apache.uima.tools.jcasgen.jcasgenpPluginResources");
+              .getBundle("org.apache.uima.tools.jcasgen.jcasgenpPluginResources");
     } catch (MissingResourceException x) {
       resourceBundle = null;
     }
@@ -327,8 +327,8 @@ public class Jg {
   }
 
   public void mainForCde(IMerge aMerger, IProgressMonitor aProgressMonitor, IError aError,
-                  String inputFile, String outputDirectory, TypeDescription[] tds, CASImpl aCas)
-                  throws IOException {
+          String inputFile, String outputDirectory, TypeDescription[] tds, CASImpl aCas)
+          throws IOException {
     this.merger = aMerger;
     this.error = aError;
     this.progressMonitor = aProgressMonitor;
@@ -398,15 +398,15 @@ public class Jg {
           File dir = file.getParentFile();
           if (null == dir) {
             error.newError(IError.ERROR, getString("sourceArgNeedsDirectory",
-                            new Object[] { inputFile }), null);
+                    new Object[] { inputFile }), null);
           }
           outputDirectory = dir.getPath() + File.separator + "JCas"
-                          + ((null != merger) ? "" : "New");
+                  + ((null != merger) ? "" : "New");
         }
         progressMonitor.beginTask("", 5);
         progressMonitor.subTask("Output going to '" + outputDirectory + "'");
         progressMonitor.subTask(getString("ReadingDescriptorAndCreatingTypes",
-                        new Object[] { inputFile }));
+                new Object[] { inputFile }));
         // code to read xml and make cas type instance
         CASImpl casLocal = null;
         // handle classpath
@@ -418,16 +418,16 @@ public class Jg {
             AnalysisEngineDescription aeSpecifier = (AnalysisEngineDescription) specifier;
             if (!aeSpecifier.isPrimitive())
               typeSystemDescription = CasCreationUtils.mergeDelegateAnalysisEngineTypeSystems(
-                              aeSpecifier, createResourceManager());
+                      aeSpecifier, createResourceManager());
             else
               typeSystemDescription = mergeTypeSystemImports(aeSpecifier
-                              .getAnalysisEngineMetaData().getTypeSystem());
+                      .getAnalysisEngineMetaData().getTypeSystem());
 
           } else if (specifier instanceof TypeSystemDescription)
             typeSystemDescription = mergeTypeSystemImports(((TypeSystemDescription) specifier));
           else {
             error.newError(IError.ERROR, getString("fileDoesntParse", new Object[] { inputFile }),
-                            null);
+                    null);
           }
           TypePriorities typePriorities = null;
           FsIndexDescription[] fsIndexDescription = null;
@@ -436,10 +436,10 @@ public class Jg {
             // no ResourceManager, since everything has been
             // imported/merged by previous actions
             casLocal = (CASImpl) CasCreationUtils.createTCas(typeSystemDescription, typePriorities,
-                            fsIndexDescription);
+                    fsIndexDescription);
           } catch (ResourceInitializationException e) {
             error.newError(IError.WARN, getString("resourceInitializationException",
-                            new Object[] { e.getLocalizedMessage() }), e);
+                    new Object[] { e.getLocalizedMessage() }), e);
             casLocal = null; // continue with null cas, anyway
           }
 
@@ -449,7 +449,7 @@ public class Jg {
           error.newError(IError.ERROR, getString("invalidXML", new Object[] { inputFile }), e);
         } catch (ResourceInitializationException e) {
           error.newError(IError.ERROR, getString("resourceInitializationExceptionError",
-                          new Object[] {}), e);
+                  new Object[] {}), e);
         }
 
         progressMonitor.worked(1);
@@ -468,7 +468,7 @@ public class Jg {
 
   // This is also the interface for CDE
   void generateAllTypes(String outputDirectory, TypeDescription[] tds, CASImpl aCas)
-                  throws IOException {
+          throws IOException {
     Set generatedBuiltInTypes = new TreeSet();
     for (int i = 0; i < tds.length; i++) {
       TypeDescription td = tds[i];
@@ -480,7 +480,7 @@ public class Jg {
 
       // if the type is built-in - augment it with the built-in's features
       FeatureDescription[] builtInFeatures = (FeatureDescription[]) extendableBuiltInTypes.get(td
-                      .getName());
+              .getName());
       if (null != builtInFeatures) {
         generatedBuiltInTypes.add(td.getName());
         List newFeatures = setDifference(td.getFeatures(), builtInFeatures);
@@ -524,24 +524,24 @@ public class Jg {
       Feature f = (Feature) vFeatures.get(i);
       if (f.getDomain().equals(type)) {
         FeatureDescription fd = UIMAFramework.getResourceSpecifierFactory()
-                        .createFeatureDescription();
+                .createFeatureDescription();
         fd.setName(f.getShortName());
         fd.setRangeTypeName(f.getRange().getName());
         featuresOfType.add(fd);
       }
     }
     td.setFeatures((FeatureDescription[]) featuresOfType
-                    .toArray(new FeatureDescription[featuresOfType.size()]));
+            .toArray(new FeatureDescription[featuresOfType.size()]));
     return td;
   }
 
   private void generateClasses(TypeDescription td, String outputDirectory) throws IOException {
     simpleClassName = removePkg(getJavaName(td));
     generateClass(progressMonitor, outputDirectory, td, (new JCasTypeTemplate())
-                    .generate(new Object[] { this, td }), getJavaName(td), merger);
+            .generate(new Object[] { this, td }), getJavaName(td), merger);
     simpleClassName = removePkg(getJavaName_Type(td));
     generateClass(progressMonitor, outputDirectory, td, (new JCas_TypeTemplate())
-                    .generate(new Object[] { this, td }), getJavaName_Type(td), merger);
+            .generate(new Object[] { this, td }), getJavaName_Type(td), merger);
   }
 
   String getPkg(TypeDescription td) {
@@ -556,8 +556,8 @@ public class Jg {
   }
 
   private void generateClass(IProgressMonitor progressMonitorGenerateClass, String outputDirectory,
-                  TypeDescription td, String sourceContents, String className,
-                  IMerge mergerGenerateClass) throws IOException {
+          TypeDescription td, String sourceContents, String className, IMerge mergerGenerateClass)
+          throws IOException {
 
     String pkgName = getJavaPkg(td);
     String qualifiedClassName = (0 != pkgName.length()) ? pkgName + "." + className : className;
@@ -567,14 +567,14 @@ public class Jg {
 
     if (null != mergerGenerateClass) {
       mergerGenerateClass.doMerge(this, progressMonitorGenerateClass, sourceContents,
-                      targetContainer, targetPath, qualifiedClassName, targetFile);
+              targetContainer, targetPath, qualifiedClassName, targetFile);
     } else {
       if (targetFile.exists()) {
         progressMonitorGenerateClass.subTask(getString("replacingTarget",
-                        new Object[] { qualifiedClassName }));
+                new Object[] { qualifiedClassName }));
       } else
         progressMonitorGenerateClass.subTask(getString("creatingTarget",
-                        new Object[] { qualifiedClassName }));
+                new Object[] { qualifiedClassName }));
       (new File(targetContainer)).mkdirs();
       FileWriter fw = new FileWriter(targetPath);
       try {
@@ -780,7 +780,7 @@ public class Jg {
   // *******************************
   String castResult(String resultType, String core) {
     if ("Ref".equals(sc(resultType)) && resultType != null
-                    && !resultType.equals("FeatureStructure"))
+            && !resultType.equals("FeatureStructure"))
       return "(" + resultType + ")(" + core + ")";
     return core;
   }
@@ -802,7 +802,7 @@ public class Jg {
     if (get_set.equals("set") && range.equals("Ref"))
       v = ", jcasType.ll_cas.ll_getFSRef(v)";
     return "jcasType.ll_cas.ll_" + get_set + range + "Value(addr, ((" + tname_Type
-                    + ")jcasType).casFeatCode_" + fname + ((get_set.equals("set")) ? v : "") + ")";
+            + ")jcasType).casFeatCode_" + fname + ((get_set.equals("set")) ? v : "") + ")";
   }
 
   String simpleLLCore(String get_set, String range, String fname) {
@@ -810,7 +810,7 @@ public class Jg {
     // if (get_set.equals("set") && range.equals("Ref"))
     // v = ", ll_cas.ll_getFSRef(v)";
     return "ll_cas.ll_" + get_set + range + "Value(addr, casFeatCode_" + fname
-                    + ((get_set.equals("set")) ? v : "") + ")";
+            + ((get_set.equals("set")) ? v : "") + ")";
   }
 
   // return string that starts with FS whose value is not an array object, but
@@ -820,26 +820,26 @@ public class Jg {
     if (get_set.equals("set") && range.equals("Ref"))
       v = ", jcasType.ll_cas.ll_getFSRef(v)";
     return "jcasType.ll_cas.ll_" + get_set + range + "ArrayValue("
-                    + simpleCore("get", "Ref", fname, tname_Type) + ", i"
-                    + ((get_set.equals("set")) ? v : "") + ")";
+            + simpleCore("get", "Ref", fname, tname_Type) + ", i"
+            + ((get_set.equals("set")) ? v : "") + ")";
   }
 
   String arrayLLCore(String get_set, String range, String fname) {
     String v = ", v";
     return "ll_cas.ll_" + get_set + range + "ArrayValue(" + simpleLLCore("get", "Ref", fname)
-                    + ", i" + ((get_set.equals("set")) ? v : "") + ")";
+            + ", i" + ((get_set.equals("set")) ? v : "") + ")";
   }
 
   String arrayLLCoreChk(String get_set, String range, String fname) {
     String v = ", v";
     return "ll_cas.ll_" + get_set + range + "ArrayValue(" + simpleLLCore("get", "Ref", fname)
-                    + ", i" + ((get_set.equals("set")) ? v : "") + ", true)";
+            + ", i" + ((get_set.equals("set")) ? v : "") + ", true)";
   }
 
   String getFeatureValue(FeatureDescription fd, TypeDescription td) {
     String getSetNamePart = getGetSetNamePart(fd);
     String core = wrapToGetFS(simpleCore("get", getSetNamePart, fd.getName(), getJavaName(td)
-                    + "_Type"), getSetNamePart);
+            + "_Type"), getSetNamePart);
     return castResult(getJavaRangeType(fd), core);
   }
 
@@ -850,7 +850,7 @@ public class Jg {
   String getArrayFeatureValue(FeatureDescription fd, TypeDescription td) {
     String getSetArrayNamePart = getGetSetArrayNamePart(fd);
     String core = wrapToGetFS(arrayCore("get", getSetArrayNamePart, fd.getName(), getJavaName(td)
-                    + "_Type"), getSetArrayNamePart);
+            + "_Type"), getSetArrayNamePart);
     return castResult(getJavaRangeArrayElementType(fd), core);
   }
 
@@ -884,11 +884,11 @@ public class Jg {
   }
 
   public TypeSystemDescription mergeTypeSystemImports(TypeSystemDescription tsd)
-                  throws ResourceInitializationException {
+          throws ResourceInitializationException {
     Collection tsdc = new ArrayList(1);
     tsdc.add(tsd.clone());
     TypeSystemDescription mergedTsd = CasCreationUtils.mergeTypeSystems(tsdc,
-                    createResourceManager());
+            createResourceManager());
     return mergedTsd;
   }
 

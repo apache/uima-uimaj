@@ -51,7 +51,7 @@ public class FSTreeModel implements TreeModel {
   private ArrayList fss;
 
   private static final String defaultRootString = "<html><b>" + MainFrame.htmlGrayColor
-                  + "FS List - no selection</b></html>";
+          + "FS List - no selection</b></html>";
 
   private String rootString = defaultRootString;
 
@@ -69,7 +69,7 @@ public class FSTreeModel implements TreeModel {
     this.cas = (TCASImpl) cas1;
     final int size = index.size();
     this.rootString = "<html><font color=green>" + indexName + "</font> - <font color=blue>"
-                    + index.getType().getName() + "</font> [" + size + "]</html>";
+            + index.getType().getName() + "</font> [" + size + "]</html>";
     this.root = new FSNode(this, FSNode.DISPLAY_NODE, 0, null);
     this.fss = new ArrayList();
     FSIterator it = index.iterator();
@@ -142,7 +142,7 @@ public class FSTreeModel implements TreeModel {
     } else if (this.cas.isAbstractArrayType(domType)) {
       final int featAddr = this.cas.getFeatureValue(addr, ((FeatureImpl) feat).getCode());
       if (this.cas.isArrayType(this.cas.getTypeSystemImpl()
-                      .getType(this.cas.getHeapValue(featAddr)))) {
+              .getType(this.cas.getHeapValue(featAddr)))) {
         return FSNode.ARRAY_FS;
       }
     }

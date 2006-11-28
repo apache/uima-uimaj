@@ -44,10 +44,10 @@ public class JCas_TypeTemplate {
       stringBuffer.append(";\n");
     }
     stringBuffer
-                    .append("\nimport org.apache.uima.jcas.impl.JCas;\nimport org.apache.uima.cas.impl.CASImpl;\nimport org.apache.uima.cas.impl.FSGenerator;\nimport org.apache.uima.cas.FeatureStructure;\nimport org.apache.uima.cas.impl.TypeImpl;\nimport org.apache.uima.cas.Type;\n");
+            .append("\nimport org.apache.uima.jcas.impl.JCas;\nimport org.apache.uima.cas.impl.CASImpl;\nimport org.apache.uima.cas.impl.FSGenerator;\nimport org.apache.uima.cas.FeatureStructure;\nimport org.apache.uima.cas.impl.TypeImpl;\nimport org.apache.uima.cas.Type;\n");
     if (td.getFeatures().length > 0) {
       stringBuffer
-                      .append("import org.apache.uima.cas.impl.FeatureImpl;\nimport org.apache.uima.cas.Feature;\n");
+              .append("import org.apache.uima.cas.impl.FeatureImpl;\nimport org.apache.uima.cas.Feature;\n");
     }
     stringBuffer.append("");
     for (Iterator i = jg.collectImports(td, true).iterator(); i.hasNext();) {
@@ -70,28 +70,28 @@ public class JCas_TypeTemplate {
     stringBuffer.append(" extends ");
     stringBuffer.append(jg.getJavaName(td.getSupertypeName()) + "_Type");
     stringBuffer
-                    .append(" {\n  /** @generated */\n  protected FSGenerator getFSGenerator() {return fsGenerator;}\n  /** @generated */\n  private final FSGenerator fsGenerator = \n    new FSGenerator() {\n      public FeatureStructure createFS(int addr, CASImpl cas) {\n  			 if (");
+            .append(" {\n  /** @generated */\n  protected FSGenerator getFSGenerator() {return fsGenerator;}\n  /** @generated */\n  private final FSGenerator fsGenerator = \n    new FSGenerator() {\n      public FeatureStructure createFS(int addr, CASImpl cas) {\n  			 if (");
     stringBuffer.append(typeName_Type);
     stringBuffer
-                    .append(".this.useExistingInstance) {\n  			   // Return eq fs instance if already created\n  		     FeatureStructure fs = ");
+            .append(".this.useExistingInstance) {\n  			   // Return eq fs instance if already created\n  		     FeatureStructure fs = ");
     stringBuffer.append(typeName_Type);
     stringBuffer
-                    .append(".this.jcas.getJfsFromCaddr(addr);\n  		     if (null == fs) {\n  		       fs = new ");
+            .append(".this.jcas.getJfsFromCaddr(addr);\n  		     if (null == fs) {\n  		       fs = new ");
     stringBuffer.append(typeName);
     stringBuffer.append("(addr, ");
     stringBuffer.append(typeName_Type);
     stringBuffer.append(".this);\n  			   ");
     stringBuffer.append(typeName_Type);
     stringBuffer
-                    .append(".this.jcas.putJfsFromCaddr(addr, fs);\n  			   return fs;\n  		     }\n  		     return fs;\n        } else return new ");
+            .append(".this.jcas.putJfsFromCaddr(addr, fs);\n  			   return fs;\n  		     }\n  		     return fs;\n        } else return new ");
     stringBuffer.append(typeName);
     stringBuffer.append("(addr, ");
     stringBuffer.append(typeName_Type);
     stringBuffer
-                    .append(".this);\n  	  }\n    };\n  /** @generated */\n  public final static int typeIndexID = ");
+            .append(".this);\n  	  }\n    };\n  /** @generated */\n  public final static int typeIndexID = ");
     stringBuffer.append(typeName);
     stringBuffer
-                    .append(".typeIndexID;\n  /** @generated \n     @modifiable */\n  public final static boolean featOkTst = JCas.getFeatOkTst(\"");
+            .append(".typeIndexID;\n  /** @generated \n     @modifiable */\n  public final static boolean featOkTst = JCas.getFeatOkTst(\"");
     stringBuffer.append(td.getName());
     stringBuffer.append("\");\n");
     FeatureDescription[] fds = td.getFeatures();
@@ -204,7 +204,7 @@ public class JCas_TypeTemplate {
         stringBuffer.append("ArrayValue(ll_cas.ll_getRefValue(addr, ");
         stringBuffer.append(casFeatCode);
         stringBuffer
-                        .append("), i, v, true);\n    jcas.checkArrayBounds(ll_cas.ll_getRefValue(addr, ");
+                .append("), i, v, true);\n    jcas.checkArrayBounds(ll_cas.ll_getRefValue(addr, ");
         stringBuffer.append(casFeatCode);
         stringBuffer.append("), i);\n    ll_cas.ll_set");
         stringBuffer.append(getSetArrayNamePart);
@@ -215,10 +215,10 @@ public class JCas_TypeTemplate {
       stringBuffer.append(" \n");
     }
     stringBuffer
-                    .append("\n\n  /** initialize variables to correspond with Cas Type and Features\n	* @generated */\n  public ");
+            .append("\n\n  /** initialize variables to correspond with Cas Type and Features\n	* @generated */\n  public ");
     stringBuffer.append(typeName_Type);
     stringBuffer
-                    .append("(JCas jcas, Type casType) {\n    super(jcas, casType);\n    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());\n\n");
+            .append("(JCas jcas, Type casType) {\n    super(jcas, casType);\n    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());\n\n");
     for (int i = 0; i < fds.length; i++) {
       FeatureDescription fd = fds[i];
 

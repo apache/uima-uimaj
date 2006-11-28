@@ -59,7 +59,7 @@ public class SpringUtilities {
    *          y padding between cells
    */
   public static void makeGrid(Container parent, int rows, int cols, int initialX, int initialY,
-                  int xPad, int yPad) {
+          int xPad, int yPad) {
     SpringLayout layout;
     try {
       layout = (SpringLayout) parent.getLayout();
@@ -118,14 +118,14 @@ public class SpringUtilities {
     // Set the parent's size.
     SpringLayout.Constraints pCons = layout.getConstraints(parent);
     pCons.setConstraint(SpringLayout.SOUTH, Spring.sum(Spring.constant(yPad), lastCons
-                    .getConstraint(SpringLayout.SOUTH)));
+            .getConstraint(SpringLayout.SOUTH)));
     pCons.setConstraint(SpringLayout.EAST, Spring.sum(Spring.constant(xPad), lastCons
-                    .getConstraint(SpringLayout.EAST)));
+            .getConstraint(SpringLayout.EAST)));
   }
 
   /* Used by makeCompactGrid. */
   private static SpringLayout.Constraints getConstraintsForCell(int row, int col, Container parent,
-                  int cols) {
+          int cols) {
     SpringLayout layout = (SpringLayout) parent.getLayout();
     Component c = parent.getComponent(row * cols + col);
     return layout.getConstraints(c);
@@ -151,7 +151,7 @@ public class SpringUtilities {
    *          y padding between cells
    */
   public static void makeCompactGrid(Container parent, int rows, int cols, int initialX,
-                  int initialY, int xPad, int yPad) {
+          int initialY, int xPad, int yPad) {
     SpringLayout layout;
     try {
       layout = (SpringLayout) parent.getLayout();

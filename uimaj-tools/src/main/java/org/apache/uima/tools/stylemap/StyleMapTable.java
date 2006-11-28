@@ -35,7 +35,7 @@ public class StyleMapTable extends JTable {
   private TableGUIMediator med;
 
   public StyleMapTable(TableModel model, AnnotationFeaturesViewer av, StyleMapEditor edit,
-                  TableGUIMediator tmed) {
+          TableGUIMediator tmed) {
     super(model);
     med = tmed;
     setAutoResizeMode(JTable.AUTO_RESIZE_OFF);

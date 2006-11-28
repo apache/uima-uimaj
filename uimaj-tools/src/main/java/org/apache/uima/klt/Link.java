@@ -98,7 +98,7 @@ public class Link extends TOP {
     try {
       JCas jcas = aFrom.getCAS().getJCas();
       java.lang.reflect.Constructor linkConstructor = linkClass
-                      .getConstructor(new Class[] { JCas.class });
+              .getConstructor(new Class[] { JCas.class });
       newLink = (Link) linkConstructor.newInstance(new Object[] { jcas });
     } catch (Exception e) {
     }
@@ -227,7 +227,7 @@ public class Link extends TOP {
     if (Link_Type.featOkTst && ((Link_Type) jcasType).casFeat_from == null)
       JCas.throwFeatMissing("from", "org.apache.uima.klt.Link");
     return (TOP) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Link_Type) jcasType).casFeatCode_from)));
+            ((Link_Type) jcasType).casFeatCode_from)));
   }
 
   /**
@@ -239,7 +239,7 @@ public class Link extends TOP {
     if (Link_Type.featOkTst && ((Link_Type) jcasType).casFeat_from == null)
       JCas.throwFeatMissing("from", "org.apache.uima.klt.Link");
     jcasType.ll_cas.ll_setRefValue(addr, ((Link_Type) jcasType).casFeatCode_from, jcasType.ll_cas
-                    .ll_getFSRef(v));
+            .ll_getFSRef(v));
   }
 
   // *--------------*
@@ -254,7 +254,7 @@ public class Link extends TOP {
     if (Link_Type.featOkTst && ((Link_Type) jcasType).casFeat_to == null)
       JCas.throwFeatMissing("to", "org.apache.uima.klt.Link");
     return (TOP) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Link_Type) jcasType).casFeatCode_to)));
+            ((Link_Type) jcasType).casFeatCode_to)));
   }
 
   /**
@@ -266,7 +266,7 @@ public class Link extends TOP {
     if (Link_Type.featOkTst && ((Link_Type) jcasType).casFeat_to == null)
       JCas.throwFeatMissing("to", "org.apache.uima.klt.Link");
     jcasType.ll_cas.ll_setRefValue(addr, ((Link_Type) jcasType).casFeatCode_to, jcasType.ll_cas
-                    .ll_getFSRef(v));
+            .ll_getFSRef(v));
   }
 
   // *--------------*

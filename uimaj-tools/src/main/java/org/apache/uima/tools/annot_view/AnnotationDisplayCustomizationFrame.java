@@ -67,7 +67,7 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
      */
     public void valueChanged(TreeSelectionEvent event) {
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) AnnotationDisplayCustomizationFrame.this.tree
-                      .getLastSelectedPathComponent();
+              .getLastSelectedPathComponent();
       String typeName = (String) node.getUserObject();
       if (typeName.equals(AnnotationDisplayCustomizationFrame.this.currentTypeName)) {
         return;
@@ -81,7 +81,7 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
 
     public void actionPerformed(ActionEvent event) {
       Color color = JColorChooser.showDialog(AnnotationDisplayCustomizationFrame.this,
-                      "Choose color", AnnotationDisplayCustomizationFrame.this.bgColor);
+              "Choose color", AnnotationDisplayCustomizationFrame.this.bgColor);
       if (color != null) {
         AnnotationDisplayCustomizationFrame.this.bgColor = color;
         AnnotationDisplayCustomizationFrame.this.bgIcon.setColor(color);
@@ -98,7 +98,7 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
 
     public void actionPerformed(ActionEvent event) {
       Color color = JColorChooser.showDialog(AnnotationDisplayCustomizationFrame.this,
-                      "Choose color", AnnotationDisplayCustomizationFrame.this.fgColor);
+              "Choose color", AnnotationDisplayCustomizationFrame.this.fgColor);
       if (color != null) {
         AnnotationDisplayCustomizationFrame.this.fgColor = color;
         AnnotationDisplayCustomizationFrame.this.fgIcon.setColor(color);
@@ -115,19 +115,19 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
 
     public void actionPerformed(ActionEvent event) {
       Style style = (Style) AnnotationDisplayCustomizationFrame.this.styleMap
-                      .get(AnnotationDisplayCustomizationFrame.this.currentTypeName);
+              .get(AnnotationDisplayCustomizationFrame.this.currentTypeName);
       if (style == null) {
         style = AnnotationDisplayCustomizationFrame.this.textPane.addStyle(
-                        AnnotationDisplayCustomizationFrame.this.currentTypeName,
-                        (Style) AnnotationDisplayCustomizationFrame.this.styleMap
-                                        .get(TCAS.TYPE_NAME_ANNOTATION));
+                AnnotationDisplayCustomizationFrame.this.currentTypeName,
+                (Style) AnnotationDisplayCustomizationFrame.this.styleMap
+                        .get(TCAS.TYPE_NAME_ANNOTATION));
       }
       StyleConstants.setForeground(style, StyleConstants
-                      .getForeground(AnnotationDisplayCustomizationFrame.this.currentStyle));
+              .getForeground(AnnotationDisplayCustomizationFrame.this.currentStyle));
       StyleConstants.setBackground(style, StyleConstants
-                      .getBackground(AnnotationDisplayCustomizationFrame.this.currentStyle));
+              .getBackground(AnnotationDisplayCustomizationFrame.this.currentStyle));
       AnnotationDisplayCustomizationFrame.this.styleMap.put(
-                      AnnotationDisplayCustomizationFrame.this.currentTypeName, style);
+              AnnotationDisplayCustomizationFrame.this.currentTypeName, style);
       enableButtons(false);
       AnnotationDisplayCustomizationFrame.this.repaint();
     }
@@ -138,18 +138,18 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
 
     public void actionPerformed(ActionEvent event) {
       Style style = (Style) AnnotationDisplayCustomizationFrame.this.styleMap
-                      .get(AnnotationDisplayCustomizationFrame.this.currentTypeName);
+              .get(AnnotationDisplayCustomizationFrame.this.currentTypeName);
       if (style == null) {
         style = (Style) AnnotationDisplayCustomizationFrame.this.styleMap
-                        .get(TCAS.TYPE_NAME_ANNOTATION);
+                .get(TCAS.TYPE_NAME_ANNOTATION);
       }
       // assert(style != null);
       AnnotationDisplayCustomizationFrame.this.fgColor = StyleConstants.getForeground(style);
       AnnotationDisplayCustomizationFrame.this.fgIcon
-                      .setColor(AnnotationDisplayCustomizationFrame.this.fgColor);
+              .setColor(AnnotationDisplayCustomizationFrame.this.fgColor);
       AnnotationDisplayCustomizationFrame.this.bgColor = StyleConstants.getBackground(style);
       AnnotationDisplayCustomizationFrame.this.bgIcon
-                      .setColor(AnnotationDisplayCustomizationFrame.this.bgColor);
+              .setColor(AnnotationDisplayCustomizationFrame.this.bgColor);
       setCurrentStyle(style);
       setTextPane();
       enableButtons(false);

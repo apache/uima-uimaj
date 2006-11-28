@@ -78,18 +78,18 @@ public class XCasAnnotationViewerMain extends JFrame {
   private static final long serialVersionUID = -3201723535833938833L;
 
   private static final String HELP_MESSAGE = "Instructions for using XCAS Annotation Viewer:\n\n"
-                  + "1) In the \"Input Directory\" field, either type or use the browse\n"
-                  + "button to select a directory containing the analyzed documents\n "
-                  + "(in XMI or XCAS format) that you want to view.\n\n"
-                  + "2) In the \"TAE Descriptor File\" field, either type or use the browse\n"
-                  + "button to select the TAE descriptor for the TAE that generated the\n"
-                  + "XCAS files.  (This is needed for type system infornation only.\n"
-                  + "Analysis will not be redone.)\n\n"
-                  + "3) Click the \"View\" button at the buttom of the window.\n\n"
-                  + "A list of the analyzed documents will be displayed.\n\n\n"
-                  + "4) Select the view type -- either the Java annotation viewer, HTML,\n"
-                  + "or XML.  The Java annotation viewer is recommended.\n\n"
-                  + "5) Double-click on a document to view it.\n";
+          + "1) In the \"Input Directory\" field, either type or use the browse\n"
+          + "button to select a directory containing the analyzed documents\n "
+          + "(in XMI or XCAS format) that you want to view.\n\n"
+          + "2) In the \"TAE Descriptor File\" field, either type or use the browse\n"
+          + "button to select the TAE descriptor for the TAE that generated the\n"
+          + "XCAS files.  (This is needed for type system infornation only.\n"
+          + "Analysis will not be redone.)\n\n"
+          + "3) Click the \"View\" button at the buttom of the window.\n\n"
+          + "A list of the analyzed documents will be displayed.\n\n\n"
+          + "4) Select the view type -- either the Java annotation viewer, HTML,\n"
+          + "or XML.  The Java annotation viewer is recommended.\n\n"
+          + "5) Double-click on a document to view it.\n";
 
   private File uimaHomeDir;
 
@@ -170,14 +170,14 @@ public class XCasAnnotationViewerMain extends JFrame {
     // Set default values for input fields
     File inputDir = new File(uimaHomeDir, "docs/examples/data/processed");
     inputFileSelector = new FileSelector("", "Input Directory", JFileChooser.DIRECTORIES_ONLY,
-                    inputDir);
+            inputDir);
     inputFileSelector.setSelected(inputDir.getAbsolutePath());
 
     taeDescriptorFileSelector = new FileSelector("", "TAE Descriptor File",
-                    JFileChooser.FILES_ONLY, uimaHomeDir);
+            JFileChooser.FILES_ONLY, uimaHomeDir);
 
     File descriptorFile = new File(uimaHomeDir,
-                    "docs/examples/descriptors/analysis_engine/PersonTitleAnnotator.xml");
+            "docs/examples/descriptors/analysis_engine/PersonTitleAnnotator.xml");
     taeDescriptorFileSelector.setSelected(descriptorFile.getAbsolutePath());
 
     controlPanel.add(labelInputDir);
@@ -186,8 +186,8 @@ public class XCasAnnotationViewerMain extends JFrame {
     controlPanel.add(taeDescriptorFileSelector);
 
     SpringUtilities.makeCompactGrid(controlPanel, 2, 2, // rows, cols
-                    4, 4, // initX, initY
-                    4, 4); // xPad, yPad
+            4, 4, // initX, initY
+            4, 4); // xPad, yPad
 
     // Event Handlling of "Exit" Menu Item
     exitMenuItem.addActionListener(new ActionListener() {
@@ -208,7 +208,7 @@ public class XCasAnnotationViewerMain extends JFrame {
     helpMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
         JOptionPane.showMessageDialog(XCasAnnotationViewerMain.this, HELP_MESSAGE,
-                        "Annotation Viewer Help", JOptionPane.PLAIN_MESSAGE);
+                "Annotation Viewer Help", JOptionPane.PLAIN_MESSAGE);
       }
     });
 
@@ -248,7 +248,7 @@ public class XCasAnnotationViewerMain extends JFrame {
   }
 
   public void viewDocuments() throws InvalidXMLException, IOException,
-                  ResourceInitializationException {
+          ResourceInitializationException {
     File descriptorFile = new File(taeDescriptorFileSelector.getSelected());
     if (!descriptorFile.exists() || descriptorFile.isDirectory()) {
       displayError("Descriptor File \"" + descriptorFile.getPath() + "\" does not exist.");
@@ -268,7 +268,7 @@ public class XCasAnnotationViewerMain extends JFrame {
     if (descriptor instanceof AnalysisEngineDescription) {
       tcas = CasCreationUtils.createTCas((AnalysisEngineDescription) descriptor);
       styleMapFile = getStyleMapFile((AnalysisEngineDescription) descriptor, descriptorFile
-                      .getPath());
+              .getPath());
     } else if (descriptor instanceof TypeSystemDescription) {
       TypeSystemDescription tsDesc = (TypeSystemDescription) descriptor;
       tsDesc.resolveImports();
@@ -276,7 +276,7 @@ public class XCasAnnotationViewerMain extends JFrame {
       styleMapFile = getStyleMapFile((TypeSystemDescription) descriptor, descriptorFile.getPath());
     } else {
       displayError("Invalid Descriptor File \"" + descriptorFile.getPath() + "\""
-                      + "Must be either an AnalysisEngine or TypeSystem descriptor.");
+              + "Must be either an AnalysisEngine or TypeSystem descriptor.");
       return;
     }
 
@@ -287,8 +287,8 @@ public class XCasAnnotationViewerMain extends JFrame {
     // output dir is the directory containing XCAS files.
     prefsMed.setOutputDir(inputDir.toString());
     XCasAnnotationViewerDialog viewerDialog = new XCasAnnotationViewerDialog(this,
-                    "Analyzed Documents", prefsMed, styleMapFile, null, tcas.getTypeSystem(), null,
-                    false, tcas);
+            "Analyzed Documents", prefsMed, styleMapFile, null, tcas.getTypeSystem(), null, false,
+            tcas);
     viewerDialog.pack();
     viewerDialog.setModal(true);
     viewerDialog.setVisible(true);
@@ -301,7 +301,7 @@ public class XCasAnnotationViewerMain extends JFrame {
    * @throws IOException
    */
   private File getStyleMapFile(AnalysisEngineDescription tad, String descFileName)
-                  throws IOException {
+          throws IOException {
     File styleMapFile = getStyleMapFileName(descFileName);
     if (!styleMapFile.exists()) {
       // generate default style map
@@ -377,12 +377,12 @@ public class XCasAnnotationViewerMain extends JFrame {
     // figure defaults
     File defaultInputDir = new File(uimaHomeDir, "docs/examples/data/processed");
     File defaultTaeDescriptorFile = new File(uimaHomeDir,
-                    "docs/examples/descriptors/analysis_engine/PersonTitleAnnotator.xml");
+            "docs/examples/descriptors/analysis_engine/PersonTitleAnnotator.xml");
 
     // restore preferences
     inputFileSelector.setSelected(prefs.get("inDir", defaultInputDir.toString()));
     taeDescriptorFileSelector.setSelected(prefs.get("taeDescriptorFile", defaultTaeDescriptorFile
-                    .toString()));
+            .toString()));
   }
 
   /**
@@ -414,7 +414,7 @@ public class XCasAnnotationViewerMain extends JFrame {
     }
 
     JOptionPane.showMessageDialog(XCasAnnotationViewerMain.this, buf.toString(), "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.ERROR_MESSAGE);
   }
 
   /**

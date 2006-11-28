@@ -24,6 +24,6 @@ import java.io.IOException;
 
 public interface IMerge {
   public void doMerge(Jg jg, IProgressMonitor progressMonitor, String sourceContents,
-                  String targetContainer, String targetPath, String targetClassName, File targetFile)
-                  throws IOException;
+          String targetContainer, String targetPath, String targetClassName, File targetFile)
+          throws IOException;
 }

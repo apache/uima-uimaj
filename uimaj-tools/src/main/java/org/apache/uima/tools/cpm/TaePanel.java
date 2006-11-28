@@ -62,13 +62,13 @@ public class TaePanel extends MetaDataPanel {
 
   public boolean hasFileChanged(long lastCheck) {
     return specifierFile.lastModified() > this.lastFileSyncTimestamp
-                    && specifierFile.lastModified() > lastCheck;
+            && specifierFile.lastModified() > lastCheck;
   }
 
   public void refreshFromFile() throws InvalidXMLException, IOException {
     clearAll();
     this.taeSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-                    new XMLInputSource(this.specifierFile));
+            new XMLInputSource(this.specifierFile));
     if (taeSpecifier instanceof TaeDescription) {
       TaeDescription taeDescription = (TaeDescription) taeSpecifier;
       populate(taeDescription.getMetaData(), null);

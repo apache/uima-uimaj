@@ -136,17 +136,17 @@ public class Link_Type extends TOP_Type {
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
     casFeat_componentId = jcas.getRequiredFeatureDE(casType, "componentId", "uima.cas.String",
-                    featOkTst);
+            featOkTst);
     casFeatCode_componentId = (null == casFeat_componentId) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_componentId).getCode();
+            : ((FeatureImpl) casFeat_componentId).getCode();
 
     casFeat_from = jcas.getRequiredFeatureDE(casType, "from", "uima.cas.TOP", featOkTst);
     casFeatCode_from = (null == casFeat_from) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_from).getCode();
+            : ((FeatureImpl) casFeat_from).getCode();
 
     casFeat_to = jcas.getRequiredFeatureDE(casType, "to", "uima.cas.TOP", featOkTst);
     casFeatCode_to = (null == casFeat_to) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl) casFeat_to)
-                    .getCode();
+            .getCode();
 
   }
 }

@@ -43,9 +43,9 @@ public class JCasTypeTemplate {
       stringBuffer.append(";\n");
     } else
       jg.error.newError(IError.WARN, jg.getString("pkgMissing", new Object[] { td.getName() }),
-                      null);
+              null);
     stringBuffer
-                    .append("\nimport org.apache.uima.jcas.impl.JCas; \nimport org.apache.uima.jcas.cas.TOP_Type;\n\n");
+            .append("\nimport org.apache.uima.jcas.impl.JCas; \nimport org.apache.uima.jcas.cas.TOP_Type;\n\n");
     for (Iterator i = jg.collectImports(td, false).iterator(); i.hasNext();) {
       stringBuffer.append("import ");
       stringBuffer.append((String) i.next());
@@ -67,23 +67,23 @@ public class JCasTypeTemplate {
     stringBuffer.append(" extends ");
     stringBuffer.append(jg.getJavaName(td.getSupertypeName()));
     stringBuffer
-                    .append(" {\n  /** @generated\n   * @ordered \n   */\n  public final static int typeIndexID = JCas.getNextIndex();\n  /** @generated\n   * @ordered \n   */\n  public final static int type = typeIndexID;\n  /** @generated  */\n  public              int getTypeIndexID() {return typeIndexID;}\n \n  /** Never called.  Disable default constructor\n   * @generated */\n  protected ");
+            .append(" {\n  /** @generated\n   * @ordered \n   */\n  public final static int typeIndexID = JCas.getNextIndex();\n  /** @generated\n   * @ordered \n   */\n  public final static int type = typeIndexID;\n  /** @generated  */\n  public              int getTypeIndexID() {return typeIndexID;}\n \n  /** Never called.  Disable default constructor\n   * @generated */\n  protected ");
     stringBuffer.append(typeName);
     stringBuffer
-                    .append("() {}\n    \n  /** Internal - constructor used by generator \n   * @generated */\n  public ");
+            .append("() {}\n    \n  /** Internal - constructor used by generator \n   * @generated */\n  public ");
     stringBuffer.append(typeName);
     stringBuffer
-                    .append("(int addr, TOP_Type type) {\n    super(addr, type);\n    readObject();\n  }\n  \n  /** @generated */\n  public ");
+            .append("(int addr, TOP_Type type) {\n    super(addr, type);\n    readObject();\n  }\n  \n  /** @generated */\n  public ");
     stringBuffer.append(typeName);
     stringBuffer.append("(JCas jcas) {\n    super(jcas);\n    readObject();   \n  } \n");
     if (jg.isSubTypeOfAnnotation(td)) {
       stringBuffer.append("  \n  /** @generated */\n  public ");
       stringBuffer.append(typeName);
       stringBuffer
-                      .append("(JCas jcas, int begin, int end) {\n    super(jcas);\n    setBegin(begin);\n    setEnd(end);\n    readObject();\n  }   \n");
+              .append("(JCas jcas, int begin, int end) {\n    super(jcas);\n    setBegin(begin);\n    setEnd(end);\n    readObject();\n  }   \n");
     }
     stringBuffer
-                    .append("\n  /** <!-- begin-user-doc -->\n    * Write your own initialization here\n    * <!-- end-user-doc -->\n  @generated modifiable */\n  private void readObject() {}\n     \n");
+            .append("\n  /** <!-- begin-user-doc -->\n    * Write your own initialization here\n    * <!-- end-user-doc -->\n  @generated modifiable */\n  private void readObject() {}\n     \n");
     FeatureDescription[] fds = td.getFeatures();
     for (int i = 0; i < fds.length; i++) {
       FeatureDescription fd = fds[i];
@@ -212,7 +212,7 @@ public class JCasTypeTemplate {
     if (td.getName().equals("uima.cas.Annotation")) {
       stringBuffer.append("  ");
       stringBuffer
-                      .append("  /** Constructor with begin and end passed as arguments \n    * @generated */\n  public Annotation(JCas jcas, int begin, int end) { \n	this(jcas); // forward to constructor \n	this.setBegin(begin); \n	this.setEnd(end); \n  } \n  \n  /** @see org.apache.uima.cas.text.AnnotationFS#getCoveredText() \n    * @generated */ \n  public String getCoveredText() { \n	final TCASImpl tcasImpl = (TCASImpl)jcasType.casImpl; \n    String text = tcasImpl.getDocumentText(); \n	if (text == null)  \n	  return null; \n	return text.substring(getBegin(), getEnd()); \n  } \n  \n  /** @deprecated \n    * @generated */\n  public int getStart() {return getBegin();}\n		\n  /** @see org.apache.uima.cas.text.AnnotationFS#getCoveredText() \n    * @generated */ \n  public String getCoveredText(int inst) { \n    final TCASImpl tcasImpl = (TCASImpl) casImpl; \n    final String text = tcasImpl.getDocumentText(); \n    if (text == null) \n      return null; \n    return text.substring(getBegin(inst), getEnd(inst)); \n  }\n");
+              .append("  /** Constructor with begin and end passed as arguments \n    * @generated */\n  public Annotation(JCas jcas, int begin, int end) { \n	this(jcas); // forward to constructor \n	this.setBegin(begin); \n	this.setEnd(end); \n  } \n  \n  /** @see org.apache.uima.cas.text.AnnotationFS#getCoveredText() \n    * @generated */ \n  public String getCoveredText() { \n	final TCASImpl tcasImpl = (TCASImpl)jcasType.casImpl; \n    String text = tcasImpl.getDocumentText(); \n	if (text == null)  \n	  return null; \n	return text.substring(getBegin(), getEnd()); \n  } \n  \n  /** @deprecated \n    * @generated */\n  public int getStart() {return getBegin();}\n		\n  /** @see org.apache.uima.cas.text.AnnotationFS#getCoveredText() \n    * @generated */ \n  public String getCoveredText(int inst) { \n    final TCASImpl tcasImpl = (TCASImpl) casImpl; \n    final String text = tcasImpl.getDocumentText(); \n    if (text == null) \n      return null; \n    return text.substring(getBegin(inst), getEnd(inst)); \n  }\n");
       stringBuffer.append("");
     } /* of Annotation if-statement */
     stringBuffer.append("}\n\n    ");

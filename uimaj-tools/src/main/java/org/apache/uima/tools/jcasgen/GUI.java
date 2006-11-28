@@ -276,7 +276,7 @@ public class GUI extends JFrame {
       Runnable r = new Runnable() {
         public void run() {
           jg.main0(new String[] { "-jcasgeninput", inFileName, "-jcasgenoutput", outDirName },
-                          jg.merger, new GuiProgressMonitor(), new GuiErrorImpl());
+                  jg.merger, new GuiProgressMonitor(), new GuiErrorImpl());
         }
       };
       new Thread(r).start();
@@ -285,7 +285,7 @@ public class GUI extends JFrame {
     String showInStatus(String message) {
       taStatus.setText(taStatus.getText() + message + NL);
       areaScrollPane.getVerticalScrollBar().setValue(
-                      areaScrollPane.getVerticalScrollBar().getMaximum());
+              areaScrollPane.getVerticalScrollBar().getMaximum());
       gui.repaint();
       return message;
     }

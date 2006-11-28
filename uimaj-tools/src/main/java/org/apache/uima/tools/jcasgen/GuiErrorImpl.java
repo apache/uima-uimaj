@@ -40,7 +40,7 @@ public class GuiErrorImpl implements IError {
   public void newError(int severity, String message, Exception exception) {
     Logger log = UIMAFramework.getLogger();
     log.log(logLevels[severity], GUI.theGUI.pnG.showInStatus("JCasGen " + sevMsg[severity] + ": "
-                    + message), exception);
+            + message), exception);
     if (null != exception) {
       ByteArrayOutputStream b = new ByteArrayOutputStream();
       PrintStream ps = new PrintStream(b);

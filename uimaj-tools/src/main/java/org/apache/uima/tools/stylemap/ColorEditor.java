@@ -57,7 +57,7 @@ class ColorEditor extends DefaultCellEditor {
   }
 
   public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,
-                  int row, int column) {
+          int row, int column) {
     // ((JButton) editorComponent).setText(value.toString());
     currentColor = (Color) value;
     return editorComponent;

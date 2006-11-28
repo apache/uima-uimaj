@@ -180,7 +180,7 @@ public class Referent extends TOP {
     if (Referent_Type.featOkTst && ((Referent_Type) jcasType).casFeat_links == null)
       JCas.throwFeatMissing("links", "org.apache.uima.klt.Referent");
     return (FSList) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Referent_Type) jcasType).casFeatCode_links)));
+            ((Referent_Type) jcasType).casFeatCode_links)));
   }
 
   /**
@@ -192,7 +192,7 @@ public class Referent extends TOP {
     if (Referent_Type.featOkTst && ((Referent_Type) jcasType).casFeat_links == null)
       JCas.throwFeatMissing("links", "org.apache.uima.klt.Referent");
     jcasType.ll_cas.ll_setRefValue(addr, ((Referent_Type) jcasType).casFeatCode_links,
-                    jcasType.ll_cas.ll_getFSRef(v));
+            jcasType.ll_cas.ll_getFSRef(v));
   }
 
   // *--------------*
@@ -207,7 +207,7 @@ public class Referent extends TOP {
     if (Referent_Type.featOkTst && ((Referent_Type) jcasType).casFeat_classes == null)
       JCas.throwFeatMissing("classes", "org.apache.uima.klt.Referent");
     return (StringArray) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Referent_Type) jcasType).casFeatCode_classes)));
+            ((Referent_Type) jcasType).casFeatCode_classes)));
   }
 
   /**
@@ -219,7 +219,7 @@ public class Referent extends TOP {
     if (Referent_Type.featOkTst && ((Referent_Type) jcasType).casFeat_classes == null)
       JCas.throwFeatMissing("classes", "org.apache.uima.klt.Referent");
     jcasType.ll_cas.ll_setRefValue(addr, ((Referent_Type) jcasType).casFeatCode_classes,
-                    jcasType.ll_cas.ll_getFSRef(v));
+            jcasType.ll_cas.ll_getFSRef(v));
   }
 
   /**
@@ -231,9 +231,9 @@ public class Referent extends TOP {
     if (Referent_Type.featOkTst && ((Referent_Type) jcasType).casFeat_classes == null)
       JCas.throwFeatMissing("classes", "org.apache.uima.klt.Referent");
     jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Referent_Type) jcasType).casFeatCode_classes), i);
+            ((Referent_Type) jcasType).casFeatCode_classes), i);
     return jcasType.ll_cas.ll_getStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Referent_Type) jcasType).casFeatCode_classes), i);
+            ((Referent_Type) jcasType).casFeatCode_classes), i);
   }
 
   /**
@@ -245,9 +245,9 @@ public class Referent extends TOP {
     if (Referent_Type.featOkTst && ((Referent_Type) jcasType).casFeat_classes == null)
       JCas.throwFeatMissing("classes", "org.apache.uima.klt.Referent");
     jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Referent_Type) jcasType).casFeatCode_classes), i);
+            ((Referent_Type) jcasType).casFeatCode_classes), i);
     jcasType.ll_cas.ll_setStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Referent_Type) jcasType).casFeatCode_classes), i, v);
+            ((Referent_Type) jcasType).casFeatCode_classes), i, v);
   }
 
   // *--------------*
@@ -262,7 +262,7 @@ public class Referent extends TOP {
     if (Referent_Type.featOkTst && ((Referent_Type) jcasType).casFeat_canonicalForm == null)
       JCas.throwFeatMissing("canonicalForm", "org.apache.uima.klt.Referent");
     return jcasType.ll_cas.ll_getStringValue(addr,
-                    ((Referent_Type) jcasType).casFeatCode_canonicalForm);
+            ((Referent_Type) jcasType).casFeatCode_canonicalForm);
   }
 
   /**
@@ -274,8 +274,7 @@ public class Referent extends TOP {
     if (Referent_Type.featOkTst && ((Referent_Type) jcasType).casFeat_canonicalForm == null)
       JCas.throwFeatMissing("canonicalForm", "org.apache.uima.klt.Referent");
     jcasType.ll_cas
-                    .ll_setStringValue(addr, ((Referent_Type) jcasType).casFeatCode_canonicalForm,
-                                    v);
+            .ll_setStringValue(addr, ((Referent_Type) jcasType).casFeatCode_canonicalForm, v);
   }
 
   // *--------------*
@@ -290,7 +289,7 @@ public class Referent extends TOP {
     if (Referent_Type.featOkTst && ((Referent_Type) jcasType).casFeat_variantForms == null)
       JCas.throwFeatMissing("variantForms", "org.apache.uima.klt.Referent");
     return (StringList) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-                    ((Referent_Type) jcasType).casFeatCode_variantForms)));
+            ((Referent_Type) jcasType).casFeatCode_variantForms)));
   }
 
   /**
@@ -302,7 +301,7 @@ public class Referent extends TOP {
     if (Referent_Type.featOkTst && ((Referent_Type) jcasType).casFeat_variantForms == null)
       JCas.throwFeatMissing("variantForms", "org.apache.uima.klt.Referent");
     jcasType.ll_cas.ll_setRefValue(addr, ((Referent_Type) jcasType).casFeatCode_variantForms,
-                    jcasType.ll_cas.ll_getFSRef(v));
+            jcasType.ll_cas.ll_getFSRef(v));
   }
 
   // *--------------*
@@ -317,7 +316,7 @@ public class Referent extends TOP {
     if (Referent_Type.featOkTst && ((Referent_Type) jcasType).casFeat_componentId == null)
       JCas.throwFeatMissing("componentId", "org.apache.uima.klt.Referent");
     return jcasType.ll_cas.ll_getStringValue(addr,
-                    ((Referent_Type) jcasType).casFeatCode_componentId);
+            ((Referent_Type) jcasType).casFeatCode_componentId);
   }
 
   /**

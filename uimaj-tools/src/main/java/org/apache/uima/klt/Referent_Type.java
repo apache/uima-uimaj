@@ -172,7 +172,7 @@ public class Referent_Type extends TOP_Type {
       JCas.throwFeatMissing("classes", "org.apache.uima.klt.Referent");
     if (lowLevelTypeChecks)
       return ll_cas.ll_getStringArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_classes), i,
-                      true);
+              true);
     jcas.checkArrayBounds(ll_cas.ll_getRefValue(addr, casFeatCode_classes), i);
     return ll_cas.ll_getStringArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_classes), i);
   }
@@ -218,31 +218,31 @@ public class Referent_Type extends TOP_Type {
 
     casFeat_links = jcas.getRequiredFeatureDE(casType, "links", "uima.cas.FSList", featOkTst);
     casFeatCode_links = (null == casFeat_links) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_links).getCode();
+            : ((FeatureImpl) casFeat_links).getCode();
 
     casFeat_componentId = jcas.getRequiredFeatureDE(casType, "componentId", "uima.cas.String",
-                    featOkTst);
+            featOkTst);
     casFeatCode_componentId = (null == casFeat_componentId) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_componentId).getCode();
+            : ((FeatureImpl) casFeat_componentId).getCode();
 
     casFeat_classes = jcas.getRequiredFeatureDE(casType, "classes", "uima.cas.StringArray",
-                    featOkTst);
+            featOkTst);
     casFeatCode_classes = (null == casFeat_classes) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_classes).getCode();
+            : ((FeatureImpl) casFeat_classes).getCode();
 
     casFeat_canonicalForm = jcas.getRequiredFeatureDE(casType, "canonicalForm", "uima.cas.String",
-                    featOkTst);
+            featOkTst);
     casFeatCode_canonicalForm = (null == casFeat_canonicalForm) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_canonicalForm).getCode();
+            : ((FeatureImpl) casFeat_canonicalForm).getCode();
 
     casFeat_variantForms = jcas.getRequiredFeatureDE(casType, "variantForms",
-                    "uima.cas.StringList", featOkTst);
+            "uima.cas.StringList", featOkTst);
     casFeatCode_variantForms = (null == casFeat_variantForms) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_variantForms).getCode();
+            : ((FeatureImpl) casFeat_variantForms).getCode();
 
     casFeat_id = jcas.getRequiredFeatureDE(casType, "id", "uima.cas.String", featOkTst);
     casFeatCode_id = (null == casFeat_id) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl) casFeat_id)
-                    .getCode();
+            .getCode();
 
   }
 }

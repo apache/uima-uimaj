@@ -66,7 +66,7 @@ public class RelationAnnotation_Type extends Annotation_Type {
    * @modifiable
    */
   public final static boolean featOkTst = JCas
-                  .getFeatOkTst("org.apache.uima.klt.RelationAnnotation");
+          .getFeatOkTst("org.apache.uima.klt.RelationAnnotation");
 
   /** @generated */
   final Feature casFeat_links;
@@ -159,22 +159,22 @@ public class RelationAnnotation_Type extends Annotation_Type {
 
     casFeat_links = jcas.getRequiredFeatureDE(casType, "links", "uima.cas.FSList", featOkTst);
     casFeatCode_links = (null == casFeat_links) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_links).getCode();
+            : ((FeatureImpl) casFeat_links).getCode();
 
     casFeat_componentId = jcas.getRequiredFeatureDE(casType, "componentId", "uima.cas.String",
-                    featOkTst);
+            featOkTst);
     casFeatCode_componentId = (null == casFeat_componentId) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_componentId).getCode();
+            : ((FeatureImpl) casFeat_componentId).getCode();
 
     casFeat_predicate = jcas.getRequiredFeatureDE(casType, "predicate", "uima.tcas.Annotation",
-                    featOkTst);
+            featOkTst);
     casFeatCode_predicate = (null == casFeat_predicate) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_predicate).getCode();
+            : ((FeatureImpl) casFeat_predicate).getCode();
 
     casFeat_relationArgs = jcas.getRequiredFeatureDE(casType, "relationArgs",
-                    "org.apache.uima.klt.RelationArgs", featOkTst);
+            "org.apache.uima.klt.RelationArgs", featOkTst);
     casFeatCode_relationArgs = (null == casFeat_relationArgs) ? JCas.INVALID_FEATURE_CODE
-                    : ((FeatureImpl) casFeat_relationArgs).getCode();
+            : ((FeatureImpl) casFeat_relationArgs).getCode();
 
   }
 }
