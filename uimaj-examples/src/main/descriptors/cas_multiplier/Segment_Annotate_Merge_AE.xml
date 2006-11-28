@@ -42,7 +42,11 @@
 			<import location="SimpleTextMerger.xml"/>
 		</delegateAnalysisEngine>
 	</delegateAnalysisEngineSpecifiers>
-	
+		
+	<flowController key="FixedFlowController">
+		<import name="org.apache.uima.flow.FixedFlowController"/>
+	</flowController>
+		
 	<analysisEngineMetaData>
 		<name>Segment, Annotate, and Merge Example AE</name>
 		<description>Splits a document into pieces and runs the tokenizer and name
@@ -50,9 +54,9 @@
 			document, keeping the name annotations in the merged document but discarding
 			the tokens. 
 		
-		    TODO: we should use a custom flow controller to drop the segments that are merged,
-			so that they are not output from the aggregate.  Then the aggregate would take one
-			CAS in and produce one CAS as output.
+		    By default the intermediate segments are dropped after being processed by the merger, and
+			are not output from the aggregate.  This behavior is configurable via the
+			ActionForIntermediateSegments parameter.
 		</description>
 		<version>1.0</version>
 		<vendor>The Apache Software Foundation</vendor>
@@ -76,7 +80,26 @@
 					<parameter>Merger/AnnotationTypesToCopy</parameter>
 				</overrides>
 			</configurationParameter>
-		</configurationParameters>
+			
+			  <configurationParameter>
+				 <name>ActionForIntermediateSegments</name>
+				 <description>Tells the flow controller what to do with intermediate segments after they are input to the merger.
+				 Valid values are:
+					continue - the CAS continues on to the next element in the flow
+					stop - the CAS will no longer continue in the flow, and will be returned from the aggregate if possible.
+					drop - the CAS will no longer continue in the flow, and will be dropped (not returned from the aggregate) if possible.	 
+					dropIfNewCasProduced (the default) - if the CAS multiplier produced a new CAS as a result of processing this CAS, then this
+						CAS will be dropped.  If not, then this CAS will continue.			 
+				 </description>
+				 <type>String</type>
+				 <multiValued>false</multiValued>
+				 <mandatory>false</mandatory>
+				  <overrides>
+					  <parameter>FixedFlowController/ActionAfterCasMultiplier</parameter>
+				  </overrides>
+			   </configurationParameter>			
+			 </configurationParameters>
+		
 		<configurationParameterSettings>
 			<nameValuePair>
 				<name>AnnotationTypesToPreserve</name>
@@ -84,6 +107,12 @@
 					<array>
 						<string>example.Name</string>
 					</array>
+				</value>
+			</nameValuePair>
+			<nameValuePair>
+				<name>ActionForIntermediateSegments</name>
+				<value>
+					<string>drop</string>
 				</value>
 			</nameValuePair>
 		</configurationParameterSettings>
