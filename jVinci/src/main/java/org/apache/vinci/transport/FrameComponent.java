@@ -22,26 +22,25 @@ package org.apache.vinci.transport;
 import org.apache.vinci.debug.Debug;
 
 /**
- * Base class for components that can be included in Frame documents. Descendents currently
- * include only FrameLeaf and Frame.
+ * Base class for components that can be included in Frame documents. Descendents currently include
+ * only FrameLeaf and Frame.
  */
 public class FrameComponent {
   /**
-   * Set the attributes (replacing any previous ones) assocated with this
-   * Frame component.  Default implementation does nothing since
-   * attributes are not supported by default.
+   * Set the attributes (replacing any previous ones) assocated with this Frame component. Default
+   * implementation does nothing since attributes are not supported by default.
    */
   public void setAttributes(Attributes s) {
     Debug.p("WARNING: Attempt to set attributes of FrameComponent "
-        + "which does not support them. Attribute info will be lost.");
+            + "which does not support them. Attribute info will be lost.");
   }
 
   /**
    * Get the attributes associated with this FrameComponent.
    * 
    * @return The set of attributes associated with this FrameComponent. This method may return
-   * "null" to indicate there are no attributes.  It could however return an empty Attribute set
-   * depending on the implementation.  
+   *         "null" to indicate there are no attributes. It could however return an empty Attribute
+   *         set depending on the implementation.
    */
   public Attributes getAttributes() {
     return null;

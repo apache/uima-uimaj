@@ -29,35 +29,38 @@ import org.apache.vinci.transport.context.VinciContext;
 import org.apache.vinci.transport.vns.client.ServeonResult;
 
 /**
- * "Standard" service container for a VinciServable. This extends BaseServer with functions
- * allowing port negotiation via interaction with VNS. It also provides rudimentary support for
- * service control and monitoring by responding to vinci:SHUTDOWN and vinci:PING.
- *
- * Note that this server class directs requests to a single VinciServable. For many applications
- * it may be desirable to have one server accept requests that get delegated to multiple services,
- * not just a single service. For such applications consider using the MultiplexedServer. You can
- * also implement a VinciServable that implements its own sub-service delegation scheme.
- *
+ * "Standard" service container for a VinciServable. This extends BaseServer with functions allowing
+ * port negotiation via interaction with VNS. It also provides rudimentary support for service
+ * control and monitoring by responding to vinci:SHUTDOWN and vinci:PING.
+ * 
+ * Note that this server class directs requests to a single VinciServable. For many applications it
+ * may be desirable to have one server accept requests that get delegated to multiple services, not
+ * just a single service. For such applications consider using the MultiplexedServer. You can also
+ * implement a VinciServable that implements its own sub-service delegation scheme.
+ * 
  */
 public class VinciServer extends BaseServer {
 
-  private int          priority    = 0;
-  private int          instance    = 0;
-  private String       hostName    = null;
-  private String       serviceName = null;
+  private int priority = 0;
+
+  private int instance = 0;
+
+  private String hostName = null;
+
+  private String serviceName = null;
 
   // Port gets set via VNS port negotiation once serving
   // is initiated.
-  private volatile int port        = -1;
+  private volatile int port = -1;
 
-  private VinciContext context     = null;
+  private VinciContext context = null;
 
   /**
-   * Create a new server. If an incorrect hostname is provided, this server will not be
-   * reachable.
-   *
-   * @param host_name The DNS hostname of the machine running this server.
-   *
+   * Create a new server. If an incorrect hostname is provided, this server will not be reachable.
+   * 
+   * @param host_name
+   *          The DNS hostname of the machine running this server.
+   * 
    * @pre service_name != null
    * @pre host_name != null
    * @pre servable != null
@@ -67,11 +70,12 @@ public class VinciServer extends BaseServer {
   }
 
   /**
-   * Create a new server that reports the current machine's IP address as the host.
-   * This should not be used for DHCP-based hosts since IP address can change.
-   *
-   * @throws UnknownHostException If there is an error determining machine IP address.
-   *
+   * Create a new server that reports the current machine's IP address as the host. This should not
+   * be used for DHCP-based hosts since IP address can change.
+   * 
+   * @throws UnknownHostException
+   *           If there is an error determining machine IP address.
+   * 
    * @pre service_name != null
    * @pre servable != null
    */
@@ -81,14 +85,15 @@ public class VinciServer extends BaseServer {
 
   /**
    * Create a new server.
-   *
+   * 
    * @pre service_name != null
    * @pre host_name != null
    * @pre servable != null
    * @pre myPriority >= -1
    * @pre myInstance >= 0
    */
-  public VinciServer(String service_name, String host_name, VinciServable servable, int myPriority, int myInstance) {
+  public VinciServer(String service_name, String host_name, VinciServable servable, int myPriority,
+          int myInstance) {
     super(servable);
     this.priority = myPriority;
     this.serviceName = service_name;
@@ -111,7 +116,8 @@ public class VinciServer extends BaseServer {
    * @pre servable != null
    * @pre myPriority >= -1
    */
-  public VinciServer(String service_name, VinciServable servable, int myPriority) throws UnknownHostException {
+  public VinciServer(String service_name, VinciServable servable, int myPriority)
+          throws UnknownHostException {
     this(service_name, InetAddress.getLocalHost().getHostAddress(), servable, myPriority);
   }
 
@@ -122,7 +128,7 @@ public class VinciServer extends BaseServer {
    * @pre myInstance >= 0
    */
   public VinciServer(String service_name, VinciServable servable, int myPriority, int myInstance)
-      throws UnknownHostException {
+          throws UnknownHostException {
     this(service_name, InetAddress.getLocalHost().getHostName(), servable, myPriority, myInstance);
   }
 
@@ -134,8 +140,8 @@ public class VinciServer extends BaseServer {
   }
 
   /**
-   * Get the context associated with this server. By default clients use the global Vinci
-   * context, though this can be overridden.
+   * Get the context associated with this server. By default clients use the global Vinci context,
+   * though this can be overridden.
    */
   public VinciContext getContext() {
     if (context == null) {
@@ -162,9 +168,9 @@ public class VinciServer extends BaseServer {
   }
 
   /**
-   * After invoking serve() or startServing(), this method can be used to determine
-   * the port which was negotiated with VNS on which to serve requests.
-   *
+   * After invoking serve() or startServing(), this method can be used to determine the port which
+   * was negotiated with VNS on which to serve requests.
+   * 
    * @since 2.0.15
    */
   public int getServingPort() {
@@ -172,24 +178,26 @@ public class VinciServer extends BaseServer {
   }
 
   /**
-   * Set the VinciContext to be used by this server. Set to null if you wish the global
-   * context to be used.
+   * Set the VinciContext to be used by this server. Set to null if you wish the global context to
+   * be used.
    */
   public void setContext(VinciContext c) {
     context = c;
   }
 
   /**
-   * Serve requests until a clean shutdown is triggered. Note that all three exceptions thrown
-   * by this method are IOExceptions so a single IOException catch phrase is sufficient
-   * unless it is important to determine the particular failure.
-   *
-   * @throws ServiceDownException Thrown if there was a failure to contact VNS for port
-   * negotiation.
-   * @throws VNSException Typically thrown if VNS does not recognize the service provided by
-   * this server.
-   * @throws IOException Thrown if there was some problem with the server socket. 
-   * @throws IllegalStateException if VNS host is not specified.
+   * Serve requests until a clean shutdown is triggered. Note that all three exceptions thrown by
+   * this method are IOExceptions so a single IOException catch phrase is sufficient unless it is
+   * important to determine the particular failure.
+   * 
+   * @throws ServiceDownException
+   *           Thrown if there was a failure to contact VNS for port negotiation.
+   * @throws VNSException
+   *           Typically thrown if VNS does not recognize the service provided by this server.
+   * @throws IOException
+   *           Thrown if there was some problem with the server socket.
+   * @throws IllegalStateException
+   *           if VNS host is not specified.
    */
   public void serve() throws ServiceDownException, VNSException, IOException {
     this.port = getPort();
@@ -198,18 +206,20 @@ public class VinciServer extends BaseServer {
   }
 
   /**
-   * Start a new thread that will serve requests until a clean shutdown is triggered. Note that
-   * all three exceptions thrown by this method are IOExceptions so a single IOException catch
-   * phrase is sufficient unless it is important to determine the particular failure. If this
-   * method returns without throwing an exception then the port has been determined and a new
-   * thread has been launched.
-   *
-   * @throws ServiceDownException Thrown if there was a failure to
-   * contact VNS for port negotiation.
-   * @throws VNSException Typically thrown if VNS does not recognize the service provided by
-   * this server.
-   * @throws IOException Thrown if there was some problem with the server socket. 
-   * @throws IllegalStateException if VNS host is not specified.
+   * Start a new thread that will serve requests until a clean shutdown is triggered. Note that all
+   * three exceptions thrown by this method are IOExceptions so a single IOException catch phrase is
+   * sufficient unless it is important to determine the particular failure. If this method returns
+   * without throwing an exception then the port has been determined and a new thread has been
+   * launched.
+   * 
+   * @throws ServiceDownException
+   *           Thrown if there was a failure to contact VNS for port negotiation.
+   * @throws VNSException
+   *           Typically thrown if VNS does not recognize the service provided by this server.
+   * @throws IOException
+   *           Thrown if there was some problem with the server socket.
+   * @throws IllegalStateException
+   *           if VNS host is not specified.
    * @since 2.0.15
    */
   public void startServing() throws ServiceDownException, VNSException, IOException {
@@ -226,28 +236,29 @@ public class VinciServer extends BaseServer {
   }
 
   /**
-   * Factory method for creating a shutdown message. Send the returned object to 
-   * any server, and if it is programmed to respond to shutdown, it will do so.
-   *
-   * @param shutdown_message Should be used to pass a message explaining the shutdown,
-   * or in the future it may also include authentication information for password-protected
-   * shutdown.
+   * Factory method for creating a shutdown message. Send the returned object to any server, and if
+   * it is programmed to respond to shutdown, it will do so.
+   * 
+   * @param shutdown_message
+   *          Should be used to pass a message explaining the shutdown, or in the future it may also
+   *          include authentication information for password-protected shutdown.
    */
   public static Transportable createShutdownCommand(String shutdown_message) {
     return new VinciFrame().fadd(TransportConstants.SHUTDOWN_KEY, shutdown_message);
   }
 
   /**
-   * This method is called by the server when a remote shutdown request is received. In general
-   * if you want to stop the server call shutdownServing() -- this method should have probably
-   * been declared "protected".  You can override this method if you want the shutdown message
-   * to be ignored in certain cases.
+   * This method is called by the server when a remote shutdown request is received. In general if
+   * you want to stop the server call shutdownServing() -- this method should have probably been
+   * declared "protected". You can override this method if you want the shutdown message to be
+   * ignored in certain cases.
    */
   public boolean shutdown(String shutdown_message) {
     // Override this method if shutdown is to be ignored in certain cases (by returning
-    // false). Default implementation unconditionally halts serving, 
+    // false). Default implementation unconditionally halts serving,
     // and hence always returns true.
-    Debug.printDebuggingMessage("VinciServer.shutdown()", "Accepted shutdown request: " + shutdown_message);
+    Debug.printDebuggingMessage("VinciServer.shutdown()", "Accepted shutdown request: "
+            + shutdown_message);
     new Thread(new Runnable() {
       public void run() {
         try {
@@ -263,14 +274,15 @@ public class VinciServer extends BaseServer {
   }
 
   /**
-   * @throws IllegalStateException if VNS host isn't specified.
+   * @throws IllegalStateException
+   *           if VNS host isn't specified.
    */
   protected int getPort() throws ServiceDownException, VNSException {
     try {
       VinciContext myContext = getContext();
-      ServeonResult response = (ServeonResult) VinciClient.sendAndReceive(ServeonResult.composeQuery(serviceName,
-          hostName, priority, instance), myContext.getVNSHost(), myContext.getVNSPort(), ServeonResult.factory,
-          myContext.getVNSServeonTimeout());
+      ServeonResult response = (ServeonResult) VinciClient.sendAndReceive(ServeonResult
+              .composeQuery(serviceName, hostName, priority, instance), myContext.getVNSHost(),
+              myContext.getVNSPort(), ServeonResult.factory, myContext.getVNSServeonTimeout());
       return response.port;
     } catch (IOException e) {
       Debug.reportException(e);

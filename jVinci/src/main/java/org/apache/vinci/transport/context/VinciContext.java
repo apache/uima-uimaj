@@ -34,28 +34,38 @@ import org.apache.vinci.transport.VinciFrame;
 import org.apache.vinci.transport.vns.client.ResolveResult;
 
 /**
- * <p>This class can be used to globally affect various behaviors of Vinci clients and servers
- * under its control (for example, which VNS to contact). There is one "global" VinciContext that
- * is used by default, though anyone can create an alternate context should multiple sets of
- * defaults be required in a single program. Each VinciContext also serves to cache resolve
- * results for all clients under its control (for a default of 1 minute). </p> 
- *
- * <p>For the most part, Vinci library users won't have to directly deal with this class, since
- * there is a global context used by default which is almost always adequate.</p>
- *
- * <p>The most common use of this class is to programmatically specify a VNS hostname other than
- * the default (which is the one specified by the Java property VNS_HOST).</p> 
+ * <p>
+ * This class can be used to globally affect various behaviors of Vinci clients and servers under
+ * its control (for example, which VNS to contact). There is one "global" VinciContext that is used
+ * by default, though anyone can create an alternate context should multiple sets of defaults be
+ * required in a single program. Each VinciContext also serves to cache resolve results for all
+ * clients under its control (for a default of 1 minute).
+ * </p>
+ * 
+ * <p>
+ * For the most part, Vinci library users won't have to directly deal with this class, since there
+ * is a global context used by default which is almost always adequate.
+ * </p>
+ * 
+ * <p>
+ * The most common use of this class is to programmatically specify a VNS hostname other than the
+ * default (which is the one specified by the Java property VNS_HOST).
+ * </p>
  */
 
 public class VinciContext {
 
-  public static final int     DEFAULT_VNS_CACHE_SIZE  = 1000;
+  public static final int DEFAULT_VNS_CACHE_SIZE = 1000;
 
-  private static final String VNS_HOST_PROPERTY       = "VNS_HOST";
-  private static final String VNS_HOST_PROPERTY_2     = "VNSHOST";
-  private static final String VNS_PORT_PROPERTY       = "VNS_PORT";
-  private static final String VNS_PORT_PROPERTY_2     = "VNSPORT";
-  private static final int    DEFAULT_VNS_PORT        = 9000;
+  private static final String VNS_HOST_PROPERTY = "VNS_HOST";
+
+  private static final String VNS_HOST_PROPERTY_2 = "VNSHOST";
+
+  private static final String VNS_PORT_PROPERTY = "VNS_PORT";
+
+  private static final String VNS_PORT_PROPERTY_2 = "VNSPORT";
+
+  private static final int DEFAULT_VNS_PORT = 9000;
 
   static private VinciContext globalContext;
   static {
@@ -81,23 +91,28 @@ public class VinciContext {
     globalContext = new VinciContext(host, port);
   }
 
-  private static final int    DEFAULT_RESOLVE_TIMEOUT = 20000;
-  private static final int    DEFAULT_SERVEON_TIMEOUT = 60000;
-  // Default time to live for cached VNS entries.
-  private static final int    DEFAULT_TTL             = 60000;
+  private static final int DEFAULT_RESOLVE_TIMEOUT = 20000;
 
-  private int                 vnsResolveTimeout       = DEFAULT_RESOLVE_TIMEOUT;
-  private int                 vnsServeonTimeout       = DEFAULT_SERVEON_TIMEOUT;
-  private int                 ttlMillis               = DEFAULT_TTL;
+  private static final int DEFAULT_SERVEON_TIMEOUT = 60000;
+
+  // Default time to live for cached VNS entries.
+  private static final int DEFAULT_TTL = 60000;
+
+  private int vnsResolveTimeout = DEFAULT_RESOLVE_TIMEOUT;
+
+  private int vnsServeonTimeout = DEFAULT_SERVEON_TIMEOUT;
+
+  private int ttlMillis = DEFAULT_TTL;
 
   // Whether or not to use stale cached entries
   // in the event VNS is inaccessible.
-  private boolean             allowStaleLookups       = true;
+  private boolean allowStaleLookups = true;
 
-  private int                 vnsCacheSize            = DEFAULT_VNS_CACHE_SIZE;
+  private int vnsCacheSize = DEFAULT_VNS_CACHE_SIZE;
 
-  private String              host;
-  private int                 port;
+  private String host;
+
+  private int port;
 
   static class CachedVNSResult {
     CachedVNSResult(ResolveResult r) {
@@ -106,26 +121,28 @@ public class VinciContext {
     }
 
     ResolveResult r;
-    long          entryTime;
+
+    long entryTime;
   }
 
   /**
-   * Set the size of the VNS cache. This method can be invoked at any time, however if the cache size
-   * is ever reduced, it might not take effect.
+   * Set the size of the VNS cache. This method can be invoked at any time, however if the cache
+   * size is ever reduced, it might not take effect.
    * 
-   * @param to The limit on the number of entries that will be maintained in the VNS cache.
+   * @param to
+   *          The limit on the number of entries that will be maintained in the VNS cache.
    */
   synchronized public void setVNSCacheSize(int to) {
     vnsCacheSize = to;
   }
 
   private LinkedHashMap vnsCache = new LinkedHashMap(16, .75f, true) {
-                                   private static final long serialVersionUID = 7138871637782205744L;
+    private static final long serialVersionUID = 7138871637782205744L;
 
-                                   protected boolean removeEldestEntry(Map.Entry e) {
-                                     return size() > vnsCacheSize;
-                                   }
-                                 };
+    protected boolean removeEldestEntry(Map.Entry e) {
+      return size() > vnsCacheSize;
+    }
+  };
 
   /**
    * @pre myport >= 0
@@ -137,33 +154,33 @@ public class VinciContext {
   }
 
   /**
-   * Return the VNS hostname. When the global instance of this class is first loaded, it will
-   * set the hostname from the java property VNS_HOST.  To set the VNS_HOST using this java
-   * property, you must therefore specify the property before the class is ever referenced,
-   * e.g. through the command-line property option -DVNS_HOST=[hostname], or by calling
-   * System.setProperty("VNS_HOST", [hostname]) before ever invoking any Vinci client
-   * code. Otherwise, you can set the hostname using the setVNSHost() method provided by this
-   * class.  
-   *
-   * @throws IllegalStateException if the VNS host has not been specified.
+   * Return the VNS hostname. When the global instance of this class is first loaded, it will set
+   * the hostname from the java property VNS_HOST. To set the VNS_HOST using this java property, you
+   * must therefore specify the property before the class is ever referenced, e.g. through the
+   * command-line property option -DVNS_HOST=[hostname], or by calling
+   * System.setProperty("VNS_HOST", [hostname]) before ever invoking any Vinci client code.
+   * Otherwise, you can set the hostname using the setVNSHost() method provided by this class.
+   * 
+   * @throws IllegalStateException
+   *           if the VNS host has not been specified.
    */
   public String getVNSHost() {
     if (host == null) {
       throw new IllegalStateException(
-          "No VNS host or IP address has been specified! You can specify the VNS host or IP address through the Java command-line option -DVNS_HOST=[hostname], or programmatically using either System.setProperty(\"VNS_HOST\",[hostname]) or VinciContext.getGlobalContext().setVNSHost([hostname]).");
+              "No VNS host or IP address has been specified! You can specify the VNS host or IP address through the Java command-line option -DVNS_HOST=[hostname], or programmatically using either System.setProperty(\"VNS_HOST\",[hostname]) or VinciContext.getGlobalContext().setVNSHost([hostname]).");
     } else {
       return host;
     }
   }
 
   /**
-   * Return the VNS listener port. When the global instance of this class is first loaded, it
-   * will attempt to set the port number from the java property VNS_PORT.  To set the port using
-   * this java property, you must therefore specify the VNS_PORT property before the class is
-   * ever referenced, e.g. through the command-line property option -DVNS_PORT=[hostname], or by
-   * calling System.setProperty("VNS_PORT", [hostname]) before ever invoking any Vinci client
-   * code. Otherwise, the port will default to 9000. You can override this default (or any
-   * property-specified value) by calling the setPort() method provided by this class.  
+   * Return the VNS listener port. When the global instance of this class is first loaded, it will
+   * attempt to set the port number from the java property VNS_PORT. To set the port using this java
+   * property, you must therefore specify the VNS_PORT property before the class is ever referenced,
+   * e.g. through the command-line property option -DVNS_PORT=[hostname], or by calling
+   * System.setProperty("VNS_PORT", [hostname]) before ever invoking any Vinci client code.
+   * Otherwise, the port will default to 9000. You can override this default (or any
+   * property-specified value) by calling the setPort() method provided by this class.
    */
   public int getVNSPort() {
     return port;
@@ -189,16 +206,16 @@ public class VinciContext {
   }
 
   /**
-   * Returns whether clients can use stale resolve cache entries for service location in the
-   * event VNS is unreachable.
+   * Returns whether clients can use stale resolve cache entries for service location in the event
+   * VNS is unreachable.
    */
   public boolean areStaleLookupsAllowed() {
     return allowStaleLookups;
   }
 
   /**
-   * Set whether clients can use stale resolve cache entries for service location in the event
-   * VNS is unreachable. Default is true. 
+   * Set whether clients can use stale resolve cache entries for service location in the event VNS
+   * is unreachable. Default is true.
    */
   public void setAllowStaleLookups(boolean b) {
     allowStaleLookups = b;
@@ -212,15 +229,15 @@ public class VinciContext {
   }
 
   /**
-   * Set the time-to-live of cached service locators (resolve results). Default is 1 minute. Set
-   * to 0 to disable caching completely.
+   * Set the time-to-live of cached service locators (resolve results). Default is 1 minute. Set to
+   * 0 to disable caching completely.
    */
   public void setResolveCacheTTL(int millis) {
     ttlMillis = millis;
   }
 
   /**
-   * Get the timeout setting of VNS resolve queries. 
+   * Get the timeout setting of VNS resolve queries.
    */
   public int getVNSResolveTimeout() {
     return vnsResolveTimeout;
@@ -248,8 +265,7 @@ public class VinciContext {
   }
 
   /**
-   * Get the global VinciContext used by Vinci classes when no context is explicitly
-   * specified.
+   * Get the global VinciContext used by Vinci classes when no context is explicitly specified.
    */
   static public VinciContext getGlobalContext() {
     return globalContext;
@@ -257,7 +273,7 @@ public class VinciContext {
 
   /**
    * Get a cached resolve result (if any).
-   *
+   * 
    * @return the cached resolve result, or null if none is cached.
    * 
    * @pre serviceName != null
@@ -275,8 +291,8 @@ public class VinciContext {
 
   /**
    * Get a cached resolve result (if any), but allow returning stale cache entries.
-   *
-   * @return the cached resolve result, or null if none is cached. 
+   * 
+   * @return the cached resolve result, or null if none is cached.
    * 
    * @pre serviceName != null
    */
@@ -302,7 +318,7 @@ public class VinciContext {
       c.r = r;
       c.entryTime = System.currentTimeMillis();
     }
-    //long now = System.currentTimeMillis();
+    // long now = System.currentTimeMillis();
   }
 
   /**
@@ -320,17 +336,19 @@ public class VinciContext {
 
   /**
    * See documentation for VinciClient.sendAndReceive().
-   *
+   * 
    * @see org.apache.vinci.transport.VinciClient
-   *
-   * @throws IllegalStateException if the VNS host has not been specified.
-   *
+   * 
+   * @throws IllegalStateException
+   *           if the VNS host has not been specified.
+   * 
    * @pre in != null
    * @pre service_name != null
    * @pre factory != null
    */
-  public Transportable sendAndReceive(Transportable in, String service_name, TransportableFactory factory)
-      throws IOException, ServiceException, ServiceDownException, VNSException {
+  public Transportable sendAndReceive(Transportable in, String service_name,
+          TransportableFactory factory) throws IOException, ServiceException, ServiceDownException,
+          VNSException {
     VinciClient tempClient = new VinciClient(service_name, factory, this);
     try {
       return tempClient.sendAndReceive(in);
@@ -341,18 +359,19 @@ public class VinciContext {
 
   /**
    * See documentation for VinciClient.sendAndReceive().
-   *
+   * 
    * @see org.apache.vinci.transport.VinciClient
-   *
-   * @throws IllegalStateException if the VNS host has not been specified.
-   *
+   * 
+   * @throws IllegalStateException
+   *           if the VNS host has not been specified.
+   * 
    * @pre in != null
    * @pre service_name != null
    * @pre factory != null
    * @pre socket_timeout >= 0
    */
-  public Transportable sendAndReceive(Transportable in, String service_name, TransportableFactory factory,
-      int socket_timeout) throws IOException, ServiceException {
+  public Transportable sendAndReceive(Transportable in, String service_name,
+          TransportableFactory factory, int socket_timeout) throws IOException, ServiceException {
     VinciClient tempClient = new VinciClient(service_name, factory, this);
     tempClient.setSocketTimeout(socket_timeout);
     try {
@@ -364,21 +383,23 @@ public class VinciContext {
 
   /**
    * See documentation for VinciClient.sendAndReceive().
-   *
-   * WARNING: This method relies on JDK-1.4 specific functions.  USE IT ONLY if you don't need
-   * to maintain JDK1.3 compatability.
-   *
+   * 
+   * WARNING: This method relies on JDK-1.4 specific functions. USE IT ONLY if you don't need to
+   * maintain JDK1.3 compatability.
+   * 
    * @see org.apache.vinci.transport.VinciClient
-   *
-   * @throws IllegalStateException if the VNS host has not been specified.
-   *
+   * 
+   * @throws IllegalStateException
+   *           if the VNS host has not been specified.
+   * 
    * @pre in != null
    * @pre service_name != null
    * @pre factory != null
    * @pre socket_timeout >= 0
    */
-  public Transportable sendAndReceive(Transportable in, String service_name, TransportableFactory factory,
-      int socket_timeout, int connect_timeout) throws IOException, ServiceException {
+  public Transportable sendAndReceive(Transportable in, String service_name,
+          TransportableFactory factory, int socket_timeout, int connect_timeout)
+          throws IOException, ServiceException {
     VinciClient tempClient = new VinciClient(service_name, factory, this, connect_timeout);
     tempClient.setSocketTimeout(socket_timeout);
     try {
@@ -390,16 +411,17 @@ public class VinciContext {
 
   /**
    * See documentation for VinciClient.rpc().
-   *
+   * 
    * @see org.apache.vinci.transport.VinciClient
-   *
-   * @throws IllegalStateException if the VNS host has not been specified.
-   *
+   * 
+   * @throws IllegalStateException
+   *           if the VNS host has not been specified.
+   * 
    * @pre in != null
    * @pre service_name != null
    */
-  public VinciFrame rpc(Transportable in, String service_name) throws IOException, ServiceException,
-      ServiceDownException, VNSException {
+  public VinciFrame rpc(Transportable in, String service_name) throws IOException,
+          ServiceException, ServiceDownException, VNSException {
     VinciClient tempClient = new VinciClient(service_name, this);
     try {
       return tempClient.rpc(in);
@@ -410,17 +432,18 @@ public class VinciContext {
 
   /**
    * See documentation for VinciClient.rpc().
-   *
+   * 
    * @see org.apache.vinci.transport.VinciClient
-   *
-   * @throws IllegalStateException if the VNS host has not been specified.
-   *
+   * 
+   * @throws IllegalStateException
+   *           if the VNS host has not been specified.
+   * 
    * @pre in != null
    * @pre service_name != null
    * @pre timeout >= 0
    */
-  public VinciFrame rpc(Transportable in, String service_name, int timeout) throws IOException, ServiceException,
-      ServiceDownException, VNSException {
+  public VinciFrame rpc(Transportable in, String service_name, int timeout) throws IOException,
+          ServiceException, ServiceDownException, VNSException {
     VinciClient tempClient = new VinciClient(service_name, this);
     tempClient.setSocketTimeout(timeout);
     try {
@@ -432,20 +455,22 @@ public class VinciContext {
 
   /**
    * See documentation for VinciClient.rpc().
-   *
-   * WARNING: This method relies on JDK-1.4 specific functions.  USE IT ONLY if you don't need
-   * to maintain JDK1.3 compatability.
-   *
+   * 
+   * WARNING: This method relies on JDK-1.4 specific functions. USE IT ONLY if you don't need to
+   * maintain JDK1.3 compatability.
+   * 
    * @see org.apache.vinci.transport.VinciClient
-   *
-   * @throws IllegalStateException if the VNS host has not been specified.
-   *
+   * 
+   * @throws IllegalStateException
+   *           if the VNS host has not been specified.
+   * 
    * @pre in != null
    * @pre service_name != null
    * @pre timeout >= 0
    */
-  public VinciFrame rpc(Transportable in, String service_name, int socket_timeout, int connect_timeout)
-      throws IOException, ServiceException, ServiceDownException, VNSException {
+  public VinciFrame rpc(Transportable in, String service_name, int socket_timeout,
+          int connect_timeout) throws IOException, ServiceException, ServiceDownException,
+          VNSException {
     VinciClient tempClient = new VinciClient(service_name, this, connect_timeout);
     tempClient.setSocketTimeout(socket_timeout);
     try {

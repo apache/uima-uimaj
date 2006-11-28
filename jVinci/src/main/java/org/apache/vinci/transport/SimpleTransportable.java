@@ -27,17 +27,16 @@ import java.io.OutputStream;
 import org.apache.vinci.debug.FatalException;
 
 /**
- * SimpleTransportable is an immutable Transportable object that simply writes a byte buffer for
- * its toStream implementation. It can be used for creating lightweight copies of more
- * heavy-weight documents for high performance and simplified synchronization. Because it is
- * immutable, the fromStream() method of this class throws an unchecked exception if invoked.
+ * SimpleTransportable is an immutable Transportable object that simply writes a byte buffer for its
+ * toStream implementation. It can be used for creating lightweight copies of more heavy-weight
+ * documents for high performance and simplified synchronization. Because it is immutable, the
+ * fromStream() method of this class throws an unchecked exception if invoked.
  */
 public final class SimpleTransportable implements Transportable {
   private final byte[] document;
 
   /**
-   * Create a SimpleTransportable that is an immutable copy of the provided Transportable
-   * object.
+   * Create a SimpleTransportable that is an immutable copy of the provided Transportable object.
    * 
    * @pre convert_me != null
    */
@@ -65,10 +64,10 @@ public final class SimpleTransportable implements Transportable {
   }
 
   /**
-   * Not implemented (throws UnsupportedOperationException if invoked) to preserve
-   * immutability. 
-   *
-   * @throws UnsupportedOperationException thrown unconditionally.
+   * Not implemented (throws UnsupportedOperationException if invoked) to preserve immutability.
+   * 
+   * @throws UnsupportedOperationException
+   *           thrown unconditionally.
    */
   public KeyValuePair fromStream(InputStream os) throws IOException {
     throw new UnsupportedOperationException("not implemented");

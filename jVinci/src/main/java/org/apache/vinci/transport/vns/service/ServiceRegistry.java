@@ -45,14 +45,18 @@ import org.apache.vinci.transport.document.XMLToVinci;
 public class ServiceRegistry {
 
   /* Constants */
-  static int  minAutoPort     = 10000;
-  static int  maxAutoPort     = 11000;
-  static int  sizeAutoPort    = 10;
-  static int  MAX_ALIAS_LINKS = 25;   // Make number of continuous alias links
+  static int minAutoPort = 10000;
+
+  static int maxAutoPort = 11000;
+
+  static int sizeAutoPort = 10;
+
+  static int MAX_ALIAS_LINKS = 25; // Make number of continuous alias links
 
   /* Instance vars */
-  ServiceTree services        = null;
-  Hashtable   bindings        = null;
+  ServiceTree services = null;
+
+  Hashtable bindings = null;
 
   /* constructor */
   public ServiceRegistry() {
@@ -124,7 +128,8 @@ public class ServiceRegistry {
           srv = (Service) objs[i];
           if (srv == null)
             continue;
-          if (srv.realhost.equals(S.realhost) && srv.level.equals(S.level) && srv.instance == S.instance) {
+          if (srv.realhost.equals(S.realhost) && srv.level.equals(S.level)
+                  && srv.instance == S.instance) {
             pr("Service not added: Found one with same everything");
             return false;
           }
@@ -271,7 +276,7 @@ public class ServiceRegistry {
       if (ServiceAlias.isAlias(O))
         return null;
       else {
-        // Get all the services from the ServiceStack 
+        // Get all the services from the ServiceStack
         // that are at or below the level specified
         Object[] temp = ((ServiceStack) O).get(level);
         Service[] result = new Service[temp.length];
@@ -443,7 +448,8 @@ public class ServiceRegistry {
           H.put(C.getNodeName(), C.getFirstChild().getNodeValue());
         } else {
           // Complex elements
-          H.put(C.getNodeName(), XMLToVinci.xmlToVinciFrame(new StringReader(constructXMLString(C, true))));
+          H.put(C.getNodeName(), XMLToVinci.xmlToVinciFrame(new StringReader(constructXMLString(C,
+                  true))));
         }
       } // End for j
 

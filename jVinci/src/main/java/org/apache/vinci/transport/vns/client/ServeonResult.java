@@ -35,29 +35,30 @@ import org.apache.vinci.transport.vns.VNSConstants;
 public class ServeonResult extends Frame {
 
   static public TransportableFactory factory = new TransportableFactory() {
-                                               public Transportable makeTransportable() {
-                                                 return new ServeonResult();
-                                               }
-                                             };
+    public Transportable makeTransportable() {
+      return new ServeonResult();
+    }
+  };
 
   /**
-   * Create a document representing the VNS serveon query for the specified service
-   * running on/with the specified host/priority/instance.
+   * Create a document representing the VNS serveon query for the specified service running on/with
+   * the specified host/priority/instance.
    * 
    * @pre service_name != null
    * @pre host_name != null
    * @pre priority >= -1
    * @pre instance >= 0
    */
-  static public Transportable composeQuery(String service_name, String host_name, int priority, int instance) {
+  static public Transportable composeQuery(String service_name, String host_name, int priority,
+          int instance) {
     VinciFrame query = (VinciFrame) composeQuery(service_name, host_name, priority);
     query.fadd(VNSConstants.INSTANCE_KEY, instance);
     return query;
   }
 
   /**
-   * Create a document representing the VNS serveon query for the specified service
-   * running on/with the specified host/priority.
+   * Create a document representing the VNS serveon query for the specified service running on/with
+   * the specified host/priority.
    * 
    * @pre service_name != null
    * @pre host_name != null
@@ -70,8 +71,8 @@ public class ServeonResult extends Frame {
   }
 
   /**
-   * Create a document representing the VNS serveon query for the specified service
-   * running on the specified host.
+   * Create a document representing the VNS serveon query for the specified service running on the
+   * specified host.
    * 
    * @pre service_name != null
    * @pre host_name != null

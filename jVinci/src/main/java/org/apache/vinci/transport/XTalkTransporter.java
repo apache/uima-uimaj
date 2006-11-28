@@ -32,22 +32,26 @@ import org.apache.vinci.transport.util.UTFConverter;
  */
 public class XTalkTransporter implements FrameTransporter {
 
-  static private final int    OVERSIZE_KEY_LENGTH = 1024 * 1024 * 1024;
-  static public final byte    DOCUMENT_MARKER     = (byte) 'X';
-  static public final byte    ELEMENT_MARKER      = (byte) 'E';
-  static public final byte    PI_MARKER           = (byte) 'p';
-  static public final byte    STRING_MARKER       = (byte) 's';
-  static public final byte    VERSION_CODE        = (byte) 0;
+  static private final int OVERSIZE_KEY_LENGTH = 1024 * 1024 * 1024;
 
-  static final private String OVERSIZE_FIELD      = "Oversize field: ";
+  static public final byte DOCUMENT_MARKER = (byte) 'X';
+
+  static public final byte ELEMENT_MARKER = (byte) 'E';
+
+  static public final byte PI_MARKER = (byte) 'p';
+
+  static public final byte STRING_MARKER = (byte) 's';
+
+  static public final byte VERSION_CODE = (byte) 0;
+
+  static final private String OVERSIZE_FIELD = "Oversize field: ";
 
   /**
    * Parse the data-stream according to the XTalk protocol.
    * 
-   * @return If the first tag belongs to the Vinci namespace, then this
-   *         tag/value combination is returned. Otherwise returns null. Should
-   *         there be a non-null return, then the value object of the
-   *         KeyValuePair can be either FrameLeaf or Frame.
+   * @return If the first tag belongs to the Vinci namespace, then this tag/value combination is
+   *         returned. Otherwise returns null. Should there be a non-null return, then the value
+   *         object of the KeyValuePair can be either FrameLeaf or Frame.
    * @pre is != null
    * @pre f != null
    */
@@ -74,10 +78,12 @@ public class XTalkTransporter implements FrameTransporter {
     return fromStreamWork(is, f, new byte[128], new char[128]);
   }
 
-  public KeyValuePair fromStreamWork(InputStream is, Frame f, byte[] buffer, char[] cbuffer) throws IOException {
+  public KeyValuePair fromStreamWork(InputStream is, Frame f, byte[] buffer, char[] cbuffer)
+          throws IOException {
     int version = is.read();
     if ((byte) version != VERSION_CODE) {
-      throw new IOException("Xtalk version code doesn't match " + (int) VERSION_CODE + ": " + version);
+      throw new IOException("Xtalk version code doesn't match " + (int) VERSION_CODE + ": "
+              + version);
     }
     int top_field_count = readInt(is);
     // Skip over intro PI's.
@@ -111,7 +117,8 @@ public class XTalkTransporter implements FrameTransporter {
    * 
    * @pre is != null
    */
-  private Attributes consumeAttributes(InputStream is, byte[] buffer, char[] cbuffer) throws IOException {
+  private Attributes consumeAttributes(InputStream is, byte[] buffer, char[] cbuffer)
+          throws IOException {
     int attribute_count = readInt(is);
     if (attribute_count < 1) {
       return null;
@@ -146,7 +153,8 @@ public class XTalkTransporter implements FrameTransporter {
    * @pre is != null
    * @pre f != null
    */
-  public KeyValuePair consumeRootChildren(InputStream is, Frame f, byte[] buffer, char[] cbuffer) throws IOException {
+  public KeyValuePair consumeRootChildren(InputStream is, Frame f, byte[] buffer, char[] cbuffer)
+          throws IOException {
     consumeString(is, buffer, cbuffer); // ignore root tag name -- assume it's
     // always vinci:FRAME
     Attributes attributes = consumeAttributes(is, buffer, cbuffer);
@@ -181,7 +189,8 @@ public class XTalkTransporter implements FrameTransporter {
    * @pre is != null
    * @pre f != null
    */
-  public KeyValuePair consumeRootElement(InputStream is, Frame f, byte[] buffer, char[] cbuffer) throws IOException {
+  public KeyValuePair consumeRootElement(InputStream is, Frame f, byte[] buffer, char[] cbuffer)
+          throws IOException {
     // This code returns the first ELEMENT as the KeyValuePair header, if its
     // tag
     // is from the Vinci namespace.
@@ -235,8 +244,8 @@ public class XTalkTransporter implements FrameTransporter {
    * @pre is != null
    * @pre f != null
    */
-  public void consumeChildren(InputStream is, Frame f, int field_count, int marker, byte[] buffer, char[] cbuffer)
-      throws IOException {
+  public void consumeChildren(InputStream is, Frame f, int field_count, int marker, byte[] buffer,
+          char[] cbuffer) throws IOException {
     while (field_count > 0) {
       switch ((byte) marker) {
         case PI_MARKER:
@@ -297,8 +306,8 @@ public class XTalkTransporter implements FrameTransporter {
   }
 
   /**
-   * Consume a string from the input stream. TODO: Make a faster version that
-   * exploits work buffers to reduce allocations to a single string object.
+   * Consume a string from the input stream. TODO: Make a faster version that exploits work buffers
+   * to reduce allocations to a single string object.
    * 
    * @param is
    * @return
@@ -316,7 +325,8 @@ public class XTalkTransporter implements FrameTransporter {
     return UTFConverter.convertUTFToString(bytearr);
   }
 
-  static public String consumeString(InputStream is, byte[] buffer, char[] cbuffer) throws IOException {
+  static public String consumeString(InputStream is, byte[] buffer, char[] cbuffer)
+          throws IOException {
     int utflen = readInt(is);
     if (utflen > OVERSIZE_KEY_LENGTH) {
       throw new IOException(OVERSIZE_FIELD + utflen);
@@ -333,11 +343,11 @@ public class XTalkTransporter implements FrameTransporter {
   }
 
   /**
-   * Consume the string of bytesToRead utf-8 bytes. assumes buffers are big
-   * enough to hold bytesToRead bytes/chars
+   * Consume the string of bytesToRead utf-8 bytes. assumes buffers are big enough to hold
+   * bytesToRead bytes/chars
    */
-  static public int consumeCharacters(InputStream is, byte[] byteBuf, char[] charBuf, int bytesToRead)
-      throws IOException {
+  static public int consumeCharacters(InputStream is, byte[] byteBuf, char[] charBuf,
+          int bytesToRead) throws IOException {
     readFully(byteBuf, bytesToRead, is);
     return UTFConverter.convertUTFToString(byteBuf, 0, bytesToRead, charBuf);
   }
@@ -438,8 +448,8 @@ public class XTalkTransporter implements FrameTransporter {
   }
 
   /**
-   * Sends a string as utf8, using the temporary buffer if it is big enough to
-   * avoid allocating new memory.
+   * Sends a string as utf8, using the temporary buffer if it is big enough to avoid allocating new
+   * memory.
    */
   static public void stringToBin(String str, OutputStream os, byte[] buffer) throws IOException {
     byte[] newbuf;
@@ -459,13 +469,15 @@ public class XTalkTransporter implements FrameTransporter {
     os.write(newbuf, 0, newlen);
   }
 
-  static public void stringToBin(char[] str, int begin, int len, OutputStream os) throws IOException {
+  static public void stringToBin(char[] str, int begin, int len, OutputStream os)
+          throws IOException {
     byte[] write_me = UTFConverter.convertStringToUTF(str, begin, len);
     writeInt(write_me.length, os);
     os.write(write_me);
   }
 
-  static public void stringToBin(char[] str, int begin, int len, OutputStream os, byte[] buffer) throws IOException {
+  static public void stringToBin(char[] str, int begin, int len, OutputStream os, byte[] buffer)
+          throws IOException {
     byte[] newbuf;
     if (buffer.length < (len - begin) * 3) {
       int byteslen = UTFConverter.calculateUTFLength(str, begin, len);
@@ -550,7 +562,8 @@ public class XTalkTransporter implements FrameTransporter {
    * @pre os != null
    * @pre attributes != null
    */
-  public void attributesToBin(OutputStream os, Attributes attributes, byte[] workbuf) throws IOException {
+  public void attributesToBin(OutputStream os, Attributes attributes, byte[] workbuf)
+          throws IOException {
     int size = attributes.getKeyValuePairCount();
     writeInt(size, os);
     for (int i = 0; i < size; i++) {

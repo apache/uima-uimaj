@@ -34,17 +34,20 @@ import org.apache.vinci.transport.XTalkTransporter;
  */
 public class XTalkToSAX {
 
-  public static final int     INITIAL_BUF_SIZE = 256;
+  public static final int INITIAL_BUF_SIZE = 256;
 
-  private static final String cdataType        = "CDATA";
+  private static final String cdataType = "CDATA";
 
-  private char[]              charBuffer;
-  private byte[]              byteBuffer;
-  private AttributesImpl      workAttributes;
+  private char[] charBuffer;
+
+  private byte[] byteBuffer;
+
+  private AttributesImpl workAttributes;
 
   // members initialzed by parse() to reduce argument passing.
-  private InputStream         is;
-  private ContentHandler      handler;
+  private InputStream is;
+
+  private ContentHandler handler;
 
   public XTalkToSAX() {
     init(INITIAL_BUF_SIZE);
@@ -62,9 +65,9 @@ public class XTalkToSAX {
 
   /**
    * Initially, the XTalkToSAX processor creates a byte buffer and char buffer of size
-   * INITIAL_BUF_SIZE. These buffer may grow during parsing to handle very large strings.  Users
-   * can determine the size of these arrays with this method. This method in conjunction with
-   * resetBuffers lets application implement their own buffer management.  Buffers can be reset
+   * INITIAL_BUF_SIZE. These buffer may grow during parsing to handle very large strings. Users can
+   * determine the size of these arrays with this method. This method in conjunction with
+   * resetBuffers lets application implement their own buffer management. Buffers can be reset
    * during parsing, but not from another thread.
    */
   public int bufferSize() {
@@ -72,9 +75,9 @@ public class XTalkToSAX {
   }
 
   /**
-   * Resets buffers to their initial size... this is useful because buffers can 
-   * grow during parsing and this allows the space to be reclaimed without having
-   * to undo references to the parser object.
+   * Resets buffers to their initial size... this is useful because buffers can grow during parsing
+   * and this allows the space to be reclaimed without having to undo references to the parser
+   * object.
    */
   public void resizeBuffers(int toSize) {
     if (this.byteBuffer.length != toSize) {
@@ -84,15 +87,16 @@ public class XTalkToSAX {
   }
 
   /**
-   * Parse one document off of the incoming XTalk stream into SAX events.
-   * A side effect of parsing is that internal arrays will grow to the size of the
-   * largest character string encountered in the document. Use bufferSize() and resizeBuffers
-   * to manage memory in applications where very large strings may be encountered and the same
-   * object is used to parse many incoming documents.
-   *
-   * @throws IOException if underlying IOException from the stream or if XTalk format is invalid.
-   * @throws SAXException if SAXException thrown by the handler
-   *
+   * Parse one document off of the incoming XTalk stream into SAX events. A side effect of parsing
+   * is that internal arrays will grow to the size of the largest character string encountered in
+   * the document. Use bufferSize() and resizeBuffers to manage memory in applications where very
+   * large strings may be encountered and the same object is used to parse many incoming documents.
+   * 
+   * @throws IOException
+   *           if underlying IOException from the stream or if XTalk format is invalid.
+   * @throws SAXException
+   *           if SAXException thrown by the handler
+   * 
    * @pre handler != null
    * @pre is != null
    */
@@ -109,8 +113,8 @@ public class XTalkToSAX {
       }
       int version = is.read();
       if ((byte) version != XTalkTransporter.VERSION_CODE) {
-        throw new IOException("Xtalk version code doesn't match " + (int) XTalkTransporter.VERSION_CODE + ": "
-            + version);
+        throw new IOException("Xtalk version code doesn't match "
+                + (int) XTalkTransporter.VERSION_CODE + ": " + version);
       }
       handler.startDocument();
       doTopLevelParse();
@@ -194,7 +198,8 @@ public class XTalkToSAX {
         case XTalkTransporter.STRING_MARKER:
           int bytesToRead = XTalkTransporter.readInt(is);
           ensureCapacity(bytesToRead);
-          int charsRead = XTalkTransporter.consumeCharacters(is, byteBuffer, charBuffer, bytesToRead);
+          int charsRead = XTalkTransporter.consumeCharacters(is, byteBuffer, charBuffer,
+                  bytesToRead);
           handler.characters(charBuffer, 0, charsRead);
           break;
         case XTalkTransporter.ELEMENT_MARKER:

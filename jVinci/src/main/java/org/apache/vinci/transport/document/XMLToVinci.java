@@ -42,8 +42,8 @@ import org.apache.vinci.transport.VinciFrame;
 import org.apache.vinci.transport.util.TransportableConverter;
 
 /**
- * Class for parsing an XML document and representing it using any of
- * the various jVinci-compatible document models.
+ * Class for parsing an XML document and representing it using any of the various jVinci-compatible
+ * document models.
  * 
  */
 public class XMLToVinci {
@@ -55,10 +55,13 @@ public class XMLToVinci {
   }
 
   private static class StackEntry {
-    List           sub_entries = null;
-    StackEntry     parent      = null;
-    String         ename_or_pcdata;
-    FrameComponent component   = null;
+    List sub_entries = null;
+
+    StackEntry parent = null;
+
+    String ename_or_pcdata;
+
+    FrameComponent component = null;
   }
 
   private static class AStackEntry extends StackEntry {
@@ -89,13 +92,13 @@ public class XMLToVinci {
      * @pre top.sub_entries != null
      */
     public void endElement(String uri, String name, String qName) {
-      //Debug.p("End element: " + qName);
+      // Debug.p("End element: " + qName);
       if (top.sub_entries.size() == 0) {
-        //Debug.p("Empty element.");
+        // Debug.p("Empty element.");
         top.component = new VinciFrame();
       } else {
         StackEntry child = (StackEntry) top.sub_entries.get(0);
-        //Debug.p("Frameleaf.");
+        // Debug.p("Frameleaf.");
         if (top.sub_entries.size() == 1 && child.sub_entries == null) {
           // This is a frameleaf
           top.component = new FrameLeaf(child.ename_or_pcdata);
@@ -113,7 +116,7 @@ public class XMLToVinci {
           }
         }
       }
-      //top.sub_entries = null;
+      // top.sub_entries = null;
       if (top.parent != null) {
         top = top.parent;
       }
@@ -131,7 +134,7 @@ public class XMLToVinci {
         StackEntry entry = (StackEntry) top.sub_entries.get(top.sub_entries.size() - 1);
         if (entry.sub_entries == null) {
           entry.ename_or_pcdata += new String(ch, start, length);
-          //Debug.p("pcdata1: " + entry.ename_or_pcdata);
+          // Debug.p("pcdata1: " + entry.ename_or_pcdata);
           return;
         }
       }
@@ -150,13 +153,13 @@ public class XMLToVinci {
     }
 
     public void startElement(String uri, String name, String qName, org.xml.sax.Attributes a) {
-      //Debug.p("Attributes: " + qName + " : " +  atts.getLength());
+      // Debug.p("Attributes: " + qName + " : " + atts.getLength());
       AStackEntry entry = new AStackEntry();
       entry.ename_or_pcdata = qName;
       if (a.getLength() > 0) {
         org.apache.vinci.transport.Attributes frame_attributes = new org.apache.vinci.transport.Attributes();
         for (int i = 0; i < a.getLength(); i++) {
-          //Debug.p("Att: " + a.getQName(i) + " : " + a.getValue(i));
+          // Debug.p("Att: " + a.getQName(i) + " : " + a.getValue(i));
           frame_attributes.fadd(a.getQName(i), a.getValue(i));
         }
         entry.attributes = frame_attributes;
@@ -207,29 +210,33 @@ public class XMLToVinci {
 
   /**
    * Populate the empty document with the XML yielded by the provided reader.
-   *
-   * @param empty An empty document to be populated.
-   * @param r A reader providing the XML to populate the empty document.
-   * @exception ServiceException if there is a parse error.
+   * 
+   * @param empty
+   *          An empty document to be populated.
+   * @param r
+   *          A reader providing the XML to populate the empty document.
+   * @exception ServiceException
+   *              if there is a parse error.
    */
-  public static Transportable xmlToTransportable(Reader r, Transportable empty) throws ServiceException {
+  public static Transportable xmlToTransportable(Reader r, Transportable empty)
+          throws ServiceException {
     TransportableConverter.convert(xmlToAFrame(r), empty);
     return empty;
   }
 
   /**
-   * Convert the XML document (provided as a Reader) to a VinciFrame document model. 
-   * Throws ServiceException if the XML parser reports any error.
-   * WARNING: This method will silently ignore any attributes or processing instructions
-   * within the document since VinciFrame cannot represent them. Consider using
-   * AFrame if attribute support is required.
-   *
-   * This implementation of xmlToVinciFrame uses apache SAX parser directly.
-   * It should be faster, and it should be tolerant of undeclared namespaces, unlike
-   * the previous impl.
-   *
-   * @param r A reader providing the XML to convert.
-   * @exception ServiceException if there is a parse error.
+   * Convert the XML document (provided as a Reader) to a VinciFrame document model. Throws
+   * ServiceException if the XML parser reports any error. WARNING: This method will silently ignore
+   * any attributes or processing instructions within the document since VinciFrame cannot represent
+   * them. Consider using AFrame if attribute support is required.
+   * 
+   * This implementation of xmlToVinciFrame uses apache SAX parser directly. It should be faster,
+   * and it should be tolerant of undeclared namespaces, unlike the previous impl.
+   * 
+   * @param r
+   *          A reader providing the XML to convert.
+   * @exception ServiceException
+   *              if there is a parse error.
    */
   public static VinciFrame xmlToVinciFrame(Reader r) throws ServiceException {
     XMLReader xr;
@@ -258,17 +265,19 @@ public class XMLToVinci {
   }
 
   /**
-   * Convert the XML document (provided as a Reader) to the AFrame document model. 
-   * Throws ServiceException if the XML parser reports any error.
-   * WARNING: This method will silently ignore any processing instructions
-   * within the document since AFrame cannot represent them. 
-   *
-   * @param r A reader providing the XML to convert.
-   * @exception ServiceException if there is a parse error.
+   * Convert the XML document (provided as a Reader) to the AFrame document model. Throws
+   * ServiceException if the XML parser reports any error. WARNING: This method will silently ignore
+   * any processing instructions within the document since AFrame cannot represent them.
+   * 
+   * @param r
+   *          A reader providing the XML to convert.
+   * @exception ServiceException
+   *              if there is a parse error.
    */
-  /*public static AFrame xmlToAFrame(Reader r) throws ServiceException {
-   return (AFrame) xmlToTransportable(r, new AFrame());
-   }*/
+  /*
+   * public static AFrame xmlToAFrame(Reader r) throws ServiceException { return (AFrame)
+   * xmlToTransportable(r, new AFrame()); }
+   */
   public static AFrame xmlToAFrame(Reader r) throws ServiceException {
     XMLReader xr;
     try {

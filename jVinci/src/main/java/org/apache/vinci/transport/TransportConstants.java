@@ -29,20 +29,29 @@ public class TransportConstants {
   private TransportConstants() {
   }
 
-  public static final String VINCI_NAMESPACE     = "vinci:";
+  public static final String VINCI_NAMESPACE = "vinci:";
+
   public static final String VINCI_NAMESPACE_URI = "http://uima.apache.org/vinci/FrameSpec/";
+
   // ^^ This transport library naively assumes that the Vinci namepsace is ALWAYS
   // indicated by the "vinci:" tag prefix, even though XML requires the namespace
-  // be defined by the prefix "xmlns" definition. 
+  // be defined by the prefix "xmlns" definition.
 
-  public static final String PCDATA_KEY          = "";
-  public static final String ERROR_KEY           = VINCI_NAMESPACE + "ERROR";
-  public static final String COMMAND_KEY         = VINCI_NAMESPACE + "COMMAND";
-  public static final String SHUTDOWN_KEY        = VINCI_NAMESPACE + "SHUTDOWN";
-  public static final String PING_KEY            = VINCI_NAMESPACE + "PING";
-  public static final String STATUS_KEY          = VINCI_NAMESPACE + "STATUS";
+  public static final String PCDATA_KEY = "";
 
-  public static final String TRUE_VALUE          = "true";
-  public static final String FALSE_VALUE         = "false";
-  public static final String OK_VALUE            = "ok";
+  public static final String ERROR_KEY = VINCI_NAMESPACE + "ERROR";
+
+  public static final String COMMAND_KEY = VINCI_NAMESPACE + "COMMAND";
+
+  public static final String SHUTDOWN_KEY = VINCI_NAMESPACE + "SHUTDOWN";
+
+  public static final String PING_KEY = VINCI_NAMESPACE + "PING";
+
+  public static final String STATUS_KEY = VINCI_NAMESPACE + "STATUS";
+
+  public static final String TRUE_VALUE = "true";
+
+  public static final String FALSE_VALUE = "false";
+
+  public static final String OK_VALUE = "ok";
 }

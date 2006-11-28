@@ -50,50 +50,74 @@ import org.apache.vinci.transport.VinciServableAdapter;
 import org.apache.vinci.transport.vns.VNSConstants;
 
 /**
- * VNS (Vinci Naming Service) provides the "directory" of all available Vinci services. VNS must
- * be running somewhere on the network for VinciClient and VinciServer classes to function. These
+ * VNS (Vinci Naming Service) provides the "directory" of all available Vinci services. VNS must be
+ * running somewhere on the network for VinciClient and VinciServer classes to function. These
  * classes consult org.apache.vinci.transport.vns.client.VNSConfig to determine the location of the
  * VNS service.
  */
 public class VNS extends VinciServableAdapter {
 
-  private HashMap            cachedResults       = new HashMap();
+  private HashMap cachedResults = new HashMap();
 
-  public final static String dirCmdAddService    = "addservice";
-  public final static String dirCmdAddAlias      = "addalias";
-  public final static String dirCmdDelService    = "delservice";
-  public final static String dirCmdDelAlias      = "delalias";
+  public final static String dirCmdAddService = "addservice";
+
+  public final static String dirCmdAddAlias = "addalias";
+
+  public final static String dirCmdDelService = "delservice";
+
+  public final static String dirCmdDelAlias = "delalias";
+
   public final static String dirCmdUpdateService = "updateservice";
-  public final static String dirCmdGetList       = "getlist";
-  public final static String dirCmdGetNames      = "getnames";
-  public final static String dirCmdGetHits       = "gethits";
 
-  public String              ENV_PROXY           = "vinci.environment.proxy";
+  public final static String dirCmdGetList = "getlist";
+
+  public final static String dirCmdGetNames = "getnames";
+
+  public final static String dirCmdGetHits = "gethits";
+
+  public String ENV_PROXY = "vinci.environment.proxy";
 
   // Static variables set up during the start of the program
-  private static String      configFile, backupFile, workspacesFile, counterFile;
-  private static String      logFile             = null;
-  private static String      configDir           = null;
-  private static int         backupInterval      = 120;
-  private static int         srvPort             = 9000;
-  private static boolean     logFlag             = false;
+  private static String configFile, backupFile, workspacesFile, counterFile;
 
-  private static String      bindAddress         = null;
-  private static int         backlog             = 100;
-  private static int         maxThreads          = 200;
+  private static String logFile = null;
+
+  private static String configDir = null;
+
+  private static int backupInterval = 120;
+
+  private static int srvPort = 9000;
+
+  private static boolean logFlag = false;
+
+  private static String bindAddress = null;
+
+  private static int backlog = 100;
+
+  private static int maxThreads = 200;
 
   /* Instance variables */
-  int                        port;
-  String                     myLogFile           = null;
-  Thread                     backupThread;
-  BackupThread               backupThreadRunnable;
-  Hashtable                  hits;                                               // for keeping track of the counters
-  int                        totalhits;
-  ServiceRegistry            SR;
-  WorkspaceConfig            WS;
-  Writer                     log;                                                // for writing to the logfile
-  String                     starttime;
-  static File                quitFile;
+  int port;
+
+  String myLogFile = null;
+
+  Thread backupThread;
+
+  BackupThread backupThreadRunnable;
+
+  Hashtable hits; // for keeping track of the counters
+
+  int totalhits;
+
+  ServiceRegistry SR;
+
+  WorkspaceConfig WS;
+
+  Writer log; // for writing to the logfile
+
+  String starttime;
+
+  static File quitFile;
 
   static private void setConfigDir(String path) {
     if (path.charAt(path.length() - 1) == File.separatorChar) {
@@ -182,7 +206,8 @@ public class VNS extends VinciServableAdapter {
     System.out.println("    Serve on port number N [default=" + srvPort + "]");
 
     System.out.println("  -b ip_address  --bind ip_address");
-    System.out.println("    Force socket server to bind only to ip_address [default is bind to all]");
+    System.out
+            .println("    Force socket server to bind only to ip_address [default is bind to all]");
 
     System.out.println("  -c dirname --config dirname");
     System.out.println("    Look for & write config files in this directory [default=.]");
@@ -200,7 +225,8 @@ public class VNS extends VinciServableAdapter {
     System.out.println("    Set the ServerSocket backlog [default=" + backlog + "]");
 
     System.out.println("  -m N  --maxthreads N");
-    System.out.println("    Set the maximum size of the VNS thread pool [default=" + maxThreads + "].");
+    System.out.println("    Set the maximum size of the VNS thread pool [default=" + maxThreads
+            + "].");
 
     System.out.println("  -h  --help");
     System.out.println("    This help message");
@@ -234,7 +260,8 @@ public class VNS extends VinciServableAdapter {
 
     // Configure and start the backup thread
     Debug.p("Starting backup thread, using files " + backupFile + " and " + configFile);
-    vns.backupThreadRunnable = new BackupThread(vns, backupFile, configFile, backupInterval, counterFile);
+    vns.backupThreadRunnable = new BackupThread(vns, backupFile, configFile, backupInterval,
+            counterFile);
 
     vns.backupThread = new Thread(vns.backupThreadRunnable);
     vns.backupThread.start();
@@ -553,8 +580,12 @@ public class VNS extends VinciServableAdapter {
     } catch (Exception e) {
       // Exact translation of the Python code [may not be necessary]
       out = new VinciFrame();
-      out.fadd("vinci:ERROR", "Critical error :\n" + e
-          + "\nThe server MAY not respond to further requests.\nPlease notify the administrator\n");
+      out
+              .fadd(
+                      "vinci:ERROR",
+                      "Critical error :\n"
+                              + e
+                              + "\nThe server MAY not respond to further requests.\nPlease notify the administrator\n");
       e.printStackTrace();
     }
 
@@ -579,9 +610,9 @@ public class VNS extends VinciServableAdapter {
         // Try to resolve the IP if possible
         realhost = (InetAddress.getByName(host)).getHostAddress();
       } catch (Exception e) {
-        //realhost = null;
+        // realhost = null;
 
-        //return error message
+        // return error message
         return new ErrorFrame("Could not resolve IP address for service " + name);
       }
     }
@@ -625,7 +656,8 @@ public class VNS extends VinciServableAdapter {
         cache(name + "[" + servicesList[0].level + "]", new CachedItem(servicesList));
         // Have a proxy pointer to the entry created if it is not the same
         if (!servicesList[0].level.equals(level)) {
-          cache(name + "[" + level + "]", new ProxyCachedItem(name + "[" + servicesList[0].level + "]"));
+          cache(name + "[" + level + "]", new ProxyCachedItem(name + "[" + servicesList[0].level
+                  + "]"));
         }
       }
     } else
@@ -637,7 +669,8 @@ public class VNS extends VinciServableAdapter {
       return out;
     }
 
-    Debug.p("Number of services found with name = " + name + ", and level = " + level + " : " + servicesList.length);
+    Debug.p("Number of services found with name = " + name + ", and level = " + level + " : "
+            + servicesList.length);
 
     if (servicesList.length == 0)
       System.err.println("NO SERVICES FOUND WITH REALHOST = " + realhost + " name = " + name);
@@ -712,7 +745,7 @@ public class VNS extends VinciServableAdapter {
       }
 
       try {
-        // If the host specified is the local one, then use resolveLocal() 
+        // If the host specified is the local one, then use resolveLocal()
         // else it will have an infinite loop
         if (S.port == srvPort && InetAddress.getLocalHost().getHostAddress().equals(S.realhost))
           out = resolveLocal(in);
@@ -722,7 +755,7 @@ public class VNS extends VinciServableAdapter {
         }
         System.out.println(out.toXML());
         if (out == null || out instanceof ErrorFrame || strip(out.fgetString("LEVEL")) == null
-            || out.fgetString("vinci:ERROR") != null) {
+                || out.fgetString("vinci:ERROR") != null) {
           continue; // Check if resolve actually worked
         }
         return out;
@@ -770,7 +803,8 @@ public class VNS extends VinciServableAdapter {
   }
 
   VinciFrame resolve(VinciFrame in) {
-    logRequest(VNSConstants.RESOLVE_COMMAND, in.fgetString("vinci:REMOTEIP"), in.fgetString("SERVICE"));
+    logRequest(VNSConstants.RESOLVE_COMMAND, in.fgetString("vinci:REMOTEIP"), in
+            .fgetString("SERVICE"));
 
     if (in.fgetString("WORKSPACE") == null) {
       return resolveDefaults(in);
@@ -852,7 +886,8 @@ public class VNS extends VinciServableAdapter {
       for (int i = 0; i < services.length; i++) {
         S = (Service) services[i];
         Debug.p("current: realhost = " + S.realhost + " - instance = " + S.instance);
-        if (S.realhost.equals(realhost) && instance.equals("" + S.instance) && S.level.equals(level)) {
+        if (S.realhost.equals(realhost) && instance.equals("" + S.instance)
+                && S.level.equals(level)) {
           srv = S;
           break;
         }
@@ -870,8 +905,8 @@ public class VNS extends VinciServableAdapter {
       srv = new Service(H);
       boolean ok = false;
       synchronized (SR) {
-        Debug.p("Adding service : " + H.get("NAME") + ", lvl=" + H.get("LEVEL") + ",instance=" + H.get("INSTANCE")
-            + ",ip=" + H.get("IP"));
+        Debug.p("Adding service : " + H.get("NAME") + ", lvl=" + H.get("LEVEL") + ",instance="
+                + H.get("INSTANCE") + ",ip=" + H.get("IP"));
         ok = SR.addService(srv);
       }
       if (!ok) {
@@ -887,9 +922,9 @@ public class VNS extends VinciServableAdapter {
             Debug.p("Trying to shutdown old service ...");
             VinciFrame shutdown = new VinciFrame();
             shutdown
-                .fadd(
-                    "vinci:SHUTDOWN",
-                    "Identical service started on this host. Use the INSTANCE tag to run multiple instances of the same service on a single host.");
+                    .fadd(
+                            "vinci:SHUTDOWN",
+                            "Identical service started on this host. Use the INSTANCE tag to run multiple instances of the same service on a single host.");
             try {
               VinciFrame f = BaseClient.rpc(shutdown, s_host, s_port, 10000);
               Debug.p("Shutdown response received: " + f.toXML());
@@ -955,7 +990,8 @@ public class VNS extends VinciServableAdapter {
       getFrame(false, "Malformed request");
     else {
       synchronized (SR) {
-        ok = SR.addAlias(new ServiceAlias(service.fgetString("NAME"), service.fgetString("TARGET")));
+        ok = SR
+                .addAlias(new ServiceAlias(service.fgetString("NAME"), service.fgetString("TARGET")));
       }
     }
 
@@ -1267,15 +1303,20 @@ public class VNS extends VinciServableAdapter {
 
 /* Class for the backup thread */
 class BackupThread implements Runnable {
-  VNS                        parent;
-  String                     backupFile;
-  String                     configFile  = null;
-  String                     counterFile = null;
-  int                        interval;
+  VNS parent;
 
-  volatile protected boolean stop        = false;
+  String backupFile;
 
-  public BackupThread(VNS parent, String backupFile, String configFile, int interval, String counterFile) {
+  String configFile = null;
+
+  String counterFile = null;
+
+  int interval;
+
+  volatile protected boolean stop = false;
+
+  public BackupThread(VNS parent, String backupFile, String configFile, int interval,
+          String counterFile) {
     // We create new strings so that we can start another VNS instance without disturbing this one
     this.parent = parent;
     this.backupFile = new String(backupFile);
@@ -1322,7 +1363,8 @@ class BackupThread implements Runnable {
 /* Thread to check for quit command */
 class exitThread extends Thread {
   BaseServer parent = null;
-  boolean    run    = false;
+
+  boolean run = false;
 
   public exitThread(BaseServer parent) {
     this.parent = parent;

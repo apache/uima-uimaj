@@ -38,12 +38,14 @@ public class VinciServerRunnable extends BaseServerRunnable {
     if (header != null) {
       if (header.key.equals(TransportConstants.SHUTDOWN_KEY)) {
         if (((VinciServer) getParent()).shutdown(header.getValueAsString())) {
-          out = (VinciFrame) new VinciFrame().fadd(TransportConstants.STATUS_KEY, TransportConstants.OK_VALUE);
+          out = (VinciFrame) new VinciFrame().fadd(TransportConstants.STATUS_KEY,
+                  TransportConstants.OK_VALUE);
         } else {
           out = new ErrorFrame("Shutdown request ignored.");
         }
       } else if (header.key.equals(TransportConstants.PING_KEY)) {
-        out = (VinciFrame) new VinciFrame().fadd(TransportConstants.STATUS_KEY, TransportConstants.OK_VALUE);
+        out = (VinciFrame) new VinciFrame().fadd(TransportConstants.STATUS_KEY,
+                TransportConstants.OK_VALUE);
       }
     }
     return out;

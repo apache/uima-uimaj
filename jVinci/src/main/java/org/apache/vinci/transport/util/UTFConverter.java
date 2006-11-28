@@ -22,12 +22,12 @@ package org.apache.vinci.transport.util;
 import java.io.UTFDataFormatException;
 
 /**
- * Provides utility methods for Java string <==> UTF-8 conversion. We don't use the
- * default Java methods for UTF-8 since they are non-standard and not as efficient as
- * this implementation.
+ * Provides utility methods for Java string <==> UTF-8 conversion. We don't use the default Java
+ * methods for UTF-8 since they are non-standard and not as efficient as this implementation.
  */
 public class UTFConverter {
-  public static final String TRUE_VALUE  = "true";
+  public static final String TRUE_VALUE = "true";
+
   public static final String FALSE_VALUE = "false";
 
   /**
@@ -38,30 +38,38 @@ public class UTFConverter {
 
   /**
    * Convert the UTF-8 contents of a byte array of UTF-8 bytes to a float.
-   * @param bytearr Array of bytes.
-   * @return      float.
+   * 
+   * @param bytearr
+   *          Array of bytes.
+   * @return float.
    * @throws UTFDataFormatException
    * @throws NumberFormatException
    */
-  static public float convertUTFToFloat(byte[] bytearr) throws UTFDataFormatException, NumberFormatException {
+  static public float convertUTFToFloat(byte[] bytearr) throws UTFDataFormatException,
+          NumberFormatException {
     return Float.parseFloat(UTFConverter.convertUTFToString(bytearr));
   }
 
   /**
    * Convert the UTF-8 contents of a byte array to a double.
-   * @param bytearr Array of bytes.
-   * @return      double.
+   * 
+   * @param bytearr
+   *          Array of bytes.
+   * @return double.
    * @throws UTFDataFormatException
    * @throws NumberFormatException
    */
-  static public double convertUTFToDouble(byte[] bytearr) throws UTFDataFormatException, NumberFormatException {
+  static public double convertUTFToDouble(byte[] bytearr) throws UTFDataFormatException,
+          NumberFormatException {
     return Double.parseDouble(UTFConverter.convertUTFToString(bytearr));
   }
 
   /**
-   * Convert the UTF-8 contents of a byte array to a boolean. 
-   * @param bytearr Array of bytes.
-   * @return      boolean.
+   * Convert the UTF-8 contents of a byte array to a boolean.
+   * 
+   * @param bytearr
+   *          Array of bytes.
+   * @return boolean.
    * @throws UTFDataFormatException
    */
   static public boolean convertUTFToBool(byte[] bytearr) throws UTFDataFormatException {
@@ -69,52 +77,65 @@ public class UTFConverter {
   }
 
   /**
-   * Convert the UTF-8 contents of a byte array to an int. 
-   * @param bytearr Array of bytes.
-   * @return      int.
+   * Convert the UTF-8 contents of a byte array to an int.
+   * 
+   * @param bytearr
+   *          Array of bytes.
+   * @return int.
    * @throws UTFDataFormatException
    * @throws NumberFormatException
    */
-  static public int convertUTFToInt(byte[] bytearr) throws UTFDataFormatException, NumberFormatException {
+  static public int convertUTFToInt(byte[] bytearr) throws UTFDataFormatException,
+          NumberFormatException {
     return Integer.parseInt(UTFConverter.convertUTFToString(bytearr));
   }
 
   /**
-   * Convert the UTF-8 contents of a byte array to a long. 
-   * @param bytearr Array of bytes.
-   * @return      long.
+   * Convert the UTF-8 contents of a byte array to a long.
+   * 
+   * @param bytearr
+   *          Array of bytes.
+   * @return long.
    * @throws UTFDataFormatException
    * @throws NumberFormatException
    */
-  static public long convertUTFToLong(byte[] bytearr) throws UTFDataFormatException, NumberFormatException {
+  static public long convertUTFToLong(byte[] bytearr) throws UTFDataFormatException,
+          NumberFormatException {
     return Long.parseLong(UTFConverter.convertUTFToString(bytearr));
   }
 
   /**
    * Convert the UTF-8 contents of a byte array to a Java String.
-   * @param bytearr Array of bytes.
-   * @return      String.
+   * 
+   * @param bytearr
+   *          Array of bytes.
+   * @return String.
    * @throws UTFDataFormatException
    */
   static public String convertUTFToString(byte[] bytearr) throws UTFDataFormatException {
     char[] result = new char[bytearr.length];
     // ^^ We rely on the fact that the length of the string cannot exceed the length
     // of the underlying representation.
-    int outputLength = convertUTFToString(bytearr, 0, bytearr.length, result); //pfh
+    int outputLength = convertUTFToString(bytearr, 0, bytearr.length, result); // pfh
     return new String(result, 0, outputLength);
   }
 
   /**
    * Convert the UTF-8 contents of a byte array to a Java String.
-   * @param bytearr   Array of bytes.
-   * @param beginOffset Start offest to data in byte array.
-   * @param inputLength Length of the data to convert.
-   * @param result    Character array containing the converted characters.
-   * @return        The length of the converted characters.
+   * 
+   * @param bytearr
+   *          Array of bytes.
+   * @param beginOffset
+   *          Start offest to data in byte array.
+   * @param inputLength
+   *          Length of the data to convert.
+   * @param result
+   *          Character array containing the converted characters.
+   * @return The length of the converted characters.
    * @throws UTFDataFormatException
    */
-  static public int convertUTFToString(byte[] bytearr, final int beginOffset, final int inputLength, char[] result)
-      throws UTFDataFormatException {
+  static public int convertUTFToString(byte[] bytearr, final int beginOffset,
+          final int inputLength, char[] result) throws UTFDataFormatException {
     int outputLength = 0;
     int count = beginOffset;
     int c1, c2, c3;
@@ -156,8 +177,10 @@ public class UTFConverter {
 
   /**
    * Convert a Java String to UTF-8.
-   * @param inputString String to convert.
-   * @return        array of UTF-8 bytes.
+   * 
+   * @param inputString
+   *          String to convert.
+   * @return array of UTF-8 bytes.
    */
   static public byte[] convertStringToUTF(String inputString) {
     int resultLength = calculateUTFLength(inputString);
@@ -168,12 +191,16 @@ public class UTFConverter {
 
   /**
    * Convert a String from a character array to UTF-8.
-   * @param inputArray  Array of characters to convert.
-   * @param startOffset Start offset in character array.
-   * @param endOffset   One past the last character in the array.
-   * @return        A byte array with the converted result. 
+   * 
+   * @param inputArray
+   *          Array of characters to convert.
+   * @param startOffset
+   *          Start offset in character array.
+   * @param endOffset
+   *          One past the last character in the array.
+   * @return A byte array with the converted result.
    */
-  static public byte[] convertStringToUTF(char[] inputArray, int startOffset, int endOffset) //pfh
+  static public byte[] convertStringToUTF(char[] inputArray, int startOffset, int endOffset) // pfh
   {
     int resultLength = calculateUTFLength(inputArray, startOffset, endOffset);
     byte[] resultArray = new byte[resultLength];
@@ -182,13 +209,17 @@ public class UTFConverter {
   }
 
   /**
-   * Calculate the UTF-8 length of a character array. 
-   * @param inputArray  Array of characters.
-   * @param startOffset Start offset of the data in the character array.
-   * @param endOffset   One past the last character in the array.
-   * @return        The number of bytes in the UTF-8 representation.
+   * Calculate the UTF-8 length of a character array.
+   * 
+   * @param inputArray
+   *          Array of characters.
+   * @param startOffset
+   *          Start offset of the data in the character array.
+   * @param endOffset
+   *          One past the last character in the array.
+   * @return The number of bytes in the UTF-8 representation.
    */
-  static public int calculateUTFLength(char[] inputArray, int startOffset, int endOffset) //pfh 
+  static public int calculateUTFLength(char[] inputArray, int startOffset, int endOffset) // pfh
   {
     int resultLength = 0;
 
@@ -207,8 +238,10 @@ public class UTFConverter {
 
   /**
    * Calculate the UTF-8 length of a Java String.
-   * @param inputString The String to calculate the length of.
-   * @return        The number of bytes in the UTF-8 representation.
+   * 
+   * @param inputString
+   *          The String to calculate the length of.
+   * @return The number of bytes in the UTF-8 representation.
    */
   static public int calculateUTFLength(String inputString) {
     int resultLength = 0;
@@ -227,15 +260,21 @@ public class UTFConverter {
   }
 
   /**
-   * Convert the given char[] input into UTF-8 and place in the destination buffer. This 
-   * method assumes the destination buffer is big enough to hold the output.
-   * @param inputArray  Array of characters to convert.
-   * @param startOffset Start offset in character array.
-   * @param endOffset   One past the last character in the array.
-   * @param resultArray Byte array containing the converted characters.
-   * @return        The number of characters in the UTF-8 representation.
+   * Convert the given char[] input into UTF-8 and place in the destination buffer. This method
+   * assumes the destination buffer is big enough to hold the output.
+   * 
+   * @param inputArray
+   *          Array of characters to convert.
+   * @param startOffset
+   *          Start offset in character array.
+   * @param endOffset
+   *          One past the last character in the array.
+   * @param resultArray
+   *          Byte array containing the converted characters.
+   * @return The number of characters in the UTF-8 representation.
    */
-  static public int convertStringToUTF(char[] inputArray, int startOffset, int endOffset, byte[] resultArray) {
+  static public int convertStringToUTF(char[] inputArray, int startOffset, int endOffset,
+          byte[] resultArray) {
     int resultLength = 0;
     resultLength = 0;
     // Now populate the result array
@@ -256,10 +295,13 @@ public class UTFConverter {
   }
 
   /**
-   * Convert the given char[] input into UTF-8 and place in the destination buffer. This 
-   * method assumes the destination buffer is big enough to hold the output.
-   * @param inputString String to convert.
-   * @param resultArray Byte array containing the converted characters.
+   * Convert the given char[] input into UTF-8 and place in the destination buffer. This method
+   * assumes the destination buffer is big enough to hold the output.
+   * 
+   * @param inputString
+   *          String to convert.
+   * @param resultArray
+   *          Byte array containing the converted characters.
    * @return the number of characters in the UTF-8 representation.
    */
   static public int convertStringToUTF(String inputString, byte[] resultArray) {

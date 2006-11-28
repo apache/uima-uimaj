@@ -32,19 +32,24 @@ import org.apache.vinci.transport.vns.client.ResolveResult;
  */
 public class VinciClient extends BaseClient {
 
-  private int          level       = -2;
-  private int          instance    = -1;
-  private String       serviceName = null;
-  private VinciContext context     = null;
+  private int level = -2;
+
+  private int instance = -1;
+
+  private String serviceName = null;
+
+  private VinciContext context = null;
 
   /**
-   * Construct a new client connected to the requested service, and uses a VinciFrame
-   * factory to create the return document type.
-   *
-   * @param service_name The name of the service to connect to.
-   *
-   * @throws IllegalStateException if no VNS_HOST has been specified.
-   *
+   * Construct a new client connected to the requested service, and uses a VinciFrame factory to
+   * create the return document type.
+   * 
+   * @param service_name
+   *          The name of the service to connect to.
+   * 
+   * @throws IllegalStateException
+   *           if no VNS_HOST has been specified.
+   * 
    * @pre service_name != null
    */
   public VinciClient(String service_name) throws ServiceDownException, VNSException {
@@ -52,18 +57,22 @@ public class VinciClient extends BaseClient {
   }
 
   /**
-   * Constructs a new client connected to the requested service.  Consults VNS for the proper
-   * host and port to connect to.  Service names must be properly qualified. 
-   *
-   * @param service_name The name of the service to connect to.  
-   * @param factory The factory used for creating return documents of desired type.
-   *
-   * @throws IllegalStateException if no VNS_HOST has been specified.
-   *
+   * Constructs a new client connected to the requested service. Consults VNS for the proper host
+   * and port to connect to. Service names must be properly qualified.
+   * 
+   * @param service_name
+   *          The name of the service to connect to.
+   * @param factory
+   *          The factory used for creating return documents of desired type.
+   * 
+   * @throws IllegalStateException
+   *           if no VNS_HOST has been specified.
+   * 
    * @pre service_name != null
    * @pre factory != null
    */
-  public VinciClient(String service_name, TransportableFactory factory) throws ServiceDownException, VNSException {
+  public VinciClient(String service_name, TransportableFactory factory)
+          throws ServiceDownException, VNSException {
     super(factory);
     open(service_name);
   }
@@ -72,11 +81,12 @@ public class VinciClient extends BaseClient {
    * @pre service_name != null
    * @pre factory != null
    * @pre myContext != null
-   *
-   * @throws IllegalStateException if no VNS_HOST has been specified.
+   * 
+   * @throws IllegalStateException
+   *           if no VNS_HOST has been specified.
    */
   public VinciClient(String service_name, TransportableFactory factory, VinciContext myContext)
-      throws ServiceDownException, VNSException {
+          throws ServiceDownException, VNSException {
     super(factory);
     setContext(myContext);
     open(service_name);
@@ -85,58 +95,69 @@ public class VinciClient extends BaseClient {
   /**
    * @pre service_name != null
    * @pre myContext != null
-   *
-   * @throws IllegalStateException if no VNS_HOST has been specified.
+   * 
+   * @throws IllegalStateException
+   *           if no VNS_HOST has been specified.
    */
-  public VinciClient(String service_name, VinciContext myContext) throws ServiceDownException, VNSException {
+  public VinciClient(String service_name, VinciContext myContext) throws ServiceDownException,
+          VNSException {
     this(service_name, VinciFrame.getVinciFrameFactory(), myContext);
   }
 
   /**
-   * Construct a new client connected to the requested service, and uses a VinciFrame
-   * factory to create the return document type.
-   *
-   * @param service_name The name of the service to connect to.
-   * @param connectTimeout The number of milliseconds that will elapse before a connect attempt fails.
-   *
-   * @throws IllegalStateException if no VNS_HOST has been specified.
-   *
+   * Construct a new client connected to the requested service, and uses a VinciFrame factory to
+   * create the return document type.
+   * 
+   * @param service_name
+   *          The name of the service to connect to.
+   * @param connectTimeout
+   *          The number of milliseconds that will elapse before a connect attempt fails.
+   * 
+   * @throws IllegalStateException
+   *           if no VNS_HOST has been specified.
+   * 
    * @pre service_name != null
    */
-  public VinciClient(String service_name, int connectTimeout) throws ServiceDownException, VNSException {
+  public VinciClient(String service_name, int connectTimeout) throws ServiceDownException,
+          VNSException {
     this(service_name, VinciFrame.getVinciFrameFactory(), connectTimeout);
   }
 
   /**
-   * Constructs a new client connected to the requested service.  Consults VNS for the proper
-   * host and port to connect to.  Service names must be properly qualified. 
-   *
-   * @param service_name The name of the service to connect to.  
-   * @param factory The factory used for creating return documents of desired type.
-   * @param connectTimeout The number of milliseconds that will elapse before a connect attempt fails.
-   *
-   * @throws IllegalStateException if no VNS_HOST has been specified.
-   *
+   * Constructs a new client connected to the requested service. Consults VNS for the proper host
+   * and port to connect to. Service names must be properly qualified.
+   * 
+   * @param service_name
+   *          The name of the service to connect to.
+   * @param factory
+   *          The factory used for creating return documents of desired type.
+   * @param connectTimeout
+   *          The number of milliseconds that will elapse before a connect attempt fails.
+   * 
+   * @throws IllegalStateException
+   *           if no VNS_HOST has been specified.
+   * 
    * @pre service_name != null
    * @pre factory != null
    */
   public VinciClient(String service_name, TransportableFactory factory, int connectTimeout)
-      throws ServiceDownException, VNSException {
+          throws ServiceDownException, VNSException {
     super(factory, connectTimeout);
     open(service_name);
   }
 
   /**
    * Constructs a new client connected to the requested service.
-   *
+   * 
    * @pre service_name != null
    * @pre factory != null
    * @pre myContext != null
-   *
-   * @throws IllegalStateException if no VNS_HOST has been specified.
+   * 
+   * @throws IllegalStateException
+   *           if no VNS_HOST has been specified.
    */
-  public VinciClient(String service_name, TransportableFactory factory, VinciContext myContext, int connectTimeout)
-      throws ServiceDownException, VNSException {
+  public VinciClient(String service_name, TransportableFactory factory, VinciContext myContext,
+          int connectTimeout) throws ServiceDownException, VNSException {
     super(factory, connectTimeout);
     setContext(myContext);
     open(service_name);
@@ -144,103 +165,111 @@ public class VinciClient extends BaseClient {
 
   /**
    * Constructs a new client connected to the requested service.
-   *
+   * 
    * @pre service_name != null
    * @pre myContext != null
-   *
-   * @throws IllegalStateException if no VNS_HOST has been specified.
+   * 
+   * @throws IllegalStateException
+   *           if no VNS_HOST has been specified.
    */
-  public VinciClient(String service_name, VinciContext myContext, int connectTimeout) throws ServiceDownException,
-      VNSException {
+  public VinciClient(String service_name, VinciContext myContext, int connectTimeout)
+          throws ServiceDownException, VNSException {
     this(service_name, VinciFrame.getVinciFrameFactory(), myContext, connectTimeout);
   }
 
   /**
-   * Construct a new client WITHOUT opening a connection, using the VinciFrame factory
-   * to create return documents.
+   * Construct a new client WITHOUT opening a connection, using the VinciFrame factory to create
+   * return documents.
    */
   public VinciClient() {
     super();
   }
 
   /**
-   * Construct a new client WITHOUT opening a connection, using the specified factory
-   * to create return documents.
+   * Construct a new client WITHOUT opening a connection, using the specified factory to create
+   * return documents.
    */
   public VinciClient(TransportableFactory f) {
     super(f);
   }
 
   /**
-   * Get the priority level of the service to which this client is connected. This 
-   * method only works after the connection has been opened.
+   * Get the priority level of the service to which this client is connected. This method only works
+   * after the connection has been opened.
    */
   public int getLevel() {
     return level;
   }
 
   /**
-   * Get the instance number of this service. This method only works after the connection has
-   * been opened.
-   *
+   * Get the instance number of this service. This method only works after the connection has been
+   * opened.
+   * 
    * Services should have "non zero" instance numbers only when more than one instance of the
    * service is running on the same host. The unique instance value allows each instance to be
-   * distinguished and uniquely addressed via a fully qualified service name.  
+   * distinguished and uniquely addressed via a fully qualified service name.
    */
   public int getInstance() {
     return instance;
   }
 
   /**
-   * Convenience method for "one-shot"/single-query connections. Equivalent of manually creating
-   * a new VinciClient(), calling (non-static) sendAndReceive, and then closing the client.
-   *
-   * @throws IllegalStateException if the VNS host has not been specified.
+   * Convenience method for "one-shot"/single-query connections. Equivalent of manually creating a
+   * new VinciClient(), calling (non-static) sendAndReceive, and then closing the client.
+   * 
+   * @throws IllegalStateException
+   *           if the VNS host has not been specified.
    * 
    * @pre in != null
    * @pre service_name != null
    * @pre factory != null
    */
-  static public Transportable sendAndReceive(Transportable in, String service_name, TransportableFactory factory)
-      throws IOException, ServiceException, ServiceDownException, VNSException {
+  static public Transportable sendAndReceive(Transportable in, String service_name,
+          TransportableFactory factory) throws IOException, ServiceException, ServiceDownException,
+          VNSException {
     return VinciContext.getGlobalContext().sendAndReceive(in, service_name, factory);
   }
 
   /**
-   * Convenience method for "one-shot"/single-query connections. Equivalent of manually creating
-   * a new VinciClient(), calling (non-static) sendAndReceive, and then closing the client.
-   *
-   * @throws IllegalStateException if the VNS host has not been specified.
-   *
+   * Convenience method for "one-shot"/single-query connections. Equivalent of manually creating a
+   * new VinciClient(), calling (non-static) sendAndReceive, and then closing the client.
+   * 
+   * @throws IllegalStateException
+   *           if the VNS host has not been specified.
+   * 
    * @pre in != null
    * @pre service_name != null
    * @pre factory != null
    * @pre socket_timeout >= 0
    */
-  static public Transportable sendAndReceive(Transportable in, String service_name, TransportableFactory factory,
-      int socket_timeout) throws IOException, ServiceException {
-    return VinciContext.getGlobalContext().sendAndReceive(in, service_name, factory, socket_timeout);
+  static public Transportable sendAndReceive(Transportable in, String service_name,
+          TransportableFactory factory, int socket_timeout) throws IOException, ServiceException {
+    return VinciContext.getGlobalContext()
+            .sendAndReceive(in, service_name, factory, socket_timeout);
   }
 
   /**
-   * Convenience method for "one-shot"/single-query connections. Equivalent of manually creating
-   * a new VinciClient(), calling (non-static) sendAndReceive, and then closing the client.
-   *
-   * @throws IllegalStateException if the VNS host has not been specified.
-   *
+   * Convenience method for "one-shot"/single-query connections. Equivalent of manually creating a
+   * new VinciClient(), calling (non-static) sendAndReceive, and then closing the client.
+   * 
+   * @throws IllegalStateException
+   *           if the VNS host has not been specified.
+   * 
    * @pre in != null
    * @pre service_name != null
    * @pre factory != null
    * @pre socket_timeout >= 0
    */
-  static public Transportable sendAndReceive(Transportable in, String service_name, TransportableFactory factory,
-      int socket_timeout, int connect_timeout) throws IOException, ServiceException {
-    return VinciContext.getGlobalContext().sendAndReceive(in, service_name, factory, socket_timeout, connect_timeout);
+  static public Transportable sendAndReceive(Transportable in, String service_name,
+          TransportableFactory factory, int socket_timeout, int connect_timeout)
+          throws IOException, ServiceException {
+    return VinciContext.getGlobalContext().sendAndReceive(in, service_name, factory,
+            socket_timeout, connect_timeout);
   }
 
   /**
-   * Get the context associated with this client. By default clients use the global Vinci
-   * context, though this can be overridden.
+   * Get the context associated with this client. By default clients use the global Vinci context,
+   * though this can be overridden.
    */
   public VinciContext getContext() {
     if (context == null) {
@@ -251,24 +280,25 @@ public class VinciClient extends BaseClient {
   }
 
   /**
-   * Set the VinciContext to be used by this client. Set to null if you wish the global context
-   * to be used. You should set the context BEFORE a connection is open (e.g. ater using the
-   * no-arg constructor), otherwise the global context parameters will be used to establish the
-   * connection before you have a chance to change it.
+   * Set the VinciContext to be used by this client. Set to null if you wish the global context to
+   * be used. You should set the context BEFORE a connection is open (e.g. ater using the no-arg
+   * constructor), otherwise the global context parameters will be used to establish the connection
+   * before you have a chance to change it.
    */
   public void setContext(VinciContext c) {
     context = c;
   }
 
   /**
-   * Get the fully qualified name of this service. This method is useful when for whatever
-   * reason a connection needs to be re-established with this exact same service instance. This
-   * method only works after connection has been established.  
-   *
+   * Get the fully qualified name of this service. This method is useful when for whatever reason a
+   * connection needs to be re-established with this exact same service instance. This method only
+   * works after connection has been established.
+   * 
    * @pre getHost() != null
    */
   public String getQualifiedServiceName() {
-    return ResolveResult.unqualifiedName(serviceName) + '[' + getLevel() + ',' + getHost() + ',' + getInstance() + ']';
+    return ResolveResult.unqualifiedName(serviceName) + '[' + getLevel() + ',' + getHost() + ','
+            + getInstance() + ']';
   }
 
   public String getServiceName() {
@@ -276,18 +306,22 @@ public class VinciClient extends BaseClient {
   }
 
   /**
-   * Connects the client to the specified service as delegated by VNS. Use this open method
-   * in conjunction with the no-arg VinciClient constructor.
-   *
-   * @param serviceName The name of the service to connect to.
-   * @throws ServiceDownException Thrown when either (1) VNS is inaccessible
-   * or (2) none of the servers registered under serviceName are accessible.
-   * @throws VNSException Thrown when VNS is accessible but reports an error,
-   * which should almost always indicate that the requested service is not registered.
+   * Connects the client to the specified service as delegated by VNS. Use this open method in
+   * conjunction with the no-arg VinciClient constructor.
+   * 
+   * @param serviceName
+   *          The name of the service to connect to.
+   * @throws ServiceDownException
+   *           Thrown when either (1) VNS is inaccessible or (2) none of the servers registered
+   *           under serviceName are accessible.
+   * @throws VNSException
+   *           Thrown when VNS is accessible but reports an error, which should almost always
+   *           indicate that the requested service is not registered.
    * 
    * @pre service_name != null
-   *
-   * @throws IllegalStateException if no VNS_HOST has been specified.
+   * 
+   * @throws IllegalStateException
+   *           if no VNS_HOST has been specified.
    */
   public void open(String service_name) throws ServiceDownException, VNSException {
     this.serviceName = service_name;
@@ -301,7 +335,8 @@ public class VinciClient extends BaseClient {
     String vnsHost = myContext.getVNSHost();
     int vnsPort = myContext.getVNSPort();
 
-    // Check to see if default host/port are being overridden by vns "@" specification in service name
+    // Check to see if default host/port are being overridden by vns "@" specification in service
+    // name
     int atIndex = service_name.indexOf('@');
     if (atIndex != -1) {
       vnsHost = service_name.substring(atIndex + 1);
@@ -317,7 +352,7 @@ public class VinciClient extends BaseClient {
     }
 
     // ^^ A list of service locations that have already been determined to be
-    // unavailable. 
+    // unavailable.
     for (;;) {
       try {
         response = myContext.getCachedResolveResult(serviceName);
@@ -326,8 +361,8 @@ public class VinciClient extends BaseClient {
           if (query == null) {
             query = ResolveResult.composeQuery(serviceName);
           }
-          response = (ResolveResult) BaseClient.sendAndReceive(query, vnsHost, vnsPort, ResolveResult.factory,
-              myContext.getVNSResolveTimeout());
+          response = (ResolveResult) BaseClient.sendAndReceive(query, vnsHost, vnsPort,
+                  ResolveResult.factory, myContext.getVNSResolveTimeout());
           myContext.cacheResolveResult(serviceName, response);
         } else {
           usedCache = true;
@@ -363,8 +398,8 @@ public class VinciClient extends BaseClient {
             Debug.p("Resolved " + serviceName + " to: " + locator.host + ":" + locator.port);
             return;
           } catch (IOException e) {
-            Debug.p("WARNING: Failed to connect to service at (" + locator.host + ":" + locator.port + "):"
-                + e.getMessage());
+            Debug.p("WARNING: Failed to connect to service at (" + locator.host + ":"
+                    + locator.port + "):" + e.getMessage());
             connectFailed = true;
             if (alreadyTried == null) {
               alreadyTried = new ArrayList();
@@ -381,7 +416,8 @@ public class VinciClient extends BaseClient {
       } else if (response.priority != 0 && !ResolveResult.isQualified(serviceName)) {
         // If a service name was specified without qualifications, then
         // we allow fail-over to lower-priority services.
-        Debug.p("VinciClient.open(String)", "Resolving with lower priority than: " + response.priority);
+        Debug.p("VinciClient.open(String)", "Resolving with lower priority than: "
+                + response.priority);
         myContext.flushFromCache(serviceName);
         int next_level = response.priority;
         if (next_level == -1) {
@@ -411,52 +447,54 @@ public class VinciClient extends BaseClient {
    * Same as VinciClient.sendAndReceive(Transportable) except for return type. Syntactic sugar
    * method for the case where return result is known to be VinciFrame (eliminates the need for
    * casting in the typical usage case).
-   *
-   * @throws IllegalStateException if the VNS host has not been specified.
+   * 
+   * @throws IllegalStateException
+   *           if the VNS host has not been specified.
    * @return A VinciFrame representing the service result.
    * 
    * @pre in != null
    * @pre service_name != null
    */
-  static public VinciFrame rpc(Transportable in, String service_name) throws IOException, ServiceException,
-      ServiceDownException, VNSException {
+  static public VinciFrame rpc(Transportable in, String service_name) throws IOException,
+          ServiceException, ServiceDownException, VNSException {
     return VinciContext.getGlobalContext().rpc(in, service_name);
   }
 
   /**
-   * Same as VinciClient.sendAndReceive(Transportable, service_name) except it also takes a
-   * timeout value.  WARNING: This method "hides" the BaseClient rpc method with the same
-   * signature. The BaseClient method accepts (Transportable, host string, port) whereas this
-   * one accepts (Transportable, service_name, timeout).  Despite the equivalent signatures, the
-   * semantics of these two methods are quite different.
-   *
-   * @return A VinciFrame representing the service result.  
-   *
+   * Same as VinciClient.sendAndReceive(Transportable, service_name) except it also takes a timeout
+   * value. WARNING: This method "hides" the BaseClient rpc method with the same signature. The
+   * BaseClient method accepts (Transportable, host string, port) whereas this one accepts
+   * (Transportable, service_name, timeout). Despite the equivalent signatures, the semantics of
+   * these two methods are quite different.
+   * 
+   * @return A VinciFrame representing the service result.
+   * 
    * @pre in != null
    * @pre service_name != null
    * @pre timeout >= 0
    */
-  static public VinciFrame rpc(Transportable in, String service_name, int timeout) throws IOException,
-      ServiceException, ServiceDownException, VNSException {
+  static public VinciFrame rpc(Transportable in, String service_name, int timeout)
+          throws IOException, ServiceException, ServiceDownException, VNSException {
     return VinciContext.getGlobalContext().rpc(in, service_name, timeout);
   }
 
   /**
    * Same as VinciClient.sendAndReceive(Transportable, service_name) except it also takes socket
-   * read and socket connect timeout values.  WARNING: This method "hides" the BaseClient rpc
-   * method with the same signature. The BaseClient method accepts (Transportable, host string,
-   * port) whereas this one accepts (Transportable, service_name, timeout).  Despite the
-   * equivalent signatures, the semantics of these two methods are quite different.
-   *
-   * @return A VinciFrame representing the service result.  
-   *
+   * read and socket connect timeout values. WARNING: This method "hides" the BaseClient rpc method
+   * with the same signature. The BaseClient method accepts (Transportable, host string, port)
+   * whereas this one accepts (Transportable, service_name, timeout). Despite the equivalent
+   * signatures, the semantics of these two methods are quite different.
+   * 
+   * @return A VinciFrame representing the service result.
+   * 
    * @pre in != null
    * @pre service_name != null
    * @pre timeout >= 0
    * @pre connect_timeout > 0
    */
-  static public VinciFrame rpc(Transportable in, String service_name, int timeout, int connect_timeout)
-      throws IOException, ServiceException, ServiceDownException, VNSException {
+  static public VinciFrame rpc(Transportable in, String service_name, int timeout,
+          int connect_timeout) throws IOException, ServiceException, ServiceDownException,
+          VNSException {
     return VinciContext.getGlobalContext().rpc(in, service_name, timeout, connect_timeout);
   }
 

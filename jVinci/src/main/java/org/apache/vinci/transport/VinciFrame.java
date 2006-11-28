@@ -25,24 +25,26 @@ import org.apache.vinci.transport.util.TransportableConverter;
 
 /**
  * This is the "default" document class for use with the Vinci client and servable classes.
- * VinciFrame implements a queryable frame from (nested) ArrayList data structures. Search time
- * for a named tag is O(n) in the number of keys at a given depth, which is fine for all but the
- * largest documents.
- *
+ * VinciFrame implements a queryable frame from (nested) ArrayList data structures. Search time for
+ * a named tag is O(n) in the number of keys at a given depth, which is fine for all but the largest
+ * documents.
+ * 
  * VinciFrame complements the QueryableFrame adders and getters with several setter methods
  * [fset(String, *)] for modifying the values of designated tags.
  */
 public class VinciFrame extends QueryableFrame {
 
-  private int                         capacity;
-  private int                         size;
-  private KeyValuePair[]              elements;
+  private int capacity;
+
+  private int size;
+
+  private KeyValuePair[] elements;
 
   private static TransportableFactory vinciFrameFactory = new TransportableFactory() {
-                                                          public Transportable makeTransportable() {
-                                                            return new VinciFrame();
-                                                          }
-                                                        };
+    public Transportable makeTransportable() {
+      return new VinciFrame();
+    }
+  };
 
   /**
    * Get a TransportableFactory that creates new VinciFrames.
@@ -69,10 +71,11 @@ public class VinciFrame extends QueryableFrame {
 
   /**
    * Create a new empty VinciFrame with the specified initial capacity.
-   *
-   * @param initialCapacity the capacity value to be passed on to the internal ArrayList used
-   * for holding KeyValuePairs. 
-   *
+   * 
+   * @param initialCapacity
+   *          the capacity value to be passed on to the internal ArrayList used for holding
+   *          KeyValuePairs.
+   * 
    * @pre initialCapacity >= 0
    */
   public VinciFrame(int initialCapacity) {
@@ -82,10 +85,9 @@ public class VinciFrame extends QueryableFrame {
   }
 
   /**
-   * Returns a ArrayList of all the keys at the top-level of this frame, removing any
-   * duplicates.
-   *
-   * @return A ArrayList of keys.  
+   * Returns a ArrayList of all the keys at the top-level of this frame, removing any duplicates.
+   * 
+   * @return A ArrayList of keys.
    */
   public ArrayList fkeys() {
     ArrayList rval = new ArrayList();
@@ -98,7 +100,7 @@ public class VinciFrame extends QueryableFrame {
     return rval;
   }
 
-  /** 
+  /**
    * Implementation of the abstract fget method defined in QueryableFrame.
    */
   public ArrayList fget(String key) {
@@ -112,7 +114,7 @@ public class VinciFrame extends QueryableFrame {
     return return_me;
   }
 
-  /** 
+  /**
    * Implementation of the abstract fgetFirst method defined in QueryableFrame.
    */
   public FrameComponent fgetFirst(String key) {
@@ -127,7 +129,7 @@ public class VinciFrame extends QueryableFrame {
 
   /**
    * Override the createSubFrame to create a VinciFrame of precise capacity.
-   *
+   * 
    * @pre tag_name != null
    * @pre initialCapacity >= 0
    */
@@ -137,9 +139,11 @@ public class VinciFrame extends QueryableFrame {
 
   /**
    * Convenience method for fetching sub-frames when their type is known to be VinciFrame
-   *
-   * @param key The key identifying the value to retrieve.
-   * @exception ClassCastException (unchecked) if the value was not of type VinciFrame.
+   * 
+   * @param key
+   *          The key identifying the value to retrieve.
+   * @exception ClassCastException
+   *              (unchecked) if the value was not of type VinciFrame.
    * @return The requested value, or null if the specified key does not exist.
    */
   public VinciFrame fgetVinciFrame(String key) {
@@ -147,11 +151,12 @@ public class VinciFrame extends QueryableFrame {
   }
 
   /**
-   * Change the value associated with first occurence of the given key to val. If the key
-   * doesn't exist, then the value is added.
-   *
-   * @exception NullPointerException if val is null.  
-   *
+   * Change the value associated with first occurence of the given key to val. If the key doesn't
+   * exist, then the value is added.
+   * 
+   * @exception NullPointerException
+   *              if val is null.
+   * 
    * @pre key != null
    * @pre val != null
    */
@@ -162,7 +167,7 @@ public class VinciFrame extends QueryableFrame {
 
   /**
    * Change the value associated with the first occurence of the given key to val. If the key
-   * doesn't exist, then the value is added.  
+   * doesn't exist, then the value is added.
    * 
    * @pre key != null
    */
@@ -173,8 +178,8 @@ public class VinciFrame extends QueryableFrame {
 
   /**
    * Change the value associated with the first occurence of the given key to val. If the key
-   * doesn't exist, then the value is added. 
-   *
+   * doesn't exist, then the value is added.
+   * 
    * @pre key != null
    */
   public VinciFrame fset(String key, boolean val) {
@@ -184,8 +189,8 @@ public class VinciFrame extends QueryableFrame {
 
   /**
    * Change the value associated with the first occurence of the given key to val. If the key
-   * doesn't exist, then the value is added. 
-   *
+   * doesn't exist, then the value is added.
+   * 
    * @pre key != null
    */
   public VinciFrame fset(String key, int val) {
@@ -196,7 +201,7 @@ public class VinciFrame extends QueryableFrame {
   /**
    * Change the value associated with the first occurence of the given key to val. If the key
    * doesn't exist, then the value is added.
-   *
+   * 
    * @pre key != null
    * @pre val != null
    */
@@ -208,9 +213,10 @@ public class VinciFrame extends QueryableFrame {
   /**
    * Change the value associated with the first occurence of the given key to val. If the key
    * doesn't exist, then the value is added.
-   *
-   * @exception NullPointerException if val is null.  
-   *
+   * 
+   * @exception NullPointerException
+   *              if val is null.
+   * 
    * @pre key != null
    */
   public VinciFrame fset(String key, Frame val) {
@@ -220,8 +226,8 @@ public class VinciFrame extends QueryableFrame {
 
   /**
    * Change the value associated with the first occurence of the given key to val. If the key
-   * doesn't exist, then the value is added.  
-   *
+   * doesn't exist, then the value is added.
+   * 
    * @pre key != null
    */
   public VinciFrame fset(String key, double val) {
@@ -232,9 +238,10 @@ public class VinciFrame extends QueryableFrame {
   /**
    * Change the value associated with the first occurence of the given key to val. If the key
    * doesn't exist, then the value is added.
-   *
-   * @exception NullPointerException if bin is null.  
-   *
+   * 
+   * @exception NullPointerException
+   *              if bin is null.
+   * 
    * @pre key != null
    * @pre bin != null
    */
@@ -245,11 +252,12 @@ public class VinciFrame extends QueryableFrame {
 
   /**
    * Change the value associated with the first occurence of the given key to val. If the key
-   * doesn't exist, then the value is added. The warnings associated with faddTrueBinary also
-   * apply to this method.
-   *
-   * @exception NullPointerException if bin is null.  
-   *
+   * doesn't exist, then the value is added. The warnings associated with faddTrueBinary also apply
+   * to this method.
+   * 
+   * @exception NullPointerException
+   *              if bin is null.
+   * 
    * @pre key != null
    * @pre bin != null
    */
@@ -260,11 +268,12 @@ public class VinciFrame extends QueryableFrame {
 
   /**
    * Change the value associated with the first occurence of the given key to val. If the key
-   * doesn't exist, then the value is added. Note that there is no suite of methods to change
-   * *all* values associated with a given key to some value.
-   *
-   * @exception NullPointerException if val is null.  
-   *
+   * doesn't exist, then the value is added. Note that there is no suite of methods to change *all*
+   * values associated with a given key to some value.
+   * 
+   * @exception NullPointerException
+   *              if val is null.
+   * 
    * @pre key != null
    */
   protected void set(String key, FrameComponent val) {
@@ -283,11 +292,12 @@ public class VinciFrame extends QueryableFrame {
   }
 
   /**
-   * Remove only the first element whose tag name matches the specified key (if any) from the
-   * top level of this frame.
+   * Remove only the first element whose tag name matches the specified key (if any) from the top
+   * level of this frame.
    * 
-   * @param key The tag name of the element to remove.
-   * @return this object (NOT the component dropped).  
+   * @param key
+   *          The tag name of the element to remove.
+   * @return this object (NOT the component dropped).
    */
   public VinciFrame fdropFirst(String key) {
     for (int i = 0; i < size; i++) {
@@ -303,11 +313,12 @@ public class VinciFrame extends QueryableFrame {
   }
 
   /**
-   * Remove all elements whose tag name matches the provided key (if any) from the top level of
-   * this frame.
+   * Remove all elements whose tag name matches the provided key (if any) from the top level of this
+   * frame.
    * 
-   * @param key The tag name of the elements to remove.
-   * @return this object (NOT the component dropped).  
+   * @param key
+   *          The tag name of the elements to remove.
+   * @return this object (NOT the component dropped).
    */
   public VinciFrame fdrop(String key) {
     int shift = 0;
@@ -341,7 +352,7 @@ public class VinciFrame extends QueryableFrame {
 
   /**
    * Implementation of the abstract Frame method.
-   *
+   * 
    * @pre key != null
    * @pre val != null
    */
@@ -364,7 +375,7 @@ public class VinciFrame extends QueryableFrame {
 
   /**
    * Implementation of the abstract Frame method.
-   *
+   * 
    * @pre which < getKeyValuePairCount()
    * @pre which >= 0
    */

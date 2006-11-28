@@ -43,22 +43,27 @@ import org.apache.vinci.transport.vns.VNSConstants;
 public class NameClient {
 
   String vnsHost;
-  int    vnsPort = 9000;
+
+  int vnsPort = 9000;
 
   static class HitsList {
     public HitsList() {
     }
 
     String[] types;
-    int[]    hits;
-    int      totalhits;
-    String   starttime;
+
+    int[] hits;
+
+    int totalhits;
+
+    String starttime;
   };
 
   static Random R = new Random();
 
   public NameClient() {
-    configure(VinciContext.getGlobalContext().getVNSHost(), VinciContext.getGlobalContext().getVNSPort());
+    configure(VinciContext.getGlobalContext().getVNSHost(), VinciContext.getGlobalContext()
+            .getVNSPort());
   }
 
   public NameClient(String host, int port) {
@@ -106,8 +111,8 @@ public class NameClient {
   public ServiceInfo[] lookup(String name, int level, String host, String instance, String ws) {
     VinciFrame req = new VinciFrame();
 
-    req.fadd("vinci:COMMAND", VNSConstants.RESOLVE_COMMAND).fadd("SERVICE", name).fadd("LEVEL", level).fadd("HOST",
-        host).fadd("INSTANCE", instance).fadd("WORKSPACE", ws);
+    req.fadd("vinci:COMMAND", VNSConstants.RESOLVE_COMMAND).fadd("SERVICE", name).fadd("LEVEL",
+            level).fadd("HOST", host).fadd("INSTANCE", instance).fadd("WORKSPACE", ws);
 
     System.out.println(req.toXML());
     VinciFrame resp = (VinciFrame) transmit(req);
@@ -172,8 +177,8 @@ public class NameClient {
   }
 
   public ServiceInfo resolve(String name, int level) {
-    VinciFrame req = (VinciFrame) new VinciFrame().fadd("vinci:COMMAND", VNSConstants.RESOLVE_COMMAND).fadd("SERVICE",
-        name).fadd("LEVEL", level);
+    VinciFrame req = (VinciFrame) new VinciFrame().fadd("vinci:COMMAND",
+            VNSConstants.RESOLVE_COMMAND).fadd("SERVICE", name).fadd("LEVEL", level);
 
     VinciFrame resp = (VinciFrame) transmit(req);
 
@@ -388,8 +393,9 @@ public class NameClient {
       }
     }
 
-    VinciFrame out = (VinciFrame) new VinciFrame().fadd("vinci:COMMAND", VNSConstants.SERVEON_COMMAND).fadd("SERVICE",
-        name).fadd("HOST", host).fadd("LEVEL", level).fadd("INSTANCE", instance);
+    VinciFrame out = (VinciFrame) new VinciFrame().fadd("vinci:COMMAND",
+            VNSConstants.SERVEON_COMMAND).fadd("SERVICE", name).fadd("HOST", host).fadd("LEVEL",
+            level).fadd("INSTANCE", instance);
 
     VinciFrame resp = (VinciFrame) transmit(out);
 
@@ -421,7 +427,8 @@ public class NameClient {
     QueryableFrame L;
     for (int i = 0; i < S.length; i++) {
       L = (QueryableFrame) A.get(i);
-      S[i] = new ServiceInfo(name, L.fgetString("HOST"), L.fgetString("PORT"), level, L.fgetString("INSTANCE"));
+      S[i] = new ServiceInfo(name, L.fgetString("HOST"), L.fgetString("PORT"), level, L
+              .fgetString("INSTANCE"));
     }
 
     return S;
@@ -577,12 +584,12 @@ public class NameClient {
     String name = getLine(br);
     pr("Enter the level : ", false);
     String level = strip(getLine(br));
-    //  int l = -1;
-    //    try {
-    //      l = Integer.parseInt(level);
-    //    } catch (Exception e) {
-    //      l = -1;
-    //    }
+    // int l = -1;
+    // try {
+    // l = Integer.parseInt(level);
+    // } catch (Exception e) {
+    // l = -1;
+    // }
 
     Object[] S = nc.getList(name, level);
     for (int i = 0; i < S.length; i++)
@@ -597,12 +604,12 @@ public class NameClient {
     String name = getLine(br);
     pr("Enter the level : ", false);
     String level = strip(getLine(br));
-    //    int l = -1;
-    //    try {
-    //      l = Integer.parseInt(level);
-    //    } catch (Exception e) {
-    //      l = -1;
-    //    }
+    // int l = -1;
+    // try {
+    // l = Integer.parseInt(level);
+    // } catch (Exception e) {
+    // l = -1;
+    // }
 
     String[] S = nc.getNames(name, level);
     for (int i = 0; i < S.length; i++)
@@ -655,8 +662,8 @@ public class NameClient {
       System.out.println("Could not add the service");
   }
 
-  private static String[] options = { "parseqname", "lookup", "resolve", "getlist", "getnames", "gethits",
-      "getallhits", "serveon", "addservice" };
+  private static String[] options = { "parseqname", "lookup", "resolve", "getlist", "getnames",
+      "gethits", "getallhits", "serveon", "addservice" };
 
   private static void prMainMenu() {
     pr("\nMenu \n");

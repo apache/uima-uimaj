@@ -20,18 +20,19 @@
 package org.apache.vinci.transport;
 
 /**
- * Object for storing each key/value within a frame.  Also returned by the simple Frame
- * positional accessor method "getKeyValuePair(int)".
- *
- * KeyValuePair can be considered immutable unless you use any of the VinciFrame.fset(*) 
- * methods, which may modify the value component.
- *
- * Generally you shouldn't have to work with KeyValuePair objects since the recommended approach
- * to accessing Frame contents is through declarative as opposed to positional accessors.  
+ * Object for storing each key/value within a frame. Also returned by the simple Frame positional
+ * accessor method "getKeyValuePair(int)".
+ * 
+ * KeyValuePair can be considered immutable unless you use any of the VinciFrame.fset(*) methods,
+ * which may modify the value component.
+ * 
+ * Generally you shouldn't have to work with KeyValuePair objects since the recommended approach to
+ * accessing Frame contents is through declarative as opposed to positional accessors.
  */
 
 public final class KeyValuePair {
-  final String   key;
+  final String key;
+
   FrameComponent value; // Frame or FrameLeaf
 
   /**

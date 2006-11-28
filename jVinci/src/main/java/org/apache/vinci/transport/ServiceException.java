@@ -21,18 +21,19 @@ package org.apache.vinci.transport;
 
 /**
  * Special exception thrown by VinciClient indicating an "application level" error or exception.
- * Vinci services can also throw this exception and an equivalent exception will arise
- * on the other side. Other ways to cause an exception to be returned on the other side is
- * to simply return an ErrorFrame. An ErrorFrame allows arbitrary other information to be
- * returned along with the exception message.
- *
+ * Vinci services can also throw this exception and an equivalent exception will arise on the other
+ * side. Other ways to cause an exception to be returned on the other side is to simply return an
+ * ErrorFrame. An ErrorFrame allows arbitrary other information to be returned along with the
+ * exception message.
+ * 
  * If a Vinci service throws a ServiceException, then this is equivalent to returning a Vinci
  * ErrorFrame as returned by the single ErrorFrame constructor.
  */
 public class ServiceException extends Exception {
 
   private static final long serialVersionUID = 6243682131707055564L;
-  private Transportable     complete_result;
+
+  private Transportable complete_result;
 
   public ServiceException(String error_message, Transportable result) {
     super(error_message);

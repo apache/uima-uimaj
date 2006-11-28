@@ -30,16 +30,18 @@ public interface Transportable {
 
   /**
    * Read the object from the input stream.
-   *
-   * @param is The stream to read from.
+   * 
+   * @param is
+   *          The stream to read from.
    * @exception IOException
    */
   KeyValuePair fromStream(InputStream is) throws IOException;
 
   /**
    * Write the object to the output stream.
-   *
-   * @param os The stream to write into.
+   * 
+   * @param os
+   *          The stream to write into.
    * @exception IOException
    */
   void toStream(OutputStream os) throws IOException;

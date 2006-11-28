@@ -71,13 +71,19 @@ public class XMLToXTalk {
    * This is a SAX document handler to parse XML into VinciFrames.
    */
   private static class XTalkHandler extends DefaultHandler {
-    protected StackEntry top           = null;
-    int                  depth         = 0;
-    StackEntry[]         childrenCount = new StackEntry[6969];
-    ArrayList            countList     = new ArrayList();
-    OutputStream         os;
-    Writer               xml_os;
-    boolean              purgeWhitespace;
+    protected StackEntry top = null;
+
+    int depth = 0;
+
+    StackEntry[] childrenCount = new StackEntry[6969];
+
+    ArrayList countList = new ArrayList();
+
+    OutputStream os;
+
+    Writer xml_os;
+
+    boolean purgeWhitespace;
 
     XTalkHandler(OutputStream os, boolean purgeWhitespace, Writer xml_os) {
       this.os = os;
@@ -98,7 +104,7 @@ public class XMLToXTalk {
         depth++;
         childrenCount[depth] = new StackEntry();
         countList.add(childrenCount[depth]);
-        //Debug.p("Attributes: " + qName + " : " +  atts.getLength());
+        // Debug.p("Attributes: " + qName + " : " + atts.getLength());
         XTalkTransporter.stringToBin(qName, os);
         XTalkTransporter.writeInt(a.getLength(), os);
         for (int i = 0; i < a.getLength(); i++) {
@@ -163,7 +169,7 @@ public class XMLToXTalk {
             }
           }
           if (all_whitespace) {
-            //Debug.p("Purging whitespace: " + new String(ch, start, length));
+            // Debug.p("Purging whitespace: " + new String(ch, start, length));
             return;
           }
         }
@@ -182,16 +188,17 @@ public class XMLToXTalk {
   }
 
   /**
-   * Right now we assume there are NO processing instructions.
-   * Given an XML file, create an XTalk representation of that data. If xml_filename is non-null, then
-   * this method will also create a UTF-8 representation of the xml file, exactly mimicing the
-   * XTalk encoding (e.g. removing irrelevant whitespace, expanding entity refs, etc). 
+   * Right now we assume there are NO processing instructions. Given an XML file, create an XTalk
+   * representation of that data. If xml_filename is non-null, then this method will also create a
+   * UTF-8 representation of the xml file, exactly mimicing the XTalk encoding (e.g. removing
+   * irrelevant whitespace, expanding entity refs, etc).
    */
-  public static void xmlToXTalk(Reader r, String filename, boolean purgeWhitespace, String xml_filename)
-      throws ServiceException, IOException {
+  public static void xmlToXTalk(Reader r, String filename, boolean purgeWhitespace,
+          String xml_filename) throws ServiceException, IOException {
     Writer xml_os = null;
     if (xml_filename != null) {
-      xml_os = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(xml_filename), "UTF-8"));
+      xml_os = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(xml_filename),
+              "UTF-8"));
     }
     File file = new File(filename);
     OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
@@ -233,19 +240,20 @@ public class XMLToXTalk {
     RandomAccessFile raf = new RandomAccessFile(filename, "rw");
     try {
       raf.skipBytes(7);
-      //int return_val = 
+      // int return_val =
       updateElement(raf, handler.countList, 0);
-      //Debug.p("Return val: " + return_val);
+      // Debug.p("Return val: " + return_val);
     } finally {
       raf.close();
     }
 
   }
 
-  static private int updateElement(RandomAccessFile raf, ArrayList counts, int index) throws IOException {
+  static private int updateElement(RandomAccessFile raf, ArrayList counts, int index)
+          throws IOException {
     skipString(raf);
     int skipCount = raf.readInt();
-    //Debug.p("Skip count: " + skipCount);
+    // Debug.p("Skip count: " + skipCount);
     for (int i = 0; i < skipCount; i++) {
       skipString(raf);
       skipString(raf);
@@ -253,7 +261,7 @@ public class XMLToXTalk {
     int childCount = ((StackEntry) counts.get(index)).childCount;
     index++;
     raf.writeInt(childCount);
-    //Debug.p("Wrote: " + childCount);
+    // Debug.p("Wrote: " + childCount);
     for (int i = 0; i < childCount; i++) {
       int marker = raf.read();
       switch ((byte) marker) {
@@ -272,7 +280,7 @@ public class XMLToXTalk {
 
   static private void skipString(RandomAccessFile raf) throws IOException {
     int count = raf.readInt();
-    //Debug.p("Skipping string of size: " + count);
+    // Debug.p("Skipping string of size: " + count);
     raf.skipBytes(count);
   }
 

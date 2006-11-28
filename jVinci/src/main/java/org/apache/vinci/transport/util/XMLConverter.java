@@ -20,8 +20,8 @@
 package org.apache.vinci.transport.util;
 
 /**
- * Methods for converting to / from regular strings and XML(entity ref)-encoded strings,
- * as well as HTML-formatted strings.
+ * Methods for converting to / from regular strings and XML(entity ref)-encoded strings, as well as
+ * HTML-formatted strings.
  */
 public class XMLConverter {
 
@@ -34,10 +34,10 @@ public class XMLConverter {
   /**
    * Convert to XML string format. Uses CDATA encoding if there are more than 4 characters requiring
    * ampersand encoding.
-   *
+   * 
    * @param convert_me
    * @return
-   *
+   * 
    * @pre convert_me != null
    */
   static public String convertStringToXMLString(String convert_me) {
@@ -51,7 +51,7 @@ public class XMLConverter {
    * 
    * @param convert_me
    * @return
-   *
+   * 
    * @pre convert_me != null
    */
   static public String simpleConvertStringToXMLString(String convert_me) {
@@ -180,5 +180,5 @@ public class XMLConverter {
     }
   }
 
-} //class
+} // class
 

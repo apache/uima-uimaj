@@ -37,10 +37,11 @@ public class StreamMaterializer {
   }
 
   /**
-   * Bring the entire contents of the provided stream into a memory-resident byte array.
-   * Does NOT close the stream.
-   *
-   * @exception IOException thrown by the input stream. 
+   * Bring the entire contents of the provided stream into a memory-resident byte array. Does NOT
+   * close the stream.
+   * 
+   * @exception IOException
+   *              thrown by the input stream.
    * 
    * @pre input_stream != null
    */

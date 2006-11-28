@@ -26,13 +26,15 @@ package org.apache.vinci.transport;
 public interface VinciServable extends TransportableFactory {
 
   /**
-   * The eval method accepts an input document and returns an output document
-   * that is the result of performing the service. 
+   * The eval method accepts an input document and returns an output document that is the result of
+   * performing the service.
    * 
    * @return The output document
-   * @param in The input document
-   * @exception ServiceException thrown when there is an application level error that should
-   * result in the client receiving the same ServiceException on the other end.
+   * @param in
+   *          The input document
+   * @exception ServiceException
+   *              thrown when there is an application level error that should result in the client
+   *              receiving the same ServiceException on the other end.
    */
   Transportable eval(Transportable in) throws ServiceException;
 

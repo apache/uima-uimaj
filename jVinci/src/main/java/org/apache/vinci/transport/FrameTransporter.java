@@ -34,16 +34,20 @@ public interface FrameTransporter {
   /**
    * Marshall the frame to the input stream.
    * 
-   * @param is The stream where the Frame is written.
-   * @param f The Frame to be marshalled.
+   * @param is
+   *          The stream where the Frame is written.
+   * @param f
+   *          The Frame to be marshalled.
    */
   KeyValuePair fromStream(InputStream is, Frame f) throws IOException, EOFException;
 
   /**
    * Populate the (empty) frame from the stream contents.
    * 
-   * @param os The stream from where the data is read.
-   * @param f The Frame to be populated from the stream.
+   * @param os
+   *          The stream from where the data is read.
+   * @param f
+   *          The Frame to be populated from the stream.
    */
   void toStream(OutputStream os, Frame f) throws IOException;
 }

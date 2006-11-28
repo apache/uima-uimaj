@@ -30,9 +30,9 @@ import org.apache.vinci.debug.Debug;
  * Class for running VinciServables in the Vinci framework. This implementation supports multiple
  * concurrent clients (in a Thread per client manner). Creating a service typically requires
  * defining implementing a VinciServable which is passed to this class to service requests.
- *
+ * 
  * This class can be used independently of VNS. For VNS-enhanced serving, use the VinciServer.
- *
+ * 
  * This class is designed to be extensible. For example you can extend to provide new Runnable
  * objects that are used to handle requests in the appropriate fashion. You can also override
  * configure socket to install SSL-supporting server sockets, and so on...
@@ -40,29 +40,39 @@ import org.apache.vinci.debug.Debug;
 public class BaseServer {
 
   static private final int DEFAULT_SOCKET_TIMEOUT = 60000; // one minute.
-  static private final int DEFAULT_MAX_POOL_SIZE  = 20;
 
-  static private final int SERVER_SOCKET_TIMEOUT  = 1000;
+  static private final int DEFAULT_MAX_POOL_SIZE = 20;
+
+  static private final int SERVER_SOCKET_TIMEOUT = 1000;
 
   volatile private boolean shutdown;
+
   volatile private boolean isServing;
 
-  private ServerSocket     serverSocket;
-  private VinciServable    servable;
-  private Thread           servingThread;
+  private ServerSocket serverSocket;
 
-  private int              socketTimeout;
-  private int              initialPoolSize;
-  private int              maxPoolSize;
+  private VinciServable servable;
 
-  private int              pooledCount;
-  private int              busyCount;
-  private PooledThread[]   threadPool;
-  private PooledThread[]   busyThreads;
+  private Thread servingThread;
+
+  private int socketTimeout;
+
+  private int initialPoolSize;
+
+  private int maxPoolSize;
+
+  private int pooledCount;
+
+  private int busyCount;
+
+  private PooledThread[] threadPool;
+
+  private PooledThread[] busyThreads;
 
   private class PooledThread extends Thread {
-    private Runnable  run_me;
-    private Socket    socket;
+    private Runnable run_me;
+
+    private Socket socket;
 
     private final int which;
 
@@ -117,7 +127,7 @@ public class BaseServer {
     }
 
     void setRunnable(Runnable r, Socket c) {
-      //Debug.p("Set runnable called: " + r);
+      // Debug.p("Set runnable called: " + r);
       run_me = r;
       socket = c;
     }
@@ -130,8 +140,9 @@ public class BaseServer {
 
   /**
    * Create a new BaseServer that will delegate requests to the provided servable.
-   *
-   * @param my_servable The servable object implementing the service.
+   * 
+   * @param my_servable
+   *          The servable object implementing the service.
    * @pre my_servable != null
    */
   public BaseServer(VinciServable my_servable) {
@@ -156,12 +167,13 @@ public class BaseServer {
   }
 
   /**
-   * This method is used to override the default timeout value of one minute.  You can provide
-   * "0" for "never timeout" but this is not recommended, as in some cases threads will end up
-   * forever blocking for input, eventually causing the threadpool to max out and block all
-   * pending requests.  
+   * This method is used to override the default timeout value of one minute. You can provide "0"
+   * for "never timeout" but this is not recommended, as in some cases threads will end up forever
+   * blocking for input, eventually causing the threadpool to max out and block all pending
+   * requests.
    * 
-   * @param millis The socket timeout value in milliseconds.
+   * @param millis
+   *          The socket timeout value in milliseconds.
    */
   public void setSocketTimeout(int millis) throws IOException {
     socketTimeout = millis;
@@ -185,9 +197,9 @@ public class BaseServer {
   }
 
   /**
-   * Get an available thread from the thread pool. Block if no thread is available and
-   * the maximum pool size has been reached.
-   *
+   * Get an available thread from the thread pool. Block if no thread is available and the maximum
+   * pool size has been reached.
+   * 
    * @pre threadPool != null
    */
   private PooledThread getThreadFromPool() throws InterruptedException {
@@ -204,8 +216,8 @@ public class BaseServer {
   }
 
   /**
-   * Set the intitial and maximum size of the threadpool used by this server.
-   * This should be called before serving starts otherwise it has no effect.
+   * Set the intitial and maximum size of the threadpool used by this server. This should be called
+   * before serving starts otherwise it has no effect.
    */
   public void setThreadPoolSize(int initial, int max) {
     Debug.Assert(!isServing);
@@ -235,11 +247,13 @@ public class BaseServer {
   }
 
   /**
-   * Asynchronously start serving requests. If this method returns without throwing an
-   * exception, then another thread has been successfully launched to begin serving requests.
-   *
-   * @param port The port on which to listen for requests.
-   * @exception IOException Thrown if there was some problem with the server socket.
+   * Asynchronously start serving requests. If this method returns without throwing an exception,
+   * then another thread has been successfully launched to begin serving requests.
+   * 
+   * @param port
+   *          The port on which to listen for requests.
+   * @exception IOException
+   *              Thrown if there was some problem with the server socket.
    * @pre port >= 0
    * @pre port < 65536
    * @since 2.0.15
@@ -262,9 +276,11 @@ public class BaseServer {
 
   /**
    * Serve requests, blocking until a clean shutdown is triggered.
-   *
-   * @param port The port on which to listen for requests.
-   * @exception IOException Thrown if there was some problem with the server socket.
+   * 
+   * @param port
+   *          The port on which to listen for requests.
+   * @exception IOException
+   *              Thrown if there was some problem with the server socket.
    * @pre port >= 0
    * @pre port < 65536
    */
@@ -282,7 +298,7 @@ public class BaseServer {
 
   /**
    * Get the server socket that this server uses to listen for requests.
-   *
+   * 
    * @return The server's server socket
    */
   protected ServerSocket getServerSocket() {
@@ -290,12 +306,13 @@ public class BaseServer {
   }
 
   /**
-   * Create the server socket used to listen for requests. This method can be overridden to
-   * provide non-standard server sockets, such as those supporting SSL, those requiring special
+   * Create the server socket used to listen for requests. This method can be overridden to provide
+   * non-standard server sockets, such as those supporting SSL, those requiring special
    * configuration/initialization, etc.
-   *
+   * 
    * @return The server socket to be used by this server for accepting requests.
-   * @param port The port which is to be listened to by the created socket. 
+   * @param port
+   *          The port which is to be listened to by the created socket.
    * @pre port >= 0
    * @pre port < 65536
    */
@@ -305,8 +322,8 @@ public class BaseServer {
   }
 
   /**
-   * Enter the server socket accept() loop. Loop terminates when shutdown shutdownServing()
-   * method is called.  
+   * Enter the server socket accept() loop. Loop terminates when shutdown shutdownServing() method
+   * is called.
    * 
    * @pre threadPool != null
    * @pre serverSocket != null
@@ -341,8 +358,8 @@ public class BaseServer {
   public void shutdownServing() {
     // NOTE that we no longer use .close() of the server socket to trigger shutdown,
     // as this fails on Linux, and under Windows with Aventail connect it can cause
-    // the system to hang.  Instead, we now have the socket interrupt every 1 second
-    // to check the shutdown status.  This method will block for at most 2 seconds
+    // the system to hang. Instead, we now have the socket interrupt every 1 second
+    // to check the shutdown status. This method will block for at most 2 seconds
     // so it may return before the server socket actually closes (though this shouldn't
     // happen in general).
     // NOTE2: The above note is probably due to Java 1.3 bugs... it probably isn't necessary
@@ -359,7 +376,7 @@ public class BaseServer {
   }
 
   /**
-   * Get a runnable object to run within a pooled thread that will handle the request. 
+   * Get a runnable object to run within a pooled thread that will handle the request.
    * 
    * @pre client != null
    */
@@ -369,7 +386,7 @@ public class BaseServer {
 
   /**
    * Initialize a new socket connection.
-   *
+   * 
    * @pre client != null
    * @pre threadPool != null
    */
@@ -387,7 +404,7 @@ public class BaseServer {
 
   /**
    * Cleanly shut down this server. Called when handleRequests completes the accept loop.
-   *
+   * 
    * @pre serverSocket != null
    * @pre threadPool != null
    */
@@ -421,9 +438,9 @@ public class BaseServer {
   }
 
   /**
-   * This function is a callback for the (Base/Vinci)ServerRunnable. It invokes the eval method
-   * of the appropriate VinciServable.  
-   *
+   * This function is a callback for the (Base/Vinci)ServerRunnable. It invokes the eval method of
+   * the appropriate VinciServable.
+   * 
    * @pre in != null
    */
   public Transportable eval(Transportable in, KeyValuePair header) {
@@ -437,9 +454,9 @@ public class BaseServer {
   }
 
   /**
-   * This is another callback for the (Base/Vinci)ServerRunnable that creates the document
-   * to be populated by the service with the request response.
-   *
+   * This is another callback for the (Base/Vinci)ServerRunnable that creates the document to be
+   * populated by the service with the request response.
+   * 
    * @return The document the service will populate to create the request response.
    */
   public Transportable makeTransportable() {

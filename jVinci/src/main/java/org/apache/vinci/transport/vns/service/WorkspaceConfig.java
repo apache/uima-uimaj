@@ -34,9 +34,11 @@ import org.apache.vinci.debug.Debug;
  * Represents a VNS Workspace.
  */
 public class WorkspaceConfig {
-  protected String    workspace = null;
-  protected ArrayList search    = null;
-  VNS                 parent    = null;
+  protected String workspace = null;
+
+  protected ArrayList search = null;
+
+  VNS parent = null;
 
   public WorkspaceConfig() {
     workspace = null;

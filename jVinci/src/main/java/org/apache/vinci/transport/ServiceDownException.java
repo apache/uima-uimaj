@@ -22,8 +22,8 @@ package org.apache.vinci.transport;
 import java.io.IOException;
 
 /**
- * Special exception type thrown when a socket connection to VNS or the desired Vinci service
- * could not be established.
+ * Special exception type thrown when a socket connection to VNS or the desired Vinci service could
+ * not be established.
  */
 public class ServiceDownException extends IOException {
   /**
@@ -33,8 +33,9 @@ public class ServiceDownException extends IOException {
 
   /**
    * Standard Constructor.
-   *
-   * @param message Provides details on the failure that caused the exception.
+   * 
+   * @param message
+   *          Provides details on the failure that caused the exception.
    */
   public ServiceDownException(String message) {
     super(message);

@@ -33,14 +33,15 @@ import org.apache.vinci.debug.Debug;
  * Runnable class used by BaseServer to concurrently service requests.
  */
 public class BaseServerRunnable implements Runnable {
-  private Socket                   socket;
-  private BaseServer               parent;
+  private Socket socket;
+
+  private BaseServer parent;
 
   private static final ThreadLocal THREAD_LOCAL_SOCKET = new ThreadLocal();
 
   /**
-   * Allows anyone in the calling chain of the 'run' method to get access to the socket being
-   * used in the Vinci connection via the ThreadLocal variable.  
+   * Allows anyone in the calling chain of the 'run' method to get access to the socket being used
+   * in the Vinci connection via the ThreadLocal variable.
    */
   public static Socket getSocket() {
     return (Socket) THREAD_LOCAL_SOCKET.get();
@@ -68,9 +69,9 @@ public class BaseServerRunnable implements Runnable {
         Transportable in = parent.makeTransportable();
         KeyValuePair header = null;
         try {
-          //long begin = System.currentTimeMillis(); // TEMP
+          // long begin = System.currentTimeMillis(); // TEMP
           header = in.fromStream(is);
-          //Debug.p("Elapsed fromStream: " + (System.currentTimeMillis() - begin));
+          // Debug.p("Elapsed fromStream: " + (System.currentTimeMillis() - begin));
         } catch (EOFException e) {
           break;
         }
@@ -85,10 +86,10 @@ public class BaseServerRunnable implements Runnable {
         }
         if (out != null) {
           // ^ Asynch services may choose not to return results.
-          //long begin = System.currentTimeMillis(); // TEMP
+          // long begin = System.currentTimeMillis(); // TEMP
           out.toStream(os);
           os.flush();
-          //Debug.p("Elapsed toStream: " + (System.currentTimeMillis() - begin));
+          // Debug.p("Elapsed toStream: " + (System.currentTimeMillis() - begin));
         }
       }
     } catch (IOException e) {

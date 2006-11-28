@@ -30,7 +30,8 @@ import java.util.StringTokenizer;
  */
 public class ServiceTree {
 
-  Object    value = null;
+  Object value = null;
+
   Hashtable children;
 
   public ServiceTree() {

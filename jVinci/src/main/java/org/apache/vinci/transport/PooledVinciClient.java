@@ -28,24 +28,31 @@ import org.apache.vinci.transport.context.VinciContext;
 /**
  * Maintains a pool of connections to a given service and allows thread-safe querying of that
  * service. This provides a set of sendAndReceive methods with signatures equivalent to those in
- * VinciClient, but unlike VinciClient, the methods can be invoked concurrently by multiple
- * threads.
+ * VinciClient, but unlike VinciClient, the methods can be invoked concurrently by multiple threads.
  */
 public class PooledVinciClient {
 
-  private VinciContext         context        = VinciContext.getGlobalContext();
-  private TransportableFactory factory        = VinciFrame.getVinciFrameFactory();
-  int                          connectTimeout = BaseClient.DEFAULT_CONNECT_TIMEOUT;
-  int                          socketTimeout  = BaseClient.DEFAULT_SOCKET_TIMEOUT;
+  private VinciContext context = VinciContext.getGlobalContext();
 
-  private String               serviceName;
-  private int                  maxPoolSize;
-  private VinciClient[]        availableClients;
-  private int                  availableClientsStartIndex;
-  boolean                      closed;
+  private TransportableFactory factory = VinciFrame.getVinciFrameFactory();
+
+  int connectTimeout = BaseClient.DEFAULT_CONNECT_TIMEOUT;
+
+  int socketTimeout = BaseClient.DEFAULT_SOCKET_TIMEOUT;
+
+  private String serviceName;
+
+  private int maxPoolSize;
+
+  private VinciClient[] availableClients;
+
+  private int availableClientsStartIndex;
+
+  boolean closed;
 
   /**
-   * Create a PooledVinciClient that will establish at most maxPoolSize connections to the designated service.
+   * Create a PooledVinciClient that will establish at most maxPoolSize connections to the
+   * designated service.
    */
   public PooledVinciClient(String serviceName, int maxPoolSize) {
     this.serviceName = serviceName;
@@ -56,7 +63,8 @@ public class PooledVinciClient {
   }
 
   /**
-   * Set a VinciContext that will be used by this PooledVinciClient instead of the default global context.
+   * Set a VinciContext that will be used by this PooledVinciClient instead of the default global
+   * context.
    */
   public void setContext(VinciContext context) {
     this.context = context;
@@ -106,7 +114,8 @@ public class PooledVinciClient {
    * Send a request to the service and receive the response, using the provided transportable
    * factory in place of the client-provided one. This method is tread safe.
    */
-  public Transportable sendAndReceive(Transportable in, TransportableFactory f) throws IOException, ServiceException {
+  public Transportable sendAndReceive(Transportable in, TransportableFactory f) throws IOException,
+          ServiceException {
     VinciClient c = getClientFromPool();
     try {
       return c.sendAndReceive(in, f);
@@ -119,8 +128,8 @@ public class PooledVinciClient {
    * Send a request to the service and receive the response, using the provided transportable
    * factory and socketTimeout in place of the client-provided ones. This method is tread safe.
    */
-  public Transportable sendAndReceive(Transportable in, TransportableFactory f, int socketTimeout) throws IOException,
-      ServiceException {
+  public Transportable sendAndReceive(Transportable in, TransportableFactory f, int socketTimeout)
+          throws IOException, ServiceException {
     VinciClient c = getClientFromPool();
     try {
       return c.sendAndReceive(in, f, socketTimeout);
@@ -130,10 +139,11 @@ public class PooledVinciClient {
   }
 
   /**
-   * Send a request to the service and receive the response, using the provided 
-   * socketTimeout in place of the client-provided one. This method is tread safe.
+   * Send a request to the service and receive the response, using the provided socketTimeout in
+   * place of the client-provided one. This method is tread safe.
    */
-  public Transportable sendAndReceive(Transportable in, int socketTimeout) throws IOException, ServiceException {
+  public Transportable sendAndReceive(Transportable in, int socketTimeout) throws IOException,
+          ServiceException {
     VinciClient c = getClientFromPool();
     try {
       return c.sendAndReceive(in, socketTimeout);
@@ -144,11 +154,12 @@ public class PooledVinciClient {
 
   /**
    * Close this pooled client. Blocked requests will return IOException, as will any requests
-   * following the invocation of this method. Once a pooled client is closed it cannot be
-   * reused.
-   *
-   * @param wait If true, this method will block until all in-progress requests have completed, otherwise
-   * this method will return immediately (though in progress requests will still be allowed to complete)
+   * following the invocation of this method. Once a pooled client is closed it cannot be reused.
+   * 
+   * @param wait
+   *          If true, this method will block until all in-progress requests have completed,
+   *          otherwise this method will return immediately (though in progress requests will still
+   *          be allowed to complete)
    */
   public void close(boolean wait) {
     ArrayList closeUs = new ArrayList();
@@ -188,9 +199,10 @@ public class PooledVinciClient {
    * Retrieve a client from the pool, blocking for at most "socketTimeout" seconds. If the wait
    * block time is exceeded, an IOException will be thrown. Connections obtained by this method
    * *must* be released by calling releaseClient().
-   *
-   * @throws IOException if the wait() time before a connectoin becomes available exceeds the
-   * socketTimeout value, or if thrown by a failed service connection attempt.
+   * 
+   * @throws IOException
+   *           if the wait() time before a connectoin becomes available exceeds the socketTimeout
+   *           value, or if thrown by a failed service connection attempt.
    */
   private VinciClient getClientFromPool() throws IOException {
     VinciClient client;

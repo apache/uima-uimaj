@@ -28,8 +28,10 @@ import java.util.Stack;
 public class ServiceStack {
 
   String name;
-  Stack  stack;
-  int    toplevel;
+
+  Stack stack;
+
+  int toplevel;
 
   public ServiceStack(String name) {
     this.name = name;
@@ -41,12 +43,11 @@ public class ServiceStack {
     toplevel = 0;
   }
 
-  /* Return the Vinci view of the level
-   * No specification (null) or "none" -> -1 (highest)
-   * "all" -> -2 (invalid / indication to concatenate all)
-   * Positive int specification -> actual level from bottom of stack
-   * Negative int specification -> level from top of stack
-   * "new" or "next" -> one above the toplevel
+  /*
+   * Return the Vinci view of the level No specification (null) or "none" -> -1 (highest) "all" ->
+   * -2 (invalid / indication to concatenate all) Positive int specification -> actual level from
+   * bottom of stack Negative int specification -> level from top of stack "new" or "next" -> one
+   * above the toplevel
    */
 
   public static int getAbsLevel(String level) {
@@ -106,8 +107,9 @@ public class ServiceStack {
     return absLevel("" + i);
   }
 
-  /* Return the mapping into the ArrayList
-   * Returns -1 if the number cannot be mapped to a positive val
+  /*
+   * Return the mapping into the ArrayList Returns -1 if the number cannot be mapped to a positive
+   * val
    */
   private int actualLevel(int level) {
     if (level < -1)
@@ -116,8 +118,8 @@ public class ServiceStack {
     return level + 1;
   }
 
-  /* Expand the stack to the specified index level 
-   * level represents the actual vector index
+  /*
+   * Expand the stack to the specified index level level represents the actual vector index
    */
   public void expand(int level) {
 
@@ -129,8 +131,9 @@ public class ServiceStack {
 
   }
 
-  /* Get the set of values above the specified Vinci level 
-   * Returns an Object [] of those values (Service [])
+  /*
+   * Get the set of values above the specified Vinci level Returns an Object [] of those values
+   * (Service [])
    */
   public Service[] get(String mylevel) {
     int level = absLevel(mylevel);
@@ -178,9 +181,9 @@ public class ServiceStack {
     return get("" + mylevel);
   }
 
-  /* Updates the level fields in the Service and makes them
-   * consistent i.e. transforms the vinciLevel string and the
-   * actualLevel int if need be.
+  /*
+   * Updates the level fields in the Service and makes them consistent i.e. transforms the
+   * vinciLevel string and the actualLevel int if need be.
    */
   public void makeConsistent(Service S) {
     if (S.actualLevel < -1) {
@@ -192,8 +195,8 @@ public class ServiceStack {
     }
   }
 
-  /* Add the specified service to the stack
-   * The level in the Service must be a non-index level
+  /*
+   * Add the specified service to the stack The level in the Service must be a non-index level
    */
   public void add(Service S) {
     makeConsistent(S);

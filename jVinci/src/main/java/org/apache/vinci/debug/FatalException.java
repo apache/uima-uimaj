@@ -20,8 +20,8 @@
 package org.apache.vinci.debug;
 
 /**
- * The FatalException class is used to convert any checked exception into an unchecked exception
- * to terminate the current thread due to unrecoverable and unexpected error conditions.
+ * The FatalException class is used to convert any checked exception into an unchecked exception to
+ * terminate the current thread due to unrecoverable and unexpected error conditions.
  * 
  */
 public class FatalException extends RuntimeException {
@@ -29,13 +29,15 @@ public class FatalException extends RuntimeException {
    * 
    */
   private static final long serialVersionUID = -8889142805115637932L;
-  private Throwable         original_exception;
+
+  private Throwable original_exception;
 
   /**
-   * Create an unchecked exception. This should be the default unchecked exception
-   * used in Vinci to indicate unrecoverable errors due to unexpected conditions.
-   *
-   * @param message A textual description of the error.
+   * Create an unchecked exception. This should be the default unchecked exception used in Vinci to
+   * indicate unrecoverable errors due to unexpected conditions.
+   * 
+   * @param message
+   *          A textual description of the error.
    */
   public FatalException(String message) {
     super(message);
@@ -43,10 +45,11 @@ public class FatalException extends RuntimeException {
   }
 
   /**
-   * Convert an exception into an unchecked exception, after appropriately
-   * reporting the unchecked exception to the error stream.
+   * Convert an exception into an unchecked exception, after appropriately reporting the unchecked
+   * exception to the error stream.
    * 
-   * @param e The exception to convert to an unchecked FatalException.
+   * @param e
+   *          The exception to convert to an unchecked FatalException.
    * 
    * @pre e != null
    */
@@ -57,11 +60,10 @@ public class FatalException extends RuntimeException {
   }
 
   /**
-   * Return the original checked exception that was converted into an unchecked exception (if
-   * any)
-   *
-   * @return The original exception, or null if this fatal exception was not the result of
-   * a checked exception conversion.
+   * Return the original checked exception that was converted into an unchecked exception (if any)
+   * 
+   * @return The original exception, or null if this fatal exception was not the result of a checked
+   *         exception conversion.
    */
   public Throwable getOriginalException() {
     return original_exception;

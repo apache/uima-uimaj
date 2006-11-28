@@ -20,10 +20,10 @@
 package org.apache.vinci.transport;
 
 /**
- * This is a special VinciFrame that simplifies returning error or exceptional conditions.  If a
+ * This is a special VinciFrame that simplifies returning error or exceptional conditions. If a
  * service returns an error frame, then the client's request method will in response throw an
- * exception with the provided error_message. Returning an error frame from VinciServable.eval()
- * has the same effect as throwing a ServiceException.
+ * exception with the provided error_message. Returning an error frame from VinciServable.eval() has
+ * the same effect as throwing a ServiceException.
  */
 public class ErrorFrame extends VinciFrame {
 

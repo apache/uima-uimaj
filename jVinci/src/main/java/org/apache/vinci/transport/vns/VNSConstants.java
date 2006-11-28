@@ -24,12 +24,18 @@ package org.apache.vinci.transport.vns;
  */
 public class VNSConstants {
   public static final String SERVEON_COMMAND = "serveon";
+
   public static final String RESOLVE_COMMAND = "resolve";
 
-  public static final String SERVICE_KEY     = "SERVICE";
-  public static final String SERVER_KEY      = "SERVER";
-  public static final String HOST_KEY        = "HOST";
-  public static final String PORT_KEY        = "PORT";
-  public static final String LEVEL_KEY       = "LEVEL";
-  public static final String INSTANCE_KEY    = "INSTANCE";
+  public static final String SERVICE_KEY = "SERVICE";
+
+  public static final String SERVER_KEY = "SERVER";
+
+  public static final String HOST_KEY = "HOST";
+
+  public static final String PORT_KEY = "PORT";
+
+  public static final String LEVEL_KEY = "LEVEL";
+
+  public static final String INSTANCE_KEY = "INSTANCE";
 }

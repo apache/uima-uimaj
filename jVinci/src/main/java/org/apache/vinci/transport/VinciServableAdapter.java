@@ -20,8 +20,8 @@
 package org.apache.vinci.transport;
 
 /**
- * Adapter class for VinciServable, which provides a do-nothing cleanExit() method and
- * a TransportableFactory that returns a VinciFrame.
+ * Adapter class for VinciServable, which provides a do-nothing cleanExit() method and a
+ * TransportableFactory that returns a VinciFrame.
  */
 public abstract class VinciServableAdapter implements VinciServable {
   public abstract Transportable eval(Transportable in) throws ServiceException;

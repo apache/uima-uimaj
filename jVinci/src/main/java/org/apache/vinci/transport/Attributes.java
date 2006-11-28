@@ -35,8 +35,9 @@ public class Attributes extends VinciFrame {
   /**
    * This method throws an unchecked exception since you should never add non-leaf valued
    * attributes.
-   *
-   * @exception UnsupportedOperationException thrown unconditionally.
+   * 
+   * @exception UnsupportedOperationException
+   *              thrown unconditionally.
    */
   public VinciFrame fset(String key, Frame val) {
     throw new UnsupportedOperationException("Can't set frame as attribute value.");
@@ -45,8 +46,9 @@ public class Attributes extends VinciFrame {
   /**
    * This method throws an unchecked exception since you should never add non-leaf valued
    * attributes.
-   *
-   * @exception UnsupportedOperationException thrown unconditionally.
+   * 
+   * @exception UnsupportedOperationException
+   *              thrown unconditionally.
    */
   public Frame fadd(String key, Frame val) {
     throw new UnsupportedOperationException("Can't add frame as attribute value.");
@@ -54,8 +56,9 @@ public class Attributes extends VinciFrame {
 
   /**
    * This method throws an unchecked exception since valueless attributes are undefined.
-   *
-   * @exception UnsupportedOperationException thrown unconditionally.
+   * 
+   * @exception UnsupportedOperationException
+   *              thrown unconditionally.
    */
   public Frame fadd(String key) {
     throw new UnsupportedOperationException("Can't add empty attribute values.");

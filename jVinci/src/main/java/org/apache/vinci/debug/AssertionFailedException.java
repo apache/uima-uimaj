@@ -28,7 +28,8 @@ public class AssertionFailedException extends RuntimeException {
   /**
    * Standard constructor.
    * 
-   * @param message Provides a description of the assertion test that failed.
+   * @param message
+   *          Provides a description of the assertion test that failed.
    */
   public AssertionFailedException(String message) {
     super(message);

@@ -41,8 +41,11 @@ public class TransportableConverter {
   /**
    * Convert a transportable to the type of transportable returned by a factory.
    * 
-   * @param convert_me The transportable to get converted. Must implement toStream().
-   * @param factory The factory used to create the return Transportable, which must implement fromStream().
+   * @param convert_me
+   *          The transportable to get converted. Must implement toStream().
+   * @param factory
+   *          The factory used to create the return Transportable, which must implement
+   *          fromStream().
    * 
    * @pre convert_me != null
    * @pre factory != null
@@ -56,8 +59,10 @@ public class TransportableConverter {
   /**
    * Copy the contents of one transportable into the other transportable.
    * 
-   * @param convert_me The transportable to get converted. Must implement toStream().
-   * @param into_me The transportable to get populated. Must implement fromStream().
+   * @param convert_me
+   *          The transportable to get converted. Must implement toStream().
+   * @param into_me
+   *          The transportable to get populated. Must implement fromStream().
    * 
    * @pre convert_me != null
    * @pre into_me != null
@@ -82,4 +87,4 @@ public class TransportableConverter {
     }
   }
 
-} //class
+} // class

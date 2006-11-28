@@ -34,20 +34,20 @@ import org.apache.vinci.transport.VinciFrame;
 import org.apache.vinci.transport.vns.VNSConstants;
 
 /**
- * Specialized document (Frame) for representing the result of resolving a service name to
- * host/port through VNS. Also provides utility methods for manipulating qualified/unqualified
- * service names. This class is used by VinciClient to locate the physical location of the 
- * requested service from its logical service name.
+ * Specialized document (Frame) for representing the result of resolving a service name to host/port
+ * through VNS. Also provides utility methods for manipulating qualified/unqualified service names.
+ * This class is used by VinciClient to locate the physical location of the requested service from
+ * its logical service name.
  */
 public class ResolveResult extends Frame {
 
-  public int                         priority = -1;
+  public int priority = -1;
 
-  static public TransportableFactory factory  = new TransportableFactory() {
-                                                public Transportable makeTransportable() {
-                                                  return new ResolveResult();
-                                                }
-                                              };
+  static public TransportableFactory factory = new TransportableFactory() {
+    public Transportable makeTransportable() {
+      return new ResolveResult();
+    }
+  };
 
   /**
    * Strip the qualifications from this qualified service name.
@@ -65,8 +65,8 @@ public class ResolveResult extends Frame {
   }
 
   /**
-   * Check whether a service_name has qualifications (that is, any or all of level, host,
-   * instance are explicitly specified.) 
+   * Check whether a service_name has qualifications (that is, any or all of level, host, instance
+   * are explicitly specified.)
    * 
    * @pre service_name != null
    */
@@ -78,8 +78,8 @@ public class ResolveResult extends Frame {
   }
 
   /**
-   * Create a document representing the VNS resolve query for the specified service.
-   * This method accepts either qualified or unqualified service names.
+   * Create a document representing the VNS resolve query for the specified service. This method
+   * accepts either qualified or unqualified service names.
    * 
    * @pre service_name != null
    */
@@ -116,9 +116,9 @@ public class ResolveResult extends Frame {
   }
 
   /**
-   * Create a document representing the VNS resolve query for the highest priority service(s)
-   * whose priority is strictly below the specified priority. This method accepts either
-   * qualified or unqualified service names.  
+   * Create a document representing the VNS resolve query for the highest priority service(s) whose
+   * priority is strictly below the specified priority. This method accepts either qualified or
+   * unqualified service names.
    * 
    * @pre service_name != null
    */
@@ -134,11 +134,12 @@ public class ResolveResult extends Frame {
   }
 
   private int begin;
+
   private int current;
 
   /**
-   * Initialize the service listing iterator. This initializes to a random spot
-   * to implement simple load balancing across multiple equivalent service instances.
+   * Initialize the service listing iterator. This initializes to a random spot to implement simple
+   * load balancing across multiple equivalent service instances.
    */
   public void initializeIterator() {
     // Initialize the beginning to a random slot.
@@ -166,13 +167,15 @@ public class ResolveResult extends Frame {
 
   static public class ServiceLocator extends Frame {
     public String host;
-    public int    port;
-    public int    instance;
+
+    public int port;
+
+    public int instance;
 
     // Note that "priority" is a member of ResolveResult instead of this member class, since
     // all ServiceLocators for a particular query will always have the same priority.
 
-    /** 
+    /**
      * Implement the Frame add() callback.
      * 
      * @pre key != null
@@ -194,7 +197,8 @@ public class ResolveResult extends Frame {
    * 
    * @pre key != null
    * @pre val != null
-   * @pre ((val instanceof ServiceLocator && key.equals(VNSConstants.SERVER_KEY)) || (val instanceof FrameLeaf && key.equals(VNSConstants.LEVEL_KEY)))
+   * @pre ((val instanceof ServiceLocator && key.equals(VNSConstants.SERVER_KEY)) || (val instanceof
+   *      FrameLeaf && key.equals(VNSConstants.LEVEL_KEY)))
    */
   public void add(String key, FrameComponent val) {
     if (key.equals(VNSConstants.SERVER_KEY)) {
@@ -213,7 +217,7 @@ public class ResolveResult extends Frame {
   }
   // END Frame implementation
 
-  /*static public void main(String[] args_) {
-   System.out.println(composeQuery(args_[0]).toXML());
-   }*/
+  /*
+   * static public void main(String[] args_) { System.out.println(composeQuery(args_[0]).toXML()); }
+   */
 }

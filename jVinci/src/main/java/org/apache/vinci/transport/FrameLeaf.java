@@ -29,28 +29,29 @@ import org.apache.vinci.transport.util.Base64FormatException;
 import org.apache.vinci.transport.util.UTFConverter;
 
 /**
- * Class encapsulating leaf data from a Frame. Internally, leaf data is always represented as
- * UTF-8. Most people will never have to use this class directly unless implementing specialized
- * Frame document types.
- *
- * While FrameLeaf is effectively an immutable class, any descendents that implement
- * setAttributes of the base class FrameComponent are not likely to be immutable.
+ * Class encapsulating leaf data from a Frame. Internally, leaf data is always represented as UTF-8.
+ * Most people will never have to use this class directly unless implementing specialized Frame
+ * document types.
+ * 
+ * While FrameLeaf is effectively an immutable class, any descendents that implement setAttributes
+ * of the base class FrameComponent are not likely to be immutable.
  */
 
 public class FrameLeaf extends FrameComponent {
   /**
-   * If you call toString() on a FrameLeaf which contains binary data, you get this
-   * string as the result.
+   * If you call toString() on a FrameLeaf which contains binary data, you get this string as the
+   * result.
    */
   static public final String NOT_UTF8_ERROR = "*** ERROR: Data not utf8 ***";
-  private final byte[]       data;
+
+  private final byte[] data;
 
   /**
-   * Create a frameleaf from existing UTF-8 (or true binary) data.  
-   *
-   * WARNING: Does not copy the array.  Caller is responsible for ensuring the provided byte
-   * array cannot be modified by external code.  
-   *
+   * Create a frameleaf from existing UTF-8 (or true binary) data.
+   * 
+   * WARNING: Does not copy the array. Caller is responsible for ensuring the provided byte array
+   * cannot be modified by external code.
+   * 
    * @pre mydata != null
    */
   public FrameLeaf(byte[] mydata, boolean encode) {
@@ -71,12 +72,10 @@ public class FrameLeaf extends FrameComponent {
 
   /**
    * This method does NOT support null values in the array.
-   *
+   * 
    * @pre mystring != null
-   * @pre {
-   *     for (int i = 0; i < mystring.length; i++)
-   *         $assert(mystring[i] != null, "array elements are non-null"); 
-   * }
+   * @pre { for (int i = 0; i < mystring.length; i++) $assert(mystring[i] != null, "array elements
+   *      are non-null"); }
    */
   public FrameLeaf(String[] mystring) {
     String separator = "#";
@@ -142,7 +141,7 @@ public class FrameLeaf extends FrameComponent {
   }
 
   /**
-   * @pre myint != null 
+   * @pre myint != null
    */
   public FrameLeaf(int[] myint) {
     StringBuffer add_me = new StringBuffer();
@@ -161,7 +160,7 @@ public class FrameLeaf extends FrameComponent {
   }
 
   /**
-   * @pre mylong != null 
+   * @pre mylong != null
    */
   public FrameLeaf(long[] mylong) {
     StringBuffer add_me = new StringBuffer();
@@ -249,8 +248,9 @@ public class FrameLeaf extends FrameComponent {
 
   /**
    * Converts the B64 encoded data to binary and returns it.
-   *
-   * @exception LeafCastException if the data was not base64 encoded.
+   * 
+   * @exception LeafCastException
+   *              if the data was not base64 encoded.
    */
   public byte[] toBytes() {
     try {
@@ -262,8 +262,9 @@ public class FrameLeaf extends FrameComponent {
 
   /**
    * Converts the UTF-8 data to a Java long type.
-   *
-   * @exception LeafCastException if the data could not be converted to long.
+   * 
+   * @exception LeafCastException
+   *              if the data could not be converted to long.
    */
   public long toLong() {
     try {
@@ -277,8 +278,9 @@ public class FrameLeaf extends FrameComponent {
 
   /**
    * Converts the UTF-8 data to a Java array of longs.
-   *
-   * @exception LeafCastException if the data could not be convered to a long array.
+   * 
+   * @exception LeafCastException
+   *              if the data could not be convered to a long array.
    */
   public long[] toLongArray() {
     try {
@@ -302,8 +304,9 @@ public class FrameLeaf extends FrameComponent {
 
   /**
    * Converts the UTF-8 data to a Java int type.
-   *
-   * @exception LeafCastException if the data could not be converted to int.
+   * 
+   * @exception LeafCastException
+   *              if the data could not be converted to int.
    */
   public int toInt() {
     try {
@@ -317,8 +320,9 @@ public class FrameLeaf extends FrameComponent {
 
   /**
    * Converts the UTF-8 data to a Java array of ints.
-   *
-   * @exception LeafCastException if the data could not be convered to an int array.
+   * 
+   * @exception LeafCastException
+   *              if the data could not be convered to an int array.
    */
   public int[] toIntArray() {
     try {
@@ -342,8 +346,9 @@ public class FrameLeaf extends FrameComponent {
 
   /**
    * Converts the UTF-8 data to a Java float type.
-   *
-   * @exception LeafCastException if the data could not be converted to float.
+   * 
+   * @exception LeafCastException
+   *              if the data could not be converted to float.
    */
   public float toFloat() {
     try {
@@ -357,8 +362,9 @@ public class FrameLeaf extends FrameComponent {
 
   /**
    * Converts the UTF-8 data to a Java array of float.
-   *
-   * @exception LeafCastException if the data could not be convered to a float array.
+   * 
+   * @exception LeafCastException
+   *              if the data could not be convered to a float array.
    */
   public float[] toFloatArray() {
     try {
@@ -382,8 +388,9 @@ public class FrameLeaf extends FrameComponent {
 
   /**
    * Converts the UTF-8 data to a Java double type.
-   *
-   * @exception LeafCastException if the data could not be converted to double.
+   * 
+   * @exception LeafCastException
+   *              if the data could not be converted to double.
    */
   public double toDouble() {
     try {
@@ -397,8 +404,9 @@ public class FrameLeaf extends FrameComponent {
 
   /**
    * Converts the UTF-8 data to a Java array of double.
-   *
-   * @exception LeafCastException if the data could not be convered to a double array.
+   * 
+   * @exception LeafCastException
+   *              if the data could not be convered to a double array.
    */
   public double[] toDoubleArray() {
     try {
@@ -422,9 +430,9 @@ public class FrameLeaf extends FrameComponent {
 
   /**
    * Converts the UTF-8 data to a Java boolean.
-   *
-   * @exception LeafCastException if the underlying data was not utf-8 (which in general
-   * should not happen).
+   * 
+   * @exception LeafCastException
+   *              if the underlying data was not utf-8 (which in general should not happen).
    */
   public boolean toBoolean() {
     try {

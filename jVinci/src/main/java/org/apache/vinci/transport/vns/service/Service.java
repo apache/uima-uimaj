@@ -18,6 +18,7 @@
  */
 
 package org.apache.vinci.transport.vns.service;
+
 import java.net.InetAddress;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -28,10 +29,13 @@ import org.apache.vinci.transport.VinciFrame;
 public class Service implements ServiceInterface {
 
   // Attributes defined
-  protected int       port        = -1, minport, maxport, instance;
-  protected String    realhost, host, qhost, name, level;
-  public int          actualLevel = -2;
-  protected boolean   meta;
+  protected int port = -1, minport, maxport, instance;
+
+  protected String realhost, host, qhost, name, level;
+
+  public int actualLevel = -2;
+
+  protected boolean meta;
 
   protected Hashtable dict;
 
@@ -134,8 +138,8 @@ public class Service implements ServiceInterface {
 
     return (o.toString().equals(toString()));
   }
-  
-  public int hashCode(){
+
+  public int hashCode() {
     return toString().hashCode();
   }
 
@@ -203,7 +207,7 @@ public class Service implements ServiceInterface {
       S = (String) keys[i];
 
       O = dict.get(S);
-      //if (Frame.isFrame(O))
+      // if (Frame.isFrame(O))
       if (1 == 0) // hack to get it to compile - can't find the isFrame() method
         F.fadd(S, (Frame) O);
       else
@@ -231,7 +235,7 @@ public class Service implements ServiceInterface {
         str.append("   " + ((Frame) value).toXML());
       } else {
         str.append("   <" + xmlquote(key.toString()) + ">" + xmlquote(value.toString()) + "</"
-            + xmlquote(key.toString()) + ">\n");
+                + xmlquote(key.toString()) + ">\n");
       }
     }
     str.append("</SERVICE>\n");
@@ -281,6 +285,7 @@ public class Service implements ServiceInterface {
   }
 
   public String toString() {
-    return "NAME/REALHOST/LEVEL/INSTANCE=" + name + "/" + getHostByName(host) + "/" + level + "/" + instance;
+    return "NAME/REALHOST/LEVEL/INSTANCE=" + name + "/" + getHostByName(host) + "/" + level + "/"
+            + instance;
   }
 }
