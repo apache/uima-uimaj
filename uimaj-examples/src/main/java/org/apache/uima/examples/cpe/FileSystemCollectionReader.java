@@ -86,8 +86,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
     // if input directory does not exist or is not a directory, throw exception
     if (!directory.exists() || !directory.isDirectory()) {
       throw new ResourceInitializationException(ResourceConfigurationException.DIRECTORY_NOT_FOUND,
-                      new Object[] { PARAM_INPUTDIR, this.getMetaData().getName(),
-                          directory.getPath() });
+              new Object[] { PARAM_INPUTDIR, this.getMetaData().getName(), directory.getPath() });
     }
 
     // get list of files (not subdirectories) in the specified directory

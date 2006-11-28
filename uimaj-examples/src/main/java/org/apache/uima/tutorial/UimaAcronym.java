@@ -19,83 +19,104 @@
 
 package org.apache.uima.tutorial;
 
-import org.apache.uima.jcas.impl.JCas; 
+import org.apache.uima.jcas.impl.JCas;
 import org.apache.uima.jcas.cas.TOP_Type;
 
 import org.apache.uima.jcas.tcas.Annotation;
 
-
-/** 
- * Updated by JCasGen Mon Nov 29 15:02:38 EST 2004
- * XML source: C:/Program Files/apache/uima/examples/descriptors/tutorial/ex6/TutorialTypeSystem.xml
- * @generated */
+/**
+ * Updated by JCasGen Mon Nov 29 15:02:38 EST 2004 XML source: C:/Program
+ * Files/apache/uima/examples/descriptors/tutorial/ex6/TutorialTypeSystem.xml
+ * 
+ * @generated
+ */
 public class UimaAcronym extends Annotation {
-  /** @generated
-   * @ordered 
+  /**
+   * @generated
+   * @ordered
    */
   public final static int typeIndexID = JCas.getNextIndex();
-  /** @generated
-   * @ordered 
+
+  /**
+   * @generated
+   * @ordered
    */
   public final static int type = typeIndexID;
-  /** @generated  */
-  public              int getTypeIndexID() {return typeIndexID;}
- 
-  /** Never called.  Disable default constructor
-   * @generated */
-  protected UimaAcronym() {}
-    
-  /** Internal - constructor used by generator 
-   * @generated */
+
+  /** @generated */
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  /**
+   * Never called. Disable default constructor
+   * 
+   * @generated
+   */
+  protected UimaAcronym() {
+  }
+
+  /**
+   * Internal - constructor used by generator
+   * 
+   * @generated
+   */
   public UimaAcronym(int addr, TOP_Type type) {
     super(addr, type);
     readObject();
   }
-  
+
   /** @generated */
   public UimaAcronym(JCas jcas) {
     super(jcas);
-    readObject();   
-  } 
-  
+    readObject();
+  }
+
   public UimaAcronym(JCas jcas, int begin, int end) {
     super(jcas);
     setBegin(begin);
     setEnd(end);
     readObject();
-  }   
+  }
 
-  /** <!-- begin-user-doc -->
-    * Write your own initialization here
-    * <!-- end-user-doc -->
-  @generated modifiable */
-  private void readObject() {}
-     
- 
-    
-  //*--------------*
-  //* Feature: expandedForm
+  /**
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
+   * 
+   * @generated modifiable
+   */
+  private void readObject() {
+  }
 
-  /** getter for expandedForm - gets 
-   * @generated */
+  // *--------------*
+  // * Feature: expandedForm
+
+  /**
+   * getter for expandedForm - gets
+   * 
+   * @generated
+   */
   public String getExpandedForm() {
-    if (UimaAcronym_Type.featOkTst && ((UimaAcronym_Type)jcasType).casFeat_expandedForm == null)
+    if (UimaAcronym_Type.featOkTst && ((UimaAcronym_Type) jcasType).casFeat_expandedForm == null)
       JCas.throwFeatMissing("expandedForm", "org.apache.uima.tutorial.UimaAcronym");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((UimaAcronym_Type)jcasType).casFeatCode_expandedForm);}
-    
-  /** setter for expandedForm - sets  
-   * @generated */
+    return jcasType.ll_cas.ll_getStringValue(addr,
+            ((UimaAcronym_Type) jcasType).casFeatCode_expandedForm);
+  }
+
+  /**
+   * setter for expandedForm - sets
+   * 
+   * @generated
+   */
   public void setExpandedForm(String v) {
-    if (UimaAcronym_Type.featOkTst && ((UimaAcronym_Type)jcasType).casFeat_expandedForm == null)
+    if (UimaAcronym_Type.featOkTst && ((UimaAcronym_Type) jcasType).casFeat_expandedForm == null)
       JCas.throwFeatMissing("expandedForm", "org.apache.uima.tutorial.UimaAcronym");
-    jcasType.ll_cas.ll_setStringValue(addr, ((UimaAcronym_Type)jcasType).casFeatCode_expandedForm, v);}    
+    jcasType.ll_cas.ll_setStringValue(addr, ((UimaAcronym_Type) jcasType).casFeatCode_expandedForm,
+            v);
+  }
 
   /** Custom constructor taking all parameters */
-	public UimaAcronym(JCas jcas, int start, int end, String expandedForm)
-	{ super(jcas, start, end);
-		setExpandedForm(expandedForm);
-	}
+  public UimaAcronym(JCas jcas, int start, int end, String expandedForm) {
+    super(jcas, start, end);
+    setExpandedForm(expandedForm);
+  }
 }
-  
-
-    

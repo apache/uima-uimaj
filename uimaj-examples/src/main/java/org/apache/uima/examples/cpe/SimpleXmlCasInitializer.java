@@ -86,7 +86,7 @@ public class SimpleXmlCasInitializer extends CasInitializer_ImplBase {
       inputSource = new InputSource((InputStream) aObj);
     } else {
       throw new CollectionException(CollectionException.INCORRECT_INPUT_TO_CAS_INITIALIZER,
-                      new Object[] { InputStream.class.getName(), aObj.getClass().getName() });
+              new Object[] { InputStream.class.getName(), aObj.getClass().getName() });
     }
     // create SAX ContentHandler that populates CAS
     SaxHandler handler = new SaxHandler(aCAS);
@@ -126,7 +126,7 @@ public class SimpleXmlCasInitializer extends CasInitializer_ImplBase {
      *      java.lang.String, org.xml.sax.Attributes)
      */
     public void startElement(String uri, String localName, String qName, Attributes attributes)
-                    throws SAXException {
+            throws SAXException {
       if (mInsideTextTag) {
         mBuf.append('<').append(qName).append('>');
       } else if (qName.equalsIgnoreCase(mXmlTagContainingText)) {

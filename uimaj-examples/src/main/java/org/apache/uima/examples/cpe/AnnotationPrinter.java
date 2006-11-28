@@ -73,16 +73,15 @@ public class AnnotationPrinter extends CasConsumer_ImplBase implements CasObject
     // Output file should be specified in the descriptor
     if (oPath == null) {
       throw new ResourceInitializationException(
-                      ResourceInitializationException.CONFIG_SETTING_ABSENT,
-                      new Object[] { "outputFile" });
+              ResourceInitializationException.CONFIG_SETTING_ABSENT, new Object[] { "outputFile" });
     }
     // If specified output directory does not exist, try to create it
     outFile = new File(oPath.trim());
     if (outFile.getParentFile() != null && !outFile.getParentFile().exists()) {
       if (!outFile.getParentFile().mkdirs())
         throw new ResourceInitializationException(
-                        ResourceInitializationException.RESOURCE_DATA_NOT_VALID, new Object[] {
-                            oPath, "outputFile" });
+                ResourceInitializationException.RESOURCE_DATA_NOT_VALID, new Object[] { oPath,
+                    "outputFile" });
     }
     try {
       fileWriter = new FileWriter(outFile);
@@ -115,7 +114,7 @@ public class AnnotationPrinter extends CasConsumer_ImplBase implements CasObject
     boolean titleP = false;
     String docUri = null;
     Iterator it = jcas.getJFSIndexRepository().getAnnotationIndex(SourceDocumentInformation.type)
-                    .iterator();
+            .iterator();
     if (it.hasNext()) {
       SourceDocumentInformation srcDocInfo = (SourceDocumentInformation) it.next();
       docUri = srcDocInfo.getUri();
@@ -163,7 +162,7 @@ public class AnnotationPrinter extends CasConsumer_ImplBase implements CasObject
    * @see org.apache.uima.collection.CasConsumer#batchProcessComplete(ProcessTrace)
    */
   public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
-                  IOException {
+          IOException {
     // nothing to do in this case as AnnotationPrinter doesnot do
     // anything cumulatively
   }
@@ -180,7 +179,7 @@ public class AnnotationPrinter extends CasConsumer_ImplBase implements CasObject
    * @see org.apache.uima.collection.CasConsumer#collectionProcessComplete(ProcessTrace)
    */
   public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
-                  IOException {
+          IOException {
     if (fileWriter != null) {
       fileWriter.close();
     }
@@ -211,8 +210,8 @@ public class AnnotationPrinter extends CasConsumer_ImplBase implements CasObject
         if (oFile.getParentFile() != null && !oFile.getParentFile().exists()) {
           if (!oFile.getParentFile().mkdirs())
             throw new ResourceConfigurationException(
-                            ResourceInitializationException.RESOURCE_DATA_NOT_VALID, new Object[] {
-                                oPath, "outputFile" });
+                    ResourceInitializationException.RESOURCE_DATA_NOT_VALID, new Object[] { oPath,
+                        "outputFile" });
         }
         fileWriter = new FileWriter(oFile);
       } catch (IOException e) {

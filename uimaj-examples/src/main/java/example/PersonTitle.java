@@ -19,76 +19,96 @@
 
 package example;
 
-import org.apache.uima.jcas.impl.JCas; 
+import org.apache.uima.jcas.impl.JCas;
 import org.apache.uima.jcas.cas.TOP_Type;
 
 import org.apache.uima.jcas.tcas.Annotation;
 
-
-/** A Personal Title.
- * Updated by JCasGen Mon May 23 17:48:43 EDT 2005
- * XML source: c:\a\eclipse\301jxe\jedii_examples\descriptors\analysis_engine\NamesAndPersonTitles_TAE.xml
- * @generated */
+/**
+ * A Personal Title. Updated by JCasGen Mon May 23 17:48:43 EDT 2005 XML source:
+ * c:\a\eclipse\301jxe\jedii_examples\descriptors\analysis_engine\NamesAndPersonTitles_TAE.xml
+ * 
+ * @generated
+ */
 public class PersonTitle extends Annotation {
-  /** @generated
-   * @ordered 
+  /**
+   * @generated
+   * @ordered
    */
   public final static int typeIndexID = JCas.getNextIndex();
-  /** @generated
-   * @ordered 
+
+  /**
+   * @generated
+   * @ordered
    */
   public final static int type = typeIndexID;
-  /** @generated  */
-  public              int getTypeIndexID() {return typeIndexID;}
- 
-  /** Never called.  Disable default constructor
-   * @generated */
-  protected PersonTitle() {}
-    
-  /** Internal - constructor used by generator 
-   * @generated */
+
+  /** @generated */
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  /**
+   * Never called. Disable default constructor
+   * 
+   * @generated
+   */
+  protected PersonTitle() {
+  }
+
+  /**
+   * Internal - constructor used by generator
+   * 
+   * @generated
+   */
   public PersonTitle(int addr, TOP_Type type) {
     super(addr, type);
     readObject();
   }
-  
+
   /** @generated */
   public PersonTitle(JCas jcas) {
     super(jcas);
-    readObject();   
-  } 
-  
+    readObject();
+  }
+
   public PersonTitle(JCas jcas, int begin, int end) {
     super(jcas);
     setBegin(begin);
     setEnd(end);
     readObject();
-  }   
-
-  /** <!-- begin-user-doc -->
-    * Write your own initialization here
-    * <!-- end-user-doc -->
-  @generated modifiable */
-  private void readObject() {}
-     
- 
-    
-  //*--------------*
-  //* Feature: Kind
-
-  /** getter for Kind - gets The kind of title - Civilian, Military, or Government.
-   * @generated */
-  public String getKind() {
-    if (PersonTitle_Type.featOkTst && ((PersonTitle_Type)jcasType).casFeat_Kind == null)
-      JCas.throwFeatMissing("Kind", "example.PersonTitle");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((PersonTitle_Type)jcasType).casFeatCode_Kind);}
-    
-  /** setter for Kind - sets The kind of title - Civilian, Military, or Government. 
-   * @generated */
-  public void setKind(String v) {
-    if (PersonTitle_Type.featOkTst && ((PersonTitle_Type)jcasType).casFeat_Kind == null)
-      JCas.throwFeatMissing("Kind", "example.PersonTitle");
-    jcasType.ll_cas.ll_setStringValue(addr, ((PersonTitle_Type)jcasType).casFeatCode_Kind, v);}    
   }
 
-    
+  /**
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
+   * 
+   * @generated modifiable
+   */
+  private void readObject() {
+  }
+
+  // *--------------*
+  // * Feature: Kind
+
+  /**
+   * getter for Kind - gets The kind of title - Civilian, Military, or Government.
+   * 
+   * @generated
+   */
+  public String getKind() {
+    if (PersonTitle_Type.featOkTst && ((PersonTitle_Type) jcasType).casFeat_Kind == null)
+      JCas.throwFeatMissing("Kind", "example.PersonTitle");
+    return jcasType.ll_cas.ll_getStringValue(addr, ((PersonTitle_Type) jcasType).casFeatCode_Kind);
+  }
+
+  /**
+   * setter for Kind - sets The kind of title - Civilian, Military, or Government.
+   * 
+   * @generated
+   */
+  public void setKind(String v) {
+    if (PersonTitle_Type.featOkTst && ((PersonTitle_Type) jcasType).casFeat_Kind == null)
+      JCas.throwFeatMissing("Kind", "example.PersonTitle");
+    jcasType.ll_cas.ll_setStringValue(addr, ((PersonTitle_Type) jcasType).casFeatCode_Kind, v);
+  }
+}

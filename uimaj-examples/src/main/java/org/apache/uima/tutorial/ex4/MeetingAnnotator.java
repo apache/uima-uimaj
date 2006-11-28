@@ -88,9 +88,9 @@ public class MeetingAnnotator extends JCasAnnotator_ImplBase {
             if (time1 != time2) {
               // compute the begin and end of the span
               int minBegin = Math.min(Math.min(time1.getBegin(), time2.getBegin()), Math.min(date
-                              .getBegin(), room.getBegin()));
+                      .getBegin(), room.getBegin()));
               int maxEnd = Math.max(Math.max(time1.getEnd(), time2.getEnd()), Math.max(date
-                              .getEnd(), room.getEnd()));
+                      .getEnd(), room.getEnd()));
 
               // span must be smaller than the window size?
               if (maxEnd - minBegin < mWindowSize) {

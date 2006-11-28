@@ -45,107 +45,101 @@ import org.apache.uima.util.SimpleXmlCasInitializer;
 import org.apache.uima.util.XMLInputSource;
 
 /**
- * An example application that reads documents from the file system, sends them
- * though an Analysis Engine(AE), and produces XML files with inline 
- * annotations.  This application uses the {@link CollectionProcessingManager}
- * to drive the processing.  For a simpler introduction to using AEs in an
- * application, see {@link ExampleApplication}.
+ * An example application that reads documents from the file system, sends them though an Analysis
+ * Engine(AE), and produces XML files with inline annotations. This application uses the
+ * {@link CollectionProcessingManager} to drive the processing. For a simpler introduction to using
+ * AEs in an application, see {@link ExampleApplication}.
  * <p>
  * <code>Usage: java org.apache.uima.examples.RunAE [OPTIONS] 
  * &lt;AE descriptor or JAR file name&gt; &lt;input dir&gt; 
- * [&lt;output dir&gt;]</code> 
+ * [&lt;output dir&gt;]</code>
  * <p>
- * If <code>output dir</code> is not specified, the analysis results will not 
- * be output.  This can be useful when only interested in performance statistics.
+ * If <code>output dir</code> is not specified, the analysis results will not be output. This can
+ * be useful when only interested in performance statistics.
  * <p>
  * <u>OPTIONS</u>
  * <p>
- * -t &lt;TagName&gt; (XML Text Tag) - specifies the name of an XML tag, found 
- * within the input documents, that contains the text to be analyzed.  Documents 
- * not containing this tag will not be processed.  If this option is not 
- * specified, the entire document text will be processed.
+ * -t &lt;TagName&gt; (XML Text Tag) - specifies the name of an XML tag, found within the input
+ * documents, that contains the text to be analyzed. Documents not containing this tag will not be
+ * processed. If this option is not specified, the entire document text will be processed. <br>
+ * -l &lt;ISO code&gt; (Language) - specifies the ISO code for the language of the input documents.
+ * Some AEs require this. <br>
+ * -e &lt;Encoding&gt; - specifies character encoding of the input documents. The default is UTF-8.
  * <br>
- * -l &lt;ISO code&gt; (Language) - specifies the ISO code for the language of
- * the input documents.  Some AEs require this.
+ * -q (Quiet) - supresses progress messages that are normally printed as each document is processed.
  * <br>
- * -e &lt;Encoding&gt; - specifies character encoding of the input documents.
- * The default is UTF-8.
- * <br> 
- * -q (Quiet) - supresses progress messages that are normally printed as each 
- * document is processed.
- * <br>
- * -s&lt;x&gt; (Stats level) - determines the verboseness of performance
- *  statistics.  s0=none, s1=brief, s2=full.  The default is brief. 
+ * -s&lt;x&gt; (Stats level) - determines the verboseness of performance statistics. s0=none,
+ * s1=brief, s2=full. The default is brief.
  * 
  * 
  */
 public class RunAE implements StatusCallbackListener {
   /**
-   * Constructor.  Sets up and runs a Text Analysis Engine.  
+   * Constructor. Sets up and runs a Text Analysis Engine.
    */
   public RunAE(String[] args) {
     try {
-      //Read and validate command line arguments
+      // Read and validate command line arguments
       if (!processCmdLineArgs(args)) {
         printUsageMessage();
         return;
       }
 
-      //Enable schema validation (omit this to speed up initialization)
-      //UIMAFramework.getXMLParser().enableSchemaValidation(true);
+      // Enable schema validation (omit this to speed up initialization)
+      // UIMAFramework.getXMLParser().enableSchemaValidation(true);
 
-      //create CPM instance that will drive processing
+      // create CPM instance that will drive processing
       mCPM = UIMAFramework.newCollectionProcessingManager();
 
-      //read AE descriptor from file
+      // read AE descriptor from file
       long startTime = System.currentTimeMillis();
       XMLInputSource in = new XMLInputSource(aeSpecifierFile);
       ResourceSpecifier aeSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
 
-      //taeSpecifier.toXML(new FileWriter("spec.xml"));
+      // taeSpecifier.toXML(new FileWriter("spec.xml"));
 
-      //instantiate AE
+      // instantiate AE
       AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aeSpecifier);
       long initTime = System.currentTimeMillis() - startTime;
       System.out.println("AE initialized in " + initTime + "ms.");
       mCPM.setAnalysisEngine(ae);
 
-      //create and configure collection reader that will read input docs
+      // create and configure collection reader that will read input docs
       CollectionReaderDescription collectionReaderDesc = FileSystemCollectionReader
-                      .getDescription();
+              .getDescription();
       ConfigurationParameterSettings paramSettings = collectionReaderDesc.getMetaData()
-                      .getConfigurationParameterSettings();
+              .getConfigurationParameterSettings();
       paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_INPUTDIR, inputDir
-                      .getAbsolutePath());
+              .getAbsolutePath());
       paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_ENCODING, encoding);
       paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_LANGUAGE, language);
       CollectionReader collectionReader = UIMAFramework
-                      .produceCollectionReader(collectionReaderDesc);
+              .produceCollectionReader(collectionReaderDesc);
 
-      //if XML tag was specified, also create SimpleXmlCasInitializer to handle this
+      // if XML tag was specified, also create SimpleXmlCasInitializer to handle this
       if (xmlTagName != null && xmlTagName.length() > 0) {
         CasInitializerDescription casIniDesc = SimpleXmlCasInitializer.getDescription();
         ConfigurationParameterSettings casIniParamSettings = casIniDesc.getMetaData()
-                        .getConfigurationParameterSettings();
+                .getConfigurationParameterSettings();
         casIniParamSettings.setParameterValue(SimpleXmlCasInitializer.PARAM_XMLTAG, xmlTagName);
         CasInitializer casInitializer = UIMAFramework.produceCasInitializer(casIniDesc);
         collectionReader.setCasInitializer(casInitializer);
       }
 
-      //create and configure CAS consumer that will write the output
+      // create and configure CAS consumer that will write the output
       if (outputDir != null) {
         CasConsumerDescription casConsumerDesc = InlineXmlCasConsumer.getDescription();
         ConfigurationParameterSettings consumerParamSettings = casConsumerDesc.getMetaData()
-                        .getConfigurationParameterSettings();
+                .getConfigurationParameterSettings();
         consumerParamSettings.setParameterValue(InlineXmlCasConsumer.PARAM_OUTPUTDIR, outputDir
-                        .getAbsolutePath());
+                .getAbsolutePath());
         mCPM.addCasConsumer(UIMAFramework.produceCasConsumer(casConsumerDesc));
       }
 
-      //register callback listener
+      // register callback listener
       mCPM.addStatusCallbackListener(this);
 
-      //execute
+      // execute
       mCPM.process(collectionReader);
     } catch (Exception e) {
       e.printStackTrace();
@@ -159,17 +153,18 @@ public class RunAE implements StatusCallbackListener {
   }
 
   /**
-   * @see org.apache.uima.collection.StatusCallbackListener#entityProcessComplete(org.apache.uima.cas.CAS, org.apache.uima.collection.EntityProcessStatus)
+   * @see org.apache.uima.collection.StatusCallbackListener#entityProcessComplete(org.apache.uima.cas.CAS,
+   *      org.apache.uima.collection.EntityProcessStatus)
    */
   public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
     if (aStatus.isException()) {
       mCPM.stop();
       ((Exception) aStatus.getExceptions().get(0)).printStackTrace();
     } else if (genProgressMessages) {
-      // retreive the filename of the input file from the CAS 
+      // retreive the filename of the input file from the CAS
       // (it was put there by the FileSystemCollectionReader)
       Type fileLocType = aCas.getTypeSystem().getType(
-                      "org.apache.uima.examples.SourceDocumentInformation");
+              "org.apache.uima.examples.SourceDocumentInformation");
       Feature fileNameFeat = fileLocType.getFeatureByBaseName("uri");
       FSIterator it = aCas.getAnnotationIndex(fileLocType).iterator();
       FeatureStructure fileLoc = it.get();
@@ -196,10 +191,10 @@ public class RunAE implements StatusCallbackListener {
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#collectionProcessComplete()
    */
   public void collectionProcessComplete() {
-    //output performance stats
+    // output performance stats
     if (statsLevel > 0) {
       AnalysisEnginePerformanceReports performanceReports = new AnalysisEnginePerformanceReports(
-                      mCPM.getPerformanceReport());
+              mCPM.getPerformanceReport());
       System.out.println("\n\nPERFORMANCE STATS\n-----------------\n\n");
       if (statsLevel > 1) {
         System.out.println(performanceReports.getFullReport());
@@ -226,21 +221,20 @@ public class RunAE implements StatusCallbackListener {
    */
   private void printUsageMessage() {
     System.err.println("\nUsage: java " + this.getClass().getName()
-                    + " [OPTIONS] <AE descriptor or JAR file name> <input dir> [<output dir>] ");
+            + " [OPTIONS] <AE descriptor or JAR file name> <input dir> [<output dir>] ");
     System.err.println("\nIf <output dir> is not specified, the analysis "
-                    + "results will not be output.  This can be useful when only interested "
-                    + "in performance statistics.");
+            + "results will not be output.  This can be useful when only interested "
+            + "in performance statistics.");
     System.err.println("\nOPTIONS\n-------");
     System.err.println("-t <TagName> (XML Text Tag) - specifies the name of "
-                    + "an XML tag, found within the input documents, that contains the text "
-                    + "to be analyzed.  Documents not containing this tag will not be "
-                    + "processed.  If this option is not specified, the entire document text "
-                    + "will be processed.");
+            + "an XML tag, found within the input documents, that contains the text "
+            + "to be analyzed.  Documents not containing this tag will not be "
+            + "processed.  If this option is not specified, the entire document text "
+            + "will be processed.");
     System.err.println("-q (Quiet) - supresses progress messages that are "
-                    + "normally printed as each document is processed.");
-    System.err
-                    .println("-s<x> (Stats level) - determines the verboseness of "
-                                    + "performance statistics.  s0=none, s1=brief, s2=full.  The default is brief.");
+            + "normally printed as each document is processed.");
+    System.err.println("-s<x> (Stats level) - determines the verboseness of "
+            + "performance statistics.  s0=none, s1=brief, s2=full.  The default is brief.");
 
   }
 
@@ -250,41 +244,41 @@ public class RunAE implements StatusCallbackListener {
    * @return true if command line args were valid, false if not
    */
   private boolean processCmdLineArgs(String[] args) {
-    encoding = "UTF-8"; //default
+    encoding = "UTF-8"; // default
     int index = 0;
     while (index < args.length) {
       String arg = args[index++];
-      if (arg.equals("-q")) //quiet mode
+      if (arg.equals("-q")) // quiet mode
       {
         genProgressMessages = false;
-      } else if (arg.equals("-s0")) //no stats
+      } else if (arg.equals("-s0")) // no stats
       {
         statsLevel = 0;
-      } else if (arg.equals("-s2")) //full stats
+      } else if (arg.equals("-s2")) // full stats
       {
         statsLevel = 2;
-      } else if (arg.equals("-t")) //XML tag text
+      } else if (arg.equals("-t")) // XML tag text
       {
-        //tag name is next argument
+        // tag name is next argument
         if (index >= args.length) {
           return false;
         }
         xmlTagName = args[index++];
-      } else if (arg.equals("-l")) //Language
+      } else if (arg.equals("-l")) // Language
       {
-        //language ISO code is next argument
+        // language ISO code is next argument
         if (index >= args.length) {
           return false;
         }
         language = args[index++];
-      } else if (arg.equals("-e")) //Encoding
+      } else if (arg.equals("-e")) // Encoding
       {
-        //encoding is next argument
+        // encoding is next argument
         if (index >= args.length) {
           return false;
         }
         encoding = args[index++];
-      } else //one of the standard params - whichever we haven't read yet
+      } else // one of the standard params - whichever we haven't read yet
       {
         if (aeSpecifierFile == null) {
           aeSpecifierFile = new File(arg);
@@ -307,7 +301,7 @@ public class RunAE implements StatusCallbackListener {
         }
       }
     }
-    //make sure required values were specified
+    // make sure required values were specified
     return (aeSpecifierFile != null) && (inputDir != null);
   }
 
@@ -315,7 +309,7 @@ public class RunAE implements StatusCallbackListener {
     new RunAE(args);
   }
 
-  //Values read from cmd line args
+  // Values read from cmd line args
   private File aeSpecifierFile = null;
 
   private File inputDir = null;

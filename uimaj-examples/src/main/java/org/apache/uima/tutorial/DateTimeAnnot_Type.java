@@ -29,66 +29,77 @@ import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
-/** 
+/**
  * Updated by JCasGen Mon Nov 29 15:02:38 EST 2004
- * @generated */
+ * 
+ * @generated
+ */
 public class DateTimeAnnot_Type extends Annotation_Type {
   /** @generated */
-  protected FSGenerator getFSGenerator() {return fsGenerator;}
+  protected FSGenerator getFSGenerator() {
+    return fsGenerator;
+  }
+
   /** @generated */
-  private final FSGenerator fsGenerator = 
-    new FSGenerator() {
-      public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (instanceOf_Type.useExistingInstance) {
-  			   // Return eq fs instance if already created
-  		     FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
-  		     if (null == fs) {
-  		       fs = new DateTimeAnnot(addr, instanceOf_Type);
-  			   instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
-  			   return fs;
-  		     }
-  		     return fs;
-        } else return new DateTimeAnnot(addr, instanceOf_Type);
-  	  }
-    };
+  private final FSGenerator fsGenerator = new FSGenerator() {
+    public FeatureStructure createFS(int addr, CASImpl cas) {
+      if (instanceOf_Type.useExistingInstance) {
+        // Return eq fs instance if already created
+        FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
+        if (null == fs) {
+          fs = new DateTimeAnnot(addr, instanceOf_Type);
+          instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
+          return fs;
+        }
+        return fs;
+      } else
+        return new DateTimeAnnot(addr, instanceOf_Type);
+    }
+  };
+
   /** @generated */
   public final static int typeIndexID = DateTimeAnnot.typeIndexID;
-  /** @generated 
-     @modifiable */
-  public final static boolean featOkTst = JCas.getFeatOkTst("org.apache.uima.tutorial.DateTimeAnnot");
- 
+
+  /**
+   * @generated
+   * @modifiable
+   */
+  public final static boolean featOkTst = JCas
+          .getFeatOkTst("org.apache.uima.tutorial.DateTimeAnnot");
+
   /** @generated */
   final Feature casFeat_shortDateString;
+
   /** @generated */
-  final int     casFeatCode_shortDateString;
-  /** @generated */ 
+  final int casFeatCode_shortDateString;
+
+  /** @generated */
   public String getShortDateString(int addr) {
-        if (featOkTst && casFeat_shortDateString == null)
+    if (featOkTst && casFeat_shortDateString == null)
       JCas.throwFeatMissing("shortDateString", "org.apache.uima.tutorial.DateTimeAnnot");
     return ll_cas.ll_getStringValue(addr, casFeatCode_shortDateString);
   }
-  /** @generated */    
+
+  /** @generated */
   public void setShortDateString(int addr, String v) {
-        if (featOkTst && casFeat_shortDateString == null)
+    if (featOkTst && casFeat_shortDateString == null)
       JCas.throwFeatMissing("shortDateString", "org.apache.uima.tutorial.DateTimeAnnot");
-    ll_cas.ll_setStringValue(addr, casFeatCode_shortDateString, v);}
-    
-  
+    ll_cas.ll_setStringValue(addr, casFeatCode_shortDateString, v);
+  }
 
-
-  /** initialize variables to correspond with Cas Type and Features
-	* @generated */
+  /**
+   * initialize variables to correspond with Cas Type and Features
+   * 
+   * @generated
+   */
   public DateTimeAnnot_Type(JCas jcas, Type casType) {
     super(jcas, casType);
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
+    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
- 
-    casFeat_shortDateString = jcas.getRequiredFeatureDE(casType, "shortDateString", "uima.cas.String", featOkTst);
-    casFeatCode_shortDateString  = (null == casFeat_shortDateString) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_shortDateString).getCode();
+    casFeat_shortDateString = jcas.getRequiredFeatureDE(casType, "shortDateString",
+            "uima.cas.String", featOkTst);
+    casFeatCode_shortDateString = (null == casFeat_shortDateString) ? JCas.INVALID_FEATURE_CODE
+            : ((FeatureImpl) casFeat_shortDateString).getCode();
 
   }
 }
-
-
-
-    

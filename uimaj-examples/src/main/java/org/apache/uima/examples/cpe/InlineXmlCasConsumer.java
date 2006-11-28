@@ -89,7 +89,7 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
 
     // retreive the filename of the input file from the CAS
     FSIterator it = jcas.getJFSIndexRepository().getAnnotationIndex(SourceDocumentInformation.type)
-                    .iterator();
+            .iterator();
     File outFile = null;
     if (it.hasNext()) {
       SourceDocumentInformation fileLoc = (SourceDocumentInformation) it.next();

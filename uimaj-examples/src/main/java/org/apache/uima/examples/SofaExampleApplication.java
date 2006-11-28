@@ -48,9 +48,9 @@ public class SofaExampleApplication {
   public static void main(String[] args) throws UIMAException, IOException {
     // parse AnalysisEngine descriptor
     XMLInputSource input = new XMLInputSource(
-                    "descriptors/analysis_engine/SofaExampleAnnotator.xml");
+            "descriptors/analysis_engine/SofaExampleAnnotator.xml");
     AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-                    input);
+            input);
 
     // create AnalysisEngine
     AnalysisEngine seAnnotator = UIMAFramework.produceAnalysisEngine(desc);

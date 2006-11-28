@@ -41,9 +41,9 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
 
 /**
- * A simple example of how to extract information from the CAS.  This
- * example retrieves all annotations of a specified type from a CAS and
- * prints them (along with all of their features) to a PrintStream.
+ * A simple example of how to extract information from the CAS. This example retrieves all
+ * annotations of a specified type from a CAS and prints them (along with all of their features) to
+ * a PrintStream.
  * 
  * 
  */
@@ -52,14 +52,16 @@ public class PrintAnnotations {
   /**
    * Prints all Annotations to a PrintStream.
    * 
-   * @param aCAS the CAS containing the FeatureStructures to print
-   * @param aOut the PrintStream to which output will be written
+   * @param aCAS
+   *          the CAS containing the FeatureStructures to print
+   * @param aOut
+   *          the PrintStream to which output will be written
    */
   public static void printAnnotations(CAS aCAS, PrintStream aOut) {
-    //get iterator over annotations
+    // get iterator over annotations
     FSIterator iter = aCAS.getAnnotationIndex().iterator();
 
-    //iterate
+    // iterate
     while (iter.isValid()) {
       FeatureStructure fs = iter.get();
       printFS(fs, aCAS, 0, aOut);
@@ -70,15 +72,18 @@ public class PrintAnnotations {
   /**
    * Prints all Annotations of a specified Type to a PrintStream.
    * 
-   * @param aCAS the CAS containing the FeatureStructures to print
-   * @param aAnnotType the Type of Annotation to be printed
-   * @param aOut the PrintStream to which output will be written
+   * @param aCAS
+   *          the CAS containing the FeatureStructures to print
+   * @param aAnnotType
+   *          the Type of Annotation to be printed
+   * @param aOut
+   *          the PrintStream to which output will be written
    */
   public static void printAnnotations(CAS aCAS, Type aAnnotType, PrintStream aOut) {
-    //get iterator over annotations
+    // get iterator over annotations
     FSIterator iter = aCAS.getAnnotationIndex(aAnnotType).iterator();
 
-    //iterate
+    // iterate
     while (iter.isValid()) {
       FeatureStructure fs = iter.get();
       printFS(fs, aCAS, 0, aOut);
@@ -89,10 +94,14 @@ public class PrintAnnotations {
   /**
    * Prints a FeatureStructure to a PrintStream.
    * 
-   * @param aFS the FeatureStructure to print
-   * @param aCAS the CAS containing the FeatureStructure
-   * @param aNestingLevel number of tabs to print before each line
-   * @param aOut the PrintStream to which output will be written
+   * @param aFS
+   *          the FeatureStructure to print
+   * @param aCAS
+   *          the CAS containing the FeatureStructure
+   * @param aNestingLevel
+   *          number of tabs to print before each line
+   * @param aOut
+   *          the PrintStream to which output will be written
    */
   public static void printFS(FeatureStructure aFS, CAS aCAS, int aNestingLevel, PrintStream aOut) {
     Type stringType = aCAS.getTypeSystem().getType(CAS.TYPE_NAME_STRING);
@@ -100,7 +109,7 @@ public class PrintAnnotations {
     printTabs(aNestingLevel, aOut);
     aOut.println(aFS.getType().getName());
 
-    //if it's an annotation, print the first 64 chars of its covered text
+    // if it's an annotation, print the first 64 chars of its covered text
     if (aFS instanceof AnnotationFS) {
       AnnotationFS annot = (AnnotationFS) aFS;
       String coveredText = annot.getCoveredText();
@@ -114,18 +123,19 @@ public class PrintAnnotations {
       aOut.println("\"");
     }
 
-    //print all features
+    // print all features
     List aFeatures = aFS.getType().getFeatures();
     Iterator iter = aFeatures.iterator();
     while (iter.hasNext()) {
       Feature feat = (Feature) iter.next();
       printTabs(aNestingLevel + 1, aOut);
-      //print feature name
+      // print feature name
       aOut.print(feat.getShortName());
       aOut.print(" = ");
-      //prnt feature value (how we get this depends on feature's range type)
+      // prnt feature value (how we get this depends on feature's range type)
       String rangeTypeName = feat.getRange().getName();
-      if (aCAS.getTypeSystem().subsumes(stringType, feat.getRange())) //must check for subtypes of string
+      if (aCAS.getTypeSystem().subsumes(stringType, feat.getRange())) // must check for subtypes of
+                                                                      // string
       {
         String str = aFS.getStringValue(feat);
         if (str == null) {
@@ -190,7 +200,7 @@ public class PrintAnnotations {
           }
           aOut.println("]\"");
         }
-      } else //non-primitive type
+      } else // non-primitive type
       {
         FeatureStructure val = aFS.getFeatureValue(feat);
         if (val == null) {
@@ -205,8 +215,10 @@ public class PrintAnnotations {
   /**
    * Prints tabs to a PrintStream.
    * 
-   * @param aNumTabs number of tabs to print
-   * @param aOut the PrintStream to which output will be written
+   * @param aNumTabs
+   *          number of tabs to print
+   * @param aOut
+   *          the PrintStream to which output will be written
    */
   private static void printTabs(int aNumTabs, PrintStream aOut) {
     for (int i = 0; i < aNumTabs; i++) {
@@ -215,9 +227,8 @@ public class PrintAnnotations {
   }
 
   /**
-   * Main program for testing this class.  Ther are two required arguments -
-   * the path to the XML descriptor for the TAE to run and an input file.  
-   * Additional arguments are Type or Feature names
+   * Main program for testing this class. Ther are two required arguments - the path to the XML
+   * descriptor for the TAE to run and an input file. Additional arguments are Type or Feature names
    * to be included in the ResultSpecification passed to the TAE.
    */
   public static void main(String[] args) {
@@ -225,21 +236,21 @@ public class PrintAnnotations {
       File taeDescriptor = new File(args[0]);
       File inputFile = new File(args[1]);
 
-      //get Resource Specifier from XML file or TEAR
+      // get Resource Specifier from XML file or TEAR
       XMLInputSource in = new XMLInputSource(taeDescriptor);
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
 
-      //create Analysis Engine
+      // create Analysis Engine
       AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(specifier);
-      //create a CAS
+      // create a CAS
       CAS cas = ae.newCAS();
 
-      //build ResultSpec if Type and Feature names were specified on commandline
+      // build ResultSpec if Type and Feature names were specified on commandline
       ResultSpecification resultSpec = null;
       if (args.length > 2) {
         resultSpec = ae.createResultSpecification();
         for (int i = 2; i < args.length; i++) {
-          if (args[i].indexOf(':') > 0) //feature name
+          if (args[i].indexOf(':') > 0) // feature name
           {
             resultSpec.addResultFeature(args[i]);
           } else {
@@ -248,22 +259,22 @@ public class PrintAnnotations {
         }
       }
 
-      //read contents of file
+      // read contents of file
       FileInputStream fis = new FileInputStream(inputFile);
       byte[] contents = new byte[(int) inputFile.length()];
       fis.read(contents);
       fis.close();
       String document = new String(contents);
 
-      //send doc through the AE
+      // send doc through the AE
       cas.setDocumentText(document);
       ae.process(cas, resultSpec);
 
-      //print results
+      // print results
       Type annotationType = cas.getTypeSystem().getType(CAS.TYPE_NAME_ANNOTATION);
       PrintAnnotations.printAnnotations(cas, annotationType, System.out);
 
-      //destroy AE
+      // destroy AE
       ae.destroy();
     } catch (Exception e) {
       e.printStackTrace();

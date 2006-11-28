@@ -29,66 +29,76 @@ import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
-/** 
+/**
  * Updated by JCasGen Mon Nov 29 15:02:38 EST 2004
- * @generated */
+ * 
+ * @generated
+ */
 public class UimaAcronym_Type extends Annotation_Type {
   /** @generated */
-  protected FSGenerator getFSGenerator() {return fsGenerator;}
+  protected FSGenerator getFSGenerator() {
+    return fsGenerator;
+  }
+
   /** @generated */
-  private final FSGenerator fsGenerator = 
-    new FSGenerator() {
-      public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (instanceOf_Type.useExistingInstance) {
-  			   // Return eq fs instance if already created
-  		     FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
-  		     if (null == fs) {
-  		       fs = new UimaAcronym(addr, instanceOf_Type);
-  			   instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
-  			   return fs;
-  		     }
-  		     return fs;
-        } else return new UimaAcronym(addr, instanceOf_Type);
-  	  }
-    };
+  private final FSGenerator fsGenerator = new FSGenerator() {
+    public FeatureStructure createFS(int addr, CASImpl cas) {
+      if (instanceOf_Type.useExistingInstance) {
+        // Return eq fs instance if already created
+        FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
+        if (null == fs) {
+          fs = new UimaAcronym(addr, instanceOf_Type);
+          instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
+          return fs;
+        }
+        return fs;
+      } else
+        return new UimaAcronym(addr, instanceOf_Type);
+    }
+  };
+
   /** @generated */
   public final static int typeIndexID = UimaAcronym.typeIndexID;
-  /** @generated 
-     @modifiable */
+
+  /**
+   * @generated
+   * @modifiable
+   */
   public final static boolean featOkTst = JCas.getFeatOkTst("org.apache.uima.tutorial.UimaAcronym");
- 
+
   /** @generated */
   final Feature casFeat_expandedForm;
+
   /** @generated */
-  final int     casFeatCode_expandedForm;
-  /** @generated */ 
+  final int casFeatCode_expandedForm;
+
+  /** @generated */
   public String getExpandedForm(int addr) {
-        if (featOkTst && casFeat_expandedForm == null)
+    if (featOkTst && casFeat_expandedForm == null)
       JCas.throwFeatMissing("expandedForm", "org.apache.uima.tutorial.UimaAcronym");
     return ll_cas.ll_getStringValue(addr, casFeatCode_expandedForm);
   }
-  /** @generated */    
+
+  /** @generated */
   public void setExpandedForm(int addr, String v) {
-        if (featOkTst && casFeat_expandedForm == null)
+    if (featOkTst && casFeat_expandedForm == null)
       JCas.throwFeatMissing("expandedForm", "org.apache.uima.tutorial.UimaAcronym");
-    ll_cas.ll_setStringValue(addr, casFeatCode_expandedForm, v);}
-    
-  
+    ll_cas.ll_setStringValue(addr, casFeatCode_expandedForm, v);
+  }
 
-
-  /** initialize variables to correspond with Cas Type and Features
-	* @generated */
+  /**
+   * initialize variables to correspond with Cas Type and Features
+   * 
+   * @generated
+   */
   public UimaAcronym_Type(JCas jcas, Type casType) {
     super(jcas, casType);
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
+    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
- 
-    casFeat_expandedForm = jcas.getRequiredFeatureDE(casType, "expandedForm", "uima.cas.String", featOkTst);
-    casFeatCode_expandedForm  = (null == casFeat_expandedForm) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_expandedForm).getCode();
+    casFeat_expandedForm = jcas.getRequiredFeatureDE(casType, "expandedForm", "uima.cas.String",
+            featOkTst);
+    casFeatCode_expandedForm = (null == casFeat_expandedForm) ? JCas.INVALID_FEATURE_CODE
+            : ((FeatureImpl) casFeat_expandedForm).getCode();
 
   }
 }
-
-
-
-    

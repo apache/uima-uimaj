@@ -37,18 +37,16 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.CasCopier;
 
 /**
- * An example CasMultiplier, which merges text documents into larger ones.
- * It attempts to merge all of the segments that came from one original artifact.
- * This is done by checking the "lastSegment" feature of the SourceDocumentInformation
- * FeatureStructure, which is expected to be populated by the CollectionReader
- * or CasMultiplier that produced the input CASes.
+ * An example CasMultiplier, which merges text documents into larger ones. It attempts to merge all
+ * of the segments that came from one original artifact. This is done by checking the "lastSegment"
+ * feature of the SourceDocumentInformation FeatureStructure, which is expected to be populated by
+ * the CollectionReader or CasMultiplier that produced the input CASes.
  * <p>
- * Limitations:  if the lastSegment feature is never set to true by the component producing
- * the input CASes, the merger will never produce any output.  Also, this implementation
- * relies on the CASes arriving in order, which could be a problem in a 
- * mulithreaded framework implementation.  The order requirement could be relieved by recording
- * a segment number in the SourceDocumentInformation, but that would also make this example
- * more complicated. 
+ * Limitations: if the lastSegment feature is never set to true by the component producing the input
+ * CASes, the merger will never produce any output. Also, this implementation relies on the CASes
+ * arriving in order, which could be a problem in a mulithreaded framework implementation. The order
+ * requirement could be relieved by recording a segment number in the SourceDocumentInformation, but
+ * that would also make this example more complicated.
  */
 public class SimpleTextMerger extends JCasMultiplier_ImplBase {
   private StringBuffer mDocBuf = new StringBuffer();
@@ -88,7 +86,7 @@ public class SimpleTextMerger extends JCasMultiplier_ImplBase {
     // copy specified annotation types
     CasCopier copier = new CasCopier(mMergedCas.getCas());
     Set copiedIndexedFs = new HashSet(); // needed in case one annotation is in two indexes (could
-                                          // happen if specified annotation types overlap)
+    // happen if specified annotation types overlap)
     for (int i = 0; i < mAnnotationTypesToCopy.length; i++) {
       Type type = mMergedCas.getTypeSystem().getType(mAnnotationTypesToCopy[i]);
       FSIndex index = aJCas.getCas().getAnnotationIndex(type);
@@ -109,9 +107,9 @@ public class SimpleTextMerger extends JCasMultiplier_ImplBase {
     // get the SourceDocumentInformation FS, which indicates the sourceURI of the document
     // and whether the incoming CAS is the last segment
     FSIterator it = aJCas.getJFSIndexRepository()
-                    .getAnnotationIndex(SourceDocumentInformation.type).iterator();
+            .getAnnotationIndex(SourceDocumentInformation.type).iterator();
     if (!it.hasNext()) {
-      throw new RuntimeException("Missing SourceDocumentInformation"); 
+      throw new RuntimeException("Missing SourceDocumentInformation");
     }
     SourceDocumentInformation sourceDocInfo = (SourceDocumentInformation) it.next();
     if (sourceDocInfo.getLastSegment()) {
@@ -147,7 +145,7 @@ public class SimpleTextMerger extends JCasMultiplier_ImplBase {
    */
   public AbstractCas next() throws AnalysisEngineProcessException {
     if (!mReadyToOutput) {
-      throw new RuntimeException("No next CAS"); 
+      throw new RuntimeException("No next CAS");
     }
     JCas casToReturn = mMergedCas;
     mMergedCas = null;

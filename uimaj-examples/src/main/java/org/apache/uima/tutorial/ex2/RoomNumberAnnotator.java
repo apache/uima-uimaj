@@ -32,7 +32,7 @@ import org.apache.uima.tutorial.RoomNumber;
 import org.apache.uima.util.Level;
 
 /**
- * Example annotator that detects room numbers using Java 1.4 regular expressions. 
+ * Example annotator that detects room numbers using Java 1.4 regular expressions.
  */
 public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
   private Pattern[] mPatterns;

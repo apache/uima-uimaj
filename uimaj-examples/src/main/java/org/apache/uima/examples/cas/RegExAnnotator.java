@@ -107,10 +107,10 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
       String[] patternStrings = (String[]) getContext().getConfigParameterValue("Patterns");
       String[] typeNames = (String[]) getContext().getConfigParameterValue("TypeNames");
       mContainingAnnotationTypeNames = (String[]) getContext().getConfigParameterValue(
-                      "ContainingAnnotationTypes");
+              "ContainingAnnotationTypes");
       if (mContainingAnnotationTypeNames != null && mContainingAnnotationTypeNames.length > 0) {
         mAnnotateEntireContainingAnnotation = (Boolean) getContext().getConfigParameterValue(
-                        "AnnotateEntireContainingAnnotation");
+                "AnnotateEntireContainingAnnotation");
       } else {
         mAnnotateEntireContainingAnnotation = Boolean.FALSE;
       }
@@ -125,7 +125,7 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
         if (typeNames == null || typeNames.length != patternStrings.length) {
           // throw exception - error message in external message digest
           throw new ResourceInitializationException(MESSAGE_DIGEST,
-                          "type_pattern_array_length_mismatch", new Object[0]);
+                  "type_pattern_array_length_mismatch", new Object[0]);
         }
         mTypeNames.addAll(Arrays.asList(typeNames));
 
@@ -147,7 +147,7 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
           String line = reader.readLine();
           while (line != null) {
             if (!line.startsWith("#") && line.length() > 0
-                            && !Character.isWhitespace(line.charAt(0))) {
+                    && !Character.isWhitespace(line.charAt(0))) {
               // line is not a comment
               if (line.startsWith("%")) // annotation type name
               {
@@ -182,8 +182,8 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
       // make sure there is at least one pattern
       if (patternArray.isEmpty()) {
         throw new ResourceInitializationException(
-                        AnnotatorConfigurationException.ONE_PARAM_REQUIRED,
-                        new Object[] { "Patterns, Pattern File" });
+                AnnotatorConfigurationException.ONE_PARAM_REQUIRED,
+                new Object[] { "Patterns, Pattern File" });
       }
 
       // compile regular expression patterns
@@ -198,11 +198,11 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
             // would lead to infinite loops during processing
             if (mPatterns[i][j].matcher("").matches()) {
               throw new ResourceInitializationException(MESSAGE_DIGEST,
-                              "regex_matches_empty_string", new Object[] { pats[j] });
+                      "regex_matches_empty_string", new Object[] { pats[j] });
             }
           } catch (PatternSyntaxException e) {
             throw new ResourceInitializationException(MESSAGE_DIGEST, "regex_syntax_error",
-                            new Object[] { pats[j] }, e);
+                    new Object[] { pats[j] }, e);
           }
         }
       }
@@ -227,7 +227,7 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
       mCASTypes[i] = aTypeSystem.getType(curTypeName);
       if (mCASTypes[i] == null) {
         throw new AnalysisEngineProcessException(AnnotatorInitializationException.TYPE_NOT_FOUND,
-                        new Object[] { this.getClass().getName(), curTypeName });
+                new Object[] { this.getClass().getName(), curTypeName });
       }
     }
 
@@ -240,7 +240,7 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
         mContainingAnnotationTypes[i] = aTypeSystem.getType(mContainingAnnotationTypeNames[i]);
         if (mContainingAnnotationTypes[i] == null) {
           throw new AnalysisEngineProcessException(AnnotatorInitializationException.TYPE_NOT_FOUND,
-                          new Object[] { getClass().getName(), mContainingAnnotationTypeNames[i] });
+                  new Object[] { getClass().getName(), mContainingAnnotationTypeNames[i] });
         }
       }
     }
@@ -285,7 +285,7 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
               Matcher matcher = mPatterns[j][k].matcher(subText);
               while (pos < subText.length() && matcher.find(pos)) {
                 getContext().getLogger().log(Level.FINER,
-                                "RegEx match found: [" + matcher.group() + "]");
+                        "RegEx match found: [" + matcher.group() + "]");
                 // match found; extract locations of start and end of match
                 // (or of entire containing annotation, if that option is on)
                 int annotStart, annotEnd;

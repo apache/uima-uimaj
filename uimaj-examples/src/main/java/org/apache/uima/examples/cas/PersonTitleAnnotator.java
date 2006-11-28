@@ -113,24 +113,24 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
     mPersonTitleType = aTypeSystem.getType("example.PersonTitle");
     if (mPersonTitleType == null) {
       throw new AnalysisEngineProcessException(AnnotatorInitializationException.TYPE_NOT_FOUND,
-                      new Object[] { getClass().getName(), "example.PersonTitle" });
+              new Object[] { getClass().getName(), "example.PersonTitle" });
     }
 
     // Get a reference to the "Kind" Feature
     mPersonTitleKindFeature = mPersonTitleType.getFeatureByBaseName("Kind");
     if (mPersonTitleKindFeature == null) {
       throw new AnalysisEngineProcessException(AnnotatorInitializationException.FEATURE_NOT_FOUND,
-                      new Object[] { getClass().getName(), "example.PersonTitle:Kind" });
+              new Object[] { getClass().getName(), "example.PersonTitle:Kind" });
     }
 
     // Get the value for the "ContainingType" parameter if there is one
     String containingTypeName = (String) getContext().getConfigParameterValue(
-                    "ContainingAnnotationType");
+            "ContainingAnnotationType");
     if (containingTypeName != null) {
       mContainingType = aTypeSystem.getType(containingTypeName);
       if (mContainingType == null) {
         throw new AnalysisEngineProcessException(AnnotatorInitializationException.TYPE_NOT_FOUND,
-                        new Object[] { getClass().getName(), containingTypeName });
+                new Object[] { getClass().getName(), containingTypeName });
       }
     }
   }
@@ -214,7 +214,7 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
    * 
    */
   protected void annotateRange(CAS aCAS, String aText, int aBeginPos, String aTitleType,
-                  String[] aTitles) {
+          String[] aTitles) {
     // Loop over the matchStrings.
     for (int i = 0; i < aTitles.length; i++) {
       // logger.log("Looking for string: " + matchStrings[i]);
@@ -229,7 +229,7 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
         int absEnd = aBeginPos + end;
         // Write log message
         getContext().getLogger().log(Level.FINER,
-                        "Found \"" + aTitles[i] + "\" at (" + absStart + "," + absEnd + ")");
+                "Found \"" + aTitles[i] + "\" at (" + absStart + "," + absEnd + ")");
         // Create a new annotation for the most recently discovered match.
         createAnnotation(aCAS, absStart, absEnd, aTitleType);
         // Look for the next match, starting after the previous match.

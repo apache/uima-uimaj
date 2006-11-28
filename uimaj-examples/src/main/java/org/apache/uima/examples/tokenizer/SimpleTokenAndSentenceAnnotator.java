@@ -83,7 +83,7 @@ public class SimpleTokenAndSentenceAnnotator extends JCasAnnotator_ImplBase {
   void makeAnnotations(Maker m, BreakIterator b) {
     b.setText(input);
     for (int end = b.next(), start = b.first(); end != BreakIterator.DONE; start = end, end = b
-                    .next()) {
+            .next()) {
       // eliminate all-whitespace tokens
       boolean isWhitespace = true;
       for (int i = start; i < end; i++) {

@@ -30,12 +30,10 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
 
 /**
- * A simple multiple subject of analysis (multi-Sofa) example annotator
- * Expects an English text Sofa as input
- * Creates a German text Sofa as output
+ * A simple multiple subject of analysis (multi-Sofa) example annotator Expects an English text Sofa
+ * as input Creates a German text Sofa as output
  * 
- * This annotator has no configuration parameters,
- * and requires no initialization method
+ * This annotator has no configuration parameters, and requires no initialization method
  */
 
 public class SofaExampleAnnotator extends CasAnnotator_ImplBase {
@@ -45,7 +43,7 @@ public class SofaExampleAnnotator extends CasAnnotator_ImplBase {
     // get the CAS view for the English document
     englishView = aCas.getView("EnglishDocument");
 
-    //Create the German text Sofa and open its view
+    // Create the German text Sofa and open its view
     germanView = aCas.createView("GermanDocument");
 
     // Get some necessary Type System constants

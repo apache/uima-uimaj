@@ -37,7 +37,7 @@ import org.apache.uima.tutorial.DateTimeAnnot;
 import org.apache.uima.tutorial.TimeAnnot;
 
 /**
- * Simple Date/Time annotator. 
+ * Simple Date/Time annotator.
  */
 public class TutorialDateTime extends JCasAnnotator_ImplBase {
 
@@ -61,7 +61,7 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
   // \d:[0-6]\d followed by a digit and the colon char,and minutes
   // \s*?(AM|PM)? followed by optional white space (non greedy) and AM or PM
   static final Pattern hoursMinutesPattern = Pattern
-                  .compile("(?s)\\b([0-2]?\\d:[0-5]\\d\\s*(AM\\W|PM\\W|am\\W|pm\\W)?)");
+          .compile("(?s)\\b([0-2]?\\d:[0-5]\\d\\s*(AM\\W|PM\\W|am\\W|pm\\W)?)");
 
   //
   static final DateFormat dfTimeShort = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.US);
@@ -75,7 +75,7 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
   // \d
   // ((/[1-2]\d\d\d)|(/\d\d)|\s) // year is /nnnn or /nn or missing
   static final Pattern numericDatePattern = Pattern
-                  .compile("(?s)\\b([0-1]?\\d/[0-3]?\\d((/[1-2]\\d\\d\\d)|(/\\d\\d))?)\\W");
+          .compile("(?s)\\b([0-1]?\\d/[0-3]?\\d((/[1-2]\\d\\d\\d)|(/\\d\\d))?)\\W");
 
   static final DateFormat dfDateShort = DateFormat.getDateInstance(DateFormat.SHORT, Locale.US);
 
@@ -90,7 +90,7 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
   static final String shortMonthNames = "(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)";
 
   static final Pattern mediumDatePattern = Pattern.compile("(?s)\\b(" + shortMonthNames
-                  + "\\.?\\s[0-3]?\\d(((,\\s+)?[1-2]\\d\\d\\d)|((,\\s+)?\\d\\d))?)\\W");
+          + "\\.?\\s[0-3]?\\d(((,\\s+)?[1-2]\\d\\d\\d)|((,\\s+)?\\d\\d))?)\\W");
 
   static final DateFormat dfDateMedium = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.US);
 
@@ -98,7 +98,7 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
   static final String longMonthNames = "(January|February|March|April|June|July|August|September|October|November|December)";
 
   static final Pattern longDatePattern = Pattern.compile("(?s)\\b(" + longMonthNames
-                  + "\\s[0-3]?\\d(((,\\s+)?[1-2]\\d\\d\\d)|((,\\s+)?\\d\\d))?)\\W");
+          + "\\s[0-3]?\\d(((,\\s+)?[1-2]\\d\\d\\d)|((,\\s+)?\\d\\d))?)\\W");
 
   static final DateFormat dfDateLong = DateFormat.getDateInstance(DateFormat.LONG, Locale.US);
 
@@ -145,7 +145,7 @@ public class TutorialDateTime extends JCasAnnotator_ImplBase {
   void makeAnnotations(Maker m, BreakIterator b) {
     b.setText(input);
     for (int end = b.next(), start = b.first(); end != BreakIterator.DONE; start = end, end = b
-                    .next()) {
+            .next()) {
 
       // eliminate all-whitespace tokens
       boolean isWhitespace = true;

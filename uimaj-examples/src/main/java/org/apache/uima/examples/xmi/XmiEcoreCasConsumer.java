@@ -90,7 +90,7 @@ public class XmiEcoreCasConsumer extends CasConsumer_ImplBase {
       mOutputDir.mkdirs();
     }
     writeEcoreTypeSystem = Boolean.TRUE.equals(getUimaContext().getConfigParameterValue(
-                    PARAM_WRITE_ECORE_TYPESYSTEM));
+            PARAM_WRITE_ECORE_TYPESYSTEM));
   }
 
   /**
@@ -116,7 +116,7 @@ public class XmiEcoreCasConsumer extends CasConsumer_ImplBase {
 
     // retreive the filename of the input file from the CAS
     FSIterator it = jcas.getJFSIndexRepository().getAnnotationIndex(SourceDocumentInformation.type)
-                    .iterator();
+            .iterator();
     File outFile = null;
     if (it.hasNext()) {
       SourceDocumentInformation fileLoc = (SourceDocumentInformation) it.next();
@@ -166,18 +166,18 @@ public class XmiEcoreCasConsumer extends CasConsumer_ImplBase {
       // Generate E-core for type system, but only once
       if (writeEcoreTypeSystem && !isModelGenerated) {
         TypeSystemDescription tsDesc = TypeSystemUtil.typeSystem2TypeSystemDescription(aCas
-                        .getTypeSystem());
+                .getTypeSystem());
         // register default resource factory
         Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("*",
-                        new XMIResourceFactoryImpl());
+                new XMIResourceFactoryImpl());
         ResourceSet resourceSet = new ResourceSetImpl();
         URI outputURI = URI.createFileURI(new File(mOutputDir, "typesystem.ecore")
-                        .getAbsolutePath());
+                .getAbsolutePath());
         Resource outputResource = resourceSet.createResource(outputURI);
         schemaLocationMap = new HashMap();
         try {
           UimaTypeSystem2Ecore
-                          .uimaTypeSystem2Ecore(tsDesc, outputResource, null, schemaLocationMap);
+                  .uimaTypeSystem2Ecore(tsDesc, outputResource, null, schemaLocationMap);
         } catch (InvalidXMLException e) {
           // this should not happen. TypeSystemUtil.typeSystem2TypeSystemDescription
           // should never produce an invalid TypeSystemDescription!

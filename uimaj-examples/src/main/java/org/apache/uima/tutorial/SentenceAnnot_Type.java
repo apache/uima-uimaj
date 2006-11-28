@@ -27,44 +27,52 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.Type;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
-/** 
+/**
  * Updated by JCasGen Mon Nov 29 15:02:37 EST 2004
- * @generated */
+ * 
+ * @generated
+ */
 public class SentenceAnnot_Type extends Annotation_Type {
   /** @generated */
-  protected FSGenerator getFSGenerator() {return fsGenerator;}
+  protected FSGenerator getFSGenerator() {
+    return fsGenerator;
+  }
+
   /** @generated */
-  private final FSGenerator fsGenerator = 
-    new FSGenerator() {
-      public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (instanceOf_Type.useExistingInstance) {
-  			   // Return eq fs instance if already created
-  		     FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
-  		     if (null == fs) {
-  		       fs = new SentenceAnnot(addr, instanceOf_Type);
-  			   instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
-  			   return fs;
-  		     }
-  		     return fs;
-        } else return new SentenceAnnot(addr, instanceOf_Type);
-  	  }
-    };
+  private final FSGenerator fsGenerator = new FSGenerator() {
+    public FeatureStructure createFS(int addr, CASImpl cas) {
+      if (instanceOf_Type.useExistingInstance) {
+        // Return eq fs instance if already created
+        FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
+        if (null == fs) {
+          fs = new SentenceAnnot(addr, instanceOf_Type);
+          instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
+          return fs;
+        }
+        return fs;
+      } else
+        return new SentenceAnnot(addr, instanceOf_Type);
+    }
+  };
+
   /** @generated */
   public final static int typeIndexID = SentenceAnnot.typeIndexID;
-  /** @generated 
-     @modifiable */
-  public final static boolean featOkTst = JCas.getFeatOkTst("org.apache.uima.tutorial.SentenceAnnot");
 
+  /**
+   * @generated
+   * @modifiable
+   */
+  public final static boolean featOkTst = JCas
+          .getFeatOkTst("org.apache.uima.tutorial.SentenceAnnot");
 
-  /** initialize variables to correspond with Cas Type and Features
-	* @generated */
+  /**
+   * initialize variables to correspond with Cas Type and Features
+   * 
+   * @generated
+   */
   public SentenceAnnot_Type(JCas jcas, Type casType) {
     super(jcas, casType);
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
+    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
   }
 }
-
-
-
-    

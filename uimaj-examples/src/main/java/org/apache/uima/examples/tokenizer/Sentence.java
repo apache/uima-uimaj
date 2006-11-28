@@ -26,11 +26,16 @@ import org.apache.uima.jcas.cas.TOP_Type;
 public class Sentence extends Annotation {
 
   public final static int typeIndexID = JCas.getNextIndex();
-  public final static int type = typeIndexID;
-  public           int getTypeIndexID() {return typeIndexID;}
 
-  // Never called.  Disable default constructor
-  protected Sentence() {}
+  public final static int type = typeIndexID;
+
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  // Never called. Disable default constructor
+  protected Sentence() {
+  }
 
   /** Internal - Constructor used by generator */
   public Sentence(int addr, TOP_Type type) {
@@ -41,6 +46,7 @@ public class Sentence extends Annotation {
     super(jcas);
   }
 
-
-    public Sentence(JCas jcas, int start, int end) { super(jcas, start, end);}
+  public Sentence(JCas jcas, int start, int end) {
+    super(jcas, start, end);
+  }
 }

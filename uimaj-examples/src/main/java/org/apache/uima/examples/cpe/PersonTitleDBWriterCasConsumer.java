@@ -98,8 +98,7 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
   public void initialize() throws ResourceInitializationException {
     startTime = System.currentTimeMillis();
     System.out
-                    .println("Time: " + (System.currentTimeMillis() - startTime)
-                                    + " initialize() called");
+            .println("Time: " + (System.currentTimeMillis() - startTime) + " initialize() called");
     mOutputDir = new File((String) getConfigParameterValue(PARAM_OUTPUTDIR));
     if (!mOutputDir.exists()) {
       mOutputDir.mkdirs();
@@ -108,7 +107,7 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
     // make this the derby home by setting system property
     System.setProperty("derby.system.home", mOutputDir.toString());
     System.out.println("Time: " + (System.currentTimeMillis() - startTime)
-                    + " DB Writer: Set derby system home to: '" + mOutputDir.toString() + "'");
+            + " DB Writer: Set derby system home to: '" + mOutputDir.toString() + "'");
   }
 
   /**
@@ -126,7 +125,7 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
    */
   public void processCas(CAS aCAS) throws ResourceProcessException {
     System.out.println("Time: " + (System.currentTimeMillis() - startTime)
-                    + " DB Writer: ProcessCas called");
+            + " DB Writer: ProcessCas called");
     JCas jcas;
     try {
       jcas = aCAS.getJCas();
@@ -138,7 +137,7 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
       if (firstCall) {
         firstCall = false;
         System.out.println("Time: " + (System.currentTimeMillis() - startTime)
-                        + " DB Writer: First Time Initiailization: ");
+                + " DB Writer: First Time Initiailization: ");
         // NOTE TO USERS: a better design will be to do the loading of the
         // driver in the initialize() method, where it can
         // throw a ResourceInitialization Exception if it can't
@@ -152,15 +151,15 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
         if (firstEverCall) {
           firstEverCall = false;
           System.out
-                          .println("Time: "
-                                          + (System.currentTimeMillis() - startTime)
-                                          + " DB Writer: Doing first process call ever (even during re-runs) initialization");
+                  .println("Time: "
+                          + (System.currentTimeMillis() - startTime)
+                          + " DB Writer: Doing first process call ever (even during re-runs) initialization");
           try {
             // note: newInstance() call is needed to reinitialize properly after
             // derby has been shutdown
             Class.forName("org.apache.derby.jdbc.EmbeddedDriver").newInstance();
             System.out.println("Time: " + (System.currentTimeMillis() - startTime)
-                            + " DB Writer:    Loaded derby DB driver OK");
+                    + " DB Writer:    Loaded derby DB driver OK");
           } catch (ClassNotFoundException e) {
             System.err.println("No driver found for derby - check class path.");
           } catch (InstantiationException e) {
@@ -189,18 +188,18 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
         File db = new File(mOutputDir.toString() + "/ExamplePersonTitleDB");
         if (db.exists()) {
           System.out.println("Time: " + (System.currentTimeMillis() - startTime)
-                          + " DB Writer: First Time Initiailization: Deleting Database");
+                  + " DB Writer: First Time Initiailization: Deleting Database");
           deleteDir(db);
           System.out.println("Time: " + (System.currentTimeMillis() - startTime)
-                          + " DB Writer: First Time Initiailization: Database deleted");
+                  + " DB Writer: First Time Initiailization: Database deleted");
 
         }
 
         con = DriverManager.getConnection("jdbc:derby:ExamplePersonTitleDB;create=true");
         System.out
-                        .println("Time: "
-                                        + (System.currentTimeMillis() - startTime)
-                                        + " DB Writer: First Time Initiailization: Created the ExamplePersonTitleDB and connected to it.");
+                .println("Time: "
+                        + (System.currentTimeMillis() - startTime)
+                        + " DB Writer: First Time Initiailization: Created the ExamplePersonTitleDB and connected to it.");
 
         // Databases typically use user-names and passwords; these can
         // be passed as //properties to the getConnection method.
@@ -214,10 +213,10 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
         } catch (SQLException e) {
         }
         sqlStmt.execute("create table PersonTitle(" + "uri varchar(" + MAX_URI_LENGTH
-                        + "), spannedText varchar(" + MAX_TITLE_LENGTH
-                        + "), beginOffset int, endOffset int)");
+                + "), spannedText varchar(" + MAX_TITLE_LENGTH
+                + "), beginOffset int, endOffset int)");
         System.out.println("Time: " + (System.currentTimeMillis() - startTime)
-                        + " DB Writer: First Time Initiailization: Created the PersonTitle table.");
+                + " DB Writer: First Time Initiailization: Created the PersonTitle table.");
 
         sqlStmt.close(); // free resources associated with this
         // statement
@@ -231,14 +230,14 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
 
       // get the singleton instance of the SourceDocumentInformation
       SourceDocumentInformation sdi = (SourceDocumentInformation) jcas.getJFSIndexRepository()
-                      .getAnnotationIndex(SourceDocumentInformation.type).iterator().next();
+              .getAnnotationIndex(SourceDocumentInformation.type).iterator().next();
 
       System.out.println("Time: " + (System.currentTimeMillis() - startTime)
-                      + " DB Writer: Processing doc: '" + sdi.getUri() + "'");
+              + " DB Writer: Processing doc: '" + sdi.getUri() + "'");
 
       stmt.setString(1, truncate(sdi.getUri(), MAX_URI_LENGTH));
       for (FSIterator iter = jcas.getJFSIndexRepository().getAnnotationIndex(PersonTitle.type)
-                      .iterator(); iter.hasNext();) {
+              .iterator(); iter.hasNext();) {
         PersonTitle pt = (PersonTitle) iter.next();
         stmt.setString(2, truncate(pt.getCoveredText(), MAX_TITLE_LENGTH));
         stmt.setInt(3, pt.getBegin());
@@ -247,7 +246,7 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
         batchCounter--;
         if (batchCounter <= 0) {
           System.out.println("Time: " + (System.currentTimeMillis() - startTime)
-                          + " DB Writer: Batch writing updates - process call");
+                  + " DB Writer: Batch writing updates - process call");
           stmt.executeBatch();
           // NOTE TO USERS: Although we "commit" here, you may want
           // to delay committing until batchProcessComplete - or some
@@ -279,13 +278,13 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
   }
 
   public void collectionProcessComplete(ProcessTrace arg0) throws ResourceProcessException,
-                  IOException {
+          IOException {
     firstCall = true;
 
     try {
       if (batchCounter < DB_LOAD_BATCH_SIZE) {
         System.out.println("Time: " + (System.currentTimeMillis() - startTime)
-                        + " DB Writer: Batch writing updates - processComplete call");
+                + " DB Writer: Batch writing updates - processComplete call");
         stmt.executeBatch();
         con.commit();
         batchCounter = DB_LOAD_BATCH_SIZE;
@@ -294,7 +293,7 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
       stmt.close();
       con.close();
       System.out.println("Time: " + (System.currentTimeMillis() - startTime)
-                      + " DB Writer: Sucessfully closed the connection - done.");
+              + " DB Writer: Sucessfully closed the connection - done.");
 
     } catch (SQLException e) {
       System.err.println("Unexpected SQL exception");

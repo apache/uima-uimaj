@@ -19,57 +19,70 @@
 
 package org.apache.uima.tutorial;
 
-import org.apache.uima.jcas.impl.JCas; 
+import org.apache.uima.jcas.impl.JCas;
 import org.apache.uima.jcas.cas.TOP_Type;
 
-
-
-/** 
- * Updated by JCasGen Mon Nov 29 15:02:38 EST 2004
- * XML source: C:/Program Files/apache/uima/examples/descriptors/tutorial/ex6/TutorialTypeSystem.xml
- * @generated */
+/**
+ * Updated by JCasGen Mon Nov 29 15:02:38 EST 2004 XML source: C:/Program
+ * Files/apache/uima/examples/descriptors/tutorial/ex6/TutorialTypeSystem.xml
+ * 
+ * @generated
+ */
 public class DateAnnot extends DateTimeAnnot {
-  /** @generated
-   * @ordered 
+  /**
+   * @generated
+   * @ordered
    */
   public final static int typeIndexID = JCas.getNextIndex();
-  /** @generated
-   * @ordered 
+
+  /**
+   * @generated
+   * @ordered
    */
   public final static int type = typeIndexID;
-  /** @generated  */
-  public              int getTypeIndexID() {return typeIndexID;}
- 
-  /** Never called.  Disable default constructor
-   * @generated */
-  protected DateAnnot() {}
-    
-  /** Internal - constructor used by generator 
-   * @generated */
+
+  /** @generated */
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  /**
+   * Never called. Disable default constructor
+   * 
+   * @generated
+   */
+  protected DateAnnot() {
+  }
+
+  /**
+   * Internal - constructor used by generator
+   * 
+   * @generated
+   */
   public DateAnnot(int addr, TOP_Type type) {
     super(addr, type);
     readObject();
   }
-  
+
   /** @generated */
   public DateAnnot(JCas jcas) {
     super(jcas);
-    readObject();   
-  } 
-  
+    readObject();
+  }
+
   public DateAnnot(JCas jcas, int begin, int end) {
     super(jcas);
     setBegin(begin);
     setEnd(end);
     readObject();
-  }   
+  }
 
-  /** <!-- begin-user-doc -->
-    * Write your own initialization here
-    * <!-- end-user-doc -->
-  @generated modifiable */
-  private void readObject() {}
-     
+  /**
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
+   * 
+   * @generated modifiable
+   */
+  private void readObject() {
+  }
+
 }
-
-    

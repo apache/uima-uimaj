@@ -94,13 +94,13 @@ public class SimpleRunCPM extends Thread {
     // Collection Reader
     System.out.println("Initializing Collection Reader");
     ResourceSpecifier colReaderSpecifier = UIMAFramework.getXMLParser()
-                    .parseCollectionReaderDescription(new XMLInputSource(args[0]));
+            .parseCollectionReaderDescription(new XMLInputSource(args[0]));
     CollectionReader collectionReader = UIMAFramework.produceCollectionReader(colReaderSpecifier);
 
     // CAS Initializer
     System.out.println("Initializing CAS Initializer");
     ResourceSpecifier casIniSpecifier = UIMAFramework.getXMLParser()
-                    .parseCasInitializerDescription(new XMLInputSource(args[1]));
+            .parseCasInitializerDescription(new XMLInputSource(args[1]));
     CasInitializer casIni = UIMAFramework.produceCasInitializer(casIniSpecifier);
     // plug CAS Initializer into Collection Reader
     collectionReader.setCasInitializer(casIni);
@@ -108,13 +108,13 @@ public class SimpleRunCPM extends Thread {
     // TAE
     System.out.println("Initializing AnalysisEngine");
     ResourceSpecifier aeSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-                    new XMLInputSource(args[2]));
+            new XMLInputSource(args[2]));
     AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aeSpecifier);
 
     // CAS Consumer
     System.out.println("Initializing CAS Consumer");
     ResourceSpecifier consumerSpecifier = UIMAFramework.getXMLParser().parseCasConsumerDescription(
-                    new XMLInputSource(args[3]));
+            new XMLInputSource(args[3]));
     CasConsumer casConsumer = UIMAFramework.produceCasConsumer(consumerSpecifier);
 
     // create a new Collection Processing Manager
@@ -139,10 +139,9 @@ public class SimpleRunCPM extends Thread {
    */
   private static void printUsageMessage() {
     System.out.println(" Arguments to the program are as follows : \n"
-                    + "args[0] : CollectionReader descriptor file \n "
-                    + "args[1] : CAS Initializer descriptor file \n "
-                    + "args[2] : TAE descriptor file. \n"
-                    + "args[3] : CAS Consumer descriptor file");
+            + "args[0] : CollectionReader descriptor file \n "
+            + "args[1] : CAS Initializer descriptor file \n " + "args[2] : TAE descriptor file. \n"
+            + "args[3] : CAS Consumer descriptor file");
   }
 
   /**

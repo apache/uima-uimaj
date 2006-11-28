@@ -26,11 +26,16 @@ import org.apache.uima.jcas.cas.TOP_Type;
 public class Token extends Annotation {
 
   public final static int typeIndexID = JCas.getNextIndex();
-  public final static int type = typeIndexID;
-  public           int getTypeIndexID() {return typeIndexID;}
 
-  // Never called.  Disable default constructor
-  protected Token() {}
+  public final static int type = typeIndexID;
+
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  // Never called. Disable default constructor
+  protected Token() {
+  }
 
   /** Internal - Constructor used by generator */
   public Token(int addr, TOP_Type type) {
@@ -41,6 +46,7 @@ public class Token extends Annotation {
     super(jcas);
   }
 
-
-    public Token(JCas jcas, int start, int end) { super(jcas, start, end);}
+  public Token(JCas jcas, int start, int end) {
+    super(jcas, start, end);
+  }
 }

@@ -31,9 +31,8 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
 
 /**
- * An example application that reads documents from files, sends them
- * though an Analysis Engine, and prints all discovered annotations to
- * System.out.
+ * An example application that reads documents from files, sends them though an Analysis Engine, and
+ * prints all discovered annotations to System.out.
  * <p>
  * The application takes two arguments:
  * <ol type="1">
@@ -45,43 +44,44 @@ public class ExampleApplication {
   /**
    * Main program.
    * 
-   * @param args Command-line arguments - see class description
+   * @param args
+   *          Command-line arguments - see class description
    */
   public static void main(String[] args) {
     try {
       File taeDescriptor = null;
       File inputDir = null;
 
-      //Read and validate command line arguments
+      // Read and validate command line arguments
       boolean validArgs = false;
       if (args.length == 2) {
         taeDescriptor = new File(args[0]);
         inputDir = new File(args[1]);
 
         validArgs = taeDescriptor.exists() && !taeDescriptor.isDirectory()
-                        && inputDir.isDirectory();
+                && inputDir.isDirectory();
       }
       if (!validArgs) {
         printUsageMessage();
       } else {
-        //get Resource Specifier from XML file
+        // get Resource Specifier from XML file
         XMLInputSource in = new XMLInputSource(taeDescriptor);
         ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
 
-        //for debugging, output the Resource Specifier
-        //System.out.println(specifier);
+        // for debugging, output the Resource Specifier
+        // System.out.println(specifier);
 
-        //create Analysis Engine
+        // create Analysis Engine
         AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(specifier);
-        //create a CAS 
+        // create a CAS
         CAS cas = ae.newCAS();
 
-        //get all files in the input directory
+        // get all files in the input directory
         File[] files = inputDir.listFiles();
         if (files == null) {
           System.out.println("No files to process");
         } else {
-          //process documents
+          // process documents
           for (int i = 0; i < files.length; i++) {
             if (!files[i].isDirectory()) {
               processFile(files[i], ae, cas);
@@ -100,39 +100,42 @@ public class ExampleApplication {
    */
   private static void printUsageMessage() {
     System.err.println("Usage: java org.apache.uima.example.ExampleApplication "
-                    + "<TAE descriptor or TEAR file name> <input dir> <output dir>");
+            + "<TAE descriptor or TEAR file name> <input dir> <output dir>");
   }
 
   /**
    * Processes a single XML file and prints annotations to System.out
    * 
-   * @param aFile file to process
-   * @param aAE Analysis Engine that will process the file
-   * @param aCAS CAS that will be used to hold analysis results
+   * @param aFile
+   *          file to process
+   * @param aAE
+   *          Analysis Engine that will process the file
+   * @param aCAS
+   *          CAS that will be used to hold analysis results
    */
   private static void processFile(File aFile, AnalysisEngine aAE, CAS aCAS) throws IOException,
-                  AnalysisEngineProcessException {
+          AnalysisEngineProcessException {
     System.out.println("Processing file " + aFile.getName());
     FileInputStream fis = null;
 
     try {
-      //read file
+      // read file
       fis = new FileInputStream(aFile);
       byte[] contents = new byte[(int) aFile.length()];
       fis.read(contents);
       String document = new String(contents, "UTF-8");
       document = document.trim();
 
-      //put document text in CAS 
+      // put document text in CAS
       aCAS.setDocumentText(document);
 
-      //process
+      // process
       aAE.process(aCAS);
 
-      //print annotations to System.out
+      // print annotations to System.out
       PrintAnnotations.printAnnotations(aCAS, System.out);
 
-      //reset the CAS to prepare it for processing the next document
+      // reset the CAS to prepare it for processing the next document
       aCAS.reset();
     } finally {
       try {

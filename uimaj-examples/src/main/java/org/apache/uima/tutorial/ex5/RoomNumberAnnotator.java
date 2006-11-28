@@ -57,7 +57,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
         mPatterns[i] = Pattern.compile(patternStrings[i]);
       } catch (PatternSyntaxException e) {
         throw new ResourceInitializationException(MESSAGE_DIGEST, "regex_syntax_error",
-                        new Object[] { patternStrings[i] }, e);
+                new Object[] { patternStrings[i] }, e);
       }
     }
   }

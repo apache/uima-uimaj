@@ -19,76 +19,97 @@
 
 package org.apache.uima.tutorial;
 
-import org.apache.uima.jcas.impl.JCas; 
+import org.apache.uima.jcas.impl.JCas;
 import org.apache.uima.jcas.cas.TOP_Type;
 
 import org.apache.uima.jcas.tcas.Annotation;
 
-
-/** 
- * Updated by JCasGen Mon Nov 29 15:02:37 EST 2004
- * XML source: C:/Program Files/apache/uima/examples/descriptors/tutorial/ex6/TutorialTypeSystem.xml
- * @generated */
+/**
+ * Updated by JCasGen Mon Nov 29 15:02:37 EST 2004 XML source: C:/Program
+ * Files/apache/uima/examples/descriptors/tutorial/ex6/TutorialTypeSystem.xml
+ * 
+ * @generated
+ */
 public class RoomNumber extends Annotation {
-  /** @generated
-   * @ordered 
+  /**
+   * @generated
+   * @ordered
    */
   public final static int typeIndexID = JCas.getNextIndex();
-  /** @generated
-   * @ordered 
+
+  /**
+   * @generated
+   * @ordered
    */
   public final static int type = typeIndexID;
-  /** @generated  */
-  public              int getTypeIndexID() {return typeIndexID;}
- 
-  /** Never called.  Disable default constructor
-   * @generated */
-  protected RoomNumber() {}
-    
-  /** Internal - constructor used by generator 
-   * @generated */
+
+  /** @generated */
+  public int getTypeIndexID() {
+    return typeIndexID;
+  }
+
+  /**
+   * Never called. Disable default constructor
+   * 
+   * @generated
+   */
+  protected RoomNumber() {
+  }
+
+  /**
+   * Internal - constructor used by generator
+   * 
+   * @generated
+   */
   public RoomNumber(int addr, TOP_Type type) {
     super(addr, type);
     readObject();
   }
-  
+
   /** @generated */
   public RoomNumber(JCas jcas) {
     super(jcas);
-    readObject();   
-  } 
-  
+    readObject();
+  }
+
   public RoomNumber(JCas jcas, int begin, int end) {
     super(jcas);
     setBegin(begin);
     setEnd(end);
     readObject();
-  }   
-
-  /** <!-- begin-user-doc -->
-    * Write your own initialization here
-    * <!-- end-user-doc -->
-  @generated modifiable */
-  private void readObject() {}
-     
- 
-    
-  //*--------------*
-  //* Feature: building
-
-  /** getter for building - gets Building containing this room
-   * @generated */
-  public String getBuilding() {
-    if (RoomNumber_Type.featOkTst && ((RoomNumber_Type)jcasType).casFeat_building == null)
-      JCas.throwFeatMissing("building", "org.apache.uima.tutorial.RoomNumber");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((RoomNumber_Type)jcasType).casFeatCode_building);}
-    
-  /** setter for building - sets Building containing this room 
-   * @generated */
-  public void setBuilding(String v) {
-    if (RoomNumber_Type.featOkTst && ((RoomNumber_Type)jcasType).casFeat_building == null)
-      JCas.throwFeatMissing("building", "org.apache.uima.tutorial.RoomNumber");
-    jcasType.ll_cas.ll_setStringValue(addr, ((RoomNumber_Type)jcasType).casFeatCode_building, v);}    
   }
 
-    
+  /**
+   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
+   * 
+   * @generated modifiable
+   */
+  private void readObject() {
+  }
+
+  // *--------------*
+  // * Feature: building
+
+  /**
+   * getter for building - gets Building containing this room
+   * 
+   * @generated
+   */
+  public String getBuilding() {
+    if (RoomNumber_Type.featOkTst && ((RoomNumber_Type) jcasType).casFeat_building == null)
+      JCas.throwFeatMissing("building", "org.apache.uima.tutorial.RoomNumber");
+    return jcasType.ll_cas.ll_getStringValue(addr,
+            ((RoomNumber_Type) jcasType).casFeatCode_building);
+  }
+
+  /**
+   * setter for building - sets Building containing this room
+   * 
+   * @generated
+   */
+  public void setBuilding(String v) {
+    if (RoomNumber_Type.featOkTst && ((RoomNumber_Type) jcasType).casFeat_building == null)
+      JCas.throwFeatMissing("building", "org.apache.uima.tutorial.RoomNumber");
+    jcasType.ll_cas.ll_setStringValue(addr, ((RoomNumber_Type) jcasType).casFeatCode_building, v);
+  }
+}
