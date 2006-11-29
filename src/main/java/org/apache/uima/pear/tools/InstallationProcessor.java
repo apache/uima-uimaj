@@ -170,9 +170,6 @@ public class InstallationProcessor {
     buffer.append("\t<service name=\"");
     buffer.append(insdObject.getMainComponentId());
     buffer.append("\" host=\"localhost\" provider=\"vinci\">\n");
-    buffer.append("\t\t<parameter name=\"serializerClassName\" value=\"");
-    buffer.append("org.apache.uima.adapter.vinci.");
-    buffer.append("VinciXCASSerializer_NoDocText\"/>\n");
     buffer.append("\t\t<parameter name=\"resourceSpecifierPath\" ");
     buffer.append("value=\"");
     buffer.append(insdObject.getMainComponentDesc());
