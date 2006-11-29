@@ -50,7 +50,7 @@ public class XmlDeserializer extends DeserializerImpl {
     try {
       mNesting = 0;
       mDeser = new SaxDeserializer_impl(UIMAFramework.getXMLParser(), null, null,
-              new XMLParser.ParsingOptions(false, false));
+              new XMLParser.ParsingOptions(false));
       LocatorImpl loc = new LocatorImpl();
       loc.setSystemId(new File(System.getProperty("user.dir")).toURL().toString());
       mDeser.setDocumentLocator(loc);
