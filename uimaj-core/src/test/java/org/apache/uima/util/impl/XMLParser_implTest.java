@@ -28,6 +28,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.TaeDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 
@@ -98,7 +99,7 @@ public class XMLParser_implTest extends TestCase {
 
       // parse with env var ref expansion disabled
       taeDesc = UIMAFramework.getXMLParser().parseTaeDescription(new XMLInputSource(envVarRefTest),
-              new XMLParser.ParsingOptions(true, false));
+              new XMLParser.ParsingOptions(false));
       Assert.assertEquals(
               "<envVarRef>uima.test.var1</envVarRef>-<envVarRef>uima.test.var2</envVarRef>",
               taeDesc.getMetaData().getName());
@@ -110,5 +111,19 @@ public class XMLParser_implTest extends TestCase {
     }
   }
 
+  public void testParseResourceSpecifier() throws Exception {
+    try {
+      //test schema validation
+      File invalid = JUnitExtension.getFile("XmlParserTest/NotConformingToSchema.xml");
+      try {
+        mXmlParser.parseResourceSpecifier(new XMLInputSource(invalid));
+        fail();
+      }
+      catch (InvalidXMLException e) {        
+      }
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
+  }
   private XMLParser mXmlParser;
 }

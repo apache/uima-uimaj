@@ -19,40 +19,24 @@
 
 package org.apache.uima.util.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Result;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 
-import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
-import org.apache.uima.internal.util.XIncluder;
 import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.Level;
 import org.apache.uima.util.SaxDeserializer;
 import org.apache.uima.util.XMLParser;
-import org.apache.uima.util.XMLSerializer;
 import org.apache.uima.util.XMLizable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Reference implementation of {@link SaxDeserializer}.
@@ -69,22 +53,13 @@ public class SaxDeserializer_impl implements SaxDeserializer {
   private static final SAXTransformerFactory transformerFactory = (SAXTransformerFactory) SAXTransformerFactory
           .newInstance();
 
-  private boolean mValidate;
-
-  private DocumentBuilder mDocumentBuilder;
-
   private DOMResult mDOMResult;
-
-  private ByteArrayOutputStream mBytes;
-
-  private TransformerHandler mXIncludeTransformerHandler;
 
   private XMLParser mUimaXmlParser;
 
   private XMLParser.ParsingOptions mOptions;
-
-  // private DomParserWrapper mDomParser;
-  private ParseErrorHandler mErrorHandler;
+ 
+  private TransformerHandler mTransformerHandler;
 
   /**
    * Creates a new SAX Deserializer.
@@ -92,115 +67,55 @@ public class SaxDeserializer_impl implements SaxDeserializer {
    * @param aUimaXmlParser
    *          the UIMA XML parser that knows the XML element to Java class mappings and which is
    *          used to assist in the serialization.
-   * @param aNamespaceForSchema
-   *          XML namespace for elements to be validated against XML schema. If null, no schema will
-   *          be used.
-   * @param aSchemaUrl
-   *          URL to XML schema that will be used to validate the XML document. If null, no schema
-   *          will be used.
    * @param aOptions
    *          option settings
    */
-  public SaxDeserializer_impl(XMLParser aUimaXmlParser, String aNamespaceForSchema, URL aSchemaUrl,
-          XMLParser.ParsingOptions aOptions) {
+  public SaxDeserializer_impl(XMLParser aUimaXmlParser, XMLParser.ParsingOptions aOptions) {
     mUimaXmlParser = aUimaXmlParser;
     mOptions = aOptions;
 
-    // are we doing schema validation?
-    mValidate = (aNamespaceForSchema != null && aSchemaUrl != null);
-
-    // Setup XInclude Transformer
+    // use a TransformerHandler to convert SAX events to DOM
     try {
-      if (aOptions.expandXIncludes) {
-        mXIncludeTransformerHandler = XIncluder.newXIncludeHandler();
-      } else {
-        // use identity transformer
-        mXIncludeTransformerHandler = transformerFactory.newTransformerHandler();
-      }
-
-      // if no validation, go straight to DOM. Otherwise we have to go back
-      // to string so we can do validation.
-      if (!mValidate) {
-        mDOMResult = new DOMResult();
-        mXIncludeTransformerHandler.setResult(mDOMResult);
-      } else {
-        // create new ByteArrayOutputStream to which we will write the parsed XML
-        mBytes = new ByteArrayOutputStream();
-        // Set up a Serializer to serialize the Result to a byte stream
-        XMLSerializer serializer = new XMLSerializer(mBytes);
-        // The Serializer functions as a SAX ContentHandler.
-        Result result = new SAXResult(serializer.getContentHandler());
-        mXIncludeTransformerHandler.setResult(result);
-
-        // Create DOM parser that is used to parse the string produced by the
-        // XIncluder
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
-        // attempt to enable schema validation
-        try {
-          factory.setAttribute(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
-          factory.setAttribute(JAXP_SCHEMA_SOURCE, aSchemaUrl.toString());
-          factory.setValidating(true);
-        } catch (Exception e) {
-          UIMAFramework
-                  .getLogger()
-                  .log(Level.INFO,
-                          "The installed XML Parser does not support schema validation.  No validation will occur.");
-          factory.setValidating(false);
-        }
-        mDocumentBuilder = factory.newDocumentBuilder();
-        mErrorHandler = new ParseErrorHandler();
-        mDocumentBuilder.setErrorHandler(mErrorHandler);
-      }
-    } catch (ParserConfigurationException e) {
-      throw new UIMARuntimeException(e);
-    } catch (SecurityException e) {
-      throw new UIMARuntimeException(e);
+      mTransformerHandler = transformerFactory.newTransformerHandler();
+      mDOMResult = new DOMResult();
+      mTransformerHandler.setResult(mDOMResult);
     } catch (TransformerConfigurationException e) {
       throw new UIMARuntimeException(e);
     }
-
+  }
+  
+  /**
+   * Creates a new SAX Deserializer.
+   * 
+   * @param aUimaXmlParser
+   *          the UIMA XML parser that knows the XML element to Java class mappings and which is
+   *          used to assist in the serialization.
+   * @param aNamespaceForSchema
+   *          not used
+   * @param aSchemaUrl
+   *          not used
+   * @param aOptions
+   *          option settings
+   *          
+   * @deprecated Use {@link #SaxDeserializer_impl(XMLParser, XMLParser.ParsingOptions)} instead.
+   */
+  public SaxDeserializer_impl(XMLParser aUimaXmlParser, String aNamespaceForSchema, URL aSchemaUrl,
+          XMLParser.ParsingOptions aOptions) {
+    this(aUimaXmlParser, aOptions);
   }
 
   /**
    * @see org.apache.uima.util.SaxDeserializer#getObject()
    */
   public XMLizable getObject() throws InvalidXMLException {
-    Node rootDomNode;
-
-    if (mValidate) {
-      // parese intermediate data from byte array
-      InputStream in = new ByteArrayInputStream(mBytes.toByteArray());
-
-      // parse it with DOM parser
-      try {
-        InputSource input = new InputSource(in);
-        rootDomNode = mDocumentBuilder.parse(input).getDocumentElement();
-      } catch (IOException e) {
-        throw new InvalidXMLException(e);
-      } catch (SAXException e) {
-        throw new InvalidXMLException(e);
-      }
-
-      if (mErrorHandler.getException() != null) {
-        throw new InvalidXMLException(mErrorHandler.getException());
-      }
-    } else {
-      // should have already parsed to DOM
-      rootDomNode = ((Document) mDOMResult.getNode()).getDocumentElement();
-    }
+    Node rootDomNode = ((Document) mDOMResult.getNode()).getDocumentElement();
 
     // build the object
     XMLizable result = mUimaXmlParser.buildObject((Element) rootDomNode, mOptions);
 
     // clear state to prepare for another parse
-    if (mValidate) {
-      mBytes = new ByteArrayOutputStream();
-      mErrorHandler.clear();
-    } else {
-      mDOMResult = new DOMResult();
-      mXIncludeTransformerHandler.setResult(mDOMResult);
-    }
+    mDOMResult = new DOMResult();
+    mTransformerHandler.setResult(mDOMResult);
 
     return result;
   }
@@ -210,7 +125,7 @@ public class SaxDeserializer_impl implements SaxDeserializer {
    */
   public void characters(char[] ch, int start, int length) throws SAXException {
     // System.out.println("SaxDeserializer_impl::characters");
-    mXIncludeTransformerHandler.characters(ch, start, length);
+    mTransformerHandler.characters(ch, start, length);
   }
 
   /**
@@ -218,7 +133,7 @@ public class SaxDeserializer_impl implements SaxDeserializer {
    */
   public void endDocument() throws SAXException {
     // System.out.println("SaxDeserializer_impl::endDocument");
-    mXIncludeTransformerHandler.endDocument();
+    mTransformerHandler.endDocument();
   }
 
   /**
@@ -227,7 +142,7 @@ public class SaxDeserializer_impl implements SaxDeserializer {
    */
   public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
     // System.out.println("SaxDeserializer_impl::endElement");
-    mXIncludeTransformerHandler.endElement(namespaceURI, localName, qName);
+    mTransformerHandler.endElement(namespaceURI, localName, qName);
   }
 
   /**
@@ -235,14 +150,14 @@ public class SaxDeserializer_impl implements SaxDeserializer {
    */
   public void endPrefixMapping(String prefix) throws SAXException {
     // System.out.println("SaxDeserializer_impl::endPrefixMapping");
-    mXIncludeTransformerHandler.endPrefixMapping(prefix);
+    mTransformerHandler.endPrefixMapping(prefix);
   }
 
   /**
    * @see org.xml.sax.ContentHandler#ignorableWhitespace(char[], int, int)
    */
   public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
-    mXIncludeTransformerHandler.ignorableWhitespace(ch, start, length);
+    mTransformerHandler.ignorableWhitespace(ch, start, length);
   }
 
   /**
@@ -250,7 +165,7 @@ public class SaxDeserializer_impl implements SaxDeserializer {
    */
   public void processingInstruction(String target, String data) throws SAXException {
     // System.out.println("SaxDeserializer_impl::processingInstruction");
-    mXIncludeTransformerHandler.processingInstruction(target, data);
+    mTransformerHandler.processingInstruction(target, data);
   }
 
   /**
@@ -258,14 +173,14 @@ public class SaxDeserializer_impl implements SaxDeserializer {
    */
   public void setDocumentLocator(Locator locator) {
     // System.out.println("SaxDeserializer_impl::setDocumentLocator");
-    mXIncludeTransformerHandler.setDocumentLocator(locator);
+    mTransformerHandler.setDocumentLocator(locator);
   }
 
   /**
    * @see org.xml.sax.ContentHandler#skippedEntity(java.lang.String)
    */
   public void skippedEntity(String name) throws SAXException {
-    mXIncludeTransformerHandler.skippedEntity(name);
+    mTransformerHandler.skippedEntity(name);
   }
 
   /**
@@ -273,7 +188,7 @@ public class SaxDeserializer_impl implements SaxDeserializer {
    */
   public void startDocument() throws SAXException {
     // System.out.println("SaxDeserializer_impl::startDocument");
-    mXIncludeTransformerHandler.startDocument();
+    mTransformerHandler.startDocument();
   }
 
   /**
@@ -283,7 +198,7 @@ public class SaxDeserializer_impl implements SaxDeserializer {
   public void startElement(String namespaceURI, String localName, String qName, Attributes atts)
           throws SAXException {
     // System.out.println("SaxDeserializer_impl::startElement("+namespaceURI+","+localName+","+qName+","+atts+")");
-    mXIncludeTransformerHandler.startElement(namespaceURI, localName, qName, atts);
+    mTransformerHandler.startElement(namespaceURI, localName, qName, atts);
   }
 
   /**
@@ -291,36 +206,6 @@ public class SaxDeserializer_impl implements SaxDeserializer {
    */
   public void startPrefixMapping(String prefix, String uri) throws SAXException {
     // System.out.println("SaxDeserializer_impl::startPrefixMapping("+prefix+","+uri+")");
-    mXIncludeTransformerHandler.startPrefixMapping(prefix, uri);
-  }
-
-  /**
-   * Error handler for XML parsing. Stores first error in <code>exception</code> field for later
-   * retrieval.
-   */
-  static class ParseErrorHandler extends DefaultHandler {
-    private SAXParseException mException = null;
-
-    public void error(SAXParseException aError) {
-      if (mException == null)
-        mException = aError;
-    }
-
-    public void fatalError(SAXParseException aError) {
-      if (mException == null)
-        mException = aError;
-    }
-
-    public void warning(SAXParseException aWarning) {
-      System.err.println("XML Warning: " + aWarning.getMessage());
-    }
-
-    public SAXParseException getException() {
-      return mException;
-    }
-
-    public void clear() {
-      mException = null;
-    }
+    mTransformerHandler.startPrefixMapping(prefix, uri);
   }
 }

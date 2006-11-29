@@ -75,32 +75,6 @@ public interface XMLParser {
   public void enableSchemaValidation(boolean aEnable);
 
   /**
-   * Parses an XML input stream and produces an object.
-   * 
-   * @param aInput
-   *          the input source from which to read the XML document
-   * @param aNamespaceForSchema
-   *          XML namespace for elements to be validated against XML schema. If null, no schema will
-   *          be used (unless one is declared in the document itself). This parameter is ignored if
-   *          schema validation has not been enabled via {@link #enableSchemaValidation(boolean)}.
-   * @param aSchemaUrl
-   *          URL to XML schema that will be used to validate the XML document. If null, no schema
-   *          will be used (unless one is declared in the document itself). This parameter is
-   *          ignored if schema validation has not been enabled via
-   *          {@link #enableSchemaValidation(boolean)}.
-   * @param aExpandXIncludes
-   *          if true, XInclude (<code>xi:include</code>) elements will be expanded according to
-   *          the XInclude specification.
-   * 
-   * @return an <code>XMLizable</code> object constructed from the XML document
-   * 
-   * @throws InvalidXMLException
-   *           if the input XML is not valid or does not specify a valid object
-   */
-  public XMLizable parse(XMLInputSource aInput, String aNamespaceForSchema, URL aSchemaUrl,
-          boolean aExpandXIncludes) throws InvalidXMLException;
-
-  /**
    * Parses an XML input stream and produces an object. This method will expand XInclude (<code>xi:include</code>)
    * elements.
    * 
@@ -696,35 +670,6 @@ public interface XMLParser {
   /**
    * Creates a new <code>SaxDeserializer</code>.
    * 
-   * @param aNamespaceForSchema
-   *          XML namespace for elements to be validated against XML schema. If null, no schema will
-   *          be used.
-   * @param aSchemaUrl
-   *          URL to XML schema that will be used to validate the XML document. If null, no schema
-   *          will be used.
-   * @param aExpandXIncludes
-   *          if true, XInclude (<code>xi:include</code>) elements will be expanded according to
-   *          the XInclude specification.
-   * 
-   * @return an object that implements {@link org.xml.sax.ContentHandler} and can be used to
-   *         deserialize an {@link XMLizable} object from SAX events.
-   * 
-   * @throws InvalidXMLException
-   *           if the XML element does not specify a valid object
-   * @see #newSaxDeserializer()
-   */
-  public SaxDeserializer newSaxDeserializer(String aNamespaceForSchema, URL aSchemaUrl,
-          boolean aExpandXIncludes);
-
-  /**
-   * Creates a new <code>SaxDeserializer</code>.
-   * 
-   * @param aNamespaceForSchema
-   *          XML namespace for elements to be validated against XML schema. If null, no schema will
-   *          be used.
-   * @param aSchemaUrl
-   *          URL to XML schema that will be used to validate the XML document. If null, no schema
-   *          will be used.
    * @param aOptions
    *          option settings
    * 
@@ -734,9 +679,10 @@ public interface XMLParser {
    * @throws InvalidXMLException
    *           if the XML element does not specify a valid object
    * @see #newSaxDeserializer()
+
    */
-  public SaxDeserializer newSaxDeserializer(String aNamespaceForSchema, URL aSchemaUrl,
-          ParsingOptions aOptions);
+  public SaxDeserializer newSaxDeserializer(ParsingOptions aOptions);
+  
 
   /**
    * Configures this XMLParser by registering a mapping between the name of an XML element and the
@@ -772,6 +718,7 @@ public interface XMLParser {
   public static class ParsingOptions {
     /**
      * Whether to expand &lt;xi:include&gt; elements according to the XInclude spec.
+     * @deprecated XInclude is no longer supported
      */
     public boolean expandXIncludes;
 
@@ -789,10 +736,22 @@ public interface XMLParser {
      * @param aExpandEnvVarRefs
      *          Whether to expand &lt;envVarRef&gt;VARNAME&lt;/envVarRef&gt; elements by
      *          substituting the value of the System proprery VARNAME.
+     * @deprecated XInclude is no longer supported
      */
     public ParsingOptions(boolean aExpandXIncludes, boolean aExpandEnvVarRefs) {
       expandXIncludes = aExpandXIncludes;
       expandEnvVarRefs = aExpandEnvVarRefs;
     }
+
+    /**
+     * Creates a new ParsingOptions object.
+     * 
+     * @param aExpandEnvVarRefs
+     *          Whether to expand &lt;envVarRef&gt;VARNAME&lt;/envVarRef&gt; elements by
+     *          substituting the value of the System proprery VARNAME.
+     */
+    public ParsingOptions(boolean aExpandEnvVarRefs) {
+      expandEnvVarRefs = aExpandEnvVarRefs;
+    }  
   }
 }

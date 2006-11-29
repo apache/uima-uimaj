@@ -273,7 +273,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
       String aggregateDescXml = writer.getBuffer().toString();
       // System.out.println(aggregateDescXml);
 
-      // parse objects from XML (no schema validation)
+      // parse objects from XML
       InputStream is = new ByteArrayInputStream(primitiveDescXml.getBytes());
       AnalysisEngineDescription newPrimitiveDesc = (AnalysisEngineDescription) UIMAFramework
               .getXMLParser().parse(new XMLInputSource(is, null));
