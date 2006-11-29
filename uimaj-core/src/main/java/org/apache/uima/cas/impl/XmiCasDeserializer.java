@@ -595,10 +595,10 @@ public class XmiCasDeserializer {
         }
           // For list types, we do the same as for array types UNLESS we're dealing with
           // the tail feature of another list node. In that case we do the usual FS deserialization.
-        case LowLevelCAS.TYPE_CLASS_INTLIST:
-        case LowLevelCAS.TYPE_CLASS_FLOATLIST:
-        case LowLevelCAS.TYPE_CLASS_STRINGLIST:
-        case LowLevelCAS.TYPE_CLASS_FSLIST: {
+        case XmiCasSerializer.TYPE_CLASS_INTLIST:
+        case XmiCasSerializer.TYPE_CLASS_FLOATLIST:
+        case XmiCasSerializer.TYPE_CLASS_STRINGLIST:
+        case XmiCasSerializer.TYPE_CLASS_FSLIST: {
           if (ts.getFeature(featCode).isMultipleReferencesAllowed()) {
             // do the usual FS deserialization
             try {
@@ -688,22 +688,22 @@ public class XmiCasDeserializer {
           cas.setFeatureValue(addr, featCode, casArray);
           break;
         }
-        case LowLevelCAS.TYPE_CLASS_INTLIST: {
+        case XmiCasSerializer.TYPE_CLASS_INTLIST: {
           int listFS = listUtils.createIntList(featVals);
           cas.setFeatureValue(addr, featCode, listFS);
           break;
         }
-        case LowLevelCAS.TYPE_CLASS_FLOATLIST: {
+        case XmiCasSerializer.TYPE_CLASS_FLOATLIST: {
           int listFS = listUtils.createFloatList(featVals);
           cas.setFeatureValue(addr, featCode, listFS);
           break;
         }
-        case LowLevelCAS.TYPE_CLASS_STRINGLIST: {
+        case XmiCasSerializer.TYPE_CLASS_STRINGLIST: {
           int listFS = listUtils.createStringList(featVals);
           cas.setFeatureValue(addr, featCode, listFS);
           break;
         }
-        case LowLevelCAS.TYPE_CLASS_FSLIST: {
+        case XmiCasSerializer.TYPE_CLASS_FSLIST: {
           // this call, in addition to creating the list in the CAS, also
           // adds each list node ID to the fsListNodesFromMultivaluedProperties list.
           // We need this so we can go back through later and reset the addresses of the
@@ -1113,23 +1113,33 @@ public class XmiCasDeserializer {
     }
 
     /**
-     * TODO: something like this should be in the CASImpl, and more efficiently.
+     * Classifies a type. This returns an integer code identifying the type as one of the primitive
+     * types, one of the array types, one of the list types, or a generic FS type (anything else).
+     * <p>
+     * The {@link LowLevelCAS#ll_getTypeClass(int)} method classifies primitives and array types,
+     * but does not have a special classification for list types, which we need for XMI
+     * serialization. Therefore, in addition to the type codes defined on {@link LowLevelCAS}, this
+     * method can return one of the type codes TYPE_CLASS_INTLIST, TYPE_CLASS_FLOATLIST,
+     * TYPE_CLASS_STRINGLIST, or TYPE_CLASS_FSLIST defined on {@link XmiCasSerializer} interface.
      * 
      * @param type
-     * @return
+     *          the type to classify
+     * @return one of the TYPE_CLASS codes defined on {@link LowLevelCAS} or on the
+     *         {@link XmiCasSerializer} interface.
      */
     private final int classifyType(int type) {
+      // For most most types
       if (listUtils.isIntListType(type)) {
-        return LowLevelCAS.TYPE_CLASS_INTLIST;
+        return XmiCasSerializer.TYPE_CLASS_INTLIST;
       }
       if (listUtils.isFloatListType(type)) {
-        return LowLevelCAS.TYPE_CLASS_FLOATLIST;
+        return XmiCasSerializer.TYPE_CLASS_FLOATLIST;
       }
       if (listUtils.isStringListType(type)) {
-        return LowLevelCAS.TYPE_CLASS_STRINGLIST;
+        return XmiCasSerializer.TYPE_CLASS_STRINGLIST;
       }
       if (listUtils.isFsListType(type)) {
-        return LowLevelCAS.TYPE_CLASS_FSLIST;
+        return XmiCasSerializer.TYPE_CLASS_FSLIST;
       }
       return cas.ll_getTypeClass(type);
     }
