@@ -28,7 +28,7 @@
     <parameter name="className" value="org.apache.uima.adapter.soap.AxisAnalysisEngineService_impl"/>
     <parameter name="allowedMethods" value="getMetaData process"/>
     <parameter name="allowedRoles" value="*"/>
-    <parameter name="resourceSpecifierPath" value="C:/Program Files/apache/uima/examples/descriptors/analysis_engine/PersonTitleAnnotator.xml"/>
+    <parameter name="resourceSpecifierPath" value="C:/Program Files/apache-uima/examples/descriptors/analysis_engine/PersonTitleAnnotator.xml"/>
     <parameter name="numInstances" value="3"/>
     <parameter name="timeoutPeriod" value="30000"/>
     <parameter name="enableLogging" value="true"/>

@@ -25,7 +25,7 @@
   <service name="uima.annotator.PersonTitleAnnotator" provider="vinci">
 
     <parameter name="serializerClassName" value="org.apache.uima.adapter.vinci.VinciXCASSerializer_NoDocText"/>
-    <parameter name="resourceSpecifierPath" value="C:/Program Files/apache/uima/examples/descriptors/analysis_engine/PersonTitleAnnotator.xml"/>
+    <parameter name="resourceSpecifierPath" value="C:/Program Files/apache-uima/examples/descriptors/analysis_engine/PersonTitleAnnotator.xml"/>
     <parameter name="numInstances" value="1"/>
     <parameter name="timeoutPeriod" value="30000"/>
   </service>

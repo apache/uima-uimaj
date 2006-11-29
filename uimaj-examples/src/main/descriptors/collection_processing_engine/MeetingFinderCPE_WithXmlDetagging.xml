@@ -33,7 +33,7 @@
 			<configurationParameterSettings>
 				<nameValuePair>
 					<name>InputDirectory</name>
-					<value><string>C:/Program Files/apache/uima/examples/data/xml</string></value>
+					<value><string>C:/Program Files/apache-uima/examples/data/xml</string></value>
 				</nameValuePair>
 			</configurationParameterSettings>
         </collectionIterator>

@@ -43,7 +43,7 @@
 		    <nameValuePair>
 		        <name>InputDirectory</name>
 		        <value>
-		            <string>C:/Program Files/apache/uima/examples/data</string>
+		            <string>C:/Program Files/apache-uima/examples/data</string>
 		        </value>
 		    </nameValuePair>
 		</configurationParameterSettings>
