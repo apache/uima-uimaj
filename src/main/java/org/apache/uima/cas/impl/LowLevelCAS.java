@@ -144,14 +144,6 @@ public interface LowLevelCAS {
 
   public static final int TYPE_CLASS_DOUBLEARRAY = 18;
 
-  public static final int TYPE_CLASS_INTLIST = 19;
-
-  public static final int TYPE_CLASS_FLOATLIST = 20;
-
-  public static final int TYPE_CLASS_STRINGLIST = 21;
-
-  public static final int TYPE_CLASS_FSLIST = 22;
-
   static final int NULL_FS_REF = 0;
 
   /**
@@ -704,9 +696,19 @@ public interface LowLevelCAS {
    * <li><code>TYPE_CLASS_INT</code> -- Integer type. </li>
    * <li><code>TYPE_CLASS_FLOAT</code> -- Float type.</li>
    * <li><code>TYPE_CLASS_STRING</code> -- String type.</li>
+   * <li><code>TYPE_CLASS_BOOLEAN</code> -- Boolean type.</li>
+   * <li><code>TYPE_CLASS_BYTE</code> -- Byte type.</li>
+   * <li><code>TYPE_CLASS_SHORT</code> -- Short type.</li>
+   * <li><code>TYPE_CLASS_LONG</code> -- Long type.</li>
+   * <li><code>TYPE_CLASS_DOUBLE</code> -- Double type.</li>
    * <li><code>TYPE_CLASS_INTARRAY</code> -- Integer array.</li>
    * <li><code>TYPE_CLASS_FLOATARRAY</code> -- Float array.</li>
    * <li><code>TYPE_CLASS_STRINGARRAY</code> -- String array.</li>
+   * <li><code>TYPE_CLASS_BOOLEANARRAY</code> -- Boolean array.</li>
+   * <li><code>TYPE_CLASS_BYTEARRAY</code> -- Byte array.</li>
+   * <li><code>TYPE_CLASS_SHORTARRAY</code> -- Short array.</li>
+   * <li><code>TYPE_CLASS_LONGARRAY</code> -- Long array.</li>
+   * <li><code>TYPE_CLASS_DOUBLEARRAY</code> -- Double array.</li>
    * <li><code>TYPE_CLASS_FSARRAY</code> -- FS array.</li>
    * <li><code>TYPE_CLASS_FS</code> -- FS type, i.e., all other types, including all user-defined
    * types.</li>

@@ -56,6 +56,17 @@ import org.xml.sax.helpers.AttributesImpl;
  * This class is thread safe.
  */
 public class XmiCasSerializer {
+  // Special "type class" codes for list types. The LowLevelCAS.ll_getTypeClass() method
+  // returns type classes for primitives and arrays, but not lists (which are just ordinary FS types
+  // as far as the CAS is concerned). The XMI serialization treats lists specially, however, and
+  // so needs its own type codes for these.
+  public static final int TYPE_CLASS_INTLIST = 101;
+
+  public static final int TYPE_CLASS_FLOATLIST = 102;
+
+  public static final int TYPE_CLASS_STRINGLIST = 103;
+
+  public static final int TYPE_CLASS_FSLIST = 104;
 
   // number of children of current element
   private int numChildren;
@@ -424,16 +435,16 @@ public class XmiCasSerializer {
             }
             break;
           }
-          case LowLevelCAS.TYPE_CLASS_INTLIST:
-          case LowLevelCAS.TYPE_CLASS_FLOATLIST:
-          case LowLevelCAS.TYPE_CLASS_STRINGLIST:
-          case LowLevelCAS.TYPE_CLASS_FSLIST: {
+          case TYPE_CLASS_INTLIST:
+          case TYPE_CLASS_FLOATLIST:
+          case TYPE_CLASS_STRINGLIST:
+          case TYPE_CLASS_FSLIST: {
             // we only enqueue lists as first-class objects if the feature has
             // multipleReferencesAllowed = true
             // OR if we're already inside a list node (this handles the tail feature correctly)
             if (cas.ts.getFeature(feats[i]).isMultipleReferencesAllowed() || insideListNode) {
               enqueue(featVal);
-            } else if (fsClass == LowLevelCAS.TYPE_CLASS_FSLIST) {
+            } else if (fsClass == TYPE_CLASS_FSLIST) {
               // also, we need to enqueue any FSs reachable from an FSList
               enqueueFSListElements(featVal);
             }
@@ -532,10 +543,10 @@ public class XmiCasSerializer {
       final int typeClass = classifyType(typeCode);
       switch (typeClass) {
         case LowLevelCAS.TYPE_CLASS_FS:
-        case LowLevelCAS.TYPE_CLASS_INTLIST:
-        case LowLevelCAS.TYPE_CLASS_FLOATLIST:
-        case LowLevelCAS.TYPE_CLASS_STRINGLIST:
-        case LowLevelCAS.TYPE_CLASS_FSLIST: {
+        case TYPE_CLASS_INTLIST:
+        case TYPE_CLASS_FLOATLIST:
+        case TYPE_CLASS_STRINGLIST:
+        case TYPE_CLASS_FSLIST: {
 
           // encode features. this populates the attributes (workAttrs). It also
           // populates the child elements list with features that are to be encoded
@@ -714,9 +725,9 @@ public class XmiCasSerializer {
             break;
           }
             // Lists
-          case LowLevelCAS.TYPE_CLASS_INTLIST:
-          case LowLevelCAS.TYPE_CLASS_FLOATLIST:
-          case LowLevelCAS.TYPE_CLASS_FSLIST: {
+          case TYPE_CLASS_INTLIST:
+          case TYPE_CLASS_FLOATLIST:
+          case TYPE_CLASS_FSLIST: {
             // If the feature has multipleReferencesAllowed = true OR if we're already
             // inside another list node (i.e. this is the "tail" feature).
             // Otherwise, serialize as a multi-valued property.
@@ -729,7 +740,7 @@ public class XmiCasSerializer {
           }
             // special case for StringLists, which stored values as child elements rather
             // than attributes.
-          case LowLevelCAS.TYPE_CLASS_STRINGLIST: {
+          case TYPE_CLASS_STRINGLIST: {
             if (cas.ts.getFeature(feats[i]).isMultipleReferencesAllowed() || insideListNode) {
               attrValue = getXmiId(featVal);
             } else {
@@ -916,16 +927,16 @@ public class XmiCasSerializer {
       StringBuffer buf = new StringBuffer();
       String[] array = null;
       switch (arrayType) {
-        case LowLevelCAS.TYPE_CLASS_INTLIST:
+        case TYPE_CLASS_INTLIST:
           array = listUtils.intListToStringArray(addr);
           break;
-        case LowLevelCAS.TYPE_CLASS_FLOATLIST:
+        case TYPE_CLASS_FLOATLIST:
           array = listUtils.floatListToStringArray(addr);
           break;
-        case LowLevelCAS.TYPE_CLASS_STRINGLIST:
+        case TYPE_CLASS_STRINGLIST:
           array = listUtils.stringListToStringArray(addr);
           break;
-        case LowLevelCAS.TYPE_CLASS_FSLIST:
+        case TYPE_CLASS_FSLIST:
           array = listUtils.fsListToXmiIdStringArray(addr, sharedData);
           break;
       }
@@ -942,23 +953,32 @@ public class XmiCasSerializer {
     }
 
     /**
-     * TODO: something like this should be in the CASImpl, and more efficiently.
+     * Classifies a type. This returns an integer code identifying the type as one of the primitive
+     * types, one of the array types, one of the list types, or a generic FS type (anything else).
+     * <p>
+     * The {@link LowLevelCAS#ll_getTypeClass(int)} method classifies primitives and array types,
+     * but does not have a special classification for list types, which we need for XMI
+     * serialization. Therefore, in addition to the type codes defined on {@link LowLevelCAS}, this
+     * method can return one of the type codes TYPE_CLASS_INTLIST, TYPE_CLASS_FLOATLIST,
+     * TYPE_CLASS_STRINGLIST, or TYPE_CLASS_FSLIST.
      * 
      * @param type
-     * @return
+     *          the type to classify
+     * @return one of the TYPE_CLASS codes defined on {@link LowLevelCAS} or on this interface.
      */
     private final int classifyType(int type) {
+      // For most most types
       if (listUtils.isIntListType(type)) {
-        return LowLevelCAS.TYPE_CLASS_INTLIST;
+        return TYPE_CLASS_INTLIST;
       }
       if (listUtils.isFloatListType(type)) {
-        return LowLevelCAS.TYPE_CLASS_FLOATLIST;
+        return TYPE_CLASS_FLOATLIST;
       }
       if (listUtils.isStringListType(type)) {
-        return LowLevelCAS.TYPE_CLASS_STRINGLIST;
+        return TYPE_CLASS_STRINGLIST;
       }
       if (listUtils.isFsListType(type)) {
-        return LowLevelCAS.TYPE_CLASS_FSLIST;
+        return TYPE_CLASS_FSLIST;
       }
       return cas.ll_getTypeClass(type);
     }
