@@ -1403,8 +1403,8 @@ implements Listener, StandardStrings {
   }
 
   public static XMLizable parseDescriptor(XMLInputSource input) throws InvalidXMLException {
-    // turn off xi:include and environment variable expansion
-    XMLParser.ParsingOptions parsingOptions = new XMLParser.ParsingOptions(false, false);
+    // turn off environment variable expansion
+    XMLParser.ParsingOptions parsingOptions = new XMLParser.ParsingOptions(false);
     XMLParser parser = UIMAFramework.getXMLParser();
     // disabled - error messages from XML validation not very helpful
     // parser.enableSchemaValidation(true);
