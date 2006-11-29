@@ -44,8 +44,6 @@ public class Descriptor extends DefaultHandler {
 
   private int instanceCount = 0;
 
-  private String serializerClassName = "";
-
   private String resourceSpecifierPath = "";
 
   private String filterString = "";
@@ -79,7 +77,6 @@ public class Descriptor extends DefaultHandler {
       SAXParser parser = factory.newSAXParser();
       parser.parse(new File(configFile), this);
 
-      UIMAFramework.getLogger().log(Level.CONFIG, "Serializer::" + getSerializerClassName());
       UIMAFramework.getLogger().log(Level.CONFIG, "Resource::" + getResourceSpecifierPath());
       UIMAFramework.getLogger().log(Level.CONFIG, "Instance Count::" + getInstanceCount());
       UIMAFramework.getLogger().log(Level.CONFIG, "Service Name::" + getServiceName());
@@ -124,9 +121,7 @@ public class Descriptor extends DefaultHandler {
     } else if (elementName.equals("parameter")) {
       String att = getAttribute("name", attribs);
       String value = getAttribute("value", attribs);
-      if ("serializerClassName".equals(att)) {
-        setSerializerClassName(value);
-      } else if ("resourceSpecifierPath".equals(att)) {
+      if ("resourceSpecifierPath".equals(att)) {
         setResourceSpecifierPath(value);
       } else if ("filterString".equals(att)) {
         setFilterString(value);
@@ -172,15 +167,6 @@ public class Descriptor extends DefaultHandler {
   }
 
   /**
-   * Returns the serializerClassName.
-   * 
-   * @return String
-   */
-  public String getSerializerClassName() {
-    return serializerClassName;
-  }
-
-  /**
    * Returns the serviceName.
    * 
    * @return String
@@ -210,16 +196,6 @@ public class Descriptor extends DefaultHandler {
   }
 
   /**
-   * Sets the serializerClassName.
-   * 
-   * @param serializerClassName
-   *          The serializerClassName to set
-   */
-  public void setSerializerClassName(String serializerClassName) {
-    this.serializerClassName = serializerClassName;
-  }
-
-  /**
    * Sets the serviceName.
    * 
    * @param serviceName
@@ -227,19 +203,6 @@ public class Descriptor extends DefaultHandler {
    */
   public void setServiceName(String serviceName) {
     this.serviceName = serviceName;
-  }
-
-  public static void main(String[] args) {
-    try {
-      Descriptor d = new Descriptor(args[0]);
-      System.out.println("Serializer::" + d.getSerializerClassName());
-      System.out.println("Resource::" + d.getResourceSpecifierPath());
-      System.out.println("Instance Count::" + d.getInstanceCount());
-      System.out.println("Service Name::" + d.getServiceName());
-
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
   }
 
   /**
