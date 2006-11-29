@@ -156,7 +156,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
       }
 
       // Parse the XML into the AnalysisEngineMetaData object
-      SaxDeserializer saxDeser = UIMAFramework.getXMLParser().newSaxDeserializer(null, null, false);
+      SaxDeserializer saxDeser = UIMAFramework.getXMLParser().newSaxDeserializer();
 
       VinciSaxParser vinciSaxParser = new VinciSaxParser();
       vinciSaxParser.setContentHandler(saxDeser);
