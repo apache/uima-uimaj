@@ -57,7 +57,9 @@ import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLizable;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Reference implementation of {@link XMLParser}.
@@ -86,7 +88,7 @@ public class XMLParser_impl implements XMLParser {
    */
   protected boolean mSchemaValidationEnabled = false;
 
-  protected static final ParsingOptions DEFAULT_PARSING_OPTIONS = new ParsingOptions(true, true);
+  protected static final ParsingOptions DEFAULT_PARSING_OPTIONS = new ParsingOptions(true);
 
   /**
    * Creates a new XMLParser_impl.
@@ -125,32 +127,6 @@ public class XMLParser_impl implements XMLParser {
    *           if the input XML is not valid or does not specify a valid object
    */
   public XMLizable parse(XMLInputSource aInput, String aNamespaceForSchema, URL aSchemaUrl,
-          boolean aExpandXIncludes) throws InvalidXMLException {
-    return parse(aInput, aNamespaceForSchema, aSchemaUrl, new XMLParser.ParsingOptions(
-            aExpandXIncludes, true));
-  }
-
-  /**
-   * Parses an XML input stream and produces an object.
-   * 
-   * @param aInput
-   *          the input source from which to read the XML document
-   * @param aNamespaceForSchema
-   *          XML namespace for elements to be validated against XML schema. If null, no schema will
-   *          be used.
-   * @param aSchemaUrl
-   *          URL to XML schema that will be used to validate the XML document. If null, no schema
-   *          will be used.
-   * @param aExpandXIncludes
-   *          if true, XInclude (<code>xi:include</code>) elements will be expanded according to
-   *          the XInclude specification.
-   * 
-   * @return an <code>XMLizable</code> object constructed from the XML document
-   * 
-   * @throws InvalidXMLException
-   *           if the input XML is not valid or does not specify a valid object
-   */
-  public XMLizable parse(XMLInputSource aInput, String aNamespaceForSchema, URL aSchemaUrl,
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     URL urlToParse = aInput.getURL();
     try {
@@ -163,6 +139,14 @@ public class XMLParser_impl implements XMLParser {
 
       XMLReader reader = parser.getXMLReader();
       reader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+      
+      //enable validation if requested
+      if (mSchemaValidationEnabled && aNamespaceForSchema != null && aSchemaUrl != null) {
+        reader.setFeature("http://xml.org/sax/features/validation", true);
+        reader.setFeature("http://apache.org/xml/features/validation/schema", true);
+        reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation", 
+                  aNamespaceForSchema + " " + aSchemaUrl);
+      }
 
       // set up InputSource
       InputSource input = new InputSource();
@@ -175,17 +159,23 @@ public class XMLParser_impl implements XMLParser {
       }
       input.setSystemId(systemId);
 
+      //set up error handler to catch validation errors\
+      ParseErrorHandler errorHandler = new ParseErrorHandler();
+      reader.setErrorHandler(errorHandler);
+      
       // Parse with SaxDeserializer
-      SaxDeserializer deser;
-      if (mSchemaValidationEnabled) {
-        deser = new SaxDeserializer_impl(this, aNamespaceForSchema, aSchemaUrl, aOptions);
-      } else {
-        deser = new SaxDeserializer_impl(this, null, null, aOptions);
-      }
-
+      SaxDeserializer deser = new SaxDeserializer_impl(this, aOptions);
       reader.setContentHandler(deser);
       reader.parse(input);
+      
+      //if there was an exception, throw it
+      if (errorHandler.getException() != null) {
+        throw errorHandler.getException();
+      }
+      
+      //otherwise build the UIMA XMLizable object and return it
       XMLizable result = deser.getObject();
+      
       if (result instanceof MetaDataObject_impl) {
         // set Source URL (needed to later resolve descriptor-relative paths)
         ((MetaDataObject_impl) result).setSourceUrl(urlToParse);
@@ -217,7 +207,7 @@ public class XMLParser_impl implements XMLParser {
    */
   public XMLizable parse(XMLInputSource aInput, String aNamespaceForSchema, URL aSchemaUrl)
           throws InvalidXMLException {
-    return parse(aInput, aNamespaceForSchema, aSchemaUrl, true);
+    return parse(aInput, aNamespaceForSchema, aSchemaUrl, DEFAULT_PARSING_OPTIONS);
   }
 
   /**
@@ -232,7 +222,7 @@ public class XMLParser_impl implements XMLParser {
    *           if the input XML is not valid or does not specify a valid object
    */
   public XMLizable parse(XMLInputSource aInput) throws InvalidXMLException {
-    return parse(aInput, null, null);
+    return parse(aInput, null, null, DEFAULT_PARSING_OPTIONS);
   }
 
   /*
@@ -257,7 +247,7 @@ public class XMLParser_impl implements XMLParser {
    *           if the XML element does not specify a valid object
    */
   public XMLizable buildObject(Element aElement) throws InvalidXMLException {
-    return buildObject(aElement, new ParsingOptions(true, true));
+    return buildObject(aElement, new ParsingOptions(true));
   }
 
   /**
@@ -838,24 +828,14 @@ public class XMLParser_impl implements XMLParser {
    * @see org.apache.uima.util.XMLParser#newSaxDeserializer()
    */
   public SaxDeserializer newSaxDeserializer() {
-    return new SaxDeserializer_impl(this, null, null, new XMLParser.ParsingOptions(true, true));
+    return new SaxDeserializer_impl(this, new XMLParser.ParsingOptions(true));
   }
-
+  
   /**
    * @see org.apache.uima.util.XMLParser#newSaxDeserializer(java.lang.String, java.net.URL, boolean)
    */
-  public SaxDeserializer newSaxDeserializer(String aNamespaceForSchema, URL aSchemaUrl,
-          boolean aExpandXIncludes) {
-    return new SaxDeserializer_impl(this, aNamespaceForSchema, aSchemaUrl,
-            new XMLParser.ParsingOptions(aExpandXIncludes, true));
-  }
-
-  /**
-   * @see org.apache.uima.util.XMLParser#newSaxDeserializer(java.lang.String, java.net.URL, boolean)
-   */
-  public SaxDeserializer newSaxDeserializer(String aNamespaceForSchema, URL aSchemaUrl,
-          XMLParser.ParsingOptions aOptions) {
-    return new SaxDeserializer_impl(this, aNamespaceForSchema, aSchemaUrl, aOptions);
+  public SaxDeserializer newSaxDeserializer(XMLParser.ParsingOptions aOptions) {
+    return new SaxDeserializer_impl(this, aOptions);
   }
 
   /**
@@ -871,4 +851,34 @@ public class XMLParser_impl implements XMLParser {
     }
     return schemaURL;
   }
+  
+  /**
+   * Error handler for XML parsing. Stores first error in <code>exception</code> field for later
+   * retrieval.
+   */
+  static class ParseErrorHandler extends DefaultHandler {
+    private SAXParseException mException = null;
+
+    public void error(SAXParseException aError) {
+      if (mException == null)
+        mException = aError;
+    }
+
+    public void fatalError(SAXParseException aError) {
+      if (mException == null)
+        mException = aError;
+    }
+
+    public void warning(SAXParseException aWarning) {
+      System.err.println("XML Warning: " + aWarning.getMessage());
+    }
+
+    public SAXParseException getException() {
+      return mException;
+    }
+
+    public void clear() {
+      mException = null;
+    }
+  }  
 }

@@ -251,15 +251,13 @@ public class TaeDescription_implTest extends TestCase {
       String aggregateDescXml = writer.getBuffer().toString();
       // System.out.println(aggregateDescXml);
 
-      // parse objects back from XML (with schema validation)
-      UIMAFramework.getXMLParser().enableSchemaValidation(true);
+      // parse objects back from XML
       InputStream is = new ByteArrayInputStream(primitiveDescXml.getBytes());
       TaeDescription newPrimitiveDesc = UIMAFramework.getXMLParser().parseTaeDescription(
               new XMLInputSource(is, null));
       is = new ByteArrayInputStream(aggregateDescXml.getBytes());
       TaeDescription newAggregateDesc = UIMAFramework.getXMLParser().parseTaeDescription(
               new XMLInputSource(is, null));
-      UIMAFramework.getXMLParser().enableSchemaValidation(false);
 
       Assert.assertEquals(primitiveDesc, newPrimitiveDesc);
       Assert.assertEquals(aggregateDesc, newAggregateDesc);

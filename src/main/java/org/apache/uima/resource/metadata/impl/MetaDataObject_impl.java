@@ -825,7 +825,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    */
   public final void buildFromXMLElement(Element aElement, XMLParser aParser)
           throws InvalidXMLException {
-    buildFromXMLElement(aElement, aParser, new XMLParser.ParsingOptions(true, true));
+    buildFromXMLElement(aElement, aParser, new XMLParser.ParsingOptions(true));
   }
 
   /**
