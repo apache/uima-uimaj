@@ -72,13 +72,12 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.analysis_engine.metadata.FixedFlow;
+import org.apache.uima.analysis_engine.metadata.SofaMapping;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.collection.CasConsumerDescription;
-import org.apache.uima.collection.CasInitializer;
-import org.apache.uima.collection.CasInitializerDescription;
 import org.apache.uima.collection.CollectionProcessingManager;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.EntityProcessStatus;
@@ -98,9 +97,9 @@ import org.apache.uima.util.AnalysisEnginePerformanceReports;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.FileSystemCollectionReader;
 import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.SimpleXmlCasInitializer;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XmiWriterCasConsumer;
+import org.apache.uima.util.XmlDetagger;
 
 /**
  * A simple GUI for the RunTextAnalysis application library. Note that currently this will only run
@@ -213,6 +212,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   protected TCAS tcas; // JMP
 
   private Timer progressTimer;
+
+  private boolean usingXmlDetagger;
 
   /**
    * Constructor. Sets up the GUI.
@@ -851,6 +852,9 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       XCasAnnotationViewerDialog viewerDialog = new XCasAnnotationViewerDialog(this,
               "Analysis Results", prefsMed, styleMapFile, statsString, currentTypeSystem,
               currentTaeOutputTypes, useGeneratedStyleMap, tcas);
+      if (usingXmlDetagger) {
+        viewerDialog.setDefaultCasViewName("plainTextDocument");
+      }
       viewerDialog.pack();
       viewerDialog.setModal(true);
       viewerDialog.setVisible(true);
@@ -1092,18 +1096,6 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       collectionReader = (FileSystemCollectionReader) UIMAFramework
               .produceCollectionReader(collectionReaderDesc);
 
-      // JMP commented out pending update by Jennifer
-      // if XML tag was specified, also create SimpleXmlCasInitializer to
-      // handle this
-      if (xmlTag != null && xmlTag.length() > 0) {
-        CasInitializerDescription casIniDesc = SimpleXmlCasInitializer.getDescription();
-        ConfigurationParameterSettings casIniParamSettings = casIniDesc.getMetaData()
-                .getConfigurationParameterSettings();
-        casIniParamSettings.setParameterValue(SimpleXmlCasInitializer.PARAM_XMLTAG, xmlTag);
-        CasInitializer casInitializer = UIMAFramework.produceCasInitializer(casIniDesc);
-        collectionReader.setCasInitializer(casInitializer);
-      }
-
       // show progress Monitor
       String progressMsg = "  Processing " + collectionReader.getNumberOfDocuments()
               + " Documents.";
@@ -1142,22 +1134,64 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       casConsumerDesc.getCasConsumerMetaData().getCapabilities()[0].addInputType("uima.cas.TOP",
               true);
 
-      // create an aggregate AE that includes user's AE descriptor followed
-      // by the XMI Writer CAS Consumer, using fixed flow. We use an aggregate AE here,
-      // rather than just adding the CAS Consumer to the CPE, so that we
-      // can support the user's AE being a CAS Multiplier.
+      // if XML tag was specified, also create XmlDetagger annotator that handles this
+      AnalysisEngineDescription xmlDetaggerDesc = null;
+      if (xmlTag != null && xmlTag.length() > 0) {
+        xmlDetaggerDesc = XmlDetagger.getDescription();
+        ConfigurationParameterSettings xmlDetaggerParamSettings = xmlDetaggerDesc.getMetaData()
+                .getConfigurationParameterSettings();
+        xmlDetaggerParamSettings.setParameterValue(XmlDetagger.PARAM_TEXT_TAG, xmlTag);
+        usingXmlDetagger = true;
+      }
+      else {
+        usingXmlDetagger = false;
+      }
+      
+      // create an aggregate AE that includes the XmlDetagger (if needed), followed by
+      //th user's AE descriptor, followed by the XMI Writer CAS Consumer, using fixed flow.
+      // We use an aggregate AE here, rather than just adding the CAS Consumer to the CPE, so 
+      //that we can support the user's AE being a CAS Multiplier and we can specify sofa mappings.
       AnalysisEngineDescription aggDesc = UIMAFramework.getResourceSpecifierFactory()
               .createAnalysisEngineDescription();
       aggDesc.setPrimitive(false);
       aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("UserAE", aeSpecifier);
       aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("XmiWriter", casConsumerDesc);
-      FixedFlow flow = UIMAFramework.getResourceSpecifierFactory().createFixedFlow();
-      flow.setFixedFlow(new String[] { "UserAE", "XmiWriter" });
+      FixedFlow flow = UIMAFramework.getResourceSpecifierFactory().createFixedFlow();      
+            
+      if (xmlDetaggerDesc != null) {
+        aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("XmlDetagger", xmlDetaggerDesc);
+        flow.setFixedFlow(new String[] {"XmlDetagger", "UserAE", "XmiWriter"});
+        
+        //to run XmlDetagger we need sofa mappings
+        //XmlDetagger's "xmlDocument" input sofa gets mapped to the default sofa
+        SofaMapping sofaMapping1 = UIMAFramework.getResourceSpecifierFactory().createSofaMapping();
+        sofaMapping1.setComponentKey("XmlDetagger");
+        sofaMapping1.setComponentSofaName("xmlDocument");
+        sofaMapping1.setAggregateSofaName(CAS.NAME_DEFAULT_SOFA);
+        
+        //for UserAE and XmiWriter, may default sofa to the "plainTextDocument" produced by the XmlDetagger
+        SofaMapping sofaMapping2 = UIMAFramework.getResourceSpecifierFactory().createSofaMapping();
+        sofaMapping2.setComponentKey("UserAE");
+        sofaMapping2.setAggregateSofaName("plainTextDocument");
+        SofaMapping sofaMapping3 = UIMAFramework.getResourceSpecifierFactory().createSofaMapping();
+        sofaMapping3.setComponentKey("XmiWriter");
+        sofaMapping3.setAggregateSofaName("plainTextDocument");
+                
+        aggDesc.setSofaMappings(new SofaMapping[] {sofaMapping1, sofaMapping2, sofaMapping3});
+      }
+      else {
+        //no XML detagger needed in the aggregate in flow
+        flow.setFixedFlow(new String[] { "UserAE", "XmiWriter" });          
+      }
+
+      
       aggDesc.getAnalysisEngineMetaData().setName("DocumentAnalyzerAE");
       aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
       aggDesc.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(
               false);
 
+      
+      
       progressMonitor.setProgress(++progress);
 
       // instantiate AE
@@ -1179,7 +1213,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       descriptorList.add(collectionReaderDesc);
       descriptorList.add(ae.getMetaData());
       descriptorList.add(casConsumerDesc);
-      currentTypeSystem = CasCreationUtils.createTCas(descriptorList).getTypeSystem();
+      currentTypeSystem = CasCreationUtils.createCas(descriptorList).getTypeSystem();
 
       // save AE output types for later use in configuring viewer
       if (aeSpecifier instanceof AnalysisEngineDescription) {

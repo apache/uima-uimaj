@@ -137,6 +137,8 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
   private TCAS cas;
 
   private boolean processedStyleMap = false;
+  
+  private String defaultCasViewName = CAS.NAME_DEFAULT_SOFA;
 
   // unwound from small anonymous inner class
   public void actionPerformed(ActionEvent arg0) {
@@ -379,6 +381,23 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
 
   }
 
+
+  /**
+   * Gets the name of the CAS View that will be displayed first in 
+   * the annotation viewer.
+   */
+  public String getDefaultCasViewName() {
+    return defaultCasViewName;
+  }
+
+  /**
+   * Sets the name of the CAS View that will be displayed first in 
+   * the annotation viewer.  It not set, defaults to {@link CAS#NAME_DEFAULT_SOFA}.
+   */
+  public void setDefaultCasViewName(String defaultCasViewName) {
+    this.defaultCasViewName = defaultCasViewName;
+  }
+  
   // Common code to launch viewer for both the Run (file-based) and
   // Interactive modes
   // JMP
@@ -402,6 +421,9 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
         if (xcasInStream != null)
           xcasInStream.close();
       }
+      
+      //get the specified view
+      cas = cas.getView(this.defaultCasViewName);
 
       // launch appropriate viewer
       if (javaViewerRBisSelected || javaViewerUCRBisSelected) { // JMP
@@ -747,5 +769,4 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
       }
     }
   }
-
 }
