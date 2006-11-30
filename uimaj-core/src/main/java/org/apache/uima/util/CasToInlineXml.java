@@ -31,10 +31,15 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.FloatArrayFS;
-import org.apache.uima.cas.IntArrayFS;
-import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.impl.BooleanArrayFSImpl;
+import org.apache.uima.cas.impl.ByteArrayFSImpl;
+import org.apache.uima.cas.impl.DoubleArrayFSImpl;
+import org.apache.uima.cas.impl.FloatArrayFSImpl;
+import org.apache.uima.cas.impl.IntArrayFSImpl;
+import org.apache.uima.cas.impl.LongArrayFSImpl;
+import org.apache.uima.cas.impl.ShortArrayFSImpl;
+import org.apache.uima.cas.impl.StringArrayFSImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -214,9 +219,6 @@ public class CasToInlineXml {
 
   private final Attributes getFeatureAttributes(FeatureStructure aFS, CAS aCAS) {
     AttributesImpl attrs = new AttributesImpl();
-
-    Type stringType = aCAS.getTypeSystem().getType(CAS.TYPE_NAME_STRING);
-
     List aFeatures = aFS.getType().getFeatures();
     Iterator iter = aFeatures.iterator();
     while (iter.hasNext()) {
@@ -224,10 +226,9 @@ public class CasToInlineXml {
       String featName = feat.getShortName();
       // how we get feature value depends on feature's range type)
       String rangeTypeName = feat.getRange().getName();
-      if (aCAS.getTypeSystem().subsumes(stringType, feat.getRange())) // must check for subtypes of
-      // string
+      if (feat.getRange().isPrimitive())
       {
-        String str = aFS.getStringValue(feat);
+        String str = aFS.getFeatureValueAsString(feat);
         if (str == null) {
           attrs.addAttribute("", featName, featName, "CDATA", "null");
         } else {
@@ -236,21 +237,48 @@ public class CasToInlineXml {
           }
           attrs.addAttribute("", featName, featName, "CDATA", str);
         }
-      } else if (CAS.TYPE_NAME_INTEGER.equals(rangeTypeName)) {
-        attrs
-                .addAttribute("", featName, featName, "CDATA", Integer.toString(aFS
-                        .getIntValue(feat)));
-      } else if (CAS.TYPE_NAME_FLOAT.equals(rangeTypeName)) {
-        attrs
-                .addAttribute("", featName, featName, "CDATA", Float.toString(aFS
-                        .getFloatValue(feat)));
-      } else if (CAS.TYPE_NAME_STRING_ARRAY.equals(rangeTypeName)) {
-        StringArrayFS arrayFS = (StringArrayFS) aFS.getFeatureValue(feat);
-        if (arrayFS == null) {
-          attrs.addAttribute("", featName, featName, "CDATA", "null");
+      } else if (feat.getRange().isArray() && feat.getRange().getComponentType().isPrimitive())
+      {
+        //TODO: there should be a better way to get any array value as a string array
+        String[] vals = null;
+        if (CAS.TYPE_NAME_STRING_ARRAY.equals(rangeTypeName)) {
+          StringArrayFSImpl arrayFS = (StringArrayFSImpl) aFS.getFeatureValue(feat);
+          if (arrayFS != null)
+            vals = arrayFS.toArray();
+        } else if (CAS.TYPE_NAME_INTEGER_ARRAY.equals(rangeTypeName)) {
+          IntArrayFSImpl arrayFS = (IntArrayFSImpl) aFS.getFeatureValue(feat);
+          if (arrayFS != null)
+            vals = arrayFS.toStringArray();
+        } else if (CAS.TYPE_NAME_FLOAT_ARRAY.equals(rangeTypeName)) {
+          FloatArrayFSImpl arrayFS = (FloatArrayFSImpl) aFS.getFeatureValue(feat);
+          if (arrayFS != null)
+            vals = arrayFS.toStringArray();
+        } else if (CAS.TYPE_NAME_BOOLEAN_ARRAY.equals(rangeTypeName)) {
+          BooleanArrayFSImpl arrayFS = (BooleanArrayFSImpl) aFS.getFeatureValue(feat);
+          if (arrayFS != null)
+            vals = arrayFS.toStringArray();
+        } else if (CAS.TYPE_NAME_BYTE_ARRAY.equals(rangeTypeName)) {
+          ByteArrayFSImpl arrayFS = (ByteArrayFSImpl) aFS.getFeatureValue(feat);
+          if (arrayFS != null)
+            vals = arrayFS.toStringArray();
+        } else if (CAS.TYPE_NAME_SHORT_ARRAY.equals(rangeTypeName)) {
+          ShortArrayFSImpl arrayFS = (ShortArrayFSImpl) aFS.getFeatureValue(feat);
+          if (arrayFS != null)
+            vals = arrayFS.toStringArray();
+        } else if (CAS.TYPE_NAME_LONG_ARRAY.equals(rangeTypeName)) {
+          LongArrayFSImpl arrayFS = (LongArrayFSImpl) aFS.getFeatureValue(feat);
+          if (arrayFS != null)
+            vals = arrayFS.toStringArray();
+        } else if (CAS.TYPE_NAME_DOUBLE_ARRAY.equals(rangeTypeName)) {
+          DoubleArrayFSImpl arrayFS = (DoubleArrayFSImpl) aFS.getFeatureValue(feat);
+          if (arrayFS != null)
+            vals = arrayFS.toStringArray();
+        } 
+        String attrVal;
+        if (vals == null) {
+          attrVal = "null";
         } else {
           StringBuffer buf = new StringBuffer();
-          String[] vals = arrayFS.toArray();
           buf.append('[');
           for (int i = 0; i < vals.length - 1; i++) {
             buf.append(vals[i]);
@@ -260,44 +288,9 @@ public class CasToInlineXml {
             buf.append(vals[vals.length - 1]);
           }
           buf.append(']');
-          attrs.addAttribute("", featName, featName, "CDATA", buf.toString());
+          attrVal = buf.toString();
         }
-      } else if (CAS.TYPE_NAME_INTEGER_ARRAY.equals(rangeTypeName)) {
-        IntArrayFS arrayFS = (IntArrayFS) aFS.getFeatureValue(feat);
-        if (arrayFS == null) {
-          attrs.addAttribute("", featName, featName, "CDATA", "null");
-        } else {
-          StringBuffer buf = new StringBuffer();
-          int[] vals = arrayFS.toArray();
-          buf.append('[');
-          for (int i = 0; i < vals.length - 1; i++) {
-            buf.append(vals[i]);
-            buf.append(',');
-          }
-          if (vals.length > 0) {
-            buf.append(vals[vals.length - 1]);
-          }
-          buf.append(']');
-          attrs.addAttribute("", featName, featName, "CDATA", buf.toString());
-        }
-      } else if (CAS.TYPE_NAME_FLOAT_ARRAY.equals(rangeTypeName)) {
-        FloatArrayFS arrayFS = (FloatArrayFS) aFS.getFeatureValue(feat);
-        if (arrayFS == null) {
-          attrs.addAttribute("", featName, featName, "CDATA", "null");
-        } else {
-          StringBuffer buf = new StringBuffer();
-          float[] vals = arrayFS.toArray();
-          buf.append('[');
-          for (int i = 0; i < vals.length - 1; i++) {
-            buf.append(vals[i]);
-            buf.append(',');
-          }
-          if (vals.length > 0) {
-            buf.append(vals[vals.length - 1]);
-          }
-          buf.append(']');
-          attrs.addAttribute("", featName, featName, "CDATA", buf.toString());
-        }
+        attrs.addAttribute("", featName, featName, "CDATA", attrVal);        
       } else {
         // get value as FeatureStructure
         FeatureStructure fsVal = aFS.getFeatureValue(feat);
