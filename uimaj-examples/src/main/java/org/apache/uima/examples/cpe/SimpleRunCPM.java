@@ -27,7 +27,6 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CasConsumer;
-import org.apache.uima.collection.CasInitializer;
 import org.apache.uima.collection.CollectionProcessingManager;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.EntityProcessStatus;
@@ -40,8 +39,7 @@ import org.apache.uima.util.XMLInputSource;
  * and initiailizes the following components:
  * <ol>
  * <li> CollectionReader </li>
- * <li> CasInitializer </li>
- * <li> Text Analysis Engine </li>
+ * <li> Analysis Engine </li>
  * <li> CAS Consumer </li>
  * </ol>
  * <br>
@@ -50,18 +48,15 @@ import org.apache.uima.util.XMLInputSource;
  * Command lines arguments for the run are :
  * <ol>
  * <li> args[0] : CollectionReader descriptor file </li>
- * <li> args[1] : CAS Initializer descriptor file </li>
- * <li> args[2] : CAS Consumer descriptor file. </li>
- * <li> args[3] : AnnotationPrinter descriptor file </li>
- * debug mode </li>
+ * <li> args[1] : CAS Consumer descriptor file. </li>
+ * <li> args[2] : AnnotationPrinter descriptor file </li>
  * </ol>
  * <br>
  * Example : <br>
- * java -cp &lt; all jar files needed &gt;
- * C:\\uima\desc\collection_reader\XMLFileCollectionReader.xml
- * C:\\uima\desc\cas_initializer\XMLCasInitializer.xml C:\\uima\desc\PersonTitleAnnotator.xml
- * C:\\uima\desc\cas_consumer\AnnotationPrinter.xml
- * 
+ * java -cp &lt; all jar files needed &gt; org.apache.uima.example.cpe.SimpleRunCPE
+ * descriptors/collection_reader/FileSystemCollectionReader.xml
+ * descriptors/analysis_engine/PersonTitleAnnotator.xml
+ * descriptors/cas_consumer/XmiWrtierCasConsumer.xml
  * 
  */
 public class SimpleRunCPM extends Thread {
@@ -85,8 +80,9 @@ public class SimpleRunCPM extends Thread {
     mStartTime = System.currentTimeMillis();
 
     // check command line args
-    if (args.length < 4) {
+    if (args.length < 3) {
       printUsageMessage();
+      System.exit(1);
     }
 
     // create components from their descriptors
@@ -97,24 +93,16 @@ public class SimpleRunCPM extends Thread {
             .parseCollectionReaderDescription(new XMLInputSource(args[0]));
     CollectionReader collectionReader = UIMAFramework.produceCollectionReader(colReaderSpecifier);
 
-    // CAS Initializer
-    System.out.println("Initializing CAS Initializer");
-    ResourceSpecifier casIniSpecifier = UIMAFramework.getXMLParser()
-            .parseCasInitializerDescription(new XMLInputSource(args[1]));
-    CasInitializer casIni = UIMAFramework.produceCasInitializer(casIniSpecifier);
-    // plug CAS Initializer into Collection Reader
-    collectionReader.setCasInitializer(casIni);
-
-    // TAE
+    // AnalysisEngine
     System.out.println("Initializing AnalysisEngine");
     ResourceSpecifier aeSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-            new XMLInputSource(args[2]));
+            new XMLInputSource(args[1]));
     AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aeSpecifier);
 
     // CAS Consumer
     System.out.println("Initializing CAS Consumer");
     ResourceSpecifier consumerSpecifier = UIMAFramework.getXMLParser().parseCasConsumerDescription(
-            new XMLInputSource(args[3]));
+            new XMLInputSource(args[2]));
     CasConsumer casConsumer = UIMAFramework.produceCasConsumer(consumerSpecifier);
 
     // create a new Collection Processing Manager
@@ -139,9 +127,9 @@ public class SimpleRunCPM extends Thread {
    */
   private static void printUsageMessage() {
     System.out.println(" Arguments to the program are as follows : \n"
-            + "args[0] : CollectionReader descriptor file \n "
-            + "args[1] : CAS Initializer descriptor file \n " + "args[2] : TAE descriptor file. \n"
-            + "args[3] : CAS Consumer descriptor file");
+            + "args[0] : Collection Reader descriptor file \n "
+            + "args[1] : Analysis Engine descriptor file. \n"
+            + "args[2] : CAS Consumer descriptor file");
   }
 
   /**

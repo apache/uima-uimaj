@@ -20,34 +20,33 @@
 package org.apache.uima.examples;
 
 import java.io.File;
+import java.util.Iterator;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.collection.CasConsumerDescription;
-import org.apache.uima.collection.CasInitializer;
-import org.apache.uima.collection.CasInitializerDescription;
-import org.apache.uima.collection.CollectionProcessingManager;
-import org.apache.uima.collection.CollectionReader;
-import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.collection.CollectionProcessingEngine;
 import org.apache.uima.collection.EntityProcessStatus;
 import org.apache.uima.collection.StatusCallbackListener;
-import org.apache.uima.resource.ResourceSpecifier;
-import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
+import org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory;
+import org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings;
+import org.apache.uima.collection.metadata.CpeCasProcessor;
+import org.apache.uima.collection.metadata.CpeCollectionReader;
+import org.apache.uima.collection.metadata.CpeDescription;
+import org.apache.uima.collection.metadata.CpeSofaMapping;
+import org.apache.uima.collection.metadata.CpeSofaMappings;
 import org.apache.uima.util.AnalysisEnginePerformanceReports;
 import org.apache.uima.util.FileSystemCollectionReader;
 import org.apache.uima.util.InlineXmlCasConsumer;
-import org.apache.uima.util.SimpleXmlCasInitializer;
-import org.apache.uima.util.XMLInputSource;
+import org.apache.uima.util.XmlDetagger;
 
 /**
  * An example application that reads documents from the file system, sends them though an Analysis
- * Engine(AE), and produces XML files with inline annotations. This application uses the
- * {@link CollectionProcessingManager} to drive the processing. For a simpler introduction to using
+ * Engine(AE), and produces XML files with inline annotations. This application uses a
+ * {@link CollectionProcessingEngine} to drive the processing. For a simpler introduction to using
  * AEs in an application, see {@link ExampleApplication}.
  * <p>
  * <code>Usage: java org.apache.uima.examples.RunAE [OPTIONS] 
@@ -60,8 +59,8 @@ import org.apache.uima.util.XMLInputSource;
  * <u>OPTIONS</u>
  * <p>
  * -t &lt;TagName&gt; (XML Text Tag) - specifies the name of an XML tag, found within the input
- * documents, that contains the text to be analyzed. Documents not containing this tag will not be
- * processed. If this option is not specified, the entire document text will be processed. <br>
+ * documents, that contains the text to be analyzed. The text will also be detagged. If this option
+ * is not specified, the entire document will be processed. <br>
  * -l &lt;ISO code&gt; (Language) - specifies the ISO code for the language of the input documents.
  * Some AEs require this. <br>
  * -e &lt;Encoding&gt; - specifies character encoding of the input documents. The default is UTF-8.
@@ -69,13 +68,36 @@ import org.apache.uima.util.XMLInputSource;
  * -q (Quiet) - supresses progress messages that are normally printed as each document is processed.
  * <br>
  * -s&lt;x&gt; (Stats level) - determines the verboseness of performance statistics. s0=none,
- * s1=brief, s2=full. The default is brief.
- * 
- * 
+ * s1=brief, s2=full. The default is brief. <br>
+ * -x - process input files as XCAS files.
  */
 public class RunAE implements StatusCallbackListener {
+
+  // Values read from cmd line args
+  private File aeSpecifierFile = null;
+
+  private File inputDir = null;
+
+  private File outputDir = null;
+
+  private String xmlTagName = null;
+
+  private String language;
+
+  private String encoding;
+
+  private boolean genProgressMessages = true;
+
+  private int statsLevel = 1;
+
+  private boolean xcasInput = false;
+
+  int docsProcessed;
+
+  private CollectionProcessingEngine mCPE;
+
   /**
-   * Constructor. Sets up and runs a Text Analysis Engine.
+   * Constructor. Sets up and runs an Analysis Engine.
    */
   public RunAE(String[] args) {
     try {
@@ -88,59 +110,91 @@ public class RunAE implements StatusCallbackListener {
       // Enable schema validation (omit this to speed up initialization)
       // UIMAFramework.getXMLParser().enableSchemaValidation(true);
 
-      // create CPM instance that will drive processing
-      mCPM = UIMAFramework.newCollectionProcessingManager();
+      // build a Collection Processing Engine descriptor that will drive processing
+      CpeDescription cpeDesc = CpeDescriptorFactory.produceDescriptor();
 
-      // read AE descriptor from file
-      long startTime = System.currentTimeMillis();
-      XMLInputSource in = new XMLInputSource(aeSpecifierFile);
-      ResourceSpecifier aeSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-
-      // taeSpecifier.toXML(new FileWriter("spec.xml"));
-
-      // instantiate AE
-      AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aeSpecifier);
-      long initTime = System.currentTimeMillis() - startTime;
-      System.out.println("AE initialized in " + initTime + "ms.");
-      mCPM.setAnalysisEngine(ae);
-
-      // create and configure collection reader that will read input docs
-      CollectionReaderDescription collectionReaderDesc = FileSystemCollectionReader
-              .getDescription();
-      ConfigurationParameterSettings paramSettings = collectionReaderDesc.getMetaData()
-              .getConfigurationParameterSettings();
-      paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_INPUTDIR, inputDir
+      // add collection reader that will read input docs
+      cpeDesc.addCollectionReader(FileSystemCollectionReader.getDescriptorURL().toString());
+      // specify configuration parameters for collection reader
+      CasProcessorConfigurationParameterSettings crSettings = CpeDescriptorFactory
+              .produceCasProcessorConfigurationParameterSettings();
+      CpeCollectionReader cpeCollRdr = cpeDesc.getAllCollectionCollectionReaders()[0];
+      cpeCollRdr.setConfigurationParameterSettings(crSettings);
+      crSettings.setParameterValue(FileSystemCollectionReader.PARAM_INPUTDIR, inputDir
               .getAbsolutePath());
-      paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_ENCODING, encoding);
-      paramSettings.setParameterValue(FileSystemCollectionReader.PARAM_LANGUAGE, language);
-      CollectionReader collectionReader = UIMAFramework
-              .produceCollectionReader(collectionReaderDesc);
+      crSettings.setParameterValue(FileSystemCollectionReader.PARAM_ENCODING, encoding);
+      crSettings.setParameterValue(FileSystemCollectionReader.PARAM_LANGUAGE, language);
+      crSettings.setParameterValue(FileSystemCollectionReader.PARAM_XCAS, Boolean
+              .toString(xcasInput));
 
-      // if XML tag was specified, also create SimpleXmlCasInitializer to handle this
+      // if XML tag was specified, configure XmlDetagger annotator and add to CPE
+      CpeCasProcessor xmlDetaggerCasProc = null;
       if (xmlTagName != null && xmlTagName.length() > 0) {
-        CasInitializerDescription casIniDesc = SimpleXmlCasInitializer.getDescription();
-        ConfigurationParameterSettings casIniParamSettings = casIniDesc.getMetaData()
-                .getConfigurationParameterSettings();
-        casIniParamSettings.setParameterValue(SimpleXmlCasInitializer.PARAM_XMLTAG, xmlTagName);
-        CasInitializer casInitializer = UIMAFramework.produceCasInitializer(casIniDesc);
-        collectionReader.setCasInitializer(casInitializer);
+        xmlDetaggerCasProc = CpeDescriptorFactory.produceCasProcessor("XmlDetagger");
+        xmlDetaggerCasProc.setDescriptor(XmlDetagger.getDescriptorURL().toString());
+        CasProcessorConfigurationParameterSettings detaggerSettings = CpeDescriptorFactory
+                .produceCasProcessorConfigurationParameterSettings();
+        xmlDetaggerCasProc.setConfigurationParameterSettings(detaggerSettings);
+        detaggerSettings.setParameterValue(XmlDetagger.PARAM_TEXT_TAG, xmlTagName);
+        cpeDesc.addCasProcessor(xmlDetaggerCasProc);
       }
 
+      // add user's AE to CPE
+      CpeCasProcessor casProc = CpeDescriptorFactory.produceCasProcessor("UserAE");
+      casProc.setDescriptor(aeSpecifierFile.getAbsolutePath());
+      cpeDesc.addCasProcessor(casProc);
+
+      // add CAS Consumer that will write the output
       // create and configure CAS consumer that will write the output
+      CpeCasProcessor casCon = null;
       if (outputDir != null) {
-        CasConsumerDescription casConsumerDesc = InlineXmlCasConsumer.getDescription();
-        ConfigurationParameterSettings consumerParamSettings = casConsumerDesc.getMetaData()
-                .getConfigurationParameterSettings();
-        consumerParamSettings.setParameterValue(InlineXmlCasConsumer.PARAM_OUTPUTDIR, outputDir
+        casCon = CpeDescriptorFactory.produceCasProcessor("CasConsumer");
+        casCon.setDescriptor(InlineXmlCasConsumer.getDescriptorURL().toString());
+        CasProcessorConfigurationParameterSettings consumerSettings = CpeDescriptorFactory
+                .produceCasProcessorConfigurationParameterSettings();
+        casCon.setConfigurationParameterSettings(consumerSettings);
+        consumerSettings.setParameterValue(InlineXmlCasConsumer.PARAM_OUTPUTDIR, outputDir
                 .getAbsolutePath());
-        mCPM.addCasConsumer(UIMAFramework.produceCasConsumer(casConsumerDesc));
+        consumerSettings.setParameterValue(InlineXmlCasConsumer.PARAM_XCAS, Boolean
+                .toString(xcasInput));
+        cpeDesc.addCasProcessor(casCon);
       }
 
+      // if XML detagger is used, we need to configure sofa mappings for the CPE
+      if (xmlDetaggerCasProc != null) {
+        // For XML detagger map default sofa to "xmlDocument"
+        CpeSofaMapping sofaMapping = CpeDescriptorFactory.produceSofaMapping();
+        sofaMapping.setComponentSofaName("xmlDocument");
+        sofaMapping.setCpeSofaName(CAS.NAME_DEFAULT_SOFA);
+        CpeSofaMappings xmlDetaggerSofaMappings = CpeDescriptorFactory.produceSofaMappings();
+        xmlDetaggerSofaMappings.setSofaNameMappings(new CpeSofaMapping[] { sofaMapping });
+        xmlDetaggerCasProc.setSofaNameMappings(xmlDetaggerSofaMappings);
+
+        // User AE and InlineXmlCasConsumer (if present) operate on the "plainTextDocument"
+        // sofa produced by the XmlDetagger
+        CpeSofaMapping aeSofaMapping = CpeDescriptorFactory.produceSofaMapping();
+        aeSofaMapping.setCpeSofaName("plainTextDocument");
+        CpeSofaMappings userAeSofaMappings = CpeDescriptorFactory.produceSofaMappings();
+        userAeSofaMappings.setSofaNameMappings(new CpeSofaMapping[] { aeSofaMapping });
+        casProc.setSofaNameMappings(userAeSofaMappings);
+
+        if (casCon != null) {
+          CpeSofaMapping casConSofaMapping = CpeDescriptorFactory.produceSofaMapping();
+          casConSofaMapping.setCpeSofaName("plainTextDocument");
+          CpeSofaMappings consumerSofaMappings = CpeDescriptorFactory.produceSofaMappings();
+          consumerSofaMappings.setSofaNameMappings(new CpeSofaMapping[] { casConSofaMapping });
+          casCon.setSofaNameMappings(consumerSofaMappings);
+        }
+      }
+
+      // instantiate CPE
+      mCPE = UIMAFramework.produceCollectionProcessingEngine(cpeDesc);
       // register callback listener
-      mCPM.addStatusCallbackListener(this);
+      mCPE.addStatusCallbackListener(this);
 
       // execute
-      mCPM.process(collectionReader);
+      docsProcessed = 0;
+      mCPE.process();
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -158,18 +212,24 @@ public class RunAE implements StatusCallbackListener {
    */
   public void entityProcessComplete(CAS aCas, EntityProcessStatus aStatus) {
     if (aStatus.isException()) {
-      mCPM.stop();
-      ((Exception) aStatus.getExceptions().get(0)).printStackTrace();
+      Iterator iter = aStatus.getExceptions().iterator();
+      while (iter.hasNext()) {
+        ((Throwable) iter.next()).printStackTrace();
+      }
     } else if (genProgressMessages) {
       // retreive the filename of the input file from the CAS
       // (it was put there by the FileSystemCollectionReader)
-      Type fileLocType = aCas.getTypeSystem().getType(
-              "org.apache.uima.examples.SourceDocumentInformation");
-      Feature fileNameFeat = fileLocType.getFeatureByBaseName("uri");
-      FSIterator it = aCas.getAnnotationIndex(fileLocType).iterator();
-      FeatureStructure fileLoc = it.get();
-      File inFile = new File(fileLoc.getStringValue(fileNameFeat));
-      System.out.println("Processed Document " + inFile.getName());
+      if (!xcasInput) {
+        Type fileLocType = aCas.getTypeSystem().getType(
+                "org.apache.uima.examples.SourceDocumentInformation");
+        Feature fileNameFeat = fileLocType.getFeatureByBaseName("uri");
+        FSIterator it = aCas.getAnnotationIndex(fileLocType).iterator();
+        FeatureStructure fileLoc = it.get();
+        File inFile = new File(fileLoc.getStringValue(fileNameFeat));
+        System.out.println("Processed Document " + inFile.getName());
+      } else {
+        System.out.println("doc" + docsProcessed++ + " processed successfully");
+      }
     }
   }
 
@@ -194,7 +254,7 @@ public class RunAE implements StatusCallbackListener {
     // output performance stats
     if (statsLevel > 0) {
       AnalysisEnginePerformanceReports performanceReports = new AnalysisEnginePerformanceReports(
-              mCPM.getPerformanceReport());
+              mCPE.getPerformanceReport());
       System.out.println("\n\nPERFORMANCE STATS\n-----------------\n\n");
       if (statsLevel > 1) {
         System.out.println(performanceReports.getFullReport());
@@ -221,20 +281,20 @@ public class RunAE implements StatusCallbackListener {
    */
   private void printUsageMessage() {
     System.err.println("\nUsage: java " + this.getClass().getName()
-            + " [OPTIONS] <AE descriptor or JAR file name> <input dir> [<output dir>] ");
+            + " [OPTIONS] <AE descriptor filename> <input dir> [<output dir>] ");
     System.err.println("\nIf <output dir> is not specified, the analysis "
             + "results will not be output.  This can be useful when only interested "
             + "in performance statistics.");
     System.err.println("\nOPTIONS\n-------");
     System.err.println("-t <TagName> (XML Text Tag) - specifies the name of "
             + "an XML tag, found within the input documents, that contains the text "
-            + "to be analyzed.  Documents not containing this tag will not be "
-            + "processed.  If this option is not specified, the entire document text "
-            + "will be processed.");
+            + "to be analyzed.  The text will also be detagged. If this option is not "
+            + "specified, the entire document will be processed.");
     System.err.println("-q (Quiet) - supresses progress messages that are "
             + "normally printed as each document is processed.");
     System.err.println("-s<x> (Stats level) - determines the verboseness of "
             + "performance statistics.  s0=none, s1=brief, s2=full.  The default is brief.");
+    System.err.println("-x - process input files as XCAS files.");
 
   }
 
@@ -278,6 +338,9 @@ public class RunAE implements StatusCallbackListener {
           return false;
         }
         encoding = args[index++];
+      } else if (arg.equals("-x")) // XCAS file input
+      {
+        xcasInput = true;
       } else // one of the standard params - whichever we haven't read yet
       {
         if (aeSpecifierFile == null) {
@@ -308,24 +371,4 @@ public class RunAE implements StatusCallbackListener {
   public static void main(String[] args) {
     new RunAE(args);
   }
-
-  // Values read from cmd line args
-  private File aeSpecifierFile = null;
-
-  private File inputDir = null;
-
-  private File outputDir = null;
-
-  private String xmlTagName = null;
-
-  private String language;
-
-  private String encoding;
-
-  private boolean genProgressMessages = true;
-
-  private int statsLevel = 1;
-
-  private CollectionProcessingManager mCPM;
-
 }

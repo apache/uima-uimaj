@@ -25,15 +25,18 @@ import java.util.Iterator;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.CasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.resource.ResourceInitializationException;
 
 /**
  * A multi-sofa annotator that does XML detagging. Reads XML data from the input Sofa (named
@@ -42,9 +45,26 @@ import org.apache.uima.cas.TypeSystem;
  * written to a new sofa called "plainTextDocument".
  */
 public class XmlDetagger extends CasAnnotator_ImplBase {
+  /**
+   * Name of optional configuration parameter that contains the name of an XML tag that appears in
+   * the input file. Only text that falls within this XML tag will be considered part of the
+   * "document" that it is added to the CAS by this CAS Initializer. If not specified, the entire
+   * file will be considered the document.
+   */
+  public static final String PARAM_XMLTAG = "XmlTagContainingText";
+  
   private SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 
   private Type sourceDocInfoType;
+
+  private String mXmlTagContainingText = null;
+
+    
+  public void initialize(UimaContext aContext) throws ResourceInitializationException {
+    super.initialize(aContext);
+    // Get config param setting
+    mXmlTagContainingText  = (String) getContext().getConfigParameterValue(PARAM_XMLTAG);
+  }
 
   public void typeSystemInit(TypeSystem aTypeSystem) throws AnalysisEngineProcessException {
     sourceDocInfoType = aTypeSystem.getType("org.apache.uima.examples.SourceDocumentInformation");
@@ -81,9 +101,34 @@ public class XmlDetagger extends CasAnnotator_ImplBase {
 
   class DetagHandler extends DefaultHandler {
     private StringBuffer detaggedText = new StringBuffer();
+    private boolean insideTextTag;
+
+    public DetagHandler() {
+      insideTextTag = (mXmlTagContainingText == null);
+    }
+        
+    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+      if (qName.equalsIgnoreCase(mXmlTagContainingText)) {
+        insideTextTag = true;
+      }
+    }
+
+    public void endElement(String uri, String localName, String qName) throws SAXException {
+      if (qName.equalsIgnoreCase(mXmlTagContainingText)) {
+        insideTextTag = false;
+      }
+    }
 
     public void characters(char[] ch, int start, int length) throws SAXException {
-      detaggedText.append(ch, start, length);
+      if (insideTextTag) {
+        detaggedText.append(ch, start, length);        
+      }
+    }
+    
+    public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
+      if (insideTextTag) {
+        detaggedText.append(ch, start, length);        
+      }
     }
 
     String getDetaggedText() {

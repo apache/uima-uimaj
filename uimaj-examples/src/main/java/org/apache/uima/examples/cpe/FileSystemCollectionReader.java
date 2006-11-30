@@ -121,22 +121,16 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
     File file = (File) mFiles.get(mCurrentIndex++);
     FileInputStream fis = new FileInputStream(file);
     try {
-      // if there's a CAS Initializer, call it
-      if (getCasInitializer() != null) {
-        getCasInitializer().initializeCas(fis, aCAS);
-      } else // No CAS Initiliazer, so read file and set document text ourselves
-      {
-        byte[] contents = new byte[(int) file.length()];
-        fis.read(contents);
-        String text;
-        if (mEncoding != null) {
-          text = new String(contents, mEncoding);
-        } else {
-          text = new String(contents);
-        }
-        // put document in CAS
-        jcas.setDocumentText(text);
+      byte[] contents = new byte[(int) file.length()];
+      fis.read(contents);
+      String text;
+      if (mEncoding != null) {
+        text = new String(contents, mEncoding);
+      } else {
+        text = new String(contents);
       }
+      // put document in CAS
+      jcas.setDocumentText(text);
     } finally {
       if (fis != null)
         fis.close();
