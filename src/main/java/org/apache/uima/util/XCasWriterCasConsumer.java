@@ -169,4 +169,7 @@ public class XCasWriterCasConsumer extends CasConsumer_ImplBase {
             new XMLInputSource(descStream, null));
   }
 
+  public static URL getDescriptorURL() {
+    return XCasWriterCasConsumer.class.getResource("XCasWriterCasConsumer.xml");
+  }
 }
