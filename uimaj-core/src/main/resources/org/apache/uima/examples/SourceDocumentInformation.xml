@@ -47,6 +47,11 @@
 					<description>Size of original document in bytes before processing by CAS Initializer. Either absolute file size of size within file or other source.</description>
 					<rangeTypeName>uima.cas.Integer</rangeTypeName>
 				</featureDescription>
+				<featureDescription>
+				  <name>lastSegment</name>
+				  <description>For a CAS that represents a segment of a larger source document, this flag indicates whether this CAS is the final segment of the source document.  This is useful for downstream components that want to take some action after having seen all of the segments of a particular source document. </description>
+			      <rangeTypeName>uima.cas.Boolean</rangeTypeName>
+			    </featureDescription>	
 			</features>
 		</typeDescription>
 	</types>
