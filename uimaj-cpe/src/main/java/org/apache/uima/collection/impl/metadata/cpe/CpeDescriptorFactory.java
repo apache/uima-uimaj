@@ -49,6 +49,8 @@ import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
 import org.apache.uima.collection.metadata.CpeLocalCasProcessor;
 import org.apache.uima.collection.metadata.CpeRemoteCasProcessor;
 import org.apache.uima.collection.metadata.CpeResourceManagerConfiguration;
+import org.apache.uima.collection.metadata.CpeSofaMapping;
+import org.apache.uima.collection.metadata.CpeSofaMappings;
 import org.apache.uima.collection.metadata.CpeTimer;
 import org.apache.uima.collection.metadata.NameValuePair;
 import org.apache.uima.util.InvalidXMLException;
@@ -451,4 +453,11 @@ public class CpeDescriptorFactory {
     return new NameValuePairImpl();
   }
 
+  public static CpeSofaMapping produceSofaMapping() {
+    return new CpeSofaMappingImpl();
+  }
+  
+  public static CpeSofaMappings produceSofaMappings() {
+    return new CpeSofaMappingsImpl();
+  }
 }

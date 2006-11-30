@@ -41,7 +41,7 @@ public class CpeSofaMappingImpl extends MetaDataObject_impl implements CpeSofaMa
     return XMLIZATION_INFO;
   }
 
-  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("cpeSofaMapping",
+  static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("sofaNameMapping",
           new PropertyXmlInfo[0]);
 
   /**
@@ -52,9 +52,13 @@ public class CpeSofaMappingImpl extends MetaDataObject_impl implements CpeSofaMa
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = super.getXMLAttributes();
     try {
-      attrs.addAttribute("", "cpeSofaName", "cpeSofaName", "CDATA", getCpeSofaName());
-      attrs.addAttribute("", "componentSofaName", "componentSofaName", "CDATA",
-              getComponentSofaName());
+      if (getCpeSofaName() != null) {
+        attrs.addAttribute("", "cpeSofaName", "cpeSofaName", "CDATA", getCpeSofaName());
+      }
+      if (getComponentSofaName() != null) {
+        attrs.addAttribute("", "componentSofaName", "componentSofaName", "CDATA",
+                getComponentSofaName());
+      }
     } catch (Exception e) {
       e.printStackTrace();
     }
