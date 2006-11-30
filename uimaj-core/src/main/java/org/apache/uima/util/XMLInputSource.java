@@ -66,14 +66,21 @@ public class XMLInputSource {
   /**
    * Creates an <code>XMLInputSource</code> from a descriptor file.
    * 
-   * @param aFileName
-   *          name of file to read from
+   * @param aUrlOrFileName
+   *          a URL or a file name to read from
    * 
    * @throws IOException
    *           if an I/O error occurs
    */
-  public XMLInputSource(String aFileName) throws IOException {
-    this(new File(aFileName));
+  public XMLInputSource(String aUrlOrFileName) throws IOException {
+    //try as URL first, then as file name
+    try {
+      mURL = new URL(aUrlOrFileName);
+    }
+    catch (MalformedURLException e) {
+      mURL = new File(aUrlOrFileName).toURL();
+    }
+    mInputStream = mURL.openStream();
   }
 
   /**
