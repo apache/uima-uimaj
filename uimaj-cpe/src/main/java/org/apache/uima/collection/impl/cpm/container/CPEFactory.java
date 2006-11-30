@@ -803,8 +803,7 @@ public class CPEFactory {
    * @throws Exception
    */
   public ResourceSpecifier getSpecifier(String aFileName) throws Exception {
-    File processorSpecifierFile = new File(aFileName);
-    XMLInputSource in = new XMLInputSource(processorSpecifierFile);
+    XMLInputSource in = new XMLInputSource(aFileName);
     return UIMAFramework.getXMLParser().parseResourceSpecifier(in);
 
   }
