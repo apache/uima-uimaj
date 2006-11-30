@@ -21,12 +21,26 @@
                 version='1.0'>
 
   <xsl:param name="body.font.family"  select="'Palatino'"/>
-  <xsl:param name="body.font.size"    select="'10.5'"/>
+  <xsl:param name="body.font.master"    select="'10.5'"/>
   <xsl:attribute-set name="root.properties">
       <xsl:attribute name="text-align">left</xsl:attribute>
   </xsl:attribute-set>
-<!--  <xsl.param name="alignment"         select="'left'"/> -->
   
+<!--###################################################
+                      Monospace font size
+    ################################################### -->
+  
+  <xsl:attribute-set name="monospace.properties">
+    <xsl:attribute name="font-size">9.5pt</xsl:attribute>
+  </xsl:attribute-set>
+ 
+  <xsl:attribute-set name="monospace.verbatim.properties">
+    <xsl:attribute name="font-size">9pt</xsl:attribute>
+  </xsl:attribute-set>
+
+<!--###################################################
+                      Page margins
+    ################################################### -->   
   <xsl:param name="page.margin.top" select="'1cm'"/>
   <xsl:param name="region.before.extent" select="'1cm'"/>
   <xsl:param name="body.margin.top" select="'1.5cm'"/>
@@ -35,7 +49,9 @@
   <xsl:param name="region.after.extent" select="'1cm'"/>
   <xsl:param name="page.margin.bottom" select="'1cm'"/>
   <xsl:param name="title.margin.left" select="'-4pc'"/>
-
+  
+  <xsl:param name="page.margin.inner" select="'1.3in'"/>
+  <xsl:param name="page.margin.outer" select="'.70in'"/>
 <!--###################################################
                       Header
     ################################################### -->
