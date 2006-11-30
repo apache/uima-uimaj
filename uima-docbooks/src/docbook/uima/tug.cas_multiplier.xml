@@ -300,6 +300,10 @@ JCas getEmptyJCas()</programlisting>
       considered a type of Analysis Engine, and so their descriptors use the same syntax as any
       other Analysis Engine Descriptor.</para>
     
+	<para>The descriptor for the <literal>SimpleTextSegmenter</literal> is located in the
+	  <literal>examples/descriptors/cas_multiplier/SimpleTextSegmenter.xml</literal> directory
+	  of the UIMA SDK.</para>
+	  
     <para>The Analysis Engine Description, in its <quote>Operational Properties</quote>
       section, now contains a new <quote>outputsNewCASes</quote> property which takes a
       Boolean value. If the Analysis Engine is a CAS Multiplier, this property should be set to
@@ -356,32 +360,90 @@ JCas getEmptyJCas()</programlisting>
       
     </section>
     
-    <section id="ugr.tug.cm.cm_and_fc"><title>CAS Multipliers and Flow
-      Control</title>
+    <section id="ugr.tug.cm.cm_and_fc">
+      <title>CAS Multipliers and Flow Control</title>
       
-      <para>CAS Multipliers are only supported in the context of Fixed Flow or custom Flow
-        Control. If you use the built-in <quote>Fixed Flow</quote> for your Aggregate
-        Analysis Engine, you can position the CAS Multiplier anywhere in that flow.
-        Processing then works as follows: When a CAS is input to the Aggregate AE, that CAS is
-        routed to the components in the order specified by the Fixed Flow, until that CAS
-        reaches a CAS Multiplier. Once the CAS reaches a CAS Multiplier, it will not complete
-        the rest of the flow. Instead, each new output CAS from that CAS Multiplier will
-        continue through the flow, starting at the node immediately after the CAS Multiplier
-        in the Fixed Flow. No further processing will be done on the original input CAS after it
-        has reached a CAS Multiplier.</para>
-      
-      <para>It is possible to put more than one CAS Multiplier in your flow. In this case, when a
-        new CAS output from the first CAS Multiplier reaches the second CAS Multiplier, no
-        further processing will occur on that CAS, and any new output CASes produced by the
-        second CAS Multiplier will continue the flow starting at the node after the second CAS
+      <para>CAS Multipliers are only supported in the context of Fixed Flow or custom Flow Control. If you use the
+        built-in <quote>Fixed Flow</quote> for your Aggregate Analysis Engine, you can position the CAS
+        Multiplier anywhere in that flow. Processing then works as follows: When a CAS is input to the Aggregate AE,
+        that CAS is routed to the components in the order specified by the Fixed Flow, until that CAS reaches a CAS
         Multiplier.</para>
       
-      <para>If you would like to have different kind of flow, you will need to implement a
-        custom FlowController as described in <olink
-          targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.fc"/>. For
-        example, you could implement a flow where a CAS that is input to a CAS Multiplier will
-        continue to be processed by other components after the CAS Multiplier is finished
-        with it.</para>
+      <para>Upon reaching a CAS Multiplier, if that CAS Multiplier produces new output CASes, then each output CAS
+        from that CAS Multiplier will continue through the flow, starting at the node immediately after the CAS
+        Multiplier in the Fixed Flow. No further processing will be done on the original input CAS after it has reached
+        a CAS Multiplier &ndash; it will <emphasis>not</emphasis> continue in the flow.</para>
+      
+      <para>If the CAS Multiplier does <emphasis>not</emphasis> produce any output CASes for a given input CAS,
+        then that input CAS <emphasis>will</emphasis> continue in the flow. This behavior is appropriate, for
+        example, for a CAS Multiplier that may segment an input CAS into pieces but only does so if the input CAS is
+        larger than a certain size.</para>
+      
+      <para>It is possible to put more than one CAS Multiplier in your flow. In this case, when a new CAS output from the
+        first CAS Multiplier reaches the second CAS Multiplier and if the second CAS Multiplier produces output
+        CASes, then no further processing will occur on the input CAS, and any new output CASes produced by the second
+        CAS Multiplier will continue the flow starting at the node after the second CAS Multiplier.</para>
+      
+      <para>This default behavior can be customized. The <literal>FixedFlowController</literal> component
+        that implement's UIMA&apos;s default flow defines a configuration parameter
+        <literal>ActionAfterCasMultiplier</literal> that can take the following values:</para>
+      <itemizedlist>
+        <listitem><para><literal>continue</literal> &ndash; the CAS continues on to the next element in the
+          flow</para></listitem>
+        <listitem><para><literal>stop</literal> &ndash; the CAS will no longer continue in the flow, and will be
+          returned from the aggregate if possible.</para></listitem>
+        <listitem><para><literal>drop</literal> &ndash; the CAS will no longer continue in the flow, and will be dropped
+          (not returned from the aggregate) if possible.</para></listitem>
+        <listitem><para><literal>dropIfNewCasProduced</literal> (the default) &ndash; if the CAS multiplier
+          produced a new CAS as a result of processing this CAS, then this CAS will be dropped. If not, then this CAS will
+          continue.</para></listitem>
+      </itemizedlist>
+      
+      <para>You can override this parameter in your Aggregate Analysis Engine the same way you would override a
+        parameter in a delegate Analysis Engine. But to do so you must first explicitly identify that you are using the
+        <literal>FixedFlowController</literal> implementation by importing its descriptor into your
+        aggregate as follows:</para>
+      
+      <programlisting>
+        &lt;flowController key="FixedFlowController">
+          &lt;import name="org.apache.uima.flow.FixedFlowController"/>
+        &lt;/flowController>
+      </programlisting>
+      
+      <para>The parameter could then be overriden as, for example:</para>
+      <programlisting>
+        &lt;configurationParameters>
+          &lt;configurationParameter>
+            &lt;name>ActionForIntermediateSegments&lt;/name>
+            &lt;type>String&lt;/type>
+            &lt;multiValued>false&lt;/multiValued>
+            &lt;mandatory>false&lt;/mandatory>
+            &lt;overrides>
+              &lt;parameter>FixedFlowController/ActionAfterCasMultiplier&lt;/parameter>
+            &lt;/overrides>
+          &lt;/configurationParameter>   
+        &lt;/configurationParameters>
+  
+       &lt;configurationParameterSettings>
+         &lt;nameValuePair>
+           &lt;name>ActionForIntermediateSegments&lt;/name>
+           &lt;value>
+             &lt;string>drop&lt;/string>
+           &lt;/value>
+         &lt;/nameValuePair>
+       &lt;/configurationParameterSettings>
+      </programlisting>
+      
+      <para>This overriding can also be done using the Component Descriptor Editor tool.
+        An example of an Analysis Engine that overrides this parameter can be found in
+        <literal>examples/descriptors/cas_multiplier/Segment_Annotate_Merge_AE.xml</literal>. For more
+        information about how to specify a flow controller as part of your Aggregate Analysis Engine descriptor, see
+          <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.fc"/>.</para>
+      
+      <para>If you would like to further customize the flow, you will need to implement a custom FlowController as
+        described in <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.fc"/>. For example,
+        you could implement a flow where a CAS that is input to a CAS Multiplier will be processed further by
+        <emphasis>some</emphasis> downstream components, but not others.</para>
       
     </section>
     
