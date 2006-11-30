@@ -24,7 +24,7 @@
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-cpe</artifactId>
 			<version>2.1.0-incubating-SNAPSHOT</version>
-			<scope>runtime</scope>
+			<scope>compile</scope>
 		</dependency>		
 		<dependency>
 			<groupId>org.apache.uima</groupId>
