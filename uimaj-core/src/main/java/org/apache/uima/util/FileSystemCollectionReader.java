@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 
 import org.apache.uima.UIMAFramework;
@@ -224,5 +225,8 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
     return UIMAFramework.getXMLParser().parseCollectionReaderDescription(
             new XMLInputSource(descStream, null));
   }
-
+  
+  public static URL getDescriptorURL() {
+    return FileSystemCollectionReader.class.getResource("FileSystemCollectionReader.xml");
+  }
 }

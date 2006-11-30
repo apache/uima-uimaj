@@ -190,5 +190,8 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
     return UIMAFramework.getXMLParser().parseCasConsumerDescription(
             new XMLInputSource(descStream, null));
   }
-
+  
+  public static URL getDescriptorURL() {
+    return InlineXmlCasConsumer.class.getResource("InlineXmlCasConsumer.xml");
+  }
 }
