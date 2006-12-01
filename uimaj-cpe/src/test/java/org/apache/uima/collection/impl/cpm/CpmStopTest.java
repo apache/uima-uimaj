@@ -168,53 +168,48 @@ public class CpmStopTest extends TestCase {
     CpeDescription cpeDesc = null;
     CollectionProcessingEngine cpe = null;
 
-    try {
-      String colReaderBase = junitTestBasePath + "CpmTests" + separator
-              + "ErrorTestCollectionReader.xml";
-      String taeBase = junitTestBasePath + "CpmTests" + separator + "ErrorTestAnnotator.xml";
-      String casConsumerBase = junitTestBasePath + "CpmTests" + separator
-              + "ErrorTestCasConsumer.xml";
+    String colReaderBase = junitTestBasePath + "CpmTests" + separator
+            + "ErrorTestCollectionReader.xml";
+    String taeBase = junitTestBasePath + "CpmTests" + separator + "ErrorTestAnnotator.xml";
+    String casConsumerBase = junitTestBasePath + "CpmTests" + separator
+            + "ErrorTestCasConsumer.xml";
 
-      // created needed descriptors
-      String colReaderDesc = DescriptorMakeUtil.makeCollectionReader(colReaderBase, documentCount);
-      String taeDesc = DescriptorMakeUtil.makeAnalysisEngine(taeBase);
-      String casConsumerDesc = DescriptorMakeUtil.makeCasConsumer(casConsumerBase);
+    // created needed descriptors
+    String colReaderDesc = DescriptorMakeUtil.makeCollectionReader(colReaderBase, documentCount);
+    String taeDesc = DescriptorMakeUtil.makeAnalysisEngine(taeBase);
+    String casConsumerDesc = DescriptorMakeUtil.makeCasConsumer(casConsumerBase);
 
-      // create cpm descriptor
-      cpeDesc = CpeDescriptorFactory.produceDescriptor();
-      cpeDesc.setInputQueueSize(2);
-      cpeDesc.setOutputQueueSize(2);
-      cpeDesc.setProcessingUnitThreadCount(threadCount);
+    // create cpm descriptor
+    cpeDesc = CpeDescriptorFactory.produceDescriptor();
+    cpeDesc.setInputQueueSize(2);
+    cpeDesc.setOutputQueueSize(2);
+    cpeDesc.setProcessingUnitThreadCount(threadCount);
 
-      // add tae
-      CpeIntegratedCasProcessor integratedProcessor = CpeDescriptorFactory
-              .produceCasProcessor("ErrorTestAnnotator");
-      integratedProcessor.setDescriptor(taeDesc);
-      cpeDesc.addCasProcessor(integratedProcessor);
+    // add tae
+    CpeIntegratedCasProcessor integratedProcessor = CpeDescriptorFactory
+            .produceCasProcessor("ErrorTestAnnotator");
+    integratedProcessor.setDescriptor(taeDesc);
+    cpeDesc.addCasProcessor(integratedProcessor);
 
-      // add slow annotator if requested
-      if (useSlowAnnotator) {
-        CpeIntegratedCasProcessor slowProcessor = CpeDescriptorFactory
-                .produceCasProcessor("SlowAnnotator");
-        slowProcessor.setDescriptor(junitTestBasePath + "CpmTests" + separator
-                + "SlowAnnotator.xml");
-        cpeDesc.addCasProcessor(slowProcessor);
-      }
-
-      // add casConsumer
-      CpeIntegratedCasProcessor casConsumer = CpeDescriptorFactory
-              .produceCasProcessor("ErrorTest CasConsumer");
-      casConsumer.setDescriptor(casConsumerDesc);
-      cpeDesc.addCasProcessor(casConsumer);
-
-      // add collectionReader
-      cpeDesc.addCollectionReader(colReaderDesc);
-
-      // produce cpe
-      cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc, null, null);
-    } catch (Exception e) {
-      e.printStackTrace();
+    // add slow annotator if requested
+    if (useSlowAnnotator) {
+      CpeIntegratedCasProcessor slowProcessor = CpeDescriptorFactory
+              .produceCasProcessor("SlowAnnotator");
+      slowProcessor.setDescriptor(junitTestBasePath + "CpmTests" + separator + "SlowAnnotator.xml");
+      cpeDesc.addCasProcessor(slowProcessor);
     }
+
+    // add casConsumer
+    CpeIntegratedCasProcessor casConsumer = CpeDescriptorFactory
+            .produceCasProcessor("ErrorTest CasConsumer");
+    casConsumer.setDescriptor(casConsumerDesc);
+    cpeDesc.addCasProcessor(casConsumer);
+
+    // add collectionReader
+    cpeDesc.addCollectionReader(colReaderDesc);
+
+    // produce cpe
+    cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc, null, null);
 
     return cpe;
   }

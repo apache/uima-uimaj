@@ -633,7 +633,7 @@ public class CPEFactory {
         return false;
       }
 
-      if (frameworkName.startsWith("org.apache.uima.cpp") || frameworkName.startsWith("TAF")) {
+      if (frameworkName.startsWith(org.apache.uima.Constants.CPP_FRAMEWORK_NAME)) {
         validDefinition = true;
       } else {
         // String className = ((CasConsumerDescription) resourceSpecifier).getImplementationName();

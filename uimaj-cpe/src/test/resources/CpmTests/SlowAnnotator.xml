@@ -19,7 +19,7 @@
  -->
 
 <taeDescription xmlns="http://uima.apache.org/resourceSpecifier">
-    <frameworkImplementation>JEDII</frameworkImplementation>
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
     <primitive>true</primitive>
     <annotatorImplementationName>org.apache.uima.collection.impl.cpm.utils.SlowAnnotator</annotatorImplementationName>
     <analysisEngineMetaData>
