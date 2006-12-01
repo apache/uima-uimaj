@@ -339,6 +339,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
     prefsMed.setFileSelectors(inputFileSelector, outputFileSelector, xmlFileSelector);
     runParametersField = new JTextField(16);
+    runParametersField.setText(prefsMed.getXmlTag());
 
     JPanel runParametersPanel = new JPanel();
     runParametersPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 2));
@@ -347,6 +348,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     languageComboBox = new JComboBox(new Object[] { "en", "de", "es", "fr", "it", "pt", "ja",
         "ko-kr", "pt-br", "zh-cn", "zh-tw", "x-unspecified" });
     languageComboBox.setEditable(true);
+    languageComboBox.setSelectedItem(prefsMed.getLanguage());
     JPanel languagePanel = new JPanel();
     languagePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 2));
     languagePanel.add(languageComboBox);
@@ -356,7 +358,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     Object[] charsetArr = charsets.toArray();
     encodingComboBox = new JComboBox(charsetArr);
     encodingComboBox.setEditable(true);
-    encodingComboBox.setSelectedItem("UTF-8");
+    encodingComboBox.setSelectedItem(prefsMed.getEncoding());
     JPanel encodingPanel = new JPanel();
     encodingPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 2));
     encodingPanel.add(encodingComboBox);

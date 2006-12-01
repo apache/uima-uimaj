@@ -71,6 +71,8 @@ public class PrefsMediator {
   private static final String OUTDIR = "outDir";
 
   private static final String INDIR = "inDir";
+  
+  private static final String XMLTAG = "xmlTag";
 
   public PrefsMediator() {
     // get the installed UIMA home directory
@@ -87,6 +89,7 @@ public class PrefsMediator {
     language = prefs.get(LANGUAGE, "en");
     encoding = prefs.get(ENCODING, "UTF-8");
     viewType = prefs.get(VIEWTYPE, "Java Viewer");
+    xmlTag = prefs.get(XMLTAG, "");
   }
 
   // saves current preferences
@@ -251,6 +254,7 @@ public class PrefsMediator {
    */
   public void setXmlTag(String xmlTag) {
     this.xmlTag = xmlTag;
+    prefs.put(XMLTAG, xmlTag);
   }
 
   /** returns the new edited stylemap file */
