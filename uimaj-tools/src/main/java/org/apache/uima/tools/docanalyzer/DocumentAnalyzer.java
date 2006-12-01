@@ -169,7 +169,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
   private int numDocs;
 
-  private int progress = 0;
+  private int numDocsProcessed = 0;
 
   private AnalysisEngine ae;
 
@@ -674,9 +674,9 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     }
     // increment the number of documents processed and update the
     // ProgressMonitor
-    progress++;
-    progressMonitor.setProgress(progress);
-    progressMonitor.setNote("Processed " + progress + " of " + numDocs + " documents.");
+    numDocsProcessed++;
+    progressMonitor.setProgress(numDocsProcessed + 2);
+    progressMonitor.setNote("Processed " + numDocsProcessed + " of " + numDocs + " documents.");
   }
 
   /**
@@ -1108,7 +1108,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       progressMonitor.setNote(initial);
       progressMonitor.setMillisToPopup(-1);
       progressMonitor.setMillisToDecideToPopup(-1);
-      progress = 0;
+      numDocsProcessed = 0;
       progressTimer.start();
 
       // set wait cursor
@@ -1194,13 +1194,13 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
       
       
-      progressMonitor.setProgress(++progress);
+      progressMonitor.setProgress(1);
 
       // instantiate AE
       ae = UIMAFramework.produceAnalysisEngine(aggDesc);
       mCPM.setAnalysisEngine(ae);
 
-      progressMonitor.setProgress(++progress);
+      progressMonitor.setProgress(2);
 
       // this generates style map file if one does not currently exist
       if (!prefsMed.getStylemapFile().exists()) {
