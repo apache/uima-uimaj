@@ -49,10 +49,4 @@ public interface InsdConstants {
   public final String COMP_TYPE_COLLECTION_READER = "collection_reader";
 
   public final String COMP_TYPE_CPE = "cpe";
-
-  // public final String PEAR_DEPLOYMENT_TYPE_STANDARD_JEDII =
-  // InstallationDescriptorHandler.STANDARD_TAG;
-  // public final String PEAR_DEPLOYMENT_TYPE_NETWORK = InstallationDescriptorHandler.NETWORK_TAG;
-  // public final String PEAR_DEPLOYMENT_TYPE_SERVICE = InstallationDescriptorHandler.SERVICE_TAG;
-
 }
