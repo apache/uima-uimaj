@@ -106,7 +106,7 @@ public class CollectionReaderDescription_implTest extends TestCase {
 
       // create primitive TAE description
       mTestDesc = new CollectionReaderDescription_impl();
-      mTestDesc.setFrameworkImplementation("org.apache.uima.java");
+      mTestDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       mTestDesc.setImplementationName("org.apache.uima.examples.TestAnnotator");
       ProcessingResourceMetaData md = mTestDesc.getCollectionReaderMetaData();
       md.setName("Test CAS Consumer");

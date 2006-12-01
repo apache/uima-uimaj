@@ -106,7 +106,7 @@ public class CasConsumerDescription_implTest extends TestCase {
 
       // create primitive TAE description
       mTestDesc = new CasConsumerDescription_impl();
-      mTestDesc.setFrameworkImplementation("org.apache.uima.java");
+      mTestDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       mTestDesc.setImplementationName("org.apache.uima.examples.TestAnnotator");
       ProcessingResourceMetaData md = mTestDesc.getCasConsumerMetaData();
       md.setName("Test CAS Consumer");

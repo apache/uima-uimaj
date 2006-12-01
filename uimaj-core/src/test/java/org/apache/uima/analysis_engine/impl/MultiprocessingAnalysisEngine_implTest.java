@@ -25,6 +25,7 @@ import java.util.HashMap;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.uima.Constants;
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -68,7 +69,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     try {
       super.setUp();
       mSimpleDesc = new TaeDescription_impl();
-      mSimpleDesc.setFrameworkImplementation("org.apache.uima.java");
+      mSimpleDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       mSimpleDesc.setPrimitive(true);
       mSimpleDesc
               .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
@@ -231,7 +232,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
 
       // test aggregate TAE
       TaeDescription aggDesc = new TaeDescription_impl();
-      aggDesc.setFrameworkImplementation("org.apache.uima.java");
+      aggDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       aggDesc.setPrimitive(false);
       aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", primitiveDesc);
       aggDesc.getMetaData().setName("Reconfigure Test 2");

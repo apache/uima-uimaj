@@ -22,6 +22,7 @@ package org.apache.uima.analysis_engine.impl;
 import java.util.Collections;
 import java.util.Map;
 
+import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.UimaContextAdmin;
@@ -109,10 +110,9 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
 
       mDescription = (ResourceCreationSpecifier) aSpecifier;
 
-      // also framework implementation must start with:
-      // org.apache.uima.java (new style) or JEDII (old style)
+      // also framework implementation must start with org.apache.uima.java
       final String fwImpl = mDescription.getFrameworkImplementation();
-      if (!(fwImpl.startsWith("org.apache.uima.java") || fwImpl.startsWith("JEDII"))) {
+      if (!fwImpl.startsWith(Constants.JAVA_FRAMEWORK_NAME)) {
         return false;
       }
 

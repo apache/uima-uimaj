@@ -329,15 +329,15 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
    */
   public static int getLoggingLevel() {
 
-    Logger tafLogger = UIMAFramework.getLogger(UimacppAnalysisComponent.class);
+    Logger uimacppLogger = UIMAFramework.getLogger(UimacppAnalysisComponent.class);
 
-    if (tafLogger.isLoggable(Level.FINEST) || tafLogger.isLoggable(Level.FINER)
-            || tafLogger.isLoggable(Level.FINE) || tafLogger.isLoggable(Level.CONFIG)
-            || tafLogger.isLoggable(Level.INFO)) {
+    if (uimacppLogger.isLoggable(Level.FINEST) || uimacppLogger.isLoggable(Level.FINER)
+            || uimacppLogger.isLoggable(Level.FINE) || uimacppLogger.isLoggable(Level.CONFIG)
+            || uimacppLogger.isLoggable(Level.INFO)) {
       return TAF_LOGLEVEL_MESSAGE;
-    } else if (tafLogger.isLoggable(Level.WARNING)) {
+    } else if (uimacppLogger.isLoggable(Level.WARNING)) {
       return TAF_LOGLEVEL_WARNING;
-    } else if (tafLogger.isLoggable(Level.SEVERE)) {
+    } else if (uimacppLogger.isLoggable(Level.SEVERE)) {
       return TAF_LOGLEVEL_ERROR;
     } else {
       return TAF_LOGLEVEL_OFF;
@@ -346,10 +346,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
 
   // log a message
   public static void log(int msglevel, String sourceClass, String sourceMethod, String message) {
-    // System.out.println("CPPJEDIIEnging::log() level=" + msglevel + "src=" + sourceClass +
-    // "method=" + sourceMethod + "message=" + message);
-
-    Logger tafLogger = UIMAFramework.getLogger(UimacppAnalysisComponent.class);
+    Logger uimacppLogger = UIMAFramework.getLogger(UimacppAnalysisComponent.class);
     Level level = Level.INFO; // default
     if (msglevel == TAF_LOGLEVEL_MESSAGE) {
       level = Level.INFO;
@@ -359,9 +356,9 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
       level = Level.SEVERE;
     }
     if (sourceMethod.length() > 0)
-      tafLogger.log(level, sourceClass + "::" + sourceMethod + ": " + message);
+      uimacppLogger.log(level, sourceClass + "::" + sourceMethod + ": " + message);
     else
-      tafLogger.log(level, sourceClass + ": " + message);
+      uimacppLogger.log(level, sourceClass + ": " + message);
 
     // TODO: add Logger method log(level, sourceClass, sourceMethod, message);
   }

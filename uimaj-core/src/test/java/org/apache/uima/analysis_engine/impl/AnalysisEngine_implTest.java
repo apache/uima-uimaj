@@ -28,6 +28,7 @@ import java.util.Iterator;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.uima.Constants;
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalStateException;
@@ -122,7 +123,7 @@ public class AnalysisEngine_implTest extends TestCase {
       // initialize simple primitive TextAnalysisEngine
       tae1 = new PrimitiveAnalysisEngine_impl();
       TaeDescription primitiveDesc = new TaeDescription_impl();
-      primitiveDesc.setFrameworkImplementation("org.apache.uima.java");
+      primitiveDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       primitiveDesc.setPrimitive(true);
       primitiveDesc
               .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
@@ -141,7 +142,7 @@ public class AnalysisEngine_implTest extends TestCase {
       // initialize simple aggregate TextAnalysisEngine (also pass TextAnalysisEngineProcessData as
       // parameter)
       TaeDescription aggDesc = new TaeDescription_impl();
-      aggDesc.setFrameworkImplementation("org.apache.uima.java");
+      aggDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       aggDesc.setPrimitive(false);
       aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", primitiveDesc);
       FixedFlow_impl flow = new FixedFlow_impl();
@@ -410,7 +411,7 @@ public class AnalysisEngine_implTest extends TestCase {
 
       // test aggregate TAE
       TaeDescription aggDesc = new TaeDescription_impl();
-      aggDesc.setFrameworkImplementation("org.apache.uima.java");
+      aggDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       aggDesc.setPrimitive(false);
       aggDesc.getMetaData().setName("Test Aggregate TAE");
       aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", primitiveDesc);
@@ -447,7 +448,7 @@ public class AnalysisEngine_implTest extends TestCase {
       primitiveDesc.getMetaData().getConfigurationParameterSettings().setParameterSettings(
               new NameValuePair[] { new NameValuePair_impl("StringParam", "Test1") });
       TaeDescription aggDesc2 = new TaeDescription_impl();
-      aggDesc2.setFrameworkImplementation("org.apache.uima.java");
+      aggDesc2.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       aggDesc2.setPrimitive(false);
       aggDesc2.getMetaData().setName("Test Aggregate TAE");
       aggDesc2.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", primitiveDesc);
