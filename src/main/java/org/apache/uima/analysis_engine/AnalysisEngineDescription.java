@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.util.Map;
 
+import org.apache.uima.Constants;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration;
 import org.apache.uima.analysis_engine.metadata.SofaMapping;
@@ -74,7 +75,7 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
 
   /**
    * Gets the name of the framework implementation within which the AnalysisEngine executes. The
-   * framework name for this implementation is "org.apache.uima.java".
+   * framework name for this implementation is given by {@link Constants#JAVA_FRAMEWORK_NAME}.
    * 
    * @return the framework implementation name
    */
@@ -82,7 +83,7 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
 
   /**
    * Sets the name of the framework implementation within which the AnalysisEngine executes. The
-   * framework name for this implementation is "org.apache.uima.java".
+   * framework name for this implementation is given by {@link Constants#JAVA_FRAMEWORK_NAME}.
    * 
    * @param aFrameworkImplementation
    *          the framework implementation name

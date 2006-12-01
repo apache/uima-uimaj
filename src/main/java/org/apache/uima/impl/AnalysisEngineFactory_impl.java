@@ -21,6 +21,7 @@ package org.apache.uima.impl;
 
 import java.util.Map;
 
+import org.apache.uima.Constants;
 import org.apache.uima.ResourceFactory;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -64,15 +65,28 @@ public class AnalysisEngineFactory_impl implements ResourceFactory {
       ResourceCreationSpecifier spec = (ResourceCreationSpecifier) aSpecifier;
       if (multiprocessing) {
         resource = new MultiprocessingAnalysisEngine_impl();
-      } else if ("org.apache.uima.cpp".equals(spec.getFrameworkImplementation())
-              || "TAF".equals(spec.getFrameworkImplementation())) {
-        resource = new UimacppAnalysisEngineImpl();
       } else {
-        if (spec instanceof AnalysisEngineDescription
-                && !((AnalysisEngineDescription) spec).isPrimitive()) {
-          resource = new AggregateAnalysisEngine_impl();
+
+        String frameworkImpl = spec.getFrameworkImplementation();
+        if (frameworkImpl == null || frameworkImpl.length() == 0) {
+          throw new ResourceInitializationException(
+                  ResourceInitializationException.MISSING_FRAMEWORK_IMPLEMENTATION,
+                  new Object[] { aSpecifier.getSourceUrlString() });
+        }
+
+        if (frameworkImpl.startsWith(Constants.CPP_FRAMEWORK_NAME)) {
+          resource = new UimacppAnalysisEngineImpl();
+        } else if (frameworkImpl.startsWith(Constants.JAVA_FRAMEWORK_NAME)) {
+          if (spec instanceof AnalysisEngineDescription
+                  && !((AnalysisEngineDescription) spec).isPrimitive()) {
+            resource = new AggregateAnalysisEngine_impl();
+          } else {
+            resource = new PrimitiveAnalysisEngine_impl();
+          }
         } else {
-          resource = new PrimitiveAnalysisEngine_impl();
+          throw new ResourceInitializationException(
+                  ResourceInitializationException.UNSUPPORTED_FRAMEWORK_IMPLEMENTATION,
+                  new Object[] { spec.getFrameworkImplementation(), aSpecifier.getSourceUrlString() });
         }
       }
     }

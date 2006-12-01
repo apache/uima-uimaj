@@ -22,6 +22,7 @@ package org.apache.uima.analysis_engine.impl;
 import java.util.Collections;
 import java.util.Map;
 
+import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UIMA_IllegalStateException;
@@ -111,10 +112,9 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
 
     mDescription = (AnalysisEngineDescription) aSpecifier;
 
-    // also framework implementation must start with:
-    // org.apache.uima.cpp (new style) or TAF (old style)
+    // also framework implementation must start with org.apache.uima.cpp
     final String fwImpl = mDescription.getFrameworkImplementation();
-    if (!fwImpl.startsWith("org.apache.uima.cpp") && !fwImpl.startsWith("TAF")) {
+    if (!fwImpl.startsWith(Constants.CPP_FRAMEWORK_NAME)) {
       return false;
     }
 

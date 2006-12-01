@@ -137,7 +137,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
 
       // create primitive TAE description
       primitiveDesc = new AnalysisEngineDescription_impl();
-      primitiveDesc.setFrameworkImplementation("org.apache.uima.java");
+      primitiveDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       primitiveDesc.setPrimitive(true);
       primitiveDesc.setAnnotatorImplementationName("org.apache.uima.examples.TestAnnotator");
       AnalysisEngineMetaData md = primitiveDesc.getAnalysisEngineMetaData();
@@ -195,12 +195,12 @@ public class AnalysisEngineDescription_implTest extends TestCase {
 
       // create aggregate TAE description
       aggregateDesc = new AnalysisEngineDescription_impl();
-      aggregateDesc.setFrameworkImplementation("org.apache.uima.java");
+      aggregateDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       aggregateDesc.setPrimitive(false);
       Map delegateTaeMap = aggregateDesc.getDelegateAnalysisEngineSpecifiersWithImports();
       delegateTaeMap.put("Test", primitiveDesc);
       AnalysisEngineDescription_impl primDesc2 = new AnalysisEngineDescription_impl();
-      primDesc2.setFrameworkImplementation("org.apache.uima.java");
+      primDesc2.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       primDesc2.setAnnotatorImplementationName("fakeClass");
       primDesc2.getAnalysisEngineMetaData().setName("fakeAnnotator");
       primDesc2.getAnalysisEngineMetaData().setCapabilities(

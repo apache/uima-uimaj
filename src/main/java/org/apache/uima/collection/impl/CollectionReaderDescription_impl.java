@@ -21,6 +21,7 @@ package org.apache.uima.collection.impl;
 
 import java.util.ArrayList;
 
+import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -55,7 +56,7 @@ public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_
    */
   public CollectionReaderDescription_impl() {
     setMetaData(new ProcessingResourceMetaData_impl());
-    setFrameworkImplementation("org.apache.uima.java");
+    setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
     // set default operational properties (may be overriden during parsing)
     OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory()
             .createOperationalProperties();

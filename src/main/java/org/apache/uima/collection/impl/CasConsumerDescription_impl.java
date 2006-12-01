@@ -21,6 +21,7 @@ package org.apache.uima.collection.impl;
 
 import java.util.ArrayList;
 
+import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.CasConsumer;
 import org.apache.uima.collection.CasConsumerDescription;
@@ -53,7 +54,7 @@ public class CasConsumerDescription_impl extends ResourceCreationSpecifier_impl 
    */
   public CasConsumerDescription_impl() {
     setMetaData(new ProcessingResourceMetaData_impl());
-    setFrameworkImplementation("org.apache.uima.java");
+    setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
     // set default operational properties (may be overrriden during parsing)
     OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory()
             .createOperationalProperties();

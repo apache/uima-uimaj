@@ -21,6 +21,7 @@ package org.apache.uima.collection.impl;
 
 import java.util.ArrayList;
 
+import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.CasInitializer;
 import org.apache.uima.collection.CasInitializerDescription;
@@ -52,7 +53,7 @@ public class CasInitializerDescription_impl extends ResourceCreationSpecifier_im
    */
   public CasInitializerDescription_impl() {
     setMetaData(new ProcessingResourceMetaData_impl());
-    setFrameworkImplementation("org.apache.uima.java");
+    setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
     // set default operational properties (may be overrriden during parsing)
     OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory()
             .createOperationalProperties();

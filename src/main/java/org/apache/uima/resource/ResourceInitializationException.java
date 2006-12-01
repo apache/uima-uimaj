@@ -403,6 +403,12 @@ public class ResourceInitializationException extends UIMAException {
   public static final String TEXT_ANNOTATOR_CANNOT_BE_SOFA_AWARE = "text_annotator_cannot_be_sofa_aware";
 
   /**
+   * Message key for a standard UIMA exception message: "Component descriptor did not specify the
+   * required &lt;frameworkImplementation> element."
+   */
+  public static final String MISSING_FRAMEWORK_IMPLEMENTATION = "missing_framework_implementation";
+
+  /**
    * Creates a new exception with a null message.
    */
   public ResourceInitializationException() {

@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.uima.Constants;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -115,10 +116,9 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
         return false;
       }
 
-      // also framework implementation must start with:
-      // org.apache.uima.java (new style) or JEDII (old style)
+      // also framework implementation must start with org.apache.uima.java
       final String fwImpl = mDescription.getFrameworkImplementation();
-      if (!(fwImpl.startsWith("org.apache.uima.java") || fwImpl.startsWith("JEDII"))) {
+      if (!fwImpl.startsWith(Constants.JAVA_FRAMEWORK_NAME)) {
         return false;
       }
 

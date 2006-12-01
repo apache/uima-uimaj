@@ -21,6 +21,7 @@ package org.apache.uima.impl;
 
 import java.util.Map;
 
+import org.apache.uima.Constants;
 import org.apache.uima.ResourceFactory;
 import org.apache.uima.analysis_engine.impl.UimacppAnalysisEngineImpl;
 import org.apache.uima.collection.CasConsumer;
@@ -47,8 +48,15 @@ public class CasConsumerFactory_impl implements ResourceFactory {
           Map aAdditionalParams) throws ResourceInitializationException {
     if (aSpecifier instanceof CasConsumerDescription) {
       CasConsumerDescription desc = (CasConsumerDescription) aSpecifier;
-      final String fwImpl = desc.getFrameworkImplementation();
-      if (fwImpl.startsWith("org.apache.uima.java") || fwImpl.startsWith("JEDII")) {
+
+      final String frameworkImpl = desc.getFrameworkImplementation();
+      if (frameworkImpl == null || frameworkImpl.length() == 0) {
+        throw new ResourceInitializationException(
+                ResourceInitializationException.MISSING_FRAMEWORK_IMPLEMENTATION,
+                new Object[] { aSpecifier.getSourceUrlString() });
+      }
+
+      if (frameworkImpl.startsWith(Constants.JAVA_FRAMEWORK_NAME)) {
         String className = desc.getImplementationName();
         if (className == null || className.length() == 0) {
           throw new ResourceInitializationException(
@@ -116,7 +124,7 @@ public class CasConsumerFactory_impl implements ResourceFactory {
                   ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
                       className, aSpecifier.getSourceUrlString() });
         }
-      } else if (fwImpl.startsWith("org.apache.uima.cpp") || fwImpl.startsWith("TAF")) {
+      } else if (frameworkImpl.startsWith(Constants.CPP_FRAMEWORK_NAME)) {
         Resource resource = new UimacppAnalysisEngineImpl();
         if (resource.initialize(aSpecifier, aAdditionalParams)) {
           // success!
@@ -130,8 +138,8 @@ public class CasConsumerFactory_impl implements ResourceFactory {
         }
       } else {
         throw new ResourceInitializationException(
-                ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
-                    UimacppAnalysisComponent.class.getName(), aSpecifier.getSourceUrlString() });
+                ResourceInitializationException.UNSUPPORTED_FRAMEWORK_IMPLEMENTATION, new Object[] {
+                    desc.getFrameworkImplementation(), aSpecifier.getSourceUrlString() });
       }
     } else {
       return null;

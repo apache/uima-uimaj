@@ -19,6 +19,7 @@
 
 package org.apache.uima.flow.impl;
 
+import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.flow.FlowController;
 import org.apache.uima.flow.FlowControllerDescription;
@@ -48,7 +49,7 @@ public class FlowControllerDescription_impl extends ResourceCreationSpecifier_im
    */
   public FlowControllerDescription_impl() {
     setMetaData(new ProcessingResourceMetaData_impl());
-    setFrameworkImplementation("org.apache.uima.java");
+    setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
     // set default operational properties (may be overrriden during parsing)
     OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory()
             .createOperationalProperties();

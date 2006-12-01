@@ -21,6 +21,7 @@ package org.apache.uima.impl;
 
 import java.util.Map;
 
+import org.apache.uima.Constants;
 import org.apache.uima.ResourceFactory;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.base_cpm.BaseCollectionReader;
@@ -43,7 +44,27 @@ public class CollectionReaderFactory_impl implements ResourceFactory {
           Map aAdditionalParams) throws ResourceInitializationException {
     if (aSpecifier instanceof CollectionReaderDescription) {
       CollectionReaderDescription desc = (CollectionReaderDescription) aSpecifier;
+      
+      //check framework implementation (CollectionReaders only supported in Java)
+      String frameworkImpl = desc.getFrameworkImplementation();
+      if (frameworkImpl == null || frameworkImpl.length() == 0) {
+        throw new ResourceInitializationException(
+                ResourceInitializationException.MISSING_FRAMEWORK_IMPLEMENTATION,
+                new Object[] { aSpecifier.getSourceUrlString() });
+      }
+      if (!frameworkImpl.startsWith(Constants.JAVA_FRAMEWORK_NAME)) {
+        throw new ResourceInitializationException(
+                ResourceInitializationException.UNSUPPORTED_FRAMEWORK_IMPLEMENTATION,
+                new Object[] { desc.getFrameworkImplementation(), aSpecifier.getSourceUrlString() });        
+      }
+      
       String className = desc.getImplementationName();
+      
+      if (className == null || className.length() == 0) {
+        throw new ResourceInitializationException(
+                ResourceInitializationException.MISSING_IMPLEMENTATION_CLASS_NAME,
+                new Object[] {aSpecifier.getSourceUrlString()});
+      }
 
       // load class using UIMA Extension ClassLoader if there is one
       ClassLoader cl = null;

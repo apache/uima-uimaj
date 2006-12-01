@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -118,7 +119,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    */
   public AnalysisEngineDescription_impl() {
     setMetaData(new AnalysisEngineMetaData_impl());
-    setFrameworkImplementation("org.apache.uima.java");
+    setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
     // Set default operational properties. These are used if the
     // descriptor is constructed programatically, rather than parsed.
     OperationalProperties opProps = UIMAFramework.getResourceSpecifierFactory()

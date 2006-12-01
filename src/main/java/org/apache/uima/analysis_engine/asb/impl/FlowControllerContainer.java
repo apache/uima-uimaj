@@ -21,6 +21,7 @@ package org.apache.uima.analysis_engine.asb.impl;
 
 import java.util.Map;
 
+import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -72,11 +73,10 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
       }
       ResourceCreationSpecifier desc = (ResourceCreationSpecifier) aSpecifier;
 
-      // also framework implementation must start with:
-      // org.apache.uima.java (new style) or JEDII (old style)
+      // also framework implementation must start with org.apache.uima.java
       final String fwImpl = desc.getFrameworkImplementation();
       if (fwImpl == null
-              || !(fwImpl.startsWith("org.apache.uima.java") || fwImpl.startsWith("JEDII"))) {
+              || !fwImpl.equalsIgnoreCase(Constants.JAVA_FRAMEWORK_NAME)) {
         throw new ResourceInitializationException(
                 ResourceInitializationException.UNSUPPORTED_FRAMEWORK_IMPLEMENTATION, new Object[] {
                     fwImpl, aSpecifier.getSourceUrlString() });

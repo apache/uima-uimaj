@@ -22,6 +22,7 @@ package org.apache.uima.internal.util;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.uima.Constants;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.TaeDescription;
@@ -60,7 +61,7 @@ public class TextAnalysisEnginePoolTest extends TestCase {
     try {
       super.setUp();
       mSimpleDesc = new TaeDescription_impl();
-      mSimpleDesc.setFrameworkImplementation("org.apache.uima.java");
+      mSimpleDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       mSimpleDesc.setPrimitive(true);
       mSimpleDesc.getMetaData().setName("Test Primitive TAE");
       mSimpleDesc
