@@ -19,6 +19,7 @@
 
 package org.apache.uima.taeconfigurator.editors.ui;
 
+import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.metadata.FlowConstraints;
 import org.apache.uima.resource.ExternalResourceDependency;
@@ -44,16 +45,16 @@ public class GeneralSection extends AbstractSection {
   public void enable() {
   }
 
-  private Button tafButton;
+  private Button cppButton;
 
-  private Button jediiButton;
+  private Button javaButton;
 
   private Button primitiveButton;
 
   private Button aggregateButton;
 
   /**
-   * Creates a section to edit general information like primitive or aggregate and TAF or JEDII
+   * Creates a section to edit general information like primitive or aggregate and C++ or Java
    * 
    * @param editor
    *          the referenced multipage editor
@@ -78,8 +79,8 @@ public class GeneralSection extends AbstractSection {
               "Choose the implementation language here.");
 
       Composite buttons = new2ColumnComposite(sectionClient);
-      tafButton = newRadioButton(buttons, "C/C++", "C/C++", NOT_SELECTED);
-      jediiButton = newRadioButton(buttons, "Java", "Java", SELECTED);
+      cppButton = newRadioButton(buttons, "C/C++", "C/C++", NOT_SELECTED);
+      javaButton = newRadioButton(buttons, "Java", "Java", SELECTED);
 
       // DescriptorType choose, 2 radio buttons
       toolkit.createLabel(sectionClient, "Engine Type").setToolTipText(
@@ -107,11 +108,8 @@ public class GeneralSection extends AbstractSection {
 
       // select C++ or Java
       String implType = editor.getAeDescription().getFrameworkImplementation();
-      tafButton.setSelection("TAF".equals(implType) || // TAF is deprecated
-              "org.apache.uima.cpp".equals(implType));
-      jediiButton.setSelection("org.apache.uima.java".equals(implType) || "JEDII".equals(implType)); // JEDII
-      // is
-      // deprecated
+      cppButton.setSelection(Constants.CPP_FRAMEWORK_NAME.equals(implType));
+      javaButton.setSelection(Constants.JAVA_FRAMEWORK_NAME.equals(implType));
     }
   }
 
@@ -170,8 +168,8 @@ public class GeneralSection extends AbstractSection {
       } catch (ResourceInitializationException e) {
         throw new InternalErrorCDE("invalid state", e);
       }
-      jediiButton.setEnabled(isPrimitive);
-      tafButton.setEnabled(isPrimitive);
+      javaButton.setEnabled(isPrimitive);
+      cppButton.setEnabled(isPrimitive);
       HeaderPage page = editor.getAggregatePage();
       if (null != page)
         page.markStale();
@@ -194,15 +192,15 @@ public class GeneralSection extends AbstractSection {
       if (null != page)
         page.markStale();
     }
-    if (event.widget == jediiButton || event.widget == tafButton) {
+    if (event.widget == javaButton || event.widget == cppButton) {
       valueChanged = false;
-      if (tafButton.getSelection()) {
+      if (cppButton.getSelection()) {
         editor.getAeDescription().setFrameworkImplementation(
-                setValueChanged("org.apache.uima.cpp", editor.getAeDescription()
+                setValueChanged(Constants.CPP_FRAMEWORK_NAME, editor.getAeDescription()
                         .getFrameworkImplementation()));
       } else {
         editor.getAeDescription().setFrameworkImplementation(
-                setValueChanged("org.apache.uima.java", editor.getAeDescription()
+                setValueChanged(Constants.JAVA_FRAMEWORK_NAME, editor.getAeDescription()
                         .getFrameworkImplementation()));
       }
       if (!valueChanged)

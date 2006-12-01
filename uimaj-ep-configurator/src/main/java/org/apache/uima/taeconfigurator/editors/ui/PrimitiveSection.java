@@ -21,6 +21,7 @@ package org.apache.uima.taeconfigurator.editors.ui;
 
 import java.text.MessageFormat;
 
+import org.apache.uima.Constants;
 import org.apache.uima.resource.metadata.OperationalProperties;
 import org.apache.uima.taeconfigurator.InternalErrorCDE;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
@@ -116,7 +117,7 @@ public class PrimitiveSection extends AbstractSection {
 
     // set description for enter field (either .class or .dll file)
     String implKind = editor.getAeDescription().getFrameworkImplementation();
-    if ("TAF".equals(implKind) || "org.apache.uima.cpp".equals(implKind)) {
+    if (Constants.CPP_FRAMEWORK_NAME.equals(implKind)) {
       implNameLabel.setText("Name of the .dll file");
       implName.setToolTipText("Enter the name of the .dll file here.");
       findButton.setToolTipText("Browse the file system for the .dll file.");
@@ -162,7 +163,7 @@ public class PrimitiveSection extends AbstractSection {
       String className = null;
       try {
         String implKind = editor.getAeDescription().getFrameworkImplementation();
-        if ("TAF".equals(implKind) || "org.apache.uima.cpp".equals(implKind)) {
+        if (Constants.CPP_FRAMEWORK_NAME.equals(implKind)) {
           FileDialog dialog = new FileDialog(getSection().getShell(), SWT.NONE);
           String[] extensions = { "*.dll" };
           dialog.setFilterExtensions(extensions);
