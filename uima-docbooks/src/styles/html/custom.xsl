@@ -18,6 +18,7 @@
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version='1.0'>
+  <xsl:param name="collect.xref.targets" select="'yes'"/>
   <!-- next 3 cause the role="xxx" to be propagated as class="xxx" in the output html -->
   <xsl:param name="para.propagates.style" select="1"/>
   <xsl:param name="emphasis.propagates.style" select="1"/>
@@ -32,14 +33,13 @@
   <xsl:param name="table.cell.border.color"  select="'black'"/>
 <!-- Activate Graphics -->
   <xsl:param name="admon.graphics" select="1"/>
-  <xsl:param name="admon.graphics.path">images/</xsl:param>
+  <xsl:param name="admon.graphics.path">../images/</xsl:param>
   <xsl:param name="admon.graphics.extension">.gif</xsl:param>
   <xsl:param name="callout.graphics" select="1" />
-  <xsl:param name="callout.graphics.path">images/callouts/</xsl:param>
+  <xsl:param name="callout.graphics.path">../images/callouts/</xsl:param>
   <xsl:param name="callout.graphics.extension">.gif</xsl:param>
 
   <xsl:param name="table.borders.with.css" select="1"/>
-  <xsl:param name="html.stylesheet">css/stylesheet.css</xsl:param>
   <xsl:param name="html.stylesheet.type">text/css</xsl:param>         
   <xsl:param name="generate.toc">book toc,title</xsl:param>         
 
@@ -52,6 +52,8 @@
 
   <xsl:param name="section.label.includes.component.label" select="1"/>
   <xsl:param name="table.footnote.number.format" select="'1'"/>
+  
+  <xsl:param name="navig.graphics.path" select="'../images/'"/>
 
 <!-- Remove "Chapter" from the Chapter titles... -->
   <xsl:param name="local.l10n.xml" select="document('')"/>

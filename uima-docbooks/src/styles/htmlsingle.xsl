@@ -23,5 +23,11 @@
   <xsl:import href="@file.prefix@@src.dir@/styles/html/custom.xsl" />
   <xsl:include href="@file.prefix@@tmp.dir@/html-titlepage.xsl" />
 
+  <!-- where the olink output goes -->  
+  <xsl:param name="targets.filename">@src.dir@/olink/@file@/@type@-target.db</xsl:param>
+  
+  <!-- where to find the css stylesheet -->
+  <xsl:param name="html.stylesheet">css/stylesheet.css</xsl:param>
+
 </xsl:stylesheet>
 

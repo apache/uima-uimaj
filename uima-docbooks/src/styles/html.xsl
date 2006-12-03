@@ -23,7 +23,14 @@
   <xsl:import href="@file.prefix@@src.dir@/styles/html/custom.xsl" />
   <xsl:include href="@file.prefix@@tmp.dir@/html-titlepage.xsl" />
 
+  <!-- where the olink output goes -->  
+  <xsl:param name="targets.filename">@src.dir@/olink/@file@/@type@-target.db</xsl:param>
+  
+  <!-- where to find the css stylesheet -->
+  <xsl:param name="html.stylesheet">css/stylesheet.css</xsl:param>
+
   <!-- Do not use the file.prefix and make sure that you keep the trailing slash! -->
   <xsl:param name="base.dir">@html.target.dir@/</xsl:param>
+  <xsl:param name="chunk.fast" select="1"/>
 </xsl:stylesheet>
 
