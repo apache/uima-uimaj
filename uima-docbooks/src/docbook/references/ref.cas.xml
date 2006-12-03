@@ -1,0 +1,924 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
+<!ENTITY imgroot "images/annotator_analysis_engine_files/" >
+<!ENTITY % uimaents SYSTEM "entities.ent" >  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="ugr.ref.cas">
+  <title></title>
+  <section name="CAS Reference"><a id="_crossRef77"> </a>
+
+
+
+<para><a id="_crossRef78">The CAS
+(Common Analysis System) is the part of the Unstructured Information Management
+Architecture (UIMA) that is concerned with creating and handling the data that annotators
+manipulate.  </a></para>
+
+<para>Java users typically use the JCas (Java interface to the
+CAS) when manipulating objects in the CAS.  This chapter describes an alternative interface to the CAS which allows
+discovery and specification of types and features at run time.  It is recommended for use when the using code
+cannot know ahead of time the type system it will be dealing with.</para>
+
+<para>CASes passed to Annotator Components are either a base CAS
+or a regular CAS.  Base CASes are only
+passed to Multi-View components - they are like regular CASes, but do not have
+user accessible indexes or Sofas.  They
+are used by the component only for switching to other CAS views, which are
+regular CASes.</para>
+
+<subsection name="JavaDocs"><a id="_crossRef79"> </a>
+
+<para>The subdirectory <literal>docs/api</literal> contains
+the documentation details of all the classes, methods, and constants for the
+APIs discussed here.  Please refer to this
+for details on the methods, classes and constants, specifically in the packages
+<literal>org.apache.uima.cas.*</literal>.</para>
+
+
+
+
+  </subsection>
+<subsection name="CAS Overview"><a id="_crossRef80"> </a>
+
+<para>There are three main parts to the
+CAS: the type system, data creation and manipulation, and indexing.  We will start with a brief description of
+these components.</para>
+
+<h3><a id="_crossRef81">The type system</a></h3>
+
+<para>The type system specifies what
+kind of data you will be able to manipulate in your annotators.  The type system defines two kinds of
+entities, types and features.  Types are
+arranged in an inheritance tree and define the kinds of entities (objects) you
+can manipulate in the CAS.  Features
+optionally specify slots within a type.  The correspondence to Java is to equate a CAS Type to a Java Class, and
+the CAS Features to fields within the type.  A critical difference is that CAS types have no methods; they are just
+data structures with named slots (features).   These slots can have as values primitive things like integers, floating
+point numbers, and strings, and they also can hold references to other
+instances of objects in the CAS.  We call
+instances of the data structures declared by the type system <quote>feature
+structures</quote> (not to be confused with <quote>features</quote>).  Feature structures are similar to the many
+variants of record structures found in computer science.<span class="footnote">
+The name &ldquo;feature structure<quote> comes from terminology used in linguistics.</span>.</para>
+
+<para>Each CAS Type defines a
+supertype; it is a subtype of that supertype.  This means that any features that the supertype defines are features of
+the subtype; in other words, it inherits its supertype&apos;s features.  Only single inheritance is supported; a
+type&apos;s feature set is the union of all of the features in its supertype
+hierarchy.  There is a built-in type
+called uima.cas.TOP; this is the top, root node
+of the inheritance tree.  It defines no
+features.</para>
+
+<para>The values that can be stored in
+features are either built-in primitive values or references to other feature
+structures.  The primitive values are <literal>boolean</literal>, <literal>byte</literal>, <literal>short</literal> (16 bit integers), <literal>integer</literal> (32 bit), <literal>long</literal> (64 bit), <literal>float</literal> (32 bit), <literal>double</literal> (64 bit floats) and
+strings; the official names of these are <literal>uima.cas.Boolean</literal>,
+<literal>uima.cas.Byte</literal>, <literal>uima.cas.Short</literal>,
+<literal>uima.cas.Integer</literal>, <literal>uima.cas.Long</literal>,
+<literal>uima.cas.Float</literal>,<literal>
+uima.cas.Double</literal> and <literal>uima.cas.String</literal>.  The strings are Java
+strings (16 bit Unicode strings).  The
+CAS also defines other basic built-in types for arrays of these, plus arrays of
+references to other objects, called <literal>uima.cas.IntegerArray</literal>,<literal> uima.cas.FloatArray</literal>, <literal>uima.cas.StringArray</literal>,
+<literal>uima.cas.FSArray</literal>, etc.</para>
+
+<para>The CAS also defines a built-in
+type called <literal>uima.tcas.Annotation</literal> which inherits from <literal>uima.cas.TOP</literal>.  There are two
+features defined by this type, called <literal>begin</literal> and <literal>end</literal>, both of which are integer valued.</para>
+
+<para>Types and features are defined in
+XML descriptors.  At runtime, annotators
+are passed an instance of a CAS, or JCas, depending on the kind of annotator it
+is, and other factors.  See <b><a class="crossrefText" href="SOFA_Developers_Guide.htm#_crossRef304">Multi-View Components</a></b> on page 9-178 for more details.  You can use this object to access all of the data and metadata about the
+defined type system in use.  Also, for
+CASes other than a base CAS which is passed to Multi-View components, you can
+also access the CAS indexes and metadata about the CAS indexes.</para>
+
+<h3><a id="_crossRef82">Creating, accessing and manipulating data</a></h3>
+
+<para>Using the non JCas runtime APIs to access the CAS is a two
+step process.  In step one you query the
+CAS&apos;s type system to obtain type and feature objects corresponding to the types
+and features.  This has to be done once
+for each CAS type system.  Then you use these
+retrieved type and feature objects in calls to the CAS APIs to create feature
+structures, set and get feature values from particular feature structures, and
+add and removed feature structures from indexes.</para>
+
+<h3><a id="_crossRef83">Creating and using indexes</a></h3>
+
+<para>Instances of feature structures can be added to CAS
+indexes.  These indexes provide the only
+way for other annotators to locate existing data in the CAS.  The only way for an annotator to use data
+that another annotator has created is to get feature structures the first
+annotator created, out of the CAS using an index.  If you want the data you create to be visible
+to other annotators, you must index it.</para>
+
+<para>Indexes are named; they are used to index one specific CAS
+type (including its subtypes).  To access
+an index, you minimally need to know its name.  The CAS provides an index repository which you can query for
+indexes.  Once you have a handle to an
+index, you can get information about the feature structures in the index, the
+size of the index, as well as an iterator over the feature structures.</para>
+
+<para>Indexes are defined in the XML descriptor metadata for the
+application.  The indexes are grouped
+into repositories.  Each view of the
+CAS  has a separate repository,
+containing all the indexes.  When you
+obtain an index, it is always from a particular CAS view.  When you index an item, it is always added to
+all indexes where it belongs, within just one repository.  You can specify different repositories to
+use; a given instance may be indexed in more than one repository.</para>
+
+<para>Iterators allow you to enumerate the feature structures in
+an index.  The iterators are a subclass
+of the normal Java Iterator class; they add methods to allow both forward and
+backward traversal, and you can set the iterator to arbitrary points in the
+index.</para>
+
+<para>Indexes are created by specifying them in the annotator&apos;s
+or aggregate&apos;s resource descriptor.  An
+index specification includes its name, the CAS type being indexed, the kind of
+index it is, and an (optional) ordering relation on the feature structures to
+be indexed.  Feature structures need to
+be explicitly added to the index repository by a method call.  Feature structures that are not indexed will
+not be visible to other annotators, (unless they are located via being
+referenced by some other feature of another feature structure, which is
+indexed).</para>
+
+<para>The framework defines one standard, built-in annotation
+index, called AnnotationIndex, which indexes the <literal>uima.tcas.Annotation</literal>
+type.  All feature structures of type <literal>uima.tcas.Annotation</literal> or its subtypes are automatically indexed
+with this built-in index.</para>
+
+<para>The ordering relation used by this index is to first order
+by the value of the </quote>begin<quote> features (in ascending order) and then by
+the value of the </quote>end<quote> feature (in descending order).  This ordering insures that longer annotations
+starting at the same spot come before shorter ones.  For Subjects of Analysis other than Text,
+this may not be an appropriate index.</para>
+
+
+
+
+  </subsection>
+<subsection name="Built-in CAS Types"><a id="_crossRef84"> </a>
+
+
+
+<para>The CAS has two
+kinds of built-in types &ndash; primitive and non-primitive.  The primitive types are:</para>
+
+<programlisting><literal>uima.cas.Boolean
+uima.cas.Byte
+uima.cas.Short
+uima.cas.Integer
+uima.cas.Long
+uima.cas.Float
+uima.cas.Double
+uima.cas.String</literal></programlisting>
+
+<para>The <literal>Byte, Short, Integer, </literal>and<literal> Long</literal> are all
+signed integer types, of length 8, 16, 32, and 64 bits.  The <literal>Double</literal> type is 64 bit floating point.  The <literal>String</literal> type can be sub-typed to create sets of allowed
+values; see <a class="crossrefText" href="Component_Descriptor_Reference.htm#_crossRef120">Chapter 23  </a>  These types can be used to specify the range
+of a feature.  They act like Strings, but
+have additional checking to insure the setting of values into them conforms to
+one of the allowed values.  Note that
+these sub-types cannot be used as a supertype for another type definition; only
+<literal>uima.cas.String</literal>
+can be sub-typed.</para>
+
+<para>The non-primitive
+types exist in a type hierarchy; the top of the hierarchy is the type</para>
+
+<programlisting>uima.cas.TOP</programlisting>
+
+<para>All other
+non-primitive types inherit from some supertype.</para>
+
+<para>There are 9 built-in
+array types.  These arrays have a size
+specified when they are created; the size is fixed at creation time; they are
+named:</para>
+
+<programlisting>uima.cas.BooleanArray
+uima.cas.ByteArray
+uima.cas.ShortArray
+uima.cas.IntegerArray
+uima.cas.LongArray
+uima.cas.FloatArray
+uima.cas.DoubleArray
+uima.cas.StringArray
+uima.cas.FSArray</programlisting>
+
+<para>The <literal>uima.cas.FSArray</literal>
+type is an array whose elements are arbitrary other feature structures
+(instances of non-primitive types).</para>
+
+<para>There are 3
+built-in types associated with the artifact being analyzed:</para>
+
+<programlisting>uima.cas.AnnotationBase
+uima.tcas.Annotation
+uima.tcas.DocumentAnnotation</programlisting>
+
+<para>The <literal>AnnotationBase</literal>
+type defines one system-used feature which references the Sofa the annotation
+is over.  The Annotation type extends
+from this and defines 2 features, taking <literal>uima.cas.Integer</literal> values, called <literal>begin</literal> and <literal>end</literal>.  The <literal>begin</literal> feature typically identifies the start of a span of
+text the annotation covers; the <literal>end</literal> feature identifies the end.  The values refer to character offsets; the
+starting index is 0.  An annotation of
+the word </quote>CAS<quote> in a text </quote>CAS Reference<quote> would have a start
+index of 0, and an end index of 3; the difference between end and start is the
+length of the span the annotation refers to.</para>
+
+<para>Annotations are
+always with respect to some Sofa (Subject of Analysis &ndash; see <b><a class="crossrefText" href="SOFA_Developers_Guide.htm#_crossRef286">Annotations,
+Artifacts, and Sofas</a></b> <a class="crossrefPage" href="SOFA_Developers_Guide.htm#_crossRef286"></a>).</para>
+
+<note>Artifacts
+which are not text strings may have a different interpretation of the meaning
+of begin and end, or may define their own kind of annotation, extending from <literal>AnnotationBase</literal>.
+</listitem></itemizedlist>
+
+<para>The <literal>DocumentAnnotation</literal>
+type has one special instance.  It is a
+subtype of the Annotation type, and the built-in definition defines one
+feature, <literal>language</literal>,
+which is a string indicating the language of the document in the CAS.  The value of this language feature is used by
+the system to control flow among annotators, allowing the flow to skip over
+annotators that don&apos;t process particular languages.  Users may extend this type by adding
+additional features to it, using the XML Descriptor element for defining a
+type.</para>
+
+<para>Each CAS view has
+a different associated instance of the <literal>DocumentAnnotation</literal> type.</para>
+
+<para>The instance of
+this type can be accessed in two ways:  using
+the <literal>getDocumentationAnnotation</literal>
+method on a CAS object, or using the <literal>getDocumentationAnnotationFs</literal> method on a JCas object.  There is a deprecated JCas method with the
+same method name as the method used with the CAS object (i.e., without the
+trailing </quote>Fs<quote>), but it is not safe to use in an environment where
+class loaders are being used.  The <literal>getDocumentationAnnotationFs</literal>
+ method returns an item of type <literal>TOP</literal>, which you
+need to cast to <literal>DocumentAnnotation</literal>.  The JCas model for this is the Java type <literal>DocumentAnnotation </literal>in the package <literal>org.apache.uima.jcas.tcas</literal>.</para>
+
+<para>There are also built-in
+types supporting lists, in the style of Lisp.  Their use is not recommended, however, as this is not a particularly
+efficient representation.  The
+implementation is type specific; there are different list building objects for
+each of the primitive types, plus one for general feature structures.  Here are the type names:</para>
+
+<programlisting>uima.cas.FloatList
+uima.cas.IntegerList
+uima.cas.StringList
+uima.cas.FSList</programlisting>
+
+<programlisting>uima.cas.EmptyFloatList
+uima.cas.EmptyIntegerList
+uima.cas.EmptyStringList
+uima.cas.EmptyFSList</programlisting>
+
+<programlisting>uima.cas.NonEmptyFloatList
+uima.cas.NonEmptyIntegerList
+uima.cas.NonEmptyStringList
+uima.cas.NonEmptyFSList</programlisting>
+
+<para>For the primitive
+types <literal>Float</literal>,
+<literal>Integer</literal>,
+<literal>String</literal>
+and <literal>FeatureStructure</literal>,
+there is a base type, for instance, <literal>uima.cas.FloatList</literal>.  For each of these, there are two subtypes, corresponding to a non-empty
+element, and a marker that serves to indicate the end of the list, or an empty
+list.  The non-empty types define two
+features &ndash; <literal>head</literal>
+and <literal>tail</literal>.
+The head feature holds the particular value for that part of the list.  The tail refers to the next list object
+(either a non-empty one or the empty version to indicate the end of the list).</para>
+
+<para>There are no other
+built-in types.  Users are free to define
+their own type systems, building upon these types.</para>
+
+
+
+
+  </subsection>
+<subsection name="Accessing the type system"><a id="_crossRef85"> </a>
+
+
+
+<para>When using the JCas, the type system declaration is
+converted to Java class definitions; these allow strongly typed references to
+the CAS data objects.  When you are
+designing an application which can&apos;t use this approach, perhaps because it is a
+general tool that is built to handle unknown (at compile-time) type systems,
+you use the CAS (not JCas) APIs, described here.</para>
+
+<para>These APIs presume as a starting point a reference to an
+existing CAS, or a CAS&apos;s type system.  This CAS reference can be something returned by utilities that create
+new CASes, or is a parameter passed to an annotator&apos;s process method.  The CAS&apos;s type system can be obtained by
+calling the getTypeSystem method on the CAS object.</para>
+
+<para>Non-JCas annotators implement an additional method, <literal>typeSystemInit,</literal> which is called by the UIMA framework
+before the annotator&apos;s process method.  This method, implemented by the annotator writer, is passed a reference
+to the CAS&apos;s type system metadata.  The
+method typically uses the type system APIs to obtain type and feature objects
+corresponding to all the types and features the annotator will be using in its
+process method.  This initialization step
+should not be done during an annotator&apos;s initialize method since the type system
+can change after the initialize method is called; it should not be done during
+the process method, since this is presumably work that is identical for each
+incoming document, and so should be performed only when the type system changes
+(which will be a rare event).  The UIMA
+framework guarantees it will call the <literal>typeSystemInit </literal>method
+of an annotator whenever the type system changes, before calling the
+annotator&apos;s <literal>process</literal> method.</para>
+
+<para>The initialization done by <literal>typeSystemInit</literal>
+is done by the UIMA framework when you use the JCas APIs; you only need to provide
+a <literal>typeSystemInit</literal> method, as described here, when
+you are not using the JCas approach.</para>
+
+<h3><a id="_crossRef86">TypeSystemPrinter example</a></h3>
+
+<para>Here is a code fragment that, given a CAS Type System,
+will print a list of all types.</para>
+
+<programlisting>  // Get all type names from the type system
+  // and print them to stdout.
+  private void listTypes1(TypeSystem ts) {
+    // Get an iterator over types
+    Iterator typeIterator = ts.getTypeIterator();
+    Type t;
+    System.out.println(</quote>Types in the type system:<quote>);
+    while (typeIterator.hasNext()) {
+      // Retrieve a type...
+      t = (Type) typeIterator.next();
+      // ...and print its name.
+      System.out.println(t.getName());
+    }
+    System.out.println();
+  }</programlisting>
+
+<para>This method is passed the type system as a parameter.  (The type system is passed as a parameter to
+your annotator&apos;s typeSystemInit method by the UIMA framework, or you can obtain
+it from a CAS reference using the method <literal>getTypeSystem</literal>.)  From the type system, we can get an iterator
+over all known types.  If you run this
+against a CAS created with no additional user-defined types, we should see
+something like this on the console:</para>
+
+<para>Types
+in the type system:</para>
+
+<programlisting>uima.cas.TOP
+uima.cas.Boolean
+uima.cas.Byte
+uima.cas.Short
+uima.cas.Integer
+uima.cas.Long
+uima.cas.Float
+uima.cas.Double
+uima.cas.String
+uima.cas.ArrayBase
+uima.cas.FSArray
+uima.cas.BooleanArray
+uima.cas.ByteArray
+uima.cas.ShortArray
+uima.cas.IntegerArray
+uima.cas.LongArray
+uima.cas.FloatArray
+uima.cas.DoubleArray
+uima.cas.StringArray
+uima.cas.ListBase
+uima.cas.IntegerList
+uima.cas.EmptyIntegerList
+uima.cas.NonEmptyIntegerList
+uima.cas.FloatList
+uima.cas.EmptyFloatList
+uima.cas.NonEmptyFloatList
+uima.cas.StringList
+uima.cas.EmptyStringList
+uima.cas.NonEmptyStringList
+uima.tcas.Annotation</programlisting>
+
+<para>Here we only see the built-in types; more would show up if
+the type system had user-defined types.  Note that some of these types are not directly creatable &ndash; they are
+types used by the framework in the type hierarchy (e.g. uima.cas.ArrayBase).</para>
+
+<para>CAS type names include a name-space prefix.  The components of a type name are separated
+by the dot (.).  A type name component
+must start with a Unicode letter, followed by an arbitrary sequence of letters,
+digits and the underscore (_).  By
+convention, the last component of a type name starts with an uppercase letter,
+the rest start with a lowercase letter.</para>
+
+<para>Listing the type names is mildly useful, but it would be
+even better if we could see the inheritance relation between the types.  The following code prints the inheritance
+tree in indented format.</para>
+
+<programlisting>  private static final int INDENT = 2;
+  private void listTypes2(TypeSystem ts) {
+    // Get the root of the inheritance tree.
+    Type top = ts.getTopType();
+    // Recursively print the tree.
+    printInheritanceTree(ts,top, 0);
+  }</programlisting>
+
+<programlisting></programlisting>
+
+<programlisting>private void printInheritanceTree(TypeSystem ts, Type type, int level) {
+    indent(level); // Print indentation.
+    System.out.println(type.getName());
+    // Get a vector of the immediate subtypes.
+    Vector subTypes =
+      ts.getDirectlySubsumedTypes(type);
+    ++level; // Increase the indentation level.
+    for (int i = 0; i &lt; subTypes.size(); i++) {
+      // Print the subtypes.
+      printInheritanceTree(ts, (Type) subTypes.get(i), level);
+    }
+  }
+  // A simple, inefficient indenter
+  private void indent(int level) {
+    int spaces = level * INDENT;
+    for (int i = 0; i &lt; spaces; i++) {
+      System.out.print(</quote> <quote>);
+    }
+  }</programlisting>
+
+<para><br/>
+This example shows that you can traverse the type hierarchy by starting at the
+top with TypeSystem.getTopType and by retrieving subtypes with <literal>TypeSystem.getDirectlySubsumedTypes.</literal></para>
+
+<para>The JavaDocs also have APIs that allow you to access the
+features, as well as what the allowed value type is for that feature.  Here is sample code which prints out all the
+features of all the types, together with the allowed value types (the feature
+</quote>range<quote>).  Each feature has a
+</quote>domain<quote> which is the type where it is defined, as well as a
+</quote>range<quote>.</para>
+
+<programlisting>  private void listFeatures2(TypeSystem ts) {
+    Iterator featureIterator = ts.getFeatures();
+    Feature f;
+    System.out.println(</quote>Features in the type system:<quote>);
+    while (featureIterator.hasNext()) {
+      f = (Feature) featureIterator.next();
+      System.out.println(
+        f.getShortName() + </quote>: <quote> +
+        f.getDomain() + </quote> -&gt; <quote> + f.getRange());
+    }
+    System.out.println();
+  }</programlisting>
+
+<para>We can ask a feature object for its domain (the type it is
+defined on) and its range (the type of the value of the feature).  The terminology derives from the fact that
+features can be viewed as functions on subspaces of the object space.</para>
+
+<h3><a id="_crossRef87">Using the CAS APIs to create and
+modify feature structures</a></h3>
+
+<para>Assume a type system declaration that defines two types: Entity and Person.  Entity has no features defined within it but inherits from
+uima.tcas.Annotation &ndash; so it has the begin and end
+features.  Person is, in turn, a subtype of Entity, and adds firstName and lastName features.  CAS type systems are declaratively specified
+using XML; the format of this XML is described in <a class="crossrefText" href="Component_Descriptor_Reference.htm#_crossRef120">Chapter 23  </a>.</para>
+
+<programlisting>&lt;!-- Type System Definition --&gt;
+&lt;typeSystemDescription&gt;
+  &lt;types&gt;
+    &lt;typeDescription&gt;
+      &lt;name&gt;com.xyz.proj.Entity&lt;/name&gt;
+      &lt;description /&gt;
+      &lt;supertypeName&gt;uima.tcas.Annotation&lt;/supertypeName&gt;
+    &lt;/typeDescription&gt;
+    &lt;typeDescription&gt;
+      &lt;name&gt;Person&lt;/name&gt;
+      &lt;description /&gt;
+      &lt;supertypeName&gt;com.xyz.proj.Entity &lt;/supertypeName&gt;
+      &lt;features&gt;
+        &lt;featureDescription&gt;
+          &lt;name&gt;firstName&lt;/name&gt;
+          &lt;description /&gt;
+          &lt;rangeTypeName&gt;uima.cas.String&lt;/rangeTypeName&gt;
+        &lt;/featureDescription&gt;
+        &lt;featureDescription&gt;
+          &lt;name&gt;lastName&lt;/name&gt;
+          &lt;description /&gt;
+          &lt;rangeTypeName&gt;uima.cas.String&lt;/rangeTypeName&gt;
+        &lt;/featureDescription&gt;
+      &lt;/features&gt;
+    &lt;/typeDescription&gt;
+  &lt;/types&gt;</programlisting>
+
+<programlisting>&lt;/typeSystemDescription&gt;</programlisting>
+
+<para>To use these types in annotator code, the CAS APIs require
+</quote>handles<quote> which are references to the specific type and feature
+objects corresponding to each type and feature (note that these are not
+required when using the JCas APIs to the CAS).  These are setup by CAS TypeSystem API calls that are passed the official
+external names of the types and features. The CAS APIs provide string constants
+for the official names of all the built-in types and features that you might
+use.</para>
+
+<programlisting>  /** Entity type name constant. */
+  public static final String ENTITY_TYPE_NAME = </quote>com.xyz.proj.Entity<quote>;</programlisting>
+
+<programlisting>  /** Person type name constant. */
+  public static final String PERSON_TYPE_NAME = </quote>com. xyz.proj.Person<quote>;</programlisting>
+
+<programlisting>  /** First name feature name constant. */
+  public static final String FIRST_NAME_FEAT_NAME = </quote>firstName<quote>;</programlisting>
+
+<programlisting>  /** Last name feature name constant. */
+  public static final String LAST_NAME_FEAT_NAME = </quote>lastName<quote>;</programlisting>
+
+<para>We define type and feature member variables; these will
+hold the values of the type and feature objects needed by the CAS APIs.</para>
+
+<programlisting>  // Type system object variables
+  private Type entityType;
+  private Type personType;
+  private Feature firstNameFeature;
+  private Feature lastNameFeature;
+  private Type stringType;</programlisting>
+
+<para>The type system does not consider it to be an error if we
+ask for something that is not known, it simply returns null; therefore the code
+checks for this.</para>
+
+<programlisting>// Get a type object corresponding to a name.
+// If it doesn©t exist, throw an exception.
+private Type initType(String typeName)
+  throws AnnotatorInitializationException {
+  Type type = ts.getType(typeName);
+  if (type == null) {
+    throw new AnnotatorInitializationException(
+      AnnotatorInitializationException.TYPE_NOT_FOUND,
+      new Object[] { this.getClass().getName(), typeName });
+  }
+  return type;
+}
+We add similar code for retrieving feature objects.
+// Get a feature object from a name and a type object.
+// If it doesn©t exist, throw an exception.
+private Feature initFeature(String featName, Type type)
+  throws AnnotatorInitializationException {
+  Feature feat = type.getFeatureByBaseName(featName);
+  if (feat == null) {
+    throw new AnnotatorInitializationException(
+      AnnotatorInitializationException.FEATURE_NOT_FOUND,
+      new Object[] { this.getClass().getName(), featName });
+  }
+  return feat;
+}</programlisting>
+
+<para>Using these two functions, code for initializing the type
+system described above would be:</para>
+
+<programlisting>  public void typeSystemInit(TypeSystem aTypeSystem)
+    throws AnnotatorConfigurationException,
+           AnnotatorInitializationException
+  {
+    this.typeSystem = aTypeSystem;
+    // Set type system member variables.
+    this.entityType = initType(ENTITY_TYPE_NAME);
+    this.personType = initType(PERSON_TYPE_NAME);
+    this.firstNameFeature =
+      initFeature(FIRST_NAME_FEAT_NAME, personType);
+    this.lastNameFeature =
+      initFeature(LAST_NAME_FEAT_NAME, personType);
+    this.stringType = initType(CAS.TYPE_NAME_STRING);
+  }</programlisting>
+
+<para>Note that we initialize the string type by using a type
+name constant from the CAS.</para>
+
+
+
+
+  </subsection>
+<subsection name="Creating feature structures"><a id="_crossRef88"> </a>
+
+
+
+<para>To create feature structures in JCas, we use the Java
+</quote>new<quote>
+operator.  In the CAS, we use one of
+several different API methods on the CAS object, depending on which of the 10
+basic kinds of feature structures we are creating (a plain feature structure,
+or an instance of the built-in primitive type arrays or FSArray). There are is also a method to
+create an instance of a <literal>uima.tcas.Annotation</literal>, setting
+the begin and end values.</para>
+
+<para>Once a feature structure is created, it needs to be added
+to the CAS indexes (unless it will be accessed via some reference from another
+accessible feature structure).  The CAS
+provides this API:  Assuming aCAS holds a reference to a
+CAS, and token holds
+a reference to a newly created feature structure, here&apos;s the code to add that
+feature structure to all the relevant CAS indexes:</para>
+
+<programlisting>    // Add the token to the index repository.
+    aCAS.addFsToIndexes(token);</programlisting>
+
+<para>There is also a corresponding <literal>removeFsFromIndexes(token)</literal>
+method on CAS objects.</para>
+
+
+
+
+  </subsection>
+<subsection name="Accessing or modifying features of feature structures"><a id="_crossRef89"> </a>
+
+
+
+<para>Values of individual features for a feature structure can
+be set or referenced, using a set of methods that depend on the type of value
+that feature is declared to have.  There
+are methods on FeatureStructure for this: getBooleanValue, getByteValue,
+getShortValue, getIntValue, getLongValue, getFloatValue, getDoubleValue, getStringValue,
+and getFeatureValue (which means to get a value which in turn is a reference to
+a feature structure).  There are
+corresponding </quote>setter<quote> methods, as well.  These methods on the feature structure object
+take as arguments the feature object retrieved earlier in the typeSystemInit method.</para>
+
+<para>Using the previous example, with the type system
+initialized with type personType and feature lastNameFeature, here&apos;s a sample
+code fragment that gets and sets that feature:</para>
+
+<programlisting>// Assume aPerson is a variable holding an object of type Person
+// get the lastNameFeature value from the feature structure
+String lastName = aPerson.getStringValue(lastNameFeature);
+// set the lastNameFeature value
+aPerson.setStringValue(lastNameFeature, newStringValueForLastName);</programlisting>
+
+<para>The getters and setters for each of the primitive types
+are defined in the JavaDocs as methods of the FeatureStructure interface.</para>
+
+
+
+
+  </subsection>
+<subsection name="Indexes and Iterators"><a id="_crossRef90"> </a>
+
+
+
+<para>Each CAS can have many indexes associated with it.  Each index is represented by an instance of
+the type org.apache.uima.cas.FSIndex.  You use the object org.apache.uima.cas.FSIndexRepository,
+accessible via a method on the basic CAS object, to retrieve instances of the
+index object.  There are methods that let
+you select the index by name, or by name and type.  Since each index is already associated with a
+type, the passing of an additional type parameter is valid only if the type
+passed in is the same type or a subtype of the one declared in the index
+specification for this index.  If you
+pass in a subtype, the returned FSIndex object refers to an index that will return only items
+belonging to that subtype (or subtypes of that subtype).</para>
+
+<para>The returned FSIndex objects are used, in turn, to create iterators.  The iterators created can be used like common
+Java iterators, to sequentially retrieve items indexed.  If the index represents a sorted index, the
+items are returned in a sorted order, where the sort order is specified in the
+XML index definition.   This XML is part
+of the Component Descriptor, see <a class="crossrefText" href="Component_Descriptor_Reference.htm#_crossRef120">Chapter
+23  </a></para>
+
+<para>Feature structures should not be added to or removed from
+indexes while iterating over them; a ConcurrentModificationException is thrown
+when this is detected.  Certain
+operations are allowed with the iterators after modification, which can
+</quote>reset<quote> this condition, such as moving to beginning, end, or moving
+to a particular feature structure.  So -
+if you have to modify the index, you can move it back to the last FS you had
+retrieved from the iterator, and then continue, if that makes sense in your
+application.</para>
+
+<h3><a id="_crossRef91">Iterators</a></h3>
+
+<para>Iterators are objects of class <literal>org.apache.uima.cas.FSIterator.</literal>  This class implements the normal Java
+iterator methods, plus additional ones that allow moving both forwards and
+backwards.</para>
+
+<h3><a id="_crossRef92">Special iterators for Annotation
+types</a></h3>
+
+<para>The built-in index over the <literal>uima.tcas.Annotation</literal>
+type named </quote><literal>AnnotationIndex</literal><quote> has
+additional capabilities.  To use them,
+you first get a reference to this built-in index using either the <literal>getAnnotationIndex</literal> method on a CAS View object, or by
+asking the <literal>FSIndexRepository</literal> object for an index
+having the particular name </quote>AnnotationIndex<quote>.  You then must cast the returned FSIndex
+object to <literal>AnnotationIndex</literal>.  Here&apos;s an example showing the cast:</para>
+
+<programlisting>AnnotationIndex idx = (AnnotationIndex) aTCAS.getAnnotationIndex();</programlisting>
+
+<para>This object can be used to produce several additional
+kinds of iterators.  It can produce
+unambiguous iterators; these skip over elements until it finds one where the
+start position of the next annotation is equal to or greater than the end
+position of the previously returned annotation.</para>
+
+<para>It can also produce several kinds of subiterators; these
+are iterators whose annotations fall within the span of another
+annotation.  This kind of iterator can
+also have the unambiguous property, if desired.  It also can be </quote>strict<quote> or not; strict means that the returned
+annotation lies completely within the span of the controlling annotation.  Non-strict only implies that the beginning of
+the returned annotation falls within the span of the controlling annotation.</para>
+
+<para>There is also a method which produces an <literal>AnnotationTree</literal> object, which contains nodes representing
+the results of doing a strict, unambiguous subiterator over the span of some
+controlling annotation.  For more
+details, please refer to the JavaDocs for the <literal>org.apache.uima.cas.text</literal>
+package.</para>
+
+<h3><a id="_crossRef93">Constraints and Filtered iterators</a></h3>
+
+<para>There is a set of API calls that build constraint
+objects.  These objects can be used
+directly to test if a particular feature structure matches (satisfies) the
+constraint, or they can be passed to the createFilteredIterator method to
+create an iterator that skips over instances which fail to satisfy the
+constraint.</para>
+
+<para>It is possible to specify a feature value located by
+following a chain of references starting from the feature structure being
+tested.  Here&apos;s a scenario to explore
+this concept.  Let&apos;s suppose you have the
+following type system (namespaces are omitted for clarity):</para>
+
+<para>Token, having a feature
+PartOfSpeech which holds a reference to another type (POS)</para>
+
+<para>POS  (a type with many subtypes, each representing
+a different part of speech)</para>
+
+<para>Noun (a subtype of POS)</para>
+
+<para>ProperName (a subtype of Noun),
+having a feature Class which holds an integer value encoding some information
+about the proper noun.</para>
+
+<para>If you want to filter Token instances, such that only
+those tokens get through which are proper names of class 3 (for example), you
+would need a test that started with a Token instance, followed its PartOfSpeech
+reference to another instance (the ProperName instance) and then tested the
+Class feature of that instance for a value equal to 3.</para>
+
+<para>To support this, the filtering approach has components
+that specify tests, and components that specify </quote>paths<quote>.  The tests that can be done include testing
+references to type instances to see if they are instances of some type or its
+subtypes; this is done with a FSTypeConstraint constraint.  Other tests check for equality or, for
+numeric values, ranges.</para>
+
+<para>Each test may be combined with a path &ndash; to get to the
+value to test.  Tests that start from a
+feature structure instance can be combined with and and or connectors.  The JavaDocs for these are in the package
+org.apache.uima.cas in the classes that end in Constraint, plus the classes
+ConstraintFactory, FeaturePath and CAS.  Here&apos;s an example; assume the variable cas holds a reference to a CAS
+instance.</para>
+
+<programlisting>// Start by getting the constraint factory from the CAS.</programlisting>
+
+<programlisting>ConstraintFactory cf = cas.getConstraintFactory();</programlisting>
+
+<programlisting></programlisting>
+
+<programlisting>// To specify a path to an item to test, you start by
+// creating an empty path.</programlisting>
+
+<programlisting>FeaturePath path = cas.createFeaturePath();</programlisting>
+
+<programlisting></programlisting>
+
+<programlisting>// Add POS feature to path, creating one-element path.</programlisting>
+
+<programlisting>path.addFeature(posFeat);</programlisting>
+
+<programlisting>// You can extend the chain arbitrarily by adding additional
+// features.</programlisting>
+
+<programlisting></programlisting>
+
+<programlisting>// Create a new type constraint.  </programlisting>
+
+<programlisting>// Type constraints will check that structures
+// they match against have a type at least as specific
+// as the type specified in the constraint.</programlisting>
+
+<programlisting>FSTypeConstraint nounConstraint = cf.createTypeConstraint();</programlisting>
+
+<programlisting>// Set the type (by default it is TOP).
+// This succeeds if the type being tested by this constraint
+// is nounType or a subtype of nounType.</programlisting>
+
+<programlisting>nounConstraint.add(nounType);</programlisting>
+
+<programlisting></programlisting>
+
+<programlisting>// Embed the noun constraint under the pos path.
+// This means, associate the test with the path, so it tests the
+// proper value.</programlisting>
+
+<programlisting>// The result is a test which will
+// match a feature structure that has a posFeat defined
+// which has a value which is an instance of a nounType or
+// one of its subtypes.</programlisting>
+
+<programlisting>FSMatchConstraint embeddedNoun = cf.embedConstraint(path, nounConstraint);</programlisting>
+
+<programlisting></programlisting>
+
+<programlisting>// Create a type constraint for token (or a subtype of it)</programlisting>
+
+<programlisting>FSTypeConstraint tokenConstraint = cf.createTypeConstraint();</programlisting>
+
+<programlisting>// Set the type.</programlisting>
+
+<programlisting>tokenConstraint.add(tokenType);</programlisting>
+
+<programlisting></programlisting>
+
+<programlisting>// Create the final constraint by conjoining the two constraints.</programlisting>
+
+<programlisting>FSMatchConstraint nounTokenCons = cf.and(nounConstraint, tokenConstraint);</programlisting>
+
+<programlisting></programlisting>
+
+<programlisting>// Create a filtered iterator from some annotation iterator.</programlisting>
+
+<programlisting>FSIterator it = cas.createFilteredIterator(annotIt, nounTokenCons);</programlisting>
+
+
+
+
+  </subsection>
+<subsection name="The CAS APIs &ndash; a guide to the JavaDocs"><a id="_crossRef94"> </a>
+
+
+
+<para>The CAS APIs are organized into 3 Java packages: cas,
+cas.impl, and cas.text.  Most of the APIs
+described here are in the cas package.  The cas.impl package contains classes used in serializing and
+deserializing (reading and writing to external strings) the XCAS form of the
+CAS (XCAS is an XML serialization of the CAS).  The XCAS form is used for transporting the CAS among local and remote
+annotators, or for storing the CAS in permanent storage. The cas.text contains
+the APIs that extend the CAS to support artifact (including </quote>text&quot;)
+analysis.</para>
+
+<h3><a id="_crossRef95">APIs in the CAS package</a></h3>
+
+<para>The main objects implementing the APIs discussed here are
+shown in the diagram below.  The
+hierarchy represents that there is a way to get from an upper object to an
+instance of the lower object, usually by using a method on the upper object;
+this is not an inheritance hierarchy. <img width="586" height="399"
+src="../UIMA_SDK_Guide_Ref/CAS_Reference_files/image001.png" alt="Organization Chart"/></para>
+
+<para>The main Interface is the CAS interface.  This has most of the functionality of the
+CAS, except for the type system metadata access, and the indexing access.  JCas and CAS are alternative representations
+and API approaches to the CAS; each has a method to get the other.  You can mix JCas and CAS APIs in your
+application as needed.  To use the JCas
+APIs, you have to create the Java classes that correspond to the CAS types, and
+include them in the Java class path of the application.  If you have a CAS object, you can get a JCas
+object by using the getJCas() method call on the CAS object; likewise, you can
+get the CAS object from a JCas by using the getCAS() method call on the JCas
+object.  There is also a low level CAS
+interface that is not part of the official API, and is intended for internal
+use only &ndash; it is not documented here.</para>
+
+<para>The type system metadata APIs are found in the TypeSystem
+interface.  The objects defining each
+type and feature are defined by the interfaces Type and Feature.  The Type interface has methods to see what
+types subsume other types, to iterate over the types available, and to extract
+information about the types, including what features it has.  The Feature interface has methods that get
+what type it belongs to, its name, and its range (the kind of values it can
+hold).</para>
+
+<para>The FSIndexRepository gives you access to methods to get
+instances of indexes.  The FSIndex and
+AnnotationIndex objects give you methods to create instances of iterators.</para>
+
+<para>Iterators and the CAS methods that create new feature
+structures return FeatureStructure objects.  These objects can be used to set and get the values of defined features
+within them.</para>
+</chapter>

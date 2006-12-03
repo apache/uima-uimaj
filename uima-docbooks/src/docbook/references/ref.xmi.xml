@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
+<!ENTITY imgroot "images/annotator_analysis_engine_files/" >
+<!ENTITY % uimaents SYSTEM "entities.ent" >  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="ugr.ref.xmi">
+  <title></title>
+  <section name="XMI CAS Serialization Reference"><a id="_crossRef386"> </a>
+
+
+
+<para>This is the specification for the mapping of the UIMA CAS
+into the XMI (XML Metadata Interchange<span class="footnote">
+
+For details on XMI see Grose et al. <emphasis>Mastering
+XMI.  Java Programming with XMI, XML, and
+UML. </emphasis>John Wiley &amp; Sons, Inc. 2002.
+
+</span>)
+format.  XMI is an OMG standard for
+expressing object graphs in XML.  The
+UIMA SDK provides support for XMI through the classes
+org.apache.uima.cas.impl.XmiCasSerializer and
+org.apache.uima.cas.impl.XmiCasDeserializer.</para>
+
+
+
+<subsection name="XMI Tag"><a id="_crossRef387"> </a>
+
+
+
+<para>The outermost tag is &lt;XMI&gt; and must include a
+version number and XML namespace attribute:</para>
+
+<programlisting>&lt;xmi:XMI xmi:version=<quote>2.0</quote> xmlns:xmi=<a href="http://www.omg.org/XMI">http://www.omg.org/XMI</a>&gt;
+  &lt;!-- CAS Contents here --&gt;
+&lt;/xmi:XMI&gt;</programlisting>
+
+<para>XML namespaces<span class="footnote">http://www.w3.org/TR/xml-names11/</span> are used throughout.  The <quote>xmi</quote> namespace prefix is used to identify elements and
+attributes that are defined by the XMI specification.  The XMI document will also define one
+namespace prefix for each CAS namespace, as described in the next section.</para>
+
+
+
+
+  </subsection>
+<subsection name="Feature Structures"><a id="_crossRef388"> </a>
+
+
+
+<para>UIMA Feature Structures are mapped to XML elements.  The name of the element is formed from the
+CAS type name, making use of XML namespaces as follows.</para>
+
+<para>The CAS type namespace is converted to an XML namespace
+URI by the following rule: replace all dots with slashes, prepend http:///, and
+append .ecore.</para>
+
+<para>This mapping was chosen because it is the default mapping
+used by the Eclipse Modeling Framework (EMF)<span class="footnote">
+For details on EMF and Ecore see Budinsky et al.  <emphasis>Eclipse
+Modeling Framework 2.0</emphasis>. Addison-Wesley. 2006.
+</span> to
+create namespace URIs from Java package names.  The use of the http scheme is a common convention, and does not imply
+any HTTP communication.  The .ecore
+suffix is due to the fact that the recommended type system definition for a
+namespace is an ECore model, see <b><a class="crossrefText" href="XMI_and_EMF_Interoperability.htm#_crossRef382">XMI
+and EMF Interoperability</a></b> <a class="crossrefPage" href="XMI_and_EMF_Interoperability.htm#_crossRef382"></a>.</para>
+
+<para>Consider the CAS type name
+<quote>org.myproj.Foo</quote>.   The CAS
+namespace (<quote>org.myorg.</quote>) is converted to the XML namespace URI is
+http:///org/myproj.ecore.</para>
+
+<para>The XML element name is then formed by concatenating the
+XML namespace prefix (which is an arbitrary token, but typically we use the
+last component of the CAS namespace) with the type name (excluding the
+namespace).</para>
+
+<para>So the example <quote>org.myproj.Foo</quote> FeatureStructure
+is written to XMI as:</para>
+
+<programlisting>&lt;xmi:XMI xmi:version=<quote>2.0</quote> xmlns:xmi=<quote><a href="http://www.omg.org/XMI">http://www.omg.org/XMI</a></quote>  xmlns:myproj=<quote>http:///org/myproj.ecore</quote>&gt;
+  ...
+  &lt;myproj:Foo xmi:id=<quote>1</quote>/&gt;
+  ...
+&lt;/xmi:XMI&gt;</programlisting>
+
+<para>The xmi:id attribute is only required if this object will
+be referred to from elsewhere in the XMI document.  If provided, the xmi:id must be unique for
+each feature.</para>
+
+<para>All namespace prefixes (e.g. <quote>myproj</quote>) in this
+example must be bound to URIs using the <quote>xmlns...</quote> attribute, as
+defined by the XML namespaces specification.</para>
+
+
+
+
+  </subsection>
+<subsection name="Primitive Features"><a id="_crossRef389"> </a>
+
+
+
+<para>CAS features of primitive types (currently String,
+Integer, or Float, but others are possible) can be mapped either to XML
+attributes or XML elements.  For example,
+a CAS FeatureStructure of type org.myproj.Foo, with features:</para>
+
+<programlisting>begin   = 14
+end     = 19
+myFeature = <quote>bar</quote></programlisting>
+
+<para>could be mapped to:</para>
+
+<programlisting>&lt;xmi:XMI xmi:version=<quote>2.0</quote> xmlns:xmi=<quote><a href="http://www.omg.org/XMI">http://www.omg.org/XMI</a></quote>
+  xmlns:myproj=<quote>http:///org/myproj.ecore</quote>&gt;
+  ...
+  &lt;myproj:Foo xmi:id=<quote>1</quote> begin=<quote>14</quote> end=<quote>19</quote> myFeature=<quote>bar</quote>/&gt;
+  ...
+&lt;/xmi:XMI&gt;</programlisting>
+
+<para>or equivalently:</para>
+
+<programlisting>&lt;xmi:XMI xmi:version=<quote>2.0</quote> xmlns:xmi=<quote><a href="http://www.omg.org/XMI">http://www.omg.org/XMI</a>
+  xmlns:myproj=</quote>http:///org/myproj.ecore<quote>&gt;
+  ...
+  &lt;myproj:Foo xmi:id=</quote>1<quote>&gt;
+    &lt;begin&gt;14&lt;/begin&gt;
+    &lt;end&gt;19&lt;/end&gt;
+    &lt;myFeature&gt;bar&lt;/myFeature&gt;
+  &lt;/myproj:Foo&gt;
+  ...
+&lt;/xmi:XMI&gt;</programlisting>
+
+<para>The attribute serialization is preferred for compactness,
+but either representation is allowable.  Mixing the two styles is allowed; some features can be represented as
+attributes and others as elements.</para>
+
+
+
+
+  </subsection>
+<subsection name="Reference Features"><a id="_crossRef390"> </a>
+
+
+
+<para>CAS features that are references to other feature
+structures (excluding arrays and lists, which are handled separately) are
+serialized as ID references.</para>
+
+<para>If we add to the previous CAS example a feature structure
+of type org.myproj.Baz, with feature </quote>myFoo<quote> that is a reference to
+the Foo object, the serialization would be:</para>
+
+<programlisting>&lt;xmi:XMI xmi:version=</quote>2.0<quote> xmlns:xmi=</quote><a href="http://www.omg.org/XMI"><literal>http://www.omg.org/XMI</literal></a><quote>
+  xmlns:myproj=</quote>http:///org/myproj.ecore<quote>&gt;
+  ...
+  &lt;myproj:Foo xmi:id=</quote>1<quote> begin=</quote>14<quote> end=</quote>19<quote> myFeature=</quote>bar<quote>/&gt;
+  &lt;myproj:Baz xmi:id=</quote>2<quote> myFoo=</quote>1<quote>/&gt;
+  ...
+&lt;/xmi:XMI&gt;</programlisting>
+
+<para>As with primitive-valued features, it is permitted to use
+an element rather than an attribute.  However, the syntax is slightly different:</para>
+
+<programlisting>&lt;myproj:Baz xmi:id=</quote>2<quote>&gt;
+   &lt;myFoo href=</quote>#1<quote>/&gt;
+&lt;myproj.Baz&gt;</programlisting>
+
+<para>Note that in the attribute representation, a reference
+feature is indistinguishable from an integer-valued feature, so the meaning
+cannot be determined without prior knowledge of the type system.  The element representation is unambiguous.</para>
+
+
+
+
+  </subsection>
+<subsection name="Array and List Features"><a id="_crossRef391"> </a>
+
+
+
+<para>For a CAS feature whose range type is one of the CAS array
+or list types, the XMI serialization depends on the setting of the
+</quote>multipleReferencesAllowed<quote> attribute for that feature in the UIMA
+Type System Description (see <b><a class="crossrefText" href="Component_Descriptor_Reference.htm#_crossRef124">Features</a></b> <a class="crossrefPage" href="Component_Descriptor_Reference.htm#_crossRef124"></a>.</para>
+
+<para>An array or list with multipleReferencesAllowed = false
+(the default) is serialized as a </quote>multi-valued<quote> property in XMI.  An array or list with
+multipleReferencesAllowed = true is serialized as a first-class object.  Details are described below.</para>
+
+<h3><a id="_crossRef392">Arrays and Lists as Multi-Valued
+Properties</a></h3>
+
+<para>In XMI, a multi-valued property is the most natural XMI
+representation for most cases.  Consider
+the example where the FeatureStructure of type org.myproj.Baz has a feature
+myIntArray whose value is the integer array {2,4,6}.  This can be mapped to:</para>
+
+<programlisting>&lt;myproj:Baz xmi:id=</quote>3<quote> myIntArray=</quote>2 4 6<quote>/&gt;</programlisting>
+
+<para>or equivalently:</para>
+
+<programlisting>&lt;myproj:Baz xmi:id=</quote>3<quote>&gt;
+  &lt;myIntArray&gt;2&lt;/myIntArray&gt;
+  &lt;myIntArray&gt;4&lt;/myIntArray&gt;
+  &lt;myIntArray&gt;6&lt;/myIntArray&gt;
+&lt;/myproj:Baz&gt;</programlisting>
+
+<para>Note that String arrays whose elements contain embedded
+spaces MUST use the latter mapping.</para>
+
+<para>FSArray or FSList features are serialized in a similar
+way.  For example an FSArray feature that
+contains references to the elements with xmi:id&apos;s </quote>13<quote> and
+</quote>42<quote> could be serialized as:</para>
+
+<programlisting>&lt;myproj:Baz xmi:id=</quote>3<quote> myFsArray=</quote>13 42<quote>/&gt;</programlisting>
+
+<para>or:</para>
+
+<programlisting>&lt;myproj:Baz xmi:id=</quote>3<quote>&gt;
+  &lt;myFsArray href=</quote>#13<quote>/&gt;
+  &lt;myFsArray href=</quote>#42<quote>/&gt;
+&lt;/myproj:Baz&gt;</programlisting>
+
+<h3><a id="_crossRef393">Arrays and Lists as First-Class
+Objects</a></h3>
+
+<para>The multi-valued-property representation described in the
+previous section does not allow multiple references to an array or list
+object.  Therefore, it cannot be used for
+features that are defined to allow multiple references (i.e. features for which
+multipleReferencesAllowed = true in the Type System Description).</para>
+
+<para>When multipleReferencesAllowed is set to true, array and
+list features are serialized as references, and the array or list objects are
+serialized as separate objects in the XMI. Consider again the example where the
+FeatureStructure of type org.myproj.Baz has a feature myIntArray whose value is
+the integer array {2,4,6}.  If myIntArray
+is defined with multipleReferencesAllowed=true, the serialization will be as
+follows:</para>
+
+<programlisting>&lt;myproj:Baz xmi:id=</quote>3<quote> myIntArray=</quote>4<quote>/&gt;</programlisting>
+
+<para>or:</para>
+
+<programlisting>&lt;myproj:Baz xmi:id=</quote>3<quote>&gt;
+  &lt;myIntArray href=</quote>#4<quote>/&gt;
+&lt;/myproj:Baz&gt;</programlisting>
+
+<para>with the array object serialized as:</para>
+
+<programlisting>&lt;cas:IntegerArray xmi:id=</quote>4<quote> elements=</quote>2 4 6<quote>/&gt;</programlisting>
+
+<para>or:</para>
+
+<programlisting>&lt;cas:IntegerArray xmi:id=</quote>4<quote>&gt;
+  &lt;elements&gt;2&lt;/elements&gt;
+  &lt;elements&gt;4&lt;/elements&gt;
+  &lt;elements&gt;6&lt;/elements&gt;
+&lt;/cas:IntegerArray&gt;</programlisting>
+
+<para>Note that in this case, the XML element name is formed
+from the CAS type name (e.g. </quote><literal>uima.cas.IntegerArray</literal><quote>)
+in the same way as for other FeatureStructures.  The elements of the array are serialized either as a space-separated
+attribute named </quote>elements<quote> or as a series of child elements named
+</quote>elements<quote>.</para>
+
+<para>List nodes are just standard FeatureStructures with
+</quote>head<quote> and </quote>tail<quote> features, and are serialized using the
+normal FeatureStructure serialization.  For example, an IntegerList with the values 2, 4, and 6 would be
+serialized as the four objects:</para>
+
+<programlisting>&lt;cas:NonEmptyIntegerList xmi:id=</quote>10<quote> head=</quote>2<quote> tail=</quote>11<quote>/&gt;
+&lt;cas:NonEmptyIntegerList xmi:id=</quote>11<quote> head=</quote>4<quote> tail=</quote>12<quote>/&gt;
+&lt;cas:NonEmptyIntegerList xmi:id=</quote>12<quote> head=</quote>6<quote> tail=</quote>13<quote>/&gt;
+&lt;cas:EmptyIntegerList xmi:id</quote>13<quote>/&gt;</programlisting>
+
+<para>This representation of arrays allows multiple references
+to an array of list.  It also allows a
+feature with range type TOP to refer to an array or list.  However, it is a very unnatural
+representation in XMI and does not support interoperability with other
+XMI-based systems, so we instead recommend using the multi-valued-property
+representation described in the previous section whenever it is possible.</para>
+
+
+
+
+  </subsection>
+<subsection name="Null Array/List Elements"><a id="_crossRef394"> </a>
+
+
+
+<para>In UIMA, an element of an FSArray or FSList may be
+null.  In XMI, multi-valued properties do
+not permit null values.  As a workaround
+for this, we will use a dummy instance of the special type cas:NULL, which has
+xmi:id 0.  For example, in the following
+example the </quote>myFsArray<quote> feature refers to an FSArray whose second
+element is null:</para>
+
+<programlisting>&lt;cas:NULL xmi:id=</quote>0<quote>/&gt;
+&lt;myproj:Baz xmi:id=</quote>3<quote>&gt;
+  &lt;myFsArray href=</quote>#13<quote>/&gt;
+  &lt;myFsArray href=</quote>#0<quote>/&gt;
+  &lt;myFsArray href=</quote>#42<quote>/&gt;
+&lt;/myproj:Baz&gt;</programlisting>
+
+
+
+
+  </subsection>
+<subsection name="Subjects of Analysis (Sofas) and Views"><a id="_crossRef395"> </a>
+
+
+
+<para>A UIMA CAS contain one or more
+subjects of analysis (Sofas).  These are
+serialized no differently from any other feature structure.  For example:</para>
+
+<programlisting>&lt;?xml version=</quote>1.0<quote> encoding=</quote>ASCII<quote>?&gt;
+&lt;xmi:XMI xmi:version=</quote>2.0<quote> xmlns:xmi=<a href="http://www.omg.org/XMI">http://www.omg.org/XMI</a>
+                           xmlns:cas=</quote>http:///uima/cas.ecore<quote>&gt;
+  &lt;cas:Sofa xmi:id=</quote>1<quote> sofaNum=</quote>1<quote>
+            text=</quote>the quick brown fox jumps over the lazy dog.<quote>/&gt;
+&lt;/xmi:XMI&gt;</programlisting>
+
+<para>Each Sofa defines a separate View.  Feature Structures in the CAS can be members
+of one or more views.  (A Feature
+Structure that is a member of a view is indexed in its IndexRepository, but
+that is an implementation detail.)</para>
+
+<para>In the XMI serialization, views will be represented as
+first-class objects.  Each View has an
+(optional) </quote>sofa<quote> feature, which references a sofa, and multi-valued
+reference to the members of the View.  For example:</para>
+
+<programlisting>&lt;cas:View sofa=</quote>1<quote> members=</quote>3 7 21 39 61<quote>/&gt;</programlisting>
+
+<para>Here the integers 3, 7, 21, 39, and 61 refer to the xmi:id
+fields of the objects that are members of this view.</para>
+
+<para>If the sofa feature is omitted, then this is interpreted
+as the </quote>base<quote> view, whose members pertain to the artifact as a whole
+rather than any individual Sofa.</para>
+
+
+
+
+  </subsection>
+<subsection name="Linking an XMI Document to its Ecore Type System"><a id="_crossRef396"> </a>
+
+
+
+<para>If the CAS Type System has been saved to an Ecore file
+(which is the subject of a different spec), it is possible to store a link from
+an XMI document to that Ecore type system.  This is done using an xsi:schemaLocation attribute on the root XMI
+element.</para>
+
+<para>The xsi:schemaLocation attribute is a space-separated list
+that represents a mapping from namespace URI (e.g. <a href="http://org/myproj.ecore">http:///org/myproj.ecore</a>)
+to the physical URI of the .ecore file containing the type system for that
+namespace.  For example:</para>
+
+<programlisting>xsi:schemaLocation=
+</quote>http:///org/myproj.ecore file:/c:/typesystems/myproj.ecore&quot;</programlisting>
+
+<para>would indicate that the definition for the org.myproj CAS
+types is contained in the file <literal>c:/typesystems/myproj.ecore</literal>.  You can specify a different mapping for each of your CAS namespaces, using a space separated
+list.  For details see Budinsky et
+al.  <emphasis>Eclipse Modeling Framework</emphasis>.</para>
+
+</chapter>
