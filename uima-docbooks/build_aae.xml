@@ -27,8 +27,8 @@
 
     <!-- Build the Users Guide -->
     <ant antfile="build-docbook.xml" target="all">
-      <property name="docbook.dir" value="uima"/>
-      <property name="docbook.file" value="annotator_analysis_engine_guide"/>
+      <property name="book_name" value="tutorials_and_users_guides"/>
+      <property name="chapter_name" value="annotator_analysis_engine_guide"/>
     </ant>
   </target>
 

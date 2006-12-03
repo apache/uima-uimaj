@@ -16,7 +16,7 @@
  limitations under the License.
 -->
 
-<project name="uima-docbook" default="all" basedir=".">
+<project default="all" basedir=".">
 
   <!-- ======================================================================== -->
   <!-- ==                                                                    == -->
@@ -27,8 +27,8 @@
 
     <!-- Build the Users Guide -->
     <ant antfile="build-docbook.xml" target="all">
-      <property name="docbook.dir" value="uima"/>
-      <property name="docbook.file" value="tug.cas_multiplier"/>
+      <property name="book_name" value="tutorials_and_users_guides"/>
+      <property name="chapter_name" value="tug.cas_multiplier"/>
     </ant>
   </target>
 
