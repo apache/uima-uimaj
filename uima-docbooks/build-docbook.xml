@@ -166,7 +166,7 @@
 		<filter token="docbook.xsl" value="${docbook.xsl.path}" />
 
 		<!-- file used to form path where olink output goes -->
-		<filter token="file" value="${chapter_name}"/>  
+		<filter token="olink_file" value="${chapter_name}"/>  
 		<filter token="paper.type" value="${paper.type}" />
 		<filter token="file.prefix" value="${file.prefix}" />
 		<filter token="src.dir" value="${src.dir.path}" />
@@ -209,24 +209,23 @@
  	<!-- ==                      olink info layout                             == -->
 	<!-- ======================================================================== -->
 	<!-- ==	(root) (= src/olink in the uima-docbook project)                   == -->
+	<!-- ==  |-olink_db_html.xml                                               == -->
+	<!-- ==  |-olink_db_htmlsingle.xml                                         == -->
+	<!-- ==  |-olink_db_pdf.xml                                                == -->
 	<!-- ==  |                                                                 == -->
 	<!-- ==  |-${chapter_name)  overview_and_setup  << directories             == -->
-	<!-- ==  |    |-olink_db                    << target database info        == -->
 	<!-- ==  |    |-html-target.db              << for chunked html            == -->
 	<!-- ==  |    |-htmlsingle-target.db        << single html                 == -->
 	<!-- ==  |    |-pdf-target.db               << pdf                         == -->
 	<!-- ==  |-${chapter_name)  Tutorials-and-Users-Guides                     == -->
-	<!-- ==  |    |-olink_db                    << target database info        == -->
 	<!-- ==  |    |-html-target.db              << for chunked html            == -->
 	<!-- ==  |    |-htmlsingle-target.db        << single html                 == -->
 	<!-- ==  |    |-pdf-target.db               << pdf                         == -->
 	<!-- ==  |-${chapter_name)  UIMA-Tools                                     == -->
-	<!-- ==  |    |-olink_db                    << target database info        == -->
 	<!-- ==  |    |-html-target.db              << for chunked html            == -->
 	<!-- ==  |    |-htmlsingle-target.db        << single html                 == -->
 	<!-- ==  |    |-pdf-target.db               << pdf                         == -->
 	<!-- ==  |-${chapter_name)  UIMA-References                                == -->
-	<!-- ==       |-olink_db                    << target database info        == -->
 	<!-- ==       |-html-target.db              << for chunked html            == -->
 	<!-- ==       |-htmlsingle-target.db        << single html                 == -->
 	<!-- ==       |-pdf-target.db               << pdf                         == -->
