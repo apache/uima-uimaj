@@ -1,0 +1,24 @@
+<configuration>
+  <fonts>
+    <font metrics-file="file:lib/palatino.xml" 
+      kerning="yes"
+      embed-file="file:///c:/WINDOWS/Fonts/pala.TTF">
+      <font-triplet name="Palatino" style="normal" weight="normal"/>
+    </font>
+    <font metrics-file="file:lib/palatino-bold.xml" 
+      kerning="yes"
+      embed-file="file:///c:/WINDOWS/Fonts/palab.TTF">
+      <font-triplet name="Palatino" style="normal" weight="bold"/>
+    </font>
+    <font metrics-file="file:lib/palatino-italic.xml" 
+      kerning="yes"
+      embed-file="file:///c:/WINDOWS/Fonts/palai.TTF">
+      <font-triplet name="Palatino" style="italic" weight="normal"/>
+    </font>
+    <font metrics-file="file:lib/palatino-bold-italic.xml" 
+      kerning="yes"
+      embed-file="file:///c:/WINDOWS/Fonts/palabi.TTF">
+      <font-triplet name="Palatino" style="italic" weight="bold"/>
+    </font>
+  </fonts>
+</configuration>
