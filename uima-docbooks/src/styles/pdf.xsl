@@ -34,7 +34,7 @@
   <xsl:param name="paper.type" select="'@paper.type@'"/>
 
   <!-- where the olink output goes -->  
-  <xsl:param name="targets.filename">@src.dir@/olink/@file@/@type@-target.db</xsl:param>
+  <xsl:param name="targets.filename">@src.dir@/olink/@olink_file@/@type@-target.db</xsl:param>
   
 </xsl:stylesheet>
 

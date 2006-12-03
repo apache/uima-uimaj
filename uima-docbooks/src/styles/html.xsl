@@ -24,7 +24,7 @@
   <xsl:include href="@file.prefix@@tmp.dir@/html-titlepage.xsl" />
 
   <!-- where the olink output goes -->  
-  <xsl:param name="targets.filename">@src.dir@/olink/@file@/@type@-target.db</xsl:param>
+  <xsl:param name="targets.filename">@src.dir@/olink/@olink_file@/@type@-target.db</xsl:param>
   
   <!-- where to find the css stylesheet -->
   <xsl:param name="html.stylesheet">css/stylesheet.css</xsl:param>
