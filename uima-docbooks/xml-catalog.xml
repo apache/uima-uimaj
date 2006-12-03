@@ -22,6 +22,11 @@
   <rewriteSystem
     systemIdStartString="http://www.oasis-open.org/docbook/xml/4.4/"
     rewritePrefix="docbook/docbook-xml-4.4/"/>
+  
+  <rewriteSystem
+    systemIdStartString="http://docbook.sourceforge.net/release/xsl/current/"
+    rewritePrefix="docbook/docbook-xsl-1.70.0/"/>
+
 
   <!-- Translate DocBook XML 4.4 public ids to local file names -->
   <nextCatalog
