@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!ENTITY url_eclipse "http://www.eclipse.org" >
+<!ENTITY url_emf "http://www.eclipse.org/emf" >
+<!ENTITY url_apache_uima_download "http://incubator.apache.org/uima">
+
+<!ENTITY ae "Analysis Engine">
+<!ENTITY aae "Aggregate Analysis Engine">
+
+<!ENTITY uima_docs_overview "uima_docs_overview">
+<!ENTITY uima_docs_tutorial_guides "uima_docs_tutorial_guides">
+<!ENTITY uima_docs_tools "uima_docs_tools">
+<!ENTITY uima_docs_ref "uima_docs_ref">
+
