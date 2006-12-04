@@ -1,6 +1,7 @@
-		      Velocity DocBook Framework
+		      UIMA DocBook Framework
 		      ==========================
 
+This project is a derivative of work done by the Velocity project.
 
 This project started out as a framework to render documentation for
 the Velocity project (http://jakarta.apache.org/velocity/) and ended
@@ -15,32 +16,35 @@ and other applications. Adjusting such a rendering framework to the
 needs of the Velocity project wasn't easy, so at some point, we decided
 to redo this (almost) from scratch.
 
-
 License Information
 ===================
 
-Copyright 2006 The Apache Software Foundation.
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
 
-Licensed under the Apache License, Version 2.0 (the "License")
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+   http://www.apache.org/licenses/LICENSE-2.0
 
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
 
 
 Author information
 ------------------
 
-This framework and documentation was written by the Jakarta Velocity
-Developers. If you have questions, found a bug or have enhancements,
-please contact us through the Jakarta Velocity Development Mailing
-list at velocity-dev@jakarta.apache.org
+This framework and documentation was originally written by the Jakarta Velocity
+Developers. It has been extensively modified by the UIMA developers.
+If you have questions, found a bug or have enhancements,
+please contact the UIMA developers through the UIMA Development Mailing
+list at uima-dev@incubator.apache.org
 
 
 Why another framework for rendering docbook?
@@ -86,14 +90,30 @@ What we wanted to have, was a framework, that
 
 * ant-driven, platform independent.
 
+  UIMA developers added these:
+  
+* supports XInclude - so you can break up your book into individual
+  svn-controlled chapters, and xinclude them with a master file into
+  a book
+  
+* supports the Docbook "olink" mechanism 
+
+* supports multiple Docbooks
+
+* shares images among html and htmlsingle formats (images are often the
+  most memory consuming part of the document)
+
 
 What you need
 =============
 
 * A Java Runtime. All testing has been done using the Sun JSDK 1.5.0
+  but Java 1.4.2 has also been used quite extensively.
 
 * Apache Ant version 1.6 or better. The build script uses the macrodef
   task which was introduced in ant 1.6. Get it from http://ant.apache.org/
+
+* If you want to render images, Java Advanced Imaging (see README.FIRST)
 
 Everything else should be included in this package.
 
@@ -101,20 +121,53 @@ Everything else should be included in this package.
 How it is used
 ==============
 
-The documents to render are located in src/docbook. Here you find
-subdirectories and each subdirectory contains one set of docbook files.
+The documents to render are located in src/docbook. 
+Each book is in one subdirectory.  The name of the subdirectory
+is up to you, but this name appears in many other places (by convention).
+The name should be unique to this installation of this pacakge.
+
+The subdirectory can contain 1 or more files, and an images subdirectory.
+Image subdirectory names must be unique for this installation of this package, 
+because they're all put into one target directory (to permit sharing of 
+docbook images).
+If you have more than one file, you can use a modular approach where one 
+file (by convention of the same name as the book subdirectory, followed by ".xml")
+is the "master file" and includes the <book> docbook element, and uses XIncludes 
+to include other parts (typically chapters).
+
+Parallel to the book subdirectories is another set of directories under src/olink.
+These contain for each book the generated olink databases needed for cross reference
+linking using the docbook olink mechanism.  See the Olink section for more details.
+These olink files should be saved in the source svn tree because they're needed for
+the rebuilding of the targets.
 
 If you run ant in the base directory of this distribution, it should
 build a target directory in target/ for each directory in
 src/docbook. In each of the directories, you'll find three
-subdirectories: pdf, html and htmlsingle.
+outputs for the chunked html, the single html (called by the book-name.html)
+and the pdf (called by the book-name.pdf).
 
-pdf:		PDF format. 
-html:		Multiple HTML files, one for each section.
-htmlsingle:	One big HTML file.
+In addition, the target directory has 
+   - a shared images directory (the images
+     associated with docbook itself are shared among all books).
+   - a css directory for each book
 
-Both of the HTML format directories will also contain a .zip file for
-distribution.
+Zip files are not created here - a further packaging step can create these
+if needed.  
+
+
+Running Ant from Eclipse
+========================
+
+If you right click the build-docbook.xml file and select run as Ant ...
+it will bring up a menu where you can add properties.  You can use this
+to add/edit the "book_name" property and set it to, e.g., tools - this
+would build the tools book.  This setting is sticky - it is remembered by
+the Eclipse framework - and you can rerun it with a single click on the 
+run-external-tools icon.
+
+If you run ant with no arguments in the base directory, it runs the
+build.xml ant script which builds all the UIMA documentation.
 
 
 Notes
@@ -130,26 +183,31 @@ Notes
   ant -Dpaper.type=A4 will render the documentation in A4.
 
 
-Add a new DocBook document
-==========================
+Add a new DocBook "book"
+========================
 
 You create a new subdirectory inside src/docbook. In there goes your
 new docbook document. If you need images for your document, they go
-into src/images. Inside your document, they should be referenced as
-'images/<yourimage>>' because this is where they will end up during
-the render process.
+into src/<bookname>/images/<maybe-subdir-for-chapter>/image001.png_etc. 
+Inside your document, they should be referenced as
+'..images/etc.' because images are kept one level highter in the target
+for sharing the docbook images.
 
 In the main build.xml file, you must add a call to the framework for
-your new document. E.g. this is for the Velocity Users guide:
+your new document:
 
 <ant antfile="build-docbook.xml" target="all">
-  <property name="docbook.dir" value="userguide"/> (1)
-  <property name="docbook.file" value="VelocityUsersGuide"/> (2)
+      <property name="book_name" value="tutorials_and_users_guides"/>  (1)
 </ant>
 
 (1) This is the subdirectory in src/docbook
-(2) This is the name of the main docbook file *WITHOUT* the
-    ending. The framework will add .xml for the source file.
+
+If you want to do just one chapter of a book, you can.  Do it like this:
+
+<ant antfile="build-docbook.xml" target="all">
+      <property name="book_name" value="tutorials_and_users_guides"/>
+      <property name="chapter_name" value="tug.cas_multiplier"/>
+</ant>
 
 When you add a new document to the framework, you must make sure that
 its referenced DocBook DTD files can be resolved by the Catalog
@@ -162,6 +220,21 @@ document declaration should be
 If you use another doctype definition, the framework will still work,
 but connect to the Internet to get the definition files every time you
 run the build process.
+
+
+How to write / edit Docbook source
+==================================
+
+If you are comfortable with Eclipse, obtain the XMLBuddy plugin for it
+and use it.  It integrates into the Eclipse auto-complete framework all the
+docbook elements and attributes.  It also includes any "entities" that you
+might define/declare.  The UIMA Docbook source makes extensive use of these -
+using entities this way will show an error indicator if you mispell it, and
+entities also participate in the auto-complete framework.  And, when you're
+all done, click on the menu "XML" -> "format" and the source is nicely
+formatted for you.
+
+You can also use XMLMind (see the bottom of this document).
 
 
 How it works (in depth)
@@ -192,11 +265,11 @@ DocBook reference files
 
 This framework uses the DocBook XML and XSL distribution archives
 without any changes to them. The reference files are located in
-src/zip and are expanded into the target/ directory before the
+docbook/zip and are expanded into the docbook/ directory before the
 rendering process. The file names must be reflected in the
 docbook.xml.version and docbook.xsl.version properties in the
 project.properties file. If you want to use e.g. a newer XSL version,
-you can put it into src/zip and update project.properties to reflect
+you can put it into docbook/zip and update project.properties to reflect
 the change.
 
 
@@ -246,14 +319,17 @@ files:
 
 @docbook.xsl@     - Location of the DocBook XSL style sheets
 
+@olink_file@      - where generated olink db is put (usually the book_name)
+
+@type@            - pdf, html, or htmlsingle - used to form names in olink dbs
+
+@paper.type@      - paper size for pdf output
+
 @src.dir@         - Location of ${basedir}/src
 
 @tmp.dir@         - Location of ${basedir}/target/tmp
 
-@<type>.target.dir@ - (pdf.target.dir for PDF, html.target.dir
-                       and htmlsingle.target.dir for HTML) which points
-                       to the target directory into which the document
-                       is rendered.
+@html.target.dir@ - used only for chunked pdf - the base target directory
 
 Please note, that *only* the driver file is filtered! If you have path
 adjustments to make, you must do them in the driver file!

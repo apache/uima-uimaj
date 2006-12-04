@@ -22,8 +22,8 @@ project.properties                      - project settings
 CatalogManager.properties               - Configuration file for xml commons resolver
 xml-catalog.xml                         - Catalog file for xml commons resolver
 
-src/images                              - User images (e.g. Project logo)
 src/docbook                             - Docbook files to transform
+src/docbook/<book-name>/images          - User images
 
 src/styles                              - User XSLT styles
 src/styles/html.xsl                     - Stylesheet driver for HTML
@@ -38,14 +38,17 @@ src/styles/pdf                          - XSLT styles for PDF
 src/styles/pdf/custom.xsl               - Custom settings for PDF
 src/styles/pdf/titlepage.xml            - Titlepage definition for PDF
 
-src/css                                 - User CSS files
-src/css/html                            - CSS files for HTML and HTML-Single
+src/css                                 - Shared User CSS files for html and htmlsingle
 
-src/zip                                 - Docbook reference files
-src/zip/docbook-xml-4.4.zip             - XML definition files from http://www.oasis-open.org/docbook/xml/
-src/zip/docbook-xsl-1.70.0.zip          - XSL transformation styles from http://sourceforge.net/project/showfiles.php?group_id=21935
+docbook/zip                             - Docbook reference files
+docbook/src/zip/docbook-xml-4.4.zip         - XML definition files from http://www.oasis-open.org/docbook/xml/
+docbook/src/zip/docbook-xsl-1.70.0.zip      - XSL transformation styles from http://sourceforge.net/project/showfiles.php?group_id=21935
 
 lib                                     - libraries for XSLT transformation
+                                        -   and FOP
+                                        -   and Xerces
+                                        -   and additional Fonts for FOP
+                                        -   and XML resolver
 
 MANIFEST                                - This file
 TODO                                    - If you feel like helping out, tackle these tasks.
