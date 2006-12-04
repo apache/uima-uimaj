@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
 "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
-  <!ENTITY % xinclude SYSTEM "xinclude.mod">
+  <!ENTITY % xinclude SYSTEM "../xinclude.mod">
   %xinclude;
   ]>
 <!--
@@ -24,7 +24,7 @@ under the License.
 -->
 <book lang="en">
   <title>Apache UIMA SDK Tutorial and Developers' Guides</title>
-  <xi:include href="common_book_info.xml"/>
+  <xi:include href="../common_book_info.xml"/>
 
   <toc/>
   

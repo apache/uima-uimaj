@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
 "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
-<!ENTITY imgroot "../images/tutorials_and_users_guides/tug.application/" >
-<!ENTITY % uimaents SYSTEM "../entities.ent" >  
+<!ENTITY imgroot "../images/tutorials_and_users_guides/tug.application/">
+<!ENTITY % uimaents SYSTEM "../entities.ent">  
 %uimaents;
 ]>
 <!--

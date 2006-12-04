@@ -6,8 +6,8 @@
 <!ENTITY ae "Analysis Engine">
 <!ENTITY aae "Aggregate Analysis Engine">
 
-<!ENTITY uima_docs_overview "uima_docs_overview">
-<!ENTITY uima_docs_tutorial_guides "uima_docs_tutorial_guides">
-<!ENTITY uima_docs_tools "uima_docs_tools">
-<!ENTITY uima_docs_ref "uima_docs_ref">
+<!ENTITY uima_docs_overview "overview_and_setup">
+<!ENTITY uima_docs_tutorial_guides "tutorials_and_users_guides">
+<!ENTITY uima_docs_tools "tools">
+<!ENTITY uima_docs_ref "references">
 

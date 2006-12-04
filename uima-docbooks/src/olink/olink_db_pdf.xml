@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE targetset SYSTEM "http://docbook.sourceforge.net/release/xsl/current/common/targetdatabase.dtd" [
-<!ENTITY otarget_overview SYSTEM "olink_ovv.db">
-<!ENTITY otarget_tutorial_users_guides SYSTEM "olink_tug.db">
-<!ENTITY otarget_tools SYSTEM "olink_tools.db">
-<!ENTITY otarget_references SYSTEM "olink_ref.db">
-<!ENTITY % uimaents SYSTEM "../../../src/docbook/uima/entities.ent">  
+<!ENTITY % uimaents SYSTEM "../docbook/entities.ent" >  
 %uimaents;
+<!ENTITY otarget_overview SYSTEM "overview_and_setup/pdf-target.db">
+<!ENTITY otarget_tug      SYSTEM "tutorials_and_users_guides/pdf-target.db">
+<!ENTITY otarget_refs     SYSTEM "references/pdf-target.db">
+<!ENTITY otarget_tools    SYSTEM "tools/pdf-target.db">
 ]>
 <targetset>
   <targetsetinfo>UIMA books olinks</targetsetinfo>
   
   <!-- Site map for generating relative paths between documents -->
   <sitemap>
-    <dir name="html">
-      <dir name="UIMA-overview">
+    <dir name="target">
+      <dir name="overview_and_setup">
         <document targetdoc="&uima_docs_overview;">
           &otarget_overview;
         </document>
       </dir>
-      <dir name="UIMA-Tutorials-and-Users-Guide">
-        <document targetdoc="&target_tutorial_users_guides;">
-          &otarget_tutorial_users_guides;
+      <dir name="tutorials_and_users_guides">
+        <document targetdoc="&uima_docs_tutorial_guides;">
+          &otarget_tug;
         </document>
       </dir>
-      <dir name="UIMA-Tools">
-        <document targetdoc="&target_tools;">
-          &otarget_tutorial_users_guides;
+      <dir name="tools">
+        <document targetdoc="&uima_docs_tools;">
+          &otarget_tools;
         </document>
       </dir>
-      <dir name="UIMA-Tutorials-and-Users-Guide">
-        <document targetdoc="&target_tutorial_users_guides;">
-          &otarget_tutorial_users_guides;
+      <dir name="references">
+        <document targetdoc="&uima_docs_ref;">
+          &otarget_refs;
         </document>
-      </dir>    
+      </dir>  
+    </dir>  
   </sitemap>
 </targetset>

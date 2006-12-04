@@ -26,6 +26,10 @@
   <!-- where the olink output goes -->  
   <xsl:param name="targets.filename">@src.dir@/olink/@olink_file@/@type@-target.db</xsl:param>
   
+  <!-- process using olink info -->
+  <xsl:param name="target.database.document">@file.prefix@@src.dir@/olink/olink_db_@type@.xml</xsl:param>
+  <xsl:param name="current.docid">@olink_file@</xsl:param>
+  
   <!-- where to find the css stylesheet -->
   <xsl:param name="html.stylesheet">css/stylesheet.css</xsl:param>
 

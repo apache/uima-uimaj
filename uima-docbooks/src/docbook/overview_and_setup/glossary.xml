@@ -25,7 +25,7 @@ under the License.
 <chapter id="ugr.glossary">
   <title>Glossary of Key Terms and Concepts</title>
   <para></para>
-  <glossary>
+  <glossary id="ugr.glossary.glossary">
     <!--
     <glossentry id="ugr.glossary.">
       <glossterm></glossterm>

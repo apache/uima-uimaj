@@ -318,7 +318,7 @@ under the License.
           included with the SDK.</para>
       </listitem>
       <listitem>
-        <para> Read <olink targetdoc="uima_docs_overview"
+        <para> Read <olink targetdoc="&uima_docs_overview;"
             targetptr="ugr.conceptual_overview"/> to get a broad view of the basic UIMA
           concepts and philosophy with reference to the other documents included in the
           documentation set which provide greater detail. </para>
@@ -337,8 +337,8 @@ under the License.
       </listitem>
       <listitem>
         <para> Develop sample UIMA annotators, run them and explore the results. Read <olink
-            targetdoc="uima_docs_tutorial_guides"
-            targetptr="annotators_and_analysis_engines"/> and follow it like a
+            targetdoc="&uima_docs_tutorial_guides;"
+            targetptr="ugr.tug.aae"/> and follow it like a
           tutorial to learn how to develop your first UIMA annotator and set up and run your
           first UIMA analysis engines.
           <itemizedlist>
@@ -347,12 +347,12 @@ under the License.
                 <itemizedlist>
                   <listitem>
                     <para> The UIMA Component Descriptor Editor, described in more detail
-                      in <olink targetdoc="uima_docs_tools"
+                      in <olink targetdoc="&uima_docs_tools;"
                         targetptr="cde_chapter"/> and </para>
                   </listitem>
                   <listitem>
                     <para> The Document Analyzer, described in more detail in <olink
-                        targetdoc="uima_docs_tools"
+                        targetdoc="&uima_docs_tools;"
                         targetptr="document_analyzer_chapter"/>. </para>
                   </listitem>
                   
@@ -361,17 +361,17 @@ under the License.
             </listitem>
             <listitem>
               <para>While following along in <olink
-                  targetdoc="uima_docs_tutorial_guides"
-                  targetptr="annotators_and_analysis_engines_chapter"/>,
+                  targetdoc="&uima_docs_tutorial_guides;"
+                  targetptr="ugr.tug.aae"/>,
                 reference documents that may help are:
                 <itemizedlist>
                   <listitem>
-                    <para> <olink targetdoc="uima_docs_ref"
+                    <para> <olink targetdoc="&uima_docs_ref;"
                         targetptr="ref_ae_descriptors_chapter"/> for understanding
                       the analysis engine descriptors </para>
                   </listitem>
                   <listitem>
-                    <para> <olink targetdoc="uima_docs_ref"
+                    <para> <olink targetdoc="&uima_docs_ref;"
                         targetptr="ref_jcas_chapter"/> for understanding the JCas
                       </para>
                   </listitem>
@@ -384,16 +384,15 @@ under the License.
           application. <phrase condition="juru">Connect your analysis engine to the
           provided semantic search engine to learn how a complete analysis and search
           application may be built with the UIMA SDK.</phrase> <olink
-            targetdoc="uima_docs_tutorial_guides"
-            targetptr="application_dev_chapter"/> will guide you through this process.
+            targetdoc="&uima_docs_tutorial_guides;"
+            targetptr="ugr.tug.application"/> will guide you through this process.
           <itemizedlist>
             <listitem>
               <para> As part of this you will use the document analyzer (described in more
-                detail in <olink targetdoc="uima_docs_tools"
-                  targetptr="document_analyzer_chapter"/> <phrase
-                  condition="juru">and semantic search GUI tools (see <olink
-                  targetdoc="uima_docs_tutorial_guides"
-                  targetptr="search_query_tool"/></phrase>. </para>
+                detail in <olink targetdoc="&uima_docs_tools;"
+                  targetptr="document_analyzer_chapter"/> and semantic search GUI tools (see <olink
+                  targetdoc="&uima_docs_tutorial_guides;"
+                  targetptr="ugr.tug.application.search.query_tool"/>. </para>
             </listitem>
           </itemizedlist> </para>
       </listitem>
@@ -408,26 +407,26 @@ under the License.
       <listitem>
         <para> Develop and run a Collection Processing Engine (CPE) to analyze and gather the
           results of an entire collection of documents. <olink
-            targetdoc="uima_docs_tutorial_guides" targetptr="cpe_chapter"/> will
+            targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.cpe"/> will
           guide you through this process.
           <itemizedlist>
             <listitem>
               <para> As part of this you will use the CPE Configurator tool. For details see
-                  <olink targetdoc="uima_docs_tools"
+                  <olink targetdoc="&uima_docs_tools;"
                   targetptr="cpe_configurator_chapter"/>. </para>
             </listitem>
             <listitem>
               <para> You will also learn about CPE Descriptors. The detailed format for
-                these may be found in <olink targetdoc="uima_docs_ref"
-                  targetptr="cpe_chapter"/>. </para>
+                these may be found in <olink targetdoc="&uima_docs_ref;"
+                  targetptr="ugr.tug.cpe"/>. </para>
             </listitem>
           </itemizedlist> </para>
       </listitem>
       <listitem>
         <para> Learn how to package up an analysis engine for easy installation into another
-          UIMA environment. <olink targetdoc="uima_docs_tools"
+          UIMA environment. <olink targetdoc="&uima_docs_tools;"
             targetptr="pear_packager_chapter"/> and <olink
-            targetdoc="uima_docs_tools" targetptr="pear_installer_chapter"/> will
+            targetdoc="&uima_docs_tools;" targetptr="pear_installer_chapter"/> will
           teach you how to create UIMA analysis engine archives so that you can easily share
           your components with a broader community. </para>
       </listitem>
@@ -450,7 +449,7 @@ under the License.
           integers), and Double (64 bit floating point) primitive types, and arrays of
           these. These types can be used like all the other primitive types.</para>
       </section>
-      <section>
+      <section id="ugr.ovv.simpler_aes_and_cases">
         <title>Simpler Analysis Engines and CASes</title>
         <para>Version 1.x made a distinction between Analysis Engines and Text Analysis
           Engines. This distinction has been eliminated in Version 2 - new code should just
@@ -462,33 +461,37 @@ under the License.
           Java-friendly way to work with CAS types remains; we clarify that the JCas is just
           (one of potentially several) interfaces to the CAS.</para>
       </section>
-      <section>
+      <section id="ugr.ovv.sofas_and_cas_views_simplified">
         <title>Sofas and CAS Views simplified</title>
         <para>The APIs for manipulating multiple subjects of analysis (Sofas) and their
           corresponding CAS Views have been simplified.</para>
       </section>
-      <section>
+      <section id="ugr.ovv.ae_support_multiple_new_cases">
         <title>Analysis Component generalized to support multiple new CAS
           outputs</title>
         <para>Analysis Components, in general, can make use of new capabilities to return
           multiple new CASes, in addition to returning the original CAS that is passed in.
           This allows components to have Collection Reader-like capabilities, but be
-          placed anywhere in the flow. See <olink targetdoc="uima_docs_tutorial_guides"
-            targetptr="cas_multiplier_chapter"/>.</para>
+          placed anywhere in the flow. See <olink targetdoc="&uima_docs_tutorial_guides;"
+            targetptr="ugr.tug.cm"/>.</para>
       </section>
-      <section>
+      <section id="ugr.ovv.user_customized_fc">
         <title>User-customized Flow Controllers</title>
         <para>A new component, the Flow Controller, can be supplied by the user to implement
           arbitrary flow control for CASes within an Aggregate. This is in addition to the two
           built-in flow control choices of linear and language-capability flow. See <olink
-            targetdoc="uima_docs_tutoria_guilds"
-            targetptr="flow_controller_chapter"/>.</para>
+            targetdoc="&uima_docs_tutorial_guides;"
+            targetptr="ugr.tug.fc"/>.</para>
       </section>
-      <section>
-        <title>Search Engine</title>
+      <section id="ugr.ovv.search_engine_repackaged">
+        <title>Search Engine Repackaged</title>
         <para>The versions of the UIMA SDK prior to the move into Apache came with a semantic
-          search engine. The Apache version does not include this search engine. The intent
-          is to hook up (over time) with the Lucene search engine project in Apache.</para>
+          search engine. The Apache version does not include this search engine.  The search engine
+          has been repackaged and is separately available from 
+          <ulink url="http://www.alphaworks.ibm.com/tech/uima"/>.  
+          The intent
+          is to hook up (over time) with other open source search engines, such as the Lucene 
+          search engine project in Apache.</para>
       </section>
     </section>
     <section id="ugr.project_overview_backwards_compatibility">
@@ -530,7 +533,7 @@ under the License.
         </itemizedlist> </para>
       
     </section>
-    <section>
+    <section id="ugr.ovv.other_changes">
       <title>Other Changes</title>
       <para>TextAnalysisEngine has been deprecated - it is now no different than
         AnalysisEngine. Previous code that uses this should still continue to work,
@@ -547,7 +550,7 @@ under the License.
   </section>
   <section id="ugr.project_overview_summary">
     <title>Apache UIMA SDK Summary</title>
-    <section>
+    <section id="ugr.ovv.summary.general">
       <title>General</title>
       <para>The UIMA SDK supports the development, discovery, composition and deployment
         of multi-modal analytics for the analysis of unstructured information and its
@@ -562,7 +565,7 @@ under the License.
         indexing the results of analysis and for using this semantic index to perform more
         advanced search. </para>
     </section>
-    <section>
+    <section id="ugr.ovv.summary.programming_language_support">
       <title>Programming Language Support</title>
       <para>UIMA supports the development and integration of analysis algorithms
         developed in different programming languages. </para>
@@ -580,23 +583,22 @@ under the License.
         filled in).</phrase></para>
       
     </section>
-    <section>
+    <section id="ugr.ovv.general.summary.multi_modal_support">
       <title>Multi-Modal Support</title>
       <para>The UIMA architecture supports the development, discovery, composition and
         deployment of multi-modal analytics, including text, audio and video. <olink
-          targetdoc="uima_docs_tutorial_guides"
-          targetptr="sofa_chapter_annotations_artifacts"/> discuss this is more
+          targetdoc="&uima_docs_tutorial_guides;"
+          targetptr="ugr.tug.aas"/> discuss this is more
         detail.</para>
     </section>
-    <section>
+    <section id="ugr.ovv.summary.general.semantic_search_components">
       <title>Semantic Search Components</title>
       <para> The Lucene search engine as of this writing (November, 2006) does not support
-        searching with annotations. <phrase
-          condition="juru_apache_pkg_on_alphaworks_ready">The site <ulink
+        searching with annotations. The site <ulink
           url="http://www.alphaworks.ibm.com/tech/uima"/> provides a download of a
         semantic search engine, a simple demo query tool, some documentation on the semantic
         search engine, and a component that connects the results of UIMA analysis to the
-        indexer so that the annotations as well as key-words can be indexed.</phrase>
+        indexer so that the annotations as well as key-words can be indexed.
         </para>
       
       <para>Previous versions of the UIMA SDK (prior to the Apache versions) are available
