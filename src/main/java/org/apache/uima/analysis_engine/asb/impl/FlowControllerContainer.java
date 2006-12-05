@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.impl.AnalysisEngineManagementImpl;
@@ -40,6 +41,7 @@ import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
+import org.apache.uima.util.Logger;
 import org.apache.uima.util.UimaTimer;
 
 /**
@@ -100,7 +102,13 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
       // determine if this component is Sofa-aware (based on whether it
       // declares any input or output sofas in its capabilities)
       mSofaAware = getProcessingResourceMetaData().isSofaAware();
-
+      
+      // Set Logger, to enable component-specific logging configuration
+      UimaContextAdmin uimaContext = getUimaContextAdmin();
+      Logger logger = UIMAFramework.getLogger(mFlowController.getClass());
+      logger.setResourceManager(this.getResourceManager());
+      uimaContext.setLogger(logger);      
+      
       // initialize FlowController
       mFlowController.initialize(getFlowControllerContext());
 
@@ -234,7 +242,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
               ResourceInitializationException.MISSING_IMPLEMENTATION_CLASS_NAME,
               new Object[] { aDescriptor.getSourceUrlString() });
     }
-    // load annotator class
+    // load FlowController class
     Class flowControllerClass = null;
     try {
       // get UIMA extension ClassLoader if available
