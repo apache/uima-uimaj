@@ -33,9 +33,13 @@ import org.apache.uima.flow.CasFlowController_ImplBase;
 import org.apache.uima.flow.CasFlow_ImplBase;
 import org.apache.uima.flow.FinalStep;
 import org.apache.uima.flow.Flow;
+import org.apache.uima.flow.FlowControllerContext;
 import org.apache.uima.flow.SimpleStep;
 import org.apache.uima.flow.Step;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.Capability;
+import org.apache.uima.util.Level;
+import org.apache.uima.util.Logger;
 
 /**
  * FlowController implementing a simple version of the "whiteboard" flow model. Each time a CAS is
@@ -46,6 +50,21 @@ import org.apache.uima.resource.metadata.Capability;
  * multiple Sofas or CasMultipliers.
  */
 public class WhiteboardFlowController extends CasFlowController_ImplBase {
+
+  /**
+   * UIMA logger instance we will use to log messages when flow decisions are made.
+   */
+  private Logger mLogger;
+  
+  
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.flow.FlowController_ImplBase#initialize(org.apache.uima.flow.FlowControllerContext)
+   */
+  public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
+    super.initialize(aContext);
+    mLogger = aContext.getLogger();
+  }
 
   /*
    * (non-Javadoc)
@@ -92,11 +111,15 @@ public class WhiteboardFlowController extends CasFlowController_ImplBase {
           }
           if (satisfied) {
             mAlreadyCalled.add(aeKey);
+            if (mLogger.isLoggable(Level.FINEST)) {
+              getContext().getLogger().log(Level.FINEST, "Next AE is: " + aeKey);
+            }
             return new SimpleStep(aeKey);
           }
         }
       }
       // no appropriate AEs to call - end of flow
+      getContext().getLogger().log(Level.FINEST, "Flow Complete.");
       return new FinalStep();
     }
 
