@@ -22,19 +22,15 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 -->
-<book lang="en" >
+<book lang="en">
   <title>Overview &amp; Setup</title>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="../common_book_info.xml"/>
 
   <toc/>
-  <!--
-  <preface>
-    <xi:include href="acknowledgements.xml"/>
-  </preface>
-    -->
+
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="project_overview.xml" />
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="conceptual_overview.xml"/>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="eclipse_setup.xml"/>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="faqs.xml"/>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="glossary.xml"/>
-  </book>
+</book>

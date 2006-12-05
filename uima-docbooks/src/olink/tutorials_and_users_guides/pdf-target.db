@@ -1,7 +1,7 @@
 <div element="book" href="#d0e2" number="" lang="en">
    <ttl>Apache UIMA SDK Tutorial and Developers' Guides</ttl>
    <xreftext>Apache UIMA SDK Tutorial and Developers' Guides</xreftext>
-   <div element="chapter" href="#ugr.aae" number="1" targetptr="ugr.aae">
+   <div element="chapter" href="#ugr.tug.aae" number="1" targetptr="ugr.tug.aae">
       <ttl>Annotator and Analysis Engine Developer's Guide</ttl>
       <xreftext>Chapter 1, <fo:inline xmlns:fo="http://www.w3.org/1999/XSL/Format" font-style="italic">Annotator and Analysis Engine Developer's Guide</fo:inline>
       </xreftext>
@@ -29,10 +29,10 @@
             <xreftext>Section 1.1.5, “Testing Your Annotator”</xreftext>
          </div>
       </div>
-      <div element="section" href="#d0e608" number="1.2">
+      <div element="section" href="#ugr.tug.aae.configuration_logging" number="1.2" targetptr="ugr.tug.aae.configuration_logging">
          <ttl>Configuration and Logging</ttl>
          <xreftext>Section 1.2, “Configuration and Logging”</xreftext>
-         <div element="section" href="#d0e611" number="1.2.1">
+         <div element="section" href="#ugr.tug.aae.configuration_parameters" number="1.2.1" targetptr="ugr.tug.aae.configuration_parameters">
             <ttl>Configuration Parameters</ttl>
             <xreftext>Section 1.2.1, “Configuration Parameters”</xreftext>
             <div element="section" href="#ugr.tug.aae.declaring_parameters_in_the_descriptor" number="1.2.1.1" targetptr="ugr.tug.aae.declaring_parameters_in_the_descriptor">
@@ -55,23 +55,23 @@
          <div element="section" href="#ugr.tug.aae.logging" number="1.2.2" targetptr="ugr.tug.aae.logging">
             <ttl>Logging</ttl>
             <xreftext>Section 1.2.2, “Logging”</xreftext>
-            <div element="section" href="#ugr.tug.aae.configuring_logging" number="1.2.2.1" targetptr="ugr.tug.aae.configuring_logging">
+            <div element="section" href="#ugr.tug.aae.logging.configuring" number="1.2.2.1" targetptr="ugr.tug.aae.logging.configuring">
                <ttl>Specifying the Logging Configuration</ttl>
                <xreftext>Section 1.2.2.1, “Specifying the Logging Configuration”</xreftext>
             </div>
-            <div element="section" href="#d0e813" number="1.2.2.2">
+            <div element="section" href="#ugr.tug.aae.logging.setting_logging_levels" number="1.2.2.2" targetptr="ugr.tug.aae.logging.setting_logging_levels">
                <ttl>Setting Logging Levels</ttl>
                <xreftext>Section 1.2.2.2, “Setting Logging Levels”</xreftext>
             </div>
-            <div element="section" href="#d0e842" number="1.2.2.3">
+            <div element="section" href="#ugr.tug.aae.logging.output_format" number="1.2.2.3" targetptr="ugr.tug.aae.logging.output_format">
                <ttl>Format of logging output</ttl>
                <xreftext>Section 1.2.2.3, “Format of logging output”</xreftext>
             </div>
-            <div element="section" href="#d0e855" number="1.2.2.4">
+            <div element="section" href="#ugr.tug.aae.logging.meaning_of_severity_levels" number="1.2.2.4" targetptr="ugr.tug.aae.logging.meaning_of_severity_levels">
                <ttl>Meaning of the logging severity levels</ttl>
                <xreftext>Section 1.2.2.4, “Meaning of the logging severity levels”</xreftext>
             </div>
-            <div element="section" href="#d0e894" number="1.2.2.5">
+            <div element="section" href="#ugr.tug.aae.logging.using_outside_of_an_annotator" number="1.2.2.5" targetptr="ugr.tug.aae.logging.using_outside_of_an_annotator">
                <ttl>Using the logger outside of an annotator</ttl>
                <xreftext>Section 1.2.2.5, “Using the logger outside of an annotator”</xreftext>
             </div>
@@ -88,7 +88,7 @@
                </obj>
             </div>
          </div>
-         <div element="section" href="#d0e1017" number="1.2.4">
+         <div element="section" href="#ugr.tug.aae.aaes_can_contain_cas_consumers" number="1.2.4" targetptr="ugr.tug.aae.aaes_can_contain_cas_consumers">
             <ttl>Aggregate Engines can also contain CAS Consumers</ttl>
             <xreftext>Section 1.2.4, “Aggregate Engines can also contain CAS Consumers”</xreftext>
          </div>
@@ -125,15 +125,15 @@
          <div element="section" href="#ugr.tug.aae.accessing_external_resource_files" number="1.4.4" targetptr="ugr.tug.aae.accessing_external_resource_files">
             <ttl>Accessing External Resource Files</ttl>
             <xreftext>Section 1.4.4, “Accessing External Resource Files”</xreftext>
-            <div element="section" href="#d0e1344" number="1.4.4.1">
+            <div element="section" href="#ugr.tug.aae.resources.declaring_dependencies" number="1.4.4.1" targetptr="ugr.tug.aae.resources.declaring_dependencies">
                <ttl>Declaring Resource Dependencies</ttl>
                <xreftext>Section 1.4.4.1, “Declaring Resource Dependencies”</xreftext>
             </div>
-            <div element="section" href="#d0e1356" number="1.4.4.2">
+            <div element="section" href="#ugr.tug.aae.resources.accessing_from_uimacontext" number="1.4.4.2" targetptr="ugr.tug.aae.resources.accessing_from_uimacontext">
                <ttl>Accessing the Resource from the UimaContext</ttl>
                <xreftext>Section 1.4.4.2, “Accessing the Resource from the UimaContext”</xreftext>
             </div>
-            <div element="section" href="#d0e1391" number="1.4.4.3">
+            <div element="section" href="#ugr.tug.aae.resources.declaring_and_bindings" number="1.4.4.3" targetptr="ugr.tug.aae.resources.declaring_and_bindings">
                <ttl>Declaring Resources and Bindings</ttl>
                <xreftext>Section 1.4.4.3, “Declaring Resources and Bindings”</xreftext>
                <obj element="figure" href="#ugr.tug.aae.fig.external_resource_binding" number="1.3" targetptr="ugr.tug.aae.fig.external_resource_binding">
@@ -141,9 +141,9 @@
                   <xreftext>Figure 1.3, “External Resource Binding”</xreftext>
                </obj>
             </div>
-            <div element="section" href="#d0e1451" number="1.4.4.4">
-               <ttl>Sharing Resources between Annotators</ttl>
-               <xreftext>Section 1.4.4.4, “Sharing Resources between Annotators”</xreftext>
+            <div element="section" href="#ugr.tug.aae.resources.sharing_among_annotators" number="1.4.4.4" targetptr="ugr.tug.aae.resources.sharing_among_annotators">
+               <ttl>Sharing Resources among Annotators</ttl>
+               <xreftext>Section 1.4.4.4, “Sharing Resources among Annotators”</xreftext>
                <obj element="figure" href="#ugr.tug.aae.fig.sharing_common_resource" number="1.4" targetptr="ugr.tug.aae.fig.sharing_common_resource">
                   <ttl>Component engines of an aggregate share a common resource</ttl>
                   <xreftext>Figure 1.4, “Component engines of an aggregate share a common resource”</xreftext>
@@ -154,42 +154,42 @@
             <ttl>Result Specification Setting</ttl>
             <xreftext>Section 1.4.5, “Result Specification Setting”</xreftext>
          </div>
-         <div element="section" href="#d0e1510" number="1.4.6">
+         <div element="section" href="#ugr.tug.aae.result_spec.default" number="1.4.6" targetptr="ugr.tug.aae.result_spec.default">
             <ttl>Default ResultSpecification</ttl>
             <xreftext>Section 1.4.6, “Default ResultSpecification”</xreftext>
          </div>
-         <div element="section" href="#d0e1515" number="1.4.7">
+         <div element="section" href="#ugr.tug.aae.result_spec.passing_to_annotators" number="1.4.7" targetptr="ugr.tug.aae.result_spec.passing_to_annotators">
             <ttl>Passing Result Specifications to Annotators</ttl>
             <xreftext>Section 1.4.7, “Passing Result Specifications to Annotators”</xreftext>
          </div>
-         <div element="section" href="#d0e1520" number="1.4.8">
+         <div element="section" href="#ugr.tug.aae.result_spec.aggregates" number="1.4.8" targetptr="ugr.tug.aae.result_spec.aggregates">
             <ttl>Aggregates</ttl>
             <xreftext>Section 1.4.8, “Aggregates”</xreftext>
+            <div element="section" href="#ugr.tug.aae.result_spec.aggregates.fixed_flow" number="1.4.8.1" targetptr="ugr.tug.aae.result_spec.aggregates.fixed_flow">
+               <ttl>Fixed Flow</ttl>
+               <xreftext>Section 1.4.8.1, “Fixed Flow”</xreftext>
+            </div>
+            <div element="section" href="#ugr.tug.aae.result_spec.aggregates.capability_language_flow" number="1.4.8.2" targetptr="ugr.tug.aae.result_spec.aggregates.capability_language_flow">
+               <ttl>CapabilityLanguageFlow</ttl>
+               <xreftext>Section 1.4.8.2, “CapabilityLanguageFlow”</xreftext>
+            </div>
+            <div element="section" href="#ugr.tug.aae.skipping_ae_in_capability_language_flow" number="1.4.8.3" targetptr="ugr.tug.aae.skipping_ae_in_capability_language_flow">
+               <ttl>Special rule for skipping Analysis Engines</ttl>
+               <xreftext>Section 1.4.8.3, “Special rule for skipping Analysis Engines”</xreftext>
+            </div>
+            <div element="section" href="#ugr.tug.aae.result_spec.aggregates.cpes" number="1.4.8.4" targetptr="ugr.tug.aae.result_spec.aggregates.cpes">
+               <ttl>Collection Proessing Engines</ttl>
+               <xreftext>Section 1.4.8.4, “Collection Proessing Engines”</xreftext>
+            </div>
          </div>
-         <div element="section" href="#d0e1525" number="1.4.9">
-            <ttl>Fixed Flow</ttl>
-            <xreftext>Section 1.4.9, “Fixed Flow”</xreftext>
-         </div>
-         <div element="section" href="#d0e1530" number="1.4.10">
-            <ttl>CapabilityLanguageFlow</ttl>
-            <xreftext>Section 1.4.10, “CapabilityLanguageFlow”</xreftext>
-         </div>
-         <div element="section" href="#d0e1537" number="1.4.11">
-            <ttl>Special rule for skipping Analysis Engines</ttl>
-            <xreftext>Section 1.4.11, “Special rule for skipping Analysis Engines”</xreftext>
-         </div>
-         <div element="section" href="#d0e1546" number="1.4.12">
-            <ttl>Collection Proessing Engines</ttl>
-            <xreftext>Section 1.4.12, “Collection Proessing Engines”</xreftext>
-         </div>
-         <div element="section" href="#d0e1551" number="1.4.13">
+         <div element="section" href="#ugr.tug.aae.classpath_when_using_jcas" number="1.4.9" targetptr="ugr.tug.aae.classpath_when_using_jcas">
             <ttl>Class path setup when using JCas</ttl>
-            <xreftext>Section 1.4.13, “Class path setup when using JCas”</xreftext>
+            <xreftext>Section 1.4.9, “Class path setup when using JCas”</xreftext>
          </div>
-         <div element="section" href="#ugr.tug.aae.using_shell_scripts" number="1.4.14" targetptr="ugr.tug.aae.using_shell_scripts">
+         <div element="section" href="#ugr.tug.aae.using_shell_scripts" number="1.4.10" targetptr="ugr.tug.aae.using_shell_scripts">
             <ttl>Using the Shell Scripts</ttl>
-            <xreftext>Section 1.4.14, “Using the Shell Scripts”</xreftext>
-            <obj element="table" href="#d0e1583" number="1.1">
+            <xreftext>Section 1.4.10, “Using the Shell Scripts”</xreftext>
+            <obj element="table" href="#ugr.aae.tbl.env_vars_used_by_shell_scripts" number="1.1" targetptr="ugr.aae.tbl.env_vars_used_by_shell_scripts">
                <ttl>Environment variables used by the shell scripts</ttl>
                <xreftext>Table 1.1, “Environment variables used by the shell scripts”</xreftext>
             </obj>
@@ -222,10 +222,10 @@
             <ttl>Capabilities</ttl>
             <xreftext>Section 1.7.4, “Capabilities”</xreftext>
          </div>
-         <div element="section" href="#ugr.tug.aae.xml_intro_configuration_parameters" number="1.7.5" targetptr="ugr.tug.aae.xml_intro_configuration_parameters">
+         <div element="section" href="#ugr.tug.aae.xml_intro.configuration_parameters" number="1.7.5" targetptr="ugr.tug.aae.xml_intro.configuration_parameters">
             <ttl>Configuration Parameters (Optional)</ttl>
             <xreftext>Section 1.7.5, “Configuration Parameters (Optional)”</xreftext>
-            <div element="section" href="#d0e1771" number="1.7.5.1">
+            <div element="section" href="#ugr.tug.aae.xml_intro.configuration_parameters_declarations" number="1.7.5.1" targetptr="ugr.tug.aae.xml_intro.configuration_parameters_declarations">
                <ttl>Configuration Parameter Declarations</ttl>
                <xreftext>Section 1.7.5.1, “Configuration Parameter Declarations”</xreftext>
             </div>
@@ -233,7 +233,7 @@
                <ttl>Configuration Parameter Settings</ttl>
                <xreftext>Section 1.7.5.2, “Configuration Parameter Settings”</xreftext>
             </div>
-            <div element="section" href="#d0e1814" number="1.7.5.3">
+            <div element="section" href="#ugr.tug.aae.xml_intro.aggregate" number="1.7.5.3" targetptr="ugr.tug.aae.xml_intro.aggregate">
                <ttl>Aggregate Analysis Engine Descriptor</ttl>
                <xreftext>Section 1.7.5.3, “Aggregate Analysis Engine Descriptor”</xreftext>
             </div>
@@ -275,88 +275,88 @@
       <div element="section" href="#ugr.tug.cpe.developing_collection_processing_components" number="2.4" targetptr="ugr.tug.cpe.developing_collection_processing_components">
          <ttl>Developing Collection Processing Components</ttl>
          <xreftext>Section 2.4, “Developing Collection Processing Components”</xreftext>
-         <div element="section" href="#ugr.tug.cpe.developing_collection_readers" number="2.4.1" targetptr="ugr.tug.cpe.developing_collection_readers">
+         <div element="section" href="#ugr.tug.cpe.collection_reader.developing" number="2.4.1" targetptr="ugr.tug.cpe.collection_reader.developing">
             <ttl>Developing Collection Readers</ttl>
             <xreftext>Section 2.4.1, “Developing Collection Readers”</xreftext>
-            <div element="section" href="#d0e2190" number="2.4.1.1">
+            <div element="section" href="#ugr.tug.cpe.collection_reader.java_class" number="2.4.1.1" targetptr="ugr.tug.cpe.collection_reader.java_class">
                <ttl>Java Class for the Collection Reader</ttl>
                <xreftext>Section 2.4.1.1, “Java Class for the Collection Reader”</xreftext>
             </div>
-            <div element="section" href="#d0e2254" number="2.4.1.2">
+            <div element="section" href="#ugr.tug.cpe.collection_reader.required_methods" number="2.4.1.2" targetptr="ugr.tug.cpe.collection_reader.required_methods">
                <ttl>Required Methods in the Collection Reader class</ttl>
                <xreftext>Section 2.4.1.2, “Required Methods in the Collection Reader class”</xreftext>
-               <div element="section" href="#d0e2259" number="">
+               <div element="section" href="#ugr.tug.cpe.collection_reader.required_methods.initialize" number="" targetptr="ugr.tug.cpe.collection_reader.required_methods.initialize">
                   <ttl>initialize()</ttl>
                   <xreftext>the section called “initialize()”</xreftext>
                </div>
-               <div element="section" href="#d0e2283" number="">
+               <div element="section" href="#ugr.tug.cpe.collection_reader.hasnext" number="" targetptr="ugr.tug.cpe.collection_reader.hasnext">
                   <ttl>hasNext()</ttl>
                   <xreftext>the section called “hasNext()”</xreftext>
                </div>
-               <div element="section" href="#d0e2297" number="">
+               <div element="section" href="#ugr.tug.cpe.collection_reader.required_methods.getnext" number="" targetptr="ugr.tug.cpe.collection_reader.required_methods.getnext">
                   <ttl>getNext(CAS)</ttl>
                   <xreftext>the section called “getNext(CAS)”</xreftext>
                </div>
-               <div element="section" href="#d0e2338" number="">
+               <div element="section" href="#ugr.tug.cpe.collection_reader.required_methods.getprogress" number="" targetptr="ugr.tug.cpe.collection_reader.required_methods.getprogress">
                   <ttl>getProgress()</ttl>
                   <xreftext>the section called “getProgress()”</xreftext>
                </div>
-               <div element="section" href="#d0e2365" number="">
+               <div element="section" href="#ugr.tug.cpe.collection_reader.required_methods.close" number="" targetptr="ugr.tug.cpe.collection_reader.required_methods.close">
                   <ttl>close()</ttl>
                   <xreftext>the section called “close()”</xreftext>
                </div>
-               <div element="section" href="#d0e2372" number="">
+               <div element="section" href="#ugr.tug.cpe.collection_reader.optional_methods" number="" targetptr="ugr.tug.cpe.collection_reader.optional_methods">
                   <ttl>Optional Methods</ttl>
                   <xreftext>the section called “Optional Methods”</xreftext>
-                  <div element="section" href="#d0e2377" number="">
+                  <div element="section" href="#ugr.tug.cpe.collection_reader.optional_methods.reconfigure" number="" targetptr="ugr.tug.cpe.collection_reader.optional_methods.reconfigure">
                      <ttl>reconfigure()</ttl>
                      <xreftext>the section called “reconfigure()”</xreftext>
                   </div>
-                  <div element="section" href="#d0e2382" number="">
+                  <div element="section" href="#ugr.tug.cpe.collection_reader.optional_methods.typesysteminit" number="" targetptr="ugr.tug.cpe.collection_reader.optional_methods.typesysteminit">
                      <ttl>typeSystemInit()</ttl>
                      <xreftext>the section called “typeSystemInit()”</xreftext>
                   </div>
                </div>
-               <div element="section" href="#d0e2389" number="">
+               <div element="section" href="#ugr.tug.cpe.collection_reader.threading" number="" targetptr="ugr.tug.cpe.collection_reader.threading">
                   <ttl>Threading considerations</ttl>
                   <xreftext>the section called “Threading considerations”</xreftext>
                </div>
-               <div element="section" href="#d0e2394" number="">
+               <div element="section" href="#ugr.tug.cpe.collection_reader.descriptor" number="" targetptr="ugr.tug.cpe.collection_reader.descriptor">
                   <ttl>XML Descriptor for a Collection Reader</ttl>
                   <xreftext>the section called “XML Descriptor for a Collection Reader”</xreftext>
                </div>
             </div>
          </div>
-         <div element="section" href="#ugr.tug.cpe.developing_cas_initializers" number="2.4.2" targetptr="ugr.tug.cpe.developing_cas_initializers">
+         <div element="section" href="#ugr.tug.cpe.cas_initializer.developing" number="2.4.2" targetptr="ugr.tug.cpe.cas_initializer.developing">
             <ttl>Developing CAS
       Initializers</ttl>
             <xreftext>Section 2.4.2, “Developing CAS
       Initializers”</xreftext>
          </div>
-         <div element="section" href="#ugr.tug.cpe.developing_cas_consumers" number="2.4.3" targetptr="ugr.tug.cpe.developing_cas_consumers">
+         <div element="section" href="#ugr.tug.cpe.cas_consumer.developing" number="2.4.3" targetptr="ugr.tug.cpe.cas_consumer.developing">
             <ttl>Developing CAS
       Consumers</ttl>
             <xreftext>Section 2.4.3, “Developing CAS
       Consumers”</xreftext>
-            <div element="section" href="#d0e2591" number="2.4.3.1">
+            <div element="section" href="#ugr.tug.cpe.cas_consumer.required_methods" number="2.4.3.1" targetptr="ugr.tug.cpe.cas_consumer.required_methods">
                <ttl>Required Methods for a CAS Consumer</ttl>
                <xreftext>Section 2.4.3.1, “Required Methods for a CAS Consumer”</xreftext>
-               <div element="section" href="#d0e2599" number="">
+               <div element="section" href="#ugr.tug.cpe.cas_consumer.required_methods.initialize" number="" targetptr="ugr.tug.cpe.cas_consumer.required_methods.initialize">
                   <ttl>initialize()</ttl>
                   <xreftext>the section called “initialize()”</xreftext>
                </div>
-               <div element="section" href="#d0e2614" number="">
+               <div element="section" href="#ugr.tug.cpe.cas_consumer.required_methods.processcas" number="" targetptr="ugr.tug.cpe.cas_consumer.required_methods.processcas">
                   <ttl>processCas()</ttl>
                   <xreftext>the section called “processCas()”</xreftext>
                </div>
-               <div element="section" href="#d0e2633" number="">
+               <div element="section" href="#ugr.tug.cpe.cas_consumer.optional_methods" number="" targetptr="ugr.tug.cpe.cas_consumer.optional_methods">
                   <ttl>Optional Methods&gt;</ttl>
                   <xreftext>the section called “Optional Methods&gt;”</xreftext>
-                  <div element="section" href="#d0e2638" number="">
+                  <div element="section" href="#ugr.tug.cpe.cas_consumer.optional_methods.batchprocesscomplete" number="" targetptr="ugr.tug.cpe.cas_consumer.optional_methods.batchprocesscomplete">
                      <ttl>batchProcessComplete()</ttl>
                      <xreftext>the section called “batchProcessComplete()”</xreftext>
                   </div>
-                  <div element="section" href="#d0e2643" number="">
+                  <div element="section" href="#ugr.tug.cpe.cas_consumer.optional_methods.collectionprocesscomplete" number="" targetptr="ugr.tug.cpe.cas_consumer.optional_methods.collectionprocesscomplete">
                      <ttl>collectionProcessComplete()</ttl>
                      <xreftext>the section called “collectionProcessComplete()”</xreftext>
                   </div>
@@ -558,11 +558,11 @@
          <div element="section" href="#ugr.tug.fc.example_code" number="4.1.2" targetptr="ugr.tug.fc.example_code">
             <ttl>Example Code</ttl>
             <xreftext>Section 4.1.2, “Example Code”</xreftext>
-            <div element="section" href="#d0e4410" number="4.1.2.1">
+            <div element="section" href="#ugr.tug.fc.whiteboard" number="4.1.2.1" targetptr="ugr.tug.fc.whiteboard">
                <ttl>The WhiteboardFlowController Class</ttl>
                <xreftext>Section 4.1.2.1, “The WhiteboardFlowController Class”</xreftext>
             </div>
-            <div element="section" href="#d0e4446" number="4.1.2.2">
+            <div element="section" href="#ugr.tug.fc.whiteboardflow" number="4.1.2.2" targetptr="ugr.tug.fc.whiteboardflow">
                <ttl>The WhiteboardFlow Class</ttl>
                <xreftext>Section 4.1.2.2, “The WhiteboardFlow Class”</xreftext>
             </div>
@@ -715,19 +715,19 @@
       <div element="section" href="#ugr.tug.mvs.sample_application" number="6.6" targetptr="ugr.tug.mvs.sample_application">
          <ttl>Sample Multi-View Application</ttl>
          <xreftext>Section 6.6, “Sample Multi-View Application”</xreftext>
-         <div element="section" href="#d0e5136" number="6.6.1">
+         <div element="section" href="#ugr.tug.mvs.sample_application.descriptor" number="6.6.1" targetptr="ugr.tug.mvs.sample_application.descriptor">
             <ttl>Annotator Descriptor</ttl>
             <xreftext>Section 6.6.1, “Annotator Descriptor”</xreftext>
          </div>
-         <div element="section" href="#d0e5163" number="6.6.2">
+         <div element="section" href="#ugr.tug.mvs.sample_application.setup" number="6.6.2" targetptr="ugr.tug.mvs.sample_application.setup">
             <ttl>Application Setup</ttl>
             <xreftext>Section 6.6.2, “Application Setup”</xreftext>
          </div>
-         <div element="section" href="#d0e5185" number="6.6.3">
+         <div element="section" href="#ugr.tug.mvs.sample_application.annotator_processing" number="6.6.3" targetptr="ugr.tug.mvs.sample_application.annotator_processing">
             <ttl>Annotator Processing</ttl>
             <xreftext>Section 6.6.3, “Annotator Processing”</xreftext>
          </div>
-         <div element="section" href="#d0e5208" number="6.6.4">
+         <div element="section" href="#ugr.tug.mvs.sample_application.accessing_results" number="6.6.4" targetptr="ugr.tug.mvs.sample_application.accessing_results">
             <ttl>Accessing the results of analysis</ttl>
             <xreftext>Section 6.6.4, “Accessing the results of analysis”</xreftext>
          </div>
@@ -759,23 +759,23 @@
          <div element="section" href="#ugr.tug.cm.example_code" number="7.1.3" targetptr="ugr.tug.cm.example_code">
             <ttl>Example Code</ttl>
             <xreftext>Section 7.1.3, “Example Code”</xreftext>
-            <div element="section" href="#d0e5461" number="7.1.3.1">
+            <div element="section" href="#ugr.tug.cm.example_code.overall_structure" number="7.1.3.1" targetptr="ugr.tug.cm.example_code.overall_structure">
                <ttl>Overall Structure</ttl>
                <xreftext>Section 7.1.3.1, “Overall Structure”</xreftext>
             </div>
-            <div element="section" href="#d0e5486" number="7.1.3.2">
+            <div element="section" href="#ugr.tug.cm.example_code.initialize" number="7.1.3.2" targetptr="ugr.tug.cm.example_code.initialize">
                <ttl>Initialize Method</ttl>
                <xreftext>Section 7.1.3.2, “Initialize Method”</xreftext>
             </div>
-            <div element="section" href="#d0e5496" number="7.1.3.3">
+            <div element="section" href="#ugr.tug.cm.example_code.process" number="7.1.3.3" targetptr="ugr.tug.cm.example_code.process">
                <ttl>Process Method</ttl>
                <xreftext>Section 7.1.3.3, “Process Method”</xreftext>
             </div>
-            <div element="section" href="#d0e5508" number="7.1.3.4">
+            <div element="section" href="#ugr.tug.cm.example_code.hasnext" number="7.1.3.4" targetptr="ugr.tug.cm.example_code.hasnext">
                <ttl>HasNext Method</ttl>
                <xreftext>Section 7.1.3.4, “HasNext Method”</xreftext>
             </div>
-            <div element="section" href="#d0e5515" number="7.1.3.5">
+            <div element="section" href="#ugr.tug.cm.example_code.next" number="7.1.3.5" targetptr="ugr.tug.cm.example_code.next">
                <ttl>Next Method</ttl>
                <xreftext>Section 7.1.3.5, “Next Method”</xreftext>
             </div>
@@ -819,11 +819,11 @@
          <div element="section" href="#ugr.tug.cm.example_cas_merger" number="7.6.2" targetptr="ugr.tug.cm.example_cas_merger">
             <ttl>Example CAS Merger</ttl>
             <xreftext>Section 7.6.2, “Example CAS Merger”</xreftext>
-            <div element="section" href="#d0e5873" number="7.6.2.1">
+            <div element="section" href="#ugr.tug.cm.example_cas_merger.process" number="7.6.2.1" targetptr="ugr.tug.cm.example_cas_merger.process">
                <ttl>Process Method</ttl>
                <xreftext>Section 7.6.2.1, “Process Method”</xreftext>
             </div>
-            <div element="section" href="#d0e5932" number="7.6.2.2">
+            <div element="section" href="#ugr.tug.cm.example_cas_merger.hasnext_and_next" number="7.6.2.2" targetptr="ugr.tug.cm.example_cas_merger.hasnext_and_next">
                <ttl>HasNext and Next Methods</ttl>
                <xreftext>Section 7.6.2.2, “HasNext and Next Methods”</xreftext>
             </div>

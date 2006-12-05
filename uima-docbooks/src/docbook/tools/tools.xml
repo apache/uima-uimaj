@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
 "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
-  <!ENTITY % xinclude SYSTEM "xinclude.mod">
+  <!ENTITY % xinclude SYSTEM "../xinclude.mod">
   %xinclude;
   ]>
 <!--
@@ -24,20 +24,18 @@ under the License.
 -->
 <book lang="en">
   <title>Apache UIMA SDK Tools Guide and Reference</title>
-  <para>This book describes the tools that are part of the 
-  UIMA distribution, and how to use them.
-  </para>
-  <xi:include href="common_book_info.xml"/>
-
-  <toc/> 
-  <xi:include href="tools/Component_Descriptor_Editor.xml"/>
-  <xi:include href="tools/Collection_Processing_Engine_Configurator.xml"/>
-  <xi:include href="tools/Eclipse_UIMA_Component_Launcher.xml"/>
-  <xi:include href="tools/PEAR_Packager.xml"/>
-  <xi:include href="tools/PEAR_Installer.xml"/>
-  <xi:include href="tools/PEAR_Merger.xml"/>
-  <xi:include href="tools/Document_Analyzer.xml"/>
-  <xi:include href="tools/JCasGen.xml"/>
-  <xi:include href="tools/XCAS_Annotation_viewer.xml"/>
-  <xi:include href="Notices_and_Trademarks.xml"/>
-  </book>
+  <xi:include href="../common_book_info.xml"/>
+  <toc/>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.cde.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.cpe.xml"/>
+  <!--
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.eclipse_launcher.xml"/>
+  -->
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.doc_analyzer.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.annotation_viewer.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.cvd.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.jcasgen.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.pear.packager.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.pear.installer.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="tools.pear.merger.xml"/>
+</book>

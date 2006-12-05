@@ -23,7 +23,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 -->
-<chapter id="ugr.aae">
+<chapter id="ugr.tug.aae">
   <title>Annotator and Analysis Engine Developer&apos;s Guide</title>
   
   <para>This chapter describes how to develop UIMA <emphasis>type systems</emphasis>,
@@ -92,7 +92,7 @@ under the License.
     </listitem>
     <listitem>
       <para><emphasis role="bolditalic"><xref
-          linkend="ugr.tug.aae.configuring_logging"/></emphasis> discusses how to
+          linkend="ugr.tug.aae.logging.configuring"/></emphasis> discusses how to
         make your UIMA annotator configurable, and how it can write messages to the UIMA log
         file.</para>
     </listitem>
@@ -130,7 +130,7 @@ under the License.
     use Analysis Engines, along with other components, e.g. a search engine, document store,
     and user interface, to deliver a complete package of functionality to an end-user. For
     information on application development, see <olink
-      targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.app_dev"/>
+      targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.application"/>
     .</para>
   
   <section id="ugr.tug.aae.getting_started">
@@ -141,7 +141,7 @@ under the License.
       <literal>examples</literal> directory of the UIMA SDK. This directory is designed to
       be imported into your Eclipse workspace; see <olink
         targetdoc="&uima_docs_overview;"
-        targetptr="ugr.eclipse_setup.example_code"/> for instructions on how to do
+        targetptr="ugr.ovv.eclipse_setup.example_code"/> for instructions on how to do
       this. Also you may wish to refer to the UIMA SDK JavaDocs located in the <ulink
         url="file:api/index.html">docs/api</ulink> directory.</para>
     <note><para>In Eclipse 3.1, if you highlight a UIMA class or method defined in the UIMA SDK
@@ -194,7 +194,7 @@ under the License.
       <para>UIMA includes an Eclipse plug-in that will help you edit Type System
         Descriptors, so if you are using Eclipse you will not need to worry about the details of
         the XML syntax. See <olink targetdoc="&uima_docs_overview;"
-          targetptr="ugr.eclipse_setup"/> for instructions on setting up Eclipse and
+          targetptr="ugr.ovv.eclipse_setup"/> for instructions on setting up Eclipse and
         installing the plugin.</para>
       
       <para>The Type System Descriptor for our annotator is located in the file
@@ -202,7 +202,7 @@ under the License.
         and all other examples are located in the <literal>examples</literal>directory of
         the installation of the UIMA SDK, which can be imported into an Eclipse project for
         your convenience, as described in <olink targetdoc="&uima_docs_overview;"
-          targetptr="ugr.eclipse_setup.example_code"/>.)</para>
+          targetptr="ugr.ovv.eclipse_setup.example_code"/>.)</para>
       
       <para>In Eclipse, expand the <literal>uimaj_examples</literal> project in the
         Package Explorer view, and browse to the file
@@ -360,7 +360,7 @@ under the License.
         use the JCas will extend from this class, so they only have to implement the process
         method. This class is not restricted to handling just text; see <olink
           targetdoc="&uima_docs_tutorial_guides;"
-          targetptr="ugr.tug.annotations_artifacts_sofas"/>.</para>
+          targetptr="ugr.tug.aas"/>.</para>
       
       <para>Annotators are not required to extend from the JCasAnnotator_ImplBase class;
         they may instead directly implement the AnalysisComponent interface, and provide
@@ -607,7 +607,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
         leave this blank. The Sofas section allows you to specify the names of additional
         subjects of analysis. This capability and the Sofa Mappings at the bottom are
         advanced topics, described in <olink targetdoc="&uima_docs_tutorial_guides;"
-          targetptr="ugr.tug.annotations_artifacts_sofas"/>. </para>
+          targetptr="ugr.tug.aas"/>. </para>
       
       <para>This is all of the information we need to provide for a simple annotator. If you
         want to peek at the XML that this tool saves you from having to write, click on the
@@ -706,10 +706,10 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
     </section>
   </section>
   
-  <section>
+  <section id="ugr.tug.aae.configuration_logging">
     <title>Configuration and Logging</title>
     
-    <section>
+    <section id="ugr.tug.aae.configuration_parameters">
       <title>Configuration Parameters</title>
       
       <para>The example RoomNumberAnnotator from the previous section used hardcoded
@@ -933,7 +933,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
       Preferences &rarr; General &rarr; Workspace, then click the <quote>refresh
       automatically</quote> checkbox.</para></note>
       
-      <section id="ugr.tug.aae.configuring_logging">
+      <section id="ugr.tug.aae.logging.configuring">
         <title>Specifying the Logging Configuration</title>
         
         <para>The standard UIMA logger uses the underlying Java 1.4 logging mechanism. You
@@ -974,7 +974,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
           </para>
       </section>
       
-      <section>
+      <section id="ugr.tug.aae.logging.setting_logging_levels">
         <title>Setting Logging Levels</title>
         
         <para>Within the logging control file, the default global logging level specifies
@@ -1001,7 +1001,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
           specification for logging in Java 1.4.</para>
       </section>
       
-      <section>
+      <section id="ugr.tug.aae.logging.output_format">
         <title>Format of logging output</title>
         
         <para>The logging output is formatted by handlers specified in the properties file
@@ -1018,7 +1018,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
           in!</literal></para>
       </section>
       
-      <section>
+      <section id="ugr.tug.aae.logging.meaning_of_severity_levels">
         <title>Meaning of the logging severity levels</title>
         
         <para>These levels are defined by the Java logging framework, which was
@@ -1060,7 +1060,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
             </listitem></itemizedlist></para>
       </section>
       
-      <section>
+      <section id="ugr.tug.aae.logging.using_outside_of_an_annotator">
         <title>Using the logger outside of an annotator</title>
         
         <para>An application using UIMA may want to log its messages using the same logging
@@ -1144,7 +1144,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
           which run remotely (for example, on another machine using a remote networking
           connection). This capability is described in section <olink
             targetdoc="&uima_docs_tutorial_guides;"
-            targetptr="ugr.tug.app_dev.how_to_call_a_uima_service"/>,</para>
+            targetptr="ugr.tug.application.how_to_call_a_uima_service"/>,</para>
           </note> </para>
         
         <para>The order of the components in the left pane does not imply an order of
@@ -1200,7 +1200,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
       </section>
     </section>
     
-    <section>
+    <section id="ugr.tug.aae.aaes_can_contain_cas_consumers">
       <title>Aggregate Engines can also contain CAS Consumers</title>
       
       <para>In addition to aggregating Analysis Engines, Aggregates can also contain CAS
@@ -1308,7 +1308,7 @@ while (timeIter.hasNext()) {
       <listitem><para>XmlDetagger &ndash; A multi-sofa annotator that does XML
         detagging. Multiple Sofas (Subjects of Analysis) are described in a later &ndash;
         see <olink targetdoc="&uima_docs_tutorial_guides;"
-          targetptr="ugr.tug.multiple_views"/>. Reads XML data from the input Sofa
+          targetptr="ugr.tug.mvs"/>. Reads XML data from the input Sofa
         (named "xmlDocument"); this data can be stored in the CAS as a string or array, or it can
         be a URI to a remote file. The XML is parsed using the JVM's default parser, and the
         plain-text content is written to a new sofa called "plainTextDocument".</para>
@@ -1656,7 +1656,7 @@ while (timeIter.hasNext()) {
       
       <para>The top window has a scroll bar allowing you to see the rest of the line.</para>
       
-      <section>
+      <section id="ugr.tug.aae.resources.declaring_dependencies">
         <title>Declaring Resource Dependencies</title>
         
         <para>The bottom window is where an annotator declares an external resource
@@ -1682,7 +1682,7 @@ while (timeIter.hasNext()) {
           will get direct access to the data file.</para>
       </section>
       
-      <section>
+      <section id="ugr.tug.aae.resources.accessing_from_uimacontext">
         <title>Accessing the Resource from the UimaContext</title>
         
         <para> If you look at the
@@ -1723,7 +1723,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
         
       </section>
       
-      <section>
+      <section id="ugr.tug.aae.resources.declaring_and_bindings">
         <title>Declaring Resources and Bindings</title>
         
         <para>Refer back to the top window in the Resources page of the Component Descriptor
@@ -1826,7 +1826,8 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
           made our external resource dependencies explicit in the descriptor, which will
           help others to deploy our annotator.</para>
       </section>
-      <section><title>Sharing Resources between Annotators</title>
+      <section id="ugr.tug.aae.resources.sharing_among_annotators">
+        <title>Sharing Resources among Annotators</title>
         
         <para>Another advantage of the Resource Manager is that it allows our data to be
           shared between annotators. To demonstrate this we have developed another
@@ -1932,7 +1933,8 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
       
     </section>
     
-    <section><title>Default ResultSpecification</title>
+    <section id="ugr.tug.aae.result_spec.default">
+      <title>Default ResultSpecification</title>
       
       <para>The default Result Specification is taken from the Engine&apos;s output
         Capability Specification. Remember that a Capability Specification has both
@@ -1943,7 +1945,8 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
       
     </section>
     
-    <section><title>Passing Result Specifications to Annotators</title>
+    <section id="ugr.tug.aae.result_spec.passing_to_annotators">
+      <title>Passing Result Specifications to Annotators</title>
       
       <para>If you are not using aggregation or collection processing, but instead are
         instantiating your own primitive analysis engines and calling their process
@@ -1954,13 +1957,15 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
         Result Specification is created and passed, as above.</para>
     </section>
     
-    <section><title>Aggregates</title>
+    <section id="ugr.tug.aae.result_spec.aggregates">
+      <title>Aggregates</title>
       
       <para>For aggregate engines, the value passed to the primitive annotator code depends
         on the kind of flow.</para>
-    </section>
+
     
-    <section><title>Fixed Flow</title>
+    <section id="ugr.tug.aae.result_spec.aggregates.fixed_flow">
+      <title>Fixed Flow</title>
       
       <para>For FixedFlow, any ResultSpecification passed into the aggregate is ignored,
         and instead, each primitive annotator is passed a result spec that corresponds to the
@@ -1970,7 +1975,8 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
       
     </section>
     
-    <section><title>CapabilityLanguageFlow</title>
+    <section id="ugr.tug.aae.result_spec.aggregates.capability_language_flow">
+      <title>CapabilityLanguageFlow</title>
       <para>For CapabilityLanguageFlow, each annotator is passed a ResultSpecification
         that is the intersection of the primitive annotator&apos;s output Capability
         Specification with the ResultSpecification passed to the aggregate. If this
@@ -1982,8 +1988,10 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
         need to be produced internally in the flow, or else things will not work
         properly.</para>
     </section>
+
     
-    <section><title>Special rule for skipping Analysis Engines</title>
+    <section id="ugr.tug.aae.skipping_ae_in_capability_language_flow">
+      <title>Special rule for skipping Analysis Engines</title>
       
       <para>When using the CapabilityLanguageFlow, an annotator will be also be skipped if
         all of its outputs are in the output capability of some annotator(s) that has (have)
@@ -2002,14 +2010,15 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
         need to be produced, or else things will not work properly.</para>
     </section>
     
-    <section><title>Collection Proessing Engines</title>
+    <section id="ugr.tug.aae.result_spec.aggregates.cpes">
+      <title>Collection Proessing Engines</title>
       
       <para>The Default Result Specification is always used for all components of a
         Collection Processing Engine.</para>
       
     </section>
-    
-    <section>
+          </section>
+    <section id="ugr.tug.aae.classpath_when_using_jcas">
       <title>Class path setup when using JCas</title>
       
       <para>JCas provides Java classes that correspond to each CAS type in an application.
@@ -2052,7 +2061,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
       
       <para>Other environment variables are used by the shell scripts, as follows:
         
-        <table frame="all">
+        <table frame="all" id="ugr.aae.tbl.env_vars_used_by_shell_scripts">
           <title>Environment variables used by the shell scripts</title>
           <tgroup cols="2" rowsep="1" colsep="1">
             <colspec colname="c1"/>
@@ -2091,14 +2100,14 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
                 <entry>(Optional) if specified, the network IP name of the host running the
                   Vinci Name Server (VNS) (see <olink
                     targetdoc="&uima_docs_tutorial_guides;"
-                    targetptr="ugr.tug.app_dev.vns"/>)</entry>
+                    targetptr="ugr.tug.application.vns"/>)</entry>
               </row>
               <row>
                 <entry>VNS_PORT</entry>
                 <entry>(Optional) if specified, the network IP port number of the Vinci
                   Name Server (VNS) (see <olink
                     targetdoc="&uima_docs_tutorial_guides;"
-                    targetptr="ugr.tug.app_dev.vns"/>)</entry>
+                    targetptr="ugr.tug.application.vns"/>)</entry>
               </row>
               <row>
                 <entry>ECLIPSE_HOME</entry>
@@ -2334,10 +2343,11 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
       
     </section>
     
-    <section id="ugr.tug.aae.xml_intro_configuration_parameters">
+    <section id="ugr.tug.aae.xml_intro.configuration_parameters">
       <title>Configuration Parameters (Optional)</title>
       
-      <section><title>Configuration Parameter Declarations</title>
+      <section id="ugr.tug.aae.xml_intro.configuration_parameters_declarations">
+        <title>Configuration Parameter Declarations</title>
         
         
         <programlisting>
@@ -2426,7 +2436,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
         
       </section>
       
-      <section>
+      <section id="ugr.tug.aae.xml_intro.aggregate">
         <title>Aggregate Analysis Engine Descriptor</title>
         
         

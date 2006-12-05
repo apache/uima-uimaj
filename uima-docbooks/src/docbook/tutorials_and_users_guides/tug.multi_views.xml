@@ -172,7 +172,7 @@ under the License.
           targetdoc="&uima_docs_ref;"
           targetptr="ugr.ref.xml.component_descriptor"/>. The Component Descriptor
         Editor supports Sofa declarations on the <olink targetdoc="&uima_docs_tools;"
-          targetptr="ugr.tools.cde.capabilities_page"/>.</para>
+          targetptr="ugr.tools.cde.capabilities"/>.</para>
       
     </section>
   </section>
@@ -275,7 +275,7 @@ under the License.
       
       <para>The Component Descriptor Editor supports Sofa name mapping in aggregates and
         simplifies the task. See <olink targetdoc="&uima_docs_tools;"
-          targetptr="ugr.tools.cde.sofa_name_mappings"/> for details.</para>
+          targetptr="ugr.tools.cde.capabilities.sofa_name_mapping"/> for details.</para>
       
     </section>
     
@@ -452,7 +452,8 @@ anAnnotator = UIMAFramework.produceAnalysisEngine(desc,additionalParams);</progr
       <listitem><para>The strong affinity of annotations with a specific Sofa. </para>
         </listitem></itemizedlist>
     
-    <section><title>Annotator Descriptor</title>
+    <section id="ugr.tug.mvs.sample_application.descriptor">
+      <title>Annotator Descriptor</title>
       
       <para>The annotator descriptor in
         <literal>examples/descriptors/analysis_engine/SofaExampleAnnotator.xml</literal>
@@ -480,7 +481,8 @@ anAnnotator = UIMAFramework.produceAnalysisEngine(desc,additionalParams);</progr
       
     </section>
     
-    <section><title>Application Setup</title>
+    <section id="ugr.tug.mvs.sample_application.setup">
+      <title>Application Setup</title>
       
       <para>The application driver instantiates an analysis engine,
         <literal>seAnnotator</literal>, from the annotator descriptor, obtains a new
@@ -503,7 +505,8 @@ CAS aView = cas.createView("EnglishDocument");</programlisting>
       
     </section>
     
-    <section><title>Annotator Processing</title>
+    <section id="ugr.tug.mvs.sample_application.annotator_processing">
+      <title>Annotator Processing</title>
       
       <para>Annotator processing consists of parsing the English document into individual
         words, doing word-by-word translation and concatenating the translations into a
@@ -538,7 +541,8 @@ germAnnot.setFeatureValue(other, engAnnot);</programlisting>
       
     </section>
     
-    <section><title>Accessing the results of analysis</title>
+    <section id="ugr.tug.mvs.sample_application.accessing_results">
+      <title>Accessing the results of analysis</title>
       
       <para>The application needs to get the results of analysis, which may be in different
         views. Analysis results for each Sofa are dumped independently by iterating over all

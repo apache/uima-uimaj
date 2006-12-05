@@ -198,7 +198,7 @@ Annotations are made with respect to one view.  Feature structures can have refe
       <glossdef>
         <para>The Component Descriptor Editor. This
 is the Eclipse tool that lets you conveniently edit the UIMA descriptors; 
-          see <olink targetdoc="&uima_docs_tools;" targetptr="ugr.component_descriptor_editor"/>.</para>
+          see <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cde"/>.</para>
       </glossdef>
     </glossentry>
   

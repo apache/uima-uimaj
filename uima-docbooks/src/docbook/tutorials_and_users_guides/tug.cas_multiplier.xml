@@ -125,7 +125,7 @@ JCas getEmptyJCas()</programlisting> which are
         <literal>org.apache.uima.examples.casMultiplier.SimpleTextSegmenter</literal> and the source
         code is included in the UIMA SDK under the <literal>examples/src</literal> directory.</para>
       
-      <section>
+      <section id="ugr.tug.cm.example_code.overall_structure">
         <title>Overall Structure</title>
         
         
@@ -156,7 +156,7 @@ JCas getEmptyJCas()</programlisting> which are
         
       </section>
       
-      <section>
+      <section id="ugr.tug.cm.example_code.initialize">
         <title>Initialize Method</title>
         
         
@@ -174,7 +174,7 @@ JCas getEmptyJCas()</programlisting> which are
         
       </section>
       
-      <section>
+      <section id="ugr.tug.cm.example_code.process">
         <title>Process Method</title>
         
         
@@ -208,7 +208,7 @@ JCas getEmptyJCas()</programlisting> which are
         
       </section>
       
-      <section>
+      <section id="ugr.tug.cm.example_code.hasnext">
         <title>HasNext Method</title>
         
         
@@ -222,7 +222,7 @@ JCas getEmptyJCas()</programlisting> which are
         
       </section>
       
-      <section>
+      <section id="ugr.tug.cm.example_code.next">
         <title>Next Method</title>
         
         
@@ -473,7 +473,7 @@ JCas getEmptyJCas()</programlisting> which are
         occurring inside it is hidden from users of that Analysis Engine.</para> <note>
       <para>If you want to output some new Output CASes and not others, you need to implement a custom Flow Controller
         that makes this decision &mdash; see <olink targetdoc="&uima_docs_tutorial_guides;"
-          targetptr="ugr.tug.fc."/>. </para> </note>
+          targetptr="ugr.tug.fc"/>. </para> </note>
       
     </section>
   </section>
@@ -595,7 +595,7 @@ while (casIterator.hasNext()) {
       <para>An example CAS Multiplier that merges CASes can be found is provided in the UIMA SDK. The Java class for
         this example is <literal>org.apache.uima.examples.casMultiplier.SimpleTextMerger</literal> and
         the source code is located under the <literal>examples/src</literal> directory.</para>
-      <section>
+      <section id="ugr.tug.cm.example_cas_merger.process">
         <title>Process Method</title>
         <para>Almost all of the code for this example is in the <literal>process</literal> method. The first part of
           the <literal>process</literal> method shows how to copy Feature Structures from the input CAS to the
@@ -687,7 +687,7 @@ while (casIterator.hasNext()) {
           FeatureStructure), and then sets the <literal>mReadyToOutput</literal> field to true. This field is
           then used in the <literal>hasNext</literal> and <literal>next</literal> methods.</para>
       </section>
-      <section>
+      <section id="ugr.tug.cm.example_cas_merger.hasnext_and_next">
         <title>HasNext and Next Methods</title>
         <para>These methods are relatively simple:</para>
         

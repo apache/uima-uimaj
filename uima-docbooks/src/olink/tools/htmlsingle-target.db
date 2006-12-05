@@ -1,517 +1,297 @@
 <div element="book" href="#d0e2" number="" lang="en">
-   <ttl>Overview &amp; Setup</ttl>
-   <xreftext>Overview &amp; Setup</xreftext>
-   <div element="chapter" href="#ugr.project_overview" number="1" targetptr="ugr.project_overview">
-      <ttl>Apache UIMA Project Overview</ttl>
-      <xreftext>Chapter 1, <i>Apache UIMA Project Overview</i>
+   <ttl>Apache UIMA SDK Tools Guide and Reference</ttl>
+   <xreftext>Apache UIMA SDK Tools Guide and Reference</xreftext>
+   <div element="chapter" href="#ugr.tools.cde" number="1" targetptr="ugr.tools.cde">
+      <ttl>Component Descriptor Editor User's Guide</ttl>
+      <xreftext>Chapter 1, <i>Component Descriptor Editor User's Guide</i>
       </xreftext>
-      <div element="section" href="#ugr.project_overview_doc_overview" number="1.1" targetptr="ugr.project_overview_doc_overview">
-         <ttl>Apache UIMA Project Documentation Overview</ttl>
-         <xreftext>Section 1.1, “Apache UIMA Project Documentation Overview”</xreftext>
-         <div element="section" href="#ugr.project_overview_overview" number="" targetptr="ugr.project_overview_overview">
-            <ttl>Overviews</ttl>
-            <xreftext>the section called “Overviews”</xreftext>
+      <div element="section" href="#ugr.tools.cde.launching" number="1.1" targetptr="ugr.tools.cde.launching">
+         <ttl>Launching the Component Descriptor Editor</ttl>
+         <xreftext>Section 1.1, “Launching the Component Descriptor Editor”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tools.cde.creating_new_ae_descriptor" number="1.2" targetptr="ugr.tools.cde.creating_new_ae_descriptor">
+         <ttl>Creating a New AE Descriptor</ttl>
+         <xreftext>Section 1.2, “Creating a New AE Descriptor”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tools.cde.pages_within_the_editor" number="1.3" targetptr="ugr.tools.cde.pages_within_the_editor">
+         <ttl>Pages within the Editor</ttl>
+         <xreftext>Section 1.3, “Pages within the Editor”</xreftext>
+         <div element="section" href="#ugr.tools.cde.adjusting_display_of_pages" number="" targetptr="ugr.tools.cde.adjusting_display_of_pages">
+            <ttl>Adjusting the display of pages</ttl>
+            <xreftext>the section called “Adjusting the display of pages”</xreftext>
          </div>
-         <div element="section" href="#ugr.project_overview_setup" number="" targetptr="ugr.project_overview_setup">
-            <ttl>Eclipse Tooling Installation and Setup</ttl>
-            <xreftext>the section called “Eclipse Tooling Installation and Setup”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tools.cde.overview_page" number="1.4" targetptr="ugr.tools.cde.overview_page">
+         <ttl>Overview Page</ttl>
+         <xreftext>Section 1.4, “Overview Page”</xreftext>
+         <div element="section" href="#ugr.tools.cde.overview_page.implementation_details" number="" targetptr="ugr.tools.cde.overview_page.implementation_details">
+            <ttl>Implementation Details</ttl>
+            <xreftext>the section called “Implementation Details”</xreftext>
          </div>
-         <div element="section" href="#ugr.project_overview_tutorials_dev_guides" number="" targetptr="ugr.project_overview_tutorials_dev_guides">
-            <ttl>Tutorials and Developer's Guides</ttl>
-            <xreftext>the section called “Tutorials and Developer's Guides”</xreftext>
-            <obj element="row" href="#ugr.project_overview_tutorial_annotator" number="" targetptr="ugr.project_overview_tutorial_annotator">
-               <ttl>???TITLE???</ttl>
-               <xreftext>???</xreftext>
-            </obj>
-            <obj element="row" href="#ugr.project_overview_tutorial_cpe" number="" targetptr="ugr.project_overview_tutorial_cpe">
-               <ttl>???TITLE???</ttl>
-               <xreftext>???</xreftext>
-            </obj>
-            <obj element="row" href="#ugr.project_overview_tutorial_application_development" number="" targetptr="ugr.project_overview_tutorial_application_development">
-               <ttl>???TITLE???</ttl>
-               <xreftext>???</xreftext>
-            </obj>
-            <obj element="row" href="#ugr.project_overview_guide_flow_controller" number="" targetptr="ugr.project_overview_guide_flow_controller">
-               <ttl>???TITLE???</ttl>
-               <xreftext>???</xreftext>
-            </obj>
-            <obj element="row" href="#ugr.project_overview_guide_multiple_sofas" number="" targetptr="ugr.project_overview_guide_multiple_sofas">
-               <ttl>???TITLE???</ttl>
-               <xreftext>???</xreftext>
-            </obj>
-            <obj element="row" href="#ugr.project_overview_guide_cas_multiplier" number="" targetptr="ugr.project_overview_guide_cas_multiplier">
-               <ttl>???TITLE???</ttl>
-               <xreftext>???</xreftext>
-            </obj>
-            <obj element="row" href="#ugr.project_overview_xmi_emf" number="" targetptr="ugr.project_overview_xmi_emf">
-               <ttl>???TITLE???</ttl>
-               <xreftext>???</xreftext>
-            </obj>
+         <div element="section" href="#ugr.tools.cde.overview_page.runtime_info" number="" targetptr="ugr.tools.cde.overview_page.runtime_info">
+            <ttl>Runtime Information</ttl>
+            <xreftext>the section called “Runtime Information”</xreftext>
          </div>
-         <div element="section" href="#ugr.project_overview_tool_guides" number="" targetptr="ugr.project_overview_tool_guides">
-            <ttl>Tools Users' Guides</ttl>
-            <xreftext>the section called “Tools Users' Guides”</xreftext>
-            <obj element="row" href="#ugr.project_overview_tools_component_descriptor_editor" number="" targetptr="ugr.project_overview_tools_component_descriptor_editor">
-               <ttl>???TITLE???</ttl>
-               <xreftext>???</xreftext>
-            </obj>
-            <obj element="row" href="#ugr.project_overview_tools_cpe_configurator" number="" targetptr="ugr.project_overview_tools_cpe_configurator">
-               <ttl>???TITLE???</ttl>
-               <xreftext>???</xreftext>
-            </obj>
-            <obj element="row" href="#ugr.project_overview_tools_pear_packager" number="" targetptr="ugr.project_overview_tools_pear_packager">
-               <ttl>???TITLE???</ttl>
-               <xreftext>???</xreftext>
-            </obj>
-            <obj element="row" href="#ugr.project_overview_tools_pear_installer" number="" targetptr="ugr.project_overview_tools_pear_installer">
-               <ttl>???TITLE???</ttl>
-               <xreftext>???</xreftext>
-            </obj>
-            <obj element="row" href="#ugr.project_overview_tools_pear_merger" number="" targetptr="ugr.project_overview_tools_pear_merger">
-               <ttl>???TITLE???</ttl>
-               <xreftext>???</xreftext>
-            </obj>
-            <obj element="row" href="#ugr.project_overview_tools_document_analyzer" number="" targetptr="ugr.project_overview_tools_document_analyzer">
-               <ttl>???TITLE???</ttl>
-               <xreftext>???</xreftext>
-            </obj>
-            <obj element="row" href="#ugr.project_overview_tools_cas_visual_debugger" number="" targetptr="ugr.project_overview_tools_cas_visual_debugger">
-               <ttl>???TITLE???</ttl>
-               <xreftext>???</xreftext>
-            </obj>
-            <obj element="row" href="#ugr.project_overview_tools_jcasgen" number="" targetptr="ugr.project_overview_tools_jcasgen">
-               <ttl>???TITLE???</ttl>
-               <xreftext>???</xreftext>
-            </obj>
-            <obj element="row" href="#ugr.project_overview_tools_xml_cas_viewer" number="" targetptr="ugr.project_overview_tools_xml_cas_viewer">
-               <ttl>???TITLE???</ttl>
-               <xreftext>???</xreftext>
-            </obj>
+         <div element="section" href="#ugr.tools.cde.overview_page.overall_id_info" number="" targetptr="ugr.tools.cde.overview_page.overall_id_info">
+            <ttl>Overall Identification Information</ttl>
+            <xreftext>the section called “Overall Identification Information”</xreftext>
          </div>
-         <div element="section" href="#ugr.project_overview_reference" number="" targetptr="ugr.project_overview_reference">
-            <ttl>References</ttl>
-            <xreftext>the section called “References”</xreftext>
-            <obj element="row" href="#ugr.project_overview_xml_ref_component_descriptor" number="" targetptr="ugr.project_overview_xml_ref_component_descriptor">
-               <ttl>???TITLE???</ttl>
-               <xreftext>???</xreftext>
-            </obj>
-            <obj element="row" href="#ugr.project_overview_xml_ref_collection_processing_engine_descriptor" number="" targetptr="ugr.project_overview_xml_ref_collection_processing_engine_descriptor">
-               <ttl>???TITLE???</ttl>
-               <xreftext>???</xreftext>
-            </obj>
-            <obj element="row" href="#ugr.project_overview_javadocs" number="" targetptr="ugr.project_overview_javadocs">
-               <ttl>???TITLE???</ttl>
-               <xreftext>???</xreftext>
-            </obj>
-            <obj element="row" href="#ugr.project_overview_cas" number="" targetptr="ugr.project_overview_cas">
-               <ttl>???TITLE???</ttl>
-               <xreftext>???</xreftext>
-            </obj>
-            <obj element="row" href="#ugr.project_overview_jcas" number="" targetptr="ugr.project_overview_jcas">
-               <ttl>???TITLE???</ttl>
-               <xreftext>???</xreftext>
-            </obj>
-            <obj element="row" href="#ugr.project_overview_ref_pear" number="" targetptr="ugr.project_overview_ref_pear">
-               <ttl>???TITLE???</ttl>
-               <xreftext>???</xreftext>
-            </obj>
-            <obj element="row" href="#ugr.project_overview_xmi_cas_serialization" number="" targetptr="ugr.project_overview_xmi_cas_serialization">
+      </div>
+      <div element="section" href="#ugr.tools.cde.aggregate_page" number="1.5" targetptr="ugr.tools.cde.aggregate_page">
+         <ttl>Aggregate Page</ttl>
+         <xreftext>Section 1.5, “Aggregate Page”</xreftext>
+         <div element="section" href="#ugr.tools.cde.aggregate_page.adding_components_more_than_once" number="" targetptr="ugr.tools.cde.aggregate_page.adding_components_more_than_once">
+            <ttl>Adding components more than once</ttl>
+            <xreftext>the section called “Adding components more than once”</xreftext>
+         </div>
+         <div element="section" href="#ugr.tools.cde.aggregate_page.adding_removing_components_from_flow" number="" targetptr="ugr.tools.cde.aggregate_page.adding_removing_components_from_flow">
+            <ttl>Adding or Removing components in a flow</ttl>
+            <xreftext>the section called “Adding or Removing components in a flow”</xreftext>
+         </div>
+         <div element="section" href="#ugr.tools.cde.aggregate_page.adding_remote_aes" number="" targetptr="ugr.tools.cde.aggregate_page.adding_remote_aes">
+            <ttl>Adding remote Analysis Engines</ttl>
+            <xreftext>the section called “Adding remote Analysis Engines”</xreftext>
+         </div>
+         <div element="section" href="#ugr.tools.cde.aggregate_page.connecting_to_remote_services" number="" targetptr="ugr.tools.cde.aggregate_page.connecting_to_remote_services">
+            <ttl>Connecting to Remote Services</ttl>
+            <xreftext>the section called “Connecting to Remote Services”</xreftext>
+         </div>
+         <div element="section" href="#ugr.tools.cde.aggregate_page.finding_aes_by_searching" number="" targetptr="ugr.tools.cde.aggregate_page.finding_aes_by_searching">
+            <ttl>Finding Analysis Engines by searching</ttl>
+            <xreftext>the section called “Finding Analysis Engines by searching”</xreftext>
+         </div>
+         <div element="section" href="#ugr.tools.cde.aggregate_page.component_engine_flow" number="" targetptr="ugr.tools.cde.aggregate_page.component_engine_flow">
+            <ttl>Component Engine Flow</ttl>
+            <xreftext>the section called “Component Engine Flow”</xreftext>
+         </div>
+      </div>
+      <div element="section" href="#ugr.tools.cde.parm_definition" number="1.6" targetptr="ugr.tools.cde.parm_definition">
+         <ttl>Parameters Definition Page</ttl>
+         <xreftext>Section 1.6, “Parameters Definition Page”</xreftext>
+         <div element="section" href="#ugr.tools.cde.parm_definition.using_groups" number="" targetptr="ugr.tools.cde.parm_definition.using_groups">
+            <ttl>Using groups</ttl>
+            <xreftext>the section called “Using groups”</xreftext>
+         </div>
+         <div element="section" href="#ugr.tools.cde.parm_definition.aggregates" number="" targetptr="ugr.tools.cde.parm_definition.aggregates">
+            <ttl>Parameter declarations for Aggregates</ttl>
+            <xreftext>the section called “Parameter declarations for Aggregates”</xreftext>
+            <obj element="phrase" href="#ugr.tools.cde.parm_definition.removing_groups" number="" targetptr="ugr.tools.cde.parm_definition.removing_groups">
                <ttl>???TITLE???</ttl>
                <xreftext>???</xreftext>
             </obj>
          </div>
       </div>
-      <div element="section" href="#ugr.project_overview_doc_use" number="1.2" targetptr="ugr.project_overview_doc_use">
-         <ttl>Using the Documentation to get started with the UIMA SDK</ttl>
-         <xreftext>Section 1.2, “Using the Documentation to get started with the UIMA SDK”</xreftext>
+      <div element="section" href="#ugr.tools.cde.parameter_settings" number="1.7" targetptr="ugr.tools.cde.parameter_settings">
+         <ttl>Parameter Settings Page</ttl>
+         <xreftext>Section 1.7, “Parameter Settings Page”</xreftext>
       </div>
-      <div element="section" href="#ugr.project_overview_whats_new" number="1.3" targetptr="ugr.project_overview_whats_new">
-         <ttl>What's new in Apache UIMA Version 2.0</ttl>
-         <xreftext>Section 1.3, “What's new in Apache UIMA Version 2.0”</xreftext>
-         <div element="section" href="#ugr.project_overview_new_capabilities" number="" targetptr="ugr.project_overview_new_capabilities">
-            <ttl>New Capabilities</ttl>
-            <xreftext>the section called “New Capabilities”</xreftext>
-            <div element="section" href="#ugr.project_overview_new_data_types" number="" targetptr="ugr.project_overview_new_data_types">
-               <ttl>New Primitive data types</ttl>
-               <xreftext>the section called “New Primitive data types”</xreftext>
-            </div>
-            <div element="section" href="#d0e444" number="">
-               <ttl>Simpler Analysis Engines and CASes</ttl>
-               <xreftext>the section called “Simpler Analysis Engines and CASes”</xreftext>
-            </div>
-            <div element="section" href="#d0e451" number="">
-               <ttl>Sofas and CAS Views simplified</ttl>
-               <xreftext>the section called “Sofas and CAS Views simplified”</xreftext>
-            </div>
-            <div element="section" href="#d0e456" number="">
-               <ttl>Analysis Component generalized to support multiple new CAS
-          outputs</ttl>
-               <xreftext>the section called “Analysis Component generalized to support multiple new CAS
-          outputs”</xreftext>
-            </div>
-            <div element="section" href="#d0e463" number="">
-               <ttl>User-customized Flow Controllers</ttl>
-               <xreftext>the section called “User-customized Flow Controllers”</xreftext>
-            </div>
-            <div element="section" href="#d0e470" number="">
-               <ttl>Search Engine</ttl>
-               <xreftext>the section called “Search Engine”</xreftext>
-            </div>
-         </div>
-         <div element="section" href="#ugr.project_overview_backwards_compatibility" number="" targetptr="ugr.project_overview_backwards_compatibility">
-            <ttl>Backwards Compatibility</ttl>
-            <xreftext>the section called “Backwards Compatibility”</xreftext>
-         </div>
-         <div element="section" href="#d0e501" number="">
-            <ttl>Other Changes</ttl>
-            <xreftext>the section called “Other Changes”</xreftext>
-         </div>
-      </div>
-      <div element="section" href="#ugr.project_overview_summary" number="1.4" targetptr="ugr.project_overview_summary">
-         <ttl>Apache UIMA SDK Summary</ttl>
-         <xreftext>Section 1.4, “Apache UIMA SDK Summary”</xreftext>
-         <div element="section" href="#d0e513" number="">
-            <ttl>General</ttl>
-            <xreftext>the section called “General”</xreftext>
-         </div>
-         <div element="section" href="#d0e522" number="">
-            <ttl>Programming Language Support</ttl>
-            <xreftext>the section called “Programming Language Support”</xreftext>
-         </div>
-         <div element="section" href="#d0e533" number="">
-            <ttl>Multi-Modal Support</ttl>
-            <xreftext>the section called “Multi-Modal Support”</xreftext>
-         </div>
-         <div element="section" href="#d0e540" number="">
-            <ttl>Semantic Search Components</ttl>
-            <xreftext>the section called “Semantic Search Components”</xreftext>
-         </div>
-      </div>
-      <div element="section" href="#ugr.project_overview_summary_sdk_capabilities" number="1.5" targetptr="ugr.project_overview_summary_sdk_capabilities">
-         <ttl>Summary of UIMA SDK Capabilities</ttl>
-         <xreftext>Section 1.5, “Summary of UIMA SDK Capabilities”</xreftext>
-      </div>
-   </div>
-   <div element="chapter" href="#ugr.conceptual_overview" number="2" targetptr="ugr.conceptual_overview">
-      <ttl>UIMA Conceptual Overview</ttl>
-      <xreftext>Chapter 2, <i>UIMA Conceptual Overview</i>
-      </xreftext>
-      <div element="section" href="#ugr.conceptual_overview.uima_introduction" number="2.1" targetptr="ugr.conceptual_overview.uima_introduction">
-         <ttl>UIMA Introduction</ttl>
-         <xreftext>Section 2.1, “UIMA Introduction”</xreftext>
-         <obj element="figure" href="#d0e734" number="2.1">
-            <ttl>UIMA helps you build the bridge between the unstructured and structured
-        worlds</ttl>
-            <xreftext>Figure 2.1, “UIMA helps you build the bridge between the unstructured and structured
-        worlds”</xreftext>
+      <div element="section" href="#ugr.tools.cde.type_system" number="1.8" targetptr="ugr.tools.cde.type_system">
+         <ttl>Type System Page</ttl>
+         <xreftext>Section 1.8, “Type System Page”</xreftext>
+         <obj element="para" href="#ugr.tools.cde.auto_jcasgen" number="" targetptr="ugr.tools.cde.auto_jcasgen">
+            <ttl>???TITLE???</ttl>
+            <xreftext>Section 1.8, “Type System Page”</xreftext>
          </obj>
-      </div>
-      <div element="section" href="#ugr.conceptual_overview_architecture_framework_sdk" number="2.2" targetptr="ugr.conceptual_overview_architecture_framework_sdk">
-         <ttl>The Architecture, the Framework and the SDK</ttl>
-         <xreftext>Section 2.2, “The Architecture, the Framework and the SDK”</xreftext>
-      </div>
-      <div element="section" href="#ugr.conceptual_overview.analysis_basics" number="2.3" targetptr="ugr.conceptual_overview.analysis_basics">
-         <ttl>Analysis Basics</ttl>
-         <xreftext>Section 2.3, “Analysis Basics”</xreftext>
-         <div element="section" href="#d0e805" number="">
-            <ttl>Analysis Engines, Annotators and Analysis Results</ttl>
-            <xreftext>the section called “Analysis Engines, Annotators and Analysis Results”</xreftext>
-            <obj element="figure" href="#ugr.conceptual_overview.metadata_in_cas" number="2.2" targetptr="ugr.conceptual_overview.metadata_in_cas">
-               <ttl>Objects represented in the Common Analysis Structure (CAS)</ttl>
-               <xreftext>Figure 2.2, “Objects represented in the Common Analysis Structure (CAS)”</xreftext>
-            </obj>
-         </div>
-         <div element="section" href="#d0e879" number="">
-            <ttl>Representing Analysis Results in the CAS</ttl>
-            <xreftext>the section called “Representing Analysis Results in the CAS”</xreftext>
-            <div element="section" href="#d0e944" number="">
-               <ttl>The Annotation Type</ttl>
-               <xreftext>the section called “The Annotation Type”</xreftext>
-            </div>
-            <div element="section" href="#d0e973" number="">
-               <ttl>Not Just Annotations</ttl>
-               <xreftext>the section called “Not Just Annotations”</xreftext>
-            </div>
-            <div element="section" href="#d0e1007" number="">
-               <ttl>Multiple Views within a CAS</ttl>
-               <xreftext>the section called “Multiple Views within a CAS”</xreftext>
-            </div>
-         </div>
-         <div element="section" href="#d0e1023" number="">
-            <ttl>Interacting with the CAS and External Resources</ttl>
-            <xreftext>the section called “Interacting with the CAS and External Resources”</xreftext>
-         </div>
-         <div element="section" href="#d0e1043" number="">
-            <ttl>Component Descriptors</ttl>
-            <xreftext>the section called “Component Descriptors”</xreftext>
+         <div element="section" href="#ugr.tools.cde.type_system.exporting" number="" targetptr="ugr.tools.cde.type_system.exporting">
+            <ttl>Exporting</ttl>
+            <xreftext>the section called “Exporting”</xreftext>
          </div>
       </div>
-      <div element="section" href="#ugr.conceptual_overview.aggregate_analysis_engines" number="2.4" targetptr="ugr.conceptual_overview.aggregate_analysis_engines">
-         <ttl>Aggregate Analysis Engines</ttl>
-         <xreftext>Section 2.4, “Aggregate Analysis Engines”</xreftext>
-         <obj element="figure" href="#ugr.conceptual_overview.sample_aggregate" number="2.3" targetptr="ugr.conceptual_overview.sample_aggregate">
-            <ttl>Sample Aggregate Analysis Engine</ttl>
-            <xreftext>Figure 2.3, “Sample Aggregate Analysis Engine”</xreftext>
-         </obj>
-      </div>
-      <div element="section" href="#d0e1143" number="2.5">
-         <ttl>Application Building and Collection Processing</ttl>
-         <xreftext>Section 2.5, “Application Building and Collection Processing”</xreftext>
-         <div element="section" href="#d0e1151" number="">
-            <ttl>Using the framework from an Application</ttl>
-            <xreftext>the section called “Using the framework from an Application”</xreftext>
-            <obj element="figure" href="#ugr.conceptual_overview.application_factory_ae" number="2.4" targetptr="ugr.conceptual_overview.application_factory_ae">
-               <ttl>Using UIMA Framework to create and interact with an Analysis Engine</ttl>
-               <xreftext>Figure 2.4, “Using UIMA Framework to create and interact with an Analysis Engine”</xreftext>
-            </obj>
-         </div>
-         <div element="section" href="#d0e1182" number="">
-            <ttl>Graduating to Collection Processing</ttl>
-            <xreftext>the section called “Graduating to Collection Processing”</xreftext>
-            <obj element="figure" href="#ugr.conceptual_overview.fig.cpe" number="2.5" targetptr="ugr.conceptual_overview.fig.cpe">
-               <ttl>High-Level UIMA Component Architecture from Source to Sink</ttl>
-               <xreftext>Figure 2.5, “High-Level UIMA Component Architecture from Source to Sink”</xreftext>
-            </obj>
-            <obj element="figure" href="#ugr.conceptual_overview.fig.cpm" number="2.6" targetptr="ugr.conceptual_overview.fig.cpm">
-               <ttl>Collection Processing Manager in UIMA Framework</ttl>
-               <xreftext>Figure 2.6, “Collection Processing Manager in UIMA Framework”</xreftext>
-            </obj>
+      <div element="section" href="#ugr.tools.cde.capabilities" number="1.9" targetptr="ugr.tools.cde.capabilities">
+         <ttl>Capabilities Page</ttl>
+         <xreftext>Section 1.9, “Capabilities Page”</xreftext>
+         <div element="section" href="#ugr.tools.cde.capabilities.sofa_name_mapping" number="" targetptr="ugr.tools.cde.capabilities.sofa_name_mapping">
+            <ttl>Sofa (and view) name mappings</ttl>
+            <xreftext>the section called “Sofa (and view) name mappings”</xreftext>
          </div>
       </div>
-      <div element="section" href="#d0e1285" number="2.6">
-         <ttl>Exploiting Analysis Results</ttl>
-         <xreftext>Section 2.6, “Exploiting Analysis Results”</xreftext>
-         <div element="section" href="#d0e1293" number="">
-            <ttl>Semantic Search</ttl>
-            <xreftext>the section called “Semantic Search”</xreftext>
+      <div element="section" href="#ugr.tools.cde.indexes" number="1.10" targetptr="ugr.tools.cde.indexes">
+         <ttl>Indexes Page</ttl>
+         <xreftext>Section 1.10, “Indexes Page”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tools.cde.resources" number="1.11" targetptr="ugr.tools.cde.resources">
+         <ttl>Resources Page</ttl>
+         <xreftext>Section 1.11, “Resources Page”</xreftext>
+         <div element="section" href="#ugr.tools.cde.resources.binding" number="" targetptr="ugr.tools.cde.resources.binding">
+            <ttl>Binding</ttl>
+            <xreftext>the section called “Binding”</xreftext>
          </div>
-         <div element="section" href="#d0e1351" number="">
-            <ttl>Databases</ttl>
-            <xreftext>the section called “Databases”</xreftext>
+         <div element="section" href="#ugr.tools.cde.resources.aggregates" number="" targetptr="ugr.tools.cde.resources.aggregates">
+            <ttl>Resources with Aggregates</ttl>
+            <xreftext>the section called “Resources with Aggregates”</xreftext>
+         </div>
+         <div element="section" href="#ugr.tools.cde.resources.imports_exports" number="" targetptr="ugr.tools.cde.resources.imports_exports">
+            <ttl>Imports and Exports</ttl>
+            <xreftext>the section called “Imports and Exports”</xreftext>
          </div>
       </div>
-      <div element="section" href="#d0e1356" number="2.7">
-         <ttl>Multimodal Processing in UIMA</ttl>
-         <xreftext>Section 2.7, “Multimodal Processing in UIMA”</xreftext>
-         <obj element="figure" href="#ugr.conceptual_overview.fig.multiple_sofas" number="2.7" targetptr="ugr.conceptual_overview.fig.multiple_sofas">
-            <ttl>Multiple Sofas in support of multi-modal analysis of an audio Stream. Some
-        engines work on the audio “<span class="quote">view</span>”, some on the text
-        “<span class="quote">view</span>” and some on both.</ttl>
-            <xreftext>Figure 2.7, “Multiple Sofas in support of multi-modal analysis of an audio Stream. Some
-        engines work on the audio “<span class="quote">view</span>”, some on the text
-        “<span class="quote">view</span>” and some on both.”</xreftext>
-         </obj>
+      <div element="section" href="#ugr.tools.cde.source" number="1.12" targetptr="ugr.tools.cde.source">
+         <ttl>Source Page</ttl>
+         <xreftext>Section 1.12, “Source Page”</xreftext>
+         <div element="section" href="#ugr.tools.cde.source.formatting" number="" targetptr="ugr.tools.cde.source.formatting">
+            <ttl>Source formatting – indentation</ttl>
+            <xreftext>the section called “Source formatting – indentation”</xreftext>
+         </div>
       </div>
-      <div element="section" href="#d0e1411" number="2.8">
-         <ttl>Next Steps</ttl>
-         <xreftext>Section 2.8, “Next Steps”</xreftext>
+      <div element="section" href="#ugr.tools.cde.creating_self_contained_type_system" number="1.13" targetptr="ugr.tools.cde.creating_self_contained_type_system">
+         <ttl>Creating a Self-Contained Type System</ttl>
+         <xreftext>Section 1.13, “Creating a Self-Contained Type System”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tools.cde.creating_other_descriptor_components" number="1.14" targetptr="ugr.tools.cde.creating_other_descriptor_components">
+         <ttl>Creating Other Descriptor Components</ttl>
+         <xreftext>Section 1.14, “Creating Other Descriptor Components”</xreftext>
       </div>
    </div>
-   <div element="chapter" href="#ugr.eclipse_setup" number="3" targetptr="ugr.eclipse_setup">
-      <ttl>Setting up Eclipse IDE to work with UIMA</ttl>
-      <xreftext>Chapter 3, <i>Setting up Eclipse IDE to work with UIMA</i>
+   <div element="chapter" href="#ugr.tools.cpe" number="2" targetptr="ugr.tools.cpe">
+      <ttl>Collection Processing Engine Configurator User's Guide</ttl>
+      <xreftext>Chapter 2, <i>Collection Processing Engine Configurator User's Guide</i>
       </xreftext>
-      <div element="section" href="#d0e1462" number="3.1">
-         <ttl>Installation</ttl>
-         <xreftext>Section 3.1, “Installation”</xreftext>
-         <div element="section" href="#d0e1465" number="">
-            <ttl>Install Eclipse</ttl>
-            <xreftext>the section called “Install Eclipse”</xreftext>
+      <div element="section" href="#ugr.tools.cpe.limitations" number="2.1" targetptr="ugr.tools.cpe.limitations">
+         <ttl>Limitations of the CPE Configurator</ttl>
+         <xreftext>Section 2.1, “Limitations of the CPE Configurator”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tools.cpe.starting" number="2.2" targetptr="ugr.tools.cpe.starting">
+         <ttl>Starting the CPE Configurator</ttl>
+         <xreftext>Section 2.2, “Starting the CPE Configurator”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tools.cpe.selecting_component_descriptors" number="2.3" targetptr="ugr.tools.cpe.selecting_component_descriptors">
+         <ttl>Selecting Component Descriptors</ttl>
+         <xreftext>Section 2.3, “Selecting Component Descriptors”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tools.cpe.running" number="2.4" targetptr="ugr.tools.cpe.running">
+         <ttl>Running a Collection Processing Engine</ttl>
+         <xreftext>Section 2.4, “Running a Collection Processing Engine”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tools.cpe.file_menu" number="2.5" targetptr="ugr.tools.cpe.file_menu">
+         <ttl>The File Menu</ttl>
+         <xreftext>Section 2.5, “The File Menu”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tools.cpe.help_menu" number="2.6" targetptr="ugr.tools.cpe.help_menu">
+         <ttl>The Help Menu</ttl>
+         <xreftext>Section 2.6, “The Help Menu”</xreftext>
+      </div>
+   </div>
+   <div element="chapter" href="#ugr.tools.doc_analyzer" number="3" targetptr="ugr.tools.doc_analyzer">
+      <ttl>Document Analyzer User's Guide</ttl>
+      <xreftext>Chapter 3, <i>Document Analyzer User's Guide</i>
+      </xreftext>
+      <div element="section" href="#ugr.tools.doc_analyzer.starting" number="3.1" targetptr="ugr.tools.doc_analyzer.starting">
+         <ttl>Starting the Document Analyzer</ttl>
+         <xreftext>Section 3.1, “Starting the Document Analyzer”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tools.doc_analyzer.running_an_ae" number="3.2" targetptr="ugr.tools.doc_analyzer.running_an_ae">
+         <ttl>Running an AE</ttl>
+         <xreftext>Section 3.2, “Running an AE”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tools.doc_analyzer.viewing_results" number="3.3" targetptr="ugr.tools.doc_analyzer.viewing_results">
+         <ttl>Viewing the Analysis Results</ttl>
+         <xreftext>Section 3.3, “Viewing the Analysis Results”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tools.doc_analyzer.configuring" number="3.4" targetptr="ugr.tools.doc_analyzer.configuring">
+         <ttl>Configuring the Annotation Viewer</ttl>
+         <xreftext>Section 3.4, “Configuring the Annotation Viewer”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tools.doc_analyzer.interactive_mode" number="3.5" targetptr="ugr.tools.doc_analyzer.interactive_mode">
+         <ttl>Interactive Mode</ttl>
+         <xreftext>Section 3.5, “Interactive Mode”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tools.doc_analyzer.view_mode" number="3.6" targetptr="ugr.tools.doc_analyzer.view_mode">
+         <ttl>View Mode</ttl>
+         <xreftext>Section 3.6, “View Mode”</xreftext>
+      </div>
+   </div>
+   <div element="chapter" href="#ugr.tools.annotation_viewer" number="4" targetptr="ugr.tools.annotation_viewer">
+      <ttl>Annotation Viewer</ttl>
+      <xreftext>Chapter 4, <i>Annotation Viewer</i>
+      </xreftext>
+   </div>
+   <div element="chapter" href="#ugr.tools.cvd" number="5" targetptr="ugr.tools.cvd">
+      <ttl>CAS Visual Debugger</ttl>
+      <xreftext>Chapter 5, <i>CAS Visual Debugger</i>
+      </xreftext>
+   </div>
+   <div element="chapter" href="#ugr.tools.jcasgen" number="6" targetptr="ugr.tools.jcasgen">
+      <ttl>JCasGen User Guide</ttl>
+      <xreftext>Chapter 6, <i>JCasGen User Guide</i>
+      </xreftext>
+      <div element="section" href="#ugr.tools.jcasgen.running_without_eclipse" number="6.1" targetptr="ugr.tools.jcasgen.running_without_eclipse">
+         <ttl>Running stand-alone without Eclipse</ttl>
+         <xreftext>Section 6.1, “Running stand-alone without Eclipse”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tools.jcasgen.running_standalone_with_eclipse" number="6.2" targetptr="ugr.tools.jcasgen.running_standalone_with_eclipse">
+         <ttl>Running stand-alone with Eclipse</ttl>
+         <xreftext>Section 6.2, “Running stand-alone with Eclipse”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tools.jcasgen.running_within_eclipse" number="6.3" targetptr="ugr.tools.jcasgen.running_within_eclipse">
+         <ttl>Running within Eclipse</ttl>
+         <xreftext>Section 6.3, “Running within Eclipse”</xreftext>
+      </div>
+   </div>
+   <div element="chapter" href="#ugr.tools.pear.packager" number="7" targetptr="ugr.tools.pear.packager">
+      <ttl>PEAR Packager User's Guide</ttl>
+      <xreftext>Chapter 7, <i>PEAR Packager User's Guide</i>
+      </xreftext>
+      <div element="section" href="#ugr.tools.pear.packager.using_eclipse_plugin" number="7.1" targetptr="ugr.tools.pear.packager.using_eclipse_plugin">
+         <ttl>Using the PEAR Eclipse Plugin</ttl>
+         <xreftext>Section 7.1, “Using the PEAR Eclipse Plugin”</xreftext>
+         <div element="section" href="#ugr.tools.pear.packager.add_uima_nature" number="" targetptr="ugr.tools.pear.packager.add_uima_nature">
+            <ttl>Add UIMA Nature to your project</ttl>
+            <xreftext>the section called “Add UIMA Nature to your project”</xreftext>
+            <obj element="figure" href="#ugr.tools.pear.packager.fig.pear_structure" number="7.1" targetptr="ugr.tools.pear.packager.fig.pear_structure">
+               <ttl>The Pear Structure</ttl>
+               <xreftext>Figure 7.1, “The Pear Structure”</xreftext>
+            </obj>
          </div>
-         <div element="section" href="#d0e1486" number="">
-            <ttl>Install additional Eclipse component: EMF</ttl>
-            <xreftext>the section called “Install additional Eclipse component: EMF”</xreftext>
-         </div>
-         <div element="section" href="#d0e1538" number="">
-            <ttl>Install the UIMA SDK</ttl>
-            <xreftext>the section called “Install the UIMA SDK”</xreftext>
-         </div>
-         <div element="section" href="#d0e1545" number="">
-            <ttl>Install the UIMA Eclipse Plugins</ttl>
-            <xreftext>the section called “Install the UIMA Eclipse Plugins”</xreftext>
-         </div>
-         <div element="section" href="#d0e1550" number="">
-            <ttl>Start Eclipse</ttl>
-            <xreftext>the section called “Start Eclipse”</xreftext>
-            <div element="section" href="#d0e1566" number="">
-               <ttl>Special startup parameter for Eclipse: -clean</ttl>
-               <xreftext>the section called “Special startup parameter for Eclipse: -clean”</xreftext>
+         <div element="section" href="#ugr.tools.pear.packager.using_pear_generation_wizard" number="" targetptr="ugr.tools.pear.packager.using_pear_generation_wizard">
+            <ttl>Using the PEAR Generation Wizard</ttl>
+            <xreftext>the section called “Using the PEAR Generation Wizard”</xreftext>
+            <div element="section" href="#ugr.tools.pear.packager.wizard.component_information" number="" targetptr="ugr.tools.pear.packager.wizard.component_information">
+               <ttl>The Component Information page</ttl>
+               <xreftext>the section called “The Component Information page”</xreftext>
+               <obj element="figure" href="#ugr.tools.pear.packager.fig.wizard.component_information" number="7.2" targetptr="ugr.tools.pear.packager.fig.wizard.component_information">
+                  <ttl>The Component Information Page</ttl>
+                  <xreftext>Figure 7.2, “The Component Information Page”</xreftext>
+               </obj>
+            </div>
+            <div element="section" href="#ugr.tools.pear.packager.wizard.install_environment" number="" targetptr="ugr.tools.pear.packager.wizard.install_environment">
+               <ttl>The Installation Environment page</ttl>
+               <xreftext>the section called “The Installation Environment page”</xreftext>
+               <obj element="figure" href="#ugr.tools.pear.packager.fig.wizard.install_environment" number="7.3" targetptr="ugr.tools.pear.packager.fig.wizard.install_environment">
+                  <ttl>The Installation Environment Page</ttl>
+                  <xreftext>Figure 7.3, “The Installation Environment Page”</xreftext>
+               </obj>
+            </div>
+            <div element="section" href="#ugr.tools.pear.packager.wizard.file_content" number="" targetptr="ugr.tools.pear.packager.wizard.file_content">
+               <ttl>The PEAR file content page</ttl>
+               <xreftext>the section called “The PEAR file content page”</xreftext>
+               <obj element="figure" href="#ugr.tools.pear.packager.fig.wizard.export" number="7.4" targetptr="ugr.tools.pear.packager.fig.wizard.export">
+                  <ttl>The PEAR File Export Page</ttl>
+                  <xreftext>Figure 7.4, “The PEAR File Export Page”</xreftext>
+               </obj>
             </div>
          </div>
       </div>
-      <div element="section" href="#ugr.eclipse_setup.example_code" number="3.2" targetptr="ugr.eclipse_setup.example_code">
-         <ttl>Setting up Eclipse to view Example Code</ttl>
-         <xreftext>Section 3.2, “Setting up Eclipse to view Example Code”</xreftext>
-      </div>
-      <div element="section" href="#d0e1669" number="3.3">
-         <ttl>Running external tools from Eclipse</ttl>
-         <xreftext>Section 3.3, “Running external tools from Eclipse”</xreftext>
-      </div>
    </div>
-   <div element="chapter" href="#ugr.faqs" number="4" targetptr="ugr.faqs">
-      <ttl>UIMA Frequently Asked Questions (FAQs)</ttl>
-      <xreftext>Chapter 4, <i>UIMA Frequently Asked Questions (FAQs)</i>
+   <div element="chapter" href="#ugr.tools.pear.installer" number="8" targetptr="ugr.tools.pear.installer">
+      <ttl>PEAR Installer User's Guide</ttl>
+      <xreftext>Chapter 8, <i>PEAR Installer User's Guide</i>
       </xreftext>
    </div>
-   <div element="chapter" href="#ugr.glossary" number="5" targetptr="ugr.glossary">
-      <ttl>Glossary of Key Terms and Concepts</ttl>
-      <xreftext>Chapter 5, <i>Glossary of Key Terms and Concepts</i>
+   <div element="chapter" href="#ugr.tools.pear.merger" number="9" targetptr="ugr.tools.pear.merger">
+      <ttl>PEAR Merger User's Guide</ttl>
+      <xreftext>Chapter 9, <i>PEAR Merger User's Guide</i>
       </xreftext>
-      <obj element="glossentry" href="#ugr.glossary.aggregate" number="" targetptr="ugr.glossary.aggregate">
-         <ttl>Aggregate Analysis Engine</ttl>
-         <xreftext>Aggregate Analysis Engine</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.analysis_engine" number="" targetptr="ugr.glossary.analysis_engine">
-         <ttl>Analysis Engine</ttl>
-         <xreftext>Analysis Engine</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.annotation" number="" targetptr="ugr.glossary.annotation">
-         <ttl>Annotation</ttl>
-         <xreftext>Annotation</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.annotator" number="" targetptr="ugr.glossary.annotator">
-         <ttl>Annotator</ttl>
-         <xreftext>Annotator</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.application" number="" targetptr="ugr.glossary.application">
-         <ttl>Application</ttl>
-         <xreftext>Application</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.cas" number="" targetptr="ugr.glossary.cas">
-         <ttl>CAS</ttl>
-         <xreftext>CAS</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.cas_consumer" number="" targetptr="ugr.glossary.cas_consumer">
-         <ttl>CAS Consumer</ttl>
-         <xreftext>CAS Consumer</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.cas_initializer" number="" targetptr="ugr.glossary.cas_initializer">
-         <ttl>CAS Initializer (deprecated)</ttl>
-         <xreftext>CAS Initializer (deprecated)</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.cas_multiplier" number="" targetptr="ugr.glossary.cas_multiplier">
-         <ttl>CAS Multiplier</ttl>
-         <xreftext>CAS Multiplier</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.cas_processor" number="" targetptr="ugr.glossary.cas_processor">
-         <ttl>CAS Processor</ttl>
-         <xreftext>CAS Processor</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.cas_view" number="" targetptr="ugr.glossary.cas_view">
-         <ttl>CAS View</ttl>
-         <xreftext>CAS View</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.cde" number="" targetptr="ugr.glossary.cde">
-         <ttl>CDE</ttl>
-         <xreftext>CDE</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.cpe" number="" targetptr="ugr.glossary.cpe">
-         <ttl>Collection Processing Engine (CPE)</ttl>
-         <xreftext>Collection Processing Engine (CPE)</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.cpm" number="" targetptr="ugr.glossary.cpm">
-         <ttl>Collection Processing Manager (CPM)</ttl>
-         <xreftext>Collection Processing Manager (CPM)</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.collection_reader" number="" targetptr="ugr.glossary.collection_reader">
-         <ttl>Collection Reader</ttl>
-         <xreftext>Collection Reader</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.fact_search" number="" targetptr="ugr.glossary.fact_search">
-         <ttl>Fact Search</ttl>
-         <xreftext>Fact Search</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.feature" number="" targetptr="ugr.glossary.feature">
-         <ttl>Feature</ttl>
-         <xreftext>Feature</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.flow_controller" number="" targetptr="ugr.glossary.flow_controller">
-         <ttl>Flow Controller</ttl>
-         <xreftext>Flow Controller</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.hybrid_analysis_engine" number="" targetptr="ugr.glossary.hybrid_analysis_engine">
-         <ttl>Hybrid Analysis Engine</ttl>
-         <xreftext>Hybrid Analysis Engine</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.index" number="" targetptr="ugr.glossary.index">
-         <ttl>Index</ttl>
-         <xreftext>Index</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.jcas" number="" targetptr="ugr.glossary.jcas">
-         <ttl>JCas</ttl>
-         <xreftext>JCas</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.keyword_search" number="" targetptr="ugr.glossary.keyword_search">
-         <ttl>Keyword Search</ttl>
-         <xreftext>Keyword Search</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.knowledge_base" number="" targetptr="ugr.glossary.knowledge_base">
-         <ttl>Knowledge Base</ttl>
-         <xreftext>Knowledge Base</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.loosely_coupled_analysis_engine" number="" targetptr="ugr.glossary.loosely_coupled_analysis_engine">
-         <ttl>Loosely-Coupled Analysis Engine</ttl>
-         <xreftext>Loosely-Coupled Analysis Engine</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.ontology" number="" targetptr="ugr.glossary.ontology">
-         <ttl/>
-         <xreftext/>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.pear" number="" targetptr="ugr.glossary.pear">
-         <ttl>PEAR</ttl>
-         <xreftext>PEAR</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.primitive_analysis_engine" number="" targetptr="ugr.glossary.primitive_analysis_engine">
-         <ttl>Primitive Analysis Engine</ttl>
-         <xreftext>Primitive Analysis Engine</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.semantic_search" number="" targetptr="ugr.glossary.semantic_search">
-         <ttl>Semantic Search</ttl>
-         <xreftext>Semantic Search</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.structured_information" number="" targetptr="ugr.glossary.structured_information">
-         <ttl>Structured Information</ttl>
-         <xreftext>Structured Information</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.sofa" number="" targetptr="ugr.glossary.sofa">
-         <ttl>Subject of Analysis (Sofa)</ttl>
-         <xreftext>Subject of Analysis (Sofa)</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.tightly_coupled_analysis_engine" number="" targetptr="ugr.glossary.tightly_coupled_analysis_engine">
-         <ttl>Tightly-Coupled Analysis Engine</ttl>
-         <xreftext>Tightly-Coupled Analysis Engine</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.type" number="" targetptr="ugr.glossary.type">
-         <ttl>Type</ttl>
-         <xreftext>Type</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.type_system" number="" targetptr="ugr.glossary.type_system">
-         <ttl>Type System</ttl>
-         <xreftext>Type System</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.unstructured_information" number="" targetptr="ugr.glossary.unstructured_information">
-         <ttl>Unstructured Information</ttl>
-         <xreftext>Unstructured Information</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.uima" number="" targetptr="ugr.glossary.uima">
-         <ttl>UIMA</ttl>
-         <xreftext>UIMA</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.uima_java_framework" number="" targetptr="ugr.glossary.uima_java_framework">
-         <ttl>UIMA Java Framework</ttl>
-         <xreftext>UIMA Java Framework</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.uima_sdk" number="" targetptr="ugr.glossary.uima_sdk">
-         <ttl>UIMA Software Development Kit (SDK)</ttl>
-         <xreftext>UIMA Software Development Kit (SDK)</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.xcas" number="" targetptr="ugr.glossary.xcas">
-         <ttl>XCAS</ttl>
-         <xreftext>XCAS</xreftext>
-      </obj>
-      <obj element="glossentry" href="#ugr.glossary.xmi" number="" targetptr="ugr.glossary.xmi">
-         <ttl>XML Metadata Interchange (XMI)</ttl>
-         <xreftext>XML Metadata Interchange (XMI)</xreftext>
-      </obj>
+      <div element="section" href="#ugr.tools.pear.merger.merge_details" number="9.1" targetptr="ugr.tools.pear.merger.merge_details">
+         <ttl>Details of the merging process</ttl>
+         <xreftext>Section 9.1, “Details of the merging process”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tools.pear.merger.testing_modifying_resulting_pear" number="9.2" targetptr="ugr.tools.pear.merger.testing_modifying_resulting_pear">
+         <ttl>Testing and Modifying the resulting PEAR</ttl>
+         <xreftext>Section 9.2, “Testing and Modifying the resulting PEAR”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tools.pear.merger.restrictions_limitations" number="9.3" targetptr="ugr.tools.pear.merger.restrictions_limitations">
+         <ttl>Restrictions and Limitations</ttl>
+         <xreftext>Section 9.3, “Restrictions and Limitations”</xreftext>
+      </div>
    </div>
 </div>

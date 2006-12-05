@@ -348,12 +348,12 @@ under the License.
                   <listitem>
                     <para> The UIMA Component Descriptor Editor, described in more detail
                       in <olink targetdoc="&uima_docs_tools;"
-                        targetptr="cde_chapter"/> and </para>
+                        targetptr="ugr.tools.cde"/> and </para>
                   </listitem>
                   <listitem>
                     <para> The Document Analyzer, described in more detail in <olink
                         targetdoc="&uima_docs_tools;"
-                        targetptr="document_analyzer_chapter"/>. </para>
+                        targetptr="ugr.tools.doc_analyzer"/>. </para>
                   </listitem>
                   
                 </itemizedlist> </para>
@@ -367,12 +367,12 @@ under the License.
                 <itemizedlist>
                   <listitem>
                     <para> <olink targetdoc="&uima_docs_ref;"
-                        targetptr="ref_ae_descriptors_chapter"/> for understanding
+                        targetptr="ugr.ref.xml.component_descriptor"/> for understanding
                       the analysis engine descriptors </para>
                   </listitem>
                   <listitem>
                     <para> <olink targetdoc="&uima_docs_ref;"
-                        targetptr="ref_jcas_chapter"/> for understanding the JCas
+                        targetptr="ugr.ref.jcas"/> for understanding the JCas
                       </para>
                   </listitem>
                 </itemizedlist> </para>
@@ -390,7 +390,7 @@ under the License.
             <listitem>
               <para> As part of this you will use the document analyzer (described in more
                 detail in <olink targetdoc="&uima_docs_tools;"
-                  targetptr="document_analyzer_chapter"/> and semantic search GUI tools (see <olink
+                  targetptr="ugr.tools.doc_analyzer"/> and semantic search GUI tools (see <olink
                   targetdoc="&uima_docs_tutorial_guides;"
                   targetptr="ugr.tug.application.search.query_tool"/>. </para>
             </listitem>
@@ -413,7 +413,7 @@ under the License.
             <listitem>
               <para> As part of this you will use the CPE Configurator tool. For details see
                   <olink targetdoc="&uima_docs_tools;"
-                  targetptr="cpe_configurator_chapter"/>. </para>
+                  targetptr="ugr.tools.cpe"/>. </para>
             </listitem>
             <listitem>
               <para> You will also learn about CPE Descriptors. The detailed format for
@@ -425,8 +425,8 @@ under the License.
       <listitem>
         <para> Learn how to package up an analysis engine for easy installation into another
           UIMA environment. <olink targetdoc="&uima_docs_tools;"
-            targetptr="pear_packager_chapter"/> and <olink
-            targetdoc="&uima_docs_tools;" targetptr="pear_installer_chapter"/> will
+            targetptr="ugr.tools.pear.packager"/> and <olink
+            targetdoc="&uima_docs_tools;" targetptr="ugr.tools.pear.installer"/> will
           teach you how to create UIMA analysis engine archives so that you can easily share
           your components with a broader community. </para>
       </listitem>

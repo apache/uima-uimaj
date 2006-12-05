@@ -113,7 +113,8 @@ under the License.
         and the source code is included in the UIMA SDK under the
         <literal>examples/src</literal> directory.</para>
       
-      <section><title>The WhiteboardFlowController Class</title>
+      <section id="ugr.tug.fc.whiteboard">
+        <title>The WhiteboardFlowController Class</title>
         
         
         <programlisting>public class WhiteboardFlowController extends CasFlowController_ImplBase {
@@ -143,7 +144,8 @@ under the License.
           not be any confusion.</para>
         
       </section>
-      <section><title>The WhiteboardFlow Class</title>
+      <section id="ugr.tug.fc.whiteboardflow">
+        <title>The WhiteboardFlow Class</title>
         
         
         <programlisting>class WhiteboardFlow extends CasFlow_ImplBase {

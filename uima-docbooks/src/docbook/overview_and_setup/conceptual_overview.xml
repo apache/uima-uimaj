@@ -245,7 +245,7 @@ under the License.
       <para>In UIMA the person who codes analysis algorithms takes on the role of the
           <emphasis role="bold">Annotator Developer</emphasis>. <olink
           targetdoc="&uima_docs_tutorial_guides;"
-          targetptr="ugr.aae"/> will take the reader
+          targetptr="ugr.tug.aae"/> will take the reader
         through the details involved in creating UIMA annotators and analysis
         engines.</para>
       
@@ -415,7 +415,7 @@ under the License.
         document and reads and writes analysis results. The CAS interfaces provide a suite of
         access methods that allow the developer to obtain indexed iterators to the different
         objects in the CAS. See <olink targetdoc="&uima_docs_ref;"
-          targetptr="ugr.cas_ref"/>. While many objects may exist in a CAS, the annotator
+          targetptr="ugr.ref.cas"/>. While many objects may exist in a CAS, the annotator
         developer can obtain a specialized iterator to all Person objects associated with a
         particular view, for example.</para>
       
@@ -425,7 +425,7 @@ under the License.
         Person class in Java. As the analysis algorithm detects mentions of persons in the
         documents, it can create Person objects in the CAS. For more details on how to interact
         with the CAS using this interface, refer to <olink targetdoc="&uima_docs_ref;"
-          targetptr="ugr.jcas_ref"/>.</para>
+          targetptr="ugr.ref.jcas"/>.</para>
       
       <para>The component developer, in addition to interacting with the CAS, can access
         external resources through the framework&apos;s resource manager interface
@@ -470,7 +470,7 @@ under the License.
         editing XML directly. This tool is described briefly in <olink
           targetdoc="&uima_docs_tutorial_guides;"
           targetptr="ugr.tug.aae"/>, and more
-        thoroughly in <olink targetdoc="&uima_docs_tools;" targetptr="ugr.cde"/>
+        thoroughly in <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cde"/>
         .</para>
       
       <para>Component descriptors contain standard metadata including the
@@ -568,10 +568,10 @@ under the License.
       adapter layer that automatically creates the necessary infrastructure in response to
       a declaration in the component&apos;s descriptor. For more details on creating
       aggregate analysis engines refer to <olink targetdoc="&uima_docs_ref;"
-        targetptr="ugr.component_descriptor"/> The component descriptor editor tool
+        targetptr="ugr.ref.component_descriptor"/> The component descriptor editor tool
       assists in the specification of aggregate AEs from a repository of available engines.
       For more details on this tool refer to <olink targetdoc="&uima_docs_tools;"
-        targetptr="ugr.cde"/>.</para>
+        targetptr="ugr.tools.cde"/>.</para>
     
     <para>The UIMA framework implementation has two built-in flow implementations: one
       that support a linear flow between components, and one with conditional branching
@@ -721,7 +721,7 @@ under the License.
         analysis engines and CAS Consumers) and indicate a flow among them. The flow
         specification allows for filtering capabilities to, for example, skip over AEs
         based on CAS contents. Details about the format of CPE Descriptors may be found in
-          <olink targetdoc="&uima_docs_ref;" targetptr="ugr.cpe_descriptor_ref"/>.
+          <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe"/>.
         </para>
       
       <figure id="ugr.conceptual_overview.fig.cpm">
@@ -755,14 +755,14 @@ under the License.
       <para>This deployment option requires that the CPM run in a separate process or a
         machine distinct from the CPE components. A CPE may be configured to run with a variety
         of deployment options that control the features provided by the CPM. For details see
-          <olink targetdoc="&uima_docs_ref;" targetptr="ugr.cpe_descriptor_ref"/>
+          <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe"/>
         .</para>
       
       <para>The UIMA SDK also provides a tool called the CPE Configurator. This tool provides
         the developer with a user interface that simplifies the process of connecting up all
         the components in a CPE and running the result. For details on using the CPE
         Configurator see <olink targetdoc="&uima_docs_tools;"
-          targetptr="ugr.cpe_configurator"/>. This tool currently does not provide
+          targetptr="ugr.tools.cpe"/>. This tool currently does not provide
         access to the full set of CPE deployment options supported by the CPM; however, you can
         configure other parts of the CPE descriptor by editing it directly. For details on how
         to create and run CPEs refer to <olink targetdoc="&uima_docs_tutorial_guides;"

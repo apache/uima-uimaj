@@ -307,7 +307,7 @@
          <xreftext>Section 2.8, “Next Steps”</xreftext>
       </div>
    </div>
-   <div element="chapter" href="#ugr.eclipse_setup" number="3" targetptr="ugr.eclipse_setup">
+   <div element="chapter" href="#ugr.ovv.eclipse_setup" number="3" targetptr="ugr.ovv.eclipse_setup">
       <ttl>Setting up Eclipse IDE to work with UIMA</ttl>
       <xreftext>Chapter 3, <fo:inline xmlns:fo="http://www.w3.org/1999/XSL/Format" font-style="italic">Setting up Eclipse IDE to work with UIMA</fo:inline>
       </xreftext>
@@ -339,7 +339,7 @@
             </div>
          </div>
       </div>
-      <div element="section" href="#ugr.eclipse_setup.example_code" number="3.2" targetptr="ugr.eclipse_setup.example_code">
+      <div element="section" href="#ugr.ovv.eclipse_setup.example_code" number="3.2" targetptr="ugr.ovv.eclipse_setup.example_code">
          <ttl>Setting up Eclipse to view Example Code</ttl>
          <xreftext>Section 3.2, “Setting up Eclipse to view Example Code”</xreftext>
       </div>

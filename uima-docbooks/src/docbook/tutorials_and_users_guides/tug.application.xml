@@ -250,10 +250,11 @@ ae.destroy();</programlisting></para>
         <para>See:</para>
         
         <itemizedlist><listitem><para> <olink
-            targetdoc="ugr.tug.aae.developing_your_annotator"/> </para>
+            targetdoc="&uima_docs_tutorial_guides;"
+            targetptr="ugr.tug.aae.developing_annotator_code"/> </para>
           </listitem>
           
-          <listitem><para> <olink targetdoc="ugr.ref.jcas"/> </para></listitem>
+          <listitem><para> <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.jcas"/></para></listitem>
           
           <listitem><para> The source code for
             <literal>org.apache.uima.examples.AnnotationFilter</literal>, which is
@@ -422,7 +423,7 @@ ae.destroy();</programlisting></para>
       <para>In most cases, the easiest way to use multiple Analysis Engines from within an
         application is to combine them into an aggregate AE. For instructions, see <olink
           targetdoc="&uima_docs_tutorial_guides;"
-          targetptr="ugr.tug.aae.building_aggregate_aes"/>. Be sure that you
+          targetptr="ugr.tug.aae.building_aggregates"/>. Be sure that you
         understand this method before deciding to use the more advanced feature described in
         this section.</para>
       
@@ -903,7 +904,7 @@ consumerParamSettings.setParameterValue(
         <para>Run the CPE Configurator tool by executing the <literal>cpeGui</literal>
           shell script in the <literal>bin</literal> directory of the UIMA SDK. (For
           instructions on using this tool, see the <olink targetdoc="&uima_docs_tools;"
-            targetptr="ugr.tools.cpe_configurator"/>.)</para>
+            targetptr="ugr.tools.cpe"/>.)</para>
         
         <para>In the CPE Configurator tool, select the following components by browsing to
           their descriptors:</para>

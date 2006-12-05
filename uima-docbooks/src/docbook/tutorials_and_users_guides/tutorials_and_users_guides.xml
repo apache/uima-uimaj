@@ -36,4 +36,4 @@ under the License.
   <xi:include href="tug.multi_views.xml"/>
   <xi:include href="tug.cas_multiplier.xml"/>
   <xi:include href="tug.xmi_emf.xml"/>
-  </book>
+</book>

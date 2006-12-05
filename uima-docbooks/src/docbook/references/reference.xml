@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
 "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
-  <!ENTITY % xinclude SYSTEM "xinclude.mod">
+  <!ENTITY % xinclude SYSTEM "../xinclude.mod">
   %xinclude;
   ]>
 <!--
@@ -24,15 +24,15 @@ under the License.
 -->
 <book lang="en">
   <title>Apache UIMA SDK Reference</title>
-  <xi:include href="common_book_info.xml"/>
+  <xi:include href="../common_book_info.xml"/>
 
   <toc/>
   
-  <xi:include href="reference/JavaDocs.xml"/>
-  <xi:include href="reference/XML_Component_Descriptor.xml"/>
-  <xi:include href="reference/XML_Collection_Processing_Engine_Descriptor.xml"/>
-  <xi:include href="reference/CAS.xml"/>
-  <xi:include href="reference/JCas.xml"/>
-  <xi:include href="reference/PEAR.xml"/>
-  <xi:include href="reference/XMI_CAS_Serialization.xml"/>
-  </book>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="ref.javadocs.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="ref.xml.component_descriptor.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="ref.xml.cpe_descriptor.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="ref.cas.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="ref.jcas.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="ref.pear.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="ref.xmi.xml"/>
+</book>

@@ -45,14 +45,14 @@ under the License.
   
   <para>A Collection Reader provides the interface to the raw input data and knows how to
     iterate over the data collection. Collection Readers are discussed in <xref
-      linkend="ugr.tug.cpe.developing_collection_readers"/>. The CAS Initializer
+      linkend="ugr.tug.cpe.collection_reader.developing"/>. The CAS Initializer
     <footnote><para>CAS Initializers are deprecated in favor of a more general mechanism,
     multiple subjects of analysis.</para></footnote> prepares an individual data item for
     analysis and loads it into the CAS. CAS Initializers are discussed in <xref
-      linkend="ugr.tug.cpe.developing_cas_initializers"/> A CAS Consumer extracts
+      linkend="ugr.tug.cpe.cas_initializer.developing"/> A CAS Consumer extracts
     analysis results from the CAS and may also perform <emphasis>collection level
     processing</emphasis>, or analysis over a collection of CASes. CAS Consumers are
-    discussed in <xref linkend="ugr.tug.cpe.developing_cas_consumers"/>.</para>
+    discussed in <xref linkend="ugr.tug.cpe.cas_consumer.developing"/>.</para>
   
   <para>Analysis Engines and CAS Consumers are both instances of <emphasis>CAS
     Processors</emphasis>. A Collection Processing Engine (CPE) may contain multiple CAS
@@ -72,7 +72,7 @@ under the License.
     provides a graphical tool, called the CPE Configurator, for assisting in the assembly of
     CPEs. Use of this tool is summarized in <xref
       linkend="ugr.tug.cpe.cpe_configurator"/>, and more details can be found in <olink
-      targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cpe_configurator"/>.
+      targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cpe"/>.
     Alternatively, a CPE can be assembled by writing an XML CPE descriptor. Details on the CPE
     descriptor, including its syntax and content, can be found in the <olink
       targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe"/>. The individual
@@ -305,7 +305,7 @@ CAS Consumer:
       
       <para>If you have followed the instructions in <olink
           targetdoc="&uima_docs_overview;"
-          targetptr="ugr.overview.eclipse_setup"/> and imported the example Eclipse
+          targetptr="ugr.ovv.eclipse_setup"/> and imported the example Eclipse
         project, then you should already have a Run configuration for the CPE Configurator
         tool (called <literal>UIMA CPE GUI</literal>) configured to run in the example
         project. Simply run that configuration to start the CPE Configurator.</para>
@@ -405,7 +405,7 @@ mCPE.process();
       which you have defined at least one constructor does not get a default 0-argument
       constructor.)</para>
     
-    <section id="ugr.tug.cpe.developing_collection_readers">
+    <section id="ugr.tug.cpe.collection_reader.developing">
       <title>Developing Collection Readers</title>
       
       <para>A Collection Reader is responsible for obtaining documents from the collection
@@ -420,7 +420,8 @@ mCPE.process();
         <literal>%UIMA_HOME%/examples/src/main/descriptors/collection_reader/
           FileSystemCollectionReader.xml</literal>.</para>
       
-      <section><title>Java Class for the Collection Reader</title>
+      <section id="ugr.tug.cpe.collection_reader.java_class">
+        <title>Java Class for the Collection Reader</title>
         
         <para>The Java class for a Collection Reader must implement the
           <literal>org.apache.uima.collection.CollectionReader</literal>
@@ -463,11 +464,14 @@ mCPE.process();
           for more details.</para>
       </section>
       
-      <section><title>Required Methods in the Collection Reader class</title>
+      <section id="ugr.tug.cpe.collection_reader.required_methods">
+        <title>Required Methods in the Collection Reader class</title>
+        
         
         <para>The following abstract methods must be implemented:</para>
         
-        <section><title>initialize()</title>
+        <section id="ugr.tug.cpe.collection_reader.required_methods.initialize">
+          <title>initialize()</title>
           
           <para>The <literal>initialize()</literal> method is called by the framework
             when the Collection Reader is first created.
@@ -510,7 +514,8 @@ mCPE.process();
           
         </section>
         
-        <section><title>hasNext()</title>
+        <section id="ugr.tug.cpe.collection_reader.hasnext">
+          <title>hasNext()</title>
           
           <para>The <literal>hasNext()</literal> method returns whether or not there are
             any documents remaining to be read from the collection. The File System
@@ -526,7 +531,8 @@ mCPE.process();
           
         </section>
         
-        <section><title>getNext(CAS)</title>
+        <section id="ugr.tug.cpe.collection_reader.required_methods.getnext">
+          <title>getNext(CAS)</title>
           
           <para>The <literal>getNext()</literal> method reads the next document from the
             collection and populates a CAS. In the simple case, this amounts to reading the
@@ -621,7 +627,7 @@ mCPE.process();
           <para>CAS Initializers are now deprecated. If you have complex initialization,
             it is better to do this using one or more annotators that create new Subjects of
             Analysis (see <olink targetdoc="&uima_docs_tutorial_guides;"
-              targetptr="ugr.tug.multi_views"/>).</para>
+              targetptr="ugr.tug.mvs"/>).</para>
           
           <!--However, if you are doing complex
           initialization of the CAS, it may be better to use a CAS Initializer as
@@ -629,7 +635,8 @@ mCPE.process();
           </a>. -->
         </section>
         
-        <section><title>getProgress()</title>
+        <section id="ugr.tug.cpe.collection_reader.required_methods.getprogress">
+          <title>getProgress()</title>
           <para>The Collection Reader is responsible for returning progress information;
             that is, how much of the collection has been read thus far and how much remains to be
             read. The framework defines progress very generally; the Collection Reader
@@ -657,7 +664,8 @@ mCPE.process();
           
         </section>
         
-        <section><title>close()</title>
+        <section id="ugr.tug.cpe.collection_reader.required_methods.close">
+          <title>close()</title>
           
           <para>The close method is called when the Collection Reader is no longer needed.
             The Collection Reader should then release any resources it may be holding. The
@@ -669,16 +677,19 @@ mCPE.process();
           
         </section>
         
-        <section><title>Optional Methods</title>
+        <section id="ugr.tug.cpe.collection_reader.optional_methods">
+          <title>Optional Methods</title>
           
           <para>The following methods may be implemented:</para>
           
-          <section><title>reconfigure()</title>
+          <section id="ugr.tug.cpe.collection_reader.optional_methods.reconfigure">
+            <title>reconfigure()</title>
             <para>This method is called if the Collection Reader&apos;s configuration
               parameters change.</para>
           </section>
           
-          <section><title>typeSystemInit()</title>
+          <section id="ugr.tug.cpe.collection_reader.optional_methods.typesysteminit">
+            <title>typeSystemInit()</title>
             
             <para>If you are only setting the document text in the CAS, or if you are using the
               JCas (recommended, as in the current example, you do not have to implement this
@@ -689,7 +700,8 @@ mCPE.process();
           </section>
         </section>
         
-        <section><title>Threading considerations</title>
+        <section id="ugr.tug.cpe.collection_reader.threading">
+          <title>Threading considerations</title>
           
           <para>Collection readers do not have to be thread safe; they are run with a single
             thread per instance, and only one instance per instance of the Collection
@@ -697,7 +709,8 @@ mCPE.process();
           
         </section>
         
-        <section><title>XML Descriptor for a Collection Reader</title>
+        <section id="ugr.tug.cpe.collection_reader.descriptor">
+          <title>XML Descriptor for a Collection Reader</title>
           
           <para>You can use the Component Description Editor to create and / or edit the File
             System Collection Reader&apos;s descriptor. Here is its descriptor
@@ -779,11 +792,11 @@ mCPE.process();
       </section>
     </section>
     
-    <section id="ugr.tug.cpe.developing_cas_initializers"><title>Developing CAS
+    <section id="ugr.tug.cpe.cas_initializer.developing"><title>Developing CAS
       Initializers</title> <note><para>CAS Initializers are now deprecated (as of
       version 2.1). For complex initialization, please use instead the capabilities of
       creating additional Subjects of Analysis (see <olink
-        targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.multi_views"/>
+        targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.mvs"/>
       ). </para></note>
       
       <para>Although Collection Readers can directly write to the CAS, it is best that they do
@@ -907,7 +920,7 @@ mCPE.process();
         been supplied, and call the CAS Initializer&apos;s
         <literal>initializeCas()</literal> method, rather than setting up the CAS
         itself. Our File System Collection Reader example, <xref
-          linkend="ugr.tug.cpe.developing_collection_readers"/>, optionally uses a
+          linkend="ugr.tug.cpe.collection_reader.developing"/>, optionally uses a
         CAS Initializer as follows:
         
         
@@ -927,7 +940,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
       
     </section>
     
-    <section id="ugr.tug.cpe.developing_cas_consumers"><title>Developing CAS
+    <section id="ugr.tug.cpe.cas_consumer.developing"><title>Developing CAS
       Consumers</title> <note><para>In version 2, there is no difference in capability
       between CAS Consumers and ordinary Analysis Engines, except for the default setting of
       the XML parameters for <literal>multipleDeploymentAllowed</literal> and
@@ -968,13 +981,14 @@ else { //No CAS Initializer, so read file and set document text ourselves
         <literal>%UIMA_HOME%/examples/descriptors/cas_consumer/XmiWriterCasConsumer.xml</literal>
         .</para>
       
-      <section><title>Required Methods for a CAS Consumer</title>
+      <section id="ugr.tug.cpe.cas_consumer.required_methods">
+        <title>Required Methods for a CAS Consumer</title>
         
         <para>When extending the convenience class
           <literal>org.apache.uima.collection.CasConsumer_ImplBase</literal>, the
           following abstract methods must be implemented:</para>
         
-        <section>
+        <section id="ugr.tug.cpe.cas_consumer.required_methods.initialize">
           <title>initialize()</title>
           <para>The <literal>initialize()</literal> method is called by the framework
             when the CAS Consumer is first created.
@@ -999,7 +1013,8 @@ else { //No CAS Initializer, so read file and set document text ourselves
 </programlisting></para>
         </section>
         
-        <section><title>processCas()</title>
+        <section id="ugr.tug.cpe.cas_consumer.required_methods.processcas">
+          <title>processCas()</title>
           
           <para>The <literal>processCas()</literal> method is where the CAS Consumer
             does most of its work. In our example, the XMI Writer CAS Consumer obtains an
@@ -1063,10 +1078,12 @@ else { //No CAS Initializer, so read file and set document text ourselves
           
         </section>
         
-        <section><title>Optional Methods></title>
+        <section id="ugr.tug.cpe.cas_consumer.optional_methods">
+          <title>Optional Methods></title>
           <para>The following methods are optional in a CAS Consumer, though they are often
             used.</para>
-          <section><title>batchProcessComplete()</title>
+          <section id="ugr.tug.cpe.cas_consumer.optional_methods.batchprocesscomplete">
+            <title>batchProcessComplete()</title>
             
             <para>The framework calls the batchProcessComplete() method at the end of each
               batch of CASes. This gives the CAS Consumer an opportunity to perform any batch
@@ -1075,7 +1092,8 @@ else { //No CAS Initializer, so read file and set document text ourselves
               Collection Processing Engine descriptor.</para>
           </section>
           
-          <section><title>collectionProcessComplete()</title>
+          <section id="ugr.tug.cpe.cas_consumer.optional_methods.collectionprocesscomplete">
+            <title>collectionProcessComplete()</title>
             
             <para>The framework calls the collectionProcessComplete() method at the end
               of the collection (i.e., when all objects in the collection have been
@@ -1152,14 +1170,14 @@ else { //No CAS Initializer, so read file and set document text ourselves
       accomplished using <emphasis>Vinci</emphasis>, a communication protocol used by
       the CPM and which is provided as a part of Apache UIMA. Vinci handles service naming and
       location and data transport (see <olink targetdoc="&uima_docs_tutorial_guides;"
-        targetptr="ugr.tug.application.deploy_as_vinci_service"/> for more
+        targetptr="ugr.tug.application.how_to_deploy_a_vinci_service"/> for more
       information). Service naming and location are provided by a <emphasis>Vinci Naming
       Service</emphasis>, or <emphasis>VNS</emphasis>. For managed CAS Processors, the
       CPE uses its own internal VNS. For non-managed CAS Processors, a separate VNS must be
       running.</para> <note><para>The UIMA SDK also supports using unmanaged remote
     services via the web-standard SOAP communications protocol (see <olink
       targetdoc="&uima_docs_tutorial_guides;"
-      targetptr="ugr.tug.application.deploy_as_soap_service"/>. This approach is
+      targetptr="ugr.tug.application.how_to_deploy_as_soap"/>. This approach is
     based on a proxy implementation, where the proxy is essentially running in an integrated
     mode. To use this approach with the CPM, use the Integrated mode, with the component being
     an Aggregate which, in turn, connects to a remote service. </para></note>
@@ -1279,7 +1297,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
         running on the network. This VNS must be manually started and monitored by the end user
         or application. Instructions for running a VNS can be found in <olink
           targetdoc="&uima_docs_tutorial_guides;"
-          targetptr="ugr.tug.application.starting_vns"/>.</para>
+          targetptr="ugr.tug.application.vns.starting"/>.</para>
       
       <para>To deploy a non-managed CAS Processor, the CPE deployer must change the CPE
         descriptor. The following is a section from the CPE descriptor that shows an example

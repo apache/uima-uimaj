@@ -23,7 +23,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 -->
-<chapter id="ugr.eclipse_setup">
+<chapter id="ugr.ovv.eclipse_setup">
   <title>Setting up Eclipse IDE to work with UIMA</title>
   
   <para>This chapter describes how to set up the UIMA SDK to work with Eclipse. Eclipse (<ulink
@@ -34,7 +34,7 @@ under the License.
     form that's easy to import into your Eclipse environment.</para>
   
   <para>If you are not planning on using the UIMA SDK with Eclipse, you may skip this chapter and
-    read <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.aae"/>
+    read <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.aae"/>
     next.</para>
   
   <para>This chapter provides instructions for
@@ -166,7 +166,7 @@ under the License.
       
     </section>
   </section>
-  <section id="ugr.eclipse_setup.example_code">
+  <section id="ugr.ovv.eclipse_setup.example_code">
     <title>Setting up Eclipse to view Example Code</title>
     <para>Later chapters refer to example code. You can create a special project in Eclipse to
       hold the examples. Here's how:</para>
@@ -246,11 +246,11 @@ under the License.
         </para></listitem></itemizedlist>
     
     <para>For instructions on using the Document Analyzer and CPE Configurator, see <olink
-        targetdoc="&uima_docs_tools;" targetptr="ugr.document_analyzer"/>, and
-        <olink targetdoc="&uima_docs_tools;" targetptr="ugr.cpe_configurator"/> For
+        targetdoc="&uima_docs_tools;" targetptr="ugr.tools.doc_analyzer"/>, and
+        <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cpe"/> For
       instructions on using the CAS Visual Debugger and JCasGen, see <olink
-        targetdoc="&uima_docs_tools;" targetptr="ugr.cas_visual_debugger"/> and
-        <olink targetdoc="&uima_docs_tools;" targetptr="ugr.jcasgen"/></para>
+        targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cvd"/> and
+        <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.jcasgen"/></para>
     
   </section>
   

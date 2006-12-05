@@ -27,8 +27,7 @@
 
     <!-- Build the Users Guide -->
     <ant antfile="build-docbook.xml" target="all">
-      <property name="docbook.dir" value="uima"/>
-      <property name="docbook.file" value="overview_and_setup"/>
+      <property name="book_name" value="overview_and_setup"/>
     </ant>
   </target>
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
 "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
-<!ENTITY imgroot "images/annotator_analysis_engine_files/" >
-<!ENTITY % uimaents SYSTEM "entities.ent" >  
+<!ENTITY imgroot "../images/tools/tools.doc_analyzer/" >
+<!ENTITY % uimaents SYSTEM "../entities.ent" >  
 %uimaents;
 ]>
 <!--
@@ -23,28 +23,25 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 -->
-<chapter id="ugr.tool.doc_analyzer">
-  <title></title>
-  <section name="Document Analyzer User&apos;s Guide"><a id="_crossRef205"> </a>
+<chapter id="ugr.tools.doc_analyzer">
+  <title>Document Analyzer User&apos;s Guide</title>
+ 
 
-
-
-<para>The <emphasis>Document Analyz</emphasis>er is a tool provided by the
-UIMA SDK for testing annotators and TAEs.  It reads text files from your disk, processes them using a TAE, and
+<para>The <emphasis>Document Analyzer</emphasis> is a tool provided by the
+UIMA SDK for testing annotators and AEs. It reads text files from your disk, processes them using an AE, and
 allows you to view the results.  The
 Document Analyzer is designed to work with text files and cannot be used with
 Analysis Engines that process other types of data.</para>
 
 <para>For an introduction to developing annotators and Analysis
-Engines, read <a class="crossrefText" href="Annotator_and_Analysis_Engine_Developers_Guide.htm#_crossRef1">Chapter 4, <b>Annotator and Analysis Engine Developer&apos;s Guide</b></a>.  This chapter is a user&apos;s guide for using the Document Analyzer tool, and
+Engines, read 
+ <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.aae"/>.  
+  This chapter is a user&apos;s guide for using the Document Analyzer tool, and
 does not describe the process of developing annotators and Analysis Engines.</para>
 
-
-
-<subsection name="Starting the Document Analyzer"><a id="_crossRef206"> </a>
-
-
-
+<section id="ugr.tools.doc_analyzer.starting">
+  <title>Starting the Document Analyzer</title>
+  
 <para>To run the Document Analyzer, execute the <literal>documentAnalyzer</literal> script that is in the <literal>bin</literal> directory of your UIMA SDK installation, or, if you
 are using the example Eclipse project, execute the <quote>UIMA Document Analyzer</quote>
 run configuration supplied with that project.</para>
@@ -55,61 +52,73 @@ update your CLASSPATH environment variable to include the classes needed by
 that Analysis Engine.</para>
 
 <para>When you first run the Document Analyzer, you should see a
-screen that looks like this:</para>
-
-<para><img alt="" width="564" height="314"
-src="../UIMA_SDK_Guide_Ref/Document_Analyzer_Users_Manual_files/image002.jpg"/></para>
-
-
-
-
-
-
-  </subsection>
-<subsection name="Running a TAE"><a id="_crossRef207"> </a>
-
+screen that looks like this:
+  
+  <screenshot>
+    <mediaobject>
+      <imageobject>
+        <imagedata width="564" depth="314" format="JPG" fileref="&imgroot;image002.jpg"/>
+      </imageobject>
+      <textobject><phrase>Document Analyzer GUI</phrase>
+      </textobject>
+    </mediaobject>
+  </screenshot></para>
 
 
-<para>To run a TAE, you must first configure the six fields on
+  </section>
+  
+  <section id="ugr.tools.doc_analyzer.running_an_ae">
+    <title>Running an AE</title>
+
+
+
+<para>To run a AE, you must first configure the six fields on
 the main screen of the Document Analyzer.</para>
 
-<para><b>Input Directory</b>:  Browse to or type the path of a directory containing text files that you
+<para><emphasis role="bold">Input Directory:</emphasis>  
+  Browse to or type the path of a directory containing text files that you
 want to analyze.  Some sample documents
-are provided in the UIMA SDK under the <literal>docs/examples/data</literal>
+are provided in the UIMA SDK under the <literal>examples/data</literal>
 directory.</para>
 
-<para><b>Output Directory:</b>  Browse to or type the path of a directory where you want output to be
+<para><emphasis role="bold">Output Directory:</emphasis>  
+  Browse to or type the path of a directory where you want output to be
 written.  (As we&apos;ll see later, you won&apos;t
 normally need to look directly at these files, but the Document Analyzer needs
 to know where to write them.)  The files
 written to this directory will be an XML representation of the analyzed
 documents.  If this directory doesn&apos;t
 exist, it will be created.  If you leave
-this field blank, your TAE will be run but no output will be generated.</para>
+this field blank, your AE will be run but no output will be generated.</para>
 
-<para><b>Location of TAE XML Descriptor</b>:  Browse to or type the path of the descriptor
-for the TAE that you want to run.  There
-are some example descriptors provided in the UIMA SDK under the <literal>docs/examples/descriptors/analysis_engine</literal> and <literal>docs/examples/descriptors/tutorial</literal> directories.</para>
+<para><emphasis role="bold">Location of AE XML Descriptor:</emphasis>  
+  Browse to or type the path of the descriptor
+for the AE that you want to run.  There
+are some example descriptors provided in the UIMA SDK under the <literal>examples/descriptors/analysis_engine</literal> and <literal>examples/descriptors/tutorial</literal> directories.</para>
 
-<para><b>XML Tag containing Text</b>:  This is an optional feature.  If you enter a value here, it specifies the
+<para><emphasis role="bold">XML Tag containing Text:</emphasis>  
+  This is an optional feature.  If you enter a value here, it specifies the
 name of an XML tag, expected to be found within the input documents, that
 contains the text to be analyzed.  For
-example, the value <literal>TEXT</literal> would cause the TAE to only
+example, the value <literal>TEXT</literal> would cause the AE to only
 analyze the portion of the document enclosed within &lt;TEXT&gt;...&lt;/TEXT&gt;
 tags.</para>
 
-<para><b>Language:  </b>Specify
+<para><emphasis role="bold">Language:</emphasis>
+  Specify
 the language in which the documents are written.  Some Analysis Engines, but not all, require
 that this be set correctly in order to do their analysis.  You can select a value from the drop-down
 list or type your own.  The value entered
-here must be an ISO language identifier, the list of which can be found here: <literal><a
-href="http://www.ics.uci.edu/pub/ietf/http/related/iso639.txt">http://www.ics.uci.edu/pub/ietf/http/related/iso639.txt</a></literal>
+here must be an ISO language identifier, the list of which can be found here: 
+  <ulink url="http://www.ics.uci.edu/pub/ietf/http/related/iso639.txt"/>.
 </para>
 
-<para><b>Character Encoding:</b>  The character encoding of the input files.  The default, UTF-8, also works fine for ASCII
+<para><emphasis role="bold">Character Encoding:</emphasis>  
+  The character encoding of the input files.  The default, UTF-8, also works fine for ASCII
 text files.  If you have a different
 encoding, enter it here.  For more
-information on character sets and their names, see the JavaDocs for <literal>java.nio.charset.Charset</literal>.</para>
+information on character sets and their names, see the JavaDocs for 
+  <literal>java.nio.charset.Charset</literal>.</para>
 
 <para>Once you&apos;ve filled in the appropriate values, press the
 <quote>Run</quote> button.</para>
@@ -122,35 +131,45 @@ own annotator code.)  Otherwise, an
 
 
 
-
-
-
-  </subsection>
-<subsection name="Viewing the Analysis Results"><a id="_crossRef208"> </a>
-
-
+</section>
+  
+  <section id="ugr.tools.doc_analyzer.viewing_results">
+    <title>Viewing the Analysis Results</title>
 
 <para>After a successful analysis, the <quote>Analysis
-Results</quote> window will appear.</para>
+Results</quote> window will appear.
+  
+  <screenshot>
+    <mediaobject>
+      <imageobject>
+        <imagedata width="434" depth="262" format="JPG" fileref="&imgroot;image004.jpg"/>
+      </imageobject>
+      <textobject><phrase>Analysis Results Window</phrase></textobject>
+    </mediaobject>
+  </screenshot></para>
 
-<para><img alt="" width="434" height="262"
-src="../UIMA_SDK_Guide_Ref/Document_Analyzer_Users_Manual_files/image004.jpg"/></para>
 
 <para>The <quote>Results Display Format</quote> options at the
 bottom of this window show the different ways you can view your analysis &ndash; the
-Java Viewer, Java Viewer (JV) with User Colors, HTML, and XML.  The default, Java Viewer, is recommended.</para>
+Java Viewer, Java Viewer (JV) with User Colors, HTML, and XML.  
+  The default, Java Viewer, is recommended.</para>
 
 <para>Once you have selected your desired Results Display
 Format, you can double-click on one of the files in the list to view the
 analysis done on that file.</para>
 
 <para>For the Java viewer, the results display looks like this
-(for the TAE descriptor <literal>docs/examples/descriptors/tutorial/ex4/MeetingDetectorTAE.xml</literal>):</para>
+(for the AE descriptor <literal>examples/descriptors/tutorial/ex4/MeetingDetectorAE.xml</literal>):
 
+  <screenshot>
+    <mediaobject>
+      <imageobject>
+        <imagedata width="575" depth="413" format="JPG" fileref="&imgroot;image006.jpg"/>
+      </imageobject>
+      <textobject><phrase>Analysis Results Window showing results from tutorial example 4</phrase></textobject>
+    </mediaobject>
+  </screenshot></para>
 
-
-<para><img alt="" width="575" height="413"
-src="../UIMA_SDK_Guide_Ref/Document_Analyzer_Users_Manual_files/image006.jpg"/></para>
 
 <para>You can click the mouse on one of the highlighted
 annotations to see a list of all its features in the frame on the right.</para>
@@ -165,13 +184,10 @@ Viewer window.  This will allow you to
 choose the Sofa that you wish to view.  Note that only text Sofas containing a non-null document are available
 for viewing.</para>
 
-
-
-
-  </subsection>
-<subsection name="Configuring the Annotation Viewer"><a id="_crossRef209"> </a>
-
-
+</section>
+  
+  <section id="ugr.tools.doc_analyzer.configuring">
+    <title>Configuring the Annotation Viewer</title>
 
 <para>The <quote>JV User Colors</quote> and the HTML viewer allow
 you to specify exactly which colors are used to display each of your annotation
@@ -180,10 +196,18 @@ specify which types should be initially selected, and you can hide types
 entirely.</para>
 
 <para>To configure the viewer, click the <quote>Edit Style
-Map</quote> button on the <quote>Analysis Results</quote> dialog.  You should see a dialog that looks like this:</para>
+Map</quote> button on the <quote>Analysis Results</quote> dialog.  
+  You should see a dialog that looks like this:
 
-<para><img alt="" width="576" height="220"
-src="../UIMA_SDK_Guide_Ref/Document_Analyzer_Users_Manual_files/image008.jpg"/></para>
+  
+  <screenshot>
+    <mediaobject>
+      <imageobject>
+        <imagedata width="576" depth="220" format="JPG" fileref="&imgroot;image008.jpg"/>
+      </imageobject>
+      <textobject><phrase>Configuring the Analysis Results Viewer</phrase></textobject>
+    </mediaobject>
+  </screenshot></para>
 
 <para>To change the color assigned to a type, simply click on
 the colored cell in the <quote>Background</quote> column for the type you wish to
@@ -200,17 +224,15 @@ settings only affect the Java Viewer, not the HTML view.</para>
 
 <para>When you are done editing, click the <quote>Save</quote>
 button.  This will save your choices to a
-file in the same directory as your TAE descriptor.  From now on, when you view analysis results
-produced by this TAE using the <quote>JV User Colors</quote> or <quote>HTML</quote>
+file in the same directory as your AE descriptor.  From now on, when you view analysis results
+produced by this AE using the <quote>JV User Colors</quote> or <quote>HTML</quote>
 options, the viewer will be configured as you have specified.</para>
 
+</section>
 
-
-
-  </subsection>
-<subsection name="Interactive Mode"><a id="_crossRef210"> </a>
-
-
+<section id="ugr.tools.doc_analyzer.interactive_mode">
+  <title>Interactive Mode</title>
+  
 
 <para>Interactive Mode allows you to analyze text that you type
 or cut-and-paste into the tool, rather than requiring that the documents be
@@ -219,53 +241,38 @@ stored as files.</para>
 <para>In the main Document Analyzer window, you can invoke
 Interactive Mode by clicking the <quote>Interactive</quote> button instead of the
 <quote>Run</quote> button.  This will
-display a dialog that looks like this:</para>
-
-<para><img alt="" width="502" height="355"
-src="../UIMA_SDK_Guide_Ref/Document_Analyzer_Users_Manual_files/image010.jpg"/></para>
+display a dialog that looks like this:
+  
+   
+  <screenshot>
+    <mediaobject>
+      <imageobject>
+        <imagedata width="502" depth="355" format="JPG" fileref="&imgroot;image010.jpg"/>
+      </imageobject>
+      <textobject><phrase>Invoking Interactive Mode</phrase></textobject>
+    </mediaobject>
+  </screenshot></para> 
 
 <para>You can type or cut-and-paste your text into this window,
 then choose your Results Display Format and click the <quote>Analyze</quote>
-button.  Your TAE will be run on the text
+button.  Your AE will be run on the text
 that you supplied and the results will be displayed as usual.</para>
 
 
-
-
-  </subsection>
-<subsection name="View Mode"><a id="_crossRef211"> </a>
-
-
-
-<para>If you have previously run a TAE and saved its analysis
+</section>
+  
+  <section id="ugr.tools.doc_analyzer.view_mode">
+    <title>View Mode</title>
+    
+<para>If you have previously run a AE and saved its analysis
 results, you can use the Document Analyzer&apos;s View mode to view those results,
 without re-running your analysis.  To do
 this, on the main Document Analyzer window simply select the location of your
 analyzed documents in the <quote>Output Directory</quote> dialog and click the
 <quote>View</quote> button.  You can then
-view your analysis results as described in Section <a class="crossrefText" href="Document_Analyzer_Users_Manual.htm#_crossRef208">17.3, <b><emphasis>Viewing the Analysis
-Results</emphasis></b></a>.</para>
-
-
-
-</div>
-
-<br/>
-
-
-<div class="Section2">
-
-
-
-
-  </subsection>
+view your analysis results as described in Section 
+ <xref linkend="ugr.tools.doc_analyzer.viewing_results"/>.</para>
 
 </section>
-<section name="CAS Visual Debugger"><a id="_crossRef212"> </a>
+  </chapter>
 
-
-
-<para>The documentation for this component is found in a
-separate file in the docs/ directory, called <literal>CASVisualDebugger.pdf</literal>.</para>
-
-</chapter>
