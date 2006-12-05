@@ -11,5 +11,5 @@ setlocal
 @echo on
 call "%UIMA_HOME%\bin\setUimaClassPath"
 if "%JAVA_HOME%"=="" set JAVA_HOME="%UIMA_HOME%\java\jre"
-"%JAVA_HOME%\bin\java" -cp "%UIMA_CLASSPATH%" -Duima.home="%UIMA_HOME%" org.apache.uima.pear.merger.PMController %*
+"%JAVA_HOME%\bin\java" -cp "%UIMA_CLASSPATH%" -Duima.home="%UIMA_HOME%" org.apache.uima.tools.pear.merger.PMController %*
 :EXIT
