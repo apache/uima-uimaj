@@ -24,16 +24,16 @@ under the License.
 -->
 <book lang="en">
   <title>Apache UIMA SDK Tutorial and Developers' Guides</title>
-  <xi:include href="../common_book_info.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="../common_book_info.xml"/>
 
   <toc/>
   
-  <xi:include href="annotator_analysis_engine_guide.xml"/>
-  <xi:include href="tug.cpe.xml"/>
-  <xi:include href="tug.application.xml"/>
-  <xi:include href="tug.fc.xml"/>
-  <xi:include href="tug.aas.xml"/>
-  <xi:include href="tug.multi_views.xml"/>
-  <xi:include href="tug.cas_multiplier.xml"/>
-  <xi:include href="tug.xmi_emf.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="annotator_analysis_engine_guide.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="tug.cpe.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="tug.application.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="tug.fc.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="tug.aas.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="tug.multi_views.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="tug.cas_multiplier.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="tug.xmi_emf.xml"/>
 </book>

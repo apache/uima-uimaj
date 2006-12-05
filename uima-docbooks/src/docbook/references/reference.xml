@@ -24,15 +24,15 @@ under the License.
 -->
 <book lang="en">
   <title>Apache UIMA SDK Reference</title>
-  <xi:include href="../common_book_info.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="../common_book_info.xml"/>
 
   <toc/>
   
-  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="ref.javadocs.xml"/>
-  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="ref.xml.component_descriptor.xml"/>
-  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="ref.xml.cpe_descriptor.xml"/>
-  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="ref.cas.xml"/>
-  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="ref.jcas.xml"/>
-  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="ref.pear.xml"/>
-  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="ref.xmi.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="ref.javadocs.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="ref.xml.component_descriptor.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="ref.xml.cpe_descriptor.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="ref.cas.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="ref.jcas.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="ref.pear.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="ref.xmi.xml"/>
 </book>
