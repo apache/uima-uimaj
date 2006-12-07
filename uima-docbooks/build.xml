@@ -38,9 +38,11 @@
     <ant antfile="build-docbook.xml" target="all">
       <property name="book_name" value="tools"/>
     </ant>
-    <ant antfile="build-docbook.xml" target="all">
+<!--
+      <ant antfile="build-docbook.xml" target="all">
       <property name="book_name" value="references"/>
     </ant>
+-->  
   </target>
 
   <!-- ======================================================================== -->
