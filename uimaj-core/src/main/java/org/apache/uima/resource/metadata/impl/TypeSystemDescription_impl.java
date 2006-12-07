@@ -208,6 +208,11 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
 
   public void resolveImports(Collection aAlreadyImportedTypeSystemURLs,
           ResourceManager aResourceManager) throws InvalidXMLException {
+    // add our own URL, if known, to the collection of already imported URLs
+    if (getSourceUrl() != null) {
+      aAlreadyImportedTypeSystemURLs.add(getSourceUrl().toString());
+    }
+
     List importedTypes = new ArrayList();
     Import[] imports = getImports();
     for (int i = 0; i < imports.length; i++) {

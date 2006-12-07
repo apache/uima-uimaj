@@ -131,9 +131,7 @@ public class TypePriorities_implTest extends TestCase {
       descriptor = JUnitExtension.getFile("TypePrioritiesImplTest/Circular1.xml");
       pri = UIMAFramework.getXMLParser().parseTypePriorities(new XMLInputSource(descriptor));
       pri.resolveImports();
-      // TODO: currently, the circular import leaves duplicates.
-      // when we fix this, the "3" on the next line should become a "2".
-      assertEquals(3, pri.getPriorityLists().length);
+      assertEquals(2, pri.getPriorityLists().length);
 
       // calling resolveImports when there are none should do nothing
       descriptor = JUnitExtension.getFile("TypePrioritiesImplTest/SimpleTypePriorities.xml");

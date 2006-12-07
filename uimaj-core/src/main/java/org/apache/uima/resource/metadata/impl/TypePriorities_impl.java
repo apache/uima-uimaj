@@ -195,6 +195,11 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
 
   public void resolveImports(Collection aAlreadyImportedTypePrioritiesURLs,
           ResourceManager aResourceManager) throws InvalidXMLException {
+    // add our own URL, if known, to the collection of already imported URLs
+    if (getSourceUrl() != null) {
+      aAlreadyImportedTypePrioritiesURLs.add(getSourceUrl().toString());
+    }
+    
     List importedPriorityLists = new ArrayList();
     Import[] imports = getImports();
     for (int i = 0; i < imports.length; i++) {
