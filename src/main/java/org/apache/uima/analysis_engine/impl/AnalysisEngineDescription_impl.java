@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -176,7 +177,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#getDelegateAnalysisEngineSpecifiers()
    */
   public Map getDelegateAnalysisEngineSpecifiers() throws InvalidXMLException {
-    resolveDelegateAnalysisEngineImports(UIMAFramework.newDefaultResourceManager());
+    resolveImports(UIMAFramework.newDefaultResourceManager());
     return Collections.unmodifiableMap(mDelegateAnalysisEngineSpecifiers);
   }
 
@@ -185,7 +186,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    */
   public Map getDelegateAnalysisEngineSpecifiers(ResourceManager aResourceManager)
           throws InvalidXMLException {
-    resolveDelegateAnalysisEngineImports(aResourceManager);
+    resolveImports(aResourceManager);
     return Collections.unmodifiableMap(mDelegateAnalysisEngineSpecifiers);
   }
 
@@ -218,10 +219,9 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
     if (aResourceManager == null) {
       aResourceManager = UIMAFramework.newDefaultResourceManager();
     }
-    resolveDelegateAnalysisEngineImports(aResourceManager);
+    resolveImports(aResourceManager);
     Map map = new HashMap(mDelegateAnalysisEngineSpecifiers);
     if (getFlowControllerDeclaration() != null) {
-      getFlowControllerDeclaration().resolveImports(aResourceManager);
       map.put(getFlowControllerDeclaration().getKey(), getFlowControllerDeclaration()
               .getSpecifier());
     }
@@ -683,10 +683,50 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#resolveDelegateAnalysisEngineImports(org.apache.uima.resource.ResourceManager)
+   * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#resolveImports(org.apache.uima.resource.ResourceManager)
    */
-  protected void resolveDelegateAnalysisEngineImports(ResourceManager aResourceManager)
-          throws InvalidXMLException {
+  public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException {
+    resolveImports(new HashSet(), aResourceManager);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#resolveImports(java.util.Collection,
+   *      org.apache.uima.resource.ResourceManager)
+   */
+  public void resolveImports(Collection aAlreadyImportedDelegateAeUrls,
+          ResourceManager aResourceManager) throws InvalidXMLException {
+    // add our own URL, if known, to the collection of already imported URLs
+    if (getSourceUrl() != null) {
+      aAlreadyImportedDelegateAeUrls.add(getSourceUrl());
+    }
+    // resolve delegate AE imports
+    resolveDelegateAnalysisEngineImports(aAlreadyImportedDelegateAeUrls, aResourceManager);
+    // resolve flow controller import
+    if (getFlowControllerDeclaration() != null) {
+      getFlowControllerDeclaration().resolveImports(aResourceManager);
+    }
+
+    // resolve imports in metadata (type systems, indexes, type priorities)
+    if (getAnalysisEngineMetaData() != null) {
+      getAnalysisEngineMetaData().resolveImports(aResourceManager);
+    }
+    // resolve imports in resource manager configuration
+    if (getResourceManagerConfiguration() != null) {
+      getResourceManagerConfiguration().resolveImports(aResourceManager);
+    }
+  }
+
+  /**
+   * Resolves imports of delegate Analysis Engines. This reads from the
+   * delegateAnalysisEngineSpecifiersWithImports map and populates the
+   * delegateAnalysisEngineSpecifiers map. This also recursively calls
+   * {@link #resolveImports(Collection, ResourceManager)} on each delegate. If a cirular import is
+   * found, an exception will be thrown.
+   */
+  protected void resolveDelegateAnalysisEngineImports(Collection aAlreadyImportedDelegateAeUrls,
+          ResourceManager aResourceManager) throws InvalidXMLException {
     HashSet keys = new HashSet(); // keep track of keys we've encountered
     // so we can remove stale entries
     Iterator entryIterator = getDelegateAnalysisEngineSpecifiersWithImports().entrySet().iterator();
@@ -708,6 +748,14 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
         }
         // locate import target
         URL url = aeImport.findAbsoluteUrl(aResourceManager);
+
+        // check for resursive import
+        if (aAlreadyImportedDelegateAeUrls.contains(url)) {
+          String name = getMetaData() == null ? "<null>" : getMetaData().getName();
+          throw new InvalidXMLException(InvalidXMLException.CIRCULAR_AE_IMPORT, new Object[] {
+              name, url });
+        }
+
         // parse import target
         XMLInputSource input;
         try {
@@ -723,9 +771,21 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
 
         // add to processed imports map so we don't redo
         mProcessedImports.put(key, aeImport);
+
+        // now resolve imports in ths delegate
+        if (spec instanceof AnalysisEngineDescription) {
+          Set alreadyImportedUrls = new HashSet(aAlreadyImportedDelegateAeUrls);
+          alreadyImportedUrls.add(url);
+          ((AnalysisEngineDescription) spec).resolveImports(alreadyImportedUrls, aResourceManager);
+        }
       } else {
         // not an import -- copy directly to derived mDelegateAnalysisEngineSpecifiers map.
         mDelegateAnalysisEngineSpecifiers.put(entry.getKey(), entry.getValue());
+        // resolve imports recursively on the delegate
+        if (entry.getValue() instanceof AnalysisEngineDescription) {
+          ((AnalysisEngineDescription) entry.getValue()).resolveImports(
+                  aAlreadyImportedDelegateAeUrls, aResourceManager);
+        }
       }
     }
     // remove stale entries

@@ -22,9 +22,11 @@ package org.apache.uima.analysis_engine;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.Map;
 
 import org.apache.uima.Constants;
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration;
 import org.apache.uima.analysis_engine.metadata.SofaMapping;
@@ -326,6 +328,43 @@ public interface AnalysisEngineDescription extends ResourceCreationSpecifier {
    */
   public void doFullValidation(ResourceManager aResourceManager)
           throws ResourceInitializationException;
+
+  /**
+   * Resolves all import declarations in this AnalysisEngineDescription. For an aggregate, this is
+   * recursive, also resolving all imports in each delegate AnalysisEngine. Users do not typically
+   * need to call this method; it is called automatically when
+   * {@link UIMAFramework#produceAnalysisEngine(ResourceSpecifier)} is called.
+   * 
+   * @param aResourceManager
+   *          the Resource Manager used to locate imports by name. For example, the path in which to
+   *          locate these imported descriptors can be set via the
+   *          {@link ResourceManager#setDataPath(String)} method.
+   * 
+   * @throws InvalidXMLException
+   *           if an import target does not exist or is invalid
+   */
+  public void resolveImports(ResourceManager aResourceManager) throws InvalidXMLException;
+
+  /**
+   * Resolves all import declarations in this AnalysisEngineDescription. For an aggregate, this is
+   * recursive, also resolving all imports in each delegate AnalysisEngine. Users do not typically
+   * need to call this method; it is called automatically when
+   * {@link UIMAFramework#produceAnalysisEngine(ResourceSpecifier)} is called.
+   * <p>
+   * This version is used internally to resolve nested imports.
+   * 
+   * @param aAlreadyImportedDelegateAeUrls
+   *          URLs of already imported AE descriptors, so we don't import them again.
+   * @param aResourceManager
+   *          the Resource Manager used to locate imports by name. For example, the path in which to
+   *          locate these imported descriptors can be set via the
+   *          {@link ResourceManager#setDataPath(String)} method.
+   * 
+   * @throws InvalidXMLException
+   *           if an import target does not exist or is invalid
+   */
+  public void resolveImports(Collection aAlreadyImportedDelegateAeUrls,
+          ResourceManager aResourceManager) throws InvalidXMLException;
 
   /**
    * Writes this object's XML representation as a string. Note that if you want to write the XML to
