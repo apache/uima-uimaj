@@ -32,9 +32,7 @@ import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 
 /**
- * JUnitTestRunner is the start class for the comand line test with JUnit
- * 
- * @author Michael Baessler
+ * JUnitTestRunner is the start class for the comand line test with JUnit.
  */
 public class JUnitTestRunner {
   // this mehtod name must be avaialbe at every TestSuite class
@@ -202,7 +200,7 @@ public class JUnitTestRunner {
         System.setOut(consoleWriter);
       }
 
-      // set IBMResult printer mode, if teeResult is true use another output layout
+      // set UIMAResult printer mode, if teeResult is true use another output layout
       UIMAResultPrinter printer = new UIMAResultPrinter(resultWriter, abortOnFail, teeResult);
       aTestRunner.setPrinter(printer);
 

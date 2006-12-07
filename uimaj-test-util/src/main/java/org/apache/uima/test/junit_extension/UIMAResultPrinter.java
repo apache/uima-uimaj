@@ -32,9 +32,7 @@ import junit.runner.BaseTestRunner;
 import junit.textui.ResultPrinter;
 
 /**
- * IBMResultPrinter is the ResultPrinter extension for the JUnit framework.
- * 
- * @author Michael Baessler
+ * UIMAResultPrinter is a ResultPrinter extension for the JUnit framework.
  */
 public class UIMAResultPrinter extends ResultPrinter implements TestListener {
   // print stream for the output
