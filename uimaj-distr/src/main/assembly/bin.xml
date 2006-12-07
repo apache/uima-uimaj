@@ -113,7 +113,7 @@
         <include>overview_and_setup/overview_and_setup.*</include>
         <include>tutorials_and_users_guides/tutorials_and_users_guides.*</include>
         <include>tools/tools.*</include>
-        <include>reference/reference.*</include>
+        <include>references/references.*</include>
       </includes>
     </fileSet>    
 		<fileSet>
