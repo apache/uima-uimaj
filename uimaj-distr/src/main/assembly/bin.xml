@@ -91,6 +91,7 @@
 		</dependencySet>
 	</dependencySets>
 	
+  <!-- Add other files - scripts, documentation, examples -->
 	<fileSets>
 		<fileSet>
 			<directory>src/main/scripts</directory>
@@ -104,6 +105,17 @@
 			<directory>target/site/apidocs</directory>
 			<outputDirectory>/docs/api</outputDirectory>
 		</fileSet>
+    <fileSet>
+      <directory>../uima-docbooks/target</directory>      
+      <outputDirectory>/docs</outputDirectory>
+      <includes>
+        <include>images/**</include>
+        <include>overview_and_setup/overview_and_setup.*</include>
+        <include>tutorials_and_users_guides/tutorials_and_users_guides.*</include>
+        <include>tools/tools.*</include>
+        <include>reference/reference.*</include>
+      </includes>
+    </fileSet>    
 		<fileSet>
 			<directory>../uimaj-examples/src/main/java</directory>
 			<outputDirectory>/examples/src</outputDirectory>
