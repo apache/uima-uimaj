@@ -104,12 +104,6 @@ public class InvalidXMLException extends UIMAException {
   public static final String INVALID_CPE_DESCRIPTOR = "invalid_cpe_descriptor";
 
   /**
-   * Message key for a standard UIMA exception message: An xi:include element was not resolved.
-   * Please note that <xi:includes> are deprecated...
-   */
-  public static final String UNRESOLVED_XINCLUDE = "unresolved_xinclude";
-
-  /**
    * Message key for a standard UIMA exception message: Cycle found in imports. The descriptor for
    * Aggregate Analysis Engine "{0}" has imported itself as one of its delegate descriptors (perhaps
    * indirectly through another intermediate Analysis Engine descriptor).

@@ -139,13 +139,13 @@ public class XMLParser_impl implements XMLParser {
 
       XMLReader reader = parser.getXMLReader();
       reader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
-      
-      //enable validation if requested
+
+      // enable validation if requested
       if (mSchemaValidationEnabled && aNamespaceForSchema != null && aSchemaUrl != null) {
         reader.setFeature("http://xml.org/sax/features/validation", true);
         reader.setFeature("http://apache.org/xml/features/validation/schema", true);
-        reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation", 
-                  aNamespaceForSchema + " " + aSchemaUrl);
+        reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",
+                aNamespaceForSchema + " " + aSchemaUrl);
       }
 
       // set up InputSource
@@ -159,23 +159,23 @@ public class XMLParser_impl implements XMLParser {
       }
       input.setSystemId(systemId);
 
-      //set up error handler to catch validation errors\
+      // set up error handler to catch validation errors\
       ParseErrorHandler errorHandler = new ParseErrorHandler();
       reader.setErrorHandler(errorHandler);
-      
+
       // Parse with SaxDeserializer
       SaxDeserializer deser = new SaxDeserializer_impl(this, aOptions);
       reader.setContentHandler(deser);
       reader.parse(input);
-      
-      //if there was an exception, throw it
+
+      // if there was an exception, throw it
       if (errorHandler.getException() != null) {
         throw errorHandler.getException();
       }
-      
-      //otherwise build the UIMA XMLizable object and return it
+
+      // otherwise build the UIMA XMLizable object and return it
       XMLizable result = deser.getObject();
-      
+
       if (result instanceof MetaDataObject_impl) {
         // set Source URL (needed to later resolve descriptor-relative paths)
         ((MetaDataObject_impl) result).setSourceUrl(urlToParse);
@@ -266,12 +266,8 @@ public class XMLParser_impl implements XMLParser {
     // attempt to locate a Class that can be built from the element
     Class cls = (Class) mElementToClassMap.get(aElement.getTagName());
     if (cls == null) {
-      if ("xi:include".equals(aElement.getTagName())) {
-        throw new InvalidXMLException(InvalidXMLException.UNRESOLVED_XINCLUDE, new Object[0]);
-      } else {
-        throw new InvalidXMLException(InvalidXMLException.UNKNOWN_ELEMENT, new Object[] { aElement
-                .getTagName() });
-      }
+      throw new InvalidXMLException(InvalidXMLException.UNKNOWN_ELEMENT, new Object[] { aElement
+              .getTagName() });
     }
 
     // resolve the class name and instantiate the class
@@ -300,19 +296,15 @@ public class XMLParser_impl implements XMLParser {
     // attempt to locate a Class that can be built from the element
     Class cls = (Class) mElementToClassMap.get(aElement.getTagName());
     if (cls == null) {
-      if ("xi:include".equals(aElement.getTagName())) {
-        throw new InvalidXMLException(InvalidXMLException.UNRESOLVED_XINCLUDE, new Object[0]);
-      } else {
-        // attempt to parse as primitive
-        Object primObj = XMLUtils.readPrimitiveValue(aElement);
-        if (primObj != null) {
-          return primObj;
-        }
-
-        // unknown element - throw exception
-        throw new InvalidXMLException(InvalidXMLException.UNKNOWN_ELEMENT, new Object[] { aElement
-                .getTagName() });
+      // attempt to parse as primitive
+      Object primObj = XMLUtils.readPrimitiveValue(aElement);
+      if (primObj != null) {
+        return primObj;
       }
+
+      // unknown element - throw exception
+      throw new InvalidXMLException(InvalidXMLException.UNKNOWN_ELEMENT, new Object[] { aElement
+              .getTagName() });
     }
 
     // resolve the class name and instantiate the class
@@ -830,7 +822,7 @@ public class XMLParser_impl implements XMLParser {
   public SaxDeserializer newSaxDeserializer() {
     return new SaxDeserializer_impl(this, new XMLParser.ParsingOptions(true));
   }
-  
+
   /**
    * @see org.apache.uima.util.XMLParser#newSaxDeserializer(java.lang.String, java.net.URL, boolean)
    */
@@ -851,7 +843,7 @@ public class XMLParser_impl implements XMLParser {
     }
     return schemaURL;
   }
-  
+
   /**
    * Error handler for XML parsing. Stores first error in <code>exception</code> field for later
    * retrieval.
@@ -880,5 +872,5 @@ public class XMLParser_impl implements XMLParser {
     public void clear() {
       mException = null;
     }
-  }  
+  }
 }
