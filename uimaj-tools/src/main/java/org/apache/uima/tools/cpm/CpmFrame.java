@@ -105,7 +105,6 @@ public class CpmFrame extends JFrame implements ActionListener {
     menuBar = new JMenuBar();
 
     JMenu fileMenu = new JMenu("File");
-
     List fileMenuItems = cpmPanel.createFileMenuItems();
     Iterator iter = fileMenuItems.iterator();
     while (iter.hasNext()) {
@@ -115,6 +114,13 @@ public class CpmFrame extends JFrame implements ActionListener {
     exitMenuItem = new JMenuItem("Exit");
     exitMenuItem.addActionListener(this);
     fileMenu.add(exitMenuItem);
+    
+    JMenu viewMenu = new JMenu("View");
+    List viewMenuItems = cpmPanel.createViewMenuItems();
+    iter = viewMenuItems.iterator();
+    while (iter.hasNext()) {
+      viewMenu.add((JMenuItem) iter.next());
+    }
 
     JMenu helpMenu = new JMenu("Help");
     aboutMenuItem = new JMenuItem("About");
@@ -124,6 +130,7 @@ public class CpmFrame extends JFrame implements ActionListener {
     helpMenu.add(aboutMenuItem);
     helpMenu.add(helpMenuItem);
     menuBar.add(fileMenu);
+    menuBar.add(viewMenu);
     menuBar.add(helpMenu);
 
     return menuBar;

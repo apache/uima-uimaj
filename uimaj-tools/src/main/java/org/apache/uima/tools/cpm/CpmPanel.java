@@ -44,6 +44,7 @@ import java.util.prefs.Preferences;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -96,12 +97,15 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   private static final long serialVersionUID = -5096300176103368922L;
 
   public static final String HELP_MESSAGE = "Instructions for using UIMA Collection Processing Engine Configurator:\n\n"
-          + "Select a Collection Reader descriptor and optionally a CAS Initializer descriptor\n"
-          + "using the Browse buttons.  On the Analyis Engines panel and the CAS Consumers panel,\n"
-          + "use the Add button to select Analysis Engine (AE) and CAS Consumer descriptors.\n"
+          + "Select a Collection Reader descriptor using the Browse button in the topmost panel.\n\n"
+          + "On the Analyis Engines panel and the CAS Consumers panel, use the Add button to select Analysis Engine (AE) \n" 
+          + "and CAS Consumer descriptors.\n\n"
           + "Press the Play button to start collection processing.\n"
           + "A progress bar in the lower left corner of the window will indicate the processing progress.\n"
-          + "When running, you may use the Pause or Stop button to pause or stop the processing.\n\n";
+          + "When running, you may use the Pause or Stop button to pause or stop the processing.\n\n" 
+          + "The File menu contains options for opening and saving CPE descriptors.\n\n" 
+          + "The View menu contains an option to display the CAS Initializer panel.  CAS Initializers are deprecated \n"  
+          + "since UIMA version 2.0, but are still supported by this tool.";       
 
   private static final String PREFS_CPE_DESCRIPTOR_FILE = "cpeDescriptorFile";
 
@@ -115,7 +119,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
   private JSplitPane mainSplitPane;
 
-  private JPanel baseReaderPanel;
+  private JSplitPane readerInitializerSplitPane;
 
   private ResetableMetaDataPanel collectionReaderPanel;
 
@@ -205,6 +209,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
   private boolean selectedComponentsChanged = false;
 
+  private JMenuItem viewCasInitializerPanelMenuItem;
+
   public CpmPanel() {
     super();
 
@@ -229,10 +235,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     JSplitPane bottomSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
     bottomSplitPane.setResizeWeight(0.5);
     mainSplitPane.setBottomComponent(bottomSplitPane);
-    baseReaderPanel = new JPanel();
-
-    GridLayout crLayout = new GridLayout(1, 2);
-    baseReaderPanel.setLayout(crLayout);
+    readerInitializerSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+    readerInitializerSplitPane.setResizeWeight(0.5);
 
     collectionReaderPanel = new ResetableMetaDataPanel(2);
     // Initialized in readPreferences
@@ -243,7 +247,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     collectionReaderPanel.setBorder(collectionReaderTitledBorder);
 
     JScrollPane collectionReaderScrollPane = new JScrollPane(collectionReaderPanel);
-    baseReaderPanel.add(collectionReaderScrollPane);
+    readerInitializerSplitPane.setLeftComponent(collectionReaderScrollPane);
 
     casInitializerPanel = new ResetableMetaDataPanel(2);
 
@@ -251,9 +255,9 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     casInitializerTitledBorder = BorderFactory.createTitledBorder(bevelBorder, "CAS Initializer");
     casInitializerPanel.setBorder(casInitializerTitledBorder);
 
-    baseReaderPanel.add(casInitializerPanel);
+    readerInitializerSplitPane.setRightComponent(casInitializerPanel);
 
-    mainSplitPane.setTopComponent(baseReaderPanel);
+    mainSplitPane.setTopComponent(readerInitializerSplitPane);
 
     // AE Panel
     aeMainPanel = new JPanel();
@@ -409,6 +413,10 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     } catch (Exception e) {
       e.printStackTrace();
     }
+    
+    //CAS initializer panel is initially hidden since it is deprecated
+    setCasInitializerPanelVisible(false);
+    
     // read preferences (loads last opened CPE descriptor)
     if (System.getProperty("uima.noprefs") == null) {
       readPreferences();
@@ -448,6 +456,32 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     menuItemList.add(clearAllMenuItem);
 
     return menuItemList;
+  }
+  
+  /**
+   * Creates JMenuItems that should be added to the View menu
+   * 
+   * @return a List of JMenuItems
+   */
+  public List createViewMenuItems() {
+    List menuItemList = new ArrayList();
+
+    viewCasInitializerPanelMenuItem = new JCheckBoxMenuItem("CAS Initializer Panel");
+    viewCasInitializerPanelMenuItem.setSelected(casInitializerPanel.isVisible());
+    viewCasInitializerPanelMenuItem.addActionListener(this);
+    menuItemList.add(viewCasInitializerPanelMenuItem);
+
+    return menuItemList;
+  }  
+  
+  private void setCasInitializerPanelVisible(boolean visible) {
+    casInitializerPanel.setVisible(visible);
+    if (viewCasInitializerPanelMenuItem != null) {
+      viewCasInitializerPanelMenuItem.setSelected(visible);
+    }
+    if (visible) {
+      readerInitializerSplitPane.setDividerLocation(0.5);
+    }
   }
 
   private void readPreferences() {
@@ -736,6 +770,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       casInitializerPanel.validate();
       aeMainPanel.validate();
       consumersPanel.validate();
+    } else if (source == viewCasInitializerPanelMenuItem) {
+      setCasInitializerPanelVisible(!casInitializerPanel.isVisible());
     }
   }
 
@@ -1075,6 +1111,9 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
         return true;
       }
 
+      //a CAS initializer is selected, so make sure the panel is made visible
+      setCasInitializerPanelVisible(true);
+      
       File f = new File(specifierFile);
       if (!f.exists()) {
         String errorMsg = "Descriptor file " + f.getAbsolutePath() + " does not exist";
@@ -1279,7 +1318,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     // for (int i = 0; i < (nrMenuItems - 2); i++)
     // menuBar.getMenu(i).setEnabled(onOff);
 
-    baseReaderPanel.setEnabled(onOff);
+    readerInitializerSplitPane.setEnabled(onOff);
     collectionReaderPanel.setEnabled(onOff);
     collectionReaderTitledBorder.setTitleColor(titleColor);
     casInitializerPanel.setEnabled(onOff);
@@ -1316,10 +1355,14 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     // Cursor cursor = (onOff ? Cursor.getDefaultCursor() : Cursor
     // .getPredefinedCursor(Cursor.WAIT_CURSOR));
     // setCursor(cursor);
-    openCpeDescMenuItem.setEnabled(onOff);
-    saveCpeDescMenuItem.setEnabled(onOff);
-    refreshMenuItem.setEnabled(onOff);
-    clearAllMenuItem.setEnabled(onOff);
+    if (openCpeDescMenuItem != null)
+      openCpeDescMenuItem.setEnabled(onOff);
+    if (saveCpeDescMenuItem != null)
+      saveCpeDescMenuItem.setEnabled(onOff);
+    if (refreshMenuItem != null)
+      refreshMenuItem.setEnabled(onOff);
+    if (clearAllMenuItem != null)
+      clearAllMenuItem.setEnabled(onOff);
   }
 
   public void onCompletion() {
