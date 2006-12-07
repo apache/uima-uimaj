@@ -192,11 +192,11 @@
          <xreftext>Section 1.5, “Summary of UIMA SDK Capabilities”</xreftext>
       </div>
    </div>
-   <div element="chapter" href="ch02.html" number="2" targetptr="ugr.conceptual_overview">
+   <div element="chapter" href="ch02.html" number="2" targetptr="ugr.ovv.conceptual">
       <ttl>UIMA Conceptual Overview</ttl>
       <xreftext>Chapter 2, <i>UIMA Conceptual Overview</i>
       </xreftext>
-      <div element="section" href="ch02.html#ugr.conceptual_overview.uima_introduction" number="2.1" targetptr="ugr.conceptual_overview.uima_introduction">
+      <div element="section" href="ch02.html#ugr.ovv.conceptual.uima_introduction" number="2.1" targetptr="ugr.ovv.conceptual.uima_introduction">
          <ttl>UIMA Introduction</ttl>
          <xreftext>Section 2.1, “UIMA Introduction”</xreftext>
          <obj element="figure" href="ch02.html#ugr.ovv.conceptual.fig.bridge" number="2.1" targetptr="ugr.ovv.conceptual.fig.bridge">
@@ -206,17 +206,17 @@
         worlds”</xreftext>
          </obj>
       </div>
-      <div element="section" href="ch02s02.html" number="2.2" targetptr="ugr.conceptual_overview_architecture_framework_sdk">
+      <div element="section" href="ch02s02.html" number="2.2" targetptr="ugr.ovv.conceptual.architecture_framework_sdk">
          <ttl>The Architecture, the Framework and the SDK</ttl>
          <xreftext>Section 2.2, “The Architecture, the Framework and the SDK”</xreftext>
       </div>
-      <div element="section" href="ch02s03.html" number="2.3" targetptr="ugr.conceptual_overview.analysis_basics">
+      <div element="section" href="ch02s03.html" number="2.3" targetptr="ugr.ovv.conceptual.analysis_basics">
          <ttl>Analysis Basics</ttl>
          <xreftext>Section 2.3, “Analysis Basics”</xreftext>
          <div element="section" href="ch02s03.html#ugr.ovv.conceptual.aes_annotators_and_analysis_results" number="" targetptr="ugr.ovv.conceptual.aes_annotators_and_analysis_results">
             <ttl>Analysis Engines, Annotators and Analysis Results</ttl>
             <xreftext>the section called “Analysis Engines, Annotators and Analysis Results”</xreftext>
-            <obj element="figure" href="ch02s03.html#ugr.conceptual_overview.metadata_in_cas" number="2.2" targetptr="ugr.conceptual_overview.metadata_in_cas">
+            <obj element="figure" href="ch02s03.html#ugr.ovv.conceptual.metadata_in_cas" number="2.2" targetptr="ugr.ovv.conceptual.metadata_in_cas">
                <ttl>Objects represented in the Common Analysis Structure (CAS)</ttl>
                <xreftext>Figure 2.2, “Objects represented in the Common Analysis Structure (CAS)”</xreftext>
             </obj>
@@ -246,10 +246,10 @@
             <xreftext>the section called “Component Descriptors”</xreftext>
          </div>
       </div>
-      <div element="section" href="ch02s04.html" number="2.4" targetptr="ugr.conceptual_overview.aggregate_analysis_engines">
+      <div element="section" href="ch02s04.html" number="2.4" targetptr="ugr.ovv.conceptual.aggregate_analysis_engines">
          <ttl>Aggregate Analysis Engines</ttl>
          <xreftext>Section 2.4, “Aggregate Analysis Engines”</xreftext>
-         <obj element="figure" href="ch02s04.html#ugr.conceptual_overview.sample_aggregate" number="2.3" targetptr="ugr.conceptual_overview.sample_aggregate">
+         <obj element="figure" href="ch02s04.html#ugr.ovv.conceptual.sample_aggregate" number="2.3" targetptr="ugr.ovv.conceptual.sample_aggregate">
             <ttl>Sample Aggregate Analysis Engine</ttl>
             <xreftext>Figure 2.3, “Sample Aggregate Analysis Engine”</xreftext>
          </obj>
@@ -260,7 +260,7 @@
          <div element="section" href="ch02s05.html#ugr.ovv.conceptual.using_framework_from_an_application" number="" targetptr="ugr.ovv.conceptual.using_framework_from_an_application">
             <ttl>Using the framework from an Application</ttl>
             <xreftext>the section called “Using the framework from an Application”</xreftext>
-            <obj element="figure" href="ch02s05.html#ugr.conceptual_overview.application_factory_ae" number="2.4" targetptr="ugr.conceptual_overview.application_factory_ae">
+            <obj element="figure" href="ch02s05.html#ugr.ovv.conceptual.application_factory_ae" number="2.4" targetptr="ugr.ovv.conceptual.application_factory_ae">
                <ttl>Using UIMA Framework to create and interact with an Analysis Engine</ttl>
                <xreftext>Figure 2.4, “Using UIMA Framework to create and interact with an Analysis Engine”</xreftext>
             </obj>
@@ -268,11 +268,11 @@
          <div element="section" href="ch02s05.html#ugr.ovv.conceptual.graduating_to_collection_processing" number="" targetptr="ugr.ovv.conceptual.graduating_to_collection_processing">
             <ttl>Graduating to Collection Processing</ttl>
             <xreftext>the section called “Graduating to Collection Processing”</xreftext>
-            <obj element="figure" href="ch02s05.html#ugr.conceptual_overview.fig.cpe" number="2.5" targetptr="ugr.conceptual_overview.fig.cpe">
+            <obj element="figure" href="ch02s05.html#ugr.ovv.conceptual.fig.cpe" number="2.5" targetptr="ugr.ovv.conceptual.fig.cpe">
                <ttl>High-Level UIMA Component Architecture from Source to Sink</ttl>
                <xreftext>Figure 2.5, “High-Level UIMA Component Architecture from Source to Sink”</xreftext>
             </obj>
-            <obj element="figure" href="ch02s05.html#ugr.conceptual_overview.fig.cpm" number="2.6" targetptr="ugr.conceptual_overview.fig.cpm">
+            <obj element="figure" href="ch02s05.html#ugr.ovv.conceptual.fig.cpm" number="2.6" targetptr="ugr.ovv.conceptual.fig.cpm">
                <ttl>Collection Processing Manager in UIMA Framework</ttl>
                <xreftext>Figure 2.6, “Collection Processing Manager in UIMA Framework”</xreftext>
             </obj>
@@ -293,7 +293,7 @@
       <div element="section" href="ch02s07.html" number="2.7" targetptr="ugr.ovv.conceptual.multimodal_processing">
          <ttl>Multimodal Processing in UIMA</ttl>
          <xreftext>Section 2.7, “Multimodal Processing in UIMA”</xreftext>
-         <obj element="figure" href="ch02s07.html#ugr.conceptual_overview.fig.multiple_sofas" number="2.7" targetptr="ugr.conceptual_overview.fig.multiple_sofas">
+         <obj element="figure" href="ch02s07.html#ugr.ovv.conceptual.fig.multiple_sofas" number="2.7" targetptr="ugr.ovv.conceptual.fig.multiple_sofas">
             <ttl>Multiple Sofas in support of multi-modal analysis of an audio Stream. Some
         engines work on the audio “<span class="quote">view</span>”, some on the text
         “<span class="quote">view</span>” and some on both.</ttl>

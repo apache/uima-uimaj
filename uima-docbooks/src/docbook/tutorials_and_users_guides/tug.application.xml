@@ -879,8 +879,9 @@ consumerParamSettings.setParameterValue(
             </itemizedlist></para>
         
         <para>More information on the syntax of these kinds of queries, called XML
-          Fragments, can be found in <olink targetdoc="&uima_docs_ref;"
-            targetptr="ugr.ref.semantic_search"/>. For more information on the Index
+          Fragments, can be found in documentation for the semantic search engine
+          component
+          on <ulink url="http://www.alphaworks.ibm.com/tech/uima"/>. For more information on the Index
           Build Specification format, see the UIMA JavaDocs for class
           <literal>org.apache.uima.search.IndexBuildSpecification</literal>.
           Accessing the JavaDocs is described <olink targetdoc="&uima_docs_ref;"
@@ -1011,8 +1012,9 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
         XML queries where the XML tags correspond to the labels in the index build
         specification file (e.g.
         <literal>&lt;Meeting&gt;UIMA&lt;/Meeting&gt;</literal>). XML Fragments are
-        described in <olink targetdoc="&uima_docs_ref;"
-          targetptr="ugr.ref.semantic_search"/>.</para>
+        described in the documentation for the semantic search engine
+          component
+          on <ulink url="http://www.alphaworks.ibm.com/tech/uima"/>.</para>
       
       <para>After you enter a query and click the <quote>Search</quote> button, a list of
         hits will appear. Select one of the documents and click <quote>View
@@ -1023,9 +1025,10 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
         . A simple command-line query program is also provided in
         <literal>examples/src/com/ibm/uima/examples/search/SemanticSearch.java</literal>
         . Using these as a model, you can build a query interface from your own application. For
-        details on the Semantic Search Engine query language and interface, see <olink
-          targetdoc="&uima_docs_ref;" targetptr="ugr.ref.semantic_search"/>
-        .</para>
+        details on the Semantic Search Engine query language and interface, see 
+        the documentation for the semantic search engine
+          component
+          on <ulink url="http://www.alphaworks.ibm.com/tech/uima"/>.</para>
     </section>
   </section>
   
@@ -1553,7 +1556,7 @@ Exception: Connection refused: connect</programlisting>
       the size of the CAS pool is equal to or greater than this number (the attribute of
       <literal>&lt;casProcessors&gt;</literal> to set is
       <literal>casPoolSize</literal>). For more details on these settings, see <olink
-        targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe.cas_processors"/>
+        targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors"/>
       .</para>
     
     <para>For deployments that incorporate remote analysis engines in the Collection
@@ -1589,7 +1592,7 @@ Exception: Connection refused: connect</programlisting>
       advantage of multi-processor and hyper-threaded architectures).</para>
     <note><para>When using Vinci in <quote>exclusive</quote> mode (see service access
     under <olink targetdoc="&uima_docs_ref;"
-      targetptr="ugr.ref.xml.cpe.deployment_parameters"/>), only one thread is used.
+      targetptr="ugr.ref.xml.cpe_descriptor.cas_processors.individual.deployment_parameters"/>), only one thread is used.
     To achieve multi-processing on a server in this case, use multiple instances of the
     service, instead of multiple threads (see <xref
       linkend="ugr.tug.application.how_to_deploy_a_vinci_service"/>.</para>

@@ -27,7 +27,7 @@
 
     <!-- Build the Users Guide -->
     <ant antfile="build-docbook.xml" target="all">
-      <property name="book_name" value="tools"/>
+      <property name="book_name" value="references"/>
     </ant>
   </target>
 

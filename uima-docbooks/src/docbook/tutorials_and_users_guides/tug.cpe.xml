@@ -75,7 +75,7 @@ under the License.
       targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cpe"/>.
     Alternatively, a CPE can be assembled by writing an XML CPE descriptor. Details on the CPE
     descriptor, including its syntax and content, can be found in the <olink
-      targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe"/>. The individual
+      targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/>. The individual
     components have associated XML descriptors, each of which can be created and / or edited
     using the <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cde">
     Component Description Editor</olink>.</para>
@@ -146,7 +146,7 @@ under the License.
       
       <para>A CPE can be assembled by writing an XML CPE descriptor. Details on the CPE
         descriptor, including its syntax and content, can be found in <olink
-          targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml_cpe"/>. Rather than
+          targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/>. Rather than
         edit raw XML, you may develop a CPE Descriptor using the CPE Configurator tool. The CPE
         Configurator tool is described briefly in this section, and in more detail in <olink
           targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cpe"/>.</para>
@@ -227,7 +227,7 @@ CAS Consumer:
         allow specifying operational parameters, such as error handling options, that are
         not currently available for configuration through the CPE Configurator. For more
         information on manually creating a CPE Descriptor, see the <olink
-          targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe"/>.</para>
+          targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/>.</para>
       
       <para>Note that CPE descriptors identify <emphasis>which</emphasis> components
         comprise the CPE, but they do not capture the individual configuration settings for
@@ -327,7 +327,7 @@ CAS Consumer:
       the build path, because the uimaj_examples project is set up to include all the UIMA
       framework classes in its classpath already. </para></note>
       
-      <para>Next, in the Eclipse menu select <literal>Run</literal><literal> &rarr;
+      <para>Next, in the Eclipse menu select <literal>Run &rarr;
         Run</literal>..., which brings up the Run configuration screen.</para>
       
       <para>In the Main tab, set the main class to
@@ -1125,7 +1125,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
       detailed tutorial for these settings will be provided. In the meantime, we provide only
       a high-level, conceptual overview of these advanced features in the rest of this
       chapter, and refer the advanced user to <olink targetdoc="&uima_docs_ref;"
-        targetptr="ugr.ref.xml.cpe"/> for details on setting these options in the CPE
+        targetptr="ugr.ref.xml.cpe_descriptor"/> for details on setting these options in the CPE
       Descriptor.</para>
     
     <para> <xref linkend="ugr.tug.cpe.fig.cpe_instantiation"/> shows a logical view of
@@ -1186,7 +1186,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
       CAS Processors in integrated mode. To deploy CAS Processors in any other mode, the CPE
       descriptor must be edited by hand (better tooling may be provided later). Details on the
       CPE descriptor and the required settings for various CAS Processor deployment modes
-      can be found in <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe"/>
+      can be found in <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/>
       . In the following sections we merely summarize the various CAS Processor deployment
       options.</para>
     
@@ -1257,7 +1257,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
 &lt;/casProcessor&gt;
 </programlisting>
       
-      <para>See <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe"/> for
+      <para>See <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/> for
         details and required settings.</para>
       
     </section>
@@ -1320,7 +1320,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
 &lt;/casProcessor&gt;
 </programlisting>
       
-      <para>See <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe"/> for
+      <para>See <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/> for
         details and required settings.</para>
       
     </section>
@@ -1369,7 +1369,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
 &lt;/casProcessor&gt;
 </programlisting>
       
-      <para>See <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe"/> for
+      <para>See <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/> for
         details and required settings.</para>
       
     </section>

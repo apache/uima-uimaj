@@ -319,7 +319,7 @@ under the License.
       </listitem>
       <listitem>
         <para> Read <olink targetdoc="&uima_docs_overview;"
-            targetptr="ugr.conceptual_overview"/> to get a broad view of the basic UIMA
+            targetptr="ugr.ovv.conceptual"/> to get a broad view of the basic UIMA
           concepts and philosophy with reference to the other documents included in the
           documentation set which provide greater detail. </para>
       </listitem>
@@ -418,7 +418,7 @@ under the License.
             <listitem>
               <para> You will also learn about CPE Descriptors. The detailed format for
                 these may be found in <olink targetdoc="&uima_docs_ref;"
-                  targetptr="ugr.tug.cpe"/>. </para>
+                  targetptr="ugr.ref.xml.cpe_descriptor"/>. </para>
             </listitem>
           </itemizedlist> </para>
       </listitem>

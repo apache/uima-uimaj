@@ -23,6 +23,9 @@
   <xsl:import href="@file.prefix@@src.dir@/styles/html/custom.xsl" />
   <xsl:include href="@file.prefix@@tmp.dir@/html-titlepage.xsl" />
 
+  <!-- enable olink, or not -->
+  <xsl:param name="collect.xref.targets" select="'@olink_work@'"/>
+
   <!-- where the olink output goes -->  
   <xsl:param name="targets.filename">@src.dir@/olink/@olink_file@/@type@-target.db</xsl:param>
 

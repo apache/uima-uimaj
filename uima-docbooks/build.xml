@@ -25,9 +25,26 @@
   <!-- ==                                                                    == -->
   <!-- == Build all the Docbook Documentation under src/docbook              == -->
   <!-- ==                                                                    == -->
+  <!-- ==   Built 2 times - first time updates the olinks, 2nd time builds   == -->
+  <!-- ==                                                                    == -->
   <!-- ======================================================================== -->
-  <target name="all" description="--> Build all documentation">
-
+  <target name="all" description="--> Build all documentation"
+	  depends="do_olinks, do_build_given_olinks"/>  	
+  	
+	<target name="do_olinks" description="--> for all books, compute the cross reference databases needed for linking">
+		<antcall target="build_all_books">
+		  	  <param name="olink_work" value="only"/>
+		</antcall>
+  </target>
+		
+	<target name="do_build_given_olinks" 
+		description="--> build all books using precomputed olink database information">
+		<antcall target="build_all_books">
+		  	  <param name="olink_work" value="no"/>
+		</antcall>
+  </target>
+		
+	<target name="build_all_books"  description="internal - build all books">
     <!-- Build the UIMA books -->
     <ant antfile="build-docbook.xml" target="all">
       <property name="book_name" value="overview_and_setup"/>
@@ -38,11 +55,10 @@
     <ant antfile="build-docbook.xml" target="all">
       <property name="book_name" value="tools"/>
     </ant>
-<!--
       <ant antfile="build-docbook.xml" target="all">
       <property name="book_name" value="references"/>
     </ant>
--->  
+  
   </target>
 
   <!-- ======================================================================== -->

@@ -65,7 +65,7 @@ under the License.
       Addison-Wesley. 2006.</para>
     
     <para>For details of how the UIMA CAS is represented in XMI format, see <olink
-        targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xmi_cas_serialization"/>
+        targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xmi"/>
       .</para>
     
   </section>

@@ -18,7 +18,7 @@
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version='1.0'>
-  <xsl:param name="collect.xref.targets" select="'yes'"/>
+
   <!-- next 3 cause the role="xxx" to be propagated as class="xxx" in the output html -->
   <xsl:param name="para.propagates.style" select="1"/>
   <xsl:param name="emphasis.propagates.style" select="1"/>

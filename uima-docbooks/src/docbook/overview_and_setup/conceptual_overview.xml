@@ -24,7 +24,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 -->
-<chapter id="ugr.conceptual_overview">
+<chapter id="ugr.ovv.conceptual">
   <title>UIMA Conceptual Overview</title>
   
   <para>UIMA is an open, industrial-strength, scaleable and extensible platform for
@@ -47,7 +47,7 @@ under the License.
       targetdoc="&uima_docs_overview;" targetptr="ugr.glossary"/>, to become familiar
     with the terminology in this overview.</para>
   
-  <section id="ugr.conceptual_overview.uima_introduction">
+  <section id="ugr.ovv.conceptual.uima_introduction">
     <title>UIMA Introduction</title>
     <figure id="ugr.ovv.conceptual.fig.bridge">
       <title>UIMA helps you build the bridge between the unstructured and structured
@@ -137,7 +137,7 @@ under the License.
     
   </section>
   
-  <section id="ugr.conceptual_overview_architecture_framework_sdk">
+  <section id="ugr.ovv.conceptual.architecture_framework_sdk">
     <title>The Architecture, the Framework and the SDK</title>
     <para>UIMA is a software architecture which specifies component interfaces, data
       representations, design patterns and development roles for creating, describing,
@@ -156,7 +156,7 @@ under the License.
     
   </section>
   
-  <section id="ugr.conceptual_overview.analysis_basics">
+  <section id="ugr.ovv.conceptual.analysis_basics">
     <title>Analysis Basics</title>
     <blockquote role="key_concepts"><para><phrase role="bold">
       &key_concepts;</phrase> Analysis Engine, Document, Annotator, Annotator
@@ -166,7 +166,7 @@ under the License.
     
     <section id="ugr.ovv.conceptual.aes_annotators_and_analysis_results">
       <title>Analysis Engines, Annotators and Analysis Results</title>
-      <figure id="ugr.conceptual_overview.metadata_in_cas">
+      <figure id="ugr.ovv.conceptual.metadata_in_cas">
         <title>Objects represented in the Common Analysis Structure (CAS)</title>
         <mediaobject>
           <imageobject>
@@ -276,7 +276,7 @@ under the License.
       
       <para>The UIMA framework includes an implementation and interfaces to the CAS. For a
         more detailed description of the CAS and its interfaces see <olink
-          targetdoc="&uima_docs_ref;" targetptr="cas_ref"/>.</para>
+          targetdoc="&uima_docs_ref;" targetptr="ugr.ref.cas"/>.</para>
       
       <para>A CAS that logically contains statement 2 (repeated here for your
         convenience)</para>
@@ -375,7 +375,7 @@ under the License.
           the annotator may link FredCenter to both P1 and P2 by making them values of its
           <emphasis>occurrences</emphasis> feature.</para>
         
-        <para> <xref linkend="ugr.conceptual_overview.metadata_in_cas"/> also
+        <para> <xref linkend="ugr.ovv.conceptual.metadata_in_cas"/> also
           illustrates that an entity may be linked to annotations referring to regions of
           image documents as well. To do this the annotation type would have to be extended
           with the appropriate features to point to regions of an image.</para>
@@ -489,11 +489,11 @@ under the License.
         composition based on desired results. UIMA analysis engines provide an interface
         for accessing the component metadata represented in their descriptors. For more
         details on the structure of UIMA component descriptors refer to <olink
-          targetdoc="&uima_docs_ref;" targetptr="component_descriptor"/>.</para>
+          targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.component_descriptor"/>.</para>
       
     </section>
   </section>
-  <section id="ugr.conceptual_overview.aggregate_analysis_engines">
+  <section id="ugr.ovv.conceptual.aggregate_analysis_engines">
     <title>Aggregate Analysis Engines</title>
     
     <blockquote role="key_concepts"><para><phrase role="bold">
@@ -501,7 +501,7 @@ under the License.
       Tightly and Loosely Coupled, Flow Specification, Analysis Engine Assembler</para>
     </blockquote>
     
-    <figure id="ugr.conceptual_overview.sample_aggregate">
+    <figure id="ugr.ovv.conceptual.sample_aggregate">
       <title>Sample Aggregate Analysis Engine</title>
       <mediaobject>
         <imageobject>
@@ -538,7 +538,7 @@ under the License.
       and insulate it from users of the AE. In our example, the aggregate analysis engine
       developer simply acquires the internal components, defines the necessary flow
       between them and publishes the resulting AE. Consider the simple example illustrated
-      in <xref linkend="ugr.conceptual_overview.sample_aggregate"/> where
+      in <xref linkend="ugr.ovv.conceptual.sample_aggregate"/> where
       <quote>MyNamed-EntityDetector</quote> is composed of a linear flow of more
       primitive analysis engines.</para>
     
@@ -568,7 +568,7 @@ under the License.
       adapter layer that automatically creates the necessary infrastructure in response to
       a declaration in the component&apos;s descriptor. For more details on creating
       aggregate analysis engines refer to <olink targetdoc="&uima_docs_ref;"
-        targetptr="ugr.ref.component_descriptor"/> The component descriptor editor tool
+        targetptr="ugr.ref.xml.component_descriptor"/> The component descriptor editor tool
       assists in the specification of aggregate AEs from a repository of available engines.
       For more details on this tool refer to <olink targetdoc="&uima_docs_tools;"
         targetptr="ugr.tools.cde"/>.</para>
@@ -596,7 +596,7 @@ under the License.
     <section id="ugr.ovv.conceptual.using_framework_from_an_application">
       <title>Using the framework from an Application</title>
       
-      <figure id="ugr.conceptual_overview.application_factory_ae">
+      <figure id="ugr.ovv.conceptual.application_factory_ae">
         <title>Using UIMA Framework to create and interact with an Analysis Engine</title>
         <mediaobject>
           <imageobject>
@@ -618,7 +618,7 @@ under the License.
         instantiate an AE, create or acquire an input CAS, initialize the input CAS with a
         document and then pass it to the AE through the <emphasis role="bold">process
         method</emphasis>. This interaction with the framework is illustrated in <xref
-          linkend="ugr.conceptual_overview.application_factory_ae"/>. </para>
+          linkend="ugr.ovv.conceptual.application_factory_ae"/>. </para>
       
       <para>The UIMA AE Factory takes the declarative information from the Component
         Descriptor and the class files implementing the annotator, and instantiates the AE
@@ -641,7 +641,7 @@ under the License.
     
     <section id="ugr.ovv.conceptual.graduating_to_collection_processing">
       <title>Graduating to Collection Processing</title>
-      <figure id="ugr.conceptual_overview.fig.cpe">
+      <figure id="ugr.ovv.conceptual.fig.cpe">
         <title>High-Level UIMA Component Architecture from Source to Sink</title>
         <mediaobject>
           <imageobject>
@@ -677,7 +677,7 @@ under the License.
           role="bold">Collection Reader</emphasis> and the <emphasis role="bold">CAS
         Consumer</emphasis>. The complete flow from source, through document analysis,
         and to CAS Consumers supported by UIMA is illustrated in <xref
-          linkend="ugr.conceptual_overview.fig.cpe"/>.</para>
+          linkend="ugr.ovv.conceptual.fig.cpe"/>.</para>
       
       <para>The Collection Reader&apos;s job is to connect to and iterate through a source
         collection, acquiring documents and initializing CASes for analysis. </para>
@@ -721,10 +721,10 @@ under the License.
         analysis engines and CAS Consumers) and indicate a flow among them. The flow
         specification allows for filtering capabilities to, for example, skip over AEs
         based on CAS contents. Details about the format of CPE Descriptors may be found in
-          <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe"/>.
+          <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/>.
         </para>
       
-      <figure id="ugr.conceptual_overview.fig.cpm">
+      <figure id="ugr.ovv.conceptual.fig.cpm">
         <title>Collection Processing Manager in UIMA Framework</title>
         <mediaobject>
           <imageobject>
@@ -740,7 +740,7 @@ under the License.
       <para>The UIMA framework includes a <emphasis role="bold">Collection Processing
         Manager</emphasis> (CPM). The CPM is capable of reading a CPE descriptor, and
         deploying and running the specified CPE. <xref
-          linkend="ugr.conceptual_overview.fig.cpe"/> illustrates the role of the CPM
+          linkend="ugr.ovv.conceptual.fig.cpe"/> illustrates the role of the CPM
         in the UIMA Framework.</para>
       
       <para>Key features of the CPM are failure recovery, CAS management and scale-out.
@@ -755,7 +755,7 @@ under the License.
       <para>This deployment option requires that the CPM run in a separate process or a
         machine distinct from the CPE components. A CPE may be configured to run with a variety
         of deployment options that control the features provided by the CPM. For details see
-          <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe"/>
+          <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/>
         .</para>
       
       <para>The UIMA SDK also provides a tool called the CPE Configurator. This tool provides
@@ -867,7 +867,7 @@ under the License.
       form of annotations. Subsequent Analysis engines will make further assertions about
       both the artifact and previous analysis results, and finally one or more CAS Consumers
       will extract information from these CASs for structured information storage.</para>
-    <figure id="ugr.conceptual_overview.fig.multiple_sofas">
+    <figure id="ugr.ovv.conceptual.fig.multiple_sofas">
       <title>Multiple Sofas in support of multi-modal analysis of an audio Stream. Some
         engines work on the audio <quote>view</quote>, some on the text
         <quote>view</quote> and some on both.</title>
@@ -883,7 +883,7 @@ under the License.
       </mediaobject>
     </figure>
     <para>Consider a processing pipeline, illustrated in <xref
-        linkend="ugr.conceptual_overview.fig.multiple_sofas"/>, that starts with an
+        linkend="ugr.ovv.conceptual.fig.multiple_sofas"/>, that starts with an
       audio recording of a conversation, transcribes the audio into text, and then extracts
       information from the text transcript. Analysis Engines at the start of the pipeline are
       analyzing an audio subject of analysis, and later analysis engines are analyzing a text

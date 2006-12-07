@@ -53,7 +53,7 @@ under the License.
     repositories:</para>
   
   
-  <programlisting><literal>aView.addFsToIndexes(aFeatureStructure)</literal> <literal>aView.removeFsFromIndexes(aFeatureStructure)</literal> </programlisting>
+  <programlisting>aView.addFsToIndexes(aFeatureStructure) aView.removeFsFromIndexes(aFeatureStructure)</programlisting>
   
   <para>specify the view in which this Feature Structure should be added to or removed from the
     indexes.</para>
@@ -293,7 +293,7 @@ under the License.
         &lt;componentKey&gt;</literal> element is not needed. Finally, rather than
         sub-elements for the parts, the XML markup for these uses attributes. See <olink
           targetdoc="&uima_docs_ref;"
-          targetptr="ugr.ref.xml.cpe.sofa_name_mappings"/>.</para>
+          targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.sofa_name_mappings"/>.</para>
       
       <para>Here&apos;s an example. Let&apos;s use the aggregate from the previous section
         in a collection processing engine. Here we will add a Collection Reader that outputs

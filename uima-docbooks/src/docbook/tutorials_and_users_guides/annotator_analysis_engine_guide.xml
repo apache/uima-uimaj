@@ -878,7 +878,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
         
         <para>The syntax for defining parameter groups in your descriptor is fairly
           straightforward &ndash; see <olink targetdoc="&uima_docs_ref;"
-            targetptr="ugr.ref.component_descriptor"/> for details. Values of
+            targetptr="ugr.ref.xml.component_descriptor"/> for details. Values of
           parameters defined within groups are accessed through the two-argument version
           of <literal>UimaContext.getConfigParameterValue</literal>, which takes
           both the group name and the parameter name as its arguments.</para>
@@ -2093,7 +2093,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
                 <entry>UIMA_DATAPATH</entry>
                 <entry>(Optional) if specified, a path specification to use as the default
                   DataPath (see <olink targetdoc="&uima_docs_ref;"
-                    targetptr="ugr.ref.component_descriptor.datapath"/>)</entry>
+                    targetptr="ugr.ref.xml.component_descriptor.datapath"/>)</entry>
               </row>
               <row>
                 <entry>VNS_HOST</entry>
@@ -2216,7 +2216,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
       discussion is divided into several logical sections of the descriptor.</para>
     
     <para>The full specification for Analysis Engine Descriptors is defined in <olink
-        targetdoc="&uima_docs_ref;" targetptr="ugr.ref.component_descriptor"/>
+        targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.component_descriptor"/>
       .</para>
     
     <section id="ugr.tug.aae.header_annotator_class_identification">

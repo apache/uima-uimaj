@@ -396,7 +396,7 @@ under the License.
       
       <para>The UIMA SDK currently supports three kinds of sequencing flows: Fixed,
         CapabilityLanguageFlow (see <olink targetdoc="&uima_docs_ref;"
-          targetptr="ugr.ref.xml.component_descriptor.capability_language_flow"/>
+          targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.flow_constraints.capability_language_flow"/>
         ), and user-defined. The first two require specification of a linear flow sequence;
         this linear flow sequence can also be read by a user-defined flow controller (what use
         is made of it is up to the user-defined flow controller). The Component Engine Flow
@@ -513,7 +513,7 @@ under the License.
         group requested. It can have the values of None, language_fallback, or
         default_fallback. These are more fully described in the section <olink
           targetdoc="&uima_docs_ref;"
-          targetptr="ugr.ref.xml.component_descriptor.configuration_parameter_declaration"/>
+          targetptr="ugr.ref.xml.component_descriptor.aes.configuration_parameter_declaration"/>
         .</para>
       
       <para>Groups are added using the Add Group button. Once added, they can be edited or
@@ -1171,7 +1171,7 @@ under the License.
       resource. If both the URL and URL suffix are used, the file resource is formed by
       combining the first URL part with the language-identifier, followed by the URL suffix;
       see <olink targetdoc="&uima_docs_ref;"
-        targetptr="ugr.ref.xml.component_descriptor.resource_manager_configuration"/>
+        targetptr="ugr.ref.xml.component_descriptor.aes.primitive.resource_manager_configuration"/>
       . URLs may be written as <quote>relative</quote> URLs; in this case they are resolved by
       looking them up relative to the classpath and/or datapath. A relative URL has the path
       part starting without an intial <quote>/</quote>; for example:

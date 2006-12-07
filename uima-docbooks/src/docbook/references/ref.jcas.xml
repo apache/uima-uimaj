@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
 "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
-<!ENTITY imgroot "../images/annotator_analysis_engine_files/" >
 <!ENTITY % uimaents SYSTEM "../entities.ent" >  
 %uimaents;
 ]>
@@ -24,538 +23,543 @@ specific language governing permissions and limitations
 under the License.
 -->
 <chapter id="ugr.ref.jcas">
-  <title></title>
-  <section name="JCas Reference"><a id="_crossRef226"> </a>
-
-
-
-<para>The CAS is a system for sharing data among annotators,
-consisting of data structures (definable at run time), indexes over these data,
-metadata describing these, and a high performance serialization/deserialization
-mechanism.  JCas is a Java approach to
-accessing CAS data, based on using generated, specific Java classes for each
-CAS type.</para>
-
-<para>Annotators process one CAS per call to their process
-method.  During processing, annotators
-can retrieve feature structures from the passed in CAS, add new ones, modify
-existing ones, and use and update CAS indexes.  Of course, an annotator can also use plain Java Objects in addition; but
-the data in the CAS is what is shared among annotators within an application.</para>
-
-<para>All the facilities present in the APIs for the CAS are
-available when using the JCas APIs; indeed, you can use the getCas() method to
-get the corresponding CAS object from a JCas (and vice-versa).  The JCas APIs often have helper methods that
-make using this interface more convenient for Java developers, however.</para>
-
-<para>The data in the CAS are typed objects having fields.  JCas uses a set of generated Java classes
-(each corresponding to a particular CAS type) with <quote>getter</quote> and <quote>setter</quote>
-methods for the features, plus a constructor so new instances can be made.  The Java classes don&apos;t actually store the
-data in the class instance; instead, the getters and setters forward to the
-underlying CAS data representation.  Because of this, applications which use the JCas interface can share
-data with annotators using plain CAS (i.e., not using the JCas approach).  Users can modify the JCas generated Java
-classes by adding fields to them; this allows arbitrary  non-CAS data to also be represented within
-the JCas objects, as well; however, the non-CAS data stored in the JCas object
-instances cannot be shared with annotators using the plain CAS.</para>
-
-<para>Data in the CAS initially has no corresponding JCas type
-instances; these are created as needed at the first reference.  This means, if your annotator is passed a
-large CAS having millions of CAS feature structures, but you only reference a
-few of them, and no previously created Java JCas object instances were created
-by upstream annotators, the only Java objects that will be created will be
-those that correspond to the CAS feature structures that you reference.</para>
-
-<para>The JCas class Java source files are generated from XML
-type system descriptions.  The JCasGen
-utility does the work of generating the corresponding Java Class Model for the
-CAS types.  There are a variety of ways
-JCasGen can be run; these are described later.  You include the generated classes with your UIMA component, and you can
-publish these classes for others who might want to use your type system.</para>
-
-<para>The specification of the type system in XML can be written
-using a conventional text editor, an XML editor, or using the Eclipse plug-in
-that supports editing UIMA descriptors.</para>
-
-<para>Changes to the type system are done by changing the XML
-and regenerating the corresponding Java Class Models.  Of course, once you&apos;ve published your type
-system for others to use, you should be careful that any changes you make don&apos;t
-adversely impact the users.  Additional
-features can be added to existing types without breaking other code.</para>
-
-<para>A separate Java class is generated for each type; this
-type implements the CAS FeatureStructure interface, as well as having the
-special getters and setters for the included features.  In the current implementation, an additional
-helper class per type is also generated.  The generated Java classes have methods (getters and setters) for the
-fields as defined in the XML type specification.   Descriptor comments are reflected in the
-generated Java code as Java-doc style comments.</para>
-
-<para>Type names used in the CAS correspond to the generated
-Java classes directly.  If the CAS name
-is com.myCompany.myProject.ExampleClass, the generated Java class is in the
-package com.myCompany.myProject, and the class is ExampleClass.</para>
-
-
-
-<subsection name="Name Spaces"><a id="_crossRef227"> </a>
-
-
-
-<para>Full Type names consist of a <quote>namespace</quote> prefix
-dotted with a simple name.  Namespaces
-are used like packages to avoid collisions between types that are defined by
-different people at different times.  The
-namespace is used as the Java package name for generated Java files.  An exception to this rule is the built-in
-types starting with <literal>uima.cas </literal>and <literal>uima.tcas</literal>; these names are mapped to Java packages named <literal>org.apache.uima.jcas.cas</literal> and <literal>org.apache.uima.jcas.tcas</literal>.</para>
-
-
-
-
-  </subsection>
-<subsection name="XML source description tags"><a id="_crossRef228"> </a>
-
-
-
-<para>Each XML type specification can have &lt;description ...
-&gt; tags.  The description for a type
-will be copied into the generated Java code, as a JavaDoc style comment for the
-class.  When writing these descriptions
-in the XML type specification file, you might want to use html tags, as allowed
-in JavaDocs.</para>
-
-<para>If you use the Component Description Editor, you can write
-the html tags normally, for instance, <quote>&lt;h1&gt;My Title&lt;/h1&gt;.  The Component Descriptor Editor will take
-care of coverting the actual descriptor source so that it has the leading </quote>&lt;<quote>
-character written as </quote>&amp;lt;<quote>, to avoid confusing the XML type
-specification.  For example, &lt;p&gt; would
-be written in the source of the descriptor as &amp;lt;p&gt;.  Any characters used in the JavaDoc comment
-must of course be from the character set allowed by the XML type specification.
-These specifications often start with the line &lt;?xml version=</quote>1.0<quote>
-encoding=</quote>UTF-8<quote> ?&gt;, which means you can use any of the UTF-8
-characters.</para>
-
-
-
-
-  </subsection>
-<subsection name="Mapping built-in CAS types to Java types"><a id="_crossRef229"> </a>
-
-
-
-<para>The built-in primitive CAS types map to Java types as
-follows:</para>
-
-<programlisting>uima.cas.Boolean &gt;&gt; boolean
-uima.cas.Byte    &gt;&gt; byte
-uima.cas.Short   &gt;&gt; short
-uima.cas.Integer &gt;&gt; int
-uima.cas.Long    &gt;&gt; long
-uima.cas.Float   &gt;&gt; float
-uima.cas.Double  &gt;&gt; double
-uima.cas.String  &gt;&gt; String</programlisting>
-
-
-
-
-  </subsection>
-<subsection name="Augmenting the generated Java Code"><a id="_crossRef230"> </a>
-
-
-
-<para>The Java Class Models generated for each type can be
-augmented by the user.  Typical augmentations
-include adding additional (non-CAS) fields and methods, and import statements
-that might be needed to support these.  Commonly added methods include additional constructors (having different
-parameter signatures), and implementations of toString().</para>
-
-<para>To augment the code, just edit the generated Java source
-code for the class named the same as the CAS type.  Here&apos;s an example of an additional method you
-might add; the various getter methods are retrieving values from the instance:</para>
-
-<programlisting>public String toString() { // for debugging
-  return </quote>XsgParse <quote>
-    + getslotName() + </quote>: <quote>
+  <title>JCas Reference</title>
+  
+  <para>The CAS is a system for sharing data among annotators, consisting of data structures
+    (definable at run time), indexes over these data, metadata describing these, and a high
+    performance serialization/deserialization mechanism. JCas is a Java approach to
+    accessing CAS data, based on using generated, specific Java classes for each CAS
+    type.</para>
+  
+  <para>Annotators process one CAS per call to their process method. During processing,
+    annotators can retrieve feature structures from the passed in CAS, add new ones, modify
+    existing ones, and use and update CAS indexes. Of course, an annotator can also use plain
+    Java Objects in addition; but the data in the CAS is what is shared among annotators within
+    an application.</para>
+  
+  <para>All the facilities present in the APIs for the CAS are available when using the JCas
+    APIs; indeed, you can use the getCas() method to get the corresponding CAS object from a
+    JCas (and vice-versa). The JCas APIs often have helper methods that make using this
+    interface more convenient for Java developers, however.</para>
+  
+  <para>The data in the CAS are typed objects having fields. JCas uses a set of generated Java
+    classes (each corresponding to a particular CAS type) with <quote>getter</quote> and
+    <quote>setter</quote> methods for the features, plus a constructor so new instances can
+    be made. The Java classes don&apos;t actually store the data in the class instance;
+    instead, the getters and setters forward to the underlying CAS data representation.
+    Because of this, applications which use the JCas interface can share data with annotators
+    using plain CAS (i.e., not using the JCas approach). Users can modify the JCas generated
+    Java classes by adding fields to them; this allows arbitrary non-CAS data to also be
+    represented within the JCas objects, as well; however, the non-CAS data stored in the JCas
+    object instances cannot be shared with annotators using the plain CAS.</para>
+  
+  <para>Data in the CAS initially has no corresponding JCas type instances; these are created
+    as needed at the first reference. This means, if your annotator is passed a large CAS having
+    millions of CAS feature structures, but you only reference a few of them, and no previously
+    created Java JCas object instances were created by upstream annotators, the only Java
+    objects that will be created will be those that correspond to the CAS feature structures
+    that you reference.</para>
+  
+  <para>The JCas class Java source files are generated from XML type system descriptions. The
+    JCasGen utility does the work of generating the corresponding Java Class Model for the CAS
+    types. There are a variety of ways JCasGen can be run; these are described later. You
+    include the generated classes with your UIMA component, and you can publish these classes
+    for others who might want to use your type system.</para>
+  
+  <para>The specification of the type system in XML can be written using a conventional text
+    editor, an XML editor, or using the Eclipse plug-in that supports editing UIMA
+    descriptors.</para>
+  
+  <para>Changes to the type system are done by changing the XML and regenerating the
+    corresponding Java Class Models. Of course, once you&apos;ve published your type system
+    for others to use, you should be careful that any changes you make don&apos;t adversely
+    impact the users. Additional features can be added to existing types without breaking
+    other code.</para>
+  
+  <para>A separate Java class is generated for each type; this type implements the CAS
+    FeatureStructure interface, as well as having the special getters and setters for the
+    included features. In the current implementation, an additional helper class per type is
+    also generated. The generated Java classes have methods (getters and setters) for the
+    fields as defined in the XML type specification. Descriptor comments are reflected in the
+    generated Java code as Java-doc style comments.</para>
+  
+  <para>Type names used in the CAS correspond to the generated Java classes directly. If the
+    CAS name is com.myCompany.myProject.ExampleClass, the generated Java class is in the
+    package com.myCompany.myProject, and the class is ExampleClass.</para>
+  
+  <section id="ugr.ref.jcas.name_spaces">
+    <title>Name Spaces</title>
+    
+    <para>Full Type names consist of a <quote>namespace</quote> prefix dotted with a simple
+      name. Namespaces are used like packages to avoid collisions between types that are
+      defined by different people at different times. The namespace is used as the Java
+      package name for generated Java files. An exception to this rule is the built-in types
+      starting with <literal>uima.cas </literal>and <literal>uima.tcas</literal>;
+      these names are mapped to Java packages named
+      <literal>org.apache.uima.jcas.cas</literal> and
+      <literal>org.apache.uima.jcas.tcas</literal>.</para>
+    
+  </section>
+  
+  <section id="ugr.ref.jcas.use_of_description">
+    <title>XML description element is copied into generated Java code</title>
+    
+    <para>Each XML type specification can have &lt;description ...
+      &gt; tags. The description for a type will be copied into the generated Java code, as a
+      JavaDoc style comment for the class. When writing these descriptions in the XML type
+      specification file, you might want to use html tags, as allowed in JavaDocs.</para>
+    
+    <para>If you use the Component Description Editor, you can write the html tags normally,
+      for instance, <quote>&lt;h1&gt;My Title&lt;/h1&gt;</quote>. The Component
+      Descriptor Editor will take care of coverting the actual descriptor source so that it
+      has the leading <quote>&lt;</quote> character written as <quote>&amp;lt;</quote>,
+      to avoid confusing the XML type specification. For example, &lt;p&gt; would be written
+      in the source of the descriptor as &amp;lt;p&gt;. Any characters used in the JavaDoc
+      comment must of course be from the character set allowed by the XML type specification.
+      These specifications often start with the line &lt;?xml version=<quote>1.0</quote>
+      encoding=<quote>UTF-8</quote> ?&gt;, which means you can use any of the UTF-8
+      characters.</para>
+    
+  </section>
+  
+  <section id="ugr.ref.jcas.mapping_built_ins">
+    <title>Mapping built-in CAS types to Java types</title>
+    
+    <para>The built-in primitive CAS types map to Java types as follows:</para>
+    
+    
+    <programlisting>uima.cas.Boolean &rarr; boolean
+uima.cas.Byte    &rarr; byte
+uima.cas.Short   &rarr; short
+uima.cas.Integer &rarr; int
+uima.cas.Long    &rarr; long
+uima.cas.Float   &rarr; float
+uima.cas.Double  &rarr; double
+uima.cas.String  &rarr; String</programlisting>
+    
+  </section>
+  
+  <section id="ugr.ref.jcas.augmenting_generated_code">
+    <title>Augmenting the generated Java Code</title>
+    
+    <para>The Java Class Models generated for each type can be augmented by the user. Typical
+      augmentations include adding additional (non-CAS) fields and methods, and import
+      statements that might be needed to support these. Commonly added methods include
+      additional constructors (having different parameter signatures), and
+      implementations of toString().</para>
+    
+    <para>To augment the code, just edit the generated Java source code for the class named the
+      same as the CAS type. Here&apos;s an example of an additional method you might add; the
+      various getter methods are retrieving values from the instance:</para>
+    
+    
+    <programlisting>public String toString() { // for debugging
+  return "XsgParse "
+    + getslotName() + ": "
     + getheadWord().getCoveredText()
-    + </quote> seqNo: <quote> + getseqNo()
-    + </quote>, cAddr: <quote> + id
-    + </quote>, size left mods: <quote> + getlMods().size()
-    + </quote>, size right mods: <quote> + getrMods().size();
+    + " seqNo: " + getseqNo()
+    + ", cAddr: " + id
+    + ", size left mods: " + getlMods().size()
+    + ", size right mods: " + getrMods().size();
 }</programlisting>
-
-<h3><a id="_crossRef231">Keeping hand-coded augmentations
-when regenerating</a></h3>
-
-<para>If the type system specification changes, you have to
-re-run the JCasGen generator.  This will
-produce updated Java  for the Class
-Models that capture the changed specification.  If you have previously augmented the source for these Java Class Models,
-your changes must be merged with the newly (re)generated Java source code for
-the Class Models. This can be done by hand, or you can run the version of
-JCasGen that is integrated with Eclipse, since the merging depends on Eclipse&apos;s
-EMF plug-in.  You can obtain Eclipse and
-the needed EMF plug-in from <a
-href="http://www.eclipse.org/">http://www.eclipse.org</a>.</para>
-
-<para>If you run the generator version that works without using
-Eclipse, it will not merge Java source changes you may have previously made; if
-you want them retained, you&apos;ll have to do the merging by hand.</para>
-
-<para>The Java source merging will keep additional constructors,
-additional fields, and any changes you may have made to the readObject method
-(see below).  Merging will not delete
-classes in the target corresponding to deleted CAS types, which no longer are
-in the source &ndash; you should delete these by hand.</para>
-
-<h3><a id="_crossRef232">Additional Constructors</a></h3>
-
-<para>Any additional constructors that you add must include the
-JCas argument. The first line of your constructor is required to be</para>
-
-<programlisting>this(jcas);        // run the standard constructor</programlisting>
-
-<para>where jcas is the passed in JCas reference.  If the type you&apos;re defining extends <literal>uima.tcas.Annotation</literal>, JCasGen will automatically add a
-constructor which takes 2 additional parameters &ndash; the begin and end Java int
-values, and set the <literal>uima.tcas.Annotation</literal> <literal>begin</literal> and <literal>end</literal> fields.</para>
-
-<para>Here&apos;s an example:  If you&apos;re defining a type MyType which has a feature parent, you might
-make an additional constructor which has an additional argument of parent:</para>
-
-<programlisting>MyType(JCas jcas, MyType parent) {
-    this(jcas);        // run the standard constructor
-    setParent(parent);   // set the parent field from the parameter
-  }</programlisting>
-
-<h4>Using readObject</h4>
-
-<para>Fields defined by augmenting the Java Class Model to
-include additional fields represent data that exist for this class in Java, in
-a local JVM (Java Virtual Machine), but do not exist in the CAS when it is
-passed to other environments (for example, passing to a remote annotator).</para>
-
-<para>A problem can arise when new instances are created,
-perhaps by the underlying system when it iterates over an index, which is: how
-to insure that any additional non-CAS fields are properly initialized.  To allow for arbitrary initialization at
-instance creation time, an initialization method in the Java Class Model,
-called readObject is used.  The generated
-default for this method is to do nothing, but it is one of the methods that you
-can modify &ndash; to do whatever initialization might be needed.  It is called with 0 parameters, during the
-constructor for the object, after the basic object fields have been set
-up.  It can refer to fields in the CAS
-using the getters and setters, and other fields in the Java object instance
-being initialized.</para>
-
-<para>A pre-existing CAS feature structure could exist if a CAS
-was being passed to this annotator; in this case the JCas system calls the
-readObject method when creating the corresponding Java instance for the first
-time for the CAS feature structure. This can happen at two points: when a new object
-is being returned from an iterator over a CAS index, or a getter method is
-getting a field for the first time whose value is a feature structure.</para>
-
-<h3><a id="_crossRef233">Modifying generated items</a></h3>
-
-<para>The following modifications, if made in generated items,
-will be preserved when regenerating.</para>
-
-<para>The public/private etc. flags associated with methods
-(getters and setters).  You can change
-the default (</quote>public<quote>) if needed.</para>
-
-<para></quote>final<quote> or </quote>abstract<quote> can be added to
-the type itself, with the usual semantics.</para>
-
-
-
-
-  </subsection>
-<subsection name="Merging types from different type system specifications"><a id="_crossRef234"> </a>
-
-
-
-<h3><a id="_crossRef235">Aggregate AEs and CPEs as sources
-of types</a></h3>
-
-<para>When running aggregate AEs (Analysis Engines), or a set of
-AEs in a collection processing engine, a merged type system is built.  (Note: this </quote>merge<quote> is merging
-types, not to be confused with merging Java source code, discussed above).  This merged type system has all the types of
-every component used in the application.  It is possible that there may be multiple definitions of the same CAS
-type, each of which might have different features defined; the merged type
-result is created by accumulating all the defined features for a particular
-type into that type&apos;s type definition.</para>
-
-<para>If no type merging is needed, then each type system can
-have its own Java Class Models generated individually, perhaps at an earlier
-time, and the resulting class files (or .jar files containing these class
-files) can be put in the class path to enable JCas.</para>
-
-<h4>JCasGen support
-for type merging</h4>
-
-<para>If type merging is needed, the input to the JCasGen
-generation process, rather than being a simple type system or a primitive AE
-specification, is instead, an aggregate AE specification or a CPE (Collection
-processing engine) specification, which specifies a set of type systems that
-need to be combined.  The generation
-process will merge the type systems, and the generated output will reflect the
-merged types.  This generated Java source
-code can be, in turn, merged with hand-done changes to previously generated
-versions for this aggregate or CPE, as described above.  To do this Java source merge, the source for
-the (hand-modified) generated JCas types must be put into the file system where
-the generated output will go.</para>
-
-<para>Directions for running JCasGen can be found in <a class="crossrefText" href="JCasGen_Users_Guide.htm#_crossRef222">Chapter 19, <b>JCasGen User Guide</b></a>.</para>
-
-
-
-
-  </subsection>
-<subsection name="Using JCas within an Annotator"><a id="_crossRef236"> </a>
-
-
-
-<para>To use JCas within an annotator, you must include the
-generated Java classes output from JCasGen in the class path.</para>
-
-<para>An annotator written using JCas is built by defining a
-class for the annotator that implements JTextAnnotator.  The process method for this annotator is
-written</para>
-
-<programlisting>public void process(JCas jcas, ResultSpecification aResultSpec)
-     throws AnnotatorProcessException {
-    ... // body of annotator goes here
+    
+    <section id="ugr.ref.jcas.keeping_augmentations_when_regenerating">
+      <title>Keeping hand-coded augmentations when regenerating</title>
+      
+      <para>If the type system specification changes, you have to re-run the JCasGen
+        generator. This will produce updated Java for the Class Models that capture the
+        changed specification. If you have previously augmented the source for these Java
+        Class Models, your changes must be merged with the newly (re)generated Java source
+        code for the Class Models. This can be done by hand, or you can run the version of JCasGen
+        that is integrated with Eclipse, since the merging depends on Eclipse&apos;s EMF
+        plug-in. You can obtain Eclipse and the needed EMF plug-in from <ulink
+          url="http://www.eclipse.org/"/>.</para>
+      
+      <para>If you run the generator version that works without using Eclipse, it will not
+        merge Java source changes you may have previously made; if you want them retained,
+        you&apos;ll have to do the merging by hand.</para>
+      
+      <para>The Java source merging will keep additional constructors, additional fields,
+        and any changes you may have made to the readObject method (see below). Merging will
+        not delete classes in the target corresponding to deleted CAS types, which no longer
+        are in the source &ndash; you should delete these by hand.</para>
+      
+    </section>
+    
+    <section id="ugr.ref.jcas.additional_constructors">
+      <title>Additional Constructors</title>
+      
+      <para>Any additional constructors that you add must include the JCas argument. The
+        first line of your constructor is required to be</para>
+      
+      
+      <programlisting>this(jcas);        // run the standard constructor</programlisting>
+      
+      <para>where jcas is the passed in JCas reference. If the type you&apos;re defining
+        extends <literal>uima.tcas.Annotation</literal>, JCasGen will automatically
+        add a constructor which takes 2 additional parameters &ndash; the begin and end Java
+        int values, and set the <literal>uima.tcas.Annotation</literal>
+        <literal>begin</literal> and <literal>end</literal> fields.</para>
+      
+      <para>Here&apos;s an example: If you&apos;re defining a type MyType which has a
+        feature parent, you might make an additional constructor which has an additional
+        argument of parent:</para>
+      
+      
+      <programlisting>MyType(JCas jcas, MyType parent) {
+  this(jcas);        // run the standard constructor
+  setParent(parent); // set the parent field from the parameter
 }</programlisting>
-
-<para>The process method is passed the JCas instance to use as
-the first parameter.</para>
-
-<para>The JCas reference is used throughout the annotator to
-refer to the particular JCas instance being worked on.  In pooled or multi-threaded implementations,
-there will be a separate JCas for each thread being (simultaneously) worked on.</para>
-
-<para>You can do several kinds of operations using the JCas
-APIs:  create new feature structures
-(instances of CAS types) (using the new operator), access existing feature
-structures passed to your annotator in the JCas (for example, by using the next
-method of an iterator over the feature structures), get and set the fields of a
-particular instance of a feature structure, and add and remove feature
-structure instances from the CAS indexes.  To support iteration, there are also functions to get and use indexes
-and iterators over the instances in a JCas.</para>
-
-<h3><a id="_crossRef237">Creating new instances using the
-Java </quote>new<quote> operator</a></h3>
-
-<para>The new operator creates new instances of JCas types.  It takes at least one parameter, the JCas
-instance in which the type is to be created.  For example, if there was a type Meeting defined, you can create a new
-instance of it using:</para>
-
-<programlisting>Meeting m = new Meeting(jcas);</programlisting>
-
-<para>Other variations of constructors can be added in custom
-code; the single parameter version is the one automatically generated by
-JCasGen.  For types that are subtypes of
-Annotation, JCasGen also generates an additional constructor with additional </quote>begin<quote>
-and </quote>end<quote> arguments.</para>
-
-<h3><a id="_crossRef238">Getters and Setters</a></h3>
-
-<para>If the CAS type Meeting had fields location and time, you
-could get or set these by using getter or setter methods.  These methods have names formed by splicing
-together the word </quote>get<quote> or </quote>set<quote> followed by the field
-name, with the first letter of the field name capitalized.  For instance</para>
-
-<programlisting>getLocation()</programlisting>
-
-<para>The getter forms take no parameters and return the value
-of the field; the setter forms take one parameter, the value to set into the
-field, and return void.</para>
-
-<para>There are built-in CAS types for arrays of integers,
-strings, floats, and feature structures.  For fields whose values are these types of arrays, there is an alternate
-form of getters and setters that take an additional parameter, written as the
-first parameter, which is the index in the array of an item to get or set.</para>
-
-<h3><a id="_crossRef239">Obtaining references to Indexes</a></h3>
-
-<para>The only way to access instances (not otherwise referenced
-from other instances) passed in to your annotator in its JCas is to use an
-iterator over some index.  Indexes in the
-CAS are specified in the annotator descriptor.  Indexes have a name; text annotators have a built-in, standard index
-over all annotations.</para>
-
-<para>To get an index, first get the JFSIndexRepository from the
-JCas using the method jcas.getJFSIndexRepository().  Here are the calls to get indexes:</para>
-
-<programlisting>JFSIndexRepository ir = jcas.getJFSIndexRepository();
+      
+      <section id="ugr.ref.jcas.using_readobject">
+        <title>Using readObject</title>
+        
+        <para>Fields defined by augmenting the Java Class Model to include additional
+          fields represent data that exist for this class in Java, in a local JVM (Java Virtual
+          Machine), but do not exist in the CAS when it is passed to other environments (for
+          example, passing to a remote annotator).</para>
+        
+        <para>A problem can arise when new instances are created, perhaps by the underlying
+          system when it iterates over an index, which is: how to insure that any additional
+          non-CAS fields are properly initialized. To allow for arbitrary initialization
+          at instance creation time, an initialization method in the Java Class Model,
+          called readObject is used. The generated default for this method is to do nothing,
+          but it is one of the methods that you can modify &ndash; to do whatever
+          initialization might be needed. It is called with 0 parameters, during the
+          constructor for the object, after the basic object fields have been set up. It can
+          refer to fields in the CAS using the getters and setters, and other fields in the Java
+          object instance being initialized.</para>
+        
+        <para>A pre-existing CAS feature structure could exist if a CAS was being passed to
+          this annotator; in this case the JCas system calls the readObject method when
+          creating the corresponding Java instance for the first time for the CAS feature
+          structure. This can happen at two points: when a new object is being returned from an
+          iterator over a CAS index, or a getter method is getting a field for the first time
+          whose value is a feature structure.</para>
+        
+      </section>
+    </section>
+    
+    <section id="ugr.ref.jcas.modifying_generated_items">
+      <title>Modifying generated items</title>
+      
+      <para>The following modifications, if made in generated items, will be preserved when
+        regenerating.</para>
+      
+      <para>The public/private etc. flags associated with methods (getters and setters).
+        You can change the default (<quote>public</quote>) if needed.</para>
+      
+      <para><quote>final</quote> or <quote>abstract</quote> can be added to the type
+        itself, with the usual semantics.</para>
+      
+    </section>
+  </section>
+  
+  <section id="ugr.ref.jcas.merging_types_from_other_specs">
+    <title>Merging types from different type system specifications</title>
+    
+    <section id="ugr.ref.jcas.merging_types.aggregates_and_cpes">
+      <title>Aggregate AEs and CPEs as sources of types</title>
+      
+      <para>When running aggregate AEs (Analysis Engines), or a set of AEs in a collection
+        processing engine, a merged type system is built. (Note: this <quote>merge</quote>
+        is merging types, not to be confused with merging Java source code, discussed above).
+        This merged type system has all the types of every component used in the application.
+        It is possible that there may be multiple definitions of the same CAS type, each of
+        which might have different features defined; the merged type result is created by
+        accumulating all the defined features for a particular type into that type&apos;s
+        type definition.</para>
+      
+      <para>If no type merging is needed, then each type system can have its own Java Class
+        Models generated individually, perhaps at an earlier time, and the resulting class
+        files (or .jar files containing these class files) can be put in the class path to
+        enable JCas.</para>
+      
+      <section id="ugr.ref.jcas.merging_types.jcasgen_support">
+        <title>JCasGen support for type merging</title>
+        
+        <para>If type merging is needed, the input to the JCasGen generation process, rather
+          than being a simple type system or a primitive AE specification, is instead, an
+          aggregate AE specification or a CPE (Collection processing engine)
+          specification, which specifies a set of type systems that need to be combined. The
+          generation process will merge the type systems, and the generated output will
+          reflect the merged types. This generated Java source code can be, in turn, merged
+          with hand-done changes to previously generated versions for this aggregate or
+          CPE, as described above. To do this Java source merge, the source for the
+          (hand-modified) generated JCas types must be put into the file system where the
+          generated output will go.</para>
+        
+        <para>Directions for running JCasGen can be found in <olink
+            targetdoc="&uima_docs_tools;" targetptr="ugr.tools.jcasgen"/>.</para>
+        
+      </section>
+    </section>
+  </section>
+  
+  <section id="ugr.ref.jcas.using_within_an_annotator">
+    <title>Using JCas within an Annotator</title>
+    
+    <para>To use JCas within an annotator, you must include the generated Java classes output
+      from JCasGen in the class path.</para>
+    
+    <para>An annotator written using JCas is built by defining a class for the annotator that
+      extends JCasAnnotator_ImplBase. The process method for this annotator is
+      written</para>
+    
+    
+    <programlisting>public void process(JCas jcas)
+     throws AnalysisEngineProcessException {
+  ... // body of annotator goes here
+}</programlisting>
+    
+    <para>The process method is passed the JCas instance to use as a parameter.</para>
+    
+    <para>The JCas reference is used throughout the annotator to refer to the particular JCas
+      instance being worked on. In pooled or multi-threaded implementations, there will be a
+      separate JCas for each thread being (simultaneously) worked on.</para>
+    
+    <para>You can do several kinds of operations using the JCas APIs: create new feature
+      structures (instances of CAS types) (using the new operator), access existing feature
+      structures passed to your annotator in the JCas (for example, by using the next method of
+      an iterator over the feature structures), get and set the fields of a particular
+      instance of a feature structure, and add and remove feature structure instances from
+      the CAS indexes. To support iteration, there are also functions to get and use indexes
+      and iterators over the instances in a JCas.</para>
+    
+    <section id="ugr.ref.jcas.new_instances">
+      <title>Creating new instances using the Java <quote>new</quote> operator</title>
+      
+      <para>The new operator creates new instances of JCas types. It takes at least one
+        parameter, the JCas instance in which the type is to be created. For example, if there
+        was a type Meeting defined, you can create a new instance of it using:
+        
+        <programlisting>Meeting m = new Meeting(jcas);</programlisting></para>
+      
+      <para>Other variations of constructors can be added in custom code; the single
+        parameter version is the one automatically generated by JCasGen. For types that are
+        subtypes of Annotation, JCasGen also generates an additional constructor with
+        additional <quote>begin</quote> and <quote>end</quote> arguments.</para>
+      
+    </section>
+    <section id="ugr.ref.jcas.getters_and_setters">
+      <title>Getters and Setters</title>
+      
+      <para>If the CAS type Meeting had fields location and time, you could get or set these by
+        using getter or setter methods. These methods have names formed by splicing together
+        the word <quote>get</quote> or <quote>set</quote> followed by the field name, with
+        the first letter of the field name capitalized. For instance
+        
+        <programlisting>getLocation()</programlisting></para>
+      
+      <para>The getter forms take no parameters and return the value of the field; the setter
+        forms take one parameter, the value to set into the field, and return void.</para>
+      
+      <para>There are built-in CAS types for arrays of integers, strings, floats, and
+        feature structures. For fields whose values are these types of arrays, there is an
+        alternate form of getters and setters that take an additional parameter, written as
+        the first parameter, which is the index in the array of an item to get or set.</para>
+      
+    </section>
+    
+    <section id="ugr.ref.jcas.obtaining_refs_to_indexes">
+      <title>Obtaining references to Indexes</title>
+      
+      <para>The only way to access instances (not otherwise referenced from other
+        instances) passed in to your annotator in its JCas is to use an iterator over some
+        index. Indexes in the CAS are specified in the annotator descriptor. Indexes have a
+        name; text annotators have a built-in, standard index over all annotations.</para>
+      
+      <para>To get an index, first get the JFSIndexRepository from the JCas using the method
+        jcas.getJFSIndexRepository(). Here are the calls to get indexes:</para>
+      
+      
+      <programlisting>JFSIndexRepository ir = jcas.getJFSIndexRepository();
 
 ir.getIndex(name-of-index) // get the index by its name, a string
 ir.getIndex(name-of-index, Foo.type) // filtered by specific type
 
 ir.getAnnotationIndex()      // get AnnotationIndex
 ir.getAnnotationIndex(Foo.type)      // filtered by specific type</programlisting>
-
-<para>Filtering types have to be a subtype of the type specified
-for this index in its index specification.  They can be written as either Foo.type or if you have an instance of
-Foo, you can write</para>
-
-<programlisting>fooInstance.jcasType.casType.  </programlisting>
-
-<para>Foo is (of course) an example of  the name of the type.</para>
-
-<h3><a id="_crossRef240">Adding (and removing) instances to
-(from) indexes</a></h3>
-
-<para>CAS indexes are maintained automatically by the CAS.  But you must add any instances of feature
-structures you want the index to find, to the indexes by using the call:</para>
-
-<programlisting>myInstance.addToIndexes();</programlisting>
-
-<para>Do this after setting all features in the instance <b><emphasis>which
-could be used in indexing</emphasis></b>, for example, in determining the sorting
-order.  After indexing, do not change the
-values of these particular features because the indexes will not be
-updated.  If you need to change the
-values, you must first remove the instance from the CAS indexes, change the
-values, and then add the instance back.  To remove an instance from the indexes, use the method:</para>
-
-<programlisting>myInstance.removeFromIndexes();</programlisting>
-
-<note>It&apos;s OK to change feature values which are not used in determining sort
-ordering (or set membership), without removing and re-adding back to the index.
-</listitem></itemizedlist>
-
-<para>When writing a Multi-View component, you may need to index
-instances in multiple CAS views.  The
-methods above use the indexes associated with the current JCas object.  You can explicitly add instances to other
-views using the addFsToIndexes method on other JCas (or CAS) objects.  For instance, if you had 2 other CAS views
-(myView1 and myView2), in which you wanted to index myInstance, you could
-write:</para>
-
-<programlisting>myInstance.addToIndexes();  // index in the JCas use with the new operator
+      
+      <para>Filtering types have to be a subtype of the type specified for this index in its
+        index specification. They can be written as either Foo.type or if you have an instance
+        of Foo, you can write</para>
+      
+      <programlisting>fooInstance.jcasType.casType.  </programlisting>
+      
+      <para>Foo is (of course) an example of the name of the type.</para>
+      
+    </section>
+    <section id="ugr.ref.jcas.adding_removing_instances_to_indexes">
+      <title>Adding (and removing) instances to (from) indexes</title>
+      
+      <para>CAS indexes are maintained automatically by the CAS. But you must add any
+        instances of feature structures you want the index to find, to the indexes by using the
+        call:</para>
+      
+      <programlisting>myInstance.addToIndexes();</programlisting>
+      
+      <para>Do this after setting all features in the instance <emphasis
+          role="bolditalic">which could be used in indexing</emphasis>, for example, in
+        determining the sorting order. After indexing, do not change the values of these
+        particular features because the indexes will not be updated. If you need to change the
+        values, you must first remove the instance from the CAS indexes, change the values,
+        and then add the instance back. To remove an instance from the indexes, use the method:
+        
+        <programlisting>myInstance.removeFromIndexes();</programlisting></para>
+      <note><para>It&apos;s OK to change feature values which are not used in determining
+      sort ordering (or set membership), without removing and re-adding back to the index.
+      </para></note>
+      
+      <para>When writing a Multi-View component, you may need to index instances in multiple
+        CAS views. The methods above use the indexes associated with the current JCas object.
+        You can explicitly add instances to other views using the addFsToIndexes method on
+        other JCas (or CAS) objects. For instance, if you had 2 other CAS views (myView1 and
+        myView2), in which you wanted to index myInstance, you could write:</para>
+      
+      
+      <programlisting>myInstance.addToIndexes();  // index in the JCas use with the new operator
 myView1.addFsToIndexes(myInstance); // index myInstance in myView1
 myView2.addFsToIndexes(myInstance); // index myInstance in myView2</programlisting>
-
-<h3><a id="_crossRef241">Using Iterators</a></h3>
-
-<para>Once you have an index obtained from the JCas, you can get
-an iterator from the index; here is an example:</para>
-
-<programlisting>FSIndexRepository ir = jcas.getFSIndexRepository();
-FSIndex myIndex = ir.getIndex(</quote>myIndexName<quote>);
+    </section>
+    
+    <section id="ugr.ref.jcas.using_iterators">
+      <title>Using Iterators</title>
+      
+      <para>Once you have an index obtained from the JCas, you can get an iterator from the
+        index; here is an example:</para>
+      
+      
+      <programlisting>FSIndexRepository ir = jcas.getFSIndexRepository();
+FSIndex myIndex = ir.getIndex(<quote>myIndexName</quote>);
 FSIterator myIterator = myIndex.iterator();</programlisting>
-
-<programlisting>JFSIndexRepository ir = jcas.getJFSIndexRepository();
-FSIndex myIndex = ir.getIndex(</quote>myIndexName<quote>, Foo.type); // filtered
+      
+      
+      <programlisting>JFSIndexRepository ir = jcas.getJFSIndexRepository();
+FSIndex myIndex = ir.getIndex(<quote>myIndexName</quote>, Foo.type); // filtered
 FSIterator myIterator = myIndex.iterator();</programlisting>
-
-<para>Iterators work like normal Java iterators, but are
-augmented to support additional capabilities.  Iterators are described in the CAS Reference, <emphasis>Section </emphasis><a class="crossrefText" href="CAS_Reference.htm#_crossRef90">26.6, <b>Indexes and Iterators</b></a></para>
-
-<h3><a id="_crossRef242">Class Loaders in UIMA</a></h3>
-
-<para>The basic concept of a UIMA application includes assembling
-engines into a flow. The applications made up of these Engines are run within
-the UIMA Framework, either by the Collection Processing Manager, or by using
-more basic UIMA Framework APIs.</para>
-
-<para>The UIMA Framework exists within a JVM (Java Virtual
-Machine). A JVM has the capability to load multiple applications, in a way
-where each one is isolated from the others, by using a separate class loader
-for each application. For instance,  one
-set of UIMA Framework Classes could be shared by multiple sets of application -
-specific classes.</para>
-
-<h4>Use of Class
-Loaders is optional</h4>
-
-<para>The UIMA framework will use a specific ClassLoader, based
-on how ResourceManager instances are used.  Specific ClassLoaders are only created if you specify an
-ExtensionClassPath as part of the ResourceManager. If you do not need to
-support multiple applications within one UIMA framework within a JVM, don&apos;t
-specify an ExtensionClassPath; in this case, the classloader used will be the
-one used to load the UIMA framework - usually the overall application class
-loader.</para>
-
-<para>Of course, you should not run multiple UIMA applications
-together, in this way, if they have different class definitions for the same
-class name. This includes the JCas </quote>cover<quote> classes. This case might
-arise, for instance, if both applications extended <literal>uima.tcas.DocumentAnnotation</literal>
-in differing, incompatible ways. Each application would need its own definition
-of this class, but only one could be loaded (unless you specify
-ExtensionClassPath in the ResourceManager which will cause the UIMA application
-to load its private versions of its classes, from its classpath).</para>
-
-<h3><a id="_crossRef243">Issues around DocumentAnnotation</a></h3>
-
-<para>The built-in type, <literal>uima.tcas.DocumentAnnotion</literal>,
-is frequently extended by applications. The JCas provides a method, <literal>getDocumentAnnotation(),</literal> to get the special instance of
-this type which associated with each CAS View. Currently this method returns an
-instance of the JCas cover class for this. Because there can be multiple
-definitions of this class, this method is deprecated. It will continue to work,
-as long as the ExtensionClassPath is not being used. If it is being used, the
-user will see some pretty strange errors, something like</para>
-
-<para><literal>ClassCast Exception: Cannot cast </quote>uima.tcas.DocumentAnnotation<quote>
-to </quote>uima.tcas.DocumentAnnotation<quote></literal></para>
-
-<para>What&apos;s really going on is that the JCas method for this
-loads a version of the <literal>DocumentAnnotation</literal> class
-from the UIMA Framework loader, while the Application trying to use it loads a
-different version of the <literal>DocumentAnnotation</literal> class
-from its ExtensionClassLoader.</para>
-
-<para>If only one definition of <literal>DocumentAnnotation</literal>
-will be used for the complete set of UIMA applications being run in the JVM,
-then you can replace the definition of <literal>DocumentAnnotation</literal>
-in the Jar that the UIMA Framework loader is using with your definition, and
-not have this definition findable in the ExtensionClassPath.</para>
-
-<para>This approach is enabled by putting all the extendable,
-built-in classes for UIMA into a separate JAR file.</para>
-
-<para>The method <literal>getDocumentAnnotationFs</literal>()
-replaces the deprecated <literal>getDocumentAnnotation</literal>(). It
-has the same function, except its return type is TOP, which means your code
-will have to </quote>cast&quot; it to your particular loaded version of <literal>DocumentAnnotation</literal>.</para>
-
-<para><literal>   /* deprecated */  <br/>
-DocumentAnnotation docAnn = aJcas.getDocumentAnnotation();</literal></para>
-
-<para><literal>   /* new way */  <br/>
-DocumentAnnotation docAnn =
-(DocumentAnnotation)aJcas.getDocumentAnnotationFs();</literal></para>
-
-<h3><a id="_crossRef244">Issues accessing JCas objects
-outside of UIMA Engine Components</a></h3>
-
-<para>If you are using the ExtensionClassPaths, the JCas cover
-classes are loaded under a class loader created by the ResourceManager. If you
-reference the same JCas classes outside of any UIMA component, for instance, in
-top level application code, the JCas classes used by that top level application
-code must be loaded under the same class loader, in order to avoid class cast
-exceptions. Currently, there is no supported way to do this if you are using
-ExtensionClassPaths.</para>
-
-<para>The workaround is to do all the JCas processing inside a
-UIMA component (no processing using JCas outside of the UIMA pipeline), or to
-put the JCas classes only in the main classpath for the UIMA Framework, and
-insure they are not findable in the ExtensionClassPaths. This latter approach
-of course limits you to one set of JCas class definitions per UIMA framework.</para>
-
-
-
-
-
-
-  </subsection>
-<subsection name="Setting up Classpath for JCas"><a id="_crossRef245"> </a>
-
-
-
-<para>The JCas Java classes generated by JCasGen are typically
-compiled and put into a JAR file, which, in turn, is put into the application&apos;s
-class path.</para>
-
-<para>This JAR file must be generated from the application&apos;s
-merged type system.  This is most
-conveniently done by opening the top level descriptor used by the application
-in the Component Descriptor Editor tool, and pressing the Run-JCasGen button on
-the Type System Definition page.</para>
-
+      
+      <para>Iterators work like normal Java iterators, but are augmented to support
+        additional capabilities. Iterators are described in the CAS Reference, <olink
+          targetdoc="&uima_docs_ref;"
+          targetptr="ugr.ref.cas.indexes_and_iterators"/>.</para>
+      
+    </section>
+    
+    <section id="ugr.ref.jcas.class_loaders">
+      <title>Class Loaders in UIMA</title>
+      
+      <para>The basic concept of a UIMA application includes assembling engines into a flow.
+        The application made up of these Engines are run within the UIMA Framework, either by
+        the Collection Processing Manager, or by using more basic UIMA Framework
+        APIs.</para>
+      
+      <para>The UIMA Framework exists within a JVM (Java Virtual Machine). A JVM has the
+        capability to load multiple applications, in a way where each one is isolated from the
+        others, by using a separate class loader for each application. For instance, one set
+        of UIMA Framework Classes could be shared by multiple sets of application - specific
+        classes, even if these application-specific classes had the same names but were
+        different versions.</para>
+      
+      <section id="ugr.ref.jcas.class_loaders.optional">
+        <title>Use of Class Loaders is optional</title>
+        
+        <para>The UIMA framework will use a specific ClassLoader, based on how
+          ResourceManager instances are used. Specific ClassLoaders are only created if
+          you specify an ExtensionClassPath as part of the ResourceManager. If you do not
+          need to support multiple applications within one UIMA framework within a JVM,
+          don&apos;t specify an ExtensionClassPath; in this case, the classloader used
+          will be the one used to load the UIMA framework - usually the overall application
+          class loader.</para>
+        
+        <para>Of course, you should not run multiple UIMA applications together, in this
+          way, if they have different class definitions for the same class name. This
+          includes the JCas <quote>cover</quote> classes. This case might arise, for
+          instance, if both applications extended
+          <literal>uima.tcas.DocumentAnnotation</literal> in differing,
+          incompatible ways. Each application would need its own definition of this class,
+          but only one could be loaded (unless you specify ExtensionClassPath in the
+          ResourceManager which will cause the UIMA application to load its private
+          versions of its classes, from its classpath).</para>
+      </section>
+    </section>
+    <section id="ugr.ref.jcas.documentannotation_issues">
+      <title>Issues around DocumentAnnotation</title>
+      
+      <para>The built-in type, <literal>uima.tcas.DocumentAnnotion</literal>, is
+        frequently extended by applications. The JCas provides a method,
+        <literal>getDocumentAnnotation(),</literal> to get the special instance of this
+        type which associated with each CAS View. Currently this method returns an instance
+        of the JCas cover class for this. Because there can be multiple definitions of this
+        class, this method is deprecated. It will continue to work, as long as the
+        ExtensionClassPath is not being used. If it is being used, the user will see some
+        pretty strange errors, something like</para>
+      
+      <para><computeroutput>ClassCast Exception: Cannot cast
+        "uima.tcas.DocumentAnnotation" to
+        "uima.tcas.DocumentAnnotation"</computeroutput></para>
+      
+      <para>What&apos;s really going on is that the JCas method for this loads a version of the
+        <literal>DocumentAnnotation</literal> class from the UIMA Framework loader,
+        while the Application trying to use it loads a different version of the
+        <literal>DocumentAnnotation</literal> class from its
+        ExtensionClassLoader.</para>
+      
+      <para>If only one definition of <literal>DocumentAnnotation</literal> will be used
+        for the complete set of UIMA applications being run in the JVM, then you can replace the
+        definition of <literal>DocumentAnnotation</literal> in the Jar that the UIMA
+        Framework loader is using with your definition, and not have this definition
+        findable in the ExtensionClassPath.</para>
+      
+      <para>This approach is enabled by putting all the extendable, built-in classes for
+        UIMA into a separate JAR file.</para>
+      
+      <para>The method <literal>getDocumentAnnotationFs</literal>() replaces the
+        deprecated <literal>getDocumentAnnotation</literal>(). It has the same
+        function, except its return type is TOP, which means your code will have to
+        <quote>cast</quote> it to your particular loaded version of
+        <literal>DocumentAnnotation</literal>.
+        
+        
+        <programlisting>   /* deprecated */
+DocumentAnnotation docAnn = aJcas.getDocumentAnnotation();
+   /* new way */
+DocumentAnnotation docAnn = 
+  (DocumentAnnotation)aJcas.getDocumentAnnotationFs();
+</programlisting></para>
+      
+    </section>
+    
+    <section id="ugr.ref.jcas.accessing_jcas_objects_outside_uima_components">
+      <title>Issues accessing JCas objects outside of UIMA Engine Components</title>
+      
+      <para>If you are using the ExtensionClassPaths, the JCas cover classes are loaded
+        under a class loader created by the ResourceManager. If you reference the same JCas
+        classes outside of any UIMA component, for instance, in top level application code,
+        the JCas classes used by that top level application code must be loaded under the same
+        class loader, in order to avoid class cast exceptions. Currently, there is no
+        supported way to do this if you are using ExtensionClassPaths.</para>
+      
+      <para>The workaround is to do all the JCas processing inside a UIMA component (no
+        processing using JCas outside of the UIMA pipeline), or to put the JCas classes only in
+        the main classpath for the UIMA Framework, and insure they are not findable in the
+        ExtensionClassPaths. This latter approach of course limits you to one set of JCas
+        class definitions per UIMA framework.</para>
+      
+    </section>
+  </section>
+  
+  <section id="ugr.ref.jcas.setting_up_classpath">
+    <title>Setting up Classpath for JCas</title>
+    
+    <para>The JCas Java classes generated by JCasGen are typically compiled and put into a JAR
+      file, which, in turn, is put into the application&apos;s class path.</para>
+    
+    <para>This JAR file must be generated from the application&apos;s merged type system.
+      This is most conveniently done by opening the top level descriptor used by the
+      application in the Component Descriptor Editor tool, and pressing the Run-JCasGen
+      button on the Type System Definition page.</para>
+    
+  </section>
+  
 </chapter>

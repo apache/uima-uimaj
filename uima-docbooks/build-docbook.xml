@@ -111,6 +111,14 @@
 	
 	<!-- if docbook.outname is not set, set it to the chapter_name -->
 	<property name="docbook.outname" value="${chapter_name}"/>
+
+	<!-- if olink_work is not set, set it to yes -->
+	<property name="olink_work" value="yes"/>
+
+	<!-- skip some steps if olink_work value is only -->
+	<condition property="do_olinkdb_only">
+		<equals arg1="${olink_work}" arg2="only"/>
+  </condition>
 	
   <condition property="css_styles_prefix" value="${src.dir}"
 	                              else="${docbook.src.dir}/${book_name}">
@@ -128,6 +136,7 @@
 	<path id="docbook.classpath">
 		<!-- xercesImpl.jar comes first to allow using XInclude -->
 		<pathelement location="${basedir}/lib/xercesImpl.jar"/>
+		<pathelement location="${basedir}/lib/xml-apis.jar"/>
 		<fileset dir="${basedir}/lib">
 			<include name="*.jar"/>
 		</fileset>
@@ -136,6 +145,7 @@
 		</fileset>
 		<pathelement location="${basedir}"/>
 	</path>
+	
 
 	<!-- ======================================================================== -->
 	<!-- ==                                                                    == -->
@@ -262,7 +272,9 @@
 	<!-- ==                                                                    == -->
 	<!-- ======================================================================== -->
 	<target name="all" depends="pdf,html,htmlsingle"
-          description="--> Generate and copy reference documentation"/>
+          description="--> Generate and copy reference documentation">
+		<echo message="build all for ${chapter_name}"/>
+	</target>
 
 	<!-- ======================================================================== -->
 	<!-- ==                                                                    == -->
@@ -284,7 +296,12 @@
           description="--> Generate PDF docs">
 
 		<transform type="pdf" target="tmp" title="pdf"/>
-
+		
+		<antcall target="fop_conditionally"/>
+	</target>
+		
+  <target name="fop_conditionally" description="internal - runs fop conditionally"
+  	      unless="do_olinkdb_only">
 		<java classname="org.apache.fop.apps.Fop" fork="true" maxmemory="256m"
           dir="${basedir}" classpathref="docbook.classpath">
 			<arg value="-c"/>
@@ -303,10 +320,12 @@
           depends="prepare"
           description="--> Generate HTML docs in multiple files">
 
+		<echo message="skipping many-page html output for now for ${chapter_name}"/>
+		<!--
 		<transform type="html" target="html" title="html"/>
 		
 		<antcall target="copy-docbook-images-and-css"/>
-
+    -->
 	</target>
 
 	<!-- ======================================================================== -->
@@ -336,7 +355,7 @@
 	<!-- == Subroutine: Copy the images and css                                == -->
 	<!-- ======================================================================== -->
 
-	<target name="copy-docbook-images-and-css">
+	<target name="copy-docbook-images-and-css"  unless="${do_olinkdb_only}">
 		<copy todir="${target.dir}/images">
 			<fileset dir="${docbook.xsl.dir}/images/"/>
 		</copy>
@@ -386,6 +405,7 @@
 			<filterset>
 				<filter token="${type}.target.dir" value="${transform.target.path}" />
 				<filter token="type" value="${type}"/>
+				<filter token="olink_work" value="${olink_work}"/>
 			</filterset>
 		</copy>
 

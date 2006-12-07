@@ -33,6 +33,9 @@
   <xsl:param name="draft.watermark.image" select="'@file.prefix@@docbook.xsl@/images/draft.png'"/>
   <xsl:param name="paper.type" select="'@paper.type@'"/>
 
+  <!-- enable olink, or not -->
+  <xsl:param name="collect.xref.targets" select="'@olink_work@'"/>
+
   <!-- where the olink output goes -->  
   <xsl:param name="targets.filename">@src.dir@/olink/@olink_file@/@type@-target.db</xsl:param>
 
