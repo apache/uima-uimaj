@@ -28,8 +28,10 @@ import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.text.AnnotationFS;
@@ -42,6 +44,11 @@ import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
+import org.apache.uima.resource.metadata.impl.FsIndexCollection_impl;
+import org.apache.uima.resource.metadata.impl.FsIndexDescription_impl;
+import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
+import org.apache.uima.resource.metadata.impl.TypePriorityList_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
@@ -359,4 +366,84 @@ public class CasCreationUtilsTest extends TestCase {
       JUnitExtension.handleException(e);
     }
   }
+  
+  public void testCreateCasCollection() throws Exception {
+    try {
+      // create two Type System description objects
+      TypeSystemDescription tsd1 = new TypeSystemDescription_impl();
+      TypeDescription supertype = tsd1.addType("test.Super", "", "uima.tcas.Annotation");
+      supertype.addFeature("testfeat", "", "uima.cas.Integer");
+      TypeDescription subtype = tsd1.addType("test.Sub", "", "test.Super");
+      subtype.addFeature("testfeat", "", "uima.cas.Integer");
+
+      TypeSystemDescription tsd2 = new TypeSystemDescription_impl();
+      TypeDescription fooType = tsd1.addType("test.Foo", "", "uima.cas.TOP");
+      fooType.addFeature("bar", "", "uima.cas.String");
+      
+      //create index and priorities descriptions
+      
+      FsIndexCollection indexes = new FsIndexCollection_impl();
+      FsIndexDescription index = new FsIndexDescription_impl();
+      index.setLabel("MyIndex");
+      index.setTypeName("test.Foo");
+      index.setKind(FsIndexDescription.KIND_BAG);
+      indexes.addFsIndex(index);
+      
+      TypePriorities priorities = new TypePriorities_impl();
+      TypePriorityList priList = new TypePriorityList_impl();
+      priList.addType("test.Foo");
+      priList.addType("test.Sub");
+      priList.addType("test.Super");
+      priorities.addPriorityList(priList);
+      
+      //create a CAS containing all these definitions
+      ArrayList descList = new ArrayList();
+      descList.add(tsd1);
+      descList.add(tsd2);  
+      descList.add(indexes);
+      descList.add(priorities);
+     
+      CAS cas = CasCreationUtils.createCas(descList);
+      
+      //check that type system has been installed
+      TypeSystem ts = cas.getTypeSystem();
+      Type supertypeHandle = ts.getType(supertype.getName());
+      assertNotNull(supertypeHandle);
+      assertNotNull(supertypeHandle.getFeatureByBaseName("testfeat"));
+      Type subtypeHandle = ts.getType(subtype.getName());
+      assertNotNull(subtypeHandle);
+      assertNotNull(subtypeHandle.getFeatureByBaseName("testfeat"));
+      Type fooTypeHandle = ts.getType(fooType.getName());
+      assertNotNull(fooTypeHandle);
+      assertNotNull(fooTypeHandle.getFeatureByBaseName("bar"));
+      
+      //check that index exists
+      assertNotNull(cas.getIndexRepository().getIndex("MyIndex"));
+      
+      //test that priorities work
+      cas.createFS(supertypeHandle);
+      cas.createFS(subtypeHandle);
+      FSIterator iter = cas.getAnnotationIndex().iterator();
+      while (iter.isValid()) {
+        if (iter.get().getType() == subtypeHandle) //expected
+          break;
+        if (iter.get().getType() == supertypeHandle) //unexpected
+          fail();
+        iter.moveToNext();
+      }
+      
+      //test that passing an invalid object causes an error
+      descList.add(new ConfigurationParameter_impl());
+      try {
+        CasCreationUtils.createCas(descList);
+        fail();
+      }
+      catch (ResourceInitializationException e) {
+        //expected        
+      }
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }       
+  }
+  
 }
