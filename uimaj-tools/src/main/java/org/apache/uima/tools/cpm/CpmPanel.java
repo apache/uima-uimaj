@@ -26,7 +26,6 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -98,14 +97,14 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
   public static final String HELP_MESSAGE = "Instructions for using UIMA Collection Processing Engine Configurator:\n\n"
           + "Select a Collection Reader descriptor using the Browse button in the topmost panel.\n\n"
-          + "On the Analyis Engines panel and the CAS Consumers panel, use the Add button to select Analysis Engine (AE) \n" 
+          + "On the Analyis Engines panel and the CAS Consumers panel, use the Add button to select Analysis Engine (AE) \n"
           + "and CAS Consumer descriptors.\n\n"
           + "Press the Play button to start collection processing.\n"
           + "A progress bar in the lower left corner of the window will indicate the processing progress.\n"
-          + "When running, you may use the Pause or Stop button to pause or stop the processing.\n\n" 
-          + "The File menu contains options for opening and saving CPE descriptors.\n\n" 
-          + "The View menu contains an option to display the CAS Initializer panel.  CAS Initializers are deprecated \n"  
-          + "since UIMA version 2.0, but are still supported by this tool.";       
+          + "When running, you may use the Pause or Stop button to pause or stop the processing.\n\n"
+          + "The File menu contains options for opening and saving CPE descriptors.\n\n"
+          + "The View menu contains an option to display the CAS Initializer panel.  CAS Initializers are deprecated \n"
+          + "since UIMA version 2.0, but are still supported by this tool.";
 
   private static final String PREFS_CPE_DESCRIPTOR_FILE = "cpeDescriptorFile";
 
@@ -413,10 +412,10 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     } catch (Exception e) {
       e.printStackTrace();
     }
-    
-    //CAS initializer panel is initially hidden since it is deprecated
+
+    // CAS initializer panel is initially hidden since it is deprecated
     setCasInitializerPanelVisible(false);
-    
+
     // read preferences (loads last opened CPE descriptor)
     if (System.getProperty("uima.noprefs") == null) {
       readPreferences();
@@ -457,7 +456,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
     return menuItemList;
   }
-  
+
   /**
    * Creates JMenuItems that should be added to the View menu
    * 
@@ -472,8 +471,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     menuItemList.add(viewCasInitializerPanelMenuItem);
 
     return menuItemList;
-  }  
-  
+  }
+
   private void setCasInitializerPanelVisible(boolean visible) {
     casInitializerPanel.setVisible(visible);
     if (viewCasInitializerPanelMenuItem != null) {
@@ -1111,9 +1110,9 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
         return true;
       }
 
-      //a CAS initializer is selected, so make sure the panel is made visible
+      // a CAS initializer is selected, so make sure the panel is made visible
       setCasInitializerPanelVisible(true);
-      
+
       File f = new File(specifierFile);
       if (!f.exists()) {
         String errorMsg = "Descriptor file " + f.getAbsolutePath() + " does not exist";
