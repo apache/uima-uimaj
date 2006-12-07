@@ -45,7 +45,6 @@ public class CollectionReaderFactory_implTest extends TestCase {
       ccFactory.produceResource(CollectionReader.class, desc, Collections.EMPTY_MAP);
       fail();
     } catch (ResourceInitializationException e) {
-      e.printStackTrace();
       assertNotNull(e.getMessage());
       assertFalse(e.getMessage().startsWith("EXCEPTION MESSAGE LOCALIZATION FAILED"));
       assertEquals(e.getMessageKey(), ResourceInitializationException.UNSUPPORTED_FRAMEWORK_IMPLEMENTATION);
