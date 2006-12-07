@@ -45,7 +45,6 @@ public class CasConsumerFactory_implTest extends TestCase {
       ccFactory.produceResource(CasConsumer.class, desc, Collections.EMPTY_MAP);
       fail();
     } catch (ResourceInitializationException e) {
-      e.printStackTrace();
       assertNotNull(e.getMessage());
       assertFalse(e.getMessage().startsWith("EXCEPTION MESSAGE LOCALIZATION FAILED"));
       assertEquals(e.getMessageKey(), ResourceInitializationException.UNSUPPORTED_FRAMEWORK_IMPLEMENTATION);
