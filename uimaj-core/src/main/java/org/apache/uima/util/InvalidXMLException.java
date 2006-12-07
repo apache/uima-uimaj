@@ -110,6 +110,13 @@ public class InvalidXMLException extends UIMAException {
   public static final String UNRESOLVED_XINCLUDE = "unresolved_xinclude";
 
   /**
+   * Message key for a standard UIMA exception message: Cycle found in imports. The descriptor for
+   * Aggregate Analysis Engine "{0}" has imported itself as one of its delegate descriptors (perhaps
+   * indirectly through another intermediate Analysis Engine descriptor).
+   */
+  public static final String CIRCULAR_AE_IMPORT = "circular_ae_import";
+
+  /**
    * Message key for a standard UIMA exception message: The element "fsIndexes" cannot occur outside
    * the containing element "fsIndexCollection"
    */

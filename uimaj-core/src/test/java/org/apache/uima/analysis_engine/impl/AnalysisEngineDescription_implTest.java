@@ -389,6 +389,9 @@ public class AnalysisEngineDescription_implTest extends TestCase {
     // invalid fs indexes
     _testInvalidDescriptor(JUnitExtension
             .getFile("TextAnalysisEngineImplTest/InvalidFsIndexes.xml"));
+    // circular import
+    _testInvalidDescriptor(JUnitExtension
+            .getFile("TextAnalysisEngineImplTest/AggregateThatImportsItself.xml"));
 
     // try some that should work
     XMLInputSource in = new XMLInputSource(JUnitExtension
