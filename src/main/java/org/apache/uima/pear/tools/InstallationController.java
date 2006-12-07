@@ -1167,6 +1167,7 @@ public class InstallationController {
       try {
         status.retCode = process.waitFor();
       } catch (InterruptedException e) {
+        
       }
       status.message = msgBuffer.toString();
     } finally {
@@ -1218,13 +1219,22 @@ public class InstallationController {
       String mainDescPath = mainInsD.getMainComponentDesc();
       if (mainDescPath == null)
         throw new RuntimeException("main descriptor path not specified");
-      //if (uimaHomePath == null)
-        //throw new RuntimeException(UIMA_HOME_ENV + " variable not specified");
+
+      String uimaClassPath = null;
+      if (uimaHomePath == null) {
+        // build UIMA classpath using application class path
+        uimaClassPath = System.getProperty("java.class.path", null);
+      } else {
+        // build UIMA classpath using UIMA_HOME env variable
+        uimaClassPath = buildUIMAClassPath(uimaHomePath);
+      }
+      if (uimaClassPath == null) {
+        throw new RuntimeException(UIMA_HOME_ENV + " variable not specified");
+      }
+
       // build component classpath, including dlg components
       String compClassPath = controller.buildComponentClassPath();
-      // build UIMA classpath
-      //String uimaClassPath = buildUIMAClassPath(uimaHomePath);
-      String uimaClassPath = System.getProperty("java.class.path", null);
+
       // set java.library.path, including dlg components
       String javaLibPath = controller.buildComponentPath();
       // set other required env vars
