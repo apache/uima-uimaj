@@ -137,11 +137,6 @@ public class TypeSystemDescription_implTest extends TestCase {
       descriptor = JUnitExtension.getFile("TypeSystemDescriptionImplTest/Circular1.xml");
       ts = UIMAFramework.getXMLParser().parseTypeSystemDescription(new XMLInputSource(descriptor));
       ts.resolveImports();
-      // TODO: currently, there will be duplicates, so we need to call mergeTypeSystems.
-      // when we fix this, the next 3 lines should be deleted.
-      ArrayList l = new ArrayList();
-      l.add(ts);
-      ts = CasCreationUtils.mergeTypeSystems(l);
       assertEquals(2, ts.getTypes().length);
 
       // calling resolveImports when there are none should do nothing

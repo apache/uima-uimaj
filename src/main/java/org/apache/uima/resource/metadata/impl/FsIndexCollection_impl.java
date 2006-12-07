@@ -198,6 +198,11 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
 
   public void resolveImports(Collection aAlreadyImportedFsIndexURLs,
           ResourceManager aResourceManager) throws InvalidXMLException {
+    // add our own URL, if known, to the collection of already imported URLs
+    if (getSourceUrl() != null) {
+      aAlreadyImportedFsIndexURLs.add(getSourceUrl().toString());
+    }
+    
     List importedIndexes = new ArrayList();
     Import[] imports = getImports();
     for (int i = 0; i < imports.length; i++) {

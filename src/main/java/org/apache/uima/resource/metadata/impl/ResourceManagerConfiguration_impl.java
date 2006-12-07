@@ -238,9 +238,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /**
    * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#getImport()
    * @deprecated
    */
@@ -252,9 +250,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /**
    * @see org.apache.uima.resource.metadata.ResourceManagerConfiguration#setImport(org.apache.uima.resource.metadata.Import)
    * @deprecated
    */
@@ -277,6 +273,10 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
 
   public void resolveImports(Collection aAlreadyImportedURLs, ResourceManager aResourceManager)
           throws InvalidXMLException {
+    // add our own URL, if known, to the collection of already imported URLs
+    if (getSourceUrl() != null) {
+      aAlreadyImportedURLs.add(getSourceUrl().toString());
+    }
     List importedResources = new ArrayList();
     List importedBindings = new ArrayList();
     Import[] imports = getImports();

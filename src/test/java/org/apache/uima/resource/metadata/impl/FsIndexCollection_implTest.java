@@ -123,11 +123,6 @@ public class FsIndexCollection_implTest extends TestCase {
       descriptor = JUnitExtension.getFile("FsIndexCollectionImplTest/Circular1.xml");
       ic = UIMAFramework.getXMLParser().parseFsIndexCollection(new XMLInputSource(descriptor));
       ic.resolveImports();
-      // TODO: currently, there will be duplicates, so we need to call mergeTypeSystems.
-      // when we fix this, the next 3 lines should be deleted.
-      ArrayList l = new ArrayList();
-      l.add(ic);
-      ic = CasCreationUtils.mergeFsIndexes(l, resMgr);
       assertEquals(2, ic.getFsIndexes().length);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
