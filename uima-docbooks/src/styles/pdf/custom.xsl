@@ -23,9 +23,6 @@
   <xsl:param name="admon.graphics.path" select="'../images/'"/>
   <xsl:param name="navig.graphics.path" select="'../images/'"/>
   <xsl:param name="callout.graphics.path" select="'../images/callouts/'"/>
-
-  <!-- enable olinking -->
-  <xsl:param name="collect.xref.targets" select="'yes'"/>
   
   <xsl:param name="body.font.family"  select="'Palatino'"/>
   <xsl:param name="body.font.master"    select="'10.5'"/>
