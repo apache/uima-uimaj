@@ -66,6 +66,7 @@ import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.resource.metadata.impl.ProcessingResourceMetaData_impl;
 
 /**
  * Utilities for creating and setting up CASes. Also includes utilities for merging CAS type
@@ -162,7 +163,9 @@ public class CasCreationUtils {
    * @param aComponentDescriptionsOrMetaData
    *          a collection of {@link AnalysisEngineDescription},
    *          {@link CollectionReaderDescription}, {@link CasInitializerDescription},
-   *          {@link CasConsumerDescription}, or {@link ProcessingResourceMetaData} objects.
+   *          {@link CasConsumerDescription}, {@link ProcessingResourceMetaData},
+   *          {@link TypeSystemDescription}, {@link FsIndexCollection}, or {@link TypePriorities}
+   *          objects.
    * 
    * @return a new CAS instance
    * 
@@ -182,7 +185,9 @@ public class CasCreationUtils {
    * @param aComponentDescriptionsOrMetaData
    *          a collection of {@link AnalysisEngineDescription},
    *          {@link CollectionReaderDescription}, {@link CasInitializerDescription},
-   *          {@link CasConsumerDescription}, or {@link ProcessingResourceMetaData} objects.
+   *          {@link CasConsumerDescription}, {@link ProcessingResourceMetaData},
+   *          {@link TypeSystemDescription}, {@link FsIndexCollection}, or {@link TypePriorities}
+   *          objects.
    * @param aPerformanceTuningSettings
    *          Properties object containing framework performance tuning settings using key names
    *          defined on {@link UIMAFramework} interface
@@ -205,7 +210,9 @@ public class CasCreationUtils {
    * @param aComponentDescriptionsOrMetaData
    *          a collection of {@link AnalysisEngineDescription},
    *          {@link CollectionReaderDescription}, {@link CasInitializerDescription},
-   *          {@link CasConsumerDescription}, or {@link ProcessingResourceMetaData} objects.
+   *          {@link CasConsumerDescription}, {@link ProcessingResourceMetaData},
+   *          {@link TypeSystemDescription}, {@link FsIndexCollection}, or {@link TypePriorities}
+   *          objects.
    * @param aPerformanceTuningSettings
    *          Properties object containing framework performance tuning settings using key names
    *          defined on {@link UIMAFramework} interface
@@ -325,7 +332,9 @@ public class CasCreationUtils {
    * @param aComponentDescriptionsOrMetaData
    *          a collection of {@link AnalysisEngineDescription},
    *          {@link CollectionReaderDescription}, {@link CasInitializerDescription},
-   *          {@link CasConsumerDescription}, or {@link ProcessingResourceMetaData} objects.
+   *          {@link CasConsumerDescription}, {@link ProcessingResourceMetaData},
+   *          {@link TypeSystemDescription}, {@link FsIndexCollection}, or {@link TypePriorities}
+   *          objects.
    * @param aTypeSystem
    *          type system to install in the CAS, null if none
    * @param aPerformanceTuningSettings
@@ -352,7 +361,9 @@ public class CasCreationUtils {
    * @param aComponentDescriptionsOrMetaData
    *          a collection of {@link AnalysisEngineDescription},
    *          {@link CollectionReaderDescription}, {@link CasInitializerDescription},
-   *          {@link CasConsumerDescription}, or {@link ProcessingResourceMetaData} objects.
+   *          {@link CasConsumerDescription}, {@link ProcessingResourceMetaData},
+   *          {@link TypeSystemDescription}, {@link FsIndexCollection}, or {@link TypePriorities}
+   *          objects.
    * @param aTypeSystem
    *          type system to install in the CAS, null if none
    * @param aPerformanceTuningSettings
@@ -1549,19 +1560,24 @@ public class CasCreationUtils {
   }
 
   /**
-   * Gets the metadata list from a list containing either component descriptions or metadata.
-   * Metadata objects will be cloned, so that further processing (such as import resolution) does
-   * not affect the caller.
+   * Gets a list of ProcessingResourceMetadata objects from a list containing either component
+   * descriptions, ProcessingResourceMetadata objects, or subparts of ProcessingResourceMetadata
+   * objects (type sypstems, indexes, or type priorities). Subparts will be wrapped inside a
+   * ProcessingResourceMetadata object. All objects will be cloned, so that further processing (such
+   * as import resolution) does not affect the caller.
    * 
    * @param aComponentDescriptionOrMetaData
-   *          a collection contianing AnalysisEngineDescription, CollectionReaderDescription,
-   *          CasInitializerDescription, CasConsumerDescription, or ProcessingResourceMetaData
+   *          a collection contianing {@link AnalysisEngineDescription},
+   *          {@link CollectionReaderDescription}, {@link CasInitializerDescription},
+   *          {@link CasConsumerDescription}, {@link ProcessingResourceMetaData},
+   *          {@link TypeSystemDescription}, {@link FsIndexCollection}, or {@link TypePriorities}
    *          objects.
    * @param aResourceManager
    *          used to resolve delegate analysis engine imports
    * 
-   * @return a List containing the MetaData objects for each component description in
-   *         <code>aComponentDescriptionOrMetaData</code> (including delegate analysis engines)
+   * @return a List containing the ProcessingResourceMetaData objects containing all of the
+   *         information in all of the objects in <code>aComponentDescriptionOrMetaData</code>
+   *         (including all components of aggregate AnalysisEngines)
    * 
    * @throws ResourceInitialziationException
    *           if a failure occurs because an import could not be resolved
@@ -1577,8 +1593,7 @@ public class CasCreationUtils {
       Object current = iter.next();
       if (current instanceof ProcessingResourceMetaData) {
         mdList.add(((ProcessingResourceMetaData) current).clone());
-      }
-      if (current instanceof AnalysisEngineDescription) {
+      } else if (current instanceof AnalysisEngineDescription) {
         AnalysisEngineDescription aeDesc = (AnalysisEngineDescription) current;
         mdList.add(aeDesc.getMetaData().clone());
         // expand aggregate
@@ -1599,6 +1614,22 @@ public class CasCreationUtils {
         mdList.add(((CasConsumerDescription) current).getMetaData().clone());
       } else if (current instanceof FlowControllerDescription) {
         mdList.add(((FlowControllerDescription) current).getMetaData().clone());
+      } else if (current instanceof TypeSystemDescription) {
+        ProcessingResourceMetaData md = new ProcessingResourceMetaData_impl();
+        md.setTypeSystem((TypeSystemDescription) current);
+        mdList.add(md);
+      } else if (current instanceof FsIndexCollection) {
+        ProcessingResourceMetaData md = new ProcessingResourceMetaData_impl();
+        md.setFsIndexCollection((FsIndexCollection) current);
+        mdList.add(md);
+      } else if (current instanceof TypePriorities) {
+        ProcessingResourceMetaData md = new ProcessingResourceMetaData_impl();
+        md.setTypePriorities((TypePriorities) current);
+        mdList.add(md);
+      } else {
+        throw new ResourceInitializationException(
+                ResourceInitializationException.UNSUPPORTED_OBJECT_TYPE_IN_CREATE_CAS,
+                new Object[] { current.getClass().getName() });
       }
     }
 

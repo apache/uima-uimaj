@@ -409,6 +409,13 @@ public class ResourceInitializationException extends UIMAException {
   public static final String MISSING_FRAMEWORK_IMPLEMENTATION = "missing_framework_implementation";
 
   /**
+   * Message key for a standard UIMA exception message: "The CasCreationUtils.createCas method was
+   * passed a collection containing an object of class {0}, which is not supported.  Refer to the
+   * Javadoc for a list of types accepted by this method."
+   */
+  public static final String UNSUPPORTED_OBJECT_TYPE_IN_CREATE_CAS = "unsupported_object_type_in_create_cas";
+
+  /**
    * Creates a new exception with a null message.
    */
   public ResourceInitializationException() {
