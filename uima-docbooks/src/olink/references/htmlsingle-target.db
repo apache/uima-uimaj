@@ -51,94 +51,94 @@
             <div element="section" href="#ugr.ref.xml.component_descriptor.aes.primitive.basic" number="" targetptr="ugr.ref.xml.component_descriptor.aes.primitive.basic">
                <ttl>Basic Structure</ttl>
                <xreftext>the section called “Basic Structure”</xreftext>
-               <div element="section" href="#ugr.ref.xml.component_descriptor.aes.metadata" number="" targetptr="ugr.ref.xml.component_descriptor.aes.metadata">
-                  <ttl>Analysis Engine MetaData</ttl>
-                  <xreftext>the section called “Analysis Engine MetaData”</xreftext>
+            </div>
+            <div element="section" href="#ugr.ref.xml.component_descriptor.aes.metadata" number="" targetptr="ugr.ref.xml.component_descriptor.aes.metadata">
+               <ttl>Analysis Engine MetaData</ttl>
+               <xreftext>the section called “Analysis Engine MetaData”</xreftext>
+            </div>
+            <div element="section" href="#ugr.ref.xml.component_descriptor.aes.configuration_parameter_declaration" number="" targetptr="ugr.ref.xml.component_descriptor.aes.configuration_parameter_declaration">
+               <ttl>Configuration Parameter Declaration</ttl>
+               <xreftext>the section called “Configuration Parameter Declaration”</xreftext>
+               <div element="section" href="#ugr.ref.xml.component_descriptor.aes.configuration_parameter_declaration.example" number="" targetptr="ugr.ref.xml.component_descriptor.aes.configuration_parameter_declaration.example">
+                  <ttl>Example</ttl>
+                  <xreftext>the section called “Example”</xreftext>
                </div>
-               <div element="section" href="#ugr.ref.xml.component_descriptor.aes.configuration_parameter_declaration" number="" targetptr="ugr.ref.xml.component_descriptor.aes.configuration_parameter_declaration">
-                  <ttl>Configuration Parameter Declaration</ttl>
-                  <xreftext>the section called “Configuration Parameter Declaration”</xreftext>
-                  <div element="section" href="#ugr.ref.xml.component_descriptor.aes.configuration_parameter_declaration.example" number="" targetptr="ugr.ref.xml.component_descriptor.aes.configuration_parameter_declaration.example">
-                     <ttl>Example</ttl>
-                     <xreftext>the section called “Example”</xreftext>
-                  </div>
+            </div>
+            <div element="section" href="#ugr.ref.xml.component_descriptor.aes.configuration_parameter_settings" number="" targetptr="ugr.ref.xml.component_descriptor.aes.configuration_parameter_settings">
+               <ttl>Configuration Parameter Settings</ttl>
+               <xreftext>the section called “Configuration Parameter Settings”</xreftext>
+               <div element="section" href="#ugr.ref.xml.component_descriptor.aes.configuration_parameter_settings.example" number="" targetptr="ugr.ref.xml.component_descriptor.aes.configuration_parameter_settings.example">
+                  <ttl>Example</ttl>
+                  <xreftext>the section called “Example”</xreftext>
                </div>
-               <div element="section" href="#ugr.ref.xml.component_descriptor.aes.configuration_parameter_settings" number="" targetptr="ugr.ref.xml.component_descriptor.aes.configuration_parameter_settings">
-                  <ttl>Configuration Parameter Settings</ttl>
-                  <xreftext>the section called “Configuration Parameter Settings”</xreftext>
-                  <div element="section" href="#ugr.ref.xml.component_descriptor.aes.configuration_parameter_settings.example" number="" targetptr="ugr.ref.xml.component_descriptor.aes.configuration_parameter_settings.example">
-                     <ttl>Example</ttl>
-                     <xreftext>the section called “Example”</xreftext>
-                  </div>
-                  <div element="section" href="#ugr.ref.xml.component_descriptor.aes.type_system" number="" targetptr="ugr.ref.xml.component_descriptor.aes.type_system">
-                     <ttl>Type System Definition</ttl>
-                     <xreftext>the section called “Type System Definition”</xreftext>
-                  </div>
-                  <div element="section" href="#ugr.ref.xml.component_descriptor.aes.type_priority" number="" targetptr="ugr.ref.xml.component_descriptor.aes.type_priority">
-                     <ttl>Type Priority Definition</ttl>
-                     <xreftext>the section called “Type Priority Definition”</xreftext>
-                  </div>
-                  <div element="section" href="#ugr.ref.xml.component_descriptor.aes.index" number="" targetptr="ugr.ref.xml.component_descriptor.aes.index">
-                     <ttl>Index Definition</ttl>
-                     <xreftext>the section called “Index Definition”</xreftext>
-                  </div>
-                  <div element="section" href="#ugr.ref.xml.component_descriptor.aes.capabilities" number="" targetptr="ugr.ref.xml.component_descriptor.aes.capabilities">
-                     <ttl>Capabilities</ttl>
-                     <xreftext>the section called “Capabilities”</xreftext>
-                  </div>
-                  <div element="section" href="#ugr.ref.xml.component_descriptor.aes.operational_properties" number="" targetptr="ugr.ref.xml.component_descriptor.aes.operational_properties">
-                     <ttl>OperationalProperties</ttl>
-                     <xreftext>the section called “OperationalProperties”</xreftext>
-                  </div>
-                  <div element="section" href="#ugr.ref.xml.component_descriptor.aes.primitive.external_resource_dependencies" number="" targetptr="ugr.ref.xml.component_descriptor.aes.primitive.external_resource_dependencies">
-                     <ttl>External Resource Dependencies</ttl>
-                     <xreftext>the section called “External Resource Dependencies”</xreftext>
-                  </div>
-                  <div element="section" href="#ugr.ref.xml.component_descriptor.aes.primitive.resource_manager_configuration" number="" targetptr="ugr.ref.xml.component_descriptor.aes.primitive.resource_manager_configuration">
-                     <ttl>Resource Manager Configuration</ttl>
-                     <xreftext>the section called “Resource Manager Configuration”</xreftext>
-                  </div>
-                  <div element="section" href="#ugr.ref.xml.component_descriptor.aes.environment_variable_references" number="" targetptr="ugr.ref.xml.component_descriptor.aes.environment_variable_references">
-                     <ttl>Environment Variable References</ttl>
-                     <xreftext>the section called “Environment Variable References”</xreftext>
-                  </div>
+            </div>
+            <div element="section" href="#ugr.ref.xml.component_descriptor.aes.type_system" number="" targetptr="ugr.ref.xml.component_descriptor.aes.type_system">
+               <ttl>Type System Definition</ttl>
+               <xreftext>the section called “Type System Definition”</xreftext>
+            </div>
+            <div element="section" href="#ugr.ref.xml.component_descriptor.aes.type_priority" number="" targetptr="ugr.ref.xml.component_descriptor.aes.type_priority">
+               <ttl>Type Priority Definition</ttl>
+               <xreftext>the section called “Type Priority Definition”</xreftext>
+            </div>
+            <div element="section" href="#ugr.ref.xml.component_descriptor.aes.index" number="" targetptr="ugr.ref.xml.component_descriptor.aes.index">
+               <ttl>Index Definition</ttl>
+               <xreftext>the section called “Index Definition”</xreftext>
+            </div>
+            <div element="section" href="#ugr.ref.xml.component_descriptor.aes.capabilities" number="" targetptr="ugr.ref.xml.component_descriptor.aes.capabilities">
+               <ttl>Capabilities</ttl>
+               <xreftext>the section called “Capabilities”</xreftext>
+            </div>
+            <div element="section" href="#ugr.ref.xml.component_descriptor.aes.operational_properties" number="" targetptr="ugr.ref.xml.component_descriptor.aes.operational_properties">
+               <ttl>OperationalProperties</ttl>
+               <xreftext>the section called “OperationalProperties”</xreftext>
+            </div>
+            <div element="section" href="#ugr.ref.xml.component_descriptor.aes.primitive.external_resource_dependencies" number="" targetptr="ugr.ref.xml.component_descriptor.aes.primitive.external_resource_dependencies">
+               <ttl>External Resource Dependencies</ttl>
+               <xreftext>the section called “External Resource Dependencies”</xreftext>
+            </div>
+            <div element="section" href="#ugr.ref.xml.component_descriptor.aes.primitive.resource_manager_configuration" number="" targetptr="ugr.ref.xml.component_descriptor.aes.primitive.resource_manager_configuration">
+               <ttl>Resource Manager Configuration</ttl>
+               <xreftext>the section called “Resource Manager Configuration”</xreftext>
+            </div>
+            <div element="section" href="#ugr.ref.xml.component_descriptor.aes.environment_variable_references" number="" targetptr="ugr.ref.xml.component_descriptor.aes.environment_variable_references">
+               <ttl>Environment Variable References</ttl>
+               <xreftext>the section called “Environment Variable References”</xreftext>
+            </div>
+         </div>
+         <div element="section" href="#ugr.ref.xml.component_descriptor.aes.aggregate" number="" targetptr="ugr.ref.xml.component_descriptor.aes.aggregate">
+            <ttl>Aggregate Analysis Engine Descriptors</ttl>
+            <xreftext>the section called “Aggregate Analysis Engine Descriptors”</xreftext>
+            <div element="section" href="#ugr.ref.xml.component_descriptor.aes.aggregate.delegates" number="" targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.delegates">
+               <ttl>Delegate Analysis Engine Specifiers</ttl>
+               <xreftext>the section called “Delegate Analysis Engine Specifiers”</xreftext>
+            </div>
+            <div element="section" href="#ugr.ref.xml.component_descriptor.aes.aggregate.flow_controller" number="" targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.flow_controller">
+               <ttl>FlowController</ttl>
+               <xreftext>the section called “FlowController”</xreftext>
+            </div>
+            <div element="section" href="#ugr.ref.xml.component_descriptor.aes.aggregate.flow_constraints" number="" targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.flow_constraints">
+               <ttl>FlowConstraintsr</ttl>
+               <xreftext>the section called “FlowConstraintsr”</xreftext>
+               <div element="section" href="#ugr.ref.xml.component_descriptor.aes.aggregate.flow_constraints.fixed_flow" number="" targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.flow_constraints.fixed_flow">
+                  <ttl>Fixed Flow</ttl>
+                  <xreftext>the section called “Fixed Flow”</xreftext>
                </div>
-               <div element="section" href="#ugr.ref.xml.component_descriptor.aes.aggregate" number="" targetptr="ugr.ref.xml.component_descriptor.aes.aggregate">
-                  <ttl>Aggregate Analysis Engine Descriptors</ttl>
-                  <xreftext>the section called “Aggregate Analysis Engine Descriptors”</xreftext>
-                  <div element="section" href="#ugr.ref.xml.component_descriptor.aes.aggregate.delegates" number="" targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.delegates">
-                     <ttl>Delegate Analysis Engine Specifiers</ttl>
-                     <xreftext>the section called “Delegate Analysis Engine Specifiers”</xreftext>
-                  </div>
-                  <div element="section" href="#ugr.ref.xml.component_descriptor.aes.aggregate.flow_controller" number="" targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.flow_controller">
-                     <ttl>FlowController</ttl>
-                     <xreftext>the section called “FlowController”</xreftext>
-                  </div>
-                  <div element="section" href="#ugr.ref.xml.component_descriptor.aes.aggregate.flow_constraints" number="" targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.flow_constraints">
-                     <ttl>FlowConstraintsr</ttl>
-                     <xreftext>the section called “FlowConstraintsr”</xreftext>
-                     <div element="section" href="#ugr.ref.xml.component_descriptor.aes.aggregate.flow_constraints.fixed_flow" number="" targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.flow_constraints.fixed_flow">
-                        <ttl>Fixed Flow</ttl>
-                        <xreftext>the section called “Fixed Flow”</xreftext>
-                     </div>
-                     <div element="section" href="#ugr.ref.xml.component_descriptor.aes.aggregate.flow_constraints.capability_language_flow" number="" targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.flow_constraints.capability_language_flow">
-                        <ttl>Capability Language Flow</ttl>
-                        <xreftext>the section called “Capability Language Flow”</xreftext>
-                     </div>
-                  </div>
-                  <div element="section" href="#ugr.ref.xml.component_descriptor.aes.aggregate.configuration_parameter_overrides" number="" targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.configuration_parameter_overrides">
-                     <ttl>Configuration Parameter Overrides</ttl>
-                     <xreftext>the section called “Configuration Parameter Overrides”</xreftext>
-                  </div>
-                  <div element="section" href="#ugr.ref.xml.component_descriptor.aes.aggregate.external_resource_bindings" number="" targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.external_resource_bindings">
-                     <ttl>External Resource Bindings</ttl>
-                     <xreftext>the section called “External Resource Bindings”</xreftext>
-                  </div>
-                  <div element="section" href="#ugr.ref.xml.component_descriptor.aes.aggregate.sofa_mappings" number="" targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.sofa_mappings">
-                     <ttl>Sofa Mappings</ttl>
-                     <xreftext>the section called “Sofa Mappings”</xreftext>
-                  </div>
+               <div element="section" href="#ugr.ref.xml.component_descriptor.aes.aggregate.flow_constraints.capability_language_flow" number="" targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.flow_constraints.capability_language_flow">
+                  <ttl>Capability Language Flow</ttl>
+                  <xreftext>the section called “Capability Language Flow”</xreftext>
                </div>
+            </div>
+            <div element="section" href="#ugr.ref.xml.component_descriptor.aes.aggregate.configuration_parameter_overrides" number="" targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.configuration_parameter_overrides">
+               <ttl>Configuration Parameter Overrides</ttl>
+               <xreftext>the section called “Configuration Parameter Overrides”</xreftext>
+            </div>
+            <div element="section" href="#ugr.ref.xml.component_descriptor.aes.aggregate.external_resource_bindings" number="" targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.external_resource_bindings">
+               <ttl>External Resource Bindings</ttl>
+               <xreftext>the section called “External Resource Bindings”</xreftext>
+            </div>
+            <div element="section" href="#ugr.ref.xml.component_descriptor.aes.aggregate.sofa_mappings" number="" targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.sofa_mappings">
+               <ttl>Sofa Mappings</ttl>
+               <xreftext>the section called “Sofa Mappings”</xreftext>
             </div>
          </div>
       </div>

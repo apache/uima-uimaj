@@ -467,6 +467,8 @@ uima.tcas.Annotation.</programlisting>
             linkend="&tp;aes.primitive.external_resource_dependencies"/> and <xref
             linkend="&tp;aes.primitive.resource_manager_configuration"/>.</para>
         
+        </section>
+      
         <section id="&tp;aes.metadata">
           <title>Analysis Engine MetaData</title>
           
@@ -831,6 +833,8 @@ uima.tcas.Annotation.</programlisting>
 
 </configurationParameterSettings>]]></programlisting></para>
           </section>
+          </section>
+      
           <section id="&tp;aes.type_system">
             <title>Type System Definition</title>
             
@@ -1810,8 +1814,7 @@ uima.tcas.Annotation.</programlisting>
           </section>
         </section>
       </section>
-    </section>
-  </section>
+ 
   
   <section id="&tp;flow_controller">
     <title>Flow Controller Descriptors</title>

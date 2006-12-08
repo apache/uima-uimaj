@@ -556,7 +556,7 @@ local_root_directory_for_1st_delegate_component/resources/dict/
       
     </section>
     <section id="ugr.ref.pear.installing">
-      <title>Installing a PEAR fiel</title>
+      <title>Installing a PEAR file</title>
       
       <para>For information about the installation of a PEAR file and the PEAR Installer
         tool, please see <olink targetdoc="&uima_docs_tools;"
