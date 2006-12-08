@@ -38,6 +38,8 @@
 
   <!-- Do not use the file.prefix and make sure that you keep the trailing slash! -->
   <xsl:param name="base.dir">@html.target.dir@/</xsl:param>
+  <!--
   <xsl:param name="chunk.fast" select="1"/>
+    -->
 </xsl:stylesheet>
 

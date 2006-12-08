@@ -18,8 +18,11 @@
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version='1.0'>
-
+  <!--
+  <xsl:import href="@file.prefix@@docbook.xsl@/html/onechunk.xsl" />
+    -->
   <xsl:import href="@file.prefix@@docbook.xsl@/html/docbook.xsl" />
+
   <xsl:import href="@file.prefix@@src.dir@/styles/html/custom.xsl" />
   <xsl:include href="@file.prefix@@tmp.dir@/html-titlepage.xsl" />
 

@@ -55,7 +55,7 @@
   
   <xsl:param name="navig.graphics.path" select="'../images/'"/>
 
-<!-- Remove "Chapter" from the Chapter titles... -->
+<!-- Remove "Chapter" from the Chapter titles... 
   <xsl:param name="local.l10n.xml" select="document('')"/>
   <l:i18n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0">
     <l:l10n language="en">
@@ -64,5 +64,6 @@
         <l:template name="section" text="%n&#160;%t"/>
       </l:context>
     </l:l10n>
-  </l:i18n>      
+  </l:i18n>
+  -->    
 </xsl:stylesheet>

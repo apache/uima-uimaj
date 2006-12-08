@@ -234,7 +234,7 @@ CAS Consumer:
         these components. That information is kept in the individual component
         descriptors. If you have made changes to these settings in the CPE Configurator tool
         and wish to save the settings back to the original descriptor files, use the
-        <literal>File <symbol role="symbolfont">&rarr;</symbol> Save Component Configuration</literal> action.</para>
+        <literal>File &rarr; Save Component Configuration</literal> action.</para>
       
       <para>The CPE configured above runs a simple name and title annotator on the sample data
         provided with the UIMA SDK and stores the results using the XMI Writer CAS Consumer. To
@@ -327,7 +327,7 @@ CAS Consumer:
       the build path, because the uimaj_examples project is set up to include all the UIMA
       framework classes in its classpath already. </para></note>
       
-      <para>Next, in the Eclipse menu select <literal>Run <symbol role="symbolfont">&rarr;</symbol>
+      <para>Next, in the Eclipse menu select <literal>Run &rarr;
         Run</literal>..., which brings up the Run configuration screen.</para>
       
       <para>In the Main tab, set the main class to
@@ -438,7 +438,7 @@ mCPE.process();
           <literal>CollectionReader</literal> interface.</para> <tip><para>Eclipse
         tip &ndash; if you are using Eclipse, you can quickly create the boiler plate code and
         stubs for all of the required methods by clicking <literal>File</literal>
-        <symbol role="symbolfont">&rarr;</symbol> <literal>New</literal> <symbol role="symbolfont">&rarr;</symbol> <literal>Class</literal> to bring up the <quote>New Java Class</quote>
+        &rarr; <literal>New</literal> &rarr; <literal>Class</literal> to bring up the <quote>New Java Class</quote>
         dialogue, specifying
         <literal>org.apache.uima.collection.CollectionReader_ImplBase</literal>
         as the Superclass, and checking <quote>Inherited abstract methods</quote> in the
@@ -1401,7 +1401,7 @@ descriptors\collection_processing_engine\MeetingFinderCPE_Integrated.xml</litera
       creating a run configuration. To do this, highlight the SimpleRunCPE.java source file
       in the examples src/org/apache/uima/examples/cpe directory, and then</para>
     
-    <orderedlist><listitem><para>pick the menu Run <symbol role="symbolfont">&rarr;</symbol> Run...</para></listitem>
+    <orderedlist><listitem><para>pick the menu Run &rarr; Run...</para></listitem>
       
       <listitem><para>click <quote>Java Application</quote> and press
         <quote>New</quote></para></listitem>

@@ -11,3 +11,7 @@
 <!ENTITY uima_docs_tools "tools">
 <!ENTITY uima_docs_ref "references">
 
+<!-- special symbols forced to switch to symbol font
+     because FOP 0.20.5 doesn't do this correctly -->
+<!ENTITY rarr "<symbol role='symbolfont'>&#x02192;</symbol>" >
+<!ENTITY larr "<symbol role='symbolfont'>&#x02190;</symbol>" >

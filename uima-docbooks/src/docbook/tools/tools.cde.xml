@@ -43,7 +43,7 @@ under the License.
       <listitem><para>Within this project, browse to the file
         descriptors/tutorial/ex1/RoomNumberAnnotator.xml.</para></listitem>
       
-      <listitem><para>Right-click on this file and select Open With <symbol role="symbolfont">&rarr;</symbol> Component
+      <listitem><para>Right-click on this file and select Open With &rarr; Component
         Descriptor Editor. (If this option is not present, check to make sure you installed
         the plug-ins as described <olink targetdoc="&uima_docs_overview;"
           targetptr="ugr.ovv.eclipse_setup.installation"/>. The EMF plugin is also
@@ -57,7 +57,7 @@ under the License.
   <section id="ugr.tools.cde.creating_new_ae_descriptor">
     <title>Creating a New AE Descriptor</title>
     
-    <para>A new AE descriptor file may be created by selecting the File <symbol role="symbolfont">&rarr;</symbol> New <symbol role="symbolfont">&rarr;</symbol>
+    <para>A new AE descriptor file may be created by selecting the File &rarr; New &rarr;
       Other... menu. This brings up the following dialog:
       
       
@@ -112,14 +112,14 @@ under the License.
       views.</para>
     
     <para>It is possible to set the Component Descriptor Editor as the default editor for all
-      .xml files by going to Window <symbol role="symbolfont">&rarr;</symbol> Preferences, and then selecting File Associations
+      .xml files by going to Window &rarr; Preferences, and then selecting File Associations
       on the left, and *.xml on the right, and finally by clicking on Component Descriptor
       Editor, the Default button and then OK. If AE and Type System descriptors are not the
       primary .xml files you work with within the Eclipse environment, we recommend not
       setting the Component Descriptor Editor as your default editor for all .xml files. To
       open an .xml file using the Component Descriptor Editor, if the Component Descriptor
       Editor is not set as your default editor, right click on the file in the Package Explorer,
-      or other navigational view, and select Open With <symbol role="symbolfont">&rarr;</symbol> Component Descriptor Editor.
+      or other navigational view, and select Open With &rarr; Component Descriptor Editor.
       This choice is remembered by Eclipse for subsequent open operations.</para>
     
   </section>
@@ -356,7 +356,7 @@ under the License.
       <para>If you are using the Vinci protocol, it requires that you specify the location of
         the Vinci Name Server (an IP address and a Port number). You can specify these in the
         service descriptor, or globally, for your Eclipse workspace, using the Eclipse menu
-        item: Window <symbol role="symbolfont">&rarr;</symbol> Preferences... <symbol role="symbolfont">&rarr;</symbol> UIMA Preferences. If the remote service
+        item: Window &rarr; Preferences... &rarr; UIMA Preferences. If the remote service
         is available (up and running), additional operations become possible. For
         instance, hovering the mouse over the remote descriptor will show the description
         metadata from the remote service.</para>
@@ -660,7 +660,7 @@ under the License.
     
     <para>Before discussing this page in detail, it is important to note that there are two
       settings that affect the operation of this page. These are accessed by selecting the
-      UIMA <symbol role="symbolfont">&rarr;</symbol> Settings (or by going to the Eclipse Window <symbol role="symbolfont">&rarr;</symbol> Preferences <symbol role="symbolfont">&rarr;</symbol> UIMA
+      UIMA &rarr; Settings (or by going to the Eclipse Window &rarr; Preferences &rarr; UIMA
       Preferences) and checking or unchecking one of the following: <quote>Auto generate
       .java files when defining types</quote> and <quote>Display fully qualified type
       names.</quote></para>
@@ -669,7 +669,7 @@ under the License.
       Java, any time a change is made to a type and the change is saved, the corresponding .java
       files are generated using the JCasGen tool. The results are stored in the primary source
       directory defined for the project. The primary source directory is that listed first
-      when you right click on your project and select Properties <symbol role="symbolfont">&rarr;</symbol> Java Build Path, click
+      when you right click on your project and select Properties &rarr; Java Build Path, click
       on the Source tab and look in the list box under the text that reads: <quote>Source folder
       on build path.</quote> If no source folders are defined, you will get a warning that you
       have no source folders defined and JCasGen will not be run. (For information on JCasGen
@@ -1248,8 +1248,8 @@ under the License.
       <title>Source formatting &ndash; indentation</title>
       
       <para>The XML is indented using an indentation amount saved as a global UIMA
-        preference. To change this preference, use the Eclipse menu item: Windows <symbol role="symbolfont">&rarr;</symbol>
-        Preferences <symbol role="symbolfont">&rarr;</symbol> UIMA Preferences.</para>
+        preference. To change this preference, use the Eclipse menu item: Windows &rarr;
+        Preferences &rarr; UIMA Preferences.</para>
       
     </section>
   </section>
@@ -1259,7 +1259,7 @@ under the License.
     
     <para>It is also possible to use the Component Descriptor Editor to create or edit
       self-contained type systems. To create a self-contained type system, select the menu
-      item File <symbol role="symbolfont">&rarr;</symbol> New <symbol role="symbolfont">&rarr;</symbol> Other and then select Type System Descriptor File. From the
+      item File &rarr; New &rarr; Other and then select Type System Descriptor File. From the
       next page of the selection wizard specify a Parent Folder and File name and click Finish.
       
       

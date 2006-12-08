@@ -47,7 +47,7 @@ under the License.
   
   <para>Once you do this, Eclipse can show you JavaDocs for UIMA APIs as you work. To see the
     JavaDoc for a UIMA API, highlight the API class or method and press shift-F2, or use the menu
-    Navigate <symbol role="symbolfont">&rarr;</symbol> OpenExternalJavaDoc. This will open the JavaDoc for the selected item in
+    Navigate &rarr; OpenExternalJavaDoc. This will open the JavaDoc for the selected item in
     a browser.</para>
   
 </chapter>
