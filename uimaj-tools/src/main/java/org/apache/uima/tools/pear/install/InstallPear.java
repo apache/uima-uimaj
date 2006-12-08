@@ -215,8 +215,6 @@ public class InstallPear extends JFrame {
 
   private static Properties gladisProperties = null;
 
-  private static boolean gladisExists = true;
-
   private static boolean helpExists = true;
 
   private static String message = null;
@@ -395,7 +393,7 @@ public class InstallPear extends JFrame {
           try {
             String uimaCompCtg = UIMAUtil.identifyUimaComponentCategory(xmlDescFile);
             if (UIMAUtil.ANALYSIS_ENGINE_CTG.equals(uimaCompCtg))
-              runButton.setEnabled(gladisExists);
+              runButton.setEnabled(true);
           } catch (Exception e) {
           }
           errorFlag = false;
@@ -460,30 +458,10 @@ public class InstallPear extends JFrame {
       // load gladis properties
       if (gladisProperties == null)
         gladisProperties = loadProperties("gladis.properties");
-      // get Gladis specific PATH
-      String gladisPath = gladisProperties.getProperty("env.PATH");
-      // substitute '\', ';' and UIMA_HOME
-      if (gladisPath != null && gladisPath.length() > 0) {
-        gladisPath = gladisPath.replace('\\', '/');
-        gladisPath = gladisPath.replace(';', File.pathSeparatorChar);
-        gladisPath = gladisPath.replaceAll("%UIMA_HOME%", System.getProperty("uima.home").replace(
-                '\\', '/'));
-      } else
-        gladisPath = "";
+      
       // get Gladis specific CLASSPATH
-      String gladisClassPath = gladisProperties.getProperty("env.CLASSPATH");
-      // substitute '\', ';' and UIMA_HOME
-      if (gladisClassPath != null && gladisClassPath.length() > 0) {
-        gladisClassPath = gladisClassPath.replace('\\', '/');
-        gladisClassPath = gladisClassPath.replace(';', File.pathSeparatorChar);
-        gladisClassPath = gladisClassPath.replaceAll("%UIMA_HOME%", System.getProperty("uima.home")
-                .replace('\\', '/'));
-      } else
-        gladisClassPath = "";
-      if (System.getProperty("DEBUG") != null) {
-        System.out.println("[DEBUG:runGladis()]:\n\tgladisPath = " + gladisPath
-                + "\n\tgladisClasspath = " + gladisClassPath);
-      }
+      String gladisClassPath = System.getProperty("java.class.path");//gladisProperties.getProperty("env.CLASSPATH");
+
       // get component specific PATH
       String compPath = InstallationController
               .buildComponentPath(mainComponentRootPath, insdObject);
@@ -645,7 +623,7 @@ public class InstallPear extends JFrame {
                   + sysValue;
           classPathAdded = true;
         } else if (sysKey.equalsIgnoreCase("PATH") || sysKey.equalsIgnoreCase("LD_LIBRARY_PATH")) {
-          value = compPath + File.pathSeparator + gladisPath + File.pathSeparator + sysValue;
+          value = compPath + File.pathSeparator + sysValue;
           pathAdded = true;
         }
         // add to the env. array
@@ -657,7 +635,7 @@ public class InstallPear extends JFrame {
         envArrayList.add("CLASSPATH=" + classPath);
       }
       if (!pathAdded) {
-        String path = compPath + File.pathSeparator + gladisPath;
+        String path = compPath;
         envArrayList.add("PATH=" + path);
         envArrayList.add("LD_LIBRARY_PATH=" + path);
       }
@@ -1026,16 +1004,10 @@ public class InstallPear extends JFrame {
       System.setProperty(UIMA_HOME_ENV, UIMA_HOME);
       // load main properties and replace %UIMA_HOME%
       mainProperties = loadProperties("pi.properties");
-      String gladisPath = mainProperties.getProperty("gladis.path");
-      gladisPath = gladisPath.replaceAll("%UIMA_HOME%", UIMA_HOME.replace('\\', '/'));
       String pearHelpPath = mainProperties.getProperty("help.file");
       pearHelpPath = pearHelpPath.replaceAll("%UIMA_HOME%", UIMA_HOME.replace('\\', '/'));
-      File gladisFile = new File(gladisPath);
       File helpFile = new File(pearHelpPath);
-      gladisExists = gladisFile.exists();
       helpExists = helpFile.exists();
-      if (!gladisExists)
-        System.err.println(gladisPath + " not found");
       if (!helpExists)
         System.err.println(pearHelpPath + " not found");
       else
