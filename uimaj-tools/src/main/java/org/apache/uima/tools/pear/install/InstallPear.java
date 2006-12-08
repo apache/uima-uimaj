@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -42,6 +43,7 @@ import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -202,10 +204,6 @@ public class InstallPear extends JFrame {
   private static File installationDir = null;
 
   private static String mainComponentId;
-
-  protected static Properties mainProperties;
-
-  protected static String piHelp_URL = null;
 
   private static InstallationDescriptor insdObject;
 
@@ -458,9 +456,9 @@ public class InstallPear extends JFrame {
       // load gladis properties
       if (gladisProperties == null)
         gladisProperties = loadProperties("gladis.properties");
-      
+
       // get Gladis specific CLASSPATH
-      String gladisClassPath = System.getProperty("java.class.path");//gladisProperties.getProperty("env.CLASSPATH");
+      String gladisClassPath = System.getProperty("java.class.path");// gladisProperties.getProperty("env.CLASSPATH");
 
       // get component specific PATH
       String compPath = InstallationController
@@ -954,23 +952,27 @@ public class InstallPear extends JFrame {
       helpButton.setMnemonic('h');
       helpButton.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent e) {
-          if (e.getActionCommand().equals("Help")) {
-            if (piHelp_URL == null)
-              try {
-                throw new IOException(
-                        "PEAR Installer help file does not exist: %UIMA_HOME%/docs/sith/piHelp.html");
-              } catch (IOException e2) {
-                errorFlag = true;
-                message = e2.toString();
-                printInConsole(errorFlag, message);
-              }
+          if (e.getActionCommand() == "Help") {
             try {
-              BrowserUtil.openUrlInDefaultBrowser(piHelp_URL);
-            } catch (IOException e1) {
-              errorFlag = true;
-              message = e1.toString();
-              printInConsole(errorFlag, message);
-
+              URL helpFileUrl = getClass().getResource("piHelp.html");
+              if (helpFileUrl == null) {
+                String msg = "PEAR Installer help file does not exist.";
+                JOptionPane.showMessageDialog(InstallPear.this, msg, "Error showing help",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+              }
+              JFrame manFrame = new JFrame("PEAR Installer Help");
+              JEditorPane editorPane = new JEditorPane();
+              editorPane.setEditable(false);
+              editorPane.setPage(helpFileUrl);
+              JScrollPane scrollPane = new JScrollPane(editorPane);
+              scrollPane.setPreferredSize(new Dimension(700, 800));
+              manFrame.setContentPane(scrollPane);
+              manFrame.pack();
+              manFrame.show();
+            } catch (Exception ex) {
+              JOptionPane.showMessageDialog(InstallPear.this, ex.getMessage(), "Error showing help",
+                      JOptionPane.ERROR_MESSAGE);
             }
           }
         }
@@ -1003,15 +1005,6 @@ public class InstallPear extends JFrame {
         throw new RuntimeException("-Duima.home not defined");
       System.setProperty(UIMA_HOME_ENV, UIMA_HOME);
       // load main properties and replace %UIMA_HOME%
-      mainProperties = loadProperties("pi.properties");
-      String pearHelpPath = mainProperties.getProperty("help.file");
-      pearHelpPath = pearHelpPath.replaceAll("%UIMA_HOME%", UIMA_HOME.replace('\\', '/'));
-      File helpFile = new File(pearHelpPath);
-      helpExists = helpFile.exists();
-      if (!helpExists)
-        System.err.println(pearHelpPath + " not found");
-      else
-        piHelp_URL = pearHelpPath;
     } catch (Exception exc) {
       System.err.println("Error in InstallPear.main():" + exc.toString());
       exc.printStackTrace(System.err);
@@ -1065,22 +1058,26 @@ public class InstallPear extends JFrame {
     helpMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand() == "Help") {
-          if (piHelp_URL == null)
-            try {
-              throw new IOException(
-                      "PEAR Installer help file does not exist: %UIMA_HOME%/docs/sith/piHelp.html");
-            } catch (IOException e2) {
-              errorFlag = true;
-              message = e2.toString();
-              printInConsole(errorFlag, message);
-            }
           try {
-            BrowserUtil.openUrlInDefaultBrowser(piHelp_URL);
-          } catch (IOException e1) {
-            errorFlag = true;
-            message = e1.toString();
-            printInConsole(errorFlag, message);
-
+            URL helpFileUrl = getClass().getResource("piHelp.html");
+            if (helpFileUrl == null) {
+              String msg = "PEAR Installer help file does not exist.";
+              JOptionPane.showMessageDialog(InstallPear.this, msg, "Error showing help",
+                      JOptionPane.ERROR_MESSAGE);
+              return;
+            }
+            JFrame manFrame = new JFrame("PEAR Installer Help");
+            JEditorPane editorPane = new JEditorPane();
+            editorPane.setEditable(false);
+            editorPane.setPage(helpFileUrl);
+            JScrollPane scrollPane = new JScrollPane(editorPane);
+            scrollPane.setPreferredSize(new Dimension(700, 800));
+            manFrame.setContentPane(scrollPane);
+            manFrame.pack();
+            manFrame.show();
+          } catch (Exception ex) {
+            JOptionPane.showMessageDialog(InstallPear.this, ex.getMessage(), "Error showing help",
+                    JOptionPane.ERROR_MESSAGE);
           }
         }
       }
