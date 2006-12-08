@@ -185,7 +185,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
           XTalkTransporter.stringToBin(k.getValueAsString(), os, mybuf);
         }
       } catch (IOException e) {
-        throw new SAXException("IOException: " + e);
+        throw wrapAsSAXException(e);
       }
     }
 
@@ -222,7 +222,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
         XTalkTransporter.writeInt(serializer.getNumChildren(), os); // HACK to find out # of
         // children
       } catch (IOException e) {
-        throw new SAXException("IOException: " + e);
+        throw wrapAsSAXException(e);
       }
     }
 
@@ -232,7 +232,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
         os.write(XTalkTransporter.STRING_MARKER);
         XTalkTransporter.stringToBin(ch, start, length, os, mybuf);
       } catch (IOException e) {
-        throw new SAXException("IOException: " + e);
+        throw wrapAsSAXException(e);
       }
     }
   }
@@ -247,7 +247,10 @@ public class CASTransportable extends DefaultHandler implements Transportable {
       // Debug.p("...done parsing.");
       done = true;
     } catch (SAXException e) {
-      throw new IOException("Unexpected SAXException: " + e);
+      //if SAXException wraps an IOException, throw the IOException.  This is
+      //important since different types of IOExceptions (e.g. SocketTimeoutExceptions)
+      //are treated differently by Vinci
+      throw convertToIOException(e);
     } finally {
       if (!done) {
         cleanup(); // release the cas back to the pool if we didn't parse successfully.
@@ -275,7 +278,10 @@ public class CASTransportable extends DefaultHandler implements Transportable {
       try {
         xcasSerializer.serialize(myCas, s, includeDocText, outOfTypeSystemData);
       } catch (org.xml.sax.SAXException e) {
-        throw new IOException("SAX Exception: " + e);
+        //if SAXException wraps an IOException, throw the IOException.  This is
+        //important since different types of IOExceptions (e.g. SocketTimeoutExceptions)
+        //are treated differently by Vinci
+        throw convertToIOException(e);
       }
       UIMAFramework.getLogger().log(Level.FINEST, "CAS Serialization Complete.");
     } catch (IOException e) {
@@ -391,4 +397,48 @@ public class CASTransportable extends DefaultHandler implements Transportable {
     handler.endElement("", "CAS", "CAS");
     handler.endDocument();
   }
+  
+  /**
+   * Create a SAXException that wraps the given IOException.
+   * The wrapping is done using the standard Java 1.4 mechanism, 
+   * so that getCause() will work.  Note that new SAXException(Exception) 
+   * does NOT work.
+   * @param e an IOException to wrap
+   * @return a SAX exception for which <code>getCause()</code> will return <code>e</code>.
+   */
+  public SAXException wrapAsSAXException(IOException e) {
+    SAXException saxEx =new SAXException();
+    saxEx.initCause(e);
+    return saxEx;
+  }
+  
+  /**
+   * Converts a Throwable to an IOException.  If <code>t</code> is an IOException,
+   * then <code>t</code> is returned.  If not, then if <code>t</code> was caused
+   * by an IOException (directly or indirectly), then that IOException is returned.
+   * Otherwise, a new IOException is created which wraps (is caused by) <code>t</code>.
+   * @param t the throwable to convert
+   * @return an IOException which is either t, one of the causes of t, or a new IOException
+   *   that wraps t.
+   */
+  private IOException convertToIOException(Throwable t) {
+   //if t is itself an IOException, just return it
+   if (t instanceof IOException) {
+     return (IOException)t;
+   }
+   
+   //search for a cause that is an IOException.  If one is found, return that.
+   Throwable cause = t.getCause();
+   while (cause != null) {
+     if (cause instanceof IOException) {
+       return (IOException)cause;
+     }
+     cause = cause.getCause();
+   }
+   
+   //otherwise, wrap t in a new IOException
+   IOException ioex = new IOException();
+   ioex.initCause(t);
+   return ioex;
+  }  
 }
