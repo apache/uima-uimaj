@@ -207,7 +207,7 @@ under the License.
       <para>In Eclipse, expand the <literal>uimaj_examples</literal> project in the
         Package Explorer view, and browse to the file
         <literal>descriptors/tutorial/ex1/TutorialTypeSystem.xml</literal>.
-        Right-click on the file in the navigator and select Open With &rarr; Component
+        Right-click on the file in the navigator and select Open With <symbol role="symbolfont">&rarr;</symbol> Component
         Descriptor Editor. Once the editor opens, click on the <quote>Type System</quote>
         tab at the bottom of the editor window. You should see a view such as the
         following:</para>
@@ -290,7 +290,7 @@ under the License.
         defined.</para>
       
       <para>This feature is enabled/disabled using the UIMA menu pulldown (or the Eclipse
-        Preferences &rarr; UIMA). If automatic running of JCasGen is not happening, please
+        Preferences <symbol role="symbolfont">&rarr;</symbol> UIMA). If automatic running of JCasGen is not happening, please
         make sure the option is checked:</para>
       
       
@@ -522,7 +522,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
         distribution under the name
         <literal>descriptors/tutorial/ex1/RoomNumberAnnotator.xml.</literal> To
         edit it in Eclipse, right-click on that file in the navigator and select Open With
-        &rarr; Component Descriptor Editor.</para> <tip><para>In Eclipse, you can double
+        <symbol role="symbolfont">&rarr;</symbol> Component Descriptor Editor.</para> <tip><para>In Eclipse, you can double
       click on the tab at the top of the Component Descriptor Editor&apos;s window
       identifying the currently selected editor, and the window will
       <quote>Maximize</quote>. Double click it again to restore the original size.</para>
@@ -623,7 +623,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
         script that is in the <literal>bin</literal> directory of your UIMA SDK
         installation, or, if you are using the example Eclipse project, execute the
         <quote>UIMA Document Analyzer</quote> run configuration supplied with that
-        project. (To do this, click on the menu bar Run &rarr; Run ... &rarr; and under Java
+        project. (To do this, click on the menu bar Run <symbol role="symbolfont">&rarr;</symbol> Run ... <symbol role="symbolfont">&rarr;</symbol> and under Java
         Applications in the left box, click on UIMA Document Analyzer.)</para>
       
       <para>You should see a screen that looks like this:</para>
@@ -929,8 +929,8 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
       in the Eclipse package explorer view until you right-click the uimaj_examples project
       with the mouse, and select <quote>Refresh</quote>. This operation refreshes the
       Eclipse display to conform to what may have changed on the file system. Also, you can set
-      the Eclipse preferences for the workspace to automatically refresh (Window &rarr;
-      Preferences &rarr; General &rarr; Workspace, then click the <quote>refresh
+      the Eclipse preferences for the workspace to automatically refresh (Window <symbol role="symbolfont">&rarr;</symbol>
+      Preferences <symbol role="symbolfont">&rarr;</symbol> General <symbol role="symbolfont">&rarr;</symbol> Workspace, then click the <quote>refresh
       automatically</quote> checkbox.</para></note>
       
       <section id="ugr.tug.aae.logging.configuring">

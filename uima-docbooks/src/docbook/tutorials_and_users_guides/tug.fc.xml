@@ -234,8 +234,8 @@ under the License.
   <section id="ugr.tug.fc.creating_fc_descriptor">
     <title>Creating the Flow Controller Descriptor</title>
     
-    <para>To create a Flow Controller Descriptor in the CDE, use File &rarr; New &rarr; Other
-      &rarr; UIMA &rarr; Flow Controller Descriptor File:
+    <para>To create a Flow Controller Descriptor in the CDE, use File <symbol role="symbolfont">&rarr;</symbol> New <symbol role="symbolfont">&rarr;</symbol> Other
+      <symbol role="symbolfont">&rarr;</symbol> UIMA <symbol role="symbolfont">&rarr;</symbol> Flow Controller Descriptor File:
       
       
       <screenshot>

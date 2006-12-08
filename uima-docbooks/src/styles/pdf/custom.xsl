@@ -359,4 +359,12 @@
       </l:context>
     </l:l10n>
   </l:i18n>
+
+<!-- create ability to switch to symbol fonts for FOP 0.20.5 -->
+  <xsl:template match="symbol[@role = 'symbolfont']">
+    <fo:inline font-family="Symbol">
+      <xsl:call-template name="inline.charseq"/>
+    </fo:inline>
+  </xsl:template>
+
 </xsl:stylesheet>

@@ -82,14 +82,14 @@ under the License.
         "Update Manager" link to see what url to use in the next step, where you use the built-in
         facilities in Eclipse to find and install new features. </para>
       
-      <para>Activate the software feature finding by using the menu: help &rarr; Software
-        Updates &rarr; Find and Install. Select <quote>Search for new features to
+      <para>Activate the software feature finding by using the menu: help <symbol role="symbolfont">&rarr;</symbol> Software
+        Updates <symbol role="symbolfont">&rarr;</symbol> Find and Install. Select <quote>Search for new features to
         install</quote>, push <quote>Next</quote>. Specify the update site where EMF is
         found as a site to search, making sure the <quote>Ignore features not applicable to
         this environment</quote> box is checked, and push <quote>Finish</quote>. If your
         computer is on an internet connection which uses a proxy server, you can configure
         Eclipse to know about that. Put your proxy settings into Ecluse using the Eclipse
-        preferences by accessing the menus: Window &rarr; Preferences... &rarr;
+        preferences by accessing the menus: Window <symbol role="symbolfont">&rarr;</symbol> Preferences... <symbol role="symbolfont">&rarr;</symbol>
         Install/Update, and Enable HTTP proxy connection under the Proxy Settings with the
         information about your proxy. </para>
       
@@ -172,14 +172,14 @@ under the License.
       hold the examples. Here's how:</para>
     
     <itemizedlist spacing="compact"><listitem><para>In Eclipse, if the Java
-      perspective is not already open, switch to it by going to Window &rarr; Open Perspective
-      &rarr; Java.</para></listitem>
+      perspective is not already open, switch to it by going to Window <symbol role="symbolfont">&rarr;</symbol> Open Perspective
+      <symbol role="symbolfont">&rarr;</symbol> Java.</para></listitem>
       
       <listitem><para>Set up a class path variable named UIMA_HOME, whose value is the
         directory where you installed the UIMA SDK. This is done as follows:
         
-        <itemizedlist><listitem><para>Go to Window &rarr; Preferences &rarr; Java
-          &rarr; Build Path &rarr; Classpath Variables.</para></listitem>
+        <itemizedlist><listitem><para>Go to Window <symbol role="symbolfont">&rarr;</symbol> Preferences <symbol role="symbolfont">&rarr;</symbol> Java
+          <symbol role="symbolfont">&rarr;</symbol> Build Path <symbol role="symbolfont">&rarr;</symbol> Classpath Variables.</para></listitem>
           
           <listitem><para>Click <quote>New</quote></para></listitem>
           
@@ -200,7 +200,7 @@ under the License.
             <quote>Yes</quote> </para></listitem></itemizedlist></para>
         </listitem>
       
-      <listitem><para>Select the File &rarr; Import menu option</para></listitem>
+      <listitem><para>Select the File <symbol role="symbolfont">&rarr;</symbol> Import menu option</para></listitem>
       
       <listitem><para>Select <quote>Existing Project into Workspace</quote> and click
         the <quote>Next</quote> button.</para></listitem>
@@ -229,17 +229,17 @@ under the License.
     <para>To run these tools from Eclipse:</para>
     
     <itemizedlist spacing="compact"><listitem><para>If the Java perspective is not
-      already open, switch to it by going to Window &rarr; Open Perspective &rarr;
+      already open, switch to it by going to Window <symbol role="symbolfont">&rarr;</symbol> Open Perspective <symbol role="symbolfont">&rarr;</symbol>
       Java.</para></listitem>
       
-      <listitem><para>Go to Run &rarr; Run... </para></listitem>
+      <listitem><para>Go to Run <symbol role="symbolfont">&rarr;</symbol> Run... </para></listitem>
       
       <listitem><para>In the window that appears, select <quote>UIMA CPE GUI</quote>,
         <quote>UIMA CAS Visual Debugger</quote>, <quote>UIMA JCasGen</quote>,
         <quote>UIMA Document Analyzer</quote>, or <quote>UIMA Semantic Search</quote>
         from the list of run configurations on the left. (If you don't see, these, please
-        select the uima_examples project and do a Menu &rarr; File
-        &rarr; Refresh).</para></listitem>
+        select the uima_examples project and do a Menu <symbol role="symbolfont">&rarr;</symbol> File
+        <symbol role="symbolfont">&rarr;</symbol> Refresh).</para></listitem>
       
       <listitem><para>Press the <quote>Run</quote> button. The tools should start. Close
         the tools by clicking the <quote>X</quote> in the upper right corner on the GUI.

@@ -125,9 +125,9 @@ under the License.
     <para>An absolute URL is written with one of the following prefixes, followed by a path
       such as <literal>org/apache/myproj/MyTypeSystem.xml</literal>:
       
-      <itemizedlist spacing="compact"><listitem><para>file:/ &larr; has no network
+      <itemizedlist spacing="compact"><listitem><para>file:/ <symbol role="symbolfont">&larr;</symbol> has no network
         address</para></listitem>
-        <listitem><para>file:/// &larr; has an empty network address</para></listitem>
+        <listitem><para>file:/// <symbol role="symbolfont">&larr;</symbol> has an empty network address</para></listitem>
         <listitem><para>file://some.network.address/</para></listitem>
         </itemizedlist></para>
     
@@ -667,8 +667,8 @@ uima.tcas.Annotation.</programlisting>
                 &ndash; this setting allows for a specific use of configuration parameter
                 groups where the groups names correspond to ISO language and country codes
                 (for an example, see below). The fallback sequence is:
-                <literal>&lt;lang&gt;_&lt;country&gt;_&lt;region&gt; &rarr;
-                &lt;lang&gt;_&lt;country&gt; &rarr; &lt;lang&gt; &rarr;
+                <literal>&lt;lang&gt;_&lt;country&gt;_&lt;region&gt; <symbol role="symbolfont">&rarr;</symbol>
+                &lt;lang&gt;_&lt;country&gt; <symbol role="symbolfont">&rarr;</symbol> &lt;lang&gt; <symbol role="symbolfont">&rarr;</symbol>
                 &lt;default&gt;.</literal> </para></listitem></itemizedlist>
             </para>
           

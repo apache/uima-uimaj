@@ -289,7 +289,7 @@ myFeature = "bar"</programlisting>
   </section>
   
   <section id="ugr.ref.xmi.null_array_list_elements">
-    <title>Null Array/List Elements"</title>
+    <title>Null Array/List Elements</title>
     
     <para>In UIMA, an element of an FSArray or FSList may be null. In XMI, multi-valued
       properties do not permit null values. As a workaround for this, we will use a dummy

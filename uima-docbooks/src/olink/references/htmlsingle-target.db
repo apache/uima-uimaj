@@ -506,8 +506,8 @@
             <xreftext>the section called “Packaging the PEAR structure into one file”</xreftext>
          </div>
          <div element="section" href="#ugr.ref.pear.installing" number="" targetptr="ugr.ref.pear.installing">
-            <ttl>Installing a PEAR fiel</ttl>
-            <xreftext>the section called “Installing a PEAR fiel”</xreftext>
+            <ttl>Installing a PEAR file</ttl>
+            <xreftext>the section called “Installing a PEAR file”</xreftext>
          </div>
       </div>
    </div>
@@ -544,8 +544,8 @@
          </div>
       </div>
       <div element="section" href="#ugr.ref.xmi.null_array_list_elements" number="7.6" targetptr="ugr.ref.xmi.null_array_list_elements">
-         <ttl>Null Array/List Elements"</ttl>
-         <xreftext>Section 7.6, “Null Array/List Elements"”</xreftext>
+         <ttl>Null Array/List Elements</ttl>
+         <xreftext>Section 7.6, “Null Array/List Elements”</xreftext>
       </div>
       <div element="section" href="#ugr.ref.xmi.sofas_views" number="7.7" targetptr="ugr.ref.xmi.sofas_views">
          <ttl>Subjects of Analysis (Sofas) and Views</ttl>

@@ -128,14 +128,14 @@ under the License.
     <para>The built-in primitive CAS types map to Java types as follows:</para>
     
     
-    <programlisting>uima.cas.Boolean &rarr; boolean
-uima.cas.Byte    &rarr; byte
-uima.cas.Short   &rarr; short
-uima.cas.Integer &rarr; int
-uima.cas.Long    &rarr; long
-uima.cas.Float   &rarr; float
-uima.cas.Double  &rarr; double
-uima.cas.String  &rarr; String</programlisting>
+    <programlisting>uima.cas.Boolean <symbol role="symbolfont">&rarr;</symbol> boolean
+uima.cas.Byte    <symbol role="symbolfont">&rarr;</symbol> byte
+uima.cas.Short   <symbol role="symbolfont">&rarr;</symbol> short
+uima.cas.Integer <symbol role="symbolfont">&rarr;</symbol> int
+uima.cas.Long    <symbol role="symbolfont">&rarr;</symbol> long
+uima.cas.Float   <symbol role="symbolfont">&rarr;</symbol> float
+uima.cas.Double  <symbol role="symbolfont">&rarr;</symbol> double
+uima.cas.String  <symbol role="symbolfont">&rarr;</symbol> String</programlisting>
     
   </section>
   
