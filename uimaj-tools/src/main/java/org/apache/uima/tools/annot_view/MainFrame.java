@@ -2625,8 +2625,8 @@ public class MainFrame extends JFrame {
       this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
       this.sofaSelectionPanel.setVisible(false);
       this.disableSofaListener = false;
-      MainFrame.this.textArea.setText(null);
-      MainFrame.this.textArea.repaint();
+//      MainFrame.this.textArea.setText(null);
+//      MainFrame.this.textArea.repaint();
       MainFrame.this.updateIndexTree(true);
     } catch (Exception e) {
       handleException(e);
