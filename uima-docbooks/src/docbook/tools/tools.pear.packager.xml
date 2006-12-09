@@ -80,7 +80,7 @@ under the License.
         <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="612" depth="474" format="JPG" fileref="&imgroot;image002.jpg"/>
+          <imagedata width="612px" format="JPG" fileref="&imgroot;image002.jpg"/>
         </imageobject>
         <textobject><phrase>Screenshot of Adding the UIMA Nature to your project</phrase>
         </textobject>
@@ -143,7 +143,7 @@ under the License.
           <title>The Pear Structure</title>
           <mediaobject>
             <imageobject>
-              <imagedata width="303" depth="394" format="JPG"
+              <imagedata width="303px" format="JPG"
                 fileref="&imgroot;image004.jpg"/>
             </imageobject>
             <textobject><phrase>Pear structure</phrase>
@@ -184,7 +184,7 @@ under the License.
             <title>The Component Information Page</title>
             <mediaobject>
               <imageobject>
-                <imagedata width="636" depth="453" format="JPG"
+                <imagedata width="636px" format="JPG"
                   fileref="&imgroot;image006.jpg"/>
               </imageobject>
               <textobject><phrase>Pear Wizard - component information page</phrase>
@@ -234,7 +234,7 @@ under the License.
           <title>The Installation Environment Page</title>
           <mediaobject>
             <imageobject>
-              <imagedata width="612" depth="388" format="JPG"
+              <imagedata width="612px" format="JPG"
                 fileref="&imgroot;image008.jpg"/>
             </imageobject>
             <textobject><phrase>Pear Wizard - install environment page</phrase>
@@ -266,7 +266,7 @@ under the License.
             <title>The PEAR File Export Page</title>
             <mediaobject>
               <imageobject>
-                <imagedata width="576" depth="434" format="JPG"
+                <imagedata width="576px" format="JPG"
                   fileref="&imgroot;image010.jpg"/>
               </imageobject>
               <textobject><phrase>Pear Wizard - File Export Page</phrase>

@@ -25,6 +25,7 @@ under the License.
 -->
 <chapter id="ugr.tools.cde">
   <title>Component Descriptor Editor User&apos;s Guide</title>
+  <titleabbrev>CDE User&apos;s Guide</titleabbrev>
   
   <para>The Component Descriptor Editor is an Eclipse plug-in that provides a forms-based
     interface for creating and editing UIMA XML descriptors. It supports most of the
@@ -64,7 +65,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="531" depth="402" format="JPG" fileref="&imgroot;image002.jpg"/>
+          <imagedata width="531px" format="JPG" fileref="&imgroot;image002.jpg"/>
         </imageobject>
         <textobject><phrase>Screenshot of selecting new UIMA component in Eclipse</phrase>
         </textobject>
@@ -79,7 +80,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="324" depth="261" format="JPG" fileref="&imgroot;image004.jpg"/>
+          <imagedata width="324px" format="JPG" fileref="&imgroot;image004.jpg"/>
         </imageobject>
         <textobject><phrase>Screenshot of selecting new UIMA component in Eclipse
         after pushing Next</phrase>
@@ -100,7 +101,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="563" depth="456" format="JPG" fileref="&imgroot;image006.jpg"/>
+          <imagedata width="563px" format="JPG" fileref="&imgroot;image006.jpg"/>
         </imageobject>
         <textobject><phrase>Screenshot of CDE showing overview page</phrase>
         </textobject>
@@ -153,7 +154,7 @@ under the License.
         <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="51" depth="30" format="JPG" fileref="&imgroot;image008.jpg"/>
+          <imagedata width="51px" format="JPG" fileref="&imgroot;image008.jpg"/>
         </imageobject>
         <textobject><phrase>Changing orientation of two window split</phrase>
         </textobject>
@@ -226,7 +227,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="609" depth="271" format="JPG" fileref="&imgroot;image010.jpg"/>
+          <imagedata width="609px" format="JPG" fileref="&imgroot;image010.jpg"/>
         </imageobject>
         <textobject><phrase>CDE Aggregate page</phrase>
         </textobject>
@@ -247,7 +248,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="473" depth="459" format="JPG" fileref="&imgroot;image012.jpg"/>
+          <imagedata width="473px" format="JPG" fileref="&imgroot;image012.jpg"/>
         </imageobject>
         <textobject><phrase>Adding an Analysis Engine to an Aggregate</phrase>
         </textobject>
@@ -328,7 +329,7 @@ under the License.
         <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="576" depth="518" format="JPG" fileref="&imgroot;image014.jpg"/>
+          <imagedata width="576px" format="JPG" fileref="&imgroot;image014.jpg"/>
         </imageobject>
         <textobject><phrase>Adding a remote client to an aggregate</phrase>
         </textobject>
@@ -375,7 +376,7 @@ under the License.
         <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="518" depth="312" format="JPG" fileref="&imgroot;image016.jpg"/>
+          <imagedata width="518px" format="JPG" fileref="&imgroot;image016.jpg"/>
         </imageobject>
         <textobject><phrase>Searching for an AE to add to an aggregate</phrase>
         </textobject>
@@ -410,7 +411,7 @@ under the License.
         <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="402" depth="209" format="JPG" fileref="&imgroot;image018.jpg"/>
+          <imagedata width="402px" format="JPG" fileref="&imgroot;image018.jpg"/>
         </imageobject>
         <textobject><phrase>Specifying flow control</phrase>
         </textobject>
@@ -444,7 +445,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="495" depth="380" format="JPG" fileref="&imgroot;image020.jpg"/>
+          <imagedata width="495px" format="JPG" fileref="&imgroot;image020.jpg"/>
         </imageobject>
         <textobject><phrase>Parameter Definitions - not Aggregate</phrase>
         </textobject>
@@ -471,7 +472,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="488" depth="339" format="JPG" fileref="&imgroot;image022.jpg"/>
+          <imagedata width="488px" format="JPG" fileref="&imgroot;image022.jpg"/>
         </imageobject>
         <textobject><phrase>Parameter description shown in a hover message</phrase>
         </textobject>
@@ -496,7 +497,7 @@ under the License.
         <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="466" depth="383" format="JPG" fileref="&imgroot;image024.jpg"/>
+          <imagedata width="466px" format="JPG" fileref="&imgroot;image024.jpg"/>
         </imageobject>
         <textobject><phrase>Using parameter groups</phrase>
         </textobject>
@@ -541,7 +542,7 @@ under the License.
         <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="575" depth="319" format="JPG" fileref="&imgroot;image026.jpg"/>
+          <imagedata width="575px" format="JPG" fileref="&imgroot;image026.jpg"/>
         </imageobject>
         <textobject><phrase>Aggregate parameters</phrase>
         </textobject>
@@ -610,7 +611,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="576" depth="337" format="JPG" fileref="&imgroot;image028.jpg"/>
+          <imagedata width="576px" format="JPG" fileref="&imgroot;image028.jpg"/>
         </imageobject>
         <textobject><phrase>Parameter settings page</phrase>
         </textobject>
@@ -651,7 +652,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="618" depth="364" format="JPG" fileref="&imgroot;image030.jpg"/>
+          <imagedata width="618px" format="JPG" fileref="&imgroot;image030.jpg"/>
         </imageobject>
         <textobject><phrase>Type System declaration page</phrase>
         </textobject>
@@ -687,7 +688,7 @@ under the License.
     <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="594" depth="127" format="JPG" fileref="&imgroot;image032.jpg"/>
+          <imagedata width="594px" format="JPG" fileref="&imgroot;image032.jpg"/>
         </imageobject>
         <textobject><phrase>Setting JCasGen options</phrase>
         </textobject>
@@ -713,7 +714,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="452" depth="378" format="JPG" fileref="&imgroot;image034.jpg"/>
+          <imagedata width="452px" format="JPG" fileref="&imgroot;image034.jpg"/>
         </imageobject>
         <textobject><phrase>Adding a type</phrase>
         </textobject>
@@ -762,7 +763,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="444" depth="408" format="JPG" fileref="&imgroot;image036.jpg"/>
+          <imagedata width="444px" format="JPG" fileref="&imgroot;image036.jpg"/>
         </imageobject>
         <textobject><phrase>Specifying a Feature Structure</phrase>
         </textobject>
@@ -787,7 +788,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="473" depth="416" format="JPG" fileref="&imgroot;image038.jpg"/>
+          <imagedata width="473px" format="JPG" fileref="&imgroot;image038.jpg"/>
         </imageobject>
         <textobject><phrase>Picking files for importing</phrase>
         </textobject>
@@ -829,7 +830,7 @@ under the License.
         <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="453" depth="377" format="JPG" fileref="&imgroot;image040.jpg"/>
+          <imagedata width="453px" format="JPG" fileref="&imgroot;image040.jpg"/>
         </imageobject>
         <textobject><phrase>Exporting a type system</phrase>
         </textobject>
@@ -857,7 +858,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="529" depth="429" format="JPG" fileref="&imgroot;image042.jpg"/>
+          <imagedata width="529px" format="JPG" fileref="&imgroot;image042.jpg"/>
         </imageobject>
         <textobject><phrase>Capabilities page</phrase>
         </textobject>
@@ -878,7 +879,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="434" depth="249" format="JPG" fileref="&imgroot;image044.jpg"/>
+          <imagedata width="434px" format="JPG" fileref="&imgroot;image044.jpg"/>
         </imageobject>
         <textobject><phrase>Adding a type to the capabilities page</phrase>
         </textobject>
@@ -902,7 +903,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="428" depth="230" format="JPG" fileref="&imgroot;image046.jpg"/>
+          <imagedata width="428px" format="JPG" fileref="&imgroot;image046.jpg"/>
         </imageobject>
         <textobject><phrase>Specifying features as input or output</phrase>
         </textobject>
@@ -924,7 +925,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="444" depth="168" format="JPG" fileref="&imgroot;image048.jpg"/>
+          <imagedata width="444px" format="JPG" fileref="&imgroot;image048.jpg"/>
         </imageobject>
         <textobject><phrase>Specifying a language</phrase>
         </textobject>
@@ -944,7 +945,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="452" depth="280" format="JPG" fileref="&imgroot;image050.jpg"/>
+          <imagedata width="452px" format="JPG" fileref="&imgroot;image050.jpg"/>
         </imageobject>
         <textobject><phrase>Specifying a Sofa name</phrase>
         </textobject>
@@ -964,7 +965,7 @@ under the License.
         <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="528" depth="626" format="JPG" fileref="&imgroot;image052.jpg"/>
+          <imagedata width="528px" format="JPG" fileref="&imgroot;image052.jpg"/>
         </imageobject>
         <textobject><phrase>Sofa mappings</phrase>
         </textobject>
@@ -995,7 +996,7 @@ under the License.
         <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="657" depth="233" format="JPG" fileref="&imgroot;image054.jpg"/>
+          <imagedata width="657px" format="JPG" fileref="&imgroot;image054.jpg"/>
         </imageobject>
         <textobject><phrase>Adding a Sofa mapping</phrase>
         </textobject>
@@ -1022,7 +1023,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="568" depth="652" format="JPG" fileref="&imgroot;image056.jpg"/>
+          <imagedata width="568px" format="JPG" fileref="&imgroot;image056.jpg"/>
         </imageobject>
         <textobject><phrase>Index page</phrase>
         </textobject>
@@ -1057,7 +1058,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="409" depth="377" format="JPG" fileref="&imgroot;image058.jpg"/>
+          <imagedata width="409px" format="JPG" fileref="&imgroot;image058.jpg"/>
         </imageobject>
         <textobject><phrase>Adding a new index</phrase>
         </textobject>
@@ -1128,7 +1129,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="515" depth="515" format="JPG" fileref="&imgroot;image060.jpg"/>
+          <imagedata width="515px" format="JPG" fileref="&imgroot;image060.jpg"/>
         </imageobject>
         <textobject><phrase>Resources page for a primitive</phrase>
         </textobject>
@@ -1142,7 +1143,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="396" depth="325" format="JPG" fileref="&imgroot;image062.jpg"/>
+          <imagedata width="396px" format="JPG" fileref="&imgroot;image062.jpg"/>
         </imageobject>
         <textobject><phrase>Specifying a resource dependency</phrase>
         </textobject>
@@ -1160,7 +1161,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="396" depth="393" format="JPG" fileref="&imgroot;image064.jpg"/>
+          <imagedata width="396px" format="JPG" fileref="&imgroot;image064.jpg"/>
         </imageobject>
         <textobject><phrase>Specifying an External Resource</phrase>
         </textobject>
@@ -1226,7 +1227,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="576" depth="284" format="JPG" fileref="&imgroot;image066.jpg"/>
+          <imagedata width="576px" format="JPG" fileref="&imgroot;image066.jpg"/>
         </imageobject>
         <textobject><phrase>Source page</phrase>
         </textobject>
@@ -1266,7 +1267,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="377" depth="417" format="JPG" fileref="&imgroot;image068.jpg"/>
+          <imagedata width="377px" format="JPG" fileref="&imgroot;image068.jpg"/>
         </imageobject>
         <textobject><phrase>Working with a self-contained type system</phrase>
         </textobject>
@@ -1277,7 +1278,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="330" depth="265" format="JPG" fileref="&imgroot;image070.jpg"/>
+          <imagedata width="330px" format="JPG" fileref="&imgroot;image070.jpg"/>
         </imageobject>
         <textobject><phrase></phrase>
         </textobject>
@@ -1293,7 +1294,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="372" depth="304" format="JPG" fileref="&imgroot;image072.jpg"/>
+          <imagedata width="372px" format="JPG" fileref="&imgroot;image072.jpg"/>
         </imageobject>
         <textobject><phrase>Editing a type system object</phrase>
         </textobject>

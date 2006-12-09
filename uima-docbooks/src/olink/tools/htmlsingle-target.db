@@ -1,6 +1,6 @@
 <div element="book" href="#d0e2" number="" lang="en">
-   <ttl>Apache UIMA SDK Tools Guide and Reference</ttl>
-   <xreftext>Apache UIMA SDK Tools Guide and Reference</xreftext>
+   <ttl>Apache UIMA SDK — Tools Guide and Reference</ttl>
+   <xreftext>Apache UIMA SDK — Tools Guide and Reference</xreftext>
    <div element="chapter" href="#ugr.tools.cde" number="1" targetptr="ugr.tools.cde">
       <ttl>Component Descriptor Editor User's Guide</ttl>
       <xreftext>Chapter 1, <i>Component Descriptor Editor User's Guide</i>
@@ -211,8 +211,8 @@
       </xreftext>
    </div>
    <div element="chapter" href="#ugr.tools.jcasgen" number="6" targetptr="ugr.tools.jcasgen">
-      <ttl>JCasGen User Guide</ttl>
-      <xreftext>Chapter 6, <i>JCasGen User Guide</i>
+      <ttl>JCasGen User's Guide</ttl>
+      <xreftext>Chapter 6, <i>JCasGen User's Guide</i>
       </xreftext>
       <div element="section" href="#ugr.tools.jcasgen.running_without_eclipse" number="6.1" targetptr="ugr.tools.jcasgen.running_without_eclipse">
          <ttl>Running stand-alone without Eclipse</ttl>

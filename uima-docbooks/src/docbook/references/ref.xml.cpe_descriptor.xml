@@ -26,6 +26,7 @@ under the License.
 -->
 <chapter id="ugr.ref.xml.cpe_descriptor">
   <title>Collection Processing Engine Descriptor Reference</title>
+  <titleabbrev>CPE Descriptor Reference</titleabbrev>
   
   <para>A UIMA <emphasis>Collection Processing Engine</emphasis> (CPE) is a combination
     of UIMA components assembled to analyze a collection of artifacts. A CPE is an
@@ -51,7 +52,7 @@ under the License.
       <title>CPE Runtime Overview</title>
       <mediaobject>
         <imageobject>
-          <imagedata width="550" depth="301" format="PNG"
+          <imagedata width="550px" format="PNG"
             fileref="&imgroot;image002.png"/>
         </imageobject>
         <textobject><phrase>CPE Runtime Overview diagram</phrase></textobject>
@@ -514,9 +515,9 @@ under the License.
           <para>This element provides a way to override the contained Analysis
             Engine&apos;s parameters settings. Any entry specified here must already be
             defined; values specified replace the corresponding values for each
-            parameter. <emphasis role="bolditalic">For Cas Processors, this mechanism
+            parameter. <emphasis role="bold"><emphasis role="italic">For Cas Processors, this mechanism
             is only available when they are deployed in <quote>integrated</quote>
-            mode.</emphasis> For Collection Readers and Initializers, it always is
+            mode.</emphasis></emphasis> For Collection Readers and Initializers, it always is
             available.</para>
           
           <para>The content of this element is identical to the component descriptor for
@@ -1129,8 +1130,8 @@ vinci.VinciAnalysisEngineService_impl</arg>
         the following specification:
         
         
-        <programlisting>&lt;outputQueue dequeueTimeout="100000" 
-    queueClass="org.apache.uima.reference_impl.collection.cpm.engine.SequencedQueue"/&gt;</programlisting>
+        <programlisting>&lt;outputQueue dequeueTimeout="100000" queueClass=
+"org.apache.uima.reference_impl.collection.cpm.engine.SequencedQueue"/&gt;</programlisting>
         where the mandatory <literal>queueClass</literal> attribute defines the name of
         the class and the second mandatory attribute, <literal>dequeueTimeout</literal>
         specifies the maximum number of milliseconds to wait for the expected chunk.</para>
@@ -1316,14 +1317,18 @@ vinci.VinciAnalysisEngineService_impl</arg>
   <collectionReader>
     <collectionIterator>
       <descriptor>
-        <include href="C:/Program Files/apache-uima/examples/descriptors/collection_reader/FileSystemCollectionReader.xml"/>
+        <include href="C:/Program Files/apache-uima/examples/descriptors/
+      collection_reader/FileSystemCollectionReader.xml"/>
       </descriptor>
     </collectionIterator>
   </collectionReader>
-  <casProcessors dropCasOnException="true" casPoolSize="1" processingUnitThreadCount="1">
-    <casProcessor deployment="integrated" name="Aggregate TAE - Name Recognizer and Person Title Annotator">
+  <casProcessors dropCasOnException="true" casPoolSize="1" 
+      processingUnitThreadCount="1">
+    <casProcessor deployment="integrated" 
+      name="Aggregate TAE - Name Recognizer and Person Title Annotator">
       <descriptor>
-        <include href="C:/Program Files/apache-uima/examples/descriptors/analysis_engine/NamesAndPersonTitles_TAE.xml"/>
+        <include href="C:/Program Files/apache-uima/examples/descriptors/
+      analysis_engine/NamesAndPersonTitles_TAE.xml"/>
       </descriptor>
       <deploymentParameters/>
       <filter/>
@@ -1336,7 +1341,8 @@ vinci.VinciAnalysisEngineService_impl</arg>
     </casProcessor>
     <casProcessor deployment="integrated" name="Annotation Printer">
       <descriptor>
-        <include href="C:/Program Files/apache-uima/examples/descriptors/cas_consumer/AnnotationPrinter.xml"/>
+        <include href="C:/Program Files/apache-uima/examples/descriptors/
+      cas_consumer/AnnotationPrinter.xml"/>
       </descriptor>
       <deploymentParameters/>
       <filter/>

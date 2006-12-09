@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+<!DOCTYPE glossary PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
 "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
 <!ENTITY % uimaents SYSTEM "../entities.ent" >  
 %uimaents;
@@ -22,10 +22,13 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 -->
-<chapter id="ugr.glossary">
-  <title>Glossary of Key Terms and Concepts</title>
+<glossary id="ugr.glossary">
+  <title>Glossary: Key Terms &amp; Concepts</title>
+  <titleabbrev>Glossary</titleabbrev>
+ <!-- 
   <para></para>
   <glossary id="ugr.glossary.glossary">
+   -->
     <!--
     <glossentry id="ugr.glossary.">
       <glossterm></glossterm>
@@ -533,5 +536,6 @@ CAS to an XML representation.</para>
   
   </glossary>
 
-  
+ <!-- 
 </chapter>
+   -->

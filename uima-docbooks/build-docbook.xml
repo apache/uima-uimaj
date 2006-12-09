@@ -309,6 +309,9 @@
 			<arg value="${target.dir}/${chapter_name}/${docbook.outname}.xml"/>
 			<arg value="${target.dir}/${chapter_name}/${docbook.outname}.pdf"/>
 		</java>
+  	
+  	<move file="${target.dir}/${chapter_name}/${docbook.outname}.xml" 
+      	  tofile="${target.dir}/${chapter_name}/${docbook.outname}.pdf_src.xml"/>
 	</target>
 
 	<!-- ======================================================================== -->

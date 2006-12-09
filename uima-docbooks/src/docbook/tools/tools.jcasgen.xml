@@ -24,7 +24,7 @@ specific language governing permissions and limitations
 under the License.
 -->
 <chapter id="ugr.tools.jcasgen">
-  <title>JCasGen User Guide</title>
+  <title>JCasGen User&apos;s Guide</title>
   
   <para>JCasGen reads a descriptor for an application, creates the merged type system
     specification by merging all the type system information from all the components
@@ -66,7 +66,7 @@ under the License.
     <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="576" depth="334" format="JPG" fileref="&imgroot;image002.jpg"/>
+          <imagedata width="576px" format="JPG" fileref="&imgroot;image002.jpg"/>
         </imageobject>
         <textobject><phrase>JCasGen tool showing fields for input arguments</phrase>
         </textobject>
@@ -140,7 +140,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="503" depth="547" format="JPG" fileref="&imgroot;image004.jpg"/>
+          <imagedata width="503px" format="JPG" fileref="&imgroot;image004.jpg"/>
         </imageobject>
         <textobject><phrase>Running JCasGen within Eclipse using the external tool launcher</phrase>
         </textobject>

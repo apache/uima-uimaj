@@ -112,16 +112,14 @@ under the License.
       <para>The following code shows how to instantiate an AE from its XML descriptor:
         
         
-        <programlisting>{
-  //get Resource Specifier from XML file or PEAR
-  XMLInputSource in = new XMLInputSource("MyDescriptor.xml");
-  ResourceSpecifier specifier = 
+        <programlisting>  //get Resource Specifier from XML file or PEAR
+XMLInputSource in = new XMLInputSource("MyDescriptor.xml");
+ResourceSpecifier specifier = 
     UIMAFramework.getXMLParser().parseResourceSpecifier(in);
 
   //create AE here
-  AnalysisEngine ae = 
-    UIMAFramework.produceAnalysisEngine(specifier);
-}</programlisting></para>
+AnalysisEngine ae = 
+    UIMAFramework.produceAnalysisEngine(specifier);</programlisting></para>
       
       <para>The first two lines parse the XML descriptor (for AEs with multiple descriptor
         files, one of them is the <quote>main</quote> descriptor - the AE documentation
@@ -156,9 +154,8 @@ under the License.
       <para>Using the JCas
         
         
-        <programlisting>{
-  //create a JCas, given an Analysis Engine (ae)
-  JCas jcas = ae.newDefaultTextJCas();
+        <programlisting>  //create a JCas, given an Analysis Engine (ae)
+JCas jcas = ae.newDefaultTextJCas();
   
   // this is shorthand for the following steps:
   //   CAS aCas = ae.newCAS();
@@ -166,20 +163,19 @@ under the License.
   //   JCas jcas = aCasView.createJCas();
   
   //analyze a document
-  jcas.setDocumentText(doc1text);
-  ae.process(jcas);
-  doSomethingWithResults(jcas);
-  jcas.reset();
+jcas.setDocumentText(doc1text);
+ae.process(jcas);
+doSomethingWithResults(jcas);
+jcas.reset();
   
   //analyze another document
-  jcas.setDocumentText(doc2text);
-  ae.process(jcas);
-  doSomethingWithResults(jcas);
-  jcas.reset();
-  ...
+jcas.setDocumentText(doc2text);
+ae.process(jcas);
+doSomethingWithResults(jcas);
+jcas.reset();
+...
   //done
-  ae.destroy();
-}</programlisting></para>
+ae.destroy();</programlisting></para>
       
       <para>Using the CAS
         
@@ -418,7 +414,8 @@ ae.destroy();</programlisting></para>
     </section>
     
     <section id="ugr.tug.application.using_multiple_aes">
-      <title>Using Multiple Analysis Engines (and creating shared CASes)</title>
+      <title>Using Multiple Analysis Engines and creating shared CASes)</title>
+      <titleabbrev>Multiple AEs &amp; creating shared CASes</titleabbrev>
       
       <para>In most cases, the easiest way to use multiple Analysis Engines from within an
         application is to combine them into an aggregate AE. For instructions, see <olink
@@ -456,8 +453,8 @@ ae.destroy();</programlisting></para>
 
   CAS cas = CasCreationUtils.createCas(list);
 
-  // once you have this CAS, you need to create the view you want of it, and
-  // also (optionally) the JCas Interface to it
+  // once you have this CAS, you need to create the view you want of it, 
+  // and also (optionally) the JCas Interface to it
 
   CAS casView = cas.createView("mySofaName", mime-type);
   // (OR)
@@ -510,7 +507,8 @@ ae.destroy();</programlisting></para>
       you only deal with descriptors.</para>
     
     <section id="ugr.tug.application.running_a_cpe_from_a_descriptor">
-      <title>Running a CPE from a Descriptor</title>
+      <title>Running a Collection Processing Engine from a Descriptor</title>
+      <titleabbrev>Running a CPE from a Descriptor</titleabbrev>>
       
       <para><olink targetdoc="&uima_docs_tutorial_guides;"
           targetptr="ugr.tug.cpe.running_cpe_from_application"/> describes how to
@@ -520,7 +518,8 @@ ae.destroy();</programlisting></para>
     
     <section
       id="ugr.tug.application.configuring_a_cpe_descriptor_programmatically">
-      <title>Configuring a CPE Descriptor Programmatically</title>
+      <title>Configuring a Collection Processing Engine Descriptor Programmatically</title>
+      <titleabbrev>Configuring a CPE Descriptor Programmatically</titleabbrev>>
       
       <para>For the finest level of control over the CPE descriptor settings, the CPE offers
         programmatic access to the descriptor via an API. With this API, a developer can
@@ -588,8 +587,7 @@ cpe.setTimer(<quote>org.apache.uima.reference_impl.util.JavaTimer</quote>);
 cpe.setNumToProcess(1000);
 
 //  Dump the descriptor to the System.out
-((CpeDescriptionImpl)cpe).toXML(System.out);
-</programlisting>
+((CpeDescriptionImpl)cpe).toXML(System.out);</programlisting>
       
       <para>The CPE descriptor for the above configuration looks like this:
         
@@ -652,9 +650,7 @@ cpe.setNumToProcess(1000);
       org.apache.uima.reference_impl.util.JavaTimer
     </timerImpl>
   </cpeConfig>
-</cpeDescription>
-]]>
-</programlisting></para>
+</cpeDescription>]]></programlisting></para>
       
     </section>
   </section>
@@ -700,8 +696,7 @@ ConfigurationParameterSettings consumerParamSettings =
 // Set a parameter value
 consumerParamSettings.setParameterValue(
   InlineXmlCasConsumer.PARAM_OUTPUTDIR,
-  outputDir.getAbsolutePath());
-</programlisting></para>
+  outputDir.getAbsolutePath());</programlisting></para>
     
     <para>Then you might produce this component using:
       
@@ -818,9 +813,7 @@ consumerParamSettings.setParameterValue(
       <style name="Annotation"/>
     </indexRule>    
   </indexBuildItem>
-</indexBuildSpecification>
-]]>
-</programlisting></para>
+</indexBuildSpecification>]]></programlisting></para>
         
         <para>The index build specification is a series of index build items, each of which
           identifies a CAS annotation type (a subtype of
@@ -893,6 +886,7 @@ consumerParamSettings.setParameterValue(
         id="ugr.tug.application.search.cpe_with_semantic_search_cas_consumer">
         <title>Building and Running a CPE including the Semantic Search CAS Consumer
           &ndash; Indexer</title>
+        <titleabbrev>Using Semantic Search CAS Consumer</titleabbrev>
         
         <para>The following steps illustrate how to build and run a CPE that uses the UIMA
           Meeting Detector TAE and the Simple Token and Sentence Annotator, discussed in the
@@ -982,7 +976,7 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
         <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="576" depth="329" format="JPG" fileref="&imgroot;image002.jpg"/>
+        <imagedata width="576px" format="JPG" fileref="&imgroot;image002.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of the Semantic Search tool set up to run 
         semantic queries against a semantic search index</phrase></textobject>
@@ -1033,7 +1027,7 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
   </section>
   
   <section id="ugr.tug.application.remote_services">
-    <title>Working with Analysis Engine and CAS Consumer Remote Services</title>
+    <title>Working with Remote Services</title>
     
     <para>The UIMA SDK allows you to easily take any Analysis Engine or CAS Consumer and deploy
       it as a service. That Analysis Engine or CAS Consumer can then be called from a remote
@@ -1061,7 +1055,8 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
           communications protocol. </para></listitem></orderedlist></para>
     
     <section id="ugr.tug.application.how_to_deploy_as_soap">
-      <title>How to Deploy a UIMA Component as a SOAP Web Service</title>
+      <title>Deploying a UIMA Component as a SOAP Service</title>
+      <titleabbrev>Deploying as SOAP Service</titleabbrev>
       
       <para>To deploy a UIMA component as a SOAP Web Service, you need to first install the
         following software components:
@@ -1090,7 +1085,7 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
             <literal>%CATALINA_HOME%/webapps/axis/WEB-INF/lib</literal> in your
             installation.</para></listitem>
           
-          <listitem><para><emphasis role="bolditalic">IMPORTANT</emphasis>: any
+          <listitem><para><emphasis role="bold"><emphasis role="italic">IMPORTANT</emphasis></emphasis>: any
             time you add JAR files to TomCat (for instance, in the above 2 steps), you must
             shutdown and restart TomCat before it <quote>notices</quote> this. So now,
             please shutdown and restart TomCat.</para></listitem>
@@ -1132,11 +1127,11 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
         looks like this (important parts are in bold italics):
         
         
-        <programlisting>&lt;deployment name=<quote><emphasis role="bolditalic">PersonTitleAnnotator</emphasis></quote> 
+        <programlisting>&lt;deployment name=<quote><emphasis role="bold"><emphasis role="italic">PersonTitleAnnotator</emphasis></emphasis></quote> 
             xmlns=<quote>http://xml.apache.org/axis/wsdd/</quote> 
             xmlns:java=<quote>http://xml.apache.org/axis/wsdd/providers/java</quote>&gt;
 
-  &lt;service name=<quote><emphasis role="bolditalic">urn:PersonTitleAnnotator</emphasis></quote> provider=<quote>java:RPC</quote>&gt;
+  &lt;service name=<quote><emphasis role="bold"><emphasis role="italic">urn:PersonTitleAnnotator</emphasis></emphasis></quote> provider=<quote>java:RPC</quote>&gt;
 
     &lt;parameter name=<quote>scope</quote> value=<quote>Request</quote>/&gt;
 
@@ -1147,13 +1142,14 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
     &lt;parameter name=<quote>allowedMethods</quote> value=<quote>getMetaData process</quote>/&gt;
     &lt;parameter name=<quote>allowedRoles</quote> value=<quote>*</quote>/&gt;
     &lt;parameter name=<quote>resourceSpecifierPath</quote> 
-      value=<quote><emphasis role="bolditalic">C:/Program Files/apache/uima/examples/
-           descriptors/analysis_engine/PersonTitleAnnotator.xml</emphasis></quote>/&gt;
+      value=<quote><emphasis role="bold"><emphasis role="italic">C:/Program Files/apache/uima/examples/
+           descriptors/analysis_engine/PersonTitleAnnotator.xml</emphasis></emphasis></quote>/&gt;
 
     &lt;parameter name=<quote>numInstances</quote> value=<quote>3</quote>/&gt;
     &lt;parameter name=<quote>timeoutPeriod</quote> value=<quote>30000</quote>/&gt;
 
-    &lt;!-- Type Mappings omitted from this document; you will not need to edit them. --&gt;
+    &lt;!-- Type Mappings omitted from this document; 
+          you will not need to edit them. --&gt;
 
     &lt;typeMapping .../&gt;
     &lt;typeMapping .../&gt;
@@ -1178,7 +1174,7 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
       <para>To deploy the Person Title annotator service, issue the following command:
         
         
-        <programlisting>C:Program Files/apache/uima&gt;bindeploytool 
+        <programlisting>C:/Program Files/apache/uima&gt;bindeploytool 
 examples/deploy/soap/Deploy_PersonTitleAnnotator.wsdd</programlisting></para>
       
       <para>Test if the deployment was successful by starting up a browser, pointing it to
@@ -1204,7 +1200,8 @@ examples/deploy/soap/Deploy_PersonTitleAnnotator.wsdd</programlisting></para>
     </section>
     
     <section id="ugr.tug.application.how_to_deploy_a_vinci_service">
-      <title>How to Deploy a UIMA Component as a Vinci Service</title>
+      <title>Deploying a UIMA Component as a Vinci Service</title>
+      <titleabbrev>Deploying as a Vinci Service</titleabbrev>
       
       <para>There are no software prerequisites for deploying a Vinci service. The
         necessary libraries are part of the UIMA SDK. However, before you can use Vinci
@@ -1222,18 +1219,19 @@ examples/deploy/soap/Deploy_PersonTitleAnnotator.wsdd</programlisting></para>
       <para>This example deployment descriptor looks like:
         
         
-        <programlisting>&lt;deployment name=<emphasis role="bolditalic"><quote>Vinci Person Title Annotator Service</quote></emphasis>&gt;
+        <programlisting>&lt;deployment name=<emphasis role="bold"><emphasis role="italic">"Vinci Person Title Annotator Service"</emphasis></emphasis>&gt;
 
-  &lt;service name=<emphasis role="bolditalic"><quote>uima.annotator.PersonTitleAnnotator</quote></emphasis> provider=<quote>vinci</quote>&gt;
+  &lt;service name=<emphasis role="bold"><emphasis role="italic">"uima.annotator.PersonTitleAnnotator"</emphasis></emphasis> provider="vinci"&gt;
 
-    &lt;parameter name=<quote>resourceSpecifierPath</quote> 
-      value=<emphasis role="bolditalic"><quote>C:/Program Files/apache/uima/examples/descriptors/analysis_engine/PersonTitleAnnotator.xml</quote></emphasis>/&gt;
+    &lt;parameter name="resourceSpecifierPath" 
+      value=<emphasis role="bold"><emphasis role="italic">"C:/Program Files/apache/uima/examples/descriptors/
+          analysis_engine/PersonTitleAnnotator.xml"</emphasis></emphasis>/&gt;
 
-    &lt;parameter name=<quote>numInstances</quote> value=<quote>1</quote>/&gt;
+    &lt;parameter name="numInstances" value="1"/&gt;
 
-    &lt;parameter name=<quote>timeoutPeriod</quote> value=<quote>30000</quote>/&gt;
+    &lt;parameter name="timeoutPeriod" value="30000"/&gt;
 
-    &lt;parameter name=<quote>serverSocketTimeout</quote> value=<quote>120000</quote>/&gt;
+    &lt;parameter name="serverSocketTimeout" value="120000"/&gt;
 
   &lt;/service&gt;
 
@@ -1277,6 +1275,7 @@ examples/deploy/soap/Deploy_PersonTitleAnnotator.wsdd</programlisting></para>
     
     <section id="ugr.tug.application.how_to_call_a_uima_service">
       <title>How to Call a UIMA Service</title>
+      <titleabbrev>Calling a UIMA Service</titleabbrev>
       
       <para>Once an Analysis Engine or CAS Consumer has been deployed as a service, it can be
         used from any UIMA application, in the exact same way that a local Analysis Engine or
@@ -1419,8 +1418,7 @@ examples/deploy/soap/Deploy_PersonTitleAnnotator.wsdd</programlisting></para>
         available. If you see the following exception:
         
         <programlisting>java.net.BindException: Address already in use:
-JVM_Bind
-  </programlisting>
+JVM_Bind</programlisting>
         it indicates that another process is running on port 9000. In this case, add the
         parameter <literal>-p &lt;port&gt;</literal> to the
         <literal>startVNS</literal> command, using <literal>&lt;port&gt;</literal>
@@ -1592,7 +1590,7 @@ Exception: Connection refused: connect</programlisting>
       advantage of multi-processor and hyper-threaded architectures).</para>
     <note><para>When using Vinci in <quote>exclusive</quote> mode (see service access
     under <olink targetdoc="&uima_docs_ref;"
-      targetptr="ugr.ref.xml.cpe_descriptor.cas_processors.individual.deployment_parameters"/>), only one thread is used.
+      targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.deployment_parameters"/>), only one thread is used.
     To achieve multi-processing on a server in this case, use multiple instances of the
     service, instead of multiple threads (see <xref
       linkend="ugr.tug.application.how_to_deploy_a_vinci_service"/>.</para>
@@ -1600,7 +1598,7 @@ Exception: Connection refused: connect</programlisting>
   </section>
   
   <section id="ugr.tug.application.jmx">
-    <title>Monitoring Analysis Engine Performance using JMX</title>
+    <title>Monitoring AE Performance using JMX</title>
     
     <para>As of version 2, UIMA supports remote monitoring of Analysis Engine performance
       via the Java Management Extensions (JMX) API. JMX is a standard part of the Java Runtime
@@ -1624,7 +1622,7 @@ Exception: Connection refused: connect</programlisting>
       <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="400" depth="300" format="JPG" fileref="&imgroot;image004.jpg"/>
+        <imagedata width="300px" format="JPG" fileref="&imgroot;image004.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of JMX console</phrase></textobject>
     </mediaobject>
@@ -1641,7 +1639,7 @@ Exception: Connection refused: connect</programlisting>
       <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="634" depth="400" format="JPG" fileref="&imgroot;image006.jpg"/>
+        <imagedata width="634px" format="JPG" fileref="&imgroot;image006.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of JMX console monitoring UIMA components</phrase></textobject>
     </mediaobject>
@@ -1674,8 +1672,8 @@ Exception: Connection refused: connect</programlisting>
       completed, you will need to write your application so that the JVM remains running after
       processing completes, waiting for some user signal before terminating.</para>
     
-    <para>For information on JMX see <ulink
-        url="http://java.sun.com/j2se/1.5.0/docs/api/javax/management/package-summary.html#package_description"/>
-      .</para>
+    <para>For information on JMX can be found in the  <ulink
+        url="http://java.sun.com/j2se/1.5.0/docs/api/javax/management/package-summary.html#package_description">
+      Java 5 documentation</ulink>.</para>
   </section>
 </chapter>

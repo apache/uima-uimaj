@@ -25,6 +25,7 @@ under the License.
 -->
 <chapter id="ugr.tug.cpe">
   <title>Collection Processing Engine Developer&apos;s Guide</title>
+  <titleabbrev>CPE Developer&apos;s Guide</titleabbrev>
   
   <para>The UIMA Analysis Engine interface provides support for developing and integrating
     algorithms that analyze unstructured data. Analysis Engines are designed to operate on a
@@ -95,7 +96,7 @@ under the License.
       <title>CPE Components</title>
       <mediaobject>
         <imageobject>
-          <imagedata width="576" depth="360" format="PNG"
+          <imagedata width="576px" format="PNG"
             fileref="&imgroot;image002.png"/>
         </imageobject>
         <textobject><phrase>CPE Components and flow between them</phrase>
@@ -139,7 +140,7 @@ under the License.
   </section>
   
   <section id="ugr.tug.cpe.configurator_and_viewer">
-    <title>The CPE Configurator and the Externalized CAS viewer</title>
+    <title>CPE Configurator and CAS viewer</title>
     
     <section id="ugr.tug.cpe.cpe_configurator">
       <title>Using the CPE Configurator</title>
@@ -162,7 +163,7 @@ under the License.
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata width="575" depth="547" format="JPG" fileref="&imgroot;image004.jpg"/>
+              <imagedata width="350px" format="JPG" fileref="&imgroot;image004.jpg"/>
             </imageobject>
             <textobject><phrase>Screenshot of CPE GUI</phrase></textobject>
           </mediaobject>
@@ -188,14 +189,13 @@ Analysis Engine:
 
 CAS Consumer: 
     %UIMA_HOME%/examples/descriptors/cas_consumer/
-          XmiWriterCasConsumer.xml
-</programlisting></para>
+          XmiWriterCasConsumer.xml</programlisting></para>
       
       
       <screenshot>
      <mediaobject>
       <imageobject>
-        <imagedata width="576" depth="439" format="JPG" fileref="&imgroot;image006.jpg"/>
+        <imagedata width="576px" format="JPG" fileref="&imgroot;image006.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of CPE GUI after fields filled in</phrase></textobject>
     </mediaobject>
@@ -249,7 +249,7 @@ CAS Consumer:
         <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="488" depth="226" format="JPG" fileref="&imgroot;image008.jpg"/>
+        <imagedata width="488px" format="JPG" fileref="&imgroot;image008.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of Annotation Viewer results</phrase></textobject>
     </mediaobject>
@@ -260,7 +260,7 @@ CAS Consumer:
         the XMI Writer CAS Consumer in the CPE configured above (e.g.,
         <literal>%UIMA_HOME%\examples\data\processed</literal>) and that the TAE
         Descriptor File is set to the Analysis Engine used in the CPE configured above (e.g.,
-        <literal>%UIMA_HOME%\examples\descriptors\analysis_engine\NamesAndPersonTitles_TAE.xml</literal>
+        <literal>examples\descriptors\analysis_engine\NamesAndPersonTitles_TAE.xml</literal>
         ).</para>
       
       <para>Click the View button to display the Analyzed Documents window:
@@ -269,7 +269,7 @@ CAS Consumer:
         <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="385" depth="286" format="JPG" fileref="&imgroot;image010.jpg"/>
+        <imagedata width="385px" format="JPG" fileref="&imgroot;image010.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of CPE Configurator Analyzed Documents</phrase></textobject>
     </mediaobject>
@@ -284,7 +284,7 @@ CAS Consumer:
         <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="575" depth="418" format="JPG" fileref="&imgroot;image012.jpg"/>
+        <imagedata width="575px" format="JPG" fileref="&imgroot;image012.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of Document and Annotation Viewer</phrase></textobject>
     </mediaobject>
@@ -365,8 +365,7 @@ mCPE = UIMAFramework.produceCollectionProcessingEngine(cpeDesc);
 mCPE.addStatusCallbackListener(new StatusCallbackListenerImpl());
 
       //Start Processing
-mCPE.process();
-</programlisting></para>
+mCPE.process();</programlisting></para>
     
     <para>This will start the CPE running in a separate thread.</para>
     
@@ -448,7 +447,7 @@ mCPE.process();
         <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="378" depth="415" format="JPG" fileref="&imgroot;image014.jpg"/>
+        <imagedata width="378px" format="JPG" fileref="&imgroot;image014.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot showing Eclipse new class wizard</phrase></textobject>
     </mediaobject>
@@ -503,8 +502,7 @@ mCPE.process();
       mFiles.add(files[i]);  
     }
   }
-}
-</programlisting>
+}</programlisting>
           <note><para>This is the zero-argument version of the initialize method. There is
           also a method on the Collection Reader interface called
           <literal>initialize(ResourceSpecifier, Map)</literal> but it is not
@@ -525,8 +523,7 @@ mCPE.process();
             
             <programlisting>public boolean hasNext() {
   return mCurrentIndex &lt; mFiles.size();
-}
-</programlisting>
+}</programlisting>
             </para>
           
         </section>
@@ -618,8 +615,7 @@ mCPE.process();
   srcDocInfo.setOffsetInSource(0);
   srcDocInfo.setDocumentSize((int) file.length());
   srcDocInfo.addToIndexes();
-}
-</programlisting>
+}</programlisting>
           
           <para>The Collection Reader can create additional annotations in the CAS at this
             point, in the same way that annotators create annotations.</para>
@@ -652,8 +648,7 @@ mCPE.process();
             <programlisting>public Progress[] getProgress() {
   return new Progress[]{
      new ProgressImpl(mCurrentIndex,mFiles.size(),Progress.ENTITIES)};
-}
-</programlisting></para>
+}</programlisting></para>
           
           <para>In this particular example, the total number of files in the collection is
             known, but the total size of the collection is not known. As such, a
@@ -785,8 +780,7 @@ mCPE.process();
       <outputsNewCASes>true</outputsNewCASes>
     </operationalProperties>
   </processingResourceMetaData>
-</collectionReaderDescription>]]>
-</programlisting>
+</collectionReaderDescription>]]></programlisting>
           
         </section>
       </section>
@@ -871,8 +865,7 @@ mCPE.process();
     } catch (Exception e) {
       throw new CollectionException(e);
     }
-  }
-</programlisting>
+  }</programlisting>
       
       <para>The <literal>SaxHandler</literal> class referenced here is an inner class
         that does the actual work of extracting the text from the specified XML element. For
@@ -896,7 +889,7 @@ mCPE.process();
         <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="576" depth="439" format="JPG" fileref="&imgroot;image016.jpg"/>
+        <imagedata width="576px" format="JPG" fileref="&imgroot;image016.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot showing CPE Configurator specifying a CAS Initializer</phrase></textobject>
     </mediaobject>
@@ -930,8 +923,7 @@ if (getCasInitializer() != null) {
 }
 else { //No CAS Initializer, so read file and set document text ourselves
   ...
-}
-</programlisting></para>
+}</programlisting></para>
       
       <para>When you write your own Collection Reader, in the description element of your
         Collection Reader&apos;s descriptor you should document whether your Collection
@@ -1009,8 +1001,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
   if (!mOutputDir.exists()) {
     mOutputDir.mkdirs();
   }
-}
-</programlisting></para>
+}</programlisting></para>
         </section>
         
         <section id="ugr.tug.cpe.cas_consumer.required_methods.processcas">
@@ -1073,8 +1064,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
   } catch (SAXException e) {
     throw new ResourceProcessException(e);
   }
-}
-</programlisting>
+}</programlisting>
           
         </section>
         
@@ -1138,7 +1128,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
       <title>CPE Instantiation</title>
       <mediaobject>
         <imageobject>
-          <imagedata width="535" depth="327" format="PNG"
+          <imagedata width="535px" format="PNG"
             fileref="&imgroot;image018.png"/>
         </imageobject>
         <textobject><phrase>Picture of deployment of a CPE</phrase></textobject>
@@ -1162,8 +1152,8 @@ else { //No CAS Initializer, so read file and set document text ourselves
       runs in a separate process from the CPE, but still on the same computer. The CPE controls
       startup, shutdown, and recovery of a managed CAS Processor. A non-managed CAS
       Processor runs as a service and may be on the same computer as the CPE or on a remote
-      computer. A non-managed CAS Processor <emphasis role="bolditalic">
-      service</emphasis> is started and managed independently from the CPE.</para>
+      computer. A non-managed CAS Processor <emphasis role="bold"><emphasis role="italic">
+      service</emphasis></emphasis> is started and managed independently from the CPE.</para>
     
     <para>For both managed and non-managed CAS Processors, the CAS must be transmitted
       between separate processes and possibly between separate computers. This is
@@ -1206,7 +1196,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
         <title>CPE with Managed CAS Processors</title>
         <mediaobject>
           <imageobject>
-            <imagedata width="306" depth="274" format="PNG"
+            <imagedata width="306px" format="PNG"
               fileref="&imgroot;image020.png"/>
           </imageobject>
           <textobject><phrase>Managed deployment showing separate JVMs and CASes
@@ -1228,7 +1218,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
         configuration specifying a managed CAS Processor.</para>
       
       
-      <programlisting>&lt;casProcessor <emphasis role="bolditalic">deployment="local"</emphasis> name="Meeting Detector TAE"&gt;
+      <programlisting>&lt;casProcessor <emphasis role="bold"><emphasis role="italic">deployment="local"</emphasis></emphasis> name="Meeting Detector TAE"&gt;
   &lt;descriptor&gt;
     &lt;include href="deploy/vinci/Deploy_MeetingDetectorTAE.xml"/&gt;
   &lt;/descriptor&gt;
@@ -1254,8 +1244,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
     &lt;timeout max="100000"/&gt;
   &lt;/errorHandling&gt;
   &lt;checkpoint batch="10000"/&gt;
-&lt;/casProcessor&gt;
-</programlisting>
+&lt;/casProcessor&gt;</programlisting>
       
       <para>See <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/> for
         details and required settings.</para>
@@ -1281,7 +1270,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
         <title>CPE with non-managed CAS Processors</title>
         <mediaobject>
           <imageobject>
-            <imagedata width="396" depth="309" format="PNG"
+            <imagedata width="396px" format="PNG"
               fileref="&imgroot;image023.png"/>
           </imageobject>
           <textobject><phrase>Non-managed CPE deployment</phrase></textobject>
@@ -1304,7 +1293,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
         configuration for the non-managed CAS Processor.</para>
       
       
-      <programlisting>&lt;casProcessor <emphasis role="bolditalic">deployment=<quote>remote</quote></emphasis> name=<quote>Meeting Detector TAE</quote>&gt;
+      <programlisting>&lt;casProcessor <emphasis role="bold"><emphasis role="italic">deployment=<quote>remote</quote></emphasis></emphasis> name=<quote>Meeting Detector TAE</quote>&gt;
   &lt;descriptor&gt;
     &lt;include href=
         <quote>descriptors/vinciService/MeetingDetectorVinciService.xml</quote>/&gt;
@@ -1317,8 +1306,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
     &lt;timeout max=<quote>100000</quote>/&gt;
   &lt;/errorHandling&gt;
   &lt;checkpoint batch=<quote>10000</quote>/&gt;
-&lt;/casProcessor&gt;
-</programlisting>
+&lt;/casProcessor&gt;</programlisting>
       
       <para>See <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/> for
         details and required settings.</para>
@@ -1342,7 +1330,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
         <title>CPE with integrated CAS Processor</title>
         <mediaobject>
           <imageobject>
-            <imagedata width="330" depth="295" format="PNG"
+            <imagedata width="330px" format="PNG"
               fileref="&imgroot;image026.png"/>
           </imageobject>
           <textobject><phrase>CPE with integrated CAS Processor</phrase>
@@ -1354,7 +1342,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
         configuration for the integrated CAS Processor.</para>
       
       
-      <programlisting>&lt;casProcessor <emphasis role="bolditalic">deployment=<quote>integrated</quote></emphasis> name=<quote>Meeting Detector TAE</quote>&gt;
+      <programlisting>&lt;casProcessor <emphasis role="bold"><emphasis role="italic">deployment=<quote>integrated</quote></emphasis></emphasis> name=<quote>Meeting Detector TAE</quote>&gt;
   &lt;descriptor&gt;
     &lt;include href="descriptors/tutorial/ex4/MeetingDetectorTAE.xml"/&gt;
   &lt;/descriptor&gt;
@@ -1366,8 +1354,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
     &lt;timeout max="100000"/&gt;
   &lt;/errorHandling&gt;
   &lt;checkpoint batch="10000"/&gt;
-&lt;/casProcessor&gt;
-</programlisting>
+&lt;/casProcessor&gt;</programlisting>
       
       <para>See <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/> for
         details and required settings.</para>
@@ -1387,7 +1374,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
     <para>To run either the integrated or managed examples, use the
       <literal>runCPE</literal> script in the /bin directory of the UIMA installation,
       passing the appropriate CPE descriptor as an argument.</para> <note><para>The
-    <literal>runCPE</literal> script <emphasis role="bolditalic"> must</emphasis> be
+    <literal>runCPE</literal> script <emphasis role="bold"><emphasis role="italic"> must</emphasis></emphasis> be
     run from the <literal>%UIMA_HOME%\examples </literal>directory, because it uses
     relative path names that are resolved relative to this working directory. For instance,
     
@@ -1408,7 +1395,8 @@ descriptors\collection_processing_engine\MeetingFinderCPE_Integrated.xml</litera
       
       <listitem><para>click on the Arguments panel, and insert a path to the appropriate CPE
         descriptor in the <quote>Program Arguments</quote> box by typing, for instance:
-        <literal>descriptors/collection_processing_engine/MeetingFinderCPE_Integrated.xml</literal>
+        <literal>descriptors/collection_processing_engine/
+          MeetingFinderCPE_Integrated.xml</literal>
         </para></listitem>
       
       <listitem><para>Then press <quote>Run</quote> </para></listitem>

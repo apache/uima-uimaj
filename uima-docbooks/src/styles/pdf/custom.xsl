@@ -30,7 +30,22 @@
       <xsl:attribute name="text-align">left</xsl:attribute>
   </xsl:attribute-set>
   
+  
 <!--###################################################
+                      olink styling
+    ################################################### -->
+  <xsl:param name="insert.xref.page.number" select="'yes'"/>
+  <xsl:param name="olink.doctitle" select="'yes'"/>
+  <xsl:param name="insert.olink.pdf.frag" select="1"/>
+
+  <!--###################################################
+                      xref (and ulink) styling
+    ################################################### -->
+  <xsl:attribute-set name="xref.properties">
+      <xsl:attribute name="color">blue</xsl:attribute>
+  </xsl:attribute-set>
+  
+  <!--###################################################
                       Monospace font size
     ################################################### -->
   
@@ -39,7 +54,14 @@
   </xsl:attribute-set>
  
   <xsl:attribute-set name="monospace.verbatim.properties">
-    <xsl:attribute name="font-size">9pt</xsl:attribute>
+    <xsl:attribute name="font-size">
+      <xsl:choose>
+        <xsl:when test="processing-instruction('db-font-size')">
+          <xsl:value-of select="processing-instruction('db-font-size')"/>
+        </xsl:when>
+        <xsl:otherwise>9pt</xsl:otherwise>
+      </xsl:choose>
+    </xsl:attribute>
   </xsl:attribute-set>
 
 <!--###################################################
@@ -80,7 +102,7 @@
 <!--###################################################
                       Custom Footer
     ################################################### -->
-    <!-- inside, center, outside -->
+    <!-- width specifications: inside, center, outside -->
     <xsl:param name="footer.column.widths">2 6 1</xsl:param>
   
     <xsl:template name="footer.content">
@@ -110,7 +132,8 @@
         </xsl:variable>
 
         <xsl:variable name="Title">
-          <xsl:value-of select="//title"/>
+          <!-- <xsl:value-of select="//title"/> -->
+          <xsl:apply-templates select="." mode="titleabbrev.markup"/>
         </xsl:variable>
 
         <xsl:choose>
@@ -224,7 +247,7 @@
   
     <xsl:param name="table.footnote.number.format" select="'1'"/>
  
-    <xsl:attribute-set name="chapter.title.properties">
+    <xsl:attribute-set name="component.title.properties">
       <xsl:attribute name="border-top">
         <xsl:text>solid black 2pt</xsl:text>
       </xsl:attribute> 
@@ -330,6 +353,13 @@
                           Misc
     ################################################### -->
 
+    <!-- have ulinks with text show the link in a footnote -->
+    <xsl:param name="ulink.footnotes" select="1"/>
+    <xsl:param name="ulink.show" select="1"/>
+
+    <!-- Glossary indent -->
+    <xsl:param name="glossterm.width" select="'1.4in'"/>
+
     <!-- Placement of titles -->
     <xsl:param name="formal.title.placement">
         figure after
@@ -346,7 +376,7 @@
   <xsl:param name="body.start.indent">.75in</xsl:param>
    -->
   
-  <!-- Remove "Chapter" from the Chapter titles... -->
+  <!-- Remove "Chapter" from the Chapter titles... 
   <xsl:param name="local.l10n.xml" select="document('')"/>
   <l:i18n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0">
     <l:l10n language="en">
@@ -359,7 +389,8 @@
       </l:context>
     </l:l10n>
   </l:i18n>
-
+--> 
+  
 <!-- create ability to switch to symbol fonts for FOP 0.20.5 -->
   <xsl:template match="symbol[@role = 'symbolfont']">
     <fo:inline font-family="Symbol">

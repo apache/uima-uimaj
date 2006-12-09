@@ -25,6 +25,7 @@ under the License.
 -->
 <chapter id="ugr.tug.aae">
   <title>Annotator and Analysis Engine Developer&apos;s Guide</title>
+  <titleabbrev>Annotator &amp; AE Developer&apos;s Guide</titleabbrev>
   
   <para>This chapter describes how to develop UIMA <emphasis>type systems</emphasis>,
     <emphasis>Annotators</emphasis> and <emphasis>Analysis Engines</emphasis> using
@@ -85,27 +86,27 @@ under the License.
   
   <itemizedlist>
     <listitem>
-      <para><emphasis role="bolditalic"><xref
-          linkend="ugr.tug.aae.getting_started"/></emphasis> is a tutorial with
+      <para><emphasis role="bold"><emphasis role="italic"><xref
+          linkend="ugr.tug.aae.getting_started"/></emphasis></emphasis> is a tutorial with
         step-by-step instructions for how to develop and test a simple UIMA
         annotator.</para>
     </listitem>
     <listitem>
-      <para><emphasis role="bolditalic"><xref
-          linkend="ugr.tug.aae.logging.configuring"/></emphasis> discusses how to
+      <para><emphasis role="bold"><emphasis role="italic"><xref
+          linkend="ugr.tug.aae.logging.configuring"/></emphasis></emphasis> discusses how to
         make your UIMA annotator configurable, and how it can write messages to the UIMA log
         file.</para>
     </listitem>
     <listitem>
-      <para> <emphasis role="bolditalic"><xref
-          linkend="ugr.tug.aae.building_aggregates"/></emphasis> describes how
+      <para> <emphasis role="bold"><emphasis role="italic"><xref
+          linkend="ugr.tug.aae.building_aggregates"/></emphasis></emphasis> describes how
         annotators can be combined into aggregate analysis engines. It also describes how
         one annotator can make use of the analysis results produced by an annotator that has
         run previously.</para>
     </listitem>
   </itemizedlist>
   
-  <para><emphasis role="bolditalic">Other examples</emphasis></para>
+  <para><emphasis role="bold"><emphasis role="italic">Other examples</emphasis></emphasis></para>
   
   <para>The UIMA SDK include several other examples you may find interesting,
     including</para>
@@ -118,12 +119,12 @@ under the License.
       example, hooks up with the Open Source Apache Derby database. </para></listitem>
   </itemizedlist>
   
-  <para><emphasis role="bolditalic">Additional Topics</emphasis> describes
+  <para><emphasis role="bold"><emphasis role="italic">Additional Topics</emphasis></emphasis> describes
     additional features of the UIMA SDK that may help you in building your own annotators and
     analysis engines.</para>
   
-  <para><emphasis role="bolditalic"><xref linkend="ugr.tug.aae.common_pitfalls"/>
-    </emphasis> contains some useful guidelines to help you ensure that your annotators will
+  <para><emphasis role="bold"><emphasis role="italic"><xref linkend="ugr.tug.aae.common_pitfalls"/>
+    </emphasis></emphasis> contains some useful guidelines to help you ensure that your annotators will
     work correctly in any UIMA application.</para>
   
   <para>This guide does not discuss how to build UIMA Applications, which are programs that
@@ -216,7 +217,7 @@ under the License.
       <screenshot>
  <mediaobject>
         <imageobject>
-          <imagedata width="575" depth="339" format="JPG" fileref="&imgroot;image002.jpg"/>
+          <imagedata width="575px" format="JPG" fileref="&imgroot;image002.jpg"/>
         </imageobject>
         <textobject><phrase>Screenshot of editor for Type System Definitions</phrase></textobject>
       </mediaobject>
@@ -251,12 +252,11 @@ under the License.
         System displayed above in the editor:</para>
       
       
-      <programlisting>
-<![CDATA[
-  <?xml version="1.0" encoding="UTF-8" ?>
+      <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8" ?>
   <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <name>TutorialTypeSystem</name>
-    <description>Type System Definition for the tutorial examples - as of Exercise 1</description>
+    <description>Type System Definition for the tutorial examples - 
+        as of Exercise 1</description>
     <vendor>IBM</vendor>
     <version>1.0</version>
     <types>
@@ -273,9 +273,7 @@ under the License.
         </features>
       </typeDescription>
     </types>
-  </typeSystemDescription>
-]]>
-    </programlisting>
+  </typeSystemDescription>]]></programlisting>
       
     </section>
     
@@ -297,7 +295,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="575" depth="83" format="JPG" fileref="&imgroot;image004.jpg"/>
+          <imagedata width="575px" format="JPG" fileref="&imgroot;image004.jpg"/>
         </imageobject>
         <textobject><phrase>Screenshot of enabling automatic running of JCasGen</phrase></textobject>
       </mediaobject>
@@ -318,7 +316,7 @@ under the License.
       <screenshot>
         <mediaobject>
         <imageobject>
-          <imagedata width="534" depth="279" format="JPG" fileref="&imgroot;image006.jpg"/>
+          <imagedata width="534px" format="JPG" fileref="&imgroot;image006.jpg"/>
         </imageobject>
         <textobject><phrase>Screenshot of JCasGen</phrase></textobject>
       </mediaobject>
@@ -392,8 +390,7 @@ under the License.
         directory.</para>
       
       
-      <programlisting>
-package org.apache.uima.tutorial.ex1;
+      <programlisting>package org.apache.uima.tutorial.ex1;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -403,16 +400,16 @@ import org.apache.uima.jcas.impl.JCas;
 import org.apache.uima.tutorial.RoomNumber;
 
 /**
- * Example annotator that detects room numbers using Java 1.4 regular expressions.
+ * Example annotator that detects room numbers using 
+ * Java 1.4 regular expressions.
  */
 public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
-  private Pattern mYorktownPattern = Pattern.compile("\\b[0-4]\\d-[0-2]\\d\\d\\b");
+  private Pattern mYorktownPattern = 
+        Pattern.compile("\\b[0-4]\\d-[0-2]\\d\\d\\b");
 
-  private Pattern mHawthornePattern = Pattern.compile("\\b[G1-4][NS]-[A-Z]\\d\\d\\b");
+  private Pattern mHawthornePattern = 
+        Pattern.compile("\\b[G1-4][NS]-[A-Z]\\d\\d\\b");
 
-  /**
-   * @see JCasAnnotator_ImplBase#process(JCas)
-   */
   public void process(JCas aJCas) {
     // Discussed Later
   }
@@ -438,35 +435,34 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
         changes.</para></footnote></para>
       
       
-      <programlisting>
-  public void process(JCas aJCas) {
-    // get document text
-    String docText = aJCas.getDocumentText();
-    // search for Yorktown room numbers
-    Matcher matcher = mYorktownPattern.matcher(docText);
-    int pos = 0;
-    while (matcher.find(pos)) {
-      // found one - creation annotation
-      RoomNumber annotation = new RoomNumber(aJCas);
-      annotation.setBegin(matcher.start());
-      annotation.setEnd(matcher.end());
-      annotation.setBuilding("Yorktown");
-      annotation.addToIndexes();
-      pos = matcher.end();
-    }
-    // search for Hawthorne room numbers
-    matcher = mHawthornePattern.matcher(docText);
-    pos = 0;
-    while (matcher.find(pos)) {
-      // found one - creation annotation
-      RoomNumber annotation = new RoomNumber(aJCas);
-      annotation.setBegin(matcher.start());
-      annotation.setEnd(matcher.end());
-      annotation.setBuilding("Hawthorne");
-      annotation.addToIndexes();
-      pos = matcher.end();
-    }
+      <programlisting>public void process(JCas aJCas) {
+  // get document text
+  String docText = aJCas.getDocumentText();
+  // search for Yorktown room numbers
+  Matcher matcher = mYorktownPattern.matcher(docText);
+  int pos = 0;
+  while (matcher.find(pos)) {
+    // found one - creation annotation
+    RoomNumber annotation = new RoomNumber(aJCas);
+    annotation.setBegin(matcher.start());
+    annotation.setEnd(matcher.end());
+    annotation.setBuilding("Yorktown");
+    annotation.addToIndexes();
+    pos = matcher.end();
   }
+  // search for Hawthorne room numbers
+  matcher = mHawthornePattern.matcher(docText);
+  pos = 0;
+  while (matcher.find(pos)) {
+    // found one - creation annotation
+    RoomNumber annotation = new RoomNumber(aJCas);
+    annotation.setBegin(matcher.start());
+    annotation.setEnd(matcher.end());
+    annotation.setBuilding("Hawthorne");
+    annotation.addToIndexes();
+    pos = matcher.end();
+  }
+}
 </programlisting>
       
       <para>The Matcher class is part of the java.util.regex package and is used to find the
@@ -474,12 +470,11 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
         simple as creating a new Java object and calling some set methods:</para>
       
       
-      <programlisting>
-  RoomNumber annotation = new RoomNumber(aJCas);
-  annotation.setBegin(matcher.start());
-  annotation.setEnd(matcher.end());
-  annotation.setBuilding("Yorktown");
-  </programlisting>
+      <programlisting>RoomNumber annotation = new RoomNumber(aJCas);
+annotation.setBegin(matcher.start());
+annotation.setEnd(matcher.end());
+annotation.setBuilding("Yorktown");
+</programlisting>
       
       <para>The <literal>RoomNumber</literal> class was generated from the type system
         description by the Component Descriptor Editor or the JCasGen tool, as discussed in
@@ -545,7 +540,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
       <screenshot>
   <mediaobject>
     <imageobject>
-      <imagedata width="575" depth="313" format="JPG" fileref="&imgroot;image008.jpg"/>
+      <imagedata width="575px" format="JPG" fileref="&imgroot;image008.jpg"/>
     </imageobject>
     <textobject><phrase>Screenshot of Component Descriptor Editor overview page</phrase>      
     </textobject>
@@ -574,7 +569,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
       <screenshot>
    <mediaobject>
      <imageobject>
-       <imagedata width="576" depth="257" format="JPG" fileref="&imgroot;image010.jpg"/>
+       <imagedata width="576px" format="JPG" fileref="&imgroot;image010.jpg"/>
      </imageobject>
      <textobject><phrase>Screenshot of CDE Type System page</phrase></textobject>
    </mediaobject>
@@ -587,7 +582,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
       <screenshot>
    <mediaobject>
      <imageobject>
-       <imagedata width="511" depth="398" format="JPG" fileref="&imgroot;image012.jpg"/>
+       <imagedata width="511px" format="JPG" fileref="&imgroot;image012.jpg"/>
      </imageobject>
      <textobject><phrase>Screenshot of CDE Capabilities page</phrase></textobject>
    </mediaobject>
@@ -632,7 +627,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
       <screenshot>
    <mediaobject>
      <imageobject>
-       <imagedata width="576" depth="294" format="JPG" fileref="&imgroot;image014.jpg"/>
+       <imagedata width="576px" format="JPG" fileref="&imgroot;image014.jpg"/>
      </imageobject>
      <textobject><phrase>Screenshot of UIMA Document Analyzer GUI</phrase></textobject>
    </mediaobject>       
@@ -661,7 +656,8 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
       <para>Use the Browse button next to the third item to set the <quote>Location of AE XML
         Descriptor</quote> field to the descriptor we&apos;ve just been discussing
         &mdash;
-        <literal>&lt;where-you-installed-uima-e.g.UIMA_HOME&gt;/examples/descriptors/tutorial/ex1/RoomNumberAnnotator.xml</literal>
+        <literal>&lt;where-you-installed-uima-e.g.UIMA_HOME&gt; 
+          /examples/descriptors/tutorial/ex1/RoomNumberAnnotator.xml</literal>
         . Set the other fields to the values shown in the screen shot above (which should be the
         default values if this is the first time you&apos;ve run the Document Analyzer). Then
         click the <quote>Run</quote> button to start processing.</para>
@@ -673,7 +669,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
       <screenshot>
    <mediaobject>
      <imageobject>
-       <imagedata width="332" depth="255" format="JPG" fileref="&imgroot;image016.jpg"/>
+       <imagedata width="332px" format="JPG" fileref="&imgroot;image016.jpg"/>
      </imageobject>
      <textobject><phrase>Screenshot of UIMA Document Analyzer Results GUI</phrase></textobject>
    </mediaobject>       
@@ -688,7 +684,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
       <screenshot>
    <mediaobject>
      <imageobject>
-       <imagedata width="510" depth="389" format="JPG" fileref="&imgroot;image018.jpg"/>
+       <imagedata width="510px" format="JPG" fileref="&imgroot;image018.jpg"/>
      </imageobject>
      <textobject><phrase>Screenshot of UIMA CAS Annotation Viewer GUI</phrase></textobject>
    </mediaobject>       
@@ -740,7 +736,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
         <screenshot>
    <mediaobject>
      <imageobject>
-       <imagedata width="538" depth="364" format="JPG" fileref="&imgroot;image020.jpg"/>
+       <imagedata width="538px" format="JPG" fileref="&imgroot;image020.jpg"/>
      </imageobject>
      <textobject><phrase>Screenshot of UIMA Component Descriptor Editor (CDE) Parameters page</phrase></textobject>
    </mediaobject>       
@@ -778,7 +774,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
         <screenshot>
    <mediaobject>
      <imageobject>
-       <imagedata width="538" depth="364" format="JPG" fileref="&imgroot;image022.jpg"/>
+       <imagedata width="538px" format="JPG" fileref="&imgroot;image022.jpg"/>
      </imageobject>
      <textobject><phrase>Screenshot of UIMA Component Descriptor Editor (CDE) Parameter Settings page</phrase></textobject>
    </mediaobject>       
@@ -804,23 +800,25 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
           body:</para>
         
         
-        <programlisting>
-  /**
-   * @see AnalysisComponent#initialize(UimaContext)
-   */
-  public void initialize(UimaContext aContext) throws ResourceInitializationException {
-    super.initialize(aContext);
+        <programlisting>/**
+* @see AnalysisComponent#initialize(UimaContext)
+*/
+public void initialize(UimaContext aContext) 
+        throws ResourceInitializationException {
+  super.initialize(aContext);
   
-    // Get config. parameter values  
-    String[] patternStrings = (String[]) aContext.getConfigParameterValue("Patterns");
-    mLocations = (String[]) aContext.getConfigParameterValue("Locations");
+  // Get config. parameter values  
+  String[] patternStrings = 
+        (String[]) aContext.getConfigParameterValue("Patterns");
+  mLocations = 
+        (String[]) aContext.getConfigParameterValue("Locations");
 
-    // compile regular expressions
-    mPatterns = new Pattern[patternStrings.length];
-    for (int i = 0; i &lt; patternStrings.length; i++) {
-      mPatterns[i] = Pattern.compile(patternStrings[i]);
-    }
+  // compile regular expressions
+  mPatterns = new Pattern[patternStrings.length];
+  for (int i = 0; i &lt; patternStrings.length; i++) {
+    mPatterns[i] = Pattern.compile(patternStrings[i]);
   }
+}
 </programlisting>
         
         <para>Configuration parameter values are accessed through the UimaContext. As you
@@ -906,8 +904,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
         <literal>org.apache.uima.tutorial.ex2.RoomNumberAnnotator</literal>:
         
         
-        <programlisting>
-  getContext().getLogger().log(Level.FINEST,"Found: " + annotation);
+        <programlisting>getContext().getLogger().log(Level.FINEST,"Found: " + annotation);
 </programlisting>
         </para>
       
@@ -960,8 +957,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
           relative to the working directory. For example:
           
           
-          <programlisting>
-  java "-Djava.util.logging.config.file=C:/Program Files/apache/uima/Logger.properties"
+          <programlisting><?db-font-size 60% ?>java "-Djava.util.logging.config.file=C:/Program Files/apache/uima/Logger.properties"
 </programlisting>
           <note><para>In a shell script, you can use environment variables such as
           UIMA_HOME if convenient.</para></note> </para>
@@ -1103,7 +1099,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
             <title>Combining Annotators to form an Aggregate Analysis Engine</title>
             <mediaobject>
               <imageobject>
-                <imagedata width="560" depth="320" format="PNG"
+                <imagedata width="560px" format="PNG"
                   fileref="&imgroot;image024.png"/>
               </imageobject>
               <textobject> <phrase>Combining Annotators to form an Aggregate Analysis
@@ -1127,7 +1123,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
         <screenshot>
   <mediaobject>
     <imageobject>
-      <imagedata width="575" depth="357" format="JPG" fileref="&imgroot;image026.jpg"/>
+      <imagedata width="575px" format="JPG" fileref="&imgroot;image026.jpg"/>
     </imageobject>
     <textobject>
       <phrase>Aggregate page of the Component Descriptor Editor (CDE)</phrase>
@@ -1168,7 +1164,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
           <screenshot>
      <mediaobject>
        <imageobject>
-         <imagedata width="526" depth="386" format="JPG" fileref="&imgroot;image028.jpg"/>
+         <imagedata width="526px" format="JPG" fileref="&imgroot;image028.jpg"/>
        </imageobject>
        <textobject><phrase>Screen shot of the Capabilities page of the Component Descriptor Editor
        </phrase></textobject>
@@ -1190,7 +1186,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
         <screenshot>
      <mediaobject>
        <imageobject>
-         <imagedata width="525" depth="468" format="JPG" fileref="&imgroot;image030.jpg"/>
+         <imagedata width="525px" format="JPG" fileref="&imgroot;image030.jpg"/>
        </imageobject>
        <textobject><phrase>Screen shot results of running the Document Analyzer
        </phrase></textobject>
@@ -1201,7 +1197,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
     </section>
     
     <section id="ugr.tug.aae.aaes_can_contain_cas_consumers">
-      <title>Aggregate Engines can also contain CAS Consumers</title>
+      <title>AEs can also contain CAS Consumers</title>
       
       <para>In addition to aggregating Analysis Engines, Aggregates can also contain CAS
         Consumers (see <olink targetdoc="&uima_docs_tutorial_guides;"
@@ -1225,8 +1221,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
         TimeAnnot annotations in the JCas:
         
         
-        <programlisting>
-JFSIndexRepository indexes = aJCas.getJFSIndexRepository();
+        <programlisting>JFSIndexRepository indexes = aJCas.getJFSIndexRepository();
 FSIndex timeIndex = indexes.getAnnotationIndex(TimeAnnot.type);
 Iterator timeIter = timeIndex.iterator();   
 while (timeIter.hasNext()) {
@@ -1262,7 +1257,7 @@ while (timeIter.hasNext()) {
       <screenshot>
      <mediaobject>
        <imageobject>
-         <imagedata width="526" depth="416" format="JPG" fileref="&imgroot;image032.jpg"/>
+         <imagedata width="526px" format="JPG" fileref="&imgroot;image032.jpg"/>
        </imageobject>
        <textobject><phrase>Screen shot of Capabilities page of the Component Descriptor Editor
        </phrase></textobject>
@@ -1284,7 +1279,7 @@ while (timeIter.hasNext()) {
             previous engines</title>
           <mediaobject>
             <imageobject>
-              <imagedata width="555" depth="232" format="PNG"
+              <imagedata width="555px" format="PNG"
                 fileref="&imgroot;image034.png"/>
             </imageobject>
             <textobject><phrase>An Aggregate Analysis Engine where an internal
@@ -1324,7 +1319,7 @@ while (timeIter.hasNext()) {
     <title>Additional Topics</title>
     
     <section id="ugr.tug.aae.contract_for_annotator_methods">
-      <title>Contract for Annotator methods called by the Framework</title>
+      <title>Contract: Framework called Annotator methods</title>
       
       <para>Every instance of an Annotator is associated with one and only one thread. An
         instance never has to worry about running some method on one thread, and then
@@ -1443,9 +1438,8 @@ while (timeIter.hasNext()) {
         this:</para>
       
       
-      <programlisting>
-  throw new AnnotatorConfigurationException(
-       "The regular expression " + x + " is not valid.");
+      <programlisting>throw new AnnotatorConfigurationException(
+    "The regular expression " + x + " is not valid.");
 </programlisting>
       
       <para>UIMA, however, does not do it this way. All UIMA exceptions are
@@ -1501,16 +1495,15 @@ while (timeIter.hasNext()) {
         will see the following code:
         
         
-        <programlisting>
-  try {
-    mPatterns[i] = Pattern.compile(patternStrings[i]);  
-  } 
-  catch (PatternSyntaxException e) {
-    throw new AnnotatorConfigurationException(
-       MESSAGE_DIGEST, "regex_syntax_error", 
-       new Object[]{patternStrings[i]}, e);
-  }
-</programlisting>>
+        <programlisting>try {
+  mPatterns[i] = Pattern.compile(patternStrings[i]);  
+} 
+catch (PatternSyntaxException e) {
+  throw new AnnotatorConfigurationException(
+     MESSAGE_DIGEST, "regex_syntax_error", 
+     new Object[]{patternStrings[i]}, e);
+}
+</programlisting>
         where the MESSAGE_DIGEST constant has the value <literal>
         "org.apache.uima.tutorial.ex5.RoomNumberAnnotator_Messages". </literal>
         </para>
@@ -1553,7 +1546,7 @@ while (timeIter.hasNext()) {
       <para>Create a file with the .properties extension, where you declare message keys and
         their associated messages, using the same syntax as shown above for the
         regex_syntax_error exception. The properties file syntax is more completely
-        described in the JavaDocs for the <ulink
+        described in the JavaDocs for the <ulink 
           url="http://java.sun.com/j2se/1.4.1/docs/api/java/util/Properties.html#load(java.io.InputStream)">
         load</ulink>> method of the java.util.Properties class.</para>
       
@@ -1573,18 +1566,16 @@ while (timeIter.hasNext()) {
       
       <para>In your annotator code, throw an exception like this:
         
-        
-        <programlisting>
-  throw new AnnotatorConfigurationException(
-     MESSAGE_DIGEST, "your_message_name",
-     new Object[]{param1,param2,...});
+        <programlisting>throw new AnnotatorConfigurationException(
+    MESSAGE_DIGEST, "your_message_name",
+    new Object[]{param1,param2,...});
 </programlisting></para>
       
       <para>You may also wish to look at the JavaDocs for the UIMAException class.</para>
       
-      <para>For more information on Java&apos;s internationalization features, see the
-        Java Internationalization Guide at <ulink
-          url="http://java.sun.com/j2se/1.4/docs/guide/intl/index.html"/></para>
+      <para>For more information on Java&apos;s internationalization features, see the 
+       <ulink url="http://java.sun.com/j2se/1.4/docs/guide/intl/index.html">
+        Java Internationalization Guide</ulink>.</para>
     </section>
     
     <section id="ugr.tug.aae.accessing_external_resource_files">
@@ -1627,7 +1618,7 @@ while (timeIter.hasNext()) {
         <screenshot>
        <mediaobject>
        <imageobject>
-         <imagedata width="576" depth="446" format="JPG" fileref="&imgroot;image036.jpg"/>
+         <imagedata width="576px" format="JPG" fileref="&imgroot;image036.jpg"/>
        </imageobject>
        <textobject><phrase>Screen shot of Component Descriptor Editor page for configuring External Resources
        </phrase></textobject>
@@ -1645,7 +1636,7 @@ while (timeIter.hasNext()) {
         <screenshot>
        <mediaobject>
        <imageobject>
-         <imagedata width="681" depth="354" format="JPG" fileref="&imgroot;image038.jpg"/>
+         <imagedata width="681px" format="JPG" fileref="&imgroot;image038.jpg"/>
        </imageobject>
        <textobject><phrase>Screen shot of Component Descriptor Editor page for configuring External Resources after
          adjusting the layout
@@ -1663,8 +1654,7 @@ while (timeIter.hasNext()) {
           dependency. The XML for this is as follows:</para>
         
         
-        <programlisting><![CDATA[
-<externalResourceDependency>
+        <programlisting><![CDATA[<externalResourceDependency>
   <key>AcronymTable</key> 
   <description>Table of acronyms and their expanded forms.</description> 
   <interfaceName>org.apache.uima.tutorial.ex6.StringMapResource</interfaceName> 
@@ -1691,8 +1681,7 @@ while (timeIter.hasNext()) {
           UimaContext by calling:
           
           
-          <programlisting>
-StringMapResource mMap = (StringMapResource)getContext()getResourceObject("AcronymTable");
+          <programlisting>StringMapResource mMap = (StringMapResource)getContext()getResourceObject("AcronymTable");
 </programlisting>
           </para>
         
@@ -1732,9 +1721,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
           section of the descriptor:
           
           
-          <programlisting>
-<![CDATA[
-<resourceManagerConfiguration>
+          <programlisting><![CDATA[<resourceManagerConfiguration>
   <externalResources>
     <externalResource>
       <name>UimaAcronymTableFile</name> 
@@ -1812,7 +1799,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
             <title>External Resource Binding</title>
             <mediaobject>
               <imageobject>
-                <imagedata width="528" depth="352" format="PNG"
+                <imagedata width="528px" format="PNG"
                   fileref="&imgroot;image040.png"/>
               </imageobject>
               <textobject><phrase>External Resource Binding</phrase></textobject>
@@ -1853,7 +1840,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
             <title>Component engines of an aggregate share a common resource</title>
             <mediaobject>
               <imageobject>
-                <imagedata width="563" depth="320" format="PNG"
+                <imagedata width="563px" format="PNG"
                   fileref="&imgroot;image042.png"/>
               </imageobject>
               <textobject><phrase>Picture of Component engines of an aggregate sharing a
@@ -1872,16 +1859,14 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
           <screenshot>
      <mediaobject>
       <imageobject>
-        <imagedata width="572" depth="504" format="JPG" fileref="&imgroot;image044.jpg"/>
+        <imagedata width="572px" format="JPG" fileref="&imgroot;image044.jpg"/>
       </imageobject>
       <textobject><phrase>UimaMeetingDetectorAE.xml binding a common resource</phrase></textobject>
     </mediaobject>
   </screenshot>
           
           
-          <programlisting>
-<![CDATA[
-<externalResourceBindings>
+          <programlisting><![CDATA[<externalResourceBindings>
   <externalResourceBinding>
     <key>UimaAcronymAnnotator/AcronymTable</key> 
     <resourceName>UimaAcronymTableFile</resourceName> 
@@ -1900,7 +1885,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
           (which uses the name AcronymTable) and UimaMeetingAnnotator (which uses
           UimaTermTable) to the single declared resource named UimaAcronymFile.
           Therefore they will share the same instance. Resource bindings in the aggregate
-          descriptor <emphasis role="bolditalic">override</emphasis> any resource
+          descriptor <emphasis role="bold"><emphasis role="italic">override</emphasis></emphasis> any resource
           declarations in individual annotator descriptors.</para>
         
         <para>If we wanted to have the annotators use different acronym tables, we could
@@ -2053,9 +2038,8 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
         the documentAnalyzer script:
         
         
-        <programlisting>
-  set UIMA_CLASSPATH=c:abcmyProjectmyJarFile.jar
-  documentAnalyzer
+        <programlisting>set UIMA_CLASSPATH=c:abcmyProjectmyJarFile.jar
+documentAnalyzer
 </programlisting>
       </para>
       
@@ -2167,7 +2151,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
       <screenshot>
      <mediaobject>
       <imageobject>
-        <imagedata width="492" depth="171" format="JPG" fileref="&imgroot;image046.jpg"/>
+        <imagedata width="492px" format="JPG" fileref="&imgroot;image046.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of Eclipse debugger showing non-logical-structure display of 
       a feature structure</phrase></textobject>
@@ -2182,7 +2166,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
       <screenshot>
      <mediaobject>
       <imageobject>
-        <imagedata width="480" depth="24" format="JPG" fileref="&imgroot;image048.jpg"/>
+        <imagedata width="480px" format="JPG" fileref="&imgroot;image048.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of Eclipse debugger showing button to push to 
         enable viewing logical structures</phrase></textobject>
@@ -2194,7 +2178,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
       <screenshot>
      <mediaobject>
       <imageobject>
-        <imagedata width="492" depth="206" format="JPG" fileref="&imgroot;image050.jpg"/>
+        <imagedata width="492px" format="JPG" fileref="&imgroot;image050.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of Eclipse debugger showing logical structure display of 
       an annotation</phrase></textobject>
@@ -2223,9 +2207,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
       <title>Header and Annotator Class Identification</title>
       
       
-      <programlisting>
-<![CDATA[
-<?xml version="1.0" encoding="UTF-8" ?> 
+      <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8" ?> 
 <!--  Descriptor for the example RoomNumberAnnotator. --> 
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation> 
@@ -2260,9 +2242,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
       <title>Simple Metadata Attributes</title>
       
       
-      <programlisting>
-<![CDATA[
-<analysisEngineMetaData>
+      <programlisting><![CDATA[<analysisEngineMetaData>
   <name>Room Number Annotator</name> 
   <description>An example annotator that searches for room numbers in
      the IBM Watson research buildings.</description> 
@@ -2280,9 +2260,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
       <title>Type System Definition</title>
       
       
-      <programlisting>
-<![CDATA[
-<typeSystemDescription>
+      <programlisting><![CDATA[<typeSystemDescription>
   <imports>
     <import location=<quote>TutorialTypeSystem.xml</quote>/>
   </imports>
@@ -2303,9 +2281,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
       <title>Capabilities</title>
       
       
-      <programlisting>
-<![CDATA[
-<capabilities>
+      <programlisting><![CDATA[<capabilities>
   <capability>
     <inputs /> 
     <outputs>
@@ -2332,14 +2308,11 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
         The &lt;outputs&gt; section above could be replaced with the equivalent section:
         
         
-        <programlisting>
-<![CDATA[
-<outputs>
-  <type allAnnotatorFeatures =<quote>true</quote>> org.apache.uima.tutorial.RoomNumber
+        <programlisting><![CDATA[<outputs>
+  <type allAnnotatorFeatures ="true">
+     org.apache.uima.tutorial.RoomNumber
   </type> 
-</outputs>
-]]>
-  </programlisting></para>
+</outputs>]]></programlisting></para>
       
     </section>
     
@@ -2350,9 +2323,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
         <title>Configuration Parameter Declarations</title>
         
         
-        <programlisting>
-<![CDATA[
-<configurationParameters>
+        <programlisting><![CDATA[<configurationParameters>
   <configurationParameter>
     <name>Patterns</name> 
     <description>List of room number regular expression patterns.
@@ -2370,9 +2341,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
     <multiValued>true</multiValued> 
     <mandatory>true</mandatory> 
   </configurationParameter>
-</configurationParameters>
-]]>
-</programlisting>
+</configurationParameters>]]></programlisting>
         
         <para>The <literal>&lt;configurationParameters&gt;</literal> element
           contains the definitions of the configuration parameters that our annotator
@@ -2407,9 +2376,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
         <title>Configuration Parameter Settings</title>
         
         
-        <programlisting>
-<![CDATA[
-<configurationParameterSettings>
+        <programlisting><![CDATA[<configurationParameterSettings>
   <nameValuePair>
     <name>Patterns</name> 
     <value>
@@ -2430,9 +2397,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
       </array>
     </value>
   </nameValuePair>
-</configurationParameterSettings>
-]]>          
-      </programlisting>
+</configurationParameterSettings>]]></programlisting>
         
       </section>
       
@@ -2440,9 +2405,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
         <title>Aggregate Analysis Engine Descriptor</title>
         
         
-        <programlisting>
-<![CDATA[
-<?xml version="1.0" encoding="UTF-8" ?> 
+        <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8" ?> 
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation> 
   <primitive>false</primitive> 
@@ -2454,9 +2417,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
     <delegateAnalysisEngine key="DateTime">
       <import location="TutorialDateTime.xml" /> 
     </delegateAnalysisEngine>
-  </delegateAnalysisEngineSpecifiers>
-]]>
-</programlisting>
+  </delegateAnalysisEngineSpecifiers>]]></programlisting>
         
         <para>The first difference between this descriptor and an individual
           annotator&apos;s descriptor is that the
@@ -2474,9 +2435,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
           pipeline. Ordering is done by another section of the descriptor:
           
           
-          <programlisting>
-<![CDATA[
-<analysisEngineMetaData>
+          <programlisting><![CDATA[<analysisEngineMetaData>
   <name>Aggregate AE - Room Number and DateTime Annotators</name> 
   <description>Detects Room Numbers, Dates, and Times</description> 
   <flowConstraints>
@@ -2484,9 +2443,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
       <node>RoomNumber</node> 
       <node>DateTime</node> 
     </fixedFlow>
-  </flowConstraints>  
-]]>
-  </programlisting></para>
+  </flowConstraints>]]></programlisting></para>
         
         <para>Here, a fixedFlow is adequate, and we specify the exact ordering in which the
           AEs will be executed. In this case, it doesn&apos;t really matter, since the
@@ -2497,9 +2454,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
           same syntax as a primitive AE&apos;s capabilities section:
           
           
-          <programlisting>
-<![CDATA[
-<capabilities>
+          <programlisting><![CDATA[<capabilities>
   <capability>
     <inputs /> 
     <outputs>
@@ -2517,9 +2472,7 @@ StringMapResource mMap = (StringMapResource)getContext()getResourceObject("Acron
       <language>en</language> 
     </languagesSupported>
   </capability>
-</capabilities>
-]]>     
-  </programlisting>
+</capabilities>]]></programlisting>
           </para>
         
       </section>

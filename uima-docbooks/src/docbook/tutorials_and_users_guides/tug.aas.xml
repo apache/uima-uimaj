@@ -24,6 +24,7 @@ under the License.
 -->
 <chapter id="ugr.tug.aas">
   <title>Annotations, Artifacts, and Sofas</title>
+  <titleabbrev>Annotations, Artifacts &amp; Sofas</titleabbrev>
   
   <para>Up to this point, the documentation has focused on analyzing strings of Unicode text,
     producing subtypes of Annotations which reference offsets in those strings. This

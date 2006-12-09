@@ -23,9 +23,8 @@ specific language governing permissions and limitations
 under the License.
 -->
 <chapter id="ugr.project_overview">
-  <!-- id="_crossRef356" -->
-  <!-- check: use of SDK -->
-  <title>Apache UIMA Project Overview</title>
+  <title>Apache UIMA SDK &mdash; Project Overview</title>
+  <titleabbrev>Overview</titleabbrev>
   
   <para>The Unstructured Information Management Architecture (UIMA) is an architecture
     and software framework for creating, discovering, composing and deploying a broad range
@@ -311,7 +310,7 @@ under the License.
   
   <section id="ugr.project_overview_doc_use">
     <!-- _crossRef358 -->
-    <title>Using the Documentation to get started with the UIMA SDK</title>
+    <title>How to use the Documentation</title>
     <orderedlist>
       <listitem>
         <para>Explore this chapter to get an overview of the different documents that are
@@ -602,10 +601,11 @@ under the License.
         </para>
       
       <para>Previous versions of the UIMA SDK (prior to the Apache versions) are available
-        from IBM's alphaWorks (<ulink
-          url="http://www.alphaworks.ibm.com/tech/uima"/>). The source code for
-        previous versions of the main UIMA framework is available on SourceForge (<ulink
-          url="http://uima-framework.sourceforge.net/"/>).</para>
+        from <ulink url="http://www.alphaworks.ibm.com/tech/uima">
+        IBM's alphaWorks</ulink>. The source code for
+        previous versions of the main UIMA framework is available on 
+        <ulink url="http://uima-framework.sourceforge.net/">
+        SourceForge</ulink>.</para>
       
     </section>
   </section>

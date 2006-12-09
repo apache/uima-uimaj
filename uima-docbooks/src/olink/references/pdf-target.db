@@ -1,6 +1,6 @@
 <div element="book" href="#d0e2" number="" lang="en">
-   <ttl>Apache UIMA SDK Reference</ttl>
-   <xreftext>Apache UIMA SDK Reference</xreftext>
+   <ttl>Apache UIMA SDK — References</ttl>
+   <xreftext>Apache UIMA SDK — References</xreftext>
    <div element="chapter" href="#ugr.ref.javadocs" number="1" targetptr="ugr.ref.javadocs">
       <ttl>Javadocs</ttl>
       <xreftext>Chapter 1, <fo:inline xmlns:fo="http://www.w3.org/1999/XSL/Format" font-style="italic">Javadocs</fo:inline>
@@ -273,7 +273,7 @@
          </div>
          <div element="section" href="#ugr.ref.cas.creating_accessing_manipulating_data" number="4.2.2" targetptr="ugr.ref.cas.creating_accessing_manipulating_data">
             <ttl>Creating, accessing and manipulating data</ttl>
-            <xreftext>Section 4.2.2, “Creating, accessing and manipulating data”</xreftext>
+            <xreftext>Section 4.2.2, “Creating/Accessing/Changing data”</xreftext>
          </div>
          <div element="section" href="#ugr.ref.cas.creating_using_indexes" number="4.2.3" targetptr="ugr.ref.cas.creating_using_indexes">
             <ttl>Creating and using indexes</ttl>
@@ -297,7 +297,7 @@
          </div>
          <div element="section" href="#ugr.ref.cas.cas_apis_create_modify_feature_structures" number="4.4.2" targetptr="ugr.ref.cas.cas_apis_create_modify_feature_structures">
             <ttl>Using the CAS APIs to create and modify feature structures</ttl>
-            <xreftext>Section 4.4.2, “Using the CAS APIs to create and modify feature structures”</xreftext>
+            <xreftext>Section 4.4.2, “Using CAS APIs: Feature Structures”</xreftext>
          </div>
       </div>
       <div element="section" href="#ugr.ref.cas.creating_feature_structures" number="4.5" targetptr="ugr.ref.cas.creating_feature_structures">
@@ -306,7 +306,7 @@
       </div>
       <div element="section" href="#ugr.ref.cas.accessing_modifying_features_of_feature_structures" number="4.6" targetptr="ugr.ref.cas.accessing_modifying_features_of_feature_structures">
          <ttl>Accessing or modifying features of feature structures</ttl>
-         <xreftext>Section 4.6, “Accessing or modifying features of feature structures”</xreftext>
+         <xreftext>Section 4.6, “Accessing or modifying Features”</xreftext>
       </div>
       <div element="section" href="#ugr.ref.cas.indexes_and_iterators" number="4.7" targetptr="ugr.ref.cas.indexes_and_iterators">
          <ttl>Indexes and Iterators</ttl>
@@ -325,8 +325,8 @@
          </div>
       </div>
       <div element="section" href="#ugr.ref.cas.guide_to_javadocs" number="4.8" targetptr="ugr.ref.cas.guide_to_javadocs">
-         <ttl>The CAS APIs – a guide to the JavaDocs</ttl>
-         <xreftext>Section 4.8, “The CAS APIs – a guide to the JavaDocs”</xreftext>
+         <ttl>The CAS API's – a guide to the JavaDocs</ttl>
+         <xreftext>Section 4.8, “CAS API's JavaDocs”</xreftext>
          <div element="section" href="#ugr.ref.cas.javadocs.cas_package" number="4.8.1" targetptr="ugr.ref.cas.javadocs.cas_package">
             <ttl>APIs in the CAS package</ttl>
             <xreftext>Section 4.8.1, “APIs in the CAS package”</xreftext>
@@ -467,7 +467,7 @@
          </div>
          <div element="section" href="#ugr.ref.pear.installation_descriptor" number="6.1.4" targetptr="ugr.ref.pear.installation_descriptor">
             <ttl>Documented template for the installation descriptor:</ttl>
-            <xreftext>Section 6.1.4, “Documented template for the installation descriptor:”</xreftext>
+            <xreftext>Section 6.1.4, “Installation Descriptor: template”</xreftext>
             <div element="section" href="#ugr.ref.pear.installation_descriptor.submitted_component" number="6.1.4.1" targetptr="ugr.ref.pear.installation_descriptor.submitted_component">
                <ttl>The SUBMITTED_COMPONENT section</ttl>
                <xreftext>Section 6.1.4.1, “The SUBMITTED_COMPONENT section”</xreftext>
@@ -553,7 +553,7 @@
       </div>
       <div element="section" href="#ugr.ref.xmi.linking_to_ecore_type_system" number="7.8" targetptr="ugr.ref.xmi.linking_to_ecore_type_system">
          <ttl>Linking an XMI Document to its Ecore Type System</ttl>
-         <xreftext>Section 7.8, “Linking an XMI Document to its Ecore Type System”</xreftext>
+         <xreftext>Section 7.8, “Linking XMI docs to Ecore Type System”</xreftext>
       </div>
    </div>
 </div>

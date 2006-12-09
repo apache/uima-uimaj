@@ -241,7 +241,7 @@ under the License.
       <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="503" depth="405" format="JPG" fileref="&imgroot;image002.jpg"/>
+        <imagedata width="503px" format="JPG" fileref="&imgroot;image002.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of Eclipse new object wizard showing Flow Controller</phrase></textobject>
     </mediaobject>
@@ -252,7 +252,7 @@ under the License.
       <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="467" depth="383" format="JPG" fileref="&imgroot;image004.jpg"/>
+        <imagedata width="467px" format="JPG" fileref="&imgroot;image004.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of Component Descriptor Editor Overview page for new Flow Controller</phrase></textobject>
     </mediaobject>
@@ -286,7 +286,7 @@ under the License.
       <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="409" depth="213" format="JPG" fileref="&imgroot;image006.jpg"/>
+        <imagedata width="409px" format="JPG" fileref="&imgroot;image006.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of Component Descriptor Editor Aggregate page showing selecting user-defined flow</phrase></textobject>
     </mediaobject>

@@ -61,7 +61,7 @@ under the License.
     <screenshot>
   <mediaobject>
     <imageobject>
-      <imagedata width="488" depth="210" format="JPG" fileref="&imgroot;image002.jpg"/>
+      <imagedata width="488px" format="JPG" fileref="&imgroot;image002.jpg"/>
     </imageobject>
     <textobject><phrase>Screenshot of annotationViewer</phrase></textobject>
   </mediaobject>

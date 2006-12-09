@@ -29,7 +29,7 @@ under the License.
     </copyright>
     -->
 
-    <releaseinfo>Version 2.0</releaseinfo>
+    <releaseinfo>Version 2.1</releaseinfo>
 
     <productname>UIMA</productname>
 
@@ -45,17 +45,18 @@ under the License.
     </mediaobject>
  -->
     <legalnotice>
-      <warning>
-        <title>Warning and Disclaimer</title>
+      <note>
+        <title>License and Disclaimer</title>
+
         <para>The ASF licenses this documentation
            to you under the Apache License, Version 2.0 (the
            "License"); you may not use this documentation except in compliance
            with the License.  You may obtain a copy of the License at
-           </para>
-           <para>
-             http://www.apache.org/licenses/LICENSE-2.0
-           </para>
-           <para>
+         
+         <blockquote>
+           <ulink url="http://www.apache.org/licenses/LICENSE-2.0"/>
+         </blockquote>
+         
            Unless required by applicable law or agreed to in writing,
            this documentation and its contents are distributed under the License 
            on an 
@@ -63,8 +64,9 @@ under the License.
            KIND, either express or implied.  See the License for the
            specific language governing permissions and limitations
            under the License.
-           </para>
-      </warning>
+         </para>
+        </note>
+      <para> </para>
       <note>
         <title>Trademarks</title>
         <para>All terms mentioned in the text that are known to be trademarks or 

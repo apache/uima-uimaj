@@ -57,7 +57,7 @@ screen that looks like this:
   <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="564" depth="314" format="JPG" fileref="&imgroot;image002.jpg"/>
+        <imagedata width="564px" format="JPG" fileref="&imgroot;image002.jpg"/>
       </imageobject>
       <textobject><phrase>Document Analyzer GUI</phrase>
       </textobject>
@@ -142,7 +142,7 @@ Results</quote> window will appear.
   <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="434" depth="262" format="JPG" fileref="&imgroot;image004.jpg"/>
+        <imagedata width="434px" format="JPG" fileref="&imgroot;image004.jpg"/>
       </imageobject>
       <textobject><phrase>Analysis Results Window</phrase></textobject>
     </mediaobject>
@@ -164,7 +164,7 @@ analysis done on that file.</para>
   <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="575" depth="413" format="JPG" fileref="&imgroot;image006.jpg"/>
+        <imagedata width="575px" format="JPG" fileref="&imgroot;image006.jpg"/>
       </imageobject>
       <textobject><phrase>Analysis Results Window showing results from tutorial example 4</phrase></textobject>
     </mediaobject>
@@ -203,7 +203,7 @@ Map</quote> button on the <quote>Analysis Results</quote> dialog.
   <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="576" depth="220" format="JPG" fileref="&imgroot;image008.jpg"/>
+        <imagedata width="576px" format="JPG" fileref="&imgroot;image008.jpg"/>
       </imageobject>
       <textobject><phrase>Configuring the Analysis Results Viewer</phrase></textobject>
     </mediaobject>
@@ -247,7 +247,7 @@ display a dialog that looks like this:
   <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="502" depth="355" format="JPG" fileref="&imgroot;image010.jpg"/>
+        <imagedata width="502px" format="JPG" fileref="&imgroot;image010.jpg"/>
       </imageobject>
       <textobject><phrase>Invoking Interactive Mode</phrase></textobject>
     </mediaobject>

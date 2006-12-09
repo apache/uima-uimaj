@@ -24,7 +24,8 @@ specific language governing permissions and limitations
 under the License.
 -->
 <chapter id="ugr.ovv.eclipse_setup">
-  <title>Setting up Eclipse IDE to work with UIMA</title>
+  <title>Setting up the Eclipse IDE to work with UIMA</title>
+  <titleabbrev>Eclipse IDE setup for UIMA</titleabbrev>
   
   <para>This chapter describes how to set up the UIMA SDK to work with Eclipse. Eclipse (<ulink
       url="&url_eclipse;"/>) is a popular open-source Integrated Development
@@ -101,7 +102,7 @@ under the License.
       <informalfigure>
         <mediaobject>
           <imageobject>
-            <imagedata format="JPG" fileref="&imgroot;image002.jpg"/>
+            <imagedata width="350px" format="JPG" fileref="&imgroot;image002.jpg"/>
           </imageobject>
           <textobject><phrase>Screenshot showing search results for EMF</phrase>
           </textobject>

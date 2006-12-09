@@ -342,6 +342,7 @@ myFeature = "bar"</programlisting>
   
   <section id="ugr.ref.xmi.linking_to_ecore_type_system">
     <title>Linking an XMI Document to its Ecore Type System</title>
+    <titleabbrev>Linking XMI docs to Ecore Type System</titleabbrev>
     
     <para>If the CAS Type System has been saved to an Ecore file (which is the subject of a
       different spec), it is possible to store a link from an XMI document to that Ecore type

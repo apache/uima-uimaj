@@ -25,6 +25,7 @@ under the License.
 -->
 <chapter id="ugr.tools.cpe">
   <title>Collection Processing Engine Configurator User&apos;s Guide</title>
+  <titleabbrev>CPE Configurator User&apos;s Guide</titleabbrev>
   
   <para>A <emphasis>Collection Processing Engine (CPE)</emphasis> processes
     collections of artifacts (documents) through the combination of the following
@@ -80,7 +81,7 @@ under the License.
       <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="542" depth="412" format="JPG" fileref="&imgroot;image002.jpg"/>
+        <imagedata width="542px" format="JPG" fileref="&imgroot;image002.jpg"/>
       </imageobject>
       <textobject><phrase>CPE Configurator main GUI window</phrase> 
       </textobject>
@@ -119,7 +120,7 @@ examples/descriptors/cas_consumer/XCasWriterCasConsumer.xml</programlisting></pa
     <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="576" depth="439" format="JPG" fileref="&imgroot;image004.jpg"/>
+        <imagedata width="576px" format="JPG" fileref="&imgroot;image004.jpg"/>
       </imageobject>
       <textobject><phrase>CPE Configurator after components chosen</phrase> 
       </textobject>

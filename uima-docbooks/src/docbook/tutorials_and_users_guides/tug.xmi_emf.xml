@@ -24,6 +24,7 @@ under the License.
 -->
 <chapter id="ugr.tug.xmi_emf">
   <title>XMI and EMF Interoperability</title>
+  <titleabbrev>XMI &amp; EMF</titleabbrev>
   
   <section id="ugr.tug.xmi_emf.overview">
     <title>Overview</title>
@@ -46,12 +47,14 @@ under the License.
       of UIMA CASes to and from XMI format. This provides a number of advantages,
       including:</para>
     
+    <blockquote>
     <para>You can define a model using a UML Editor, such as Rational Rose or EclipseUML, and
       then automatically convert it to a UIMA Type System.</para>
     
     <para>You can take an existing UIMA application, convert its type system to Ecore, and
       save the CASes it produces to XMI. This data is now in a form where it can easily be ingested
       by an EMF-based application.</para>
+      </blockquote>
     
     <para>More generally, we are adopting the well-documented, open standard XMI as the
       standard way to represent UIMA-compliant analysis results (replacing the
@@ -129,8 +132,9 @@ under the License.
       <literal>UimaTypeSystem2Ecore</literal>.</para>
     
     <para>Also, the uimaj_examples Eclipse project contains some example code that shows
-      how to use the serializer and deserializer:</para>
-    
+      how to use the serializer and deserializer:
+
+    <blockquote>
     <para><literal>org.apache.uima.examples.xmi.XmiWriterCasConsumer:</literal>
       This is a CAS Consumer that writes each CAS to an output file in XMI format. It is analogous
       to the XCasWriter CAS Consumer that has existed in prior UIMA versions, except that it
@@ -141,6 +145,7 @@ under the License.
       them into a CAS. For example, this would allow you to build a Collection Processing
       Engine that reads XMI files, which could contain some previous analysis results, and
       then do further analysis.</para>
+    </blockquote></para>
     
     <para>Finally, in under the folder <literal>uimaj_examples/ecore_src</literal> is
       the class

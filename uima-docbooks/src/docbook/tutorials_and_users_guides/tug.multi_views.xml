@@ -24,6 +24,7 @@ under the License.
 -->
 <chapter id="ugr.tug.mvs">
   <title>Multiple CAS Views of an Artifact</title>
+  <titleabbrev>Multiple CAS Views</titleabbrev>
   
   <para>UIMA provides an extension to the basic model of the CAS which supports analysis of
     multiple views of the same artifact, all contained with the CAS. This chapter describes
@@ -53,7 +54,8 @@ under the License.
     repositories:</para>
   
   
-  <programlisting>aView.addFsToIndexes(aFeatureStructure) aView.removeFsFromIndexes(aFeatureStructure)</programlisting>
+  <programlisting>aView.addFsToIndexes(aFeatureStructure) 
+aView.removeFsFromIndexes(aFeatureStructure)</programlisting>
   
   <para>specify the view in which this Feature Structure should be added to or removed from the
     indexes.</para>
@@ -93,7 +95,8 @@ under the License.
     </section>
     
     <section id="ugr.tug.mvs.multi_view_and_single_view">
-      <title>Multi-View and Single-View components and applications</title>
+      <title>Multi-View, Single-View components &amp; applications</title>
+      <titleabbrev>Multi/Single View parts in Applications</titleabbrev>
       
       <para>Components and applications can be written to be Multi-View or Single-View.
         Most components used as primitive building blocks are expected to be Single-View.
@@ -115,6 +118,7 @@ under the License.
     <title>Multi-View Components</title>
     <section id="ugr.tug.mvs.deciding_multi_view">
       <title>How UIMA decides if a component is Multi-View</title>
+      <titleabbrev>Deciding: Multi-View</titleabbrev>
       
       <para>Every UIMA component has an associated XML Component Descriptor. Multi-View
         components are identified simply as those whose descriptors declare one or more Sofa
@@ -179,6 +183,7 @@ under the License.
   
   <section id="ugr.tug.mvs.sofa_capabilities_and_apis_for_apps">
     <title>Sofa Capabilities and APIs for Applications</title>
+    <titleabbrev>Sofa Capabilities &amp; APIs for Apps</titleabbrev>
     
     <para>In addition to components, applications can make use of these capabilities. When
       an application creates a new CAS, it also creates the initial view of that CAS - and this
@@ -411,7 +416,7 @@ anAnnotator = UIMAFramework.produceAnalysisEngine(desc,additionalParams);</progr
   </section>
   
   <section id="ugr.tug.mvs.jcas_extensions_for_multi_views">
-    <title>JCas extensions for Multiple Views / Sofas</title>
+    <title>JCas extensions for Multiple Views</title>
     
     <para>The JCas interface to the CAS can be used with any / all views, as well as the base CAS
       sent to Multi-View components. You can always get a JCas object from an existing CAS
@@ -584,10 +589,9 @@ uima.tcas.DocumentAnnotation: this beer is good
 uima.tcas.Annotation: this
 uima.tcas.Annotation: beer
 uima.tcas.Annotation: is
-uima.tcas.Annotation: good</programlisting>
+uima.tcas.Annotation: good
       
-      
-      <programlisting>---Printing all annotations for German Sofa---
+---Printing all annotations for German Sofa---
 uima.tcas.DocumentAnnotation: das bier ist gut
 sofa.test.CrossAnnotation: das
  other annotation feature: this
@@ -604,11 +608,10 @@ sofa.test.CrossAnnotation: gut
   <section id="ugr.tug.mvs.views_api_summary">
     <title>Views API Summary</title>
     
-    <para>The recommended way to deliver a particular CAS view to a <emphasis
-        role="bolditalic">Single-View</emphasis> component is to use by Sofa-mapping in
+    <para>The recommended way to deliver a particular CAS view to a <emphasis role="bold"><emphasis role="italic">Single-View</emphasis></emphasis> component is to use by Sofa-mapping in
       the CPE and/or aggregate descriptors.</para>
     
-    <para>For <emphasis role="bolditalic">Multi-View </emphasis> components or
+    <para>For <emphasis role="bold"><emphasis role="italic">Multi-View </emphasis></emphasis> components or
       applications, the following methods are used to create or get a reference to a CAS view
       for a particular Sofa:</para>
     

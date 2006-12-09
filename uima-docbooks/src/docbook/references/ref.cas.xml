@@ -50,7 +50,8 @@ under the License.
       packages <literal>org.apache.uima.cas.*</literal>.</para>
   </section>
   
-  <section id="ugr.ref.cas.overview"><title>CAS Overview</title>
+  <section id="ugr.ref.cas.overview">
+    <title>CAS Overview</title>
     
     <para>There are three main parts to the CAS: the type system, data creation and
       manipulation, and indexing. <footnote><para>A fourth part, the Subject of Analysis,
@@ -118,6 +119,7 @@ under the License.
     
     <section id="ugr.ref.cas.creating_accessing_manipulating_data">
       <title>Creating, accessing and manipulating data</title>
+      <titleabbrev>Creating/Accessing/Changing data</titleabbrev>
       
       <para>Using the non JCas runtime APIs to access the CAS is a two step process. In step one
         you query the CAS&apos;s type system to obtain type and feature objects
@@ -190,7 +192,8 @@ under the License.
     </section>
   </section>
   
-  <section id="ugr.ref.cas.builtin_types"><title>Built-in CAS Types</title>
+  <section id="ugr.ref.cas.builtin_types">
+    <title>Built-in CAS Types</title>
     
     <para>The CAS has two kinds of built-in types &ndash; primitive and non-primitive. The
       primitive types are:
@@ -472,6 +475,7 @@ private void indent(int level) {
     
     <section id="ugr.ref.cas.cas_apis_create_modify_feature_structures">
       <title>Using the CAS APIs to create and modify feature structures</title>
+      <titleabbrev>Using CAS APIs: Feature Structures</titleabbrev>
       
       <para>Assume a type system declaration that defines two types: Entity and Person.
         Entity has no features defined within it but inherits from uima.tcas.Annotation
@@ -624,6 +628,7 @@ private Feature initFeature(String featName, Type type)
   
   <section id="ugr.ref.cas.accessing_modifying_features_of_feature_structures">
     <title>Accessing or modifying features of feature structures</title>
+    <titleabbrev>Accessing or modifying Features</titleabbrev>
     
     <para>Values of individual features for a feature structure can be set or referenced,
       using a set of methods that depend on the type of value that feature is declared to have.
@@ -818,7 +823,8 @@ FSIterator it = cas.createFilteredIterator(annotIt, nounTokenCons);</programlist
         </para></section></section>
   
   <section id="ugr.ref.cas.guide_to_javadocs">
-    <title>The CAS APIs &ndash; a guide to the JavaDocs</title>
+    <title>The CAS API&apos;s &ndash; a guide to the JavaDocs</title>
+    <titleabbrev>CAS API&apos;s JavaDocs</titleabbrev>
     
     <para>The CAS APIs are organized into 3 Java packages: cas, cas.impl, and cas.text. Most
       of the APIs described here are in the cas package. The cas.impl package contains classes
@@ -839,7 +845,7 @@ FSIterator it = cas.createFilteredIterator(annotIt, nounTokenCons);</programlist
           <title>CAS Object hierarchy</title>
           <mediaobject>
             <imageobject>
-              <imagedata width="586" depth="399" format="JPG"
+              <imagedata width="586px" format="JPG"
                 fileref="&imgroot;image001.png"/>
             </imageobject>
             <textobject><phrase>CAS object hierarchy</phrase></textobject>

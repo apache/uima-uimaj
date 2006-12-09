@@ -114,7 +114,7 @@ under the License.
         <title>The PEAR Structure</title>
         <mediaobject>
           <imageobject>
-            <imagedata width="303" depth="394" format="JPG"
+            <imagedata width="303px" format="JPG"
               fileref="&imgroot;image002.jpg"/>
           </imageobject>
           <textobject><phrase>diagram of the PEAR structure</phrase></textobject>
@@ -211,6 +211,7 @@ under the License.
     
     <section id="ugr.ref.pear.installation_descriptor">
       <title>Documented template for the installation descriptor:</title>
+      <titleabbrev>Installation Descriptor: template</titleabbrev>
       
       <para>The following is a sample <quote>documented template</quote> which describes
         content of the installation descriptor install.xml:</para>
@@ -255,15 +256,15 @@ under the License.
     <DESC>$main_root/desc/ComponentDescriptor.xml</DESC>
 
     <!-- deployment options:                                   -->
-    <!-- a) ©standard© is deploying AE locally                 -->
-    <!-- b) ©service©  is deploying AE locally as a service,   -->
+    <!-- a) "standard" is deploying AE locally                 -->
+    <!-- b) "service"  is deploying AE locally as a service,   -->
     <!--    using specified command (script)                   -->
-    <!-- c) ©network©  is deploying a pure network AE, which   -->
+    <!-- c) "network"  is deploying a pure network AE, which   -->
     <!--    is running somewhere on the network                -->
 
     <DEPLOYMENT>standard | service | network</DEPLOYMENT>
 
-    <!-- Specifications for ©service© deployment option only   -->
+    <!-- Specifications for "service" deployment option only   -->
     <SERVICE_COMMAND>$main_root/bin/startService.bat</SERVICE_COMMAND>
     <SERVICE_WORKING_DIR>$main_root</SERVICE_WORKING_DIR>
     <SERVICE_COMMAND_ARGS>
@@ -280,7 +281,7 @@ under the License.
 
     </SERVICE_COMMAND_ARGS>
 
-    <!-- Specifications for ©network© deployment option only   -->
+    <!-- Specifications for "network" deployment option only   -->
 
     <NETWORK_PARAMETERS>
       <VNS_SPECS VNS_HOST="vns_host_IP" VNS_PORT="vns_port_No" />

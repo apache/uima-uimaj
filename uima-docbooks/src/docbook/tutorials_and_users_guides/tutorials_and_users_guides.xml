@@ -23,7 +23,7 @@ specific language governing permissions and limitations
 under the License.
 -->
 <book lang="en">
-  <title>Apache UIMA SDK Tutorial and Developers' Guides</title>
+  <title>Apache UIMA SDK &mdash; Tutorial and Developers&apos; Guides</title>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="../common_book_info.xml"/>
 
   <toc/>

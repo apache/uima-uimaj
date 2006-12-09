@@ -54,7 +54,7 @@ under the License.
         worlds</title>
       <mediaobject>
         <imageobject>
-          <imagedata format="PNG"
+          <imagedata width="576px" format="PNG"
             fileref="&imgroot;image002.png"/>
         </imageobject>
         <textobject><phrase>Picture of a bridge between unstructured information
@@ -165,12 +165,12 @@ under the License.
     </blockquote>
     
     <section id="ugr.ovv.conceptual.aes_annotators_and_analysis_results">
-      <title>Analysis Engines, Annotators and Analysis Results</title>
+      <title>Analysis Engines, Annotators &amp; Results</title>
       <figure id="ugr.ovv.conceptual.metadata_in_cas">
         <title>Objects represented in the Common Analysis Structure (CAS)</title>
         <mediaobject>
           <imageobject>
-            <imagedata format="PNG" width="594" depth="376" align="center"
+            <imagedata format="PNG" width="594px" align="center"
               fileref="&imgroot;image004.png"/>
           </imageobject>
           <textobject><phrase>Picture of some text, with a hierarchy of discovered
@@ -200,7 +200,7 @@ under the License.
         For example, the following is an assertion about the topic of a document:</para>
       
       
-      <programlisting>(1) The Topic of document D102 is <quote>CEOs and Golf</quote>.</programlisting>
+      <programlisting>(1) The Topic of document D102 is "CEOs and Golf".</programlisting>
       
       <para>Analysis results may include statements describing regions more granular than
         the entire document. We use the term <emphasis role="bold">span</emphasis> to
@@ -505,7 +505,7 @@ under the License.
       <title>Sample Aggregate Analysis Engine</title>
       <mediaobject>
         <imageobject>
-          <imagedata format="PNG"
+          <imagedata width="588px" format="PNG"
             fileref="&imgroot;image006.png"/>
         </imageobject>
         <textobject><phrase>Picture of multiple parts (a language identifier,
@@ -600,7 +600,7 @@ under the License.
         <title>Using UIMA Framework to create and interact with an Analysis Engine</title>
         <mediaobject>
           <imageobject>
-            <imagedata width="618" depth="418" align="center" format="PNG"
+            <imagedata width="618px" align="center" format="PNG"
               fileref="&imgroot;image008.png"/>
           </imageobject>
           <textobject><phrase>Picture of application interacting with UIMA&apos;s
@@ -645,7 +645,7 @@ under the License.
         <title>High-Level UIMA Component Architecture from Source to Sink</title>
         <mediaobject>
           <imageobject>
-            <imagedata width="578" depth="296" format="PNG" align="center"
+            <imagedata width="578px" format="PNG" align="center"
               fileref="&imgroot;image010.png"/>
           </imageobject>
         </mediaobject>
@@ -728,7 +728,7 @@ under the License.
         <title>Collection Processing Manager in UIMA Framework</title>
         <mediaobject>
           <imageobject>
-            <imagedata width="576" depth="376" align="center" format="PNG"
+            <imagedata width="576px" align="center" format="PNG"
               fileref="&imgroot;image012.png"/>
           </imageobject>
           <textobject><phrase>box and arrows picture of application using CPE factory to
@@ -873,7 +873,7 @@ under the License.
         <quote>view</quote> and some on both.</title>
       <mediaobject>
         <imageobject>
-          <imagedata width="576" depth="264" format="PNG" align="center"
+          <imagedata width="576px" format="PNG" align="center"
             fileref="&imgroot;image014.png"/>
         </imageobject>
         <textobject><phrase>Picture showing audio on the left broken into segments by a
