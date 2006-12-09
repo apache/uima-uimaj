@@ -508,7 +508,7 @@ ae.destroy();</programlisting></para>
     
     <section id="ugr.tug.application.running_a_cpe_from_a_descriptor">
       <title>Running a Collection Processing Engine from a Descriptor</title>
-      <titleabbrev>Running a CPE from a Descriptor</titleabbrev>>
+      <titleabbrev>Running a CPE from a Descriptor</titleabbrev>
       
       <para><olink targetdoc="&uima_docs_tutorial_guides;"
           targetptr="ugr.tug.cpe.running_cpe_from_application"/> describes how to
@@ -519,7 +519,7 @@ ae.destroy();</programlisting></para>
     <section
       id="ugr.tug.application.configuring_a_cpe_descriptor_programmatically">
       <title>Configuring a Collection Processing Engine Descriptor Programmatically</title>
-      <titleabbrev>Configuring a CPE Descriptor Programmatically</titleabbrev>>
+      <titleabbrev>Configuring a CPE Descriptor Programmatically</titleabbrev>
       
       <para>For the finest level of control over the CPE descriptor settings, the CPE offers
         programmatic access to the descriptor via an API. With this API, a developer can
@@ -1127,26 +1127,26 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
         looks like this (important parts are in bold italics):
         
         
-        <programlisting>&lt;deployment name=<quote><emphasis role="bold"><emphasis role="italic">PersonTitleAnnotator</emphasis></emphasis></quote> 
-            xmlns=<quote>http://xml.apache.org/axis/wsdd/</quote> 
-            xmlns:java=<quote>http://xml.apache.org/axis/wsdd/providers/java</quote>&gt;
+        <programlisting>&lt;deployment name="<emphasis role="bold"><emphasis role="italic">PersonTitleAnnotator</emphasis></emphasis>" 
+            xmlns="http://xml.apache.org/axis/wsdd/" 
+            xmlns:java="http://xml.apache.org/axis/wsdd/providers/java"&gt;
 
-  &lt;service name=<quote><emphasis role="bold"><emphasis role="italic">urn:PersonTitleAnnotator</emphasis></emphasis></quote> provider=<quote>java:RPC</quote>&gt;
+  &lt;service name="<emphasis role="bold"><emphasis role="italic">urn:PersonTitleAnnotator</emphasis></emphasis>" provider="java:RPC"&gt;
 
-    &lt;parameter name=<quote>scope</quote> value=<quote>Request</quote>/&gt;
+    &lt;parameter name="scope" value="Request"/&gt;
 
-    &lt;parameter name=<quote>className</quote> 
-      value=<quote>org.apache.uima.reference_impl.analysis_engine
-                .service.soap.AxisAnalysisEngineService_impl</quote>/&gt;
+    &lt;parameter name="className" 
+      value="org.apache.uima.reference_impl.analysis_engine
+                .service.soap.AxisAnalysisEngineService_impl"/&gt;
 
-    &lt;parameter name=<quote>allowedMethods</quote> value=<quote>getMetaData process</quote>/&gt;
-    &lt;parameter name=<quote>allowedRoles</quote> value=<quote>*</quote>/&gt;
-    &lt;parameter name=<quote>resourceSpecifierPath</quote> 
-      value=<quote><emphasis role="bold"><emphasis role="italic">C:/Program Files/apache/uima/examples/
-           descriptors/analysis_engine/PersonTitleAnnotator.xml</emphasis></emphasis></quote>/&gt;
+    &lt;parameter name="allowedMethods" value="getMetaData process"/&gt;
+    &lt;parameter name="allowedRoles" value="*"/&gt;
+    &lt;parameter name="resourceSpecifierPath" 
+      value="<emphasis role="bold"><emphasis role="italic">C:/Program Files/apache/uima/examples/
+           descriptors/analysis_engine/PersonTitleAnnotator.xml</emphasis></emphasis>"/&gt;
 
-    &lt;parameter name=<quote>numInstances</quote> value=<quote>3</quote>/&gt;
-    &lt;parameter name=<quote>timeoutPeriod</quote> value=<quote>30000</quote>/&gt;
+    &lt;parameter name="numInstances" value="3"/&gt;
+    &lt;parameter name="timeoutPeriod" value="30000"/&gt;
 
     &lt;!-- Type Mappings omitted from this document; 
           you will not need to edit them. --&gt;

@@ -1293,19 +1293,19 @@ else { //No CAS Initializer, so read file and set document text ourselves
         configuration for the non-managed CAS Processor.</para>
       
       
-      <programlisting>&lt;casProcessor <emphasis role="bold"><emphasis role="italic">deployment=<quote>remote</quote></emphasis></emphasis> name=<quote>Meeting Detector TAE</quote>&gt;
+      <programlisting>&lt;casProcessor <emphasis role="bold"><emphasis role="italic">deployment="remote"</emphasis></emphasis> name="Meeting Detector TAE"&gt;
   &lt;descriptor&gt;
     &lt;include href=
-        <quote>descriptors/vinciService/MeetingDetectorVinciService.xml</quote>/&gt;
+        "descriptors/vinciService/MeetingDetectorVinciService.xml"/&gt;
   &lt;/descriptor&gt;
   &lt;deploymentParameters/&gt;
   &lt;filter/&gt;
   &lt;errorHandling&gt;
-    &lt;errorRateThreshold action=<quote>terminate</quote> value=<quote>1/100</quote>/&gt;
-    &lt;maxConsecutiveRestarts action=<quote>terminate</quote> value=<quote>3</quote>/&gt;
-    &lt;timeout max=<quote>100000</quote>/&gt;
+    &lt;errorRateThreshold action="terminate" value="1/100"/&gt;
+    &lt;maxConsecutiveRestarts action="terminate" value="3"/&gt;
+    &lt;timeout max="100000"/&gt;
   &lt;/errorHandling&gt;
-  &lt;checkpoint batch=<quote>10000</quote>/&gt;
+  &lt;checkpoint batch="10000"/&gt;
 &lt;/casProcessor&gt;</programlisting>
       
       <para>See <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/> for

@@ -274,10 +274,10 @@ myFeature = "bar"</programlisting>
         and 6 would be serialized as the four objects:
         
         
-        <programlisting>&lt;cas:NonEmptyIntegerList xmi:id=<quote>10</quote> head=<quote>2</quote> tail=<quote>11</quote>/&gt;
-&lt;cas:NonEmptyIntegerList xmi:id=<quote>11</quote> head=<quote>4</quote> tail=<quote>12</quote>/&gt;
-&lt;cas:NonEmptyIntegerList xmi:id=<quote>12</quote> head=<quote>6</quote> tail=<quote>13</quote>/&gt;
-&lt;cas:EmptyIntegerList xmi:id<quote>13</quote>/&gt;</programlisting></para>
+        <programlisting>&lt;cas:NonEmptyIntegerList xmi:id="10" head="2" tail="11"/&gt;
+&lt;cas:NonEmptyIntegerList xmi:id="11" head="4" tail="12"/&gt;
+&lt;cas:NonEmptyIntegerList xmi:id="12" head="6" tail="13"/&gt;
+&lt;cas:EmptyIntegerList xmi:id"13"/&gt;</programlisting></para>
       
       <para>This representation of arrays allows multiple references to an array of list. It
         also allows a feature with range type TOP to refer to an array or list. However, it is a

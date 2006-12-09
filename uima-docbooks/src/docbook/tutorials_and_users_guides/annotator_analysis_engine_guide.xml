@@ -2262,7 +2262,7 @@ documentAnalyzer
       
       <programlisting><![CDATA[<typeSystemDescription>
   <imports>
-    <import location=<quote>TutorialTypeSystem.xml</quote>/>
+    <import location="TutorialTypeSystem.xml"/>
   </imports>
 </typeSystemDescription>
 ]]>

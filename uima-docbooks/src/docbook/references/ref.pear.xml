@@ -489,7 +489,7 @@ local_root_directory_for_1st_delegate_component/resources/dict/
             
             <programlisting><![CDATA[<DEPLOYMENT>network</DEPLOYMENT>
 <NETWORK_PARAMETERS>
-  <VNS_SPECS VNS_HOST=<quote>vns_host_IP</quote> VNS_PORT=<quote>vns_port_No</quote> />
+  <VNS_SPECS VNS_HOST="vns_host_IP" VNS_PORT="vns_port_No" />
 </NETWORK_PARAMETERS>]]></programlisting></para>
         </section>
       </section>

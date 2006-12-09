@@ -108,8 +108,8 @@ under the License.
       from other XML files. When one of the following appears in an XML descriptor:
       
       
-      <programlisting>&lt;import location=<quote>[URL]</quote> /&gt; or
-&lt;import name=<quote>[Name]</quote> /&gt;</programlisting>
+      <programlisting>&lt;import location="[URL]" /&gt; or
+&lt;import name="[Name]" /&gt;</programlisting>
       it indicates that information from a separate XML file is being imported. Note that
       imports are allowed only in certain places in the descriptor. In the remainder of this
       chapter, it will be indicated at which points imports are allowed.</para>
@@ -176,7 +176,7 @@ AnalysisEngine ae = UIMAFramework.produceAE(desc, resMgr, null);
     <para>To use XInclude, you first must include the XInclude
     namespace in your document&apos;s root element, e.g.:</para>
     
-    <programlisting>&lt;analysisEngineDescription xmlns=<quote>http://uima.apache.org/resourceSpecifier</quote> xmlns:xi=<quote>http://www.w3.org/2001/XInclude</quote>&gt;</programlisting>
+    <programlisting>&lt;analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier" xmlns:xi="http://www.w3.org/2001/XInclude"&gt;</programlisting>
     
     <para>Then, you can include a file using the syntax <literal>&lt;xi:include
     href="[URL]"/&gt;</literal></para>
@@ -2004,7 +2004,7 @@ uima.tcas.Annotation.</programlisting>
         <programlisting><![CDATA[<capabilities>
   <capability>
     <outputs>
-      <type allAnnotatorFeatures=<quote>true|false</quote>>[String]</type>
+      <type allAnnotatorFeatures="true|false">[String]</type>
       <type>[TypeName]</type>
       ...
       <feature>[TypeName]:[Name]</feature>

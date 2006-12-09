@@ -193,7 +193,7 @@ under the License.
     
     
     <programlisting>&lt;descriptor&gt;
-    &lt;include href=<quote>${CPM_HOME}/desc_dir/descriptor.xml</quote>/&gt;
+    &lt;include href="${CPM_HOME}/desc_dir/descriptor.xml"/&gt;
 &lt;/descriptor&gt;</programlisting>
     
     <para>In this case, the value for the <literal>CPM_HOME</literal> variable must be
@@ -555,8 +555,8 @@ under the License.
             
             
             <programlisting>&lt;sofaNameMappings&gt;
-  &lt;sofaNameMapping cpeSofaName=<quote>a_CPE_name</quote>
-                   componentSofaName=<quote>a_component_Name</quote>/&gt;
+  &lt;sofaNameMapping cpeSofaName="a_CPE_name"
+                   componentSofaName="a_component_Name"/&gt;
   ...
 &lt;/sofaNameMappings&gt;</programlisting></para>
           

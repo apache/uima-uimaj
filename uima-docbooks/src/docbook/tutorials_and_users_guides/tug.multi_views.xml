@@ -214,11 +214,11 @@ aView.removeFsFromIndexes(aFeatureStructure)</programlisting>
     <para>Consider annotator code to create a new CAS view:</para>
     
     
-    <programlisting>CAS viewX = cas.createView(<quote>X</quote>);</programlisting>
+    <programlisting>CAS viewX = cas.createView("X");</programlisting>
     
     <para>Or code to get an existing CAS view:</para>
     
-    <programlisting>CAS viewX = cas.getView(<quote>X</quote>);</programlisting>
+    <programlisting>CAS viewX = cas.getView("X");</programlisting>
     
     <para>Without Sofa name mapping the SofaID for the new Sofa will be <quote>X</quote>.
       However, if a name mapping for <quote>X</quote> has been specified by the aggregate or

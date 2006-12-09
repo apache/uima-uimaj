@@ -430,12 +430,11 @@ myView2.addFsToIndexes(myInstance); // index myInstance in myView2</programlisti
       
       
       <programlisting>FSIndexRepository ir = jcas.getFSIndexRepository();
-FSIndex myIndex = ir.getIndex(<quote>myIndexName</quote>);
-FSIterator myIterator = myIndex.iterator();</programlisting>
-      
-      
-      <programlisting>JFSIndexRepository ir = jcas.getJFSIndexRepository();
-FSIndex myIndex = ir.getIndex(<quote>myIndexName</quote>, Foo.type); // filtered
+FSIndex myIndex = ir.getIndex("myIndexName");
+FSIterator myIterator = myIndex.iterator();
+
+JFSIndexRepository ir = jcas.getJFSIndexRepository();
+FSIndex myIndex = ir.getIndex("myIndexName", Foo.type); // filtered
 FSIterator myIterator = myIndex.iterator();</programlisting>
       
       <para>Iterators work like normal Java iterators, but are augmented to support
