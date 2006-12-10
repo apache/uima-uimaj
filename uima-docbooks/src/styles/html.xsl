@@ -22,6 +22,7 @@
   <xsl:import href="@file.prefix@@docbook.xsl@/html/chunk.xsl" />
   <xsl:import href="@file.prefix@@src.dir@/styles/html/custom.xsl" />
   <xsl:include href="@file.prefix@@tmp.dir@/html-titlepage.xsl" />
+  <xsl:include href="@file.prefix@@src.dir@/styles/common_custom.xsl" />
 
   <!-- enable olink, or not -->
   <xsl:param name="collect.xref.targets" select="'@olink_work@'"/>

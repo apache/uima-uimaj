@@ -20,10 +20,6 @@
                 xmlns:fo="http://www.w3.org/1999/XSL/Format"
                 version='1.0'>
   
-  <xsl:param name="admon.graphics.path" select="'../images/'"/>
-  <xsl:param name="navig.graphics.path" select="'../images/'"/>
-  <xsl:param name="callout.graphics.path" select="'../images/callouts/'"/>
-  
   <xsl:param name="body.font.family"  select="'Palatino'"/>
   <xsl:param name="body.font.master"    select="'10.5'"/>
   <xsl:attribute-set name="root.properties">
@@ -35,7 +31,6 @@
                       olink styling
     ################################################### -->
   <xsl:param name="insert.xref.page.number" select="'yes'"/>
-  <xsl:param name="olink.doctitle" select="'yes'"/>
   <xsl:param name="insert.olink.pdf.frag" select="1"/>
 
   <!--###################################################
@@ -90,14 +85,6 @@
         <xsl:attribute name="margin-left">-5em</xsl:attribute>
         <xsl:attribute name="margin-right">-5em</xsl:attribute>
     </xsl:attribute-set>
-
-<!--###################################################
-                      Table of Contents
-    ################################################### -->
-
-    <xsl:param name="generate.toc">
-      book      toc,title
-    </xsl:param>
 
 <!--###################################################
                       Custom Footer
@@ -237,15 +224,6 @@
 <!--###################################################
                          Labels
     ################################################### -->
-
-    <!-- Label Chapters and Sections (numbering) -->
-    <xsl:param name="chapter.autolabel" select="1"/>
-    <xsl:param name="section.autolabel" select="1"/>
-    <xsl:param name="section.autolabel.max.depth" select="3"/>
-
-    <xsl:param name="section.label.includes.component.label" select="1"/>
-  
-    <xsl:param name="table.footnote.number.format" select="'1'"/>
  
     <xsl:attribute-set name="component.title.properties">
       <xsl:attribute name="border-top">
@@ -339,38 +317,8 @@
     </xsl:attribute-set>
 
 <!--###################################################
-                         Callouts
-    ################################################### -->
-
-    <!-- don't use images for callouts -->
-    <xsl:param name="callout.graphics">0</xsl:param>
-    <xsl:param name="callout.unicode">1</xsl:param>
-
-    <!-- Place callout marks at this column in annotated areas -->
-    <xsl:param name="callout.defaultcolumn">90</xsl:param>
-
-<!--###################################################
                           Misc
     ################################################### -->
-
-    <!-- have ulinks with text show the link in a footnote -->
-    <xsl:param name="ulink.footnotes" select="1"/>
-    <xsl:param name="ulink.show" select="1"/>
-
-    <!-- Glossary indent -->
-    <xsl:param name="glossterm.width" select="'1.4in'"/>
-
-    <!-- Placement of titles -->
-    <xsl:param name="formal.title.placement">
-        figure after
-        example after
-        equation before
-        table before
-        procedure before
-    </xsl:param>
-
-  <!-- Format Variable Lists as Blocks (prevents horizontal overflow) -->
-  <xsl:param name="variablelist.as.blocks">1</xsl:param>
 
   <!-- FOP 0.25 doens't support body.start.indent 
   <xsl:param name="body.start.indent">.75in</xsl:param>

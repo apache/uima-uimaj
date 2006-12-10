@@ -22,6 +22,7 @@
   <xsl:import href="@file.prefix@@docbook.xsl@/fo/docbook.xsl" />
   <xsl:import href="@file.prefix@@src.dir@/styles/pdf/custom.xsl" />
   <xsl:include href="@file.prefix@@tmp.dir@/pdf-titlepage.xsl" />
+  <xsl:include href="@file.prefix@@src.dir@/styles/common_custom.xsl" />
 
 <!-- ##################################################################
      # Admonitions - Must be here or the filter does not get applied! #
@@ -30,7 +31,6 @@
   <!-- Use nice graphics for admonitions 
   <xsl:param name="admon.graphics">'1'</xsl:param>
     -->
-  <xsl:param name="admon.graphics.path">@file.prefix@@docbook.xsl@/images/</xsl:param>
   <xsl:param name="draft.watermark.image" select="'@file.prefix@@docbook.xsl@/images/draft.png'"/>
   <xsl:param name="paper.type" select="'@paper.type@'"/>
 

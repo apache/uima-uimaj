@@ -2,8 +2,8 @@
    <ttl>Overview &amp; Setup</ttl>
    <xreftext>Overview &amp; Setup</xreftext>
    <div element="chapter" href="#ugr.project_overview" number="1" targetptr="ugr.project_overview">
-      <ttl>Apache UIMA SDK — Project Overview</ttl>
-      <xreftext>Chapter 1, <fo:inline xmlns:fo="http://www.w3.org/1999/XSL/Format" font-style="italic">Apache UIMA SDK — Project Overview</fo:inline>
+      <ttl>UIMA Overview</ttl>
+      <xreftext>Chapter 1, <fo:inline xmlns:fo="http://www.w3.org/1999/XSL/Format" font-style="italic">UIMA Overview</fo:inline>
       </xreftext>
       <div element="section" href="#ugr.project_overview_doc_overview" number="1.1" targetptr="ugr.project_overview_doc_overview">
          <ttl>Apache UIMA Project Documentation Overview</ttl>

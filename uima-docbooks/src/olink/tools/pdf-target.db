@@ -1,6 +1,6 @@
 <div element="book" href="#d0e2" number="" lang="en">
-   <ttl>Apache UIMA SDK — Tools Guide and Reference</ttl>
-   <xreftext>Apache UIMA SDK — Tools Guide and Reference</xreftext>
+   <ttl>UIMA Tools Guide and Reference</ttl>
+   <xreftext>UIMA Tools Guide and Reference</xreftext>
    <div element="chapter" href="#ugr.tools.cde" number="1" targetptr="ugr.tools.cde">
       <ttl>Component Descriptor Editor User's Guide</ttl>
       <xreftext>Chapter 1, <fo:inline xmlns:fo="http://www.w3.org/1999/XSL/Format" font-style="italic">Component Descriptor Editor User's Guide</fo:inline>

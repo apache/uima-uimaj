@@ -1,6 +1,6 @@
 <div element="book" href="#d0e2" number="" lang="en">
-   <ttl>Apache UIMA SDK — Tutorial and Developers' Guides</ttl>
-   <xreftext>Apache UIMA SDK — Tutorial and Developers' Guides</xreftext>
+   <ttl>UIMA Tutorial and Developers' Guides</ttl>
+   <xreftext>UIMA Tutorial and Developers' Guides</xreftext>
    <div element="chapter" href="#ugr.tug.aae" number="1" targetptr="ugr.tug.aae">
       <ttl>Annotator and Analysis Engine Developer's Guide</ttl>
       <xreftext>Chapter 1, <fo:inline xmlns:fo="http://www.w3.org/1999/XSL/Format" font-style="italic">Annotator and Analysis Engine Developer's Guide</fo:inline>

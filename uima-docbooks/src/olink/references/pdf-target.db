@@ -1,6 +1,6 @@
 <div element="book" href="#d0e2" number="" lang="en">
-   <ttl>Apache UIMA SDK — References</ttl>
-   <xreftext>Apache UIMA SDK — References</xreftext>
+   <ttl>UIMA References</ttl>
+   <xreftext>UIMA References</xreftext>
    <div element="chapter" href="#ugr.ref.javadocs" number="1" targetptr="ugr.ref.javadocs">
       <ttl>Javadocs</ttl>
       <xreftext>Chapter 1, <fo:inline xmlns:fo="http://www.w3.org/1999/XSL/Format" font-style="italic">Javadocs</fo:inline>

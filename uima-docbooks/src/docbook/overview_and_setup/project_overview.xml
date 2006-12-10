@@ -23,7 +23,7 @@ specific language governing permissions and limitations
 under the License.
 -->
 <chapter id="ugr.project_overview">
-  <title>Apache UIMA SDK &mdash; Project Overview</title>
+  <title>UIMA Overview</title>
   <titleabbrev>Overview</titleabbrev>
   
   <para>The Unstructured Information Management Architecture (UIMA) is an architecture
@@ -67,7 +67,7 @@ under the License.
     <!-- _crossRef357 -->
     <title>Apache UIMA Project Documentation Overview</title>
     <para> The user documentation for UIMA is organized into several parts.
-      <itemizedlist>
+      <itemizedlist spacing="compact">
         <listitem>
           <para> <xref linkend="ugr.project_overview_overview"/> - this documentation
             </para>

@@ -36,8 +36,12 @@ div {
 p {
     text-align:     left;
     margin-bottom:  .6em;
-    line-height:    1.2;
+    line-height:    1.4;
 }
+
+td {   line-height:    1.2;
+       padding: .3em;
+       }
 
 hr {
     margin-top:     .6em;
@@ -49,7 +53,7 @@ hr {
 }
 
 h2,h3,h4,h5 {
-  margin: 0 0 0.5em 0; 
+  margin: 0 0 0.5em 0;
   page-break-after: avoid;
   font-family: Helvetica, Arial, sans-serif;
   font-weight: bold;
@@ -64,7 +68,7 @@ h2, h3, h4 { margin-top: 1em; }
 /* later rules of same specificity override earlier ones */
 /* cant use ">" because IE doesn't recognize */
 
-div.chapter div.titlepage h2.title {  
+div.chapter div.titlepage h2.title {
   margin-bottom: 1.5em;
   font-size: 1.6em;
   letter-spacing: -0.07ex;
@@ -82,6 +86,13 @@ h3 {
   margin-left: -5%;
   font-size: 1.2em;
   border-top:solid black .75pt;
+}
+
+div.note h3, div.tip h3 {
+    margin-left: 0;
+    font-size: 1.2em;
+    border-top: none;
+    margin-top: 0em;
 }
 
 h4 {
@@ -148,7 +159,7 @@ div.authorgroup
 }
 
 div.toc, div.list-of-examples, div.list-of-figures {
-    font-size:      0.8em;
+
     margin-bottom:  3em;
 }
 
@@ -166,7 +177,7 @@ li {
 
 pre {
     margin:         .75em 0;
-    line-height:    1.0;
+    line-height:    1.25;
     color:          black;
 }
 
@@ -199,7 +210,7 @@ div.table p.title {
 }
 
 p.releaseinfo, .copyright {
-    font-size:      0.7em;
+    font-size:      0.9em;
     text-align:     left;
     margin:         0px;
     padding:        0px;
@@ -264,13 +275,13 @@ div.revhistory {
 div.revhistory table {
     font-family:    sans-serif;
     font-size:      12px;
-	border-collapse: collapse;
+  border-collapse: collapse;
 }
 
 div.revhistory table tr {
-	border:         solid 1px gray;
+  border:         solid 1px gray;
 }
 
 div.revhistory table th {
-	border: none;
+  border: none;
 }

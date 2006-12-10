@@ -31,29 +31,9 @@
   <xsl:param name="chunker.output.doctype-public" select="'-//W3C//DTD HTML 4.0 Transitional//EN'"/>
   <xsl:param name="table.frame.border.color" select="'black'"/>
   <xsl:param name="table.cell.border.color"  select="'black'"/>
-<!-- Activate Graphics -->
-  <xsl:param name="admon.graphics" select="1"/>
-  <xsl:param name="admon.graphics.path">../images/</xsl:param>
-  <xsl:param name="admon.graphics.extension">.gif</xsl:param>
-  <xsl:param name="callout.graphics" select="1" />
-  <xsl:param name="callout.graphics.path">../images/callouts/</xsl:param>
-  <xsl:param name="callout.graphics.extension">.gif</xsl:param>
 
   <xsl:param name="table.borders.with.css" select="1"/>
-  <xsl:param name="html.stylesheet.type">text/css</xsl:param>         
-  <xsl:param name="generate.toc">book toc,title</xsl:param>         
-
-  <xsl:param name="admonition.title.properties">text-align: left</xsl:param>
-
-  <!-- Label Chapters and Sections (numbering) -->
-  <xsl:param name="chapter.autolabel" select="1"/>
-  <xsl:param name="section.autolabel" select="1"/>
-  <xsl:param name="section.autolabel.max.depth" select="1"/>
-
-  <xsl:param name="section.label.includes.component.label" select="1"/>
-  <xsl:param name="table.footnote.number.format" select="'1'"/>
-  
-  <xsl:param name="navig.graphics.path" select="'../images/'"/>
+  <xsl:param name="html.stylesheet.type">text/css</xsl:param>           
 
 <!-- Remove "Chapter" from the Chapter titles... 
   <xsl:param name="local.l10n.xml" select="document('')"/>
