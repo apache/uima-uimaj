@@ -158,11 +158,10 @@ under the License.
   
   <section id="ugr.ovv.conceptual.analysis_basics">
     <title>Analysis Basics</title>
-    <blockquote role="key_concepts"><para><phrase role="bold">
-      &key_concepts;</phrase> Analysis Engine, Document, Annotator, Annotator
+    <note><title>&key_concepts;</title><para>Analysis Engine, Document, Annotator, Annotator
       Developer, Type, Type System, Feature, Annotation, CAS, Sofa, JCas, UIMA
       Context.</para>
-    </blockquote>
+    </note>
     
     <section id="ugr.ovv.conceptual.aes_annotators_and_analysis_results">
       <title>Analysis Engines, Annotators &amp; Results</title>
@@ -496,10 +495,9 @@ under the License.
   <section id="ugr.ovv.conceptual.aggregate_analysis_engines">
     <title>Aggregate Analysis Engines</title>
     
-    <blockquote role="key_concepts"><para><phrase role="bold">
-      &key_concepts;</phrase> Aggregate Analysis Engine, Delegate Analysis Engine,
+    <note><title>&key_concepts;</title><para>Aggregate Analysis Engine, Delegate Analysis Engine,
       Tightly and Loosely Coupled, Flow Specification, Analysis Engine Assembler</para>
-    </blockquote>
+    </note>
     
     <figure id="ugr.ovv.conceptual.sample_aggregate">
       <title>Sample Aggregate Analysis Engine</title>
@@ -588,10 +586,9 @@ under the License.
   <section id="ugr.ovv.conceptual.applicaiton_building_and_collection_processing">
     <title>Application Building and Collection Processing</title>
     
-    <blockquote role="key_concepts"><para><phrase role="bold">
-      &key_concepts;</phrase> Process Method, Collection Processing Architecture,
+    <note><title>&key_concepts;</title><para>Process Method, Collection Processing Architecture,
       Collection Reader, CAS Consumer, CAS Initializer, Collection Processing Engine,
-      Collection Processing Manager.</para></blockquote>
+      Collection Processing Manager.</para></note>
     
     <section id="ugr.ovv.conceptual.using_framework_from_an_application">
       <title>Using the framework from an Application</title>
@@ -775,9 +772,8 @@ under the License.
   <section id="ugr.ovv.conceptual.exploiting_analysis_results">
     <title>Exploiting Analysis Results</title>
     
-    <blockquote role="key_concepts"><para><phrase role="bold">
-      &key_concepts;</phrase> Semantic Search, XML Fragment Queries.</para>
-    </blockquote>
+    <note><title>&key_concepts;</title><para>Semantic Search, XML Fragment Queries.</para>
+    </note>
     
     <section id="ugr.ovv.conceptual.semantic_search">
       <title>Semantic Search</title>
