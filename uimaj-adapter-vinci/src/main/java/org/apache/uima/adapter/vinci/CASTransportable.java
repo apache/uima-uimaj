@@ -333,6 +333,23 @@ public class CASTransportable extends DefaultHandler implements Transportable {
       }
     }
     if (Constants.KEYS.equals(qName)) {
+      // the data inside the KEYS element is the contents of an incoming CAS.
+      // So this is where we need to grab a CAS from the CasPool and initialize 
+      //the XCASDeserializer.
+      if (myCas == null) {
+        myCas = myCasPool.getCas(0);
+      }
+      myCas.reset();
+      XCASDeserializer deser = new XCASDeserializer(myCas.getTypeSystem(), this.uimaContext);
+      deser.setDocumentTypeName("Detag:DetagContent");
+      if (!ignoreResponse) {
+        handler = deser.getXCASHandler(myCas, outOfTypeSystemData);
+      } else {
+        handler = new DefaultHandler();
+      }
+      handler.startDocument();
+      handler.startElement("", "CAS", "CAS", null);
+      //set the ready flag to indicate that following elements are CAS data
       ready++;
     }
   }
@@ -341,6 +358,10 @@ public class CASTransportable extends DefaultHandler implements Transportable {
     // Debug.p("End element: " + qName);
     if (Constants.KEYS.equals(qName)) {
       ready--;
+      if (ready == 0) {
+        handler.endElement("", "CAS", "CAS");
+        handler.endDocument();
+      }
     }
     if (ready > 0) {
       handler.endElement(uri, name, qName);
@@ -369,22 +390,6 @@ public class CASTransportable extends DefaultHandler implements Transportable {
    * @see org.xml.sax.helpers.DefaultHandler#startDocument()
    */
   public void startDocument() throws SAXException {
-    // this gets called from the XTalkToSax parser after it confirms
-    // that there is data to be read from the socket. So this is where we
-    // need to grab a CAS from the CasPool and initialize the XCASDeserializer.
-    if (myCas == null) {
-      myCas = myCasPool.getCas(0);
-    }
-    myCas.reset();
-    XCASDeserializer deser = new XCASDeserializer(myCas.getTypeSystem(), this.uimaContext);
-    deser.setDocumentTypeName("Detag:DetagContent");
-    if (!ignoreResponse) {
-      handler = deser.getXCASHandler(myCas, outOfTypeSystemData);
-    } else {
-      handler = new DefaultHandler();
-    }
-    handler.startDocument();
-    handler.startElement("", "CAS", "CAS", null);
     this.ready = 0;
   }
 
@@ -394,8 +399,6 @@ public class CASTransportable extends DefaultHandler implements Transportable {
    * @see org.xml.sax.helpers.DefaultHandler#endDocument()
    */
   public void endDocument() throws SAXException {
-    handler.endElement("", "CAS", "CAS");
-    handler.endDocument();
   }
   
   /**
