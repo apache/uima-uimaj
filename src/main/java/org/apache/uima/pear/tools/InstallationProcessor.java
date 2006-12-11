@@ -175,7 +175,6 @@ public class InstallationProcessor {
     buffer.append(insdObject.getMainComponentDesc());
     buffer.append("\"/>\n");
     buffer.append("\t\t<parameter name=\"numInstances\" value=\"1\"/>\n");
-    buffer.append("\t\t<parameter name=\"timeoutPeriod\" value=\"30000\"/>\n");
     buffer.append("\t</service>\n");
     buffer.append("</deployment>");
     return buffer.toString();
