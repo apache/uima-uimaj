@@ -281,10 +281,10 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
       }
       UIMAFramework.getLogger().log(
               Level.FINEST,
-              "VinciCasObjectProcessorService_impl: Starting Server with Socket Timeout:"
+              "VinciAnalysisEngineService_impl: Starting Server with Socket Timeout:"
                       + descriptor.getServerSocketTimeout());
       System.out
-              .println("VinciCasObjectProcessorService_impl: Starting Server with Socket Timeout:"
+              .println("VinciAnalysisEngineService_impl: Starting Server with Socket Timeout:"
                       + descriptor.getServerSocketTimeout());
       _server.setSocketTimeout(descriptor.getServerSocketTimeout());
 

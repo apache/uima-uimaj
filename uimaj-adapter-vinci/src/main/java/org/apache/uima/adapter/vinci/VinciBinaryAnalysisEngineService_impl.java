@@ -146,7 +146,7 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
    *              there is a failure processing
    */
   private Frame getMetaData() throws Exception {
-    UIMAFramework.getLogger().log(Level.FINEST, "VinciCasObjectProcessorService.getMetaData()");
+    UIMAFramework.getLogger().log(Level.FINEST, "getMetaData()");
     // get metadata
     ProcessingResourceMetaData md = mAE.getProcessingResourceMetaData();
     // convert to vinci frame
@@ -305,10 +305,10 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
       }
       UIMAFramework.getLogger().log(
               Level.FINEST,
-              "VinciCasObjectProcessorService_impl: Starting Server with Socket Timeout:"
+              "VinciBinaryAnalysisEngineService_impl: Starting Server with Socket Timeout:"
                       + descriptor.getServerSocketTimeout());
       System.out
-              .println("VinciCasObjectProcessorService_impl: Starting Server with Socket Timeout:"
+              .println("VinciBinaryAnalysisEngineService_impl: Starting Server with Socket Timeout:"
                       + descriptor.getServerSocketTimeout());
       _server.setSocketTimeout(descriptor.getServerSocketTimeout());
       _server.serve();
