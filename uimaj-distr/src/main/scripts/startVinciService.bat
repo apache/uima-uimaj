@@ -32,13 +32,13 @@ REM   under the License.
 @if "%~2"=="" goto execute
 @set VNS_HOST=%~2
 @:execute
-"%JAVA_HOME%\bin\java" -cp "%UIMA_CLASSPATH%" "-Duima.datapath=%UIMA_DATAPATH%" -DVNS_HOST=%VNS_HOST% -DVNS_PORT=%VNS_PORT% "-Djava.util.logging.config.file=%UIMA_HOME%\Logger.properties" org.apache.uima.adapter.vinci.VinciCasObjectProcessorService_impl %SERVICE%
+"%JAVA_HOME%\bin\java" -cp "%UIMA_CLASSPATH%" "-Duima.datapath=%UIMA_DATAPATH%" -DVNS_HOST=%VNS_HOST% -DVNS_PORT=%VNS_PORT% "-Djava.util.logging.config.file=%UIMA_HOME%\Logger.properties" org.apache.uima.adapter.vinci.VinciAnalysisEngineService_impl %SERVICE%
 @goto end
 
 @:execute2
 @set VNS_HOST=%~2
 @set INSTANCEID=%~3
-"%JAVA_HOME%\bin\java" -cp "%UIMA_CLASSPATH%" "-Duima.datapath=%UIMA_DATAPATH%" -DVNS_HOST=%VNS_HOST% -DVNS_PORT=%VNS_PORT% "-Djava.util.logging.config.file=%UIMA_HOME%\Logger.properties" org.apache.uima.adapter.vinci.VinciCasObjectProcessorService_impl %SERVICE% %INSTANCEID%
+"%JAVA_HOME%\bin\java" -cp "%UIMA_CLASSPATH%" "-Duima.datapath=%UIMA_DATAPATH%" -DVNS_HOST=%VNS_HOST% -DVNS_PORT=%VNS_PORT% "-Djava.util.logging.config.file=%UIMA_HOME%\Logger.properties" org.apache.uima.adapter.vinci.VinciAnalysisEngineService_impl %SERVICE% %INSTANCEID%
 @goto end
 
 @:usage
