@@ -53,6 +53,11 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
 
   private AnalysisEngineServiceAdapter mOwner;
 
+  /**
+   * Timeout to use for process and collectionProcessComplete calls.
+   */
+  private int mTimeout;
+  
   public VinciBinaryAnalysisEngineServiceStub(String endpointURI, AnalysisEngineServiceAdapter owner)
           throws ResourceInitializationException {
     this(endpointURI, null, owner, null);
@@ -97,7 +102,9 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
         mVinciClient = new VinciClient(endpointURI, AFrame.getAFrameFactory());
       }
       if (timeout != null) {
-        mVinciClient.setSocketTimeout(timeout.intValue());
+        mTimeout = timeout.intValue();
+      } else {
+       mTimeout = mVinciClient.getSocketTimeout(); //default
       }
       if (debug) {
         System.out.println("Success");
@@ -189,7 +196,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
 
       requestFrame.fsetTrueBinary("BinaryCAS", SerializationUtils.serialize(serializer));
 
-      AFrame responseFrame = (AFrame) mVinciClient.sendAndReceive(requestFrame);
+      AFrame responseFrame = (AFrame) mVinciClient.sendAndReceive(requestFrame, mTimeout);
 
       // deserialize CAS from response frame
       byte[] responseCasBytes = responseFrame.fgetTrueBinary("BinaryCAS");
@@ -236,7 +243,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
       queryFrame.fadd("vinci:COMMAND", Constants.COLLECTION_PROCESS_COMPLETE);
 
       // make RPC call (return val ignored)
-      mVinciClient.rpc(queryFrame);
+      mVinciClient.rpc(queryFrame, mTimeout);
     } catch (Exception e) {
       throw new ResourceServiceException(e);
     }

@@ -47,6 +47,11 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   private VinciClient mVinciClient;
 
   private Resource mOwner;
+  
+  /**
+   * Timeout to use for process and collectionProcessComplete calls.
+   */
+  private int mTimeout;
 
   private static final boolean debug = System.getProperty("DEBUG") != null;
 
@@ -94,8 +99,11 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
         mVinciClient = new VinciClient(endpointURI, AFrame.getAFrameFactory());
       }
       if (timeout != null) {
-        mVinciClient.setSocketTimeout(timeout.intValue());
+        mTimeout = timeout.intValue();
+      } else {
+       mTimeout = mVinciClient.getSocketTimeout(); //default
       }
+      
       if (debug) {
         System.out.println("Success");
       }
@@ -191,7 +199,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
           // query.ignoreResponse = true; // TESTING
           return query;
         }
-      });
+      }, mTimeout);
 
       // if service reply included the time taken to do the analysis,
       // add that to the AnalysisEngineManagement MBean
@@ -240,7 +248,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
       queryFrame.fadd("vinci:COMMAND", Constants.COLLECTION_PROCESS_COMPLETE);
 
       // make RPC call (no return val)
-      mVinciClient.rpc(queryFrame);
+      mVinciClient.rpc(queryFrame, mTimeout);
     } catch (Exception e) {
       throw new ResourceServiceException(e);
     }
