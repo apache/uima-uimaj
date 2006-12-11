@@ -75,7 +75,7 @@ public interface XMLParser {
   public void enableSchemaValidation(boolean aEnable);
 
   /**
-   * Parses an XML input stream and produces an object. This method will expand XInclude (<code>xi:include</code>)
+   * Parses an XML input stream and produces an object.
    * elements.
    * 
    * @param aInput
