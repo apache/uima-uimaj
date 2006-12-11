@@ -25,6 +25,5 @@
   <service name="uima.annotator.PersonTitleAnnotator" provider="vinci">
     <parameter name="resourceSpecifierPath" value="C:/Program Files/apache-uima/examples/descriptors/analysis_engine/PersonTitleAnnotator.xml"/>
     <parameter name="numInstances" value="1"/>
-    <parameter name="timeoutPeriod" value="30000"/>
   </service>
 </deployment>
