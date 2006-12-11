@@ -104,7 +104,7 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
     this.debug = debug;
 
     UIMAFramework.getLogger().log(Level.FINEST,
-            "VinciBinaryCasObjectProcessorService_impl: constructor");
+            "VinciBinaryAnalysisEngineService_impl: constructor");
     // Instantiate an object which holds configuration data: resource
     // specifier path,
     // serializer class, service name, etc
