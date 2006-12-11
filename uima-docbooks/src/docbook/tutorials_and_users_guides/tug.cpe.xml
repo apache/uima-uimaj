@@ -1232,7 +1232,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
                     C:/Program Files/apache/uima/lib/jVinci.jar"/>
       &lt;arg&gt;-DLOG=C:/Temp/service.log&lt;/arg&gt;
       &lt;arg&gt;org.apache.uima.reference_impl.collection.
-         service.vinci.VinciCasObjectProcessorService_impl&lt;/arg&gt;
+         service.vinci.VinciAnalysisEnginerService_impl&lt;/arg&gt;
       &lt;arg&gt;${descriptor}&lt;/arg&gt;
     &lt;/exec&gt;
   &lt;/runInSeparateProcess&gt;
