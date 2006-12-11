@@ -136,12 +136,14 @@ public class RunAE implements StatusCallbackListener {
                 .produceCasProcessorConfigurationParameterSettings();
         xmlDetaggerCasProc.setConfigurationParameterSettings(detaggerSettings);
         detaggerSettings.setParameterValue(XmlDetagger.PARAM_TEXT_TAG, xmlTagName);
+        xmlDetaggerCasProc.setMaxErrorCount(0);
         cpeDesc.addCasProcessor(xmlDetaggerCasProc);
       }
 
       // add user's AE to CPE
       CpeCasProcessor casProc = CpeDescriptorFactory.produceCasProcessor("UserAE");
       casProc.setDescriptor(aeSpecifierFile.getAbsolutePath());
+      casProc.setMaxErrorCount(0);
       cpeDesc.addCasProcessor(casProc);
 
       // add CAS Consumer that will write the output
@@ -157,6 +159,7 @@ public class RunAE implements StatusCallbackListener {
                 .getAbsolutePath());
         consumerSettings.setParameterValue(InlineXmlCasConsumer.PARAM_XCAS, Boolean
                 .toString(xcasInput));
+        casCon.setMaxErrorCount(0);
         cpeDesc.addCasProcessor(casCon);
       }
 
