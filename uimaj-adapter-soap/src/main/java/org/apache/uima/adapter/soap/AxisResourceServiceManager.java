@@ -65,14 +65,6 @@ public class AxisResourceServiceManager {
   public static final String PARAM_NUM_INSTANCES = "numInstances";
 
   /**
-   * The name of the deployment parameter whose value is the maximum time (in milliseconds) to wait
-   * when attempting to acquire a resource from the pool. If this period elapses an exception will
-   * be thrown back to the client. A value of 0 (the default if no value is specified) will cause
-   * the service to wait forever.
-   */
-  public static final String PARAM_TIMEOUT_PERIOD = "timeoutPeriod";
-
-  /**
    * The name of the deployment parameter whose value is a boolean indicating whether to write log
    * messages during each service invocation. This currently applies only to Analysis Engine
    * services.
@@ -142,20 +134,6 @@ public class AxisResourceServiceManager {
                 + " not valid.  Check your deployment descriptor file (WSDD)");
       }
 
-      // Get the timeout period
-      String timeoutStr = (String) self.getOption(PARAM_TIMEOUT_PERIOD);
-      int timeout;
-      if (timeoutStr == null) {
-        timeout = 0; // default value
-      } else {
-        try {
-          timeout = Integer.parseInt(timeoutStr);
-        } catch (NumberFormatException e) {
-          throw new Exception("Invalid Configuration - " + PARAM_TIMEOUT_PERIOD
-                  + " not valid.  Check your deployment descriptor file (WSDD)");
-        }
-      }
-
       // Get whether to enable logging
       String enableLogStr = (String) self.getOption(PARAM_ENABLE_LOGGING);
       boolean enableLog = "true".equalsIgnoreCase(enableLogStr);
@@ -164,7 +142,6 @@ public class AxisResourceServiceManager {
       serviceImpl = (ResourceService_impl) aServiceImplClass.newInstance();
       HashMap initParams = new HashMap();
       initParams.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, new Integer(numInstances));
-      initParams.put(AnalysisEngine.PARAM_TIMEOUT_PERIOD, new Integer(timeout));
       serviceImpl.initialize(resourceSpecifier, initParams);
 
       // disable logging for Analysis Engines if deployer so indicated
