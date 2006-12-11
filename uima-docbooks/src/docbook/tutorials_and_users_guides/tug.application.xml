@@ -1146,7 +1146,6 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
            descriptors/analysis_engine/PersonTitleAnnotator.xml</emphasis></emphasis>"/&gt;
 
     &lt;parameter name="numInstances" value="3"/&gt;
-    &lt;parameter name="timeoutPeriod" value="30000"/&gt;
 
     &lt;!-- Type Mappings omitted from this document; 
           you will not need to edit them. --&gt;
@@ -1163,14 +1162,11 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
         replace the areas indicated in bold italics (deployment name, service name, and
         resource specifier path) with values appropriate for your component.</para>
       
-      <para>The <literal>timeoutPeriod</literal> parameter only is used when there are
-        multiple clients accessing the service. When a new request comes in, if the service is
-        busy with other requests (or all instances are busy, in the case where it has multiple
-        instances), it waits for one to become available - and this parameter specifies the
-        maximum time for that wait. If it takes longer than this, the service wrapper will
-        throw an exception back to the client and abort the processing for this document on the
-        service.</para>
-      
+      <para>The <literal>numInstances</literal> parameter specifies how many instances of
+        your Analysis Engine or CAS Consumer will be created.  This allows your service to
+        support multiple clients concurrently. When a new request comes in, if all of the
+        instances are busy, the new request will wait until an instance becomes available.</para>
+            
       <para>To deploy the Person Title annotator service, issue the following command:
         
         
@@ -1229,8 +1225,6 @@ examples/deploy/soap/Deploy_PersonTitleAnnotator.wsdd</programlisting></para>
 
     &lt;parameter name="numInstances" value="1"/&gt;
 
-    &lt;parameter name="timeoutPeriod" value="30000"/&gt;
-
     &lt;parameter name="serverSocketTimeout" value="120000"/&gt;
 
   &lt;/service&gt;
@@ -1242,14 +1236,11 @@ examples/deploy/soap/Deploy_PersonTitleAnnotator.wsdd</programlisting></para>
         service name, and resource specifier path) with values appropriate for your
         component.</para>
       
-      <para>The <literal>timeoutPeriod</literal> parameter only is used when there are
-        multiple clients accessing the service. When a new request comes in, if the service is
-        busy with other requests (all instances are busy, in the case where it has multiple
-        instances), it waits for one to become available - and this parameter specifies the
-        maximum time for that wait. If it takes longer than this, the service wrapper will
-        throw an exception back to the client and abort the processing for this document on the
-        service.</para>
-      
+      <para>The <literal>numInstances</literal> parameter specifies how many instances of
+        your Analysis Engine or CAS Consumer will be created.  This allows your service to
+        support multiple clients concurrently. When a new request comes in, if all of the
+        instances are busy, the new request will wait until an instance becomes available.</para>
+            
       <para>The <literal>serverSocketTimeout</literal> parameter specifies the number
         of milliseconds (default = 5 minutes) that the service will wait between requests to
         process something. After this amount of time, the server will presume the client may
