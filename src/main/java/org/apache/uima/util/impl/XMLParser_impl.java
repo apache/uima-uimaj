@@ -117,9 +117,6 @@ public class XMLParser_impl implements XMLParser {
    * @param aSchemaUrl
    *          URL to XML schema that will be used to validate the XML document. If null, no schema
    *          will be used.
-   * @param aExpandXIncludes
-   *          if true, XInclude (<code>xi:include</code>) elements will be expanded according to
-   *          the XInclude specification.
    * 
    * @return an <code>XMLizable</code> object constructed from the XML document
    * 
