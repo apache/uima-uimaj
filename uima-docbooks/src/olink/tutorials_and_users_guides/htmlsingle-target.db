@@ -165,21 +165,9 @@
          <div element="section" href="#ugr.tug.aae.result_spec.aggregates" number="1.4.8" targetptr="ugr.tug.aae.result_spec.aggregates">
             <ttl>Aggregates</ttl>
             <xreftext>Section 1.4.8, “Aggregates”</xreftext>
-            <div element="section" href="#ugr.tug.aae.result_spec.aggregates.fixed_flow" number="1.4.8.1" targetptr="ugr.tug.aae.result_spec.aggregates.fixed_flow">
-               <ttl>Fixed Flow</ttl>
-               <xreftext>Section 1.4.8.1, “Fixed Flow”</xreftext>
-            </div>
-            <div element="section" href="#ugr.tug.aae.result_spec.aggregates.capability_language_flow" number="1.4.8.2" targetptr="ugr.tug.aae.result_spec.aggregates.capability_language_flow">
-               <ttl>CapabilityLanguageFlow</ttl>
-               <xreftext>Section 1.4.8.2, “CapabilityLanguageFlow”</xreftext>
-            </div>
-            <div element="section" href="#ugr.tug.aae.skipping_ae_in_capability_language_flow" number="1.4.8.3" targetptr="ugr.tug.aae.skipping_ae_in_capability_language_flow">
-               <ttl>Special rule for skipping Analysis Engines</ttl>
-               <xreftext>Section 1.4.8.3, “Special rule for skipping Analysis Engines”</xreftext>
-            </div>
-            <div element="section" href="#ugr.tug.aae.result_spec.aggregates.cpes" number="1.4.8.4" targetptr="ugr.tug.aae.result_spec.aggregates.cpes">
+            <div element="section" href="#ugr.tug.aae.result_spec.aggregates.cpes" number="1.4.8.1" targetptr="ugr.tug.aae.result_spec.aggregates.cpes">
                <ttl>Collection Proessing Engines</ttl>
-               <xreftext>Section 1.4.8.4, “Collection Proessing Engines”</xreftext>
+               <xreftext>Section 1.4.8.1, “Collection Proessing Engines”</xreftext>
             </div>
          </div>
          <div element="section" href="#ugr.tug.aae.classpath_when_using_jcas" number="1.4.9" targetptr="ugr.tug.aae.classpath_when_using_jcas">

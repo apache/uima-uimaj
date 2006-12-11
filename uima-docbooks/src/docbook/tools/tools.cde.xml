@@ -248,7 +248,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="473px" format="JPG" fileref="&imgroot;image012.jpg"/>
+          <imagedata width="370px" format="JPG" fileref="&imgroot;image012.jpg"/>
         </imageobject>
         <textobject><phrase>Adding an Analysis Engine to an Aggregate</phrase>
         </textobject>
