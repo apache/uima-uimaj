@@ -24,9 +24,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.uima.internal.util.FileUtils;
 
@@ -36,8 +36,7 @@ import org.apache.uima.internal.util.FileUtils;
  * Updates import statements in .java files to reflect the new org.apache package names.
  */
 public class IbmToApachePackageNames {
-  private static List apacheUimaPackageNames = new ArrayList();
-  private static List ibmUimaPackageNames = new ArrayList();
+  private static Map packageMapping = new TreeMap();
   
   /**
    * Main program.  Expects one argument, the name of a directory containing files to
@@ -50,12 +49,9 @@ public class IbmToApachePackageNames {
       System.err.println("Usage: java " + IbmToApachePackageNames.class.getName() + " <directory>");
       System.exit(1);
     }
-    //get lists of apache UIMA package names and the corresponding IBM UIMA package names
-    readApacheUimaPackageNames();
-    for (int i = 0; i < apacheUimaPackageNames.size(); i++) {
-      String apachePkg = (String)apacheUimaPackageNames.get(i);
-      ibmUimaPackageNames.add(apachePackageToUimaPackage(apachePkg));
-    }
+    //get map from IBM UIMA package names to Apache UIMA package names
+    readPackageMapping();
+
     //do the replacement of import statements
     replaceImportsInAllFiles(new File(args[0]));
   }
@@ -101,9 +97,11 @@ public class IbmToApachePackageNames {
     String original = FileUtils.file2String(file);
     String contents = original;
     //loop over packages to replace
-    for (int i = 0; i < apacheUimaPackageNames.size(); i++) {
-      String apachePkg = (String)apacheUimaPackageNames.get(i);
-      String ibmPkg = (String)ibmUimaPackageNames.get(i);
+    Iterator entries = packageMapping.entrySet().iterator();
+    while (entries.hasNext()) {
+      Map.Entry entry = (Map.Entry)entries.next();
+      String ibmPkg = (String)entry.getKey();
+      String apachePkg = (String)entry.getValue();
       //form regex to replace
       String regex = "import\\s*"+ibmPkg+"(\\.[^\\.]*;)";
       //replace
@@ -116,46 +114,20 @@ public class IbmToApachePackageNames {
   }
 
   /**
-   * @param apachePkg
-   * @return
+   * Reads the mapping from IBM UIMA package names to Apache UIMA
+   * package names from a resource file and populates the packageMapping
+   * field.
    */
-  private static String apachePackageToUimaPackage(String apachePkg) {
-    //mapping is complicated for "impl" classes other than cas.impl
-    int indexOfImpl = apachePkg.indexOf(".impl");
-    if (indexOfImpl > 0 && apachePkg.indexOf("cas.impl") == -1) {
-      //remove the .impl, and replace org.apache.uima with com.ibm.uima.reference_impl
-      String noImpl = apachePkg.replaceAll(".impl", "");
-      return noImpl.replaceAll("org\\.apache\\.uima","com.ibm.uima.reference_impl");      
-    }
-    else {
-      //just apply simple replacement of org.apache to com.ibm
-      return apachePkg.replaceAll("org\\.apache", "com.ibm");
-    }
-    
-  }
-
-
-  /**
-   * Reads the list of apache UIMA packages from a resource file.
-   */
-  private static void readApacheUimaPackageNames() throws IOException {
-    URL pkgListFile = IbmToApachePackageNames.class.getResource("uimaPackageNames.txt");
-    // Read from this URL into a string using a char buffer.
-    char[] buf = new char[10000];
-    int charsRead;
+  private static void readPackageMapping() throws IOException {
+    URL pkgListFile = IbmToApachePackageNames.class.getResource("packageMapping.txt");
     InputStream inStream = pkgListFile.openStream();
     BufferedReader reader = new BufferedReader(new InputStreamReader(inStream));
-    StringBuffer strbuf = new StringBuffer();
-    while ((charsRead = reader.read(buf)) >= 0) {
-      strbuf.append(buf, 0, charsRead);
+    String line = reader.readLine();
+    while (line != null) {
+      String[] mapping = line.split("=");
+      packageMapping.put(mapping[0],mapping[1]);
+      line = reader.readLine();
     }
-    reader.close();
-    StringTokenizer tokenizer = new StringTokenizer(new String(buf),",");
-    while (tokenizer.hasMoreTokens())
-    {
-      String tok = tokenizer.nextToken().trim();
-      if (tok.length() > 0)
-        apacheUimaPackageNames.add(tok);
-    }
+    inStream.close();
   }
 }
