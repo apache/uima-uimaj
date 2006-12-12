@@ -59,7 +59,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
-import org.apache.uima.internal.util.BrowserUtil;
 import org.apache.uima.internal.util.SystemEnvReader;
 import org.apache.uima.pear.tools.InstallationController;
 import org.apache.uima.pear.tools.InstallationDescriptor;
@@ -74,8 +73,7 @@ import org.apache.uima.tools.images.Images;
  * the installed AE in Gladis. <br />
  * The required field is : The pear file must be specified. The User may or may not specify the
  * installation directory. If the installation directory is not specified, the current working
- * directory is used by default. Set JVM arguments: <br />
- * -Duima.home=%UIMA_HOME% (local directory where UIMA is installed)
+ * directory is used by default. 
  * 
  */
 public class InstallPear extends JFrame {
@@ -227,9 +225,9 @@ public class InstallPear extends JFrame {
 
   private static final String SET_ENV_FILE = "metadata/setenv.txt";
 
-  protected static final String UIMA_HOME_ENV = "UIMA_HOME";
+//  protected static final String UIMA_HOME_ENV = "UIMA_HOME";
 
-  protected static final String UIMA_DATAPATH_ENV = "uima.datapath";
+//  protected static final String UIMA_DATAPATH_ENV = "uima.datapath";
 
   /**
    * Opens a dialog to select a PEAR file from the local file system.
@@ -508,9 +506,10 @@ public class InstallPear extends JFrame {
         StringTokenizer tokenList = new StringTokenizer(jvmOptions, " ");
         while (tokenList.hasMoreTokens()) {
           String token = tokenList.nextToken();
-          // substitute UIMA_HOME
-          cmdArrayList.add(token.replaceAll("%UIMA_HOME%", System.getProperty("uima.home").replace(
-                  '\\', '/')));
+//          // substitute UIMA_HOME
+//          cmdArrayList.add(token.replaceAll("%UIMA_HOME%", System.getProperty("uima.home").replace(
+//                  '\\', '/')));
+          cmdArrayList.add(token);
         }
       }
       // add component-specific JVM options (env.vars)
@@ -541,9 +540,10 @@ public class InstallPear extends JFrame {
         String key = (String) gladisPropKeys.nextElement();
         if (key.startsWith("jvm.arg.")) {
           String arg = key.substring(8).trim();
-          // substitute UIMA_HOME
-          String value = gladisProperties.getProperty(key).replaceAll("%UIMA_HOME%",
-                  System.getProperty("uima.home").replace('\\', '/'));
+//          // substitute UIMA_HOME
+//          String value = gladisProperties.getProperty(key).replaceAll("%UIMA_HOME%",
+//                  System.getProperty("uima.home").replace('\\', '/'));
+          String value = gladisProperties.getProperty(key);
           // if arg = java.library.path, add component path
           if (arg.equals("java.library.path")) {
             if (addJavaLibPath) {
@@ -566,9 +566,10 @@ public class InstallPear extends JFrame {
       while (gladisPropKeys.hasMoreElements()) {
         String key = (String) gladisPropKeys.nextElement();
         if (key.startsWith("main.class.arg.")) {
-          // substitute UIMA_HOME
-          String value = gladisProperties.getProperty(key).replaceAll("%UIMA_HOME%",
-                  System.getProperty("uima.home").replace('\\', '/'));
+//          // substitute UIMA_HOME
+//          String value = gladisProperties.getProperty(key).replaceAll("%UIMA_HOME%",
+//                  System.getProperty("uima.home").replace('\\', '/'));
+        	String value = gladisProperties.getProperty(key);
           // substitute DESCRIPTOR
           if (value.equals("%DESCRIPTOR%"))
             value = insdObject.getMainComponentDesc();
@@ -656,8 +657,9 @@ public class InstallPear extends JFrame {
         String key = (String) gladisPropKeys.nextElement();
         if (key.startsWith("env.") && !key.equals("env.PATH") && !key.equals("env.CLASSPATH")) {
           String arg = key.substring(4).trim();
-          String value = gladisProperties.getProperty(key).replaceAll("%UIMA_HOME%",
-                  System.getProperty("uima.home").replace('\\', '/'));
+//          String value = gladisProperties.getProperty(key).replaceAll("%UIMA_HOME%",
+//                  System.getProperty("uima.home").replace('\\', '/'));
+          String value = gladisProperties.getProperty(key);
           envArrayList.add(arg + "=" + value);
         }
       }
@@ -998,18 +1000,17 @@ public class InstallPear extends JFrame {
    */
   public static void main(String[] args) {
 
-    // checks for system properties
-    try {
-      String UIMA_HOME = System.getProperty("uima.home");
-      if (UIMA_HOME == null)
-        throw new RuntimeException("-Duima.home not defined");
-      System.setProperty(UIMA_HOME_ENV, UIMA_HOME);
-      // load main properties and replace %UIMA_HOME%
-    } catch (Exception exc) {
-      System.err.println("Error in InstallPear.main():" + exc.toString());
-      exc.printStackTrace(System.err);
-      System.exit(0);
-    }
+//    try {
+//      String UIMA_HOME = System.getProperty("uima.home");
+//      if (UIMA_HOME == null)
+//        throw new RuntimeException("-Duima.home not defined");
+//      System.setProperty(UIMA_HOME_ENV, UIMA_HOME);
+//      // load main properties and replace %UIMA_HOME%
+//    } catch (Exception exc) {
+//      System.err.println("Error in InstallPear.main():" + exc.toString());
+//      exc.printStackTrace(System.err);
+//      System.exit(0);
+//    }
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         createAndShowGUI();
