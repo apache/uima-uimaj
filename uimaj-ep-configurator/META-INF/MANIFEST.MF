@@ -7,17 +7,14 @@ Bundle-ClassPath: uima-ep-configurator.jar
 Bundle-Activator: org.eclipse.core.internal.compatibility.PluginActivator
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Localization: plugin
-Export-Package: .,
- org.apache.uima.taeconfigurator,
+Export-Package: org.apache.uima.taeconfigurator,
  org.apache.uima.taeconfigurator.editors,
  org.apache.uima.taeconfigurator.editors.ui,
  org.apache.uima.taeconfigurator.editors.ui.dialogs,
  org.apache.uima.taeconfigurator.editors.xml,
  org.apache.uima.taeconfigurator.files,
  org.apache.uima.taeconfigurator.model,
- org.apache.uima.taeconfigurator.wizards,
- org.apache.uima.typesystem,
- org.apache.uima.typesystem.contentassist
+ org.apache.uima.taeconfigurator.wizards
 Require-Bundle: org.eclipse.core.runtime.compatibility,
  org.eclipse.ui.ide,
  org.eclipse.jface.text,

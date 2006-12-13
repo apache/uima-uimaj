@@ -19,14 +19,21 @@
 
 package org.apache.uima.taeconfigurator.editors.ui.dialogs;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
+import org.apache.uima.taeconfigurator.StandardStrings;
+import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
+import org.apache.uima.taeconfigurator.editors.MultiPageEditorContributor;
+import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
+import org.eclipse.jface.bindings.keys.KeyStroke;
+import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.fieldassist.ContentProposalAdapter;
+import org.eclipse.jface.fieldassist.TextContentAdapter;
+import org.eclipse.jface.fieldassist.TextControlCreator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.KeyEvent;
@@ -45,17 +52,19 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-
-import org.apache.uima.taeconfigurator.StandardStrings;
-import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
-import org.apache.uima.taeconfigurator.editors.MultiPageEditorContributor;
-import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
-import org.apache.uima.typesystem.ITypeSystemInfo;
-import org.apache.uima.typesystem.OpenTypeSystemSelectionDialog;
-import org.apache.uima.typesystem.contentassist.ControlContentAssistHelper;
-import org.apache.uima.typesystem.contentassist.TypeSystemCompletionProcessor;
+import org.eclipse.ui.fieldassist.ContentAssistField;
 
 public abstract class AbstractDialog extends Dialog implements Listener, StandardStrings {
+  
+  public final static char[] contentAssistActivationChars  = new char[0];
+  public final static KeyStroke contentAssistActivationKey;
+  static {
+    try {
+      contentAssistActivationKey = KeyStroke.getInstance("Ctrl+Space");
+    } catch (ParseException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   protected MultiPageEditor editor;
 
@@ -224,7 +233,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
    * @return
    */
   protected Table newTable(Composite parent, int style) {
-    Table table = new Table(parent, style);
+    Table table = new Table(parent, style | SWT.BORDER);
     GridData gd = new GridData(GridData.FILL_BOTH);
     table.setLayoutData(gd);
     table.addListener(SWT.Selection, this);
@@ -332,38 +341,63 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     return allTypes;
   }
 
-  protected Text newLabeledTypeInput(Composite parent, String label, String tip) {
+  protected Text newLabeledTypeInput(AbstractSection aSection, Composite parent, String label, String tip) {
     setTextAndTip(new Label(parent, SWT.NONE), label, tip);
-    return newTypeInput(parent);
+    return newTypeInput(aSection, parent);
   }
 
   /**
    * @param twoCol
    */
-  protected Text newTypeInput(Composite twoCol) {
+  protected Text newTypeInput(AbstractSection aSection, Composite twoCol) {
     Composite tc = new2ColumnComposite(twoCol);
-    final Text text = newText(tc, SWT.NONE,
-            "Enter a Type name. Content Assist is available (press Ctrl + Space)");
-    final ArrayList candidatesToPickFrom = getTypeSystemInfoList(); // provide an ArrayList of
-    // ITypeSystemInfo
+    final TypesWithNameSpaces candidatesToPickFrom = getTypeSystemInfoList(); // provide an ArrayList of
+
+    ContentAssistField caf = new ContentAssistField(tc, SWT.BORDER, new TextControlCreator(), 
+            new TextContentAdapter(), candidatesToPickFrom,
+            null, null);
+    caf.getContentAssistCommandAdapter().setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
+    final Text text = (Text)caf.getControl();
+    text.setToolTipText("Enter a Type name. Content Assist is available on Eclipse 3.2 and beyond (press Ctrl + Space)");
+    text.getParent().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    text.addListener(SWT.KeyUp, this);
+    text.addListener(SWT.MouseUp, this); // for paste operation
+    
+//    newText(tc, SWT.NONE,
+//    "Enter a Type name. Content Assist is available on Eclipse 3.2 and beyond (press Ctrl + Space)");
+
+//    ContentProposalAdapter adapter = new ContentProposalAdapter(
+//            text, new TextContentAdapter(),
+//            candidatesToPickFrom,
+//            contentAssistActivationKey, 
+//            contentAssistActivationChars);
+//    adapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
+    
     Button browseButton = newPushButton(tc, "Browse", "Click here to browse possible types");
     browseButton.removeListener(SWT.Selection, this);
+    final AbstractSection finalSection = aSection;
     browseButton.addListener(SWT.Selection, new Listener() {
       public void handleEvent(Event event) {
         errorMessageUI.setText("");
-        ArrayList typeList = candidatesToPickFrom;
-        OpenTypeSystemSelectionDialog dialog = new OpenTypeSystemSelectionDialog(getShell(),
-                typeList);
+        SelectTypeDialog dialog = new SelectTypeDialog(finalSection, candidatesToPickFrom); 
+//          OpenTypeSystemSelectionDialog dialog = 
+//              new OpenTypeSystemSelectionDialog(getShell(), typeList);
         if (dialog.open() != IDialogConstants.OK_ID)
           return;
+        
+        text.setText(dialog.nameSpaceName + "." + dialog.typeName);
+        enableOK();
+    /*
         Object[] types = dialog.getResult();
         if (types != null && types.length > 0) {
           ITypeSystemInfo selectedType = (ITypeSystemInfo) types[0];
           text.setText(selectedType.getFullName());
           enableOK();
         }
+    */
       }
     });
+    /*
     TypeSystemCompletionProcessor processor = new TypeSystemCompletionProcessor(
             candidatesToPickFrom);
     ControlContentAssistHelper.createTextContentAssistant(text, processor);
@@ -377,23 +411,28 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
         textModifyCallback(e);
       }
     });
+    */
     return text;
   }
 
   public void textModifyCallback(Event e) {
   }
-
+ 
   // default implementation - always overridden when used
-  public ArrayList getTypeSystemInfoList() {
-    return new ArrayList();
+  public TypesWithNameSpaces getTypeSystemInfoList() {
+    return new TypesWithNameSpaces();
   }
 
-  protected boolean typeContainedInTypeSystemInfoList(String fullTypeName, List infoList) {
-    for (Iterator it = infoList.iterator(); it.hasNext();) {
-      if (fullTypeName.equals(((ITypeSystemInfo) it.next()).getFullName()))
-        return true;
-    }
-    return false;
+  protected boolean typeContainedInTypeSystemInfoList(String fullTypeName, TypesWithNameSpaces types) {
+    String key = AbstractSection.getShortName(fullTypeName);
+    String nameSpace = AbstractSection.getNameSpace(fullTypeName);
+    
+    Set s = (Set)types.sortedNames.get(key);
+    
+    if (null == s) 
+      return false;
+    
+    return s.contains(nameSpace);
   }
 
   /**

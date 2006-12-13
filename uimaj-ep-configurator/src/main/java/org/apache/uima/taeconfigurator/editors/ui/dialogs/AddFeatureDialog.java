@@ -19,11 +19,11 @@
 
 package org.apache.uima.taeconfigurator.editors.ui.dialogs;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-
+import org.apache.uima.cas.Type;
+import org.apache.uima.resource.metadata.FeatureDescription;
+import org.apache.uima.resource.metadata.TypeDescription;
+import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
+import org.apache.uima.taeconfigurator.editors.ui.TypeSection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.StyledText;
@@ -33,13 +33,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Text;
-
-import org.apache.uima.cas.Type;
-import org.apache.uima.resource.metadata.FeatureDescription;
-import org.apache.uima.resource.metadata.TypeDescription;
-import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
-import org.apache.uima.taeconfigurator.editors.ui.TypeSection;
-import org.apache.uima.typesystem.TypeSystemInfo;
 
 public class AddFeatureDialog extends AbstractDialogKeyVerify {
 
@@ -71,7 +64,7 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
 
   private FeatureDescription existingFd;
 
-  private List allTypesList;
+  private TypesWithNameSpaces allTypesList;
 
   private Composite multiRefComposite;
 
@@ -112,7 +105,7 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
     featureNameUI = newLabeledSingleLineStyledText(twoCol, "Feature Name", S_);
 
     typeFilter = ALL_TYPES;
-    featureRangeNameUI = newLabeledTypeInput(twoCol, "Range Type:",
+    featureRangeNameUI = newLabeledTypeInput(section, twoCol, "Range Type:",
             "The range type specifies the type of value this feature can hold.");
 
     multiRefComposite = new2ColumnComposite(twoCol);
@@ -127,7 +120,7 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
     elementTypeComposite = new2ColumnComposite(twoCol);
     ((GridData) elementTypeComposite.getLayoutData()).horizontalSpan = 2;
     typeFilter = ONLY_NON_PRIMITIVE_TYPES;
-    elementRangeNameUI = newLabeledTypeInput(elementTypeComposite, "Element Type:",
+    elementRangeNameUI = newLabeledTypeInput(section, elementTypeComposite, "Element Type:",
             "The element type of each element in the Array or List object");
 
     descriptionUI = newDescription(twoCol, S_);
@@ -162,10 +155,10 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
     }
   }
 
-  public ArrayList getTypeSystemInfoList() {
-    ArrayList result = new ArrayList();
+  public TypesWithNameSpaces getTypeSystemInfoList() {
+    TypesWithNameSpaces result = new TypesWithNameSpaces();
     Type[] allTypes = (Type[]) editor.allTypes.get().values().toArray(new Type[0]);
-    Arrays.sort(allTypes, new Comparator() {
+/*    Arrays.sort(allTypes, new Comparator() {
 
       public int compare(Object o1, Object o2) {
         Type t1 = (Type) o1;
@@ -173,14 +166,15 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
         return t1.getShortName().compareTo(t2.getShortName());
       }
     });
+    */
     for (int i = 0; i < allTypes.length; i++) {
       Type type = allTypes[i];
       if (typeFilter == ONLY_NON_PRIMITIVE_TYPES) {
         if (!type.isPrimitive()) {
-          result.add(new TypeSystemInfo(type.getName()));
+          result.add(type.getName());
         }
       } else {
-        result.add(new TypeSystemInfo(type.getName()));
+        result.add(type.getName());
       }
     }
     if (typeFilter == ALL_TYPES)

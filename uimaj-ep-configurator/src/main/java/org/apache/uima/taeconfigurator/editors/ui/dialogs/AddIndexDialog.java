@@ -22,6 +22,12 @@ package org.apache.uima.taeconfigurator.editors.ui.dialogs;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.uima.UIMAFramework;
+import org.apache.uima.cas.admin.FSIndexComparator;
+import org.apache.uima.resource.metadata.FsIndexDescription;
+import org.apache.uima.resource.metadata.FsIndexKeyDescription;
+import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
+import org.apache.uima.taeconfigurator.editors.ui.IndexSection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.StyledText;
@@ -34,14 +40,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-
-import org.apache.uima.UIMAFramework;
-import org.apache.uima.cas.admin.FSIndexComparator;
-import org.apache.uima.resource.metadata.FsIndexDescription;
-import org.apache.uima.resource.metadata.FsIndexKeyDescription;
-import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
-import org.apache.uima.taeconfigurator.editors.ui.IndexSection;
-import org.apache.uima.typesystem.TypeSystemInfo;
 
 public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
 
@@ -128,7 +126,7 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
     indexKindUI.add("set");
 
     new Label(twoCol, SWT.NONE).setText("CAS Type");
-    indexTypeUI = newTypeInput(twoCol);
+    indexTypeUI = newTypeInput(section, twoCol);
 
     setTextAndTip(
             keyTable = new Label(twoCol, SWT.NONE),
@@ -176,11 +174,11 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
     return mainArea;
   }
 
-  public ArrayList getTypeSystemInfoList() {
-    ArrayList result = new ArrayList();
+  public TypesWithNameSpaces getTypeSystemInfoList() {
+    TypesWithNameSpaces result = new TypesWithNameSpaces();
     String[] allTypes = getAllTypesAsSortedArray();
     for (int i = 0; i < allTypes.length; i++) {
-      result.add(new TypeSystemInfo(allTypes[i]));
+      result.add(allTypes[i]);
     }
     return result;
   }

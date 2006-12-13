@@ -19,11 +19,14 @@
 
 package org.apache.uima.taeconfigurator.editors.ui.dialogs;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.Type;
+import org.apache.uima.resource.metadata.TypeDescription;
+import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
+import org.apache.uima.taeconfigurator.editors.ui.TypeSection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.GridData;
@@ -32,13 +35,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-
-import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.Type;
-import org.apache.uima.resource.metadata.TypeDescription;
-import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
-import org.apache.uima.taeconfigurator.editors.ui.TypeSection;
-import org.apache.uima.typesystem.TypeSystemInfo;
 
 public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
 
@@ -60,7 +56,7 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
 
   private TypeDescription existingTd = null;
 
-  private List allTypesList;
+  private TypesWithNameSpaces allTypesList;
 
   // private boolean seenThisAlready = false;
 
@@ -99,7 +95,7 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
     typeNameUI.setText("some.typename.you.Choose");
 
     new Label(twoCol, SWT.NONE).setText("Supertype:");
-    supertypeNameUI = newTypeInput(twoCol);
+    supertypeNameUI = newTypeInput(section, twoCol);
     descriptionUI = newDescription(twoCol, S_);
     newErrorMessage(twoCol, 2);
 
@@ -122,15 +118,15 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
    * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#getTypeSystemInfoList()
    */
-  public ArrayList getTypeSystemInfoList() {
-    ArrayList result = new ArrayList();
+  public TypesWithNameSpaces getTypeSystemInfoList() {
+    TypesWithNameSpaces result = new TypesWithNameSpaces();
     boolean hasFeatures = false;
     boolean hasAllowedValues = false;
     if (null != existingTd) {
       hasFeatures = ((null != existingTd.getFeatures()) && (existingTd.getFeatures().length > 0));
       hasAllowedValues = ((null != existingTd.getAllowedValues()) && (existingTd.getAllowedValues().length > 0));
       if (hasAllowedValues) {
-        result.add(new TypeSystemInfo(CAS.TYPE_NAME_STRING));
+        result.add(CAS.TYPE_NAME_STRING);
         allTypesList = result;
         return result;
       }
@@ -150,7 +146,7 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
         continue;
       if (hasFeatures && CAS.TYPE_NAME_STRING.equals(type.getName()))
         continue;
-      result.add(new TypeSystemInfo(type.getName()));
+      result.add(type.getName());
     }
     allTypesList = result;
     return result;
