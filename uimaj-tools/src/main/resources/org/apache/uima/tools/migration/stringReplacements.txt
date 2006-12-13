@@ -1,0 +1,5 @@
+<frameworkImplementation>com.ibm.uima.java</frameworkImplementation> <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+<frameworkImplementation>JEDII</frameworkImplementation> <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+VinciCasObjectProcessorService_impl VinciAnalysisEngineService_impl
+org.apache.uima.tools.DocumentAnalyzer org.apache.uima.tools.docanalyzer.DocumentAnalyzer
+http://uima.watson.ibm.com/resourceSpecifier http://uima.apache.org/resourceSpecifier
