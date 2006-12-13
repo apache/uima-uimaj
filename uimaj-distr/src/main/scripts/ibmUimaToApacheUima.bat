@@ -20,13 +20,4 @@ REM   under the License.
 @echo on
 
 if "%JAVA_HOME%"=="" set JAVA_HOME=%UIMA_HOME%\java\jre
-REM   update package names in import statements
-"%JAVA_HOME%\bin\java" -cp "%UIMA_HOME%/lib/uima-core.jar;%UIMA_HOME%/lib/uima-tools.jar" org.apache.uima.tools.migration.IbmToApachePackageNames %1
-
-REM   update frameworkImplementation elements in XML descriptors
-"%JAVA_HOME%\bin\java" -cp "%UIMA_HOME%/lib/uima-core.jar" org.apache.uima.internal.util.ReplaceStringInFiles %1 .xml com.ibm.uima.java org.apache.uima.java
-"%JAVA_HOME%\bin\java" -cp "%UIMA_HOME%/lib/uima-core.jar" org.apache.uima.internal.util.ReplaceStringInFiles %1 .xml JEDII org.apache.uima.java
-
-REM miscellaneous other replacements
-"%JAVA_HOME%\bin\java" -cp "%UIMA_HOME%/lib/uima-core.jar" org.apache.uima.internal.util.ReplaceStringInFiles %1 "" VinciCasObjectProcessorService_impl VinciAnalysisEngineService_impl
-"%JAVA_HOME%\bin\java" -cp "%UIMA_HOME%/lib/uima-core.jar" org.apache.uima.internal.util.ReplaceStringInFiles %1 "" org.apache.uima.tools.DocumentAnalyzer org.apache.uima.tools.docanalyzer.DocumentAnalyzer
+"%JAVA_HOME%\bin\java" -cp "%UIMA_HOME%/lib/uima-core.jar;%UIMA_HOME%/lib/uima-tools.jar" org.apache.uima.tools.migration.IbmUimaToApacheUima %1
