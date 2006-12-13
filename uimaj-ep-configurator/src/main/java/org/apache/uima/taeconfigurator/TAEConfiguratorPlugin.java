@@ -38,8 +38,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
-import org.apache.uima.typesystem.TypeSystemSelectionPlugin;
-
 /**
  * The main plugin class to be used in the desktop.
  */
@@ -134,7 +132,6 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
     } catch (MissingResourceException x) {
       resourceBundle = null;
     }
-    new TypeSystemSelectionPlugin(); // initialize its default() etc.
     imageRegistry.put(IMAGE_ANNOTATOR, getImageDescriptor("annotator.gif"));
     imageRegistry.put(IMAGE_BIG_AE, getImageDescriptor("big_ae.gif"));
     imageRegistry.put(IMAGE_BIG_T_S, getImageDescriptor("big_t_s.gif"));
