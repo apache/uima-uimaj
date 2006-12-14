@@ -301,6 +301,37 @@ public class NewPrimitiveTypesTest extends TestCase {
     // System.out.println(sb.toString());
   }
 
+  public void testClone() throws Exception {
+    createExampleFS(cas);
+    // get the example FS
+    CAS englishView = cas.getView("EnglishDocument");
+    FSIterator iter = englishView.getAnnotationIndex().iterator();
+    // skip document annotation
+    iter.moveToNext();
+    // the exampleType fs
+    AnnotationFS fs = (AnnotationFS) iter.get();
+
+    // clone it
+    AnnotationFS clone = (AnnotationFS) fs.clone();
+
+    // subsitute the clone for the original in the index,
+    // and validate that it was correctly copied
+    englishView.removeFsFromIndexes(fs);
+    englishView.addFsToIndexes(clone);
+    validateFSData(cas);
+
+    // editing the original FS should not change the clone
+    fs.setStringValue(stringFeature, "foo");
+    fs.setFloatValue(floatFeature, -1f);
+    fs.setByteValue(byteFeature, (byte) -1);
+    fs.setBooleanValue(booleanFeature, false);
+    fs.setShortValue(shortFeature, (short) -1);
+    fs.setLongValue(longFeature, -1);
+    fs.setDoubleValue(doubleFeature, -1);
+
+    validateFSData(cas);
+  }
+
   private void validateFSData(CAS cas) throws Exception {
     CAS englishView = cas.getView("EnglishDocument");
     assertNotNull(englishView);
@@ -470,8 +501,6 @@ public class NewPrimitiveTypesTest extends TestCase {
     fs.setFeatureValue(longArrayFeature, longArrayFS);
     fs.setDoubleValue(doubleFeature, Double.MAX_VALUE);
     fs.setFeatureValue(doubleArrayFeature, doubleArrayFS);
-
-    englishView.getIndexRepository().addFS(fs);
   }
 
   // public void testUimaTypeSystem2Ecore() throws Exception
