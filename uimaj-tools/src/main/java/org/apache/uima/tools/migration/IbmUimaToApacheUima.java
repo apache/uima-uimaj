@@ -24,8 +24,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.uima.internal.util.FileUtils;
@@ -41,6 +44,7 @@ public class IbmUimaToApacheUima {
   private static Map packageMapping = new TreeMap();
   private static Map stringReplacements = new TreeMap();
   private static int MAX_FILE_SIZE = 1000000; //don't update files bigger than this
+  private static Set extensions = new HashSet();
   
   /**
    * Main program.  Expects one argument, the name of a directory containing files to
@@ -49,18 +53,67 @@ public class IbmUimaToApacheUima {
    * @throws IOException if an I/O error occurs
    */
   public static void main(String[] args) throws IOException{
-    if (args.length < 1) {
-      System.err.println("Usage: java " + IbmUimaToApacheUima.class.getName() + " <directory>");
-      System.exit(1);
+    //parse command line
+    String dir = null;
+    for (int i = 0; i < args.length; i++) {
+      if (args[i].startsWith("-")) {
+        if (args[i].equals("-ext")) {
+          if (i + 1 >= args.length) {
+            printUsageAndExit();
+          }
+          parseCommaSeparatedList(args[++i], extensions);
+        }
+        else {
+          System.err.println("Unknown switch " + args[i]);
+          printUsageAndExit();
+        }
+      }
+      else {
+        if (dir != null) {
+          printUsageAndExit();
+        }
+        else {
+          dir = args[i];
+        }
+      }
     }
+    if (dir == null) {
+      printUsageAndExit();
+    }
+
     //read resource files
-    //mapp from IBM UIMA package names to Apache UIMA package names
+    //map from IBM UIMA package names to Apache UIMA package names
     readMapping("packageMapping.txt", packageMapping);
     //other string replacements
     readMapping("stringReplacements.txt", stringReplacements);
 
+    //from system property, get list of file extensions to exclude
+    
     //do the replacements
     replaceInAllFiles(new File(args[0]));
+  }
+
+  /**
+   * Parses a comma separated list, entering each value into the results Collection.
+   * Trailing empty strings are included in the results Collection.
+   * @param string string to parse
+   * @param results Collection to which each value will be added
+   */
+  private static void parseCommaSeparatedList(String string, Collection results) {
+    String[] components = string.split(",",-1);
+    for (int i = 0; i < components.length; i++) {
+      results.add(components[i]);
+    }    
+  }
+
+  /**
+   * 
+   */
+  private static void printUsageAndExit() {
+    System.err.println("Usage: java " + IbmUimaToApacheUima.class.getName() + " <directory> [-ext <fileExtensions>]");
+    System.err.println("<fileExtensions> is a comma separated list of file extensions to process, e.g.: java,xml,properties");
+    System.err.println("\tUse a trailing comma to include files with no extension (meaning their name contains no dot)");
+    System.exit(1);
   }
 
   /**
@@ -75,18 +128,31 @@ public class IbmUimaToApacheUima {
     for (int i = 0; i < fileList.length; i++) {
       File file = fileList[i];
       if (file.isFile()) {
+        //skip files with extensions specified in the excludes list
+        if (!extensions.isEmpty()) {
+          String filename = file.getName();
+          String ext="";
+          int lastDot = filename.lastIndexOf('.');
+          if (lastDot > -1) {
+            ext = filename.substring(lastDot+1);
+          }
+          if (!extensions.contains(ext.toLowerCase())) {
+            continue;
+          }
+        }
+        
         //skip files that we can't read and write
         if (!file.canRead()) {
-          System.err.println("Skipping unreadable file: " + file.getPath());
+          System.err.println("Skipping unreadable file: " + file.getCanonicalPath());
           continue;
         }
         if (!file.canWrite()) {
-          System.err.println("Skipping unwritable file: " + file.getPath());
+          System.err.println("Skipping unwritable file: " + file.getCanonicalPath());
           continue;
         }
         //skip files that are too big
         if (file.length() > MAX_FILE_SIZE) {
-          System.err.println("Skipping file " + file.getPath() + " with size: " + file.length() + " bytes");
+          System.out.println("Skipping file " + file.getCanonicalPath() + " with size: " + file.length() + " bytes");
           continue;
         }
         
@@ -121,23 +187,15 @@ public class IbmUimaToApacheUima {
     //loop over packages to replace
     //we do special processing for package names to try to handle the case where
     //user code exists in a package prefixed by com.ibm.uima.
-    //in .java files, we only replace imports
-    //in other files, we only replace the package name when it appears on its own,
-    //not as a prefix of another package.
+    //We only replace the package name when it appears as part of a fully-qualified
+    //class name in that package, not as a prefix of another package.
     Iterator entries = packageMapping.entrySet().iterator();
     while (entries.hasNext()) {
       Map.Entry entry = (Map.Entry)entries.next();
       String ibmPkg = (String)entry.getKey();
       String apachePkg = (String)entry.getValue();
-      //apply replacement (depends on whether this is a .java file)
-      if (file.getName().endsWith(".java")) {
-        String regex = "import\\s*"+ibmPkg+"(\\.[^\\.]*;)";
-        contents = contents.replaceAll(regex, "import " + apachePkg + "$1");
-      }
-      else {
-        String regex = ibmPkg+"(\\.[^\\.]*[\\W&&[^\\.]])";
-        contents = contents.replaceAll(regex, apachePkg + "$1");
-      }
+      String regex = ibmPkg+"(\\.(\\*|[A-Z]\\w*))";
+      contents = contents.replaceAll(regex, apachePkg + "$1");
     }
     //now apply simple string replacements
     entries = stringReplacements.entrySet().iterator();

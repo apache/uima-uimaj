@@ -89,7 +89,7 @@ com.ibm.uima.tutorial.ex5 org.apache.uima.tutorial.ex5
 com.ibm.uima.tutorial.ex6 org.apache.uima.tutorial.ex6
 com.ibm.uima.uimacpp org.apache.uima.uimacpp
 com.ibm.uima.util org.apache.uima.util
-com.ibm.uima.reference_impl.util org.apache.uima.util.impl
+com.ibm.uima.reference_impl.util org.apache.uima.internal.util
 com.ibm.vinci.debug org.apache.vinci.debug
 com.ibm.vinci.transport org.apache.vinci.transport
 com.ibm.vinci.transport.context org.apache.vinci.transport.context

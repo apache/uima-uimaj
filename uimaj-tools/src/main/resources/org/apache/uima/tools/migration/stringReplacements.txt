@@ -3,3 +3,9 @@
 VinciCasObjectProcessorService_impl VinciAnalysisEngineService_impl
 org.apache.uima.tools.DocumentAnalyzer org.apache.uima.tools.docanalyzer.DocumentAnalyzer
 http://uima.watson.ibm.com/resourceSpecifier http://uima.apache.org/resourceSpecifier
+org.apache.uima.internal.util.JSR47Logger_impl org.apache.uima.util.impl.JSR47Logger_impl
+org.apache.uima.internal.util.Logger_impl org.apache.uima.util.impl.Logger_impl
+org.apache.uima.internal.util.ProcessTrace_impl org.apache.uima.util.impl.ProcessTrace_impl
+org.apache.uima.internal.util.ProcessTraceEvent_impl org.apache.uima.util.impl.ProcessTraceEvent_impl
+org.apache.uima.internal.util.SaxDeserializer_impl org.apache.uima.util.impl.SaxDeserializer_impl
+org.apache.uima.internal.util.XMLParser_impl org.apache.uima.util.impl.XMLParser_impl
