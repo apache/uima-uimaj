@@ -22,6 +22,7 @@ package org.apache.uima.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -54,14 +55,18 @@ import org.apache.uima.collection.CasInitializerDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.resource.CasDefinition;
+import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.ResourceSpecifier;
+import org.apache.uima.resource.URISpecifier;
 import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.resource.metadata.FeatureDescription;
 import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.FsIndexKeyDescription;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
+import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
@@ -159,11 +164,17 @@ public class CasCreationUtils {
   /**
    * Creates a new CAS instance for a collection of CAS Processors. This method correctly handles
    * aggregate as well as primitive analysis engines
+   * <p>
+   * If you pass this method objects of type {@link AnalysisEngineDescription}, 
+   * {@link CollectionReaderDescription}, {@link CasInitializerDescription}, or {@link CasConsumerDescription},
+   * it will not instantiate the components.  It will just extract the type system information from the
+   * descriptor.  For any other kind of {@link ResourceSpecifier}, it will call
+   * {@link UIMAFramework#produceResource(org.apache.uima.resource.ResourceSpecifier, Map)}.  For example,
+   * if a {@link URISpecifier} is passed, a remote connection will be established and the service will be
+   * queries for its metadata.  An exception will be thrown if the connection can not be opened.
    * 
    * @param aComponentDescriptionsOrMetaData
-   *          a collection of {@link AnalysisEngineDescription},
-   *          {@link CollectionReaderDescription}, {@link CasInitializerDescription},
-   *          {@link CasConsumerDescription}, {@link ProcessingResourceMetaData},
+   *          a collection of {@link ResourceSpecifier}, {@link ProcessingResourceMetaData},
    *          {@link TypeSystemDescription}, {@link FsIndexCollection}, or {@link TypePriorities}
    *          objects.
    * 
@@ -181,11 +192,17 @@ public class CasCreationUtils {
   /**
    * Creates a new CAS instance for a collection of CAS Processors. This method correctly handles
    * aggregate as well as primitive analysis engines
+   * <p>
+   * If you pass this method objects of type {@link AnalysisEngineDescription}, 
+   * {@link CollectionReaderDescription}, {@link CasInitializerDescription}, or {@link CasConsumerDescription},
+   * it will not instantiate the components.  It will just extract the type system information from the
+   * descriptor.  For any other kind of {@link ResourceSpecifier}, it will call
+   * {@link UIMAFramework#produceResource(org.apache.uima.resource.ResourceSpecifier, Map)}.  For example,
+   * if a {@link URISpecifier} is passed, a remote connection will be established and the service will be
+   * queries for its metadata.  An exception will be thrown if the connection can not be opened.
    * 
    * @param aComponentDescriptionsOrMetaData
-   *          a collection of {@link AnalysisEngineDescription},
-   *          {@link CollectionReaderDescription}, {@link CasInitializerDescription},
-   *          {@link CasConsumerDescription}, {@link ProcessingResourceMetaData},
+   *          a collection of {@link ResourceSpecifier}, {@link ProcessingResourceMetaData},
    *          {@link TypeSystemDescription}, {@link FsIndexCollection}, or {@link TypePriorities}
    *          objects.
    * @param aPerformanceTuningSettings
@@ -206,11 +223,17 @@ public class CasCreationUtils {
   /**
    * Creates a new CAS instance for a collection of CAS Processors. This method correctly handles
    * aggregate as well as primitive analysis engines
+   *  <p>
+   * If you pass this method objects of type {@link AnalysisEngineDescription}, 
+   * {@link CollectionReaderDescription}, {@link CasInitializerDescription}, or {@link CasConsumerDescription},
+   * it will not instantiate the components.  It will just extract the type system information from the
+   * descriptor.  For any other kind of {@link ResourceSpecifier}, it will call
+   * {@link UIMAFramework#produceResource(org.apache.uima.resource.ResourceSpecifier, Map)}.  For example,
+   * if a {@link URISpecifier} is passed, a remote connection will be established and the service will be
+   * queries for its metadata.  An exception will be thrown if the connection can not be opened.
    * 
    * @param aComponentDescriptionsOrMetaData
-   *          a collection of {@link AnalysisEngineDescription},
-   *          {@link CollectionReaderDescription}, {@link CasInitializerDescription},
-   *          {@link CasConsumerDescription}, {@link ProcessingResourceMetaData},
+   *          a collection of {@link ResourceSpecifier}, {@link ProcessingResourceMetaData},
    *          {@link TypeSystemDescription}, {@link FsIndexCollection}, or {@link TypePriorities}
    *          objects.
    * @param aPerformanceTuningSettings
@@ -327,12 +350,17 @@ public class CasCreationUtils {
    * Creates a new CAS instance for a collection of CAS Processors, which. reuses an existing type
    * system. Using this method allows several CASes to all share the exact same type system object.
    * This method correctly handles aggregate as well as primitive analysis engines.
-   * 
+   * <p>
+   * If you pass this method objects of type {@link AnalysisEngineDescription}, 
+   * {@link CollectionReaderDescription}, {@link CasInitializerDescription}, or {@link CasConsumerDescription},
+   * it will not instantiate the components.  It will just extract the type system information from the
+   * descriptor.  For any other kind of {@link ResourceSpecifier}, it will call
+   * {@link UIMAFramework#produceResource(org.apache.uima.resource.ResourceSpecifier, Map)}.  For example,
+   * if a {@link URISpecifier} is passed, a remote connection will be established and the service will be
+   * queries for its metadata.  An exception will be thrown if the connection can not be opened.
    * 
    * @param aComponentDescriptionsOrMetaData
-   *          a collection of {@link AnalysisEngineDescription},
-   *          {@link CollectionReaderDescription}, {@link CasInitializerDescription},
-   *          {@link CasConsumerDescription}, {@link ProcessingResourceMetaData},
+   *          a collection of {@link ResourceSpecifier}, {@link ProcessingResourceMetaData},
    *          {@link TypeSystemDescription}, {@link FsIndexCollection}, or {@link TypePriorities}
    *          objects.
    * @param aTypeSystem
@@ -356,12 +384,17 @@ public class CasCreationUtils {
    * Creates a new CAS instance for a collection of CAS Processors, which. reuses an existing type
    * system. Using this method allows several CASes to all share the exact same type system object.
    * This method correctly handles aggregate as well as primitive analysis engines.
-   * 
+   * <p>
+   * If you pass this method objects of type {@link AnalysisEngineDescription}, 
+   * {@link CollectionReaderDescription}, {@link CasInitializerDescription}, or {@link CasConsumerDescription},
+   * it will not instantiate the components.  It will just extract the type system information from the
+   * descriptor.  For any other kind of {@link ResourceSpecifier}, it will call
+   * {@link UIMAFramework#produceResource(org.apache.uima.resource.ResourceSpecifier, Map)}.  For example,
+   * if a {@link URISpecifier} is passed, a remote connection will be established and the service will be
+   * queries for its metadata.  An exception will be thrown if the connection can not be opened.
    * 
    * @param aComponentDescriptionsOrMetaData
-   *          a collection of {@link AnalysisEngineDescription},
-   *          {@link CollectionReaderDescription}, {@link CasInitializerDescription},
-   *          {@link CasConsumerDescription}, {@link ProcessingResourceMetaData},
+   *          a collection of {@link ResourceSpecifier}, {@link ProcessingResourceMetaData},
    *          {@link TypeSystemDescription}, {@link FsIndexCollection}, or {@link TypePriorities}
    *          objects.
    * @param aTypeSystem
@@ -1560,16 +1593,22 @@ public class CasCreationUtils {
   }
 
   /**
-   * Gets a list of ProcessingResourceMetadata objects from a list containing either component
-   * descriptions, ProcessingResourceMetadata objects, or subparts of ProcessingResourceMetadata
+   * Gets a list of ProcessingResourceMetadata objects from a list containing either ResourceSpecifiers,
+   * ProcessingResourceMetadata objects, or subparts of ProcessingResourceMetadata
    * objects (type sypstems, indexes, or type priorities). Subparts will be wrapped inside a
    * ProcessingResourceMetadata object. All objects will be cloned, so that further processing (such
    * as import resolution) does not affect the caller.
+   * <p>
+   * If you pass this method objects of type {@link AnalysisEngineDescription}, 
+   * {@link CollectionReaderDescription}, {@link CasInitializerDescription}, or {@link CasConsumerDescription},
+   * it will not instantiate the components.  It will just extract the type system information from the
+   * descriptor.  For any other kind of {@link ResourceSpecifier}, it will call
+   * {@link UIMAFramework#produceResource(org.apache.uima.resource.ResourceSpecifier, Map)}.  For example,
+   * if a {@link URISpecifier} is passed, a remote connection will be established and the service will be
+   * queries for its metadata.  An exception will be thrown if the connection can not be opened.
    * 
-   * @param aComponentDescriptionOrMetaData
-   *          a collection contianing {@link AnalysisEngineDescription},
-   *          {@link CollectionReaderDescription}, {@link CasInitializerDescription},
-   *          {@link CasConsumerDescription}, {@link ProcessingResourceMetaData},
+   * @param aComponentDescriptionsOrMetaData
+   *          a collection of {@link ResourceSpecifier}, {@link ProcessingResourceMetaData},
    *          {@link TypeSystemDescription}, {@link FsIndexCollection}, or {@link TypePriorities}
    *          objects.
    * @param aResourceManager
@@ -1626,7 +1665,15 @@ public class CasCreationUtils {
         ProcessingResourceMetaData md = new ProcessingResourceMetaData_impl();
         md.setTypePriorities((TypePriorities) current);
         mdList.add(md);
-      } else {
+      } else if (current instanceof ResourceSpecifier) {
+        Resource resource = UIMAFramework.produceResource((ResourceSpecifier)current, Collections.EMPTY_MAP);
+        ResourceMetaData metadata = resource.getMetaData();
+        if (metadata instanceof ProcessingResourceMetaData) {
+          mdList.add(metadata);
+        }      
+        resource.destroy();
+      }
+      else {
         throw new ResourceInitializationException(
                 ResourceInitializationException.UNSUPPORTED_OBJECT_TYPE_IN_CREATE_CAS,
                 new Object[] { current.getClass().getName() });
