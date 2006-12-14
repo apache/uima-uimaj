@@ -17,4 +17,4 @@
 #   specific language governing permissions and limitations
 #   under the License.
 
-"$JAVA_HOME/bin/java" -cp "$UIMA_HOME/lib/uima-core.jar:$UIMA_HOME/lib/uima-tools.jar" org.apache.uima.tools.migration.IbmUimaToApacheUima %1
+"$JAVA_HOME/bin/java" -cp "$UIMA_HOME/lib/uima-core.jar:$UIMA_HOME/lib/uima-tools.jar" org.apache.uima.tools.migration.IbmUimaToApacheUima %1 -ext java,xml,wsdd,properties,launch,bat,cmd,sh,ksh,csh,
