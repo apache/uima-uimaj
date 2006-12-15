@@ -156,7 +156,7 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
   }
 
   public TypesWithNameSpaces getTypeSystemInfoList() {
-    TypesWithNameSpaces result = new TypesWithNameSpaces();
+    TypesWithNameSpaces result = super.getTypeSystemInfoList();
     Type[] allTypes = (Type[]) editor.allTypes.get().values().toArray(new Type[0]);
 /*    Arrays.sort(allTypes, new Comparator() {
 

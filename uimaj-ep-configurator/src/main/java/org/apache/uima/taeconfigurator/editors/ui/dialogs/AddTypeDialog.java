@@ -119,7 +119,7 @@ public class AddTypeDialog extends AbstractDialogKeyVerifyJavaNames {
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#getTypeSystemInfoList()
    */
   public TypesWithNameSpaces getTypeSystemInfoList() {
-    TypesWithNameSpaces result = new TypesWithNameSpaces();
+    TypesWithNameSpaces result = super.getTypeSystemInfoList();
     boolean hasFeatures = false;
     boolean hasAllowedValues = false;
     if (null != existingTd) {

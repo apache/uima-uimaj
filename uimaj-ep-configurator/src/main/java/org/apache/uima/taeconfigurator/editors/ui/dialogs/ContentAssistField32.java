@@ -17,29 +17,29 @@
  * under the License.
  */
 
+/*
+ * Isolates Eclipse 3.2 content assist types
+ */
 package org.apache.uima.taeconfigurator.editors.ui.dialogs;
 
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.fieldassist.ContentAssistField;
 
-import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
-
-public class TypesWithNameSpaces {
-
-  public SortedMap sortedNames = new TreeMap();
+public class ContentAssistField32 {
   
-  public void add(String fullname) {
-    String key = AbstractSection.getShortName(fullname);
-    String nameSpace = AbstractSection.getNameSpace(fullname);
-    Set entry = (Set) sortedNames.get(key);
-    if (null == entry) {
-      entry = new TreeSet();
-      entry.add(nameSpace);
-      sortedNames.put(key, entry);
-    } else {
-      entry.add(nameSpace);
-    }
-  }   
+  final private ContentAssistField caf;
+  
+  ContentAssistField32(Composite tc, TypesWithNameSpaces candidatesToPickFrom) {
+    TypesWithNameSpaces32 twns32 = new TypesWithNameSpaces32(candidatesToPickFrom);
+    caf = new ContentAssistField(tc, SWT.BORDER, new org.eclipse.jface.fieldassist.TextControlCreator(), 
+            new org.eclipse.jface.fieldassist.TextContentAdapter(), twns32,
+            null, null);
+    caf.getContentAssistCommandAdapter().setProposalAcceptanceStyle(org.eclipse.jface.fieldassist.ContentProposalAdapter.PROPOSAL_REPLACE);
+  }
+
+  public Text getControl() {
+    return (Text) caf.getControl();
+  }
 }

@@ -175,7 +175,7 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
   }
 
   public TypesWithNameSpaces getTypeSystemInfoList() {
-    TypesWithNameSpaces result = new TypesWithNameSpaces();
+    TypesWithNameSpaces result = super.getTypeSystemInfoList();
     String[] allTypes = getAllTypesAsSortedArray();
     for (int i = 0; i < allTypes.length; i++) {
       result.add(allTypes[i]);

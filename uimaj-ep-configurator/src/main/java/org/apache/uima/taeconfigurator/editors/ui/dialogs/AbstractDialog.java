@@ -31,9 +31,6 @@ import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.fieldassist.ContentProposalAdapter;
-import org.eclipse.jface.fieldassist.TextContentAdapter;
-import org.eclipse.jface.fieldassist.TextControlCreator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.KeyEvent;
@@ -53,20 +50,20 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
-import org.eclipse.ui.fieldassist.ContentAssistField;
 
 public abstract class AbstractDialog extends Dialog implements Listener, StandardStrings {
-  
-  public final static char[] contentAssistActivationChars  = new char[0];
-  public final static KeyStroke contentAssistActivationKey;
+ 
+  private final static boolean contentAssistAvailable;
   static {
+    boolean contentAssistIsOK = false;
     try {
-      contentAssistActivationKey = KeyStroke.getInstance("Ctrl+Space");
-    } catch (ParseException e) {
-      throw new RuntimeException(e);
+      Class.forName("org.eclipse.ui.fieldassist.ContentAssistField");
+      contentAssistIsOK = true;
+    } catch (ClassNotFoundException e) {
     }
+    contentAssistAvailable = contentAssistIsOK;
   }
-
+ 
   protected MultiPageEditor editor;
 
   protected AbstractSection section;
@@ -377,12 +374,16 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     Composite tc = new2ColumnComposite(twoCol);
     final TypesWithNameSpaces candidatesToPickFrom = getTypeSystemInfoList(); // provide an ArrayList of
 
-    ContentAssistField caf = new ContentAssistField(tc, SWT.BORDER, new TextControlCreator(), 
-            new TextContentAdapter(), candidatesToPickFrom,
-            null, null);
-    caf.getContentAssistCommandAdapter().setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
-    final Text text = (Text)caf.getControl();
-    text.setToolTipText("Enter a Type name. Content Assist is available on Eclipse 3.2 and beyond (press Ctrl + Space)");
+    final Text text;
+    if (contentAssistAvailable) {
+      ContentAssistField32 caf = new ContentAssistField32(tc, candidatesToPickFrom);
+      text = caf.getControl();
+    } else {
+      text = newText(tc, SWT.BORDER, "");
+    }
+      
+    text.setToolTipText("Enter a Type name." + (contentAssistAvailable ? 
+            "Content Assist is available (press Ctrl + Space)" : ""));
     text.getParent().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     text.addListener(SWT.KeyUp, this);
     text.addListener(SWT.MouseUp, this); // for paste operation
