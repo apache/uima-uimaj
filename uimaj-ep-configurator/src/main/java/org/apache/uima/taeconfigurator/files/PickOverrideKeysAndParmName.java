@@ -19,21 +19,8 @@
 
 package org.apache.uima.taeconfigurator.files;
 
-import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CasConsumerDescription;
@@ -43,38 +30,186 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.ConfigurationGroup;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.ConfigurationParameterDeclarations;
+import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.apache.uima.taeconfigurator.editors.ui.ParameterDelegatesSection;
+import org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog;
 import org.apache.uima.taeconfigurator.editors.ui.dialogs.AddParameterDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 
-/**
- */
-public class PickOverrideKeysAndParmName extends LimitedResourceSelectionDialog {
 
-  final static private Object[] objectArray0 = new Object[0];
+public class PickOverrideKeysAndParmName extends AbstractDialog {
 
   private AddParameterDialog parameterDialog = null; // not currently used
 
   private ConfigurationParameter cp;
 
-  private ITreeContentProvider keyTreeProvider;
-
   private ConfigurationParameterDeclarations cpd;
 
   private boolean adding;
 
-  // rootElement is the map returned from getDelegateAnalysisEngineSpecifiers()
+  private Table paramsUI;
 
-  public PickOverrideKeysAndParmName(Shell parentShell,
-          Object rootElement, // is editor.getResolvedDelegates(), a Map, key = keyname,
-          // value = delegate description object
+  private Table keysUI;
+
+  private Map delegates;
+  
+  //returned values
+  public String delegateKeyName;
+  public String delegateParameterName;
+
+   /*
+   * Shows 2 side-by-side windows.
+   * 
+   * Left one is a list of keys of next-level-delegates
+   * Right one is a list of parms of those delegates that 
+   *   match sufficiently to be overridden by this overriding parm
+   * If adding to existing override - current overrides are not shown as
+   *   candidates.
+   * If editing - all are shown (you can delete)  
+   *
+   */
+  public PickOverrideKeysAndParmName(AbstractSection aSection,
+          Map delegateMap,
           String message, ConfigurationParameter aCp, ConfigurationParameterDeclarations aCpd,
           boolean aAdding) {
-    super(parentShell, rootElement, message);
+    super(aSection, "Delegate Keys and Parameter Name Selection", message);
+    delegates = delegateMap;
     cp = aCp;
     cpd = aCpd;
     adding = aAdding; // true if we're adding, not editing
   }
 
+  protected Control createDialogArea(Composite parent) {
+    Composite mainArea = (Composite)super.createDialogArea(parent);
+    
+    Composite twoCol = new2ColumnComposite(mainArea);
+    
+    
+    keysUI = newTable(twoCol, SWT.SINGLE);
+    paramsUI = newTable(twoCol, SWT.SINGLE);
+    
+    for (Iterator it = delegates.entrySet().iterator(); it.hasNext();) {
+      Map.Entry entry = (Map.Entry)it.next();
+      TableItem item = new TableItem(keysUI, SWT.NULL);
+      item.setText((String)entry.getKey());
+      item.setData(entry);
+    }
+    keysUI.addListener(SWT.Selection, this);
+    if (0 < keysUI.getItemCount()) {
+      keysUI.setSelection(0);
+    }
+    
+    return mainArea;
+  }
+    
+  
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#handleEvent(org.eclipse.swt.widgets.Event)
+   */
+  public void handleEvent(Event event) {
+    if (event.widget == keysUI && event.type == SWT.Selection) {
+      fillParameterCandidates();
+      enableOK();
+    }
+    
+    else if (event.widget == paramsUI && event.type == SWT.Selection) {
+      copyValuesFromGUI();
+      enableOK();
+    }
+  }
+
+  private void fillParameterCandidates() {
+    paramsUI.setRedraw(false);
+    paramsUI.removeAll();
+    TableItem selectedItem = keysUI.getSelection()[0];
+
+    Map.Entry entry = (Map.Entry) selectedItem.getData();
+    String keyName = (String) entry.getKey();
+    // support CasConsumers also
+    // support Flow Controllers too
+    // and skip remote service descriptors
+
+    ResourceSpecifier rs = (ResourceSpecifier) entry.getValue();
+    if (rs instanceof AnalysisEngineDescription || rs instanceof CasConsumerDescription
+            || rs instanceof FlowControllerDescription) {
+      ConfigurationParameterDeclarations delegateCpd = ((ResourceCreationSpecifier) rs)
+              .getMetaData().getConfigurationParameterDeclarations();
+      addSelectedParms(delegateCpd.getCommonParameters(), keyName);
+
+      ConfigurationGroup[] groups = delegateCpd.getConfigurationGroups();
+      if (null != groups) {
+        for (int i = 0; i < groups.length; i++) {
+          addSelectedParms(groups[i].getConfigurationParameters(), keyName);
+        }
+      }
+      addSelectedParms(delegateCpd.getConfigurationParameters(), keyName);
+    }
+    if (0 < paramsUI.getItemCount()) {
+      paramsUI.setSelection(0);
+    }
+    paramsUI.setRedraw(true);
+  }
+ 
+  /*
+   * Filter overridable parameters to exclude: - already overridden (can't override same parameter
+   * twice) - those with different type or multi-valued-ness (Group match not required)
+   */
+  private void addSelectedParms(ConfigurationParameter[] parms, String keyName) {
+    boolean isMultiValued = (null != parameterDialog) ? parameterDialog.multiValueUI
+            .getSelection() : cp.isMultiValued();
+    String type = (null != parameterDialog) ? parameterDialog.parmTypeUI.getText() : cp.getType();
+
+    if (null != parms) {
+      for (int i = 0; i < parms.length; i++) {
+        // multi-valued-ness must match
+        if ((isMultiValued != parms[i].isMultiValued()))
+          continue;
+        // types must match, but we also allow if no type is spec'd - not sure if this is useful
+        if ((null != type && !"".equals(type) && //$NON-NLS-1$
+        !type.equals(parms[i].getType())))
+          continue;
+        // parameter must not be already overridden, unless we're editing an existing one
+        String override = keyName + '/' + parms[i].getName();
+        if (adding && null != ParameterDelegatesSection.getOverridingParmName(override, cpd))
+          continue;
+
+        TableItem tableItem = new TableItem(paramsUI, SWT.NULL);
+        tableItem.setText(parms[i].getName());
+        tableItem.setData(parms[i]);
+      }
+    }
+  }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
+   */
+  public void copyValuesFromGUI() {
+    delegateKeyName = keysUI.getSelection()[0].getText();
+    delegateParameterName = paramsUI.getSelection()[0].getText();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
+   */
+  public void enableOK() {
+    okButton.setEnabled( (0 < keysUI.getSelectionCount()) && 
+                         (0 < paramsUI.getSelectionCount()));   
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
+   */
+  public boolean isValid() {
+    return true;
+  }
+
+    /*
   protected TreeGroup createTreeGroup(Composite composite, Object rootObject) {
     return new TreeGroup(composite, rootObject, (keyTreeProvider = new KeyTreeProvider()),
             new KeyTreeLabelProvider(), new ParmNameProvider(), new ParmNameLabelProvider(),
@@ -102,12 +237,13 @@ public class PickOverrideKeysAndParmName extends LimitedResourceSelectionDialog 
   Map keyTreeParent = new HashMap();
 
   class KeyTreeProvider implements ITreeContentProvider {
-
+ */
     /**
      * for a given map of delegates, return an array of maps representing the those delegates having
      * children. Not called for the top element, but called for subsequent layers
      */
-    public Object[] getChildren(Object parentElement) {
+  /* 
+  public Object[] getChildren(Object parentElement) {
       return objectArray0;
     }
 
@@ -118,11 +254,12 @@ public class PickOverrideKeysAndParmName extends LimitedResourceSelectionDialog 
     public boolean hasChildren(Object element) {
       return false;
     }
-
+ */
     /**
      * returns an array of Map.Entry elements: Key and AE or flow ctlr Description. Called only for
      * the top element
      */
+  /*
     public Object[] getElements(Object inputElement) {
       AbstractList items = new ArrayList();
       if (inputElement instanceof ArrayList)
@@ -141,11 +278,12 @@ public class PickOverrideKeysAndParmName extends LimitedResourceSelectionDialog 
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
       keyTreeParent.clear();
     }
-  }
+*/
 
   /**
    * elements are Map.Entry
    */
+  /*
   static class KeyTreeLabelProvider implements ILabelProvider {
 
     public Image getImage(Object element) {
@@ -170,10 +308,11 @@ public class PickOverrideKeysAndParmName extends LimitedResourceSelectionDialog 
     }
 
   }
-
+  */
   /**
    * Element is: Map Entry Set ConfigurationParameterDeclarations
    */
+  /*
   class ParmNameProvider implements ITreeContentProvider {
 
     public Object[] getChildren(Object parentElement) {
@@ -189,12 +328,13 @@ public class PickOverrideKeysAndParmName extends LimitedResourceSelectionDialog 
       // TODO Auto-generated method stub
       return false;
     }
-
+ */
     /*
      * Get elements (which are overridable parameters) for one delegate
      * 
      * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
      */
+  /*
     public Object[] getElements(Object inputElement) {
       AbstractList items = new ArrayList();
       Map.Entry entry = (Map.Entry) inputElement;
@@ -222,34 +362,6 @@ public class PickOverrideKeysAndParmName extends LimitedResourceSelectionDialog 
       return items.toArray();
     }
 
-    /*
-     * Filter overridable parameters to exclude: - already overridden (can't override same parameter
-     * twice) - those with different type or multi-valued-ness (Group match not required)
-     */
-    private void addSelectedParms(ConfigurationParameter[] parms, AbstractList items, String keyName) {
-      boolean isMultiValued = (null != parameterDialog) ? parameterDialog.multiValueUI
-              .getSelection() : cp.isMultiValued();
-      String type = (null != parameterDialog) ? parameterDialog.parmTypeUI.getText() : cp.getType();
-
-      if (null != parms) {
-        for (int i = 0; i < parms.length; i++) {
-          // multi-valued-ness must match
-          if ((isMultiValued != parms[i].isMultiValued()))
-            continue;
-          // types must match, but we also allow if no type is spec'd - not sure if this is useful
-          if ((null != type && !"".equals(type) && //$NON-NLS-1$
-          !type.equals(parms[i].getType())))
-            continue;
-          // parameter must not be already overridden, unless we're editing an existing one
-          String override = keyName + '/' + parms[i].getName();
-          if (adding && null != ParameterDelegatesSection.getOverridingParmName(override, cpd))
-            continue;
-
-          items.add(parms[i].getName());
-        }
-      }
-
-    }
 
     public void dispose() {
     }
@@ -281,5 +393,7 @@ public class PickOverrideKeysAndParmName extends LimitedResourceSelectionDialog 
     public void removeListener(ILabelProviderListener listener) {
     }
   }
+ */
+
 
 }

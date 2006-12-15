@@ -30,6 +30,9 @@ import org.eclipse.ui.forms.IManagedForm;
 public class OverviewPage extends HeaderPageWithSash {
 
   private PrimitiveSection primitiveSection;
+  
+  // should always exist
+  private MetaDataSection metadataSection;  
 
   /**
    */
@@ -47,9 +50,9 @@ public class OverviewPage extends HeaderPageWithSash {
     if (isLocalProcessingDescriptor()) {
       managedForm.addPart(new GeneralSection(editor, form.left));
       managedForm.addPart(primitiveSection = new PrimitiveSection(editor, form.left));
-      managedForm.addPart(new MetaDataSection(editor, form.right));
+      managedForm.addPart(metadataSection= new MetaDataSection(editor, form.right));
     } else {
-      managedForm.addPart(new MetaDataSection(editor, form.left));
+      managedForm.addPart(metadataSection = new MetaDataSection(editor, form.left));
     }
     createToolBarActions(managedForm);
     sashForm.setOrientation(SWT.HORIZONTAL);
@@ -64,4 +67,7 @@ public class OverviewPage extends HeaderPageWithSash {
     return primitiveSection;
   }
 
+  public MetaDataSection getMetaDataSection() {
+    return metadataSection;
+  }
 }

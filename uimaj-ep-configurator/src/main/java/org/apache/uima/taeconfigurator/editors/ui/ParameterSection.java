@@ -474,47 +474,36 @@ public class ParameterSection extends AbstractSectionParm {
     }
     // only picks one override key - but code is from earlier design where multiple keys were
     // possible
-    PickOverrideKeysAndParmName dialog = new PickOverrideKeysAndParmName(getSection().getShell(),
-            delegateMap, "Override Keys and Parameter Name Selection", cp, cpd, overrideIndex == -1);
+    PickOverrideKeysAndParmName dialog = new PickOverrideKeysAndParmName(this, delegateMap,
+            "Override Keys and Parameter Name Selection", cp, cpd, overrideIndex == -1);
 
     dialog.setTitle("Delegate Keys and Parameter Name Selection");
     dialog
             .setMessage("Select the override key path from the left panel, and the overridden parameter from the right panel.\nOnly valid parameters will be shown.");
     if (dialog.open() == Window.CANCEL)
       return;
-    Object[] keysAndParms = dialog.getResult();
-    // NOTE: this code is written presuming you could have multiple keys:
-    // key1/key2/parm
-    // but this is not the case. There is always one and only one key
-    if (null != keysAndParms && keysAndParms.length > 0) {
-      Map.Entry[] keys = (Map.Entry[]) keysAndParms[0];
-      StringBuffer keyNames = new StringBuffer();
-      for (int i = keys.length - 1; i >= 0; i--) {
-        if (i < (keys.length - 1))
-          keyNames.append('/');
-        keyNames.append(keys[i].getKey());
-      }
 
-      // update the existing item
-      // have to do a 3 step update because the getOverrides returns a
-      // cloned array
-      valueChanged = false;
-      String overrideSpec = keyNames.append('/').append((String) ((Object[]) keysAndParms[1])[0])
-              .toString();
-      // updateOneOverride(cp, overrideIndex, dialog.overrideSpec);
-      if (overrideIndex < 0) {
-        addOverride(cp, overrideSpec);
-        valueChanged = true;
-      } else {
-        String[] overrides = cp.getOverrides();
-        overrides[overrideIndex] = setValueChanged(overrideSpec, overrides[overrideIndex]);
-        cp.setOverrides(overrides);
-        parent.getItems()[overrideIndex].setText(OVERRIDE_HEADER + overrideSpec);
-      }
-      // TODO consequences of changes in rest of model?
-      commonActionFinishDirtyIfChange();
+    String delegateKeyName = dialog.delegateKeyName;
+    String delegateParameterName = dialog.delegateParameterName;
+    // update the existing item
+    // have to do a 3 step update because the getOverrides returns a
+    // cloned array
+    valueChanged = false;
+    String overrideSpec = delegateKeyName + '/' + delegateParameterName;
+    // updateOneOverride(cp, overrideIndex, dialog.overrideSpec);
+    if (overrideIndex < 0) {
+      addOverride(cp, overrideSpec);
+      valueChanged = true;
+    } else {
+      String[] overrides = cp.getOverrides();
+      overrides[overrideIndex] = setValueChanged(overrideSpec, overrides[overrideIndex]);
+      cp.setOverrides(overrides);
+      parent.getItems()[overrideIndex].setText(OVERRIDE_HEADER + overrideSpec);
     }
+    // TODO consequences of changes in rest of model?
+    commonActionFinishDirtyIfChange();
   }
+  
 
   private boolean removeItems(TreeItem[] itemsToRemove, boolean giveWarningMsg) {
     String[] namesToRemove = new String[itemsToRemove.length];

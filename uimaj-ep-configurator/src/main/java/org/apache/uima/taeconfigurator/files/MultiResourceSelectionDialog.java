@@ -21,6 +21,11 @@ package org.apache.uima.taeconfigurator.files;
 
 import java.util.ArrayList;
 
+import org.apache.uima.taeconfigurator.CDEpropertyPage;
+import org.apache.uima.taeconfigurator.Messages;
+import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
+import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
+import org.apache.uima.taeconfigurator.editors.ui.dialogs.ResourcePickerDialog;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -36,12 +41,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import org.apache.uima.taeconfigurator.CDEpropertyPage;
-import org.apache.uima.taeconfigurator.Messages;
-import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
-import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
-
-public class MultiResourceSelectionDialog extends LimitedResourceSelectionDialog {
+public class MultiResourceSelectionDialog extends ResourcePickerDialog {
 
   private Button browseButton; // for browsing the file system
 
@@ -55,7 +55,10 @@ public class MultiResourceSelectionDialog extends LimitedResourceSelectionDialog
 
   public MultiResourceSelectionDialog(Shell parentShell, IAdaptable rootElement, String message,
           IPath aExcludeDescriptor, MultiPageEditor aEditor) {
+    super(parentShell);
+    editor = aEditor;
 
+    /*
     super(parentShell, rootElement, message);
     editor = aEditor;
     setTitle(Messages.getString("ResourceSelectionDialog.title")); //$NON-NLS-1$
@@ -65,6 +68,7 @@ public class MultiResourceSelectionDialog extends LimitedResourceSelectionDialog
     else
       setMessage(Messages.getString("ResourceSelectionDialog.message")); //$NON-NLS-1$
     setShellStyle(getShellStyle() | SWT.RESIZE);
+ */
   }
 
   protected Control createDialogArea(Composite parent) {

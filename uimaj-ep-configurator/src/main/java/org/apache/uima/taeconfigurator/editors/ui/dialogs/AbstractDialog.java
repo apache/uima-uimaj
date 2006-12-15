@@ -52,6 +52,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.fieldassist.ContentAssistField;
 
 public abstract class AbstractDialog extends Dialog implements Listener, StandardStrings {
@@ -81,16 +82,32 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
   /**
    * @param parentShell
    */
-  protected AbstractDialog(AbstractSection aSection, String title, String description) {
+  protected AbstractDialog(AbstractSection section, String title, String description) {
     // maintainers: don't use new shell; see comment in Dialog class
-    super(aSection.getSection().getShell());
+    super(section.getSection().getShell());
+    commonInit(section, title, description);
+  }
+  
+  protected AbstractDialog(Shell shell, String title, String description) {
+    super(shell);
+    commonInit(null, title, description);
+  }
+  
+  private void commonInit(AbstractSection aSection, String aTitle, String aDescription) {
     section = aSection;
-    editor = section.editor;
+    editor = (null == section)? null : section.editor;
     setShellStyle(getShellStyle() | SWT.RESIZE);
+    title = aTitle;
+    dialogDescription = aDescription;
+  }
+  
+  public void setTitle(String title) {
     this.title = title;
-    this.dialogDescription = description;
   }
 
+  public void setMessage(String msg) {
+    this.dialogDescription = msg;
+  }
   protected Control createDialogArea(Composite parent) {
     // create composite
     Composite composite = (Composite) super.createDialogArea(parent);
@@ -223,6 +240,13 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
   protected Text newLabeledText(Composite parent, int style, String label, String tip) {
     setTextAndTip(new Label(parent, SWT.NONE), label, tip);
     return newText(parent, style, tip);
+  }
+
+  protected Tree newTree(Composite parent, int style) {
+    Tree tree = new Tree(parent, style | SWT.BORDER);
+    GridData gd = new GridData(GridData.FILL_BOTH);
+    tree.setLayoutData(gd);
+    return tree;
   }
 
   /**
