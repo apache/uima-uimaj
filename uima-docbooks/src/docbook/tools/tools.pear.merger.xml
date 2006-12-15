@@ -29,7 +29,7 @@ under the License.
     creating a new PEAR which has, in turn, a new Aggregate analysis engine whose delegates are
     the components from the original files being merged. It does this by (1) copying the
     contents of the input components into the output component, placing each component into a
-    separate subdirectory, (2) generating a UIMA descriptor for the output Aggregate text
+    separate subdirectory, (2) generating a UIMA descriptor for the output Aggregate 
     analysis engine and (3) creating an output PEAR file that encapsulates the output
     Aggregate.</para>
   
@@ -48,7 +48,7 @@ under the License.
     here. The <literal>-n</literal> parameter is the name of the generated Aggregate
     Analysis Engine. The optional <literal>-f</literal> parameter specifies the name of
     the output file. If it is omitted, the output is written to
-    <literal>output_tae_name.pear</literal> in the current working directory.</para>
+    <literal>output_analysis_engine_name.pear</literal> in the current working directory.</para>
   
   <para>During the running of this tool, work files are written to a temporary directory
     created in the user&apos;s home directory.</para>
@@ -74,7 +74,7 @@ under the License.
         &apos;desc&apos; folders under the working directory, are created.</para>
         </listitem>
       
-      <listitem><para>The UIMA TAE descriptor for the output aggregate component is built
+      <listitem><para>The UIMA AE descriptor for the output aggregate component is built
         in the &apos;desc&apos; folder. This aggregate descriptor refers to the input
         delegate components, specifying &apos;fixed flow&apos; based on the original
         order of the input components in the command line. The aggregate descriptor&apos;s
