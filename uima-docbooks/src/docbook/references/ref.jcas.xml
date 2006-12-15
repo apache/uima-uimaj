@@ -399,7 +399,7 @@ ir.getAnnotationIndex(Foo.type)      // filtered by specific type</programlistin
       
       <programlisting>myInstance.addToIndexes();</programlisting>
       
-      <para>Do this after setting all features in the instance <emphasis role="bold"><emphasis role="italic">which could be used in indexing</emphasis></emphasis>, for example, in
+      <para>Do this after setting all features in the instance <emphasis role="bold-italic">which could be used in indexing</emphasis>, for example, in
         determining the sorting order. After indexing, do not change the values of these
         particular features because the indexes will not be updated. If you need to change the
         values, you must first remove the instance from the CAS indexes, change the values,

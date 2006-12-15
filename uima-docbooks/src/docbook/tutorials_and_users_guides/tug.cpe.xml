@@ -1152,8 +1152,8 @@ else { //No CAS Initializer, so read file and set document text ourselves
       runs in a separate process from the CPE, but still on the same computer. The CPE controls
       startup, shutdown, and recovery of a managed CAS Processor. A non-managed CAS
       Processor runs as a service and may be on the same computer as the CPE or on a remote
-      computer. A non-managed CAS Processor <emphasis role="bold"><emphasis role="italic">
-      service</emphasis></emphasis> is started and managed independently from the CPE.</para>
+      computer. A non-managed CAS Processor <emphasis role="bold-italic">
+      service</emphasis> is started and managed independently from the CPE.</para>
     
     <para>For both managed and non-managed CAS Processors, the CAS must be transmitted
       between separate processes and possibly between separate computers. This is
@@ -1218,7 +1218,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
         configuration specifying a managed CAS Processor.</para>
       
       
-      <programlisting>&lt;casProcessor <emphasis role="bold"><emphasis role="italic">deployment="local"</emphasis></emphasis> name="Meeting Detector TAE"&gt;
+      <programlisting>&lt;casProcessor <emphasis role="bold-italic">deployment="local"</emphasis> name="Meeting Detector TAE"&gt;
   &lt;descriptor&gt;
     &lt;include href="deploy/vinci/Deploy_MeetingDetectorTAE.xml"/&gt;
   &lt;/descriptor&gt;
@@ -1293,7 +1293,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
         configuration for the non-managed CAS Processor.</para>
       
       
-      <programlisting>&lt;casProcessor <emphasis role="bold"><emphasis role="italic">deployment="remote"</emphasis></emphasis> name="Meeting Detector TAE"&gt;
+      <programlisting>&lt;casProcessor <emphasis role="bold-italic">deployment="remote"</emphasis> name="Meeting Detector TAE"&gt;
   &lt;descriptor&gt;
     &lt;include href=
         "descriptors/vinciService/MeetingDetectorVinciService.xml"/&gt;
@@ -1342,7 +1342,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
         configuration for the integrated CAS Processor.</para>
       
       
-      <programlisting>&lt;casProcessor <emphasis role="bold"><emphasis role="italic">deployment=<quote>integrated</quote></emphasis></emphasis> name=<quote>Meeting Detector TAE</quote>&gt;
+      <programlisting>&lt;casProcessor <emphasis role="bold-italic">deployment=<quote>integrated</quote></emphasis> name=<quote>Meeting Detector TAE</quote>&gt;
   &lt;descriptor&gt;
     &lt;include href="descriptors/tutorial/ex4/MeetingDetectorTAE.xml"/&gt;
   &lt;/descriptor&gt;
@@ -1374,7 +1374,7 @@ else { //No CAS Initializer, so read file and set document text ourselves
     <para>To run either the integrated or managed examples, use the
       <literal>runCPE</literal> script in the /bin directory of the UIMA installation,
       passing the appropriate CPE descriptor as an argument.</para> <note><para>The
-    <literal>runCPE</literal> script <emphasis role="bold"><emphasis role="italic"> must</emphasis></emphasis> be
+    <literal>runCPE</literal> script <emphasis role="bold-italic"> must</emphasis> be
     run from the <literal>%UIMA_HOME%\examples </literal>directory, because it uses
     relative path names that are resolved relative to this working directory. For instance,
     

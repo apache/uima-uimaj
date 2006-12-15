@@ -86,27 +86,27 @@ under the License.
   
   <itemizedlist>
     <listitem>
-      <para><emphasis role="bold"><emphasis role="italic"><xref
-          linkend="ugr.tug.aae.getting_started"/></emphasis></emphasis> is a tutorial with
+      <para><emphasis role="bold-italic"><xref
+          linkend="ugr.tug.aae.getting_started"/></emphasis> is a tutorial with
         step-by-step instructions for how to develop and test a simple UIMA
         annotator.</para>
     </listitem>
     <listitem>
-      <para><emphasis role="bold"><emphasis role="italic"><xref
-          linkend="ugr.tug.aae.logging.configuring"/></emphasis></emphasis> discusses how to
+      <para><emphasis role="bold-italic"><xref
+          linkend="ugr.tug.aae.logging.configuring"/></emphasis> discusses how to
         make your UIMA annotator configurable, and how it can write messages to the UIMA log
         file.</para>
     </listitem>
     <listitem>
-      <para> <emphasis role="bold"><emphasis role="italic"><xref
-          linkend="ugr.tug.aae.building_aggregates"/></emphasis></emphasis> describes how
+      <para> <emphasis role="bold-italic"><xref
+          linkend="ugr.tug.aae.building_aggregates"/></emphasis> describes how
         annotators can be combined into aggregate analysis engines. It also describes how
         one annotator can make use of the analysis results produced by an annotator that has
         run previously.</para>
     </listitem>
   </itemizedlist>
   
-  <para><emphasis role="bold"><emphasis role="italic">Other examples</emphasis></emphasis></para>
+  <para><emphasis role="bold-italic">Other examples</emphasis></para>
   
   <para>The UIMA SDK include several other examples you may find interesting,
     including</para>
@@ -119,12 +119,12 @@ under the License.
       example, hooks up with the Open Source Apache Derby database. </para></listitem>
   </itemizedlist>
   
-  <para><emphasis role="bold"><emphasis role="italic">Additional Topics</emphasis></emphasis> describes
+  <para><emphasis role="bold-italic">Additional Topics</emphasis> describes
     additional features of the UIMA SDK that may help you in building your own annotators and
     analysis engines.</para>
   
-  <para><emphasis role="bold"><emphasis role="italic"><xref linkend="ugr.tug.aae.common_pitfalls"/>
-    </emphasis></emphasis> contains some useful guidelines to help you ensure that your annotators will
+  <para><emphasis role="bold-italic"><xref linkend="ugr.tug.aae.common_pitfalls"/>
+    </emphasis> contains some useful guidelines to help you ensure that your annotators will
     work correctly in any UIMA application.</para>
   
   <para>This guide does not discuss how to build UIMA Applications, which are programs that
@@ -1886,7 +1886,7 @@ catch (PatternSyntaxException e) {
           (which uses the name AcronymTable) and UimaMeetingAnnotator (which uses
           UimaTermTable) to the single declared resource named UimaAcronymFile.
           Therefore they will share the same instance. Resource bindings in the aggregate
-          descriptor <emphasis role="bold"><emphasis role="italic">override</emphasis></emphasis> any resource
+          descriptor <emphasis role="bold-italic">override</emphasis> any resource
           declarations in individual annotator descriptors.</para>
         
         <para>If we wanted to have the annotators use different acronym tables, we could

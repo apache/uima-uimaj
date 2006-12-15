@@ -608,10 +608,10 @@ sofa.test.CrossAnnotation: gut
   <section id="ugr.tug.mvs.views_api_summary">
     <title>Views API Summary</title>
     
-    <para>The recommended way to deliver a particular CAS view to a <emphasis role="bold"><emphasis role="italic">Single-View</emphasis></emphasis> component is to use by Sofa-mapping in
+    <para>The recommended way to deliver a particular CAS view to a <emphasis role="bold-italic">Single-View</emphasis> component is to use by Sofa-mapping in
       the CPE and/or aggregate descriptors.</para>
     
-    <para>For <emphasis role="bold"><emphasis role="italic">Multi-View </emphasis></emphasis> components or
+    <para>For <emphasis role="bold-italic">Multi-View </emphasis> components or
       applications, the following methods are used to create or get a reference to a CAS view
       for a particular Sofa:</para>
     

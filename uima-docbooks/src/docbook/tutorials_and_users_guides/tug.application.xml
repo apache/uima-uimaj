@@ -1085,7 +1085,7 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
             <literal>%CATALINA_HOME%/webapps/axis/WEB-INF/lib</literal> in your
             installation.</para></listitem>
           
-          <listitem><para><emphasis role="bold"><emphasis role="italic">IMPORTANT</emphasis></emphasis>: any
+          <listitem><para><emphasis role="bold-italic">IMPORTANT</emphasis>: any
             time you add JAR files to TomCat (for instance, in the above 2 steps), you must
             shutdown and restart TomCat before it <quote>notices</quote> this. So now,
             please shutdown and restart TomCat.</para></listitem>
@@ -1127,11 +1127,11 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
         looks like this (important parts are in bold italics):
         
         
-        <programlisting>&lt;deployment name="<emphasis role="bold"><emphasis role="italic">PersonTitleAnnotator</emphasis></emphasis>" 
+        <programlisting>&lt;deployment name="<emphasis role="bold-italic">PersonTitleAnnotator</emphasis>" 
             xmlns="http://xml.apache.org/axis/wsdd/" 
             xmlns:java="http://xml.apache.org/axis/wsdd/providers/java"&gt;
 
-  &lt;service name="<emphasis role="bold"><emphasis role="italic">urn:PersonTitleAnnotator</emphasis></emphasis>" provider="java:RPC"&gt;
+  &lt;service name="<emphasis role="bold-italic">urn:PersonTitleAnnotator</emphasis>" provider="java:RPC"&gt;
 
     &lt;parameter name="scope" value="Request"/&gt;
 
@@ -1142,8 +1142,8 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
     &lt;parameter name="allowedMethods" value="getMetaData process"/&gt;
     &lt;parameter name="allowedRoles" value="*"/&gt;
     &lt;parameter name="resourceSpecifierPath" 
-      value="<emphasis role="bold"><emphasis role="italic">C:/Program Files/apache/uima/examples/
-           descriptors/analysis_engine/PersonTitleAnnotator.xml</emphasis></emphasis>"/&gt;
+      value="<emphasis role="bold-italic">C:/Program Files/apache/uima/examples/
+           descriptors/analysis_engine/PersonTitleAnnotator.xml</emphasis>"/&gt;
 
     &lt;parameter name="numInstances" value="3"/&gt;
 
@@ -1215,13 +1215,13 @@ examples/deploy/soap/Deploy_PersonTitleAnnotator.wsdd</programlisting></para>
       <para>This example deployment descriptor looks like:
         
         
-        <programlisting>&lt;deployment name=<emphasis role="bold"><emphasis role="italic">"Vinci Person Title Annotator Service"</emphasis></emphasis>&gt;
+        <programlisting>&lt;deployment name=<emphasis role="bold-italic">"Vinci Person Title Annotator Service"</emphasis>&gt;
 
-  &lt;service name=<emphasis role="bold"><emphasis role="italic">"uima.annotator.PersonTitleAnnotator"</emphasis></emphasis> provider="vinci"&gt;
+  &lt;service name=<emphasis role="bold-italic">"uima.annotator.PersonTitleAnnotator"</emphasis> provider="vinci"&gt;
 
     &lt;parameter name="resourceSpecifierPath" 
-      value=<emphasis role="bold"><emphasis role="italic">"C:/Program Files/apache/uima/examples/descriptors/
-          analysis_engine/PersonTitleAnnotator.xml"</emphasis></emphasis>/&gt;
+      value=<emphasis role="bold-italic">"C:/Program Files/apache/uima/examples/descriptors/
+          analysis_engine/PersonTitleAnnotator.xml"</emphasis>/&gt;
 
     &lt;parameter name="numInstances" value="1"/&gt;
 

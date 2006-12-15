@@ -346,4 +346,12 @@
     </fo:inline>
   </xsl:template>
 
+  <xsl:template match="emphasis[@role='bold-italic']">
+   <fo:inline font-weight="bold" font-style="italic">
+     <xsl:apply-templates/>
+   </fo:inline>
+ </xsl:template>
+  
+  <!-- bold-italic formatting -->
+  
 </xsl:stylesheet>

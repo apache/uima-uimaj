@@ -515,9 +515,9 @@ under the License.
           <para>This element provides a way to override the contained Analysis
             Engine&apos;s parameters settings. Any entry specified here must already be
             defined; values specified replace the corresponding values for each
-            parameter. <emphasis role="bold"><emphasis role="italic">For Cas Processors, this mechanism
+            parameter. <emphasis role="bold-italic">For Cas Processors, this mechanism
             is only available when they are deployed in <quote>integrated</quote>
-            mode.</emphasis></emphasis> For Collection Readers and Initializers, it always is
+            mode.</emphasis> For Collection Readers and Initializers, it always is
             available.</para>
           
           <para>The content of this element is identical to the component descriptor for
