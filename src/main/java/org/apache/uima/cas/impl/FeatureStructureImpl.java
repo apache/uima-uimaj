@@ -19,7 +19,6 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.uima.cas.CAS;
@@ -132,20 +131,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
       e.addArgument(this.getCASImpl().getTypeSystem().getType(CAS.TYPE_NAME_STRING).getName());
       throw e;
     }
-    // Check if we're dealing with a subtype of String.
-    if (stringType != rangeType) {
-      // We know that we're dealing with a proper subtype of string, so the resulting String[] is
-      // not null.
-      final String[] stringSet = ts.ll_getStringSet(rangeType);
-      if (Arrays.binarySearch(stringSet, val) < 0) {
-        // Not a legal value.
-        CASRuntimeException e = new CASRuntimeException(CASRuntimeException.ILLEGAL_STRING_VALUE);
-        e.addArgument(val);
-        e.addArgument(ts.getTypeName(rangeType));
-        throw e;
-      }
-    }
-    this.getCASImpl().setStringValue(this.getAddress(), featCode, val);
+    this.getCAS().getLowLevelCAS().ll_setStringValue(this.getAddress(), featCode, val);
   }
 
   public void setByteValue(Feature feat, byte val) throws CASRuntimeException {
