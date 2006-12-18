@@ -744,7 +744,6 @@ public interface LowLevelCAS {
 
   double ll_getDoubleValue(int fsRef, int featureCode);
 
-  /** for jcas / featurepath * */
   byte ll_getByteValue(int fsRef, int featureCode, boolean doTypeChecks);
 
   boolean ll_getBooleanValue(int fsRef, int featureCode, boolean doTypeChecks);

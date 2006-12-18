@@ -27,6 +27,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.LowLevelTypeSystem;
 import org.apache.uima.cas.impl.StringTypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.resource.metadata.AllowedValue;
@@ -126,7 +127,8 @@ public class TypeSystemUtil {
    *         Type.
    */
   public static String[] getAllowedValuesForType(Type aType, TypeSystem aTypeSystem) {
-    return ((TypeSystemImpl) aTypeSystem).getStringSet(((StringTypeImpl) aType).getStringSet());
+    LowLevelTypeSystem lts = aTypeSystem.getLowLevelTypeSystem();
+    return lts.ll_getStringSet(lts.ll_getCodeForType(aType));
   }
 
 }

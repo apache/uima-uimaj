@@ -2908,8 +2908,20 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
   }
 
   public final void ll_setStringValue(int fsRef, int featureCode, String value) {
+    String[] stringSet = this.ts.ll_getStringSet(this.ts.ll_getRangeType(featureCode));
+    if (stringSet != null) {
+      final int rc = Arrays.binarySearch(stringSet, value);
+      if (rc < 0) {
+        // Not a legal value.
+        CASRuntimeException e = new CASRuntimeException(CASRuntimeException.ILLEGAL_STRING_VALUE);
+        e.addArgument(value);
+        e.addArgument(this.ts.ll_getTypeForCode(this.ts.ll_getRangeType(featureCode)).getName());
+        throw e;
+      }
+    }
     final int stringAddr = (value == null) ? NULL : this.stringHeap.addString(value);
-    this.heap.heap[fsRef + this.featureOffset[featureCode]] = stringAddr;
+    final int valueAddr = fsRef + this.featureOffset[featureCode]; 
+    this.heap.heap[valueAddr] = stringAddr;
   }
 
   public final void ll_setRefValue(int fsRef, int featureCode, int value) {

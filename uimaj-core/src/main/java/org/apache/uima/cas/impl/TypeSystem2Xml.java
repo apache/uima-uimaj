@@ -106,8 +106,9 @@ public class TypeSystem2Xml {
 
       // check for string subtypes
       if (type instanceof StringTypeImpl) {
-        int stringSetId = ((StringTypeImpl) type).getStringSet();
-        String[] strings = ((TypeSystemImpl) aTypeSystem).getStringSet(stringSetId);
+	LowLevelTypeSystem lts = aTypeSystem.getLowLevelTypeSystem();
+	final int typeCode = lts.ll_getCodeForType(type);
+        String[] strings = lts.ll_getStringSet(typeCode);
         AllowedValue[] allowedVals = new AllowedValue[strings.length];
         for (int i = 0; i < strings.length; i++) {
           allowedVals[i] = factory.createAllowedValue();

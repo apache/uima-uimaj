@@ -146,9 +146,6 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   // Code of root of hierarchy (will be 1 with current implementation)
   private int top;
 
-  // String sets for string subtypes.
-  private ArrayList stringSets;
-
   // A vector of TypeImpl objects.
   private ArrayList types;
 
@@ -158,7 +155,13 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   // List of parent types.
   private final IntVector parents;
 
-  BitSet isStringSubtype = new BitSet();
+  // String sets for string subtypes.
+  private final ArrayList stringSets;
+
+  
+  // This map contains an entry for every subtype of the string type.  The value is a pointer into
+  // the stringSets array list.
+  private final IntRedBlackTree stringSetMap;
 
   // For each type, remember of an array of this component type has already
   // been created.
@@ -257,6 +260,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     this.features = new ArrayList();
     this.features.add(null);
     this.stringSets = new ArrayList();
+    this.stringSetMap = new IntRedBlackTree();
     this.componentToArrayTypeMap = new IntRedBlackTree();
     this.arrayToComponentTypeMap = new IntRedBlackTree();
     this.arrayCodeToTypeMap = new RedBlackTree();
@@ -485,10 +489,10 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     }
     TypeImpl t;
     if (isStringType) {
-      this.isStringSubtype.set(type);
-      t = new StringTypeImpl(name, type, this, this.stringSets.size());
+      final int stringSetCode = this.stringSets.size();
+      this.stringSetMap.put(type, stringSetCode);
+      t = new StringTypeImpl(name, type, this);
     } else {
-      this.isStringSubtype.clear(type);
       t = new TypeImpl(name, type, this);
     }
     this.types.add(t);
@@ -1116,7 +1120,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   }
 
   public boolean ll_isStringSubtype(int type) {
-    return this.isStringSubtype.get(type);
+    return this.stringSetMap.containsKey(type);
   }
 
   public boolean ll_isRefType(int typeCode) {
@@ -1226,7 +1230,6 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     // Dummy call to keep the counts ok. Will never use these data
     // structures for array types.
     newType();
-    this.isStringSubtype.clear(arrayTypeCode);
     TypeImpl arrayType = new TypeImpl(arrayTypeName, arrayTypeCode, this);
     this.types.add(arrayType);
     this.parents.add(motherCode);
@@ -1268,6 +1271,16 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   /* note that subtypes of String are considered primitive */
   public boolean ll_isPrimitiveType(int typeCode) {
     return !ll_isRefType(typeCode);
+  }
+
+  public String[] ll_getStringSet(int typeCode) {
+    if (!ll_isValidTypeCode(typeCode)) {
+      return null;
+    }
+    if (!ll_isStringSubtype(typeCode)) {
+      return null;
+    }
+    return (String[]) this.stringSets.get(this.stringSetMap.get(typeCode));
   }
 
 }

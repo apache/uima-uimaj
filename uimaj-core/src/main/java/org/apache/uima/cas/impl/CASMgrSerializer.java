@@ -310,7 +310,7 @@ public class CASMgrSerializer implements Serializable {
       typeCode = type.getCode();
       this.stringSubtypes[i] = typeCode;
       this.stringSubtypeValuePos[i] = pos;
-      stringSet = ts.getStringSet(type.getStringSet());
+      stringSet = ts.ll_getStringSet(typeCode);
       pos += stringSet.length;
       for (int j = 0; j < stringSet.length; j++) {
         strVals.add(stringSet[j]);
