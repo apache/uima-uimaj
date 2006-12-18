@@ -134,8 +134,9 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
     }
     // Check if we're dealing with a subtype of String.
     if (stringType != rangeType) {
-      final int stringSetCode = ((StringTypeImpl) ts.getType(rangeType)).getStringSet();
-      final String[] stringSet = ts.getStringSet(stringSetCode);
+      // We know that we're dealing with a proper subtype of string, so the resulting String[] is
+      // not null.
+      final String[] stringSet = ts.ll_getStringSet(rangeType);
       if (Arrays.binarySearch(stringSet, val) < 0) {
         // Not a legal value.
         CASRuntimeException e = new CASRuntimeException(CASRuntimeException.ILLEGAL_STRING_VALUE);

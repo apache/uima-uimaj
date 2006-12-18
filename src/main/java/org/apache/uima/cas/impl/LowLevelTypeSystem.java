@@ -240,4 +240,12 @@ public interface LowLevelTypeSystem {
    * @return The type code of the parent type.
    */
   int ll_getParentType(int typeCode);
+  
+  /**
+   * Get the string set (sorted) for a string subtype.
+   * @param typeCode Input type code; should be a string subtype.
+   * @return The set of allowable string values for subtypes of uima.cas.String.  If the input type
+   * code is not a proper subtype of String, returns <code>null</code>. 
+   */
+  String[] ll_getStringSet(int typeCode);
 }
