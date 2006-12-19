@@ -51,7 +51,7 @@ import org.apache.uima.cas.text.TCASMgr;
 import org.apache.uima.internal.util.TextStringTokenizer;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.apache.uima.test.junit_extension.TestPropertyReader;
+import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 
 /**
@@ -389,10 +389,7 @@ public class SerializationNoMDTest extends TestCase {
 
     // Read the document into a String. I'm sure there are better ways to
     // do this.
-    File dataDir = new File(TestPropertyReader.getJUnitTestBasePath());
-    assertTrue(dataDir.exists());
-    assertTrue(dataDir.isDirectory());
-    File textFile = new File(dataDir, "data/moby.txt");
+    File textFile = JUnitExtension.getFile("data/moby.txt");
     String moby = file2String(textFile);
     // String moby = file2String(System.getProperty("cas.data.test") + "moby.txt");
     String line;

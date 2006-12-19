@@ -26,7 +26,6 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.apache.uima.test.junit_extension.TestPropertyReader;
 
 /**
  * 
@@ -66,7 +65,7 @@ public class RelativePathResolver_implTest extends TestCase {
       Assert.assertNull(absUrl);
 
       // specify path
-      String path = TestPropertyReader.getJUnitTestBasePath() + "ResourceTest/subdir";
+      String path = JUnitExtension.getFile("ResourceTest/subdir").getAbsolutePath();
       resolver.setDataPath(path);
 
       // now file should be found
