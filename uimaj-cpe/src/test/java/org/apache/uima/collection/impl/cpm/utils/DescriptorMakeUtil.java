@@ -28,7 +28,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.resource.ResourceCreationSpecifier;
-import org.apache.uima.test.junit_extension.TestPropertyReader;
+import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 /**
@@ -36,8 +36,6 @@ import org.apache.uima.util.XMLInputSource;
  */
 public class DescriptorMakeUtil {
   private static final String FS = System.getProperties().getProperty("file.separator");
-
-  private static final String junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
 
   public static String makeAnalysisEngine(String descFileName) throws Exception {
 
@@ -58,7 +56,7 @@ public class DescriptorMakeUtil {
       aed.getMetaData().getConfigurationParameterSettings().setParameterValue(functionName,
               "Exception", exceptionName);
     }
-    File baseDir = new File(junitTestBasePath, "CpmTests" + FS + "CpeDesc");
+    File baseDir = JUnitExtension.getFile("CpmTests" + FS + "CpeDesc");
 
     if (!baseDir.exists()) {
       baseDir.mkdir();
@@ -92,7 +90,7 @@ public class DescriptorMakeUtil {
       ccd.getCasConsumerMetaData().getConfigurationParameterSettings().setParameterValue(
               "ErrorException", exceptionName);
     }
-    File baseDir = new File(junitTestBasePath, "CpmTests" + FS + "CpeDesc");
+    File baseDir = JUnitExtension.getFile("CpmTests" + FS + "CpeDesc");
 
     if (!baseDir.exists()) {
       baseDir.mkdir();
@@ -130,7 +128,7 @@ public class DescriptorMakeUtil {
       crd.getCollectionReaderMetaData().getConfigurationParameterSettings().setParameterValue(
               "ErrorException", exceptionName);
     }
-    File baseDir = new File(junitTestBasePath, "CpmTests" + FS + "CpeDesc");
+    File baseDir = JUnitExtension.getFile("CpmTests" + FS + "CpeDesc");
 
     if (!baseDir.exists()) {
       baseDir.mkdir();

@@ -33,8 +33,8 @@ import org.apache.uima.collection.impl.cpm.utils.TestStatusCallbackListener;
 import org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
+import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.test.junit_extension.ManageOutputDevice;
-import org.apache.uima.test.junit_extension.TestPropertyReader;
 
 /**
  * Test CasConsumer Error Handling<br>
@@ -68,16 +68,6 @@ import org.apache.uima.test.junit_extension.TestPropertyReader;
 public class CpmCasConsumer_ErrorTests extends TestCase {
 
   private static final String FS = System.getProperties().getProperty("file.separator");
-
-  private String junitTestBasePath;
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
-    // get test base path setting
-    junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
-  }
 
   /**
    * <b>testcase:</b> the initialize method throws a ResourceInitializationException.<br>
@@ -375,9 +365,9 @@ public class CpmCasConsumer_ErrorTests extends TestCase {
     CollectionProcessingEngine cpe = null;
 
     try {
-      String colReaderBase = junitTestBasePath + "CpmTests" + FS + "ErrorTestCollectionReader.xml";
-      String taeBase = junitTestBasePath + "CpmTests" + FS + "ErrorTestAnnotator.xml";
-      String casConsumerBase = junitTestBasePath + "CpmTests" + FS + "ErrorTestCasConsumer.xml";
+      String colReaderBase = JUnitExtension.getFile("CpmTests" + FS + "ErrorTestCollectionReader.xml").getAbsolutePath();
+      String taeBase = JUnitExtension.getFile("CpmTests" + FS + "ErrorTestAnnotator.xml").getAbsolutePath();
+      String casConsumerBase = JUnitExtension.getFile("CpmTests" + FS + "ErrorTestCasConsumer.xml").getAbsolutePath();
 
       // first, prepare all descriptors as needed
       String colReaderDesc = DescriptorMakeUtil.makeCollectionReader(colReaderBase, documentCount);
@@ -459,8 +449,8 @@ public class CpmCasConsumer_ErrorTests extends TestCase {
         while (iter.hasNext()) {
           // if there is an error ... call the cpm to kill and check for a null CAS
           if (iter.next() instanceof java.lang.Error) {
-            cpe.kill();
-            errorThrown = true;
+            this.cpe.kill();
+            this.errorThrown = true;
             assertEquals("The cas is not null, as expected.", null, aCas);
           }
         }
@@ -468,7 +458,7 @@ public class CpmCasConsumer_ErrorTests extends TestCase {
     }
 
     public boolean hasError() {
-      return errorThrown;
+      return this.errorThrown;
     }
   }
 }

@@ -22,6 +22,7 @@ package org.apache.uima.collection.impl.cpm;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.analysis_engine.annotator.JTextAnnotator;
 import org.apache.uima.collection.CollectionProcessingEngine;
 import org.apache.uima.collection.impl.cpm.utils.DescriptorMakeUtil;
 import org.apache.uima.collection.impl.cpm.utils.FunctionErrorStore;
@@ -29,8 +30,8 @@ import org.apache.uima.collection.impl.cpm.utils.TestStatusCallbackListener;
 import org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
+import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.test.junit_extension.ManageOutputDevice;
-import org.apache.uima.test.junit_extension.TestPropertyReader;
 
 /**
  * The TestCase aims to test the behaviour of the cpm faced with different error scenarios<br>
@@ -72,18 +73,8 @@ public class CpmAE_ErrorTests extends TestCase {
 
   private static final String FS = System.getProperties().getProperty("file.separator");
 
-  private String junitTestBasePath;
-
   public CpmAE_ErrorTests() {
     System.gc();
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
-    // get test base path setting
-    junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
   }
 
   /**
@@ -836,9 +827,12 @@ public class CpmAE_ErrorTests extends TestCase {
     CollectionProcessingEngine cpe = null;
 
     try {
-      String colReaderBase = junitTestBasePath + "CpmTests" + FS + "ErrorTestCollectionReader.xml";
-      String taeBase = junitTestBasePath + "CpmTests" + FS + "ErrorTestAnnotator.xml";
-      String casConsumerBase = junitTestBasePath + "CpmTests" + FS + "ErrorTestCasConsumer.xml";
+      String colReaderBase = JUnitExtension.getFile(
+              "CpmTests" + FS + "ErrorTestCollectionReader.xml").getAbsolutePath();
+      String taeBase = JUnitExtension.getFile("CpmTests" + FS + "ErrorTestAnnotator.xml")
+              .getAbsolutePath();
+      String casConsumerBase = JUnitExtension.getFile("CpmTests" + FS + "ErrorTestCasConsumer.xml")
+              .getAbsolutePath();
 
       // first, prepare all descriptors as needed
       String colReaderDesc = DescriptorMakeUtil.makeCollectionReader(colReaderBase, documentCount);
@@ -910,9 +904,12 @@ public class CpmAE_ErrorTests extends TestCase {
     CpeDescription cpeDesc = null;
     CpeIntegratedCasProcessor integratedProcessor = null;
     try {
-      String colReaderBase = junitTestBasePath + "CpmTests" + FS + "ErrorTestCollectionReader.xml";
-      String taeBase = junitTestBasePath + "CpmTests" + FS + "ErrorTestAnnotator.xml";
-      String casConsumerBase = junitTestBasePath + "CpmTests" + FS + "ErrorTestCasConsumer.xml";
+      String colReaderBase = JUnitExtension.getFile(
+              "CpmTests" + FS + "ErrorTestCollectionReader.xml").getAbsolutePath();
+      String taeBase = JUnitExtension.getFile("CpmTests" + FS + "ErrorTestAnnotator.xml")
+              .getAbsolutePath();
+      String casConsumerBase = JUnitExtension.getFile("CpmTests" + FS + "ErrorTestCasConsumer.xml")
+              .getAbsolutePath();
 
       // first, prepare all descriptors as needed
       String colReaderDesc = DescriptorMakeUtil.makeCollectionReader(colReaderBase, documentCount);
@@ -963,7 +960,7 @@ public class CpmAE_ErrorTests extends TestCase {
     public void aborted() {
       super.aborted();
       System.out.println("abort was called.");
-      cpe.stop();
+      this.cpe.stop();
     }
   }
 }

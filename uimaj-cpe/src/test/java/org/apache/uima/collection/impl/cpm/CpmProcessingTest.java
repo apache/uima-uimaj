@@ -30,7 +30,7 @@ import org.apache.uima.collection.impl.cpm.utils.TestStatusCallbackListener;
 import org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
-import org.apache.uima.test.junit_extension.TestPropertyReader;
+import org.apache.uima.test.junit_extension.JUnitExtension;
 
 /**
  * This test aimes to check if the cpm implements the ProcessingUnitThreadCount in the correct
@@ -41,14 +41,10 @@ import org.apache.uima.test.junit_extension.TestPropertyReader;
 public class CpmProcessingTest extends TestCase {
   private static final String separator = System.getProperties().getProperty("file.separator");
 
-  private static String junitTestBasePath;
-
   /**
    * @see junit.framework.TestCase#setUp()
    */
   protected void setUp() throws Exception {
-    // get test base path setting
-    junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
     // disable schema validation -- this test uses descriptors
     // that don't validate, for some reason
     UIMAFramework.getXMLParser().enableSchemaValidation(false);
@@ -226,11 +222,11 @@ public class CpmProcessingTest extends TestCase {
     CollectionProcessingEngine cpe = null;
 
     try {
-      String colReaderBase = junitTestBasePath + "CpmTests" + separator
-              + "ErrorTestCollectionReader.xml";
-      String taeBase = junitTestBasePath + "CpmTests" + separator + "ErrorTestAnnotator.xml";
-      String casConsumerBase = junitTestBasePath + "CpmTests" + separator
-              + "ErrorTestCasConsumer.xml";
+      String colReaderBase = JUnitExtension.getFile("CpmTests" + separator
+              + "ErrorTestCollectionReader.xml").getAbsolutePath();
+      String taeBase = JUnitExtension.getFile("CpmTests" + separator + "ErrorTestAnnotator.xml").getAbsolutePath();
+      String casConsumerBase = JUnitExtension.getFile("CpmTests" + separator
+              + "ErrorTestCasConsumer.xml").getAbsolutePath();
 
       // created needed descriptors
       String colReaderDesc = DescriptorMakeUtil.makeCollectionReader(colReaderBase, documentCount);

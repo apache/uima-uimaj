@@ -23,7 +23,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
@@ -39,8 +38,7 @@ import org.apache.uima.collection.metadata.CpeConfiguration;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
 import org.apache.uima.collection.metadata.CpeLocalCasProcessor;
-import org.apache.uima.test.junit_extension.FileCompare;
-import org.apache.uima.test.junit_extension.TestPropertyReader;
+import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 /**
@@ -51,7 +49,7 @@ import org.apache.uima.util.XMLInputSource;
  */
 public class CpeDescriptorSerialization_Test extends TestCase {
 
-  private static String junitTestBasePath;
+  private File testBaseDir;
 
   private CpeDescription cpeDesc = null;
 
@@ -60,7 +58,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
    */
   protected void setUp() throws Exception {
     // get test base path setting
-    junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
+    this.testBaseDir = JUnitExtension.getFile("CpmTests/CpeAPITest");
   }
 
   /**
@@ -72,12 +70,12 @@ public class CpeDescriptorSerialization_Test extends TestCase {
   public void testReadDescriptor() throws Exception {
 
     // input file
-    String cpeDescFileName = junitTestBasePath + "CpmTests/CpeAPITest/refConf.xml";
-    XMLInputSource in = new XMLInputSource(cpeDescFileName);
+    File cpeDescFile = JUnitExtension.getFile("CpmTests/CpeAPITest/refConf.xml");
+    XMLInputSource in = new XMLInputSource(cpeDescFile);
     cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(in);
 
     // output file
-    File outputFile = new File(junitTestBasePath, "CpmTests/CpeAPITest/outConf.xml");
+    File outputFile = new File(this.testBaseDir, "outConf.xml");
 
     // serialize input file to output file
     ByteArrayOutputStream outStream = new ByteArrayOutputStream();
@@ -87,7 +85,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
     fOut.close();
 
     // compare input and output
-    equal(cpeDescFileName, cpeDesc);
+    equal(cpeDescFile, cpeDesc);
 
     outputFile.delete();
   }
@@ -101,12 +99,12 @@ public class CpeDescriptorSerialization_Test extends TestCase {
   public void testReadDescriptor2() throws Exception {
 
     // input file
-    String cpeDescFileName = junitTestBasePath + "CpmTests/CpeAPITest/refConf2.xml";
-    XMLInputSource in = new XMLInputSource(cpeDescFileName);
+    File cpeDescFile = JUnitExtension.getFile("CpmTests/CpeAPITest/refConf2.xml");
+    XMLInputSource in = new XMLInputSource(cpeDescFile);
     cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(in);
 
     // output file
-    File outputFile = new File(junitTestBasePath, "CpmTests/CpeAPITest/outConf2.xml");
+    File outputFile = new File(this.testBaseDir, "outConf2.xml");
 
     // serialize input file to output file
     ByteArrayOutputStream outStream = new ByteArrayOutputStream();
@@ -115,7 +113,7 @@ public class CpeDescriptorSerialization_Test extends TestCase {
     fOut.write(outStream.toByteArray());
     fOut.close();
 
-    equal(cpeDescFileName, cpeDesc);
+    equal(cpeDescFile, cpeDesc);
 
     outputFile.delete();
   }
@@ -130,13 +128,12 @@ public class CpeDescriptorSerialization_Test extends TestCase {
   public void testAddRemoteCasProcessor() throws Exception {
 
     // parse cpe descriptor file
-    File cpeDescFile = new File(junitTestBasePath, "CpmTests/CpeAPITest/refConf3.xml");
+    File cpeDescFile = JUnitExtension.getFile("CpmTests/CpeAPITest/refConf3.xml");
     XMLInputSource in = new XMLInputSource(cpeDescFile);
     cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(in);
 
     // init files
-    File outputFile = new File(junitTestBasePath, "CpmTests/CpeAPITest/remoteTestOut.xml");
-    String refFile = junitTestBasePath + "CpmTests/CpeAPITest/testRemoteDesc.xml";
+    File refFile = JUnitExtension.getFile("CpmTests/CpeAPITest/testRemoteDesc.xml");
 
     // generate a new casProcessor
     CpeCasProcessor casProcessor = CpeDescriptorFactory
@@ -167,13 +164,12 @@ public class CpeDescriptorSerialization_Test extends TestCase {
   public void testAddLocalCasProcessor() throws Exception {
 
     // parse cpe descriptor file
-    File cpeDescFile = new File(junitTestBasePath, "CpmTests/CpeAPITest/refConf3.xml");
+    File cpeDescFile = JUnitExtension.getFile("CpmTests/CpeAPITest/refConf3.xml");
     XMLInputSource in = new XMLInputSource(cpeDescFile);
     cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(in);
 
     // output file
-    File outputFile = new File(junitTestBasePath, "CpmTests/CpeAPITest/localTestOut.xml");
-    String refFile = junitTestBasePath + "CpmTests/CpeAPITest/testLocalDesc.xml";
+    File refFile = JUnitExtension.getFile("CpmTests/CpeAPITest/testLocalDesc.xml");
 
     // Create Detag CasProcessor
     CpeLocalCasProcessor localProcessor = CpeDescriptorFactory.produceLocalCasProcessor(
@@ -202,12 +198,12 @@ public class CpeDescriptorSerialization_Test extends TestCase {
   public void testAddIntegratedCasProcessor() throws Exception {
 
     // parse cpe descriptor file
-    File cpeDescFile = new File(junitTestBasePath, "CpmTests/CpeAPITest/refConf3.xml");
+    File cpeDescFile = JUnitExtension.getFile("CpmTests/CpeAPITest/refConf3.xml");
     XMLInputSource in = new XMLInputSource(cpeDescFile);
     cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(in);
 
     // output file
-    String refFile = junitTestBasePath + "CpmTests/CpeAPITest/testIntegratedDesc.xml";
+    File refFile = JUnitExtension.getFile("CpmTests/CpeAPITest/testIntegratedDesc.xml");
 
     // add a new iCpe
     CpeIntegratedCasProcessor integratedProcessor = CpeDescriptorFactory
@@ -228,10 +224,10 @@ public class CpeDescriptorSerialization_Test extends TestCase {
 
   }
 
-  public void equal(String aReferenceDescriptorFilePath, CpeDescription aGeneratedDescriptor) {
+  public void equal(File aReferenceDescriptorFile, CpeDescription aGeneratedDescriptor) {
     try {
-      File cpeRefDescFile = new File(aReferenceDescriptorFilePath);
-      XMLInputSource in = new XMLInputSource(cpeRefDescFile);
+      
+      XMLInputSource in = new XMLInputSource(aReferenceDescriptorFile);
       CpeDescription referenceDesc = UIMAFramework.getXMLParser().parseCpeDescription(in);
 
       // First Check Collection Reader
