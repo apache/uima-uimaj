@@ -44,7 +44,6 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.flow.impl.CapabilityLanguageFlowController;
 import org.apache.uima.flow.impl.FixedFlowController;
-import org.apache.uima.flow.impl.FlowControllerDescription_impl;
 import org.apache.uima.internal.util.UUIDGenerator;
 import org.apache.uima.resource.ConfigurableResource;
 import org.apache.uima.resource.Resource;
@@ -159,7 +158,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
 
       // validate the AnalysisEngineDescription and throw a
       // ResourceInitializationException if there is a problem
-      mDescription.validate();
+      mDescription.validate(getResourceManager());
 
       // Read parameters from the aAdditionalParams map.
       // (First copy it so we can modify it and send the parameters on to

@@ -317,15 +317,21 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    *          an array of ConfigurationParameters
    * @param aGroupName
    *          name of groups in which these parameters are contained. Null if no group
-   * @param aDesc
-   *          the full analysis engine description, needed to check delegates to see if they contain
-   *          the parameters specified in the overrides
-   * 
+   * @param aResourceManager
+   *          a ResourceManager instance to use to resolve imports by name.
+   *           
    * @throws ResourceInitializationException
    *           if there is an invalid parameter override declaration
    */
   protected void checkForInvalidParameterOverrides(ConfigurationParameter[] aParams,
-          String aGroupName) throws ResourceInitializationException {
+          String aGroupName, ResourceManager aResourceManager) throws ResourceInitializationException {
+    //make sure delegate analysis engine specifiers are resolved using the correct resource manager
+    try {
+      resolveImports(aResourceManager);
+    } catch (InvalidXMLException e) {
+      throw new ResourceInitializationException(e);
+    }
+    
     for (int i = 0; i < aParams.length; i++) {
       String[] overrides = aParams[i].getOverrides();
       if (overrides.length > 0 && isPrimitive()) {

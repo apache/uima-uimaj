@@ -136,7 +136,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
 
       // validate the AnalysisEngineDescription and throw a
       // ResourceInitializationException if there is a problem
-      mDescription.validate();
+      mDescription.validate(getResourceManager());
 
       // Read parameters from the aAdditionalParams map.
       if (aAdditionalParams == null) {
