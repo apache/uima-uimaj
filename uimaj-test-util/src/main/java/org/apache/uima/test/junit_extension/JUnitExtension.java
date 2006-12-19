@@ -20,6 +20,10 @@
 package org.apache.uima.test.junit_extension;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLDecoder;
 
 import junit.framework.Assert;
 
@@ -29,11 +33,30 @@ import junit.framework.Assert;
  * @author Adam Lally
  */
 public class JUnitExtension {
-  private static String junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
+  //private static String junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
 
+  
+//  public static File getFile(String aRelativeFilePath) {
+//    return new File(junitTestBasePath, aRelativeFilePath);
+//  }
+  
   public static File getFile(String aRelativeFilePath) {
-    return new File(junitTestBasePath, aRelativeFilePath);
-  }
+    URL url = JUnitExtension.class.getClassLoader().getResource(aRelativeFilePath);
+    File file = null;
+    if(url != null) {
+      String fileURL = null;
+      try {
+        //TODO: use Java 1.5 decoding 
+        fileURL = URLDecoder.decode(url.getFile(), "UTF-8");
+      } catch (UnsupportedEncodingException ex) {
+        // TODO Auto-generated catch block
+        ex.printStackTrace();
+      }
+      file = new File(fileURL);
+    }
+    return file;
+  } 
+
 
   public static void handleException(Exception e) throws Exception {
     // check command line setting

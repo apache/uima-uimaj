@@ -75,6 +75,35 @@ public class FileCompare {
   /**
    * compares two files and return true if the files have the same content.
    * 
+   * @param file1
+   *          first file
+   * @param file2
+   *          second file
+   * @return - true if the files have the same content
+   * 
+   * @throws IOException
+   */
+  public static boolean compare(File file1, File file2) throws IOException {
+    InputStream inputStream1 = null;
+    InputStream inputStream2 = null;
+
+    try {
+      // create file input stream of the two bytes
+      inputStream1 = new FileInputStream(file1);
+      inputStream2 = new FileInputStream(file2);
+
+      return compare(inputStream1, inputStream2);
+
+    } finally {
+      inputStream1.close();
+      inputStream2.close();
+    }
+  }
+
+  
+  /**
+   * compares two files and return true if the files have the same content.
+   * 
    * @param filename1
    *          filename of the first file
    * @param in
