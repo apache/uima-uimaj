@@ -160,7 +160,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
     // validate the AnalysisEngineDescription and throw a
     // ResourceInitializationException if there is a problem
     try {
-      mDescription.validate();
+      mDescription.validate(getResourceManager());
     } catch (ResourceConfigurationException e) {
       throw new ResourceInitializationException(e);
     }

@@ -87,7 +87,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
       super.initialize(aSpecifier, aAdditionalParams);
 
       // validate the descriptor
-      desc.validate();
+      desc.validate(getResourceManager());
 
       // instantiate FlowController
       mFlowController = instantiateFlowController(desc);

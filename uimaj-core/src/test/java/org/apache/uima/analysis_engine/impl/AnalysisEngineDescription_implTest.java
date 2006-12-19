@@ -45,6 +45,7 @@ import org.apache.uima.internal.util.SerializationUtils;
 import org.apache.uima.resource.ExternalResourceDependency;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.URISpecifier;
 import org.apache.uima.resource.impl.URISpecifier_impl;
 import org.apache.uima.resource.metadata.AllowedValue;
@@ -431,6 +432,26 @@ public class AnalysisEngineDescription_implTest extends TestCase {
             .getFile("TextAnalysisEngineImplTest/AggregateWithDuplicateGroupOverrides.xml"));
     desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
     desc.doFullValidation();
+    
+    //test aggregate with import by name and configuration parameter overrides
+    in = new XMLInputSource(JUnitExtension
+            .getFile("TextAnalysisEngineImplTest/AeWithConfigParamOverridesAndImportByName.xml"));
+    desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
+    ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
+    File dataPathDir = JUnitExtension.getFile("TextAnalysisEngineImplTest/dataPathDir");
+    resMgr.setDataPath(dataPathDir.getCanonicalPath());
+    desc.doFullValidation(resMgr);
+  }
+  
+  public void testValidate() throws Exception {
+    //test aggregate with import by name and configuration parameter overrides
+    XMLInputSource in = new XMLInputSource(JUnitExtension
+            .getFile("TextAnalysisEngineImplTest/AeWithConfigParamOverridesAndImportByName.xml"));
+    AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
+    ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
+    File dataPathDir = JUnitExtension.getFile("TextAnalysisEngineImplTest/dataPathDir");
+    resMgr.setDataPath(dataPathDir.getCanonicalPath());
+    desc.validate(resMgr); 
   }
 
   public void testGetAllComponentSpecifiers() throws Exception {

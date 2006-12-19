@@ -166,6 +166,22 @@ public interface ResourceCreationSpecifier extends ResourceSpecifier {
   public void validate() throws ResourceInitializationException, ResourceConfigurationException;
 
   /**
+   * Checks that this specifier is valid. An exception is thrown if it is not valid. This only does
+   * fairly lightweight checking. To do a more complete but more expensive check, use
+   * {@link #doFullValidation()}.
+   * 
+   * @param aResourceManager
+   *          a ResourceManager instance to use to resolve imports by name.
+   * 
+   * @throws ResourceInitializationException
+   *           if <code>aDesc</code> is invalid
+   * @throws ResourceConfigurationException
+   *           if the configuration parameter settings in <code>aDesc</code> are invalid
+   */
+  public void validate(ResourceManager aResourceManager) throws ResourceInitializationException,
+          ResourceConfigurationException;
+
+  /**
    * Does full validation of this specifier. This essentially performs all operations necessary to
    * instantiate a Resource except that it does not actually instantiate the implementation class.
    * If appropriate, this method will also attempt to create a CAS based on the descriptor, in order

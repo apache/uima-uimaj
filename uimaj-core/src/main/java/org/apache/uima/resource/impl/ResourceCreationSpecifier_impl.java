@@ -206,8 +206,17 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    *           if the configuration parameter settings in <code>aDesc</code> are invalid
    */
   public void validate() throws ResourceInitializationException, ResourceConfigurationException {
+    validate(UIMAFramework.newDefaultResourceManager());
+  }
+  
+  
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.ResourceCreationSpecifier#validate(org.apache.uima.resource.ResourceManager)
+   */
+  public void validate(ResourceManager aResourceManager) throws ResourceInitializationException, ResourceConfigurationException {
     // Validate configuration parameter declarations (but not settings)
-    validateConfigurationParameters();
+    validateConfigurationParameters(aResourceManager); 
   }
 
   /**
@@ -221,18 +230,20 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    * 
    * @param aMetaData
    *          ResourceMetaData object containing parameters to validate
+   * @param aResourceManger used to resolve import by name.  This is necessary to validate
+   *         configuration parameter overrides.
    * 
    * @throws ResourceInitializationException
    *           if the configuration parameters are invalid
    */
-  protected void validateConfigurationParameters() throws ResourceInitializationException {
+  protected void validateConfigurationParameters(ResourceManager aResourceManager) throws ResourceInitializationException {
     ConfigurationParameterDeclarations cfgParamDecls = getMetaData()
             .getConfigurationParameterDeclarations();
     ConfigurationParameter[] params = cfgParamDecls.getConfigurationParameters();
     if (params.length > 0) {
       // check for duplicate names
       checkForDuplicateParameterNames(params);
-      checkForInvalidParameterOverrides(params, null);
+      checkForInvalidParameterOverrides(params, null, aResourceManager);
     } else {
       ConfigurationParameter[] commonParams = cfgParamDecls.getCommonParameters();
       // check for duplicates in common params
@@ -273,9 +284,9 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
                 }
               }
             }
-            checkForInvalidParameterOverrides(paramsInGroup, names[j]);
+            checkForInvalidParameterOverrides(paramsInGroup, names[j], aResourceManager);
             if (commonParams != null) {
-              checkForInvalidParameterOverrides(commonParams, names[j]);
+              checkForInvalidParameterOverrides(commonParams, names[j], aResourceManager);
             }
           }
         }
@@ -315,12 +326,13 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    *          an array of ConfigurationParameters
    * @param aGroupName
    *          name of groups in which these parameters are contained. Null if no group
-   * 
+   * @param aResourceManger used to resolve imports by name.
+   *          
    * @throws ResourceInitializationException
    *           if there is an invalid parameter override declaration
    */
   protected void checkForInvalidParameterOverrides(ConfigurationParameter[] aParams,
-          String aGroupName) throws ResourceInitializationException {
+          String aGroupName, ResourceManager aResourceManager) throws ResourceInitializationException {
     for (int i = 0; i < aParams.length; i++) {
       String[] overrides = aParams[i].getOverrides();
       if (overrides.length > 0) {
