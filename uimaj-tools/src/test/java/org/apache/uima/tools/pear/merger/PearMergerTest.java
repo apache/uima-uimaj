@@ -33,7 +33,7 @@ import org.apache.uima.pear.tools.InstallationController;
 import org.apache.uima.pear.tools.InstallationDescriptor;
 import org.apache.uima.pear.util.FileUtil;
 import org.apache.uima.resource.ResourceManager;
-import org.apache.uima.test.junit_extension.TestPropertyReader;
+import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 
@@ -56,9 +56,6 @@ public class PearMergerTest extends TestCase {
   // output aggregate PEAR file
   private static String OUT_PEAR_ID = "uima.example.RoomDateTimeAggregate";
 
-  // JUnit test base path
-  private String _junitTestBasePath;
-
   // Temporary working directory
   private File _tempWorkingDir = null;
 
@@ -66,8 +63,7 @@ public class PearMergerTest extends TestCase {
    * @see junit.framework.TestCase#setUp()
    */
   protected void setUp() throws Exception {
-    // get test base path setting
-    _junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
+    
     // create temporary working directory
     File tempFile = File.createTempFile("pear_merger_test_", "~tmp");
     if (tempFile.delete()) {
@@ -85,7 +81,7 @@ public class PearMergerTest extends TestCase {
       FileUtil.deleteDirectory(_tempWorkingDir);
     }
   }
-
+  
   /**
    * Runs test for org.apache.uima.pear.merger.PMController class by merging 2 sample input PEARs
    * into the output aggregate PEAR. Then, the output PEAR is installed by using
@@ -98,10 +94,10 @@ public class PearMergerTest extends TestCase {
       throw new FileNotFoundException("temp directory not found");
     // check sample PEAR files
     File[] inpPearFiles = new File[2];
-    inpPearFiles[0] = new File(_junitTestBasePath, TEST_FOLDER + File.separator + INP_PEAR_1_FILE);
+    inpPearFiles[0] = JUnitExtension.getFile(TEST_FOLDER + File.separator + INP_PEAR_1_FILE);
     if (!inpPearFiles[0].isFile())
       throw new FileNotFoundException("sample PEAR 1 not found");
-    inpPearFiles[1] = new File(_junitTestBasePath, TEST_FOLDER + File.separator + INP_PEAR_2_FILE);
+    inpPearFiles[1] = JUnitExtension.getFile(TEST_FOLDER + File.separator + INP_PEAR_2_FILE);
     if (!inpPearFiles[1].isFile())
       throw new FileNotFoundException("sample PEAR 2 not found");
     // specify output aggregate PEAR file
