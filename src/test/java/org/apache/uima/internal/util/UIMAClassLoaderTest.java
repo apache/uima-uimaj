@@ -27,7 +27,7 @@ import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ResourceManager;
-import org.apache.uima.test.junit_extension.TestPropertyReader;
+import org.apache.uima.test.junit_extension.JUnitExtension;
 
 /*
  * UIMA ClassLoader test
@@ -35,8 +35,6 @@ import org.apache.uima.test.junit_extension.TestPropertyReader;
  * @author Michael Baessler
  */
 public class UIMAClassLoaderTest extends TestCase {
-  // TODO: getting a lot of failuires in Maven. Need to take a closer look.
-  private String junitTestBasePath;
 
   private String testClassPath;
 
@@ -53,11 +51,8 @@ public class UIMAClassLoaderTest extends TestCase {
    * @see junit.framework.TestCase#setUp()
    */
   protected void setUp() throws Exception {
-    // get test base path setting
-    junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
-    // get the location where the junit test classes live
-    File classesDir = new File(junitTestBasePath, "../../target/test-classes");
-    testClassPath = classesDir.getAbsolutePath();
+    
+    this.testClassPath = JUnitExtension.getFile("ClassLoaderTest/classLoadingTest.jar").getAbsolutePath();
   }
 
   public void testSimpleRsrcMgrCLassLoaderCreation() throws Exception {
@@ -82,7 +77,7 @@ public class UIMAClassLoaderTest extends TestCase {
   }
 
   public void testSimpleClassloadingSampleString() throws Exception {
-    UIMAClassLoader cl = new UIMAClassLoader(testClassPath);
+    UIMAClassLoader cl = new UIMAClassLoader(this.testClassPath);
     Class testClass = null;
 
     testClass = cl.loadClass("org.apache.uima.internal.util.ClassloadingTestClass");
@@ -99,7 +94,7 @@ public class UIMAClassLoaderTest extends TestCase {
   }
 
   public void testSimpleClassloadingSampleURL() throws Exception {
-    URL[] urlClasspath = new URL[] { new File(testClassPath).toURL() };
+    URL[] urlClasspath = new URL[] { new File(this.testClassPath).toURL() };
     UIMAClassLoader cl = new UIMAClassLoader(urlClasspath);
     Class testClass = null;
 
@@ -117,7 +112,7 @@ public class UIMAClassLoaderTest extends TestCase {
   }
 
   public void testAdvancedClassloadingSampleString() throws Exception {
-    UIMAClassLoader cl = new UIMAClassLoader(testClassPath, this.getClass().getClassLoader());
+    UIMAClassLoader cl = new UIMAClassLoader(this.testClassPath, this.getClass().getClassLoader());
     Class testClass = null;
 
     testClass = cl.loadClass("org.apache.uima.internal.util.ClassloadingTestClass");
@@ -132,7 +127,7 @@ public class UIMAClassLoaderTest extends TestCase {
   }
 
   public void testAdvancedClassloadingSampleURL() throws Exception {
-    URL[] urlClasspath = new URL[] { new File(testClassPath).toURL() };
+    URL[] urlClasspath = new URL[] { new File(this.testClassPath).toURL() };
     UIMAClassLoader cl = new UIMAClassLoader(urlClasspath, this.getClass().getClassLoader());
     Class testClass = null;
 

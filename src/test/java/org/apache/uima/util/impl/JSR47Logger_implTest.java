@@ -22,7 +22,6 @@ package org.apache.uima.util.impl;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.uima.test.junit_extension.TestPropertyReader;
 import org.apache.uima.util.Level;
 
 /**
@@ -31,20 +30,9 @@ import org.apache.uima.util.Level;
  * @author Michael Baessler
  */
 public class JSR47Logger_implTest extends TestCase {
-  /** JUnit test base path */
-  private String junitTestBasePath;
 
   public JSR47Logger_implTest(String arg0) {
     super(arg0);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
-    // get test base path setting
-    junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
-
   }
 
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

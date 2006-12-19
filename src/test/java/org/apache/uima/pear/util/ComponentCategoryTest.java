@@ -25,7 +25,7 @@ import java.io.FileNotFoundException;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.uima.test.junit_extension.TestPropertyReader;
+import org.apache.uima.test.junit_extension.JUnitExtension;
 
 /**
  * The <code>ComponentCategoryTest</code> class provides JUnit test cases for the
@@ -51,22 +51,11 @@ public class ComponentCategoryTest extends TestCase {
 
   private static String TS_DESC_NAME = "ts.xml";
 
-  // JUnit test base path
-  private String _junitTestBasePath;
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
-    // get test base path setting
-    _junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
-  }
-
   /**
    * Runs test case for Analysis Engine descriptor.
    */
   public void testAeDescriptor() throws Exception {
-    File aeDescFile = new File(_junitTestBasePath, TEST_FOLDER + "/" + AE_DESC_NAME);
+    File aeDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + AE_DESC_NAME);
     if (!aeDescFile.isFile())
       throw new FileNotFoundException("AE descriptor not found");
     Assert.assertTrue(UIMAUtil.ANALYSIS_ENGINE_CTG.equals(UIMAUtil
@@ -77,7 +66,7 @@ public class ComponentCategoryTest extends TestCase {
    * Runs test case for CAS Consumer descriptor.
    */
   public void testCcDescriptor() throws Exception {
-    File ccDescFile = new File(_junitTestBasePath, TEST_FOLDER + "/" + CC_DESC_NAME);
+    File ccDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + CC_DESC_NAME);
     if (!ccDescFile.isFile())
       throw new FileNotFoundException("CC descriptor not found");
     Assert.assertTrue(UIMAUtil.CAS_CONSUMER_CTG.equals(UIMAUtil
@@ -88,7 +77,7 @@ public class ComponentCategoryTest extends TestCase {
    * Runs test case for CAS Initializer descriptor.
    */
   public void testCiDescriptor() throws Exception {
-    File ciDescFile = new File(_junitTestBasePath, TEST_FOLDER + "/" + CI_DESC_NAME);
+    File ciDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + CI_DESC_NAME);
     if (!ciDescFile.isFile())
       throw new FileNotFoundException("CI descriptor not found");
     Assert.assertTrue(UIMAUtil.CAS_INITIALIZER_CTG.equals(UIMAUtil
@@ -112,7 +101,7 @@ public class ComponentCategoryTest extends TestCase {
    * Runs test case for Collection Reader descriptor.
    */
   public void testCrDescriptor() throws Exception {
-    File crDescFile = new File(_junitTestBasePath, TEST_FOLDER + "/" + CR_DESC_NAME);
+    File crDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + CR_DESC_NAME);
     if (!crDescFile.isFile())
       throw new FileNotFoundException("CR descriptor not found");
     Assert.assertTrue(UIMAUtil.COLLECTION_READER_CTG.equals(UIMAUtil
@@ -123,7 +112,7 @@ public class ComponentCategoryTest extends TestCase {
    * Runs test case for Type System descriptor.
    */
   public void testTsDescriptor() throws Exception {
-    File tsDescFile = new File(_junitTestBasePath, TEST_FOLDER + "/" + TS_DESC_NAME);
+    File tsDescFile = JUnitExtension.getFile(TEST_FOLDER + "/" + TS_DESC_NAME);
     if (!tsDescFile.isFile())
       throw new FileNotFoundException("TS descriptor not found");
     Assert.assertTrue(UIMAUtil.TYPE_SYSTEM_CTG.equals(UIMAUtil

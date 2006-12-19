@@ -36,7 +36,7 @@ import org.apache.uima.analysis_engine.annotator.AnnotatorProcessException;
 import org.apache.uima.analysis_engine.annotator.Annotator_ImplBase;
 import org.apache.uima.analysis_engine.annotator.TextAnnotator;
 import org.apache.uima.cas.text.TCAS;
-import org.apache.uima.test.junit_extension.TestPropertyReader;
+import org.apache.uima.test.junit_extension.JUnitExtension;
 
 /**
  * Dummy annotator which does not processing. Annotator only writes his name and his result
@@ -48,11 +48,11 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements TextAn
   // annotator name
   private String name;
 
-  private String junitTestBasePath;
+  private File testBaseDir;
 
   public SequencerTestAnnotator() {
     super();
-    junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
+    this.testBaseDir = JUnitExtension.getFile("SequencerTest");
   }
 
   /**
@@ -88,16 +88,13 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements TextAn
    */
   public void process(TCAS tcas, ResultSpecification resultSpec) throws AnnotatorProcessException {
 
-    // get document language
-    final String documentLanguage = tcas.getDocumentLanguage();
-
     try {
       // use standard output file
-      File fp = new File(junitTestBasePath + "SequencerTest/SequencerTest.txt");
+      File fp = new File(this.testBaseDir, "SequencerTest.txt");
       if (fp.canWrite()) {
         // write result specification to the output file
         OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(fp, true), "UTF-8");
-        writer.write("\nResultSpec for annotator " + name + ":\n");
+        writer.write("\nResultSpec for annotator " + this.name + ":\n");
         TypeOrFeature[] tofs = resultSpec.getResultTypesAndFeatures();
         // sort by name to ensure consistent output for testing purposes
         Arrays.sort(tofs, new Comparator() {
@@ -111,8 +108,7 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements TextAn
         writer.flush();
         writer.close();
       } else {
-        throw new IOException("Cannot write to " + junitTestBasePath
-                + "SequencerTest/SequencerTest.txt");
+        throw new IOException("Cannot write to " + fp.getAbsolutePath());
       }
     } catch (IOException e) {
       // If an error occours, throw new annotator exception

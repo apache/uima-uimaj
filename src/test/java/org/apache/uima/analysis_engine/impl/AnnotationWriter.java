@@ -33,7 +33,7 @@ import org.apache.uima.collection.CasConsumer_ImplBase;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
-import org.apache.uima.test.junit_extension.TestPropertyReader;
+import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.ProcessTrace;
 
 /*
@@ -55,9 +55,6 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
 
   public static boolean typeSystemInitCalled = false;
 
-  public AnnotationWriter() {
-  }
-
   /**
    * Initializes this CAS Consumer with the parameters specified in the descriptor.
    * 
@@ -66,13 +63,11 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    */
   public void initialize() throws ResourceInitializationException {
 
-    // get test base path setting
-    String junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
-    // extract configuration parameter settings
-    outFile = new File(junitTestBasePath, "CpmOutput.txt");
+    File testBaseDir = JUnitExtension.getFile("TextAnalysisEngineImplTest").getParentFile();
+    this.outFile = new File(testBaseDir, "CpmOutput.txt");
 
     try {
-      fileWriter = new OutputStreamWriter(new FileOutputStream(outFile, false), "UTF-8");
+      this.fileWriter = new OutputStreamWriter(new FileOutputStream(this.outFile, false), "UTF-8");
     } catch (Exception e) {
       throw new ResourceInitializationException(e);
     }
@@ -107,11 +102,11 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
       for (typeIterator.moveToFirst(); typeIterator.isValid(); typeIterator.moveToNext()) {
         AnnotationFS annot = (AnnotationFS) typeIterator.get();
 
-        fileWriter.write(annot.getCoveredText());
-        fileWriter.write(System.getProperty("line.separator"));
-        fileWriter.write(annot.toString());
+        this.fileWriter.write(annot.getCoveredText());
+        this.fileWriter.write(System.getProperty("line.separator"));
+        this.fileWriter.write(annot.toString());
       }
-      fileWriter.flush();
+      this.fileWriter.flush();
     } catch (Exception ex) {
       ex.printStackTrace();
     }
@@ -148,8 +143,8 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    */
   public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException,
           IOException {
-    if (fileWriter != null) {
-      fileWriter.close();
+    if (this.fileWriter != null) {
+      this.fileWriter.close();
     }
   }
 
@@ -164,7 +159,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    * @see org.apache.uima.resource.ConfigurableResource#reconfigure()
    */
   public void reconfigure() throws ResourceConfigurationException {
-
+    //do nothing
   }
 
   /**
@@ -173,9 +168,9 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
    * @see org.apache.uima.resource.Resource#destroy()
    */
   public void destroy() {
-    if (fileWriter != null) {
+    if (this.fileWriter != null) {
       try {
-        fileWriter.close();
+        this.fileWriter.close();
       } catch (IOException e) {
         // ignore IOException on destroy
       }

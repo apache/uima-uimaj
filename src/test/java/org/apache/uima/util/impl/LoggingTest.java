@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.apache.uima.test.junit_extension.TestPropertyReader;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 
@@ -34,7 +33,6 @@ import org.apache.uima.util.Logger;
  * @author Michael Baessler
  */
 public class LoggingTest extends TestCase {
-  private String junitTestBasePath;
 
   /**
    * Constructor for SequencerTest
@@ -43,14 +41,6 @@ public class LoggingTest extends TestCase {
    */
   public LoggingTest(String arg0) {
     super(arg0);
-  }
-
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
-    // get test base path setting
-    junitTestBasePath = TestPropertyReader.getJUnitTestBasePath();
   }
 
   public void testDefaultLoggerCreation() throws Exception {

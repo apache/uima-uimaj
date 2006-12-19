@@ -19,6 +19,7 @@
 
 package org.apache.uima.resource.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 
@@ -54,8 +55,8 @@ public class FileLanguageResource_implTest extends TestCase {
       super.setUp();
 
       FileLanguageResourceSpecifier spec = new FileLanguageResourceSpecifier_impl();
-      spec.setFileUrlPrefix(JUnitExtension.getFile(
-              "ResourceTest/FileLanguageResource_implTest_data_").toURL().toString());
+      File baseDir = JUnitExtension.getFile("ResourceTest");     
+      spec.setFileUrlPrefix(new File(baseDir, "FileLanguageResource_implTest_data_").toURL().toString());
       spec.setFileUrlSuffix(".dat");
       mResource = new FileLanguageResource_impl();
       mResource.initialize(spec, Collections.EMPTY_MAP);

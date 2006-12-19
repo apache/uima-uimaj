@@ -97,8 +97,9 @@ public class ResourceManager_implTest extends TestCase {
 
       // parameterized (language-based) resource
       FileLanguageResourceSpecifier langSpec = new FileLanguageResourceSpecifier_impl();
-      langSpec.setFileUrlPrefix(JUnitExtension.getFile(
-              "ResourceTest/FileLanguageResource_implTest_data_").toURL().toString());
+      
+      File baseDir = JUnitExtension.getFile("ResourceTest");          
+      langSpec.setFileUrlPrefix(new File(baseDir,"FileLanguageResource_implTest_data_").toURL().toString());
       langSpec.setFileUrlSuffix(".dat");
       ExternalResourceDescription desc3 = new ExternalResourceDescription_impl();
       desc3.setName("myLanguageResource");
