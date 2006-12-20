@@ -41,6 +41,10 @@ public class PMControllerHelper {
 
   static final String MAIN_ROOT_REGEX = "\\$main_root";
 
+  static final String STANDARD_PATH_SEPARATOR = ";";
+
+  static final char STANDARD_PATH_SEPARATOR_CHAR = ';';
+
   /**
    * Creates a 'set_env_variable' action object based on given environment variable name and value.
    * 
@@ -125,11 +129,11 @@ public class PMControllerHelper {
       if (dlgLibDir.isDirectory()) {
         // get list of JAR files
         File[] jarFiles = dlgLibDir.listFiles(new FileUtil.ExtFilenameFilter(".jar"));
-        // build CLASSPATH buffer
+        // build delegate CLASSPATH buffer
+        cpBuffer.setLength(0);
         for (int n = 0; n < jarFiles.length; n++) {
-          cpBuffer.setLength(0);
           if (cpBuffer.length() > 0)
-            cpBuffer.append(File.pathSeparatorChar);
+            cpBuffer.append(STANDARD_PATH_SEPARATOR_CHAR);
           cpBuffer.append(adjMainRoot + "/"
                   + FileUtil.getRelativePath(dlgRootDir, jarFiles[n].getAbsolutePath()));
         }
