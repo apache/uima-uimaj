@@ -156,7 +156,6 @@ public class TypeOrderTest extends TestCase {
     try {
       cas.initCASIndexes();
     } catch (CASException e2) {
-      // TODO Auto-generated catch block
       e2.printStackTrace();
       assertTrue(false);
     }
