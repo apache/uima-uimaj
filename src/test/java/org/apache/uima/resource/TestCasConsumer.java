@@ -32,7 +32,7 @@ public class TestCasConsumer extends CasConsumer_ImplBase {
    * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#processCas(org.apache.uima.cas.CAS)
    */
   public void processCas(CAS aCAS) throws ResourceProcessException {
-    // TODO Auto-generated method stub
+    // empty method
 
   }
 

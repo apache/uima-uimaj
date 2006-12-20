@@ -35,7 +35,7 @@ public class TestCollectionReader extends CollectionReader_ImplBase {
    * @see org.apache.uima.collection.CollectionReader#getNext(org.apache.uima.cas.CAS)
    */
   public void getNext(CAS aCAS) throws IOException, CollectionException {
-    // TODO Auto-generated method stub
+    // empty method
 
   }
 
@@ -43,7 +43,7 @@ public class TestCollectionReader extends CollectionReader_ImplBase {
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#hasNext()
    */
   public boolean hasNext() throws IOException, CollectionException {
-    // TODO Auto-generated method stub
+    // empty method
     return false;
   }
 
@@ -51,7 +51,7 @@ public class TestCollectionReader extends CollectionReader_ImplBase {
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#getProgress()
    */
   public Progress[] getProgress() {
-    // TODO Auto-generated method stub
+    // empty method
     return null;
   }
 
@@ -59,7 +59,7 @@ public class TestCollectionReader extends CollectionReader_ImplBase {
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#close()
    */
   public void close() throws IOException {
-    // TODO Auto-generated method stub
+    // empty method
 
   }
 
