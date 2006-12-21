@@ -346,12 +346,39 @@
     </fo:inline>
   </xsl:template>
 
+  <!-- bold-italic formatting -->
   <xsl:template match="emphasis[@role='bold-italic']">
    <fo:inline font-weight="bold" font-style="italic">
      <xsl:apply-templates/>
    </fo:inline>
  </xsl:template>
   
-  <!-- bold-italic formatting -->
+  <!-- Make notes display inline for 1st para --> 
+  <xsl:template name="nongraphical.admonition">
+    <xsl:variable name="id">
+      <xsl:call-template name="object.id"/>
+    </xsl:variable>
+
+    <xsl:choose>
+      <xsl:when test="child::*[1]/self::para">
+        <fo:block id="{$id}"
+               xsl:use-attribute-sets="nongraphical.admonition.properties">
+          <fo:block>
+            <fo:inline keep-with-next.within-line='always'
+                 xsl:use-attribute-sets="admonition.title.properties">
+              <xsl:apply-templates select="." mode="object.title.markup"/>
+              <xsl:text>: </xsl:text>
+            </fo:inline>
+            <xsl:apply-templates select="para[1]/node()"/>
+          </fo:block>
+          <xsl:apply-templates select="*[not(self::para[1])]"/>
+        </fo:block>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-imports/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template> 
+
   
 </xsl:stylesheet>
