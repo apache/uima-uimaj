@@ -593,7 +593,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
       SofaFS sofa = (SofaFS) sofas.next();
       if (sofa.getLocalStringData() != null) {
         String sofaId = sofa.getStringValue(sofaIdFeat);
-        if (CAS.NAME_DEFAULT_TEXT_SOFA.equals(sofaId)) {
+        if (CAS.NAME_DEFAULT_SOFA.equals(sofaId)) {
           sofaId = "DEFAULT"; // make nicer display
         } else {
           nonDefaultSofaFound = true;
@@ -1479,7 +1479,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
      *      java.lang.Object, boolean, boolean, boolean, int, boolean)
      */
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel,
-            boolean expanded, boolean leaf, int row, boolean hasFocus) {
+            boolean expanded, boolean leaf, int row, boolean aHasFocus) {
 
       // set background color if this is an Annotation or a Type
       Color background = null;
@@ -1504,7 +1504,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
       this.setBackgroundSelectionColor(background);
 
       Component component = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
-              row, hasFocus);
+              row, aHasFocus);
       return component;
     }
   }
