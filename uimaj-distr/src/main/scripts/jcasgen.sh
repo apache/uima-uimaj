@@ -32,7 +32,7 @@ then
   JAVA_HOME=$UIMA_HOME/java/jre
 fi
 LOGGER="-Djava.util.logging.config.file=$UIMA_HOME/FileConsoleLogger.properties"
-MAIN=org.apache.uima.jcas.jcasgen_gen.Jg
+MAIN=org.apache.uima.tools.jcasgen.Jg
 if [ "$firstarg" = "" ]
 then
   "$JAVA_HOME/bin/java" "$LOGGER" -cp "$UIMA_CLASSPATH" $MAIN
