@@ -98,10 +98,7 @@ import org.apache.uima.cas.impl.StringArrayFSImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.jcas.impl.JCas;
-import org.apache.uima.klt.Entity;
-import org.apache.uima.klt.EntityAnnotation;
-import org.apache.uima.klt.HasOccurrence;
-import org.apache.uima.klt.Link;
+import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * A Swing component that displays annotations in a text pane with highlighting. There is also a
@@ -217,7 +214,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
 
   private Set mHiddenFeatureNames = new HashSet();
 
-  private Boolean mEntityViewEnabled; // null if user has made no choice
+  private boolean mEntityViewEnabled; 
 
   private short mViewMode = MODE_ANNOTATIONS;
 
@@ -267,6 +264,8 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
   private JPanel sofaSelectionPanel;
 
   private JComboBox sofaSelectionComboBox;
+
+  private EntityResolver mEntityResolver = new DefaultEntityResolver();
 
   /**
    * Creates a CAS Annotation Viewer.
@@ -480,18 +479,27 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
 
   /**
    * Configures whether the viewer will allow the user to switch to "Entity" view, which highlight
-   * entities rather than annotations. Entity view mode is only useful if the CAS contains instances
-   * of org.apache.uima.klt.Entity.
-   * <p>
-   * NOTE: if this method is not called, the default is to display entities if and only if the
-   * org.apache.uima.klt.Entity type is present in the type system.
+   * entities rather than annotations.  Entity mode is typically only useful if the
+   * {@link #setEntityResolver(EntityResolver)} method has been called with a user-supplied
+   * class that can determine which annotations refer to the same entity.
    * 
    * @param aDisplayEntities
-   *          true to enable entity viewing mode, false to allow annotation viewing only
+   *          true to enable entity viewing mode, false to allow annotation viewing only.
+   *          The default is false.
    */
   public void setEntityViewEnabled(boolean aEnabled) {
-    mEntityViewEnabled = new Boolean(aEnabled);
+    mEntityViewEnabled = aEnabled;
     this.viewModePanel.setVisible(aEnabled);
+  }
+  
+  /**
+   * Sets the {@link EntityResolver} to use when the viewer is in entity mode.
+   * Entity mode must be turned on using the {@link #setEntityViewEnabled(boolean)} method.
+   * @param aEntityResolver user-supplied class that can determine which annotations correspond
+   *   to the same entity.
+   */
+  public void setEntityResolver(EntityResolver aEntityResolver) {
+    mEntityResolver = aEntityResolver;
   }
 
   /**
@@ -576,13 +584,8 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
     mBoldfaceKeywords = new String[0];
     mBoldfaceSpans = new int[0];
 
-    // enable entity view if the org.apache.uima.klt.EntityAnnotation type is
-    // present (if user has not called setEntityViewEnalbed)
-    if (mEntityViewEnabled == null) {
-      boolean entityTypeExists = mCAS.getTypeSystem().getType(
-              "org.apache.uima.klt.EntityAnnotation") != null;
-      this.viewModePanel.setVisible(entityTypeExists);
-    }
+    // enable or disable entity view depending on user's choice 
+    this.viewModePanel.setVisible(mEntityViewEnabled);
 
     // Populate sofa combo box with the names of all text Sofas in the CAS
     sofaSelectionComboBox.removeAllItems();
@@ -983,7 +986,8 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
       throw new RuntimeException(e);
     }
 
-    // Iterate over EntityAnnotations using JCAS
+    // Iterate over EntityAnnotations using JCAS, because the EntityResolver interface
+    // uses JCAS as a convenience to the user.
     JCas jcas;
     try {
       // NOTE: for a large type system, this can take a few seconds, which results in a
@@ -992,54 +996,37 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
     } catch (CASException e) {
       throw new RuntimeException(e);
     }
-    FSIterator iter = jcas.getJFSIndexRepository().getAnnotationIndex(EntityAnnotation.type)
-            .iterator();
+    FSIterator iter = jcas.getJFSIndexRepository().getAnnotationIndex().iterator();
     while (iter.isValid()) {
-      EntityAnnotation entityAnnot = (EntityAnnotation) iter.get();
+      Annotation annot = (Annotation) iter.get();
       iter.moveToNext();
 
-      // find out what entity this annotations represents
-      LinkedList entityList = Link.getFromValues(entityAnnot.getLinks(), HasOccurrence.class);
-      if (entityList.isEmpty()) {
-        continue;
-      }
-      // currently assume only one Entity per annotation
-      Entity entity = (Entity) entityList.getFirst();
+      // find out what entity this annotation represents
+      String entityCanonicalForm = mEntityResolver.getCanonicalForm(annot);
 
+      //if not an entity, skip it
+      if (entityCanonicalForm == null)
+        continue;
+      
       // have we seen this entity before?
-      JCheckBox checkbox = (JCheckBox) mEntityToCheckboxMap.get(entity);
+      JCheckBox checkbox = (JCheckBox) mEntityToCheckboxMap.get(entityCanonicalForm);
       if (checkbox == null) {
         // assign next available color
         Color c = COLORS[mEntityToCheckboxMap.size() % COLORS.length];
         // add checkbox
-        String label = entity.getCanonicalForm();
-        if (label == null) // canonical form not known
-        {
-          // initially set label to this occurrence; we will later set it to the longest
-          // occurrence
-          label = entityAnnot.getCoveredText();
-        }
-        checkbox = new JCheckBox(label, true);
-        checkbox.setToolTipText(label);
+        checkbox = new JCheckBox(entityCanonicalForm, true);
+        checkbox.setToolTipText(entityCanonicalForm);
         checkbox.addActionListener(this);
         checkbox.setBackground(c);
         entityCheckboxPanel.add(checkbox);
         // add to (Entity, Checkbox) map
-        mEntityToCheckboxMap.put(entity, checkbox);
-      } else {
-        // ensure longest occurrence used as label if canonical form not known
-        if (entity.getCanonicalForm() == null) {
-          String thisOccurrence = entityAnnot.getCoveredText();
-          if (thisOccurrence.length() > checkbox.getText().length()) {
-            checkbox.setText(thisOccurrence);
-          }
-        }
+        mEntityToCheckboxMap.put(entityCanonicalForm, checkbox);
       }
 
       // if checkbox is checked, assign color to text
       if (checkbox.isSelected()) {
-        int begin = entityAnnot.getBegin();
-        int end = entityAnnot.getEnd();
+        int begin = annot.getBegin();
+        int end = annot.getEnd();
         // be careful of 0-length annotation. If we try to set background color when there
         // is no selection, it will set the input text style, which is not what we want.
         if (begin != end) {
@@ -1718,5 +1705,20 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
       return 10;
     }
 
+  }
+  
+  /**
+   * Trivial entity resolver that's applied if the user turns on entity mode without
+   * specifying their own entity resolver.  Returns the covered text as the canonical form.
+   */
+  static class DefaultEntityResolver implements EntityResolver {
+
+    /* (non-Javadoc)
+     * @see org.apache.uima.tools.viewer.EntityResolver#getCanonicalForm(org.apache.uima.jcas.tcas.Annotation)
+     */
+    public String getCanonicalForm(Annotation aAnnotation) {
+      return aAnnotation.getCoveredText();
+    }
+    
   }
 }
