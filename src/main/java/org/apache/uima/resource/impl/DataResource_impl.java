@@ -22,6 +22,7 @@ package org.apache.uima.resource.impl;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -81,11 +82,23 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
     if (relPathResolver == null) {
       relPathResolver = new RelativePathResolver_impl();
     }
-
+      
     // Get the file URL, resolving relative path as necessary
     IOException ioEx = null;
     try {
-      mFileUrl = relPathResolver.resolveRelativePath(new URL(spec.getFileUrl()));
+      // Get the file URL from the specifier.  If the user has passed a file path
+      // (e.g. c:\Program Files\...) instead of a URL, be lenient and convert it to
+      // a URL
+      URL relativeUrl;
+      try {
+        relativeUrl = new URL(spec.getFileUrl());
+      }
+      catch (MalformedURLException e) {
+        relativeUrl = new File(spec.getFileUrl()).toURL();
+      }
+      
+      //resolve relative paths
+      mFileUrl = relPathResolver.resolveRelativePath(relativeUrl);
 
       // Store local cache info, even though it is not used
       if (spec.getLocalCache() == null) {
