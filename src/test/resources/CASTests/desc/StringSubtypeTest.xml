@@ -39,7 +39,7 @@
 		<typeSystemDescription>
 			<types>
 				<typeDescription>
-					<name>org.apache.uima.cas.test.TestAnnotation</name>
+					<name>org.apache.uima.cas.test.StringSubtypeAnnotation</name>
 					<supertypeName>uima.tcas.Annotation</supertypeName>
 					<features>
 						<featureDescription>
