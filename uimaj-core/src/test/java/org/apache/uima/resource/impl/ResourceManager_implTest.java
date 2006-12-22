@@ -97,9 +97,10 @@ public class ResourceManager_implTest extends TestCase {
 
       // parameterized (language-based) resource
       FileLanguageResourceSpecifier langSpec = new FileLanguageResourceSpecifier_impl();
-      
-      File baseDir = JUnitExtension.getFile("ResourceTest");          
-      langSpec.setFileUrlPrefix(new File(baseDir,"FileLanguageResource_implTest_data_").toURL().toString());
+
+      File baseDir = JUnitExtension.getFile("ResourceTest");
+      langSpec.setFileUrlPrefix(new File(baseDir, "FileLanguageResource_implTest_data_").toURL()
+              .toString());
       langSpec.setFileUrlSuffix(".dat");
       ExternalResourceDescription desc3 = new ExternalResourceDescription_impl();
       desc3.setName("myLanguageResource");
@@ -118,9 +119,15 @@ public class ResourceManager_implTest extends TestCase {
       desc5.setName("myResourceWithSpaceInPath");
       desc5.setResourceSpecifier(spec2);
 
-      cfg
-              .setExternalResources(new ExternalResourceDescription[] { desc, desc2, desc3, desc4,
-                  desc5 });
+      // resource path as filename instead of URL
+      ExternalResourceDescription desc6 = new ExternalResourceDescription_impl();
+      FileResourceSpecifier_impl fileSpec = new FileResourceSpecifier_impl();
+      fileSpec.setFileUrl(TEST_DATA_FILE.getAbsolutePath());
+      desc6.setResourceSpecifier(fileSpec);
+      desc6.setName("myResourceWithFilePathNotUrl");
+
+      cfg.setExternalResources(new ExternalResourceDescription[] { desc, desc2, desc3, desc4,
+          desc5, desc6 });
 
       // define bindings
       ExternalResourceBinding binding1 = new ExternalResourceBinding_impl();
@@ -138,8 +145,11 @@ public class ResourceManager_implTest extends TestCase {
       ExternalResourceBinding binding5 = new ExternalResourceBinding_impl();
       binding5.setKey("myResourceWithSpaceInPathKey");
       binding5.setResourceName("myResourceWithSpaceInPath");
+      ExternalResourceBinding binding6 = new ExternalResourceBinding_impl();
+      binding6.setKey("myResourceWithFilePathNotUrl");
+      binding6.setResourceName("myResourceWithFilePathNotUrl");
       cfg.setExternalResourceBindings(new ExternalResourceBinding[] { binding1, binding2, binding3,
-          binding4, binding5 });
+          binding4, binding5, binding6 });
 
       mManager.initializeExternalResources(cfg, TEST_CONTEXT_NAME, null);
 
