@@ -52,7 +52,7 @@ public class StringSubtypeTest extends TestCase {
 
   private static final String undefinedValue = "dd";
 
-  private static final String annotationTypeName = "org.apache.uima.cas.test.TestAnnotation";
+  private static final String annotationTypeName = "org.apache.uima.cas.test.StringSubtypeAnnotation";
 
   private static final String stringSetFeatureName = "stringSetFeature";
 
@@ -88,7 +88,7 @@ public class StringSubtypeTest extends TestCase {
   }
 
   public void testJcas() {
-    TestAnnotation annot = new TestAnnotation(this.jcas);
+    StringSubtypeAnnotation annot = new StringSubtypeAnnotation(this.jcas);
     annot.setStringSetFeature(definedValue1);
     annot.setStringSetFeature(definedValue2);
     annot.setStringSetFeature(definedValue3);
