@@ -128,7 +128,8 @@ public class Import_implTest extends TestCase {
       // name import
       importObj = new Import_impl();
       importObj.setName("TypeSystemDescriptionImplTest.TestTypeSystem");
-      String workingDir = JUnitExtension.getFile(".").getAbsolutePath();
+      String workingDir = JUnitExtension.getFile("TypeSystemDescriptionImplTest").getParentFile()
+      		.getAbsolutePath();
       ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
       resMgr.setDataPath(workingDir);
       absUrl = importObj.findAbsoluteUrl(resMgr);
