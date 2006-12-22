@@ -1877,8 +1877,8 @@ public class MultiPageEditor extends FormEditor {
     if (null == project || !project.isNatureEnabled("org.eclipse.jdt.core.javanature")) { //$NON-NLS-1$
       return ""; //$NON-NLS-1$
     }
-    IJavaProject javaProject = JavaCore.create(project);
-    IProject projectRoot = javaProject.getProject();
+    IJavaProject javaProj = JavaCore.create(project);
+    IProject projectRoot = javaProj.getProject();
 
     IResource classFileResource = projectRoot.findMember(".classpath"); //$NON-NLS-1$
     long stamp = classFileResource.getModificationStamp();
@@ -1888,7 +1888,7 @@ public class MultiPageEditor extends FormEditor {
 
     StringBuffer result = new StringBuffer(1000);
 
-    String[] classPaths = JavaRuntime.computeDefaultRuntimeClassPath(javaProject);
+    String[] classPaths = JavaRuntime.computeDefaultRuntimeClassPath(javaProj);
 
     for (int i = 0; i < classPaths.length; i++) {
       String classPath = classPaths[i];
@@ -1921,8 +1921,8 @@ public class MultiPageEditor extends FormEditor {
       if (!project.isNatureEnabled("org.eclipse.jdt.core.javanature")) { //$NON-NLS-1$
         return null;
       }
-      IJavaProject javaProject = JavaCore.create(project);
-      IPackageFragmentRoot[] frs = javaProject.getPackageFragmentRoots();
+      IJavaProject javaProj = JavaCore.create(project);
+      IPackageFragmentRoot[] frs = javaProj.getPackageFragmentRoots();
       for (int i = 0; i < frs.length; i++) {
         frs[i].open(null);
         IResource resource = frs[i].getResource(); // first folder resource will always be first

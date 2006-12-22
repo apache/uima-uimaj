@@ -38,8 +38,7 @@ public class FlowNodes {
       fixedFlow = (FixedFlow) flow;
     else if (flow instanceof CapabilityLanguageFlow)
       capabilityLanguageFlow = (CapabilityLanguageFlow) flow;
-    else
-      ;// can be null if omitted
+      // can be null if omitted
   }
 
   public String[] getFlow() {

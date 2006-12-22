@@ -27,8 +27,6 @@ import org.apache.uima.taeconfigurator.StandardStrings;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditorContributor;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
-import org.eclipse.jface.bindings.keys.KeyStroke;
-import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
