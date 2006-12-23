@@ -22,7 +22,7 @@ package org.apache.uima.collection.impl.cpm.utils;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.annotator.AnnotatorProcessException;
 import org.apache.uima.analysis_engine.annotator.JTextAnnotator_ImplBase;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
 
 /**
  * 
