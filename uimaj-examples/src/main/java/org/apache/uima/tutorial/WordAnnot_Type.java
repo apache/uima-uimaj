@@ -19,7 +19,8 @@
 
 package org.apache.uima.tutorial;
 
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.FeatureStructure;
@@ -62,7 +63,7 @@ public class WordAnnot_Type extends Annotation_Type {
    * @generated
    * @modifiable
    */
-  public final static boolean featOkTst = JCas.getFeatOkTst("org.apache.uima.tutorial.WordAnnot");
+  public final static boolean featOkTst = JCasImpl.getFeatOkTst("org.apache.uima.tutorial.WordAnnot");
 
   /**
    * initialize variables to correspond with Cas Type and Features

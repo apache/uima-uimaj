@@ -31,7 +31,8 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.examples.SourceDocumentInformation;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.CasCopier;
@@ -51,7 +52,7 @@ import org.apache.uima.util.CasCopier;
 public class SimpleTextMerger extends JCasMultiplier_ImplBase {
   private StringBuffer mDocBuf = new StringBuffer();
 
-  private JCas mMergedCas;
+  private JCasImpl mMergedCas;
 
   private boolean mReadyToOutput = false;
 
@@ -147,7 +148,7 @@ public class SimpleTextMerger extends JCasMultiplier_ImplBase {
     if (!mReadyToOutput) {
       throw new RuntimeException("No next CAS");
     }
-    JCas casToReturn = mMergedCas;
+    JCasImpl casToReturn = mMergedCas;
     mMergedCas = null;
     mReadyToOutput = false;
     return casToReturn;

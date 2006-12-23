@@ -19,13 +19,14 @@
 
 package org.apache.uima.examples.tokenizer;
 
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.jcas.cas.TOP_Type;
 
 public class Token extends Annotation {
 
-  public final static int typeIndexID = JCas.getNextIndex();
+  public final static int typeIndexID = JCasImpl.getNextIndex();
 
   public final static int type = typeIndexID;
 

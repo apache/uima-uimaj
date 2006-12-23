@@ -19,7 +19,8 @@
 
 package org.apache.uima.tutorial;
 
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.FeatureStructure;
@@ -64,7 +65,7 @@ public class UimaAcronym_Type extends Annotation_Type {
    * @generated
    * @modifiable
    */
-  public final static boolean featOkTst = JCas.getFeatOkTst("org.apache.uima.tutorial.UimaAcronym");
+  public final static boolean featOkTst = JCasImpl.getFeatOkTst("org.apache.uima.tutorial.UimaAcronym");
 
   /** @generated */
   final Feature casFeat_expandedForm;
@@ -75,14 +76,14 @@ public class UimaAcronym_Type extends Annotation_Type {
   /** @generated */
   public String getExpandedForm(int addr) {
     if (featOkTst && casFeat_expandedForm == null)
-      JCas.throwFeatMissing("expandedForm", "org.apache.uima.tutorial.UimaAcronym");
+      JCasImpl.throwFeatMissing("expandedForm", "org.apache.uima.tutorial.UimaAcronym");
     return ll_cas.ll_getStringValue(addr, casFeatCode_expandedForm);
   }
 
   /** @generated */
   public void setExpandedForm(int addr, String v) {
     if (featOkTst && casFeat_expandedForm == null)
-      JCas.throwFeatMissing("expandedForm", "org.apache.uima.tutorial.UimaAcronym");
+      JCasImpl.throwFeatMissing("expandedForm", "org.apache.uima.tutorial.UimaAcronym");
     ll_cas.ll_setStringValue(addr, casFeatCode_expandedForm, v);
   }
 

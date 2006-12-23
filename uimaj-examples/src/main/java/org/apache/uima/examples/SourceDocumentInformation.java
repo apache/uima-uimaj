@@ -19,7 +19,8 @@
 
 package org.apache.uima.examples;
 
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.jcas.cas.TOP_Type;
 
 import org.apache.uima.jcas.tcas.Annotation;
@@ -39,7 +40,7 @@ public class SourceDocumentInformation extends Annotation {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCas.getNextIndex();
+  public final static int typeIndexID = JCasImpl.getNextIndex();
 
   /**
    * @generated
@@ -104,7 +105,7 @@ public class SourceDocumentInformation extends Annotation {
   public String getUri() {
     if (SourceDocumentInformation_Type.featOkTst
             && ((SourceDocumentInformation_Type) jcasType).casFeat_uri == null)
-      JCas.throwFeatMissing("uri", "org.apache.uima.examples.SourceDocumentInformation");
+      JCasImpl.throwFeatMissing("uri", "org.apache.uima.examples.SourceDocumentInformation");
     return jcasType.ll_cas.ll_getStringValue(addr,
             ((SourceDocumentInformation_Type) jcasType).casFeatCode_uri);
   }
@@ -118,7 +119,7 @@ public class SourceDocumentInformation extends Annotation {
   public void setUri(String v) {
     if (SourceDocumentInformation_Type.featOkTst
             && ((SourceDocumentInformation_Type) jcasType).casFeat_uri == null)
-      JCas.throwFeatMissing("uri", "org.apache.uima.examples.SourceDocumentInformation");
+      JCasImpl.throwFeatMissing("uri", "org.apache.uima.examples.SourceDocumentInformation");
     jcasType.ll_cas.ll_setStringValue(addr,
             ((SourceDocumentInformation_Type) jcasType).casFeatCode_uri, v);
   }
@@ -136,7 +137,7 @@ public class SourceDocumentInformation extends Annotation {
   public int getOffsetInSource() {
     if (SourceDocumentInformation_Type.featOkTst
             && ((SourceDocumentInformation_Type) jcasType).casFeat_offsetInSource == null)
-      JCas.throwFeatMissing("offsetInSource", "org.apache.uima.examples.SourceDocumentInformation");
+      JCasImpl.throwFeatMissing("offsetInSource", "org.apache.uima.examples.SourceDocumentInformation");
     return jcasType.ll_cas.ll_getIntValue(addr,
             ((SourceDocumentInformation_Type) jcasType).casFeatCode_offsetInSource);
   }
@@ -151,7 +152,7 @@ public class SourceDocumentInformation extends Annotation {
   public void setOffsetInSource(int v) {
     if (SourceDocumentInformation_Type.featOkTst
             && ((SourceDocumentInformation_Type) jcasType).casFeat_offsetInSource == null)
-      JCas.throwFeatMissing("offsetInSource", "org.apache.uima.examples.SourceDocumentInformation");
+      JCasImpl.throwFeatMissing("offsetInSource", "org.apache.uima.examples.SourceDocumentInformation");
     jcasType.ll_cas.ll_setIntValue(addr,
             ((SourceDocumentInformation_Type) jcasType).casFeatCode_offsetInSource, v);
   }
@@ -168,7 +169,7 @@ public class SourceDocumentInformation extends Annotation {
   public int getDocumentSize() {
     if (SourceDocumentInformation_Type.featOkTst
             && ((SourceDocumentInformation_Type) jcasType).casFeat_documentSize == null)
-      JCas.throwFeatMissing("documentSize", "org.apache.uima.examples.SourceDocumentInformation");
+      JCasImpl.throwFeatMissing("documentSize", "org.apache.uima.examples.SourceDocumentInformation");
     return jcasType.ll_cas.ll_getIntValue(addr,
             ((SourceDocumentInformation_Type) jcasType).casFeatCode_documentSize);
   }
@@ -182,7 +183,7 @@ public class SourceDocumentInformation extends Annotation {
   public void setDocumentSize(int v) {
     if (SourceDocumentInformation_Type.featOkTst
             && ((SourceDocumentInformation_Type) jcasType).casFeat_documentSize == null)
-      JCas.throwFeatMissing("documentSize", "org.apache.uima.examples.SourceDocumentInformation");
+      JCasImpl.throwFeatMissing("documentSize", "org.apache.uima.examples.SourceDocumentInformation");
     jcasType.ll_cas.ll_setIntValue(addr,
             ((SourceDocumentInformation_Type) jcasType).casFeatCode_documentSize, v);
   }
@@ -201,7 +202,7 @@ public class SourceDocumentInformation extends Annotation {
   public boolean getLastSegment() {
     if (SourceDocumentInformation_Type.featOkTst
             && ((SourceDocumentInformation_Type) jcasType).casFeat_lastSegment == null)
-      JCas.throwFeatMissing("lastSegment", "org.apache.uima.examples.SourceDocumentInformation");
+      JCasImpl.throwFeatMissing("lastSegment", "org.apache.uima.examples.SourceDocumentInformation");
     return jcasType.ll_cas.ll_getBooleanValue(addr,
             ((SourceDocumentInformation_Type) jcasType).casFeatCode_lastSegment);
   }
@@ -217,7 +218,7 @@ public class SourceDocumentInformation extends Annotation {
   public void setLastSegment(boolean v) {
     if (SourceDocumentInformation_Type.featOkTst
             && ((SourceDocumentInformation_Type) jcasType).casFeat_lastSegment == null)
-      JCas.throwFeatMissing("lastSegment", "org.apache.uima.examples.SourceDocumentInformation");
+      JCasImpl.throwFeatMissing("lastSegment", "org.apache.uima.examples.SourceDocumentInformation");
     jcasType.ll_cas.ll_setBooleanValue(addr,
             ((SourceDocumentInformation_Type) jcasType).casFeatCode_lastSegment, v);
   }

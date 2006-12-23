@@ -19,7 +19,8 @@
 
 package example;
 
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.FeatureStructure;
@@ -64,7 +65,7 @@ public class PersonTitle_Type extends Annotation_Type {
    * @generated
    * @modifiable
    */
-  public final static boolean featOkTst = JCas.getFeatOkTst("example.PersonTitle");
+  public final static boolean featOkTst = JCasImpl.getFeatOkTst("example.PersonTitle");
 
   /** @generated */
   final Feature casFeat_Kind;
@@ -75,14 +76,14 @@ public class PersonTitle_Type extends Annotation_Type {
   /** @generated */
   public String getKind(int addr) {
     if (featOkTst && casFeat_Kind == null)
-      JCas.throwFeatMissing("Kind", "example.PersonTitle");
+      JCasImpl.throwFeatMissing("Kind", "example.PersonTitle");
     return ll_cas.ll_getStringValue(addr, casFeatCode_Kind);
   }
 
   /** @generated */
   public void setKind(int addr, String v) {
     if (featOkTst && casFeat_Kind == null)
-      JCas.throwFeatMissing("Kind", "example.PersonTitle");
+      JCasImpl.throwFeatMissing("Kind", "example.PersonTitle");
     ll_cas.ll_setStringValue(addr, casFeatCode_Kind, v);
   }
 

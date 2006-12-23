@@ -25,7 +25,8 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.examples.SourceDocumentInformation;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**
@@ -99,7 +100,7 @@ public class SimpleTextSegmenter extends JCasMultiplier_ImplBase {
     while (breakAt < mDoc.length() && mDoc.charAt(breakAt - 1) != '\n')
       breakAt++;
 
-    JCas jcas = getEmptyJCas();
+    JCasImpl jcas = getEmptyJCas();
     try {
       jcas.setDocumentText(mDoc.substring(mPos, breakAt));
       // if original CAS had SourceDocumentInformation, also add SourceDocumentInformatio

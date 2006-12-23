@@ -23,7 +23,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.tutorial.RoomNumber;
 
 /**
@@ -35,7 +36,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
   private Pattern mHawthornePattern = Pattern.compile("\\b[G1-4][NS]-[A-Z]\\d\\d\\b");
 
   /**
-   * @see JCasAnnotator_ImplBase#process(JCas)
+   * @see JCasAnnotator_ImplBase#process(JCasImpl)
    */
   public void process(JCas aJCas) {
     // get document text

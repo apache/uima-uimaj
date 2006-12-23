@@ -24,7 +24,8 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 public class Token_Type extends Annotation_Type {
@@ -50,7 +51,7 @@ public class Token_Type extends Annotation_Type {
 
   public final static int typeIndexID = Token.typeIndexID;
 
-  public final static boolean featOkTst = JCas
+  public final static boolean featOkTst = JCasImpl
           .getFeatOkTst("org.apache.uima_examples.tokenizer.Token");
 
   // * initialize variables to correspond with Cas Type and Features

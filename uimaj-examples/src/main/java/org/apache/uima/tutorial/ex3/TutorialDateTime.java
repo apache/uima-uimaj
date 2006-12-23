@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.ResultSpecification;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.tutorial.DateAnnot;
 import org.apache.uima.tutorial.DateTimeAnnot;

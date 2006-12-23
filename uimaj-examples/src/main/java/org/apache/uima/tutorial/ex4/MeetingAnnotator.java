@@ -25,8 +25,9 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.AnalysisComponent;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.cas.FSIndex;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.tutorial.DateAnnot;
 import org.apache.uima.tutorial.Meeting;
@@ -54,7 +55,7 @@ public class MeetingAnnotator extends JCasAnnotator_ImplBase {
   }
 
   /**
-   * @see JCasAnnotator_ImplBase#process(JCas)
+   * @see JCasAnnotator_ImplBase#process(JCasImpl)
    */
   public void process(JCas aJCas) {
     // get annotation indexes
