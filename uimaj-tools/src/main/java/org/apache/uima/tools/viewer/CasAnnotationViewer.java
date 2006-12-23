@@ -97,7 +97,7 @@ import org.apache.uima.cas.impl.ShortArrayFSImpl;
 import org.apache.uima.cas.impl.StringArrayFSImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.TCAS;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
 /**
