@@ -20,7 +20,8 @@
 package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.StringArrayFS;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /** JCas class model for StringArray */
 public final class StringArray extends TOP implements StringArrayFS {
@@ -28,7 +29,7 @@ public final class StringArray extends TOP implements StringArrayFS {
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
    */
-  public final static int typeIndexID = JCas.getNextIndex();
+  public final static int typeIndexID = JCasImpl.getNextIndex();
 
   public final static int type = typeIndexID;
 

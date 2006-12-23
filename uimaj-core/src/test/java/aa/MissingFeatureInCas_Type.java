@@ -26,8 +26,9 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP_Type;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Updated by JCasGen Tue Feb 21 14:56:04 EST 2006
@@ -64,7 +65,7 @@ public class MissingFeatureInCas_Type extends TOP_Type {
    * @generated
    * @modifiable
    */
-  public final static boolean featOkTst = JCas.getFeatOkTst("aa.MissingFeatureInCas");
+  public final static boolean featOkTst = JCasImpl.getFeatOkTst("aa.MissingFeatureInCas");
 
   /** @generated */
   final Feature casFeat_haveThisOne;
@@ -75,14 +76,14 @@ public class MissingFeatureInCas_Type extends TOP_Type {
   /** @generated */
   public int getHaveThisOne(int addr) {
     if (featOkTst && casFeat_haveThisOne == null)
-      JCas.throwFeatMissing("haveThisOne", "aa.MissingFeatureInCas");
+      JCasImpl.throwFeatMissing("haveThisOne", "aa.MissingFeatureInCas");
     return ll_cas.ll_getIntValue(addr, casFeatCode_haveThisOne);
   }
 
   /** @generated */
   public void setHaveThisOne(int addr, int v) {
     if (featOkTst && casFeat_haveThisOne == null)
-      JCas.throwFeatMissing("haveThisOne", "aa.MissingFeatureInCas");
+      JCasImpl.throwFeatMissing("haveThisOne", "aa.MissingFeatureInCas");
     ll_cas.ll_setIntValue(addr, casFeatCode_haveThisOne, v);
   }
 
@@ -95,14 +96,14 @@ public class MissingFeatureInCas_Type extends TOP_Type {
   /** @generated */
   public float getMissingThisOne(int addr) {
     if (featOkTst && casFeat_missingThisOne == null)
-      JCas.throwFeatMissing("missingThisOne", "aa.MissingFeatureInCas");
+      JCasImpl.throwFeatMissing("missingThisOne", "aa.MissingFeatureInCas");
     return ll_cas.ll_getFloatValue(addr, casFeatCode_missingThisOne);
   }
 
   /** @generated */
   public void setMissingThisOne(int addr, float v) {
     if (featOkTst && casFeat_missingThisOne == null)
-      JCas.throwFeatMissing("missingThisOne", "aa.MissingFeatureInCas");
+      JCasImpl.throwFeatMissing("missingThisOne", "aa.MissingFeatureInCas");
     ll_cas.ll_setFloatValue(addr, casFeatCode_missingThisOne, v);
   }
 
@@ -115,14 +116,14 @@ public class MissingFeatureInCas_Type extends TOP_Type {
   /** @generated */
   public String getChangedFType(int addr) {
     if (featOkTst && casFeat_changedFType == null)
-      JCas.throwFeatMissing("changedFType", "aa.MissingFeatureInCas");
+      JCasImpl.throwFeatMissing("changedFType", "aa.MissingFeatureInCas");
     return ll_cas.ll_getStringValue(addr, casFeatCode_changedFType);
   }
 
   /** @generated */
   public void setChangedFType(int addr, String v) {
     if (featOkTst && casFeat_changedFType == null)
-      JCas.throwFeatMissing("changedFType", "aa.MissingFeatureInCas");
+      JCasImpl.throwFeatMissing("changedFType", "aa.MissingFeatureInCas");
     ll_cas.ll_setStringValue(addr, casFeatCode_changedFType, v);
   }
 

@@ -19,9 +19,10 @@
 
 package aa;
 
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.cas.TOP_Type;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Updated by JCasGen Tue Feb 21 14:56:04 EST 2006 XML source:
@@ -34,7 +35,7 @@ public class AbstractType extends TOP {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCas.getNextIndex();
+  public final static int typeIndexID = JCasImpl.getNextIndex();
 
   /**
    * @generated
@@ -89,7 +90,7 @@ public class AbstractType extends TOP {
    */
   public int getAbstractInt() {
     if (AbstractType_Type.featOkTst && ((AbstractType_Type) jcasType).casFeat_abstractInt == null)
-      JCas.throwFeatMissing("abstractInt", "aa.AbstractType");
+      JCasImpl.throwFeatMissing("abstractInt", "aa.AbstractType");
     return jcasType.ll_cas.ll_getIntValue(addr,
             ((AbstractType_Type) jcasType).casFeatCode_abstractInt);
   }
@@ -101,7 +102,7 @@ public class AbstractType extends TOP {
    */
   public void setAbstractInt(int v) {
     if (AbstractType_Type.featOkTst && ((AbstractType_Type) jcasType).casFeat_abstractInt == null)
-      JCas.throwFeatMissing("abstractInt", "aa.AbstractType");
+      JCasImpl.throwFeatMissing("abstractInt", "aa.AbstractType");
     jcasType.ll_cas.ll_setIntValue(addr, ((AbstractType_Type) jcasType).casFeatCode_abstractInt, v);
   }
 }

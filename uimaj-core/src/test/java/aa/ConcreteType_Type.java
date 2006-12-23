@@ -26,7 +26,8 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Updated by JCasGen Tue Feb 21 14:56:04 EST 2006
@@ -63,7 +64,7 @@ public class ConcreteType_Type extends AbstractType_Type {
    * @generated
    * @modifiable
    */
-  public final static boolean featOkTst = JCas.getFeatOkTst("aa.ConcreteType");
+  public final static boolean featOkTst = JCasImpl.getFeatOkTst("aa.ConcreteType");
 
   /** @generated */
   final Feature casFeat_concreteString;
@@ -74,14 +75,14 @@ public class ConcreteType_Type extends AbstractType_Type {
   /** @generated */
   public String getConcreteString(int addr) {
     if (featOkTst && casFeat_concreteString == null)
-      JCas.throwFeatMissing("concreteString", "aa.ConcreteType");
+      JCasImpl.throwFeatMissing("concreteString", "aa.ConcreteType");
     return ll_cas.ll_getStringValue(addr, casFeatCode_concreteString);
   }
 
   /** @generated */
   public void setConcreteString(int addr, String v) {
     if (featOkTst && casFeat_concreteString == null)
-      JCas.throwFeatMissing("concreteString", "aa.ConcreteType");
+      JCasImpl.throwFeatMissing("concreteString", "aa.ConcreteType");
     ll_cas.ll_setStringValue(addr, casFeatCode_concreteString, v);
   }
 

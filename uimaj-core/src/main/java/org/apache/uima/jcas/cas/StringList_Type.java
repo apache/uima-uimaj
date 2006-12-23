@@ -24,7 +24,8 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 public class StringList_Type extends org.apache.uima.jcas.cas.TOP_Type {
   protected FSGenerator getFSGenerator() {
@@ -49,7 +50,7 @@ public class StringList_Type extends org.apache.uima.jcas.cas.TOP_Type {
 
   public final static int typeIndexID = StringList.typeIndexID;
 
-  public final static boolean featOkTst = JCas.getFeatOkTst("uima.cas.StringList");
+  public final static boolean featOkTst = JCasImpl.getFeatOkTst("uima.cas.StringList");
 
   // * initialize variables to correspond with Cas Type and Features
   public StringList_Type(JCas jcas, Type casType) {

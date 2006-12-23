@@ -26,7 +26,8 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 public class NonEmptyStringList_Type extends StringList_Type {
   protected FSGenerator getFSGenerator() {
@@ -51,7 +52,7 @@ public class NonEmptyStringList_Type extends StringList_Type {
 
   public final static int typeIndexID = NonEmptyStringList.typeIndexID;
 
-  public final static boolean featOkTst = JCas.getFeatOkTst("uima.cas.NonEmptyStringList");
+  public final static boolean featOkTst = JCasImpl.getFeatOkTst("uima.cas.NonEmptyStringList");
 
   final Feature casFeat_head;
 
@@ -59,13 +60,13 @@ public class NonEmptyStringList_Type extends StringList_Type {
 
   public String getHead(int addr) {
     if (featOkTst && casFeat_head == null)
-      JCas.throwFeatMissing("head", "uima.cas.NonEmptyStringList");
+      JCasImpl.throwFeatMissing("head", "uima.cas.NonEmptyStringList");
     return ll_cas.ll_getStringValue(addr, casFeatCode_head);
   }
 
   public void setHead(int addr, String v) {
     if (featOkTst && casFeat_head == null)
-      JCas.throwFeatMissing("head", "uima.cas.NonEmptyStringList");
+      JCasImpl.throwFeatMissing("head", "uima.cas.NonEmptyStringList");
     ll_cas.ll_setStringValue(addr, casFeatCode_head, v);
   }
 
@@ -75,13 +76,13 @@ public class NonEmptyStringList_Type extends StringList_Type {
 
   public int getTail(int addr) {
     if (featOkTst && casFeat_tail == null)
-      JCas.throwFeatMissing("tail", "uima.cas.NonEmptyStringList");
+      JCasImpl.throwFeatMissing("tail", "uima.cas.NonEmptyStringList");
     return ll_cas.ll_getRefValue(addr, casFeatCode_tail);
   }
 
   public void setTail(int addr, int v) {
     if (featOkTst && casFeat_tail == null)
-      JCas.throwFeatMissing("tail", "uima.cas.NonEmptyStringList");
+      JCasImpl.throwFeatMissing("tail", "uima.cas.NonEmptyStringList");
     ll_cas.ll_setRefValue(addr, casFeatCode_tail, v);
   }
 

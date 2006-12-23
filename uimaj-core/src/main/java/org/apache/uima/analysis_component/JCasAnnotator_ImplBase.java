@@ -21,10 +21,11 @@ package org.apache.uima.analysis_component;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
- * Base class to be extended by Annotators that use the {@link JCas} interface. An Annotator is an
+ * Base class to be extended by Annotators that use the {@link JCasImpl} interface. An Annotator is an
  * {@link AnalysisComponent} that may modify its input CAS, but never creates any new CASes as
  * output.
  */
@@ -35,7 +36,7 @@ public abstract class JCasAnnotator_ImplBase extends Annotator_ImplBase {
    * @see org.apache.uima.analysis_component.AnalysisComponent#getRequiredCasInterface()
    */
   public Class getRequiredCasInterface() {
-    return JCas.class;
+    return JCasImpl.class;
   }
 
   /*
@@ -48,7 +49,7 @@ public abstract class JCasAnnotator_ImplBase extends Annotator_ImplBase {
       process((JCas) aCAS);
     } else {
       throw new AnalysisEngineProcessException(
-              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { JCas.class,
+              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { JCasImpl.class,
                   aCAS.getClass() });
     }
   }

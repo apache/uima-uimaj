@@ -22,7 +22,8 @@ package org.apache.uima.jcas.cas;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.LowLevelCAS;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /** Java Class model for Cas FSArray type */
 public final class FSArray extends TOP implements ArrayFS {
@@ -31,7 +32,7 @@ public final class FSArray extends TOP implements ArrayFS {
    * each cover class when loaded sets an index. used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
    */
-  public final static int typeIndexID = JCas.getNextIndex();
+  public final static int typeIndexID = JCasImpl.getNextIndex();
 
   public final static int type = typeIndexID;
 

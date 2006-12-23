@@ -22,7 +22,8 @@ package org.apache.uima.analysis_component;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Base class to be extended by CAS Multipliers that use the {@link CAS} interface. A CAS Multiplier
@@ -36,7 +37,7 @@ public abstract class JCasMultiplier_ImplBase extends AnalysisComponent_ImplBase
    * @see org.apache.uima.analysis_component.AnalysisComponent#getRequiredCasInterface()
    */
   public final Class getRequiredCasInterface() {
-    return JCas.class;
+    return JCasImpl.class;
   }
 
   /**
@@ -58,7 +59,7 @@ public abstract class JCasMultiplier_ImplBase extends AnalysisComponent_ImplBase
       process((JCas) aCAS);
     } else {
       throw new AnalysisEngineProcessException(
-              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { JCas.class,
+              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { JCasImpl.class,
                   aCAS.getClass() });
     }
   }
@@ -82,7 +83,7 @@ public abstract class JCasMultiplier_ImplBase extends AnalysisComponent_ImplBase
    * 
    * @return an empty JCas
    */
-  protected final JCas getEmptyJCas() {
-    return (JCas) getContext().getEmptyCas(JCas.class);
+  protected final JCasImpl getEmptyJCas() {
+    return (JCasImpl) getContext().getEmptyCas(JCasImpl.class);
   }
 }

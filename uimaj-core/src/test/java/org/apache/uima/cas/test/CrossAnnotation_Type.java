@@ -26,7 +26,8 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /**
@@ -56,7 +57,7 @@ public class CrossAnnotation_Type extends Annotation_Type {
 
   public final static int typeIndexID = CrossAnnotation.typeIndexID;
 
-  public final static boolean featOkTst = JCas.getFeatOkTst("uima.tcas.CrossAnnotation");
+  public final static boolean featOkTst = JCasImpl.getFeatOkTst("uima.tcas.CrossAnnotation");
 
   final Feature casFeat_otherAnnotation;
 
@@ -64,13 +65,13 @@ public class CrossAnnotation_Type extends Annotation_Type {
 
   public int getOtherAnnotation(int addr) {
     if (featOkTst && casFeat_otherAnnotation == null)
-      JCas.throwFeatMissing("otherAnnotation", "uima.tcas.CrossAnnotation");
+      JCasImpl.throwFeatMissing("otherAnnotation", "uima.tcas.CrossAnnotation");
     return ll_cas.ll_getRefValue(addr, casFeatCode_otherAnnotation);
   }
 
   public void setOtherAnnotation(int addr, int v) {
     if (featOkTst && casFeat_otherAnnotation == null)
-      JCas.throwFeatMissing("otherAnnotation", "uima.tcas.CrossAnnotation");
+      JCasImpl.throwFeatMissing("otherAnnotation", "uima.tcas.CrossAnnotation");
     ll_cas.ll_setRefValue(addr, casFeatCode_otherAnnotation, v);
   }
 

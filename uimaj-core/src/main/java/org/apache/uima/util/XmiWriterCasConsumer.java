@@ -34,7 +34,7 @@ import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.collection.CasConsumer_ImplBase;
 import org.apache.uima.examples.SourceDocumentInformation;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
 import org.xml.sax.SAXException;

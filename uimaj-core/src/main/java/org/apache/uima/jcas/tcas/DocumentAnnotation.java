@@ -19,19 +19,20 @@
 
 package org.apache.uima.jcas.tcas;
 
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP_Type;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * The JCas class definition for the CAS <code>DocumentAnnotation</code> type. When text CASs are
  * created, one instance of this type is created and made accessable via a call to the
- * {@link JCas#getDocumentAnnotationFs()} method. It is also a subtype of {@link Annotation} and
+ * {@link JCasImpl#getDocumentAnnotationFs()} method. It is also a subtype of {@link Annotation} and
  * therefore would appear as one of the annotations that an iterator over all the annotations would
  * return.
  */
 public class DocumentAnnotation extends Annotation {
 
-  public final static int typeIndexID = JCas.getNextIndex();
+  public final static int typeIndexID = JCasImpl.getNextIndex();
 
   public final static int type = typeIndexID;
 
@@ -60,7 +61,7 @@ public class DocumentAnnotation extends Annotation {
   public String getLanguage() {
     if (DocumentAnnotation_Type.featOkTst
             && ((DocumentAnnotation_Type) jcasType).casFeat_language == null)
-      JCas.throwFeatMissing("language", "uima.tcas.DocumentAnnotation");
+      JCasImpl.throwFeatMissing("language", "uima.tcas.DocumentAnnotation");
     return jcasType.ll_cas.ll_getStringValue(addr,
             ((DocumentAnnotation_Type) jcasType).casFeatCode_language);
   }
@@ -71,7 +72,7 @@ public class DocumentAnnotation extends Annotation {
   public void setLanguage(String v) {
     if (DocumentAnnotation_Type.featOkTst
             && ((DocumentAnnotation_Type) jcasType).casFeat_language == null)
-      JCas.throwFeatMissing("language", "uima.tcas.DocumentAnnotation");
+      JCasImpl.throwFeatMissing("language", "uima.tcas.DocumentAnnotation");
     jcasType.ll_cas.ll_setStringValue(addr,
             ((DocumentAnnotation_Type) jcasType).casFeatCode_language, v);
   }

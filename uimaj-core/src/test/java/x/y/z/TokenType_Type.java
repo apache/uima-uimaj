@@ -24,8 +24,9 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP_Type;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /* comment 3 of 14 */
 public class TokenType_Type extends TOP_Type {
@@ -51,7 +52,7 @@ public class TokenType_Type extends TOP_Type {
 
   public final static int typeIndexID = TokenType.typeIndexID;
 
-  public final static boolean featOkTst = JCas.getFeatOkTst("x.y.z.TokenType");
+  public final static boolean featOkTst = JCasImpl.getFeatOkTst("x.y.z.TokenType");
 
   // * initialize variables to correspond with Cas Type and Features
   public TokenType_Type(JCas jcas, Type casType) {

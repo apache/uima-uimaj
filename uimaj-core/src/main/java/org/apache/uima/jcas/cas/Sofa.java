@@ -30,7 +30,8 @@ import org.apache.uima.cas.SofaID;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TCASImpl;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Updated by JCasGen Fri Apr 29 16:05:04 EDT 2005
@@ -40,7 +41,7 @@ public class Sofa extends TOP implements SofaFS {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCas.getNextIndex();
+  public final static int typeIndexID = JCasImpl.getNextIndex();
 
   /**
    * @generated
@@ -72,7 +73,7 @@ public class Sofa extends TOP implements SofaFS {
   }
 
   /**
-   * @deprecated As of v2.0, use {@link JCas#createView(String)} to create a view, which will also
+   * @deprecated As of v2.0, use {@link JCasImpl#createView(String)} to create a view, which will also
    *             create the Sofa for that view.
    */
   public Sofa(JCas jcas, SofaID ID, String mimeType) {
@@ -100,7 +101,7 @@ public class Sofa extends TOP implements SofaFS {
    */
   public int getSofaNum() {
     if (Sofa_Type.featOkTst && ((Sofa_Type) jcasType).casFeat_sofaNum == null)
-      JCas.throwFeatMissing("sofaNum", "uima.cas.Sofa");
+      JCasImpl.throwFeatMissing("sofaNum", "uima.cas.Sofa");
     return jcasType.ll_cas.ll_getIntValue(addr, ((Sofa_Type) jcasType).casFeatCode_sofaNum);
   }
 
@@ -114,7 +115,7 @@ public class Sofa extends TOP implements SofaFS {
    */
   public String getSofaID() {
     if (Sofa_Type.featOkTst && ((Sofa_Type) jcasType).casFeat_sofaID == null)
-      JCas.throwFeatMissing("sofaID", "uima.cas.Sofa");
+      JCasImpl.throwFeatMissing("sofaID", "uima.cas.Sofa");
     return jcasType.ll_cas.ll_getStringValue(addr, ((Sofa_Type) jcasType).casFeatCode_sofaID);
   }
 
@@ -128,7 +129,7 @@ public class Sofa extends TOP implements SofaFS {
    */
   public String getMimeType() {
     if (Sofa_Type.featOkTst && ((Sofa_Type) jcasType).casFeat_mimeType == null)
-      JCas.throwFeatMissing("mimeType", "uima.cas.Sofa");
+      JCasImpl.throwFeatMissing("mimeType", "uima.cas.Sofa");
     return jcasType.ll_cas.ll_getStringValue(addr, ((Sofa_Type) jcasType).casFeatCode_mimeType);
   }
 

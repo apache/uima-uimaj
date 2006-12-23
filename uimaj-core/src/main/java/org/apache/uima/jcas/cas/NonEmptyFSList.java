@@ -19,11 +19,12 @@
 
 package org.apache.uima.jcas.cas;
 
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 public class NonEmptyFSList extends FSList {
 
-  public final static int typeIndexID = JCas.getNextIndex();
+  public final static int typeIndexID = JCasImpl.getNextIndex();
 
   public final static int type = typeIndexID;
 
@@ -49,7 +50,7 @@ public class NonEmptyFSList extends FSList {
   /** getter for head * */
   public org.apache.uima.jcas.cas.TOP getHead() {
     if (NonEmptyFSList_Type.featOkTst && ((NonEmptyFSList_Type) jcasType).casFeat_head == null)
-      JCas.throwFeatMissing("head", "uima.cas.NonEmptyFSList");
+      JCasImpl.throwFeatMissing("head", "uima.cas.NonEmptyFSList");
     return (org.apache.uima.jcas.cas.TOP) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas
             .ll_getRefValue(addr, ((NonEmptyFSList_Type) jcasType).casFeatCode_head)));
   }
@@ -57,7 +58,7 @@ public class NonEmptyFSList extends FSList {
   /** setter for head * */
   public void setHead(org.apache.uima.jcas.cas.TOP v) {
     if (NonEmptyFSList_Type.featOkTst && ((NonEmptyFSList_Type) jcasType).casFeat_head == null)
-      JCas.throwFeatMissing("head", "uima.cas.NonEmptyFSList");
+      JCasImpl.throwFeatMissing("head", "uima.cas.NonEmptyFSList");
     jcasType.ll_cas.ll_setRefValue(addr, ((NonEmptyFSList_Type) jcasType).casFeatCode_head,
             jcasType.ll_cas.ll_getFSRef(v));
   }
@@ -67,7 +68,7 @@ public class NonEmptyFSList extends FSList {
   /** getter for tail * */
   public FSList getTail() {
     if (NonEmptyFSList_Type.featOkTst && ((NonEmptyFSList_Type) jcasType).casFeat_tail == null)
-      JCas.throwFeatMissing("tail", "uima.cas.NonEmptyFSList");
+      JCasImpl.throwFeatMissing("tail", "uima.cas.NonEmptyFSList");
     return (FSList) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
             ((NonEmptyFSList_Type) jcasType).casFeatCode_tail)));
   }
@@ -75,7 +76,7 @@ public class NonEmptyFSList extends FSList {
   /** setter for tail * */
   public void setTail(FSList v) {
     if (NonEmptyFSList_Type.featOkTst && ((NonEmptyFSList_Type) jcasType).casFeat_tail == null)
-      JCas.throwFeatMissing("tail", "uima.cas.NonEmptyFSList");
+      JCasImpl.throwFeatMissing("tail", "uima.cas.NonEmptyFSList");
     jcasType.ll_cas.ll_setRefValue(addr, ((NonEmptyFSList_Type) jcasType).casFeatCode_tail,
             jcasType.ll_cas.ll_getFSRef(v));
   }

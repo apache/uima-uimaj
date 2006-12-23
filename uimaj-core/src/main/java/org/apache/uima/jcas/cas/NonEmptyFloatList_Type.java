@@ -26,7 +26,8 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 public class NonEmptyFloatList_Type extends FloatList_Type {
   protected FSGenerator getFSGenerator() {
@@ -51,7 +52,7 @@ public class NonEmptyFloatList_Type extends FloatList_Type {
 
   public final static int typeIndexID = NonEmptyFloatList.typeIndexID;
 
-  public final static boolean featOkTst = JCas.getFeatOkTst("uima.cas.NonEmptyFloatList");
+  public final static boolean featOkTst = JCasImpl.getFeatOkTst("uima.cas.NonEmptyFloatList");
 
   final Feature casFeat_head;
 
@@ -59,13 +60,13 @@ public class NonEmptyFloatList_Type extends FloatList_Type {
 
   public float getHead(int addr) {
     if (featOkTst && casFeat_head == null)
-      JCas.throwFeatMissing("head", "uima.cas.NonEmptyFloatList");
+      JCasImpl.throwFeatMissing("head", "uima.cas.NonEmptyFloatList");
     return ll_cas.ll_getFloatValue(addr, casFeatCode_head);
   }
 
   public void setHead(int addr, float v) {
     if (featOkTst && casFeat_head == null)
-      JCas.throwFeatMissing("head", "uima.cas.NonEmptyFloatList");
+      JCasImpl.throwFeatMissing("head", "uima.cas.NonEmptyFloatList");
     ll_cas.ll_setFloatValue(addr, casFeatCode_head, v);
   }
 
@@ -75,13 +76,13 @@ public class NonEmptyFloatList_Type extends FloatList_Type {
 
   public int getTail(int addr) {
     if (featOkTst && casFeat_tail == null)
-      JCas.throwFeatMissing("tail", "uima.cas.NonEmptyFloatList");
+      JCasImpl.throwFeatMissing("tail", "uima.cas.NonEmptyFloatList");
     return ll_cas.ll_getRefValue(addr, casFeatCode_tail);
   }
 
   public void setTail(int addr, int v) {
     if (featOkTst && casFeat_tail == null)
-      JCas.throwFeatMissing("tail", "uima.cas.NonEmptyFloatList");
+      JCasImpl.throwFeatMissing("tail", "uima.cas.NonEmptyFloatList");
     ll_cas.ll_setRefValue(addr, casFeatCode_tail, v);
   }
 

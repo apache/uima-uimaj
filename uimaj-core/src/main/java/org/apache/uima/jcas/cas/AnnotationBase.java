@@ -22,7 +22,8 @@ package org.apache.uima.jcas.cas;
 import org.apache.uima.cas.AnnotationBaseFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.SofaFS;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * the JCas class model for the CAS type uima.cas.Annotation. It defines two integer valued features
@@ -31,7 +32,7 @@ import org.apache.uima.jcas.impl.JCas;
  */
 public class AnnotationBase extends org.apache.uima.jcas.cas.TOP implements AnnotationBaseFS {
 
-  public final static int typeIndexID = JCas.getNextIndex();
+  public final static int typeIndexID = JCasImpl.getNextIndex();
 
   public final static int type = typeIndexID;
 
@@ -60,7 +61,7 @@ public class AnnotationBase extends org.apache.uima.jcas.cas.TOP implements Anno
    */
   public SofaFS getSofa() {
     if (AnnotationBase_Type.featOkTst && ((AnnotationBase_Type) jcasType).casFeat_sofa == null)
-      JCas.throwFeatMissing("sofa", "uima.tcas.Annotation");
+      JCasImpl.throwFeatMissing("sofa", "uima.tcas.Annotation");
     return (SofaFS) jcasType.ll_cas.ll_getFSForRef(addr);
   }
 

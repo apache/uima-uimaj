@@ -26,8 +26,9 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP_Type;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Updated by JCasGen Tue Feb 21 14:56:04 EST 2006
@@ -64,7 +65,7 @@ public class Root_Type extends TOP_Type {
    * @generated
    * @modifiable
    */
-  public final static boolean featOkTst = JCas.getFeatOkTst("aa.Root");
+  public final static boolean featOkTst = JCasImpl.getFeatOkTst("aa.Root");
 
   /** @generated */
   final Feature casFeat_arrayInt;
@@ -75,21 +76,21 @@ public class Root_Type extends TOP_Type {
   /** @generated */
   public int getArrayInt(int addr) {
     if (featOkTst && casFeat_arrayInt == null)
-      JCas.throwFeatMissing("arrayInt", "aa.Root");
+      JCasImpl.throwFeatMissing("arrayInt", "aa.Root");
     return ll_cas.ll_getRefValue(addr, casFeatCode_arrayInt);
   }
 
   /** @generated */
   public void setArrayInt(int addr, int v) {
     if (featOkTst && casFeat_arrayInt == null)
-      JCas.throwFeatMissing("arrayInt", "aa.Root");
+      JCasImpl.throwFeatMissing("arrayInt", "aa.Root");
     ll_cas.ll_setRefValue(addr, casFeatCode_arrayInt, v);
   }
 
   /** @generated */
   public int getArrayInt(int addr, int i) {
     if (featOkTst && casFeat_arrayInt == null)
-      JCas.throwFeatMissing("arrayInt", "aa.Root");
+      JCasImpl.throwFeatMissing("arrayInt", "aa.Root");
     if (lowLevelTypeChecks)
       return ll_cas.ll_getIntArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_arrayInt), i, true);
     jcas.checkArrayBounds(ll_cas.ll_getRefValue(addr, casFeatCode_arrayInt), i);
@@ -99,7 +100,7 @@ public class Root_Type extends TOP_Type {
   /** @generated */
   public void setArrayInt(int addr, int i, int v) {
     if (featOkTst && casFeat_arrayInt == null)
-      JCas.throwFeatMissing("arrayInt", "aa.Root");
+      JCasImpl.throwFeatMissing("arrayInt", "aa.Root");
     if (lowLevelTypeChecks)
       ll_cas.ll_setIntArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_arrayInt), i, v, true);
     jcas.checkArrayBounds(ll_cas.ll_getRefValue(addr, casFeatCode_arrayInt), i);
@@ -115,21 +116,21 @@ public class Root_Type extends TOP_Type {
   /** @generated */
   public int getArrayRef(int addr) {
     if (featOkTst && casFeat_arrayRef == null)
-      JCas.throwFeatMissing("arrayRef", "aa.Root");
+      JCasImpl.throwFeatMissing("arrayRef", "aa.Root");
     return ll_cas.ll_getRefValue(addr, casFeatCode_arrayRef);
   }
 
   /** @generated */
   public void setArrayRef(int addr, int v) {
     if (featOkTst && casFeat_arrayRef == null)
-      JCas.throwFeatMissing("arrayRef", "aa.Root");
+      JCasImpl.throwFeatMissing("arrayRef", "aa.Root");
     ll_cas.ll_setRefValue(addr, casFeatCode_arrayRef, v);
   }
 
   /** @generated */
   public int getArrayRef(int addr, int i) {
     if (featOkTst && casFeat_arrayRef == null)
-      JCas.throwFeatMissing("arrayRef", "aa.Root");
+      JCasImpl.throwFeatMissing("arrayRef", "aa.Root");
     if (lowLevelTypeChecks)
       return ll_cas.ll_getRefArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_arrayRef), i, true);
     jcas.checkArrayBounds(ll_cas.ll_getRefValue(addr, casFeatCode_arrayRef), i);
@@ -139,7 +140,7 @@ public class Root_Type extends TOP_Type {
   /** @generated */
   public void setArrayRef(int addr, int i, int v) {
     if (featOkTst && casFeat_arrayRef == null)
-      JCas.throwFeatMissing("arrayRef", "aa.Root");
+      JCasImpl.throwFeatMissing("arrayRef", "aa.Root");
     if (lowLevelTypeChecks)
       ll_cas.ll_setRefArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_arrayRef), i, v, true);
     jcas.checkArrayBounds(ll_cas.ll_getRefValue(addr, casFeatCode_arrayRef), i);
@@ -155,21 +156,21 @@ public class Root_Type extends TOP_Type {
   /** @generated */
   public int getArrayFloat(int addr) {
     if (featOkTst && casFeat_arrayFloat == null)
-      JCas.throwFeatMissing("arrayFloat", "aa.Root");
+      JCasImpl.throwFeatMissing("arrayFloat", "aa.Root");
     return ll_cas.ll_getRefValue(addr, casFeatCode_arrayFloat);
   }
 
   /** @generated */
   public void setArrayFloat(int addr, int v) {
     if (featOkTst && casFeat_arrayFloat == null)
-      JCas.throwFeatMissing("arrayFloat", "aa.Root");
+      JCasImpl.throwFeatMissing("arrayFloat", "aa.Root");
     ll_cas.ll_setRefValue(addr, casFeatCode_arrayFloat, v);
   }
 
   /** @generated */
   public float getArrayFloat(int addr, int i) {
     if (featOkTst && casFeat_arrayFloat == null)
-      JCas.throwFeatMissing("arrayFloat", "aa.Root");
+      JCasImpl.throwFeatMissing("arrayFloat", "aa.Root");
     if (lowLevelTypeChecks)
       return ll_cas.ll_getFloatArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_arrayFloat), i,
               true);
@@ -180,7 +181,7 @@ public class Root_Type extends TOP_Type {
   /** @generated */
   public void setArrayFloat(int addr, int i, float v) {
     if (featOkTst && casFeat_arrayFloat == null)
-      JCas.throwFeatMissing("arrayFloat", "aa.Root");
+      JCasImpl.throwFeatMissing("arrayFloat", "aa.Root");
     if (lowLevelTypeChecks)
       ll_cas.ll_setFloatArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_arrayFloat), i, v, true);
     jcas.checkArrayBounds(ll_cas.ll_getRefValue(addr, casFeatCode_arrayFloat), i);
@@ -196,21 +197,21 @@ public class Root_Type extends TOP_Type {
   /** @generated */
   public int getArrayString(int addr) {
     if (featOkTst && casFeat_arrayString == null)
-      JCas.throwFeatMissing("arrayString", "aa.Root");
+      JCasImpl.throwFeatMissing("arrayString", "aa.Root");
     return ll_cas.ll_getRefValue(addr, casFeatCode_arrayString);
   }
 
   /** @generated */
   public void setArrayString(int addr, int v) {
     if (featOkTst && casFeat_arrayString == null)
-      JCas.throwFeatMissing("arrayString", "aa.Root");
+      JCasImpl.throwFeatMissing("arrayString", "aa.Root");
     ll_cas.ll_setRefValue(addr, casFeatCode_arrayString, v);
   }
 
   /** @generated */
   public String getArrayString(int addr, int i) {
     if (featOkTst && casFeat_arrayString == null)
-      JCas.throwFeatMissing("arrayString", "aa.Root");
+      JCasImpl.throwFeatMissing("arrayString", "aa.Root");
     if (lowLevelTypeChecks)
       return ll_cas.ll_getStringArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_arrayString), i,
               true);
@@ -221,7 +222,7 @@ public class Root_Type extends TOP_Type {
   /** @generated */
   public void setArrayString(int addr, int i, String v) {
     if (featOkTst && casFeat_arrayString == null)
-      JCas.throwFeatMissing("arrayString", "aa.Root");
+      JCasImpl.throwFeatMissing("arrayString", "aa.Root");
     if (lowLevelTypeChecks)
       ll_cas.ll_setStringArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_arrayString), i, v,
               true);
@@ -238,14 +239,14 @@ public class Root_Type extends TOP_Type {
   /** @generated */
   public int getPlainInt(int addr) {
     if (featOkTst && casFeat_plainInt == null)
-      JCas.throwFeatMissing("plainInt", "aa.Root");
+      JCasImpl.throwFeatMissing("plainInt", "aa.Root");
     return ll_cas.ll_getIntValue(addr, casFeatCode_plainInt);
   }
 
   /** @generated */
   public void setPlainInt(int addr, int v) {
     if (featOkTst && casFeat_plainInt == null)
-      JCas.throwFeatMissing("plainInt", "aa.Root");
+      JCasImpl.throwFeatMissing("plainInt", "aa.Root");
     ll_cas.ll_setIntValue(addr, casFeatCode_plainInt, v);
   }
 
@@ -258,14 +259,14 @@ public class Root_Type extends TOP_Type {
   /** @generated */
   public float getPlainFloat(int addr) {
     if (featOkTst && casFeat_plainFloat == null)
-      JCas.throwFeatMissing("plainFloat", "aa.Root");
+      JCasImpl.throwFeatMissing("plainFloat", "aa.Root");
     return ll_cas.ll_getFloatValue(addr, casFeatCode_plainFloat);
   }
 
   /** @generated */
   public void setPlainFloat(int addr, float v) {
     if (featOkTst && casFeat_plainFloat == null)
-      JCas.throwFeatMissing("plainFloat", "aa.Root");
+      JCasImpl.throwFeatMissing("plainFloat", "aa.Root");
     ll_cas.ll_setFloatValue(addr, casFeatCode_plainFloat, v);
   }
 
@@ -278,14 +279,14 @@ public class Root_Type extends TOP_Type {
   /** @generated */
   public String getPlainString(int addr) {
     if (featOkTst && casFeat_plainString == null)
-      JCas.throwFeatMissing("plainString", "aa.Root");
+      JCasImpl.throwFeatMissing("plainString", "aa.Root");
     return ll_cas.ll_getStringValue(addr, casFeatCode_plainString);
   }
 
   /** @generated */
   public void setPlainString(int addr, String v) {
     if (featOkTst && casFeat_plainString == null)
-      JCas.throwFeatMissing("plainString", "aa.Root");
+      JCasImpl.throwFeatMissing("plainString", "aa.Root");
     ll_cas.ll_setStringValue(addr, casFeatCode_plainString, v);
   }
 
@@ -298,14 +299,14 @@ public class Root_Type extends TOP_Type {
   /** @generated */
   public int getPlainRef(int addr) {
     if (featOkTst && casFeat_plainRef == null)
-      JCas.throwFeatMissing("plainRef", "aa.Root");
+      JCasImpl.throwFeatMissing("plainRef", "aa.Root");
     return ll_cas.ll_getRefValue(addr, casFeatCode_plainRef);
   }
 
   /** @generated */
   public void setPlainRef(int addr, int v) {
     if (featOkTst && casFeat_plainRef == null)
-      JCas.throwFeatMissing("plainRef", "aa.Root");
+      JCasImpl.throwFeatMissing("plainRef", "aa.Root");
     ll_cas.ll_setRefValue(addr, casFeatCode_plainRef, v);
   }
 
@@ -318,14 +319,14 @@ public class Root_Type extends TOP_Type {
   /** @generated */
   public String getConcreteString(int addr) {
     if (featOkTst && casFeat_concreteString == null)
-      JCas.throwFeatMissing("concreteString", "aa.Root");
+      JCasImpl.throwFeatMissing("concreteString", "aa.Root");
     return ll_cas.ll_getStringValue(addr, casFeatCode_concreteString);
   }
 
   /** @generated */
   public void setConcreteString(int addr, String v) {
     if (featOkTst && casFeat_concreteString == null)
-      JCas.throwFeatMissing("concreteString", "aa.Root");
+      JCasImpl.throwFeatMissing("concreteString", "aa.Root");
     ll_cas.ll_setStringValue(addr, casFeatCode_concreteString, v);
   }
 

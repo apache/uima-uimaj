@@ -21,9 +21,10 @@ package org.apache.uima.jcas.tcas;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.AnnotationBase;
 import org.apache.uima.jcas.cas.TOP_Type;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * the JCas class model for the CAS type uima.cas.Annotation. It defines two integer valued features
@@ -32,7 +33,7 @@ import org.apache.uima.jcas.impl.JCas;
  */
 public class Annotation extends AnnotationBase implements AnnotationFS {
 
-  public final static int typeIndexID = JCas.getNextIndex();
+  public final static int typeIndexID = JCasImpl.getNextIndex();
 
   public final static int type = typeIndexID;
 
@@ -61,7 +62,7 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
    */
   public int getBegin() {
     if (Annotation_Type.featOkTst && ((Annotation_Type) jcasType).casFeat_begin == null)
-      JCas.throwFeatMissing("begin", "uima.tcas.Annotation");
+      JCasImpl.throwFeatMissing("begin", "uima.tcas.Annotation");
     return jcasType.ll_cas.ll_getIntValue(addr, ((Annotation_Type) jcasType).casFeatCode_begin);
   }
 
@@ -70,7 +71,7 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
    */
   public void setBegin(int v) {
     if (Annotation_Type.featOkTst && ((Annotation_Type) jcasType).casFeat_begin == null)
-      JCas.throwFeatMissing("begin", "uima.tcas.Annotation");
+      JCasImpl.throwFeatMissing("begin", "uima.tcas.Annotation");
     jcasType.ll_cas.ll_setIntValue(addr, ((Annotation_Type) jcasType).casFeatCode_begin, v);
   }
 
@@ -83,7 +84,7 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
    */
   public int getEnd() {
     if (Annotation_Type.featOkTst && ((Annotation_Type) jcasType).casFeat_end == null)
-      JCas.throwFeatMissing("end", "uima.tcas.Annotation");
+      JCasImpl.throwFeatMissing("end", "uima.tcas.Annotation");
     return jcasType.ll_cas.ll_getIntValue(addr, ((Annotation_Type) jcasType).casFeatCode_end);
   }
 
@@ -92,7 +93,7 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
    */
   public void setEnd(int v) {
     if (Annotation_Type.featOkTst && ((Annotation_Type) jcasType).casFeat_end == null)
-      JCas.throwFeatMissing("end", "uima.tcas.Annotation");
+      JCasImpl.throwFeatMissing("end", "uima.tcas.Annotation");
     jcasType.ll_cas.ll_setIntValue(addr, ((Annotation_Type) jcasType).casFeatCode_end, v);
   }
 
