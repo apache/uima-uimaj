@@ -42,7 +42,7 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.Language;
 import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.internal.util.JmxMBeanAgent;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.CasDefinition;
 import org.apache.uima.resource.ConfigurableResource_ImplBase;
 import org.apache.uima.resource.ResourceInitializationException;

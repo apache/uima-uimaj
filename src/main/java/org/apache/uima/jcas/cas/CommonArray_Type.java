@@ -20,7 +20,7 @@
 package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.Type;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
 
 /**
  * 

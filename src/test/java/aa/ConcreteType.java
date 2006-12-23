@@ -19,8 +19,9 @@
 
 package aa;
 
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP_Type;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Updated by JCasGen Tue Feb 21 14:56:04 EST 2006 XML source:
@@ -33,7 +34,7 @@ public class ConcreteType extends AbstractType {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCas.getNextIndex();
+  public final static int typeIndexID = JCasImpl.getNextIndex();
 
   /**
    * @generated
@@ -89,7 +90,7 @@ public class ConcreteType extends AbstractType {
   public String getConcreteString() {
     if (ConcreteType_Type.featOkTst
             && ((ConcreteType_Type) jcasType).casFeat_concreteString == null)
-      JCas.throwFeatMissing("concreteString", "aa.ConcreteType");
+      JCasImpl.throwFeatMissing("concreteString", "aa.ConcreteType");
     return jcasType.ll_cas.ll_getStringValue(addr,
             ((ConcreteType_Type) jcasType).casFeatCode_concreteString);
   }
@@ -102,7 +103,7 @@ public class ConcreteType extends AbstractType {
   public void setConcreteString(String v) {
     if (ConcreteType_Type.featOkTst
             && ((ConcreteType_Type) jcasType).casFeat_concreteString == null)
-      JCas.throwFeatMissing("concreteString", "aa.ConcreteType");
+      JCasImpl.throwFeatMissing("concreteString", "aa.ConcreteType");
     jcasType.ll_cas.ll_setStringValue(addr,
             ((ConcreteType_Type) jcasType).casFeatCode_concreteString, v);
   }

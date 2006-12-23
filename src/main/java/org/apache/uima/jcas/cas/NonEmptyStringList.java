@@ -19,11 +19,12 @@
 
 package org.apache.uima.jcas.cas;
 
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 public class NonEmptyStringList extends StringList {
 
-  public final static int typeIndexID = JCas.getNextIndex();
+  public final static int typeIndexID = JCasImpl.getNextIndex();
 
   public final static int type = typeIndexID;
 
@@ -50,7 +51,7 @@ public class NonEmptyStringList extends StringList {
   public String getHead() {
     if (NonEmptyStringList_Type.featOkTst
             && ((NonEmptyStringList_Type) jcasType).casFeat_head == null)
-      JCas.throwFeatMissing("head", "uima.cas.NonEmptyStringList");
+      JCasImpl.throwFeatMissing("head", "uima.cas.NonEmptyStringList");
     return jcasType.ll_cas.ll_getStringValue(addr,
             ((NonEmptyStringList_Type) jcasType).casFeatCode_head);
   }
@@ -59,7 +60,7 @@ public class NonEmptyStringList extends StringList {
   public void setHead(String v) {
     if (NonEmptyStringList_Type.featOkTst
             && ((NonEmptyStringList_Type) jcasType).casFeat_head == null)
-      JCas.throwFeatMissing("head", "uima.cas.NonEmptyStringList");
+      JCasImpl.throwFeatMissing("head", "uima.cas.NonEmptyStringList");
     jcasType.ll_cas.ll_setStringValue(addr, ((NonEmptyStringList_Type) jcasType).casFeatCode_head,
             v);
   }
@@ -70,7 +71,7 @@ public class NonEmptyStringList extends StringList {
   public StringList getTail() {
     if (NonEmptyStringList_Type.featOkTst
             && ((NonEmptyStringList_Type) jcasType).casFeat_tail == null)
-      JCas.throwFeatMissing("tail", "uima.cas.NonEmptyStringList");
+      JCasImpl.throwFeatMissing("tail", "uima.cas.NonEmptyStringList");
     return (StringList) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
             ((NonEmptyStringList_Type) jcasType).casFeatCode_tail)));
   }
@@ -79,7 +80,7 @@ public class NonEmptyStringList extends StringList {
   public void setTail(StringList v) {
     if (NonEmptyStringList_Type.featOkTst
             && ((NonEmptyStringList_Type) jcasType).casFeat_tail == null)
-      JCas.throwFeatMissing("tail", "uima.cas.NonEmptyStringList");
+      JCasImpl.throwFeatMissing("tail", "uima.cas.NonEmptyStringList");
     jcasType.ll_cas.ll_setRefValue(addr, ((NonEmptyStringList_Type) jcasType).casFeatCode_tail,
             jcasType.ll_cas.ll_getFSRef(v));
   }

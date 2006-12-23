@@ -21,10 +21,11 @@ package org.apache.uima.flow;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
- * Base class to be extended by FlowControllers that use the {@link JCas} interface.
+ * Base class to be extended by FlowControllers that use the {@link JCasImpl} interface.
  */
 public abstract class JCasFlowController_ImplBase extends FlowController_ImplBase {
   /*
@@ -33,25 +34,25 @@ public abstract class JCasFlowController_ImplBase extends FlowController_ImplBas
    * @see org.apache.uima.flow.FlowController#getRequiredCasInterface()
    */
   public Class getRequiredCasInterface() {
-    return JCas.class;
+    return JCasImpl.class;
   }
 
   /**
-   * Overriden to check that <code>aCAS</code> is an instanceof {@link JCas}. If it is, then
-   * {@link #computeFlow(JCas)} is called. If not, an exception is thrown.
+   * Overriden to check that <code>aCAS</code> is an instanceof {@link JCasImpl}. If it is, then
+   * {@link #computeFlow(JCasImpl)} is called. If not, an exception is thrown.
    */
   public final Flow computeFlow(AbstractCas aCAS) throws AnalysisEngineProcessException {
     if (aCAS instanceof JCas) {
       return computeFlow((JCas) aCAS);
     } else {
       throw new AnalysisEngineProcessException(
-              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { JCas.class,
+              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { JCasImpl.class,
                   aCAS.getClass() });
     }
   }
 
   /**
-   * This method must be overriden by subclasses. It takes a {@link JCas} and returns a {@link Flow}
+   * This method must be overriden by subclasses. It takes a {@link JCasImpl} and returns a {@link Flow}
    * object that is responsible for routing this particular JCas through the components of this
    * Aggregate. The <code>Flow</code> object should be given a handle to the JCas, so that it can
    * use information in the CAS to make routing decisions.

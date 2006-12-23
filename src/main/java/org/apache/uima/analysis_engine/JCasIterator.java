@@ -19,12 +19,13 @@
 
 package org.apache.uima.analysis_engine;
 
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * An iterator over a collection of JCAS objects. One use for this interface is to allow an
  * application to iterate over all of the CASes produced by as output of the
- * {@link AnalysisEngine#processAndOutputNewCASes(JCas)} method.
+ * {@link AnalysisEngine#processAndOutputNewCASes(JCasImpl)} method.
  */
 public interface JCasIterator {
   /**

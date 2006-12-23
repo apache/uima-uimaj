@@ -3,7 +3,8 @@
 /* First created by JCasGen Fri Dec 22 14:02:31 CET 2006 */
 package org.apache.uima.cas.test;
 
-import org.apache.uima.jcas.impl.JCas; 
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl; 
 import org.apache.uima.jcas.cas.TOP_Type;
 
 import org.apache.uima.jcas.tcas.Annotation;
@@ -17,7 +18,7 @@ public class StringSubtypeAnnotation extends Annotation {
   /** @generated
    * @ordered 
    */
-  public final static int typeIndexID = JCas.getNextIndex();
+  public final static int typeIndexID = JCasImpl.getNextIndex();
   /** @generated
    * @ordered 
    */
@@ -65,14 +66,14 @@ public class StringSubtypeAnnotation extends Annotation {
    * @generated */
   public String getStringSetFeature() {
     if (StringSubtypeAnnotation_Type.featOkTst && ((StringSubtypeAnnotation_Type)jcasType).casFeat_stringSetFeature == null)
-      JCas.throwFeatMissing("stringSetFeature", "org.apache.uima.cas.test.StringSubtypeAnnotation");
+      JCasImpl.throwFeatMissing("stringSetFeature", "org.apache.uima.cas.test.StringSubtypeAnnotation");
     return jcasType.ll_cas.ll_getStringValue(addr, ((StringSubtypeAnnotation_Type)jcasType).casFeatCode_stringSetFeature);}
     
   /** setter for stringSetFeature - sets  
    * @generated */
   public void setStringSetFeature(String v) {
     if (StringSubtypeAnnotation_Type.featOkTst && ((StringSubtypeAnnotation_Type)jcasType).casFeat_stringSetFeature == null)
-      JCas.throwFeatMissing("stringSetFeature", "org.apache.uima.cas.test.StringSubtypeAnnotation");
+      JCasImpl.throwFeatMissing("stringSetFeature", "org.apache.uima.cas.test.StringSubtypeAnnotation");
     jcasType.ll_cas.ll_setStringValue(addr, ((StringSubtypeAnnotation_Type)jcasType).casFeatCode_stringSetFeature, v);}    
   }
 

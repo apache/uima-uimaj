@@ -24,7 +24,8 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /* comment 5 of 14 */
 public class Separator_Type extends TokenType_Type {
@@ -50,7 +51,7 @@ public class Separator_Type extends TokenType_Type {
 
   public final static int typeIndexID = Separator.typeIndexID;
 
-  public final static boolean featOkTst = JCas.getFeatOkTst("x.y.z.Separator");
+  public final static boolean featOkTst = JCasImpl.getFeatOkTst("x.y.z.Separator");
 
   // * initialize variables to correspond with Cas Type and Features
   public Separator_Type(JCas jcas, Type casType) {

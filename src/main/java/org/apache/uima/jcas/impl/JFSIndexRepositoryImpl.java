@@ -26,6 +26,7 @@ import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.text.TCAS;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 
 /**

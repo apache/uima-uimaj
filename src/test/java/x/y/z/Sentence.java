@@ -19,14 +19,15 @@
 
 package x.y.z;
 
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP_Type;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.jcas.tcas.Annotation;
 
 /* comment 1 of 14 */
 public class Sentence extends Annotation {
 
-  public final static int typeIndexID = JCas.getNextIndex();
+  public final static int typeIndexID = JCasImpl.getNextIndex();
 
   public final static int type = typeIndexID;
 

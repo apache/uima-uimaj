@@ -24,7 +24,8 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 public class EmptyFloatList_Type extends FloatList_Type {
   protected FSGenerator getFSGenerator() {
@@ -49,7 +50,7 @@ public class EmptyFloatList_Type extends FloatList_Type {
 
   public final static int typeIndexID = EmptyFloatList.typeIndexID;
 
-  public final static boolean featOkTst = JCas.getFeatOkTst("uima.cas.EmptyFloatList");
+  public final static boolean featOkTst = JCasImpl.getFeatOkTst("uima.cas.EmptyFloatList");
 
   // * initialize variables to correspond with Cas Type and Features
   public EmptyFloatList_Type(JCas jcas, Type casType) {

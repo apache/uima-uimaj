@@ -76,7 +76,8 @@ import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.internal.util.IntVector;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Implements the CAS interfaces. This class must be public because we need to be able to create
@@ -327,7 +328,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
 
   private boolean annotIndexInitialized = false;
 
-  protected JCas jcas = null;
+  protected JCasImpl jcas = null;
 
   private ComponentInfo componentInfo;
 
@@ -980,7 +981,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
     }
     if (this.jcas != null) {
       try {
-        JCas.clearData(this);
+        JCasImpl.clearData(this);
       } catch (CASException e) {
         CASAdminException cae = new CASAdminException(CASAdminException.JCAS_ERROR);
         cae.addArgument(e.getMessage());
@@ -2364,9 +2365,9 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
   // ///////////////////////////////////////////////////////////////////////////
   // JCas support
 
-  public JCas getJCas() throws CASException {
+  public JCasImpl getJCas() throws CASException {
     if (this.jcas == null) {
-      this.jcas = JCas.getJCas(this);
+      this.jcas = JCasImpl.getJCas(this);
     }
     return this.jcas;
   }
@@ -2375,7 +2376,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
   public JCas getJCas(SofaFS aSofa) throws CASException {
     // Create base JCas, if needed
     if (this.baseCAS.jcas == null) {
-      this.baseCAS.jcas = JCas.getJCas(this.baseCAS);
+      this.baseCAS.jcas = JCasImpl.getJCas(this.baseCAS);
     }
 
     // If a JCas already exists for this Sofa, return it

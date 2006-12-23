@@ -23,7 +23,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.CasIterator;
 import org.apache.uima.analysis_engine.JCasIterator;
 import org.apache.uima.cas.CASException;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
 
 /**
  * Wraps a CasIterator as a JCasIterator

@@ -24,8 +24,9 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP_Type;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Updated by JCasGen Tue Feb 21 14:56:04 EST 2006
@@ -62,7 +63,7 @@ public class MissingInCas_Type extends TOP_Type {
    * @generated
    * @modifiable
    */
-  public final static boolean featOkTst = JCas.getFeatOkTst("aa.MissingInCas");
+  public final static boolean featOkTst = JCasImpl.getFeatOkTst("aa.MissingInCas");
 
   /**
    * initialize variables to correspond with Cas Type and Features

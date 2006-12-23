@@ -26,7 +26,8 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 public class Annotation_Type extends org.apache.uima.jcas.cas.AnnotationBase_Type {
   protected FSGenerator getFSGenerator() {
@@ -51,7 +52,7 @@ public class Annotation_Type extends org.apache.uima.jcas.cas.AnnotationBase_Typ
 
   public final static int typeIndexID = Annotation.typeIndexID;
 
-  public final static boolean featOkTst = JCas.getFeatOkTst("uima.tcas.Annotation");
+  public final static boolean featOkTst = JCasImpl.getFeatOkTst("uima.tcas.Annotation");
 
   final Feature casFeat_begin;
 
@@ -59,13 +60,13 @@ public class Annotation_Type extends org.apache.uima.jcas.cas.AnnotationBase_Typ
 
   public int getBegin(int addr) {
     if (featOkTst && casFeat_begin == null)
-      JCas.throwFeatMissing("begin", "uima.tcas.Annotation");
+      JCasImpl.throwFeatMissing("begin", "uima.tcas.Annotation");
     return ll_cas.ll_getIntValue(addr, casFeatCode_begin);
   }
 
   public void setBegin(int addr, int v) {
     if (featOkTst && casFeat_begin == null)
-      JCas.throwFeatMissing("begin", "uima.tcas.Annotation");
+      JCasImpl.throwFeatMissing("begin", "uima.tcas.Annotation");
     ll_cas.ll_setIntValue(addr, casFeatCode_begin, v);
   }
 
@@ -75,13 +76,13 @@ public class Annotation_Type extends org.apache.uima.jcas.cas.AnnotationBase_Typ
 
   public int getEnd(int addr) {
     if (featOkTst && casFeat_end == null)
-      JCas.throwFeatMissing("end", "uima.tcas.Annotation");
+      JCasImpl.throwFeatMissing("end", "uima.tcas.Annotation");
     return ll_cas.ll_getIntValue(addr, casFeatCode_end);
   }
 
   public void setEnd(int addr, int v) {
     if (featOkTst && casFeat_end == null)
-      JCas.throwFeatMissing("end", "uima.tcas.Annotation");
+      JCasImpl.throwFeatMissing("end", "uima.tcas.Annotation");
     ll_cas.ll_setIntValue(addr, casFeatCode_end, v);
   }
 

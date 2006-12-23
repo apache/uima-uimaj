@@ -26,7 +26,8 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /* comment 2 of 14 */
@@ -53,7 +54,7 @@ public class Token_Type extends Annotation_Type {
 
   public final static int typeIndexID = Token.typeIndexID;
 
-  public final static boolean featOkTst = JCas.getFeatOkTst("x.y.z.Token");
+  public final static boolean featOkTst = JCasImpl.getFeatOkTst("x.y.z.Token");
 
   final Feature casFeat_ttype;
 
@@ -61,13 +62,13 @@ public class Token_Type extends Annotation_Type {
 
   public int getTtype(int addr) {
     if (featOkTst && casFeat_ttype == null)
-      JCas.throwFeatMissing("ttype", "x.y.z.Token");
+      JCasImpl.throwFeatMissing("ttype", "x.y.z.Token");
     return ll_cas.ll_getRefValue(addr, casFeatCode_ttype);
   }
 
   public void setTtype(int addr, int v) {
     if (featOkTst && casFeat_ttype == null)
-      JCas.throwFeatMissing("ttype", "x.y.z.Token");
+      JCasImpl.throwFeatMissing("ttype", "x.y.z.Token");
     ll_cas.ll_setRefValue(addr, casFeatCode_ttype, v);
   }
 
@@ -77,13 +78,13 @@ public class Token_Type extends Annotation_Type {
 
   public float getTokenFloatFeat(int addr) {
     if (featOkTst && casFeat_tokenFloatFeat == null)
-      JCas.throwFeatMissing("tokenFloatFeat", "x.y.z.Token");
+      JCasImpl.throwFeatMissing("tokenFloatFeat", "x.y.z.Token");
     return ll_cas.ll_getFloatValue(addr, casFeatCode_tokenFloatFeat);
   }
 
   public void setTokenFloatFeat(int addr, float v) {
     if (featOkTst && casFeat_tokenFloatFeat == null)
-      JCas.throwFeatMissing("tokenFloatFeat", "x.y.z.Token");
+      JCasImpl.throwFeatMissing("tokenFloatFeat", "x.y.z.Token");
     ll_cas.ll_setFloatValue(addr, casFeatCode_tokenFloatFeat, v);
   }
 
@@ -93,13 +94,13 @@ public class Token_Type extends Annotation_Type {
 
   public String getLemma(int addr) {
     if (featOkTst && casFeat_lemma == null)
-      JCas.throwFeatMissing("lemma", "x.y.z.Token");
+      JCasImpl.throwFeatMissing("lemma", "x.y.z.Token");
     return ll_cas.ll_getStringValue(addr, casFeatCode_lemma);
   }
 
   public void setLemma(int addr, String v) {
     if (featOkTst && casFeat_lemma == null)
-      JCas.throwFeatMissing("lemma", "x.y.z.Token");
+      JCasImpl.throwFeatMissing("lemma", "x.y.z.Token");
     ll_cas.ll_setStringValue(addr, casFeatCode_lemma, v);
   }
 
@@ -109,13 +110,13 @@ public class Token_Type extends Annotation_Type {
 
   public int getSentenceLength(int addr) {
     if (featOkTst && casFeat_sentenceLength == null)
-      JCas.throwFeatMissing("sentenceLength", "x.y.z.Token");
+      JCasImpl.throwFeatMissing("sentenceLength", "x.y.z.Token");
     return ll_cas.ll_getIntValue(addr, casFeatCode_sentenceLength);
   }
 
   public void setSentenceLength(int addr, int v) {
     if (featOkTst && casFeat_sentenceLength == null)
-      JCas.throwFeatMissing("sentenceLength", "x.y.z.Token");
+      JCasImpl.throwFeatMissing("sentenceLength", "x.y.z.Token");
     ll_cas.ll_setIntValue(addr, casFeatCode_sentenceLength, v);
   }
 
@@ -125,13 +126,13 @@ public class Token_Type extends Annotation_Type {
 
   public int getLemmaList(int addr) {
     if (featOkTst && casFeat_lemmaList == null)
-      JCas.throwFeatMissing("lemmaList", "x.y.z.Token");
+      JCasImpl.throwFeatMissing("lemmaList", "x.y.z.Token");
     return ll_cas.ll_getRefValue(addr, casFeatCode_lemmaList);
   }
 
   public String getLemmaList(int addr, int i) {
     if (featOkTst && casFeat_lemmaList == null)
-      JCas.throwFeatMissing("lemmaList", "x.y.z.Token");
+      JCasImpl.throwFeatMissing("lemmaList", "x.y.z.Token");
     if (lowLevelTypeChecks)
       return ll_cas.ll_getStringArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_lemmaList), i,
               true);
@@ -141,13 +142,13 @@ public class Token_Type extends Annotation_Type {
 
   public void setLemmaList(int addr, int v) {
     if (featOkTst && casFeat_lemmaList == null)
-      JCas.throwFeatMissing("lemmaList", "x.y.z.Token");
+      JCasImpl.throwFeatMissing("lemmaList", "x.y.z.Token");
     ll_cas.ll_setRefValue(addr, casFeatCode_lemmaList, v);
   }
 
   public void setLemmaList(int addr, int i, String v) {
     if (featOkTst && casFeat_lemmaList == null)
-      JCas.throwFeatMissing("lemmaList", "x.y.z.Token");
+      JCasImpl.throwFeatMissing("lemmaList", "x.y.z.Token");
     if (lowLevelTypeChecks)
       ll_cas.ll_setStringArrayValue(ll_cas.ll_getRefValue(addr, casFeatCode_lemmaList), i, v, true);
     jcas.checkArrayBounds(ll_cas.ll_getRefValue(addr, casFeatCode_lemmaList), i);

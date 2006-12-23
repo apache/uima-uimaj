@@ -24,7 +24,7 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
 
 // *********************************
 // * Implementation of DoubleArray_Type for JCas

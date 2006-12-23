@@ -42,7 +42,7 @@ import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.impl.UimaContext_ImplBase;
 import org.apache.uima.internal.util.UUIDGenerator;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;

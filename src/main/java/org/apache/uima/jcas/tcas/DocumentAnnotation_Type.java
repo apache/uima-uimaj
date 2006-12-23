@@ -26,7 +26,8 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 public class DocumentAnnotation_Type extends Annotation_Type {
   protected FSGenerator getFSGenerator() {
@@ -51,7 +52,7 @@ public class DocumentAnnotation_Type extends Annotation_Type {
 
   public final static int typeIndexID = DocumentAnnotation.typeIndexID;
 
-  public final static boolean featOkTst = JCas.getFeatOkTst("uima.tcas.DocumentAnnotation");
+  public final static boolean featOkTst = JCasImpl.getFeatOkTst("uima.tcas.DocumentAnnotation");
 
   final Feature casFeat_language;
 
@@ -59,13 +60,13 @@ public class DocumentAnnotation_Type extends Annotation_Type {
 
   public String getLanguage(int addr) {
     if (featOkTst && casFeat_language == null)
-      JCas.throwFeatMissing("language", "uima.tcas.DocumentAnnotation");
+      JCasImpl.throwFeatMissing("language", "uima.tcas.DocumentAnnotation");
     return ll_cas.ll_getStringValue(addr, casFeatCode_language);
   }
 
   public void setLanguage(int addr, String v) {
     if (featOkTst && casFeat_language == null)
-      JCas.throwFeatMissing("language", "uima.tcas.DocumentAnnotation");
+      JCasImpl.throwFeatMissing("language", "uima.tcas.DocumentAnnotation");
     ll_cas.ll_setStringValue(addr, casFeatCode_language, v);
   }
 

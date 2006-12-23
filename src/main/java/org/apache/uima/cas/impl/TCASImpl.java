@@ -38,7 +38,7 @@ import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.cas.text.TCASException;
 import org.apache.uima.cas.text.TCASMgr;
 import org.apache.uima.cas.text.TCASRuntimeException;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * TCAS: Text Common Analysis System Implementation. These APIs are internal. Note: even though the
@@ -419,7 +419,7 @@ public class TCASImpl extends CASImpl implements TCAS, TCASMgr {
     }
     if (this.jcas != null) {
       try {
-        JCas.clearData(this);
+        JCasImpl.clearData(this);
       } catch (CASException e) {
         CASAdminException cae = new CASAdminException(CASAdminException.JCAS_ERROR);
         cae.addArgument(e.getMessage());

@@ -19,9 +19,10 @@
 
 package aa;
 
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.cas.TOP_Type;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Updated by JCasGen Tue Feb 21 14:56:04 EST 2006 XML source:
@@ -34,7 +35,7 @@ public class MissingInCas extends TOP {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCas.getNextIndex();
+  public final static int typeIndexID = JCasImpl.getNextIndex();
 
   /**
    * @generated

@@ -20,7 +20,8 @@
 package org.apache.uima.analysis_engine.annotator;
 
 import org.apache.uima.analysis_engine.ResultSpecification;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Interface for JCAS annotators in UIMA SDK v1.x. As of v2.0, JCAS annotators should extend
@@ -29,7 +30,7 @@ import org.apache.uima.jcas.impl.JCas;
 public interface JTextAnnotator extends BaseAnnotator {
   /**
    * Invokes this annotator's analysis logic. Prior to calling this method, the caller must ensure
-   * that the {@link JCas} has been populated with the document to be analyzed as well as any
+   * that the {@link JCasImpl} has been populated with the document to be analyzed as well as any
    * information that this annotator needs to do its processing. This annotator will access the data
    * in the JCas and add new data to the JCas.
    * <p>
