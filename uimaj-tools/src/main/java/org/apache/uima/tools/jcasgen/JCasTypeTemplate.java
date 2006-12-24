@@ -20,9 +20,8 @@
 package org.apache.uima.tools.jcasgen;
 
 import java.util.Iterator;
-
-import org.apache.uima.resource.metadata.FeatureDescription;
 import org.apache.uima.resource.metadata.TypeDescription;
+import org.apache.uima.resource.metadata.FeatureDescription;
 
 public class JCasTypeTemplate {
 
@@ -30,31 +29,31 @@ public class JCasTypeTemplate {
     StringBuffer stringBuffer = new StringBuffer();
 
     stringBuffer.append("\n\n");
-    Object[] args = (Object[]) argument;
-    Jg jg = (Jg) args[0];
-    TypeDescription td = (TypeDescription) args[1];
-    jg.packageName = jg.getJavaPkg(td);
+    Object [] args = (Object [])argument;
+    Jg jg = (Jg)args[0];
+    TypeDescription td = (TypeDescription)args[1]; 
+   jg.packageName = jg.getJavaPkg(td); 
     stringBuffer.append("/* First created by JCasGen ");
     stringBuffer.append(jg.getDate());
     stringBuffer.append(" */\n");
-    if (0 != jg.packageName.length()) {
-      stringBuffer.append("package ");
-      stringBuffer.append(jg.packageName);
-      stringBuffer.append(";\n");
-    } else
-      jg.error.newError(IError.WARN, jg.getString("pkgMissing", new Object[] { td.getName() }),
-              null);
-    stringBuffer
-            .append("\nimport org.apache.uima.jcas.impl.JCas; \nimport org.apache.uima.jcas.cas.TOP_Type;\n\n");
-    for (Iterator i = jg.collectImports(td, false).iterator(); i.hasNext();) {
-      stringBuffer.append("import ");
-      stringBuffer.append((String) i.next());
-      stringBuffer.append(";\n");
-    }
+   if (0 != jg.packageName.length()) {
+    stringBuffer.append("package ");
+    stringBuffer.append(jg.packageName);
+    stringBuffer.append(";\n");
+   } 
+   else 
+     jg.error.newError(IError.WARN, 
+		jg.getString("pkgMissing", new Object[] {td.getName()}), null); 
+    stringBuffer.append("\nimport org.apache.uima.jcas.impl.JCas; \nimport org.apache.uima.jcas.cas.TOP_Type;\n\n");
+   for(Iterator i=jg.collectImports(td, false).iterator(); i.hasNext();) { 
+    stringBuffer.append("import ");
+    stringBuffer.append((String)i.next());
+    stringBuffer.append(";\n");
+   } 
     stringBuffer.append("\n\n");
-    String typeName = jg.getJavaName(td);
-    String typeName_Type = typeName + "_Type";
-    String jcasTypeCasted = "((" + typeName_Type + ")jcasType)";
+   String typeName = jg.getJavaName(td);
+   String typeName_Type = typeName + "_Type";
+   String jcasTypeCasted = "((" + typeName_Type + ")jcasType)";
 
     stringBuffer.append("/** ");
     stringBuffer.append(jg.nullBlank(td.getDescription()));
@@ -66,155 +65,150 @@ public class JCasTypeTemplate {
     stringBuffer.append(typeName);
     stringBuffer.append(" extends ");
     stringBuffer.append(jg.getJavaName(td.getSupertypeName()));
-    stringBuffer
-            .append(" {\n  /** @generated\n   * @ordered \n   */\n  public final static int typeIndexID = JCas.getNextIndex();\n  /** @generated\n   * @ordered \n   */\n  public final static int type = typeIndexID;\n  /** @generated  */\n  public              int getTypeIndexID() {return typeIndexID;}\n \n  /** Never called.  Disable default constructor\n   * @generated */\n  protected ");
+    stringBuffer.append(" {\n  /** @generated\n   * @ordered \n   */\n  public final static int typeIndexID = JCas.getNextIndex();\n  /** @generated\n   * @ordered \n   */\n  public final static int type = typeIndexID;\n  /** @generated  */\n  public              int getTypeIndexID() {return typeIndexID;}\n \n  /** Never called.  Disable default constructor\n   * @generated */\n  protected ");
     stringBuffer.append(typeName);
-    stringBuffer
-            .append("() {}\n    \n  /** Internal - constructor used by generator \n   * @generated */\n  public ");
+    stringBuffer.append("() {}\n    \n  /** Internal - constructor used by generator \n   * @generated */\n  public ");
     stringBuffer.append(typeName);
-    stringBuffer
-            .append("(int addr, TOP_Type type) {\n    super(addr, type);\n    readObject();\n  }\n  \n  /** @generated */\n  public ");
+    stringBuffer.append("(int addr, TOP_Type type) {\n    super(addr, type);\n    readObject();\n  }\n  \n  /** @generated */\n  public ");
     stringBuffer.append(typeName);
     stringBuffer.append("(JCas jcas) {\n    super(jcas);\n    readObject();   \n  } \n");
-    if (jg.isSubTypeOfAnnotation(td)) {
-      stringBuffer.append("  \n  /** @generated */\n  public ");
-      stringBuffer.append(typeName);
-      stringBuffer
-              .append("(JCas jcas, int begin, int end) {\n    super(jcas);\n    setBegin(begin);\n    setEnd(end);\n    readObject();\n  }   \n");
-    }
-    stringBuffer
-            .append("\n  /** <!-- begin-user-doc -->\n    * Write your own initialization here\n    * <!-- end-user-doc -->\n  @generated modifiable */\n  private void readObject() {}\n     \n");
-    FeatureDescription[] fds = td.getFeatures();
-    for (int i = 0; i < fds.length; i++) {
-      FeatureDescription fd = fds[i];
+  if (jg.isSubTypeOfAnnotation(td)) { 
+    stringBuffer.append("\n  /** @generated */  \n  public ");
+    stringBuffer.append(typeName);
+    stringBuffer.append("(JCas jcas, int begin, int end) {\n    super(jcas);\n    setBegin(begin);\n    setEnd(end);\n    readObject();\n  }   \n");
+  } 
+    stringBuffer.append("\n  /** <!-- begin-user-doc -->\n    * Write your own initialization here\n    * <!-- end-user-doc -->\n  @generated modifiable */\n  private void readObject() {}\n     \n");
+   FeatureDescription [] fds = td.getFeatures();
+   for (int i = 0; i < fds.length; i++) { 
+     FeatureDescription fd = fds[i];
 
-      String featName = fd.getName();
-      String featUName = jg.uc1(featName); // upper case first letter
-      if (Jg.reservedFeatureNames.contains(featUName))
-        jg.error.newError(IError.ERROR, jg.getString("reservedNameUsed", new Object[] { featName,
-            td.getName() }), null);
+     String featName = fd.getName();
+     String featUName = jg.uc1(featName);  // upper case first letter
+	 if (Jg.reservedFeatureNames.contains(featUName))
+	   jg.error.newError(IError.ERROR, 
+		 jg.getString("reservedNameUsed", new Object[] { featName, td.getName() }),
+		 null);
 
-      String featDesc = jg.nullBlank(fd.getDescription());
-      String featDescCmt = featDesc;
+     String featDesc = jg.nullBlank(fd.getDescription());
+     String featDescCmt = featDesc;
 
-      String rangeType = jg.getJavaRangeType(fd);
-      String elemType = jg.getJavaRangeArrayElementType(fd);
+     String rangeType = jg.getJavaRangeType(fd);
+     String elemType = jg.getJavaRangeArrayElementType(fd);    
 
-      stringBuffer.append(" \n    \n  //*--------------*\n  //* Feature: ");
-      stringBuffer.append(featName);
-      stringBuffer.append("\n\n  /** getter for ");
-      stringBuffer.append(featName);
-      stringBuffer.append(" - gets ");
-      stringBuffer.append(featDescCmt);
-      stringBuffer.append("\n   * @generated */\n  public ");
-      stringBuffer.append(rangeType);
-      stringBuffer.append(" get");
-      stringBuffer.append(featUName);
-      stringBuffer.append("() {\n    ");
-      stringBuffer.append("if (");
-      stringBuffer.append(typeName_Type);
-      stringBuffer.append(".featOkTst && ");
-      stringBuffer.append(jcasTypeCasted);
-      stringBuffer.append(".casFeat_");
-      stringBuffer.append(featName);
-      stringBuffer.append(" == null)\n      JCas.throwFeatMissing(\"");
-      stringBuffer.append(featName);
-      stringBuffer.append("\", \"");
-      stringBuffer.append(td.getName());
-      stringBuffer.append("\");\n");
-      stringBuffer.append("    return ");
-      stringBuffer.append(jg.getFeatureValue(fd, td));
-      stringBuffer.append(";}\n    \n  /** setter for ");
-      stringBuffer.append(featName);
-      stringBuffer.append(" - sets ");
-      stringBuffer.append(featDescCmt);
-      stringBuffer.append(" \n   * @generated */\n  public void set");
-      stringBuffer.append(featUName);
-      stringBuffer.append("(");
-      stringBuffer.append(rangeType);
-      stringBuffer.append(" v) {\n    ");
-      stringBuffer.append("if (");
-      stringBuffer.append(typeName_Type);
-      stringBuffer.append(".featOkTst && ");
-      stringBuffer.append(jcasTypeCasted);
-      stringBuffer.append(".casFeat_");
-      stringBuffer.append(featName);
-      stringBuffer.append(" == null)\n      JCas.throwFeatMissing(\"");
-      stringBuffer.append(featName);
-      stringBuffer.append("\", \"");
-      stringBuffer.append(td.getName());
-      stringBuffer.append("\");\n");
-      stringBuffer.append("    ");
-      stringBuffer.append(jg.setFeatureValue(fd, td));
-      stringBuffer.append(";}    \n  ");
-      if (jg.hasArrayRange(fd)) {
-        stringBuffer.append("  \n  /** indexed getter for ");
-        stringBuffer.append(featName);
-        stringBuffer.append(" - gets an indexed value - ");
-        stringBuffer.append(featDescCmt);
-        stringBuffer.append("\n   * @generated */\n  public ");
-        stringBuffer.append(elemType);
-        stringBuffer.append(" get");
-        stringBuffer.append(featUName);
-        stringBuffer.append("(int i) {\n    ");
-        stringBuffer.append("if (");
-        stringBuffer.append(typeName_Type);
-        stringBuffer.append(".featOkTst && ");
-        stringBuffer.append(jcasTypeCasted);
-        stringBuffer.append(".casFeat_");
-        stringBuffer.append(featName);
-        stringBuffer.append(" == null)\n      JCas.throwFeatMissing(\"");
-        stringBuffer.append(featName);
-        stringBuffer.append("\", \"");
-        stringBuffer.append(td.getName());
-        stringBuffer.append("\");\n");
-        stringBuffer.append("    ");
-        stringBuffer.append("jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ");
-        stringBuffer.append(jcasTypeCasted);
-        stringBuffer.append(".casFeatCode_");
-        stringBuffer.append(featName);
-        stringBuffer.append("), i);\n");
-        stringBuffer.append("    return ");
-        stringBuffer.append(jg.getArrayFeatureValue(fd, td));
-        stringBuffer.append(";}\n\n  /** indexed setter for ");
-        stringBuffer.append(featName);
-        stringBuffer.append(" - sets an indexed value - ");
-        stringBuffer.append(featDescCmt);
-        stringBuffer.append("\n   * @generated */\n  public void set");
-        stringBuffer.append(featUName);
-        stringBuffer.append("(int i, ");
-        stringBuffer.append(elemType);
-        stringBuffer.append(" v) { \n    ");
-        stringBuffer.append("if (");
-        stringBuffer.append(typeName_Type);
-        stringBuffer.append(".featOkTst && ");
-        stringBuffer.append(jcasTypeCasted);
-        stringBuffer.append(".casFeat_");
-        stringBuffer.append(featName);
-        stringBuffer.append(" == null)\n      JCas.throwFeatMissing(\"");
-        stringBuffer.append(featName);
-        stringBuffer.append("\", \"");
-        stringBuffer.append(td.getName());
-        stringBuffer.append("\");\n");
-        stringBuffer.append("    ");
-        stringBuffer.append("jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ");
-        stringBuffer.append(jcasTypeCasted);
-        stringBuffer.append(".casFeatCode_");
-        stringBuffer.append(featName);
-        stringBuffer.append("), i);\n");
-        stringBuffer.append("    ");
-        stringBuffer.append(jg.setArrayFeatureValue(fd, td));
-        stringBuffer.append(";}\n  ");
-      } /* of hasArray */
-      stringBuffer.append("");
-    } /* of Features iteration */
+    stringBuffer.append(" \n    \n  //*--------------*\n  //* Feature: ");
+    stringBuffer.append(featName);
+    stringBuffer.append("\n\n  /** getter for ");
+    stringBuffer.append(featName);
+    stringBuffer.append(" - gets ");
+    stringBuffer.append(featDescCmt);
+    stringBuffer.append("\n   * @generated */\n  public ");
+    stringBuffer.append(rangeType);
+    stringBuffer.append(" get");
+    stringBuffer.append(featUName);
+    stringBuffer.append("() {\n    ");
+    stringBuffer.append("if (");
+    stringBuffer.append(typeName_Type);
+    stringBuffer.append(".featOkTst && ");
+    stringBuffer.append(jcasTypeCasted);
+    stringBuffer.append(".casFeat_");
+    stringBuffer.append(featName);
+    stringBuffer.append(" == null)\n      JCas.throwFeatMissing(\"");
+    stringBuffer.append(featName);
+    stringBuffer.append("\", \"");
+    stringBuffer.append(td.getName());
+    stringBuffer.append("\");\n");
+    stringBuffer.append("    return ");
+    stringBuffer.append(jg.getFeatureValue(fd, td));
+    stringBuffer.append(";}\n    \n  /** setter for ");
+    stringBuffer.append(featName);
+    stringBuffer.append(" - sets ");
+    stringBuffer.append(featDescCmt);
+    stringBuffer.append(" \n   * @generated */\n  public void set");
+    stringBuffer.append(featUName);
+    stringBuffer.append("(");
+    stringBuffer.append(rangeType);
+    stringBuffer.append(" v) {\n    ");
+    stringBuffer.append("if (");
+    stringBuffer.append(typeName_Type);
+    stringBuffer.append(".featOkTst && ");
+    stringBuffer.append(jcasTypeCasted);
+    stringBuffer.append(".casFeat_");
+    stringBuffer.append(featName);
+    stringBuffer.append(" == null)\n      JCas.throwFeatMissing(\"");
+    stringBuffer.append(featName);
+    stringBuffer.append("\", \"");
+    stringBuffer.append(td.getName());
+    stringBuffer.append("\");\n");
+    stringBuffer.append("    ");
+    stringBuffer.append(jg.setFeatureValue(fd, td));
+    stringBuffer.append(";}    \n  ");
+  if (jg.hasArrayRange(fd)) {
+    stringBuffer.append("  \n  /** indexed getter for ");
+    stringBuffer.append(featName);
+    stringBuffer.append(" - gets an indexed value - ");
+    stringBuffer.append(featDescCmt);
+    stringBuffer.append("\n   * @generated */\n  public ");
+    stringBuffer.append(elemType);
+    stringBuffer.append(" get");
+    stringBuffer.append(featUName);
+    stringBuffer.append("(int i) {\n    ");
+    stringBuffer.append("if (");
+    stringBuffer.append(typeName_Type);
+    stringBuffer.append(".featOkTst && ");
+    stringBuffer.append(jcasTypeCasted);
+    stringBuffer.append(".casFeat_");
+    stringBuffer.append(featName);
+    stringBuffer.append(" == null)\n      JCas.throwFeatMissing(\"");
+    stringBuffer.append(featName);
+    stringBuffer.append("\", \"");
+    stringBuffer.append(td.getName());
+    stringBuffer.append("\");\n");
+    stringBuffer.append("    ");
+    stringBuffer.append("jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ");
+    stringBuffer.append(jcasTypeCasted);
+    stringBuffer.append(".casFeatCode_");
+    stringBuffer.append(featName);
+    stringBuffer.append("), i);\n");
+    stringBuffer.append("    return ");
+    stringBuffer.append(jg.getArrayFeatureValue(fd, td));
+    stringBuffer.append(";}\n\n  /** indexed setter for ");
+    stringBuffer.append(featName);
+    stringBuffer.append(" - sets an indexed value - ");
+    stringBuffer.append(featDescCmt);
+    stringBuffer.append("\n   * @generated */\n  public void set");
+    stringBuffer.append(featUName);
+    stringBuffer.append("(int i, ");
+    stringBuffer.append(elemType);
+    stringBuffer.append(" v) { \n    ");
+    stringBuffer.append("if (");
+    stringBuffer.append(typeName_Type);
+    stringBuffer.append(".featOkTst && ");
+    stringBuffer.append(jcasTypeCasted);
+    stringBuffer.append(".casFeat_");
+    stringBuffer.append(featName);
+    stringBuffer.append(" == null)\n      JCas.throwFeatMissing(\"");
+    stringBuffer.append(featName);
+    stringBuffer.append("\", \"");
+    stringBuffer.append(td.getName());
+    stringBuffer.append("\");\n");
+    stringBuffer.append("    ");
+    stringBuffer.append("jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ");
+    stringBuffer.append(jcasTypeCasted);
+    stringBuffer.append(".casFeatCode_");
+    stringBuffer.append(featName);
+    stringBuffer.append("), i);\n");
+    stringBuffer.append("    ");
+    stringBuffer.append(jg.setArrayFeatureValue(fd, td));
+    stringBuffer.append(";}\n  ");
+   } /* of hasArray */ 
     stringBuffer.append("");
-    if (td.getName().equals("uima.cas.Annotation")) {
-      stringBuffer.append("  ");
-      stringBuffer
-              .append("  /** Constructor with begin and end passed as arguments \n    * @generated */\n  public Annotation(JCas jcas, int begin, int end) { \n	this(jcas); // forward to constructor \n	this.setBegin(begin); \n	this.setEnd(end); \n  } \n  \n  /** @see org.apache.uima.cas.text.AnnotationFS#getCoveredText() \n    * @generated */ \n  public String getCoveredText() { \n	final TCASImpl tcasImpl = (TCASImpl)jcasType.casImpl; \n    String text = tcasImpl.getDocumentText(); \n	if (text == null)  \n	  return null; \n	return text.substring(getBegin(), getEnd()); \n  } \n  \n  /** @deprecated \n    * @generated */\n  public int getStart() {return getBegin();}\n		\n  /** @see org.apache.uima.cas.text.AnnotationFS#getCoveredText() \n    * @generated */ \n  public String getCoveredText(int inst) { \n    final TCASImpl tcasImpl = (TCASImpl) casImpl; \n    final String text = tcasImpl.getDocumentText(); \n    if (text == null) \n      return null; \n    return text.substring(getBegin(inst), getEnd(inst)); \n  }\n");
-      stringBuffer.append("");
-    } /* of Annotation if-statement */
+   } /* of Features iteration */ 
+    stringBuffer.append("");
+   if (td.getName().equals("uima.cas.Annotation")) { 
+    stringBuffer.append("  ");
+    stringBuffer.append("  /** Constructor with begin and end passed as arguments \n    * @generated */\n  public Annotation(JCas jcas, int begin, int end) { \n	  this(jcas); // forward to constructor \n	  this.setBegin(begin); \n	  this.setEnd(end); \n  } \n  \n  /** @see org.apache.uima.cas.text.AnnotationFS#getCoveredText() \n    * @generated */ \n  public String getCoveredText() { \n    final CAS casView = this.getView();\n    final String text = casView.getDocumentText();\n    if (text == null) {\n      return null;\n    }\n    return text.substring(getBegin(), getEnd());\n  } \n  \n  /** @deprecated \n    * @generated */\n  public int getStart() {return getBegin();}\n		\n  /** @see org.apache.uima.cas.text.AnnotationFS#getCoveredText() \n    * @generated */ \n  public String getCoveredText(int inst) { \n    final TCASImpl tcasImpl = (TCASImpl) casImpl; \n    final String text = tcasImpl.getDocumentText(); \n    if (text == null) \n      return null; \n    return text.substring(getBegin(inst), getEnd(inst)); \n  }\n");
+    stringBuffer.append("");
+   } /* of Annotation if-statement */ 
     stringBuffer.append("}\n\n    ");
     return stringBuffer.toString();
   }

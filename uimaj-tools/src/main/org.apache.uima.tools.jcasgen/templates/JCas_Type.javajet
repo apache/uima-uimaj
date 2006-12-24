@@ -1,0 +1,153 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+ <%@ jet package="org.apache.uima.tools.jcasgen" imports="java.util.Iterator org.apache.uima.resource.metadata.TypeDescription org.apache.uima.resource.metadata.FeatureDescription" class="JCas_TypeTemplate" %>
+<%
+    Object [] args = (Object [])argument;
+    Jg jg = (Jg)args[0];
+    TypeDescription td = (TypeDescription)args[1]; 
+   jg.packageName = jg.getJavaPkg(td);%>
+/* First created by JCasGen <%=jg.getDate()%> */
+<% if (0 != jg.packageName.length()) {%>
+package <%=jg.packageName%>;
+<% } %>
+
+import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.FSGenerator;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.Type;
+<% if (td.getFeatures().length > 0) {%>
+import org.apache.uima.cas.impl.FeatureImpl;
+import org.apache.uima.cas.Feature;
+<% } %>
+<% for(Iterator i=jg.collectImports(td, true).iterator(); i.hasNext();) { 
+ String imp = (String)i.next();
+  if (!imp.equals(jg.getJavaNameWithPkg(td.getName()+"_Type"))) {%>
+import <%=imp%>;
+<% }} %>
+
+<% String typeName = jg.getJavaName(td);
+   String typeName_Type = typeName + "_Type"; %>
+/** <%=jg.nullBlank(td.getDescription())%>
+ * Updated by JCasGen <%=jg.getDate()%>
+ * @generated */
+public class <%=typeName_Type%> extends <%=jg.getJavaName(td.getSupertypeName()) + "_Type"%> {
+  /** @generated */
+  protected FSGenerator getFSGenerator() {return fsGenerator;}
+  /** @generated */
+  private final FSGenerator fsGenerator = 
+    new FSGenerator() {
+      public FeatureStructure createFS(int addr, CASImpl cas) {
+  			 if (<%=typeName_Type%>.this.useExistingInstance) {
+  			   // Return eq fs instance if already created
+  		     FeatureStructure fs = <%=typeName_Type%>.this.jcas.getJfsFromCaddr(addr);
+  		     if (null == fs) {
+  		       fs = new <%=typeName%>(addr, <%=typeName_Type%>.this);
+  			   <%=typeName_Type%>.this.jcas.putJfsFromCaddr(addr, fs);
+  			   return fs;
+  		     }
+  		     return fs;
+        } else return new <%=typeName%>(addr, <%=typeName_Type%>.this);
+  	  }
+    };
+  /** @generated */
+  public final static int typeIndexID = <%=typeName%>.typeIndexID;
+  /** @generated 
+     @modifiable */
+  public final static boolean featOkTst = JCas.getFeatOkTst("<%=td.getName()%>");
+<% FeatureDescription [] fds = td.getFeatures();
+   for (int i = 0; i < fds.length; i++) { 
+     FeatureDescription fd = fds[i];
+
+     String featName = fd.getName();
+     String featUName = jg.uc1(featName);  // upper case first letter
+
+     String rangeType = jg.getJavaRangeType(fd);
+     String getSetNamePart = jg.sc(rangeType);
+     String returnType = getSetNamePart.equals("Ref") ? "int" : rangeType;
+     String getSetArrayNamePart = jg.getGetSetArrayNamePart(fd);
+     
+     String elemType = jg.getJavaRangeArrayElementType(fd);    
+     if (jg.sc(elemType).equals("Ref")) 
+       elemType = "int";   
+     String casFeatCode = "casFeatCode_" + featName;
+%> 
+  /** @generated */
+  final Feature casFeat_<%=featName%>;
+  /** @generated */
+  final int     <%=casFeatCode%>;
+  /** @generated */ 
+  public <%=returnType%> get<%=featUName%>(int addr) {
+    <%@ include file="../includedTemplates/FeatOk_Testing.javajet"%>
+    return ll_cas.ll_get<%=getSetNamePart%>Value(addr, <%=casFeatCode%>);
+  }
+  /** @generated */    
+  public void set<%=featUName%>(int addr, <%=returnType%> v) {
+    <%@ include file="../includedTemplates/FeatOk_Testing.javajet"%>
+    ll_cas.ll_set<%=getSetNamePart%>Value(addr, <%=casFeatCode%>, v);}
+    
+ <%if (jg.hasArrayRange(fd)) {%>
+  /** @generated */
+  public <%=elemType%> get<%=featUName%>(int addr, int i) {
+    <%@ include file="../includedTemplates/FeatOk_Testing.javajet"%>
+    if (lowLevelTypeChecks)
+      return ll_cas.ll_get<%=getSetArrayNamePart%>ArrayValue(ll_cas.ll_getRefValue(addr, <%=casFeatCode%>), i, true);
+    jcas.checkArrayBounds(ll_cas.ll_getRefValue(addr, <%=casFeatCode%>), i);
+	return ll_cas.ll_get<%=getSetArrayNamePart%>ArrayValue(ll_cas.ll_getRefValue(addr, <%=casFeatCode%>), i);
+  }
+   
+  /** @generated */ 
+  public void set<%=featUName%>(int addr, int i, <%=elemType%> v) {
+    <%@ include file="../includedTemplates/FeatOk_Testing.javajet"%>
+    if (lowLevelTypeChecks)
+      ll_cas.ll_set<%=getSetArrayNamePart%>ArrayValue(ll_cas.ll_getRefValue(addr, <%=casFeatCode%>), i, v, true);
+    jcas.checkArrayBounds(ll_cas.ll_getRefValue(addr, <%=casFeatCode%>), i);
+    ll_cas.ll_set<%=getSetArrayNamePart%>ArrayValue(ll_cas.ll_getRefValue(addr, <%=casFeatCode%>), i, v);
+  }
+<% } %> 
+<% } %>
+
+<% if (td.getName().equals("uima.cas.Annotation")) { %>
+  <%@ include file="../includedTemplates/Annotation_Methods.javajet" %>
+<% } /* of Annotation if-statement */ %>
+
+
+  /** initialize variables to correspond with Cas Type and Features
+	* @generated */
+  public <%=typeName_Type%>(JCas jcas, Type casType) {
+    super(jcas, casType);
+    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
+
+<% for (int i = 0; i < fds.length; i++) { 
+     FeatureDescription fd = fds[i];
+
+     String featName = fd.getName();
+
+%> 
+    casFeat_<%=featName%> = jcas.getRequiredFeatureDE(casType, "<%=featName%>", "<%=fd.getRangeTypeName()%>", featOkTst);
+    casFeatCode_<%=featName%>  = (null == casFeat_<%=featName%>) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_<%=featName%>).getCode();
+
+<% } %>
+  }
+}
+
+
+
+    
