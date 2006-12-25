@@ -119,6 +119,9 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
     return text.substring(getBegin(), getEnd());
   }
 
+  /**
+   * @deprecated
+   */
   public int getStart() {
     return getBegin();
   }
