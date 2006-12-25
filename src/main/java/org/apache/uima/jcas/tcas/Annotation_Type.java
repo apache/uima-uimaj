@@ -89,12 +89,15 @@ public class Annotation_Type extends org.apache.uima.jcas.cas.AnnotationBase_Typ
   /**
    * @see org.apache.uima.cas.text.AnnotationFS#getCoveredText()
    */
-  // public String getCoveredText(int inst) {
-  // final TCASImpl tcasImpl = (TCASImpl) casImpl;
-  // final String text = tcasImpl.getDocumentText();
-  // if (text == null) return null;
-  // return text.substring(getBegin(inst), getEnd(inst));
-  // }
+  public String getCoveredText(int inst) { 
+    final CASImpl casView = ll_cas.ll_getSofaCasView(inst);
+    final String text = casView.getDocumentText();
+    if (text == null) {
+      return null;
+    }
+    return text.substring(getBegin(inst), getEnd(inst)); 
+  }
+
   // * initialize variables to correspond with Cas Type and Features
   public Annotation_Type(JCas jcas, Type casType) {
     super(jcas, casType);
