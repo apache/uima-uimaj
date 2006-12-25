@@ -42,7 +42,7 @@ public class JCas_TypeTemplate {
     stringBuffer.append(jg.packageName);
     stringBuffer.append(";\n");
    } 
-    stringBuffer.append("\nimport org.apache.uima.jcas.impl.JCas;\nimport org.apache.uima.cas.impl.CASImpl;\nimport org.apache.uima.cas.impl.FSGenerator;\nimport org.apache.uima.cas.FeatureStructure;\nimport org.apache.uima.cas.impl.TypeImpl;\nimport org.apache.uima.cas.Type;\n");
+    stringBuffer.append("\nimport org.apache.uima.jcas.JCas;\nimport org.apache.uima.jcas.impl.JCasImpl;\nimport org.apache.uima.cas.impl.CASImpl;\nimport org.apache.uima.cas.impl.FSGenerator;\nimport org.apache.uima.cas.FeatureStructure;\nimport org.apache.uima.cas.impl.TypeImpl;\nimport org.apache.uima.cas.Type;\n");
    if (td.getFeatures().length > 0) {
     stringBuffer.append("import org.apache.uima.cas.impl.FeatureImpl;\nimport org.apache.uima.cas.Feature;\n");
    } 
@@ -81,7 +81,7 @@ public class JCas_TypeTemplate {
     stringBuffer.append(typeName_Type);
     stringBuffer.append(".this);\n  	  }\n    };\n  /** @generated */\n  public final static int typeIndexID = ");
     stringBuffer.append(typeName);
-    stringBuffer.append(".typeIndexID;\n  /** @generated \n     @modifiable */\n  public final static boolean featOkTst = JCas.getFeatOkTst(\"");
+    stringBuffer.append(".typeIndexID;\n  /** @generated \n     @modifiable */\n  public final static boolean featOkTst = JCasImpl.getFeatOkTst(\"");
     stringBuffer.append(td.getName());
     stringBuffer.append("\");\n");
    FeatureDescription [] fds = td.getFeatures();
@@ -116,7 +116,7 @@ public class JCas_TypeTemplate {
 
     stringBuffer.append("    if (featOkTst && casFeat_");
     stringBuffer.append(featName);
-    stringBuffer.append(" == null)\n      JCas.throwFeatMissing(\"");
+    stringBuffer.append(" == null)\n      JCasImpl.throwFeatMissing(\"");
     stringBuffer.append(featName);
     stringBuffer.append("\", \"");
     stringBuffer.append(td.getName());
@@ -136,7 +136,7 @@ public class JCas_TypeTemplate {
 
     stringBuffer.append("    if (featOkTst && casFeat_");
     stringBuffer.append(featName);
-    stringBuffer.append(" == null)\n      JCas.throwFeatMissing(\"");
+    stringBuffer.append(" == null)\n      JCasImpl.throwFeatMissing(\"");
     stringBuffer.append(featName);
     stringBuffer.append("\", \"");
     stringBuffer.append(td.getName());
@@ -158,7 +158,7 @@ public class JCas_TypeTemplate {
 
     stringBuffer.append("    if (featOkTst && casFeat_");
     stringBuffer.append(featName);
-    stringBuffer.append(" == null)\n      JCas.throwFeatMissing(\"");
+    stringBuffer.append(" == null)\n      JCasImpl.throwFeatMissing(\"");
     stringBuffer.append(featName);
     stringBuffer.append("\", \"");
     stringBuffer.append(td.getName());
@@ -184,7 +184,7 @@ public class JCas_TypeTemplate {
 
     stringBuffer.append("    if (featOkTst && casFeat_");
     stringBuffer.append(featName);
-    stringBuffer.append(" == null)\n      JCas.throwFeatMissing(\"");
+    stringBuffer.append(" == null)\n      JCasImpl.throwFeatMissing(\"");
     stringBuffer.append(featName);
     stringBuffer.append("\", \"");
     stringBuffer.append(td.getName());

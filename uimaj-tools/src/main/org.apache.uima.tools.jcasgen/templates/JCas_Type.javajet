@@ -27,7 +27,8 @@
 package <%=jg.packageName%>;
 <% } %>
 
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.FeatureStructure;
@@ -71,7 +72,7 @@ public class <%=typeName_Type%> extends <%=jg.getJavaName(td.getSupertypeName())
   public final static int typeIndexID = <%=typeName%>.typeIndexID;
   /** @generated 
      @modifiable */
-  public final static boolean featOkTst = JCas.getFeatOkTst("<%=td.getName()%>");
+  public final static boolean featOkTst = JCasImpl.getFeatOkTst("<%=td.getName()%>");
 <% FeatureDescription [] fds = td.getFeatures();
    for (int i = 0; i < fds.length; i++) { 
      FeatureDescription fd = fds[i];

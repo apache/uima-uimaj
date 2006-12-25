@@ -38,13 +38,3 @@
   /** @deprecated 
     * @generated */
   public int getStart() {return getBegin();}
-		
-  /** @see org.apache.uima.cas.text.AnnotationFS#getCoveredText() 
-    * @generated */ 
-  public String getCoveredText(int inst) { 
-    final TCASImpl tcasImpl = (TCASImpl) casImpl; 
-    final String text = tcasImpl.getDocumentText(); 
-    if (text == null) 
-      return null; 
-    return text.substring(getBegin(inst), getEnd(inst)); 
-  }
