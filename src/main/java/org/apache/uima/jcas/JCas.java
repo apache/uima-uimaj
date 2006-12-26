@@ -19,26 +19,19 @@
  
 package org.apache.uima.jcas;
 
-import java.io.InputStream;
-
-import org.apache.uima.cas.AbstractCas;
+import org.apache.uima.cas.CommonCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
-import org.apache.uima.cas.CasOwner;
-import org.apache.uima.cas.ConstraintFactory;
 import org.apache.uima.cas.FSIndexRepository;
-import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.Feature;
-import org.apache.uima.cas.FeaturePath;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.SofaID;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
-import org.apache.uima.cas.text.TCASRuntimeException;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
 import org.apache.uima.jcas.cas.IntegerArray;
@@ -65,7 +58,7 @@ import org.apache.uima.jcas.tcas.DocumentAnnotation;
  * method on the CAS object. 
  */
 
-public interface JCas extends AbstractCas {
+public interface JCas extends CommonCas {
 
   /**
    * (internal use)
@@ -149,9 +142,6 @@ public interface JCas extends AbstractCas {
    */
   public abstract TOP getJfsFromCaddr(int casAddr);
 
-  /** calls the cas reset() function */
-  public abstract void reset();
-
   public abstract void checkArrayBounds(int fsRef, int pos);
 
   /**
@@ -165,8 +155,6 @@ public interface JCas extends AbstractCas {
   public abstract JCas createView(String sofaID) throws CASException;
 
   public abstract JCas getJCas(Sofa sofa) throws CASException;
-
-  public abstract FSIterator getSofaIterator();
 
   public abstract JFSIndexRepository getJFSIndexRepository();
 
@@ -195,95 +183,6 @@ public interface JCas extends AbstractCas {
    * @see org.apache.uima.cas.text.TCAS#getDocumentAnnotation
    */
   public abstract TOP getDocumentAnnotationFs();
-
-  /**
-   * @see org.apache.uima.cas.text.TCAS#getDocumentText
-   * 
-   * @return String representing the Sofa data
-   */
-  public abstract String getDocumentText();
-
-  /**
-   * @see org.apache.uima.cas.text.TCAS#getSofaDataArray
-   * 
-   * @return FSARRAY representing the Sofa data
-   */
-  public abstract FSArray getSofaDataArray();
-
-  /**
-   * @see org.apache.uima.cas.text.TCAS#getSofaDataURI
-   * 
-   * @return String holding the URI of the Sofa data
-   */
-  public abstract String getSofaDataURI();
-
-  /**
-   * @see org.apache.uima.cas.text.TCAS#setDocumentText
-   * 
-   */
-  public abstract void setDocumentText(String text) throws TCASRuntimeException;
-
-  /**
-   * @see org.apache.uima.cas.text.TCAS#setSofaDataString
-   * 
-   */
-  public abstract void setSofaDataString(String text, String mime) throws TCASRuntimeException;
-
-  /**
-   * @see org.apache.uima.cas.text.TCAS#setSofaDataArray
-   * 
-   */
-  public abstract void setSofaDataArray(TOP array, String mime) throws TCASRuntimeException;
-
-  /**
-   * @see org.apache.uima.cas.text.TCAS#setSofaDataURI
-   * 
-   */
-  public abstract void setSofaDataURI(String uri, String mime) throws TCASRuntimeException;
-
-  /**
-   * @see org.apache.uima.cas.text.TCAS#getDocumentLanguage
-   * 
-   * @return String representing the language of the document in the JCAS
-   */
-  public abstract String getDocumentLanguage();
-
-  /**
-   * @see org.apache.uima.cas.text.TCAS#setDocumentLanguage
-   * 
-   */
-  public abstract void setDocumentLanguage(String language) throws TCASRuntimeException;
-
-  /**
-   * @see org.apache.uima.cas.text.TCAS#getSofaDataStream
-   * 
-   * @return InputStream handle to the Sofa data
-   */
-  public abstract InputStream getSofaDataStream();
-
-  /**
-   * @see org.apache.uima.cas.CAS#getConstraintFactory
-   * @return ConstraintFactory instance
-   */
-  public abstract ConstraintFactory getConstraintFactory();
-
-  /**
-   * @see org.apache.uima.cas.CAS#createFeaturePath
-   * 
-   * @return FeaturePath instance
-   */
-  public abstract FeaturePath createFeaturePath();
-
-  /**
-   * @see org.apache.uima.cas.CAS#createFilteredIterator
-   * 
-   * @param it
-   *          the iterator to filter
-   * @param constraint
-   *          the constraint to apply to the iterator to filter the results
-   * @return a filtered iterator
-   */
-  public abstract FSIterator createFilteredIterator(FSIterator it, FSMatchConstraint constraint);
 
   /**
    * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
@@ -325,32 +224,31 @@ public interface JCas extends AbstractCas {
    */
   public abstract void processInit();
 
-  /*
-   * (non-Javadoc)
+  /**
+   * Get the view for a Sofa (subject of analysis). The view provides access to the Sofa data and
+   * the index repository that contains metadata (annotations and other feature structures)
+   * pertaining to that Sofa.
    * 
-   * @see org.apache.uima.cas.AbstractCas_ImplBase#setOwn
-   */
-  public abstract void setOwner(CasOwner aCasOwner);
-
-  /**
-   * @see org.apache.uima.cas.AbstractCas_ImplBase#release()
-   */
-  public abstract void release();
-
-  /**
-   * @see org.apache.uima.cas.CAS#getView(String localViewName);
    * @param localViewName
-   * @return
+   *          the local name, before any sofa name mapping is done, for this view (note: this is the
+   *          same as the associated Sofa name).
+   * 
+   * @return The view corresponding to this local name.
    * @throws CASException
+   *           
    */
-  public abstract JCas getView(String localViewName) throws CASException;
-
+  JCas getView(String localViewName) throws CASException;
+  
   /**
-   * @see org.apache.uima.cas.CAS#addFsToIndexes(FeatureStructure);
-   * @param instance
+   * Get the view for a Sofa (subject of analysis). The view provides access to the Sofa data and
+   * the index repository that contains metadata (annotations and other feature structures)
+   * pertaining to that Sofa.
+   * 
+   * @param aSofa
+   *          a Sofa feature structure in the CAS
+   * 
+   * @return The view for the given Sofa
    */
-  public abstract void addFsToIndexes(FeatureStructure instance);
-
-  public abstract void removeFsFromIndexes(FeatureStructure instance);
+  JCas getView(SofaFS aSofa) throws CASException;
 
 }
