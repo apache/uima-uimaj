@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.Map;
 
 import org.apache.uima.cas.AbstractCas;
@@ -53,6 +54,8 @@ import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeaturePath;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.FeatureValuePath;
+import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.SofaID;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
@@ -62,7 +65,6 @@ import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelException;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.cas.text.TCASRuntimeException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
@@ -210,7 +212,19 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   // * Access to this data is assumed to be single threaded
   // *******************
 
-  /** key = CAS addr, value = corresponding Java instance */
+  /** key = CAS addr, value = corresponding Java instance 
+   * The reason there are multiple cover objects per Cas object
+   * is that the JCas cover object distinguishes the CAS View
+   * the object belongs to, in order to support the
+   * methods:  aJCasCoverObjectInstance.addToIndexes()
+   * which needs to know which view to use
+   * This "convenience" of not needing to specify which CAS
+   * view to use here, is traded off with space: the same object
+   * indexed in multiple views ends up not "sharing" the Java
+   * cover object (because the objects are not identical - they
+   * refer to different views).
+   */
+
   public Map cAddr2Jfs;
 
   private int prevCaddr2JfsSize = INITIAL_HASHMAP_SIZE;
@@ -714,7 +728,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.impl.IJCas#reset()
    */
   public void reset() {
-    getCas().reset();
+    casImpl.reset();
   }
 
   private final static int NULL = 0;
@@ -752,12 +766,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.impl.IJCas#getSofa()
    */
   public Sofa getSofa() {
-    if (casImpl instanceof TCAS)
-      return (Sofa) ((TCAS) casImpl).getSofa();
-    CASRuntimeException casEx = new CASRuntimeException(
-            CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
-    casEx.addArgument("getSofa()");
-    throw casEx;
+      return (Sofa) casImpl.getSofa();
   }
 
   /* (non-Javadoc)
@@ -771,7 +780,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.impl.IJCas#getJCas(org.apache.uima.jcas.cas.Sofa)
    */
   public JCas getJCas(Sofa sofa) throws CASException {
-    return casImpl.getJCas(sofa);
+    return casImpl.getView(sofa).getJCas();
   }
 
   /* (non-Javadoc)
@@ -800,154 +809,84 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.impl.IJCas#getDocumentAnnotation()
    */
   public DocumentAnnotation getDocumentAnnotation() {
-    if (casImpl instanceof TCAS)
-      return (DocumentAnnotation) ((TCAS) casImpl).getDocumentAnnotation();
-    CASRuntimeException casEx = new CASRuntimeException(
-            CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
-    casEx.addArgument("getDocumentAnnotation()");
-    throw casEx;
+    return (DocumentAnnotation) casImpl.getDocumentAnnotation();
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.impl.IJCas#getDocumentAnnotationFs()
    */
   public TOP getDocumentAnnotationFs() {
-    if (casImpl instanceof TCAS)
-      return (TOP) ((TCAS) casImpl).getDocumentAnnotation();
-    CASRuntimeException casEx = new CASRuntimeException(
-            CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
-    casEx.addArgument("getDocumentAnnotationFs()");
-    throw casEx;
+    return (TOP) casImpl.getDocumentAnnotation();
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.impl.IJCas#getDocumentText()
    */
   public String getDocumentText() {
-    if (casImpl instanceof TCAS)
-      return ((TCAS) casImpl).getDocumentText();
-    CASRuntimeException casEx = new CASRuntimeException(
-            CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
-    casEx.addArgument("getDocumentText()");
-    throw casEx;
-  }
+    return casImpl.getDocumentText();
+ }
 
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.impl.IJCas#getSofaDataArray()
    */
-  public FSArray getSofaDataArray() {
-    if (casImpl instanceof TCAS)
-      return (FSArray) ((TCAS) casImpl).getSofaDataArray();
-    CASRuntimeException casEx = new CASRuntimeException(
-            CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
-    casEx.addArgument("getSofaDataArray()");
-    throw casEx;
+  public FeatureStructure getSofaDataArray() {
+    return casImpl.getSofaDataArray();
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.impl.IJCas#getSofaDataURI()
    */
   public String getSofaDataURI() {
-    if (casImpl instanceof TCAS)
-      return ((TCAS) casImpl).getSofaDataURI();
-    CASRuntimeException casEx = new CASRuntimeException(
-            CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
-    casEx.addArgument("getSofaDataURI()");
-    throw casEx;
+    return casImpl.getSofaDataURI();
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.impl.IJCas#setDocumentText(java.lang.String)
    */
   public void setDocumentText(String text) throws TCASRuntimeException {
-    if (casImpl instanceof TCAS)
-      ((TCAS) casImpl).setDocumentText(text);
-    else {
-      CASRuntimeException casEx = new CASRuntimeException(
-              CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
-      casEx.addArgument("setDocumentText(...)");
-      throw casEx;
-    }
+    casImpl.setDocumentText(text);
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.impl.IJCas#setSofaDataString(java.lang.String, java.lang.String)
    */
   public void setSofaDataString(String text, String mime) throws TCASRuntimeException {
-    if (casImpl instanceof TCAS)
-      ((TCAS) casImpl).setSofaDataString(text, mime);
-    else {
-      CASRuntimeException casEx = new CASRuntimeException(
-              CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
-      casEx.addArgument("setSofaDataString(...)");
-      throw casEx;
-    }
+    casImpl.setSofaDataString(text, mime);
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.impl.IJCas#setSofaDataArray(org.apache.uima.jcas.cas.TOP, java.lang.String)
    */
-  public void setSofaDataArray(TOP array, String mime) throws TCASRuntimeException {
-    if (casImpl instanceof TCAS)
-      ((TCAS) casImpl).setSofaDataArray(array, mime);
-    else {
-      CASRuntimeException casEx = new CASRuntimeException(
-              CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
-      casEx.addArgument("setSofaDataArray(...)");
-      throw casEx;
-    }
+  public void setSofaDataArray(FeatureStructure array, String mime) throws TCASRuntimeException {
+    casImpl.setSofaDataArray(array, mime);
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.impl.IJCas#setSofaDataURI(java.lang.String, java.lang.String)
    */
   public void setSofaDataURI(String uri, String mime) throws TCASRuntimeException {
-    if (casImpl instanceof TCAS)
-      ((TCAS) casImpl).setSofaDataURI(uri, mime);
-    else {
-      CASRuntimeException casEx = new CASRuntimeException(
-              CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
-      casEx.addArgument("setSofaDataURI(...)");
-      throw casEx;
-    }
+    casImpl.setSofaDataURI(uri, mime);
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.impl.IJCas#getDocumentLanguage()
    */
   public String getDocumentLanguage() {
-    if (casImpl instanceof TCAS)
-      return ((TCAS) casImpl).getDocumentLanguage();
-    CASRuntimeException casEx = new CASRuntimeException(
-            CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
-    casEx.addArgument("getDocumentLanguage()");
-    throw casEx;
+    return casImpl.getDocumentLanguage();
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.impl.IJCas#setDocumentLanguage(java.lang.String)
    */
   public void setDocumentLanguage(String language) throws TCASRuntimeException {
-    if (casImpl instanceof TCAS)
-      ((TCAS) casImpl).setDocumentLanguage(language);
-    else {
-      CASRuntimeException casEx = new CASRuntimeException(
-              CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
-      casEx.addArgument("setDocumentLanguage(" + language + ")");
-      throw casEx;
-    }
+    casImpl.setDocumentLanguage(language);
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.impl.IJCas#getSofaDataStream()
    */
   public InputStream getSofaDataStream() {
-    if (casImpl instanceof TCAS)
-      return ((TCAS) casImpl).getSofaDataStream();
-    CASRuntimeException casEx = new CASRuntimeException(
-            CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
-    casEx.addArgument("getSofaDataArray()");
-    throw casEx;
+    return casImpl.getSofaDataStream();
   }
 
   /* (non-Javadoc)
@@ -1031,16 +970,21 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.impl.IJCas#release()
    */
   public void release() {
-    getCas().release();
+    casImpl.release();
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getView(java.lang.String)
+   * @see org.apache.uima.jcas.JCas#getView(java.lang.String)
    */
   public JCas getView(String localViewName) throws CASException {
-    return getJCas((CASImpl) casImpl.getView(localViewName));
+    return casImpl.getView(localViewName).getJCas();
   }
-
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.JCas#getView(org.apache.uima.cas.SofaFS)
+   */
+  public JCas getView(SofaFS aSofa) throws CASException {
+    return casImpl.getView(aSofa).getJCas();
+  }
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.impl.IJCas#addFsToIndexes(org.apache.uima.cas.FeatureStructure)
    */
@@ -1053,6 +997,53 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    */
   public void removeFsFromIndexes(FeatureStructure instance) {
     casImpl.removeFsFromIndexes(instance);
+  }
+
+  /**
+   * @see org.apache.uima.cas.CAS#fs2listIterator(FSIterator)
+   */
+  public ListIterator fs2listIterator(FSIterator it) {
+    return casImpl.fs2listIterator(it);
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.BaseCas#createFeatureValuePath(java.lang.String)
+   */
+  public FeatureValuePath createFeatureValuePath(String featureValuePath)
+          throws CASRuntimeException {
+    return casImpl.createFeatureValuePath(featureValuePath);
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.BaseCas#createSofa(org.apache.uima.cas.SofaID, java.lang.String)
+   * @deprecated
+   */
+  public SofaFS createSofa(SofaID sofaID, String mimeType) {
+    // extract absolute SofaName string from the ID
+    return casImpl.createSofa(sofaID, mimeType);
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.BaseCas#getIndexRepository()
+   */
+  public FSIndexRepository getIndexRepository() {
+    return casImpl.getIndexRepository();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.BaseCas#getViewName()
+   */
+  public String getViewName() {
+    return casImpl.getViewName();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.BaseCas#size()
+   */
+  public int size() {
+    //TODO improve this to account for JCas
+    //  structure sizes
+    return casImpl.size();
   }
 
 }
