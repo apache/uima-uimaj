@@ -19,12 +19,13 @@
 
 package org.apache.uima.examples.opennlp;
 
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.cas.Type;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Particle. Category for words that should be tagged RP. Updated by JCasGen Fri Dec 02 14:22:24 EST
@@ -62,7 +63,7 @@ public class PRT_Type extends Phrase_Type {
    * @generated
    * @modifiable
    */
-  public final static boolean featOkTst = JCas.getFeatOkTst("org.apache.uima.examples.opennlp.PRT");
+  public final static boolean featOkTst = JCasImpl.getFeatOkTst("org.apache.uima.examples.opennlp.PRT");
 
   /**
    * initialize variables to correspond with Cas Type and Features

@@ -19,8 +19,9 @@
 
 package org.apache.uima.examples.opennlp;
 
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP_Type;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * List marker. Includes surrounding punctuation. Updated by JCasGen Fri Dec 02 14:22:24 EST 2005
@@ -34,7 +35,7 @@ public class LST extends Phrase {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCas.getNextIndex();
+  public final static int typeIndexID = JCasImpl.getNextIndex();
 
   /**
    * @generated

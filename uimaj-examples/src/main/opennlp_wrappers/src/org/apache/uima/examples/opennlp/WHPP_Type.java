@@ -19,12 +19,13 @@
 
 package org.apache.uima.examples.opennlp;
 
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.cas.Type;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Wh-prepositional Phrase. Prepositional phrase containing a wh-noun phrase (such as of which or by
@@ -63,7 +64,7 @@ public class WHPP_Type extends Phrase_Type {
    * @generated
    * @modifiable
    */
-  public final static boolean featOkTst = JCas
+  public final static boolean featOkTst = JCasImpl
           .getFeatOkTst("org.apache.uima.examples.opennlp.WHPP");
 
   /**

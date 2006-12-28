@@ -19,8 +19,9 @@
 
 package org.apache.uima.examples.opennlp;
 
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP_Type;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Phrase level syntactic annotation. Updated by JCasGen Fri Dec 02 14:22:24 EST 2005 XML source:
@@ -33,7 +34,7 @@ public class Phrase extends SyntaxAnnotation {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCas.getNextIndex();
+  public final static int typeIndexID = JCasImpl.getNextIndex();
 
   /**
    * @generated

@@ -19,12 +19,13 @@
 
 package org.apache.uima.examples.opennlp;
 
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.cas.Type;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Simple declarative clause, i.e. one that is not introduced by a (possible empty) subordinating
@@ -63,7 +64,7 @@ public class S_Type extends Clause_Type {
    * @generated
    * @modifiable
    */
-  public final static boolean featOkTst = JCas.getFeatOkTst("org.apache.uima.examples.opennlp.S");
+  public final static boolean featOkTst = JCasImpl.getFeatOkTst("org.apache.uima.examples.opennlp.S");
 
   /**
    * initialize variables to correspond with Cas Type and Features

@@ -19,8 +19,9 @@
 
 package org.apache.uima.examples.opennlp;
 
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP_Type;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Inverted yes/no question, or main clause of a wh-question, following the wh-phrase in SBARQ.
@@ -34,7 +35,7 @@ public class SQ extends Clause {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCas.getNextIndex();
+  public final static int typeIndexID = JCasImpl.getNextIndex();
 
   /**
    * @generated

@@ -19,8 +19,9 @@
 
 package org.apache.uima.examples.opennlp;
 
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP_Type;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Updated by JCasGen Fri Dec 02 14:22:23 EST 2005 XML source:
@@ -33,7 +34,7 @@ public class Person extends EntityAnnotation {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCas.getNextIndex();
+  public final static int typeIndexID = JCasImpl.getNextIndex();
 
   /**
    * @generated

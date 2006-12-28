@@ -41,7 +41,7 @@ import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.examples.opennlp.EntityAnnotation;
 import org.apache.uima.examples.opennlp.Sentence;
 import org.apache.uima.examples.opennlp.Token;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**

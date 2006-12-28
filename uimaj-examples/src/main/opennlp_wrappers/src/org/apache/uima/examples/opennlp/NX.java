@@ -19,8 +19,9 @@
 
 package org.apache.uima.examples.opennlp;
 
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP_Type;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Used within certain complex NPs to mark the head of the NP. Corresponds very roughly to N-bar
@@ -34,7 +35,7 @@ public class NX extends Phrase {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCas.getNextIndex();
+  public final static int typeIndexID = JCasImpl.getNextIndex();
 
   /**
    * @generated

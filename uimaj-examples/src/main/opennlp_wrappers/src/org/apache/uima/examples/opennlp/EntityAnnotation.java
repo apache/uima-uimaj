@@ -19,9 +19,9 @@
 
 package org.apache.uima.examples.opennlp;
 
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP_Type;
-
+import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.jcas.tcas.Annotation;
 
 /**
@@ -35,7 +35,7 @@ public class EntityAnnotation extends Annotation {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCas.getNextIndex();
+  public final static int typeIndexID = JCasImpl.getNextIndex();
 
   /**
    * @generated
@@ -98,7 +98,7 @@ public class EntityAnnotation extends Annotation {
   public String getComponentId() {
     if (EntityAnnotation_Type.featOkTst
             && ((EntityAnnotation_Type) jcasType).casFeat_componentId == null)
-      JCas.throwFeatMissing("componentId", "org.apache.uima.examples.opennlp.EntityAnnotation");
+      JCasImpl.throwFeatMissing("componentId", "org.apache.uima.examples.opennlp.EntityAnnotation");
     return jcasType.ll_cas.ll_getStringValue(addr,
             ((EntityAnnotation_Type) jcasType).casFeatCode_componentId);
   }
@@ -111,7 +111,7 @@ public class EntityAnnotation extends Annotation {
   public void setComponentId(String v) {
     if (EntityAnnotation_Type.featOkTst
             && ((EntityAnnotation_Type) jcasType).casFeat_componentId == null)
-      JCas.throwFeatMissing("componentId", "org.apache.uima.examples.opennlp.EntityAnnotation");
+      JCasImpl.throwFeatMissing("componentId", "org.apache.uima.examples.opennlp.EntityAnnotation");
     jcasType.ll_cas.ll_setStringValue(addr,
             ((EntityAnnotation_Type) jcasType).casFeatCode_componentId, v);
   }

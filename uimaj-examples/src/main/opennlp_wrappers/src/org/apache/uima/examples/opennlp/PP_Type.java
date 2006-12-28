@@ -19,12 +19,13 @@
 
 package org.apache.uima.examples.opennlp;
 
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.cas.Type;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Prepositional Phrase. Updated by JCasGen Fri Dec 02 14:22:24 EST 2005
@@ -61,7 +62,7 @@ public class PP_Type extends Phrase_Type {
    * @generated
    * @modifiable
    */
-  public final static boolean featOkTst = JCas.getFeatOkTst("org.apache.uima.examples.opennlp.PP");
+  public final static boolean featOkTst = JCasImpl.getFeatOkTst("org.apache.uima.examples.opennlp.PP");
 
   /**
    * initialize variables to correspond with Cas Type and Features
