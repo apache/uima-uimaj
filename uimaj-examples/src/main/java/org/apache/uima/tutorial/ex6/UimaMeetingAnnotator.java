@@ -31,7 +31,6 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.resource.ResourceAccessException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.tutorial.Meeting;
@@ -63,7 +62,7 @@ public class UimaMeetingAnnotator extends JCasAnnotator_ImplBase {
   }
 
   /**
-   * @see JCasAnnotator_ImplBase#process(JCasImpl)
+   * @see JCasAnnotator_ImplBase#process(JCas)
    */
   public void process(JCas aJCas) throws AnalysisEngineProcessException {
     // get document text

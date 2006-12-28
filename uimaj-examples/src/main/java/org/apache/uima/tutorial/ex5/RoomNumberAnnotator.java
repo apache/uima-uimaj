@@ -27,7 +27,6 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.AnalysisComponent;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.tutorial.RoomNumber;
 import org.apache.uima.util.Level;
@@ -64,7 +63,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
   }
 
   /**
-   * @see JCasAnnotator_ImplBase#process(JCasImpl)
+   * @see JCasAnnotator_ImplBase#process(JCas)
    */
   public void process(JCas aJCas) {
     // get document text
