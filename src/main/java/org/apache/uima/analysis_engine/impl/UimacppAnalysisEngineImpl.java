@@ -53,7 +53,6 @@ import org.apache.uima.uimacpp.UimacppAnalysisComponent;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
-import org.apache.uima.util.ProcessTrace;
 
 /**
  * Reference implementation of {@link AnalysisEngine}.
@@ -70,15 +69,6 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
    * The AnalysisEngineDescription for this AnlaysisEngine instance.
    */
   private AnalysisEngineDescription mDescription;
-
-  /**
-   * The object that encapsulates all data that is modified during this AnalysisEngine's
-   * {@link process(ResultSpecification)} method. This includes the {@link CAS} and the
-   * {@link ProcessTrace}.
-   * 
-   * @deprecated
-   */
-  private AnalysisProcessData_impl mAnalysisProcessData;
 
   /**
    * For a primitive AnalysisEngine only, the Annotator instance that contains the analysis logic.
@@ -451,14 +441,6 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
     }
   }
 
-  /**
-   * For testing purposes, returns whether this analysis engine has created its own
-   * AnalysisProcessData object. This should only be the case if the application has called
-   * deprecated methods.
-   */
-  protected boolean ownsProcessData() {
-    return (mAnalysisProcessData != null);
-  }
 
   /**
    * Implements the iterator that steps through all outputs from an AnalysisComponent.
