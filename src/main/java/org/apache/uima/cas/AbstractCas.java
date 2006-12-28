@@ -25,7 +25,7 @@ package org.apache.uima.cas;
  * Components, such as Annotators, read from a CAS interface in order to do their analysis and may
  * write new metadata back to the CAS interface.
  * <p>
- * The UIMA SDK provides the CAS interfaces {@link org.apache.uima.jcas.impl.JCasImpl} and
+ * The UIMA SDK provides the CAS interfaces {@link org.apache.uima.jcas.JCas} and
  * {@link org.apache.uima.cas.CAS}, but in future versions, other CAS interfaces may be available.
  */
 public interface AbstractCas {

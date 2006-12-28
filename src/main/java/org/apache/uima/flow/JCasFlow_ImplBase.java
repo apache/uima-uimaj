@@ -23,7 +23,6 @@ import org.apache.uima.UIMA_UnsupportedOperationException;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Convenience base class for Flow objects that use the JCas interface. Stores the JCas in a field
@@ -44,8 +43,8 @@ public abstract class JCasFlow_ImplBase implements Flow {
   }
 
   /**
-   * Overriden to check that <code>newCas</code> is an instanceof {@link JCasImpl}. If it is, then
-   * {@link #newCasProduced(JCasImpl,String)} is called. If not, an exception is thrown.
+   * Overriden to check that <code>newCas</code> is an instanceof {@link JCas}. If it is, then
+   * {@link #newCasProduced(JCas,String)} is called. If not, an exception is thrown.
    * 
    * @see Flow#newCasProduced(AbstractCas, String)
    */
@@ -55,7 +54,7 @@ public abstract class JCasFlow_ImplBase implements Flow {
       return newCasProduced((JCas) newCas, producedBy);
     } else {
       throw new AnalysisEngineProcessException(
-              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { JCasImpl.class,
+              AnalysisEngineProcessException.INCORRECT_CAS_INTERFACE, new Object[] { JCas.class,
                   newCas.getClass() });
     }
   }

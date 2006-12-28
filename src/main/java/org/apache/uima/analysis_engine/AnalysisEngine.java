@@ -27,7 +27,6 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.collection.base_cpm.CasObjectProcessor;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.resource.ConfigurableResource;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -72,8 +71,8 @@ import org.apache.uima.util.ProcessTrace;
  * objects may be expensive to create and may consume a significant amount of memory.
  * <p>
  * Instead of using the {@link CAS} interface, applications may wish to use the Java-object-based
- * {@link JCasImpl} interface. In that case, the call to <code>newCAS</code> from step 1 above would
- * be replaced by {@link #newJCas()}, and the {@link #process(JCasImpl,ResultSpecification)} method
+ * {@link JCas} interface. In that case, the call to <code>newCAS</code> from step 1 above would
+ * be replaced by {@link #newJCas()}, and the {@link #process(JCas,ResultSpecification)} method
  * would be used.
  * <p>
  * Analysis Engine implementations may or may not be capable of simultaneously processing multiple
@@ -192,16 +191,16 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
 
   /**
    * Similar to {@link #newCAS()} but wraps the new CAS objects with the Java-object-based
-   * {@link JCasImpl} interface.
+   * {@link JCas} interface.
    * <p>
    * Note: the JCas that is returned is equivalent to what you would get if you called
    * <code>newCAS().getDefaultView().getJCas()</code>. That is, this method returns a view of the
    * default Sofa, NOT a Base CAS.
    * <p>
    * <b>Important:</b> CAS creation is expensive, so if at all possible an application should reuse
-   * CASes. When a JCas instance is no longer being used, call its {@link JCasImpl#reset()} method,
+   * CASes. When a JCas instance is no longer being used, call its {@link JCas#reset()} method,
    * which will remove all prior analysis information, and then reuse that same JCas instance for
-   * another call to {@link #process(JCasImpl,ResultSpecification)}.
+   * another call to {@link #process(JCas, ResultSpecification)}.
    * 
    * @return a new <code>CAS</code> appropriate for this AnalysisEngine.
    * 
@@ -315,7 +314,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
           throws ResultNotSupportedException, AnalysisEngineProcessException;
 
   /**
-   * Similar to {@link #process(CAS)} but uses the Java-object-based {@link JCasImpl} interface instead
+   * Similar to {@link #process(CAS)} but uses the Java-object-based {@link JCas} interface instead
    * of the general {@link CAS} interface.
    * 
    * @param aJCas
@@ -332,7 +331,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
 
   /**
    * Similar to {@link #process(CAS,ResultSpecification)} but uses the Java-object-based
-   * {@link JCasImpl} interface instead of the general {@link CAS} interface.
+   * {@link JCas} interface instead of the general {@link CAS} interface.
    * 
    * @param aJCas
    *          the JCas containing the inputs to the processing. Analysis results will also be
@@ -353,7 +352,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
           throws ResultNotSupportedException, AnalysisEngineProcessException;
 
   /**
-   * Similar to {@link #process(CAS)} but uses the Java-object-based {@link JCasImpl} interface instead
+   * Similar to {@link #process(CAS)} but uses the Java-object-based {@link JCas} interface instead
    * of the general {@link CAS} interface.
    * 
    * @param aJCas

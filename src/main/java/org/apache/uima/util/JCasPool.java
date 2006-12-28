@@ -28,18 +28,17 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.TextAnalysisEngine;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 
 /**
- * This class represents a simple pool of {@link JCasImpl} instances. This is useful for multithreaded
+ * This class represents a simple pool of {@link JCas} instances. This is useful for multithreaded
  * applications, where there is a need for multiple CASes to be processed simultaneously. Because
  * JCas creation is expensive, it is a good idea to create a pool of reusable JCas instances at
  * initialization time, rather than creating a new JCas each time one is needed.
  * <p>
  * Clients check-out JCas instances from the pool using the {@link #getJCas()} method and check-in
- * JCas instances using the {@link #releaseJCas(JCasImpl)} method.
+ * JCas instances using the {@link #releaseJCas(JCas)} method.
  * 
  * 
  * 
@@ -138,7 +137,7 @@ public class JCasPool {
   }
 
   /**
-   * Checks in a JCas to the pool. This automatically calls the {@link JCasImpl#reset()} method, to
+   * Checks in a JCas to the pool. This automatically calls the {@link JCas#reset()} method, to
    * ensure that when the JCas is later retrieved from the pool it will be ready to use. Also
    * notifies other Threads that may be waiting for an instance to become available.
    * 

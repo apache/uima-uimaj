@@ -328,7 +328,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
 
   private boolean annotIndexInitialized = false;
 
-  protected JCasImpl jcas = null;
+  protected JCas jcas = null;
 
   private ComponentInfo componentInfo;
 
@@ -2365,7 +2365,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
   // ///////////////////////////////////////////////////////////////////////////
   // JCas support
 
-  public JCasImpl getJCas() throws CASException {
+  public JCas getJCas() throws CASException {
     if (this.jcas == null) {
       this.jcas = JCasImpl.getJCas(this);
     }

@@ -23,7 +23,6 @@ import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Object-oriented CAS (Common Analysis System) API.
@@ -158,7 +157,7 @@ public interface CAS extends CommonCas {
    * 
    * @return The JCas for this CAS.
    */
-  JCasImpl getJCas() throws CASException;
+  JCas getJCas() throws CASException;
 
   /**
    * Get the TCas view for the default text Sofa.
