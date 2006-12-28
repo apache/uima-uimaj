@@ -19,7 +19,7 @@
 -->
 
 
-<project default="all" basedir=".">
+<project name="Apache UIMA DocBook" default="all" basedir=".">
 
   <!-- ======================================================================== -->
   <!-- ==                                                                    == -->
