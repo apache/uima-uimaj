@@ -1,29 +1,177 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
+"../../../docbook/docbook-xml-4.4/docbookx.dtd"[
 <!ENTITY imgroot "../images/tools/tools.cvd/" >
 <!ENTITY % uimaents SYSTEM "../entities.ent" >  
 %uimaents;
 ]>
 <!--
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
+	Licensed to the Apache Software Foundation (ASF) under one
+	or more contributor license agreements.  See the NOTICE file
+	distributed with this work for additional information
+	regarding copyright ownership.  The ASF licenses this file
+	to you under the Apache License, Version 2.0 (the
+	"License"); you may not use this file except in compliance
+	with the License.  You may obtain a copy of the License at
+	
+	http://www.apache.org/licenses/LICENSE-2.0
+	
+	Unless required by applicable law or agreed to in writing,
+	software distributed under the License is distributed on an
+	"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	KIND, either express or implied.  See the License for the
+	specific language governing permissions and limitations
+	under the License.
 -->
 <chapter id="ugr.tools.cvd">
-  <title>CAS Visual Debugger</title>
-  <para>tbd</para>
+	<title>CAS Visual Debugger</title>
+	<para>
+		The CAS Visual Debugger is a tool to run text analysis engines
+		in UIMA and view the results. The tool is implemented as a
+		stand-alone GUI tool using Java's Swing library.
+	</para>
+	<para>
+		This is a developer's tool.  It is intended to support you in
+		writing text analysis annotators for UIMA (Unstructured
+		Information Management Architecture).  As a development tool,
+		the emphasis is not so much on pretty pictures, but rather on
+		navigability.  It is intended to show you all the information
+		you need, and show it to you quickly (at least on a fast machine
+		;-).
+	</para>
+	<para>
+		The main purpose of this application is to let you browse all
+		the data that was created when you ran an analysis engine over
+		some text.  The display mimics the access methods you have in
+		the CAS API in terms of indexes, types, feature structures and
+		feature values.
+	</para>
+	<para>
+		As in the CAS, there is special support for annotations. 
+		Clicking on an annotation will select the corresponding text,
+		and conversely, you can display all annotations that cover a
+		given position in the text. This will be explained in more
+		detail in the section on the main display area.
+	</para>
+	<para>
+		As usual, the graphics in this manual are for illustrative
+		purposes and may not look 100% like the actual version of CVD
+		you are running. This depends on your operating system, your
+		version of Java, and a variety of other factors.
+	</para>
+	<section>
+		<title>Error Handling</title>
+		<para>
+			Error handling is not a strong point of this program. On
+			encountering an error, it will generally pop up an error
+			dialog with a short, usually incomprehensible message. 
+			Often, the error message will claim that there is more
+			information available in the log file, and sometimes, this
+			is actually true; so do go and check the log.  You can view
+			the log file by selecting the appropriate item in the
+			&quot;Tools&quot; menu.
+
+			<screenshot>
+				<mediaobject>
+					<imageobject>
+						<imagedata format="JPG"
+							fileref="&imgroot;ErrorExample.jpg" />
+					</imageobject>
+					<textobject>
+						<phrase>Sample error dialog</phrase>
+					</textobject>
+				</mediaobject>
+			</screenshot>
+
+		</para>
+	</section>
+
+	<section>
+		<title>Preferences File</title>
+		<para>
+			The program will attempt to read on startup and save on exit
+			a file called annotViewer.pref in your home directory.  This
+			file contains information about choices you made while
+			running the program: directories (such as where your data
+			files are) and window sizes.  These settings will be used
+			the next time you use the program. There is no user control
+			over this process, but the file format is reasonably
+			transparent, in case you feel like changing it.  Note,
+			however, that the file will be overwritten every time you
+			exit the program.
+		</para>
+	</section>
+
+	<section>
+		<title>The Menus</title>
+		<para>
+			We give a brief description of the various menus. All menu
+			items come with mnemonics (e.g., Alt-F X will exit the
+			program). In addition, some menu items have their own
+			keyboard accelerators that you can use anywhere in the
+			program. For example, Ctrl-S will save the text you've been
+			editing.
+		</para>
+		<section>
+			<title>The File Menu</title>
+			<para>
+				The File menu lets you load, create and save text, load
+				and save color settings, and import and export the XCAS
+				format. Here's a screenshot.
+
+				<screenshot>
+					<mediaobject>
+						<imageobject>
+							<imagedata format="JPG"
+								fileref="&imgroot;FileMenu.jpg" />
+						</imageobject>
+						<textobject>
+							<phrase>The File menu</phrase>
+						</textobject>
+					</mediaobject>
+				</screenshot>
+			</para>
+
+			<itemizedlist>
+				<para>
+					Below is a list of the menu items, together with an
+					explanation.
+				</para>
+
+				<listitem>
+					<formalpara>
+						<title>New Text...</title>
+						<para>
+							Clears the text area. Text you type is
+							written to an anonymous buffer. You can use
+							&quot;Save Text As...&quot; to save the text
+							you typed to a file. Note: whenever you
+							modify the text, be it through typing,
+							loading a file or using the &quot;New
+							Text...&quot; menu item, previous analysis
+							results will be lost. Since the previous
+							analysis is specific to the text, modifying
+							the text invalidates the analysis.
+						</para>
+					</formalpara>
+				</listitem>
+
+				<listitem>
+					<formalpara>
+						<title>Open Text File</title>
+						<para>
+							Loads a new text file into the viewer.  The
+							next time you run an analysis engine, it
+							will run the text you loaded last. 
+							Depending on the annotator you're using, the
+							program may run slow with very large text
+							files, so you may want to experiment.
+						</para>
+					</formalpara>
+
+				</listitem>
+			</itemizedlist>
+
+		</section>
+	</section>
 </chapter>

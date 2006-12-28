@@ -209,6 +209,22 @@
       <ttl>CAS Visual Debugger</ttl>
       <xreftext>Chapter 5, <i>CAS Visual Debugger</i>
       </xreftext>
+      <div element="section" href="#d0e1360" number="5.1">
+         <ttl>Error Handling</ttl>
+         <xreftext>Section 5.1, “Error Handling”</xreftext>
+      </div>
+      <div element="section" href="#d0e1373" number="5.2">
+         <ttl>Preferences File</ttl>
+         <xreftext>Section 5.2, “Preferences File”</xreftext>
+      </div>
+      <div element="section" href="#d0e1378" number="5.3">
+         <ttl>The Menus</ttl>
+         <xreftext>Section 5.3, “The Menus”</xreftext>
+         <div element="section" href="#d0e1383" number="5.3.1">
+            <ttl>The File Menu</ttl>
+            <xreftext>Section 5.3.1, “The File Menu”</xreftext>
+         </div>
+      </div>
    </div>
    <div element="chapter" href="#ugr.tools.jcasgen" number="6" targetptr="ugr.tools.jcasgen">
       <ttl>JCasGen User's Guide</ttl>
