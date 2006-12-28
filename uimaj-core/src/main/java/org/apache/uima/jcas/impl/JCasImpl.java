@@ -378,7 +378,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 
     this.casImpl = cas;
     if (casImpl != casImpl.getBaseCAS()) {
-      sharedView = casImpl.getBaseCAS().getJCas().sharedView;
+      sharedView = ((JCasImpl)casImpl.getBaseCAS().getJCas()).sharedView;
       sharedView.errorSet.clear();
     } else {
       sharedView = new JCasSharedView();
@@ -487,7 +487,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    *          a CAS instance
    * @return newly created and initialized JCas
    */
-  public static JCasImpl getJCas(CASImpl cas) throws CASException {
+  public static JCas getJCas(CASImpl cas) throws CASException {
     JCasImpl jcas = new JCasImpl(cas);
     if (jcas.sharedView.errorSet.size() > 0) {
       StringBuffer msg = new StringBuffer(100);
@@ -704,7 +704,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * associations.
    */
   public static void clearData(CAS cas) throws CASException {
-    JCasImpl jcas = cas.getJCas();
+    JCasImpl jcas = (JCasImpl) cas.getJCas();
     int hashSize = Math.max(jcas.cAddr2Jfs.size(), 32); // not worth dropping below 32
     // System.out.println("\n***JCas Resizing Hashtable: size is: " + hashSize + ", curmax = " +
     // jcas.prevCaddr2JfsSize);

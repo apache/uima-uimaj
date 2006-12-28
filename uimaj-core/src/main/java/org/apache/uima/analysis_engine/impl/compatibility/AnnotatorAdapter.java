@@ -45,7 +45,6 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 
@@ -93,7 +92,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
 
     // determine which CAS interface this Annotator needs
     if (mAnnotator instanceof JTextAnnotator) {
-      mCasInterface = JCasImpl.class;
+      mCasInterface = JCas.class;
     } else {
       mCasInterface = CAS.class;
     }

@@ -29,7 +29,7 @@ import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.impl.TCASImpl;
-import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.CasDefinition;
 import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -141,7 +141,7 @@ public class CasManager_impl implements CasManager {
   public AbstractCas getCasInterface(CAS cas, Class requiredInterface) {
     if (requiredInterface == CAS.class) {
       return cas;
-    } else if (requiredInterface == JCasImpl.class) {
+    } else if (requiredInterface == JCas.class) {
       try {
         return cas.getJCas();
       } catch (CASException e) {

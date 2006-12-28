@@ -26,7 +26,6 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.examples.SourceDocumentInformation;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * 
@@ -40,7 +39,7 @@ public class NewlineResegmenter extends JCasMultiplier_ImplBase {
 
   StringBuffer mBuf = new StringBuffer();
 
-  JCasImpl[] mJCases = new JCasImpl[2];
+  JCas[] mJCases = new JCas[2];
 
   int mActiveJCas = 0;
 
@@ -73,7 +72,7 @@ public class NewlineResegmenter extends JCasMultiplier_ImplBase {
    */
   public AbstractCas next() throws AnalysisEngineProcessException {
     // we should already have a JCas ready to return
-    JCasImpl toReturn = mJCases[mActiveJCas];
+    JCas toReturn = mJCases[mActiveJCas];
     mJCases[mActiveJCas] = null;
     assert toReturn != null;
 
