@@ -55,11 +55,10 @@ import org.apache.uima.util.ProcessTrace;
  * AnalysisEngine.</li>
  * <li>Use the {@link CAS} interface to populate the <code>CAS</code> with the artifact to be
  * analyzed any information known about this docuemnt (e.g. the language of a text document). </li>
- * <li>Optionally create a {@link org.apache.uima.analysis_engine.ResultSpecification} that
+ * <li>Optionally, create a {@link org.apache.uima.analysis_engine.ResultSpecification} that
  * identifies the results you would like this AnalysisEngine to generate (e.g. people, places, and
- * dates).
- * <li>Call {@link #process(CAS,ResultSpecification)} - the AnalysisEngine will perform its
- * analysis.</li>
+ * dates), and call the {#link {@link #setResultSpecification(ResultSpecification)} method.</li>
+ * <li>Call {@link #process(CAS)} - the AnalysisEngine will perform its analysis.</li>
  * <li>Retrieve the results from the {@link CAS}.</li>
  * <li>Call {@link CAS#reset()} to clear out the <code>CAS</code> and prepare for processing a
  * new artifact.</li>
@@ -72,8 +71,7 @@ import org.apache.uima.util.ProcessTrace;
  * <p>
  * Instead of using the {@link CAS} interface, applications may wish to use the Java-object-based
  * {@link JCas} interface. In that case, the call to <code>newCAS</code> from step 1 above would
- * be replaced by {@link #newJCas()}, and the {@link #process(JCas,ResultSpecification)} method
- * would be used.
+ * be replaced by {@link #newJCas()}, and the {@link #process(JCas)} method would be used.
  * <p>
  * Analysis Engine implementations may or may not be capable of simultaneously processing multiple
  * documents in a multithreaded environment. See the documentation associated with the
@@ -103,11 +101,11 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
 
   /**
    * Key for the initialization parameter whose value is the number of simultaneous calls to
-   * {@link #process(CAS,ResultSpecification)} that will be supported. Analysis Engine
-   * implementations may use this to create a pool of objects (e.g. Annotators), each of which can
-   * process only one request at a time. Applications should be careful about setting this number
-   * higher than is necessary, since large pools of objects may increase initialiation time and
-   * consume resources. Not all analysis engine implementations pay attention to this parameter.
+   * {@link #process(CAS)} that will be supported. Analysis Engine implementations may use this to
+   * create a pool of objects (e.g. Annotators), each of which can process only one request at a
+   * time. Applications should be careful about setting this number higher than is necessary, since
+   * large pools of objects may increase initialiation time and consume resources. Not all analysis
+   * engine implementations pay attention to this parameter.
    * <p>
    * This value is used as a key in the <code>aAdditionalParams</code> Map that is passed to the
    * {@link #initialize(ResourceSpecifier,Map)} method.
@@ -117,9 +115,9 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
   /**
    * Key for the initialization parameter whose value is the maximum number of milliseconds to wait
    * for a pooled object (see {@link #PARAM_NUM_SIMULTANEOUS_REQUESTS}) to become available to
-   * serve a {@link #process(CAS,ResultSpecification)} request. If the processing has not begun
-   * within this time, an exception will be thrown. A value of zero will cause the AnalysisEngine to
-   * wait forever. Not all analysis* engine implementations pay attention to this parameter.
+   * serve a {@link #process(CAS)} request. If the processing has not begun within this time, an
+   * exception will be thrown. A value of zero will cause the AnalysisEngine to wait forever. Not
+   * all analysis* engine implementations pay attention to this parameter.
    * <p>
    * This value is used as a key in the <code>aAdditionalParams</code> Map that is passed to the
    * {@link #initialize(ResourceSpecifier,Map)} method.
@@ -162,13 +160,13 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
 
   /**
    * Creates a new Common Analysis System appropriate for this Analysis Engine. An application can
-   * pre-populate this CAS, then pass it to the {@link #process(CAS, ResultSpecification)} method.
-   * Then, when the process method returns, the CAS will contain the results of the analysis.
+   * pre-populate this CAS, then pass it to the {@link #process(CAS)} method. Then, when the process
+   * method returns, the CAS will contain the results of the analysis.
    * <p>
    * <b>Important:</b> CAS creation is expensive, so if at all possible an application should reuse
    * CASes. When a CAS instance is no longer being used, call its {@link CAS#reset()} method, which
    * will remove all prior analysis information, and then reuse that same CAS instance for another
-   * call to {@link #process(CAS,ResultSpecification)}.
+   * call to {@link #process(CAS)}.
    * <p>
    * Note that the CAS allows multiple subjects of analysis (e.g. documents) and defines a separate
    * "view" for each of them. If your application wants to work with a single subject of analysis,
@@ -200,7 +198,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    * <b>Important:</b> CAS creation is expensive, so if at all possible an application should reuse
    * CASes. When a JCas instance is no longer being used, call its {@link JCas#reset()} method,
    * which will remove all prior analysis information, and then reuse that same JCas instance for
-   * another call to {@link #process(JCas, ResultSpecification)}.
+   * another call to {@link #process(JCas)}.
    * 
    * @return a new <code>CAS</code> appropriate for this AnalysisEngine.
    * 
@@ -216,6 +214,14 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    * ensure that the CAS has been populated with the artifact to be analyzed as well as any inputs
    * required by this AnalysisEngine (as defined by this AnalysisEngine's
    * {@link org.apache.uima.resource.metadata.Capability} specification.)
+   * <p>
+   * This version of the <code>process</code> method takes a {@link ResultSpecification} as an
+   * argument. The <code>ResultSpecification</code> is alist of output types and features that the
+   * application wants this AnalysisEngine to produce. If you are going to use the same
+   * {@link ResultSpecification} for multiple calls to <code>process</code>, it is not
+   * recommended to use this method. Instead call
+   * {@link #setResultSpecification(ResultSpecification)} once and then call {@link #process(CAS)}
+   * for each CAS that you want to process.
    * 
    * @param aCAS
    *          the CAS containing the inputs to the processing. Analysis results will also be written
@@ -242,7 +248,8 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    * {@link org.apache.uima.resource.metadata.Capability} specification.)
    * <p>
    * This version of <code>process</code> does not take a {@link ResultSpecification} parameter.
-   * This instructs the Analysis Engine to produce ALL possible results.
+   * You may specify a <code>ResultSpecification</code> by calling
+   * {@link #setResultSpecification(ResultSpecification)} prior to calling this method.
    * 
    * @param aCAS
    *          the CAS containing the inputs to the processing. Analysis results will also be written
@@ -262,9 +269,17 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    * required by this AnalysisEngine (as defined by this AnalysisEngine's
    * {@link org.apache.uima.resource.metadata.Capability} specification.)
    * <p>
-   * This version of this method takes a <code>ProcessTrace</code> object as a parameter. This
-   * allows trace events to be written to an existing <code>ProcessTrace</code> rather than a new
-   * one.
+   * This version of the <code>process</code> method takes a {@link ResultSpecification} as an
+   * argument. The <code>ResultSpecification</code> is alist of output types and features that the
+   * application wants this AnalysisEngine to produce. If you are going to use the same
+   * {@link ResultSpecification} for multiple calls to <code>process</code>, it is not
+   * recommended to use this method. Instead call
+   * {@link #setResultSpecification(ResultSpecification)} once and then call {@link #process(CAS)}
+   * for each CAS that you want to process.
+   * <p>
+   * This version of this method also takes a <code>ProcessTrace</code> object as a parameter.
+   * This allows trace events to be written to an existing <code>ProcessTrace</code> rather than a
+   * new one.
    * 
    * @param aCAS
    *          the CAS containing the inputs to the processing. Analysis results will also be written
@@ -332,6 +347,14 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
   /**
    * Similar to {@link #process(CAS,ResultSpecification)} but uses the Java-object-based
    * {@link JCas} interface instead of the general {@link CAS} interface.
+   * <p>
+   * This version of the <code>process</code> method takes a {@link ResultSpecification} as an
+   * argument. The <code>ResultSpecification</code> is alist of output types and features that the
+   * application wants this AnalysisEngine to produce. If you are going to use the same
+   * {@link ResultSpecification} for multiple calls to <code>process</code>, it is not
+   * recommended to use this method. Instead call
+   * {@link #setResultSpecification(ResultSpecification)} once and then call {@link #process(JCas)}
+   * for each CAS that you want to process.
    * 
    * @param aJCas
    *          the JCas containing the inputs to the processing. Analysis results will also be
@@ -352,8 +375,20 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
           throws ResultNotSupportedException, AnalysisEngineProcessException;
 
   /**
-   * Similar to {@link #process(CAS)} but uses the Java-object-based {@link JCas} interface instead
-   * of the general {@link CAS} interface.
+   * Similar to {@link #process(CAS, ResultSpecification, ProcessTrace)} but uses the
+   * Java-object-based {@link JCas} interface instead of the general {@link CAS} interface.
+   * <p>
+   * This version of the <code>process</code> method takes a {@link ResultSpecification} as an
+   * argument. The <code>ResultSpecification</code> is alist of output types and features that the
+   * application wants this AnalysisEngine to produce. If you are going to use the same
+   * {@link ResultSpecification} for multiple calls to <code>process</code>, it is not
+   * recommended to use this method. Instead call
+   * {@link #setResultSpecification(ResultSpecification)} once and then call {@link #process(JCas)}
+   * for each CAS that you want to process.
+   * <p>
+   * This version of this method also takes a <code>ProcessTrace</code> object as a parameter.
+   * This allows trace events to be written to an existing <code>ProcessTrace</code> rather than a
+   * new one.
    * 
    * @param aJCas
    *          the JCas containing the inputs to the processing. Analysis results will also be
@@ -448,7 +483,7 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
   /**
    * A factory method used to create an instance of {@link ResultSpecification} for use with this
    * AnalysisEngine. Applications use this method to construct <code>ResultSpecification</code>s
-   * to pass to this AnalysisEngine's {@link #process(CAS,ResultSpecification)} method.
+   * to pass to this AnalysisEngine's {@link #setResultSpecification(ResultSpecification)} method.
    * 
    * @return a new instance of <code>ResultSpecification</code>
    */
