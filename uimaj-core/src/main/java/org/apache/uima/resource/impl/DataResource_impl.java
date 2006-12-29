@@ -94,7 +94,19 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
         relativeUrl = new URL(spec.getFileUrl());
       }
       catch (MalformedURLException e) {
-        relativeUrl = new File(spec.getFileUrl()).toURL();
+        //try to treat the URL as a file name.  
+        File file = new File(spec.getFileUrl());
+        if (file.isAbsolute()) {
+          //for absolute paths, use File.toURL(), which handles
+          //windows absolute paths correctly
+          relativeUrl = file.toURL();
+        } else {
+          //for relative paths, we can' use File.toURL() because it always
+          //produces an absolute URL.  Instead we do the following, which
+          //won't work for windows absolute paths (but that's OK, since we
+          //know we're working with a relative path)
+          relativeUrl = new URL("file", "", spec.getFileUrl());
+        }
       }
       
       //resolve relative paths

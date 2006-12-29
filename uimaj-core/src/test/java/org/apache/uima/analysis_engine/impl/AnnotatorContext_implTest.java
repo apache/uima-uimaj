@@ -20,6 +20,7 @@
 package org.apache.uima.analysis_engine.impl;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,6 +47,9 @@ import org.apache.uima.util.XMLInputSource;
 public class AnnotatorContext_implTest extends TestCase {
   protected final String TEST_DATAPATH = JUnitExtension.getFile("AnnotatorContextTest").getPath()
           + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
+
+  protected final String TEST_EXTENSION_CLASSPATH = JUnitExtension.getFile(
+          "ResourceTest/spaces in dir name").getPath();
 
   private AnnotatorContext mAC1;
 
@@ -81,6 +85,7 @@ public class AnnotatorContext_implTest extends TestCase {
       HashMap map = new HashMap();
       ResourceManager rm = UIMAFramework.newDefaultResourceManager();
       rm.setDataPath(TEST_DATAPATH);
+      rm.setExtensionClassPath(TEST_EXTENSION_CLASSPATH, true);
       map.put(AnalysisEngine.PARAM_RESOURCE_MANAGER, rm);
       tae.initialize(desc, map);
       // this should include an annotator context
@@ -403,6 +408,121 @@ public class AnnotatorContext_implTest extends TestCase {
       URL url7 = mAC3.getResourceURL("subdir");
       Assert.assertNotNull(url7);
 
+      // spaces as part of extension classpath (spaces should be URL-encoded)
+      URL url8 = mAC3.getResourceURL("OtherFileResource");
+      assertNotNull(url8);
+      assertTrue(url8.getPath().indexOf("%20") > -1);
+      assertTrue(url8.getPath().indexOf(" ") == -1);
+
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
+  }
+
+  public void testGetResourceURIString() throws Exception {
+    try {
+      // standard data resource (should succeed)
+      URI uri = mAC3.getResourceURI("TestFileResource");
+      Assert.assertNotNull(uri);
+
+      // custom resource object (should return null)
+      URI uri2 = mAC3.getResourceURI("TestResourceObject");
+      Assert.assertNull(uri2);
+
+      // parameterized resources (should fail)
+      AnnotatorContextException ex = null;
+      try {
+        mAC3.getResourceURI("TestFileLanguageResource");
+      } catch (AnnotatorContextException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      ex = null;
+      try {
+        mAC3.getResourceURI("TestLanguageResourceObject");
+      } catch (AnnotatorContextException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      // nonexistent resource (should return null)
+      URI uri3 = mAC3.getResourceURI("Unknown");
+      Assert.assertNull(uri3);
+
+      // passthrough to class loader
+      URI uri5 = mAC3.getResourceURI("org/apache/uima/analysis_engine/impl/testDataFile3.dat");
+      Assert.assertNotNull(uri5);
+
+      // passthrough to data path
+      URI uri6 = mAC1.getResourceURI("testDataFile.dat");
+      Assert.assertNotNull(uri6);
+
+      // for directory
+      URI uri7 = mAC3.getResourceURI("subdir");
+      Assert.assertNotNull(uri7);
+
+      // spaces as part of extension classpath (spaces should be decoded)
+      URI uri8 = mAC3.getResourceURI("OtherFileResource");
+      assertNotNull(uri8);
+      assertTrue(uri8.getPath().indexOf("%20") == -1);
+      assertTrue(uri8.getPath().indexOf(" ") > -1);
+
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
+  }
+
+  public void testGetResourceFilePathString() throws Exception {
+    try {
+      // standard data resource (should succeed)
+      String path = mAC3.getResourceFilePath("TestFileResource");
+      Assert.assertNotNull(path);
+
+      // custom resource object (should return null)
+      String path2 = mAC3.getResourceFilePath("TestResourceObject");
+      Assert.assertNull(path2);
+
+      // parameterized resources (should fail)
+      AnnotatorContextException ex = null;
+      try {
+        mAC3.getResourceFilePath("TestFileLanguageResource");
+      } catch (AnnotatorContextException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      ex = null;
+      try {
+        mAC3.getResourceFilePath("TestLanguageResourceObject");
+      } catch (AnnotatorContextException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      // nonexistent resource (should return null)
+      String path3 = mAC3.getResourceFilePath("Unknown");
+      Assert.assertNull(path3);
+
+      // passthrough to class loader
+      String path5 = mAC3
+              .getResourceFilePath("org/apache/uima/analysis_engine/impl/testDataFile3.dat");
+      Assert.assertNotNull(path5);
+
+      // passthrough to data path
+      String path6 = mAC1.getResourceFilePath("testDataFile.dat");
+      Assert.assertNotNull(path6);
+
+      // for directory
+      String path7 = mAC3.getResourceFilePath("subdir");
+      Assert.assertNotNull(path7);
+
+      // spaces as part of extension classpath (spaces should be decoded)
+      String path8 = mAC3.getResourceFilePath("OtherFileResource");
+      assertNotNull(path8);
+      assertTrue(path8.indexOf("%20") == -1);
+      assertTrue(path8.indexOf(" ") > -1);
+
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -627,6 +747,118 @@ public class AnnotatorContext_implTest extends TestCase {
       // nonexistent resource (should return null)
       URL url4 = mAC3.getResourceURL("Unknown", new String[] { "en" });
       Assert.assertNull(url4);
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
+  }
+
+  public void testGetResourceURIStringStringArray() throws Exception {
+    try {
+      // standard data resource
+      URI uri = mAC3.getResourceURI("TestFileLanguageResource", new String[] { "en" });
+      Assert.assertNotNull(uri);
+
+      URI uri2 = mAC3.getResourceURI("TestFileLanguageResource", new String[] { "de" });
+      Assert.assertNotNull(uri2);
+      Assert.assertFalse(uri2.equals(uri));
+
+      // custom object (should return null)
+      URI uri3 = mAC3.getResourceURI("TestLanguageResourceObject", new String[] { "en" });
+      Assert.assertNull(uri3);
+
+      // parameter values for which no resource exists (should fail)
+      AnnotatorContextException ex = null;
+      try {
+        mAC3.getResourceURI("TestFileLanguageResource", new String[] { "zh" });
+      } catch (AnnotatorContextException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      ex = null;
+      try {
+        mAC3.getResourceURI("TestFileLanguageResource", new String[] { "en", "p2" });
+      } catch (AnnotatorContextException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      // non-parameterized resources (should fail)
+      ex = null;
+      try {
+        mAC3.getResourceURI("TestFileResource", new String[] { "en" });
+      } catch (AnnotatorContextException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      ex = null;
+      try {
+        mAC3.getResourceURI("TestResourceObject", new String[] { "de" });
+      } catch (AnnotatorContextException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      // nonexistent resource (should return null)
+      URI uri4 = mAC3.getResourceURI("Unknown", new String[] { "en" });
+      Assert.assertNull(uri4);
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
+  }
+
+  public void testGetResourceFilePathStringStringArray() throws Exception {
+    try {
+      // standard data resource
+      String path = mAC3.getResourceFilePath("TestFileLanguageResource", new String[] { "en" });
+      Assert.assertNotNull(path);
+
+      String path2 = mAC3.getResourceFilePath("TestFileLanguageResource", new String[] { "de" });
+      Assert.assertNotNull(path2);
+      Assert.assertFalse(path2.equals(path));
+
+      // custom object (should return null)
+      String path3 = mAC3.getResourceFilePath("TestLanguageResourceObject", new String[] { "en" });
+      Assert.assertNull(path3);
+
+      // parameter values for which no resource exists (should fail)
+      AnnotatorContextException ex = null;
+      try {
+        mAC3.getResourceFilePath("TestFileLanguageResource", new String[] { "zh" });
+      } catch (AnnotatorContextException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      ex = null;
+      try {
+        mAC3.getResourceFilePath("TestFileLanguageResource", new String[] { "en", "p2" });
+      } catch (AnnotatorContextException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      // non-parameterized resources (should fail)
+      ex = null;
+      try {
+        mAC3.getResourceFilePath("TestFileResource", new String[] { "en" });
+      } catch (AnnotatorContextException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      ex = null;
+      try {
+        mAC3.getResourceFilePath("TestResourceObject", new String[] { "de" });
+      } catch (AnnotatorContextException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      // nonexistent resource (should return null)
+      String path4 = mAC3.getResourceFilePath("Unknown", new String[] { "en" });
+      Assert.assertNull(path4);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }

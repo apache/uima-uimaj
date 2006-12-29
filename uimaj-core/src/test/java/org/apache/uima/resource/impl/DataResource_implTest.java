@@ -78,7 +78,7 @@ public class DataResource_implTest extends TestCase {
       ResourceInitializationException ex = null;
       try {
         FileResourceSpecifier_impl invalidSpec = new FileResourceSpecifier_impl();
-        invalidSpec.setFileUrl("file://this/file/does/not/exist");
+        invalidSpec.setFileUrl("file:/this/file/does/not/exist");
         DataResource_impl dr2 = new DataResource_impl();
         dr2.initialize(invalidSpec, Collections.EMPTY_MAP);
       } catch (ResourceInitializationException e) {
