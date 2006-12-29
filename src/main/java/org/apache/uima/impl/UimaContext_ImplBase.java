@@ -22,7 +22,10 @@ package org.apache.uima.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -187,6 +190,43 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
       return null;
     }
   }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.UimaContext#getResourceURI(java.lang.String)
+   */
+  public URI getResourceURI(String aKey) throws ResourceAccessException {
+    URL resourceUrl = getResourceURL(aKey);
+    if (resourceUrl != null) {
+      try {
+        return new URI(resourceUrl.toString().replaceAll(" ", "%20"));
+      } catch (URISyntaxException e) {
+        throw new ResourceAccessException(e);
+      }
+    }
+    else {
+      return null;
+    }
+  }
+ 
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.UimaContext#getResourceFilePath(java.lang.String)
+   */
+  public String getResourceFilePath(String aKey) throws ResourceAccessException {
+    URI resourceUri = getResourceURI(aKey);
+    if (resourceUri != null) {
+      if ("file".equals(resourceUri.getScheme())) {
+        return resourceUri.getPath();
+      } 
+      else {
+        throw new ResourceAccessException(); //TODO: error message
+      }
+    }
+    else {
+      return null;
+    }
+  }
+
 
   /**
    * Acquires Resource InputStreams using the ResourceManager.
@@ -288,6 +328,42 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
                 LOG_RESOURCE_BUNDLE, "UIMA_unmanaged_resource__WARNING", new Object[] { aKey });
         return unmanagedResourceUrl;
       }
+      return null;
+    }
+  }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.UimaContext#getResourceURI(String, String[])
+   */
+  public URI getResourceURI(String aKey, String[] aParams) throws ResourceAccessException {
+    URL resourceUrl = getResourceURL(aKey, aParams);
+    if (resourceUrl != null) {
+      try {
+        return new URI(resourceUrl.toString().replaceAll(" ", "%20"));
+      } catch (URISyntaxException e) {
+        throw new ResourceAccessException(e);
+      }
+    }
+    else {
+      return null;
+    }
+  }
+ 
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.UimaContext#getResourceFilePath(String, String[])
+   */
+  public String getResourceFilePath(String aKey, String[] aParams) throws ResourceAccessException {
+    URI resourceUri = getResourceURI(aKey, aParams);
+    if (resourceUri != null) {
+      if ("file".equals(resourceUri.getScheme())) {
+        return resourceUri.getPath();
+      } 
+      else {
+        throw new ResourceAccessException(); //TODO: error message
+      }
+    }
+    else {
       return null;
     }
   }

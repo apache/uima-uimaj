@@ -20,6 +20,7 @@
 package org.apache.uima.impl;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,6 +52,9 @@ public class UimaContext_implTest extends TestCase {
   protected final String TEST_DATAPATH = JUnitExtension.getFile("AnnotatorContextTest").getPath()
           + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
 
+  protected final String TEST_EXTENSION_CLASSPATH = JUnitExtension.getFile(
+          "ResourceTest/spaces in dir name").getPath();
+
   private UimaContext mContext;
 
   private UimaContext mContext2;
@@ -78,6 +82,7 @@ public class UimaContext_implTest extends TestCase {
       // configure ResourceManager to allow test components to locate their resources
       ResourceManager rm = UIMAFramework.newDefaultResourceManager();
       rm.setDataPath(TEST_DATAPATH);
+      rm.setExtensionClassPath(TEST_EXTENSION_CLASSPATH, true);
 
       // create a UimaContext with Config Params and Resources
       UIMAFramework.getXMLParser().enableSchemaValidation(true);
@@ -382,6 +387,120 @@ public class UimaContext_implTest extends TestCase {
       // for directory
       URL url7 = mContext.getResourceURL("subdir");
       Assert.assertNotNull(url7);
+
+      // spaces as part of extension classpath (spaces should be URL-encoded)
+      URL url8 = mContext.getResourceURL("OtherFileResource");
+      assertNotNull(url8);
+      assertTrue(url8.getPath().indexOf("%20") > -1);
+      assertTrue(url8.getPath().indexOf(" ") == -1);
+
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
+  }
+
+  public void testGetResourceURIString() throws Exception {
+    try {
+      // standard data resource (should succeed)
+      URI uri = mContext.getResourceURI("TestFileResource");
+      Assert.assertNotNull(uri);
+
+      // custom resource object (should return null)
+      URI uri2 = mContext.getResourceURI("TestResourceObject");
+      Assert.assertNull(uri2);
+
+      // parameterized resources (should fail)
+      ResourceAccessException ex = null;
+      try {
+        mContext.getResourceURI("TestFileLanguageResource");
+      } catch (ResourceAccessException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      ex = null;
+      try {
+        mContext.getResourceURI("TestLanguageResourceObject");
+      } catch (ResourceAccessException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      // nonexistent resource (should return null)
+      URI uri3 = mContext.getResourceURI("Unknown");
+      Assert.assertNull(uri3);
+
+      // passthrough to class loader
+      URI uri5 = mContext.getResourceURI("org/apache/uima/analysis_engine/impl/testDataFile3.dat");
+      Assert.assertNotNull(uri5);
+
+      // passthrough to data path
+      URI uri6 = mContext.getResourceURI("testDataFile.dat");
+      Assert.assertNotNull(uri6);
+
+      // for directory
+      URI uri7 = mContext.getResourceURI("subdir");
+      Assert.assertNotNull(uri7);
+
+      // spaces as part of extension classpath (spaces should be decoded, unlike with URL)
+      URI uri8 = mContext.getResourceURI("OtherFileResource");
+      assertNotNull(uri8);
+      assertTrue(uri8.getPath().indexOf("%20") == -1);
+      assertTrue(uri8.getPath().indexOf(" ") > -1);
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
+  }
+
+  public void testGetResourceFilePathString() throws Exception {
+    try {
+      // standard data resource (should succeed)
+      String path = mContext.getResourceFilePath("TestFileResource");
+      Assert.assertNotNull(path);
+
+      // custom resource object (should return null)
+      String path2 = mContext.getResourceFilePath("TestResourceObject");
+      Assert.assertNull(path2);
+
+      // parameterized resources (should fail)
+      ResourceAccessException ex = null;
+      try {
+        mContext.getResourceFilePath("TestFileLanguageResource");
+      } catch (ResourceAccessException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      ex = null;
+      try {
+        mContext.getResourceFilePath("TestLanguageResourceObject");
+      } catch (ResourceAccessException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      // nonexistent resource (should return null)
+      String path3 = mContext.getResourceFilePath("Unknown");
+      Assert.assertNull(path3);
+
+      // passthrough to class loader
+      String path5 = mContext
+              .getResourceFilePath("org/apache/uima/analysis_engine/impl/testDataFile3.dat");
+      Assert.assertNotNull(path5);
+
+      // passthrough to data path
+      String path6 = mContext.getResourceFilePath("testDataFile.dat");
+      Assert.assertNotNull(path6);
+
+      // for directory
+      String path7 = mContext.getResourceFilePath("subdir");
+      Assert.assertNotNull(path7);
+
+      // spaces as part of extension classpath (spaces should be decoded, unlike with URL)
+      String path8 = mContext.getResourceFilePath("OtherFileResource");
+      assertNotNull(path8);
+      assertTrue(path8.indexOf("%20") == -1);
+      assertTrue(path8.indexOf(" ") > -1);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -430,6 +549,10 @@ public class UimaContext_implTest extends TestCase {
       // for directory
       InputStream strm6 = mContext.getResourceAsStream("subdir");
       Assert.assertNotNull(strm6);
+
+      // spaces as part of extension classpath
+      InputStream strm7 = mContext.getResourceAsStream("OtherFileResource");
+      assertNotNull(strm7);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -607,6 +730,120 @@ public class UimaContext_implTest extends TestCase {
       // nonexistent resource (should return null)
       URL url4 = mContext.getResourceURL("Unknown", new String[] { "en" });
       Assert.assertNull(url4);
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
+  }
+
+  public void testGetResourceURIStringStringArray() throws Exception {
+    try {
+      // standard data resource
+      URI uri = mContext.getResourceURI("TestFileLanguageResource", new String[] { "en" });
+      Assert.assertNotNull(uri);
+
+      URI uri2 = mContext.getResourceURI("TestFileLanguageResource", new String[] { "de" });
+      Assert.assertNotNull(uri2);
+      Assert.assertFalse(uri2.equals(uri));
+
+      // custom object (should return null)
+      URI uri3 = mContext.getResourceURI("TestLanguageResourceObject", new String[] { "en" });
+      Assert.assertNull(uri3);
+
+      // parameter values for which no resource exists (should fail)
+      ResourceAccessException ex = null;
+      try {
+        mContext.getResourceURI("TestFileLanguageResource", new String[] { "zh" });
+      } catch (ResourceAccessException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      ex = null;
+      try {
+        mContext.getResourceURI("TestFileLanguageResource", new String[] { "en", "p2" });
+      } catch (ResourceAccessException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      // non-parameterized resources (should fail)
+      ex = null;
+      try {
+        mContext.getResourceURI("TestFileResource", new String[] { "en" });
+      } catch (ResourceAccessException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      ex = null;
+      try {
+        mContext.getResourceURI("TestResourceObject", new String[] { "de" });
+      } catch (ResourceAccessException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      // nonexistent resource (should return null)
+      URI uri4 = mContext.getResourceURI("Unknown", new String[] { "en" });
+      Assert.assertNull(uri4);
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
+  }
+
+  public void testGetResourceFilePathStringStringArray() throws Exception {
+    try {
+      // standard data resource
+      String path = mContext.getResourceFilePath("TestFileLanguageResource", new String[] { "en" });
+      Assert.assertNotNull(path);
+
+      String path2 = mContext
+              .getResourceFilePath("TestFileLanguageResource", new String[] { "de" });
+      Assert.assertNotNull(path2);
+      Assert.assertFalse(path2.equals(path));
+
+      // custom object (should return null)
+      String path3 = mContext.getResourceFilePath("TestLanguageResourceObject",
+              new String[] { "en" });
+      Assert.assertNull(path3);
+
+      // parameter values for which no resource exists (should fail)
+      ResourceAccessException ex = null;
+      try {
+        mContext.getResourceFilePath("TestFileLanguageResource", new String[] { "zh" });
+      } catch (ResourceAccessException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      ex = null;
+      try {
+        mContext.getResourceFilePath("TestFileLanguageResource", new String[] { "en", "p2" });
+      } catch (ResourceAccessException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      // non-parameterized resources (should fail)
+      ex = null;
+      try {
+        mContext.getResourceFilePath("TestFileResource", new String[] { "en" });
+      } catch (ResourceAccessException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      ex = null;
+      try {
+        mContext.getResourceFilePath("TestResourceObject", new String[] { "de" });
+      } catch (ResourceAccessException e) {
+        ex = e;
+      }
+      Assert.assertNotNull(ex);
+
+      // nonexistent resource (should return null)
+      String path4 = mContext.getResourceFilePath("Unknown", new String[] { "en" });
+      Assert.assertNull(path4);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }

@@ -20,6 +20,7 @@
 package org.apache.uima.analysis_engine.impl;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 
 import org.apache.uima.UimaContextAdmin;
@@ -128,6 +129,32 @@ public class AnnotatorContext_impl implements AnnotatorContext {
     }
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceURI(java.lang.String)
+   */
+  public URI getResourceURI(String aKey) throws AnnotatorContextException {
+    try {
+      return mUimaContext.getResourceURI(aKey);
+    } catch (ResourceAccessException e) {
+      throw new AnnotatorContextException(e);
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceFilePath(java.lang.String)
+   */
+  public String getResourceFilePath(String aKey) throws AnnotatorContextException {
+    try {
+      return mUimaContext.getResourceFilePath(aKey);
+    } catch (ResourceAccessException e) {
+      throw new AnnotatorContextException(e);
+    }
+  }
+
   /**
    * Acquires Resource InputStreams using the ResourceManager, or, if that fails, the ClassLoader.
    * 
@@ -186,6 +213,34 @@ public class AnnotatorContext_impl implements AnnotatorContext {
   public URL getResourceURL(String aKey, String[] aParams) throws AnnotatorContextException {
     try {
       return mUimaContext.getResourceURL(aKey, aParams);
+    } catch (ResourceAccessException e) {
+      throw new AnnotatorContextException(e);
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceURI(java.lang.String,
+   *      java.lang.String[])
+   */
+  public URI getResourceURI(String aKey, String[] aParams) throws AnnotatorContextException {
+    try {
+      return mUimaContext.getResourceURI(aKey, aParams);
+    } catch (ResourceAccessException e) {
+      throw new AnnotatorContextException(e);
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getResourceFilePath(java.lang.String,
+   *      java.lang.String[])
+   */
+  public String getResourceFilePath(String aKey, String[] aParams) throws AnnotatorContextException {
+    try {
+      return mUimaContext.getResourceFilePath(aKey, aParams);
     } catch (ResourceAccessException e) {
       throw new AnnotatorContextException(e);
     }

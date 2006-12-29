@@ -20,6 +20,7 @@
 package org.apache.uima.analysis_engine.annotator;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 
 import org.apache.uima.UimaContext;
@@ -136,6 +137,11 @@ public interface AnnotatorContext {
    * or authority files. The resource should be declared in the &lt;externalResourceDependencies&gt;
    * section of the descriptor.
    * <p>
+   * Note that if the URL contains spaces may be encoded as %20. The {@link URL#getPath()} method
+   * does NOT decode these sequences, therefore it is not safe to call
+   * <code>getResourceURL().getPath()</code> and attempt to use the result as a file path.
+   * Instead, you may use {@link #getResourceURI(String)} or {@link #getResourceFilePath(String)}.
+   * <p>
    * For backwards compatibility, if the key is not declared as a resource dependency, it is looked
    * up directly in the {@link #getDataPath() data path} and the class path. However, this usage is
    * deprecated and support may be dropped in future versions. ALL external resource dependencies
@@ -151,6 +157,59 @@ public interface AnnotatorContext {
    * @see org.apache.uima.UimaContext#getResourceURL(String)
    */
   public URL getResourceURL(String aKey) throws AnnotatorContextException;
+
+  /**
+   * Retrieves the URI to the named resource. This can be used, for example, to locate configuration
+   * or authority files. The resource should be declared in the &lt;externalResourceDependencies&gt;
+   * section of the descriptor.
+   * <p>
+   * This method is safer than {@link #getResourceURL(String)} in its treatment of file paths
+   * containing spaces. This is because the {@link URI#getPath()} does perform URL decoding of that
+   * path (decoding %20 sequences to spaces) whereas {@link URL#getPath()} does not.
+   * <p>
+   * For backwards compatibility, if the key is not declared as a resource dependency, it is looked
+   * up directly in the {@link #getDataPath() data path} and the class path. However, this usage is
+   * deprecated and support may be dropped in future versions. ALL external resource dependencies
+   * should be declared in the descriptor.
+   * 
+   * @param aKey
+   *          the key by which the resource is identified. This key should be declared in the
+   *          &lt;externalResourceDependencies&gt; section of the descriptor.
+   * 
+   * @return the <code>URI</code> at which the named resource is located, <code>null</code> if
+   *         the named resource could not be found.
+   * 
+   * @see org.apache.uima.UimaContext#getResourceURI(String)
+   */
+  public URI getResourceURI(String aKey) throws AnnotatorContextException;
+
+  /**
+   * Retrieves the absolute file path to the named resource. This can be used, for example, to
+   * locate configuration or authority files. The resource should be declared in the
+   * &lt;externalResourceDependencies&gt; section of the descriptor.
+   * <p>
+   * This only works if the resource is a local file. If the resource is not a local file (for
+   * example, it could be an <code>http</code> URL, then an exception will be thrown.
+   * <p>
+   * URL decoding will be done on the file path, so it is safe to use this method for file paths
+   * that contain spaces.
+   * 
+   * For backwards compatibility, if the key is not declared as a resource dependency, it is looked
+   * up directly in the {@link #getDataPath() data path} and the class path. However, this usage is
+   * deprecated and support may be dropped in future versions. ALL external resource dependencies
+   * should be declared in the descriptor.
+   * 
+   * @param aKey
+   *          the key by which the resource is identified. This key should be declared in the
+   *          &lt;externalResourceDependencies&gt; section of the descriptor.
+   * 
+   * @return the absolute file path at which the named resource is located, <code>null</code> if
+   *         the named resource could not be found.
+   * 
+   * 
+   * @see org.apache.uima.UimaContext#getResourceFilePath(String)
+   */
+  public String getResourceFilePath(String aKey) throws AnnotatorContextException;
 
   /**
    * Retrieves an InputStream for reading from the named resource. This can be used, for example, to
@@ -194,6 +253,11 @@ public interface AnnotatorContext {
    * or authority files. The resource should be declared in the &lt;externalResourceDependencies&gt;
    * section of the descriptor.
    * <p>
+   * Note that if the URL contains spaces may be encoded as %20. The {@link URL#getPath()} method
+   * does NOT decode these sequences, therefore it is not safe to call
+   * <code>getResourceURL().getPath()</code> and attempt to use the result as a file path.
+   * Instead, you may use {@link #getResourceURI(String)} or {@link #getResourceFilePath(String)}.
+   * <p>
    * For backwards compatibility, if the key is not declared as a resource dependency, it is looked
    * up directly in the {@link #getDataPath() data path} and the class path. However, this usage is
    * deprecated and support may be dropped in future versions. ALL external resource dependencies
@@ -218,6 +282,68 @@ public interface AnnotatorContext {
    * @see org.apache.uima.UimaContext#getResourceURL(String,String[])
    */
   public URL getResourceURL(String aKey, String[] aParams) throws AnnotatorContextException;
+
+  /**
+   * Retrieves the URI to the named resource. This can be used, for example, to locate configuration
+   * or authority files. The resource should be declared in the &lt;externalResourceDependencies&gt;
+   * section of the descriptor.
+   * <p>
+   * This method is safer than {@link #getResourceURL(String)} in its treatment of file paths
+   * containing spaces. This is because the {@link URI#getPath()} does perform URL decoding of that
+   * path (decoding %20 sequences to spaces) whereas {@link URL#getPath()} does not.
+   * <p>
+   * For backwards compatibility, if the key is not declared as a resource dependency, it is looked
+   * up directly in the {@link #getDataPath() data path} and the class path. However, this usage is
+   * deprecated and support may be dropped in future versions. ALL external resource dependencies
+   * should be declared in the descriptor.
+   * <p>
+   * This version of this method takes an array of parameters used to further identify the resource.
+   * This can be used, for example, with resources that vary depending on the language of the
+   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier> element is used in
+   * the component descriptor.
+   * 
+   * @param aKey
+   *          the key by which the resource is identified. This key should be declared in the
+   *          &lt;externalResourceDependencies&gt; section of the descriptor.
+   * 
+   * @return the <code>URI</code> at which the named resource is located, <code>null</code> if
+   *         the named resource could not be found.
+   * 
+   * @see org.apache.uima.UimaContext#getResourceURI(String,String[])
+   */
+  public URI getResourceURI(String aKey, String[] aParams) throws AnnotatorContextException;
+
+  /**
+   * Retrieves the absolute file path to the named resource. This can be used, for example, to
+   * locate configuration or authority files. The resource should be declared in the
+   * &lt;externalResourceDependencies&gt; section of the descriptor.
+   * <p>
+   * This only works if the resource is a local file. If the resource is not a local file (for
+   * example, it could be an <code>http</code> URL, then an exception will be thrown.
+   * <p>
+   * URL decoding will be done on the file path, so it is safe to use this method for file paths
+   * that contain spaces.
+   * <p>
+   * For backwards compatibility, if the key is not declared as a resource dependency, it is looked
+   * up directly in the {@link #getDataPath() data path} and the class path. However, this usage is
+   * deprecated and support may be dropped in future versions. ALL external resource dependencies
+   * should be declared in the descriptor.
+   * <p>
+   * This version of this method takes an array of parameters used to further identify the resource.
+   * This can be used, for example, with resources that vary depending on the language of the
+   * document being analyzed, such as when the &lt;fileLanguageResourceSpecifier> element is used in
+   * the component descriptor.
+   * 
+   * @param aKey
+   *          the key by which the resource is identified. This key should be declared in the
+   *          &lt;externalResourceDependencies&gt; section of the descriptor.
+   * 
+   * @return the absolute file path at which the named resource is located, <code>null</code> if
+   *         the named resource could not be found.
+   * 
+   * @see org.apache.uima.UimaContext#getResourceFilePath(String,String[])
+   */
+  public String getResourceFilePath(String aKey, String[] aParams) throws AnnotatorContextException;
 
   /**
    * Retrieves an InputStream for reading from the named resource. This can be used, for example, to
