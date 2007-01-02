@@ -38,7 +38,6 @@ public class JUnitExtension {
     File file = null;
     if (url != null) {
       try {
-        // TODO: use Java 1.5 decoding
         String fileURL = URLDecoder.decode(url.getFile(), "UTF-8");
         file = new File(fileURL);
       } catch (UnsupportedEncodingException ex) {
