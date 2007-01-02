@@ -94,10 +94,10 @@ public class DebugFSLogicalStructure {
       if (null != items)
         return items;
       if (isContainedFS) {
-        return getDebugLogicalStructure_SubAnnotations(constrainingFS);
+        return items = getDebugLogicalStructure_SubAnnotations(constrainingFS);
       }
       if (isIndex) {
-        return getIndexContents(fsIndex);
+        return items = getIndexContents(fsIndex);
       }
       return null;
     }
