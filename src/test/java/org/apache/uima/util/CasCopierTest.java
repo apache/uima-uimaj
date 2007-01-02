@@ -21,6 +21,7 @@ package org.apache.uima.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import junit.framework.TestCase;
@@ -29,7 +30,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.XCASDeserializer;
-import org.apache.uima.cas.impl.XmiCasSerializer;
+import org.apache.uima.cas.impl.XCASSerializer;
 import org.apache.uima.cas_data.impl.CasComparer;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -45,16 +46,41 @@ public class CasCopierTest extends TestCase {
   private FsIndexDescription[] indexes;
 
   protected void setUp() throws Exception {
-    File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
+    File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
+    File typeSystemFile2 = JUnitExtension.getFile("ExampleCas/hutt.xml");
     File indexesFile = JUnitExtension.getFile("ExampleCas/kltIndexes.xml");
 
-    typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-            new XMLInputSource(typeSystemFile));
+    TypeSystemDescription typeSystem1 = UIMAFramework.getXMLParser().parseTypeSystemDescription(
+            new XMLInputSource(typeSystemFile1));
+    TypeSystemDescription typeSystem2 = UIMAFramework.getXMLParser().parseTypeSystemDescription(
+            new XMLInputSource(typeSystemFile2));
+    ArrayList typeSystems = new ArrayList();
+    typeSystems.add(typeSystem1);
+    typeSystems.add(typeSystem2);
+    typeSystem = CasCreationUtils.mergeTypeSystems(typeSystems);
     indexes = UIMAFramework.getXMLParser().parseFsIndexCollection(new XMLInputSource(indexesFile))
             .getFsIndexes();
   }
 
   public void testCopyCas() throws Exception {
+    // create a source CAS by deserializing from XCAS
+    CAS srcCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+    InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/multiSofaCas.xml"));
+    XCASDeserializer.deserialize(serCasStream, srcCas);
+    serCasStream.close();
+
+    // create a destination CAS
+    CAS destCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+
+    // do the copy
+    CasCopier.copyCas(srcCas, destCas, true);
+    XCASSerializer.serialize(destCas, System.out);
+
+    // verify copy
+    CasComparer.assertEquals(srcCas, destCas);    
+  }
+  
+  public void testCopyCasView() throws Exception {
     // create a source CAS by deserializing from XCAS
     CAS srcCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
@@ -65,8 +91,8 @@ public class CasCopierTest extends TestCase {
     CAS destCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
 
     // do the copy
-    CasCopier.copyCasView(srcCas, destCas, true);
-    XmiCasSerializer.serialize(destCas, System.out);
+    CasCopier copier = new CasCopier(destCas);
+    copier.copyCasView(srcCas, true);
 
     // verify copy
     CasComparer.assertEquals(srcCas, destCas);

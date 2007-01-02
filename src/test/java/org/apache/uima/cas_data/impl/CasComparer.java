@@ -44,17 +44,13 @@ import org.apache.uima.cas.text.TCAS;
  */
 public class CasComparer {
   public static void assertEquals(CAS c1, CAS c2) {
-    FSIterator sofaIter1 = c1.getSofaIterator();
-    FSIterator sofaIter2 = c2.getSofaIterator();
-    while (sofaIter1.hasNext()) {
-      Assert.assertTrue(sofaIter2.hasNext());
-      SofaFS sofa1 = (SofaFS) sofaIter1.next();
-      SofaFS sofa2 = (SofaFS) sofaIter2.next();
-      TCAS tcas1 = c1.getTCAS(sofa1);
-      TCAS tcas2 = c2.getTCAS(sofa2);
+    FSIterator sofaIter = c1.getSofaIterator();
+    while (sofaIter.hasNext()) {
+      SofaFS sofa = (SofaFS) sofaIter.next();
+      TCAS tcas1 = (TCAS)c1.getView(sofa);
+      TCAS tcas2 = (TCAS)c2.getView(tcas1.getViewName());
       assertEquals(tcas1, tcas2);
     }
-    Assert.assertFalse(sofaIter2.hasNext());
   }
 
   public static void assertEquals(TCAS c1, TCAS c2) {

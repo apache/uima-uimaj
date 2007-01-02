@@ -29,6 +29,7 @@ import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.BooleanArrayFS;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.DoubleArrayFS;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.Feature;
@@ -40,6 +41,7 @@ import org.apache.uima.cas.ShortArrayFS;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.text.AnnotationFS;
 
 /**
  * Utility class for doing deep copies of FeatureStructures from one CAS to another. To handle cases
@@ -47,50 +49,92 @@ import org.apache.uima.cas.Type;
  * CasCopier and use it to copy multiple FeatureStructures. The CasCopier will remember previously
  * copied FeatureStructures, so if you later copy another FS that has a reference to a previously
  * copied FS, it will not duplicate the multiply-referenced FS.
- * <p>
- * Limitation: This currently will not handle multiple Sofas. You can only specify a single
- * destination CAS view. Any reference to a Sofa found in the source FS's will become a reference to
- * the Sofa of the destination CAS View.
  */
 public class CasCopier {
-  private CAS mDestCasView;
+  private CAS mDestCas;
 
   private Map mFsMap = new HashMap();
 
   /**
    * Creates a new CasCopier that can be used to copy FeatureStructures from one CAS to another.
    * 
-   * @param aDestCasView
-   *          the CAS View to copy into.
+   * @param aDestCas
+   *          the CAS to copy into.
    */
-  public CasCopier(CAS aDestCasView) {
-    mDestCasView = aDestCasView;
+  public CasCopier(CAS aDestCas) {
+    mDestCas = aDestCas;
+  }
+  
+  /**
+   * Does a complete deep copy of one CAS into another CAS.  The contents of each view
+   * in the source CAS will be copied to the same-named view in the destination CAS.  If
+   * the view does not already exist it will be created.  All FeatureStructures that are
+   * indexed in a view in the source CAS will become indexed in the same-named view in the
+   * destination CAS.
+   * 
+   * @param aSrcCas
+   *          the CAS to copy from
+   * @param aDestCas
+   *          the CAS to copy to
+   * @param aCopySofa
+   *          if true, the sofa data and mimeType of each view will be copied. If false they will not.
+   */  
+  public static void copyCas(CAS aSrcCas, CAS aDestCas, boolean aCopySofa) {
+    //create views if they do not exist
+    Iterator sofaIter = aSrcCas.getSofaIterator();
+    while (sofaIter.hasNext()) {
+      SofaFS sofa = ((SofaFS)sofaIter.next());
+      try {
+        aDestCas.getView(sofa.getSofaID()); //TODO: is this safe with sofa mappings?
+      }
+      catch(CASRuntimeException e) {
+        //create the view
+       aDestCas.createView(sofa.getSofaID()); //TODO: is this safe with sofa mappings?
+      }
+    }
+    
+    CasCopier copier = new CasCopier(aDestCas);
+    
+    sofaIter = aSrcCas.getSofaIterator();
+    while (sofaIter.hasNext()) {
+      SofaFS sofa = ((SofaFS)sofaIter.next());
+      CAS view = aSrcCas.getView(sofa);
+      copier.copyCasView(view, aCopySofa);
+    }
   }
 
   /**
-   * Does a deep copy of the entire contents of one CAS View into another CAS View. All
-   * FeatureStructures that are indexed in the source CAS view will become indexed in the
-   * destination CAS view.
+   * Does a deep copy of the contents of one CAS View into another CAS.
+   * If a view with the same name as <code>aSrcCasView</code> exists in the destination CAS,
+   * then it will be the target of the copy.  Otherwise, a new view will be created with
+   * that name and will become the target of the copy.  All FeatureStructures that are indexed 
+   * in the source CAS view will become indexed in the target view.
    * 
    * @param aSrcCasView
    *          the CAS to copy from
-   * @param aDestCasView
-   *          the CAS to copy to.
    * @param aCopySofa
    *          if true, the sofa data and mimeType will be copied. If false they will not.
    */
-  public static void copyCasView(CAS aSrcCasView, CAS aDestCasView, boolean aCopySofa) {
-    CasCopier copier = new CasCopier(aDestCasView);
-
+  public void copyCasView(CAS aSrcCasView, boolean aCopySofa) {
+    //get or create the target view
+    CAS targetView;
+    try {
+      targetView = mDestCas.getView(aSrcCasView.getViewName()); //TODO: is this safe with sofa mappings?
+    }
+    catch(CASRuntimeException e) {
+      //create the view
+      targetView = mDestCas.createView(aSrcCasView.getViewName());
+    }
+    
     if (aCopySofa) {
       // can't copy the SofaFS - just copy the sofa data and mime type
       String sofaMime = aSrcCasView.getSofa().getSofaMime();
       if (aSrcCasView.getDocumentText() != null) {
-        aDestCasView.setSofaDataString(aSrcCasView.getDocumentText(), sofaMime);
+        targetView.setSofaDataString(aSrcCasView.getDocumentText(), sofaMime);
       } else if (aSrcCasView.getSofaDataURI() != null) {
-        aDestCasView.setSofaDataURI(aSrcCasView.getSofaDataURI(), sofaMime);
+        targetView.setSofaDataURI(aSrcCasView.getSofaDataURI(), sofaMime);
       } else if (aSrcCasView.getSofaDataArray() != null) {
-        aDestCasView.setSofaDataArray(copier.copyFs(aSrcCasView.getSofaDataArray()), sofaMime);
+        targetView.setSofaDataArray(copyFs(aSrcCasView.getSofaDataArray()), sofaMime);
       }
     }
 
@@ -103,10 +147,12 @@ public class CasCopier {
       while (iter.hasNext()) {
         FeatureStructure fs = (FeatureStructure) iter.next();
         if (!indexedFs.contains(fs)) {
-          FeatureStructure copyOfFs = copier.copyFs(fs);
+          FeatureStructure copyOfFs = copyFs(fs);
           // also don't index the DocumentAnnotation (it's indexed by default)
-          if (!copyOfFs.equals(copyOfFs.getCAS().getDocumentAnnotation())) {
-            aDestCasView.addFsToIndexes(copyOfFs);
+          //TODO: clean this up
+          if (!(copyOfFs instanceof AnnotationFS) ||
+              !copyOfFs.equals(((AnnotationFS)copyOfFs).getView().getDocumentAnnotation())) {
+            targetView.addFsToIndexes(copyOfFs);
           }
           indexedFs.add(fs);
         }
@@ -133,12 +179,33 @@ public class CasCopier {
 
     // Certain types need to be handled specially
 
-    // Sofa - cannot be created by normal methods. For now any reference to a Sofa in the
-    // source CAS becomes a reference to the Sofa of the destination view. This works for
-    // copying the contents of one view to another, but won't handle cross-view references.
-    // TODO: can this be done better?
+    // Sofa - cannot be created by normal methods.  Instead, we return the Sofa with the
+    // same Sofa ID in the target CAS.  If it does not exist it will be created.
     if (aFS instanceof SofaFS) {
-      return mDestCasView.getSofa();
+      String sofaId = ((SofaFS)aFS).getSofaID();
+      SofaFS destSofa;
+      //TODO: would be better if we could check for sofa existence without the try...catch
+      try {
+        destSofa = mDestCas.getView(sofaId).getSofa(); //TODO: is this safe with sofa mappings?
+      }
+      catch(CASRuntimeException e) {
+        //create the Sofa
+        destSofa = mDestCas.createView(sofaId).getSofa();
+      }
+      return destSofa;
+    }
+
+    // DocumentAnnotation - instead of creating a new instance, reuse the automatically created
+    // instance in the destination view.
+    if (aFS instanceof AnnotationFS && 
+        aFS.equals(((AnnotationFS)aFS).getView().getDocumentAnnotation())) {         
+      String viewName = ((AnnotationFS)aFS).getView().getViewName();
+      CAS destView = mDestCas.getView(viewName);
+      FeatureStructure destDocAnnot = destView.getDocumentAnnotation();
+      if (destDocAnnot != null) {
+        copyFeatures(aFS, destDocAnnot);
+      }
+      return destDocAnnot;
     }
 
     // Arrays - need to be created a populated differently than "normal" FS
@@ -148,24 +215,14 @@ public class CasCopier {
       return copy;
     }
 
-    // DocumentAnnotation - instead of creating a new instance, reuse the automatically created
-    // instance in the destination view.
-    if (aFS.equals(aFS.getCAS().getDocumentAnnotation())) {
-      FeatureStructure destDocAnnot = mDestCasView.getDocumentAnnotation();
-      if (destDocAnnot != null) {
-        copyFeatures(aFS, destDocAnnot);
-      }
-      return destDocAnnot;
-    }
-
     // create a new FS of the same type in the target CAS
     // TODO: could optimize type lookup if type systems are identical
-    Type destType = mDestCasView.getTypeSystem().getType(srcType.getName());
+    Type destType = mDestCas.getTypeSystem().getType(srcType.getName());
     if (destType == null) {
       throw new UIMARuntimeException(UIMARuntimeException.TYPE_NOT_FOUND_DURING_CAS_COPY,
               new Object[] { srcType.getName() });
     }
-    FeatureStructure destFs = mDestCasView.createFS(destType);
+    FeatureStructure destFs = mDestCas.createFS(destType);
 
     // add to map so we don't try to copy this more than once
     mFsMap.put(aFS, destFs);
@@ -238,7 +295,7 @@ public class CasCopier {
     if (aSrcFs instanceof StringArrayFS) {
       StringArrayFS arrayFs = (StringArrayFS) aSrcFs;
       int len = arrayFs.size();
-      StringArrayFS destFS = mDestCasView.createStringArrayFS(len);
+      StringArrayFS destFS = mDestCas.createStringArrayFS(len);
       for (int i = 0; i < len; i++) {
         destFS.set(i, arrayFs.get(i));
       }
@@ -247,7 +304,7 @@ public class CasCopier {
     if (aSrcFs instanceof IntArrayFS) {
       IntArrayFS arrayFs = (IntArrayFS) aSrcFs;
       int len = arrayFs.size();
-      IntArrayFS destFS = mDestCasView.createIntArrayFS(len);
+      IntArrayFS destFS = mDestCas.createIntArrayFS(len);
       for (int i = 0; i < len; i++) {
         destFS.set(i, arrayFs.get(i));
       }
@@ -256,7 +313,7 @@ public class CasCopier {
     if (aSrcFs instanceof ByteArrayFS) {
       ByteArrayFS arrayFs = (ByteArrayFS) aSrcFs;
       int len = arrayFs.size();
-      ByteArrayFS destFS = mDestCasView.createByteArrayFS(len);
+      ByteArrayFS destFS = mDestCas.createByteArrayFS(len);
       for (int i = 0; i < len; i++) {
         destFS.set(i, arrayFs.get(i));
       }
@@ -265,7 +322,7 @@ public class CasCopier {
     if (aSrcFs instanceof ShortArrayFS) {
       ShortArrayFS arrayFs = (ShortArrayFS) aSrcFs;
       int len = arrayFs.size();
-      ShortArrayFS destFS = mDestCasView.createShortArrayFS(len);
+      ShortArrayFS destFS = mDestCas.createShortArrayFS(len);
       for (int i = 0; i < len; i++) {
         destFS.set(i, arrayFs.get(i));
       }
@@ -274,7 +331,7 @@ public class CasCopier {
     if (aSrcFs instanceof LongArrayFS) {
       LongArrayFS arrayFs = (LongArrayFS) aSrcFs;
       int len = arrayFs.size();
-      LongArrayFS destFS = mDestCasView.createLongArrayFS(len);
+      LongArrayFS destFS = mDestCas.createLongArrayFS(len);
       for (int i = 0; i < len; i++) {
         destFS.set(i, arrayFs.get(i));
       }
@@ -283,7 +340,7 @@ public class CasCopier {
     if (aSrcFs instanceof FloatArrayFS) {
       FloatArrayFS arrayFs = (FloatArrayFS) aSrcFs;
       int len = arrayFs.size();
-      FloatArrayFS destFS = mDestCasView.createFloatArrayFS(len);
+      FloatArrayFS destFS = mDestCas.createFloatArrayFS(len);
       for (int i = 0; i < len; i++) {
         destFS.set(i, arrayFs.get(i));
       }
@@ -292,7 +349,7 @@ public class CasCopier {
     if (aSrcFs instanceof DoubleArrayFS) {
       DoubleArrayFS arrayFs = (DoubleArrayFS) aSrcFs;
       int len = arrayFs.size();
-      DoubleArrayFS destFS = mDestCasView.createDoubleArrayFS(len);
+      DoubleArrayFS destFS = mDestCas.createDoubleArrayFS(len);
       for (int i = 0; i < len; i++) {
         destFS.set(i, arrayFs.get(i));
       }
@@ -301,7 +358,7 @@ public class CasCopier {
     if (aSrcFs instanceof BooleanArrayFS) {
       BooleanArrayFS arrayFs = (BooleanArrayFS) aSrcFs;
       int len = arrayFs.size();
-      BooleanArrayFS destFS = mDestCasView.createBooleanArrayFS(len);
+      BooleanArrayFS destFS = mDestCas.createBooleanArrayFS(len);
       for (int i = 0; i < len; i++) {
         destFS.set(i, arrayFs.get(i));
       }
@@ -310,7 +367,7 @@ public class CasCopier {
     if (aSrcFs instanceof ArrayFS) {
       ArrayFS arrayFs = (ArrayFS) aSrcFs;
       int len = arrayFs.size();
-      ArrayFS destFS = mDestCasView.createArrayFS(len);
+      ArrayFS destFS = mDestCas.createArrayFS(len);
       for (int i = 0; i < len; i++) {
         FeatureStructure copyElem = copyFs(arrayFs.get(i));
         destFS.set(i, copyElem);
