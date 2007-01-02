@@ -184,9 +184,9 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
     if (!(obj instanceof DataResource_impl))
       return false;
 
-    // URLs must be the same
+    // URLs must be the same (but don't use URL.equals(), which does DNS resolution!)
     URL url = ((DataResource_impl) obj).getUrl();
-    if (url == null || !url.equals(this.getUrl()))
+    if (url == null || !url.toString().equals(this.getUrl().toString()))
       return false;
 
     // Local Cache Files must be the same
@@ -207,7 +207,7 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
     // add hash codes of member variables
     int hashCode = 0;
     if (mFileUrl != null)
-      hashCode += mFileUrl.hashCode();
+      hashCode += mFileUrl.toString().hashCode(); //don't use URL.hashCode(), which does DNS resolution
     if (mLocalCache != null)
       hashCode += mLocalCache.hashCode();
 

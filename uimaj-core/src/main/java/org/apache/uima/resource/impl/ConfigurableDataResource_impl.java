@@ -149,9 +149,9 @@ public class ConfigurableDataResource_impl extends Resource_ImplBase implements 
     if (!(obj instanceof ConfigurableDataResource_impl))
       return false;
 
-    // URLs must be the same
-    URL url = ((ConfigurableDataResource_impl) obj).getUrl();
-    if (url == null || !url.equals(this.getUrl()))
+    // URIs must be the same
+    URI uri = ((ConfigurableDataResource_impl) obj).getUri();
+    if (uri == null || !uri.equals(this.getUri()))
       return false;
 
     // Local Cache Files must be the same
@@ -171,8 +171,8 @@ public class ConfigurableDataResource_impl extends Resource_ImplBase implements 
   public int hashCode() {
     // add hash codes of member variables
     int hashCode = 0;
-    if (mFileUrl != null)
-      hashCode += mFileUrl.hashCode();
+    if (mUri != null)
+      hashCode += mUri.hashCode();
 
     return hashCode;
   }
