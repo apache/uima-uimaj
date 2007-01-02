@@ -214,7 +214,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
 
   private Set mHiddenFeatureNames = new HashSet();
 
-  private boolean mEntityViewEnabled; 
+  private boolean mEntityViewEnabled = false; 
 
   private short mViewMode = MODE_ANNOTATIONS;
 
@@ -1002,25 +1002,25 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
       iter.moveToNext();
 
       // find out what entity this annotation represents
-      String entityCanonicalForm = mEntityResolver.getCanonicalForm(annot);
+      EntityResolver.Entity entity = mEntityResolver.getEntity(annot);
 
       //if not an entity, skip it
-      if (entityCanonicalForm == null)
+      if (entity == null)
         continue;
       
       // have we seen this entity before?
-      JCheckBox checkbox = (JCheckBox) mEntityToCheckboxMap.get(entityCanonicalForm);
+      JCheckBox checkbox = (JCheckBox) mEntityToCheckboxMap.get(entity);
       if (checkbox == null) {
         // assign next available color
         Color c = COLORS[mEntityToCheckboxMap.size() % COLORS.length];
         // add checkbox
-        checkbox = new JCheckBox(entityCanonicalForm, true);
-        checkbox.setToolTipText(entityCanonicalForm);
+        checkbox = new JCheckBox(entity.getCanonicalForm(), true);
+        checkbox.setToolTipText(entity.getCanonicalForm());
         checkbox.addActionListener(this);
         checkbox.setBackground(c);
         entityCheckboxPanel.add(checkbox);
         // add to (Entity, Checkbox) map
-        mEntityToCheckboxMap.put(entityCanonicalForm, checkbox);
+        mEntityToCheckboxMap.put(entity, checkbox);
       }
 
       // if checkbox is checked, assign color to text
@@ -1709,15 +1709,33 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
   
   /**
    * Trivial entity resolver that's applied if the user turns on entity mode without
-   * specifying their own entity resolver.  Returns the covered text as the canonical form.
+   * specifying their own entity resolver.  Returns the covered text as the canonical form,
+   * and treats annotations with equal covered text as belonging to the same entity.
    */
   static class DefaultEntityResolver implements EntityResolver {
 
     /* (non-Javadoc)
      * @see org.apache.uima.tools.viewer.EntityResolver#getCanonicalForm(org.apache.uima.jcas.tcas.Annotation)
      */
-    public String getCanonicalForm(Annotation aAnnotation) {
-      return aAnnotation.getCoveredText();
+    public Entity getEntity(final Annotation aAnnotation) {
+      return new Entity() {
+        
+        public String getCanonicalForm() {          
+          return aAnnotation.getCoveredText();
+        }
+
+        public boolean equals(Object obj) {
+          if (obj instanceof Entity) {
+            String canon = ((Entity)obj).getCanonicalForm();
+            return getCanonicalForm().equals(canon);
+          }
+          return false;
+        }
+
+        public int hashCode() {          
+          return getCanonicalForm().hashCode();
+        }              
+      };              
     }
     
   }

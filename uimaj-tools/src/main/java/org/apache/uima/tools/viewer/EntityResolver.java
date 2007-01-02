@@ -22,27 +22,45 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * Pluggable interface that supports Entity View mode in the CasAnnotationViewer. Users implement
- * this interface with logic that for their particular type system can return the canonical form of
- * an annotation in the CAS.
+ * this interface with logic that for their particular type system can determine which Entity an
+ * Annotation refers to.
  * <p>
- * In the viewer, all annotations whose canonical form strings are <code>equal</code> will be
- * displayed in the same color, and the canonical form will be shown in the legend.
+ * In the viewer, all annotations whose Entity objects are <code>equal</code> will be
+ * displayed in the same color, and the Entity's canonical form will be shown in the legend.
  */
 public interface EntityResolver {
-
+  
   /**
-   * Returns the canonical form String for an annotation.
+   * Returns the <code>Entity</code> to which an annotation refers.
+     * Returns the canonical form String for an annotation.
+     * <p>
+     * For two annotations that refer to the same Entity, this should return <code>Entity</code>
+     * objects that are <code>equal</code>.
+     * <p>
+     * If the annotation does not represent an entity at all, <code>null</code> should be returned.
+     * 
+     * @param aAnnotation the annotation to resolve
+     * 
+     * @return the Entity to which the annotation refers, null if the annotation does not represent an
+     */
+  Entity getEntity(Annotation aAnnotation);
+  
+  /**
+   * Object representing an Entity.  Annotations whose <code>Entity</code> objects are <code>equal</code>
+   * will be displayed in the same color in the viewer.  
    * <p>
-   * For two annotations that refer to the same Entity, this should return canonical form strings that
-   * are <code>equal</code>.
-   * <p>
-   * If the annotation does not represent an entity at all, <code>null</code> should be returned.
-   * 
-   * @param aAnnotation
-   *          the annotation to resolve
-   * 
-   * @return the canonical form of the annotation, null if the annotation does not represent an
-   *         entity
+   * This means that either the <code>EntityResolver</code>
+   * must return the identical (<code>==</code>) <code>Entity</code> object for annotations belonging to the
+   * same entity, or your <code>Entity</code> objects must implement {@link Object#equals(Object)} and
+   * {@link  Object#hashCode()}.  
+   *
    */
-  String getCanonicalForm(Annotation aAnnotation);
+  public interface Entity {
+    /**
+     * Returns the canonical form String for an Entity.  This string will be displayed in the legend.
+     * 
+     * @return the canonical form of the entity
+     */
+    String getCanonicalForm();
+  }
 }
