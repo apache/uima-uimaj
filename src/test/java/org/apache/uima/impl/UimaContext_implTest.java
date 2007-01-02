@@ -687,7 +687,7 @@ public class UimaContext_implTest extends TestCase {
 
       URL url2 = mContext.getResourceURL("TestFileLanguageResource", new String[] { "de" });
       Assert.assertNotNull(url2);
-      Assert.assertFalse(url2.equals(url));
+      Assert.assertFalse(url2.toString().equals(url.toString()));
 
       // custom object (should return null)
       URL url3 = mContext.getResourceURL("TestLanguageResourceObject", new String[] { "en" });

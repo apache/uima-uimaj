@@ -104,7 +104,7 @@ public class LoggerPrintStream extends PrintStream {
   }
 
   public void println(char[] x) {
-    println(x);
+    println(new String(x));
   }
 
   public void println(double x) {
