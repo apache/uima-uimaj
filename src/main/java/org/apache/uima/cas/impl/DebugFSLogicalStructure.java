@@ -414,16 +414,16 @@ public class DebugFSLogicalStructure {
 
   }
 
-  public static CAS[] getOtherViews(CAS cas) {
+  public static ViewInfo[] getOtherViews(CAS cas) {
     Iterator sofaIt = cas.getSofaIterator();
     ArrayList r = new ArrayList();
     while (sofaIt.hasNext()) {
       SofaFS item = (SofaFS) sofaIt.next();
       CAS oCas = cas.getView(item);
       if (oCas != cas)
-        r.add(oCas);
+        r.add(new ViewInfo(oCas));
     }
-    return (CAS[]) r.toArray(new CAS[r.size()]);
+    return (ViewInfo[]) r.toArray(new ViewInfo[r.size()]);
   }
 
   // public static DebugNameValuePair [] getDebugLogicalStructure_JCas(JCas jcas) {
