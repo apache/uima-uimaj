@@ -9,3 +9,7 @@ org.apache.uima.internal.util.ProcessTrace_impl org.apache.uima.util.impl.Proces
 org.apache.uima.internal.util.ProcessTraceEvent_impl org.apache.uima.util.impl.ProcessTraceEvent_impl
 org.apache.uima.internal.util.SaxDeserializer_impl org.apache.uima.util.impl.SaxDeserializer_impl
 org.apache.uima.internal.util.XMLParser_impl org.apache.uima.util.impl.XMLParser_impl
+org.apache.uima.jcas.impl.JCas\b org.apache.uima.jcas.JCas
+JCas.getFeatOkTst org.apache.uima.jcas.impl.JCasImpl.getFeatOkTst
+JCas.getNextIndex org.apache.uima.jcas.impl.JCasImpl.getNextIndex
+JCas.throwFeatMissing org.apache.uima.jcas.impl.JCasImpl.throwFeatMissing

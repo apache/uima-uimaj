@@ -194,7 +194,11 @@ public class IbmUimaToApacheUima {
       Map.Entry entry = (Map.Entry)entries.next();
       String ibmPkg = (String)entry.getKey();
       String apachePkg = (String)entry.getValue();
-      String regex = ibmPkg+"(\\.(\\*|[A-Z]\\w*))";
+      //turn package name into a regex (have to escape the . and,
+      //technically, should allow whitepsace around dots)
+      String ibmPkgRegex = ibmPkg.replaceAll("\\.", "\\\\s*\\\\.\\\\s*");
+      //form regex that will find any fully-qualified class name in this package
+      String regex = ibmPkgRegex+"(\\.(\\*|[A-Z]\\w*))";
       contents = contents.replaceAll(regex, apachePkg + "$1");
     }
     //now apply simple string replacements
@@ -203,8 +207,10 @@ public class IbmUimaToApacheUima {
       Map.Entry entry = (Map.Entry)entries.next();
       String src = (String)entry.getKey();
       String dest = (String)entry.getValue();
+      //form regex from src, by escaping dots and allowing whitespace
+      String srcRegex = src.replaceAll("\\.", "\\\\s*\\\\.\\\\s*");
       //replace
-      contents = contents.replaceAll(src, dest);      
+      contents = contents.replaceAll(srcRegex, dest);      
     }    
     
     //write file if it changed
