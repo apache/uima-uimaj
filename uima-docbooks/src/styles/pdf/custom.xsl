@@ -60,6 +60,18 @@
   </xsl:attribute-set>
 
 <!--###################################################
+                      Center figure captions
+    ################################################### -->
+  
+  <xsl:attribute-set name="informalfigure.properties">
+    <xsl:attribute name="text-align">center</xsl:attribute>
+  </xsl:attribute-set>
+
+  <xsl:attribute-set name="figure.properties">
+    <xsl:attribute name="text-align">center</xsl:attribute>
+  </xsl:attribute-set>
+
+<!--###################################################
                       Page margins
     ################################################### -->   
   <xsl:param name="page.margin.top" select="'1cm'"/>
@@ -203,7 +215,7 @@
     <xsl:param name="hyphenate">false</xsl:param>
 
     <!-- Line height in body text -->
-    <xsl:param name="line-height">1.4</xsl:param>
+    <xsl:param name="line-height">1.35</xsl:param>
 
 <!--###################################################
                    Tables

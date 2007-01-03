@@ -1,4 +1,4 @@
-<!--
+/*
  Copyright 2006 The Apache Software Foundation.
 
  Licensed under the Apache License, Version 2.0 (the "License")
@@ -12,7 +12,7 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
--->
+*/
 
 html {
     padding:        0pt;
@@ -195,7 +195,9 @@ div.table {
 }
 
 div.table table {
-    display:        block;
+ /*    display:        block; */   /* in firefox, breaks centering */
+    margin-left: auto;  /* see http://theodorakis.net/tablecentertest.html */
+    margin-right: auto;
 }
 
 div.table td {
@@ -238,14 +240,19 @@ div.navfooter, div.navfooter table {
     font-size:      12px;
 }
 
-div.figure {
-    text-align:     center;
+div.figure, div.screenshot {
+    text-align:     center;  /* needed for ms5 */
     margin-top:     1em;
     margin-bottom:  1em;
 }
 
+div.figure table, div.screenshot table {    /* see http://theodorakis.net/tablecentertest.html */
+    margin-left: auto;
+    margin-right: auto;
+}
+
 div.figure p.title {
-    text-align:     center;
+    text-align:     center; 
     margin-left:    15%;
     margin-right:   15%;
 }

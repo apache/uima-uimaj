@@ -72,7 +72,7 @@
     <title>A sample error dialog</title>
     <mediaobject>
      <imageobject>
-      <imagedata format="JPG" fileref="&imgroot;ErrorExample.jpg"/>
+      <imagedata width="3.44in" format="JPG" fileref="&imgroot;ErrorExample.jpg"/>
      </imageobject>
      <textobject>
       <phrase>Sample error dialog</phrase>
@@ -118,7 +118,7 @@
      <title>The File menu</title>
      <mediaobject>
       <imageobject>
-       <imagedata format="JPG" fileref="&imgroot;FileMenu.jpg"/>
+       <imagedata width="1.91in" format="JPG" fileref="&imgroot;FileMenu.jpg"/>
       </imageobject>
       <textobject>
        <phrase>The File menu</phrase>
@@ -326,7 +326,7 @@
      <title>The Edit menu</title>
      <mediaobject>
       <imageobject>
-       <imagedata format="JPG" fileref="&imgroot;EditMenu.jpg" />
+       <imagedata width="2.15in" format="JPG" fileref="&imgroot;EditMenu.jpg" />
       </imageobject>
       <textobject>
        <phrase>The Edit menu</phrase>
@@ -354,7 +354,7 @@
      <title>The Run menu</title>
      <mediaobject>
       <imageobject>
-       <imagedata format="JPG" fileref="&imgroot;RunMenu.jpg" />
+       <imagedata width="2.225in" format="JPG" fileref="&imgroot;RunMenu.jpg" />
       </imageobject>
       <textobject>
        <phrase>The Run menu</phrase>
@@ -463,7 +463,7 @@
       <screenshot>
        <mediaobject>
         <imageobject>
-         <imagedata format="JPG"
+         <imagedata width="5.816in" format="JPG"
           fileref="&imgroot;TypeSystemViewer.jpg" />
         </imageobject>
        </mediaobject>
@@ -500,7 +500,7 @@
       </title>
       <mediaobject>
        <imageobject>
-        <imagedata format="JPG" fileref="&imgroot;AnnotationViewer.jpg" />
+        <imagedata width="5.82in" format="JPG" fileref="&imgroot;AnnotationViewer.jpg" />
        </imageobject>
       </mediaobject>
      </figure>
@@ -560,7 +560,7 @@
     <title>State of GUI after running an analysis engine</title>
     <mediaobject>
      <imageobject>
-      <imagedata format="JPG" fileref="&imgroot;Main1.jpg" />
+      <imagedata width="6.423in" format="JPG" fileref="&imgroot;Main1.jpg" />
      </imageobject>
     </mediaobject>
    </figure>
@@ -598,7 +598,7 @@
     </title>
     <mediaobject>
      <imageobject>
-      <imagedata format="JPG" fileref="&imgroot;Main2.jpg" />
+      <imagedata width="6.39in" format="JPG" fileref="&imgroot;Main2.jpg" />
      </imageobject>
     </mediaobject>
    </figure>
@@ -619,7 +619,7 @@
     </title>
     <mediaobject>
      <imageobject>
-      <imagedata format="JPG" fileref="&imgroot;Main3.jpg" />
+      <imagedata width="6.39in" format="JPG" fileref="&imgroot;Main3.jpg" />
      </imageobject>
     </mediaobject>
    </figure>
@@ -710,7 +710,7 @@
    <para>
     The following table shows the supported keyboard shortcuts.
    </para>
-   <table frame="none" align="center" id="cvd.table.keyboardShortcuts">
+   <table frame="none" id="cvd.table.keyboardShortcuts">
     <title>Keyboard shortcuts</title>
     <tgroup cols="3">
      <thead>

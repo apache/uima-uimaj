@@ -35,6 +35,11 @@
   <xsl:param name="table.borders.with.css" select="1"/>
   <xsl:param name="html.stylesheet.type">text/css</xsl:param>           
 
+  <!--
+  <xsl:param name="use.extensions">1</xsl:param>  causes lots of failed to load image msgs !
+  <xsl:param name="graphicsize.extension">1</xsl:param>
+    -->
+
 <!-- Remove "Chapter" from the Chapter titles... 
   <xsl:param name="local.l10n.xml" select="document('')"/>
   <l:i18n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0">
