@@ -236,7 +236,7 @@ class FSNode extends FSTreeNode {
         if (this.addr == 0) {
           return getNullString();
         }
-        return "\"" + cas.getStringForCode((int) this.addr) + "\"";
+        return "\"" + escapeLt(cas.getStringForCode((int) this.addr)) + "\"";
       }
       case ARRAY_FS: {
         if (cas.getHeapValue((int) this.addr) == 0) {
@@ -255,6 +255,30 @@ class FSNode extends FSTreeNode {
     return null;
   }
 
+  private static final String escapeLt(String s) {
+    final int max = s.length();
+    int i = 0;
+    while (i < max) {
+      if (s.charAt(i) == '<') {
+	break;
+      }
+      ++i;
+    }
+    if (i == max) {
+      return s;
+    }
+    StringBuffer buf = new StringBuffer(s.substring(0, i));
+    while (i < max) {
+      if (s.charAt(i) == '<') {
+	buf.append("&lt;");
+      } else {
+	buf.append(s.charAt(i));
+      }
+      ++i;
+    }
+    return buf.toString();
+  }
+  
   private String getNullString() {
     return "&lt;null&gt;";
   }
