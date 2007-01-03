@@ -42,7 +42,8 @@ import org.apache.uima.resource.metadata.impl.XmlizationInfo;
  * 
  * 
  */
-public class ResultSpecification_impl extends MetaDataObject_impl implements ResultSpecification {
+public final class ResultSpecification_impl extends MetaDataObject_impl implements
+        ResultSpecification {
 
   private static final long serialVersionUID = 8516517600467270594L;
 
@@ -565,14 +566,15 @@ public class ResultSpecification_impl extends MetaDataObject_impl implements Res
    */
   public Object clone() {
     // create new result specification
-    // NOTE: cannot use super.clone here, since we do not want to execute
-    // the MetaDataObject_impl logic. TODO: rethink whether this should be
-    // a subclass of MetaDataOBject_impl.
+    // NOTE: we don't use super.clone here, since for performance reasons
+    // we want to do a faster clone that what the general-purpose logic in
+    // MetaDataObject_impl does. This class is marked final so that
+    // this can't cause a problem if ResultSpecification_impl is subclassed.
     ResultSpecification_impl newResultSpec = new ResultSpecification_impl();
 
     // clone HashMaps
-    newResultSpec.mTypesAndFeatures = new HashMap(this.mTypesAndFeatures);
-    newResultSpec.mDefaultLanguage = new HashSet(this.mDefaultLanguage);
+    // newResultSpec.mTypesAndFeatures = new HashMap(this.mTypesAndFeatures);
+    // newResultSpec.mDefaultLanguage = new HashSet(this.mDefaultLanguage);
 
     return newResultSpec;
   }
