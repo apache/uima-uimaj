@@ -50,19 +50,15 @@
 		<ant antfile="build-docbook.xml" target="all">
 			<property name="book_name" value="tutorials_and_users_guides" />
 		</ant>
-		<antcall target="build_tools_book">
-		</antcall>
+		<ant antfile="build-docbook.xml" target="all">
+			<property name="book_name" value="tools" />
+		</ant>
 		<ant antfile="build-docbook.xml" target="all">
 			<property name="book_name" value="references" />
 		</ant>
 
 	</target>
 
-	<target name="build_tools_book">
-		<ant antfile="build-docbook.xml" target="all">
-			<property name="book_name" value="tools" />
-		</ant>
-	</target>
 
 	<!-- ======================================================================== -->
 	<!-- ==                                                                    == -->
