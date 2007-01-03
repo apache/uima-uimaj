@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
@@ -154,5 +155,23 @@ public class CasDefinition {
     } else {
       return null;
     }
+  }
+  
+  /**
+   * Constructs and returns a <code>ProcessingResourceMetaData</code> object
+   * that contains the type system, indexes, and type priorities definitions
+   * for the CAS.
+   * 
+   * @return processing resource metadata object containing the 
+   *   relevant parts of the CAS definition
+   */
+  public ProcessingResourceMetaData getProcessingResourceMetaData() {
+    ProcessingResourceMetaData md = UIMAFramework.getResourceSpecifierFactory().createProcessingResourceMetaData();
+    md.setTypeSystem(getTypeSystemDescription());
+    md.setTypePriorities(getTypePriorities());
+    FsIndexCollection indColl = UIMAFramework.getResourceSpecifierFactory().createFsIndexCollection();
+    indColl.setFsIndexes(getFsIndexDescriptions());
+    md.setFsIndexCollection(indColl);
+    return md;
   }
 }
