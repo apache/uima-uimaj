@@ -209,54 +209,106 @@
       <ttl>CAS Visual Debugger</ttl>
       <xreftext>Chapter 5, <fo:inline xmlns:fo="http://www.w3.org/1999/XSL/Format" font-style="italic">CAS Visual Debugger</fo:inline>
       </xreftext>
-      <div element="section" href="#d0e1360" number="5.1">
+      <div element="section" href="#cvd.errorHandling" number="5.1" targetptr="cvd.errorHandling">
          <ttl>Error Handling</ttl>
          <xreftext>Section 5.1, “Error Handling”</xreftext>
+         <obj element="figure" href="#cvd.sampleErrorFigure" number="5.1" targetptr="cvd.sampleErrorFigure">
+            <ttl>A sample error dialog</ttl>
+            <xreftext>Figure 5.1, “A sample error dialog”</xreftext>
+         </obj>
       </div>
-      <div element="section" href="#d0e1373" number="5.2">
+      <div element="section" href="#cvd.preferencesFile" number="5.2" targetptr="cvd.preferencesFile">
          <ttl>Preferences File</ttl>
          <xreftext>Section 5.2, “Preferences File”</xreftext>
       </div>
-      <div element="section" href="#d0e1378" number="5.3">
+      <div element="section" href="#cvd.theMenus" number="5.3" targetptr="cvd.theMenus">
          <ttl>The Menus</ttl>
          <xreftext>Section 5.3, “The Menus”</xreftext>
-         <div element="section" href="#d0e1383" number="5.3.1">
+         <div element="section" href="#cvd.fileMenu" number="5.3.1" targetptr="cvd.fileMenu">
             <ttl>The File Menu</ttl>
             <xreftext>Section 5.3.1, “The File Menu”</xreftext>
+            <obj element="figure" href="#cvd.figure.fileMenu" number="5.2" targetptr="cvd.figure.fileMenu">
+               <ttl>The File menu</ttl>
+               <xreftext>Figure 5.2, “The File menu”</xreftext>
+            </obj>
          </div>
-         <div element="section" href="#d0e1474" number="5.3.2">
+         <div element="section" href="#cvd.editMenu" number="5.3.2" targetptr="cvd.editMenu">
             <ttl>The Edit Menu</ttl>
             <xreftext>Section 5.3.2, “The Edit Menu”</xreftext>
+            <obj element="figure" href="#cvd.figure.editMenu" number="5.3" targetptr="cvd.figure.editMenu">
+               <ttl>The Edit menu</ttl>
+               <xreftext>Figure 5.3, “The Edit menu”</xreftext>
+            </obj>
          </div>
-         <div element="section" href="#d0e1489" number="5.3.3">
+         <div element="section" href="#cvd.runMenu" number="5.3.3" targetptr="cvd.runMenu">
             <ttl>The Run Menu</ttl>
             <xreftext>Section 5.3.3, “The Run Menu”</xreftext>
+            <obj element="figure" href="#cvd.figure.runMenu" number="5.4" targetptr="cvd.figure.runMenu">
+               <ttl>The Run menu</ttl>
+               <xreftext>Figure 5.4, “The Run menu”</xreftext>
+            </obj>
          </div>
-         <div element="section" href="#d0e1533" number="5.3.4">
+         <div element="section" href="#cvd.toolsMenu" number="5.3.4" targetptr="cvd.toolsMenu">
             <ttl>The tools menu</ttl>
             <xreftext>Section 5.3.4, “The tools menu”</xreftext>
-            <div element="section" href="#d0e1538" number="5.3.4.1">
+            <div element="section" href="#cvd.viewTypeSystem" number="5.3.4.1" targetptr="cvd.viewTypeSystem">
                <ttl>View Type System</ttl>
                <xreftext>Section 5.3.4.1, “View Type System”</xreftext>
-               <obj element="figure" href="#d0e1543" number="5.1">
+               <obj element="figure" href="#cvd.figure.typeSystemViewer" number="5.5" targetptr="cvd.figure.typeSystemViewer">
                   <ttl>The type system viewer</ttl>
-                  <xreftext>Figure 5.1, “The type system viewer”</xreftext>
+                  <xreftext>Figure 5.5, “The type system viewer”</xreftext>
                </obj>
             </div>
-            <div element="section" href="#d0e1555" number="5.3.4.2">
+            <div element="section" href="#cvd.showSelectedAnnotations" number="5.3.4.2" targetptr="cvd.showSelectedAnnotations">
                <ttl>Show Selected Annotations</ttl>
                <xreftext>Section 5.3.4.2, “Show Selected Annotations”</xreftext>
-               <obj element="figure" href="#AnnotationViewerFigure" number="5.2" targetptr="AnnotationViewerFigure">
+               <obj element="figure" href="#AnnotationViewerFigure" number="5.6" targetptr="AnnotationViewerFigure">
                   <ttl>
-							Annotations produced by a statistical named
-							entity tagger
-						</ttl>
-                  <xreftext>Figure 5.2, “
-							Annotations produced by a statistical named
-							entity tagger
-						”</xreftext>
+       Annotations produced by a statistical named entity tagger
+      </ttl>
+                  <xreftext>Figure 5.6, “
+       Annotations produced by a statistical named entity tagger
+      ”</xreftext>
                </obj>
             </div>
+         </div>
+      </div>
+      <div element="section" href="#cvd.mainDisplayArea" number="5.4" targetptr="cvd.mainDisplayArea">
+         <ttl>The Main Display Area</ttl>
+         <xreftext>Section 5.4, “The Main Display Area”</xreftext>
+         <obj element="figure" href="#Main1Figure" number="5.7" targetptr="Main1Figure">
+            <ttl>State of GUI after running an analysis engine</ttl>
+            <xreftext>Figure 5.7, “State of GUI after running an analysis engine”</xreftext>
+         </obj>
+         <obj element="figure" href="#Main2Figure" number="5.8" targetptr="Main2Figure">
+            <ttl>
+     Finding annotations for a specific location in the text
+    </ttl>
+            <xreftext>Figure 5.8, “
+     Finding annotations for a specific location in the text
+    ”</xreftext>
+         </obj>
+         <obj element="figure" href="#Main3Figure" number="5.9" targetptr="Main3Figure">
+            <ttl>
+     Selecting an annotation from the context menu will highlight that
+     annotation in the FS display
+    </ttl>
+            <xreftext>Figure 5.9, “
+     Selecting an annotation from the context menu will highlight that
+     annotation in the FS display
+    ”</xreftext>
+         </obj>
+         <div element="section" href="#cvd.statusBar" number="5.4.1" targetptr="cvd.statusBar">
+            <ttl>The Status Bar</ttl>
+            <xreftext>Section 5.4.1, “The Status Bar”</xreftext>
+         </div>
+         <div element="section" href="#cvd.keyboardNavigation" number="5.4.2" targetptr="cvd.keyboardNavigation">
+            <ttl>Keyboard Navigation and Shortcuts</ttl>
+            <xreftext>Section 5.4.2, “Keyboard Navigation and Shortcuts”</xreftext>
+            <obj element="table" href="#cvd.table.keyboardShortcuts" number="5.1" targetptr="cvd.table.keyboardShortcuts">
+               <ttl>Keyboard shortcuts</ttl>
+               <xreftext>Table 5.1, “Keyboard shortcuts”</xreftext>
+            </obj>
          </div>
       </div>
    </div>
