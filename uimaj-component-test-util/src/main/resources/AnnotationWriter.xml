@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<casConsumerDescription xmlns="http://uima.watson.ibm.com/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <implementationName>org.apache.uima.test.junit_extension.AnnotationWriter</implementationName>
+    <processingResourceMetaData>
+        <name>Annotation Writer</name>
+        <description>Writes annotations to a file</description>
+        <version>1.0</version>
+        <vendor>Apache</vendor>
+    </processingResourceMetaData>
+</casConsumerDescription>
