@@ -19,20 +19,28 @@
    under the License.    
 -->
 
-<project default="all" basedir=".">
+<project default="all" basedir="." name="Apache UIMA tools documentation">
 
   <!-- ======================================================================== -->
   <!-- ==                                                                    == -->
   <!-- == Build all the Velocity Docbook Documentation                       == -->
   <!-- ==                                                                    == -->
   <!-- ======================================================================== -->
-  <target name="all" description="--> Build the book">
+	  <target name="all" description="--> Build the book">
 
-    <!-- Build the Users Guide -->
-    <ant antfile="build-docbook.xml" target="all">
-      <property name="book_name" value="tools"/>
-    </ant>
-  </target>
+	    <!-- Build the Users Guide -->
+	    <ant antfile="build-docbook.xml" target="all">
+	      <property name="book_name" value="tools"/>
+	    </ant>
+	  </target>
+
+	  <target name="javahelp" description="Build javahelp for tools">
+
+	    <!-- Build the Users Guide -->
+	    <ant antfile="build-docbook.xml" target="javahelp">
+	      <property name="book_name" value="tools"/>
+	    </ant>
+	  </target>
 
   <!-- ======================================================================== -->
   <!-- ==                                                                    == -->
