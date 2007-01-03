@@ -158,15 +158,15 @@ public class FSTreeModel implements TreeModel {
       return FSNode.FLOAT_FS;
     } else if (this.cas.isArrayType(type)) {
       return FSNode.ARRAY_FS;
-    } else if (cas.isByteArrayType(type)) {
+    } else if (this.cas.isByteArrayType(type)) {
       return FSNode.BYTE_FS;
-    } else if (cas.isBooleanArrayType(type)) {
+    } else if (this.cas.isBooleanArrayType(type)) {
       return FSNode.BOOL_FS;
-    } else if (cas.isShortArrayType(type)) {
+    } else if (this.cas.isShortArrayType(type)) {
       return FSNode.SHORT_FS;
-    } else if (cas.isLongArrayType(type)) {
+    } else if (this.cas.isLongArrayType(type)) {
       return FSNode.LONG_FS;
-    } else if (cas.isDoubleArrayType(type)) {
+    } else if (this.cas.isDoubleArrayType(type)) {
       return FSNode.DOUBLE_FS;
     }
     return FSNode.STD_FS;

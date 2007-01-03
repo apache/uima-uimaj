@@ -63,7 +63,7 @@ public class Gladis {
 
       public void run() {
         frame.pack();
-        frame.show();
+        frame.setVisible(true);
       }
     });
     return frame;

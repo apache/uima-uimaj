@@ -120,6 +120,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CommonCas;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
@@ -690,22 +691,22 @@ public class MainFrame extends JFrame {
             MainFrame.this.disableSofaListener = true;
             String currentView = (String) MainFrame.this.sofaSelectionComboBox.getSelectedItem();
             MainFrame.this.sofaSelectionComboBox.removeAllItems();
-            MainFrame.this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
+            MainFrame.this.sofaSelectionComboBox.addItem(CommonCas.NAME_DEFAULT_SOFA);
             Iterator sofas = ((CASImpl) MainFrame.this.cas).getBaseCAS().getSofaIterator();
             Feature sofaIdFeat = MainFrame.this.cas.getTypeSystem().getFeatureByFullName(
-                    CAS.FEATURE_FULL_NAME_SOFAID);
+        	CommonCas.FEATURE_FULL_NAME_SOFAID);
             boolean nonDefaultSofaFound = false;
             while (sofas.hasNext()) {
               SofaFS sofa = (SofaFS) sofas.next();
               String sofaId = sofa.getStringValue(sofaIdFeat);
-              if (!CAS.NAME_DEFAULT_SOFA.equals(sofaId)) {
+              if (!CommonCas.NAME_DEFAULT_SOFA.equals(sofaId)) {
                 MainFrame.this.sofaSelectionComboBox.addItem(sofaId);
                 nonDefaultSofaFound = true;
               }
             }
             // reuse last selected view if found in new CAS
             int newIndex = 0;
-            String newView = CAS.NAME_DEFAULT_SOFA;
+            String newView = CommonCas.NAME_DEFAULT_SOFA;
             for (int i = 0; i < MainFrame.this.sofaSelectionComboBox.getItemCount(); i++) {
               if (currentView.equals(MainFrame.this.sofaSelectionComboBox.getItemAt(i))) {
                 newIndex = i;
@@ -1130,7 +1131,7 @@ public class MainFrame extends JFrame {
       tsFrame.setTypeSystem(MainFrame.this.cas.getTypeSystem());
       tsFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       tsFrame.pack();
-      tsFrame.show();
+      tsFrame.setVisible(true);
     }
 
   }
@@ -1243,7 +1244,7 @@ public class MainFrame extends JFrame {
               "Customize Annotation Display");
       acd.init(MainFrame.this.styleMap, MainFrame.this.cas);
       acd.pack();
-      acd.show();
+      acd.setVisible(true);
     }
 
   }
@@ -1342,7 +1343,7 @@ public class MainFrame extends JFrame {
       window.setContentPane(panel);
       window.pack();
       window.setLocationRelativeTo(MainFrame.this);
-      window.show();
+      window.setVisible(true);
     }
 
   }
@@ -2499,7 +2500,7 @@ public class MainFrame extends JFrame {
     leftPanel.setLayout(new BorderLayout());
     this.sofaSelectionPanel = new JPanel();
     this.sofaSelectionComboBox = new JComboBox();
-    this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
+    this.sofaSelectionComboBox.addItem(CommonCas.NAME_DEFAULT_SOFA);
     this.sofaSelectionPanel.add(new JLabel("Select View:"));
     this.sofaSelectionPanel.add(this.sofaSelectionComboBox);
     leftPanel.add(this.sofaSelectionPanel, BorderLayout.NORTH);
@@ -2625,7 +2626,7 @@ public class MainFrame extends JFrame {
       // reset sofa combo box with just the initial view
       this.disableSofaListener = true;
       this.sofaSelectionComboBox.removeAllItems();
-      this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
+      this.sofaSelectionComboBox.addItem(CommonCas.NAME_DEFAULT_SOFA);
       this.sofaSelectionPanel.setVisible(false);
       this.disableSofaListener = false;
 //      MainFrame.this.textArea.setText(null);
@@ -2642,7 +2643,7 @@ public class MainFrame extends JFrame {
     try {
       if (doCasReset) {
         // Change to Initial view
-        this.cas = this.cas.getView(CAS.NAME_DEFAULT_SOFA);
+        this.cas = this.cas.getView(CommonCas.NAME_DEFAULT_SOFA);
         this.cas.reset();
         setLanguage();
         this.cas.setDocumentText(this.textArea.getText());
@@ -2654,15 +2655,15 @@ public class MainFrame extends JFrame {
       this.disableSofaListener = true;
       int currentViewID = this.sofaSelectionComboBox.getSelectedIndex();
       this.sofaSelectionComboBox.removeAllItems();
-      this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
+      this.sofaSelectionComboBox.addItem(CommonCas.NAME_DEFAULT_SOFA);
       Iterator sofas = ((CASImpl) MainFrame.this.cas).getBaseCAS().getSofaIterator();
       Feature sofaIdFeat = MainFrame.this.cas.getTypeSystem().getFeatureByFullName(
-              CAS.FEATURE_FULL_NAME_SOFAID);
+	  CommonCas.FEATURE_FULL_NAME_SOFAID);
       boolean nonDefaultSofaFound = false;
       while (sofas.hasNext()) {
         SofaFS sofa = (SofaFS) sofas.next();
         String sofaId = sofa.getStringValue(sofaIdFeat);
-        if (!CAS.NAME_DEFAULT_SOFA.equals(sofaId)) {
+        if (!CommonCas.NAME_DEFAULT_SOFA.equals(sofaId)) {
           this.sofaSelectionComboBox.addItem(sofaId);
           nonDefaultSofaFound = true;
         }
