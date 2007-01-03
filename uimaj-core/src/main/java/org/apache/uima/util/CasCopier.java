@@ -80,22 +80,9 @@ public class CasCopier {
    *          if true, the sofa data and mimeType of each view will be copied. If false they will not.
    */  
   public static void copyCas(CAS aSrcCas, CAS aDestCas, boolean aCopySofa) {
-    //create views if they do not exist
-    Iterator sofaIter = aSrcCas.getSofaIterator();
-    while (sofaIter.hasNext()) {
-      SofaFS sofa = ((SofaFS)sofaIter.next());
-      try {
-        aDestCas.getView(sofa.getSofaID()); //TODO: is this safe with sofa mappings?
-      }
-      catch(CASRuntimeException e) {
-        //create the view
-       aDestCas.createView(sofa.getSofaID()); //TODO: is this safe with sofa mappings?
-      }
-    }
-    
     CasCopier copier = new CasCopier(aDestCas);
     
-    sofaIter = aSrcCas.getSofaIterator();
+    Iterator sofaIter = aSrcCas.getSofaIterator();
     while (sofaIter.hasNext()) {
       SofaFS sofa = ((SofaFS)sofaIter.next());
       CAS view = aSrcCas.getView(sofa);
@@ -117,14 +104,7 @@ public class CasCopier {
    */
   public void copyCasView(CAS aSrcCasView, boolean aCopySofa) {
     //get or create the target view
-    CAS targetView;
-    try {
-      targetView = mDestCas.getView(aSrcCasView.getViewName()); //TODO: is this safe with sofa mappings?
-    }
-    catch(CASRuntimeException e) {
-      //create the view
-      targetView = mDestCas.createView(aSrcCasView.getViewName());
-    }
+    CAS targetView = getOrCreateView(mDestCas, aSrcCasView.getViewName());
     
     if (aCopySofa) {
       // can't copy the SofaFS - just copy the sofa data and mime type
@@ -149,9 +129,7 @@ public class CasCopier {
         if (!indexedFs.contains(fs)) {
           FeatureStructure copyOfFs = copyFs(fs);
           // also don't index the DocumentAnnotation (it's indexed by default)
-          //TODO: clean this up
-          if (!(copyOfFs instanceof AnnotationFS) ||
-              !copyOfFs.equals(((AnnotationFS)copyOfFs).getView().getDocumentAnnotation())) {
+          if (!isDocumentAnnotation(copyOfFs)) {
             targetView.addFsToIndexes(copyOfFs);
           }
           indexedFs.add(fs);
@@ -159,6 +137,7 @@ public class CasCopier {
       }
     }
   }
+
 
   /**
    * Copies an FS from the source CAS to the destination CAS. Also copies any referenced FS, except
@@ -183,22 +162,12 @@ public class CasCopier {
     // same Sofa ID in the target CAS.  If it does not exist it will be created.
     if (aFS instanceof SofaFS) {
       String sofaId = ((SofaFS)aFS).getSofaID();
-      SofaFS destSofa;
-      //TODO: would be better if we could check for sofa existence without the try...catch
-      try {
-        destSofa = mDestCas.getView(sofaId).getSofa(); //TODO: is this safe with sofa mappings?
-      }
-      catch(CASRuntimeException e) {
-        //create the Sofa
-        destSofa = mDestCas.createView(sofaId).getSofa();
-      }
-      return destSofa;
+      return getOrCreateView(mDestCas, sofaId).getSofa();
     }
 
     // DocumentAnnotation - instead of creating a new instance, reuse the automatically created
-    // instance in the destination view.
-    if (aFS instanceof AnnotationFS && 
-        aFS.equals(((AnnotationFS)aFS).getView().getDocumentAnnotation())) {         
+    // instance in the destination view. 
+    if (isDocumentAnnotation(aFS)) {         
       String viewName = ((AnnotationFS)aFS).getView().getViewName();
       CAS destView = mDestCas.getView(viewName);
       FeatureStructure destDocAnnot = destView.getDocumentAnnotation();
@@ -376,5 +345,29 @@ public class CasCopier {
     }
     assert false; // the set of array types should be exhaustive, so we should never get here
     return null;
+  }
+  
+  /**
+   * Gets the named view; if the view doesn't exist it will be created.
+   */
+  private static CAS getOrCreateView(CAS aCas, String aViewName) {
+    //TODO: there should be some way to do this without the try...catch
+    try {
+      return aCas.getView(aViewName); 
+    }
+    catch(CASRuntimeException e) {
+      //create the view
+      return aCas.createView(aViewName); 
+    }
+  }  
+  
+  /**
+   * Determines whether the given FS is the DocumentAnnotation for its view.  
+   * This is more than just a type check; we actually check if it is the one "special"
+   * DocumentAnnotation that CAS.getDocumentAnnotation() would return.
+   */
+  private static boolean isDocumentAnnotation(FeatureStructure aFS) {
+    return (aFS instanceof AnnotationFS) &&
+      aFS.equals(((AnnotationFS)aFS).getView().getDocumentAnnotation());
   }
 }
