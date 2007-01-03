@@ -118,7 +118,7 @@
      <title>The File menu</title>
      <mediaobject>
       <imageobject>
-       <imagedata format="JPG" fileref="&imgroot;FileMenu.jpg" width="173px"/>
+       <imagedata format="JPG" fileref="&imgroot;FileMenu.jpg"/>
       </imageobject>
       <textobject>
        <phrase>The File menu</phrase>
@@ -326,7 +326,7 @@
      <title>The Edit menu</title>
      <mediaobject>
       <imageobject>
-       <imagedata format="JPG" fileref="&imgroot;EditMenu.jpg" width="190px"/>
+       <imagedata format="JPG" fileref="&imgroot;EditMenu.jpg" />
       </imageobject>
       <textobject>
        <phrase>The Edit menu</phrase>
@@ -354,7 +354,7 @@
      <title>The Run menu</title>
      <mediaobject>
       <imageobject>
-       <imagedata format="JPG" fileref="&imgroot;RunMenu.jpg" width="202px"/>
+       <imagedata format="JPG" fileref="&imgroot;RunMenu.jpg" />
       </imageobject>
       <textobject>
        <phrase>The Run menu</phrase>
