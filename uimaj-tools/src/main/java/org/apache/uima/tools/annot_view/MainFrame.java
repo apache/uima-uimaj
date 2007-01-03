@@ -1371,25 +1371,28 @@ public class MainFrame extends JFrame {
 
     public void actionPerformed(ActionEvent event) {
       try {
-        String manFileName = "/html_manual/casvisualdebugger.htm";
-        if (manFileName == null) {
-          String msg = "Can't find manual since system property\n"
-                  + "gladis.manual.file is not set.";
-          JOptionPane.showMessageDialog(MainFrame.this, msg, "Error loading manual",
-                  JOptionPane.ERROR_MESSAGE);
-          return;
-        }
+        String manFileName = "tools/tools.html";
         JFrame manFrame = new JFrame("CVD Manual");
         JEditorPane editorPane = new JEditorPane();
         editorPane.setEditable(false);
         editorPane.addHyperlinkListener(new Hyperactive());
-        URL manURL = MainFrame.class.getResource(manFileName);
+        URL manURL = ClassLoader.getSystemResource(manFileName);
+        if (manURL == null) {
+          String msg = "Can't find manual. The manual is loaded via the classpath,\n" +
+          		"so make sure the manual folder is in the classpath.";
+          JOptionPane.showMessageDialog(MainFrame.this, msg, "Error loading manual",
+                  JOptionPane.ERROR_MESSAGE);
+          return;
+        }
         editorPane.setPage(manURL);
         JScrollPane scrollPane = new JScrollPane(editorPane);
         scrollPane.setPreferredSize(new Dimension(700, 800));
         manFrame.setContentPane(scrollPane);
         manFrame.pack();
-        manFrame.show();
+        manFrame.setVisible(true);
+        URL cvdLinkUrl = new URL(manURL.toString() + "#ugr.tools.cvd");
+        HyperlinkEvent e = new HyperlinkEvent(editorPane, HyperlinkEvent.EventType.ACTIVATED, cvdLinkUrl);
+        editorPane.fireHyperlinkUpdate(e);
       } catch (Exception e) {
         handleException(e);
       }
