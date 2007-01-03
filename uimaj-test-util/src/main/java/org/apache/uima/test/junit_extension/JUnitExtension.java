@@ -47,6 +47,10 @@ public class JUnitExtension {
     return file;
   }
 
+  public static URL getURL(String aRelativeFilePath) {
+    return JUnitExtension.class.getClassLoader().getResource(aRelativeFilePath);
+  }
+
   public static void handleException(Exception e) throws Exception {
     // check command line setting
     if (System.getProperty("isCommandLine", "false").equals("true")) {
