@@ -168,10 +168,456 @@
 							files, so you may want to experiment.
 						</para>
 					</formalpara>
-
 				</listitem>
+
+				<listitem>
+					<formalpara>
+						<title>Save Text File</title>
+						<para>
+							Saves the currently open text file. If no
+							file is currently loaded (either because you
+							haven't loaded a file, or you've used the
+							&quot;New Text...&quot; menu item), this
+							menu item is disabled (and Ctrl-S will do
+							nothing).
+						</para>
+					</formalpara>
+				</listitem>
+
+				<listitem>
+					<formalpara>
+						<title>Save Text As...</title>
+						<para>
+							Save the text to a file of your choosing.
+							This can be an existing file, which is then
+							overwritten, or it can be a new file that
+							you're creating.
+						</para>
+					</formalpara>
+				</listitem>
+
+				<listitem>
+					<formalpara>
+						<title>Change Code Page</title>
+						<para>
+							Allows you to change the code page that is
+							used to load and save text files. If you're
+							sure the text you're loading is in ASCII or
+							one of the 8-bit extensions such as
+							ISO-8859-1 (ISO Latin1), there is probably
+							nothing you need to do. Just load the text
+							and look at the display. If you see no funny
+							characters or square boxes, chances are your
+							selected code page is compatible with your
+							text file.
+
+							Note that the code page setting is also in
+							effect when you save files. You can observe
+							the effects with a hex editor or by just
+							looking at the file size. For example, if
+							you save the default text
+							<computeroutput>
+								This is where the text goes.
+							</computeroutput>
+							to a file on Windows using the default code
+							page, the size of the file will be 28 bytes.
+							If you now change the code page to UTF-16
+							and save the file again, the file size will
+							be 58 bytes: two bytes for each character,
+							plus two bytes for the byte-order mark. Now
+							switch the code page back to the default
+							Windows code page and reload the UTF-16 file
+							to see the difference in the editor.
+
+							By default, the code page options include
+							all code pages that any Java implementation
+							must support: US-ASCII, ISO-8859-1, UTF-8,
+							UTF-16BE (big-endian), UTF-16LE (little
+							endian) and UTF-16 (with magic marker). Also
+							included is the system code page, if it is
+							not among the built-in ones. Prior to Java
+							1.4, there is no programmatic way to
+							determine what the complete list of
+							supported code pages is. Therefore, you can
+							add your own code page in the corresponding
+							submenu. All this amounts to is adding a
+							string. The new code page is automatically
+							selected as the current code page. The way
+							to find out if the code page you entered is
+							supported in your Java implementation is to
+							try and load a text file. If you see an
+							error ``Unsupported text encoding'', the
+							code page is not supported. [Note: as of
+							Java 1.4, it is possible to query Java for
+							the supported code pages and so prevent
+							users from trying out an unsupported code
+							page. This was not possible in Java 1.3,
+							which we're still supporting with this
+							version of Gladis.]
+						</para>
+					</formalpara>
+				</listitem>
+
+				<listitem>
+					<formalpara>
+						<title>Load Color Settings</title>
+						<para>
+							Load previously saved color settings from a
+							file (see Tools/Customize Annotation
+							Display).  It is highly recommended that you
+							only load automatically generated files. 
+							Strange things may happen if you try to load
+							the wrong file format. On startup, the
+							program attempts to load the last color
+							settings file that you loaded or saved
+							during a previous session. If you intend to
+							use the same color settings as the last time
+							you ran the program, there is therefore no
+							need to manually load a color settings file.
+						</para>
+					</formalpara>
+				</listitem>
+
+				<listitem>
+					<formalpara>
+						<title>Save Color Settings</title>
+						<para>
+							Save your customized color settings (see
+							Tools/Customize Annotation Display).  The
+							file is a Java properties file, and as such,
+							reasonably transparent.  What is not
+							transparent is the encoding of the colors
+							(integer encoding of 24-bit RGB values), so
+							changing the file by hand is not really
+							recommended.
+						</para>
+					</formalpara>
+				</listitem>
+
+				<listitem>
+					<formalpara>
+						<title>Read Type System File</title>
+						<para>
+							Load a type system file. This allows you to
+							load an XCAS file without having to have
+							access to the corresponding annotator.
+						</para>
+					</formalpara>
+				</listitem>
+
+				<listitem>
+					<formalpara>
+						<title>Write Type System File</title>
+						<para>
+							Create a type system file from the currently
+							loaded type definitions. In addition, you
+							can save the current CAS as a XCAS file (see
+							below). This allows you to later load the
+							type system and XCAS to view the CAS without
+							having to rerun the annotator.
+						</para>
+					</formalpara>
+				</listitem>
+
+				<listitem>
+					<formalpara>
+						<title>Write XCAS File</title>
+						<para>
+							Writes the current analysis out as an XCAS
+							file. This menu item is disabled until after
+							the first time a TAE has run successfully.
+						</para>
+					</formalpara>
+				</listitem>
+
+				<listitem>
+					<formalpara>
+						<title>Read XCAS File</title>
+						<para>
+							Read an XCAS file. Important: XCAS is a
+							serialization format that serializes a CAS
+							without type system and index information.
+							It is therefore impossible to read in a
+							stand-alone XCAS file. XCAS files can only
+							be interpreted in the context of an existing
+							type system. Consequently, you need to load
+							the TAE that was used to create the XCAS
+							file to be able to load it. Loading a XCAS
+							file without loading the TAE may produce
+							strange errors. You may get syntax errors on
+							loading the XCAS file, or worse, everything
+							may appear to go smoothly but in reality
+							your CAS may be corrupted.
+						</para>
+					</formalpara>
+				</listitem>
+
+				<listitem>
+					<formalpara>
+						<title>Exit</title>
+						<para>
+							Exits the program. Your preferences will be
+							saved.
+						</para>
+					</formalpara>
+				</listitem>
+
 			</itemizedlist>
 
 		</section>
+
+		<section>
+			<title>The Edit Menu</title>
+			<para>
+
+				<screenshot>
+					<mediaobject>
+						<imageobject>
+							<imagedata format="JPG"
+								fileref="&imgroot;EditMenu.jpg" />
+						</imageobject>
+						<textobject>
+							<phrase>The Edit menu</phrase>
+						</textobject>
+					</mediaobject>
+				</screenshot>
+
+				The &quot;Edit&quot; menu provides a standard text
+				editing menu with Cut, Copy and Paste, as well as
+				unlimited Undo.
+			</para>
+			<para>
+				Note that standard keyboard accelerators Ctrl-X, Ctrl-C,
+				Ctrl-V and Ctrl-Z can be used for Cut, Copy, Paste and
+				Undo, respectively. The text area supports other
+				standard keyboard operations such as navigation HOME,
+				Ctrl-HOME etc., as well as marking text with Shift-
+				&lt;ArrowKey&gt; .
+			</para>
+		</section>
+
+		<section>
+			<title>The Run Menu</title>
+			<para>
+
+				<screenshot>
+					<mediaobject>
+						<imageobject>
+							<imagedata format="JPG"
+								fileref="&imgroot;RunMenu.jpg" />
+						</imageobject>
+						<textobject>
+							<phrase>The Run menu</phrase>
+						</textobject>
+					</mediaobject>
+				</screenshot>
+
+				In the Run menu, you can load and run text analysis
+				engines.
+			</para>
+
+			<itemizedlist>
+
+				<listitem>
+					<formalpara>
+						<title>Load AE</title>
+						<para>
+							Loads and initializes a text analysis
+							engine. Choosing this menu item will display
+							a file open dialog where you should choose
+							an XML descriptor of a Text Analysis Engine
+							to process the current text.  Even if the
+							analysis engine runs fast, this will take a
+							while, since there is a lot of setup work to
+							do when a new TAE is created.  So be
+							patient.
+
+							When you develop a new annotator, you will
+							often need to recompile your code. Gladis
+							will not reload your annotator code. When
+							you recompile your code, you need to
+							terminate the GUI and restart it. If you
+							only make changes to the XML descriptor, you
+							don't need to restart the GUI. Simply reload
+							the XML file.
+						</para>
+					</formalpara>
+				</listitem>
+
+				<listitem>
+					<formalpara>
+						<title>Run AE</title>
+						<para>
+							Before you have (successfully) loaded a TAE,
+							this menu item will be disabled. After you
+							have loaded a TAE, it will be enabled, and
+							the name changes according to the name of
+							the TAE you have loaded. For example, if
+							you've loaded &quot;The World's Fastest
+							Parser&quot;, you will have a menu item
+							called &quot;Run The World's Fastest
+							Parser&quot;. When you choose the item, the
+							TAE is run on whatever text you have
+							currently loaded.
+
+							After a TAE has run successfully, the index
+							window in the upper left-hand corner of the
+							screen should be updated and show the
+							indexes that were created by this run.  We
+							will have more to say about indexes and what
+							to do with them later.
+						</para>
+					</formalpara>
+				</listitem>
+
+				<listitem>
+					<formalpara>
+						<title>Run AE on CAS</title>
+						<para>
+							This allows you to run an analysis engine on
+							the current CAS. This is useful if you have
+							loaded a CAS from an XCAS file, and would
+							like to run further analysis on it.
+						</para>
+					</formalpara>
+				</listitem>
+
+				<listitem>
+					<formalpara>
+						<title>Recently used</title>
+						<para>
+							Collects a list of recently used analysis
+							engines as a short-cut for loading.
+						</para>
+					</formalpara>
+				</listitem>
+
+				<listitem>
+					<formalpara>
+						<title>Language</title>
+						<para>
+							Some annotators do language specific
+							processing. For example, if you run lexical
+							analysis, the results may be quite different
+							depending on what the analysis engine thinks
+							the language of the document is. With this
+							menu item, you can manually set the document
+							language. Alternatively, you can use an
+							automatic language identification annotator.
+							If the analysis engines you're working with
+							are language agnostic, there is no need to
+							set the language.
+						</para>
+					</formalpara>
+				</listitem>
+
+			</itemizedlist>
+		</section>
+
+		<section>
+			<title>The tools menu</title>
+			<para>
+				The tools menu contains some assorted utilities, such as
+				the log file viewer. A more detailed description of some
+				of the menu items follows below.
+			</para>
+			<section>
+				<title>View Type System</title>
+				<para>
+
+					<figure>
+						<title>The type system viewer</title>
+
+						<screenshot>
+							<mediaobject>
+								<imageobject>
+									<imagedata format="JPG"
+										fileref="&imgroot;TypeSystemViewer.jpg" />
+								</imageobject>
+							</mediaobject>
+						</screenshot>
+					</figure>
+
+					Brings up a new window that displays the type
+					system. This menu item is disabled until the first
+					time you have run an analysis engine, since there is
+					no type system to display until then. An example is
+					shown above.
+				</para>
+				<para>
+					You can view the inheritance tree on the left by
+					expanding and collapsing nodes.  When you select a
+					type, the features defined on that type are
+					displayed in the table on the right.  The feature
+					table has three columns.  The first gives the name
+					of the feature, the second one the type of the
+					feature (i.e., what values it takes), and the third
+					column displays the highest type this feature is
+					defined on.  In this example, the features
+					&quot;begin&quot; and &quot;end&quot; are inherited
+					from the built-in annotation type.
+				</para>
+				<para>
+					In the options menu, you can configure if you want
+					to see inherited features or not (not yet
+					implemented).
+				</para>
+			</section>
+
+			<section>
+				<title>Show Selected Annotations</title>
+				<para>
+					<figure id="AnnotationViewerFigure">
+						<title>
+							Annotations produced by a statistical named
+							entity tagger
+						</title>
+						<mediaobject>
+							<imageobject>
+								<imagedata format="JPG"
+									fileref="&imgroot;AnnotationViewer.jpg" />
+							</imageobject>
+						</mediaobject>
+					</figure>
+				</para>
+
+				<para>
+					To enable this menu, you must have run an analysis
+					engine and selected the ``AnnotationIndex'' or one
+					of its subnodes in the upper left hand corncer of
+					the screen.  It will bring up a new text window with
+					all selected annotations marked up in the text. 
+				</para>
+				<para>
+					<xref linkend="AnnotationViewerFigure" />
+					shows the results of applying a statistical named
+					entity tagger to a newspaper article.  Some
+					annotation colors have been customized: countries
+					are in reverse video, organizations have a turquois
+					background, person names are green, and occupations
+					have a maroon background.  The default background
+					color is yellow.  This color is also used if there
+					is more than one annotation spanning a certain
+					text.  Clearly, this display is only useful if you
+					don't have any overlapping annotations, or at least
+					not too many.
+				</para>
+				<para>
+					This menu item is also available as a context menu
+					in the Index Tree area of the main window. To use
+					it, select the annotation index or one of its
+					subnodes, right-click to bring up a popup menu, and
+					select the only item in the popup menu. The popup
+					menu is actually a better way to invoke the
+					annotation display, since it changes according to
+					the selection in the Index Tree area, and will tell
+					you if what you've selected can be displayed or not.
+				</para>
+
+
+			</section>
+
+		</section>
+
 	</section>
 </chapter>

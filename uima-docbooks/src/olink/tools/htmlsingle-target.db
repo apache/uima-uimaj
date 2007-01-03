@@ -224,6 +224,40 @@
             <ttl>The File Menu</ttl>
             <xreftext>Section 5.3.1, “The File Menu”</xreftext>
          </div>
+         <div element="section" href="#d0e1474" number="5.3.2">
+            <ttl>The Edit Menu</ttl>
+            <xreftext>Section 5.3.2, “The Edit Menu”</xreftext>
+         </div>
+         <div element="section" href="#d0e1489" number="5.3.3">
+            <ttl>The Run Menu</ttl>
+            <xreftext>Section 5.3.3, “The Run Menu”</xreftext>
+         </div>
+         <div element="section" href="#d0e1533" number="5.3.4">
+            <ttl>The tools menu</ttl>
+            <xreftext>Section 5.3.4, “The tools menu”</xreftext>
+            <div element="section" href="#d0e1538" number="5.3.4.1">
+               <ttl>View Type System</ttl>
+               <xreftext>Section 5.3.4.1, “View Type System”</xreftext>
+               <obj element="figure" href="#d0e1543" number="5.1">
+                  <ttl>The type system viewer</ttl>
+                  <xreftext>Figure 5.1, “The type system viewer”</xreftext>
+               </obj>
+            </div>
+            <div element="section" href="#d0e1555" number="5.3.4.2">
+               <ttl>Show Selected Annotations</ttl>
+               <xreftext>Section 5.3.4.2, “Show Selected Annotations”</xreftext>
+               <obj element="figure" href="#AnnotationViewerFigure" number="5.2" targetptr="AnnotationViewerFigure">
+                  <ttl>
+							Annotations produced by a statistical named
+							entity tagger
+						</ttl>
+                  <xreftext>Figure 5.2, “
+							Annotations produced by a statistical named
+							entity tagger
+						”</xreftext>
+               </obj>
+            </div>
+         </div>
       </div>
    </div>
    <div element="chapter" href="#ugr.tools.jcasgen" number="6" targetptr="ugr.tools.jcasgen">
