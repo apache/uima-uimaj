@@ -337,7 +337,7 @@ CAS Consumer:
         
         
         <programlisting>-Xms128M -Xmx256M 
--Duima.home="C:\Program Files\IBM\uima"</programlisting>
+-Duima.home="C:\Program Files\Apache\uima"</programlisting>
         (or wherever you installed the UIMA SDK)</para>
       
       <para>Click the Run button to launch the CPE Configurator, and use it as previously
