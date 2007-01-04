@@ -573,8 +573,8 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
     ResultSpecification_impl newResultSpec = new ResultSpecification_impl();
 
     // clone HashMaps
-    // newResultSpec.mTypesAndFeatures = new HashMap(this.mTypesAndFeatures);
-    // newResultSpec.mDefaultLanguage = new HashSet(this.mDefaultLanguage);
+    newResultSpec.mTypesAndFeatures = new HashMap(this.mTypesAndFeatures);
+    newResultSpec.mDefaultLanguage = new HashSet(this.mDefaultLanguage);
 
     return newResultSpec;
   }
