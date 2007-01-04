@@ -149,7 +149,6 @@
 							<excludePackageNames>*.internal.*:*.impl.*</excludePackageNames>-->
 							<!-- add a few classes in impl packages that are directly used by user code -->
 							<additionalparam>
-								${basedir}/../uimaj-core/src/main/java/org/apache/uima/jcas/impl/JCas.java
 								${basedir}/../uimaj-core/src/main/java/org/apache/uima/cas/impl/XCASDeserializer.java
 								${basedir}/../uimaj-core/src/main/java/org/apache/uima/cas/impl/XCASParsingException.java
 								${basedir}/../uimaj-core/src/main/java/org/apache/uima/cas/impl/XCASSerializer.java
