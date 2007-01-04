@@ -61,6 +61,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.logging.LogManager;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -135,7 +136,6 @@ import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XCASSerializer;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.TCAS;
-import org.apache.uima.internal.util.EncodedPrintStream;
 import org.apache.uima.internal.util.FileUtils;
 import org.apache.uima.internal.util.TimeSpan;
 import org.apache.uima.internal.util.Timer;
@@ -1439,6 +1439,8 @@ public class MainFrame extends JFrame {
     }
 
   }
+  
+  private static final String loggerPropertiesFileName = "org/apache/uima/tools/annot_view/Logger.properties";
 
   private static final String defaultText =
   // "Load a text file and/or edit text here.";
@@ -2460,10 +2462,25 @@ public class MainFrame extends JFrame {
     this.statusPanel.revalidate();
   }
 
-  private void init() {
-    this.addCursorOwningComponent(this);
-    File homeDir = new File(System.getProperty("user.dir"));
+  private void initializeLogging() {
+    File homeDir = new File(System.getProperty("user.home"));
+    LogManager logManager = LogManager.getLogManager();
+    try {
+      logManager.readConfiguration(ClassLoader.getSystemResourceAsStream(loggerPropertiesFileName));
+    } catch (SecurityException e) {
+      handleException(e);
+      return;
+    } catch (IOException e) {
+      handleException(e);
+      return;
+    }
     this.logFile = new File(homeDir, "uima.log");
+    this.log = UIMAFramework.getLogger();
+  }
+  
+  private void init() {
+    initializeLogging();
+    this.addCursorOwningComponent(this);
     this.addWindowListener(new MainFrameClosing());
     // runConfigs = new ArrayList();
     createTextArea();
@@ -2583,13 +2600,6 @@ public class MainFrame extends JFrame {
           handleException(e, msg);
         }
       }
-
-      this.log = UIMAFramework.getLogger();
-      this.logStream = new EncodedPrintStream(new BufferedOutputStream(new FileOutputStream(
-              this.logFile)), "UTF-8");
-
-      this.log.setOutputStream(this.logStream);
-      // System.out.println("Logging to: " + logFile.getAbsolutePath());
 
       // Destroy old AE.
       if (this.ae != null) {
