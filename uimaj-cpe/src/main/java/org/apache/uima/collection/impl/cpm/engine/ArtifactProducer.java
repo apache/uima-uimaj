@@ -475,8 +475,13 @@ public class ArtifactProducer extends Thread {
         try {
           if (sofaUnaware) {
             // sofa-unaware CR, give it whatever is mapped to the
-            // initial view
+            // initial view (creating that view first if it's not the default)
+            String absSofaName = context.getComponentInfo().mapToSofaID(CAS.NAME_DEFAULT_SOFA);
+            if (!CAS.NAME_DEFAULT_SOFA.equals(absSofaName)) {
+              casList[i].createView(CAS.NAME_DEFAULT_SOFA);
+            }            
             CAS view = casList[i].getView(CAS.NAME_DEFAULT_SOFA);
+            
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
                       this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
