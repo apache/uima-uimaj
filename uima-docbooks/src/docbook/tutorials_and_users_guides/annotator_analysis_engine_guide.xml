@@ -257,7 +257,7 @@ under the License.
     <name>TutorialTypeSystem</name>
     <description>Type System Definition for the tutorial examples - 
         as of Exercise 1</description>
-    <vendor>IBM</vendor>
+    <vendor>Apache Software Foundation</vendor>
     <version>1.0</version>
     <types>
       <typeDescription>
