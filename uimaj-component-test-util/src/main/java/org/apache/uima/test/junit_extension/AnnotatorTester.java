@@ -22,6 +22,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
+import junit.framework.Assert;
+
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -353,10 +355,7 @@ public class AnnotatorTester
          {
            testFile.delete();
          }
-         else
-         {
-            System.out.println("ErrorFile: " + testFile.getAbsolutePath());
-         }
+         Assert.assertTrue(isIdentic);
          
       }
       catch (Exception ex)
