@@ -191,10 +191,8 @@ under the License.
       <destName>readme.txt</destName>
     </file>
     <file>
-      <source>
-        ../uimaj-examples/src/main/java/org/apache/uima/examples/xmi/XmiEcoreCasConsumer.java</source>
-      <outputDirectory>/apache-uima
-        /examples/ecore_src/org/apache/uima/examples/xmi</outputDirectory>
+      <source>../uimaj-examples/src/main/java/org/apache/uima/examples/xmi/XmiEcoreCasConsumer.java</source>
+      <outputDirectory>/apache-uima/examples/ecore_src/org/apache/uima/examples/xmi</outputDirectory>
     </file>
   </files>
 </assembly>
