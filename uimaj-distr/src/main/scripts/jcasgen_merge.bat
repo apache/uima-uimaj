@@ -41,7 +41,7 @@ REM   under the License.
 @set secondarg=-jcasgenoutput "%~2"
 @:next1
 @set ARGS=-data "%ECLIPSE_TEMP_WORKSPACE%" -noupdate -nosplash -consolelog -application org.apache.uima.jcas.jcasgenp.JCasGen %firstarg% %secondarg%
-@set logger=-Djava.util.logging.config.file=%UIMA_HOME%/FileConsoleLogger.properties
+@set logger=-Djava.util.logging.config.file=%UIMA_HOME%/config\FileConsoleLogger.properties
 @rmdir /S /Q "%ECLIPSE_TEMP_WORKSPACE%"
 if "%JAVA_HOME%"=="" set JAVA_HOME=%UIMA_HOME%\java\jre
 "%JAVA_HOME%\bin\java" "%logger%" -cp "%ECLIPSE_HOME%\startup.jar" org.eclipse.core.launcher.Main %ARGS%

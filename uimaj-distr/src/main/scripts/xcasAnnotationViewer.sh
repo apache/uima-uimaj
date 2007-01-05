@@ -22,4 +22,4 @@ if [ "$JAVA_HOME" = "" ];
 then
   JAVA_HOME=$UIMA_HOME/java/jre
 fi
-"$JAVA_HOME/bin/java" -cp "$UIMA_CLASSPATH" -Xms128M -Xmx900M "-Duima.home=$UIMA_HOME" "-Duima.datapath=$UIMA_DATAPATH" "-Djava.util.logging.config.file=$UIMA_HOME/Logger.properties" org.apache.uima.tools.XCasAnnotationViewerMain
+"$JAVA_HOME/bin/java" -cp "$UIMA_CLASSPATH" -Xms128M -Xmx900M "-Duima.home=$UIMA_HOME" "-Duima.datapath=$UIMA_DATAPATH" "-Djava.util.logging.config.file=$UIMA_HOME/config/Logger.properties" org.apache.uima.tools.XCasAnnotationViewerMain

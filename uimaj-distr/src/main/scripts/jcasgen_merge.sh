@@ -56,7 +56,7 @@ else
     J="$JAVA_HOME/bin/java"
     ES="$ECLIPSE_HOME/startup.jar"
     MAIN=org.eclipse.core.launcher.Main
-    LOGGER="-Djava.util.logging.config.file=$UIMA_HOME/FileConsoleLogger.properties"
+    LOGGER="-Djava.util.logging.config.file=$UIMA_HOME/config/FileConsoleLogger.properties"
     ARGS="-noupdate -nosplash -consolelog -application org.apache.uima.jcas.jcasgenp.JCasGen"
     if [ "$firstarg" = "" ] 
     then 

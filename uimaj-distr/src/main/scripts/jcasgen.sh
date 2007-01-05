@@ -31,7 +31,7 @@ if [ "$JAVA_HOME" = "" ]
 then
   JAVA_HOME=$UIMA_HOME/java/jre
 fi
-LOGGER="-Djava.util.logging.config.file=$UIMA_HOME/FileConsoleLogger.properties"
+LOGGER="-Djava.util.logging.config.file=$UIMA_HOME/config/FileConsoleLogger.properties"
 MAIN=org.apache.uima.tools.jcasgen.Jg
 if [ "$firstarg" = "" ]
 then
