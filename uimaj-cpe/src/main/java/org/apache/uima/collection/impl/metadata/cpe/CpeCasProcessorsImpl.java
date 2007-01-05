@@ -184,9 +184,11 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
     if (aPosition <= casProcessors.size()) {
       casProcessors.remove(aPosition);
     }
-    throw new CpeDescriptorException(CpmLocalizedMessage.getLocalizedMessage(
-            CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_array_index__WARNING",
-            new Object[] { Thread.currentThread().getName() }));
+    else {
+      throw new CpeDescriptorException(CpmLocalizedMessage.getLocalizedMessage(
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_array_index__WARNING",
+              new Object[] { Thread.currentThread().getName() }));
+    }
   }
 
   /**
@@ -198,9 +200,11 @@ public class CpeCasProcessorsImpl extends MetaDataObject_impl implements CpeCasP
       casProcessors.remove(aPosition);
       return getAllCpeCasProcessors();
     }
-    throw new CpeDescriptorException(CpmLocalizedMessage.getLocalizedMessage(
-            CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_array_index__WARNING",
-            new Object[] { Thread.currentThread().getName() }));
+    else {
+      throw new CpeDescriptorException(CpmLocalizedMessage.getLocalizedMessage(
+              CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_EXP_invalid_array_index__WARNING",
+              new Object[] { Thread.currentThread().getName() }));
+    }
   }
 
   /*
