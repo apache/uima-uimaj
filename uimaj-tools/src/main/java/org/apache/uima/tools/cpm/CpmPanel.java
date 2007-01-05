@@ -73,8 +73,10 @@ import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory;
 import org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSettings;
 import org.apache.uima.collection.metadata.CpeCasProcessor;
+import org.apache.uima.collection.metadata.CpeCasProcessors;
 import org.apache.uima.collection.metadata.CpeCollectionReader;
 import org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer;
+import org.apache.uima.collection.metadata.CpeCollectionReaderIterator;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.collection.metadata.CpeDescriptorException;
 import org.apache.uima.resource.ResourceSpecifier;
@@ -209,6 +211,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   private boolean selectedComponentsChanged = false;
 
   private JMenuItem viewCasInitializerPanelMenuItem;
+
+  private CpeDescription currentCpeDesc = createEmptyCpeDescription();
 
   public CpmPanel() {
     super();
@@ -371,6 +375,30 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
     performanceQueryTimer = new Timer(2000, this);
 
+    initFileChoosers();
+
+    // initialize empty CollectionReader and CAS Initializer panels
+    try {
+      populateCollectionReaderPanel(null);
+      populateCasInitializerPanel(null);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    // CAS initializer panel is initially hidden since it is deprecated
+    setCasInitializerPanelVisible(false);
+
+    // read preferences (loads last opened CPE descriptor)
+    if (System.getProperty("uima.noprefs") == null) {
+      readPreferences();
+    }
+  }
+
+  /**
+   * Initialize the file choosers. This is called initially from the constructor but can be called
+   * again to reset the file choosers to their default state.
+   */
+  private void initFileChoosers() {
     // set up AE file chooser to point to directory containing last
     // selected AE
     aeFileChooser = new JFileChooser(fileChooserRootDir);
@@ -404,22 +432,6 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
     this.openSaveFileChooser = new JFileChooser(fileChooserRootDir);
     openSaveFileChooser.setFileFilter(new XMLFileFilter());
-
-    // initialize empty CollectionReader and CAS Initializer panels
-    try {
-      populateCollectionReaderPanel(null, null);
-      populateCasInitializerPanel(null, null);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    // CAS initializer panel is initially hidden since it is deprecated
-    setCasInitializerPanelVisible(false);
-
-    // read preferences (loads last opened CPE descriptor)
-    if (System.getProperty("uima.noprefs") == null) {
-      readPreferences();
-    }
   }
 
   private Frame getParentFrame() {
@@ -510,11 +522,11 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     }
 
     try {
-      // build a CPE description from the settings in the GUI
-      CpeDescription cpeDesc = createCpeDescription();
+      // update the parameter overrides according to GUI settings
+      updateCpeDescriptionParameterOverrides();
 
       // intantiate CPE
-      mCPE = UIMAFramework.produceCollectionProcessingEngine(cpeDesc);
+      mCPE = UIMAFramework.produceCollectionProcessingEngine(currentCpeDesc);
 
       // attach callback listener
       StatusCallbackListenerImpl statCbL = new StatusCallbackListenerImpl();
@@ -530,72 +542,67 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   /**
-   * Creates a CpeDescription based on all of the settings in the GUI.
+   * Updates the configuration parameter settings in this.currentCpeDesc to match the current state
+   * of the GUI.
    */
-  private CpeDescription createCpeDescription() throws Exception {
+  private void updateCpeDescriptionParameterOverrides() throws Exception {
     // first check for descriptors out of sync with filesystem
     checkForOutOfSyncFiles();
 
-    CpeDescription cpeDesc = CpeDescriptorFactory.produceDescriptor();
     // Collection Reader
-    cpeDesc.addCollectionReader(readerFileSelector.getSelected());
-    if (collectionReaderPanel.isModified()) {
-      CasProcessorConfigurationParameterSettings crSettings = CpeDescriptorFactory
-              .produceCasProcessorConfigurationParameterSettings();
-      cpeDesc.getAllCollectionCollectionReaders()[0].setConfigurationParameterSettings(crSettings);
-      createParameterOverrides(crSettings, collectionReaderPanel);
+    if (readerFileSelector.getSelected().length() > 0) {
+      if (collectionReaderPanel.isModified()) {
+        CasProcessorConfigurationParameterSettings crSettings = CpeDescriptorFactory
+                .produceCasProcessorConfigurationParameterSettings();
+        currentCpeDesc.getAllCollectionCollectionReaders()[0]
+                .setConfigurationParameterSettings(crSettings);
+        createParameterOverrides(crSettings, collectionReaderPanel);
+      } else {
+        currentCpeDesc.getAllCollectionCollectionReaders()[0]
+                .setConfigurationParameterSettings(null);
+      }
     }
+
     // CAS Initializer
     if (casInitializerFileSelector.getSelected().length() > 0) {
-      cpeDesc.addCasInitializer(casInitializerFileSelector.getSelected());
       if (casInitializerPanel.isModified()) {
         CasProcessorConfigurationParameterSettings casIniSettings = CpeDescriptorFactory
                 .produceCasProcessorConfigurationParameterSettings();
-        cpeDesc.getAllCollectionCollectionReaders()[0].getCasInitializer()
+        currentCpeDesc.getAllCollectionCollectionReaders()[0].getCasInitializer()
                 .setConfigurationParameterSettings(casIniSettings);
         createParameterOverrides(casIniSettings, casInitializerPanel);
+      } else {
+        currentCpeDesc.getAllCollectionCollectionReaders()[0].getCasInitializer()
+                .setConfigurationParameterSettings(null);
       }
     }
     // Analysis Engines
     for (int i = 0; i < aeSpecifiers.size(); i++) {
-      String aeName = aeTabbedPane.getTitleAt(i);
-      String aeFile = (String) aeSpecifiers.get(i);
-      CpeCasProcessor casProc = CpeDescriptorFactory.produceCasProcessor(aeName);
-      casProc.setDescriptor(aeFile);
-      casProc.setBatchSize(10000);
-      casProc.getErrorHandling().getErrorRateThreshold().setMaxErrorCount(0);
-      cpeDesc.addCasProcessor(casProc);
-      // deal with configuration parameter overrides
+      CpeCasProcessor casProc = currentCpeDesc.getCpeCasProcessors().getCpeCasProcessor(i);
       AnalysisEnginePanel aePanel = (AnalysisEnginePanel) aeTabbedPane.getComponentAt(i);
       if (aePanel.isModified()) {
         CasProcessorConfigurationParameterSettings settings = CpeDescriptorFactory
                 .produceCasProcessorConfigurationParameterSettings();
         casProc.setConfigurationParameterSettings(settings);
         createParameterOverrides(settings, aePanel);
+      } else {
+        casProc.setConfigurationParameterSettings(null);
       }
     }
     // CAS Consumers
     for (int i = 0; i < consumerSpecifiers.size(); i++) {
-      String consumerName = consumerTabbedPane.getTitleAt(i);
-      String consumerFile = (String) consumerSpecifiers.get(i);
-      CpeCasProcessor casProc = CpeDescriptorFactory.produceCasProcessor(consumerName);
-      casProc.setDescriptor(consumerFile);
-      casProc.setBatchSize(10000);
-      casProc.getErrorHandling().getErrorRateThreshold().setMaxErrorCount(0);
-      cpeDesc.addCasProcessor(casProc);
-      // deal with configuration parameter overrides
+      CpeCasProcessor casProc = currentCpeDesc.getCpeCasProcessors().getCpeCasProcessor(
+              aeSpecifiers.size() + i);
       ConsumerPanel consumerPanel = (ConsumerPanel) consumerTabbedPane.getComponentAt(i);
       if (consumerPanel.isModified()) {
         CasProcessorConfigurationParameterSettings settings = CpeDescriptorFactory
                 .produceCasProcessorConfigurationParameterSettings();
         casProc.setConfigurationParameterSettings(settings);
         createParameterOverrides(settings, consumerPanel);
+      } else {
+        casProc.setConfigurationParameterSettings(null);
       }
     }
-    // CAS pool size hardcoded at the moment
-    cpeDesc.getCpeCasProcessors().setPoolSize(3);
-
-    return cpeDesc;
   }
 
   /**
@@ -675,7 +682,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
         // Create AE panel on the tabbed pane for this AE specifier file
 
         try {
-          addAE(file.getPath(), null);
+          addAE(file.getPath());
         } catch (Exception e) {
           displayError(e);
         }
@@ -688,6 +695,17 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     } else if (source == moveAeLeftButton) {
       int index = aeTabbedPane.getSelectedIndex();
       if (index > 0) {
+        // update CPE descriptor
+        try {
+          CpeCasProcessor casProcToMove = currentCpeDesc.getCpeCasProcessors().getCpeCasProcessor(
+                  index);
+          currentCpeDesc.getCpeCasProcessors().removeCpeCasProcessor(index);
+          currentCpeDesc.getCpeCasProcessors().addCpeCasProcessor(casProcToMove, index - 1);
+        } catch (CpeDescriptorException e) {
+          displayError(e);
+          return;
+        }
+        // update GUI
         aeTabbedPane.moveTab(index, index - 1);
         aeTabbedPane.setSelectedIndex(index - 1);
         Object specifierToMove = aeSpecifiers.remove(index);
@@ -696,6 +714,17 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     } else if (source == moveAeRightButton) {
       int index = aeTabbedPane.getSelectedIndex();
       if (index > -1 && index < aeTabbedPane.getTabCount() - 1) {
+        // update CPE descriptor
+        try {
+          CpeCasProcessor casProcToMove = currentCpeDesc.getCpeCasProcessors().getCpeCasProcessor(
+                  index);
+          currentCpeDesc.getCpeCasProcessors().removeCpeCasProcessor(index);
+          currentCpeDesc.getCpeCasProcessors().addCpeCasProcessor(casProcToMove, index + 1);
+        } catch (CpeDescriptorException e) {
+          displayError(e);
+          return;
+        }
+        // update GUI
         aeTabbedPane.moveTab(index, index + 1);
         aeTabbedPane.setSelectedIndex(index + 1);
         Object specifierToMove = aeSpecifiers.remove(index);
@@ -713,7 +742,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
         // for this consumer specifier file:
 
         try {
-          addConsumer(file.getPath(), null);
+          addConsumer(file.getPath());
         } catch (Exception e) {
           displayError(e);
         }
@@ -726,6 +755,18 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     } else if (source == moveConsumerLeftButton) {
       int index = consumerTabbedPane.getSelectedIndex();
       if (index > 0) {
+        // update CPE descriptor
+        try {
+          int absIndex = aeSpecifiers.size() + index;
+          CpeCasProcessor casProcToMove = currentCpeDesc.getCpeCasProcessors().getCpeCasProcessor(
+                  absIndex);
+          currentCpeDesc.getCpeCasProcessors().removeCpeCasProcessor(absIndex);
+          currentCpeDesc.getCpeCasProcessors().addCpeCasProcessor(casProcToMove, absIndex - 1);
+        } catch (CpeDescriptorException e) {
+          displayError(e);
+          return;
+        }
+        // update GUI
         consumerTabbedPane.moveTab(index, index - 1);
         consumerTabbedPane.setSelectedIndex(index - 1);
         Object specifierToMove = consumerSpecifiers.remove(index);
@@ -734,6 +775,18 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     } else if (source == moveConsumerRightButton) {
       int index = consumerTabbedPane.getSelectedIndex();
       if (index > -1 && index < consumerTabbedPane.getTabCount() - 1) {
+        // update CPE descriptor
+        try {
+          int absIndex = aeSpecifiers.size() + index;
+          CpeCasProcessor casProcToMove = currentCpeDesc.getCpeCasProcessors().getCpeCasProcessor(
+                  absIndex);
+          currentCpeDesc.getCpeCasProcessors().removeCpeCasProcessor(absIndex);
+          currentCpeDesc.getCpeCasProcessors().addCpeCasProcessor(casProcToMove, absIndex + 1);
+        } catch (CpeDescriptorException e) {
+          displayError(e);
+          return;
+        }
+        // update GUI
         consumerTabbedPane.moveTab(index, index + 1);
         consumerTabbedPane.setSelectedIndex(index + 1);
         Object specifierToMove = consumerSpecifiers.remove(index);
@@ -757,21 +810,43 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     } else if (source == refreshMenuItem) {
       refreshOutOfSyncFiles();
     } else if (source == clearAllMenuItem) {
-      collectionReaderPanel.reset();
-      readerFileSelector.setSelected("");
-      casInitializerPanel.reset();
-      casInitializerFileSelector.setSelected("");
-      removeAllAEsAndConsumers();
-      aeFileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
-      consumerFileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
-      openSaveFileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
-      collectionReaderPanel.validate();
-      casInitializerPanel.validate();
-      aeMainPanel.validate();
-      consumersPanel.validate();
+      clearAll();
     } else if (source == viewCasInitializerPanelMenuItem) {
       setCasInitializerPanelVisible(!casInitializerPanel.isVisible());
     }
+  }
+
+  /**
+   * Resets the GUI to an empty state.
+   */
+  private void clearAll() {
+    currentCpeDesc = createEmptyCpeDescription();
+    collectionReaderPanel.reset();
+    readerFileSelector.setSelected("");
+    casInitializerPanel.reset();
+    casInitializerFileSelector.setSelected("");
+    removeAllAEsAndConsumers();
+    initFileChoosers();
+    collectionReaderPanel.validate();
+    casInitializerPanel.validate();
+    aeMainPanel.validate();
+    consumersPanel.validate();
+  }
+
+  /**
+   * @return
+   */
+  private CpeDescription createEmptyCpeDescription() {
+    CpeDescription cpeDesc = CpeDescriptorFactory.produceDescriptor();
+    // We use CAS pool size default of 3
+    try {
+      CpeCasProcessors cpeCasProcs = CpeDescriptorFactory.produceCasProcessors();
+      cpeDesc.setCpeCasProcessors(cpeCasProcs);
+      cpeCasProcs.setPoolSize(3);
+    } catch (CpeDescriptorException e) {
+      e.printStackTrace(); // this should never happen
+    }
+    return cpeDesc;
   }
 
   /**
@@ -799,8 +874,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   private void doSaveCpeDescriptor(File aFile) throws Exception {
-    // construct a CPE Descriptor based on the state of the GUI
-    CpeDescription cpeDesc = createCpeDescription();
+    // update the parameter overrides according to GUI settings
+    updateCpeDescriptionParameterOverrides();
 
     // save descriptor
     OutputStream out = null;
@@ -810,7 +885,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
         parentFile.mkdirs();
       }
       out = new FileOutputStream(aFile);
-      cpeDesc.toXML(out);
+      currentCpeDesc.toXML(out);
     } finally {
       if (out != null) {
         out.close();
@@ -943,7 +1018,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       File readerSpecifierFile = new File(readerFileSelector.getSelected());
       if (readerSpecifierFile.lastModified() > this.collectionReaderLastFileSyncTimestamp) {
         try {
-          populateCollectionReaderPanel(readerFileSelector.getSelected(), null);
+          populateCollectionReaderPanel(currentCpeDesc.getAllCollectionCollectionReaders()[0]
+                  .getCollectionIterator());
         } catch (Exception e) {
           displayError(e);
         }
@@ -954,7 +1030,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       File casInitializerSpecifierFile = new File(casInitializerFileSelector.getSelected());
       if (casInitializerSpecifierFile.lastModified() > this.casInitializerLastFileSyncTimestamp) {
         try {
-          populateCasInitializerPanel(casInitializerFileSelector.getSelected(), null);
+          populateCasInitializerPanel(currentCpeDesc.getAllCollectionCollectionReaders()[0]
+                  .getCasInitializer());
         } catch (Exception e) {
           displayError(e);
         }
@@ -1047,10 +1124,14 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     displayError(message);
   }
 
-  private boolean populateCollectionReaderPanel(String specifierFile,
-          CasProcessorConfigurationParameterSettings overrides) throws InvalidXMLException,
-          IOException {
+  private boolean populateCollectionReaderPanel(CpeCollectionReaderIterator cpeColRdr)
+          throws InvalidXMLException, IOException {
     try {
+      String specifierFile = null;
+      if (cpeColRdr != null) {
+        specifierFile = cpeColRdr.getDescriptor().getInclude().get();
+      }
+
       if (collectionReaderPanel.getNrComponents() == 0) {
         collectionReaderPanel.add(new JLabel("Descriptor:"));
         readerFileSelector = new FileSelector(specifierFile, "Collection Reader Descriptor",
@@ -1061,6 +1142,12 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
         readerFileSelector.addFileSelectorListener(this, collectionReaderPanel);
       } else {
         collectionReaderPanel.reset();
+      }
+
+      if (specifierFile == null || specifierFile.length() == 0) {
+        // no CollectionReader selected (allowed, as interemediate state)
+        collectionReaderDesc = null;
+        return true;
       }
 
       if (specifierFile != null && specifierFile.length() > 0) {
@@ -1076,8 +1163,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
           XMLInputSource readerInputSource = new XMLInputSource(f);
           collectionReaderDesc = UIMAFramework.getXMLParser().parseCollectionReaderDescription(
                   readerInputSource);
-
-          collectionReaderPanel.populate(collectionReaderDesc.getMetaData(), overrides);
+          collectionReaderPanel.populate(collectionReaderDesc.getMetaData(), cpeColRdr
+                  .getConfigurationParameterSettings());
         }
       }
       return true;
@@ -1088,10 +1175,14 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     }
   }
 
-  private boolean populateCasInitializerPanel(String specifierFile,
-          CasProcessorConfigurationParameterSettings overrides) throws InvalidXMLException,
-          IOException {
+  private boolean populateCasInitializerPanel(CpeCollectionReaderCasInitializer cpeCasIni)
+          throws InvalidXMLException, IOException {
     try {
+      String specifierFile = null;
+      if (cpeCasIni != null) {
+        specifierFile = cpeCasIni.getDescriptor().getInclude().get();
+      }
+
       if (casInitializerPanel.getNrComponents() == 0) {
         casInitializerPanel.add(new JLabel("Descriptor:"));
         casInitializerFileSelector = new FileSelector(specifierFile, "CAS Initializer Descriptor",
@@ -1126,7 +1217,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
         casInitializerDesc = UIMAFramework.getXMLParser().parseCasInitializerDescription(
                 casIniInputSource);
 
-        casInitializerPanel.populate(casInitializerDesc.getMetaData(), overrides);
+        casInitializerPanel.populate(casInitializerDesc.getMetaData(), cpeCasIni
+                .getConfigurationParameterSettings());
         return true;
       }
     } finally {
@@ -1135,8 +1227,24 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     }
   }
 
-  private void addAE(String aeSpecifierFile, CasProcessorConfigurationParameterSettings overrides)
-          throws InvalidXMLException, IOException {
+  private void addAE(String aeSpecifierFile) throws CpeDescriptorException, InvalidXMLException,
+          IOException {
+    String tempAeName = new File(aeSpecifierFile).getName(); // overriden later
+    CpeCasProcessor casProc = CpeDescriptorFactory.produceCasProcessor(tempAeName);
+    casProc.setDescriptor(aeSpecifierFile);
+    casProc.setBatchSize(10000);
+    casProc.getErrorHandling().getErrorRateThreshold().setMaxErrorCount(0);
+
+    // add to pipeline as last AE but before CAS Consumers
+    currentCpeDesc.addCasProcessor(aeTabbedPane.getTabCount(), casProc);
+
+    // update GUI
+    addAE(casProc);
+  }
+
+  private void addAE(CpeCasProcessor cpeCasProc) throws CpeDescriptorException,
+          InvalidXMLException, IOException {
+    String aeSpecifierFile = cpeCasProc.getDescriptor();
     File f = new File(aeSpecifierFile);
     long fileModStamp = f.lastModified(); // get mod stamp before parsing, to prevent race condition
     XMLInputSource aeInputSource = new XMLInputSource(aeSpecifierFile);
@@ -1148,22 +1256,37 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     if (aeSpecifier instanceof AnalysisEngineDescription) {
       AnalysisEngineDescription aeDescription = (AnalysisEngineDescription) aeSpecifier;
       ResourceMetaData md = aeDescription.getMetaData();
-      aePanel.populate(md, overrides);
+      aePanel.populate(md, cpeCasProc.getConfigurationParameterSettings());
       tabName = md.getName();
     } else {
       tabName = f.getName();
     }
 
     tabName = makeUniqueCasProcessorName(tabName);
+    cpeCasProc.setName(tabName);
     aeTabbedPane.addTab(tabName, aePanel);
     aeSpecifiers.add(f.getAbsolutePath());
 
     selectedComponentsChanged = true;
   }
 
-  private void addConsumer(String consumerSpecifierFile,
-          CasProcessorConfigurationParameterSettings overrides) throws InvalidXMLException,
-          IOException {
+  private void addConsumer(String consumerSpecifierFile) throws CpeDescriptorException,
+          InvalidXMLException, IOException {
+    String tempName = new File(consumerSpecifierFile).getName(); // overriden later
+    CpeCasProcessor casProc = CpeDescriptorFactory.produceCasProcessor(tempName);
+    casProc.setDescriptor(consumerSpecifierFile);
+    casProc.setBatchSize(10000);
+    casProc.getErrorHandling().getErrorRateThreshold().setMaxErrorCount(0);
+
+    // add to pipeline as last CAS Processor
+    currentCpeDesc.addCasProcessor(casProc);
+    // update GUI
+    addConsumer(casProc);
+  }
+
+  private void addConsumer(CpeCasProcessor cpeCasProc) throws CpeDescriptorException,
+          InvalidXMLException, IOException {
+    String consumerSpecifierFile = cpeCasProc.getDescriptor();
     File f = new File(consumerSpecifierFile);
     long fileModStamp = f.lastModified(); // get mod stamp before parsing, to prevent race condition
     XMLInputSource consumerInputSource = new XMLInputSource(consumerSpecifierFile);
@@ -1175,13 +1298,14 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     if (casConsumerSpecifier instanceof CasConsumerDescription) {
       ResourceMetaData md = ((CasConsumerDescription) casConsumerSpecifier)
               .getCasConsumerMetaData();
-      consumerPanel.populate(md, overrides);
+      consumerPanel.populate(md, cpeCasProc.getConfigurationParameterSettings());
       tabName = md.getName();
     } else {
       tabName = f.getName();
     }
 
     tabName = makeUniqueCasProcessorName(tabName);
+    cpeCasProc.setName(tabName);
     consumerTabbedPane.addTab(tabName, consumerPanel);
     consumerSpecifiers.add(f.getAbsolutePath());
     selectedComponentsChanged = true;
@@ -1216,10 +1340,43 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
     try {
       if (source == collectionReaderPanel) {
-        rv = populateCollectionReaderPanel(fileString, null);
+        if (fileString != null && fileString.length() > 0) {
+          CpeCollectionReader[] readers = currentCpeDesc.getAllCollectionCollectionReaders();
+          if (readers.length == 0) {
+            currentCpeDesc.addCollectionReader(fileString);
+            readers = currentCpeDesc.getAllCollectionCollectionReaders();
+          } else {
+            readers[0].getCollectionIterator().getDescriptor().getInclude().set(fileString);
+            // clear config settings
+            readers[0].getCollectionIterator().setConfigurationParameterSettings(null);
+          }
+
+          rv = populateCollectionReaderPanel(readers[0].getCollectionIterator());
+        } else {
+          // no Collection Reader selected - allowed as intermeidate state
+          currentCpeDesc.setAllCollectionCollectionReaders(new CpeCollectionReader[0]);
+        }
         selectedComponentsChanged = true;
       } else if (source == casInitializerPanel) {
-        rv = populateCasInitializerPanel(fileString, null);
+        if (fileString != null && fileString.length() > 0) {
+          CpeCollectionReader[] readers = currentCpeDesc.getAllCollectionCollectionReaders();
+          if (readers.length == 0 || readers[0].getCasInitializer() == null) {
+            currentCpeDesc.addCasInitializer(fileString);
+            readers = currentCpeDesc.getAllCollectionCollectionReaders();
+          } else {
+            readers[0].getCasInitializer().getDescriptor().getInclude().set(fileString);
+            // clear config settings
+            readers[0].getCasInitializer().setConfigurationParameterSettings(null);
+          }
+          rv = populateCasInitializerPanel(readers[0].getCasInitializer());
+        } else {
+          // no CAS initializer selected - OK
+          CpeCollectionReader[] readers = currentCpeDesc.getAllCollectionCollectionReaders();
+          if (readers.length > 0) {
+            readers[0].removeCasInitializer();
+          }
+          rv = populateCasInitializerPanel(null);
+        }
         selectedComponentsChanged = true;
       }
     } catch (Exception e) {
@@ -1234,12 +1391,18 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
   // TabClosedListener:
   public void tabClosed(JTabbedPaneWithCloseIcons source, int tabPos) {
-    if (source == consumerTabbedPane) {
-      consumerSpecifiers.remove(tabPos);
-    } else if (source == aeTabbedPane) {
-      aeSpecifiers.remove(tabPos);
+    try {
+      if (source == consumerTabbedPane) {
+        currentCpeDesc.getCpeCasProcessors().removeCpeCasProcessor(aeSpecifiers.size() + tabPos);
+        consumerSpecifiers.remove(tabPos);
+      } else if (source == aeTabbedPane) {
+        currentCpeDesc.getCpeCasProcessors().removeCpeCasProcessor(tabPos);
+        aeSpecifiers.remove(tabPos);
+      }
+      selectedComponentsChanged = true;
+    } catch (CpeDescriptorException e) {
+      displayError(e);
     }
-    selectedComponentsChanged = true;
   }
 
   public void controlStarted() {
@@ -1422,18 +1585,18 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   private void openCpeDescriptor(File aFile) throws InvalidXMLException, IOException,
           CpeDescriptorException {
     // parse
-    CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
-            new XMLInputSource(aFile));
+    currentCpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(new XMLInputSource(aFile));
 
     // update GUI
     // Collection Reader
-    CpeCollectionReader[] collRdrs = cpeDesc.getAllCollectionCollectionReaders(); // more than one??
+    CpeCollectionReader[] collRdrs = currentCpeDesc.getAllCollectionCollectionReaders(); // more
+                                                                                          // than
+                                                                                          // one??
     CpeCollectionReader collRdr = null;
     if (collRdrs != null && collRdrs.length > 0) {
       collRdr = collRdrs[0];
       collectionReaderPanel.clearAll();
-      populateCollectionReaderPanel(collRdr.getDescriptor().getInclude().get(), collRdr
-              .getConfigurationParameterSettings());
+      populateCollectionReaderPanel(collRdr.getCollectionIterator());
     } else {
       collectionReaderPanel.reset();
     }
@@ -1443,24 +1606,22 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       casIni = collRdr.getCasInitializer();
     }
     if (casIni != null) {
-      String casIniDescFile = casIni.getDescriptor().getInclude().get();
-      casInitializerPanel.clearAll();
-      populateCasInitializerPanel(casIniDescFile, casIni.getConfigurationParameterSettings());
+      populateCasInitializerPanel(casIni);
     } else {
       casInitializerPanel.reset();
     }
 
     // CAS Processors
     removeAllAEsAndConsumers();
-    CpeCasProcessor[] casProcs = cpeDesc.getCpeCasProcessors().getAllCpeCasProcessors();
+    CpeCasProcessor[] casProcs = currentCpeDesc.getCpeCasProcessors().getAllCpeCasProcessors();
     for (int i = 0; i < casProcs.length; i++) {
       String specifierFile = casProcs[i].getDescriptor();
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
               new XMLInputSource(specifierFile));
       if (isCasConsumerSpecifier(specifier)) {
-        addConsumer(specifierFile, casProcs[i].getConfigurationParameterSettings());
+        addConsumer(casProcs[i]);
       } else {
-        addAE(specifierFile, casProcs[i].getConfigurationParameterSettings());
+        addAE(casProcs[i]);
       }
     }
 
