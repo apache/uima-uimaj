@@ -6,7 +6,7 @@
 <listEntry value="4"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="uimaj-examples"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="&quot;-Djava.util.logging.config.file=${env_var:UIMA_HOME}/Logger.properties&quot; -DVNS_HOST=localhost"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="&quot;-Djava.util.logging.config.file=${env_var:UIMA_HOME}/config/Logger.properties&quot; -DVNS_HOST=localhost"/>
 <stringAttribute key="org.eclipse.debug.ui.target_debug_perspective" value="perspective_default"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/uimaj-examples"/>
