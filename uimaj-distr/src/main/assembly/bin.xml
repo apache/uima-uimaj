@@ -128,6 +128,10 @@ under the License.
       <outputDirectory>/apache-uima/</outputDirectory>
     </fileSet>
     <fileSet>
+      <directory>src/main/readme</directory>
+      <outputDirectory>/apache-uima/</outputDirectory>
+    </fileSet>
+    <fileSet>
       <directory>target/site/apidocs</directory>
       <outputDirectory>/apache-uima/docs/api</outputDirectory>
     </fileSet>
