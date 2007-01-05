@@ -140,7 +140,12 @@ public class CpeDescriptionImpl extends MetaDataObject_impl implements CpeDescri
 
   public void setAllCollectionCollectionReaders(CpeCollectionReader[] areaders)
           throws CpeDescriptorException {
-    collectionReader = areaders[0];
+    if (areaders == null || areaders.length == 0) {
+      collectionReader = null;
+    }
+    else {
+      collectionReader = areaders[0];
+    }
   }
 
   public void setResourceManagerConfiguration(String aResMgrConfPagth) {
