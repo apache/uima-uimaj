@@ -944,8 +944,8 @@ public void initialize(UimaContext aContext)
         
         <para>Two sample logging specification property files can be found in the UIMA_HOME
           directory where the UIMA SDK is installed:
-          <literal>Logger.properties</literal>, and
-          <literal>FileConsoleLogger.properties</literal>. These specify the same
+          <literal>config/Logger.properties</literal>, and
+          <literal>config/FileConsoleLogger.properties</literal>. These specify the same
           logging, except the first logs just to a file, while the second logs both to a file and
           to the console. You can edit these files, or create additional ones, as described
           below, to change the logging behavior.</para>
@@ -966,7 +966,7 @@ public void initialize(UimaContext aContext)
           in the VM arguments section of the Arguments tab of the run configuration screen. If
           you&apos;ve set an environment variable UIMA_HOME, you could for example, use the
           string:
-          <literal>"-Djava.util.logging.config.file=${env_var:UIMA_HOME}/Logger.properties".</literal>
+          <literal>"-Djava.util.logging.config.file=${env_var:UIMA_HOME}/config/Logger.properties".</literal>
           </para>
       </section>
       
