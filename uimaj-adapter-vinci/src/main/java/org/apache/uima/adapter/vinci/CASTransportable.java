@@ -410,7 +410,7 @@ public class CASTransportable extends DefaultHandler implements Transportable {
    * @return a SAX exception for which <code>getCause()</code> will return <code>e</code>.
    */
   public SAXException wrapAsSAXException(IOException e) {
-    SAXException saxEx =new SAXException();
+    SAXException saxEx =new SAXException(e.getMessage());
     saxEx.initCause(e);
     return saxEx;
   }
