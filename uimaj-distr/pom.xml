@@ -146,7 +146,7 @@
 								</group>
 							</groups>
 							<sourcepath>../uimaj-core/src/main/java</sourcepath>
-							<excludePackageNames>*.internal.*:*.impl.*</excludePackageNames>-->
+							<excludePackageNames>*.internal.*:*.impl.*</excludePackageNames>
 							<!-- add a few classes in impl packages that are directly used by user code -->
 							<additionalparam>
 								${basedir}/../uimaj-core/src/main/java/org/apache/uima/cas/impl/XCASDeserializer.java
