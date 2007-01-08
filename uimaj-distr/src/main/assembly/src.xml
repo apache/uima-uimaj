@@ -37,6 +37,16 @@ under the License.
       </includes>
     </fileSet>
     <fileSet>
+      <directory>../uima-docbooks</directory>
+      <outputDirectory>/uima-docbooks</outputDirectory>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>Source_UIMA_SDK_Guide_Ref/**</exclude>
+        <exclude>lib/jai*</exclude>
+        <exclude>.*</exclude>        
+      </excludes>
+    </fileSet>
+    <fileSet>
       <directory>../uimaj</directory>
       <outputDirectory>/uimaj</outputDirectory>
       <includes>
