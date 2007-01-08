@@ -119,6 +119,12 @@
 			    <Implementation-Vendor>Apache Software Foundation</Implementation-Vendor>
 			    <Implementation-Url>${pom.url}</Implementation-Url>
 			    <Implementation-License>http://www.apache.org/licenses/LICENSE-2.0.txt</Implementation-License>
+                <!-- Note: I found no way to access any kind of timestamp from within Maven.  This 
+                     property needs to passed on the command line.  On Windows, you can do something
+                     like mvn -Duima.build.date="%date% %time%", in bash, -Duima.build.date="`date`".
+                     If the property is not specified, the manifest will not contain the build date.
+                     (tg) -->
+                <Build-Date>${uima.build.date}</Build-Date>
 			   </manifestEntries>
 			  </archive>
 			 </configuration>
