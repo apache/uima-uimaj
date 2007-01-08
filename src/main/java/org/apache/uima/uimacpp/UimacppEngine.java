@@ -42,7 +42,7 @@ import org.apache.uima.internal.util.IntVector;
 public class UimacppEngine {
 
   // Those types can not be created with CAS.createFS().
-  private static String[] compatibleTafJniVersions = { "7.0.0" };
+  private static String[] compatibleTafJniVersions = { "2.0" };
 
   static {
     System.loadLibrary("uima");
