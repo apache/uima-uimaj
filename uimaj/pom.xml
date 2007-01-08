@@ -115,16 +115,10 @@
 			   <manifestEntries>
 			    <Project-Title>Apache UIMA</Project-Title>
 			    <Implementation-Title>${pom.name}</Implementation-Title>
-			    <Implementation-Version>
-			     ${pom.version}
-			    </Implementation-Version>
-			    <Implementation-Vendor>
-			     Apache Software Foundation
-			    </Implementation-Vendor>
+			    <Implementation-Version>${pom.version}</Implementation-Version>
+			    <Implementation-Vendor>Apache Software Foundation</Implementation-Vendor>
 			    <Implementation-Url>${pom.url}</Implementation-Url>
-			    <Implementation-License>
-			     http://www.apache.org/licenses/LICENSE-2.0.txt
-			    </Implementation-License>
+			    <Implementation-License>http://www.apache.org/licenses/LICENSE-2.0.txt</Implementation-License>
 			   </manifestEntries>
 			  </archive>
 			 </configuration>
