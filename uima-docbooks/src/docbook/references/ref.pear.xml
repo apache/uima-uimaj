@@ -560,113 +560,94 @@ local_root_directory_for_1st_delegate_component/resources/dict/
   <section id="ugr.ref.pear.installing">
     <title>Installing a PEAR package</title>
     
-    <para>The installation of a PEAR package can be done in two different ways. It is either possible to install a PEAR package 
-    using the PEAR installer tool or the PEAR API if the PEAR file should be installed out of an
-    application. The two possibilities are described here:
-     
-      <itemizedlist>
-        <listitem><para> <xref linkend="ugr.ref.pear.installing_pear_using_pearInstaller"/></para></listitem>       
-        <listitem><para> <xref linkend="ugr.ref.pear.installing_pear_using_API"/></para></listitem>   
-      </itemizedlist>
-    </para>
-     
-    <section id="ugr.ref.pear.installing_pear_using_pearInstaller">
-      <title>Installing a PEAR file using the PEAR Installer</title>
+    <para>The installation of a PEAR package can be done using 
+      the PEAR installer tool (see <olink targetdoc="&uima_docs_tools;" 
+          targetptr="ugr.tools.pear.installer"/>, or by an application using
+      the PEAR APIs, directly. </para>
       
-      <para>For information about the installation of a PEAR package using the PEAR Installer
-        tool, please see <olink targetdoc="&uima_docs_tools;" 
-          targetptr="ugr.tools.pear.installer"/>.</para>
-    </section>
- 
     <section id="ugr.ref.pear.installing_pear_using_API">
-      <title>Installing a PEAR file using the PEAR API</title>
+      <title>Installing a PEAR file using the PEAR APIs</title>
     
-      <para>To install a PEAR package out of an application the PEAR API must be used. The PEAR API installes the PEAR package
-      in the same way as the PEAR installer tool did. The example below shows how to use the PEAR API to install a 
+      <para>The example below shows how to use the PEAR APIs to install a 
       PEAR package and access the installed PEAR package data. For more details about the PackageBrowser API, 
       please refer to the JavaDocs for the org.apache.uima.pear.tools package.
-      </para>
       
-      <programlisting>  
-   File installDir = new File("/home/user/uimaApp/installedPears");
-   File pearFile = new File("/home/user/uimaApp/testpear.pear");
-   boolean doVerification = true;
+      
+      <programlisting>File installDir = new File("/home/user/uimaApp/installedPears");
+File pearFile = new File("/home/user/uimaApp/testpear.pear");
+boolean doVerification = true;
 
-   try {
+try {
+  // install PEAR package
+  PackageBrowser instPear = PackageInstaller.installPackage(
+ 	installDir, pearFile, doVerification);
 
-     // install PEAR package
-     PackageBrowser instPear = PackageInstaller.installPackage(
-     	installDir, pearFile, doVerification);
-
-     // retrieve installed PEAR data
-     // PEAR package classpath
-     String classpath = instPear.buildComponentClassPath();
-     // PEAR package main component descriptor
-     String mainComponentDescriptor = instPear
+  // retrieve installed PEAR data
+  // PEAR package classpath
+  String classpath = instPear.buildComponentClassPath();
+  // PEAR package main component descriptor
+  String mainComponentDescriptor = instPear
      	.getInstallationDescriptor().getMainComponentDesc();
-     // PEAR package component ID
-     String mainComponentID = instPear
+  // PEAR package component ID
+  String mainComponentID = instPear
      	.getInstallationDescriptor().getMainComponentId();
 
-     // print out settings
-     System.out.println("PEAR package class path: " + classpath);
-     System.out.println("PEAR package mainComponentDescriptor: " 
-     	+ mainComponentDescriptor);
-     System.out.println("PEAR package mainComponentID: " 
-     	+ mainComponentID);
+  // print out settings
+  System.out.println("PEAR package class path: " + classpath);
+  System.out.println("PEAR package mainComponentDescriptor: " 
+   	+ mainComponentDescriptor);
+  System.out.println("PEAR package mainComponentID: " 
+   	+ mainComponentID);
 
-   } catch (PackageInstallerException ex) {
-     // catch PackageInstallerException - pear installation failed
-     ex.printStackTrace();
-     System.out.println("PEAR installation failed");
-   } catch (IOException ex) {
-     ex.printStackTrace();
-     System.out.println("Error retrieving installed PEAR settings");
-   }
-	  </programlisting>
+  } catch (PackageInstallerException ex) {
+    // catch PackageInstallerException - pear installation failed
+    ex.printStackTrace();
+    System.out.println("PEAR installation failed");
+  } catch (IOException ex) {
+    ex.printStackTrace();
+    System.out.println("Error retrieving installed PEAR settings");
+  }</programlisting></para>
 	  
 	  <para>
 	    To run a PEAR package after it was installed using the PEAR API see the sample below. It use the UIMA classloader
 	    extension to set the classpath of the installed PEAR dynamically. For more details about the APIs please refer
 	    to the JavaDocs.
-	  </para>
+	  
 
-      <programlisting>  
-    File installDir = new File("/home/user/uimaApp/installedPears");
-    File pearFile = new File("/home/user/uimaApp/testpear.pear");
-    boolean doVerification = true;
+      <programlisting>File installDir = new File("/home/user/uimaApp/installedPears");
+File pearFile = new File("/home/user/uimaApp/testpear.pear");
+boolean doVerification = true;
 
-    try {
+try {
 
-      // Install PEAR package
-      PackageBrowser instPear = PackageInstaller.installPackage(
-      	installDir, pearFile, doVerification);
+  // Install PEAR package
+  PackageBrowser instPear = PackageInstaller.installPackage(
+  	installDir, pearFile, doVerification);
 
-      // Create resouce manager and set PEAR package classpath
-      ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
-      // Set PEAR package classpath and use it also to resolve resources
-      rsrcMgr.setExtensionClassPath(
+  // Create resouce manager and set PEAR package classpath
+  ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
+  // Set PEAR package classpath and use it also to resolve resources
+  rsrcMgr.setExtensionClassPath(
       	instPear.buildComponentClassPath(), true);
 
-      // Create analysis engine from the installed PEAR package
-      XMLInputSource in = new XMLInputSource(instPear
+  // Create analysis engine from the installed PEAR package
+  XMLInputSource in = new XMLInputSource(instPear
       	.getInstallationDescriptor().getMainComponentDesc());
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser()
+  ResourceSpecifier specifier = UIMAFramework.getXMLParser()
       	.parseResourceSpecifier(in);
-      AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(
+  AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(
       	specifier, rsrcMgr, null);
 
-      // Create a CAS with a sample document text
-      CAS cas = ae.newCAS();
-      cas.setDocumentText("Sample text to process");
-      cas.setDocumentLanguage("en");
+  // Create a CAS with a sample document text
+  CAS cas = ae.newCAS();
+  cas.setDocumentText("Sample text to process");
+  cas.setDocumentLanguage("en");
 
-      // Process the sample document
-      ae.process(cas);
-    } catch (Exception ex) {
+  // Process the sample document
+  ae.process(cas);
+  } catch (Exception ex) {
          ex.printStackTrace();
-   	}	      
-	  </programlisting>
+  }</programlisting></para>
    
     </section>
 

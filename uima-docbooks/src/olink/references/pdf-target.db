@@ -505,9 +505,13 @@
             <ttl>Packaging the PEAR structure into one file</ttl>
             <xreftext>Section 6.1.5, “Packaging the PEAR structure into one file”</xreftext>
          </div>
-         <div element="section" href="#ugr.ref.pear.installing" number="6.1.6" targetptr="ugr.ref.pear.installing">
-            <ttl>Installing a PEAR file</ttl>
-            <xreftext>Section 6.1.6, “Installing a PEAR file”</xreftext>
+      </div>
+      <div element="section" href="#ugr.ref.pear.installing" number="6.2" targetptr="ugr.ref.pear.installing">
+         <ttl>Installing a PEAR package</ttl>
+         <xreftext>Section 6.2, “Installing a PEAR package”</xreftext>
+         <div element="section" href="#ugr.ref.pear.installing_pear_using_API" number="6.2.1" targetptr="ugr.ref.pear.installing_pear_using_API">
+            <ttl>Installing a PEAR file using the PEAR APIs</ttl>
+            <xreftext>Section 6.2.1, “Installing a PEAR file using the PEAR APIs”</xreftext>
          </div>
       </div>
    </div>
