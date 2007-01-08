@@ -265,9 +265,9 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
   }
 
   /**
-   * @see org.apache.uima.collection.base_cpm.CasProcessor#batchProcessComplete(org.apache.uima.util.ProcessTrace)
+   * 
    */
-  public void batchProcessComplete(ProcessTrace arg0) throws ResourceProcessException, IOException {
+  public void batchProcessComplete() throws AnalysisEngineProcessException {
     try {
       if (engine != null) {
         engine.batchProcessComplete();
@@ -279,10 +279,9 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
   }
 
   /**
-   * @see org.apache.uima.collection.base_cpm.CasProcessor#collectionProcessComplete(org.apache.uima.util.ProcessTrace)
+   * 
    */
-  public void collectionProcessComplete(ProcessTrace arg0) throws ResourceProcessException,
-          IOException {
+  public void collectionProcessComplete() throws AnalysisEngineProcessException {
     try {
       if (engine != null) {
         engine.collectionProcessComplete();
