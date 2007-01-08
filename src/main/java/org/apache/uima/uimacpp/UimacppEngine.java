@@ -45,7 +45,7 @@ public class UimacppEngine {
   private static String[] compatibleTafJniVersions = { "7.0.0" };
 
   static {
-    System.loadLibrary("tafjni");
+    System.loadLibrary("uima");
     try {
       String jniVersion = getTafJNIVersion();
       boolean compatible = false;
@@ -318,22 +318,12 @@ public class UimacppEngine {
    */
   public void process(ResultSpecification rs, CAS aCas, boolean casIsEmpty) throws UimacppException {
 
-    int isTCas;
-    String sofaName;
-
-    TypeSystem crTypeSystem = aCas.getTypeSystem();
-    // System.out.println("in process" +
-    // crTypeSystem.getType("sofa.test.CrossAnnotation").getName());
-    Type localSofaType = crTypeSystem.getType(CAS.TYPE_NAME_SOFA);
-    Feature sofaID = localSofaType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAID);
-    if (aCas instanceof TCAS) {
-      isTCas = 1;
-      SofaFS aSofa = ((TCASImpl) aCas).getSofa();
-      sofaName = aSofa.getStringValue(sofaID);
-    } else {
-      isTCas = 0;
-      sofaName = "";
+    int isTCas=0;
+    String sofaName=aCas.getViewName();
+    if (sofaName != null) {
+      isTCas=1;
     }
+
     cas = aCas;
 
     try {
