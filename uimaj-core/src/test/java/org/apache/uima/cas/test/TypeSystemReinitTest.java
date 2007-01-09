@@ -32,11 +32,10 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.cas.impl.TCASImpl;
 import org.apache.uima.cas.text.TCAS;
-import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
-import org.apache.uima.util.FileSystemCollectionReader;
 import org.apache.uima.util.XMLInputSource;
 
 /**
@@ -48,11 +47,12 @@ public class TypeSystemReinitTest extends TestCase {
       AnalysisEngineDescription aed = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(JUnitExtension
                       .getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml")));
-      CollectionReaderDescription crd = FileSystemCollectionReader.getDescription();
+      TypeSystemDescription tsd = UIMAFramework.getXMLParser().parseTypeSystemDescription(
+              new XMLInputSource(getClass().getResource("/org/apache/uima/examples/SourceDocumentInformation.xml")));
 
       ArrayList l = new ArrayList();
       l.add(aed);
-      l.add(crd);
+      l.add(tsd);
       TCAS cas1 = CasCreationUtils.createTCas(l);
       cas1.setDocumentText("foo");
       CASCompleteSerializer ser = Serialization.serializeCASComplete((CASMgr) cas1);

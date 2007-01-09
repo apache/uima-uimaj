@@ -55,7 +55,6 @@ import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.jcas.tcas.Annotation_Type;
-import org.apache.uima.jcas.tcas.DocumentAnnotation;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 import x.y.z.EndOfSentence;
@@ -552,14 +551,6 @@ public class JCasTest extends TestCase {
     }
   }
 
-  public void testDocumentAnnotation() throws Exception {
-    try {
-      assertTrue(jcas.getDocumentAnnotationFs() instanceof DocumentAnnotation);
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
-  }
-
   public void testGetNthFSList() throws Exception {
     try {
       Token tok1 = new Token(jcas);
@@ -813,16 +804,7 @@ public class JCasTest extends TestCase {
    * 0; for (int i = 0; i < iresults.length; i++) { if (iresults[i] == iresults[0]) j ++; }
    * times[11] = j; // this code an attempt to fool JIT into keeping the results return times; }
    */
-  public void testCreateDocAnnot3() throws Exception {
-    try {
-      DocumentAnnotation b = (DocumentAnnotation) jcas.getDocumentAnnotationFs();
-      jcas.reset();
-      DocumentAnnotation a = (DocumentAnnotation) jcas.getDocumentAnnotationFs();
-      assertTrue(true);
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
-  }
+
 
   /*
    * public void testCreateFS() { // Can create FS of type "Top"

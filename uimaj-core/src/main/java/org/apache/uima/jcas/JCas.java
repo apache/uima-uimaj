@@ -49,7 +49,6 @@ import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.cas.TOP_Type;
-import org.apache.uima.jcas.tcas.DocumentAnnotation;
 
 /**
  * Java Cover Classes based Object-oriented CAS (Common Analysis System) API.
@@ -164,18 +163,6 @@ public interface JCas extends AbstractCas {
   public abstract JCas getJCas(Sofa sofa) throws CASException;
 
   public abstract JFSIndexRepository getJFSIndexRepository();
-
-  /**
-   * @see org.apache.uima.cas.text.TCAS#getDocumentAnnotation
-   * 
-   * @return The one instance of the DocumentAnnotation annotation
-   * 
-   * @deprecated Use of this method is not safe and may cause ClassCastExceptions in certain
-   *             deployments. Instead, use {@link #getDocumentAnnotationFs()}, which has a return
-   *             type of TOP, and typecast the returned object to
-   *             {@link org.apache.uima.jcas.tcas.DocumentAnnotation}.
-   */
-  public abstract DocumentAnnotation getDocumentAnnotation();
 
   /**
    * Gets the document annotation. The object returned from this method can be typecast to
