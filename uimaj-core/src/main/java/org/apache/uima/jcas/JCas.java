@@ -19,19 +19,29 @@
  
 package org.apache.uima.jcas;
 
-import org.apache.uima.cas.CommonCas;
+import java.io.InputStream;
+
+import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.ConstraintFactory;
 import org.apache.uima.cas.FSIndexRepository;
+import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.Feature;
+import org.apache.uima.cas.FeaturePath;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.FeatureValuePath;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.SofaID;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
+import org.apache.uima.cas.text.TCASRuntimeException;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
 import org.apache.uima.jcas.cas.IntegerArray;
@@ -58,7 +68,7 @@ import org.apache.uima.jcas.tcas.DocumentAnnotation;
  * method on the CAS object. 
  */
 
-public interface JCas extends CommonCas {
+public interface JCas extends AbstractCas {
 
   /**
    * (internal use)
@@ -81,9 +91,6 @@ public interface JCas extends CommonCas {
 
   /** internal use */
   public abstract LowLevelCAS getLowLevelCas();
-
-  /** return the Cas TypeSystem for this JCas. */
-  public abstract TypeSystem getTypeSystem();
 
   /**
    * get the JCas _Type instance for a particular CAS type constant
@@ -250,5 +257,247 @@ public interface JCas extends CommonCas {
    * @return The view for the given Sofa
    */
   JCas getView(SofaFS aSofa) throws CASException;
+
+  /**
+   * This part of the CAS interface is shared among CAS and JCAS interfaces
+   * If you change it in one of the interfaces, consider changing it in the 
+   * other
+   */
+
+  
+  ///////////////////////////////////////////////////////////////////////////
+  //
+  //  Standard CAS Methods
+  //
+  ///////////////////////////////////////////////////////////////////////////
+  /**
+   * Return the type system of this CAS instance.
+   * 
+   * @return The type system, or <code>null</code> if none is available.
+   * @exception CASRuntimeException
+   *              If the type system has not been committed.
+   */
+  TypeSystem getTypeSystem() throws CASRuntimeException;
+  
+  /**
+   * Create a Subject of Analysis. The new sofaFS is automatically added to the SofaIndex.
+   * 
+   * @return The sofaFS.
+   * 
+   * @deprecated As of v2.0, use {@link #createView(String)} instead.
+   */
+  SofaFS createSofa(SofaID sofaID, String mimeType);
+
+  /**
+   * Get iterator for all SofaFS in the CAS.
+   * 
+   * @return an iterator over SofaFS.
+   */
+  FSIterator getSofaIterator();
+
+  /**
+   * Create an iterator over structures satisfying a given constraint. Constraints are described in
+   * the javadocs for {@link ConstraintFactory} and related classes.
+   * 
+   * @param it
+   *          The input iterator.
+   * @param cons
+   *          The constraint specifying what structures should be returned.
+   * @return An iterator over FSs.
+   */
+  FSIterator createFilteredIterator(FSIterator it, FSMatchConstraint cons);
+
+  /**
+   * Get a constraint factory. A constraint factory is a simple way of creating
+   * {@link org.apache.uima.cas.FSMatchConstraint FSMatchConstraints}.
+   * 
+   * @return A constraint factory to create new FS constraints.
+   */
+  ConstraintFactory getConstraintFactory();
+
+  /**
+   * Create a feature path. This is mainly useful for creating
+   * {@link org.apache.uima.cas.FSMatchConstraint FSMatchConstraints}.
+   * 
+   * @return A new, empty feature path.
+   */
+  FeaturePath createFeaturePath();
+
+  /**
+   * Get the index repository.
+   * 
+   * @return The index repository, or <code>null</code> if none is available.
+   */
+  FSIndexRepository getIndexRepository();
+
+  /**
+   * Wrap a standard Java {@link java.util.ListIterator ListIterator} around an FSListIterator. Use
+   * if you feel more comfortable with java style iterators.
+   * 
+   * @param it
+   *          The <code>FSListIterator</code> to be wrapped.
+   * @return An equivalent <code>ListIterator</code>.
+   */
+  java.util.ListIterator fs2listIterator(FSIterator it);
+
+  /**
+   * Reset the CAS, emptying it of all content. Feature structures and iterators will no longer be
+   * valid. Note: this method may only be called from an application. Calling it from an annotator
+   * will trigger a runtime exception.
+   * 
+   * @throws CASRuntimeException
+   *           When called out of sequence.
+   * @see org.apache.uima.cas.admin.CASMgr
+   */
+  void reset() throws CASAdminException;
+  
+  /**
+   * Get the view name. The view name is the same as the name of the view's Sofa, retrieved by
+   * getSofa().getSofaID(), except for the initial View before its Sofa has been created.
+   * 
+   * @return The name of the view
+   */
+  String getViewName();
+
+  /**
+   * Estimate the memory consumption of this CAS instance (in bytes).
+   * 
+   * @return The estimated memory used by this CAS instance.
+   */
+  int size();
+
+  /**
+   * Create a feature-value path from a string.
+   * 
+   * @param featureValuePath
+   *          String representation of the feature-value path.
+   * @return Feature-value path object.
+   * @throws CASRuntimeException
+   *           If the input string is not well-formed.
+   */
+  FeatureValuePath createFeatureValuePath(String featureValuePath) throws CASRuntimeException;
+
+  /**
+   * Set the document text. Once set, Sofa data is immutable, and cannot be set again until the CAS
+   * has been reset.
+   * 
+   * @param text
+   *          The text to be analyzed.
+   * @exception CASRuntimeException
+   *              If the Sofa data has already been set.
+   */
+  void setDocumentText(String text) throws TCASRuntimeException;
+
+  /**
+   * Set the document text. Once set, Sofa data is immutable, and cannot be set again until the CAS
+   * has been reset.
+   * 
+   * @param text
+   *          The text to be analyzed.
+   * @param mime
+   *          The mime type of the data
+   * @exception CASRuntimeException
+   *              If the Sofa data has already been set.
+   */
+  void setSofaDataString(String text, String mimetype) throws TCASRuntimeException;
+
+  /**
+   * Get the document text.
+   * 
+   * @return The text being analyzed.
+   */
+  String getDocumentText();
+
+  /**
+   * Sets the language for this document. This value sets the language feature of the special
+   * instance of DocumentAnnotation associated with this TCAS.
+   * 
+   * @param languageCode
+   * @throws TCASRuntimeException
+   */
+  void setDocumentLanguage(String languageCode) throws TCASRuntimeException;
+
+  /**
+   * Gets the language code for this document from the language feature of the special instance of
+   * the DocumentationAnnotation associated with this TCAS.
+   * 
+   * @return language identifier
+   */
+  String getDocumentLanguage();
+
+  /**
+   * Set the Sofa data as an ArrayFS. Once set, Sofa data is immutable, and cannot be set again
+   * until the CAS has been reset.
+   * 
+   * @param array
+   *          The ArrayFS to be analyzed.
+   * @param mime
+   *          The mime type of the data
+   * @exception CASRuntimeException
+   *              If the Sofa data has already been set.
+   */
+  void setSofaDataArray(FeatureStructure array, String mime) throws TCASRuntimeException;
+
+  /**
+   * Get the Sofa data array.
+   * 
+   * @return The Sofa Data being analyzed.
+   */
+  FeatureStructure getSofaDataArray();
+
+  /**
+   * Set the Sofa data as a URI. Once set, Sofa data is immutable, and cannot be set again until the
+   * CAS has been reset.
+   * 
+   * @param uri
+   *          The URI of the data to be analyzed.
+   * @param mime
+   *          The mime type of the data
+   * @exception CASRuntimeException
+   *              If the Sofa data has already been set.
+   */
+  void setSofaDataURI(String uri, String mime) throws TCASRuntimeException;
+
+  /**
+   * Get the Sofa data array.
+   * 
+   * @return The Sofa Data being analyzed.
+   */
+  String getSofaDataURI();
+
+  /**
+   * Get the Sofa data as a byte stream.
+   * 
+   * @return A stream handle to the Sofa Data.
+   */
+  InputStream getSofaDataStream();
+
+  /**
+   * Add a feature structure to all appropriate indexes in the repository associated with this CAS
+   * View.
+   * 
+   * <p>
+   * <b>Important</b>: after you have called <code>addFsToIndexes(...)</code> on a FS, do not
+   * change the values of any features used for indexing. If you do, the index will become corrupted
+   * and may be unusable. If you need to change an index feature value, first call
+   * {@link #removeFsFromIndexes(FeatureStructure) removeFsFromIndexes(...)} on the FS, change the
+   * feature values, then call <code>addFsToIndexes(...)</code> again.
+   * 
+   * @param fs
+   *          The Feature Structure to be added.
+   * @exception NullPointerException
+   *              If the <code>fs</code> parameter is <code>null</code>.
+   */
+  void addFsToIndexes(FeatureStructure fs);
+
+  /**
+   * Remove a feature structure from all indexes in the repository associated with this CAS View.
+   * 
+   * @param fs
+   *          The Feature Structure to be removed.
+   * @exception NullPointerException
+   *              If the <code>fs</code> parameter is <code>null</code>.
+   */
+  void removeFsFromIndexes(FeatureStructure fs);
 
 }
