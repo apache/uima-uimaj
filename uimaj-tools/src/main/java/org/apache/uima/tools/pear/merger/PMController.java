@@ -37,7 +37,7 @@ import org.apache.uima.pear.util.FileUtil;
 
 /**
  * The <code>PMController</code> class allows to merge several input PEAR files in one PEAR file
- * and generate an aggregate component from the components encapsulated in the input PEARs.
+ * and generate an aggregate analysis engine from the components encapsulated in the input PEARs.
  * 
  * @see org.apache.uima.tools.pear.merger.PMControllerHelper
  * @see org.apache.uima.tools.pear.merger.PMUimaAgent
@@ -54,17 +54,13 @@ public class PMController {
   static final String AGGREGATE_NAME_ARG = "-n";
 
   static final String AGGREGATE_PEAR_FILE_ARG = "-f";
-
-  static final String AE_MODE_FLAG = "-ae";
-
+  
   // command line parameters
   private static File[] __pearFiles = null;
 
   private static String __aggregateName = null;
 
   private static File __aggregatePearFile = null;
-
-  private static boolean __aeModeFlag = false;
 
   /**
    * The <code>PMLogFormatter</code> class formats messages for the log file.
@@ -124,24 +120,19 @@ public class PMController {
 
   private InstallationDescriptor _outAggInstDesc = null;
 
-  private boolean _aeModeEnabled = false;
-
   /**
    * The command line application entry point. This method expects the following command line
    * arguments:
    * <ul>
    * <li>pear_file_1 ... pear_file_n - input PEAR files (required)</li>
-   * <li>-n agg_name - a name of the output aggregate component (required) </li>
+   * <li>-n agg_name - a name of the output aggregate analysis engine (required) </li>
    * <li>-f agg_pear_file - output aggregate PEAR file (optional). <br />
    * If the output PEAR file is not specified, the default output PEAR file is created in the
    * current working directory.</li>
-   * <li>-ae analysis engine mode flag (optional). If this flag is specified, the utility creates
-   * aggregate analysis engine descriptor, otherwise (by default) it creates more specific text
-   * analysis engine descriptor.</li>
-   * </ul>
+    * </ul>
    * 
    * @param args
-   *          pear_file_1 ... pear_file_n -n agg_name [-f agg_pear_file] [-ae]
+   *          pear_file_1 ... pear_file_n -n agg_name [-f agg_pear_file]
    */
   public static void main(String[] args) {
     // enable log file
@@ -155,7 +146,6 @@ public class PMController {
     try {
       // create controller object
       controller = new PMController(__pearFiles, __aggregateName, __aggregatePearFile);
-      controller.setAeModeEnabled(__aeModeFlag);
       // merge input PEARs and create merged aggregate PEAR file
       if (controller.mergePears()) {
         logInfoMessage("[" + PEAR_MERGER + "]: " + "operation completed successfully");
@@ -231,7 +221,7 @@ public class PMController {
     // verify command line args (min 4 args: p_1 p_2 -n name)
     if (args.length < 4) {
       logErrorMessage(PEAR_MERGER + " args: " + "pear_file_1 ... pear_file_n -n agg_name "
-              + "[-f agg_pear_file] [-ae]");
+              + "[-f agg_pear_file]");
       return false;
     }
     ArrayList listOfPears = new ArrayList();
@@ -245,8 +235,9 @@ public class PMController {
         // set aggregate PEAR file
         if (++i < args.length)
           __aggregatePearFile = new File(args[i]);
-      } else if (args[i].equals(AE_MODE_FLAG)) {
-        __aeModeFlag = true;
+      } else if (args[i].startsWith( "-" )) {
+        logErrorMessage(PEAR_MERGER + " error: " + "unknown flag '" + args[i] + "'");
+        return false;
       } else {
         // add next input PEAR file
         File inPear = new File(args[i]);
@@ -440,7 +431,7 @@ public class PMController {
     // 4th step: generate aggregate component descriptor
     File aggDescFile = new File(pkgDescDir, _outAggCompName + ".xml");
     AnalysisEngineDescription aggDescription = PMUimaAgent.createAggregateDescription(
-            _outAggCompName, _outAggRootDir, _dlgInstDescs, _aeModeEnabled);
+            _outAggCompName, _outAggRootDir, _dlgInstDescs);
     if (aggDescription != null) {
       PMUimaAgent.saveAggregateDescription(aggDescription, aggDescFile);
       logInfoMessage("[" + PEAR_MERGER + "]: " + "generated aggregate component descriptor");
@@ -463,18 +454,5 @@ public class PMController {
       done = true;
     }
     return done;
-  }
-
-  /**
-   * Enables or disables AE mode for the next merging operation. If the AE mode is enabled, the
-   * merger creates AE output descriptor, instead of a more specific TAE descriptor. <br />
-   * Note: by default, the TAE mode is used.
-   * 
-   * @param aeModeFlag
-   *          If <code>true</code>, the AE mode is enabled, otherwise the default (TAE) mode is
-   *          used.
-   */
-  public void setAeModeEnabled(boolean aeModeFlag) {
-    _aeModeEnabled = aeModeFlag;
   }
 }

@@ -59,10 +59,9 @@ import org.xml.sax.SAXException;
 
 public class PMUimaAgent {
   /**
-   * Creates UIMA aggregate component description object, based on given aggregate component name
+   * Creates UIMA aggregate analysis engine description object, based on given aggregate component name
    * (ID), aggregate root directory and array of delegate installation descriptors. Returns the UIMA
-   * aggregate component description object. If the TAE mode is enabled, the method create TAE
-   * description object, otherwise it creates analysis engine description object.
+   * aggregate analysis engine description object. 
    * 
    * @param aggCompName
    *          The given aggregate component name (ID).
@@ -70,21 +69,17 @@ public class PMUimaAgent {
    *          The given aggregate root directory.
    * @param dlgInstDescs
    *          The given array of delegate installation descriptors.
-   * @param aeModeEnabled
-   *          If <code>true</code>, the method creates AE description object, otherwise it
-   *          creates more specific TAE description object.
-   * @return The UIMA aggregate component description object.
+   * @return The UIMA aggregate analysis engine description object.
    */
   static AnalysisEngineDescription createAggregateDescription(String aggCompName, File aggRootDir,
-          InstallationDescriptor[] dlgInstDescs, boolean aeModeEnabled) {
+          InstallationDescriptor[] dlgInstDescs) {
     AnalysisEngineDescription aggDescription = null;
     int lastInputNo = 0;
     try {
       // get UIMA resource specifier factory
       ResourceSpecifierFactory rsFactory = UIMAFramework.getResourceSpecifierFactory();
       // create aggregate AE description
-      aggDescription = aeModeEnabled ? rsFactory.createAnalysisEngineDescription() : rsFactory
-              .createTaeDescription();
+      aggDescription = rsFactory.createAnalysisEngineDescription();
       aggDescription.setPrimitive(false);
       // get Map of delegate specifiers with imports
       Map delegatesMap = aggDescription.getDelegateAnalysisEngineSpecifiersWithImports();

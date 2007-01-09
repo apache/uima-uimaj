@@ -26,8 +26,8 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.analysis_engine.TaeDescription;
-import org.apache.uima.analysis_engine.TextAnalysisEngine;
+import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.pear.tools.InstallationController;
 import org.apache.uima.pear.tools.InstallationDescriptor;
@@ -120,16 +120,16 @@ public class PearMergerTest extends TestCase {
     ResourceManager resMngr = UIMAFramework.newDefaultResourceManager();
     String compClassPath = InstallationController.buildComponentClassPath(insDesc
             .getMainComponentRoot(), insDesc);
-    // instantiate the aggregate TAE
+    // instantiate the aggregate AE
     resMngr.setExtensionClassPath(compClassPath, true);
     String compDescFilePath = insDesc.getMainComponentDesc();
     XMLParser xmlPaser = UIMAFramework.getXMLParser();
     XMLInputSource xmlInput = new XMLInputSource(compDescFilePath);
-    TaeDescription taeSpec = xmlPaser.parseTaeDescription(xmlInput);
-    TextAnalysisEngine tae = UIMAFramework.produceTAE(taeSpec, resMngr, null);
-    Assert.assertTrue(tae != null);
+    AnalysisEngineDescription aeSpec = xmlPaser.parseAnalysisEngineDescription(xmlInput);
+    AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aeSpec, resMngr, null);
+    Assert.assertTrue(ae != null);
     // create TCAS object
-    TCAS tCas = tae.newTCAS();
+    TCAS tCas = ae.newTCAS();
     Assert.assertTrue(tCas != null);
     // clean-up the results
     pmController.cleanUp();
