@@ -823,21 +823,14 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     if (superType == type)
       return true;
 
-    // Yes, the code below is intentional. Until we actually support real
-    // arrays of some
-    // particular fs,
-    // we have FSArray is the supertype of xxxx[] AND
-    // xxx[] is the supertype of FSArray
-    // (this second relation because all we can generate are instances of
-    // FSArray
-    // and we must be able to assign them to xxx[] )
+    // Special check for subtypes of FSArray.
     if (superType == this.fsArrayTypeCode) {
       return !ll_isPrimitiveArrayType(type) && ll_isArrayType(type);
     }
 
+    // Special check for supertypes of FSArray.  Why do we need this?
     if (type == this.fsArrayTypeCode) {
-      return superType == this.top || superType == this.arrayBaseTypeCode
-              || (!ll_isPrimitiveArrayType(superType) && ll_isArrayType(superType));
+      return superType == this.top || superType == this.arrayBaseTypeCode;
     }
 
     // at this point, we could have arrays of other primitive types, or
