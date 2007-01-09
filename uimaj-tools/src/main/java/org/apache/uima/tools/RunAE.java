@@ -38,10 +38,10 @@ import org.apache.uima.collection.metadata.CpeCollectionReader;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.collection.metadata.CpeSofaMapping;
 import org.apache.uima.collection.metadata.CpeSofaMappings;
+import org.apache.uima.tools.components.FileSystemCollectionReader;
+import org.apache.uima.tools.components.InlineXmlCasConsumer;
+import org.apache.uima.tools.components.XmlDetagger;
 import org.apache.uima.util.AnalysisEnginePerformanceReports;
-import org.apache.uima.util.FileSystemCollectionReader;
-import org.apache.uima.util.InlineXmlCasConsumer;
-import org.apache.uima.util.XmlDetagger;
 
 /**
  * An example application that reads documents from the file system, sends them though an Analysis

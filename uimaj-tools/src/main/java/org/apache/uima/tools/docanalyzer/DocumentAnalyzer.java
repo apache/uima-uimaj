@@ -86,6 +86,9 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
+import org.apache.uima.tools.components.FileSystemCollectionReader;
+import org.apache.uima.tools.components.XmiWriterCasConsumer;
+import org.apache.uima.tools.components.XmlDetagger;
 import org.apache.uima.tools.images.Images;
 import org.apache.uima.tools.stylemap.StyleMapEditor;
 import org.apache.uima.tools.stylemap.StyleMapEntry;
@@ -95,11 +98,8 @@ import org.apache.uima.tools.util.gui.SpringUtilities;
 import org.apache.uima.tools.util.htmlview.AnnotationViewGenerator;
 import org.apache.uima.util.AnalysisEnginePerformanceReports;
 import org.apache.uima.util.CasCreationUtils;
-import org.apache.uima.util.FileSystemCollectionReader;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
-import org.apache.uima.util.XmiWriterCasConsumer;
-import org.apache.uima.util.XmlDetagger;
 
 /**
  * A simple GUI for the RunTextAnalysis application library. Note that currently this will only run

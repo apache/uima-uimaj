@@ -47,10 +47,16 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
+			<artifactId>uimaj-document-annotation</artifactId>
+			<version>2.1.0-incubating-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>	    
+		<dependency>
+			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-test-util</artifactId>
 			<version>2.1.0-incubating-SNAPSHOT</version>
 			<scope>test</scope>
-		</dependency>
+		</dependency>    
 	</dependencies>
 	<build>
 		<finalName>uima-tools</finalName>
