@@ -53,6 +53,13 @@ public class CASTestSetup extends TestCase implements AnnotatorInitializer {
   public static final String TOKEN_TYPE_TYPE = "TokenType";
 
   public static final String WORD_TYPE = "Word";
+  
+  public static final String ARRAYFSWITHSUBTYPE_TYPE = "ArrayFsWithSubtype";
+  
+  public static final String ARRAYFSWITHSUBTYPE_TYPE_FEAT = "subArrayOfAnnot";
+  
+  public static final String ARRAYFSWITHSUBTYPE_TYPE_FEAT_Q = ARRAYFSWITHSUBTYPE_TYPE + TypeSystem.FEATURE_SEPARATOR
+          + ARRAYFSWITHSUBTYPE_TYPE_FEAT;
 
   public static final String SEP_TYPE = "Separator";
 
@@ -127,6 +134,9 @@ public class CASTestSetup extends TestCase implements AnnotatorInitializer {
     Type tokenType = tsm.addType(TOKEN_TYPE, annotType);
     Type tokenTypeType = tsm.addType(TOKEN_TYPE_TYPE, topType);
     tsm.addType(WORD_TYPE, tokenTypeType);
+    Type arrayFsWithSubtypeType = tsm.addType(ARRAYFSWITHSUBTYPE_TYPE, topType);
+    Type arrayOfAnnot = tsm.getArrayType(annotType);
+    tsm.addFeature(ARRAYFSWITHSUBTYPE_TYPE_FEAT, arrayFsWithSubtypeType, arrayOfAnnot);
     tsm.addType(SEP_TYPE, tokenTypeType);
     tsm.addType(EOS_TYPE, tokenTypeType);
     tsm.addFeature(TOKEN_TYPE_FEAT, tokenType, tokenTypeType);

@@ -21,6 +21,7 @@ package org.apache.uima.cas.test;
 
 import junit.framework.TestCase;
 
+import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Feature;
@@ -54,6 +55,10 @@ public class FeatureStructureTest extends TestCase {
   private Type tokenTypeType;
 
   private Type wordType;
+  
+  private Type arrayFsWithSubtypeType;
+  
+  private Feature arrayFsWithSubtypeTypeFeat;
 
   private Type group1Type;
 
@@ -114,6 +119,9 @@ public class FeatureStructureTest extends TestCase {
     assertTrue(this.tokenTypeType != null);
     this.wordType = this.ts.getType(CASTestSetup.WORD_TYPE);
     assertTrue(this.wordType != null);
+    this.arrayFsWithSubtypeType = this.ts.getType(CASTestSetup.ARRAYFSWITHSUBTYPE_TYPE);
+    assertTrue(this.arrayFsWithSubtypeType != null);
+    this.arrayFsWithSubtypeTypeFeat = this.ts.getFeatureByFullName(CASTestSetup.ARRAYFSWITHSUBTYPE_TYPE_FEAT_Q);
     this.group1Type = this.ts.getType(CASTestSetup.GROUP_1);
     assertTrue(this.group1Type != null);
     this.group2Type = this.ts.getType(CASTestSetup.GROUP_2);
@@ -178,6 +186,22 @@ public class FeatureStructureTest extends TestCase {
     assertTrue(token.getType().equals(tokenType1));
   }
 
+  public void testSetArrayValuedFeature() {
+    FeatureStructure testFS = this.cas.createFS(this.arrayFsWithSubtypeType);
+    assertTrue(testFS.getFeatureValue(this.arrayFsWithSubtypeTypeFeat) == null);
+    ArrayFS arrayFS = cas.createArrayFS(1);
+    testFS.setFeatureValue(arrayFsWithSubtypeTypeFeat, arrayFS);
+    assertTrue(true); 
+    boolean caughtExc = false;
+    try {
+      testFS.setFeatureValue(arrayFsWithSubtypeTypeFeat, testFS);
+    } catch (CASRuntimeException e) {
+      caughtExc = true;
+      assertTrue(e.getError() == CASRuntimeException.INAPPROP_RANGE);
+    }
+    assertTrue(caughtExc);
+  }
+  
   public void testSetFeatureValue() {
     FeatureStructure token = this.cas.createFS(this.tokenType);
     assertTrue(token.getFeatureValue(this.tokenTypeFeat) == null);
