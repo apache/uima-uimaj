@@ -75,7 +75,6 @@ import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.cas.TOP_Type;
-import org.apache.uima.jcas.tcas.DocumentAnnotation;
 
 // *********************************
 // * Implementation of JCas *
@@ -423,8 +422,11 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
             jcasTypes.put(nameBase, new LoadedJCasType(t, Class.forName(name_Type, true, cas
                     .getJCasClassLoader())));
           } catch (ClassNotFoundException e1) {
-            // never get here because built-ins have java cover types
-            e1.printStackTrace();
+            // OK for DocumentAnnotation, which may not have a cover class.  Otherwise, not OK.
+            if (!CAS.TYPE_NAME_DOCUMENT_ANNOTATION.equals(casName)) {
+              assert false : "never get here because built-ins have java cover types";
+              e1.printStackTrace();
+            }
           }
 
         // this is done unconditionally to pick up old style cover functions if any
@@ -457,7 +459,12 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
           t = (Type) typeIt.next();
           if (builtInsWithNoJCas.contains(t.getName()))
             continue;
-          if (builtInsWithAltNames.contains(t.getName()))
+          //comment here
+          if (CAS.TYPE_NAME_DOCUMENT_ANNOTATION.equals(t.getName())) {
+            if (jcasTypes.get("org.apache.uima.jcas.tcas.DocumentAnnotation") != null) 
+              continue;                    
+          }
+          else if (builtInsWithAltNames.contains(t.getName()))
             continue; // because jcasTypes has no entry for these
           if (null != jcasTypes.get(t.getName()))
             continue;
@@ -804,13 +811,6 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   // ****************
   // * TCas support *
   // ****************
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getDocumentAnnotation()
-   */
-  public DocumentAnnotation getDocumentAnnotation() {
-    return (DocumentAnnotation) casImpl.getDocumentAnnotation();
-  }
 
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.impl.IJCas#getDocumentAnnotationFs()
