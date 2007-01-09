@@ -13,3 +13,8 @@ org.apache.uima.jcas.impl.JCas\b org.apache.uima.jcas.JCas
 JCas.getFeatOkTst org.apache.uima.jcas.impl.JCasImpl.getFeatOkTst
 JCas.getNextIndex org.apache.uima.jcas.impl.JCasImpl.getNextIndex
 JCas.throwFeatMissing org.apache.uima.jcas.impl.JCasImpl.throwFeatMissing
+org.apache.uima.util.FileSystemCollectionReader org.apache.uima.tools.components.FileSystemCollectionReader
+org.apache.uima.util.InlineXmlCasConsumer org.apache.uima.tools.components.InlineXmlCasConsumer
+org.apache.uima.util.XCasWriterCasConsumer org.apache.uima.tools.components.XCasWriterCasConsumer
+org.apache.uima.util.XmiWriterCasConsumer org.apache.uima.tools.components.XmiWriterCasConsumer
+org.apache.uima.util.XmlDetagger org.apache.uima.tools.components.XmlDetagger
