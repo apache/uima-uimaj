@@ -146,6 +146,7 @@
 		<module>../uimaj-ep-configurator</module>
 		<module>../uimaj-ep-pear-packager</module>
 		<module>../uimaj-ep-runtime</module>
+		<module>../uimaj-document-annotation</module>
 	</modules>
 	<repositories>
 		<repository>
