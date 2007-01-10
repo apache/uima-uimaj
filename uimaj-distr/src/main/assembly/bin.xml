@@ -58,6 +58,14 @@ under the License.
     </dependencySet>
     <dependencySet>
       <includes>
+        <include>org.apache.uima:uimaj-document-annotation</include>
+      </includes>
+      <unpack>false</unpack>
+      <outputFileNameMapping>uima-document-annotation.jar</outputFileNameMapping>
+      <outputDirectory>/apache-uima/lib</outputDirectory>
+    </dependencySet>
+    <dependencySet>
+      <includes>
         <include>org.apache.uima:uimaj-examples</include>
       </includes>
       <unpack>false</unpack>

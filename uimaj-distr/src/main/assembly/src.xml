@@ -102,6 +102,14 @@ under the License.
       </includes>
     </fileSet>      
     <fileSet>
+      <directory>../uimaj-document-annotation</directory>
+      <outputDirectory>/uimaj-document-annotation</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>   
+    <fileSet>
       <directory>../uimaj-ep-configurator</directory>
       <outputDirectory>/uimaj-ep-configurator</outputDirectory>
       <includes>
