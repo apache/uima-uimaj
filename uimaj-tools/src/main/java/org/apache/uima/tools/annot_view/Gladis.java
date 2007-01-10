@@ -44,15 +44,14 @@ public class Gladis {
   private static final String EXECUTE_SWITCH = "-exec";
 
   private static final String DATA_PATH_PARAM = "-datapath";
+  
+  private static final String LOOK_AND_FEEL_PARAM = "-lookandfeel";
 
   private Gladis() {
     super();
   }
 
-  public static MainFrame createMainFrame() throws ClassNotFoundException, InstantiationException,
-          IllegalAccessException, UnsupportedLookAndFeelException {
-    // Set look-and-feel.
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+  public static MainFrame createMainFrame() {
     final MainFrame frame = new MainFrame();
     // Set icon.
     ImageIcon icon = Images.getImageIcon(Images.MICROSCOPE);
@@ -74,6 +73,7 @@ public class Gladis {
     parser.addParameter(TEXT_FILE_PARAM, true);
     parser.addParameter(DESC_FILE_PARAM, true);
     parser.addParameter(DATA_PATH_PARAM, true);
+    parser.addParameter(LOOK_AND_FEEL_PARAM, true);
     parser.addParameter(EXECUTE_SWITCH);
     return parser;
   }
@@ -81,6 +81,8 @@ public class Gladis {
   private static final void printUsage() {
     System.out
             .println("Usage: java org.apache.uima.annot_view.Gladis [-text <TextFile>] [-desc <XmlDescriptor>] [-datapath <DataPath>] [-exec]");
+    System.out.println("Additional optional parameters:");
+    System.out.println("  -lookandfeel <LookAndFeelClassName>");
   }
 
   private static final boolean checkCmdLineSyntax(CommandLineParser clp) {
@@ -111,6 +113,15 @@ public class Gladis {
       }
       SplashScreen splashScreen = new SplashScreen(new JWindow());
       splashScreen.start();
+      String lookAndFeel = null;
+      if (clp.isInArgsList(LOOK_AND_FEEL_PARAM)) {
+	lookAndFeel = clp.getParamArgument(LOOK_AND_FEEL_PARAM);
+	try {
+	  UIManager.setLookAndFeel(lookAndFeel);
+	} catch (UnsupportedLookAndFeelException e) {
+	  System.err.println(e.getMessage());
+	}
+      }
       MainFrame frame = createMainFrame();
       splashScreen.close();
       splashScreen.join();
