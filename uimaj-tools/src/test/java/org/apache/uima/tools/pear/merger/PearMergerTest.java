@@ -42,7 +42,6 @@ import org.apache.uima.util.XMLParser;
  * component. The test cases are based on the sample input PEARs located in the
  * 'pearTests/pearMergerTests' folder.
  * 
- * @author LK
  */
 public class PearMergerTest extends TestCase {
   // relative location of sample PEARs
