@@ -22,6 +22,8 @@ package org.apache.uima.cas.test;
 import junit.framework.TestCase;
 
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
@@ -257,6 +259,22 @@ public class AnnotationIteratorTest extends TestCase {
       ++count;
     }
     assertTrue(count == 2);
+  }
+  
+  public void testIncorrectIndexTypeException() {
+    boolean caughtException = false;
+    try {
+      this.cas.getAnnotationIndex(this.stringType);
+    } catch (CASRuntimeException e) {
+      e.printStackTrace();
+      caughtException = true;
+    }
+    assertTrue(caughtException);
+    try {
+      this.cas.getAnnotationIndex(this.tokenType);
+    } catch (CASRuntimeException e) {
+      assertTrue(false);
+    }
   }
 
   public static void main(String[] args) {

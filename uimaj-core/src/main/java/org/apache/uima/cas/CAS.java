@@ -723,7 +723,7 @@ public interface CAS extends AbstractCas {
    *          The annotation type the index is restricted to.
    * @return The standard annotation index, restricted to <code>type</code>.
    */
-  FSIndex getAnnotationIndex(Type type);
+  FSIndex getAnnotationIndex(Type type) throws CASRuntimeException;
 
   /**
    * Create a new annotation. Note that you still need to insert the annotation into the index
