@@ -25,12 +25,6 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CasInitializer_ImplBase;
 import org.apache.uima.collection.CollectionException;
 
-/**
- * @author alally
- * 
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
- */
 public class TestCasInitializer extends CasInitializer_ImplBase {
 
   /*

@@ -23,10 +23,6 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.EntityProcessStatus;
 import org.apache.uima.collection.StatusCallbackListener;
 
-/*
- * @author Michael Baessler
- * 
- */
 /**
  * Callback Listener. Receives event notifications from CPE.
  */

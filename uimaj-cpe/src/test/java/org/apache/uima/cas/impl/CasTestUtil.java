@@ -21,10 +21,7 @@ package org.apache.uima.cas.impl;
 
 import org.apache.uima.cas.CAS;
 
-/**
- * 
- * @author Adam Lally
- */
+
 public class CasTestUtil {
 
   /**

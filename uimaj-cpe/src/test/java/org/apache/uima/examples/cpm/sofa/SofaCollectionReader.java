@@ -37,10 +37,7 @@ import org.apache.uima.util.Progress;
  */
 
 /**
- * Creates a Text SofA in the cas.
- * 
- * @author Bhavani Iyer
- * 
+ * Creates a Text SofA in the cas. 
  */
 public class SofaCollectionReader extends CollectionReader_ImplBase {
   boolean hasMore = true;

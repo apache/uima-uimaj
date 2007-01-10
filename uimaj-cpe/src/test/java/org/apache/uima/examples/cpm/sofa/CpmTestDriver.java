@@ -36,9 +36,6 @@ import org.apache.uima.util.XMLInputSource;
 
 /**
  * Runs a CPE that processes a text SofA.
- * 
- * @author Bhavani Iyer
- * 
  */
 public class CpmTestDriver {
 

@@ -39,9 +39,6 @@ import org.apache.uima.util.Progress;
 
 /**
  * Creates a Text SofA in the cas.
- * 
- * @author Bhavani Iyer
- * 
  */
 public class TcasCollectionReader extends CollectionReader_ImplBase {
   boolean hasMore = true;

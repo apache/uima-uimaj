@@ -33,7 +33,6 @@ import org.apache.uima.collection.CollectionException;
 /**
  * Creates a Text SofA in the cas
  * 
- * @author Bhavani Iyer
  */
 public class SofaCasInitializer extends CasInitializer_ImplBase {
 

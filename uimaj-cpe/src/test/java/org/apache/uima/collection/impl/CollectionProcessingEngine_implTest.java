@@ -35,10 +35,7 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-/**
- * 
- * @author Adam Lally
- */
+
 public class CollectionProcessingEngine_implTest extends TestCase {
   protected final String TEST_DATAPATH = JUnitExtension.getFile(
           "CollectionProcessingEngineImplTest").getPath()

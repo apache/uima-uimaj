@@ -36,11 +36,6 @@ import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.ProcessTraceEvent;
 import org.apache.uima.util.XMLInputSource;
 
-/**
- * @author Bhavani Iyer
- * 
- * 
- */
 public class SofaCPE_Test extends TestCase {
 
   private File cpeSpecifierFile = null;
@@ -113,7 +108,6 @@ public class SofaCPE_Test extends TestCase {
   /**
    * Callback Listener.
    * 
-   * @author Adam Lally
    */
   class StatusCallbackListenerImpl1 implements StatusCallbackListener {
 

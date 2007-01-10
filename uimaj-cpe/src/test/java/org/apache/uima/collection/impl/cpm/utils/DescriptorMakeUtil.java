@@ -31,9 +31,7 @@ import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-/**
- * @author Michael Baessler
- */
+
 public class DescriptorMakeUtil {
   private static final String FS = System.getProperties().getProperty("file.separator");
 

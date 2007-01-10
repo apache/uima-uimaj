@@ -33,7 +33,6 @@ import org.apache.uima.util.Progress;
 /**
  * A test collection reader that just Asserts the CAS heap size to be a specified value.
  * 
- * @author Adam Lally
  */
 public class CasHeapSizeTestCollectionReader extends CollectionReader_ImplBase {
   static final int EXPECTED_HEAP_SIZE = 100000;

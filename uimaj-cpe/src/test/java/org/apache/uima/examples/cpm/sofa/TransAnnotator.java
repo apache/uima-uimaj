@@ -36,7 +36,6 @@ import org.apache.uima.cas.text.TCAS;
 /**
  * Simple English to German translator
  * 
- * @author Eddie Epstein
  */
 public class TransAnnotator extends Annotator_ImplBase implements GenericAnnotator {
 

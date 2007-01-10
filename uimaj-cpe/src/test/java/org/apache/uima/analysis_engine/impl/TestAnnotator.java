@@ -34,7 +34,6 @@ import org.apache.uima.util.ProcessTraceEvent;
 /**
  * Annotator class used for testing
  * 
- * @author Adam Lally
  */
 public class TestAnnotator extends Annotator_ImplBase implements TextAnnotator {
   // Process method saves information to these static fields,
