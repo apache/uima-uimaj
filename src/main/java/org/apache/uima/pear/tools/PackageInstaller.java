@@ -27,24 +27,37 @@ import org.apache.uima.pear.util.MessageRouter;
 import org.apache.uima.util.Level;
 import org.xml.sax.SAXException;
 
+
+
+/**
+ * The <code>PackageInstaller</code> class is the main user API for installing PEAR packages.
+ * The class has a static method <code>installPackage</code> to install PEAR packages that returns a 
+ * <code>PackageBrowser</code> object containing all the needed information about the installed
+ * PEAR package. 
+ * 
+ * @see org.apache.uima.pear.tools.PackageBrowser
+ *
+ */
 public class PackageInstaller {
 
   private static final String PEAR_MESSAGE_RESOURCE_BUNDLE = "org.apache.uima.pear.pear_messages";
 
   /**
-   * Installes the given pear package to the specified location.
+   * Installes the specified PEAR package to the specified install location. After the installation
+   * a simple installation verification step can be executed. This verification starts the PEAR package
+   * and call the <code>process</code> method.
    * 
    * @param installDir
-   *          pear package install location
+   *          PEAR package install location
    * @param pearPackage
-   *          pear package to install
+   *          PEAR package file location to install
    * @param verify
-   *          if true a simple pear package verification is done after installation
+   *          If true the PEAR package verification is done after the installation
    * 
-   * @return PackageBrowser - pear package install settings
+   * @return Returns a <code>PackageBrowser</code> object containing all PEAR package install settings
    * 
    * @throws PackageInstallerException
-   *           if an error during the pear installation occurs.
+   *           If an error occured during the pear installation or verification.
    */
   public static PackageBrowser installPackage(File installDir, File pearPackage, boolean verify)
           throws PackageInstallerException {
