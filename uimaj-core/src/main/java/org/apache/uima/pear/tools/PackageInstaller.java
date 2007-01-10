@@ -43,9 +43,11 @@ public class PackageInstaller {
   private static final String PEAR_MESSAGE_RESOURCE_BUNDLE = "org.apache.uima.pear.pear_messages";
 
   /**
-   * Installes the specified PEAR package to the specified install location. After the installation
-   * a simple installation verification step can be executed. This verification starts the PEAR package
-   * and call the <code>process</code> method.
+   * Installs the specified PEAR package to the specified install location.
+   * After the installation is completed, an optional installation verification
+   * step can be executed. This verification uses the main component descriptor
+   * to instantiate the UIMA resource, encapsulated in the PEAR package, and may
+   * run some additional tests, if applicable
    * 
    * @param installDir
    *          PEAR package install location
