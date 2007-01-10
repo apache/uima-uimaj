@@ -20,6 +20,9 @@ package org.apache.uima.pear.tools;
 
 import org.apache.uima.InternationalizedRuntimeException;
 
+/**
+ * Exception thrown if PEAR installation fails.
+ */
 public class PackageInstallerException extends InternationalizedRuntimeException {
   private static final long serialVersionUID = 6261840563059646801L;
 
