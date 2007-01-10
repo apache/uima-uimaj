@@ -65,301 +65,6 @@ import org.apache.uima.jcas.JCas;
  */
 public interface CAS extends AbstractCas {
 
-  /**
-   * Create a FS on the temporary (document) heap.
-   * 
-   * @param type
-   *          The type of the FS.
-   * @return The new FS.
-   */
-  FeatureStructure createFS(Type type) throws CASRuntimeException;
-
-  /**
-   * Create a new feature structure array.
-   * 
-   * @param length
-   *          The length of the array.
-   * @return The new array.
-   */
-  ArrayFS createArrayFS(int length) throws CASRuntimeException;
-
-  /**
-   * Create a new int array.
-   * 
-   * @param length
-   *          The length of the array.
-   * @return The new array.
-   */
-  IntArrayFS createIntArrayFS(int length) throws CASRuntimeException;
-
-  /**
-   * Create a new int array.
-   * 
-   * @param length
-   *          The length of the array.
-   * @return The new array.
-   */
-  FloatArrayFS createFloatArrayFS(int length) throws CASRuntimeException;
-
-  /**
-   * Create a new String array.
-   * 
-   * @param length
-   *          The length of the array.
-   * @return The new array.
-   */
-  StringArrayFS createStringArrayFS(int length) throws CASRuntimeException;
-
-  /**
-   * Create a new Byte array.
-   * 
-   * @param length
-   *          The length of the array.
-   * @return The new array.
-   */
-  ByteArrayFS createByteArrayFS(int length) throws CASRuntimeException;
-
-  /**
-   * Create a new Boolean array.
-   * 
-   * @param length
-   *          The length of the array.
-   * @return The new array.
-   */
-  BooleanArrayFS createBooleanArrayFS(int length) throws CASRuntimeException;
-
-  /**
-   * Create a new Short array.
-   * 
-   * @param length
-   *          The length of the array.
-   * @return The new array.
-   */
-  ShortArrayFS createShortArrayFS(int length) throws CASRuntimeException;
-
-  /**
-   * Create a new Long array.
-   * 
-   * @param length
-   *          The length of the array.
-   * @return The new array.
-   */
-  LongArrayFS createLongArrayFS(int length) throws CASRuntimeException;
-
-  /**
-   * Create a new Double array.
-   * 
-   * @param length
-   *          The length of the array.
-   * @return The new array.
-   */
-  DoubleArrayFS createDoubleArrayFS(int length) throws CASRuntimeException;
-
-
-  /**
-   * Get the JCas for this CAS.
-   * 
-   * @return The JCas for this CAS.
-   */
-  JCas getJCas() throws CASException;
-
-  /**
-   * Get the TCas view for the default text Sofa.
-   * 
-   * @return the TCas view for the default text Sofa. If it does not already exist, it will be
-   *         created.
-   * 
-   * @deprecated As of v2.0, all methods on the TCAS interface have been moved to the CAS interface,
-   *             making this method unnecessary.
-   */
-  TCAS getTCAS();
-
-  /**
-   * Get the TCas view for a Sofa.
-   * 
-   * @param aSofsFS
-   *          a Sofa feature struture in this CAS
-   * 
-   * @return The TCas for the given Sofa.
-   * 
-   * @deprecated As of v2.0, use {@link #getView(String)} to get a view. All methods on the TCAS
-   *             interface have been moved to the CAS interface, making this method unnecessary.
-   */
-  TCAS getTCAS(SofaFS aSofa);
-
-  /**
-   * Get sofaFS for given Subject of Analysis ID.
-   * 
-   * @return The sofaFS.
-   * 
-   * @deprecated As of v2.0, use {#getView(String)}. From the view you can access the Sofa data, or
-   *             call {@link #getSofa()} if you truly need to access the SofaFS object.
-   */
-  SofaFS getSofa(SofaID sofaID);
-
-  /**
-   * Get the Sofa feature structure associated with this TCAS view.
-   * 
-   * @return The SofaFS associated with this TCAS.
-   */
-  SofaFS getSofa();
-  
-  /**
-   * Create a view and its underlying Sofa (subject of analysis). The view provides access to the
-   * Sofa data and the index repository that contains metadata (annotations and other feature
-   * structures) pertaining to that Sofa.
-   * 
-   * @param localViewName
-   *          the local name, before any sofa name mapping is done, for this view (note: this is the
-   *          same as the associated Sofa name).
-   * 
-   * @return The view corresponding to this local name.
-   * @throws CASRuntimeException
-   *           if a View with this name already exists in this CAS
-   */
-  CAS createView(String localViewName);
-
-  /**
-   * Create a JCas view for a Sofa. Note: as of UIMA v2.0, can be replaced with
-   * getView(sofaFS).getJCas().
-   * 
-   * @param aSofa
-   *          a Sofa feature structure in this CAS.
-   * 
-   * @return The JCas for the given Sofa.
-   */
-  JCas getJCas(SofaFS aSofa) throws CASException;
-
-  /**
-   * Create a JCas view for a Sofa. Note: this is provided for convenience. It is equivalent to
-   * <code>getView(aSofaID).getJCas()</code>.
-   * 
-   * @param aSofaID
-   *          the ID of a Sofa defined in this CAS
-   * 
-   * @return The view for the Sofa with ID <code>aSofaID</code>.
-   * @throws CASRuntimeException
-   *           if no Sofa with the given ID exists in this CAS
-   * 
-   * @deprecated As of v2.0, use {@link #getView(String)} followed by {@link #getJCas()}.
-   */
-  JCas getJCas(SofaID aSofaID) throws CASException;
-
-  /**
-   * Get the view for a Sofa (subject of analysis). The view provides access to the Sofa data and
-   * the index repository that contains metadata (annotations and other feature structures)
-   * pertaining to that Sofa.
-   * 
-   * @param localViewName
-   *          the local name, before any sofa name mapping is done, for this view (note: this is the
-   *          same as the associated Sofa name).
-   * 
-   * @return The view corresponding to this local name.
-   * @throws CASRuntimeException
-   *           if no View with this name exists in this CAS
-   */
-  CAS getView(String localViewName);
-  
-  /**
-   * Get the view for a Sofa (subject of analysis). The view provides access to the Sofa data and
-   * the index repository that contains metadata (annotations and other feature structures)
-   * pertaining to that Sofa.
-   * 
-   * @param aSofa
-   *          a Sofa feature structure in the CAS
-   * 
-   * @return The view for the given Sofa
-   */
-  CAS getView(SofaFS aSofa);
-
- 
-  /**
-   * Get an instance of the low-level CAS. Low-level and regular CAS can be used in parallel, all
-   * data is always contained in both.
-   * 
-   * <p>
-   * <b>Note</b>: This is for internal use.
-   * 
-   * @return A low-level CAS.
-   * @see LowLevelCAS
-   */
-  LowLevelCAS getLowLevelCAS();
-
-
-  /**
-   * Get the type object for the annotation type.
-   * 
-   * @return The annotation type.
-   */
-  Type getAnnotationType();
-
-  /**
-   * Get the feature object for the annotation begin feature.
-   * 
-   * @return The annotation begin feature.
-   */
-  Feature getBeginFeature();
-
-  /**
-   * Get the feature object for the annotation end feature.
-   * 
-   * @return The annotation end feature.
-   */
-  Feature getEndFeature();
-
-  /**
-   * Get the standard annotation index.
-   * 
-   * @return The standard annotation index.
-   */
-  FSIndex getAnnotationIndex();
-
-  /**
-   * Get the standard annotation index restricted to a specific annotation type.
-   * 
-   * @param type
-   *          The annotation type the index is restricted to.
-   * @return The standard annotation index, restricted to <code>type</code>.
-   */
-  FSIndex getAnnotationIndex(Type type);
-
-  /**
-   * Create a new annotation. Note that you still need to insert the annotation into the index
-   * repository yourself.
-   * 
-   * @param type
-   *          The type of the annotation.
-   * @param begin
-   *          The start of the annotation.
-   * @param end
-   *          The end of the annotation.
-   * @return A new annotation object.
-   */
-  AnnotationFS createAnnotation(Type type, int begin, int end);
-
-  /**
-   * Get the document annotation. The document has a string-valued feature called "language" where
-   * the document language is specified.
-   * 
-   * @return The document annotation, or <code>null</code> if there is none.
-   */
-  AnnotationFS getDocumentAnnotation();
-
-  /**
-   * Informs the CAS of relevant information about the component that is currently procesing it.
-   * This is called by the framework automatically; users do not need to call it.
-   * 
-   * @param info
-   *          information about the component that is currently processing this CAS.
-   */
-  void setCurrentComponentInfo(ComponentInfo info);
-  
-  /**
-   * This part of the CAS interface is shared among CAS and JCAS interfaces
-   * If you change it in one of the interfaces, consider changing it in the 
-   * other
-   */
-
   // //////////////////////////////////////////////////
   // Type names
 
@@ -762,6 +467,301 @@ public interface CAS extends AbstractCas {
   static final String DEFAULT_LANGUAGE_NAME = "x-unspecified";
 
   
+  /**
+   * Create a FS on the temporary (document) heap.
+   * 
+   * @param type
+   *          The type of the FS.
+   * @return The new FS.
+   */
+  FeatureStructure createFS(Type type) throws CASRuntimeException;
+
+  /**
+   * Create a new feature structure array.
+   * 
+   * @param length
+   *          The length of the array.
+   * @return The new array.
+   */
+  ArrayFS createArrayFS(int length) throws CASRuntimeException;
+
+  /**
+   * Create a new int array.
+   * 
+   * @param length
+   *          The length of the array.
+   * @return The new array.
+   */
+  IntArrayFS createIntArrayFS(int length) throws CASRuntimeException;
+
+  /**
+   * Create a new int array.
+   * 
+   * @param length
+   *          The length of the array.
+   * @return The new array.
+   */
+  FloatArrayFS createFloatArrayFS(int length) throws CASRuntimeException;
+
+  /**
+   * Create a new String array.
+   * 
+   * @param length
+   *          The length of the array.
+   * @return The new array.
+   */
+  StringArrayFS createStringArrayFS(int length) throws CASRuntimeException;
+
+  /**
+   * Create a new Byte array.
+   * 
+   * @param length
+   *          The length of the array.
+   * @return The new array.
+   */
+  ByteArrayFS createByteArrayFS(int length) throws CASRuntimeException;
+
+  /**
+   * Create a new Boolean array.
+   * 
+   * @param length
+   *          The length of the array.
+   * @return The new array.
+   */
+  BooleanArrayFS createBooleanArrayFS(int length) throws CASRuntimeException;
+
+  /**
+   * Create a new Short array.
+   * 
+   * @param length
+   *          The length of the array.
+   * @return The new array.
+   */
+  ShortArrayFS createShortArrayFS(int length) throws CASRuntimeException;
+
+  /**
+   * Create a new Long array.
+   * 
+   * @param length
+   *          The length of the array.
+   * @return The new array.
+   */
+  LongArrayFS createLongArrayFS(int length) throws CASRuntimeException;
+
+  /**
+   * Create a new Double array.
+   * 
+   * @param length
+   *          The length of the array.
+   * @return The new array.
+   */
+  DoubleArrayFS createDoubleArrayFS(int length) throws CASRuntimeException;
+
+
+  /**
+   * Get the JCas for this CAS.
+   * 
+   * @return The JCas for this CAS.
+   */
+  JCas getJCas() throws CASException;
+
+  /**
+   * Get the TCas view for the default text Sofa.
+   * 
+   * @return the TCas view for the default text Sofa. If it does not already exist, it will be
+   *         created.
+   * 
+   * @deprecated As of v2.0, all methods on the TCAS interface have been moved to the CAS interface,
+   *             making this method unnecessary.
+   */
+  TCAS getTCAS();
+
+  /**
+   * Get the TCas view for a Sofa.
+   * 
+   * @param aSofsFS
+   *          a Sofa feature struture in this CAS
+   * 
+   * @return The TCas for the given Sofa.
+   * 
+   * @deprecated As of v2.0, use {@link #getView(String)} to get a view. All methods on the TCAS
+   *             interface have been moved to the CAS interface, making this method unnecessary.
+   */
+  TCAS getTCAS(SofaFS aSofa);
+
+  /**
+   * Get sofaFS for given Subject of Analysis ID.
+   * 
+   * @return The sofaFS.
+   * 
+   * @deprecated As of v2.0, use {#getView(String)}. From the view you can access the Sofa data, or
+   *             call {@link #getSofa()} if you truly need to access the SofaFS object.
+   */
+  SofaFS getSofa(SofaID sofaID);
+
+  /**
+   * Get the Sofa feature structure associated with this TCAS view.
+   * 
+   * @return The SofaFS associated with this TCAS.
+   */
+  SofaFS getSofa();
+  
+  /**
+   * Create a view and its underlying Sofa (subject of analysis). The view provides access to the
+   * Sofa data and the index repository that contains metadata (annotations and other feature
+   * structures) pertaining to that Sofa.
+   * 
+   * @param localViewName
+   *          the local name, before any sofa name mapping is done, for this view (note: this is the
+   *          same as the associated Sofa name).
+   * 
+   * @return The view corresponding to this local name.
+   * @throws CASRuntimeException
+   *           if a View with this name already exists in this CAS
+   */
+  CAS createView(String localViewName);
+
+  /**
+   * Create a JCas view for a Sofa. Note: as of UIMA v2.0, can be replaced with
+   * getView(sofaFS).getJCas().
+   * 
+   * @param aSofa
+   *          a Sofa feature structure in this CAS.
+   * 
+   * @return The JCas for the given Sofa.
+   */
+  JCas getJCas(SofaFS aSofa) throws CASException;
+
+  /**
+   * Create a JCas view for a Sofa. Note: this is provided for convenience. It is equivalent to
+   * <code>getView(aSofaID).getJCas()</code>.
+   * 
+   * @param aSofaID
+   *          the ID of a Sofa defined in this CAS
+   * 
+   * @return The view for the Sofa with ID <code>aSofaID</code>.
+   * @throws CASRuntimeException
+   *           if no Sofa with the given ID exists in this CAS
+   * 
+   * @deprecated As of v2.0, use {@link #getView(String)} followed by {@link #getJCas()}.
+   */
+  JCas getJCas(SofaID aSofaID) throws CASException;
+
+  /**
+   * Get the view for a Sofa (subject of analysis). The view provides access to the Sofa data and
+   * the index repository that contains metadata (annotations and other feature structures)
+   * pertaining to that Sofa.
+   * 
+   * @param localViewName
+   *          the local name, before any sofa name mapping is done, for this view (note: this is the
+   *          same as the associated Sofa name).
+   * 
+   * @return The view corresponding to this local name.
+   * @throws CASRuntimeException
+   *           if no View with this name exists in this CAS
+   */
+  CAS getView(String localViewName);
+  
+  /**
+   * Get the view for a Sofa (subject of analysis). The view provides access to the Sofa data and
+   * the index repository that contains metadata (annotations and other feature structures)
+   * pertaining to that Sofa.
+   * 
+   * @param aSofa
+   *          a Sofa feature structure in the CAS
+   * 
+   * @return The view for the given Sofa
+   */
+  CAS getView(SofaFS aSofa);
+
+ 
+  /**
+   * Get an instance of the low-level CAS. Low-level and regular CAS can be used in parallel, all
+   * data is always contained in both.
+   * 
+   * <p>
+   * <b>Note</b>: This is for internal use.
+   * 
+   * @return A low-level CAS.
+   * @see LowLevelCAS
+   */
+  LowLevelCAS getLowLevelCAS();
+
+
+  /**
+   * Get the type object for the annotation type.
+   * 
+   * @return The annotation type.
+   */
+  Type getAnnotationType();
+
+  /**
+   * Get the feature object for the annotation begin feature.
+   * 
+   * @return The annotation begin feature.
+   */
+  Feature getBeginFeature();
+
+  /**
+   * Get the feature object for the annotation end feature.
+   * 
+   * @return The annotation end feature.
+   */
+  Feature getEndFeature();
+
+  /**
+   * Get the standard annotation index.
+   * 
+   * @return The standard annotation index.
+   */
+  FSIndex getAnnotationIndex();
+
+  /**
+   * Get the standard annotation index restricted to a specific annotation type.
+   * 
+   * @param type
+   *          The annotation type the index is restricted to.
+   * @return The standard annotation index, restricted to <code>type</code>.
+   */
+  FSIndex getAnnotationIndex(Type type);
+
+  /**
+   * Create a new annotation. Note that you still need to insert the annotation into the index
+   * repository yourself.
+   * 
+   * @param type
+   *          The type of the annotation.
+   * @param begin
+   *          The start of the annotation.
+   * @param end
+   *          The end of the annotation.
+   * @return A new annotation object.
+   */
+  AnnotationFS createAnnotation(Type type, int begin, int end);
+
+  /**
+   * Get the document annotation. The document has a string-valued feature called "language" where
+   * the document language is specified.
+   * 
+   * @return The document annotation, or <code>null</code> if there is none.
+   */
+  AnnotationFS getDocumentAnnotation();
+
+  /**
+   * Informs the CAS of relevant information about the component that is currently procesing it.
+   * This is called by the framework automatically; users do not need to call it.
+   * 
+   * @param info
+   *          information about the component that is currently processing this CAS.
+   */
+  void setCurrentComponentInfo(ComponentInfo info);
+  
+  /**
+   * This part of the CAS interface is shared among CAS and JCAS interfaces
+   * If you change it in one of the interfaces, consider changing it in the 
+   * other
+   */
+
   ///////////////////////////////////////////////////////////////////////////
   //
   //  Standard CAS Methods
