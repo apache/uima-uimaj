@@ -1898,7 +1898,7 @@ catch (PatternSyntaxException e) {
       </section>
     </section>
     <section id="ugr.tug.aae.result_specification_setting">
-      <title>Result Specification Setting</title>
+      <title>Result Specifications</title>
       
       <para>The Result Specification is passed to the annotator instance by calling its
         setResultSpecificaiton method. When called, the default implementation saves the
@@ -1918,120 +1918,69 @@ catch (PatternSyntaxException e) {
         specify it, or choose not to specify it (for example, using the form of the
         process(...) call on an Analysis Engine that doesn&apos;t include the Result
         Specification), a <quote>Default</quote> Result Specification is used.</para>
-      
-    </section>
-    
-    <section id="ugr.tug.aae.result_spec.default">
-      <title>Default ResultSpecification</title>
-      
-      <para>The default Result Specification is taken from the Engine&apos;s output
-        Capability Specification. Remember that a Capability Specification has both
-        inputs and outputs, can specify types and / or features, and there can be more than one
-        Capability Set. If there is more than one set, the logical union of these sets is used.
-        The default Result Specification is exactly what&apos;s included in the output
-        Capability Specification.</para>
-      
-    </section>
-    
-    <section id="ugr.tug.aae.result_spec.passing_to_annotators">
-      <title>Passing Result Specifications to Annotators</title>
-      
-      <para>If you are not using a Collection Processing Engine, you can specify a Result
-        Specification for your AnalysisEngine(s) by calling the
-        <literal>AnalysisEngine.setResultSpecification(ResultSpecification)</literal>
-        method.</para>
-      <para>It is also possible to pass a Result Specification on each call to
-        <literal>AnalysisEngine.process(CAS, ResultSpecification)</literal>. However,
-        this is not recommended if your Result Specification will stay constant across
-        multiple calls to
-        <literal>process</literal>. In that case it will be more efficient to call
-        <literal>AnalysisEngine.setResultSpecification(ResultSpecification)</literal>
-        only when the Result Specification changes.</para>
-      <para> For primitive Analysis Engines, whatever Result Specification you pass in is
-        passed along to the annotator's
-        <literal>setResultSpecification(ResultSpecification)</literal> method. For
-        aggregate Analysis Engines, see below.</para>
-    </section>
-    
-    <section id="ugr.tug.aae.result_spec.aggregates">
-      <title>Aggregates</title>
-      
-      <para>For aggregate engines, the Result Specification passed to the
-        <code>AnalysisEngine.setResultSpecification(ResultSpecification)</code>
-        method is intended to specify the set of output types/features that the aggregate
-        should produce. This is not necessarily equivalent to the set of output
-        types/features that each annotator should produce. For example, an annotator may
-        need to produce an intermediate type that is then consumed by a downstream annotator,
-        even though that intermediate type is not part of the Result Specification.</para>
-      <para>To handle this situation, when
-        <code>AnalysisEngine.setResultSpecification(ResultSpecification)</code>
-        is called on an aggregate, the framework computes the union of the passed Result
-        Specification with the set of
-        <emphasis>all</emphasis> input types and features of
-        <emphasis>all</emphasis> component AnalysisEngines within that aggregate. This forms the
-        complete set of types and features that any component of the aggregate might need to
-        produce. This derived Result Specification is then passed to the
-        <code>AnalysisEngine.setResultSpecification(ResultSpecification)</code>
-        of each component AnalysisEngine. In the case of nested aggregates, this procedure
-        is applied recursively.</para>
-  <!-- to be deleted because design changed    
-      <para>For aggregate engines, the value passed to the primitive annotator code depends
-        on the kind of flow.</para>
-      
-      <section id="ugr.tug.aae.result_spec.aggregates.fixed_flow">
-        <title>Fixed Flow</title>
+          
+      <section id="ugr.tug.aae.result_spec.default">
+        <title>Default ResultSpecification</title>
         
-        <para>For FixedFlow, any ResultSpecification passed into the aggregate is
-          ignored, and instead, each primitive annotator is passed a result spec that
-          corresponds to the union of its output capability specifications at the primitive
-          descriptor level. If no output capability specification is given, the annotator
-          will still be called, but the result specification will be empty.</para>
+        <para>The default Result Specification is taken from the Engine&apos;s output
+          Capability Specification. Remember that a Capability Specification has both
+          inputs and outputs, can specify types and / or features, and there can be more than one
+          Capability Set. If there is more than one set, the logical union of these sets is used.
+          The default Result Specification is exactly what&apos;s included in the output
+          Capability Specification.</para>
         
       </section>
       
-      <section id="ugr.tug.aae.result_spec.aggregates.capability_language_flow">
-        <title>CapabilityLanguageFlow</title>
-        <para>For CapabilityLanguageFlow, each annotator is passed a
-          ResultSpecification that is the intersection of the primitive annotator&apos;s
-          output Capability Specification with the ResultSpecification passed to the
-          aggregate. If this intersection is null (the annotator does not produce any type or
-          feature included in the ResultSpecification), the annotator will not be called at
-          all.</para>
+      <section id="ugr.tug.aae.result_spec.passing_to_annotators">
+        <title>Passing Result Specifications to Annotators</title>
         
-        <para>Therefore, if using the CapabilityLanguageFlow, if you want to supply a
-          custom ResultSpecification for the aggregate it must include any intermediate
-          types that need to be produced internally in the flow, or else things will not work
-          properly.</para>
+        <para>If you are not using a Collection Processing Engine, you can specify a Result
+          Specification for your AnalysisEngine(s) by calling the
+          <literal>AnalysisEngine.setResultSpecification(ResultSpecification)</literal>
+          method.</para>
+        <para>It is also possible to pass a Result Specification on each call to
+          <literal>AnalysisEngine.process(CAS, ResultSpecification)</literal>. However,
+          this is not recommended if your Result Specification will stay constant across
+          multiple calls to
+          <literal>process</literal>. In that case it will be more efficient to call
+          <literal>AnalysisEngine.setResultSpecification(ResultSpecification)</literal>
+          only when the Result Specification changes.</para>
+        <para> For primitive Analysis Engines, whatever Result Specification you pass in is
+          passed along to the annotator's
+          <literal>setResultSpecification(ResultSpecification)</literal> method. For
+          aggregate Analysis Engines, see below.</para>
       </section>
       
-      <section id="ugr.tug.aae.skipping_ae_in_capability_language_flow">
-        <title>Special rule for skipping Analysis Engines</title>
+      <section id="ugr.tug.aae.result_spec.aggregates">
+        <title>Aggregates</title>
         
-        <para>When using the CapabilityLanguageFlow, an annotator will be also be skipped
-          if all of its outputs are in the output capability of some annotator(s) that has
-          (have) executed previously in the flow. The concept here is that if all of an
-          annotator&apos;s output types have already been produced, that annotator will
-          not be called.</para>
-        
-        <para>For an Aggregate, each annotator is passed a Result Specification that is the
-          intersection of the set of types mentioned in its output with the Result
-          Specification passed to the aggregate. If this intersection is null (the
-          annotator does not produce any type included in the ResultSpecification), the
-          annotator will not be called at all.</para>
-        
-        <para>Therefore, if using the CapabilityLanguageFlow, if you want to supply a
-          custom ResultSpecification for the aggregate it must include any intermediate
-          types that need to be produced, or else things will not work properly.</para>
-      </section>
-   -->   
+        <para>For aggregate engines, the Result Specification passed to the
+          <code>AnalysisEngine.setResultSpecification(ResultSpecification)</code>
+          method is intended to specify the set of output types/features that the aggregate
+          should produce. This is not necessarily equivalent to the set of output
+          types/features that each annotator should produce. For example, an annotator may
+          need to produce an intermediate type that is then consumed by a downstream annotator,
+          even though that intermediate type is not part of the Result Specification.</para>
+        <para>To handle this situation, when
+          <code>AnalysisEngine.setResultSpecification(ResultSpecification)</code>
+          is called on an aggregate, the framework computes the union of the passed Result
+          Specification with the set of
+          <emphasis>all</emphasis> input types and features of
+          <emphasis>all</emphasis> component AnalysisEngines within that aggregate. This forms the
+          complete set of types and features that any component of the aggregate might need to
+          produce. This derived Result Specification is then passed to the
+          <code>AnalysisEngine.setResultSpecification(ResultSpecification)</code>
+          of each component AnalysisEngine. In the case of nested aggregates, this procedure
+          is applied recursively.</para>
+      </section>  
       <section id="ugr.tug.aae.result_spec.aggregates.cpes">
         <title>Collection Proessing Engines</title>
-        
+          
         <para>The Default Result Specification is always used for all components of a
-          Collection Processing Engine.</para>
-        
+          Collection Processing Engine.</para>        
       </section>
     </section>
+    
     <section id="ugr.tug.aae.classpath_when_using_jcas">
       <title>Class path setup when using JCas</title>
       
