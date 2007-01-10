@@ -49,7 +49,6 @@ public class InstallationDescriptor implements Serializable {
   /**
    * The <code>ActionInfo</code> class defines 'installation action' attributes.
    * 
-   * @author LK
    */
   public static class ActionInfo implements Serializable {
 
@@ -91,7 +90,6 @@ public class InstallationDescriptor implements Serializable {
   /**
    * The <code>ArgInfo</code> class defines attributes of a service command argument.
    * 
-   * @author LK
    */
   public static class ArgInfo {
     // public attributes
@@ -103,7 +101,6 @@ public class InstallationDescriptor implements Serializable {
   /**
    * The <code>ServiceInfo</code> class defines attributes of a 'service' component.
    * 
-   * @author LK
    */
   public static class ServiceInfo {
     // private attributes
@@ -129,7 +126,6 @@ public class InstallationDescriptor implements Serializable {
   /**
    * The <code>ComponentInfo</code> class defines UIMA component attributes.
    * 
-   * @author LK
    */
   public static class ComponentInfo implements Serializable {
 

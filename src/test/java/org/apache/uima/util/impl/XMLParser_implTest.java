@@ -32,11 +32,6 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 
-/**
- * @author alally
- * 
- * To change this generated comment go to Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class XMLParser_implTest extends TestCase {
 
   /**

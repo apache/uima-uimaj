@@ -40,7 +40,6 @@ import org.apache.uima.cas.text.TCAS;
 /**
  * A non-perfect CAS equality checker for JUnit.
  * 
- * @author Adam Lally
  */
 public class CasComparer {
   public static void assertEquals(CAS c1, CAS c2) {

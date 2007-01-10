@@ -34,10 +34,7 @@ import org.apache.uima.resource.SharedResourceObject;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 
-/**
- * 
- * @author Adam Lally
- */
+
 public class TestResourceInterface_impl extends Resource_ImplBase implements SharedResourceObject,
         TestResourceInterface {
   private String mString;

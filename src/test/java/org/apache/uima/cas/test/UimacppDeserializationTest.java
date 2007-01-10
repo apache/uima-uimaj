@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 /**
  * Class comment for UimacppDeserializationTest.java goes here.
  * 
- * @author Thilo Goetz
  */
 public class UimacppDeserializationTest extends TestCase {
 

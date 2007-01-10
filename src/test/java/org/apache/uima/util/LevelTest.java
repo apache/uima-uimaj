@@ -25,7 +25,6 @@ import junit.framework.TestCase;
 /**
  * class Level provides the message level constants for logging and tracing
  * 
- * @author Michael Baessler
  */
 public class LevelTest extends TestCase {
 

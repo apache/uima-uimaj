@@ -82,7 +82,6 @@ import org.apache.uima.util.impl.ProcessTrace_impl;
 /**
  * Tests the TextAnalysisEngine_impl class.
  * 
- * @author Adam Lally
  */
 public class AnalysisEngine_implTest extends TestCase {
   /**

@@ -43,7 +43,6 @@ import org.apache.uima.cas.text.TCASRuntimeException;
 /**
  * Class comment for FilteredIteratorTest.java goes here.
  * 
- * @author Thilo Goetz
  */
 public class FilteredIteratorTest extends TestCase {
 

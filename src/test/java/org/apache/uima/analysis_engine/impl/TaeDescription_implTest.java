@@ -69,7 +69,6 @@ import org.apache.uima.util.XMLInputSource;
 /**
  * Test the TaeDescription_impl class.
  * 
- * @author Adam Lally
  */
 public class TaeDescription_implTest extends TestCase {
   /**

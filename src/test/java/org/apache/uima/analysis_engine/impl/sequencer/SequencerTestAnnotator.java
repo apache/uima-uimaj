@@ -42,7 +42,6 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
  * Dummy annotator which does not processing. Annotator only writes his name and his result
  * specification to a textfile
  * 
- * @author Michael Baessler
  */
 public class SequencerTestAnnotator extends Annotator_ImplBase implements TextAnnotator {
   // annotator name

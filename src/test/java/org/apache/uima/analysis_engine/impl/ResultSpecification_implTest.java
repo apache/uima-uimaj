@@ -40,10 +40,7 @@ import org.apache.uima.resource.metadata.impl.Capability_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-/**
- * 
- * @author Adam Lally
- */
+
 public class ResultSpecification_implTest extends TestCase {
 
   /**

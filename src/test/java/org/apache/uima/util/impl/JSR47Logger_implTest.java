@@ -27,7 +27,6 @@ import org.apache.uima.util.Level;
 /**
  * UIMA Logging Test
  * 
- * @author Michael Baessler
  */
 public class JSR47Logger_implTest extends TestCase {
 

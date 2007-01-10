@@ -30,7 +30,6 @@ import org.apache.uima.util.Logger;
 /**
  * Logger implementation test
  * 
- * @author Michael Baessler
  */
 public class LoggingTest extends TestCase {
 

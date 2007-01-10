@@ -36,7 +36,6 @@ import org.apache.uima.util.XMLInputSource;
 /**
  * Testclass for Sequencers with a capabilityLanguageFlow
  * 
- * @author Michael Baessler
  */
 public class SequencerCapabilityLanguageTest extends TestCase {
 

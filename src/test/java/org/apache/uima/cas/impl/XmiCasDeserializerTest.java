@@ -56,10 +56,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
-/**
- * 
- * @author Adam Lally
- */
+
 public class XmiCasDeserializerTest extends TestCase {
 
   private FsIndexDescription[] indexes;

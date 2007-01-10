@@ -31,13 +31,6 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.TCAS;
 
-/**
- * @author goetz
- * 
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates. To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
- */
 public class ArrayFSTest extends TestCase {
 
   private TCAS cas;

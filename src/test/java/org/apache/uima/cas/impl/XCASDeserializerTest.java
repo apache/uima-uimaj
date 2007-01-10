@@ -56,10 +56,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-/**
- * 
- * @author Adam Lally
- */
+
 public class XCASDeserializerTest extends TestCase {
 
   private TypeSystemDescription typeSystem;

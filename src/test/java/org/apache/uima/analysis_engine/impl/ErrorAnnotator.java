@@ -28,7 +28,6 @@ import org.apache.uima.cas.text.TCAS;
 /**
  * Annotator class used for testing errors
  * 
- * @author Adam Lally
  */
 public class ErrorAnnotator extends Annotator_ImplBase implements TextAnnotator {
   /**

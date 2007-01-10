@@ -58,7 +58,6 @@ import org.apache.uima.util.CasCreationUtils;
 /**
  * Class comment for TokenizerTest.java goes here.
  * 
- * @author Thilo Goetz
  */
 public class SerializationReinitTest extends TestCase {
 

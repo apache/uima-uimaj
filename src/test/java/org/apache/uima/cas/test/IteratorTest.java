@@ -41,7 +41,6 @@ import org.apache.uima.internal.util.IntVector;
 /**
  * Class comment for IteratorTest.java goes here.
  * 
- * @author Thilo Goetz
  */
 public class IteratorTest extends TestCase {
 

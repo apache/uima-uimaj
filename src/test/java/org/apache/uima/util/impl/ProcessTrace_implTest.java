@@ -26,10 +26,7 @@ import junit.framework.TestCase;
 
 import org.apache.uima.util.ProcessTraceEvent;
 
-/**
- * 
- * @author Adam Lally
- */
+
 public class ProcessTrace_implTest extends TestCase {
 
   /**

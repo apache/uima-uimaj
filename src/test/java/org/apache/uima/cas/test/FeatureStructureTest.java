@@ -36,7 +36,6 @@ import org.apache.uima.cas.text.TCAS;
 /**
  * Class comment for FeatureStructureTest.java goes here.
  * 
- * @author Thilo Goetz
  */
 public class FeatureStructureTest extends TestCase {
 

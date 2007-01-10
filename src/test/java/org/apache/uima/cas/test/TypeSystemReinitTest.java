@@ -38,9 +38,7 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
-/**
- * @author alally
- */
+
 public class TypeSystemReinitTest extends TestCase {
   public void testReinitCASCompleteSerializer() throws Exception {
     try {

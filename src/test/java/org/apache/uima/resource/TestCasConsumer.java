@@ -22,10 +22,7 @@ package org.apache.uima.resource;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CasConsumer_ImplBase;
 
-/**
- * 
- * @author Adam Lally
- */
+
 public class TestCasConsumer extends CasConsumer_ImplBase {
 
   /**

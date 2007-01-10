@@ -34,7 +34,6 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 /**
  * Tests the FileLanguageResource_impl class.
  * 
- * @author Adam Lally
  */
 public class FileLanguageResource_implTest extends TestCase {
 

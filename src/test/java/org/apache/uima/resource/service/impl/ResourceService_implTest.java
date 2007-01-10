@@ -32,7 +32,6 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 /**
  * Tests the ResourceService_impl class.
  * 
- * @author Adam Lally
  */
 public class ResourceService_implTest extends TestCase {
   /**

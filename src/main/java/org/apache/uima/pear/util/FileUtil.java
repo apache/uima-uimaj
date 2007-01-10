@@ -142,7 +142,6 @@ public class FileUtil {
   /**
    * The <code>NameFileFilter</code> class allows to filter files based on specified file name.
    * 
-   * @author LK
    */
   public static class NameFileFilter implements FileFilter {
     // attributes
@@ -182,7 +181,6 @@ public class FileUtil {
    * The <code>ExtFileFilter</code> allows to filter file names based on the specified filename
    * extension.
    * 
-   * @author LK
    */
   public static class ExtFilenameFilter implements FilenameFilter {
     // attributes

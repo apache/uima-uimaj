@@ -25,10 +25,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader_ImplBase;
 
-/**
- * 
- * @author Adam Lally
- */
+
 public class TestCollectionReader extends CollectionReader_ImplBase {
 
   /**

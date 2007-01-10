@@ -33,10 +33,7 @@ import org.apache.uima.resource.Resource;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-/**
- * 
- * @author Adam Lally
- */
+
 public class CasPerformanceTuningSettingsTest extends TestCase {
 
   /**

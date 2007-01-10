@@ -36,10 +36,7 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.w3c.dom.Document;
 
-/**
- * 
- * @author Adam Lally
- */
+
 public class Import_implTest extends TestCase {
 
   /**

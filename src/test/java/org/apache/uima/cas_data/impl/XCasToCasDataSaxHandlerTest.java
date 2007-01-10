@@ -67,7 +67,6 @@ import org.xml.sax.XMLReader;
 /**
  * Tests XCasToCasDataSaxHandler. Also Tests CasDataToXCas.
  * 
- * @author Adam Lally
  */
 public class XCasToCasDataSaxHandlerTest extends TestCase {
 

@@ -36,10 +36,6 @@ import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.ProcessTrace;
 
-/*
- * @author Michael Baessler
- * 
- */
 
 /**
  * The AnnotationWriter class writes specified annotations to an output file. The encoding of the
