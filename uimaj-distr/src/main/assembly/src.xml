@@ -37,6 +37,18 @@ under the License.
       </includes>
     </fileSet>
     <fileSet>
+      <directory>src/main/readme</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>DISCLAIMER</include>
+        <include>LICENSE</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>src/main/readme_src</directory>
+      <outputDirectory>/</outputDirectory>
+    </fileSet>
+    <fileSet>
       <directory>../uima-docbooks</directory>
       <outputDirectory>/uima-docbooks</outputDirectory>
       <excludes>
@@ -173,5 +185,5 @@ under the License.
         <include>pom.xml</include>
       </includes>
     </fileSet>       
-  </fileSets> 
+  </fileSets>  
 </assembly>
