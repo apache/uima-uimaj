@@ -29,7 +29,6 @@ import junit.framework.Assert;
 /**
  * Contains static convenience methods for using the UIMA JUnit extensions.
  * 
- * @author Adam Lally
  */
 public class JUnitExtension {
 

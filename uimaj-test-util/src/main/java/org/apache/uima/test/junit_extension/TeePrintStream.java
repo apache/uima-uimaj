@@ -24,7 +24,6 @@ import java.io.PrintStream;
 /**
  * TeePrintStream duplicates a PrintStream.
  * 
- * @author Michael Baessler
  */
 public class TeePrintStream extends PrintStream {
   PrintStream original;

@@ -22,7 +22,6 @@ package org.apache.uima.test.junit_extension;
 /**
  * ExceptionPrinter print out an exception with the place where the exception occours
  * 
- * @author Michael Baessler
  */
 public class ExceptionPrinter {
   /**

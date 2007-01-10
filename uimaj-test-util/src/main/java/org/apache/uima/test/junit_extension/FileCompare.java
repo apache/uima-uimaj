@@ -33,7 +33,6 @@ import java.util.regex.Pattern;
 /**
  * FileCompare class provides a method, which compares two files.
  * 
- * @author Michael Baessler
  */
 public class FileCompare {
 
