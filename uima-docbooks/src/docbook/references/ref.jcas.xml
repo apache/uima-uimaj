@@ -261,38 +261,63 @@ uima.cas.String  &rarr; String</programlisting>
     <section id="ugr.ref.jcas.merging_types.aggregates_and_cpes">
       <title>Aggregate AEs and CPEs as sources of types</title>
       
-      <para>When running aggregate AEs (Analysis Engines), or a set of AEs in a collection
-        processing engine, a merged type system is built. (Note: this <quote>merge</quote>
-        is merging types, not to be confused with merging Java source code, discussed above).
-        This merged type system has all the types of every component used in the application.
-        It is possible that there may be multiple definitions of the same CAS type, each of
-        which might have different features defined; the merged type result is created by
-        accumulating all the defined features for a particular type into that type&apos;s
-        type definition.</para>
+      <para>When running aggregate AEs (Analysis Engines), or a set of AEs in a collection processing engine, the
+        UIMA framework will build a merged type system (Note: this <quote>merge</quote> is merging types, not to be
+        confused with merging Java source code, discussed above). This merged type system has all the types of every
+        component used in the application.</para>
       
-      <para>If no type merging is needed, then each type system can have its own Java Class
-        Models generated individually, perhaps at an earlier time, and the resulting class
-        files (or .jar files containing these class files) can be put in the class path to
-        enable JCas.</para>
+      <para>In most cases, each type system can have its own Java Class Models generated individually, perhaps at an
+        earlier time, and the resulting class files (or .jar files containing these class files) can be put in the
+        class path to enable JCas.</para>
       
-      <section id="ugr.ref.jcas.merging_types.jcasgen_support">
-        <title>JCasGen support for type merging</title>
-        
-        <para>If type merging is needed, the input to the JCasGen generation process, rather
-          than being a simple type system or a primitive AE specification, is instead, an
-          aggregate AE specification or a CPE (Collection processing engine)
-          specification, which specifies a set of type systems that need to be combined. The
-          generation process will merge the type systems, and the generated output will
-          reflect the merged types. This generated Java source code can be, in turn, merged
-          with hand-done changes to previously generated versions for this aggregate or
-          CPE, as described above. To do this Java source merge, the source for the
-          (hand-modified) generated JCas types must be put into the file system where the
-          generated output will go.</para>
-        
-        <para>Directions for running JCasGen can be found in <olink
-            targetdoc="&uima_docs_tools;" targetptr="ugr.tools.jcasgen"/>.</para>
-        
-      </section>
+      <para>However, it is possible that there may be multiple definitions of the same CAS type, each of which might
+        have different features defined. In this case, the UIMA framework will create a merged type by accumulating
+        all the defined features for a particular type into that type&apos;s type definition. However, the JCas
+        classes for these types are not automatically merged, which can create some issues for JCas users, as
+        discussed in the next section.</para>
+    </section>
+    
+    <section id="ugr.ref.jcas.merging_types.jcasgen_support">
+      <title>JCasGen support for type merging</title>
+      
+      <para>When there are multiple definitions of the same CAS type with different features defined, then JCasGen
+        must be re-run on the merged type system. Directions for running JCasGen can be found in <olink
+          targetdoc="&uima_docs_tools;" targetptr="ugr.tools.jcasgen"/>. This must be done by the person who
+        is assembling the Aggregate Analysis Engine or Collection Processing Engine. The resulting merged Java
+        Class Model will then contain get and set methods for the complete set of features. These Java classes must
+        then be made available in the class path, <emphasis>replacing</emphasis> the pre-merge versions of the
+        classes.</para>
+      
+      <para>If hand-modifications were done to the pre-merge versions of the classes, these must be applied to the
+        merged versions, as described in section <xref
+          linkend="ugr.ref.jcas.keeping_augmentations_when_regenerating"/>, above. If just one of the
+        pre-merge versions had hand-modifications, the source for this hand-modified version must be put into the
+        file system where the generated output will go, and the -merge option must be used. If
+        <emphasis>both</emphasis> pre-merged versions had hand-modifications, then these modifications must
+        be manually merged.</para>
+      
+    </section>
+    
+    <section id="ugr.ref.jcas.impact_of_type_merging_on_composability">
+      <title>Impact of Type Merging on Composability of Annotators</title>
+      
+      <para>The recommended approach in UIMA is to build and maintain type systems as separate components, which are
+        imported by Annotators. Using this approach, Type Merging does not occur because the Type System and its JCas
+        classes are centrally managed and shared by the annotators.</para>
+      
+      <para>If you do choose to create a JCas Annotator that relies on Type Merging (meaning that your annotator
+        redefines a Type that is already in use elsewhere, and adds its own features), this can negatively impact the
+        reusability of your annotator.</para>
+      
+      <para>Whenever anyone wants to combine your annotator with another annotator that uses a different version of
+        the same Type, they will need to be aware of all of the issues described in the previous section. They will need
+        to have the know-how to re-run JCasGen and appropriately set up their classpath to include the merged Java
+        classes and to not include the pre-merge classes. (To enable this, you should package these classes
+        separately from other .jar files for your annotator, so that they can be more easily excluded.) And, if you
+        have done hand-modifications to your JCas classes, the person assembling your annotator will need to
+        properly merge those changes. These issues significantly complicate the task of combining annotators, and
+        will cause your annotator not to be as easily reusable as other UIMA annotators. </para>
+      
     </section>
   </section>
   
