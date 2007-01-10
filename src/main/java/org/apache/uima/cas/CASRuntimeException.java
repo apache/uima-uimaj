@@ -151,6 +151,11 @@ public class CASRuntimeException extends RuntimeException {
    */
   public static final int ANNOTATION_IN_WRONG_INDEX = 32;
 
+  /**
+   * Error accessing index "{0}" for type "{1}".  Index "{0}" is over type "{2}", which is not a supertype of "{1}".
+   */
+  public static final int TYPE_NOT_IN_INDEX = 33;
+  
   private static final String[] identifiers = { "NON_CREATABLE_TYPE", "ILLEGAL_ARRAY_SIZE",
       "INAPPROP_TYPE", "INAPPROP_FEAT", "INAPPROP_RANGE", "PRIMITIVE_VAL_FEAT",
       "TYPESYSTEM_NOT_LOCKED", "ILLEGAL_STRING_VALUE", "UNKNOWN_CONSTRAINT_TYPE",
@@ -161,7 +166,7 @@ public class CASRuntimeException extends RuntimeException {
       "SOFADATA_ALREADY_SET", "SOFANAME_NOT_FOUND", "SOFAREF_NOT_FOUND", "PROTECTED_SOFA_FEATURE",
       "JCAS_MISSING_COVERCLASS", "INVALID_FEATURE_PATH", "NO_PRIMITIVE_TAIL", "BLOB_SERIALIZATION",
       "BLOB_DESERIALIZATION", "SOFADATASTREAM_ERROR", "INVALID_BASE_CAS_METHOD",
-      "ANNOTATION_IN_WRONG_INDEX" };
+      "ANNOTATION_IN_WRONG_INDEX", "TYPE_NOT_IN_INDEX" };
 
   private int error;
 

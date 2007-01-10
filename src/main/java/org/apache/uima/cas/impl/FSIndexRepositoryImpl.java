@@ -31,6 +31,7 @@ import java.util.Vector;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
@@ -1078,6 +1079,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     if (iicp == null) {
       return null;
     }
+    // Why is this necessary?
     if (type.isArray()) {
       Type componentType = type.getComponentType();
       if (componentType != null && !componentType.isPrimitive()
@@ -1087,7 +1089,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
     Type indexType = iicp.index.getType();
     if (!this.typeSystem.subsumes(indexType, type)) {
-      return null;
+      CASRuntimeException cre = new CASRuntimeException(CASRuntimeException.TYPE_NOT_IN_INDEX);
+      cre.addArgument(label);
+      cre.addArgument(type.getName());
+      cre.addArgument(indexType.getName());
+      throw cre;
     }
     final int typeCode = ((TypeImpl) type).getCode();
     ArrayList inds = this.indexArray[typeCode];

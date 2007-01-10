@@ -48,7 +48,7 @@ public interface FSIndexRepository {
    * @return The specified, or <code>null</code> if an index with that name doesn't exist, or it
    *         exists but <code>type</code> is not a subtype of the index's type.
    */
-  FSIndex getIndex(String label, Type type);
+  FSIndex getIndex(String label, Type type) throws CASRuntimeException;
 
   /**
    * Get all labels for all indexes.
