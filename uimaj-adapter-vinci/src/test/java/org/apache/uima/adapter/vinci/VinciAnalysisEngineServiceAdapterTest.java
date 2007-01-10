@@ -28,10 +28,7 @@ import org.apache.uima.adapter.vinci.VinciAnalysisEngineServiceAdapter;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.URISpecifier;
 
-/**
- * 
- * @author Adam Lally
- */
+
 public class VinciAnalysisEngineServiceAdapterTest extends TestCase {
 
   /**
