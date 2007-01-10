@@ -27,7 +27,6 @@ import org.apache.uima.util.Level;
 /**
  * UIMA Logging interface implementation test without using an logging toolkit
  * 
- * @author Michael Baessler
  */
 public class Logger_implTest extends TestCase {
   public Logger_implTest(String arg0) {

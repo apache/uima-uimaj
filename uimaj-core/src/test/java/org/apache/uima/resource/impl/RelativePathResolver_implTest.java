@@ -27,10 +27,7 @@ import junit.framework.TestCase;
 
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
-/**
- * 
- * @author Adam Lally
- */
+
 public class RelativePathResolver_implTest extends TestCase {
   /**
    * Constructor for RelativePathResolver_implTest.

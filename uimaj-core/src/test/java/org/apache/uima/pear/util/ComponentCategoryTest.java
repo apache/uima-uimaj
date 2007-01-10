@@ -32,7 +32,6 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
  * org.apache.uima.pear.util.UIMAUtil.identifyUimaComponentCategory() method. The test cases are
  * based on the sample XML descriptors located in the 'pearTests/componentCategoryTests' folder.
  * 
- * @author LK
  */
 public class ComponentCategoryTest extends TestCase {
   // relative location of test descriptors

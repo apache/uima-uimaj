@@ -31,7 +31,6 @@ import org.apache.uima.cas.text.TCAS;
 /**
  * Class comment for StringArrayTest.java goes here.
  * 
- * @author Thilo Goetz
  */
 public class StringArrayTest extends TestCase {
 

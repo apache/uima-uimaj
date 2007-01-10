@@ -35,7 +35,6 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 /**
  * Tests the DataResource_impl class.
  * 
- * @author Adam Lally
  */
 public class ConfigurableDataResource_implTest extends TestCase {
 

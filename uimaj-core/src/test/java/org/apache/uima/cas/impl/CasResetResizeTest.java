@@ -30,10 +30,7 @@ import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-/**
- * 
- * @author Adam Lally
- */
+
 public class CasResetResizeTest extends TestCase {
 
   /**

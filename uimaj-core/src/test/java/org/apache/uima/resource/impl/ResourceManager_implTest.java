@@ -41,10 +41,7 @@ import org.apache.uima.resource.metadata.impl.ResourceManagerConfiguration_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-/**
- * 
- * @author Adam Lally
- */
+
 public class ResourceManager_implTest extends TestCase {
   private final File TEST_DATA_FILE = JUnitExtension
           .getFile("ResourceTest/ResourceManager_implTest_tempDataFile.dat");

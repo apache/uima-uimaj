@@ -19,10 +19,6 @@
 
 package org.apache.uima.jcas.test;
 
-/**
- * @author schor
- * 
- */
 import junit.framework.TestCase;
 
 import org.apache.uima.cas.CAS;
@@ -66,7 +62,6 @@ import aa.Root;
 /**
  * Class comment for CASTest.java goes here.
  * 
- * @author Thilo Goetz
  */
 public class JCasTest extends TestCase {
 

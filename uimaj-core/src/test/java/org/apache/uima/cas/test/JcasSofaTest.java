@@ -62,9 +62,7 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.SAXException;
 
-/**
- * @author Eddie Epstein
- */
+
 public class JcasSofaTest extends TestCase {
 
   private CASMgr casMgr;

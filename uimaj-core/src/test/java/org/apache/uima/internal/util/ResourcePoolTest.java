@@ -32,7 +32,6 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 /**
  * Tests the ResourcePool_impl class.
  * 
- * @author Adam Lally
  */
 public class ResourcePoolTest extends TestCase {
   /**

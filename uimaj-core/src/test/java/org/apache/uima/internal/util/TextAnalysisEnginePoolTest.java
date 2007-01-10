@@ -39,10 +39,7 @@ import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
 import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
-/**
- * 
- * @author Adam Lally
- */
+
 public class TextAnalysisEnginePoolTest extends TestCase {
 
   /**

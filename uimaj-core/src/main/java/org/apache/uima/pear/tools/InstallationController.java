@@ -142,7 +142,6 @@ public class InstallationController {
    * The <code>PackageSelector</code> interface defines methods required for manually or
    * automatically selecting installed PEAR package root directories and PEAR package files.
    * 
-   * @author LK
    */
   public static interface PackageSelector {
     /**

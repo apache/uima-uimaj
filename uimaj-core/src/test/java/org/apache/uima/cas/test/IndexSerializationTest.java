@@ -42,9 +42,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 
-/**
- * @author Thilo Goetz
- */
+
 public class IndexSerializationTest extends TestCase {
 
   // Index name constants.

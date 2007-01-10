@@ -32,7 +32,6 @@ import org.apache.uima.cas.impl.Heap;
 /**
  * Class comment for CASTest.java goes here.
  * 
- * @author Thilo Goetz
  */
 public class CASTest extends TestCase {
 

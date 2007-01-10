@@ -43,10 +43,7 @@ import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
-/**
- * 
- * @author Adam Lally
- */
+
 public class MultiprocessingAnalysisEngine_implTest extends TestCase {
 
   private TaeDescription mSimpleDesc;

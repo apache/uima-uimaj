@@ -32,10 +32,7 @@ import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-/**
- * 
- * @author Adam Lally
- */
+
 public class ResourceManagerConfiguration_implTest extends TestCase {
 
   /**

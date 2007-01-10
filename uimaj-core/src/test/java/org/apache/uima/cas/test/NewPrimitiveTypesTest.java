@@ -68,9 +68,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
-/**
- * @author Bhavani Iyer
- */
+
 public class NewPrimitiveTypesTest extends TestCase {
 
   private CASMgr casMgr;

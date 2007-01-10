@@ -32,10 +32,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.w3c.dom.Document;
 
-/**
- * 
- * @author Adam Lally
- */
+
 public class ConfigurationParameterDeclarations_implTest extends TestCase {
 
   /**

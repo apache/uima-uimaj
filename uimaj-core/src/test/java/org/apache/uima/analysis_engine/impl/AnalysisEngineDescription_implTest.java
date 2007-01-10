@@ -81,7 +81,6 @@ import org.apache.uima.util.XMLInputSource;
 /**
  * Test the AnalysisEngineDescription_impl class.
  * 
- * @author Adam Lally
  */
 public class AnalysisEngineDescription_implTest extends TestCase {
   /**

@@ -34,7 +34,6 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 /*
- * @author Michael Baessler
  */
 
 /**

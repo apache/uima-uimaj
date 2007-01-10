@@ -29,7 +29,6 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 /**
  * Pear encoding tests
  * 
- * @author Michael Baessler
  */
 public class PearEncodingTest extends TestCase {
 

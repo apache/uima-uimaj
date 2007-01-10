@@ -52,10 +52,7 @@ import org.apache.uima.resource.metadata.impl.TypePriorityList_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
-/**
- * 
- * @author Adam Lally
- */
+
 public class CasCreationUtilsTest extends TestCase {
 
   /**

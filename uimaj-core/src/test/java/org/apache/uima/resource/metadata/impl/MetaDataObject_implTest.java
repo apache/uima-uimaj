@@ -40,7 +40,6 @@ import org.apache.uima.util.XMLParser;
 /**
  * Tests the MetaDataObject_impl class.
  * 
- * @author Adam Lally
  */
 public class MetaDataObject_implTest extends TestCase {
   /**

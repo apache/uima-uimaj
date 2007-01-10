@@ -38,7 +38,6 @@ import org.apache.uima.cas.text.TCAS;
 /**
  * Class comment for TypeSystemTest.java goes here.
  * 
- * @author Thilo Goetz
  */
 public class TypeSystemTest extends TestCase {
 

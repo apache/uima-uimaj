@@ -33,7 +33,6 @@ import org.apache.uima.util.CasCreationUtils;
 /**
  * TODO: add type comment for <code>CompleteSerializationTest</code>.
  * 
- * @author Thilo Goetz
  */
 public class CompleteSerializationTest extends TestCase {
 

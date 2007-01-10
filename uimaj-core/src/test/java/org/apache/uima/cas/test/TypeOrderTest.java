@@ -39,9 +39,7 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.cas.text.TCASException;
 
-/**
- * @author Thilo Goetz
- */
+
 public class TypeOrderTest extends TestCase {
 
   // Index name constants.

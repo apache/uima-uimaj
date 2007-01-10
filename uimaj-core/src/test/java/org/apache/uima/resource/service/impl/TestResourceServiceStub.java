@@ -28,7 +28,6 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
  * methods are specified by public fields. Info on last method called is also specified by public
  * fields.
  * 
- * @author Adam Lally
  */
 public class TestResourceServiceStub implements ResourceServiceStub {
   /** Name of last method called */

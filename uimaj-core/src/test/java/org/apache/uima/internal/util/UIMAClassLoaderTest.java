@@ -32,7 +32,6 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 /*
  * UIMA ClassLoader test
  * 
- * @author Michael Baessler
  */
 public class UIMAClassLoaderTest extends TestCase {
 
