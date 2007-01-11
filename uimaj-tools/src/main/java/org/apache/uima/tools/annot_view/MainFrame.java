@@ -129,7 +129,6 @@ import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.TCASImpl;
 import org.apache.uima.cas.impl.TypeSystem2Xml;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XCASSerializer;
@@ -478,7 +477,7 @@ public class MainFrame extends JFrame {
       MainFrame.this.isAnnotIndex = label.equals(TCAS.STD_ANNOTATION_INDEX);
       MainFrame.this.index = MainFrame.this.cas.getIndexRepository().getIndex(label, type);
       updateFSTree(label, MainFrame.this.index);
-      MainFrame.this.allAnnotViewerItem.setEnabled(((TCASImpl) MainFrame.this.cas)
+      MainFrame.this.allAnnotViewerItem.setEnabled(((CASImpl) MainFrame.this.cas)
               .isAnnotationType(type));
       MainFrame.this.textArea.getCaret().setVisible(true);
     }

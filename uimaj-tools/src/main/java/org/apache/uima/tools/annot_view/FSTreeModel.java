@@ -33,7 +33,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.FeatureImpl;
-import org.apache.uima.cas.impl.TCASImpl;
+import org.apache.uima.cas.impl.CASImpl;
 
 /**
  * Insert comment for enclosing_type here.
@@ -44,7 +44,7 @@ public class FSTreeModel implements TreeModel {
 
   private FSTreeNode root;
 
-  private TCASImpl cas;
+  private CASImpl cas;
 
   private ArrayList treeModelListeners = new ArrayList();
 
@@ -66,7 +66,7 @@ public class FSTreeModel implements TreeModel {
 
   public void update(String indexName, FSIndex index, CAS cas1) {
     // this.indexName = indexName;
-    this.cas = (TCASImpl) cas1;
+    this.cas = (CASImpl) cas1;
     final int size = index.size();
     this.rootString = "<html><font color=green>" + indexName + "</font> - <font color=blue>"
             + index.getType().getName() + "</font> [" + size + "]</html>";
@@ -218,9 +218,9 @@ public class FSTreeModel implements TreeModel {
   }
 
   /**
-   * @return TCASImpl
+   * @return CASImpl
    */
-  TCASImpl getCas() {
+  CASImpl getCas() {
     return this.cas;
   }
 

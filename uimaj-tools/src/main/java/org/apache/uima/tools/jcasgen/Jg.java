@@ -53,7 +53,6 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.TCASImpl;
 import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
@@ -130,7 +129,7 @@ public class Jg {
       // never get here
     }
 
-    builtInTypeSystem = ((TCASImpl) tcas).getTypeSystemImpl();
+    builtInTypeSystem = ((CASImpl) tcas).getTypeSystemImpl();
     ((CASImpl) tcas).commitTypeSystem();
 
     for (Iterator it = builtInTypeSystem.getTypeIterator(); it.hasNext();) {

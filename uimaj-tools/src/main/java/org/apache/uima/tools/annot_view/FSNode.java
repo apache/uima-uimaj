@@ -27,7 +27,7 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
-import org.apache.uima.cas.impl.TCASImpl;
+import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 
 class FSNode extends FSTreeNode {
@@ -103,7 +103,7 @@ class FSNode extends FSTreeNode {
       return;
     }
     Type type = getType();
-    TCASImpl cas = this.fSTreeModel.getCas();
+    CASImpl cas = this.fSTreeModel.getCas();
     if (this.fSTreeModel.getCas().isArrayType(type)) {
       int arrayLength = cas.getArraySize((int) this.addr);
       if (arrayLength > 20) {
@@ -216,7 +216,7 @@ class FSNode extends FSTreeNode {
   }
 
   private String getValueString() {
-    TCASImpl cas = this.fSTreeModel.getCas();
+    CASImpl cas = this.fSTreeModel.getCas();
     switch (this.nodeClass) {
       case INT_FS:
       case BYTE_FS:
@@ -303,12 +303,12 @@ class FSNode extends FSTreeNode {
   }
 
   Type getType() {
-    TCASImpl cas = this.fSTreeModel.getCas();
+    CASImpl cas = this.fSTreeModel.getCas();
     return cas.getTypeSystemImpl().getType(cas.getHeapValue((int) this.addr));
   }
 
   boolean isAnnotation() {
-    TCASImpl cas = this.fSTreeModel.getCas();
+    CASImpl cas = this.fSTreeModel.getCas();
     if (this.nodeClass != STD_FS || this.addr == 0) {
       return false;
     }
@@ -321,7 +321,7 @@ class FSNode extends FSTreeNode {
   }
 
   int getStart() {
-    TCASImpl cas = this.fSTreeModel.getCas();
+    CASImpl cas = this.fSTreeModel.getCas();
     if (isAnnotation()) {
       final FeatureImpl feat1 = (FeatureImpl) cas.getBeginFeature();
       return cas.getHeapValue((int) this.addr + cas.getFeatureOffset(feat1.getCode()));
@@ -330,7 +330,7 @@ class FSNode extends FSTreeNode {
   }
 
   int getEnd() {
-    TCASImpl cas = this.fSTreeModel.getCas();
+    CASImpl cas = this.fSTreeModel.getCas();
     if (isAnnotation()) {
       final FeatureImpl feat1 = (FeatureImpl) cas.getEndFeature();
       return cas.getHeapValue((int) this.addr + cas.getFeatureOffset(feat1.getCode()));
