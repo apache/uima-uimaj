@@ -1071,55 +1071,55 @@ public void initialize(UimaContext aContext)
           <quote>org.apache.uima</quote>.</para>
       </section>
     </section>
+  </section>  
+  <section id="ugr.tug.aae.building_aggregates">
+    <title>Building Aggregate Analysis Engines</title>
     
-    <section id="ugr.tug.aae.building_aggregates">
-      <title>Building Aggregate Analysis Engines</title>
+    <section id="ugr.tug.aae.combining_annotators">
+      <title>Combining Annotators</title>
       
-      <section id="ugr.tug.aae.combining_annotators">
-        <title>Combining Annotators</title>
+      <para>The UIMA SDK makes it very easy to combine any sequence of Analysis Engines to
+        form an <emphasis>Aggregate Analysis Engine</emphasis>. This is done through an
+        XML descriptor; no Java code is required!</para>
+      
+      <para>If you go to the <literal>examples/descriptors/tutorial/ex3</literal>
+        folder (in Eclipse, it&apos;s in your uimaj_examples project, under the
+        <literal>descriptors/tutorial/ex3</literal> folder), you will find a
+        descriptor for a TutorialDateTime annotator. This annotator detects dates and
+        times (and also sentences and words). To see what this annotator can do, try it out
+        using the Document Analyzer. If you are curious as to how this annotator works, the
+        source code is included, but it is not necessary to understand the code at this
+        time.</para>
+      
+      <para>We are going to combine the TutorialDateTime annotator with the
+        RoomNumberAnnotator to create an aggregate Analysis Engine. This is illustrated
+        in the following figure:
         
-        <para>The UIMA SDK makes it very easy to combine any sequence of Analysis Engines to
-          form an <emphasis>Aggregate Analysis Engine</emphasis>. This is done through an
-          XML descriptor; no Java code is required!</para>
-        
-        <para>If you go to the <literal>examples/descriptors/tutorial/ex3</literal>
-          folder (in Eclipse, it&apos;s in your uimaj_examples project, under the
-          <literal>descriptors/tutorial/ex3</literal> folder), you will find a
-          descriptor for a TutorialDateTime annotator. This annotator detects dates and
-          times (and also sentences and words). To see what this annotator can do, try it out
-          using the Document Analyzer. If you are curious as to how this annotator works, the
-          source code is included, but it is not necessary to understand the code at this
-          time.</para>
-        
-        <para>We are going to combine the TutorialDateTime annotator with the
-          RoomNumberAnnotator to create an aggregate Analysis Engine. This is illustrated
-          in the following figure:
-          
-          <figure id="ugr.tug.aae.fig.combining_annotators">
-            <title>Combining Annotators to form an Aggregate Analysis Engine</title>
-            <mediaobject>
-              <imageobject>
-                <imagedata width="560px" format="PNG"
-                  fileref="&imgroot;image024.png"/>
-              </imageobject>
-              <textobject> <phrase>Combining Annotators to form an Aggregate Analysis
-                Engine</phrase>
-              </textobject>
-            </mediaobject>
-          </figure> </para>
-        
-        <para>The descriptor that does this is named
-          <literal>RoomNumberAndDateTime.xml</literal>, which you can open in the
-          Component Descriptor Editor plug-in. This is in the uimaj_examples project in the
-          folder <literal>descriptors/tutorial/ex3</literal>. </para>
-        
-        <para>The <quote>Aggregate</quote> page of the Component Descriptor Editor is
-          used to define which components make up the aggregate. A screen shot is shown below.
-          (If you are not using Eclipse, see <xref
-            linkend="ugr.tug.aae.xml_intro_ae_descriptor"/> for the actual XML syntax
-          for Aggregate Analysis Engine Descriptors.)</para>
-        
-        
+        <figure id="ugr.tug.aae.fig.combining_annotators">
+          <title>Combining Annotators to form an Aggregate Analysis Engine</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata width="560px" format="PNG"
+                fileref="&imgroot;image024.png"/>
+            </imageobject>
+            <textobject> <phrase>Combining Annotators to form an Aggregate Analysis
+              Engine</phrase>
+            </textobject>
+          </mediaobject>
+        </figure> </para>
+      
+      <para>The descriptor that does this is named
+        <literal>RoomNumberAndDateTime.xml</literal>, which you can open in the
+        Component Descriptor Editor plug-in. This is in the uimaj_examples project in the
+        folder <literal>descriptors/tutorial/ex3</literal>. </para>
+      
+      <para>The <quote>Aggregate</quote> page of the Component Descriptor Editor is
+        used to define which components make up the aggregate. A screen shot is shown below.
+        (If you are not using Eclipse, see <xref
+          linkend="ugr.tug.aae.xml_intro_ae_descriptor"/> for the actual XML syntax
+        for Aggregate Analysis Engine Descriptors.)</para>
+      
+      
         <screenshot>
   <mediaobject>
     <imageobject>
@@ -1131,35 +1131,35 @@ public void initialize(UimaContext aContext)
   </mediaobject>
 </screenshot>
         
-        <para>On the left side of the screen is the list of component engines that make up the
-          aggregate &ndash; in this case, the TutorialDateTime annotator and the
-          RoomNumberAnnotator. To add a component, you can click the <quote>Add</quote>
-          button and browse to its descriptor. You can also click the <quote>Find AE</quote>
-          button and search for an Analysis Engine in your Eclipse workspace.
-          <note><para>The <quote>AddRemote</quote> button is used for adding components
-          which run remotely (for example, on another machine using a remote networking
-          connection). This capability is described in section <olink
-            targetdoc="&uima_docs_tutorial_guides;"
-            targetptr="ugr.tug.application.how_to_call_a_uima_service"/>,</para>
-          </note> </para>
+      <para>On the left side of the screen is the list of component engines that make up the
+        aggregate &ndash; in this case, the TutorialDateTime annotator and the
+        RoomNumberAnnotator. To add a component, you can click the <quote>Add</quote>
+        button and browse to its descriptor. You can also click the <quote>Find AE</quote>
+        button and search for an Analysis Engine in your Eclipse workspace.
+        <note><para>The <quote>AddRemote</quote> button is used for adding components
+        which run remotely (for example, on another machine using a remote networking
+        connection). This capability is described in section <olink
+          targetdoc="&uima_docs_tutorial_guides;"
+          targetptr="ugr.tug.application.how_to_call_a_uima_service"/>,</para>
+        </note> </para>
+      
+      <para>The order of the components in the left pane does not imply an order of
+        execution. The order of execution, or <quote>flow</quote> is determined in the
+        <quote>Component Engine Flow</quote> section on the right. UIMA supports
+        different types of algorithms (including user-definable) for determining the
+        flow. Here we pick the simplest: <literal>FixedFlow</literal>. We have chosen to
+        have the RoomNumberAnnotator execute first, although in this case it
+        doesn&apos;t really matter, since the RoomNumber and DateTime annotators do not
+        have any dependencies on one another.</para>
+      
+      <para>If you look at the <quote>Type System</quote> page of the Component
+        Descriptor Editor, you will see that it displays the type system but is not
+        editable. The Type System of an Aggregate Analysis Engine is automatically
+        computed by merging the Type Systems of all of its components.</para>
+      
+      <para>The Capabilities page is where you explicitly declare the aggregate Analysis
+        Engine&apos;s inputs and outputs. Sofas and Languages are described later.
         
-        <para>The order of the components in the left pane does not imply an order of
-          execution. The order of execution, or <quote>flow</quote> is determined in the
-          <quote>Component Engine Flow</quote> section on the right. UIMA supports
-          different types of algorithms (including user-definable) for determining the
-          flow. Here we pick the simplest: <literal>FixedFlow</literal>. We have chosen to
-          have the RoomNumberAnnotator execute first, although in this case it
-          doesn&apos;t really matter, since the RoomNumber and DateTime annotators do not
-          have any dependencies on one another.</para>
-        
-        <para>If you look at the <quote>Type System</quote> page of the Component
-          Descriptor Editor, you will see that it displays the type system but is not
-          editable. The Type System of an Aggregate Analysis Engine is automatically
-          computed by merging the Type Systems of all of its components.</para>
-        
-        <para>The Capabilities page is where you explicitly declare the aggregate Analysis
-          Engine&apos;s inputs and outputs. Sofas and Languages are described later.
-          
           
           <screenshot>
      <mediaobject>
@@ -1193,7 +1193,6 @@ public void initialize(UimaContext aContext)
      </mediaobject>
    </screenshot>
         
-      </section>
     </section>
     
     <section id="ugr.tug.aae.aaes_can_contain_cas_consumers">
