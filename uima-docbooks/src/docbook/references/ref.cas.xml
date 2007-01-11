@@ -657,10 +657,10 @@ aPerson.setStringValue(lastNameFeature, newStringValueForLastName);</programlist
     <para>Each CAS can have many indexes associated with it. Each index is represented by an
       instance of the type org.apache.uima.cas.FSIndex. You use the object
       org.apache.uima.cas.FSIndexRepository, accessible via a method on a CAS object, to
-      retrieve instances of the index object. There are methods that let you select the index
-      by name, or by name and type. Since each index is already associated with a type, the
-      passing of an additional type parameter is valid only if the type passed in is the same
-      type or a subtype of the one declared in the index specification for this index. If you
+      retrieve instances of indexes. There are methods that let you select the index
+      by name, by type, or by both name and type. Since each index is already associated with a type, 
+      passing both a name and a type is valid only if the type passed in is the same
+      type or a subtype of the one declared in the index specification for the named index. If you
       pass in a subtype, the returned FSIndex object refers to an index that will return only
       items belonging to that subtype (or subtypes of that subtype).</para>
     
@@ -670,22 +670,49 @@ aPerson.setStringValue(lastNameFeature, newStringValueForLastName);</programlist
       order, where the sort order is specified in the XML index definition. This XML is part of
       the Component Descriptor, see <olink targetdoc="&uima_docs_ref;"
         targetptr="ugr.ref.xml.component_descriptor.aes.index"/>.</para>
-    
+       
     <para>Feature structures should not be added to or removed from indexes while iterating
       over them; a ConcurrentModificationException is thrown when this is detected.
       Certain operations are allowed with the iterators after modification, which can
       <quote>reset</quote> this condition, such as moving to beginning, end, or moving to a
       particular feature structure. So - if you have to modify the index, you can move it back to
       the last FS you had retrieved from the iterator, and then continue, if that makes sense in
-      your application.</para>
+      your application.</para>   
+
+    <section id="ugr.ref.cas.index.built_in_indexes">
+      <title>Built-in Indexes</title>
+      
+      <para>The CAS contains a built-in index for the type <literal>uima.tcas.Annotation</literal>, which sorts
+        annotations in the order in which they appear in the document. Annotations are sorted first by increasing
+        <literal>begin</literal> position. Ties are then broken by <emphasis>decreasing</emphasis>
+        <literal>end</literal> position (so that longer annotations come first). Annotations that match in both
+        their <literal>begin</literal> and <literal>end</literal> features are sorted using the Type Priority
+        (see <olink targetdoc="&uima_docs_ref;"
+          targetptr="ugr.ref.xml.component_descriptor.aes.type_priority"/> )</para>
+      
+      <para>For all types that are not subtypes of <literal>uima.tcas.Annotation</literal>, if there is no custom
+        index defined in the Component Descriptor, the CAS will create a default bag (unsorted) index to hold
+        FeatureStructures of that type.</para>
+    </section>
+
     
+    <section id="ugr.ref.cas.index.adding_to_indexes">
+      <title>Adding Feature Structures to the Indexes</title>
+      
+      <para>Feature Structures are added to the indexes by calling the
+        <literal>FSIndexRepository.addFS(FeatureStructure)</literal> method or the equivalent convenience
+        method <literal>CAS.addFsToIndexes(FeatureStructure)</literal>. This adds the Feature Structure to
+        <emphasis>all</emphasis> indexes that are defined for the type of that FeatureStructure (or any of its
+        supertypes). Note that you should not add a Feature Structure to the indexes until you have set values for all
+        of the features that may be used as sort keys in an index.</para>
+    </section>
+        
     <section id="ugr.ref.cas.index.iterators">
       <title>Iterators</title>
       
-      <para>Iterators are objects of class
-        <literal>org.apache.uima.cas.FSIterator.</literal> This class implements the
-        normal Java iterator methods, plus additional ones that allow moving both forwards
-        and backwards.</para>
+      <para>Iterators are objects of class <literal>org.apache.uima.cas.FSIterator.</literal> This class
+        extends <literal>java.util.Iterator</literal> and implements the normal Java iterator methods, plus
+        additional ones that allow moving both forwards and backwards.</para>
       
     </section>
     

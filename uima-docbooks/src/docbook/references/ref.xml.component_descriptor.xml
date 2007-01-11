@@ -983,15 +983,15 @@ uima.tcas.Annotation.</programlisting>
 
 </fsIndexCollection>]]></programlisting>
             
-            <para>The <literal>fsIndexCollection</literal> element
-              declares<emphasis> Feature Structure Indexes</emphasis>, which define an
-              index that holds feature structures of a given type. Information in the CAS is
-              always accessed through an index. There is a built-in default annotation
-              index declared which can be used to access instances of type Annotation (or its
-              subtypes), but if there is a need for a specialized index it must be declared in
-              this element. See <olink targetdoc="&uima_docs_ref;"
-                targetptr="ugr.ref.cas.indexes_and_iterators"/> for details on FS
-              indexes.</para>
+            <para>The <literal>fsIndexCollection</literal> element declares<emphasis> Feature Structure
+              Indexes</emphasis>, which define an index that holds feature structures of a given type.
+              Information in the CAS is always accessed through an index. There is a built-in default annotation
+              index declared which can be used to access instances of type
+              <literal>uima.tcas.Annotation</literal> (or its subtypes), sorted based on their
+              <literal>begin</literal> and <literal>end</literal> features. For all other types, there is a
+              default, unsorted (bag) index. If there is a need for a specialized index it must be declared in this
+              element of the descriptor. See <olink targetdoc="&uima_docs_ref;"
+                targetptr="ugr.ref.cas.indexes_and_iterators"/> for details on FS indexes.</para>
             
             <para>Like type systems and type priorities, an
               <literal>fsIndexCollection</literal> can declare a
@@ -1037,10 +1037,13 @@ uima.tcas.Annotation.</programlisting>
               <literal>&lt;kind&gt;</literal> of index. Sorted indexes enforce an
               ordering of feature structures, and may contain duplicates. Bag indexes do
               not enforce ordering, and also may contain duplicates. Set indexes do not
-              enforce ordering and may not contain duplicates. If the
-              <literal>&lt;kind&gt;</literal>element is omitted, it will default to
+              enforce ordering and may not contain duplicates.  If the <literal>&lt;kind&gt;</literal>element is omitted, it will default to
               sorted, which is the most common type of index.</para>
             
+            <note><para>There is usually no need to explicitly declare a Bag index in your descriptor.  
+              As of UIMA v2.1, if you do not declare any index for a type (or any of its 
+              supertypes), a Bag index will be automatically created.</para></note>
+                        
             <para>An index may define one or more <emphasis>keys</emphasis>. These keys
               determine the sort order of the feature structures within a sorted index, and
               determine equality for set indexes. Bag indexes do not use keys. Keys are

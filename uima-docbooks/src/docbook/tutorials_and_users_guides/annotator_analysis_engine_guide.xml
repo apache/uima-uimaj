@@ -336,58 +336,57 @@ under the License.
     <section id="ugr.tug.aae.developing_annotator_code">
       <title>Developing Your Annotator Code</title>
       
-      <para>Annotator implementations all implement a standard interface
-        (AnalysisComponent), having several methods, the most important of which are:
+      <para>Annotator implementations all implement a standard interface (AnalysisComponent), having several
+        methods, the most important of which are:
         
         <itemizedlist spacing="compact">
-          <listitem><para><literal>initialize</literal>, </para></listitem>
+          <listitem>
+            <para><literal>initialize</literal>, </para>
+          </listitem>
           
-          <listitem><para><literal>process</literal>, and </para></listitem>
+          <listitem>
+            <para><literal>process</literal>, and </para>
+          </listitem>
           
-          <listitem><para><literal>destroy</literal>. </para></listitem>
+          <listitem>
+            <para><literal>destroy</literal>. </para>
+          </listitem>
         </itemizedlist></para>
       
-      <para><literal>initialize</literal> is called by the framework once when it first
-        creates an instance of the annotator class. <literal>process</literal> is called
-        once per item being processed. <literal>destroy</literal> may be called by the
-        application when it is done. There is a default implementation of this interface for
-        annotators using the JCas, called JCasAnnotator_ImplBase, which has
+      <para><literal>initialize</literal> is called by the framework once when it first creates an instance of the
+        annotator class. <literal>process</literal> is called once per item being processed.
+        <literal>destroy</literal> may be called by the application when it is done. There is a default
+        implementation of this interface for annotators using the JCas, called JCasAnnotator_ImplBase, which has
         implementations of all required methods except for the process method.</para>
       
-      <para>Our annotator class extends the JCasAnnotator_ImplBase; most annotators that
-        use the JCas will extend from this class, so they only have to implement the process
-        method. This class is not restricted to handling just text; see <olink
-          targetdoc="&uima_docs_tutorial_guides;"
-          targetptr="ugr.tug.aas"/>.</para>
+      <para>Our annotator class extends the JCasAnnotator_ImplBase; most annotators that use the JCas will extend
+        from this class, so they only have to implement the process method. This class is not restricted to handling
+        just text; see <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.aas"/>.</para>
       
-      <para>Annotators are not required to extend from the JCasAnnotator_ImplBase class;
-        they may instead directly implement the AnalysisComponent interface, and provide
-        all method implementations themselves. <footnote>
-        <para>Note that AnalysisComponent is not specific to JCAS. There is a method
-          getRequiredCasInterface() which the user would have to implement to return
-          <literal>JCas.class</literal>. Then in the <literal>process(AbstractCas
-          cas)</literal> method, they would need to typecas <literal>cas</literal> to
-          type <literal>JCas</literal>.</para></footnote> This allows you to have your
-        annotator inherit from some other superclass if necessary. If you would like to do
-        this, see the JavaDocs for JCasAnnotator for descriptions of the methods you must
-        implement.</para>
+      <para>Annotators are not required to extend from the JCasAnnotator_ImplBase class; they may instead
+        directly implement the AnalysisComponent interface, and provide all method implementations themselves.
+        <footnote>
+        <para>Note that AnalysisComponent is not specific to JCAS. There is a method getRequiredCasInterface()
+          which the user would have to implement to return <literal>JCas.class</literal>. Then in the
+          <literal>process(AbstractCas cas)</literal> method, they would need to typecas
+          <literal>cas</literal> to type <literal>JCas</literal>.</para></footnote> This allows you to have
+        your annotator inherit from some other superclass if necessary. If you would like to do this, see the JavaDocs
+        for JCasAnnotator for descriptions of the methods you must implement.</para>
       
-      <para>Annotator classes need to be public and have public, 0-argument constructors,
-        so that they can be instantiated by the framework <footnote><para> Although Java
-        classes in which you do not define any constructor will, by default, have a 0-argument
-        constructor that doesn&apos;t do anything, a class in which you have defined at least
-        one constructor does not get a default 0-argument constructor.</para> </footnote>
-        .</para>
+      <para>Annotator classes need to be public and have public, 0-argument constructors, so that they can be
+        instantiated by the framework <footnote>
+        <para> Although Java classes in which you do not define any constructor will, by default, have a 0-argument
+          constructor that doesn&apos;t do anything, a class in which you have defined at least one constructor does
+          not get a default 0-argument constructor.</para> </footnote> .</para>
       
-      <para>The class definition for our RoomNumberAnnotator implements the process
-        method, and is shown here. You can find the source for this in the
-        <literal>uimaj_examples/src/org/apache/uima/tutorial/ex1/RoomNumberAnnotator.java</literal>
-        . <note><para>In Eclipse, in the <quote>Package Explorer</quote> view, this will
-        appear by default in the project <literal>uimaj_examples</literal>, in the folder
-        <literal>src</literal>, in the package
-        <literal>org.apache.uima.tutorial.ex1</literal>.</para></note> In Eclipse,
-        open the RoomNumberAnnotator.java in the uimaj_examples project, under the src
-        directory.</para>
+      <para>The class definition for our RoomNumberAnnotator implements the process method, and is shown here. You
+        can find the source for this in the
+        <literal>uimaj_examples/src/org/apache/uima/tutorial/ex1/RoomNumberAnnotator.java</literal> .
+        <note>
+        <para>In Eclipse, in the <quote>Package Explorer</quote> view, this will appear by default in the project
+          <literal>uimaj_examples</literal>, in the folder <literal>src</literal>, in the package
+          <literal>org.apache.uima.tutorial.ex1</literal>.</para></note> In Eclipse, open the
+        RoomNumberAnnotator.java in the uimaj_examples project, under the src directory.</para>
       
       
       <programlisting>package org.apache.uima.tutorial.ex1;
@@ -415,24 +414,21 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
   }
 }</programlisting>
       
-      <para>The two Java class fields, mYorktownPattern and mHawthornePattern, hold
-        regular expressions that will be used in the process method. Note that these two
-        fields are part of the Java implementation of the annotator code, and not a part of the
-        CAS type system. We are using the regular expression facility that is built into Java
-        1.4. It is not critical that you know the details of how this works, but if you are
-        curious the details can be found in the Java API docs for the java.util.regex
-        package.</para>
+      <para>The two Java class fields, mYorktownPattern and mHawthornePattern, hold regular expressions that
+        will be used in the process method. Note that these two fields are part of the Java implementation of the
+        annotator code, and not a part of the CAS type system. We are using the regular expression facility that is
+        built into Java 1.4. It is not critical that you know the details of how this works, but if you are curious the
+        details can be found in the Java API docs for the java.util.regex package.</para>
       
-      <para>The only method that we are required to implement is process. This method is
-        typically called once for each document that is being analyzed. This method takes one
-        argument, which is a JCas instance; this holds the document to be analyzed and all of
-        the analysis results. <footnote><para>Version 1 of UIMA specified an additional
-        parameter, the ResultSpecification. This provides a specification of which types
-        and features are desired to be computed and "output" from this annotator. Its use is
-        optional; many annotators ignore it.</para><para> This parameter has been
-        replaced by specific set/getResultSpecification() methods, which allow the
-        annotator to receive a signal (a method call) when the result specification
-        changes.</para></footnote></para>
+      <para>The only method that we are required to implement is process. This method is typically called once for
+        each document that is being analyzed. This method takes one argument, which is a JCas instance; this holds the
+        document to be analyzed and all of the analysis results. <footnote>
+        <para>Version 1 of UIMA specified an additional parameter, the ResultSpecification. This provides a
+          specification of which types and features are desired to be computed and "output" from this annotator. Its
+          use is optional; many annotators ignore it.</para>
+        <para> This parameter has been replaced by specific set/getResultSpecification() methods, which allow
+          the annotator to receive a signal (a method call) when the result specification changes.</para>
+        </footnote></para>
       
       
       <programlisting>public void process(JCas aJCas) {
@@ -465,9 +461,9 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
 }
 </programlisting>
       
-      <para>The Matcher class is part of the java.util.regex package and is used to find the
-        room numbers in the document text. When we find one, recording the annotation is as
-        simple as creating a new Java object and calling some set methods:</para>
+      <para>The Matcher class is part of the java.util.regex package and is used to find the room numbers in the
+        document text. When we find one, recording the annotation is as simple as creating a new Java object and
+        calling some set methods:</para>
       
       
       <programlisting>RoomNumber annotation = new RoomNumber(aJCas);
@@ -476,21 +472,27 @@ annotation.setEnd(matcher.end());
 annotation.setBuilding("Yorktown");
 </programlisting>
       
-      <para>The <literal>RoomNumber</literal> class was generated from the type system
-        description by the Component Descriptor Editor or the JCasGen tool, as discussed in
-        the previous section.</para>
+      <para>The <literal>RoomNumber</literal> class was generated from the type system description by the
+        Component Descriptor Editor or the JCasGen tool, as discussed in the previous section.</para>
       
-      <para>Finally, we call annotation.addToIndexes() to add the new annotation to the
-        indexes maintained in the CAS. By default, the CAS implementation used for analysis
-        of text documents keeps an index of all annotations in their order from beginning to
-        end of the document. Subsequent annotators or applications use the indexes to
-        iterate over the annotations. It is also possible to define your own custom indexes in
-        the CAS (see <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.cas"/> for
-        details).</para> <note><para> If you don&apos;t add the instance to the indexes, it
-      cannot be retrieved by down-stream annotators, using the indexes. </para></note>
+      <para>Finally, we call <literal>annotation.addToIndexes()</literal> to add the new annotation to the
+        indexes maintained in the CAS. By default, the CAS implementation used for analysis of text documents keeps
+        an index of all annotations in their order from beginning to end of the document. Subsequent annotators or
+        applications use the indexes to iterate over the annotations. </para>
       
-      <para>We&apos;re almost ready to test the RoomNumberAnnotator. There is just one more
-        step remaining.</para>
+      <note>
+      <para> If you don&apos;t add the instance to the indexes, it cannot be retrieved by down-stream annotators,
+        using the indexes. </para></note>
+      
+      <note>
+      <para>You can also call <literal>addToIndexes()</literal> on Feature Structures that are not subtypes of
+        <literal>uima.tcas.Annotation</literal>, but these will not be sorted in any particular way. If you want
+        to specify a sort order, you can define your own custom indexes in the CAS: see <olink
+          targetdoc="&uima_docs_ref;" targetptr="ugr.ref.cas"/> and <olink targetdoc="&uima_docs_ref;"
+          targetptr="ugr.ref.xml.component_descriptor.aes.index"/> for details.</para></note>
+      
+      <para>We&apos;re almost ready to test the RoomNumberAnnotator. There is just one more step
+        remaining.</para>
     </section>
     <section id="ugr.tug.aae.creating_xml_descriptor">
       <title>Creating the XML Descriptor</title>
@@ -1220,15 +1222,13 @@ public void initialize(UimaContext aContext)
     <section id="ugr.tug.aae.reading_results_previous_annotators">
       <title>Reading the Results of Previous Annotators</title>
       
-      <para>So far, we have been looking at annotators that look directly at the document
-        text. However, annotators can also use the results of other annotators. One useful
-        thing we can do at this point is look for the co-occurrence of a Date, a RoomNumber, and
-        two Times &ndash; and annotate that as a Meeting.</para>
+      <para>So far, we have been looking at annotators that look directly at the document text. However, annotators
+        can also use the results of other annotators. One useful thing we can do at this point is look for the
+        co-occurrence of a Date, a RoomNumber, and two Times &ndash; and annotate that as a Meeting.</para>
       
-      <para>The CAS maintains <emphasis>indexes</emphasis> of annotations, and from an
-        index you can obtain an iterator that allows you to step through all annotations of a
-        particular type. Here&apos;s some example code that would iterate over all of the
-        TimeAnnot annotations in the JCas:
+      <para>The CAS maintains <emphasis>indexes</emphasis> of annotations, and from an index you can obtain an
+        iterator that allows you to step through all annotations of a particular type. Here&apos;s some example code
+        that would iterate over all of the TimeAnnot annotations in the JCas:
         
         
         <programlisting>JFSIndexRepository indexes = aJCas.getJFSIndexRepository();
@@ -1241,27 +1241,32 @@ while (timeIter.hasNext()) {
 }
 </programlisting></para>
       
-      <para>Now that we&apos;ve explained the basics, let&apos;s take a look at the process
-        method for
-        <literal>org.apache.uima.tutorial.ex4.MeetingAnnotator</literal>. Since
-        we&apos;re looking for a combination of a RoomNumber, a Date, and two Times, there are
-        four nested iterators. (There&apos;s surely a better algorithm for doing this, but
-        to keep things simple we&apos;re just going to look at every combination of the four
-        items.)</para>
+      <note>
+      <para>You can also use the method
+        <literal>JFSIndexRepository.getAllIndexedFS(YourClass.type)</literal>, which returns an iterator
+        over all instances of <literal>YourClass</literal> in no particular order. This can be useful for types
+        that are not subtypes of the built-in Annotation type and which therefore have no default sort order.</para>
+      <para>Also, if you've defined your own custom index as described in <olink targetdoc="&uima_docs_ref;"
+          targetptr="ugr.ref.xml.component_descriptor.aes.index"/>, you can get an iterator over that
+        specific index by calling <literal>JFSIndexRepository.getIndex(label)</literal>.</para></note>
       
-      <para>For each combination of the four annotations, we compute the span of text that
-        includes all of them, and then we check to see if that span is smaller than a
-        <quote>window</quote> size, a configuration parameter. There are also some checks
-        to make sure that we don&apos;t annotate the same span of text multiple times. If all
-        the checks pass, we create a Meeting annotation over the whole span. There&apos;s
-        really nothing to it!</para>
+      <para>Now that we&apos;ve explained the basics, let&apos;s take a look at the process method for
+        <literal>org.apache.uima.tutorial.ex4.MeetingAnnotator</literal>. Since we&apos;re looking for a
+        combination of a RoomNumber, a Date, and two Times, there are four nested iterators. (There&apos;s surely a
+        better algorithm for doing this, but to keep things simple we&apos;re just going to look at every combination
+        of the four items.)</para>
+      
+      <para>For each combination of the four annotations, we compute the span of text that includes all of them, and
+        then we check to see if that span is smaller than a <quote>window</quote> size, a configuration parameter.
+        There are also some checks to make sure that we don&apos;t annotate the same span of text multiple times. If all
+        the checks pass, we create a Meeting annotation over the whole span. There&apos;s really nothing to
+        it!</para>
       
       <para>The XML descriptor, located in
-        <literal>examples/descriptors/tutorial/ex4/MeetingAnnotator.xml</literal>
-        , is also very straightforward. An important difference from previous descriptors
-        is that this is the first annotator we&apos;ve discussed that has input
-        requirements. This can be seen on the <quote>Capabilities</quote> page of the
-        Component Descriptor Editor:</para>
+        <literal>examples/descriptors/tutorial/ex4/MeetingAnnotator.xml</literal> , is also very
+        straightforward. An important difference from previous descriptors is that this is the first annotator
+        we&apos;ve discussed that has input requirements. This can be seen on the <quote>Capabilities</quote>
+        page of the Component Descriptor Editor:</para>
       
       
       <screenshot>
@@ -1274,26 +1279,24 @@ while (timeIter.hasNext()) {
      </mediaobject>
    </screenshot>
       
-      <para>If we were to run the MeetingAnnotator on its own, it wouldn&apos;t detect
-        anything because it wouldn&apos;t have any input annotations to work with. The
-        required input annotations can be produced by the RoomNumber and DateTime
-        annotators. So, we create an aggregate Analysis Engine containing these two
-        annotators, followed by the Meeting annotator. This aggregate is illustrated in
-          <xref linkend="ugr.tug.aae.fig.aggregate_for_meeting_annotator"/>. The
-        descriptor for this is in
-        <literal>examples/descriptors/tutorial/ex4/MeetingDetectorAE.xml</literal>
-        . Give it a try in the Document Analyzer.
+      <para>If we were to run the MeetingAnnotator on its own, it wouldn&apos;t detect anything because it
+        wouldn&apos;t have any input annotations to work with. The required input annotations can be produced by the
+        RoomNumber and DateTime annotators. So, we create an aggregate Analysis Engine containing these two
+        annotators, followed by the Meeting annotator. This aggregate is illustrated in <xref
+          linkend="ugr.tug.aae.fig.aggregate_for_meeting_annotator"/>. The descriptor for this is in
+        <literal>examples/descriptors/tutorial/ex4/MeetingDetectorAE.xml</literal> . Give it a try in the
+        Document Analyzer.
         
         <figure id="ugr.tug.aae.fig.aggregate_for_meeting_annotator">
-          <title>An Aggregate Analysis Engine where an internal component uses output from
-            previous engines</title>
+          <title>An Aggregate Analysis Engine where an internal component uses output from previous
+            engines</title>
           <mediaobject>
             <imageobject>
-              <imagedata width="555px" format="PNG"
-                fileref="&imgroot;image034.png"/>
+              <imagedata width="555px" format="PNG" fileref="&imgroot;image034.png"/>
             </imageobject>
-            <textobject><phrase>An Aggregate Analysis Engine where an internal
-              component uses output from previous engines. </phrase></textobject>
+            <textobject><phrase>An Aggregate Analysis Engine where an internal component uses output from
+              previous engines. </phrase>
+            </textobject>
           </mediaobject>
         </figure> </para>
       

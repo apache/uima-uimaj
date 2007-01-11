@@ -96,10 +96,10 @@
             <ttl>Reading the Results of Previous Annotators</ttl>
             <xreftext>Section 1.3.3, “Reading the Results of Previous Annotators”</xreftext>
             <obj element="figure" href="#ugr.tug.aae.fig.aggregate_for_meeting_annotator" number="1.2" targetptr="ugr.tug.aae.fig.aggregate_for_meeting_annotator">
-               <ttl>An Aggregate Analysis Engine where an internal component uses output from
-            previous engines</ttl>
-               <xreftext>Figure 1.2, “An Aggregate Analysis Engine where an internal component uses output from
-            previous engines”</xreftext>
+               <ttl>An Aggregate Analysis Engine where an internal component uses output from previous
+            engines</ttl>
+               <xreftext>Figure 1.2, “An Aggregate Analysis Engine where an internal component uses output from previous
+            engines”</xreftext>
             </obj>
          </div>
       </div>
