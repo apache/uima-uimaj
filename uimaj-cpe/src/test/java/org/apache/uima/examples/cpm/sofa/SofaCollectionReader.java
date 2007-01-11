@@ -48,7 +48,6 @@ public class SofaCollectionReader extends CollectionReader_ImplBase {
    * @see org.apache.uima.collection.CollectionReader#getNext(org.apache.uima.cas.CAS)
    */
   public void getNext(CAS aCAS) throws IOException, CollectionException {
-    // TODO Auto-generated method stub
     String text = "this beer is good";
     try {
       this.getCasInitializer().initializeCas(text, aCAS);
@@ -69,7 +68,6 @@ public class SofaCollectionReader extends CollectionReader_ImplBase {
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#hasNext()
    */
   public boolean hasNext() throws IOException, CollectionException {
-    // TODO Auto-generated method stub
     return hasMore;
   }
 
@@ -79,7 +77,6 @@ public class SofaCollectionReader extends CollectionReader_ImplBase {
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#getProgress()
    */
   public Progress[] getProgress() {
-    // TODO Auto-generated method stub
     return null;
   }
 
@@ -89,7 +86,6 @@ public class SofaCollectionReader extends CollectionReader_ImplBase {
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#close()
    */
   public void close() throws IOException {
-    // TODO Auto-generated method stub
 
   }
 

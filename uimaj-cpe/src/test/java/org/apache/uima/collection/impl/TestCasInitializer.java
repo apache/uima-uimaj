@@ -34,7 +34,6 @@ public class TestCasInitializer extends CasInitializer_ImplBase {
    *      org.apache.uima.cas.CAS)
    */
   public void initializeCas(Object aObj, CAS aCAS) throws CollectionException, IOException {
-    // TODO Auto-generated method stub
 
   }
 
