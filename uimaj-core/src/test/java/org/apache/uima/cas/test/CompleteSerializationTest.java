@@ -31,7 +31,7 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 
 /**
- * TODO: add type comment for <code>CompleteSerializationTest</code>.
+ * CAS complete serialization test class
  * 
  */
 public class CompleteSerializationTest extends TestCase {
