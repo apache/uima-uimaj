@@ -297,7 +297,7 @@ view of the CAS.  Indexes are specified
 to retrieve instances of some CAS Type (including its subtypes), and can be
 optionally sorted in a user-definable way. 
           For example, all types derived from the UIMA
-built-in type <literal>uima.tcas.annotation</literal> contain begin
+built-in type <literal>uima.tcas.Annotation</literal> contain begin
 and end features, which mark the begin and end offsets in the text where this
 annotation occurs.  One may then specify that types should be retrieved
 sequentially by sorting first on the value of the begin feature (ascending)
