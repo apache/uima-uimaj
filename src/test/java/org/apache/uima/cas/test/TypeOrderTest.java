@@ -19,6 +19,11 @@
 
 package org.apache.uima.cas.test;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.cas.CASException;
@@ -38,6 +43,8 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.cas.text.TCASException;
+import org.apache.uima.test.junit_extension.FileCompare;
+import org.apache.uima.test.junit_extension.JUnitExtension;
 
 
 public class TypeOrderTest extends TestCase {
@@ -218,6 +225,13 @@ public class TypeOrderTest extends TestCase {
    */
   public void testMain() throws Exception {
 
+    File refFile = JUnitExtension.getFile("CASTests/CasTypeOderTestRef.txt");
+    Assert.assertNotNull(refFile);
+    File outputFile = new File(JUnitExtension.getFile("CASTests"), "CasTypeOderTest_testouput.txt");
+    OutputStreamWriter fileWriter = new OutputStreamWriter(new FileOutputStream(
+            outputFile , false), "UTF-8");
+    Assert.assertNotNull(fileWriter);   
+    
     for (int i = 0; i < 10; i++) {
       cas.getIndexRepository().addFS(cas.createAnnotation(annotationType, i * 2, (i * 2) + 1));
       cas.getIndexRepository().addFS(cas.createAnnotation(sentenceType, i * 2, (i * 2) + 1));
@@ -239,15 +253,16 @@ public class TypeOrderTest extends TestCase {
     AnnotationFS fs;
     for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
       fs = (AnnotationFS) it.get();
-      // TODO: shouldn't this assert something rather than printing?
-      // System.out.println(
-      // fs.getType().getName()
-      // + ": "
-      // + fs.getBegin()
-      // + " - "
-      // + fs.getEnd());
+      fileWriter.write(
+       fs.getType().getName()
+       + ": "
+       + fs.getBegin()
+       + " - "
+       + fs.getEnd() + "\n");
     }
-
+    
+    fileWriter.close();
+    Assert.assertTrue(FileCompare.compare(refFile, outputFile));
   }
 
   public static void main(String[] args) {

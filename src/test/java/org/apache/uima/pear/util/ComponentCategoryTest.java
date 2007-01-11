@@ -44,12 +44,13 @@ public class ComponentCategoryTest extends TestCase {
 
   private static String CI_DESC_NAME = "ci.xml";
 
-  // private static String CPE_DESC_NAME = "cpe.xml";
-
   private static String CR_DESC_NAME = "cr.xml";
 
   private static String TS_DESC_NAME = "ts.xml";
 
+  
+  // NOTE: the testcase to identify a CPE descriptor has meen moved to the CPE project
+  
   /**
    * Runs test case for Analysis Engine descriptor.
    */
@@ -83,19 +84,6 @@ public class ComponentCategoryTest extends TestCase {
             .identifyUimaComponentCategory(ciDescFile)));
   }
 
-  // TODO: test currently fails because CPE descriptor can't be parsed without uimaj-cpe
-  // project, which is not in classpath.
-  // /**
-  // * Runs test case for CPE descriptor.
-  // */
-  // public void testCpeDescriptor() throws Exception {
-  // File cpeDescFile =
-  // new File( _junitTestBasePath, TEST_FOLDER + "/" + CPE_DESC_NAME );
-  // if( ! cpeDescFile.isFile() )
-  // throw new FileNotFoundException( "CPE descriptor not found" );
-  // Assert.assertTrue( UIMAUtil.CPE_CONFIGURATION_CTG.equals(
-  // UIMAUtil.identifyUimaComponentCategory( cpeDescFile ) ) );
-  // }
   /**
    * Runs test case for Collection Reader descriptor.
    */

@@ -76,7 +76,7 @@ public class UIMAClassLoaderTest extends TestCase {
   }
 
   public void testSimpleClassloadingSampleString() throws Exception {
-    UIMAClassLoader cl = new UIMAClassLoader(this.testClassPath);
+    UIMAClassLoader cl = new UIMAClassLoader(this.testClassPath, this.getClass().getClassLoader());
     Class testClass = null;
 
     testClass = cl.loadClass("org.apache.uima.internal.util.ClassloadingTestClass");
@@ -84,17 +84,15 @@ public class UIMAClassLoaderTest extends TestCase {
     Assert.assertNotNull(testClass);
     Assert.assertEquals(cl, testClass.getClassLoader());
 
-    // TODO: the below don't work if the test is run under a separate ClassLoader, as is done in
-    // Maven.
-    // testClass = cl.loadClass("org.apache.uima.flow.impl.AnalysisSequenceCapabilityNode");
-    //			
-    // Assert.assertNotNull(testClass);
-    // Assert.assertEquals(this.getClass().getClassLoader(),testClass.getClassLoader());
+    testClass = cl.loadClass("org.apache.uima.flow.impl.AnalysisSequenceCapabilityNode");
+    
+    Assert.assertNotNull(testClass);
+    Assert.assertEquals(this.getClass().getClassLoader(),testClass.getClassLoader());
   }
 
   public void testSimpleClassloadingSampleURL() throws Exception {
     URL[] urlClasspath = new URL[] { new File(this.testClassPath).toURL() };
-    UIMAClassLoader cl = new UIMAClassLoader(urlClasspath);
+    UIMAClassLoader cl = new UIMAClassLoader(urlClasspath, this.getClass().getClassLoader());
     Class testClass = null;
 
     testClass = cl.loadClass("org.apache.uima.internal.util.ClassloadingTestClass");
@@ -102,12 +100,11 @@ public class UIMAClassLoaderTest extends TestCase {
     Assert.assertNotNull(testClass);
     Assert.assertEquals(cl, testClass.getClassLoader());
 
-    // TODO: the below don't work if the test is run under a separate ClassLoader, as is done in
-    // Maven.
-    // testClass = cl.loadClass("org.apache.uima.flow.impl.AnalysisSequenceCapabilityNode");
-    //			
-    // Assert.assertNotNull(testClass);
-    // Assert.assertEquals(this.getClass().getClassLoader(),testClass.getClassLoader());
+   
+    testClass = cl.loadClass("org.apache.uima.flow.impl.AnalysisSequenceCapabilityNode");
+    			
+    Assert.assertNotNull(testClass);
+    Assert.assertEquals(this.getClass().getClassLoader(),testClass.getClassLoader());
   }
 
   public void testAdvancedClassloadingSampleString() throws Exception {
