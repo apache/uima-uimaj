@@ -46,5 +46,17 @@
 </featureDescription>
 </features>
 </typeDescription>
+<typeDescription>
+<name>Type3</name>
+<description>Example type.</description>
+<supertypeName>uima.tcas.Annotation</supertypeName>
+<features>
+<featureDescription>
+<name>baz</name>
+<description></description>
+<rangeTypeName>uima.cas.String</rangeTypeName>
+</featureDescription>
+</features>
+</typeDescription>
 </types>
 </typeSystemDescription>
