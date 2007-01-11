@@ -112,7 +112,7 @@ under the License.
       <para>The following code shows how to instantiate an AE from its XML descriptor:
         
         
-        <programlisting>  //get Resource Specifier from XML file or PEAR
+        <programlisting>  //get Resource Specifier from XML file
 XMLInputSource in = new XMLInputSource("MyDescriptor.xml");
 ResourceSpecifier specifier = 
     UIMAFramework.getXMLParser().parseResourceSpecifier(in);
@@ -294,7 +294,7 @@ ae.destroy();</programlisting></para>
   private CAS mCAS;
 
   public MyApplication() {
-    //get Resource Specifier from XML file or PEAR
+    //get Resource Specifier from XML file
     XMLInputSource in = new XMLInputSource("MyDescriptor.xml");
     ResourceSpecifier specifier = 
         UIMAFramework.getXMLParser().parseResourceSpecifier(in);
@@ -350,7 +350,7 @@ ae.destroy();</programlisting></para>
   
   public MyApplication()
   {
-    //get Resource Specifier from XML file or PEAR
+    //get Resource Specifier from XML file
     XMLInputSource in = new XMLInputSource("MyDescriptor.xml");
     ResourceSpecifier specifier = 
       UIMAFramework.getXMLParser().parseResourceSpecifier(in);
