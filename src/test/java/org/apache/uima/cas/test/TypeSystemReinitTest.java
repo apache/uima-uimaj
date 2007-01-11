@@ -30,7 +30,6 @@ import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.impl.CASCompleteSerializer;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.Serialization;
-import org.apache.uima.cas.impl.TCASImpl;
 import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
@@ -56,7 +55,7 @@ public class TypeSystemReinitTest extends TestCase {
       CASCompleteSerializer ser = Serialization.serializeCASComplete((CASMgr) cas1);
 
       TCAS tcas2 = CasCreationUtils.createTCas(new TypeSystemDescription_impl(), null, null);
-      CASImpl cas2 = ((TCASImpl) tcas2).getBaseCAS();
+      CASImpl cas2 = ((CASImpl) tcas2).getBaseCAS();
       tcas2.setDocumentText("bar");
 
       // reinit

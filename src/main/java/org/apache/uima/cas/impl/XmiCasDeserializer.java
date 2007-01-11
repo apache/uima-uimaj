@@ -449,7 +449,7 @@ public class XmiCasDeserializer {
           // add indexRepo for views other than the initial view
           indexRepositories.add(cas.getSofaIndexRepository(sofa));
         }
-        ((TCASImpl) view).registerView(sofa);
+        ((CASImpl) view).registerView(sofa);
         tcasInstances.add(view);
       }
       if (id < 0) {
@@ -932,7 +932,7 @@ public class XmiCasDeserializer {
       // System.out.println("Done in " + new TimeSpan(time));
 
       for (int i = 0; i < tcasInstances.size(); i++) {
-        ((TCASImpl) tcasInstances.get(i)).updateDocumentAnnotation();
+        ((CASImpl) tcasInstances.get(i)).updateDocumentAnnotation();
       }
     }
 

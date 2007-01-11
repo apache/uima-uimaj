@@ -111,7 +111,7 @@ public class SofaFSImpl extends FeatureStructureImplC implements SofaFS {
     super.setStringValue(stringFeat, aString);
     // create or update the document annotation for this Sofa's view
     CAS view = this.casImpl.getView(this);
-    ((TCASImpl) view).updateDocumentAnnotation();
+    ((CASImpl) view).updateDocumentAnnotation();
   }
 
   /**

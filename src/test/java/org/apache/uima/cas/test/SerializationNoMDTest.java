@@ -45,9 +45,8 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.CASSerializer;
 import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.TCAS;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.text.TCASException;
-import org.apache.uima.cas.text.TCASMgr;
 import org.apache.uima.internal.util.TextStringTokenizer;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -77,9 +76,9 @@ public class SerializationNoMDTest extends TestCase {
 
   public static final String SENT_TYPE = "Sentence";
 
-  private TCASMgr casMgr;
+  private CASMgr casMgr;
 
-  private TCAS cas;
+  private CAS cas;
 
   private Type wordType;
 
@@ -107,7 +106,7 @@ public class SerializationNoMDTest extends TestCase {
   public void setUp() throws Exception {
     super.setUp();
     casMgr = initCAS();
-    cas = casMgr.getTCAS();
+    cas = (CASImpl)casMgr;
 
     TypeSystem ts = cas.getTypeSystem();
     wordType = ts.getType(WORD_TYPE);
@@ -116,8 +115,8 @@ public class SerializationNoMDTest extends TestCase {
     eosType = ts.getType(EOS_TYPE);
     tokenType = ts.getType(TOKEN_TYPE);
     tokenTypeFeature = ts.getFeatureByFullName(TOKEN_TYPE_FEAT_Q);
-    startFeature = ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_BEGIN);
-    endFeature = ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_END);
+    startFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
+    endFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
     sentenceType = ts.getType(SENT_TYPE);
   }
 
@@ -136,7 +135,7 @@ public class SerializationNoMDTest extends TestCase {
   }
 
   // Initialize the first CAS.
-  private static TCASMgr initCAS() throws TCASException {
+  private static CASMgr initCAS() throws TCASException {
     // Create an initial CASMgr from the factory.
     // CASMgr cas = CASFactory.createCAS();
     // assert(tsa != null);
@@ -152,7 +151,7 @@ public class SerializationNoMDTest extends TestCase {
     TypeSystemMgr tsa = aCas.getTypeSystemMgr();
     // Add new types and features.
     Type topType = tsa.getTopType();
-    Type annotType = tsa.getType(TCAS.TYPE_NAME_ANNOTATION);
+    Type annotType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
     // assert(annotType != null);
     tsa.addType(SENT_TYPE, annotType);
     Type tokenType = tsa.addType(TOKEN_TYPE, annotType);
@@ -178,7 +177,7 @@ public class SerializationNoMDTest extends TestCase {
     // assert(cas.getIndexRepositoryMgr().isCommitted());
 
     // Create the default text Sofa and return TCAS view
-    return (TCASMgr) aCas.getCAS().getTCAS();
+    return (CASMgr) aCas.getCAS().getTCAS();
   }
 
   // Tokenize text.
@@ -416,7 +415,7 @@ public class SerializationNoMDTest extends TestCase {
       for (int i = 0; i < numDocs && docCount < max; i++) {
         // System.out.println("Processing document: " + i);
         // Set document text in first CAS.
-        casMgr.setDocumentText((String) docs.get(i));
+        cas.setDocumentText((String) docs.get(i));
 
         tokenize();
         numTok = cas.getAnnotationIndex(tokenType).size();
@@ -425,7 +424,7 @@ public class SerializationNoMDTest extends TestCase {
 
         // System.out.println("Serializing...");
         cs = Serialization.serializeNoMetaData(cas);
-        cas = Serialization.createTCAS(casMgr, cs);
+        cas = Serialization.createCAS(casMgr, cs);
 
         assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
 
@@ -436,7 +435,7 @@ public class SerializationNoMDTest extends TestCase {
 
         // System.out.println("Serializing...");
         cs = Serialization.serializeNoMetaData(cas);
-        cas = Serialization.createTCAS(casMgr, cs);
+        cas = Serialization.createCAS(casMgr, cs);
 
         assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
         assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());
@@ -445,7 +444,7 @@ public class SerializationNoMDTest extends TestCase {
 
         // System.out.println("Serializing...");
         cs = Serialization.serializeNoMetaData(cas);
-        cas = Serialization.createTCAS(casMgr, cs);
+        cas = Serialization.createCAS(casMgr, cs);
 
         assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
         assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());

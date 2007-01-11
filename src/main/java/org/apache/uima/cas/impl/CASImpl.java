@@ -74,7 +74,9 @@ import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.cas.text.Language;
 import org.apache.uima.cas.text.TCAS;
+import org.apache.uima.cas.text.TCASRuntimeException;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.impl.JCasImpl;
@@ -142,6 +144,9 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
   protected ShortHeap shortHeap; // for storing 16 bit values
 
   protected LongHeap longHeap; // for storing 64 bit values
+
+  // The document text.
+  private String documentText;
 
   // The index repository.
   protected FSIndexRepositoryImpl indexRepository;
@@ -241,9 +246,13 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
 
   private TypeImpl annotBaseType;
 
+  private TypeImpl docType;
+
   private FeatureImpl startFeat;
 
   private FeatureImpl endFeat;
+
+  private FeatureImpl langFeat;
 
   private TypeImpl byteType;
 
@@ -283,7 +292,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
 
   private int sofaTypeCode;
 
-  protected int annotTypeCode; // accessed from TCASImpl
+  protected int annotTypeCode;
 
   private int annotBaseTypeCode;
 
@@ -322,6 +331,8 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
   int startFeatCode;
 
   int endFeatCode;
+
+  protected int langFeatCode;
 
   // If this CAS can be flushed or not.
   private boolean flushEnabled = true;
@@ -380,6 +391,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
     this.annotType = in.annotType;
     this.annotBaseType = in.annotBaseType;
     this.sofaType = in.sofaType;
+    this.docType = in.docType;
 
     this.byteType = in.byteType;
     this.byteArrayType = in.byteArrayType;
@@ -401,13 +413,13 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
   // this(typeSystem, DEFAULT_INITIAL_HEAP_SIZE);
   // }
 
-  // Reference existing CAS
-  // For use when creating views of the CAS
-  CASImpl(CAS cas) {
-    this.setCAS(cas);
-    this.useFSCache = false;
-    initTypeVariables();
-  }
+//  // Reference existing CAS
+//  // For use when creating views of the CAS
+//  CASImpl(CAS cas) {
+//    this.setCAS(cas);
+//    this.useFSCache = false;
+//    initTypeVariables();
+//  }
 
   public CASImpl(TypeSystemImpl typeSystem, int initialHeapSize) {
     this(typeSystem, initialHeapSize, DEFAULT_USE_FS_CACHE);
@@ -469,6 +481,69 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
     this.setIndexRepository(ser.getIndexRepository(this));
   }
 
+  // Use this when creating a CAS view
+  CASImpl(CAS cas, SofaFS aSofa) {
+
+    this.setCAS(cas);
+    this.useFSCache = false;
+    initTypeVariables();
+    
+    // this.mySofa = aSofa;
+    if (aSofa != null) {
+      // save address of SofaFS
+      this.mySofaRef = aSofa.hashCode();
+    } else {
+      // this is the InitialView
+      this.mySofaRef = -1;
+    }
+
+    initFSClassRegistry();
+
+    // get the indexRepository for this Sofa
+    this.indexRepository = (this.mySofaRef == -1) ? (FSIndexRepositoryImpl) ((CASImpl) cas)
+            .getSofaIndexRepository(1) : (FSIndexRepositoryImpl) ((CASImpl) cas)
+            .getSofaIndexRepository(aSofa);
+    if (null == this.indexRepository) {
+      // create the indexRepository for this TCAS
+      // use the baseIR to create a lightweight IR copy
+      this.indexRepository = new FSIndexRepositoryImpl((CASImpl) this,
+              (FSIndexRepositoryImpl) ((CASImpl) cas).getBaseIndexRepository());
+      this.indexRepository.commit();
+      // save new sofa index
+      if (this.mySofaRef == -1) {
+        ((CASImpl) cas).setSofaIndexRepository(1, this.indexRepository);
+      } else {
+        ((CASImpl) cas).setSofaIndexRepository(aSofa, this.indexRepository);
+      }
+    }
+  }
+
+  // Use this when creating a CAS view
+  protected void refreshView(CAS cas, SofaFS aSofa) {
+    this.setCAS(cas);
+    if (aSofa != null) {
+      // save address of SofaFS
+      this.mySofaRef = aSofa.hashCode();
+    } else {
+      // this is the InitialView
+      this.mySofaRef = -1;
+    }
+
+    // toss the JCas, if it exists
+    this.jcas = null;
+
+    // create the indexRepository for this Sofa
+    this.indexRepository = new FSIndexRepositoryImpl(this,
+            (FSIndexRepositoryImpl) ((CASImpl) cas).getBaseIndexRepository());
+    this.indexRepository.commit();
+    // save new sofa index
+    if (this.mySofaRef == -1) {
+      ((CASImpl) cas).setSofaIndexRepository(1, this.indexRepository);
+    } else {
+      ((CASImpl) cas).setSofaIndexRepository(aSofa, this.indexRepository);
+    }
+  }
+
   private final void initTypeVariables() {
     // Type objects.
     this.topType = (TypeImpl) this.ts.getTopType();
@@ -485,6 +560,8 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
     this.annotBaseType = (TypeImpl) this.ts.getType(CAS.TYPE_NAME_ANNOTATION_BASE);
     this.startFeat = (FeatureImpl) this.ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_BEGIN);
     this.endFeat = (FeatureImpl) this.ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_END);
+    this.langFeat = (FeatureImpl) this.ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_LANGUAGE);
+    this.docType = (TypeImpl) this.ts.getType(TCAS.TYPE_NAME_DOCUMENT_ANNOTATION);
 
     this.byteType = (TypeImpl) this.ts.getType(TYPE_NAME_BYTE);
     this.byteArrayType = (TypeImpl) this.ts.getType(TYPE_NAME_BYTE_ARRAY);
@@ -541,7 +618,8 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
             this.annotType.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_BEGIN));
     this.endFeatCode = ll_getTypeSystem().ll_getCodeForFeature(
             this.annotType.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_END));
-
+    this.langFeatCode = ll_getTypeSystem().ll_getCodeForFeature(
+            this.docType.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_LANGUAGE));
   }
 
   private void checkInternalCodes(CASMgrSerializer ser) throws CASAdminException {
@@ -948,13 +1026,33 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
     this.baseCAS.resetNoQuestions();
   }
 
+  private void resetView() {
+    this.indexRepository.flush();
+    this.documentText = null;
+    if (this.mySofaRef > 0 && this.getSofa().getSofaRef() == 1) {
+      // indicate no Sofa exists for the initial view
+      this.mySofaRef = -1;
+    } else {
+      this.mySofaRef = 0;
+    }
+    if (this.jcas != null) {
+      try {
+        JCasImpl.clearData(this);
+      } catch (CASException e) {
+        CASAdminException cae = new CASAdminException(CASAdminException.JCAS_ERROR);
+        cae.addArgument(e.getMessage());
+        throw cae;
+      }
+    }
+  }
+  
   public void resetNoQuestions() {
     int numViews = this.getBaseSofaCount();
     // Flush indexRepository for all Sofa
     for (int view = 1; view <= numViews; view++) {
       CAS tcas = (view == 1) ? getInitialView() : getTCAS(view);
       if (tcas != null) {
-        ((TCASImpl) tcas).resetNoQuestions();
+        ((CASImpl) tcas).resetView();
       }
     }
     if (this.heap.getCurrentTempSize() > this.resetHeapSize) {
@@ -1000,8 +1098,14 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
   /**
    * 
    */
-  // BaseCas has no indexes for users
   public FSIndexRepository getIndexRepository() {
+    if (this == this.baseCAS) {
+      // BaseCas has no indexes for users
+      return null;
+    }
+    if (this.indexRepository.isCommitted()) {
+      return this.indexRepository;
+    }
     return null;
   }
 
@@ -1014,6 +1118,10 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
 
   protected void addSofaFsToIndex(SofaFS sofa) {
     this.baseCAS.getBaseIndexRepository().addFS(sofa);
+  }
+
+  protected void registerView(SofaFS aSofa) {
+    this.mySofaRef = aSofa.hashCode();
   }
 
   public void reinit(CASSerializer ser) {
@@ -1130,7 +1238,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
     this.sofaCount = 0;
 
     // freshen the initial view
-    ((TCASImpl) initialView).refreshView(this.baseCAS, null);
+    ((CASImpl) initialView).refreshView(this.baseCAS, null);
     this.sofa2tcasMap.put(new Integer(1), initialView);
     this.baseCAS.sofaCount = 1;
 
@@ -1431,7 +1539,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
         // only bump count if not the initial view
         this.baseCAS.sofaCount++;
       }
-      ((TCASImpl) this.getView(sofa)).registerView(sofa);
+      ((CASImpl) this.getView(sofa)).registerView(sofa);
       iterator.moveToNext();
     }
     for (int view = 1; view <= numViews; view++) {
@@ -1443,7 +1551,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
           loopIndexRep.addFS(fsIndex[i]);
         }
         loopStart += loopLen + 1;
-        ((TCASImpl) tcas).updateDocumentAnnotation();
+        ((CASImpl) tcas).updateDocumentAnnotation();
       } else {
         loopStart += 1;
       }
@@ -2254,7 +2362,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
     // Type remoteSofa = ts.addType(CAS.TYPE_NAME_REMOTESOFA, sofa);
     ts.addFeature(CAS.FEATURE_BASE_NAME_SOFAURI, sofa, stringT);
 
-    // Annotations (moved here from TCASImpl)
+    // Annotations
     Type annotBaseType = ts.addType(CAS.TYPE_NAME_ANNOTATION_BASE, top);
     ts.addFeature(TCAS.FEATURE_BASE_NAME_SOFA, annotBaseType, sofa);
     Type annotType = ts.addType(TCAS.TYPE_NAME_ANNOTATION, annotBaseType);
@@ -2413,7 +2521,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
       return couldBeThis;
     }
     // create the initial view, without a Sofa
-    CAS aTcas = new TCASImpl(this.baseCAS, null);
+    CAS aTcas = new CASImpl(this.baseCAS, null);
     this.sofa2tcasMap.put(new Integer(1), aTcas);
     this.baseCAS.sofaCount = 1;
     return aTcas;
@@ -2437,7 +2545,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
     }
     SofaFS newSofa = createSofa(absoluteSofaName, null);
     CAS newView = getView(newSofa);
-    ((TCASImpl) newView).registerView(newSofa);
+    ((CASImpl) newView).registerView(newSofa);
     return newView;
   }
 
@@ -2467,10 +2575,10 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
   }
 
   public CAS getView(SofaFS aSofa) {
-    TCASImpl aTcas = (TCASImpl) this.sofa2tcasMap.get(new Integer(aSofa.getSofaRef()));
+    CASImpl aTcas = (CASImpl) this.sofa2tcasMap.get(new Integer(aSofa.getSofaRef()));
     if (null == aTcas) {
       // create a new TCAS view
-      aTcas = new TCASImpl(this.baseCAS, aSofa);
+      aTcas = new CASImpl(this.baseCAS, aSofa);
       this.sofa2tcasMap.put(new Integer(aSofa.getSofaRef()), aTcas);
       if (this.baseCAS.sofaCount < aSofa.getSofaRef()) {
         // for binary deserialization
@@ -3504,11 +3612,29 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
     ll_setDoubleArrayValue(fsRef, position, value);
   }
 
+  public boolean isAnnotationType(Type t) {
+    return getTypeSystem().subsumes(getAnnotationType(), t);
+  }
+
+  public boolean isAnnotationType(int t) {
+    return this.ts.subsumes(this.annotTypeCode, t);
+  }
+
   public AnnotationFS createAnnotation(Type type, int begin, int end) {
-    // Can't create annotation on base CAS
-    CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INVALID_BASE_CAS_METHOD);
-    e.addArgument("createAnnotation");
-    throw e;
+    if (this == this.baseCAS) {
+      // Can't create annotation on base CAS
+      CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INVALID_BASE_CAS_METHOD);
+      e.addArgument("createAnnotation");
+      throw e;
+    }
+    FeatureStructure fs = createFS(type);
+    final int addr = ll_getFSRef(fs);
+    // setSofaFeat(addr, this.mySofaRef); // already done by createFS
+    setFeatureValue(addr, this.startFeatCode, begin);
+    // setStartFeat(addr, begin);
+    setFeatureValue(addr, this.endFeatCode, end);
+    // setEndFeat(addr, end);
+    return (AnnotationFS) fs;
   }
 
   public FSIndex getAnnotationIndex() {
@@ -3540,39 +3666,104 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
     return this.startFeat;
   }
 
+  private AnnotationFS createDocumentAnnotation(int length) {
+    // Remove any existing document annotations.
+    FSIterator it = getAnnotationIndex(this.docType).iterator();
+    ArrayList list = new ArrayList();
+    while (it.isValid()) {
+      list.add(it.get());
+      it.moveToNext();
+    }
+    for (int i = 0; i < list.size(); i++) {
+      getIndexRepository().removeFS((FeatureStructure) list.get(i));
+    }
+    // Create a new document annotation.
+    AnnotationFS doc = createAnnotation(this.docType, 0, length);
+    getIndexRepository().addFS(doc);
+    // Set the language feature to the default value.
+    doc.setStringValue(this.langFeat, TCAS.DEFAULT_LANGUAGE_NAME);
+    return doc;
+  }
+
+  // Update the document Text and document Annotation if required
+  public void updateDocumentAnnotation() {
+    if (!mySofaIsValid()) {
+      return;
+    }
+    final Type SofaType = this.ts.getType(CAS.TYPE_NAME_SOFA);
+    final Feature sofaString = SofaType.getFeatureByBaseName(FEATURE_BASE_NAME_SOFASTRING);
+    String newDoc = getSofa(this.mySofaRef).getStringValue(sofaString);
+    this.documentText = newDoc;
+    if (null != newDoc)
+      getDocumentAnnotation().setIntValue(getEndFeature(), newDoc.length());
+  }
+
   public AnnotationFS getDocumentAnnotation() {
-    // base CAS has no document
-    return null;
+    if (this == this.baseCAS) {
+      // base CAS has no document
+      return null;
+    }
+    FSIterator it = getAnnotationIndex(this.docType).iterator();
+    if (it.isValid()) {
+      return (AnnotationFS) it.get();
+    }
+    return createDocumentAnnotation(0);
   }
 
   public String getDocumentLanguage() {
-    // base CAS has no document
-    return null;
+    if (this == this.baseCAS) {
+      // base CAS has no document
+      return null;
+    }
+    LowLevelCAS llc = this;
+    final int docAnnotAddr = llc.ll_getFSRef(getDocumentAnnotation());
+    return llc.ll_getStringValue(docAnnotAddr, this.langFeatCode);
   }
 
   public String getDocumentText() {
-    // base CAS has no document
-    return null;
+    if (this == this.baseCAS) {
+      // base CAS has no document
+      return null;
+    }
+    return this.documentText;
   }
 
   public String getSofaDataString() {
-    // base CAS has no document
-    return null;
+    if (this == this.baseCAS) {
+      // base CAS has no document
+      return null;
+    }
+    return this.documentText;
   }
 
   public FeatureStructure getSofaDataArray() {
-    // base CAS has no SofaArray
+    if (this == this.baseCAS) {
+      // base CAS has no Sofa
+      return null;
+    }
+    if (mySofaIsValid()) {
+      return this.getSofa(mySofaRef).getLocalFSData();
+    }
     return null;
   }
 
   public String getSofaDataURI() {
-    // base CAS has no Sofa nothin
+    if (this == this.baseCAS) {
+      // base CAS has no Sofa
+      return null;
+    }
+    if (mySofaIsValid()) {
+      return this.getSofa(mySofaRef).getSofaURI();
+    }
     return null;
   }
 
   public InputStream getSofaDataStream() {
-    // base CAS has no Sofa nothin
-    return null;
+    if (this == this.baseCAS) {
+      // base CAS has no Sofa nothin
+      return null;
+    }
+    return this.getSofaDataStream(this.getSofa());
   }
 
   public SofaFS getSofa() {
@@ -3592,34 +3783,83 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
     }
   }
 
+  private boolean mySofaIsValid() {
+    return this.mySofaRef > 0;
+  }
+
+  protected void setDocTextFromDeserializtion(String text) {
+    if (mySofaIsValid()) {
+      final int SofaStringCode = ll_getTypeSystem().ll_getCodeForFeature(
+              this.getTypeSystem().getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFASTRING));
+      final int llsofa = getLowLevelCAS().ll_getFSRef(this.getSofa());
+      getLowLevelCAS().ll_setStringValue(llsofa, SofaStringCode, text);
+      this.documentText = text;
+    }
+  }
+
   public void setDocumentLanguage(String languageCode) {
-    CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INVALID_BASE_CAS_METHOD);
-    e.addArgument("setDocumentLanguage");
-    throw e;
+    if (this == this.baseCAS) {
+      CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INVALID_BASE_CAS_METHOD);
+      e.addArgument("setDocumentLanguage");
+      throw e;
+    }
+    // LowLevelCAS llc = getLowLevelCAS();
+    LowLevelCAS llc = this;
+    final int docAnnotAddr = llc.ll_getFSRef(getDocumentAnnotation());
+    languageCode = Language.normalize(languageCode);
+    llc.ll_setStringValue(docAnnotAddr, this.langFeatCode, languageCode);
   }
 
   public void setDocumentText(String text) {
-    CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INVALID_BASE_CAS_METHOD);
-    e.addArgument("setDocumentText");
-    throw e;
+    if (this == this.baseCAS) {
+      CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INVALID_BASE_CAS_METHOD);
+      e.addArgument("setDocumentText");
+      throw e;
+    }
+    setSofaDataString(text, "text");
   }
 
   public void setSofaDataString(String text, String mime) throws CASRuntimeException {
-    CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INVALID_BASE_CAS_METHOD);
-    e.addArgument("setDocumentLanguage");
-    throw e;
+    if (this == this.baseCAS) {
+      CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INVALID_BASE_CAS_METHOD);
+      e.addArgument("setDocumentText");
+      throw e;
+    }
+
+    if (!mySofaIsValid()) {
+      this.createInitialSofa(mime);
+    }
+    // try to put the document into the SofaString ...
+    // ... will fail if previously set
+    getSofa(this.mySofaRef).setLocalSofaData(text);
   }
 
   public void setSofaDataArray(FeatureStructure array, String mime) throws CASRuntimeException {
-    CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INVALID_BASE_CAS_METHOD);
-    e.addArgument("setDocumentLanguage");
-    throw e;
+    if (this == this.baseCAS) {
+      CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INVALID_BASE_CAS_METHOD);
+      e.addArgument("setSofaDataArray");
+      throw e;
+    }
+    if (!mySofaIsValid()) {
+      this.baseCAS.createInitialSofa(mime);
+    }
+    // try to put the document into the SofaString ...
+    // ... will fail if previously set
+    getSofa(this.mySofaRef).setLocalSofaData(array);
   }
 
   public void setSofaDataURI(String uri, String mime) throws CASRuntimeException {
-    CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INVALID_BASE_CAS_METHOD);
-    e.addArgument("setDocumentLanguage");
-    throw e;
+    if (this == this.baseCAS) {
+      CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INVALID_BASE_CAS_METHOD);
+      e.addArgument("setSofaDataURI");
+      throw e;
+    }
+    if (!mySofaIsValid()) {
+      this.baseCAS.createInitialSofa(mime);
+    }
+    // try to put the document into the SofaString ...
+    // ... will fail if previously set
+    getSofa(this.mySofaRef).setRemoteSofaURI(uri);
   }
 
   public void setCurrentComponentInfo(ComponentInfo info) {
@@ -3662,7 +3902,8 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
     int sofaId = this.getSofaFeat(addr);
     if (sofaId > 0) {
       // check if same as that of current CAS view
-      if (!(this instanceof TCASImpl) || (sofaId != ((TCASImpl) this).getSofaRef())) {
+//      if (!(this instanceof TCASImpl) || (sofaId != ((TCASImpl) this).getSofaRef())) {
+      if (sofaId != ((CASImpl) this).getSofaRef()) {
         // Does not match. get TCAS for the sofaRef feature found in
         // annotation
         return (CASImpl) this.getTCAS(getSofa(sofaId).getSofaRef());

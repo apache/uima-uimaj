@@ -33,7 +33,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.impl.TCASImpl;
+import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.internal.util.IntVector;
@@ -44,7 +44,7 @@ import org.apache.uima.internal.util.IntVector;
  */
 public class IteratorTest extends TestCase {
 
-  private TCASImpl cas;
+  private CASImpl cas;
 
   private TypeSystem ts;
 
@@ -83,7 +83,7 @@ public class IteratorTest extends TestCase {
 
   public void setUp() {
     try {
-      this.cas = (TCASImpl) CASInitializer.initCas(new CASTestSetup());
+      this.cas = (CASImpl) CASInitializer.initCas(new CASTestSetup());
       assertTrue(this.cas != null);
       this.ts = this.cas.getTypeSystem();
       assertTrue(this.ts != null);

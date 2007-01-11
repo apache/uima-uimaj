@@ -34,7 +34,7 @@ import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.LinearTypeOrderBuilderImpl;
-import org.apache.uima.cas.impl.TCASImpl;
+import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
@@ -185,7 +185,7 @@ public class IndexComparitorTest extends TestCase {
 
   public void setUp() throws Exception {
     try {
-      this.cas = (TCASImpl) CASInitializer.initCas(new SetupForIndexCompareTesting());
+      this.cas = (CASImpl) CASInitializer.initCas(new SetupForIndexCompareTesting());
       assertNotNull(cas);
       ir = cas.getIndexRepository();
       sortedType1 = ir.getIndex("SortedType1");

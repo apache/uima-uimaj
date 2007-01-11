@@ -28,7 +28,7 @@ import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
-import org.apache.uima.cas.impl.TCASImpl;
+import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.CasDefinition;
 import org.apache.uima.resource.CasManager;
@@ -160,7 +160,7 @@ public class CasManager_impl implements CasManager {
   private void populateCasToCasPoolMap(CasPool aCasPool) {
     CAS[] casArray = new CAS[aCasPool.getSize()];
     for (int i = 0; i < casArray.length; i++) {
-      casArray[i] = ((TCASImpl) aCasPool.getCas()).getBaseCAS();
+      casArray[i] = ((CASImpl) aCasPool.getCas()).getBaseCAS();
       mCasToCasPoolMap.put(casArray[i], aCasPool);
     }
     for (int i = 0; i < casArray.length; i++) {

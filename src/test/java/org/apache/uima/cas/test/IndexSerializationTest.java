@@ -37,7 +37,6 @@ import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.cas.text.TCASException;
-import org.apache.uima.cas.text.TCASMgr;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
@@ -67,7 +66,7 @@ public class IndexSerializationTest extends TestCase {
 
   public static final String SENT_TYPE = "Sentence";
 
-  private TCASMgr casMgr;
+  private CASMgr casMgr;
 
   private TCAS cas;
 
@@ -99,7 +98,7 @@ public class IndexSerializationTest extends TestCase {
   protected void setUp() throws Exception {
     super.setUp();
     casMgr = initCAS();
-    cas = casMgr.getTCAS();
+    cas = (CASImpl)casMgr;
 
     TypeSystem ts = cas.getTypeSystem();
     wordType = ts.getType(WORD_TYPE);
@@ -116,7 +115,7 @@ public class IndexSerializationTest extends TestCase {
   }
 
   // Initialize the first CAS.
-  private static TCASMgr initCAS() throws TCASException {
+  private static CASMgr initCAS() throws TCASException {
     // // Create a TCASMgr. Ensures existence of AnnotationFS type.
     // TCASMgr tcas = TCASFactory.createTCAS();
     CASMgr casMgr = CASFactory.createCAS();
@@ -166,7 +165,7 @@ public class IndexSerializationTest extends TestCase {
     // assert(cas.getIndexRepositoryMgr().isCommitted());
 
     // Create the default text Sofa and return TCAS view
-    return (TCASMgr) casMgr.getCAS().getTCAS();
+    return (CASMgr) casMgr.getCAS().getTCAS();
   }
 
   /**
@@ -216,7 +215,7 @@ public class IndexSerializationTest extends TestCase {
     ((CASImpl) realCasMgr).commitTypeSystem();
     Serialization.deserializeCASComplete(cs, realCasMgr);
     cas = ((CASImpl) realCasMgr).getTCAS();
-    casMgr = (TCASMgr) cas;
+    casMgr = (CASMgr) cas;
 
     // System.out.println("After serialization\n");
     FSIndex index = cas.getAnnotationIndex();

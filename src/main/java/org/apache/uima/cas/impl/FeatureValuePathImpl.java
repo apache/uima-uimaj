@@ -1170,7 +1170,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 
   private boolean isEmptyList(LowLevelCAS cas, int type) {
     Type candidateType = cas.ll_getTypeSystem().ll_getTypeForCode(type);
-    TypeSystem typeSystem = ((TCASImpl) cas).getTypeSystem();
+    TypeSystem typeSystem = ((CASImpl) cas).getTypeSystem();
     boolean isEmpty = false;
     for (int i = 0; i < this.emptyListTypes.length && (!isEmpty); i++) {
       isEmpty = typeSystem.subsumes(this.emptyListTypes[i], candidateType);

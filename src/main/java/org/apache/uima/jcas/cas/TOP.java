@@ -24,7 +24,6 @@ import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FeatureStructureImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
-import org.apache.uima.cas.impl.TCASImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.impl.JCasImpl;
 
@@ -98,8 +97,8 @@ public class TOP extends FeatureStructureImpl {
     this.addr = jcasType.ll_cas.ll_createFS(jcasType.casTypeCode);
     jcas.putJfsFromCaddr(addr, this);
     CAS cas = jcas.getCas();
-    if (cas instanceof TCASImpl && ((TCASImpl) cas).isAnnotationType(jcasType.casTypeCode)) {
-      ((TCASImpl) cas).setSofaFeat(addr, ((TCASImpl) cas).getSofaRef());
+    if (((CASImpl) cas).isAnnotationType(jcasType.casTypeCode)) {
+      ((CASImpl) cas).setSofaFeat(addr, ((CASImpl) cas).getSofaRef());
     }
   }
 
