@@ -23,6 +23,8 @@ import java.util.Iterator;
 
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
+import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.Type;
 
 /**
  * Provides the same function as the FSIndexRepository except that the variants that take a "type"
@@ -95,5 +97,37 @@ public interface JFSIndexRepository {
    * @return The associated FSIndexRepository.
    */
   FSIndexRepository getFSIndexRepository();
+
+  /**
+   * Gets an iterator over all indexed FeatureStructures of the specified Type (and any of its
+   * subtypes).
+   * <p>
+   * Limitation: If there are no sorted or bag indexes defined for this type, but there is more than
+   * one set index defined, then this method will only return the contents of one of these set
+   * indexes (chosen arbitrarily).
+   * 
+   * @param aType
+   *          The type
+   * 
+   * @return An iterator that returns all indexed FeatureStructures of type <code>aType</code>,
+   *         in no particular order.
+   */
+  FSIterator getAllIndexedFS(Type aType);
+
+  /**
+   * Gets an iterator over all indexed FeatureStructures of the specified Type (and any of its
+   * subtypes).
+   * <p>
+   * Limitation: If there are no sorted or bag indexes defined for this type, but there is more than
+   * one set index defined, then this method will only return the contents of one of these set
+   * indexes (chosen arbitrarily).
+   * 
+   * @param aType
+   *          The type obtained by doing MyJCasClass.type
+   * 
+   * @return An iterator that returns all indexed FeatureStructures of type <code>aType</code>,
+   *         in no particular order.
+   */
+  FSIterator getAllIndexedFS(int aType);
 
 }
