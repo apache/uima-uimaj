@@ -25,6 +25,8 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
+import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
@@ -118,5 +120,19 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
    */
   public FSIndexRepository getFSIndexRepository() {
     return fsIndexRepository;
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.JFSIndexRepository#getAllIndexedFS(org.apache.uima.cas.Type)
+   */
+  public FSIterator getAllIndexedFS(Type aType) {
+    return fsIndexRepository.getAllIndexedFS(aType);
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.JFSIndexRepository#getAllIndexedFS(int)
+   */
+  public FSIterator getAllIndexedFS(int aType) {
+    return fsIndexRepository.getAllIndexedFS(jcas.getCasType(aType));
   }
 }
