@@ -19,6 +19,9 @@
 
 package org.apache.uima.util.impl;
 
+import java.util.HashMap;
+import java.util.logging.LogManager;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -30,16 +33,22 @@ import org.apache.uima.util.Level;
  */
 public class JSR47Logger_implTest extends TestCase {
 
+  private static HashMap logLevels = new HashMap(9);
+  static {
+    logLevels.put("OFF", Level.OFF);
+    logLevels.put("SEVERE", Level.SEVERE);
+    logLevels.put("WARNING", Level.WARNING);
+    logLevels.put("INFO", Level.INFO);
+    logLevels.put("CONFIG", Level.CONFIG);
+    logLevels.put("FINE", Level.FINE);
+    logLevels.put("FINER", Level.FINER);
+    logLevels.put("FINEST", Level.FINEST);
+    logLevels.put("ALL", Level.ALL);
+  }
+
   public JSR47Logger_implTest(String arg0) {
     super(arg0);
   }
-
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  //
-  // All tests use the JSR47.properties file
-  // as base configuration
-  //
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   public void testLogWrapperCreation() throws Exception {
     org.apache.uima.util.Logger rootLogger = JSR47Logger_impl.getInstance();
@@ -57,29 +66,47 @@ public class JSR47Logger_implTest extends TestCase {
     org.apache.uima.util.Logger rootLogger = JSR47Logger_impl.getInstance();
     org.apache.uima.util.Logger classLogger = JSR47Logger_impl.getInstance(this.getClass());
 
-    // TODO: these fail in Maven, maybe because it has set the root logger level to something
-    // other than the default?
-    // //check message leveling root logger
-    // Assert.assertFalse(rootLogger.isLoggable(Level.ALL));
-    // Assert.assertFalse(rootLogger.isLoggable(Level.FINEST));
-    // Assert.assertFalse(rootLogger.isLoggable(Level.FINER));
-    // Assert.assertFalse(rootLogger.isLoggable(Level.FINE));
-    // Assert.assertFalse(rootLogger.isLoggable(Level.CONFIG));
-    // Assert.assertTrue(rootLogger.isLoggable(Level.INFO));
-    // Assert.assertTrue(rootLogger.isLoggable(Level.WARNING));
-    // Assert.assertTrue(rootLogger.isLoggable(Level.SEVERE));
-    // Assert.assertTrue(rootLogger.isLoggable(Level.OFF));
-    //		
-    // //check message leveling class logger
-    // Assert.assertFalse(rootLogger.isLoggable(Level.ALL));
-    // Assert.assertFalse(rootLogger.isLoggable(Level.FINEST));
-    // Assert.assertFalse(rootLogger.isLoggable(Level.FINER));
-    // Assert.assertFalse(rootLogger.isLoggable(Level.FINE));
-    // Assert.assertFalse(rootLogger.isLoggable(Level.CONFIG));
-    // Assert.assertTrue(rootLogger.isLoggable(Level.INFO));
-    // Assert.assertTrue(rootLogger.isLoggable(Level.WARNING));
-    // Assert.assertTrue(rootLogger.isLoggable(Level.SEVERE));
-    // Assert.assertTrue(rootLogger.isLoggable(Level.OFF));
+    Level defaultLogLevel = (Level) logLevels.get(LogManager.getLogManager().getProperty(".level"));
+
+    // check message logging for root logger based on default log level
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.ALL), rootLogger
+            .isLoggable(Level.ALL));
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINEST), rootLogger
+            .isLoggable(Level.FINEST));
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINER), rootLogger
+            .isLoggable(Level.FINER));
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINE), rootLogger
+            .isLoggable(Level.FINE));
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.CONFIG), rootLogger
+            .isLoggable(Level.CONFIG));
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.INFO), rootLogger
+            .isLoggable(Level.INFO));
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.WARNING), rootLogger
+            .isLoggable(Level.WARNING));
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.SEVERE), rootLogger
+            .isLoggable(Level.SEVERE));
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.OFF), rootLogger
+            .isLoggable(Level.OFF));
+
+    // check message logging for class logger based on default log level
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.ALL), classLogger
+            .isLoggable(Level.ALL));
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINEST), classLogger
+            .isLoggable(Level.FINEST));
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINER), classLogger
+            .isLoggable(Level.FINER));
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINE), classLogger
+            .isLoggable(Level.FINE));
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.CONFIG), classLogger
+            .isLoggable(Level.CONFIG));
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.INFO), classLogger
+            .isLoggable(Level.INFO));
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.WARNING), classLogger
+            .isLoggable(Level.WARNING));
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.SEVERE), classLogger
+            .isLoggable(Level.SEVERE));
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.OFF), classLogger
+            .isLoggable(Level.OFF));
 
     // reset class logger level to OFF
     // Logger.getLogger(this.getClass().getName()).setLevel(java.util.logging.Level.OFF);
@@ -120,6 +147,8 @@ public class JSR47Logger_implTest extends TestCase {
     Assert.assertTrue(classLogger.isLoggable(Level.SEVERE));
     Assert.assertTrue(classLogger.isLoggable(Level.OFF));
 
+    // reset log level to default log level
+    classLogger.setLevel(defaultLogLevel);
   }
 
   public void testMessageLogMethods() throws Exception {
@@ -189,8 +218,8 @@ public class JSR47Logger_implTest extends TestCase {
     // logger.setOutputStream(new PrintStream(new FileOutputStream(file)));
 
     // test deprecated log(String, String, Object[])
-    String msgKey = "UIMA_class_in_framework_config_not_found";
-    String bundle = "org.apache.uima.impl.log_messages";
+    String msgKey = "UIMA_logger_test";
+    String bundle = "org.apache.uima.util.impl.logger_test_messages";
     logger.log(bundle, msgKey, new Object[] { "message key test" });
     logger.log(bundle, null, new Object[] { "message key test" });
     logger.log(bundle, msgKey, new Object[] { "" });
