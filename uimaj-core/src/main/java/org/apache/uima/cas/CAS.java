@@ -183,7 +183,7 @@ public interface CAS extends AbstractCas {
    * Name of annotation base type.
    */
   static final String TYPE_NAME_ANNOTATION_BASE = UIMA_CAS_PREFIX + "AnnotationBase";
-  
+
   // /////////////////////////////////////////////////////////////////////////
   // Sofa features.
 
@@ -466,7 +466,6 @@ public interface CAS extends AbstractCas {
 
   static final String DEFAULT_LANGUAGE_NAME = "x-unspecified";
 
-  
   /**
    * Create a FS on the temporary (document) heap.
    * 
@@ -557,7 +556,6 @@ public interface CAS extends AbstractCas {
    */
   DoubleArrayFS createDoubleArrayFS(int length) throws CASRuntimeException;
 
-
   /**
    * Get the JCas for this CAS.
    * 
@@ -605,7 +603,7 @@ public interface CAS extends AbstractCas {
    * @return The SofaFS associated with this TCAS.
    */
   SofaFS getSofa();
-  
+
   /**
    * Create a view and its underlying Sofa (subject of analysis). The view provides access to the
    * Sofa data and the index repository that contains metadata (annotations and other feature
@@ -661,7 +659,7 @@ public interface CAS extends AbstractCas {
    *           if no View with this name exists in this CAS
    */
   CAS getView(String localViewName);
-  
+
   /**
    * Get the view for a Sofa (subject of analysis). The view provides access to the Sofa data and
    * the index repository that contains metadata (annotations and other feature structures)
@@ -674,7 +672,6 @@ public interface CAS extends AbstractCas {
    */
   CAS getView(SofaFS aSofa);
 
- 
   /**
    * Get an instance of the low-level CAS. Low-level and regular CAS can be used in parallel, all
    * data is always contained in both.
@@ -686,7 +683,6 @@ public interface CAS extends AbstractCas {
    * @see LowLevelCAS
    */
   LowLevelCAS getLowLevelCAS();
-
 
   /**
    * Get the type object for the annotation type.
@@ -755,18 +751,17 @@ public interface CAS extends AbstractCas {
    *          information about the component that is currently processing this CAS.
    */
   void setCurrentComponentInfo(ComponentInfo info);
-  
+
   /**
-   * This part of the CAS interface is shared among CAS and JCAS interfaces
-   * If you change it in one of the interfaces, consider changing it in the 
-   * other
+   * This part of the CAS interface is shared among CAS and JCAS interfaces If you change it in one
+   * of the interfaces, consider changing it in the other
    */
 
-  ///////////////////////////////////////////////////////////////////////////
+  // /////////////////////////////////////////////////////////////////////////
   //
-  //  Standard CAS Methods
+  // Standard CAS Methods
   //
-  ///////////////////////////////////////////////////////////////////////////
+  // /////////////////////////////////////////////////////////////////////////
   /**
    * Return the type system of this CAS instance.
    * 
@@ -775,7 +770,7 @@ public interface CAS extends AbstractCas {
    *              If the type system has not been committed.
    */
   TypeSystem getTypeSystem() throws CASRuntimeException;
-  
+
   /**
    * Create a Subject of Analysis. The new sofaFS is automatically added to the SofaIndex.
    * 
@@ -847,7 +842,7 @@ public interface CAS extends AbstractCas {
    * @see org.apache.uima.cas.admin.CASMgr
    */
   void reset() throws CASAdminException;
-  
+
   /**
    * Get the view name. The view name is the same as the name of the view's Sofa, retrieved by
    * getSofa().getSofaID(), except for the initial View before its Sofa has been created.
@@ -971,7 +966,8 @@ public interface CAS extends AbstractCas {
 
   /**
    * Add a feature structure to all appropriate indexes in the repository associated with this CAS
-   * View.
+   * View. If no indexes exist for the type of FS that you are adding, then a bag (unsorted) index
+   * will be automatically created.
    * 
    * <p>
    * <b>Important</b>: after you have called <code>addFsToIndexes(...)</code> on a FS, do not
@@ -996,6 +992,5 @@ public interface CAS extends AbstractCas {
    *              If the <code>fs</code> parameter is <code>null</code>.
    */
   void removeFsFromIndexes(FeatureStructure fs);
-
 
 }

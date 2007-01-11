@@ -723,11 +723,6 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
   private LinearTypeOrder defaultTypeOrder = null;
 
-  // For add(FS) where there is no encompassing index defined for the given FS
-  // type
-  // Used only by serialization
-  private IntVector undefinedIndex;
-
   private FSIndexRepositoryImpl() {
     super();
   }
@@ -742,7 +737,6 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     this.cas = cas;
     this.typeSystem = cas.getTypeSystemImpl();
     this.name2indexMap = new HashMap();
-    this.undefinedIndex = new IntVector();
     init();
   }
 
@@ -757,7 +751,6 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     this.cas = cas;
     this.typeSystem = cas.getTypeSystemImpl();
     this.name2indexMap = new HashMap();
-    this.undefinedIndex = new IntVector();
     init();
     Set keys = baseIndexRepo.name2indexMap.keySet();
     if (!keys.isEmpty()) {
@@ -797,7 +790,6 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     if (!this.locked) {
       return;
     }
-    this.undefinedIndex.removeAllElements();
     int max;
     ArrayList v;
     // The first element is null. This is not good...
@@ -1245,12 +1237,6 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         }
       }
     }
-    if (this.undefinedIndex.size() > 0) {
-      int undef[] = this.undefinedIndex.toArray();
-      for (int k = 0; k < undef.length; k++) {
-        v.add(undef[k]);
-      }
-    }
     return v.toArray();
   }
 
@@ -1262,8 +1248,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   private void incrementIllegalIndexUpdateDetector(int typeCode) {
-    this.detectIllegalIndexUpdates[typeCode] = (this.detectIllegalIndexUpdates[typeCode] == Integer.MAX_VALUE) ? Integer.MIN_VALUE
-            : this.detectIllegalIndexUpdates[typeCode] + 1;
+    this.detectIllegalIndexUpdates[typeCode]++;
   }
 
   /**
@@ -1350,7 +1335,15 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       ((IndexIteratorCachePair) indexes.get(i)).index.insert(fsRef);
     }
     if (size == 0) {
-      this.undefinedIndex.add(fsRef);
+      //lazily create a default bag index for this type
+      Type type = this.typeSystem.getType(typeCode);
+      String defIndexName = "_" + type.getName() + "_GeneratedIndex";
+      FSIndexComparator comparator = createComparator();
+      comparator.setType(type);
+      createIndexNoQuestionsAsked(comparator, defIndexName, FSIndex.BAG_INDEX);
+      assert this.indexArray[typeCode].size() == 1;
+      //add the FS to the bag index
+      ((IndexIteratorCachePair)this.indexArray[typeCode].get(0)).index.insert(fsRef);
     }
   }
 
@@ -1370,18 +1363,30 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * @see org.apache.uima.cas.FSIndexRepository#getAllIndexedFS(org.apache.uima.cas.Type)
    */
   public FSIterator getAllIndexedFS(Type aType) {
+    //Attempt to find a non-set index first. 
+    //If none found, then use the an arbitrary set index if any.
+    FSIndex setIndex = null;
     Iterator iter = getLabels();
     while (iter.hasNext()) {
       String label = (String) iter.next();
       FSIndex index = getIndex(label);
-      if (index.getIndexingStrategy() != FSIndex.SET_INDEX
-              && this.typeSystem.subsumes(index.getType(), aType)) {
-        return getIndex(label, aType).iterator();
+      if (this.typeSystem.subsumes(index.getType(), aType)) {
+        if (index.getIndexingStrategy() != FSIndex.SET_INDEX) {
+          return getIndex(label, aType).iterator();
+        }
+        else {
+          setIndex = getIndex(label, aType);
+        }
       }
     }
-    // No sorted or bag index found for this type. Return an empty iterator.
-    // TODO: remove this once default bag index is implemented.
-    return new EmptyFSIterator();
+    // No sorted or bag index found for this type. If there was a set index,
+    // return an iterator for it.  If not, return an empty iterator.
+    if (setIndex != null) {
+      return setIndex.iterator();
+    }
+    else {
+      return new EmptyFSIterator();
+    }
   }
 
   /**

@@ -65,8 +65,8 @@ public interface FSIndexRepository {
   Iterator getIndexes();
 
   /**
-   * Add a feature structure to all appropriate indexes in the repository.
-   * 
+   * Add a feature structure to all appropriate indexes in the repository. If no indexes exist for
+   * the type of FS that you are adding, then a bag (unsorted) index will be automatically created.
    * <p>
    * <b>Important</b>: after you have called <code>addFS()</code> on a FS, do not change the
    * values of any features used for indexing. If you do, the index will become corrupted and may be
@@ -95,8 +95,9 @@ public interface FSIndexRepository {
    * Gets an iterator over all indexed FeatureStructures of the specified Type (and any of its
    * subtypes).
    * <p>
-   * Current limitation: there must be a sorted or bag index defined over this type (or one of its
-   * supertypes). Otherwise an empty iterator will always be returned.
+   * Limitation: If there are no sorted or bag indexes defined for this type, but there is more than
+   * one set index defined, then this method will only return the contents of one of these set
+   * indexes (chosen arbitrarily).
    * 
    * @param aType
    *          The type
