@@ -683,10 +683,12 @@ under the License.
     
   <warning><para>If the components of the aggregate have different definitions for the same 
     type name, the CDE will show a warning.  It is possible to continue past this warning, 
-    in which case the CDE will produce Java source files representing the merged types (that is, the
+    in which case the CDE will produce the correct 
+    Java source files representing the merged types (that is, the
     type definition that contains all of the features defined on that type by all of your
-    components).  However, it is not recommended to use this feature since it can make it 
-    difficult to combine your annotator with others. See <olink
+    components).  However, it is not recommended to use this feature 
+    (of having different definitions for the same type name) since it can make it 
+    difficult to combine/package your annotator with others. See <olink
       targetdoc="&uima_docs_ref;"
       targetptr="ugr.ref.jcas.merging_types_from_other_specs"/> for more information.
   </para></warning>    
