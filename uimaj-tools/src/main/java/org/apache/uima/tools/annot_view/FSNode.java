@@ -26,11 +26,14 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FeatureImpl;
+import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.TCASImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 
 class FSNode extends FSTreeNode {
 
+  private static final int maxStringLength = 100;
+  
   private final FSTreeModel fSTreeModel;
 
   static final int INT_FS = 0;
@@ -233,20 +236,22 @@ class FSNode extends FSTreeNode {
         return Double.toString(CASImpl.long2double(this.addr));
       }
       case STRING_FS: {
-        if (this.addr == 0) {
+        if (this.addr == LowLevelCAS.NULL_FS_REF) {
           return getNullString();
         }
-        return "\"" + escapeLt(cas.getStringForCode((int) this.addr)) + "\"";
+        String s = cas.getStringForCode((int) this.addr);
+        s = shortenString(s);
+        return "\"" + escapeLt(s) + "\"";
       }
       case ARRAY_FS: {
-        if (cas.getHeapValue((int) this.addr) == 0) {
+        if (cas.getHeapValue((int) this.addr) == LowLevelCAS.NULL_FS_REF) {
           return getNullString();
         }
         return "<font color=blue>" + getType().getName() + "</font>["
                 + cas.getArraySize((int) this.addr) + "]";
       }
       case STD_FS: {
-        if (cas.getHeapValue((int) this.addr) == 0) {
+        if (cas.getHeapValue((int) this.addr) == LowLevelCAS.NULL_FS_REF) {
           return getNullString();
         }
         return "<font color=blue>" + getType().getName() + "</font>";
@@ -255,6 +260,16 @@ class FSNode extends FSTreeNode {
     return null;
   }
 
+  private static final String shortenString(String s) {
+    if (s.length() <= maxStringLength) {
+      return s;
+    }
+    StringBuffer buf = new StringBuffer();
+    buf.append(s.substring(0, maxStringLength));
+    buf.append("...");
+    return buf.toString();
+  }
+  
   private static final String escapeLt(String s) {
     final int max = s.length();
     int i = 0;
