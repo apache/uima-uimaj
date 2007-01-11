@@ -30,9 +30,25 @@ under the License.
     specification by merging all the type system information from all the components
     referred to in the descriptor, and then uses this merged type system to create Java source
     files for classes that enable JCas access to the CAS. Java classes are not produced for the
-    built-in types, except for the <literal>uima.tcas.DocumentAnnotation</literal>
-    built-in type, which is the only built-in type that can be extended by users by adding
-    features to it.</para>
+    built-in types, since these classes are already provided by the UIMA SDK.  (An exception is
+    the built-in type <literal>uima.tcas.DocumentAnnotation</literal>, see the warning below.) </para>
+  
+  <warning><para>If the components have different definitions for the same type name,
+    JCasGen will show a warning.  It is possible to continue past this warning, in which case 
+    JCasGen will produce Java source files representing the merged types (that is, the
+    type definition that contains all of the features defined on that type by all of your
+    components).  However, it is not recommended to use this feature since it can make it 
+    difficult to combine your annotator with others. See <olink
+      targetdoc="&uima_docs_ref;"
+      targetptr="ugr.ref.jcas.merging_types_from_other_specs"/> for more information.
+  </para>
+  
+  <para>Also note that if your type system declares a custom version of the <literal>uima.tcas.DocumentAnnotation</literal> 
+    built-in type, then JCasGen will generate a Java source file for it.  If you do this, you need to be
+    aware of the issues discussed in 
+    <olink
+       targetdoc="&uima_docs_ref;"
+       targetptr="ugr.ref.jcas.documentannotation_issues"/>.</para></warning>
   
   <para>There are several versions of JCasGen. The basic version reads an XML descriptor
     which contains a type system descriptor, and generates the corresponding Java Class

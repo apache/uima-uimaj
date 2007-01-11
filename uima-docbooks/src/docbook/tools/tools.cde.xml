@@ -680,6 +680,17 @@ under the License.
       JCasGen runs on the fully-merged type system, consisting of the type specification
       plus any imported type system, plus (for aggregates) the merged type systems of all the
       components in an aggregate.</para>
+    
+  <warning><para>If the components of the aggregate have different definitions for the same 
+    type name, the CDE will show a warning.  It is possible to continue past this warning, 
+    in which case the CDE will produce Java source files representing the merged types (that is, the
+    type definition that contains all of the features defined on that type by all of your
+    components).  However, it is not recommended to use this feature since it can make it 
+    difficult to combine your annotator with others. See <olink
+      targetdoc="&uima_docs_ref;"
+      targetptr="ugr.ref.jcas.merging_types_from_other_specs"/> for more information.
+  </para></warning>    
+    
     <note><para>In addition to running automatically, you can manually run JCasGen on the
     fully merged type system by clicking the JCasGen button, or by selecting Run JCasGen from
     the UIMA pulldown menu: </para></note>

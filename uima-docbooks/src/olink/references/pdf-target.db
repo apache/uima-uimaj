@@ -379,10 +379,18 @@
          <div element="section" href="#ugr.ref.jcas.merging_types.aggregates_and_cpes" number="5.5.1" targetptr="ugr.ref.jcas.merging_types.aggregates_and_cpes">
             <ttl>Aggregate AEs and CPEs as sources of types</ttl>
             <xreftext>Section 5.5.1, “Aggregate AEs and CPEs as sources of types”</xreftext>
-            <div element="section" href="#ugr.ref.jcas.merging_types.jcasgen_support" number="5.5.1.1" targetptr="ugr.ref.jcas.merging_types.jcasgen_support">
-               <ttl>JCasGen support for type merging</ttl>
-               <xreftext>Section 5.5.1.1, “JCasGen support for type merging”</xreftext>
-            </div>
+         </div>
+         <div element="section" href="#ugr.ref.jcas.merging_types.jcasgen_support" number="5.5.2" targetptr="ugr.ref.jcas.merging_types.jcasgen_support">
+            <ttl>JCasGen support for type merging</ttl>
+            <xreftext>Section 5.5.2, “JCasGen support for type merging”</xreftext>
+         </div>
+         <div element="section" href="#ugr.ref.jcas.impact_of_type_merging_on_composability" number="5.5.3" targetptr="ugr.ref.jcas.impact_of_type_merging_on_composability">
+            <ttl>Impact of Type Merging on Composability of Annotators</ttl>
+            <xreftext>Section 5.5.3, “Impact of Type Merging on Composability of Annotators”</xreftext>
+         </div>
+         <div element="section" href="#ugr.ref.jcas.documentannotation_issues" number="5.5.4" targetptr="ugr.ref.jcas.documentannotation_issues">
+            <ttl>Adding Features to DocumentAnnotation</ttl>
+            <xreftext>Section 5.5.4, “Adding Features to DocumentAnnotation”</xreftext>
          </div>
       </div>
       <div element="section" href="#ugr.ref.jcas.using_within_an_annotator" number="5.6" targetptr="ugr.ref.jcas.using_within_an_annotator">
@@ -416,13 +424,9 @@
                <xreftext>Section 5.6.6.1, “Use of Class Loaders is optional”</xreftext>
             </div>
          </div>
-         <div element="section" href="#ugr.ref.jcas.documentannotation_issues" number="5.6.7" targetptr="ugr.ref.jcas.documentannotation_issues">
-            <ttl>Issues around DocumentAnnotation</ttl>
-            <xreftext>Section 5.6.7, “Issues around DocumentAnnotation”</xreftext>
-         </div>
-         <div element="section" href="#ugr.ref.jcas.accessing_jcas_objects_outside_uima_components" number="5.6.8" targetptr="ugr.ref.jcas.accessing_jcas_objects_outside_uima_components">
+         <div element="section" href="#ugr.ref.jcas.accessing_jcas_objects_outside_uima_components" number="5.6.7" targetptr="ugr.ref.jcas.accessing_jcas_objects_outside_uima_components">
             <ttl>Issues accessing JCas objects outside of UIMA Engine Components</ttl>
-            <xreftext>Section 5.6.8, “Issues accessing JCas objects outside of UIMA Engine Components”</xreftext>
+            <xreftext>Section 5.6.7, “Issues accessing JCas objects outside of UIMA Engine Components”</xreftext>
          </div>
       </div>
       <div element="section" href="#ugr.ref.jcas.setting_up_classpath" number="5.7" targetptr="ugr.ref.jcas.setting_up_classpath">

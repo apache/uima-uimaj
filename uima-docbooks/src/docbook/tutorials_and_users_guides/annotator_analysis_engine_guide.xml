@@ -1157,6 +1157,17 @@ public void initialize(UimaContext aContext)
         editable. The Type System of an Aggregate Analysis Engine is automatically
         computed by merging the Type Systems of all of its components.</para>
       
+      <warning><para>If the components have different definitions for the same type name,
+        The Component Descriptor Editor will show a warning.  It is possible to continue past
+        this warning, in which case your aggregate's type system will have a <quote>merged</quote>
+        type definition that contains all of the features defined on that type by all of your
+        components.  However, it is not recommended to use this feature in conjunction with JCAS,
+        since the JCAS Java Class definitions cannot be so easily merged.  See
+        <olink
+          targetdoc="&uima_docs_ref;"
+          targetptr="ugr.ref.jcas.merging_types_from_other_specs"/> for more information.
+      </para></warning>
+      
       <para>The Capabilities page is where you explicitly declare the aggregate Analysis
         Engine&apos;s inputs and outputs. Sofas and Languages are described later.
         

@@ -284,15 +284,11 @@ under the License.
     
     <para>The instance of this type can be accessed in two ways: using the
       <literal>getDocumentationAnnotation</literal> method on a CAS object, or using the
-      <literal>getDocumentationAnnotationFs</literal> method on a JCas object. There is
-      a deprecated JCas method with the same method name as the method used with the CAS object
-      (i.e., without the trailing <quote>Fs</quote>), but it is not safe to use in an
-      environment where class loaders are being used. The
-      <literal>getDocumentationAnnotationFs</literal> method returns an item of type
-      <literal>TOP</literal>, which you need to cast to
-      <literal>DocumentAnnotation</literal>. The JCas model for this is the Java type
-      <literal>DocumentAnnotation </literal>in the package
-      <literal>org.apache.uima.jcas.tcas</literal>.</para>
+      <literal>getDocumentationAnnotationFs</literal> method on a JCas object. There
+      are special considerations for using the DocumentAnnotation with JCas; see
+      <olink
+      targetdoc="&uima_docs_ref;"
+      targetptr="ugr.ref.jcas.documentannotation_issues"/>.</para>
     
     <para>There are also built-in types supporting lists, in the style of Lisp. Their use is
       not recommended, however, as this is not a particularly efficient representation. The

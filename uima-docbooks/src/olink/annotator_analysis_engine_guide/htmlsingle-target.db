@@ -1,0 +1,227 @@
+<div element="chapter" href="#ugr.tug.aae" number="1" targetptr="ugr.tug.aae">
+   <ttl>Annotator and Analysis Engine Developer's Guide</ttl>
+   <xreftext>Chapter 1, <i>Annotator and Analysis Engine Developer's Guide</i>
+   </xreftext>
+   <div element="section" href="#ugr.tug.aae.getting_started" number="1.1" targetptr="ugr.tug.aae.getting_started">
+      <ttl>Getting Started</ttl>
+      <xreftext>Section 1.1, “Getting Started”</xreftext>
+      <div element="section" href="#ugr.tug.aae.defining_types" number="1.1.1" targetptr="ugr.tug.aae.defining_types">
+         <ttl>Defining Types</ttl>
+         <xreftext>Section 1.1.1, “Defining Types”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tug.aae.generating_jcas_sources" number="1.1.2" targetptr="ugr.tug.aae.generating_jcas_sources">
+         <ttl>Generating Java Source Files for CAS Types</ttl>
+         <xreftext>Section 1.1.2, “Generating Java Source Files for CAS Types”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tug.aae.developing_annotator_code" number="1.1.3" targetptr="ugr.tug.aae.developing_annotator_code">
+         <ttl>Developing Your Annotator Code</ttl>
+         <xreftext>Section 1.1.3, “Developing Your Annotator Code”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tug.aae.creating_xml_descriptor" number="1.1.4" targetptr="ugr.tug.aae.creating_xml_descriptor">
+         <ttl>Creating the XML Descriptor</ttl>
+         <xreftext>Section 1.1.4, “Creating the XML Descriptor”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tug.aae.testing_your_annotator" number="1.1.5" targetptr="ugr.tug.aae.testing_your_annotator">
+         <ttl>Testing Your Annotator</ttl>
+         <xreftext>Section 1.1.5, “Testing Your Annotator”</xreftext>
+      </div>
+   </div>
+   <div element="section" href="#ugr.tug.aae.configuration_logging" number="1.2" targetptr="ugr.tug.aae.configuration_logging">
+      <ttl>Configuration and Logging</ttl>
+      <xreftext>Section 1.2, “Configuration and Logging”</xreftext>
+      <div element="section" href="#ugr.tug.aae.configuration_parameters" number="1.2.1" targetptr="ugr.tug.aae.configuration_parameters">
+         <ttl>Configuration Parameters</ttl>
+         <xreftext>Section 1.2.1, “Configuration Parameters”</xreftext>
+         <div element="section" href="#ugr.tug.aae.declaring_parameters_in_the_descriptor" number="1.2.1.1" targetptr="ugr.tug.aae.declaring_parameters_in_the_descriptor">
+            <ttl>Declaring Parameters in the Descriptor</ttl>
+            <xreftext>Section 1.2.1.1, “Declaring Parameters in the Descriptor”</xreftext>
+         </div>
+         <div element="section" href="#ugr.tug.aae.accessing_parameter_values_from_annotator" number="1.2.1.2" targetptr="ugr.tug.aae.accessing_parameter_values_from_annotator">
+            <ttl>Accessing Parameter Values from the Annotator Code</ttl>
+            <xreftext>Section 1.2.1.2, “Accessing Parameter Values from the Annotator Code”</xreftext>
+         </div>
+         <div element="section" href="#ugr.tug.aae.supporting_reconfiguration" number="1.2.1.3" targetptr="ugr.tug.aae.supporting_reconfiguration">
+            <ttl>Supporting Reconfiguration</ttl>
+            <xreftext>Section 1.2.1.3, “Supporting Reconfiguration”</xreftext>
+         </div>
+         <div element="section" href="#ugr.tug.aae.configuration_parameter_groups" number="1.2.1.4" targetptr="ugr.tug.aae.configuration_parameter_groups">
+            <ttl>Configuration parameter Groups</ttl>
+            <xreftext>Section 1.2.1.4, “Configuration parameter Groups”</xreftext>
+         </div>
+      </div>
+      <div element="section" href="#ugr.tug.aae.logging" number="1.2.2" targetptr="ugr.tug.aae.logging">
+         <ttl>Logging</ttl>
+         <xreftext>Section 1.2.2, “Logging”</xreftext>
+         <div element="section" href="#ugr.tug.aae.logging.configuring" number="1.2.2.1" targetptr="ugr.tug.aae.logging.configuring">
+            <ttl>Specifying the Logging Configuration</ttl>
+            <xreftext>Section 1.2.2.1, “Specifying the Logging Configuration”</xreftext>
+         </div>
+         <div element="section" href="#ugr.tug.aae.logging.setting_logging_levels" number="1.2.2.2" targetptr="ugr.tug.aae.logging.setting_logging_levels">
+            <ttl>Setting Logging Levels</ttl>
+            <xreftext>Section 1.2.2.2, “Setting Logging Levels”</xreftext>
+         </div>
+         <div element="section" href="#ugr.tug.aae.logging.output_format" number="1.2.2.3" targetptr="ugr.tug.aae.logging.output_format">
+            <ttl>Format of logging output</ttl>
+            <xreftext>Section 1.2.2.3, “Format of logging output”</xreftext>
+         </div>
+         <div element="section" href="#ugr.tug.aae.logging.meaning_of_severity_levels" number="1.2.2.4" targetptr="ugr.tug.aae.logging.meaning_of_severity_levels">
+            <ttl>Meaning of the logging severity levels</ttl>
+            <xreftext>Section 1.2.2.4, “Meaning of the logging severity levels”</xreftext>
+         </div>
+         <div element="section" href="#ugr.tug.aae.logging.using_outside_of_an_annotator" number="1.2.2.5" targetptr="ugr.tug.aae.logging.using_outside_of_an_annotator">
+            <ttl>Using the logger outside of an annotator</ttl>
+            <xreftext>Section 1.2.2.5, “Using the logger outside of an annotator”</xreftext>
+         </div>
+      </div>
+   </div>
+   <div element="section" href="#ugr.tug.aae.building_aggregates" number="1.3" targetptr="ugr.tug.aae.building_aggregates">
+      <ttl>Building Aggregate Analysis Engines</ttl>
+      <xreftext>Section 1.3, “Building Aggregate Analysis Engines”</xreftext>
+      <div element="section" href="#ugr.tug.aae.combining_annotators" number="1.3.1" targetptr="ugr.tug.aae.combining_annotators">
+         <ttl>Combining Annotators</ttl>
+         <xreftext>Section 1.3.1, “Combining Annotators”</xreftext>
+         <obj element="figure" href="#ugr.tug.aae.fig.combining_annotators" number="1.1" targetptr="ugr.tug.aae.fig.combining_annotators">
+            <ttl>Combining Annotators to form an Aggregate Analysis Engine</ttl>
+            <xreftext>Figure 1.1, “Combining Annotators to form an Aggregate Analysis Engine”</xreftext>
+         </obj>
+      </div>
+      <div element="section" href="#ugr.tug.aae.aaes_can_contain_cas_consumers" number="1.3.2" targetptr="ugr.tug.aae.aaes_can_contain_cas_consumers">
+         <ttl>AEs can also contain CAS Consumers</ttl>
+         <xreftext>Section 1.3.2, “AEs can also contain CAS Consumers”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tug.aae.reading_results_previous_annotators" number="1.3.3" targetptr="ugr.tug.aae.reading_results_previous_annotators">
+         <ttl>Reading the Results of Previous Annotators</ttl>
+         <xreftext>Section 1.3.3, “Reading the Results of Previous Annotators”</xreftext>
+         <obj element="figure" href="#ugr.tug.aae.fig.aggregate_for_meeting_annotator" number="1.2" targetptr="ugr.tug.aae.fig.aggregate_for_meeting_annotator">
+            <ttl>An Aggregate Analysis Engine where an internal component uses output from
+            previous engines</ttl>
+            <xreftext>Figure 1.2, “An Aggregate Analysis Engine where an internal component uses output from
+            previous engines”</xreftext>
+         </obj>
+      </div>
+   </div>
+   <div element="section" href="#ugr.tug.aae.other_examples" number="1.4" targetptr="ugr.tug.aae.other_examples">
+      <ttl>Other examples</ttl>
+      <xreftext>Section 1.4, “Other examples”</xreftext>
+   </div>
+   <div element="section" href="#ugr.tug.aae.additional_topics" number="1.5" targetptr="ugr.tug.aae.additional_topics">
+      <ttl>Additional Topics</ttl>
+      <xreftext>Section 1.5, “Additional Topics”</xreftext>
+      <div element="section" href="#ugr.tug.aae.contract_for_annotator_methods" number="1.5.1" targetptr="ugr.tug.aae.contract_for_annotator_methods">
+         <ttl>Contract: Framework called Annotator methods</ttl>
+         <xreftext>Section 1.5.1, “Contract: Framework called Annotator methods”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tug.aae.reporting_errors_from_annotators" number="1.5.2" targetptr="ugr.tug.aae.reporting_errors_from_annotators">
+         <ttl>Reporting errors from Annotators</ttl>
+         <xreftext>Section 1.5.2, “Reporting errors from Annotators”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tug.aae.throwing_exceptions_from_annotators" number="1.5.3" targetptr="ugr.tug.aae.throwing_exceptions_from_annotators">
+         <ttl>Throwing Exceptions from Annoatators</ttl>
+         <xreftext>Section 1.5.3, “Throwing Exceptions from Annoatators”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tug.aae.accessing_external_resource_files" number="1.5.4" targetptr="ugr.tug.aae.accessing_external_resource_files">
+         <ttl>Accessing External Resource Files</ttl>
+         <xreftext>Section 1.5.4, “Accessing External Resource Files”</xreftext>
+         <div element="section" href="#ugr.tug.aae.resources.declaring_dependencies" number="1.5.4.1" targetptr="ugr.tug.aae.resources.declaring_dependencies">
+            <ttl>Declaring Resource Dependencies</ttl>
+            <xreftext>Section 1.5.4.1, “Declaring Resource Dependencies”</xreftext>
+         </div>
+         <div element="section" href="#ugr.tug.aae.resources.accessing_from_uimacontext" number="1.5.4.2" targetptr="ugr.tug.aae.resources.accessing_from_uimacontext">
+            <ttl>Accessing the Resource from the UimaContext</ttl>
+            <xreftext>Section 1.5.4.2, “Accessing the Resource from the UimaContext”</xreftext>
+         </div>
+         <div element="section" href="#ugr.tug.aae.resources.declaring_and_bindings" number="1.5.4.3" targetptr="ugr.tug.aae.resources.declaring_and_bindings">
+            <ttl>Declaring Resources and Bindings</ttl>
+            <xreftext>Section 1.5.4.3, “Declaring Resources and Bindings”</xreftext>
+            <obj element="figure" href="#ugr.tug.aae.fig.external_resource_binding" number="1.3" targetptr="ugr.tug.aae.fig.external_resource_binding">
+               <ttl>External Resource Binding</ttl>
+               <xreftext>Figure 1.3, “External Resource Binding”</xreftext>
+            </obj>
+         </div>
+         <div element="section" href="#ugr.tug.aae.resources.sharing_among_annotators" number="1.5.4.4" targetptr="ugr.tug.aae.resources.sharing_among_annotators">
+            <ttl>Sharing Resources among Annotators</ttl>
+            <xreftext>Section 1.5.4.4, “Sharing Resources among Annotators”</xreftext>
+            <obj element="figure" href="#ugr.tug.aae.fig.sharing_common_resource" number="1.4" targetptr="ugr.tug.aae.fig.sharing_common_resource">
+               <ttl>Component engines of an aggregate share a common resource</ttl>
+               <xreftext>Figure 1.4, “Component engines of an aggregate share a common resource”</xreftext>
+            </obj>
+         </div>
+      </div>
+      <div element="section" href="#ugr.tug.aae.result_specification_setting" number="1.5.5" targetptr="ugr.tug.aae.result_specification_setting">
+         <ttl>Result Specifications</ttl>
+         <xreftext>Section 1.5.5, “Result Specifications”</xreftext>
+         <div element="section" href="#ugr.tug.aae.result_spec.default" number="1.5.5.1" targetptr="ugr.tug.aae.result_spec.default">
+            <ttl>Default ResultSpecification</ttl>
+            <xreftext>Section 1.5.5.1, “Default ResultSpecification”</xreftext>
+         </div>
+         <div element="section" href="#ugr.tug.aae.result_spec.passing_to_annotators" number="1.5.5.2" targetptr="ugr.tug.aae.result_spec.passing_to_annotators">
+            <ttl>Passing Result Specifications to Annotators</ttl>
+            <xreftext>Section 1.5.5.2, “Passing Result Specifications to Annotators”</xreftext>
+         </div>
+         <div element="section" href="#ugr.tug.aae.result_spec.aggregates" number="1.5.5.3" targetptr="ugr.tug.aae.result_spec.aggregates">
+            <ttl>Aggregates</ttl>
+            <xreftext>Section 1.5.5.3, “Aggregates”</xreftext>
+         </div>
+         <div element="section" href="#ugr.tug.aae.result_spec.aggregates.cpes" number="1.5.5.4" targetptr="ugr.tug.aae.result_spec.aggregates.cpes">
+            <ttl>Collection Proessing Engines</ttl>
+            <xreftext>Section 1.5.5.4, “Collection Proessing Engines”</xreftext>
+         </div>
+      </div>
+      <div element="section" href="#ugr.tug.aae.classpath_when_using_jcas" number="1.5.6" targetptr="ugr.tug.aae.classpath_when_using_jcas">
+         <ttl>Class path setup when using JCas</ttl>
+         <xreftext>Section 1.5.6, “Class path setup when using JCas”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tug.aae.using_shell_scripts" number="1.5.7" targetptr="ugr.tug.aae.using_shell_scripts">
+         <ttl>Using the Shell Scripts</ttl>
+         <xreftext>Section 1.5.7, “Using the Shell Scripts”</xreftext>
+         <obj element="table" href="#ugr.aae.tbl.env_vars_used_by_shell_scripts" number="1.1" targetptr="ugr.aae.tbl.env_vars_used_by_shell_scripts">
+            <ttl>Environment variables used by the shell scripts</ttl>
+            <xreftext>Table 1.1, “Environment variables used by the shell scripts”</xreftext>
+         </obj>
+      </div>
+   </div>
+   <div element="section" href="#ugr.tug.aae.common_pitfalls" number="1.6" targetptr="ugr.tug.aae.common_pitfalls">
+      <ttl>Common Pitfalls</ttl>
+      <xreftext>Section 1.6, “Common Pitfalls”</xreftext>
+   </div>
+   <div element="section" href="#ugr.tug.aae.viewing_UIMA_objects_in_eclipse_debugger" number="1.7" targetptr="ugr.tug.aae.viewing_UIMA_objects_in_eclipse_debugger">
+      <ttl>Viewing UIMA objects in the Eclipse debugger</ttl>
+      <xreftext>Section 1.7, “Viewing UIMA objects in the Eclipse debugger”</xreftext>
+   </div>
+   <div element="section" href="#ugr.tug.aae.xml_intro_ae_descriptor" number="1.8" targetptr="ugr.tug.aae.xml_intro_ae_descriptor">
+      <ttl>Introduction to Analysis Engine Descriptor XML Syntax</ttl>
+      <xreftext>Section 1.8, “Introduction to Analysis Engine Descriptor XML Syntax”</xreftext>
+      <div element="section" href="#ugr.tug.aae.header_annotator_class_identification" number="1.8.1" targetptr="ugr.tug.aae.header_annotator_class_identification">
+         <ttl>Header and Annotator Class Identification</ttl>
+         <xreftext>Section 1.8.1, “Header and Annotator Class Identification”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tug.aae.xml_intro_simple_metadata_attributes" number="1.8.2" targetptr="ugr.tug.aae.xml_intro_simple_metadata_attributes">
+         <ttl>Simple Metadata Attributes</ttl>
+         <xreftext>Section 1.8.2, “Simple Metadata Attributes”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tug.aae.xml_intro_type_system_definition" number="1.8.3" targetptr="ugr.tug.aae.xml_intro_type_system_definition">
+         <ttl>Type System Definition</ttl>
+         <xreftext>Section 1.8.3, “Type System Definition”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tug.aae.xml_intro_capabilities" number="1.8.4" targetptr="ugr.tug.aae.xml_intro_capabilities">
+         <ttl>Capabilities</ttl>
+         <xreftext>Section 1.8.4, “Capabilities”</xreftext>
+      </div>
+      <div element="section" href="#ugr.tug.aae.xml_intro.configuration_parameters" number="1.8.5" targetptr="ugr.tug.aae.xml_intro.configuration_parameters">
+         <ttl>Configuration Parameters (Optional)</ttl>
+         <xreftext>Section 1.8.5, “Configuration Parameters (Optional)”</xreftext>
+         <div element="section" href="#ugr.tug.aae.xml_intro.configuration_parameters_declarations" number="1.8.5.1" targetptr="ugr.tug.aae.xml_intro.configuration_parameters_declarations">
+            <ttl>Configuration Parameter Declarations</ttl>
+            <xreftext>Section 1.8.5.1, “Configuration Parameter Declarations”</xreftext>
+         </div>
+         <div element="section" href="#ugr.tug.aae.xml_intro_configuration_parameter_settings" number="1.8.5.2" targetptr="ugr.tug.aae.xml_intro_configuration_parameter_settings">
+            <ttl>Configuration Parameter Settings</ttl>
+            <xreftext>Section 1.8.5.2, “Configuration Parameter Settings”</xreftext>
+         </div>
+         <div element="section" href="#ugr.tug.aae.xml_intro.aggregate" number="1.8.5.3" targetptr="ugr.tug.aae.xml_intro.aggregate">
+            <ttl>Aggregate Analysis Engine Descriptor</ttl>
+            <xreftext>Section 1.8.5.3, “Aggregate Analysis Engine Descriptor”</xreftext>
+         </div>
+      </div>
+   </div>
+</div>
