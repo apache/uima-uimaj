@@ -311,21 +311,25 @@
       <div element="section" href="#ugr.ref.cas.indexes_and_iterators" number="4.7" targetptr="ugr.ref.cas.indexes_and_iterators">
          <ttl>Indexes and Iterators</ttl>
          <xreftext>Section 4.7, “Indexes and Iterators”</xreftext>
-         <div element="section" href="#ugr.ref.cas.index.adding_to_indexes" number="4.7.1" targetptr="ugr.ref.cas.index.adding_to_indexes">
+         <div element="section" href="#ugr.ref.cas.index.built_in_indexes" number="4.7.1" targetptr="ugr.ref.cas.index.built_in_indexes">
+            <ttl>Built-in Indexes</ttl>
+            <xreftext>Section 4.7.1, “Built-in Indexes”</xreftext>
+         </div>
+         <div element="section" href="#ugr.ref.cas.index.adding_to_indexes" number="4.7.2" targetptr="ugr.ref.cas.index.adding_to_indexes">
             <ttl>Adding Feature Structures to the Indexes</ttl>
-            <xreftext>Section 4.7.1, “Adding Feature Structures to the Indexes”</xreftext>
+            <xreftext>Section 4.7.2, “Adding Feature Structures to the Indexes”</xreftext>
          </div>
-         <div element="section" href="#ugr.ref.cas.index.iterators" number="4.7.2" targetptr="ugr.ref.cas.index.iterators">
+         <div element="section" href="#ugr.ref.cas.index.iterators" number="4.7.3" targetptr="ugr.ref.cas.index.iterators">
             <ttl>Iterators</ttl>
-            <xreftext>Section 4.7.2, “Iterators”</xreftext>
+            <xreftext>Section 4.7.3, “Iterators”</xreftext>
          </div>
-         <div element="section" href="#ugr.ref.cas.index.annotation_index" number="4.7.3" targetptr="ugr.ref.cas.index.annotation_index">
+         <div element="section" href="#ugr.ref.cas.index.annotation_index" number="4.7.4" targetptr="ugr.ref.cas.index.annotation_index">
             <ttl>Special iterators for Annotation types</ttl>
-            <xreftext>Section 4.7.3, “Special iterators for Annotation types”</xreftext>
+            <xreftext>Section 4.7.4, “Special iterators for Annotation types”</xreftext>
          </div>
-         <div element="section" href="#ugr.ref.cas.index.constraints_and_filtered_iterators" number="4.7.4" targetptr="ugr.ref.cas.index.constraints_and_filtered_iterators">
+         <div element="section" href="#ugr.ref.cas.index.constraints_and_filtered_iterators" number="4.7.5" targetptr="ugr.ref.cas.index.constraints_and_filtered_iterators">
             <ttl>Constraints and Filtered iterators</ttl>
-            <xreftext>Section 4.7.4, “Constraints and Filtered iterators”</xreftext>
+            <xreftext>Section 4.7.5, “Constraints and Filtered iterators”</xreftext>
          </div>
       </div>
       <div element="section" href="#ugr.ref.cas.guide_to_javadocs" number="4.8" targetptr="ugr.ref.cas.guide_to_javadocs">
