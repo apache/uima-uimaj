@@ -30,6 +30,7 @@ import java.util.Iterator;
 
 import junit.framework.TestCase;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
@@ -82,9 +83,9 @@ public class SerializationReinitTest extends TestCase {
 
   public static final String[] STR_1_VALS = { "test1", "test2" };
 
-  private TCASMgr casMgr;
+  private CASMgr casMgr;
 
-  private TCAS cas;
+  private CAS cas;
 
   private Type wordType;
 
@@ -114,7 +115,7 @@ public class SerializationReinitTest extends TestCase {
   public void setUp() throws Exception {
     super.setUp();
     casMgr = initCAS();
-    cas = casMgr.getTCAS();
+    cas = (CASImpl)casMgr;
 
     TypeSystem ts = cas.getTypeSystem();
     wordType = ts.getType(WORD_TYPE);
@@ -146,7 +147,7 @@ public class SerializationReinitTest extends TestCase {
   }
 
   // Initialize the first CAS.
-  private static TCASMgr initCAS() throws TCASException {
+  private static CASMgr initCAS() throws TCASException {
     // Create an initial CASMgr from the factory.
     // CASMgr cas = CASFactory.createCAS();
     // assert(tsa != null);
@@ -189,7 +190,7 @@ public class SerializationReinitTest extends TestCase {
     // assert(cas.getIndexRepositoryMgr().isCommitted());
 
     // Create the default text Sofa and return TCAS view
-    return (TCASMgr) aCas.getCAS().getTCAS();
+    return (CASMgr) aCas.getCAS().getTCAS();
   }
 
   public void testReset() {
@@ -389,7 +390,7 @@ public class SerializationReinitTest extends TestCase {
       for (int i = 0; i < numDocs && docCount < max; i++) {
         // System.out.println("Processing document: " + i);
         // Set document text in first CAS.
-        casMgr.setDocumentText((String) docs.get(i));
+        cas.setDocumentText((String) docs.get(i));
 
         tokenize();
         numTok = cas.getAnnotationIndex(tokenType).size();
@@ -398,7 +399,7 @@ public class SerializationReinitTest extends TestCase {
 
         // System.out.println("Serializing...");
         cs = Serialization.serializeCAS(cas);
-        cas = Serialization.createTCAS(casMgr, cs);
+        cas = Serialization.createCAS(casMgr, cs);
 
         assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
 
@@ -409,14 +410,14 @@ public class SerializationReinitTest extends TestCase {
 
         // System.out.println("Serializing...");
         cs = Serialization.serializeCAS(cas);
-        cas = Serialization.createTCAS(casMgr, cs);
+        cas = Serialization.createCAS(casMgr, cs);
 
         assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
         assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());
 
         // System.out.println("Serializing...");
         cs = Serialization.serializeCAS(cas);
-        cas = Serialization.createTCAS(casMgr, cs);
+        cas = Serialization.createCAS(casMgr, cs);
 
         assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
         assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());
@@ -466,7 +467,7 @@ public class SerializationReinitTest extends TestCase {
       for (int i = 0; i < numDocs && docCount < max; i++) {
         // System.out.println("Processing document: " + i);
         // Set document text in first CAS.
-        casMgr.setDocumentText((String) docs.get(i));
+        cas.setDocumentText((String) docs.get(i));
 
         tokenize();
         numTok = cas.getAnnotationIndex(tokenType).size();
@@ -480,7 +481,7 @@ public class SerializationReinitTest extends TestCase {
         CASMgr realCasMgr = CASFactory.createCAS();
         realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
         cas = ((CASImpl) realCasMgr).getTCAS();
-        casMgr = (TCASMgr) cas;
+        casMgr = (CASMgr) cas;
 
         assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
 
@@ -496,7 +497,7 @@ public class SerializationReinitTest extends TestCase {
         realCasMgr = CASFactory.createCAS();
         realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
         cas = ((CASImpl) realCasMgr).getTCAS();
-        casMgr = (TCASMgr) cas;
+        casMgr = (CASMgr) cas;
 
         assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
         assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());
@@ -508,7 +509,7 @@ public class SerializationReinitTest extends TestCase {
         realCasMgr = CASFactory.createCAS();
         realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
         cas = ((CASImpl) realCasMgr).getTCAS();
-        casMgr = (TCASMgr) cas;
+        casMgr = (CASMgr) cas;
 
         assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
         assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());

@@ -461,7 +461,7 @@ public class XCASDeserializer {
           // add indexRepo for views other than the initial view
           indexRepositories.add(cas.getSofaIndexRepository(sofa));
         }
-        ((TCASImpl) view).registerView(sofa);
+        ((CASImpl) view).registerView(sofa);
         tcasInstances.add(view);
       }
       FSInfo fsInfo = new FSInfo(addr, indexRep);
@@ -692,7 +692,7 @@ public class XCASDeserializer {
         case DOC_TEXT_STATE: {
           // Assume old style TCAS with one text Sofa
           SofaFS newSofa = cas.createInitialSofa("text");
-          TCASImpl tcas = (TCASImpl) cas.getInitialView();
+          CASImpl tcas = (CASImpl) cas.getInitialView();
           tcas.registerView(newSofa);
           // Set the document text without creating a documentAnnotation
           tcas.setDocTextFromDeserializtion(buffer.toString());
@@ -781,7 +781,7 @@ public class XCASDeserializer {
       }
 
       for (int i = 0; i < tcasInstances.size(); i++) {
-        ((TCASImpl) tcasInstances.get(i)).updateDocumentAnnotation();
+        ((CASImpl) tcasInstances.get(i)).updateDocumentAnnotation();
       }
     }
 

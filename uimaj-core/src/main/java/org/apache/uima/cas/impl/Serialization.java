@@ -58,7 +58,7 @@ public class Serialization {
   }
 
   public static void deserializeTCASComplete(CASCompleteSerializer casCompSer, CASMgr casMgr) {
-    ((TCASImpl) casMgr).reinit(casCompSer);
+    ((CASImpl) casMgr).reinit(casCompSer);
   }
 
   public static CASMgr createCASMgr(CASMgrSerializer ser) {
@@ -75,7 +75,7 @@ public class Serialization {
   }
 
   public static TCAS createTCAS(TCASMgr tcasMgr, CASSerializer casSer) {
-    ((TCASImpl) tcasMgr).reinit(casSer);
+    ((CASImpl) tcasMgr).reinit(casSer);
     return tcasMgr.getTCAS();
   }
 

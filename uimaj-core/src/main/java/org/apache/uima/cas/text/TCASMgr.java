@@ -25,11 +25,11 @@ import org.apache.uima.cas.admin.CASMgr;
  * Collect admin functionality for TCAS.
  */
 public interface TCASMgr extends CASMgr {
-  /**
-   * @deprecated no longer used, will throw exception if called.
-   * @throws TCASException
-   */
-  void initTCASIndexes() throws TCASException;
+//  /**
+//   * @deprecated no longer used, will throw exception if called.
+//   * @throws TCASException
+//   */
+//  void initTCASIndexes() throws TCASException;
 
   /**
    * Set the document text.
@@ -42,13 +42,13 @@ public interface TCASMgr extends CASMgr {
    */
   void setDocumentText(String text) throws TCASRuntimeException;
 
-  /**
-   * Allow or disallow setting the text on the TCAS object corresponding to this manager.
-   * 
-   * @param flag
-   *          If the text can be set on the corresponding TCAS object.
-   */
-  void enableSetText(boolean flag);
+//  /**
+//   * Allow or disallow setting the text on the TCAS object corresponding to this manager.
+//   * 
+//   * @param flag
+//   *          If the text can be set on the corresponding TCAS object.
+//   */
+//  void enableSetText(boolean flag);
 
   /**
    * Return the TCAS corresponding to this CASMgr instance. This handle will remain valid, even
@@ -58,7 +58,7 @@ public interface TCASMgr extends CASMgr {
    * @see org.apache.uima.cas.admin.FSIndexRepositoryMgr
    */
   TCAS getTCAS();
-
-  void setTCAS(TCAS tcas);
+//
+//  void setTCAS(TCAS tcas);
 
 }

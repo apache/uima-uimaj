@@ -29,7 +29,6 @@ import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.SofaID;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FeatureImpl;
-import org.apache.uima.cas.impl.TCASImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.impl.JCasImpl;
 
@@ -166,7 +165,7 @@ public class Sofa extends TOP implements SofaFS {
     super.setStringValue(stringFeat, aString);
     // create or update the document annotation for this Sofa's view
     CAS view = this.getCASImpl().getView(this);
-    ((TCASImpl) view).updateDocumentAnnotation();
+    ((CASImpl) view).updateDocumentAnnotation();
   }
 
   /**

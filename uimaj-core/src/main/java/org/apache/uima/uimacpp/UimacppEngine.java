@@ -33,7 +33,6 @@ import org.apache.uima.cas.impl.CASMgrSerializer;
 import org.apache.uima.cas.impl.CASSerializer;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.Serialization;
-import org.apache.uima.cas.impl.TCASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.text.TCAS;

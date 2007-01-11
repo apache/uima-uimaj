@@ -37,7 +37,6 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.TCAS;
-import org.apache.uima.cas.text.TCASMgr;
 import org.apache.uima.cas.text.TCASRuntimeException;
 
 /**
@@ -153,19 +152,9 @@ public class FilteredIteratorTest extends TestCase {
     } catch (TCASRuntimeException e) {
       assertTrue(false);
     }
-    ((TCASMgr) cas).enableSetText(false);
-    boolean exc = false;
-    try {
-      cas.setDocumentText("A test.");
-    } catch (TCASRuntimeException e) {
-      assertTrue(e.getError() == TCASRuntimeException.SET_DOC_TEXT_DISABLED);
-      exc = true;
-    }
-    assertTrue(exc);
-    ((TCASMgr) cas).enableSetText(true);
 
     try {
-      ((TCASMgr) cas).setDocumentText("This is a test.");
+      cas.setDocumentText("This is a test.");
     } catch (TCASRuntimeException e) {
       assertTrue(false);
     }
@@ -225,19 +214,9 @@ public class FilteredIteratorTest extends TestCase {
     } catch (TCASRuntimeException e) {
       assertTrue(false);
     }
-    ((TCASMgr) cas).enableSetText(false);
-    boolean exc = false;
-    try {
-      cas.setDocumentText("A test.");
-    } catch (TCASRuntimeException e) {
-      assertTrue(e.getError() == TCASRuntimeException.SET_DOC_TEXT_DISABLED);
-      exc = true;
-    }
-    assertTrue(exc);
-    ((TCASMgr) cas).enableSetText(true);
 
     try {
-      ((TCASMgr) cas).setDocumentText("This is a test.");
+      cas.setDocumentText("This is a test.");
     } catch (TCASRuntimeException e) {
       assertTrue(false);
     }
@@ -302,7 +281,7 @@ public class FilteredIteratorTest extends TestCase {
 
   public void testIterator2() {
     try {
-      ((TCASMgr) cas).setDocumentText("This is a test with the word \"the\" in it.");
+      cas.setDocumentText("This is a test with the word \"the\" in it.");
 
       // create token and sentence annotations
       String type1 = "type1";
@@ -374,7 +353,7 @@ public class FilteredIteratorTest extends TestCase {
 
   public void testIterator2a() {
     try {
-      ((TCASMgr) cas).setDocumentText("This is a test with the word \"the\" in it.");
+      cas.setDocumentText("This is a test with the word \"the\" in it.");
 
       // create token and sentence annotations
       String type1 = "type1";
@@ -445,7 +424,7 @@ public class FilteredIteratorTest extends TestCase {
 
   public void testIterator2b() {
     try {
-      ((TCASMgr) cas).setDocumentText("This is a test with the word \"the\" in it.");
+      cas.setDocumentText("This is a test with the word \"the\" in it.");
 
       FeatureStructure wordFS = this.cas.createFS(wordType);
       FeatureStructure sepFS = this.cas.createFS(sepType);
