@@ -225,7 +225,7 @@ public class TypeOrderTest extends TestCase {
    */
   public void testMain() throws Exception {
 
-    File refFile = JUnitExtension.getFile("CASTests/CasTypeOderTestRef.txt");
+    File refFile = JUnitExtension.getFile("CASTests/CasTypeOrderTestRef.txt");
     Assert.assertNotNull(refFile);
     File outputFile = new File(JUnitExtension.getFile("CASTests"), "CasTypeOderTest_testouput.txt");
     OutputStreamWriter fileWriter = new OutputStreamWriter(new FileOutputStream(
