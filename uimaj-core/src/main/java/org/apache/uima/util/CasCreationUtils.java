@@ -165,13 +165,15 @@ public class CasCreationUtils {
    * Creates a new CAS instance for a collection of CAS Processors. This method correctly handles
    * aggregate as well as primitive analysis engines
    * <p>
-   * If you pass this method objects of type {@link AnalysisEngineDescription}, 
-   * {@link CollectionReaderDescription}, {@link CasInitializerDescription}, or {@link CasConsumerDescription},
-   * it will not instantiate the components.  It will just extract the type system information from the
-   * descriptor.  For any other kind of {@link ResourceSpecifier}, it will call
-   * {@link UIMAFramework#produceResource(org.apache.uima.resource.ResourceSpecifier, Map)}.  For example,
-   * if a {@link URISpecifier} is passed, a remote connection will be established and the service will be
-   * queries for its metadata.  An exception will be thrown if the connection can not be opened.
+   * If you pass this method objects of type {@link AnalysisEngineDescription},
+   * {@link CollectionReaderDescription}, {@link CasInitializerDescription}, or
+   * {@link CasConsumerDescription}, it will not instantiate the components. It will just extract
+   * the type system information from the descriptor. For any other kind of
+   * {@link ResourceSpecifier}, it will call
+   * {@link UIMAFramework#produceResource(org.apache.uima.resource.ResourceSpecifier, Map)}. For
+   * example, if a {@link URISpecifier} is passed, a remote connection will be established and the
+   * service will be queries for its metadata. An exception will be thrown if the connection can not
+   * be opened.
    * 
    * @param aComponentDescriptionsOrMetaData
    *          a collection of {@link ResourceSpecifier}, {@link ProcessingResourceMetaData},
@@ -193,13 +195,15 @@ public class CasCreationUtils {
    * Creates a new CAS instance for a collection of CAS Processors. This method correctly handles
    * aggregate as well as primitive analysis engines
    * <p>
-   * If you pass this method objects of type {@link AnalysisEngineDescription}, 
-   * {@link CollectionReaderDescription}, {@link CasInitializerDescription}, or {@link CasConsumerDescription},
-   * it will not instantiate the components.  It will just extract the type system information from the
-   * descriptor.  For any other kind of {@link ResourceSpecifier}, it will call
-   * {@link UIMAFramework#produceResource(org.apache.uima.resource.ResourceSpecifier, Map)}.  For example,
-   * if a {@link URISpecifier} is passed, a remote connection will be established and the service will be
-   * queries for its metadata.  An exception will be thrown if the connection can not be opened.
+   * If you pass this method objects of type {@link AnalysisEngineDescription},
+   * {@link CollectionReaderDescription}, {@link CasInitializerDescription}, or
+   * {@link CasConsumerDescription}, it will not instantiate the components. It will just extract
+   * the type system information from the descriptor. For any other kind of
+   * {@link ResourceSpecifier}, it will call
+   * {@link UIMAFramework#produceResource(org.apache.uima.resource.ResourceSpecifier, Map)}. For
+   * example, if a {@link URISpecifier} is passed, a remote connection will be established and the
+   * service will be queries for its metadata. An exception will be thrown if the connection can not
+   * be opened.
    * 
    * @param aComponentDescriptionsOrMetaData
    *          a collection of {@link ResourceSpecifier}, {@link ProcessingResourceMetaData},
@@ -223,14 +227,16 @@ public class CasCreationUtils {
   /**
    * Creates a new CAS instance for a collection of CAS Processors. This method correctly handles
    * aggregate as well as primitive analysis engines
-   *  <p>
-   * If you pass this method objects of type {@link AnalysisEngineDescription}, 
-   * {@link CollectionReaderDescription}, {@link CasInitializerDescription}, or {@link CasConsumerDescription},
-   * it will not instantiate the components.  It will just extract the type system information from the
-   * descriptor.  For any other kind of {@link ResourceSpecifier}, it will call
-   * {@link UIMAFramework#produceResource(org.apache.uima.resource.ResourceSpecifier, Map)}.  For example,
-   * if a {@link URISpecifier} is passed, a remote connection will be established and the service will be
-   * queries for its metadata.  An exception will be thrown if the connection can not be opened.
+   * <p>
+   * If you pass this method objects of type {@link AnalysisEngineDescription},
+   * {@link CollectionReaderDescription}, {@link CasInitializerDescription}, or
+   * {@link CasConsumerDescription}, it will not instantiate the components. It will just extract
+   * the type system information from the descriptor. For any other kind of
+   * {@link ResourceSpecifier}, it will call
+   * {@link UIMAFramework#produceResource(org.apache.uima.resource.ResourceSpecifier, Map)}. For
+   * example, if a {@link URISpecifier} is passed, a remote connection will be established and the
+   * service will be queries for its metadata. An exception will be thrown if the connection can not
+   * be opened.
    * 
    * @param aComponentDescriptionsOrMetaData
    *          a collection of {@link ResourceSpecifier}, {@link ProcessingResourceMetaData},
@@ -351,13 +357,15 @@ public class CasCreationUtils {
    * system. Using this method allows several CASes to all share the exact same type system object.
    * This method correctly handles aggregate as well as primitive analysis engines.
    * <p>
-   * If you pass this method objects of type {@link AnalysisEngineDescription}, 
-   * {@link CollectionReaderDescription}, {@link CasInitializerDescription}, or {@link CasConsumerDescription},
-   * it will not instantiate the components.  It will just extract the type system information from the
-   * descriptor.  For any other kind of {@link ResourceSpecifier}, it will call
-   * {@link UIMAFramework#produceResource(org.apache.uima.resource.ResourceSpecifier, Map)}.  For example,
-   * if a {@link URISpecifier} is passed, a remote connection will be established and the service will be
-   * queries for its metadata.  An exception will be thrown if the connection can not be opened.
+   * If you pass this method objects of type {@link AnalysisEngineDescription},
+   * {@link CollectionReaderDescription}, {@link CasInitializerDescription}, or
+   * {@link CasConsumerDescription}, it will not instantiate the components. It will just extract
+   * the type system information from the descriptor. For any other kind of
+   * {@link ResourceSpecifier}, it will call
+   * {@link UIMAFramework#produceResource(org.apache.uima.resource.ResourceSpecifier, Map)}. For
+   * example, if a {@link URISpecifier} is passed, a remote connection will be established and the
+   * service will be queries for its metadata. An exception will be thrown if the connection can not
+   * be opened.
    * 
    * @param aComponentDescriptionsOrMetaData
    *          a collection of {@link ResourceSpecifier}, {@link ProcessingResourceMetaData},
@@ -385,13 +393,15 @@ public class CasCreationUtils {
    * system. Using this method allows several CASes to all share the exact same type system object.
    * This method correctly handles aggregate as well as primitive analysis engines.
    * <p>
-   * If you pass this method objects of type {@link AnalysisEngineDescription}, 
-   * {@link CollectionReaderDescription}, {@link CasInitializerDescription}, or {@link CasConsumerDescription},
-   * it will not instantiate the components.  It will just extract the type system information from the
-   * descriptor.  For any other kind of {@link ResourceSpecifier}, it will call
-   * {@link UIMAFramework#produceResource(org.apache.uima.resource.ResourceSpecifier, Map)}.  For example,
-   * if a {@link URISpecifier} is passed, a remote connection will be established and the service will be
-   * queries for its metadata.  An exception will be thrown if the connection can not be opened.
+   * If you pass this method objects of type {@link AnalysisEngineDescription},
+   * {@link CollectionReaderDescription}, {@link CasInitializerDescription}, or
+   * {@link CasConsumerDescription}, it will not instantiate the components. It will just extract
+   * the type system information from the descriptor. For any other kind of
+   * {@link ResourceSpecifier}, it will call
+   * {@link UIMAFramework#produceResource(org.apache.uima.resource.ResourceSpecifier, Map)}. For
+   * example, if a {@link URISpecifier} is passed, a remote connection will be established and the
+   * service will be queries for its metadata. An exception will be thrown if the connection can not
+   * be opened.
    * 
    * @param aComponentDescriptionsOrMetaData
    *          a collection of {@link ResourceSpecifier}, {@link ProcessingResourceMetaData},
@@ -1197,6 +1207,38 @@ public class CasCreationUtils {
    */
   public static TypeSystemDescription mergeTypeSystems(Collection aTypeSystems,
           ResourceManager aResourceManager) throws ResourceInitializationException {
+    return mergeTypeSystems(aTypeSystems, aResourceManager, null);
+  }
+
+  /**
+   * Merges several TypeSystemDescriptions into one. Also resolves imports in the
+   * TypeSystemDescription objects.
+   * <p>
+   * This version of this method takes an argument <code>aOutputMergedTypeNames</code>, to which
+   * this method will add the names of any types whose definitions have been merged from multiple
+   * non-identical sources. That is, types that are declared more than once, with different (but
+   * compatible) sets of features in each declaration, or with different (but compatible)
+   * supertypes.
+   * 
+   * @param aTypeSystems
+   *          a collection of TypeSystems to be merged
+   * @param aResourceManager
+   *          Resource Manager to use to locate type systems imported by name
+   * @param aOutputMergedTypeNames
+   *          A Collection to which this method will add the names of any types whose definitions
+   *          were merged from multiple non-identical sources. The same type name may be added more
+   *          than once, so if you want to eliminate duplicates, pass a Set, not a List. You may
+   *          pass null if you are not interested in this information.
+   * 
+   * @return a new TypeSystemDescription that is the result of merging all of the type systems
+   *         together
+   * 
+   * @throws ResourceInitializationException
+   *           if an incompatibiliy exists or if an import could not be resolved
+   */
+  public static TypeSystemDescription mergeTypeSystems(Collection aTypeSystems,
+          ResourceManager aResourceManager, Collection aOutputMergedTypeNames)
+          throws ResourceInitializationException {
     // create the type system into which we are merging
     TypeSystemDescription result = UIMAFramework.getResourceSpecifierFactory()
             .createTypeSystemDescription();
@@ -1226,6 +1268,10 @@ public class CasCreationUtils {
               existingType.setAllowedValues(types[i].getAllowedValues());
               existingType.setSourceUrl(types[i].getSourceUrl());
               typeNameMap.put(types[i].getName(), existingType);
+              FeatureDescription[] features = types[i].getFeatures();
+              if (features != null) {
+                mergeFeatures(existingType, types[i].getFeatures());
+              }
             } else {
               // type already existed - check that supertypes are compatible
               String supertypeName = types[i].getSupertypeName();
@@ -1236,9 +1282,15 @@ public class CasCreationUtils {
                   // existing supertype subsumes newly specified supertype -
                   // reset supertype to the new, more specific type
                   existingType.setSupertypeName(supertypeName);
+                  if (aOutputMergedTypeNames != null) {
+                    aOutputMergedTypeNames.add(typeName);
+                  }
                 } else if (subsumes(supertypeName, existingSupertypeName, typeNameMap)) {
-                  // newly specified supertype subsumes old type,
-                  // this is OK and we don't need to do anything
+                  // newly specified supertype subsumes old type, this is OK and we don't
+                  // need to do anything except report this
+                  if (aOutputMergedTypeNames != null) {
+                    aOutputMergedTypeNames.add(typeName);
+                  }
                 } else {
                   // error
                   throw new ResourceInitializationException(
@@ -1248,11 +1300,18 @@ public class CasCreationUtils {
                 }
 
               }
-            }
-            // merge features
-            FeatureDescription[] features = types[i].getFeatures();
-            if (features != null) {
-              mergeFeatures(existingType, types[i].getFeatures());
+              // merge features
+              int prevNumFeatures = existingType.getFeatures().length;
+              FeatureDescription[] features = types[i].getFeatures();
+              if (features != null) {
+                mergeFeatures(existingType, types[i].getFeatures());
+                // if feature-merged occurred, the number of features on the type will have
+                // changed. Report this by adding to the aOutputMergedTypeNames collection.
+                if (aOutputMergedTypeNames != null
+                        && existingType.getFeatures().length != prevNumFeatures) {
+                  aOutputMergedTypeNames.add(typeName);
+                }
+              }
             }
           }
         }
@@ -1283,6 +1342,12 @@ public class CasCreationUtils {
   /**
    * Merges the Type Systems of each component within an aggregate Analysis Engine, producing a
    * single combined Type System.
+   * <p>
+   * This version of this method takes an argument <code>aOutputMergedTypeNames</code>, to which
+   * this method will add the names of any types whose definitions have been merged from multiple
+   * non-identical sources. That is, types that are declared more than once, with different (but
+   * compatible) sets of features in each declaration, or with different (but compatible)
+   * supertypes.
    * 
    * @param aAggregateDescription
    *          an aggregate Analysis Engine description
@@ -1298,6 +1363,32 @@ public class CasCreationUtils {
   public static TypeSystemDescription mergeDelegateAnalysisEngineTypeSystems(
           AnalysisEngineDescription aAggregateDescription, ResourceManager aResourceManager)
           throws ResourceInitializationException {
+    return mergeDelegateAnalysisEngineTypeSystems(aAggregateDescription, aResourceManager, null);
+  }
+
+  /**
+   * Merges the Type Systems of each component within an aggregate Analysis Engine, producing a
+   * single combined Type System.
+   * 
+   * @param aAggregateDescription
+   *          an aggregate Analysis Engine description
+   * @param aResourceManager
+   *          ResourceManager instance used to resolve imports
+   * @param aOutputMergedTypeNames
+   *          A Collection to which this method will add the names of any types whose definitions
+   *          were merged from multiple non-identical sources. The same type name may be added more
+   *          than once, so if you want to eliminate duplicates, pass a Set, not a List. You may
+   *          pass null if you are not interested in this information.
+   * 
+   * @return a new TypeSystemDescription that is the result of merging all of the delegate AE type
+   *         systems together
+   * 
+   * @throws ResourceInitializationException
+   *           if an incompatibiliy exists or if an import could not be resolved
+   */
+  public static TypeSystemDescription mergeDelegateAnalysisEngineTypeSystems(
+          AnalysisEngineDescription aAggregateDescription, ResourceManager aResourceManager,
+          Collection aOutputMergedTypeNames) throws ResourceInitializationException {
     // expand the aggregate AE description into the individual delegates
     ArrayList l = new ArrayList();
     l.add(aAggregateDescription);
@@ -1311,7 +1402,7 @@ public class CasCreationUtils {
       if (md.getTypeSystem() != null)
         typeSystems.add(md.getTypeSystem());
     }
-    return mergeTypeSystems(typeSystems, aResourceManager);
+    return mergeTypeSystems(typeSystems, aResourceManager, aOutputMergedTypeNames);
   }
 
   /**
@@ -1593,19 +1684,21 @@ public class CasCreationUtils {
   }
 
   /**
-   * Gets a list of ProcessingResourceMetadata objects from a list containing either ResourceSpecifiers,
-   * ProcessingResourceMetadata objects, or subparts of ProcessingResourceMetadata
-   * objects (type sypstems, indexes, or type priorities). Subparts will be wrapped inside a
-   * ProcessingResourceMetadata object. All objects will be cloned, so that further processing (such
-   * as import resolution) does not affect the caller.
+   * Gets a list of ProcessingResourceMetadata objects from a list containing either
+   * ResourceSpecifiers, ProcessingResourceMetadata objects, or subparts of
+   * ProcessingResourceMetadata objects (type sypstems, indexes, or type priorities). Subparts will
+   * be wrapped inside a ProcessingResourceMetadata object. All objects will be cloned, so that
+   * further processing (such as import resolution) does not affect the caller.
    * <p>
-   * If you pass this method objects of type {@link AnalysisEngineDescription}, 
-   * {@link CollectionReaderDescription}, {@link CasInitializerDescription}, or {@link CasConsumerDescription},
-   * it will not instantiate the components.  It will just extract the type system information from the
-   * descriptor.  For any other kind of {@link ResourceSpecifier}, it will call
-   * {@link UIMAFramework#produceResource(org.apache.uima.resource.ResourceSpecifier, Map)}.  For example,
-   * if a {@link URISpecifier} is passed, a remote connection will be established and the service will be
-   * queries for its metadata.  An exception will be thrown if the connection can not be opened.
+   * If you pass this method objects of type {@link AnalysisEngineDescription},
+   * {@link CollectionReaderDescription}, {@link CasInitializerDescription}, or
+   * {@link CasConsumerDescription}, it will not instantiate the components. It will just extract
+   * the type system information from the descriptor. For any other kind of
+   * {@link ResourceSpecifier}, it will call
+   * {@link UIMAFramework#produceResource(org.apache.uima.resource.ResourceSpecifier, Map)}. For
+   * example, if a {@link URISpecifier} is passed, a remote connection will be established and the
+   * service will be queries for its metadata. An exception will be thrown if the connection can not
+   * be opened.
    * 
    * @param aComponentDescriptionsOrMetaData
    *          a collection of {@link ResourceSpecifier}, {@link ProcessingResourceMetaData},
@@ -1666,14 +1759,14 @@ public class CasCreationUtils {
         md.setTypePriorities((TypePriorities) current);
         mdList.add(md);
       } else if (current instanceof ResourceSpecifier) {
-        Resource resource = UIMAFramework.produceResource((ResourceSpecifier)current, Collections.EMPTY_MAP);
+        Resource resource = UIMAFramework.produceResource((ResourceSpecifier) current,
+                Collections.EMPTY_MAP);
         ResourceMetaData metadata = resource.getMetaData();
         if (metadata instanceof ProcessingResourceMetaData) {
           mdList.add(metadata);
-        }      
+        }
         resource.destroy();
-      }
-      else {
+      } else {
         throw new ResourceInitializationException(
                 ResourceInitializationException.UNSUPPORTED_OBJECT_TYPE_IN_CREATE_CAS,
                 new Object[] { current.getClass().getName() });
