@@ -21,6 +21,8 @@ package org.apache.uima.util;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -71,6 +73,7 @@ public class CasCreationUtilsTest extends TestCase {
 
       Assert.assertEquals(1, ts1desc.getType("Type1").getFeatures().length);
       Assert.assertEquals(1, ts1desc.getType("Type2").getFeatures().length);
+      Assert.assertEquals(1, ts1desc.getType("Type3").getFeatures().length);
 
       TypeSystemDescription ts2desc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
               new XMLInputSource(JUnitExtension.getFile("CasCreationUtilsTest/TypeSystem2.xml")));
@@ -80,10 +83,20 @@ public class CasCreationUtilsTest extends TestCase {
       ArrayList tsList = new ArrayList();
       tsList.add(ts1desc);
       tsList.add(ts2desc);
-      TypeSystemDescription merged = CasCreationUtils.mergeTypeSystems(tsList);
+      Set typesWithMergedFeatures = new HashSet();
+      TypeSystemDescription merged = CasCreationUtils.mergeTypeSystems(tsList, UIMAFramework.newDefaultResourceManager(), typesWithMergedFeatures);
 
       Assert.assertEquals(2, merged.getType("Type1").getFeatures().length);
       Assert.assertEquals(2, merged.getType("Type2").getFeatures().length);
+      Assert.assertEquals(1, merged.getType("Type3").getFeatures().length);
+      
+      assertEquals(2, typesWithMergedFeatures.size());
+      assertTrue(typesWithMergedFeatures.contains("Type1"));
+      assertTrue(typesWithMergedFeatures.contains("Type2"));
+      
+      //make sure one-arg version doesn't fail
+      CasCreationUtils.mergeTypeSystems(tsList);
+      
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -187,13 +200,15 @@ public class CasCreationUtilsTest extends TestCase {
     }
   }
 
-  public void testMergeDelegateAnalysisEngineMetaData() throws Exception {
+  public void testMergeDelegateAnalysisEngineTypeSystems() throws Exception {
     try {
       File descFile = JUnitExtension
               .getFile("TextAnalysisEngineImplTest/AggregateTaeForMergeTest.xml");
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(descFile));
-      TypeSystemDescription typeSys = CasCreationUtils.mergeDelegateAnalysisEngineTypeSystems(desc);
+      Set mergedTypes = new HashSet();
+      TypeSystemDescription typeSys = CasCreationUtils.mergeDelegateAnalysisEngineTypeSystems(desc, 
+              UIMAFramework.newDefaultResourceManager(), mergedTypes);
 
       // test results of merge
       Assert.assertEquals(8, typeSys.getTypes().length);
@@ -237,6 +252,15 @@ public class CasCreationUtilsTest extends TestCase {
       Assert.assertNotNull(type7);
       Assert.assertEquals("uima.tcas.Annotation", type7.getSupertypeName());
       Assert.assertEquals(1, type7.getFeatures().length);
+      
+      //Place has merged features, Person has different supertype
+      assertEquals(2, mergedTypes.size());
+      assertTrue(mergedTypes.contains("Place"));
+      assertTrue(mergedTypes.contains("Person"));
+      
+      //make sure one-arg version doesn't fail
+      CasCreationUtils.mergeDelegateAnalysisEngineTypeSystems(desc);
+      
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
