@@ -319,6 +319,43 @@ uima.cas.String  &rarr; String</programlisting>
         will cause your annotator not to be as easily reusable as other UIMA annotators. </para>
       
     </section>
+    
+    <section id="ugr.ref.jcas.documentannotation_issues">
+      <title>Adding Features to DocumentAnnotation</title>
+      
+      <para>There is one built-in type, <literal>uima.tcas.DocumentAnnotion</literal>, 
+        to which applications can add additional features.  (All other built-in types
+        are "feature-final" and you cannot add additional features to them.)  Frequently,
+        additional features are added to <literal>uima.tcas.DocumentAnnotion</literal> 
+        to provide a place to store document-level metadata.</para>
+      
+      <para>For the same reasons mentioned in the previous section, adding features to 
+        DocumentAnnotation is not recommended if you are using JCas.  Instead, it is recommended
+        that you define your own type for storing your document-level metadata.  You can create 
+        an instance of this type and add it to the indexes in the usual way.  You can then
+        retrieve this instance using <literal>JFSIndexRepository.getAllIndexedFS(type)</literal>.
+        (As of UIMA v2.1, you do not have to declare a custom index in your descriptor to
+        get this to work).</para>
+      
+      <para>If you do choose to add features to DocumentAnnotation, there are additional issues to
+        be aware of.  The UIMA SDK provides the JCas cover class for the built-in definition of
+        DocumentAnnotation, in the separate jar file <literal>uima-document-annotation.jar</literal>.
+        If you add additional features to DocumentAnnotation, you must remove this jar file
+        from your classpath, because you will not want to use the default JCas cover class.
+        You will need to re-run JCasGen as described in <xref
+          linkend="ugr.ref.jcas.merging_types.jcasgen_support"/>.  JCasGen will generate a new cover
+        class for DocumentAnnotation, which you must place in your classpath in lieu of the version
+        in <literal>uima-document-annotation.jar</literal>.</para>
+        
+      <para>Also, this is the reason why the method <literal>JCas.getDocumentAnnotationFs()</literal> returns
+        type <literal>TOP</literal>, rather than type <literal>DocumentAnnotation</literal>.  Because the
+        <literal>DocumentAnnotation</literal> class can be replaced by users, it is not part of
+        <literal>uima-core.jar</literal> and so the core UIMA framework cannot have any references
+        to it.  In your code, you may <quote>cast</quote> the result of <literal>JCas.getDocumentAnnotationFs()</literal> 
+        to type <literal>DocumentAnnotation</literal>, which must be available on the classpath either via 
+        <literal>uima-document-annotation.jar</literal> or by including a custom version that you have generated using JCasGen.</para>
+    </section>
+    
   </section>
   
   <section id="ugr.ref.jcas.using_within_an_annotator">
@@ -442,7 +479,7 @@ ir.getAnnotationIndex(Foo.type)      // filtered by specific type</programlistin
         myView2), in which you wanted to index myInstance, you could write:</para>
       
       
-      <programlisting>myInstance.addToIndexes();  // index in the JCas use with the new operator
+      <programlisting>myInstance.addToIndexes();  // index in the JCas used with the new operator
 myView1.addFsToIndexes(myInstance); // index myInstance in myView1
 myView2.addFsToIndexes(myInstance); // index myInstance in myView2</programlisting>
     </section>
@@ -505,52 +542,6 @@ FSIterator myIterator = myIndex.iterator();</programlisting>
           ResourceManager which will cause the UIMA application to load its private
           versions of its classes, from its classpath).</para>
       </section>
-    </section>
-    <section id="ugr.ref.jcas.documentannotation_issues">
-      <title>Issues around DocumentAnnotation</title>
-      
-      <para>The built-in type, <literal>uima.tcas.DocumentAnnotion</literal>, is
-        frequently extended by applications. The JCas provides a method,
-        <literal>getDocumentAnnotation(),</literal> to get the special instance of this
-        type which associated with each CAS View. Currently this method returns an instance
-        of the JCas cover class for this. Because there can be multiple definitions of this
-        class, this method is deprecated. It will continue to work, as long as the
-        ExtensionClassPath is not being used. If it is being used, the user will see some
-        pretty strange errors, something like</para>
-      
-      <para><computeroutput>ClassCast Exception: Cannot cast
-        "uima.tcas.DocumentAnnotation" to
-        "uima.tcas.DocumentAnnotation"</computeroutput></para>
-      
-      <para>What&apos;s really going on is that the JCas method for this loads a version of the
-        <literal>DocumentAnnotation</literal> class from the UIMA Framework loader,
-        while the Application trying to use it loads a different version of the
-        <literal>DocumentAnnotation</literal> class from its
-        ExtensionClassLoader.</para>
-      
-      <para>If only one definition of <literal>DocumentAnnotation</literal> will be used
-        for the complete set of UIMA applications being run in the JVM, then you can replace the
-        definition of <literal>DocumentAnnotation</literal> in the Jar that the UIMA
-        Framework loader is using with your definition, and not have this definition
-        findable in the ExtensionClassPath.</para>
-      
-      <para>This approach is enabled by putting all the extendable, built-in classes for
-        UIMA into a separate JAR file.</para>
-      
-      <para>The method <literal>getDocumentAnnotationFs</literal>() replaces the
-        deprecated <literal>getDocumentAnnotation</literal>(). It has the same
-        function, except its return type is TOP, which means your code will have to
-        <quote>cast</quote> it to your particular loaded version of
-        <literal>DocumentAnnotation</literal>.
-        
-        
-        <programlisting>   /* deprecated */
-DocumentAnnotation docAnn = aJcas.getDocumentAnnotation();
-   /* new way */
-DocumentAnnotation docAnn = 
-  (DocumentAnnotation)aJcas.getDocumentAnnotationFs();
-</programlisting></para>
-      
     </section>
     
     <section id="ugr.ref.jcas.accessing_jcas_objects_outside_uima_components">
