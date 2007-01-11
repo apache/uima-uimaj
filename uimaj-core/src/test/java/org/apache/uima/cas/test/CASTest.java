@@ -63,7 +63,7 @@ public class CASTest extends TestCase {
   }
 
   public void testGetTypeSystem() {
-    assertTrue(cas.getTypeSystem() != null);
+    assertTrue(this.cas.getTypeSystem() != null);
   }
 
   public void testCreateFS() {
@@ -118,10 +118,8 @@ public class CASTest extends TestCase {
   }
 
   public void testCreateCAS() {
-    TypeSystemMgr ts = CASFactory.createTypeSystem();
-    ts.commit();
-    // assertNotNull(CASFactory.createCAS(ts));
-    // TODO discuss this test with Thilo and Adam!!!
+    TypeSystemMgr tsm = CASFactory.createTypeSystem();
+    tsm.commit();
   }
 
   public void testCreateArrayFS() {

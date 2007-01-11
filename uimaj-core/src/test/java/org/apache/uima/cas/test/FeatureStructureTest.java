@@ -188,12 +188,12 @@ public class FeatureStructureTest extends TestCase {
   public void testSetArrayValuedFeature() {
     FeatureStructure testFS = this.cas.createFS(this.arrayFsWithSubtypeType);
     assertTrue(testFS.getFeatureValue(this.arrayFsWithSubtypeTypeFeat) == null);
-    ArrayFS arrayFS = cas.createArrayFS(1);
-    testFS.setFeatureValue(arrayFsWithSubtypeTypeFeat, arrayFS);
+    ArrayFS arrayFS = this.cas.createArrayFS(1);
+    testFS.setFeatureValue(this.arrayFsWithSubtypeTypeFeat, arrayFS);
     assertTrue(true); 
     boolean caughtExc = false;
     try {
-      testFS.setFeatureValue(arrayFsWithSubtypeTypeFeat, testFS);
+      testFS.setFeatureValue(this.arrayFsWithSubtypeTypeFeat, testFS);
     } catch (CASRuntimeException e) {
       caughtExc = true;
       assertTrue(e.getError() == CASRuntimeException.INAPPROP_RANGE);
@@ -213,11 +213,11 @@ public class FeatureStructureTest extends TestCase {
       assertTrue(e.getError() == CASRuntimeException.INAPPROP_FEAT);
     }
     assertTrue(caughtExc);
-    FeatureStructure word = this.cas.createFS(wordType);
-    token.setFeatureValue(tokenTypeFeat, word);
+    FeatureStructure word = this.cas.createFS(this.wordType);
+    token.setFeatureValue(this.tokenTypeFeat, word);
     caughtExc = false;
     try {
-      token.setFeatureValue(lemmaFeat, word);
+      token.setFeatureValue(this.lemmaFeat, word);
     } catch (CASRuntimeException e) {
       caughtExc = true;
       assertTrue(e.getError() == CASRuntimeException.INAPPROP_RANGE);
@@ -225,209 +225,130 @@ public class FeatureStructureTest extends TestCase {
     assertTrue(caughtExc);
 
     try {
-      token.setFeatureValue(tokenTypeFeat, null);
+      token.setFeatureValue(this.tokenTypeFeat, null);
     } catch (CASRuntimeException e) {
       assertTrue(false);
     }
 
     caughtExc = false;
     try {
-      token.setFeatureValue(startFeature, null);
+      token.setFeatureValue(this.startFeature, null);
     } catch (CASRuntimeException e) {
       assertTrue(e.getError() == CASRuntimeException.PRIMITIVE_VAL_FEAT);
       caughtExc = true;
     }
     assertTrue(caughtExc);
 
-    assertTrue(token.getStringValue(lemmaFeat) == null);
+    assertTrue(token.getStringValue(this.lemmaFeat) == null);
     String testString = "test";
-    token.setStringValue(lemmaFeat, testString);
-    assertTrue(token.getStringValue(lemmaFeat).equals(testString));
+    token.setStringValue(this.lemmaFeat, testString);
+    assertTrue(token.getStringValue(this.lemmaFeat).equals(testString));
     testString = "";
-    token.setStringValue(lemmaFeat, testString);
-    assertTrue(token.getStringValue(lemmaFeat).equals(testString));
+    token.setStringValue(this.lemmaFeat, testString);
+    assertTrue(token.getStringValue(this.lemmaFeat).equals(testString));
   }
 
   public void testSetFloatValue() {
-    AnnotationFS token = (AnnotationFS) this.cas.createFS(tokenType);
-    assertTrue(token.getFloatValue(tokenFloatFeat) == 0.0f);
+    AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
+    assertTrue(token.getFloatValue(this.tokenFloatFeat) == 0.0f);
     float f = -3.2f;
-    token.setFloatValue(tokenFloatFeat, f);
-    assertTrue(token.getFloatValue(tokenFloatFeat) == f);
+    token.setFloatValue(this.tokenFloatFeat, f);
+    assertTrue(token.getFloatValue(this.tokenFloatFeat) == f);
     f = 51234.132f;
-    token.setFloatValue(tokenFloatFeat, f);
-    assertTrue(token.getFloatValue(tokenFloatFeat) == f);
+    token.setFloatValue(this.tokenFloatFeat, f);
+    assertTrue(token.getFloatValue(this.tokenFloatFeat) == f);
     boolean caughtExc = false;
     try {
-      token.setFloatValue(tokenTypeFeat, 0.0f);
+      token.setFloatValue(this.tokenTypeFeat, 0.0f);
     } catch (CASRuntimeException e) {
       caughtExc = true;
       assertTrue(e.getError() == CASRuntimeException.INAPPROP_RANGE);
     }
     assertTrue(caughtExc);
-    assertTrue(token.getFloatValue(tokenFloatFeat) == f);
+    assertTrue(token.getFloatValue(this.tokenFloatFeat) == f);
     caughtExc = false;
     try {
-      token.setFloatValue(sentLenFeat, 0.0f);
+      token.setFloatValue(this.sentLenFeat, 0.0f);
     } catch (CASRuntimeException e) {
       caughtExc = true;
       assertTrue(e.getError() == CASRuntimeException.INAPPROP_FEAT);
     }
     assertTrue(caughtExc);
-    assertTrue(token.getFloatValue(tokenFloatFeat) == f);
+    assertTrue(token.getFloatValue(this.tokenFloatFeat) == f);
   }
 
   public void testSetIntValue() {
-    AnnotationFS token = (AnnotationFS) this.cas.createFS(tokenType);
-    assertTrue(token.getIntValue(startFeature) == 0);
+    AnnotationFS token = (AnnotationFS) this.cas.createFS(this.tokenType);
+    assertTrue(token.getIntValue(this.startFeature) == 0);
     int i = 3;
-    token.setIntValue(startFeature, i);
-    assertTrue(token.getIntValue(startFeature) == i);
+    token.setIntValue(this.startFeature, i);
+    assertTrue(token.getIntValue(this.startFeature) == i);
     i = -123456;
-    token.setIntValue(startFeature, i);
-    assertTrue(token.getIntValue(startFeature) == i);
+    token.setIntValue(this.startFeature, i);
+    assertTrue(token.getIntValue(this.startFeature) == i);
     boolean caughtExc = false;
     try {
-      token.setIntValue(tokenTypeFeat, 0);
+      token.setIntValue(this.tokenTypeFeat, 0);
     } catch (CASRuntimeException e) {
       caughtExc = true;
       assertTrue(e.getError() == CASRuntimeException.INAPPROP_RANGE);
     }
     assertTrue(caughtExc);
-    assertTrue(token.getIntValue(startFeature) == i);
+    assertTrue(token.getIntValue(this.startFeature) == i);
     caughtExc = false;
     try {
-      token.setIntValue(sentLenFeat, 0);
+      token.setIntValue(this.sentLenFeat, 0);
     } catch (CASRuntimeException e) {
       caughtExc = true;
       assertTrue(e.getError() == CASRuntimeException.INAPPROP_FEAT);
     }
     assertTrue(caughtExc);
-    assertTrue(token.getIntValue(startFeature) == i);
+    assertTrue(token.getIntValue(this.startFeature) == i);
   }
 
-  public void testCreateCasFromTypeSystem() {
-    // TODO discuss with Thilo
-    // CAS newCAS = null;
-    // try {
-    // TCASMgr tcasMgr = TCASFactory.createTCAS(10000,
-    // this.cas.getTypeSystem());
-    // tcasMgr.initTCASIndexes();
-    // tcasMgr.getIndexRepositoryMgr().commit();
-    // newCAS = tcasMgr.getTCAS();
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // assertTrue(false);
-    // }
-    CAS newCAS = this.cas;
-    assertTrue(newCAS != null);
-    FeatureStructure lp = newCAS.createFS(langPairType);
-    assertTrue(lp != null);
-    // Check that all strings are initially null.
-    try {
-      assertTrue(lp.getStringValue(lang1) == null);
-    } catch (Exception e) {
-      assertTrue(false);
-    }
-    try {
-      assertTrue(lp.getStringValue(lang2) == null);
-    } catch (Exception e) {
-      assertTrue(false);
-    }
-    try {
-      assertTrue(lp.getStringValue(descr) == null);
-    } catch (Exception e) {
-      assertTrue(false);
-    }
-    // FeatureStructure topFS = newCAS.createFS(topType);
-    String val = "Some string.";
-    try {
-      lp.setStringValue(descr, val);
-      assertTrue(val.equals(lp.getStringValue(descr)));
-    } catch (CASRuntimeException e) {
-      assertTrue(false);
-    }
-    try {
-      lp.setStringValue(descr, null);
-      assertTrue(lp.getStringValue(descr) == null);
-    } catch (CASRuntimeException e) {
-      assertTrue(false);
-    }
-    try {
-      lp.setStringValue(lang1, CASTestSetup.GROUP_1_LANGUAGES[0]);
-      lp.setStringValue(lang2, CASTestSetup.GROUP_2_LANGUAGES[2]);
-    } catch (Exception e) {
-      assertTrue(false);
-    }
-    boolean exc = false;
-    try {
-      lp.setStringValue(lang1, CASTestSetup.GROUP_2_LANGUAGES[0]);
-    } catch (CASRuntimeException e) {
-      assertTrue(e.getError() == CASRuntimeException.ILLEGAL_STRING_VALUE);
-      exc = true;
-    }
-    assertTrue(exc);
-    exc = false;
-    try {
-      lp.setStringValue(lang2, val);
-    } catch (CASRuntimeException e) {
-      assertTrue(e.getError() == CASRuntimeException.ILLEGAL_STRING_VALUE);
-      exc = true;
-    }
-    assertTrue(exc);
-
-    LowLevelCAS llc = newCAS.getLowLevelCAS();
-    LowLevelTypeSystem llts = llc.ll_getTypeSystem();
-    final int tokenTypeCode = llts.ll_getCodeForType(tokenType);
-    final int addr = llc.ll_createFS(tokenTypeCode);
-    final int lemmaFeatCode = llts.ll_getCodeForFeature(lemmaFeat);
-    llc.ll_setStringValue(addr, lemmaFeatCode, "test", true);
-    assertTrue(llc.ll_getCharBufferValueSize(addr, lemmaFeatCode) == 4);
-
-  }
 
   public void testStrings() {
-    FeatureStructure lp = cas.createFS(langPairType);
+    FeatureStructure lp = this.cas.createFS(this.langPairType);
     assertTrue(lp != null);
     // Check that all strings are initially null.
     try {
-      assertTrue(lp.getStringValue(lang1) == null);
+      assertTrue(lp.getStringValue(this.lang1) == null);
     } catch (Exception e) {
       assertTrue(false);
     }
     try {
-      assertTrue(lp.getStringValue(lang2) == null);
+      assertTrue(lp.getStringValue(this.lang2) == null);
     } catch (Exception e) {
       assertTrue(false);
     }
     try {
-      assertTrue(lp.getStringValue(descr) == null);
+      assertTrue(lp.getStringValue(this.descr) == null);
     } catch (Exception e) {
       assertTrue(false);
     }
     // FeatureStructure topFS = cas.createFS(topType);
     String val = "Some string.";
     try {
-      lp.setStringValue(descr, val);
-      assertTrue(val.equals(lp.getStringValue(descr)));
+      lp.setStringValue(this.descr, val);
+      assertTrue(val.equals(lp.getStringValue(this.descr)));
     } catch (CASRuntimeException e) {
       assertTrue(false);
     }
     try {
-      lp.setStringValue(descr, null);
-      assertTrue(lp.getStringValue(descr) == null);
+      lp.setStringValue(this.descr, null);
+      assertTrue(lp.getStringValue(this.descr) == null);
     } catch (CASRuntimeException e) {
       assertTrue(false);
     }
     try {
-      lp.setStringValue(lang1, CASTestSetup.GROUP_1_LANGUAGES[0]);
-      lp.setStringValue(lang2, CASTestSetup.GROUP_2_LANGUAGES[2]);
+      lp.setStringValue(this.lang1, CASTestSetup.GROUP_1_LANGUAGES[0]);
+      lp.setStringValue(this.lang2, CASTestSetup.GROUP_2_LANGUAGES[2]);
     } catch (Exception e) {
       assertTrue(false);
     }
     boolean exc = false;
     try {
-      lp.setStringValue(lang1, CASTestSetup.GROUP_2_LANGUAGES[0]);
+      lp.setStringValue(this.lang1, CASTestSetup.GROUP_2_LANGUAGES[0]);
     } catch (CASRuntimeException e) {
       assertTrue(e.getError() == CASRuntimeException.ILLEGAL_STRING_VALUE);
       exc = true;
