@@ -25,9 +25,9 @@ import java.util.HashMap;
 import javax.swing.text.Style;
 import javax.swing.text.StyleContext;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.TCAS;
 
 /**
  * TODO: add type comment for <code>MultiMarkup</code>.
@@ -132,7 +132,7 @@ public abstract class MultiMarkup {
     }
     Style unmarkedStyle = StyleContext.getDefaultStyleContext()
             .getStyle(StyleContext.DEFAULT_STYLE);
-    Style annotStyle = (Style) styleMap.get(TCAS.TYPE_NAME_ANNOTATION);
+    Style annotStyle = (Style) styleMap.get(CAS.TYPE_NAME_ANNOTATION);
     // Copy our internal extents to the public representation.
     final int size = list.size();
     AnnotationExtent[] extentArray = new AnnotationExtent[size];

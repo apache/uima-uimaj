@@ -50,7 +50,6 @@ import javax.swing.tree.TreeModel;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.text.TCAS;
 
 /**
  * TODO: add type comment for <code>AnnotationDisplayCustomizationFrame</code>.
@@ -120,7 +119,7 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
         style = AnnotationDisplayCustomizationFrame.this.textPane.addStyle(
                 AnnotationDisplayCustomizationFrame.this.currentTypeName,
                 (Style) AnnotationDisplayCustomizationFrame.this.styleMap
-                        .get(TCAS.TYPE_NAME_ANNOTATION));
+                        .get(CAS.TYPE_NAME_ANNOTATION));
       }
       StyleConstants.setForeground(style, StyleConstants
               .getForeground(AnnotationDisplayCustomizationFrame.this.currentStyle));
@@ -141,7 +140,7 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
               .get(AnnotationDisplayCustomizationFrame.this.currentTypeName);
       if (style == null) {
         style = (Style) AnnotationDisplayCustomizationFrame.this.styleMap
-                .get(TCAS.TYPE_NAME_ANNOTATION);
+                .get(CAS.TYPE_NAME_ANNOTATION);
       }
       // assert(style != null);
       AnnotationDisplayCustomizationFrame.this.fgColor = StyleConstants.getForeground(style);
@@ -240,12 +239,12 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
     this.tree.addTreeSelectionListener(new TypeTreeSelectionListener());
     JScrollPane treeScrollPane = new JScrollPane(this.tree);
     this.splitPane.setLeftComponent(treeScrollPane);
-    this.splitPane.setRightComponent(createCustomizationPanel(TCAS.TYPE_NAME_ANNOTATION));
+    this.splitPane.setRightComponent(createCustomizationPanel(CAS.TYPE_NAME_ANNOTATION));
   }
 
   private JPanel createCustomizationPanel(String typeName) {
     this.currentTypeName = typeName;
-    String defaultAnnotStyleName = TCAS.TYPE_NAME_ANNOTATION;
+    String defaultAnnotStyleName = CAS.TYPE_NAME_ANNOTATION;
     Style defaultAnnotStyle = (Style) this.styleMap.get(defaultAnnotStyleName);
     GridLayout layout = new GridLayout(0, 1);
     JPanel topPanel = new JPanel(layout);
@@ -273,7 +272,7 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
 
   private void setCustomizationPanel(String typeName) {
     this.currentTypeName = typeName;
-    Style defaultAnnotStyle = (Style) this.styleMap.get(TCAS.TYPE_NAME_ANNOTATION);
+    Style defaultAnnotStyle = (Style) this.styleMap.get(CAS.TYPE_NAME_ANNOTATION);
     Style style = (Style) this.styleMap.get(typeName);
     if (style == null) {
       style = defaultAnnotStyle;
@@ -337,7 +336,7 @@ public class AnnotationDisplayCustomizationFrame extends JFrame {
   }
 
   private TreeModel createTreeModel(TypeSystem ts) {
-    String typeName = TCAS.TYPE_NAME_ANNOTATION;
+    String typeName = CAS.TYPE_NAME_ANNOTATION;
     DefaultMutableTreeNode node = new DefaultMutableTreeNode(typeName);
     Type type = ts.getType(typeName);
     addChildren(node, type, ts);
