@@ -21,7 +21,9 @@ package org.apache.uima.util;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.Assert;
@@ -82,7 +84,7 @@ public class CasCreationUtilsTest extends TestCase {
       ArrayList tsList = new ArrayList();
       tsList.add(ts1desc);
       tsList.add(ts2desc);
-      Set typesWithMergedFeatures = new HashSet();
+      Map typesWithMergedFeatures = new HashMap();
       TypeSystemDescription merged = CasCreationUtils.mergeTypeSystems(tsList, UIMAFramework.newDefaultResourceManager(), typesWithMergedFeatures);
 
       Assert.assertEquals(2, merged.getType("Type1").getFeatures().length);
@@ -90,8 +92,8 @@ public class CasCreationUtilsTest extends TestCase {
       Assert.assertEquals(1, merged.getType("Type3").getFeatures().length);
       
       assertEquals(2, typesWithMergedFeatures.size());
-      assertTrue(typesWithMergedFeatures.contains("Type1"));
-      assertTrue(typesWithMergedFeatures.contains("Type2"));
+      assertTrue(typesWithMergedFeatures.containsKey("Type1"));
+      assertTrue(typesWithMergedFeatures.containsKey("Type2"));
       
       //make sure one-arg version doesn't fail
       CasCreationUtils.mergeTypeSystems(tsList);
@@ -205,7 +207,7 @@ public class CasCreationUtilsTest extends TestCase {
               .getFile("TextAnalysisEngineImplTest/AggregateTaeForMergeTest.xml");
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(descFile));
-      Set mergedTypes = new HashSet();
+      Map mergedTypes = new HashMap();
       TypeSystemDescription typeSys = CasCreationUtils.mergeDelegateAnalysisEngineTypeSystems(desc, 
               UIMAFramework.newDefaultResourceManager(), mergedTypes);
 
@@ -254,8 +256,8 @@ public class CasCreationUtilsTest extends TestCase {
       
       //Place has merged features, Person has different supertype
       assertEquals(2, mergedTypes.size());
-      assertTrue(mergedTypes.contains("Place"));
-      assertTrue(mergedTypes.contains("Person"));
+      assertTrue(mergedTypes.containsKey("Place"));
+      assertTrue(mergedTypes.containsKey("Person"));
       
       //make sure one-arg version doesn't fail
       CasCreationUtils.mergeDelegateAnalysisEngineTypeSystems(desc);

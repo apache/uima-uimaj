@@ -29,6 +29,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -1213,21 +1215,22 @@ public class CasCreationUtils {
    * Merges several TypeSystemDescriptions into one. Also resolves imports in the
    * TypeSystemDescription objects.
    * <p>
-   * This version of this method takes an argument <code>aOutputMergedTypeNames</code>, to which
-   * this method will add the names of any types whose definitions have been merged from multiple
-   * non-identical sources. That is, types that are declared more than once, with different (but
-   * compatible) sets of features in each declaration, or with different (but compatible)
-   * supertypes.
+   * This version of this method takes an argument <code>aOutputMergedTypes</code>, which
+   * this method will populate with the names and descriptor locations of any types whose definitions 
+   * have been merged from multiple non-identical sources. That is, types that are declared
+   * more than once, with different (but compatible) sets of features in each declaration,
+   * or with different (but compatible) supertypes.
    * 
    * @param aTypeSystems
    *          a collection of TypeSystems to be merged
    * @param aResourceManager
    *          Resource Manager to use to locate type systems imported by name
-   * @param aOutputMergedTypeNames
-   *          A Collection to which this method will add the names of any types whose definitions
-   *          were merged from multiple non-identical sources. The same type name may be added more
-   *          than once, so if you want to eliminate duplicates, pass a Set, not a List. You may
-   *          pass null if you are not interested in this information.
+   * @param aOutputMergedTypes
+   *          A Map that this method will populate with information about the set of types
+   *          whose definitions were merged from multiple non-identical sources. The keys in
+   *          the Map will be the type names (Strings) and the values will be 
+   *          {link Set}s containing Descriptor URLs (Strings) where those types are 
+   *          declared. You may pass null if you are not interested in this information.
    * 
    * @return a new TypeSystemDescription that is the result of merging all of the type systems
    *         together
@@ -1236,7 +1239,7 @@ public class CasCreationUtils {
    *           if an incompatibiliy exists or if an import could not be resolved
    */
   public static TypeSystemDescription mergeTypeSystems(Collection aTypeSystems,
-          ResourceManager aResourceManager, Collection aOutputMergedTypeNames)
+          ResourceManager aResourceManager, Map aOutputMergedTypes)
           throws ResourceInitializationException {
     // create the type system into which we are merging
     TypeSystemDescription result = UIMAFramework.getResourceSpecifierFactory()
@@ -1281,15 +1284,12 @@ public class CasCreationUtils {
                   // existing supertype subsumes newly specified supertype -
                   // reset supertype to the new, more specific type
                   existingType.setSupertypeName(supertypeName);
-                  if (aOutputMergedTypeNames != null) {
-                    aOutputMergedTypeNames.add(typeName);
-                  }
+                  // report that a merge occurred
+                  reportMerge(aOutputMergedTypes, types[i], existingType);
                 } else if (subsumes(supertypeName, existingSupertypeName, typeNameMap)) {
                   // newly specified supertype subsumes old type, this is OK and we don't
                   // need to do anything except report this
-                  if (aOutputMergedTypeNames != null) {
-                    aOutputMergedTypeNames.add(typeName);
-                  }
+                  reportMerge(aOutputMergedTypes, types[i], existingType);
                 } else {
                   // error
                   throw new ResourceInitializationException(
@@ -1306,9 +1306,8 @@ public class CasCreationUtils {
                 mergeFeatures(existingType, types[i].getFeatures());
                 // if feature-merged occurred, the number of features on the type will have
                 // changed. Report this by adding to the aOutputMergedTypeNames collection.
-                if (aOutputMergedTypeNames != null
-                        && existingType.getFeatures().length != prevNumFeatures) {
-                  aOutputMergedTypeNames.add(typeName);
+                if (existingType.getFeatures().length != prevNumFeatures) {
+                  reportMerge(aOutputMergedTypes, types[i], existingType);
                 }
               }
             }
@@ -1317,6 +1316,30 @@ public class CasCreationUtils {
       }
     }
     return result;
+  }
+
+  /**
+   * Utility method for populating the aOutputMergedTypes argument in the
+   * mergeTypeSystems method.
+   * @param aOutputMergedTypes Map to populate
+   * @param currentType TypeDescription currently being processed
+   * @param existingType TypeDescription that already existed for the same name
+   */
+  private static void reportMerge(Map aOutputMergedTypes, TypeDescription currentType, 
+          TypeDescription existingType) {
+    if (aOutputMergedTypes != null) {
+      String typeName = currentType.getName();
+      Set descriptorUrls = (Set)aOutputMergedTypes.get(typeName);
+      if (descriptorUrls == null) {
+        descriptorUrls = new TreeSet();
+        descriptorUrls.add(existingType.getSourceUrlString());
+        descriptorUrls.add(currentType.getSourceUrlString());
+        aOutputMergedTypes.put(typeName, descriptorUrls);
+      }
+      else {
+        descriptorUrls.add(currentType.getSourceUrlString());
+      }
+    }
   }
 
   /**
@@ -1368,17 +1391,24 @@ public class CasCreationUtils {
   /**
    * Merges the Type Systems of each component within an aggregate Analysis Engine, producing a
    * single combined Type System.
-   * 
+   * <p>
+   * This version of this method takes an argument <code>aOutputMergedTypes</code>, which
+   * this method will populate with the names and descriptor locations of any types whose definitions 
+   * have been merged from multiple non-identical sources. That is, types that are declared
+   * more than once, with different (but compatible) sets of features in each declaration,
+   * or with different (but compatible) supertypes.
+   *  
    * @param aAggregateDescription
    *          an aggregate Analysis Engine description
    * @param aResourceManager
    *          ResourceManager instance used to resolve imports
-   * @param aOutputMergedTypeNames
-   *          A Collection to which this method will add the names of any types whose definitions
-   *          were merged from multiple non-identical sources. The same type name may be added more
-   *          than once, so if you want to eliminate duplicates, pass a Set, not a List. You may
-   *          pass null if you are not interested in this information.
-   * 
+   * @param aOutputMergedTypes
+   *          A Map that this method will populate with information about the set of types
+   *          whose definitions were merged from multiple non-identical sources. The keys in
+   *          the Map will be the type names (Strings) and the values will be 
+   *          {link Set}s containing Descriptor URLs (Strings) where those types are 
+   *          declared. You may pass null if you are not interested in this information.
+   *    * 
    * @return a new TypeSystemDescription that is the result of merging all of the delegate AE type
    *         systems together
    * 
@@ -1387,7 +1417,7 @@ public class CasCreationUtils {
    */
   public static TypeSystemDescription mergeDelegateAnalysisEngineTypeSystems(
           AnalysisEngineDescription aAggregateDescription, ResourceManager aResourceManager,
-          Collection aOutputMergedTypeNames) throws ResourceInitializationException {
+          Map aOutputMergedTypes) throws ResourceInitializationException {
     // expand the aggregate AE description into the individual delegates
     ArrayList l = new ArrayList();
     l.add(aAggregateDescription);
@@ -1401,7 +1431,7 @@ public class CasCreationUtils {
       if (md.getTypeSystem() != null)
         typeSystems.add(md.getTypeSystem());
     }
-    return mergeTypeSystems(typeSystems, aResourceManager, aOutputMergedTypeNames);
+    return mergeTypeSystems(typeSystems, aResourceManager, aOutputMergedTypes);
   }
 
   /**
