@@ -43,12 +43,21 @@ import org.apache.uima.cas.Type;
 public class CasComparer {
   public static void assertEquals(CAS c1, CAS c2) {
     FSIterator sofaIter = c1.getSofaIterator();
+    int c1Sofas = 0;
     while (sofaIter.hasNext()) {
       SofaFS sofa = (SofaFS) sofaIter.next();
-      CAS tcas1 = (CAS)c1.getView(sofa);
-      CAS tcas2 = (CAS)c2.getView(tcas1.getViewName());
+      CAS tcas1 = c1.getView(sofa);
+      CAS tcas2 = c2.getView(tcas1.getViewName());
       assertEqualViews(tcas1, tcas2);
+      c1Sofas++;
     }
+    sofaIter = c2.getSofaIterator();
+    int c2Sofas = 0;
+    while (sofaIter.hasNext()) {
+      c2Sofas++;
+      sofaIter.moveToNext();
+    }
+    Assert.assertTrue(c1Sofas == c2Sofas);
   }
 
   public static void assertEqualViews(CAS c1, CAS c2) {
