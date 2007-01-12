@@ -123,17 +123,17 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
       throw new ResourceInitializationException(
               ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
                   aeDescription.getAnalysisEngineMetaData().getName(),
-                  aeDescription.getSourceUrlString() + " " + e.getMessage() });
+                  aeDescription.getSourceUrlString() }, e);
     } catch (SAXException e) {
       throw new ResourceInitializationException(
               ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
                   aeDescription.getAnalysisEngineMetaData().getName(),
-                  aeDescription.getSourceUrlString() });
+                  aeDescription.getSourceUrlString() }, e);
     } catch (IOException e) {
       throw new ResourceInitializationException(
               ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
                   aeDescription.getAnalysisEngineMetaData().getName(),
-                  aeDescription.getSourceUrlString() });
+                  aeDescription.getSourceUrlString() }, e);
     }
   }
 
