@@ -41,6 +41,7 @@ import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
+import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
 import org.apache.uima.jcas.cas.IntegerArray;
@@ -485,5 +486,32 @@ public interface JCas extends AbstractCas {
    *              If the <code>fs</code> parameter is <code>null</code>.
    */
   void removeFsFromIndexes(FeatureStructure fs);
+
+  /**
+   * Get the standard annotation index.
+   * 
+   * @return The standard annotation index.
+   */
+  AnnotationIndex getAnnotationIndex();
+
+  /**
+   * Get the standard annotation index restricted to a specific annotation type.
+   * 
+   * @param type
+   *          The annotation type the index is restricted to.
+   * @return The standard annotation index, restricted to <code>type</code>.
+   */
+  AnnotationIndex getAnnotationIndex(Type type) throws CASRuntimeException;
+
+  /**
+   * Get the standard annotation index restricted to a specific annotation type.
+   * 
+   * @param type
+   *          The annotation type the index is restricted to, 
+   *          passed as an integer using the form
+   *          MyAnnotationType.type
+   * @return The standard annotation index, restricted to <code>type</code>.
+   */
+  AnnotationIndex getAnnotationIndex(int type) throws CASRuntimeException;
 
 }
