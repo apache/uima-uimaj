@@ -65,6 +65,7 @@ import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelException;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.cas.FSArray;
@@ -1043,6 +1044,27 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     //TODO improve this to account for JCas
     //  structure sizes
     return casImpl.size();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.JCas#getAnnotationIndex()
+   */
+  public AnnotationIndex getAnnotationIndex() {
+    return casImpl.getAnnotationIndex();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.JCas#getAnnotationIndex(org.apache.uima.cas.Type)
+   */
+  public AnnotationIndex getAnnotationIndex(Type type) throws CASRuntimeException {
+    return casImpl.getAnnotationIndex(type);
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.JCas#getAnnotationIndex(int)
+   */
+  public AnnotationIndex getAnnotationIndex(int type) throws CASRuntimeException {
+    return casImpl.getAnnotationIndex(this.getCasType(type));
   }
 
 }
