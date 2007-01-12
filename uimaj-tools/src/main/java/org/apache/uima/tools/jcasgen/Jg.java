@@ -53,7 +53,6 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.FeatureDescription;
@@ -120,7 +119,7 @@ public class Jg {
   static TypeSystem builtInTypeSystem;
 
   static {
-    TCAS tcas = null;
+    CAS tcas = null;
     try {
       tcas = CasCreationUtils.createTCas((TypeSystemDescription) null, null,
               new FsIndexDescription[0], casCreateProperties);
@@ -474,7 +473,7 @@ public class Jg {
     this.cas = aCas;
     this.typeSystem = cas.getTypeSystem();
     this.casStringType = typeSystem.getType(CAS.TYPE_NAME_STRING);
-    this.tcasAnnotationType = typeSystem.getType(TCAS.TYPE_NAME_ANNOTATION);
+    this.tcasAnnotationType = typeSystem.getType(CAS.TYPE_NAME_ANNOTATION);
 
     for (int i = 0; i < tds.length; i++) {
       TypeDescription td = tds[i];

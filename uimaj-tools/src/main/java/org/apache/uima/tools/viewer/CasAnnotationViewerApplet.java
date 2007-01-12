@@ -94,7 +94,7 @@ public class CasAnnotationViewerApplet extends JApplet {
       // create viewer component and add to this applet
       mViewer = new CasAnnotationViewer();
       // NOTE: it seems to be important to add the viewer to the frame
-      // before calling setTCAS. If we do it the other way around
+      // before calling setCAS. If we do it the other way around
       // we seem to frequently cause the browser to hang.
       getContentPane().add(mViewer);
 

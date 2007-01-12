@@ -28,7 +28,7 @@ import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.cas.text.TCAS;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.pear.tools.InstallationController;
 import org.apache.uima.pear.tools.InstallationDescriptor;
 import org.apache.uima.pear.util.FileUtil;
@@ -85,7 +85,7 @@ public class PearMergerTest extends TestCase {
    * Runs test for org.apache.uima.pear.merger.PMController class by merging 2 sample input PEARs
    * into the output aggregate PEAR. Then, the output PEAR is installed by using
    * org.apache.uima.pear.tools.InstallationController, and the installed component is verified by
-   * instantiating the aggregate TAE and creating TCAS object.
+   * instantiating the aggregate TAE and creating CAS object.
    */
   public void testPearMerger() throws Exception {
     // check temporary working directory
@@ -127,8 +127,8 @@ public class PearMergerTest extends TestCase {
     AnalysisEngineDescription aeSpec = xmlPaser.parseAnalysisEngineDescription(xmlInput);
     AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aeSpec, resMngr, null);
     Assert.assertTrue(ae != null);
-    // create TCAS object
-    TCAS tCas = ae.newTCAS();
+    // create CAS object
+    CAS tCas = ae.newCAS();
     Assert.assertTrue(tCas != null);
     // clean-up the results
     pmController.cleanUp();

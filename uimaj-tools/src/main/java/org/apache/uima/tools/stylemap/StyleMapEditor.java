@@ -47,7 +47,7 @@ import javax.swing.table.TableColumn;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
-import org.apache.uima.cas.text.TCAS;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.tools.images.Images;
 import org.apache.uima.tools.util.gui.ImageButton;
 import org.apache.uima.tools.util.htmlview.AnnotationViewGenerator;
@@ -115,7 +115,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
    * 
    * Creates a new `Editor.
    */
-  public StyleMapEditor(final JFrame aOwner, TCAS cas) {
+  public StyleMapEditor(final JFrame aOwner, CAS cas) {
     super(aOwner, "Style Map Editor", true);
     populated = false; // table not yet loaded
     styleList = new ArrayList();
@@ -295,7 +295,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
    * @return a new style map XML document. If the user cancels, null is returned.
    */
   public String launchEditor(AnalysisEngineMetaData aAnalysisEngineMetaData, String aStyleMapXml,
-          TCAS cas) {
+          CAS cas) {
     analysisEngineMetaData = aAnalysisEngineMetaData;
     // create an ArrayList of style entries used by the GUI
     ArrayList styleList = createStyleList(aAnalysisEngineMetaData, aStyleMapXml);
@@ -466,7 +466,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
    * @return true if the user exits the dialog by clicking the OK button, false if the user has
    *         clicked the Cancel button.
    */
-  private boolean launchGUI(ArrayList aStyleList, TCAS cas) {
+  private boolean launchGUI(ArrayList aStyleList, CAS cas) {
     if (!populated) {
       // populate and display GUI here, then wait for user to click OK or Cancel
       styleList = aStyleList;

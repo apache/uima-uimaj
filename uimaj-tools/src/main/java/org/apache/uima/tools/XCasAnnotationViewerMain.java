@@ -52,7 +52,7 @@ import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.cas.text.TCAS;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -262,8 +262,8 @@ public class XCasAnnotationViewerMain extends JFrame {
 
     // parse descriptor. Could be either AE or TypeSystem descriptor
     Object descriptor = UIMAFramework.getXMLParser().parse(new XMLInputSource(descriptorFile));
-    // instantiate TCAS to get type system. Also build style map file if there is none.
-    TCAS tcas;
+    // instantiate CAS to get type system. Also build style map file if there is none.
+    CAS tcas;
     File styleMapFile;
     if (descriptor instanceof AnalysisEngineDescription) {
       tcas = CasCreationUtils.createTCas((AnalysisEngineDescription) descriptor);

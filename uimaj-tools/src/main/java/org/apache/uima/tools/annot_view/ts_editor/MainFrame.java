@@ -43,11 +43,11 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreeSelectionModel;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.CASMgr;
-import org.apache.uima.cas.text.TCAS;
 
 /**
  * Insert comment for enclosing_type here.
@@ -161,7 +161,7 @@ public class MainFrame extends JFrame {
 
   public void showAnnotFeats() {
     // Debug...
-    this.selectedType = this.ts.getType(TCAS.TYPE_NAME_ANNOTATION);
+    this.selectedType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
     updateFeatureTable();
   }
 

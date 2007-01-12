@@ -44,7 +44,6 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.resource.metadata.Capability;
 
 /**
@@ -91,7 +90,7 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
   }
 
   public void populate(AnalysisEngineDescription analysisEngine, AnalysisEngineMetaData aeMetaData,
-          TCAS cas) {
+          CAS cas) {
     tree = generateTreeView(analysisEngine, aeMetaData, cas);
 
     tree.setDragEnabled(true); // To allow drag to stylemap table.
@@ -111,7 +110,7 @@ public class AnnotationFeaturesViewer extends JPanel implements ActionListener {
   }
 
   private JTree generateTreeView(AnalysisEngineDescription analysisEngine,
-          AnalysisEngineMetaData aeMetaData, TCAS cas) {
+          AnalysisEngineMetaData aeMetaData, CAS cas) {
 
     DefaultMutableTreeNode root = new DefaultMutableTreeNode(ROOT);
     // We won't actually see this.

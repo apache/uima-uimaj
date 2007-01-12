@@ -96,7 +96,6 @@ import org.apache.uima.cas.impl.LongArrayFSImpl;
 import org.apache.uima.cas.impl.ShortArrayFSImpl;
 import org.apache.uima.cas.impl.StringArrayFSImpl;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
@@ -105,7 +104,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  * tree view for display details of annotations on which the user clicks. This class extends
  * {@link JPanel} and so can be reused within any Swing application.
  * <p>
- * To launch the viewer, call the {@link #setTCAS(TCAS)} method with the TCAS to be viewed.
+ * To launch the viewer, call the {@link #setCAS(CAS)} method with the CAS to be viewed.
  * <p>
  * The viewer is configurable via the following methods:
  * <ul>
@@ -456,7 +455,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
       checkbox.setSelected(typeNamesContains(mInitiallySelectedTypeNames, type));
     }
 
-    // redisplay (if we have a TCAS) - this allows this method to be called
+    // redisplay (if we have a CAS) - this allows this method to be called
     // either before or after displaying the viewer
     if (mCAS != null) {
       display();
@@ -544,18 +543,6 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
   }
 
   /**
-   * Sets the TCAS to be viewed. This must be called before {@link #display()}.
-   * 
-   * @param aTCAS
-   *          the TCAS to be viewed.
-   * 
-   * @deprecated as of v2.0, use {@link #setCAS(CAS) instead}
-   */
-  public void setTCAS(TCAS aTCAS) {
-    setCAS(aTCAS);
-  }
-
-  /**
    * Sets the CAS to be viewed. This must be called before {@link #display()}.
    * 
    * @param aCAS
@@ -623,8 +610,8 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
 
   /**
    * Causes the specified words to appear in boldface wherever they occur in the document. This is
-   * case-insensitive. Call this method after {@link #setTCAS()}. It wil apply only to the current
-   * document, and will be reset on the next call to {@link #setTCAS()}.
+   * case-insensitive. Call this method after {@link #setCAS()}. It wil apply only to the current
+   * document, and will be reset on the next call to {@link #setCAS()}.
    * 
    * @param aWords
    *          array of words to highlight in boldface.
@@ -636,8 +623,8 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
 
   /**
    * Causes the specified spans to appear in boldface. This is case-insensitive. Call this method
-   * after {@link #setTCAS()}. It wil apply only to the current document, and will be reset on the
-   * next call to {@link #setTCAS()}.
+   * after {@link #setCAS()}. It wil apply only to the current document, and will be reset on the
+   * next call to {@link #setCAS()}.
    * 
    * @param aSpans
    *          spans to appear in boldface (begin1, end1, begin2, end2, ...)
@@ -832,7 +819,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
       legendScrollPane.setViewportView(annotationCheckboxPanel);
     }
 
-    // add text from TCAS
+    // add text from CAS
     try {
       doc.remove(0, doc.getLength());
       doc.insertString(0, mCAS.getDocumentText(), new SimpleAttributeSet());
@@ -978,7 +965,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
       legendScrollPane.setViewportView(entityCheckboxPanel);
     }
 
-    // add text from TCAS
+    // add text from CAS
     try {
       doc.remove(0, doc.getLength());
       doc.insertString(0, mCAS.getDocumentText(), new SimpleAttributeSet());

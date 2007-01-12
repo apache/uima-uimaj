@@ -76,7 +76,6 @@ import org.apache.uima.analysis_engine.metadata.SofaMapping;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.collection.CollectionProcessingManager;
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -209,7 +208,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
   private File aeSpecifierFile;
 
-  protected TCAS tcas; // JMP
+  protected CAS tcas; // JMP
 
   private Timer progressTimer;
 
@@ -787,14 +786,14 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   }
 
   /**
-   * Creates a TCAS from an descriptor. Supports both local AE descriptors and remote service
+   * Creates a CAS from an descriptor. Supports both local AE descriptors and remote service
    * specifiers. In the latter case the service is contacted to obtain its type system.
    * 
    * @throws ResourceInitializationException
    * @throws InvalidXMLException
    * @throws IOException
    */
-  protected TCAS createTCasFromDescriptor(String aDescriptorFile) // JMP
+  protected CAS createTCasFromDescriptor(String aDescriptorFile) // JMP
           throws ResourceInitializationException, InvalidXMLException, IOException {
     ResourceSpecifier spec = UIMAFramework.getXMLParser().parseResourceSpecifier(
             new XMLInputSource(aDescriptorFile));

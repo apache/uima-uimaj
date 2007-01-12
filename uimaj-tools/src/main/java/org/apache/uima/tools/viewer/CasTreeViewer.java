@@ -74,8 +74,8 @@ public class CasTreeViewer extends JPanel {
   /**
    * Creates a CAS Tree Viewer.
    * 
-   * @param aTCAS
-   *          the TCAS containing the annotations to be displayed in the tree viewer GUI
+   * @param aCAS
+   *          the CAS containing the annotations to be displayed in the tree viewer GUI
    */
   public CasTreeViewer(CAS aCAS) throws CASException {
     super();

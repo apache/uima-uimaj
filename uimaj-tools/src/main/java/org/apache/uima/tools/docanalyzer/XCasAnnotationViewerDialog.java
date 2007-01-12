@@ -71,7 +71,6 @@ import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.internal.util.BrowserUtil;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.tools.images.Images;
@@ -134,7 +133,7 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
 
   JRadioButton xmlRB = null;
 
-  private TCAS cas;
+  private CAS cas;
 
   private boolean processedStyleMap = false;
   
@@ -210,7 +209,7 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
   public XCasAnnotationViewerDialog(JFrame aParentFrame, String aDialogTitle, PrefsMediator med,
           File aStyleMapFile, String aPerformanceStats, TypeSystem aTypeSystem,
           final String[] aTypesToDisplay, String interactiveTempFN, boolean javaViewerRBisSelected,
-          boolean javaViewerUCRBisSelected, boolean xmlRBisSelected, TCAS cas) {
+          boolean javaViewerUCRBisSelected, boolean xmlRBisSelected, CAS cas) {
     super(aParentFrame, aDialogTitle);
     // create the AnnotationViewGenerator (for HTML view generation)
     this.med1 = med;
@@ -238,7 +237,7 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
 
   public XCasAnnotationViewerDialog(JFrame aParentFrame, String aDialogTitle, PrefsMediator med,
           File aStyleMapFile, String aPerformanceStats, TypeSystem aTypeSystem,
-          final String[] aTypesToDisplay, boolean generatedStyleMap, TCAS cas) {
+          final String[] aTypesToDisplay, boolean generatedStyleMap, CAS cas) {
 
     super(aParentFrame, aDialogTitle);
     this.med1 = med;
@@ -409,7 +408,7 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
     try {
 
       File xcasFile = new File(inputDirPath, fileName);
-      // create a new TCAS
+      // create a new CAS
       CAS cas = CasCreationUtils.createCas(Collections.EMPTY_LIST, typeSystem, UIMAFramework
               .getDefaultPerformanceTuningProperties());
       // deserialize XCAS into CAS

@@ -409,7 +409,7 @@ public class MainFrame extends JFrame {
   // return;
   // }
   // indexLabel = label;
-  // isAnnotIndex = label.equals(TCAS.STD_ANNOTATION_INDEX);
+  // isAnnotIndex = label.equals(CAS.STD_ANNOTATION_INDEX);
   // index = cas.getIndexRepository().getIndex(label, type);
   // String title = indexLabel + " [" + index.getType().getName() + "]";
   // MultiAnnotViewerFrame f = new MultiAnnotViewerFrame(title);
@@ -773,7 +773,7 @@ public class MainFrame extends JFrame {
             Timer time = new Timer();
             time.start();
             Object descriptor = UIMAFramework.getXMLParser().parse(new XMLInputSource(tsFile));
-            // instantiate TCAS to get type system. Also build style
+            // instantiate CAS to get type system. Also build style
             // map file if there is none.
             TypeSystemDescription tsDesc = (TypeSystemDescription) descriptor;
             tsDesc.resolveImports();
@@ -2622,7 +2622,7 @@ public class MainFrame extends JFrame {
       } else {
         this.ae = UIMAFramework.produceAnalysisEngine(specifier, rsrcMgr, null);
       }
-      this.cas = this.ae.newTCAS();
+      this.cas = this.ae.newCAS();
       this.acdItem.setEnabled(true);
       this.tsViewerItem.setEnabled(true);
       this.xcasWriteItem.setEnabled(true);
