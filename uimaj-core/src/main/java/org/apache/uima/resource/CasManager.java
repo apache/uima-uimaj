@@ -86,7 +86,7 @@ public interface CasManager extends CasOwner {
    * @param cas
    *          The CAS
    * @param requiredInterface
-   *          interface to get. Currently must be one of CAS, CAS, or JCas.
+   *          interface to get. Currently must be either CAS or JCas.
    */
   AbstractCas getCasInterface(CAS cas, Class requiredInterface);
 }

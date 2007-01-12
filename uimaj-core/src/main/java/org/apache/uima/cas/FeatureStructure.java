@@ -261,7 +261,7 @@ public interface FeatureStructure {
    * 
    * @param feat.
    *          The feature whose value we want to get and whose type is one of the primitve types.
-   * @return A string representation of a primitive feature value.
+   * @return
    * @throws CASRuntimeException
    *           If <code>feat</code> is not defined for the type of this FS, or if the type is not
    *           a primitive type.

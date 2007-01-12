@@ -174,7 +174,7 @@ public interface JCas extends AbstractCas {
    * the framework ClassLoader.
    * 
    * @return The one instance of the DocumentAnnotation annotation.
-   * @see org.apache.uima.cas.text.CAS#getDocumentAnnotation
+   * @see org.apache.uima.cas.CAS#getDocumentAnnotation
    */
   public abstract TOP getDocumentAnnotationFs();
 

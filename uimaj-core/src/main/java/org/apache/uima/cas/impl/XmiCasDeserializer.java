@@ -69,7 +69,7 @@ public class XmiCasDeserializer {
     // Expect the start of the XML document.
     private static final int DOC_STATE = 0;
 
-    // At the top level. Expect a FS, or a CAS document, or the end of the
+    // At the top level. Expect a FS, or document text element, or the end of the
     // XML input.
     private static final int FS_STATE = 1;
 
@@ -148,8 +148,8 @@ public class XmiCasDeserializer {
     // Store IndexRepositories in a vector;
     private ArrayList indexRepositories;
 
-    // and CAS too
-    private ArrayList tcasInstances;
+    // and views too
+    private ArrayList views;
 
     // utilities for handling CAS list types
     private ListUtils listUtils;
@@ -187,7 +187,7 @@ public class XmiCasDeserializer {
       this.fsListNodesFromMultivaluedProperties = new IntVector();
       this.buffer = new StringBuffer();
       this.indexRepositories = new ArrayList();
-      this.tcasInstances = new ArrayList();
+      this.views = new ArrayList();
       indexRepositories.add(this.cas.getBaseIndexRepository());
       // There should always be another index for the Initial View
       indexRepositories.add(this.cas.getView(CAS.NAME_DEFAULT_SOFA).getIndexRepository());
@@ -449,7 +449,7 @@ public class XmiCasDeserializer {
           indexRepositories.add(cas.getSofaIndexRepository(sofa));
         }
         ((CASImpl) view).registerView(sofa);
-        tcasInstances.add(view);
+        views.add(view);
       }
       if (id < 0) {
         idLess.add(addr);
@@ -930,8 +930,8 @@ public class XmiCasDeserializer {
       // time = System.currentTimeMillis() - time;
       // System.out.println("Done in " + new TimeSpan(time));
 
-      for (int i = 0; i < tcasInstances.size(); i++) {
-        ((CASImpl) tcasInstances.get(i)).updateDocumentAnnotation();
+      for (int i = 0; i < views.size(); i++) {
+        ((CASImpl) views.get(i)).updateDocumentAnnotation();
       }
     }
 

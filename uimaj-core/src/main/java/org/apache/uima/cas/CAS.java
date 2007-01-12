@@ -397,7 +397,7 @@ public interface CAS extends AbstractCas {
           + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_TAIL;
 
   /**
-   * Name of CAS (Text CAS) name space.
+   * Name of Text CAS name space.
    */
   static final String NAME_SPACE_UIMA_TCAS = "uima" + TypeSystem.NAMESPACE_SEPARATOR + "tcas";
 
@@ -458,8 +458,7 @@ public interface CAS extends AbstractCas {
           + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_LANGUAGE;
 
   /**
-   * Name of the standard index on annotations. The standard index is automatically defined if you
-   * use a CAS.
+   * Name of the built-in index on annotations.
    */
   static final String STD_ANNOTATION_INDEX = "AnnotationIndex";
 
@@ -563,9 +562,10 @@ public interface CAS extends AbstractCas {
   JCas getJCas() throws CASException;
 
   /**
-   * Get the Cas view specified for the current component.
+   * Get the Cas view that the current component should use.  This
+   * should only be used by single-view components.
    * 
-   * @return the Cas view specified for the current component by Sofa mapping. Defaults to _InitialView.
+   * @return the Cas view specified for the current component by Sofa mapping. Defaults to _InitialView if there is no Sofa mapping.
    * 
    */
   CAS getCurrentView();
@@ -583,7 +583,7 @@ public interface CAS extends AbstractCas {
   /**
    * Get the Sofa feature structure associated with this CAS view.
    * 
-   * @return The SofaFS associated with this CAS.
+   * @return The SofaFS associated with this CAS view.
    */
   SofaFS getSofa();
 

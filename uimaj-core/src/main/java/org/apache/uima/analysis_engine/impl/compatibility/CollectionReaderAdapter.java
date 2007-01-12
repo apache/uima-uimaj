@@ -95,7 +95,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
       TypeSystem typeSystem;
       if (aCAS instanceof JCas) {
         typeSystem = ((JCas) aCAS).getTypeSystem();
-      } else // CAS or CAS
+      } else // CAS
       {
         typeSystem = ((CAS) aCAS).getTypeSystem();
       }
