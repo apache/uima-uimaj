@@ -18,3 +18,11 @@ org.apache.uima.util.InlineXmlCasConsumer org.apache.uima.tools.components.Inlin
 org.apache.uima.util.XCasWriterCasConsumer org.apache.uima.tools.components.XCasWriterCasConsumer
 org.apache.uima.util.XmiWriterCasConsumer org.apache.uima.tools.components.XmiWriterCasConsumer
 org.apache.uima.util.XmlDetagger org.apache.uima.tools.components.XmlDetagger
+getTCAS\(\) getCurrentView()
+getTCAS\( getView(
+org.apache.uima.cas.text.TCAS org.apache.uima.cas.CAS
+\bTCAS\b CAS
+CasCreationUtils.createTCas CasCreationUtils.createCas
+TCASException CASException
+TCASRuntimeException CASRuntimeException
+TCasPool CasPool

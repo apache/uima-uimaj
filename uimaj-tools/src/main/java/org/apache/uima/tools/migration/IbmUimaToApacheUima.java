@@ -24,12 +24,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
-import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.uima.internal.util.FileUtils;
 
@@ -41,10 +43,11 @@ import org.apache.uima.internal.util.FileUtils;
  * package names in them (e.g., launch configurations, scripts).
  */
 public class IbmUimaToApacheUima {
-  private static Map packageMapping = new TreeMap();
-  private static Map stringReplacements = new TreeMap();
+  private static List replacements = new ArrayList();
   private static int MAX_FILE_SIZE = 1000000; //don't update files bigger than this
   private static Set extensions = new HashSet();
+  private static final Pattern IMPORT_PATTERN = Pattern.compile("(?m)^\\s*import\\s+([^;]*);\\s*$");
+
   
   /**
    * Main program.  Expects one argument, the name of a directory containing files to
@@ -83,9 +86,9 @@ public class IbmUimaToApacheUima {
 
     //read resource files
     //map from IBM UIMA package names to Apache UIMA package names
-    readMapping("packageMapping.txt", packageMapping);
+    readMapping("packageMapping.txt", replacements, true);
     //other string replacements
-    readMapping("stringReplacements.txt", stringReplacements);
+    readMapping("stringReplacements.txt", replacements, false);
 
     //from system property, get list of file extensions to exclude
     
@@ -184,34 +187,17 @@ public class IbmUimaToApacheUima {
       return;
     }
     String contents = original;
-    //loop over packages to replace
-    //we do special processing for package names to try to handle the case where
-    //user code exists in a package prefixed by com.ibm.uima.
-    //We only replace the package name when it appears as part of a fully-qualified
-    //class name in that package, not as a prefix of another package.
-    Iterator entries = packageMapping.entrySet().iterator();
-    while (entries.hasNext()) {
-      Map.Entry entry = (Map.Entry)entries.next();
-      String ibmPkg = (String)entry.getKey();
-      String apachePkg = (String)entry.getValue();
-      //turn package name into a regex (have to escape the . and,
-      //technically, should allow whitepsace around dots)
-      String ibmPkgRegex = ibmPkg.replaceAll("\\.", "\\\\s*\\\\.\\\\s*");
-      //form regex that will find any fully-qualified class name in this package
-      String regex = ibmPkgRegex+"(\\.(\\*|[A-Z]\\w*))";
-      contents = contents.replaceAll(regex, apachePkg + "$1");
+    //apply replacements
+    Iterator iter = replacements.iterator();
+    while (iter.hasNext()) {
+      Replacement replacement = (Replacement)iter.next();
+      contents = contents.replaceAll(replacement.regex, replacement.replacementStr);
     }
-    //now apply simple string replacements
-    entries = stringReplacements.entrySet().iterator();
-    while (entries.hasNext()) {
-      Map.Entry entry = (Map.Entry)entries.next();
-      String src = (String)entry.getKey();
-      String dest = (String)entry.getValue();
-      //form regex from src, by escaping dots and allowing whitespace
-      String srcRegex = src.replaceAll("\\.", "\\\\s*\\\\.\\\\s*");
-      //replace
-      contents = contents.replaceAll(srcRegex, dest);      
-    }    
+
+    //remove duplicate imports from .java files (can be caused by some replacements)
+    if (file.getName().endsWith(".java")) {
+      contents = removeDuplicateImports(contents);
+    }
     
     //write file if it changed
     if (!contents.equals(original)) {
@@ -219,20 +205,93 @@ public class IbmUimaToApacheUima {
     }
   }
   /**
-   * Reads the mapping from IBM UIMA package names to Apache UIMA
-   * package names from a resource file and populates the packageMapping
-   * field.
+   * @param contents
+   * @return
    */
-  private static void readMapping(String fileName, Map map) throws IOException {
+  private static String removeDuplicateImports(String contents) {
+    HashSet classes = new HashSet();
+    Matcher matcher = IMPORT_PATTERN.matcher(contents);
+    int pos = 0;
+    int endOfLastDuplicate = 0;
+    StringBuffer result = null;
+    while (matcher.find(pos)) {
+      String className = matcher.group(1);
+      //account for whitespace in class name
+      className = className.replaceAll("\\s*","");
+      if (!classes.add(className)) {
+        //duplicate import found.  Do not append the import,
+        //but get everything else before it.
+        if (result == null) {
+          result = new StringBuffer(contents.length());
+        }
+        result.append(contents.substring(endOfLastDuplicate, matcher.start()));
+        endOfLastDuplicate = matcher.end();
+      }
+      pos = matcher.end();
+    }
+    if (result == null) {
+      //no duplicates found
+      return contents;
+    }
+    else {
+      result.append(contents.substring(endOfLastDuplicate));
+      return result.toString();
+    }
+  }
+
+  /**
+   * Reads a mapping from a resource file, and populates a List of
+   * Replacement objects.  We don't use a Map because the order in which
+   * the replacements are applied can be important.
+   * 
+   * @param fileName name of file to read from (looked up looking using Class.getResource())
+   * @param mappings List to which Replacement objects will be added.
+   *   Each object contains the regex to search for and the replacement string.
+   * @param treatAsPackageNames if true, the keys in the resource file will be considered
+   *   package names, and this routine will produce regexes that replace any fully-qualified
+   *   class name belonging to that package.
+   */
+  private static void readMapping(String fileName, List mappings, boolean treatAsPackageNames) throws IOException {
     URL pkgListFile = IbmUimaToApacheUima.class.getResource(fileName);
     InputStream inStream = pkgListFile.openStream();
     BufferedReader reader = new BufferedReader(new InputStreamReader(inStream));
     String line = reader.readLine();
     while (line != null) {
       String[] mapping = line.split(" ");
-      map.put(mapping[0],mapping[1]);
+      String regex, replaceStr;
+      if (treatAsPackageNames) {
+        //we do special processing for package names to try to handle the case where
+        //user code exists in a package prefixed by com.ibm.uima.
+        //We only replace the package name when it appears as part of a fully-qualified
+        //class name in that package, not as a prefix of another package.
+
+        //turn package name into a regex (have to escape the . and,
+        //technically, should allow whitepsace around dots)
+        String pkgRegex = mapping[0].replaceAll("\\.", "\\\\s*\\\\.\\\\s*");
+        //form regex that will find any fully-qualified class name in this package
+        regex = pkgRegex+"(\\.(\\*|[A-Z]\\w*))";
+        replaceStr = mapping[1] + "$1";
+      }
+      else {
+        //form regex from src, by escaping dots and allowing whitespace
+        regex = mapping[0].replaceAll("\\.", "\\\\s*\\\\.\\\\s*");
+        replaceStr = mapping[1];        
+      }      
+      
+      Replacement replacement = new Replacement(regex, replaceStr);
+      mappings.add(replacement);
       line = reader.readLine();
     }
     inStream.close();
+  }
+  
+  private static class Replacement {
+    String regex;
+    String replacementStr;
+    
+    Replacement(String regex, String replacement) {
+      this.regex = regex;
+      this.replacementStr = replacement;
+    }
   }
 }
