@@ -476,17 +476,12 @@ public class UimacppEngine {
   static void throwJTafException(Exception exc) throws UimacppException {
     if (exc instanceof InternalTafException) {
       InternalTafException itExc = (InternalTafException) exc;
+
       // check special errors
       long l = itExc.getTafErrorCode();
       switch ((int) l) {
         case 1000:
-        case 4000:
         case 5000:
-        case 5003:
-        case 5004:
-        case 5005:
-        case 5006:
-        case 5020:
         case 10000:
           throw new OutOfMemoryError();
       }
