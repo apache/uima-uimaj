@@ -34,9 +34,11 @@ import org.apache.uima.analysis_engine.TaeDescription;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.impl.FixedFlow_impl;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.resource.metadata.impl.Capability_impl;
 import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
 import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
@@ -72,7 +74,14 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       mSimpleDesc.getMetaData().setName("Simple Test");
       TypeSystemDescription typeSys = new TypeSystemDescription_impl();
       typeSys.addType("foo.Bar", "test", "uima.tcas.Annotation");
+      typeSys.addType("NamedEntity", "test", "uima.tcas.Annotation");
+      typeSys.addType("DocumentStructure", "test", "uima.tcas.Annotation");
       mSimpleDesc.getAnalysisEngineMetaData().setTypeSystem(typeSys);
+      Capability cap = new Capability_impl();
+      cap.addOutputType("NamedEntity", true);
+      cap.addOutputType("DocumentStructure", true);
+      Capability[] caps = new Capability[] {cap};
+       mSimpleDesc.getAnalysisEngineMetaData().setCapabilities(caps);
 
       mAggDesc = new TaeDescription_impl();
       mAggDesc.setPrimitive(false);
@@ -81,6 +90,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       FixedFlow_impl flow = new FixedFlow_impl();
       flow.setFixedFlow(new String[] { "Test" });
       mAggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
+      mAggDesc.getAnalysisEngineMetaData().setCapabilities(caps);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -291,12 +301,12 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
 
     // process(CAS,ResultSpecification)
     ResultSpecification resultSpec = new ResultSpecification_impl();
-    resultSpec.addResultType("FakeType", true);
+    resultSpec.addResultType("NamedEntity", true);
 
     tcas.setDocumentText("testing...");
     tae.process(tcas, resultSpec);
     assertEquals("testing...", TestAnnotator.lastDocument);
-    // TODO: resultSpec not supported assertEquals(resultSpec, TestAnnotator.lastResultSpec);
+    assertEquals(resultSpec, TestAnnotator.lastResultSpec);
     tcas.reset();
   }
 
