@@ -121,7 +121,7 @@ public class Jg {
   static {
     CAS tcas = null;
     try {
-      tcas = CasCreationUtils.createTCas((TypeSystemDescription) null, null,
+      tcas = CasCreationUtils.createCas((TypeSystemDescription) null, null,
               new FsIndexDescription[0], casCreateProperties);
 
     } catch (ResourceInitializationException e1) {
@@ -434,7 +434,7 @@ public class Jg {
 
             // no ResourceManager, since everything has been
             // imported/merged by previous actions
-            casLocal = (CASImpl) CasCreationUtils.createTCas(typeSystemDescription, typePriorities,
+            casLocal = (CASImpl) CasCreationUtils.createCas(typeSystemDescription, typePriorities,
                     fsIndexDescription);
           } catch (ResourceInitializationException e) {
             error.newError(IError.WARN, getString("resourceInitializationException",
