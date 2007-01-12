@@ -61,7 +61,7 @@ public class DescriptorTCAS extends AbstractModelPart {
     try {
       // long time = System.currentTimeMillis();
       // System.out.println("Creating TCas model");
-      cachedResult = CasCreationUtils.createTCas(aes, casCreateProperties, modelRoot
+      cachedResult = CasCreationUtils.createCas(aes, casCreateProperties, modelRoot
               .createResourceManager());
       // System.out.println("Finished Creating TCas model; time= " +
       // (System.currentTimeMillis() - time));
