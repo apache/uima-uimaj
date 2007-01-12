@@ -24,7 +24,7 @@ import java.util.Collection;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.admin.CASAdminException;
-import org.apache.uima.cas.text.TCAS;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.taeconfigurator.InternalErrorCDE;
@@ -32,12 +32,12 @@ import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.apache.uima.util.CasCreationUtils;
 
 /**
- * Model part: TCAS corresponding to the descriptor being edited
+ * Model part: CAS corresponding to the descriptor being edited
  */
 
 public class DescriptorTCAS extends AbstractModelPart {
 
-  private TCAS cachedResult;
+  private CAS cachedResult;
 
   public DescriptorTCAS(MultiPageEditor modelRoot) {
     super(modelRoot);
@@ -75,16 +75,16 @@ public class DescriptorTCAS extends AbstractModelPart {
   }
 
   /**
-   * @return a TCAS for the model descriptor
+   * @return a CAS for the model descriptor
    */
-  public TCAS get() {
+  public CAS get() {
     if (dirty) {
       update();
     }
     return cachedResult;
   }
 
-  public void set(TCAS tcas) {
+  public void set(CAS tcas) {
     cachedResult = tcas;
     dirty = false;
   }

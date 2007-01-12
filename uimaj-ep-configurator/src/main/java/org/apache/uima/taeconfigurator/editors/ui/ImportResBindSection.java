@@ -62,7 +62,7 @@ public class ImportResBindSection extends ImportSection {
     getResourceManagerConfiguration().setExternalResources(externalResourceDescription0);
   }
 
-  // indexes are checked and merged when the TCAS is built
+  // indexes are checked and merged when the CAS is built
   protected boolean isValidImport(String title, String message) {
     ResourceManagerConfiguration savedRmc = editor.getResolvedExternalResourcesAndBindings();
     if (null != savedRmc)

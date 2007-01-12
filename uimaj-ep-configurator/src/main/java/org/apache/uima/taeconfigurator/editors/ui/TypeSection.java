@@ -48,7 +48,6 @@ import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.impl.UIMAFramework_impl;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.AllowedValue;
@@ -917,7 +916,7 @@ public class TypeSection extends AbstractImportablePartSection {
     // have list of features really disappearing (not kept present by imports or built-ins)
     // return all types/features of these for types which are subtypes of the passed-in type
 
-    TCAS tcas = editor.getTCAS();
+    CAS tcas = editor.getCurrentView();
     TypeSystem typeSystem = tcas.getTypeSystem();
     Type thisType = typeSystem.getType(localTd.getName());
     List subsumedTypesList = typeSystem.getProperlySubsumedTypes(thisType);

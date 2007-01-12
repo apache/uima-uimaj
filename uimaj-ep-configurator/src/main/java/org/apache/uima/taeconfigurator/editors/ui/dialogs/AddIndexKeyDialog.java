@@ -89,7 +89,7 @@ public class AddIndexKeyDialog extends AbstractDialog {
    * @return an array of features whose range is primitive
    */
   private String[] getSortableFeatureNames(String selectedTypeName) {
-    Type selectedType = section.editor.getTCAS().getTypeSystem().getType(selectedTypeName);
+    Type selectedType = section.editor.getCurrentView().getTypeSystem().getType(selectedTypeName);
     List feats = selectedType.getFeatures();
     Collection sortableFeatureNames = new ArrayList();
 

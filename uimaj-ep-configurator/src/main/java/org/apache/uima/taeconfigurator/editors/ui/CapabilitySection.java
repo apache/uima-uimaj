@@ -587,8 +587,8 @@ public class CapabilitySection extends AbstractSection {
         TableTreeItem typeItem = editItem.getParentItem();
         String typeName = getFullyQualifiedName(typeItem);
 
-        // using the TCAS to get all the inherited features
-        Type type = editor.getTCAS().getTypeSystem().getType(typeName);
+        // using the CAS to get all the inherited features
+        Type type = editor.getCurrentView().getTypeSystem().getType(typeName);
 
         AddCapabilityFeatureDialog dialog = new AddCapabilityFeatureDialog(this, type, c);
         if (dialog.open() == Window.CANCEL)
@@ -860,8 +860,8 @@ public class CapabilitySection extends AbstractSection {
     Capability c = getCapabilityFromTableTreeItem(selItem.getParentItem());
     String typeName = getFullyQualifiedName(selItem);
 
-    // using the TCAS to get all the inherited features
-    Type type = editor.getTCAS().getTypeSystem().getType(typeName);
+    // using the CAS to get all the inherited features
+    Type type = editor.getCurrentView().getTypeSystem().getType(typeName);
 
     AddCapabilityFeatureDialog dialog = new AddCapabilityFeatureDialog(this, type, c);
     if (dialog.open() == Window.CANCEL)

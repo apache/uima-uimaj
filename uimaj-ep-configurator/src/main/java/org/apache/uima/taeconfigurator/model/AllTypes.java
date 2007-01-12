@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
@@ -59,7 +59,7 @@ public class AllTypes extends AbstractModelPart {
   private void update() {
     cachedResult.clear();
 
-    TCAS tcas = modelRoot.getTCAS();
+    CAS tcas = modelRoot.getCurrentView();
     if (null == tcas)
       return;
     TypeSystem typeSystem = tcas.getTypeSystem();

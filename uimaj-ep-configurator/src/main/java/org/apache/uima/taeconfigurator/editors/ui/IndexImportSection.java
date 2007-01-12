@@ -22,7 +22,7 @@ package org.apache.uima.taeconfigurator.editors.ui;
 import java.io.IOException;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.cas.text.TCAS;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.Import;
@@ -72,20 +72,20 @@ public class IndexImportSection extends ImportSection {
     getAnalysisEngineMetaData().setFsIndexes(fsIndexDescription0);
   }
 
-  // indexes are checked and merged when the TCAS is built
+  // indexes are checked and merged when the CAS is built
   protected boolean isValidImport(String title, String message) {
 
     FsIndexCollection savedIC = editor.getMergedFsIndexCollection();
     if (null != savedIC)
       savedIC = (FsIndexCollection) savedIC.clone();
-    TCAS savedTCAS = editor.getTCAS();
+    CAS savedCAS = editor.getCurrentView();
     try {
       editor.setMergedFsIndexCollection();
-      editor.descriptorTCAS.validate();
+      editor.descriptorCAS.validate();
     } catch (ResourceInitializationException e) {
       revertMsg(title, message, editor.getMessagesToRootCause(e));
       editor.setMergedFsIndexCollection(savedIC);
-      editor.descriptorTCAS.set(savedTCAS);
+      editor.descriptorCAS.set(savedCAS);
       return false;
     }
     return true;

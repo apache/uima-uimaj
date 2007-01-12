@@ -25,11 +25,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.FeatureDescription;
 import org.apache.uima.resource.metadata.FsIndexDescription;
@@ -50,7 +50,7 @@ public class BuiltInTypes extends AbstractModelPart {
   public static final Map typeDescriptions = new TreeMap();
 
   static {
-    TCAS tcas = null;
+    CAS tcas = null;
     try {
       tcas = CasCreationUtils.createTCas((TypeSystemDescription) null, null,
               new FsIndexDescription[0], casCreateProperties);

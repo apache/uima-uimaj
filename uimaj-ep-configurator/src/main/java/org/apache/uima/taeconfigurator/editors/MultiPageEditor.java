@@ -48,8 +48,8 @@ import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_impl;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.collection.CasInitializerDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -252,7 +252,7 @@ public class MultiPageEditor extends FormEditor {
 
   // values computed when first needed
   // all use common markStale()
-  public DescriptorTCAS descriptorTCAS;
+  public DescriptorTCAS descriptorCAS;
 
   public AllTypes allTypes;
 
@@ -466,7 +466,7 @@ public class MultiPageEditor extends FormEditor {
     // Model initialization
     fileDirty = false;
     dirtyTypeNameHash = new HashSet();
-    descriptorTCAS = new DescriptorTCAS(this);
+    descriptorCAS = new DescriptorTCAS(this);
     allTypes = new AllTypes(this);
     definedTypesWithSupers = new DefinedTypesWithSupers(this);
 
@@ -974,7 +974,7 @@ public class MultiPageEditor extends FormEditor {
   }
 
   /**
-   * Called when switching off of the indexes page Goal is to validate indexes by making a TCAS - as
+   * Called when switching off of the indexes page Goal is to validate indexes by making a CAS - as
    * a side effect it does index validation.
    * 
    * We do this without changing the typeSystemDescription
@@ -982,15 +982,15 @@ public class MultiPageEditor extends FormEditor {
    * @return
    */
   private boolean validateIndexes() {
-    TCAS localTCAS = descriptorTCAS.get();
+    CAS localCAS = descriptorCAS.get();
     TypePriorities savedMergedTypePriorities = getMergedTypePriorities();
     FsIndexCollection savedFsIndexCollection = getMergedFsIndexCollection();
     try {
       setMergedFsIndexCollection();
       setMergedTypePriorities();
-      descriptorTCAS.validate();
+      descriptorCAS.validate();
     } catch (Exception ex) {
-      descriptorTCAS.set(localTCAS);
+      descriptorCAS.set(localCAS);
       if (!revertToLastValid(Messages.getString("MultiPageEditor.indexDefProblemTitle"), //$NON-NLS-1$
               Messages.getString("MultiPageEditor.indexDefProblem") + //$NON-NLS-1$
                       getMessagesToRootCause(ex))) {
@@ -1094,7 +1094,7 @@ public class MultiPageEditor extends FormEditor {
 
   private void checkForNewlyDirtyTypes(TypeSystemDescription oldTsd) {
 
-    // an array of TypeDescription objects (not TCAS), including imported ones
+    // an array of TypeDescription objects (not CAS), including imported ones
     TypeDescription[] oldTypes = (null == oldTsd || null == oldTsd.getTypes()) ? new TypeDescription[0]
             : oldTsd.getTypes();
     HashMap oldTypeHash = new HashMap(oldTypes.length);
@@ -1278,7 +1278,7 @@ public class MultiPageEditor extends FormEditor {
     aeDescription.getAnalysisEngineMetaData().setTypeSystem(this.typeSystemDescription);
 
     if (doValidation)
-      descriptorTCAS.validate();
+      descriptorCAS.validate();
   }
 
   // **************************************************************
@@ -1426,7 +1426,7 @@ public class MultiPageEditor extends FormEditor {
     aeDescription.getAnalysisEngineMetaData().setTypePriorities(typePriorities);
     setMergedTypePriorities();
     setImportedTypePriorities();
-    descriptorTCAS.validate();
+    descriptorCAS.validate();
   }
 
   private static class MultilevelCancel extends RuntimeException {
@@ -1503,7 +1503,7 @@ public class MultiPageEditor extends FormEditor {
     aeDescription.getAnalysisEngineMetaData().setFsIndexCollection(indexCollection);
     setMergedFsIndexCollection();
     setImportedFsIndexCollection();
-    descriptorTCAS.validate();
+    descriptorCAS.validate();
   }
 
   private void showContextLoadFailureMessage(Exception e, String contextFile) {
@@ -1531,7 +1531,7 @@ public class MultiPageEditor extends FormEditor {
     } catch (InvalidXMLException e) {
       throw new ResourceInitializationException(e);
     }
-    descriptorTCAS.validate();
+    descriptorCAS.validate();
   }
 
   public String getAbsolutePathFromImport(Import importItem) {
@@ -1617,13 +1617,13 @@ public class MultiPageEditor extends FormEditor {
   }
 
   public void markTCasDirty() {
-    descriptorTCAS.markDirty();
+    descriptorCAS.markDirty();
     allTypes.markDirty();
     definedTypesWithSupers.markDirty();
   }
 
-  public TCAS getTCAS() {
-    return descriptorTCAS.get();
+  public CAS getCurrentView() {
+    return descriptorCAS.get();
   }
 
   public IProject getProject() {
@@ -1816,7 +1816,7 @@ public class MultiPageEditor extends FormEditor {
 
   private void markTypeModelDirty() {
     allTypes.markDirty();
-    descriptorTCAS.markDirty();
+    descriptorCAS.markDirty();
     definedTypesWithSupers.markDirty();
   }
 
@@ -1839,7 +1839,7 @@ public class MultiPageEditor extends FormEditor {
         public void run(IProgressMonitor progressMonitor) {
           try {
             jg.mainForCde(new MergerImpl(), new JCasGenProgressMonitor(progressMonitor),
-                    jCasGenThrower, inputFile, outputDirectory, types, (CASImpl) getTCAS());
+                    jCasGenThrower, inputFile, outputDirectory, types, (CASImpl) getCurrentView());
           } catch (IOException e) {
             Utility.popMessage(Messages.getString("MultiPageEditor.25"), //$NON-NLS-1$
                     Messages.getString("MultiPageEditor.26") //$NON-NLS-1$

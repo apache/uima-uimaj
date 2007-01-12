@@ -65,7 +65,7 @@ public class DefinedTypesWithSupers extends AbstractModelPart {
       return; // cleared table
 
     TypeDescription[] types = typeSystemDescription.getTypes();
-    TypeSystem typeSystem = modelRoot.descriptorTCAS.get().getTypeSystem();
+    TypeSystem typeSystem = modelRoot.descriptorCAS.get().getTypeSystem();
 
     String typeName;
     Map allTypes = modelRoot.allTypes.get();

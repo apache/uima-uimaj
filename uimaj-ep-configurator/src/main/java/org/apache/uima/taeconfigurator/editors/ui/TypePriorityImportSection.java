@@ -22,7 +22,7 @@ package org.apache.uima.taeconfigurator.editors.ui;
 import java.io.IOException;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.cas.text.TCAS;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.TypePriorities;
@@ -68,19 +68,19 @@ public class TypePriorityImportSection extends ImportSection {
     getTypePriorities().setPriorityLists(typePriorityList0);
   }
 
-  // indexes are checked and merged when the TCAS is built
+  // indexes are checked and merged when the CAS is built
   protected boolean isValidImport(String title, String message) {
-    TCAS savedTCAS = editor.getTCAS();
+    CAS savedCAS = editor.getCurrentView();
     TypePriorities savedTP = editor.getMergedTypePriorities();
     if (null != savedTP)
       savedTP = (TypePriorities) savedTP.clone();
     try {
       editor.setMergedTypePriorities();
-      editor.descriptorTCAS.validate();
+      editor.descriptorCAS.validate();
     } catch (ResourceInitializationException e1) {
       revertMsg(title, message, editor.getMessagesToRootCause(e1));
       editor.setMergedTypePriorities(savedTP);
-      editor.descriptorTCAS.set(savedTCAS);
+      editor.descriptorCAS.set(savedCAS);
       return false;
     }
     return true;

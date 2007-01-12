@@ -22,7 +22,7 @@ package org.apache.uima.taeconfigurator.editors.ui;
 import java.io.IOException;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.cas.text.TCAS;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class TypeImportSection extends ImportSection {
 
-  private TCAS savedTCAS;
+  private CAS savedCAS;
 
   private boolean importWasRemoved;
 
@@ -72,7 +72,7 @@ public class TypeImportSection extends ImportSection {
   }
 
   protected void setModelImportArray(Import[] imports) {
-    savedTCAS = editor.getTCAS();
+    savedCAS = editor.getCurrentView();
     Import[] oldImports = getTypeSystemDescription().getImports();
     importWasRemoved = (null != oldImports) && (oldImports.length > imports.length);
     getTypeSystemDescription().setImports(imports);
@@ -88,12 +88,12 @@ public class TypeImportSection extends ImportSection {
 
     try {
       editor.setMergedTypeSystemDescription();
-      editor.descriptorTCAS.validate();
+      editor.descriptorCAS.validate();
     } catch (ResourceInitializationException e1) {
       revertMsg(title, msg, editor.getMessagesToRootCause(e1));
       editor.setMergedTypeSystemDescription(savedTSD);
       editor.setImportedTypeSystemDescription(savedITSD);
-      editor.descriptorTCAS.set(savedTCAS);
+      editor.descriptorCAS.set(savedCAS);
       return false;
     }
     if (importWasRemoved)
@@ -105,7 +105,7 @@ public class TypeImportSection extends ImportSection {
         revertMsg(title, msg, "Cancelled by user.");
         editor.setMergedTypeSystemDescription(savedTSD);
         editor.setImportedTypeSystemDescription(savedITSD);
-        editor.descriptorTCAS.set(savedTCAS);
+        editor.descriptorCAS.set(savedCAS);
         return false;
       }
 
@@ -114,7 +114,7 @@ public class TypeImportSection extends ImportSection {
 
   /**
    * At this point, the basic type system description is updated. and validated. Validation has
-   * updated the merged type system description, and updated the TCAS.
+   * updated the merged type system description, and updated the CAS.
    */
   protected void finishImportChangeAction() {
 
