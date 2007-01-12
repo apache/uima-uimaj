@@ -31,7 +31,6 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.SofaID;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.TCAS;
 
 /**
  * Simple English to German translator
@@ -40,22 +39,22 @@ import org.apache.uima.cas.text.TCAS;
 public class TransAnnotator extends Annotator_ImplBase implements GenericAnnotator {
 
   public void process(CAS aCas, ResultSpecification aResultSpec) throws AnnotatorProcessException {
-    TCAS engTcas, germTcas;
+    CAS engTcas, germTcas;
 
-    // get English text Sofa and open TCAS view
+    // get English text Sofa and open CAS view
     SofaID realSofaName = getContext().mapToSofaID("EnglishDocument");
     // System.out.println("TRANSANNOTATOR: real sofa name for English document " +
     // realSofaName.getSofaID());
 
-    engTcas = aCas.getTCAS(aCas.getSofa(realSofaName));
+    engTcas = aCas.getView(aCas.getSofa(realSofaName));
     // if (engTcas == null)
     // System.out.println(realSofaName + " sofa not found in CAS");
 
     realSofaName = getContext().mapToSofaID("GermanDocument");
     // System.out.println("TRANSANNOTATOR: real sofa name of GermanDocument " +
     // realSofaName.getSofaID());
-    // Create the output German text Sofa and open TCAS view
-    germTcas = aCas.getTCAS(aCas.createSofa(realSofaName, "text"));
+    // Create the output German text Sofa and open CAS view
+    germTcas = aCas.getView(aCas.createSofa(realSofaName, "text"));
 
     // Get some necessary Type System constants
     Type annot = engTcas.getAnnotationType();

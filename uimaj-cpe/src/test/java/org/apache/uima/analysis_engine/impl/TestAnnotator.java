@@ -27,9 +27,8 @@ import org.apache.uima.analysis_engine.annotator.AnnotatorInitializationExceptio
 import org.apache.uima.analysis_engine.annotator.AnnotatorProcessException;
 import org.apache.uima.analysis_engine.annotator.Annotator_ImplBase;
 import org.apache.uima.analysis_engine.annotator.TextAnnotator;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.text.TCAS;
-import org.apache.uima.util.ProcessTraceEvent;
 
 /**
  * Annotator class used for testing
@@ -67,12 +66,12 @@ public class TestAnnotator extends Annotator_ImplBase implements TextAnnotator {
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.annotator.TextAnnotator#process(TCAS,ResultSpecification)
+   * @see org.apache.uima.analysis_engine.annotator.TextAnnotator#process(CAS,ResultSpecification)
    */
-  public void process(TCAS aTCAS, ResultSpecification aResultSpec) throws AnnotatorProcessException {
+  public void process(CAS aCAS, ResultSpecification aResultSpec) throws AnnotatorProcessException {
     // set static fields to contain document text, result spec,
     // and value of StringParam configuration parameter.
-    lastDocument = aTCAS.getDocumentText();
+    lastDocument = aCAS.getDocumentText();
     lastResultSpec = aResultSpec;
   }
 }

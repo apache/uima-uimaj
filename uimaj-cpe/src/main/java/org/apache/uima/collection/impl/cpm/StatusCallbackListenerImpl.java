@@ -24,7 +24,6 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.collection.EntityProcessStatus;
 import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.collection.impl.cpm.utils.CPMUtils;
@@ -165,7 +164,7 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
       // get size here
       Type t = aCas.getTypeSystem().getType("uima.cpm.FileLocation");
       Feature f = t.getFeatureByBaseName("DocumentSize");
-      FSIterator fsI = ((TCAS) aCas).getAnnotationIndex(t).iterator();
+      FSIterator fsI = ((CAS) aCas).getAnnotationIndex(t).iterator();
       if (fsI.isValid()) {
         dataSize = fsI.get().getIntValue(f);
       }

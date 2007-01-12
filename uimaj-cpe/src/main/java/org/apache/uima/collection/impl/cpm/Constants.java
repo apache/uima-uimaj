@@ -159,7 +159,7 @@ public class Constants {
 
   public static final String CONTENT_TAG = "uima.cpm.DocumentText";
 
-  public static final String CONTENT_TCAS_TAG = "uima.tcas.DocumentAnnotation";
+  public static final String CONTENT_CAS_TAG = "uima.tcas.DocumentAnnotation";
 
   public static final String CONTENT_TAG_VALUE = "value";
 

@@ -22,7 +22,6 @@ package org.apache.uima.collection.impl.cpm.engine;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.text.TCAS;
 
 /**
  * 
@@ -43,7 +42,7 @@ public class ConsumerCasUtils {
    * 
    * @return - feature value as int
    */
-  public static int getIntFeatValue(TCAS aTcas, String aTypeS, String aFeatS) {
+  public static int getIntFeatValue(CAS aTcas, String aTypeS, String aFeatS) {
     int result = 0;
     FSIterator idIter = aTcas.getAnnotationIndex(aTcas.getTypeSystem().getType(aTypeS)).iterator();
     while (idIter != null && idIter.isValid()) {
@@ -89,7 +88,7 @@ public class ConsumerCasUtils {
    * 
    * @return
    */
-  public static FeatureStructure getTcasFS(TCAS aTcas, String aTypeS) {
+  public static FeatureStructure getTcasFS(CAS aTcas, String aTypeS) {
     org.apache.uima.cas.FeatureStructure idFS = null;
     FSIterator idIter = aTcas.getAnnotationIndex(aTcas.getTypeSystem().getType(aTypeS)).iterator();
     while (idIter != null && idIter.isValid()) {

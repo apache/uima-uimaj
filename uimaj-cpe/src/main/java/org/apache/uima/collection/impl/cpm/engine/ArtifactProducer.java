@@ -448,7 +448,7 @@ public class ArtifactProducer extends Thread {
 
         // If Collection Reader and CAS Initilaizer do not declare any
         // output SofAs,
-        // must be sent a TCAS for backward compatiblity
+        // must be sent a CAS for backward compatiblity
         Capability[] capabilities;
         CasInitializer casIni = ((CollectionReader) collectionReader).getCasInitializer();
         if (casIni != null)
@@ -486,7 +486,7 @@ public class ArtifactProducer extends Thread {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
                       this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_call_cr_next__FINEST",
-                      new Object[] { Thread.currentThread().getName(), "TCAS" });
+                      new Object[] { Thread.currentThread().getName(), "CAS" });
             }
             localTrace.startEvent(collectionReader.getProcessingResourceMetaData().getName(),
                     "Process", "");
@@ -499,7 +499,7 @@ public class ArtifactProducer extends Thread {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
                       this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                       "UIMA_CPM_call_cr_next_finished__FINEST",
-                      new Object[] { Thread.currentThread().getName(), "TCAS" });
+                      new Object[] { Thread.currentThread().getName(), "CAS" });
             }
           } else
           // sofa-aware CR, give it the base CAS

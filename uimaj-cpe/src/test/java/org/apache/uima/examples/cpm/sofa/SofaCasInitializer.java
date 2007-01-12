@@ -21,12 +21,9 @@ package org.apache.uima.examples.cpm.sofa;
 
 import java.io.IOException;
 
-import junit.framework.Assert;
-
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.SofaID;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.collection.CasInitializer_ImplBase;
 import org.apache.uima.collection.CollectionException;
 
@@ -41,7 +38,7 @@ public class SofaCasInitializer extends CasInitializer_ImplBase {
    *      org.apache.uima.cas.CAS)
    */
   public void initializeCas(Object aObject, CAS aCAS) throws CollectionException, IOException {
-    // Assert.assertFalse(aCAS instanceof TCAS);
+    // Assert.assertFalse(aCAS instanceof CAS);
     // Create the English document Sofa
     SofaID realSofaName = getUimaContext().mapToSofaID("InputText");
     // System.out.println("CASINITIALIZER: real sofa name for InputText " +

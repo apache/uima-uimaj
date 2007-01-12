@@ -141,7 +141,7 @@ public class CPMEngine extends Thread {
 
   // Last document id
   // Array for CASObject instances.
-  // private TCAS[] tcas;
+  // private CAS[] tcas;
   // ProcessTrace aggregating CPMs performance stats
   private ProcessTrace procTr = null;
 
@@ -1130,8 +1130,8 @@ public class CPMEngine extends Thread {
     String name = aCasProcessor.getProcessingResourceMetaData().getName();
 
     // Set a global flag to indicate the we should support mixed CasProcessor types.
-    // When this supported is enabled TCAS array will be instantiated to facilitate
-    // conversions between CasData and TCAS.
+    // When this supported is enabled CAS array will be instantiated to facilitate
+    // conversions between CasData and CAS.
     if (aCasProcessor instanceof CasObjectProcessor || aCasProcessor instanceof CasConsumer) {
       mixedCasProcessorTypeSupport = true;
     }
@@ -1846,10 +1846,10 @@ public class CPMEngine extends Thread {
 
       // When the CPE is configured to run exclusively with CasDataProcessor type components (no
       // CasObjectProcessors)
-      // there is no need to instantiate TCAS objects. These would never be used and woud waste
+      // there is no need to instantiate CAS objects. These would never be used and woud waste
       // memory.
       if (mixedCasProcessorTypeSupport) {
-        // Instantiate container for TCAS Instances
+        // Instantiate container for CAS Instances
 
         try {
           // Merge Type systems from all components
@@ -3071,14 +3071,14 @@ public class CPMEngine extends Thread {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                     "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_call_cr_next__FINEST",
-                    new Object[] { Thread.currentThread().getName(), "TCAS" });
+                    new Object[] { Thread.currentThread().getName(), "CAS" });
           }
           ((CollectionReader) collectionReader).getNext(view);
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                     "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                     "UIMA_CPM_call_cr_next_finished__FINEST",
-                    new Object[] { Thread.currentThread().getName(), "TCAS" });
+                    new Object[] { Thread.currentThread().getName(), "CAS" });
           }
         } else // sofa-aware CR, give it the base CAS
         {
@@ -3122,7 +3122,7 @@ public class CPMEngine extends Thread {
   private boolean needsTCas() {
     if (definedCapabilities == null) {
       // If Collection Reader and CAS Initilaizer do not declare any output SofAs,
-      // must be sent a TCAS for backward compatiblity
+      // must be sent a CAS for backward compatiblity
       CasInitializer casIni = ((CollectionReader) collectionReader).getCasInitializer();
       if (casIni != null) {
         definedCapabilities = casIni.getProcessingResourceMetaData().getCapabilities();
