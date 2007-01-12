@@ -25,6 +25,7 @@ import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.text.AnnotationIndex;
 
 /**
  * Provides the same function as the FSIndexRepository except that the variants that take a "type"
@@ -66,7 +67,7 @@ public interface JFSIndexRepository {
    * 
    * @return The standard annotation index.
    */
-  FSIndex getAnnotationIndex();
+  AnnotationIndex getAnnotationIndex();
 
   /**
    * Get the standard annotation index restricted to a specific annotation type.
@@ -75,7 +76,7 @@ public interface JFSIndexRepository {
    *          The annotation type the index is restricted to, written as Foo.type
    * @return The standard annotation index, restricted to <code>type</code>.
    */
-  FSIndex getAnnotationIndex(int type);
+  AnnotationIndex getAnnotationIndex(int type);
 
   /**
    * Get all labels for all indexes.

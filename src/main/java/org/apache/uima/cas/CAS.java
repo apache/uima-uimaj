@@ -24,6 +24,7 @@ import java.io.InputStream;
 import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.cas.text.TCASRuntimeException;
 import org.apache.uima.jcas.JCas;
@@ -710,7 +711,7 @@ public interface CAS extends AbstractCas {
    * 
    * @return The standard annotation index.
    */
-  FSIndex getAnnotationIndex();
+  AnnotationIndex getAnnotationIndex();
 
   /**
    * Get the standard annotation index restricted to a specific annotation type.
@@ -719,7 +720,7 @@ public interface CAS extends AbstractCas {
    *          The annotation type the index is restricted to.
    * @return The standard annotation index, restricted to <code>type</code>.
    */
-  FSIndex getAnnotationIndex(Type type) throws CASRuntimeException;
+  AnnotationIndex getAnnotationIndex(Type type) throws CASRuntimeException;
 
   /**
    * Create a new annotation. Note that you still need to insert the annotation into the index
