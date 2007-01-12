@@ -50,11 +50,11 @@ public class TypeSystemReinitTest extends TestCase {
       ArrayList l = new ArrayList();
       l.add(aed);
       l.add(tsd);
-      CAS cas1 = CasCreationUtils.createTCas(l);
+      CAS cas1 = CasCreationUtils.createCas(l);
       cas1.setDocumentText("foo");
       CASCompleteSerializer ser = Serialization.serializeCASComplete((CASMgr) cas1);
 
-      CAS tcas2 = CasCreationUtils.createTCas(new TypeSystemDescription_impl(), null, null);
+      CAS tcas2 = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
       CASImpl cas2 = ((CASImpl) tcas2).getBaseCAS();
       tcas2.setDocumentText("bar");
 

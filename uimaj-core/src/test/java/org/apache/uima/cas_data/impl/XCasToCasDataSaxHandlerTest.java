@@ -115,19 +115,19 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
       File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
       TypeSystemDescription typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
               new XMLInputSource(typeSystemFile));
-      CAS tcas2 = CasCreationUtils.createTCas(typeSystem, new TypePriorities_impl(),
+      CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
               new FsIndexDescription[0]);
 
       InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
-      XCASDeserializer deser = new XCASDeserializer(tcas2.getTypeSystem());
-      ContentHandler deserHandler = deser.getXCASHandler(tcas2);
+      XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());
+      ContentHandler deserHandler = deser.getXCASHandler(cas);
       SAXParserFactory fact = SAXParserFactory.newInstance();
       SAXParser parser = fact.newSAXParser();
       XMLReader xmlReader = parser.getXMLReader();
       xmlReader.setContentHandler(deserHandler);
       xmlReader.parse(new InputSource(serCasStream));
       serCasStream.close();
-      _testConversions(tcas2);
+      _testConversions(cas);
 
       // a CAS with multiple Sofas
       InputStream translatorAeStream = new FileInputStream(JUnitExtension
@@ -135,12 +135,12 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
       AnalysisEngineDescription translatorAeDesc = UIMAFramework.getXMLParser()
               .parseAnalysisEngineDescription(new XMLInputSource(translatorAeStream, null));
       AnalysisEngine transAnnotator = UIMAFramework.produceAnalysisEngine(translatorAeDesc);
-      CAS cas = transAnnotator.newCAS();
-      SofaFS ls = cas.createSofa(transAnnotator.getUimaContext().mapToSofaID("EnglishDocument"),
+      CAS cas2 = transAnnotator.newCAS();
+      SofaFS ls = cas2.createSofa(transAnnotator.getUimaContext().mapToSofaID("EnglishDocument"),
               "text");
       ls.setLocalSofaData("this beer is good");
-      transAnnotator.process(cas);
-      _testConversions(cas);
+      transAnnotator.process(cas2);
+      _testConversions(cas2);
 
     } catch (Exception e) {
       JUnitExtension.handleException(e);

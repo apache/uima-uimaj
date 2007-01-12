@@ -212,7 +212,7 @@ public class JCasPool {
     for (int i = 0; i < mNumInstances; i++) {
       JCas c;
       try {
-        c = CasCreationUtils.createTCas(mdList).getJCas();
+        c = CasCreationUtils.createCas(mdList).getJCas();
       } catch (CASException e) {
         throw new ResourceInitializationException(e);
       }

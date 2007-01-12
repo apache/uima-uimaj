@@ -196,25 +196,6 @@ public class XmiCasDeserializerTest extends TestCase {
 
         newCas.reset();
       }
-
-      // test same thing but with a CAS
-      CAS newTcas = CasCreationUtils.createTCas(typeSystem, new TypePriorities_impl(),
-              new FsIndexDescription[0]);
-      for (int i = 0; i < 2; i++) {
-        XmiCasDeserializer newDeser = new XmiCasDeserializer(newTcas.getTypeSystem());
-        ContentHandler newDeserHandler = newDeser.getXmiCasHandler(newTcas);
-        SAXParserFactory fact = SAXParserFactory.newInstance();
-        SAXParser parser = fact.newSAXParser();
-        XMLReader xmlReader = parser.getXMLReader();
-        xmlReader.setContentHandler(newDeserHandler);
-        xmlReader.parse(new InputSource(new StringReader(xml)));
-
-        // check sofas
-        assertEquals("This is a test", newTcas.getDocumentText());
-        CAS newTcas2 = newTcas.getView(newTcas.getSofa(new SofaID_impl("OtherSofa")));
-        assertEquals("This is only a test", newTcas2.getDocumentText());
-        newTcas.reset();
-      }
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
