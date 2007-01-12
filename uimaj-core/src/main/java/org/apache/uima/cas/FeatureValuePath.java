@@ -100,7 +100,7 @@ public interface FeatureValuePath {
    * 
    * @param currentFS
    * @param cas
-   * @return
+   * @return A string representation of the leaf value.
    */
   public String evaluateAsString(int currentFS, LowLevelCAS cas);
 

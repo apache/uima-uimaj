@@ -20,7 +20,7 @@
 package org.apache.uima.cas;
 
 /**
- * Annotation Base API
+ * Annotation Base API.
  * 
  * <p>
  * The <code>AnnotationBase</code> object holds one feature, the Sofa, which is a reference to the
@@ -30,7 +30,6 @@ package org.apache.uima.cas;
  * It implements the methods to get the CAS view associated with this sofa.
  * 
  */
-
 public interface AnnotationBaseFS extends FeatureStructure {
 
   /**

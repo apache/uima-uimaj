@@ -269,9 +269,6 @@ public class FSIntArrayIndex extends FSLeafIndexImpl {
     return (-start) - 1;
   }
 
-  /**
-   * @see org.apache.uima.cas.impl.FSLeafIndexImpl#pointerIterator(IntComparator)
-   */
   public ComparableIntPointerIterator pointerIterator(IntComparator comp,
           int[] detectIllegalIndexUpdates, int typeCode) {
     IntVectorIterator ivi = new IntVectorIterator(comp);

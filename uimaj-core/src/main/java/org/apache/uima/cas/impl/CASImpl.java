@@ -992,7 +992,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   /**
-   * @see org.apache.uima.cas.CAS#commitFS(FeatureStructure)
    * @deprecated
    */
   public void commitFS(FeatureStructure fs) {
@@ -2810,10 +2809,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   /**
-   * create a subtype of AnnotationBase
+   * Create an instance of a subtype of AnnotationBase.
    * 
    * @param typeCode
-   * @return
+   * @return An annotation?
    */
   public final int ll_createAnnotationBaseFS(int typeCode) {
     int addr = ll_createFS(typeCode);
