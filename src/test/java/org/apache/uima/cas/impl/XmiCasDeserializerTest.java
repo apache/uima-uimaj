@@ -292,15 +292,25 @@ public class XmiCasDeserializerTest extends TestCase {
     xmlReader.setContentHandler(deserHandler2);
     xmlReader.parse(new InputSource(new StringReader(xml)));
 
-    // serialize the new CAS
+    //test that index is correctly populated
+    Type intArrayType = cas2.getTypeSystem().getType(CAS.TYPE_NAME_INTEGER_ARRAY);
+    Iterator iter = cas2.getIndexRepository().getAllIndexedFS(intArrayType);
+    assertTrue(iter.hasNext());
+    IntArrayFS intArrayFS2 = (IntArrayFS)iter.next();
+    assertFalse(iter.hasNext());
+    assertEquals(5, intArrayFS2.size());
+    assertEquals(1, intArrayFS2.get(0));
+    assertEquals(2, intArrayFS2.get(1));
+    assertEquals(3, intArrayFS2.get(2));
+    assertEquals(4, intArrayFS2.get(3));
+    assertEquals(5, intArrayFS2.get(4));
+
+    // test that serializing the new CAS produces the same XML
     sw = new StringWriter();
     xmlSer = new XMLSerializer(sw, false);
     xmiSer = new XmiCasSerializer(cas2.getTypeSystem());
     xmiSer.serialize(cas2, xmlSer.getContentHandler());
-    String xml2 = sw.getBuffer().toString();
-
-    // simple compare for now
-    // TODO when default indexing is available, validate the integer array explicitly
+    String xml2 = sw.getBuffer().toString();    
     assertTrue(xml2.equals(xml));
   }
 
