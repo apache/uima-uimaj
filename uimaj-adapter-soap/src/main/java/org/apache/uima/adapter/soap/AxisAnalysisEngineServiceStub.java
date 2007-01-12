@@ -37,7 +37,7 @@ import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.service.impl.ServiceDataCargo;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.text.TCASException;
+import org.apache.uima.cas.CASException;
 import org.apache.uima.resource.ResourceServiceException;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 
@@ -188,7 +188,7 @@ public class AxisAnalysisEngineServiceStub extends AxisResourceServiceStub imple
       throw new ResourceServiceException(e);
     } catch (java.rmi.RemoteException e) {
       throw new ResourceServiceException(e);
-    } catch (TCASException e) {
+    } catch (CASException e) {
       throw new ResourceServiceException(e);
     }
   }
