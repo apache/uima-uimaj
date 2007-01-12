@@ -74,9 +74,9 @@ import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.cas.text.Language;
 import org.apache.uima.cas.text.TCAS;
-import org.apache.uima.cas.text.TCASRuntimeException;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.impl.JCasImpl;
@@ -506,7 +506,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
     if (null == this.indexRepository) {
       // create the indexRepository for this TCAS
       // use the baseIR to create a lightweight IR copy
-      this.indexRepository = new FSIndexRepositoryImpl((CASImpl) this,
+      this.indexRepository = new FSIndexRepositoryImpl(this,
               (FSIndexRepositoryImpl) ((CASImpl) cas).getBaseIndexRepository());
       this.indexRepository.commit();
       // save new sofa index
@@ -556,12 +556,12 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
     this.stringArrayType = (TypeImpl) this.ts.getType(TYPE_NAME_STRING_ARRAY);
     this.fsArrayType = (TypeImpl) this.ts.getType(TYPE_NAME_FS_ARRAY);
     this.sofaType = (TypeImpl) this.ts.getType(TYPE_NAME_SOFA);
-    this.annotType = (TypeImpl) this.ts.getType(TCAS.TYPE_NAME_ANNOTATION);
+    this.annotType = (TypeImpl) this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
     this.annotBaseType = (TypeImpl) this.ts.getType(CAS.TYPE_NAME_ANNOTATION_BASE);
-    this.startFeat = (FeatureImpl) this.ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_BEGIN);
-    this.endFeat = (FeatureImpl) this.ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_END);
-    this.langFeat = (FeatureImpl) this.ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_LANGUAGE);
-    this.docType = (TypeImpl) this.ts.getType(TCAS.TYPE_NAME_DOCUMENT_ANNOTATION);
+    this.startFeat = (FeatureImpl) this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
+    this.endFeat = (FeatureImpl) this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
+    this.langFeat = (FeatureImpl) this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_LANGUAGE);
+    this.docType = (TypeImpl) this.ts.getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION);
 
     this.byteType = (TypeImpl) this.ts.getType(TYPE_NAME_BYTE);
     this.byteArrayType = (TypeImpl) this.ts.getType(TYPE_NAME_BYTE_ARRAY);
@@ -613,13 +613,13 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
     this.sofaArrayFeatCode = ll_getTypeSystem().ll_getCodeForFeature(
             this.sofaType.getFeatureByBaseName(FEATURE_BASE_NAME_SOFAARRAY));
     this.annotSofaFeatCode = ll_getTypeSystem().ll_getCodeForFeature(
-            this.annotBaseType.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_SOFA));
+            this.annotBaseType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFA));
     this.startFeatCode = ll_getTypeSystem().ll_getCodeForFeature(
-            this.annotType.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_BEGIN));
+            this.annotType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN));
     this.endFeatCode = ll_getTypeSystem().ll_getCodeForFeature(
-            this.annotType.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_END));
+            this.annotType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_END));
     this.langFeatCode = ll_getTypeSystem().ll_getCodeForFeature(
-            this.docType.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_LANGUAGE));
+            this.docType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE));
   }
 
   private void checkInternalCodes(CASMgrSerializer ser) throws CASAdminException {
@@ -2364,12 +2364,12 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
 
     // Annotations
     Type annotBaseType = ts.addType(CAS.TYPE_NAME_ANNOTATION_BASE, top);
-    ts.addFeature(TCAS.FEATURE_BASE_NAME_SOFA, annotBaseType, sofa);
-    Type annotType = ts.addType(TCAS.TYPE_NAME_ANNOTATION, annotBaseType);
-    ts.addFeature(TCAS.FEATURE_BASE_NAME_BEGIN, annotType, intT);
-    ts.addFeature(TCAS.FEATURE_BASE_NAME_END, annotType, intT);
-    Type docType = ts.addType(TCAS.TYPE_NAME_DOCUMENT_ANNOTATION, annotType);
-    ts.addFeature(TCAS.FEATURE_BASE_NAME_LANGUAGE, docType, stringT);
+    ts.addFeature(CAS.FEATURE_BASE_NAME_SOFA, annotBaseType, sofa);
+    Type annotType = ts.addType(CAS.TYPE_NAME_ANNOTATION, annotBaseType);
+    ts.addFeature(CAS.FEATURE_BASE_NAME_BEGIN, annotType, intT);
+    ts.addFeature(CAS.FEATURE_BASE_NAME_END, annotType, intT);
+    Type docType = ts.addType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION, annotType);
+    ts.addFeature(CAS.FEATURE_BASE_NAME_LANGUAGE, docType, stringT);
 
     // Lock individual types.
     setTypeFinal(intT);
@@ -2434,13 +2434,13 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
     this.indexRepository.createIndex(comp, CAS.SOFA_INDEX_NAME, FSIndex.SET_INDEX);
 
     comp = this.indexRepository.createComparator();
-    comp.setType(this.ts.getType(TCAS.TYPE_NAME_ANNOTATION));
-    comp.addKey(this.ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_BEGIN),
+    comp.setType(this.ts.getType(CAS.TYPE_NAME_ANNOTATION));
+    comp.addKey(this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN),
             FSIndexComparator.STANDARD_COMPARE);
-    comp.addKey(this.ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_END),
+    comp.addKey(this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_END),
             FSIndexComparator.REVERSE_STANDARD_COMPARE);
     comp.addKey(this.indexRepository.getDefaultTypeOrder(), FSIndexComparator.STANDARD_COMPARE);
-    this.indexRepository.createIndex(comp, TCAS.STD_ANNOTATION_INDEX);
+    this.indexRepository.createIndex(comp, CAS.STD_ANNOTATION_INDEX);
   }
 
   ArrayList getStringTable() {
@@ -3637,12 +3637,12 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
     return (AnnotationFS) fs;
   }
 
-  public FSIndex getAnnotationIndex() {
-    return new AnnotationIndexImpl(getIndexRepository().getIndex(TCAS.STD_ANNOTATION_INDEX));
+  public AnnotationIndex getAnnotationIndex() {
+    return new AnnotationIndexImpl(getIndexRepository().getIndex(CAS.STD_ANNOTATION_INDEX));
   }
 
-  public FSIndex getAnnotationIndex(Type type) {
-    return new AnnotationIndexImpl(getIndexRepository().getIndex(TCAS.STD_ANNOTATION_INDEX, type));
+  public AnnotationIndex getAnnotationIndex(Type type) {
+    return new AnnotationIndexImpl(getIndexRepository().getIndex(CAS.STD_ANNOTATION_INDEX, type));
   }
 
   /**
@@ -3681,7 +3681,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
     AnnotationFS doc = createAnnotation(this.docType, 0, length);
     getIndexRepository().addFS(doc);
     // Set the language feature to the default value.
-    doc.setStringValue(this.langFeat, TCAS.DEFAULT_LANGUAGE_NAME);
+    doc.setStringValue(this.langFeat, CAS.DEFAULT_LANGUAGE_NAME);
     return doc;
   }
 
@@ -3742,7 +3742,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
       return null;
     }
     if (mySofaIsValid()) {
-      return this.getSofa(mySofaRef).getLocalFSData();
+      return this.getSofa(this.mySofaRef).getLocalFSData();
     }
     return null;
   }
@@ -3753,7 +3753,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
       return null;
     }
     if (mySofaIsValid()) {
-      return this.getSofa(mySofaRef).getSofaURI();
+      return this.getSofa(this.mySofaRef).getSofaURI();
     }
     return null;
   }
@@ -3903,7 +3903,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
     if (sofaId > 0) {
       // check if same as that of current CAS view
 //      if (!(this instanceof TCASImpl) || (sofaId != ((TCASImpl) this).getSofaRef())) {
-      if (sofaId != ((CASImpl) this).getSofaRef()) {
+      if (sofaId != this.getSofaRef()) {
         // Does not match. get TCAS for the sofaRef feature found in
         // annotation
         return (CASImpl) this.getTCAS(getSofa(sofaId).getSofaRef());

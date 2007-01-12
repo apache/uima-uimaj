@@ -27,6 +27,7 @@ import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
@@ -69,14 +70,8 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
    * 
    * @see org.apache.uima.jcas.JFSIndexRepository#getAnnotationIndex()
    */
-  public FSIndex getAnnotationIndex() {
-    CAS aCas = jcas.getCas();
-    if (aCas instanceof TCAS)
-      return ((TCAS) aCas).getAnnotationIndex();
-    CASRuntimeException casEx = new CASRuntimeException(
-            CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
-    casEx.addArgument("JFSIndexRepostory: getAnnotationIndex()");
-    throw casEx;
+  public AnnotationIndex getAnnotationIndex() {
+    return this.jcas.getCas().getAnnotationIndex();
   }
 
   /*
@@ -84,14 +79,8 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
    * 
    * @see org.apache.uima.jcas.JFSIndexRepository#getAnnotationIndex(int)
    */
-  public FSIndex getAnnotationIndex(int type) {
-    CAS aCas = jcas.getCas();
-    if (aCas instanceof TCAS)
-      return ((TCAS) aCas).getAnnotationIndex(jcas.getCasType(type));
-    CASRuntimeException casEx = new CASRuntimeException(
-            CASRuntimeException.JCAS_UNSUPPORTED_OP_NOT_TCAS);
-    casEx.addArgument("JFSIndexRepostory: getAnnotationIndex(type)");
-    throw casEx;
+  public AnnotationIndex getAnnotationIndex(int type) {
+      return this.jcas.getCas().getAnnotationIndex(this.jcas.getCasType(type));
   }
 
   /*
