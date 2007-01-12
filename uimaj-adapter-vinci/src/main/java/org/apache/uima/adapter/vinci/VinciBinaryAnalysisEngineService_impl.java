@@ -210,7 +210,7 @@ public class VinciBinaryAnalysisEngineService_impl extends VinciServableAdapter 
       FSIterator sItr = cas.getSofaIterator();
       while (sItr.isValid()) {
         sofa = (SofaFS) sItr.get();
-        totalAnnots += cas.getTCAS(sofa).getAnnotationIndex().size();
+        totalAnnots += cas.getView(sofa).getAnnotationIndex().size();
         sItr.moveToNext();
       }
       UIMAFramework.getLogger().log(Level.FINE, "CAS Annotation Count::" + totalAnnots);
