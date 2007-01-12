@@ -28,7 +28,6 @@ import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
@@ -65,7 +64,7 @@ public class UnambiguousIteratorTest extends TestCase {
 
       File tsFile = new File(xcasDir, sampleTsFileName);
       Object descriptor = UIMAFramework.getXMLParser().parse(new XMLInputSource(tsFile));
-      // instantiate TCAS to get type system. Also build style
+      // instantiate CAS to get type system. Also build style
       // map file if there is none.
       TypeSystemDescription tsDesc = (TypeSystemDescription) descriptor;
       CAS cas = CasCreationUtils.createCas(tsDesc, null, new FsIndexDescription[0]);
@@ -80,14 +79,14 @@ public class UnambiguousIteratorTest extends TestCase {
        * XMLInputSource(this.tafDataDir + "specifiers/jtok.xml"); // Parse the specifier.
        * ResourceSpecifier specifier = UIMAFramework.getXMLParser() .parseResourceSpecifier(in); //
        * Create the Text Analysis Engine. tae = UIMAFramework.produceTAE(specifier, null, null); //
-       * Create a new TCAS. TCAS cas = tae.newTCAS(); // Set the document text on the CAS.
+       * Create a new CAS. CAS cas = tae.newCAS(); // Set the document text on the CAS.
        * cas.setDocumentText(text); cas.setDocumentLanguage("en"); // Process the sample document.
        * tae.process(cas); System.out.println("Annotation index size: " +
        * cas.getAnnotationIndex().size());
        */
       LowLevelCAS llc = cas.getLowLevelCAS();
       final int tokType = llc.ll_getTypeSystem().ll_getCodeForTypeName("uima.tt.TokenAnnotation");
-      LowLevelIndex annotIdx = llc.ll_getIndexRepository().ll_getIndex(TCAS.STD_ANNOTATION_INDEX,
+      LowLevelIndex annotIdx = llc.ll_getIndexRepository().ll_getIndex(CAS.STD_ANNOTATION_INDEX,
               tokType);
       final int annotSizeA1 = iteratorSize(annotIdx.ll_iterator());
       final int annotSizeU1 = iteratorSize(annotIdx.ll_iterator(false));
@@ -98,7 +97,7 @@ public class UnambiguousIteratorTest extends TestCase {
       xcasFile = new File(xcasDir, sampleXcas2FileName);
       parser.parse(xcasFile, xcasDeserializer.getXCASHandler(cas));
 
-      annotIdx = llc.ll_getIndexRepository().ll_getIndex(TCAS.STD_ANNOTATION_INDEX, tokType);
+      annotIdx = llc.ll_getIndexRepository().ll_getIndex(CAS.STD_ANNOTATION_INDEX, tokType);
       final int annotSizeA2 = iteratorSize(annotIdx.ll_iterator());
       final int annotSizeU2 = iteratorSize(annotIdx.ll_iterator(false));
       // System.out.println("Annotation index size: "

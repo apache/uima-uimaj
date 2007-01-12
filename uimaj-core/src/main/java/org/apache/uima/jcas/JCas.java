@@ -41,7 +41,6 @@ import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
-import org.apache.uima.cas.text.TCASRuntimeException;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
 import org.apache.uima.jcas.cas.IntegerArray;
@@ -174,7 +173,7 @@ public interface JCas extends AbstractCas {
    * the framework ClassLoader.
    * 
    * @return The one instance of the DocumentAnnotation annotation.
-   * @see org.apache.uima.cas.text.TCAS#getDocumentAnnotation
+   * @see org.apache.uima.cas.text.CAS#getDocumentAnnotation
    */
   public abstract TOP getDocumentAnnotationFs();
 
@@ -373,7 +372,7 @@ public interface JCas extends AbstractCas {
    * @exception CASRuntimeException
    *              If the Sofa data has already been set.
    */
-  void setDocumentText(String text) throws TCASRuntimeException;
+  void setDocumentText(String text) throws CASRuntimeException;
 
   /**
    * Set the document text. Once set, Sofa data is immutable, and cannot be set again until the CAS
@@ -386,7 +385,7 @@ public interface JCas extends AbstractCas {
    * @exception CASRuntimeException
    *              If the Sofa data has already been set.
    */
-  void setSofaDataString(String text, String mimetype) throws TCASRuntimeException;
+  void setSofaDataString(String text, String mimetype) throws CASRuntimeException;
 
   /**
    * Get the document text.
@@ -397,16 +396,16 @@ public interface JCas extends AbstractCas {
 
   /**
    * Sets the language for this document. This value sets the language feature of the special
-   * instance of DocumentAnnotation associated with this TCAS.
+   * instance of DocumentAnnotation associated with this CAS.
    * 
    * @param languageCode
-   * @throws TCASRuntimeException
+   * @throws CASRuntimeException
    */
-  void setDocumentLanguage(String languageCode) throws TCASRuntimeException;
+  void setDocumentLanguage(String languageCode) throws CASRuntimeException;
 
   /**
    * Gets the language code for this document from the language feature of the special instance of
-   * the DocumentationAnnotation associated with this TCAS.
+   * the DocumentationAnnotation associated with this CAS.
    * 
    * @return language identifier
    */
@@ -423,7 +422,7 @@ public interface JCas extends AbstractCas {
    * @exception CASRuntimeException
    *              If the Sofa data has already been set.
    */
-  void setSofaDataArray(FeatureStructure array, String mime) throws TCASRuntimeException;
+  void setSofaDataArray(FeatureStructure array, String mime) throws CASRuntimeException;
 
   /**
    * Get the Sofa data array.
@@ -443,7 +442,7 @@ public interface JCas extends AbstractCas {
    * @exception CASRuntimeException
    *              If the Sofa data has already been set.
    */
-  void setSofaDataURI(String uri, String mime) throws TCASRuntimeException;
+  void setSofaDataURI(String uri, String mime) throws CASRuntimeException;
 
   /**
    * Get the Sofa data array.

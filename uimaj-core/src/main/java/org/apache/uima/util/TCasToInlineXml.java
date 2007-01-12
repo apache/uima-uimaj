@@ -36,14 +36,13 @@ import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.TCAS;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * Generates an inline XML representation of a TCAS. Annotation types are represented as XML tags,
+ * Generates an inline XML representation of a CAS. Annotation types are represented as XML tags,
  * features are represented as attributes. Note that features whose values are FeatureStructures are
  * not represented.
  * 
@@ -59,54 +58,54 @@ public class TCasToInlineXml implements TCasFormatter {
   }
 
   /**
-   * @see org.apache.uima.util.TCasFormatter#format(TCAS)
+   * @see org.apache.uima.util.TCasFormatter#format(CAS)
    */
-  public String format(TCAS aTCAS) throws CASException {
-    return generateXML(aTCAS, null);
+  public String format(CAS aCAS) throws CASException {
+    return generateXML(aCAS, null);
   }
 
   /**
-   * @see org.apache.uima.util.TCasFormatter#format(TCAS, FSMatchConstraint)
+   * @see org.apache.uima.util.TCasFormatter#format(CAS, FSMatchConstraint)
    */
-  public String format(TCAS aTCAS, FSMatchConstraint aFilter) throws CASException {
-    return generateXML(aTCAS, aFilter);
+  public String format(CAS aCAS, FSMatchConstraint aFilter) throws CASException {
+    return generateXML(aCAS, aFilter);
   }
 
   /**
-   * Generates inline XML from a TCAS.
+   * Generates inline XML from a CAS.
    * 
-   * @param aTCAS
-   *          TCAS to generate from
+   * @param aCAS
+   *          CAS to generate from
    */
-  public String generateXML(TCAS aTCAS) throws CASException {
-    return generateXML(aTCAS, null);
+  public String generateXML(CAS aCAS) throws CASException {
+    return generateXML(aCAS, null);
   }
 
   /**
-   * Generates inline XML from a TCAS.
+   * Generates inline XML from a CAS.
    * 
-   * @param aTCAS
-   *          TCAS to generate from
+   * @param aCAS
+   *          CAS to generate from
    * @param aFilter
    *          constraint that determines which annotations are included in the output. If null (or
    *          ommitted), all annotations are included.
    */
-  public String generateXML(TCAS aTCAS, FSMatchConstraint aFilter) throws CASException {
+  public String generateXML(CAS aCAS, FSMatchConstraint aFilter) throws CASException {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     XMLSerializer sax2xml = new XMLSerializer(byteArrayOutputStream);
 
     // get document text
-    String docText = aTCAS.getDocumentText();
+    String docText = aCAS.getDocumentText();
     char[] docCharArray = docText.toCharArray();
     replaceInvalidXmlChars(docCharArray);
 
     // get iterator over annotations sorted by increasing start position and
     // decreasing end position
-    FSIterator iterator = aTCAS.getAnnotationIndex().iterator();
+    FSIterator iterator = aCAS.getAnnotationIndex().iterator();
 
     // filter the iterator if desired
     if (aFilter != null) {
-      iterator = aTCAS.createFilteredIterator(iterator, aFilter);
+      iterator = aCAS.createFilteredIterator(iterator, aFilter);
     }
 
     // This is basically a recursive algorithm that has had the recursion
@@ -144,7 +143,7 @@ public class TCasToInlineXml implements TCasFormatter {
               handler.characters(docCharArray, pos, nextAnnot.getBegin() - pos);
               pos = nextAnnot.getBegin();
               handler.startElement("", nextAnnot.getType().getName(),
-                      nextAnnot.getType().getName(), getFeatureAttributes(nextAnnot, aTCAS));
+                      nextAnnot.getType().getName(), getFeatureAttributes(nextAnnot, aCAS));
 
               // push parent annotation on stack
               stack.add(curAnnot);
@@ -213,10 +212,10 @@ public class TCasToInlineXml implements TCasFormatter {
     }
   }
 
-  private final Attributes getFeatureAttributes(FeatureStructure aFS, TCAS aTCAS) {
+  private final Attributes getFeatureAttributes(FeatureStructure aFS, CAS aCAS) {
     AttributesImpl attrs = new AttributesImpl();
 
-    Type stringType = aTCAS.getTypeSystem().getType(CAS.TYPE_NAME_STRING);
+    Type stringType = aCAS.getTypeSystem().getType(CAS.TYPE_NAME_STRING);
 
     List aFeatures = aFS.getType().getFeatures();
     Iterator iter = aFeatures.iterator();
@@ -225,7 +224,7 @@ public class TCasToInlineXml implements TCasFormatter {
       String featName = feat.getShortName();
       // how we get feature value depends on feature's range type)
       String rangeTypeName = feat.getRange().getName();
-      if (aTCAS.getTypeSystem().subsumes(stringType, feat.getRange())) // must check for subtypes
+      if (aCAS.getTypeSystem().subsumes(stringType, feat.getRange())) // must check for subtypes
       // of string
       {
         String str = aFS.getStringValue(feat);

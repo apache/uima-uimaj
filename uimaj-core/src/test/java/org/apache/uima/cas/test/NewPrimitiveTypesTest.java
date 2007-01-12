@@ -59,7 +59,6 @@ import org.apache.uima.cas.impl.XCASSerializer;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
@@ -124,7 +123,7 @@ public class NewPrimitiveTypesTest extends TestCase {
       // Create a writable type system.
       TypeSystemMgr tsa = casMgr.getTypeSystemMgr();
       // Add new types and features.
-      annotationType = tsa.getType(TCAS.TYPE_NAME_ANNOTATION);
+      annotationType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
       assertTrue(annotationType != null);
 
       // new primitive types

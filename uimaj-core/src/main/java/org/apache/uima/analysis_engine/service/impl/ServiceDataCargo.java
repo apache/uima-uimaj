@@ -26,7 +26,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.impl.CASCompleteSerializer;
 import org.apache.uima.cas.impl.Serialization;
-import org.apache.uima.cas.text.TCASException;
+import org.apache.uima.cas.CASException;
 import org.apache.uima.util.ProcessTrace;
 
 /**
@@ -100,7 +100,7 @@ public class ServiceDataCargo implements Serializable {
    *          the AnalysisProcessData to unmarshal into
    */
   public void unmarshalInto(AnalysisProcessData aDataContainer, boolean aReplaceCasTypeSystem)
-          throws TCASException {
+          throws CASException {
     unmarshalCas(aDataContainer.getCAS(), aReplaceCasTypeSystem);
     aDataContainer.getProcessTrace().addAll(mProcessTrace.getEvents());
   }
@@ -113,7 +113,7 @@ public class ServiceDataCargo implements Serializable {
    * @param aDataContainer
    *          the AnalysisProcessData to unmarshal into
    */
-  public void unmarshalCas(CAS aCas, boolean aReplaceCasTypeSystem) throws TCASException {
+  public void unmarshalCas(CAS aCas, boolean aReplaceCasTypeSystem) throws CASException {
     CASMgr casMgr = (CASMgr) aCas;
     if (aReplaceCasTypeSystem) {
       Serialization.deserializeCASComplete(mCasSer, casMgr);

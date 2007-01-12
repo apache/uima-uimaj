@@ -21,6 +21,7 @@ package org.apache.uima.cas.test;
 
 import junit.framework.TestCase;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.Feature;
@@ -35,8 +36,6 @@ import org.apache.uima.cas.impl.CASCompleteSerializer;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.TCAS;
-import org.apache.uima.cas.text.TCASException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
@@ -68,7 +67,7 @@ public class IndexSerializationTest extends TestCase {
 
   private CASMgr casMgr;
 
-  private TCAS cas;
+  private CAS cas;
 
   private Type annotationType;
 
@@ -107,17 +106,17 @@ public class IndexSerializationTest extends TestCase {
     eosType = ts.getType(EOS_TYPE);
     tokenType = ts.getType(TOKEN_TYPE);
     tokenTypeFeature = ts.getFeatureByFullName(TOKEN_TYPE_FEAT_Q);
-    startFeature = ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_BEGIN);
-    endFeature = ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_END);
+    startFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
+    endFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
     sentenceType = ts.getType(SENT_TYPE);
-    annotationType = ts.getType(TCAS.TYPE_NAME_ANNOTATION);
+    annotationType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
     assertTrue(annotationType != null);
   }
 
   // Initialize the first CAS.
-  private static CASMgr initCAS() throws TCASException {
-    // // Create a TCASMgr. Ensures existence of AnnotationFS type.
-    // TCASMgr tcas = TCASFactory.createTCAS();
+  private static CASMgr initCAS() throws CASException {
+    // // Create a CASMgr. Ensures existence of AnnotationFS type.
+    // CASMgr tcas = CASFactory.createCAS();
     CASMgr casMgr = CASFactory.createCAS();
     try {
       CasCreationUtils.setupTypeSystem(casMgr, (TypeSystemDescription) null);
@@ -128,7 +127,7 @@ public class IndexSerializationTest extends TestCase {
     TypeSystemMgr tsa = casMgr.getTypeSystemMgr();
     // Add new types and features.
     Type topType = tsa.getTopType();
-    Type annotType = tsa.getType(TCAS.TYPE_NAME_ANNOTATION);
+    Type annotType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
     // assert(annotType != null);
     tsa.addType(SENT_TYPE, annotType);
     Type tokenType = tsa.addType(TOKEN_TYPE, annotType);
@@ -140,8 +139,8 @@ public class IndexSerializationTest extends TestCase {
     // Commit the type system.
     ((CASImpl) casMgr).commitTypeSystem();
     // assert(tsa.isCommitted());
-    // // Create the TCAS indexes.
-    // tcas.initTCASIndexes();
+    // // Create the CAS indexes.
+    // tcas.initCASIndexes();
     // Create the Base indexes.
     try {
       casMgr.initCASIndexes();
@@ -151,11 +150,11 @@ public class IndexSerializationTest extends TestCase {
 
     FSIndexRepositoryMgr irm = casMgr.getIndexRepositoryMgr();
     FSIndexComparator comp = irm.createComparator();
-    Type annotation = tsa.getType(TCAS.TYPE_NAME_ANNOTATION);
+    Type annotation = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
     comp.setType(annotation);
-    comp.addKey(annotation.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_BEGIN),
+    comp.addKey(annotation.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN),
             FSIndexComparator.STANDARD_COMPARE);
-    comp.addKey(annotation.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_END),
+    comp.addKey(annotation.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_END),
             FSIndexComparator.REVERSE_STANDARD_COMPARE);
     irm.createIndex(comp, ANNOT_BAG_INDEX, FSIndex.BAG_INDEX);
     irm.createIndex(comp, ANNOT_SET_INDEX, FSIndex.SET_INDEX);
@@ -164,8 +163,8 @@ public class IndexSerializationTest extends TestCase {
     irm.commit();
     // assert(cas.getIndexRepositoryMgr().isCommitted());
 
-    // Create the default text Sofa and return TCAS view
-    return (CASMgr) casMgr.getCAS().getTCAS();
+    // Create the default text Sofa and return CAS view
+    return (CASMgr) casMgr.getCAS().getCurrentView();
   }
 
   /**
@@ -210,11 +209,11 @@ public class IndexSerializationTest extends TestCase {
 
     CASCompleteSerializer cs;
     cs = Serialization.serializeCASComplete(casMgr);
-    // casMgr = TCASFactory.createTCAS();
+    // casMgr = CASFactory.createCAS();
     CASMgr realCasMgr = CASFactory.createCAS();
     ((CASImpl) realCasMgr).commitTypeSystem();
     Serialization.deserializeCASComplete(cs, realCasMgr);
-    cas = ((CASImpl) realCasMgr).getTCAS();
+    cas = ((CASImpl) realCasMgr).getCurrentView();
     casMgr = (CASMgr) cas;
 
     // System.out.println("After serialization\n");

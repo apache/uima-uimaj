@@ -32,7 +32,7 @@ import org.apache.uima.analysis_engine.impl.TaeDescription_impl;
 import org.apache.uima.analysis_engine.impl.TestAnnotator;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.impl.FixedFlow_impl;
-import org.apache.uima.cas.text.TCAS;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
@@ -145,7 +145,7 @@ public class TextAnalysisEnginePoolTest extends TestCase {
       // call process - this should generate an event with a resource name equal
       // to the value of StringParam
       TextAnalysisEngine tae = pool.getTAE();
-      TCAS tcas = tae.newTCAS();
+      CAS tcas = tae.newCAS();
       try {
         // check value of string param (TestAnnotator saves it in a static field)
         assertEquals("Test1", TestAnnotator.stringParamValue);
@@ -183,7 +183,7 @@ public class TextAnalysisEnginePoolTest extends TestCase {
       // We use thse to make sure the information propogates correctly to the annotator.
 
       // process(CAS)
-      TCAS tcas = tae.newTCAS();
+      CAS tcas = tae.newCAS();
       tcas.setDocumentText("new test");
       tae.process(tcas);
       assertEquals("new test", TestAnnotator.lastDocument);

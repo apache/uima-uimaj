@@ -20,7 +20,7 @@
 package org.apache.uima.analysis_engine.annotator;
 
 import org.apache.uima.analysis_engine.ResultSpecification;
-import org.apache.uima.cas.text.TCAS;
+import org.apache.uima.cas.CAS;
 
 /**
  * Base class for text annotators in UIMA SDK v1.x. As of v2.0, annotators should extend
@@ -30,9 +30,9 @@ import org.apache.uima.cas.text.TCAS;
 public interface TextAnnotator extends BaseAnnotator {
   /**
    * Invokes this annotator's analysis logic. Prior to calling this method, the caller must ensure
-   * that the {@link TCAS} has been populated with the document to be analyzed as well as any
+   * that the {@link CAS} has been populated with the document to be analyzed as well as any
    * information that this annotator needs to do its processing. This annotator will access the data
-   * in the TCAS and add new data to the TCAS.
+   * in the CAS and add new data to the CAS.
    * <p>
    * The caller must also guarantee that the {@link ResultSpecification} falls within the scope of
    * the {@link org.apache.uima.resource.metadata.Capability Capabilities} of this annotator (as
@@ -41,7 +41,7 @@ public interface TextAnnotator extends BaseAnnotator {
    * The annotator will only produce the output types and features that are declared in the
    * <code>aResultSpec</code> parameter.
    * 
-   * @param aTCAS
+   * @param aCAS
    *          contains the document to be analyzed and may contain other metadata about that
    *          document.
    * @param aResultSpec
@@ -50,5 +50,5 @@ public interface TextAnnotator extends BaseAnnotator {
    * @throws AnnotatorProcessException
    *           if a failure occurs during processing.
    */
-  public void process(TCAS aTCAS, ResultSpecification aResultSpec) throws AnnotatorProcessException;
+  public void process(CAS aCAS, ResultSpecification aResultSpec) throws AnnotatorProcessException;
 }

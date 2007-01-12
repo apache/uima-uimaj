@@ -46,7 +46,6 @@ import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.cas_data.CasData;
 import org.apache.uima.cas_data.FeatureStructure;
 import org.apache.uima.cas_data.PrimitiveValue;
@@ -601,33 +600,11 @@ public class CasCreationUtils {
   }
 
   /**
-   * Creates a new TCAS instance.
+   * Creates a new CAS instance.
    * 
    * @param aMetaData
    *          metadata for the anlaysis engine that will process this CAS. This is used to set up
    *          the CAS's type system and indexes.
-   * 
-   * @return a new TCAS instance
-   * 
-   * @throws ResourceInitializationException
-   *           if TCAS creation fails
-   * 
-   * @deprecated As of v2.0, use <code>createCas(...)</code> instead. All methods that were on the
-   *             TCAS interface have been moved to CAS.
-   */
-  public static TCAS createTCas(AnalysisEngineMetaData aMetaData)
-          throws ResourceInitializationException {
-    List list = new ArrayList();
-    list.add(aMetaData);
-    return createTCas(list);
-  }
-
-  /**
-   * Creates a new TCAS instance.
-   * 
-   * @param aMetaData
-   *          metadata for the resource that will process this TCAS. This is used to set up the
-   *          TCAS's type system and indexes.
    * 
    * @return a new CAS instance
    * 
@@ -635,9 +612,31 @@ public class CasCreationUtils {
    *           if CAS creation fails
    * 
    * @deprecated As of v2.0, use <code>createCas(...)</code> instead. All methods that were on the
-   *             TCAS interface have been moved to CAS.
+   *             CAS interface have been moved to CAS.
    */
-  public static TCAS createTCas(ProcessingResourceMetaData aMetaData)
+  public static CAS createTCas(AnalysisEngineMetaData aMetaData)
+          throws ResourceInitializationException {
+    List list = new ArrayList();
+    list.add(aMetaData);
+    return createTCas(list);
+  }
+
+  /**
+   * Creates a new CAS instance.
+   * 
+   * @param aMetaData
+   *          metadata for the resource that will process this CAS. This is used to set up the
+   *          CAS's type system and indexes.
+   * 
+   * @return a new CAS instance
+   * 
+   * @throws ResourceInitializationException
+   *           if CAS creation fails
+   * 
+   * @deprecated As of v2.0, use <code>createCas(...)</code> instead. All methods that were on the
+   *             CAS interface have been moved to CAS.
+   */
+  public static CAS createTCas(ProcessingResourceMetaData aMetaData)
           throws ResourceInitializationException {
     List list = new ArrayList();
     list.add(aMetaData);
@@ -646,18 +645,18 @@ public class CasCreationUtils {
 
   /**
    * @deprecated As of v2.0, use <code>createCas(...)</code> instead. All methods that were on the
-   *             TCAS interface have been moved to CAS.
+   *             CAS interface have been moved to CAS.
    */
-  public static TCAS createTCas(AnalysisEngineDescription aDescription)
+  public static CAS createTCas(AnalysisEngineDescription aDescription)
           throws ResourceInitializationException {
     return createTCas(aDescription, UIMAFramework.getDefaultPerformanceTuningProperties());
   }
 
   /**
    * @deprecated As of v2.0, use <code>createCas(...)</code> instead. All methods that were on the
-   *             TCAS interface have been moved to CAS.
+   *             CAS interface have been moved to CAS.
    */
-  public static TCAS createTCas(AnalysisEngineDescription aDescription,
+  public static CAS createTCas(AnalysisEngineDescription aDescription,
           Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     List list = new ArrayList();
     list.add(aDescription);
@@ -666,9 +665,9 @@ public class CasCreationUtils {
 
   /**
    * @deprecated As of v2.0, use <code>createCas(...)</code> instead. All methods that were on the
-   *             TCAS interface have been moved to CAS.
+   *             CAS interface have been moved to CAS.
    */
-  public static TCAS createTCas(Collection aComponentDescriptionsOrMetaData)
+  public static CAS createTCas(Collection aComponentDescriptionsOrMetaData)
           throws ResourceInitializationException {
     return createTCas(aComponentDescriptionsOrMetaData, UIMAFramework
             .getDefaultPerformanceTuningProperties());
@@ -676,9 +675,9 @@ public class CasCreationUtils {
 
   /**
    * @deprecated As of v2.0, use <code>createCas(...)</code> instead. All methods that were on the
-   *             TCAS interface have been moved to CAS.
+   *             CAS interface have been moved to CAS.
    */
-  public static TCAS createTCas(Collection aComponentDescriptionsOrMetaData,
+  public static CAS createTCas(Collection aComponentDescriptionsOrMetaData,
           Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     return createTCas(aComponentDescriptionsOrMetaData, aPerformanceTuningSettings, UIMAFramework
             .newDefaultResourceManager());
@@ -686,9 +685,9 @@ public class CasCreationUtils {
 
   /**
    * @deprecated As of v2.0, use <code>createCas(...)</code> instead. All methods that were on the
-   *             TCAS interface have been moved to CAS.
+   *             CAS interface have been moved to CAS.
    */
-  public static TCAS createTCas(Collection aComponentDescriptionsOrMetaData,
+  public static CAS createTCas(Collection aComponentDescriptionsOrMetaData,
           Properties aPerformanceTuningSettings, ResourceManager aResourceManager)
           throws ResourceInitializationException {
     // build a list of metadata objects
@@ -720,9 +719,9 @@ public class CasCreationUtils {
 
   /**
    * @deprecated As of v2.0, use <code>createCas(...)</code> instead. All methods that were on the
-   *             TCAS interface have been moved to CAS.
+   *             CAS interface have been moved to CAS.
    */
-  public static TCAS createTCas(Collection aComponentDescriptionsOrMetaData, TypeSystem aTypeSystem)
+  public static CAS createTCas(Collection aComponentDescriptionsOrMetaData, TypeSystem aTypeSystem)
           throws ResourceInitializationException {
     return createTCas(aComponentDescriptionsOrMetaData, aTypeSystem, UIMAFramework
             .getDefaultPerformanceTuningProperties());
@@ -730,9 +729,9 @@ public class CasCreationUtils {
 
   /**
    * @deprecated As of v2.0, use <code>createCas(...)</code> instead. All methods that were on the
-   *             TCAS interface have been moved to CAS.
+   *             CAS interface have been moved to CAS.
    */
-  public static TCAS createTCas(Collection aComponentDescriptionsOrMetaData,
+  public static CAS createTCas(Collection aComponentDescriptionsOrMetaData,
           TypeSystem aTypeSystem, Properties aPerformanceTuningSettings)
           throws ResourceInitializationException {
     return createTCas(aComponentDescriptionsOrMetaData, aTypeSystem, aPerformanceTuningSettings,
@@ -741,9 +740,9 @@ public class CasCreationUtils {
 
   /**
    * @deprecated As of v2.0, use <code>createCas(...)</code> instead. All methods that were on the
-   *             TCAS interface have been moved to CAS.
+   *             CAS interface have been moved to CAS.
    */
-  public static TCAS createTCas(Collection aComponentDescriptionsOrMetaData,
+  public static CAS createTCas(Collection aComponentDescriptionsOrMetaData,
           TypeSystem aTypeSystem, Properties aPerformanceTuningSettings,
           ResourceManager aResourceManager) throws ResourceInitializationException {
     // build a list of metadata objects
@@ -782,9 +781,9 @@ public class CasCreationUtils {
 
   /**
    * @deprecated As of v2.0, use <code>createCas(...)</code> instead. All methods that were on the
-   *             TCAS interface have been moved to CAS.
+   *             CAS interface have been moved to CAS.
    */
-  public static TCAS createTCas(TypeSystemDescription aTypeSystem, TypePriorities aTypePriorities,
+  public static CAS createTCas(TypeSystemDescription aTypeSystem, TypePriorities aTypePriorities,
           FsIndexDescription[] aFsIndexes) throws ResourceInitializationException {
     return createTCas(aTypeSystem, aTypePriorities, aFsIndexes, UIMAFramework
             .getDefaultPerformanceTuningProperties());
@@ -792,9 +791,9 @@ public class CasCreationUtils {
 
   /**
    * @deprecated As of v2.0, use <code>createCas(...)</code> instead. All methods that were on the
-   *             TCAS interface have been moved to CAS.
+   *             CAS interface have been moved to CAS.
    */
-  public static TCAS createTCas(TypeSystemDescription aTypeSystem, TypePriorities aTypePriorities,
+  public static CAS createTCas(TypeSystemDescription aTypeSystem, TypePriorities aTypePriorities,
           FsIndexDescription[] aFsIndexes, Properties aPerformanceTuningSettings)
           throws ResourceInitializationException {
     return createTCas(aTypeSystem, aTypePriorities, aFsIndexes, aPerformanceTuningSettings, null);
@@ -802,22 +801,22 @@ public class CasCreationUtils {
 
   /**
    * @deprecated As of v2.0, use <code>createCas(...)</code> instead. All methods that were on the
-   *             TCAS interface have been moved to CAS.
+   *             CAS interface have been moved to CAS.
    */
-  public static TCAS createTCas(TypeSystemDescription aTypeSystem, TypePriorities aTypePriorities,
+  public static CAS createTCas(TypeSystemDescription aTypeSystem, TypePriorities aTypePriorities,
           FsIndexDescription[] aFsIndexes, Properties aPerformanceTuningSettings,
           ResourceManager aResourceManager) throws ResourceInitializationException {
-    // Create CAS, then create default text Sofa and return TCAS view
+    // Create CAS, then create default text Sofa and return CAS view
     CAS cas = createCas(aTypeSystem, aTypePriorities, aFsIndexes, aPerformanceTuningSettings,
             aResourceManager);
-    return (TCAS) cas;
+    return (CAS) cas;
   }
 
   /**
    * @deprecated As of v2.0, use <code>createCas(...)</code> instead. All methods that were on the
-   *             TCAS interface have been moved to CAS.
+   *             CAS interface have been moved to CAS.
    */
-  public static TCAS createTCas(TypeSystem aTypeSystem, TypePriorities aTypePriorities,
+  public static CAS createTCas(TypeSystem aTypeSystem, TypePriorities aTypePriorities,
           FsIndexDescription[] aFsIndexes) throws ResourceInitializationException {
     return createTCas(aTypeSystem, aTypePriorities, aFsIndexes, UIMAFramework
             .getDefaultPerformanceTuningProperties());
@@ -825,9 +824,9 @@ public class CasCreationUtils {
 
   /**
    * @deprecated As of v2.0, use <code>createCas(...)</code> instead. All methods that were on the
-   *             TCAS interface have been moved to CAS.
+   *             CAS interface have been moved to CAS.
    */
-  public static TCAS createTCas(TypeSystem aTypeSystem, TypePriorities aTypePriorities,
+  public static CAS createTCas(TypeSystem aTypeSystem, TypePriorities aTypePriorities,
           FsIndexDescription[] aFsIndexes, Properties aPerformanceTuningSettings)
           throws ResourceInitializationException {
     return createTCas(aTypeSystem, aTypePriorities, aFsIndexes, aPerformanceTuningSettings, null);
@@ -835,15 +834,15 @@ public class CasCreationUtils {
 
   /**
    * @deprecated As of v2.0, use <code>createCas(...)</code> instead. All methods that were on the
-   *             TCAS interface have been moved to CAS.
+   *             CAS interface have been moved to CAS.
    */
-  public static TCAS createTCas(TypeSystem aTypeSystem, TypePriorities aTypePriorities,
+  public static CAS createTCas(TypeSystem aTypeSystem, TypePriorities aTypePriorities,
           FsIndexDescription[] aFsIndexes, Properties aPerformanceTuningSettings,
           ResourceManager aResourceManager) throws ResourceInitializationException {
-    // Create CAS, then create default text Sofa and return TCAS view
+    // Create CAS, then create default text Sofa and return CAS view
     CAS cas = createCas(aTypeSystem, aTypePriorities, aFsIndexes, aPerformanceTuningSettings,
             aResourceManager);
-    return (TCAS) cas;
+    return (CAS) cas;
   }
 
   /**
@@ -1615,7 +1614,7 @@ public class CasCreationUtils {
    */
   protected static boolean subsumes(String aType1Name, String aType2Name, Map aNameMap) {
     // Top type subsumes everything
-    if (TCAS.TYPE_NAME_TOP.equals(aType1Name)) {
+    if (CAS.TYPE_NAME_TOP.equals(aType1Name)) {
       return true;
     }
 

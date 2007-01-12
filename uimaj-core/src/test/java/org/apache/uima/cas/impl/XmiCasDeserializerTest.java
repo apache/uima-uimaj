@@ -42,7 +42,6 @@ import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.impl.SofaID_impl;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -198,8 +197,8 @@ public class XmiCasDeserializerTest extends TestCase {
         newCas.reset();
       }
 
-      // test same thing but with a TCAS
-      TCAS newTcas = CasCreationUtils.createTCas(typeSystem, new TypePriorities_impl(),
+      // test same thing but with a CAS
+      CAS newTcas = CasCreationUtils.createTCas(typeSystem, new TypePriorities_impl(),
               new FsIndexDescription[0]);
       for (int i = 0; i < 2; i++) {
         XmiCasDeserializer newDeser = new XmiCasDeserializer(newTcas.getTypeSystem());
@@ -212,7 +211,7 @@ public class XmiCasDeserializerTest extends TestCase {
 
         // check sofas
         assertEquals("This is a test", newTcas.getDocumentText());
-        CAS newTcas2 = newTcas.getTCAS(newTcas.getSofa(new SofaID_impl("OtherSofa")));
+        CAS newTcas2 = newTcas.getView(newTcas.getSofa(new SofaID_impl("OtherSofa")));
         assertEquals("This is only a test", newTcas2.getDocumentText());
         newTcas.reset();
       }

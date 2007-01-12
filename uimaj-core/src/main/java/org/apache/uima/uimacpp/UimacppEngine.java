@@ -23,10 +23,6 @@ import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.Feature;
-import org.apache.uima.cas.SofaFS;
-import org.apache.uima.cas.Type;
-import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.CASMgrSerializer;
@@ -35,7 +31,6 @@ import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.internal.util.IntVector;
 
 public class UimacppEngine {
@@ -213,7 +208,7 @@ public class UimacppEngine {
 
   // ////////////////////////////////////////////////////////
   // implementation of the AE interface
-  // getAnalysisEngineMetaData, getTCAS, process, reset, and destroy.
+  // getAnalysisEngineMetaData, getView, process, reset, and destroy.
 
   /**
    * create a TAF engine with a config file

@@ -19,41 +19,41 @@
 
 package org.apache.uima.jcas.test;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.text.TCAS;
 
 /**
  * Use this as your CAS factory.
  */
 public class CASInitializer {
 
-  public static TCAS initCas(AnnotatorInitializer init) throws CASException {
+  public static CAS initCas(AnnotatorInitializer init) throws CASException {
     // Create an initial CASMgr from the factory.
     CASMgr casMgr = CASFactory.createCAS();
     // Create a writable type system.
     TypeSystemMgr tsa = casMgr.getTypeSystemMgr();
     // assert(tsa != null);
-    // Create a TCASMgr. Ensures existence of AnnotationFS type.
+    // Create a CASMgr. Ensures existence of AnnotationFS type.
     init.initTypeSystem(tsa);
     // Commit the type system.
     ((CASImpl) casMgr).commitTypeSystem();
     // assert(tsa.isCommitted());
-    // Create the TCAS indexes.
+    // Create the CAS indexes.
     casMgr.initCASIndexes();
 
-    // tcasMgr.initTCASIndexes();
+    // tcasMgr.initCASIndexes();
     FSIndexRepositoryMgr irm = casMgr.getIndexRepositoryMgr();
     init.initIndexes(irm, casMgr.getTypeSystemMgr());
     // Commit the index repository.
     irm.commit();
     // assert(cas.getIndexRepositoryMgr().isCommitted());
 
-    return casMgr.getCAS().getTCAS();
+    return casMgr.getCAS().getCurrentView();
   }
 
 }

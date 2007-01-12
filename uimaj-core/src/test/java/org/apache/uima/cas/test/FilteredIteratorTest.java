@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.ConstraintFactory;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
@@ -36,8 +37,6 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.TCAS;
-import org.apache.uima.cas.text.TCASRuntimeException;
 
 /**
  * Class comment for FilteredIteratorTest.java goes here.
@@ -45,7 +44,7 @@ import org.apache.uima.cas.text.TCASRuntimeException;
  */
 public class FilteredIteratorTest extends TestCase {
 
-  private TCAS cas;
+  private CAS cas;
 
   private TypeSystem ts;
 
@@ -118,11 +117,11 @@ public class FilteredIteratorTest extends TestCase {
     assertTrue(sentLenFeat != null);
     this.tokenFloatFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_FLOAT_FEAT_Q);
     assertTrue(tokenFloatFeat != null);
-    this.startFeature = ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_BEGIN);
+    this.startFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
     assertTrue(startFeature != null);
     this.sentenceType = ts.getType(CASTestSetup.SENT_TYPE);
     assertTrue(sentenceType != null);
-    this.annotationType = ts.getType(TCAS.TYPE_NAME_ANNOTATION);
+    this.annotationType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
     assertTrue(annotationType != null);
   }
 
@@ -149,13 +148,13 @@ public class FilteredIteratorTest extends TestCase {
 
     try {
       // cas.setDocumentText("A test."); can't set document text twice
-    } catch (TCASRuntimeException e) {
+    } catch (CASRuntimeException e) {
       assertTrue(false);
     }
 
     try {
       cas.setDocumentText("This is a test.");
-    } catch (TCASRuntimeException e) {
+    } catch (CASRuntimeException e) {
       assertTrue(false);
     }
     // create token and sentence annotations
@@ -211,13 +210,13 @@ public class FilteredIteratorTest extends TestCase {
 
     try {
       // cas.setDocumentText("A test."); can't set document text twice!
-    } catch (TCASRuntimeException e) {
+    } catch (CASRuntimeException e) {
       assertTrue(false);
     }
 
     try {
       cas.setDocumentText("This is a test.");
-    } catch (TCASRuntimeException e) {
+    } catch (CASRuntimeException e) {
       assertTrue(false);
     }
     // create token and sentence annotations
@@ -248,13 +247,13 @@ public class FilteredIteratorTest extends TestCase {
   /*
    * public void testIterator1b() {
    * 
-   * try { cas.setDocumentText("A test."); } catch (TCASRuntimeException e) { assertTrue(false); }
-   * ((TCASMgr) cas).enableSetText(false); boolean exc = false; try { cas.setDocumentText("A
-   * test."); } catch (TCASRuntimeException e) { assertTrue(e.getError() ==
-   * TCASRuntimeException.SET_DOC_TEXT_DISABLED); exc = true; } assertTrue(exc); ((TCASMgr)
+   * try { cas.setDocumentText("A test."); } catch (CASRuntimeException e) { assertTrue(false); }
+   * ((CASMgr) cas).enableSetText(false); boolean exc = false; try { cas.setDocumentText("A
+   * test."); } catch (CASRuntimeException e) { assertTrue(e.getError() ==
+   * CASRuntimeException.SET_DOC_TEXT_DISABLED); exc = true; } assertTrue(exc); ((CASMgr)
    * cas).enableSetText(true);
    * 
-   * try { ((TCASMgr) cas).setDocumentText("This is a test."); } catch (TCASRuntimeException e) {
+   * try { ((CASMgr) cas).setDocumentText("This is a test."); } catch (CASRuntimeException e) {
    * assertTrue(false); } //create token and sentence annotations
    * cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 0, 4));
    * cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 5, 7));
@@ -483,7 +482,7 @@ public class FilteredIteratorTest extends TestCase {
 
   // test uses constraint compiler
   /*
-   * public void testIterator2c() { try { ((TCASMgr) cas).setDocumentText( "This is a test with the
+   * public void testIterator2c() { try { ((CASMgr) cas).setDocumentText( "This is a test with the
    * word \"the\" in it.");
    * 
    * FeatureStructure wordFS = this.cas.createFS(wordType); FeatureStructure sepFS =

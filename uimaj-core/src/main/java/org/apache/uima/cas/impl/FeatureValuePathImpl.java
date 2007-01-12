@@ -31,7 +31,6 @@ import org.apache.uima.cas.FeatureValuePath;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.TCAS;
 
 /**
  * Contains CAS Type and Feature objects to represent a feature path of the form
@@ -62,7 +61,7 @@ import org.apache.uima.cas.text.TCAS;
  * <li><code>[last]</code> returns the last entry of the array
  * <li><code>[]</code> returns an array of values. <code>[]</code> is only allowed 0 or 1 time
  * in a feature path. If it is used, <code>getValueType</code> will return one of the following:
- * <code>TCAS.TYPE_NAME_STRING_ARRAY ,TCAS.TYPE_NAME_INTEGER_ARRAY,TCAS.TYPE_NAME_FLOAT_ARRAY</code>.
+ * <code>CAS.TYPE_NAME_STRING_ARRAY ,CAS.TYPE_NAME_INTEGER_ARRAY,CAS.TYPE_NAME_FLOAT_ARRAY</code>.
  * </ul>
  * If the feature path is defined directly for an <code>FSArray</code>, an actual feature name
  * can be omitted, and only the array access operator can be used. Examples:
@@ -778,12 +777,12 @@ public class FeatureValuePathImpl implements FeatureValuePath {
    * 
    * @return String the type that this feature path will evaluate to. Will be one of the following:
    *         <ul>
-   *         <li>TCAS.TYPE_NAME_STRING
-   *         <li>TCAS.TYPE_NAME_STRING_ARRAY
-   *         <li>TCAS.TYPE_NAME_INTEGER
-   *         <li>TCAS.TYPE_NAME_INTEGER_ARRAY
-   *         <li>TCAS.TYPE_NAME_FLOAT
-   *         <li>TCAS.TYPE_NAME_FLOAT_ARRAY
+   *         <li>CAS.TYPE_NAME_STRING
+   *         <li>CAS.TYPE_NAME_STRING_ARRAY
+   *         <li>CAS.TYPE_NAME_INTEGER
+   *         <li>CAS.TYPE_NAME_INTEGER_ARRAY
+   *         <li>CAS.TYPE_NAME_FLOAT
+   *         <li>CAS.TYPE_NAME_FLOAT_ARRAY
    *         </ul>
    */
   public String getValueType() {
@@ -951,7 +950,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
       this.childPath.typeSystemInit(rangeTypeCode, ts);
     } else if (this.isCoveredTextFeature) {
       // make sure that the type is a subtype of annotation
-      int annotationType = ts.ll_getCodeForTypeName(TCAS.TYPE_NAME_ANNOTATION);
+      int annotationType = ts.ll_getCodeForTypeName(CAS.TYPE_NAME_ANNOTATION);
       if (!((TypeSystemImpl) ts).subsumes(annotationType, fsType)) {
         CASRuntimeException exception = new CASRuntimeException(
                 CASRuntimeException.INVALID_FEATURE_PATH);

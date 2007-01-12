@@ -104,10 +104,10 @@ public class CASRuntimeException extends RuntimeException {
   public static final int JCAS_MAKING_ABSTRACT_INSTANCE = 18;
 
   /**
-   * The method "{0}" is not supported by this JCAS because it is not associated with a TCAS view of
+   * The method "{0}" is not supported by this JCAS because it is not associated with a CAS view of
    * a CAS, but rather just with a base CAS.
    */
-  public static final int JCAS_UNSUPPORTED_OP_NOT_TCAS = 19;
+  public static final int JCAS_UNSUPPORTED_OP_NOT_CAS = 19;
 
   /** A sofaFS with name {0} has already been created. */
   public static final int SOFANAME_ALREADY_EXISTS = 20;
@@ -162,7 +162,7 @@ public class CASRuntimeException extends RuntimeException {
       "UNKNOWN_CONSTRAINT_FEAT", "CHILD_INDEX_OOB", "JCAS_CAS_MISMATCH", "JCAS_TYPE_NOT_IN_CAS",
       "JCAS_UNKNOWN_TYPE_NOT_IN_CAS", "JCAS_GET_NTH_ON_EMPTY_LIST", "JCAS_GET_NTH_NEGATIVE_INDEX",
       "JCAS_GET_NTH_PAST_END", "JCAS_OLDSTYLE_REF_TO_NONJCAS_TYPE",
-      "JCAS_MAKING_ABSTRACT_INSTANCE", "JCAS_UNSUPPORTED_OP_NOT_TCAS", "SOFANAME_ALREADY_EXISTS",
+      "JCAS_MAKING_ABSTRACT_INSTANCE", "JCAS_UNSUPPORTED_OP_NOT_CAS", "SOFANAME_ALREADY_EXISTS",
       "SOFADATA_ALREADY_SET", "SOFANAME_NOT_FOUND", "SOFAREF_NOT_FOUND", "PROTECTED_SOFA_FEATURE",
       "JCAS_MISSING_COVERCLASS", "INVALID_FEATURE_PATH", "NO_PRIMITIVE_TAIL", "BLOB_SERIALIZATION",
       "BLOB_DESERIALIZATION", "SOFADATASTREAM_ERROR", "INVALID_BASE_CAS_METHOD",

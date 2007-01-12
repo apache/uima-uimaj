@@ -79,7 +79,7 @@ public class SegmentDroppingFlowController extends CasFlowController_ImplBase {
      */
     public Step next() throws AnalysisEngineProcessException {
       // drop any segment whose document text is "DROP"
-      if ("DROP".equals(getCas().getTCAS().getDocumentText())) {
+      if ("DROP".equals(getCas().getCurrentView().getDocumentText())) {
         return new FinalStep(true);
       }
 

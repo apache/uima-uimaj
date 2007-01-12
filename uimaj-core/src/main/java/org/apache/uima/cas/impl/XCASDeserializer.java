@@ -73,7 +73,7 @@ public class XCASDeserializer {
     // Expect the start of the XML document.
     private static final int DOC_STATE = 0;
 
-    // At the top level. Expect a FS, or a TCAS document, or the end of the
+    // At the top level. Expect a FS, or a CAS document, or the end of the
     // XML input.
     private static final int FS_STATE = 1;
 
@@ -92,7 +92,7 @@ public class XCASDeserializer {
     // Inside an array FS. Expect an array element, or the end of the FS.
     private static final int ARRAY_ELE_STATE = 6;
 
-    // Inside the TCAS document. Expect the doc text.
+    // Inside the CAS document. Expect the doc text.
     private static final int DOC_TEXT_STATE = 7;
 
     // Inside an Out-Of-Typesystem FS. Expect features, or the end of the FS.
@@ -159,7 +159,7 @@ public class XCASDeserializer {
     // Store IndexRepositories in a vector;
     private ArrayList indexRepositories;
 
-    // and TCAS too
+    // and CAS too
     private ArrayList tcasInstances;
 
     // for processing v1.x format XCAS
@@ -450,7 +450,7 @@ public class XCASDeserializer {
       }
 
       if (sofaTypeCode == heapValue) {
-        // If a Sofa, create TCAS view to get new indexRepository
+        // If a Sofa, create CAS view to get new indexRepository
         SofaFS sofa = (SofaFS) cas.createFS(addr);
         // also add to indexes so we can retrieve the Sofa later
         cas.getBaseIndexRepository().addFS(sofa);
@@ -690,7 +690,7 @@ public class XCASDeserializer {
           break;
         }
         case DOC_TEXT_STATE: {
-          // Assume old style TCAS with one text Sofa
+          // Assume old style CAS with one text Sofa
           SofaFS newSofa = cas.createInitialSofa("text");
           CASImpl tcas = (CASImpl) cas.getInitialView();
           tcas.registerView(newSofa);

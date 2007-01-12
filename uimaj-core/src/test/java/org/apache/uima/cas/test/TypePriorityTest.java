@@ -24,6 +24,7 @@ import java.util.Properties;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
@@ -34,7 +35,6 @@ import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.text.TCAS;
 
 /**
  * tests of type priorities
@@ -56,7 +56,7 @@ public class TypePriorityTest extends TestCase {
 
   private CASMgr casMgr;
 
-  private TCAS cas;
+  private CAS cas;
 
   private FSIndexRepositoryMgr irm;
 
@@ -72,7 +72,7 @@ public class TypePriorityTest extends TestCase {
   protected void setUp() throws Exception {
     super.setUp();
     casMgr = initCAS();
-    cas = casMgr.getCAS().getTCAS();
+    cas = casMgr.getCAS().getCurrentView();
     irm = casMgr.getIndexRepositoryMgr();
     ts = cas.getTypeSystem();
   }
@@ -117,7 +117,7 @@ public class TypePriorityTest extends TestCase {
 
   // Initialize the first CAS.
   private CASMgr initCAS() {
-    // Create a TCASMgr. Ensures existence of AnnotationFS type.
+    // Create a CASMgr. Ensures existence of AnnotationFS type.
 
     CASMgr cas = CASFactory.createCAS(200);
     // Create a writable type system.

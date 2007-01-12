@@ -65,7 +65,6 @@ import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelException;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.cas.text.TCASRuntimeException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.cas.FSArray;
@@ -843,28 +842,28 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.impl.IJCas#setDocumentText(java.lang.String)
    */
-  public void setDocumentText(String text) throws TCASRuntimeException {
+  public void setDocumentText(String text) throws CASRuntimeException {
     casImpl.setDocumentText(text);
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.impl.IJCas#setSofaDataString(java.lang.String, java.lang.String)
    */
-  public void setSofaDataString(String text, String mime) throws TCASRuntimeException {
+  public void setSofaDataString(String text, String mime) throws CASRuntimeException {
     casImpl.setSofaDataString(text, mime);
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.impl.IJCas#setSofaDataArray(org.apache.uima.jcas.cas.TOP, java.lang.String)
    */
-  public void setSofaDataArray(FeatureStructure array, String mime) throws TCASRuntimeException {
+  public void setSofaDataArray(FeatureStructure array, String mime) throws CASRuntimeException {
     casImpl.setSofaDataArray(array, mime);
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.impl.IJCas#setSofaDataURI(java.lang.String, java.lang.String)
    */
-  public void setSofaDataURI(String uri, String mime) throws TCASRuntimeException {
+  public void setSofaDataURI(String uri, String mime) throws CASRuntimeException {
     casImpl.setSofaDataURI(uri, mime);
   }
 
@@ -878,7 +877,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.impl.IJCas#setDocumentLanguage(java.lang.String)
    */
-  public void setDocumentLanguage(String language) throws TCASRuntimeException {
+  public void setDocumentLanguage(String language) throws CASRuntimeException {
     casImpl.setDocumentLanguage(language);
   }
 

@@ -76,7 +76,6 @@ import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.cas.text.Language;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.impl.JCasImpl;
@@ -86,7 +85,7 @@ import org.apache.uima.jcas.impl.JCasImpl;
  * instance of it from outside the package. Use at your own risk. May change without notice.
  * 
  */
-public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLevelCAS {
+public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLevelCAS {
 
   // Notes on the implementation
   // ---------------------------
@@ -154,7 +153,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
   // A map from Sofas to IndexRepositories.
   private HashMap sofa2indexMap;
 
-  // A map from Sofas to TCAS views.
+  // A map from Sofas to CAS views.
   private HashMap sofa2tcasMap;
 
   // A map from Sofas to JCas views.
@@ -504,7 +503,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
             .getSofaIndexRepository(1) : (FSIndexRepositoryImpl) ((CASImpl) cas)
             .getSofaIndexRepository(aSofa);
     if (null == this.indexRepository) {
-      // create the indexRepository for this TCAS
+      // create the indexRepository for this CAS
       // use the baseIR to create a lightweight IR copy
       this.indexRepository = new FSIndexRepositoryImpl(this,
               (FSIndexRepositoryImpl) ((CASImpl) cas).getBaseIndexRepository());
@@ -1021,7 +1020,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
       resetNoQuestions();
       return;
     }
-    // called from a TCAS view.
+    // called from a CAS view.
     // clear CAS ...
     this.baseCAS.resetNoQuestions();
   }
@@ -1050,7 +1049,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
     int numViews = this.getBaseSofaCount();
     // Flush indexRepository for all Sofa
     for (int view = 1; view <= numViews; view++) {
-      CAS tcas = (view == 1) ? getInitialView() : getTCAS(view);
+      CAS tcas = (view == 1) ? getInitialView() : getView(view);
       if (tcas != null) {
         ((CASImpl) tcas).resetView();
       }
@@ -1230,7 +1229,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
     this.indexRepository.commit();
 
     // get handle to existing initial View
-    TCAS initialView = (TCAS) this.getInitialView();
+    CAS initialView = (CAS) this.getInitialView();
 
     // throw away all other View information as the CAS definition may have changed
     this.sofa2indexMap.clear();
@@ -1249,7 +1248,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
 
     // we also need to throw away the JCAS. A new JCAS will be created on
     // the next
-    // call to getJCas(). As with the TCAS, we are counting on the fact that
+    // call to getJCas(). As with the CAS, we are counting on the fact that
     // this happens only in a service, where JCAS handles are not held on
     // to.
     this.jcas = null;
@@ -1543,7 +1542,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
       iterator.moveToNext();
     }
     for (int view = 1; view <= numViews; view++) {
-      CAS tcas = (view == 1) ? getInitialView() : getTCAS(view);
+      CAS tcas = (view == 1) ? getInitialView() : getView(view);
       if (tcas != null) {
         FSIndexRepositoryImpl loopIndexRep = (FSIndexRepositoryImpl) getSofaIndexRepository(view);
         loopLen = fsIndex[loopStart];
@@ -2449,25 +2448,19 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
   }
 
   // ///////////////////////////////////////////////////////////////////////////
-  // TCAS support ... create TCAS view of aSofa
+  // CAS support ... create CAS view of aSofa
 
-  /**
-   * @deprecated
-   */
-  public TCAS getTCAS(SofaFS aSofa) {
-    return (TCAS) getView(aSofa);
-  }
 
   // For internal use only
-  public TCAS getTCAS(int sofaNum) {
-    return (TCAS) this.sofa2tcasMap.get(new Integer(sofaNum));
+  public CAS getView(int sofaNum) {
+    return (CAS) this.sofa2tcasMap.get(new Integer(sofaNum));
   }
 
   /**
-   * @deprecated
+   * 
    */
-  public TCAS getTCAS() {
-    return (TCAS) getView(CAS.NAME_DEFAULT_SOFA);
+  public CAS getCurrentView() {
+    return getView(CAS.NAME_DEFAULT_SOFA);
   }
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -2577,7 +2570,7 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
   public CAS getView(SofaFS aSofa) {
     CASImpl aTcas = (CASImpl) this.sofa2tcasMap.get(new Integer(aSofa.getSofaRef()));
     if (null == aTcas) {
-      // create a new TCAS view
+      // create a new CAS view
       aTcas = new CASImpl(this.baseCAS, aSofa);
       this.sofa2tcasMap.put(new Integer(aSofa.getSofaRef()), aTcas);
       if (this.baseCAS.sofaCount < aSofa.getSofaRef()) {
@@ -3646,21 +3639,21 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
   }
 
   /**
-   * @see org.apache.uima.cas.text.TCAS#getAnnotationType()
+   * @see org.apache.uima.cas.text.CAS#getAnnotationType()
    */
   public Type getAnnotationType() {
     return this.annotType;
   }
 
   /**
-   * @see org.apache.uima.cas.text.TCAS#getEndFeature()
+   * @see org.apache.uima.cas.text.CAS#getEndFeature()
    */
   public Feature getEndFeature() {
     return this.endFeat;
   }
 
   /**
-   * @see org.apache.uima.cas.text.TCAS#getBeginFeature()
+   * @see org.apache.uima.cas.text.CAS#getBeginFeature()
    */
   public Feature getBeginFeature() {
     return this.startFeat;
@@ -3902,11 +3895,11 @@ public class CASImpl extends AbstractCas_ImplBase implements TCAS, CASMgr, LowLe
     int sofaId = this.getSofaFeat(addr);
     if (sofaId > 0) {
       // check if same as that of current CAS view
-//      if (!(this instanceof TCASImpl) || (sofaId != ((TCASImpl) this).getSofaRef())) {
+//      if (!(this instanceof CASImpl) || (sofaId != ((CASImpl) this).getSofaRef())) {
       if (sofaId != this.getSofaRef()) {
-        // Does not match. get TCAS for the sofaRef feature found in
+        // Does not match. get CAS for the sofaRef feature found in
         // annotation
-        return (CASImpl) this.getTCAS(getSofa(sofaId).getSofaRef());
+        return (CASImpl) this.getView(getSofa(sofaId).getSofaRef());
       }
     } else {// annotation created from low-level APIs, without setting sofa
       // feature

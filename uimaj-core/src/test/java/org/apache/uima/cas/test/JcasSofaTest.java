@@ -43,7 +43,6 @@ import org.apache.uima.cas.impl.CASSerializer;
 import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XCASSerializer;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.impl.SofaID_impl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
@@ -86,7 +85,7 @@ public class JcasSofaTest extends TestCase {
       // Create a writable type system.
       TypeSystemMgr tsa = casMgr.getTypeSystemMgr();
       // Add new types and features.
-      Type annotType = tsa.getType(TCAS.TYPE_NAME_ANNOTATION);
+      Type annotType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
       Type crossType = tsa.addType("org.apache.uima.cas.test.CrossAnnotation", annotType);
       tsa.addFeature("otherAnnotation", crossType, annotType);
       // Commit the type system.
@@ -242,9 +241,9 @@ public class JcasSofaTest extends TestCase {
       Annotation engAnnot = (Annotation) engIt.get();
       Annotation gerAnnot = (Annotation) gerIt.get();
       Annotation frAnnot = (Annotation) frIt.get();
-      assertTrue((TCAS.TYPE_NAME_DOCUMENT_ANNOTATION).equals(engAnnot.getType().getName()));
-      assertTrue((TCAS.TYPE_NAME_DOCUMENT_ANNOTATION).equals(gerAnnot.getType().getName()));
-      assertTrue((TCAS.TYPE_NAME_DOCUMENT_ANNOTATION).equals(frAnnot.getType().getName()));
+      assertTrue((CAS.TYPE_NAME_DOCUMENT_ANNOTATION).equals(engAnnot.getType().getName()));
+      assertTrue((CAS.TYPE_NAME_DOCUMENT_ANNOTATION).equals(gerAnnot.getType().getName()));
+      assertTrue((CAS.TYPE_NAME_DOCUMENT_ANNOTATION).equals(frAnnot.getType().getName()));
 
       engIt.moveToNext();
       gerIt.moveToNext();
@@ -252,9 +251,9 @@ public class JcasSofaTest extends TestCase {
       engAnnot = (Annotation) engIt.get();
       CrossAnnotation gerCrossAnnot = (CrossAnnotation) gerIt.get();
       frAnnot = (Annotation) frIt.get();
-      assertTrue((TCAS.TYPE_NAME_ANNOTATION).equals(engAnnot.getType().getName()));
+      assertTrue((CAS.TYPE_NAME_ANNOTATION).equals(engAnnot.getType().getName()));
       assertTrue(("this").equals(engAnnot.getCoveredText()));
-      assertTrue((TCAS.TYPE_NAME_ANNOTATION).equals(frAnnot.getType().getName()));
+      assertTrue((CAS.TYPE_NAME_ANNOTATION).equals(frAnnot.getType().getName()));
       assertTrue(("cette").equals(frAnnot.getCoveredText()));
       assertTrue(("org.apache.uima.cas.test.CrossAnnotation").equals(gerCrossAnnot.getType()
               .getName()));
@@ -262,7 +261,7 @@ public class JcasSofaTest extends TestCase {
 
       // Test that the other annotation feature of cross annotations works
       Annotation crossAnnot = gerCrossAnnot.getOtherAnnotation();
-      assertTrue((TCAS.TYPE_NAME_ANNOTATION).equals(crossAnnot.getType().getName()));
+      assertTrue((CAS.TYPE_NAME_ANNOTATION).equals(crossAnnot.getType().getName()));
       assertTrue(("this").equals(crossAnnot.getCoveredText()));
 
       // Test that annotations accessed from a reference in the base CAS work correctly

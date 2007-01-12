@@ -29,13 +29,13 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.ResultSpecification;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.impl.CASCompleteSerializer;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.CASMgrSerializer;
 import org.apache.uima.cas.impl.CASSerializer;
 import org.apache.uima.cas.impl.Serialization;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.collection.CasConsumer;
 import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.resource.ResourceManager;
@@ -209,9 +209,9 @@ public class CppUimajEngine {
         // 3. call process with tcas or cas
         if (requiresTCas && sofaNum == 0) {
           result = 1;
-          exceptionString = "This CasConsumer expects a TCAS but Sofa from which to construct one is not specified.";
+          exceptionString = "This CasConsumer expects a CAS but Sofa from which to construct one is not specified.";
         } else if (sofaNum > 0) {
-          TCAS tcas = casImpl.getTCAS(sofaNum);
+          CAS tcas = casImpl.getView(sofaNum);
           cc.processCas(tcas);
         } else {
           cc.processCas(casImpl);

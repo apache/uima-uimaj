@@ -24,7 +24,6 @@ import java.util.Properties;
 
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.collection.base_cpm.CasObjectProcessor;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ConfigurableResource;
@@ -180,12 +179,6 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    *           AnalysisEngine initialization time, and it will likely be moved in the future.
    */
   public CAS newCAS() throws ResourceInitializationException;
-
-  /**
-   * For backwards compatibility with v1.x only. As of v2.0, replace with
-   * <code>newCAS().getDefaultView()</code>.
-   */
-  public TCAS newTCAS() throws ResourceInitializationException;
 
   /**
    * Similar to {@link #newCAS()} but wraps the new CAS objects with the Java-object-based

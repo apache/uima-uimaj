@@ -44,7 +44,7 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
   // Expect the start of the XML document.
   private static final int DOC_STATE = 0;
 
-  // At the top level. Expect a FS, or a TCAS document, or the end of the
+  // At the top level. Expect a FS, or a CAS document, or the end of the
   // XML input.
   private static final int FS_STATE = 1;
 
@@ -63,7 +63,7 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
   // Inside an array FS. Expect an array element, or the end of the FS.
   private static final int ARRAY_ELE_STATE = 6;
 
-  // Inside the TCAS document. Expect the doc text.
+  // Inside the CAS document. Expect the doc text.
   private static final int DOC_TEXT_STATE = 7;
 
   // End parser states.

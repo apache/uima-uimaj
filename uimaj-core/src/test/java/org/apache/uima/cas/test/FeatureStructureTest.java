@@ -31,7 +31,6 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelTypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.TCAS;
 
 /**
  * Class comment for FeatureStructureTest.java goes here.
@@ -133,7 +132,7 @@ public class FeatureStructureTest extends TestCase {
     assertTrue(this.sentLenFeat != null);
     this.tokenFloatFeat = this.ts.getFeatureByFullName(CASTestSetup.TOKEN_FLOAT_FEAT_Q);
     assertTrue(this.tokenFloatFeat != null);
-    this.startFeature = this.ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_BEGIN);
+    this.startFeature = this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
     assertTrue(this.startFeature != null);
     this.langPairType = this.ts.getType(CASTestSetup.LANG_PAIR);
     assertTrue(this.langPairType != null);

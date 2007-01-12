@@ -55,7 +55,6 @@ import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XCASSerializer;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.impl.SofaID_impl;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
@@ -96,9 +95,9 @@ public class SofaTest extends TestCase {
       TypeSystemMgr tsa = casMgr.getTypeSystemMgr();
       // Add new types and features.
       // Type topType = tsa.getTopType();
-      annotationType = tsa.getType(TCAS.TYPE_NAME_ANNOTATION);
-      annotSofaFeat = annotationType.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_SOFA);
-      docAnnotationType = tsa.getType(TCAS.TYPE_NAME_DOCUMENT_ANNOTATION);
+      annotationType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
+      annotSofaFeat = annotationType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFA);
+      docAnnotationType = tsa.getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION);
       assertTrue(annotationType != null);
       crossType = tsa.addType("sofa.test.CrossAnnotation", annotationType);
       otherFeat = tsa.addFeature("otherAnnotation", crossType, annotationType);
@@ -198,11 +197,11 @@ public class SofaTest extends TestCase {
       Serialization.deserializeCAS(cas, fis);
 
       // Open TCas views of some Sofas
-      TCAS engTcas = cas.getTCAS(es);
+      CAS engTcas = cas.getView(es);
       assertTrue(engTcas.getViewName().equals("EnglishDocument"));
       CAS frTcas = cas.getView("FrenchDocument");
 
-      // Set the document text off SofaFS after the TCAS view exists
+      // Set the document text off SofaFS after the CAS view exists
       frTcas.setSofaDataString("cette biere est bonne", "text");
 
       // Create standard annotations against one and cross annotations

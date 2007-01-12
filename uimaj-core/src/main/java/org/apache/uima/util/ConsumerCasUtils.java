@@ -19,13 +19,13 @@
 
 package org.apache.uima.util;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.text.TCAS;
 
 public class ConsumerCasUtils {
-  public static int getIntFeatValue(TCAS aTcas, String aTypeS, String aFeatS) {
+  public static int getIntFeatValue(CAS aTcas, String aTypeS, String aFeatS) {
     int result = 0;
     Type type = aTcas.getTypeSystem().getType(aTypeS);
     if (type != null) {
@@ -40,7 +40,7 @@ public class ConsumerCasUtils {
     return result;
   }
 
-  public static String getStringFeatValue(TCAS aTcas, String aTypeS, String aFeatS) {
+  public static String getStringFeatValue(CAS aTcas, String aTypeS, String aFeatS) {
     String result = null;
     Type type = aTcas.getTypeSystem().getType(aTypeS);
     if (type != null) {
@@ -55,7 +55,7 @@ public class ConsumerCasUtils {
     return result;
   }
 
-  public static FeatureStructure getTcasFS(TCAS aTcas, String aTypeS) {
+  public static FeatureStructure getTcasFS(CAS aTcas, String aTypeS) {
     org.apache.uima.cas.FeatureStructure idFS = null;
     Type type = aTcas.getTypeSystem().getType(aTypeS);
     if (type != null) {

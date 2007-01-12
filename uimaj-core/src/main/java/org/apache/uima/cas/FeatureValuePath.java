@@ -51,7 +51,7 @@ import org.apache.uima.cas.impl.LowLevelTypeSystem;
  * <li><code>[last]</code> returns the last entry of the array
  * <li><code>[]</code> returns an array of values. <code>[]</code> is only allowed 0 or 1 time
  * in a feature path. If it is used, <code>getValueType</code> will return one of the following:
- * <code>TCAS.TYPE_NAME_STRING_ARRAY ,TCAS.TYPE_NAME_INTEGER_ARRAY,TCAS.TYPE_NAME_FLOAT_ARRAY</code>.
+ * <code>CAS.TYPE_NAME_STRING_ARRAY ,CAS.TYPE_NAME_INTEGER_ARRAY,CAS.TYPE_NAME_FLOAT_ARRAY</code>.
  * </ul>
  * If the feature path is defined directly for an <code>FSArray</code>, an actual feature name
  * can be omitted, and only the array access operator can be used. Examples:
@@ -128,12 +128,12 @@ public interface FeatureValuePath {
    * 
    * @return String the type that this feature path will evaluate to. Will be one of the following:
    *         <ul>
-   *         <li>TCAS.TYPE_NAME_STRING
-   *         <li>TCAS.TYPE_NAME_STRING_ARRAY
-   *         <li>TCAS.TYPE_NAME_INTEGER
-   *         <li>TCAS.TYPE_NAME_INTEGER_ARRAY
-   *         <li>TCAS.TYPE_NAME_FLOAT
-   *         <li>TCAS.TYPE_NAME_FLOAT_ARRAY
+   *         <li>CAS.TYPE_NAME_STRING
+   *         <li>CAS.TYPE_NAME_STRING_ARRAY
+   *         <li>CAS.TYPE_NAME_INTEGER
+   *         <li>CAS.TYPE_NAME_INTEGER_ARRAY
+   *         <li>CAS.TYPE_NAME_FLOAT
+   *         <li>CAS.TYPE_NAME_FLOAT_ARRAY
    *         </ul>
    */
   public String getValueType();

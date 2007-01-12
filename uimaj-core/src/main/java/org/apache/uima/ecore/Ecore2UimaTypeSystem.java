@@ -34,7 +34,6 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.XmiCasSerializer;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.resource.metadata.FeatureDescription;
 import org.apache.uima.resource.metadata.FsIndexDescription;
@@ -216,7 +215,7 @@ public class Ecore2UimaTypeSystem {
         EStructuralFeature end = aEClass.getEStructuralFeature("end");
         if (begin != null && end != null && begin.getEType() == EcorePackage.eINSTANCE.getEInt()
                 && end.getEType() == EcorePackage.eINSTANCE.getEInt()) {
-          type.setSupertypeName(TCAS.TYPE_NAME_ANNOTATION);
+          type.setSupertypeName(CAS.TYPE_NAME_ANNOTATION);
         } else {
           type.setSupertypeName(CAS.TYPE_NAME_TOP);
         }

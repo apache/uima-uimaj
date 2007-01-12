@@ -33,7 +33,6 @@ import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.TypeSystemMgr;
-import org.apache.uima.cas.text.TCAS;
 
 /**
  * Class comment for TypeSystemTest.java goes here.
@@ -51,7 +50,7 @@ public class TypeSystemTest extends TestCase {
       // Check type names.
 
       boolean exc = false;
-      Type annot = tsm.getType(TCAS.TYPE_NAME_ANNOTATION);
+      Type annot = tsm.getType(CAS.TYPE_NAME_ANNOTATION);
       assertTrue(annot != null);
       // Check for some illegal characters in type names.
       try {
@@ -144,7 +143,7 @@ public class TypeSystemTest extends TestCase {
       // by name on types more than one level removed from the introducing
       // type.
       assertTrue(tsm.getFeatureByFullName(annot2name + TypeSystem.FEATURE_SEPARATOR
-              + TCAS.FEATURE_BASE_NAME_BEGIN) != null);
+              + CAS.FEATURE_BASE_NAME_BEGIN) != null);
 
       String inhTestFeat = "inhTestFeat";
       tsm.addFeature(inhTestFeat, annot1, nameTest);
@@ -268,7 +267,7 @@ public class TypeSystemTest extends TestCase {
 
   }
 
-  private TCAS cas;
+  private CAS cas;
 
   private TypeSystem ts;
 
@@ -301,16 +300,16 @@ public class TypeSystemTest extends TestCase {
   }
 
   public void testNameChecking() {
-    TCAS tcas = CASInitializer.initCas(new SetupTest());
+    CAS tcas = CASInitializer.initCas(new SetupTest());
     assertTrue(tcas != null);
   }
 
   public void testGetParent() {
     assertTrue(this.ts.getParent(this.ts.getType(CAS.TYPE_NAME_TOP)) == null);
-    Type annotBase = this.ts.getType(TCAS.TYPE_NAME_ANNOTATION_BASE);
+    Type annotBase = this.ts.getType(CAS.TYPE_NAME_ANNOTATION_BASE);
     assertTrue(this.ts.getParent(annotBase) == this.ts.getTopType());
-    Type annot = this.ts.getType(TCAS.TYPE_NAME_ANNOTATION);
-    assertTrue(this.ts.getParent(annot) == this.ts.getType(TCAS.TYPE_NAME_ANNOTATION_BASE));
+    Type annot = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
+    assertTrue(this.ts.getParent(annot) == this.ts.getType(CAS.TYPE_NAME_ANNOTATION_BASE));
     assertTrue(this.ts.getParent(this.ts.getType(CASTestSetup.TOKEN_TYPE)) == annot);
   }
 
@@ -318,7 +317,7 @@ public class TypeSystemTest extends TestCase {
     Type top = this.ts.getTopType();
     assertTrue(top != null);
     assertTrue(top.getName().equals(CAS.TYPE_NAME_TOP));
-    Type annot = this.ts.getType(TCAS.TYPE_NAME_ANNOTATION);
+    Type annot = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
     assertTrue(annot != null);
     Type token = this.ts.getType(CASTestSetup.TOKEN_TYPE);
     assertTrue(token != null);
@@ -328,18 +327,18 @@ public class TypeSystemTest extends TestCase {
    * Test for Feature getFeature(String)
    */
   public void testGetFeature() {
-    Type annot = this.ts.getType(TCAS.TYPE_NAME_ANNOTATION);
-    Feature start = this.ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_BEGIN);
-    Feature end = this.ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_END);
+    Type annot = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
+    Feature start = this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
+    Feature end = this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
     Type integer = this.ts.getType(CAS.TYPE_NAME_INTEGER);
     assertTrue(start.getDomain() == annot);
     assertTrue(end.getDomain() == annot);
     assertTrue(start.getRange() == integer);
     assertTrue(end.getRange() == integer);
-    Feature start1 = annot.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_BEGIN);
+    Feature start1 = annot.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN);
     assertTrue(start == start1);
     Feature start2 = this.ts.getType(CASTestSetup.TOKEN_TYPE).getFeatureByBaseName(
-            TCAS.FEATURE_BASE_NAME_BEGIN);
+            CAS.FEATURE_BASE_NAME_BEGIN);
     assertTrue(start == start2);
   }
 
@@ -353,7 +352,7 @@ public class TypeSystemTest extends TestCase {
     assertTrue(v.contains(CAS.TYPE_NAME_TOP));
     assertTrue(v.contains(CAS.TYPE_NAME_FLOAT));
     assertTrue(v.contains(CAS.TYPE_NAME_FS_ARRAY));
-    assertTrue(v.contains(TCAS.TYPE_NAME_ANNOTATION));
+    assertTrue(v.contains(CAS.TYPE_NAME_ANNOTATION));
     assertTrue(v.contains(CASTestSetup.SENT_TYPE));
   }
 
@@ -364,12 +363,12 @@ public class TypeSystemTest extends TestCase {
     while (it.hasNext()) {
       v.add(((Feature) it.next()).getName());
     }
-    String annotPrefix = TCAS.TYPE_NAME_ANNOTATION + TypeSystem.FEATURE_SEPARATOR;
+    String annotPrefix = CAS.TYPE_NAME_ANNOTATION + TypeSystem.FEATURE_SEPARATOR;
     String arrayPrefix = CAS.TYPE_NAME_ARRAY_BASE + TypeSystem.FEATURE_SEPARATOR;
     assertTrue(arrayPrefix != null);
     String tokenPrefix = CASTestSetup.TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR;
-    assertTrue(v.contains(annotPrefix + TCAS.FEATURE_BASE_NAME_BEGIN));
-    assertTrue(v.contains(annotPrefix + TCAS.FEATURE_BASE_NAME_END));
+    assertTrue(v.contains(annotPrefix + CAS.FEATURE_BASE_NAME_BEGIN));
+    assertTrue(v.contains(annotPrefix + CAS.FEATURE_BASE_NAME_END));
     assertTrue(v.contains(tokenPrefix + CASTestSetup.TOKEN_TYPE_FEAT));
     // assertTrue(v.contains(arrayPrefix + CAS.ARRAY_LENGTH_FEAT));
   }
@@ -384,9 +383,9 @@ public class TypeSystemTest extends TestCase {
     List subTypes = this.ts.getDirectSubtypes(this.ts.getType(CAS.TYPE_NAME_TOP));
     Type intType = this.ts.getType(CAS.TYPE_NAME_INTEGER);
     assertTrue(subTypes.contains(intType));
-    Type annotBaseType = this.ts.getType(TCAS.TYPE_NAME_ANNOTATION_BASE);
+    Type annotBaseType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION_BASE);
     assertTrue(subTypes.contains(annotBaseType));
-    Type annotType = this.ts.getType(TCAS.TYPE_NAME_ANNOTATION);
+    Type annotType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
     assertTrue(!subTypes.contains(annotType));
     Type tokenType = this.ts.getType(CASTestSetup.TOKEN_TYPE);
     assertTrue(!subTypes.contains(tokenType));
@@ -398,7 +397,7 @@ public class TypeSystemTest extends TestCase {
   public void testSubsumes() {
     Type top = this.ts.getTopType();
     Type intType = this.ts.getType(CAS.TYPE_NAME_INTEGER);
-    Type annotType = this.ts.getType(TCAS.TYPE_NAME_ANNOTATION);
+    Type annotType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
     Type tokenType = this.ts.getType(CASTestSetup.TOKEN_TYPE);
     assertTrue(this.ts.subsumes(top, intType));
     assertTrue(this.ts.subsumes(top, annotType));
@@ -468,7 +467,7 @@ public class TypeSystemTest extends TestCase {
     assertTrue(intMatrix.isArray());
     assertTrue(intMatrix.getComponentType().equals(intArrayType));
     // Check array inheritance.
-    Type annotationArray = this.ts.getArrayType(this.ts.getType(TCAS.TYPE_NAME_ANNOTATION));
+    Type annotationArray = this.ts.getArrayType(this.ts.getType(CAS.TYPE_NAME_ANNOTATION));
     assertTrue(this.ts.subsumes(fsArrayType, annotationArray));
     // assertFalse(this.ts.subsumes(annotationArray, fsArrayType));
   }

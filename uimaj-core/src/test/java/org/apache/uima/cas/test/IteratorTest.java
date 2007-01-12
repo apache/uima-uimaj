@@ -35,7 +35,6 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.internal.util.IntVector;
 
 /**
@@ -109,11 +108,11 @@ public class IteratorTest extends TestCase {
     assertTrue(this.sentLenFeat != null);
     this.tokenFloatFeat = this.ts.getFeatureByFullName(CASTestSetup.TOKEN_FLOAT_FEAT_Q);
     assertTrue(this.tokenFloatFeat != null);
-    this.startFeature = this.ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_BEGIN);
+    this.startFeature = this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
     assertTrue(this.startFeature != null);
     this.sentenceType = this.ts.getType(CASTestSetup.SENT_TYPE);
     assertTrue(this.sentenceType != null);
-    this.annotationType = this.ts.getType(TCAS.TYPE_NAME_ANNOTATION);
+    this.annotationType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
     assertTrue(this.annotationType != null);
   }
 

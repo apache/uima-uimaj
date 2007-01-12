@@ -43,7 +43,6 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.internal.util.I18nUtil;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.rb_trees.IntRedBlackTree;
@@ -70,7 +69,7 @@ public class XmiCasDeserializer {
     // Expect the start of the XML document.
     private static final int DOC_STATE = 0;
 
-    // At the top level. Expect a FS, or a TCAS document, or the end of the
+    // At the top level. Expect a FS, or a CAS document, or the end of the
     // XML input.
     private static final int FS_STATE = 1;
 
@@ -149,7 +148,7 @@ public class XmiCasDeserializer {
     // Store IndexRepositories in a vector;
     private ArrayList indexRepositories;
 
-    // and TCAS too
+    // and CAS too
     private ArrayList tcasInstances;
 
     // utilities for handling CAS list types
@@ -194,7 +193,7 @@ public class XmiCasDeserializer {
       indexRepositories.add(this.cas.getView(CAS.NAME_DEFAULT_SOFA).getIndexRepository());
       this.sofaTypeCode = cas.ts.getTypeCode(CAS.TYPE_NAME_SOFA);
       this.sofaNumFeatCode = cas.ts.getFeatureCode(CAS.FEATURE_FULL_NAME_SOFANUM);
-      this.sofaFeatCode = cas.ts.getFeatureCode(TCAS.FEATURE_FULL_NAME_SOFA);
+      this.sofaFeatCode = cas.ts.getFeatureCode(CAS.FEATURE_FULL_NAME_SOFA);
       this.nextSofaNum = 2;
       this.listUtils = new ListUtils(cas, UIMAFramework.getLogger(XmiCasDeserializer.class), null);
 
@@ -438,7 +437,7 @@ public class XmiCasDeserializer {
         }
       }
       if (sofaTypeCode == typeCode) {
-        // If a Sofa, create TCAS view to get new indexRepository
+        // If a Sofa, create CAS view to get new indexRepository
         SofaFS sofa = (SofaFS) cas.createFS(addr);
         // also add to indexes so we can retrieve the Sofa later
         cas.getBaseIndexRepository().addFS(sofa);

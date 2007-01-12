@@ -26,6 +26,7 @@ import java.io.OutputStreamWriter;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
@@ -41,8 +42,6 @@ import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.TCAS;
-import org.apache.uima.cas.text.TCASException;
 import org.apache.uima.test.junit_extension.FileCompare;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
@@ -75,7 +74,7 @@ public class TypeOrderTest extends TestCase {
 
   private CASMgr casMgr;
 
-  private TCAS cas;
+  private CAS cas;
 
   private Type annotationType;
 
@@ -105,7 +104,7 @@ public class TypeOrderTest extends TestCase {
   protected void setUp() throws Exception {
     super.setUp();
     casMgr = initCAS();
-    cas = casMgr.getCAS().getTCAS();
+    cas = casMgr.getCAS().getCurrentView();
 
     TypeSystem ts = cas.getTypeSystem();
     wordType = ts.getType(WORD_TYPE);
@@ -114,10 +113,10 @@ public class TypeOrderTest extends TestCase {
     eosType = ts.getType(EOS_TYPE);
     tokenType = ts.getType(TOKEN_TYPE);
     tokenTypeFeature = ts.getFeatureByFullName(TOKEN_TYPE_FEAT_Q);
-    startFeature = ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_BEGIN);
-    endFeature = ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_END);
+    startFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
+    endFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
     sentenceType = ts.getType(SENT_TYPE);
-    annotationType = ts.getType(TCAS.TYPE_NAME_ANNOTATION);
+    annotationType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
     assertTrue(annotationType != null);
   }
 
@@ -136,14 +135,14 @@ public class TypeOrderTest extends TestCase {
   }
 
   // Initialize the first CAS.
-  private static CASMgr initCAS() throws TCASException {
-    // Create a TCASMgr. Ensures existence of AnnotationFS type.
+  private static CASMgr initCAS() throws CASException {
+    // Create a CASMgr. Ensures existence of AnnotationFS type.
     CASMgr cas = CASFactory.createCAS();
     // Create a writable type system.
     TypeSystemMgr tsa = cas.getTypeSystemMgr();
     // Add new types and features.
     Type topType = tsa.getTopType();
-    Type annotType = tsa.getType(TCAS.TYPE_NAME_ANNOTATION);
+    Type annotType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
     // assert(annotType != null);
     tsa.addType(SENT_TYPE, annotType);
     Type tokenType = tsa.addType(TOKEN_TYPE, annotType);
@@ -155,8 +154,8 @@ public class TypeOrderTest extends TestCase {
     // Commit the type system.
     ((CASImpl) cas).commitTypeSystem();
     // assert(tsa.isCommitted());
-    // Create the TCAS indexes.
-    // tcas.initTCASIndexes();
+    // Create the CAS indexes.
+    // tcas.initCASIndexes();
     // Create the Base indexes.
     try {
       cas.initCASIndexes();
@@ -167,11 +166,11 @@ public class TypeOrderTest extends TestCase {
 
     FSIndexRepositoryMgr irm = cas.getIndexRepositoryMgr();
     FSIndexComparator comp = irm.createComparator();
-    Type annotation = tsa.getType(TCAS.TYPE_NAME_ANNOTATION);
+    Type annotation = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
     comp.setType(annotation);
-    comp.addKey(annotation.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_BEGIN),
+    comp.addKey(annotation.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN),
             FSIndexComparator.STANDARD_COMPARE);
-    comp.addKey(annotation.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_END),
+    comp.addKey(annotation.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_END),
             FSIndexComparator.REVERSE_STANDARD_COMPARE);
     irm.createIndex(comp, ANNOT_BAG_INDEX, FSIndex.BAG_INDEX);
     irm.createIndex(comp, ANNOT_SET_INDEX, FSIndex.SET_INDEX);
@@ -193,7 +192,7 @@ public class TypeOrderTest extends TestCase {
     order = irm.createTypeSortOrder();
     LinearTypeOrder lo = null;
     try {
-      order.add(new String[] { TOKEN_TYPE, SENT_TYPE, TCAS.TYPE_NAME_ANNOTATION });
+      order.add(new String[] { TOKEN_TYPE, SENT_TYPE, CAS.TYPE_NAME_ANNOTATION });
       lo = order.getOrder();
     } catch (CASException e) {
       assertTrue(false);
@@ -203,9 +202,9 @@ public class TypeOrderTest extends TestCase {
     assertTrue(!lo.lessThan(annotType, tokenType));
     comp = irm.createComparator();
     comp.setType(annotation);
-    comp.addKey(annotation.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_BEGIN),
+    comp.addKey(annotation.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN),
             FSIndexComparator.STANDARD_COMPARE);
-    comp.addKey(annotation.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_END),
+    comp.addKey(annotation.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_END),
             FSIndexComparator.REVERSE_STANDARD_COMPARE);
     try {
       comp.addKey(order.getOrder(), FSIndexComparator.STANDARD_COMPARE);

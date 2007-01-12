@@ -27,18 +27,18 @@ import java.util.Vector;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.TextAnalysisEngine;
-import org.apache.uima.cas.text.TCAS;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 
 /**
- * This class represents a simple pool of {@link TCAS} instances. This is useful for multithreaded
+ * This class represents a simple pool of {@link CAS} instances. This is useful for multithreaded
  * applications, where there is a need for multiple CASes to be processed simultaneously. Because
- * TCAS creation is expensive, it is a good idea to create a pool of reusable TCAS instances at
- * initialization time, rather than creating a new TCAS each time one is needed.
+ * CAS creation is expensive, it is a good idea to create a pool of reusable CAS instances at
+ * initialization time, rather than creating a new CAS each time one is needed.
  * <p>
- * Clients check-out TCAS instances from the pool using the {@link #getTCas()} method and check-in
- * TCAS instances using the {@link #releaseTCas(TCAS)} method.
+ * Clients check-out CAS instances from the pool using the {@link #getTCas()} method and check-in
+ * CAS instances using the {@link #releaseTCas(CAS)} method.
  * 
  * 
  * 
@@ -64,13 +64,13 @@ public class TCasPool {
    * Creates a new TCasPool
    * 
    * @param aNumInstances
-   *          the number of TCAS instances in the pool
+   *          the number of CAS instances in the pool
    * @param aTextAnalysisEngine
-   *          the TAE that will create the TCAS instances and which will later be used to process
+   *          the TAE that will create the CAS instances and which will later be used to process
    *          them
    * 
    * @throws ResourceInitializationException
-   *           if the TCAS instances could not be created
+   *           if the CAS instances could not be created
    * 
    * @deprecated As of v2.0, TextAnalysisEngine has been deprecated. Use
    *             {@link #TCasPool(int, AnalysisEngine)} instead.
@@ -86,13 +86,13 @@ public class TCasPool {
    * Creates a new TCasPool
    * 
    * @param aNumInstances
-   *          the number of TCAS instances in the pool
+   *          the number of CAS instances in the pool
    * @param aAnalysisEngine
-   *          the AE that will create the TCAS instances and which will later be used to process
+   *          the AE that will create the CAS instances and which will later be used to process
    *          them
    * 
    * @throws ResourceInitializationException
-   *           if the TCAS instances could not be created
+   *           if the CAS instances could not be created
    */
   public TCasPool(int aNumInstances, AnalysisEngine aAnalysisEngine)
           throws ResourceInitializationException {
@@ -105,7 +105,7 @@ public class TCasPool {
    * Creates a new TCasPool
    * 
    * @param aNumInstances
-   *          the number of TCAS instances in the pool
+   *          the number of CAS instances in the pool
    * @param aMetaData
    *          metadata that includes the type system for the CAS
    * 
@@ -123,7 +123,7 @@ public class TCasPool {
    * Creates a new TCasPool
    * 
    * @param aNumInstances
-   *          the number of TCAS instances in the pool
+   *          the number of CAS instances in the pool
    * @param aMetaDataList
    *          list of ResourceMetaData objects including the type sytsem for the CASes
    * 
@@ -137,15 +137,15 @@ public class TCasPool {
   }
 
   /**
-   * Checks out a TCAS from the pool.
+   * Checks out a CAS from the pool.
    * 
-   * @return a TCAS instance. Returns <code>null</code> if none are available (in which case the
+   * @return a CAS instance. Returns <code>null</code> if none are available (in which case the
    *         client may {@link Object#wait()} on this object in order to be notified when an
    *         instance becomes available).
    */
-  public synchronized TCAS getTCas() {
+  public synchronized CAS getTCas() {
     if (!mFreeInstances.isEmpty()) {
-      return (TCAS) mFreeInstances.remove(0);
+      return (CAS) mFreeInstances.remove(0);
     } else {
       // no instances available
       return null;
@@ -153,14 +153,14 @@ public class TCasPool {
   }
 
   /**
-   * Checks in a TCAS to the pool. This automatically calls the {@link TCAS#reset()} method, to
-   * ensure that when the TCAS is later retrieved from the pool it will be ready to use. Also
+   * Checks in a CAS to the pool. This automatically calls the {@link CAS#reset()} method, to
+   * ensure that when the CAS is later retrieved from the pool it will be ready to use. Also
    * notifies other Threads that may be waiting for an instance to become available.
    * 
    * @param aTCas
-   *          the TCAS to release
+   *          the CAS to release
    */
-  public synchronized void releaseTCas(TCAS aTCas) {
+  public synchronized void releaseTCas(CAS aTCas) {
     // make sure this CAS actually belongs to this pool and is checked out
     if (!mAllInstances.contains(aTCas) || mFreeInstances.contains(aTCas)) {
       UIMAFramework.getLogger(CLASS_NAME).logrb(Level.WARNING, CLASS_NAME.getName(), "releaseTCas",
@@ -177,18 +177,18 @@ public class TCasPool {
   }
 
   /**
-   * Checks out a TCAS from the pool. If none is currently available, wait for the specified amount
+   * Checks out a CAS from the pool. If none is currently available, wait for the specified amount
    * of time for one to be checked in.
    * 
    * @param aTimeout
    *          the time to wait in milliseconds. A value of &lt;=0 will wait forever.
    * 
-   * @return a TCAS instance. Returns <code>null</code> if none are available within the specified
+   * @return a CAS instance. Returns <code>null</code> if none are available within the specified
    *         timeout period.
    */
-  public synchronized TCAS getTCas(long aTimeout) {
+  public synchronized CAS getTCas(long aTimeout) {
     long startTime = new Date().getTime();
-    TCAS cas;
+    CAS cas;
     while ((cas = getTCas()) == null) {
       try {
         wait(aTimeout);
@@ -203,7 +203,7 @@ public class TCasPool {
   }
 
   /**
-   * Gets the size of this pool (the total number of TCAS instances that it can hold).
+   * Gets the size of this pool (the total number of CAS instances that it can hold).
    * 
    * @return the size of this pool
    */
@@ -225,12 +225,12 @@ public class TCasPool {
     // create first CAS from metadata
     ArrayList mdList = new ArrayList();
     mdList.add(aMetaData);
-    TCAS c0 = CasCreationUtils.createTCas(mdList);
+    CAS c0 = CasCreationUtils.createTCas(mdList);
     mAllInstances.add(c0);
     mFreeInstances.add(c0);
     // create additional CASes that share same type system
     for (int i = 1; i < mNumInstances; i++) {
-      TCAS c = CasCreationUtils.createTCas(c0.getTypeSystem(), aMetaData.getTypePriorities(),
+      CAS c = CasCreationUtils.createTCas(c0.getTypeSystem(), aMetaData.getTypePriorities(),
               aMetaData.getFsIndexes());
       mAllInstances.add(c);
       mFreeInstances.add(c);
@@ -248,12 +248,12 @@ public class TCasPool {
    */
   protected void fillPool(List aMetaDataList) throws ResourceInitializationException {
     // create first CAS from metadata
-    TCAS c0 = CasCreationUtils.createTCas(aMetaDataList);
+    CAS c0 = CasCreationUtils.createTCas(aMetaDataList);
     mAllInstances.add(c0);
     mFreeInstances.add(c0);
     // create additional CASes that share same type system
     for (int i = 1; i < mNumInstances; i++) {
-      TCAS c = CasCreationUtils.createTCas(aMetaDataList, c0.getTypeSystem());
+      CAS c = CasCreationUtils.createTCas(aMetaDataList, c0.getTypeSystem());
       mAllInstances.add(c);
       mFreeInstances.add(c);
     }

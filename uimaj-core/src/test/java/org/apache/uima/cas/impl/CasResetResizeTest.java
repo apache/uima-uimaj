@@ -25,8 +25,8 @@ import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.TaeDescription;
 import org.apache.uima.analysis_engine.TextAnalysisEngine;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
@@ -50,13 +50,13 @@ public class CasResetResizeTest extends TestCase {
 
       // check default setting
       TextAnalysisEngine taeDefault = UIMAFramework.produceTAE(testDescriptor);
-      TCAS cas = taeDefault.newTCAS();
+      CAS cas = taeDefault.newCAS();
       int heapSize = ((CASImpl) cas).heap.getCurrentTempSize();
       // System.out.println("Heap size: " + heapSize + ", buffer size: " + ((CASImpl)
       // cas).heap.heap.length);
       Assert.assertTrue(heapSize < CASImpl.DEFAULT_RESET_HEAP_SIZE);
       assertTrue(heapSize <= ((CASImpl) cas).heap.heap.length);
-      Type annotType = cas.getTypeSystem().getType(TCAS.TYPE_NAME_ANNOTATION);
+      Type annotType = cas.getTypeSystem().getType(CAS.TYPE_NAME_ANNOTATION);
       for (int i = 0; i < 2000000; i++) {
         cas.createAnnotation(annotType, i, i);
       }

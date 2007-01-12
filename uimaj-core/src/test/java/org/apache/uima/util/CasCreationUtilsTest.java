@@ -37,7 +37,6 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.FsIndexCollection;
@@ -123,7 +122,7 @@ public class CasCreationUtilsTest extends TestCase {
       // call method
       ArrayList descList = new ArrayList();
       descList.add(desc);
-      TCAS tcas = CasCreationUtils.createTCas(descList, UIMAFramework
+      CAS tcas = CasCreationUtils.createTCas(descList, UIMAFramework
               .getDefaultPerformanceTuningProperties(), resMgr);
       // check that imports were resolved correctly
       assertNotNull(tcas.getTypeSystem().getType("DocumentStructure"));
@@ -160,7 +159,7 @@ public class CasCreationUtilsTest extends TestCase {
               new XMLInputSource(taeDescriptorWithImport));
       ArrayList mdList = new ArrayList();
       mdList.add(desc);
-      TCAS tcas = CasCreationUtils.createTCas(mdList, UIMAFramework
+      CAS tcas = CasCreationUtils.createTCas(mdList, UIMAFramework
               .getDefaultPerformanceTuningProperties(), resMgr);
       // check that imports were resolved correctly
       assertNotNull(tcas.getTypeSystem().getType("DocumentStructure"));
