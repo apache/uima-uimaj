@@ -263,16 +263,16 @@ public class XCasAnnotationViewerMain extends JFrame {
     // parse descriptor. Could be either AE or TypeSystem descriptor
     Object descriptor = UIMAFramework.getXMLParser().parse(new XMLInputSource(descriptorFile));
     // instantiate CAS to get type system. Also build style map file if there is none.
-    CAS tcas;
+    CAS cas;
     File styleMapFile;
     if (descriptor instanceof AnalysisEngineDescription) {
-      tcas = CasCreationUtils.createTCas((AnalysisEngineDescription) descriptor);
+      cas = CasCreationUtils.createCas((AnalysisEngineDescription) descriptor);
       styleMapFile = getStyleMapFile((AnalysisEngineDescription) descriptor, descriptorFile
               .getPath());
     } else if (descriptor instanceof TypeSystemDescription) {
       TypeSystemDescription tsDesc = (TypeSystemDescription) descriptor;
       tsDesc.resolveImports();
-      tcas = CasCreationUtils.createTCas(tsDesc, null, new FsIndexDescription[0]);
+      cas = CasCreationUtils.createCas(tsDesc, null, new FsIndexDescription[0]);
       styleMapFile = getStyleMapFile((TypeSystemDescription) descriptor, descriptorFile.getPath());
     } else {
       displayError("Invalid Descriptor File \"" + descriptorFile.getPath() + "\""
@@ -287,8 +287,8 @@ public class XCasAnnotationViewerMain extends JFrame {
     // output dir is the directory containing XCAS files.
     prefsMed.setOutputDir(inputDir.toString());
     XCasAnnotationViewerDialog viewerDialog = new XCasAnnotationViewerDialog(this,
-            "Analyzed Documents", prefsMed, styleMapFile, null, tcas.getTypeSystem(), null, false,
-            tcas);
+            "Analyzed Documents", prefsMed, styleMapFile, null, cas.getTypeSystem(), null, false,
+            cas);
     viewerDialog.pack();
     viewerDialog.setModal(true);
     viewerDialog.setVisible(true);

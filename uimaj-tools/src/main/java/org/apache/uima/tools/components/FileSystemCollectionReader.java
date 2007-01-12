@@ -154,7 +154,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
           } else {
             text = new String(contents);
           }
-          // put document in CAS (assume CAS)
+          // put document text in JCas
           jcas.setDocumentText(text);
         }
       } finally {

@@ -208,7 +208,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
   private File aeSpecifierFile;
 
-  protected CAS tcas; // JMP
+  protected CAS cas; // JMP
 
   private Timer progressTimer;
 
@@ -754,11 +754,11 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   public void showAnalysisResults(AnalysisEnginePerformanceReports aReports, File aOutputDir) {
     statsString = ("PERFORMANCE STATS\n-------------\n\n" + aReports);
     try {
-      tcas = createTCasFromDescriptor(prefsMed.getTAEfile());
+      cas = createCasFromDescriptor(prefsMed.getTAEfile());
     } catch (Exception e) {
       displayError(e);
     }
-    currentTypeSystem = tcas.getTypeSystem();
+    currentTypeSystem = cas.getTypeSystem();
     show_analysis(aOutputDir);
   }
 
@@ -766,15 +766,15 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   public void showAnalysisResults(File aOutputDir) {
 
     try {
-      tcas = createTCasFromDescriptor(prefsMed.getTAEfile());
-      currentTypeSystem = tcas.getTypeSystem();
+      cas = createCasFromDescriptor(prefsMed.getTAEfile());
+      currentTypeSystem = cas.getTypeSystem();
     } catch (Exception e) {
       displayError(e);
     }
 
     statsString = null;
     // what is this code doing??? - APL
-    StyleMapEditor sedit = new StyleMapEditor(this, tcas);
+    StyleMapEditor sedit = new StyleMapEditor(this, cas);
     String sXml = readStylemapFile(prefsMed.getStylemapFile());
     ArrayList sme = sedit.parseStyleList(sXml);
     currentTaeOutputTypes = new String[sme.size()];
@@ -793,15 +793,15 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
    * @throws InvalidXMLException
    * @throws IOException
    */
-  protected CAS createTCasFromDescriptor(String aDescriptorFile) // JMP
+  protected CAS createCasFromDescriptor(String aDescriptorFile) // JMP
           throws ResourceInitializationException, InvalidXMLException, IOException {
     ResourceSpecifier spec = UIMAFramework.getXMLParser().parseResourceSpecifier(
             new XMLInputSource(aDescriptorFile));
     if (spec instanceof AnalysisEngineDescription) {
-      return CasCreationUtils.createTCas((AnalysisEngineDescription) spec);
+      return CasCreationUtils.createCas((AnalysisEngineDescription) spec);
     } else {
       AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(spec);
-      return CasCreationUtils.createTCas(ae.getAnalysisEngineMetaData());
+      return CasCreationUtils.createCas(ae.getAnalysisEngineMetaData());
     }
   }
 
@@ -846,13 +846,13 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       // calls setVisible(true) to make the dialog visible
       new XCasAnnotationViewerDialog(this, "Analysis Results", prefsMed, styleMapFile, statsString,
               currentTypeSystem, currentTaeOutputTypes, interactiveTempFN + ".xmi",
-              javaViewerRBisSelected, javaViewerUCRBisSelected, xmlRB.isSelected(), tcas);
+              javaViewerRBisSelected, javaViewerUCRBisSelected, xmlRB.isSelected(), cas);
     } else {
       // this version of the XCasAnnotationViewerDialog constructor does
       // not automatically launch the viewer.
       XCasAnnotationViewerDialog viewerDialog = new XCasAnnotationViewerDialog(this,
               "Analysis Results", prefsMed, styleMapFile, statsString, currentTypeSystem,
-              currentTaeOutputTypes, useGeneratedStyleMap, tcas);
+              currentTaeOutputTypes, useGeneratedStyleMap, cas);
       if (usingXmlDetagger) {
         viewerDialog.setDefaultCasViewName("plainTextDocument");
       }
