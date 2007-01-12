@@ -203,7 +203,6 @@ public class TypeImpl implements Type, Comparable {
   }
 
   /**
-   * @see org.apache.uima.cas.Type#getFeature(java.lang.String)
    * @deprecated
    */
   public Feature getFeature(String featureName) {

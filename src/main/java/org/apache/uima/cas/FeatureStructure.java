@@ -148,7 +148,7 @@ public interface FeatureStructure {
    * 
    * @param feat
    *          The feature whose value we want to set.
-   * @return
+   * @return The value byte; <code>0</code> if the value has not been set.
    * @throws CASRuntimeException
    */
   byte getByteValue(Feature feat) throws CASRuntimeException;
@@ -261,7 +261,7 @@ public interface FeatureStructure {
    * 
    * @param feat.
    *          The feature whose value we want to get and whose type is one of the primitve types.
-   * @return
+   * @return A string representation of a primitive feature value.
    * @throws CASRuntimeException
    *           If <code>feat</code> is not defined for the type of this FS, or if the type is not
    *           a primitive type.

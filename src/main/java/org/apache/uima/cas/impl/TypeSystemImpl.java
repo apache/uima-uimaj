@@ -982,7 +982,6 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   }
 
   /**
-   * @see org.apache.uima.cas.TypeSystem#getFeature(java.lang.String)
    * @deprecated
    */
   public Feature getFeature(String featureName) {
