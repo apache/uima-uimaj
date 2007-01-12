@@ -447,8 +447,8 @@ public class ArtifactProducer extends Thread {
         casList[i].reset();
 
         // If Collection Reader and CAS Initilaizer do not declare any
-        // output SofAs,
-        // must be sent a CAS for backward compatiblity
+        // output SofAs, must be passed the default view (meaning whatever's 
+        //mapped to _InitialView) for backward compatiblity
         Capability[] capabilities;
         CasInitializer casIni = ((CollectionReader) collectionReader).getCasInitializer();
         if (casIni != null)

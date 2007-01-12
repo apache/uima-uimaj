@@ -33,7 +33,7 @@ public class ConsumerCasUtils {
   /**
    * Returns an int value of a given Feature Structure
    * 
-   * @param aTcas -
+   * @param aCasView -
    *          CAS instance to retrieve data from
    * @param aTypeS -
    *          Feature Type
@@ -42,12 +42,12 @@ public class ConsumerCasUtils {
    * 
    * @return - feature value as int
    */
-  public static int getIntFeatValue(CAS aTcas, String aTypeS, String aFeatS) {
+  public static int getIntFeatValue(CAS aCasView, String aTypeS, String aFeatS) {
     int result = 0;
-    FSIterator idIter = aTcas.getAnnotationIndex(aTcas.getTypeSystem().getType(aTypeS)).iterator();
+    FSIterator idIter = aCasView.getAnnotationIndex(aCasView.getTypeSystem().getType(aTypeS)).iterator();
     while (idIter != null && idIter.isValid()) {
       org.apache.uima.cas.FeatureStructure idFS = idIter.get();
-      result = idFS.getIntValue(aTcas.getTypeSystem().getFeatureByFullName(aTypeS + ":" + aFeatS));
+      result = idFS.getIntValue(aCasView.getTypeSystem().getFeatureByFullName(aTypeS + ":" + aFeatS));
       idIter.moveToNext();
     }
     return result;
@@ -81,16 +81,16 @@ public class ConsumerCasUtils {
   /**
    * Returns a Feature Structure of a given type
    * 
-   * @param aTcas -
+   * @param aCasView -
    *          CAS instance to retrieve data from
    * @param aTypeS -
    *          Feature Type
    * 
    * @return
    */
-  public static FeatureStructure getTcasFS(CAS aTcas, String aTypeS) {
+  public static FeatureStructure getTcasFS(CAS aCasView, String aTypeS) {
     org.apache.uima.cas.FeatureStructure idFS = null;
-    FSIterator idIter = aTcas.getAnnotationIndex(aTcas.getTypeSystem().getType(aTypeS)).iterator();
+    FSIterator idIter = aCasView.getAnnotationIndex(aCasView.getTypeSystem().getType(aTypeS)).iterator();
     while (idIter != null && idIter.isValid()) {
       idFS = idIter.get();
       idIter.moveToNext();

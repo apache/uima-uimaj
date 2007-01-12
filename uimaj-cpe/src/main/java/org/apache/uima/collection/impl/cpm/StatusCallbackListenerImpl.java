@@ -164,7 +164,7 @@ class StatusCallbackListenerImpl implements StatusCallbackListener {
       // get size here
       Type t = aCas.getTypeSystem().getType("uima.cpm.FileLocation");
       Feature f = t.getFeatureByBaseName("DocumentSize");
-      FSIterator fsI = ((CAS) aCas).getAnnotationIndex(t).iterator();
+      FSIterator fsI = aCas.getAnnotationIndex(t).iterator();
       if (fsI.isValid()) {
         dataSize = fsI.get().getIntValue(f);
       }
