@@ -56,6 +56,7 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.impl.URISpecifier_impl;
 import org.apache.uima.resource.metadata.AllowedValue;
+import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.FeatureDescription;
 import org.apache.uima.resource.metadata.FsIndexDescription;
@@ -66,6 +67,7 @@ import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.AllowedValue_impl;
+import org.apache.uima.resource.metadata.impl.Capability_impl;
 import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
 import org.apache.uima.resource.metadata.impl.FeatureDescription_impl;
 import org.apache.uima.resource.metadata.impl.FsIndexDescription_impl;
@@ -318,6 +320,11 @@ public class AnalysisEngine_implTest extends TestCase {
       primitiveDesc
               .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       primitiveDesc.getMetaData().setName("Test Primitive TAE");
+      Capability cap = new Capability_impl();
+      cap.addOutputType("NamedEntity", true);
+      cap.addOutputType("DocumentStructure", true);
+      Capability[] caps = new Capability[] {cap};
+      primitiveDesc.getAnalysisEngineMetaData().setCapabilities(caps);
       _testProcess(primitiveDesc);
 
       // test simple aggregate TextAnalysisEngine (again using TestAnnotator class)
@@ -328,6 +335,7 @@ public class AnalysisEngine_implTest extends TestCase {
       FixedFlow_impl flow = new FixedFlow_impl();
       flow.setFixedFlow(new String[] { "Test" });
       aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
+      aggDesc.getAnalysisEngineMetaData().setCapabilities(caps);
       _testProcess(aggDesc);
 
       // test aggregate TAE containing a CAS Consumer
@@ -367,12 +375,12 @@ public class AnalysisEngine_implTest extends TestCase {
 
     // process(CAS,ResultSpecification)
     ResultSpecification resultSpec = new ResultSpecification_impl();
-    resultSpec.addResultType("FakeType", true);
+    resultSpec.addResultType("NamedEntity", true);
 
     tcas.setDocumentText("testing...");
     tae.process(tcas, resultSpec);
     assertEquals("testing...", TestAnnotator.lastDocument);
-    // TODO: resultSpec not supported assertEquals(resultSpec, TestAnnotator.lastResultSpec);
+    assertEquals(resultSpec, TestAnnotator.lastResultSpec);
     tcas.reset();
   }
 

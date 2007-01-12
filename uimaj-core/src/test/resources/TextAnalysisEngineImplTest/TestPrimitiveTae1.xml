@@ -116,8 +116,8 @@
 <capabilities>
 <capability>
 <outputs>
-<type>DocumentStructure</type>
-<type>NamedEntity</type>
+<type allAnnotatorFeatures="true">DocumentStructure</type>
+<type allAnnotatorFeatures="true">NamedEntity</type>
 </outputs>
 <languagesSupported>
 <language>en</language>
