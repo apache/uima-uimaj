@@ -31,7 +31,6 @@ import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.admin.TypeSystemMgr;
-import org.apache.uima.cas.text.TCAS;
 
 public class CASTestSetup extends TestCase implements AnnotatorInitializer {
 
@@ -121,7 +120,7 @@ public class CASTestSetup extends TestCase implements AnnotatorInitializer {
   public void initTypeSystem(TypeSystemMgr tsm) {
     // Add new types and features.
     Type topType = tsm.getTopType();
-    Type annotType = tsm.getType(TCAS.TYPE_NAME_ANNOTATION);
+    Type annotType = tsm.getType(CAS.TYPE_NAME_ANNOTATION);
     // assert(annotType != null);
     tsm.addType(SENT_TYPE, annotType);
     Type tokenType = tsm.addType(TOKEN_TYPE, annotType);
@@ -174,15 +173,15 @@ public class CASTestSetup extends TestCase implements AnnotatorInitializer {
    */
   public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts) {
     FSIndexComparator comp = irm.createComparator();
-    Type annotation = ts.getType(TCAS.TYPE_NAME_ANNOTATION);
+    Type annotation = ts.getType(CAS.TYPE_NAME_ANNOTATION);
     comp.setType(annotation);
-    comp.addKey(annotation.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_BEGIN),
+    comp.addKey(annotation.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN),
             FSIndexComparator.STANDARD_COMPARE);
-    comp.addKey(annotation.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_END),
+    comp.addKey(annotation.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_END),
             FSIndexComparator.REVERSE_STANDARD_COMPARE);
     LinearTypeOrderBuilder tob = irm.createTypeSortOrder();
     try {
-      tob.add(new String[] { TCAS.TYPE_NAME_ANNOTATION, SENT_TYPE, TOKEN_TYPE });
+      tob.add(new String[] { CAS.TYPE_NAME_ANNOTATION, SENT_TYPE, TOKEN_TYPE });
       comp.addKey(tob.getOrder(), FSIndexComparator.STANDARD_COMPARE);
     } catch (CASException e) {
       assertTrue(false);

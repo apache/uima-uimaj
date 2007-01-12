@@ -391,7 +391,7 @@ public class DebugFSLogicalStructure {
   // result[1] = new DebugNameValuePair("Views", iteratorToArray(
   // new Iterator() {
   // public boolean hasNext() { return sofaIt.hasNext(); }
-  // public Object next() { return cas.getTCAS((SofaFS)sofaIt.next());}
+  // public Object next() { return cas.getView((SofaFS)sofaIt.next());}
   // public void remove() { sofaIt.remove();}
   // }, CAS.class));
   //

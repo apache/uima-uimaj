@@ -36,7 +36,6 @@ import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
@@ -59,10 +58,10 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
 
   public void testArrayIndex() {
     try {
-      TCAS cas = this.tae.newTCAS();
+      CAS cas = this.tae.newCAS();
       FSIndexRepository ir = cas.getIndexRepository();
       TypeSystem ts = cas.getTypeSystem();
-      Type annotationType = ts.getType(TCAS.TYPE_NAME_ANNOTATION);
+      Type annotationType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
       Type annotArrayType = ts.getArrayType(annotationType);
 
       FSIndex arrayIndexAll = ir.getIndex(idxId);
@@ -90,7 +89,7 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
     this.tae.destroy();
   }
 
-  public void process(TCAS aTCAS, ResultSpecification aResultSpec) throws AnnotatorProcessException {
+  public void process(CAS aCAS, ResultSpecification aResultSpec) throws AnnotatorProcessException {
     // Do nothing.
   }
 

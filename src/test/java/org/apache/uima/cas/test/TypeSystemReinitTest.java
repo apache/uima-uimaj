@@ -25,12 +25,12 @@ import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.impl.CASCompleteSerializer;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.Serialization;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
@@ -50,17 +50,17 @@ public class TypeSystemReinitTest extends TestCase {
       ArrayList l = new ArrayList();
       l.add(aed);
       l.add(tsd);
-      TCAS cas1 = CasCreationUtils.createTCas(l);
+      CAS cas1 = CasCreationUtils.createTCas(l);
       cas1.setDocumentText("foo");
       CASCompleteSerializer ser = Serialization.serializeCASComplete((CASMgr) cas1);
 
-      TCAS tcas2 = CasCreationUtils.createTCas(new TypeSystemDescription_impl(), null, null);
+      CAS tcas2 = CasCreationUtils.createTCas(new TypeSystemDescription_impl(), null, null);
       CASImpl cas2 = ((CASImpl) tcas2).getBaseCAS();
       tcas2.setDocumentText("bar");
 
       // reinit
       cas2.reinit(ser);
-      TCAS tcas3 = cas2.getTCAS();
+      CAS tcas3 = cas2.getCurrentView();
 
       assertTrue(tcas2 == tcas3);
       assertNotNull(cas1.getTypeSystem().getType("NamedEntity"));

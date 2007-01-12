@@ -43,7 +43,6 @@ import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -137,7 +136,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
     // do proper typecasts and call process method
     try {
       if (mAnnotator instanceof TextAnnotator) {
-        TCAS tcas = (TCAS) aCAS;
+        CAS tcas = (CAS) aCAS;
         ResultSpecification rs = getResultSpecForLanguage(tcas.getDocumentLanguage());
         ((TextAnnotator) mAnnotator).process(tcas, rs);
       } else if (mAnnotator instanceof JTextAnnotator) {
@@ -186,7 +185,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
       TypeSystem typeSystem;
       if (aCAS instanceof JCas) {
         typeSystem = ((JCas) aCAS).getTypeSystem();
-      } else // CAS or TCAS
+      } else // CAS or CAS
       {
         typeSystem = ((CAS) aCAS).getTypeSystem();
       }

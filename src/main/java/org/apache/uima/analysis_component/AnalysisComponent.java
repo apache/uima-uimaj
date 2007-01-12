@@ -39,7 +39,7 @@ import org.apache.uima.resource.ResourceInitializationException;
  * <ul>
  * <li>{@link org.apache.uima.analysis_engine.annotator.JTextAnnotator_ImplBase}: Uses JCas
  * interface</li>
- * <li>{@link org.apache.uima.analysis_engine.annotator.TextAnnotator}: Uses TCAS interface</li>
+ * <li>{@link org.apache.uima.analysis_engine.annotator.TextAnnotator}: Uses CAS interface</li>
  * <li>{@link org.apache.uima.analysis_engine.annotator.GenericAnnotator_ImplBase}: Uses CAS
  * interface
  * </ul>

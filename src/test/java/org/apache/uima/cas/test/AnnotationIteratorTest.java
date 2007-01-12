@@ -23,15 +23,12 @@ import junit.framework.TestCase;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
-import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
-import org.apache.uima.cas.text.TCAS;
-import org.apache.uima.cas.text.TCASRuntimeException;
 
 /**
  * Class comment for FilteredIteratorTest.java goes here.
@@ -39,7 +36,7 @@ import org.apache.uima.cas.text.TCASRuntimeException;
  */
 public class AnnotationIteratorTest extends TestCase {
 
-  private TCAS cas;
+  private CAS cas;
 
   private TypeSystem ts;
 
@@ -112,9 +109,9 @@ public class AnnotationIteratorTest extends TestCase {
     assertTrue(sentLenFeat != null);
     this.tokenFloatFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_FLOAT_FEAT_Q);
     assertTrue(tokenFloatFeat != null);
-    this.startFeature = ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_BEGIN);
+    this.startFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
     assertTrue(startFeature != null);
-    this.endFeature = ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_END);
+    this.endFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
     assertTrue(endFeature != null);
     this.sentenceType = ts.getType(CASTestSetup.SENT_TYPE);
     assertTrue(sentenceType != null);
@@ -144,7 +141,7 @@ public class AnnotationIteratorTest extends TestCase {
 
     try {
       cas.setDocumentText(text);
-    } catch (TCASRuntimeException e) {
+    } catch (CASRuntimeException e) {
       assertTrue(false);
     }
 

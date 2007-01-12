@@ -23,10 +23,10 @@ import java.util.Arrays;
 
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.UIMA_UnsupportedOperationException;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.ConstraintFactory;
 import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.FSTypeConstraint;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.resource.metadata.LanguagePrecondition;
 
 /**
@@ -43,7 +43,7 @@ public class LanguagePrecondition_impl extends SimplePrecondition_impl implement
     FSTypeConstraint typeCon = ConstraintFactory.instance().createTypeConstraint();
     typeCon.add("uima.tcas.DocumentAnnotation");
     super.setFsMatchConstraint(typeCon);
-    super.setFeatureName(TCAS.FEATURE_BASE_NAME_LANGUAGE);
+    super.setFeatureName(CAS.FEATURE_BASE_NAME_LANGUAGE);
     super.setPredicate(LANGUAGE_SUBSUMED);
   }
 

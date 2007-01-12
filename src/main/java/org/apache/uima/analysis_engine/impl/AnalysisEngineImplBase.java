@@ -40,7 +40,6 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.Language;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.internal.util.JmxMBeanAgent;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.CasDefinition;
@@ -165,13 +164,6 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   public synchronized CAS newCAS() throws ResourceInitializationException {
     CasDefinition casDef = getCasManager().getCasDefinition();
     return CasCreationUtils.createCas(casDef, getPerformanceTuningSettings());
-  }
-
-  /**
-   * @see org.apache.uima.analysis_engine.MultithreadableTextAnalysisEngine#newTCAS()
-   */
-  public synchronized TCAS newTCAS() throws ResourceInitializationException {
-    return (TCAS) newCAS();
   }
 
   /**

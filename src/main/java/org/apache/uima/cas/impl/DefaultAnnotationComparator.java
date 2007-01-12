@@ -19,7 +19,7 @@
 
 package org.apache.uima.cas.impl;
 
-import org.apache.uima.cas.text.TCAS;
+import org.apache.uima.cas.CAS;
 
 /**
  * Default implementation to compare two annotations.
@@ -39,9 +39,9 @@ public class DefaultAnnotationComparator implements FSImplComparator {
     super();
     this.cas = cas;
     this.startCode = ((FeatureImpl) cas.getTypeSystem().getFeatureByFullName(
-            TCAS.FEATURE_BASE_NAME_BEGIN)).getCode();
+            CAS.FEATURE_BASE_NAME_BEGIN)).getCode();
     this.endCode = ((FeatureImpl) cas.getTypeSystem().getFeatureByFullName(
-            TCAS.FEATURE_BASE_NAME_END)).getCode();
+            CAS.FEATURE_BASE_NAME_END)).getCode();
   }
 
   /**

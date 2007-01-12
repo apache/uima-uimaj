@@ -29,7 +29,6 @@ import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.TypeSystemMgr;
-import org.apache.uima.cas.text.TCAS;
 
 public class CASTestSetup extends TestCase implements AnnotatorInitializer {
 
@@ -127,7 +126,7 @@ public class CASTestSetup extends TestCase implements AnnotatorInitializer {
   public void initTypeSystem(TypeSystemMgr tsm) {
     // Add new types and features.
     Type topType = tsm.getTopType();
-    Type annotType = tsm.getType(TCAS.TYPE_NAME_ANNOTATION);
+    Type annotType = tsm.getType(CAS.TYPE_NAME_ANNOTATION);
     Type typeArrayInt = tsm.getType(CAS.TYPE_NAME_INTEGER_ARRAY);
     Type typeArrayRef = tsm.getType(CAS.TYPE_NAME_FS_ARRAY);
     Type typeArrayFloat = tsm.getType(CAS.TYPE_NAME_FLOAT_ARRAY);
@@ -221,11 +220,11 @@ public class CASTestSetup extends TestCase implements AnnotatorInitializer {
    */
   public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts) {
     FSIndexComparator comp = irm.createComparator();
-    Type annotation = ts.getType(TCAS.TYPE_NAME_ANNOTATION);
+    Type annotation = ts.getType(CAS.TYPE_NAME_ANNOTATION);
     comp.setType(annotation);
-    comp.addKey(annotation.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_BEGIN),
+    comp.addKey(annotation.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN),
             FSIndexComparator.STANDARD_COMPARE);
-    comp.addKey(annotation.getFeatureByBaseName(TCAS.FEATURE_BASE_NAME_END),
+    comp.addKey(annotation.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_END),
             FSIndexComparator.REVERSE_STANDARD_COMPARE);
     irm.createIndex(comp, ANNOT_BAG_INDEX, FSIndex.BAG_INDEX);
     irm.createIndex(comp, ANNOT_SET_INDEX, FSIndex.SET_INDEX);

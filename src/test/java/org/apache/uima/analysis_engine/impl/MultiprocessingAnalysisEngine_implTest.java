@@ -34,7 +34,6 @@ import org.apache.uima.analysis_engine.TaeDescription;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.impl.FixedFlow_impl;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -284,7 +283,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     // We use thse to make sure the information propogates correctly to the annotator.
 
     // process(CAS)
-    TCAS tcas = tae.newTCAS();
+    CAS tcas = tae.newCAS();
     tcas.setDocumentText("new test");
     tae.process(tcas);
     assertEquals("new test", TestAnnotator.lastDocument);

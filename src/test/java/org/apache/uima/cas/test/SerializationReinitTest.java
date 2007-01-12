@@ -47,9 +47,6 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.CASSerializer;
 import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.TCAS;
-import org.apache.uima.cas.text.TCASException;
-import org.apache.uima.cas.text.TCASMgr;
 import org.apache.uima.internal.util.TextStringTokenizer;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -124,8 +121,8 @@ public class SerializationReinitTest extends TestCase {
     eosType = ts.getType(EOS_TYPE);
     tokenType = ts.getType(TOKEN_TYPE);
     tokenTypeFeature = ts.getFeatureByFullName(TOKEN_TYPE_FEAT_Q);
-    startFeature = ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_BEGIN);
-    endFeature = ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_END);
+    startFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
+    endFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
     sentenceType = ts.getType(SENT_TYPE);
     strSub1 = ts.getType(STRING_SUBTYPE_1);
     assertTrue(strSub1 != null);
@@ -147,12 +144,12 @@ public class SerializationReinitTest extends TestCase {
   }
 
   // Initialize the first CAS.
-  private static CASMgr initCAS() throws TCASException {
+  private static CASMgr initCAS() throws CASException {
     // Create an initial CASMgr from the factory.
     // CASMgr cas = CASFactory.createCAS();
     // assert(tsa != null);
-    // Create a TCASMgr. Ensures existence of AnnotationFS type.
-    // TCASMgr tcas = TCASFactory.createTCAS();
+    // Create a CASMgr. Ensures existence of AnnotationFS type.
+    // CASMgr tcas = CASFactory.createCAS();
     CASMgr aCas = CASFactory.createCAS();
     try {
       CasCreationUtils.setupTypeSystem(aCas, (TypeSystemDescription) null);
@@ -163,7 +160,7 @@ public class SerializationReinitTest extends TestCase {
     TypeSystemMgr tsa = aCas.getTypeSystemMgr();
     // Add new types and features.
     Type topType = tsa.getTopType();
-    Type annotType = tsa.getType(TCAS.TYPE_NAME_ANNOTATION);
+    Type annotType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
     // assert(annotType != null);
     tsa.addType(SENT_TYPE, annotType);
     Type tokenType = tsa.addType(TOKEN_TYPE, annotType);
@@ -176,8 +173,8 @@ public class SerializationReinitTest extends TestCase {
     // Commit the type system.
     ((CASImpl) aCas).commitTypeSystem();
     // assert(tsa.isCommitted());
-    // // Create the TCAS indexes.
-    // tcas.initTCASIndexes();
+    // // Create the CAS indexes.
+    // tcas.initCASIndexes();
     // Create the Base indexes.
     try {
       aCas.initCASIndexes();
@@ -189,8 +186,8 @@ public class SerializationReinitTest extends TestCase {
     aCas.getIndexRepositoryMgr().commit();
     // assert(cas.getIndexRepositoryMgr().isCommitted());
 
-    // Create the default text Sofa and return TCAS view
-    return (CASMgr) aCas.getCAS().getTCAS();
+    // Create the default text Sofa and return CAS view
+    return (CASMgr) aCas.getCAS().getCurrentView();
   }
 
   public void testReset() {
@@ -285,8 +282,8 @@ public class SerializationReinitTest extends TestCase {
     // //assert(tokenType != null);
     // Type sentenceType = ts.getType(SENT_TYPE);
     // Feature tokenTypeFeature = ts.getFeature(TOKEN_TYPE_FEAT);
-    // Feature startFeature = ts.getFeature(TCAS.START_FEAT);
-    // Feature endFeature = ts.getFeature(TCAS.END_FEAT);
+    // Feature startFeature = ts.getFeature(CAS.START_FEAT);
+    // Feature endFeature = ts.getFeature(CAS.END_FEAT);
 
     // System.out.println("\nCreating sentence annotations.");
 
@@ -475,12 +472,12 @@ public class SerializationReinitTest extends TestCase {
         // System.out.println(" Number of tokens: " + numTok);
 
         // System.out.println("Serializing...");
-        // TCASMgr casMgr = TCASFactory.createTCAS();
+        // CASMgr casMgr = CASFactory.createCAS();
         // casMgr.setCAS(cas);
-        // cas = (TCAS) casMgr.getCAS();
+        // cas = (CAS) casMgr.getCAS();
         CASMgr realCasMgr = CASFactory.createCAS();
         realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
-        cas = ((CASImpl) realCasMgr).getTCAS();
+        cas = ((CASImpl) realCasMgr).getCurrentView();
         casMgr = (CASMgr) cas;
 
         assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
@@ -491,24 +488,24 @@ public class SerializationReinitTest extends TestCase {
         // System.out.println(" Number of sentences: " + numSent);
 
         // System.out.println("Serializing...");
-        // casMgr = TCASFactory.createTCAS();
+        // casMgr = CASFactory.createCAS();
         // casMgr.setCAS(cas);
-        // cas = (TCAS) casMgr.getCAS();
+        // cas = (CAS) casMgr.getCAS();
         realCasMgr = CASFactory.createCAS();
         realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
-        cas = ((CASImpl) realCasMgr).getTCAS();
+        cas = ((CASImpl) realCasMgr).getCurrentView();
         casMgr = (CASMgr) cas;
 
         assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
         assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());
 
         // System.out.println("Serializing...");
-        // casMgr = TCASFactory.createTCAS();
+        // casMgr = CASFactory.createCAS();
         // casMgr.setCAS(cas);
-        // cas = (TCAS) casMgr.getCAS();
+        // cas = (CAS) casMgr.getCAS();
         realCasMgr = CASFactory.createCAS();
         realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
-        cas = ((CASImpl) realCasMgr).getTCAS();
+        cas = ((CASImpl) realCasMgr).getCurrentView();
         casMgr = (CASMgr) cas;
 
         assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());

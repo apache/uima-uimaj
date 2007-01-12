@@ -53,7 +53,6 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.impl.URISpecifier_impl;
 import org.apache.uima.resource.metadata.AllowedValue;
@@ -360,7 +359,7 @@ public class AnalysisEngine_implTest extends TestCase {
     // We use thse to make sure the information propogates correctly to the annotator.
 
     // process(CAS)
-    TCAS tcas = tae.newTCAS();
+    CAS tcas = tae.newCAS();
     tcas.setDocumentText("new test");
     tae.process(tcas);
     assertEquals("new test", TestAnnotator.lastDocument);
@@ -489,13 +488,13 @@ public class AnalysisEngine_implTest extends TestCase {
 
       TypeSystemDescription typeSystem = new TypeSystemDescription_impl();
       TypeDescription type1 = typeSystem.addType("Type1", "Test Type One",
-              TCAS.TYPE_NAME_ANNOTATION);
+              CAS.TYPE_NAME_ANNOTATION);
       FeatureDescription feat1 = new FeatureDescription_impl();
       feat1.setName("Feature1");
       feat1.setRangeTypeName(CAS.TYPE_NAME_INTEGER);
       type1.setFeatures(new FeatureDescription[] { feat1 });
       TypeDescription type2 = typeSystem.addType("Type2", "Test Type Two",
-              TCAS.TYPE_NAME_ANNOTATION);
+              CAS.TYPE_NAME_ANNOTATION);
       FeatureDescription feat2 = new FeatureDescription_impl();
       feat2.setName("Feature2");
       feat2.setRangeTypeName("EnumType");
@@ -546,7 +545,7 @@ public class AnalysisEngine_implTest extends TestCase {
 
       // check results in CAS
       // type system
-      TCAS cas = tae.newTCAS();
+      CAS cas = tae.newCAS();
       TypeSystem ts = cas.getTypeSystem();
       Type t1 = ts.getType("Type1");
       Assert.assertEquals("Type1", t1.getName());
@@ -780,7 +779,7 @@ public class AnalysisEngine_implTest extends TestCase {
                       .getFile("TextAnalysisEngineImplTest/AggregateTaeWithCasConsumer.xml")));
       AggregateAnalysisEngine_impl aggTae = new AggregateAnalysisEngine_impl();
       aggTae.initialize(aggWithCcDesc, null);
-      TCAS tcas = aggTae.newTCAS();
+      CAS tcas = aggTae.newCAS();
       tcas.setDocumentText("This is a test");
       aggTae.process(tcas);
       assertTrue(TestAnnotator.typeSystemInitCalled);

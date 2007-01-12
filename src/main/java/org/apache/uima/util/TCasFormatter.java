@@ -19,44 +19,44 @@
 
 package org.apache.uima.util;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSMatchConstraint;
-import org.apache.uima.cas.text.TCAS;
 
 /**
- * Interface for components that generate a String representation of a TCAS.
+ * Interface for components that generate a String representation of a CAS.
  * 
  * 
  */
 public interface TCasFormatter {
 
   /**
-   * Produces a string representation of a TCAS.
+   * Produces a string representation of a CAS.
    * 
-   * @param aTCAS
-   *          the TCAS to be formatted
+   * @param aCAS
+   *          the CAS to be formatted
    * 
-   * @return a string representation of <code>aTCAS</code>.
+   * @return a string representation of <code>aCAS</code>.
    * 
    * @exception CASException
-   *              if an exception occurs reading from the TCAS
+   *              if an exception occurs reading from the CAS
    */
-  public String format(TCAS aTCAS) throws CASException;
+  public String format(CAS aCAS) throws CASException;
 
   /**
-   * Produces a string representation of a TCAS. Only those feature structures that satisfy the
+   * Produces a string representation of a CAS. Only those feature structures that satisfy the
    * specified filter will appear in the string representation.
    * 
-   * @param aTCAS
-   *          the TCAS to be formatted
+   * @param aCAS
+   *          the CAS to be formatted
    * @param aFilter
    *          a constraint which FeatureStructures must satisfy in order to be included in the
    *          resulting string
    * 
-   * @return a string representation of <code>aTCAS</code>.
+   * @return a string representation of <code>aCAS</code>.
    * 
    * @exception CASException
-   *              if an exception occurs reading from the TCAS
+   *              if an exception occurs reading from the CAS
    */
-  public String format(TCAS aTCAS, FSMatchConstraint aFilter) throws CASException;
+  public String format(CAS aCAS, FSMatchConstraint aFilter) throws CASException;
 }

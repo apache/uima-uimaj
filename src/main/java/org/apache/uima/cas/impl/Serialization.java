@@ -24,8 +24,6 @@ import java.io.OutputStream;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.admin.CASMgr;
-import org.apache.uima.cas.text.TCAS;
-import org.apache.uima.cas.text.TCASMgr;
 
 public class Serialization {
 
@@ -57,26 +55,17 @@ public class Serialization {
     ((CASImpl) casMgr).reinit(casCompSer);
   }
 
-  public static void deserializeTCASComplete(CASCompleteSerializer casCompSer, CASMgr casMgr) {
-    ((CASImpl) casMgr).reinit(casCompSer);
-  }
-
   public static CASMgr createCASMgr(CASMgrSerializer ser) {
     return new CASImpl(ser);
   }
 
-  // public static TCASMgr createTCASMgr(CASMgrSerializer ser) {
-  // return new TCASImpl(ser);
+  // public static CASMgr createCASMgr(CASMgrSerializer ser) {
+  // return new CASImpl(ser);
   // }
 
   public static CAS createCAS(CASMgr casMgr, CASSerializer casSer) {
     ((CASImpl) casMgr).reinit(casSer);
-    return casMgr.getCAS();
-  }
-
-  public static TCAS createTCAS(TCASMgr tcasMgr, CASSerializer casSer) {
-    ((CASImpl) tcasMgr).reinit(casSer);
-    return tcasMgr.getTCAS();
+    return ((CASImpl) casMgr).getCurrentView();
   }
 
   public static void serializeCAS(CAS cas, OutputStream ostream) {

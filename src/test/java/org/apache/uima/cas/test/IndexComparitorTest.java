@@ -21,6 +21,7 @@ package org.apache.uima.cas.test;
 
 import junit.framework.TestCase;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
@@ -33,9 +34,8 @@ import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.admin.TypeSystemMgr;
-import org.apache.uima.cas.impl.LinearTypeOrderBuilderImpl;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.text.TCAS;
+import org.apache.uima.cas.impl.LinearTypeOrderBuilderImpl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 /**
@@ -44,7 +44,7 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
  */
 public class IndexComparitorTest extends TestCase {
 
-  TCAS cas;
+  CAS cas;
 
   TypeSystem ts;
 

@@ -38,7 +38,7 @@ public class NewlineSegmenter extends CasMultiplier_ImplBase {
    * @see org.apache.uima.analysis_component.CasSegmenter_ImplBase#process(org.apache.uima.cas.CAS)
    */
   public void process(CAS aCAS) throws AnalysisEngineProcessException {
-    String doc = aCAS.getTCAS().getDocumentText();
+    String doc = aCAS.getCurrentView().getDocumentText();
     mStringTok = new StringTokenizer(doc, "\n");
   }
 
@@ -59,7 +59,7 @@ public class NewlineSegmenter extends CasMultiplier_ImplBase {
   public AbstractCas next() throws AnalysisEngineProcessException {
     String nextSeg = mStringTok.nextToken();
     CAS cas = (CAS) getContext().getEmptyCas(CAS.class);
-    cas.getTCAS().setDocumentText(nextSeg);
+    cas.getCurrentView().setDocumentText(nextSeg);
     return cas;
   }
 

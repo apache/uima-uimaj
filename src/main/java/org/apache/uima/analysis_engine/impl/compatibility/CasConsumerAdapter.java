@@ -112,7 +112,7 @@ public class CasConsumerAdapter implements AnalysisComponent {
       TypeSystem typeSystem;
       if (aCAS instanceof JCas) {
         typeSystem = ((JCas) aCAS).getTypeSystem();
-      } else // CAS or TCAS
+      } else // CAS or CAS
       {
         typeSystem = ((CAS) aCAS).getTypeSystem();
       }

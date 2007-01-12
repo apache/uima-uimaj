@@ -29,11 +29,10 @@ import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.TCAS;
 
 public class ArrayFSTest extends TestCase {
 
-  private TCAS cas;
+  private CAS cas;
 
   private TypeSystem ts;
 
@@ -85,7 +84,7 @@ public class ArrayFSTest extends TestCase {
       exceptionCaught = true;
     }
     assertTrue(exceptionCaught);
-    FeatureStructure fs1 = cas.createFS(ts.getType(TCAS.TYPE_NAME_ANNOTATION));
+    FeatureStructure fs1 = cas.createFS(ts.getType(CAS.TYPE_NAME_ANNOTATION));
     FeatureStructure fs2 = cas.createFS(ts.getType(CAS.TYPE_NAME_TOP));
     FeatureStructure fs3 = cas.createFS(ts.getType(CASTestSetup.TOKEN_TYPE));
     array = (ArrayFS) cas.createArrayFS(3);
@@ -131,7 +130,7 @@ public class ArrayFSTest extends TestCase {
 
   public void testToArray() {
     // From CAS array to Java array.
-    FeatureStructure fs1 = cas.createFS(ts.getType(TCAS.TYPE_NAME_ANNOTATION));
+    FeatureStructure fs1 = cas.createFS(ts.getType(CAS.TYPE_NAME_ANNOTATION));
     FeatureStructure fs2 = cas.createFS(ts.getType(CAS.TYPE_NAME_TOP));
     FeatureStructure fs3 = cas.createFS(ts.getType(CASTestSetup.TOKEN_TYPE));
     ArrayFS array = (ArrayFS) cas.createArrayFS(3);
@@ -164,7 +163,7 @@ public class ArrayFSTest extends TestCase {
   }
 
   public void testArraysOfArrays() {
-    Type annotationType = this.ts.getType(TCAS.TYPE_NAME_ANNOTATION);
+    Type annotationType = this.ts.getType(CAS.TYPE_NAME_ANNOTATION);
     AnnotationFS annot = this.cas.createAnnotation(annotationType, 0, 5);
     IntArrayFS intArray = this.cas.createIntArrayFS(3);
     intArray.set(0, 1);

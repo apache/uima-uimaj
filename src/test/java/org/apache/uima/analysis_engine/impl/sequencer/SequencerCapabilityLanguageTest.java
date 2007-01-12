@@ -27,7 +27,7 @@ import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.ResultSpecification;
-import org.apache.uima.cas.text.TCAS;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.test.junit_extension.FileCompare;
 import org.apache.uima.test.junit_extension.JUnitExtension;
@@ -74,8 +74,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new TCAS.
-      TCAS cas = ae.newTCAS();
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");
@@ -114,8 +114,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new TCAS.
-      TCAS cas = ae.newTCAS();
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");
@@ -157,8 +157,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new TCAS.
-      TCAS cas = ae.newTCAS();
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");
@@ -197,8 +197,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new TCAS.
-      TCAS cas = ae.newTCAS();
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");
@@ -240,8 +240,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new TCAS.
-      TCAS cas = ae.newTCAS();
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");
@@ -280,8 +280,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new TCAS.
-      TCAS cas = ae.newTCAS();
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");
@@ -323,8 +323,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new TCAS.
-      TCAS cas = ae.newTCAS();
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");
@@ -363,8 +363,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new TCAS.
-      TCAS cas = ae.newTCAS();
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");
@@ -406,8 +406,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new TCAS.
-      TCAS cas = ae.newTCAS();
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");
@@ -446,8 +446,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new TCAS.
-      TCAS cas = ae.newTCAS();
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");
@@ -489,8 +489,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new TCAS.
-      TCAS cas = ae.newTCAS();
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");
@@ -529,8 +529,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new TCAS.
-      TCAS cas = ae.newTCAS();
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");
@@ -572,8 +572,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new TCAS.
-      TCAS cas = ae.newTCAS();
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");
@@ -612,8 +612,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new TCAS.
-      TCAS cas = ae.newTCAS();
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");
@@ -655,8 +655,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new TCAS.
-      TCAS cas = ae.newTCAS();
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");
@@ -698,8 +698,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new TCAS.
-      TCAS cas = ae.newTCAS();
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");
@@ -738,8 +738,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new TCAS.
-      TCAS cas = ae.newTCAS();
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");
@@ -781,8 +781,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new TCAS.
-      TCAS cas = ae.newTCAS();
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");
@@ -821,8 +821,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new TCAS.
-      TCAS cas = ae.newTCAS();
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");
@@ -864,8 +864,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new TCAS.
-      TCAS cas = ae.newTCAS();
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");
@@ -904,8 +904,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new TCAS.
-      TCAS cas = ae.newTCAS();
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");
@@ -947,8 +947,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new TCAS.
-      TCAS cas = ae.newTCAS();
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");
@@ -987,8 +987,8 @@ public class SequencerCapabilityLanguageTest extends TestCase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
       // Create the Text Analysis Engine.
       ae = UIMAFramework.produceAnalysisEngine(specifier, null, null);
-      // Create a new TCAS.
-      TCAS cas = ae.newTCAS();
+      // Create a new CAS.
+      CAS cas = ae.newCAS();
       // Our sample text.
       String text = "Hello world!";
       // System.out.println("Processing text: \"" + text + "\"");

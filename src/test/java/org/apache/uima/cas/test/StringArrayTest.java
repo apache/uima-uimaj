@@ -21,12 +21,12 @@ package org.apache.uima.cas.test;
 
 import junit.framework.TestCase;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.text.TCAS;
 
 /**
  * Class comment for StringArrayTest.java goes here.
@@ -34,7 +34,7 @@ import org.apache.uima.cas.text.TCAS;
  */
 public class StringArrayTest extends TestCase {
 
-  private TCAS cas;
+  private CAS cas;
 
   private TypeSystem ts;
 

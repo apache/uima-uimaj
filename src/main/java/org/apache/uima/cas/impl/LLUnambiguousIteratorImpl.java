@@ -21,7 +21,7 @@ package org.apache.uima.cas.impl;
 
 import java.util.NoSuchElementException;
 
-import org.apache.uima.cas.text.TCAS;
+import org.apache.uima.cas.CAS;
 
 public class LLUnambiguousIteratorImpl implements LowLevelIterator {
 
@@ -42,9 +42,9 @@ public class LLUnambiguousIteratorImpl implements LowLevelIterator {
     this.theIterator = it;
     this.annots = new int[it.ll_indexSize()];
     final LowLevelTypeSystem ts = cas.ll_getTypeSystem();
-    final int annotType = ts.ll_getCodeForTypeName(TCAS.TYPE_NAME_ANNOTATION);
-    final int startFeat = ts.ll_getCodeForFeatureName(TCAS.FEATURE_FULL_NAME_BEGIN);
-    final int endFeat = ts.ll_getCodeForFeatureName(TCAS.FEATURE_FULL_NAME_END);
+    final int annotType = ts.ll_getCodeForTypeName(CAS.TYPE_NAME_ANNOTATION);
+    final int startFeat = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_BEGIN);
+    final int endFeat = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_END);
 
     int lastSeenEnd = 0;
     int curRef;

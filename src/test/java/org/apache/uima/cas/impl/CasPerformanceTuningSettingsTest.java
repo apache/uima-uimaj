@@ -28,7 +28,7 @@ import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.TaeDescription;
 import org.apache.uima.analysis_engine.TextAnalysisEngine;
-import org.apache.uima.cas.text.TCAS;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
@@ -59,7 +59,7 @@ public class CasPerformanceTuningSettingsTest extends TestCase {
 
       // check default setting
       TextAnalysisEngine taeDefault = UIMAFramework.produceTAE(testDescriptor);
-      TCAS tcasDefault = taeDefault.newTCAS();
+      CAS tcasDefault = taeDefault.newCAS();
       int heapSize = ((CASImpl) tcasDefault).getHeap().heap.length;
       Assert.assertEquals(expectedHeapSizeDefault, heapSize);
 
@@ -67,7 +67,7 @@ public class CasPerformanceTuningSettingsTest extends TestCase {
       HashMap params = new HashMap();
       params.put(Resource.PARAM_PERFORMANCE_TUNING_SETTINGS, newProps);
       TextAnalysisEngine taeOverride = UIMAFramework.produceTAE(testDescriptor, params);
-      TCAS tcasOverride = taeOverride.newTCAS();
+      CAS tcasOverride = taeOverride.newCAS();
       heapSize = ((CASImpl) tcasOverride).getHeap().heap.length;
       Assert.assertEquals(100000, heapSize);
     } catch (Exception e) {

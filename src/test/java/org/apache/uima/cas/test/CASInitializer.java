@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas.test;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.CASMgr;
@@ -26,7 +27,6 @@ import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
@@ -36,7 +36,7 @@ import org.apache.uima.util.CasCreationUtils;
  */
 public class CASInitializer {
 
-  public static TCAS initCas(AnnotatorInitializer init) {
+  public static CAS initCas(AnnotatorInitializer init) {
     // Create an initial CASMgr from the factory.
     CASMgr casMgr0 = CASFactory.createCAS();
     CASMgr casMgr = null;
@@ -64,8 +64,8 @@ public class CASInitializer {
       e.printStackTrace();
     }
 
-    // Create the default text Sofa and return TCAS view
-    return casMgr.getCAS().getTCAS();
+    // Create the default text Sofa and return CAS view
+    return casMgr.getCAS().getCurrentView();
   }
 
 }

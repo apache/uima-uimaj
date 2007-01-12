@@ -35,7 +35,7 @@ import org.apache.uima.analysis_engine.annotator.AnnotatorInitializationExceptio
 import org.apache.uima.analysis_engine.annotator.AnnotatorProcessException;
 import org.apache.uima.analysis_engine.annotator.Annotator_ImplBase;
 import org.apache.uima.analysis_engine.annotator.TextAnnotator;
-import org.apache.uima.cas.text.TCAS;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 /**
@@ -82,10 +82,10 @@ public class SequencerTestAnnotator extends Annotator_ImplBase implements TextAn
   }
 
   /**
-   * @see org.apache.uima.analysis_engine.annotator.TextAnnotator#process(org.apache.uima.cas.text.TCAS,
+   * @see org.apache.uima.analysis_engine.annotator.TextAnnotator#process(org.apache.uima.cas.text.CAS,
    *      org.apache.uima.analysis_engine.ResultSpecification)
    */
-  public void process(TCAS tcas, ResultSpecification resultSpec) throws AnnotatorProcessException {
+  public void process(CAS tcas, ResultSpecification resultSpec) throws AnnotatorProcessException {
 
     try {
       // use standard output file

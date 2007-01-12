@@ -38,14 +38,13 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XCASSerializer;
-import org.apache.uima.cas.text.TCAS;
-import org.apache.uima.cas.text.TCASException;
 import org.apache.uima.cas_data.CasData;
 import org.apache.uima.cas_data.FeatureStructure;
 import org.apache.uima.cas_data.FeatureValue;
@@ -116,7 +115,7 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
       File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
       TypeSystemDescription typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
               new XMLInputSource(typeSystemFile));
-      TCAS tcas2 = CasCreationUtils.createTCas(typeSystem, new TypePriorities_impl(),
+      CAS tcas2 = CasCreationUtils.createTCas(typeSystem, new TypePriorities_impl(),
               new FsIndexDescription[0]);
 
       InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
@@ -148,7 +147,7 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
     }
   }
 
-  private void _testConversions(CAS aCAS) throws TCASException, IOException,
+  private void _testConversions(CAS aCAS) throws CASException, IOException,
           ParserConfigurationException, SAXException, ResourceInitializationException,
           CASRuntimeException {
     // generate XCAS events and pipe them to XCasToCasDataSaxHandler
@@ -173,8 +172,8 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
     UIMAFramework.getLogger(XCasToCasDataSaxHandlerTest.class).log(Level.FINE, xml);
 
     // deserialize back into CAS for comparison
-    // TCASMgr tcasMgr = TCASFactory.createTCAS(aTCAS.getTypeSystem());
-    // tcasMgr.initTCASIndexes();
+    // CASMgr tcasMgr = CASFactory.createCAS(aCAS.getTypeSystem());
+    // tcasMgr.initCASIndexes();
     // tcasMgr.getIndexRepositoryMgr().commit();
 
     CAS cas2 = CasCreationUtils.createCas(null, aCAS.getTypeSystem(), null);
@@ -196,7 +195,7 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
    * @param system
    */
   private void assertValidCasData(CasData casData, TypeSystem typeSystem) {
-    Type annotType = typeSystem.getType(TCAS.TYPE_NAME_ANNOTATION);
+    Type annotType = typeSystem.getType(CAS.TYPE_NAME_ANNOTATION);
     Type arrayType = typeSystem.getType(CAS.TYPE_NAME_ARRAY_BASE);
     Iterator fsIter = casData.getFeatureStructures();
     while (fsIter.hasNext()) {

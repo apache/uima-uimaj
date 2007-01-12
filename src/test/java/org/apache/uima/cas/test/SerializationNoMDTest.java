@@ -30,6 +30,7 @@ import java.util.Iterator;
 
 import junit.framework.TestCase;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
@@ -45,8 +46,6 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.CASSerializer;
 import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.text.TCASException;
 import org.apache.uima.internal.util.TextStringTokenizer;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -135,12 +134,12 @@ public class SerializationNoMDTest extends TestCase {
   }
 
   // Initialize the first CAS.
-  private static CASMgr initCAS() throws TCASException {
+  private static CASMgr initCAS() throws CASException {
     // Create an initial CASMgr from the factory.
     // CASMgr cas = CASFactory.createCAS();
     // assert(tsa != null);
-    // Create a TCASMgr. Ensures existence of AnnotationFS type.
-    // TCASMgr tcas = TCASFactory.createTCAS();
+    // Create a CASMgr. Ensures existence of AnnotationFS type.
+    // CASMgr tcas = CASFactory.createCAS();
     CASMgr aCas = CASFactory.createCAS();
     try {
       CasCreationUtils.setupTypeSystem(aCas, (TypeSystemDescription) null);
@@ -163,8 +162,8 @@ public class SerializationNoMDTest extends TestCase {
     // Commit the type system.
     ((CASImpl) aCas).commitTypeSystem();
     // assert(tsa.isCommitted());
-    // // Create the TCAS indexes.
-    // tcas.initTCASIndexes();
+    // // Create the CAS indexes.
+    // tcas.initCASIndexes();
     // Create the Base indexes.
     try {
       aCas.initCASIndexes();
@@ -176,8 +175,8 @@ public class SerializationNoMDTest extends TestCase {
     aCas.getIndexRepositoryMgr().commit();
     // assert(cas.getIndexRepositoryMgr().isCommitted());
 
-    // Create the default text Sofa and return TCAS view
-    return (CASMgr) aCas.getCAS().getTCAS();
+    // Create the default text Sofa and return CAS view
+    return (CASMgr) aCas.getCAS().getCurrentView();
   }
 
   // Tokenize text.
@@ -257,8 +256,8 @@ public class SerializationNoMDTest extends TestCase {
     // //assert(tokenType != null);
     // Type sentenceType = ts.getType(SENT_TYPE);
     // Feature tokenTypeFeature = ts.getFeature(TOKEN_TYPE_FEAT);
-    // Feature startFeature = ts.getFeature(TCAS.START_FEAT);
-    // Feature endFeature = ts.getFeature(TCAS.END_FEAT);
+    // Feature startFeature = ts.getFeature(CAS.START_FEAT);
+    // Feature endFeature = ts.getFeature(CAS.END_FEAT);
 
     // System.out.println("\nCreating sentence annotations.");
 
@@ -307,12 +306,12 @@ public class SerializationNoMDTest extends TestCase {
   }
 
   // Check results.
-  private void checkSentences() throws CASException, TCASException {
+  private void checkSentences() throws CASException, CASException {
     TypeSystem ts = cas.getTypeSystem();
     Type sentenceType = ts.getType(SENT_TYPE);
     // Feature tokenTypeFeature = ts.getFeatureByFullName(TOKEN_TYPE_FEAT);
-    // Feature startFeature = ts.getFeatureByFullName(TCAS.FEATURE_BASE_NAME_BEGIN);
-    // Feature endFeature = ts.getFeatureByFullName(TCAS.FEATURE_BASE_NAME_END);
+    // Feature startFeature = ts.getFeatureByFullName(CAS.FEATURE_BASE_NAME_BEGIN);
+    // Feature endFeature = ts.getFeatureByFullName(CAS.FEATURE_BASE_NAME_END);
 
     // Print the first few sentences.
     // System.out.println("\nThe first 10 sentences:\n");
@@ -349,7 +348,7 @@ public class SerializationNoMDTest extends TestCase {
     // while (it.isValid() && counter < 50) {
     // fs = (AnnotationFS)it.get();
     // System.out.print(fs.getType().getName() + ": ");
-    // if (fs.getType().getName().equals(TCASMgr.DOCUMENT_TYPE)) {
+    // if (fs.getType().getName().equals(CASMgr.DOCUMENT_TYPE)) {
     // // When we see the document, we don't print the whole text ;-)
     // System.out.println("...");
     // } else {

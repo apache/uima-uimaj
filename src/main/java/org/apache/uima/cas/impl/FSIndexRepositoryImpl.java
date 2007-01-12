@@ -672,7 +672,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   // return new Subiterator(
   // this.getIntIterator(),
   // annot,
-  // (TCASImpl) FSIndexRepositoryImpl.this.cas,
+  // (CASImpl) FSIndexRepositoryImpl.this.cas,
   // this.getIntComparator());
   // }
   //

@@ -21,8 +21,8 @@ package org.apache.uima.analysis_engine;
 
 import java.io.Serializable;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.util.XMLizable;
 
@@ -34,7 +34,7 @@ import org.apache.uima.util.XMLizable;
  * Annotator implementations are expected to only produce those <code>Type</code>s and
  * <code>Feature</code>s that are part of the <code>ResultSpecification</code> passed as a
  * parameter to their
- * {@link org.apache.uima.analysis_engine.annotator.TextAnnotator#process(TCAS,ResultSpecification)}
+ * {@link org.apache.uima.analysis_engine.annotator.TextAnnotator#process(CAS,ResultSpecification)}
  * method. Annotators can call the {@link #containsType(String)} and
  * {@link #containsFeature(String)} to determine which types and features belong to this
  * ResultSpecification and should be produced.

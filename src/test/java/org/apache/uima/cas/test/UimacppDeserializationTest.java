@@ -49,18 +49,18 @@ public class UimacppDeserializationTest extends TestCase {
    * Deserialize ObjectInputStream ois = null; CASCompleteSerializer ser = null; try { ois = new
    * ObjectInputStream(new FileInputStream(serializedForm)); ser = (CASCompleteSerializer)
    * ois.readObject(); ois.close(); } catch (IOException e) { e.printStackTrace();
-   * assertTrue(false); } catch (ClassNotFoundException e) { assertTrue(false); } TCAS cas = null;
-   * try { TCASMgr casMgr = TCASFactory.createTCAS(); Serialization.deserializeTCASComplete(ser,
-   * casMgr); cas = casMgr.getTCAS(); } catch (TCASException e) { assertTrue(false); }
+   * assertTrue(false); } catch (ClassNotFoundException e) { assertTrue(false); } CAS cas = null;
+   * try { CASMgr casMgr = CASFactory.createCAS(); Serialization.deserializeCASComplete(ser,
+   * casMgr); cas = casMgr.getCurrentView(); } catch (CASException e) { assertTrue(false); }
    * assertTrue(cas != null); System.out.println("Document text:");
    * System.out.println(cas.getDocumentText());
    * 
    * System.out.println("Type system:\n" + cas.getTypeSystem().toString());
    * 
    * TypeSystem ts = cas.getTypeSystem(); Type ttDocType = ts.getType("uima.tt.DocumentAnnotation");
-   * assertTrue(ttDocType != null); Type annotType = ts.getType(TCAS.TYPE_NAME_ANNOTATION);
+   * assertTrue(ttDocType != null); Type annotType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
    * assertTrue(annotType != null); assertTrue(ts.subsumes(annotType, ttDocType)); Feature beginFeat =
-   * ts.getFeatureByFullName(TCAS.FEATURE_FULL_NAME_BEGIN);
+   * ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
    * assertTrue(ttDocType.getAppropriateFeatures().contains(beginFeat)); Vector feats =
    * ttDocType.getAppropriateFeatures(); System.out.println("Features defined for " +
    * ttDocType.getName()); for (int i = 0; i < feats.size(); i++) { System.out.println(" " +
@@ -78,7 +78,7 @@ public class UimacppDeserializationTest extends TestCase {
    * System.out.println("Index labels: "); while (labelIt.hasNext()) { System.out.println(" " +
    * (String) labelIt.next()); }
    * 
-   * Type docType = cas.getTypeSystem().getType(TCASMgr.DOCUMENT_TYPE); FSIndex docIndex =
+   * Type docType = cas.getTypeSystem().getType(CASMgr.DOCUMENT_TYPE); FSIndex docIndex =
    * cas.getAnnotationIndex(docType); Vector featVector = docType.getAppropriateFeatures();
    * System.out.println("Features defined for docType: "); for (int i = 0; i < featVector.size();
    * i++) { System.out.println(" " + ((Feature)featVector.get(i)).getShortName()); }

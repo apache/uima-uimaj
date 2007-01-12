@@ -25,10 +25,10 @@ import java.util.TreeSet;
 
 import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.ConstraintFactory;
 import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.FSTypeConstraint;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.resource.metadata.Capability;
 
 /**
@@ -45,7 +45,7 @@ public class AnalysisEngineUtils {
    * @param aMetaData
    *          metadata for the text analysis engine that is producing the results to be filtered
    * 
-   * @return the filter to be passed to {@link TCasFormatter#format(TCAS,FSMatchConstraint)}.
+   * @return the filter to be passed to {@link TCasFormatter#format(CAS,FSMatchConstraint)}.
    */
   public static FSMatchConstraint createOutputFilter(AnalysisEngineMetaData aMetaData) {
     // get a list of the AE's output type names

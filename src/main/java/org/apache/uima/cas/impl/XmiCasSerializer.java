@@ -158,7 +158,7 @@ public class XmiCasSerializer {
       this.queue = new IntStack();
       this.indexedFSs = new IntVector();
       // this.sofaTypeCode = cas.ts.getTypeCode(CAS.TYPE_NAME_SOFA);
-      // this.annotationTypeCode = cas.ts.getTypeCode(TCAS.TYPE_NAME_ANNOTATION);
+      // this.annotationTypeCode = cas.ts.getTypeCode(CAS.TYPE_NAME_ANNOTATION);
       this.listUtils = new ListUtils(cas, logger, eh);
       this.arrayAndListFSs = new IntRedBlackTree();
       this.sharedData = sharedData;
@@ -222,7 +222,7 @@ public class XmiCasSerializer {
         FSIndexRepositoryImpl loopIR = (FSIndexRepositoryImpl) cas.getBaseCAS()
                 .getSofaIndexRepository(sofaNum);
         if (sofaNum != 1 || cas.isInitialSofaCreated()) {
-          FeatureStructureImpl sofa = (FeatureStructureImpl) cas.getTCAS(sofaNum).getSofa();
+          FeatureStructureImpl sofa = (FeatureStructureImpl) cas.getView(sofaNum).getSofa();
           sofaXmiId = getXmiId((sofa).getAddress());
         }
         if (loopIR != null) {

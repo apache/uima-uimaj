@@ -106,7 +106,7 @@ public class JCasPool {
    * Creates a new JCasPool
    * 
    * @param aNumInstances
-   *          the number of TCAS instances in the pool
+   *          the number of CAS instances in the pool
    * @param aMetaData
    *          metadata that includes the type system for the CAS
    * 

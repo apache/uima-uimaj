@@ -23,7 +23,7 @@ import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.annotator.AnnotatorProcessException;
 import org.apache.uima.analysis_engine.annotator.Annotator_ImplBase;
 import org.apache.uima.analysis_engine.annotator.TextAnnotator;
-import org.apache.uima.cas.text.TCAS;
+import org.apache.uima.cas.CAS;
 
 /**
  * Annotator class used for testing errors
@@ -31,10 +31,10 @@ import org.apache.uima.cas.text.TCAS;
  */
 public class ErrorAnnotator extends Annotator_ImplBase implements TextAnnotator {
   /**
-   * @see org.apache.uima.analysis_engine.annotator.TextAnnotator#process(TCAS,ResultSpecification)
+   * @see org.apache.uima.analysis_engine.annotator.TextAnnotator#process(CAS,ResultSpecification)
    */
-  public void process(TCAS aTCAS, ResultSpecification aResultSpec) throws AnnotatorProcessException {
-    if ("ERROR".equals(aTCAS.getDocumentText())) {
+  public void process(CAS aCAS, ResultSpecification aResultSpec) throws AnnotatorProcessException {
+    if ("ERROR".equals(aCAS.getDocumentText())) {
       throw new RuntimeException("Test Error");
     }
   }

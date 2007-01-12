@@ -25,8 +25,6 @@ import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
-import org.apache.uima.cas.text.TCAS;
-import org.apache.uima.cas.text.TCASRuntimeException;
 import org.apache.uima.jcas.JCas;
 
 /**
@@ -399,7 +397,7 @@ public interface CAS extends AbstractCas {
           + TypeSystem.FEATURE_SEPARATOR + FEATURE_BASE_NAME_TAIL;
 
   /**
-   * Name of TCAS (Text CAS) name space.
+   * Name of CAS (Text CAS) name space.
    */
   static final String NAME_SPACE_UIMA_TCAS = "uima" + TypeSystem.NAMESPACE_SEPARATOR + "tcas";
 
@@ -461,7 +459,7 @@ public interface CAS extends AbstractCas {
 
   /**
    * Name of the standard index on annotations. The standard index is automatically defined if you
-   * use a TCAS.
+   * use a CAS.
    */
   static final String STD_ANNOTATION_INDEX = "AnnotationIndex";
 
@@ -565,28 +563,12 @@ public interface CAS extends AbstractCas {
   JCas getJCas() throws CASException;
 
   /**
-   * Get the TCas view for the default text Sofa.
+   * Get the Cas view specified for the current component.
    * 
-   * @return the TCas view for the default text Sofa. If it does not already exist, it will be
-   *         created.
+   * @return the Cas view specified for the current component by Sofa mapping. Defaults to _InitialView.
    * 
-   * @deprecated As of v2.0, all methods on the TCAS interface have been moved to the CAS interface,
-   *             making this method unnecessary.
    */
-  TCAS getTCAS();
-
-  /**
-   * Get the TCas view for a Sofa.
-   * 
-   * @param aSofsFS
-   *          a Sofa feature struture in this CAS
-   * 
-   * @return The TCas for the given Sofa.
-   * 
-   * @deprecated As of v2.0, use {@link #getView(String)} to get a view. All methods on the TCAS
-   *             interface have been moved to the CAS interface, making this method unnecessary.
-   */
-  TCAS getTCAS(SofaFS aSofa);
+  CAS getCurrentView();
 
   /**
    * Get sofaFS for given Subject of Analysis ID.
@@ -599,9 +581,9 @@ public interface CAS extends AbstractCas {
   SofaFS getSofa(SofaID sofaID);
 
   /**
-   * Get the Sofa feature structure associated with this TCAS view.
+   * Get the Sofa feature structure associated with this CAS view.
    * 
-   * @return The SofaFS associated with this TCAS.
+   * @return The SofaFS associated with this CAS.
    */
   SofaFS getSofa();
 
@@ -879,7 +861,7 @@ public interface CAS extends AbstractCas {
    * @exception CASRuntimeException
    *              If the Sofa data has already been set.
    */
-  void setDocumentText(String text) throws TCASRuntimeException;
+  void setDocumentText(String text) throws CASRuntimeException;
 
   /**
    * Set the document text. Once set, Sofa data is immutable, and cannot be set again until the CAS
@@ -892,7 +874,7 @@ public interface CAS extends AbstractCas {
    * @exception CASRuntimeException
    *              If the Sofa data has already been set.
    */
-  void setSofaDataString(String text, String mimetype) throws TCASRuntimeException;
+  void setSofaDataString(String text, String mimetype) throws CASRuntimeException;
 
   /**
    * Get the document text.
@@ -903,16 +885,16 @@ public interface CAS extends AbstractCas {
 
   /**
    * Sets the language for this document. This value sets the language feature of the special
-   * instance of DocumentAnnotation associated with this TCAS.
+   * instance of DocumentAnnotation associated with this CAS.
    * 
    * @param languageCode
-   * @throws TCASRuntimeException
+   * @throws CASRuntimeException
    */
-  void setDocumentLanguage(String languageCode) throws TCASRuntimeException;
+  void setDocumentLanguage(String languageCode) throws CASRuntimeException;
 
   /**
    * Gets the language code for this document from the language feature of the special instance of
-   * the DocumentationAnnotation associated with this TCAS.
+   * the DocumentationAnnotation associated with this CAS.
    * 
    * @return language identifier
    */
@@ -929,7 +911,7 @@ public interface CAS extends AbstractCas {
    * @exception CASRuntimeException
    *              If the Sofa data has already been set.
    */
-  void setSofaDataArray(FeatureStructure array, String mime) throws TCASRuntimeException;
+  void setSofaDataArray(FeatureStructure array, String mime) throws CASRuntimeException;
 
   /**
    * Get the Sofa data array.
@@ -949,7 +931,7 @@ public interface CAS extends AbstractCas {
    * @exception CASRuntimeException
    *              If the Sofa data has already been set.
    */
-  void setSofaDataURI(String uri, String mime) throws TCASRuntimeException;
+  void setSofaDataURI(String uri, String mime) throws CASRuntimeException;
 
   /**
    * Get the Sofa data array.

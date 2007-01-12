@@ -71,7 +71,7 @@ public class AnnotationImpl extends AnnotationBaseImpl implements AnnotationFS {
    */
   public int getBegin() {
     return this.casImpl.getFeatureValue(addr, this.casImpl.startFeatCode);
-    // return ((TCASImpl) this.casImpl).getStartFeat(this.addr);
+    // return ((CASImpl) this.casImpl).getStartFeat(this.addr);
   }
 
   /**
@@ -79,7 +79,7 @@ public class AnnotationImpl extends AnnotationBaseImpl implements AnnotationFS {
    */
   public int getEnd() {
     return this.casImpl.getFeatureValue(addr, this.casImpl.endFeatCode);
-    // return ((TCASImpl) this.casImpl).getEndFeat(this.addr);
+    // return ((CASImpl) this.casImpl).getEndFeat(this.addr);
   }
 
   /**
