@@ -210,7 +210,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
           // the mapping is for this analysis engine
           if (mSofaMappings[s].getComponentKey().equals(key)) {
             // if component sofa name is null, replace it with the default for CAS sofa name
-            // This is to support old style CAS
+            // This is to support single-view annotators.
             if (mSofaMappings[s].getComponentSofaName() == null)
               mSofaMappings[s].setComponentSofaName(CAS.NAME_DEFAULT_TEXT_SOFA);
             sofamap.put(mSofaMappings[s].getComponentSofaName(), mSofaMappings[s]
@@ -281,8 +281,8 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
       for (int s = 0; s < mSofaMappings.length; s++) {
         // the mapping is for this analysis engine
         if (mSofaMappings[s].getComponentKey().equals(key)) {
-          // if component sofa name is null, replace it with the default for CAS sofa name
-          // This is to support old style CAS
+          // if component sofa name is null, replace it with the default for TCAS sofa name
+          // This is to support single-view annotators.
           if (mSofaMappings[s].getComponentSofaName() == null)
             mSofaMappings[s].setComponentSofaName(CAS.NAME_DEFAULT_TEXT_SOFA);
           sofamap.put(mSofaMappings[s].getComponentSofaName(), mSofaMappings[s]

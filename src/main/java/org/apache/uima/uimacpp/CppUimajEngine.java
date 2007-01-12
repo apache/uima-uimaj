@@ -209,10 +209,10 @@ public class CppUimajEngine {
         // 3. call process with tcas or cas
         if (requiresTCas && sofaNum == 0) {
           result = 1;
-          exceptionString = "This CasConsumer expects a CAS but Sofa from which to construct one is not specified.";
+          exceptionString = "This CasConsumer expects a View, but the Sofa from which to construct one is not specified.";
         } else if (sofaNum > 0) {
-          CAS tcas = casImpl.getView(sofaNum);
-          cc.processCas(tcas);
+          CAS view = casImpl.getView(sofaNum);
+          cc.processCas(view);
         } else {
           cc.processCas(casImpl);
         }

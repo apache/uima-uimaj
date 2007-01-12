@@ -37,11 +37,8 @@ import org.apache.uima.resource.ResourceInitializationException;
  * <ul>
  * <li> Annotator: Receives an input CAS and updates it
  * <ul>
- * <li>{@link org.apache.uima.analysis_engine.annotator.JTextAnnotator_ImplBase}: Uses JCas
- * interface</li>
- * <li>{@link org.apache.uima.analysis_engine.annotator.TextAnnotator}: Uses CAS interface</li>
- * <li>{@link org.apache.uima.analysis_engine.annotator.GenericAnnotator_ImplBase}: Uses CAS
- * interface
+ * <li>{@link JCasAnnotator_ImplBase}: Uses JCas interface</li>
+ * <li>{@link CasAnnotator_ImplBase}: Uses CASinterface
  * </ul>
  * </li>
  * <li>{@link org.apache.uima.collection.CasConsumer_ImplBase}: Receives an input CAS but does not

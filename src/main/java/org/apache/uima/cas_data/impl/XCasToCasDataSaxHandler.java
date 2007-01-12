@@ -44,8 +44,7 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
   // Expect the start of the XML document.
   private static final int DOC_STATE = 0;
 
-  // At the top level. Expect a FS, or a CAS document, or the end of the
-  // XML input.
+  // At the top level. Expect a FS.
   private static final int FS_STATE = 1;
 
   // Inside a FS. Expect features, or the end of the FS.
@@ -62,9 +61,6 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
 
   // Inside an array FS. Expect an array element, or the end of the FS.
   private static final int ARRAY_ELE_STATE = 6;
-
-  // Inside the CAS document. Expect the doc text.
-  private static final int DOC_TEXT_STATE = 7;
 
   // End parser states.
   // ///////////////////////////////////////////////////////////////////////
@@ -340,7 +336,7 @@ public class XCasToCasDataSaxHandler extends DefaultHandler {
    * @see org.xml.sax.ContentHandler#characters(char[], int, int)
    */
   public void characters(char[] chars, int start, int length) throws SAXException {
-    if ((this.state == DOC_TEXT_STATE) || (this.state == CONTENT_STATE)
+    if ((this.state == CONTENT_STATE)
             || (this.state == ARRAY_ELE_CONTENT_STATE) || (this.state == FEAT_CONTENT_STATE)) {
       // When we're in a text expecting state, add the characters to the
       // text buffer. Else, do nothing.

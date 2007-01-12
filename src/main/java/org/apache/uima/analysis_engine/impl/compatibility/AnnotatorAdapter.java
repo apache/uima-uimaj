@@ -136,9 +136,9 @@ public class AnnotatorAdapter implements AnalysisComponent {
     // do proper typecasts and call process method
     try {
       if (mAnnotator instanceof TextAnnotator) {
-        CAS tcas = (CAS) aCAS;
-        ResultSpecification rs = getResultSpecForLanguage(tcas.getDocumentLanguage());
-        ((TextAnnotator) mAnnotator).process(tcas, rs);
+        CAS cas = (CAS) aCAS;
+        ResultSpecification rs = getResultSpecForLanguage(cas.getDocumentLanguage());
+        ((TextAnnotator) mAnnotator).process(cas, rs);
       } else if (mAnnotator instanceof JTextAnnotator) {
         JCas jcas = (JCas) aCAS;
         ResultSpecification rs = getResultSpecForLanguage(jcas.getDocumentLanguage());
@@ -185,7 +185,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
       TypeSystem typeSystem;
       if (aCAS instanceof JCas) {
         typeSystem = ((JCas) aCAS).getTypeSystem();
-      } else // CAS or CAS
+      } else // CAS 
       {
         typeSystem = ((CAS) aCAS).getTypeSystem();
       }

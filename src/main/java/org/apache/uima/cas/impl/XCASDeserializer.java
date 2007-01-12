@@ -73,7 +73,7 @@ public class XCASDeserializer {
     // Expect the start of the XML document.
     private static final int DOC_STATE = 0;
 
-    // At the top level. Expect a FS, or a CAS document, or the end of the
+    // At the top level. Expect a FS, or the document text element, or the end of the
     // XML input.
     private static final int FS_STATE = 1;
 
@@ -92,7 +92,7 @@ public class XCASDeserializer {
     // Inside an array FS. Expect an array element, or the end of the FS.
     private static final int ARRAY_ELE_STATE = 6;
 
-    // Inside the CAS document. Expect the doc text.
+    // Inside the document text element. Expect the doc text.
     private static final int DOC_TEXT_STATE = 7;
 
     // Inside an Out-Of-Typesystem FS. Expect features, or the end of the FS.
@@ -159,8 +159,8 @@ public class XCASDeserializer {
     // Store IndexRepositories in a vector;
     private ArrayList indexRepositories;
 
-    // and CAS too
-    private ArrayList tcasInstances;
+    // and Views too
+    private ArrayList views;
 
     // for processing v1.x format XCAS
     // map from sofa int values to id references
@@ -182,7 +182,7 @@ public class XCASDeserializer {
       this.buffer = new StringBuffer();
       this.outOfTypeSystemData = ootsData;
       this.indexRepositories = new ArrayList();
-      this.tcasInstances = new ArrayList();
+      this.views = new ArrayList();
       // using the baseCas for indexing Sofas
       indexRepositories.add(this.cas.getBaseIndexRepository());
       // There should always be another index for the Initial View
@@ -462,7 +462,7 @@ public class XCASDeserializer {
           indexRepositories.add(cas.getSofaIndexRepository(sofa));
         }
         ((CASImpl) view).registerView(sofa);
-        tcasInstances.add(view);
+        views.add(view);
       }
       FSInfo fsInfo = new FSInfo(addr, indexRep);
       if (id < 0) {
@@ -780,8 +780,8 @@ public class XCASDeserializer {
         finalizeOutOfTypeSystemFeatures();
       }
 
-      for (int i = 0; i < tcasInstances.size(); i++) {
-        ((CASImpl) tcasInstances.get(i)).updateDocumentAnnotation();
+      for (int i = 0; i < views.size(); i++) {
+        ((CASImpl) views.get(i)).updateDocumentAnnotation();
       }
     }
 
