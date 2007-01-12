@@ -51,7 +51,10 @@
 <capabilities>
 <capability>
 <inputs/>
-<outputs/>
+<outputs>
+  <type allAnnotatorFeatures="true">NamedEntity</type>
+  <type allAnnotatorFeatures="true">DocumentStructure</type>
+</outputs>
 <languagesSupported/>
 </capability>
 </capabilities>

@@ -116,6 +116,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
 
   public void setResultSpecification(ResultSpecification aResultSpec) {
     mDefaultResultSpecification = aResultSpec;
+    mLanguageToResultSpecMap = new HashMap();
   }
 
   /*
