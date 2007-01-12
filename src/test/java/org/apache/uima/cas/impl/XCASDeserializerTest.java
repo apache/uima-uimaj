@@ -41,7 +41,6 @@ import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.impl.SofaID_impl;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
@@ -286,24 +285,6 @@ public class XCASDeserializerTest extends TestCase {
       assertTrue(tIndex.size() == 2); // document annot and this one
       assertTrue(t2Index.size() == 2); // ditto
       newCas.reset();
-    }
-
-    // test same thing but using CAS (backwards compatibility check)
-    CAS newTcas = CasCreationUtils.createTCas(typeSystem, new TypePriorities_impl(), indexes);
-    for (int i = 0; i < 2; i++) {
-      XCASDeserializer newDeser = new XCASDeserializer(newTcas.getTypeSystem());
-      ContentHandler newDeserHandler = newDeser.getXCASHandler(newTcas);
-      SAXParserFactory fact = SAXParserFactory.newInstance();
-      SAXParser parser = fact.newSAXParser();
-      XMLReader xmlReader = parser.getXMLReader();
-      xmlReader.setContentHandler(newDeserHandler);
-      xmlReader.parse(new InputSource(new StringReader(xml)));
-
-      // check sofas
-      assertEquals("This is a test", newTcas.getDocumentText());
-      CAS newTcas2 = newTcas.getView(newTcas.getSofa(new SofaID_impl("OtherSofa")));
-      assertEquals("This is only a test", newTcas2.getDocumentText());
-      newTcas.reset();
     }
   }
 

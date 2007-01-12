@@ -22,9 +22,7 @@ package org.apache.uima.util;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -103,47 +101,6 @@ public class CasCreationUtilsTest extends TestCase {
     }
   }
 
-  public void testCreateTCasCollectionPropertiesResourceManager() throws Exception {
-    try {
-      // parse descriptor
-      File taeDescriptorWithImport = JUnitExtension
-              .getFile("CasCreationUtilsTest/TaeWithImports.xml");
-      AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-              new XMLInputSource(taeDescriptorWithImport));
-
-      // create Resource Manager & set data path - necessary to resolve imports
-      ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
-      String pathSep = System.getProperty("path.separator");
-      resMgr.setDataPath(JUnitExtension.getFile("TypeSystemDescriptionImplTest/dataPathDir")
-              .getAbsolutePath()
-              + pathSep
-              + JUnitExtension.getFile("TypePrioritiesImplTest/dataPathDir").getAbsolutePath()
-              + pathSep
-              + JUnitExtension.getFile("FsIndexCollectionImplTest/dataPathDir").getAbsolutePath());
-
-      // call method
-      ArrayList descList = new ArrayList();
-      descList.add(desc);
-      CAS tcas = CasCreationUtils.createTCas(descList, UIMAFramework
-              .getDefaultPerformanceTuningProperties(), resMgr);
-      // check that imports were resolved correctly
-      assertNotNull(tcas.getTypeSystem().getType("DocumentStructure"));
-      assertNotNull(tcas.getTypeSystem().getType("NamedEntity"));
-      assertNotNull(tcas.getTypeSystem().getType("TestType3"));
-
-      assertNotNull(tcas.getIndexRepository().getIndex("TestIndex"));
-      assertNotNull(tcas.getIndexRepository().getIndex("ReverseAnnotationIndex"));
-      assertNotNull(tcas.getIndexRepository().getIndex("DocumentStructureIndex"));
-
-      // check of type priority
-      AnnotationFS fs1 = tcas.createAnnotation(tcas.getTypeSystem().getType("Paragraph"), 0, 1);
-      AnnotationFS fs2 = tcas.createAnnotation(tcas.getTypeSystem().getType("Sentence"), 0, 1);
-      assertTrue(tcas.getAnnotationIndex().compare(fs1, fs2) < 0);
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
-    }
-  }
-
   public void testAggregateWithImports() throws Exception {
     try {
       String pathSep = System.getProperty("path.separator");
@@ -161,7 +118,7 @@ public class CasCreationUtilsTest extends TestCase {
               new XMLInputSource(taeDescriptorWithImport));
       ArrayList mdList = new ArrayList();
       mdList.add(desc);
-      CAS tcas = CasCreationUtils.createTCas(mdList, UIMAFramework
+      CAS tcas = CasCreationUtils.createCas(mdList, UIMAFramework
               .getDefaultPerformanceTuningProperties(), resMgr);
       // check that imports were resolved correctly
       assertNotNull(tcas.getTypeSystem().getType("DocumentStructure"));
