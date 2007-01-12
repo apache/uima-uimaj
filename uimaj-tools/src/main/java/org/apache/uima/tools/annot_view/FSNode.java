@@ -67,6 +67,8 @@ class FSNode extends FSTreeNode {
   private final int arrayElem;
 
   private final boolean isArrayElem;
+  
+  private boolean isShortenedString = false;
 
   FSNode(FSTreeModel fSTreeModel, int nodeClass, long addr, Feature feat) {
     super();
@@ -214,6 +216,17 @@ class FSNode extends FSTreeNode {
   private String getFeatureString() {
     return "<i>" + this.feat.getShortName() + "</i>";
   }
+  
+  boolean isShortenedString() {
+    return this.isShortenedString;
+  }
+  
+  String getFullString() {
+    if (getNodeClass() != STRING_FS) {
+      return null;
+    }
+    return this.fSTreeModel.getCas().getStringForCode((int) this.addr);
+  }
 
   private String getValueString() {
     CASImpl cas = this.fSTreeModel.getCas();
@@ -240,8 +253,9 @@ class FSNode extends FSTreeNode {
           return getNullString();
         }
         String s = cas.getStringForCode((int) this.addr);
-        s = shortenString(s);
-        return "\"" + escapeLt(s) + "\"";
+        String s1 = shortenString(s);
+        this.isShortenedString = (s != s1);
+        return "\"" + escapeLt(s1) + "\"";
       }
       case ARRAY_FS: {
         if (cas.getHeapValue((int) this.addr) == LowLevelCAS.NULL_FS_REF) {

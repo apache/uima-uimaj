@@ -2724,6 +2724,7 @@ public class MainFrame extends JFrame {
   private void initFSTree() {
     FSTreeModel treeModel = new FSTreeModel();
     this.fsTree = new JTree(treeModel);
+    this.fsTree.addMouseListener(new StringFsPopupEventAdapter());
     this.fsTree.setBorder(BorderFactory.createEmptyBorder(2, 4, 2, 2));
     this.fsTree.setLargeModel(true);
     // Only one node can be selected at any one time.
