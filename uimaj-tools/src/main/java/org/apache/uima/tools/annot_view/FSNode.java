@@ -27,7 +27,6 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
-import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 
 class FSNode extends FSTreeNode {
@@ -68,6 +67,7 @@ class FSNode extends FSTreeNode {
 
   private final boolean isArrayElem;
   
+  // Remember if we're displaying a shortened string.
   private boolean isShortenedString = false;
 
   FSNode(FSTreeModel fSTreeModel, int nodeClass, long addr, Feature feat) {
@@ -217,10 +217,18 @@ class FSNode extends FSTreeNode {
     return "<i>" + this.feat.getShortName() + "</i>";
   }
   
+  /**
+   * 
+   * @return if this is a string node displaying a shortened string
+   */
   boolean isShortenedString() {
     return this.isShortenedString;
   }
   
+  /**
+   * 
+   * @return for string nodes, return the string value (so it can be displayed seperately
+   */
   String getFullString() {
     if (getNodeClass() != STRING_FS) {
       return null;
@@ -253,7 +261,9 @@ class FSNode extends FSTreeNode {
           return getNullString();
         }
         String s = cas.getStringForCode((int) this.addr);
+        // Check if we need to shorten the string for display purposes
         String s1 = shortenString(s);
+        // Remember if string is shortened
         this.isShortenedString = (s != s1);
         return "\"" + escapeLt(s1) + "\"";
       }

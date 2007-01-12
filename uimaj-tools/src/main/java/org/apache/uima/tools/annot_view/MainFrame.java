@@ -133,7 +133,6 @@ import org.apache.uima.cas.impl.TypeSystem2Xml;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XCASSerializer;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.TCAS;
 import org.apache.uima.internal.util.FileUtils;
 import org.apache.uima.internal.util.TimeSpan;
 import org.apache.uima.internal.util.Timer;
@@ -360,13 +359,13 @@ public class MainFrame extends JFrame {
         boolean isAnnotation = true;
         if (userObject instanceof IndexTreeNode) {
           IndexTreeNode iNode = (IndexTreeNode) userObject;
-          if (!iNode.getName().equals(TCAS.STD_ANNOTATION_INDEX)) {
+          if (!iNode.getName().equals(CAS.STD_ANNOTATION_INDEX)) {
             isAnnotation = false;
           }
           annotTitle = iNode.getType().getName();
         } else if (userObject instanceof TypeTreeNode) {
           TypeTreeNode tNode = (TypeTreeNode) userObject;
-          if (!tNode.getLabel().equals(TCAS.STD_ANNOTATION_INDEX)) {
+          if (!tNode.getLabel().equals(CAS.STD_ANNOTATION_INDEX)) {
             isAnnotation = false;
           }
           annotTitle = tNode.getType().getName();
@@ -474,7 +473,7 @@ public class MainFrame extends JFrame {
         return;
       }
       MainFrame.this.indexLabel = label;
-      MainFrame.this.isAnnotIndex = label.equals(TCAS.STD_ANNOTATION_INDEX);
+      MainFrame.this.isAnnotIndex = label.equals(CAS.STD_ANNOTATION_INDEX);
       MainFrame.this.index = MainFrame.this.cas.getIndexRepository().getIndex(label, type);
       updateFSTree(label, MainFrame.this.index);
       MainFrame.this.allAnnotViewerItem.setEnabled(((CASImpl) MainFrame.this.cas)
@@ -2556,7 +2555,7 @@ public class MainFrame extends JFrame {
     Style defaultStyle = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
     defaultStyle = StyleContext.getDefaultStyleContext().addStyle("defaultAnnot", defaultStyle);
     StyleConstants.setBackground(defaultStyle, selectionColor);
-    this.styleMap.put(TCAS.TYPE_NAME_ANNOTATION, defaultStyle);
+    this.styleMap.put(CAS.TYPE_NAME_ANNOTATION, defaultStyle);
     this.textPopup = new JPopupMenu();
     this.fsTree.addFocusListener(new TreeFocusHandler(this.fsTree));
     this.indexTree.addFocusListener(new TreeFocusHandler(this.indexTree));
@@ -2689,7 +2688,7 @@ public class MainFrame extends JFrame {
   private void setLanguage() {
     if (this.language != null) {
       Feature langFeat = this.cas.getTypeSystem().getFeatureByFullName(
-              TCAS.FEATURE_FULL_NAME_LANGUAGE);
+              CAS.FEATURE_FULL_NAME_LANGUAGE);
       AnnotationFS doc = this.cas.getDocumentAnnotation();
       if (doc != null) {
         doc.setStringValue(langFeat, this.language);
@@ -3013,7 +3012,7 @@ public class MainFrame extends JFrame {
   }
 
   private void loadColorPreferences(File file) throws IOException {
-    Style parent = (Style) this.styleMap.get(TCAS.TYPE_NAME_ANNOTATION);
+    Style parent = (Style) this.styleMap.get(CAS.TYPE_NAME_ANNOTATION);
     StyleContext sc = StyleContext.getDefaultStyleContext();
     Properties prefs1 = new Properties();
     FileInputStream in = new FileInputStream(file);
