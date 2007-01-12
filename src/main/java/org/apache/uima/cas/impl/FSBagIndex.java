@@ -237,9 +237,6 @@ public class FSBagIndex extends FSLeafIndexImpl {
    * This means that the input span is empty. return (-start)-1; }
    */
 
-  /**
-   * @see org.apache.uima.cas.impl.FSLeafIndexImpl#pointerIterator(IntComparator)
-   */
   public ComparableIntPointerIterator pointerIterator(IntComparator comp,
           int[] detectIllegalIndexUpdates, int typeCode) {
     IntVectorIterator ivi = new IntVectorIterator(comp);
