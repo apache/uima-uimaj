@@ -372,7 +372,7 @@ public class JcasSofaTest extends TestCase {
 
       // create remote sofa and set the SofaURI feature
       JCas remoteView = jcas.createView("remoteSofaData");
-      remoteView.setSofaDataURI("file:.\\Sofa.xcas", "text");
+      remoteView.setSofaDataURI("file:./Sofa.xcas", "text");
 
       // read sofa data
       InputStream is = stringView.getSofaDataStream();
