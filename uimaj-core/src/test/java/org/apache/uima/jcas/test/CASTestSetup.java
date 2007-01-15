@@ -215,9 +215,6 @@ public class CASTestSetup extends TestCase implements AnnotatorInitializer {
     assertTrue(exc);
   }
 
-  /**
-   * @see org.apache.uima.cas.test.AnnotatorInitializer#initIndexes(FSIndexRepositoryMgr)
-   */
   public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts) {
     FSIndexComparator comp = irm.createComparator();
     Type annotation = ts.getType(CAS.TYPE_NAME_ANNOTATION);
