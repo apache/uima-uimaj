@@ -6,7 +6,7 @@
 	<includeBaseDirectory>true</includeBaseDirectory>
 	<fileSets>
 		<fileSet>
-			<directory>/</directory>
+			<directory>./</directory>
 			<includes>
 				<include>plugin.xml</include>
 				<include>META-INF/</include>
