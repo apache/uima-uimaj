@@ -339,14 +339,17 @@ public class AnalysisEngine_implTest extends TestCase {
       _testProcess(aggDesc);
 
       // test aggregate TAE containing a CAS Consumer
+      File outFile = JUnitExtension.getFile("CpmOutput.txt");
+      outFile.delete();
+      assertFalse(outFile.exists());
+
       TaeDescription aggWithCcDesc = UIMAFramework.getXMLParser().parseTaeDescription(
               new XMLInputSource(JUnitExtension
                       .getFile("TextAnalysisEngineImplTest/AggregateTaeWithCasConsumer.xml")));
-      long startTime = System.currentTimeMillis();
       _testProcess(aggWithCcDesc);
       // test that CAS Consumer ran
-      File outFile = JUnitExtension.getFile("CpmOutput.txt");
-      assertTrue(outFile.lastModified() >= startTime);
+      assertTrue(outFile.exists());
+      outFile.delete();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
