@@ -27,7 +27,7 @@
 <import location="TransAnnotator.xml"/>
 </delegateAnalysisEngine>
 <delegateAnalysisEngine key="TestAnnotator">
-<import location="../TextAnalysisEngineImplTest/TestPrimitiveTAE1.xml"/>
+<import location="../TextAnalysisEngineImplTest/TestPrimitiveTae1.xml"/>
 </delegateAnalysisEngine>
 </delegateAnalysisEngineSpecifiers>
 
