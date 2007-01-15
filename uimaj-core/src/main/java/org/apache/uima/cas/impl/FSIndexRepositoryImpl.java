@@ -260,10 +260,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       return cipi;
     }
 
-    private ComparableIntPointerIterator resetConcurrentModification(int i) {
+    private void resetConcurrentModification(int i) {
       ComparableIntPointerIterator cipi = this.indexes[i];
       cipi.resetConcurrentModification();
-      return cipi;
     }
 
     private void checkConcurrentModificationAll() {
@@ -274,7 +273,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
     public void moveToFirst() {
       for (int i = 0; i < this.indexes.length; i++) {
-        resetConcurrentModification(i).moveToFirst();
+        resetConcurrentModification(i);
+        this.indexes[i].moveToFirst();
       }
       this.numIndexes = this.indexes.length;
       checkIndexesTo(this.numIndexes);
@@ -286,7 +286,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
     public void moveToLast() {
       for (int i = 0; i < this.indexes.length; i++) {
-        resetConcurrentModification(i).moveToLast();
+        resetConcurrentModification(i);
+        this.indexes[i].moveToLast();
       }
       this.numIndexes = this.indexes.length;
       checkIndexesTo(this.numIndexes);
@@ -512,7 +513,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       this.numIndexes = this.indexes.length;
       // Set all iterators to insertion point.
       for (int i = 0; i < this.numIndexes; i++) {
-        resetConcurrentModification(i).moveTo(fs);
+        resetConcurrentModification(i);
+        this.indexes[i].moveTo(fs);
       }
       // Check validity of all indexes.
       checkIndexesTo(this.numIndexes);
