@@ -21,6 +21,9 @@ package org.apache.uima.util.impl;
 
 import java.io.File;
 
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -31,6 +34,7 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
+import org.xml.sax.XMLReader;
 
 public class XMLParser_implTest extends TestCase {
 
@@ -108,6 +112,19 @@ public class XMLParser_implTest extends TestCase {
 
   public void testParseResourceSpecifier() throws Exception {
     try {
+      //can't run this test under Sun Java 1.4 with no Xerces installed, as
+      //it doesn't support schema validation.  The following is a test for that.
+      SAXParserFactory factory = SAXParserFactory.newInstance();
+      SAXParser parser = factory.newSAXParser();
+      XMLReader reader = parser.getXMLReader();
+      try {
+        reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation", "test");
+      }
+      catch(Exception e) {
+        System.err.println("Skipping XMLParser_implTest.testParseResourceSpecifier() because installed XML parser doesn't support schema validation.");
+        return;
+      }
+      
       //test schema validation
       File invalid = JUnitExtension.getFile("XmlParserTest/NotConformingToSchema.xml");
       try {

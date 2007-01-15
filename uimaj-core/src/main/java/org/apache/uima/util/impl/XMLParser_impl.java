@@ -57,6 +57,7 @@ import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLizable;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
@@ -139,10 +140,15 @@ public class XMLParser_impl implements XMLParser {
 
       // enable validation if requested
       if (mSchemaValidationEnabled && aNamespaceForSchema != null && aSchemaUrl != null) {
-        reader.setFeature("http://xml.org/sax/features/validation", true);
-        reader.setFeature("http://apache.org/xml/features/validation/schema", true);
-        reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",
+        try {
+          reader.setFeature("http://apache.org/xml/features/validation/schema", true);
+          reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",
                 aNamespaceForSchema + " " + aSchemaUrl);
+          reader.setFeature("http://xml.org/sax/features/validation", true);
+        }
+        catch(SAXNotRecognizedException e) {
+          UIMAFramework.getLogger().log(Level.INFO, "The installed XML Parser does not support schema validation.  No validation will occur.");
+        }
       }
 
       // set up InputSource
