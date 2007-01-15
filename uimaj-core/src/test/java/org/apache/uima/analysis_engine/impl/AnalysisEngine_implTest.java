@@ -20,6 +20,7 @@
 package org.apache.uima.analysis_engine.impl;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -340,8 +341,12 @@ public class AnalysisEngine_implTest extends TestCase {
 
       // test aggregate TAE containing a CAS Consumer
       File outFile = JUnitExtension.getFile("CpmOutput.txt");
-      outFile.delete();
-      assertFalse(outFile.exists());
+      if(outFile.exists()) {
+        //outFile.delete() //can't be relied upon.  Instead set file to zero length.
+        FileOutputStream fos = new FileOutputStream(outFile, false);
+        fos.close();
+        assertEquals(0,outFile.length());
+      }
 
       TaeDescription aggWithCcDesc = UIMAFramework.getXMLParser().parseTaeDescription(
               new XMLInputSource(JUnitExtension
@@ -349,6 +354,7 @@ public class AnalysisEngine_implTest extends TestCase {
       _testProcess(aggWithCcDesc);
       // test that CAS Consumer ran
       assertTrue(outFile.exists());
+      assertTrue(outFile.length() > 0);
       outFile.delete();
     } catch (Exception e) {
       JUnitExtension.handleException(e);
