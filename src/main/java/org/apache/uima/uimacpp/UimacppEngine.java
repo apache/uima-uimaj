@@ -318,7 +318,7 @@ public class UimacppEngine {
       isTCas=1;
     }
 
-    cas = aCas;
+    cas = aCas.getCurrentView();
 
     try {
       resetJNI();
