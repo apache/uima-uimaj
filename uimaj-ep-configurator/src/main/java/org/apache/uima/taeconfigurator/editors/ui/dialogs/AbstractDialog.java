@@ -33,6 +33,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -184,6 +185,10 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     final CCombo cc = new CCombo(parent, SWT.FLAT | SWT.BORDER | SWT.READ_ONLY);
     cc.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
     cc.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    // without these next lines, the height of the ccombo is too small
+    // especially on a Mac
+    FontData [] fontData = cc.getFont().getFontData();
+    ((GridData) cc.getLayoutData()).heightHint = 2 * fontData[0].getHeight();
     cc.addListener(SWT.Selection, this);
     cc.setToolTipText(tip);
     cc.addKeyListener(new KeyListener() {
