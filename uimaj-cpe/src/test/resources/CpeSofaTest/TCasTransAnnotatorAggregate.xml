@@ -24,7 +24,7 @@
 
 <delegateAnalysisEngineSpecifiers>
 <delegateAnalysisEngine key="Translator1">
-<import location="TCasTransAnnotator.xml"/>
+<import location="TcasTransAnnotator.xml"/>
 </delegateAnalysisEngine>
 <delegateAnalysisEngine key="Translator2">
 <import location="TransAnnotator.xml"/>
