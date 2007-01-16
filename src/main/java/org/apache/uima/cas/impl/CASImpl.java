@@ -3713,11 +3713,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public String getDocumentText() {
-    if (this == this.baseCAS) {
-      // base CAS has no document
-      return null;
-    }
-    return this.documentText;
+    return this.getSofaDataString();
   }
 
   public String getSofaDataString() {
@@ -3725,7 +3721,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       // base CAS has no document
       return null;
     }
-    return this.documentText;
+    if (mySofaIsValid()) {
+      return this.getSofa(this.mySofaRef).getLocalStringData();
+    }
+    return null;
   }
 
   public FeatureStructure getSofaDataArray() {
