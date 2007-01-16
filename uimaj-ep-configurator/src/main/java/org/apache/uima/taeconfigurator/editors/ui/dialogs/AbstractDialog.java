@@ -413,7 +413,10 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
         if (dialog.open() != IDialogConstants.OK_ID)
           return;
         
-        text.setText(dialog.nameSpaceName + "." + dialog.typeName);
+        text.setText((null == dialog.nameSpaceName || 
+                "".equals(dialog.nameSpaceName)) ? 
+                dialog.typeName :
+                dialog.nameSpaceName + "." + dialog.typeName);
         enableOK();
     /*
         Object[] types = dialog.getResult();
