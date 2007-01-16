@@ -351,7 +351,7 @@ public class AnalysisEngine_implTest extends TestCase {
       TaeDescription aggWithCcDesc = UIMAFramework.getXMLParser().parseTaeDescription(
               new XMLInputSource(JUnitExtension
                       .getFile("TextAnalysisEngineImplTest/AggregateTaeWithCasConsumer.xml")));
-      _testProcess(aggWithCcDesc);
+      _testProcess(aggWithCcDesc);      
       // test that CAS Consumer ran
       assertTrue(outFile.exists());
       assertTrue(outFile.length() > 0);
@@ -391,6 +391,7 @@ public class AnalysisEngine_implTest extends TestCase {
     assertEquals("testing...", TestAnnotator.lastDocument);
     assertEquals(resultSpec, TestAnnotator.lastResultSpec);
     tcas.reset();
+    tae.destroy();
   }
 
   public void testReconfigure() throws Exception {
