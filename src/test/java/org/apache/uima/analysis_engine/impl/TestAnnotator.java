@@ -45,6 +45,14 @@ public class TestAnnotator extends Annotator_ImplBase implements TextAnnotator {
 
   public static boolean typeSystemInitCalled;
 
+  public static synchronized String getLastDocument() {
+    return lastDocument;  
+  }
+  
+  public static synchronized ResultSpecification getLastResultSpec() {
+    return lastResultSpec;
+  }
+  
   /**
    * @see org.apache.uima.analysis_engine.annotator.Annotator#initialize(CAS, AnnotatorContext)
    */

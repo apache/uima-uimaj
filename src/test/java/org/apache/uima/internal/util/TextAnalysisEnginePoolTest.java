@@ -99,7 +99,7 @@ public class TextAnalysisEnginePoolTest extends TestCase {
       // test simple primitive MultithreadableTextAnalysisEngine
       // (using TestAnnotator class)
       TextAnalysisEnginePool pool = new TextAnalysisEnginePool("taePool", 3, mSimpleDesc);
-      _testProcess(pool, 0, false);
+      _testProcess(pool, 0);
 
       // test simple aggregate MultithreadableTextAnalysisEngine
       // (again using TestAnnotator class)
@@ -111,22 +111,42 @@ public class TextAnalysisEnginePoolTest extends TestCase {
       flow.setFixedFlow(new String[] { "Test" });
       aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
       pool = new TextAnalysisEnginePool("taePool", 3, aggDesc);
-      _testProcess(pool, 0, true);
+      _testProcess(pool, 0);
 
       // multiple threads!
       final int NUM_THREADS = 4;
-      Thread[] threads = new Thread[NUM_THREADS];
+      ProcessThread[] threads = new ProcessThread[NUM_THREADS];
       for (int i = 0; i < NUM_THREADS; i++) {
-        threads[i] = new ProcessThread(pool, i, true);
+        threads[i] = new ProcessThread(pool, i);
         threads[i].start();
       }
 
-      // wait for threads to finish
-      for (int i = 0; i < NUM_THREADS; i++)
+      // wait for threads to finish and check if they got exceptions
+      for (int i = 0; i < NUM_THREADS; i++) {
         threads[i].join();
+        Throwable failure = threads[i].getFailure();
+        if (failure != null) {
+          if (failure instanceof Exception) {
+            throw (Exception)failure;
+          } else {
+            fail(failure.getMessage());
+          }
+        }
+      }     
+      
+      //Check TestAnnotator fields only at the very end of processing,
+      //we can't test from the threads themsleves since the state of
+      //these fields is nondeterministic during the multithreaded processing.
+      assertEquals("testing...", TestAnnotator.getLastDocument());
+      ResultSpecification resultSpec = new ResultSpecification_impl();
+      resultSpec.addResultType("NamedEntity", true);
+      assertEquals(resultSpec, TestAnnotator.getLastResultSpec());
+
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
+    
+   
   }
 
   public void testReconfigure() throws Exception {
@@ -149,10 +169,7 @@ public class TextAnalysisEnginePoolTest extends TestCase {
       // create pool
       TextAnalysisEnginePool pool = new TextAnalysisEnginePool("taePool", 3, primitiveDesc);
 
-      // call process - this should generate an event with a resource name equal
-      // to the value of StringParam
       TextAnalysisEngine tae = pool.getTAE();
-      CAS tcas = tae.newCAS();
       try {
         // check value of string param (TestAnnotator saves it in a static field)
         assertEquals("Test1", TestAnnotator.stringParamValue);
@@ -161,7 +178,7 @@ public class TextAnalysisEnginePoolTest extends TestCase {
         tae.setConfigParameterValue("StringParam", "Test2");
         tae.reconfigure();
 
-        // test again
+        //test again
         assertEquals("Test2", TestAnnotator.stringParamValue);
 
         // check pool metadata
@@ -181,7 +198,7 @@ public class TextAnalysisEnginePoolTest extends TestCase {
    * @param aTaeDesc
    *          description of TextAnalysisEngine to test
    */
-  protected void _testProcess(TextAnalysisEnginePool aPool, int i, boolean isAggregate)
+  protected void _testProcess(TextAnalysisEnginePool aPool, int i)
           throws UIMAException {
     TextAnalysisEngine tae = aPool.getTAE(0);
     try {
@@ -193,7 +210,6 @@ public class TextAnalysisEnginePoolTest extends TestCase {
       CAS tcas = tae.newCAS();
       tcas.setDocumentText("new test");
       tae.process(tcas);
-      assertEquals("new test", TestAnnotator.lastDocument);
       tcas.reset();
 
       // process(CAS,ResultSpecification)
@@ -202,8 +218,6 @@ public class TextAnalysisEnginePoolTest extends TestCase {
 
       tcas.setDocumentText("testing...");
       tae.process(tcas, resultSpec);
-      assertEquals("testing...", TestAnnotator.lastDocument);
-      assertEquals(resultSpec, TestAnnotator.lastResultSpec);
       tcas.reset();
     } finally {
       aPool.releaseTAE(tae);
@@ -211,21 +225,26 @@ public class TextAnalysisEnginePoolTest extends TestCase {
   }
 
   class ProcessThread extends Thread {
-    ProcessThread(TextAnalysisEnginePool aPool, int aId, boolean aIsAggregate) {
+    ProcessThread(TextAnalysisEnginePool aPool, int aId) {
       mPool = aPool;
       mId = aId;
-      mIsAggregate = aIsAggregate;
     }
 
     public void run() {
       try {
         // System.out.println("thread started");
-        _testProcess(mPool, mId, mIsAggregate);
+        _testProcess(mPool, mId);
         // System.out.println("thread finished");
-      } catch (Exception e) {
-        e.printStackTrace();
-        Assert.fail(e.getLocalizedMessage());
+      } catch (Throwable t) {
+        t.printStackTrace();
+        //can't cause unit test to fail by throwing exception from thread.
+        //record the failure and the main thread will check for it later.
+        mFailure = t;
       }
+    }
+    
+    public synchronized Throwable getFailure() {
+      return mFailure;
     }
 
     int mId;
@@ -233,6 +252,8 @@ public class TextAnalysisEnginePoolTest extends TestCase {
     TextAnalysisEnginePool mPool;
 
     boolean mIsAggregate;
+    
+    Throwable mFailure = null;
   }
 
   private TaeDescription mSimpleDesc;
