@@ -24,13 +24,13 @@
 
 <fsIndexes>
 <fsIndexDescription>
-<label>kltEntityIndex</label>
-<typeName>org.apache.uima.klt.Entity</typeName>
+<label>testEntityIndex</label>
+<typeName>org.apache.uima.testTypeSystem.Entity</typeName>
 <kind>bag</kind>
 </fsIndexDescription>
 <fsIndexDescription>
-<label>kltRelationIndex</label>
-<typeName>org.apache.uima.klt.Relation</typeName>
+<label>testRelationIndex</label>
+<typeName>org.apache.uima.testTypeSystem.Relation</typeName>
 <kind>bag</kind>
 </fsIndexDescription>
 </fsIndexes>

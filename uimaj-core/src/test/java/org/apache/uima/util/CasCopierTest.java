@@ -47,17 +47,10 @@ public class CasCopierTest extends TestCase {
 
   protected void setUp() throws Exception {
     File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
-    File typeSystemFile2 = JUnitExtension.getFile("ExampleCas/hutt.xml");
-    File indexesFile = JUnitExtension.getFile("ExampleCas/kltIndexes.xml");
+    File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
 
-    TypeSystemDescription typeSystem1 = UIMAFramework.getXMLParser().parseTypeSystemDescription(
+    typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
             new XMLInputSource(typeSystemFile1));
-    TypeSystemDescription typeSystem2 = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-            new XMLInputSource(typeSystemFile2));
-    ArrayList typeSystems = new ArrayList();
-    typeSystems.add(typeSystem1);
-    typeSystems.add(typeSystem2);
-    typeSystem = CasCreationUtils.mergeTypeSystems(typeSystems);
     indexes = UIMAFramework.getXMLParser().parseFsIndexCollection(new XMLInputSource(indexesFile))
             .getFsIndexes();
   }
@@ -120,7 +113,7 @@ public class CasCopierTest extends TestCase {
     CasComparer.assertEquals(annot, copy);
 
     // copy a Relation (which will have references)
-    Iterator relationIter = srcCas.getIndexRepository().getIndex("kltRelationIndex").iterator();
+    Iterator relationIter = srcCas.getIndexRepository().getIndex("testRelationIndex").iterator();
     FeatureStructure relFS = (FeatureStructure) relationIter.next();
     FeatureStructure relCopy = copier.copyFs(relFS);
     // verify copy
