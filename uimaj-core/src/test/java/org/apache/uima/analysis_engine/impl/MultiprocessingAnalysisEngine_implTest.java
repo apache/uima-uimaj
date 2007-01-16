@@ -21,6 +21,7 @@ package org.apache.uima.analysis_engine.impl;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -190,16 +191,39 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       _testProcess(mAggDesc, 0);
 
       // multiple threads!
+      MultiprocessingAnalysisEngine_impl ae = new MultiprocessingAnalysisEngine_impl();
+      Map params = new HashMap();
+      params.put(AnalysisEngine.PARAM_NUM_SIMULTANEOUS_REQUESTS, new Integer(3));
+      ae.initialize(mAggDesc, params);
+      
       final int NUM_THREADS = 4;
-      Thread[] threads = new Thread[NUM_THREADS];
+      ProcessThread[] threads = new ProcessThread[NUM_THREADS];
       for (int i = 0; i < NUM_THREADS; i++) {
-        threads[i] = new ProcessThread(i);
+        threads[i] = new ProcessThread(ae);
         threads[i].start();
       }
 
-      // wait for threads to finish
-      for (int i = 0; i < NUM_THREADS; i++)
+      // wait for threads to finish and check if they got exceptions
+      for (int i = 0; i < NUM_THREADS; i++) {
         threads[i].join();
+        Throwable failure = threads[i].getFailure();
+        if (failure != null) {
+          if (failure instanceof Exception) {
+            throw (Exception)failure;
+          } else {
+            fail(failure.getMessage());
+          }
+        }
+      }     
+      
+      //Check TestAnnotator fields only at the very end of processing,
+      //we can't test from the threads themsleves since the state of
+      //these fields is nondeterministic during the multithreaded processing.
+      assertEquals("testing...", TestAnnotator.getLastDocument());
+      ResultSpecification resultSpec = new ResultSpecification_impl();
+      resultSpec.addResultType("NamedEntity", true);
+      assertEquals(resultSpec, TestAnnotator.getLastResultSpec());
+
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -311,20 +335,48 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
   }
 
   class ProcessThread extends Thread {
-    ProcessThread(int aId) {
-      mId = aId;
+    ProcessThread(AnalysisEngine aAE) {
+      mAE = aAE;
     }
 
     public void run() {
       try {
-        // System.out.println("thread started");
-        _testProcess(mSimpleDesc, mId);
-        // System.out.println("thread finished");
-      } catch (Exception e) {
-        Assert.fail();
+
+        // Test each form of the process method. When TestAnnotator executes, it
+        // stores in static fields the document text and the ResultSpecification.
+        // We use thse to make sure the information propogates correctly to the 
+        // annotator. (However, we can't check these until after the threads are
+        // finished, as their state is nondeterministic during multithreaded
+        // processing.)
+
+        // process(CAS)
+        CAS tcas = mAE.newCAS();
+        tcas.setDocumentText("new test");
+        mAE.process(tcas);
+        tcas.reset();
+
+        // process(CAS,ResultSpecification)
+        ResultSpecification resultSpec = new ResultSpecification_impl();
+        resultSpec.addResultType("NamedEntity", true);
+
+        tcas.setDocumentText("testing...");
+        mAE.process(tcas, resultSpec);
+        tcas.reset();
+
+      } catch (Throwable t) {
+        t.printStackTrace();
+        //can't cause unit test to fail by throwing exception from thread.
+        //record the failure and the main thread will check for it later.
+        mFailure = t;
       }
     }
 
-    int mId;
+    public synchronized Throwable getFailure() {
+      return mFailure;
+    }
+
+    Throwable mFailure = null;
+    
+    AnalysisEngine mAE;
   }
 }
