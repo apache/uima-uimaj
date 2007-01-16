@@ -80,41 +80,41 @@ public class AnnotationIteratorTest extends TestCase {
   public void setUp() {
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup());
-      assertTrue(cas != null);
+      assertTrue(this.cas != null);
       this.ts = this.cas.getTypeSystem();
-      assertTrue(ts != null);
+      assertTrue(this.ts != null);
     } catch (Exception e) {
       e.printStackTrace();
       assertTrue(false);
     }
-    this.stringType = ts.getType(CAS.TYPE_NAME_STRING);
-    assertTrue(stringType != null);
-    this.tokenType = ts.getType(CASTestSetup.TOKEN_TYPE);
-    assertTrue(stringType != null);
-    this.intType = ts.getType(CAS.TYPE_NAME_INTEGER);
-    assertTrue(intType != null);
-    this.tokenTypeType = ts.getType(CASTestSetup.TOKEN_TYPE_TYPE);
-    assertTrue(tokenTypeType != null);
-    this.wordType = ts.getType(CASTestSetup.WORD_TYPE);
-    assertTrue(wordType != null);
-    this.sepType = ts.getType(CASTestSetup.SEP_TYPE);
-    assertTrue(sepType != null);
-    this.eosType = ts.getType(CASTestSetup.EOS_TYPE);
-    assertTrue(eosType != null);
-    this.tokenTypeFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_TYPE_FEAT_Q);
-    assertTrue(tokenTypeFeat != null);
-    this.lemmaFeat = ts.getFeatureByFullName(CASTestSetup.LEMMA_FEAT_Q);
-    assertTrue(lemmaFeat != null);
-    this.sentLenFeat = ts.getFeatureByFullName(CASTestSetup.SENT_LEN_FEAT_Q);
-    assertTrue(sentLenFeat != null);
-    this.tokenFloatFeat = ts.getFeatureByFullName(CASTestSetup.TOKEN_FLOAT_FEAT_Q);
-    assertTrue(tokenFloatFeat != null);
-    this.startFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
-    assertTrue(startFeature != null);
-    this.endFeature = ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
-    assertTrue(endFeature != null);
-    this.sentenceType = ts.getType(CASTestSetup.SENT_TYPE);
-    assertTrue(sentenceType != null);
+    this.stringType = this.ts.getType(CAS.TYPE_NAME_STRING);
+    assertTrue(this.stringType != null);
+    this.tokenType = this.ts.getType(CASTestSetup.TOKEN_TYPE);
+    assertTrue(this.stringType != null);
+    this.intType = this.ts.getType(CAS.TYPE_NAME_INTEGER);
+    assertTrue(this.intType != null);
+    this.tokenTypeType = this.ts.getType(CASTestSetup.TOKEN_TYPE_TYPE);
+    assertTrue(this.tokenTypeType != null);
+    this.wordType = this.ts.getType(CASTestSetup.WORD_TYPE);
+    assertTrue(this.wordType != null);
+    this.sepType = this.ts.getType(CASTestSetup.SEP_TYPE);
+    assertTrue(this.sepType != null);
+    this.eosType = this.ts.getType(CASTestSetup.EOS_TYPE);
+    assertTrue(this.eosType != null);
+    this.tokenTypeFeat = this.ts.getFeatureByFullName(CASTestSetup.TOKEN_TYPE_FEAT_Q);
+    assertTrue(this.tokenTypeFeat != null);
+    this.lemmaFeat = this.ts.getFeatureByFullName(CASTestSetup.LEMMA_FEAT_Q);
+    assertTrue(this.lemmaFeat != null);
+    this.sentLenFeat = this.ts.getFeatureByFullName(CASTestSetup.SENT_LEN_FEAT_Q);
+    assertTrue(this.sentLenFeat != null);
+    this.tokenFloatFeat = this.ts.getFeatureByFullName(CASTestSetup.TOKEN_FLOAT_FEAT_Q);
+    assertTrue(this.tokenFloatFeat != null);
+    this.startFeature = this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
+    assertTrue(this.startFeature != null);
+    this.endFeature = this.ts.getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
+    assertTrue(this.endFeature != null);
+    this.sentenceType = this.ts.getType(CASTestSetup.SENT_TYPE);
+    assertTrue(this.sentenceType != null);
   }
 
   public void tearDown() {
@@ -140,7 +140,7 @@ public class AnnotationIteratorTest extends TestCase {
     final String text = "aaaa bbbb cccc dddd aaaa bbbb cccc dddd aaaa bbbb cccc dddd ";
 
     try {
-      cas.setDocumentText(text);
+      this.cas.setDocumentText(text);
     } catch (CASRuntimeException e) {
       assertTrue(false);
     }
@@ -149,18 +149,18 @@ public class AnnotationIteratorTest extends TestCase {
     // create token and sentence annotations
     for (int i = 0; i < text.length() - 5; i++) {
       ++annotCount;
-      cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, i, i + 5));
+      this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.tokenType, i, i + 5));
     }
     // for (int i = 0; i < text.length() - 5; i++) {
     // cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, i, i+5));
     // }
     for (int i = 0; i < text.length() - 10; i += 5) {
       ++annotCount;
-      cas.getIndexRepository().addFS(cas.createAnnotation(sentenceType, i, i + 10));
+      this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.sentenceType, i, i + 10));
     }
 
     int count;
-    AnnotationIndex annotIndex = (AnnotationIndex) cas.getAnnotationIndex();
+    AnnotationIndex annotIndex = this.cas.getAnnotationIndex();
     FSIterator it = annotIndex.iterator(true);
     count = 0;
     while (it.isValid()) {
@@ -177,7 +177,7 @@ public class AnnotationIteratorTest extends TestCase {
     }
     assertTrue(count == 1);
     // System.out.println("Size of unambiguous iterator: " + count);
-    AnnotationFS bigAnnot = cas.createAnnotation(sentenceType, 10, 41);
+    AnnotationFS bigAnnot = this.cas.createAnnotation(this.sentenceType, 10, 41);
     it = annotIndex.subiterator(bigAnnot, true, true);
     count = 0;
     while (it.isValid()) {
@@ -238,7 +238,7 @@ public class AnnotationIteratorTest extends TestCase {
       ++count;
     }
     assertTrue(count == 4);
-    AnnotationFS sent = (AnnotationFS) cas.getAnnotationIndex(sentenceType).iterator().get();
+    AnnotationFS sent = (AnnotationFS) this.cas.getAnnotationIndex(this.sentenceType).iterator().get();
     it = annotIndex.subiterator(sent, false, true);
     count = 0;
     while (it.isValid()) {
@@ -261,7 +261,7 @@ public class AnnotationIteratorTest extends TestCase {
     try {
       this.cas.getAnnotationIndex(this.stringType);
     } catch (CASRuntimeException e) {
-      e.printStackTrace();
+//      e.printStackTrace();
       caughtException = true;
     }
     assertTrue(caughtException);
