@@ -113,7 +113,14 @@ public class AggregateSection extends AbstractSection {
     newTableColumn(filesTable, 50, SWT.LEFT, "Delegate");
     newTableColumn(filesTable, 75, SWT.LEFT, "Key Name");
 
-    Composite bottomButtonContainer = newButtonContainer(tableContainer, HORIZONTAL_BUTTONS, 150);
+    // This little code fragment is an attempt to get the right sizing for the buttons
+    // Was wrong on Mac platforms
+    //   Word below is the longer of the two words in the button container
+    Button tempForSize = toolkit.createButton(tableContainer, "Remove", SWT.PUSH);
+    Point p = tempForSize.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+    tempForSize.dispose();
+    
+    Composite bottomButtonContainer = newButtonContainer(tableContainer, HORIZONTAL_BUTTONS, 3* p.x);
 
     addButton = newPushButton(bottomButtonContainer, S_ADD,
             "Click here to add a locally defined AE or CAS Consumer delegate", ENABLED);
@@ -227,11 +234,14 @@ public class AggregateSection extends AbstractSection {
         boolean bEnableButtons = (filesTable.getSelectionCount() > 0);
         removeButton.setEnabled(bEnableButtons);
         addToFlowButton.setEnabled(bEnableButtons);
-      } else if (event.type == SWT.MouseDown && event.button == 3) {
+      } else if (event.type == SWT.MouseDown && 
+                  (event.button == 3  || 
+                          // this is for Macintosh - they just have one button
+                   (event.button == 1 && (0 != (event.stateMask & SWT.CTRL))))) {
         handleTableContextMenuRequest(event);
       } else if (event.type == SWT.MouseHover && !bDisableToolTipHelp) {
         handleTableHoverHelp(event);
-      }
+      } 
       // Don't need this. Next mouse hover kills tool tip anyway
       // else if (event.type == SWT.MouseMove) {
       // filesTable.setToolTipText("");
