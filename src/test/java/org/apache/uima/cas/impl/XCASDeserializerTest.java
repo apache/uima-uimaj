@@ -72,7 +72,7 @@ public class XCASDeserializerTest extends TestCase {
 
   protected void setUp() throws Exception {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
-    File indexesFile = JUnitExtension.getFile("ExampleCas/kltIndexes.xml");
+    File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
 
     typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
             new XMLInputSource(typeSystemFile));
@@ -135,9 +135,9 @@ public class XCASDeserializerTest extends TestCase {
     serCasStream.close();
 
     // check that array refs are not null
-    Type entityType = cas.getTypeSystem().getType("org.apache.uima.klt.Entity");
+    Type entityType = cas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity");
     Feature classesFeat = entityType.getFeatureByBaseName("classes");
-    Iterator iter = cas.getIndexRepository().getIndex("kltEntityIndex").iterator();
+    Iterator iter = cas.getIndexRepository().getIndex("testEntityIndex").iterator();
     assertTrue(iter.hasNext());
     while (iter.hasNext()) {
       FeatureStructure fs = (FeatureStructure) iter.next();
@@ -200,9 +200,9 @@ public class XCASDeserializerTest extends TestCase {
     xmlReader.parse(new InputSource(new StringReader(xml)));
 
     // check that array refs are not null
-    Type entityType = cas2.getTypeSystem().getType("org.apache.uima.klt.Entity");
+    Type entityType = cas2.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity");
     Feature classesFeat = entityType.getFeatureByBaseName("classes");
-    Iterator iter = cas2.getIndexRepository().getIndex("kltEntityIndex").iterator();
+    Iterator iter = cas2.getIndexRepository().getIndex("testEntityIndex").iterator();
     assertTrue(iter.hasNext());
     while (iter.hasNext()) {
       FeatureStructure fs = (FeatureStructure) iter.next();

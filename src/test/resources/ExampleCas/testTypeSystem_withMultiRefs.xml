@@ -21,7 +21,7 @@
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <types>
     <typeDescription>
-      <name>org.apache.uima.klt.EntityAnnotation</name>
+      <name>org.apache.uima.testTypeSystem.EntityAnnotation</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>
@@ -29,7 +29,7 @@
           <name>links</name>
           <description/>
           <rangeTypeName>uima.cas.FSList</rangeTypeName>
-          <elementType>org.apache.nimd.Link</elementType>
+          <elementType>org.apache.uima.testTypeSystem.Link</elementType>
           <multipleReferencesAllowed>true</multipleReferencesAllowed>
         </featureDescription>
         <featureDescription>
@@ -45,7 +45,7 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.uima.klt.RelationAnnotation</name>
+      <name>org.apache.uima.testTypeSystem.RelationAnnotation</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>
@@ -53,7 +53,7 @@
           <name>links</name>
           <description/>
           <rangeTypeName>uima.cas.FSList</rangeTypeName>
-          <elementType>org.apache.nimd.Link</elementType>
+          <elementType>org.apache.uima.testTypeSystem.Link</elementType>
           <multipleReferencesAllowed>true</multipleReferencesAllowed>
         </featureDescription>
         <featureDescription>
@@ -69,19 +69,19 @@
         <featureDescription>
           <name>relationArgs</name>
           <description/>
-          <rangeTypeName>org.apache.uima.klt.RelationArgs</rangeTypeName>
+          <rangeTypeName>org.apache.uima.testTypeSystem.RelationArgs</rangeTypeName>
         </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.uima.klt.RelationArgs</name>
+      <name>org.apache.uima.testTypeSystem.RelationArgs</name>
       <description/>
       <supertypeName>uima.cas.TOP</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.uima.klt.BinaryRelationArgs</name>
+      <name>org.apache.uima.testTypeSystem.BinaryRelationArgs</name>
       <description/>
-      <supertypeName>org.apache.uima.klt.RelationArgs</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.RelationArgs</supertypeName>
       <features>
         <featureDescription>
           <name>domainValue</name>
@@ -96,21 +96,20 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.uima.klt.GenericRelationArgs</name>
+      <name>org.apache.uima.testTypeSystem.GenericRelationArgs</name>
       <description/>
-      <supertypeName>org.apache.uima.klt.RelationArgs</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.RelationArgs</supertypeName>
       <features>
         <featureDescription>
           <name>args</name>
           <description/>
           <rangeTypeName>uima.cas.FSList</rangeTypeName>
-          <elementType></elementType>
           <multipleReferencesAllowed>true</multipleReferencesAllowed>
         </featureDescription>
       </features>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.uima.klt.Referent</name>
+      <name>org.apache.uima.testTypeSystem.Referent</name>
       <description/>
       <supertypeName>uima.cas.TOP</supertypeName>
       <features>
@@ -118,7 +117,7 @@
           <name>links</name>
           <description/>
           <rangeTypeName>uima.cas.FSList</rangeTypeName>
-          <elementType>org.apache.nimd.Link</elementType>
+          <elementType>org.apache.uima.testTypeSystem.Link</elementType>
           <multipleReferencesAllowed>true</multipleReferencesAllowed>
         </featureDescription>
         <featureDescription>
@@ -151,17 +150,17 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.uima.klt.Entity</name>
+      <name>org.apache.uima.testTypeSystem.Entity</name>
       <description/>
-      <supertypeName>org.apache.uima.klt.Referent</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.Referent</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.uima.klt.Relation</name>
+      <name>org.apache.uima.testTypeSystem.Relation</name>
       <description/>
-      <supertypeName>org.apache.uima.klt.Referent</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.Referent</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.uima.klt.Link</name>
+      <name>org.apache.uima.testTypeSystem.Link</name>
       <description/>
       <supertypeName>uima.cas.TOP</supertypeName>
       <features>
@@ -183,14 +182,14 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.uima.klt.HasOccurrence</name>
+      <name>org.apache.uima.testTypeSystem.HasOccurrence</name>
       <description/>
-      <supertypeName>org.apache.uima.klt.Link</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.Link</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.uima.klt.Argument</name>
+      <name>org.apache.uima.testTypeSystem.Argument</name>
       <description/>
-      <supertypeName>org.apache.uima.klt.Link</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.Link</supertypeName>
       <features>
         <featureDescription>
           <name>role</name>
@@ -198,11 +197,11 @@
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
       </features>
-    </typeDescription>
+    </typeDescription>    
     <typeDescription>
-      <name>org.apache.hutt.TopEntity</name>
+      <name>org.apache.uima.testTypeSystem.TopEntity</name>
       <description/>
-      <supertypeName>org.apache.uima.klt.EntityAnnotation</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.EntityAnnotation</supertypeName>
       <features>
         <featureDescription>
           <name>confidence</name>
@@ -212,611 +211,84 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.Person</name>
+      <name>org.apache.uima.testTypeSystem.Person</name>
       <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.TopEntity</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.Expert</name>
+      <name>org.apache.uima.testTypeSystem.GeographicEntity</name>
       <description/>
-      <supertypeName>org.apache.hutt.Person</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.TopEntity</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.NonExpert</name>
+      <name>org.apache.uima.testTypeSystem.Location</name>
       <description/>
-      <supertypeName>org.apache.hutt.Person</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.GeographicEntity</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.EnterpriseMember</name>
+      <name>org.apache.uima.testTypeSystem.RegionInternational</name>
       <description/>
-      <supertypeName>org.apache.hutt.Person</supertypeName>
-      <features>
-        <featureDescription>
-          <name>enterprise</name>
-          <description/>
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-        </featureDescription>
-        <featureDescription>
-          <name>enterpriseId</name>
-          <description/>
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-        </featureDescription>
-      </features>
+      <supertypeName>org.apache.uima.testTypeSystem.Location</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.Royalty</name>
+      <name>org.apache.uima.testTypeSystem.Facility</name>
       <description/>
-      <supertypeName>org.apache.hutt.Person</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.Location</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.President</name>
+      <name>org.apache.uima.testTypeSystem.GPE</name>
       <description/>
-      <supertypeName>org.apache.hutt.Person</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.GeographicEntity</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.GeographicEntity</name>
+      <name>org.apache.uima.testTypeSystem.Continent</name>
       <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.GPE</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.Location</name>
+      <name>org.apache.uima.testTypeSystem.Nation</name>
       <description/>
-      <supertypeName>org.apache.hutt.GeographicEntity</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.GPE</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.Address</name>
+      <name>org.apache.uima.testTypeSystem.NationalAdministrativeDivision</name>
       <description/>
-      <supertypeName>org.apache.hutt.Location</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.GPE</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.StreetAddress</name>
+      <name>org.apache.uima.testTypeSystem.UsState</name>
       <description/>
-      <supertypeName>org.apache.hutt.Address</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.NationalAdministrativeDivision</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.Boundary</name>
+      <name>org.apache.uima.testTypeSystem.City</name>
       <description/>
-      <supertypeName>org.apache.hutt.Location</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.GPE</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.CelestialLocation</name>
+      <name>org.apache.uima.testTypeSystem.Organization</name>
       <description/>
-      <supertypeName>org.apache.hutt.Location</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.TopEntity</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.Planet</name>
+      <name>org.apache.uima.testTypeSystem.EducationalOrganization</name>
       <description/>
-      <supertypeName>org.apache.hutt.CelestialLocation</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.Organization</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.Moon</name>
+      <name>org.apache.uima.testTypeSystem.College</name>
       <description/>
-      <supertypeName>org.apache.hutt.CelestialLocation</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.EducationalOrganization</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.Star</name>
+      <name>org.apache.uima.testTypeSystem.Weapon</name>
       <description/>
-      <supertypeName>org.apache.hutt.CelestialLocation</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.TopEntity</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.Constellation</name>
+      <name>org.apache.uima.testTypeSystem.Timex</name>
       <description/>
-      <supertypeName>org.apache.hutt.CelestialLocation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.WaterBody</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Location</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.WaterBody2D</name>
-      <description/>
-      <supertypeName>org.apache.hutt.WaterBody</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Lake</name>
-      <description/>
-      <supertypeName>org.apache.hutt.WaterBody2D</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Ocean</name>
-      <description/>
-      <supertypeName>org.apache.hutt.WaterBody2D</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.River</name>
-      <description/>
-      <supertypeName>org.apache.hutt.WaterBody</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.LandRegionNatural</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Location</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Mountain</name>
-      <description/>
-      <supertypeName>org.apache.hutt.LandRegionNatural</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.RegionLocal</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Location</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.RegionSubnational</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Location</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.RegionNational</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Location</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.RegionInternational</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Location</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Facility</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Location</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.IndustrialPlant</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Facility</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Building</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Facility</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.SubareaBuilding</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Facility</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Office</name>
-      <description/>
-      <supertypeName>org.apache.hutt.SubareaBuilding</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.BoundedArea</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Facility</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Conduit</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Facility</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Path</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Facility</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Road</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Path</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Barrier</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Facility</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.GPE</name>
-      <description/>
-      <supertypeName>org.apache.hutt.GeographicEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Continent</name>
-      <description/>
-      <supertypeName>org.apache.hutt.GPE</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Nation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.GPE</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.NorthAmericanNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Nation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.CentralAmericanNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Nation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.SouthAmericanNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Nation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.LatinAmericanNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Nation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.CaribbeanNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Nation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.EuropeanNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Nation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.NorthernEuropeanNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.EuropeanNation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.WesternEuropeanNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.EuropeanNation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.EasternEuropeanNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.EuropeanNation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.CentralEuropeanNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.EuropeanNation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.NordicNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.EuropeanNation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ScandinavianNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.NordicNation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.BalkanNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.EuropeanNation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.AfricanNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Nation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.NorthAfricanNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.AfricanNation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.CentralAfricanNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.AfricanNation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.WestAfricanNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.AfricanNation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.EastAfricanNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.AfricanNation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.SubSaharanAfricanNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.AfricanNation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.MediterraneanNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Nation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.EasternMediterraneanNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.MediterraneanNation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.MiddleEasternNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Nation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.PersianGulfNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Nation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.AsianNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Nation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.SouthWestAsianNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.AsianNation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.SouthAsianNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.AsianNation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.SouthEastAsianNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.AsianNation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.CentralAsianNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.AsianNation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.EastAsianNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.AsianNation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.FormerSovietNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.AsianNation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.AustralasianNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Nation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.OceanicNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Nation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.PacificRimNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Nation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.EuNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Nation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.NatoNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Nation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.CommunistNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Nation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.MuslimNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Nation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.AxisOfEvilNation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Nation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.NationalAdministrativeDivision</name>
-      <description/>
-      <supertypeName>org.apache.hutt.GPE</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Province</name>
-      <description/>
-      <supertypeName>org.apache.hutt.NationalAdministrativeDivision</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.UsState</name>
-      <description/>
-      <supertypeName>org.apache.hutt.NationalAdministrativeDivision</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.District</name>
-      <description/>
-      <supertypeName>org.apache.hutt.GPE</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Borough</name>
-      <description/>
-      <supertypeName>org.apache.hutt.District</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.PostalDistrict</name>
-      <description/>
-      <supertypeName>org.apache.hutt.District</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.City</name>
-      <description/>
-      <supertypeName>org.apache.hutt.GPE</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Capital</name>
-      <description/>
-      <supertypeName>org.apache.hutt.City</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Organization</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.GovernmentOrganization</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Organization</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.MilitaryOrganization</name>
-      <description/>
-      <supertypeName>org.apache.hutt.GovernmentOrganization</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.CommercialOrganization</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Organization</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Airline</name>
-      <description/>
-      <supertypeName>org.apache.hutt.CommercialOrganization</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.EducationalOrganization</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Organization</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.College</name>
-      <description/>
-      <supertypeName>org.apache.hutt.EducationalOrganization</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.NonProfitOrganization</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Organization</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.NewsSource</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Organization</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.SportsTeam</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Organization</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.TerroristOrganization</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Organization</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Vehicle</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.AirVehicle</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Vehicle</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.LandVehicle</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Vehicle</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.WaterVehicle</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Vehicle</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.SubareaOfVehicle</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Vehicle</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Weapon</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.BluntWeapon</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Weapon</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ExplodingWeapon</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Weapon</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.SharpWeapon</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Weapon</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ShootingWeapon</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Weapon</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ProjectileWeapon</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Weapon</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.DeliverySystem</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Weapon</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ProjectileDeliverySystem</name>
-      <description/>
-      <supertypeName>org.apache.hutt.DeliverySystem</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.WmdWeapon</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Weapon</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ChemicalWeapon</name>
-      <description/>
-      <supertypeName>org.apache.hutt.WmdWeapon</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.BiologicalWeapon</name>
-      <description/>
-      <supertypeName>org.apache.hutt.WmdWeapon</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.NuclearWeapon</name>
-      <description/>
-      <supertypeName>org.apache.hutt.WmdWeapon</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.WmdAgent</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.BiologicalWeaponAgent</name>
-      <description/>
-      <supertypeName>org.apache.hutt.WmdAgent</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ChemicalWeaponAgent</name>
-      <description/>
-      <supertypeName>org.apache.hutt.WmdAgent</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.NuclearWeaponAgent</name>
-      <description/>
-      <supertypeName>org.apache.hutt.WmdAgent</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Timex</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.TopEntity</supertypeName>
       <features>
         <featureDescription>
           <name>tid</name>
@@ -846,451 +318,99 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.Duration</name>
+      <name>org.apache.uima.testTypeSystem.Duration</name>
       <description/>
-      <supertypeName>org.apache.hutt.Timex</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.Timex</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.HistoricalDuration</name>
+      <name>org.apache.uima.testTypeSystem.HistoricalDuration</name>
       <description/>
-      <supertypeName>org.apache.hutt.Duration</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.Duration</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.Time</name>
+      <name>org.apache.uima.testTypeSystem.Time</name>
       <description/>
-      <supertypeName>org.apache.hutt.Timex</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.Timex</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.Date</name>
+      <name>org.apache.uima.testTypeSystem.Date</name>
       <description/>
-      <supertypeName>org.apache.hutt.Timex</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.Timex</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.TimeOfYear</name>
+      <name>org.apache.uima.testTypeSystem.TimeOfYear</name>
       <description/>
-      <supertypeName>org.apache.hutt.Date</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.Date</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.Year</name>
+      <name>org.apache.uima.testTypeSystem.Year</name>
       <description/>
-      <supertypeName>org.apache.hutt.Date</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.Date</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.Event</name>
+      <name>org.apache.uima.testTypeSystem.Clothing</name>
       <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.TopEntity</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.SemanticEvent</name>
+      <name>org.apache.uima.testTypeSystem.Number</name>
       <description/>
-      <supertypeName>org.apache.hutt.Event</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.TopEntity</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.EventMovement</name>
+      <name>org.apache.uima.testTypeSystem.WholeNumber</name>
       <description/>
-      <supertypeName>org.apache.hutt.SemanticEvent</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.Number</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.EventCreation</name>
+      <name>org.apache.uima.testTypeSystem.SmallWholeNumber</name>
       <description/>
-      <supertypeName>org.apache.hutt.SemanticEvent</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.WholeNumber</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.EventDestruction</name>
+      <name>org.apache.uima.testTypeSystem.LargeWholeNumber</name>
       <description/>
-      <supertypeName>org.apache.hutt.SemanticEvent</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.WholeNumber</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.EventDeath</name>
+      <name>org.apache.uima.testTypeSystem.Measurement</name>
       <description/>
-      <supertypeName>org.apache.hutt.EventDestruction</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.TopEntity</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.EventInjury</name>
+      <name>org.apache.uima.testTypeSystem.Money</name>
       <description/>
-      <supertypeName>org.apache.hutt.EventDestruction</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.Measurement</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.EventInteraction</name>
+      <name>org.apache.uima.testTypeSystem.BodyPart</name>
       <description/>
-      <supertypeName>org.apache.hutt.SemanticEvent</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.TopEntity</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.EventMeeting</name>
+      <name>org.apache.uima.testTypeSystem.PhoneNumber</name>
       <description/>
-      <supertypeName>org.apache.hutt.EventInteraction</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.TopEntity</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.EventViolence</name>
+      <name>org.apache.uima.testTypeSystem.Tool</name>
       <description/>
-      <supertypeName>org.apache.hutt.EventInteraction</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.TopEntity</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.EventTransfer</name>
+      <name>org.apache.uima.testTypeSystem.MiscellaneousEntity</name>
       <description/>
-      <supertypeName>org.apache.hutt.SemanticEvent</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.EventArrest</name>
-      <description/>
-      <supertypeName>org.apache.hutt.EventTransfer</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.TemporalEvent</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Event</supertypeName>
-      <features>
-        <featureDescription>
-          <name>tense</name>
-          <description/>
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-        </featureDescription>
-        <featureDescription>
-          <name>aspect</name>
-          <description/>
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-        </featureDescription>
-        <featureDescription>
-          <name>polarity</name>
-          <description/>
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-        </featureDescription>
-        <featureDescription>
-          <name>modality</name>
-          <description/>
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-        </featureDescription>
-        <featureDescription>
-          <name>cardinality</name>
-          <description/>
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-        </featureDescription>
-      </features>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.EventAspectual</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TemporalEvent</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.EventIntensionalAction</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TemporalEvent</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.EventIntensionalState</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TemporalEvent</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.EventOccurrence</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TemporalEvent</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.EventPerception</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TemporalEvent</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.EventReporting</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TemporalEvent</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.EventState</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TemporalEvent</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.MentalState</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Motive</name>
-      <description/>
-      <supertypeName>org.apache.hutt.MentalState</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Intention</name>
-      <description/>
-      <supertypeName>org.apache.hutt.MentalState</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Sentiment</name>
-      <description/>
-      <supertypeName>org.apache.hutt.MentalState</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Clothing</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Footwear</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Clothing</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Number</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.WholeNumber</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Number</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.OneOrTwo</name>
-      <description/>
-      <supertypeName>org.apache.hutt.WholeNumber</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.SmallWholeNumber</name>
-      <description/>
-      <supertypeName>org.apache.hutt.WholeNumber</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.LargeWholeNumber</name>
-      <description/>
-      <supertypeName>org.apache.hutt.WholeNumber</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Measurement</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Age</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Measurement</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Rate</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Measurement</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Percentage</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Rate</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Money</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Measurement</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Power</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Measurement</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Speed</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Measurement</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Temperature</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Measurement</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Toxicity</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Measurement</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Population</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Measurement</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Weight</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Measurement</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Length</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Measurement</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Area</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Measurement</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Volume</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Measurement</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Animal</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.BodyPart</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Chemical</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Color</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Code</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Composition</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.StandardsDocument</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Composition</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.EmailMessage</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Composition</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Currency</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Deity</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Disease</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Element</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Flight</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Furniture</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Food</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Language</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.MedicalCondition</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Medicine</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.MusicalInstrument</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.PhoneNumber</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Plant</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Religion</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Sport</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Tool</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Conceptualization</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Composition</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Conceptualization</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Issue</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Conceptualization</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Topic</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Conceptualization</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ComputingTopic</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Topic</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.TravelReservation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.MiscellaneousEntity</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.EmailAddress</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
-    </typeDescription>
+      <supertypeName>org.apache.uima.testTypeSystem.TopEntity</supertypeName>
+    </typeDescription>    
     <typeDescription>
-      <name>org.apache.hutt.URL</name>
+      <name>org.apache.uima.testTypeSystem.URL</name>
       <description/>
-      <supertypeName>org.apache.hutt.TopEntity</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.TopEntity</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.TopRelation</name>
+      <name>org.apache.uima.testTypeSystem.TopRelation</name>
       <description/>
-      <supertypeName>org.apache.uima.klt.RelationAnnotation</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.RelationAnnotation</supertypeName>
       <features>
         <featureDescription>
           <name>confidence</name>
@@ -1298,424 +418,69 @@
           <rangeTypeName>uima.cas.Float</rangeTypeName>
         </featureDescription>
       </features>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ArgumentOfEvent</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.AgentOfEvent</name>
-      <description/>
-      <supertypeName>org.apache.hutt.ArgumentOfEvent</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ObjectOfEvent</name>
-      <description/>
-      <supertypeName>org.apache.hutt.ArgumentOfEvent</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.SourceOfEvent</name>
-      <description/>
-      <supertypeName>org.apache.hutt.ArgumentOfEvent</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.TargetOfEvent</name>
-      <description/>
-      <supertypeName>org.apache.hutt.ArgumentOfEvent</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.LocationOfEvent</name>
-      <description/>
-      <supertypeName>org.apache.hutt.ArgumentOfEvent</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Physical</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.At</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Physical</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.PartOf</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Physical</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.SubPlace</name>
-      <description/>
-      <supertypeName>org.apache.hutt.PartOf</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Near</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Physical</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.OnBoard</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Physical</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.PersonalAndSocial</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.BusinessRelationship</name>
-      <description/>
-      <supertypeName>org.apache.hutt.PersonalAndSocial</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.CoauthorWith</name>
-      <description/>
-      <supertypeName>org.apache.hutt.PersonalAndSocial</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Associate</name>
-      <description/>
-      <supertypeName>org.apache.hutt.BusinessRelationship</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Relative</name>
-      <description/>
-      <supertypeName>org.apache.hutt.PersonalAndSocial</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Parent</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Relative</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Sibling</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Relative</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Spouse</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Relative</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Grandparent</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Relative</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.OrganizationalRelationship</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Staff</name>
-      <description/>
-      <supertypeName>org.apache.hutt.OrganizationalRelationship</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ManagerOf</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Staff</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.GeneralStaff</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Staff</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Member</name>
-      <description/>
-      <supertypeName>org.apache.hutt.OrganizationalRelationship</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Subsidiary</name>
-      <description/>
-      <supertypeName>org.apache.hutt.OrganizationalRelationship</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.AffiliatePartner</name>
-      <description/>
-      <supertypeName>org.apache.hutt.OrganizationalRelationship</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ExportsTo</name>
-      <description/>
-      <supertypeName>org.apache.hutt.AffiliatePartner</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.TransfersTechnology</name>
-      <description/>
-      <supertypeName>org.apache.hutt.AffiliatePartner</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.AgentArtifact</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.AuthorOf</name>
-      <description/>
-      <supertypeName>org.apache.hutt.AgentArtifact</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.HasAccessTo</name>
-      <description/>
-      <supertypeName>org.apache.hutt.AgentArtifact</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.HasWeaponProgram</name>
-      <description/>
-      <supertypeName>org.apache.hutt.AgentArtifact</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.InterestedIn</name>
-      <description/>
-      <supertypeName>org.apache.hutt.AgentArtifact</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ExpertIn</name>
-      <description/>
-      <supertypeName>org.apache.hutt.InterestedIn</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.LeadsActivityFor</name>
-      <description/>
-      <supertypeName>org.apache.hutt.ExpertIn</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ParticipatesInActivityFor</name>
-      <description/>
-      <supertypeName>org.apache.hutt.ExpertIn</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.AuthorOfSpecificationFor</name>
-      <description/>
-      <supertypeName>org.apache.hutt.ExpertIn</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.AuthorOfMessageAbout</name>
-      <description/>
-      <supertypeName>org.apache.hutt.InterestedIn</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Owner</name>
-      <description/>
-      <supertypeName>org.apache.hutt.AgentArtifact</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ExportsWeapon</name>
-      <description/>
-      <supertypeName>org.apache.hutt.AgentArtifact</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ImportsWeapon</name>
-      <description/>
-      <supertypeName>org.apache.hutt.AgentArtifact</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.InventorOrManufacturer</name>
-      <description/>
-      <supertypeName>org.apache.hutt.AgentArtifact</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ProducesWeapon</name>
-      <description/>
-      <supertypeName>org.apache.hutt.InventorOrManufacturer</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.PersonalOrOrganizationalAffiliation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Ethnicity</name>
-      <description/>
-      <supertypeName>org.apache.hutt.PersonalOrOrganizationalAffiliation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Ideology</name>
-      <description/>
-      <supertypeName>org.apache.hutt.PersonalOrOrganizationalAffiliation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.GpeAffiliation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.CitizenOf</name>
-      <description/>
-      <supertypeName>org.apache.hutt.GpeAffiliation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.BasedIn</name>
-      <description/>
-      <supertypeName>org.apache.hutt.GpeAffiliation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.TemporalLink</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.After</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TemporalLink</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Before</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TemporalLink</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Begins</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TemporalLink</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.BegunBy</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TemporalLink</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.During</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TemporalLink</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.EndedBy</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TemporalLink</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Ends</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TemporalLink</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Identity</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TemporalLink</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ImmediatelyAfter</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TemporalLink</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ImmediatelyBefore</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TemporalLink</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Includes</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TemporalLink</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.IsIncluded</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TemporalLink</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Simultaneous</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TemporalLink</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Causes</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Casualties</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Discourse</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.DeliversWeapon</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.DestructionPotential</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.HasWeaponCapability</name>
-      <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
-    </typeDescription>
+    </typeDescription>    
     <typeDescription>
-      <name>org.apache.hutt.HasIntention</name>
+      <name>org.apache.uima.testTypeSystem.Physical</name>
       <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.TopRelation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.HasProperty</name>
+      <name>org.apache.uima.testTypeSystem.PartOf</name>
       <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.Physical</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.HoldsDuring</name>
+      <name>org.apache.uima.testTypeSystem.SubPlace</name>
       <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.PartOf</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.MadePhoneCallTo</name>
+      <name>org.apache.uima.testTypeSystem.OrganizationalRelationship</name>
       <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.TopRelation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.Motivation</name>
+      <name>org.apache.uima.testTypeSystem.Staff</name>
       <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.OrganizationalRelationship</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.RelatesTo</name>
+      <name>org.apache.uima.testTypeSystem.ManagerOf</name>
       <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.Staff</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.Subsumes</name>
+      <name>org.apache.uima.testTypeSystem.Subsidiary</name>
       <description/>
-      <supertypeName>org.apache.hutt.RelatesTo</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.OrganizationalRelationship</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.ReservationFor</name>
+      <name>org.apache.uima.testTypeSystem.AgentArtifact</name>
       <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.TopRelation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.Residence</name>
+      <name>org.apache.uima.testTypeSystem.Owner</name>
       <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.AgentArtifact</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.RouteEnd</name>
+      <name>org.apache.uima.testTypeSystem.GpeAffiliation</name>
       <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.TopRelation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.SentimentAppliesTo</name>
+      <name>org.apache.uima.testTypeSystem.BasedIn</name>
       <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.GpeAffiliation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.HasReservation</name>
+      <name>org.apache.uima.testTypeSystem.HoldsDuring</name>
       <description/>
-      <supertypeName>org.apache.hutt.TopRelation</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.TopRelation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.LexicalAnnotation</name>
+      <name>org.apache.uima.testTypeSystem.LexicalAnnotation</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>
@@ -1732,199 +497,12 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.Quotation</name>
+      <name>org.apache.uima.testTypeSystem.Thing</name>
       <description/>
-      <supertypeName>org.apache.hutt.LexicalAnnotation</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.LexicalAnnotation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.Abbreviation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.LexicalAnnotation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Nickname</name>
-      <description/>
-      <supertypeName>org.apache.hutt.LexicalAnnotation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ConditionalExpression</name>
-      <description/>
-      <supertypeName>org.apache.hutt.LexicalAnnotation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.UnknownName</name>
-      <description/>
-      <supertypeName>org.apache.hutt.LexicalAnnotation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Thing</name>
-      <description/>
-      <supertypeName>org.apache.hutt.LexicalAnnotation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Sentence</name>
-      <description/>
-      <supertypeName>org.apache.hutt.LexicalAnnotation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Token</name>
-      <description/>
-      <supertypeName>org.apache.hutt.LexicalAnnotation</supertypeName>
-      <features>
-        <featureDescription>
-          <name>posType</name>
-          <description/>
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-        </featureDescription>
-      </features>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Clause</name>
-      <description/>
-      <supertypeName>org.apache.hutt.LexicalAnnotation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Phrase</name>
-      <description/>
-      <supertypeName>org.apache.hutt.LexicalAnnotation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.SyntaxAnnotation</name>
-      <description/>
-      <supertypeName>org.apache.hutt.LexicalAnnotation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.SimpleDeclarativeClause</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Clause</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.SubordinatingConjunctionClause</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Clause</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.DirectIdentifyingQuestion</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Clause</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.InvertedDeclarativeSentence</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Clause</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.SQ</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Clause</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.AdjectivePhrase</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Phrase</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.AdverbPhrase</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Phrase</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ConjunctionPhrase</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Phrase</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Fragment</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Phrase</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Interjection</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Phrase</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ListMarker</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Phrase</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.NotAConstituent</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Phrase</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.NounPhrase</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Phrase</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.NounPhraseHead</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Phrase</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.PrepositionalPhrase</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Phrase</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ParentheticalPhrase</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Phrase</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ParticlePhrase</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Phrase</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.QuantifierPhrase</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Phrase</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.ReducedRelativeClause</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Phrase</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.UnlikeCoordinatedPhrase</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Phrase</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.VerbPhrase</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Phrase</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.IdentifyingAdjectivePhrase</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Phrase</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.IdentifyingAdverbPhrase</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Phrase</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.IdentifyingNounPhrase</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Phrase</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.IdentifyingPrepositionalPhrase</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Phrase</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.UndefinedPhrase</name>
-      <description/>
-      <supertypeName>org.apache.hutt.Phrase</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.CharacteristicAnnotation</name>
+      <name>org.apache.uima.testTypeSystem.CharacteristicAnnotation</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>
@@ -1941,82 +519,30 @@
       </features>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.UncertainAnnotation</name>
+      <name>org.apache.uima.testTypeSystem.Occupation</name>
       <description/>
-      <supertypeName>org.apache.hutt.CharacteristicAnnotation</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.CharacteristicAnnotation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.Alias</name>
+      <name>org.apache.uima.testTypeSystem.NondefiningRole</name>
       <description/>
-      <supertypeName>org.apache.hutt.CharacteristicAnnotation</supertypeName>
-      <features>
-        <featureDescription>
-          <name>actualName</name>
-          <description/>
-          <rangeTypeName>org.apache.uima.klt.EntityAnnotation</rangeTypeName>
-        </featureDescription>
-        <featureDescription>
-          <name>alternateName</name>
-          <description/>
-          <rangeTypeName>org.apache.uima.klt.EntityAnnotation</rangeTypeName>
-        </featureDescription>
-      </features>
+      <supertypeName>org.apache.uima.testTypeSystem.CharacteristicAnnotation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.Superlative</name>
+      <name>org.apache.uima.testTypeSystem.EventCharacteristic</name>
       <description/>
-      <supertypeName>org.apache.hutt.CharacteristicAnnotation</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.CharacteristicAnnotation</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.Occupation</name>
+      <name>org.apache.uima.testTypeSystem.Method</name>
       <description/>
-      <supertypeName>org.apache.hutt.CharacteristicAnnotation</supertypeName>
+      <supertypeName>org.apache.uima.testTypeSystem.EventCharacteristic</supertypeName>
     </typeDescription>
     <typeDescription>
-      <name>org.apache.hutt.NondefiningRole</name>
+      <name>org.apache.uima.testTypeSystem.Symptom</name>
       <description/>
-      <supertypeName>org.apache.hutt.CharacteristicAnnotation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Material</name>
-      <description/>
-      <supertypeName>org.apache.hutt.CharacteristicAnnotation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.EventCharacteristic</name>
-      <description/>
-      <supertypeName>org.apache.hutt.CharacteristicAnnotation</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Method</name>
-      <description/>
-      <supertypeName>org.apache.hutt.EventCharacteristic</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Purpose</name>
-      <description/>
-      <supertypeName>org.apache.hutt.EventCharacteristic</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Crime</name>
-      <description/>
-      <supertypeName>org.apache.hutt.EventCharacteristic</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.TypeOfInjury</name>
-      <description/>
-      <supertypeName>org.apache.hutt.EventCharacteristic</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.MannerOfKilling</name>
-      <description/>
-      <supertypeName>org.apache.hutt.EventCharacteristic</supertypeName>
-    </typeDescription>
-    <typeDescription>
-      <name>org.apache.hutt.Symptom</name>
-      <description/>
-      <supertypeName>org.apache.hutt.CharacteristicAnnotation</supertypeName>
-    </typeDescription>
+      <supertypeName>org.apache.uima.testTypeSystem.CharacteristicAnnotation</supertypeName>
+    </typeDescription>    
     <typeDescription>
       <name>sofa.test.CrossAnnotation</name>
       <description></description>

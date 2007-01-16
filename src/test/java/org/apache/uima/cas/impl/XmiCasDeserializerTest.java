@@ -73,7 +73,7 @@ public class XmiCasDeserializerTest extends TestCase {
 
   protected void setUp() throws Exception {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
-    File indexesFile = JUnitExtension.getFile("ExampleCas/kltIndexes.xml");
+    File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
 
     typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
             new XMLInputSource(typeSystemFile));
@@ -125,9 +125,9 @@ public class XmiCasDeserializerTest extends TestCase {
     // CasComparer.assertEquals(tcas,tcas2);
 
     // check that array refs are not null
-    Type entityType = cas2.getTypeSystem().getType("org.apache.uima.klt.Entity");
+    Type entityType = cas2.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity");
     Feature classesFeat = entityType.getFeatureByBaseName("classes");
-    Iterator iter = cas2.getIndexRepository().getIndex("kltEntityIndex").iterator();
+    Iterator iter = cas2.getIndexRepository().getIndex("testEntityIndex").iterator();
     assertTrue(iter.hasNext());
     while (iter.hasNext()) {
       FeatureStructure fs = (FeatureStructure) iter.next();
@@ -241,13 +241,13 @@ public class XmiCasDeserializerTest extends TestCase {
       xmlReader.parse(new InputSource(new StringReader(xml)));
 
       // check that types have been filtered out
-      Type orgType = cas2.getTypeSystem().getType("org.apache.hutt.Organization");
+      Type orgType = cas2.getTypeSystem().getType("org.apache.uima.testTypeSystem.Organization");
       assertNotNull(orgType);
       assertTrue(cas2.getAnnotationIndex(orgType).size() == 0);
       assertTrue(cas.getAnnotationIndex(orgType).size() > 0);
 
       // but that some types are still there
-      Type personType = cas2.getTypeSystem().getType("org.apache.hutt.Person");
+      Type personType = cas2.getTypeSystem().getType("org.apache.uima.testTypeSystem.Person");
       FSIndex personIndex = cas2.getAnnotationIndex(personType);
       assertTrue(personIndex.size() > 0);
 
