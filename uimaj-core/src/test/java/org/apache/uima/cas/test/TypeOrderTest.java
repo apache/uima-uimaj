@@ -21,11 +21,14 @@ package org.apache.uima.cas.test;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.uima.UIMAFramework;
+import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIndex;
@@ -41,8 +44,13 @@ import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.test.junit_extension.FileCompare;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.apache.uima.util.InvalidXMLException;
+import org.apache.uima.util.XMLInputSource;
+import org.apache.uima.util.XMLParser;
 
 
 public class TypeOrderTest extends TestCase {
@@ -71,7 +79,7 @@ public class TypeOrderTest extends TestCase {
 
   public static final String SENT_TYPE = "Sentence";
 
-  private CASMgr casMgr;
+//  private CASMgr casMgr;
 
   private CAS cas;
 
@@ -90,8 +98,26 @@ public class TypeOrderTest extends TestCase {
    */
   protected void setUp() throws Exception {
     super.setUp();
-    this.casMgr = initCAS();
-    this.cas = this.casMgr.getCAS().getCurrentView();
+//    this.casMgr = initCAS();
+    File descriptorFile = JUnitExtension.getFile("CASTests/desc/typePriorityTestCaseDescriptor.xml");
+    assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile.exists());
+    
+    try {
+      XMLParser parser = UIMAFramework.getXMLParser();
+      ResourceSpecifier spec = (ResourceSpecifier) parser.parse(new XMLInputSource(descriptorFile));
+      AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(spec);
+      this.cas = ae.newCAS();
+      assertTrue(this.cas != null);
+    } catch (IOException e) {
+      e.printStackTrace();
+      assertTrue(false);
+    } catch (InvalidXMLException e) {
+      e.printStackTrace();
+      assertTrue(false);
+    } catch (ResourceInitializationException e) {
+      e.printStackTrace();
+      assertTrue(false);
+    }
 
     TypeSystem ts = this.cas.getTypeSystem();
     // assert(wordType != null);
@@ -102,7 +128,7 @@ public class TypeOrderTest extends TestCase {
   }
 
   public void tearDown() {
-    this.casMgr = null;
+//    this.casMgr = null;
     this.cas = null;
     this.tokenType = null;
     this.sentenceType = null;

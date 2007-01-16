@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription
+ xmlns="http://uima.apache.org/resourceSpecifier">
+ <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+ <primitive>true</primitive>
+ <annotatorImplementationName>
+  org.apache.uima.cas.test.TestAnnotator
+ </annotatorImplementationName>
+ <analysisEngineMetaData>
+  <name>aeDescriptor</name>
+  <description></description>
+  <version>1.0</version>
+  <vendor></vendor>
+  <configurationParameters />
+  <configurationParameterSettings />
+  <typeSystemDescription>
+   <imports>
+    <import location="casTestCaseTypesystem.xml" />
+   </imports>
+  </typeSystemDescription>
+  <typePriorities>
+   <priorityList>
+    <type>Token</type>
+    <type>Sentence</type>
+    <type>uima.tcas.Annotation</type>
+   </priorityList>
+  </typePriorities>
+  <fsIndexCollection>
+   <fsIndexes>
+    <fsIndexDescription>
+     <label>Annotation Set Index</label>
+     <typeName>uima.tcas.Annotation</typeName>
+     <kind>set</kind>
+     <keys>
+      <fsIndexKey>
+       <featureName>begin</featureName>
+       <comparator>standard</comparator>
+      </fsIndexKey>
+      <fsIndexKey>
+       <featureName>end</featureName>
+       <comparator>reverse</comparator>
+      </fsIndexKey>
+     </keys>
+    </fsIndexDescription>
+    <fsIndexDescription>
+     <label>Annotation Bag Index</label>
+     <typeName>uima.tcas.Annotation</typeName>
+     <kind>bag</kind>
+     <keys>
+      <fsIndexKey>
+       <featureName>begin</featureName>
+       <comparator>standard</comparator>
+      </fsIndexKey>
+      <fsIndexKey>
+       <featureName>end</featureName>
+       <comparator>reverse</comparator>
+      </fsIndexKey>
+     </keys>
+    </fsIndexDescription>
+    <fsIndexDescription>
+     <label>TypeOrderIndex</label>
+     <typeName>uima.tcas.Annotation</typeName>
+     <kind>sorted</kind>
+     <keys>
+      <fsIndexKey>
+       <featureName>begin</featureName>
+       <comparator>standard</comparator>
+      </fsIndexKey>
+      <fsIndexKey>
+       <featureName>end</featureName>
+       <comparator>reverse</comparator>
+      </fsIndexKey>
+      <fsIndexKey>
+       <typePriority />
+      </fsIndexKey>
+     </keys>
+    </fsIndexDescription>
+   </fsIndexes>
+  </fsIndexCollection>
+  <capabilities>
+   <capability>
+    <inputs />
+    <outputs />
+    <languagesSupported />
+   </capability>
+  </capabilities>
+  <operationalProperties>
+   <modifiesCas>true</modifiesCas>
+   <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+   <outputsNewCASes>false</outputsNewCASes>
+  </operationalProperties>
+ </analysisEngineMetaData>
+ <resourceManagerConfiguration />
+</analysisEngineDescription>
