@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
-import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -504,11 +503,14 @@ public class IteratorTest extends TestCase {
     count = 0;
     source.moveToFirst();
     copy = source.copy();
-    // System.out.println("Max: " + max);
+    copy.moveToFirst();
+//     System.out.println("Max: " + max);
     while (count < max) {
-      // System.out.println("Count: " + count);
+//       System.out.println("Count: " + count);
       assertTrue(source.isValid());
       assertTrue(copy.isValid());
+      String out = source.get().toString() + copy.get().toString();
+      assertTrue(out, source.get().equals(copy.get()));
       source.moveToNext();
       copy.moveToNext();
       ++count;
