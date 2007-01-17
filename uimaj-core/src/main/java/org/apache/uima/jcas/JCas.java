@@ -404,6 +404,13 @@ public interface JCas extends AbstractCas {
   String getDocumentText();
 
   /**
+   * Get the Sofa Data String (a.k.a. the document text).
+   * 
+   * @return The Sofa data string.
+   */
+  String getSofaDataString();
+
+  /**
    * Sets the language for this document. This value sets the language feature of the special
    * instance of DocumentAnnotation associated with this CAS.
    * 
