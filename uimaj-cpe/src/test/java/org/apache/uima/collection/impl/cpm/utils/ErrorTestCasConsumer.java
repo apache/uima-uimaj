@@ -53,7 +53,7 @@ public class ErrorTestCasConsumer extends CasConsumer_ImplBase {
 
   private Logger logger;
 
-  private final static Level LOG_LEVEL = Level.INFO;
+  private final static Level LOG_LEVEL = Level.FINE;
 
   public ErrorTestCasConsumer() {
     FunctionErrorStore.increaseCasConsumerCount();

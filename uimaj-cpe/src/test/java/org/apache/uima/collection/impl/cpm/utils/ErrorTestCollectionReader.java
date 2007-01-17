@@ -84,7 +84,7 @@ public class ErrorTestCollectionReader extends CollectionReader_ImplBase {
 
   private Logger logger;
 
-  private final static Level LOG_LEVEL = Level.INFO;
+  private final static Level LOG_LEVEL = Level.FINE;
 
   public ErrorTestCollectionReader() {
     FunctionErrorStore.increaseCollectionReaderCount();

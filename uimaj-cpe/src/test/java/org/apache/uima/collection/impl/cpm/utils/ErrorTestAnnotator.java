@@ -39,11 +39,11 @@ import org.apache.uima.util.Logger;
 public class ErrorTestAnnotator extends JTextAnnotator_ImplBase {
 
   // Parameter fields in the xml
-  private final String TEST_THIS_ANNOTATOR = "TestAnnotator";
+  private static final String TEST_THIS_ANNOTATOR = "TestAnnotator";
 
-  private final String EXCEPTION = "Exception";
+  private static final String EXCEPTION = "Exception";
 
-  private final String ERROR_COUNT = "ErrorCount";
+  private static final String ERROR_COUNT = "ErrorCount";
 
   private HashMap errorConfig;
 
@@ -57,7 +57,7 @@ public class ErrorTestAnnotator extends JTextAnnotator_ImplBase {
 
   private Logger logger;
 
-  private final static Level LOG_LEVEL = Level.INFO;
+  private final static Level LOG_LEVEL = Level.FINE;
 
   private boolean aTestAnnotator = false;
 
