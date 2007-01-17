@@ -177,7 +177,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * @see org.apache.uima.analysis_engine.AnalysisEngineDescription#getDelegateAnalysisEngineSpecifiers()
    */
   public Map getDelegateAnalysisEngineSpecifiers() throws InvalidXMLException {
-    resolveImports(UIMAFramework.newDefaultResourceManager());
+    resolveDelegateAnalysisEngineImports(UIMAFramework.newDefaultResourceManager(), false);
     return Collections.unmodifiableMap(mDelegateAnalysisEngineSpecifiers);
   }
 
@@ -186,7 +186,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    */
   public Map getDelegateAnalysisEngineSpecifiers(ResourceManager aResourceManager)
           throws InvalidXMLException {
-    resolveImports(aResourceManager);
+    resolveDelegateAnalysisEngineImports(aResourceManager, false);
     return Collections.unmodifiableMap(mDelegateAnalysisEngineSpecifiers);
   }
 
@@ -707,8 +707,8 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
     if (getSourceUrl() != null) {
       aAlreadyImportedDelegateAeUrls.add(getSourceUrl());
     }
-    // resolve delegate AE imports
-    resolveDelegateAnalysisEngineImports(aAlreadyImportedDelegateAeUrls, aResourceManager);
+    // resolve delegate AE imports (and recursively resolve imports therein)
+    resolveDelegateAnalysisEngineImports(aAlreadyImportedDelegateAeUrls, aResourceManager, true);
     // resolve flow controller import
     if (getFlowControllerDeclaration() != null) {
       getFlowControllerDeclaration().resolveImports(aResourceManager);
@@ -723,16 +723,37 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
       getResourceManagerConfiguration().resolveImports(aResourceManager);
     }
   }
+  
 
   /**
    * Resolves imports of delegate Analysis Engines. This reads from the
    * delegateAnalysisEngineSpecifiersWithImports map and populates the
-   * delegateAnalysisEngineSpecifiers map. This also recursively calls
-   * {@link #resolveImports(Collection, ResourceManager)} on each delegate. If a cirular import is
-   * found, an exception will be thrown.
+   * delegateAnalysisEngineSpecifiers map. 
+   * 
+   * @param aRecursive If true, this method will call {@link #resolveImports(Collection, ResourceManager)} 
+   *   on each delegate. If a cirular import is found, an exception will be thrown.
    */
-  protected void resolveDelegateAnalysisEngineImports(Collection aAlreadyImportedDelegateAeUrls,
-          ResourceManager aResourceManager) throws InvalidXMLException {
+  protected void resolveDelegateAnalysisEngineImports(ResourceManager aResourceManager, boolean aRecursive) 
+          throws InvalidXMLException {
+    // add our own URL, if known, to the collection of enclosing aggregate URLs
+    Set urls = new HashSet();
+    if (getSourceUrl() != null) {
+      urls.add(getSourceUrl());
+    }   
+    resolveDelegateAnalysisEngineImports(urls, aResourceManager, aRecursive);
+  }  
+
+  /**
+   * Resolves imports of delegate Analysis Engines. This reads from the
+   * delegateAnalysisEngineSpecifiersWithImports map and populates the
+   * delegateAnalysisEngineSpecifiers map. 
+   * 
+   * @param aEnclosingAggregateAeUrls URLs of enclosing aggregate AEs.  Used to detect circular imports.
+   * @param aRecursive If true, this method will call {@link #resolveImports(Collection, ResourceManager)} 
+   *   on each delegate. If a cirular import is found, an exception will be thrown.
+   */
+  protected void resolveDelegateAnalysisEngineImports(Collection aEnclosingAggregateAeUrls,
+          ResourceManager aResourceManager, boolean aRecursive) throws InvalidXMLException {
     HashSet keys = new HashSet(); // keep track of keys we've encountered
     // so we can remove stale entries
     Iterator entryIterator = getDelegateAnalysisEngineSpecifiersWithImports().entrySet().iterator();
@@ -756,7 +777,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
         URL url = aeImport.findAbsoluteUrl(aResourceManager);
 
         // check for resursive import
-        if (aAlreadyImportedDelegateAeUrls.contains(url)) {
+        if (aEnclosingAggregateAeUrls.contains(url)) {
           String name = getMetaData() == null ? "<null>" : getMetaData().getName();
           throw new InvalidXMLException(InvalidXMLException.CIRCULAR_AE_IMPORT, new Object[] {
               name, url });
@@ -780,7 +801,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
 
         // now resolve imports in ths delegate
         if (spec instanceof AnalysisEngineDescription) {
-          Set alreadyImportedUrls = new HashSet(aAlreadyImportedDelegateAeUrls);
+          Set alreadyImportedUrls = new HashSet(aEnclosingAggregateAeUrls);
           alreadyImportedUrls.add(url);
           ((AnalysisEngineDescription) spec).resolveImports(alreadyImportedUrls, aResourceManager);
         }
@@ -790,7 +811,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
         // resolve imports recursively on the delegate
         if (entry.getValue() instanceof AnalysisEngineDescription) {
           ((AnalysisEngineDescription) entry.getValue()).resolveImports(
-                  aAlreadyImportedDelegateAeUrls, aResourceManager);
+                  aEnclosingAggregateAeUrls, aResourceManager);
         }
       }
     }
