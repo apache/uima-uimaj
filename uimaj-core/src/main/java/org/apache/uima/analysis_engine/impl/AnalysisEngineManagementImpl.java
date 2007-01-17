@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.analysis_engine.AnalysisEngineManagement;
@@ -38,7 +39,9 @@ public class AnalysisEngineManagementImpl implements AnalysisEngineManagementImp
         AnalysisEngineManagement {
 
   private static final long serialVersionUID = 1988620286191379887L;
-
+ 
+  private static final Pattern RESERVED_CHAR_PATTERN = Pattern.compile("[\",=:*?]");
+  
   static final DecimalFormat format = new DecimalFormat("0.##");
 
   /**
@@ -228,7 +231,7 @@ public class AnalysisEngineManagementImpl implements AnalysisEngineManagementImp
       }
       usedRootNames.add(rootName);
       // create a propertly-formatted MBean name
-      rootMBean.uniqueMBeanName = "org.apache.uima:name=" + rootName;
+      rootMBean.uniqueMBeanName = "org.apache.uima:name=" + escapeValue(rootName);
     }
 
     if (rootMBean != this) {
@@ -237,7 +240,14 @@ public class AnalysisEngineManagementImpl implements AnalysisEngineManagementImp
       // strip off the org.apache.uima:name= prefix to get just the simple name
       rootName = rootName.substring("org.apache.uima:name=".length());
       // form the hierarchical MBean name
-      String prefix = "org.apache.uima:p0=" + rootName + " Components,";
+      String prefix = "org.apache.uima:p0=";
+      //we add "Components" to the end of the rootName, but be aware of quoting issues
+      if (rootName.endsWith("\"")) {
+        prefix += rootName.substring(0,rootName.length() - 1) + " Components\",";
+      }
+      else {
+        prefix += rootName + " Components,";
+      }      
       uniqueMBeanName = makeMBeanName(prefix, aContext.getQualifiedContextName().substring(1), 1);
     }
   }
@@ -248,11 +258,35 @@ public class AnalysisEngineManagementImpl implements AnalysisEngineManagementImp
   private static String makeMBeanName(String prefix, String contextName, int depth) {
     int firstSlash = contextName.indexOf('/');
     if (firstSlash == contextName.length() - 1) {
-      return prefix + "name=" + contextName.substring(0, contextName.length() - 1);
+      return prefix + "name=" + escapeValue(contextName.substring(0, contextName.length() - 1));
     } else {
-      String newPrefix = prefix + "p" + depth + "=" + contextName.substring(0, firstSlash)
-              + " Components,";
+      String newPrefix = prefix + "p" + depth + "=" + escapeValue(contextName.substring(0, firstSlash)
+              + " Components") + ",";
       return makeMBeanName(newPrefix, contextName.substring(firstSlash + 1), depth + 1);
+    }
+  }
+  
+  /** Escapes the "value" part of a JMX name if necessary.  If the value
+   * includes reserved characters (" , = : * ?) the value will be enclosed
+   * in quotes and some characters (" ? * \) will be escaped with backslashes.
+   */
+  private static String escapeValue(String value) {
+    if (RESERVED_CHAR_PATTERN.matcher(value).find()) {
+      //must quote the value
+      StringBuffer buf = new StringBuffer();
+      buf.append('\"');
+      //must escape special characters inside the quoted value
+      for (int i = 0; i < value.length(); i++) {
+        char c = value.charAt(i);
+        if (c == '\"' || c =='\\' || c == '?' || c =='*') {
+          buf.append('\\');
+        }
+        buf.append(c);
+      }
+      buf.append('\"');
+      return buf.toString();
+    } else {
+      return value; //no escaping needed
     }
   }
 }
