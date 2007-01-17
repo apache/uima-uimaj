@@ -212,7 +212,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
             // if component sofa name is null, replace it with the default for CAS sofa name
             // This is to support single-view annotators.
             if (mSofaMappings[s].getComponentSofaName() == null)
-              mSofaMappings[s].setComponentSofaName(CAS.NAME_DEFAULT_TEXT_SOFA);
+              mSofaMappings[s].setComponentSofaName(CAS.NAME_DEFAULT_SOFA);
             sofamap.put(mSofaMappings[s].getComponentSofaName(), mSofaMappings[s]
                     .getAggregateSofaName());
           }
@@ -284,7 +284,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
           // if component sofa name is null, replace it with the default for TCAS sofa name
           // This is to support single-view annotators.
           if (mSofaMappings[s].getComponentSofaName() == null)
-            mSofaMappings[s].setComponentSofaName(CAS.NAME_DEFAULT_TEXT_SOFA);
+            mSofaMappings[s].setComponentSofaName(CAS.NAME_DEFAULT_SOFA);
           sofamap.put(mSofaMappings[s].getComponentSofaName(), mSofaMappings[s]
                   .getAggregateSofaName());
         }
@@ -449,6 +449,9 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
           cas.release();
         }
       }
+      //clear the active CASes list, to guard against ever trying to
+      //reuse these CASes or trying to release them a second time.
+      activeCASes.clear(); 
 
       // recursively release any CasIterators on stack
       while (!casIteratorStack.isEmpty()) {
