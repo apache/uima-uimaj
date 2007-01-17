@@ -30,8 +30,8 @@ package <%=jg.packageName%>;
      jg.error.newError(IError.WARN, 
 		jg.getString("pkgMissing", new Object[] {td.getName()}), null); %>
 
-import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.jcas.JCas; 
+import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
 
 <% for(Iterator i=jg.collectImports(td, false).iterator(); i.hasNext();) { %>
@@ -51,7 +51,7 @@ public class <%=typeName%> extends <%=jg.getJavaName(td.getSupertypeName())%> {
   /** @generated
    * @ordered 
    */
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = JCasRegistry.register(<%=typeName%>.class);
   /** @generated
    * @ordered 
    */

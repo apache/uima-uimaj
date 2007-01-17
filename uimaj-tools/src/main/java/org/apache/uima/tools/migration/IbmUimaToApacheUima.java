@@ -47,6 +47,9 @@ public class IbmUimaToApacheUima {
   private static int MAX_FILE_SIZE = 1000000; //don't update files bigger than this
   private static Set extensions = new HashSet();
   private static final Pattern IMPORT_PATTERN = Pattern.compile("(?m)^\\s*import\\s+([^;]*);\\s*$");
+  private static final Pattern CLASS_NAME_PATTERN = Pattern.compile("public\\s+(final\\s+|abstract\\s+)*class\\s+([A-Za-z0-9_]+)");
+  private static final Pattern GET_NEXT_INDEX_PATTERN = Pattern.compile("JCas\\.getNextIndex\\(\\)");
+  private static final Pattern THROW_FEAT_MISSING_PATTERN = Pattern.compile("JCas\\.throwFeatMissing");
 
   
   /**
@@ -194,8 +197,11 @@ public class IbmUimaToApacheUima {
       contents = contents.replaceAll(replacement.regex, replacement.replacementStr);
     }
 
-    //remove duplicate imports from .java files (can be caused by some replacements)
+    //for .java files do some additional processing
     if (file.getName().endsWith(".java")) {
+      //updates for JCas/JCasRegistry refactoring
+      contents = applyJCasRefactoring(contents);
+      //remove duplicate imports (can be caused by some replacements)
       contents = removeDuplicateImports(contents);
     }
     
@@ -204,9 +210,40 @@ public class IbmUimaToApacheUima {
       FileUtils.saveString2File(contents, file);
     }
   }
+  
   /**
-   * @param contents
-   * @return
+   * Applies changes needed due to JCas/JCasRegistry refactoring.  These are a little
+   * more complicated than simple regex replacements.
+   * 
+   * JCas.getNextIndex -> JCasRegistry.register(ThisClass.class)
+   * JCas.throwFeatMissing -> jcasType.jcas.throwFeatMissing [in cover class]
+   * JCas.throwFeatMissing -> jcas.throwFeatMissing [in _Type class]
+   */
+  private static String applyJCasRefactoring(String contents) {
+    //find the class name, we'll need it later
+    Matcher classNameMatcher = CLASS_NAME_PATTERN.matcher(contents);
+    if (!classNameMatcher.find()) 
+      return contents;
+    String className = classNameMatcher.group(2);
+    
+    //replace getNextIndex
+    Matcher getNextIndexMatcher = GET_NEXT_INDEX_PATTERN.matcher(contents);
+    String replacement = "org.apache.uima.jcas.JCasRegistry.register(" + className + ".class)";
+    contents = getNextIndexMatcher.replaceAll(replacement);
+    
+    //replace throwFeatMissing (replacement depends on whether we're in _Type object or not)
+    Matcher throwFeatMissingMatcher = THROW_FEAT_MISSING_PATTERN.matcher(contents);
+    if (className.endsWith("_Type")) {
+      contents = throwFeatMissingMatcher.replaceAll("this.jcas.throwFeatMissing");
+    } 
+    else {
+      contents = throwFeatMissingMatcher.replaceAll("this.jcasType.jcas.throwFeatMissing");
+    }
+    return contents;      
+  }
+
+  /**
+   * Remove duplicate imports from a Java source file.
    */
   private static String removeDuplicateImports(String contents) {
     HashSet classes = new HashSet();

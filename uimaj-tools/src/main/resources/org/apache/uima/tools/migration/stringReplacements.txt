@@ -10,9 +10,7 @@ org.apache.uima.internal.util.ProcessTraceEvent_impl org.apache.uima.util.impl.P
 org.apache.uima.internal.util.SaxDeserializer_impl org.apache.uima.util.impl.SaxDeserializer_impl
 org.apache.uima.internal.util.XMLParser_impl org.apache.uima.util.impl.XMLParser_impl
 org.apache.uima.jcas.impl.JCas\b org.apache.uima.jcas.JCas
-JCas.getFeatOkTst org.apache.uima.jcas.impl.JCasImpl.getFeatOkTst
-JCas.getNextIndex org.apache.uima.jcas.impl.JCasImpl.getNextIndex
-JCas.throwFeatMissing org.apache.uima.jcas.impl.JCasImpl.throwFeatMissing
+JCas.getFeatOkTst org.apache.uima.jcas.JCasRegistry.getFeatOkTst
 org.apache.uima.util.FileSystemCollectionReader org.apache.uima.tools.components.FileSystemCollectionReader
 org.apache.uima.util.InlineXmlCasConsumer org.apache.uima.tools.components.InlineXmlCasConsumer
 org.apache.uima.util.XCasWriterCasConsumer org.apache.uima.tools.components.XCasWriterCasConsumer

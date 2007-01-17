@@ -44,7 +44,7 @@ public class JCasTypeTemplate {
    else 
      jg.error.newError(IError.WARN, 
 		jg.getString("pkgMissing", new Object[] {td.getName()}), null); 
-    stringBuffer.append("\nimport org.apache.uima.jcas.impl.JCasImpl;\nimport org.apache.uima.jcas.JCas; \nimport org.apache.uima.jcas.cas.TOP_Type;\n\n");
+    stringBuffer.append("\nimport org.apache.uima.jcas.JCas; \nimport org.apache.uima.jcas.JCasRegistry;\nimport org.apache.uima.jcas.cas.TOP_Type;\n\n");
    for(Iterator i=jg.collectImports(td, false).iterator(); i.hasNext();) { 
     stringBuffer.append("import ");
     stringBuffer.append((String)i.next());
@@ -65,7 +65,9 @@ public class JCasTypeTemplate {
     stringBuffer.append(typeName);
     stringBuffer.append(" extends ");
     stringBuffer.append(jg.getJavaName(td.getSupertypeName()));
-    stringBuffer.append(" {\n  /** @generated\n   * @ordered \n   */\n  public final static int typeIndexID = JCasImpl.getNextIndex();\n  /** @generated\n   * @ordered \n   */\n  public final static int type = typeIndexID;\n  /** @generated  */\n  public              int getTypeIndexID() {return typeIndexID;}\n \n  /** Never called.  Disable default constructor\n   * @generated */\n  protected ");
+    stringBuffer.append(" {\n  /** @generated\n   * @ordered \n   */\n  public final static int typeIndexID = JCasRegistry.register(");
+    stringBuffer.append(typeName);
+    stringBuffer.append(".class);\n  /** @generated\n   * @ordered \n   */\n  public final static int type = typeIndexID;\n  /** @generated  */\n  public              int getTypeIndexID() {return typeIndexID;}\n \n  /** Never called.  Disable default constructor\n   * @generated */\n  protected ");
     stringBuffer.append(typeName);
     stringBuffer.append("() {}\n    \n  /** Internal - constructor used by generator \n   * @generated */\n  public ");
     stringBuffer.append(typeName);
@@ -112,7 +114,7 @@ public class JCasTypeTemplate {
     stringBuffer.append(jcasTypeCasted);
     stringBuffer.append(".casFeat_");
     stringBuffer.append(featName);
-    stringBuffer.append(" == null)\n      JCasImpl.throwFeatMissing(\"");
+    stringBuffer.append(" == null)\n      jcasType.jcas.throwFeatMissing(\"");
     stringBuffer.append(featName);
     stringBuffer.append("\", \"");
     stringBuffer.append(td.getName());
@@ -134,7 +136,7 @@ public class JCasTypeTemplate {
     stringBuffer.append(jcasTypeCasted);
     stringBuffer.append(".casFeat_");
     stringBuffer.append(featName);
-    stringBuffer.append(" == null)\n      JCasImpl.throwFeatMissing(\"");
+    stringBuffer.append(" == null)\n      jcasType.jcas.throwFeatMissing(\"");
     stringBuffer.append(featName);
     stringBuffer.append("\", \"");
     stringBuffer.append(td.getName());
@@ -158,7 +160,7 @@ public class JCasTypeTemplate {
     stringBuffer.append(jcasTypeCasted);
     stringBuffer.append(".casFeat_");
     stringBuffer.append(featName);
-    stringBuffer.append(" == null)\n      JCasImpl.throwFeatMissing(\"");
+    stringBuffer.append(" == null)\n      jcasType.jcas.throwFeatMissing(\"");
     stringBuffer.append(featName);
     stringBuffer.append("\", \"");
     stringBuffer.append(td.getName());
@@ -186,7 +188,7 @@ public class JCasTypeTemplate {
     stringBuffer.append(jcasTypeCasted);
     stringBuffer.append(".casFeat_");
     stringBuffer.append(featName);
-    stringBuffer.append(" == null)\n      JCasImpl.throwFeatMissing(\"");
+    stringBuffer.append(" == null)\n      jcasType.jcas.throwFeatMissing(\"");
     stringBuffer.append(featName);
     stringBuffer.append("\", \"");
     stringBuffer.append(td.getName());

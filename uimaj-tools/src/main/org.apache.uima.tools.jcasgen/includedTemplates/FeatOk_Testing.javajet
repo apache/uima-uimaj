@@ -20,4 +20,4 @@
 /* checks to insure that cas has the feature */
 %>
     if (featOkTst && casFeat_<%=featName%> == null)
-      JCasImpl.throwFeatMissing("<%=featName%>", "<%=td.getName()%>");
+      jcas.throwFeatMissing("<%=featName%>", "<%=td.getName()%>");
