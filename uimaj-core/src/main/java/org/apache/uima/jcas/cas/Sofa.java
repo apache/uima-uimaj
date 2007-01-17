@@ -30,6 +30,7 @@ import org.apache.uima.cas.SofaID;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
@@ -40,7 +41,7 @@ public class Sofa extends TOP implements SofaFS {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = JCasRegistry.register(Sofa.class);
 
   /**
    * @generated
@@ -100,7 +101,7 @@ public class Sofa extends TOP implements SofaFS {
    */
   public int getSofaNum() {
     if (Sofa_Type.featOkTst && ((Sofa_Type) jcasType).casFeat_sofaNum == null)
-      JCasImpl.throwFeatMissing("sofaNum", "uima.cas.Sofa");
+      this.jcasType.jcas.throwFeatMissing("sofaNum", "uima.cas.Sofa");
     return jcasType.ll_cas.ll_getIntValue(addr, ((Sofa_Type) jcasType).casFeatCode_sofaNum);
   }
 
@@ -114,7 +115,7 @@ public class Sofa extends TOP implements SofaFS {
    */
   public String getSofaID() {
     if (Sofa_Type.featOkTst && ((Sofa_Type) jcasType).casFeat_sofaID == null)
-      JCasImpl.throwFeatMissing("sofaID", "uima.cas.Sofa");
+      this.jcasType.jcas.throwFeatMissing("sofaID", "uima.cas.Sofa");
     return jcasType.ll_cas.ll_getStringValue(addr, ((Sofa_Type) jcasType).casFeatCode_sofaID);
   }
 
@@ -128,7 +129,7 @@ public class Sofa extends TOP implements SofaFS {
    */
   public String getMimeType() {
     if (Sofa_Type.featOkTst && ((Sofa_Type) jcasType).casFeat_mimeType == null)
-      JCasImpl.throwFeatMissing("mimeType", "uima.cas.Sofa");
+      this.jcasType.jcas.throwFeatMissing("mimeType", "uima.cas.Sofa");
     return jcasType.ll_cas.ll_getStringValue(addr, ((Sofa_Type) jcasType).casFeatCode_mimeType);
   }
 

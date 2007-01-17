@@ -39,7 +39,7 @@ public class StringSubtypeAnnotation_Type extends Annotation_Type {
   public final static int typeIndexID = StringSubtypeAnnotation.typeIndexID;
   /** @generated 
      @modifiable */
-  public final static boolean featOkTst = JCasImpl.getFeatOkTst("org.apache.uima.cas.test.StringSubtypeAnnotation");
+  public final static boolean featOkTst = org.apache.uima.jcas.JCasRegistry.getFeatOkTst("org.apache.uima.cas.test.StringSubtypeAnnotation");
  
   /** @generated */
   final Feature casFeat_stringSetFeature;
@@ -48,13 +48,13 @@ public class StringSubtypeAnnotation_Type extends Annotation_Type {
   /** @generated */ 
   public String getStringSetFeature(int addr) {
         if (featOkTst && casFeat_stringSetFeature == null)
-      JCasImpl.throwFeatMissing("stringSetFeature", "org.apache.uima.cas.test.StringSubtypeAnnotation");
+      this.jcas.throwFeatMissing("stringSetFeature", "org.apache.uima.cas.test.StringSubtypeAnnotation");
     return ll_cas.ll_getStringValue(addr, casFeatCode_stringSetFeature);
   }
   /** @generated */    
   public void setStringSetFeature(int addr, String v) {
         if (featOkTst && casFeat_stringSetFeature == null)
-      JCasImpl.throwFeatMissing("stringSetFeature", "org.apache.uima.cas.test.StringSubtypeAnnotation");
+      this.jcas.throwFeatMissing("stringSetFeature", "org.apache.uima.cas.test.StringSubtypeAnnotation");
     ll_cas.ll_setStringValue(addr, casFeatCode_stringSetFeature, v);}
     
   

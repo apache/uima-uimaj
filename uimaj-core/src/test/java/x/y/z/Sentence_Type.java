@@ -52,7 +52,7 @@ public class Sentence_Type extends Annotation_Type {
 
   public final static int typeIndexID = Sentence.typeIndexID;
 
-  public final static boolean featOkTst = JCasImpl.getFeatOkTst("x.y.z.Sentence");
+  public final static boolean featOkTst = org.apache.uima.jcas.JCasRegistry.getFeatOkTst("x.y.z.Sentence");
 
   // * initialize variables to correspond with Cas Type and Features
   public Sentence_Type(JCas jcas, Type casType) {

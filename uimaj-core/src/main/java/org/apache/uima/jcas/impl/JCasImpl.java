@@ -67,6 +67,7 @@ import org.apache.uima.cas.impl.LowLevelIndexRepository;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
@@ -148,37 +149,6 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   // *************************************************
   private final static int INITIAL_HASHMAP_SIZE = 200;
 
-  private static int nextIndex = 0;
-
-  private static ArrayList loadedJCasTypeClassNames = new ArrayList();
-
-  /**
-   * internal use only. used to initialize an index corresponding to JCas Type when type is loaded.
-   * This has to be public to allow the generated Java classes corresponding to the CAS classes to
-   * access it.
-   * 
-   * @return next Index value to assign
-   */
-  public static synchronized int getNextIndex() {
-    // For bookkeeping purposes, we record the class name of the JCas cover class
-    // that requested the new ID. This is useful if we encounter an ID for a type
-    // that is not defined in a particular CAS instance, we can report a useful
-    // error message containing the name of the offending JCas cover class.
-    StackTraceElement[] stack = new Throwable().fillInStackTrace().getStackTrace();
-    if (stack.length > 1) {
-      String className = stack[1].getClassName();
-      for (int i = loadedJCasTypeClassNames.size(); i <= nextIndex; i++) {
-        loadedJCasTypeClassNames.add(null);
-      }
-      loadedJCasTypeClassNames.set(nextIndex, className);
-    }
-
-    return nextIndex++;
-  }
-
-  private static synchronized int getNextIndexNoIncr() {
-    return nextIndex;
-  }
 
   // **********************************************
   // * Data shared among views of a single CAS *
@@ -292,9 +262,10 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   public TOP_Type getType(int i) {
     if (i >= typeArray.length || null == typeArray[i]) {
 
-      // unknown ID. Attempt to get offending class name.
-      if (i < loadedJCasTypeClassNames.size() && loadedJCasTypeClassNames.get(i) != null) {
-        String typeName = (String) loadedJCasTypeClassNames.get(i);
+      // unknown ID. Attempt to get offending class.
+      Class cls = JCasRegistry.getClassForIndex(i);
+      if (cls != null) {
+        String typeName = cls.getName();
         // is type in type system
         if (this.casImpl.getTypeSystem().getType(typeName) == null) {
           // no - report error that JCAS type was not defined in XML descriptor
@@ -443,7 +414,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
         }
       }
 
-      typeArray = new TOP_Type[JCasImpl.getNextIndexNoIncr()];
+      typeArray = new TOP_Type[JCasRegistry.getNumberOfRegisteredClasses()];
 
       Iterator jcasTypeIt = jcasTypes.entrySet().iterator();
       while (jcasTypeIt.hasNext()) {
@@ -609,16 +580,6 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     }
   }
 
-  /**
-   * for a particular type, return true if that type should have run-time checking for use of fields
-   * defined in the JCas Model which are not present in the CAS. Internal use. If false, all fields
-   * in the JCas must be in the CAS type system at instantiation time, or an exception is thrown;
-   * this allows the runtime to skip this test.
-   */
-  public static boolean getFeatOkTst(String fullyQualTypeName) {
-    return true;
-  }
-
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.impl.IJCas#getRequiredType(java.lang.String)
    */
@@ -679,7 +640,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @param feat
    * @param type
    */
-  public static void throwFeatMissing(String feat, String type) {
+  public void throwFeatMissing(String feat, String type) {
     CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INAPPROP_FEAT);
     e.addArgument(feat);
     e.addArgument(type);

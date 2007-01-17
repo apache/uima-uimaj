@@ -64,7 +64,7 @@ public class ConcreteType_Type extends AbstractType_Type {
    * @generated
    * @modifiable
    */
-  public final static boolean featOkTst = JCasImpl.getFeatOkTst("aa.ConcreteType");
+  public final static boolean featOkTst = org.apache.uima.jcas.JCasRegistry.getFeatOkTst("aa.ConcreteType");
 
   /** @generated */
   final Feature casFeat_concreteString;
@@ -75,14 +75,14 @@ public class ConcreteType_Type extends AbstractType_Type {
   /** @generated */
   public String getConcreteString(int addr) {
     if (featOkTst && casFeat_concreteString == null)
-      JCasImpl.throwFeatMissing("concreteString", "aa.ConcreteType");
+      this.jcas.throwFeatMissing("concreteString", "aa.ConcreteType");
     return ll_cas.ll_getStringValue(addr, casFeatCode_concreteString);
   }
 
   /** @generated */
   public void setConcreteString(int addr, String v) {
     if (featOkTst && casFeat_concreteString == null)
-      JCasImpl.throwFeatMissing("concreteString", "aa.ConcreteType");
+      this.jcas.throwFeatMissing("concreteString", "aa.ConcreteType");
     ll_cas.ll_setStringValue(addr, casFeatCode_concreteString, v);
   }
 

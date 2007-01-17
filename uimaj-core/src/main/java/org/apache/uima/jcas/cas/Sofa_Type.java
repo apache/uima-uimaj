@@ -27,7 +27,7 @@ import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.jcas.JCasRegistry;
 
 /**
  * Updated by JCasGen Fri Apr 29 16:05:04 EDT 2005
@@ -64,7 +64,7 @@ public class Sofa_Type extends TOP_Type {
    * @generated
    * @modifiable
    */
-  public final static boolean featOkTst = JCasImpl.getFeatOkTst("uima.cas.Sofa");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("uima.cas.Sofa");
 
   /** @generated */
   final Feature casFeat_sofaNum;

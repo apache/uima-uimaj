@@ -27,7 +27,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 /* comment 1 of 14 */
 public class Sentence extends Annotation {
 
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = org.apache.uima.jcas.JCasRegistry.register(Sentence.class);
 
   public final static int type = typeIndexID;
 

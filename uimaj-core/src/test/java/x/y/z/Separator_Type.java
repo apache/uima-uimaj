@@ -51,7 +51,7 @@ public class Separator_Type extends TokenType_Type {
 
   public final static int typeIndexID = Separator.typeIndexID;
 
-  public final static boolean featOkTst = JCasImpl.getFeatOkTst("x.y.z.Separator");
+  public final static boolean featOkTst = org.apache.uima.jcas.JCasRegistry.getFeatOkTst("x.y.z.Separator");
 
   // * initialize variables to correspond with Cas Type and Features
   public Separator_Type(JCas jcas, Type casType) {

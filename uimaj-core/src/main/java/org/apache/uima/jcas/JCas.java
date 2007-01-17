@@ -139,17 +139,25 @@ public interface JCas extends AbstractCas {
   public abstract Feature getRequiredFeatureDE(Type t, String s, String rangeName, boolean featOkTst);
 
   /**
-   * internal - sets the corresponding Java instance for a Cas instance
+   * Internal Use - sets the corresponding Java instance for a Cas instance
    */
   public abstract void putJfsFromCaddr(int casAddr, FeatureStructure fs);
 
   /**
-   * internal - sets the corresponding Java instance for a Cas instance
+   * Internal Use - sets the corresponding Java instance for a Cas instance
    */
   public abstract TOP getJfsFromCaddr(int casAddr);
 
+  /**
+   * Internal Use. 
+   */
   public abstract void checkArrayBounds(int fsRef, int pos);
 
+  /**
+   * Internal Use - throw missing feature exception at runtime.
+   */
+  public void throwFeatMissing(String feat, String type);
+  
   /**
    * @deprecated As of v2.0, use {#getView(String)}. From the view you can access the Sofa data, or
    *             call {@link #getSofa()} if you truly need to access the SofaFS object.

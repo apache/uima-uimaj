@@ -52,7 +52,7 @@ public class TokenType_Type extends TOP_Type {
 
   public final static int typeIndexID = TokenType.typeIndexID;
 
-  public final static boolean featOkTst = JCasImpl.getFeatOkTst("x.y.z.TokenType");
+  public final static boolean featOkTst = org.apache.uima.jcas.JCasRegistry.getFeatOkTst("x.y.z.TokenType");
 
   // * initialize variables to correspond with Cas Type and Features
   public TokenType_Type(JCas jcas, Type casType) {

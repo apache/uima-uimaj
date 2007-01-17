@@ -27,7 +27,7 @@ import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.jcas.JCasRegistry;
 
 public class NonEmptyFSList_Type extends FSList_Type {
   protected FSGenerator getFSGenerator() {
@@ -52,7 +52,7 @@ public class NonEmptyFSList_Type extends FSList_Type {
 
   public final static int typeIndexID = NonEmptyFSList.typeIndexID;
 
-  public final static boolean featOkTst = JCasImpl.getFeatOkTst("uima.cas.NonEmptyFSList");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("uima.cas.NonEmptyFSList");
 
   final Feature casFeat_head;
 
@@ -60,13 +60,13 @@ public class NonEmptyFSList_Type extends FSList_Type {
 
   public int getHead(int addr) {
     if (featOkTst && casFeat_head == null)
-      JCasImpl.throwFeatMissing("head", "uima.cas.NonEmptyFSList");
+      this.jcas.throwFeatMissing("head", "uima.cas.NonEmptyFSList");
     return ll_cas.ll_getRefValue(addr, casFeatCode_head);
   }
 
   public void setHead(int addr, int v) {
     if (featOkTst && casFeat_head == null)
-      JCasImpl.throwFeatMissing("head", "uima.cas.NonEmptyFSList");
+      this.jcas.throwFeatMissing("head", "uima.cas.NonEmptyFSList");
     ll_cas.ll_setRefValue(addr, casFeatCode_head, v);
   }
 
@@ -76,13 +76,13 @@ public class NonEmptyFSList_Type extends FSList_Type {
 
   public int getTail(int addr) {
     if (featOkTst && casFeat_tail == null)
-      JCasImpl.throwFeatMissing("tail", "uima.cas.NonEmptyFSList");
+      this.jcas.throwFeatMissing("tail", "uima.cas.NonEmptyFSList");
     return ll_cas.ll_getRefValue(addr, casFeatCode_tail);
   }
 
   public void setTail(int addr, int v) {
     if (featOkTst && casFeat_tail == null)
-      JCasImpl.throwFeatMissing("tail", "uima.cas.NonEmptyFSList");
+      this.jcas.throwFeatMissing("tail", "uima.cas.NonEmptyFSList");
     ll_cas.ll_setRefValue(addr, casFeatCode_tail, v);
   }
 

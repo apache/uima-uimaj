@@ -54,7 +54,7 @@ public class LanguagePair_Type extends TOP_Type {
 
   public final static int typeIndexID = LanguagePair.typeIndexID;
 
-  public final static boolean featOkTst = JCasImpl.getFeatOkTst("org.apache.lang.LanguagePair");
+  public final static boolean featOkTst = org.apache.uima.jcas.JCasRegistry.getFeatOkTst("org.apache.lang.LanguagePair");
 
   final Feature casFeat_lang1;
 
@@ -62,13 +62,13 @@ public class LanguagePair_Type extends TOP_Type {
 
   public String getLang1(int addr) {
     if (featOkTst && casFeat_lang1 == null)
-      JCasImpl.throwFeatMissing("lang1", "org.apache.lang.LanguagePair");
+      this.jcas.throwFeatMissing("lang1", "org.apache.lang.LanguagePair");
     return ll_cas.ll_getStringValue(addr, casFeatCode_lang1);
   }
 
   public void setLang1(int addr, String v) {
     if (featOkTst && casFeat_lang1 == null)
-      JCasImpl.throwFeatMissing("lang1", "org.apache.lang.LanguagePair");
+      this.jcas.throwFeatMissing("lang1", "org.apache.lang.LanguagePair");
     ll_cas.ll_setStringValue(addr, casFeatCode_lang1, v);
   }
 
@@ -78,13 +78,13 @@ public class LanguagePair_Type extends TOP_Type {
 
   public String getLang2(int addr) {
     if (featOkTst && casFeat_lang2 == null)
-      JCasImpl.throwFeatMissing("lang2", "org.apache.lang.LanguagePair");
+      this.jcas.throwFeatMissing("lang2", "org.apache.lang.LanguagePair");
     return ll_cas.ll_getStringValue(addr, casFeatCode_lang2);
   }
 
   public void setLang2(int addr, String v) {
     if (featOkTst && casFeat_lang2 == null)
-      JCasImpl.throwFeatMissing("lang2", "org.apache.lang.LanguagePair");
+      this.jcas.throwFeatMissing("lang2", "org.apache.lang.LanguagePair");
     ll_cas.ll_setStringValue(addr, casFeatCode_lang2, v);
   }
 
@@ -94,13 +94,13 @@ public class LanguagePair_Type extends TOP_Type {
 
   public String getDescription(int addr) {
     if (featOkTst && casFeat_description == null)
-      JCasImpl.throwFeatMissing("description", "org.apache.lang.LanguagePair");
+      this.jcas.throwFeatMissing("description", "org.apache.lang.LanguagePair");
     return ll_cas.ll_getStringValue(addr, casFeatCode_description);
   }
 
   public void setDescription(int addr, String v) {
     if (featOkTst && casFeat_description == null)
-      JCasImpl.throwFeatMissing("description", "org.apache.lang.LanguagePair");
+      this.jcas.throwFeatMissing("description", "org.apache.lang.LanguagePair");
     ll_cas.ll_setStringValue(addr, casFeatCode_description, v);
   }
 

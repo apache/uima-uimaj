@@ -34,7 +34,7 @@ public class ConcreteType extends AbstractType {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = org.apache.uima.jcas.JCasRegistry.register(ConcreteType.class);
 
   /**
    * @generated
@@ -90,7 +90,7 @@ public class ConcreteType extends AbstractType {
   public String getConcreteString() {
     if (ConcreteType_Type.featOkTst
             && ((ConcreteType_Type) jcasType).casFeat_concreteString == null)
-      JCasImpl.throwFeatMissing("concreteString", "aa.ConcreteType");
+      this.jcasType.jcas.throwFeatMissing("concreteString", "aa.ConcreteType");
     return jcasType.ll_cas.ll_getStringValue(addr,
             ((ConcreteType_Type) jcasType).casFeatCode_concreteString);
   }
@@ -103,7 +103,7 @@ public class ConcreteType extends AbstractType {
   public void setConcreteString(String v) {
     if (ConcreteType_Type.featOkTst
             && ((ConcreteType_Type) jcasType).casFeat_concreteString == null)
-      JCasImpl.throwFeatMissing("concreteString", "aa.ConcreteType");
+      this.jcasType.jcas.throwFeatMissing("concreteString", "aa.ConcreteType");
     jcasType.ll_cas.ll_setStringValue(addr,
             ((ConcreteType_Type) jcasType).casFeatCode_concreteString, v);
   }

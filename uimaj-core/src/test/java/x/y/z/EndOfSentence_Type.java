@@ -51,7 +51,7 @@ public class EndOfSentence_Type extends TokenType_Type {
 
   public final static int typeIndexID = EndOfSentence.typeIndexID;
 
-  public final static boolean featOkTst = JCasImpl.getFeatOkTst("x.y.z.EndOfSentence");
+  public final static boolean featOkTst = org.apache.uima.jcas.JCasRegistry.getFeatOkTst("x.y.z.EndOfSentence");
 
   // * initialize variables to correspond with Cas Type and Features
   public EndOfSentence_Type(JCas jcas, Type casType) {

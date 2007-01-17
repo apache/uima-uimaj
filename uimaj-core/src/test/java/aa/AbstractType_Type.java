@@ -65,7 +65,7 @@ public class AbstractType_Type extends TOP_Type {
    * @generated
    * @modifiable
    */
-  public final static boolean featOkTst = JCasImpl.getFeatOkTst("aa.AbstractType");
+  public final static boolean featOkTst = org.apache.uima.jcas.JCasRegistry.getFeatOkTst("aa.AbstractType");
 
   /** @generated */
   final Feature casFeat_abstractInt;
@@ -76,14 +76,14 @@ public class AbstractType_Type extends TOP_Type {
   /** @generated */
   public int getAbstractInt(int addr) {
     if (featOkTst && casFeat_abstractInt == null)
-      JCasImpl.throwFeatMissing("abstractInt", "aa.AbstractType");
+      this.jcas.throwFeatMissing("abstractInt", "aa.AbstractType");
     return ll_cas.ll_getIntValue(addr, casFeatCode_abstractInt);
   }
 
   /** @generated */
   public void setAbstractInt(int addr, int v) {
     if (featOkTst && casFeat_abstractInt == null)
-      JCasImpl.throwFeatMissing("abstractInt", "aa.AbstractType");
+      this.jcas.throwFeatMissing("abstractInt", "aa.AbstractType");
     ll_cas.ll_setIntValue(addr, casFeatCode_abstractInt, v);
   }
 

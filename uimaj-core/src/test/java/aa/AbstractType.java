@@ -35,7 +35,7 @@ public class AbstractType extends TOP {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = org.apache.uima.jcas.JCasRegistry.register(AbstractType.class);
 
   /**
    * @generated
@@ -90,7 +90,7 @@ public class AbstractType extends TOP {
    */
   public int getAbstractInt() {
     if (AbstractType_Type.featOkTst && ((AbstractType_Type) jcasType).casFeat_abstractInt == null)
-      JCasImpl.throwFeatMissing("abstractInt", "aa.AbstractType");
+      this.jcasType.jcas.throwFeatMissing("abstractInt", "aa.AbstractType");
     return jcasType.ll_cas.ll_getIntValue(addr,
             ((AbstractType_Type) jcasType).casFeatCode_abstractInt);
   }
@@ -102,7 +102,7 @@ public class AbstractType extends TOP {
    */
   public void setAbstractInt(int v) {
     if (AbstractType_Type.featOkTst && ((AbstractType_Type) jcasType).casFeat_abstractInt == null)
-      JCasImpl.throwFeatMissing("abstractInt", "aa.AbstractType");
+      this.jcasType.jcas.throwFeatMissing("abstractInt", "aa.AbstractType");
     jcasType.ll_cas.ll_setIntValue(addr, ((AbstractType_Type) jcasType).casFeatCode_abstractInt, v);
   }
 }

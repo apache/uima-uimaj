@@ -20,11 +20,11 @@
 package org.apache.uima.jcas.cas;
 
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.jcas.JCasRegistry;
 
 public class NonEmptyIntegerList extends IntegerList {
 
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = JCasRegistry.register(NonEmptyIntegerList.class);
 
   public final static int type = typeIndexID;
 
@@ -51,7 +51,7 @@ public class NonEmptyIntegerList extends IntegerList {
   public int getHead() {
     if (NonEmptyIntegerList_Type.featOkTst
             && ((NonEmptyIntegerList_Type) jcasType).casFeat_head == null)
-      JCasImpl.throwFeatMissing("head", "uima.cas.NonEmptyIntegerList");
+      this.jcasType.jcas.throwFeatMissing("head", "uima.cas.NonEmptyIntegerList");
     return jcasType.ll_cas.ll_getIntValue(addr,
             ((NonEmptyIntegerList_Type) jcasType).casFeatCode_head);
   }
@@ -60,7 +60,7 @@ public class NonEmptyIntegerList extends IntegerList {
   public void setHead(int v) {
     if (NonEmptyIntegerList_Type.featOkTst
             && ((NonEmptyIntegerList_Type) jcasType).casFeat_head == null)
-      JCasImpl.throwFeatMissing("head", "uima.cas.NonEmptyIntegerList");
+      this.jcasType.jcas.throwFeatMissing("head", "uima.cas.NonEmptyIntegerList");
     jcasType.ll_cas.ll_setIntValue(addr, ((NonEmptyIntegerList_Type) jcasType).casFeatCode_head, v);
   }
 
@@ -70,7 +70,7 @@ public class NonEmptyIntegerList extends IntegerList {
   public IntegerList getTail() {
     if (NonEmptyIntegerList_Type.featOkTst
             && ((NonEmptyIntegerList_Type) jcasType).casFeat_tail == null)
-      JCasImpl.throwFeatMissing("tail", "uima.cas.NonEmptyIntegerList");
+      this.jcasType.jcas.throwFeatMissing("tail", "uima.cas.NonEmptyIntegerList");
     return (IntegerList) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
             ((NonEmptyIntegerList_Type) jcasType).casFeatCode_tail)));
   }
@@ -79,7 +79,7 @@ public class NonEmptyIntegerList extends IntegerList {
   public void setTail(IntegerList v) {
     if (NonEmptyIntegerList_Type.featOkTst
             && ((NonEmptyIntegerList_Type) jcasType).casFeat_tail == null)
-      JCasImpl.throwFeatMissing("tail", "uima.cas.NonEmptyIntegerList");
+      this.jcasType.jcas.throwFeatMissing("tail", "uima.cas.NonEmptyIntegerList");
     jcasType.ll_cas.ll_setRefValue(addr, ((NonEmptyIntegerList_Type) jcasType).casFeatCode_tail,
             jcasType.ll_cas.ll_getFSRef(v));
   }

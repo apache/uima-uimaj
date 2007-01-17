@@ -20,11 +20,11 @@
 package org.apache.uima.jcas.cas;
 
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.jcas.JCasRegistry;
 
 public class NonEmptyFloatList extends FloatList {
 
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = JCasRegistry.register(NonEmptyFloatList.class);
 
   public final static int type = typeIndexID;
 
@@ -51,7 +51,7 @@ public class NonEmptyFloatList extends FloatList {
   public float getHead() {
     if (NonEmptyFloatList_Type.featOkTst
             && ((NonEmptyFloatList_Type) jcasType).casFeat_head == null)
-      JCasImpl.throwFeatMissing("head", "uima.cas.NonEmptyFloatList");
+      this.jcasType.jcas.throwFeatMissing("head", "uima.cas.NonEmptyFloatList");
     return jcasType.ll_cas.ll_getFloatValue(addr,
             ((NonEmptyFloatList_Type) jcasType).casFeatCode_head);
   }
@@ -60,7 +60,7 @@ public class NonEmptyFloatList extends FloatList {
   public void setHead(float v) {
     if (NonEmptyFloatList_Type.featOkTst
             && ((NonEmptyFloatList_Type) jcasType).casFeat_head == null)
-      JCasImpl.throwFeatMissing("head", "uima.cas.NonEmptyFloatList");
+      this.jcasType.jcas.throwFeatMissing("head", "uima.cas.NonEmptyFloatList");
     jcasType.ll_cas.ll_setFloatValue(addr, ((NonEmptyFloatList_Type) jcasType).casFeatCode_head, v);
   }
 
@@ -70,7 +70,7 @@ public class NonEmptyFloatList extends FloatList {
   public FloatList getTail() {
     if (NonEmptyFloatList_Type.featOkTst
             && ((NonEmptyFloatList_Type) jcasType).casFeat_tail == null)
-      JCasImpl.throwFeatMissing("tail", "uima.cas.NonEmptyFloatList");
+      this.jcasType.jcas.throwFeatMissing("tail", "uima.cas.NonEmptyFloatList");
     return (FloatList) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
             ((NonEmptyFloatList_Type) jcasType).casFeatCode_tail)));
   }
@@ -79,7 +79,7 @@ public class NonEmptyFloatList extends FloatList {
   public void setTail(FloatList v) {
     if (NonEmptyFloatList_Type.featOkTst
             && ((NonEmptyFloatList_Type) jcasType).casFeat_tail == null)
-      JCasImpl.throwFeatMissing("tail", "uima.cas.NonEmptyFloatList");
+      this.jcasType.jcas.throwFeatMissing("tail", "uima.cas.NonEmptyFloatList");
     jcasType.ll_cas.ll_setRefValue(addr, ((NonEmptyFloatList_Type) jcasType).casFeatCode_tail,
             jcasType.ll_cas.ll_getFSRef(v));
   }
