@@ -20,7 +20,7 @@
 package org.apache.uima.tutorial;
 
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
 
 /**
@@ -34,7 +34,7 @@ public class TimeAnnot extends DateTimeAnnot {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = JCasRegistry.register(TimeAnnot.class);
 
   /**
    * @generated

@@ -25,7 +25,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.jcas.JCasRegistry;
 
 /**
  * Unknown, uncertain, or unbracketable. X is often used for bracketing typos and in bracketing
@@ -63,7 +63,7 @@ public class X_Type extends Phrase_Type {
    * @generated
    * @modifiable
    */
-  public final static boolean featOkTst = JCasImpl.getFeatOkTst("org.apache.uima.examples.opennlp.X");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("org.apache.uima.examples.opennlp.X");
 
   /**
    * initialize variables to correspond with Cas Type and Features

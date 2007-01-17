@@ -25,7 +25,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 public class Sentence_Type extends Annotation_Type {
@@ -51,8 +51,7 @@ public class Sentence_Type extends Annotation_Type {
 
   public final static int typeIndexID = Sentence.typeIndexID;
 
-  public final static boolean featOkTst = JCasImpl
-          .getFeatOkTst("org.apache.uima_examples.tokenizer.Sentence");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("org.apache.uima_examples.tokenizer.Sentence");
 
   // * initialize variables to correspond with Cas Type and Features
   public Sentence_Type(JCas jcas, Type casType) {

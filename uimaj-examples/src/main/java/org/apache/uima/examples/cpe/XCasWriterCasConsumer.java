@@ -25,8 +25,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.xml.sax.SAXException;
-
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
@@ -37,6 +35,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.util.XMLSerializer;
+import org.xml.sax.SAXException;
 
 /**
  * A simple CAS consumer that generates XCAS (XML representation of the CAS) files in the

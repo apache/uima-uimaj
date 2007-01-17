@@ -20,8 +20,8 @@
 package org.apache.uima.examples.opennlp;
 
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
-import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Simple declarative clause, i.e. one that is not introduced by a (possible empty) subordinating
@@ -36,7 +36,7 @@ public class S extends Clause {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = JCasRegistry.register(S.class);
 
   /**
    * @generated

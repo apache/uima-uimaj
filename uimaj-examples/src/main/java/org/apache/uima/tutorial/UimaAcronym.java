@@ -20,9 +20,8 @@
 package org.apache.uima.tutorial;
 
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
-
 import org.apache.uima.jcas.tcas.Annotation;
 
 /**
@@ -36,7 +35,7 @@ public class UimaAcronym extends Annotation {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = JCasRegistry.register(UimaAcronym.class);
 
   /**
    * @generated
@@ -98,7 +97,7 @@ public class UimaAcronym extends Annotation {
    */
   public String getExpandedForm() {
     if (UimaAcronym_Type.featOkTst && ((UimaAcronym_Type) jcasType).casFeat_expandedForm == null)
-      JCasImpl.throwFeatMissing("expandedForm", "org.apache.uima.tutorial.UimaAcronym");
+      this.jcasType.jcas.throwFeatMissing("expandedForm", "org.apache.uima.tutorial.UimaAcronym");
     return jcasType.ll_cas.ll_getStringValue(addr,
             ((UimaAcronym_Type) jcasType).casFeatCode_expandedForm);
   }
@@ -110,7 +109,7 @@ public class UimaAcronym extends Annotation {
    */
   public void setExpandedForm(String v) {
     if (UimaAcronym_Type.featOkTst && ((UimaAcronym_Type) jcasType).casFeat_expandedForm == null)
-      JCasImpl.throwFeatMissing("expandedForm", "org.apache.uima.tutorial.UimaAcronym");
+      this.jcasType.jcas.throwFeatMissing("expandedForm", "org.apache.uima.tutorial.UimaAcronym");
     jcasType.ll_cas.ll_setStringValue(addr, ((UimaAcronym_Type) jcasType).casFeatCode_expandedForm,
             v);
   }

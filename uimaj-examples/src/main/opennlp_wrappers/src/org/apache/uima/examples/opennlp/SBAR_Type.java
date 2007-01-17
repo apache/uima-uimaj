@@ -25,7 +25,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.jcas.JCasRegistry;
 
 /**
  * Clause introduced by a (possibly empty) subordinating conjunction. Updated by JCasGen Fri Dec 02
@@ -63,8 +63,7 @@ public class SBAR_Type extends Clause_Type {
    * @generated
    * @modifiable
    */
-  public final static boolean featOkTst = JCasImpl
-          .getFeatOkTst("org.apache.uima.examples.opennlp.SBAR");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("org.apache.uima.examples.opennlp.SBAR");
 
   /**
    * initialize variables to correspond with Cas Type and Features

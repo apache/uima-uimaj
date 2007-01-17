@@ -20,8 +20,8 @@
 package org.apache.uima.examples.opennlp;
 
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
-import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Unknown, uncertain, or unbracketable. X is often used for bracketing typos and in bracketing
@@ -35,7 +35,7 @@ public class X extends Phrase {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = JCasRegistry.register(X.class);
 
   /**
    * @generated

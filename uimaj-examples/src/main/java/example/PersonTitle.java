@@ -20,9 +20,8 @@
 package example;
 
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
-
 import org.apache.uima.jcas.tcas.Annotation;
 
 /**
@@ -36,7 +35,7 @@ public class PersonTitle extends Annotation {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = JCasRegistry.register(PersonTitle.class);
 
   /**
    * @generated
@@ -98,7 +97,7 @@ public class PersonTitle extends Annotation {
    */
   public String getKind() {
     if (PersonTitle_Type.featOkTst && ((PersonTitle_Type) jcasType).casFeat_Kind == null)
-      JCasImpl.throwFeatMissing("Kind", "example.PersonTitle");
+      this.jcasType.jcas.throwFeatMissing("Kind", "example.PersonTitle");
     return jcasType.ll_cas.ll_getStringValue(addr, ((PersonTitle_Type) jcasType).casFeatCode_Kind);
   }
 
@@ -109,7 +108,7 @@ public class PersonTitle extends Annotation {
    */
   public void setKind(String v) {
     if (PersonTitle_Type.featOkTst && ((PersonTitle_Type) jcasType).casFeat_Kind == null)
-      JCasImpl.throwFeatMissing("Kind", "example.PersonTitle");
+      this.jcasType.jcas.throwFeatMissing("Kind", "example.PersonTitle");
     jcasType.ll_cas.ll_setStringValue(addr, ((PersonTitle_Type) jcasType).casFeatCode_Kind, v);
   }
 }

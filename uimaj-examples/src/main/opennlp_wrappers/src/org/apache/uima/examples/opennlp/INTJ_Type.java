@@ -25,7 +25,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.jcas.JCasRegistry;
 
 /**
  * Interjection. Corresponds approximately to the part-of-speech tag UH. Updated by JCasGen Fri Dec
@@ -63,8 +63,7 @@ public class INTJ_Type extends Phrase_Type {
    * @generated
    * @modifiable
    */
-  public final static boolean featOkTst = JCasImpl
-          .getFeatOkTst("org.apache.uima.examples.opennlp.INTJ");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("org.apache.uima.examples.opennlp.INTJ");
 
   /**
    * initialize variables to correspond with Cas Type and Features

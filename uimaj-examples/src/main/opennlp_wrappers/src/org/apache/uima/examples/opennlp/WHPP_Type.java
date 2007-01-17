@@ -25,7 +25,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.jcas.JCasRegistry;
 
 /**
  * Wh-prepositional Phrase. Prepositional phrase containing a wh-noun phrase (such as of which or by
@@ -64,8 +64,7 @@ public class WHPP_Type extends Phrase_Type {
    * @generated
    * @modifiable
    */
-  public final static boolean featOkTst = JCasImpl
-          .getFeatOkTst("org.apache.uima.examples.opennlp.WHPP");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("org.apache.uima.examples.opennlp.WHPP");
 
   /**
    * initialize variables to correspond with Cas Type and Features

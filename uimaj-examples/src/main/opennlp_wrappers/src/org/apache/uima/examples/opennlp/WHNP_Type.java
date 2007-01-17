@@ -25,7 +25,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.jcas.JCasRegistry;
 
 /**
  * Wh-noun Phrase. Introduces a clause with an NP gap. May be null (containing the 0 complementizer)
@@ -64,8 +64,7 @@ public class WHNP_Type extends Phrase_Type {
    * @generated
    * @modifiable
    */
-  public final static boolean featOkTst = JCasImpl
-          .getFeatOkTst("org.apache.uima.examples.opennlp.WHNP");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("org.apache.uima.examples.opennlp.WHNP");
 
   /**
    * initialize variables to correspond with Cas Type and Features

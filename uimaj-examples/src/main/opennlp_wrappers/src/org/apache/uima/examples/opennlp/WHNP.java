@@ -20,8 +20,8 @@
 package org.apache.uima.examples.opennlp;
 
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
-import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Wh-noun Phrase. Introduces a clause with an NP gap. May be null (containing the 0 complementizer)
@@ -36,7 +36,7 @@ public class WHNP extends Phrase {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = JCasRegistry.register(WHNP.class);
 
   /**
    * @generated

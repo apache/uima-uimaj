@@ -27,7 +27,7 @@ import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /**
@@ -65,8 +65,7 @@ public class SyntaxAnnotation_Type extends Annotation_Type {
    * @generated
    * @modifiable
    */
-  public final static boolean featOkTst = JCasImpl
-          .getFeatOkTst("org.apache.uima.examples.opennlp.SyntaxAnnotation");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("org.apache.uima.examples.opennlp.SyntaxAnnotation");
 
   /** @generated */
   final Feature casFeat_componentId;
@@ -77,14 +76,14 @@ public class SyntaxAnnotation_Type extends Annotation_Type {
   /** @generated */
   public String getComponentId(int addr) {
     if (featOkTst && casFeat_componentId == null)
-      JCasImpl.throwFeatMissing("componentId", "org.apache.uima.examples.opennlp.SyntaxAnnotation");
+      this.jcas.throwFeatMissing("componentId", "org.apache.uima.examples.opennlp.SyntaxAnnotation");
     return ll_cas.ll_getStringValue(addr, casFeatCode_componentId);
   }
 
   /** @generated */
   public void setComponentId(int addr, String v) {
     if (featOkTst && casFeat_componentId == null)
-      JCasImpl.throwFeatMissing("componentId", "org.apache.uima.examples.opennlp.SyntaxAnnotation");
+      this.jcas.throwFeatMissing("componentId", "org.apache.uima.examples.opennlp.SyntaxAnnotation");
     ll_cas.ll_setStringValue(addr, casFeatCode_componentId, v);
   }
 

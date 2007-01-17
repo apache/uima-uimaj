@@ -20,8 +20,8 @@
 package org.apache.uima.examples.opennlp;
 
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
-import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.jcas.tcas.Annotation;
 
 /**
@@ -35,7 +35,7 @@ public class Token extends Annotation {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = JCasRegistry.register(Token.class);
 
   /**
    * @generated
@@ -97,7 +97,7 @@ public class Token extends Annotation {
    */
   public String getPosTag() {
     if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_posTag == null)
-      JCasImpl.throwFeatMissing("posTag", "org.apache.uima.examples.opennlp.Token");
+      this.jcasType.jcas.throwFeatMissing("posTag", "org.apache.uima.examples.opennlp.Token");
     return jcasType.ll_cas.ll_getStringValue(addr, ((Token_Type) jcasType).casFeatCode_posTag);
   }
 
@@ -108,7 +108,7 @@ public class Token extends Annotation {
    */
   public void setPosTag(String v) {
     if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_posTag == null)
-      JCasImpl.throwFeatMissing("posTag", "org.apache.uima.examples.opennlp.Token");
+      this.jcasType.jcas.throwFeatMissing("posTag", "org.apache.uima.examples.opennlp.Token");
     jcasType.ll_cas.ll_setStringValue(addr, ((Token_Type) jcasType).casFeatCode_posTag, v);
   }
 
@@ -122,7 +122,7 @@ public class Token extends Annotation {
    */
   public String getComponentId() {
     if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_componentId == null)
-      JCasImpl.throwFeatMissing("componentId", "org.apache.uima.examples.opennlp.Token");
+      this.jcasType.jcas.throwFeatMissing("componentId", "org.apache.uima.examples.opennlp.Token");
     return jcasType.ll_cas.ll_getStringValue(addr, ((Token_Type) jcasType).casFeatCode_componentId);
   }
 
@@ -133,7 +133,7 @@ public class Token extends Annotation {
    */
   public void setComponentId(String v) {
     if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_componentId == null)
-      JCasImpl.throwFeatMissing("componentId", "org.apache.uima.examples.opennlp.Token");
+      this.jcasType.jcas.throwFeatMissing("componentId", "org.apache.uima.examples.opennlp.Token");
     jcasType.ll_cas.ll_setStringValue(addr, ((Token_Type) jcasType).casFeatCode_componentId, v);
   }
 }

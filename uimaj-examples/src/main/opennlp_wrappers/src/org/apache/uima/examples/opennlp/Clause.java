@@ -20,8 +20,8 @@
 package org.apache.uima.examples.opennlp;
 
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
-import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Clause level syntactic parse annotation. Updated by JCasGen Fri Dec 02 14:22:24 EST 2005 XML
@@ -35,7 +35,7 @@ public class Clause extends SyntaxAnnotation {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = JCasRegistry.register(Clause.class);
 
   /**
    * @generated

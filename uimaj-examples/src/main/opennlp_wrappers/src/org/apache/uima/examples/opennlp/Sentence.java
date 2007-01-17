@@ -20,8 +20,8 @@
 package org.apache.uima.examples.opennlp;
 
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
-import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.jcas.tcas.Annotation;
 
 /**
@@ -35,7 +35,7 @@ public class Sentence extends Annotation {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = JCasRegistry.register(Sentence.class);
 
   /**
    * @generated
@@ -97,7 +97,7 @@ public class Sentence extends Annotation {
    */
   public String getComponentId() {
     if (Sentence_Type.featOkTst && ((Sentence_Type) jcasType).casFeat_componentId == null)
-      JCasImpl.throwFeatMissing("componentId", "org.apache.uima.examples.opennlp.Sentence");
+      this.jcasType.jcas.throwFeatMissing("componentId", "org.apache.uima.examples.opennlp.Sentence");
     return jcasType.ll_cas.ll_getStringValue(addr,
             ((Sentence_Type) jcasType).casFeatCode_componentId);
   }
@@ -109,7 +109,7 @@ public class Sentence extends Annotation {
    */
   public void setComponentId(String v) {
     if (Sentence_Type.featOkTst && ((Sentence_Type) jcasType).casFeat_componentId == null)
-      JCasImpl.throwFeatMissing("componentId", "org.apache.uima.examples.opennlp.Sentence");
+      this.jcasType.jcas.throwFeatMissing("componentId", "org.apache.uima.examples.opennlp.Sentence");
     jcasType.ll_cas.ll_setStringValue(addr, ((Sentence_Type) jcasType).casFeatCode_componentId, v);
   }
 }
