@@ -21,7 +21,6 @@ package org.apache.uima.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import junit.framework.TestCase;
@@ -30,7 +29,6 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.XCASDeserializer;
-import org.apache.uima.cas.impl.XCASSerializer;
 import org.apache.uima.cas_data.impl.CasComparer;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -67,7 +65,7 @@ public class CasCopierTest extends TestCase {
 
     // do the copy
     CasCopier.copyCas(srcCas, destCas, true);
-    XCASSerializer.serialize(destCas, System.out);
+    //XCASSerializer.serialize(destCas, System.out);
 
     // verify copy
     CasComparer.assertEquals(srcCas, destCas);    
