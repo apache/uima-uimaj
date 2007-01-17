@@ -42,6 +42,7 @@ import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.swing.UIManager;
@@ -264,6 +265,8 @@ public class Jg {
   private Type casStringType;
 
   private Type tcasAnnotationType;
+  
+  private Map mergedTypesAddingFeatures = new TreeMap();  // a Map of types and the xml files that were merged to create them 
 
   public Jg() { // default constructor
   }
@@ -413,11 +416,12 @@ public class Jg {
           XMLInputSource in = new XMLInputSource(file);
           XMLizable specifier = UIMAFramework.getXMLParser().parse(in);
 
+          mergedTypesAddingFeatures.clear();
           if (specifier instanceof AnalysisEngineDescription) {
             AnalysisEngineDescription aeSpecifier = (AnalysisEngineDescription) specifier;
             if (!aeSpecifier.isPrimitive())
               typeSystemDescription = CasCreationUtils.mergeDelegateAnalysisEngineTypeSystems(
-                      aeSpecifier, createResourceManager());
+                      aeSpecifier, createResourceManager(), mergedTypesAddingFeatures);
             else
               typeSystemDescription = mergeTypeSystemImports(aeSpecifier
                       .getAnalysisEngineMetaData().getTypeSystem());
@@ -427,6 +431,14 @@ public class Jg {
           else {
             error.newError(IError.ERROR, getString("fileDoesntParse", new Object[] { inputFile }),
                     null);
+          }
+          if (mergedTypesAddingFeatures.size() > 0) {
+            error.newError(
+                    IError.WARN, 
+                    getString("typesHaveFeaturesAdded",
+                            new Object[] {makeMergeMessage(mergedTypesAddingFeatures)}),
+                    null
+                    );
           }
           TypePriorities typePriorities = null;
           FsIndexDescription[] fsIndexDescription = null;
@@ -465,6 +477,29 @@ public class Jg {
     }
   }
 
+  // message: TypeName = ".....", URLs defining this type = "xxxx", "xxxx", ....
+  private String makeMergeMessage(Map m) {
+    StringBuffer sb = new StringBuffer();  
+    for (Iterator it = m.entrySet().iterator(); it.hasNext();) {
+      Map.Entry entry = (Map.Entry)it.next();
+      String typeName =(String)entry.getKey();
+      sb.append("\n  ");
+      sb.append("TypeName having merged features = ").append(typeName).append("\n    URLs defining this type =");
+      Set urls = (Set)entry.getValue();
+      boolean afterFirst = false;
+      for (Iterator itUrls = urls.iterator(); itUrls.hasNext();) {
+        if (afterFirst)
+          sb.append(",\n        ");
+        else
+          sb.append("\n        ");
+        afterFirst = true;
+        String url = (String) itUrls.next();
+        sb.append('"').append(url).append('"');
+      }
+    }
+    return sb.toString();
+  }
+  
   // This is also the interface for CDE
   void generateAllTypes(String outputDirectory, TypeDescription[] tds, CASImpl aCas)
           throws IOException {
@@ -523,7 +558,7 @@ public class Jg {
     }
     */
   }
-
+  /* This code was only called by above commented out section 
   private TypeDescription createTdFromType(String typeName) {
     TypeDescription td = UIMAFramework.getResourceSpecifierFactory().createTypeDescription();
     Type type = builtInTypeSystem.getType(typeName);
@@ -546,7 +581,8 @@ public class Jg {
             .toArray(new FeatureDescription[featuresOfType.size()]));
     return td;
   }
-
+  */
+  
   private void generateClasses(TypeDescription td, String outputDirectory) throws IOException {
     simpleClassName = removePkg(getJavaName(td));
     generateClass(progressMonitor, outputDirectory, td, (new JCasTypeTemplate())
@@ -895,12 +931,13 @@ public class Jg {
     return resourceManager;
   }
 
-  public TypeSystemDescription mergeTypeSystemImports(TypeSystemDescription tsd)
+  private TypeSystemDescription mergeTypeSystemImports(TypeSystemDescription tsd)
           throws ResourceInitializationException {
     Collection tsdc = new ArrayList(1);
     tsdc.add(tsd.clone());
+    mergedTypesAddingFeatures.clear();
     TypeSystemDescription mergedTsd = CasCreationUtils.mergeTypeSystems(tsdc,
-            createResourceManager());
+            createResourceManager(), mergedTypesAddingFeatures);
     return mergedTsd;
   }
 
