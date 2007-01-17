@@ -17,11 +17,32 @@ REM   KIND, either express or implied.  See the License for the
 REM   specific language governing permissions and limitations
 REM   under the License.
 
+REM Run with -notest to skip the unit tests
+
 @echo on
 
+@set jvmarg=""
+@if "%~1"=="" goto execute
+@if "%~1"=="-notest" goto notest
+@goto usage
+
+@:usage
+@echo off
+echo Usage: extractAndBuild.bat [-notest]
+@echo on
+@goto exit
+
+@:notest
+@set jvmarg="-Dmaven.test.skip=true"
+@goto execute
+
+
+@:execute
 svn checkout http://svn.apache.org/repos/asf/incubator/uima/uimaj/trunk
 cd trunk\uimaj
-call mvn -Dmaven.test.skip=true  -Duima.build.date="%date% %time%" install
+call mvn %jvmarg%  -Duima.build.date="%date% %time%" install
 cd ..
 cd uimaj-distr
 call mvn assembly:assembly
+
+@:exit
