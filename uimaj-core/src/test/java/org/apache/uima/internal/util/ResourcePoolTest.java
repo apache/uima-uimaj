@@ -22,12 +22,14 @@ package org.apache.uima.internal.util;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.TaeDescription;
 import org.apache.uima.analysis_engine.TextAnalysisEngine;
 import org.apache.uima.analysis_engine.impl.TaeDescription_impl;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.apache.uima.util.Level;
 
 /**
  * Tests the ResourcePool_impl class.
@@ -148,6 +150,8 @@ public class ResourcePoolTest extends TestCase {
       Assert.assertEquals(1, pool1.getFreeInstances().size());
 
       // try to release "foo" again - should not change the free instances count
+      // this will log a warning - first we log that this is expected
+      UIMAFramework.getLogger().log(Level.WARNING, "Unit test is expecting to log ResourcePool warning.");
       pool1.releaseResource(foo);
       Assert.assertEquals(1, pool1.getFreeInstances().size());
 
