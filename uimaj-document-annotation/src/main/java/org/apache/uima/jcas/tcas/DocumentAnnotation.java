@@ -20,6 +20,7 @@
 package org.apache.uima.jcas.tcas;
 
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.impl.JCasImpl;
 
@@ -32,7 +33,7 @@ import org.apache.uima.jcas.impl.JCasImpl;
  */
 public class DocumentAnnotation extends Annotation {
 
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = JCasRegistry.register(DocumentAnnotation.class);
 
   public final static int type = typeIndexID;
 
@@ -61,7 +62,7 @@ public class DocumentAnnotation extends Annotation {
   public String getLanguage() {
     if (DocumentAnnotation_Type.featOkTst
             && ((DocumentAnnotation_Type) jcasType).casFeat_language == null)
-      JCasImpl.throwFeatMissing("language", "uima.tcas.DocumentAnnotation");
+      this.jcasType.jcas.throwFeatMissing("language", "uima.tcas.DocumentAnnotation");
     return jcasType.ll_cas.ll_getStringValue(addr,
             ((DocumentAnnotation_Type) jcasType).casFeatCode_language);
   }
@@ -72,7 +73,7 @@ public class DocumentAnnotation extends Annotation {
   public void setLanguage(String v) {
     if (DocumentAnnotation_Type.featOkTst
             && ((DocumentAnnotation_Type) jcasType).casFeat_language == null)
-      JCasImpl.throwFeatMissing("language", "uima.tcas.DocumentAnnotation");
+      this.jcasType.jcas.throwFeatMissing("language", "uima.tcas.DocumentAnnotation");
     jcasType.ll_cas.ll_setStringValue(addr,
             ((DocumentAnnotation_Type) jcasType).casFeatCode_language, v);
   }
