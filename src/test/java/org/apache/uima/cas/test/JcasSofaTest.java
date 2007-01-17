@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas.test;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -127,6 +128,7 @@ public class JcasSofaTest extends TestCase {
       XMLSerializer xmlSer = new XMLSerializer(outputXCAS);
       try {
         ser.serialize(cas, xmlSer.getContentHandler());
+        outputXCAS.close();
       } catch (IOException e) {
         e.printStackTrace();
       } catch (SAXException e) {
@@ -138,6 +140,7 @@ public class JcasSofaTest extends TestCase {
       InputStream inputXCAS = (InputStream) new FileInputStream("Sofa.xcas");
       try {
         XCASDeserializer.deserialize(inputXCAS, cas, false);
+        inputXCAS.close();
       } catch (SAXException e2) {
         e2.printStackTrace();
       } catch (IOException e2) {
@@ -372,7 +375,8 @@ public class JcasSofaTest extends TestCase {
 
       // create remote sofa and set the SofaURI feature
       JCas remoteView = jcas.createView("remoteSofaData");
-      remoteView.setSofaDataURI("file:./Sofa.xcas", "text");
+      String sofaFileName = "./Sofa.xcas";
+      remoteView.setSofaDataURI("file:" + sofaFileName, "text");
 
       // read sofa data
       InputStream is = stringView.getSofaDataStream();
@@ -385,6 +389,7 @@ public class JcasSofaTest extends TestCase {
       assertTrue(buf.toString().equals("this beer is good"));
 
       dest = new byte[4];
+      is.close();
       is = intArrayView.getSofaDataStream();
       assertTrue(is != null);
       int i = 0;
@@ -393,6 +398,7 @@ public class JcasSofaTest extends TestCase {
         ;
       }
 
+      is.close();
       is = floatArrayView.getSofaDataStream();
       assertTrue(is != null);
       i = 0;
@@ -401,6 +407,7 @@ public class JcasSofaTest extends TestCase {
       }
 
       dest = new byte[2];
+      is.close();
       is = shortArrayView.getSofaDataStream();
       assertTrue(is != null);
       i = 0;
@@ -409,6 +416,7 @@ public class JcasSofaTest extends TestCase {
       }
 
       dest = new byte[1];
+      is.close();
       is = byteArrayView.getSofaDataStream();
       assertTrue(is != null);
       i = 0;
@@ -417,6 +425,7 @@ public class JcasSofaTest extends TestCase {
       }
 
       dest = new byte[8];
+      is.close();
       is = longArrayView.getSofaDataStream();
       assertTrue(is != null);
       i = 0;
@@ -424,6 +433,7 @@ public class JcasSofaTest extends TestCase {
         assertTrue(ByteBuffer.wrap(dest).getLong() == longArrayFS.get(i++));
       }
 
+      is.close();
       is = doubleArrayView.getSofaDataStream();
       assertTrue(is != null);
       i = 0;
@@ -432,9 +442,16 @@ public class JcasSofaTest extends TestCase {
       }
 
       dest = new byte[1];
+      is.close();
       is = remoteView.getSofaDataStream();
       assertTrue(is != null);
-
+      is.close();
+      
+      // Delete the generated file.
+      File xcasFile = new File(sofaFileName);
+      if (xcasFile.exists()) {
+        assertTrue(xcasFile.delete());
+      }
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
