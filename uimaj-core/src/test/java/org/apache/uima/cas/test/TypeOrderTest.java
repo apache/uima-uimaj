@@ -225,8 +225,8 @@ public class TypeOrderTest extends TestCase {
     }
     
     fileWriter.close();
-    System.out.println(refFile.getAbsolutePath());
-    System.out.println(outputFile.getAbsolutePath());
+    //System.out.println(refFile.getAbsolutePath());
+    //System.out.println(outputFile.getAbsolutePath());
     Assert.assertTrue("Comparing ref " + refFile.getAbsolutePath() + " and output " + outputFile.getAbsolutePath(), FileCompare.compare(refFile, outputFile));
   }
 
