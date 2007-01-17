@@ -788,6 +788,13 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
  }
 
   /* (non-Javadoc)
+   * @see org.apache.uima.jcas.impl.IJCas#getSofaDataString()
+   */
+  public String getSofaDataString() {
+    return casImpl.getSofaDataString();
+ }
+
+  /* (non-Javadoc)
    * @see org.apache.uima.jcas.impl.IJCas#getSofaDataArray()
    */
   public FeatureStructure getSofaDataArray() {
