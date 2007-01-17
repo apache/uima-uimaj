@@ -21,7 +21,7 @@ package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.LongArrayFS;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for LongArray */
 public final class LongArray extends TOP implements LongArrayFS {
@@ -29,7 +29,7 @@ public final class LongArray extends TOP implements LongArrayFS {
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
    */
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = JCasRegistry.register(LongArray.class);
 
   public final static int type = typeIndexID;
 

@@ -18,7 +18,7 @@ public class StringSubtypeAnnotation extends Annotation {
   /** @generated
    * @ordered 
    */
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = org.apache.uima.jcas.JCasRegistry.register(StringSubtypeAnnotation.class);
   /** @generated
    * @ordered 
    */
@@ -66,14 +66,14 @@ public class StringSubtypeAnnotation extends Annotation {
    * @generated */
   public String getStringSetFeature() {
     if (StringSubtypeAnnotation_Type.featOkTst && ((StringSubtypeAnnotation_Type)jcasType).casFeat_stringSetFeature == null)
-      JCasImpl.throwFeatMissing("stringSetFeature", "org.apache.uima.cas.test.StringSubtypeAnnotation");
+      this.jcasType.jcas.throwFeatMissing("stringSetFeature", "org.apache.uima.cas.test.StringSubtypeAnnotation");
     return jcasType.ll_cas.ll_getStringValue(addr, ((StringSubtypeAnnotation_Type)jcasType).casFeatCode_stringSetFeature);}
     
   /** setter for stringSetFeature - sets  
    * @generated */
   public void setStringSetFeature(String v) {
     if (StringSubtypeAnnotation_Type.featOkTst && ((StringSubtypeAnnotation_Type)jcasType).casFeat_stringSetFeature == null)
-      JCasImpl.throwFeatMissing("stringSetFeature", "org.apache.uima.cas.test.StringSubtypeAnnotation");
+      this.jcasType.jcas.throwFeatMissing("stringSetFeature", "org.apache.uima.cas.test.StringSubtypeAnnotation");
     jcasType.ll_cas.ll_setStringValue(addr, ((StringSubtypeAnnotation_Type)jcasType).casFeatCode_stringSetFeature, v);}    
   }
 

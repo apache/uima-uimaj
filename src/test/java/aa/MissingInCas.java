@@ -35,7 +35,7 @@ public class MissingInCas extends TOP {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = org.apache.uima.jcas.JCasRegistry.register(MissingInCas.class);
 
   /**
    * @generated

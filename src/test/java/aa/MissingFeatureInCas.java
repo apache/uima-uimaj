@@ -35,7 +35,7 @@ public class MissingFeatureInCas extends TOP {
    * @generated
    * @ordered
    */
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = org.apache.uima.jcas.JCasRegistry.register(MissingFeatureInCas.class);
 
   /**
    * @generated
@@ -91,7 +91,7 @@ public class MissingFeatureInCas extends TOP {
   public int getHaveThisOne() {
     if (MissingFeatureInCas_Type.featOkTst
             && ((MissingFeatureInCas_Type) jcasType).casFeat_haveThisOne == null)
-      JCasImpl.throwFeatMissing("haveThisOne", "aa.MissingFeatureInCas");
+      this.jcasType.jcas.throwFeatMissing("haveThisOne", "aa.MissingFeatureInCas");
     return jcasType.ll_cas.ll_getIntValue(addr,
             ((MissingFeatureInCas_Type) jcasType).casFeatCode_haveThisOne);
   }
@@ -104,7 +104,7 @@ public class MissingFeatureInCas extends TOP {
   public void setHaveThisOne(int v) {
     if (MissingFeatureInCas_Type.featOkTst
             && ((MissingFeatureInCas_Type) jcasType).casFeat_haveThisOne == null)
-      JCasImpl.throwFeatMissing("haveThisOne", "aa.MissingFeatureInCas");
+      this.jcasType.jcas.throwFeatMissing("haveThisOne", "aa.MissingFeatureInCas");
     jcasType.ll_cas.ll_setIntValue(addr,
             ((MissingFeatureInCas_Type) jcasType).casFeatCode_haveThisOne, v);
   }
@@ -120,7 +120,7 @@ public class MissingFeatureInCas extends TOP {
   public float getMissingThisOne() {
     if (MissingFeatureInCas_Type.featOkTst
             && ((MissingFeatureInCas_Type) jcasType).casFeat_missingThisOne == null)
-      JCasImpl.throwFeatMissing("missingThisOne", "aa.MissingFeatureInCas");
+      this.jcasType.jcas.throwFeatMissing("missingThisOne", "aa.MissingFeatureInCas");
     return jcasType.ll_cas.ll_getFloatValue(addr,
             ((MissingFeatureInCas_Type) jcasType).casFeatCode_missingThisOne);
   }
@@ -133,7 +133,7 @@ public class MissingFeatureInCas extends TOP {
   public void setMissingThisOne(float v) {
     if (MissingFeatureInCas_Type.featOkTst
             && ((MissingFeatureInCas_Type) jcasType).casFeat_missingThisOne == null)
-      JCasImpl.throwFeatMissing("missingThisOne", "aa.MissingFeatureInCas");
+      this.jcasType.jcas.throwFeatMissing("missingThisOne", "aa.MissingFeatureInCas");
     jcasType.ll_cas.ll_setFloatValue(addr,
             ((MissingFeatureInCas_Type) jcasType).casFeatCode_missingThisOne, v);
   }
@@ -149,7 +149,7 @@ public class MissingFeatureInCas extends TOP {
   public String getChangedFType() {
     if (MissingFeatureInCas_Type.featOkTst
             && ((MissingFeatureInCas_Type) jcasType).casFeat_changedFType == null)
-      JCasImpl.throwFeatMissing("changedFType", "aa.MissingFeatureInCas");
+      this.jcasType.jcas.throwFeatMissing("changedFType", "aa.MissingFeatureInCas");
     return jcasType.ll_cas.ll_getStringValue(addr,
             ((MissingFeatureInCas_Type) jcasType).casFeatCode_changedFType);
   }
@@ -162,7 +162,7 @@ public class MissingFeatureInCas extends TOP {
   public void setChangedFType(String v) {
     if (MissingFeatureInCas_Type.featOkTst
             && ((MissingFeatureInCas_Type) jcasType).casFeat_changedFType == null)
-      JCasImpl.throwFeatMissing("changedFType", "aa.MissingFeatureInCas");
+      this.jcasType.jcas.throwFeatMissing("changedFType", "aa.MissingFeatureInCas");
     jcasType.ll_cas.ll_setStringValue(addr,
             ((MissingFeatureInCas_Type) jcasType).casFeatCode_changedFType, v);
   }

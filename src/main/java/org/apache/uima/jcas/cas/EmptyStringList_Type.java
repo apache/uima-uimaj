@@ -25,7 +25,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.jcas.JCasRegistry;
 
 public class EmptyStringList_Type extends StringList_Type {
   protected FSGenerator getFSGenerator() {
@@ -50,7 +50,7 @@ public class EmptyStringList_Type extends StringList_Type {
 
   public final static int typeIndexID = EmptyStringList.typeIndexID;
 
-  public final static boolean featOkTst = JCasImpl.getFeatOkTst("uima.cas.EmptyStringList");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("uima.cas.EmptyStringList");
 
   // * initialize variables to correspond with Cas Type and Features
   public EmptyStringList_Type(JCas jcas, Type casType) {

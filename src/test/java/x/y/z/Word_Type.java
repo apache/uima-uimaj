@@ -51,7 +51,7 @@ public class Word_Type extends TokenType_Type {
 
   public final static int typeIndexID = Word.typeIndexID;
 
-  public final static boolean featOkTst = JCasImpl.getFeatOkTst("x.y.z.Word");
+  public final static boolean featOkTst = org.apache.uima.jcas.JCasRegistry.getFeatOkTst("x.y.z.Word");
 
   // * initialize variables to correspond with Cas Type and Features
   public Word_Type(JCas jcas, Type casType) {

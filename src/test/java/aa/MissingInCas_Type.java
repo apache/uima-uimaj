@@ -63,7 +63,7 @@ public class MissingInCas_Type extends TOP_Type {
    * @generated
    * @modifiable
    */
-  public final static boolean featOkTst = JCasImpl.getFeatOkTst("aa.MissingInCas");
+  public final static boolean featOkTst = org.apache.uima.jcas.JCasRegistry.getFeatOkTst("aa.MissingInCas");
 
   /**
    * initialize variables to correspond with Cas Type and Features

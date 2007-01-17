@@ -26,7 +26,7 @@ import org.apache.uima.jcas.impl.JCasImpl;
 /* comment 4 of 14 */
 public class Word extends TokenType {
 
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = org.apache.uima.jcas.JCasRegistry.register(Word.class);
 
   public final static int type = typeIndexID;
 

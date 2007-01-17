@@ -21,7 +21,7 @@ package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.jcas.JCasRegistry;
 
 /** The Java Class model corresponding to the Cas IntegerArray_JCasImpl type. */
 public final class IntegerArray extends TOP implements IntArrayFS {
@@ -29,7 +29,7 @@ public final class IntegerArray extends TOP implements IntArrayFS {
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
    */
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = JCasRegistry.register(IntegerArray.class);
 
   public final static int type = typeIndexID;
 

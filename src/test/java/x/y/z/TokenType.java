@@ -27,7 +27,7 @@ import org.apache.uima.jcas.impl.JCasImpl;
 /* comment 3 of 14 */
 public class TokenType extends TOP {
 
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = org.apache.uima.jcas.JCasRegistry.register(TokenType.class);
 
   public final static int type = typeIndexID;
 

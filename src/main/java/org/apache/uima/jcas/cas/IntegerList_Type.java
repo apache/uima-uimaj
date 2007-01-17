@@ -25,7 +25,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.jcas.JCasRegistry;
 
 public class IntegerList_Type extends org.apache.uima.jcas.cas.TOP_Type {
   protected FSGenerator getFSGenerator() {
@@ -50,7 +50,7 @@ public class IntegerList_Type extends org.apache.uima.jcas.cas.TOP_Type {
 
   public final static int typeIndexID = IntegerList.typeIndexID;
 
-  public final static boolean featOkTst = JCasImpl.getFeatOkTst("uima.cas.IntegerList");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("uima.cas.IntegerList");
 
   // * initialize variables to correspond with Cas Type and Features
   public IntegerList_Type(JCas jcas, Type casType) {

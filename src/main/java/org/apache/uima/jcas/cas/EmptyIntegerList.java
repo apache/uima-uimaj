@@ -20,11 +20,11 @@
 package org.apache.uima.jcas.cas;
 
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.jcas.JCasRegistry;
 
 public class EmptyIntegerList extends IntegerList {
 
-  public final static int typeIndexID = JCasImpl.getNextIndex();
+  public final static int typeIndexID = JCasRegistry.register(EmptyIntegerList.class);
 
   public final static int type = typeIndexID;
 
