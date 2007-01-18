@@ -215,49 +215,49 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   // * Getters for read-only objects *
   // *********************************
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getFSIndexRepository()
+   * @see org.apache.uima.jcas.JCas#getFSIndexRepository()
    */
   public FSIndexRepository getFSIndexRepository() {
     return casImpl.getIndexRepository();
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getLowLevelIndexRepository()
+   * @see org.apache.uima.jcas.JCas#getLowLevelIndexRepository()
    */
   public LowLevelIndexRepository getLowLevelIndexRepository() {
     return ll_IndexRepository;
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getCas()
+   * @see org.apache.uima.jcas.JCas#getCas()
    */
   public CAS getCas() {
     return casImpl;
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getCasImpl()
+   * @see org.apache.uima.jcas.JCas#getCasImpl()
    */
   public CASImpl getCasImpl() {
     return casImpl;
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getLowLevelCas()
+   * @see org.apache.uima.jcas.JCas#getLowLevelCas()
    */
   public LowLevelCAS getLowLevelCas() {
     return casImpl;
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getTypeSystem()
+   * @see org.apache.uima.jcas.JCas#getTypeSystem()
    */
   public TypeSystem getTypeSystem() {
     return casImpl.getTypeSystem();
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getType(int)
+   * @see org.apache.uima.jcas.JCas#getType(int)
    */
   public TOP_Type getType(int i) {
     if (i >= typeArray.length || null == typeArray[i]) {
@@ -289,14 +289,14 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getCasType(int)
+   * @see org.apache.uima.jcas.JCas#getCasType(int)
    */
   public Type getCasType(int i) {
     return getType(i).casType;
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getType(org.apache.uima.jcas.cas.TOP)
+   * @see org.apache.uima.jcas.JCas#getType(org.apache.uima.jcas.cas.TOP)
    */
   public TOP_Type getType(TOP instance) {
     return getType(instance.getTypeIndexID());
@@ -581,7 +581,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getRequiredType(java.lang.String)
+   * @see org.apache.uima.jcas.JCas#getRequiredType(java.lang.String)
    */
   public Type getRequiredType(String s) throws CASException {
     Type t = getTypeSystem().getType(s);
@@ -594,7 +594,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getRequiredFeature(org.apache.uima.cas.Type, java.lang.String)
+   * @see org.apache.uima.jcas.JCas#getRequiredFeature(org.apache.uima.cas.Type, java.lang.String)
    */
   public Feature getRequiredFeature(Type t, String s) throws CASException {
     Feature f = t.getFeatureByBaseName(s);
@@ -608,7 +608,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getRequiredFeatureDE(org.apache.uima.cas.Type, java.lang.String, java.lang.String, boolean)
+   * @see org.apache.uima.jcas.JCas#getRequiredFeatureDE(org.apache.uima.cas.Type, java.lang.String, java.lang.String, boolean)
    */
 
   public Feature getRequiredFeatureDE(Type t, String s, String rangeName, boolean featOkTst) {
@@ -652,14 +652,14 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   final static private Class[] jcasBaseAndType = new Class[] { JCas.class, Type.class };
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#putJfsFromCaddr(int, org.apache.uima.cas.FeatureStructure)
+   * @see org.apache.uima.jcas.JCas#putJfsFromCaddr(int, org.apache.uima.cas.FeatureStructure)
    */
   public void putJfsFromCaddr(int casAddr, FeatureStructure fs) {
     cAddr2Jfs.put(new Integer(casAddr), fs);
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getJfsFromCaddr(int)
+   * @see org.apache.uima.jcas.JCas#getJfsFromCaddr(int)
    */
   public TOP getJfsFromCaddr(int casAddr) {
     return (TOP) cAddr2Jfs.get(new Integer(casAddr));
@@ -693,7 +693,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#reset()
+   * @see org.apache.uima.jcas.JCas#reset()
    */
   public void reset() {
     casImpl.reset();
@@ -702,7 +702,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   private final static int NULL = 0;
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#checkArrayBounds(int, int)
+   * @see org.apache.uima.jcas.JCas#checkArrayBounds(int, int)
    */
   public final void checkArrayBounds(int fsRef, int pos) {
     if (NULL == fsRef) {
@@ -724,35 +724,35 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   // *****************
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getSofa(org.apache.uima.cas.SofaID)
+   * @see org.apache.uima.jcas.JCas#getSofa(org.apache.uima.cas.SofaID)
    */
   public Sofa getSofa(SofaID sofaID) {
     return (Sofa) casImpl.getSofa(sofaID);
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getSofa()
+   * @see org.apache.uima.jcas.JCas#getSofa()
    */
   public Sofa getSofa() {
       return (Sofa) casImpl.getSofa();
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#createView(java.lang.String)
+   * @see org.apache.uima.jcas.JCas#createView(java.lang.String)
    */
   public JCas createView(String sofaID) throws CASException {
     return casImpl.createView(sofaID).getJCas();
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getJCas(org.apache.uima.jcas.cas.Sofa)
+   * @see org.apache.uima.jcas.JCas#getJCas(org.apache.uima.jcas.cas.Sofa)
    */
   public JCas getJCas(Sofa sofa) throws CASException {
     return casImpl.getView(sofa).getJCas();
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getSofaIterator()
+   * @see org.apache.uima.jcas.JCas#getSofaIterator()
    */
   public FSIterator getSofaIterator() {
     return casImpl.getSofaIterator();
@@ -763,7 +763,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   // *****************
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getJFSIndexRepository()
+   * @see org.apache.uima.jcas.JCas#getJFSIndexRepository()
    */
   public JFSIndexRepository getJFSIndexRepository() {
     return jfsIndexRepository;
@@ -774,112 +774,119 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   // ****************
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getDocumentAnnotationFs()
+   * @see org.apache.uima.jcas.JCas#getDocumentAnnotationFs()
    */
   public TOP getDocumentAnnotationFs() {
     return (TOP) casImpl.getDocumentAnnotation();
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getDocumentText()
+   * @see org.apache.uima.jcas.JCas#getDocumentText()
    */
   public String getDocumentText() {
     return casImpl.getDocumentText();
  }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getSofaDataString()
+   * @see org.apache.uima.jcas.JCas#getSofaDataString()
    */
   public String getSofaDataString() {
     return casImpl.getSofaDataString();
  }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getSofaDataArray()
+   * @see org.apache.uima.jcas.JCas#getSofaDataArray()
    */
   public FeatureStructure getSofaDataArray() {
     return casImpl.getSofaDataArray();
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getSofaDataURI()
+   * @see org.apache.uima.jcas.JCas#getSofaDataURI()
    */
   public String getSofaDataURI() {
     return casImpl.getSofaDataURI();
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#setDocumentText(java.lang.String)
+   * @see org.apache.uima.jcas.JCas#getSofaMimeType()
+   */
+  public String getSofaMimeType() {
+    return casImpl.getSofaMimeType();
+ }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.JCas#setDocumentText(java.lang.String)
    */
   public void setDocumentText(String text) throws CASRuntimeException {
     casImpl.setDocumentText(text);
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#setSofaDataString(java.lang.String, java.lang.String)
+   * @see org.apache.uima.jcas.JCas#setSofaDataString(java.lang.String, java.lang.String)
    */
   public void setSofaDataString(String text, String mime) throws CASRuntimeException {
     casImpl.setSofaDataString(text, mime);
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#setSofaDataArray(org.apache.uima.jcas.cas.TOP, java.lang.String)
+   * @see org.apache.uima.jcas.JCas#setSofaDataArray(org.apache.uima.jcas.cas.TOP, java.lang.String)
    */
   public void setSofaDataArray(FeatureStructure array, String mime) throws CASRuntimeException {
     casImpl.setSofaDataArray(array, mime);
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#setSofaDataURI(java.lang.String, java.lang.String)
+   * @see org.apache.uima.jcas.JCas#setSofaDataURI(java.lang.String, java.lang.String)
    */
   public void setSofaDataURI(String uri, String mime) throws CASRuntimeException {
     casImpl.setSofaDataURI(uri, mime);
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getDocumentLanguage()
+   * @see org.apache.uima.jcas.JCas#getDocumentLanguage()
    */
   public String getDocumentLanguage() {
     return casImpl.getDocumentLanguage();
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#setDocumentLanguage(java.lang.String)
+   * @see org.apache.uima.jcas.JCas#setDocumentLanguage(java.lang.String)
    */
   public void setDocumentLanguage(String language) throws CASRuntimeException {
     casImpl.setDocumentLanguage(language);
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getSofaDataStream()
+   * @see org.apache.uima.jcas.JCas#getSofaDataStream()
    */
   public InputStream getSofaDataStream() {
     return casImpl.getSofaDataStream();
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getConstraintFactory()
+   * @see org.apache.uima.jcas.JCas#getConstraintFactory()
    */
   public ConstraintFactory getConstraintFactory() {
     return casImpl.getConstraintFactory();
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#createFeaturePath()
+   * @see org.apache.uima.jcas.JCas#createFeaturePath()
    */
   public FeaturePath createFeaturePath() {
     return casImpl.createFeaturePath();
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#createFilteredIterator(org.apache.uima.cas.FSIterator, org.apache.uima.cas.FSMatchConstraint)
+   * @see org.apache.uima.jcas.JCas#createFilteredIterator(org.apache.uima.cas.FSIterator, org.apache.uima.cas.FSMatchConstraint)
    */
   public FSIterator createFilteredIterator(FSIterator it, FSMatchConstraint constraint) {
     return casImpl.createFilteredIterator(it, constraint);
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getStringArray0L()
+   * @see org.apache.uima.jcas.JCas#getStringArray0L()
    */
 
   public StringArray getStringArray0L() {
@@ -889,7 +896,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getIntegerArray0L()
+   * @see org.apache.uima.jcas.JCas#getIntegerArray0L()
    */
   public IntegerArray getIntegerArray0L() {
     if (null == sharedView.integerArray0L)
@@ -898,7 +905,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getFloatArray0L()
+   * @see org.apache.uima.jcas.JCas#getFloatArray0L()
    */
   public FloatArray getFloatArray0L() {
     if (null == sharedView.floatArray0L)
@@ -907,7 +914,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#getFSArray0L()
+   * @see org.apache.uima.jcas.JCas#getFSArray0L()
    */
   public FSArray getFSArray0L() {
     if (null == sharedView.fsArray0L)
@@ -916,7 +923,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#processInit()
+   * @see org.apache.uima.jcas.JCas#processInit()
    */
   public void processInit() {
     // unused
@@ -928,14 +935,14 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.cas.AbstractCas_ImplBase#setOwn
    */
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#setOwner(org.apache.uima.cas.CasOwner)
+   * @see org.apache.uima.jcas.JCas#setOwner(org.apache.uima.cas.CasOwner)
    */
   public void setOwner(CasOwner aCasOwner) {
     casImpl.setOwner(aCasOwner);
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#release()
+   * @see org.apache.uima.jcas.JCas#release()
    */
   public void release() {
     casImpl.release();
@@ -954,14 +961,14 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     return casImpl.getView(aSofa).getJCas();
   }
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#addFsToIndexes(org.apache.uima.cas.FeatureStructure)
+   * @see org.apache.uima.jcas.JCas#addFsToIndexes(org.apache.uima.cas.FeatureStructure)
    */
   public void addFsToIndexes(FeatureStructure instance) {
     casImpl.addFsToIndexes(instance);
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.impl.IJCas#removeFsFromIndexes(org.apache.uima.cas.FeatureStructure)
+   * @see org.apache.uima.jcas.JCas#removeFsFromIndexes(org.apache.uima.cas.FeatureStructure)
    */
   public void removeFsFromIndexes(FeatureStructure instance) {
     casImpl.removeFsFromIndexes(instance);

@@ -960,6 +960,13 @@ public interface CAS extends AbstractCas {
   InputStream getSofaDataStream();
 
   /**
+   * Get the mime type of the Sofa data being analyzed.
+   * 
+   * @return the mime type of the Sofa
+   */
+  String getSofaMimeType();
+  
+  /**
    * Add a feature structure to all appropriate indexes in the repository associated with this CAS
    * View. If no indexes exist for the type of FS that you are adding, then a bag (unsorted) index
    * will be automatically created.
