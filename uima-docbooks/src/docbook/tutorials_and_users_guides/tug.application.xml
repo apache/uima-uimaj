@@ -155,12 +155,7 @@ AnalysisEngine ae =
         
         
         <programlisting>  //create a JCas, given an Analysis Engine (ae)
-JCas jcas = ae.newDefaultTextJCas();
-  
-  // this is shorthand for the following steps:
-  //   CAS aCas = ae.newCAS();
-  //   CAS aCasView = aCas.createDefaultTextView();
-  //   JCas jcas = aCasView.createJCas();
+JCas jcas = ae.newJCas();
   
   //analyze a document
 jcas.setDocumentText(doc1text);
@@ -181,11 +176,7 @@ ae.destroy();</programlisting></para>
         
         
         <programlisting>//create a CAS
-CAS aCasView = ae.newDefaultTextCAS();
-
-// this is shorthand for the following steps:
-//   CAS aCas = ae.newCAS();
-//   CAS aCasView = aCas.createDefaultTextView();
+CAS aCasView = ae.newCAS();
 
 //analyze a document
 aCasView.setDocumentText(doc1text);
@@ -301,7 +292,7 @@ ae.destroy();</programlisting></para>
  
     //create Analysis Engine here
     mAnalysisEngine = UIMAFramework.produceAnalysisEngine(specifier);
-    mCAS = mAnalysisEngine.newDefaultTextCAS();
+    mCAS = mAnalysisEngine.newCAS();
   }
 
   // Assume some other part of your multi-threaded application could
@@ -453,13 +444,7 @@ ae.destroy();</programlisting></para>
 
   CAS cas = CasCreationUtils.createCas(list);
 
-  // once you have this CAS, you need to create the view you want of it, 
-  // and also (optionally) the JCas Interface to it
-
-  CAS casView = cas.createView("mySofaName", mime-type);
-  // (OR)
-  CAS casView = cas.createDefaultText View();
-  // (optional) 
+  // (optional, if using the JCas interface) 
   JCas jcas = casView.getJCas();</programlisting>
       
       <para>The CasCreationUtils class takes care of the work of merging the AEs&apos; type
