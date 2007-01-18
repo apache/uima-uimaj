@@ -2087,6 +2087,8 @@ public class MultiPageEditor extends FormEditor {
     return bRes;
   }
 
+  private static final int previewSize = 1024 * 16;
+  
   /**
    * Used by code to get lists of delegate components by input/output type specs.
    */
@@ -2096,12 +2098,23 @@ public class MultiPageEditor extends FormEditor {
       return null;
     }
     // make a quick assesment of whether file is a TAE
-    char[] acBuffer = new char[1024];
+    // looking in the first part of the file, but 1024 isn't big enough
+    // because initial comment blocks like the apache license are that big
+    // Do 16 K
+    char[] acBuffer = new char[previewSize];
     FileReader fileReader = null;
-    int nCharsRead;
+    int nCharsRead = 0;
     try {
+      // FileReader is FileInputStream using "default" char-encoding
       fileReader = new FileReader(iFile.getLocation().toString());
-      nCharsRead = fileReader.read(acBuffer);
+      while (true) {
+        int tempCharsRead = fileReader.read(acBuffer, nCharsRead, previewSize - nCharsRead);
+        if (-1 == tempCharsRead)
+          break;
+        nCharsRead = nCharsRead + tempCharsRead;
+        if (nCharsRead >= previewSize)
+          break;
+      }
     } catch (FileNotFoundException e) {
       return null;
     } catch (IOException e) {

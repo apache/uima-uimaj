@@ -144,24 +144,24 @@ public class FindComponentDialog extends AbstractDialog {
     }
   }
 
+  private static final String needToEscapeTheseChars = 
+    ".+{}()\\";
   private String convertToRegexSearchPattern(String searchPattern) {
     if (searchPattern == null || searchPattern.equals("")) {
       return null;
     }
-
     String searchPatternLowerCase = searchPattern.toLowerCase();
-    StringBuffer buffer = new StringBuffer(".*");
+    StringBuffer buffer = new StringBuffer("(?i)"); // case insensitive
     for (int i = 0; i < searchPatternLowerCase.length(); i++) {
       char ch = searchPatternLowerCase.charAt(i);
-      if (ch >= 'a' && ch <= 'z') {
-        buffer.append("[" + ch + ((char) (ch - 32)) + ']');
-      } else if (ch == '*') {
+      if (ch == '*') {
         buffer.append(".*");
+      } else if (0 <= needToEscapeTheseChars.indexOf(ch)) {
+        buffer.append('\\').append(ch);
       } else {
         buffer.append(ch);
       }
     }
-    buffer.append(".*");
 
     return new String(buffer);
   }

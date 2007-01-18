@@ -21,6 +21,7 @@ package org.apache.uima.taeconfigurator.editors.ui.dialogs;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -38,7 +39,11 @@ import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
 public class SearchThread implements Runnable /* extends Thread */{
-  private String m_fileNameSearch, m_inputTypeSearch, m_outputTypeSearch, m_projectToSearch;
+  private Pattern m_fileNameSearch; 
+  private Pattern m_inputTypeSearch;
+  private Pattern m_outputTypeSearch;
+  
+  private String  m_projectToSearch;
 
   FindComponentDialog m_dialog;
 
@@ -60,9 +65,9 @@ public class SearchThread implements Runnable /* extends Thread */{
 
     m_dialog = dialog;
     m_aggregateSection = aggregateSection;
-    m_fileNameSearch = fileNameSearch;
-    m_inputTypeSearch = inputTypeSearch;
-    m_outputTypeSearch = outputTypeSearch;
+    m_fileNameSearch = (null == fileNameSearch)? null : Pattern.compile(fileNameSearch);
+    m_inputTypeSearch = (null == inputTypeSearch)? null : Pattern.compile(inputTypeSearch);
+    m_outputTypeSearch = (null == outputTypeSearch)? null : Pattern.compile(outputTypeSearch);
     m_projectToSearch = projectToSearch;
     m_componentHeaders = componentHeaders;
   }
@@ -86,6 +91,8 @@ public class SearchThread implements Runnable /* extends Thread */{
   public void run() {
     m_matchingDelegateComponentDescriptors = new ArrayList();
     m_matchingDelegateComponentDescriptions = new ArrayList();
+    
+    
 
     getDelegateComponentsByInputOutputTypes(m_projectToSearch);
 
@@ -98,7 +105,7 @@ public class SearchThread implements Runnable /* extends Thread */{
         if (resource.getName().toLowerCase().endsWith(".xml")
                 // exclude potentially many data files, not descriptors
                 && !resource.getName().toLowerCase().endsWith(".txt.xml")
-                && (m_fileNameSearch == null || resource.getName().matches(m_fileNameSearch))) {
+                && (m_fileNameSearch == null || m_fileNameSearch.matcher(resource.getName()).find())) {
           String fileDescriptorRelPath = m_aggregateSection.editor
                   .getDescriptorRelativePath(resource.getLocation().toString());
           setStatusMsg(2, "Examining " + getBriefDisplayVersion(fileDescriptorRelPath));
@@ -180,7 +187,7 @@ public class SearchThread implements Runnable /* extends Thread */{
   }
 
   private boolean delegateComponentMatchesCapabilityReqs(ResourceCreationSpecifier rs,
-          String inputTypeSearch, String outputTypeSearch) {
+          Pattern inputTypeSearch, Pattern outputTypeSearch) {
 
     if (inputTypeSearch == null && outputTypeSearch == null) {
       return true;
@@ -200,7 +207,7 @@ public class SearchThread implements Runnable /* extends Thread */{
 
   private static final boolean OUTPUT = false;
 
-  private boolean matchCapabilitiesTo(Capability[] capabilities, String search, boolean isInput) {
+  private boolean matchCapabilitiesTo(Capability[] capabilities, Pattern search, boolean isInput) {
     if (null == search)
       return true;
     for (int i = 0; i < capabilities.length; i++) {
@@ -208,7 +215,7 @@ public class SearchThread implements Runnable /* extends Thread */{
               .getOutputs();
       if (null != typeOrFeatures) {
         for (int j = 0; j < typeOrFeatures.length; j++) {
-          if (typeOrFeatures[j].getName().matches(search)) {
+          if (search.matcher(typeOrFeatures[j].getName()).find()) {
             return true;
           }
         }
