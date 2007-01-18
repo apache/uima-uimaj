@@ -60,8 +60,9 @@ public class SofaCPE_Test extends TestCase {
 
   protected void setUp() throws Exception {
     UIMAFramework.getXMLParser().enableSchemaValidation(true);
-    System.setProperty("CPM_HOME", JUnitExtension.getFile(".").getAbsolutePath());
     cpeSpecifierFile = JUnitExtension.getFile("CpeSofaTest/SofaCPE.xml");
+    // Use the specifier file to determine where the specifiers live.
+    System.setProperty("CPM_HOME", cpeSpecifierFile.getParentFile().getParentFile().getAbsolutePath());
     cpeDesc = UIMAFramework.getXMLParser()
             .parseCpeDescription(new XMLInputSource(cpeSpecifierFile));
     // instantiate a cpe

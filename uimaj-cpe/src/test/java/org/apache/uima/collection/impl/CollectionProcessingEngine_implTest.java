@@ -19,6 +19,7 @@
 
 package org.apache.uima.collection.impl;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -35,28 +36,29 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
-
 public class CollectionProcessingEngine_implTest extends TestCase {
   protected final String TEST_DATAPATH = JUnitExtension.getFile(
-          "CollectionProcessingEngineImplTest").getPath()
-          + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
+      "CollectionProcessingEngineImplTest").getPath()
+      + System.getProperty("path.separator") + JUnitExtension.getFile("ResourceTest");
 
   /**
-   * Constructor for CollectionProcessingEngine_implTest.
-   * 
-   * @param arg0
-   */
+         * Constructor for CollectionProcessingEngine_implTest.
+         * 
+         * @param arg0
+         */
   public CollectionProcessingEngine_implTest(String arg0) {
     super(arg0);
   }
 
   /*
-   * (non-Javadoc)
-   * 
-   * @see junit.framework.TestCase#setUp()
-   */
+         * (non-Javadoc)
+         * 
+         * @see junit.framework.TestCase#setUp()
+         */
   protected void setUp() throws Exception {
-    System.setProperty("CPM_HOME", JUnitExtension.getFile(".").getAbsolutePath());
+    File referenceFile = JUnitExtension
+	.getFile("CollectionProcessingEngineImplTest/performanceTuningSettingsTestCpe.xml");
+    System.setProperty("CPM_HOME", referenceFile.getParentFile().getParentFile().getAbsolutePath());
   }
 
   public void testPerformanceTuningSettings() throws Exception {
@@ -66,16 +68,14 @@ public class CollectionProcessingEngine_implTest extends TestCase {
       HashMap params = new HashMap();
       params.put(Resource.PARAM_PERFORMANCE_TUNING_SETTINGS, newProps);
 
-      CpeDescription cpeDesc = UIMAFramework
-              .getXMLParser()
-              .parseCpeDescription(
-                      new XMLInputSource(
-                              JUnitExtension
-                                      .getFile("CollectionProcessingEngineImplTest/performanceTuningSettingsTestCpe.xml")));
+      CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
+	  new XMLInputSource(JUnitExtension
+	      .getFile("CollectionProcessingEngineImplTest/performanceTuningSettingsTestCpe.xml")));
       CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc,
-              params);
+	  params);
       cpe.process();
-      // Need to give CPE time to do its work. The following should work, but doesn't
+      // Need to give CPE time to do its work. The following should work, but
+      // doesn't
       // while (cpe.isProcessing())
       // {
       // Thread.sleep(1000);
@@ -91,19 +91,19 @@ public class CollectionProcessingEngine_implTest extends TestCase {
       ResourceManager rm = UIMAFramework.newDefaultResourceManager();
       rm.setDataPath(TEST_DATAPATH);
       CpeDescription cpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(
-              new XMLInputSource(JUnitExtension
-                      .getFile("CollectionProcessingEngineImplTest/externalResourceTestCpe.xml")));
+	  new XMLInputSource(JUnitExtension
+	      .getFile("CollectionProcessingEngineImplTest/externalResourceTestCpe.xml")));
       CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc, rm,
-              null);
+	  null);
       CollectionReader colRdr = (CollectionReader) cpe.getCollectionReader();
       assertNotNull(colRdr.getUimaContext().getResourceObject("TestFileResource"));
       CasInitializer casIni = colRdr.getCasInitializer();
       assertNotNull(casIni.getUimaContext().getResourceObject("TestFileLanguageResource",
-              new String[] { "en" }));
+	  new String[] { "en" }));
       AnalysisEngine ae = (AnalysisEngine) cpe.getCasProcessors()[0];
       assertNotNull(ae.getUimaContext().getResourceObject("TestResourceObject"));
       assertNotNull(ae.getUimaContext().getResourceObject("TestLanguageResourceObject",
-              new String[] { "en" }));
+	  new String[] { "en" }));
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
