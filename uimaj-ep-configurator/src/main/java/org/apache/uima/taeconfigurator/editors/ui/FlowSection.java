@@ -22,6 +22,7 @@ package org.apache.uima.taeconfigurator.editors.ui;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.metadata.CapabilityLanguageFlow;
 import org.apache.uima.analysis_engine.metadata.FixedFlow;
 import org.apache.uima.analysis_engine.metadata.FlowConstraints;
@@ -229,16 +230,24 @@ public class FlowSection extends AbstractSection {
 
   private void refreshFcd(FlowControllerDeclaration fcd) {
     enableFlowControllerGUI(true);
-    flowControllerKeyGUI.setText(null == fcd.getKey() ? "" : fcd.getKey());
+    String keyName;
+    if (null == fcd.getKey() || "".equals(fcd.getKey())) {
+      keyName = "Warning: no key name is specified";
+      flowControllerKeyGUI.setToolTipText(
+              "Use Source tab below to specify a key name " +
+              "in the <flowController> element, or the imported <flowController>");
+    } else
+      keyName = fcd.getKey();
+    flowControllerKeyGUI.setText(keyName);
     Import fcdImport = fcd.getImport();
     String fileName = null;
     if (null != fcdImport) {
       fileName = fcdImport.getLocation();
       if (null == fileName || (0 == fileName.length()))
         fileName = fcdImport.getName();
-
     }
-    flowControllerGUI.setText(null == fileName ? "" : fileName);
+    flowControllerGUI.setText(null == fileName ? 
+            "Warning: no <import> in <flowController>" : fileName);
     flowControllerChoice.setText(USER_DEFINED_FLOW);
     // must follow label updates
     // because this method also does the redraw
@@ -427,8 +436,15 @@ public class FlowSection extends AbstractSection {
    *          the key of the delegate
    */
   public void addNode(String node) {
-
-    FlowNodes flowNodes = new FlowNodes(getModelFlow());
+    FlowConstraints flowConstraints = getModelFlow();
+    if (null == flowConstraints) {
+      // no constraints declared
+      // set up Fix Flow style of contraints
+      //   This can happen if the style is user-defined flow
+      flowConstraints = UIMAFramework.getResourceSpecifierFactory().createFixedFlow();
+      getAnalysisEngineMetaData().setFlowConstraints(flowConstraints);
+    }
+    FlowNodes flowNodes = new FlowNodes(flowConstraints);
     String[] nodes = flowNodes.getFlow();
 
     if (nodes == null) {

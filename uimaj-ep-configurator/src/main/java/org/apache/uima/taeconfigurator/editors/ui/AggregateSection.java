@@ -322,6 +322,8 @@ public class AggregateSection extends AbstractSection {
 
     FlowNodes flow = new FlowNodes(getAnalysisEngineMetaData().getFlowConstraints());
     String[] savedFlowNodes = flow.getFlow();
+    if (null == savedFlowNodes) 
+      savedFlowNodes = stringArray0;
 
     // item may be in the flow 0, 1 or more times
 
@@ -387,7 +389,7 @@ public class AggregateSection extends AbstractSection {
   private void addNodeToFlow(String node) {
     FlowSection fs = editor.getAggregatePage().getFlowSection();
     fs.addNode(node);
-    fs.refresh();
+//    fs.refresh();  // the fs.addNode does a refresh
   }
 
   private void handleRemoveFromFlow() {
