@@ -26,40 +26,41 @@ under the License.
   <title>UIMA Overview</title>
   <titleabbrev>Overview</titleabbrev>
   
-  <para>The Unstructured Information Management Architecture (UIMA) is an architecture
-    and software framework for creating, discovering, composing and deploying a broad range
-    of multi-modal analysis capabilities and integrating them with search
-    technologies.</para>
+  <para>The Unstructured Information Management Architecture (UIMA) is an architecture and software framework
+    for creating, discovering, composing and deploying a broad range of multi-modal analysis capabilities and
+    integrating them with search technologies.</para>
   
-  <para>The <emphasis>UIMA framework</emphasis> provides a run-time environment in which
-    developers can plug in and run their UIMA component implementations and with which they
-    can build and deploy UIM applications. The framework is not specific to any IDE or
-    platform.</para>
+  <para>The <emphasis>UIMA framework</emphasis> provides a run-time environment in which developers can plug in
+    and run their UIMA component implementations and with which they can build and deploy UIM applications. The
+    framework is not specific to any IDE or platform.</para>
   
-  <para>The <emphasis>UIMA Software Development Kit (SDK)</emphasis> includes an
-    all-Java implementation of the UIMA framework for the development, description,
-    composition and deployment of UIMA components and applications. It also provides the
-    developer with an Eclipse-based (<ulink url="http://www.eclipse.org/"/>)
-    development environment that includes a set of tools and utilities for using UIMA.
-    </para>
+  <para>The <emphasis>UIMA Software Development Kit (SDK)</emphasis> includes an all-Java implementation of the
+    UIMA framework for the development, description, composition and deployment of UIMA components and
+    applications. It also provides the developer with an Eclipse-based (<ulink url="http://www.eclipse.org/"/>
+    ) development environment that includes a set of tools and utilities for using UIMA. </para>
   
-  <para>The <emphasis>Apache UIMA project</emphasis> also includes a C++ version of the
-    framework, and enablements for Annotators built in Perl, Python, and TCL.</para>
+  <para>The <emphasis>Apache UIMA project</emphasis> also includes a C++ version of the framework, and
+    enablements for Annotators built in Perl, Python, and TCL.</para>
   
-  <para>This chapter is the intended starting point for readers that are new to the Apache UIMA
-    Project. It includes this introduction and the following sections:</para>
+  <para>This chapter is the intended starting point for readers that are new to the Apache UIMA Project. It includes
+    this introduction and the following sections:</para>
   
   <itemizedlist>
     <listitem>
-      <para> <xref linkend="ugr.project_overview_doc_overview"/> provides a list of the
-        chapters included in the UIMA SDK documentation with a brief summary of each. </para>
+      <para> <xref linkend="ugr.project_overview_doc_overview"/> provides a list of the chapters included in
+        the UIMA SDK documentation with a brief summary of each. </para>
     </listitem>
     <listitem>
-      <para> <xref linkend="ugr.project_overview_doc_use"/> describes a recommended
-        path through the documentation to help get the reader up and running with UIMA </para>
+      <para> <xref linkend="ugr.project_overview_doc_use"/> describes a recommended path through the
+        documentation to help get the reader up and running with UIMA </para>
     </listitem>
     <listitem>
-      <para> <xref linkend="ugr.project_overview_whats_new"/> </para>
+      <para> <xref linkend="ugr.project_overview_migrating_from_ibm_uima"/> is intended for users of IBM
+        UIMA, and describes the steps needed to upgrade to Apache UIMA. </para>
+    </listitem>
+    <listitem>
+      <para> <xref linkend="project_overview_changes_from_v1"/> lists the changes that occurred between UIMA
+        v1.x and UIMA v2.x (independent of the transition to Apache).</para>
     </listitem>
   </itemizedlist>
   
@@ -69,15 +70,13 @@ under the License.
     <para> The user documentation for UIMA is organized into several parts.
       <itemizedlist spacing="compact">
         <listitem>
-          <para> <xref linkend="ugr.project_overview_overview"/> - this documentation
-            </para>
+          <para> <xref linkend="ugr.project_overview_overview"/> - this documentation </para>
         </listitem>
         <listitem>
           <para> <xref linkend="ugr.project_overview_setup"/> </para>
         </listitem>
         <listitem>
-          <para> <xref linkend="ugr.project_overview_tutorials_dev_guides"/>
-            </para>
+          <para> <xref linkend="ugr.project_overview_tutorials_dev_guides"/> </para>
         </listitem>
         <listitem>
           <para> <xref linkend="ugr.project_overview_tool_guides"/> </para>
@@ -96,28 +95,32 @@ under the License.
           <colspec colnum="2" colname="col2" colwidth="2.5*"/>
           <tbody>
             <row>
-              <entry><emphasis>Overview of the Documentation</emphasis></entry>
-              <entry><para>Lists the documents provided in the UIMA SDK documentation
-                set.</para>
-                <para>Provides a recommended path through the documentation for getting
-                  started using UIMA.</para>
+              <entry><emphasis>Overview of the Documentation</emphasis>
+              </entry>
+              <entry>
+                <para>Lists the documents provided in the UIMA SDK documentation set.</para>
+                <para>Provides a recommended path through the documentation for getting started using
+                  UIMA.</para>
                 <para>Includes release notes.</para>
-                <para>Provides a brief high-level description of the different software
-                  modules included in the UIMA SDK.</para></entry>
+                <para>Provides a brief high-level description of the different software modules included in the
+                  UIMA SDK.</para>
+              </entry>
             </row>
             <row>
-              <entry><emphasis>Conceptual Overview</emphasis></entry>
-              <entry>Provides a broad conceptual overview of the UIMA component
-                architecture; includes references to the other documents in the
-                documentation set that provide more detail.</entry>
+              <entry><emphasis>Conceptual Overview</emphasis>
+              </entry>
+              <entry>Provides a broad conceptual overview of the UIMA component architecture; includes
+                references to the other documents in the documentation set that provide more detail.</entry>
             </row>
             <row>
-              <entry><emphasis>UIMA FAQs</emphasis></entry>
-              <entry>Frequently Asked Questions about general UIMA concepts. (Not a
-                programming resource.)</entry>
+              <entry><emphasis>UIMA FAQs</emphasis>
+              </entry>
+              <entry>Frequently Asked Questions about general UIMA concepts. (Not a programming
+                resource.)</entry>
             </row>
             <row>
-              <entry><emphasis>Glossary</emphasis></entry>
+              <entry><emphasis>Glossary</emphasis>
+              </entry>
               <entry>UIMA terms and concepts and their basic definitions.</entry>
             </row>
           </tbody>
@@ -126,8 +129,8 @@ under the License.
     </section>
     <section id="ugr.project_overview_setup">
       <title>Eclipse Tooling Installation and Setup</title>
-      <para>Provides step-by-step instructions for installing the UIMA SDK in the Eclipse
-        Interactive Development Environment.</para>
+      <para>Provides step-by-step instructions for installing the UIMA SDK in the Eclipse Interactive
+        Development Environment.</para>
     </section>
     
     <section id="ugr.project_overview_tutorials_dev_guides">
@@ -138,55 +141,55 @@ under the License.
           <colspec colnum="2" colname="col2" colwidth="2.5*"/>
           <tbody>
             <row id="ugr.project_overview_tutorial_annotator">
-              <entry><emphasis>Annotators and Analysis Engines</emphasis></entry>
-              <entry>Tutorial-style guide for building UIMA annotators and analysis
-                engines. This chapter introduces the developer to creating type systems
-                and using UIMA&apos;s common data structure, the CAS or Common Analysis
-                Structure. It demonstrates how to use built in tools to specify and create
+              <entry><emphasis>Annotators and Analysis Engines</emphasis>
+              </entry>
+              <entry>Tutorial-style guide for building UIMA annotators and analysis engines. This chapter
+                introduces the developer to creating type systems and using UIMA&apos;s common data structure,
+                the CAS or Common Analysis Structure. It demonstrates how to use built in tools to specify and create
                 basic UIMA analysis components.</entry>
             </row>
             <row id="ugr.project_overview_tutorial_cpe">
-              <entry><emphasis>Building UIMA Collection Processing
-                Engines</emphasis></entry>
-              <entry>Tutorial-style guide for building UIMA collection processing
-                engines. These manage the analysis of collections of documents from source
-                to sink.</entry>
+              <entry><emphasis>Building UIMA Collection Processing Engines</emphasis>
+              </entry>
+              <entry>Tutorial-style guide for building UIMA collection processing engines. These manage the
+                analysis of collections of documents from source to sink.</entry>
             </row>
             <row id="ugr.project_overview_tutorial_application_development">
-              <entry><emphasis>Developing Complete Applications</emphasis></entry>
-              <entry>Tutorial-style guide on using the UIMA APIs to create, run and manage
-                UIMA components from your application. Also describes APIs for saving and
-                restoring the contents of a CAS using an XML format called <trademark
-                  class="registered"> XMI</trademark>.</entry>
+              <entry><emphasis>Developing Complete Applications</emphasis>
+              </entry>
+              <entry>Tutorial-style guide on using the UIMA APIs to create, run and manage UIMA components from
+                your application. Also describes APIs for saving and restoring the contents of a CAS using an XML
+                format called <trademark class="registered"> XMI</trademark>.</entry>
             </row>
             <row id="ugr.project_overview_guide_flow_controller">
-              <entry><emphasis>Flow Controller</emphasis></entry>
-              <entry>When multiple components are combined in an Aggregate, each CAS flow
-                among the various components. UIMA provides two built-in flows, and also
-                allows custom flows to be implemented.</entry>
+              <entry><emphasis>Flow Controller</emphasis>
+              </entry>
+              <entry>When multiple components are combined in an Aggregate, each CAS flow among the various
+                components. UIMA provides two built-in flows, and also allows custom flows to be
+                implemented.</entry>
             </row>
             <row id="ugr.project_overview_guide_multiple_sofas">
-              <entry><emphasis>Developing Applications using Multiple Subjects of
-                Analysis</emphasis></entry>
-              <entry>A single CAS maybe associated with multiple subjects of analysis
-                (Sofas). These are useful for representing and analyzing different
-                formats or translations of the same document. For multi-modal analysis,
-                Sofas are good for different modal representations of the same stream
-                (e.g., audio and close-captions).This chapter provides the developer
-                details on how to use multiple Sofas in an application.</entry>
+              <entry><emphasis>Developing Applications using Multiple Subjects of Analysis</emphasis>
+              </entry>
+              <entry>A single CAS maybe associated with multiple subjects of analysis (Sofas). These are useful
+                for representing and analyzing different formats or translations of the same document. For
+                multi-modal analysis, Sofas are good for different modal representations of the same stream
+                (e.g., audio and close-captions).This chapter provides the developer details on how to use
+                multiple Sofas in an application.</entry>
             </row>
             <row id="ugr.project_overview_guide_cas_multiplier">
-              <entry><emphasis>CAS Multiplier</emphasis></entry>
-              <entry>A component may add additional CASes into the workflow. This may be
-                useful to break up a large artifact into smaller units, or to create a new CAS
-                that collects information from multiple other CASes.</entry>
+              <entry><emphasis>CAS Multiplier</emphasis>
+              </entry>
+              <entry>A component may add additional CASes into the workflow. This may be useful to break up a large
+                artifact into smaller units, or to create a new CAS that collects information from multiple other
+                CASes.</entry>
             </row>
             <row id="ugr.project_overview_xmi_emf">
-              <entry><emphasis>XMI and EMF Interoperability</emphasis></entry>
-              <entry>The UIMA Type system and the contents of the CAS itself can be
-                externalized using the XMI standard for XML MetaData. Eclipse Modeling
-                Framework (EMF) tooling can be used to develop applications that use this
-                information.</entry>
+              <entry><emphasis>XMI and EMF Interoperability</emphasis>
+              </entry>
+              <entry>The UIMA Type system and the contents of the CAS itself can be externalized using the XMI
+                standard for XML MetaData. Eclipse Modeling Framework (EMF) tooling can be used to develop
+                applications that use this information.</entry>
             </row>
           </tbody>
         </tgroup>
@@ -202,56 +205,62 @@ under the License.
           <colspec colnum="2" colname="col2" colwidth="2.5*"/>
           <tbody>
             <row id="ugr.project_overview_tools_component_descriptor_editor">
-              <entry><emphasis>Component Descriptor Editor</emphasis></entry>
-              <entry>Describes the features of the Component Descriptor Editor Tool. This
-                tool provides a GUI for specifying the details of UIMA component
-                descriptors, including those for Analysis Engines (primitive and
-                aggregate), Collection Readers, CAS Consumers and Type Systems.</entry>
+              <entry><emphasis>Component Descriptor Editor</emphasis>
+              </entry>
+              <entry>Describes the features of the Component Descriptor Editor Tool. This tool provides a GUI for
+                specifying the details of UIMA component descriptors, including those for Analysis Engines
+                (primitive and aggregate), Collection Readers, CAS Consumers and Type Systems.</entry>
             </row>
             <row id="ugr.project_overview_tools_cpe_configurator">
               <entry><emphasis>Collection Processing Engine Configurator</emphasis>
-                </entry>
-              <entry>Describes the User Interfaces and features of the CPE Configurator
-                tool. This tool allows the user to select and configure the components of a
-                Collection Processing Engine and then to run the engine.</entry>
+              </entry>
+              <entry>Describes the User Interfaces and features of the CPE Configurator tool. This tool allows the
+                user to select and configure the components of a Collection Processing Engine and then to run the
+                engine.</entry>
             </row>
             <row id="ugr.project_overview_tools_pear_packager">
-              <entry><emphasis>Pear Packager</emphasis></entry>
-              <entry>Describes how to use the PEAR Packager utility. This utility enables
-                developers to produce an archive file for an analysis engine that includes
-                all required resources for installing that analysis engine in another UIMA
-                environment.</entry>
+              <entry><emphasis>Pear Packager</emphasis>
+              </entry>
+              <entry>Describes how to use the PEAR Packager utility. This utility enables developers to produce an
+                archive file for an analysis engine that includes all required resources for installing that
+                analysis engine in another UIMA environment.</entry>
             </row>
             <row id="ugr.project_overview_tools_pear_installer">
-              <entry><emphasis>Pear Installer</emphasis></entry>
-              <entry>Describes how to use the PEAR Installer utility. This utility
-                installs and verifies an analysis engine from an archive file (PEAR) with
-                all its resources in the right place so it is ready to run.</entry>
+              <entry><emphasis>Pear Installer</emphasis>
+              </entry>
+              <entry>Describes how to use the PEAR Installer utility. This utility installs and verifies an
+                analysis engine from an archive file (PEAR) with all its resources in the right place so it is ready to
+                run.</entry>
             </row>
             <row id="ugr.project_overview_tools_pear_merger">
-              <entry><emphasis>Pear Merger</emphasis></entry>
-              <entry>Describes how to use the Pear Merger utility, which does a simple merge
-                of multiple PEAR packages into one.</entry>
+              <entry><emphasis>Pear Merger</emphasis>
+              </entry>
+              <entry>Describes how to use the Pear Merger utility, which does a simple merge of multiple PEAR
+                packages into one.</entry>
             </row>
             <row id="ugr.project_overview_tools_document_analyzer">
-              <entry><emphasis>Document Analyzer</emphasis></entry>
-              <entry>Describes the features of a tool for applying a UIMA analysis engine to
-                a set of documents and viewing the results.</entry>
+              <entry><emphasis>Document Analyzer</emphasis>
+              </entry>
+              <entry>Describes the features of a tool for applying a UIMA analysis engine to a set of documents and
+                viewing the results.</entry>
             </row>
             <row id="ugr.project_overview_tools_cas_visual_debugger">
-              <entry><emphasis>CAS Visual Debugger</emphasis></entry>
-              <entry>Describes the features of a tool for viewing the detailed structure
-                and contents of a CAS. Good for debugging.</entry>
+              <entry><emphasis>CAS Visual Debugger</emphasis>
+              </entry>
+              <entry>Describes the features of a tool for viewing the detailed structure and contents of a CAS. Good
+                for debugging.</entry>
             </row>
             <row id="ugr.project_overview_tools_jcasgen">
-              <entry><emphasis>JCasGen</emphasis></entry>
-              <entry>Describes how to run the JCasGen utility, which automatically builds
-                Java classes that correspond to a particular CAS Type System.</entry>
+              <entry><emphasis>JCasGen</emphasis>
+              </entry>
+              <entry>Describes how to run the JCasGen utility, which automatically builds Java classes that
+                correspond to a particular CAS Type System.</entry>
             </row>
             <row id="ugr.project_overview_tools_xml_cas_viewer">
-              <entry><emphasis>XML CAS Viewer</emphasis></entry>
-              <entry>Describes how to run the supplied viewer to view externalized XML
-                forms of CASes. This viewier is used in the examples.</entry>
+              <entry><emphasis>XML CAS Viewer</emphasis>
+              </entry>
+              <entry>Describes how to run the supplied viewer to view externalized XML forms of CASes. This viewier
+                is used in the examples.</entry>
             </row>
           </tbody>
         </tgroup>
@@ -266,41 +275,42 @@ under the License.
           <colspec colnum="2" colname="col2" colwidth="2.5*"/>
           <tbody>
             <row id="ugr.project_overview_xml_ref_component_descriptor">
-              <entry><emphasis>XML: Component Descriptor</emphasis></entry>
-              <entry>Provides detailed XML format for all the UIMA component descriptors,
-                except the CPE (see next)</entry>
+              <entry><emphasis>XML: Component Descriptor</emphasis>
+              </entry>
+              <entry>Provides detailed XML format for all the UIMA component descriptors, except the CPE (see
+                next)</entry>
             </row>
-            <row
-              id="ugr.project_overview_xml_ref_collection_processing_engine_descriptor">
-              <entry><emphasis>XML: Collection Processing Engine
-                Descriptor</emphasis></entry>
-              <entry>Provides detailed XML format for the Collection Processing Engine
-                descriptor.</entry>
+            <row id="ugr.project_overview_xml_ref_collection_processing_engine_descriptor">
+              <entry><emphasis>XML: Collection Processing Engine Descriptor</emphasis>
+              </entry>
+              <entry>Provides detailed XML format for the Collection Processing Engine descriptor.</entry>
             </row>
             <row id="ugr.project_overview_javadocs">
               <entry><emphasis>Introduction to the UIMA API JavaDocs</emphasis>
-                </entry>
+              </entry>
               <entry>JavaDocs detailing the UIMA programming interfaces</entry>
             </row>
             <row id="ugr.project_overview_cas">
-              <entry><emphasis>CAS</emphasis></entry>
-              <entry>Provides detailed description of the principal CAS
-                interface.</entry>
+              <entry><emphasis>CAS</emphasis>
+              </entry>
+              <entry>Provides detailed description of the principal CAS interface.</entry>
             </row>
             <row id="ugr.project_overview_jcas">
-              <entry><emphasis>JCas</emphasis></entry>
-              <entry>Provides details on the JCas, a native Java interface to the
-                CAS.</entry>
+              <entry><emphasis>JCas</emphasis>
+              </entry>
+              <entry>Provides details on the JCas, a native Java interface to the CAS.</entry>
             </row>
             <row id="ugr.project_overview_ref_pear">
-              <entry><emphasis>PEAR Reference</emphasis></entry>
-              <entry>Provides detailed description of the deployable archive format for
-                UIMA components.</entry>
+              <entry><emphasis>PEAR Reference</emphasis>
+              </entry>
+              <entry>Provides detailed description of the deployable archive format for UIMA
+                components.</entry>
             </row>
             <row id="ugr.project_overview_xmi_cas_serialization">
-              <entry><emphasis>XMI CAS Serialization Reference</emphasis></entry>
-              <entry>Provides detailed description of the deployable archive format for
-                UIMA components.</entry>
+              <entry><emphasis>XMI CAS Serialization Reference</emphasis>
+              </entry>
+              <entry>Provides detailed description of the deployable archive format for UIMA
+                components.</entry>
             </row>
           </tbody>
         </tgroup>
@@ -313,237 +323,344 @@ under the License.
     <title>How to use the Documentation</title>
     <orderedlist>
       <listitem>
-        <para>Explore this chapter to get an overview of the different documents that are
-          included with the SDK.</para>
+        <para>Explore this chapter to get an overview of the different documents that are included with the
+          SDK.</para>
       </listitem>
       <listitem>
-        <para> Read <olink targetdoc="&uima_docs_overview;"
-            targetptr="ugr.ovv.conceptual"/> to get a broad view of the basic UIMA
-          concepts and philosophy with reference to the other documents included in the
+        <para> Read <olink targetdoc="&uima_docs_overview;" targetptr="ugr.ovv.conceptual"/> to get a broad
+          view of the basic UIMA concepts and philosophy with reference to the other documents included in the
           documentation set which provide greater detail. </para>
       </listitem>
       <listitem>
-        <para> For more general information on the UIMA architecture and how it has been used,
-          refer to the IBM Systems Journal special issue on Unstructured Information
-          Management, on-line at <ulink
-            url="http://www.research.ibm.com/journal/sj43-3.html"/> or to the
-          section of the UIMA project website on Apache website where other publications are
-          listed. </para>
+        <para> For more general information on the UIMA architecture and how it has been used, refer to the IBM Systems
+          Journal special issue on Unstructured Information Management, on-line at <ulink
+            url="http://www.research.ibm.com/journal/sj43-3.html"/> or to the section of the UIMA project
+          website on Apache website where other publications are listed. </para>
       </listitem>
       <listitem>
-        <para> Set up the UIMA SDK in your Eclipse environment. To do this, follow the
-          instructions in <xref linkend="ugr.project_overview_setup"/>. </para>
+        <para> Set up the UIMA SDK in your Eclipse environment. To do this, follow the instructions in <xref
+            linkend="ugr.project_overview_setup"/>. </para>
       </listitem>
       <listitem>
         <para> Develop sample UIMA annotators, run them and explore the results. Read <olink
-            targetdoc="&uima_docs_tutorial_guides;"
-            targetptr="ugr.tug.aae"/> and follow it like a
-          tutorial to learn how to develop your first UIMA annotator and set up and run your
-          first UIMA analysis engines.
+            targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.aae"/> and follow it like a tutorial
+          to learn how to develop your first UIMA annotator and set up and run your first UIMA analysis engines.
           <itemizedlist>
             <listitem>
               <para> As part of this you will use a few tools including
                 <itemizedlist>
                   <listitem>
-                    <para> The UIMA Component Descriptor Editor, described in more detail
-                      in <olink targetdoc="&uima_docs_tools;"
-                        targetptr="ugr.tools.cde"/> and </para>
+                    <para> The UIMA Component Descriptor Editor, described in more detail in <olink
+                        targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cde"/> and </para>
                   </listitem>
                   <listitem>
                     <para> The Document Analyzer, described in more detail in <olink
-                        targetdoc="&uima_docs_tools;"
-                        targetptr="ugr.tools.doc_analyzer"/>. </para>
+                        targetdoc="&uima_docs_tools;" targetptr="ugr.tools.doc_analyzer"/>. </para>
                   </listitem>
                   
                 </itemizedlist> </para>
               
             </listitem>
             <listitem>
-              <para>While following along in <olink
-                  targetdoc="&uima_docs_tutorial_guides;"
-                  targetptr="ugr.tug.aae"/>,
-                reference documents that may help are:
+              <para>While following along in <olink targetdoc="&uima_docs_tutorial_guides;"
+                  targetptr="ugr.tug.aae"/>, reference documents that may help are:
                 <itemizedlist>
                   <listitem>
                     <para> <olink targetdoc="&uima_docs_ref;"
-                        targetptr="ugr.ref.xml.component_descriptor"/> for understanding
-                      the analysis engine descriptors </para>
+                        targetptr="ugr.ref.xml.component_descriptor"/> for understanding the analysis
+                      engine descriptors </para>
                   </listitem>
                   <listitem>
-                    <para> <olink targetdoc="&uima_docs_ref;"
-                        targetptr="ugr.ref.jcas"/> for understanding the JCas
-                      </para>
+                    <para> <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.jcas"/> for
+                      understanding the JCas </para>
                   </listitem>
                 </itemizedlist> </para>
             </listitem>
           </itemizedlist> </para>
       </listitem>
       <listitem>
-        <para> Learn how to create, run and manage a UIMA analysis engine as part of an
-          application. <phrase condition="juru">Connect your analysis engine to the
-          provided semantic search engine to learn how a complete analysis and search
-          application may be built with the UIMA SDK.</phrase> <olink
-            targetdoc="&uima_docs_tutorial_guides;"
-            targetptr="ugr.tug.application"/> will guide you through this process.
+        <para> Learn how to create, run and manage a UIMA analysis engine as part of an application. <phrase
+            condition="juru">Connect your analysis engine to the provided semantic search engine to learn how a
+          complete analysis and search application may be built with the UIMA SDK.</phrase> <olink
+            targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.application"/> will guide you
+          through this process.
           <itemizedlist>
             <listitem>
-              <para> As part of this you will use the document analyzer (described in more
-                detail in <olink targetdoc="&uima_docs_tools;"
-                  targetptr="ugr.tools.doc_analyzer"/> and semantic search GUI tools (see <olink
-                  targetdoc="&uima_docs_tutorial_guides;"
+              <para> As part of this you will use the document analyzer (described in more detail in <olink
+                  targetdoc="&uima_docs_tools;" targetptr="ugr.tools.doc_analyzer"/> and semantic search
+                GUI tools (see <olink targetdoc="&uima_docs_tutorial_guides;"
                   targetptr="ugr.tug.application.search.query_tool"/>. </para>
             </listitem>
           </itemizedlist> </para>
       </listitem>
       <listitem>
-        <para> Pat yourself on the back. Congratulations! If you reached this step
-          successfully, then you have an appreciation for the UIMA analysis engine
-          architecture. You would have built a few sample annotators, deployed UIMA
-          analysis engines to analyze a few documents, searched over the results using the
-          built-in semantic search engine and viewed the results through a built-in viewer
+        <para> Pat yourself on the back. Congratulations! If you reached this step successfully, then you have an
+          appreciation for the UIMA analysis engine architecture. You would have built a few sample annotators,
+          deployed UIMA analysis engines to analyze a few documents, searched over the results using the built-in
+          semantic search engine and viewed the results through a built-in viewer
           &ndash; all as part of a simple but complete application. </para>
       </listitem>
       <listitem>
-        <para> Develop and run a Collection Processing Engine (CPE) to analyze and gather the
-          results of an entire collection of documents. <olink
-            targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.cpe"/> will
-          guide you through this process.
+        <para> Develop and run a Collection Processing Engine (CPE) to analyze and gather the results of an entire
+          collection of documents. <olink targetdoc="&uima_docs_tutorial_guides;"
+            targetptr="ugr.tug.cpe"/> will guide you through this process.
           <itemizedlist>
             <listitem>
-              <para> As part of this you will use the CPE Configurator tool. For details see
-                  <olink targetdoc="&uima_docs_tools;"
-                  targetptr="ugr.tools.cpe"/>. </para>
+              <para> As part of this you will use the CPE Configurator tool. For details see <olink
+                  targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cpe"/>. </para>
             </listitem>
             <listitem>
-              <para> You will also learn about CPE Descriptors. The detailed format for
-                these may be found in <olink targetdoc="&uima_docs_ref;"
-                  targetptr="ugr.ref.xml.cpe_descriptor"/>. </para>
+              <para> You will also learn about CPE Descriptors. The detailed format for these may be found in <olink
+                  targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/>. </para>
             </listitem>
           </itemizedlist> </para>
       </listitem>
       <listitem>
-        <para> Learn how to package up an analysis engine for easy installation into another
-          UIMA environment. <olink targetdoc="&uima_docs_tools;"
-            targetptr="ugr.tools.pear.packager"/> and <olink
-            targetdoc="&uima_docs_tools;" targetptr="ugr.tools.pear.installer"/> will
-          teach you how to create UIMA analysis engine archives so that you can easily share
-          your components with a broader community. </para>
+        <para> Learn how to package up an analysis engine for easy installation into another UIMA environment.
+            <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.pear.packager"/> and <olink
+            targetdoc="&uima_docs_tools;" targetptr="ugr.tools.pear.installer"/> will teach you how to
+          create UIMA analysis engine archives so that you can easily share your components with a broader
+          community. </para>
       </listitem>
     </orderedlist>
   </section>
   
-  <section id="ugr.project_overview_whats_new">
-    <title>What's new in Apache UIMA Version 2.0</title>
-    <para>Version 2.0 provide new capabilities and refines several areas of the UIMA
-      architecture, as compared with version 1. The Apache UIMA also changes the namespace of
-      the UIMA components to start with the prefix org.apache. This change requires that all
-      user code written to previous APIs be updated to reflect this new namespace, and
-      recompiled. </para>
+  <section id="ugr.project_overview_migrating_from_ibm_uima">
+    <title>Migrating from IBM UIMA to Apache UIMA</title>
+    <para> In Apache UIMA, the Java package names for all of the UIMA classes and interfaces have changed from what they
+      were in IBM UIMA. All of the package names now start with the prefix <literal>org.apache</literal>, and there
+      has been some other changes as well. These changes require that all user code written to previous APIs be updated
+      and recompiled. Some changes to XML descriptors are also required. A migration utility is provided which will
+      make the required updates to your files. </para>
+    
+    <section id="ugr.project_overview_running_the_migration_utility">
+      <title>Running the Migration Utility</title> <warning>
+      <para>Before running the migration utility, be sure to back up your files, just in case you encounter any
+        problems.</para> </warning>
+      <para> The migration utility is run by executing the script file
+        <literal>apache-uima/bin/ibmUimaToApacheUima.bat</literal> (Windows) or
+        <literal>apache-uima/bin/ibmUimaToApacheUima.sh</literal> (UNIX). You must pass one argument: the
+        directory containing the files that you want to be migrated. Subdirectories will be processed
+        recursively.</para>
+      <para>The script will scan your files and apply the necessary updates, for example replacing the com.ibm
+        package names with the new org.apache package names. For more details on what has changed in the UIMA APIs and
+        what changes are performed by the migration script, see the next section of this document.</para>
+      <para>The script will only attempt to modify files with the extensions: java, xml, xmi, wsdd, properties,
+        launch, bat, cmd, sh, ksh, or csh; and files with no extension. Also, files with size greater than 1,000,000
+        bytes will be skipped. (If you want the script too modify files with other extensions, you can edit the script
+        file and change the <literal>-ext</literal> argument appropraitely.) </para>
+      <para>After running the migration utility, you must recompile your code against the Apache UIMA jar files. The
+        migration utility should have done most of the updates necessary for your code to compile and run, but some
+        situations require manual intervention. See section <xref
+          linkend="ugr.project_overview_manual_migration_necessary"/> for more information.</para>
+    </section>
+    
+    <section id="ugr.project_overview_changes_addressed_by_migration_utility">
+      <title>Changes Addressed by the Migration Utility</title>
+      <section>
+        <title>Java Package Name Changes</title>
+        <para>All of the UIMA Java package names have changed in Apache UIMA. They now start with
+          <literal>org.apache</literal> rather than <literal>com.ibm</literal>. There have been other
+          changes as well. The package name segment <literal>reference_impl</literal> has been shortened to
+          <literal>impl</literal>, and some segments have been reordered. For example
+          <literal>com.ibm.uima.reference_impl.analysis_engine</literal> has become
+          <literal>org.apache.uima.analysis_engine.impl</literal>. Tools are now consolidated under
+          <literal>org.apache.uima.tools</literal> and service adapters under
+          <literal>org.apache.uima.adapter</literal>. </para>
+        <para>The migration utility will replace all occurrences of IBM UIMA package names with their Apache UIMA
+          equivalents. It will not replace <emphasis>prefixes</emphasis> of package names, so if your code uses is
+          a package called <literal>com.ibm.uima.myproject</literal> (although that is not recommended), it
+          will not be replaced.</para>
+      </section>
+      <section>
+        <title>XML Descriptor Changes</title>
+        <para>The XML namespace in UIMA component descriptors has changed from
+          <literal>http://uima.watson.ibm.com/resourceSpecifier</literal> to
+          <literal>http://uima.apache.org/resourceSpecifier</literal>. The value of the
+          <literal>&lt;frameworkImplementation></literal> must now be
+          <literal>org.apache.uima.java</literal> or <literal>org.apache.uima.cpp</literal>. The
+          migration script will apply these replacements. </para>
+      </section>
+      <section>
+        <title>TCAS replaced by CAS</title>
+        <para>In Apache UIMA the <literal>TCAS</literal> interface has been removed. All uses of it must now be
+          replaced by the <literal>CAS</literal> interface. (All methods that used to be defined on
+          <literal>TCAS</literal> were moved to <literal>CAS</literal> in v2.0.) The method
+          <literal>CAS.getTCAS()</literal> is replaced with <literal>CAS.getCurrentView()</literal> and
+          <literal>CAS.getTCAS(String)</literal> is replaced with <literal>CAS.getView(String)</literal>
+          . The following have also been removed and replaced with the equivalent "CAS" variants:
+          <literal>TCASException</literal>, <literal>TCASRuntimeException</literal>,
+          <literal>TCasPool</literal>, and <literal>CasCreationUtils.createTCas(...)</literal>. </para>
+        <para>The migration script will apply the necessary replacements. It will only reaplce "TCAS" when it
+          appears capitalized and as a word by itself, or as one of the class or method names listed above. Otherwise it
+          will not be replaced.</para>
+      </section>
+      <section>
+        <title>JCas Is Now an Interface</title>
+        <para>In previous versions, user code accessed the JCas <emphasis>class</emphasis> directly. In Apache
+          UIMA there is now an interface, <literal>org.apache.uima.jcas.JCas</literal>, which all JCas-based
+          user code must now use. Static methods that were previously on the JCas class (and called from JCas cover
+          classes generated by JCasGen) have been moved to the new
+          <literal>org.apache.uima.jcas.JCasRegistry</literal> class. The migration script will apply the
+          necessary replacements to your code, including any JCas cover classes that are part of your codebase.
+          </para>
+      </section>
+    </section>
+    
+    <section id="ugr.project_overview_manual_migration_necessary">
+      <title>Situations Where Manual Migration is Necessary</title>
+      <para> In the following situations the migration script will not be able to automatically apply the necessary
+        changes, and some manual intervention is necessary. </para>
+      <section>
+        <title>JCas Cover Classes for DocumentAnnotation</title>
+        <para> If you have run JCasGen it is likely that you have the classes
+          <literal>com.ibm.uima.jcas.tcas.DocumentAnnotation</literal> and
+          <literal>com.ibm.uima.jcas.tcas.DocumentAnnotation_Type</literal> as part of your code. This
+          package name is no longer valid, and the migration utility does not move your files between directories so
+          it is unable to fix this. </para>
+        <para> If you have not made manual modifications to these classes, the best solution is usually to just delete
+          these two classes (and their containing package). There is a default version in the
+          <literal>uima-document-annotation.jar</literal> file that is included in Apache UIMA. If you
+          <emphasis>have</emphasis> made custom changes, then you should not delete the file but instead move it to
+          the correct package <literal>org.apache.uima.jcas.tcas</literal>. For more information about JCAS
+          and DocumentAnnotation please see <olink targetdoc="&uima_docs_ref;"
+            targetptr="ugr.ref.jcas.documentannotation_issues"/> </para>
+      </section>
+      <section>
+        <title>JCas.getDocumentAnnotation</title>
+        <para>The deprecated method <literal>JCas.getDocumentAnnotation</literal> has been removed. Its use
+          must be replaced with <literal>JCas.getDocumentAnnotationFs</literal>. The method
+          <literal>JCas.getDocumentAnnotationFs()</literal> returns type <literal>TOP</literal>, so your
+          code must cast this to type <literal>DocumentAnnotation</literal>. The reasons for this are described
+          in <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.jcas.documentannotation_issues"/>.
+          </para>
+      </section>
+      <section>
+        <title>xi:include</title>
+        <para>The use of &lt;xi:include> in UIMA component descriptors has been discouraged for some time, and in
+          Apache UIMA support for it has been removed. If you have descriptors that use that, you must change them to
+          use UIMA's &lt;import> syntax instead. The proper syntax is described in <olink
+            targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.component_descriptor.imports"/>.
+          </para>
+      </section>
+      <section>
+        <title>Duplicate Methods Taking CAS and TCAS as Arguments</title>
+        <para>Because <literal>TCAS</literal> has been replaced by <literal>CAS</literal>, if you had two
+          methods distinguished only by whether an argument type was <literal>TCAS</literal> or
+          <literal>CAS</literal>, the migration tool will cause these to have identical signatures, which will be
+          a compile error. If this happens, consider why the two variants were needed in the first place. Often, it may
+          work to simply delete one of the methods.</para>
+      </section>
+      <section>
+        <title>Use of Undocumented Methods from the com.ibm.uima.util package</title>
+        <para>Previous UIMA versions has some methods in the <literal>com.ibm.uima.util</literal> package that
+          were for internal use and were not documented in the JavaDoc. (There are also many methods in that package
+          which are documented, and there is no issue with using these.) It is not recommended that you use any of the
+          undocumented methods. If you do, the migration script will not handle them correctly. These have now been
+          moved to <literal>org.apache.uima.internal.util</literal>, and you will have to manually update your
+          imports to point to this location.</para>
+      </section>
+      <section>
+        <title>Use of UIMA Package Names for User Code</title>
+        <para>If you have placed your own classes in a package that has exactly the same name as one of the UIMA packages
+          (not recommended), this will cause problems when your run the migration script. Since the script replaces
+          UIMA package names, all of your imports that refer to your class will get replaced and your code will no
+          longer compile. If this happens, you can fix it by manually moving your code to the new Apache UIMA package
+          name (i.e., whatever name your imports got replaced with). However, we recommend instead that you do not
+          use Apache UIMA package names for your own code.</para>
+        <para>An even more rare case would be if you had a package name that started with a capital letter (poor Java
+          style) AND was prefixed by one of the UIMA package names, for example a pacakge named
+          <literal>com.ibm.uima.MyPackage</literal>. This would be treated as a class name and replaced with
+          <literal>org.apache.uima.MyPackage</literal> wherever it occurs.</para>
+      </section>
+    </section>
+    <section id="ugr.ovv.search_engine_repackaged">
+      <title>Semantic Search Engine Repackaged</title>
+      <para>The versions of the UIMA SDK prior to the move into Apache came with a semantic search engine. The Apache
+        version does not include this search engine. The search engine has been repackaged and is separately
+        available from <ulink url="http://www.alphaworks.ibm.com/tech/uima"/>. The intent is to hook up (over
+        time) with other open source search engines, such as the Lucene search engine project in Apache.</para>
+    </section>
+  </section>
+  
+  <section id="ugr.project_overview_changes_from_v1">
+    <title>Changes from UIMA Version 1.x</title>
+    <para>Version 2.x of UIMA provides new capabilities and refines several areas of the UIMA architecture, as
+      compared with version 1.</para>
     
     <section id="ugr.project_overview_new_capabilities">
       <title>New Capabilities</title>
       <section id="ugr.project_overview_new_data_types">
         <title>New Primitive data types</title>
-        <para>UIMA now supports Boolean (bit), Byte, Short (16 bit integers), Long (64 bit
-          integers), and Double (64 bit floating point) primitive types, and arrays of
-          these. These types can be used like all the other primitive types.</para>
+        <para>UIMA now supports Boolean (bit), Byte, Short (16 bit integers), Long (64 bit integers), and Double (64
+          bit floating point) primitive types, and arrays of these. These types can be used like all the other
+          primitive types.</para>
       </section>
       <section id="ugr.ovv.simpler_aes_and_cases">
         <title>Simpler Analysis Engines and CASes</title>
-        <para>Version 1.x made a distinction between Analysis Engines and Text Analysis
-          Engines. This distinction has been eliminated in Version 2 - new code should just
-          refer to Analysis Engines. Analysis Engines can operate on multiple kinds of
-          artifacts, including text.</para>
-        
-        <para>Version 1.x made a distinction between CASes and TCASes. TCAS are now
-          deprecated; new code should just refer to CASes. The JCas capability to have a
-          Java-friendly way to work with CAS types remains; we clarify that the JCas is just
-          (one of potentially several) interfaces to the CAS.</para>
+        <para>Version 1.x made a distinction between Analysis Engines and Text Analysis Engines. This distinction
+          has been eliminated in Version 2 - new code should just refer to Analysis Engines. Analysis Engines can
+          operate on multiple kinds of artifacts, including text.</para>
       </section>
       <section id="ugr.ovv.sofas_and_cas_views_simplified">
         <title>Sofas and CAS Views simplified</title>
-        <para>The APIs for manipulating multiple subjects of analysis (Sofas) and their
-          corresponding CAS Views have been simplified.</para>
+        <para>The APIs for manipulating multiple subjects of analysis (Sofas) and their corresponding CAS Views
+          have been simplified.</para>
       </section>
       <section id="ugr.ovv.ae_support_multiple_new_cases">
-        <title>Analysis Component generalized to support multiple new CAS
-          outputs</title>
-        <para>Analysis Components, in general, can make use of new capabilities to return
-          multiple new CASes, in addition to returning the original CAS that is passed in.
-          This allows components to have Collection Reader-like capabilities, but be
-          placed anywhere in the flow. See <olink targetdoc="&uima_docs_tutorial_guides;"
-            targetptr="ugr.tug.cm"/>.</para>
+        <title>Analysis Component generalized to support multiple new CAS outputs</title>
+        <para>Analysis Components, in general, can make use of new capabilities to return multiple new CASes, in
+          addition to returning the original CAS that is passed in. This allows components to have Collection
+          Reader-like capabilities, but be placed anywhere in the flow. See <olink
+            targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.cm"/>.</para>
       </section>
       <section id="ugr.ovv.user_customized_fc">
         <title>User-customized Flow Controllers</title>
-        <para>A new component, the Flow Controller, can be supplied by the user to implement
-          arbitrary flow control for CASes within an Aggregate. This is in addition to the two
-          built-in flow control choices of linear and language-capability flow. See <olink
-            targetdoc="&uima_docs_tutorial_guides;"
+        <para>A new component, the Flow Controller, can be supplied by the user to implement arbitrary flow control
+          for CASes within an Aggregate. This is in addition to the two built-in flow control choices of linear and
+          language-capability flow. See <olink targetdoc="&uima_docs_tutorial_guides;"
             targetptr="ugr.tug.fc"/>.</para>
-      </section>
-      <section id="ugr.ovv.search_engine_repackaged">
-        <title>Search Engine Repackaged</title>
-        <para>The versions of the UIMA SDK prior to the move into Apache came with a semantic
-          search engine. The Apache version does not include this search engine.  The search engine
-          has been repackaged and is separately available from 
-          <ulink url="http://www.alphaworks.ibm.com/tech/uima"/>.  
-          The intent
-          is to hook up (over time) with other open source search engines, such as the Lucene 
-          search engine project in Apache.</para>
       </section>
     </section>
     <section id="ugr.project_overview_backwards_compatibility">
       <title>Backwards Compatibility</title>
-      <para>Applications and components must update references to UIMA APIs to reflect the
-        change in namespace to "org.apache.". Because of this, backwards compatibility is
-        not maintained.</para>
-      <para>However, other than this and the exceptions following, applications and
-        components should not need other changes because of version 2.0 Here are the
-        exceptions, the non-compatible changes:
+      <para>Other than the changes from IBM UIMA to Apache UIMA described in <xref
+          linkend="ugr.project_overview_migrating_from_ibm_uima"/>, most UIMA 1.x applications should not
+        require additional changes to upgrade to UIMA 2.x. However, there are a few exceptions that UIMA 1.x users may
+        need to be aware of:
         <itemizedlist>
           <listitem>
-            <para> There have been some changes to ResultSpecifications. We do not
-              guarantee 100% backwards compatibility for applications that made use of
-              them, although most cases should work. </para>
+            <para> There have been some changes to ResultSpecifications. We do not guarantee 100% backwards
+              compatibility for applications that made use of them, although most cases should work. </para>
           </listitem>
           <listitem>
-            <para> For applications that deal with multiple subjects of analysis (Sofas),
-              the rules that determine whether a component is Multi-View or Single-View
-              have been made more consistent. A component is considered Multi-View if and
-              only if it declares at least one inputSofa or outputSofa in its descriptor.
-              This leads to the following incompatibilities in unusual cases:
+            <para> For applications that deal with multiple subjects of analysis (Sofas), the rules that determine
+              whether a component is Multi-View or Single-View have been made more consistent. A component is
+              considered Multi-View if and only if it declares at least one inputSofa or outputSofa in its
+              descriptor. This leads to the following incompatibilities in unusual cases:
               <itemizedlist>
                 <listitem>
-                  <para> It is an error if an annotator that implements the TextAnnotator or
-                    JTextAnnotator interface also declares inputSofas or outputSofas in
-                    its descriptor. Such annotators must be Single-View. </para>
+                  <para> It is an error if an annotator that implements the TextAnnotator or JTextAnnotator
+                    interface also declares inputSofas or outputSofas in its descriptor. Such annotators must be
+                    Single-View. </para>
                 </listitem>
                 <listitem>
-                  <para> </para>
+                  <para> Annotators that implement GenericAnnotator but do not declare any inputSofas or
+                    outputSofas will now be passed the view of default Sofa instead of the Base CAS. </para>
                 </listitem>
               </itemizedlist> </para>
-          </listitem>
-          <listitem>
-            <para> Annotators that implement GenericAnnotator but do not declare any
-              inputSofas or outputSofas will now be passed the view of default Sofa instead
-              of the Base CAS. </para>
           </listitem>
         </itemizedlist> </para>
       
     </section>
     <section id="ugr.ovv.other_changes">
       <title>Other Changes</title>
-      <para>TextAnalysisEngine has been deprecated - it is now no different than
-        AnalysisEngine. Previous code that uses this should still continue to work,
-        however.</para>
+      <para>TextAnalysisEngine has been deprecated - it is now no different than AnalysisEngine. Previous code
+        that uses this should still continue to work, however.</para>
       
-      <para>Methods that were defined on the TCAS interface have been moved to the base CAS
-        interface; the TCAS interface is no longer needed.</para>
-      
-      <para>The DocumentAnalyzer tool saves outputs in the new XMI serialization format.
-        The XCasAnnotationViewer and SemanticSearchGUI tools can read both the new XMI
-        format and the previous XCAS format.</para>
+      <para>The DocumentAnalyzer tool saves outputs in the new XMI serialization format. The
+        XCasAnnotationViewer and SemanticSearchGUI tools can read both the new XMI format and the previous XCAS
+        format.</para>
       
     </section>
   </section>
@@ -551,62 +668,52 @@ under the License.
     <title>Apache UIMA SDK Summary</title>
     <section id="ugr.ovv.summary.general">
       <title>General</title>
-      <para>The UIMA SDK supports the development, discovery, composition and deployment
-        of multi-modal analytics for the analysis of unstructured information and its
-        integration with search technologies.</para>
+      <para>The UIMA SDK supports the development, discovery, composition and deployment of multi-modal
+        analytics for the analysis of unstructured information and its integration with search
+        technologies.</para>
       
-      <para>It includes APIs and tools for creating analysis components. Examples of
-        analysis components include tokenizers, summarizers, categorizers, parsers,
-        named-entity detectors etc. Tutorial examples are provided with the SDK;
-        additional components are available from the community. </para>
+      <para>It includes APIs and tools for creating analysis components. Examples of analysis components include
+        tokenizers, summarizers, categorizers, parsers, named-entity detectors etc. Tutorial examples are
+        provided with the SDK; additional components are available from the community. </para>
       
-      <para condition="juru">The UIMA SDK also includes a semantic search engine for
-        indexing the results of analysis and for using this semantic index to perform more
-        advanced search. </para>
+      <para condition="juru">The UIMA SDK also includes a semantic search engine for indexing the results of
+        analysis and for using this semantic index to perform more advanced search. </para>
     </section>
     <section id="ugr.ovv.summary.programming_language_support">
       <title>Programming Language Support</title>
-      <para>UIMA supports the development and integration of analysis algorithms
-        developed in different programming languages. </para>
+      <para>UIMA supports the development and integration of analysis algorithms developed in different
+        programming languages. </para>
       
-      <para><phrase condition="precpp">The Apache UIMA project is initially a Java
-        framework. In the next several months we plan to bring into the project the C++
-        enablement component, which will enable annotators written in C++ to run together
-        with Java based components. The C++ enablement layer also enables annotators to be
-        written in Perl, Python, and TCL, and to interoperate with those written in other
-        languages. </phrase> <phrase condition="postcpp">The Apache UIMA project is both
-        a Java framework and a matching C++ enablement layer, which allows annotators to be
-        written in C++ and have access to a C++ version of the CAS. The C++ enablement layer also
-        enables annotators to be written in Perl, Python, and TCL, and to interoperate with
-        those written in other languages. Documentation for this is provided here (link to be
-        filled in).</phrase></para>
+      <para><phrase condition="precpp">The Apache UIMA project is initially a Java framework. In the next several
+        months we plan to bring into the project the C++ enablement component, which will enable annotators written
+        in C++ to run together with Java based components. The C++ enablement layer also enables annotators to be
+        written in Perl, Python, and TCL, and to interoperate with those written in other languages. </phrase>
+          <phrase condition="postcpp">The Apache UIMA project is both a Java framework and a matching C++
+        enablement layer, which allows annotators to be written in C++ and have access to a C++ version of the CAS. The
+        C++ enablement layer also enables annotators to be written in Perl, Python, and TCL, and to interoperate with
+        those written in other languages. Documentation for this is provided here (link to be filled in).</phrase>
+        </para>
       
     </section>
     <section id="ugr.ovv.general.summary.multi_modal_support">
       <title>Multi-Modal Support</title>
-      <para>The UIMA architecture supports the development, discovery, composition and
-        deployment of multi-modal analytics, including text, audio and video. <olink
-          targetdoc="&uima_docs_tutorial_guides;"
-          targetptr="ugr.tug.aas"/> discuss this is more
+      <para>The UIMA architecture supports the development, discovery, composition and deployment of
+        multi-modal analytics, including text, audio and video. <olink
+          targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.aas"/> discuss this is more
         detail.</para>
     </section>
     <section id="ugr.ovv.summary.general.semantic_search_components">
       <title>Semantic Search Components</title>
-      <para> The Lucene search engine as of this writing (November, 2006) does not support
-        searching with annotations. The site <ulink
-          url="http://www.alphaworks.ibm.com/tech/uima"/> provides a download of a
-        semantic search engine, a simple demo query tool, some documentation on the semantic
-        search engine, and a component that connects the results of UIMA analysis to the
-        indexer so that the annotations as well as key-words can be indexed.
-        </para>
+      <para> The Lucene search engine as of this writing (November, 2006) does not support searching with
+        annotations. The site <ulink url="http://www.alphaworks.ibm.com/tech/uima"/> provides a download of a
+        semantic search engine, a simple demo query tool, some documentation on the semantic search engine, and a
+        component that connects the results of UIMA analysis to the indexer so that the annotations as well as
+        key-words can be indexed. </para>
       
-      <para>Previous versions of the UIMA SDK (prior to the Apache versions) are available
-        from <ulink url="http://www.alphaworks.ibm.com/tech/uima">
-        IBM's alphaWorks</ulink>. The source code for
-        previous versions of the main UIMA framework is available on 
-        <ulink url="http://uima-framework.sourceforge.net/">
-        SourceForge</ulink>.</para>
-      
+      <para>Previous versions of the UIMA SDK (prior to the Apache versions) are available from <ulink
+          url="http://www.alphaworks.ibm.com/tech/uima"> IBM's alphaWorks</ulink>. The source code for
+        previous versions of the main UIMA framework is available on <ulink
+          url="http://uima-framework.sourceforge.net/"> SourceForge</ulink>.</para>      
     </section>
   </section>
   
@@ -623,98 +730,90 @@ under the License.
           </row>
           <row>
             <entry>UIMA Framework Core</entry>
-            <entry><para>A framework integrating core functions for creating,
-              deploying, running and managing UIMA components, including analysis
-              engines and Collection Processing Engines in collocated and/or distributed
-              configurations. </para>
+            <entry>
+              <para>A framework integrating core functions for creating, deploying, running and managing UIMA
+                components, including analysis engines and Collection Processing Engines in collocated and/or
+                distributed configurations. </para>
               
-              <para>The framework includes an implementation of core components for
-                transport layer adaptation, CAS management, workflow management based on
-                declarative specifications, resource management, configuration
-                management, logging, and other functions.</para></entry>
+              <para>The framework includes an implementation of core components for transport layer adaptation,
+                CAS management, workflow management based on declarative specifications, resource management,
+                configuration management, logging, and other functions.</para>
+            </entry>
           </row>
           <row>
             <entry>C++ and other programming language Interoperability</entry>
             
             <entry>
-              <para>Includes C++ CAS and supports the creation of UIMA compliant C++
-                components that can be deployed in the UIMA run-time through a built-in JNI
-                adapter. This includes high-speed binary serialization.</para>
+              <para>Includes C++ CAS and supports the creation of UIMA compliant C++ components that can be
+                deployed in the UIMA run-time through a built-in JNI adapter. This includes high-speed binary
+                serialization.</para>
               
-              <para>Includes support for creating service-based UIMA engines outside of
-                SDK. This is ideal for wrapping existing code written in different
-                languages.</para>
+              <para>Includes support for creating service-based UIMA engines outside of SDK. This is ideal for
+                wrapping existing code written in different languages.</para>
             </entry>
           </row>
           <row>
             <entry role="tableSubhead">Framework Services and APIs</entry>
             <entry role="tableSubhead">Note that interfaces of these components are available to the developer
-              but different implementations are possible in different implementations of
-              the UIMA framework.</entry>
+              but different implementations are possible in different implementations of the UIMA
+              framework.</entry>
           </row>
           <row>
             <entry>CAS</entry>
-            <entry>These classes provide the developer with typed access to the Common
-              Analysis Structure (CAS), including type system schema, elements, subjects
-              of analysis and indices. Multiple subjects of analysis (Sofas) mechanism
-              supports the independent or simultaneous analysis of multiple views of the
-              same artifacts (e.g. documents), supporting multi-lingual and multi-modal
-              analysis.</entry>
+            <entry>These classes provide the developer with typed access to the Common Analysis Structure (CAS),
+              including type system schema, elements, subjects of analysis and indices. Multiple subjects of
+              analysis (Sofas) mechanism supports the independent or simultaneous analysis of multiple views of
+              the same artifacts (e.g. documents), supporting multi-lingual and multi-modal analysis.</entry>
           </row>
           <row>
             <entry>JCas</entry>
-            <entry>An alternative interface to the CAS, providing Java-based UIMA
-           Analysis components with native Java object access to CAS types and their
-            attributes or features, using the JavaBeansconventions of getters and setters.</entry>
+            <entry>An alternative interface to the CAS, providing Java-based UIMA Analysis components with
+              native Java object access to CAS types and their attributes or features, using the
+              JavaBeansconventions of getters and setters.</entry>
           </row>
-
+          
           <row>
             <entry>Collection Processing Management (CPM)</entry>
-            <entry>Core functions for running UIMA collection processing engines in
-              collocated and/or distributed configurations. The CPM provides
-              scalability across parallel processing pipelines, check-pointing,
-              performance monitoring and recoverability.</entry>
+            <entry>Core functions for running UIMA collection processing engines in collocated and/or
+              distributed configurations. The CPM provides scalability across parallel processing pipelines,
+              check-pointing, performance monitoring and recoverability.</entry>
           </row>
           <row>
             <entry>Resource Manager</entry>
-            <entry>Provides UIMA components with run-time access to external resources
-              handling capabilities such as resource naming, sharing, and caching.
-            </entry>
+            <entry>Provides UIMA components with run-time access to external resources handling capabilities
+              such as resource naming, sharing, and caching. </entry>
           </row>
           <row>
             <entry>Configuration Manager</entry>
-            <entry>Provides UIMA components with run-time access to their configuration
-              parameter settings.
-            </entry>
+            <entry>Provides UIMA components with run-time access to their configuration parameter settings.
+              </entry>
           </row>
           <row>
             <entry>Logger</entry>
             <entry>Provides access to a common logging facility.</entry>
           </row>
           <row>
-            <entry namest="col1" nameend="col2" align="center"  role="tableSubhead"> Tools and Utilities
-            </entry>
+            <entry namest="col1" nameend="col2" align="center" role="tableSubhead"> Tools and Utilities
+              </entry>
           </row>
           <row>
             <entry>JCasGen</entry>
-            <entry>Utility for generating a Java object model for CAS types from a UIMA XML
-              type system definition.</entry>
+            <entry>Utility for generating a Java object model for CAS types from a UIMA XML type system
+              definition.</entry>
           </row>
           <row>
             <entry>Saving and Restoring CAS contents</entry>
-            <entry>APIs in the core framework support saving and restoring the contents of a
-              CAS to streams using an XMI format.
-            </entry>
+            <entry>APIs in the core framework support saving and restoring the contents of a CAS to streams using an
+              XMI format. </entry>
           </row>
           <row>
             <entry>PEAR Packager for Eclipse</entry>
-            <entry>Tool for building a UIMA component archive to facilitate porting,
-              registering, installing and testing components.</entry>
+            <entry>Tool for building a UIMA component archive to facilitate porting, registering, installing and
+              testing components.</entry>
           </row>
           <row>
             <entry>PEAR Installer</entry>
-            <entry>Tool for installing and verifying a UIMA component archive in a UIMA
-              installation.</entry>
+            <entry>Tool for installing and verifying a UIMA component archive in a UIMA installation.</entry>
           </row>
           <row>
             <entry>PEAR Merger</entry>
@@ -722,14 +821,14 @@ under the License.
           </row>
           <row>
             <entry>Component Descriptor Editor</entry>
-            <entry>Eclipse Plug-in for specifying and configuring component descriptors
-              for UIMA analysis engines as well as other UIMA component types including
-              Collection Readers and CAS Consumers.</entry>
+            <entry>Eclipse Plug-in for specifying and configuring component descriptors for UIMA analysis
+              engines as well as other UIMA component types including Collection Readers and CAS
+              Consumers.</entry>
           </row>
           <row>
             <entry>CPE Configurator</entry>
-            <entry>Graphical tool for configuring Collection Processing Engines and
-              applying them to collections of documents.</entry>
+            <entry>Graphical tool for configuring Collection Processing Engines and applying them to
+              collections of documents.</entry>
           </row>
           <row>
             <entry>Java Annotation Viewer</entry>
@@ -737,41 +836,34 @@ under the License.
           </row>
           <row>
             <entry>CAS Visual Debugger</entry>
-            <entry>GUI Java application that provides developers with detailed visual
-              view of the contents of a CAS.</entry>
+            <entry>GUI Java application that provides developers with detailed visual view of the contents of a
+              CAS.</entry>
           </row>
           <row>
             <entry>Document Analyzer</entry>
-            <entry>GUI Java application that applies analysis engines to sets of documents
-              and shows results in a viewer.</entry>
+            <entry>GUI Java application that applies analysis engines to sets of documents and shows results in a
+              viewer.</entry>
           </row>
           <row>
-            <entry namest="col1" nameend="col2" align="center"  role="tableSubhead"> Example Analysis
-              Components
-            </entry>
+            <entry namest="col1" nameend="col2" align="center" role="tableSubhead"> Example Analysis
+              Components </entry>
           </row>
           <row>
             <entry>Database Writer</entry>
-            <entry>CAS Consumer that writes the content of selected CAS types into a
-              relational database, using JDBC. This code is in
-              cpe/PersonTitleDBWriterCasConsumer.
-            </entry>
+            <entry>CAS Consumer that writes the content of selected CAS types into a relational database, using
+              JDBC. This code is in cpe/PersonTitleDBWriterCasConsumer. </entry>
           </row>
           <row>
             <entry>Annotators</entry>
-            <entry> Set of simple annotators meant for pedagogical purposes. Includes:
-              Date/time, Room-number, Regular expression, Tokenizer, and
-              Meeting-finder annotator. There are also sample wrappers for annotators
-              obtainable from <ulink url="opennlp.org"></ulink>. There are sample CAS
-              Multipliers as well.
-            </entry>
+            <entry> Set of simple annotators meant for pedagogical purposes. Includes: Date/time, Room-number,
+              Regular expression, Tokenizer, and Meeting-finder annotator. There are also sample wrappers for
+              annotators obtainable from <ulink url="opennlp.org"></ulink>. There are sample CAS Multipliers
+              as well. </entry>
           </row>
           <row>
             <entry>Flow Controllers</entry>
-            <entry> There is a sample flow-controller based on the whiteboard concept of
-              sending the CAS to whatever annotator hasn't yet processed it, when that
-              annotator's inputs are available in the CAS.
-            </entry>
+            <entry> There is a sample flow-controller based on the whiteboard concept of sending the CAS to whatever
+              annotator hasn't yet processed it, when that annotator's inputs are available in the CAS. </entry>
           </row>
           <row>
             <entry>XMI Collection Reader, CAS Consumer</entry>
@@ -780,21 +872,17 @@ under the License.
           
           <row>
             <entry>File System Collection Reader</entry>
-            <entry> Simple Collection Reader for pulling documents from the file system and
-              initializing CASes.
-            </entry>
+            <entry> Simple Collection Reader for pulling documents from the file system and initializing CASes.
+              </entry>
           </row>
           <row>
             <entry namest="col1" nameend="col2" align="center" role="tableSubhead"> Components available
-              from <ulink url="www.alphaworks.ibm.com/tech/uima"></ulink>
-            </entry>
+              from <ulink url="www.alphaworks.ibm.com/tech/uima"></ulink> </entry>
           </row>
           <row>
             <entry>Semantic Search CAS Indexer</entry>
-            <entry>A CAS Consumer that uses the semantic search engine indexer to build an
-              index from a stream of CASes. Requires the semantic search engine (available
-              from the same place).
-            </entry>
+            <entry>A CAS Consumer that uses the semantic search engine indexer to build an index from a stream of
+              CASes. Requires the semantic search engine (available from the same place). </entry>
           </row>
         </tbody>
       </tgroup>
