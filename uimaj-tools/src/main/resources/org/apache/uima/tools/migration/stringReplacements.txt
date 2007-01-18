@@ -24,3 +24,4 @@ CasCreationUtils.createTCas CasCreationUtils.createCas
 TCASException CASException
 TCASRuntimeException CASRuntimeException
 TCasPool CasPool
+http:///com/ibm/uima/examples.ecore http:///org/apache/uima/examples.ecore
