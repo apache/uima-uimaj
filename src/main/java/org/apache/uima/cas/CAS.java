@@ -591,6 +591,11 @@ public interface CAS extends AbstractCas {
    * Create a view and its underlying Sofa (subject of analysis). The view provides access to the
    * Sofa data and the index repository that contains metadata (annotations and other feature
    * structures) pertaining to that Sofa.
+   * <p>
+   * This method creates the underlying Sofa feature structure, but does not set the Sofa data.
+   * Setting ths Sofa data must be done by calling {@link #setSofaDataArray(FeatureStructure, String)},
+   * {@link #setSofaDataString(String, String)} or {@link #setSofaDataURI(String, String)} on the
+   * CAS view returned by this method.
    * 
    * @param localViewName
    *          the local name, before any sofa name mapping is done, for this view (note: this is the
@@ -609,7 +614,7 @@ public interface CAS extends AbstractCas {
    * @param aSofa
    *          a Sofa feature structure in this CAS.
    * 
-   * @return The JCas for the given Sofa.
+   * @return The JCas view for the given Sofa.
    */
   JCas getJCas(SofaFS aSofa) throws CASException;
 
