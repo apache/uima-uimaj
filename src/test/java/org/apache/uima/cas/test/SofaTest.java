@@ -521,6 +521,7 @@ public class SofaTest extends TestCase {
     testView.setSofaDataString(TEST_TEXT, TEST_MIME);
     assertEquals(TEST_TEXT, testView.getSofa().getLocalStringData());
     assertEquals(TEST_MIME, testView.getSofa().getSofaMime());
+    assertEquals(TEST_TEXT, testView.getSofaDataString());
   }
 
   public void testSetSofaDataURI() {
