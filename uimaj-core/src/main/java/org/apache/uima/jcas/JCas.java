@@ -164,12 +164,50 @@ public interface JCas extends AbstractCas {
    */
   public abstract Sofa getSofa(SofaID sofaID);
 
+  /**
+   * Get the Sofa feature structure associated with this JCas view.
+   * 
+   * @return The SofaFS associated with this JCas view.
+   */  
   public abstract Sofa getSofa();
 
+  /**
+   * Create a view and its underlying Sofa (subject of analysis). The view provides access to the
+   * Sofa data and the index repository that contains metadata (annotations and other feature
+   * structures) pertaining to that Sofa.
+   * <p>
+   * This method creates the underlying Sofa feature structure, but does not set the Sofa data.
+   * Setting ths Sofa data must be done by calling {@link #setSofaDataArray(FeatureStructure, String)},
+   * {@link #setSofaDataString(String, String)} or {@link #setSofaDataURI(String, String)} on the
+   * JCas view returned by this method.
+   * 
+   * @param localViewName
+   *          the local name, before any sofa name mapping is done, for this view (note: this is the
+   *          same as the associated Sofa name).
+   * 
+   * @return The view corresponding to this local name.
+   * @throws CASRuntimeException
+   *           if a View with this name already exists in this CAS
+   */
   public abstract JCas createView(String sofaID) throws CASException;
 
+  /**
+   * Create a JCas view for a Sofa. 
+   * 
+   * @param aSofa
+   *          a Sofa feature structure in this CAS.
+   * 
+   * @return The JCas view for the given Sofa.
+   */  
   public abstract JCas getJCas(Sofa sofa) throws CASException;
 
+  /**
+   * Gets the JCas-based interface to the Index Repository. Provides the same functionality
+   * as {@link #getFSIndexRepository()} except that the methods that take a "type"
+   * argument take type arguments obtainable easily from the JCas type.
+   *
+   * @return the JCas-based interface to the index repository
+   */
   public abstract JFSIndexRepository getJFSIndexRepository();
 
   /**
