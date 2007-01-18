@@ -513,7 +513,36 @@ public class SofaTest extends TestCase {
       JUnitExtension.handleException(e);
     }
   }
+  
+  public void testSetSofaDataString() {
+    final String TEST_TEXT = "this is a test";
+    final String TEST_MIME = "text/plain";
+    CAS testView = cas.createView("TestView");
+    testView.setSofaDataString(TEST_TEXT, TEST_MIME);
+    assertEquals(TEST_TEXT, testView.getSofa().getLocalStringData());
+    assertEquals(TEST_MIME, testView.getSofa().getSofaMime());
+  }
 
+  public void testSetSofaDataURI() {
+    final String TEST_URI = "file:/test";
+    final String TEST_MIME = "text/plain";
+    CAS testView = cas.createView("TestView");
+    testView.setSofaDataURI(TEST_URI, TEST_MIME);
+    assertEquals(TEST_URI, testView.getSofa().getSofaURI());
+    assertEquals(TEST_MIME, testView.getSofa().getSofaMime());
+  }
+  
+  public void testSetSofaDataArray() {
+    final String TEST_MIME = "text/plain";    
+    CAS testView = cas.createView("TestView");
+    ByteArrayFS sofaDataArray = testView.createByteArrayFS(2);
+    sofaDataArray.set(0, (byte)0);
+    sofaDataArray.set(1, (byte)42);
+    testView.setSofaDataArray(sofaDataArray, TEST_MIME);
+    assertEquals(sofaDataArray, testView.getSofa().getLocalFSData());
+    assertEquals(TEST_MIME, testView.getSofa().getSofaMime());
+  }
+  
   public static void main(String[] args) {
     junit.textui.TestRunner.run(SofaTest.class);
   }

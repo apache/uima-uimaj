@@ -3829,11 +3829,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
 
     if (!mySofaIsValid()) {
-      this.createInitialSofa(mime);
+      this.createInitialSofa(null);
     }
     // try to put the document into the SofaString ...
     // ... will fail if previously set
     getSofa(this.mySofaRef).setLocalSofaData(text);
+    getLowLevelCAS().ll_setStringValue(mySofaRef, this.sofaMimeFeatCode, mime);    
   }
 
   public void setSofaDataArray(FeatureStructure array, String mime) throws CASRuntimeException {
@@ -3843,11 +3844,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       throw e;
     }
     if (!mySofaIsValid()) {
-      this.baseCAS.createInitialSofa(mime);
+      this.baseCAS.createInitialSofa(null);
     }
     // try to put the document into the SofaString ...
     // ... will fail if previously set
     getSofa(this.mySofaRef).setLocalSofaData(array);
+    getLowLevelCAS().ll_setStringValue(mySofaRef, this.sofaMimeFeatCode, mime);    
   }
 
   public void setSofaDataURI(String uri, String mime) throws CASRuntimeException {
@@ -3857,11 +3859,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       throw e;
     }
     if (!mySofaIsValid()) {
-      this.baseCAS.createInitialSofa(mime);
+      this.baseCAS.createInitialSofa(null);
     }
     // try to put the document into the SofaString ...
     // ... will fail if previously set
     getSofa(this.mySofaRef).setRemoteSofaURI(uri);
+    getLowLevelCAS().ll_setStringValue(mySofaRef, this.sofaMimeFeatCode, mime);    
   }
 
   public void setCurrentComponentInfo(ComponentInfo info) {
