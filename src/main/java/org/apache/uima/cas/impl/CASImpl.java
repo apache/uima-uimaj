@@ -3757,6 +3757,17 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return this.getSofaDataStream(this.getSofa());
   }
 
+  public String getSofaMimeType() {
+    if (this == this.baseCAS) {
+      // base CAS has no Sofa
+      return null;
+    }
+    if (mySofaIsValid()) {
+      return this.getSofa(this.mySofaRef).getSofaMime();
+    }
+    return null;
+  }
+  
   public SofaFS getSofa() {
     if (this.mySofaRef > 0) {
       return getSofa(this.mySofaRef);
