@@ -2420,7 +2420,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   public void initCASIndexes() throws CASException {
     if (null == this.ts.getType(CAS.TYPE_NAME_SOFA)) {
-      throw new CASException(CASException.MUST_COMMIT_TYPE_SYSTEM);
+      throw new CASException(CASException.MUST_COMMIT_TYPE_SYSTEM, null);
     }
     if (this.annotIndexInitialized) {
       return;

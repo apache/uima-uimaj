@@ -110,13 +110,13 @@ public class JCasTest extends TestCase {
       assertTrue(false);
   }
 
-  public void checkExpectedBadCASError(Exception e1, int err) {
+  public void checkExpectedBadCASError(Exception e1, String err) {
     if (e1 instanceof CASException) {
       CASException e = (CASException) e1;
       System.out.print("\nCaught CAS Exception with message: ");
       String m = e1.getMessage();
       System.out.println(m);
-      if (!(e.getError() == err)) {
+      if (!(e.getMessageKey().equals(err))) {
         assertTrue(false);
       }
     } else
@@ -175,7 +175,7 @@ public class JCasTest extends TestCase {
     }
   }
 
-  public void jcasCasMisMatch(int testId, int expectedErr) throws Exception {
+  public void jcasCasMisMatch(int testId, String expectedErr) throws Exception {
     try {
       CAS cas;
       TypeSystem ts;
