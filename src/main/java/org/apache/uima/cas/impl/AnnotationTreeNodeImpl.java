@@ -76,7 +76,7 @@ public class AnnotationTreeNodeImpl implements AnnotationTreeNode {
     try {
       return (AnnotationTreeNode) this.dtrs.get(i);
     } catch (IndexOutOfBoundsException e) {
-      throw new CASRuntimeException(CASRuntimeException.CHILD_INDEX_OOB);
+      throw new CASRuntimeException(CASRuntimeException.CHILD_INDEX_OOB, null);
     }
   }
 

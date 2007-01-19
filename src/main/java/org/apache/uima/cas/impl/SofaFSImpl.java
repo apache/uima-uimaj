@@ -35,191 +35,189 @@ import org.apache.uima.cas.Type;
  */
 public class SofaFSImpl extends FeatureStructureImplC implements SofaFS {
 
-  private static class SofaFSGenerator implements FSGenerator {
+	private static class SofaFSGenerator implements FSGenerator {
 
-    private SofaFSGenerator() {
-      super();
-    }
+		private SofaFSGenerator() {
+			super();
+		}
 
-    /**
+		/**
      * @see org.apache.uima.cas.impl.FSGenerator#createFS(int, LowLevelCAS)
      */
-    public FeatureStructure createFS(int addr, CASImpl cas) {
-      return new SofaFSImpl(addr, cas);
-    }
+		public FeatureStructure createFS(int addr, CASImpl cas) {
+			return new SofaFSImpl(addr, cas);
+		}
 
-  }
+	}
 
-  static FSGenerator getSofaFSGenerator() {
-    return new SofaFSGenerator();
-  }
+	static FSGenerator getSofaFSGenerator() {
+		return new SofaFSGenerator();
+	}
 
-  public SofaFSImpl(int addr, CASImpl cas) {
-    super(cas, addr);
-  }
+	public SofaFSImpl(int addr, CASImpl cas) {
+		super(cas, addr);
+	}
 
-  // IMPORTANT: Methods below here are duplicated in
-  // org.apache.uima.jcas.cas.Sofa.
-  // Any changes should be made in both places.
+	// IMPORTANT: Methods below here are duplicated in
+	// org.apache.uima.jcas.cas.Sofa.
+	// Any changes should be made in both places.
 
-  /**
+	/**
    * @see org.apache.uima.cas.ArrayFS#size() This method is duplicated in
    *      org.apache.uima.jcas.cas.Sofa. Any changes should be made in both places.
    */
-  public void setLocalSofaData(FeatureStructure aFS) {
-    final Feature arrayFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-            CAS.FEATURE_FULL_NAME_SOFAARRAY);
-    if (isSofaDataSet()) {
-      CASRuntimeException e = new CASRuntimeException(CASRuntimeException.SOFADATA_ALREADY_SET);
-      e.addArgument("SetLocalSofaData()");
-      throw e;
-    }
-    Type type = aFS.getType();
-    if (!type.isArray()) {
-      CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INAPPROP_TYPE);
-      e.addArgument("Array FS");
-      e.addArgument(type.getName());
-      throw e;
-    }
-    if (!type.getName().equals(CAS.TYPE_NAME_BYTE_ARRAY)
-            && !type.getName().equals(CAS.TYPE_NAME_DOUBLE_ARRAY)
-            && !type.getName().equals(CAS.TYPE_NAME_FLOAT_ARRAY)
-            && !type.getName().equals(CAS.TYPE_NAME_INTEGER_ARRAY)
-            && !type.getName().equals(CAS.TYPE_NAME_LONG_ARRAY)
-            && !type.getName().equals(CAS.TYPE_NAME_SHORT_ARRAY)) {
-      CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INAPPROP_TYPE);
-      e.addArgument("Byte/Float/Integer/Short/String/Long/Double Array");
-      e.addArgument(type.getName());
-      throw e;
-    }
+	public void setLocalSofaData(FeatureStructure aFS) {
+		final Feature arrayFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
+				CAS.FEATURE_FULL_NAME_SOFAARRAY);
+		if (isSofaDataSet()) {
+			CASRuntimeException e = new CASRuntimeException(CASRuntimeException.SOFADATA_ALREADY_SET,
+					new String[] { "SetLocalSofaData(FeatureStructure)" });
+			throw e;
+		}
+		Type type = aFS.getType();
+		if (!type.isArray()) {
+			CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INAPPROP_TYPE,
+					new String[] { "Array FS", type.getName() });
+			throw e;
+		}
+		if (!type.getName().equals(CAS.TYPE_NAME_BYTE_ARRAY)
+				&& !type.getName().equals(CAS.TYPE_NAME_DOUBLE_ARRAY)
+				&& !type.getName().equals(CAS.TYPE_NAME_FLOAT_ARRAY)
+				&& !type.getName().equals(CAS.TYPE_NAME_INTEGER_ARRAY)
+				&& !type.getName().equals(CAS.TYPE_NAME_LONG_ARRAY)
+				&& !type.getName().equals(CAS.TYPE_NAME_SHORT_ARRAY)) {
+			CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INAPPROP_TYPE,
+					new String[] { "Byte/Float/Integer/Short/String/Long/Double Array", type.getName() });
+			throw e;
+		}
 
-    super.setFeatureValue(arrayFeat, aFS);
-  }
+		super.setFeatureValue(arrayFeat, aFS);
+	}
 
-  /**
+	/**
    * @see org.apache.uima.cas.ArrayFS#size() This method is duplicated in
    *      org.apache.uima.jcas.cas.Sofa. Any changes should be made in both places.
    */
-  public void setLocalSofaData(String aString) {
-    final Feature stringFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-            CAS.FEATURE_FULL_NAME_SOFASTRING);
-    if (isSofaDataSet()) {
-      CASRuntimeException e = new CASRuntimeException(CASRuntimeException.SOFADATA_ALREADY_SET);
-      e.addArgument("SetLocalSofaData()");
-      throw e;
-    }
-    super.setStringValue(stringFeat, aString);
-    // create or update the document annotation for this Sofa's view
-    CAS view = this.casImpl.getView(this);
-    ((CASImpl) view).updateDocumentAnnotation();
-  }
+	public void setLocalSofaData(String aString) {
+		final Feature stringFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
+				CAS.FEATURE_FULL_NAME_SOFASTRING);
+		if (isSofaDataSet()) {
+			CASRuntimeException e = new CASRuntimeException(CASRuntimeException.SOFADATA_ALREADY_SET,
+					new String[] { "setLocalSofaData(String)" });
+			throw e;
+		}
+		super.setStringValue(stringFeat, aString);
+		// create or update the document annotation for this Sofa's view
+		CAS view = this.casImpl.getView(this);
+		((CASImpl) view).updateDocumentAnnotation();
+	}
 
-  /**
+	/**
    * @see org.apache.uima.cas.ArrayFS#size() This method is duplicated in
    *      org.apache.uima.jcas.cas.Sofa. Any changes should be made in both places.
    */
-  public void setRemoteSofaURI(String aURI) {
-    final Feature uriFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-            CAS.FEATURE_FULL_NAME_SOFAURI);
+	public void setRemoteSofaURI(String aURI) {
+		final Feature uriFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
+				CAS.FEATURE_FULL_NAME_SOFAURI);
 
-    if (isSofaDataSet()) {
-      CASRuntimeException e = new CASRuntimeException(CASRuntimeException.SOFADATA_ALREADY_SET);
-      e.addArgument("setRemoteSofaURI()");
-      throw e;
-    }
-    super.setStringValue(uriFeat, aURI);
-  }
+		if (isSofaDataSet()) {
+			CASRuntimeException e = new CASRuntimeException(CASRuntimeException.SOFADATA_ALREADY_SET,
+					new String[] { "setRemoteSofaURI(String)" });
+			throw e;
+		}
+		super.setStringValue(uriFeat, aURI);
+	}
 
-  private boolean isSofaDataSet() {
-    final Feature uriFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-            CAS.FEATURE_FULL_NAME_SOFAURI);
-    final Feature arrayFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-            CAS.FEATURE_FULL_NAME_SOFAARRAY);
-    final Feature stringFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-            CAS.FEATURE_FULL_NAME_SOFASTRING);
+	private boolean isSofaDataSet() {
+		final Feature uriFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
+				CAS.FEATURE_FULL_NAME_SOFAURI);
+		final Feature arrayFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
+				CAS.FEATURE_FULL_NAME_SOFAARRAY);
+		final Feature stringFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
+				CAS.FEATURE_FULL_NAME_SOFASTRING);
 
-    if (null != this.getStringValue(uriFeat) || null != this.getFeatureValue(arrayFeat)
-            || null != this.getStringValue(stringFeat)) {
-      return true;
-    }
-    return false;
-  }
+		if (null != this.getStringValue(uriFeat) || null != this.getFeatureValue(arrayFeat)
+				|| null != this.getStringValue(stringFeat)) {
+			return true;
+		}
+		return false;
+	}
 
-  /**
+	/**
    * @see org.apache.uima.cas.ArrayFS#size() This method is duplicated in
    *      org.apache.uima.jcas.cas.Sofa. Any changes should be made in both places.
    */
-  public FeatureStructure getLocalFSData() {
-    final Feature arrayFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-            CAS.FEATURE_FULL_NAME_SOFAARRAY);
-    return this.getFeatureValue(arrayFeat);
-  }
+	public FeatureStructure getLocalFSData() {
+		final Feature arrayFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
+				CAS.FEATURE_FULL_NAME_SOFAARRAY);
+		return this.getFeatureValue(arrayFeat);
+	}
 
-  /**
+	/**
    * @see org.apache.uima.cas.ArrayFS#size() This method is duplicated in
    *      org.apache.uima.jcas.cas.Sofa. Any changes should be made in both places.
    */
-  public String getLocalStringData() {
-    final Feature stringFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-            CAS.FEATURE_FULL_NAME_SOFASTRING);
-    return this.getStringValue(stringFeat);
-  }
+	public String getLocalStringData() {
+		final Feature stringFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
+				CAS.FEATURE_FULL_NAME_SOFASTRING);
+		return this.getStringValue(stringFeat);
+	}
 
-  // override setStringValue for SofaFS to not work!
-  // This method is duplicated in org.apache.uima.jcas.cas.Sofa. Any changes
-  // should be made in both places.
-  public void setStringValue(Feature feat, String val) {
-    CASRuntimeException e = new CASRuntimeException(CASRuntimeException.PROTECTED_SOFA_FEATURE);
-    throw e;
-  }
+	// override setStringValue for SofaFS to not work!
+	// This method is duplicated in org.apache.uima.jcas.cas.Sofa. Any changes
+	// should be made in both places.
+	public void setStringValue(Feature feat, String val) {
+		CASRuntimeException e = new CASRuntimeException(CASRuntimeException.PROTECTED_SOFA_FEATURE);
+		throw e;
+	}
 
-  // override setFeatureValue for SofaFS to not work!
-  // This method is duplicated in org.apache.uima.jcas.cas.Sofa. Any changes
-  // should be made in both places.
-  public void setFeatureValue(Feature feat, FeatureStructure fs) {
-    CASRuntimeException e = new CASRuntimeException(CASRuntimeException.PROTECTED_SOFA_FEATURE);
-    throw e;
-  }
+	// override setFeatureValue for SofaFS to not work!
+	// This method is duplicated in org.apache.uima.jcas.cas.Sofa. Any changes
+	// should be made in both places.
+	public void setFeatureValue(Feature feat, FeatureStructure fs) {
+		CASRuntimeException e = new CASRuntimeException(CASRuntimeException.PROTECTED_SOFA_FEATURE);
+		throw e;
+	}
 
-  // This method is duplicated in org.apache.uima.jcas.cas.Sofa. Any changes
-  // should be made in both places.
-  public String getSofaMime() {
-    final Feature mimeFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-            CAS.FEATURE_FULL_NAME_SOFAMIME);
-    return this.casImpl.getLowLevelCAS().ll_getStringValue(super.addr,
-            ((FeatureImpl) mimeFeat).getCode());
-  }
+	// This method is duplicated in org.apache.uima.jcas.cas.Sofa. Any changes
+	// should be made in both places.
+	public String getSofaMime() {
+		final Feature mimeFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
+				CAS.FEATURE_FULL_NAME_SOFAMIME);
+		return this.casImpl.getLowLevelCAS().ll_getStringValue(super.addr,
+				((FeatureImpl) mimeFeat).getCode());
+	}
 
-  // This method is duplicated in org.apache.uima.jcas.cas.Sofa. Any changes
-  // should be made in both places.
-  public String getSofaURI() {
-    final Feature uriFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-            CAS.FEATURE_FULL_NAME_SOFAURI);
-    return this.casImpl.getLowLevelCAS().ll_getStringValue(super.addr,
-            ((FeatureImpl) uriFeat).getCode());
-  }
+	// This method is duplicated in org.apache.uima.jcas.cas.Sofa. Any changes
+	// should be made in both places.
+	public String getSofaURI() {
+		final Feature uriFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
+				CAS.FEATURE_FULL_NAME_SOFAURI);
+		return this.casImpl.getLowLevelCAS().ll_getStringValue(super.addr,
+				((FeatureImpl) uriFeat).getCode());
+	}
 
-  // This method is duplicated in org.apache.uima.jcas.cas.Sofa. Any changes
-  // should be made in both places.
-  public int getSofaRef() {
-    final Feature numFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-            CAS.FEATURE_FULL_NAME_SOFANUM);
-    return this.casImpl.getLowLevelCAS().ll_getIntValue(super.addr,
-            ((FeatureImpl) numFeat).getCode());
-  }
+	// This method is duplicated in org.apache.uima.jcas.cas.Sofa. Any changes
+	// should be made in both places.
+	public int getSofaRef() {
+		final Feature numFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
+				CAS.FEATURE_FULL_NAME_SOFANUM);
+		return this.casImpl.getLowLevelCAS().ll_getIntValue(super.addr,
+				((FeatureImpl) numFeat).getCode());
+	}
 
-  public InputStream getSofaDataStream() {
-    return this.casImpl.getSofaDataStream(this);
-  }
+	public InputStream getSofaDataStream() {
+		return this.casImpl.getSofaDataStream(this);
+	}
 
-  /**
+	/**
    * @see org.apache.uima.cas.SofaFS#getSofaID(). This method is duplicated in
    *      org.apache.uima.jcas.cas.Sofa. Any changes should be made in both places.
    */
 
-  public String getSofaID() {
-    final Feature sofaIDFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
-            CAS.FEATURE_FULL_NAME_SOFAID);
-    return this.getStringValue(sofaIDFeat);
-  }
+	public String getSofaID() {
+		final Feature sofaIDFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
+				CAS.FEATURE_FULL_NAME_SOFAID);
+		return this.getStringValue(sofaIDFeat);
+	}
 }
