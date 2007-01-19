@@ -20,6 +20,10 @@
 package org.apache.uima.adapter.vinci;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.uima.UIMAFramework;
@@ -56,7 +60,14 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
   private int mTimeout;
 
   private static final boolean debug = System.getProperty("DEBUG") != null;
-
+  
+  /**
+   * Value to return from callGetSupportedXCasVersions method for older services 
+   * that don't actually implement this method.
+   */
+  private static final List SUPPORT_XCAS_V1 = Collections.unmodifiableList(
+          Arrays.asList(new String[]{"1"}));
+  
   public VinciAnalysisEngineServiceStub(String endpointURI, Resource owner)
           throws ResourceInitializationException {
     this(endpointURI, null, owner, null);
@@ -70,13 +81,23 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
     try {
       VinciContext vctx = new VinciContext(InetAddress.getLocalHost().getCanonicalHostName(), 0);
       // Override vinci default VNS settings
-      String vnsHost = Constants.DEFAULT_VNS_HOST;
-      String vnsPort = "9000";
+      String vnsHost = null;
+      String vnsPort = null; 
       if (parameters != null) {
          vnsHost = 
           VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_HOST", parameters); 
          vnsPort = VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_PORT",
                 parameters);
+      }
+      if (vnsHost == null) {
+        vnsHost = System.getProperty("VNS_HOST");
+        if (vnsHost == null)
+          vnsHost = Constants.DEFAULT_VNS_HOST;
+      }
+      if (vnsPort == null) {
+        vnsPort = System.getProperty("VNS_PORT");
+        if (vnsPort == null)
+          vnsPort = "9000";
       }
       vctx.setVNSHost(vnsHost);
       vctx.setVNSPort(Integer.parseInt(vnsPort));
@@ -288,6 +309,27 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
     }
   }
 
+  public List callGetSupportedXCasVersions() throws ResourceServiceException {
+    try {
+      // create Vinci Frame ( Data Cargo)
+      AFrame queryFrame = new AFrame();
+      // Add Vinci Command, so that the receiving service knows what to do
+      queryFrame.fadd("vinci:COMMAND", Constants.GET_SUPPORTED_XCAS_VERSIONS);
+
+      // make RPC call
+      VinciFrame resultFrame = mVinciClient.rpc(queryFrame);
+      String result = resultFrame.fgetString("Result");
+      if (result != null) {
+        String[] versions = result.split("\\s+");
+        return Collections.unmodifiableList(Arrays.asList(versions));
+      }
+      else {
+        return SUPPORT_XCAS_V1;
+      }
+    } catch (Exception e) {
+      throw new ResourceServiceException(e);
+    }
+  }
   /**
    * Gets whether socket keepAlive is enabled, by consulting the
    * PerformanceTuningSettings.  (If no setting specified, defaults

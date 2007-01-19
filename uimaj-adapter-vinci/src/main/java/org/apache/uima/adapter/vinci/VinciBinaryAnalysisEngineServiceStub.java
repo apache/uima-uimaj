@@ -73,13 +73,23 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
     try {
       VinciContext vctx = new VinciContext(InetAddress.getLocalHost().getCanonicalHostName(), 0);
       // Override vinci default VNS settings
-      String vnsHost = Constants.DEFAULT_VNS_HOST;
-      String vnsPort = "9000";
+      String vnsHost = null;
+      String vnsPort = null; 
       if (parameters != null) {
          vnsHost = 
           VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_HOST", parameters); 
          vnsPort = VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_PORT",
                 parameters);
+      }
+      if (vnsHost == null) {
+        vnsHost = System.getProperty("VNS_HOST");
+        if (vnsHost == null)
+          vnsHost = Constants.DEFAULT_VNS_HOST;
+      }
+      if (vnsPort == null) {
+        vnsPort = System.getProperty("VNS_PORT");
+        if (vnsPort == null)
+          vnsPort = "9000";
       }
       vctx.setVNSHost(vnsHost);
       vctx.setVNSPort(Integer.parseInt(vnsPort));
