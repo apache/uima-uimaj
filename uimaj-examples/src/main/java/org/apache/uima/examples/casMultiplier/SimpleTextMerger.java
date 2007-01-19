@@ -84,7 +84,7 @@ public class SimpleTextMerger extends JCasMultiplier_ImplBase {
     mDocBuf.append(docText);
 
     // copy specified annotation types
-    CasCopier copier = new CasCopier(mMergedCas.getCas());
+    CasCopier copier = new CasCopier(aJCas.getCas(), mMergedCas.getCas());
     Set copiedIndexedFs = new HashSet(); // needed in case one annotation is in two indexes (could
     // happen if specified annotation types overlap)
     for (int i = 0; i < mAnnotationTypesToCopy.length; i++) {
