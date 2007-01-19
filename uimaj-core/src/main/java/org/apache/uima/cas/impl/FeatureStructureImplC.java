@@ -71,7 +71,7 @@ public class FeatureStructureImplC extends FeatureStructureImpl {
       return false;
     }
     FeatureStructureImplC fs = (FeatureStructureImplC) o;
-    if ((this.addr == fs.addr) && (this.casImpl == fs.casImpl)) {
+    if ((this.addr == fs.addr) && (this.casImpl.baseCAS == fs.casImpl.baseCAS)) {
       return true;
     }
     return false;
