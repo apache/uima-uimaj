@@ -72,6 +72,16 @@ public abstract class UIMAFramework {
   public static final String PROCESS_TRACE_ENABLED = "process_trace_enabled";
 
   /**
+   * Key to be used in the Properties object returned by
+   * {@link #getDefaultPerformanceTuningProperties()}. The value of this key indicates whether
+   * socket KeepAlive should be turned on (currently implemented only for Vinci clients).  The
+   * default is true.  A value of "false" (case insensitive) for this property disables the keepAlive; 
+   * any other value leaves the default setting of true.
+   * @see java.net.Socket#setKeepAlive(boolean)
+   */
+  public static final Object SOCKET_KEEPALIVE_ENABLED = "socket_keepalive_enabled";
+
+  /**
    * To be implemented by subclasses; this should return a Properties object representing the
    * default performance tuning settings for the framework. It must return a new Properties object
    * each time it is called.
