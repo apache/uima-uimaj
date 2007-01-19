@@ -20,6 +20,7 @@
 package org.apache.uima.adapter.vinci;
 
 import java.net.InetAddress;
+import java.util.Properties;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.adapter.vinci.util.Constants;
@@ -70,42 +71,37 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
 
     // open Vinci connection
     try {
-      String vnsHost;
-      if (parameters != null && (vnsHost = getParameterValueFor("VNS_HOST", parameters)) != null) {
-        // Override vinci default VNS settings
-        VinciContext vctx = new VinciContext(InetAddress.getLocalHost().getCanonicalHostName(), 0);
-        vctx.setVNSHost(vnsHost);
-        String vnsPort = getParameterValueFor("VNS_PORT", parameters);
-        if (vnsPort != null) {
-          vctx.setVNSPort(Integer.parseInt(vnsPort));
-        } else {
-          vctx.setVNSPort(9000); // use default.
-        }
-
-        if (debug) {
-          System.out.println("Establishing connnection to " + endpointURI + " using VNS_HOST:"
-                  + vnsHost + " and VNS_PORT=" + ((vnsPort == null) ? "9000" : vnsPort));
-        }
-        // establish connection to service
-        mVinciClient = new VinciClient(endpointURI, AFrame.getAFrameFactory(), vctx);
-      } else {
-        // If VNS_HOST system property is not set, use default value
-        if (System.getProperty("VNS_HOST") == null) {
-          System.out.println("No VNS_HOST specified; using default " + Constants.DEFAULT_VNS_HOST);
-          System.setProperty("VNS_HOST", Constants.DEFAULT_VNS_HOST);
-        }
-
-        if (debug) {
-          System.out.println("Establishing connnection to " + endpointURI);
-        }
-        // Use default VNS
-        mVinciClient = new VinciClient(endpointURI, AFrame.getAFrameFactory());
+      VinciContext vctx = new VinciContext(InetAddress.getLocalHost().getCanonicalHostName(), 0);
+      // Override vinci default VNS settings
+      String vnsHost = Constants.DEFAULT_VNS_HOST;
+      String vnsPort = "9000";
+      if (parameters != null) {
+         vnsHost = 
+          VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_HOST", parameters); 
+         vnsPort = VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_PORT",
+                parameters);
       }
+      vctx.setVNSHost(vnsHost);
+      vctx.setVNSPort(Integer.parseInt(vnsPort));
+      
+      // Override socket keepAlive setting
+      vctx.setSocketKeepAliveEnabled(isSocketKeepAliveEnabled());
+
+      if (debug) {
+        System.out.println("Establishing connnection to " + endpointURI + " using VNS_HOST:"
+                + vctx.getVNSHost() + " and VNS_PORT=" + vctx.getVNSPort());
+      }
+        
+      // establish connection to service
+      mVinciClient = new VinciClient(endpointURI, AFrame.getAFrameFactory(), vctx);
+      
+      //store timeout for use in later RPC calls
       if (timeout != null) {
         mTimeout = timeout.intValue();
       } else {
        mTimeout = mVinciClient.getSocketTimeout(); //default
       }
+      
       if (debug) {
         System.out.println("Success");
       }
@@ -256,4 +252,19 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
     mVinciClient.close();
   }
 
+
+  /**
+   * Gets whether socket keepAlive is enabled, by consulting the
+   * PerformanceTuningSettings.  (If no setting specified, defaults
+   * to true.)
+   * @return if socketKeepAlive is enabled
+   */
+  private boolean isSocketKeepAliveEnabled() {
+    Properties settings = mOwner.getPerformanceTuningSettings();
+    if (settings != null) {
+      String enabledStr = (String)settings.get(UIMAFramework.SOCKET_KEEPALIVE_ENABLED);
+      return !"false".equalsIgnoreCase(enabledStr);
+    }
+    return true;
+  }
 }

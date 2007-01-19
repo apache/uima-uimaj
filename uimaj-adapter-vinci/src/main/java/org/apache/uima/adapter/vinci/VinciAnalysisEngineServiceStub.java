@@ -20,10 +20,12 @@
 package org.apache.uima.adapter.vinci;
 
 import java.net.InetAddress;
+import java.util.Properties;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.adapter.vinci.util.Constants;
 import org.apache.uima.adapter.vinci.util.VinciSaxParser;
+import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineServiceStub;
 import org.apache.uima.analysis_engine.impl.AnalysisEngineManagementImpl;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
@@ -66,38 +68,31 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
 
     // open Vinci connection
     try {
-      String vnsHost;
-      if (parameters != null
-              && (vnsHost = VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_HOST",
-                      parameters)) != null) {
-        // Override vinci default VNS settings
-        VinciContext vctx = new VinciContext(InetAddress.getLocalHost().getCanonicalHostName(), 0);
-        vctx.setVNSHost(vnsHost);
-        String vnsPort = VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_PORT",
+      VinciContext vctx = new VinciContext(InetAddress.getLocalHost().getCanonicalHostName(), 0);
+      // Override vinci default VNS settings
+      String vnsHost = Constants.DEFAULT_VNS_HOST;
+      String vnsPort = "9000";
+      if (parameters != null) {
+         vnsHost = 
+          VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_HOST", parameters); 
+         vnsPort = VinciBinaryAnalysisEngineServiceStub.getParameterValueFor("VNS_PORT",
                 parameters);
-        if (vnsPort != null) {
-          vctx.setVNSPort(Integer.parseInt(vnsPort));
-        } else {
-          vctx.setVNSPort(9000); // use default.
-        }
-        if (debug) {
-          System.out.println("Establishing connnection to " + endpointURI + " using VNS_HOST:"
-                  + vnsHost + " and VNS_PORT=" + ((vnsPort == null) ? "9000" : vnsPort));
-        }
-        // establish connection to service
-        mVinciClient = new VinciClient(endpointURI, AFrame.getAFrameFactory(), vctx);
-      } else {
-        // If VNS_HOST system property is not set, use default value
-        if (System.getProperty("VNS_HOST") == null) {
-          System.out.println("No VNS_HOST specified; using default " + Constants.DEFAULT_VNS_HOST);
-          System.setProperty("VNS_HOST", Constants.DEFAULT_VNS_HOST);
-        }
-
-        if (debug) {
-          System.out.println("Establishing connnedction to " + endpointURI);
-        }
-        mVinciClient = new VinciClient(endpointURI, AFrame.getAFrameFactory());
       }
+      vctx.setVNSHost(vnsHost);
+      vctx.setVNSPort(Integer.parseInt(vnsPort));
+      
+      // Override socket keepAlive setting
+      vctx.setSocketKeepAliveEnabled(isSocketKeepAliveEnabled());
+
+      if (debug) {
+        System.out.println("Establishing connnection to " + endpointURI + " using VNS_HOST:"
+                + vctx.getVNSHost() + " and VNS_PORT=" + vctx.getVNSPort());
+      }
+        
+      // establish connection to service
+      mVinciClient = new VinciClient(endpointURI, AFrame.getAFrameFactory(), vctx);
+      
+      //store timeout for use in later RPC calls
       if (timeout != null) {
         mTimeout = timeout.intValue();
       } else {
@@ -111,6 +106,7 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
       throw new ResourceInitializationException(e);
     }
   }
+
 
   /**
    * @see org.apache.uima.resource.service.ResourceServiceStub#callGetMetaData()
@@ -292,4 +288,20 @@ public class VinciAnalysisEngineServiceStub implements AnalysisEngineServiceStub
     }
   }
 
+  /**
+   * Gets whether socket keepAlive is enabled, by consulting the
+   * PerformanceTuningSettings.  (If no setting specified, defaults
+   * to true.)
+   * @return if socketKeepAlive is enabled
+   */
+  protected boolean isSocketKeepAliveEnabled() {
+    if (mOwner instanceof AnalysisEngine) {
+      Properties settings = ((AnalysisEngine)mOwner).getPerformanceTuningSettings();
+      if (settings != null) {
+        String enabledStr = (String)settings.get(UIMAFramework.SOCKET_KEEPALIVE_ENABLED);
+        return !"false".equalsIgnoreCase(enabledStr);
+      }
+    }
+    return true;
+  }
 }
