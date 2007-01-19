@@ -179,6 +179,10 @@
                <ttl>Use of UIMA Package Names for User Code</ttl>
                <xreftext>Section 1.3.3.6, “Use of UIMA Package Names for User Code”</xreftext>
             </div>
+            <div element="section" href="#d0e710" number="1.3.3.7">
+               <ttl>CASException and CASRuntimeException now extend UIMA(Runtime)Exception</ttl>
+               <xreftext>Section 1.3.3.7, “CASException and CASRuntimeException now extend UIMA(Runtime)Exception”</xreftext>
+            </div>
          </div>
          <div element="section" href="#ugr.ovv.search_engine_repackaged" number="1.3.4" targetptr="ugr.ovv.search_engine_repackaged">
             <ttl>Semantic Search Engine Repackaged</ttl>

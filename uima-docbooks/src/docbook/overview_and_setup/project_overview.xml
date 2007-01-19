@@ -573,6 +573,28 @@ under the License.
           <literal>com.ibm.uima.MyPackage</literal>. This would be treated as a class name and replaced with
           <literal>org.apache.uima.MyPackage</literal> wherever it occurs.</para>
       </section>
+      <section>
+        <title>CASException and CASRuntimeException now extend UIMA(Runtime)Exception</title>
+        <para>
+          This change may affect user code to a small extent, as some of the APIs on 
+          <literal>CASException</literal> and <literal>CASRuntimeException</literal> no longer exist.
+          On the up side, all UIMA exceptions are now derived from the same base classes and behave
+          the same way.  The most significant change is that you can no longer check for the specific
+          type of exception the you used to.  For example, if you had code like this:
+          <programlisting>
+catch (CASRuntimeException e) {
+  if (e.getError() == CASRuntimeException.ILLEGAL_ARRAY_SIZE) {
+  // Do something in case this particular error is caught
+          </programlisting>
+          you will need to replace it with the following:
+          <programlisting>
+catch (CASRuntimeException e) {
+  if (e.getMessageKey().equals(CASRuntimeException.ILLEGAL_ARRAY_SIZE)) {
+  // Do something in case this particular error is caught
+          </programlisting>
+          as the message keys are now strings.  This change is not handled by the migration script.
+        </para>
+      </section>
     </section>
     <section id="ugr.ovv.search_engine_repackaged">
       <title>Semantic Search Engine Repackaged</title>
