@@ -85,59 +85,65 @@ import org.apache.uima.jcas.cas.TOP_Type;
  * 
  * Overview --------
  * 
- * This design uses classes for types, not Interfaces. JCas CAS types are represented in a running
- * server by a collection of classes A set of 2 classes for each loaded equivalent-to-CAS type Foo
- * (Class) Foo_Type (Class)
+ * This design uses classes for types, not Interfaces. JCas CAS types are
+ * represented in a running server by a collection of classes A set of 2 classes
+ * for each loaded equivalent-to-CAS type Foo (Class) Foo_Type (Class)
  * 
  * JCas and Foo_Type style classes have one instantiation per CAS
  * 
- * Integrated with Framework Design -------------------------------- Assume: Framework collects for
- * each CAS creation all the types that will be defined for this CAS. Note: can create multiple
- * instances of CASs (and JCases) each TAE/App.
+ * Integrated with Framework Design -------------------------------- Assume:
+ * Framework collects for each CAS creation all the types that will be defined
+ * for this CAS. Note: can create multiple instances of CASs (and JCases) each
+ * TAE/App.
  * 
- * Assume: Each JCas instance (associated with a CAS) is single-threaded. if not - must synchronize
- * refs to tables/arrays associated with this
+ * Assume: Each JCas instance (associated with a CAS) is single-threaded. if not -
+ * must synchronize refs to tables/arrays associated with this
  * 
- * Assume: Each CAS instance only has one associated set of types, specified by a String[] of
- * fully-qual-type-names Implication: if CAS type system changes, create new JCas instance. This
- * allows many things to be "final".
+ * Assume: Each CAS instance only has one associated set of types, specified by
+ * a String[] of fully-qual-type-names Implication: if CAS type system changes,
+ * create new JCas instance. This allows many things to be "final".
  * 
  * Integrate with UIMA Framework Resource Manager for use of class loaders.
  * 
- * Framework will call getJCas once after the CAS types are completely specified, or when a
- * deserialization has re-initialized a CAS.
+ * Framework will call getJCas once after the CAS types are completely
+ * specified, or when a deserialization has re-initialized a CAS.
  * 
- * Initialize: To get to the type object from Foo, use jcas.getType(Foo.type) To get to the JCas
- * type object from instance of Foo, use this.jcasType.
+ * Initialize: To get to the type object from Foo, use jcas.getType(Foo.type) To
+ * get to the JCas type object from instance of Foo, use this.jcasType.
  * 
- * If the CAS has its contents reset, call jcas.clearData() to reset the corresponding JCas content.
+ * If the CAS has its contents reset, call jcas.clearData() to reset the
+ * corresponding JCas content.
  * 
- * Implementation Notes: --------------------- At loadtime, Foo and Foo_Type classes assigned static
- * integer indexes These indexes are used in arrays in the jcas instance to go from Foo class (not
- * instances) to Foo_Type instances (one per CAS) Things which require "types" at runtime reference
- * the Foo_Type instances.
+ * Implementation Notes: --------------------- At loadtime, Foo and Foo_Type
+ * classes assigned static integer indexes These indexes are used in arrays in
+ * the jcas instance to go from Foo class (not instances) to Foo_Type instances
+ * (one per CAS) Things which require "types" at runtime reference the Foo_Type
+ * instances.
  * 
  * Maps: Note: per CAS means per shared JCas instance assoc w/ CAS
  * 
- * (universal) (static field in class) go from Foo class to index unique ID used with next map to
- * locate Foo_Type instance associated with this class If universal - becomes an index for all
- * FooStyle classes loaded (per CAS) (ArrayList) map index from Foo (static) to Foo_Type instance
- * used in creating new instances. Needs to be one per CAS because a particular "xyz" feature in
- * CAS1 != "xyz" feature in CAS2 If above universal, then can become large array with mostly unused
- * slots. Possibility: reuse no-longer-used slots. Identify no-longer-used slots at CAS Type unload
- * event?
+ * (universal) (static field in class) go from Foo class to index unique ID used
+ * with next map to locate Foo_Type instance associated with this class If
+ * universal - becomes an index for all FooStyle classes loaded (per CAS)
+ * (ArrayList) map index from Foo (static) to Foo_Type instance used in creating
+ * new instances. Needs to be one per CAS because a particular "xyz" feature in
+ * CAS1 != "xyz" feature in CAS2 If above universal, then can become large array
+ * with mostly unused slots. Possibility: reuse no-longer-used slots. Identify
+ * no-longer-used slots at CAS Type unload event?
  */
 
 /**
- * implements the supporting infrastructure for JCas model linked with a Cas. There is one logical
- * instance of this instantiated per Cas. If you hold a reference to a CAS, to get a reference to
- * the corresponding JCas, use the method getJCas(). Likewise, if you hold a reference to this
- * object, you can get a reference to the corresponding CAS object using the method getCas().
+ * implements the supporting infrastructure for JCas model linked with a Cas.
+ * There is one logical instance of this instantiated per Cas. If you hold a
+ * reference to a CAS, to get a reference to the corresponding JCas, use the
+ * method getJCas(). Likewise, if you hold a reference to this object, you can
+ * get a reference to the corresponding CAS object using the method getCas().
  * <p>
- * There are variables here that hold references to constant, frequently needed Cas values, such as
- * 0-length FSArrays, 0-length Strings, etc. These can be used to improve efficiency, since the same
- * object can be shared and used for all instances because it is unchangeable. These objects are
- * reset when the CAS is reset, and are initialized lazily, on first use.
+ * There are variables here that hold references to constant, frequently needed
+ * Cas values, such as 0-length FSArrays, 0-length Strings, etc. These can be
+ * used to improve efficiency, since the same object can be shared and used for
+ * all instances because it is unchangeable. These objects are reset when the
+ * CAS is reset, and are initialized lazily, on first use.
  */
 
 public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas {
@@ -148,7 +154,6 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   // * Static Data shared with all instances of JCas *
   // *************************************************
   private final static int INITIAL_HASHMAP_SIZE = 200;
-
 
   // **********************************************
   // * Data shared among views of a single CAS *
@@ -181,18 +186,17 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   // * Access to this data is assumed to be single threaded
   // *******************
 
-  /** key = CAS addr, value = corresponding Java instance 
-   * The reason there are multiple cover objects per Cas object
-   * is that the JCas cover object distinguishes the CAS View
-   * the object belongs to, in order to support the
-   * methods:  aJCasCoverObjectInstance.addToIndexes()
-   * which needs to know which view to use
-   * This "convenience" of not needing to specify which CAS
-   * view to use here, is traded off with space: the same object
-   * indexed in multiple views ends up not "sharing" the Java
-   * cover object (because the objects are not identical - they
-   * refer to different views).
-   */
+  /**
+         * key = CAS addr, value = corresponding Java instance The reason there
+         * are multiple cover objects per Cas object is that the JCas cover
+         * object distinguishes the CAS View the object belongs to, in order to
+         * support the methods: aJCasCoverObjectInstance.addToIndexes() which
+         * needs to know which view to use This "convenience" of not needing to
+         * specify which CAS view to use here, is traded off with space: the
+         * same object indexed in multiple views ends up not "sharing" the Java
+         * cover object (because the objects are not identical - they refer to
+         * different views).
+         */
 
   public Map cAddr2Jfs;
 
@@ -200,104 +204,126 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 
   private final JCasSharedView sharedView;
 
-  private final CASImpl casImpl; // not public to protect it from accidents
+  private final CASImpl casImpl; // not public to protect it from
+
+  // accidents
 
   private final LowLevelIndexRepository ll_IndexRepository;
 
   private final JFSIndexRepository jfsIndexRepository;
 
   /*
-   * typeArray is one per CAS because holds pointers to instances of _Type objects, per CAS
-   */
+         * typeArray is one per CAS because holds pointers to instances of _Type
+         * objects, per CAS
+         */
   private final TOP_Type[] typeArray; // contents are subtypes of TOP_Type
 
   // *********************************
   // * Getters for read-only objects *
   // *********************************
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getFSIndexRepository()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getFSIndexRepository()
+         */
   public FSIndexRepository getFSIndexRepository() {
     return casImpl.getIndexRepository();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getLowLevelIndexRepository()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getLowLevelIndexRepository()
+         */
   public LowLevelIndexRepository getLowLevelIndexRepository() {
     return ll_IndexRepository;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getCas()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getCas()
+         */
   public CAS getCas() {
     return casImpl;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getCasImpl()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getCasImpl()
+         */
   public CASImpl getCasImpl() {
     return casImpl;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getLowLevelCas()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getLowLevelCas()
+         */
   public LowLevelCAS getLowLevelCas() {
     return casImpl;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getTypeSystem()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getTypeSystem()
+         */
   public TypeSystem getTypeSystem() {
     return casImpl.getTypeSystem();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getType(int)
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getType(int)
+         */
   public TOP_Type getType(int i) {
     if (i >= typeArray.length || null == typeArray[i]) {
 
       // unknown ID. Attempt to get offending class.
       Class cls = JCasRegistry.getClassForIndex(i);
       if (cls != null) {
-        String typeName = cls.getName();
-        // is type in type system
-        if (this.casImpl.getTypeSystem().getType(typeName) == null) {
-          // no - report error that JCAS type was not defined in XML descriptor
-          CASRuntimeException casEx = new CASRuntimeException(
-                  CASRuntimeException.JCAS_TYPE_NOT_IN_CAS);
-          casEx.addArgument(typeName);
-          throw casEx;
-        } else {
-          // yes - there was some problem loading the _Type object
-          CASRuntimeException casEx = new CASRuntimeException(
-                  CASRuntimeException.JCAS_MISSING_COVERCLASS);
-          casEx.addArgument(typeName + "_Type");
-          throw casEx;
-        }
+	String typeName = cls.getName();
+	// is type in type system
+	if (this.casImpl.getTypeSystem().getType(typeName) == null) {
+	  // no - report error that JCAS type was not defined in XML
+	  // descriptor
+	  CASRuntimeException casEx = new CASRuntimeException(
+	      CASRuntimeException.JCAS_TYPE_NOT_IN_CAS);
+	  casEx.addArgument(typeName);
+	  throw casEx;
+	} else {
+	  // yes - there was some problem loading the _Type object
+	  CASRuntimeException casEx = new CASRuntimeException(
+	      CASRuntimeException.JCAS_MISSING_COVERCLASS);
+	  casEx.addArgument(typeName + "_Type");
+	  throw casEx;
+	}
 
       } else {
-        throw new CASRuntimeException(CASRuntimeException.JCAS_UNKNOWN_TYPE_NOT_IN_CAS);
+	throw new CASRuntimeException(CASRuntimeException.JCAS_UNKNOWN_TYPE_NOT_IN_CAS);
       }
     }
     return typeArray[i];
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getCasType(int)
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getCasType(int)
+         */
   public Type getCasType(int i) {
     return getType(i).casType;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getType(org.apache.uima.jcas.cas.TOP)
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getType(org.apache.uima.jcas.cas.TOP)
+         */
   public TOP_Type getType(TOP instance) {
     return getType(instance.getTypeIndexID());
   }
@@ -330,25 +356,26 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   }
 
   /*
-   * Private constructor, called when new instance (either for new cas, or for old cas but new
-   * Annotator/Application class, needed
-   * 
-   * Called by JCas.getJCas(cas)
-   * 
-   * The CAS must be initialized when this is called.
-   * 
-   */
+         * Private constructor, called when new instance (either for new cas, or
+         * for old cas but new Annotator/Application class, needed
+         * 
+         * Called by JCas.getJCas(cas)
+         * 
+         * The CAS must be initialized when this is called.
+         * 
+         */
   private JCasImpl(CASImpl cas) throws CASException {
 
     // * A new instance of JCas exists for each CAS
-    // * At this point, some but not necessarily all of the Types have been loaded
+    // * At this point, some but not necessarily all of the Types have been
+    // loaded
 
     // * the typeArray needs to be big enough to hold all the types
     // * that will be loaded.
 
     this.casImpl = cas;
     if (casImpl != casImpl.getBaseCAS()) {
-      sharedView = ((JCasImpl)casImpl.getBaseCAS().getJCas()).sharedView;
+      sharedView = ((JCasImpl) casImpl.getBaseCAS().getJCas()).sharedView;
       sharedView.errorSet.clear();
     } else {
       sharedView = new JCasSharedView();
@@ -375,118 +402,125 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 
       // * note that many of these may have already been loaded
       // * load all the others. Actually, we ask to load all the types
-      // * and the ones already loaded - we just get their loaded versions returned.
+      // * and the ones already loaded - we just get their loaded versions
+      // returned.
       // * Loading will run the static init functions.
 
       while (typeIt.hasNext()) {
-        t = (Type) typeIt.next();
-        casName = t.getName();
-        String name_Type;
-        if (builtInsWithNoJCas.contains(casName))
-          continue;
-        if (builtInsWithAltNames.contains(casName))
-          // * convert uima.cas.Xxx -> org.apache.uima.jcas.cas.Xxx
-          // * convert uima.tcas.Annotator -> org.apache.uima.jcas.tcas.Annotator
-          try {
-            String nameBase = "org.apache.uima.jcas." + casName.substring(5);
-            name_Type = nameBase + "_Type";
-            jcasTypes.put(nameBase, new LoadedJCasType(t, Class.forName(name_Type, true, cas
-                    .getJCasClassLoader())));
-          } catch (ClassNotFoundException e1) {
-            // OK for DocumentAnnotation, which may not have a cover class.  Otherwise, not OK.
-            if (!CAS.TYPE_NAME_DOCUMENT_ANNOTATION.equals(casName)) {
-              assert false : "never get here because built-ins have java cover types";
-              e1.printStackTrace();
-            }
-          }
+	t = (Type) typeIt.next();
+	casName = t.getName();
+	String name_Type;
+	if (builtInsWithNoJCas.contains(casName))
+	  continue;
+	if (builtInsWithAltNames.contains(casName))
+	  // * convert uima.cas.Xxx -> org.apache.uima.jcas.cas.Xxx
+	  // * convert uima.tcas.Annotator ->
+	  // org.apache.uima.jcas.tcas.Annotator
+	  try {
+	    String nameBase = "org.apache.uima.jcas." + casName.substring(5);
+	    name_Type = nameBase + "_Type";
+	    jcasTypes.put(nameBase, new LoadedJCasType(t, Class.forName(name_Type, true, cas
+		.getJCasClassLoader())));
+	  } catch (ClassNotFoundException e1) {
+	    // OK for DocumentAnnotation, which may not have a cover class.
+	    // Otherwise, not OK.
+	    if (!CAS.TYPE_NAME_DOCUMENT_ANNOTATION.equals(casName)) {
+	      assert false : "never get here because built-ins have java cover types";
+	      e1.printStackTrace();
+	    }
+	  }
 
-        // this is done unconditionally to pick up old style cover functions if any
-        // as well as other JCas model types
-        try {
-          name_Type = casName + "_Type";
-          jcasTypes.put(casName, new LoadedJCasType(t, Class.forName(name_Type, true, cas
-                  .getJCasClassLoader())));
-          // also force the load the plain name without _Type for old-style - that's where
-          // the index is incremented
-          Class.forName(casName, true, cas.getJCasClassLoader());
-        } catch (ClassNotFoundException e1) {
-          // many classes may not have JCas models, so this is not an error
-        }
+	// this is done unconditionally to pick up old style cover functions if
+	// any
+	// as well as other JCas model types
+	try {
+	  name_Type = casName + "_Type";
+	  jcasTypes.put(casName, new LoadedJCasType(t, Class.forName(name_Type, true, cas
+	      .getJCasClassLoader())));
+	  // also force the load the plain name without _Type for
+	  // old-style - that's where
+	  // the index is incremented
+	  Class.forName(casName, true, cas.getJCasClassLoader());
+	} catch (ClassNotFoundException e1) {
+	  // many classes may not have JCas models, so this is not an
+	  // error
+	}
       }
 
       typeArray = new TOP_Type[JCasRegistry.getNumberOfRegisteredClasses()];
 
       Iterator jcasTypeIt = jcasTypes.entrySet().iterator();
       while (jcasTypeIt.hasNext()) {
-        LoadedJCasType lt = (LoadedJCasType) ((Map.Entry) jcasTypeIt.next()).getValue();
-        makeInstanceOf_Type(lt.casType, lt.clas, cas);
+	LoadedJCasType lt = (LoadedJCasType) ((Map.Entry) jcasTypeIt.next()).getValue();
+	makeInstanceOf_Type(lt.casType, lt.clas, cas);
       }
       if (true) {
 
-        typeIt = ts.getTypeIterator(); // reset iterator to start
-        Type topType = ts.getTopType();
-        Type superType = null;
-        while (typeIt.hasNext()) {
-          t = (Type) typeIt.next();
-          if (builtInsWithNoJCas.contains(t.getName()))
-            continue;
-          //comment here
-          if (CAS.TYPE_NAME_DOCUMENT_ANNOTATION.equals(t.getName())) {
-            if (jcasTypes.get("org.apache.uima.jcas.tcas.DocumentAnnotation") != null) 
-              continue;                    
-          }
-          else if (builtInsWithAltNames.contains(t.getName()))
-            continue; // because jcasTypes has no entry for these
-          if (null != jcasTypes.get(t.getName()))
-            continue;
-          // we believe that at this point, t is not "top", because top is always loaded
-          // find closest supertype that has a loaded cover class
-          superType = t;
-          String superTypeName;
-          do {
-            superType = ts.getParent(superType);
-            superTypeName = superType.getName();
-            if (builtInsWithAltNames.contains(superTypeName)) {
-              superTypeName = "org.apache.uima.jcas." + superTypeName.substring(5);
-            }
-          } while ((null == jcasTypes.get(superTypeName) && !superType.equals(topType)));
-          // copy down its generator
-          cas.getFSClassRegistry().copyGeneratorForType((TypeImpl) t, (TypeImpl) superType);
-        }
+	typeIt = ts.getTypeIterator(); // reset iterator to start
+	Type topType = ts.getTopType();
+	Type superType = null;
+	while (typeIt.hasNext()) {
+	  t = (Type) typeIt.next();
+	  if (builtInsWithNoJCas.contains(t.getName()))
+	    continue;
+	  // comment here
+	  if (CAS.TYPE_NAME_DOCUMENT_ANNOTATION.equals(t.getName())) {
+	    if (jcasTypes.get("org.apache.uima.jcas.tcas.DocumentAnnotation") != null)
+	      continue;
+	  } else if (builtInsWithAltNames.contains(t.getName()))
+	    continue; // because jcasTypes has no entry for these
+	  if (null != jcasTypes.get(t.getName()))
+	    continue;
+	  // we believe that at this point, t is not "top", because top is
+	  // always loaded
+	  // find closest supertype that has a loaded cover class
+	  superType = t;
+	  String superTypeName;
+	  do {
+	    superType = ts.getParent(superType);
+	    superTypeName = superType.getName();
+	    if (builtInsWithAltNames.contains(superTypeName)) {
+	      superTypeName = "org.apache.uima.jcas." + superTypeName.substring(5);
+	    }
+	  } while ((null == jcasTypes.get(superTypeName) && !superType.equals(topType)));
+	  // copy down its generator
+	  cas.getFSClassRegistry().copyGeneratorForType((TypeImpl) t, (TypeImpl) superType);
+	}
       }
     } // end of synchronized block
   }
 
   /**
-   * creates a new JCas instance that corresponds to a CAS instance. Will be called once by the UIMA
-   * framework when it creates the CAS.
-   * 
-   * @param cas
-   *          a CAS instance
-   * @return newly created and initialized JCas
-   */
+         * creates a new JCas instance that corresponds to a CAS instance. Will
+         * be called once by the UIMA framework when it creates the CAS.
+         * 
+         * @param cas
+         *                a CAS instance
+         * @return newly created and initialized JCas
+         */
   public static JCas getJCas(CASImpl cas) throws CASException {
     JCasImpl jcas = new JCasImpl(cas);
     if (jcas.sharedView.errorSet.size() > 0) {
       StringBuffer msg = new StringBuffer(100);
-      CASException e = new CASException(CASException.JCAS_INIT_ERROR);
       Iterator iter = jcas.sharedView.errorSet.iterator();
       while (iter.hasNext()) {
-        Exception f = (Exception) iter.next();
-        msg.append(f.getMessage());
-        msg.append("\n");
+	Exception f = (Exception) iter.next();
+	msg.append(f.getMessage());
+	msg.append("\n");
       }
-      e.addArgument(msg.toString());
+      CASException e = new CASException(CASException.JCAS_INIT_ERROR,
+	  new String[] { msg.toString() });
       throw e;
     }
     return jcas;
   }
 
   /**
-   * built-in types which have alternate names It really isn't necessary to skip these - they're
-   * never instantiated. But it is a very slight performance boost, and it may be safer given
-   * possible future changes to these types' implementations.
-   */
+         * built-in types which have alternate names It really isn't necessary
+         * to skip these - they're never instantiated. But it is a very slight
+         * performance boost, and it may be safer given possible future changes
+         * to these types' implementations.
+         */
   private static Collection builtInsWithNoJCas = new ArrayList();
   {
     if (builtInsWithNoJCas.size() == 0) {
@@ -536,9 +570,10 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   }
 
   /**
-   * Make the instance of the JCas xxx_Type class for this CAS. Note: not all types will have
-   * xxx_Type. Instance creation does the typeSystemInit kind of function, as well.
-   */
+         * Make the instance of the JCas xxx_Type class for this CAS. Note: not
+         * all types will have xxx_Type. Instance creation does the
+         * typeSystemInit kind of function, as well.
+         */
 
   private void makeInstanceOf_Type(Type casType, Class clas, CASImpl cas) {
     Constructor c;
@@ -548,19 +583,19 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
       c = clas.getDeclaredConstructor(jcasBaseAndType);
       try {
 
-        typeIndexField = clas.getDeclaredField("typeIndexID");
+	typeIndexField = clas.getDeclaredField("typeIndexID");
       } catch (NoSuchFieldException e) {
-        try {
-          // old version has the index in the base type
-          String name = clas.getName();
-          Class clas2 = Class.forName(name.substring(0, name.length() - 5), true, cas
-                  .getJCasClassLoader()); // drop _Type
-          typeIndexField = clas2.getDeclaredField("typeIndexID");
-        } catch (NoSuchFieldException e2) {
-          logAndThrow(e2);
-        } catch (ClassNotFoundException e3) {
-          logAndThrow(e3);
-        }
+	try {
+	  // old version has the index in the base type
+	  String name = clas.getName();
+	  Class clas2 = Class.forName(name.substring(0, name.length() - 5), true, cas
+	      .getJCasClassLoader()); // drop _Type
+	  typeIndexField = clas2.getDeclaredField("typeIndexID");
+	} catch (NoSuchFieldException e2) {
+	  logAndThrow(e2);
+	} catch (ClassNotFoundException e3) {
+	  logAndThrow(e3);
+	}
       }
       typeIndex = typeIndexField.getInt(null); // null - static instance var
       TOP_Type x_Type_instance = (TOP_Type) c.newInstance(new Object[] { this, casType });
@@ -580,66 +615,69 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getRequiredType(java.lang.String)
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getRequiredType(java.lang.String)
+         */
   public Type getRequiredType(String s) throws CASException {
     Type t = getTypeSystem().getType(s);
     if (null == t) {
-      CASException casEx = new CASException(CASException.JCAS_TYPENOTFOUND_ERROR);
-      casEx.addArgument(s);
+      CASException casEx = new CASException(CASException.JCAS_TYPENOTFOUND_ERROR,
+	  new String[] { s });
       throw casEx;
     }
     return t;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getRequiredFeature(org.apache.uima.cas.Type, java.lang.String)
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getRequiredFeature(org.apache.uima.cas.Type,
+         *      java.lang.String)
+         */
   public Feature getRequiredFeature(Type t, String s) throws CASException {
     Feature f = t.getFeatureByBaseName(s);
     if (null == f) {
-      CASException casEx = new CASException(CASException.JCAS_FEATURENOTFOUND_ERROR);
-      casEx.addArgument(t.getName());
-      casEx.addArgument(s);
+      CASException casEx = new CASException(CASException.JCAS_FEATURENOTFOUND_ERROR, new String[] {
+	  t.getName(), s });
       throw casEx;
     }
     return f;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getRequiredFeatureDE(org.apache.uima.cas.Type, java.lang.String, java.lang.String, boolean)
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getRequiredFeatureDE(org.apache.uima.cas.Type,
+         *      java.lang.String, java.lang.String, boolean)
+         */
 
   public Feature getRequiredFeatureDE(Type t, String s, String rangeName, boolean featOkTst) {
     Feature f = t.getFeatureByBaseName(s);
     Type rangeType = this.getTypeSystem().getType(rangeName);
     if (null == f && !featOkTst) {
-      CASException casEx = new CASException(CASException.JCAS_FEATURENOTFOUND_ERROR);
-      casEx.addArgument(t.getName());
-      casEx.addArgument(s);
+      CASException casEx = new CASException(CASException.JCAS_FEATURENOTFOUND_ERROR, new String[] {
+	  t.getName(), s });
       sharedView.errorSet.add(casEx);
     }
     if (null != f)
       try {
-        casImpl.checkTypingConditions(t, rangeType, f);
+	casImpl.checkTypingConditions(t, rangeType, f);
       } catch (LowLevelException e) {
-        CASException casEx = new CASException(CASException.JCAS_FEATURE_WRONG_TYPE);
-        casEx.addArgument(t.getName());
-        casEx.addArgument(s);
-        casEx.addArgument(rangeName);
-        casEx.addArgument(((FeatureImpl) f).getRange().toString());
-        sharedView.errorSet.add(casEx);
+	CASException casEx = new CASException(CASException.JCAS_FEATURE_WRONG_TYPE, new String[] {
+	    t.getName(), s, rangeName, f.getRange().toString() });
+	sharedView.errorSet.add(casEx);
       }
     return f;
   }
 
   /**
-   * Internal - throw missing feature exception at runtime
-   * 
-   * @param feat
-   * @param type
-   */
+         * Internal - throw missing feature exception at runtime
+         * 
+         * @param feat
+         * @param type
+         */
   public void throwFeatMissing(String feat, String type) {
     CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INAPPROP_FEAT);
     e.addArgument(feat);
@@ -651,16 +689,21 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   /** internal use - constant used in getting constructors */
   final static private Class[] jcasBaseAndType = new Class[] { JCas.class, Type.class };
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#putJfsFromCaddr(int, org.apache.uima.cas.FeatureStructure)
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#putJfsFromCaddr(int,
+         *      org.apache.uima.cas.FeatureStructure)
+         */
   public void putJfsFromCaddr(int casAddr, FeatureStructure fs) {
     cAddr2Jfs.put(new Integer(casAddr), fs);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getJfsFromCaddr(int)
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getJfsFromCaddr(int)
+         */
   public TOP getJfsFromCaddr(int casAddr) {
     return (TOP) cAddr2Jfs.get(new Integer(casAddr));
   }
@@ -668,21 +711,25 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   // * Implementation of part of the Cas interface as part of JCas*
 
   /**
-   * (Internal Use only) called by the CAS reset function - clears the hashtable holding the
-   * associations.
-   */
+         * (Internal Use only) called by the CAS reset function - clears the
+         * hashtable holding the associations.
+         */
   public static void clearData(CAS cas) throws CASException {
     JCasImpl jcas = (JCasImpl) cas.getJCas();
-    int hashSize = Math.max(jcas.cAddr2Jfs.size(), 32); // not worth dropping below 32
-    // System.out.println("\n***JCas Resizing Hashtable: size is: " + hashSize + ", curmax = " +
+    int hashSize = Math.max(jcas.cAddr2Jfs.size(), 32); // not worth dropping
+    // below 32
+    // System.out.println("\n***JCas Resizing Hashtable: size is: " +
+    // hashSize + ", curmax = " +
     // jcas.prevCaddr2JfsSize);
     if (hashSize <= (jcas.prevCaddr2JfsSize >> 1)) {
-      // System.out.println("JCas Shrinking Hashtable from " + jcas.prevCaddr2JfsSize);
+      // System.out.println("JCas Shrinking Hashtable from " +
+      // jcas.prevCaddr2JfsSize);
       jcas.prevCaddr2JfsSize = hashSize;
       jcas.cAddr2Jfs = new HashMap(hashSize);
     } else {
       jcas.prevCaddr2JfsSize = Math.max(hashSize, jcas.prevCaddr2JfsSize);
-      // System.out.println("JCas clearing - keeping same size, new max prev size = " +
+      // System.out.println("JCas clearing - keeping same size, new max prev
+      // size = " +
       // jcas.prevCaddr2JfsSize);
       jcas.cAddr2Jfs.clear();
     }
@@ -692,18 +739,22 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     jcas.sharedView.integerArray0L = null;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#reset()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#reset()
+         */
   public void reset() {
     casImpl.reset();
   }
 
   private final static int NULL = 0;
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#checkArrayBounds(int, int)
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#checkArrayBounds(int, int)
+         */
   public final void checkArrayBounds(int fsRef, int pos) {
     if (NULL == fsRef) {
       LowLevelException e = new LowLevelException(LowLevelException.NULL_ARRAY_ACCESS);
@@ -723,37 +774,47 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   // * Sofa support *
   // *****************
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getSofa(org.apache.uima.cas.SofaID)
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getSofa(org.apache.uima.cas.SofaID)
+         */
   public Sofa getSofa(SofaID sofaID) {
     return (Sofa) casImpl.getSofa(sofaID);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getSofa()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getSofa()
+         */
   public Sofa getSofa() {
-      return (Sofa) casImpl.getSofa();
+    return (Sofa) casImpl.getSofa();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#createView(java.lang.String)
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#createView(java.lang.String)
+         */
   public JCas createView(String sofaID) throws CASException {
     return casImpl.createView(sofaID).getJCas();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getJCas(org.apache.uima.jcas.cas.Sofa)
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getJCas(org.apache.uima.jcas.cas.Sofa)
+         */
   public JCas getJCas(Sofa sofa) throws CASException {
     return casImpl.getView(sofa).getJCas();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getSofaIterator()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getSofaIterator()
+         */
   public FSIterator getSofaIterator() {
     return casImpl.getSofaIterator();
   }
@@ -762,9 +823,11 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   // * Index support *
   // *****************
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getJFSIndexRepository()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getJFSIndexRepository()
+         */
   public JFSIndexRepository getJFSIndexRepository() {
     return jfsIndexRepository;
   }
@@ -773,121 +836,159 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   // * TCas support *
   // ****************
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getDocumentAnnotationFs()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getDocumentAnnotationFs()
+         */
   public TOP getDocumentAnnotationFs() {
     return (TOP) casImpl.getDocumentAnnotation();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getDocumentText()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getDocumentText()
+         */
   public String getDocumentText() {
     return casImpl.getDocumentText();
- }
+  }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getSofaDataString()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getSofaDataString()
+         */
   public String getSofaDataString() {
     return casImpl.getSofaDataString();
- }
+  }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getSofaDataArray()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getSofaDataArray()
+         */
   public FeatureStructure getSofaDataArray() {
     return casImpl.getSofaDataArray();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getSofaDataURI()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getSofaDataURI()
+         */
   public String getSofaDataURI() {
     return casImpl.getSofaDataURI();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getSofaMimeType()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getSofaMimeType()
+         */
   public String getSofaMimeType() {
     return casImpl.getSofaMimeType();
- }
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#setDocumentText(java.lang.String)
-   */
+  }
+
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#setDocumentText(java.lang.String)
+         */
   public void setDocumentText(String text) throws CASRuntimeException {
     casImpl.setDocumentText(text);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#setSofaDataString(java.lang.String, java.lang.String)
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#setSofaDataString(java.lang.String,
+         *      java.lang.String)
+         */
   public void setSofaDataString(String text, String mime) throws CASRuntimeException {
     casImpl.setSofaDataString(text, mime);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#setSofaDataArray(org.apache.uima.jcas.cas.TOP, java.lang.String)
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#setSofaDataArray(org.apache.uima.jcas.cas.TOP,
+         *      java.lang.String)
+         */
   public void setSofaDataArray(FeatureStructure array, String mime) throws CASRuntimeException {
     casImpl.setSofaDataArray(array, mime);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#setSofaDataURI(java.lang.String, java.lang.String)
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#setSofaDataURI(java.lang.String,
+         *      java.lang.String)
+         */
   public void setSofaDataURI(String uri, String mime) throws CASRuntimeException {
     casImpl.setSofaDataURI(uri, mime);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getDocumentLanguage()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getDocumentLanguage()
+         */
   public String getDocumentLanguage() {
     return casImpl.getDocumentLanguage();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#setDocumentLanguage(java.lang.String)
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#setDocumentLanguage(java.lang.String)
+         */
   public void setDocumentLanguage(String language) throws CASRuntimeException {
     casImpl.setDocumentLanguage(language);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getSofaDataStream()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getSofaDataStream()
+         */
   public InputStream getSofaDataStream() {
     return casImpl.getSofaDataStream();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getConstraintFactory()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getConstraintFactory()
+         */
   public ConstraintFactory getConstraintFactory() {
     return casImpl.getConstraintFactory();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#createFeaturePath()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#createFeaturePath()
+         */
   public FeaturePath createFeaturePath() {
     return casImpl.createFeaturePath();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#createFilteredIterator(org.apache.uima.cas.FSIterator, org.apache.uima.cas.FSMatchConstraint)
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#createFilteredIterator(org.apache.uima.cas.FSIterator,
+         *      org.apache.uima.cas.FSMatchConstraint)
+         */
   public FSIterator createFilteredIterator(FSIterator it, FSMatchConstraint constraint) {
     return casImpl.createFilteredIterator(it, constraint);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getStringArray0L()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getStringArray0L()
+         */
 
   public StringArray getStringArray0L() {
     if (null == sharedView.stringArray0L)
@@ -895,149 +996,188 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     return sharedView.stringArray0L;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getIntegerArray0L()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getIntegerArray0L()
+         */
   public IntegerArray getIntegerArray0L() {
     if (null == sharedView.integerArray0L)
       sharedView.integerArray0L = new IntegerArray(this, 0);
     return sharedView.integerArray0L;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getFloatArray0L()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getFloatArray0L()
+         */
   public FloatArray getFloatArray0L() {
     if (null == sharedView.floatArray0L)
       sharedView.floatArray0L = new FloatArray(this, 0);
     return sharedView.floatArray0L;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getFSArray0L()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getFSArray0L()
+         */
   public FSArray getFSArray0L() {
     if (null == sharedView.fsArray0L)
       sharedView.fsArray0L = new FSArray(this, 0);
     return sharedView.fsArray0L;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#processInit()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#processInit()
+         */
   public void processInit() {
     // unused
   }
 
   /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.cas.AbstractCas_ImplBase#setOwn
-   */
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#setOwner(org.apache.uima.cas.CasOwner)
-   */
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.cas.AbstractCas_ImplBase#setOwn
+         */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#setOwner(org.apache.uima.cas.CasOwner)
+         */
   public void setOwner(CasOwner aCasOwner) {
     casImpl.setOwner(aCasOwner);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#release()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#release()
+         */
   public void release() {
     casImpl.release();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getView(java.lang.String)
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getView(java.lang.String)
+         */
   public JCas getView(String localViewName) throws CASException {
     return casImpl.getView(localViewName).getJCas();
   }
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getView(org.apache.uima.cas.SofaFS)
-   */
+
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getView(org.apache.uima.cas.SofaFS)
+         */
   public JCas getView(SofaFS aSofa) throws CASException {
     return casImpl.getView(aSofa).getJCas();
   }
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#addFsToIndexes(org.apache.uima.cas.FeatureStructure)
-   */
+
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#addFsToIndexes(org.apache.uima.cas.FeatureStructure)
+         */
   public void addFsToIndexes(FeatureStructure instance) {
     casImpl.addFsToIndexes(instance);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#removeFsFromIndexes(org.apache.uima.cas.FeatureStructure)
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#removeFsFromIndexes(org.apache.uima.cas.FeatureStructure)
+         */
   public void removeFsFromIndexes(FeatureStructure instance) {
     casImpl.removeFsFromIndexes(instance);
   }
 
   /**
-   * @see org.apache.uima.cas.CAS#fs2listIterator(FSIterator)
-   */
+         * @see org.apache.uima.cas.CAS#fs2listIterator(FSIterator)
+         */
   public ListIterator fs2listIterator(FSIterator it) {
     return casImpl.fs2listIterator(it);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.BaseCas#createFeatureValuePath(java.lang.String)
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.cas.BaseCas#createFeatureValuePath(java.lang.String)
+         */
   public FeatureValuePath createFeatureValuePath(String featureValuePath)
-          throws CASRuntimeException {
+      throws CASRuntimeException {
     return casImpl.createFeatureValuePath(featureValuePath);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.BaseCas#createSofa(org.apache.uima.cas.SofaID, java.lang.String)
-   * @deprecated
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.cas.BaseCas#createSofa(org.apache.uima.cas.SofaID,
+         *      java.lang.String)
+         * @deprecated
+         */
   public SofaFS createSofa(SofaID sofaID, String mimeType) {
     // extract absolute SofaName string from the ID
     return casImpl.createSofa(sofaID, mimeType);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.BaseCas#getIndexRepository()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.cas.BaseCas#getIndexRepository()
+         */
   public FSIndexRepository getIndexRepository() {
     return casImpl.getIndexRepository();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.BaseCas#getViewName()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.cas.BaseCas#getViewName()
+         */
   public String getViewName() {
     return casImpl.getViewName();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.BaseCas#size()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.cas.BaseCas#size()
+         */
   public int size() {
-    //TODO improve this to account for JCas
-    //  structure sizes
+    // TODO improve this to account for JCas
+    // structure sizes
     return casImpl.size();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getAnnotationIndex()
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getAnnotationIndex()
+         */
   public AnnotationIndex getAnnotationIndex() {
     return casImpl.getAnnotationIndex();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getAnnotationIndex(org.apache.uima.cas.Type)
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getAnnotationIndex(org.apache.uima.cas.Type)
+         */
   public AnnotationIndex getAnnotationIndex(Type type) throws CASRuntimeException {
     return casImpl.getAnnotationIndex(type);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getAnnotationIndex(int)
-   */
+  /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.uima.jcas.JCas#getAnnotationIndex(int)
+         */
   public AnnotationIndex getAnnotationIndex(int type) throws CASRuntimeException {
     return casImpl.getAnnotationIndex(this.getCasType(type));
   }
