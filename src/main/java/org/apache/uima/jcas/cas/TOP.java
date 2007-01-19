@@ -149,7 +149,7 @@ public class TOP extends FeatureStructureImpl {
 		if (!(o instanceof TOP))
 			return false;
 		TOP fs = (TOP) o;
-		if ((this.addr == fs.addr) && (this.jcasType.casImpl == fs.jcasType.casImpl)) {
+		if ((this.addr == fs.addr) && (this.jcasType.casImpl.getBaseCAS() == fs.jcasType.casImpl.getBaseCAS())) {
 			return true;
 		}
 		return false;

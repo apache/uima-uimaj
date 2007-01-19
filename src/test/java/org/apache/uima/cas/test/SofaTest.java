@@ -293,7 +293,10 @@ public class SofaTest extends TestCase {
       AnnotationFS crossAnnot = (AnnotationFS) gerAnnot.getFeatureValue(otherFeat);
       assertTrue(annotationType.getName().equals(crossAnnot.getType().getName()));
       assertTrue(("this").equals(crossAnnot.getCoveredText()));
-
+     
+      //Test equals method for same annotation obtained through different views
+      assertEquals(engAnnot, crossAnnot);
+      
       // Test that annotations accessed from a reference in the base CAS
       // work correctly
       ArrayFS anArray = cas.createArrayFS(3);
