@@ -82,7 +82,7 @@ public class CasCopierTest extends TestCase {
     CAS destCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
 
     // do the copy
-    CasCopier copier = new CasCopier(destCas);
+    CasCopier copier = new CasCopier(srcCas, destCas);
     copier.copyCasView(srcCas, true);
 
     // verify copy
@@ -98,7 +98,7 @@ public class CasCopierTest extends TestCase {
 
     // create a destination CAS and the CasCopier instance
     CAS destCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
-    CasCopier copier = new CasCopier(destCas);
+    CasCopier copier = new CasCopier(srcCas, destCas);
 
     // set sofa data in destination CAS (this is not copied automtically)
     destCas.setDocumentText(srcCas.getDocumentText());

@@ -41,6 +41,7 @@ import org.apache.uima.cas.ShortArrayFS;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 
 /**
@@ -51,17 +52,23 @@ import org.apache.uima.cas.text.AnnotationFS;
  * copied FS, it will not duplicate the multiply-referenced FS.
  */
 public class CasCopier {
+  private CAS mSrcCas;
   private CAS mDestCas;
 
   private Map mFsMap = new HashMap();
 
   /**
    * Creates a new CasCopier that can be used to copy FeatureStructures from one CAS to another.
+   * Note that if you are merging data from multiple CASes, you must create a new CasCopier
+   * for each source CAS.
    * 
+   * @param aSrcCas
+   *          the CAS to copy from.
    * @param aDestCas
    *          the CAS to copy into.
    */
-  public CasCopier(CAS aDestCas) {
+  public CasCopier(CAS aSrcCas, CAS aDestCas) {
+    mSrcCas = aSrcCas;
     mDestCas = aDestCas;
   }
   
@@ -80,7 +87,7 @@ public class CasCopier {
    *          if true, the sofa data and mimeType of each view will be copied. If false they will not.
    */  
   public static void copyCas(CAS aSrcCas, CAS aDestCas, boolean aCopySofa) {
-    CasCopier copier = new CasCopier(aDestCas);
+    CasCopier copier = new CasCopier(aSrcCas, aDestCas);
     
     Iterator sofaIter = aSrcCas.getSofaIterator();
     while (sofaIter.hasNext()) {
@@ -148,6 +155,9 @@ public class CasCopier {
    * @return the copy of <code>aFS</code> in the target CAS.
    */
   public FeatureStructure copyFs(FeatureStructure aFS) {
+    //FS must be in the source CAS
+    assert ((CASImpl)aFS.getCAS()).getBaseCAS() == ((CASImpl)mSrcCas).getBaseCAS();
+
     // check if we already copied this FS
     FeatureStructure copy = (FeatureStructure) mFsMap.get(aFS);
     if (copy != null)
