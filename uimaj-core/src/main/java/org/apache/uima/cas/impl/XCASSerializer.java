@@ -266,7 +266,9 @@ public class XCASSerializer {
       iElementCount += indexedFSs.size();
       iElementCount += queue.size();
 
-      startElement(casTagName, emptyAttrs, iElementCount);
+      AttributesImpl rootAttrs = new AttributesImpl();
+      rootAttrs.addAttribute(null, null, VERSION_ATTR, cdataType, CURRENT_VERSION);
+      startElement(casTagName, rootAttrs, iElementCount);
 
       // continue with serialization
       encodeIndexed(); // encodes indexedFSs.size() elements
@@ -804,6 +806,10 @@ public class XCASSerializer {
 
   public static final String casTagName = "CAS";
 
+  public static final String VERSION_ATTR = "version";
+  
+  public static final String CURRENT_VERSION = "2";
+
   public static final String DEFAULT_DOC_TYPE_NAME = "uima.tcas.Document";
 
   public static final String DEFAULT_DOC_TEXT_FEAT = "text";
@@ -821,7 +827,7 @@ public class XCASSerializer {
   public static final String ARRAY_ELEMENT_TAG = "i";
 
   public static final String TRUE_VALUE = "true";
-
+  
   private TypeSystemImpl ts;
 
   private UimaContext uimaContext;
