@@ -25,53 +25,50 @@ import org.apache.uima.jcas.JCasRegistry;
 
 public class FSList extends org.apache.uima.jcas.cas.TOP {
 
-  public final static int typeIndexID = JCasRegistry.register(FSList.class);
+	public final static int typeIndexID = JCasRegistry.register(FSList.class);
 
-  public final static int type = typeIndexID;
+	public final static int type = typeIndexID;
 
-  public int getTypeIndexID() {
-    return typeIndexID;
-  }
+	public int getTypeIndexID() {
+		return typeIndexID;
+	}
 
-  // Never called.
-  protected FSList() {// Disable default constructor
-  }
+	// Never called.
+	protected FSList() {// Disable default constructor
+	}
 
-  /** Internal - Constructor used by generator */
-  public FSList(int addr, TOP_Type type) {
-    super(addr, type);
-  }
+	/** Internal - Constructor used by generator */
+	public FSList(int addr, TOP_Type type) {
+		super(addr, type);
+	}
 
-  public FSList(JCas jcas) {
-    super(jcas);
-  }
+	public FSList(JCas jcas) {
+		super(jcas);
+	}
 
-  public TOP getNthElement(int i) {
-    if (this instanceof EmptyFSList) {
-      CASRuntimeException casEx = new CASRuntimeException(
-              CASRuntimeException.JCAS_GET_NTH_ON_EMPTY_LIST);
-      casEx.addArgument("EmptyFSList");
-      throw casEx;
-    }
-    if (i < 0) {
-      CASRuntimeException casEx = new CASRuntimeException(
-              CASRuntimeException.JCAS_GET_NTH_NEGATIVE_INDEX);
-      casEx.addArgument(new Integer(i).toString());
-      throw casEx;
-    }
-    int originali = i;
-    FSList cg = this;
-    for (;; i--) {
-      if (cg instanceof EmptyFSList) {
-        CASRuntimeException casEx = new CASRuntimeException(
-                CASRuntimeException.JCAS_GET_NTH_PAST_END);
-        casEx.addArgument(new Integer(originali).toString());
-        throw casEx;
-      }
-      NonEmptyFSList c = (NonEmptyFSList) cg;
-      if (i == 0)
-        return c.getHead();
-      cg = c.getTail();
-    }
-  }
+	public TOP getNthElement(int i) {
+		if (this instanceof EmptyFSList) {
+			CASRuntimeException casEx = new CASRuntimeException(
+					CASRuntimeException.JCAS_GET_NTH_ON_EMPTY_LIST, new String[] { "EmptyFSList" });
+			throw casEx;
+		}
+		if (i < 0) {
+			CASRuntimeException casEx = new CASRuntimeException(
+					CASRuntimeException.JCAS_GET_NTH_NEGATIVE_INDEX, new String[] { Integer.toString(i) });
+			throw casEx;
+		}
+		int originali = i;
+		FSList cg = this;
+		for (;; i--) {
+			if (cg instanceof EmptyFSList) {
+				CASRuntimeException casEx = new CASRuntimeException(
+						CASRuntimeException.JCAS_GET_NTH_PAST_END, new String[] { Integer.toString(originali) });
+				throw casEx;
+			}
+			NonEmptyFSList c = (NonEmptyFSList) cg;
+			if (i == 0)
+				return c.getHead();
+			cg = c.getTail();
+		}
+	}
 }

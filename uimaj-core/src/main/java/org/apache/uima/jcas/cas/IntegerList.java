@@ -25,53 +25,50 @@ import org.apache.uima.jcas.JCasRegistry;
 
 public class IntegerList extends org.apache.uima.jcas.cas.TOP {
 
-  public final static int typeIndexID = JCasRegistry.register(IntegerList.class);
+	public final static int typeIndexID = JCasRegistry.register(IntegerList.class);
 
-  public final static int type = typeIndexID;
+	public final static int type = typeIndexID;
 
-  public int getTypeIndexID() {
-    return typeIndexID;
-  }
+	public int getTypeIndexID() {
+		return typeIndexID;
+	}
 
-  // Never called.
-  protected IntegerList() { // Disable default constructor
-  }
+	// Never called.
+	protected IntegerList() { // Disable default constructor
+	}
 
-  /** Internal - Constructor used by generator */
-  public IntegerList(int addr, TOP_Type type) {
-    super(addr, type);
-  }
+	/** Internal - Constructor used by generator */
+	public IntegerList(int addr, TOP_Type type) {
+		super(addr, type);
+	}
 
-  public IntegerList(JCas jcas) {
-    super(jcas);
-  }
+	public IntegerList(JCas jcas) {
+		super(jcas);
+	}
 
-  public int getNthElement(int i) {
-    if (this instanceof EmptyIntegerList) {
-      CASRuntimeException casEx = new CASRuntimeException(
-              CASRuntimeException.JCAS_GET_NTH_ON_EMPTY_LIST);
-      casEx.addArgument("EmptyIntegerList");
-      throw casEx;
-    }
-    if (i < 0) {
-      CASRuntimeException casEx = new CASRuntimeException(
-              CASRuntimeException.JCAS_GET_NTH_NEGATIVE_INDEX);
-      casEx.addArgument(new Integer(i).toString());
-      throw casEx;
-    }
-    int originali = i;
-    IntegerList cg = this;
-    for (;; i--) {
-      if (cg instanceof EmptyIntegerList) {
-        CASRuntimeException casEx = new CASRuntimeException(
-                CASRuntimeException.JCAS_GET_NTH_PAST_END);
-        casEx.addArgument(new Integer(originali).toString());
-        throw casEx;
-      }
-      NonEmptyIntegerList c = (NonEmptyIntegerList) cg;
-      if (i == 0)
-        return c.getHead();
-      cg = c.getTail();
-    }
-  }
+	public int getNthElement(int i) {
+		if (this instanceof EmptyIntegerList) {
+			CASRuntimeException casEx = new CASRuntimeException(
+					CASRuntimeException.JCAS_GET_NTH_ON_EMPTY_LIST, new String[] { "EmptyIntegerList" });
+			throw casEx;
+		}
+		if (i < 0) {
+			CASRuntimeException casEx = new CASRuntimeException(
+					CASRuntimeException.JCAS_GET_NTH_NEGATIVE_INDEX, new String[] { Integer.toString(i) });
+			throw casEx;
+		}
+		int originali = i;
+		IntegerList cg = this;
+		for (;; i--) {
+			if (cg instanceof EmptyIntegerList) {
+				CASRuntimeException casEx = new CASRuntimeException(
+						CASRuntimeException.JCAS_GET_NTH_PAST_END, new String[] { Integer.toString(originali) });
+				throw casEx;
+			}
+			NonEmptyIntegerList c = (NonEmptyIntegerList) cg;
+			if (i == 0)
+				return c.getHead();
+			cg = c.getTail();
+		}
+	}
 }

@@ -35,125 +35,125 @@ import org.apache.uima.cas.impl.Heap;
  */
 public class CASTest extends TestCase {
 
-  private CAS cas;
+	private CAS cas;
 
-  private TypeSystem ts;
+	private TypeSystem ts;
 
-  /**
+	/**
    * Constructor for CASTest.
    * 
    * @param arg0
    */
-  public CASTest(String arg0) {
-    super(arg0);
-  }
+	public CASTest(String arg0) {
+		super(arg0);
+	}
 
-  public void setUp() {
-    try {
-      this.cas = CASInitializer.initCas(new CASTestSetup());
-      this.ts = this.cas.getTypeSystem();
-    } catch (Exception e) {
-      assertTrue(false);
-    }
-  }
+	public void setUp() {
+		try {
+			this.cas = CASInitializer.initCas(new CASTestSetup());
+			this.ts = this.cas.getTypeSystem();
+		} catch (Exception e) {
+			assertTrue(false);
+		}
+	}
 
-  public void tearDown() {
-    this.cas = null;
-    this.ts = null;
-  }
+	public void tearDown() {
+		this.cas = null;
+		this.ts = null;
+	}
 
-  public void testGetTypeSystem() {
-    assertTrue(this.cas.getTypeSystem() != null);
-  }
+	public void testGetTypeSystem() {
+		assertTrue(this.cas.getTypeSystem() != null);
+	}
 
-  public void testCreateFS() {
-    // Can create FS of type "Top"
-    assertTrue(this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_TOP)) != null);
-    boolean caughtExc = false;
-    // Can't create int FS.
-    try {
-      this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_INTEGER));
-    } catch (CASRuntimeException e) {
-      caughtExc = true;
-      assertTrue(e.getError() == CASRuntimeException.NON_CREATABLE_TYPE);
-    }
-    assertTrue(caughtExc);
-    caughtExc = false;
-    // Can't create array with CAS.createFS().
-    try {
-      this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_FS_ARRAY));
-    } catch (CASRuntimeException e) {
-      caughtExc = true;
-      assertTrue(e.getError() == CASRuntimeException.NON_CREATABLE_TYPE);
-    }
-    assertTrue(caughtExc);
-    caughtExc = false;
+	public void testCreateFS() {
+		// Can create FS of type "Top"
+		assertTrue(this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_TOP)) != null);
+		boolean caughtExc = false;
+		// Can't create int FS.
+		try {
+			this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_INTEGER));
+		} catch (CASRuntimeException e) {
+			caughtExc = true;
+			assertTrue(e.getMessageKey().equals(CASRuntimeException.NON_CREATABLE_TYPE));
+		}
+		assertTrue(caughtExc);
+		caughtExc = false;
+		// Can't create array with CAS.createFS().
+		try {
+			this.cas.createFS(this.ts.getType(CAS.TYPE_NAME_FS_ARRAY));
+		} catch (CASRuntimeException e) {
+			caughtExc = true;
+			assertTrue(e.getMessageKey().equals(CASRuntimeException.NON_CREATABLE_TYPE));
+		}
+		assertTrue(caughtExc);
+		caughtExc = false;
 
-    // Check that we can create structures that are larger than the internal
-    // heap page size.
-    final int arraySize = 1000000;
-    // Make sure that the structure we're trying to create is actually larger
-    // than the page size we're testing with.
-    assertTrue(arraySize > Heap.DEFAULT_PAGE_SIZE);
-    IntArrayFS array = null;
-    try {
-      array = this.cas.createIntArrayFS(arraySize);
-    } catch (CASRuntimeException e) {
-      assertTrue(false);
-    }
-    try {
-      array.set(arraySize - 1, 1);
-    } catch (ArrayIndexOutOfBoundsException e) {
-      assertTrue(false);
-    }
+		// Check that we can create structures that are larger than the internal
+		// heap page size.
+		final int arraySize = 1000000;
+		// Make sure that the structure we're trying to create is actually larger
+		// than the page size we're testing with.
+		assertTrue(arraySize > Heap.DEFAULT_PAGE_SIZE);
+		IntArrayFS array = null;
+		try {
+			array = this.cas.createIntArrayFS(arraySize);
+		} catch (CASRuntimeException e) {
+			assertTrue(false);
+		}
+		try {
+			array.set(arraySize - 1, 1);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			assertTrue(false);
+		}
 
-    // Can't create array subtype with CAS.createFS().
-    // try {
-    // this.cas.createFS(this.ts.getType(CASTestSetup.INT_ARRAY_SUB));
-    // } catch (CASRuntimeException e) {
-    // caughtExc = true;
-    // assertTrue(e.getError() == CASRuntimeException.NON_CREATABLE_TYPE);
-    // }
-    // assertTrue(caughtExc);
-  }
+		// Can't create array subtype with CAS.createFS().
+		// try {
+		// this.cas.createFS(this.ts.getType(CASTestSetup.INT_ARRAY_SUB));
+		// } catch (CASRuntimeException e) {
+		// caughtExc = true;
+		// assertTrue(e.getError() == CASRuntimeException.NON_CREATABLE_TYPE);
+		// }
+		// assertTrue(caughtExc);
+	}
 
-  public void testCreateCAS() {
-    TypeSystemMgr tsm = CASFactory.createTypeSystem();
-    tsm.commit();
-  }
+	public void testCreateCAS() {
+		TypeSystemMgr tsm = CASFactory.createTypeSystem();
+		tsm.commit();
+	}
 
-  public void testCreateArrayFS() {
-    // Has its own test class.
-  }
+	public void testCreateArrayFS() {
+		// Has its own test class.
+	}
 
-  public void testCreateIntArrayFS() {
-    // Has its own test class.
-  }
+	public void testCreateIntArrayFS() {
+		// Has its own test class.
+	}
 
-  public void testCreateStringArrayFS() {
-    // Has its own test class.
-  }
+	public void testCreateStringArrayFS() {
+		// Has its own test class.
+	}
 
-  // public void testCreateFilteredIterator() {
-  // }
-  //
-  // public void testCommitFS() {
-  // }
-  //
-  // public void testGetConstraintFactory() {
-  // }
-  //
-  // public void testCreateFeaturePath() {
-  // }
-  //
-  // public void testGetIndexRepository() {
-  // }
-  //
-  // public void testFs2listIterator() {
-  // }
-  //
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(CASTest.class);
-  }
+	// public void testCreateFilteredIterator() {
+	// }
+	//
+	// public void testCommitFS() {
+	// }
+	//
+	// public void testGetConstraintFactory() {
+	// }
+	//
+	// public void testCreateFeaturePath() {
+	// }
+	//
+	// public void testGetIndexRepository() {
+	// }
+	//
+	// public void testFs2listIterator() {
+	// }
+	//
+	public static void main(String[] args) {
+		junit.textui.TestRunner.run(CASTest.class);
+	}
 
 }

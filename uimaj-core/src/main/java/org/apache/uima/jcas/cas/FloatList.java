@@ -25,54 +25,51 @@ import org.apache.uima.jcas.JCasRegistry;
 
 public class FloatList extends org.apache.uima.jcas.cas.TOP {
 
-  public final static int typeIndexID = JCasRegistry.register(FloatList.class);
+	public final static int typeIndexID = JCasRegistry.register(FloatList.class);
 
-  public final static int type = typeIndexID;
+	public final static int type = typeIndexID;
 
-  public int getTypeIndexID() {
-    return typeIndexID;
-  }
+	public int getTypeIndexID() {
+		return typeIndexID;
+	}
 
-  // Never called.
-  protected FloatList() {// Disable default constructor
-  }
+	// Never called.
+	protected FloatList() {// Disable default constructor
+	}
 
-  /** Internal - Constructor used by generator */
-  public FloatList(int addr, TOP_Type type) {
-    super(addr, type);
-  }
+	/** Internal - Constructor used by generator */
+	public FloatList(int addr, TOP_Type type) {
+		super(addr, type);
+	}
 
-  public FloatList(JCas jcas) {
-    super(jcas);
-  }
+	public FloatList(JCas jcas) {
+		super(jcas);
+	}
 
-  public float getNthElement(int i) {
-    if (this instanceof EmptyFloatList) {
-      CASRuntimeException casEx = new CASRuntimeException(
-              CASRuntimeException.JCAS_GET_NTH_ON_EMPTY_LIST);
-      casEx.addArgument("EmptyFloatList");
-      throw casEx;
-    }
-    if (i < 0) {
-      CASRuntimeException casEx = new CASRuntimeException(
-              CASRuntimeException.JCAS_GET_NTH_NEGATIVE_INDEX);
-      casEx.addArgument(new Integer(i).toString());
-      throw casEx;
-    }
-    int originali = i;
+	public float getNthElement(int i) {
+		if (this instanceof EmptyFloatList) {
+			CASRuntimeException casEx = new CASRuntimeException(
+					CASRuntimeException.JCAS_GET_NTH_ON_EMPTY_LIST, new String[] { "EmptyFloatList" });
+			throw casEx;
+		}
+		if (i < 0) {
+			CASRuntimeException casEx = new CASRuntimeException(
+					CASRuntimeException.JCAS_GET_NTH_NEGATIVE_INDEX, new String[] {Integer.toString(i)});
+			throw casEx;
+		}
+		int originali = i;
 
-    FloatList cg = this;
-    for (;; i--) {
-      if (cg instanceof EmptyFloatList) {
-        CASRuntimeException casEx = new CASRuntimeException(
-                CASRuntimeException.JCAS_GET_NTH_PAST_END);
-        casEx.addArgument(new Integer(originali).toString());
-        throw casEx;
-      }
-      NonEmptyFloatList c = (NonEmptyFloatList) cg;
-      if (i == 0)
-        return c.getHead();
-      cg = c.getTail();
-    }
-  }
+		FloatList cg = this;
+		for (;; i--) {
+			if (cg instanceof EmptyFloatList) {
+				CASRuntimeException casEx = new CASRuntimeException(
+						CASRuntimeException.JCAS_GET_NTH_PAST_END, new String[] {Integer.toString(originali)});
+				throw casEx;
+			}
+			NonEmptyFloatList c = (NonEmptyFloatList) cg;
+			if (i == 0)
+				return c.getHead();
+			cg = c.getTail();
+		}
+	}
 }

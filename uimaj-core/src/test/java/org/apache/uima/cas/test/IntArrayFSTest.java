@@ -24,13 +24,10 @@ import junit.framework.TestCase;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.IntArrayFS;
-import org.apache.uima.cas.TypeSystem;
 
 public class IntArrayFSTest extends TestCase {
 
   private CAS cas;
-
-  private TypeSystem ts;
 
   /**
    * Constructor for ArrayFSTest.
@@ -44,7 +41,6 @@ public class IntArrayFSTest extends TestCase {
   public void setUp() {
     try {
       this.cas = CASInitializer.initCas(new CASTestSetup());
-      this.ts = this.cas.getTypeSystem();
     } catch (Exception e) {
       assertTrue(false);
     }
@@ -52,7 +48,6 @@ public class IntArrayFSTest extends TestCase {
 
   public void tearDown() {
     this.cas = null;
-    this.ts = null;
   }
 
   public static void main(String[] args) {
@@ -60,7 +55,7 @@ public class IntArrayFSTest extends TestCase {
   }
 
   public void testSet() {
-    IntArrayFS array = cas.createIntArrayFS(0);
+    IntArrayFS array = this.cas.createIntArrayFS(0);
     assertTrue(array != null);
     assertTrue(array.size() == 0);
     boolean exceptionCaught = false;
@@ -70,7 +65,7 @@ public class IntArrayFSTest extends TestCase {
       exceptionCaught = true;
     }
     assertTrue(exceptionCaught);
-    array = cas.createIntArrayFS(3);
+    array = this.cas.createIntArrayFS(3);
     try {
       array.set(0, 1);
       array.set(1, 2);
@@ -112,17 +107,17 @@ public class IntArrayFSTest extends TestCase {
     // Check that we can't create arrays smaller than 0.
     exceptionCaught = false;
     try {
-      array = cas.createIntArrayFS(-1);
+      array = this.cas.createIntArrayFS(-1);
     } catch (CASRuntimeException e) {
       exceptionCaught = true;
-      assertTrue(e.getError() == CASRuntimeException.ILLEGAL_ARRAY_SIZE);
+      assertTrue(e.getMessageKey().equals(CASRuntimeException.ILLEGAL_ARRAY_SIZE));
     }
     assertTrue(exceptionCaught);
   }
 
   public void testToArray() {
     // From CAS array to Java array.
-    IntArrayFS array = cas.createIntArrayFS(3);
+    IntArrayFS array = this.cas.createIntArrayFS(3);
     int[] fsArray = array.toArray();
     for (int i = 0; i < 3; i++) {
       assertTrue(fsArray[i] == 0);
@@ -137,7 +132,7 @@ public class IntArrayFSTest extends TestCase {
     assertTrue(fsArray[2] == 3);
 
     // From Java array to CAS array.
-    array = cas.createIntArrayFS(3);
+    array = this.cas.createIntArrayFS(3);
     assertTrue(array.get(0) == 0);
     assertTrue(array.get(1) == 0);
     assertTrue(array.get(2) == 0);

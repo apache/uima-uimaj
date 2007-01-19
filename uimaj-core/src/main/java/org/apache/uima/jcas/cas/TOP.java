@@ -37,126 +37,126 @@ import org.apache.uima.jcas.JCasRegistry;
  */
 public class TOP extends FeatureStructureImpl {
 
-  /**
+	/**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
    */
-  public final static int typeIndexID = JCasRegistry.register(TOP.class);
+	public final static int typeIndexID = JCasRegistry.register(TOP.class);
 
-  public final static int type = typeIndexID;
+	public final static int type = typeIndexID;
 
-  /**
+	/**
    * used to obtain reference to the TOP_Type instance
    * 
    * @return the type array index
    */
-  // can't be factored - refs locally defined field
-  public int getTypeIndexID() {
-    return typeIndexID;
-  }
+	// can't be factored - refs locally defined field
+	public int getTypeIndexID() {
+		return typeIndexID;
+	}
 
-  /*
+	/*
    * Note this class doesn't extend FeatureStructureImpl because that would add one more slot (the
    * casImpl ref) to every instance.
    */
-  /** used to reference the corresponding TOP_Type instance */
-  public final TOP_Type jcasType;
+	/** used to reference the corresponding TOP_Type instance */
+	public final TOP_Type jcasType;
 
-  /** used to reference the corresponding Cas instance */
-  protected final int addr;
+	/** used to reference the corresponding Cas instance */
+	protected final int addr;
 
-  // This constructor is never called .
-  // Have to set "final" values to avoid compile errors
-  protected TOP() {
-    jcasType = null;
-    addr = 0;
-    throw new RuntimeException("Internal Error: TOP() constructor should never be called.");
-  }
+	// This constructor is never called .
+	// Have to set "final" values to avoid compile errors
+	protected TOP() {
+		jcasType = null;
+		addr = 0;
+		throw new RuntimeException("Internal Error: TOP() constructor should never be called.");
+	}
 
-  /**
+	/**
    * (Internal) make a new instance of TOP, linking it with a pre-existing Cas FeatureStructure
    * object. Note: this function invoked via the generator in TOP_Type whenever the CAS needs to
    * make a java instance
    */
-  public TOP(int addr, TOP_Type jcasType) {
-    this.addr = addr;
-    this.jcasType = jcasType;
-  }
+	public TOP(int addr, TOP_Type jcasType) {
+		this.addr = addr;
+		this.jcasType = jcasType;
+	}
 
-  /**
+	/**
    * (Internal) create a new instance of TOP (or subclass of TOP) in Java and Cas, and make them
    * correspond.
    */
-  public TOP(JCas jcas) {
-    this.jcasType = jcas.getType(getTypeIndexID());
-    if (null == jcasType) {
-      CASRuntimeException e = new CASRuntimeException(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS);
-      e.addArgument(this.getClass().getName());
-      throw e;
-    }
-    this.addr = jcasType.ll_cas.ll_createFS(jcasType.casTypeCode);
-    jcas.putJfsFromCaddr(addr, this);
-    CAS cas = jcas.getCas();
-    if (((CASImpl) cas).isAnnotationType(jcasType.casTypeCode)) {
-      ((CASImpl) cas).setSofaFeat(addr, ((CASImpl) cas).getSofaRef());
-    }
-  }
+	public TOP(JCas jcas) {
+		this.jcasType = jcas.getType(getTypeIndexID());
+		if (null == jcasType) {
+			CASRuntimeException e = new CASRuntimeException(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS,
+					new String[] { this.getClass().getName() });
+			throw e;
+		}
+		this.addr = jcasType.ll_cas.ll_createFS(jcasType.casTypeCode);
+		jcas.putJfsFromCaddr(addr, this);
+		CAS cas = jcas.getCas();
+		if (((CASImpl) cas).isAnnotationType(jcasType.casTypeCode)) {
+			((CASImpl) cas).setSofaFeat(addr, ((CASImpl) cas).getSofaRef());
+		}
+	}
 
-  /** add the corresponding FeatureStructure to all Cas indexes */
-  public void addToIndexes() {
-    addToIndexes(jcasType.jcas);
-  }
+	/** add the corresponding FeatureStructure to all Cas indexes */
+	public void addToIndexes() {
+		addToIndexes(jcasType.jcas);
+	}
 
-  public void addToIndexes(JCas jcas) {
-    jcas.getCas().addFsToIndexes(this);
-  }
+	public void addToIndexes(JCas jcas) {
+		jcas.getCas().addFsToIndexes(this);
+	}
 
-  /** remove the corresponding FeatureStructure from all Cas indexes */
-  public void removeFromIndexes() {
-    removeFromIndexes(jcasType.jcas);
-  }
+	/** remove the corresponding FeatureStructure from all Cas indexes */
+	public void removeFromIndexes() {
+		removeFromIndexes(jcasType.jcas);
+	}
 
-  public void removeFromIndexes(JCas jcas) {
-    jcas.getLowLevelIndexRepository().ll_removeFS(this.addr);
-  }
+	public void removeFromIndexes(JCas jcas) {
+		jcas.getLowLevelIndexRepository().ll_removeFS(this.addr);
+	}
 
-  /*
+	/*
    * functions needed to to implement the FeatureStructure interface Note we don't simply implement
    * this class as a subclass of FeatureStructureImpl because that would add one more slot to every
    * instance
    */
 
-  public int getAddress() {
-    return this.addr;
-  }
+	public int getAddress() {
+		return this.addr;
+	}
 
-  public CASImpl getCASImpl() {
-    return jcasType.casImpl;
-  }
+	public CASImpl getCASImpl() {
+		return jcasType.casImpl;
+	}
 
-  public CAS getCAS() {
-    return jcasType.casImpl;
-  }
+	public CAS getCAS() {
+		return jcasType.casImpl;
+	}
 
-  public LowLevelCAS getLowLevelCas() {
-    return jcasType.casImpl;
-  }
+	public LowLevelCAS getLowLevelCas() {
+		return jcasType.casImpl;
+	}
 
-  public boolean equals(Object o) {
-    if (o == null) {
-      return false;
-    }
-    if (!(o instanceof TOP))
-      return false;
-    TOP fs = (TOP) o;
-    if ((this.addr == fs.addr) && (this.jcasType.casImpl == fs.jcasType.casImpl)) {
-      return true;
-    }
-    return false;
-  }
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		}
+		if (!(o instanceof TOP))
+			return false;
+		TOP fs = (TOP) o;
+		if ((this.addr == fs.addr) && (this.jcasType.casImpl == fs.jcasType.casImpl)) {
+			return true;
+		}
+		return false;
+	}
 
-  public int hashCode() {
-    return this.addr;
-  }
+	public int hashCode() {
+		return this.addr;
+	}
 
 }
