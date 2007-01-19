@@ -62,4 +62,7 @@ public class Constants {
 
   public static final String SHUTDOWN_MSG = "Shutting Down the Vinci Analysis Engine Service";
 
+  public static final String GET_SUPPORTED_XCAS_VERSIONS = "GetSupportedXCasVersions";
+  
+  public static final String SUPPORTED_XCAS_VERSIONS_RESPONSE = "2";
 }

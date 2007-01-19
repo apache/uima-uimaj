@@ -22,6 +22,7 @@ package org.apache.uima.adapter.vinci;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
 
@@ -239,6 +240,8 @@ public class VinciAnalysisEngineService_impl extends VinciServableAdapter {
       } else if (Constants.IS_READONLY.equals(op)) {
         ct.cleanup();
         return new AFrame().fadd("Result", mAE.isReadOnly());
+      } else if (Constants.GET_SUPPORTED_XCAS_VERSIONS.equals(op)) {
+        return new AFrame().fadd("Result", Constants.SUPPORTED_XCAS_VERSIONS_RESPONSE);
       } else if (Constants.SHUTDOWN.equals(op)) {
         stop();
         System.exit(1);
