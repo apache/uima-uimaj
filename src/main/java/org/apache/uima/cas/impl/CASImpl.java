@@ -144,9 +144,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
 	protected LongHeap longHeap; // for storing 64 bit values
 
-	// The document text.
-	private String documentText;
-
 	// The index repository.
 	protected FSIndexRepositoryImpl indexRepository;
 
@@ -1024,7 +1021,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
 	private void resetView() {
 		this.indexRepository.flush();
-		this.documentText = null;
 		if (this.mySofaRef > 0 && this.getSofa().getSofaRef() == 1) {
 			// indicate no Sofa exists for the initial view
 			this.mySofaRef = -1;
@@ -3680,7 +3676,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 		final Type SofaType = this.ts.getType(CAS.TYPE_NAME_SOFA);
 		final Feature sofaString = SofaType.getFeatureByBaseName(FEATURE_BASE_NAME_SOFASTRING);
 		String newDoc = getSofa(this.mySofaRef).getStringValue(sofaString);
-		this.documentText = newDoc;
 		if (null != newDoc)
 			getDocumentAnnotation().setIntValue(getEndFeature(), newDoc.length());
 	}
@@ -3790,7 +3785,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 					this.getTypeSystem().getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFASTRING));
 			final int llsofa = getLowLevelCAS().ll_getFSRef(this.getSofa());
 			getLowLevelCAS().ll_setStringValue(llsofa, SofaStringCode, text);
-			this.documentText = text;
 		}
 	}
 
