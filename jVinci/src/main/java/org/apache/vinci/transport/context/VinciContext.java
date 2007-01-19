@@ -113,6 +113,8 @@ public class VinciContext {
   private String host;
 
   private int port;
+  
+  private boolean socketKeepAliveEnabled = true;
 
   static class CachedVNSResult {
     CachedVNSResult(ResolveResult r) {
@@ -263,6 +265,22 @@ public class VinciContext {
   public void setVNSServeonTimeout(int millis) {
     vnsServeonTimeout = millis;
   }
+  
+  /**
+   * Returns whether socket keepAlive is enabled.
+   * @see java.net.Socket#setKeepAlive(boolean)
+   */
+  public boolean isSocketKeepAliveEnabled() {
+    return socketKeepAliveEnabled;
+  }
+
+  /**
+   * Set whether socket keepAlive is enabled.  Default is true.
+   * @see java.net.Socket#setKeepAlive(boolean)
+   */
+  public void setSocketKeepAliveEnabled(boolean b) {
+    socketKeepAliveEnabled = b;
+  }  
 
   /**
    * Get the global VinciContext used by Vinci classes when no context is explicitly specified.

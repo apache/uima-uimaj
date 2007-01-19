@@ -718,6 +718,7 @@ public class BaseClient {
     socket.connect(socketAddress, connectTimeout);
     socket.setTcpNoDelay(true); // needed to avoid delays with Linux/loopback
     socket.setSoTimeout(socketTimeout);
+    socket.setKeepAlive(isSocketKeepAliveEnabled());    
     is = new BufferedInputStream(socket.getInputStream());
     os = new BufferedOutputStream(socket.getOutputStream());
   }
@@ -739,6 +740,7 @@ public class BaseClient {
     setRetry(false);
     socket = use_me;
     socket.setSoTimeout(socketTimeout);
+    socket.setKeepAlive(isSocketKeepAliveEnabled());    
     is = new BufferedInputStream(socket.getInputStream());
     os = new BufferedOutputStream(socket.getOutputStream());
   }
@@ -751,6 +753,17 @@ public class BaseClient {
       socket.setSoTimeout(millis);
     }
     socketTimeout = millis;
+  }
+  
+  /**
+   * Gets whether keepAlive should be turned on for client sockets.
+   * Always returns true for BaseClient.  Can be overridden in
+   * subclasses.
+   *
+   *@return whether socket keepAlive should be turned on
+   */
+  protected boolean isSocketKeepAliveEnabled() {
+    return true;
   }
 
 } // end class BaseClient

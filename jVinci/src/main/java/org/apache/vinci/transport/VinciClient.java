@@ -442,6 +442,17 @@ public class VinciClient extends BaseClient {
     close();
     open(serviceName);
   }
+  
+  /**
+   * Gets wheter socket keepAlive is enabled.  This overrides the method
+   * in BaseClient, and makes this setting configurable through the
+   * VinciContext.
+   * 
+   * @return whether socket keepAlive is enabled.
+   */
+  protected boolean isSocketKeepAliveEnabled() {
+    return getContext().isSocketKeepAliveEnabled();
+  }
 
   /**
    * Same as VinciClient.sendAndReceive(Transportable) except for return type. Syntactic sugar
