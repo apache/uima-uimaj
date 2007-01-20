@@ -27,6 +27,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 
@@ -47,6 +49,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.CASSerializer;
 import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.internal.util.FileUtils;
 import org.apache.uima.internal.util.TextStringTokenizer;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -330,22 +333,8 @@ public class SerializationReinitTest extends TestCase {
     time = System.currentTimeMillis() - time;
     // System.out.println("Created " + endOfSentenceCounter + " sentences: " + new TimeSpan(time));
   }
-
-  private static String file2String(File file) throws IOException {
-    // Read the file into a string using a char buffer.
-    char[] buf = new char[10000];
-    int charsRead;
-    BufferedReader reader = new BufferedReader(new FileReader(file));
-    StringWriter writer = new StringWriter();
-    while ((charsRead = reader.read(buf)) >= 0) {
-      writer.write(buf, 0, charsRead);
-    }
-    reader.close();
-    final String text = writer.toString();
-    writer.close();
-    return text;
-  }
-
+  
+  private static final Pattern nlPattern = Pattern.compile("(?m)(.*?$)");
   /**
    * Test driver.
    */
@@ -360,20 +349,31 @@ public class SerializationReinitTest extends TestCase {
     time = System.currentTimeMillis();
     // Read the document into a String. I'm sure there are better ways to
     File textFile = JUnitExtension.getFile("data/moby.txt");
-    String moby = file2String(textFile);
+    String moby = FileUtils.file2String(textFile);
     // String moby = file2String(System.getProperty("cas.data.test") + "moby.txt");
     String line;
-    BufferedReader br = new BufferedReader(new StringReader(moby));
-    StringBuffer buf = new StringBuffer();
+//    BufferedReader br = new BufferedReader(new StringReader(moby));
+    StringBuffer buf = new StringBuffer(10000);
     ArrayList docs = new ArrayList();
-    while ((line = br.readLine()) != null) {
+    Matcher m = nlPattern.matcher(moby);
+    while (m.find()) {
+      line = m.group();
       if (line.startsWith(".. <p")) {
         docs.add(buf.toString());
-        buf = new StringBuffer();
+        buf.setLength(0);
       } else {
         buf.append(line + "\n");
       }
     }
+//    while ((line = br.readLine()) != null) {
+//      if (line.startsWith(".. <p")) {
+//        docs.add(buf.toString());
+//        buf = new StringBuffer();
+//      } else {
+//        buf.append(line + "\n");
+//      }
+//    }
+    m.appendTail(buf);
     docs.add(buf.toString());
     buf = null;
 
@@ -438,21 +438,34 @@ public class SerializationReinitTest extends TestCase {
 
     // Read the document into a String. 
     File textFile = JUnitExtension.getFile("data/moby.txt");
-    String moby = file2String(textFile);
+    String moby = FileUtils.file2String(textFile);
     // String moby = file2String(System.getProperty("cas.data.test") + "moby.txt");
     String line;
-    BufferedReader br = new BufferedReader(new StringReader(moby));
-    StringBuffer buf = new StringBuffer();
+//    BufferedReader br = new BufferedReader(new StringReader(moby));
+    StringBuffer buf = new StringBuffer(10000);
     ArrayList docs = new ArrayList();
-    while ((line = br.readLine()) != null) {
+    Matcher m = nlPattern.matcher(moby);
+    while (m.find()) {
+      line = m.group();
       if (line.startsWith(".. <p")) {
         docs.add(buf.toString());
-        buf = new StringBuffer();
+        buf.setLength(0);
       } else {
         buf.append(line + "\n");
       }
     }
-    docs.add(buf.toString());
+    
+//    while ((line = br.readLine()) != null) {
+//      if (line.startsWith(".. <p")) {
+//        docs.add(buf.toString());
+//        buf = new StringBuffer();
+//      } else {
+//        buf.append(line + "\n");
+//      }
+//    }
+//    docs.add(buf.toString());
+    m.appendTail(buf);
+    docs.add(buf.toString()); 
     buf = null;
 
     final int numDocs = docs.size();

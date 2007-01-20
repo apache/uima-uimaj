@@ -215,7 +215,16 @@ public class XMLUtil {
       }
       // store the 1st text byte and read next 6 bytes of XML file
       buffer[byteCounter++] = (byte) nextByte;
-      if (iStream.read(buffer, byteCounter, bytes2put - 1) != bytes2put - 1)
+      // this next bit is because the "read(...)" is not obliged to return all the bytes
+      // and must be put in a while loop to guarantee getting them
+      int offset = 0;
+      while (offset < (bytes2put - 1)) {
+        int bytesRead = iStream.read(buffer, offset + byteCounter, bytes2put - 1 - offset);
+        if (bytesRead == -1)
+          break;
+        offset += bytesRead;
+      }
+      if (offset != (bytes2put - 1))
         throw new IOException("cannot read file");
       // check first XML header characters - '<?xml'
       if (utf8Signature) {
