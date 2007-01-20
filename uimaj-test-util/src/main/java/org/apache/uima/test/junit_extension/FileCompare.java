@@ -255,16 +255,18 @@ public class FileCompare {
    * sure what the best way of handling this is.
    */
   public static String file2String(File file) throws IOException {
+    BufferedReader bReader = new BufferedReader(new FileReader(file));
+    int length = (int)file.length();
     // Read the file into a string using a char buffer.
-    char[] buf = new char[10000];
-    int charsRead;
-    BufferedReader reader = new BufferedReader(new FileReader(file));
-    StringBuffer strbuf = new StringBuffer();
-    while ((charsRead = reader.read(buf)) >= 0) {
-      strbuf.append(buf, 0, charsRead);
+    char[] buf = new char[length];
+    try {
+      // will read all the chars of the file, calling read repeatedly 
+      // as needed in the underlying layer
+      //  Note: this 3 argument version is the only one documented to do this.
+      bReader.read(buf, 0, length);
+    } finally {
+      bReader.close();
     }
-    reader.close();
-    final String text = strbuf.toString();
-    return text;
+    return new String(buf); 
   }
 }
