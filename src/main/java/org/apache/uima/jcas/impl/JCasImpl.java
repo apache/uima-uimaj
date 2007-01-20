@@ -20,15 +20,9 @@
 package org.apache.uima.jcas.impl;
 
 // * todo:
-// * check iterators returning over mixed types
-// * both old style jfs returning mixed new/ole
-// * and new style fsiterators returning mixed?
-// * reinit - have it discard and reget jcas instance
-// * call to getJCas from CASImpl - fix to simplify
-// * getStringArray0 etc - check if OK with new impl in old code
 // *
 // * Compatibility removes at some point: TypeSystemInit and it's caller
-// * done:
+
 
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
@@ -60,7 +54,6 @@ import org.apache.uima.cas.SofaID;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelException;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
@@ -112,25 +105,36 @@ import org.apache.uima.jcas.cas.TOP_Type;
  * 
  * If the CAS has its contents reset, call jcas.clearData() to reset the corresponding JCas content.
  * 
- * Implementation Notes: --------------------- At loadtime, Foo and Foo_Type classes assigned static
- * integer indexes These indexes are used in arrays in the jcas instance to go from Foo class (not
- * instances) to Foo_Type instances (one per CAS) Things which require "types" at runtime reference
- * the Foo_Type instances.
+ * Implementation Notes: 
+ * At loadtime, Foo and Foo_Type classes are assigned static
+ * integer indexes, using the JCasRegistry.  
+ * These indexes are used in arrays in the jcas instance to go from Foo class (not
+ * instances) to Foo_Type instances (one per CAS). 
+ * Things which require "types" at runtime reference the Foo_Type instances.
  * 
  * Maps: Note: per CAS means per shared JCas instance assoc w/ CAS
  * 
- * (universal) (static field in class) go from Foo class to index unique ID used with next map to
- * locate Foo_Type instance associated with this class If universal - becomes an index for all
- * FooStyle classes loaded (per CAS) (ArrayList) map index from Foo (static) to Foo_Type instance
- * used in creating new instances. Needs to be one per CAS because a particular "xyz" feature in
- * CAS1 != "xyz" feature in CAS2 If above universal, then can become large array with mostly unused
- * slots. Possibility: reuse no-longer-used slots. Identify no-longer-used slots at CAS Type unload
- * event?
+ * (universal) 
+ * (static field in class) 
+ * go from Foo class to index unique ID used with next map to
+ * locate Foo_Type instance associated with this class 
+ * If universal - becomes an index for all
+ * FooStyle classes loaded (per CAS) 
+ * 
+ * (ArrayList) map index from Foo (static) to Foo_Type instance
+ *   used in creating new instances. 
+ *   Needs to be one per CAS because a particular "xyz" feature in
+ *     CAS1 != "xyz" feature in CAS2 
+ *     If above universal, then can become large array with mostly unused
+ *     slots. 
+ *     Possibility: reuse no-longer-used slots. Identify no-longer-used slots at CAS Type unload
+ *     event?
  */
 
 /**
- * implements the supporting infrastructure for JCas model linked with a Cas. There is one logical
- * instance of this instantiated per Cas. If you hold a reference to a CAS, to get a reference to
+ * implements the supporting infrastructure for JCas model linked with a Cas. 
+ * There is one logical instance of this instantiated per Cas or CasView. 
+ * If you hold a reference to a CAS, to get a reference to
  * the corresponding JCas, use the method getJCas(). Likewise, if you hold a reference to this
  * object, you can get a reference to the corresponding CAS object using the method getCas().
  * <p>
@@ -181,11 +185,15 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 	// *******************
 
 	/**
-   * key = CAS addr, value = corresponding Java instance The reason there are multiple cover objects
-   * per Cas object is that the JCas cover object distinguishes the CAS View the object belongs to,
-   * in order to support the methods: aJCasCoverObjectInstance.addToIndexes() which needs to know
-   * which view to use This "convenience" of not needing to specify which CAS view to use here, is
-   * traded off with space: the same object indexed in multiple views ends up not "sharing" the Java
+   *   key = CAS addr, 
+   *   value = corresponding Java instance 
+   * The reason there are multiple cover objects per Cas object is that 
+   * the JCas cover object distinguishes the CAS View the object belongs to,
+   * in order to support the methods: aJCasCoverObjectInstance.addToIndexes(), 
+   * which needs to know which view to use.
+   * This "convenience" of not needing to specify which CAS view to use here, is
+   * traded off with space: the same object indexed in multiple views ends up 
+   * not "sharing" the Java 
    * cover object (because the objects are not identical - they refer to different views).
    */
 
