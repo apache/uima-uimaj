@@ -18,6 +18,7 @@
  */
 package org.apache.uima.util.jet;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -98,19 +99,17 @@ public class JetExpander {
 	}
 	
 	String readFile(String fileName) {
-		
+ 		
     char [] buffer;
     
     try {
 			File file = new File((new File(fileName)).getCanonicalPath());
    	
-			FileReader fileReader = new FileReader(file.getCanonicalPath());
+			BufferedReader fileReader = new BufferedReader(new FileReader(file.getCanonicalPath()));
 			int fileLength = (int)file.length();
 			buffer = new char [fileLength];
-			int charsRead = fileReader.read(buffer);
-			if (charsRead != fileLength)
-			  throw new ErrorExit("Read different length than whats in the file.");
-			
+      // this form with 3 args is the only one the Javadoc says will read all of the file
+			fileReader.read(buffer, 0, fileLength);			
 			return new String(buffer).replaceAll("\\r","");  // for linux/unix
 //			return new String(buffer);  
 		} catch (FileNotFoundException e) {
