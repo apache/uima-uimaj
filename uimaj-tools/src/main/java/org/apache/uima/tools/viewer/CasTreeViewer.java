@@ -58,6 +58,7 @@ import org.apache.uima.cas.FloatArrayFS;
 import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.internal.util.FileUtils;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.tools.images.Images;
 import org.apache.uima.util.XMLInputSource;
@@ -315,17 +316,9 @@ public class CasTreeViewer extends JPanel {
         CAS CAS = ae.newCAS();
 
         // read document from file
-        byte[] contents = new byte[(int) inputFile.length()];
-        FileInputStream fis = null;
-        try {
-          fis = new FileInputStream(inputFile);
-          fis.read(contents);
-        } finally {
-          if (fis != null) {
-            fis.close();
-          }
-        }
-        String document = new String(contents);
+        
+        String document = FileUtils.file2String(inputFile);
+        
         CAS.setDocumentText(getText(document).trim());
 
         // analyze

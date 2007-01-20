@@ -72,6 +72,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.internal.util.BrowserUtil;
+import org.apache.uima.internal.util.FileUtils;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.tools.images.Images;
 import org.apache.uima.tools.stylemap.ColorParser;
@@ -146,18 +147,7 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
     AnalysisEngineDescription selectedAE = null;
     try {
       if (styleMapFile.exists()) {
-        FileReader reader = new FileReader(styleMapFile);
-        StringBuffer buf = new StringBuffer();
-        char[] chars = new char[2048];
-        int charsRead = reader.read(chars);
-
-        while (charsRead > 0) {
-          buf.append(chars, 0, charsRead);
-          charsRead = reader.read(chars);
-        }
-
-        styleMapXml = buf.toString();
-        reader.close();
+        styleMapXml = FileUtils.file2String(styleMapFile);
       }
 
       // have user select AE if they haven't done so already

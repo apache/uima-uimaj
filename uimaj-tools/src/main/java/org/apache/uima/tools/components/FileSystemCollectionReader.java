@@ -19,6 +19,7 @@
 
 package org.apache.uima.tools.components;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -138,7 +139,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
 
     // open input stream to file
     File file = (File) mFiles.get(mCurrentIndex++);
-    FileInputStream fis = new FileInputStream(file);
+    BufferedInputStream fis = new BufferedInputStream(new FileInputStream(file));
     if (!mXCAS) {
       try {
         // if there's a CAS Initializer, call it

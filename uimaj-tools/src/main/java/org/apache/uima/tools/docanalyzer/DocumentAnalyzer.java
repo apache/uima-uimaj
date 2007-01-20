@@ -81,6 +81,7 @@ import org.apache.uima.collection.CollectionProcessingManager;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.EntityProcessStatus;
 import org.apache.uima.collection.StatusCallbackListener;
+import org.apache.uima.internal.util.FileUtils;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.Capability;
@@ -811,18 +812,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
     if (smapFile.exists()) {
       try {
-        FileReader reader = new FileReader(smapFile);
-        StringBuffer buf = new StringBuffer();
-        char[] chars = new char[2048];
-        int charsRead = reader.read(chars);
-
-        while (charsRead > 0) {
-          buf.append(chars, 0, charsRead);
-          charsRead = reader.read(chars);
-        }
-
-        styleMapXml = buf.toString();
-        reader.close();
+        return FileUtils.file2String(smapFile);
       } catch (FileNotFoundException e) {
         e.printStackTrace();
       } catch (IOException e) {
