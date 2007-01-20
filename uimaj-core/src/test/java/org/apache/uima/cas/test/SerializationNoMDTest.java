@@ -364,19 +364,30 @@ public class SerializationNoMDTest extends TestCase {
   // return file2String(new File(file));
   // }
 
-  private static String file2String(File file) throws IOException {
+  /**
+   * Read the contents of a file into a string, using the default platform encoding.
+   * 
+   * @param file
+   *          The file to be read in.
+   * @return String The contents of the file.
+   * @throws IOException
+   *           Various I/O errors.
+   */
+  public static String file2String(File file) throws IOException {
     // Read the file into a string using a char buffer.
-    char[] buf = new char[10000];
-    int charsRead;
-    BufferedReader reader = new BufferedReader(new FileReader(file));
-    StringWriter writer = new StringWriter();
-    while ((charsRead = reader.read(buf)) >= 0) {
-      writer.write(buf, 0, charsRead);
+    BufferedReader reader = null;
+    int fileLength = (int) file.length();
+    char[] buf = new char[fileLength];
+    try {
+      reader = new BufferedReader(new FileReader(file));  
+      // will read all the chars of the file, calling read repeatedly 
+      // as needed in the underlying layer
+      reader.read(buf, 0, fileLength);
+    } finally {
+      if (null != reader)
+        reader.close();
     }
-    reader.close();
-    final String text = writer.toString();
-    writer.close();
-    return text;
+    return new String(buf);    
   }
 
   /**

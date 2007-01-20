@@ -31,6 +31,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -108,6 +109,43 @@ public class FileUtils {
   }
 
   /**
+   * Read a bufferedReader into a string, using the default platform encoding.
+   * 
+   * @param reader to be read in, not buffered (this routine buffers it).
+   * @param length of the input 
+   * @return String The contents of the stream.
+   * @throws IOException
+   *           Various I/O errors.
+   */
+  public static String reader2String(Reader reader, int length) throws IOException {
+    BufferedReader bReader = new BufferedReader(reader);
+    // Read the file into a string using a char buffer.
+    char[] buf = new char[length];
+    try {
+      // will read all the chars of the file, calling read repeatedly 
+      // as needed in the underlying layer
+      bReader.read(buf, 0, length);
+    } finally {
+      bReader.close();
+    }
+    return new String(buf);    
+  }
+
+  public static String byteStream2String(Reader reader, int length) throws IOException {
+    BufferedReader bReader = new BufferedReader(reader);
+    // Read the file into a string using a char buffer.
+    char[] buf = new char[length];
+    try {
+      // will read all the chars of the file, calling read repeatedly 
+      // as needed in the underlying layer
+      bReader.read(buf, 0, length);
+    } finally {
+      bReader.close();
+    }
+    return new String(buf);    
+  }
+
+  /**
    * Read the contents of a file into a string, using the default platform encoding.
    * 
    * @param file
@@ -117,17 +155,9 @@ public class FileUtils {
    *           Various I/O errors.
    */
   public static String file2String(File file) throws IOException {
-    // Read the file into a string using a char buffer.
-    char[] buf = new char[10000];
-    int charsRead;
-    BufferedReader reader = new BufferedReader(new FileReader(file));
-    StringBuffer strbuf = new StringBuffer();
-    while ((charsRead = reader.read(buf)) >= 0) {
-      strbuf.append(buf, 0, charsRead);
-    }
-    reader.close();
-    final String text = strbuf.toString();
-    return text;
+    return reader2String(
+            new FileReader(file),
+            (int) file.length());   
   }
 
   /**
@@ -143,18 +173,9 @@ public class FileUtils {
    *           Various I/O errors.
    */
   public static String file2String(File file, String fileEncoding) throws IOException {
-    // Read the file into a string using a char buffer.
-    char[] buf = new char[10000];
-    int charsRead;
-    BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file),
-            fileEncoding));
-    StringBuffer strbuf = new StringBuffer();
-    while ((charsRead = reader.read(buf)) >= 0) {
-      strbuf.append(buf, 0, charsRead);
-    }
-    reader.close();
-    final String text = strbuf.toString();
-    return text;
+    return reader2String(
+            new InputStreamReader(new FileInputStream(file), fileEncoding),
+            (int) file.length());   
   }
 
   /**
@@ -318,6 +339,7 @@ public class FileUtils {
     }
     byte[] bytes = new byte[(int) file.length()];
     BufferedInputStream is = new BufferedInputStream(new FileInputStream(file));
+    // must use buffered stream to have the read(...) read the whole file 
     is.read(bytes);
     is.close();
     BufferedOutputStream os = null;

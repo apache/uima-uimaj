@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas.test;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -392,57 +393,63 @@ public class JcasSofaTest extends TestCase {
       is.close();
       is = intArrayView.getSofaDataStream();
       assertTrue(is != null);
+      BufferedInputStream bis = new BufferedInputStream(is);
       int i = 0;
-      while (is.read(dest) != -1) {
+      while (bis.read(dest) != -1) {
         assertTrue(ByteBuffer.wrap(dest).getInt() == intArrayFS.get(i++));
-        ;
       }
 
-      is.close();
+      bis.close();
+      
       is = floatArrayView.getSofaDataStream();
       assertTrue(is != null);
+      bis = new BufferedInputStream(is);
       i = 0;
-      while (is.read(dest) != -1) {
+      while (bis.read(dest) != -1) {
         assertTrue(ByteBuffer.wrap(dest).getFloat() == floatArrayFS.get(i++));
       }
 
       dest = new byte[2];
-      is.close();
+      bis.close();
       is = shortArrayView.getSofaDataStream();
       assertTrue(is != null);
+      bis = new BufferedInputStream(is);
       i = 0;
-      while (is.read(dest) != -1) {
+      while (bis.read(dest) != -1) {
         assertTrue(ByteBuffer.wrap(dest).getShort() == shortArrayFS.get(i++));
       }
 
       dest = new byte[1];
-      is.close();
+      bis.close();
       is = byteArrayView.getSofaDataStream();
       assertTrue(is != null);
+      bis = new BufferedInputStream(is);
       i = 0;
-      while (is.read(dest) != -1) {
+      while (bis.read(dest) != -1) {
         assertTrue(ByteBuffer.wrap(dest).get() == byteArrayFS.get(i++));
       }
 
       dest = new byte[8];
-      is.close();
+      bis.close();
       is = longArrayView.getSofaDataStream();
       assertTrue(is != null);
+      bis = new BufferedInputStream(is);
       i = 0;
-      while (is.read(dest) != -1) {
+      while (bis.read(dest) != -1) {
         assertTrue(ByteBuffer.wrap(dest).getLong() == longArrayFS.get(i++));
       }
 
-      is.close();
+      bis.close();
       is = doubleArrayView.getSofaDataStream();
       assertTrue(is != null);
+      bis = new BufferedInputStream(is);
       i = 0;
-      while (is.read(dest) != -1) {
+      while (bis.read(dest) != -1) {
         assertTrue(ByteBuffer.wrap(dest).getDouble() == doubleArrayFS.get(i++));
       }
 
       dest = new byte[1];
-      is.close();
+      bis.close();
       is = remoteView.getSofaDataStream();
       assertTrue(is != null);
       is.close();
