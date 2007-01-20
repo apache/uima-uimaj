@@ -19,6 +19,7 @@
 
 package org.apache.uima.examples.casMultiplier;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.PrintStream;
@@ -66,7 +67,7 @@ public class CasMultiplierExampleApplication {
 
       // read input text file
       File textFile = new File(args[1]);
-      FileInputStream fis = new FileInputStream(textFile);
+      BufferedInputStream fis = new BufferedInputStream(new FileInputStream(textFile));
       byte[] contents = new byte[(int) textFile.length()];
       fis.read(contents);
       String document = new String(contents, "UTF-8");

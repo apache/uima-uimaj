@@ -19,6 +19,7 @@
 
 package org.apache.uima.examples.cpe;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -119,7 +120,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
 
     // open input stream to file
     File file = (File) mFiles.get(mCurrentIndex++);
-    FileInputStream fis = new FileInputStream(file);
+    BufferedInputStream fis = new BufferedInputStream(new FileInputStream(file));
     try {
       byte[] contents = new byte[(int) file.length()];
       fis.read(contents);

@@ -19,6 +19,7 @@
 
 package org.apache.uima.examples;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.PrintStream;
@@ -260,7 +261,7 @@ public class PrintAnnotations {
       }
 
       // read contents of file
-      FileInputStream fis = new FileInputStream(inputFile);
+      BufferedInputStream fis = new BufferedInputStream(new FileInputStream(inputFile));
       byte[] contents = new byte[(int) inputFile.length()];
       fis.read(contents);
       fis.close();

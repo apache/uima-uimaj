@@ -19,6 +19,7 @@
 
 package org.apache.uima.examples;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -116,11 +117,11 @@ public class ExampleApplication {
   private static void processFile(File aFile, AnalysisEngine aAE, CAS aCAS) throws IOException,
           AnalysisEngineProcessException {
     System.out.println("Processing file " + aFile.getName());
-    FileInputStream fis = null;
+    BufferedInputStream fis = null;
 
     try {
       // read file
-      fis = new FileInputStream(aFile);
+      fis = new BufferedInputStream(new FileInputStream(aFile));
       byte[] contents = new byte[(int) aFile.length()];
       fis.read(contents);
       String document = new String(contents, "UTF-8");
