@@ -447,7 +447,7 @@ under the License.
         what changes are performed by the migration script, see the next section of this document.</para>
       <para>The script will only attempt to modify files with the extensions: java, xml, xmi, wsdd, properties,
         launch, bat, cmd, sh, ksh, or csh; and files with no extension. Also, files with size greater than 1,000,000
-        bytes will be skipped. (If you want the script too modify files with other extensions, you can edit the script
+        bytes will be skipped. (If you want the script to modify files with other extensions, you can edit the script
         file and change the <literal>-ext</literal> argument appropraitely.) </para>
       <para>After running the migration utility, you must recompile your code against the Apache UIMA jar files. The
         migration utility should have done most of the updates necessary for your code to compile and run, but some
