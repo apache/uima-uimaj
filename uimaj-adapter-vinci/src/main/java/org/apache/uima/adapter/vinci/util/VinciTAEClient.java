@@ -22,6 +22,7 @@ package org.apache.uima.adapter.vinci.util;
 import java.io.File;
 import java.io.FileInputStream;
 
+import org.apache.uima.internal.util.FileUtils;
 import org.apache.vinci.transport.VinciClient;
 import org.apache.vinci.transport.VinciFrame;
 
@@ -41,21 +42,12 @@ public class VinciTAEClient {
 
         System.out.println("Analyzing Document...");
         File aFile = new File(args[1]);
-        byte[] contents = new byte[(int) aFile.length()];
-        FileInputStream fis = null;
-        try {
-          fis = new FileInputStream(aFile);
-          fis.read(contents);
-        } finally {
-          if (fis != null) {
-            fis.close();
-          }
-        }
+        String fileData = FileUtils.file2String(aFile);
 
         VinciFrame data = new VinciFrame();
         VinciFrame key = new VinciFrame();
 
-        key.fadd(Constants.VINCI_DETAG, new String(contents));
+        key.fadd(Constants.VINCI_DETAG, fileData);
         data.fadd("KEYS", key);
 
         query.fadd(Constants.VINCI_COMMAND, Constants.ANNOTATE);
