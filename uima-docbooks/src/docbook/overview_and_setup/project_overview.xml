@@ -59,7 +59,7 @@ under the License.
         UIMA, and describes the steps needed to upgrade to Apache UIMA. </para>
     </listitem>
     <listitem>
-      <para> <xref linkend="project_overview_changes_from_v1"/> lists the changes that occurred between UIMA
+      <para> <xref linkend="ugr.project_overview_changes_from_v1"/> lists the changes that occurred between UIMA
         v1.x and UIMA v2.x (independent of the transition to Apache).</para>
     </listitem>
   </itemizedlist>
@@ -457,7 +457,7 @@ under the License.
     
     <section id="ugr.project_overview_changes_addressed_by_migration_utility">
       <title>Changes Addressed by the Migration Utility</title>
-      <section>
+      <section id="ugr.project_overview.migration_utility.java_package_name_changes">
         <title>Java Package Name Changes</title>
         <para>All of the UIMA Java package names have changed in Apache UIMA. They now start with
           <literal>org.apache</literal> rather than <literal>com.ibm</literal>. There have been other
@@ -472,7 +472,7 @@ under the License.
           a package called <literal>com.ibm.uima.myproject</literal> (although that is not recommended), it
           will not be replaced.</para>
       </section>
-      <section>
+      <section id="ugr.project_overview.migration_utility.xml_descriptor_changes">
         <title>XML Descriptor Changes</title>
         <para>The XML namespace in UIMA component descriptors has changed from
           <literal>http://uima.watson.ibm.com/resourceSpecifier</literal> to
@@ -481,7 +481,7 @@ under the License.
           <literal>org.apache.uima.java</literal> or <literal>org.apache.uima.cpp</literal>. The
           migration script will apply these replacements. </para>
       </section>
-      <section>
+      <section id="ugr.project_overview.migration_utility.tcas_replaced_by_cas">
         <title>TCAS replaced by CAS</title>
         <para>In Apache UIMA the <literal>TCAS</literal> interface has been removed. All uses of it must now be
           replaced by the <literal>CAS</literal> interface. (All methods that used to be defined on
@@ -495,7 +495,7 @@ under the License.
           appears capitalized and as a word by itself, or as one of the class or method names listed above. Otherwise it
           will not be replaced.</para>
       </section>
-      <section>
+      <section id="ugr.project_overview.migration_utility.jcas_interface">
         <title>JCas Is Now an Interface</title>
         <para>In previous versions, user code accessed the JCas <emphasis>class</emphasis> directly. In Apache
           UIMA there is now an interface, <literal>org.apache.uima.jcas.JCas</literal>, which all JCas-based
@@ -511,7 +511,7 @@ under the License.
       <title>Situations Where Manual Migration is Necessary</title>
       <para> In the following situations the migration script will not be able to automatically apply the necessary
         changes, and some manual intervention is necessary. </para>
-      <section>
+      <section id="ugr.project_overview.manual_migration_needed.jcas_for_document_annotation">
         <title>JCas Cover Classes for DocumentAnnotation</title>
         <para> If you have run JCasGen it is likely that you have the classes
           <literal>com.ibm.uima.jcas.tcas.DocumentAnnotation</literal> and
@@ -526,7 +526,7 @@ under the License.
           and DocumentAnnotation please see <olink targetdoc="&uima_docs_ref;"
             targetptr="ugr.ref.jcas.documentannotation_issues"/> </para>
       </section>
-      <section>
+      <section id="ugr.project_overview.manual_migration_needed.getdocumentannotation">
         <title>JCas.getDocumentAnnotation</title>
         <para>The deprecated method <literal>JCas.getDocumentAnnotation</literal> has been removed. Its use
           must be replaced with <literal>JCas.getDocumentAnnotationFs</literal>. The method
@@ -535,7 +535,7 @@ under the License.
           in <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.jcas.documentannotation_issues"/>.
           </para>
       </section>
-      <section>
+      <section id="ugr.project_overview.manual_migration_needed.xiinclude">
         <title>xi:include</title>
         <para>The use of &lt;xi:include> in UIMA component descriptors has been discouraged for some time, and in
           Apache UIMA support for it has been removed. If you have descriptors that use that, you must change them to
@@ -543,7 +543,7 @@ under the License.
             targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.component_descriptor.imports"/>.
           </para>
       </section>
-      <section>
+      <section id="ugr.project_overview.manual_migration_needed.duplicate_methods_cas_tcas">
         <title>Duplicate Methods Taking CAS and TCAS as Arguments</title>
         <para>Because <literal>TCAS</literal> has been replaced by <literal>CAS</literal>, if you had two
           methods distinguished only by whether an argument type was <literal>TCAS</literal> or
@@ -551,7 +551,7 @@ under the License.
           a compile error. If this happens, consider why the two variants were needed in the first place. Often, it may
           work to simply delete one of the methods.</para>
       </section>
-      <section>
+      <section id="ugr.project_overview.manual_migration_needed.undocumented_methods">
         <title>Use of Undocumented Methods from the com.ibm.uima.util package</title>
         <para>Previous UIMA versions has some methods in the <literal>com.ibm.uima.util</literal> package that
           were for internal use and were not documented in the JavaDoc. (There are also many methods in that package
@@ -560,7 +560,7 @@ under the License.
           moved to <literal>org.apache.uima.internal.util</literal>, and you will have to manually update your
           imports to point to this location.</para>
       </section>
-      <section>
+      <section id="ugr.project_overview.manual_migration_needed.uima_package_names_in_user_code">
         <title>Use of UIMA Package Names for User Code</title>
         <para>If you have placed your own classes in a package that has exactly the same name as one of the UIMA packages
           (not recommended), this will cause problems when your run the migration script. Since the script replaces
@@ -573,7 +573,7 @@ under the License.
           <literal>com.ibm.uima.MyPackage</literal>. This would be treated as a class name and replaced with
           <literal>org.apache.uima.MyPackage</literal> wherever it occurs.</para>
       </section>
-      <section>
+      <section id="ugr.project_overview.manual_migration_needed.exceptions_extend_uima_exceptions">
         <title>CASException and CASRuntimeException now extend UIMA(Runtime)Exception</title>
         <para>
           This change may affect user code to a small extent, as some of the APIs on 
