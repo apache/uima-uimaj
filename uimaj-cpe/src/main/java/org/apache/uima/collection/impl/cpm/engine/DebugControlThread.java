@@ -19,6 +19,7 @@
 
 package org.apache.uima.collection.impl.cpm.engine;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -201,7 +202,7 @@ public class DebugControlThread implements Runnable {
 
   public String doCheckpoint() {
     File inF = null;
-    FileInputStream fis = null;
+    BufferedInputStream fis = null;
     try {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
@@ -211,8 +212,10 @@ public class DebugControlThread implements Runnable {
       }
       inF = new File(fileName);
       byte[] content = new byte[(int) inF.length()];
-      fis = new FileInputStream(inF);
+      fis = new BufferedInputStream(new FileInputStream(inF));
 
+      // use a buffered input stream, or wrap the read(buffer) in a while checking
+      // to be sure it read all the input (see javadoc for read(...)
       fis.read(content);
       return new String(content);
 
