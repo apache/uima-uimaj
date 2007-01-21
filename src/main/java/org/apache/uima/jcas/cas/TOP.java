@@ -97,7 +97,7 @@ public class TOP extends FeatureStructureImpl {
 		}
     boolean isSubtypeOfAnnotationBase = casImpl.isSubtypeOfAnnotationBaseType(jcasType.casTypeCode);
     if (isSubtypeOfAnnotationBase &&
-        (casImpl.getBaseCAS() != casImpl)) {
+        (casImpl.getBaseCAS() == casImpl)) {
       throw new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS,
           new String[] { this.getClass().getName() });
     }
