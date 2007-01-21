@@ -153,6 +153,7 @@ public class CASRuntimeException extends UIMARuntimeException {
 
 	/** Can''t call method "{0}" on the base CAS. */
 	public static final String INVALID_BASE_CAS_METHOD = "INVALID_BASE_CAS_METHOD";
+  
 
 	/**
    * Error - the Annotation "{0}" is over view "{1}" and cannot be added to indexes associated with
@@ -165,6 +166,12 @@ public class CASRuntimeException extends UIMARuntimeException {
    * supertype of "{1}".
    */
 	public static final String TYPE_NOT_IN_INDEX = "TYPE_NOT_IN_INDEX";
+  
+  /**
+   * The type "{0}", a subtype of AnnotationBase, can''t be created in the Base CAS.
+   *
+   */
+  public static final String DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS = "DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS";
 
 	public CASRuntimeException() {
 		super();

@@ -660,10 +660,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 		final int addr = createTempFS(typeCode);
 		final boolean isAnnot = this.ts.subsumes(this.annotBaseTypeCode, typeCode);
 		if (isAnnot && this == this.getBaseCAS()) {
-			// Can't create annotation on base CAS
-			// TODO add new runtime exception for this problem
-			CASRuntimeException e = new CASRuntimeException(CASRuntimeException.NON_CREATABLE_TYPE,
-					new String[] { type.getName(), "CAS.createFS()" });
+			CASRuntimeException e = new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS,
+					new String[] { type.getName() });
 			throw e;
 		}
 		final FeatureStructure newFS = this.fsClassReg.createFS(addr, this);
@@ -3598,10 +3596,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 	public boolean isAnnotationType(Type t) {
 		return getTypeSystem().subsumes(getAnnotationType(), t);
 	}
-
-	public boolean isAnnotationType(int t) {
-		return this.ts.subsumes(this.annotTypeCode, t);
-	}
+  
+  public boolean isSubtypeOfAnnotationBaseType(int t) {
+    return this.ts.subsumes(this.annotBaseTypeCode, t);
+  }
 
 	public AnnotationFS createAnnotation(Type type, int begin, int end) {
 		if (this == this.baseCAS) {
