@@ -88,17 +88,24 @@ public class TOP extends FeatureStructureImpl {
    * correspond.
    */
 	public TOP(JCas jcas) {
+    CASImpl casImpl = (CASImpl)jcas.getCas();
 		this.jcasType = jcas.getType(getTypeIndexID());
 		if (null == jcasType) {
 			CASRuntimeException e = new CASRuntimeException(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS,
 					new String[] { this.getClass().getName() });
 			throw e;
 		}
+    boolean isSubtypeOfAnnotationBase = casImpl.isSubtypeOfAnnotationBaseType(jcasType.casTypeCode);
+    if (isSubtypeOfAnnotationBase &&
+        (casImpl.getBaseCAS() != casImpl)) {
+      throw new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS,
+          new String[] { this.getClass().getName() });
+    }
 		this.addr = jcasType.ll_cas.ll_createFS(jcasType.casTypeCode);
 		jcas.putJfsFromCaddr(addr, this);
-		CAS cas = jcas.getCas();
-		if (((CASImpl) cas).isAnnotationType(jcasType.casTypeCode)) {
-			((CASImpl) cas).setSofaFeat(addr, ((CASImpl) cas).getSofaRef());
+		
+		if (casImpl.isSubtypeOfAnnotationBaseType(jcasType.casTypeCode)) {
+      casImpl.setSofaFeat(addr, casImpl.getSofaRef());
 		}
 	}
 
