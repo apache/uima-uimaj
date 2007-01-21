@@ -135,19 +135,19 @@
          <div element="section" href="#ugr.project_overview_changes_addressed_by_migration_utility" number="1.3.2" targetptr="ugr.project_overview_changes_addressed_by_migration_utility">
             <ttl>Changes Addressed by the Migration Utility</ttl>
             <xreftext>Section 1.3.2, “Changes Addressed by the Migration Utility”</xreftext>
-            <div element="section" href="#d0e497" number="1.3.2.1">
+            <div element="section" href="#ugr.project_overview.migration_utility.java_package_name_changes" number="1.3.2.1" targetptr="ugr.project_overview.migration_utility.java_package_name_changes">
                <ttl>Java Package Name Changes</ttl>
                <xreftext>Section 1.3.2.1, “Java Package Name Changes”</xreftext>
             </div>
-            <div element="section" href="#d0e534" number="1.3.2.2">
+            <div element="section" href="#ugr.project_overview.migration_utility.xml_descriptor_changes" number="1.3.2.2" targetptr="ugr.project_overview.migration_utility.xml_descriptor_changes">
                <ttl>XML Descriptor Changes</ttl>
                <xreftext>Section 1.3.2.2, “XML Descriptor Changes”</xreftext>
             </div>
-            <div element="section" href="#d0e554" number="1.3.2.3">
+            <div element="section" href="#ugr.project_overview.migration_utility.tcas_replaced_by_cas" number="1.3.2.3" targetptr="ugr.project_overview.migration_utility.tcas_replaced_by_cas">
                <ttl>TCAS replaced by CAS</ttl>
                <xreftext>Section 1.3.2.3, “TCAS replaced by CAS”</xreftext>
             </div>
-            <div element="section" href="#d0e597" number="1.3.2.4">
+            <div element="section" href="#ugr.project_overview.migration_utility.jcas_interface" number="1.3.2.4" targetptr="ugr.project_overview.migration_utility.jcas_interface">
                <ttl>JCas Is Now an Interface</ttl>
                <xreftext>Section 1.3.2.4, “JCas Is Now an Interface”</xreftext>
             </div>
@@ -155,31 +155,31 @@
          <div element="section" href="#ugr.project_overview_manual_migration_necessary" number="1.3.3" targetptr="ugr.project_overview_manual_migration_necessary">
             <ttl>Situations Where Manual Migration is Necessary</ttl>
             <xreftext>Section 1.3.3, “Situations Where Manual Migration is Necessary”</xreftext>
-            <div element="section" href="#d0e616" number="1.3.3.1">
+            <div element="section" href="#ugr.project_overview.manual_migration_needed.jcas_for_document_annotation" number="1.3.3.1" targetptr="ugr.project_overview.manual_migration_needed.jcas_for_document_annotation">
                <ttl>JCas Cover Classes for DocumentAnnotation</ttl>
                <xreftext>Section 1.3.3.1, “JCas Cover Classes for DocumentAnnotation”</xreftext>
             </div>
-            <div element="section" href="#d0e640" number="1.3.3.2">
+            <div element="section" href="#ugr.project_overview.manual_migration_needed.getdocumentannotation" number="1.3.3.2" targetptr="ugr.project_overview.manual_migration_needed.getdocumentannotation">
                <ttl>JCas.getDocumentAnnotation</ttl>
                <xreftext>Section 1.3.3.2, “JCas.getDocumentAnnotation”</xreftext>
             </div>
-            <div element="section" href="#d0e662" number="1.3.3.3">
+            <div element="section" href="#ugr.project_overview.manual_migration_needed.xiinclude" number="1.3.3.3" targetptr="ugr.project_overview.manual_migration_needed.xiinclude">
                <ttl>xi:include</ttl>
                <xreftext>Section 1.3.3.3, “xi:include”</xreftext>
             </div>
-            <div element="section" href="#d0e669" number="1.3.3.4">
+            <div element="section" href="#ugr.project_overview.manual_migration_needed.duplicate_methods_cas_tcas" number="1.3.3.4" targetptr="ugr.project_overview.manual_migration_needed.duplicate_methods_cas_tcas">
                <ttl>Duplicate Methods Taking CAS and TCAS as Arguments</ttl>
                <xreftext>Section 1.3.3.4, “Duplicate Methods Taking CAS and TCAS as Arguments”</xreftext>
             </div>
-            <div element="section" href="#d0e686" number="1.3.3.5">
+            <div element="section" href="#ugr.project_overview.manual_migration_needed.undocumented_methods" number="1.3.3.5" targetptr="ugr.project_overview.manual_migration_needed.undocumented_methods">
                <ttl>Use of Undocumented Methods from the com.ibm.uima.util package</ttl>
                <xreftext>Section 1.3.3.5, “Use of Undocumented Methods from the com.ibm.uima.util package”</xreftext>
             </div>
-            <div element="section" href="#d0e697" number="1.3.3.6">
+            <div element="section" href="#ugr.project_overview.manual_migration_needed.uima_package_names_in_user_code" number="1.3.3.6" targetptr="ugr.project_overview.manual_migration_needed.uima_package_names_in_user_code">
                <ttl>Use of UIMA Package Names for User Code</ttl>
                <xreftext>Section 1.3.3.6, “Use of UIMA Package Names for User Code”</xreftext>
             </div>
-            <div element="section" href="#d0e710" number="1.3.3.7">
+            <div element="section" href="#ugr.project_overview.manual_migration_needed.exceptions_extend_uima_exceptions" number="1.3.3.7" targetptr="ugr.project_overview.manual_migration_needed.exceptions_extend_uima_exceptions">
                <ttl>CASException and CASRuntimeException now extend UIMA(Runtime)Exception</ttl>
                <xreftext>Section 1.3.3.7, “CASException and CASRuntimeException now extend UIMA(Runtime)Exception”</xreftext>
             </div>
