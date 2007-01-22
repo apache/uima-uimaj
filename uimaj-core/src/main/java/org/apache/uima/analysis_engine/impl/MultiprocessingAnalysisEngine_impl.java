@@ -36,9 +36,9 @@ import org.apache.uima.util.Logger;
 
 /**
  * An {@link AnalysisEngine} implementation that can process multiple {@link CAS} objects
- * simultaneously. This is accomplished by maintaining a pool of {@link AnalysisEngine_impl}
+ * simultaneously. This is accomplished by maintaining a pool of {@link AnalysisEngine}
  * instances. When initialized, this class checks for the parameter
- * {@link #PARAM_NUM_SIMULTANEOUS_REQUESTS} to determine how many <code>AnalysisEngine_impl</code>
+ * {@link #PARAM_NUM_SIMULTANEOUS_REQUESTS} to determine how many <code>AnalysisEngine</code>
  * instances to put in the pool.
  */
 public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase implements
