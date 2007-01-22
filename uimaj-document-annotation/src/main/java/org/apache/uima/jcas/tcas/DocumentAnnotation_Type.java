@@ -28,7 +28,6 @@ import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
-import org.apache.uima.jcas.impl.JCasImpl;
 
 public class DocumentAnnotation_Type extends Annotation_Type {
   protected FSGenerator getFSGenerator() {
