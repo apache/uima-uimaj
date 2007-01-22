@@ -259,9 +259,9 @@ public interface FeatureStructure {
    * Get the value of the feature as a string if the type of the feature is one of the primitive
    * type.
    * 
-   * @param feat.
+   * @param feat
    *          The feature whose value we want to get and whose type is one of the primitve types.
-   * @return
+   * @return A string representation of the feature value.
    * @throws CASRuntimeException
    *           If <code>feat</code> is not defined for the type of this FS, or if the type is not
    *           a primitive type.
@@ -297,7 +297,7 @@ public interface FeatureStructure {
    * float, string) will be shared between the clone and it's source FS.
    * 
    * @return a FeatureStructure that is the cloned copy of this FeatureStructure.
-   * @throws CasRuntimeException
+   * @throws CASRuntimeException
    */
   Object clone() throws CASRuntimeException;
 

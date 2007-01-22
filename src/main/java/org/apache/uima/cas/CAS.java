@@ -34,7 +34,7 @@ import org.apache.uima.jcas.JCas;
  * A <code>CAS</code> object provides the starting point for working with the CAS. It provides
  * access to the type system, to indexes, iterators and filters (constraints). It also lets you
  * create new annotations and other data structures. You can create a <code>CAS</code> object
- * using static methods on the class {@link org.apache.uima.internal.util.CasCreationUtils}.
+ * using static methods on the class {@link org.apache.uima.util.CasCreationUtils}.
  * <p>
  * The <code>CAS</code> object is also the container that manages multiple Subjects of Analysis or
  * Sofas. A Sofa represents some form of an unstructured artifact that is processed in a UIMA
