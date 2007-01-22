@@ -54,10 +54,10 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
 
   /**
    * Notifies this AnalysisComponent that its configuration parameters have changed. This
-   * implementation just calls {@link #destroy()} followed by {@link #initialize()}. Subclasses can
+   * implementation just calls {@link #destroy()} followed by {@link #initialize(UimaContext)}. Subclasses can
    * override to provide more efficient reconfiguration logic if necessary.
    * 
-   * @see org.apache.uima.AnalysisComponent.AnalysisComponent#reconfigure()
+   * @see org.apache.uima.analysis_component.AnalysisComponent#reconfigure()
    */
   public void reconfigure() throws ResourceConfigurationException, ResourceInitializationException {
     destroy();
@@ -97,7 +97,7 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
    * {@link #getResultSpecification()}. An AnalysisComponent implementation may override this
    * method if it would like to do specific processing when its ResultSpecificatin is changed.
    * 
-   * @see org.apache.uima.AnalysisComponent.AnalysisComponent#setResultSpecification(ResultSpecification)
+   * @see org.apache.uima.analysis_component.AnalysisComponent#setResultSpecification(ResultSpecification)
    */
   public void setResultSpecification(ResultSpecification aResultSpec) {
     mResultSpecification = aResultSpec;
