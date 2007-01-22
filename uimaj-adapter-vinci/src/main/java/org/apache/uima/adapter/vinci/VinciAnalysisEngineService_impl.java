@@ -22,7 +22,6 @@ package org.apache.uima.adapter.vinci;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
 
