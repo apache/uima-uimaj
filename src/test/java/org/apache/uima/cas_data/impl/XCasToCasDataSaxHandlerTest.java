@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas_data.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -40,7 +41,6 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
-import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.XCASDeserializer;
@@ -49,6 +49,7 @@ import org.apache.uima.cas_data.CasData;
 import org.apache.uima.cas_data.FeatureStructure;
 import org.apache.uima.cas_data.FeatureValue;
 import org.apache.uima.cas_data.PrimitiveValue;
+import org.apache.uima.internal.util.FileUtils;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -118,7 +119,20 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
       CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
               new FsIndexDescription[0]);
 
-      InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
+      InputStream serCasStream;
+      if (builtInXmlSerializationSupportsCRs()) {
+        serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
+      }
+      else {      
+        //Java version we are running can't serialize CR (\r) characters in XML output.
+        //Therefore we need to remove them from our test example XCAS or we will get 
+        //comparison failiures later in this test case.
+        String casXml = FileUtils.file2String(JUnitExtension.getFile("ExampleCas/cas.xml"), "UTF-8");
+        casXml = casXml.replaceAll("&#13;", "");
+        byte[] bytes = casXml.getBytes("UTF-8");
+        serCasStream = new ByteArrayInputStream(bytes);
+      }
+      
       XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());
       ContentHandler deserHandler = deser.getXCASHandler(cas);
       SAXParserFactory fact = SAXParserFactory.newInstance();
@@ -136,9 +150,8 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
               .parseAnalysisEngineDescription(new XMLInputSource(translatorAeStream, null));
       AnalysisEngine transAnnotator = UIMAFramework.produceAnalysisEngine(translatorAeDesc);
       CAS cas2 = transAnnotator.newCAS();
-      SofaFS ls = cas2.createSofa(transAnnotator.getUimaContext().mapToSofaID("EnglishDocument"),
-              "text");
-      ls.setLocalSofaData("this beer is good");
+      CAS englishView = cas2.createView("EnglishDocument");
+      englishView.setSofaDataString("this beer is good", "text/plain");
       transAnnotator.process(cas2);
       _testConversions(cas2);
 
@@ -227,5 +240,23 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
         Assert.assertFalse(fs.isIndexed());
       }
     }
+  }
+  
+  /**
+   * Checks the Java vendor and version and returns true if running a version
+   * of Java whose built-in XSLT support can properly serialize carriage return
+   * characters, and false if not.  It seems to be the case that Sun JVMs prior
+   * to 1.5 do not properly serialize carriage return characters.  We have to
+   * modify our test case to account for this.
+   * @return true if XML serialization of CRs behave properly in the current JRE
+   */
+  private boolean builtInXmlSerializationSupportsCRs() {
+    String javaVendor = System.getProperty("java.vendor");
+    if( javaVendor.startsWith("Sun") ) {
+        String javaVersion = System.getProperty("java.version");
+        if( javaVersion.startsWith("1.3") || javaVersion.startsWith("1.4") )
+            return false;
+    }
+    return true;
   }
 }
