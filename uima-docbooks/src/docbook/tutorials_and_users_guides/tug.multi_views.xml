@@ -228,10 +228,14 @@ aView.removeFsFromIndexes(aFeatureStructure)</programlisting>
       declared Sofas as described in the following sections. An attempt to create a Sofa with a
       SofaID already in use will throw an exception.</para>
     
-    <para>Name mapping must not use the <quote>.</quote> (period) character. Runtime Sofa
+    <para>Sofa name mapping must not use the <quote>.</quote> (period) character. Runtime Sofa
       mapping maps names up to the <quote>.</quote> and appends the period and the following
       characters to the mapped name.</para>
+
     
+    <para>Sofa name mappings are not currently supported for remote Analysis Engines.
+      See <xref linkend="ugr.tug.mvs.name_mapping_remote_services"/>.</para>
+               
     <section id="ugr.tug.mvs.name_mapping_aggregate">
       <title>Name Mapping in an Aggregate Descriptor</title>
       
@@ -280,8 +284,7 @@ aView.removeFsFromIndexes(aFeatureStructure)</programlisting>
       
       <para>The Component Descriptor Editor supports Sofa name mapping in aggregates and
         simplifies the task. See <olink targetdoc="&uima_docs_tools;"
-          targetptr="ugr.tools.cde.capabilities.sofa_name_mapping"/> for details.</para>
-      
+          targetptr="ugr.tools.cde.capabilities.sofa_name_mapping"/> for details.</para> 
     </section>
     
     <section id="ugr.tug.mvs.name_mapping_cpe"><title>Name Mapping in a CPE
@@ -405,13 +408,12 @@ anAnnotator = UIMAFramework.produceAnalysisEngine(desc,additionalParams);</progr
         to a remote service. This can cause complications for UIMA services in a Multi-View
         application.</para>
       
-      <para>Remote services using the SOAP transport will work only if the service is
-        Single-View, or if the Sofa names expected by the service match the Sofa names
-        produced by the client.</para>
+      <para>Remote Multi-View services will work only if the service is Single-View, or if the 
+        Sofa names expected by the service exactly match the Sofa names produced by the client.</para>
       
-      <para>Sofa name mapping is supported when running in <quote>integrated</quote> CPM
-        mode (or without the CPM) using Vinci, by renaming the Sofas specified by the service
-        descriptor, if necessary.</para>
+      <para>If your application requires Sofa mappings for a remote Analysis Engine, you
+        can wrap your remotely deployed AE in an aggregate (on the remote side), and specify
+        the necessary Sofa mappings in the descriptor for that aggregate.</para>
     </section>
   </section>
   

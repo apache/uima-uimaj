@@ -432,13 +432,9 @@ under the License.
                 CPM). Any UIMA SDK compliant pure Java CAS Processors may be safely deployed
                 this way.</para>
                 <para>The descriptor for an integrated deployment can, in fact, be a remote
-                  service descriptor. When used this way, with Vinci, the Sofa mapping
-                  needed for the remote is done before sending the CAS to the remote (see
-                    <olink targetdoc="&uima_docs_tutorial_guides;"
-                    targetptr="ugr.tug.mvs.name_mapping_remote_services"/>). When
-                  used this way, however, the CPM error recovery options (see below)
-                  operate in the integrated mode, which means that many of the retry options
-                  are not available.</para></listitem>
+                  service descriptor. When used this way, however, the CPM error recovery 
+                  options (see below) operate in the integrated mode, which means that many 
+                  of the retry options are not available.</para></listitem>
             </varlistentry>
             <varlistentry>
               <term>remote</term>
