@@ -66,10 +66,18 @@ public class SoapAnalysisEngineServiceAdapter extends AnalysisEngineServiceAdapt
       // after we create the stub
       super.initialize(aSpecifier, aAdditionalParams);
 
-      return true;
     } catch (MalformedURLException e) {
       throw new ResourceInitializationException(ResourceInitializationException.MALFORMED_URL,
               new Object[] { uriSpec.getUri(), uriSpec.getSourceUrlString() }, e);
     }
+    
+    // Sofa mappings are currently not implemented for remote AEs.  Catch this
+    // and report an error.
+    if (getUimaContextAdmin().getSofaMap().size() > 0) {
+      throw new ResourceInitializationException(ResourceInitializationException.SOFA_MAPPING_NOT_SUPPORTED_FOR_REMOTE,
+              new Object[]{getMetaData().getName()});
+    }    
+
+    return true;
   }
 }
