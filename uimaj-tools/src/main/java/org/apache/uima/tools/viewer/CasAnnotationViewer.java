@@ -136,12 +136,12 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
 
   private static final short MODE_ENTITIES = 1;
 
-  private static ArrayList userTypes = null;
+  private ArrayList userTypes = null;
 
   /**
    * @return Returns the userTypes.
    */
-  public static ArrayList getUserTypes() {
+  public ArrayList getUserTypes() {
     return userTypes;
   }
 
@@ -149,8 +149,8 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    * @param userTypes
    *          The userTypes to set.
    */
-  public static void setUserTypes(ArrayList userTypes) {
-    CasAnnotationViewer.userTypes = userTypes;
+  public void setUserTypes(ArrayList userTypes) {
+    this.userTypes = userTypes;
   }
 
   // colors to use for highlighting annotations

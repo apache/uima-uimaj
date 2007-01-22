@@ -94,7 +94,6 @@ import org.apache.uima.tools.stylemap.StyleMapEntry;
 import org.apache.uima.tools.util.gui.Caption;
 import org.apache.uima.tools.util.gui.SplashScreenDialog;
 import org.apache.uima.tools.util.gui.SpringUtilities;
-import org.apache.uima.tools.util.htmlview.AnnotationViewGenerator;
 import org.apache.uima.util.AnalysisEnginePerformanceReports;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
@@ -162,8 +161,6 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
   protected String interactiveTempFN = "__DAtemp__.txt"; // JMP
 
-  private AnnotationViewGenerator annotationViewGenerator;
-
   private JDialog aboutDialog;
 
   private int numDocs;
@@ -171,8 +168,6 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
   private int numDocsProcessed = 0;
 
   private AnalysisEngine ae;
-
-  private File tempDir = new File(System.getProperty("java.io.tmpdir"));
 
   /** Directory in which this program will write its output files. */
   private File outputDirectory;
@@ -467,7 +462,6 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     // load user preferences
     restorePreferences();
 
-    annotationViewGenerator = new AnnotationViewGenerator(tempDir);
     progressTimer = new Timer(100, new ActionListener() {
       public void actionPerformed(ActionEvent ee) {
         checkProgressMonitor();
@@ -496,30 +490,17 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
   }
 
-  // moves this one to top
+  // View button clicked
   public void actionPerformed(ActionEvent e) {
     savePreferences();
     try {
       aeSpecifierFile = new File(xmlFileSelector.getSelected());
-      XMLInputSource in = new XMLInputSource(aeSpecifierFile);
-      // ResourceSpecifier aeSpecifier = UIMAFramework.getXMLParser()
-      // .parseResourceSpecifier(in);
-      AnalysisEngineDescription aed = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-              in);
-
-      // this generates style map file if one does not currently exist
-      if (!prefsMed.getStylemapFile().exists()) {
-        annotationViewGenerator.autoGenerateStyleMapFile(aed.getAnalysisEngineMetaData(), prefsMed
-                .getStylemapFile());
-      }
-    } catch (InvalidXMLException e1) {
-      e1.printStackTrace();
-    } catch (IOException e1) {
-      e1.printStackTrace();
+      interactive = false; // prevent re-viewing temp file
+      showAnalysisResults(outputDirectory);
+    } 
+    catch (Exception ex) {
+      displayError(ex);
     }
-    interactive = false; // prevent re-viewing temp file
-    showAnalysisResults(outputDirectory);
-
   }
 
   /**
@@ -753,12 +734,6 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
    */
   public void showAnalysisResults(AnalysisEnginePerformanceReports aReports, File aOutputDir) {
     statsString = ("PERFORMANCE STATS\n-------------\n\n" + aReports);
-    try {
-      cas = createCasFromDescriptor(prefsMed.getTAEfile());
-    } catch (Exception e) {
-      displayError(e);
-    }
-    currentTypeSystem = cas.getTypeSystem();
     show_analysis(aOutputDir);
   }
 
@@ -773,14 +748,21 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     }
 
     statsString = null;
-    // what is this code doing??? - APL
-    StyleMapEditor sedit = new StyleMapEditor(this, cas);
-    String sXml = readStylemapFile(prefsMed.getStylemapFile());
-    ArrayList sme = sedit.parseStyleList(sXml);
-    currentTaeOutputTypes = new String[sme.size()];
-    for (int i = 0; i < sme.size(); i++) {
-      StyleMapEntry e = (StyleMapEntry) sme.get(i);
-      currentTaeOutputTypes[i] = e.getAnnotationTypeName();
+    
+    // Not sure if the following code makes sense... If a style map file exists,
+    // this restricts the set of types displayed by the viewer to only the types
+    // in that file.  But why is this only done in "View" mode?  It seems like this
+    // belongs in XCasAnnotationViewerDialog with the other code that sets up the
+    // viewer (e.g., the colors) from the style map file.
+    if (prefsMed.getStylemapFile().exists()) {
+      StyleMapEditor sedit = new StyleMapEditor(this, cas);
+      String sXml = readStylemapFile(prefsMed.getStylemapFile());
+      ArrayList sme = sedit.parseStyleList(sXml);
+      currentTaeOutputTypes = new String[sme.size()];
+      for (int i = 0; i < sme.size(); i++) {
+        StyleMapEntry e = (StyleMapEntry) sme.get(i);
+        currentTaeOutputTypes[i] = e.getAnnotationTypeName();
+      }
     }
     show_analysis(aOutputDir);
   }
@@ -800,8 +782,8 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     if (spec instanceof AnalysisEngineDescription) {
       return CasCreationUtils.createCas((AnalysisEngineDescription) spec);
     } else {
-      AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(spec);
-      return CasCreationUtils.createCas(ae.getAnalysisEngineMetaData());
+      AnalysisEngine currentAe = UIMAFramework.produceAnalysisEngine(spec);
+      return CasCreationUtils.createCas(currentAe.getAnalysisEngineMetaData());
     }
   }
 
@@ -1178,10 +1160,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       aggDesc.getAnalysisEngineMetaData().setName("DocumentAnalyzerAE");
       aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
       aggDesc.getAnalysisEngineMetaData().getOperationalProperties().setMultipleDeploymentAllowed(
-              false);
-
-      
-      
+              false);            
       progressMonitor.setProgress(1);
 
       // instantiate AE
@@ -1190,20 +1169,17 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
       progressMonitor.setProgress(2);
 
-      // this generates style map file if one does not currently exist
-      if (!prefsMed.getStylemapFile().exists()) {
-        annotationViewGenerator.autoGenerateStyleMapFile(ae, prefsMed.getStylemapFile());
-      }
-
       // register callback listener
       mCPM.addStatusCallbackListener(DocumentAnalyzer.this);
 
-      // save type system for later use in deserializing XCASes
+      // create a CAS, including all types from all components, that
+      // we'll later use for deserializing XCASes
       List descriptorList = new ArrayList();
       descriptorList.add(collectionReaderDesc);
       descriptorList.add(ae.getMetaData());
       descriptorList.add(casConsumerDesc);
-      currentTypeSystem = CasCreationUtils.createCas(descriptorList).getTypeSystem();
+      cas = CasCreationUtils.createCas(descriptorList);
+      currentTypeSystem = cas.getTypeSystem();
 
       // save AE output types for later use in configuring viewer
       if (aeSpecifier instanceof AnalysisEngineDescription) {
