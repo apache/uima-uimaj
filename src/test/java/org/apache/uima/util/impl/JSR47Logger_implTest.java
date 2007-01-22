@@ -67,6 +67,12 @@ public class JSR47Logger_implTest extends TestCase {
     org.apache.uima.util.Logger classLogger = JSR47Logger_impl.getInstance(this.getClass());
 
     Level defaultLogLevel = (Level) logLevels.get(LogManager.getLogManager().getProperty(".level"));
+    
+    if(defaultLogLevel == null) {
+      //no log level was specified, use default log level settings "INFO" that is also 
+      //used by the Java logging framework.
+      defaultLogLevel = Level.INFO;
+    }
 
     // check message logging for root logger based on default log level
     Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.ALL), rootLogger
