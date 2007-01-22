@@ -134,25 +134,25 @@ public class IndexComparitorTest extends TestCase {
     /**
      * @see org.apache.uima.cas.test.AnnotatorInitializer#initIndexes(FSIndexRepositoryMgr)
      */
-    public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts) {
-      IndexComparitorTest.this.ts = ts;
-      IndexComparitorTest.this.irm = irm;
-      irm.createIndex(newComparator(type1), "SortedType1", FSIndex.SORTED_INDEX);
-      irm.createIndex(newComparator(type1), "SetType1", FSIndex.SET_INDEX);
-      irm.createIndex(newComparator(type1), "BagType1", FSIndex.BAG_INDEX);
-      irm.createIndex(newComparatorTypePriority(type1), "SortedType1TypeOrder",
+    public void initIndexes(FSIndexRepositoryMgr parmIrm, TypeSystem parmTs) {
+      IndexComparitorTest.this.ts = parmTs;
+      IndexComparitorTest.this.irm = parmIrm;
+      parmIrm.createIndex(newComparator(type1), "SortedType1", FSIndex.SORTED_INDEX);
+      parmIrm.createIndex(newComparator(type1), "SetType1", FSIndex.SET_INDEX);
+      parmIrm.createIndex(newComparator(type1), "BagType1", FSIndex.BAG_INDEX);
+      parmIrm.createIndex(newComparatorTypePriority(type1), "SortedType1TypeOrder",
               FSIndex.SORTED_INDEX);
-      irm.createIndex(newComparatorTypePriority(type1), "SetType1TypeOrder", FSIndex.SET_INDEX);
-      irm.createIndex(newComparatorTypePriority(type1), "BagType1TypeOrder", FSIndex.BAG_INDEX);
+      parmIrm.createIndex(newComparatorTypePriority(type1), "SetType1TypeOrder", FSIndex.SET_INDEX);
+      parmIrm.createIndex(newComparatorTypePriority(type1), "BagType1TypeOrder", FSIndex.BAG_INDEX);
 
-      irm.createIndex(newComparator(type1Sub1), "SortedType1Sub1", FSIndex.SORTED_INDEX);
-      irm.createIndex(newComparator(type1Sub1), "SetType1Sub1", FSIndex.SET_INDEX);
-      irm.createIndex(newComparator(type1Sub1), "BagType1Sub1", FSIndex.BAG_INDEX);
-      irm.createIndex(newComparatorTypePriority(type1Sub1), "SortedType1Sub1TypeOrder",
+      parmIrm.createIndex(newComparator(type1Sub1), "SortedType1Sub1", FSIndex.SORTED_INDEX);
+      parmIrm.createIndex(newComparator(type1Sub1), "SetType1Sub1", FSIndex.SET_INDEX);
+      parmIrm.createIndex(newComparator(type1Sub1), "BagType1Sub1", FSIndex.BAG_INDEX);
+      parmIrm.createIndex(newComparatorTypePriority(type1Sub1), "SortedType1Sub1TypeOrder",
               FSIndex.SORTED_INDEX);
-      irm.createIndex(newComparatorTypePriority(type1Sub1), "SetType1Sub1TypeOrder",
+      parmIrm.createIndex(newComparatorTypePriority(type1Sub1), "SetType1Sub1TypeOrder",
               FSIndex.SET_INDEX);
-      irm.createIndex(newComparatorTypePriority(type1Sub1), "BagType1Sub1TypeOrder",
+      parmIrm.createIndex(newComparatorTypePriority(type1Sub1), "BagType1Sub1TypeOrder",
               FSIndex.BAG_INDEX);
 
     }
@@ -185,7 +185,7 @@ public class IndexComparitorTest extends TestCase {
 
   public void setUp() throws Exception {
     try {
-      this.cas = (CASImpl) CASInitializer.initCas(new SetupForIndexCompareTesting());
+      this.cas = CASInitializer.initCas(new SetupForIndexCompareTesting());
       assertNotNull(cas);
       ir = cas.getIndexRepository();
       sortedType1 = ir.getIndex("SortedType1");

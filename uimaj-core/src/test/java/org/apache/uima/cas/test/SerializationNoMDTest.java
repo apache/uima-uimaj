@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -308,14 +307,14 @@ public class SerializationNoMDTest extends TestCase {
   // Check results.
   private void checkSentences() throws CASException, CASException {
     TypeSystem ts = cas.getTypeSystem();
-    Type sentenceType = ts.getType(SENT_TYPE);
+    Type localSentenceType = ts.getType(SENT_TYPE);
     // Feature tokenTypeFeature = ts.getFeatureByFullName(TOKEN_TYPE_FEAT);
     // Feature startFeature = ts.getFeatureByFullName(CAS.FEATURE_BASE_NAME_BEGIN);
     // Feature endFeature = ts.getFeatureByFullName(CAS.FEATURE_BASE_NAME_END);
 
     // Print the first few sentences.
     // System.out.println("\nThe first 10 sentences:\n");
-    FSIndex sentenceIndex = cas.getAnnotationIndex(sentenceType);
+    FSIndex sentenceIndex = cas.getAnnotationIndex(localSentenceType);
     FSIterator it = sentenceIndex.iterator();
     AnnotationFS sentFS;
     if (it.isValid()) {

@@ -329,8 +329,8 @@ public class NewPrimitiveTypesTest extends TestCase {
     validateFSData(cas);
   }
 
-  private void validateFSData(CAS cas) throws Exception {
-    CAS englishView = cas.getView("EnglishDocument");
+  private void validateFSData(CAS parmCas) throws Exception {
+    CAS englishView = parmCas.getView("EnglishDocument");
     assertNotNull(englishView);
     assertNotNull(englishView.getSofa());
     FSIndex index = englishView.getAnnotationIndex();
@@ -372,7 +372,7 @@ public class NewPrimitiveTypesTest extends TestCase {
     FloatArrayFS floatArrayFS = (FloatArrayFS) fs.getFeatureValue(floatArrayFeature);
     assertTrue(floatArrayFS.get(0) == Float.MAX_VALUE);
     assertTrue(floatArrayFS.get(1) == (float) (Float.MAX_VALUE / 1000.0));
-    assertTrue(floatArrayFS.get(2) == (float) 42);
+    assertTrue(floatArrayFS.get(2) == 42);
     assertTrue(floatArrayFS.get(3) == (float) (Float.MIN_VALUE * 1000.0));
     assertTrue(floatArrayFS.get(4) == Float.MIN_VALUE);
 
@@ -413,9 +413,9 @@ public class NewPrimitiveTypesTest extends TestCase {
 
   }
 
-  private void createExampleFS(CAS cas) throws Exception {
+  private void createExampleFS(CAS parmCas) throws Exception {
     // Create a view
-    CAS englishView = cas.createView("EnglishDocument");
+    CAS englishView = parmCas.createView("EnglishDocument");
     // Set the document text
     englishView.setDocumentText("this beer is good");
 
@@ -424,55 +424,55 @@ public class NewPrimitiveTypesTest extends TestCase {
     englishView.getIndexRepository().addFS(fs);
 
     // create Array FSs
-    StringArrayFS strArrayFS = cas.createStringArrayFS(5);
+    StringArrayFS strArrayFS = parmCas.createStringArrayFS(5);
     strArrayFS.set(0, "zzzzzz");
     strArrayFS.set(1, "yyyyyy");
     strArrayFS.set(2, "xxxxxx");
     strArrayFS.set(3, "wwwwww");
     strArrayFS.set(4, "vvvvvv");
 
-    IntArrayFS intArrayFS = cas.createIntArrayFS(5);
+    IntArrayFS intArrayFS = parmCas.createIntArrayFS(5);
     intArrayFS.set(0, Integer.MAX_VALUE);
     intArrayFS.set(1, Integer.MAX_VALUE - 1);
     intArrayFS.set(2, 42);
     intArrayFS.set(3, Integer.MIN_VALUE + 1);
     intArrayFS.set(4, Integer.MIN_VALUE);
 
-    FloatArrayFS floatArrayFS = cas.createFloatArrayFS(5);
+    FloatArrayFS floatArrayFS = parmCas.createFloatArrayFS(5);
     floatArrayFS.set(0, Float.MAX_VALUE);
     floatArrayFS.set(1, (float) (Float.MAX_VALUE / 1000.0));
-    floatArrayFS.set(2, (float) 42);
+    floatArrayFS.set(2, 42);
     floatArrayFS.set(3, (float) (Float.MIN_VALUE * 1000.0));
     floatArrayFS.set(4, Float.MIN_VALUE);
 
-    ByteArrayFS byteArrayFS = cas.createByteArrayFS(5);
+    ByteArrayFS byteArrayFS = parmCas.createByteArrayFS(5);
     byteArrayFS.set(0, (byte) 8);
     byteArrayFS.set(1, (byte) 16);
     byteArrayFS.set(2, (byte) 64);
     byteArrayFS.set(3, (byte) 128);
     byteArrayFS.set(4, (byte) 255);
 
-    BooleanArrayFS boolArrayFS = cas.createBooleanArrayFS(20);
+    BooleanArrayFS boolArrayFS = parmCas.createBooleanArrayFS(20);
     boolean val = false;
     for (int i = 0; i < 20; i++) {
       boolArrayFS.set(i, val = !val);
     }
 
-    ShortArrayFS shortArrayFS = cas.createShortArrayFS(5);
+    ShortArrayFS shortArrayFS = parmCas.createShortArrayFS(5);
     shortArrayFS.set(0, Short.MAX_VALUE);
     shortArrayFS.set(1, (short) (Short.MAX_VALUE - 1));
     shortArrayFS.set(2, (short) (Short.MAX_VALUE - 2));
     shortArrayFS.set(3, (short) (Short.MAX_VALUE - 3));
     shortArrayFS.set(4, (short) (Short.MAX_VALUE - 4));
 
-    LongArrayFS longArrayFS = cas.createLongArrayFS(5);
+    LongArrayFS longArrayFS = parmCas.createLongArrayFS(5);
     longArrayFS.set(0, Long.MAX_VALUE);
     longArrayFS.set(1, Long.MAX_VALUE - 1);
     longArrayFS.set(2, Long.MAX_VALUE - 2);
     longArrayFS.set(3, Long.MAX_VALUE - 3);
     longArrayFS.set(4, Long.MAX_VALUE - 4);
 
-    DoubleArrayFS doubleArrayFS = cas.createDoubleArrayFS(5);
+    DoubleArrayFS doubleArrayFS = parmCas.createDoubleArrayFS(5);
     doubleArrayFS.set(0, Double.MAX_VALUE);
     doubleArrayFS.set(1, Double.MIN_VALUE);
     doubleArrayFS.set(2, Double.parseDouble("1.5555"));

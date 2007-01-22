@@ -137,7 +137,7 @@ public class SofaTest extends TestCase {
 
       // Test Multiple Sofas across XCAS serialization
       XCASSerializer ser = new XCASSerializer(cas.getTypeSystem());
-      OutputStream outputXCAS = (OutputStream) new FileOutputStream("Sofa.xcas");
+      OutputStream outputXCAS = new FileOutputStream("Sofa.xcas");
       XMLSerializer xmlSer = new XMLSerializer(outputXCAS);
       try {
         ser.serialize(cas, xmlSer.getContentHandler());
@@ -150,7 +150,7 @@ public class SofaTest extends TestCase {
 
       // Deserialize XCAS
       cas.reset();
-      InputStream inputXCAS = (InputStream) new FileInputStream("Sofa.xcas");
+      InputStream inputXCAS = new FileInputStream("Sofa.xcas");
       try {
         XCASDeserializer.deserialize(inputXCAS, cas, false);
         inputXCAS.close();
@@ -449,7 +449,6 @@ public class SofaTest extends TestCase {
       int i = 0;
       while (is.read(dest) != -1) {
         assertTrue(ByteBuffer.wrap(dest).getInt() == intArrayFS.get(i++));
-        ;
       }
 
       // is = floatarraySofaFS.getSofaDataStream();

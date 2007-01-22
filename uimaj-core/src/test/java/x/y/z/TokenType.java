@@ -22,7 +22,6 @@ package x.y.z;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.cas.TOP_Type;
-import org.apache.uima.jcas.impl.JCasImpl;
 
 /* comment 3 of 14 */
 public class TokenType extends TOP {

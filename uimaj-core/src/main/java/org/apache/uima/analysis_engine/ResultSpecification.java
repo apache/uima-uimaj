@@ -22,7 +22,6 @@ package org.apache.uima.analysis_engine;
 import java.io.Serializable;
 
 import org.apache.uima.analysis_component.AnalysisComponent;
-import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.util.XMLizable;

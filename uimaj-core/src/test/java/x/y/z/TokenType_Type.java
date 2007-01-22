@@ -26,13 +26,12 @@ import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP_Type;
-import org.apache.uima.jcas.impl.JCasImpl;
 
 /* comment 3 of 14 */
 public class TokenType_Type extends TOP_Type {
   protected FSGenerator getFSGenerator() {
     return fsGenerator;
-  };
+  }
 
   private final FSGenerator fsGenerator = new FSGenerator() {
     public FeatureStructure createFS(int addr, CASImpl cas) {

@@ -27,7 +27,6 @@ import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
  * Updated by JCasGen Tue Feb 21 14:56:04 EST 2006

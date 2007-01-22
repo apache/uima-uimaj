@@ -27,7 +27,6 @@ import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /**
@@ -37,7 +36,7 @@ import org.apache.uima.jcas.tcas.Annotation_Type;
 public class CrossAnnotation_Type extends Annotation_Type {
   protected FSGenerator getFSGenerator() {
     return fsGenerator;
-  };
+  }
 
   private final FSGenerator fsGenerator = new FSGenerator() {
     public FeatureStructure createFS(int addr, CASImpl cas) {

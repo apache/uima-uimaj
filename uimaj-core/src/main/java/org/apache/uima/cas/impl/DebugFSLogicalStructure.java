@@ -328,7 +328,7 @@ public class DebugFSLogicalStructure {
   public static FeatureStructure[] getDebugLogicalStructure_SubAnnotations(AnnotationFS fs) {
     // uses sub iterators - may cause apparant skipping of initial annotations due to type
     // priorities.
-    return getIndexContents(((AnnotationIndex) fs.getCAS().getAnnotationIndex()).subiterator(fs)); // built-in
+    return getIndexContents(fs.getCAS().getAnnotationIndex().subiterator(fs)); // built-in
     // annotation
     // index
   }

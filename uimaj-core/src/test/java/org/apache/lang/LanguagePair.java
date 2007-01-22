@@ -22,7 +22,6 @@ package org.apache.lang;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.cas.TOP_Type;
-import org.apache.uima.jcas.impl.JCasImpl;
 
 /* comment 7 of 14 */
 public class LanguagePair extends TOP {
