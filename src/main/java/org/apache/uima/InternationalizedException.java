@@ -239,4 +239,23 @@ public class InternationalizedException extends Exception {
   public Throwable getCause() {
     return mCause;
   }
+  
+  /**
+   * Checks if this exception, or any of its root causes,
+   * has a particular UIMA message key.  This allows checking for
+   * particular error condition
+   * @param t
+   * @param sofa_mapping_not_supported_for_remote
+   * @return
+   */
+  public boolean hasMessageKey(String messageKey) {
+    if (messageKey.equals(this.getMessageKey())) {
+      return true;
+    }
+    Throwable cause = getCause();
+    if (cause != null && cause instanceof InternationalizedException) {
+      return ((InternationalizedException)cause).hasMessageKey(messageKey);    
+    }
+    return false;
+  }    
 }
