@@ -46,7 +46,7 @@ public class TcasCollectionReader extends CollectionReader_ImplBase {
    */
   public void getNext(CAS aCAS) throws IOException, CollectionException {
     String text = "this beer is good";
-    ((CAS) aCAS).setDocumentText(text);
+    aCAS.setDocumentText(text);
     hasMore = false;
   }
 

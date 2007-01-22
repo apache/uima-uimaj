@@ -50,7 +50,7 @@ public class CasHeapSizeTestCollectionReader extends CollectionReader_ImplBase {
     numChecks--;
 
     // populate with doc to avoid error
-    ((CAS) aCAS).setDocumentText("This is a test");
+    aCAS.setDocumentText("This is a test");
   }
 
   /*

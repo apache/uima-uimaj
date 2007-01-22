@@ -20,7 +20,6 @@
 package org.apache.uima.collection.impl.cpm;
 
 import java.io.File;
-import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -29,11 +28,8 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionProcessingEngine;
 import org.apache.uima.collection.EntityProcessStatus;
 import org.apache.uima.collection.StatusCallbackListener;
-import org.apache.uima.collection.impl.EntityProcessStatusImpl;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.apache.uima.util.ProcessTrace;
-import org.apache.uima.util.ProcessTraceEvent;
 import org.apache.uima.util.XMLInputSource;
 
 public class SofaCPE_SofaUnawareCC_Test extends TestCase {
