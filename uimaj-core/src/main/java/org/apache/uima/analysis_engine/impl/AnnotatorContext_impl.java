@@ -51,8 +51,6 @@ public class AnnotatorContext_impl implements AnnotatorContext {
    * @param aUimaContext
    *          the UIMA Context that this AnnotatorContext wraps.
    * 
-   * @throws ResourceConfigurationException
-   *           if a required parameter does not have a value
    */
   public AnnotatorContext_impl(UimaContextAdmin aUimaContext) {
     mUimaContext = aUimaContext;
