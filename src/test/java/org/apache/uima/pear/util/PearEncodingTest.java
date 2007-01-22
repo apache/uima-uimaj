@@ -45,6 +45,13 @@ public class PearEncodingTest extends TestCase {
   }
 
   public void testUTF8WithSignature() throws Exception {
+	// cancel this test for Sun's Java 1.3.x or 1.4.x - it does not support BOM
+    String javaVendor = System.getProperty("java.vendor");
+    if( javaVendor.startsWith("Sun") ) {
+        String javaVersion = System.getProperty("java.version");
+        if( javaVersion.startsWith("1.3") || javaVersion.startsWith("1.4") )
+            return;
+    }
     // get XML file
     File xmlFile = JUnitExtension.getFile("pearTests/encodingTests/UTF8_with_signature.xml");
     // get encoding
@@ -69,6 +76,13 @@ public class PearEncodingTest extends TestCase {
   }
 
   public void testUTF16WithSignature() throws Exception {
+    // cancel this test for Sun's Java 1.3.x or 1.4.x - it does not support BOM
+    String javaVendor = System.getProperty("java.vendor");
+    if( javaVendor.startsWith("Sun") ) {
+        String javaVersion = System.getProperty("java.version");
+        if( javaVersion.startsWith("1.3") || javaVersion.startsWith("1.4") )
+            return;
+    }
     // get XML file
     File xmlFile = JUnitExtension.getFile("pearTests/encodingTests/UTF16_with_signature.xml");
     // get encoding
