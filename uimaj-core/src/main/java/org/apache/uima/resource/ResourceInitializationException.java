@@ -416,6 +416,14 @@ public class ResourceInitializationException extends UIMAException {
   public static final String UNSUPPORTED_OBJECT_TYPE_IN_CREATE_CAS = "unsupported_object_type_in_create_cas";
 
   /**
+   * Message key for a standard UIMA exception message: "Sofa mappings were specified for the remote Analysis
+   * Engine {0}.  Sofa mappings are not currently supported for remote Analysis Engines.  A workaround is
+   * to wrap the remotely deployed AE in an Aggregate (on the remote side), and specify Sofa mappings in that
+   * aggregate."
+   */
+  public static final String SOFA_MAPPING_NOT_SUPPORTED_FOR_REMOTE = "sofa_mapping_not_supported_for_remote";
+
+  /**
    * Creates a new exception with a null message.
    */
   public ResourceInitializationException() {
