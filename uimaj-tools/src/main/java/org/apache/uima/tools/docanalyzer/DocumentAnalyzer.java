@@ -1248,35 +1248,19 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
       }
 
     } catch (Throwable t) {
-      //special check for using XML detagger with remotes, which will generate an error
-      //since sofa mappings aren't supported for remotes
-      if (usingXmlDetagger && exceptionHasMessageKey(t, ResourceInitializationException.SOFA_MAPPING_NOT_SUPPORTED_FOR_REMOTE)) {
-        displayError("The XML detagging feature is not supported for remote Analysis Engines or for Aggregates containing remotes.  " +
-           "If you are running a remote Analysis Engine the \"XML Tag Containing Text\" field must be left blank.");
-      }      
-      else {
+      // special check for using XML detagger with remotes, which will generate an error
+      // since sofa mappings aren't supported for remotes
+      if (usingXmlDetagger
+              && (t instanceof UIMAException)
+              && ((UIMAException) t)
+                      .hasMessageKey(ResourceInitializationException.SOFA_MAPPING_NOT_SUPPORTED_FOR_REMOTE)) {
+        displayError("The XML detagging feature is not supported for remote Analysis Engines or for Aggregates containing remotes.  "
+                + "If you are running a remote Analysis Engine the \"XML Tag Containing Text\" field must be left blank.");
+      } else {
         displayError(t);
       }
       aborted();
     }
-  }
-
-  /**
-   * @param t
-   * @param sofa_mapping_not_supported_for_remote
-   * @return
-   */
-  private boolean exceptionHasMessageKey(Throwable t, String messageKey) {
-    if (t instanceof UIMAException) {
-      if (messageKey.equals(((UIMAException)t).getMessageKey())) {
-        return true;
-      }
-    }
-    Throwable cause = t.getCause();
-    if (cause != null) {
-      return exceptionHasMessageKey(cause, messageKey);      
-    }
-    return false;
   }
 
   class ProcessingThread extends Thread {
