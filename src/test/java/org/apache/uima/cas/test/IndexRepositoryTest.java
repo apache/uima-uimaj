@@ -18,6 +18,8 @@
  */
 package org.apache.uima.cas.test;
 
+import junit.framework.TestCase;
+
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
@@ -25,8 +27,6 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
-
-import junit.framework.TestCase;
 
 /**
  * 

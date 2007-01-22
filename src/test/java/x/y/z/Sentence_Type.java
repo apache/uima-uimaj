@@ -25,14 +25,13 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /* comment 1 of 14 */
 public class Sentence_Type extends Annotation_Type {
   protected FSGenerator getFSGenerator() {
     return fsGenerator;
-  };
+  }
 
   private final FSGenerator fsGenerator = new FSGenerator() {
     public FeatureStructure createFS(int addr, CASImpl cas) {

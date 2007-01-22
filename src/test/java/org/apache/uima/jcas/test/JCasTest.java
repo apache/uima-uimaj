@@ -132,15 +132,15 @@ public class JCasTest extends TestCase {
 	public void testMissingFeatureInCas() throws Exception {
 		try {
 			// jcasCasMisMatch(CASTestSetup.BAD_MISSING_FEATURE_IN_CAS, CASException.JCAS_INIT_ERROR);
-			CAS cas;
+			CAS localCas;
 			TypeSystem ts;
-			JCas jcas = null;
+			JCas localJcas = null;
 			boolean errFound = false;
 			try {
-				cas = CASInitializer.initCas(new CASTestSetup(CASTestSetup.BAD_MISSING_FEATURE_IN_CAS));
+				localCas = CASInitializer.initCas(new CASTestSetup(CASTestSetup.BAD_MISSING_FEATURE_IN_CAS));
 				ts = this.cas.getTypeSystem();
 				try {
-					jcas = cas.getJCas();
+					localJcas = localCas.getJCas();
 				} catch (Exception e1) {
 					assertTrue(false);
 					return;
@@ -150,7 +150,7 @@ public class JCasTest extends TestCase {
 				assertTrue(false);
 			}
 			// error happens when we try and ref the missing feature
-			MissingFeatureInCas t = new MissingFeatureInCas(jcas);
+			MissingFeatureInCas t = new MissingFeatureInCas(localJcas);
 			try {
 				t.setHaveThisOne(1);
 			} catch (Exception e) {
@@ -177,15 +177,15 @@ public class JCasTest extends TestCase {
 
 	public void jcasCasMisMatch(int testId, String expectedErr) throws Exception {
 		try {
-			CAS cas;
+			CAS localCas;
 			TypeSystem ts;
-			JCas jcas;
+			JCas localJcas;
 			boolean errFound = false;
 			try {
-				cas = CASInitializer.initCas(new CASTestSetup(testId));
+				localCas = CASInitializer.initCas(new CASTestSetup(testId));
 				ts = this.cas.getTypeSystem();
 				try {
-					jcas = cas.getJCas();
+					localJcas = localCas.getJCas();
 				} catch (Exception e1) {
 					checkExpectedBadCASError(e1, expectedErr);
 					errFound = true;
@@ -253,8 +253,8 @@ public class JCasTest extends TestCase {
 				System.out.println(e2);
 			}
 
-			CAS cas = jcas.getCas();
-			assertTrue(cas == this.cas);
+			CAS localCas = jcas.getCas();
+			assertTrue(localCas == this.cas);
 			LowLevelCAS ll_cas = jcas.getLowLevelCas();
 			assertTrue(ll_cas == this.cas);
 			CASImpl casImpl = jcas.getCasImpl();
@@ -276,8 +276,8 @@ public class JCasTest extends TestCase {
 			r1.setArrayFloat(new FloatArray(jcas, 2));
 			r1.setArrayFloat(0, (float) 3.0);
 			r1.setArrayFloat(1, (float) 2.5);
-			assertTrue(3.0 == (double) r1.getArrayFloat(0));
-			assertTrue(2.5 == (double) r1.getArrayFloat(1));
+			assertTrue(3.0 == r1.getArrayFloat(0));
+			assertTrue(2.5 == r1.getArrayFloat(1));
 
 			Root r2 = new Root(jcas);
 			r2.setArrayRef(new FSArray(jcas, 3));
@@ -423,7 +423,7 @@ public class JCasTest extends TestCase {
 			}
 			r1.setPlainString("" + k);
 			r1.addToIndexes();
-		};
+		}
 
 		public void test(Object o1) {
 			assertTrue(o1 instanceof Root);
@@ -438,7 +438,7 @@ public class JCasTest extends TestCase {
 				assertTrue(endOfSentenceInstance == r1.getArrayRef(i));
 			}
 			assertTrue(r1.getPlainString().equals("" + k));
-		};
+		}
 	};
 
 	public void test2CASs() throws Exception {
@@ -482,12 +482,12 @@ public class JCasTest extends TestCase {
 
 	public void testNonJCasCoveredByJCas() throws Exception {
 		try {
-			CAS cas = jcas.getCas();
-			Type subTok = cas.getTypeSystem().getType("SubToken");
+			CAS localCas = jcas.getCas();
+			Type subTok = localCas.getTypeSystem().getType("SubToken");
 			Annotation a1 = new Annotation(jcas);
 			a1.addToIndexes();
-			FeatureStructure f1 = cas.createFS(subTok);
-			cas.getIndexRepository().addFS(f1);
+			FeatureStructure f1 = localCas.createFS(subTok);
+			localCas.getIndexRepository().addFS(f1);
 
 			JFSIndexRepository ir = jcas.getJFSIndexRepository();
 			FSIndex index = ir.getAnnotationIndex();
@@ -509,10 +509,10 @@ public class JCasTest extends TestCase {
 
 	public void testFSListNotPromoted() throws Exception {
 		try {
-			CAS cas = jcas.getCas();
-			TypeSystem ts = cas.getTypeSystem();
+			CAS localCas = jcas.getCas();
+			TypeSystem ts = localCas.getTypeSystem();
 			Type fsl = ts.getType("uima.cas.NonEmptyFSList");
-			FeatureStructure fs = cas.createFS(fsl);
+			FeatureStructure fs = localCas.createFS(fsl);
 			assertTrue(fs instanceof NonEmptyFSList);
 		} catch (Exception e) {
 			JUnitExtension.handleException(e);
@@ -521,7 +521,7 @@ public class JCasTest extends TestCase {
 
 	public void testCreateFSafterReset() throws Exception {
 		try {
-			CAS cas = jcas.getCas();
+			CAS localCas = jcas.getCas();
 			cas.reset();
 			TypeSystem ts = cas.getTypeSystem();
 			Type fsl = ts.getType("uima.cas.NonEmptyFSList");

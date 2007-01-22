@@ -119,25 +119,25 @@ public class TypePriorityTest extends TestCase {
   private CASMgr initCAS() {
     // Create a CASMgr. Ensures existence of AnnotationFS type.
 
-    CASMgr cas = CASFactory.createCAS(200);
+    CASMgr localCas = CASFactory.createCAS(200);
     // Create a writable type system.
-    TypeSystemMgr tsa = cas.getTypeSystemMgr();
+    TypeSystemMgr tsa = localCas.getTypeSystemMgr();
     // Add new types and features.
 
     addTypesForLevel(tsa, 4);
 
     // Commit the type system.
-    ((CASImpl) cas).commitTypeSystem();
+    ((CASImpl) localCas).commitTypeSystem();
     try {
-      cas.initCASIndexes();
+      localCas.initCASIndexes();
     } catch (CASException e2) {
       e2.printStackTrace();
       assertTrue(false);
     }
 
-    cas.getIndexRepositoryMgr().commit();
+    localCas.getIndexRepositoryMgr().commit();
     // assert(cas.getIndexRepositoryMgr().isCommitted());
-    return cas;
+    return localCas;
   }
 
   private void check(LinearTypeOrder lo, String[] o) {

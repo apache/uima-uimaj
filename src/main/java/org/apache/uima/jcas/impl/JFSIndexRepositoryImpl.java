@@ -21,8 +21,6 @@ package org.apache.uima.jcas.impl;
 
 import java.util.Iterator;
 
-import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;

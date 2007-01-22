@@ -25,13 +25,12 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
 
 /* comment 5 of 14 */
 public class Separator_Type extends TokenType_Type {
   protected FSGenerator getFSGenerator() {
     return fsGenerator;
-  };
+  }
 
   private final FSGenerator fsGenerator = new FSGenerator() {
     public FeatureStructure createFS(int addr, CASImpl cas) {
