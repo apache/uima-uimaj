@@ -134,7 +134,7 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
     return true;
   }
 
-  private void editInstallationDescriptor() throws CoreException, IOException, PearException {
+  private void editInstallationDescriptor() throws CoreException, IOException {
     handleComponentInformation();
     addEnvOptions();
     addEnvVars();
