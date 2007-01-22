@@ -80,21 +80,21 @@ public abstract class CasMultiplier_ImplBase extends AnalysisComponent_ImplBase 
    * @param aCAS
    *          A CAS that this AnalysisComponent should process.
    * 
-   * @throws AnalysisComponentException
+   * @throws AnalysisEngineProcessException
    *           if a problem occurs during processing
    */
   public abstract void process(CAS aCAS) throws AnalysisEngineProcessException;
 
   /**
    * Informs this annotator that the CAS TypeSystem has changed. The Analysis Engine calls this
-   * method immediately following the call to {@link #initialize(AnnotatorContext)}, and will call
+   * method immediately following the call to {@link #initialize(org.apache.uima.UimaContext)}, and will call
    * it again whenever the CAS TypeSystem changes.
    * <p>
    * In this method, the Annotator should use the {@link TypeSystem} to resolve the names of Type
    * and Features to the actual {@link org.apache.uima.cas.Type} and
    * {@link org.apache.uima.cas.Feature} objects, which can then be used during processing.
    * 
-   * @throws AnnotatorEngineProcessException
+   * @throws AnalysisEngineProcessException
    *           if the provided type system is missing types or features required by this annotator
    */
   public void typeSystemInit(TypeSystem aTypeSystem) throws AnalysisEngineProcessException {
