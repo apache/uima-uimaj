@@ -68,6 +68,13 @@ public class VinciAnalysisEngineServiceAdapter extends AnalysisEngineServiceAdap
     // superclass initialization depends on having access to the component metadata.
     super.initialize(aSpecifier, aAdditionalParams);
 
+    // Sofa mappings are currently not implemented for remote AEs.  Catch this
+    // and report an error.
+    if (getUimaContextAdmin().getSofaMap().size() > 0) {
+      throw new ResourceInitializationException(ResourceInitializationException.SOFA_MAPPING_NOT_SUPPORTED_FOR_REMOTE,
+              new Object[]{getMetaData().getName()});
+    }
+    
     return true;
   }
 
