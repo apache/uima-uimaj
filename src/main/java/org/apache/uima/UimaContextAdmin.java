@@ -157,5 +157,12 @@ public interface UimaContextAdmin extends UimaContext {
    * @return the component info
    */
   public ComponentInfo getComponentInfo();
+  
+  /**
+   * Gets an unmodifiable Map containing the mapping of component sofa name to 
+   * absolute sofa ID.
+   * @return the Sofa map for this component
+   */
+  public Map getSofaMap();
 
 }

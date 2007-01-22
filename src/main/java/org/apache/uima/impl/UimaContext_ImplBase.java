@@ -28,6 +28,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -516,6 +517,13 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
       i++;
     }
     return sofaArr;
+  }  
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.UimaContextAdmin#getSofaMap()
+   */
+  public Map getSofaMap() {
+    return Collections.unmodifiableMap(mSofaMappings);
   }
 
   public void defineCasPool(int aSize, Properties aPerformanceTuningSettings, boolean aSofaAware)
