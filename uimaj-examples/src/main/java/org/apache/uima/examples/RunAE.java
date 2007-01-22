@@ -22,6 +22,7 @@ package org.apache.uima.examples;
 import java.io.File;
 import java.util.Iterator;
 
+import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
@@ -38,6 +39,7 @@ import org.apache.uima.collection.metadata.CpeCollectionReader;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.collection.metadata.CpeSofaMapping;
 import org.apache.uima.collection.metadata.CpeSofaMappings;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.tools.components.FileSystemCollectionReader;
 import org.apache.uima.tools.components.InlineXmlCasConsumer;
 import org.apache.uima.tools.components.XmlDetagger;
@@ -199,9 +201,18 @@ public class RunAE implements StatusCallbackListener {
       docsProcessed = 0;
       mCPE.process();
     } catch (Exception e) {
-      e.printStackTrace();
+      //special check for using XML detagger with remotes, which will generate an error
+      //since sofa mappings aren't supported for remotes
+      if (xmlTagName != null && xmlTagName.length() > 0 && e instanceof UIMAException &&
+              ((UIMAException)e).hasMessageKey(ResourceInitializationException.SOFA_MAPPING_NOT_SUPPORTED_FOR_REMOTE)) {
+        System.err.println("The XML detagging feature (-t) is not supported for remote Analysis Engines or for Aggregates containing remotes.");
+      }
+      else {
+        e.printStackTrace();
+      }
     }
   }
+  
 
   /**
    * @see org.apache.uima.collection.base_cpm.BaseStatusCallbackListener#initializationComplete()
