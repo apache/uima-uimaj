@@ -39,7 +39,7 @@ import java.io.InputStream;
  * <p>
  * Sofa data can be contained locally in the CAS itself or it can be remote from CAS. To set the
  * local Sofa data in the Sofa FS use:
- * {@link org.apache.uima.cas.SofaFS#setLocalSofaData SofaFS.setLocalSofaData()}. If the data is
+ * {@link org.apache.uima.cas.SofaFS#setLocalSofaData(FeatureStructure) SofaFS.setLocalSofaData()}. If the data is
  * remote from the CAS use:
  * {@link org.apache.uima.cas.SofaFS#setRemoteSofaURI SofaFS.setRemoteSofaURI()}.
  * <p>

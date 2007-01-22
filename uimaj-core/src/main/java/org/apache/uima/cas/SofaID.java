@@ -54,7 +54,7 @@ public interface SofaID {
   /**
    * Get the component Sofa name that was used to obtain this SofaID by calling {
    * 
-   * @link org.apache.uima.UimaContext#mapToSofaID UimaContext.mapToSofaID()}.
+   * @see org.apache.uima.UimaContext#mapToSofaID UimaContext.mapToSofaID()}.
    * @return Component Sofa Name
    */
   public String getComponentSofaName();
