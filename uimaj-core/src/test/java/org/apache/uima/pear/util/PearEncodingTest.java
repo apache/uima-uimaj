@@ -64,6 +64,9 @@ public class PearEncodingTest extends TestCase {
   }
 
   public void testUTF16NoSignature() throws Exception {
+    
+    //NOTE: this test fails when using SUN JVM 1.4.2_12
+    
     // get XML file
     File xmlFile = JUnitExtension.getFile("pearTests/encodingTests/UTF16_no_signature.xml");
     // get encoding
