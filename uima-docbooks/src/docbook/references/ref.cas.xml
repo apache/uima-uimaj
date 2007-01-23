@@ -93,7 +93,9 @@ under the License.
         <literal>uima.cas.Short</literal>, <literal>uima.cas.Integer</literal>,
         <literal>uima.cas.Long</literal>, <literal>uima.cas.Float</literal>
         ,<literal> uima.cas.Double</literal> and <literal>uima.cas.String</literal>
-        . The strings are Java strings (each character is a 16 bit Unicode unicode character).
+        . The strings are Java strings, and characters are Java characters.  Technically, this means
+        that characters are UTF-16 code points, which is not quite the same as a Unicode character.
+        This distinction should make no difference for almost all applications.
         The CAS also defines other basic built-in types for arrays of these, plus arrays of
         references to other objects, called <literal>uima.cas.IntegerArray</literal>
         ,<literal> uima.cas.FloatArray</literal>,
