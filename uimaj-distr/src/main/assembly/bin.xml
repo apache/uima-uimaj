@@ -143,6 +143,12 @@ under the License.
     <fileSet>
       <directory>target/site/apidocs</directory>
       <outputDirectory>/apache-uima/docs/api</outputDirectory>
+      <excludes>
+        <exclude>options</exclude>
+        <exclude>packages</exclude>
+        <exclude>files</exclude>
+        <exclude>argfile</exclude>        
+      </excludes>
     </fileSet>
     <fileSet>
       <directory>../uima-docbooks/target</directory>
