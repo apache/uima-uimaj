@@ -146,7 +146,7 @@
 									<packages>*</packages>
 								</group>
 							</groups>
-							<sourcepath>../uimaj-core/src/main/java:../uimaj-document-annotation/src/main/java</sourcepath>
+							<sourcepath>../uimaj-core/src/main/java;../uimaj-document-annotation/src/main/java</sourcepath>
 							<excludePackageNames>*.internal.*:*.impl.*</excludePackageNames>
 							<!-- add a few classes in impl packages that are directly used by user code -->
 							<additionalparam>
