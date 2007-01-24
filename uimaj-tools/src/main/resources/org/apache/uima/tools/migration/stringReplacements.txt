@@ -25,3 +25,11 @@ TCASException CASException
 TCASRuntimeException CASRuntimeException
 TCasPool CasPool
 http:///com/ibm/uima/examples.ecore http:///org/apache/uima/examples.ecore
+uima_adapter_soap.jar uima-adapter-soap.jar
+uima_adapter_vinci.jar uima-adapter-vinci.jar
+uima_core.jar uima-core.jar
+uima_cpe.jar uima-cpe.jar
+uima_examples.jar uima-examples.jar
+uima_tools.jar uima-tools.jar
+uima_jcas_builtin_types.jar uima-document-annotation.jar
+vinci(/|\\)jVinci.jar jVinci.jar
