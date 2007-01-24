@@ -446,6 +446,11 @@ public class AnalysisEngineDescription_implTest extends TestCase {
             .getFile("TextAnalysisEngineImplTest/TestUimaCppAE.xml"));
     desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
     desc.doFullValidation();
+    
+    in = new XMLInputSource(JUnitExtension
+            .getFile("TextAnalysisEngineImplTest/TestAggregateContainingCppAnnotator.xml"));
+    desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
+    desc.doFullValidation();    
   }
   
   public void testValidate() throws Exception {

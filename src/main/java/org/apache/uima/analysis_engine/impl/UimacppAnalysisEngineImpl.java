@@ -169,9 +169,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
 
     initializeAnalysisComponent(mDescription);
 
-    if (!mVerificationMode) {
-      resetResultSpecificationToDefault();
-    }
+    resetResultSpecificationToDefault();
 
     getLogger().logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
             "UIMA_analysis_engine_init_successful__CONFIG", md.getName());
@@ -182,7 +180,8 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
   public void setResultSpecification(ResultSpecification aResultSpec) {
     if (aResultSpec == null) {
       resetResultSpecificationToDefault();
-    } else {
+    } else if (mAnnotator != null) {
+      //note have to check for null to handle "verification mode" where annotator is not instantiated
       mAnnotator.setResultSpecification(aResultSpec);
     }
   }
