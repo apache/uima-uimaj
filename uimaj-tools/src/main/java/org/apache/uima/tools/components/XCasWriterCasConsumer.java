@@ -98,8 +98,7 @@ public class XCasWriterCasConsumer extends CasConsumer_ImplBase {
     }
 
     // retreive the filename of the input file from the CAS
-    FSIterator it = jcas.getJFSIndexRepository().getAnnotationIndex(SourceDocumentInformation.type)
-            .iterator();
+    FSIterator it = jcas.getAnnotationIndex(SourceDocumentInformation.type).iterator();
     File outFile = null;
     if (it.hasNext()) {
       SourceDocumentInformation fileLoc = (SourceDocumentInformation) it.next();

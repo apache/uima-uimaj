@@ -127,8 +127,7 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
       try {
         jcas = aCAS.getView(CAS.NAME_DEFAULT_SOFA).getJCas();
         hasDefaultView = true;
-        FSIterator it = jcas.getJFSIndexRepository().getAnnotationIndex(
-                SourceDocumentInformation.type).iterator();
+        FSIterator it = jcas.getAnnotationIndex(SourceDocumentInformation.type).iterator();
         if (it.hasNext()) {
           // get the output file name from the annotation in the CAS ...
           // ... note this is a little flakey if processing an XCAS file,

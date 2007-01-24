@@ -983,7 +983,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
     } catch (CASException e) {
       throw new RuntimeException(e);
     }
-    FSIterator iter = jcas.getJFSIndexRepository().getAnnotationIndex().iterator();
+    FSIterator iter = jcas.getAnnotationIndex().iterator();
     while (iter.isValid()) {
       Annotation annot = (Annotation) iter.get();
       iter.moveToNext();
