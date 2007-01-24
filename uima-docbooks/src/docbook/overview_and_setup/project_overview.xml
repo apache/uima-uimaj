@@ -505,6 +505,19 @@ under the License.
           necessary replacements to your code, including any JCas cover classes that are part of your codebase.
           </para>
       </section>
+      <section id="ugr.project_overview.migration_utility.jar_files">
+        <title>JAR File names Have Changed</title>
+        <para>The UIMA JAR file names have changed slightly.  Underscores have been replaced with hypens to 
+          be consistent with Apache naming conventions.  For example <literal>uima_core.jar</literal> is now 
+          <literal>uima-core.jar</literal>.  Also <literal>uima_jcas_builtin_types.jar</literal> has been 
+          renamed to <literal>uima-document-annotation.jar</literal>.  Finally, the <literal>jVinci.jar</literal> 
+          file is now in the <literal>lib</literal> directory rather than the <literal>lib/vinci</literal> 
+          directory as was previously the case.  The migration script will apply the necessary replacements,
+          for example to script files or Eclipse launch confiugrations. (See <xref
+          linkend="ugr.project_overview_running_the_migration_utility"/> for a list of file extensions that
+          the migration utility will process by default.)
+          </para>
+      </section>      
     </section>
     
     <section id="ugr.project_overview_manual_migration_necessary">

@@ -151,6 +151,10 @@
                <ttl>JCas Is Now an Interface</ttl>
                <xreftext>Section 1.3.2.4, “JCas Is Now an Interface”</xreftext>
             </div>
+            <div element="section" href="#ugr.project_overview.migration_utility.jar_files" number="1.3.2.5" targetptr="ugr.project_overview.migration_utility.jar_files">
+               <ttl>JAR File names Have Changed</ttl>
+               <xreftext>Section 1.3.2.5, “JAR File names Have Changed”</xreftext>
+            </div>
          </div>
          <div element="section" href="#ugr.project_overview_manual_migration_necessary" number="1.3.3" targetptr="ugr.project_overview_manual_migration_necessary">
             <ttl>Situations Where Manual Migration is Necessary</ttl>
