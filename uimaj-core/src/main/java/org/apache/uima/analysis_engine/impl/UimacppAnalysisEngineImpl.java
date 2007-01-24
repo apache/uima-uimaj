@@ -169,7 +169,9 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
 
     initializeAnalysisComponent(mDescription);
 
-    resetResultSpecificationToDefault();
+    if (!mVerificationMode) {
+      resetResultSpecificationToDefault();
+    }
 
     getLogger().logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
             "UIMA_analysis_engine_init_successful__CONFIG", md.getName());

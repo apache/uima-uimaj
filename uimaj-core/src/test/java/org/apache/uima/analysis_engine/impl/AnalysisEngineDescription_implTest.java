@@ -440,6 +440,12 @@ public class AnalysisEngineDescription_implTest extends TestCase {
     File dataPathDir = JUnitExtension.getFile("TextAnalysisEngineImplTest/dataPathDir");
     resMgr.setDataPath(dataPathDir.getCanonicalPath());
     desc.doFullValidation(resMgr);
+    
+    //test UIMA C++ descriptor (should succeed even though annotator library doesn't exist)
+    in = new XMLInputSource(JUnitExtension
+            .getFile("TextAnalysisEngineImplTest/TestUimaCppAE.xml"));
+    desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
+    desc.doFullValidation();
   }
   
   public void testValidate() throws Exception {
