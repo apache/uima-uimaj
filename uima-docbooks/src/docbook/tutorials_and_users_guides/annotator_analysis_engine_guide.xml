@@ -86,46 +86,47 @@ under the License.
   
   <itemizedlist>
     <listitem>
-      <para><emphasis role="bold-italic"><xref
-          linkend="ugr.tug.aae.getting_started"/></emphasis> is a tutorial with
-        step-by-step instructions for how to develop and test a simple UIMA
-        annotator.</para>
+      <para><emphasis role="bold-italic"><xref linkend="ugr.tug.aae.getting_started"/></emphasis> is a
+        tutorial with step-by-step instructions for how to develop and test a simple UIMA annotator.</para>
     </listitem>
     <listitem>
-      <para><emphasis role="bold-italic"><xref
-          linkend="ugr.tug.aae.logging.configuring"/></emphasis> discusses how to
-        make your UIMA annotator configurable, and how it can write messages to the UIMA log
-        file.</para>
+      <para><emphasis role="bold-italic"><xref linkend="ugr.tug.aae.configuration_logging"/>
+        </emphasis> discusses how to make your UIMA annotator configurable, and how it can write messages to the UIMA
+        log file.</para>
     </listitem>
     <listitem>
-      <para> <emphasis role="bold-italic"><xref
-          linkend="ugr.tug.aae.building_aggregates"/></emphasis> describes how
-        annotators can be combined into aggregate analysis engines. It also describes how
-        one annotator can make use of the analysis results produced by an annotator that has
-        run previously.</para>
+      <para> <emphasis role="bold-italic"><xref linkend="ugr.tug.aae.building_aggregates"/></emphasis>
+        describes how annotators can be combined into aggregate analysis engines. It also describes how one
+        annotator can make use of the analysis results produced by an annotator that has run previously.</para>
+    </listitem>
+    <listitem>
+      <para><emphasis role="bold-italic"><xref linkend="ugr.tug.aae.other_examples"/></emphasis>
+        describes several other examples you may find interesting, including</para>
+      
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>SimpleTokenAndSentenceAnnotator
+            &ndash; a simple tokenizer and sentence annotator.</para>
+        </listitem>
+        
+        <listitem>
+          <para>PersonTitleDBWriterCasConsumer &ndash; a sample CAS Consumer which populates a relational
+            database with some annotations. It uses JDBC and in this example, hooks up with the Open Source Apache
+            Derby database. </para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+    <listitem>
+      <para><emphasis role="bold-italic"><xref linkend="ugr.tug.aae.additional_topics"/></emphasis>
+        describes additional features of the UIMA SDK that may help you in building your own annotators and analysis
+        engines.</para>
+    </listitem>
+    <listitem>
+      <para><emphasis role="bold-italic"><xref linkend="ugr.tug.aae.common_pitfalls"/> </emphasis>
+        contains some useful guidelines to help you ensure that your annotators will work correctly in any UIMA
+        application.</para>
     </listitem>
   </itemizedlist>
-  
-  <para><emphasis role="bold-italic">Other examples</emphasis></para>
-  
-  <para>The UIMA SDK include several other examples you may find interesting,
-    including</para>
-  
-  <itemizedlist spacing="compact"><listitem><para>SimpleTokenAndSentenceAnnotator
-    &ndash; a simple tokenizer and sentence annotator.</para></listitem>
-    
-    <listitem><para>PersonTitleDBWriterCasConsumer &ndash; a sample CAS Consumer which
-      populates a relational database with some annotations. It uses JDBC and in this
-      example, hooks up with the Open Source Apache Derby database. </para></listitem>
-  </itemizedlist>
-  
-  <para><emphasis role="bold-italic">Additional Topics</emphasis> describes
-    additional features of the UIMA SDK that may help you in building your own annotators and
-    analysis engines.</para>
-  
-  <para><emphasis role="bold-italic"><xref linkend="ugr.tug.aae.common_pitfalls"/>
-    </emphasis> contains some useful guidelines to help you ensure that your annotators will
-    work correctly in any UIMA application.</para>
   
   <para>This guide does not discuss how to build UIMA Applications, which are programs that
     use Analysis Engines, along with other components, e.g. a search engine, document store,
