@@ -190,10 +190,8 @@ public class Parser extends JCasAnnotator_ImplBase {
     StringBuffer sentenceBuffer = new StringBuffer();
     offsetMap.clear();
 
-    AnnotationIndex sentenceIndex = (AnnotationIndex) aJCas.getJFSIndexRepository()
-            .getAnnotationIndex(Sentence.type);
-    AnnotationIndex tokenIndex = (AnnotationIndex) aJCas.getJFSIndexRepository()
-            .getAnnotationIndex(Token.type);
+    AnnotationIndex sentenceIndex = aJCas.getAnnotationIndex(Sentence.type);
+    AnnotationIndex tokenIndex = aJCas.getAnnotationIndex(Token.type);
 
     // iterate over Sentences
     FSIterator sentenceIterator = sentenceIndex.iterator();

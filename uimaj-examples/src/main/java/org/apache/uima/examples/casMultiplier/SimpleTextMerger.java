@@ -106,8 +106,7 @@ public class SimpleTextMerger extends JCasMultiplier_ImplBase {
 
     // get the SourceDocumentInformation FS, which indicates the sourceURI of the document
     // and whether the incoming CAS is the last segment
-    FSIterator it = aJCas.getJFSIndexRepository()
-            .getAnnotationIndex(SourceDocumentInformation.type).iterator();
+    FSIterator it = aJCas.getAnnotationIndex(SourceDocumentInformation.type).iterator();
     if (!it.hasNext()) {
       throw new RuntimeException("Missing SourceDocumentInformation");
     }

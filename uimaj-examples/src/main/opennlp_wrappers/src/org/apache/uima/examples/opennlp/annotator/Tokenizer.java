@@ -74,8 +74,7 @@ public class Tokenizer extends JCasAnnotator_ImplBase {
    */
   public void process(JCas aJCas) throws AnalysisEngineProcessException {
 
-    AnnotationIndex sentenceIndex = (AnnotationIndex) aJCas.getJFSIndexRepository()
-            .getAnnotationIndex(Sentence.type);
+    AnnotationIndex sentenceIndex = aJCas.getAnnotationIndex(Sentence.type);
 
     // iterate over Sentences
     FSIterator sentenceIterator = sentenceIndex.iterator();

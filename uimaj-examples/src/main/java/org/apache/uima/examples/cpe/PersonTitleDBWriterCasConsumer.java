@@ -229,15 +229,15 @@ public class PersonTitleDBWriterCasConsumer extends CasConsumer_ImplBase {
       }
 
       // get the singleton instance of the SourceDocumentInformation
-      SourceDocumentInformation sdi = (SourceDocumentInformation) jcas.getJFSIndexRepository()
-              .getAnnotationIndex(SourceDocumentInformation.type).iterator().next();
+      SourceDocumentInformation sdi = (SourceDocumentInformation) 
+              jcas.getAnnotationIndex(SourceDocumentInformation.type).iterator().next();
 
       System.out.println("Time: " + (System.currentTimeMillis() - startTime)
               + " DB Writer: Processing doc: '" + sdi.getUri() + "'");
 
       stmt.setString(1, truncate(sdi.getUri(), MAX_URI_LENGTH));
-      for (FSIterator iter = jcas.getJFSIndexRepository().getAnnotationIndex(PersonTitle.type)
-              .iterator(); iter.hasNext();) {
+      for (FSIterator iter = jcas.getAnnotationIndex(PersonTitle.type).iterator(); 
+           iter.hasNext();) {
         PersonTitle pt = (PersonTitle) iter.next();
         stmt.setString(2, truncate(pt.getCoveredText(), MAX_TITLE_LENGTH));
         stmt.setInt(3, pt.getBegin());

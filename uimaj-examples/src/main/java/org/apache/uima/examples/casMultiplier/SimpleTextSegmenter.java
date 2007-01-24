@@ -63,8 +63,7 @@ public class SimpleTextSegmenter extends JCasMultiplier_ImplBase {
     mPos = 0;
     // retreive the filename of the input file from the CAS so that it can be added
     // to each segment
-    FSIterator it = aJCas.getJFSIndexRepository()
-            .getAnnotationIndex(SourceDocumentInformation.type).iterator();
+    FSIterator it = aJCas.getAnnotationIndex(SourceDocumentInformation.type).iterator();
     if (it.hasNext()) {
       SourceDocumentInformation fileLoc = (SourceDocumentInformation) it.next();
       mDocUri = fileLoc.getUri();

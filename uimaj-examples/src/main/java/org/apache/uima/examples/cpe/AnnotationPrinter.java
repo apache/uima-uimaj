@@ -113,15 +113,14 @@ public class AnnotationPrinter extends CasConsumer_ImplBase implements CasObject
 
     boolean titleP = false;
     String docUri = null;
-    Iterator it = jcas.getJFSIndexRepository().getAnnotationIndex(SourceDocumentInformation.type)
-            .iterator();
+    Iterator it = jcas.getAnnotationIndex(SourceDocumentInformation.type).iterator();
     if (it.hasNext()) {
       SourceDocumentInformation srcDocInfo = (SourceDocumentInformation) it.next();
       docUri = srcDocInfo.getUri();
     }
 
     // iterate and print annotations
-    Iterator annotationIter = jcas.getJFSIndexRepository().getAnnotationIndex().iterator();
+    Iterator annotationIter = jcas.getAnnotationIndex().iterator();
     while (annotationIter.hasNext()) {
       Annotation annot = (Annotation) annotationIter.next();
       if (titleP == false) {

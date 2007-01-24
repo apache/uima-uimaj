@@ -76,7 +76,7 @@ public class UimaMeetingAnnotator extends JCasAnnotator_ImplBase {
     // iterating over.
     List uimaMeetings = new ArrayList();
 
-    FSIndex meetingIndex = aJCas.getJFSIndexRepository().getAnnotationIndex(Meeting.type);
+    FSIndex meetingIndex = aJCas.getAnnotationIndex(Meeting.type);
     FSIterator iter = meetingIndex.iterator();
     while (iter.isValid()) {
       Meeting meeting = (Meeting) iter.get();
