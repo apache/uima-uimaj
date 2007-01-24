@@ -155,10 +155,14 @@ under the License.
       <outputDirectory>/apache-uima/docs</outputDirectory>
       <includes>
         <include>images/**</include>
-        <include>overview_and_setup/overview_and_setup.*</include>
-        <include>tutorials_and_users_guides/tutorials_and_users_guides.*</include>
-        <include>tools/tools.*</include>
-        <include>references/references.*</include>
+        <include>overview_and_setup/overview_and_setup.pdf</include>
+        <include>overview_and_setup/overview_and_setup.html</include>
+        <include>tutorials_and_users_guides/tutorials_and_users_guides.pdf</include>
+        <include>tutorials_and_users_guides/tutorials_and_users_guides.html</include>
+        <include>tools/tools.pdf</include>
+        <include>tools/tools.html</include>
+        <include>references/references.pdf</include>
+        <include>references/references.html</include>
       </includes>
     </fileSet>
     <fileSet>
