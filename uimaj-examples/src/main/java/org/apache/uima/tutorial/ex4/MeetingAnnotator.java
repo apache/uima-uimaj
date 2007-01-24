@@ -26,7 +26,6 @@ import org.apache.uima.analysis_component.AnalysisComponent;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.tutorial.DateAnnot;
 import org.apache.uima.tutorial.Meeting;
@@ -58,10 +57,9 @@ public class MeetingAnnotator extends JCasAnnotator_ImplBase {
    */
   public void process(JCas aJCas) {
     // get annotation indexes
-    JFSIndexRepository indexes = aJCas.getJFSIndexRepository();
-    FSIndex roomNumberIndex = indexes.getAnnotationIndex(RoomNumber.type);
-    FSIndex dateIndex = indexes.getAnnotationIndex(DateAnnot.type);
-    FSIndex timeIndex = indexes.getAnnotationIndex(TimeAnnot.type);
+    FSIndex roomNumberIndex = aJCas.getAnnotationIndex(RoomNumber.type);
+    FSIndex dateIndex = aJCas.getAnnotationIndex(DateAnnot.type);
+    FSIndex timeIndex = aJCas.getAnnotationIndex(TimeAnnot.type);
 
     // store end position of last meeting we identified, to prevent multiple
     // annotations over same span
