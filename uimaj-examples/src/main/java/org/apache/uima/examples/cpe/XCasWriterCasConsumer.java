@@ -18,7 +18,15 @@
  */
 
 package org.apache.uima.examples.cpe;
-
+/* 
+ *******************************************************************************************
+ * N O T E :     The XML format (XCAS) that this Cas Consumer outputs, is
+ *               is deprecated, but is being kept for compatibility with older versions
+ *               
+ *               New code should use the XmiWriterCasConsumer
+ *               which uses the current XMI format for XML externalizations of the CAS
+ *******************************************************************************************               
+ */
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
