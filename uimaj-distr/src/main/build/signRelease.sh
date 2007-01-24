@@ -38,9 +38,9 @@ for i in ${release}*.gz;  do gpg --passphrase "$passphrase" --output $i.asc --de
 for i in ${release}*.bz2; do gpg --passphrase "$passphrase" --output $i.asc --detach-sig --armor $i; done
 
 # Create MD5 checksums
-for i in ${release}*.zip; do md5sum $i > $i.md5; done
-for i in ${release}*.gz; do md5sum $i > $i.md5; done
-for i in ${release}*.bz2; do md5sum $i > $i.md5; done
+for i in ${release}*.zip; do gpg --print-md MD5 $i > $i.md5; done
+for i in ${release}*.gz; do gpg --print-md MD5 $i > $i.md5; done
+for i in ${release}*.bz2; do gpg --print-md MD5 $i > $i.md5; done
 
 # Create SHA1 checksums
 for i in ${release}*.zip; do gpg --print-md SHA1 $i > $i.sha1; done
