@@ -198,7 +198,7 @@ public class Meeting extends Annotation {
   /** Custom constructor taking all parameters */
   public Meeting(JCas jcas, int start, int end, RoomNumber room, DateAnnot date,
           TimeAnnot startTime, TimeAnnot endTime) {
-    super(jcas, start, end);
+    this(jcas, start, end);
     setRoom(room);
     setDate(date);
     setStartTime(startTime);
