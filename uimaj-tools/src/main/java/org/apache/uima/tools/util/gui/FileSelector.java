@@ -40,8 +40,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 
 /**
- * 
- * 
  * Composite component to allow file or directory input or selection. Comprises a JTextField, and a
  * browse button associated with a JFileChooser.
  */
@@ -53,6 +51,11 @@ public class FileSelector extends JPanel implements FocusListener {
 
   private BrowseButton browseButton;
 
+  /**
+   * Note that fileChooser is created lazily, to address issue UIMA-231.  Apparently calls
+   * to JFileChooser.setCurrentDirectory aren't reliable before the file chooser has been
+   * shown.
+   */
   private JFileChooser fileChooser;
 
   private JComponent source;
@@ -60,25 +63,58 @@ public class FileSelector extends JPanel implements FocusListener {
   private FileSelectorListener fileSelectorListener = null;
 
   private String previousValue;
+  
+  private File initialDir;
+  
+  private String fileChooserTitle;
+  
+  private int selectionMode;
+  
+  private FileFilter filter;
 
-  public FileSelector(String initialValue, String fileChooserTitle, int selectionMode) // Can be
-  // either
-  // JFileChooser.FILES_ONLY,
-  // JFileChooser.DIRECTORIES_ONLY or
-  // JFileChooser.FILES_AND_DIRECTORIES
+  /**
+   * Creates a new FileSelector.
+   *  
+   * @param initialValue filename initially displayed in the text field
+   * @param fileChooserTitle title of the JFileChooser launched when the user clicks Browse
+   * @param selectionMode Can be either JFileChooser.FILES_ONLY, JFileChooser.DIRECTORIES_ONLY or JFileChooser.FILES_AND_DIRECTORIES
+   * @param currentDir default directory for the file chooser
+   */
+  public FileSelector(String initialValue, String fileChooserTitle, int selectionMode) // 
   {
     this(initialValue, fileChooserTitle, selectionMode, null);
   }
 
-  public FileSelector(String initialValue, String fileChooserTitle, int selectionMode, // Can be
-          // either
-          // JFileChooser.FILES_ONLY,
-          // JFileChooser.DIRECTORIES_ONLY or
-          // JFileChooser.FILES_AND_DIRECTORIES
-          File currentDir) {
+  /**
+   * Creates a new FileSelector.
+   * 
+   * @param initialValue filename initially displayed in the text field
+   * @param fileChooserTitle title of the JFileChooser launched when the user clicks Browse
+   * @param selectionMode Can be either JFileChooser.FILES_ONLY, JFileChooser.DIRECTORIES_ONLY or JFileChooser.FILES_AND_DIRECTORIES
+   * @param currentDir default directory for the file chooser
+   */
+  public FileSelector(String initialValue, String fileChooserTitle, int selectionMode, File currentDir) {
+    this(initialValue, fileChooserTitle, selectionMode, currentDir, null);
+  }
+
+  /**
+   * Creates a new FileSelector.
+   * 
+   * @param initialValue filename initially displayed in the text field
+   * @param fileChooserTitle title of the JFileChooser launched when the user clicks Browse
+   * @param selectionMode Can be either JFileChooser.FILES_ONLY, JFileChooser.DIRECTORIES_ONLY or JFileChooser.FILES_AND_DIRECTORIES
+   * @param currentDir default directory for the file chooser
+   * @param filter file filter used by the file chooser
+   */
+  public FileSelector(String initialValue, String fileChooserTitle, int selectionMode, File currentDir, 
+          FileFilter filter) {
     if (currentDir == null && initialValue != null) {
       currentDir = new File(initialValue).getAbsoluteFile();
     }
+    this.initialDir = currentDir;
+    this.fileChooserTitle = fileChooserTitle;
+    this.selectionMode = selectionMode;
+    this.filter = filter;
 
     setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
@@ -93,26 +129,13 @@ public class FileSelector extends JPanel implements FocusListener {
     browseButton = new BrowseButton("Browse..");
     add(browseButton);
 
-    final File selected = (initialValue == null) ? null : new File(initialValue);
-    fileChooser = new JFileChooser(currentDir);
-    fileChooser.setDialogTitle(fileChooserTitle);
-    fileChooser.setFileSelectionMode(selectionMode);
-
-    // hoping this will fix ArrayIndexOutOfBoundsException
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        if (selected != null && selected.exists()) {
-          fileChooser.setSelectedFile(selected);
-        }
-      }
-    });
-
     browseButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        int returnVal = fileChooser.showOpenDialog(browseButton);
+        JFileChooser chooser = getFileChooser();
+        int returnVal = chooser.showOpenDialog(browseButton);
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-          File file = fileChooser.getSelectedFile();
+          File file = chooser.getSelectedFile();
           String fileString = file.getAbsolutePath();
 
           if (fileSelectorListener != null) {
@@ -124,7 +147,7 @@ public class FileSelector extends JPanel implements FocusListener {
               previousValue = fileString;
             } else
               // Failure - restore previous value:
-              fileChooser.setSelectedFile(new File(previousValue));
+              chooser.setSelectedFile(new File(previousValue));
           } else {
             field.setText(fileString);
             previousValue = fileString;
@@ -140,13 +163,15 @@ public class FileSelector extends JPanel implements FocusListener {
         if (!fileString.equals(previousValue)) {
           if (fileSelectorListener != null) {
             boolean result = fileSelectorListener.fileSelected(source, fileString);
-            // Only update textField is successful:
+            // Only update textField if successful:
             if (result == true) // Success
             {
               previousValue = fileString;
             } else
               // Failure - restore previous value:
-              fileChooser.setSelectedFile(previousValue == null ? null : new File(previousValue));
+              if (fileChooser != null) {
+                fileChooser.setSelectedFile(previousValue == null ? null : new File(previousValue));
+              }
           } else {
             previousValue = fileString;
           }
@@ -168,7 +193,9 @@ public class FileSelector extends JPanel implements FocusListener {
             if (!result) // undo
             {
               previousValue = oldValue;
-              fileChooser.setSelectedFile(previousValue == null ? null : new File(previousValue));
+              if (fileChooser != null) {
+                fileChooser.setSelectedFile(previousValue == null ? null : new File(previousValue));
+              }
             }
           } else {
             previousValue = fileString;
@@ -183,25 +210,24 @@ public class FileSelector extends JPanel implements FocusListener {
     this.source = source;
   }
 
-  public void addChoosableFileFilter(FileFilter ff) {
-    fileChooser.addChoosableFileFilter(ff);
-  }
-
   public String getSelected() {
     return field.getText();
   }
 
   public void setSelected(String s) {
     field.setText(s);
-    if (s.length() == 0) {
+    if (s == null || s.length() == 0) {
       s = System.getProperty("user.dir");
     }
     File file = new File(s);
 
-    if (this.fileChooser.getFileSelectionMode() == JFileChooser.FILES_ONLY && file.isDirectory()) {
-      this.fileChooser.setCurrentDirectory(file);
-    } else {
-      this.fileChooser.setSelectedFile(file);
+    //only modify file chooser if it has already been created
+    if (this.fileChooser != null) {
+      if (this.fileChooser.getFileSelectionMode() == JFileChooser.FILES_ONLY && file.isDirectory()) {
+        this.fileChooser.setCurrentDirectory(file);
+      } else {
+        this.fileChooser.setSelectedFile(file);
+      }
     }
   }
 
@@ -241,19 +267,42 @@ public class FileSelector extends JPanel implements FocusListener {
    */
   public void focusLost(FocusEvent aEvent) {
     if (aEvent.getComponent() == this.field) {
-      String path = this.getSelected();
-      if (path.length() == 0) {
-        path = System.getProperty("user.dir");
-      }
-      File file = new File(path);
-
-      if (this.fileChooser.getFileSelectionMode() == JFileChooser.FILES_ONLY && file.isDirectory()) {
-        this.fileChooser.setCurrentDirectory(file);
-      } else {
-        this.fileChooser.setSelectedFile(file);
+      //only modify file chooser if it has already been created
+      if (this.fileChooser != null) {
+        String path = this.getSelected();
+        if (path.length() == 0) {
+          path = System.getProperty("user.dir");
+        }
+        File file = new File(path);
+  
+        if (this.fileChooser.getFileSelectionMode() == JFileChooser.FILES_ONLY && file.isDirectory()) {
+          this.fileChooser.setCurrentDirectory(file);
+        } else {
+          this.fileChooser.setSelectedFile(file);
+        }
       }
     }
 
+  }
+  
+  /**
+   * Get the File Chooser user when the Browse button is clicked.  This is lazily created when
+   * needed, because of issue UIMA-231.
+   * @return the file chooser
+   */
+  protected JFileChooser getFileChooser() {
+    if (this.fileChooser == null) {
+      String val = field.getText();
+      final File selected = (val == null) ? null : new File(val);
+      fileChooser = new JFileChooser(initialDir);
+      fileChooser.setDialogTitle(fileChooserTitle);
+      fileChooser.setFileSelectionMode(selectionMode);  
+      if (filter != null) {
+        fileChooser.addChoosableFileFilter(filter);
+      }
+      fileChooser.setSelectedFile(selected);
+    }
+    return this.fileChooser;
   }
 
 }

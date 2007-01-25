@@ -377,6 +377,15 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
     initFileChoosers();
 
+    //create file selectors (used to populate CR and CI panels later) 
+    readerFileSelector = new FileSelector(null, "Collection Reader Descriptor",
+            JFileChooser.FILES_ONLY, fileChooserRootDir, new XMLFileFilter());
+    readerFileSelector.addFileSelectorListener(this, collectionReaderPanel);
+
+    casInitializerFileSelector = new FileSelector(null, "CAS Initializer Descriptor",
+            JFileChooser.FILES_ONLY, fileChooserRootDir, new XMLFileFilter());
+    casInitializerFileSelector.addFileSelectorListener(this, casInitializerPanel);
+
     // initialize empty CollectionReader and CAS Initializer panels
     try {
       populateCollectionReaderPanel(null);
@@ -387,7 +396,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
     // CAS initializer panel is initially hidden since it is deprecated
     setCasInitializerPanelVisible(false);
-
+    
     // read preferences (loads last opened CPE descriptor)
     if (System.getProperty("uima.noprefs") == null) {
       readPreferences();
@@ -1134,12 +1143,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
       if (collectionReaderPanel.getNrComponents() == 0) {
         collectionReaderPanel.add(new JLabel("Descriptor:"));
-        readerFileSelector = new FileSelector(specifierFile, "Collection Reader Descriptor",
-                JFileChooser.FILES_ONLY, fileChooserRootDir);
-
         collectionReaderPanel.add(readerFileSelector);
-        readerFileSelector.addChoosableFileFilter(new XMLFileFilter());
-        readerFileSelector.addFileSelectorListener(this, collectionReaderPanel);
+        readerFileSelector.setSelected(specifierFile);
       } else {
         collectionReaderPanel.reset();
       }
@@ -1185,12 +1190,9 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
       if (casInitializerPanel.getNrComponents() == 0) {
         casInitializerPanel.add(new JLabel("Descriptor:"));
-        casInitializerFileSelector = new FileSelector(specifierFile, "CAS Initializer Descriptor",
-                JFileChooser.FILES_ONLY, fileChooserRootDir);
 
         casInitializerPanel.add(casInitializerFileSelector);
-        casInitializerFileSelector.addChoosableFileFilter(new XMLFileFilter());
-        casInitializerFileSelector.addFileSelectorListener(this, casInitializerPanel);
+        casInitializerFileSelector.setSelected(specifierFile);
       } else {
         casInitializerPanel.reset();
       }
