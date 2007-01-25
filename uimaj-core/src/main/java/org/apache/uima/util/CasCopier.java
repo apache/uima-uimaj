@@ -221,10 +221,11 @@ public class CasCopier {
    */
   private void copyFeatures(FeatureStructure aSrcFS, FeatureStructure aDestFS) {
     // set feature values
+    Type srcType = aSrcFS.getType();
     Type destType = aDestFS.getType();
-    Iterator featIter = destType.getFeatures().iterator();
-    while (featIter.hasNext()) {
-      Feature srcFeat = (Feature) featIter.next();
+    Iterator srcFeatIter = srcType.getFeatures().iterator();
+    while (srcFeatIter.hasNext()) {
+      Feature srcFeat = (Feature) srcFeatIter.next();
       // TODO: could optimize type lookup if type systems are identical
       Feature destFeat;
       if (destType == aSrcFS.getType()) {

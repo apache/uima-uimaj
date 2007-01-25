@@ -21,6 +21,7 @@ package org.apache.uima.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import junit.framework.TestCase;
@@ -31,8 +32,10 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas_data.impl.CasComparer;
 import org.apache.uima.resource.metadata.FsIndexDescription;
+import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
+import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 /**
@@ -69,6 +72,17 @@ public class CasCopierTest extends TestCase {
 
     // verify copy
     CasComparer.assertEquals(srcCas, destCas);    
+    
+    //try with type systems are not identical (dest. a superset of src.)
+    TypeSystemDescription additionalTypes = new TypeSystemDescription_impl();
+    TypeDescription fooType = additionalTypes.addType("test.Foo", "Test Type", "uima.tcas.Annotation");
+    fooType.addFeature("bar", "Test Feature", "uima.cas.String");    
+    ArrayList destTypeSystems = new ArrayList();
+    destTypeSystems.add(additionalTypes);
+    destTypeSystems.add(typeSystem);
+    CAS destCas2 = CasCreationUtils.createCas(destTypeSystems);
+    CasCopier.copyCas(srcCas, destCas2, true);
+    CasComparer.assertEquals(srcCas, destCas);
   }
   
   public void testCopyCasView() throws Exception {
