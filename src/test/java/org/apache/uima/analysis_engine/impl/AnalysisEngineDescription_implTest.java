@@ -462,6 +462,21 @@ public class AnalysisEngineDescription_implTest extends TestCase {
     File dataPathDir = JUnitExtension.getFile("TextAnalysisEngineImplTest/dataPathDir");
     resMgr.setDataPath(dataPathDir.getCanonicalPath());
     desc.validate(resMgr); 
+    
+    //test invalid aggregate with undefined key in flow
+    in = new XMLInputSource(JUnitExtension
+            .getFile("TextAnalysisEngineImplTest/InvalidAggregate_UndefinedKeyInFlow.xml"));
+    desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
+    try {
+      desc.validate();  
+      fail();
+    }
+    catch(ResourceInitializationException e) {
+      e.printStackTrace();
+      assertEquals(ResourceInitializationException.UNDEFINED_KEY_IN_FLOW, e.getMessageKey());
+      assertNotNull(e.getMessage());
+      assertFalse(e.getMessage().startsWith("EXCEPTION MESSAGE LOCALIZATION FAILED"));
+    }
   }
 
   public void testGetAllComponentSpecifiers() throws Exception {

@@ -424,6 +424,13 @@ public class ResourceInitializationException extends UIMAException {
   public static final String SOFA_MAPPING_NOT_SUPPORTED_FOR_REMOTE = "sofa_mapping_not_supported_for_remote";
 
   /**
+   * Message key for a standard UIMA exception message: The descriptor for Aggregate Analysis Engine "{0}" 
+   * specified an invalid flow.  The key "{1}" was used in the flow but is not defined as a key in the
+   * &lt;delegateAnalysisEngineSpecifiers> element of the descriptor.
+   */
+  public static final String UNDEFINED_KEY_IN_FLOW = "undefined_key_in_flow";
+
+  /**
    * Creates a new exception with a null message.
    */
   public ResourceInitializationException() {
