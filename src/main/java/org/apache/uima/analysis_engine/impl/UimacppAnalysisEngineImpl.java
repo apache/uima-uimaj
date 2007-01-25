@@ -39,10 +39,12 @@ import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.impl.UimaContext_ImplBase;
 import org.apache.uima.internal.util.UUIDGenerator;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceConfigurationException;
+import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.FsIndexCollection;
@@ -68,7 +70,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
   /**
    * The AnalysisEngineDescription for this AnlaysisEngine instance.
    */
-  private AnalysisEngineDescription mDescription;
+  private ResourceCreationSpecifier mDescription;
 
   /**
    * For a primitive AnalysisEngine only, the Annotator instance that contains the analysis logic.
@@ -95,18 +97,25 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
           throws ResourceInitializationException {
-    // aSpecifier must be a AnalysisEngineDescription
-    if (!(aSpecifier instanceof AnalysisEngineDescription)) {
-      return false;
-    }
+      // AnalysisEngine can be build from any ResourceCreationSpecifier-
+      // CasConsumer descriptors as well as AnalysisEngine descriptors.
+      if (!(aSpecifier instanceof ResourceCreationSpecifier)) {
+        return false;
+      }
+      
+      // aSpecifier must be a AnalysisEngineDescription or a CasConsumerDescription
+      if (!(aSpecifier instanceof AnalysisEngineDescription)  
+        && !(aSpecifier instanceof CasConsumerDescription) ) {
+          return false;
+      }
 
-    mDescription = (AnalysisEngineDescription) aSpecifier;
+      mDescription = (ResourceCreationSpecifier) aSpecifier;
 
-    // also framework implementation must start with org.apache.uima.cpp
-    final String fwImpl = mDescription.getFrameworkImplementation();
-    if (!fwImpl.startsWith(Constants.CPP_FRAMEWORK_NAME)) {
-      return false;
-    }
+     // also framework implementation must start with org.apache.uima.cpp
+     final String fwImpl = mDescription.getFrameworkImplementation();
+     if (!fwImpl.startsWith(Constants.CPP_FRAMEWORK_NAME)) {
+          return false;
+     }
 
     // Aggregate TAF AEs mostly act like primitives (because the flow
     // control is all handled
@@ -115,26 +124,25 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
     // and fs indexes are formed by merging everything declared in the
     // individual
     // components' descriptors
-    if (!mDescription.isPrimitive()) {
-      mergeDelegateAnalysisEngineMetaData();
+    if (mDescription instanceof AnalysisEngineDescription  && 
+    		 (! ((AnalysisEngineDescription)mDescription).isPrimitive())) { 
+      mergeDelegateAnalysisEngineMetaData();      
     }
 
+    ProcessingResourceMetaData md = (ProcessingResourceMetaData) mDescription.getMetaData();
     // resolve imports
     try {
-      mDescription.getAnalysisEngineMetaData().resolveImports();
+      md.resolveImports();
     } catch (InvalidXMLException e1) {
       throw new ResourceInitializationException(e1);
     }
 
     super.initialize(aSpecifier, aAdditionalParams);
 
-    ProcessingResourceMetaData md = (ProcessingResourceMetaData) mDescription.getMetaData();
-
     getLogger().logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
             "UIMA_analysis_engine_init_begin__CONFIG", md.getName());
 
-    // AnalysisEngineMetaData md = mDescription.getAnalysisEngineMetaData();
-
+  
     // Normalize language codes. Need to do this since a wide variety of
     // spellings are acceptable according to ISO.
     normalizeIsoLangCodes(md);
@@ -167,7 +175,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
     // declares any input or output sofas in its capabilities)
     mSofaAware = getAnalysisEngineMetaData().isSofaAware();
 
-    initializeAnalysisComponent(mDescription);
+    initializeAnalysisComponent();
 
     resetResultSpecificationToDefault();
 
@@ -180,8 +188,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
   public void setResultSpecification(ResultSpecification aResultSpec) {
     if (aResultSpec == null) {
       resetResultSpecificationToDefault();
-    } else if (mAnnotator != null) {
-      //note have to check for null to handle "verification mode" where annotator is not instantiated
+    } else {
       mAnnotator.setResultSpecification(aResultSpec);
     }
   }
@@ -307,7 +314,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
    * @throws ResourceInitializationException
    *           if an initialization failure occurs
    */
-  protected void initializeAnalysisComponent(AnalysisEngineDescription aDescription)
+  protected void initializeAnalysisComponent()
           throws ResourceInitializationException {
     // create Annotator Context and set Logger
     UimaContextAdmin uimaContext = getUimaContextAdmin();
@@ -315,7 +322,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
     mAnnotatorContext = new AnnotatorContext_impl(uimaContext);
 
     if (!mVerificationMode) {
-      mAnnotator = new UimacppAnalysisComponent(aDescription, this);
+      mAnnotator = new UimacppAnalysisComponent(mDescription, this);
 
       getUimaContextAdmin().defineCasPool(mAnnotator.getCasInstancesRequired(),
               getPerformanceTuningSettings(), mSofaAware);
@@ -334,14 +341,14 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
   protected void mergeDelegateAnalysisEngineMetaData() throws ResourceInitializationException {
     // do the merge
     TypeSystemDescription aggTypeSystem = CasCreationUtils.mergeDelegateAnalysisEngineTypeSystems(
-            mDescription, getResourceManager());
+            (AnalysisEngineDescription) mDescription, getResourceManager());
     TypePriorities aggTypePriorities = CasCreationUtils.mergeDelegateAnalysisEngineTypePriorities(
-            mDescription, getResourceManager());
+            (AnalysisEngineDescription) mDescription, getResourceManager());
     FsIndexCollection aggIndexColl = CasCreationUtils
-            .mergeDelegateAnalysisEngineFsIndexCollections(mDescription, getResourceManager());
+            .mergeDelegateAnalysisEngineFsIndexCollections((AnalysisEngineDescription)mDescription, getResourceManager());
 
     // assign results of merge to this aggregate AE's metadata
-    AnalysisEngineMetaData aggregateMD = mDescription.getAnalysisEngineMetaData();
+    ProcessingResourceMetaData aggregateMD = (ProcessingResourceMetaData) mDescription.getMetaData();
     aggregateMD.setTypeSystem(aggTypeSystem);
     aggregateMD.setTypePriorities(aggTypePriorities);
     aggregateMD.setFsIndexCollection(aggIndexColl);
@@ -434,7 +441,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
    */
   protected Map _getComponentCasProcessorSpecifierMap() {
     try {
-      return mDescription.getDelegateAnalysisEngineSpecifiers();
+      return ((AnalysisEngineDescription)mDescription).getDelegateAnalysisEngineSpecifiers();
     } catch (InvalidXMLException e) {
       // this should not happen, because we resolve delegates during
       // initialization

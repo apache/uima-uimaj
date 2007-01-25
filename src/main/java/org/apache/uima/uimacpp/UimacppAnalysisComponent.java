@@ -42,9 +42,12 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.impl.CASMgrSerializer;
 import org.apache.uima.cas.impl.Serialization;
+import org.apache.uima.collection.CasConsumerDescription;
+import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
+import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.ProcessTrace;
@@ -55,8 +58,8 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
   private UimacppEngine engine;
 
   private AnalysisEngineImplBase ae;
-
-  private AnalysisEngineDescription aeDescription;
+ 
+  private ResourceCreationSpecifier resourceDescription;
 
   private Logger log;
 
@@ -74,17 +77,17 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
    */
   private static final Class CLASS_NAME = UimacppAnalysisComponent.class;
 
-  public UimacppAnalysisComponent(AnalysisEngineDescription aeDescription, AnalysisEngineImplBase ae) {
-    super();
-    this.ae = ae;
-    this.aeDescription = aeDescription;
-    // TAF won't except the new <fsIndexCollection> element, but actuall it doesn't need it,
-    // because the index definitions are transmitted with the serialized CAS. So we can
-    // just null it out.
-    this.aeDescription.getAnalysisEngineMetaData().setFsIndexCollection(null);
-    this.tsReinit = true;
-    // System.out.println("Data path: " + dataPath);
-  }
+  public UimacppAnalysisComponent(ResourceCreationSpecifier aeDescription, AnalysisEngineImplBase ae) {
+	    super();
+	    this.ae = ae;
+	    this.resourceDescription = aeDescription;
+	    // TAF won't except the new <fsIndexCollection> element, but actuall it doesn't need it,
+	    // because the index definitions are transmitted with the serialized CAS. So we can
+	    // just null it out.
+	    ((ProcessingResourceMetaData)this.resourceDescription.getMetaData()).setFsIndexCollection(null);
+	    this.tsReinit = true;
+	    // System.out.println("Data path: " + dataPath);
+	  }
 
   /**
    * @throws ResourceInitializationException
@@ -97,9 +100,11 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
       // update the sofa mappings in the AE descriptor with the mappings
       // specified in the context if the AE descriptor is for an aggregate
       // Ae and contains sofa mappings
-      if (!aeDescription.isPrimitive()) {
+      if (resourceDescription instanceof AnalysisEngineDescription && 
+    	   ! ((AnalysisEngineDescription) resourceDescription).isPrimitive()) {
         ComponentInfo compInfo = ((UimaContextAdmin) context).getComponentInfo();
-        SofaMapping[] aggSofaMapping = aeDescription.getSofaMappings();
+        SofaMapping[] aggSofaMapping = ((AnalysisEngineDescription)resourceDescription).getSofaMappings();
+        
         if (aggSofaMapping != null && aggSofaMapping.length > 0) {
           for (int i = 0; i < aggSofaMapping.length; i++) {
             String absoluteSofaName = compInfo
@@ -114,7 +119,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
                 .getResourceManager().getDataPath());
 
         StringWriter strWriter = new StringWriter();
-        aeDescription.toXML(strWriter);
+        resourceDescription.toXML(strWriter);
         strWriter.close();
         engine = UimacppEngine.createJTafTAE(strWriter.getBuffer().toString());
       }
@@ -122,18 +127,18 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
       logJTafException(e);
       throw new ResourceInitializationException(
               ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
-                  aeDescription.getAnalysisEngineMetaData().getName(),
-                  aeDescription.getSourceUrlString() }, e);
+                  resourceDescription.getMetaData().getName(),
+                  resourceDescription.getSourceUrlString() }, e);
     } catch (SAXException e) {
       throw new ResourceInitializationException(
               ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
-                  aeDescription.getAnalysisEngineMetaData().getName(),
-                  aeDescription.getSourceUrlString() }, e);
+                  resourceDescription.getMetaData().getName(),
+                  resourceDescription.getSourceUrlString() }, e);
     } catch (IOException e) {
       throw new ResourceInitializationException(
               ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
-                  aeDescription.getAnalysisEngineMetaData().getName(),
-                  aeDescription.getSourceUrlString() }, e);
+                  resourceDescription.getMetaData().getName(),
+                  resourceDescription.getSourceUrlString() }, e);
     }
   }
 
@@ -156,7 +161,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
     // get new config. settings
     ConfigurationParameterSettings settings = ae.getUimaContextAdmin().getConfigurationManager()
             .getCurrentConfigParameterSettings(ae.getUimaContextAdmin().getQualifiedContextName());
-    aeDescription.getAnalysisEngineMetaData().setConfigurationParameterSettings(settings);
+    resourceDescription.getMetaData().setConfigurationParameterSettings(settings);
   }
 
   /**
@@ -169,7 +174,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
                 .getResourceManager().getDataPath());
 
         StringWriter strWriter = new StringWriter();
-        aeDescription.toXML(strWriter);
+        resourceDescription.toXML(strWriter);
         strWriter.close();
         engine = UimacppEngine.createJTafTAE(strWriter.getBuffer().toString());
         this.tsReinit = true;
