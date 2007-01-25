@@ -68,7 +68,7 @@ under the License.
       Descriptors. The formal syntax is defined by an XML schema definition, which is
       contained in two files &ndash; <literal>resourceSpecifierSchema.xsd</literal>
       and <literal>TaeSpecifierSchema.xsd</literal>, both of which are in the
-      <literal>uima_core.jar</literal> file.</para>
+      <literal>uima-core.jar</literal> file.</para>
     
     <para>The notation used in this chapter is:</para>
     
