@@ -187,11 +187,12 @@ under the License.
       
       <para>The first step in developing an annotator is to define the CAS Feature Structure
         types that it creates. This is done in an XML file called a <emphasis>Type System
-        Descriptor</emphasis>. UIMA defines some basic built-in CAS types such as TOP,
-        Boolean, Byte, Short, Integer, Long, Float, Double, Arrays of primitives and
-        FSArray, and Annotation. TOP is the root of the type system, analogous to Object in
-        Java. FSArray is an array of Feature Structures (i.e. an array of instances of
-        TOP).</para>
+        Descriptor</emphasis>. UIMA defines basic primitive types such as
+        Boolean, Byte, Short, Integer, Long, Float, and Double, as well as Arrays of these primitive
+        types.  UIMA also defines the built-in types <literal>TOP</literal>, which is the root 
+        of the type system, analogous to Object in Java; <literal>FSArray</literal>, which is 
+        an array of Feature Structures (i.e. an array of instances of TOP); and
+        <literal>Annotation</literal>, which we will discuss in more detail in this section.</para>
       
       <para>UIMA includes an Eclipse plug-in that will help you edit Type System
         Descriptors, so if you are using Eclipse you will not need to worry about the details of
@@ -201,7 +202,7 @@ under the License.
       
       <para>The Type System Descriptor for our annotator is located in the file
         <literal>descriptors/tutorial/ex1/TutorialTypeSystem.xml.</literal> (This
-        and all other examples are located in the <literal>examples</literal>directory of
+        and all other examples are located in the <literal>examples</literal> directory of
         the installation of the UIMA SDK, which can be imported into an Eclipse project for
         your convenience, as described in <olink targetdoc="&uima_docs_overview;"
           targetptr="ugr.ovv.eclipse_setup.example_code"/>.)</para>
@@ -238,10 +239,14 @@ under the License.
       <para>The bottom tab labeled <quote>Source</quote> will show you the XML source file
         associated with this descriptor.</para>
       
-      <para>The built-in Annotation type declares two fields (called
-        <emphasis>Features</emphasis> in CAS terminology) &ndash; begin and end. These
-        features store the character offsets of the span of text to which the annotation
-        refers. Our RoomNumber type will inherit these features from
+      <para>The built-in Annotation type declares three fields (called
+        <emphasis>Features</emphasis> in CAS terminology).  The features <literal>begin</literal>
+        and <literal>end</literal> store the character offsets of the span of text to which the 
+        annotation refers.  The feature <literal>sofa</literal> (Subject of Analysis) indicates
+        which document the begin and end offsets point into.  The <literal>sofa</literal> feature
+        can be ignored for now since we assume in this tutorial that the CAS contains only one
+        subject of analysis (document).</para>
+      <para>Our RoomNumber type will inherit these three features from
         <literal>uima.tcas.Annotation</literal>, its supertype; they are not visible in
         this view because inherited features are not shown. One additional feature,
         <literal>building</literal>, is declared. It takes a String as its value. Instead
@@ -356,9 +361,9 @@ under the License.
       
       <para><literal>initialize</literal> is called by the framework once when it first creates an instance of the
         annotator class. <literal>process</literal> is called once per item being processed.
-        <literal>destroy</literal> may be called by the application when it is done. There is a default
-        implementation of this interface for annotators using the JCas, called JCasAnnotator_ImplBase, which has
-        implementations of all required methods except for the process method.</para>
+        <literal>destroy</literal> may be called by the application when it is done using your annotator. There is a 
+        default implementation of this interface for annotators using the JCas, called JCasAnnotator_ImplBase, which 
+        has implementations of all required methods except for the process method.</para>
       
       <para>Our annotator class extends the JCasAnnotator_ImplBase; most annotators that use the JCas will extend
         from this class, so they only have to implement the process method. This class is not restricted to handling
@@ -369,13 +374,13 @@ under the License.
         <footnote>
         <para>Note that AnalysisComponent is not specific to JCAS. There is a method getRequiredCasInterface()
           which the user would have to implement to return <literal>JCas.class</literal>. Then in the
-          <literal>process(AbstractCas cas)</literal> method, they would need to typecas
+          <literal>process(AbstractCas cas)</literal> method, they would need to typecast
           <literal>cas</literal> to type <literal>JCas</literal>.</para></footnote> This allows you to have
         your annotator inherit from some other superclass if necessary. If you would like to do this, see the JavaDocs
         for JCasAnnotator for descriptions of the methods you must implement.</para>
       
-      <para>Annotator classes need to be public and have public, 0-argument constructors, so that they can be
-        instantiated by the framework <footnote>
+      <para>Annotator classes need to be public, cannot be declared abstract, and must have public, 0-argument 
+        constructors, so that they can be instantiated by the framework. <footnote>
         <para> Although Java classes in which you do not define any constructor will, by default, have a 0-argument
           constructor that doesn&apos;t do anything, a class in which you have defined at least one constructor does
           not get a default 0-argument constructor.</para> </footnote> .</para>
@@ -421,9 +426,9 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
         built into Java 1.4. It is not critical that you know the details of how this works, but if you are curious the
         details can be found in the Java API docs for the java.util.regex package.</para>
       
-      <para>The only method that we are required to implement is process. This method is typically called once for
-        each document that is being analyzed. This method takes one argument, which is a JCas instance; this holds the
-        document to be analyzed and all of the analysis results. <footnote>
+      <para>The only method that we are required to implement is <literal>process</literal>. This method is typically 
+        called once for each document that is being analyzed. This method takes one argument, which is a JCas instance; 
+        this holds the document to be analyzed and all of the analysis results. <footnote>
         <para>Version 1 of UIMA specified an additional parameter, the ResultSpecification. This provides a
           specification of which types and features are desired to be computed and "output" from this annotator. Its
           use is optional; many annotators ignore it.</para>
@@ -439,7 +444,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
   Matcher matcher = mYorktownPattern.matcher(docText);
   int pos = 0;
   while (matcher.find(pos)) {
-    // found one - creation annotation
+    // found one - create annotation
     RoomNumber annotation = new RoomNumber(aJCas);
     annotation.setBegin(matcher.start());
     annotation.setEnd(matcher.end());
@@ -451,7 +456,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
   matcher = mHawthornePattern.matcher(docText);
   pos = 0;
   while (matcher.find(pos)) {
-    // found one - creation annotation
+    // found one - create annotation
     RoomNumber annotation = new RoomNumber(aJCas);
     annotation.setBegin(matcher.start());
     annotation.setEnd(matcher.end());
@@ -836,7 +841,7 @@ public void initialize(UimaContext aContext)
           annotator to cast it to the appropriate type, String[] in this case.</para>
         
         <para>If there is a problem retrieving the parameter values, the framework throws an
-          exception. Generally annotators don%apos;t handle these, and just let them
+          exception. Generally annotators don&apos;t handle these, and just let them
           propagate up.</para>
         
         <para>To see the configuration parameters working, run the Document Analyzer
@@ -869,7 +874,7 @@ public void initialize(UimaContext aContext)
       </section>
       
       <section id="ugr.tug.aae.configuration_parameter_groups">
-        <title>Configuration parameter Groups</title>
+        <title>Configuration Parameter Groups</title>
         
         <para>For annotators with many sets of configuration parameters, UIMA supports
           organizing them into groups. It is possible to define a parameter with the same name
@@ -960,7 +965,7 @@ public void initialize(UimaContext aContext)
           relative to the working directory. For example:
           
           
-          <programlisting><?db-font-size 60% ?>java "-Djava.util.logging.config.file=C:/Program Files/apache/uima/Logger.properties"
+          <programlisting><?db-font-size 60% ?>java "-Djava.util.logging.config.file=C:/Program Files/apache-uima/config/Logger.properties"
 </programlisting>
           <note><para>In a shell script, you can use environment variables such as
           UIMA_HOME if convenient.</para></note> </para>
@@ -1233,8 +1238,7 @@ public void initialize(UimaContext aContext)
         that would iterate over all of the TimeAnnot annotations in the JCas:
         
         
-        <programlisting>JFSIndexRepository indexes = aJCas.getJFSIndexRepository();
-FSIndex timeIndex = indexes.getAnnotationIndex(TimeAnnot.type);
+        <programlisting>FSIndex timeIndex = aJCas.getAnnotationIndex(TimeAnnot.type);
 Iterator timeIter = timeIndex.iterator();   
 while (timeIter.hasNext()) {
   TimeAnnot time = (TimeAnnot)timeIter.next();
@@ -1245,12 +1249,12 @@ while (timeIter.hasNext()) {
       
       <note>
       <para>You can also use the method
-        <literal>JFSIndexRepository.getAllIndexedFS(YourClass.type)</literal>, which returns an iterator
+        <literal>JCAS.getJFSIndexRepository().getAllIndexedFS(YourClass.type)</literal>, which returns an iterator
         over all instances of <literal>YourClass</literal> in no particular order. This can be useful for types
         that are not subtypes of the built-in Annotation type and which therefore have no default sort order.</para>
       <para>Also, if you've defined your own custom index as described in <olink targetdoc="&uima_docs_ref;"
           targetptr="ugr.ref.xml.component_descriptor.aes.index"/>, you can get an iterator over that
-        specific index by calling <literal>JFSIndexRepository.getIndex(label)</literal>.</para></note>
+        specific index by calling <literal>JCAS.getJFSIndexRepository().getIndex(label)</literal>.</para></note>
       
       <para>Now that we&apos;ve explained the basics, let&apos;s take a look at the process method for
         <literal>org.apache.uima.tutorial.ex4.MeetingAnnotator</literal>. Since we&apos;re looking for a
@@ -1318,7 +1322,7 @@ while (timeIter.hasNext()) {
       <listitem><para>XmlDetagger &ndash; A multi-sofa annotator that does XML
         detagging. Multiple Sofas (Subjects of Analysis) are described in a later &ndash;
         see <olink targetdoc="&uima_docs_tutorial_guides;"
-          targetptr="ugr.tug.mvs"/>. Reads XML data from the input Sofa
+          targetptr="ugr.tug.mvs"/>.  Reads XML data from the input Sofa
         (named "xmlDocument"); this data can be stored in the CAS as a string or array, or it can
         be a URI to a remote file. The XML is parsed using the JVM's default parser, and the
         plain-text content is written to a new sofa called "plainTextDocument".</para>
@@ -1334,12 +1338,12 @@ while (timeIter.hasNext()) {
     <title>Additional Topics</title>
     
     <section id="ugr.tug.aae.contract_for_annotator_methods">
-      <title>Contract: Framework called Annotator methods</title>
+      <title>Contract: Annotator Methods Called by the Framework</title>
       
-      <para>Every instance of an Annotator is associated with one and only one thread. An
-        instance never has to worry about running some method on one thread, and then
-        asynchronously being called using another thread. This approach simplifies the
-        design of annotators &ndash; they do not have to be designed to support
+      <para>The UIMA framework ensures that an Annotator instance is called by only one
+        thread at a time.  An instance never has to worry about running some method on one 
+        thread, and then asynchronously being called using another thread. This approach 
+        simplifies the design of annotators &ndash; they do not have to be designed to support
         multi-threading. When multiple threading is wanted, for performance, multiple
         instances of the Annotator are created, each one running on just one thread.</para>
       
@@ -1364,7 +1368,7 @@ while (timeIter.hasNext()) {
               <entry>Typically only called once, when instance is created. Can be called
                 again if application does a reinitialize call and the default behavior
                 isn't overridden (the default behavior for reinitialize is to call
-                <literal>destroy></literal> followed by
+                <literal>destroy</literal> followed by
                 <literal>initialize</literal></entry>
               <entry>Normally does one-time initialization, including reading of
                 configuration parameters. If the application changes the parameters, it
@@ -1428,7 +1432,7 @@ while (timeIter.hasNext()) {
     <section id="ugr.tug.aae.reporting_errors_from_annotators">
       <title>Reporting errors from Annotators</title>
       
-      <para>There are two broad classes of errors that can occur: recoverable an
+      <para>There are two broad classes of errors that can occur: recoverable and
         unrecoverable. Because Annotators are often expected to process very large numbers
         of artifacts (for example, text documents), they should be written to recover where
         possible.</para>
@@ -1466,17 +1470,17 @@ while (timeIter.hasNext()) {
         modifying the message digest file, not the Java code. Also, message strings in the
         digest can contain parameters that are filled in when the exception is thrown. The
         format of the message digest file is described in the JavaDocs for the Java class
-        <literal>java.util.PropertyResourceBundler</literal> and in the load method of
+        <literal>java.util.PropertyResourceBundle</literal> and in the load method of
         <literal>java.util.Properties</literal>.</para>
       
       <para>The first thing an annotator developer must choose is what Exception class to
         use. There are three to choose from:
         
-        <orderedlist><listitem><para>AnnotatorConfigurationException should be
+        <orderedlist><listitem><para>ResourceConfigurationException should be
           thrown from the annotator&apos;s initialize() method if invalid configuration
           parameter values have been specified.</para></listitem>
           
-          <listitem><para>AnnotatorInitializationException should be thrown from the
+          <listitem><para>ResourceInitializationException should be thrown from the
             annotator&apos;s initialize() method if initialization fails for some other
             reason.</para></listitem>
           
@@ -1488,7 +1492,7 @@ while (timeIter.hasNext()) {
         you do they must extend one of these three classes, which are the only types of
         Exceptions that the annotator interface permits annotators to throw.</para>
       
-      <para>All of the UIMA Exception classes share common Constructor varieties. There are
+      <para>All of the UIMA Exception classes share common constructor varieties. There are
         four possible arguments:</para>
       
       <para>The name of the message digest to use (optional &ndash; if not specified the
@@ -1563,7 +1567,7 @@ catch (PatternSyntaxException e) {
         regex_syntax_error exception. The properties file syntax is more completely
         described in the JavaDocs for the <ulink 
           url="http://java.sun.com/j2se/1.4.1/docs/api/java/util/Properties.html#load(java.io.InputStream)">
-        load</ulink>> method of the java.util.Properties class.</para>
+        load</ulink> method of the java.util.Properties class.</para>
       
       <para>Put your properties file somewhere in your class path (it can be in your
         annotator&apos;s .jar file).</para>
@@ -1581,7 +1585,7 @@ catch (PatternSyntaxException e) {
       
       <para>In your annotator code, throw an exception like this:
         
-        <programlisting>throw new AnnotatorConfigurationException(
+        <programlisting>throw new ResourceConfigurationException(
     MESSAGE_DIGEST, "your_message_name",
     new Object[]{param1,param2,...});
 </programlisting></para>
@@ -1798,12 +1802,12 @@ catch (PatternSyntaxException e) {
           be shared among multiple annotators, as will be explained later.</para>
         
         <para>Note that all resource implementation classes (e.g.
-          StringMapResource_impl in the provided example) need to be public and have
-          public, 0-argument constructors, so that they can be instantiated by the
-          framework. (Although Java classes in which you do not define any constructor will,
-          by default, have a 0-argument constructor that doesn&apos;t do anything, a class
-          in which you have defined at least one constructor does not get a default 0-argument
-          constructor.)</para>
+          StringMapResource_impl in the provided example) must be declared public
+          must not be declared abstract, and must have public, 0-argument constructors, so 
+          that they can be instantiated by the framework. (Although Java classes in which 
+          you do not define any constructor will, by default, have a 0-argument constructor
+          that doesn&apos;t do anything, a class in which you have defined at least one
+          constructor does not get a default 0-argument constructor.)</para>
         
         <para>This annotator is illustrated in <xref
             linkend="ugr.tug.aae.fig.external_resource_binding"/>. To see it in
@@ -1921,8 +1925,8 @@ catch (PatternSyntaxException e) {
         accessed by the annotator using the protected
         <literal>getResultSpecification()</literal> method.</para>
       
-      <para>A results specification is a list of output types and / or type:feature
-        names, which are expected to be <quote>output</quote> from the
+      <para>A Result Specification is a list of output types and / or type:feature
+        names, which are expected to be output from (produced by) the
         annotator. Annotators may use this to optimize their operations, when possible, for
         those cases where only particular outputs are wanted. The interface to the Result
         Specification object (see the JavaDocs) allows querying both types and particular
@@ -2031,7 +2035,7 @@ catch (PatternSyntaxException e) {
         the documentAnalyzer script:
         
         
-        <programlisting>set UIMA_CLASSPATH=c:abcmyProjectmyJarFile.jar
+        <programlisting>set UIMA_CLASSPATH=c:\a\b\c\myProject\myJarFile.jar
 documentAnalyzer
 </programlisting>
       </para>

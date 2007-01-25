@@ -48,8 +48,8 @@
                <xreftext>Section 1.2.1.3, “Supporting Reconfiguration”</xreftext>
             </div>
             <div element="section" href="#ugr.tug.aae.configuration_parameter_groups" number="1.2.1.4" targetptr="ugr.tug.aae.configuration_parameter_groups">
-               <ttl>Configuration parameter Groups</ttl>
-               <xreftext>Section 1.2.1.4, “Configuration parameter Groups”</xreftext>
+               <ttl>Configuration Parameter Groups</ttl>
+               <xreftext>Section 1.2.1.4, “Configuration Parameter Groups”</xreftext>
             </div>
          </div>
          <div element="section" href="#ugr.tug.aae.logging" number="1.2.2" targetptr="ugr.tug.aae.logging">
@@ -111,8 +111,8 @@
          <ttl>Additional Topics</ttl>
          <xreftext>Section 1.5, “Additional Topics”</xreftext>
          <div element="section" href="#ugr.tug.aae.contract_for_annotator_methods" number="1.5.1" targetptr="ugr.tug.aae.contract_for_annotator_methods">
-            <ttl>Contract: Framework called Annotator methods</ttl>
-            <xreftext>Section 1.5.1, “Contract: Framework called Annotator methods”</xreftext>
+            <ttl>Contract: Annotator Methods Called by the Framework</ttl>
+            <xreftext>Section 1.5.1, “Contract: Annotator Methods Called by the Framework”</xreftext>
          </div>
          <div element="section" href="#ugr.tug.aae.reporting_errors_from_annotators" number="1.5.2" targetptr="ugr.tug.aae.reporting_errors_from_annotators">
             <ttl>Reporting errors from Annotators</ttl>
