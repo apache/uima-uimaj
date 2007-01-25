@@ -726,12 +726,9 @@ aPerson.setStringValue(lastNameFeature, newStringValueForLastName);</programlist
         capabilities. To use them, you first get a reference to this built-in index using
         either the <literal>getAnnotationIndex</literal> method on a CAS View object, or
         by asking the <literal>FSIndexRepository</literal> object for an index having the
-        particular name <quote>AnnotationIndex</quote>. You then must cast the returned
-        FSIndex object to <literal>AnnotationIndex</literal>. Here&apos;s an example
-        showing the cast:
+        particular name <quote>AnnotationIndex</quote>, for example:        
         
-        
-        <programlisting>AnnotationIndex idx = (AnnotationIndex) aTCAS.getAnnotationIndex();</programlisting></para>
+        <programlisting>AnnotationIndex idx = aCAS.getAnnotationIndex();</programlisting></para>
       
       <para>This object can be used to produce several additional kinds of iterators. It can
         produce unambiguous iterators; these skip over elements until it finds one where the
