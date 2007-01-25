@@ -1076,7 +1076,7 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
             please shutdown and restart TomCat.</para></listitem>
           
           <listitem><para>All the Java classes for the UIMA Examples are packaged in the
-            <literal>uima_examples.jar</literal> file which is included in the
+            <literal>uimaj-examples.jar</literal> file which is included in the
             <literal>%UIMA_HOME%/lib</literal> folder.</para></listitem>
           
           <listitem><para>In addition, if an annotator needs to locate resource files in

@@ -38,7 +38,7 @@ under the License.
       presumes you have installed the examples as described in the SDK Installation and Setup
       chapter.</para>
     
-    <itemizedlist spacing="compact"><listitem><para>Expand the uimaj_examples
+    <itemizedlist spacing="compact"><listitem><para>Expand the uimaj-examples
       project in the Eclipse Navigator or Package Explorer view</para></listitem>
       
       <listitem><para>Within this project, browse to the file

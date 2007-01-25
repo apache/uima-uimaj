@@ -206,7 +206,7 @@ under the License.
         your convenience, as described in <olink targetdoc="&uima_docs_overview;"
           targetptr="ugr.ovv.eclipse_setup.example_code"/>.)</para>
       
-      <para>In Eclipse, expand the <literal>uimaj_examples</literal> project in the
+      <para>In Eclipse, expand the <literal>uimaj-examples</literal> project in the
         Package Explorer view, and browse to the file
         <literal>descriptors/tutorial/ex1/TutorialTypeSystem.xml</literal>.
         Right-click on the file in the navigator and select Open With &rarr; Component
@@ -382,12 +382,12 @@ under the License.
       
       <para>The class definition for our RoomNumberAnnotator implements the process method, and is shown here. You
         can find the source for this in the
-        <literal>uimaj_examples/src/org/apache/uima/tutorial/ex1/RoomNumberAnnotator.java</literal> .
+        <literal>uimaj-examples/src/org/apache/uima/tutorial/ex1/RoomNumberAnnotator.java</literal> .
         <note>
         <para>In Eclipse, in the <quote>Package Explorer</quote> view, this will appear by default in the project
-          <literal>uimaj_examples</literal>, in the folder <literal>src</literal>, in the package
+          <literal>uimaj-examples</literal>, in the folder <literal>src</literal>, in the package
           <literal>org.apache.uima.tutorial.ex1</literal>.</para></note> In Eclipse, open the
-        RoomNumberAnnotator.java in the uimaj_examples project, under the src directory.</para>
+        RoomNumberAnnotator.java in the uimaj-examples project, under the src directory.</para>
       
       
       <programlisting>package org.apache.uima.tutorial.ex1;
@@ -925,8 +925,8 @@ public void initialize(UimaContext aContext)
         the output will be directed to a file named uima.log, in the current working directory
         (often the <quote>project</quote> directory when running from Eclipse, for
         instance).</para> <note><para>When using Eclipse, the uima.log file, if written
-      into the Eclipse workspace in the project uimaj_examples, for example, may not appear
-      in the Eclipse package explorer view until you right-click the uimaj_examples project
+      into the Eclipse workspace in the project uimaj-examples, for example, may not appear
+      in the Eclipse package explorer view until you right-click the uimaj-examples project
       with the mouse, and select <quote>Refresh</quote>. This operation refreshes the
       Eclipse display to conform to what may have changed on the file system. Also, you can set
       the Eclipse preferences for the workspace to automatically refresh (Window &rarr;
@@ -1086,7 +1086,7 @@ public void initialize(UimaContext aContext)
         XML descriptor; no Java code is required!</para>
       
       <para>If you go to the <literal>examples/descriptors/tutorial/ex3</literal>
-        folder (in Eclipse, it&apos;s in your uimaj_examples project, under the
+        folder (in Eclipse, it&apos;s in your uimaj-examples project, under the
         <literal>descriptors/tutorial/ex3</literal> folder), you will find a
         descriptor for a TutorialDateTime annotator. This annotator detects dates and
         times (and also sentences and words). To see what this annotator can do, try it out
@@ -1113,7 +1113,7 @@ public void initialize(UimaContext aContext)
       
       <para>The descriptor that does this is named
         <literal>RoomNumberAndDateTime.xml</literal>, which you can open in the
-        Component Descriptor Editor plug-in. This is in the uimaj_examples project in the
+        Component Descriptor Editor plug-in. This is in the uimaj-examples project in the
         folder <literal>descriptors/tutorial/ex3</literal>. </para>
       
       <para>The <quote>Aggregate</quote> page of the Component Descriptor Editor is
@@ -1528,7 +1528,7 @@ catch (PatternSyntaxException e) {
         you find this file under the src folder, in the package
         org.apache.uima.tutorial.ex5, with the name
         RoomNumberAnnotator_Messages.properties. Outside of Eclipse, you can find this
-        in the <literal>uimaj_examples.jar</literal> with the name
+        in the <literal>uimaj-examples.jar</literal> with the name
         <literal>org/apache/uima/tutorial/ex5/RoomNumberAnnotator_Messages.properties.</literal>
         If you look in this file you will see the line:
         
@@ -1772,7 +1772,7 @@ catch (PatternSyntaxException e) {
           Better is a relative URL, which will be looked up within the classpath (and/or
           datapath), as used in this example. In this case, the file
           <literal>org/apache/uima/tutorial/ex6/uimaAcronyms.txt</literal> is
-          located in <literal>uimaj_examples.jar</literal>, which is in the classpath.
+          located in <literal>uimaj-examples.jar</literal>, which is in the classpath.
           If you look in this file you will see the definitions of several UIMA
           acronyms.</para>
         

@@ -313,7 +313,7 @@ CAS Consumer:
       <para>If you haven&apos;t followed the Eclipse setup instructions and wish to run the
         CPE Configurator tool from Eclipse, you will need to do the following. As installed,
         this Eclipse launch configuration is associated with the
-        <quote>uimaj_examples</quote> project. If you&apos;ve not already done so, you
+        <quote>uimaj-examples</quote> project. If you&apos;ve not already done so, you
         may wish to import that project into your Eclipse workspace. It&apos;s located in
         %UIMA_HOME%/docs/examples. Doing this will supply the Eclipse launcher with all
         the class files it needs to run the CPE configurator. If you don&apos;t do this, please
@@ -323,8 +323,8 @@ CAS Consumer:
       to change the CPE launch configuration to be based on your project. If you do that, it will
       pick up all the files in your project&apos;s class path, which you should set up to
       include all the UIMA framework files. An easy way to do this is to specify in your
-      project&apos;s properties&apos; build-path that the uimaj_examples project is on
-      the build path, because the uimaj_examples project is set up to include all the UIMA
+      project&apos;s properties&apos; build-path that the uimaj-examples project is on
+      the build path, because the uimaj-examples project is set up to include all the UIMA
       framework classes in its classpath already. </para></note>
       
       <para>Next, in the Eclipse menu select <literal>Run &rarr;

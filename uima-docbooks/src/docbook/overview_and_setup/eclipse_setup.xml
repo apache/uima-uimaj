@@ -210,7 +210,7 @@ under the License.
         %UIMA_HOME%/docs/examples directory</para></listitem>
       
       <listitem><para>Click <quote>Finish.</quote> This will create a new project called
-        <quote>uima_examples</quote> in your Eclipse workspace. There should be no
+        <quote>uimaj-examples</quote> in your Eclipse workspace. There should be no
         compilation errors. </para></listitem></itemizedlist>
     
     <para>To verify that you have set up the project correctly, check that there are no error
@@ -224,7 +224,7 @@ under the License.
     <para>You can run many tools without using Eclipse at all, by using the shell scripts in the
       UIMA SDK's bin directory. In addition, many tools can be run from inside Eclipse;
       examples are the Document Analyzer, CPE Configurator, CAS Visual Debugger, Semantic
-      Search, and JCasGen. The uima_examples project provides Eclipse launch
+      Search, and JCasGen. The uimaj-examples project provides Eclipse launch
       configurations that make this easy to do.</para>
     
     <para>To run these tools from Eclipse:</para>
@@ -239,7 +239,7 @@ under the License.
         <quote>UIMA CAS Visual Debugger</quote>, <quote>UIMA JCasGen</quote>,
         <quote>UIMA Document Analyzer</quote>, or <quote>UIMA Semantic Search</quote>
         from the list of run configurations on the left. (If you don't see, these, please
-        select the uima_examples project and do a Menu &rarr; File
+        select the uimaj-examples project and do a Menu &rarr; File
         &rarr; Refresh).</para></listitem>
       
       <listitem><para>Press the <quote>Run</quote> button. The tools should start. Close
