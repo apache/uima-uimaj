@@ -44,7 +44,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
     Matcher matcher = mYorktownPattern.matcher(docText);
     int pos = 0;
     while (matcher.find(pos)) {
-      // found one - creation annotation
+      // found one - create annotation
       RoomNumber annotation = new RoomNumber(aJCas);
       annotation.setBegin(matcher.start());
       annotation.setEnd(matcher.end());
@@ -56,7 +56,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
     matcher = mHawthornePattern.matcher(docText);
     pos = 0;
     while (matcher.find(pos)) {
-      // found one - creation annotation
+      // found one - create annotation
       RoomNumber annotation = new RoomNumber(aJCas);
       annotation.setBegin(matcher.start());
       annotation.setEnd(matcher.end());
