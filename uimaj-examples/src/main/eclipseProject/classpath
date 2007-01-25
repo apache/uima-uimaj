@@ -22,22 +22,22 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="UIMA_HOME/lib/uima-core.jar">
 		<attributes>
-			<attribute value="file:/C:/Program Files/uima/docs/api" name="javadoc_location"/>
+			<attribute value="file:/C:/Program Files/apache-uima/docs/api" name="javadoc_location"/>
 		</attributes>
 	</classpathentry>		
 	<classpathentry kind="var" path="UIMA_HOME/lib/uima-document-annotation.jar">
 		<attributes>
-			<attribute value="file:/C:/Program Files/uima/docs/api" name="javadoc_location"/>
+			<attribute value="file:/C:/Program Files/apache-uima/docs/api" name="javadoc_location"/>
 		</attributes>
 	</classpathentry>		
 	<classpathentry kind="var" path="UIMA_HOME/lib/uima-cpe.jar">
 		<attributes>
-			<attribute value="file:/C:/Program Files/uima/docs/api" name="javadoc_location"/>
+			<attribute value="file:/C:/Program Files/apache-uima/docs/api" name="javadoc_location"/>
 		</attributes>
 	</classpathentry>		
 	<classpathentry kind="var" path="UIMA_HOME/lib/uima-tools.jar">
 			<attributes>
-			<attribute value="file:/C:/Program Files/uima/docs/api" name="javadoc_location"/>
+			<attribute value="file:/C:/Program Files/apache-uima/docs/api" name="javadoc_location"/>
 		</attributes>
 	</classpathentry>			
 	<classpathentry kind="var" path="UIMA_HOME/lib/uima-adapter-vinci.jar"/>
