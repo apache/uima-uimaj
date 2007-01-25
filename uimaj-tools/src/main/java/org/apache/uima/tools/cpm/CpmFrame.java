@@ -38,6 +38,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
@@ -158,6 +159,21 @@ public class CpmFrame extends JFrame implements ActionListener {
    * Runs the application.
    */
   public static void main(String[] args) {
+    //GUI creation must be done in the event handler thread, because Swing is
+    //not thread-safe.  This is particularly important for the CPE Configurator
+    //because it's initialization can be quite complex (it loads the last known    
+    //CPE descriptor).
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        initGUI();        
+      }
+    });    
+  }
+
+  /**
+   * Creates and shows the GUI.
+   */
+  private static void initGUI() {
     try {
       final CpmFrame frame = new CpmFrame();
       frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
