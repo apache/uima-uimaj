@@ -248,7 +248,7 @@ ae.destroy();</programlisting></para>
             in <literal>%UIMA_HOME%\examples\src</literal>.</para></listitem>
           
           <listitem><para>The JavaDocs for
-            <literal>org.apache.uima.jcas.impl.JCas</literal>. </para></listitem>
+            <literal>org.apache.uima.jcas.JCas</literal>. </para></listitem>
           </itemizedlist>
         
       </section>

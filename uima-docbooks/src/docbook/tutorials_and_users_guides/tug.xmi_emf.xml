@@ -109,7 +109,7 @@ under the License.
       files as well as the following jar files from the EMF distribution: common.jar,
       ecore.jar, and ecore.xmi.jar.</para>
     
-    <para>Also, note that the uima_core.jar file contains the Ecore model file uima.ecore,
+    <para>Also, note that the uima-core.jar file contains the Ecore model file uima.ecore,
       which defines the built-in UIMA types. You may need to use this file from your EMF
       applications.</para>
     

@@ -396,7 +396,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
-import org.apache.uima.jcas.impl.JCas;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.tutorial.RoomNumber;
 
 /**
@@ -1544,7 +1544,7 @@ catch (PatternSyntaxException e) {
         default is <literal>UIMAException.STANDARD_MESSAGE_CATALOG</literal> (whose
         value is <quote><literal>org.apache.uima.UIMAException_Messages</literal>
         </quote> in the current release but may change). This message digest is located in the
-        <literal>uima_core.jar</literal> file at
+        <literal>uima-core.jar</literal> file at
         <literal>org/apache/uima/UIMAException_messages.properties</literal>
         &ndash; you can take a look to see if any of these exception messages are useful to
         use.</para>
