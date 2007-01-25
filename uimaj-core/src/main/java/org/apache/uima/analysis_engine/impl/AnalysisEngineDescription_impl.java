@@ -33,11 +33,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import javax.security.auth.callback.LanguageCallback;
+
 import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
+import org.apache.uima.analysis_engine.metadata.CapabilityLanguageFlow;
+import org.apache.uima.analysis_engine.metadata.FixedFlow;
+import org.apache.uima.analysis_engine.metadata.FlowConstraints;
 import org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration;
 import org.apache.uima.analysis_engine.metadata.SofaMapping;
 import org.apache.uima.analysis_engine.metadata.impl.AnalysisEngineMetaData_impl;
@@ -288,23 +293,41 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * check configuration parameter settings - that must be done by an explicit call to
    * validateConfigurationParameterSettings.
    * 
-   * @param aDesc
-   *          the AnalysisEngineDescripion to validate
-   * 
+   * @param aResourceManager
+   *          a ResourceManager instance to use to resolve imports by name.
+   *  
    * @throws ResourceInitializationException
    *           if <code>aDesc</code> is invalid
    * @throws ResourceConfigurationException
    *           if the configuration parameter settings in <code>aDesc</code> are invalid
    */
-  public void validate() throws ResourceInitializationException, ResourceConfigurationException {
+  public void validate(ResourceManager aResourceManager) throws ResourceInitializationException, ResourceConfigurationException {
     // do validation common to all descriptor types (e.g. config parameters)
-    super.validate();
+    super.validate(aResourceManager);
 
     // TypeSystem may not be specified for an Aggregate Analysis Engine
     if (!isPrimitive() && getAnalysisEngineMetaData().getTypeSystem() != null) {
       throw new ResourceInitializationException(
               ResourceInitializationException.AGGREGATE_AE_TYPE_SYSTEM,
               new Object[] { getSourceUrlString() });
+    }
+    
+    //Keys in FixedFlow or LanguageCapabilityFlow must be defined
+    FlowConstraints fc = getAnalysisEngineMetaData().getFlowConstraints();
+    String[] keys = null;
+    if (fc instanceof FixedFlow) {
+      keys = ((FixedFlow)fc).getFixedFlow();
+    }
+    else if (fc instanceof CapabilityLanguageFlow) {
+      keys = ((CapabilityLanguageFlow)fc).getCapabilityLanguageFlow();
+    }
+    if (keys != null) {
+      for (int i = 0; i < keys.length; i++) {
+        if (!getDelegateAnalysisEngineSpecifiersWithImports().containsKey(keys[i])) {
+          throw new ResourceInitializationException(ResourceInitializationException.UNDEFINED_KEY_IN_FLOW,
+                  new Object[]{getAnalysisEngineMetaData().getName(), keys[i], getSourceUrlString()});
+        }
+      }
     }
   }
 

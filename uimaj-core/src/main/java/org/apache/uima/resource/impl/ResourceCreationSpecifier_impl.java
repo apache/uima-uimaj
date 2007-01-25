@@ -205,7 +205,7 @@ public class ResourceCreationSpecifier_impl extends MetaDataObject_impl implemen
    * @throws ResourceConfigurationException
    *           if the configuration parameter settings in <code>aDesc</code> are invalid
    */
-  public void validate() throws ResourceInitializationException, ResourceConfigurationException {
+  public final void validate() throws ResourceInitializationException, ResourceConfigurationException {
     validate(UIMAFramework.newDefaultResourceManager());
   }
   
