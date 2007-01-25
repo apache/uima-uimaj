@@ -20,10 +20,14 @@
 package org.apache.uima.examples.cpe;
 /* 
  *******************************************************************************************
- * N O T E :     The XML format (XCAS) that this Cas Consumer outputs, is
- *               is deprecated, but is being kept for compatibility with older versions
+ * N O T E :     The XML format (XCAS) that this Cas Consumer outputs, is eventually 
+ *               being superceeded by the more standardized and compact XMI format.  However
+ *               it is used currently as the expected form for remote services, and there is
+ *               existing tooling for doing stand-alone component development and debugging 
+ *               that uses this format to populate an initial CAS.  So it is not 
+ *               deprecated yet;  it is also being kept for compatibility with older versions.
  *               
- *               New code should use the XmiWriterCasConsumer
+ *               New code should consider using the XmiWriterCasConsumer where possible,
  *               which uses the current XMI format for XML externalizations of the CAS
  *******************************************************************************************               
  */
