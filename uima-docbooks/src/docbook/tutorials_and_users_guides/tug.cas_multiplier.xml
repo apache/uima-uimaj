@@ -117,6 +117,34 @@ JCas getEmptyJCas()</programlisting> which are
         spread your processing out across the calls to the <literal>hasNext</literal> or
         <literal>next</literal> methods.</para>
       
+      <note><para>You can only call <literal>getEmptyCAS()</literal> or <literal>getEmptyJCas()</literal>
+        from your CAS Multiplier's <literal>process</literal>, <literal>hasNext</literal>, or
+        <literal>next</literal> methods.  You cannot call it from other methods such as 
+        <literal>initialize</literal>.  This is because the Aggregate AE's Type System is not available
+        until all of the components of the aggregate have finished their initialization.
+      </para></note>
+      
+      <para>The Type System of the empty CAS will contain all of the type definitions for all 
+        components of the outermost Aggregate Analysis Engine that contains your CAS Multiplier.
+        Therefore downstream components that receive these CASes can add new instances of any
+        type that they define.</para>
+            
+      <note><para>The Type System of the empty CAS you receive will NOT in general be
+        identical to the Type System of the <emphasis>input</emphasis> CASes that are passed to your
+        CAS Multiplier's <literal>process</literal> method.  The input CASes may contain additional types.
+        For example if you are using a Collection Processing Engine (CPE), the input CASes will contain all types
+        defined by all components of the CPE, but the empty CAS will contain only the types defined within the
+        outermost Aggregate AE that contains your CAS Multiplier.</para></note>
+      
+      <warning><para>Because the Type Systems are not identical, if you are using the CAS interface (not JCas) you
+        <emphasis>cannot</emphasis> use the <literal>Type</literal> and <literal>Feature</literal> handles
+        you obtain from the input CAS to access the empty CAS, or vice versa.  You must use a completely 
+        separate set of handles for each CAS.  The JCas does not have this issue, however you must still be 
+        careful to keep the objects that belong to each CAS separate.  You cannot create references across CASes
+        or add an object created in one CAS to the indexes of a different CAS.  If you do this the results are
+        undefined.      
+      </para>        
+      </warning>
     </section>
     
     <section id="ugr.tug.cm.example_code">
