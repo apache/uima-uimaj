@@ -60,6 +60,7 @@ under the License.
             <listitem><para>produceCollectionProcessingEngine</para></listitem>
             <listitem><para>produceCollectionReader</para></listitem>
           </itemizedlist>
+          
           There are other variations of each of these methods that take additional, optional
           arguments. See the JavaDocs for details. </para></listitem>
         
@@ -238,14 +239,10 @@ ae.destroy();</programlisting></para>
         
         <itemizedlist><listitem><para> <olink
             targetdoc="&uima_docs_tutorial_guides;"
-            targetptr="ugr.tug.aae.developing_annotator_code"/> </para>
+            targetptr="ugr.tug.aae.reading_results_previous_annotators"/> </para>
           </listitem>
           
           <listitem><para> <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.jcas"/></para></listitem>
-          
-          <listitem><para> The source code for
-            <literal>org.apache.uima.examples.AnnotationFilter</literal>, which is
-            in <literal>%UIMA_HOME%\examples\src</literal>.</para></listitem>
           
           <listitem><para>The JavaDocs for
             <literal>org.apache.uima.jcas.JCas</literal>. </para></listitem>
@@ -373,7 +370,7 @@ ae.destroy();</programlisting></para>
       <para>There is not much more code required here than in the previous example. First,
         there is one additional parameter to the AnalysisEngine producer, specifying the
         number of annotator instances to create<footnote><para> Both the UIMA Collection
-        Processing Manager framework and the remote deployment services framekwork have
+        Processing Manager framework and the remote deployment services framework have
         implementations which use CAS pools in this manner, and thereby relieve the
         annotator developer of the necessity to make their annotators thread-safe.</para>
         </footnote>. Then, instead of creating a single CAS in the constructor, we now create
@@ -405,8 +402,8 @@ ae.destroy();</programlisting></para>
     </section>
     
     <section id="ugr.tug.application.using_multiple_aes">
-      <title>Using Multiple Analysis Engines and creating shared CASes)</title>
-      <titleabbrev>Multiple AEs &amp; creating shared CASes</titleabbrev>
+      <title>Using Multiple Analysis Engines and Creating Shared CASes</title>
+      <titleabbrev>Multiple AEs &amp; Creating Shared CASes</titleabbrev>
       
       <para>In most cases, the easiest way to use multiple Analysis Engines from within an
         application is to combine them into an aggregate AE. For instructions, see <olink
@@ -445,7 +442,7 @@ ae.destroy();</programlisting></para>
   CAS cas = CasCreationUtils.createCas(list);
 
   // (optional, if using the JCas interface) 
-  JCas jcas = casView.getJCas();</programlisting>
+  JCas jcas = cas.getJCas();</programlisting>
       
       <para>The CasCreationUtils class takes care of the work of merging the AEs&apos; type
         systems and producing a CAS for the combined type system. If the type systems are not
@@ -460,20 +457,20 @@ ae.destroy();</programlisting></para>
         streams. The CASes are stored in an XML format. There are two forms of this format. The
         preferred form is the XMI form (see <olink
           targetdoc="&uima_docs_tutorial_guides;"
-          targetptr="ugr.tug.xmi_emf.using_xmi_cas_serialization"/>. An older
+          targetptr="ugr.tug.xmi_emf.using_xmi_cas_serialization"/>). An older
         format is also available, called XCAS.</para>
       
-      <para>To save an XMI representation of a CAS, use the method
-        <literal>org.apache.uima.util.XmlCasSerializer</literal>. To save an XCAS
-        representation of a CAS, use the method
-        <literal>org.apache.uima.cas.impl.XCASSerializer.serialize</literal>; see
+      <para>To save an XMI representation of a CAS, use the <literal>serialize</literal>
+        method of the class <literal>org.apache.uima.util.XmlCasSerializer</literal>. 
+        To save an XCAS representation of a CAS, use the class
+        <literal>org.apache.uima.cas.impl.XCASSerializer</literal> instead; see
         the JavaDocs for details.</para>
       
-      <para>Both of these external forms can be read back in, using the
-        <literal>org.apache.uima.util.XmlCasDeserializer</literal> method. This
+      <para>Both of these external forms can be read back in, using the 
+        <literal>deserialize</literal> method of the class
+        <literal>org.apache.uima.util.XmlCasDeserializer</literal>. This
         method deserializes into a pre-existing CAS, which you must create ahead of time,
-        pre-set-up with the proper type system. See the JavaDocs for details.</para>
-      
+        pre-set-up with the proper type system. See the JavaDocs for details.</para>     
     </section>
   </section>
   
@@ -525,11 +522,11 @@ CpeDescription cpe = CpeDescriptorFactory.produceDescriptor();
 //Add CollectionReader 
 cpe.addCollectionReader([descriptor]);
 
-//Add CasInitializer
+//Add CasInitializer (deprecated)
 cpe.addCasInitializer(&lt;cas initializer descriptor&gt;);
 
 // Provide the number of CASes the CPE will use
-cpe.setCasPoolsSize(2);
+cpe.setCasPoolSize(2);
 
 //  Define and add Analysis Engine 
 CpeIntegratedCasProcessor personTitleProcessor = 
@@ -566,7 +563,7 @@ cpe.addCasProcessor(consumerProcessor);
 cpe.setCheckpoint(<quote>[path]/checkpoint.dat</quote>, 3000);
 
 //  Plug in custom timer class used for timing events
-cpe.setTimer(<quote>org.apache.uima.reference_impl.util.JavaTimer</quote>);
+cpe.setTimer(<quote>org.apache.uima.internal.util.JavaTimer</quote>);
 
 //  Define number of documents to process
 cpe.setNumToProcess(1000);
@@ -740,13 +737,13 @@ consumerParamSettings.setParameterValue(
         .</para>
       
       <section id="ugr.tug.application.search.configuring_indexer">
-        <title>Configuring the Semantic Search CAS Consumer &ndash; Indexer</title>
+        <title>Configuring the Semantic Search CAS Indexer</title>
         
         <para>Since there are several ways you might want to build a search index from the
           information in the CAS produced by your AE, you need to supply the Semantic Search
           CAS Consumer &ndash; Indexer with configuration information in the form of an
           <emphasis>Index Build Specification</emphasis> file. Apache UIMA includes
-          code for parsing Index BUild Specification files (see the Javadocs for details).
+          code for parsing Index Build Specification files (see the Javadocs for details).
           An example of an Indexing specification tailored to the AE from the tutorial in the
             <olink targetdoc="&uima_docs_tutorial_guides;"
             targetptr="ugr.tug.aae"/> is located in
@@ -836,9 +833,9 @@ consumerParamSettings.setParameterValue(
           used to map the feature name to a different name in the index, but in this example we
           have opted to use the same name, <literal>building</literal>. </para>
         
-        <para> At the end of the batch or collection, the Semantic Search CAS Consumer &ndash;
-          Indexer builds the index. This index can be queried with simple tokens or with XML
-          tags</para>
+        <para> At the end of the batch or collection, the Semantic Search CAS Indexer 
+          builds the index. This index can be queried with simple tokens or with XML
+          tags.</para>
         
         <para>Examples:
           
@@ -869,17 +866,16 @@ consumerParamSettings.setParameterValue(
       
       <section
         id="ugr.tug.application.search.cpe_with_semantic_search_cas_consumer">
-        <title>Building and Running a CPE including the Semantic Search CAS Consumer
-          &ndash; Indexer</title>
-        <titleabbrev>Using Semantic Search CAS Consumer</titleabbrev>
+        <title>Building and Running a CPE including the Semantic Search CAS Indexer</title>
+        <titleabbrev>Using Semantic Search CAS Indexer</titleabbrev>
         
         <para>The following steps illustrate how to build and run a CPE that uses the UIMA
           Meeting Detector TAE and the Simple Token and Sentence Annotator, discussed in the
             <olink targetdoc="&uima_docs_tutorial_guides;"
-            targetptr="ugr.tug.aae"/> along with the Semantic Search CAS Consumer
-          &ndash; Indexer, to build an index that allows you to query for documents based not
-          only on textual content but also on whether they contain mentions of Meetings
-          detected by the TAE.</para>
+            targetptr="ugr.tug.aae"/> along with a CAS Consumer called the
+           Semantic Search CAS Indexer, to build an index that allows you to query for 
+          documents based not only on textual content but also on whether they contain 
+          mentions of Meetings detected by the TAE.</para>
         
         <para>Run the CPE Configurator tool by executing the <literal>cpeGui</literal>
           shell script in the <literal>bin</literal> directory of the UIMA SDK. (For
@@ -909,11 +905,11 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
           <listitem><para>Two CAS Consumers:
             
             
-            <literallayout>%UIMA_HOME%/examples/descriptors/casConsumer/
+            <literallayout>%UIMA_HOME%/examples/descriptors/cas_consumer/
   SemanticSearchCasIndexer.xml
 
-%UIMA_HOME%/examples/descriptors/casConsumer/ 
-  XCasWriterCasConsumer.xml</literallayout></para>
+%UIMA_HOME%/examples/descriptors/cas_consumer/ 
+  XmiWriterCasConsumer.xml</literallayout></para>
             </listitem></itemizedlist>
         
         <para>Set up parameters:</para>
@@ -934,11 +930,11 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
             <emphasis>erases</emphasis> old versions of the files it creates in this
             directory. </para></warning> </para></listitem>
           
-          <listitem><para>Set the XCAS Writer CAS Consumer's <quote>Output
+          <listitem><para>Set the XMI Writer CAS Consumer's <quote>Output
             Directory</quote> parameter to whatever directory into which you want to store
-            the XCAS files containing the results of your analysis for each document.
+            the XMI files containing the results of your analysis for each document.
             </para></listitem></itemizedlist>
-        
+                
         <para>Click on the Run Button. Once the run completes, a statistics dialog should
           appear, in which you can see how much time was spent in each of the components
           involved in the run.</para>
@@ -968,19 +964,23 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
     </mediaobject>
   </screenshot></para>
       
-      <para>Configure the first three fields on this screen as follows:
+      <para>Configure the fields on this screen as follows:
         
         <itemizedlist spacing="compact"><listitem><para>Set the <quote>Index
           Directory</quote> to the directory where you built your index. This is the same
           value that you supplied for the <quote>Index Dir</quote> parameter of the
-          Semantic Search CAS Consumer &ndash; Indexer in the CPE Configurator.</para>
+          Semantic Search CAS Indexer in the CPE Configurator.</para>
           </listitem>
           
-          <listitem><para>Set the <quote>External CAS Directory</quote> to the
+          <listitem><para>Set the <quote>XMI/XCAS Directory</quote> to the
             directory where you stored the results of your analysis. This is the same value
             that you supplied for the <quote>Output Directory</quote> parameter of XMI
             Writer CAS Consumer in the CPE Configurator.</para></listitem>
-          
+
+          <listitem><para>Optionally, set the <quote>Original Documents Directory</quote> to 
+            the directory containing the original plain text documents that were analyzed
+            and indexed.  This is only needed for the "View Original Document" button.</para></listitem>
+                     
           <listitem><para> Set the <quote>Type System Descriptor</quote> to the location
             of the descriptor that describes your type system. For this example, this will be
             <literal>%UIMA_HOME%/examples/
@@ -1071,9 +1071,9 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
             installation.</para></listitem>
           
           <listitem><para><emphasis role="bold-italic">IMPORTANT</emphasis>: any
-            time you add JAR files to TomCat (for instance, in the above 2 steps), you must
-            shutdown and restart TomCat before it <quote>notices</quote> this. So now,
-            please shutdown and restart TomCat.</para></listitem>
+            time you add JAR files to Tomcat (for instance, in the above 2 steps), you must
+            shutdown and restart Tomcat before it <quote>notices</quote> this. So now,
+            please shutdown and restart Tomcat.</para></listitem>
           
           <listitem><para>All the Java classes for the UIMA Examples are packaged in the
             <literal>uimaj-examples.jar</literal> file which is included in the
@@ -1155,14 +1155,14 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
       <para>To deploy the Person Title annotator service, issue the following command:
         
         
-        <programlisting>C:/Program Files/apache/uima&gt;bindeploytool 
+        <programlisting>C:/Program Files/apache/uima/bin&gt;deploytool 
 examples/deploy/soap/Deploy_PersonTitleAnnotator.wsdd</programlisting></para>
       
       <para>Test if the deployment was successful by starting up a browser, pointing it to
-        your TomCat installation's <quote>axis</quote> webpage (e.g., <ulink
-          url="http://localhost:8080/axis">http://localhost:8080/axis"</ulink>)
-        and clicking on the List link. This should bring up a page which shows the deployed
-        services, where you should see the service you just deployed.</para>
+        your Tomcat installation's <quote>axis</quote> webpage (e.g., 
+          <literal>http://localhost:8080/axis</literal>) and clicking on the List link. 
+        This should bring up a page which shows the deployed services, where you should 
+        see the service you just deployed.</para>
       
       <para>The other components can be deployed by replacing
         <literal>Deploy_PersonTitleAnnotator.wsdd</literal> with one of the other
