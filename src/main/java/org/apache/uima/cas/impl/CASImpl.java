@@ -2576,6 +2576,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 				this.baseCAS.sofaNameSet.add(id);
 			}
 		}
+    else {
+      // might need to tie new Sofa to old View
+      if (0 == aTcas.mySofaRef) {
+        aTcas.mySofaRef = aSofa.hashCode();
+      }
+    }
 		if (this.baseCAS.sofaCount < aSofa.getSofaRef()) {
 			// for xcas deserialization
 			this.baseCAS.sofaCount = aSofa.getSofaRef();
