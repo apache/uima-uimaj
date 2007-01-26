@@ -33,6 +33,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.resource.CasDefinition;
+import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
@@ -154,7 +155,8 @@ public class CasPool {
   }
 
   /**
-   * Creates a new CasPool
+   * Creates a new CasPool.
+   * TODO: do we need this method AND the one that takes a CasManager?
    * 
    * @param aNumInstances
    *          the number of CAS instances in the pool
@@ -171,6 +173,25 @@ public class CasPool {
     fillPool(aCasDefinition, aPerformanceTuningSettings);
   }
 
+  /**
+   * Creates a new CasPool
+   * 
+   * @param aNumInstances
+   *          the number of CAS instances in the pool
+   * @param aCasManager
+   *          CAS Manager that will be used to create the CAS.  The CAS Manager
+   *          holds the CAS Definition.  Also all CASes created from the same
+   *          CAS Manager will share identical TypeSystem objects.
+   * @param aPerformanceTuningSettings
+   *          Properties object containing framework performance tuning settings using key names
+   *          defined on {@link UIMAFramework} interface
+   */
+  public CasPool(int aNumInstances, CasManager aCasManager,
+          Properties aPerformanceTuningSettings) throws ResourceInitializationException {
+    mNumInstances = aNumInstances;
+    fillPool(aCasManager, aPerformanceTuningSettings);
+  }
+  
   /**
    * Checks out a CAS from the pool.
    * 
@@ -277,6 +298,17 @@ public class CasPool {
     }
   }
 
+  private void fillPool(CasManager casManager, Properties performanceTuningSettings)
+          throws ResourceInitializationException {
+    // create additional CASes that share same type system
+    for (int i = 0; i < mNumInstances; i++) {
+      CAS c = casManager.createNewCas(performanceTuningSettings);
+      ((CASImpl) c).setOwner(casManager);
+      mAllInstances.add(c);
+      mFreeInstances.add(c);
+    }
+  }  
+  
   protected Vector getAllInstances() {
     return mAllInstances;
   }
