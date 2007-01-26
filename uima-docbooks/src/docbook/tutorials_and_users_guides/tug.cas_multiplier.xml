@@ -125,24 +125,14 @@ JCas getEmptyJCas()</programlisting> which are
       </para></note>
       
       <para>The Type System of the empty CAS will contain all of the type definitions for all 
-        components of the outermost Aggregate Analysis Engine that contains your CAS Multiplier.
-        Therefore downstream components that receive these CASes can add new instances of any
-        type that they define.</para>
-            
-      <note><para>The Type System of the empty CAS you receive will NOT in general be
-        identical to the Type System of the <emphasis>input</emphasis> CASes that are passed to your
-        CAS Multiplier's <literal>process</literal> method.  The input CASes may contain additional types.
-        For example if you are using a Collection Processing Engine (CPE), the input CASes will contain all types
-        defined by all components of the CPE, but the empty CAS will contain only the types defined within the
-        outermost Aggregate AE that contains your CAS Multiplier.</para></note>
-      
-      <warning><para>Because the Type Systems are not identical, if you are using the CAS interface (not JCas) you
-        <emphasis>cannot</emphasis> use the <literal>Type</literal> and <literal>Feature</literal> handles
-        you obtain from the input CAS to access the empty CAS, or vice versa.  You must use a completely 
-        separate set of handles for each CAS.  The JCas does not have this issue, however you must still be 
-        careful to keep the objects that belong to each CAS separate.  You cannot create references across CASes
-        or add an object created in one CAS to the indexes of a different CAS.  If you do this the results are
-        undefined.      
+        components of the outermost Aggregate Analysis Engine or Collection Processing Engine
+        that contains your CAS Multiplier.  Therefore downstream components that receive 
+        these CASes can add new instances of any type that they define.</para>
+                
+      <warning><para>Be careful to keep the Feature Structures that belong to each CAS separate.  You 
+        cannot create references from a Feature Structure in one CAS to a Feature Structure in another CAS.
+        You also cannot add a Feature Structure created in one CAS to the indexes of a different CAS.  
+        If you attempt to do this, the results are undefined.      
       </para>        
       </warning>
     </section>
@@ -541,31 +531,33 @@ JCas getEmptyJCas()</programlisting> which are
     <title>Calling a CAS Multiplier from an Application</title>
     <titleabbrev>Applications: Calling CAS Multipliers</titleabbrev>    
     
-    <para>The <literal>AnalysisEngine</literal> interface has the following methods that allow you to interact
-      with CAS Multiplier:
-      <itemizedlist>
-        <listitem>
-          <para><literal>CasIterator processAndOutputNewCASes(CAS)</literal></para>
-        </listitem>
-        <listitem>
-          <para><literal>JCasIterator processAndOutputNewCASes(JCas)</literal></para>
-        </listitem>
-      </itemizedlist></para>
-    
-    <para>From your application, you call <literal>processAndOutputNewCASes</literal> and pass it the input
-      CAS. An iterator is returned that allows you to step through each of the new output CASes that are produced by the
-      Analysis Engine.</para>
-    
-    <para>It is very important to realize that CASes are pooled objects and so your application must release each CAS
-      (by calling the <literal>CAS.release()</literal> method) that it obtains from the CasIterator
-      <emphasis>before</emphasis> it calls the <literal>CasIterator.next</literal> method again. Otherwise,
-      the CAS pool will be exhausted and a deadlock will occur.</para>
-    
-    <para>The example code in the class <literal>org.apache.uima.examples.casMultiplier.
-      CasMultiplierExampleApplication</literal> illusrates this. Here is the main processing loop:</para>
-    
-    
-    <programlisting>CasIterator casIterator = ae.processAndOutputNewCASes(initialCas);
+    <section>
+      <title>Retrieving Output CASes from the CAS Multiplier</title>
+      <para>The <literal>AnalysisEngine</literal> interface has the following methods that allow you to
+        interact with CAS Multiplier:
+        <itemizedlist>
+          <listitem>
+            <para><literal>CasIterator processAndOutputNewCASes(CAS)</literal></para>
+          </listitem>
+          <listitem>
+            <para><literal>JCasIterator processAndOutputNewCASes(JCas)</literal></para>
+          </listitem>
+        </itemizedlist></para>
+      
+      <para>From your application, you call <literal>processAndOutputNewCASes</literal> and pass it the input
+        CAS. An iterator is returned that allows you to step through each of the new output CASes that are produced by
+        the Analysis Engine.</para>
+      
+      <para>It is very important to realize that CASes are pooled objects and so your application must release each
+        CAS (by calling the <literal>CAS.release()</literal> method) that it obtains from the CasIterator
+        <emphasis>before</emphasis> it calls the <literal>CasIterator.next</literal> method again.
+        Otherwise, the CAS pool will be exhausted and a deadlock will occur.</para>
+      
+      <para>The example code in the class <literal>org.apache.uima.examples.casMultiplier.
+        CasMultiplierExampleApplication</literal> illusrates this. Here is the main processing loop:</para>
+      
+      
+      <programlisting>CasIterator casIterator = ae.processAndOutputNewCASes(initialCas);
 while (casIterator.hasNext()) {
   CAS outCas = casIterator.next();
 
@@ -576,23 +568,81 @@ while (casIterator.hasNext()) {
 
   //release the CAS (important)
   outCas.release();</programlisting>
-    
-    <para>Note that as defined by the CAS Multiplier contract in <xref
-        linkend="ugr.tug.cm.cm_interface_overview"/>, the CAS Multiplier owns the input CAS
-      (<literal>initialCAS</literal> in the example) until the last new output CAS has been produced. This means
-      that the application should not try to make changes to <literal>initialCAS</literal> until after the
-      <literal>CasIterator.hasNext</literal> method has returned false, indicating that the segmenter has
-      finished.</para>
-    
-    <para>Note that the processing time of the Analysis Engine is spread out over the calls to the
-      <literal>CasIterator&apos;s hasNext</literal> and <literal>next</literal> methods. That is, the next
-      output CAS may not actually be produced and annotated until the application asks for it. So the application
-      should not expect calls to the <literal>CasIterator</literal> to necessarily complete quickly.</para>
-    
-    <para>Also, calls to the <literal>CasIterator</literal> may throw Exceptions indicating an error has
-      occurred during processing. If an Exception is thrown, all processing of the input CAS will stop, and no more
-      output CASes will be produced. There is currently no error recovery mechanism that will allow processing to
-      continue after an exception.</para>
+      
+      <para>Note that as defined by the CAS Multiplier contract in <xref
+          linkend="ugr.tug.cm.cm_interface_overview"/>, the CAS Multiplier owns the input CAS
+        (<literal>initialCAS</literal> in the example) until the last new output CAS has been produced. This means
+        that the application should not try to make changes to <literal>initialCAS</literal> until after the
+        <literal>CasIterator.hasNext</literal> method has returned false, indicating that the segmenter has
+        finished.</para>
+      
+      <para>Note that the processing time of the Analysis Engine is spread out over the calls to the
+        <literal>CasIterator&apos;s hasNext</literal> and <literal>next</literal> methods. That is, the next
+        output CAS may not actually be produced and annotated until the application asks for it. So the application
+        should not expect calls to the <literal>CasIterator</literal> to necessarily complete quickly.</para>
+      
+      <para>Also, calls to the <literal>CasIterator</literal> may throw Exceptions indicating an error has
+        occurred during processing. If an Exception is thrown, all processing of the input CAS will stop, and no more
+        output CASes will be produced. There is currently no error recovery mechanism that will allow processing to
+        continue after an exception.</para>
+    </section>
+    <section>
+      <title>Using a CAS Multiplier with other Analysis Engines</title>      
+      <para>In your application you can take the output CASes from a CAS Multiplier and pass them to
+        the <literal>process</literal> method of other Analysis Engines.  However there are some
+        special considerations regarding the Type System of these CASes.</para>
+      <para>By default, the output CASes of a CAS Multiplier will have a Type System that contains all
+        of the types and features declared by any component in the outermost Aggregate Analysis Engine or
+        Collection Processing Engine that contains the CAS Multiplier.  If in your application you
+        create a CAS Multiplier and another Analysis Engine, where these are not enclosed in an aggregate,
+        then the output CASes from the CAS Multiplier will not support any types or features that are 
+        declared in the latter Analysis Engine but not in the CAS Multiplier.
+      </para>
+      <para>This can be remedied by forcing the CAS Multiplier and Analysis Engine to share a single
+        <literal>UimaContext</literal> when they are created, as follows:
+      <programlisting>//create a "root" UIMA context for your whole application
+
+UimaContextAdmin rootContext =
+   UIMAFramework.newUimaContext(UIMAFramework.getLogger(),
+      UIMAFramework.newDefaultResourceManager(),
+      UIMAFramework.newConfigurationManager());
+
+XMLInputSource input = new XMLInputSource("MyCasMultiplier.xml");
+AnalysisEngineDescription desc = UIMAFramework.getXMLParser().
+        parseAnalysisEngineDescription(input);
+ 
+//create a UIMA Context for the new AE we are about to create
+
+//first argument is unique key among all AEs used in the application
+UimaContextAdmin childContext = rootContext.createChild(
+        "myCasMultiplier", Collections.EMPTY_MAP);
+
+//instantiate CAS Multiplier AE, passing the UIMA Context through the 
+//additional parameters map
+
+Map additionalParams = new HashMap();
+additionalParams.put(Resource.PARAM_UIMA_CONTEXT, childContext);
+
+AnalysisEngine casMultiplierAE = UIMAFramework.produceAnalysisEngine(
+        desc,additionalParams);
+
+//repeat for another AE      
+XMLInputSource input2 = new XMLInputSource("MyAE.xml");
+AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser().
+        parseAnalysisEngineDescription(input2);
+ 
+UimaContextAdmin childContext2 = rootContext.createChild(
+        "myAE", Collections.EMPTY_MAP);
+
+Map additionalParams2 = new HashMap();
+additionalParams2.put(Resource.PARAM_UIMA_CONTEXT, childContext2);
+
+AnalysisEngine myAE = UIMAFramework.produceAnalysisEngine(
+        desc2, additionalParams2);      
+      </programlisting>
+        
+      </para>
+    </section>
     
   </section>
   
