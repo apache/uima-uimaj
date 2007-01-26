@@ -20,15 +20,15 @@
 package org.apache.uima.collection.impl.cpm.engine;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.impl.cpm.utils.CPMUtils;
+import org.apache.uima.resource.CasDefinition;
+import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.Level;
 
@@ -56,16 +56,14 @@ public class CPECasPool {
    * 
    * @param aNumInstances -
    *          max size of the pool
-   * @param aList -
-   *          aggregate type system
-   * @param aResourceManager -
-   *          resource manager, needed for JCAS class loading
+   * @param aCasManager -
+   *          CAS Manager to use to create the CASes
    * @throws ResourceInitializationException
    */
-  public CPECasPool(int aNumInstances, List aList, ResourceManager aResourceManager)
+  public CPECasPool(int aNumInstances, CasManager aCasManager)
           throws ResourceInitializationException {
     mNumInstances = aNumInstances;
-    fillPool(aList, UIMAFramework.getDefaultPerformanceTuningProperties(), aResourceManager);
+    fillPool(aCasManager, UIMAFramework.getDefaultPerformanceTuningProperties());
   }
 
   /**
@@ -73,39 +71,27 @@ public class CPECasPool {
    * 
    * @param aNumInstances -
    *          max size of the pool
-   * @param aList - -
-   *          aggregate type system
+   * @param aCasManager -
+   *          CAS Manager to use to create the CASes
    * @param aPerformanceTuningSettings
-   * @param aResourceManager -
-   *          resource manager, needed for JCAS class loading
    * @throws ResourceInitializationException
    */
-  public CPECasPool(int aNumInstances, List aList, Properties aPerformanceTuningSettings,
-          ResourceManager aResourceManager) throws ResourceInitializationException {
+  public CPECasPool(int aNumInstances, CasManager aCasManager, Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     mNumInstances = aNumInstances;
-    fillPool(aList, aPerformanceTuningSettings, aResourceManager);
+    fillPool(aCasManager, aPerformanceTuningSettings);
   }
 
   /**
    * Fills the pool with initialized instances of CAS.
    * 
-   * @param aList -
-   *          aggregate type system
+   * @param aCasDef -
+   *          definition (type system, indexes, etc.) of CASes to create
    * @param aPerformanceTuningSettings
-   * @param aResourceManager -
-   *          resource manager, needed for JCAS class loading
    * @throws ResourceInitializationException
    */
-  protected void fillPool(List aList, Properties aPerformanceTuningSettings,
-          ResourceManager aResourceManager) throws ResourceInitializationException {
-    // create first CAS from metadata
-    CAS c0 = CasCreationUtils.createCas(aList, aPerformanceTuningSettings, aResourceManager);
-    mAllInstances.add(c0);
-    mFreeInstances.add(c0);
-    // create additional CASes that share same type system
-    for (int i = 1; i < mNumInstances; i++) {
-      CAS c = CasCreationUtils.createCas(aList, c0.getTypeSystem(), aPerformanceTuningSettings,
-              aResourceManager);
+  protected void fillPool(CasManager aCasManager, Properties aPerformanceTuningSettings) throws ResourceInitializationException {
+    for (int i = 0; i < mNumInstances; i++) {
+      CAS c = aCasManager.createNewCas(aPerformanceTuningSettings);
       mAllInstances.add(c);
       mFreeInstances.add(c);
     }

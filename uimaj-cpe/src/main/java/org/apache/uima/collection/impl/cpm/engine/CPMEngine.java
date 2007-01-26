@@ -31,7 +31,9 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.UimaContext;
 import org.apache.uima.adapter.vinci.util.Descriptor;
+import org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.collection.CasConsumer;
@@ -67,6 +69,7 @@ import org.apache.uima.collection.metadata.CpeCasProcessors;
 import org.apache.uima.collection.metadata.CpeConfiguration;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.internal.util.JavaTimer;
+import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -1849,8 +1852,8 @@ public class CPMEngine extends Thread {
         // Instantiate container for TCAS Instances
 
         try {
-          // Merge Type systems from all components
-          ArrayList mdList = getMetaDataList();
+          // Register all type systems with the CAS Manager
+          registerTypeSystemsWithCasManager();
           if (poolSize == 0) // Not set in the CpeDescriptor
           {
             poolSize = readerFetchSize * (inputQueueSize + outputQueueSize)
@@ -1877,8 +1880,8 @@ public class CPMEngine extends Thread {
                     "UIMA_CPM_show_cas_pool_size__CONFIG",
                     new Object[] { Thread.currentThread().getName(), String.valueOf(poolSize) });
           }
-          casPool = new CPECasPool(poolSize, mdList, mPerformanceTuningSettings, cpeFactory
-                  .getResourceManager());
+          casPool = new CPECasPool(poolSize, cpeFactory.getResourceManager().getCasManager(), 
+                  mPerformanceTuningSettings);
           callTypeSystemInit();
 
         } catch (Exception e) {
@@ -2685,26 +2688,26 @@ public class CPMEngine extends Thread {
   }
 
   /**
-   * Returns a list containing merged metadata from all components of the CPE
-   * 
-   * @return
+   * Registers Type Systems of all components with the CasManager.
+   * TODO: could do this registration after initialization of each component.
    */
-  private ArrayList getMetaDataList() throws Exception {
-    ArrayList mdList = new ArrayList();
+  private void registerTypeSystemsWithCasManager() throws Exception {
+    CasManager manager= this.cpeFactory.getResourceManager().getCasManager();
+    
     ProcessingResourceMetaData crMetaData = collectionReader.getProcessingResourceMetaData();
     if (crMetaData != null) {
-      mdList.add(crMetaData);
+      manager.addMetaData(crMetaData);
     }
     if (collectionReader instanceof CollectionReader) {
       CasInitializer casIni = ((CollectionReader) collectionReader).getCasInitializer();
-      if (casIni != null && casIni.getMetaData() != null) {
-        mdList.add(casIni.getMetaData());
+      if (casIni != null && casIni.getProcessingResourceMetaData() != null) {
+        manager.addMetaData(casIni.getProcessingResourceMetaData());
       }
     } else if (collectionReader instanceof CasDataCollectionReader) {
       CasDataInitializer casIni = ((CasDataCollectionReader) collectionReader)
               .getCasDataInitializer();
-      if (casIni != null && casIni.getMetaData() != null) {
-        mdList.add(casIni.getMetaData());
+      if (casIni != null && casIni.getCasInitializerMetaData() != null) {
+        manager.addMetaData(casIni.getCasInitializerMetaData());
       }
     }
     for (int i = 0; i < annotatorList.size(); i++) {
@@ -2719,12 +2722,21 @@ public class CPMEngine extends Thread {
                 new Object[] { Thread.currentThread().getName(), container.getName() });
       }
       CasProcessor processor = container.getCasProcessor();
-      ProcessingResourceMetaData md = processor.getProcessingResourceMetaData();
-
-      if (md != null) {
-        mdList.add(md);
+      try {
+        if (processor instanceof AnalysisEngineImplBase) {
+          //Integrated AEs already have added their metadata to the CasManager during
+          //their initialization, so we don't need to do it again.
+          continue;        
+        }
+        ProcessingResourceMetaData md = processor.getProcessingResourceMetaData();
+  
+        if (md != null) {
+          manager.addMetaData(md);
+        }
       }
-      container.releaseCasProcessor(processor);
+      finally {
+        container.releaseCasProcessor(processor);
+      }
     }
     for (int i = 0; i < consumerList.size(); i++) {
       ProcessingContainer container = (ProcessingContainer) consumerList.get(i);
@@ -2740,14 +2752,22 @@ public class CPMEngine extends Thread {
       }
 
       CasProcessor processor = container.getCasProcessor();
-      ProcessingResourceMetaData md = processor.getProcessingResourceMetaData();
-
-      if (md != null) {
-        mdList.add(md);
+      try {
+        if (processor instanceof AnalysisEngineImplBase) {
+          //Integrated AEs already have added their metadata to the CasManager during
+          //their initialization, so we don't need to do it again.
+          continue;        
+        }
+        ProcessingResourceMetaData md = processor.getProcessingResourceMetaData();
+  
+        if (md != null) {
+          manager.addMetaData(md);
+        }
       }
-      container.releaseCasProcessor(processor);
+      finally {
+        container.releaseCasProcessor(processor);
+      }
     }
-    return mdList;
   }
 
   /**
@@ -3147,9 +3167,8 @@ public class CPMEngine extends Thread {
    * @throws Exception
    */
   private void bootstrapCPE() throws Exception {
-    ArrayList mdList = getMetaDataList();
-    casPool = new CPECasPool(getPoolSize(), mdList, mPerformanceTuningSettings, cpeFactory
-            .getResourceManager());
+    registerTypeSystemsWithCasManager();
+    casPool = new CPECasPool(getPoolSize(), cpeFactory.getResourceManager().getCasManager(), mPerformanceTuningSettings);
     callTypeSystemInit();
 
     setupProcessingPipeline();

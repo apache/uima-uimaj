@@ -27,9 +27,13 @@ import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CasInitializer;
 import org.apache.uima.collection.CollectionProcessingEngine;
 import org.apache.uima.collection.CollectionReader;
+import org.apache.uima.collection.EntityProcessStatus;
+import org.apache.uima.collection.StatusCallbackListener;
+import org.apache.uima.collection.impl.cpm.utils.TestStatusCallbackListener;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceManager;
@@ -106,6 +110,29 @@ public class CollectionProcessingEngine_implTest extends TestCase {
 	  new String[] { "en" }));
     } catch (Exception e) {
       JUnitExtension.handleException(e);
+    }
+  }
+  
+  public void testCasMultiplierTypeSystem() throws Throwable {
+    CpeDescription cpeDesc = UIMAFramework.getXMLParser()
+            .parseCpeDescription(new XMLInputSource(
+                    JUnitExtension.getFile("CollectionProcessingEngineImplTest/cpeWithWrappedCasMultiplier.xml")));
+    CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(cpeDesc);
+    // create and register a status callback listener
+    TestStatusCallbackListener listener = new TestStatusCallbackListener();
+    cpe.addStatusCallbackListener(listener);
+
+    // run CPM
+    cpe.process();
+
+    // wait until CPM has finished
+    while (!listener.isFinished()) {
+      Thread.sleep(5);
+    }
+    
+    //check that there was no exception
+    if (listener.getLastStatus().isException()) {
+      throw (Throwable)listener.getLastStatus().getExceptions().get(0);
     }
   }
 }

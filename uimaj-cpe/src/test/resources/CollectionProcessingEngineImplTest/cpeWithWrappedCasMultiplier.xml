@@ -22,14 +22,14 @@
   <collectionReader>
     <collectionIterator>
       <descriptor>
-        <include href="${CPM_HOME}/CollectionProcessingEngineImplTest/CasHeapSizeTestCollectionReader.xml"/>
+        <include href="${CPM_HOME}/CollectionProcessingEngineImplTest/SingleDocCollectionReader.xml"/>
       </descriptor>
     </collectionIterator>
   </collectionReader>
   <casProcessors casPoolSize="2" processingUnitThreadCount="1">
     <casProcessor  deployment="integrated" name="TestPrimitiveTae">
       <descriptor>
-        <include href="${CPM_HOME}/CollectionProcessingEngineImplTest/TestPrimitiveTae1.xml"></include>
+        <include href="${CPM_HOME}/CollectionProcessingEngineImplTest/AggregateWrappingCasMultiplier.xml"></include>
       </descriptor>      
       <deploymentParameters/>
       <filter/>
