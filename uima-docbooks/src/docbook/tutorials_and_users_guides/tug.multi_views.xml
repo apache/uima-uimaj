@@ -368,7 +368,7 @@ aView.removeFsFromIndexes(aFeatureStructure)</programlisting>
       
       <programlisting>//create a "root" UIMA context for your whole application
 
-UimaContext rootContext =
+UimaContextAdmin rootContext =
    UIMAFramework.newUimaContext(UIMAFramework.getLogger(),
       UIMAFramework.newDefaultResourceManager(),
       UIMAFramework.newConfigurationManager());
@@ -385,7 +385,7 @@ sofamappings.put("localName2", "globalName2");
 //create a UIMA Context for the new AE we are about to create
 
 //first argument is unique key among all AEs used in the application
-UimaContextAdmin childContext = uimaContext.createChild("myAE", sofamap);
+UimaContextAdmin childContext = rootContext.createChild("myAE", sofamap);
 
 //instantiate AE, passing the UIMA Context through the additional
 //parameters map
@@ -393,7 +393,7 @@ UimaContextAdmin childContext = uimaContext.createChild("myAE", sofamap);
 Map additionalParams = new HashMap();
 additionalParams.put(Resource.PARAM_UIMA_CONTEXT, childContext);
 
-anAnnotator = UIMAFramework.produceAnalysisEngine(desc,additionalParams);</programlisting>
+AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc,additionalParams);</programlisting>
       
       <para>Sofa mappings are applied from the inside out, i.e., local to global. First, any
         aggregate mappings are applied, then any CPE mappings, and finally, any specified
