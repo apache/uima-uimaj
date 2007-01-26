@@ -28,6 +28,7 @@ import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.CasDefinition;
@@ -35,6 +36,7 @@ import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
+import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.CasPool;
 
 /**
@@ -51,6 +53,8 @@ public class CasManager_impl implements CasManager {
   private Map mCasToCasPoolMap = new HashMap();
 
   private CasDefinition mCasDefinition = null;
+  
+  private TypeSystem mCurrentTypeSystem = null;
 
   public CasManager_impl(ResourceManager aResourceManager) {
     mResourceManager = aResourceManager;
@@ -64,6 +68,7 @@ public class CasManager_impl implements CasManager {
   public void addMetaData(ProcessingResourceMetaData aMetaData) {
     mMetaDataList.add(aMetaData);
     mCasDefinition = null; // mark this stale
+    mCurrentTypeSystem = null; //this too
   }
 
   /*
@@ -120,7 +125,7 @@ public class CasManager_impl implements CasManager {
       CasPool pool = (CasPool) mRequestorToCasPoolMap.get(aRequestorContextName);
       if (pool == null) {
         // this requestor hasn't requested a CAS before
-        pool = new CasPool(aSize, getCasDefinition(), aPerformanceTuningSettings);
+        pool = new CasPool(aSize, this, aPerformanceTuningSettings);
         populateCasToCasPoolMap(pool);
         mRequestorToCasPoolMap.put(aRequestorContextName, pool);
       } else {
@@ -128,6 +133,21 @@ public class CasManager_impl implements CasManager {
                 new Object[] { aRequestorContextName });
       }
     }
+  }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.CasManager#createNewCas(java.util.Properties)
+   */
+  public CAS createNewCas(Properties aPerformanceTuningSettings) throws ResourceInitializationException {
+    CAS cas;
+    if (mCurrentTypeSystem != null) {
+      cas = CasCreationUtils.createCas(getCasDefinition(), aPerformanceTuningSettings, mCurrentTypeSystem);      
+    } else
+    {
+      cas = CasCreationUtils.createCas(getCasDefinition(), aPerformanceTuningSettings);
+      mCurrentTypeSystem = cas.getTypeSystem();
+    }    
+    return cas;
   }
 
   /**

@@ -81,6 +81,19 @@ public interface CasManager extends CasOwner {
   CAS getCas(String aRequestorContextName);
 
   /**
+   * Create a new CAS using the CasDefinition stored in this CAS Manager.  Note
+   * that this new CAS will not belong to any pool managed by this CAS Manager.
+   * If this method is called multiple times while the CasDefinition is constant,
+   * each new CAS will share an identical TypeSystem object. 
+   * 
+   * @param aPerformanceTuningSettings
+   *          settings, including initial CAS heap size, for the AE
+   * @return a new CAS
+   * @throws ResourceInitializationException if the CAS could not be created
+   */
+  CAS createNewCas(Properties aPerformanceTuningSettings) throws ResourceInitializationException;
+
+  /**
    * Gets a specified interface to a CAS.
    * 
    * @param cas
@@ -88,5 +101,5 @@ public interface CasManager extends CasOwner {
    * @param requiredInterface
    *          interface to get. Currently must be either CAS or JCas.
    */
-  AbstractCas getCasInterface(CAS cas, Class requiredInterface);
+  AbstractCas getCasInterface(CAS cas, Class requiredInterface);  
 }
