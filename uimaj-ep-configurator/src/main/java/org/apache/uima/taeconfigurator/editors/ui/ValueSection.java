@@ -108,7 +108,7 @@ public class ValueSection extends AbstractSectionParm {
     enableBorders(vtc2);
     toolkit.paintBordersFor(vtc1);
     toolkit.paintBordersFor(vtc2);
-    valueText = newLabeledTextField(vtc1, "Value", "Use the combo pulldown to pick True or False",
+    valueText = newLabeledTextField(vtc1, "Value", "Specify the value",
             SWT.NONE);
     valueTextCombo = newLabeledCComboWithTip(vtc2, "Value",
             "Use the combo pulldown to pick True or False");
