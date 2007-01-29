@@ -510,7 +510,7 @@ under the License.
           tokenizer, part of speech annotator, shallow parser, and named entity detector)
           strung together into a flow, and all of them wrapped as a single aggregate object,
           which produces as annotations the union of all the results of the individual
-          annotator components ( tokens, parts of sppech, names, organizations, places,
+          annotator components ( tokens, parts of speech, names, organizations, places,
           persons, etc.)</phrase>
         </textobject>
       </mediaobject>
