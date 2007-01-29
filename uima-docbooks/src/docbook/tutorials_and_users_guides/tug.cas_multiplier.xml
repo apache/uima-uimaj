@@ -257,7 +257,7 @@ JCas getEmptyJCas()</programlisting> which are
   // Note: this example segmenter implementation
   // assumes that the document contains many newlines. 
   // In the worst case, if this segmenter
-  // is runon a document with no newlines, 
+  // is run on a document with no newlines, 
   // it will produce only one segment containing the
   // entire document text. 
   // A better implementation might specify a maximum segment size as
@@ -458,7 +458,9 @@ JCas getEmptyJCas()</programlisting> which are
             &lt;multiValued>false&lt;/multiValued>
             &lt;mandatory>false&lt;/mandatory>
             &lt;overrides>
-              &lt;parameter>FixedFlowController/ActionAfterCasMultiplier&lt;/parameter>
+              &lt;parameter>
+                FixedFlowController/ActionAfterCasMultiplier
+              &lt;/parameter>
             &lt;/overrides>
           &lt;/configurationParameter>   
         &lt;/configurationParameters>
@@ -477,7 +479,7 @@ JCas getEmptyJCas()</programlisting> which are
         Engine that overrides this parameter can be found in
         <literal>examples/descriptors/cas_multiplier/Segment_Annotate_Merge_AE.xml</literal>. For more
         information about how to specify a flow controller as part of your Aggregate Analysis Engine descriptor, see
-          <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.fc"/>.</para>
+          <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.fc.adding_fc_to_aggregate"/>.</para>
       
       <para>If you would like to further customize the flow, you will need to implement a custom FlowController as
         described in <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.fc"/>. For example,
@@ -507,7 +509,7 @@ JCas getEmptyJCas()</programlisting> which are
         occurring inside it is hidden from users of that Analysis Engine.</para> <note>
       <para>If you want to output some new Output CASes and not others, you need to implement a custom Flow Controller
         that makes this decision &mdash; see <olink targetdoc="&uima_docs_tutorial_guides;"
-          targetptr="ugr.tug.fc"/>. </para> </note>
+          targetptr="ugr.tug.fc.using_fc_with_cas_multipliers"/>. </para> </note>
       
     </section>
   </section>
@@ -571,8 +573,8 @@ while (casIterator.hasNext()) {
       
       <para>Note that as defined by the CAS Multiplier contract in <xref
           linkend="ugr.tug.cm.cm_interface_overview"/>, the CAS Multiplier owns the input CAS
-        (<literal>initialCAS</literal> in the example) until the last new output CAS has been produced. This means
-        that the application should not try to make changes to <literal>initialCAS</literal> until after the
+        (<literal>initialCas</literal> in the example) until the last new output CAS has been produced. This means
+        that the application should not try to make changes to <literal>initialCas</literal> until after the
         <literal>CasIterator.hasNext</literal> method has returned false, indicating that the segmenter has
         finished.</para>
       

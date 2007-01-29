@@ -29,47 +29,41 @@ under the License.
   <section id="ugr.tug.xmi_emf.overview">
     <title>Overview</title>
     
-    <para>In traditional object-oriented terms, a UIMA Type System is a class model and a UIMA
-      CAS is an object graph. There are established standards in this area
-      &ndash; specifically, <trademark class="registered">UML</trademark> is an
-        <trademark class="trade">OMG</trademark> standard for class models and XMI (XML
-      Metadata Interchange) is an OMG standard for the XML representation of object
-      graphs.</para>
+    <para>In traditional object-oriented terms, a UIMA Type System is a class model and a UIMA CAS is an object graph.
+      There are established standards in this area
+      &ndash; specifically, <trademark class="registered">UML</trademark> is an <trademark class="trade">
+      OMG</trademark> standard for class models and XMI (XML Metadata Interchange) is an OMG standard for the XML
+      representation of object graphs.</para>
     
-    <para>Furthermore, the Eclipse Modeling Framework (EMF) is an open-source framework
-      for model-based application development, and it is based on UML and XMI. In EMF, you
-      define class models using a metamodel called Ecore, which is similar to UML. EMF
-      provides tools for converting a UML model to Ecore. EMF can then generate Java classes
-      from your model, and supports persistence of those classes in the XMI format.</para>
+    <para>Furthermore, the Eclipse Modeling Framework (EMF) is an open-source framework for model-based
+      application development, and it is based on UML and XMI. In EMF, you define class models using a metamodel called
+      Ecore, which is similar to UML. EMF provides tools for converting a UML model to Ecore. EMF can then generate Java
+      classes from your model, and supports persistence of those classes in the XMI format.</para>
     
-    <para>The UIMA SDK now provides tools for interoperability with XMI and EMF. These tools
-      allow conversions of UIMA Type Systems to and from Ecore models, as well as conversions
-      of UIMA CASes to and from XMI format. This provides a number of advantages,
-      including:</para>
+    <para>The UIMA SDK provides tools for interoperability with XMI and EMF. These tools allow conversions of UIMA
+      Type Systems to and from Ecore models, as well as conversions of UIMA CASes to and from XMI format. This provides a
+      number of advantages, including:</para>
     
     <blockquote>
-    <para>You can define a model using a UML Editor, such as Rational Rose or EclipseUML, and
-      then automatically convert it to a UIMA Type System.</para>
+      <para>You can define a model using a UML Editor, such as Rational Rose or EclipseUML, and then automatically
+        convert it to a UIMA Type System.</para>
+      
+      <para>You can take an existing UIMA application, convert its type system to Ecore, and save the CASes it
+        produces to XMI. This data is now in a form where it can easily be ingested by an EMF-based application.</para>
+    </blockquote>
     
-    <para>You can take an existing UIMA application, convert its type system to Ecore, and
-      save the CASes it produces to XMI. This data is now in a form where it can easily be ingested
-      by an EMF-based application.</para>
-      </blockquote>
+    <para>More generally, we are adopting the well-documented, open standard XMI as the standard way to represent
+      UIMA-compliant analysis results (replacing the UIMA-specific XCAS format). This use of an open standard
+      enables other applications to more easily produce or consume these UIMA analysis results.</para>
     
-    <para>More generally, we are adopting the well-documented, open standard XMI as the
-      standard way to represent UIMA-compliant analysis results (replacing the
-      UIMA-specific XCAS format). This use of an open standard enables other applications to
-      more easily produce or consume these UIMA analysis results.</para>
+    <para>For more information on XMI, see Grose et al. <emphasis>Mastering XMI. Java Programming with XMI, XML, and
+      UML.</emphasis> John Wiley &amp; Sons, Inc. 2002.</para>
     
-    <para>For more information on XMI, see Grose et al. Mastering XMI. Java Programming with
-      XMI, XML, and UML. John Wiley &amp; Sons, Inc. 2002.</para>
-    
-    <para>For more information on EMF, see Budinsky et al. Eclipse Modeling Framework 2.0.
+    <para>For more information on EMF, see Budinsky et al. <emphasis>Eclipse Modeling Framework 2.0.</emphasis>
       Addison-Wesley. 2006.</para>
     
-    <para>For details of how the UIMA CAS is represented in XMI format, see <olink
-        targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xmi"/>
-      .</para>
+    <para>For details of how the UIMA CAS is represented in XMI format, see <olink targetdoc="&uima_docs_ref;"
+        targetptr="ugr.ref.xmi"/> .</para>
     
   </section>
   
