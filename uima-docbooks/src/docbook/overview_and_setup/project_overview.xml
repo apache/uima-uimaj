@@ -259,7 +259,7 @@ under the License.
             <row id="ugr.project_overview_tools_xml_cas_viewer">
               <entry><emphasis>XML CAS Viewer</emphasis>
               </entry>
-              <entry>Describes how to run the supplied viewer to view externalized XML forms of CASes. This viewier
+              <entry>Describes how to run the supplied viewer to view externalized XML forms of CASes. This viewer
                 is used in the examples.</entry>
             </row>
           </tbody>
@@ -448,7 +448,7 @@ under the License.
       <para>The script will only attempt to modify files with the extensions: java, xml, xmi, wsdd, properties,
         launch, bat, cmd, sh, ksh, or csh; and files with no extension. Also, files with size greater than 1,000,000
         bytes will be skipped. (If you want the script to modify files with other extensions, you can edit the script
-        file and change the <literal>-ext</literal> argument appropraitely.) </para>
+        file and change the <literal>-ext</literal> argument appropriately.) </para>
       <para>After running the migration utility, you must recompile your code against the Apache UIMA jar files. The
         migration utility should have done most of the updates necessary for your code to compile and run, but some
         situations require manual intervention. See section <xref
@@ -491,7 +491,7 @@ under the License.
           . The following have also been removed and replaced with the equivalent "CAS" variants:
           <literal>TCASException</literal>, <literal>TCASRuntimeException</literal>,
           <literal>TCasPool</literal>, and <literal>CasCreationUtils.createTCas(...)</literal>. </para>
-        <para>The migration script will apply the necessary replacements. It will only reaplce "TCAS" when it
+        <para>The migration script will apply the necessary replacements. It will only replace "TCAS" when it
           appears capitalized and as a word by itself, or as one of the class or method names listed above. Otherwise it
           will not be replaced.</para>
       </section>
@@ -507,13 +507,13 @@ under the License.
       </section>
       <section id="ugr.project_overview.migration_utility.jar_files">
         <title>JAR File names Have Changed</title>
-        <para>The UIMA JAR file names have changed slightly.  Underscores have been replaced with hypens to 
+        <para>The UIMA JAR file names have changed slightly.  Underscores have been replaced with hyphens to 
           be consistent with Apache naming conventions.  For example <literal>uima_core.jar</literal> is now 
           <literal>uima-core.jar</literal>.  Also <literal>uima_jcas_builtin_types.jar</literal> has been 
           renamed to <literal>uima-document-annotation.jar</literal>.  Finally, the <literal>jVinci.jar</literal> 
           file is now in the <literal>lib</literal> directory rather than the <literal>lib/vinci</literal> 
           directory as was previously the case.  The migration script will apply the necessary replacements,
-          for example to script files or Eclipse launch confiugrations. (See <xref
+          for example to script files or Eclipse launch configurations. (See <xref
           linkend="ugr.project_overview_running_the_migration_utility"/> for a list of file extensions that
           the migration utility will process by default.)
           </para>
@@ -535,7 +535,7 @@ under the License.
           these two classes (and their containing package). There is a default version in the
           <literal>uima-document-annotation.jar</literal> file that is included in Apache UIMA. If you
           <emphasis>have</emphasis> made custom changes, then you should not delete the file but instead move it to
-          the correct package <literal>org.apache.uima.jcas.tcas</literal>. For more information about JCAS
+          the correct package <literal>org.apache.uima.jcas.tcas</literal>. For more information about JCas
           and DocumentAnnotation please see <olink targetdoc="&uima_docs_ref;"
             targetptr="ugr.ref.jcas.documentannotation_issues"/> </para>
       </section>
@@ -582,7 +582,7 @@ under the License.
           name (i.e., whatever name your imports got replaced with). However, we recommend instead that you do not
           use Apache UIMA package names for your own code.</para>
         <para>An even more rare case would be if you had a package name that started with a capital letter (poor Java
-          style) AND was prefixed by one of the UIMA package names, for example a pacakge named
+          style) AND was prefixed by one of the UIMA package names, for example a package named
           <literal>com.ibm.uima.MyPackage</literal>. This would be treated as a class name and replaced with
           <literal>org.apache.uima.MyPackage</literal> wherever it occurs.</para>
       </section>
@@ -804,7 +804,7 @@ catch (CASRuntimeException e) {
             <entry>JCas</entry>
             <entry>An alternative interface to the CAS, providing Java-based UIMA Analysis components with
               native Java object access to CAS types and their attributes or features, using the
-              JavaBeansconventions of getters and setters.</entry>
+              JavaBeans conventions of getters and setters.</entry>
           </row>
           
           <row>
