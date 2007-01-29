@@ -1,12 +1,14 @@
 		      UIMA DocBook Framework
 		      ==========================
 
-This project is a derivative of work done by the Velocity project.
-
-This project started out as a framework to render documentation for
+The docbook tooling used to produce the UIMA DocBooks is
+based on work done by the Velocity project, where it
+started out as a framework to render documentation for
 the Velocity project (http://jakarta.apache.org/velocity/) and ended
 somehow up to be a generic framework to render DocBook documents using
 Java and driven by ant.
+
+The Velocity developers wrote:
 
 While DocBook format seems to be ubiquitous these days, to my surprise
 there were not many generic frameworks around that could render all
