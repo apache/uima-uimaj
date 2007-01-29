@@ -131,7 +131,7 @@ under the License.
       <title>Install the UIMA Eclipse Plugins</title>
       
       <para>In the directory %UIMA_HOME%/eclipsePlugin (The environment variable
-        %UIMA_HOME% is where you installed the UIMA SDK), you will a set of folders. Copy these
+        %UIMA_HOME% is where you installed the UIMA SDK), you will see a set of folders. Copy these
         to your %ECLIPSE_HOME%/eclipse/plugins directory (%ECLIPSE_HOME% is where you
         installed Eclipse).</para>
       
