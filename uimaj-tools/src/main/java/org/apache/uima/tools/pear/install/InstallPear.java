@@ -1030,7 +1030,7 @@ public class InstallPear extends JFrame {
       System.err.println("Could not set look and feel: " + exception.getMessage());
     }
     try {
-      setIconImage(ImageIO.read(getClass().getResource(Images.MICROSCOPE)));
+      setIconImage(ImageIO.read(getClass().getResource(Images.UIMA_ICON_SMALL)));
     } catch (IOException ioexception) {
       System.err.println("Image could not be loaded: " + ioexception.getMessage());
     }

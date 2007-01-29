@@ -79,7 +79,7 @@ public class CpmFrame extends JFrame implements ActionListener {
 
     // Set frame icon image
     try {
-      this.setIconImage(Images.getImage(Images.MICROSCOPE));
+      this.setIconImage(Images.getImage(Images.UIMA_ICON_SMALL));
       // new ImageIcon(getClass().getResource(FRAME_ICON_IMAGE)).getImage());
     } catch (IOException e) {
       System.err.println("Image could not be loaded: " + e.getMessage());

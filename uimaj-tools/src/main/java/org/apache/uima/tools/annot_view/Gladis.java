@@ -54,7 +54,7 @@ public class Gladis {
   public static MainFrame createMainFrame() {
     final MainFrame frame = new MainFrame();
     // Set icon.
-    ImageIcon icon = Images.getImageIcon(Images.MICROSCOPE);
+    ImageIcon icon = Images.getImageIcon(Images.UIMA_ICON_SMALL);
     if (icon != null) {
       frame.setIconImage(icon.getImage());
     }

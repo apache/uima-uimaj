@@ -31,9 +31,9 @@ import javax.swing.ImageIcon;
 public class Images {
   public static final String SPLASH = "/org/apache/uima/tools/images/Splash_screen.gif";
 
-  public static final String BANNER = "/org/apache/uima/tools/images/Banner_UIMA.gif";
+  public static final String BANNER = "/org/apache/uima/tools/images/UIMA_banner.png";
 
-  public static final String MICROSCOPE = "/org/apache/uima/tools/images/Micro_16.gif";
+  public static final String UIMA_ICON_SMALL = "/org/apache/uima/tools/images/UIMA_logo_16.png";
 
   public static final String ROW_DELETE = "/org/apache/uima/tools/images/RowDelete_24.gif";
 
