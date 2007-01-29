@@ -21,14 +21,26 @@ REM Run with -notest to skip the unit tests
 
 @echo on
 
-@set jvmarg=""
-@if "%~1"=="" goto execute
-@if "%~1"=="-notest" goto notest
+@if "%~1"=="" goto usage
+@if "%~1"=="trunk" goto trunk
+@set level=tags/%~1
+@set leveldir=%~1
+@goto checktest
+
+@:trunk
+@set level=trunk
+@set leveldir=trunk
+@goto checktest
+
+@:checktest
+@set jvmarg=
+@if "%~2"=="" goto execute
+@if "%~2"=="-notest" goto notest
 @goto usage
 
 @:usage
 @echo off
-echo Usage: extractAndBuild.bat [-notest]
+echo Usage: extractAndBuild.bat <level> [-notest]
 @echo on
 @goto exit
 
@@ -36,10 +48,10 @@ echo Usage: extractAndBuild.bat [-notest]
 @set jvmarg="-Dmaven.test.skip=true"
 @goto execute
 
-
 @:execute
-svn checkout http://svn.apache.org/repos/asf/incubator/uima/uimaj/trunk
-cd trunk\uimaj
+svn checkout -r HEAD http://svn.apache.org/repos/asf/incubator/uima/uimaj/%level%
+cd %leveldir%
+cd uimaj
 call mvn %jvmarg%  -Duima.build.date="%date% %time%" install
 cd ..
 cd uimaj-distr
