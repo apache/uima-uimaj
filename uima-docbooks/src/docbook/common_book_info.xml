@@ -34,7 +34,7 @@ under the License.
     <productname>UIMA</productname>
 
     <authorgroup>
-      <corpauthor>The Apache UIMA Development Community</corpauthor>
+      <corpauthor>Authors: The Apache UIMA Development Community</corpauthor>
     </authorgroup>
 
  <!--
@@ -45,6 +45,18 @@ under the License.
     </mediaobject>
  -->
     <legalnotice>
+      <para> </para>
+      <formalpara>
+        <title>Incubation Notice and Disclaimer</title>
+        <para>Apache UIMA is an effort undergoing incubation at the Apache Software Foundation (ASF). 
+          Incubation is required of all newly accepted projects until a further review indicates that 
+          the infrastructure, communications, and decision making process have stabilized in a manner 
+          consistent with other successful ASF projects. While incubation status is not necessarily 
+          a reflection of the completeness or stability of the code, 
+          it does indicate that the project has yet to be fully endorsed by the ASF.</para>
+      </formalpara>
+      <para> </para>
+      <para> </para>
       <formalpara>
         <title>License and Disclaimer</title>
 
@@ -67,6 +79,7 @@ under the License.
          </para>
       </formalpara>
       <para> </para>
+      <para> </para>
       <formalpara>
         <title>Trademarks</title>
         <para>All terms mentioned in the text that are known to be trademarks or 
@@ -78,7 +91,7 @@ under the License.
     </legalnotice>
     <copyright>
       <year>2007</year>
-      <holder>Apache Software Foundation</holder>
+      <holder>The Apache Software Foundation</holder>
     </copyright>
     <pubdate>February, 2007</pubdate>
   </bookinfo>
