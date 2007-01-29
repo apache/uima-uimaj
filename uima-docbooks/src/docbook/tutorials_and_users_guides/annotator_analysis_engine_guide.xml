@@ -132,7 +132,8 @@ under the License.
     use Analysis Engines, along with other components, e.g. a search engine, document store,
     and user interface, to deliver a complete package of functionality to an end-user. For
     information on application development, see <olink
-      targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.application"/>
+      targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.application"
+       xrefstyle="select: label quotedtitle"/>
     .</para>
   
   <section id="ugr.tug.aae.getting_started">
