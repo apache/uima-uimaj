@@ -45,7 +45,7 @@ under the License.
     </mediaobject>
  -->
     <legalnotice>
-      <note>
+      <formalpara>
         <title>License and Disclaimer</title>
 
         <para>The ASF licenses this documentation
@@ -65,15 +65,20 @@ under the License.
            specific language governing permissions and limitations
            under the License.
          </para>
-        </note>
+      </formalpara>
       <para> </para>
-      <note>
+      <formalpara>
         <title>Trademarks</title>
         <para>All terms mentioned in the text that are known to be trademarks or 
         service marks have been appropriately capitalized.  Use of such terms
         in this book should not be regarded as affecting the validity of the
         the trademark or service mark.
         </para>
-      </note>
+      </formalpara>
     </legalnotice>
+    <copyright>
+      <year>2007</year>
+      <holder>Apache Software Foundation</holder>
+    </copyright>
+    <pubdate>February, 2007</pubdate>
   </bookinfo>
