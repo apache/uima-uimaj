@@ -29,7 +29,8 @@ under the License.
   
   <para>The Component Descriptor Editor is an Eclipse plug-in that provides a forms-based
     interface for creating and editing UIMA XML descriptors. It supports most of the
-    descriptor formats, except the Collection Processing Engine descriptor.</para>
+    descriptor formats, except the Collection Processing Engine descriptor and
+    some remote deployment descriptors.</para>
   
   <section id="ugr.tools.cde.launching">
     <title>Launching the Component Descriptor Editor</title>
@@ -80,7 +81,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="324px" format="JPG" fileref="&imgroot;image004.jpg"/>
+          <imagedata width="300px" format="JPG" fileref="&imgroot;image004.jpg"/>
         </imageobject>
         <textobject><phrase>Screenshot of selecting new UIMA component in Eclipse
         after pushing Next</phrase>
@@ -149,7 +150,7 @@ under the License.
         which separates sub-sections of the page. This bar can be dragged with the mouse to
         adjust how the display area is split between the two sash panes. You can also change the
         orientation of the Sash so it splits vertically, instead of horizontally, by
-        clicking on the small icons at the top right of of the page that look like this:
+        clicking on the small icons at the top right of the page that look like this:
         
         <screenshot>
       <mediaobject>
@@ -192,16 +193,19 @@ under the License.
       <title>Runtime Information</title>
       
       <para>Runtime information is only applicable for primitive engines and is disabled
-        for aggregates. This is where you specify the class name of the annotator
-        implementation, if you are doing a Java implementation. This documentation always
-        assumes you are doing a Java implementation. Most Analysis Engines will specify that
-        they update the CAS, and that they can be replicated when deployed for performance. If
+        for aggregates and other kinds of descriptors. This is where you specify the class name of the annotator
+        implementation, if you are doing a Java implementation, or the C++ shared object or dll name,
+        if you are doing a C++ implementation.  Most Analysis Engines will specify that
+        they update the CAS, and that they may be replicated (for performance reasons) when deployed. If
         a particular Analysis Engine must see every CAS (for instance, if it is counting the
         number of CASes), then uncheck the <quote>multiple deployment allowed</quote>
         box. If the Analysis Engine doesn&apos;t update the CAS, uncheck the <quote>updates
-        the CAS</quote> box. (Most CAS Consumers do not update the CAS).</para>
+        the CAS</quote> box. (Most CAS Consumers do not update the CAS, and this parameter
+        defaults to unchecked for new CAS Consumer descriptors).</para>
       
-      <para>Analysis engines can create additional CASes for analysis. To specify that they
+      <para>Analysis engines are written using the CAS Multiplier APIs 
+        (see <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.cm"/>) 
+        can create additional CASes for analysis. To specify that they
         do this, check the <quote>returns new artifacts</quote>.</para>
       
     </section>
@@ -227,7 +231,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="609px" format="JPG" fileref="&imgroot;image010.jpg"/>
+          <imagedata width="330px" format="JPG" fileref="&imgroot;image010.jpg"/>
         </imageobject>
         <textobject><phrase>CDE Aggregate page</phrase>
         </textobject>
@@ -248,21 +252,16 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="370px" format="JPG" fileref="&imgroot;image012.jpg"/>
+          <imagedata width="300px" format="JPG" fileref="&imgroot;delegate-chooser.jpg"/>
         </imageobject>
         <textobject><phrase>Adding an Analysis Engine to an Aggregate</phrase>
         </textobject>
       </mediaobject>
     </screenshot></para>
     
-    <para>This is a rather complex dialog, but the basic idea is that it enables you to select
-      multiple descriptors from various levels of your workspace. As you select
-      descriptors, highlight the appropriate directory on the left, and select, or
-      multi-select descriptors on the right. To select all descriptors in a particular
-      directory, you may place a checkmark next to the directory on the left. It is also
-      possible to add descriptors that are not part of your Eclipse workspace by clicking the
-      Browse file system... button. It is only possible to add one descriptor at a time when
-      picking from outside of the Eclipse workspace.</para>
+    <para>This dialog lets you select
+      a descriptor from your workspace, or browse the file system to select a descriptor. 
+      </para>
     
     <para>You can specify that the import should be by Name (the name is looked up using both the
       Project&apos;s class path, and DataPath), or by location. If it is by name, it may
@@ -275,7 +274,7 @@ under the License.
     
     <para>The final selection at the bottom tells whether or not the selected engine(s)
       should automatically be added to the end of the flow section (the right section on the
-      Aggregate page). The OK button does not become activated until at least one descriptor
+      Aggregate page). The OK button does not become activated until a descriptor
       file is selected.</para>
     
     <para>To remove an analysis engine from the component engine list simply select an engine
@@ -411,7 +410,7 @@ under the License.
         <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="402px" format="JPG" fileref="&imgroot;image018.jpg"/>
+          <imagedata width="302px" format="JPG" fileref="&imgroot;image018.jpg"/>
         </imageobject>
         <textobject><phrase>Specifying flow control</phrase>
         </textobject>
@@ -445,7 +444,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="495px" format="JPG" fileref="&imgroot;image020.jpg"/>
+          <imagedata width="475px" format="JPG" fileref="&imgroot;image020.jpg"/>
         </imageobject>
         <textobject><phrase>Parameter Definitions - not Aggregate</phrase>
         </textobject>
@@ -497,7 +496,7 @@ under the License.
         <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="466px" format="JPG" fileref="&imgroot;image024.jpg"/>
+          <imagedata width="460px" format="JPG" fileref="&imgroot;image024.jpg"/>
         </imageobject>
         <textobject><phrase>Using parameter groups</phrase>
         </textobject>
@@ -701,7 +700,7 @@ under the License.
     <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="594px" format="JPG" fileref="&imgroot;image032.jpg"/>
+          <imagedata width="530px" format="JPG" fileref="&imgroot;image032.jpg"/>
         </imageobject>
         <textobject><phrase>Setting JCasGen options</phrase>
         </textobject>
@@ -727,7 +726,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="452px" format="JPG" fileref="&imgroot;image034.jpg"/>
+          <imagedata width="360px" format="JPG" fileref="&imgroot;image034.jpg"/>
         </imageobject>
         <textobject><phrase>Adding a type</phrase>
         </textobject>
@@ -776,7 +775,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="444px" format="JPG" fileref="&imgroot;image036.jpg"/>
+          <imagedata width="360px" format="JPG" fileref="&imgroot;image036.jpg"/>
         </imageobject>
         <textobject><phrase>Specifying a Feature Structure</phrase>
         </textobject>
@@ -801,7 +800,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="473px" format="JPG" fileref="&imgroot;image038.jpg"/>
+          <imagedata width="300px" format="JPG" fileref="&imgroot;import-chooser.jpg"/>
         </imageobject>
         <textobject><phrase>Picking files for importing</phrase>
         </textobject>
@@ -809,8 +808,7 @@ under the License.
     </screenshot></para>
     
     <para>This is essentially the same dialog as was used to add component engines to an
-      aggregate. This dialog supports multi-selection &ndash; all selected items will be
-      imported. To import from a type system descriptor that is not part of your Eclipse
+      aggregate. To import from a type system descriptor that is not part of your Eclipse
       workspace, click the Browse the file system.... button.</para>
     
     <para>Imported types are validated, and if OK, they are added to the list in the Imported
@@ -843,7 +841,7 @@ under the License.
         <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="453px" format="JPG" fileref="&imgroot;image040.jpg"/>
+          <imagedata width="360px" format="JPG" fileref="&imgroot;image040.jpg"/>
         </imageobject>
         <textobject><phrase>Exporting a type system</phrase>
         </textobject>
@@ -871,7 +869,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="529px" format="JPG" fileref="&imgroot;image042.jpg"/>
+          <imagedata width="500px" format="JPG" fileref="&imgroot;image042.jpg"/>
         </imageobject>
         <textobject><phrase>Capabilities page</phrase>
         </textobject>
@@ -892,7 +890,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="434px" format="JPG" fileref="&imgroot;image044.jpg"/>
+          <imagedata width="360px" format="JPG" fileref="&imgroot;image044.jpg"/>
         </imageobject>
         <textobject><phrase>Adding a type to the capabilities page</phrase>
         </textobject>
@@ -916,7 +914,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="428px" format="JPG" fileref="&imgroot;image046.jpg"/>
+          <imagedata width="360px" format="JPG" fileref="&imgroot;image046.jpg"/>
         </imageobject>
         <textobject><phrase>Specifying features as input or output</phrase>
         </textobject>
@@ -938,7 +936,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="444px" format="JPG" fileref="&imgroot;image048.jpg"/>
+          <imagedata width="360px" format="JPG" fileref="&imgroot;image048.jpg"/>
         </imageobject>
         <textobject><phrase>Specifying a language</phrase>
         </textobject>
@@ -958,7 +956,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="452px" format="JPG" fileref="&imgroot;image050.jpg"/>
+          <imagedata width="360px" format="JPG" fileref="&imgroot;image050.jpg"/>
         </imageobject>
         <textobject><phrase>Specifying a Sofa name</phrase>
         </textobject>
@@ -978,7 +976,7 @@ under the License.
         <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="528px" format="JPG" fileref="&imgroot;image052.jpg"/>
+          <imagedata width="500px" format="JPG" fileref="&imgroot;image052.jpg"/>
         </imageobject>
         <textobject><phrase>Sofa mappings</phrase>
         </textobject>
@@ -1028,8 +1026,8 @@ under the License.
     <title>Indexes Page</title>
     
     <para>The Indexes page is where the user declares what indexes and type priority lists are
-      used by the analysis engine. Indexes are used to determine the order in which Feature
-      Structures of a particular type are fetched, using an iterator in the UIMA API. An
+      used by the analysis engine. Indexes are used to determine which Feature
+      Structures of a particular type are fetched, using an iterator in the UIMA API.  An
       unpopulated Indexes page is displayed below:
       
       
@@ -1071,15 +1069,16 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="409px" format="JPG" fileref="&imgroot;image058.jpg"/>
+          <imagedata width="360px" format="JPG" fileref="&imgroot;image058.jpg"/>
         </imageobject>
         <textobject><phrase>Adding a new index</phrase>
         </textobject>
       </mediaobject>
     </screenshot></para>
     
-    <para>Each index needs a globally unique index name. Every index indexes one CAS type (and
-      its subtypes). The entry field for this has content assist (start typing the type name
+    <para>Each index needs a globally unique index name. Every index indexes one CAS type (including
+      its subtypes). If you're using Eclipse 3.2 or later, the entry field for this 
+      has content assist (start typing the type name
       and press Control &ndash; Spacebar to get help, or press the Browse button to pick a
       type).</para>
     
@@ -1088,6 +1087,13 @@ under the License.
       elements will be disabled if they are not relevant. For instance, if the index kind is
       <quote>bag</quote>, you cannot provide sort keys. The order of sort keys can be
       adjusted using the up and down buttons, if necessary.</para>
+    
+    
+       <note><para>There is usually no need to explicitly declare a Bag index in your descriptor.  
+              As of UIMA v2.1, if you do not declare any index for a type (or any of its 
+              supertypes), a Bag index will be automatically created.  This index is 
+       accessed using the <literal>getAllIndexedFS(...)</literal> method defined on the index repository.</para></note>
+    
     
     <para>A set index will contain no duplicates of the same type, where a duplicate is defined
       by the indexing comparator. That is, if you commit two feature structures of the same
@@ -1280,7 +1286,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="377px" format="JPG" fileref="&imgroot;image068.jpg"/>
+          <imagedata width="300px" format="JPG" fileref="&imgroot;image068.jpg"/>
         </imageobject>
         <textobject><phrase>Working with a self-contained type system</phrase>
         </textobject>
@@ -1291,7 +1297,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="330px" format="JPG" fileref="&imgroot;image070.jpg"/>
+          <imagedata width="300px" format="JPG" fileref="&imgroot;image070.jpg"/>
         </imageobject>
         <textobject><phrase></phrase>
         </textobject>
@@ -1307,7 +1313,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="372px" format="JPG" fileref="&imgroot;image072.jpg"/>
+          <imagedata width="300px" format="JPG" fileref="&imgroot;image072.jpg"/>
         </imageobject>
         <textobject><phrase>Editing a type system object</phrase>
         </textobject>
