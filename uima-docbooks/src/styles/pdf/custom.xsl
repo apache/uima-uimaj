@@ -160,7 +160,7 @@
             <fo:page-number/>
           </xsl:when>
 
-          <xsl:when test="$double.sided != 0 and $sequence = 'odd' and $position='right'">
+          <xsl:when test="$double.sided != 0 and ($sequence = 'odd' or $sequence = 'first') and $position='right'">
             <fo:page-number/>
           </xsl:when>
 
