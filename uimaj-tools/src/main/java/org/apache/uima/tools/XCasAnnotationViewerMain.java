@@ -61,7 +61,7 @@ import org.apache.uima.tools.docanalyzer.XCasAnnotationViewerDialog;
 import org.apache.uima.tools.images.Images;
 import org.apache.uima.tools.util.gui.Caption;
 import org.apache.uima.tools.util.gui.FileSelector;
-import org.apache.uima.tools.util.gui.SplashScreenDialog;
+import org.apache.uima.tools.util.gui.AboutDialog;
 import org.apache.uima.tools.util.gui.SpringUtilities;
 import org.apache.uima.tools.util.htmlview.AnnotationViewGenerator;
 import org.apache.uima.util.CasCreationUtils;
@@ -125,7 +125,7 @@ public class XCasAnnotationViewerMain extends JFrame {
 
     // Set frame icon image
     try {
-      this.setIconImage(Images.getImage(Images.UIMA_ICON_SMALL));
+      this.setIconImage(Images.getImage(Images.UIMA_LOGO_SMALL));
       // new ImageIcon(getClass().getResource(FRAME_ICON_IMAGE)).getImage());
     } catch (IOException e) {
       System.err.println("Image could not be loaded: " + e.getMessage());
@@ -134,7 +134,7 @@ public class XCasAnnotationViewerMain extends JFrame {
     this.getContentPane().setBackground(Color.WHITE);
 
     // create about dialog
-    aboutDialog = new SplashScreenDialog(this, "About XCAS Annotation Viewer");
+    aboutDialog = new AboutDialog(this, "About XCAS Annotation Viewer");
 
     // Create Menu Bar
     JMenuBar menuBar = new JMenuBar();

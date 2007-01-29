@@ -43,12 +43,12 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.uima.tools.images.Images;
-import org.apache.uima.tools.util.gui.SplashScreenDialog;
+import org.apache.uima.tools.util.gui.AboutDialog;
 
 public class GUI extends JFrame {
   private static final long serialVersionUID = 1L;
 
-  private SplashScreenDialog aboutDialog;
+  private AboutDialog aboutDialog;
 
   final static String NL = System.getProperties().getProperty("line.separator");
 
@@ -324,7 +324,7 @@ public class GUI extends JFrame {
 
     // Set frame icon image
     try {
-      this.setIconImage(Images.getImage(Images.UIMA_ICON_SMALL));
+      this.setIconImage(Images.getImage(Images.UIMA_LOGO_SMALL));
     } catch (IOException e) {
       System.err.println("Image could not be loaded: " + e.getMessage());
     }
@@ -337,7 +337,7 @@ public class GUI extends JFrame {
 
     this.getContentPane().add(pnG, BorderLayout.CENTER);
 
-    aboutDialog = new SplashScreenDialog(this, "About JCasGen");
+    aboutDialog = new AboutDialog(this, "About JCasGen");
 
     setJMenuBar(createMenuBar());
 

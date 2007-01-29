@@ -29,11 +29,11 @@ import javax.swing.ImageIcon;
  * Names of images and utility methods to get images.
  */
 public class Images {
-  public static final String SPLASH = "/org/apache/uima/tools/images/Splash_screen.gif";
-
   public static final String BANNER = "/org/apache/uima/tools/images/UIMA_banner.png";
 
-  public static final String UIMA_ICON_SMALL = "/org/apache/uima/tools/images/UIMA_logo_50.png";
+  public static final String UIMA_LOGO_SMALL = "/org/apache/uima/tools/images/UIMA_logo_50.png";
+
+  public static final String UIMA_LOGO_BIG = "/org/apache/uima/tools/images/UIMA_logo_big.png";
 
   public static final String ROW_DELETE = "/org/apache/uima/tools/images/RowDelete_24.gif";
 

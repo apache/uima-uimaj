@@ -67,6 +67,7 @@ import org.apache.uima.pear.util.MessageRouter;
 import org.apache.uima.pear.util.ProcessUtil;
 import org.apache.uima.pear.util.UIMAUtil;
 import org.apache.uima.tools.images.Images;
+import org.apache.uima.tools.util.gui.AboutDialog;
 
 /**
  * This GUI is used to install a pear file locally in a directory chosen by the user and then run
@@ -1030,7 +1031,7 @@ public class InstallPear extends JFrame {
       System.err.println("Could not set look and feel: " + exception.getMessage());
     }
     try {
-      setIconImage(ImageIO.read(getClass().getResource(Images.UIMA_ICON_SMALL)));
+      setIconImage(ImageIO.read(getClass().getResource(Images.UIMA_LOGO_SMALL)));
     } catch (IOException ioexception) {
       System.err.println("Image could not be loaded: " + ioexception.getMessage());
     }
@@ -1087,11 +1088,8 @@ public class InstallPear extends JFrame {
     aboutMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand() == "About") {
-          JFrame messageFrame = new JFrame("About PEARInstaller");
-          aboutMenuItemPanel = new JPanel();
-          JLabel frameLabel = new JLabel(new ImageIcon(getClass().getResource(Images.SPLASH)));
-          JOptionPane.showMessageDialog(messageFrame, aboutMenuItemPanel.add(frameLabel),
-                  "About PEAR Installer Version 1.0", JOptionPane.PLAIN_MESSAGE);
+          AboutDialog dialog = new AboutDialog(InstallPear.this, "About PEAR Installer");
+          dialog.setVisible(true);
         }
       }
     });

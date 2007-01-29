@@ -22,7 +22,6 @@ package org.apache.uima.tools.annot_view;
 import java.io.File;
 
 import javax.swing.ImageIcon;
-import javax.swing.JWindow;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -54,7 +53,7 @@ public class Gladis {
   public static MainFrame createMainFrame() {
     final MainFrame frame = new MainFrame();
     // Set icon.
-    ImageIcon icon = Images.getImageIcon(Images.UIMA_ICON_SMALL);
+    ImageIcon icon = Images.getImageIcon(Images.UIMA_LOGO_SMALL);
     if (icon != null) {
       frame.setIconImage(icon.getImage());
     }
@@ -111,8 +110,6 @@ public class Gladis {
         printUsage();
         System.exit(2);
       }
-      SplashScreen splashScreen = new SplashScreen(new JWindow());
-      splashScreen.start();
       String lookAndFeel = null;
       if (clp.isInArgsList(LOOK_AND_FEEL_PARAM)) {
 	lookAndFeel = clp.getParamArgument(LOOK_AND_FEEL_PARAM);
@@ -123,9 +120,6 @@ public class Gladis {
 	}
       }
       MainFrame frame = createMainFrame();
-      splashScreen.close();
-      splashScreen.join();
-      splashScreen = null;
       if (clp.isInArgsList(TEXT_FILE_PARAM)) {
         frame.loadTextFile(new File(clp.getParamArgument(TEXT_FILE_PARAM)));
       }

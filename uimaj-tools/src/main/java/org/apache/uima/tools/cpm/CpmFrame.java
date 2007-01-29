@@ -44,7 +44,7 @@ import javax.swing.WindowConstants;
 
 import org.apache.uima.tools.images.Images;
 import org.apache.uima.tools.util.gui.FileChooserBugWorkarounds;
-import org.apache.uima.tools.util.gui.SplashScreenDialog;
+import org.apache.uima.tools.util.gui.AboutDialog;
 
 public class CpmFrame extends JFrame implements ActionListener {
   private static final long serialVersionUID = 756368351780483658L;
@@ -79,7 +79,7 @@ public class CpmFrame extends JFrame implements ActionListener {
 
     // Set frame icon image
     try {
-      this.setIconImage(Images.getImage(Images.UIMA_ICON_SMALL));
+      this.setIconImage(Images.getImage(Images.UIMA_LOGO_SMALL));
       // new ImageIcon(getClass().getResource(FRAME_ICON_IMAGE)).getImage());
     } catch (IOException e) {
       System.err.println("Image could not be loaded: " + e.getMessage());
@@ -96,7 +96,7 @@ public class CpmFrame extends JFrame implements ActionListener {
 
     setJMenuBar(createMenuBar());
 
-    aboutDialog = new SplashScreenDialog(this, "About Collection Processing Engine Configurator");
+    aboutDialog = new AboutDialog(this, "About Collection Processing Engine Configurator");
 
     this.setSize(800, 600);
     this.pack();

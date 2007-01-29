@@ -92,7 +92,7 @@ import org.apache.uima.tools.images.Images;
 import org.apache.uima.tools.stylemap.StyleMapEditor;
 import org.apache.uima.tools.stylemap.StyleMapEntry;
 import org.apache.uima.tools.util.gui.Caption;
-import org.apache.uima.tools.util.gui.SplashScreenDialog;
+import org.apache.uima.tools.util.gui.AboutDialog;
 import org.apache.uima.tools.util.gui.SpringUtilities;
 import org.apache.uima.util.AnalysisEnginePerformanceReports;
 import org.apache.uima.util.CasCreationUtils;
@@ -233,7 +233,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
     // Set frame icon image
     try {
-      this.setIconImage(Images.getImage(Images.UIMA_ICON_SMALL));
+      this.setIconImage(Images.getImage(Images.UIMA_LOGO_SMALL));
       // new
       // ImageIcon(getClass().getResource(FRAME_ICON_IMAGE)).getImage());
     } catch (IOException e) {
@@ -241,7 +241,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     }
 
     // create about dialog
-    aboutDialog = new SplashScreenDialog(this, "About Document Analyzer");
+    aboutDialog = new AboutDialog(this, "About Document Analyzer");
     this.outputFileSelected = outputFileSelected;
     this.interactive = interactiveDA;
     this.javaViewerUCRBisSelected = jvucrbis;

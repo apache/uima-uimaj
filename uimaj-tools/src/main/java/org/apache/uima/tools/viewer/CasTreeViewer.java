@@ -337,7 +337,7 @@ public class CasTreeViewer extends JPanel {
 
         // Set frame icon image
         try {
-          frame.setIconImage(Images.getImage(Images.UIMA_ICON_SMALL));
+          frame.setIconImage(Images.getImage(Images.UIMA_LOGO_SMALL));
         } catch (IOException e) {
           System.err.println("Image could not be loaded: " + e.getMessage());
         }

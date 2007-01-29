@@ -141,6 +141,8 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.tools.images.Images;
+import org.apache.uima.tools.pear.install.InstallPear;
+import org.apache.uima.tools.util.gui.AboutDialog;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
@@ -1283,7 +1285,7 @@ public class MainFrame extends JFrame {
       String msg = "CVD (CAS Visual Debugger)\n" + "Apache UIMA Version "
               + UIMAFramework.getVersionString() + "\n"
               + "Copyright 2006 The Apache Software Foundation\n" + versionInfo + "\n";
-      Icon icon = Images.getImageIcon(Images.UIMA_ICON_SMALL);
+      Icon icon = Images.getImageIcon(Images.UIMA_LOGO_SMALL);
       if (icon == null) {
         JOptionPane.showMessageDialog(MainFrame.this, msg, "About CVD",
                 JOptionPane.INFORMATION_MESSAGE);
@@ -1328,21 +1330,9 @@ public class MainFrame extends JFrame {
   private class AboutUimaHandler implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
-      JWindow window = new JWindow();
-      window.addMouseListener(new WindowClosingMouseListener(window));
-      JLabel splashLabel = new JLabel(Images.getImageIcon(Images.SPLASH));
-      splashLabel.setBorder(null);
-      // JPanel panel = new JPanel(new BorderLayout());
-      JPanel panel = new JPanel();
-      panel.setBackground(Color.WHITE);
-      panel.add(splashLabel, BorderLayout.NORTH);
-      panel.setBorder(null);
-      window.setContentPane(panel);
-      window.pack();
-      window.setLocationRelativeTo(MainFrame.this);
-      window.setVisible(true);
+      AboutDialog dialog = new AboutDialog(MainFrame.this, "About UIMA");
+      dialog.setVisible(true);
     }
-
   }
 
   private class ManualHandler implements ActionListener {
