@@ -36,7 +36,6 @@ import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 
 /**
@@ -216,6 +215,7 @@ public class FileSelector extends JPanel implements FocusListener {
 
   public void setSelected(String s) {
     field.setText(s);
+    previousValue = s;
     if (s == null || s.length() == 0) {
       s = System.getProperty("user.dir");
     }
