@@ -21,6 +21,7 @@ package org.apache.uima.tools.pear.install;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -1095,37 +1096,38 @@ public class InstallPear extends JFrame {
     });
     helpMenu.add(helpMenuItem);
     helpMenu.add(aboutMenuItem);
-    JPanel bannerPanel = new JPanel();
-    bannerPanel.setSize(735, 60);
-    bannerPanel.setBackground(Color.WHITE);
-    bannerLabel = new JLabel(new ImageIcon(getClass().getResource(Images.BANNER)));
-    bannerLabel.setBounds(0, 30, 735, 20);
-    bannerPanel.add(bannerLabel);
+
     /*
-     * Initialize jContentPane and add the initialized components into the content's pane
+     * Initialize Main Pane and add the initialized components
      */
     JLabel installDirLabel = new JLabel();
     JLabel pearFileLabel = new JLabel();
-    JPanel jContentPane = new JPanel();
-    jContentPane.setLayout(null);
+    JPanel mainPane = new JPanel();
+    mainPane.setLayout(null);
     pearFileLabel.setBounds(83, 70, 126, 20);
     pearFileLabel.setText("PEAR File:");
     installDirLabel.setBounds(83, 110, 126, 20);
     installDirLabel.setText("Installation Directory:");
-    jContentPane.add(pearFileLabel, null);
-    jContentPane.add(getPearFileTextField(), null);
-    jContentPane.add(getbrowseButton(), null);
-    jContentPane.add(installDirLabel, null);
-    jContentPane.add(getInstallDirTextField(), null);
-    jContentPane.add(getBrowseDirButton(), null);
-    jContentPane.add(getInstallButton(), null);
-    jContentPane.add(getRunButton(), null);
-    jContentPane.add(getHelpButton(), null);
-    jContentPane.add(getPearConsole(), null);
-    jContentPane.add(getJScrollPane(), null);
-    jContentPane.add(bannerPanel);
-    setContentPane(jContentPane);
-
+    mainPane.add(pearFileLabel, null);
+    mainPane.add(getPearFileTextField(), null);
+    mainPane.add(getbrowseButton(), null);
+    mainPane.add(installDirLabel, null);
+    mainPane.add(getInstallDirTextField(), null);
+    mainPane.add(getBrowseDirButton(), null);
+    mainPane.add(getInstallButton(), null);
+    mainPane.add(getRunButton(), null);
+    mainPane.add(getHelpButton(), null);
+    mainPane.add(getPearConsole(), null);
+    mainPane.add(getJScrollPane(), null);
+    
+    /*
+     * Add main pane and UIMA banner to content pane
+     */
+    Container contentPanel = getContentPane();
+    contentPanel.setBackground(Color.WHITE);
+    JLabel banner = new JLabel(Images.getImageIcon(Images.BANNER));
+    contentPanel.add(banner, BorderLayout.NORTH);
+    contentPanel.add(mainPane, BorderLayout.CENTER);
   }
 
   /**

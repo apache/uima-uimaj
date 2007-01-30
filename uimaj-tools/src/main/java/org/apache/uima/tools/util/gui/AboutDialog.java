@@ -20,6 +20,7 @@
 package org.apache.uima.tools.util.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -53,7 +54,11 @@ public class AboutDialog extends JDialog {
     getContentPane().setLayout(new BorderLayout());
     JButton closeButton = new JButton("OK");
 
-    getContentPane().add(new JLabel(Images.getImageIcon(Images.UIMA_LOGO_BIG)), BorderLayout.WEST);
+    JLabel imageLabel = new JLabel(Images.getImageIcon(Images.UIMA_LOGO_BIG));
+    JPanel imagePanel = new JPanel();
+    imagePanel.setBackground(Color.WHITE);
+    imagePanel.add(imageLabel);
+    getContentPane().add(imagePanel, BorderLayout.WEST);
     
     String aboutText = ABOUT_TEXT.replaceAll("\\$\\{version\\}", UIMAFramework.getVersionString());
        

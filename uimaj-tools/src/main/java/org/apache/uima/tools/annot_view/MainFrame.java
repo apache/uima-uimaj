@@ -2486,8 +2486,8 @@ public class MainFrame extends JFrame {
     contentPane.setOpaque(true);
 
     JLabel bannerLabel = new JLabel(Images.getImageIcon(Images.BANNER));
-    bannerLabel.setAlignmentX(LEFT_ALIGNMENT);
-    contentPane.setAlignmentX(LEFT_ALIGNMENT);
+    bannerLabel.setAlignmentX(CENTER_ALIGNMENT);
+    contentPane.setAlignmentX(CENTER_ALIGNMENT);
     JPanel mainPane = new JPanel();
     mainPane.setBackground(Color.WHITE);
     // mainPane.setLayout(new BorderLayout());
