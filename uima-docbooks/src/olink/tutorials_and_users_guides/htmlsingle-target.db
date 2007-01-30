@@ -794,11 +794,11 @@
       <div element="section" href="#ugr.tug.cm.calling_cm_from_app" number="7.5" targetptr="ugr.tug.cm.calling_cm_from_app">
          <ttl>Calling a CAS Multiplier from an Application</ttl>
          <xreftext>Section 7.5, “Applications: Calling CAS Multipliers”</xreftext>
-         <div element="section" href="#d0e5765" number="7.5.1">
+         <div element="section" href="#d0e5771" number="7.5.1">
             <ttl>Retrieving Output CASes from the CAS Multiplier</ttl>
             <xreftext>Section 7.5.1, “Retrieving Output CASes from the CAS Multiplier”</xreftext>
          </div>
-         <div element="section" href="#d0e5834" number="7.5.2">
+         <div element="section" href="#d0e5840" number="7.5.2">
             <ttl>Using a CAS Multiplier with other Analysis Engines</ttl>
             <xreftext>Section 7.5.2, “Using a CAS Multiplier with other Analysis Engines”</xreftext>
          </div>

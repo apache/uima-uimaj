@@ -235,9 +235,9 @@ CAS Consumer:
       <para>The CPE configured above runs a simple name and title annotator on the sample data
         provided with the UIMA SDK and stores the results using the XMI Writer CAS Consumer. To
         view the results, start the External CAS Annotation Viewer by running the
-        <literal>xcasAnnotationViewer</literal> batch file
-        (<literal>xcasAnnotationViewer.bat</literal> on Windows,
-        <literal>xcasAnnotationViewer.sh</literal> on Unix), which is located in the
+        <literal>annotationViewer</literal> batch file
+        (<literal>annotationViewer.bat</literal> on Windows,
+        <literal>annotationViewer.sh</literal> on Unix), which is located in the
         <literal>bin</literal> directory of the UIMA SDK installation. Executing this
         batch file will display the window shown here:
         

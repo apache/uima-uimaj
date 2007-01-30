@@ -698,7 +698,7 @@ under the License.
         that uses this should still continue to work, however.</para>
       
       <para>The DocumentAnalyzer tool saves outputs in the new XMI serialization format. The
-        XCasAnnotationViewer and SemanticSearchGUI tools can read both the new XMI format and the previous XCAS
+        AnnotationViewer and SemanticSearchGUI tools can read both the new XMI format and the previous XCAS
         format.</para>
       
     </section>
