@@ -433,8 +433,8 @@
             <xreftext>Section 3.2.5, “Multi-threaded Applications”</xreftext>
          </div>
          <div element="section" href="#ugr.tug.application.using_multiple_aes" number="3.2.6" targetptr="ugr.tug.application.using_multiple_aes">
-            <ttl>Using Multiple Analysis Engines and creating shared CASes)</ttl>
-            <xreftext>Section 3.2.6, “Multiple AEs &amp; creating shared CASes”</xreftext>
+            <ttl>Using Multiple Analysis Engines and Creating Shared CASes</ttl>
+            <xreftext>Section 3.2.6, “Multiple AEs &amp; Creating Shared CASes”</xreftext>
          </div>
          <div element="section" href="#ugr.tug.application.saving_cases_to_file_systems" number="3.2.7" targetptr="ugr.tug.application.saving_cases_to_file_systems">
             <ttl>Saving CASes to file systems</ttl>
@@ -464,13 +464,12 @@
             <ttl>Building an Index</ttl>
             <xreftext>Section 3.5.1, “Building an Index”</xreftext>
             <div element="section" href="#ugr.tug.application.search.configuring_indexer" number="3.5.1.1" targetptr="ugr.tug.application.search.configuring_indexer">
-               <ttl>Configuring the Semantic Search CAS Consumer – Indexer</ttl>
-               <xreftext>Section 3.5.1.1, “Configuring the Semantic Search CAS Consumer – Indexer”</xreftext>
+               <ttl>Configuring the Semantic Search CAS Indexer</ttl>
+               <xreftext>Section 3.5.1.1, “Configuring the Semantic Search CAS Indexer”</xreftext>
             </div>
             <div element="section" href="#ugr.tug.application.search.cpe_with_semantic_search_cas_consumer" number="3.5.1.2" targetptr="ugr.tug.application.search.cpe_with_semantic_search_cas_consumer">
-               <ttl>Building and Running a CPE including the Semantic Search CAS Consumer
-          – Indexer</ttl>
-               <xreftext>Section 3.5.1.2, “Using Semantic Search CAS Consumer”</xreftext>
+               <ttl>Building and Running a CPE including the Semantic Search CAS Indexer</ttl>
+               <xreftext>Section 3.5.1.2, “Using Semantic Search CAS Indexer”</xreftext>
             </div>
          </div>
          <div element="section" href="#ugr.tug.application.search.query_tool" number="3.5.2" targetptr="ugr.tug.application.search.query_tool">
@@ -795,11 +794,11 @@
       <div element="section" href="#ugr.tug.cm.calling_cm_from_app" number="7.5" targetptr="ugr.tug.cm.calling_cm_from_app">
          <ttl>Calling a CAS Multiplier from an Application</ttl>
          <xreftext>Section 7.5, “Applications: Calling CAS Multipliers”</xreftext>
-         <div element="section" href="#d0e5734" number="7.5.1">
+         <div element="section" href="#d0e5765" number="7.5.1">
             <ttl>Retrieving Output CASes from the CAS Multiplier</ttl>
             <xreftext>Section 7.5.1, “Retrieving Output CASes from the CAS Multiplier”</xreftext>
          </div>
-         <div element="section" href="#d0e5803" number="7.5.2">
+         <div element="section" href="#d0e5834" number="7.5.2">
             <ttl>Using a CAS Multiplier with other Analysis Engines</ttl>
             <xreftext>Section 7.5.2, “Using a CAS Multiplier with other Analysis Engines”</xreftext>
          </div>
