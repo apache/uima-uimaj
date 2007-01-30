@@ -26,27 +26,30 @@ under the License.
 <chapter id="ugr.tools.jcasgen">
   <title>JCasGen User&apos;s Guide</title>
   
-  <para>JCasGen reads a descriptor for an application, creates the merged type system
+  <para>JCasGen reads a descriptor for an application (either an Analysis Engine Descriptor, 
+    or a Type System Descriptor), creates the merged type system
     specification by merging all the type system information from all the components
     referred to in the descriptor, and then uses this merged type system to create Java source
     files for classes that enable JCas access to the CAS. Java classes are not produced for the
     built-in types, since these classes are already provided by the UIMA SDK.  (An exception is
     the built-in type <literal>uima.tcas.DocumentAnnotation</literal>, see the warning below.) </para>
   
-  <warning><para>If the components have different definitions for the same type name,
+  <warning><para>If the components comprising the input to the type merging process 
+    have different definitions for the same type name,
     JCasGen will show a warning, and in some environments may offer to abort the operation.
     If you continue past this warning, 
-    JCasGen will produce Java source files representing the correctly merged types 
+    JCasGen will produce correct Java source files representing the merged types 
    (that is, the
-    type definition that contains all of the features defined on that type by all of your
-    components).  It is recommended that you do not use this feature (of having 
-    two different definitions for the same type name) since it can make it 
+    type definition containing all of the features defined on that type by all of the
+    components).  It is recommended that you do not use this capability (of having 
+    two different definitions for the same type name, with different feature sets) since it can make it 
     difficult to combine/package your annotator with others. See <olink
       targetdoc="&uima_docs_ref;"
       targetptr="ugr.ref.jcas.merging_types_from_other_specs"/> for more information.
   </para>
   
-  <para>Also note that if your type system declares a custom version of the <literal>uima.tcas.DocumentAnnotation</literal> 
+  <para>Also note that if your type system declares a custom version of the 
+    <literal>uima.tcas.DocumentAnnotation</literal> 
     built-in type, then JCasGen will generate a Java source file for it.  If you do this, you need to be
     aware of the issues discussed in 
     <olink
