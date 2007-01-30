@@ -427,24 +427,28 @@ under the License.
   
   <section id="ugr.project_overview_migrating_from_ibm_uima">
     <title>Migrating from IBM UIMA to Apache UIMA</title>
-    <para> In Apache UIMA, the Java package names for all of the UIMA classes and interfaces have changed from what they
-      were in IBM UIMA. All of the package names now start with the prefix <literal>org.apache</literal>, and there
-      has been some other changes as well. These changes require that all user code written to previous APIs be updated
+    <para>In Apache UIMA, several things have changed that require changes to user code and descriptors.  For instance,
+      the Java package names for all of the UIMA classes and interfaces have changed from what they
+      were in IBM UIMA; all of the package names now start with the prefix <literal>org.apache</literal>. 
+      These changes require that all user code written to previous APIs be updated
       and recompiled. Some changes to XML descriptors are also required. A migration utility is provided which will
       make the required updates to your files. </para>
     
     <section id="ugr.project_overview_running_the_migration_utility">
-      <title>Running the Migration Utility</title> <warning>
-      <para>Before running the migration utility, be sure to back up your files, just in case you encounter any
-        problems.</para> </warning>
+      <title>Running the Migration Utility</title> 
+      <warning>
+        <para>Before running the migration utility, be sure to back up your files, just in case you encounter any
+        problems, because the migration tool updates the files in place in the directories where it finds them.</para> 
+      </warning>
       <para> The migration utility is run by executing the script file
         <literal>apache-uima/bin/ibmUimaToApacheUima.bat</literal> (Windows) or
         <literal>apache-uima/bin/ibmUimaToApacheUima.sh</literal> (UNIX). You must pass one argument: the
         directory containing the files that you want to be migrated. Subdirectories will be processed
         recursively.</para>
-      <para>The script will scan your files and apply the necessary updates, for example replacing the com.ibm
+      <para>The script scans your files and applies the necessary updates, for example replacing the com.ibm
         package names with the new org.apache package names. For more details on what has changed in the UIMA APIs and
         what changes are performed by the migration script, see the next section of this document.</para>
+      
       <para>The script will only attempt to modify files with the extensions: java, xml, xmi, wsdd, properties,
         launch, bat, cmd, sh, ksh, or csh; and files with no extension. Also, files with size greater than 1,000,000
         bytes will be skipped. (If you want the script to modify files with other extensions, you can edit the script
@@ -593,18 +597,18 @@ under the License.
           <literal>CASException</literal> and <literal>CASRuntimeException</literal> no longer exist.
           On the up side, all UIMA exceptions are now derived from the same base classes and behave
           the same way.  The most significant change is that you can no longer check for the specific
-          type of exception the you used to.  For example, if you had code like this:
-          <programlisting>
-catch (CASRuntimeException e) {
+          type of exception the way you used to.  For example, if you had code like this:
+          
+          <programlisting>catch (CASRuntimeException e) {
   if (e.getError() == CASRuntimeException.ILLEGAL_ARRAY_SIZE) {
-  // Do something in case this particular error is caught
-          </programlisting>
+  // Do something in case this particular error is caught</programlisting>
+          
           you will need to replace it with the following:
-          <programlisting>
-catch (CASRuntimeException e) {
+          
+          <programlisting>catch (CASRuntimeException e) {
   if (e.getMessageKey().equals(CASRuntimeException.ILLEGAL_ARRAY_SIZE)) {
-  // Do something in case this particular error is caught
-          </programlisting>
+  // Do something in case this particular error is caught</programlisting>
+          
           as the message keys are now strings.  This change is not handled by the migration script.
         </para>
       </section>

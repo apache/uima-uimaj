@@ -20,14 +20,6 @@ specific language governing permissions and limitations
 under the License.
 -->  
 <bookinfo>
-    <!--  instead of copyright, license statment per Apache legal
-       THIS COPYRIGHT IS COMMENTED OUT
-    <copyright>
-      <year>2006</year>
-
-      <holder>The Apache Software Foundation</holder>
-    </copyright>
-    -->
 
     <releaseinfo>Version 2.1</releaseinfo>
 
@@ -90,8 +82,13 @@ under the License.
       </formalpara>
     </legalnotice>
     <copyright>
-      <year>2007</year>
+      <year>2006, 2007</year>
       <holder>The Apache Software Foundation</holder>
+    </copyright>
+    <copyright>
+      <year>2004</year>
+      <year>2006</year>     
+      <holder>International Business Machines Corporation</holder>
     </copyright>
     <pubdate>February, 2007</pubdate>
   </bookinfo>
