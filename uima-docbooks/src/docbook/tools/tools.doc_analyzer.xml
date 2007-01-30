@@ -81,15 +81,12 @@ want to analyze.  Some sample documents
 are provided in the UIMA SDK under the <literal>examples/data</literal>
 directory.</para>
 
-<para><emphasis role="bold">Output Directory:</emphasis>  
-  Browse to or type the path of a directory where you want output to be
-written.  (As we&apos;ll see later, you won&apos;t
-normally need to look directly at these files, but the Document Analyzer needs
-to know where to write them.)  The files
-written to this directory will be an XML representation of the analyzed
-documents.  If this directory doesn&apos;t
-exist, it will be created.  If you leave
-this field blank, your AE will be run but no output will be generated.</para>
+<para><emphasis role="bold">Output Directory:</emphasis> Browse to or type the path of a directory where you want
+  output to be written. (As we&apos;ll see later, you won&apos;t normally need to look directly at these files, but the
+  Document Analyzer needs to know where to write them.) The files written to this directory will be an XML
+  representation of the analyzed documents. If this directory doesn&apos;t exist, it will be created. If the
+  directory exists, any files in it will be deleted (but the tool will ask you to confirm this before doing so). If you
+  leave this field blank, your AE will be run but no output will be generated.</para>
 
 <para><emphasis role="bold">Location of AE XML Descriptor:</emphasis>  
   Browse to or type the path of the descriptor
@@ -102,7 +99,7 @@ name of an XML tag, expected to be found within the input documents, that
 contains the text to be analyzed.  For
 example, the value <literal>TEXT</literal> would cause the AE to only
 analyze the portion of the document enclosed within &lt;TEXT&gt;...&lt;/TEXT&gt;
-tags.</para>
+tags.  Also, any XML tags occuring within that text will be removed prior to analysis.</para>
 
 <para><emphasis role="bold">Language:</emphasis>
   Specify

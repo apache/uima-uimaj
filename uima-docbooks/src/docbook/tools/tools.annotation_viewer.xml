@@ -56,7 +56,8 @@ under the License.
   
   <para>You can run the Annotation Viewer by executing the
     <literal>annotationViewer</literal> shell script located in the bin directory of the
-    UIMA SDK. This will open the following window:   
+    UIMA SDK or the "UIMA Annotation Viewer" Eclipse run configuration in the
+    <literal>uimaj-examples</literal> project. This will open the following window:   
     
     <screenshot>
   <mediaobject>

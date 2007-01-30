@@ -56,10 +56,13 @@ under the License.
       operating with the _InitialView Sofa. Multi-View components will not have their names
       mapped. It sets up a fixed-sized CAS Pool.</para>
     
-    <para>For running arbitrary CPE descriptors, or running with other than the default
-      configuration supplied by the CPE Configurator, you can write your own application, or
-      use the runCPE script, which invokes an example application, SimpleRunCPE.</para>
-    
+    <para>To set these additional options, you must edit the CPE Descriptor XML file
+      directly.  See <olink
+      targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/> for the syntax.
+      You may then open the CPE Descriptor in the CPE Configurator and run it.  The changes
+      you applied to the CPE Descriptor <emphasis>will</emphasis> be respected, although you
+      will not be able to see them or edit them from the GUI.
+    </para>   
   </section>
   
   <section id="ugr.tools.cpe.starting">
@@ -92,24 +95,20 @@ under the License.
   <section id="ugr.tools.cpe.selecting_component_descriptors">
     <title>Selecting Component Descriptors</title>
     
-    <para>The CPE Configurator&apos;s main window is divided into 4 sections: one for each of
-      the types of components that constitute a CPE: CollectionReader, CAS Initializer,
-      Analysis Engines, and CasConsumers. Each CPE has exactly one CollectionReader, an
-      optional CAS Initializer, and at least one each of Analysis Engines and CAS
-      Consumers.</para>
+    <para>The CPE Configurator&apos;s main window is divided into three sections, one each for the Collection
+      Reader, Analysis Engines, and CAS Consumers.<footnote>
+      <para>There is also a fourth pane, for the CAS Initializer, but it is hidden by default. To enable it click the
+        <literal>View &rarr; CAS Initializer Panel</literal> menu item.</para></footnote></para>
     
-    <para>In each section of the CPE Configurator, you can select the component(s) you want to
-      use by browsing to (or typing the location of) their XML descriptors. You must select a
-      Collection Reader, at least one Analysis Engine, and at least one CAS Consumer. You may
-      or may not need to select a CAS Initializer; this depends on the particular Collection
-      Reader that you are using.</para>
+    <para>In each section of the CPE Configurator, you can select the component(s) you want to use by browsing to (or
+      typing the location of) their XML descriptors. You must select a Collection Reader, and at least one Analysis
+      Engine or CAS Consumer.</para>
     
-    <para>When you select a descriptor, the configuration parameters that are defined in
-      that descriptor will then be displayed in the GUI; these can be modified to override the
-      values present in the descriptor.</para>
+    <para>When you select a descriptor, the configuration parameters that are defined in that descriptor will then
+      be displayed in the GUI; these can be modified to override the values present in the descriptor.</para>
     
-    <para>For example, the screen shot below shows the CPE Configurator after the following
-      components have been chosen:
+    <para>For example, the screen shot below shows the CPE Configurator after the following components have been
+      chosen:
       
       
       <programlisting>examples/descriptors/collectionReader/FileSystemCollectionReader.xml
