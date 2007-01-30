@@ -33,3 +33,5 @@ uima_examples.jar uima-examples.jar
 uima_tools.jar uima-tools.jar
 uima_jcas_builtin_types.jar uima-document-annotation.jar
 vinci(/|\\)jVinci.jar jVinci.jar
+XCasAnnotationViewer AnnotationViewer
+xcasAnnotationViewer annotationViewer

@@ -752,7 +752,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     // Not sure if the following code makes sense... If a style map file exists,
     // this restricts the set of types displayed by the viewer to only the types
     // in that file.  But why is this only done in "View" mode?  It seems like this
-    // belongs in XCasAnnotationViewerDialog with the other code that sets up the
+    // belongs in AnnotationViewerDialog with the other code that sets up the
     // viewer (e.g., the colors) from the style map file.
     if (prefsMed.getStylemapFile().exists()) {
       StyleMapEditor sedit = new StyleMapEditor(this, cas);
@@ -813,15 +813,15 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
     // create Annotation Viewer Main Panel. Depends on interactive setting.
     // JMP
     if (interactive) {
-      // this version of the XCasAnnotationViewerDialog automatically
+      // this version of the AnnotationViewerDialog automatically
       // calls setVisible(true) to make the dialog visible
-      new XCasAnnotationViewerDialog(this, "Analysis Results", prefsMed, styleMapFile, statsString,
+      new AnnotationViewerDialog(this, "Analysis Results", prefsMed, styleMapFile, statsString,
               currentTypeSystem, currentTaeOutputTypes, interactiveTempFN + ".xmi",
               javaViewerRBisSelected, javaViewerUCRBisSelected, xmlRB.isSelected(), cas);
     } else {
-      // this version of the XCasAnnotationViewerDialog constructor does
+      // this version of the AnnotationViewerDialog constructor does
       // not automatically launch the viewer.
-      XCasAnnotationViewerDialog viewerDialog = new XCasAnnotationViewerDialog(this,
+      AnnotationViewerDialog viewerDialog = new AnnotationViewerDialog(this,
               "Analysis Results", prefsMed, styleMapFile, statsString, currentTypeSystem,
               currentTaeOutputTypes, useGeneratedStyleMap, cas);
       if (usingXmlDetagger) {

@@ -57,7 +57,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.tools.docanalyzer.PrefsMediator;
-import org.apache.uima.tools.docanalyzer.XCasAnnotationViewerDialog;
+import org.apache.uima.tools.docanalyzer.AnnotationViewerDialog;
 import org.apache.uima.tools.images.Images;
 import org.apache.uima.tools.util.gui.Caption;
 import org.apache.uima.tools.util.gui.FileSelector;
@@ -69,21 +69,21 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
 /**
- * Main XCAS Annotation Viewer GUI. Allows user to choose directory of XCAS or XMI files, then
- * launches the XCasAnnotationViewerDialog.
+ * Main Annotation Viewer GUI. Allows user to choose directory of XCAS or XMI files, then
+ * launches the AnnotationViewerDialog.
  * 
  * 
  */
-public class XCasAnnotationViewerMain extends JFrame {
+public class AnnotationViewerMain extends JFrame {
   private static final long serialVersionUID = -3201723535833938833L;
 
-  private static final String HELP_MESSAGE = "Instructions for using XCAS Annotation Viewer:\n\n"
+  private static final String HELP_MESSAGE = "Instructions for using Annotation Viewer:\n\n"
           + "1) In the \"Input Directory\" field, either type or use the browse\n"
           + "button to select a directory containing the analyzed documents\n "
           + "(in XMI or XCAS format) that you want to view.\n\n"
           + "2) In the \"TAE Descriptor File\" field, either type or use the browse\n"
           + "button to select the TAE descriptor for the TAE that generated the\n"
-          + "XCAS files.  (This is needed for type system infornation only.\n"
+          + "XMI or XCAS files.  (This is needed for type system infornation only.\n"
           + "Analysis will not be redone.)\n\n"
           + "3) Click the \"View\" button at the buttom of the window.\n\n"
           + "A list of the analyzed documents will be displayed.\n\n\n"
@@ -107,8 +107,8 @@ public class XCasAnnotationViewerMain extends JFrame {
   /**
    * Constructor. Sets up the GUI.
    */
-  public XCasAnnotationViewerMain() {
-    super("XCAS Annotation Viewer");
+  public AnnotationViewerMain() {
+    super("Annotation Viewer");
 
     // set UIMA home dir
     uimaHomeDir = new File(System.getProperty("uima.home", "C:/Program Files/apache-uima"));
@@ -134,7 +134,7 @@ public class XCasAnnotationViewerMain extends JFrame {
     this.getContentPane().setBackground(Color.WHITE);
 
     // create about dialog
-    aboutDialog = new AboutDialog(this, "About XCAS Annotation Viewer");
+    aboutDialog = new AboutDialog(this, "About Annotation Viewer");
 
     // Create Menu Bar
     JMenuBar menuBar = new JMenuBar();
@@ -207,7 +207,7 @@ public class XCasAnnotationViewerMain extends JFrame {
     // Event Handlling of "Help" Menu Item
     helpMenuItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
-        JOptionPane.showMessageDialog(XCasAnnotationViewerMain.this, HELP_MESSAGE,
+        JOptionPane.showMessageDialog(AnnotationViewerMain.this, HELP_MESSAGE,
                 "Annotation Viewer Help", JOptionPane.PLAIN_MESSAGE);
       }
     });
@@ -286,7 +286,7 @@ public class XCasAnnotationViewerMain extends JFrame {
     // PrefsMediator is also used in DocumentAnalyzer, where the
     // output dir is the directory containing XCAS files.
     prefsMed.setOutputDir(inputDir.toString());
-    XCasAnnotationViewerDialog viewerDialog = new XCasAnnotationViewerDialog(this,
+    AnnotationViewerDialog viewerDialog = new AnnotationViewerDialog(this,
             "Analyzed Documents", prefsMed, styleMapFile, null, cas.getTypeSystem(), null, false,
             cas);
     viewerDialog.pack();
@@ -350,7 +350,7 @@ public class XCasAnnotationViewerMain extends JFrame {
   }
 
   public static void main(String[] args) {
-    final XCasAnnotationViewerMain frame = new XCasAnnotationViewerMain();
+    final AnnotationViewerMain frame = new AnnotationViewerMain();
 
     frame.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent e) {
@@ -413,7 +413,7 @@ public class XCasAnnotationViewerMain extends JFrame {
       }
     }
 
-    JOptionPane.showMessageDialog(XCasAnnotationViewerMain.this, buf.toString(), "Error",
+    JOptionPane.showMessageDialog(AnnotationViewerMain.this, buf.toString(), "Error",
             JOptionPane.ERROR_MESSAGE);
   }
 

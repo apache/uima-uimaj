@@ -98,7 +98,7 @@ import org.xml.sax.SAXException;
  * inline XML format.
  * 
  */
-public class XCasAnnotationViewerDialog extends JDialog implements ActionListener {
+public class AnnotationViewerDialog extends JDialog implements ActionListener {
 
   private static final long serialVersionUID = -7259891069111863433L;
 
@@ -195,7 +195,7 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
    *          array of types that should be highlighted in the viewer. This can be set to the output
    *          types of the Analysis Engine. A value of null means to display all types.
    */
-  public XCasAnnotationViewerDialog(JFrame aParentFrame, String aDialogTitle, PrefsMediator med,
+  public AnnotationViewerDialog(JFrame aParentFrame, String aDialogTitle, PrefsMediator med,
           File aStyleMapFile, String aPerformanceStats, TypeSystem aTypeSystem,
           final String[] aTypesToDisplay, String interactiveTempFN, boolean javaViewerRBisSelected,
           boolean javaViewerUCRBisSelected, boolean xmlRBisSelected, CAS cas) {
@@ -224,7 +224,7 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
     }
   }
 
-  public XCasAnnotationViewerDialog(JFrame aParentFrame, String aDialogTitle, PrefsMediator med,
+  public AnnotationViewerDialog(JFrame aParentFrame, String aDialogTitle, PrefsMediator med,
           File aStyleMapFile, String aPerformanceStats, TypeSystem aTypeSystem,
           final String[] aTypesToDisplay, boolean generatedStyleMap, CAS cas) {
 
@@ -348,7 +348,7 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
     // event for the closeButton button
     closeButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
-        XCasAnnotationViewerDialog.this.setVisible(false);
+        AnnotationViewerDialog.this.setVisible(false);
       }
     });
 
@@ -427,7 +427,7 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
           viewer.setHiddenTypes(new String[] { "uima.cpm.FileLocation" });
         // launch viewer in a new dialog
         viewer.setCAS(cas);
-        JDialog dialog = new JDialog(XCasAnnotationViewerDialog.this, "Annotation Results for "
+        JDialog dialog = new JDialog(AnnotationViewerDialog.this, "Annotation Results for "
                 + fileName + " in " + inputDirPath); // JMP
         dialog.getContentPane().add(viewer);
         dialog.setSize(850, 630);
@@ -476,27 +476,7 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
     }
   }
 
-  /**
-   * Create an AnnotationViewer Dialog
-   * 
-   * @param aParentFrame
-   *          frame containing this panel
-   * @param aTitle
-   *          title to display for the dialog
-   * @param aInputDir
-   *          directory containing input files (in XCAS foramt) to read
-   * @param aStyleMapFile
-   *          filename of style map to be used to view files in HTML
-   * @param aPerformanceStats
-   *          string representaiton of performance statistics, optional.
-   * @param aTypeSystem
-   *          the CAS Type System to which the XCAS files must conform.
-   */
-  /*
-   * public XCasAnnotationViewerDialog(JFrame aParentFrame, String aDialogTitle, File aInputDir,
-   * File aStyleMapFile, String aPerformanceStats, TypeSystem aTypeSystem) { this(aParentFrame,
-   * aDialogTitle, aInputDir, aStyleMapFile, aPerformanceStats, aTypeSystem, null); }
-   */
+
   /**
    * Assumes node has a text field and extracts its value. JMP
    */
@@ -640,7 +620,7 @@ public class XCasAnnotationViewerDialog extends JDialog implements ActionListene
       }
     }
 
-    JOptionPane.showMessageDialog(XCasAnnotationViewerDialog.this, buf.toString(), "Error",
+    JOptionPane.showMessageDialog(AnnotationViewerDialog.this, buf.toString(), "Error",
             JOptionPane.ERROR_MESSAGE);
   }
 
