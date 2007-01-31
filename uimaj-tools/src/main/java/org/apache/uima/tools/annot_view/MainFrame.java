@@ -37,7 +37,6 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -87,7 +86,6 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
-import javax.swing.JWindow;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
@@ -141,7 +139,6 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.tools.images.Images;
-import org.apache.uima.tools.pear.install.InstallPear;
 import org.apache.uima.tools.util.gui.AboutDialog;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.Level;
@@ -1297,35 +1294,35 @@ public class MainFrame extends JFrame {
 
   }
 
-  private static class WindowClosingMouseListener implements MouseListener {
-
-    private JWindow window;
-
-    private WindowClosingMouseListener(JWindow window) {
-      this.window = window;
-    }
-
-    public void mouseClicked(MouseEvent e) {
-      this.window.dispose();
-    }
-
-    public void mousePressed(MouseEvent e) {
-      // does nothing
-    }
-
-    public void mouseReleased(MouseEvent e) {
-      // does nothing
-    }
-
-    public void mouseEntered(MouseEvent e) {
-      // does nothing
-    }
-
-    public void mouseExited(MouseEvent e) {
-      // does nothing
-    }
-
-  }
+//  private static class WindowClosingMouseListener implements MouseListener {
+//
+//    private JWindow window;
+//
+//    private WindowClosingMouseListener(JWindow window) {
+//      this.window = window;
+//    }
+//
+//    public void mouseClicked(MouseEvent e) {
+//      this.window.dispose();
+//    }
+//
+//    public void mousePressed(MouseEvent e) {
+//      // does nothing
+//    }
+//
+//    public void mouseReleased(MouseEvent e) {
+//      // does nothing
+//    }
+//
+//    public void mouseEntered(MouseEvent e) {
+//      // does nothing
+//    }
+//
+//    public void mouseExited(MouseEvent e) {
+//      // does nothing
+//    }
+//
+//  }
 
   private class AboutUimaHandler implements ActionListener {
 
@@ -2485,17 +2482,7 @@ public class MainFrame extends JFrame {
     contentPane.add(this.statusPanel, BorderLayout.SOUTH);
     contentPane.setOpaque(true);
 
-    JLabel bannerLabel = new JLabel(Images.getImageIcon(Images.BANNER));
-    bannerLabel.setAlignmentX(CENTER_ALIGNMENT);
-    contentPane.setAlignmentX(CENTER_ALIGNMENT);
-    JPanel mainPane = new JPanel();
-    mainPane.setBackground(Color.WHITE);
-    // mainPane.setLayout(new BorderLayout());
-    mainPane.setLayout(new BoxLayout(mainPane, BoxLayout.PAGE_AXIS));
-    mainPane.add(bannerLabel);
-    mainPane.add(contentPane);
-    // this.setContentPane(contentPane);
-    this.setContentPane(mainPane);
+    this.setContentPane(contentPane);
     initIRTree();
     this.indexTree.addMouseListener(new IndexPopupListener());
 
