@@ -520,6 +520,18 @@
                <xreftext>Section 3.6.5.3, “Launching Vinci Services”</xreftext>
             </div>
          </div>
+         <div element="section" href="#ugr.tug.configuring_timeout_settings" number="3.6.6" targetptr="ugr.tug.configuring_timeout_settings">
+            <ttl>Configuring Timeout Settings</ttl>
+            <xreftext>Section 3.6.6, “Configuring Timeout Settings”</xreftext>
+            <div element="section" href="#d0e4127" number="3.6.6.1">
+               <ttl>Setting the Client Timeout</ttl>
+               <xreftext>Section 3.6.6.1, “Setting the Client Timeout”</xreftext>
+            </div>
+            <div element="section" href="#d0e4190" number="3.6.6.2">
+               <ttl>Setting the Server Socket Timeout</ttl>
+               <xreftext>Section 3.6.6.2, “Setting the Server Socket Timeout”</xreftext>
+            </div>
+         </div>
       </div>
       <div element="section" href="#ugr.tug.application.increasing_performance_using_parallelism" number="3.7" targetptr="ugr.tug.application.increasing_performance_using_parallelism">
          <ttl>Increasing performance using parallelism</ttl>
@@ -794,11 +806,11 @@
       <div element="section" href="#ugr.tug.cm.calling_cm_from_app" number="7.5" targetptr="ugr.tug.cm.calling_cm_from_app">
          <ttl>Calling a CAS Multiplier from an Application</ttl>
          <xreftext>Section 7.5, “Applications: Calling CAS Multipliers”</xreftext>
-         <div element="section" href="#d0e5771" number="7.5.1">
+         <div element="section" href="#d0e5882" number="7.5.1">
             <ttl>Retrieving Output CASes from the CAS Multiplier</ttl>
             <xreftext>Section 7.5.1, “Retrieving Output CASes from the CAS Multiplier”</xreftext>
          </div>
-         <div element="section" href="#d0e5840" number="7.5.2">
+         <div element="section" href="#d0e5951" number="7.5.2">
             <ttl>Using a CAS Multiplier with other Analysis Engines</ttl>
             <xreftext>Section 7.5.2, “Using a CAS Multiplier with other Analysis Engines”</xreftext>
          </div>

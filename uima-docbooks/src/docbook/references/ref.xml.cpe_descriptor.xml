@@ -210,7 +210,7 @@ under the License.
   </section>
   
   <section id="&tp;descriptor">
-    <title>CPE Descriptor</title>
+    <title>CPE Descriptor Overview</title>
     
     <para>A CPE Descriptor consists of information describing the following four main
       elements.</para>
@@ -253,7 +253,7 @@ under the License.
     
     <para>Details of each of the four main elements are described in the sections that
       follow.</para>
-    
+ </section>   
     <section id="&tp;descriptor.collection_reader">
       <title>Collection Reader</title>
       
@@ -1358,6 +1358,6 @@ vinci.VinciAnalysisEngineService_impl</arg>
   </cpeConfig>
 </cpeDescription>]]></programlisting>
     </section>
-  </section>
+
   
 </chapter>

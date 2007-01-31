@@ -188,72 +188,72 @@
          <xreftext>Section 3.3, “Imports”</xreftext>
       </div>
       <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor" number="3.4" targetptr="ugr.ref.xml.cpe_descriptor.descriptor">
-         <ttl>CPE Descriptor</ttl>
-         <xreftext>Section 3.4, “CPE Descriptor”</xreftext>
-         <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.collection_reader" number="3.4.1" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.collection_reader">
-            <ttl>Collection Reader</ttl>
-            <xreftext>Section 3.4.1, “Collection Reader”</xreftext>
-            <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.collection_reader.error_handling" number="3.4.1.1" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.collection_reader.error_handling">
-               <ttl>Error handling for Collection Readers</ttl>
-               <xreftext>Section 3.4.1.1, “Error handling for Collection Readers”</xreftext>
-            </div>
+         <ttl>CPE Descriptor Overview</ttl>
+         <xreftext>Section 3.4, “CPE Descriptor Overview”</xreftext>
+      </div>
+      <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.collection_reader" number="3.5" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.collection_reader">
+         <ttl>Collection Reader</ttl>
+         <xreftext>Section 3.5, “Collection Reader”</xreftext>
+         <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.collection_reader.error_handling" number="3.5.1" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.collection_reader.error_handling">
+            <ttl>Error handling for Collection Readers</ttl>
+            <xreftext>Section 3.5.1, “Error handling for Collection Readers”</xreftext>
          </div>
-         <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors" number="3.4.2" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors">
-            <ttl>CAS Processors</ttl>
-            <xreftext>Section 3.4.2, “CAS Processors”</xreftext>
-            <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual" number="3.4.2.1" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual">
-               <ttl>Specifying an Individual CAS Processor</ttl>
-               <xreftext>Section 3.4.2.1, “Specifying an Individual CAS Processor”</xreftext>
-               <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.descriptor" number="" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.descriptor">
-                  <ttl>&lt;descriptor&gt; Element</ttl>
-                  <xreftext>the section called “&lt;descriptor&gt; Element”</xreftext>
-               </div>
-               <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.configuration_parameter_settings" number="" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.configuration_parameter_settings">
-                  <ttl>&lt;configurationParameterSettings&gt; Element</ttl>
-                  <xreftext>the section called “&lt;configurationParameterSettings&gt; Element”</xreftext>
-               </div>
-               <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.sofa_name_mappings" number="" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.sofa_name_mappings">
-                  <ttl>&lt;sofaNameMappings&gt; Element</ttl>
-                  <xreftext>the section called “&lt;sofaNameMappings&gt; Element”</xreftext>
-               </div>
-               <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.run_in_separate_process" number="" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.run_in_separate_process">
-                  <ttl>&lt;runInSeparateProcess&gt; Element</ttl>
-                  <xreftext>the section called “&lt;runInSeparateProcess&gt; Element”</xreftext>
-               </div>
-               <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.deployment_parameters" number="" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.deployment_parameters">
-                  <ttl>&lt;deploymentParameters&gt; Element</ttl>
-                  <xreftext>the section called “&lt;deploymentParameters&gt; Element”</xreftext>
-               </div>
-               <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.filter" number="" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.filter">
-                  <ttl>&lt;filter&gt; Element</ttl>
-                  <xreftext>the section called “&lt;filter&gt; Element”</xreftext>
-               </div>
-               <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.error_handling" number="" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.error_handling">
-                  <ttl>&lt;errorHandling&gt; Element</ttl>
-                  <xreftext>the section called “&lt;errorHandling&gt; Element”</xreftext>
-                  <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.error_handling.timeout_retry_action" number="" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.error_handling.timeout_retry_action">
-                     <ttl>Retry action taken on a timeout</ttl>
-                     <xreftext>the section called “Retry action taken on a timeout”</xreftext>
-                  </div>
-               </div>
-               <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.checkpoint" number="" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.checkpoint">
-                  <ttl>&lt;checkpoint&gt; Element</ttl>
-                  <xreftext>the section called “&lt;checkpoint&gt; Element”</xreftext>
+      </div>
+      <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors" number="3.6" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors">
+         <ttl>CAS Processors</ttl>
+         <xreftext>Section 3.6, “CAS Processors”</xreftext>
+         <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual" number="3.6.1" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual">
+            <ttl>Specifying an Individual CAS Processor</ttl>
+            <xreftext>Section 3.6.1, “Specifying an Individual CAS Processor”</xreftext>
+            <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.descriptor" number="3.6.1.1" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.descriptor">
+               <ttl>&lt;descriptor&gt; Element</ttl>
+               <xreftext>Section 3.6.1.1, “&lt;descriptor&gt; Element”</xreftext>
+            </div>
+            <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.configuration_parameter_settings" number="3.6.1.2" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.configuration_parameter_settings">
+               <ttl>&lt;configurationParameterSettings&gt; Element</ttl>
+               <xreftext>Section 3.6.1.2, “&lt;configurationParameterSettings&gt; Element”</xreftext>
+            </div>
+            <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.sofa_name_mappings" number="3.6.1.3" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.sofa_name_mappings">
+               <ttl>&lt;sofaNameMappings&gt; Element</ttl>
+               <xreftext>Section 3.6.1.3, “&lt;sofaNameMappings&gt; Element”</xreftext>
+            </div>
+            <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.run_in_separate_process" number="3.6.1.4" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.run_in_separate_process">
+               <ttl>&lt;runInSeparateProcess&gt; Element</ttl>
+               <xreftext>Section 3.6.1.4, “&lt;runInSeparateProcess&gt; Element”</xreftext>
+            </div>
+            <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.deployment_parameters" number="3.6.1.5" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.deployment_parameters">
+               <ttl>&lt;deploymentParameters&gt; Element</ttl>
+               <xreftext>Section 3.6.1.5, “&lt;deploymentParameters&gt; Element”</xreftext>
+            </div>
+            <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.filter" number="3.6.1.6" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.filter">
+               <ttl>&lt;filter&gt; Element</ttl>
+               <xreftext>Section 3.6.1.6, “&lt;filter&gt; Element”</xreftext>
+            </div>
+            <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.error_handling" number="3.6.1.7" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.error_handling">
+               <ttl>&lt;errorHandling&gt; Element</ttl>
+               <xreftext>Section 3.6.1.7, “&lt;errorHandling&gt; Element”</xreftext>
+               <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.error_handling.timeout_retry_action" number="" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.error_handling.timeout_retry_action">
+                  <ttl>Retry action taken on a timeout</ttl>
+                  <xreftext>the section called “Retry action taken on a timeout”</xreftext>
                </div>
             </div>
+            <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.checkpoint" number="3.6.1.8" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.checkpoint">
+               <ttl>&lt;checkpoint&gt; Element</ttl>
+               <xreftext>Section 3.6.1.8, “&lt;checkpoint&gt; Element”</xreftext>
+            </div>
          </div>
-         <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.operational_parameters" number="3.4.3" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.operational_parameters">
-            <ttl>CPE Operational Parameters</ttl>
-            <xreftext>Section 3.4.3, “CPE Operational Parameters”</xreftext>
-         </div>
-         <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.resource_manager_configuration" number="3.4.4" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.resource_manager_configuration">
-            <ttl>Resource Manager Configuration</ttl>
-            <xreftext>Section 3.4.4, “Resource Manager Configuration”</xreftext>
-         </div>
-         <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.example" number="3.4.5" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.example">
-            <ttl>Example CPE Descriptor</ttl>
-            <xreftext>Section 3.4.5, “Example CPE Descriptor”</xreftext>
-         </div>
+      </div>
+      <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.operational_parameters" number="3.7" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.operational_parameters">
+         <ttl>CPE Operational Parameters</ttl>
+         <xreftext>Section 3.7, “CPE Operational Parameters”</xreftext>
+      </div>
+      <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.resource_manager_configuration" number="3.8" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.resource_manager_configuration">
+         <ttl>Resource Manager Configuration</ttl>
+         <xreftext>Section 3.8, “Resource Manager Configuration”</xreftext>
+      </div>
+      <div element="section" href="#ugr.ref.xml.cpe_descriptor.descriptor.example" number="3.9" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.example">
+         <ttl>Example CPE Descriptor</ttl>
+         <xreftext>Section 3.9, “Example CPE Descriptor”</xreftext>
       </div>
    </div>
    <div element="chapter" href="#ugr.ref.cas" number="4" targetptr="ugr.ref.cas">
