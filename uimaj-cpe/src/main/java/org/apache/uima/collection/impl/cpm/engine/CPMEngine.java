@@ -33,6 +33,7 @@ import java.util.Properties;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
 import org.apache.uima.adapter.vinci.util.Descriptor;
+import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.CASImpl;
@@ -2689,7 +2690,7 @@ public class CPMEngine extends Thread {
 
   /**
    * Registers Type Systems of all components with the CasManager.
-   * TODO: could do this registration after initialization of each component.
+   * 
    */
   private void registerTypeSystemsWithCasManager() throws Exception {
     CasManager manager= this.cpeFactory.getResourceManager().getCasManager();
@@ -2726,7 +2727,11 @@ public class CPMEngine extends Thread {
         if (processor instanceof AnalysisEngineImplBase) {
           //Integrated AEs already have added their metadata to the CasManager during
           //their initialization, so we don't need to do it again.
-          continue;        
+          //(Exception: when running from "old" CPM interface - where AEs are created outside 
+          // and passed in, the AE may not share a ResourceManager with the CPE.  In that case
+          // we DO need to register its metadata.)
+          if (((AnalysisEngine)processor).getResourceManager() == this.cpeFactory.getResourceManager())
+            continue;        
         }
         ProcessingResourceMetaData md = processor.getProcessingResourceMetaData();
   
@@ -2754,9 +2759,11 @@ public class CPMEngine extends Thread {
       CasProcessor processor = container.getCasProcessor();
       try {
         if (processor instanceof AnalysisEngineImplBase) {
-          //Integrated AEs already have added their metadata to the CasManager during
-          //their initialization, so we don't need to do it again.
-          continue;        
+          //(Exception: when running from "old" CPM interface - where AEs are created outside 
+          // and passed in, the AE may not share a ResourceManager with the CPE.  In that case
+          // we DO need to register its metadata.)
+          if (((AnalysisEngine)processor).getResourceManager() == this.cpeFactory.getResourceManager())
+            continue;         
         }
         ProcessingResourceMetaData md = processor.getProcessingResourceMetaData();
   

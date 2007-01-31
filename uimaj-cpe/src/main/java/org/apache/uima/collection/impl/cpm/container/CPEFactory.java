@@ -128,6 +128,9 @@ public class CPEFactory {
    * Create a new CPEFactory on which we will later call parse(String) to parse a CPE descriptor.
    */
   public CPEFactory(ResourceManager aResourceManager) {
+    if (aResourceManager == null) {
+      aResourceManager = UIMAFramework.newDefaultResourceManager();
+    }
     uimaContext = UIMAFramework.newUimaContext(UIMAFramework.getLogger(), aResourceManager,
             UIMAFramework.newConfigurationManager());
   }
