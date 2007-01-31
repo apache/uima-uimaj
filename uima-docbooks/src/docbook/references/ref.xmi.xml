@@ -28,10 +28,10 @@ under the License.
   <para>This is the specification for the mapping of the UIMA CAS into the XMI (XML Metadata
     Interchange<footnote><para> For details on XMI see Grose et al. <emphasis>Mastering
     XMI. Java Programming with XMI, XML, and UML. </emphasis>John Wiley &amp; Sons, Inc.
-    2002.</para></footnote> format. XMI is an OMG standard for expressing object graphs in
+    2002.</para></footnote>) format. XMI is an OMG standard for expressing object graphs in
     XML. The UIMA SDK provides support for XMI through the classes
-    org.apache.uima.cas.impl.XmiCasSerializer and
-    org.apache.uima.cas.impl.XmiCasDeserializer.</para>
+    <literal>org.apache.uima.cas.impl.XmiCasSerializer</literal> and
+    <literal>org.apache.uima.cas.impl.XmiCasDeserializer</literal>.</para>
   
   <section id="ugr.ref.xmi.xmi_tag">
     <title>XMI Tag</title>
@@ -177,27 +177,24 @@ myFeature = "bar"</programlisting>
   <section id="ugr.ref.xmi.array_and_list_features">
     <title>Array and List Features</title>
     
-    <para>For a CAS feature whose range type is one of the CAS array or list types, the XMI
-      serialization depends on the setting of the
-      <quote>multipleReferencesAllowed</quote> attribute for that feature in the UIMA
-      Type System Description (see <olink targetdoc="&uima_docs_ref;"
-        targetptr="ugr.ref.xml.component_descriptor.type_system.features"/>.</para>
+    <para>For a CAS feature whose range type is one of the CAS array or list types, the XMI serialization depends on the
+      setting of the <quote>multipleReferencesAllowed</quote> attribute for that feature in the UIMA Type System
+      Description (see <olink targetdoc="&uima_docs_ref;"
+        targetptr="ugr.ref.xml.component_descriptor.type_system.features"/>).</para>
     
-    <para>An array or list with multipleReferencesAllowed = false (the default) is
-      serialized as a <quote>multi-valued</quote> property in XMI. An array or list with
-      multipleReferencesAllowed = true is serialized as a first-class object. Details are
-      described below.</para>
+    <para>An array or list with multipleReferencesAllowed = false (the default) is serialized as a
+      <quote>multi-valued</quote> property in XMI. An array or list with multipleReferencesAllowed = true is
+      serialized as a first-class object. Details are described below.</para>
     
     <section id="ugr.ref.xmi.array_and_list_features.as_multi_valued_properties">
       <title>Arrays and Lists as Multi-Valued Properties</title>
       
-      <para>In XMI, a multi-valued property is the most natural XMI representation for most
-        cases. Consider the example where the FeatureStructure of type org.myproj.Baz has a
-        feature myIntArray whose value is the integer array {2,4,6}. This can be mapped to:
+      <para>In XMI, a multi-valued property is the most natural XMI representation for most cases. Consider the
+        example where the FeatureStructure of type org.myproj.Baz has a feature myIntArray whose value is the
+        integer array {2,4,6}. This can be mapped to:
         
-        
-        <programlisting>&lt;myproj:Baz xmi:id="3" myIntArray="2 4 6"/&gt;</programlisting>
-        or equivalently:
+        <programlisting>&lt;myproj:Baz xmi:id="3" myIntArray="2 4 6"/&gt;</programlisting> or
+        equivalently:
         
         
         <programlisting>&lt;myproj:Baz xmi:id="3"&gt;
@@ -207,16 +204,13 @@ myFeature = "bar"</programlisting>
 &lt;/myproj:Baz&gt;</programlisting>
         </para>
       
-      <para>Note that String arrays whose elements contain embedded spaces MUST use the
-        latter mapping.</para>
+      <para>Note that String arrays whose elements contain embedded spaces MUST use the latter mapping.</para>
       
-      <para>FSArray or FSList features are serialized in a similar way. For example an
-        FSArray feature that contains references to the elements with xmi:id&apos;s
-        <quote>13</quote> and <quote>42</quote> could be serialized as:
+      <para>FSArray or FSList features are serialized in a similar way. For example an FSArray feature that contains
+        references to the elements with xmi:id&apos;s <quote>13</quote> and <quote>42</quote> could be
+        serialized as:
         
-        
-        <programlisting>&lt;myproj:Baz xmi:id="3" myFsArray="13 42"/&gt;</programlisting>
-        or:
+        <programlisting>&lt;myproj:Baz xmi:id="3" myFsArray="13 42"/&gt;</programlisting> or:
         
         
         <programlisting>&lt;myproj:Baz xmi:id="3"&gt;
@@ -229,21 +223,18 @@ myFeature = "bar"</programlisting>
     <section id="ugr.ref.xmi.array_and_list_features.as_1st_class_objects">
       <title>Arrays and Lists as First-Class Objects</title>
       
-      <para>The multi-valued-property representation described in the previous section
-        does not allow multiple references to an array or list object. Therefore, it cannot be
-        used for features that are defined to allow multiple references (i.e. features for
-        which multipleReferencesAllowed = true in the Type System Description).</para>
+      <para>The multi-valued-property representation described in the previous section does not allow multiple
+        references to an array or list object. Therefore, it cannot be used for features that are defined to allow
+        multiple references (i.e. features for which multipleReferencesAllowed = true in the Type System
+        Description).</para>
       
-      <para>When multipleReferencesAllowed is set to true, array and list features are
-        serialized as references, and the array or list objects are serialized as separate
-        objects in the XMI. Consider again the example where the FeatureStructure of type
-        org.myproj.Baz has a feature myIntArray whose value is the integer array {2,4,6}. If
-        myIntArray is defined with multipleReferencesAllowed=true, the serialization
-        will be as follows:
+      <para>When multipleReferencesAllowed is set to true, array and list features are serialized as references,
+        and the array or list objects are serialized as separate objects in the XMI. Consider again the example where
+        the FeatureStructure of type org.myproj.Baz has a feature myIntArray whose value is the integer array
+        {2,4,6}. If myIntArray is defined with multipleReferencesAllowed=true, the serialization will be as
+        follows:
         
-        
-        <programlisting>&lt;myproj:Baz xmi:id="3" myIntArray="4"/&gt;</programlisting>
-        or:
+        <programlisting>&lt;myproj:Baz xmi:id="3" myIntArray="4"/&gt;</programlisting> or:
         
         
         <programlisting>&lt;myproj:Baz xmi:id="3"&gt;
@@ -251,9 +242,7 @@ myFeature = "bar"</programlisting>
 &lt;/myproj:Baz&gt;</programlisting>
         with the array object serialized as
         
-        
-        <programlisting>&lt;cas:IntegerArray xmi:id="4" elements="2 4 6"/&gt;</programlisting>
-        or:
+        <programlisting>&lt;cas:IntegerArray xmi:id="4" elements="2 4 6"/&gt;</programlisting> or:
         
         
         <programlisting>&lt;cas:IntegerArray xmi:id="4"&gt;
@@ -263,15 +252,13 @@ myFeature = "bar"</programlisting>
 &lt;/cas:IntegerArray&gt;</programlisting></para>
       
       <para>Note that in this case, the XML element name is formed from the CAS type name (e.g.
-        <quote><literal>uima.cas.IntegerArray</literal></quote>) in the same way as
-        for other FeatureStructures. The elements of the array are serialized either as a
-        space-separated attribute named <quote>elements</quote> or as a series of child
-        elements named <quote>elements</quote>.</para>
+        <quote><literal>uima.cas.IntegerArray</literal></quote>) in the same way as for other
+        FeatureStructures. The elements of the array are serialized either as a space-separated attribute named
+        <quote>elements</quote> or as a series of child elements named <quote>elements</quote>.</para>
       
-      <para>List nodes are just standard FeatureStructures with <quote>head</quote> and
-        <quote>tail</quote> features, and are serialized using the normal
-        FeatureStructure serialization. For example, an IntegerList with the values 2, 4,
-        and 6 would be serialized as the four objects:
+      <para>List nodes are just standard FeatureStructures with <quote>head</quote> and <quote>tail</quote>
+        features, and are serialized using the normal FeatureStructure serialization. For example, an
+        IntegerList with the values 2, 4, and 6 would be serialized as the four objects:
         
         
         <programlisting>&lt;cas:NonEmptyIntegerList xmi:id="10" head="2" tail="11"/&gt;
@@ -279,31 +266,30 @@ myFeature = "bar"</programlisting>
 &lt;cas:NonEmptyIntegerList xmi:id="12" head="6" tail="13"/&gt;
 &lt;cas:EmptyIntegerList xmi:id"13"/&gt;</programlisting></para>
       
-      <para>This representation of arrays allows multiple references to an array of list. It
-        also allows a feature with range type TOP to refer to an array or list. However, it is a
-        very unnatural representation in XMI and does not support interoperability with
-        other XMI-based systems, so we instead recommend using the multi-valued-property
-        representation described in the previous section whenever it is possible.</para>
+      <para>This representation of arrays allows multiple references to an array of list. It also allows a feature
+        with range type TOP to refer to an array or list. However, it is a very unnatural representation in XMI and does
+        not support interoperability with other XMI-based systems, so we instead recommend using the
+        multi-valued-property representation described in the previous section whenever it is possible.</para>
       
     </section>
-  </section>
-  
-  <section id="ugr.ref.xmi.null_array_list_elements">
-    <title>Null Array/List Elements</title>
     
-    <para>In UIMA, an element of an FSArray or FSList may be null. In XMI, multi-valued
-      properties do not permit null values. As a workaround for this, we will use a dummy
-      instance of the special type cas:NULL, which has xmi:id 0. For example, in the following
-      example the <quote>myFsArray</quote> feature refers to an FSArray whose second
-      element is null:
+    <section id="ugr.ref.xmi.null_array_list_elements">
+      <title>Null Array/List Elements</title>
       
-      
-      <programlisting>&lt;cas:NULL xmi:id="0"/&gt;
+      <para>In UIMA, an element of an FSArray or FSList may be null. In XMI, multi-valued properties do not permit null
+        values. As a workaround for this, we use a dummy instance of the special type cas:NULL, which has xmi:id 0.
+        For example, in the following example the <quote>myFsArray</quote> feature refers to an FSArray whose
+        second element is null:
+        
+        
+        <programlisting>&lt;cas:NULL xmi:id="0"/&gt;
 &lt;myproj:Baz xmi:id="3"&gt;
   &lt;myFsArray href="#13"/&gt;
   &lt;myFsArray href="#0"/&gt;
   &lt;myFsArray href="#42"/&gt;
 &lt;/myproj:Baz&gt;</programlisting></para>
+      
+    </section>
     
   </section>
   
@@ -333,21 +319,17 @@ myFeature = "bar"</programlisting>
     <programlisting>&lt;cas:View sofa="1" members="3 7 21 39 61"/&gt;</programlisting>
     
     <para>Here the integers 3, 7, 21, 39, and 61 refer to the xmi:id fields of the objects that
-      are members of this view.</para>
-    
-    <para>If the sofa feature is omitted, then this is interpreted as the
-      <quote>base</quote> view, whose members pertain to the artifact as a whole rather than
-      any individual Sofa.</para>
+      are members of this view.</para>    
   </section>
   
   <section id="ugr.ref.xmi.linking_to_ecore_type_system">
     <title>Linking an XMI Document to its Ecore Type System</title>
     <titleabbrev>Linking XMI docs to Ecore Type System</titleabbrev>
     
-    <para>If the CAS Type System has been saved to an Ecore file (which is the subject of a
-      different spec), it is possible to store a link from an XMI document to that Ecore type
-      system. This is done using an xsi:schemaLocation attribute on the root XMI
-      element.</para>
+    <para>If the CAS Type System has been saved to an Ecore file (as described in <olink
+        targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.xmi_emf"/>), it is possible to store a
+      link from an XMI document to that Ecore type system. This is done using an xsi:schemaLocation attribute 
+      on the root XMI element.</para>
     
     <para>The xsi:schemaLocation attribute is a space-separated list that represents a
       mapping from namespace URI (e.g. http:///org/myproj.ecore) to the physical URI of the

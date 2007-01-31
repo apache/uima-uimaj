@@ -117,8 +117,8 @@
                <xreftext>Section 2.4.2.2, “FlowController”</xreftext>
             </div>
             <div element="section" href="#ugr.ref.xml.component_descriptor.aes.aggregate.flow_constraints" number="2.4.2.3" targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.flow_constraints">
-               <ttl>FlowConstraintsr</ttl>
-               <xreftext>Section 2.4.2.3, “FlowConstraintsr”</xreftext>
+               <ttl>FlowConstraints</ttl>
+               <xreftext>Section 2.4.2.3, “FlowConstraints”</xreftext>
                <div element="section" href="#ugr.ref.xml.component_descriptor.aes.aggregate.flow_constraints.fixed_flow" number="" targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.flow_constraints.fixed_flow">
                   <ttl>Fixed Flow</ttl>
                   <xreftext>the section called “Fixed Flow”</xreftext>
@@ -354,8 +354,8 @@
          <xreftext>Section 5.1, “Name Spaces”</xreftext>
       </div>
       <div element="section" href="#ugr.ref.jcas.use_of_description" number="5.2" targetptr="ugr.ref.jcas.use_of_description">
-         <ttl>XML description element is copied into generated Java code</ttl>
-         <xreftext>Section 5.2, “XML description element is copied into generated Java code”</xreftext>
+         <ttl>The XML description element is copied into generated Java code</ttl>
+         <xreftext>Section 5.2, “Use of XML Description”</xreftext>
       </div>
       <div element="section" href="#ugr.ref.jcas.mapping_built_ins" number="5.3" targetptr="ugr.ref.jcas.mapping_built_ins">
          <ttl>Mapping built-in CAS types to Java types</ttl>
@@ -383,7 +383,7 @@
       </div>
       <div element="section" href="#ugr.ref.jcas.merging_types_from_other_specs" number="5.5" targetptr="ugr.ref.jcas.merging_types_from_other_specs">
          <ttl>Merging types from different type system specifications</ttl>
-         <xreftext>Section 5.5, “Merging types from different type system specifications”</xreftext>
+         <xreftext>Section 5.5, “Merging Types”</xreftext>
          <div element="section" href="#ugr.ref.jcas.merging_types.aggregates_and_cpes" number="5.5.1" targetptr="ugr.ref.jcas.merging_types.aggregates_and_cpes">
             <ttl>Aggregate AEs and CPEs as sources of types</ttl>
             <xreftext>Section 5.5.1, “Aggregate AEs and CPEs as sources of types”</xreftext>
@@ -394,7 +394,7 @@
          </div>
          <div element="section" href="#ugr.ref.jcas.impact_of_type_merging_on_composability" number="5.5.3" targetptr="ugr.ref.jcas.impact_of_type_merging_on_composability">
             <ttl>Impact of Type Merging on Composability of Annotators</ttl>
-            <xreftext>Section 5.5.3, “Impact of Type Merging on Composability of Annotators”</xreftext>
+            <xreftext>Section 5.5.3, “Type Merging impacts on Composability”</xreftext>
          </div>
          <div element="section" href="#ugr.ref.jcas.documentannotation_issues" number="5.5.4" targetptr="ugr.ref.jcas.documentannotation_issues">
             <ttl>Adding Features to DocumentAnnotation</ttl>
@@ -558,18 +558,18 @@
             <ttl>Arrays and Lists as First-Class Objects</ttl>
             <xreftext>Section 7.5.2, “Arrays and Lists as First-Class Objects”</xreftext>
          </div>
+         <div element="section" href="#ugr.ref.xmi.null_array_list_elements" number="7.5.3" targetptr="ugr.ref.xmi.null_array_list_elements">
+            <ttl>Null Array/List Elements</ttl>
+            <xreftext>Section 7.5.3, “Null Array/List Elements”</xreftext>
+         </div>
       </div>
-      <div element="section" href="#ugr.ref.xmi.null_array_list_elements" number="7.6" targetptr="ugr.ref.xmi.null_array_list_elements">
-         <ttl>Null Array/List Elements</ttl>
-         <xreftext>Section 7.6, “Null Array/List Elements”</xreftext>
-      </div>
-      <div element="section" href="#ugr.ref.xmi.sofas_views" number="7.7" targetptr="ugr.ref.xmi.sofas_views">
+      <div element="section" href="#ugr.ref.xmi.sofas_views" number="7.6" targetptr="ugr.ref.xmi.sofas_views">
          <ttl>Subjects of Analysis (Sofas) and Views</ttl>
-         <xreftext>Section 7.7, “Subjects of Analysis (Sofas) and Views”</xreftext>
+         <xreftext>Section 7.6, “Subjects of Analysis (Sofas) and Views”</xreftext>
       </div>
-      <div element="section" href="#ugr.ref.xmi.linking_to_ecore_type_system" number="7.8" targetptr="ugr.ref.xmi.linking_to_ecore_type_system">
+      <div element="section" href="#ugr.ref.xmi.linking_to_ecore_type_system" number="7.7" targetptr="ugr.ref.xmi.linking_to_ecore_type_system">
          <ttl>Linking an XMI Document to its Ecore Type System</ttl>
-         <xreftext>Section 7.8, “Linking XMI docs to Ecore Type System”</xreftext>
+         <xreftext>Section 7.7, “Linking XMI docs to Ecore Type System”</xreftext>
       </div>
    </div>
 </div>

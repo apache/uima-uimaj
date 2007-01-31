@@ -301,7 +301,7 @@
          </div>
          <div element="section" href="#ugr.ovv.conceptual.interacting_with_cas_and_external_resources" number="2.3.3" targetptr="ugr.ovv.conceptual.interacting_with_cas_and_external_resources">
             <ttl>Interacting with the CAS and External Resources</ttl>
-            <xreftext>Section 2.3.3, “Interacting with the CAS and External Resources”</xreftext>
+            <xreftext>Section 2.3.3, “Using CASes and External Resources”</xreftext>
          </div>
          <div element="section" href="#ugr.ovv.conceptual.component_descriptors" number="2.3.4" targetptr="ugr.ovv.conceptual.component_descriptors">
             <ttl>Component Descriptors</ttl>
@@ -383,7 +383,7 @@
          <div element="section" href="#ugr.ovv.eclipse_setup.install_emf" number="3.1.2" targetptr="ugr.ovv.eclipse_setup.install_emf">
             <ttl>Install additional Eclipse component: EMF</ttl>
             <xreftext>Section 3.1.2, “Install additional Eclipse component: EMF”</xreftext>
-            <div element="section" href="#d0e1898" number="3.1.2.1">
+            <div element="section" href="#d0e1900" number="3.1.2.1">
                <ttl>EMF Installation Shortcut for Eclipse 3.2</ttl>
                <xreftext>Section 3.1.2.1, “EMF Installation Shortcut for Eclipse 3.2”</xreftext>
             </div>

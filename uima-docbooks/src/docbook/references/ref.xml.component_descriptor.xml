@@ -66,9 +66,8 @@ under the License.
     
     <para>This chapter uses an informal notation to specify the syntax of Component
       Descriptors. The formal syntax is defined by an XML schema definition, which is
-      contained in two files &ndash; <literal>resourceSpecifierSchema.xsd</literal>
-      and <literal>TaeSpecifierSchema.xsd</literal>, both of which are in the
-      <literal>uima-core.jar</literal> file.</para>
+      contained in the file <literal>resourceSpecifierSchema.xsd</literal>,  
+      located in the <literal>uima-core.jar</literal> file.</para>
     
     <para>The notation used in this chapter is:</para>
     
@@ -269,7 +268,7 @@ AnalysisEngine ae = UIMAFramework.produceAE(desc, resMgr, null);
       <itemizedlist spacing="compact"><listitem><para>test.TokenAnnotation</para>
         </listitem>
         
-        <listitem><para>org.myorg.tae.TokenAnnotation</para></listitem>
+        <listitem><para>org.myorg.TokenAnnotation</para></listitem>
         
         <listitem><para>com.my_company.proj123.TokenAnnotation </para></listitem>
         </itemizedlist>
@@ -279,15 +278,16 @@ AnalysisEngine ae = UIMAFramework.produceAE(desc, resMgr, null);
         having namespaces be all lowercase, with the short type names having an initial
         capital, but this is not mandated, so <literal>ABC.mYtyPE</literal> is an allowed
         type name. While type names without namespaces (e.g.
-        <literal>TokenAnnotation</literal> alone) are allowed, the JCas does not support
-        them and so their use is strongly discouraged.</para>
+        <literal>TokenAnnotation</literal> alone) are allowed, but discouraged because
+        naming conflicts can then result when combining annotators that use different
+        type systems.</para>
       
       <para>The <literal>description</literal> element contains a textual description
-        of the type. The <literal>superTypeName</literal> element contains the name of the
+        of the type. The <literal>supertypeName</literal> element contains the name of the
         type from which it inherits (this can be set to the name of another user-defined type,
         or it may be set to any built-in type which may be subclassed, such as
-        <quote><literal>uima.tcas.Annotation</literal></quote> for a new annotation
-        type or <quote><literal>uima.cas.TOP</literal></quote> for a new type that is not
+        <literal>uima.tcas.Annotation</literal> for a new annotation
+        type or <literal>uima.cas.TOP</literal> for a new type that is not
         an annotation). All three of these elements are required.</para>
       
     </section>
@@ -393,13 +393,12 @@ uima.tcas.Annotation.</programlisting>
       Engine is a container for a single <emphasis>annotator</emphasis>, where as an
       <emphasis>Aggregate</emphasis> Analysis Engine is composed of a collection of other
       Analysis Engines. (For more information on this and other terminology, see <olink
-        targetdoc="&uima_docs_overview;" targetptr="ugr.ovv.conceptual"/>.</para>
+        targetdoc="&uima_docs_overview;" targetptr="ugr.ovv.conceptual"/>).</para>
     
     <para>Both Primitive and Aggregate Analysis Engines have descriptors, and the two types
-      of descriptors have some similarities and some differences. Primitive Analysis
-      Engine descriptors are discussed first, in <xref linkend="&tp;aes.primitive"/>.
-        <xref linkend="&tp;aes.aggregate"/> then describes how Aggregate Analysis
-      Engine descriptors are different.</para>
+      of descriptors have some similarities and some differences. <xref linkend="&tp;aes.primitive"/>
+      discusses Primitive Analysis Engine descriptors.  <xref linkend="&tp;aes.aggregate"/> then 
+      describes how Aggregate Analysis Engine descriptors are different.</para>
     
     <section id="&tp;aes.primitive">
       <title>Primitive Analysis Engine Descriptors</title>
@@ -409,7 +408,8 @@ uima.tcas.Annotation.</programlisting>
         
         
         <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8" ?>
-<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<analysisEngineDescription 
+        xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation> 
 
   <primitive>true</primitive>
@@ -462,7 +462,7 @@ uima.tcas.Annotation.</programlisting>
         
         <para>The <literal>&lt;externalResourceDependencies&gt;</literal> and
           <literal>&lt;resourceManagerConfiguration&gt;</literal> elements declare
-          the <literal>external</literal> resource files that the analysis engine relies
+          the external resource files that the analysis engine relies
           upon. They are optional and are described in <xref
             linkend="&tp;aes.primitive.external_resource_dependencies"/> and <xref
             linkend="&tp;aes.primitive.resource_manager_configuration"/>.</para>
@@ -513,8 +513,7 @@ uima.tcas.Annotation.</programlisting>
             <literal>capabilities</literal> and
             <literal>operationalProperties</literal> are described in the following
             sections. The only one of these that is required is
-            <literal>capabilities</literal>; the others are all technically optional
-            but generally necessary for an analysis engine of any complexity.</para>
+            <literal>capabilities</literal>; the others are optional.</para>
           
         </section>
         
@@ -639,7 +638,7 @@ uima.tcas.Annotation.</programlisting>
             <literal>&lt;configurationGroup&gt;</literal> element has a names
             attribute, which contains a list of group names separated by whitespace (space
             or tab characters). Names consist of any number of non-whitespace characters;
-            however the Component Description Editor tool restricts this to be normal Java
+            however the Component Descriptor Editor tool restricts this to be normal Java
             identifiers, including the period (.) and the dash (-). One configuration group
             will be created for each name, and all of the groups will contain the same set of
             parameters.</para>
@@ -706,7 +705,7 @@ uima.tcas.Annotation.</programlisting>
 </configurationParameters>]]></programlisting>
             
             <para>In this example, we are declaring a <literal>DictionaryFile</literal>
-              parameter that can have a different value for each of the languages that our TAE
+              parameter that can have a different value for each of the languages that our AE
               supports
               &ndash; English (general), German, U.S. English, and Chinese. For Chinese
               only, we also declare a <literal>DBC_Strategy</literal>
@@ -984,7 +983,7 @@ uima.tcas.Annotation.</programlisting>
 </fsIndexCollection>]]></programlisting>
             
             <para>The <literal>fsIndexCollection</literal> element declares<emphasis> Feature Structure
-              Indexes</emphasis>, which define an index that holds feature structures of a given type.
+              Indexes</emphasis>, each of which defined an index that holds feature structures of a given type.
               Information in the CAS is always accessed through an index. There is a built-in default annotation
               index declared which can be used to access instances of type
               <literal>uima.tcas.Annotation</literal> (or its subtypes), sorted based on their
@@ -1141,8 +1140,7 @@ uima.tcas.Annotation.</programlisting>
               <literal>languagesSupported, inputSofas, and outputSofas</literal>.
               Inputs and outputs element are required (though they may be empty);
               <literal>&lt;languagesSupported&gt;, &lt;inputSofas</literal>&gt;,
-              and <literal>&lt;outputSofas&gt;</literal> are optional and is used only
-              used for TAEs.</para>
+              and <literal>&lt;outputSofas&gt;</literal> are optional.</para>
             
             <para>Both inputs and outputs may contain a mixture of type and feature
               elements.</para>
@@ -1164,7 +1162,7 @@ uima.tcas.Annotation.</programlisting>
             <para><literal>&lt;feature...&gt;</literal> elements contain the
               <quote>fully-qualified</quote> feature name, which is the type name
               followed by a colon, followed by the feature name, e.g.
-              <literal>org.myorg.tae.TokenAnnotation:lemma</literal>.
+              <literal>org.myorg.TokenAnnotation:lemma</literal>.
               <literal>&lt;feature...&gt;</literal> elements in the
               <literal>&lt;inputs&gt;</literal> section must also have a corresponding
               type declared as an input. In output sections, this is not required. If the type
@@ -1218,17 +1216,18 @@ uima.tcas.Annotation.</programlisting>
             <para><literal>ModifiesCas</literal>, if false, indicates that this
               component does not modify the CAS. If it is not specified, the default value is
               true except for CAS Consumer components.</para>
-            <note><para>If you wrap one or more CAS Consumers inside an aggregate as the only
-            components, you must explicitly specify in the aggregate the ModifiesCas
-            property as false (assuming the CAS Consumer components take the default here);
-            otherwise the framework will complain about inconsistent settings for these.
-            </para></note>
-            
+                       
             <para><literal>multipleDeploymentAllowed</literal>, if true, allows the
               component to be deployed multiple times to increase performance throught
               scale-out techniques. If it is not specified, the default value is true,
               except for CAS Consumer and Collection Reader components.</para>
-            
+
+            <note><para>If you wrap one or more CAS Consumers inside an aggregate as the only
+            components, you must explicitly specify in the aggregate the 
+            <literal>multipleDeploymentAllowed</literal> property as false (assuming the CAS Consumer 
+            components take the default here); otherwise the framework will complain about inconsistent 
+            settings for these.</para></note>
+                        
             <para><literal>outputsNewCASes</literal>, if true, allows the component to
               create new CASes during processing, for example to break a large artifact into
               smaller pieces. See <olink targetdoc="&uima_docs_tutorial_guides;"
@@ -1339,7 +1338,7 @@ uima.tcas.Annotation.</programlisting>
                 <listitem><para><literal>description</literal> &ndash; English
                   description of the resource</para></listitem>
                 
-                <listitem><para><literal>resource specifier </literal>&ndash;
+                <listitem><para>Resource Specifier &ndash;
                   Declares the location of the resource. There are different
                   possibilities for how this is done (see below).</para></listitem>
                 
@@ -1437,7 +1436,7 @@ uima.tcas.Annotation.</programlisting>
                 
                 <listitem><para>The
                   <literal>&lt;annotatorImplementationName&gt;</literal> element
-                  of a primitive TAE descriptor</para></listitem>
+                  of a primitive AE descriptor</para></listitem>
                 
                 <listitem><para>The <literal>&lt;name&gt;</literal> element within
                   <literal>&lt;analysisEngineMetaData&gt;</literal></para>
@@ -1551,7 +1550,7 @@ uima.tcas.Annotation.</programlisting>
               
               <listitem><para>An <literal>import</literal> element giving the name or
                 location of the XML descriptor for the delegate analysis engine (see <xref
-                  linkend="&tp;imports"/>.</para></listitem></itemizedlist>
+                  linkend="&tp;imports"/>).</para></listitem></itemizedlist>
             
             <para>The latter is the much more common usage, and is the only form supported by
               the Component Descriptor Editor tool.</para>
@@ -1582,7 +1581,7 @@ uima.tcas.Annotation.</programlisting>
             
           </section>
           <section id="&tp;aes.aggregate.flow_constraints">
-            <title>FlowConstraintsr</title>
+            <title>FlowConstraints</title>
             
             <para>If a <literal>&lt;flowController&gt;</literal> is not specified, the
               order in which delegate Analysis Engines are called within the aggregate
@@ -2032,7 +2031,7 @@ uima.tcas.Annotation.</programlisting>
 </capabilities>]]></programlisting></para>
       
       <para>The differences between a CAS Initializer&apos;s capabilities declaration
-        and a TAE&apos;s capabilities declaration are that the CAS Initializer does not
+        and an Analysis Engine&apos;s capabilities declaration are that the CAS Initializer does not
         declare any input CAS types and features or input Sofas (because it is always the first
         to operate on a CAS), it doesn&apos;t have a language specifier, and that the CAS
         Initializer may declare a set of MIME types that it supports for its input documents.
@@ -2074,13 +2073,23 @@ uima.tcas.Annotation.</programlisting>
     ...
   </resourceManagerConfiguration>
 </casConsumerDescription>]]></programlisting></para>
-      
+
+        <para>The <literal>frameworkImplementation</literal> element currently must 
+          have the value <literal>org.apache.uima.java</literal>, or
+           <literal>org.apache.uima.cpp</literal>.</para>
+               
+        <para>The next subelement,<literal>
+          &lt;annotatorImplementationName&gt;</literal> is how the UIMA framework
+          determines which annotator class to use. This should contain a fully-qualified
+          Java class name for Java implementations, or the name of a .dll or .so file for C++
+          implementations.</para>      
       <para>The <literal>frameworkImplementation</literal> element must always be set
         to the value <literal>org.apache.uima.java</literal>.</para>
       
       <para>The <literal>implementationName</literal> element must contain the
-        fully-qualified class name of the CAS Consumer implementation. This must name a
-        class that implements the <literal>CasConsumer</literal> interface.</para>
+        fully-qualified class name of the CAS Consumer implementation, or the name 
+        of a .dll or .so file for C++ implementations.  For Java, the named class must
+        implement the <literal>CasConsumer</literal> interface.</para>
       
       <para>The <literal>processingResourceMetaData</literal> element contains
         essentially the same information as a Primitive Analysis Engine Descriptor&apos;s
@@ -2106,8 +2115,8 @@ uima.tcas.Annotation.</programlisting>
       refers to a valid Analysis Engine or CAS Consumer service can be used in place of the
       actual Analysis Engine or CAS Consumer Descriptor. The UIMA SDK will handle the details
       of calling the remote service. (For details on <emphasis>deploying</emphasis> an
-      Analysis Engine or CAS Consumer as a service, see <olink targetdoc="&uima_docs_ref;"
-        targetptr="ugr.ref.xml.cpe_descriptor"/>.</para>
+      Analysis Engine or CAS Consumer as a service, see <olink targetdoc="&uima_docs_tutorial_guides;"
+        targetptr="ugr.tug.application.remote_services"/>.</para>
     
     <para>The UIMA SDK is extensible to support different types of remote services. In future
       versions, there may be different variations of service client descriptors that cater
