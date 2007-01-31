@@ -1182,10 +1182,12 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
         included components. Then run the <literal>startVinciService</literal> shell script, which is located
         in the <literal>bin</literal> directory, and pass it the path to a Vinci deployment descriptor, for
         example: <literal>C:UIMA&gt;bin/startVinciService
-        ../examples/deploy/vinci/Deploy_PersonTitleAnnotator.xml</literal>.</para>
+        ../examples/deploy/vinci/Deploy_PersonTitleAnnotator.xml</literal>.
+      If you are running Eclipse, and have the <literal>uimaj-examples</literal> project
+      in your workspace, you can use the Eclipse Menu &rarr; Run &rarr; Run... and then
+      pick <quote>UIMA Start Vinci Service</quote>.</para>
       
       <para>This example deployment descriptor looks like:
-        
         
         <programlisting>&lt;deployment name=<emphasis role="bold-italic">"Vinci Person Title Annotator Service"</emphasis>&gt;
 
@@ -1365,12 +1367,16 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
       <section id="ugr.tug.application.vns.starting">
         <title>Starting VNS</title>
         
-        <para>To run the VNS use the <literal>startVNS</literal> script found in the <literal>bin</literal>
-          directory of the UIMA installation.</para> <note>
-        <para>VNS runs on port 9000 by default so please make sure this port is available. If you see the following
-          exception:
-          
-          <programlisting>java.net.BindException: Address already in use:
+        <para>To run the VNS use the <literal>startVNS</literal> script found in the
+          <literal>bin</literal> directory of the UIMA installation, 
+        or launch it from Eclipse.  If you've installed the <literal>uimaj-examples</literal> project,
+        it will supply a pre-configured launch script you can access in Eclipse by selecting
+        Menu &rarr; Run &rarr; Run... and picking <quote>UIMA Start Vinci Service</quote>.</para>
+        <note><para>VNS runs on port 9000 by default so please make sure this port is
+        available. If you see the following exception:
+        
+        <programlisting>java.net.BindException: Address already in use:
+
 JVM_Bind</programlisting>
           it indicates that another process is running on port 9000. In this case, add the parameter <literal>-p
           &lt;port&gt;</literal> to the <literal>startVNS</literal> command, using
@@ -1445,13 +1451,19 @@ and .vns.services
       <section id="ugr.tug.application.launching_vinci_services">
         <title>Launching Vinci Services</title>
         
-        <para>When launching Vinci service, you must indicate which VNS the service will connect to. A Vinci service
-          is typically started using the script <literal>startVinciService</literal>, found in the
-          <literal>bin</literal> directory of the UIMA installation. The environmental variable VNS_HOST
-          should be set to the name or IP address of the machine hosting the Vinci Naming Service. The default is
-          localhost, the machine the service is deployed on. This name can also be passed as the second argument to the
-          startVinciService script. The default port for VNS is 9000 but can be overriden with the VNS_PORT
-          environmental variable.</para>
+        <para>When launching Vinci service, you must indicate which VNS the service will
+          connect to. A Vinci service is typically started using the script
+          <literal>startVinciService</literal>, found in the <literal>bin</literal>
+          directory of the UIMA installation. (If you're using Eclipse and have the 
+          <literal>uimaj-examples</literal> project in the workspace, you will also find
+          an Eclipse launcher named <quote>UIMA Start Vinci Service</quote> you can use.)  
+          For the script, the environmental variable VNS_HOST should
+          be set to the name or IP address of the machine hosting the Vinci Naming Service. The
+          default is localhost, the machine the service is deployed on. This name can also be
+          passed as the second argument to the startVinciService script. The default port
+          for VNS is 9000 but can be overriden with the VNS_PORT environmental
+          variable.</para>
+
         
         <para>If you write your own startup script, to define Vinci&apos;s default VNS you must provide the
           following JVM parameters:
