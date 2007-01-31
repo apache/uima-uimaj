@@ -158,7 +158,9 @@ under the License.
     <section id="ugr.ovv.eclipse_setup.install_uima_sdk">
       <title>Install the UIMA SDK</title>
       <para>If you haven't already done so, please download and install the UIMA SDK from
-          <ulink url="&url_apache_uima_download;"/>.</para>
+          <ulink url="&url_apache_uima_download;"/>.  Be sure to run the
+          <literal>adjustExamplePaths.bat</literal> or <literal>adjustExamplePaths.sh</literal>
+          script, as explained in the README.</para>
     </section>
     
     <section id="ugr.ovv.eclipse_setup.install_uima_eclipse_plugins">
