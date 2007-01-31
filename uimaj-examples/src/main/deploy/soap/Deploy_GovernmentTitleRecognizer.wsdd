@@ -44,7 +44,7 @@
              encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 
     <typeMapping qname="ns:serviceDataCargo" xmlns:ns="http://uima.apache.org/analysis_engine"
-             languageSpecificType="java:org.apache.uima.adapter.ServiceDataCargo"
+             languageSpecificType="java:org.apache.uima.analysis_engine.service.impl.ServiceDataCargo"
              serializer="org.apache.uima.adapter.soap.BinarySerializerFactory"
              deserializer="org.apache.uima.adapter.soap.BinaryDeserializerFactory"
              encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
