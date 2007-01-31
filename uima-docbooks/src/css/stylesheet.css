@@ -292,3 +292,8 @@ div.revhistory table tr {
 div.revhistory table th {
   border: none;
 }
+
+span.bold-italic {
+  font-weight: bold;
+  font-style: italic;
+}
