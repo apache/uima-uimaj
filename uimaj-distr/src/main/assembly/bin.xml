@@ -152,17 +152,41 @@ under the License.
     </fileSet>
     <fileSet>
       <directory>../uima-docbooks/target</directory>
-      <outputDirectory>/apache-uima/docs</outputDirectory>
+      <outputDirectory>/apache-uima/docs/html</outputDirectory>
       <includes>
         <include>images/**</include>
-        <include>overview_and_setup/overview_and_setup.pdf</include>
         <include>overview_and_setup/overview_and_setup.html</include>
-        <include>tutorials_and_users_guides/tutorials_and_users_guides.pdf</include>
         <include>tutorials_and_users_guides/tutorials_and_users_guides.html</include>
-        <include>tools/tools.pdf</include>
         <include>tools/tools.html</include>
-        <include>references/references.pdf</include>
         <include>references/references.html</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>../uima-docbooks/target/overview_and_setup</directory>
+      <outputDirectory>/apache-uima/docs/pdf</outputDirectory>
+      <includes>
+        <include>overview_and_setup.pdf</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>../uima-docbooks/target/tutorials_and_users_guides</directory>
+      <outputDirectory>/apache-uima/docs/pdf</outputDirectory>
+      <includes>
+        <include>tutorials_and_users_guides.pdf</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>../uima-docbooks/target/tools</directory>
+      <outputDirectory>/apache-uima/docs/pdf</outputDirectory>
+      <includes>
+        <include>tools.pdf</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>../uima-docbooks/target/references</directory>
+      <outputDirectory>/apache-uima/docs/pdf</outputDirectory>
+      <includes>
+        <include>references.pdf</include>
       </includes>
     </fileSet>
     <fileSet>
