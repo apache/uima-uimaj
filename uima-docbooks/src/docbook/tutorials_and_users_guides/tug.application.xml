@@ -1156,7 +1156,7 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
         
         
         <programlisting>C:/Program Files/apache/uima/bin&gt;deploytool 
-examples/deploy/soap/Deploy_PersonTitleAnnotator.wsdd</programlisting></para>
+../examples/deploy/soap/Deploy_PersonTitleAnnotator.wsdd</programlisting></para>
       
       <para>Test if the deployment was successful by starting up a browser, pointing it to
         your Tomcat installation's <quote>axis</quote> webpage (e.g., 
@@ -1195,7 +1195,7 @@ examples/deploy/soap/Deploy_PersonTitleAnnotator.wsdd</programlisting></para>
         run the <literal>startVinciService</literal> shell script, which is located in
         the <literal>bin</literal> directory, and pass it the path to a Vinci deployment
         descriptor, for example: <literal>C:UIMA&gt;bin/startVinciService
-        examples/deploy/vinci/Deploy_PersonTitleAnnotator.xml</literal>.</para>
+        ../examples/deploy/vinci/Deploy_PersonTitleAnnotator.xml</literal>.</para>
       
       <para>This example deployment descriptor looks like:
         
