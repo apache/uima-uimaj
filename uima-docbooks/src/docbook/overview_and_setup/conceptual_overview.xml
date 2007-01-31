@@ -405,6 +405,7 @@ under the License.
     
     <section id="ugr.ovv.conceptual.interacting_with_cas_and_external_resources">
       <title>Interacting with the CAS and External Resources</title>
+      <titleabbrev>Using CASes and External Resources</titleabbrev>
       
       <para>The two main interfaces that a UIMA component developer interacts with are the
         CAS and the UIMA Context.</para>

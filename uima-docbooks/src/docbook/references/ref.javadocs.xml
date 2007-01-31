@@ -33,7 +33,11 @@ under the License.
   
   <para>Eclipse supports the ability to attach the JavaDocs to your project. To use this
     facility, open a project which is referring to the UIMA APIs in its class path, and open the
-    project properties.
+    project properties.  Then pick Java Build Path.  Pick the "Libraries" tab and select
+    one of the UIMA library entries (if you don't have, for instance, uima-core.jar in this list,
+    it's unlikely your code will compile).  Each library entry has a small "+" sign on its left - click
+    that to expand the view to see the Javadoc location.  If you highlight that and press edit - you can
+    add a reference to the Javadocs, in the following dialog:  
     
     
     <screenshot>
@@ -45,9 +49,12 @@ under the License.
     </mediaobject>
   </screenshot></para>
   
-  <para>Once you do this, Eclipse can show you JavaDocs for UIMA APIs as you work. To see the
-    JavaDoc for a UIMA API, highlight the API class or method and press shift-F2, or use the menu
-    Navigate &rarr; OpenExternalJavaDoc. This will open the JavaDoc for the selected item in
-    a browser.</para>
+  <para>Once you do this, Eclipse can show you JavaDocs for UIMA APIs as you work.  To see the
+    JavaDoc for a UIMA API, you can hover over the API class or method, or select it and press shift-F2, 
+    or use the menu Navigate &rarr; OpenExternalJavaDoc, or open the Javadoc view (Window &rarr; Show View &rarr; Other 
+    &rarr; Java &rarr; Javadoc).</para>
+  
+  <para>In a similar manner, you can attach the source for the UIMA framework.  The source is, of course,
+  available from Apache UIMA.</para>
   
 </chapter>

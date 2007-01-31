@@ -26,9 +26,10 @@ under the License.
   <title>JCas Reference</title>
   
   <para>The CAS is a system for sharing data among annotators, consisting of data structures
-    (definable at run time), indexes over these data, metadata describing these, and a high
-    performance serialization/deserialization mechanism. JCas is a Java approach to
-    accessing CAS data, based on using generated, specific Java classes for each CAS
+    (definable at run time), sets of indexes over these data, metadata describing these, subjects of
+    analysis, and a high
+    performance serialization/deserialization mechanism. JCas provides Java approach to
+    accessing CAS data, and is based on using generated, specific Java classes for each CAS
     type.</para>
   
   <para>Annotators process one CAS per call to their process method. During processing,
@@ -40,7 +41,7 @@ under the License.
   <para>All the facilities present in the APIs for the CAS are available when using the JCas
     APIs; indeed, you can use the getCas() method to get the corresponding CAS object from a
     JCas (and vice-versa). The JCas APIs often have helper methods that make using this
-    interface more convenient for Java developers, however.</para>
+    interface more convenient for Java developers.</para>
   
   <para>The data in the CAS are typed objects having fields. JCas uses a set of generated Java
     classes (each corresponding to a particular CAS type) with <quote>getter</quote> and
@@ -48,7 +49,9 @@ under the License.
     be made. The Java classes don&apos;t actually store the data in the class instance;
     instead, the getters and setters forward to the underlying CAS data representation.
     Because of this, applications which use the JCas interface can share data with annotators
-    using plain CAS (i.e., not using the JCas approach). Users can modify the JCas generated
+    using plain CAS (i.e., not using the JCas approach). </para>
+  
+    <para>Users can modify the JCas generated
     Java classes by adding fields to them; this allows arbitrary non-CAS data to also be
     represented within the JCas objects, as well; however, the non-CAS data stored in the JCas
     object instances cannot be shared with annotators using the plain CAS.</para>
@@ -83,9 +86,6 @@ under the License.
     fields as defined in the XML type specification. Descriptor comments are reflected in the
     generated Java code as Java-doc style comments.</para>
   
-  <para>Type names used in the CAS correspond to the generated Java classes directly. If the
-    CAS name is com.myCompany.myProject.ExampleClass, the generated Java class is in the
-    package com.myCompany.myProject, and the class is ExampleClass.</para>
   
   <section id="ugr.ref.jcas.name_spaces">
     <title>Name Spaces</title>
@@ -93,7 +93,14 @@ under the License.
     <para>Full Type names consist of a <quote>namespace</quote> prefix dotted with a simple
       name. Namespaces are used like packages to avoid collisions between types that are
       defined by different people at different times. The namespace is used as the Java
-      package name for generated Java files. An exception to this rule is the built-in types
+      package name for generated Java files.</para>
+      
+    <para>Type names used in the CAS correspond to the generated Java classes directly. If the
+      CAS name is com.myCompany.myProject.ExampleClass, the generated Java class is in the
+      package com.myCompany.myProject, and the class is ExampleClass.</para>
+      
+    <para>
+      An exception to this rule is the built-in types
       starting with <literal>uima.cas </literal>and <literal>uima.tcas</literal>;
       these names are mapped to Java packages named
       <literal>org.apache.uima.jcas.cas</literal> and
@@ -102,7 +109,8 @@ under the License.
   </section>
   
   <section id="ugr.ref.jcas.use_of_description">
-    <title>XML description element is copied into generated Java code</title>
+    <title>The XML description element is copied into generated Java code</title>
+    <titleabbrev>Use of XML Description</titleabbrev>
     
     <para>Each XML type specification can have &lt;description ...
       &gt; tags. The description for a type will be copied into the generated Java code, as a
@@ -171,7 +179,7 @@ uima.cas.String  &rarr; String</programlisting>
         changed specification. If you have previously augmented the source for these Java
         Class Models, your changes must be merged with the newly (re)generated Java source
         code for the Class Models. This can be done by hand, or you can run the version of JCasGen
-        that is integrated with Eclipse, since the merging depends on Eclipse&apos;s EMF
+        that is integrated with Eclipse, and use automatic merging that is done using Eclipse&apos;s EMF
         plug-in. You can obtain Eclipse and the needed EMF plug-in from <ulink
           url="http://www.eclipse.org/"/>.</para>
       
@@ -181,7 +189,7 @@ uima.cas.String  &rarr; String</programlisting>
       
       <para>The Java source merging will keep additional constructors, additional fields,
         and any changes you may have made to the readObject method (see below). Merging will
-        not delete classes in the target corresponding to deleted CAS types, which no longer
+        <emphasis>not</emphasis> delete classes in the target corresponding to deleted CAS types, which no longer
         are in the source &ndash; you should delete these by hand.</para>
       
     </section>
@@ -257,6 +265,7 @@ uima.cas.String  &rarr; String</programlisting>
   
   <section id="ugr.ref.jcas.merging_types_from_other_specs">
     <title>Merging types from different type system specifications</title>
+    <titleabbrev>Merging Types</titleabbrev>
     
     <section id="ugr.ref.jcas.merging_types.aggregates_and_cpes">
       <title>Aggregate AEs and CPEs as sources of types</title>
@@ -300,6 +309,7 @@ uima.cas.String  &rarr; String</programlisting>
     
     <section id="ugr.ref.jcas.impact_of_type_merging_on_composability">
       <title>Impact of Type Merging on Composability of Annotators</title>
+      <titleabbrev>Type Merging impacts on Composability</titleabbrev>
       
       <para>The recommended approach in UIMA is to build and maintain type systems as separate components, which are
         imported by Annotators. Using this approach, Type Merging does not occur because the Type System and its JCas
@@ -333,7 +343,8 @@ uima.cas.String  &rarr; String</programlisting>
         DocumentAnnotation is not recommended if you are using JCas.  Instead, it is recommended
         that you define your own type for storing your document-level metadata.  You can create 
         an instance of this type and add it to the indexes in the usual way.  You can then
-        retrieve this instance using <literal>JFSIndexRepository.getAllIndexedFS(type)</literal>.
+        retrieve this instance using the iterator returned from the method<literal>getAllIndexedFS(type)</literal>
+        on an instance of a JFSIndexRepository object.
         (As of UIMA v2.1, you do not have to declare a custom index in your descriptor to
         get this to work).</para>
       
@@ -367,7 +378,6 @@ uima.cas.String  &rarr; String</programlisting>
     <para>An annotator written using JCas is built by defining a class for the annotator that
       extends JCasAnnotator_ImplBase. The process method for this annotator is
       written</para>
-    
     
     <programlisting>public void process(JCas jcas)
      throws AnalysisEngineProcessException {
@@ -443,6 +453,9 @@ ir.getIndex(name-of-index, Foo.type) // filtered by specific type
 ir.getAnnotationIndex()      // get AnnotationIndex
 ir.getAnnotationIndex(Foo.type)      // filtered by specific type</programlisting>
       
+      <para>For convenience, the getAnnotationIndex method is available directly on the JCas object
+      instance; the implementation merely forwards to the associated index repository.</para>
+      
       <para>Filtering types have to be a subtype of the type specified for this index in its
         index specification. They can be written as either Foo.type or if you have an instance
         of Foo, you can write</para>
@@ -474,10 +487,17 @@ ir.getAnnotationIndex(Foo.type)      // filtered by specific type</programlistin
       
       <para>When writing a Multi-View component, you may need to index instances in multiple
         CAS views. The methods above use the indexes associated with the current JCas object.
-        You can explicitly add instances to other views using the addFsToIndexes method on
+        There is a variation of the <literal>addToIndexes / removeFromIndexes</literal> methods which
+        takes one argument: a reference to a JCas object holding the view in which you want to 
+        index this instance.
+        <programlisting>myInstance.addToIndexes(anotherJCas)
+myInstance.removeFromIndexes(anotherJCas)</programlisting>
+      </para>
+      
+      <para>
+        You can also explicitly add instances to other views using the addFsToIndexes method on
         other JCas (or CAS) objects. For instance, if you had 2 other CAS views (myView1 and
         myView2), in which you wanted to index myInstance, you could write:</para>
-      
       
       <programlisting>myInstance.addToIndexes();  // index in the JCas used with the new operator
 myView1.addFsToIndexes(myInstance); // index myInstance in myView1
@@ -548,7 +568,8 @@ FSIterator myIterator = myIndex.iterator();</programlisting>
       <title>Issues accessing JCas objects outside of UIMA Engine Components</title>
       
       <para>If you are using the ExtensionClassPaths, the JCas cover classes are loaded
-        under a class loader created by the ResourceManager. If you reference the same JCas
+        under a class loader created by the ResourceManager part of the UIMA Framework. 
+        If you reference the same JCas
         classes outside of any UIMA component, for instance, in top level application code,
         the JCas classes used by that top level application code must be loaded under the same
         class loader, in order to avoid class cast exceptions. Currently, there is no
