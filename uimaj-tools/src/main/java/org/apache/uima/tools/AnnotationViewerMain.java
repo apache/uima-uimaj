@@ -168,7 +168,7 @@ public class AnnotationViewerMain extends JFrame {
     // controlPanel.setLayout(new GridLayout(4, 2, 8, 4));
 
     // Set default values for input fields
-    File inputDir = new File(uimaHomeDir, "docs/examples/data/processed");
+    File inputDir = new File(uimaHomeDir, "examples/data/processed");
     inputFileSelector = new FileSelector("", "Input Directory", JFileChooser.DIRECTORIES_ONLY,
             inputDir);
     inputFileSelector.setSelected(inputDir.getAbsolutePath());
@@ -177,7 +177,7 @@ public class AnnotationViewerMain extends JFrame {
             JFileChooser.FILES_ONLY, uimaHomeDir);
 
     File descriptorFile = new File(uimaHomeDir,
-            "docs/examples/descriptors/analysis_engine/PersonTitleAnnotator.xml");
+            "examples/descriptors/analysis_engine/PersonTitleAnnotator.xml");
     taeDescriptorFileSelector.setSelected(descriptorFile.getAbsolutePath());
 
     controlPanel.add(labelInputDir);
