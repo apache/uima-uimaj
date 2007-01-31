@@ -400,6 +400,7 @@ uima.cas.String  &rarr; String</programlisting>
     
     <section id="ugr.ref.jcas.new_instances">
       <title>Creating new instances using the Java <quote>new</quote> operator</title>
+      <titleabbrev>Creating new instances</titleabbrev>
       
       <para>The new operator creates new instances of JCas types. It takes at least one
         parameter, the JCas instance in which the type is to be created. For example, if there
@@ -467,6 +468,7 @@ ir.getAnnotationIndex(Foo.type)      // filtered by specific type</programlistin
     </section>
     <section id="ugr.ref.jcas.adding_removing_instances_to_indexes">
       <title>Adding (and removing) instances to (from) indexes</title>
+      <titleabbrev>Updating Indexes</titleabbrev>
       
       <para>CAS indexes are maintained automatically by the CAS. But you must add any
         instances of feature structures you want the index to find, to the indexes by using the
