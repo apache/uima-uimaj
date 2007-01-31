@@ -183,26 +183,27 @@ under the License.
       
       
       <programlisting><![CDATA[<descriptor>
-    <include href="[File]"/>
+    <include href="[URL or File]"/>
 </descriptor>]]></programlisting></para>
     
-    <para>The <literal>[File]</literal> attribute is a filename for the descriptor of the
-      incorporated component. A fully qualified filename may be provided, or the filename
+    <para>The <literal>[URL or File]</literal> attribute is a URL or a filename for the descriptor of the
+      incorporated component. The argument is first attempted to be resolved as a URL.</para>
+    
+    <para>
+      A fully qualified filename may be provided, or the filename
       may relative to a directory specified using the <literal>CPM_HOME</literal>
-      variable, e.g.,</para>
-    
-    
+      variable, e.g.,    
     <programlisting>&lt;descriptor&gt;
     &lt;include href="${CPM_HOME}/desc_dir/descriptor.xml"/&gt;
 &lt;/descriptor&gt;</programlisting>
     
-    <para>In this case, the value for the <literal>CPM_HOME</literal> variable must be
-      provided to the CPE by specifying it on the Java command line, e.g.,</para>
+      In this case, the value for the <literal>CPM_HOME</literal> variable must be
+      provided to the CPE by specifying it on the Java command line, e.g.,
     
     
     <programlisting>java -DCPM_HOME="C:/Program Files/apache/uima/cpm" ...</programlisting>
     
-    <para>Note that this mechanism for referencing other component descriptor files is
+    Note that this mechanism for referencing other component descriptor files is
       different from and in no way related to either of the two import mechanisms described in
         <olink targetdoc="&uima_docs_ref;"
         targetptr="ugr.ref.xml.component_descriptor"/>.</para>
@@ -1358,6 +1359,5 @@ vinci.VinciAnalysisEngineService_impl</arg>
   </cpeConfig>
 </cpeDescription>]]></programlisting>
     </section>
-
   
 </chapter>
