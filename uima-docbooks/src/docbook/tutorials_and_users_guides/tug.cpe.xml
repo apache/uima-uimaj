@@ -365,6 +365,10 @@ mCPE.process();</programlisting></para>
     
     <para>This will start the CPE running in a separate thread.</para>
     
+    <note><para>The <literal>process()</literal> method for a CPE can only be called once.  If you 
+    need to call it again, you have to instantiate a new CPE, and call that new CPE's process
+    method.</para></note>
+    
     <section id="ugr.tug.cpe.using_listeners">
       <title>Using Listeners</title>
       
@@ -1238,7 +1242,10 @@ mCPE.process();</programlisting></para>
     
     <para>To run either the integrated or managed examples, use the
       <literal>runCPE</literal> script in the /bin directory of the UIMA installation,
-      passing the appropriate CPE descriptor as an argument.</para> 
+      passing the appropriate CPE descriptor as an argument, or
+      if you're using Eclipse and have the <literal>uimaj-examples</literal> project in your
+    workspace, you can use the Eclipse Menu &rarr; Run &rarr; Run... &rarr; and then pick the 
+    launch configuration <quote>UIMA Run CPE</quote>.</para> 
     
     <note><para>The <literal>runCPE</literal> script <emphasis role="bold-italic"> must</emphasis> 
     be run from the <literal>%UIMA_HOME%\examples</literal> directory, because the example
@@ -1249,6 +1256,7 @@ mCPE.process();</programlisting></para>
 descriptors\collection_processing_engine\MeetingFinderCPE_Integrated.xml</literallayout></para>
     </note>
     
+    <!--
     <para>If you installed the examples into Eclipse, you can run directly from Eclipse by
       creating a run configuration. To do this, highlight the SimpleRunCPE.java source file
       in the examples src/org/apache/uima/examples/cpe directory, and then</para>
@@ -1266,21 +1274,27 @@ descriptors\collection_processing_engine\MeetingFinderCPE_Integrated.xml</litera
       
       <listitem><para>Then press <quote>Run</quote> </para></listitem>
     </orderedlist>
+    -->
     
     <para>To run the non-managed example, there are some additional steps.
       
       <orderedlist><listitem><para>Start a VNS service by running the
         <literal>startVNS</literal> script in the <literal>/bin</literal>
-        directory.</para></listitem>
+        directory, or using the Eclipse launcher <quote>UIMA Start Vinci Service</quote>.</para></listitem>
         
         <listitem><para>Deploy the Meeting Detector Analysis Engine as a Vinci service, by
           running the <literal>startVinciService</literal> script in the
-          <literal>/bin</literal> directory, and passing it the location of the
+          <literal>/bin</literal> directory or using the Eclipse launcher for this, and passing it the location of the
           descriptor to deploy, in this case
-          <literal>%UIMA_HOME%/examples/deploy/vinci/Deploy_MeetingDetectorTAE.xml</literal>
+          <literal>%UIMA_HOME%/examples/deploy/vinci/Deploy_MeetingDetectorTAE.xml</literal>,
+          or
+      if you're using Eclipse and have the <literal>uimaj-examples</literal> project in your
+    workspace, you can use the Eclipse Menu &rarr; Run &rarr; Run... &rarr; and then pick the 
+    launch configuration <quote>UIMA Start Vinci Service</quote>.
           </para></listitem>
         
-        <listitem><para>Now, run the runCPE script, passing it the CPE for the non-managed
+        <listitem><para>Now, run the runCPE script (or if in Eclipse, run the 
+          launch configuration <quote>UIMA Run CPE</quote>), passing it the CPE for the non-managed
           version
           <literal>(%UIMA_HOME%/examples/descriptors/collection_processing_engine/
             MeetingFinderCPE_NonManaged.xml</literal>
