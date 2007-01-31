@@ -1058,7 +1058,7 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
       
       <para>Next, you need to do the following setup steps:
         
-        <itemizedlist><listitem><para>Set the CATALINA_HOME environment variable set
+        <itemizedlist><listitem><para>Set the CATALINA_HOME environment variable
           to the location where Tomcat is installed.</para></listitem>
           
           <listitem><para>Copy all of the JAR files from
