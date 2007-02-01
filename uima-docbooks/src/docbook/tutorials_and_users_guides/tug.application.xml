@@ -1499,9 +1499,24 @@ Exception: Connection refused: connect</programlisting>
     
     <section id="ugr.tug.configuring_timeout_settings">
       <title>Configuring Timeout Settings</title>
+      
+      <para>UIMA has several timeout specifications, summarized here.  The timeouts associated with remote 
+      services are discussed below.  In addition there are timeouts that can be specified for:
+      <itemizedlist>
+        
+        <listitem><para><emphasis role="bold">Acquiring an empty CAS from a CAS Pool:</emphasis>
+      See <xref linkend="ugr.tug.applications.multi_threaded"/>.</para></listitem>
+        
+        <listitem><para><emphasis role="bold">Reassembling chunks of a large document</emphasis>
+        See <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor.descriptor.operational_parameters"/></para>
+        </listitem>
+      
+      </itemizedlist></para>
+      
       <para>If your application uses remote UIMA services it is important to consider how to set the
         <emphasis>timeout</emphasis> values appropriately. This is particularly important if your service can
         take a long time to process each request.</para>
+      
       <para>There are two types of timeout settings in UIMA, the <emphasis>client timeout</emphasis> and the
         <emphasis>server socket timeout</emphasis>. The client timeout is usually the most important, it
         specifies how long that client is willing to wait for the service to process each CAS. The client timeout can be
