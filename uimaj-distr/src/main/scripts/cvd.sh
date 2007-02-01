@@ -22,4 +22,4 @@ if [ "$JAVA_HOME" = "" ];
 then
   JAVA_HOME=$UIMA_HOME/java/jre
 fi
-"$JAVA_HOME/bin/java" -cp "$UIMA_CLASSPATH" -Xms128M -Xmx900M "-Duima.home=$UIMA_HOME" "-Duima.datapath=$UIMA_DATAPATH" -DVNS_HOST=$VNS_HOST -DVNS_PORT=$VNS_PORT org.apache.uima.tools.annot_view.Gladis
+"$JAVA_HOME/bin/java" -cp "$UIMA_CLASSPATH" -Xms128M -Xmx900M "-Duima.home=$UIMA_HOME" "-Duima.tools.cvd.manpath=${UIMA_HOME}/docs" "-Duima.datapath=$UIMA_DATAPATH" -DVNS_HOST=$VNS_HOST -DVNS_PORT=$VNS_PORT org.apache.uima.tools.annot_view.Gladis
