@@ -35,6 +35,8 @@ import org.apache.uima.tools.images.Images;
  * 
  */
 public class Gladis {
+	
+	public static final String MAN_PATH_PROPERTY = "uima.tools.cvd.manpath";
 
   private static final String TEXT_FILE_PARAM = "-text";
 

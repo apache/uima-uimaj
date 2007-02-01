@@ -1363,6 +1363,16 @@ public class MainFrame extends JFrame {
         editorPane.addHyperlinkListener(new Hyperactive());
         URL manURL = ClassLoader.getSystemResource(manFileName);
         if (manURL == null) {
+        	String manpath = System.getProperty(Gladis.MAN_PATH_PROPERTY, null);
+        	if (manpath != null) {
+        		File manDir = new File(manpath);
+        		File manFile = new File(manDir, manFileName);
+        		if (manFile.exists()) {
+        			manURL = manFile.toURL();
+        		}
+        	}
+        }
+        if (manURL == null) {
           String msg = "Can't find manual. The manual is loaded via the classpath,\n" +
           		"so make sure the manual folder is in the classpath.";
           JOptionPane.showMessageDialog(MainFrame.this, msg, "Error loading manual",
