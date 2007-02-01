@@ -163,7 +163,7 @@ public class PrefsMediator {
    * 
    */
   public String getTAEPath() {
-    int index = taeDir.lastIndexOf(File.separator);
+    int index = indexOfLastFileSeparator(taeDir);
     if (index > 0) {
       String path = taeDir.substring(0, index);
       return path;
@@ -173,15 +173,32 @@ public class PrefsMediator {
   }
 
   public String getTAEFileNameRoot() {
-    int index = taeDir.lastIndexOf(File.separator);
+    String file;
+    int index = indexOfLastFileSeparator(taeDir);
     if (index > 0) {
-      String file = taeDir.substring(index);
-      int ix = file.indexOf(".xml");
-      file = file.substring(0, ix);
-      return file;
+      file = taeDir.substring(index);
     } else {
-      return "";
+      file = taeDir;
     }
+    int ix = file.indexOf(".xml");
+    if (ix >= 0) {
+      file = file.substring(0, ix);
+    }
+    return file;
+  }
+
+  /**
+   * Gets index of last file separator character in a file path.
+   * Supports File.separator but also / on Windows.
+   * @param path
+   * @return index of the last file separator char.  Returns -1 if none.
+   */
+  private int indexOfLastFileSeparator(String path) {
+    int index = path.lastIndexOf(File.separator);
+    if (!File.separator.equals("/")) {
+      index = Math.max(index, path.lastIndexOf('/'));
+    }
+    return index;
   }
 
   /**
