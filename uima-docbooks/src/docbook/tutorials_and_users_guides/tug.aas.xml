@@ -41,7 +41,7 @@ under the License.
       <para>The Artifact is the unstructured thing being analyzed by an annotator. It could
         be an HTML web page, an image, a video stream, a recorded audio conversation, an MPEG-4
         stream, etc. Artifacts are often restructured in the course of processing to
-        facilitate particular kinds of analysis. For instance, an HTML page may be convered
+        facilitate particular kinds of analysis. For instance, an HTML page may be converted
         into a <quote>de-tagged</quote> version. Annotators at different places in the
         pipeline may be analyzing different versions of the artifact.</para>
       
