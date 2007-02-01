@@ -142,7 +142,7 @@ under the License.
         structures can be added to a selected view&apos;s CAS indexes. These indexes provide
         the only way for other annotators to locate existing data in the CAS. The only way for an
         annotator to use data that another annotator has created is by using an index (or the
-        method <literal>getAllIndexedFs</literal> of the object <literal>FSIndexRepository</literal>) to
+        method <literal>getAllIndexedFS</literal> of the object <literal>FSIndexRepository</literal>) to
         retrieve feature structures the first annotator created. If you want the data you
         create to be visible to other annotators, you must explicitly call methods which
         add it to the indexes &mdash; you must index it.</para>
