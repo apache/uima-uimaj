@@ -644,8 +644,8 @@ aCasOrJCas.setSofaDataURI(String uri, String mimeType);</programlisting>
     
     <programlisting>String doc = aCasOrJCas.getDocumentText();
 String doc = aCasOrJCas.getSofaDataString();
-FeatureStructure array = aCasOrJCas.getDataArray();
-String uri = aCasOrJCas.getDataURI();
+FeatureStructure array = aCasOrJCas.getSofaDataArray();
+String uri = aCasOrJCas.getSofaDataURI();
 InputStream is = aCasOrJCas.getSofaDataStream();</programlisting>
     
   </section>
