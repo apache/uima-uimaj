@@ -376,9 +376,9 @@ public class AnnotationViewerMain extends JFrame {
    */
   public void restorePreferences() {
     // figure defaults
-    File defaultInputDir = new File(uimaHomeDir, "docs/examples/data/processed");
+    File defaultInputDir = new File(uimaHomeDir, "examples/data/processed");
     File defaultTaeDescriptorFile = new File(uimaHomeDir,
-            "docs/examples/descriptors/analysis_engine/PersonTitleAnnotator.xml");
+            "examples/descriptors/analysis_engine/PersonTitleAnnotator.xml");
 
     // restore preferences
     inputFileSelector.setSelected(prefs.get("inDir", defaultInputDir.toString()));
