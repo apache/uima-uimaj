@@ -28,27 +28,29 @@ under the License.
   
   <para>The Unstructured Information Management Architecture (UIMA) is an architecture and software framework
     for creating, discovering, composing and deploying a broad range of multi-modal analysis capabilities and
-    integrating them with search technologies.</para>
+    integrating them with search technologies.  The architecture is undergoing a standardization effort, 
+    referred to as the <emphasis>UIMA specification</emphasis> by a technical committee within
+    <ulink url="http://www.oasis-open.org/committees/tc_home.php?wg_abbrev=uima">OASIS</ulink>.  
+    </para>
   
-  <para>The <emphasis>UIMA framework</emphasis> provides a run-time environment in which developers can plug in
+  <para>The <emphasis>Apache UIMA</emphasis> framework is an Apache licensed, open source implementation of the
+    UIMA Architecture, and provides a run-time environment in which developers can plug in
     and run their UIMA component implementations and with which they can build and deploy UIM applications. The
     framework is not specific to any IDE or platform.</para>
   
-  <para>The <emphasis>UIMA Software Development Kit (SDK)</emphasis> includes an all-Java implementation of the
+  <para>It includes an all-Java implementation of the
     UIMA framework for the development, description, composition and deployment of UIMA components and
     applications. It also provides the developer with an Eclipse-based (<ulink url="http://www.eclipse.org/"/>
-    ) development environment that includes a set of tools and utilities for using UIMA. </para>
-  
-  <para>The <emphasis>Apache UIMA project</emphasis> also includes a C++ version of the framework, and
+    ) development environment that includes a set of tools and utilities for using UIMA. It also includes 
+    a C++ version of the framework, and
     enablements for Annotators built in Perl, Python, and TCL.</para>
   
   <para>This chapter is the intended starting point for readers that are new to the Apache UIMA Project. It includes
-    this introduction and the following sections:</para>
-  
+    this introduction and the following sections:</para> 
   <itemizedlist>
     <listitem>
-      <para> <xref linkend="ugr.project_overview_doc_overview"/> provides a list of the chapters included in
-        the UIMA SDK documentation with a brief summary of each. </para>
+      <para> <xref linkend="ugr.project_overview_doc_overview"/> provides a list of the books and topics included in
+        the Apache UIMA documentation with a brief summary of each. </para>
     </listitem>
     <listitem>
       <para> <xref linkend="ugr.project_overview_doc_use"/> describes a recommended path through the
@@ -63,9 +65,21 @@ under the License.
         v1.x and UIMA v2.x (independent of the transition to Apache).</para>
     </listitem>
   </itemizedlist>
-  
+    
+    <para>The main website for Apache UIMA is <ulink url="http://incubator.apache.org/uima"/>.  Here you 
+    can find out many things, including:
+     <itemizedlist spacing="compact">
+       <listitem><para>how to download (both the binary and source distributions</para></listitem>
+       <listitem><para>how to participate in the development</para></listitem>
+       <listitem><para>mailing lists - including the user list used like a forum for questions and answers</para></listitem>
+       <listitem><para>a Wiki where you can find and contribute all kinds of information, including tips and best practices</para></listitem>
+       <listitem><para>a sandbox - a subproject for potential new additions to Apache UIMA or to subprojects of it.  Things here
+       are works in progress, with no guarantee that they will ever be promoted to an official release of Apache UIMA</para></listitem>
+       <listitem><para>links to conferences</para></listitem>
+     </itemizedlist>
+      </para>
+ 
   <section id="ugr.project_overview_doc_overview">
-    <!-- _crossRef357 -->
     <title>Apache UIMA Project Documentation Overview</title>
     <para> The user documentation for UIMA is organized into several parts.
       <itemizedlist spacing="compact">
@@ -86,6 +100,16 @@ under the License.
         </listitem>
       </itemizedlist> </para>
     
+    <para>
+    The first 2 parts make up the book <quote>overview_and_setup</quote>; the last 3 have individual books.  The books are provided both as
+    (somewhat large) html files, viewable in browsers, and also as PDF files.  
+    The documentation is fully hyperlinked, with tables of contents.  The PDF versions are set up to 
+    print nicely - they have page numbers included on the cross references within a book. </para>
+    
+    <para>If you view the PDF files inside
+    a browser that supports imbedded viewing of PDF, the hyperlinks between different PDF books may work (not 
+    all browsers have been tested...).</para>  
+    
     <section id="ugr.project_overview_overview">
       <title>Overviews</title>
       
@@ -98,12 +122,12 @@ under the License.
               <entry><emphasis>Overview of the Documentation</emphasis>
               </entry>
               <entry>
-                <para>Lists the documents provided in the UIMA SDK documentation set.</para>
+                <para>Lists the documents provided in the Apache UIMA documentation set.</para>
                 <para>Provides a recommended path through the documentation for getting started using
                   UIMA.</para>
                 <para>Includes release notes.</para>
                 <para>Provides a brief high-level description of the different software modules included in the
-                  UIMA SDK.</para>
+                  Apache UIMA Project.</para>
               </entry>
             </row>
             <row>
@@ -129,7 +153,7 @@ under the License.
     </section>
     <section id="ugr.project_overview_setup">
       <title>Eclipse Tooling Installation and Setup</title>
-      <para>Provides step-by-step instructions for installing the UIMA SDK in the Eclipse Interactive
+      <para>Provides step-by-step instructions for installing Apache UIMA in the Eclipse Interactive
         Development Environment.</para>
     </section>
     
@@ -323,8 +347,7 @@ under the License.
     <title>How to use the Documentation</title>
     <orderedlist>
       <listitem>
-        <para>Explore this chapter to get an overview of the different documents that are included with the
-          SDK.</para>
+        <para>Explore this chapter to get an overview of the different documents that are included with Apache UIMA.</para>
       </listitem>
       <listitem>
         <para> Read <olink targetdoc="&uima_docs_overview;" targetptr="ugr.ovv.conceptual"/> to get a broad
@@ -338,7 +361,7 @@ under the License.
           website on Apache website where other publications are listed. </para>
       </listitem>
       <listitem>
-        <para> Set up the UIMA SDK in your Eclipse environment. To do this, follow the instructions in <xref
+        <para> Set up Apache UIMA in your Eclipse environment. To do this, follow the instructions in <xref
             linkend="ugr.project_overview_setup"/>. </para>
       </listitem>
       <listitem>
@@ -379,9 +402,9 @@ under the License.
           </itemizedlist> </para>
       </listitem>
       <listitem>
-        <para> Learn how to create, run and manage a UIMA analysis engine as part of an application. <phrase
-            condition="juru">Connect your analysis engine to the provided semantic search engine to learn how a
-          complete analysis and search application may be built with the UIMA SDK.</phrase> <olink
+        <para> Learn how to create, run and manage a UIMA analysis engine as part of an application. 
+          Connect your analysis engine to the provided semantic search engine to learn how a
+          complete analysis and search application may be built with Apache UIMA. <olink
             targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.application"/> will guide you
           through this process.
           <itemizedlist>
@@ -704,18 +727,20 @@ under the License.
     </section>
   </section>
   <section id="ugr.project_overview_summary">
-    <title>Apache UIMA SDK Summary</title>
+    <title>Apache UIMA Summary</title>
     <section id="ugr.ovv.summary.general">
       <title>General</title>
-      <para>The UIMA SDK supports the development, discovery, composition and deployment of multi-modal
+      <para>Apache UIMA supports the development, discovery, composition and deployment of multi-modal
         analytics for the analysis of unstructured information and its integration with search
         technologies.</para>
       
       <para>It includes APIs and tools for creating analysis components. Examples of analysis components include
         tokenizers, summarizers, categorizers, parsers, named-entity detectors etc. Tutorial examples are
-        provided with the SDK; additional components are available from the community. </para>
+        provided with Apache UIMA; additional components are available from the community. </para>
       
-      <para condition="juru">The UIMA SDK also includes a semantic search engine for indexing the results of
+      <para>Apache UIMA does not itself include a semantic search engine; instructions are included for 
+        incorporating the semantic search SDK from IBM's <ulink url="http://alphaworks.ibm.com/tech/uima">alphaWorks</ulink>
+        which can index the results of
         analysis and for using this semantic index to perform more advanced search. </para>
     </section>
     <section id="ugr.ovv.summary.programming_language_support">
@@ -723,14 +748,10 @@ under the License.
       <para>UIMA supports the development and integration of analysis algorithms developed in different
         programming languages. </para>
       
-      <para><phrase condition="precpp">The Apache UIMA project is initially a Java framework. In the next several
-        months we plan to bring into the project the C++ enablement component, which will enable annotators written
-        in C++ to run together with Java based components. The C++ enablement layer also enables annotators to be
-        written in Perl, Python, and TCL, and to interoperate with those written in other languages. </phrase>
-          <phrase condition="postcpp">The Apache UIMA project is both a Java framework and a matching C++
+      <para>The Apache UIMA project is both a Java framework and a matching C++
         enablement layer, which allows annotators to be written in C++ and have access to a C++ version of the CAS. The
         C++ enablement layer also enables annotators to be written in Perl, Python, and TCL, and to interoperate with
-        those written in other languages. Documentation for this is provided here (link to be filled in).</phrase>
+        those written in other languages. <!--Documentation for this is provided here (link to be filled in).-->
         </para>
       
     </section>
@@ -757,7 +778,7 @@ under the License.
   </section>
   
   <section id="ugr.project_overview_summary_sdk_capabilities">
-    <title>Summary of UIMA SDK Capabilities</title>
+    <title>Summary of Apache UIMA Capabilities</title>
     <informaltable frame="all" rowsep="1" colsep="1">
       <tgroup cols="2">
         <colspec colnum="1" colname="col1" colwidth=".75*"/>
@@ -787,7 +808,7 @@ under the License.
                 deployed in the UIMA run-time through a built-in JNI adapter. This includes high-speed binary
                 serialization.</para>
               
-              <para>Includes support for creating service-based UIMA engines outside of SDK. This is ideal for
+              <para>Includes support for creating service-based UIMA engines. This is ideal for
                 wrapping existing code written in different languages.</para>
             </entry>
           </row>
