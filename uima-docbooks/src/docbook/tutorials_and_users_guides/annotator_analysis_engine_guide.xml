@@ -1253,9 +1253,16 @@ while (timeIter.hasNext()) {
         <literal>JCAS.getJFSIndexRepository().getAllIndexedFS(YourClass.type)</literal>, which returns an iterator
         over all instances of <literal>YourClass</literal> in no particular order. This can be useful for types
         that are not subtypes of the built-in Annotation type and which therefore have no default sort order.</para>
+        
       <para>Also, if you've defined your own custom index as described in <olink targetdoc="&uima_docs_ref;"
           targetptr="ugr.ref.xml.component_descriptor.aes.index"/>, you can get an iterator over that
-        specific index by calling <literal>JCAS.getJFSIndexRepository().getIndex(label)</literal>.</para></note>
+        specific index by calling <literal>aJCas.getJFSIndexRepository().getIndex(label)</literal>.
+        The <literal>getIndex(...)</literal> method has also a 2 argument form; the second argument, 
+      if used, specialized the index to subtype of the type the index was declared to index.  For instance,
+      if you defined an index called "allEvents" over the type <literal>Event</literal>, and wanted 
+      to get an index over just a particular subtype of event, say, <literal>TimeEvent</literal>,
+      you can ask for that index using 
+        <literal>aJCas.getJFSIndexRepository().getIndex("allEvents", TimeEvent.type)</literal>.</para></note>
       
       <para>Now that we&apos;ve explained the basics, let&apos;s take a look at the process method for
         <literal>org.apache.uima.tutorial.ex4.MeetingAnnotator</literal>. Since we&apos;re looking for a
