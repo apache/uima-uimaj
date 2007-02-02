@@ -74,7 +74,7 @@ under the License.
        <listitem><para>mailing lists - including the user list used like a forum for questions and answers</para></listitem>
        <listitem><para>a Wiki where you can find and contribute all kinds of information, including tips and best practices</para></listitem>
        <listitem><para>a sandbox - a subproject for potential new additions to Apache UIMA or to subprojects of it.  Things here
-       are works in progress, with no guarantee that they will ever be promoted to an official release of Apache UIMA</para></listitem>
+       are works in progress, and may (or may not) be included in releases.</para></listitem>
        <listitem><para>links to conferences</para></listitem>
      </itemizedlist>
       </para>
