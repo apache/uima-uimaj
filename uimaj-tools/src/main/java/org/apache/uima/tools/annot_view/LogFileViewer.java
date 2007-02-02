@@ -98,9 +98,13 @@ public class LogFileViewer extends JFrame {
     this.scrollPane = new JScrollPane(this.textArea);
     this.setContentPane(this.scrollPane);
     this.scrollPane.setPreferredSize(d);
-    loadFile();
+    boolean doneLoadingFile = loadFile();
+    if (!doneLoadingFile) {
+    	this.dispose();
+    	return;
+    }
     this.pack();
-    this.show();
+    this.setVisible(true);
   }
 
   private void createMenus() {
@@ -124,15 +128,16 @@ public class LogFileViewer extends JFrame {
     fileMenu.add(exit);
   }
 
-  private void loadFile() {
+  private boolean loadFile() {
     String text = null;
     try {
       text = FileUtils.file2String(this.logFile, "UTF-8");
     } catch (IOException e) {
       handleException(e);
-      return;
+      return false;
     }
     this.textArea.setText(text);
+    return true;
   }
 
   protected void handleException(Exception e) {
