@@ -589,8 +589,7 @@ private Feature initFeature(String featName, Type type)
         
         
         <programlisting>public void typeSystemInit(TypeSystem aTypeSystem)
-    throws AnnotatorConfigurationException,
-           AnnotatorInitializationException {
+    throws AnalysisEngineProcessException {
   this.typeSystem = aTypeSystem;
   // Set type system member variables.
   this.entityType = initType(ENTITY_TYPE_NAME);
