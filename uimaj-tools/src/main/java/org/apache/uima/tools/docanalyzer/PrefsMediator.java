@@ -76,8 +76,8 @@ public class PrefsMediator {
 
   public PrefsMediator() {
     // get the installed UIMA home directory
-    defaultInputDir = "docs/examples/data";
-    defaultOutputDir = "processed";
+    defaultInputDir = "examples/data";
+    defaultOutputDir = "examples/data/processed";
     prefs = Preferences.userRoot().node("org/apache/uima/tools/DocumentAnalyzer1");
     restorePreferences();
   }
