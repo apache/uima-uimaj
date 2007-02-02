@@ -66,7 +66,7 @@ it contains component (<quote>sub</quote>) &ae;s.</para>
 type of artifact). For example, the label <quote>Person</quote> associated with a
 region of text <quote>John Doe</quote> constitutes an annotation. We say
 <quote>Person</quote> annotates the span of text from X to Y containing exactly
-<quote>John Doe</quote>;. An annotation is represented as a special
+<quote>John Doe</quote>. An annotation is represented as a special
           <glossterm linkend="ugr.glossary.type">type</glossterm> 
 
 in a UIMA <glossterm linkend="ugr.glossary.type_system">type system</glossterm>.
@@ -209,7 +209,7 @@ is the Eclipse tool that lets you conveniently edit the UIMA descriptors;
       <glossterm>Collection Processing Engine (CPE)</glossterm>
       <glossdef>
         <para>Performs Collection Processing
-through the combination of an optional 
+through the combination of a 
           <glossterm linkend="ugr.glossary.collection_reader">Collection Reader</glossterm>,
           0 or more <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm>s,
  and zero or more <glossterm linkend="ugr.glossary.cas_consumer">CAS Consumer</glossterm>s.
@@ -223,14 +223,14 @@ The Collection Processing Manager (CPM) manages the execution of the engine.</pa
     <glossentry id="ugr.glossary.cpm">
       <glossterm>Collection Processing Manager (CPM)</glossterm>
       <glossdef>
-        <para>The par of the framework that
+        <para>The part of the framework that
 manages the execution of collection processing, routing CASs from the 
-          (optional) <glossterm linkend="ugr.glossary.collection_reader">Collection Reader</glossterm>
+          <glossterm linkend="ugr.glossary.collection_reader">Collection Reader</glossterm>
           
 to 0 or more <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm>s
 and then to the 0 or more <glossterm linkend="ugr.glossary.cas_consumer">CAS Consumer</glossterm>s. The CPM
 provides feedback such as performance statistics and error reporting and supports
-other features such as parallelization and error management.</para>
+other features such as parallelization and error handling.</para>
       </glossdef>
     </glossentry>
   
@@ -272,14 +272,14 @@ database analogy where types are tables, features are columns.
       <glossterm>Flow Controller</glossterm>
       <glossdef>
         <para>A component which implements the interfaces needed
-to specify a custom flow within an &aae;.</para>
+to specify a custom flow within an <glossterm linkend="ugr.glossary.aggregate">&aae;</glossterm>.</para>
       </glossdef>
     </glossentry>
   
     <glossentry id="ugr.glossary.hybrid_analysis_engine">
       <glossterm>Hybrid &ae;</glossterm>
       <glossdef>
-        <para>An <glossterm linkend="ugr.glossary.aggregate">Aggregate</glossterm> 
+        <para>An <glossterm linkend="ugr.glossary.aggregate">&aae;</glossterm> 
           where more than one of its component &ae;s are deployed
 the same address space and one or more are deployed remotely (part tightly and
 part loosely-coupled).</para>
@@ -299,12 +299,13 @@ optionally sorted in a user-definable way.
           For example, all types derived from the UIMA
 built-in type <literal>uima.tcas.Annotation</literal> contain begin
 and end features, which mark the begin and end offsets in the text where this
-annotation occurs.  One may then specify that types should be retrieved
-sequentially by sorting first on the value of the begin feature (ascending)
-          and then by the value of the end feature (descending).  In this case,
-iterating over the annotations, one first obtains annotations that come
-sequentially first in the text, while favoring shorter annotations, in the case
-where two annotations start at the same offset.</para>
+annotation occurs.  There is a built-in index of Annotations that specifies that
+annotations are retrieved sequentially by sorting first on the value of the begin 
+feature (ascending) and then by the value of the end feature (descending).
+In this case, iterating over the annotations, one first obtains annotations that 
+come sequentially first in the text, while favoring longer annotations, in the case
+where two annotations start at the same offset.  Users can define their own indexes
+as well.</para>
       </glossdef>
     </glossentry>
   
@@ -338,7 +339,7 @@ set of facts and rules considered true in a possible world.</para>
     <glossentry id="ugr.glossary.loosely_coupled_analysis_engine">
       <glossterm>Loosely-Coupled &ae;</glossterm>
       <glossdef>
-        <para>An <glossterm linkend="ugr.glossary.aggregate">Aggregate</glossterm>
+        <para>An <glossterm linkend="ugr.glossary.aggregate">&aae;</glossterm>
          where no two of its component &ae;s run in the
 same address space but where each is remote with respect to the others that
 make up the aggregate. Loosely coupled engines are ideal for using 
@@ -376,7 +377,7 @@ UIMA SDK.</para>
           <glossterm linkend="ugr.glossary.annotator">Annotator</glossterm>; one that has
 no component (or <quote>sub</quote>) &ae;s inside of it; 
 contrast with
-          <glossterm linkend="ugr.glossary.aggregate">Aggregate</glossterm>.</para>
+          <glossterm linkend="ugr.glossary.aggregate">&aae;</glossterm>.</para>
       </glossdef>
     </glossentry>
   
@@ -387,7 +388,7 @@ contrast with
 specified using one or more entity or relation specifiers.  For example,
 one could specify that they are looking for a person (named) <quote>Bush.</quote>
 Such a query would then not return results about the kind of bushes that grow
-in your garden but rather just persons named bush.</para>
+in your garden but rather just persons named Bush.</para>
       </glossdef>
     </glossentry>
   
@@ -414,7 +415,7 @@ for analysis by UIMA analysis components.  It belongs to a
 one CAS, each one representing a different view of the original artifact &ndash; for example,
 an audio file could be the original artifact, and also be one Sofa, and another
 could be the output of a voice-recognition component, where the Sofa would be
-the corresponding text. document. Sofas maybe analyzed independently or
+the corresponding text document. Sofas may be analyzed independently or
 simultaneously; they all co-exist within the CAS.  </para>
       </glossdef>
     </glossentry>
@@ -422,7 +423,7 @@ simultaneously; they all co-exist within the CAS.  </para>
     <glossentry id="ugr.glossary.tightly_coupled_analysis_engine">
       <glossterm>Tightly-Coupled &ae;</glossterm>
       <glossdef>
-        <para>An <glossterm linkend="ugr.glossary.aggregate">Aggregate</glossterm>
+        <para>An <glossterm linkend="ugr.glossary.aggregate">&aae;</glossterm>
  where all of its component &ae;s run in the same address space.</para>
       </glossdef>
     </glossentry>
@@ -452,9 +453,8 @@ including <glossterm linkend="ugr.glossary.application">Applications</glossterm>
           <glossterm linkend="ugr.glossary.collection_reader">Collection Readers</glossterm>,
           <glossterm linkend="ugr.glossary.flow_controller">Flow Controllers</glossterm>, or
           <glossterm linkend="ugr.glossary.cas_consumer">CAS Consumers</glossterm>
-have their own
-type system.  Type systems are shared across &ae;s, allowing the outputs of
-          one &ae; to be read as input by another &ae;.
+declare the type system that they use. Type systems are shared across &ae;s, allowing the outputs 
+          of one &ae; to be read as input by another &ae;.
 A type system is roughly analogous to a set of related classes in object
 oriented programming, or a set of related tables in a database.  The type
 system / type / feature terminology comes from computational linguistics.</para>
@@ -468,12 +468,9 @@ system / type / feature terminology comes from computational linguistics.</para>
 information is the natural language text document. The intended meaning of a
 document's content is only implicit and its precise interpretation by a
 computer program requires some degree of analysis to explicate the document's
-semantics. Other examples include audio, video and images. Unstructured
-information is contrasted with <emphasis>structured information</emphasis>. The canonical
-example of structured information is the database table. Each element of information
-in the database is associated with a precisely defined schema where each table
-column heading indicates its precise semantics, defining exactly how the
-information elements should be interpreted by a computer program or end-user.</para>
+semantics. Other examples include audio, video and images. Contrast with
+<glossterm linkend="ugr.glossary.structured_information">Structured Information</glossterm>.
+        </para>          
       </glossdef>
     </glossentry>
   
@@ -502,7 +499,7 @@ applications.</para>
       <glossdef>
         <para>The SDK includes the framework plus additional components such as
           tooling and examples.  Some of the tooling is Eclipse-based 
-          <ulink url="http://www.eclipse.org/"/>).</para>
+          (<ulink url="http://www.eclipse.org/"/>).</para>
       </glossdef>
     </glossentry>
   
@@ -510,8 +507,10 @@ applications.</para>
       <glossterm>XCAS</glossterm>
       <glossdef>
         <para>An XML representation of the CAS. The XCAS can be used for saving
-and restoring CASs to and from streams. The UIMA SDK provides serialization and
-de-serialization methods for CASes.</para>
+and restoring CASs to and from streams. The UIMA SDK provides XCAS serialization and
+de-serialization methods for CASes.  This is an older serialization format and
+new UIMA code should use the standard <glossterm linkend="ugr.glossary.xmi">XMI</glossterm>
+format instead.</para>
       </glossdef>
     </glossentry>
   
@@ -520,7 +519,8 @@ de-serialization methods for CASes.</para>
       <glossdef>
         <para>An OMG standard for representing
 object graphs in XML, which UIMA uses to serialize analysis results from the
-CAS to an XML representation.</para>
+CAS to an XML representation.  The UIMA SDK provides XMI serialization and
+de-serialization methods for CASes</para>
       </glossdef>
     </glossentry>
 
