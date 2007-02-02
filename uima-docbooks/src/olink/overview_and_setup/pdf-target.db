@@ -443,6 +443,14 @@
       <ttl>Application</ttl>
       <xreftext>Application</xreftext>
    </obj>
+   <obj element="glossentry" href="#ugr.glossary.apache_uima_java_framework" number="" targetptr="ugr.glossary.apache_uima_java_framework">
+      <ttl>Apache UIMA Java Framework</ttl>
+      <xreftext>Apache UIMA Java Framework</xreftext>
+   </obj>
+   <obj element="glossentry" href="#ugr.glossary.apache_uima_sdk" number="" targetptr="ugr.glossary.apache_uima_sdk">
+      <ttl>Apache UIMA Software Development Kit (SDK)</ttl>
+      <xreftext>Apache UIMA Software Development Kit (SDK)</xreftext>
+   </obj>
    <obj element="glossentry" href="#ugr.glossary.cas" number="" targetptr="ugr.glossary.cas">
       <ttl>CAS</ttl>
       <xreftext>CAS</xreftext>
@@ -568,8 +576,8 @@
       <xreftext>UIMA Java Framework</xreftext>
    </obj>
    <obj element="glossentry" href="#ugr.glossary.uima_sdk" number="" targetptr="ugr.glossary.uima_sdk">
-      <ttl>UIMA Software Development Kit (SDK)</ttl>
-      <xreftext>UIMA Software Development Kit (SDK)</xreftext>
+      <ttl>UIMA SDK</ttl>
+      <xreftext>UIMA SDK</xreftext>
    </obj>
    <obj element="glossentry" href="#ugr.glossary.xcas" number="" targetptr="ugr.glossary.xcas">
       <ttl>XCAS</ttl>

@@ -406,7 +406,7 @@
          <xreftext>Section 5.6, “Using JCas within an Annotator”</xreftext>
          <div element="section" href="#ugr.ref.jcas.new_instances" number="5.6.1" targetptr="ugr.ref.jcas.new_instances">
             <ttl>Creating new instances using the Java “new” operator</ttl>
-            <xreftext>Section 5.6.1, “Creating new instances using the Java “new” operator”</xreftext>
+            <xreftext>Section 5.6.1, “Creating new instances”</xreftext>
          </div>
          <div element="section" href="#ugr.ref.jcas.getters_and_setters" number="5.6.2" targetptr="ugr.ref.jcas.getters_and_setters">
             <ttl>Getters and Setters</ttl>
@@ -418,7 +418,7 @@
          </div>
          <div element="section" href="#ugr.ref.jcas.adding_removing_instances_to_indexes" number="5.6.4" targetptr="ugr.ref.jcas.adding_removing_instances_to_indexes">
             <ttl>Adding (and removing) instances to (from) indexes</ttl>
-            <xreftext>Section 5.6.4, “Adding (and removing) instances to (from) indexes”</xreftext>
+            <xreftext>Section 5.6.4, “Updating Indexes”</xreftext>
          </div>
          <div element="section" href="#ugr.ref.jcas.using_iterators" number="5.6.5" targetptr="ugr.ref.jcas.using_iterators">
             <ttl>Using Iterators</ttl>

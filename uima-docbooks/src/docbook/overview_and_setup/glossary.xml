@@ -95,7 +95,27 @@ implemented to produce and record annotations over regions of an artifact
         descriptor, and run it.</para>
       </glossdef>
     </glossentry>
-  
+
+      <glossentry id="ugr.glossary.apache_uima_java_framework">
+      <glossterm>Apache UIMA Java Framework</glossterm>
+      <glossdef>
+        <para>A Java-based implementation of the <glossterm linkend="ugr.glossary.uima">UIMA</glossterm>
+         architecture.  It provides a run-time environment in which developers can plug in and run their UIMA component 
+         implementations and with which they can build and deploy UIM applications.  The framework is the
+         core part of the <glossterm linkend="ugr.glossary.apache_uima_sdk">Apache UIMA SDK</glossterm>.</para>
+      </glossdef>
+    </glossentry>
+
+    <glossentry id="ugr.glossary.apache_uima_sdk">
+      <glossterm>Apache UIMA Software Development Kit (SDK)</glossterm>
+      <glossdef>
+        <para>The SDK for which you are now reading the documentation.  The SDK includes the framework
+          plus additional components such as tooling and examples.  Some of the tooling is Eclipse-based 
+          (<ulink url="http://www.eclipse.org/"/>). The Apache UIMA SDK is being developed at the 
+          <ulink url="http://incubator.apache.org">Apache Incuabator</ulink>.</para>
+      </glossdef>
+    </glossentry>
+    
       <glossentry id="ugr.glossary.cas">
       <glossterm>CAS</glossterm>
       <glossdef>
@@ -480,26 +500,24 @@ semantics. Other examples include audio, video and images. Contrast with
         <para>UIMA is an acronym that stands for Unstructured Information Management Architecture; 
           it is a software architecture which specifies component interfaces, design patterns
 and development roles for creating, describing, discovering, composing and
-deploying multi-modal analysis capabilities.</para>
+deploying multi-modal analysis capabilities.  The UIMA specification is being developed by a 
+        technical committee at <ulink url="http://www.oasis-open.org/committees/uima">OASIS</ulink>.</para>
       </glossdef>
     </glossentry>
   
     <glossentry id="ugr.glossary.uima_java_framework">
       <glossterm>UIMA Java Framework</glossterm>
       <glossdef>
-        <para>A Java-based implementation of the UIMA architecture. It
-provides a run-time environment in which developers can plug in and run their
-UIMA component implementations and with which they can build and deploy UIM
-applications.</para>
+        <para>See <glossterm linkend="ugr.glossary.apache_uima_java_framework">Apache UIMA Java Framework</glossterm>.</para>
+        <para/>
       </glossdef>
     </glossentry>
 
     <glossentry id="ugr.glossary.uima_sdk">
-      <glossterm>UIMA Software Development Kit (SDK)</glossterm>
+      <glossterm>UIMA SDK</glossterm>
       <glossdef>
-        <para>The SDK includes the framework plus additional components such as
-          tooling and examples.  Some of the tooling is Eclipse-based 
-          (<ulink url="http://www.eclipse.org/"/>).</para>
+        <para>See <glossterm linkend="ugr.glossary.apache_uima_sdk">Apache UIMA SDK</glossterm>.</para>
+        <para/>
       </glossdef>
     </glossentry>
   
