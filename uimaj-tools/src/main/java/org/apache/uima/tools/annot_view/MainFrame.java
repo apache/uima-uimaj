@@ -1032,6 +1032,17 @@ public class MainFrame extends JFrame {
 			setAEStatusMessage();
 			setStatusbarMessage("Done loading AE " + annotName + " in " + time.getTimeSpan() + ".");
 		}
+		// Check for CAS multiplier
+		// TODO: properly handle CAS multiplication
+		if (this.ae != null) {
+			if (this.ae.getAnalysisEngineMetaData().getOperationalProperties().getOutputsNewCASes()) {
+				JOptionPane
+						.showMessageDialog(
+								this,
+								"This analysis engine uses a CAS multiplier component.\nCAS multiplication/merging is not currently supported in CVD.\nYou can run the analysis engine, but will not see any results.",
+								"Warning: unsupported operation", JOptionPane.WARNING_MESSAGE);
+			}
+		}
 		resetCursor();
 	}
 
