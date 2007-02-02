@@ -255,7 +255,7 @@ public class MainFrame extends JFrame {
       // frame.showAnnotFeats();
 
       frame.pack();
-      frame.show();
+      frame.setVisible(true);
 
     } catch (Exception e) {
       e.printStackTrace();

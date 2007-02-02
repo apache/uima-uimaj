@@ -115,7 +115,7 @@ public class MultiAnnotViewerFrame extends JFrame {
     System.out.println("  Packing frame.");
     this.pack();
     System.out.println("  Showing frame.");
-    this.show();
+    this.setVisible(true);
   }
 
   public void init(String text, AnnotationExtent[] extents, Dimension size) {
@@ -145,7 +145,7 @@ public class MultiAnnotViewerFrame extends JFrame {
     System.out.println("  Packing frame.");
     this.pack();
     System.out.println("  Showing frame.");
-    this.show();
+    this.setVisible(true);
   }
 
   public void initHtml(String text, MarkupExtent[] extents) {
@@ -194,7 +194,7 @@ public class MultiAnnotViewerFrame extends JFrame {
     this.textPane.setText(buf.toString());
     // System.out.println(buf.toString());
     this.pack();
-    this.show();
+    this.setVisible(true);
   }
 
 }
