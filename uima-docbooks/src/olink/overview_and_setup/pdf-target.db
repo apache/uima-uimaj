@@ -230,8 +230,8 @@
          </div>
       </div>
       <div element="section" href="#ugr.project_overview_summary" number="1.5" targetptr="ugr.project_overview_summary">
-         <ttl>Apache UIMA SDK Summary</ttl>
-         <xreftext>Section 1.5, “Apache UIMA SDK Summary”</xreftext>
+         <ttl>Apache UIMA Summary</ttl>
+         <xreftext>Section 1.5, “Apache UIMA Summary”</xreftext>
          <div element="section" href="#ugr.ovv.summary.general" number="1.5.1" targetptr="ugr.ovv.summary.general">
             <ttl>General</ttl>
             <xreftext>Section 1.5.1, “General”</xreftext>
@@ -250,8 +250,8 @@
          </div>
       </div>
       <div element="section" href="#ugr.project_overview_summary_sdk_capabilities" number="1.6" targetptr="ugr.project_overview_summary_sdk_capabilities">
-         <ttl>Summary of UIMA SDK Capabilities</ttl>
-         <xreftext>Section 1.6, “Summary of UIMA SDK Capabilities”</xreftext>
+         <ttl>Summary of Apache UIMA Capabilities</ttl>
+         <xreftext>Section 1.6, “Summary of Apache UIMA Capabilities”</xreftext>
       </div>
    </div>
    <div element="chapter" href="#ugr.ovv.conceptual" number="2" targetptr="ugr.ovv.conceptual">
@@ -383,7 +383,7 @@
          <div element="section" href="#ugr.ovv.eclipse_setup.install_emf" number="3.1.2" targetptr="ugr.ovv.eclipse_setup.install_emf">
             <ttl>Install additional Eclipse component: EMF</ttl>
             <xreftext>Section 3.1.2, “Install additional Eclipse component: EMF”</xreftext>
-            <div element="section" href="#d0e1900" number="3.1.2.1">
+            <div element="section" href="#d0e1925" number="3.1.2.1">
                <ttl>EMF Installation Shortcut for Eclipse 3.2</ttl>
                <xreftext>Section 3.1.2.1, “EMF Installation Shortcut for Eclipse 3.2”</xreftext>
             </div>

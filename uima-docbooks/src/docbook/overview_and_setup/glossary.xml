@@ -42,7 +42,7 @@ under the License.
        <glossentry id="ugr.glossary.aggregate">
       <glossterm>Aggregate &ae;</glossterm>
       <glossdef>
-        <para>An <glossterm linkend="ugr.glossary.analysis_engine"/>
+        <para>An <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm>
  made up of multiple subcomponent
 &ae;s arranged in a flow.  The
 flow can be one of the two built-in flows, or a custom flow provided by the user.</para>
@@ -67,11 +67,11 @@ type of artifact). For example, the label <quote>Person</quote> associated with 
 region of text <quote>John Doe</quote> constitutes an annotation. We say
 <quote>Person</quote> annotates the span of text from X to Y containing exactly
 <quote>John Doe</quote>;. An annotation is represented as a special
-          <glossterm linkend="ugr.glossary.type"/> 
+          <glossterm linkend="ugr.glossary.type">type</glossterm> 
 
-in a UIMA <glossterm linkend="ugr.glossary.type_system"/>.
+in a UIMA <glossterm linkend="ugr.glossary.type_system">type system</glossterm>.
            It is the type used to record
-the labeling of regions of a <glossterm linkend="ugr.glossary.sofa"/></para>
+the labeling of regions of a <glossterm linkend="ugr.glossary.sofa">Sofa</glossterm></para>
       </glossdef>
     </glossentry>
   
@@ -90,8 +90,8 @@ implemented to produce and record annotations over regions of an artifact
       <glossdef>
         <para>An application is the outer containing code that invokes
         the UIMA framework functions to instantiate an 
-        <glossterm linkend="ugr.glossary.analysis_engine"/> or a
-        <glossterm linkend="ugr.glossary.cpe"/> from a particular 
+        <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm> or a
+        <glossterm linkend="ugr.glossary.cpe">Collection Processing Engine</glossterm> from a particular 
         descriptor, and run it.</para>
       </glossdef>
     </glossentry>
@@ -106,7 +106,7 @@ share analysis results.  It contains:</para>
 <itemizedlist><listitem><para>The artifact. This is the object
 being analyzed such as a text document or audio or video stream. The CAS
 projects one or more views of the artifact. Each view is referred to as a 
-  <glossterm linkend="ugr.glossary.sofa"/>.</para></listitem>
+  <glossterm linkend="ugr.glossary.sofa">Sofa</glossterm>.</para></listitem>
 
 
 <listitem><para>A type system description &ndash;
@@ -125,7 +125,7 @@ efficient access to and iteration over the results of analysis.
 a class called the Common Analysis System. We use <quote>CAS</quote> to refer to
 both the structure and system. Where the common analysis structure is used
 through a different interface, the particular implementation of the structure
-is indicated, For example, the <glossterm linkend="ugr.glossary.jcas"/> is a native Java object
+is indicated, For example, the <glossterm linkend="ugr.glossary.jcas">JCas</glossterm> is a native Java object
 representation of the contents of the common analysis structure.</para>
 
 <para>A CAS can have multiple views; each view has a unique
@@ -139,7 +139,7 @@ results of analysis for that representation of the artifact.</para>
       <glossdef>
         <para>A component that
 receives each CAS in the collection, usually after it has been processed by an 
-          <glossterm linkend="ugr.glossary.analysis_engine"/>.  It is responsible for taking the results from
+          <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm>. It is responsible for taking the results from
 the CAS and using them for some purpose, perhaps storing selected results into
 a database, for instance.  The CAS
 Consumer may also perform collection-level analysis, saving these results in an
@@ -151,9 +151,9 @@ application-specific, aggregate data structure.</para>
       <glossterm>CAS Initializer (deprecated)</glossterm>
       <glossdef>
         <para>Prior to version 2, this was the component that took an 
-          undefined input form and produced a particular <glossterm linkend="ugr.glossary.sofa"/>.
-          For version 2, this has been replaced with using any <glossterm linkend="ugr.glossary.analysis_engine"/>
-          which takes a particular <glossterm linkend="ugr.glossary.cas_view"/> and creates a
+          undefined input form and produced a particular <glossterm linkend="ugr.glossary.sofa">Sofa</glossterm>.
+          For version 2, this has been replaced with using any <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm>
+          which takes a particular <glossterm linkend="ugr.glossary.cas_view">CAS View</glossterm> and creates a
           new output Sofa.  For example, if the document is HTML, an &ae; might 
           create a Sofa which is a detagged version of an input CAS View, perhaps also
 creating annotations derived from the tags. For example &lt;p&gt; tags
@@ -166,8 +166,8 @@ might be translated into Paragraph annotations in the CAS.</para>
       <glossdef>
         <para>A component, implemented by a UIMA developer,
 that takes a CAS as input and produces 0 or more new CASes as output.  Common use cases for a CAS Multiplier
-          include creating alternative versions of an input <glossterm linkend="ugr.glossary.sofa"/> 
-          (see <glossterm linkend="ugr.glossary.cas_initializer"/>), and breaking 
+          include creating alternative versions of an input <glossterm linkend="ugr.glossary.sofa">Sofa</glossterm> 
+          (see <glossterm linkend="ugr.glossary.cas_initializer">CAS Initializer</glossterm>), and breaking 
           a large input CAS into smaller pieces, each of which is emitted as a
 separate output CAS.  There are other
 uses, however, such as aggregating input CASes into a single output CAS.</para>
@@ -179,8 +179,8 @@ uses, however, such as aggregating input CASes into a single output CAS.</para>
       <glossdef>
         <para>A component of a Collection Processing Engine (CPE) that
 takes a CAS as input and returns a CAS as output. There are two types of CAS
-Processors: <glossterm linkend="ugr.glossary.analysis_engine"/>s and 
-          <glossterm linkend="ugr.glossary.cas_consumer"/>s.</para>
+Processors: <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm>s and 
+          <glossterm linkend="ugr.glossary.cas_consumer">CAS Consumer</glossterm>s.</para>
       </glossdef>
     </glossentry>
   
@@ -189,7 +189,7 @@ Processors: <glossterm linkend="ugr.glossary.analysis_engine"/>s and
       <glossdef>
         <para>A CAS Object which shares the base CAS and type system
 definition and index specifications, but has a unique index repository and a
-particular <glossterm linkend="ugr.glossary.sofa"/>.   Views are named, and applications and
+particular <glossterm linkend="ugr.glossary.sofa">Sofa</glossterm>.   Views are named, and applications and
 annotators can dynamically create additional views whenever they are needed.
 Annotations are made with respect to one view.  Feature structures can have references to feature structures 
           indexed in other views, as needed.</para>
@@ -210,9 +210,9 @@ is the Eclipse tool that lets you conveniently edit the UIMA descriptors;
       <glossdef>
         <para>Performs Collection Processing
 through the combination of an optional 
-          <glossterm linkend="ugr.glossary.collection_reader"/>,
-          0 or more <glossterm linkend="ugr.glossary.analysis_engine"/>s,
- and zero or more <glossterm linkend="ugr.glossary.cas_consumer"/>s.
+          <glossterm linkend="ugr.glossary.collection_reader">Collection Reader</glossterm>,
+          0 or more <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm>s,
+ and zero or more <glossterm linkend="ugr.glossary.cas_consumer">CAS Consumer</glossterm>s.
 The Collection Processing Manager (CPM) manages the execution of the engine.</para>
         <para>The CPE also refers to the XML specification of the Collection Processing
         engine.  The CPM reads a CPE specification and instantiates a CPE instance from it,
@@ -225,10 +225,10 @@ The Collection Processing Manager (CPM) manages the execution of the engine.</pa
       <glossdef>
         <para>The par of the framework that
 manages the execution of collection processing, routing CASs from the 
-          (optional) <glossterm linkend="ugr.glossary.collection_reader"/>
+          (optional) <glossterm linkend="ugr.glossary.collection_reader">Collection Reader</glossterm>
           
-to 0 or more <glossterm linkend="ugr.glossary.analysis_engine"/>s
-and then to the 0 or more <glossterm linkend="ugr.glossary.cas_consumer"/>s. The CPM
+to 0 or more <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm>s
+and then to the 0 or more <glossterm linkend="ugr.glossary.cas_consumer">CAS Consumer</glossterm>s. The CPM
 provides feedback such as performance statistics and error reporting and supports
 other features such as parallelization and error management.</para>
       </glossdef>
@@ -241,10 +241,10 @@ other features such as parallelization and error management.</para>
 that reads documents from some source, for example a file system or database.
 The collection reader initializes a CAS with this document.  
           Each document is returned as a CAS that may then be processed by 
-          an <glossterm linkend="ugr.glossary.analysis_engine"/>s. If the task of populating a CAS
+          an <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm>s. If the task of populating a CAS
 from the document is complex, you may use an arbitrarily complex chain of 
-          <glossterm linkend="ugr.glossary.analysis_engine"/>s and have the last one
-          create and initialize a new <glossterm linkend="ugr.glossary.sofa"/>.</para>
+          <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm>s and have the last one
+          create and initialize a new <glossterm linkend="ugr.glossary.sofa">Sofa</glossterm>.</para>
       </glossdef>
     </glossentry>
   
@@ -279,7 +279,7 @@ to specify a custom flow within an &aae;.</para>
     <glossentry id="ugr.glossary.hybrid_analysis_engine">
       <glossterm>Hybrid &ae;</glossterm>
       <glossdef>
-        <para>An <glossterm linkend="ugr.glossary.aggregate"/> 
+        <para>An <glossterm linkend="ugr.glossary.aggregate">Aggregate</glossterm> 
           where more than one of its component &ae;s are deployed
 the same address space and one or more are deployed remotely (part tightly and
 part loosely-coupled).</para>
@@ -338,7 +338,7 @@ set of facts and rules considered true in a possible world.</para>
     <glossentry id="ugr.glossary.loosely_coupled_analysis_engine">
       <glossterm>Loosely-Coupled &ae;</glossterm>
       <glossdef>
-        <para>An <glossterm linkend="ugr.glossary.aggregate"/>
+        <para>An <glossterm linkend="ugr.glossary.aggregate">Aggregate</glossterm>
          where no two of its component &ae;s run in the
 same address space but where each is remote with respect to the others that
 make up the aggregate. Loosely coupled engines are ideal for using 
@@ -371,12 +371,12 @@ UIMA SDK.</para>
     <glossentry id="ugr.glossary.primitive_analysis_engine">
       <glossterm>Primitive &ae;</glossterm>
       <glossdef>
-        <para>An <glossterm linkend="ugr.glossary.analysis_engine"/> 
+        <para>An <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm> 
           that is composed of a single 
-          <glossterm linkend="ugr.glossary.annotator"/>; one that has
+          <glossterm linkend="ugr.glossary.annotator">Annotator</glossterm>; one that has
 no component (or <quote>sub</quote>) &ae;s inside of it; 
 contrast with
-          <glossterm linkend="ugr.glossary.aggregate"/>.</para>
+          <glossterm linkend="ugr.glossary.aggregate">Aggregate</glossterm>.</para>
       </glossdef>
     </glossentry>
   
@@ -409,7 +409,7 @@ information should be interpreted by a computer program or end-user.</para>
         <para>A piece of
 data (e.g., text document, image, audio segment, or video segment), which is intended
 for analysis by UIMA analysis components.  It belongs to a 
-          <glossterm linkend="ugr.glossary.cas_view"/> which has the same name; there
+          <glossterm linkend="ugr.glossary.cas_view">CAS View</glossterm> which has the same name; there
           is a one-to-one correspondence between these.  There can be multiple Sofas contained within
 one CAS, each one representing a different view of the original artifact &ndash; for example,
 an audio file could be the original artifact, and also be one Sofa, and another
@@ -422,7 +422,7 @@ simultaneously; they all co-exist within the CAS.  </para>
     <glossentry id="ugr.glossary.tightly_coupled_analysis_engine">
       <glossterm>Tightly-Coupled &ae;</glossterm>
       <glossdef>
-        <para>An <glossterm linkend="ugr.glossary.aggregate"/>
+        <para>An <glossterm linkend="ugr.glossary.aggregate">Aggregate</glossterm>
  where all of its component &ae;s run in the same address space.</para>
       </glossdef>
     </glossentry>
@@ -431,11 +431,11 @@ simultaneously; they all co-exist within the CAS.  </para>
       <glossterm>Type</glossterm>
       <glossdef>
         <para>A specification of an object in the
-          <glossterm linkend="ugr.glossary.cas"/> used to store the results of
+          <glossterm linkend="ugr.glossary.cas">CAS</glossterm> used to store the results of
 analysis.  Types are defined using inheritance, so some types may be
 defined purely for the sake of defining other types, and are in this sense <quote>abstract
 types.</quote>  Types usually contain 
-          <glossterm linkend="ugr.glossary.feature"/>s, which are attributes, or
+          <glossterm linkend="ugr.glossary.feature">Feature</glossterm>s, which are attributes, or
 properties of the type.  A type is roughly equivalent to a class in an
 object oriented programming language, or a table in a database.  Instances of types in the CAS
           may be indexed for retrieval.</para>
@@ -447,11 +447,11 @@ object oriented programming language, or a table in a database.  Instances of ty
       <glossdef>
         <para>A collection of related <glossterm linkend="ugr.glossary.type">types</glossterm>.
           All components that can access the CAS,
-including <glossterm linkend="ugr.glossary.application"/>s,
-          <glossterm linkend="ugr.glossary.analysis_engine"/>s,
-          <glossterm linkend="ugr.glossary.collection_reader"/>s,
-          <glossterm linkend="ugr.glossary.flow_controller"/>s, or
-          <glossterm linkend="ugr.glossary.cas_consumer"/>s
+including <glossterm linkend="ugr.glossary.application">Applications</glossterm>,
+          <glossterm linkend="ugr.glossary.analysis_engine">Analysis Engine</glossterm>s,
+          <glossterm linkend="ugr.glossary.collection_reader">Collection Readers</glossterm>,
+          <glossterm linkend="ugr.glossary.flow_controller">Flow Controllers</glossterm>, or
+          <glossterm linkend="ugr.glossary.cas_consumer">CAS Consumers</glossterm>
 have their own
 type system.  Type systems are shared across &ae;s, allowing the outputs of
           one &ae; to be read as input by another &ae;.
