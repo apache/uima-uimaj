@@ -1347,6 +1347,7 @@ while (timeIter.hasNext()) {
     
     <section id="ugr.tug.aae.contract_for_annotator_methods">
       <title>Contract: Annotator Methods Called by the Framework</title>
+      <titleabbrev>Annotator Methods</titleabbrev>
       
       <para>The UIMA framework ensures that an Annotator instance is called by only one
         thread at a time.  An instance never has to worry about running some method on one 
@@ -1456,7 +1457,7 @@ while (timeIter.hasNext()) {
     </section>
     
     <section id="ugr.tug.aae.throwing_exceptions_from_annotators">
-      <title>Throwing Exceptions from Annoatators</title>
+      <title>Throwing Exceptions from Annotators</title>
       
       <para>Let&apos;s say an invalid regular expression was passed as a parameter to the
         RoomNumberAnnotator. Because this is an error related to the overall
@@ -1465,7 +1466,7 @@ while (timeIter.hasNext()) {
         this:</para>
       
       
-      <programlisting>throw new AnnotatorConfigurationException(
+      <programlisting>throw new ResourceInitializationException(
     "The regular expression " + x + " is not valid.");
 </programlisting>
       
@@ -1526,7 +1527,7 @@ while (timeIter.hasNext()) {
   mPatterns[i] = Pattern.compile(patternStrings[i]);  
 } 
 catch (PatternSyntaxException e) {
-  throw new AnnotatorConfigurationException(
+  throw new ResourceInitializationException(
      MESSAGE_DIGEST, "regex_syntax_error", 
      new Object[]{patternStrings[i]}, e);
 }

@@ -647,82 +647,167 @@ under the License.
   
   <section id="ugr.project_overview_changes_from_v1">
     <title>Changes from UIMA Version 1.x</title>
-    <para>Version 2.x of UIMA provides new capabilities and refines several areas of the UIMA architecture, as
-      compared with version 1.</para>
+    <para>Version 2.x of UIMA provides new capabilities and refines several areas of the UIMA
+      architecture, as compared with version 1.</para>
     
     <section id="ugr.project_overview_new_capabilities">
       <title>New Capabilities</title>
-      <section id="ugr.project_overview_new_data_types">
+      <formalpara id="ugr.project_overview_new_data_types">
         <title>New Primitive data types</title>
-        <para>UIMA now supports Boolean (bit), Byte, Short (16 bit integers), Long (64 bit integers), and Double (64
-          bit floating point) primitive types, and arrays of these. These types can be used like all the other
-          primitive types.</para>
-      </section>
-      <section id="ugr.ovv.simpler_aes_and_cases">
+        <para>UIMA now supports Boolean (bit), Byte, Short (16 bit integers), Long (64 bit
+          integers), and Double (64 bit floating point) primitive types, and arrays of
+          these. These types can be used like all the other primitive types.</para>
+      </formalpara>
+      <formalpara id="ugr.ovv.simpler_aes_and_cases">
         <title>Simpler Analysis Engines and CASes</title>
-        <para>Version 1.x made a distinction between Analysis Engines and Text Analysis Engines. This distinction
-          has been eliminated in Version 2 - new code should just refer to Analysis Engines. Analysis Engines can
-          operate on multiple kinds of artifacts, including text.</para>
-      </section>
-      <section id="ugr.ovv.sofas_and_cas_views_simplified">
+        <para>Version 1.x made a distinction between Analysis Engines and Text Analysis
+          Engines. This distinction has been eliminated in Version 2 - new code should just
+          refer to Analysis Engines. Analysis Engines can operate on multiple kinds of
+          artifacts, including text.</para>
+      </formalpara>
+      <formalpara id="ugr.ovv.sofas_and_cas_views_simplified">
         <title>Sofas and CAS Views simplified</title>
-        <para>The APIs for manipulating multiple subjects of analysis (Sofas) and their corresponding CAS Views
-          have been simplified.</para>
-      </section>
-      <section id="ugr.ovv.ae_support_multiple_new_cases">
-        <title>Analysis Component generalized to support multiple new CAS outputs</title>
-        <para>Analysis Components, in general, can make use of new capabilities to return multiple new CASes, in
-          addition to returning the original CAS that is passed in. This allows components to have Collection
-          Reader-like capabilities, but be placed anywhere in the flow. See <olink
-            targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.cm"/>.</para>
-      </section>
-      <section id="ugr.ovv.user_customized_fc">
+        <para>The APIs for manipulating multiple subjects of analysis (Sofas) and their
+          corresponding CAS Views have been simplified.</para>
+      </formalpara>
+      <formalpara id="ugr.ovv.ae_support_multiple_new_cases">
+        <title>Analysis Component generalized to support multiple new CAS
+          outputs</title>
+        <para>Analysis Components, in general, can make use of new capabilities to return
+          multiple new CASes, in addition to returning the original CAS that is passed in.
+          This allows components to have Collection Reader-like capabilities, but be
+          placed anywhere in the flow. See <olink
+            targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.cm"/>
+          .</para>
+      </formalpara>
+      <formalpara id="ugr.ovv.user_customized_fc">
         <title>User-customized Flow Controllers</title>
-        <para>A new component, the Flow Controller, can be supplied by the user to implement arbitrary flow control
-          for CASes within an Aggregate. This is in addition to the two built-in flow control choices of linear and
-          language-capability flow. See <olink targetdoc="&uima_docs_tutorial_guides;"
-            targetptr="ugr.tug.fc"/>.</para>
-      </section>
+        <para>A new component, the Flow Controller, can be supplied by the user to implement
+          arbitrary flow control for CASes within an Aggregate. This is in addition to the two
+          built-in flow control choices of linear and language-capability flow. See <olink
+            targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.fc"/>
+          .</para>
+      </formalpara>
     </section>
+ 
+    <section id="ugr.ovv.other_changes">
+      <title>Other Changes</title>
+      
+      <formalpara>
+        <title>New additional Annotator API ImplBase</title>
+        <para>
+          Version 2.1 has a new set of Annotator interfaces. Annotators should now 
+          extend CasAnnotator_ImplBase or JCasAnnotator_ImplBase instead of the v1.x 
+          TextAnnotator_ImplBase and JTextAnnotator_ImplBase.  The v1.x annotator 
+          interfaces are unchanged and are still supported for backwards compatibility.
+         </para>
+        </formalpara>
+      <para>      
+        The new Annotator interfaces support the changed approaches for ResultSpecifications
+        and the changed exception names (see below).</para>
+  
+    <formalpara id="ugr.ovv.exceptions_rationalized">
+      <title>UIMA Exceptions rationalized</title>
+      
+      <para> In version 1 there were different exceptions for the methods of an
+        AnalysisEngine and for the corresponding methods of an Annotator; these were merged
+        in version 2.
+        
+        <itemizedlist spacing="compact">
+          <listitem><para>AnnotatorProcessException (v1) &rarr;
+            AnalysisEngineProcessException (v2)</para></listitem>
+          <listitem><para>AnnotatorInitializationException (v1) &rarr;
+            ResourceInitializationException (v2)</para></listitem>
+          <listitem><para>AnnotatorConfigurationException (v1) &rarr;
+            ResourceConfigurationException (v2)</para></listitem>
+          <listitem><para>AnnotatorContextException (v1) &rarr;
+            ResourceAccessException (v2)</para></listitem>
+        </itemizedlist> The previous exceptions are still available, but new code should
+        use the new exceptions.</para>
+        </formalpara>
+        <note><para>The signature for typeSystemInit changed the <quote>throws</quote> clause to throw AnalysisEngineProcessException.
+          For Annotators that extend the previous base, the previous definition of typeSystemInit will continue to 
+          work for backwards compatibility.
+       </para></note>
+
+    
+    <formalpara id="ugr.ovv.result_specification">
+      <title>Changes in Result Specifications</title>
+      <para>In version 1, the <literal>process(...)</literal> method took a second
+        argument, a ResultSpecification. Now it is set when changed and it's up to the
+        annotator to store it in a local field and make it available when needed.  
+        This approach lets the annotator receive a specific signal (a method call) when
+        the Result Specification changes. Previously, it would need to check on every call to
+        see if it changed. The default impl base classes provide set/getResultSpecification(...)
+        methods for this</para>
+    </formalpara>
+    
+    <formalpara id="ugr.ovv.one_capability_set">
+      <title>Only one Capability Set</title>
+      <para>In version one, you can define 
+        multiple capability sets. These were not supported well, and for version two, 
+        this is now simplified - you should only use one capability set. 
+        (For backwards compatibility, if you use more, 
+        this won't cause a problem for now).</para>
+    </formalpara>
+    
+    
+      <formalpara>
+        <title>TextAnalysisEngine deprecated; use AnalysisEngine instead</title>
+      <para>TextAnalysisEngine has been deprecated - it is now no different than
+        AnalysisEngine. Previous code that uses this should still continue to work,
+        however.</para></formalpara>
+      
+      <formalpara>
+        <title>Annotator Context deprecated; use UimaContext instead</title>
+        <para>The context for the Annotator is the same as the overall UIMA context. 
+        The impl base classes provide a getContext() method which returns now the 
+        UimaContext object.</para>
+      </formalpara>
+      
+      <formalpara>
+        <title>DocumentAnalyzer tool uses XMI formats</title>
+      <para>The DocumentAnalyzer tool saves outputs in the new XMI serialization format.
+        The AnnotationViewer and SemanticSearchGUI tools can read both the new XMI format
+        and the previous XCAS format.</para></formalpara>
+      
+      <formalpara>
+        <title>CAS Initializer deprecated</title>
+        <para>Example code that used CAS Initializers has been rewritten to not use this.</para> 
+      </formalpara>
+    </section>
+    
     <section id="ugr.project_overview_backwards_compatibility">
       <title>Backwards Compatibility</title>
-      <para>Other than the changes from IBM UIMA to Apache UIMA described in <xref
-          linkend="ugr.project_overview_migrating_from_ibm_uima"/>, most UIMA 1.x applications should not
-        require additional changes to upgrade to UIMA 2.x. However, there are a few exceptions that UIMA 1.x users may
-        need to be aware of:
+      <para>Other than the changes from IBM UIMA to Apache UIMA described above, most UIMA 1.x
+        applications should not require additional changes to upgrade to UIMA 2.x. However,
+        there are a few exceptions that UIMA 1.x users may need to be aware of:
         <itemizedlist>
           <listitem>
-            <para> There have been some changes to ResultSpecifications. We do not guarantee 100% backwards
-              compatibility for applications that made use of them, although most cases should work. </para>
+            <para> There have been some changes to ResultSpecifications. We do not
+              guarantee 100% backwards compatibility for applications that made use of
+              them, although most cases should work. </para>
           </listitem>
           <listitem>
-            <para> For applications that deal with multiple subjects of analysis (Sofas), the rules that determine
-              whether a component is Multi-View or Single-View have been made more consistent. A component is
-              considered Multi-View if and only if it declares at least one inputSofa or outputSofa in its
-              descriptor. This leads to the following incompatibilities in unusual cases:
+            <para> For applications that deal with multiple subjects of analysis (Sofas),
+              the rules that determine whether a component is Multi-View or Single-View
+              have been made more consistent. A component is considered Multi-View if and
+              only if it declares at least one inputSofa or outputSofa in its descriptor.
+              This leads to the following incompatibilities in unusual cases:
               <itemizedlist>
                 <listitem>
-                  <para> It is an error if an annotator that implements the TextAnnotator or JTextAnnotator
-                    interface also declares inputSofas or outputSofas in its descriptor. Such annotators must be
-                    Single-View. </para>
+                  <para> It is an error if an annotator that implements the TextAnnotator or
+                    JTextAnnotator interface also declares inputSofas or outputSofas in
+                    its descriptor. Such annotators must be Single-View. </para>
                 </listitem>
                 <listitem>
-                  <para> Annotators that implement GenericAnnotator but do not declare any inputSofas or
-                    outputSofas will now be passed the view of default Sofa instead of the Base CAS. </para>
+                  <para> Annotators that implement GenericAnnotator but do not declare
+                    any inputSofas or outputSofas will now be passed the view of default
+                    Sofa instead of the Base CAS. </para>
                 </listitem>
               </itemizedlist> </para>
           </listitem>
         </itemizedlist> </para>
-      
-    </section>
-    <section id="ugr.ovv.other_changes">
-      <title>Other Changes</title>
-      <para>TextAnalysisEngine has been deprecated - it is now no different than AnalysisEngine. Previous code
-        that uses this should still continue to work, however.</para>
-      
-      <para>The DocumentAnalyzer tool saves outputs in the new XMI serialization format. The
-        AnnotationViewer and SemanticSearchGUI tools can read both the new XMI format and the previous XCAS
-        format.</para>
       
     </section>
   </section>
@@ -730,11 +815,11 @@ under the License.
     <title>Apache UIMA Summary</title>
     <section id="ugr.ovv.summary.general">
       <title>General</title>
-      <para>Apache UIMA supports the development, discovery, composition and deployment of multi-modal
+      <para>UIMA supports the development, discovery, composition and deployment of multi-modal
         analytics for the analysis of unstructured information and its integration with search
         technologies.</para>
       
-      <para>It includes APIs and tools for creating analysis components. Examples of analysis components include
+      <para>Apache UIMA includes APIs and tools for creating analysis components. Examples of analysis components include
         tokenizers, summarizers, categorizers, parsers, named-entity detectors etc. Tutorial examples are
         provided with Apache UIMA; additional components are available from the community. </para>
       
