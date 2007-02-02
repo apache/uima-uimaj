@@ -191,7 +191,7 @@ under the License.
     
     <para>
       A fully qualified filename may be provided, or the filename
-      may relative to a directory specified using the <literal>CPM_HOME</literal>
+      may be relative to a directory specified using the <literal>CPM_HOME</literal>
       variable, e.g.,    
     <programlisting>&lt;descriptor&gt;
     &lt;include href="${CPM_HOME}/desc_dir/descriptor.xml"/&gt;
@@ -1038,7 +1038,7 @@ vinci.VinciAnalysisEngineService_impl</arg>
         defines the starting entity in the collection at which the CPM should start
         processing.</para>
       
-      <para>The implementation in the CPM passes the this argument to the Collection Reader
+      <para>The implementation in the CPM passes this argument to the Collection Reader
         as the value of the parameter <quote><literal>startNumber</literal></quote>.
         The CPM does not do anything else with this parameter; in particular, the CPM has no
         ability to skip to a specific document - that function, if available, is only provided
@@ -1354,7 +1354,7 @@ vinci.VinciAnalysisEngineService_impl</arg>
   <cpeConfig>
     <numToProcess>1</numToProcess>
     <deployAs>immediate</deployAs>
-    <checkpoint file="" time="3000&quot;/>
+    <checkpoint file="" time="3000"/>
     <timerImpl/>
   </cpeConfig>
 </cpeDescription>]]></programlisting>
