@@ -900,7 +900,7 @@ mCPE.process();</programlisting></para>
   }
  
     // retreive the filename of the input file from the CAS
-  FSIterator it = jcas.getJFSIndexRepository()
+  FSIterator it = jcas
             .getAnnotationIndex(SourceDocumentInformation.type)
                   .iterator();
   File outFile = null;
