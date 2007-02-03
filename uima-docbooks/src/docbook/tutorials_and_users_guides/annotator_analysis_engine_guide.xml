@@ -1467,8 +1467,7 @@ while (timeIter.hasNext()) {
       
       
       <programlisting>throw new ResourceInitializationException(
-    "The regular expression " + x + " is not valid.");
-</programlisting>
+    "The regular expression " + x + " is not valid.");</programlisting>
       
       <para>UIMA, however, does not do it this way. All UIMA exceptions are
         <emphasis>internationalized</emphasis>, meaning that they support translation
@@ -1524,14 +1523,13 @@ while (timeIter.hasNext()) {
         
         
         <programlisting>try {
-  mPatterns[i] = Pattern.compile(patternStrings[i]);  
+  mPatterns[i] = Pattern.compile(patternStrings[i]);
 } 
 catch (PatternSyntaxException e) {
   throw new ResourceInitializationException(
-     MESSAGE_DIGEST, "regex_syntax_error", 
+     MESSAGE_DIGEST, "regex_syntax_error",
      new Object[]{patternStrings[i]}, e);
-}
-</programlisting>
+}</programlisting>
         where the MESSAGE_DIGEST constant has the value <literal>
         "org.apache.uima.tutorial.ex5.RoomNumberAnnotator_Messages". </literal>
         </para>
@@ -1596,8 +1594,7 @@ catch (PatternSyntaxException e) {
         
         <programlisting>throw new ResourceConfigurationException(
     MESSAGE_DIGEST, "your_message_name",
-    new Object[]{param1,param2,...});
-</programlisting></para>
+    new Object[]{param1,param2,...});</programlisting></para>
       
       <para>You may also wish to look at the JavaDocs for the UIMAException class.</para>
       
@@ -1733,11 +1730,18 @@ catch (PatternSyntaxException e) {
           file, by calling:
           
           
-          <programlisting>URL url = getContext().getResourceURL("AcronymTable");
+          <programlisting>URI uri = getContext().getResourceURI("AcronymTable");
 </programlisting></para>
         
         <para>These last two options are only available in the case where the descriptor does
           not declare a Java interface.</para>
+        
+        <note><para>The methods for getting access to resources include <literal>getResourceURL</literal>.  That 
+        method returns a URL, which may contain spaces encoded as %20.  url.getPath() would
+        return the path without decoding these %20 into spaces.  <literal>getResourceURI</literal>
+        on the other hand, returns a URI, and the uri.getPath() <emphasis>does</emphasis>
+        do the conversion of %20 into spaces.  See also <literal>getResourceFilePath</literal>,
+          which does a getResourceURI followed by uri.getPath().</para></note>
         
       </section>
       
@@ -2146,6 +2150,7 @@ documentAnalyzer
   </section>
   <section id="ugr.tug.aae.viewing_UIMA_objects_in_eclipse_debugger">
     <title>Viewing UIMA objects in the Eclipse debugger</title>
+    <titleabbrev>UIMA Objects in Eclipse Debugger</titleabbrev>
     
     <para>Eclipse (as of version 3.1 or later) has a new feature for viewing Java Logical
       Structures. When enabled, it will permit you to see a view of UIMA objects (such as
@@ -2195,6 +2200,7 @@ documentAnalyzer
   
   <section id="ugr.tug.aae.xml_intro_ae_descriptor">
     <title>Introduction to Analysis Engine Descriptor XML Syntax</title>
+    <titleabbrev>Analysis Engine XML Descriptor</titleabbrev>
     
     <para>This section is an introduction to the syntax used for Analysis Engine
       Descriptors. Most users do not need to understand these details; they can use the
