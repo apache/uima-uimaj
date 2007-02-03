@@ -254,7 +254,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
    * 
    * @param parent
    * @param style
-   * @return
+   * @return the new table widget
    */
   protected Table newTable(Composite parent, int style) {
     Table table = new Table(parent, style | SWT.BORDER);
@@ -390,6 +390,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     text.getParent().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     text.addListener(SWT.KeyUp, this);
     text.addListener(SWT.MouseUp, this); // for paste operation
+    text.addListener(SWT.Modify, this);  // for content assist
     
 //    newText(tc, SWT.NONE,
 //    "Enter a Type name. Content Assist is available on Eclipse 3.2 and beyond (press Ctrl + Space)");
@@ -471,7 +472,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
    * be omitted. Fix up values to be null if empty.
    * 
    * @param v
-   * @return
+   * @return null for 0 length string
    */
   public static String nullIf0lengthString(String v) {
     if ("".equals(v))

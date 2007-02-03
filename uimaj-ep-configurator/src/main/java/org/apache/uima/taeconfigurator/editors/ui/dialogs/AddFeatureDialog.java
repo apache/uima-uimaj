@@ -154,6 +154,14 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
       elementTypeComposite.setVisible(false);
     }
   }
+  
+  
+
+  public void handleEvent(Event event) {
+    super.handleEvent(event);
+    if (event.type == SWT.Modify && event.widget == featureRangeNameUI)
+      manageVisibleFields();
+  }
 
   public TypesWithNameSpaces getTypeSystemInfoList() {
     TypesWithNameSpaces result = super.getTypeSystemInfoList();
