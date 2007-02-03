@@ -333,6 +333,7 @@ aView.removeFsFromIndexes(aFeatureStructure)</programlisting>
     
     <section id="ugr.tug.mvs.specifying_cas_view_for_single_view">
       <title>Specifying the CAS View for a Single-View Component</title>
+      <titleabbrev>CAS View for Single-View Parts</titleabbrev>
       
       <para>Single-View components receive a Sofa named <quote>_InitialView</quote>, or
         a Sofa that is mapped to this name.</para>
@@ -652,6 +653,7 @@ InputStream is = aCasOrJCas.getSofaDataStream();</programlisting>
   
   <section id="ugr.tug.mvs.sofa_incompatibilities_v1_v2">
     <title>Sofa Incompatibilities between UIMA version 1 and version 2</title>
+    <titleabbrev>Sofa Incompatibilities: V1 and V2</titleabbrev>
     
     <para>The major change for version 2 is related to the support of Single-View components
       and applications. Given an analysis engine, <literal>ae</literal>, the API

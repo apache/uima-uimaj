@@ -1525,7 +1525,7 @@ Exception: Connection refused: connect</programlisting>
         the client may have gone away - and it <quote>cleans up</quote>, releasing any resources it is holding. The
         next call to process on the service will cause the client to re-establish its connection with the service
         (some additional overhead).</para>
-      <section>
+      <section id="ugr.tug.setting_client_timeout">
         <title>Setting the Client Timeout</title>
         <para>The way to set the client timeout is different depending on what deployment mode you use in your CPE (if
           any).</para>
@@ -1579,7 +1579,8 @@ Exception: Connection refused: connect</programlisting>
             targetptr="ugr.ref.xml.cpe_descriptor.descriptor.cas_processors.individual.error_handling"/>
           ) for details. </para>
       </section>
-      <section>
+      
+      <section id="ugr.tug.setting_server_socket_timeout">
         <title>Setting the Server Socket Timeout</title>
         <para>The Server Socket Timeout applies only to Vinci services, and is specified in the Vinci deployment
           descriptor as discussed in section <xref
@@ -1600,7 +1601,7 @@ Exception: Connection refused: connect</programlisting>
   &lt;/service&gt;
 
 &lt;/deployment&gt;</programlisting>
-          </para>
+         </para>
         
         <para>The server socket timeout here is set to <literal>120000</literal> milliseconds, or two minutes.
           This parameter specifies how long the service will wait between requests to process something. After this

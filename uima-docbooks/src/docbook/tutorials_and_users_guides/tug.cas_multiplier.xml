@@ -533,8 +533,9 @@ JCas getEmptyJCas()</programlisting> which are
     <title>Calling a CAS Multiplier from an Application</title>
     <titleabbrev>Applications: Calling CAS Multipliers</titleabbrev>    
     
-    <section>
+    <section id="ugr.tug.cm.retrieving_output_cases">
       <title>Retrieving Output CASes from the CAS Multiplier</title>
+      <titleabbrev>Output CASes</titleabbrev>
       <para>The <literal>AnalysisEngine</literal> interface has the following methods that allow you to
         interact with CAS Multiplier:
         <itemizedlist>
@@ -588,8 +589,9 @@ while (casIterator.hasNext()) {
         output CASes will be produced. There is currently no error recovery mechanism that will allow processing to
         continue after an exception.</para>
     </section>
-    <section>
-      <title>Using a CAS Multiplier with other Analysis Engines</title>      
+    <section id="ugr.tug.cm.using_cm_with_other_aes">
+      <title>Using a CAS Multiplier with other Analysis Engines</title> 
+      <titleabbrev>CAS Multipliers with other AEs</titleabbrev>     
       <para>In your application you can take the output CASes from a CAS Multiplier and pass them to
         the <literal>process</literal> method of other Analysis Engines.  However there are some
         special considerations regarding the Type System of these CASes.</para>
@@ -657,7 +659,7 @@ AnalysisEngine myAE = UIMAFramework.produceAnalysisEngine(
     
     <section id="ugr.tug.cm.overview_of_how_to_merge_cases">
       <title>Overview of How to Merge CASes</title>
-      <titleabbrev>Merginging Overview</titleabbrev>      
+      <titleabbrev>CAS Merging Overview</titleabbrev>      
       
       <orderedlist>
         <listitem>

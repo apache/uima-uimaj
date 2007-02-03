@@ -273,6 +273,7 @@ under the License.
   
   <section id="ugr.tug.fc.adding_fc_to_aggregate">
     <title>Adding a Flow Controller to an Aggregate Analysis Engine</title>
+    <titleabbrev>Adding Flow Controller to an Aggregate</titleabbrev>
     
     <para>To use a Flow Controller you must add it to an Aggregate Analysis Engine. You can only
       have one Flow Controller per Aggregate Analysis Engine. In the Component Descriptor
@@ -318,6 +319,7 @@ under the License.
   
   <section id="ugr.tug.fc.adding_fc_to_cpe">
     <title>Adding a Flow Controller to a Collection Processing Engine</title>
+    <titleabbrev>Adding Flow Controller to CPE</titleabbrev>
     
     <para>Flow Controllers cannot be added directly to Collection Processing Engines. To
       use a Flow Controller in a CPE you first need to wrap the part of your CPE that requires
