@@ -704,7 +704,8 @@ under the License.
         </formalpara>
       <para>      
         The new Annotator interfaces support the changed approaches for ResultSpecifications
-        and the changed exception names (see below).</para>
+        and the changed exception names (see below), and have all the methods that CAS Consumers
+      have, including CollectionProcessComplete and BatchProcessComplete.</para>
   
     <formalpara id="ugr.ovv.exceptions_rationalized">
       <title>UIMA Exceptions rationalized</title>

@@ -802,11 +802,17 @@ mCPE.process();</programlisting></para>
     </section>
     
     <section id="ugr.tug.cpe.cas_consumer.developing"><title>Developing CAS
-      Consumers</title> <note><para>In version 2, there is no difference in capability
+      Consumers</title> 
+      
+      <note><para>In version 2, there is no difference in capability
       between CAS Consumers and ordinary Analysis Engines, except for the default setting of
       the XML parameters for <literal>multipleDeploymentAllowed</literal> and
       <literal>modifiesCas</literal>. We recommend for future work that users implement
-      and use Analysis Engine components instead of CAS Consumers</para></note>
+      and use Analysis Engine components instead of CAS Consumers.</para>
+      <para>The rest of this section is written using the version 1 style of CAS Consumer;
+      the methods described are also available for Analysis Engines.  Note that the 
+      CAS Consumer <literal>processCAS</literal> method is equivalent to the Analysis Engine
+      <literal>process</literal> method.</para></note>
       
       <para>A CAS Consumer receives each CAS after it has been analyzed by the Analysis
         Engine. CAS Consumers typically do not update the CAS; they typically extract data
@@ -828,10 +834,13 @@ mCPE.process();</programlisting></para>
         <literal>processCas(CAS)</literal>, which is where the CAS Consumer does the bulk
         of its work (i.e., consume the CAS).</para>
       
-      <para>The <literal>CasConsumer</literal> interface additionally defines batch
-        and collection level processing methods. The CAS Consumer can implement the
+      <para>The <literal>CasConsumer</literal> interface (as well as the version 2
+        Analysis Engine interfac) additionally defines batch
+        and collection level processing methods. The CAS Consumer or Analysis Engine
+        can implement the
         <literal>batchProcessComplete()</literal> method to perform processing that
-        should occur at the end of each batch of CASes. Similarly, the CAS Consumer can
+        should occur at the end of each batch of CASes. Similarly, the CAS Consumer 
+        or Analysis Engine can
         implement the <literal>collectionProcessComplete()</literal> method to
         perform any collection level processing at the end of the collection.</para>
       
@@ -945,7 +954,8 @@ mCPE.process();</programlisting></para>
             <title>batchProcessComplete()</title>
             
             <para>The framework calls the batchProcessComplete() method at the end of each
-              batch of CASes. This gives the CAS Consumer an opportunity to perform any batch
+              batch of CASes. This gives the CAS Consumer or Analysis Engine 
+              an opportunity to perform any batch
               level processing. Our simple XMI Writer CAS Consumer does not perform any
               batch level processing, so this method is empty. Batch size is set in the
               Collection Processing Engine descriptor.</para>
@@ -957,7 +967,7 @@ mCPE.process();</programlisting></para>
             <para>The framework calls the collectionProcessComplete() method at the end
               of the collection (i.e., when all objects in the collection have been
               processed). At this point in time, no CAS is passed in as a parameter. This gives
-              the CAS Consumer an opportunity to perform collection processing over the
+              the CAS Consumer or Analysis Engine an opportunity to perform collection processing over the
               entire set of objects in the collection. Our simple XMI Writer CAS Consumer
               does not perform any collection level processing, so this method is
               empty.</para>
