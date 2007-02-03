@@ -35,10 +35,15 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.util.ProcessTrace;
 
 /**
- * Base class for CAS Consumers, which developers should extend with their own CAS Consumer
- * implementation classes.
+ * Base class for CAS Consumers in UIMA SDK v1.x, which developers should extend 
+ * with their own CAS Consumer implementation classes.
  * 
- * 
+ * As of v2.0, there is no difference in capability between CAS Consumers
+ * and ordinary Analysis Engines, except for the default setting of the XML
+ * parameters for multipleDeploymentAllowed and modifiesCas. We recommend
+ * for future work that users implement and use Analysis Engine components
+ * instead of CAS Consumers.
+ *  
  */
 public abstract class CasConsumer_ImplBase extends ConfigurableResource_ImplBase implements
         CasConsumer {
