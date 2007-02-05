@@ -155,6 +155,7 @@ under the License.
       <outputDirectory>/apache-uima/docs/html</outputDirectory>
       <includes>
         <include>images/**</include>
+        <include>index.html</include>
         <include>overview_and_setup/overview_and_setup.html</include>
         <include>tutorials_and_users_guides/tutorials_and_users_guides.html</include>
         <include>tools/tools.html</include>
