@@ -28,6 +28,10 @@
 	<!-- ==   Built 2 times - first time updates the olinks, 2nd time builds   == -->
 	<!-- ==                                                                    == -->
 	<!-- ======================================================================== -->
+	
+	<!-- Load our properties -->
+	<property file="project.properties"/>
+	
 	<target name="all" description="--> Build all documentation" depends="do_olinks, do_build_given_olinks" />
 
 	<target name="do_olinks" description="--> for all books, compute the cross reference databases needed for linking">
@@ -56,6 +60,9 @@
 		<ant antfile="build-docbook.xml" target="all">
 			<property name="book_name" value="references" />
 		</ant>
+		
+		<!--copy html overview index.html to the target directory -->
+		<copy todir="${target.dir}/" file="${src.dir}/index.html"/>
 
 	</target>
 
