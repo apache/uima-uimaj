@@ -41,7 +41,6 @@ under the License.
       <outputDirectory>/</outputDirectory>
       <includes>
         <include>DISCLAIMER</include>
-        <include>LICENSE</include>
       </includes>
     </fileSet>
     <fileSet>
