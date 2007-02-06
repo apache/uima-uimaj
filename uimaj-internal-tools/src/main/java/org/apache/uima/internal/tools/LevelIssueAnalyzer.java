@@ -246,7 +246,7 @@ public class LevelIssueAnalyzer {
     try {
 
       Process process = Runtime.getRuntime().exec(command);
-
+      
       // check error stream
       BufferedInputStream errorStream = new BufferedInputStream(process.getErrorStream());
       if (errorStream.available() > 0) {
@@ -270,10 +270,13 @@ public class LevelIssueAnalyzer {
       }
     } catch (IOException ex) {
       ex.printStackTrace();
-    }
+    } 
 
     String content = buffer.toString();
     if (!content.startsWith("<?xml")) {
+      return null;
+    }
+    else if(content.equals("<?xml version=\"1.0\" encoding=\"utf-8\"?><log>")) {
       return null;
     }
 
