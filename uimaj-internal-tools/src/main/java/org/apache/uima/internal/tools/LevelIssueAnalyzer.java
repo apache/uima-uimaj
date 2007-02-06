@@ -188,9 +188,9 @@ public class LevelIssueAnalyzer {
             // retrieve abstract
             jiraIssueAbstract = m.group(1);
           }
-          System.out.println("https://issues.apache.org/jira/browse/" + jiraIssue + ": "
+          System.out.println("https://issues.apache.org/jira/browse/" + jiraIssue + " : "
                   + jiraIssueAbstract);
-          outputWriter.write("https://issues.apache.org/jira/browse/" + jiraIssue + ": "
+          outputWriter.write("https://issues.apache.org/jira/browse/" + jiraIssue + " : "
                   + jiraIssueAbstract + "\n");
         }
 
