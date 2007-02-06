@@ -47,17 +47,20 @@ public class ServiceAlias implements ServiceInterface {
   }
 
   public String toXML(int offset) {
-    String indent = "";
-    while (offset > 0)
-      indent += " ";
+    StringBuffer indent = new StringBuffer(offset);
+    while (offset > 0) {
+      indent.append(' ');
+      offset --;
+    }
+    
+    StringBuffer result = new StringBuffer(50);
 
-    String result = "";
-    result += indent + "<SERVICE>\n";
-    result += indent + "   <NAME>" + name + "</NAME>\n";
-    result += indent + "   <TARGET>" + target + "</TARGET>\n";
-    result += indent + "</SERVICE>\n";
+    result = result.append(indent).append("<SERVICE>\n");
+    result = result.append(indent).append("   <NAME>").append(name).append("</NAME>\n");
+    result = result.append(indent).append("   <TARGET>").append(target).append("</TARGET>\n");
+    result = result.append(indent).append("</SERVICE>\n");
 
-    return result;
+    return result.toString();
   }
 
   public static boolean isAlias(Object o) {
