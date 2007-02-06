@@ -42,7 +42,22 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 /**
- * @author mbaessle
+ * The LevelIssueAnalyzer detects the Jira issues keys that are used in the commit comments since a
+ * specified tag comment. So if a new level/tag is created the tool can detect all Jira issues that
+ * are fixed since the last level/tag based on the tag comment. The level/tag comments must specify
+ * the levelname as for example "levelname:uimaj-<version>-<buildNumber>"
+ * (levelname:uimaj-2.1.0-003). For each detected Jira issue, the abstract of the issue is retrieved
+ * from the web. The Jira issues that are part of the newly created level are written to a text file
+ * called levelIssues.txt
+ * 
+ * Usage: LevelIssueAnalyzer <last level name>
+ * 
+ * Sample output: https://issues.apache.org/jira/browse/UIMA-257: [#UIMA-257] Document Analyzer
+ * sometimes names style map file incorrectly - ASF JIRA
+ * https://issues.apache.org/jira/browse/UIMA-256: [#UIMA-256] CVD manual not displayed in
+ * distribution - ASF JIRA https://issues.apache.org/jira/browse/UIMA-266: [#UIMA-266]
+ * DocumentAnalyzer also use wrong default directory docs/examples/data - ASF JIRA
+ * 
  * 
  */
 public class LevelIssueAnalyzer {
@@ -56,7 +71,11 @@ public class LevelIssueAnalyzer {
   private static final Pattern jiraAbstractPattern = Pattern.compile("<title>(.*)</title>");
 
   /**
-   * @param args
+   * Main method of the LevelIssueAnalyzer, starts the Jira issue detection.
+   * 
+   * @param args -
+   *          command line parameter specifies the last level name that should be used for the for
+   *          the analysis
    */
   public static void main(String[] args) {
 
@@ -65,7 +84,7 @@ public class LevelIssueAnalyzer {
     LevelIssueAnalyzer analyzer = new LevelIssueAnalyzer();
 
     if (args.length != 1) {
-      System.out.println("Usage: LevelIssueAnalyzer <last levelname>");
+      System.out.println("Usage: LevelIssueAnalyzer <last level name>");
     } else {
       levelname = levelPrefix + args[0];
     }
@@ -77,12 +96,13 @@ public class LevelIssueAnalyzer {
       if (retry == 1) {
         System.out.println("Error getting repository logs, retry one more time.");
       }
-      analyzeData = analyzeSvnLogs("http://svn.apache.org/repos/asf/incubator/uima/uimaj");
+      analyzeData = getSvnLogs("http://svn.apache.org/repos/asf/incubator/uima/uimaj");
       retry++;
     } while (analyzeData == null && retry <= 1);
 
-    if(analyzeData == null) {
-      System.out.println("Error getting repository logs for http://svn.apache.org/repos/asf/incubator/uima/uimaj");
+    if (analyzeData == null) {
+      System.out
+              .println("Error getting repository logs for http://svn.apache.org/repos/asf/incubator/uima/uimaj");
       System.exit(-1);
     }
 
@@ -114,12 +134,13 @@ public class LevelIssueAnalyzer {
         if (retry == 1) {
           System.out.println("Error getting repository logs, retry one more time.");
         }
-        analyzeData = analyzeSvnLogs("http://svn.apache.org/repos/asf/incubator/uima/uimaj/trunk");
+        analyzeData = getSvnLogs("http://svn.apache.org/repos/asf/incubator/uima/uimaj/trunk");
         retry++;
       } while (analyzeData == null && retry <= 1);
-      
-      if(analyzeData == null) {
-        System.out.println("Error getting repository logs for http://svn.apache.org/repos/asf/incubator/uima/uimaj/trunk");
+
+      if (analyzeData == null) {
+        System.out
+                .println("Error getting repository logs for http://svn.apache.org/repos/asf/incubator/uima/uimaj/trunk");
         System.exit(-1);
       }
 
@@ -173,7 +194,7 @@ public class LevelIssueAnalyzer {
                   + jiraIssueAbstract + "\n");
         }
 
-        System.out.println("\nIssues written to file: levelIssues.txt");
+        System.out.println("\nJira issues written to file: levelIssues.txt");
         outputWriter.flush();
         outputWriter.close();
       } catch (Exception ex) {
@@ -183,6 +204,14 @@ public class LevelIssueAnalyzer {
     }
   }
 
+  /**
+   * evaluate the xpath expression for the xml string data and returns a nodelist with the matches.
+   * 
+   * @param expression xpath expression
+   * @param analyzeData xml string to analyze
+   * 
+   * @return NodeList that contains the nodes extracted from the xml
+   */
   private NodeList evaluate(String expression, String analyzeData) {
 
     XPath xpath = XPathFactory.newInstance().newXPath();
@@ -198,7 +227,14 @@ public class LevelIssueAnalyzer {
     return saxNodeList;
   }
 
-  private static String analyzeSvnLogs(String repository) {
+  /**
+   * retrieves the svn commit logs for the specified svn repository
+   * 
+   * @param repository - svn repository path
+   * 
+   * @return returns the commit logs as XML representation
+   */
+  private static String getSvnLogs(String repository) {
 
     String line = null;
     boolean error = false;
@@ -244,6 +280,5 @@ public class LevelIssueAnalyzer {
     System.out.println("Done getting logs for: " + repository + "\n");
 
     return content;
-
   }
 }
