@@ -356,7 +356,7 @@ public class XMLUtil {
     if (ex == null) {
       System.out.println("!!!");
     }
-    String systemId = ex.getSystemId();
+    String systemId = (null == ex) ? null : ex.getSystemId();
     if (systemId != null) {
       int index = systemId.lastIndexOf('/');
       if (index != -1)
@@ -364,11 +364,11 @@ public class XMLUtil {
       System.err.print(systemId);
     }
     System.err.print(':');
-    System.err.print(ex.getLineNumber());
+    System.err.print((null == ex) ? "n/a" : Integer.toString(ex.getLineNumber()));
     System.err.print(':');
-    System.err.print(ex.getColumnNumber());
+    System.err.print((null == ex) ? "n/a" : Integer.toString(ex.getColumnNumber()));
     System.err.print(": ");
-    System.err.print(ex.getMessage());
+    System.err.print((null == ex) ? "n/a" : ex.getMessage());
     System.err.println();
     System.err.flush();
   } // printError(String,SAXParseException)
