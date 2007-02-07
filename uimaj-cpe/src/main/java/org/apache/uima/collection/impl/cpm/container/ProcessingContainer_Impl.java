@@ -1129,6 +1129,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
     try {
       do {
         long t = System.currentTimeMillis();
+        synchronized (casProcessorPool) {
         CasProcessor processor = casProcessorPool.checkOut();
         fetchTime += (System.currentTimeMillis() - t);
         if (processor == null) {
@@ -1138,13 +1139,11 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
                     "UIMA_CPM_wait_no_processor__FINEST",
                     new Object[] { Thread.currentThread().getName(), getName() });
           }
-          synchronized (casProcessorPool) {
-            casProcessorPool.wait();
-          }
+          casProcessorPool.wait();
         } else {
           return processor;
         }
-
+        }
       } while (true);
     } catch (Exception e) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
