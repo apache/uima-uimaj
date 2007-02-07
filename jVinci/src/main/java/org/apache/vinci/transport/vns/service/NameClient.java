@@ -168,7 +168,7 @@ public class NameClient {
 
     ServiceInfo[] S = constructServiceInfo(resp.fget("SERVER"), resp.fgetString("LEVEL"), name);
 
-    return ((S.length > 0) ? S[Math.abs(R.nextInt()) % S.length] : null);
+    return ((S.length > 0) ? S[R.nextInt(S.length)] : null);
   }
 
   public static void smFrameAdd(VinciFrame v, String tag, String val) {
@@ -186,7 +186,7 @@ public class NameClient {
 
     ServiceInfo[] S = constructServiceInfo(resp.fget("SERVER"), resp.fgetString("LEVEL"), name);
 
-    return ((S.length > 0) ? S[Math.abs(R.nextInt()) % S.length] : null);
+    return ((S.length > 0) ? S[R.nextInt(S.length)] : null);
   }
 
   public ServiceInfo resolve(String name) {
