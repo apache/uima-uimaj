@@ -3211,7 +3211,7 @@ public class CPMEngine extends Thread {
    * @throws Exception
    */
   private void setupConsumerPipeline() throws Exception {
-    if (consumerList != null || consumerList.size() > 0) {
+    if (consumerList != null && consumerList.size() > 0) {
       nonThreadedCasConsumerProcessingUnit = new NonThreadedProcessingUnit(this);
       // Assign initial status to all Cas Processors in the processing pipeline
       for (int i = 0; i < consumerList.size(); i++) {
