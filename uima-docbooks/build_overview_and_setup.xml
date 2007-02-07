@@ -19,7 +19,7 @@
    under the License.    
 -->
 
-<project name="overview-and-setup-docbook" default="all" basedir=".">
+<project name="Apache UIMA overview and setup documentation" default="all" basedir=".">
 
   <!-- ======================================================================== -->
   <!-- ==                                                                    == -->
