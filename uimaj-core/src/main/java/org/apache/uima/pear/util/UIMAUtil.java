@@ -164,9 +164,8 @@ public class UIMAUtil {
           throws IOException {
     String uimaCompCtg = null;
     XMLInputSource xmlSource = null;
+    String xmlDescUri = (xmlDescFile != null) ? xmlDescFile.getAbsolutePath() : xmlDescUrl.toString();
     try {
-      String xmlDescUri = (xmlDescFile != null) ? xmlDescFile.getAbsolutePath() : xmlDescUrl
-              .toString();
       // clean error message
       __errTableByUri.remove(xmlDescUri);
       // get XMLParser
@@ -179,9 +178,9 @@ public class UIMAUtil {
       try {
         resourceSpec = xmlParser.parseResourceSpecifier(xmlSource);
       } catch (UIMAException err) {
-        __errTableByUri.put(xmlDescFile, err);
+				__errTableByUri.put( xmlDescUri, err );
       } catch (UIMARuntimeException exc) {
-        __errTableByUri.put(xmlDescFile, exc);
+				__errTableByUri.put( xmlDescUri, exc );
       }
       if (resourceSpec != null) { // AE | CR | CI | CC ?
         // identify UIMA resource category
@@ -201,17 +200,16 @@ public class UIMAUtil {
           xmlSource.getInputStream().close();
         } catch (Exception e) {
         }
-        xmlSource = (xmlDescFile != null) ? new XMLInputSource(xmlDescFile) : new XMLInputSource(
-                xmlDescUrl);
+        xmlSource = (xmlDescFile != null) ? new XMLInputSource(xmlDescFile) : new XMLInputSource(xmlDescUrl);
         try {
           // try parsing CPE configuration
           xmlParser.parseCpeDescription(xmlSource);
           uimaCompCtg = CPE_CONFIGURATION_CTG;
-          __errTableByUri.remove(xmlDescFile);
+          __errTableByUri.remove( xmlDescUri );
         } catch (UIMAException err) {
-          __errTableByUri.put(xmlDescFile, err);
+          __errTableByUri.put( xmlDescUri, err );
         } catch (UIMARuntimeException exc) {
-          __errTableByUri.put(xmlDescFile, exc);
+          __errTableByUri.put( xmlDescUri, exc );
         }
       }
       if (uimaCompCtg == null) { // TS ?
@@ -220,17 +218,16 @@ public class UIMAUtil {
           xmlSource.getInputStream().close();
         } catch (Exception e) {
         }
-        xmlSource = (xmlDescFile != null) ? new XMLInputSource(xmlDescFile) : new XMLInputSource(
-                xmlDescUrl);
+        xmlSource = (xmlDescFile != null) ? new XMLInputSource(xmlDescFile) : new XMLInputSource(xmlDescUrl);
         try {
           // try parsing TS description
           xmlParser.parseTypeSystemDescription(xmlSource);
           uimaCompCtg = TYPE_SYSTEM_CTG;
-          __errTableByUri.remove(xmlDescFile);
+          __errTableByUri.remove( xmlDescUri );
         } catch (UIMAException err) {
-          __errTableByUri.put(xmlDescFile, err);
+          __errTableByUri.put( xmlDescUri, err );
         } catch (UIMARuntimeException exc) {
-          __errTableByUri.put(xmlDescFile, exc);
+          __errTableByUri.put( xmlDescUri, exc );
         }
       }
       if (uimaCompCtg == null) { // RR ?
@@ -239,22 +236,22 @@ public class UIMAUtil {
           xmlSource.getInputStream().close();
         } catch (Exception e) {
         }
-        xmlSource = new XMLInputSource(xmlDescFile);
+        xmlSource = (xmlDescFile != null) ? new XMLInputSource(xmlDescFile) : new XMLInputSource(xmlDescUrl);
         try {
           // try parsing RES manager configuration
           xmlParser.parseResourceManagerConfiguration(xmlSource);
           uimaCompCtg = REUSABLE_RESOURCE_CTG;
-          __errTableByUri.remove(xmlDescFile);
+          __errTableByUri.remove( xmlDescUri );
         } catch (UIMAException err) {
-          __errTableByUri.put(xmlDescFile, err);
+          __errTableByUri.put( xmlDescUri, err );
         } catch (UIMARuntimeException exc) {
-          __errTableByUri.put(xmlDescFile, exc);
+          __errTableByUri.put( xmlDescUri, exc );
         }
       }
     } catch (IOException exc) {
       throw exc;
     } catch (Exception err) {
-      __errTableByUri.put(xmlDescFile, err);
+      __errTableByUri.put( xmlDescUri, err );
     } finally {
       if (xmlSource != null && xmlSource.getInputStream() != null)
         try {
