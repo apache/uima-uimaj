@@ -146,7 +146,7 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
 
   private boolean singleFencedInstance = false;
 
-  private String monitor = "";
+  private final Object monitor = new Object();
 
   private String processorName = null;
 

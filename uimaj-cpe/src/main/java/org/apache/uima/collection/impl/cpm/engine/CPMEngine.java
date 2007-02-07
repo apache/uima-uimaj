@@ -108,7 +108,7 @@ public class CPMEngine extends Thread {
   public CPECasPool casPool;
 
   // Used internally for synchronization
-  public String monitor = "";
+  public final Object monitor = new Object();  
 
   // CollectionReader to be used by this CPM
   private BaseCollectionReader collectionReader = null;

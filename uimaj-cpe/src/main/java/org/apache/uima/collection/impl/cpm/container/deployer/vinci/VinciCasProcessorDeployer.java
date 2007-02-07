@@ -128,11 +128,11 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
 
   private CPEFactory cpeFactory = null;
 
-  private String monitor = "";
+  private final Object monitor = new Object();  // must be unique object, used for synch
 
   private ArrayList currentServiceList = null;
 
-  private String locMonitor = "";
+  private final Object locMonitor = new Object(); // must be unique object, used for synch
 
   /**
    * Instantiaes the class and gives it access to CPE configuration.
@@ -1860,7 +1860,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
       }
       waitCount = MAX_WAIT_TRIES; // restore default
     }
-    String localMonitor = "";
+    Object localMonitor = new Object();
     if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
               "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_got_port_from_queue__INFO",

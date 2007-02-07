@@ -110,7 +110,7 @@ public class VinciTAP {
           org.apache.uima.collection.impl.cpm.Constants.CONTENT_TAG,
           org.apache.uima.collection.impl.cpm.Constants.CONTENT_TAG_VALUE, contentTag, true);
 
-  private String monitor = "";
+  private final Object monitor = new Object();
 
   public VinciTAP() {
   }
@@ -1328,7 +1328,7 @@ public class VinciTAP {
    */
   private void waitForServiceShutdown() {
     int retry = 10; // Hard-coded limit.
-    String monitor = "";
+    Object monitor = new Object();
     // Try until the endpoint is closed by the service OR hard limit of tries
     // has beed exceeded.
     do {

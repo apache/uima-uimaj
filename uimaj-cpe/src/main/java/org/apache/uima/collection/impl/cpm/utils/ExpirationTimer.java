@@ -36,7 +36,7 @@ public class ExpirationTimer extends Thread {
 
   private String key = "";
 
-  private String monitor = "";
+  private final Object monitor = new Object();
 
   CPMEngine cpm = null;
 

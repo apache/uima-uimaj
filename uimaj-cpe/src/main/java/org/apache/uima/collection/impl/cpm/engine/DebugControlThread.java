@@ -41,7 +41,7 @@ public class DebugControlThread implements Runnable {
 
   private boolean pause = false;
 
-  private String monitor = "";
+  private final Object monitor = new Object();
 
   // private boolean isRunning = false;
   private CPMEngine cpm = null;
