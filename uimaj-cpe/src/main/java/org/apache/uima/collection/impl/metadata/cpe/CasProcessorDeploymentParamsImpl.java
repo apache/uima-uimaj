@@ -88,7 +88,7 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implem
    */
   public void remove(CasProcessorDeploymentParam aParamName) throws CpeDescriptorException {
     for (int i = 0; params != null && i < params.size(); i++) {
-      if (aParamName.equals(((CasProcessorDeploymentParam) params.get(i)).getParameterName())) {
+      if (aParamName.getParameterName().equals(((CasProcessorDeploymentParam) params.get(i)).getParameterName())) {
         params.remove(i);
       }
     }
