@@ -90,7 +90,7 @@ under the License.
       Eclipse 3.2.1.
       </para>
       
-      <para>Activate the software feature finding by using the menu: help &rarr; Software
+      <para>Activate the software feature finding by using the menu: Help &rarr; Software
         Updates &rarr; Find and Install. Select <quote>Search for new features to
         install</quote>, push <quote>Next</quote>. Specify the update site where EMF is
         found as a site to search, making sure the <quote>Ignore features not applicable to
@@ -166,7 +166,7 @@ under the License.
     <section id="ugr.ovv.eclipse_setup.install_uima_eclipse_plugins">
       <title>Install the UIMA Eclipse Plugins</title>
       
-      <para>In the directory %UIMA_HOME%/eclipsePlugin (The environment variable
+      <para>In the directory %UIMA_HOME%/eclipsePlugins (The environment variable
         %UIMA_HOME% is where you installed the UIMA SDK), you will see a set of folders. Copy these
         to your %ECLIPSE_HOME%/eclipse/plugins directory (%ECLIPSE_HOME% is where you
         installed Eclipse).</para>
@@ -243,7 +243,7 @@ under the License.
         the <quote>Next</quote> button.</para></listitem>
       
       <listitem><para>Click <quote>Browse</quote> and browse to the
-        %UIMA_HOME%/docs/examples directory</para></listitem>
+        %UIMA_HOME%/ directory</para></listitem>
       
       <listitem><para>Click <quote>Finish.</quote> This will create a new project called
         <quote>uimaj-examples</quote> in your Eclipse workspace. There should be no
@@ -259,8 +259,8 @@ under the License.
     
     <para>You can run many tools without using Eclipse at all, by using the shell scripts in the
       UIMA SDK's bin directory. In addition, many tools can be run from inside Eclipse;
-      examples are the Document Analyzer, CPE Configurator, CAS Visual Debugger, Semantic
-      Search, and JCasGen. The uimaj-examples project provides Eclipse launch
+      examples are the Document Analyzer, CPE Configurator, CAS Visual Debugger, 
+      and JCasGen. The uimaj-examples project provides Eclipse launch
       configurations that make this easy to do.</para>
     
     <para>To run these tools from Eclipse:</para>
@@ -272,8 +272,8 @@ under the License.
       <listitem><para>Go to Run &rarr; Run... </para></listitem>
       
       <listitem><para>In the window that appears, select <quote>UIMA CPE GUI</quote>,
-        <quote>UIMA CAS Visual Debugger</quote>, <quote>UIMA JCasGen</quote>,
-        <quote>UIMA Document Analyzer</quote>, or <quote>UIMA Semantic Search</quote>
+        <quote>UIMA CAS Visual Debugger</quote>, <quote>UIMA JCasGen</quote>, or 
+        <quote>UIMA Document Analyzer</quote>
         from the list of run configurations on the left. (If you don't see, these, please
         select the uimaj-examples project and do a Menu &rarr; File
         &rarr; Refresh).</para></listitem>
