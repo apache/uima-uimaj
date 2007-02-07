@@ -48,9 +48,9 @@ public class Checkpoint implements Runnable {
 
   private boolean pause = false;
 
-  private Object monitor = new Object();
+  private final Object monitor = new Object();
 
-  private Object sleepMonitor = new Object();
+  private final Object sleepMonitor = new Object();
 
   // private boolean isRunning = false;
   private BaseCPMImpl cpm = null;
