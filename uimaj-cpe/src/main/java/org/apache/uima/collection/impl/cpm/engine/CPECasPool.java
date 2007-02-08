@@ -26,20 +26,13 @@ import java.util.Vector;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.impl.cpm.utils.CPMUtils;
-import org.apache.uima.resource.CasDefinition;
 import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.Level;
 
 /**
  * Implements object pooling mechanism to limit number of CAS instances. Cas'es are checked out,
- * used and checked back in when done.
- * 
- * 
- * 
- * 
- * 
+ * used and checked back in when done. 
  */
 public class CPECasPool {
 
@@ -49,7 +42,7 @@ public class CPECasPool {
 
   private LinkedList checkedOutInstances = new LinkedList();
 
-  private int mNumInstances;
+  private final int mNumInstances;
 
   /**
    * Initialize the pool.
@@ -106,16 +99,17 @@ public class CPECasPool {
    * @return - CAS instance, or null on timeout
    */
   public synchronized CAS getCas(long aTimeout) {
-    CAS cas;
-
-    if ((cas = getCas()) == null) {
-      try {
-        this.wait(aTimeout);
-      } catch (InterruptedException e) {
-      }
-      cas = getCas();
+    CAS cas = getCas();
+    
+    if (cas != null) {
+      return cas;
     }
-    return cas;
+
+    try {
+      this.wait(aTimeout);
+    } catch (InterruptedException e) { // do nothing if interrupted
+    }
+    return getCas();
   }
 
   /**
@@ -198,6 +192,7 @@ public class CPECasPool {
                 new Object[] { Thread.currentThread().getName(),
                     String.valueOf(checkedOutInstances.size()) });
       }
+      this.notifyAll();  // when CAS becomes available
     }
 
   }
@@ -235,22 +230,24 @@ public class CPECasPool {
     return mNumInstances;
   }
 
-  /**
-   * Returns pool capacity
-   * 
-   * @return - size of the pool
-   */
-  protected Vector getAllInstances() {
-    return mAllInstances;
-  }
+  // never called and dangerous to expose
+//  /**
+//   * Returns pool capacity
+//   * 
+//   * @return - size of the pool
+//   */
+//  protected Vector getAllInstances() {
+//    return mAllInstances;
+//  }
 
-  /**
-   * Number of free Cas'es available in the pool
-   * 
-   * @return
-   */
-  protected Vector getFreeInstances() {
-    return mFreeInstances;
-  }
+  // Never called
+//  /**
+//   * Number of free Cas'es available in the pool
+//   * 
+//   * @return
+//   */
+//  protected synchronized Vector getFreeInstances() {
+//    return mFreeInstances;
+//  }
 
 }
