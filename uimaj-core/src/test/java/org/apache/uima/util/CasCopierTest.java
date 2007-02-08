@@ -29,6 +29,7 @@ import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas_data.impl.CasComparer;
 import org.apache.uima.resource.metadata.FsIndexDescription;
@@ -83,6 +84,13 @@ public class CasCopierTest extends TestCase {
     CAS destCas2 = CasCreationUtils.createCas(destTypeSystems);
     CasCopier.copyCas(srcCas, destCas2, true);
     CasComparer.assertEquals(srcCas, destCas);
+    
+    //try with base CAS rather than initial view
+    CAS srcCasBase = ((CASImpl)srcCas).getBaseCAS();
+    destCas.reset();
+    CAS destCasBase = ((CASImpl)destCas).getBaseCAS();
+    CasCopier.copyCas(srcCasBase, destCasBase, true);
+    CasComparer.assertEquals(srcCasBase, destCasBase);    
   }
   
   public void testCopyCasView() throws Exception {
