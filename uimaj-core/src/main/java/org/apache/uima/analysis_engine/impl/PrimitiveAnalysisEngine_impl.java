@@ -293,7 +293,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
 
       // return a CasIterator that allows caller to step through the outputs
       // of this AnalysisComponent (if any)
-      return new AnalysisComponentCasIterator(mAnalysisComponent);
+      return new AnalysisComponentCasIterator(mAnalysisComponent, aCAS);
     } finally {
       exitProcess();
     }
@@ -372,6 +372,10 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
         // call the process method
         mAnalysisComponent.process(casToPass);
         getMBean().incrementCASesProcessed();
+        
+        //note we do not clear the CAS's currentComponentInfo at this time.  The AnalysisComponents still
+        //can access the CAS until such time as its hasNext method returns false.  Thus is is the
+        //AnalysisComponentCasIterator that knows when it is time to clear the currentComponentInfo.
       } catch (Exception e) {
         aCAS.setCurrentComponentInfo(null);
         if (e instanceof AnalysisEngineProcessException) {
@@ -515,9 +519,11 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    */
   class AnalysisComponentCasIterator implements CasIterator {
     private AnalysisComponent mMyAnalysisComponent;
+    private CAS mInputCas;
 
-    AnalysisComponentCasIterator(AnalysisComponent aAnalysisComponent) {
+    AnalysisComponentCasIterator(AnalysisComponent aAnalysisComponent, CAS aInputCas) {
       mMyAnalysisComponent = aAnalysisComponent;
+      mInputCas = aInputCas;
     }
 
     /*
@@ -528,7 +534,14 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     public boolean hasNext() throws AnalysisEngineProcessException {
       enterProcess();
       try {
-        return mMyAnalysisComponent.hasNext();
+        boolean result = mMyAnalysisComponent.hasNext();
+        if (!result) {
+          //when hasNext returns false, by contract the AnalysisComponent is done processing its
+          //input CAS.  Now is the time to clear the currentComponentInfo to indicate that the
+          //CAS is no longer being processed.
+          mInputCas.setCurrentComponentInfo(null);
+        }
+        return result;
       } finally {
         exitProcess();
       }
