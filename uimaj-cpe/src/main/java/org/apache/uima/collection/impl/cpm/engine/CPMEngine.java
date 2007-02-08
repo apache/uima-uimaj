@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.UimaContext;
 import org.apache.uima.adapter.vinci.util.Descriptor;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase;
@@ -108,15 +107,16 @@ public class CPMEngine extends Thread {
   public CPECasPool casPool;
 
   // Used internally for synchronization
-  public final Object monitor = new Object();  
+  public final Object lockForPause = new Object();  
 
   // CollectionReader to be used by this CPM
   private BaseCollectionReader collectionReader = null;
 
   // Flag indicating if the CPM should pause
   // Accesses to this flag (read and write) must
-  //   be done while holding the "monitor" lock
+  //   be done while holding the "lockForPause" lock
   //   via synch
+  //  @GuardedBy(lockForPause)
   protected boolean pause = false;
 
   // Flag indicating if this CPM is running or not
@@ -617,10 +617,10 @@ public class CPMEngine extends Thread {
           // Change global status
           isRunning = false;
           // terminate this thread if the thread has been previously suspended
-          synchronized (monitor) {
-            if (isPaused()) {
+          synchronized (lockForPause) {
+            if (pause) {
               pause = false;
-              monitor.notifyAll();
+              lockForPause.notifyAll();
             }
           }
           // Let processing threads finish their work by emptying all queues. Even during a hard
@@ -730,10 +730,10 @@ public class CPMEngine extends Thread {
       // Change global status
       isRunning = false;
       // terminate this thread if the thread has been previously suspended
-      synchronized (monitor) {
-        if (isPaused()) {
+      synchronized (lockForPause) {
+        if (pause) {
           pause = false;
-          monitor.notifyAll();
+          lockForPause.notifyAll();
         }
       }
       // Let processing threads finish their work by emptying all queues. Even during a hard
@@ -1539,7 +1539,7 @@ public class CPMEngine extends Thread {
    * Returns a global flag indicating if this Thread is in pause state
    */
   public boolean isPaused() {
-    synchronized (monitor) {
+    synchronized (lockForPause) {
       return (pause == true);
     }
   }
@@ -1553,7 +1553,7 @@ public class CPMEngine extends Thread {
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_pause_cpe__FINEST",
               new Object[] { Thread.currentThread().getName() });
     }
-    synchronized (monitor) {
+    synchronized (lockForPause) {
       pause = true;
     }
   }
@@ -1567,14 +1567,14 @@ public class CPMEngine extends Thread {
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_resume_cpe__FINEST",
               new Object[] { Thread.currentThread().getName() });
     }
-    synchronized (monitor) {
+    synchronized (lockForPause) {
       pause = false;
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_notify_engine__FINEST",
                 new Object[] { Thread.currentThread().getName() });
       }
-      monitor.notifyAll();
+      lockForPause.notifyAll();
     }
 
   }
@@ -3479,9 +3479,9 @@ public class CPMEngine extends Thread {
   }
   
   private void waitForCpmToResumeIfPaused() {
-    synchronized (monitor) {
+    synchronized (lockForPause) {
       // Pause this thread if CPM has been paused
-      if (isPaused()) {
+      while (pause) {
 //        threadState = 2016;  thread state is not kept here, only in the ProcessingUnit
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
@@ -3491,8 +3491,8 @@ public class CPMEngine extends Thread {
 
         try {
           // Wait until resumed
-          monitor.wait();
-        } catch (Exception e) {
+          lockForPause.wait();
+        } catch (InterruptedException e) {
         }
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
