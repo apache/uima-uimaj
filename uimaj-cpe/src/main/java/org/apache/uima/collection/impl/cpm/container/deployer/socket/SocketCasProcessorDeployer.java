@@ -244,7 +244,7 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
                       new Object[] { Thread.currentThread().getName(),
                           aProcessingContainer.getName() });
             }
-            pool.wait(50);
+            pool.wait();  // pool has notifyall when it changes the pool.getSize() result
           } catch (Exception e) {
           }
         }
