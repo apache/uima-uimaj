@@ -30,13 +30,11 @@ import org.apache.uima.util.Level;
  * 
  */
 public class ExpirationTimer extends Thread {
-  private long timeOut = 1;
+  private final long timeOut;
 
-  private HashMap map = null;
+  private final HashMap map;
 
-  private String key = "";
-
-  private final Object monitor = new Object();
+  private final String key;
 
   CPMEngine cpm = null;
 
@@ -59,9 +57,7 @@ public class ExpirationTimer extends Thread {
    */
   public void run() {
     try {
-      synchronized (monitor) {
-        monitor.wait(timeOut);
-      }
+      Thread.sleep(timeOut);
     } catch (InterruptedException e) {
     }
 
