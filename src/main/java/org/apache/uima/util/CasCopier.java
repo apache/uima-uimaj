@@ -42,6 +42,7 @@ import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.text.AnnotationFS;
 
 /**
@@ -54,6 +55,7 @@ import org.apache.uima.cas.text.AnnotationFS;
 public class CasCopier {
   private CAS mSrcCas;
   private CAS mDestCas;
+  private LowLevelCAS mLowLevelDestCas;
 
   private Map mFsMap = new HashMap();
 
@@ -70,6 +72,7 @@ public class CasCopier {
   public CasCopier(CAS aSrcCas, CAS aDestCas) {
     mSrcCas = aSrcCas;
     mDestCas = aDestCas;
+    mLowLevelDestCas = aDestCas.getLowLevelCAS();
   }
   
   /**
@@ -201,7 +204,13 @@ public class CasCopier {
       throw new UIMARuntimeException(UIMARuntimeException.TYPE_NOT_FOUND_DURING_CAS_COPY,
               new Object[] { srcType.getName() });
     }
-    FeatureStructure destFs = mDestCas.createFS(destType);
+    //We need to use the LowLevel CAS interface to create the FS, because the usual
+    //CAS.createFS() call doesn't allow us to create subtypes of AnnotationBase from
+    //a base CAS.  In any case we don't need the Sofa reference to be automatically
+    //set because we'll set it manually when in the copyFeatures method. 
+    int typeCode = mLowLevelDestCas.ll_getTypeSystem().ll_getCodeForType(destType);
+    int destFsAddr = mLowLevelDestCas.ll_createFS(typeCode);
+    FeatureStructure destFs = mDestCas.getLowLevelCAS().ll_getFSForRef(destFsAddr);
 
     // add to map so we don't try to copy this more than once
     mFsMap.put(aFS, destFs);
