@@ -83,6 +83,9 @@ public class SequencedQueue extends BoundedWorkQueue {
    * Returns a CAS that belong to a timedout chunk sequence. It wraps the CAS in QueueEntity and
    * indicates that the CAS arrived late.
    * 
+   * This must be called while holding the class lock (e.g. via synch on the calling methods
+   * within this class).
+   * 
    * @param aQueueIndex -
    *          position in queue from the CAS should be extracted
    * 
@@ -424,10 +427,10 @@ public class SequencedQueue extends BoundedWorkQueue {
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_wait_for_chunk__FINEST",
                   new Object[] { Thread.currentThread().getName(), getName() });
         }
-        wait(20);
+        wait(20);  // wait time is rest of time out - FIXME
       } catch (InterruptedException e) {
       }
-
+      resource = dequeue();
       if (resource == null && aTimeout > 0 && (new Date().getTime() - startTime) >= aTimeout) {
         String docId = nextChunkMetadata.getDocId();
 
@@ -472,7 +475,7 @@ public class SequencedQueue extends BoundedWorkQueue {
               CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
               "UIMA_CPM_return_chunk__FINEST",
               new Object[] { Thread.currentThread().getName(), getName(),
-                  String.valueOf(queueSize), String.valueOf(numberElementsInQueue) });
+                  String.valueOf(queueMaxSize), String.valueOf(numberElementsInQueue) });
     }
 
     return resource;
@@ -510,7 +513,7 @@ public class SequencedQueue extends BoundedWorkQueue {
 
   /**
    * Notifies all configured listeners. Makes sure that appropriate type of Cas is sent to the
-   * listener. Convertions take place to ensure compatibility.
+   * listener. Conversions take place to ensure compatibility.
    * 
    * @param aCas -
    *          Cas to pass to listener
