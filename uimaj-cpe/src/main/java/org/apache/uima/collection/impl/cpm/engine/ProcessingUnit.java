@@ -507,28 +507,28 @@ public class ProcessingUnit extends Thread {
    * 
    */
   private void isCpmPaused() {
-    // Pause this thread if CPM has been paused
-    if (cpm.isPaused()) {
-      threadState = 2016;
-      if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_pausing_pp__FINEST",
-                new Object[] { Thread.currentThread().getName() });
-      }
-      synchronized (cpm.monitor) {
+    synchronized (cpm.lockForPause) {
+      // Pause this thread if CPM has been paused
+      while (cpm.isPaused()) {
+        threadState = 2016;
+        if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_pausing_pp__FINEST",
+                  new Object[] { Thread.currentThread().getName() });
+        }
+
         try {
           // Wait until resumed
-          cpm.monitor.wait();
-        } catch (Exception e) {
+          cpm.lockForPause.wait();
+        } catch (InterruptedException e) {
+        }
+        if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_resuming_pp__FINEST",
+                  new Object[] { Thread.currentThread().getName() });
         }
       }
-      if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_resuming_pp__FINEST",
-                new Object[] { Thread.currentThread().getName() });
-      }
     }
-
   }
 
   /**
