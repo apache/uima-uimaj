@@ -27,8 +27,16 @@
  
 <analysisEngineMetaData>
 	<name>Simple Text Merger</name>
-	<description>Merges text documents into larger ones.</description>
-	<version>1.0</version>
+	<description>Merges text documents into larger ones, producing a merged CAS.  Also copies
+    selected annotation types to the merged CAS.  The input CAS requires an instance of
+    the type org.apache.uima.examples.SourceDocumentInformation (which is produced by the
+    FileSystemCollectionReader and SimpleTextSegmenter examples).  Input CASes will
+    be merged until a CAS is encountered whose SourceDocumentInformation FS has its
+    lastSegment feature set to true.  At that point a merged CAS will be output which
+    includes the content up to and including that CAS.  If additional CASes are then
+    received, a second merged CAS will be built, including all content from that point until
+    the next CAS with lastSegment = true, and so on.</description>
+  <version>1.0</version>
 	<vendor>The Apache Software Foundation</vendor>
 
 	<configurationParameters>
@@ -57,6 +65,9 @@
 		
 	<capabilities>
 		<capability>
+      <inputs>
+        <type allAnnotatorFeatures="true">org.apache.uima.examples.SourceDocumentInformation</type>
+      </inputs>
 			<outputs/>
 		</capability>
 	</capabilities>

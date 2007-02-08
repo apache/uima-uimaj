@@ -49,6 +49,13 @@ import org.apache.uima.util.CasCopier;
  * that would also make this example more complicated.
  */
 public class SimpleTextMerger extends JCasMultiplier_ImplBase {
+  
+  public static final String MESSAGE_DIGEST = "org.apache.uima.examples.casMultiplier.ExampleCasMultiplierMessages";
+  
+  public static final String MISSING_SOURCE_DOCUMENT_INFO = "missing_source_document_info";
+  
+  public static final String NO_NEXT_CAS = "no_next_cas";
+  
   private StringBuffer mDocBuf = new StringBuffer();
 
   private JCas mMergedCas;
@@ -108,7 +115,8 @@ public class SimpleTextMerger extends JCasMultiplier_ImplBase {
     // and whether the incoming CAS is the last segment
     FSIterator it = aJCas.getAnnotationIndex(SourceDocumentInformation.type).iterator();
     if (!it.hasNext()) {
-      throw new RuntimeException("Missing SourceDocumentInformation");
+      throw new AnalysisEngineProcessException(MESSAGE_DIGEST, MISSING_SOURCE_DOCUMENT_INFO,
+              new Object[0]);
     }
     SourceDocumentInformation sourceDocInfo = (SourceDocumentInformation) it.next();
     if (sourceDocInfo.getLastSegment()) {
@@ -144,7 +152,7 @@ public class SimpleTextMerger extends JCasMultiplier_ImplBase {
    */
   public AbstractCas next() throws AnalysisEngineProcessException {
     if (!mReadyToOutput) {
-      throw new RuntimeException("No next CAS");
+      throw new AnalysisEngineProcessException(MESSAGE_DIGEST, NO_NEXT_CAS, new Object[0]);
     }
     JCas casToReturn = mMergedCas;
     mMergedCas = null;
