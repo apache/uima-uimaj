@@ -1136,19 +1136,19 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
       do {
         long t = System.currentTimeMillis();
         synchronized (casProcessorPool) {
-        CasProcessor processor = casProcessorPool.checkOut();
-        fetchTime += (System.currentTimeMillis() - t);
-        if (processor == null) {
-          if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                    "UIMA_CPM_wait_no_processor__FINEST",
-                    new Object[] { Thread.currentThread().getName(), getName() });
+          CasProcessor processor = casProcessorPool.checkOut();
+          fetchTime += (System.currentTimeMillis() - t);
+          if (processor == null) {
+            if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+              UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+                      this.getClass().getName(), "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                      "UIMA_CPM_wait_no_processor__FINEST",
+                      new Object[] { Thread.currentThread().getName(), getName() });
+            }
+            casProcessorPool.wait(); // wait for something to be checked in
+          } else {
+            return processor;
           }
-          casProcessorPool.wait();
-        } else {
-          return processor;
-        }
         }
       } while (true);
     } catch (Exception e) {
