@@ -86,9 +86,9 @@ public class CasProcessorDeploymentParamsImpl extends MetaDataObject_impl implem
    * 
    * @see org.apache.uima.collection.metadata.CasProcessorDeploymentParams#remove(org.apache.uima.collection.metadata.CasProcessorDeploymentParam)
    */
-  public void remove(CasProcessorDeploymentParam aParamName) throws CpeDescriptorException {
+  public void remove(CasProcessorDeploymentParam aParam) throws CpeDescriptorException {
     for (int i = 0; params != null && i < params.size(); i++) {
-      if (aParamName.getParameterName().equals(((CasProcessorDeploymentParam) params.get(i)).getParameterName())) {
+      if (aParam == params.get(i)) {
         params.remove(i);
       }
     }
