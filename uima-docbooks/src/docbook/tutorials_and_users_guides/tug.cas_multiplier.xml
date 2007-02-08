@@ -588,12 +588,7 @@ while (casIterator.hasNext()) {
         occurred during processing. If an Exception is thrown, all processing of the input CAS will stop, and no more
         output CASes will be produced. There is currently no error recovery mechanism that will allow processing to
         continue after an exception.</para>
-        
-      <note>
-      <para>CAS Multiplier components may not work correctly when using the standard <literal>process</literal> API method. 
-      Some of the UIMA sample applications, as for example the CAS Visual Debugger cannot run these 
-      components correctly.</para></note>
-        
+                
     </section>
     <section id="ugr.tug.cm.using_cm_with_other_aes">
       <title>Using a CAS Multiplier with other Analysis Engines</title> 
