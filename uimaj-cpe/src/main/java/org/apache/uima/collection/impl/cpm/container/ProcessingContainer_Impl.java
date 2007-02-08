@@ -142,11 +142,14 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
 
   private HashMap statMap = new HashMap();
 
+  // access this only under monitor lock
+  //   monitor.notifyall called when switching from true -> false
   private boolean isPaused = false;
 
   private boolean singleFencedInstance = false;
 
-  private final Object monitor = new Object();
+  // This lock used only for isPaused field
+  private final Object lockForIsPaused = new Object();
 
   private String processorName = null;
 
@@ -1099,29 +1102,32 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
     // the CPM is trying to reconnect to the fenced un-managed service. Needed to make
     // sure that all threads using the same remote service pause until connection is
     // re-established. This loop will be terminated when the CPM calls resume().
-    while (isPaused()) {
-      try {
-        if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_container_paused__FINEST",
-                  new Object[] { Thread.currentThread().getName(), getName() });
-        }
-        synchronized (monitor) {
-          monitor.wait(CONTAINER_SLEEP_TIME);
-        }
-      } catch (InterruptedException e) {
-      }
+    synchronized (lockForIsPaused) {
+      while (isPaused) {
+        try {
+          if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_container_paused__FINEST",
+                    new Object[] { Thread.currentThread().getName(), getName() });
+          }
 
-      if (!isPaused) {
-        if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(
-                  Level.FINEST,
-                  this.getClass().getName(),
-                  "process",
-                  CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_resuming_container__FINEST",
-                  new Object[] { Thread.currentThread().getName(), getName(),
-                      String.valueOf(CONTAINER_SLEEP_TIME) });
+          lockForIsPaused.wait();
+
+        } catch (InterruptedException e) {
+        }
+
+        if (!isPaused) {
+          if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+            UIMAFramework.getLogger(this.getClass()).logrb(
+                    Level.FINEST,
+                    this.getClass().getName(),
+                    "process",
+                    CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                    "UIMA_CPM_resuming_container__FINEST",
+                    new Object[] { Thread.currentThread().getName(), getName(),
+                        String.valueOf(CONTAINER_SLEEP_TIME) });
+          }
         }
       }
     }
@@ -1509,23 +1515,27 @@ public class ProcessingContainer_Impl extends ProcessingContainer implements Run
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_pause_container__FINEST",
               new Object[] { Thread.currentThread().getName(), getName() });
     }
-    isPaused = true;
+    synchronized (lockForIsPaused) {
+      isPaused = true;
+    }
   }
 
   public void resume() {
-    synchronized (monitor) {
+    synchronized (lockForIsPaused) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
                 "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_resuming_container__FINEST",
                 new Object[] { Thread.currentThread().getName(), getName() });
       }
       isPaused = false;
-      monitor.notifyAll();
+      lockForIsPaused.notifyAll();
     }
   }
 
   public boolean isPaused() {
-    return this.isPaused;
+    synchronized (lockForIsPaused) {
+      return this.isPaused;
+    }
   }
 
   public ServiceProxyPool getPool() {
