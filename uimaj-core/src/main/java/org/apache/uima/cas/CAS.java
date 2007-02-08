@@ -465,7 +465,7 @@ public interface CAS extends AbstractCas {
   static final String DEFAULT_LANGUAGE_NAME = "x-unspecified";
 
   /**
-   * Create a FS on the temporary (document) heap.
+   * Create a new FeatureStructure.
    * 
    * @param type
    *          The type of the FS.
