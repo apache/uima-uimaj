@@ -60,7 +60,7 @@ public interface CasProcessorDeploymentParams {
    * {@link org.apache.uima.collection.metadata.CasProcessorDeploymentParam}
    * 
    * @param aParam -
-   *          name of a parameter to remove
+   *          parameter to remove
    * @throws CpeDescriptorException
    */
   public void remove(CasProcessorDeploymentParam aParam) throws CpeDescriptorException;
