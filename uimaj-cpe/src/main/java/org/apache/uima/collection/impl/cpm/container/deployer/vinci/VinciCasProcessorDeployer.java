@@ -132,8 +132,6 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
 
   private ArrayList currentServiceList = null;
 
-  private final Object locMonitor = new Object(); // must be unique object, used for synch
-
   /**
    * Instantiaes the class and gives it access to CPE configuration.
    * 
@@ -855,9 +853,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           }
           if (sleepBetweenRetries) {
             try {
-              synchronized (locMonitor) {
-                locMonitor.wait(maxTimeToWait);
-              }
+              Thread.sleep(maxTimeToWait);
             } catch (InterruptedException iex) {
             }
 
@@ -1153,63 +1149,64 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
     }
   }
 
-  /**
-   * Creates a proxy and connects it to Vinci service running on a given port. Once connected the
-   * proxy is associated with Cas Processor.
-   * 
-   * @param aCasProcessorConfig -
-   *          CasProcessor configuration
-   * @param port -
-   *          port wher vinci service is listening
-   * @return Connected proxy to service
-   * 
-   * @throws ResourceInitializationException
-   * @throws ResourceConfigurationException
-   */
-  private synchronized boolean activateProcessor(CasProcessorConfiguration aCasProcessorConfig,
-          String aHost, int aPort) throws ResourceInitializationException,
-          ResourceConfigurationException {
-    // Instantiate proxy from given configuration
-    VinciTAP tap = getTextAnalysisProxy(aCasProcessorConfig);
-    if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-              "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-              "UIMA_CPM_activating_service_on_port__FINEST",
-              new Object[] { Thread.currentThread().getName(), String.valueOf(aPort) });
-    }
-    boolean tryAgain = true;
-    int maxCount = aCasProcessorConfig.getMaxRestartCount();
-    while (tryAgain) {
-      try {
-        // Connect proxy to service running on given port on the same machine as the CPM
-        tap.connect(aHost, aPort);
-        // Connection established no need to retry
-        tryAgain = false;
-      } catch (Exception e) {
-        if (maxCount-- == 0) {
-          e.printStackTrace();
-          if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
-            UIMAFramework.getLogger(this.getClass()).log(Level.SEVERE,
-                    Thread.currentThread().getName() + "", e);
-          }
-          throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                  "UIMA_CPM_no_service_connection__SEVERE", new Object[] {
-                      Thread.currentThread().getName(), String.valueOf(aPort), aHost,
-                      aCasProcessorConfig.getName() });
-        }
-        try {
-          synchronized (monitor) {
-            monitor.wait(SLEEP_TIME);
-          }
-        } catch (InterruptedException ex) {
-        }
-      }
-    }
-    // At this point there is a connected proxy (tap), now we need to add it to container that will
-    // menage it.
-    bindProxyToNetworkCasProcessor(tap);
-    return true;
-  }
+  // Never called
+//  /**
+//   * Creates a proxy and connects it to Vinci service running on a given port. Once connected the
+//   * proxy is associated with Cas Processor.
+//   * 
+//   * @param aCasProcessorConfig -
+//   *          CasProcessor configuration
+//   * @param port -
+//   *          port wher vinci service is listening
+//   * @return Connected proxy to service
+//   * 
+//   * @throws ResourceInitializationException
+//   * @throws ResourceConfigurationException
+//   */
+//  private synchronized boolean activateProcessor(CasProcessorConfiguration aCasProcessorConfig,
+//          String aHost, int aPort) throws ResourceInitializationException,
+//          ResourceConfigurationException {
+//    // Instantiate proxy from given configuration
+//    VinciTAP tap = getTextAnalysisProxy(aCasProcessorConfig);
+//    if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//      UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
+//              "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//              "UIMA_CPM_activating_service_on_port__FINEST",
+//              new Object[] { Thread.currentThread().getName(), String.valueOf(aPort) });
+//    }
+//    boolean tryAgain = true;
+//    int maxCount = aCasProcessorConfig.getMaxRestartCount();
+//    while (tryAgain) {
+//      try {
+//        // Connect proxy to service running on given port on the same machine as the CPM
+//        tap.connect(aHost, aPort);
+//        // Connection established no need to retry
+//        tryAgain = false;
+//      } catch (Exception e) {
+//        if (maxCount-- == 0) {
+//          e.printStackTrace();
+//          if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
+//            UIMAFramework.getLogger(this.getClass()).log(Level.SEVERE,
+//                    Thread.currentThread().getName() + "", e);
+//          }
+//          throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//                  "UIMA_CPM_no_service_connection__SEVERE", new Object[] {
+//                      Thread.currentThread().getName(), String.valueOf(aPort), aHost,
+//                      aCasProcessorConfig.getName() });
+//        }
+//        try {
+//          synchronized (monitor) {
+//            monitor.wait(SLEEP_TIME);
+//          }
+//        } catch (InterruptedException ex) {
+//        }
+//      }
+//    }
+//    // At this point there is a connected proxy (tap), now we need to add it to container that will
+//    // menage it.
+//    bindProxyToNetworkCasProcessor(tap);
+//    return true;
+//  }
 
   /**
    * Creates a proxy and connects it to Vinci service running on a given port. Once connected the
@@ -1340,124 +1337,125 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
     return true;
   }
 
-  /**
-   * Associates connected proxy with an instance of CasProcessor.
-   * 
-   * @param aTap -
-   *          connected proxy
-   */
-  private void bindProxyToNetworkCasProcessor(VinciTAP aTap) {
-    if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-      UIMAFramework.getLogger(this.getClass())
-              .logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "initialize",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_get_cp_from_pool__FINEST",
-                      new Object[] { Thread.currentThread().getName(), aTap.getServiceHost(),
-                          String.valueOf(aTap.getServicePort()),
-                          String.valueOf(casProcessorPool.getSize()) });
-    }
-    synchronized (casProcessorPool) {
-      if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                Level.FINEST,
-                this.getClass().getName(),
-                "initialize",
-                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                "UIMA_CPM_get_cp_from_pool__FINEST",
-                new Object[] { Thread.currentThread().getName(), aTap.getServiceHost(),
-                    String.valueOf(aTap.getServicePort()),
-                    String.valueOf(casProcessorPool.getSize()) });
-      }
-      CasProcessor processor = null;
-      // There are as many Cas Processors as there are Procesing Threads. All of them have been
-      // already created and exist
-      // in the cas processor pool. Cas Processor may or may not already have an associated proxy.
-      // So here we cycle through all Cas Processors until we find one that has not yet have a proxy
-      // and
-      // add it.
-      for (int i = 0; i < casProcessorPool.getSize(); i++) {
-        try {
-          // Check out the next Cas Processor from the pool
-          processor = casProcessorPool.checkOut();
-          if (processor == null) {
-            if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
-              UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.SEVERE,
-                      this.getClass().getName(),
-                      "initialize",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_get_cp_from_pool_error__SEVERE",
-                      new Object[] { Thread.currentThread().getName(), aTap.getServiceHost(),
-                          String.valueOf(aTap.getServicePort()),
-                          String.valueOf(casProcessorPool.getSize()) });
-            }
-            continue;
-          }
-          // Add proxy only to instances of NetworkCasProcessorImpl
-          if (processor instanceof NetworkCasProcessorImpl) {
-            NetworkCasProcessorImpl netProcessor = (NetworkCasProcessorImpl) processor;
-            // Check if this Cas Processor has already been assigned a proxy. If so,
-            // get the next Cas Processor
-            if (netProcessor.getProxy() != null && netProcessor.getProxy().isConnected()) {
-              if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-                UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
-                        this.getClass().getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                        "UIMA_CPM_already_allocated__FINEST",
-                        new Object[] { Thread.currentThread().getName(), String.valueOf(i) });
-              }
-              continue;
-            }
-            if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-              UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "initialize",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_assign_cp_to_service__FINEST",
-                      new Object[] { Thread.currentThread().getName(), String.valueOf(i),
-                          aTap.getServiceHost(), String.valueOf(aTap.getServicePort()) });
-            }
-            // Associate the proxy with this Cas Processor
-            ((NetworkCasProcessorImpl) processor).setProxy(aTap);
-            synchronized (monitor) {
-
-              monitor.notifyAll();
-            }
-          }
-          break;
-        } catch (Exception e) {
-          e.printStackTrace();
-        } finally {
-          if (processor != null) {
-            if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-              UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "initialize",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_checkin_cp_to_pool__FINEST",
-                      new Object[] { Thread.currentThread().getName(), String.valueOf(i),
-                          aTap.getServiceHost(), String.valueOf(aTap.getServicePort()) });
-            }
-            casProcessorPool.checkIn(processor);
-            if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-              UIMAFramework.getLogger(this.getClass()).logrb(
-                      Level.FINEST,
-                      this.getClass().getName(),
-                      "initialize",
-                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-                      "UIMA_CPM_checked_in_cp_to_pool__FINEST",
-                      new Object[] { Thread.currentThread().getName(), String.valueOf(i),
-                          aTap.getServiceHost(), String.valueOf(aTap.getServicePort()) });
-            }
-          }
-        }
-      }
-    }
-  }
+  // Never called
+//  /**
+//   * Associates connected proxy with an instance of CasProcessor.
+//   * 
+//   * @param aTap -
+//   *          connected proxy
+//   */
+//  private void bindProxyToNetworkCasProcessor(VinciTAP aTap) {
+//    if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//      UIMAFramework.getLogger(this.getClass())
+//              .logrb(
+//                      Level.FINEST,
+//                      this.getClass().getName(),
+//                      "initialize",
+//                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//                      "UIMA_CPM_get_cp_from_pool__FINEST",
+//                      new Object[] { Thread.currentThread().getName(), aTap.getServiceHost(),
+//                          String.valueOf(aTap.getServicePort()),
+//                          String.valueOf(casProcessorPool.getSize()) });
+//    }
+//    synchronized (casProcessorPool) {
+//      if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//        UIMAFramework.getLogger(this.getClass()).logrb(
+//                Level.FINEST,
+//                this.getClass().getName(),
+//                "initialize",
+//                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//                "UIMA_CPM_get_cp_from_pool__FINEST",
+//                new Object[] { Thread.currentThread().getName(), aTap.getServiceHost(),
+//                    String.valueOf(aTap.getServicePort()),
+//                    String.valueOf(casProcessorPool.getSize()) });
+//      }
+//      CasProcessor processor = null;
+//      // There are as many Cas Processors as there are Procesing Threads. All of them have been
+//      // already created and exist
+//      // in the cas processor pool. Cas Processor may or may not already have an associated proxy.
+//      // So here we cycle through all Cas Processors until we find one that has not yet have a proxy
+//      // and
+//      // add it.
+//      for (int i = 0; i < casProcessorPool.getSize(); i++) {
+//        try {
+//          // Check out the next Cas Processor from the pool
+//          processor = casProcessorPool.checkOut();
+//          if (processor == null) {
+//            if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
+//              UIMAFramework.getLogger(this.getClass()).logrb(
+//                      Level.SEVERE,
+//                      this.getClass().getName(),
+//                      "initialize",
+//                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//                      "UIMA_CPM_get_cp_from_pool_error__SEVERE",
+//                      new Object[] { Thread.currentThread().getName(), aTap.getServiceHost(),
+//                          String.valueOf(aTap.getServicePort()),
+//                          String.valueOf(casProcessorPool.getSize()) });
+//            }
+//            continue;
+//          }
+//          // Add proxy only to instances of NetworkCasProcessorImpl
+//          if (processor instanceof NetworkCasProcessorImpl) {
+//            NetworkCasProcessorImpl netProcessor = (NetworkCasProcessorImpl) processor;
+//            // Check if this Cas Processor has already been assigned a proxy. If so,
+//            // get the next Cas Processor
+//            if (netProcessor.getProxy() != null && netProcessor.getProxy().isConnected()) {
+//              if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//                UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
+//                        this.getClass().getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//                        "UIMA_CPM_already_allocated__FINEST",
+//                        new Object[] { Thread.currentThread().getName(), String.valueOf(i) });
+//              }
+//              continue;
+//            }
+//            if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//              UIMAFramework.getLogger(this.getClass()).logrb(
+//                      Level.FINEST,
+//                      this.getClass().getName(),
+//                      "initialize",
+//                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//                      "UIMA_CPM_assign_cp_to_service__FINEST",
+//                      new Object[] { Thread.currentThread().getName(), String.valueOf(i),
+//                          aTap.getServiceHost(), String.valueOf(aTap.getServicePort()) });
+//            }
+//            // Associate the proxy with this Cas Processor
+//            ((NetworkCasProcessorImpl) processor).setProxy(aTap);
+//            synchronized (monitor) {
+//
+//              monitor.notifyAll();
+//            }
+//          }
+//          break;
+//        } catch (Exception e) {
+//          e.printStackTrace();
+//        } finally {
+//          if (processor != null) {
+//            if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//              UIMAFramework.getLogger(this.getClass()).logrb(
+//                      Level.FINEST,
+//                      this.getClass().getName(),
+//                      "initialize",
+//                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//                      "UIMA_CPM_checkin_cp_to_pool__FINEST",
+//                      new Object[] { Thread.currentThread().getName(), String.valueOf(i),
+//                          aTap.getServiceHost(), String.valueOf(aTap.getServicePort()) });
+//            }
+//            casProcessorPool.checkIn(processor);
+//            if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+//              UIMAFramework.getLogger(this.getClass()).logrb(
+//                      Level.FINEST,
+//                      this.getClass().getName(),
+//                      "initialize",
+//                      CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+//                      "UIMA_CPM_checked_in_cp_to_pool__FINEST",
+//                      new Object[] { Thread.currentThread().getName(), String.valueOf(i),
+//                          aTap.getServiceHost(), String.valueOf(aTap.getServicePort()) });
+//            }
+//          }
+//        }
+//      }
+//    }
+//  }
 
   /**
    * Associates connected proxy with an instance of CasProcessor.
@@ -1860,14 +1858,13 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
       }
       waitCount = MAX_WAIT_TRIES; // restore default
     }
-    Object localMonitor = new Object();
     if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
               "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_got_port_from_queue__INFO",
               new Object[] { Thread.currentThread().getName(), "" });
     }
     while (portQueue.getCurrentSize() == 0) {
-      synchronized (localMonitor) {
+      
         try {
           if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
             UIMAFramework.getLogger(this.getClass()).logrb(Level.INFO, this.getClass().getName(),
@@ -1875,7 +1872,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
                     "UIMA_CPM_service_port_not_allocated__INFO",
                     new Object[] { Thread.currentThread().getName(), String.valueOf(waitCount) });
           }
-          localMonitor.wait(WAIT_TIME);
+          Thread.sleep(WAIT_TIME);
         } catch (InterruptedException e) {
         }
         if (waitCount-- <= 0) {
@@ -1886,7 +1883,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
                       String.valueOf(waitCount * WAIT_TIME + " millis") }));
 
         }
-      }
+      
     }
     Object portObject = portQueue.dequeue();
     if (UIMAFramework.getLogger().isLoggable(Level.INFO)) {
