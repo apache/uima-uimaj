@@ -113,17 +113,23 @@ public class CPMEngine extends Thread {
   // CollectionReader to be used by this CPM
   private BaseCollectionReader collectionReader = null;
 
-  // Flag indicating if the CPM shoudl pause
+  // Flag indicating if the CPM should pause
+  // Accesses to this flag (read and write) must
+  //   be done while holding the "monitor" lock
+  //   via synch
   protected boolean pause = false;
 
   // Flag indicating if this CPM is running or not
-  protected boolean isRunning = false;
+  // Marked volatile because it is set and read on different threads without synchronization 
+  protected volatile boolean isRunning = false;
 
-  // Flaf indicating if this CPM has been stopped
-  protected boolean stopped = false;
+  // Flag indicating if this CPM has been stopped
+  // Marked volatile because it is set and read on different threads without synchronization
+  protected volatile boolean stopped = false;
 
   // Flag indicating if this CPM has been killed
-  protected boolean killed = false;
+  // Marked volatile because it is set and read on different threads without synchronization
+  protected volatile boolean killed = false;
 
   // Flag indicating if this CPM should be paused on exception
   private boolean pauseOnException = false;
@@ -611,8 +617,8 @@ public class CPMEngine extends Thread {
           // Change global status
           isRunning = false;
           // terminate this thread if the thread has been previously suspended
-          if (isPaused()) {
-            synchronized (monitor) {
+          synchronized (monitor) {
+            if (isPaused()) {
               pause = false;
               monitor.notifyAll();
             }
@@ -724,8 +730,8 @@ public class CPMEngine extends Thread {
       // Change global status
       isRunning = false;
       // terminate this thread if the thread has been previously suspended
-      if (isPaused()) {
-        synchronized (monitor) {
+      synchronized (monitor) {
+        if (isPaused()) {
           pause = false;
           monitor.notifyAll();
         }
@@ -1533,7 +1539,9 @@ public class CPMEngine extends Thread {
    * Returns a global flag indicating if this Thread is in pause state
    */
   public boolean isPaused() {
-    return (pause == true);
+    synchronized (monitor) {
+      return (pause == true);
+    }
   }
 
   /**
@@ -3288,7 +3296,7 @@ public class CPMEngine extends Thread {
         if (endOfProcessingReached(entityCount)) {
           break;
         }
-        isPaused(); // blocks if CPM is paused
+        waitForCpmToResumeIfPaused(); // blocks if CPM is paused
         // check again the state of the cpm after pause
         if (!isRunning)
           break;
@@ -3469,4 +3477,30 @@ public class CPMEngine extends Thread {
     this.nonThreadedProcessingUnit.cleanup();
     this.nonThreadedCasConsumerProcessingUnit.cleanup();
   }
+  
+  private void waitForCpmToResumeIfPaused() {
+    synchronized (monitor) {
+      // Pause this thread if CPM has been paused
+      if (isPaused()) {
+//        threadState = 2016;  thread state is not kept here, only in the ProcessingUnit
+        if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_pausing_pp__FINEST",
+                  new Object[] { Thread.currentThread().getName() });
+        }
+
+        try {
+          // Wait until resumed
+          monitor.wait();
+        } catch (Exception e) {
+        }
+        if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_resuming_pp__FINEST",
+                  new Object[] { Thread.currentThread().getName() });
+        }
+      }
+    }
+  }
+
 }
