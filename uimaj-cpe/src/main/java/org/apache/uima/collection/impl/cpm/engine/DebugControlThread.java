@@ -35,13 +35,14 @@ public class DebugControlThread implements Runnable {
 
   private String fileName = null;
 
-  private boolean stop = false;
+  private volatile boolean stop = false;
 
   private int checkpointFrequency = 3000;
 
+  // This variable guarded by lockForPause
   private boolean pause = false;
 
-  private final Object monitor = new Object();
+  private final Object lockForPause = new Object();
 
   // private boolean isRunning = false;
   private CPMEngine cpm = null;
@@ -89,11 +90,11 @@ public class DebugControlThread implements Runnable {
   public void run() {
     // isRunning = true;
     while (!stop && cpm.isRunning()) {
-      if (pause) {
-        synchronized (monitor) {
+      synchronized (lockForPause) {
+        if (pause) {
           try {
-            monitor.wait();
-          } catch (Exception e) {
+            lockForPause.wait();
+          } catch (InterruptedException e) {
           }
         }
       }
@@ -188,10 +189,10 @@ public class DebugControlThread implements Runnable {
   }
 
   public void resume() {
-    synchronized (monitor) {
+    synchronized (lockForPause) {
       if (pause) {
         try {
-          monitor.notify();
+          lockForPause.notify();
         } catch (Exception e) {
         }
         pause = false;
