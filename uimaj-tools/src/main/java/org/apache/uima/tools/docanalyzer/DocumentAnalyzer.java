@@ -233,7 +233,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
     // Set frame icon image
     try {
-      this.setIconImage(Images.getImage(Images.UIMA_LOGO_SMALL));
+      this.setIconImage(Images.getImage(Images.MICROSCOPE));
       // new
       // ImageIcon(getClass().getResource(FRAME_ICON_IMAGE)).getImage());
     } catch (IOException e) {

@@ -31,6 +31,8 @@ import javax.swing.ImageIcon;
 public class Images {
   public static final String BANNER = "/org/apache/uima/tools/images/UIMA_banner.png";
 
+  public static final String MICROSCOPE = "/org/apache/uima/tools/images/Micro_16.gif";
+
   public static final String UIMA_LOGO_SMALL = "/org/apache/uima/tools/images/UIMA_logo_50.png";
 
   public static final String UIMA_LOGO_BIG = "/org/apache/uima/tools/images/UIMA_logo_big.png";
