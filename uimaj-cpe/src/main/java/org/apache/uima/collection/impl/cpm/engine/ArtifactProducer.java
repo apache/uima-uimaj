@@ -661,8 +661,8 @@ public class ArtifactProducer extends Thread {
 
       casList = null;
       casObjectList = null;
-      if (cpm.isPaused()) {
-        synchronized (cpm.monitor) {
+      synchronized (cpm.monitor) {
+        if (cpm.isPaused()) {
           try {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
@@ -674,16 +674,17 @@ public class ArtifactProducer extends Thread {
             cpm.monitor.wait();
           } catch (Exception e) {
           }
-        }
-        if (!cpm.isRunning()) {
-          break;
-        }
-        if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_resume_cr__FINEST",
-                  new Object[] { Thread.currentThread().getName() });
+          if (!cpm.isRunning()) {
+            break;
+          }
+          if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_resume_cr__FINEST",
+                    new Object[] { Thread.currentThread().getName() });
+          }
         }
       }
+
       try {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
