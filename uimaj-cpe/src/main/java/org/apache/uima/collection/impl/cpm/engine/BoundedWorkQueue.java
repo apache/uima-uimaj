@@ -30,12 +30,15 @@ import org.apache.uima.util.Level;
  * Implementation of a Bounded Queue, a queue with a fixed number of slots. Used primarily to feed
  * data to Processing Units, it is filled by a producer like ArtifactProducer and consumed by
  * ProcessingUnit(s). When the queue is full it will block a request for enqueue until a slot frees
- * up.
+ * up.  
+ * 
+ * <p>There are 2 dequeue calls.  One returns null if the queue is empty, the other can be given a 
+ * timeout - and it will wait up to that time waiting for something to get enqueued.
  * 
  * 
  */
 public class BoundedWorkQueue {
-  protected int queueSize = 0;
+  protected final int queueMaxSize;
 
   protected LinkedList queue = new LinkedList();
 
@@ -58,7 +61,7 @@ public class BoundedWorkQueue {
    *          CPE Engine reference
    */
   public BoundedWorkQueue(int aQueueSize, String aQueueName, CPMEngine aCpmEngine) {
-    queueSize = aQueueSize;
+    queueMaxSize = aQueueSize;
     queueName = aQueueName;
     cpm = aCpmEngine;
   }
@@ -96,7 +99,7 @@ public class BoundedWorkQueue {
    * @return - queue max size
    */
   public int getCapacity() {
-    return queueSize;
+    return queueMaxSize;
   }
 
   /**
@@ -123,7 +126,7 @@ public class BoundedWorkQueue {
       // terminating the CPE
       if (!(anObject instanceof Object[] && ((Object[]) anObject)[0] instanceof EOFToken)) {
         // Block if the queue is full AND the CPE is running
-        while (numberElementsInQueue == queueSize && (cpm == null || cpm.isRunning())) {
+        while (numberElementsInQueue == queueMaxSize && (cpm == null || cpm.isRunning())) {
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
                     Level.FINEST,
@@ -164,6 +167,7 @@ public class BoundedWorkQueue {
               new Object[] { Thread.currentThread().getName(), queueName,
                   String.valueOf(numberElementsInQueue) });
     }
+    notifyAll();  
   }
 
   /**
@@ -218,6 +222,7 @@ public class BoundedWorkQueue {
               new Object[] { Thread.currentThread().getName(), queueName,
                   String.valueOf(numberElementsInQueue) });
     }
+ 
     return returnedObject;
   }
 
@@ -231,8 +236,8 @@ public class BoundedWorkQueue {
    * @return - Object from the queue, or null if time out
    */
   public synchronized Object dequeue(long aTimeout) {
-    Object resource = null;
-    if ((resource = dequeue()) == null && cpm.isRunning()) {
+    Object resource = dequeue();
+    if (resource == null && cpm.isRunning()) {
       try {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
           UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
