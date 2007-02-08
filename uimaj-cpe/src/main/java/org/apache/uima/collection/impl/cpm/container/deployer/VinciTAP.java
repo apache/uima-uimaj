@@ -110,8 +110,6 @@ public class VinciTAP {
           org.apache.uima.collection.impl.cpm.Constants.CONTENT_TAG,
           org.apache.uima.collection.impl.cpm.Constants.CONTENT_TAG_VALUE, contentTag, true);
 
-  private final Object monitor = new Object();
-
   public VinciTAP() {
   }
 
@@ -202,9 +200,7 @@ public class VinciTAP {
                     new Object[] { Thread.currentThread().getName() });
           }
           try {
-            synchronized (monitor) {
-              monitor.wait(100);
-            }
+            Thread.sleep(100);
           } catch (InterruptedException ex) {
           }
 
@@ -257,9 +253,7 @@ public class VinciTAP {
                                 String.valueOf(aPort) });
           }
           try {
-            synchronized (monitor) {
-              monitor.wait(100);
-            }
+            Thread.sleep(100);
           } catch (Exception ex) {
           }
         } else {
@@ -1328,14 +1322,13 @@ public class VinciTAP {
    */
   private void waitForServiceShutdown() {
     int retry = 10; // Hard-coded limit.
-    Object monitor = new Object();
     // Try until the endpoint is closed by the service OR hard limit of tries
     // has beed exceeded.
     do {
       try {
         // establish ownership of query object, otherwise IllegalMonitorStateException is
         // thrown. Than give the service time to cleanly exit.
-        synchronized (monitor) {
+        
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
                     Level.FINEST,
@@ -1346,12 +1339,12 @@ public class VinciTAP {
                     new Object[] { Thread.currentThread().getName(), String.valueOf(10 - retry),
                         String.valueOf(10) });
           }
-          monitor.wait(100); // wait for 50ms to give the service time to exit cleanly
+          Thread.sleep(100); // wait for 100ms to give the service time to exit cleanly
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).log(Level.FINEST,
                     " Resuming CPE shutdown.Service should be down now.");
           }
-        }
+        
       } catch (InterruptedException e) {
       }
       if (retry-- <= 0) {
