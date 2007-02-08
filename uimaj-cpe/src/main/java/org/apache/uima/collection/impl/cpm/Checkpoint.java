@@ -42,15 +42,17 @@ import org.apache.uima.util.ProcessTraceEvent;
 public class Checkpoint implements Runnable {
   private String fileName = null;
 
-  private boolean stop = false;
+  private volatile boolean stop = false;  // volatile may be buggy in some JVMs apparently
+                                          // consider changing to use synch
 
   private long checkpointFrequency = 3000;
 
+  /**
+   * @GuardedBy(lockForPause)
+   */
   private boolean pause = false;
 
-  private final Object monitor = new Object();
-
-  private final Object sleepMonitor = new Object();
+  private final Object lockForPause = new Object();
 
   // private boolean isRunning = false;
   private BaseCPMImpl cpm = null;
@@ -106,11 +108,11 @@ public class Checkpoint implements Runnable {
 
     // isRunning = true;
     while (!stop) {
-      if (pause) {
-        synchronized (monitor) {
+      synchronized (lockForPause) {
+        if (pause) {
           try {
-            monitor.wait();
-          } catch (Exception e) {
+            lockForPause.wait();
+          } catch (InterruptedException e) {
           }
         }
       }
@@ -121,24 +123,21 @@ public class Checkpoint implements Runnable {
       }
       doCheckpoint();
 
-      synchronized (sleepMonitor) {
-        try {
-          if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_sleep__FINEST",
-                    new Object[] { Thread.currentThread().getName() });
-          }
-          sleepMonitor.wait(checkpointFrequency);
-          if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-            UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_wakeup__FINEST",
-                    new Object[] { Thread.currentThread().getName() });
-          }
-        } catch (Exception e) {
+      try {
+        if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_sleep__FINEST",
+                  new Object[] { Thread.currentThread().getName() });
         }
+        Thread.sleep(checkpointFrequency);
+        if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_wakeup__FINEST",
+                  new Object[] { Thread.currentThread().getName() });
+        }
+      } catch (Exception e) {
       }
     }
-
   }
 
   /**
@@ -160,7 +159,9 @@ public class Checkpoint implements Runnable {
    * 
    */
   public void pause() {
-    pause = true;
+    synchronized (lockForPause) {
+      pause = true;
+    }
   }
 
   /**
@@ -168,16 +169,12 @@ public class Checkpoint implements Runnable {
    * 
    */
   public void resume() {
-    synchronized (monitor) {
+    synchronized (lockForPause) {
       if (pause) {
-        try {
-          monitor.notifyAll();
-        } catch (Exception e) {
-        }
+        lockForPause.notifyAll();
         pause = false;
       }
     }
-
   }
 
   /**
