@@ -19,17 +19,12 @@
 
 package org.apache.uima.collection.impl.cpm.container;
 
-import java.net.ConnectException;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.Map;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.base_cpm.CasProcessor;
-import org.apache.uima.collection.impl.cpm.container.deployer.VinciTAP;
-import org.apache.uima.collection.impl.cpm.engine.BoundedWorkQueue;
 import org.apache.uima.collection.impl.cpm.utils.CPMUtils;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 
 /**
@@ -43,7 +38,7 @@ public class ServiceProxyPool {
 
   private LinkedList mFreeInstances = new LinkedList();
 
-  private int mNumInstances;
+//  private int mNumInstances;
 
   /**
    * Checks out a Resource from the pool.
@@ -181,15 +176,15 @@ public class ServiceProxyPool {
   }
 
   /**
-   * Gets the size of this pool (the total number of instances that it can hold).
+   * Gets the available size of this pool (the number of free, available instances at this moment).
    * 
-   * @return the size of this pool
+   * @return the available size of this pool
    */
-  public int getSize() {
+  public synchronized int getSize() {  // synch for JVM memory model to get current value
     return mFreeInstances.size();
   }
 
-  public void addCasProcessor(CasProcessor aCasProcessor) {
+  public synchronized void addCasProcessor(CasProcessor aCasProcessor) {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(this.getClass()).logrb(
               Level.FINEST,
@@ -214,71 +209,72 @@ public class ServiceProxyPool {
     }
   }
 
-  /**
-   * Utility method used in the constructor to fill the pool with Resource instances.
-   * 
-   * @param aResourceSpecifier
-   *          specifier that describes how to create the Resource instances for the pool
-   * @param aResourceClass
-   *          class of resource to instantiate
-   * @param aResourceInitParams
-   *          initialization parameters to be passed to the
-   *          {@link Resource#initialize(ResourceSpecifier,Map)} method.
-   * 
-   * 
-   * @throws ResourceInitializationException
-   *           if the Resource instances could not be created
-   */
-  protected void fillPool(BoundedWorkQueue portQueue, Map initParams)
-          throws ResourceInitializationException {
-    boolean isServiceLocal = false;
-    if (initParams != null && initParams.containsKey("SERVICE_NAME")) {
-      isServiceLocal = true;
-    }
-    // fill the pool
-    for (int i = 0; i < mNumInstances; i++) {
-      VinciTAP tap = new VinciTAP();
-      if (isServiceLocal) {
-        String portAsString = (String) portQueue.dequeue();
-        int port = -1;
-        try {
-          port = Integer.parseInt(portAsString);
-        } catch (NumberFormatException e) {
-        }
-        String vnsHost = (String) initParams.get("VNS_HOST");
-        String vnsPort = (String) initParams.get("VNS_PORT");
-        tap.setVNSHost(vnsHost);
-        tap.setVNSPort(vnsPort);
-        try {
-          tap.connect("127.0.0.1", port);
-        } catch (ConnectException e) {
-          throw new ResourceInitializationException(e.getMessage(), null);
-        }
-      }
-      mAllInstances.add(tap);
-      mFreeInstances.add(tap);
-    }
-  }
+//  /**
+//   * Utility method used in the constructor to fill the pool with Resource instances.
+//   * 
+//   * @param aResourceSpecifier
+//   *          specifier that describes how to create the Resource instances for the pool
+//   * @param aResourceClass
+//   *          class of resource to instantiate
+//   * @param aResourceInitParams
+//   *          initialization parameters to be passed to the
+//   *          {@link Resource#initialize(ResourceSpecifier,Map)} method.
+//   * 
+//   * 
+//   * @throws ResourceInitializationException
+//   *           if the Resource instances could not be created
+//   */
+//  protected void fillPool(BoundedWorkQueue portQueue, Map initParams)
+//          throws ResourceInitializationException {
+//    boolean isServiceLocal = false;
+//    if (initParams != null && initParams.containsKey("SERVICE_NAME")) {
+//      isServiceLocal = true;
+//    }
+//    // fill the pool
+//    for (int i = 0; i < mNumInstances; i++) {
+//      VinciTAP tap = new VinciTAP();
+//      if (isServiceLocal) {
+//        String portAsString = (String) portQueue.dequeue();
+//        int port = -1;
+//        try {
+//          port = Integer.parseInt(portAsString);
+//        } catch (NumberFormatException e) {
+//        }
+//        String vnsHost = (String) initParams.get("VNS_HOST");
+//        String vnsPort = (String) initParams.get("VNS_PORT");
+//        tap.setVNSHost(vnsHost);
+//        tap.setVNSPort(vnsPort);
+//        try {
+//          tap.connect("127.0.0.1", port);
+//        } catch (ConnectException e) {
+//          throw new ResourceInitializationException(e.getMessage(), null);
+//        }
+//      }
+//      mAllInstances.add(tap);
+//      mFreeInstances.add(tap);
+//    }
+//  }
 
-  /**
-   * Returns all instances in the pool
-   * 
-   * @return - list of CasProcessor instances
-   */
-  protected LinkedList getAllInstances() {
-    return mAllInstances;
-  }
+  // never used
+//  /**
+//   * Returns all instances in the pool
+//   * 
+//   * @return - list of CasProcessor instances
+//   */
+//  protected synchronized LinkedList getAllInstances() {
+//    return mAllInstances;
+//  }
+//
+//  /**
+//   * Returns a list of CasProcessor instances not currently in use
+//   * 
+//   * @return -list of free proxies
+//   */
+//  protected synchronized LinkedList getFreeInstances() {
+//    return mFreeInstances;
+//  }
 
-  /**
-   * Returns a list of CasProcessor instances not currently in use
-   * 
-   * @return -list of free proxies
-   */
-  protected LinkedList getFreeInstances() {
-    return mFreeInstances;
-  }
-
-  public int getAllInstanceCount() {
+  public synchronized int getAllInstanceCount() {
     return mAllInstances.size();
   }
 }
