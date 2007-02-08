@@ -79,7 +79,7 @@ under the License.
         you can manipulate in the CAS. Features optionally specify slots or fields within a
         type. The correspondence to Java is to equate a CAS Type to a Java Class, and the CAS
         Features to fields within the type. A critical difference is that CAS types have no
-        methods; they are just data structures with named slots (features). These slots can
+        methods; they are just data structures with named slots (features). These features can
         have as values primitive things like integers, floating point numbers, and strings,
         and they also can hold references to other instances of objects in the CAS. We call
         instances of the data structures declared by the type system <quote>feature
@@ -121,29 +121,31 @@ under the License.
         called <literal>begin</literal> and <literal>end</literal>, both of which are
         integer valued.</para>
       
-      <para>Types and features are defined in XML descriptors. At runtime, annotators are
-        passed an instance of a CAS, or JCas, depending on the kind of annotator it is, and other
-        factors. See <olink targetdoc="&uima_docs_tutorial_guides;"
-          targetptr="ugr.tug.mvs.multi_view_components"/> for more details. You can
-        use this object to access all of the data and metadata about the defined type system in
-        use. Also, for CASes other than a base CAS which is passed to Multi-View components,
-        you can also access the CAS indexes and metadata about the CAS indexes.</para>
-      
     </section>
     
     <section id="ugr.ref.cas.creating_accessing_manipulating_data">
       <title>Creating, accessing and manipulating data</title>
       <titleabbrev>Creating/Accessing/Changing data</titleabbrev>
       
-      <para>Using the non JCas runtime APIs to access the CAS is a two step process. In step one
-        you query the CAS&apos;s type system to obtain type and feature objects
-        corresponding to the types and features. This has to be done once for each CAS type
-        system. For CAS-style annotator instances, the UIMA framework helps by calling the
-        typeSystemInit() method at the beginning, and also if the type system changes
-        (currently this only happens for annotators deployed as services). Your code then
-        uses these retrieved type and feature objects in calls to the CAS APIs to create
-        feature structures, set and get feature values from particular feature structures,
-        and add and removed feature structures from indexes.</para>
+      <para>
+        Creating and accessing data in the CAS requires knowledge about the types and features 
+        defined in the type system.  The idea is similar to other data access APIs, such as the XML
+        DOM or SAX APIs, or database access APIs such as JDBC.  Contrary to those APIs, however, the
+        CAS does not use the names of type system entities directly in the APIs.  Rather, you use
+        the type system to access type and feature entities by name, then use these entities in the
+        data manipulation APIs.  This can be compared to the Java reflection APIs: the type system
+        is comparable to the Java class loader, and the type and feature objects to the
+        <literal>java.lang.Class</literal> and <literal>java.lang.reflect.Field</literal> classes.
+      </para>
+      
+      <para>
+        Why does it have to be this complicated?  You wouldn&apos;t normally use reflection to create a
+        Java object, either.  As mentioned earlier, the JCas provides the more straightforward
+        method to manipulate CAS data.  The CAS access methods described here need only be used for
+        generic types of applications that need to be able to handle any kind of data (e.g., generic
+        tooling) or when the JCas may not be used for other reasons.  The generic kinds of applications
+        are exactly the ones where you would use the reflection API in Java as well.
+      </para>
       
     </section>
     
@@ -151,7 +153,7 @@ under the License.
       <title>Creating and using indexes</title>
       
       <para>Each view of a CAS provides a set of indexes for that view. Instances of feature
-        structures can be added to a selected view&apos;s CAS indexes. These indexes provide
+        structures can be added to a view&apos;s indexes. These indexes provide
         the only way for other annotators to locate existing data in the CAS. The only way for an
         annotator to use data that another annotator has created is by using an index (or the
         method <literal>getAllIndexedFS</literal> of the object <literal>FSIndexRepository</literal>) to
@@ -179,10 +181,16 @@ under the License.
         may be indexed in more
         than one CAS View.</para>
       
-      <para>Iterators allow you to enumerate the feature structures in an index. The
-        iterators are a subclass of the normal Java Iterator class; they add methods to allow
-        both forward and backward traversal, and you can set the iterator to arbitrary points
-        in the index.</para>
+      <para>Iterators allow you to enumerate the feature structures in an index.  FS iterators
+        provide two kinds of APIs: the regular Java iterator API, and a specific FS iterator API
+        where the usual Java iterator APIs (<literal>hasNext()</literal> and <literal>next()</literal>)
+        are replaced by <literal>isValid()</literal>, <literal>moveToNext()</literal> (which does
+        not return an element) and <literal>get()</literal>.  Which API style you use is up to you,
+        but we do not recommend mixing the styles as the results are sometimes unexpected.  If you
+        just want to iterate over an index from start to finish, either style is equally appropriate.
+        If you also use <literal>moveTo(FeatureStructure fs)</literal> and 
+        <literal>moveToPrevious()</literal>, it is better to use the special FS iterator style.
+      </para>
       
       <para>Indexes are created by specifying them in the annotator&apos;s or
         aggregate&apos;s resource descriptor. An index specification includes its name,
@@ -302,20 +310,22 @@ under the License.
       allowing the flow to skip over annotators that don&apos;t process particular
       languages. Users may extend this type by adding additional features to it, using the XML
       Descriptor element for defining a type.</para>
+      
+    <note><para>
+      We do <emphasis>not</emphasis> recommend extending the <literal>DocumentAnnotation</literal>
+      type.  If you do, you must <emphasis>not</emphasis> use the JCas, for the reasons stated
+      earlier.
+    </para></note>
     
     <para>Each CAS view has a different associated instance of the
-      <literal>DocumentAnnotation</literal> type.</para>
+      <literal>DocumentAnnotation</literal> type.  On the CAS, use 
+      <literal>getDocumentationAnnotation()</literal> to access the 
+      <literal>DocumentAnnotation</literal>.</para>
     
-    <para>The instance of this type can be accessed in two ways: using the
-      <literal>getDocumentationAnnotation</literal> method on a CAS object, or using the
-      <literal>getDocumentationAnnotationFs</literal> method on a JCas object. There
-      are special considerations for using the DocumentAnnotation with JCas; see
-      <olink
-      targetdoc="&uima_docs_ref;"
-      targetptr="ugr.ref.jcas.documentannotation_issues"/>.</para>
-    
-    <para>There are also built-in types supporting lists, in the style of Lisp. Their use is
-      not recommended, however, as this is not a particularly efficient representation. The
+    <para>There are also built-in types supporting linked lists, similar to the ones available in
+    Java and other programming languages. Their use is
+      constrained by the usual properties of linked lists: not very space efficient, no (efficient)
+      random access, but an easy choice if you don't know how long your list will be ahead of time. The
       implementation is type specific; there are different list building objects for each of
       the primitive types, plus one for general feature structures. Here are the type names:
       <itemizedlist spacing="compact">
@@ -354,20 +364,13 @@ under the License.
   <section id="ugr.ref.cas.accessing_the_type_system">
     <title>Accessing the type system</title>
     
-    <para>When using the JCas, the type system declaration is converted to Java class
-      definitions; these allow strongly typed references to the CAS data objects. When you
-      are designing an application which can&apos;t use this approach, perhaps because it is
-      a general tool that is built to handle unknown (at compile-time) type systems, you use
-      the CAS (not JCas) APIs, described here.</para>
+    <para>
+      During annotator processing, or outside an annotator, access the type system by calling 
+      <literal>CAS.getTypeSystem()</literal>.
+    </para>
     
-    <para>These APIs presume as a starting point a reference to an existing CAS, or a
-      CAS&apos;s type system. This CAS reference can be something returned by utilities that
-      create new CASes, or is a parameter passed to an annotator&apos;s process method. The
-      CAS&apos;s type system can be obtained by calling the
-      <literal>getTypeSystem</literal> method on the CAS object.</para>
-    
-    <para>Non-JCas annotators implement an additional method,
-      <literal>typeSystemInit,</literal> which is called by the UIMA framework before the
+    <para>However, CAS annotators implement an additional method,
+      <literal>typeSystemInit()</literal>, which is called by the UIMA framework before the
       annotator&apos;s process method. This method, implemented by the annotator writer,
       is passed a reference to the CAS&apos;s type system metadata. The method typically uses
       the type system APIs to obtain type and feature objects corresponding to all the types
@@ -378,11 +381,11 @@ under the License.
       document, and so should be performed only when the type system changes (which will be a
       rare event). The UIMA framework guarantees it will call the <literal>typeSystemInit
       </literal>method of an annotator whenever the type system changes, before calling the
-      annotator&apos;s <literal>process</literal> method.</para>
+      annotator&apos;s <literal>process()</literal> method.</para>
     
-    <para>The initialization done by <literal>typeSystemInit</literal> is done by the
+    <para>The initialization done by <literal>typeSystemInit()</literal> is done by the
       UIMA framework when you use the JCas APIs; you only need to provide a
-      <literal>typeSystemInit</literal> method, as described here, when you are not using
+      <literal>typeSystemInit()</literal> method, as described here, when you are not using
       the JCas approach.</para>
     
     <section id="ugr.ref.cas.type_system.printer_example">
@@ -392,8 +395,8 @@ under the License.
         types.</para>
       
       
-      <programlisting>  // Get all type names from the type system
-  // and print them to stdout.
+      <programlisting>// Get all type names from the type system
+// and print them to stdout.
 private void listTypes1(TypeSystem ts) {
   // Get an iterator over types
   Iterator typeIterator = ts.getTypeIterator();
@@ -408,16 +411,20 @@ private void listTypes1(TypeSystem ts) {
   System.out.println();
 }</programlisting>
       
-      <para>This method is passed the type system as a parameter. (The type system is passed as
-        a parameter to your annotator&apos;s typeSystemInit method by the UIMA framework,
-        or you can obtain it from a CAS reference using the method
-        <literal>getTypeSystem</literal>.) From the type system, we can get an iterator
+      <para>This method is passed the type system as a parameter.  From the type system, we can 
+        get an iterator
         over all known types. If you run this against a CAS created with no additional
         user-defined types, we should see something like this on the console:</para>
       
-      <para><computeroutput> Types in the type system: uima.cas.Boolean uima.cas.Byte
-        uima.cas.Short uima.cas.Integer uima.cas.Long uima.cas.ArrayBase ...
-        </computeroutput></para>
+      <programlisting>Types in the type system: 
+uima.cas.Boolean 
+uima.cas.Byte
+uima.cas.Short 
+uima.cas.Integer 
+uima.cas.Long 
+uima.cas.ArrayBase 
+...
+        </programlisting>
       
       <para>If the type system had user-defined types these would show up too. Note that some
         of these types are not directly creatable &ndash; they are types used by the framework
@@ -439,7 +446,7 @@ private void listTypes2(TypeSystem ts) {
   // Get the root of the inheritance tree.
   Type top = ts.getTopType();
   // Recursively print the tree.
-  printInheritanceTree(ts,top, 0);
+  printInheritanceTree(ts, top, 0);
 }
 
 private void printInheritanceTree(TypeSystem ts, Type type, int level) {
@@ -465,7 +472,7 @@ private void indent(int level) {
       
       <para> This example shows that you can traverse the type hierarchy by starting at the top
         with TypeSystem.getTopType and by retrieving subtypes with
-        <literal>TypeSystem.getDirectlySubsumedTypes.</literal></para>
+        <literal>TypeSystem.getDirectlySubsumedTypes()</literal>.</para>
       
       <para>The JavaDocs also have APIs that allow you to access the features, as well as what
         the allowed value type is for that feature. Here is sample code which prints out all the
@@ -534,29 +541,30 @@ private void indent(int level) {
   </types>
 </typeSystemDescription>]]></programlisting></para>
       
-      <para>To use these types in annotator code, the CAS APIs require
-        <quote>handles</quote> which are references to the specific type and feature
-        objects corresponding to each type and feature (note that these are not required when
-        using the JCas APIs to the CAS). These are setup by CAS TypeSystem API calls that are
-        passed the official external names of the types and features. The CAS APIs provide
-        string constants for the official names of all the built-in types and features that
-        you might use.</para>
+  <para>
+    To be able to access types and features, we need to know their names.  The CAS interface defines
+    constants that hold the names of built-in feature names, such as, e.g.,
+    <literal>CAS.TYPE_NAME_INTEGER</literal>.  It is good programming practice to create such
+    constants for the types and features you define, for your own use as well as for others who will
+    be using your annotators.
+  </para>
       
       
-      <programlisting>  /** Entity type name constant. */
+      <programlisting>/** Entity type name constant. */
 public static final String ENTITY_TYPE_NAME = "com.xyz.proj.Entity";
   
-    /** Person type name constant. */
+/** Person type name constant. */
 public static final String PERSON_TYPE_NAME = "com. xyz.proj.Person";
 
-  /** First name feature name constant. */
+/** First name feature name constant. */
 public static final String FIRST_NAME_FEAT_NAME = "firstName";
 
-  /** Last name feature name constant. */
+/** Last name feature name constant. */
 public static final String LAST_NAME_FEAT_NAME = "lastName";</programlisting>
       
-      <para>We define type and feature member variables; these will hold the values of the
-        type and feature objects needed by the CAS APIs.</para>
+      <para>Next we define type and feature member variables; these will hold the values of the
+        type and feature objects needed by the CAS APIs, to be assigned during
+        <literal>typeSystemInit()</literal>.</para>
       
       
       <programlisting>// Type system object variables
@@ -566,12 +574,15 @@ private Feature firstNameFeature;
 private Feature lastNameFeature;
 private Type stringType;</programlisting>
       
-      <para>The type system does not consider it to be an error if we ask for something that is
-        not known, it simply returns null; therefore the code checks for this.</para>
+      <para>The type system does not throw an exception if we ask for something that is
+        not known, it simply returns null; therefore the code checks for this and throws a proper
+        exception.  We require all these types and features to be defined for the annotator to
+        work.  One might imagine situations where certain computations are predicated on some type
+        or feature being defined in the type system, but that is not the case here.</para>
       
       
       <programlisting>// Get a type object corresponding to a name.
-// If it doesn©t exist, throw an exception.
+// If it doesn&apos;t exist, throw an exception.
 private Type initType(String typeName)
   throws AnnotatorInitializationException {
   Type type = ts.getType(typeName);
@@ -582,9 +593,10 @@ private Type initType(String typeName)
   }
   return type;
 }
+
 // We add similar code for retrieving feature objects.
 // Get a feature object from a name and a type object.
-// If it doesn©t exist, throw an exception.
+// If it doesn&apos;t exist, throw an exception.
 private Feature initFeature(String featName, Type type)
   throws AnnotatorInitializationException {
   Feature feat = type.getFeatureByBaseName(featName);
