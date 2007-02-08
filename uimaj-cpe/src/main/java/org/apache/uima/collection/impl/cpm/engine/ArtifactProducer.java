@@ -661,7 +661,7 @@ public class ArtifactProducer extends Thread {
 
       casList = null;
       casObjectList = null;
-      synchronized (cpm.monitor) {
+      synchronized (cpm.lockForPause) {
         if (cpm.isPaused()) {
           try {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -671,7 +671,7 @@ public class ArtifactProducer extends Thread {
                       new Object[] { Thread.currentThread().getName() });
             }
             // Wait until resumed
-            cpm.monitor.wait();
+            cpm.lockForPause.wait();
           } catch (Exception e) {
           }
           if (!cpm.isRunning()) {
