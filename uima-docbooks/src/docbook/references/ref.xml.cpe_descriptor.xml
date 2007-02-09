@@ -1129,14 +1129,17 @@ vinci.VinciAnalysisEngineService_impl</arg>
         
         <programlisting>&lt;outputQueue dequeueTimeout="100000" queueClass=
 "org.apache.uima.reference_impl.collection.cpm.engine.SequencedQueue"/&gt;</programlisting>
+        
         where the mandatory <literal>queueClass</literal> attribute defines the name of
         the class and the second mandatory attribute, <literal>dequeueTimeout</literal>
         specifies the maximum number of milliseconds to wait for the expected chunk.</para>
+      
       <note><para>The value for this timeout must be carefully determined to avoid
       excessive occurrences of timeouts. Typically, the size of a chunk and the type of
       analysis being done are the most important factors when deciding on the value for the
       timeout. The larger the chunk and the more complicated analysis, the more time it takes
-      for the chunk to go from source to sink. </para></note>
+      for the chunk to go from source to sink. You may specify 0, in which case, the timeout is 
+      disabled - i.e., it is equivalent to an infinitely long timeout.</para></note>
       
       <para>If the chunk doesn&apos;t arrive in the configured time window, the entire
         document is presumed to be invalid and the CAS is dropped from further processing.
