@@ -394,14 +394,19 @@ local_root_directory_for_1st_delegate_component/resources/dict/
         <para>Macros are variables such as $main_root, used to represent a string such as the
           full path of a certain directory.</para>
         
-        <para>These macros are defined in the PEAR.properties file using the local values.
+        <para>The values of these macros are defined by the PEAR installation process, when the
+          PEAR is installed, and represent the values local to that particular installation.
+          The values are stored in the <literal>metadata/PEAR.properties</literal> file that is 
+          generated during PEAR installation.
           The tools and applications that use and deploy PEAR files replace these macros with
           the corresponding values in the local environment as part of the deployment
           process in the files included in the conf and desc folders.</para>
         
         <para>Currently, there are two types of macros:</para>
         
-        <itemizedlist><listitem><para>$main_root, which represents the local absolute
+        <itemizedlist>
+          
+          <listitem><para>$main_root, which represents the local absolute
           path of the main component root directory after deployment. </para></listitem>
           
           <listitem><para>$<emphasis>component_id</emphasis>$root, which
@@ -519,8 +524,26 @@ local_root_directory_for_1st_delegate_component/resources/dict/
         <para>The &lt;INSTALLATION&gt; section may specify the following operations:
           
           <itemizedlist><listitem><para>Setting environment variables that are
-            required to run the installed component.</para></listitem>
+            required to run the installed component.
+            </para>
+            <para>This is also how you specify additional classpaths
+          for a Java component - byspecifying the setting of an environmental variable 
+            named CLASSPATH.  The <literal>buildComponentClasspath</literal> method 
+          of the PackageBrowser class builds a classpath string from what it finds in 
+          the CLASSPATH specification here, plus adds a classpath entry for all
+          Jars in the <literal>lib</literal> directory.  Because of this, there is no need
+            to specify Class Path entries for Jars in the lib directory.</para>
             
+            <blockquote><para>When specifying the value of the CLASSPATH environment 
+            variable, use the semicolon ";" as the separator character, regardless of the
+            target Operating System conventions.  This delimiter will be replaced with 
+            the right one for the Operating System during PEAR installation.</para>
+              
+            </blockquote>
+            
+            <warning><para>Do not put UIMA Framework Jars into the lib directory of your
+            PEAR; doing so will cause system failures due to class loading issues.</para></warning>
+            </listitem>
             <listitem><para>Note that you can use <quote>macros</quote>, like
               $main_root or $component_id$root in the VAR_VALUE element of the
               &lt;PARAMETERS&gt; sub-section.</para></listitem>
