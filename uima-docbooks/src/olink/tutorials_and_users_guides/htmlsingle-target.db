@@ -112,15 +112,15 @@
          <xreftext>Section 1.5, “Additional Topics”</xreftext>
          <div element="section" href="#ugr.tug.aae.contract_for_annotator_methods" number="1.5.1" targetptr="ugr.tug.aae.contract_for_annotator_methods">
             <ttl>Contract: Annotator Methods Called by the Framework</ttl>
-            <xreftext>Section 1.5.1, “Contract: Annotator Methods Called by the Framework”</xreftext>
+            <xreftext>Section 1.5.1, “Annotator Methods”</xreftext>
          </div>
          <div element="section" href="#ugr.tug.aae.reporting_errors_from_annotators" number="1.5.2" targetptr="ugr.tug.aae.reporting_errors_from_annotators">
             <ttl>Reporting errors from Annotators</ttl>
             <xreftext>Section 1.5.2, “Reporting errors from Annotators”</xreftext>
          </div>
          <div element="section" href="#ugr.tug.aae.throwing_exceptions_from_annotators" number="1.5.3" targetptr="ugr.tug.aae.throwing_exceptions_from_annotators">
-            <ttl>Throwing Exceptions from Annoatators</ttl>
-            <xreftext>Section 1.5.3, “Throwing Exceptions from Annoatators”</xreftext>
+            <ttl>Throwing Exceptions from Annotators</ttl>
+            <xreftext>Section 1.5.3, “Throwing Exceptions from Annotators”</xreftext>
          </div>
          <div element="section" href="#ugr.tug.aae.accessing_external_resource_files" number="1.5.4" targetptr="ugr.tug.aae.accessing_external_resource_files">
             <ttl>Accessing External Resource Files</ttl>
@@ -189,11 +189,11 @@
       </div>
       <div element="section" href="#ugr.tug.aae.viewing_UIMA_objects_in_eclipse_debugger" number="1.7" targetptr="ugr.tug.aae.viewing_UIMA_objects_in_eclipse_debugger">
          <ttl>Viewing UIMA objects in the Eclipse debugger</ttl>
-         <xreftext>Section 1.7, “Viewing UIMA objects in the Eclipse debugger”</xreftext>
+         <xreftext>Section 1.7, “UIMA Objects in Eclipse Debugger”</xreftext>
       </div>
       <div element="section" href="#ugr.tug.aae.xml_intro_ae_descriptor" number="1.8" targetptr="ugr.tug.aae.xml_intro_ae_descriptor">
          <ttl>Introduction to Analysis Engine Descriptor XML Syntax</ttl>
-         <xreftext>Section 1.8, “Introduction to Analysis Engine Descriptor XML Syntax”</xreftext>
+         <xreftext>Section 1.8, “Analysis Engine XML Descriptor”</xreftext>
          <div element="section" href="#ugr.tug.aae.header_annotator_class_identification" number="1.8.1" targetptr="ugr.tug.aae.header_annotator_class_identification">
             <ttl>Header and Annotator Class Identification</ttl>
             <xreftext>Section 1.8.1, “Header and Annotator Class Identification”</xreftext>
@@ -523,11 +523,11 @@
          <div element="section" href="#ugr.tug.configuring_timeout_settings" number="3.6.6" targetptr="ugr.tug.configuring_timeout_settings">
             <ttl>Configuring Timeout Settings</ttl>
             <xreftext>Section 3.6.6, “Configuring Timeout Settings”</xreftext>
-            <div element="section" href="#d0e4196" number="3.6.6.1">
+            <div element="section" href="#ugr.tug.setting_client_timeout" number="3.6.6.1" targetptr="ugr.tug.setting_client_timeout">
                <ttl>Setting the Client Timeout</ttl>
                <xreftext>Section 3.6.6.1, “Setting the Client Timeout”</xreftext>
             </div>
-            <div element="section" href="#d0e4259" number="3.6.6.2">
+            <div element="section" href="#ugr.tug.setting_server_socket_timeout" number="3.6.6.2" targetptr="ugr.tug.setting_server_socket_timeout">
                <ttl>Setting the Server Socket Timeout</ttl>
                <xreftext>Section 3.6.6.2, “Setting the Server Socket Timeout”</xreftext>
             </div>
@@ -572,11 +572,11 @@
       </div>
       <div element="section" href="#ugr.tug.fc.adding_fc_to_aggregate" number="4.3" targetptr="ugr.tug.fc.adding_fc_to_aggregate">
          <ttl>Adding a Flow Controller to an Aggregate Analysis Engine</ttl>
-         <xreftext>Section 4.3, “Adding a Flow Controller to an Aggregate Analysis Engine”</xreftext>
+         <xreftext>Section 4.3, “Adding Flow Controller to an Aggregate”</xreftext>
       </div>
       <div element="section" href="#ugr.tug.fc.adding_fc_to_cpe" number="4.4" targetptr="ugr.tug.fc.adding_fc_to_cpe">
          <ttl>Adding a Flow Controller to a Collection Processing Engine</ttl>
-         <xreftext>Section 4.4, “Adding a Flow Controller to a Collection Processing Engine”</xreftext>
+         <xreftext>Section 4.4, “Adding Flow Controller to CPE”</xreftext>
       </div>
       <div element="section" href="#ugr.tug.fc.using_fc_with_cas_multipliers" number="4.5" targetptr="ugr.tug.fc.using_fc_with_cas_multipliers">
          <ttl>Using Flow Controllers with CAS Multipliers</ttl>
@@ -691,10 +691,10 @@
          </div>
          <div element="section" href="#ugr.tug.mvs.specifying_cas_view_for_single_view" number="6.4.3" targetptr="ugr.tug.mvs.specifying_cas_view_for_single_view">
             <ttl>Specifying the CAS View for a Single-View Component</ttl>
-            <xreftext>Section 6.4.3, “Specifying the CAS View for a Single-View Component”</xreftext>
+            <xreftext>Section 6.4.3, “CAS View for Single-View Parts”</xreftext>
             <obj element="para" href="#ugr.tug.mvs.sofa_mapping_leav_out_name" number="" targetptr="ugr.tug.mvs.sofa_mapping_leav_out_name">
                <ttl>???TITLE???</ttl>
-               <xreftext>Section 6.4.3, “Specifying the CAS View for a Single-View Component”</xreftext>
+               <xreftext>Section 6.4.3, “CAS View for Single-View Parts”</xreftext>
             </obj>
          </div>
          <div element="section" href="#ugr.tug.mvs.name_mapping_application" number="6.4.4" targetptr="ugr.tug.mvs.name_mapping_application">
@@ -736,7 +736,7 @@
       </div>
       <div element="section" href="#ugr.tug.mvs.sofa_incompatibilities_v1_v2" number="6.8" targetptr="ugr.tug.mvs.sofa_incompatibilities_v1_v2">
          <ttl>Sofa Incompatibilities between UIMA version 1 and version 2</ttl>
-         <xreftext>Section 6.8, “Sofa Incompatibilities between UIMA version 1 and version 2”</xreftext>
+         <xreftext>Section 6.8, “Sofa Incompatibilities: V1 and V2”</xreftext>
       </div>
    </div>
    <div element="chapter" href="#ugr.tug.cm" number="7" targetptr="ugr.tug.cm">
@@ -806,13 +806,13 @@
       <div element="section" href="#ugr.tug.cm.calling_cm_from_app" number="7.5" targetptr="ugr.tug.cm.calling_cm_from_app">
          <ttl>Calling a CAS Multiplier from an Application</ttl>
          <xreftext>Section 7.5, “Applications: Calling CAS Multipliers”</xreftext>
-         <div element="section" href="#d0e5951" number="7.5.1">
+         <div element="section" href="#ugr.tug.cm.retrieving_output_cases" number="7.5.1" targetptr="ugr.tug.cm.retrieving_output_cases">
             <ttl>Retrieving Output CASes from the CAS Multiplier</ttl>
-            <xreftext>Section 7.5.1, “Retrieving Output CASes from the CAS Multiplier”</xreftext>
+            <xreftext>Section 7.5.1, “Output CASes”</xreftext>
          </div>
-         <div element="section" href="#d0e6020" number="7.5.2">
+         <div element="section" href="#ugr.tug.cm.using_cm_with_other_aes" number="7.5.2" targetptr="ugr.tug.cm.using_cm_with_other_aes">
             <ttl>Using a CAS Multiplier with other Analysis Engines</ttl>
-            <xreftext>Section 7.5.2, “Using a CAS Multiplier with other Analysis Engines”</xreftext>
+            <xreftext>Section 7.5.2, “CAS Multipliers with other AEs”</xreftext>
          </div>
       </div>
       <div element="section" href="#ugr.tug.cm.using_cm_to_merge_cases" number="7.6" targetptr="ugr.tug.cm.using_cm_to_merge_cases">
@@ -820,7 +820,7 @@
          <xreftext>Section 7.6, “Merging with CAS Multipliers”</xreftext>
          <div element="section" href="#ugr.tug.cm.overview_of_how_to_merge_cases" number="7.6.1" targetptr="ugr.tug.cm.overview_of_how_to_merge_cases">
             <ttl>Overview of How to Merge CASes</ttl>
-            <xreftext>Section 7.6.1, “Merginging Overview”</xreftext>
+            <xreftext>Section 7.6.1, “CAS Merging Overview”</xreftext>
          </div>
          <div element="section" href="#ugr.tug.cm.example_cas_merger" number="7.6.2" targetptr="ugr.tug.cm.example_cas_merger">
             <ttl>Example CAS Merger</ttl>

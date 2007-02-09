@@ -254,13 +254,12 @@ String           aCas.getSofaMimeType();</programlisting>
     
     <para>A built-in type, <literal>uima.cas.AnnotationBase</literal>, is provided by
       UIMA to allow users to extend the Annotation capabilities to different kinds of
-      Annotations. The <literal>AnnotationBase</literal> type has one feature, the
-      <literal>SofaRef</literal>, which holds a reference to the
-      <literal>SofaFS</literal> feature structure, which is an instance of a built-in type
-      that is used to represent a Sofa in the framework. The <literal>SofaFS</literal>
-      feature is automatically set when creating an annotation (meaning &mdash; any type
-      derived from the built-in <literal>uima.cas.AnnotationBase </literal>type); it
-      should not be set by the user.</para>
+      Annotations. The <literal>AnnotationBase</literal> type has one feature, named
+      <literal>sofa</literal>, which holds a reference to the
+      <literal>Sofa</literal> feature structure with which this annotation is associated. 
+      The <literal>sofa</literal> feature is automatically set when creating an annotation 
+      (meaning &mdash; any type derived from the built-in 
+      <literal>uima.cas.AnnotationBase</literal> type); it should not be set by the user.</para>
     
     <para>There is one method, <literal>getView</literal>(), provided by
       <literal>AnnotationBase</literal> that returns the CAS View for the Sofa the

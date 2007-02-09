@@ -64,7 +64,7 @@ aView.removeFsFromIndexes(aFeatureStructure)</programlisting>
     <title>CAS Views and Sofas</title>
     
     <para>Sofas (see <olink targetdoc="&uima_docs_tutorial_guides;"
-        targetptr="ugr.tug.aas.sofa"/> and CAS Views are linked. In this implementation,
+        targetptr="ugr.tug.aas.sofa"/>) and CAS Views are linked. In this implementation,
       every CAS view has one associated Sofa, and every Sofa has one associated CAS
       View.</para>
     
@@ -194,8 +194,7 @@ aView.removeFsFromIndexes(aFeatureStructure)</programlisting>
     
     <para>If an Application creates a new CAS, the initial CAS that is created will be a view
       named <quote>_InitialView</quote>. This name can be used in the application and in
-      Sofa Mapping (see <xref linkend="ugr.tug.mvs.sofa_name_mapping"/>) to refer to
-      this otherwise unnamed view.</para>
+      Sofa Mapping (see the next section) to refer to this otherwise unnamed view.</para>
     
   </section>
   
@@ -528,17 +527,17 @@ CAS aView = cas.createView("EnglishDocument");</programlisting>
       
       
       <programlisting>// get View of the English text Sofa
-engView = aCas.getView("EnglishDocument");
+englishView = aCas.getView("EnglishDocument");
 
 // Create the output German text Sofa
-germView = aCas.createView("GermanDocument");</programlisting>
+germanView = aCas.createView("GermanDocument");</programlisting>
       
       <para>the indexing of annotations with the appropriate view:</para>
       
       
-      <programlisting>engView.addFsToIndexes(engAnnot);
+      <programlisting>englishView.addFsToIndexes(engAnnot);
 . . .
-germView.addFsToIndexes(germAnnot);</programlisting>
+germanView.addFsToIndexes(germAnnot);</programlisting>
       
       <para>and the combining of metadata belonging to different Sofas in the same feature
         structure:</para>
@@ -655,7 +654,7 @@ InputStream is = aCasOrJCas.getSofaDataStream();</programlisting>
     <title>Sofa Incompatibilities between UIMA version 1 and version 2</title>
     <titleabbrev>Sofa Incompatibilities: V1 and V2</titleabbrev>
     
-    <para>The major change for version 2 is related to the support of Single-View components
+    <para>A major change in version 2 is related to the support of Single-View components
       and applications. Given an analysis engine, <literal>ae</literal>, the API
       
       <programlisting>CAS cas = ae.newCas();</programlisting>
