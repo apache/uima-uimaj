@@ -44,11 +44,11 @@ public class FSBagIndex extends FSLeafIndexImpl {
     private int typeCode;
 
     public boolean isConcurrentModification() {
-      return modificationSnapshot != detectIllegalIndexUpdates[typeCode];
+      return this.modificationSnapshot != this.detectIllegalIndexUpdates[this.typeCode];
     }
 
     public void resetConcurrentModification() {
-      modificationSnapshot = detectIllegalIndexUpdates[typeCode];
+      this.modificationSnapshot = this.detectIllegalIndexUpdates[this.typeCode];
     }
 
     private IntVectorIterator() {
