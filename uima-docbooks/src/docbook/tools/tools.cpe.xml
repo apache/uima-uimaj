@@ -84,7 +84,7 @@ under the License.
       <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="542px" format="JPG" fileref="&imgroot;image002.jpg"/>
+        <imagedata width="573px" format="JPG" fileref="&imgroot;image002.jpg"/>
       </imageobject>
       <textobject><phrase>CPE Configurator main GUI window</phrase> 
       </textobject>
@@ -113,13 +113,13 @@ under the License.
       
       <programlisting>examples/descriptors/collectionReader/FileSystemCollectionReader.xml
 examples/descriptors/analysis_engine/NamesAndPersonTitles_TAE.xml
-examples/descriptors/cas_consumer/XCasWriterCasConsumer.xml</programlisting></para>
+examples/descriptors/cas_consumer/XmiWriterCasConsumer.xml</programlisting></para>
     
     
     <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="576px" format="JPG" fileref="&imgroot;image004.jpg"/>
+        <imagedata width="578px" format="JPG" fileref="&imgroot;image004.jpg"/>
       </imageobject>
       <textobject><phrase>CPE Configurator after components chosen</phrase> 
       </textobject>

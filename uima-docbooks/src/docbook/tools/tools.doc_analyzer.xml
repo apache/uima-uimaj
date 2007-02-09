@@ -57,7 +57,7 @@ screen that looks like this:
   <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="564px" format="JPG" fileref="&imgroot;image002.jpg"/>
+        <imagedata width="560px" format="JPG" fileref="&imgroot;image002.jpg"/>
       </imageobject>
       <textobject><phrase>Document Analyzer GUI</phrase>
       </textobject>

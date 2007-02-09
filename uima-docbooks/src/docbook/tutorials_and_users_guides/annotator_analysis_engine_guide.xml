@@ -220,7 +220,7 @@ under the License.
       <screenshot>
  <mediaobject>
         <imageobject>
-          <imagedata width="575px" format="JPG" fileref="&imgroot;image002.jpg"/>
+          <imagedata width="768px" format="JPG" fileref="&imgroot;image002.jpg"/>
         </imageobject>
         <textobject><phrase>Screenshot of editor for Type System Definitions</phrase></textobject>
       </mediaobject>
@@ -323,7 +323,7 @@ under the License.
       <screenshot>
         <mediaobject>
         <imageobject>
-          <imagedata width="534px" format="JPG" fileref="&imgroot;image006.jpg"/>
+          <imagedata width="532px" format="JPG" fileref="&imgroot;image006.jpg"/>
         </imageobject>
         <textobject><phrase>Screenshot of JCasGen</phrase></textobject>
       </mediaobject>
@@ -636,7 +636,7 @@ annotation.setBuilding("Yorktown");
       <screenshot>
    <mediaobject>
      <imageobject>
-       <imagedata width="576px" format="JPG" fileref="&imgroot;image014.jpg"/>
+       <imagedata width="574px" format="JPG" fileref="&imgroot;image014.jpg"/>
      </imageobject>
      <textobject><phrase>Screenshot of UIMA Document Analyzer GUI</phrase></textobject>
    </mediaobject>       

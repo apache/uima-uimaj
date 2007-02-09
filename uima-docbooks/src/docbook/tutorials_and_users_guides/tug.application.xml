@@ -936,7 +936,7 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
         <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="576px" format="JPG" fileref="&imgroot;image002.jpg"/>
+        <imagedata width="577px" format="JPG" fileref="&imgroot;image002.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of the Semantic Search tool set up to run 
         semantic queries against a semantic search index</phrase></textobject>

@@ -45,7 +45,7 @@ under the License.
     <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="575px" format="JPG" fileref="&imgroot;image002.jpg"/>
+        <imagedata width="574px" format="JPG" fileref="&imgroot;image002.jpg"/>
       </imageobject>
       <textobject><phrase>PEAR Installer GUI</phrase>
       </textobject>
