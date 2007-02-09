@@ -17,12 +17,5 @@
 HOWTO build uimaj-internal-tools
 =================================
 
-The uimaj-internal-tools project has a dependency on jaxp API. You first have to install jxp to
-the maven repository before the build works fine. To install the API execute the command 
-below:
-
-> mvn install:install-file -DgroupId=javax.xml -DartifactId=jaxp-api -Dversion=1.3.1   
-	    \ -Dpackaging=jar -Dfile=/path/to/file/jaxp-api.jar 
-	    
-	    
+    
 To run the LevelIssueAnalyzer program you have to use a Java 5 JVM.
