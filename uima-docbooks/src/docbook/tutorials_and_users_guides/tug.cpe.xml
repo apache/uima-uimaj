@@ -447,7 +447,7 @@ mCPE.process();</programlisting></para>
         <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="378px" format="JPG" fileref="&imgroot;image014.jpg"/>
+        <imagedata width="382px" format="JPG" fileref="&imgroot;image014.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot showing Eclipse new class wizard</phrase></textobject>
     </mediaobject>

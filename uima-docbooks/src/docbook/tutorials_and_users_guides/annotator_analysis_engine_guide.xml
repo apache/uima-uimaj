@@ -549,7 +549,7 @@ annotation.setBuilding("Yorktown");
       <screenshot>
   <mediaobject>
     <imageobject>
-      <imagedata width="575px" format="JPG" fileref="&imgroot;image008.jpg"/>
+      <imagedata width="574px" format="JPG" fileref="&imgroot;image008.jpg"/>
     </imageobject>
     <textobject><phrase>Screenshot of Component Descriptor Editor overview page</phrase>      
     </textobject>
@@ -591,7 +591,7 @@ annotation.setBuilding("Yorktown");
       <screenshot>
    <mediaobject>
      <imageobject>
-       <imagedata width="511px" format="JPG" fileref="&imgroot;image012.jpg"/>
+       <imagedata width="534px" format="JPG" fileref="&imgroot;image012.jpg"/>
      </imageobject>
      <textobject><phrase>Screenshot of CDE Capabilities page</phrase></textobject>
    </mediaobject>
@@ -1185,7 +1185,7 @@ public void initialize(UimaContext aContext)
           <screenshot>
      <mediaobject>
        <imageobject>
-         <imagedata width="526px" format="JPG" fileref="&imgroot;image028.jpg"/>
+         <imagedata width="565px" format="JPG" fileref="&imgroot;image028.jpg"/>
        </imageobject>
        <textobject><phrase>Screen shot of the Capabilities page of the Component Descriptor Editor
        </phrase></textobject>
@@ -1286,7 +1286,7 @@ while (timeIter.hasNext()) {
       <screenshot>
      <mediaobject>
        <imageobject>
-         <imagedata width="526px" format="JPG" fileref="&imgroot;image032.jpg"/>
+         <imagedata width="566px" format="JPG" fileref="&imgroot;image032.jpg"/>
        </imageobject>
        <textobject><phrase>Screen shot of Capabilities page of the Component Descriptor Editor
        </phrase></textobject>
@@ -1643,7 +1643,7 @@ catch (PatternSyntaxException e) {
         <screenshot>
        <mediaobject>
        <imageobject>
-         <imagedata width="576px" format="JPG" fileref="&imgroot;image036.jpg"/>
+         <imagedata width="575px" format="JPG" fileref="&imgroot;image036.jpg"/>
        </imageobject>
        <textobject><phrase>Screen shot of Component Descriptor Editor page for configuring External Resources
        </phrase></textobject>
@@ -1661,7 +1661,7 @@ catch (PatternSyntaxException e) {
         <screenshot>
        <mediaobject>
        <imageobject>
-         <imagedata width="681px" format="JPG" fileref="&imgroot;image038.jpg"/>
+         <imagedata width="680px" format="JPG" fileref="&imgroot;image038.jpg"/>
        </imageobject>
        <textobject><phrase>Screen shot of Component Descriptor Editor page for configuring External Resources after
          adjusting the layout
@@ -1892,7 +1892,7 @@ catch (PatternSyntaxException e) {
           <screenshot>
      <mediaobject>
       <imageobject>
-        <imagedata width="572px" format="JPG" fileref="&imgroot;image044.jpg"/>
+        <imagedata width="615px" format="JPG" fileref="&imgroot;image044.jpg"/>
       </imageobject>
       <textobject><phrase>UimaMeetingDetectorAE.xml binding a common resource</phrase></textobject>
     </mediaobject>
@@ -2162,7 +2162,7 @@ documentAnalyzer
       <screenshot>
      <mediaobject>
       <imageobject>
-        <imagedata width="492px" format="JPG" fileref="&imgroot;image046.jpg"/>
+        <imagedata width="580px" format="JPG" fileref="&imgroot;image046.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of Eclipse debugger showing non-logical-structure display of 
       a feature structure</phrase></textobject>
@@ -2189,7 +2189,7 @@ documentAnalyzer
       <screenshot>
      <mediaobject>
       <imageobject>
-        <imagedata width="492px" format="JPG" fileref="&imgroot;image050.jpg"/>
+        <imagedata width="581px" format="JPG" fileref="&imgroot;image050.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of Eclipse debugger showing logical structure display of 
       an annotation</phrase></textobject>
