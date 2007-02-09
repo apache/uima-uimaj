@@ -155,12 +155,15 @@ under the License.
     <section id="ugr.tools.pear.packager.using_pear_generation_wizard">
       <title>Using the PEAR Generation Wizard</title>
       
-      <para>Before using the PEAR Generation Wizard, make sure you add all the files needed to
+      <para>Before using the PEAR Generation Wizard, add all the files needed to
         run your component including descriptors, jars, external libraries, resources,
         and component analysis engines (in the case of an aggregate analysis engine), etc.
-        It&apos;s recommended to generate a jar file from your code as an alternative to
-        building the project and making sure the output folder (bin) contains the required
-        class files.</para>
+        <emphasis>Do not</emphasis> add Jars for the UIMA framework, however.  Doing so will
+        cause class loading problems at run time.</para>
+      <para>
+        If you're using a Java IDE like Eclipse, instead of using the output folder (usually 
+        <literal>bin</literal> as the source of your classes, it&apos;s recommended that 
+        you generate a Jar file containing these classes.</para>
       
       <para>Then, click on <quote>Generate PEAR file</quote> from the context menu
         (right-click) of your project, to open the PEAR Generation wizard, and follow the
@@ -176,7 +179,8 @@ under the License.
           is a string that uniquely identifies the component. It should use the JAVA naming
           convention (e.g. org.apache.uima.mycomponent).</para>
         
-        <para>Optionally, you can include specific Collection Iterator, CAS Initializer,
+        <para>Optionally, you can include specific Collection Iterator, CAS Initializer (deprecated
+          as of Version 2.1),
           or CAS Consumers. In this case, specify the corresponding descriptors in this
           page.
           
@@ -204,7 +208,16 @@ under the License.
             
             <listitem><para>Required JDK version, if applicable.</para></listitem>
             
-            <listitem><para>Required Environment variable, such as CLASSPATH </para>
+            <listitem><para>Required Environment variable settings.  This is where
+              you specify special ClassPath paths.  You do not need to specify this for
+              any Jars in the <literal>lib</literal> directory; those are automatically
+              put into the generated ClassPath.  Nor should you include paths to the
+              UIMA Framework itself, here.  Doing so may cause class loading problems.
+            </para>
+              
+            <para>ClassPath segments are written here using a semicolon ";" as the separator;
+              during PEAR installation, these will be adjusted to be the correct character for the
+              target Operating System.</para>
               </listitem></itemizedlist></para>
         
         <para>Path names should be specified using macros (see below), instead of
@@ -256,12 +269,22 @@ under the License.
           building the project and making sure the output folder (bin) contains the required
           class files.</para>
         
-        <para>Note: If you are relying on the class files generated in the output folder
+        <para>Eclipse compiles your class files into some output directory, often named
+        "bin" when you take the usual defaults in Eclipse.  The recommended practice is to
+        take all these files and put them into a Jar file, perhaps using the Eclipse Export 
+        wizard.  You would place that Jar file into the PEAR <literal>lib</literal> directory.</para>
+        
+        <note><para>If you are relying on the class files generated in the output folder
           (usually called bin) to run your code, then make sure the project is built properly,
-          and all the required class files are generated without errors. In this case make
-          sure your output folder (e.g. $main_root/bin) is in the classpath (see the
+          and all the required class files are generated without errors, and then put the
+          output folder (e.g. $main_root/bin) in the classpath using the option to set
+          environment variables, by setting the CLASSPATH variable to include this folder (see the
           <quote>Installation Environment</quote> page.
-          
+          Beware that using a Java output folder named "bin" in this case is a poor practice, 
+            because the PEAR installation
+          tools will presume this folder contains binary executable files, and will adds this folder to 
+          the PATH environment variable.
+          </para>          
           <figure id="ugr.tools.pear.packager.fig.wizard.export">
             <title>The PEAR File Export Page</title>
             <mediaobject>
@@ -272,7 +295,9 @@ under the License.
               <textobject><phrase>Pear Wizard - File Export Page</phrase>
               </textobject>
             </mediaobject>
-          </figure></para>
+          </figure>
+          
+          </note>
         
       </section>
     </section>
