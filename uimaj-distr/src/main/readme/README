@@ -1,18 +1,13 @@
 
-			Unstructured Information Management Architecture (UIMA) v2.1.0
-		   ----------------------------------------------------------------
-
-Apache UIMA
-------------
-
-For information on using Apache UIMA please refer to the docs subdirectory of the distribution.
-
+			Apache UIMA (Unstructured Information Management Architecture) v2.1.0
+		   -----------------------------------------------------------------------
 
 Supported Platforms
 --------------------
 
-Apache UIMA requires Java level 1.4; it has been tested with SUN Java SDK v1.4.2 but also with SUN Java SDK v5.0 and v6.0.
-The supported platforms are: Windows, Linux, Solaris, AIX and Mac OS X.
+Apache UIMA requires Java level 1.4; it has been tested with Sun Java SDK v1.4.2 but also with Sun Java SDK v5.0 and v6.0.
+The supported platforms are: Windows, Linux, Solaris, AIX and Mac OS X.  Other platforms and Java (1.4+) implementations
+should work, but have not been significantly tested.
 
 Many of the scripts in the /bin directory invoke Java. They use the value of the environment variable, JAVA_HOME, 
 to locate the Java to use.
