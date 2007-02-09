@@ -1,5 +1,62 @@
-For information on using Apache UIMA please refer to the docs
-subdirectory of the distribution.
+
+			Unstructured Information Management Architecture (UIMA) v2.1.0
+		   ----------------------------------------------------------------
+
+Apache UIMA
+------------
+
+For information on using Apache UIMA please refer to the docs subdirectory of the distribution.
+
+
+Supported Platforms
+--------------------
+
+Apache UIMA requires Java level 1.4; it has been tested with SUN Java SDK v1.4.2 but also with SUN Java SDK v5.0 and v6.0.
+The supported platforms are: Windows, Linux, Solaris, AIX and Mac OS X.
+
+Many of the scripts in the /bin directory invoke Java. They use the value of the environment variable, JAVA_HOME, 
+to locate the Java to use.
+
+
+Environment Variables
+----------------------
+
+After you have unpacked the Apache UIMA distribution from the package of your choice (e.g. .zip or .gz), 
+you have to do the steps below that UIMA functioning properly.
+
+    * Set JAVA_HOME to the directory of your JRE installation you would like to use for UIMA.
+    * Set UIMA_HOME to the apache-uima directory of your unpacked Apache UIMA distribution
+    * Append UIMA_HOME/bin to your PATH
+    
+    * It is recommended to run the script UIMA_HOME/bin/adjustExamplePaths.bat (or .sh), which updates some 
+      hard coded paths in the examples to your actual UIMA_HOME directory. This script runs a Java program; 
+      you will need to set the environment variable JAVA_HOME to a suitable Java on your machine before running this script.
+
+
+Verifying Your Installation
+----------------------------
+
+To test the installation, run the documentAnalyzer.bat (or .sh) file located in the bin subdirectory. 
+This should pop up a "Document Analyzer" window. Set the values displayed in this GUI to as follows:
+
+    * Input Directory: UIMA_HOME/examples/data
+    * Output Directory: UIMA_HOME/examples/data/processed
+    * TAE XML Descriptor: UIMA_HOME/examples/descriptors/analysis_engine/PersonTitleAnnotator.xml
+
+Replace UIMA_HOME above with the path of your Apache UIMA installation.
+
+Next, click the "Run" button, which should, after a brief pause, pop up an "Analyzed Results" window. 
+Double-click on one of the documents to display the analysis results for that document.
+
+
+Getting Started
+----------------
+
+For an introduction to Apache UIMA and how to use it, please read the documentation located in the docs subdirectory.
+
+
+Disclaimer
+-----------
 
 Apache UIMA is an effort undergoing incubation at The Apache Software
 Foundation (ASF). Incubation is required of all newly accepted projects
