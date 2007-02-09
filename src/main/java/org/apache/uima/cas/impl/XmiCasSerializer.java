@@ -1041,6 +1041,7 @@ public class XmiCasSerializer {
           prefix = basePrefix + num;
         }
         nsUriToPrefixMap.put(nsUri, prefix);
+        nsPrefixesUsed.add(prefix);
       }
 
       return new XmlElementName(nsUri, shortName, prefix + ':' + shortName);
