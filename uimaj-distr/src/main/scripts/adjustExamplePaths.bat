@@ -19,9 +19,9 @@ REM   under the License.
 
 @echo on
 
-if "%JAVA_HOME%"=="" set JAVA_HOME=%UIMA_HOME%\java\jre
-"%JAVA_HOME%\bin\java" -cp "%UIMA_HOME%/lib/uima-core.jar" org.apache.uima.internal.util.ReplaceStringInFiles "%UIMA_HOME%/examples" .xml "C:/Program Files/apache-uima" "%UIMA_HOME%" -ignorecase
-"%JAVA_HOME%\bin\java" -cp "%UIMA_HOME%/lib/uima-core.jar" org.apache.uima.internal.util.ReplaceStringInFiles "%UIMA_HOME%/examples" .classpath "C:/Program Files/apache-uima" "%UIMA_HOME%" -ignorecase
-"%JAVA_HOME%\bin\java" -cp "%UIMA_HOME%/lib/uima-core.jar" org.apache.uima.internal.util.ReplaceStringInFiles "%UIMA_HOME%/examples" .launch "C:/Program Files/apache-uima" "%UIMA_HOME%" -ignorecase
-"%JAVA_HOME%\bin\java" -cp "%UIMA_HOME%/lib/uima-core.jar" org.apache.uima.internal.util.ReplaceStringInFiles "%UIMA_HOME%/examples" .wsdd "C:/Program Files/apache-uima" "%UIMA_HOME%" -ignorecase
-"%JAVA_HOME%\bin\java" -cp "%UIMA_HOME%/lib/uima-core.jar" org.apache.uima.internal.util.ReplaceStringInFiles "%UIMA_HOME%/examples" .xml "C:/Temp" temp -ignorecase
+if "%JAVA_HOME%"=="" (set UIMA_JAVA_CALL=java) else (set UIMA_JAVA_CALL=%JAVA_HOME%\bin\java)
+"%UIMA_JAVA_CALL%" -cp "%UIMA_HOME%/lib/uima-core.jar" org.apache.uima.internal.util.ReplaceStringInFiles "%UIMA_HOME%/examples" .xml "C:/Program Files/apache-uima" "%UIMA_HOME%" -ignorecase
+"%UIMA_JAVA_CALL%" -cp "%UIMA_HOME%/lib/uima-core.jar" org.apache.uima.internal.util.ReplaceStringInFiles "%UIMA_HOME%/examples" .classpath "C:/Program Files/apache-uima" "%UIMA_HOME%" -ignorecase
+"%UIMA_JAVA_CALL%" -cp "%UIMA_HOME%/lib/uima-core.jar" org.apache.uima.internal.util.ReplaceStringInFiles "%UIMA_HOME%/examples" .launch "C:/Program Files/apache-uima" "%UIMA_HOME%" -ignorecase
+"%UIMA_JAVA_CALL%" -cp "%UIMA_HOME%/lib/uima-core.jar" org.apache.uima.internal.util.ReplaceStringInFiles "%UIMA_HOME%/examples" .wsdd "C:/Program Files/apache-uima" "%UIMA_HOME%" -ignorecase
+"%UIMA_JAVA_CALL%" -cp "%UIMA_HOME%/lib/uima-core.jar" org.apache.uima.internal.util.ReplaceStringInFiles "%UIMA_HOME%/examples" .xml "C:/Temp" temp -ignorecase

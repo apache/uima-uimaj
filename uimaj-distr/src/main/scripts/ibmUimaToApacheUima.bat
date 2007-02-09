@@ -19,5 +19,5 @@ REM   under the License.
 
 @echo on
 
-if "%JAVA_HOME%"=="" set JAVA_HOME=%UIMA_HOME%\java\jre
-"%JAVA_HOME%\bin\java" -cp "%UIMA_HOME%/lib/uima-core.jar;%UIMA_HOME%/lib/uima-tools.jar" org.apache.uima.tools.migration.IbmUimaToApacheUima %1 -ext java,xml,xmi,wsdd,properties,launch,bat,cmd,sh,ksh,csh,
+if "%JAVA_HOME%"=="" (set UIMA_JAVA_CALL=java) else (set UIMA_JAVA_CALL=%JAVA_HOME%\bin\java)
+"%UIMA_JAVA_CALL%" -cp "%UIMA_HOME%/lib/uima-core.jar;%UIMA_HOME%/lib/uima-tools.jar" org.apache.uima.tools.migration.IbmUimaToApacheUima %1 -ext java,xml,xmi,wsdd,properties,launch,bat,cmd,sh,ksh,csh,
