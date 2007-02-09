@@ -19,6 +19,8 @@
 
 package org.apache.uima.cas.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -42,7 +44,7 @@ import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.impl.SofaID_impl;
+import org.apache.uima.cas_data.impl.CasComparer;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
@@ -389,5 +391,31 @@ public class XmiCasDeserializerTest extends TestCase {
     assertTrue(gerView.getAnnotationIndex().size() == 5); // 4 annots plus documentAnnotation
     assertTrue(CAS.NAME_DEFAULT_SOFA.equals(v1cas.getSofa().getSofaID()));
     assertTrue(v1cas.getDocumentText().equals("some text for the default text sofa."));
+  }
+  
+  public void testDuplicateNsPrefixes() throws Exception {
+    TypeSystemDescription ts = new TypeSystemDescription_impl();
+    ts.addType("org.bar.foo.Foo", "", "uima.tcas.Annotation");
+    ts.addType("org.baz.foo.Foo", "", "uima.tcas.Annotation");
+    CAS cas = CasCreationUtils.createCas(ts, null, null);
+    cas.setDocumentText("Foo");
+    Type t1 = cas.getTypeSystem().getType("org.bar.foo.Foo");
+    Type t2 = cas.getTypeSystem().getType("org.baz.foo.Foo");
+    AnnotationFS a1 = cas.createAnnotation(t1,0,3);
+    cas.addFsToIndexes(a1);
+    AnnotationFS a2 = cas.createAnnotation(t2,0,3);
+    cas.addFsToIndexes(a2);
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    XmiCasSerializer.serialize(cas, baos);
+    baos.close();
+    byte[] bytes = baos.toByteArray();
+    
+    CAS cas2 = CasCreationUtils.createCas(ts, null, null);
+    ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+    XmiCasDeserializer.deserialize(bais, cas2);
+    bais.close();
+    
+    CasComparer.assertEquals(cas, cas2);
   }
 }
