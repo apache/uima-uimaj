@@ -85,6 +85,7 @@ public class LevelIssueAnalyzer {
 
     if (args.length != 1) {
       System.out.println("Usage: LevelIssueAnalyzer <last level name>");
+      System.exit(1);
     } else {
       levelname = levelPrefix + args[0];
     }
