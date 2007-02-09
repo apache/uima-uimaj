@@ -69,7 +69,7 @@ public class SofaExampleAnnotator extends CasAnnotator_ImplBase {
 
       // Create token annotations on English text
       AnnotationFS engAnnot = englishView.createAnnotation(annot, engBegin, engEnd);
-      englishView.getIndexRepository().addFS(engAnnot);
+      englishView.addFsToIndexes(engAnnot);
 
       // Simple word-by-word translation
       String germWord = translate(thisTok);
@@ -84,7 +84,7 @@ public class SofaExampleAnnotator extends CasAnnotator_ImplBase {
       // Create token annotations on German text
       germEnd = germBegin + germWord.length();
       AnnotationFS germAnnot = germanView.createAnnotation(cross, germBegin, germEnd);
-      germanView.getIndexRepository().addFS(germAnnot);
+      germanView.addFsToIndexes(germAnnot);
 
       // add link to English text
       germAnnot.setFeatureValue(other, engAnnot);
