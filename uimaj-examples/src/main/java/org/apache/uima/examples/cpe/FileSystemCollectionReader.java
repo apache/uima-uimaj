@@ -30,6 +30,7 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader_ImplBase;
 import org.apache.uima.examples.SourceDocumentInformation;
+import org.apache.uima.internal.util.FileUtils;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.DocumentAnnotation;
 import org.apache.uima.resource.ResourceConfigurationException;
@@ -120,22 +121,9 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
 
     // open input stream to file
     File file = (File) mFiles.get(mCurrentIndex++);
-    BufferedInputStream fis = new BufferedInputStream(new FileInputStream(file));
-    try {
-      byte[] contents = new byte[(int) file.length()];
-      fis.read(contents);
-      String text;
-      if (mEncoding != null) {
-        text = new String(contents, mEncoding);
-      } else {
-        text = new String(contents);
-      }
+    String text = FileUtils.file2String(file, mEncoding);
       // put document in CAS
-      jcas.setDocumentText(text);
-    } finally {
-      if (fis != null)
-        fis.close();
-    }
+    jcas.setDocumentText(text);
 
     // set language if it was explicitly specified as a configuration parameter
     if (mLanguage != null) {
