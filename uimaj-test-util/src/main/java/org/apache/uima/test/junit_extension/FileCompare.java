@@ -20,13 +20,13 @@
 package org.apache.uima.test.junit_extension;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -255,18 +255,40 @@ public class FileCompare {
    * sure what the best way of handling this is.
    */
   public static String file2String(File file) throws IOException {
-    BufferedReader bReader = new BufferedReader(new FileReader(file));
-    int length = (int)file.length();
-    // Read the file into a string using a char buffer.
-    char[] buf = new char[length];
-    try {
-      // will read all the chars of the file, calling read repeatedly 
-      // as needed in the underlying layer
-      //  Note: this 3 argument version is the only one documented to do this.
-      bReader.read(buf, 0, length);
-    } finally {
-      bReader.close();
-    }
-    return new String(buf); 
+    return reader2String(
+            new FileReader(file),
+            (int) file.length());   
   }
+  
+  /**
+   * Read a bufferedReader into a string, using the default platform encoding.
+   * 
+   * @param reader to be read in
+   * @param bufSize - size of stream, in bytes.  Size in chars is <= size in bytes, because
+   * chars take 1 or more bytes to encode.
+   * @return String The contents of the stream.
+   * @throws IOException
+   *           Various I/O errors.
+   *           
+   * TODO: This is duplicated from org.apache.uima.internal.util.FileUtils in the uimaj-core
+   * package. We can't have a compile dependency on uimaj-core since that introduces a cycle. Not
+   * sure what the best way of handling this is.
+   */
+  public static String reader2String(Reader reader, int bufSize) throws IOException {
+    char[] buf = new char[bufSize];
+    int read_so_far = 0;
+    try {
+      while (read_so_far < bufSize) {
+        int count = reader.read(buf, read_so_far, bufSize - read_so_far);
+        if (0 > count) {
+          break;
+        }
+        read_so_far += count;
+      }
+    } finally {
+      reader.close();
+    }
+    return new String(buf, 0, read_so_far);
+  }
+
 }
