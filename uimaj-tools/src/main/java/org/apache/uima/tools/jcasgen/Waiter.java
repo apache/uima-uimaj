@@ -22,7 +22,7 @@ package org.apache.uima.tools.jcasgen;
 public class Waiter {
   private boolean wokeUpIntentionally = false;
 
-  private Object waitObject = new Object();
+  private final Object waitObject = new Object();
 
   void waitforGUI() {
     synchronized (waitObject) {
