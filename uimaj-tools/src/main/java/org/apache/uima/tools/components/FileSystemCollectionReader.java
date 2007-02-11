@@ -19,7 +19,6 @@
 
 package org.apache.uima.tools.components;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -35,6 +34,7 @@ import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.CollectionReader_ImplBase;
 import org.apache.uima.examples.SourceDocumentInformation;
+import org.apache.uima.internal.util.FileUtils;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.DocumentAnnotation;
 import org.apache.uima.resource.ResourceConfigurationException;
@@ -139,7 +139,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
 
     // open input stream to file
     File file = (File) mFiles.get(mCurrentIndex++);
-    BufferedInputStream fis = new BufferedInputStream(new FileInputStream(file));
+    FileInputStream fis = new FileInputStream(file);
     if (!mXCAS) {
       try {
         // if there's a CAS Initializer, call it
@@ -147,14 +147,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
           getCasInitializer().initializeCas(fis, aCAS);
         } else // No CAS Initiliazer, so read file and set document text ourselves
         {
-          byte[] contents = new byte[(int) file.length()];
-          fis.read(contents);
-          String text;
-          if (mEncoding != null) {
-            text = new String(contents, mEncoding);
-          } else {
-            text = new String(contents);
-          }
+          String text = FileUtils.file2String(file, mEncoding);      
           // put document text in JCas
           jcas.setDocumentText(text);
         }
