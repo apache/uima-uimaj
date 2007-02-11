@@ -465,8 +465,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
     annotation.addToIndexes();
     pos = matcher.end();
   }
-}
-</programlisting>
+}</programlisting>
       
       <para>The Matcher class is part of the java.util.regex package and is used to find the room numbers in the
         document text. When we find one, recording the annotation is as simple as creating a new Java object and
@@ -476,8 +475,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
       <programlisting>RoomNumber annotation = new RoomNumber(aJCas);
 annotation.setBegin(matcher.start());
 annotation.setEnd(matcher.end());
-annotation.setBuilding("Yorktown");
-</programlisting>
+annotation.setBuilding("Yorktown");</programlisting>
       
       <para>The <literal>RoomNumber</literal> class was generated from the type system description by the
         Component Descriptor Editor or the JCasGen tool, as discussed in the previous section.</para>
@@ -827,8 +825,7 @@ public void initialize(UimaContext aContext)
   for (int i = 0; i &lt; patternStrings.length; i++) {
     mPatterns[i] = Pattern.compile(patternStrings[i]);
   }
-}
-</programlisting>
+}</programlisting>
         
         <para>Configuration parameter values are accessed through the UimaContext. As you
           will see in subsequent sections of this chapter, the UimaContext is the
@@ -913,8 +910,7 @@ public void initialize(UimaContext aContext)
         <literal>org.apache.uima.tutorial.ex2.RoomNumberAnnotator</literal>:
         
         
-        <programlisting>getContext().getLogger().log(Level.FINEST,"Found: " + annotation);
-</programlisting>
+        <programlisting>getContext().getLogger().log(Level.FINEST,"Found: " + annotation);</programlisting>
         </para>
       
       <para>The first argument to the log method is the level of the log output. Here, a value of
@@ -966,8 +962,7 @@ public void initialize(UimaContext aContext)
           relative to the working directory. For example:
           
           
-          <programlisting><?db-font-size 60% ?>java "-Djava.util.logging.config.file=C:/Program Files/apache-uima/config/Logger.properties"
-</programlisting>
+          <programlisting><?db-font-size 70% ?>java "-Djava.util.logging.config.file=C:/Program Files/apache-uima/config/Logger.properties"</programlisting>
           <note><para>In a shell script, you can use environment variables such as
           UIMA_HOME if convenient.</para></note> </para>
         
@@ -1245,8 +1240,7 @@ while (timeIter.hasNext()) {
   TimeAnnot time = (TimeAnnot)timeIter.next();
 
   //do something
-}
-</programlisting></para>
+}</programlisting></para>
       
       <note>
       <para>You can also use the method
@@ -1684,8 +1678,7 @@ catch (PatternSyntaxException e) {
   <description>Table of acronyms and their expanded forms.</description> 
   <interfaceName>org.apache.uima.tutorial.ex6.StringMapResource</interfaceName> 
 </externalResourceDependency>
-]]>
-  </programlisting>
+]]></programlisting>
         
         <para>The &lt;key&gt; value (AcronymTable) is the name by which the annotator
           identifies this resource. The key must be unique for all resources that this
@@ -1707,8 +1700,7 @@ catch (PatternSyntaxException e) {
           
           
           <programlisting>StringMapResource mMap = 
-  (StringMapResource)getContext().getResourceObject("AcronymTable");
-</programlisting>
+  (StringMapResource)getContext().getResourceObject("AcronymTable");</programlisting>
           </para>
         
         <para>The object returned from the <literal>getResourceObject</literal> method
@@ -1723,15 +1715,13 @@ catch (PatternSyntaxException e) {
           annotator could directly access the resource data as follows:
           
           
-          <programlisting>InputStream stream = getContext().getResourceAsStream("AcronymTable");
-</programlisting></para>
+          <programlisting>InputStream stream = getContext().getResourceAsStream("AcronymTable");</programlisting></para>
         
         <para>If necessary, the annotator could also determine the location of the resource
           file, by calling:
           
           
-          <programlisting>URI uri = getContext().getResourceURI("AcronymTable");
-</programlisting></para>
+          <programlisting>URI uri = getContext().getResourceURI("AcronymTable");</programlisting></para>
         
         <para>These last two options are only available in the case where the descriptor does
           not declare a Java interface.</para>
@@ -1778,8 +1768,7 @@ catch (PatternSyntaxException e) {
     </externalResourceBinding>
   </externalResourceBindings>
 </resourceManagerConfiguration>
-]]>
-</programlisting></para>
+]]></programlisting></para>
         
         <para>The first section of this XML declares an externalResource, the
           <literal>UimaAcronymTableFile</literal>. With this, the fileUrl element
@@ -1910,8 +1899,7 @@ catch (PatternSyntaxException e) {
     <resourceName>UimaAcronymTableFile</resourceName> 
   </externalResourceBinding>
 </externalResourceBindings>
-]]>
-</programlisting>
+]]></programlisting>
           </para>
         
         <para>This binds the resource dependencies of both the UimaAcronymAnnotator
@@ -2049,8 +2037,7 @@ catch (PatternSyntaxException e) {
         
         
         <programlisting>set UIMA_CLASSPATH=c:\a\b\c\myProject\myJarFile.jar
-documentAnalyzer
-</programlisting>
+documentAnalyzer</programlisting>
       </para>
       
       <para>Other environment variables are used by the shell scripts, as follows:
@@ -2227,8 +2214,7 @@ documentAnalyzer
   <annotatorImplementationName>
     org.apache.uima.tutorial.ex1.RoomNumberAnnotator
   </annotatorImplementationName>
-]]>
-</programlisting>
+]]></programlisting>
       
       <para>The document begins with a standard XML header and a comment. The root element of
         the document is named <literal>&lt;analysisEngineDescription&gt;,</literal>
@@ -2260,8 +2246,7 @@ documentAnalyzer
      the IBM Watson research buildings.</description> 
   <version>1.0</version> 
   <vendor>The Apache Software Foundation</vendor></para>
-]]>
-  </programlisting>
+]]></programlisting>
       
       <para>Here are shown four simple metadata fields &ndash; name, description, version,
         and vendor. Providing values for these fields is optional, but recommended.</para>
@@ -2277,8 +2262,7 @@ documentAnalyzer
     <import location="TutorialTypeSystem.xml"/>
   </imports>
 </typeSystemDescription>
-]]>
-</programlisting>
+]]></programlisting>
       
       <para>This section of the XML descriptor defines which types the annotator works with.
         The recommended way to do this is to <emphasis>import</emphasis> the type system
@@ -2302,8 +2286,7 @@ documentAnalyzer
     </outputs>
   </capability>
 </capabilities>
-]]>
-</programlisting>
+]]></programlisting>
       
       <para>The last section of the descriptor describes the
         <emphasis>Capabilities</emphasis> of the annotator &ndash; the Types/Features
