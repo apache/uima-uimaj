@@ -28,6 +28,7 @@ import java.util.StringTokenizer;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.impl.cpm.utils.CPMUtils;
 import org.apache.uima.collection.impl.cpm.utils.CpmLocalizedMessage;
+import org.apache.uima.internal.util.FileUtils;
 import org.apache.uima.util.Level;
 
 public class DebugControlThread implements Runnable {
@@ -203,7 +204,6 @@ public class DebugControlThread implements Runnable {
 
   public String doCheckpoint() {
     File inF = null;
-    BufferedInputStream fis = null;
     try {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
@@ -212,13 +212,8 @@ public class DebugControlThread implements Runnable {
                 new Object[] { Thread.currentThread().getName(), fileName });
       }
       inF = new File(fileName);
-      byte[] content = new byte[(int) inF.length()];
-      fis = new BufferedInputStream(new FileInputStream(inF));
 
-      // use a buffered input stream, or wrap the read(buffer) in a while checking
-      // to be sure it read all the input (see javadoc for read(...)
-      fis.read(content);
-      return new String(content);
+      return FileUtils.file2String(inF);
 
     } catch (FileNotFoundException e) {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -231,16 +226,12 @@ public class DebugControlThread implements Runnable {
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
-      if (fis != null) {
-        try {
-          fis.close();
-          inF.delete();
-        } catch (Exception e) {
-        }
+      try {
+        inF.delete();
+      } catch (Exception e) {
       }
     }
     return null;
-
   }
 
   public boolean exists() {
