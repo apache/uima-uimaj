@@ -21,7 +21,6 @@ package org.apache.uima.internal.util;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -111,39 +110,30 @@ public class FileUtils {
   /**
    * Read a bufferedReader into a string, using the default platform encoding.
    * 
-   * @param reader to be read in, not buffered (this routine buffers it).
-   * @param length of the input 
+   * @param reader to be read in
+   * @param bufSize - size of stream, in bytes.  Size in chars is <= size in bytes, because
+   * chars take 1 or more bytes to encode.
    * @return String The contents of the stream.
    * @throws IOException
    *           Various I/O errors.
    */
-  public static String reader2String(Reader reader, int length) throws IOException {
-    BufferedReader bReader = new BufferedReader(reader);
-    // Read the file into a string using a char buffer.
-    char[] buf = new char[length];
+  public static String reader2String(Reader reader, int bufSize) throws IOException {
+    char[] buf = new char[bufSize];
+    int read_so_far = 0;
     try {
-      // will read all the chars of the file, calling read repeatedly 
-      // as needed in the underlying layer
-      bReader.read(buf, 0, length);
+      while (read_so_far < bufSize) {
+        int count = reader.read(buf, read_so_far, bufSize - read_so_far);
+        if (0 > count) {
+          break;
+        }
+        read_so_far += count;
+      }
     } finally {
-      bReader.close();
+      reader.close();
     }
-    return new String(buf);    
+    return new String(buf, 0, read_so_far);
   }
 
-  public static String byteStream2String(Reader reader, int length) throws IOException {
-    BufferedReader bReader = new BufferedReader(reader);
-    // Read the file into a string using a char buffer.
-    char[] buf = new char[length];
-    try {
-      // will read all the chars of the file, calling read repeatedly 
-      // as needed in the underlying layer
-      bReader.read(buf, 0, length);
-    } finally {
-      bReader.close();
-    }
-    return new String(buf);    
-  }
 
   /**
    * Read the contents of a file into a string, using the default platform encoding.
@@ -173,6 +163,8 @@ public class FileUtils {
    *           Various I/O errors.
    */
   public static String file2String(File file, String fileEncoding) throws IOException {
+    if (null == fileEncoding) // use default
+      return file2String(file);
     return reader2String(
             new InputStreamReader(new FileInputStream(file), fileEncoding),
             (int) file.length());   
@@ -338,20 +330,24 @@ public class FileUtils {
       throw new IOException("Can't write output file: " + outFile);
     }
     byte[] bytes = new byte[(int) file.length()];
-    BufferedInputStream is = new BufferedInputStream(new FileInputStream(file));
-    // must use buffered stream to have the read(...) read the whole file 
-    is.read(bytes);
-    is.close();
-    BufferedOutputStream os = null;
+    FileInputStream is = null; 
+    FileOutputStream os = null;
     try {
-      os = new BufferedOutputStream(new FileOutputStream(outFile));
-      os.write(bytes);
-      os.close();
-    } finally {
-      if (os != null) {
-        os.close();
+      is = new FileInputStream(file);
+      os = new FileOutputStream(outFile);
+
+      while (true) {
+        int count = is.read(bytes);
+        if (0 > count)
+          break;
+        os.write(bytes, 0, count);
       }
-    }
+    } finally {
+      if (null != is)
+        is.close();
+      if (null != os)
+        os.close();
+    } 
   }
 
   public static void main(String[] args) {

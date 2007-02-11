@@ -374,19 +374,25 @@ public class SerializationNoMDTest extends TestCase {
    */
   public static String file2String(File file) throws IOException {
     // Read the file into a string using a char buffer.
-    BufferedReader reader = null;
-    int fileLength = (int) file.length();
-    char[] buf = new char[fileLength];
+    FileReader reader = null;
+    int bufSize = (int) file.length(); // length in bytes >= length in chars due to encoding
+    char[] buf = new char[bufSize];
+    int read_so_far = 0;
     try {
-      reader = new BufferedReader(new FileReader(file));  
-      // will read all the chars of the file, calling read repeatedly 
-      // as needed in the underlying layer
-      reader.read(buf, 0, fileLength);
+      reader = new FileReader(file);  
+      while (read_so_far < bufSize) {
+        int count = reader.read(buf, read_so_far, bufSize - read_so_far);
+        if (count < 0) {
+          break;
+        }
+        read_so_far += count;
+      }
+
     } finally {
       if (null != reader)
         reader.close();
     }
-    return new String(buf);    
+    return new String(buf, 0, read_so_far);    
   }
 
   /**
