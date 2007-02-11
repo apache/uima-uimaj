@@ -349,8 +349,7 @@ JCas getEmptyJCas()</programlisting> which are
       <literal>&lt;outputsNewCASes&gt;</literal> element to your descriptor as shown here:</para>
     
     
-    <programlisting>
-  &lt;operationalProperties&gt;
+    <programlisting>&lt;operationalProperties&gt;
     &lt;modifiesCas&gt;false&lt;/modifiesCas&gt;
     &lt;multipleDeploymentAllowed&gt;true&lt;/multipleDeploymentAllowed&gt;
     <emphasis role="bold">&lt;outputsNewCASes&gt;true&lt;/outputsNewCASes&gt;</emphasis>
@@ -441,17 +440,14 @@ JCas getEmptyJCas()</programlisting> which are
         aggregate as follows:</para>
       
       
-      <programlisting>
-        &lt;flowController key="FixedFlowController">
+      <programlisting>&lt;flowController key="FixedFlowController">
           &lt;import name="org.apache.uima.flow.FixedFlowController"/>
-        &lt;/flowController>
-      </programlisting>
+        &lt;/flowController>      </programlisting>
       
       <para>The parameter could then be overriden as, for example:</para>
       
       
-      <programlisting>
-        &lt;configurationParameters>
+      <programlisting>&lt;configurationParameters>
           &lt;configurationParameter>
             &lt;name>ActionForIntermediateSegments&lt;/name>
             &lt;type>String&lt;/type>
@@ -472,8 +468,7 @@ JCas getEmptyJCas()</programlisting> which are
              &lt;string>drop&lt;/string>
            &lt;/value>
          &lt;/nameValuePair>
-       &lt;/configurationParameterSettings>
-      </programlisting>
+       &lt;/configurationParameterSettings></programlisting>
       
       <para>This overriding can also be done using the Component Descriptor Editor tool. An example of an Analysis
         Engine that overrides this parameter can be found in
@@ -643,8 +638,7 @@ Map additionalParams2 = new HashMap();
 additionalParams2.put(Resource.PARAM_UIMA_CONTEXT, childContext2);
 
 AnalysisEngine myAE = UIMAFramework.produceAnalysisEngine(
-        desc2, additionalParams2);      
-      </programlisting>
+        desc2, additionalParams2);</programlisting>
         
       </para>
     </section>
@@ -706,8 +700,7 @@ AnalysisEngine myAE = UIMAFramework.produceAnalysisEngine(
           "merged CAS":</para>
         
         
-        <programlisting>
-  public void process(JCas aJCas) throws AnalysisEngineProcessException {
+        <programlisting>public void process(JCas aJCas) throws AnalysisEngineProcessException {
     // procure a new CAS if we don't have one already
     if (mMergedCas == null) {
       mMergedCas = getEmptyJCas();
@@ -740,8 +733,7 @@ AnalysisEngine myAE = UIMAFramework.produceAnalysisEngine(
           copiedIndexedFs.add(fs);
         }
       }
-    }
-      </programlisting>
+    }</programlisting>
         
         <para>The <literal>CasCopier</literal> class is used to copy Feature Structures of certain types
           (specified by a configuration parameter) to the merged CAS. The <literal>CasCopier</literal> does deep
@@ -799,8 +791,7 @@ if (sourceDocInfo.getLastSegment()) {
         <para>These methods are relatively simple:</para>
         
         
-        <programlisting>
-  public boolean hasNext() throws AnalysisEngineProcessException {
+        <programlisting>public boolean hasNext() throws AnalysisEngineProcessException {
     return mReadyToOutput;
   }
 
@@ -812,8 +803,7 @@ if (sourceDocInfo.getLastSegment()) {
     mMergedCas = null;
     mReadyToOutput = false;
     return casToReturn;
-  }
-      </programlisting>
+  }</programlisting>
         <para>When the merged CAS is ready to be output, <literal>hasNext</literal> will return true, and
           <literal>next</literal> will return the merged CAS, taking care to set the
           <literal>mMergedCas</literal> field to
