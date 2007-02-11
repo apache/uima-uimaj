@@ -29,6 +29,7 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.CasIterator;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.examples.PrintAnnotations;
+import org.apache.uima.internal.util.FileUtils;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
 
@@ -67,10 +68,7 @@ public class CasMultiplierExampleApplication {
 
       // read input text file
       File textFile = new File(args[1]);
-      BufferedInputStream fis = new BufferedInputStream(new FileInputStream(textFile));
-      byte[] contents = new byte[(int) textFile.length()];
-      fis.read(contents);
-      String document = new String(contents, "UTF-8");
+      String document = FileUtils.file2String(textFile, "UTF-8");
 
       // create a new CAS and set the document text
       CAS initialCas = ae.newCAS();

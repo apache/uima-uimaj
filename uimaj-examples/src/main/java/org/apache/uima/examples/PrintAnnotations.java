@@ -38,6 +38,7 @@ import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.internal.util.FileUtils;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
 
@@ -261,11 +262,7 @@ public class PrintAnnotations {
       }
 
       // read contents of file
-      BufferedInputStream fis = new BufferedInputStream(new FileInputStream(inputFile));
-      byte[] contents = new byte[(int) inputFile.length()];
-      fis.read(contents);
-      fis.close();
-      String document = new String(contents);
+      String document = FileUtils.file2String(inputFile);
 
       // send doc through the AE
       cas.setDocumentText(document);

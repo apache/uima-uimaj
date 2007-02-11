@@ -28,6 +28,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.internal.util.FileUtils;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
 
@@ -120,11 +121,7 @@ public class ExampleApplication {
     BufferedInputStream fis = null;
 
     try {
-      // read file
-      fis = new BufferedInputStream(new FileInputStream(aFile));
-      byte[] contents = new byte[(int) aFile.length()];
-      fis.read(contents);
-      String document = new String(contents, "UTF-8");
+      String document = FileUtils.file2String(aFile);
       document = document.trim();
 
       // put document text in CAS
