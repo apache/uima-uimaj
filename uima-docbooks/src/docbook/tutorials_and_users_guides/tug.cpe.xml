@@ -947,7 +947,7 @@ mCPE.process();</programlisting></para>
         </section>
         
         <section id="ugr.tug.cpe.cas_consumer.optional_methods">
-          <title>Optional Methods></title>
+          <title>Optional Methods</title>
           <para>The following methods are optional in a CAS Consumer, though they are often
             used.</para>
           <section id="ugr.tug.cpe.cas_consumer.optional_methods.batchprocesscomplete">
