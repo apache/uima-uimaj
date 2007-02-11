@@ -18,7 +18,6 @@
  */
 package org.apache.uima.util.jet;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -48,6 +47,7 @@ public class JetExpander {
 " */\n\n";
  
   static class ErrorExit extends RuntimeException {
+    private static final long serialVersionUID = 1L;
     String msg;
     ErrorExit(String msg) {
       super();
@@ -99,26 +99,34 @@ public class JetExpander {
 	}
 	
 	String readFile(String fileName) {
- 		
-    char [] buffer;
-    
+    FileReader fileReader = null;
     try {
-			File file = new File((new File(fileName)).getCanonicalPath());
-   	
-			BufferedReader fileReader = new BufferedReader(new FileReader(file.getCanonicalPath()));
-			int fileLength = (int)file.length();
-			buffer = new char [fileLength];
-      // this form with 3 args is the only one the Javadoc says will read all of the file
-			fileReader.read(buffer, 0, fileLength);			
-			return new String(buffer).replaceAll("\\r","");  // for linux/unix
-//			return new String(buffer);  
+			File file = new File(fileName);  	
+      fileReader = new FileReader(file);
+      
+			int fileLength = (int)file.length(); // length in bytes >= length in chars due to char encoding
+			char[] buffer = new char [fileLength];
+      int read_so_far = 0;
+      while (read_so_far < fileLength) {
+			  int count = fileReader.read(buffer, read_so_far, fileLength - read_so_far);	
+        if (0 > count)
+          break;
+        read_so_far += count;
+      }     
+			return new String(buffer, 0, read_so_far).replaceAll("\\r","");  // for linux/unix 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			throw new ErrorExit("Bad Input File - can't read it: '" + fileName + "'");	  
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new ErrorExit("IO Error reading input file: '" + fileName + "'");
-		} 
+		} finally {
+      if (null != fileReader) 
+        try {
+          fileReader.close();
+        } catch (IOException e) {
+        }
+    }
 	}
 	
 	String pathOnly(String f) {
