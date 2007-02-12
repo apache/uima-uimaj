@@ -33,7 +33,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.uima.internal.util.FileUtils;
+import org.apache.uima.util.FileUtils;
 
 
 /**

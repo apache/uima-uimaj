@@ -80,7 +80,6 @@ import org.apache.uima.collection.CollectionProcessingManager;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.EntityProcessStatus;
 import org.apache.uima.collection.StatusCallbackListener;
-import org.apache.uima.internal.util.FileUtils;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.Capability;
@@ -96,6 +95,7 @@ import org.apache.uima.tools.util.gui.AboutDialog;
 import org.apache.uima.tools.util.gui.SpringUtilities;
 import org.apache.uima.util.AnalysisEnginePerformanceReports;
 import org.apache.uima.util.CasCreationUtils;
+import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 

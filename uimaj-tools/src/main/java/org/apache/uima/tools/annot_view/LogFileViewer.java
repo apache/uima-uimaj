@@ -39,7 +39,7 @@ import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.text.DefaultEditorKit;
 
-import org.apache.uima.internal.util.FileUtils;
+import org.apache.uima.util.FileUtils;
 
 /**
  * Simple file viewer for viewing log files.
