@@ -338,8 +338,8 @@
                   <xreftext>the section called “processCas()”</xreftext>
                </div>
                <div element="section" href="#ugr.tug.cpe.cas_consumer.optional_methods" number="" targetptr="ugr.tug.cpe.cas_consumer.optional_methods">
-                  <ttl>Optional Methods&gt;</ttl>
-                  <xreftext>the section called “Optional Methods&gt;”</xreftext>
+                  <ttl>Optional Methods</ttl>
+                  <xreftext>the section called “Optional Methods”</xreftext>
                   <div element="section" href="#ugr.tug.cpe.cas_consumer.optional_methods.batchprocesscomplete" number="" targetptr="ugr.tug.cpe.cas_consumer.optional_methods.batchprocesscomplete">
                      <ttl>batchProcessComplete()</ttl>
                      <xreftext>the section called “batchProcessComplete()”</xreftext>

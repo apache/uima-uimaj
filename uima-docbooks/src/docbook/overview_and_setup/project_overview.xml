@@ -448,42 +448,17 @@ under the License.
     </orderedlist>
   </section>
   
-  <section id="ugr.project_overview_migrating_from_ibm_uima">
-    <title>Migrating from IBM UIMA to Apache UIMA</title>
-    <para>In Apache UIMA, several things have changed that require changes to user code and descriptors.  For instance,
-      the Java package names for all of the UIMA classes and interfaces have changed from what they
-      were in IBM UIMA; all of the package names now start with the prefix <literal>org.apache</literal>. 
-      These changes require that all user code written to previous APIs be updated
-      and recompiled. Some changes to XML descriptors are also required. A migration utility is provided which will
-      make the required updates to your files. </para>
+  <section id="ugr.project_overview_changes_from_previous">
+      <title>Changes from Previous Versions</title>
+
+    <section id="ugr.project_overview_changes_from_2_0">
+    <title>Changes from IBM UIMA 2.0 to Apache UIMA 2.1</title>
     
-    <section id="ugr.project_overview_running_the_migration_utility">
-      <title>Running the Migration Utility</title> 
-      <warning>
-        <para>Before running the migration utility, be sure to back up your files, just in case you encounter any
-        problems, because the migration tool updates the files in place in the directories where it finds them.</para> 
-      </warning>
-      <para> The migration utility is run by executing the script file
-        <literal>apache-uima/bin/ibmUimaToApacheUima.bat</literal> (Windows) or
-        <literal>apache-uima/bin/ibmUimaToApacheUima.sh</literal> (UNIX). You must pass one argument: the
-        directory containing the files that you want to be migrated. Subdirectories will be processed
-        recursively.</para>
-      <para>The script scans your files and applies the necessary updates, for example replacing the com.ibm
-        package names with the new org.apache package names. For more details on what has changed in the UIMA APIs and
-        what changes are performed by the migration script, see the next section of this document.</para>
-      
-      <para>The script will only attempt to modify files with the extensions: java, xml, xmi, wsdd, properties,
-        launch, bat, cmd, sh, ksh, or csh; and files with no extension. Also, files with size greater than 1,000,000
-        bytes will be skipped. (If you want the script to modify files with other extensions, you can edit the script
-        file and change the <literal>-ext</literal> argument appropriately.) </para>
-      <para>After running the migration utility, you must recompile your code against the Apache UIMA jar files. The
-        migration utility should have done most of the updates necessary for your code to compile and run, but some
-        situations require manual intervention. See section <xref
-          linkend="ugr.project_overview_manual_migration_necessary"/> for more information.</para>
-    </section>
+    <para>This section describes what has changed between version 2.0 and version 2.1 of UIMA.
+      A migration utility is provided which will make the required updates to your Java code and
+      descriptors.  See <xref linkend="ugr.project_overview_migrating_from_ibm_uima"/> for 
+      instructions on how to run the migration utility.</para>
     
-    <section id="ugr.project_overview_changes_addressed_by_migration_utility">
-      <title>Changes Addressed by the Migration Utility</title>
       <section id="ugr.project_overview.migration_utility.java_package_name_changes">
         <title>Java Package Name Changes</title>
         <para>All of the UIMA Java package names have changed in Apache UIMA. They now start with
@@ -518,9 +493,7 @@ under the License.
           . The following have also been removed and replaced with the equivalent "CAS" variants:
           <literal>TCASException</literal>, <literal>TCASRuntimeException</literal>,
           <literal>TCasPool</literal>, and <literal>CasCreationUtils.createTCas(...)</literal>. </para>
-        <para>The migration script will apply the necessary replacements. It will only replace "TCAS" when it
-          appears capitalized and as a word by itself, or as one of the class or method names listed above. Otherwise it
-          will not be replaced.</para>
+        <para>The migration script will apply the necessary replacements.</para>
       </section>
       <section id="ugr.project_overview.migration_utility.jcas_interface">
         <title>JCas Is Now an Interface</title>
@@ -545,97 +518,6 @@ under the License.
           the migration utility will process by default.)
           </para>
       </section>      
-    </section>
-    
-    <section id="ugr.project_overview_manual_migration_necessary">
-      <title>Situations Where Manual Migration is Necessary</title>
-      <para> In the following situations the migration script will not be able to automatically apply the necessary
-        changes, and some manual intervention is necessary. </para>
-      <section id="ugr.project_overview.manual_migration_needed.jcas_for_document_annotation">
-        <title>JCas Cover Classes for DocumentAnnotation</title>
-        <para> If you have run JCasGen it is likely that you have the classes
-          <literal>com.ibm.uima.jcas.tcas.DocumentAnnotation</literal> and
-          <literal>com.ibm.uima.jcas.tcas.DocumentAnnotation_Type</literal> as part of your code. This
-          package name is no longer valid, and the migration utility does not move your files between directories so
-          it is unable to fix this. </para>
-        <para> If you have not made manual modifications to these classes, the best solution is usually to just delete
-          these two classes (and their containing package). There is a default version in the
-          <literal>uima-document-annotation.jar</literal> file that is included in Apache UIMA. If you
-          <emphasis>have</emphasis> made custom changes, then you should not delete the file but instead move it to
-          the correct package <literal>org.apache.uima.jcas.tcas</literal>. For more information about JCas
-          and DocumentAnnotation please see <olink targetdoc="&uima_docs_ref;"
-            targetptr="ugr.ref.jcas.documentannotation_issues"/> </para>
-      </section>
-      <section id="ugr.project_overview.manual_migration_needed.getdocumentannotation">
-        <title>JCas.getDocumentAnnotation</title>
-        <para>The deprecated method <literal>JCas.getDocumentAnnotation</literal> has been removed. Its use
-          must be replaced with <literal>JCas.getDocumentAnnotationFs</literal>. The method
-          <literal>JCas.getDocumentAnnotationFs()</literal> returns type <literal>TOP</literal>, so your
-          code must cast this to type <literal>DocumentAnnotation</literal>. The reasons for this are described
-          in <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.jcas.documentannotation_issues"/>.
-          </para>
-      </section>
-      <section id="ugr.project_overview.manual_migration_needed.xiinclude">
-        <title>xi:include</title>
-        <para>The use of &lt;xi:include> in UIMA component descriptors has been discouraged for some time, and in
-          Apache UIMA support for it has been removed. If you have descriptors that use that, you must change them to
-          use UIMA's &lt;import> syntax instead. The proper syntax is described in <olink
-            targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.component_descriptor.imports"/>.
-          </para>
-      </section>
-      <section id="ugr.project_overview.manual_migration_needed.duplicate_methods_cas_tcas">
-        <title>Duplicate Methods Taking CAS and TCAS as Arguments</title>
-        <para>Because <literal>TCAS</literal> has been replaced by <literal>CAS</literal>, if you had two
-          methods distinguished only by whether an argument type was <literal>TCAS</literal> or
-          <literal>CAS</literal>, the migration tool will cause these to have identical signatures, which will be
-          a compile error. If this happens, consider why the two variants were needed in the first place. Often, it may
-          work to simply delete one of the methods.</para>
-      </section>
-      <section id="ugr.project_overview.manual_migration_needed.undocumented_methods">
-        <title>Use of Undocumented Methods from the com.ibm.uima.util package</title>
-        <para>Previous UIMA versions has some methods in the <literal>com.ibm.uima.util</literal> package that
-          were for internal use and were not documented in the JavaDoc. (There are also many methods in that package
-          which are documented, and there is no issue with using these.) It is not recommended that you use any of the
-          undocumented methods. If you do, the migration script will not handle them correctly. These have now been
-          moved to <literal>org.apache.uima.internal.util</literal>, and you will have to manually update your
-          imports to point to this location.</para>
-      </section>
-      <section id="ugr.project_overview.manual_migration_needed.uima_package_names_in_user_code">
-        <title>Use of UIMA Package Names for User Code</title>
-        <para>If you have placed your own classes in a package that has exactly the same name as one of the UIMA packages
-          (not recommended), this will cause problems when your run the migration script. Since the script replaces
-          UIMA package names, all of your imports that refer to your class will get replaced and your code will no
-          longer compile. If this happens, you can fix it by manually moving your code to the new Apache UIMA package
-          name (i.e., whatever name your imports got replaced with). However, we recommend instead that you do not
-          use Apache UIMA package names for your own code.</para>
-        <para>An even more rare case would be if you had a package name that started with a capital letter (poor Java
-          style) AND was prefixed by one of the UIMA package names, for example a package named
-          <literal>com.ibm.uima.MyPackage</literal>. This would be treated as a class name and replaced with
-          <literal>org.apache.uima.MyPackage</literal> wherever it occurs.</para>
-      </section>
-      <section id="ugr.project_overview.manual_migration_needed.exceptions_extend_uima_exceptions">
-        <title>CASException and CASRuntimeException now extend UIMA(Runtime)Exception</title>
-        <para>
-          This change may affect user code to a small extent, as some of the APIs on 
-          <literal>CASException</literal> and <literal>CASRuntimeException</literal> no longer exist.
-          On the up side, all UIMA exceptions are now derived from the same base classes and behave
-          the same way.  The most significant change is that you can no longer check for the specific
-          type of exception the way you used to.  For example, if you had code like this:
-          
-          <programlisting>catch (CASRuntimeException e) {
-  if (e.getError() == CASRuntimeException.ILLEGAL_ARRAY_SIZE) {
-  // Do something in case this particular error is caught</programlisting>
-          
-          you will need to replace it with the following:
-          
-          <programlisting>catch (CASRuntimeException e) {
-  if (e.getMessageKey().equals(CASRuntimeException.ILLEGAL_ARRAY_SIZE)) {
-  // Do something in case this particular error is caught</programlisting>
-          
-          as the message keys are now strings.  This change is not handled by the migration script.
-        </para>
-      </section>
-    </section>
     <section id="ugr.ovv.search_engine_repackaged">
       <title>Semantic Search Engine Repackaged</title>
       <para>The versions of the UIMA SDK prior to the move into Apache came with a semantic search engine. The Apache
@@ -644,7 +526,8 @@ under the License.
         time) with other open source search engines, such as the Lucene search engine project in Apache.</para>
     </section>
   </section>
-  
+    
+    
   <section id="ugr.project_overview_changes_from_v1">
     <title>Changes from UIMA Version 1.x</title>
     <para>Version 2.x of UIMA provides new capabilities and refines several areas of the UIMA
@@ -812,6 +695,136 @@ under the License.
       
     </section>
   </section>
+  </section>
+
+  <section id="ugr.project_overview_migrating_from_ibm_uima">
+    <title>Migrating from IBM UIMA to Apache UIMA</title>
+    <para>In Apache UIMA, several things have changed that require changes to user code and descriptors.
+      A migration utility is provided which will make the required updates to your files.  The most
+      significant change is that the Java package names for all of the UIMA classes and interfaces have changed 
+      from what they were in IBM UIMA; all of the package names now start with the prefix <literal>org.apache</literal>.</para>
+    
+    <section id="ugr.project_overview_running_the_migration_utility">
+      <title>Running the Migration Utility</title> 
+      <note>
+        <para>Before running the migration utility, be sure to back up your files, just in case you encounter any
+        problems, because the migration tool updates the files in place in the directories where it finds them.</para> 
+      </note>
+      <para> The migration utility is run by executing the script file
+        <literal>apache-uima/bin/ibmUimaToApacheUima.bat</literal> (Windows) or
+        <literal>apache-uima/bin/ibmUimaToApacheUima.sh</literal> (UNIX). You must pass one argument: the
+        directory containing the files that you want to be migrated. Subdirectories will be processed
+        recursively.</para>
+
+      <para>The script scans your files and applies the necessary updates, for example replacing the com.ibm
+        package names with the new org.apache package names. For more details on what has changed in the UIMA APIs and
+        what changes are performed by the migration script, see <xref linkend="ugr.project_overview_changes_from_2_0"/>.</para>
+      
+      <para>The script will only attempt to modify files with the extensions: java, xml, xmi, wsdd, properties,
+        launch, bat, cmd, sh, ksh, or csh; and files with no extension. Also, files with size greater than 1,000,000
+        bytes will be skipped. (If you want the script to modify files with other extensions, you can edit the script
+        file and change the <literal>-ext</literal> argument appropriately.) </para>
+      
+      <para>If the migration tool reports warnings, there may be a few additional steps to take.  The following two
+        sections explain some simple manual changes that you might need to make to your code.</para>
+
+      <section id="ugr.project_overview_running_the_migration_utility.jcas_for_document_annotation">
+        <title>JCas Cover Classes for DocumentAnnotation</title>
+        <para> If you have run JCasGen it is likely that you have the classes
+          <literal>com.ibm.uima.jcas.tcas.DocumentAnnotation</literal> and
+          <literal>com.ibm.uima.jcas.tcas.DocumentAnnotation_Type</literal> as part of your code. This
+          package name is no longer valid, and the migration utility does not move your files between directories so
+          it is unable to fix this. </para>
+        <para> If you have not made manual modifications to these classes, the best solution is usually to just delete
+          these two classes (and their containing package). There is a default version in the
+          <literal>uima-document-annotation.jar</literal> file that is included in Apache UIMA. If you
+          <emphasis>have</emphasis> made custom changes, then you should not delete the file but instead move it to
+          the correct package <literal>org.apache.uima.jcas.tcas</literal>. For more information about JCas
+          and DocumentAnnotation please see <olink targetdoc="&uima_docs_ref;"
+            targetptr="ugr.ref.jcas.documentannotation_issues"/> </para>
+      </section>
+      <section id="ugr.project_overview_running_the_migration_utility.manual_migration_needed.getdocumentannotation">
+        <title>JCas.getDocumentAnnotation</title>
+        <para>The deprecated method <literal>JCas.getDocumentAnnotation</literal> has been removed. Its use
+          must be replaced with <literal>JCas.getDocumentAnnotationFs</literal>. The method
+          <literal>JCas.getDocumentAnnotationFs()</literal> returns type <literal>TOP</literal>, so your
+          code must cast this to type <literal>DocumentAnnotation</literal>. The reasons for this are described
+          in <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.jcas.documentannotation_issues"/>.
+          </para>
+      </section>      
+      
+    </section>
+    
+     
+    <section id="ugr.project_overview_rare_migration">
+      <title>Rare Cases Where Additional Manual Migration is Necessary</title>
+      <para>The following are rare cases where you may need to take additional steps to migrate your code.  You need only 
+        read this section if the migration tool reported a warning or if you are having trouble getting your code to 
+        compile or run after running the migration.</para>
+      
+      <section id="ugr.project_overview.manual_migration_needed.xiinclude">
+        <title>xi:include</title>
+        <para>The use of &lt;xi:include> in UIMA component descriptors has been discouraged for some time, and in
+          Apache UIMA support for it has been removed. If you have descriptors that use that, you must change them to
+          use UIMA's &lt;import> syntax instead. The proper syntax is described in <olink
+            targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.component_descriptor.imports"/>.
+          </para>
+      </section>
+      <section id="ugr.project_overview.manual_migration_needed.duplicate_methods_cas_tcas">
+        <title>Duplicate Methods Taking CAS and TCAS as Arguments</title>
+        <para>Because <literal>TCAS</literal> has been replaced by <literal>CAS</literal>, if you had two
+          methods distinguished only by whether an argument type was <literal>TCAS</literal> or
+          <literal>CAS</literal>, the migration tool will cause these to have identical signatures, which will be
+          a compile error. If this happens, consider why the two variants were needed in the first place. Often, it may
+          work to simply delete one of the methods.</para>
+      </section>
+      <section id="ugr.project_overview.manual_migration_needed.undocumented_methods">
+        <title>Use of Undocumented Methods from the com.ibm.uima.util package</title>
+        <para>Previous UIMA versions has some methods in the <literal>com.ibm.uima.util</literal> package that
+          were for internal use and were not documented in the JavaDoc. (There are also many methods in that package
+          which are documented, and there is no issue with using these.) It is not recommended that you use any of the
+          undocumented methods. If you do, the migration script will not handle them correctly. These have now been
+          moved to <literal>org.apache.uima.internal.util</literal>, and you will have to manually update your
+          imports to point to this location.</para>
+      </section>
+      <section id="ugr.project_overview.manual_migration_needed.uima_package_names_in_user_code">
+        <title>Use of UIMA Package Names for User Code</title>
+        <para>If you have placed your own classes in a package that has exactly the same name as one of the UIMA packages
+          (not recommended), this will cause problems when your run the migration script. Since the script replaces
+          UIMA package names, all of your imports that refer to your class will get replaced and your code will no
+          longer compile. If this happens, you can fix it by manually moving your code to the new Apache UIMA package
+          name (i.e., whatever name your imports got replaced with). However, we recommend instead that you do not
+          use Apache UIMA package names for your own code.</para>
+        <para>An even more rare case would be if you had a package name that started with a capital letter (poor Java
+          style) AND was prefixed by one of the UIMA package names, for example a package named
+          <literal>com.ibm.uima.MyPackage</literal>. This would be treated as a class name and replaced with
+          <literal>org.apache.uima.MyPackage</literal> wherever it occurs.</para>
+      </section>
+      <section id="ugr.project_overview.manual_migration_needed.exceptions_extend_uima_exceptions">
+        <title>CASException and CASRuntimeException now extend UIMA(Runtime)Exception</title>
+        <para>
+          This change may affect user code to a small extent, as some of the APIs on 
+          <literal>CASException</literal> and <literal>CASRuntimeException</literal> no longer exist.
+          On the up side, all UIMA exceptions are now derived from the same base classes and behave
+          the same way.  The most significant change is that you can no longer check for the specific
+          type of exception the way you used to.  For example, if you had code like this:
+          
+          <programlisting>catch (CASRuntimeException e) {
+  if (e.getError() == CASRuntimeException.ILLEGAL_ARRAY_SIZE) {
+  // Do something in case this particular error is caught</programlisting>
+          
+          you will need to replace it with the following:
+          
+          <programlisting>catch (CASRuntimeException e) {
+  if (e.getMessageKey().equals(CASRuntimeException.ILLEGAL_ARRAY_SIZE)) {
+  // Do something in case this particular error is caught</programlisting>
+          
+          as the message keys are now strings.  This change is not handled by the migration script.
+        </para>
+      </section>
+    </section>
+  </section>
+  
   <section id="ugr.project_overview_summary">
     <title>Apache UIMA Summary</title>
     <section id="ugr.ovv.summary.general">
