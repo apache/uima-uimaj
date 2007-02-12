@@ -28,7 +28,7 @@ import java.util.StringTokenizer;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.impl.cpm.utils.CPMUtils;
 import org.apache.uima.collection.impl.cpm.utils.CpmLocalizedMessage;
-import org.apache.uima.internal.util.FileUtils;
+import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.Level;
 
 public class DebugControlThread implements Runnable {
