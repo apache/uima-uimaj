@@ -71,7 +71,13 @@ public interface FSIndex {
    * Indexing strategy: bag index. A bag index contains all elements, in no particular order.
    */
   public static final int BAG_INDEX = 2;
-
+  
+  /**
+   * Special indexes used by the framework to implement
+   * {@link FSIndexRepository#getAllIndexedFS(Type)}.  Not user-definable.
+   */
+  public static final int DEFAULT_BAG_INDEX = 3;
+  
   /**
    * Return the number of feature strucures in this index.
    * 

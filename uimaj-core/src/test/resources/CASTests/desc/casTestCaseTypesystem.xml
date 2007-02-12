@@ -209,5 +209,9 @@
     </featureDescription>
    </features>
   </typeDescription>
+  <typeDescription>
+    <name>OtherAnnotation</name>
+    <supertypeName>uima.cas.AnnotationBase</supertypeName>
+  </typeDescription>
  </types>
 </typeSystemDescription>
