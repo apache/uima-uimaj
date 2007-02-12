@@ -39,9 +39,13 @@ public interface XMLizable {
 
   /**
    * Writes this object's XML representation as a string. Note that if you want to write the XML to
-   * a file, it is highly recommended that you use {@link #toXML(OutputStream)} instead, as it
-   * ensures that output is written in UTF-8 encoding, which is the default encoding that should be
-   * used for XML files.
+   * a file or to a byte stream, it is highly recommended that you use {@link #toXML(OutputStream)} 
+   * instead, as it ensures that output is written in UTF-8 encoding, which is the default encoding 
+   * that should be used for XML files.
+   * <p>
+   * The XML String that is produced will have a header <code>&lt;?xml version="1.0" encoding="UTF-8"?></code>.  
+   * Therefore you should not write this string out in any encoding other than UTF-8 (for example do not use the
+   * default platform encoding), or you will produce output that will not be able to be parsed.
    * 
    * @param aWriter
    *          a Writer to which the XML string will be written
