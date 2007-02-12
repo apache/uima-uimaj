@@ -19,8 +19,6 @@
 
 package org.apache.uima.internal.util;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,7 +39,7 @@ import java.util.Random;
  */
 public class FileUtils {
 
-  /**
+	/**
    * Get a list of all files in a directory. Optionally, get files in subdirectories as well.
    * 
    * @param directory
@@ -51,27 +49,27 @@ public class FileUtils {
    * @return ArrayList A list of <code>File</code> objects. <code>null</code> if
    *         <code>directory</code> does not exist, or is not a directory.
    */
-  public static final ArrayList getFiles(File directory, boolean getRecursive) {
-    if (!directory.exists() || !directory.isDirectory()) {
-      return null;
-    }
-    ArrayList fileList = new ArrayList();
-    File[] fileArray = directory.listFiles();
-    File file;
-    for (int i = 0; i < fileArray.length; i++) {
-      file = fileArray[i];
-      if (file.isDirectory()) {
-        if (getRecursive) {
-          fileList.addAll(getFiles(file, getRecursive));
-        }
-      } else {
-        fileList.add(file);
-      }
-    }
-    return fileList;
-  }
+	public static final ArrayList getFiles(File directory, boolean getRecursive) {
+		if (!directory.exists() || !directory.isDirectory()) {
+			return null;
+		}
+		ArrayList fileList = new ArrayList();
+		File[] fileArray = directory.listFiles();
+		File file;
+		for (int i = 0; i < fileArray.length; i++) {
+			file = fileArray[i];
+			if (file.isDirectory()) {
+				if (getRecursive) {
+					fileList.addAll(getFiles(file, getRecursive));
+				}
+			} else {
+				fileList.add(file);
+			}
+		}
+		return fileList;
+	}
 
-  /**
+	/**
    * Get a list of all files in a directory, ignoring subdirectories.
    * 
    * @param directory
@@ -79,11 +77,11 @@ public class FileUtils {
    * @return ArrayList A list of <code>File</code> objects. <code>null</code> if
    *         <code>directory</code> does not exist, or is not a directory.
    */
-  public static final ArrayList getFiles(File directory) {
-    return getFiles(directory, false);
-  }
+	public static final ArrayList getFiles(File directory) {
+		return getFiles(directory, false);
+	}
 
-  /**
+	/**
    * Get a list of all subdirectories in a directory, ignoring regular files.
    * 
    * @param directory
@@ -91,51 +89,46 @@ public class FileUtils {
    * @return ArrayList A list of <code>File</code> objects. <code>null</code> if
    *         <code>directory</code> does not exist, or is not a directory.
    */
-  public static final ArrayList getSubDirs(File directory) {
-    if (!directory.exists() || !directory.isDirectory()) {
-      return null;
-    }
-    ArrayList dirList = new ArrayList();
-    File[] fileList = directory.listFiles();
-    File file;
-    for (int i = 0; i < fileList.length; i++) {
-      file = fileList[i];
-      if (file.isDirectory()) {
-        dirList.add(file);
-      }
-    }
-    return dirList;
-  }
+	public static final ArrayList getSubDirs(File directory) {
+		if (!directory.exists() || !directory.isDirectory()) {
+			return null;
+		}
+		ArrayList dirList = new ArrayList();
+		File[] fileList = directory.listFiles();
+		File file;
+		for (int i = 0; i < fileList.length; i++) {
+			file = fileList[i];
+			if (file.isDirectory()) {
+				dirList.add(file);
+			}
+		}
+		return dirList;
+	}
 
-  /**
+	/**
    * Read a bufferedReader into a string, using the default platform encoding.
    * 
-   * @param reader to be read in
-   * @param bufSize - size of stream, in bytes.  Size in chars is <= size in bytes, because
-   * chars take 1 or more bytes to encode.
+   * @param reader
+   *          to be read in
    * @return String The contents of the stream.
    * @throws IOException
    *           Various I/O errors.
    */
-  public static String reader2String(Reader reader, int bufSize) throws IOException {
-    char[] buf = new char[bufSize];
-    int read_so_far = 0;
-    try {
-      while (read_so_far < bufSize) {
-        int count = reader.read(buf, read_so_far, bufSize - read_so_far);
-        if (0 > count) {
-          break;
-        }
-        read_so_far += count;
-      }
-    } finally {
-      reader.close();
-    }
-    return new String(buf, 0, read_so_far);
-  }
+	public static String reader2String(Reader reader) throws IOException {
+		StringBuffer strBuffer = new StringBuffer();
+		char[] buf = new char[10000];
+		int charsRead;
+		try {
+			while ((charsRead = reader.read(buf)) >= 0) {
+				strBuffer.append(buf, 0, charsRead);
+			}
+		} finally {
+			reader.close();
+		}
+		return strBuffer.toString();
+	}
 
-
-  /**
+	/**
    * Read the contents of a file into a string, using the default platform encoding.
    * 
    * @param file
@@ -144,13 +137,11 @@ public class FileUtils {
    * @throws IOException
    *           Various I/O errors.
    */
-  public static String file2String(File file) throws IOException {
-    return reader2String(
-            new FileReader(file),
-            (int) file.length());   
-  }
+	public static String file2String(File file) throws IOException {
+		return reader2String(new FileReader(file));
+	}
 
-  /**
+	/**
    * Read the contents of a file into a string using a specific character encoding.
    * 
    * @param file
@@ -162,15 +153,14 @@ public class FileUtils {
    * @throws IOException
    *           Various I/O errors.
    */
-  public static String file2String(File file, String fileEncoding) throws IOException {
-    if (null == fileEncoding) // use default
-      return file2String(file);
-    return reader2String(
-            new InputStreamReader(new FileInputStream(file), fileEncoding),
-            (int) file.length());   
-  }
+	public static String file2String(File file, String fileEncoding) throws IOException {
+		if (fileEncoding == null) { // use default
+			return file2String(file);
+		}
+		return reader2String(new InputStreamReader(new FileInputStream(file), fileEncoding));
+	}
 
-  /**
+	/**
    * Write a string to a file. If the file exists, it is overwritten.
    * 
    * @param fileContents
@@ -180,16 +170,16 @@ public class FileUtils {
    * @throws IOException
    *           If for any reason the file can't be written.
    */
-  public static void saveString2File(String fileContents, File file) throws IOException {
-    BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-    writer.write(fileContents);
-    writer.close();
-  }
+	public static void saveString2File(String fileContents, File file) throws IOException {
+		BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+		writer.write(fileContents);
+		writer.close();
+	}
 
-  /**
+	/**
    * Write a string to a file. If the file exists, it is overwritten.
    * 
-   * @param fileContents
+   * @param s
    *          The file contents.
    * @param file
    *          The file to save to.
@@ -198,57 +188,57 @@ public class FileUtils {
    * @throws IOException
    *           If for any reason the file can't be written.
    */
-  public static void saveString2File(String s, File file, String encoding) throws IOException {
-    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file),
-            encoding));
-    writer.write(s);
-    writer.close();
-  }
+	public static void saveString2File(String s, File file, String encoding) throws IOException {
+		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file),
+				encoding));
+		writer.write(s);
+		writer.close();
+	}
 
-  /**
+	/**
    * Delete all files in a directory (not recursive).
    * 
    * @param directory
    *          The directory that contains the files to be deleted.
    */
-  public static final void deleteAllFiles(File directory) {
-    File[] fileList = directory.listFiles();
-    // If file does not exist, or is not a directory, do nothing.
-    if (fileList == null) {
-      return;
-    }
-    File file;
-    for (int i = 0; i < fileList.length; i++) {
-      file = fileList[i];
-      if (file.isFile()) {
-        file.delete();
-      }
-    }
-  }
+	public static final void deleteAllFiles(File directory) {
+		File[] fileList = directory.listFiles();
+		// If file does not exist, or is not a directory, do nothing.
+		if (fileList == null) {
+			return;
+		}
+		File file;
+		for (int i = 0; i < fileList.length; i++) {
+			file = fileList[i];
+			if (file.isFile()) {
+				file.delete();
+			}
+		}
+	}
 
-  /**
+	/**
    * Recursively delete possibly non-empty directory or file.
    * 
    * @param file
    *          The file or directory to be deleted.
    * @return <code>true</code> iff the file/directory could be deleted.
    */
-  public static final boolean deleteRecursive(File file) {
-    if (!file.exists()) {
-      return false;
-    }
-    boolean rc = true;
-    if (file.isDirectory()) {
-      File[] fileList = file.listFiles();
-      for (int i = 0; i < fileList.length; i++) {
-        rc &= deleteRecursive(fileList[i]);
-      }
-    }
-    rc &= file.delete();
-    return rc;
-  }
+	public static final boolean deleteRecursive(File file) {
+		if (!file.exists()) {
+			return false;
+		}
+		boolean rc = true;
+		if (file.isDirectory()) {
+			File[] fileList = file.listFiles();
+			for (int i = 0; i < fileList.length; i++) {
+				rc &= deleteRecursive(fileList[i]);
+			}
+		}
+		rc &= file.delete();
+		return rc;
+	}
 
-  /**
+	/**
    * Create a new directory. The parent directory must exist.
    * 
    * @param directory
@@ -256,17 +246,17 @@ public class FileUtils {
    * @return boolean Will fail if directory already exists, or File.mkdir() returns
    *         <code>false</code>.
    */
-  public static final boolean mkdir(File directory) {
-    // Check if directory already exists. The documentation is silent on
-    // what
-    // could actually cause File.mkdir() to fail.
-    if (directory.exists()) {
-      return false;
-    }
-    return directory.mkdir();
-  }
+	public static final boolean mkdir(File directory) {
+		// Check if directory already exists. The documentation is silent on
+		// what
+		// could actually cause File.mkdir() to fail.
+		if (directory.exists()) {
+			return false;
+		}
+		return directory.mkdir();
+	}
 
-  /**
+	/**
    * Create a temporary directory using random numbers as name suffixes.
    * 
    * @param parent
@@ -276,29 +266,29 @@ public class FileUtils {
    * @return A file object corresponding to the newly created dir, or <code>null</code> if none
    *         could be created for some reason (e.g., if the parent is not writable).
    */
-  public static final File createTempDir(File parent, String prefix) {
-    Random rand = new Random();
-    File tempDir;
-    while (true) {
-      tempDir = new File(parent, prefix + rand.nextInt());
-      if (!tempDir.exists()) {
-        if (tempDir.mkdirs()) {
-          tempDir.deleteOnExit();
-          return tempDir;
-        }
-        return null;
-      }
-    }
-  }
+	public static final File createTempDir(File parent, String prefix) {
+		Random rand = new Random();
+		File tempDir;
+		while (true) {
+			tempDir = new File(parent, prefix + rand.nextInt());
+			if (!tempDir.exists()) {
+				if (tempDir.mkdirs()) {
+					tempDir.deleteOnExit();
+					return tempDir;
+				}
+				return null;
+			}
+		}
+	}
 
-  public static final File createTempFile(String prefix, String suffix, File tempDir)
-          throws IOException {
-    File file = File.createTempFile(prefix, suffix, tempDir);
-    file.deleteOnExit();
-    return file;
-  }
+	public static final File createTempFile(String prefix, String suffix, File tempDir)
+			throws IOException {
+		File file = File.createTempFile(prefix, suffix, tempDir);
+		file.deleteOnExit();
+		return file;
+	}
 
-  /**
+	/**
    * Copy file <code>file</code> to location <code>dir</code>. This method will not fail
    * silently. Anything that prevents the copy from happening will be treated as an error condition.
    * If the method does not throw an exception, the copy was successful.
@@ -317,37 +307,37 @@ public class FileUtils {
    *           destination directory does not exist or isn't a directory, or if the file can't be
    *           copied for any reason.
    */
-  public static final void copyFile(File file, File dir) throws IOException {
-    if (!file.exists() || !file.canRead()) {
-      throw new IOException("File does not exist or is not readable: " + file.getAbsolutePath());
-    }
-    if (!dir.exists() || !dir.isDirectory()) {
-      throw new IOException("Destination does not exist or is not a directory: "
-              + dir.getAbsolutePath());
-    }
-    File outFile = new File(dir, file.getName());
-    if (outFile.exists() && !outFile.canWrite()) {
-      throw new IOException("Can't write output file: " + outFile);
-    }
-    byte[] bytes = new byte[(int) file.length()];
-    FileInputStream is = null; 
-    FileOutputStream os = null;
-    try {
-      is = new FileInputStream(file);
-      os = new FileOutputStream(outFile);
+	public static final void copyFile(File file, File dir) throws IOException {
+		if (!file.exists() || !file.canRead()) {
+			throw new IOException("File does not exist or is not readable: " + file.getAbsolutePath());
+		}
+		if (!dir.exists() || !dir.isDirectory()) {
+			throw new IOException("Destination does not exist or is not a directory: "
+					+ dir.getAbsolutePath());
+		}
+		File outFile = new File(dir, file.getName());
+		if (outFile.exists() && !outFile.canWrite()) {
+			throw new IOException("Can't write output file: " + outFile);
+		}
+		byte[] bytes = new byte[(int) file.length()];
+		FileInputStream is = null;
+		FileOutputStream os = null;
+		try {
+			is = new FileInputStream(file);
+			os = new FileOutputStream(outFile);
 
-      while (true) {
-        int count = is.read(bytes);
-        if (0 > count)
-          break;
-        os.write(bytes, 0, count);
-      }
-    } finally {
-      if (null != is)
-        is.close();
-      if (null != os)
-        os.close();
-    } 
-  }
+			while (true) {
+				int count = is.read(bytes);
+				if (0 > count)
+					break;
+				os.write(bytes, 0, count);
+			}
+		} finally {
+			if (null != is)
+				is.close();
+			if (null != os)
+				os.close();
+		}
+	}
 
 }
