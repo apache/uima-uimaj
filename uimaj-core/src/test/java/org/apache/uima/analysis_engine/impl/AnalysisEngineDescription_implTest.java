@@ -443,7 +443,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
     
     //test UIMA C++ descriptor (should succeed even though annotator library doesn't exist)
     in = new XMLInputSource(JUnitExtension
-            .getFile("TextAnalysisEngineImplTest/TestUimaCppAE.xml"));
+            .getFile("TextAnalysisEngineImplTest/TestUimaCppAe.xml"));
     desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
     desc.doFullValidation();
     
