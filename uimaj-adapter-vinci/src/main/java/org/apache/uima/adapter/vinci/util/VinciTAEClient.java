@@ -21,7 +21,7 @@ package org.apache.uima.adapter.vinci.util;
 
 import java.io.File;
 
-import org.apache.uima.internal.util.FileUtils;
+import org.apache.uima.util.FileUtils;
 import org.apache.vinci.transport.VinciClient;
 import org.apache.vinci.transport.VinciFrame;
 
