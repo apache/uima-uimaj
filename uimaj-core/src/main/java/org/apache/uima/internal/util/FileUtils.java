@@ -350,17 +350,4 @@ public class FileUtils {
     } 
   }
 
-  public static void main(String[] args) {
-    if (args.length != 1) {
-      return;
-    }
-    String fileName = args[0];
-    System.out.println("Deleting: " + fileName);
-    if (deleteRecursive(new File(fileName))) {
-      System.out.println("File successfully deleted.");
-    } else {
-      System.out.println("Could not delete (all) file(s).");
-    }
-  }
-
 }
