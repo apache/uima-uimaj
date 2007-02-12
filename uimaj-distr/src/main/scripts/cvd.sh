@@ -18,8 +18,10 @@
 #   under the License.
 
 . "$UIMA_HOME/bin/setUimaClassPath.sh"
-if [ "$JAVA_HOME" = "" ];
+if [ "$JAVA_HOME" = "" ]
 then
-  JAVA_HOME=$UIMA_HOME/java/jre
+  UIMA_JAVA_CALL=java
+else
+  UIMA_JAVA_CALL="$JAVA_HOME/bin/java"
 fi
-"$JAVA_HOME/bin/java" -cp "$UIMA_CLASSPATH" -Xms128M -Xmx900M "-Duima.home=$UIMA_HOME" "-Duima.tools.cvd.manpath=${UIMA_HOME}/docs/html" "-Duima.datapath=$UIMA_DATAPATH" -DVNS_HOST=$VNS_HOST -DVNS_PORT=$VNS_PORT org.apache.uima.tools.annot_view.Gladis $*
+"$UIMA_JAVA_CALL" -cp "$UIMA_CLASSPATH" -Xms128M -Xmx900M "-Duima.home=$UIMA_HOME" "-Duima.tools.cvd.manpath=${UIMA_HOME}/docs/html" "-Duima.datapath=$UIMA_DATAPATH" -DVNS_HOST=$VNS_HOST -DVNS_PORT=$VNS_PORT org.apache.uima.tools.annot_view.Gladis $*

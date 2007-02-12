@@ -29,18 +29,20 @@ fi
 echo "Running JCasGen with no Java CAS Model merging.  To run with merging, use jcasgen_merge (requires Eclipse, plus UIMA and EMF plugins)."
 if [ "$JAVA_HOME" = "" ]
 then
-  JAVA_HOME=$UIMA_HOME/java/jre
+  UIMA_JAVA_CALL=java
+else
+  UIMA_JAVA_CALL="$JAVA_HOME/bin/java"
 fi
 LOGGER="-Djava.util.logging.config.file=$UIMA_HOME/config/FileConsoleLogger.properties"
 MAIN=org.apache.uima.tools.jcasgen.Jg
 if [ "$firstarg" = "" ]
 then
-  "$JAVA_HOME/bin/java" "$LOGGER" -cp "$UIMA_CLASSPATH" $MAIN
+  "$UIMA_JAVA_CALL" "$LOGGER" -cp "$UIMA_CLASSPATH" $MAIN
 else
   if [ "$secondarg" = "" ]
   then
-    "$JAVA_HOME/bin/java" "$LOGGER" -cp "$UIMA_CLASSPATH" $MAIN -jcasgeninput "$firstarg"
+    "$UIMA_JAVA_CALL" "$LOGGER" -cp "$UIMA_CLASSPATH" $MAIN -jcasgeninput "$firstarg"
   else
-    "$JAVA_HOME/bin/java" "$LOGGER" -cp "$UIMA_CLASSPATH" $MAIN -jcasgeninput "$firstarg" -jcasgenoutput "$secondarg"
+    "$UIMA_JAVA_CALL" "$LOGGER" -cp "$UIMA_CLASSPATH" $MAIN -jcasgeninput "$firstarg" -jcasgenoutput "$secondarg"
   fi  
 fi

@@ -23,9 +23,11 @@ then
   exit
 fi
 . "$UIMA_HOME/bin/setUimaClassPath.sh"
-if [ "$JAVA_HOME" = "" ];
+if [ "$JAVA_HOME" = "" ]
 then
-  JAVA_HOME=$UIMA_HOME/java/jre
+  UIMA_JAVA_CALL=java
+else
+  UIMA_JAVA_CALL="$JAVA_HOME/bin/java"
 fi
 
 SERVICE=$1
@@ -42,6 +44,6 @@ then
   VNS_HOST=$2
 fi
 
-"$JAVA_HOME/bin/java" -cp "$UIMA_CLASSPATH" "-Duima.datapath=$UIMA_DATAPATH" -DVNS_HOST=$VNS_HOST -DVNS_PORT=$VNS_PORT "-Djava.util.logging.config.file=$UIMA_HOME/config/Logger.properties" org.apache.uima.adapter.vinci.VinciAnalysisEngineService_impl $SERVICE $INSTANCEID
+"$UIMA_JAVA_CALL" -cp "$UIMA_CLASSPATH" "-Duima.datapath=$UIMA_DATAPATH" -DVNS_HOST=$VNS_HOST -DVNS_PORT=$VNS_PORT "-Djava.util.logging.config.file=$UIMA_HOME/config/Logger.properties" org.apache.uima.adapter.vinci.VinciAnalysisEngineService_impl $SERVICE $INSTANCEID
 
 

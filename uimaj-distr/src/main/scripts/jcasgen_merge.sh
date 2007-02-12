@@ -49,11 +49,13 @@ else
 
     rm -rf $ECLIPSE_TEMP_WORKSPACE
     
-    if [ "$JAVA_HOME" = "" ];
+    if [ "$JAVA_HOME" = "" ]
     then
-      JAVA_HOME=$UIMA_HOME/java/jre
-    fi
-    J="$JAVA_HOME/bin/java"
+      UIMA_JAVA_CALL=java
+    else
+      UIMA_JAVA_CALL="$JAVA_HOME/bin/java"
+    fi    
+    J="$UIMA_JAVA_CALL"
     ES="$ECLIPSE_HOME/startup.jar"
     MAIN=org.eclipse.core.launcher.Main
     LOGGER="-Djava.util.logging.config.file=$UIMA_HOME/config/FileConsoleLogger.properties"

@@ -18,8 +18,10 @@
 #   under the License.
 
 . "$UIMA_HOME/bin/setUimaClassPath.sh"
-if [ "$JAVA_HOME" = "" ];
+if [ "$JAVA_HOME" = "" ]
 then
-  JAVA_HOME=$UIMA_HOME/java/jre
+  UIMA_JAVA_CALL=java
+else
+  UIMA_JAVA_CALL="$JAVA_HOME/bin/java"
 fi
-"$JAVA_HOME/bin/java" -cp "$UIMA_CLASSPATH" "-Duima.datapath=$UIMA_DATAPATH" -Xms128M -Xmx256M org.apache.uima.tools.ValidateDescriptor $*
+"$UIMA_JAVA_CALL" -cp "$UIMA_CLASSPATH" "-Duima.datapath=$UIMA_DATAPATH" -Xms128M -Xmx256M org.apache.uima.tools.ValidateDescriptor $*

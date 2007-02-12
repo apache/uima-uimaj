@@ -18,8 +18,10 @@
 #   under the License.
 
 . setUimaClassPath.sh
-if [ "$JAVA_HOME" = "" ];
+if [ "$JAVA_HOME" = "" ]
 then
-  JAVA_HOME=$UIMA_HOME/java/jre
+  UIMA_JAVA_CALL=java
+else
+  UIMA_JAVA_CALL="$JAVA_HOME/bin/java"
 fi
-"$JAVA_HOME/bin/java" -cp "$UIMA_CLASSPATH" "-Duima.datapath=$UIMA_DATAPATH" -DVNS_HOST=$VNS_HOST -DVNS_PORT=$VNS_PORT "-Djava.util.logging.config.file=$UIMA_HOME/config/Logger.properties" -Xms128M -Xmx256M org.apache.uima.examples.cpe.SimpleRunCPE $*
+"$UIMA_JAVA_CALL" -cp "$UIMA_CLASSPATH" "-Duima.datapath=$UIMA_DATAPATH" -DVNS_HOST=$VNS_HOST -DVNS_PORT=$VNS_PORT "-Djava.util.logging.config.file=$UIMA_HOME/config/Logger.properties" -Xms128M -Xmx256M org.apache.uima.examples.cpe.SimpleRunCPE $*

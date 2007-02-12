@@ -18,8 +18,10 @@
 #   under the License.
 
 . "$UIMA_HOME/bin/setUimaClassPath.sh"
-if [ "$JAVA_HOME" = "" ];
+if [ "$JAVA_HOME" = "" ]
 then
-  JAVA_HOME=$UIMA_HOME/java/jre
+  UIMA_JAVA_CALL=java
+else
+  UIMA_JAVA_CALL="$JAVA_HOME/bin/java"
 fi
-"$JAVA_HOME/bin/java" -cp "$UIMA_CLASSPATH:$CATALINA_HOME/webapps/axis/WEB-INF/classes" org.apache.axis.client.AdminClient -lhttp://localhost:8080/axis/services/AdminService $1
+"$UIMA_JAVA_CALL" -cp "$UIMA_CLASSPATH:$CATALINA_HOME/webapps/axis/WEB-INF/classes" org.apache.axis.client.AdminClient -lhttp://localhost:8080/axis/services/AdminService $1
