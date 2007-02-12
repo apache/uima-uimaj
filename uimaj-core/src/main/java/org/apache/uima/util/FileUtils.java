@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.uima.internal.util;
+package org.apache.uima.util;
 
 import java.io.BufferedWriter;
 import java.io.File;
