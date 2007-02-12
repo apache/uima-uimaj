@@ -42,7 +42,7 @@
 			<nameValuePair>
 				<name>outputFile</name>
 				<value>
-					<string>C:/temp/uima/annotprint/annotations.txt</string>
+					<string>temp-uima-output/annotprint/annotations.txt</string>
 				</value>
 			</nameValuePair>
 		</configurationParameterSettings>

@@ -49,7 +49,7 @@
 			<nameValuePair>
 				<name>OutputDirectory</name>
 				<value>
-					<string>C:/temp/uima/xcaswriter</string>
+					<string>temp-uima-output/xcaswriter</string>
 				</value>
 			</nameValuePair>
 		</configurationParameterSettings>

@@ -46,7 +46,7 @@
             <nameValuePair>
                 <name>OutputDirectory</name>
                 <value>
-                    <string>C:/temp/uima/inlinexml</string>
+                    <string>temp-uima-output/inlinexml</string>
                 </value>
             </nameValuePair>
         </configurationParameterSettings>

@@ -42,7 +42,7 @@
       <nameValuePair>
         <name>OutputDirectory</name>
         <value>
-          <string>C:/temp/uima/xmi_output</string>
+          <string>temp-uima-output/xmi_output</string>
         </value>
       </nameValuePair>
     </configurationParameterSettings>
