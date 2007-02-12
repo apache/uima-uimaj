@@ -495,7 +495,7 @@ under the License.
           <literal>org.apache.uima.tools</literal> and service adapters under
           <literal>org.apache.uima.adapter</literal>. </para>
         <para>The migration utility will replace all occurrences of IBM UIMA package names with their Apache UIMA
-          equivalents. It will not replace <emphasis>prefixes</emphasis> of package names, so if your code uses is
+          equivalents. It will not replace <emphasis>prefixes</emphasis> of package names, so if your code uses
           a package called <literal>com.ibm.uima.myproject</literal> (although that is not recommended), it
           will not be replaced.</para>
       </section>
