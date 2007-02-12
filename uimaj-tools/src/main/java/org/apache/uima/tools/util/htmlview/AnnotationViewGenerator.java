@@ -92,12 +92,6 @@ public class AnnotationViewGenerator {
     mStyleMapToCss = getTemplates("styleMapToCss.xsl");
     mStyleMapToLegend = getTemplates("styleMapToLegend.xsl");
     mStyleMapToDocFrameXsl = getTemplates("styleMapToDocFrameXsl.xsl");
-
-    // Copy static files annotations.xsl, annotationViewer.js, and index.html to
-    // the output dir as well, where they will be used later
-    writeToFile("annotations.xsl", mOutputDir);
-    writeToFile("annotationViewer.js", mOutputDir);
-    writeToFile("index.html", mOutputDir);
   }
 
   /**
@@ -178,6 +172,12 @@ public class AnnotationViewGenerator {
    *          path to style map to be processed
    */
   public void processStyleMap(File aStyleMap) throws TransformerException {
+    // Copy static files annotations.xsl, annotationViewer.js, and index.html to
+    // the output dir as well, where they will be used later
+    writeToFile("annotations.xsl", mOutputDir);
+    writeToFile("annotationViewer.js", mOutputDir);
+    writeToFile("index.html", mOutputDir);
+    
     // Generate CSS from Style Map
     Transformer cssTransformer = mStyleMapToCss.newTransformer();
     cssTransformer.transform(new StreamSource(aStyleMap), new StreamResult(new File(mOutputDir,

@@ -102,12 +102,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
 
   private static final long serialVersionUID = -7259891069111863433L;
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-   */
-  private File tempDir = new File(System.getProperty("java.io.tmpdir"));
+  private File tempDir = createTempDir();
 
   protected AnnotationViewGenerator annotationViewGenerator; // JMP
 
@@ -138,43 +133,6 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
   private boolean processedStyleMap = false;
   
   private String defaultCasViewName = CAS.NAME_DEFAULT_SOFA;
-
-  // unwound from small anonymous inner class
-  public void actionPerformed(ActionEvent arg0) {
-    // read style map XML file if it exists
-    String styleMapXml = null;
-    AnalysisEngineDescription selectedAE = null;
-    try {
-      if (styleMapFile.exists()) {
-        styleMapXml = FileUtils.file2String(styleMapFile);
-      }
-
-      // have user select AE if they haven't done so already
-      if (selectedAE == null) {
-        selectedAE = promptForAE();
-      }
-      if (selectedAE != null) {
-        styleMapEditor.setAnalysisEngine(selectedAE);
-        // launch StyleMapEditor GUI
-        String newStyleMap = styleMapEditor.launchEditor(selectedAE.getAnalysisEngineMetaData(),
-                styleMapXml, cas);
-
-        if (newStyleMap != null) {
-          // write new file using AE+StyleMap convention
-          styleMapFile = med1.getStylemapFile();
-          // write new style map to disk
-          FileWriter writer = new FileWriter(styleMapFile);
-          writer.write(newStyleMap);
-          writer.close();
-          // process generated style map
-          annotationViewGenerator.processStyleMap(styleMapFile);
-        }
-      }
-    } catch (Exception e) {
-      displayError(e);
-    }
-
-  }
 
   /**
    * Create an AnnotationViewer Dialog
@@ -208,20 +166,6 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
     launchThatViewer(med.getOutputDir(), interactiveTempFN, aTypeSystem, aTypesToDisplay,
             javaViewerRBisSelected, javaViewerUCRBisSelected, xmlRBisSelected, aStyleMapFile,
             tempDir);
-  }
-
-  /**
-   * Filter to not show the two interactive-mode directories in the file list
-   */
-
-  static class InteractiveFilter implements FilenameFilter {
-    public boolean accept(File dir, String name) {
-      if (name.equals("interactive_temp"))
-        return false;
-      if (name.equals("interactive_out"))
-        return false;
-      return true;
-    }
   }
 
   public AnnotationViewerDialog(JFrame aParentFrame, String aDialogTitle, PrefsMediator med,
@@ -369,6 +313,54 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
 
   }
 
+  // unwound from small anonymous inner class
+  public void actionPerformed(ActionEvent arg0) {
+    // read style map XML file if it exists
+    String styleMapXml = null;
+    AnalysisEngineDescription selectedAE = null;
+    try {
+      if (styleMapFile.exists()) {
+        styleMapXml = FileUtils.file2String(styleMapFile);
+      }
+
+      // have user select AE if they haven't done so already
+      if (selectedAE == null) {
+        selectedAE = promptForAE();
+      }
+      if (selectedAE != null) {
+        styleMapEditor.setAnalysisEngine(selectedAE);
+        // launch StyleMapEditor GUI
+        String newStyleMap = styleMapEditor.launchEditor(selectedAE.getAnalysisEngineMetaData(),
+                styleMapXml, cas);
+
+        if (newStyleMap != null) {
+          // write new file using AE+StyleMap convention
+          styleMapFile = med1.getStylemapFile();
+          // write new style map to disk
+          FileWriter writer = new FileWriter(styleMapFile);
+          writer.write(newStyleMap);
+          writer.close();
+          // process generated style map
+          annotationViewGenerator.processStyleMap(styleMapFile);
+        }
+      }
+    } catch (Exception e) {
+      displayError(e);
+    }
+  }
+
+  /**
+   * Filter to not show the two interactive-mode directories in the file list
+   */
+  static class InteractiveFilter implements FilenameFilter {
+    public boolean accept(File dir, String name) {
+      if (name.equals("interactive_temp"))
+        return false;
+      if (name.equals("interactive_out"))
+        return false;
+      return true;
+    }
+  }
 
   /**
    * Gets the name of the CAS View that will be displayed first in 
@@ -698,6 +690,12 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
     } catch (Exception exc) {
       System.err.println("Error loading " + laf + ": " + exc);
     }
+  }
+  
+  private File createTempDir() {
+    File temp = new File(System.getProperty("java.io.tmpdir"), System.getProperty("user.name"));
+    temp.mkdir();
+    return temp;
   }
 
   // create and call the list cell renderer to set the selected color and
