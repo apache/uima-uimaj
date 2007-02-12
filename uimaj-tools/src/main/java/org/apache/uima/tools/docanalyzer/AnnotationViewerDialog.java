@@ -459,6 +459,10 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
           // generate HTML view
           // first process style map if not done already
           if (!processedStyleMap) {
+            if (!styleMapFile.exists()) {
+              annotationViewGenerator.autoGenerateStyleMapFile(
+                      promptForAE().getAnalysisEngineMetaData(), styleMapFile);
+            }
             annotationViewGenerator.processStyleMap(styleMapFile);
             processedStyleMap = true;
           }

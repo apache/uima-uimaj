@@ -151,7 +151,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
 
   protected String[] currentTaeOutputTypes; // JMP
 
-  private File styleMapFile;
+  private File userStyleMapFile;
 
   protected boolean useGeneratedStyleMap = false; // JMP
 
@@ -1272,10 +1272,10 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
    * @return Returns the styleMapFile.
    */
   public File getStyleMapFile() {
-    if (styleMapFile == null && prefsMed != null) {
-      styleMapFile = prefsMed.getStylemapFile();
+    if (userStyleMapFile == null && prefsMed != null) {
+      return prefsMed.getStylemapFile();
     }
-    return styleMapFile;
+    return userStyleMapFile;
   }
 
   /**
@@ -1283,7 +1283,7 @@ public class DocumentAnalyzer extends JFrame implements StatusCallbackListener, 
    *          The styleMapFile to set.
    */
   public void setStyleMapFile(File styleMapFile) {
-    this.styleMapFile = styleMapFile;
+    this.userStyleMapFile = styleMapFile;
   }
 
   /*
