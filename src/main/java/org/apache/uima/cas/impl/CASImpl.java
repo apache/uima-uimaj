@@ -3633,21 +3633,21 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 	}
 
 	/**
-   * @see org.apache.uima.cas.text.CAS#getAnnotationType()
+   * @see org.apache.uima.cas.CAS#getAnnotationType()
    */
 	public Type getAnnotationType() {
 		return this.annotType;
 	}
 
 	/**
-   * @see org.apache.uima.cas.text.CAS#getEndFeature()
+   * @see org.apache.uima.cas.CAS#getEndFeature()
    */
 	public Feature getEndFeature() {
 		return this.endFeat;
 	}
 
 	/**
-   * @see org.apache.uima.cas.text.CAS#getBeginFeature()
+   * @see org.apache.uima.cas.CAS#getBeginFeature()
    */
 	public Feature getBeginFeature() {
 		return this.startFeat;
