@@ -85,15 +85,19 @@ under the License.
       organizations, locations, facilities, products etc., that are not explicitly tagged
       or annotated in the original artifact. More challenging analytics may detect things
       like opinions, complaints, threats or facts. And then there are relations, for
-      example, located in, finances, supports, purchases, repairs etc. The lists of
-      concepts important for applications to detect and find in unstructured resources are
-      large and often domain specific. Specialized component analytics must be combined and
-      integrated to do the job. </para>
+      example, located in, finances, supports, purchases, repairs etc. The list of concepts 
+      important for applications to discover in unstructured content is large, varied and 
+      often domain specific. 
+      Many different component analytics may solve different parts of the overall analysis task. 
+      These component analytics must interoperate and must be easily combined to facilitate 
+      the developed of UIM applications.</para>
     
-    <para>The result of analysis must, in turn, be put in structured forms so that powerful
-      data mining and search technologies like search engines, database engines or OLAP
-      (On-Line Analytical Processing, or Data Mining) engines may be leveraged to
-      efficiently find the concepts you need, when you need them. </para>
+    <para>The result of analysis are used to populate structured forms so that conventional 
+      data processing and search technologies 
+      like search engines, database engines or OLAP
+      (On-Line Analytical Processing, or Data Mining) engines 
+      can efficiently deliver the newly discovered content in response to the client requests 
+      or queries.</para>
     
     <para>In analyzing unstructured content, UIM applications make use of a variety of
       analysis technologies including:</para>
@@ -115,8 +119,8 @@ under the License.
       
     </itemizedlist>
     
-    <para>These technologies are developed independently by highly specialized
-      scientists and engineers using different techniques, interfaces and platforms.
+    <para>Specific analysis capabilities using these technologies are developed 
+      independently using different techniques, interfaces and platforms.
       </para>
     
     <para>The bridge from the unstructured world to the structured world is built through the
@@ -287,13 +291,13 @@ under the License.
         document, the AE would create a Person object in the CAS and link it to the span of text
         where the person was mentioned in the document.</para>
       
-      <para>While the CAS is a general purpose representational structure, UIMA defines a
+      <para>While the CAS is a general purpose data structure, UIMA defines a
         few basic types and affords the developer the ability to extend these to define an
         arbitrarily rich <emphasis role="bold">Type System</emphasis>. You can think of a
         type system as an object schema for the CAS.</para>
       
-      <para>A type system defines the various types of objects that may be discovered in
-        documents and recorded by AEs.</para>
+      <para>A type system defines the various types of objects that may be discovered in 
+        documents by AE's that subscribe to that type system.</para>
       
       <para>As suggested above, Person may be defined as a type. Types have properties or
           <emphasis role="bold">features</emphasis>. So for example,
@@ -384,8 +388,9 @@ under the License.
         <title>Multiple Views within a CAS</title>
         
         <para>UIMA supports the simultaneous analysis of multiple views of a document. This
-          support comes in handy for processing multiple modalities, for example, the audio
-          and the closed captioned views of a single speech stream. </para>
+          support comes in handy for processing multiple forms of the artifact, for example, the audio
+          and the closed captioned views of a single speech stream, or the tagged and detagged 
+          views of an HTML document.</para>
         
         <para>AEs analyze one or more views of a document. Each view contains a specific
             <emphasis role="bold">subject of analysis(Sofa)</emphasis>, plus a set of
@@ -523,10 +528,11 @@ under the License.
       Engines.</emphasis> </para>
     
     <para>Annotators tend to perform fairly granular functions, for example language
-      detection, tokenization or part of speech detection. </para>
+      detection, tokenization or part of speech detection. 
+    These functions typically address just part of an overall analysis task. A workflow 
+      of component engines may be orchestrated to perform more complex tasks.</para>
     
-    <para>Advanced analysis, however may involve an orchestration of many of these
-      primitive functions. An AE that performs named entity detection, for example, may
+    <para>An AE that performs named entity detection, for example, may
       include a pipeline of annotators starting with language detection feeding
       tokenization, then part-of-speech detection, then deep grammatical parsing and then
       finally named-entity detection. Each step in the pipeline is required by the
@@ -535,7 +541,7 @@ under the License.
     
     <para>Aggregate AEs are built to encapsulate potentially complex internal structure
       and insulate it from users of the AE. In our example, the aggregate analysis engine
-      developer simply acquires the internal components, defines the necessary flow
+      developer acquires the internal components, defines the necessary flow
       between them and publishes the resulting AE. Consider the simple example illustrated
       in <xref linkend="ugr.ovv.conceptual.sample_aggregate"/> where
       <quote>MyNamed-EntityDetector</quote> is composed of a linear flow of more
@@ -543,11 +549,25 @@ under the License.
     
     <para>Users of this AE need not know how it is constructed internally but only need its name
       and its published input requirements and output types. These must be declared in the
-      aggregate AE descriptor. Aggregate AE&apos;s descriptors declare the components
+      aggregate AE&apos;s descriptor. Aggregate AE&apos;s descriptors declare the components
       they contain and a <emphasis role="bold">flow specification</emphasis>. The flow
       specification defines the order in which the internal component AEs should be run. The
       internal AEs specified in an aggregate are also called the <emphasis role="bold">
-      delegate analysis engines.</emphasis></para>
+      delegate analysis engines.</emphasis> The term "delegate" is used because aggregate AE's 
+      are thought to "delegate" functions to their internal AEs.</para>
+    
+    <para>
+      In UIMA 2.0, the developer can implement a "Flow Controller" and include it as part 
+      of an aggregate AE by referring to it in the aggregate AE's descriptor. 
+      The flow controller is responsible for computing the "flow", that is, 
+      for determining the order in which of delegate AE's that will process the CAS. 
+      The Flow Contoller has access to the CAS and any external resources it may require 
+      for determining the flow. It can do this dynamically at run-time, it can 
+      make multi-step decisions and it can consider any sort of flow specification 
+      included in the aggregate AE's descriptor. See 
+      <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.fc"/> 
+      for details on the UIMA Flow Controller interface.
+    </para>
     
     <para>We refer to the development role associated with building an aggregate from
       delegate AEs as the <emphasis role="bold">Analysis Engine Assembler</emphasis>
@@ -555,7 +575,7 @@ under the License.
     
     <para>The UIMA framework, given an aggregate analysis engine descriptor, will run all
       delegate AEs, ensuring that each one gets access to the CAS in the sequence produced by
-      the flow specification. The UIMA framework is equipped to handle different
+      the flow controller. The UIMA framework is equipped to handle different
       deployments where the delegate engines, for example, are <emphasis role="bold">
       tightly-coupled</emphasis> (running in the same process) or <emphasis role="bold">
       loosely-coupled</emphasis> (running in separate processes or even on different
@@ -791,7 +811,7 @@ under the License.
         <quote>center</quote>.</para>
       
       <para><emphasis role="bold">Semantic Search</emphasis> is a search paradigm that
-        can exploit the more powerful analytics pluggable in a UIMA CPE.</para>
+        can exploit the additional metadata generated by analytics like a UIMA CPE.</para>
       
       <para>Consider that we plugged a named-entity recognizer into the CPE described
         above. Assume this analysis engine is capable of detecting in documents and
@@ -896,7 +916,10 @@ under the License.
     <para>The support in UIMA for multiple subjects of analysis is called <emphasis
         role="bold">Sofa</emphasis> support; Sofa is an acronym which is derived from
         <emphasis role="underline">S</emphasis>ubject <emphasis role="underline">
-      of</emphasis> <emphasis role="underline">A</emphasis>nalysis. In UIMA a Sofa may
+      of</emphasis> <emphasis role="underline">A</emphasis>nalysis, which is a physical 
+      representation of an artifact (e.g., the detagged text of a web-page, the HTML 
+      text of the same web-page, the audio segment of a video, the close-caption text 
+      of the same audio segment). A Sofa may
       be associated with CAS Views. A particular CAS will have one or more views, each view
       corresponding to a particular subject of analysis, together with a set of the defined
       indexes that index the metadata created in that view.</para>
