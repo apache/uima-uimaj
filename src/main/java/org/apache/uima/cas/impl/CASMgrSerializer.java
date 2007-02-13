@@ -198,9 +198,12 @@ public class CASMgrSerializer implements Serializable {
     final ArrayList names = new ArrayList();
     // Create an iterator over the names.
     final Iterator namesIt = ir.getLabels();
-    // Add the names to the list.
+    // Add the names to the list, filtering out auto-indexes.
     while (namesIt.hasNext()) {
-      names.add(namesIt.next());
+      String name = (String) namesIt.next();
+      if (ir.getIndex(name).getIndexingStrategy() != FSIndex.DEFAULT_BAG_INDEX) { 
+        names.add(name);
+      }
     }
     // Now we know how many labels there are.
     final int numNames = names.size();
