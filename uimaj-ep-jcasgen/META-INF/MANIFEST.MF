@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Apache UIMA JCasGen Plugin
 Bundle-SymbolicName: org.apache.uima.jcas.jcasgenp; singleton:=true
-Bundle-Version: 2.1.0.incubating-SNAPSHOT
+Bundle-Version: 2.1.0.incubating
 Bundle-ClassPath: uima-ep-jcasgen.jar
 Bundle-Activator: org.eclipse.core.internal.compatibility.PluginActivator
 Bundle-Vendor: The Apache Software Foundation
