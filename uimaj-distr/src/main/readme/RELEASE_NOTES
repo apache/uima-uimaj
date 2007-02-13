@@ -1,4 +1,5 @@
 	Apache UIMA (Unstructured Information Management Architecture) v2.1.0
+                               Release Notes
    -----------------------------------------------------------------------
 
 CONTENTS
@@ -7,7 +8,7 @@ CONTENTS
 3. Migrating from IBM UIMA to Apache UIMA
 4. How to Get Involved
 5. How to Report Issues
-5. List of JIRA Issues Fixed in this Release   
+6. List of JIRA Issues Fixed in this Release   
    
    
 1. What is UIMA?
@@ -234,7 +235,6 @@ issues you find at http://issues.apache.org/jira/browse/uima.
     * [UIMA-141] - JCasGen - bring over missing templates and template build tool jet_expander
     * [UIMA-142] - JCas version of getLocalFSData() returning wrong type
     * [UIMA-144] - Wrong impl in JCasImpl for getView(local-view-name)
-    * [UIMA-147] - "Building with Maven" link on website nav bar does not work
     * [UIMA-148] - Calls to URL.equals and URL.hashCode should be removed
     * [UIMA-150] - DebugFSLogicalStructure - fix cache setting for Unexpanded Feature Structures (found by Findbugs)
     * [UIMA-153] - DocBook formatting fixes - style sheets and CSS wrong for table centering, plus fixes for CVD
@@ -310,6 +310,7 @@ issues you find at http://issues.apache.org/jira/browse/uima.
     * [UIMA-302] - adjustExamplePaths scripts replace "C:/Temp" with "temp"
     * [UIMA-304] - Document Analyzer HTML View Not Working
     * [UIMA-308] - org.apache.uima.cas.impl.AnnotationBaseImpl.toString() bombs for base annotations without sofa.
+    * [UIMA-310] - CasCopier fails on null array elements
 
 ** Improvement
     * [UIMA-9] - Remove support for xi:include
@@ -319,7 +320,6 @@ issues you find at http://issues.apache.org/jira/browse/uima.
     * [UIMA-28] - 2.0 examples use deprecated methods
     * [UIMA-33] - Do not use same timeout on GetMetadata as is used for Process
     * [UIMA-51] - Add version number to XCAS (or maybe to CAS built-in typesystem?)
-    * [UIMA-69] - update website with SVN commit comment guidelines for JIRA issue tracker
     * [UIMA-70] - JavaDoc doesn't match impl
     * [UIMA-76] - add new pear installer API to install a pear file easily out of an application
     * [UIMA-78] - CPE descriptor should support URLs to reference components
@@ -337,7 +337,6 @@ issues you find at http://issues.apache.org/jira/browse/uima.
     * [UIMA-120] - Logical Structure view of CAS: show view name in unexpanded form of CAS
     * [UIMA-121] - Documentation Formatting improvements
     * [UIMA-126] - add news section to the website
-    * [UIMA-127] - Add conference/workshop section to web site
     * [UIMA-132] - Provide better support for filenames with spaces in resource URL
     * [UIMA-134] - Extend CasCopier to support multiple views
     * [UIMA-145] - Port CVD documentation to DocBook
@@ -359,7 +358,6 @@ issues you find at http://issues.apache.org/jira/browse/uima.
     * [UIMA-215] - CasCopier constructor should take source CAS as argument
     * [UIMA-216] - Add getSupportedXCasVersions to Vinci Services
     * [UIMA-218] - Creating an subtype of an AnnotationBase in a "base" CAS gives wrong / misleading error message "Can't create FS of type xxx with this method"
-    * [UIMA-228] - update sandbox website with available components
     * [UIMA-235] - improve example tutorial code to use Matcher / find() in default mode
     * [UIMA-237] - Change source build to include only the docbook system zip files
     * [UIMA-241] - Migration Tool improvement
@@ -375,13 +373,9 @@ issues you find at http://issues.apache.org/jira/browse/uima.
 ** New Feature
     * [UIMA-49] - Migration tools from IBM UIMA to Apache UIMA
     * [UIMA-62] - Provide an example CasMultiplier that merges CASes
-    * [UIMA-95] - add sandbox infrastructure
-    * [UIMA-151] - Add project for uima whitespace tokenizer implementation
     * [UIMA-152] - add component test utilities project
-    * [UIMA-154] - add snowball annotator project
     * [UIMA-164] - Add source distribution
     * [UIMA-224] - Add release signing and verification info
-    * [UIMA-280] - add uimaj-internal-tools project and add tooling to detect jira issues for an UIMA level.
 
 
 
@@ -393,17 +387,14 @@ issues you find at http://issues.apache.org/jira/browse/uima.
     * [UIMA-6] - Include documentation in assembly
     * [UIMA-7] - Add javadocs to build
     * [UIMA-8] - Add examples to assembly
-    * [UIMA-13] - Javadocs should be posted on the website
     * [UIMA-15] - Semantic Search repackaging
     * [UIMA-21] - Update Version Number
     * [UIMA-36] - Change descriptor XML namespaces from uima.watson.ibm.com to uima.apache.org
     * [UIMA-37] - Track down and replace remaining occurrences of IBM
     * [UIMA-45] - Review and clean up unit tests
-    * [UIMA-47] - Post code style guidelines on website
     * [UIMA-48] - Reformat all source code to match adopted conventions
     * [UIMA-64] - Remove the package org.apache.uima.tttypesystem
     * [UIMA-103] - Add license headers to batch files and shell scripts
-    * [UIMA-118] - Link to the UIMA draft specification research report
     * [UIMA-123] - Remove VinciCasObjectProcessorService_impl
     * [UIMA-135] - Remove Entity View mode from DocumentAnalyzer
     * [UIMA-159] - Add license/notices etc. files for distribution
@@ -411,10 +402,8 @@ issues you find at http://issues.apache.org/jira/browse/uima.
     * [UIMA-168] - undo CommonCas change
     * [UIMA-172] - Status page needs updating
     * [UIMA-174] - Remove @author tags from Java source
-    * [UIMA-175] - Website build instructions for docbook need to direct users to the README.FIRST file
     * [UIMA-176] - put apache board statuses into a page linked from our uima website and update uima project status page to reflect this
     * [UIMA-180] - Update "What's new in Apache UIMA 2.0" section of documentation
-    * [UIMA-181] - UIMA Project Website - add drafts of project guidelines and contribution policy
     * [UIMA-211] - Restructure directory uimaj-tools/src/main/org.apache.uima.jcasgen
     * [UIMA-232] - Documentation screenshots must be redone
     * [UIMA-240] - Fixup Readme - needs to have other material in it, and should have a file extension I think
@@ -423,8 +412,3 @@ issues you find at http://issues.apache.org/jira/browse/uima.
     * [UIMA-295] - Restore microscope icon as the window icon for our tools
     * [UIMA-296] - Remove DocBook build files from source distribution
     * [UIMA-299] - Remove SNAPSHOT from version numbers prior to release
-    * [UIMA-306] - Improve Website documentation on building docbooks
-
-
-
-

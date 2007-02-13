@@ -41,6 +41,8 @@ under the License.
       <outputDirectory>/</outputDirectory>
       <includes>
         <include>DISCLAIMER</include>
+        <include>RELEASE_NOTES</include>
+        <include>RELEASE_NOTES.html</include>
       </includes>
     </fileSet>
     <fileSet>
