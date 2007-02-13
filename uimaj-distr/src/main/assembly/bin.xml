@@ -157,9 +157,13 @@ under the License.
         <include>images/**</include>
         <include>index.html</include>
         <include>overview_and_setup/overview_and_setup.html</include>
+        <include>overview_and_setup/css/**</include>
         <include>tutorials_and_users_guides/tutorials_and_users_guides.html</include>
+        <include>tutorials_and_users_guides/css/**</include>
         <include>tools/tools.html</include>
+        <include>tools/css/**</include>
         <include>references/references.html</include>
+        <include>references/css/**</include>
       </includes>
     </fileSet>
     <fileSet>
