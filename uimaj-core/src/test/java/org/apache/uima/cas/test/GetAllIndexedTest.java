@@ -76,7 +76,10 @@ public class GetAllIndexedTest extends TestCase {
 
   private Type annotationBaseType;
   
-//  private Type tokenType;
+  // Count the number of FSs created in a test case.
+  private int fsCount = 0;
+  
+  //  private Type tokenType;
 
 //  private Type sentenceType;
 
@@ -89,7 +92,6 @@ public class GetAllIndexedTest extends TestCase {
    */
   protected void setUp() throws Exception {
     super.setUp();
-//    this.casMgr = initCAS();
     File descriptorFile = JUnitExtension.getFile("CASTests/desc/typePriorityTestCaseDescriptor.xml");
     assertTrue("Descriptor must exist: " + descriptorFile.getAbsolutePath(), descriptorFile.exists());
     
@@ -130,25 +132,47 @@ public class GetAllIndexedTest extends TestCase {
     this.annotationBaseType = null;
     this.otherAnnotationType = null;
   }
+  
+  private final FSIterator getAllIndexed() {
+    return getAllIndexed(this.cas.getTypeSystem().getTopType());
+  }
 
+  private final FSIterator getAllIndexed(Type type) {
+    return this.cas.getIndexRepository().getAllIndexedFS(type);
+  }
+  
+  private final int getIteratorSize(FSIterator it) {
+    int count = 0;
+    for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
+      ++count;
+    }
+    return count;
+  }
+
+  private final void addFS(FeatureStructure fs) {
+    this.cas.getIndexRepository().addFS(fs);
+    ++this.fsCount;
+    assertTrue(getIteratorSize(getAllIndexed()) == this.fsCount);
+  }
+  
   /**
    * Test driver.
    */
   public void testGetAllIndexed() throws Exception {
+    this.fsCount = 0;
+    this.cas.reset();
   	FeatureStructure docAnnotation = this.cas.getDocumentAnnotation();
   	assertNotNull(docAnnotation);
+    ++this.fsCount;
+    assertTrue(getIteratorSize(getAllIndexed()) == this.fsCount);
   	final FeatureStructure otherAnnotationFS = this.cas.createFS(this.otherAnnotationType);
-  	final FeatureStructure annotationFS = this.cas.createFS(this.annotationType);
+  	FeatureStructure annotationFS = this.cas.createFS(this.annotationType);
   	final FeatureStructure annotationBaseFS = this.cas.createFS(this.annotationBaseType);
-  	this.cas.addFsToIndexes(annotationFS);
-  	this.cas.addFsToIndexes(otherAnnotationFS);
-  	this.cas.addFsToIndexes(annotationBaseFS);
-  	FSIndexRepository ir = this.cas.getIndexRepository();
-  	FSIterator it = ir.getAllIndexedFS(this.annotationBaseType);
-  	while (it.isValid()) {
-  		System.out.println(it.get().getType().getName());
-  		it.moveToNext();
-  	}
+  	addFS(annotationFS);
+    addFS(otherAnnotationFS);
+    addFS(annotationBaseFS);
+    addFS(this.cas.createFS(this.cas.getTypeSystem().getTopType()));
+    assertTrue(getIteratorSize(this.cas.getAnnotationIndex().iterator()) == 2);
   }
 
   public static void main(String[] args) {

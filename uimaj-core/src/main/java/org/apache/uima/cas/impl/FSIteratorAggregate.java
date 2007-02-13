@@ -115,6 +115,7 @@ class FSIteratorAggregate extends FSIteratorImplBase {
       if (current.isValid()) {
         return;
       }
+      ++this.iteratorIndex;
     }
     // If we get here, the iterator is no longer valid, there are no more elements.
   }
@@ -138,6 +139,7 @@ class FSIteratorAggregate extends FSIteratorImplBase {
       if (current.isValid()) {
         return;
       }
+      --this.iteratorIndex;
     }
     // If we get here, the iterator is no longer valid, there are no more elements.
   }
