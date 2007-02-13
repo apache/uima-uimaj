@@ -24,19 +24,19 @@
 	<groupId>org.apache.uima</groupId>
 	<artifactId>uimaj-adapter-soap</artifactId>
 	<packaging>jar</packaging>
-	<version>2.1.0-incubating-SNAPSHOT</version>
+	<version>2.1.0-incubating</version>
 	<name>Apache UIMA Java SOAP Adapter</name>
 	<url>http://incubator.apache.org/uima</url>
 	<parent>
 		<groupId>org.apache.uima</groupId>
 		<artifactId>uimaj</artifactId>
-		<version>2.1.0-incubating-SNAPSHOT</version>
+		<version>2.1.0-incubating</version>
 	</parent>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-core</artifactId>
-			<version>2.1.0-incubating-SNAPSHOT</version>
+			<version>2.1.0-incubating</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
