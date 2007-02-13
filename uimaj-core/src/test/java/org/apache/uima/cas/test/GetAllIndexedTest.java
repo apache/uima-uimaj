@@ -27,7 +27,6 @@ import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
@@ -155,13 +154,21 @@ public class GetAllIndexedTest extends TestCase {
     assertTrue(getIteratorSize(getAllIndexed()) == this.fsCount);
   }
   
+  private final FeatureStructure createAnnot(int from, int to) {
+    return this.cas.createAnnotation(this.annotationType, from, to);
+  }
+  
+  private final void initTest() {
+    this.cas.reset();
+    this.fsCount = 0;
+  }
+  
   /**
    * Test driver.
    */
   public void testGetAllIndexed() throws Exception {
-    this.fsCount = 0;
-    this.cas.reset();
-  	FeatureStructure docAnnotation = this.cas.getDocumentAnnotation();
+    initTest();
+    FeatureStructure docAnnotation = this.cas.getDocumentAnnotation();
   	assertNotNull(docAnnotation);
     ++this.fsCount;
     assertTrue(getIteratorSize(getAllIndexed()) == this.fsCount);
@@ -173,6 +180,29 @@ public class GetAllIndexedTest extends TestCase {
     addFS(annotationBaseFS);
     addFS(this.cas.createFS(this.cas.getTypeSystem().getTopType()));
     assertTrue(getIteratorSize(this.cas.getAnnotationIndex().iterator()) == 2);
+    addFS(createAnnot(0, 1));
+    addFS(createAnnot(1, 2));
+    addFS(createAnnot(2, 3));
+    addFS(createAnnot(3, 4));
+    
+    // Iterate backwards, check only that it returns correct number of FSs
+    FSIterator it = getAllIndexed();
+    int down = this.fsCount;
+    for (it.moveToLast(); it.isValid(); it.moveToPrevious()) {
+      --down;
+    }
+    assertTrue(down == 0);
+
+    // Get all indexed, create copy and iterate in parallel.
+    it = getAllIndexed();
+    FSIterator copy = it.copy();
+    copy.moveToFirst();
+    for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
+      assertTrue(copy.isValid());
+      assertTrue(it.get().equals(copy.get()));
+      copy.moveToNext();
+    }
+    assertFalse(copy.isValid());
   }
 
   public static void main(String[] args) {

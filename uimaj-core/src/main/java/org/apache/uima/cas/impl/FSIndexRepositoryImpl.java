@@ -498,16 +498,15 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
 
     public Object copy() {
-      // PointerIterator it = new PointerIterator();
-      // it.indexes = new
-      // ComparableIntPointerIterator[this.indexes.length];
-      // for (int i = 0; i < indexes.length; i++) {
-      // it.indexes[i] = (ComparableIntPointerIterator)
-      // this.indexes[i].copy();
-      // }
-      // it.numIndexes = it.indexes.length;
-      // return it;
-      return new PointerIterator(this.iicp, this.get());
+      // If this.isValid(), return a copy pointing to the same element.
+      if (this.isValid()) {
+        return new PointerIterator(this.iicp, this.get());
+      }
+      // Else, create a copy that is also not valid.
+      PointerIterator pi = new PointerIterator(this.iicp);
+      pi.moveToFirst();
+      pi.moveToPrevious();
+      return pi;
     }
 
     /**
@@ -1362,7 +1361,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   private static final String getAutoIndexNameForType(Type type) {
     return "_" + type.getName() + "_GeneratedIndex";
   }
-  
+
   public void ll_removeFS(int fsRef) {
     final int typeCode = this.cas.ll_getFSRefType(fsRef);
     incrementIllegalIndexUpdateDetector(typeCode);
@@ -1383,14 +1382,14 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     getAllIndexedFS(type, iteratorList);
     return new FSIteratorAggregate(iteratorList);
   }
-  
+
   private final void getAllIndexedFS(Type type, List iteratorList) {
-    // Start by looking for an auto-index.  If one exists, no other index exists.
+    // Start by looking for an auto-index. If one exists, no other index exists.
     FSIndex autoIndex = getIndex(getAutoIndexNameForType(type));
     if (autoIndex != null) {
       iteratorList.add(autoIndex.iterator());
-      // We found one of the special auto-indexes which don't inherit down the tree.  So, we
-      // manually need to traverse the inheritance tree to look for more indexes.  Note that
+      // We found one of the special auto-indexes which don't inherit down the tree. So, we
+      // manually need to traverse the inheritance tree to look for more indexes. Note that
       // this is not necessary when we have a regular index
       List subtypes = this.typeSystem.getDirectSubtypes(type);
       for (int i = 0; i < subtypes.size(); i++) {
@@ -1424,14 +1423,13 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       iteratorList.add(setIndex.iterator());
       return;
     }
-    // No index for this type was found at all.  Since the auto-indexes are created on demand for
-    // each type, there may be gaps in the inheritance chain.  So keep descending the inheritance
+    // No index for this type was found at all. Since the auto-indexes are created on demand for
+    // each type, there may be gaps in the inheritance chain. So keep descending the inheritance
     // tree looking for relevant indexes.
     List subtypes = this.typeSystem.getDirectSubtypes(type);
     for (int i = 0; i < subtypes.size(); i++) {
       getAllIndexedFS((Type) subtypes.get(i), iteratorList);
     }
   }
-
 
 }
