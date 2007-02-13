@@ -10,7 +10,7 @@ The supported platforms are: Windows, Linux, Solaris, AIX and Mac OS X.  Other p
 should work, but have not been significantly tested.
 
 Many of the scripts in the /bin directory invoke Java. They use the value of the environment variable, JAVA_HOME, 
-to locate the Java to use.
+to locate the Java to use; if it is not set, they invoke "java". 
 
 
 Environment Variables
@@ -23,11 +23,14 @@ you have to do the steps below that UIMA functioning properly.
     * Set UIMA_HOME to the apache-uima directory of your unpacked Apache UIMA distribution
     * Append UIMA_HOME/bin to your PATH
     
-    * It is recommended to run the script UIMA_HOME/bin/adjustExamplePaths.bat (or .sh), which updates some 
-      hard coded paths in the examples to your actual UIMA_HOME directory. This script runs a Java program; 
-      you will need to set the environment variable JAVA_HOME to a suitable Java on your machine before running this script.
+    * Please run the script UIMA_HOME/bin/adjustExamplePaths.bat (or .sh), to update 
+      paths in the examples based on the actual UIMA_HOME directory path. 
+      This script runs a Java program; 
+      you may to set the environment variable JAVA_HOME to a suitable Java on your machine 
+      before running this script.
 
-      Note: For MacOSX, see http://developer.apple.com/qa/qa2001/qa1067.html for how to do this.
+    Note: The Mac OS X operating system has special procedures for setting up global environment
+    variables; see http://developer.apple.com/qa/qa2001/qa1067.html for how to do this.
       
       
 Verifying Your Installation
@@ -49,7 +52,9 @@ Double-click on one of the documents to display the analysis results for that do
 Getting Started
 ----------------
 
-For an introduction to Apache UIMA and how to use it, please read the documentation located in the docs subdirectory.
+For an introduction to Apache UIMA and how to use it, please read the documentation 
+located in the docs subdirectory.  A good place to start is the overview_and_setup 
+book's first chapter, which has a brief guide to the documentation.
 
 
 Disclaimer
