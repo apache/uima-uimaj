@@ -10,7 +10,7 @@ The supported platforms are: Windows, Linux, Solaris, AIX and Mac OS X.  Other p
 should work, but have not been significantly tested.
 
 Many of the scripts in the /bin directory invoke Java. They use the value of the environment variable, JAVA_HOME, 
-to locate the Java to use; if it is not set, they invoke "java". 
+to locate the Java to use; if it is not set, they invoke "java" expecting to find an appropriate Java in your PATH. 
 
 
 Environment Variables
@@ -26,8 +26,8 @@ you have to do the steps below that UIMA functioning properly.
     * Please run the script UIMA_HOME/bin/adjustExamplePaths.bat (or .sh), to update 
       paths in the examples based on the actual UIMA_HOME directory path. 
       This script runs a Java program; 
-      you may to set the environment variable JAVA_HOME to a suitable Java on your machine 
-      before running this script.
+      you must either have java in your PATH or set the environment variable JAVA_HOME to a 
+      suitable JRE.
 
     Note: The Mac OS X operating system has special procedures for setting up global environment
     variables; see http://developer.apple.com/qa/qa2001/qa1067.html for how to do this.
