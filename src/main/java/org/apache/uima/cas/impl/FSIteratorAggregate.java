@@ -141,7 +141,9 @@ class FSIteratorAggregate extends FSIteratorImplBase {
       }
       --this.iteratorIndex;
     }
-    // If we get here, the iterator is no longer valid, there are no more elements.
+    // If we get here, the iterator is no longer valid, there are no more elements.  Set internal
+    // counter to the invalid position.
+    this.iteratorIndex = this.iterators.size();
   }
 
 }
