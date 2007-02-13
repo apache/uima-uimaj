@@ -203,6 +203,16 @@ public class GetAllIndexedTest extends TestCase {
       copy.moveToNext();
     }
     assertFalse(copy.isValid());
+    
+    // Iterate over all indexed, create a copy at each stage, check that it gets same FS.
+    for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
+      copy = it.copy();
+      assertTrue(it.get().equals(copy.get()));
+    }
+    copy = it.copy();
+    assertFalse(it.isValid());
+    assertFalse(copy.isValid());
+    
   }
 
   public static void main(String[] args) {
