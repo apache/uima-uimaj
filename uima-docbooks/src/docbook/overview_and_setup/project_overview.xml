@@ -450,14 +450,21 @@ under the License.
   
   <section id="ugr.project_overview_changes_from_previous">
       <title>Changes from Previous Versions</title>
+    <para>
+      There are two previous version of UIMA, available from IBM's alphaWorks: version 1.4.4 and version 2.0
+      (the 2.0 version was a "beta" only release).  This section describes the changes
+      relative to both of these releases.  A migration utility is provided which updates 
+      your Java code and descriptors as needed for this release. 
+      See <xref linkend="ugr.project_overview_migrating_from_ibm_uima"/> for 
+      instructions on how to run the migration utility.
+    </para>
 
     <section id="ugr.project_overview_changes_from_2_0">
     <title>Changes from IBM UIMA 2.0 to Apache UIMA 2.1</title>
     
-    <para>This section describes what has changed between version 2.0 and version 2.1 of UIMA.
-      A migration utility is provided which will make the required updates to your Java code and
-      descriptors.  See <xref linkend="ugr.project_overview_migrating_from_ibm_uima"/> for 
-      instructions on how to run the migration utility.</para>
+    <para>This section describes what has changed between version 2.0 and version 2.1 of UIMA;
+      the following section describes the differences between version 1.4 and version 2.1.
+      </para>
     
       <section id="ugr.project_overview.migration_utility.java_package_name_changes">
         <title>Java Package Name Changes</title>
@@ -757,10 +764,11 @@ under the License.
     
      
     <section id="ugr.project_overview_rare_migration">
-      <title>Rare Cases Where Additional Manual Migration is Necessary</title>
+      <title>Manual Migration</title>
       <para>The following are rare cases where you may need to take additional steps to migrate your code.  You need only 
         read this section if the migration tool reported a warning or if you are having trouble getting your code to 
-        compile or run after running the migration.</para>
+        compile or run after running the migration.  For most users, attention to these things will not
+        be required.</para>
       
       <section id="ugr.project_overview.manual_migration_needed.xiinclude">
         <title>xi:include</title>
@@ -780,6 +788,7 @@ under the License.
       </section>
       <section id="ugr.project_overview.manual_migration_needed.undocumented_methods">
         <title>Use of Undocumented Methods from the com.ibm.uima.util package</title>
+        <titleabbrev>Undocumented Methods</titleabbrev>
         <para>Previous UIMA versions has some methods in the <literal>com.ibm.uima.util</literal> package that
           were for internal use and were not documented in the JavaDoc. (There are also many methods in that package
           which are documented, and there is no issue with using these.) It is not recommended that you use any of the
@@ -789,6 +798,7 @@ under the License.
       </section>
       <section id="ugr.project_overview.manual_migration_needed.uima_package_names_in_user_code">
         <title>Use of UIMA Package Names for User Code</title>
+        <titleabbrev>Package Names</titleabbrev>
         <para>If you have placed your own classes in a package that has exactly the same name as one of the UIMA packages
           (not recommended), this will cause problems when your run the migration script. Since the script replaces
           UIMA package names, all of your imports that refer to your class will get replaced and your code will no
@@ -802,6 +812,7 @@ under the License.
       </section>
       <section id="ugr.project_overview.manual_migration_needed.exceptions_extend_uima_exceptions">
         <title>CASException and CASRuntimeException now extend UIMA(Runtime)Exception</title>
+        <titleabbrev>Changes to CAS Exceptions</titleabbrev>
         <para>
           This change may affect user code to a small extent, as some of the APIs on 
           <literal>CASException</literal> and <literal>CASRuntimeException</literal> no longer exist.

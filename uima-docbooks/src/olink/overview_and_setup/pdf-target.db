@@ -223,8 +223,8 @@
             </div>
          </div>
          <div element="section" href="#ugr.project_overview_rare_migration" number="1.4.2" targetptr="ugr.project_overview_rare_migration">
-            <ttl>Rare Cases Where Additional Manual Migration is Necessary</ttl>
-            <xreftext>Section 1.4.2, “Rare Cases Where Additional Manual Migration is Necessary”</xreftext>
+            <ttl>Manual Migration</ttl>
+            <xreftext>Section 1.4.2, “Manual Migration”</xreftext>
             <div element="section" href="#ugr.project_overview.manual_migration_needed.xiinclude" number="1.4.2.1" targetptr="ugr.project_overview.manual_migration_needed.xiinclude">
                <ttl>xi:include</ttl>
                <xreftext>Section 1.4.2.1, “xi:include”</xreftext>
@@ -235,15 +235,15 @@
             </div>
             <div element="section" href="#ugr.project_overview.manual_migration_needed.undocumented_methods" number="1.4.2.3" targetptr="ugr.project_overview.manual_migration_needed.undocumented_methods">
                <ttl>Use of Undocumented Methods from the com.ibm.uima.util package</ttl>
-               <xreftext>Section 1.4.2.3, “Use of Undocumented Methods from the com.ibm.uima.util package”</xreftext>
+               <xreftext>Section 1.4.2.3, “Undocumented Methods”</xreftext>
             </div>
             <div element="section" href="#ugr.project_overview.manual_migration_needed.uima_package_names_in_user_code" number="1.4.2.4" targetptr="ugr.project_overview.manual_migration_needed.uima_package_names_in_user_code">
                <ttl>Use of UIMA Package Names for User Code</ttl>
-               <xreftext>Section 1.4.2.4, “Use of UIMA Package Names for User Code”</xreftext>
+               <xreftext>Section 1.4.2.4, “Package Names”</xreftext>
             </div>
             <div element="section" href="#ugr.project_overview.manual_migration_needed.exceptions_extend_uima_exceptions" number="1.4.2.5" targetptr="ugr.project_overview.manual_migration_needed.exceptions_extend_uima_exceptions">
                <ttl>CASException and CASRuntimeException now extend UIMA(Runtime)Exception</ttl>
-               <xreftext>Section 1.4.2.5, “CASException and CASRuntimeException now extend UIMA(Runtime)Exception”</xreftext>
+               <xreftext>Section 1.4.2.5, “Changes to CAS Exceptions”</xreftext>
             </div>
          </div>
       </div>
@@ -401,7 +401,7 @@
          <div element="section" href="#ugr.ovv.eclipse_setup.install_emf" number="3.1.2" targetptr="ugr.ovv.eclipse_setup.install_emf">
             <ttl>Install additional Eclipse component: EMF</ttl>
             <xreftext>Section 3.1.2, “Install additional Eclipse component: EMF”</xreftext>
-            <div element="section" href="#d0e2008" number="3.1.2.1">
+            <div element="section" href="#d0e2016" number="3.1.2.1">
                <ttl>EMF Installation Shortcut for Eclipse 3.2</ttl>
                <xreftext>Section 3.1.2.1, “EMF Installation Shortcut for Eclipse 3.2”</xreftext>
             </div>
