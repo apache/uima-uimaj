@@ -358,8 +358,11 @@ public class CasCopier {
       int len = arrayFs.size();
       ArrayFS destFS = mDestCas.createArrayFS(len);
       for (int i = 0; i < len; i++) {
-        FeatureStructure copyElem = copyFs(arrayFs.get(i));
-        destFS.set(i, copyElem);
+        FeatureStructure srcElem = arrayFs.get(i);
+        if (srcElem != null) {
+          FeatureStructure copyElem = copyFs(arrayFs.get(i));
+          destFS.set(i, copyElem);
+        }
       }
       return destFS;
     }

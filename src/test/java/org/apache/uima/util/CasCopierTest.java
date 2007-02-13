@@ -27,6 +27,7 @@ import java.util.Iterator;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CASImpl;
@@ -90,7 +91,7 @@ public class CasCopierTest extends TestCase {
     destCas.reset();
     CAS destCasBase = ((CASImpl)destCas).getBaseCAS();
     CasCopier.copyCas(srcCasBase, destCasBase, true);
-    CasComparer.assertEquals(srcCasBase, destCasBase);    
+    CasComparer.assertEquals(srcCasBase, destCasBase);        
   }
   
   public void testCopyCasView() throws Exception {
@@ -138,5 +139,13 @@ public class CasCopierTest extends TestCase {
     FeatureStructure relCopy = copier.copyFs(relFS);
     // verify copy
     CasComparer.assertEquals(relFS, relCopy);
+    
+    //test null array element
+    ArrayFS arrFS = srcCas.createArrayFS(3);
+    arrFS.set(0, annot);
+    arrFS.set(1, null);
+    arrFS.set(2, relFS);
+    FeatureStructure copyArrFS = copier.copyFs(arrFS);
+    CasComparer.assertEquals(arrFS, copyArrFS);     
   }
 }
