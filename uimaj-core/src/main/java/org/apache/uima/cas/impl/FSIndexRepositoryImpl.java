@@ -1216,14 +1216,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       // Iterate over the indexes for the type.
       jMax = iv.size();
       // Create a vector of IICPs. If there is at least one sorted or bag
-      // index, pick one arbitrarily and add its FSs (since it contains
-      // all
-      // FSs that all other indexes for the same type contain). If there
-      // are
-      // only set indexes, create a set of the FSs in those indexes, since
-      // they
-      // may all contain different elements (FSs that are duplicates for
-      // one
+      // index, pick one arbitrarily and add its FSs (since it contains all
+      // FSs that all other indexes for the same type contain). If there are
+      // only set indexes, create a set of the FSs in those indexes, since they
+      // may all contain different elements (FSs that are duplicates for one
       // index may not be duplicates for a different one).
       cv = new ArrayList();
       for (int j = 0; j < jMax; j++) {
@@ -1377,34 +1373,6 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
   }
 
-//  /*
-//   * (non-Javadoc)
-//   * 
-//   * @see org.apache.uima.cas.FSIndexRepository#getAllIndexedFS(org.apache.uima.cas.Type)
-//   */
-//  public FSIterator __getAllIndexedFS(Type aType) {
-//    // Attempt to find a non-set index first.
-//    // If none found, then use the an arbitrary set index if any.
-//    FSIndex setIndex = null;
-//    Iterator iter = getLabels();
-//    while (iter.hasNext()) {
-//      String label = (String) iter.next();
-//      FSIndex index = getIndex(label);
-//      if (this.typeSystem.subsumes(index.getType(), aType)) {
-//        if (index.getIndexingStrategy() != FSIndex.SET_INDEX) {
-//          return getIndex(label, aType).iterator();
-//        }
-//        setIndex = getIndex(label, aType);
-//      }
-//    }
-//    // No sorted or bag index found for this type. If there was a set index,
-//    // return an iterator for it. If not, return an empty iterator.
-//    if (setIndex != null) {
-//      return setIndex.iterator();
-//    }
-//    return new EmptyFSIterator();
-//  }
-
   /*
    * (non-Javadoc)
    * 
@@ -1465,41 +1433,5 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
   }
 
-//  /**
-//   * An iterator that is always invalid. TODO: remove this once we implement the default bag index.
-//   */
-//  static class EmptyFSIterator extends FSIteratorImplBase {
-//    public boolean isValid() {
-//      return false;
-//    }
-//
-//    public FSIterator copy() {
-//      return this;
-//    }
-//
-//    public FeatureStructure get() throws NoSuchElementException {
-//      throw new NoSuchElementException();
-//    }
-//
-//    public void moveTo(FeatureStructure fs) {
-//      // does nothing
-//    }
-//
-//    public void moveToFirst() {
-//      // does nothing
-//    }
-//
-//    public void moveToLast() {
-//      // does nothing
-//    }
-//
-//    public void moveToNext() {
-//      // does nothing
-//    }
-//
-//    public void moveToPrevious() {
-//      // does nothing
-//    }
-//  }
 
 }
