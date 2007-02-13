@@ -24,7 +24,7 @@
 	<groupId>org.apache.uima</groupId>
 	<artifactId>uimaj</artifactId>
 	<packaging>pom</packaging>
-	<version>2.1.0-incubating-SNAPSHOT</version>
+	<version>2.1.0-incubating</version>
 	<name>Apache UIMA Java SDK</name>
 	<url>http://incubator.apache.org/uima</url>
 	<organization><name>The Apache Software Foundation</name></organization>
