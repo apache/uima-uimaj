@@ -137,7 +137,13 @@
 		<!-- xercesImpl.jar comes first to allow using XInclude -->
 		<pathelement location="${basedir}/lib/xercesImpl.jar"/>
 		<pathelement location="${basedir}/lib/xml-apis.jar"/>
+		<!-- for fop 0.93
+		<pathelement location="${basedir}/fop-0.93/build/fop.jar"/>
+		<fileset dir="${basedir}/fop-0.93/lib">
+		 -->
+		<!-- for fop 0.92 		-->
 		<fileset dir="${basedir}/lib">
+
 			<include name="*.jar"/>
 		</fileset>
 		<fileset dir="${docbook.xsl.dir}/extensions">
@@ -314,6 +320,27 @@
       	  tofile="${target.dir}/${chapter_name}/${docbook.outname}.pdf_src.xml"/>
 	</target>
 
+  <target name="fop_debug" description="internal - runs fop only">
+
+		<java classname="org.apache.fop.apps.Fop" fork="true" maxmemory="256m"
+          dir="${basedir}" classpathref="docbook.classpath">
+			<arg value="-c"/>
+			<arg value="${docbook.fontconfig}"/>
+			<arg value="${target.dir}/${chapter_name}/${docbook.outname}.pdf_src.xml"/>
+			<arg value="${target.dir}/${chapter_name}/${docbook.outname}.pdf"/>
+		</java>
+  	<!--
+		<java classname="org.apache.fop.cli.Main" fork="true" maxmemory="256m"
+          dir="${basedir}" classpathref="docbook.classpath">
+			<arg value="-c"/>
+			<arg value="${docbook.fontconfig}"/>
+			<arg value="${target.dir}/${chapter_name}/${docbook.outname}.pdf_src.xml"/>
+			<arg value="${target.dir}/${chapter_name}/${docbook.outname}.pdf"/>
+		</java>
+  	  	-->
+	</target>
+
+	
 	<!-- ======================================================================== -->
 	<!-- ==                                                                    == -->
 	<!-- == Create the HTML documentation, many pages                          == -->
@@ -374,6 +401,23 @@
 	<target name="unzip_docbook_ref" 
 	        description="internal: unzips docbook xml and xsl style sheets"
 	        unless="docbook.ref.unzipped.already">
+		
+		<fail message="missing ${zip.src.dir}/docbook-xml-${docbook.xml.version}.zip">
+			<condition>
+				<not>
+					<available file="${zip.src.dir}/docbook-xml-${docbook.xml.version}.zip"/>
+				</not>
+			</condition>
+		</fail>
+
+		<fail message="missing ${zip.src.dir}/docbook-xsl-${docbook.xsl.version}.zip">
+			<condition>
+				<not>
+					<available file="${zip.src.dir}/docbook-xsl-${docbook.xsl.version}.zip"/>
+				</not>
+			</condition>
+		</fail>
+		
 		<mkdir dir="${docbook.xml.dir}" />
 		<unzip src="${zip.src.dir}/docbook-xml-${docbook.xml.version}.zip" dest="${docbook.xml.dir}" />
 
