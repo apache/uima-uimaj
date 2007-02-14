@@ -31,7 +31,6 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
@@ -215,9 +214,9 @@ public class GetAllIndexedTest extends TestCase {
     assertFalse(copy.isValid());
     
     //test getAllIndexed(Type)
-    Type tokenType = cas.getTypeSystem().getType(TOKEN_TYPE);
+    Type tokenType = this.cas.getTypeSystem().getType(TOKEN_TYPE);
     assertNotNull(tokenType);
-    FSIterator tokenIter = cas.getIndexRepository().getAllIndexedFS(tokenType);
+    FSIterator tokenIter = this.cas.getIndexRepository().getAllIndexedFS(tokenType);
     assertFalse(tokenIter.hasNext());
   }
 
