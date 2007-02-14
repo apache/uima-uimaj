@@ -535,7 +535,7 @@ public class AggregateSection extends AbstractSection {
       Map dels = editor.getResolvedDelegates();
       if (null != dels) {
         sDesc = getDescriptionForDescriptor(item.getText(0), (ResourceSpecifier) dels.get(item
-                .getText(0)));
+                .getText(1)));
       }
     }
     filesTable.setToolTipText(sDesc);
