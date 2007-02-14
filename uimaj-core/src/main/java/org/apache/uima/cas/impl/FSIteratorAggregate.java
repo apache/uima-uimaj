@@ -39,6 +39,9 @@ class FSIteratorAggregate extends FSIteratorImplBase {
     super();
     this.iterators = new ArrayList();
     this.iterators.addAll(c);
+    // The unwritten contract of FSIterators is that they point to the first element when they are
+    // constructed.  This is also one way of checking that the new iterator is valid (non-empty).
+    moveToFirst();
   }
 
   public FSIterator copy() {
