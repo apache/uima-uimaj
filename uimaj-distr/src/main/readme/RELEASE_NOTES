@@ -186,6 +186,7 @@ issues you find at http://issues.apache.org/jira/browse/uima.
 
 6. List of JIRA Issues Fixed in this Release
 
+
 ** Bug
     * [UIMA-14] - Plugin manifests still list IBM as the vendor
     * [UIMA-16] - NullPointerException in UIMAFramework.newCollectionProcessingManager
@@ -311,6 +312,10 @@ issues you find at http://issues.apache.org/jira/browse/uima.
     * [UIMA-304] - Document Analyzer HTML View Not Working
     * [UIMA-308] - org.apache.uima.cas.impl.AnnotationBaseImpl.toString() bombs for base annotations without sofa.
     * [UIMA-310] - CasCopier fails on null array elements
+    * [UIMA-312] - assembly of docs/html missing the css dirs and file
+    * [UIMA-313] - Flow Controller example Analysis Engine does not work properly
+    * [UIMA-314] - MeetingFinderCPE_Managed.xml doesn't run on Linux
+    * [UIMA-315] - CDE - hover in aggregate page supposed to show description - but isn't
 
 ** Improvement
     * [UIMA-9] - Remove support for xi:include
@@ -369,6 +374,7 @@ issues you find at http://issues.apache.org/jira/browse/uima.
     * [UIMA-265] - impove CAS Multiplier documentation that CAS Multipliers does not work in CVD and CPE
     * [UIMA-274] - CDE add new feature - not making visible the additional input fields for element types when range type changed
     * [UIMA-305] - Move FileUtils to non-internal package
+    * [UIMA-311] - Docbook build script usability issue
 
 ** New Feature
     * [UIMA-49] - Migration tools from IBM UIMA to Apache UIMA
@@ -412,3 +418,4 @@ issues you find at http://issues.apache.org/jira/browse/uima.
     * [UIMA-295] - Restore microscope icon as the window icon for our tools
     * [UIMA-296] - Remove DocBook build files from source distribution
     * [UIMA-299] - Remove SNAPSHOT from version numbers prior to release
+    
