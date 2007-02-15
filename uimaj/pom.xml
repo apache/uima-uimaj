@@ -37,17 +37,6 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<resources>
-			<resource>
-				<targetPath>META-INF</targetPath>
-				<filtering>false</filtering>
-				<directory>../uimaj-distr/src/main/readme/</directory>
-				<includes>
-					<include>LICENSE</include>
-					<include>NOTICE</include>
-				</includes>
-			</resource>
-		</resources>
 		<pluginManagement>
 			<plugins>
 				<!-- v2.1 of the javadoc plugin needed for muilti-module javadoc build to work properly -->
