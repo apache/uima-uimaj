@@ -2794,6 +2794,9 @@ public class MainFrame extends JFrame {
 		int size = ir.getIndex(label, type).size();
 		TypeTreeNode typeNode = new TypeTreeNode(type, label, size);
 		DefaultMutableTreeNode node = new DefaultMutableTreeNode(typeNode);
+    if (ir.getIndex(label).getIndexingStrategy() == FSIndex.DEFAULT_BAG_INDEX) {
+      return node;
+    }
 		List types = ts.getDirectSubtypes(type);
 		final int max = types.size();
 		for (int i = 0; i < max; i++) {
