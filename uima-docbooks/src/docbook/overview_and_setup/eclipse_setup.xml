@@ -126,7 +126,7 @@ under the License.
         including source and documentation, you can pick the <quote>EMF SDK</quote> and the
         <quote>Examples for Eclipse Modeling Framework</quote>.)</para>
       
-      <section>
+      <section id="ugr.ovv.eclipse_setup.install_emf_shortcut">
       <title>EMF Installation Shortcut for Eclipse 3.2</title>
       <para>
       In Eclipse 3.2, all major Eclipse sub-projects have coordinated their release timeframes and
