@@ -21,6 +21,7 @@
                 version='1.0'>
   
   <xsl:param name="body.font.family"  select="'Palatino'"/>
+<!--  <xsl:param name="body.font.family"  select="'Arial'"/> -->
   <xsl:param name="body.font.master"    select="'10.5'"/>
   <xsl:attribute-set name="root.properties">
       <xsl:attribute name="text-align">left</xsl:attribute>
@@ -45,7 +46,14 @@
     ################################################### -->
   
   <xsl:attribute-set name="monospace.properties">
-    <xsl:attribute name="font-size">9.5pt</xsl:attribute>
+    <xsl:attribute name="font-size">
+      <xsl:choose>
+        <xsl:when test="processing-instruction('db-font-size')">
+          <xsl:value-of select="processing-instruction('db-font-size')"/>
+        </xsl:when>
+        <xsl:otherwise>9.5pt</xsl:otherwise>
+      </xsl:choose>
+    </xsl:attribute>
   </xsl:attribute-set>
  
   <xsl:attribute-set name="monospace.verbatim.properties">
@@ -75,13 +83,26 @@
                       Page margins
     ################################################### -->   
   <xsl:param name="page.margin.top" select="'1cm'"/>
+  <!-- region.before.extent = height of the header -->
   <xsl:param name="region.before.extent" select="'1cm'"/>
   <xsl:param name="body.margin.top" select="'1.5cm'"/>
 
   <xsl:param name="body.margin.bottom" select="'1.5cm'"/>
+  <!-- region.after.extent = height of area where footers are printed -->
   <xsl:param name="region.after.extent" select="'1cm'"/>
   <xsl:param name="page.margin.bottom" select="'1cm'"/>
-  <xsl:param name="title.margin.left" select="'-4pc'"/>
+  <xsl:param name="title.margin.left">
+    <xsl:choose>
+      <xsl:when test="$fop.extensions != 0">-4pc</xsl:when>
+      <xsl:otherwise>0pt</xsl:otherwise>
+    </xsl:choose>
+  </xsl:param>
+  <xsl:param name="body.start.indent">
+    <xsl:choose>
+      <xsl:when test="$fop.extensions != 0">0pt</xsl:when>
+      <xsl:otherwise>4pc</xsl:otherwise>
+    </xsl:choose>
+  </xsl:param>
   
   <xsl:param name="page.margin.inner" select="'1.3in'"/>
   <xsl:param name="page.margin.outer" select="'.70in'"/>
@@ -90,18 +111,27 @@
     ################################################### -->
 
     <!-- More space in the center header for long text -->
+    <xsl:param name="header.column.widths">1 90 1</xsl:param>
     <xsl:attribute-set name="header.content.properties">
         <xsl:attribute name="font-family">
             <xsl:value-of select="$body.font.family"/>
         </xsl:attribute>
-        <xsl:attribute name="margin-left">-5em</xsl:attribute>
-        <xsl:attribute name="margin-right">-5em</xsl:attribute>
+        <xsl:attribute name="margin-left">0em</xsl:attribute>
+        <xsl:attribute name="margin-right">0em</xsl:attribute>
     </xsl:attribute-set>
 
 <!--###################################################
                       Custom Footer
     ################################################### -->
-    <!-- width specifications: inside, center, outside -->
+    <xsl:attribute-set name="footer.content.properties">
+        <xsl:attribute name="font-family">
+            <xsl:value-of select="$body.font.family"/>
+        </xsl:attribute>
+        <xsl:attribute name="margin-left">0em</xsl:attribute>
+        <xsl:attribute name="margin-right">0em</xsl:attribute>
+    </xsl:attribute-set>
+
+      <!-- width specifications: inside, center, outside -->
     <xsl:param name="footer.column.widths">2 6 1</xsl:param>
   
     <xsl:template name="footer.content">
@@ -230,8 +260,10 @@
     </xsl:attribute-set>
 
     <!-- Only hairlines as frame and cell borders in tables -->
-    <xsl:param name="table.frame.border.thickness">0.1pt</xsl:param>
-    <xsl:param name="table.cell.border.thickness">0.1pt</xsl:param>
+    <!-- note that 72 pt = 1 in, and values like 0.1pt cause problems
+         in FOP 0.93 but work in FOP 0.20.5 -->
+    <xsl:param name="table.frame.border.thickness">.7pt</xsl:param>
+    <xsl:param name="table.cell.border.thickness">.7pt</xsl:param>
 
 <!--###################################################
                          Labels

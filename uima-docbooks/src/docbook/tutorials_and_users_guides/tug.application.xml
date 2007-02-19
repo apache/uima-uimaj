@@ -866,7 +866,13 @@ consumerParamSettings.setParameterValue(
           <listitem>
             <para>Analysis Engine: include both of these; one produces tokens/sentences, required by the indexer
               in all cases and the other produces the meeting annotations of interest.
-              
+              <itemizedlist spacing="compact">
+                <listitem><para><literal><?db-font-size 70% ?>%UIMA_HOME%/examples/descriptors/analysis_engine/SimpleTokenAndSentenceAnnotator.xml</literal></para></listitem>
+                <listitem><para><literal><?db-font-size 70% ?>%UIMA_HOME%/examples/descriptors/tutorial/ex6/UIMAMeetingDetectorTAE.xml</literal></para></listitem>
+              </itemizedlist>
+            </para>
+          </listitem>
+<!--              
               
               <literallayout>%UIMA_HOME%/examples/descriptors/analysis_engine/
 SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
@@ -876,16 +882,22 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
             <para><literal> and %UIMA_HOME%/examples/descriptors/tutorial/ex6/
               UIMAMeetingDetectorTAE.xml</literal></para>
           </listitem>
+  -->
           
           <listitem>
             <para>Two CAS Consumers:
-              
-              
+              <itemizedlist spacing="compact">
+                <listitem><para><literal><?db-font-size 70% ?>%UIMA_HOME%/examples/descriptors/cas_consumer/SemanticSearchCasIndexer.xml</literal></para></listitem>
+                <listitem><para><literal><?db-font-size 70% ?>%UIMA_HOME%/examples/descriptors/cas_consumer/XmiWriterCasConsumer.xml</literal></para></listitem>
+              </itemizedlist>  
+ <!--             
               <literallayout>%UIMA_HOME%/examples/descriptors/cas_consumer/
   SemanticSearchCasIndexer.xml
 
 %UIMA_HOME%/examples/descriptors/cas_consumer/ 
-  XmiWriterCasConsumer.xml</literallayout></para>
+  XmiWriterCasConsumer.xml</literallayout>
+   -->
+            </para>
           </listitem>
         </itemizedlist>
         
@@ -982,9 +994,9 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
         Viewer.</para>
       
       <para>The source code for the Semantic Search query program is in
-        <literal>examples/src/com/ibm/uima/examples/search/SemanticSearchGUI.java</literal> . A simple
+        <literal>examples/src/com/ibm/apache-uima/search/examples/SemanticSearchGUI.java</literal> . A simple
         command-line query program is also provided in
-        <literal>examples/src/com/ibm/uima/examples/search/SemanticSearch.java</literal> . Using these
+        <literal>examples/src/com/ibm/apache-uima/search/examples/SemanticSearch.java</literal> . Using these
         as a model, you can build a query interface from your own application. For details on the Semantic Search
         Engine query language and interface, see the documentation for the semantic search engine component on
           <ulink url="http://www.alphaworks.ibm.com/tech/uima"/>.</para>
