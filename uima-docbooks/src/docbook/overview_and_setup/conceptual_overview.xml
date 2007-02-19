@@ -53,9 +53,11 @@ under the License.
       <title>UIMA helps you build the bridge between the unstructured and structured
         worlds</title>
       <mediaobject>
-        <imageobject>
-          <imagedata width="576px" format="PNG"
-            fileref="&imgroot;image002.png"/>
+        <imageobject role="html">
+          <imagedata width="576px" format="PNG" fileref="&imgroot;image002.png"/>
+        </imageobject>
+        <imageobject role="fo">
+          <imagedata width="5.5in" format="PNG" fileref="&imgroot;image002.png"/>
         </imageobject>
         <textobject><phrase>Picture of a bridge between unstructured information
           artifacts and structured metadata about those artifacts</phrase>
@@ -172,10 +174,12 @@ under the License.
       <figure id="ugr.ovv.conceptual.metadata_in_cas">
         <title>Objects represented in the Common Analysis Structure (CAS)</title>
         <mediaobject>
-          <imageobject>
-            <imagedata format="PNG" width="594px" align="center"
-              fileref="&imgroot;image004.png"/>
+          <imageobject role="html">
+            <imagedata format="PNG" width="594px" align="center" fileref="&imgroot;image004.png"/>
           </imageobject>
+          <imageobject role="fo">
+            <imagedata format="PNG" width="5.5in" align="center" fileref="&imgroot;image004.png"/>
+          </imageobject>          
           <textobject><phrase>Picture of some text, with a hierarchy of discovered
             metadata about words in the text, including some image of a person as metadata
             about that name.</phrase>
@@ -508,9 +512,11 @@ under the License.
     <figure id="ugr.ovv.conceptual.sample_aggregate">
       <title>Sample Aggregate Analysis Engine</title>
       <mediaobject>
-        <imageobject>
-          <imagedata width="588px" format="PNG"
-            fileref="&imgroot;image006.png"/>
+        <imageobject role="html">
+          <imagedata width="588px" format="PNG" fileref="&imgroot;image006.png"/>
+        </imageobject>
+        <imageobject role="fo">
+          <imagedata width="5.5in" format="PNG" fileref="&imgroot;image006.png"/>
         </imageobject>
         <textobject><phrase>Picture of multiple parts (a language identifier,
           tokenizer, part of speech annotator, shallow parser, and named entity detector)
@@ -617,9 +623,11 @@ under the License.
       <figure id="ugr.ovv.conceptual.application_factory_ae">
         <title>Using UIMA Framework to create and interact with an Analysis Engine</title>
         <mediaobject>
-          <imageobject>
-            <imagedata width="618px" align="center" format="PNG"
-              fileref="&imgroot;image008.png"/>
+          <imageobject role="html">
+            <imagedata width="618px" align="center" format="PNG" fileref="&imgroot;image008.png"/>
+          </imageobject>
+          <imageobject role="fo">
+            <imagedata width="5.5in" align="center" format="PNG" fileref="&imgroot;image008.png"/>
           </imageobject>
           <textobject><phrase>Picture of application interacting with UIMA&apos;s
             factory to produce an analysis engine, which acts as a container for annotators,
@@ -662,9 +670,11 @@ under the License.
       <figure id="ugr.ovv.conceptual.fig.cpe">
         <title>High-Level UIMA Component Architecture from Source to Sink</title>
         <mediaobject>
-          <imageobject>
-            <imagedata width="578px" format="PNG" align="center"
-              fileref="&imgroot;image010.png"/>
+          <imageobject role="html">
+            <imagedata width="578px" format="PNG" align="center" fileref="&imgroot;image010.png"/>
+          </imageobject>
+          <imageobject role="fo">
+            <imagedata width="5.5in" format="PNG" align="center" fileref="&imgroot;image010.png"/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -745,9 +755,11 @@ under the License.
       <figure id="ugr.ovv.conceptual.fig.cpm">
         <title>Collection Processing Manager in UIMA Framework</title>
         <mediaobject>
-          <imageobject>
-            <imagedata width="576px" align="center" format="PNG"
-              fileref="&imgroot;image012.png"/>
+          <imageobject role="html">
+            <imagedata width="576px" align="center" format="PNG" fileref="&imgroot;image012.png"/>
+          </imageobject>
+          <imageobject role="fo">
+            <imagedata width="5.5in" align="center" format="PNG" fileref="&imgroot;image012.png"/>
           </imageobject>
           <textobject><phrase>box and arrows picture of application using CPE factory to
             instantiate a Collection Processing Engine, and that engine interacting with
@@ -889,9 +901,11 @@ under the License.
         engines work on the audio <quote>view</quote>, some on the text
         <quote>view</quote> and some on both.</title>
       <mediaobject>
-        <imageobject>
-          <imagedata width="576px" format="PNG" align="center"
-            fileref="&imgroot;image014.png"/>
+        <imageobject role="html">
+          <imagedata width="576px" format="PNG" align="center" fileref="&imgroot;image014.png"/>
+        </imageobject>
+        <imageobject role="fo">
+          <imagedata width="5.5in" format="PNG" align="center" fileref="&imgroot;image014.png"/>
         </imageobject>
         <textobject><phrase>Picture showing audio on the left broken into segments by a
           segmentation component, then sent to multiple analysis pipelines in parallel,
