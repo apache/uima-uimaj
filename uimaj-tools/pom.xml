@@ -24,37 +24,37 @@
 	<groupId>org.apache.uima</groupId>
 	<artifactId>uimaj-tools</artifactId>
 	<packaging>jar</packaging>
-	<version>2.1.0-incubating</version>
+	<version>2.2-incubating-SNAPSHOT</version>
 	<name>Apache UIMA Java SDK Tools</name>
 	<url>http://incubator.apache.org/uima</url>
 	<parent>
 		<groupId>org.apache.uima</groupId>
 		<artifactId>uimaj</artifactId>
-		<version>2.1.0-incubating</version>
+		<version>2.2-incubating-SNAPSHOT</version>
 	</parent>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-core</artifactId>
-			<version>2.1.0-incubating</version>
+			<version>2.2-incubating-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-cpe</artifactId>
-			<version>2.1.0-incubating</version>
+			<version>2.2-incubating-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-document-annotation</artifactId>
-			<version>2.1.0-incubating</version>
+			<version>2.2-incubating-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>	    
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-test-util</artifactId>
-			<version>2.1.0-incubating</version>
+			<version>2.2-incubating-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>    
 	</dependencies>
