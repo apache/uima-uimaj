@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.rb_trees.IntRedBlackTree;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
@@ -255,15 +257,27 @@ public class ListUtils {
     curNode = addr;
     for (int i = 0; i < length; i++) {
       int heapVal = cas.getHeapValue(curNode + cas.getFeatureOffset(fsHeadFeat));
-      if (sharedData != null) {
-        strArray[i] = sharedData.getXmiId(heapVal);
-      } else {
-        strArray[i] = Integer.toString(heapVal);
-      }
-      if (strArray[i] == null) {
-        // special NULL object with xmi:id=0 is used to represent
-        // a null in an FSArray
+      if (heapVal == 0) {
+        //null value in list.  Represent with "0".
         strArray[i] = "0";
+        // However, this may be null because the element was originally a reference to an 
+        // out-of-typesystem FS, so chck the XmiSerializationSharedData
+        if (sharedData != null) {
+          OotsElementData oed = sharedData.getOutOfTypeSystemFeatures(curNode);
+          if (oed != null) {
+            assert oed.attributes.size() == 1; //only the head feature can possibly be here
+            XmlAttribute attr = (XmlAttribute)oed.attributes.get(0);
+            assert CAS.FEATURE_BASE_NAME_HEAD.equals(attr.name);
+            strArray[i] = attr.value;
+          }
+        }        
+      }
+      else {
+        if (sharedData != null) {
+          strArray[i] = heapVal == 0 ? null : sharedData.getXmiId(heapVal);
+        } else {
+          strArray[i] = Integer.toString(heapVal);
+        }
       }
       curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(fsTailFeat));
     }

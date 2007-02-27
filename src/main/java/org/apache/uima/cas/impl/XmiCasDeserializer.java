@@ -43,10 +43,12 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
 import org.apache.uima.internal.util.I18nUtil;
 import org.apache.uima.internal.util.IntVector;
-import org.apache.uima.internal.util.rb_trees.IntRedBlackTree;
-import org.apache.uima.internal.util.rb_trees.IntRedBlackTree.IntRBTIterator;
+import org.apache.uima.internal.util.XmlAttribute;
+import org.apache.uima.internal.util.XmlElementName;
+import org.apache.uima.internal.util.XmlElementNameAndContents;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -78,10 +80,15 @@ public class XmiCasDeserializer {
 
     // Inside a feature element. We expect the feature value.
     private static final int FEAT_CONTENT_STATE = 3;
-
+    
     // Inside an element with the XMI namespace - indicating content that's
     // not part of the typesystem and should be ignored.
     private static final int IGNORING_XMI_ELEMENTS_STATE = 4;
+
+    // Inside a reference feature element (e.g. <feat href="#1"). 
+    // We expect no content, just the end of the element.
+    private static final int REF_FEAT_STATE = 5;
+
 
     // End parser states.
     // ///////////////////////////////////////////////////////////////////////
@@ -98,11 +105,9 @@ public class XmiCasDeserializer {
     // The CAS we're filling.
     private CASImpl cas;
 
-    // Store FSs with ID in a search tree (keys are xmi ID, values are CAS address)
-    private IntRedBlackTree fsTree;
-
-    // Store IDless FSs in a vector
-    private IntVector idLess;
+    // Store address of every FS we've deserialized, since we need to back
+    // and apply fix-ups afterwards.
+    private IntVector deserializedFsAddrs;
 
     // Store a separate vector of FSList nodes that were deserialized from multivalued properties.
     // These are special because their "head" feature needs remapping but their "tail" feature
@@ -169,21 +174,53 @@ public class XmiCasDeserializer {
     // with a non-namespace-enabled SAX parser.
     private HashMap nsPrefixToUriMap = new HashMap();
 
+    // container for data shared between the XmiCasSerialier and
+    // XmiDeserializer, to support things such as consistency of IDs across
+    // multiple serializations.  This is also where the map from xmi:id to
+    // FS address is stored.
     private XmiSerializationSharedData sharedData;
 
     // number of Sofas found so far
     private int nextSofaNum;
+    
+    //used for merging multiple XMI CASes into one CAS object.
+    private int mergePoint;
+    
+    //Current out-of-typesystem element, if any
+    private OotsElementData outOfTypeSystemElement = null;
 
+    /**
+     * Creates a SAX handler used for deserializing an XMI CAS.
+     * @param aCAS CAS to deserialize into
+     * @param lenient if true, unknown types/features result in an
+     *   exception.  If false, unknown types/features are ignored.
+     * @param sharedData data structure used to allow the XmiCasSerializer and 
+     *   XmiCasDeserializer to share information.
+     * @param mergePoint used to support merging multiple XMI CASes.  If the
+     *   mergePoint is negative, "normal" deserialization will be done,
+     *   meaning the target CAS will be reset and the entire XMI content will
+     *   be deserialized.  If the mergePoint is nonnegative (including 0), the 
+     *   target CAS will not be reset, and only Feature Structures whose
+     *   xmi:id is strictly greater than the mergePoint value will be
+     *   deserialized. 
+     */
     private XmiCasDeserializerHandler(CASImpl aCAS, boolean lenient,
-            XmiSerializationSharedData sharedData) {
+            XmiSerializationSharedData sharedData, int mergePoint) {
       super();
       this.cas = aCAS.getBaseCAS();
       this.lenient = lenient;
-      this.sharedData = sharedData;
-      // Reset the CAS. Necessary to get Sofas to work properly.
-      cas.resetNoQuestions();
-      this.fsTree = new IntRedBlackTree();
-      this.idLess = new IntVector();
+      this.sharedData = 
+        sharedData != null ? sharedData : new XmiSerializationSharedData();
+      this.mergePoint = mergePoint;
+      if (mergePoint < 0) {
+        //If not merging, reset the CAS. 
+        //Necessary to get Sofas to work properly.
+        cas.resetNoQuestions();
+        
+        // clear ID mappings stored in the SharedData (from previous deserializations)
+        this.sharedData.clearIdMap();
+      }
+      this.deserializedFsAddrs = new IntVector();
       this.fsListNodesFromMultivaluedProperties = new IntVector();
       this.buffer = new StringBuffer();
       this.indexRepositories = new ArrayList();
@@ -196,11 +233,6 @@ public class XmiCasDeserializer {
       this.sofaFeatCode = cas.ts.getFeatureCode(CAS.FEATURE_FULL_NAME_SOFA);
       this.nextSofaNum = 2;
       this.listUtils = new ListUtils(cas, UIMAFramework.getLogger(XmiCasDeserializer.class), null);
-
-      // clear ID mappings stored in the SharedData (from previous deserializations)
-      if (this.sharedData != null) {
-        this.sharedData.clearIdMap();
-      }
 
       // populate feature type table
       this.featureType = new int[cas.ts.getNumberOfFeatures() + 1];
@@ -268,6 +300,18 @@ public class XmiCasDeserializer {
             this.ignoreDepth++;
             return;
           }
+          // if we're doing merging, skip elements whose ID is <= mergePoint
+          if (this.mergePoint >= 0) {
+            String id = attrs.getValue(ID_ATTR_NAME);
+            if (id != null) {
+              int idInt = Integer.parseInt(id);
+              if (idInt <= this.mergePoint) {
+                this.state = IGNORING_XMI_ELEMENTS_STATE;
+                this.ignoreDepth++;
+                return;
+              }
+            }
+          }
           if (nameSpaceURI == null || nameSpaceURI.length() == 0) {
             // parser may not be namespace-enabled, so try to resolve NS ourselves
             int colonIndex = qualifiedName.indexOf(':');
@@ -285,16 +329,49 @@ public class XmiCasDeserializer {
             }
           }
 
-          String typeName = xmiElementName2uimaTypeName(nameSpaceURI, localName);
-
-          readFS(typeName, attrs);
+          readFS(nameSpaceURI, localName, qualifiedName, attrs);
 
           multiValuedFeatures.clear();
           state = FEAT_STATE;
           break;
         }
         case FEAT_STATE: {
-          state = FEAT_CONTENT_STATE;
+          //parsing a feature recorded as a child element
+          //check for an "href" feature, used for references
+          String href = attrs.getValue("href");
+          if (href != null && href.startsWith("#")) {           
+            //for out-of-typesystem objects, there's special handling here
+            //to keep track of the fact this was an href so we re-serialize
+            //correctly.
+            if (this.outOfTypeSystemElement != null) {
+              XmlElementName elemName = new XmlElementName(nameSpaceURI, localName, qualifiedName);
+              List ootsAttrs = new ArrayList();
+              ootsAttrs.add(new XmlAttribute("href", href));
+              XmlElementNameAndContents elemWithContents = new XmlElementNameAndContents(elemName, null, ootsAttrs);
+              this.outOfTypeSystemElement.childElements.add(elemWithContents);
+            }
+            else {
+              //In-typesystem FS, so we can forget this was an href and just add
+              //the integer value, which will be interpreted as a reference later.
+              //NOTE: this will end up causing it to be reserialized as an attribute
+              //rather than an element, but that is not in violation of the XMI spec.
+              ArrayList valueList = (ArrayList) this.multiValuedFeatures.get(qualifiedName);
+              if (valueList == null) {
+                valueList = new ArrayList();
+                this.multiValuedFeatures.put(qualifiedName, valueList);
+              }
+              valueList.add(href.substring(1));
+            }                         
+            state = REF_FEAT_STATE;
+          }
+          else {
+            //non-reference feature, expecting feature value as character content
+            state = FEAT_CONTENT_STATE;
+          }
+          break;
+        }
+        case IGNORING_XMI_ELEMENTS_STATE: {
+          ignoreDepth++;
           break;
         }
         default: {
@@ -305,7 +382,10 @@ public class XmiCasDeserializer {
     }
 
     // Create a new FS.
-    private void readFS(String typeName, Attributes attrs) throws SAXParseException {
+    private void readFS(String nameSpaceURI, String localName, String qualifiedName, 
+            Attributes attrs) throws SAXException {
+      String typeName = xmiElementName2uimaTypeName(nameSpaceURI, localName);
+      
       currentType = (TypeImpl) ts.getType(typeName);
       if (currentType == null) {
         // ignore NULL type
@@ -317,8 +397,12 @@ public class XmiCasDeserializer {
           processView(attrs.getValue("sofa"), attrs.getValue("members"));
           return;
         }
+        // type is not in our type system
         if (!lenient) {
           throw createException(XCASParsingException.UNKNOWN_TYPE, typeName);
+        } else {
+          addToOutOfTypeSystemData(
+              new XmlElementName(nameSpaceURI, localName, qualifiedName), attrs);                  
         }
         return;
       } else if (cas.isArrayType(currentType)) {
@@ -365,7 +449,7 @@ public class XmiCasDeserializer {
         if (sofa != null) {
           // translate sofa's xmi:id into its sofanum
           int sofaXmiId = Integer.parseInt(sofa);
-          int sofaAddr = fsTree.get(sofaXmiId);
+          int sofaAddr = getFsAddrForXmiId(sofaXmiId);
           sofaNum = cas.getFeatureValue(sofaAddr, sofaNumFeatCode);
         }
         FSIndexRepositoryImpl indexRep = (FSIndexRepositoryImpl) indexRepositories.get(sofaNum);
@@ -374,18 +458,24 @@ public class XmiCasDeserializer {
         // intermediate String[]?
         String[] members = parseArray(membersString);
         for (int i = 0; i < members.length; i++) {
-          // have to map each ID to its "real" address (TODO: optimize?)
-          int addr;
-          try {
-            addr = fsTree.get(Integer.parseInt(members[i]));
-          } catch (NoSuchElementException e) {
-            if (!lenient)
-              throw e;
-            // when running in lenient mode, we will have skipped FSs that
-            // are of unknown types. So ignore members of the View which are not found.
+          int id = Integer.parseInt(members[i]);
+          //if merging, don't try to index anything below the merge point
+          if (id <= this.mergePoint) {
             continue;
           }
-          indexRep.addFS(addr);
+          // have to map each ID to its "real" address (TODO: optimize?)
+          try {
+            int addr = getFsAddrForXmiId(id);
+            indexRep.addFS(addr);
+          } catch (NoSuchElementException e) {
+            if (!lenient) {
+              throw e;
+            }
+            else {
+              //unknown view member may be an OutOfTypeSystem FS
+              this.sharedData.addOutOfTypeSystemViewMember(sofa, members[i]);
+            }
+          }
         }
       }
     }
@@ -397,7 +487,7 @@ public class XmiCasDeserializer {
      * @throws SAXParseException
      */
     private void readFS(final int addr, Attributes attrs) throws SAXParseException {
-      // Hang on address for setting content feature
+      // Hang on to address for handle features encoded as child elements
       this.currentAddr = addr;
       int id = -1;
       String attrName, attrValue;
@@ -433,7 +523,7 @@ public class XmiCasDeserializer {
           } else if (sofaTypeCode == typeCode && attrName.equals(CAS.FEATURE_BASE_NAME_SOFANUM)) {
             attrValue = Integer.toString(thisSofaNum);
           }
-          handleFeature(type, addr, attrName, attrValue, false);
+          handleFeature(type, addr, attrName, attrValue);
         }
       }
       if (sofaTypeCode == typeCode) {
@@ -451,13 +541,9 @@ public class XmiCasDeserializer {
         ((CASImpl) view).registerView(sofa);
         views.add(view);
       }
-      if (id < 0) {
-        idLess.add(addr);
-      } else {
-        fsTree.put(id, addr);
-        if (sharedData != null) {
-          sharedData.addIdMapping(addr, id);
-        }
+      deserializedFsAddrs.add(addr);
+      if (id > 0) {
+        sharedData.addIdMapping(addr, id);
       }
     }
 
@@ -467,24 +553,28 @@ public class XmiCasDeserializer {
       return ((val == null) || (val.length() == 0));
     }
 
-    private void handleFeature(final Type type, int addr, String featName, String featVal,
-            boolean aLenient) throws SAXParseException {
+    private void handleFeature(final Type type, int addr, String featName, String featVal) throws SAXParseException {
       final FeatureImpl feat = (FeatureImpl) type.getFeatureByBaseName(featName);
       if (feat == null) {
-        if (!aLenient) {
+        if (!this.lenient) {
           throw createException(XCASParsingException.UNKNOWN_FEATURE, featName);
+        }
+        else {
+          sharedData.addOutOfTypeSystemAttribute(addr, featName, featVal);
         }
         return;
       }
       handleFeature(addr, feat.getCode(), featVal);
     }
 
-    private void handleFeature(final Type type, int addr, String featName, List featVals,
-            boolean aLenient) throws SAXParseException {
+    private void handleFeature(final Type type, int addr, String featName, List featVals) throws SAXParseException {
       final FeatureImpl feat = (FeatureImpl) type.getFeatureByBaseName(featName);
       if (feat == null) {
-        if (!aLenient) {
+        if (!this.lenient) {
           throw createException(XCASParsingException.UNKNOWN_FEATURE, featName);
+        }
+        else {
+          sharedData.addOutOfTypeSystemChildElements(addr, featName, featVals);
         }
         return;
       }
@@ -511,7 +601,7 @@ public class XmiCasDeserializer {
                 // special handling for "sofa" feature of annotation. Need to change
                 // it from a sofa reference into a sofa number
                 int sofaXmiId = Integer.parseInt(featVal);
-                int sofaAddr = fsTree.get(sofaXmiId);
+                int sofaAddr = getFsAddrForXmiId(sofaXmiId);
                 int sofaNum = cas.getFeatureValue(sofaAddr, sofaNumFeatCode);
                 cas.setFeatureValue(addr, featCode, sofaNum);
               } else {
@@ -751,13 +841,9 @@ public class XmiCasDeserializer {
         cas.setArrayValueFromString(casArray, i, stringVal);
       }
 
-      if (xmiId < 0) {
-        idLess.add(casArray);
-      } else {
-        fsTree.put(xmiId, casArray);
-        if (sharedData != null) {
-          sharedData.addIdMapping(casArray, xmiId);
-        }
+      deserializedFsAddrs.add(casArray);
+      if (xmiId > 0) {
+        sharedData.addIdMapping(casArray, xmiId);
       }
       return casArray;
     }
@@ -782,13 +868,9 @@ public class XmiCasDeserializer {
       }
 
       int arrayAddr = ((FeatureStructureImpl) fs).getAddress();
-      if (xmiId < 0) {
-        idLess.add(arrayAddr);
-      } else {
-        fsTree.put(xmiId, arrayAddr);
-        if (sharedData != null) {
-          sharedData.addIdMapping(arrayAddr, xmiId);
-        }
+      deserializedFsAddrs.add(arrayAddr);
+      if (xmiId > 0) {
+        sharedData.addIdMapping(arrayAddr, xmiId);
       }
       return arrayAddr;
     }
@@ -859,10 +941,26 @@ public class XmiCasDeserializer {
           this.state = FEAT_STATE;
           break;
         }
+        case REF_FEAT_STATE: {
+          this.state = FEAT_STATE;
+          break;
+        }
         case FEAT_STATE: {
           // end of FS. Process multi-valued features or array elements that were
           // encoded as subelements
-          if (currentType != null) {
+          if (this.outOfTypeSystemElement != null) {
+            if (!this.multiValuedFeatures.isEmpty()) {
+              Iterator iter = this.multiValuedFeatures.entrySet().iterator();
+              while (iter.hasNext()) {
+                Map.Entry entry = (Map.Entry) iter.next();
+                String featName = (String) entry.getKey();
+                List featVals = (List) entry.getValue();
+                addOutOfTypeSystemFeature(outOfTypeSystemElement, featName, featVals);
+              }
+            }
+            this.outOfTypeSystemElement = null;
+          }
+          else if (currentType != null) {
             if (cas.isArrayType(currentType) && !cas.isByteArrayType(currentType)) {
               // create the array now. elements may have been provided either as
               // attributes or child elements, but not both.
@@ -882,7 +980,7 @@ public class XmiCasDeserializer {
                 Map.Entry entry = (Map.Entry) iter.next();
                 String featName = (String) entry.getKey();
                 List featVals = (List) entry.getValue();
-                handleFeature(currentType, currentAddr, featName, featVals, false);
+                handleFeature(currentType, currentAddr, featName, featVals);
               }
             }
           }
@@ -905,24 +1003,9 @@ public class XmiCasDeserializer {
      * @see org.xml.sax.ContentHandler#endDocument()
      */
     public void endDocument() throws SAXException {
-      // time = System.currentTimeMillis() - time;
-      // System.out.println("Done reading xml data in " + new TimeSpan(time));
-      // System.out.println(
-      // "Resolving references for id data (" + fsTree.size() + ").");
-      // time = System.currentTimeMillis();
-
       // Resolve ID references, and add FSs to indexes
-      IntRBTIterator it = fsTree.iterator();
-      while (it.hasNext()) {
-        finalizeFS(it.next());
-      }
-      // time = System.currentTimeMillis() - time;
-      // System.out.println("Done in " + new TimeSpan(time));
-      // System.out.println(
-      // "Resolving references for non-id data (" + idLess.size() + ").");
-      // time = System.currentTimeMillis();
-      for (int i = 0; i < idLess.size(); i++) {
-        finalizeFS(idLess.get(i));
+      for (int i = 0; i < deserializedFsAddrs.size(); i++) {
+        finalizeFS(deserializedFsAddrs.get(i));
       }
       for (int i = 0; i < fsListNodesFromMultivaluedProperties.size(); i++) {
         remapFSListHeads(fsListNodesFromMultivaluedProperties.get(i));
@@ -961,12 +1044,18 @@ public class XmiCasDeserializer {
           if (featVal != CASImpl.NULL) {
             int fsValAddr = CASImpl.NULL;
             try {
-              fsValAddr = fsTree.get(featVal);
+              fsValAddr = getFsAddrForXmiId(featVal);
             } catch (NoSuchElementException e) {
-              if (!lenient)
+              if (!lenient) {
                 throw e;
-              // if running in lenient mode, we may not have deserialized the value of this
-              // feature because it was of unknown type. So set it to null.
+              }
+              else {
+                // we may not have deserialized the value of this feature because it 
+                // was of unknown type.  We set it to null, and record in the
+                // out-of-typesystem data.
+                this.sharedData.addOutOfTypeSystemAttribute(
+                        addr, feat.getShortName(), Integer.toString(featVal));
+              }
             }
             cas.setFeatureValue(addr, feats[i], fsValAddr);
           }
@@ -981,7 +1070,6 @@ public class XmiCasDeserializer {
      * 
      * @param i
      */
-
     private void remapFSListHeads(int addr) {
       final int type = cas.getHeapValue(addr);
       if (!listUtils.isFsListType(type))
@@ -994,12 +1082,15 @@ public class XmiCasDeserializer {
       if (featVal != CASImpl.NULL) {
         int fsValAddr = CASImpl.NULL;
         try {
-          fsValAddr = fsTree.get(featVal);
+          fsValAddr = getFsAddrForXmiId(featVal);
         } catch (NoSuchElementException e) {
-          if (!lenient)
+          if (!lenient) {
             throw e;
-          // if running in lenient mode, we may not have deserialized the value of this
-          // element because it was of unknown type. So we set the element to null.
+          }
+          else {
+            //this may be a reference to an out-of-typesystem FS
+            this.sharedData.addOutOfTypeSystemAttribute(addr, CAS.FEATURE_BASE_NAME_HEAD, Integer.toString(featVal));
+          }
         }
         cas.setFeatureValue(addr, headFeat, fsValAddr);
       }
@@ -1024,12 +1115,16 @@ public class XmiCasDeserializer {
         if (arrayVal != CASImpl.NULL) {
           int arrayValAddr = CASImpl.NULL;
           try {
-            arrayValAddr = fsTree.get(arrayVal);
+            arrayValAddr = getFsAddrForXmiId(arrayVal);
           } catch (NoSuchElementException e) {
-            if (!lenient)
+            if (!lenient) {
               throw e;
-            // if running in lenient mode, we may not have deserialized the value of this
-            // element because it was of unknown type. So we set the element to null.
+            }
+            else {  
+              // the array element may be out of typesystem.  In that case set it
+              // to null, but record the id so we can add it back on next serialization.
+              this.sharedData.addOutOfTypeSystemArrayElement(addr, i, arrayVal);
+            }
           }
           cas.setArrayValue(addr, i, arrayValAddr);
         }
@@ -1142,8 +1237,64 @@ public class XmiCasDeserializer {
       }
       return cas.ll_getTypeClass(type);
     }
-  }
+    
+    /**
+     * Gets the FS address into which the XMI element with the given ID
+     * was deserialized.  This method supports merging multiple XMI documents
+     * into a single CAS, by checking the XmiSerializationSharedData
+     * structure to get the address of elements that were skipped during this
+     * deserialization but were deserialized during a previous deserialization.
+     * 
+     * @param xmiId
+     * @return
+     */
+    private int getFsAddrForXmiId(int xmiId) {
+      int addr = sharedData.getFsAddrForXmiId(xmiId);
+      if (addr > 0)
+        return addr;
+      else
+        throw new java.util.NoSuchElementException();
+    }
+    
+    /**
+     * Adds a feature sturcture to the out-of-typesystem data.  Also sets the
+     * this.outOfTypeSystemElement field, which is referred to later if we have to
+     * handle features recorded as child elements.
+     */
+    private void addToOutOfTypeSystemData(XmlElementName xmlElementName, Attributes attrs)
+            throws XCASParsingException {
+      this.outOfTypeSystemElement = new OotsElementData();
+      this.outOfTypeSystemElement.elementName = xmlElementName;
+      String attrName, attrValue;
+      for (int i = 0; i < attrs.getLength(); i++) {
+        attrName = attrs.getQName(i);
+        attrValue = attrs.getValue(i);
+        if (attrName.equals(ID_ATTR_NAME)) {
+          this.outOfTypeSystemElement.xmiId = attrValue;
+        }
+        else {
+          this.outOfTypeSystemElement.attributes.add(
+                  new XmlAttribute(attrName, attrValue));
+        }
+      }
+      this.sharedData.addOutOfTypeSystemElement(this.outOfTypeSystemElement);
+    }    
 
+    /**
+     * Adds a feature to the out-of-typesystem features list.
+     * @param ootsElem object to which to add the feature
+     * @param featName name of feature
+     * @param featVals feature values, as a list of strings
+     */
+    private void addOutOfTypeSystemFeature(OotsElementData ootsElem, String featName, List featVals) {
+      Iterator iter = featVals.iterator();
+      XmlElementName elemName = new XmlElementName(null,featName,featName);
+      while (iter.hasNext()) {
+        ootsElem.childElements.add(new XmlElementNameAndContents(elemName, (String)iter.next()));
+      }
+    } 
+  }
+  
   private TypeSystemImpl ts;
 
   private Map xmiNamespaceToUimaNamespaceMap = new HashMap();
@@ -1191,7 +1342,7 @@ public class XmiCasDeserializer {
    * @return The <code>DefaultHandler</code> to pass to the SAX parser.
    */
   public DefaultHandler getXmiCasHandler(CAS cas, boolean lenient) {
-    return new XmiCasDeserializerHandler((CASImpl) cas, lenient, null);
+    return new XmiCasDeserializerHandler((CASImpl) cas, lenient, null, -1);
   }
 
   /**
@@ -1213,8 +1364,35 @@ public class XmiCasDeserializer {
    */
   public DefaultHandler getXmiCasHandler(CAS cas, boolean lenient,
           XmiSerializationSharedData sharedData) {
-    return new XmiCasDeserializerHandler((CASImpl) cas, lenient, sharedData);
+    return new XmiCasDeserializerHandler((CASImpl) cas, lenient, sharedData, -1);
   }
+  
+  /**
+   * Create a default handler for deserializing a CAS from XMI. By default this is not lenient,
+   * meaning that if the XMI references Types that are not in the Type System, an Exception will be
+   * thrown. Use {@link XmiCasDeserializer#getXmiCasHandler(CAS,boolean)} to turn on lenient mode
+   * and ignore any unknown types.
+   * 
+   * @param cas
+   *          This CAS will be used to hold the data deserialized from the XMI
+   * @param lenient
+   *          if true, unknown Types will be ignored. If false, unknown Types will cause an
+   *          exception. The default is false.
+   * @param sharedData
+   *          data structure used to allow the XmiCasSerializer and XmiCasDeserializer to share
+   *          information.
+   * @param mergePoint
+   *          used to support merging multiple XMI CASes. If the mergePoint is negative, "normal"
+   *          deserialization will be done, meaning the target CAS will be reset and the entire XMI
+   *          content will be deserialized. If the mergePoint is nonnegative (including 0), the
+   *          target CAS will not be reset, and only Feature Structures whose xmi:id is strictly
+   *          greater than the mergePoint value will be deserialized.
+   * @return The <code>DefaultHandler</code> to pass to the SAX parser.
+   */
+  public DefaultHandler getXmiCasHandler(CAS cas, boolean lenient,
+          XmiSerializationSharedData sharedData, int mergePoint) {
+    return new XmiCasDeserializerHandler((CASImpl) cas, lenient, sharedData, mergePoint);
+  }  
 
   /**
    * Deserializes a CAS from XMI.
@@ -1231,7 +1409,7 @@ public class XmiCasDeserializer {
    *           if an I/O failure occurs
    */
   public static void deserialize(InputStream aStream, CAS aCAS) throws SAXException, IOException {
-    XmiCasDeserializer.deserialize(aStream, aCAS, false);
+    XmiCasDeserializer.deserialize(aStream, aCAS, false, null, -1);
   }
 
   /**
@@ -1253,13 +1431,70 @@ public class XmiCasDeserializer {
    */
   public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient)
           throws SAXException, IOException {
-    XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-    XmiCasDeserializer deser = new XmiCasDeserializer(aCAS.getTypeSystem());
-    ContentHandler handler = deser.getXmiCasHandler(aCAS, aLenient);
-    xmlReader.setContentHandler(handler);
-    xmlReader.parse(new InputSource(aStream));
+    deserialize(aStream, aCAS, aLenient, null, -1);
   }
 
+  /**
+   * Deserializes a CAS from XMI.
+   * 
+   * @param aStream
+   *          input stream from which to read the XCMI document
+   * @param aCAS
+   *          CAS into which to deserialize. This CAS must be set up with a type system that is
+   *          compatible with that in the XMI
+   * @param aLenient
+   *          if true, unknown Types will be ignored. If false, unknown Types will cause an
+   *          exception. The default is false.
+   * @param aSharedData
+   *          an optional container for data that is shared between the {@link XmiCasSerializer} and the 
+   *          {@link XmiCasDeserializer}.  See the JavaDocs for {@link XmiSerializationSharedData} for details.
+   * 
+   * @throws SAXException
+   *           if an XML Parsing error occurs
+   * @throws IOException
+   *           if an I/O failure occurs
+   */
+  public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient,
+          XmiSerializationSharedData aSharedData)
+          throws SAXException, IOException {
+    deserialize(aStream, aCAS, aLenient, aSharedData, -1);
+  }
+  
+  /**
+   * Deserializes a CAS from XMI.  This version of this method supports merging multiple XMI documents into a single CAS.
+   * 
+   * @param aStream
+   *          input stream from which to read the XCMI document
+   * @param aCAS
+   *          CAS into which to deserialize. This CAS must be set up with a type system that is
+   *          compatible with that in the XMI
+   * @param aLenient
+   *          if true, unknown Types will be ignored. If false, unknown Types will cause an
+   *          exception. The default is false.
+   * @param aSharedData
+   *          a container for data that is shared between the {@link XmiCasSerializer} and the {@link XmiCasDeserializer}.
+   *          See the JavaDocs for {@link XmiSerializationSharedData} for details.
+   * @param aMergePoint
+   *          used to support merging multiple XMI CASes. If the mergePoint is negative, "normal"
+   *          deserialization will be done, meaning the target CAS will be reset and the entire XMI
+   *          content will be deserialized. If the mergePoint is nonnegative (including 0), the
+   *          target CAS will not be reset, and only Feature Structures whose xmi:id is strictly
+   *          greater than the mergePoint value will be deserialized. 
+   * @throws SAXException
+   *           if an XML Parsing error occurs
+   * @throws IOException
+   *           if an I/O failure occurs
+   */
+  public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient,
+          XmiSerializationSharedData aSharedData, int aMergePoint)
+          throws SAXException, IOException {
+    XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+    XmiCasDeserializer deser = new XmiCasDeserializer(aCAS.getTypeSystem());
+    ContentHandler handler = deser.getXmiCasHandler(aCAS, aLenient, aSharedData, aMergePoint);
+    xmlReader.setContentHandler(handler);
+    xmlReader.parse(new InputSource(aStream));
+  }  
+  
   /**
    * Converts an XMI element name to a UIMA-style dotted type name.
    * 
