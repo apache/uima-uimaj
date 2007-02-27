@@ -63,11 +63,11 @@
           <description/>
           <rangeTypeName>uima.tcas.Annotation</rangeTypeName>
         </featureDescription>
-        <featureDescription>
+<!--        <featureDescription>
           <name>relationArgs</name>
           <description/>
           <rangeTypeName>org.apache.uima.testTypeSystem.RelationArgs</rangeTypeName>
-        </featureDescription>
+        </featureDescription>-->
       </features>
     </typeDescription>
     <typeDescription>
@@ -119,21 +119,23 @@
           <description/>
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
-        <featureDescription>
+<!--        <featureDescription>
           <name>classes</name>
           <description/>
           <rangeTypeName>uima.cas.StringArray</rangeTypeName>
-        </featureDescription>
+        </featureDescription> 
+-->
         <featureDescription>
           <name>canonicalForm</name>
           <description/>
           <rangeTypeName>uima.cas.String</rangeTypeName>
         </featureDescription>
-        <featureDescription>
+<!--        <featureDescription>
           <name>variantForms</name>
           <description/>
           <rangeTypeName>uima.cas.StringList</rangeTypeName>
         </featureDescription>
+-->
         <featureDescription>
           <name>id</name>
           <description/>

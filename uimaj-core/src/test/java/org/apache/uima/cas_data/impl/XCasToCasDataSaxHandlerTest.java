@@ -119,19 +119,7 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
       CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
               new FsIndexDescription[0]);
 
-      InputStream serCasStream;
-      if (builtInXmlSerializationSupportsCRs()) {
-        serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
-      }
-      else {      
-        //Java version we are running can't serialize CR (\r) characters in XML output.
-        //Therefore we need to remove them from our test example XCAS or we will get 
-        //comparison failiures later in this test case.
-        String casXml = FileUtils.file2String(JUnitExtension.getFile("ExampleCas/cas.xml"), "UTF-8");
-        casXml = casXml.replaceAll("&#13;", "");
-        byte[] bytes = casXml.getBytes("UTF-8");
-        serCasStream = new ByteArrayInputStream(bytes);
-      }
+      InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
       
       XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());
       ContentHandler deserHandler = deser.getXCASHandler(cas);
@@ -182,6 +170,12 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
 
     generator.generateXCas(casData);
     String xml = sw.getBuffer().toString();
+    
+    //workaround for XML serializatioj problem on Sun Java 1.4
+    if (!builtInXmlSerializationSupportsCRs()) {
+      xml = xml.replaceAll("&#10;", "&#13;&#10;");  
+    }
+    
     UIMAFramework.getLogger(XCasToCasDataSaxHandlerTest.class).log(Level.FINE, xml);
 
     // deserialize back into CAS for comparison
