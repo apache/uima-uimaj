@@ -20,7 +20,7 @@
 # Bourne shell syntax, this should hopefully run on pretty much anything.
 
 usage() {
-  echo "Usage: signRelease.sh <version> <passphrase> (e.g., signRelease.sh uimaj-2.1.0-incubating \"Your passphrase\")"
+  echo "Usage: signRelease.sh <version> <passphrase> (e.g., signRelease.sh uimaj-2.2-incubating-SNAPSHOT \"Your passphrase\")"
 }
 
 if [ -n "$2" ]
