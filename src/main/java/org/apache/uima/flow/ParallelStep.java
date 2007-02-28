@@ -21,7 +21,6 @@ package org.apache.uima.flow;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Set;
 
 /**
  * Indicates that a CAS should be routed to a multiple AnalysisEngines and that the relative order
