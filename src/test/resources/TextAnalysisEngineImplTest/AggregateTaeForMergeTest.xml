@@ -38,7 +38,7 @@
 </flowController>
 <analysisEngineMetaData>
 <name>Aggregate TAE for Merge Test</name>
-<description>For testing mergine of type system, type priorities, and indexes.</description>
+<description>For testing merging of type system, type priorities, and indexes.</description>
 <version>1.0</version>
 <vendor>The Apache Software Foundation</vendor>
 
