@@ -26,7 +26,7 @@ import java.util.Set;
 /**
  * Indicates that a CAS should be routed to a multiple AnalysisEngines and that the relative order
  * in which these execute does not matter. Logically, they can run in parallel. The runtime is not
- * actually obligated to execute them in parallel, however.
+ * obligated to actually execute them in parallel, however.
  * <p>
  * After all the specified Analysis Engines have completed their processing, the {@link Flow#next()}
  * method will be called again to determine the next destination for the CAS.
