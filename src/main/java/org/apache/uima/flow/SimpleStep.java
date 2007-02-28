@@ -28,8 +28,8 @@ public class SimpleStep extends Step {
   /**
    * Cretes a new SimpleStep
    * 
-   * @param aCasProcessorKey
-   *          The key of the CAS Processor to which the CAS should be routed. This must be one of
+   * @param aAnalysisEngineKey
+   *          The key of the Analysis Engine to which the CAS should be routed. This must be one of
    *          the keys in the FlowController's
    *          {@link FlowControllerContext#getAnalysisEngineMetaDataMap()}.
    */

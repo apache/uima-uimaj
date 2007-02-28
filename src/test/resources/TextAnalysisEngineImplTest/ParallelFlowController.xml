@@ -1,4 +1,5 @@
-/*
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,21 +16,18 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */
+ -->
 
-package org.apache.uima.flow;
+<!-- For testing only. -->
 
-/**
- * Represents the next destination or destinations to which a CAS should be routed. A
- * <code>Step</code> is the output of the {@link Flow#next()} method. A Flow should output an
- * instance of a concrete class that extends Step. Currently, these are:
- * <ul>
- * <li>{@link SimpleStep} - specifies a single AnalysisEngine to which the CAS should next be
- * routed</li>
- * <li>{@link ParallelStep} - specifies multiple AnalysisEngine to which the CAS should next be
- * routed, where the relative order in which these Analysis Engines execute does not matter.</li>
- * <li>{@link FinalStep} - indicates that there are no more destinations for this CAS.</li>
- * </ul>
- */
-public abstract class Step {
-}
+<flowControllerDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+<implementationName>org.apache.uima.analysis_engine.impl.ParallelFlowController</implementationName>
+ 
+<processingResourceMetaData>
+<name>Parallel Flow Controller</name>
+<description>For testing only.</description>
+<version>1.0</version>
+<vendor>The Apache Software Foundation</vendor>
+</processingResourceMetaData>
+</flowControllerDescription>

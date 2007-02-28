@@ -24,7 +24,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -356,6 +358,18 @@ public class AnalysisEngine_implTest extends TestCase {
       assertTrue(outFile.exists());
       assertTrue(outFile.length() > 0);
       outFile.delete();
+      
+      //test aggregate that uses ParallelStep
+      AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+        new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateForParallelStepTest.xml")));
+      AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc);
+      CAS cas = ae.newCAS();
+      cas.setDocumentText("new test");
+      ae.process(cas);
+      assertEquals("new test", TestAnnotator.lastDocument);
+      assertEquals("new test", TestAnnotator2.lastDocument);
+      cas.reset();
+      
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -951,6 +965,27 @@ public class AnalysisEngine_implTest extends TestCase {
       assertFalse(iter.hasNext());
       // Annotator should NOT get the original CAS according to the default flow
       assertEquals("Line three", TestAnnotator.lastDocument);
+      
+      //with ParallelStep
+      AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+        new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateForParallelStepCasMultiplierTest.xml")));
+      AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc);
+      cas.reset();
+      cas.setDocumentText("One\tTwo\nThree\tFour");
+      iter = ae.processAndOutputNewCASes(cas);
+      Set expectedOutputs = new HashSet();
+      expectedOutputs.add("One");
+      expectedOutputs.add("Two\nThree");
+      expectedOutputs.add("Four");
+      expectedOutputs.add("One\tTwo");
+      expectedOutputs.add("Three\tFour");
+      while (iter.hasNext()) {
+        outCas = iter.next();
+        assertTrue(expectedOutputs.remove(outCas.getDocumentText()));        
+        outCas.release();
+      }
+      assertTrue(expectedOutputs.isEmpty());
+      
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }

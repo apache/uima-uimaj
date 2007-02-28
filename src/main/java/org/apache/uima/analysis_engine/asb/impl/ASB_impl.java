@@ -19,10 +19,13 @@
 
 package org.apache.uima.analysis_engine.asb.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
@@ -47,6 +50,7 @@ import org.apache.uima.analysis_engine.metadata.impl.AnalysisEngineMetaData_impl
 import org.apache.uima.cas.CAS;
 import org.apache.uima.flow.FinalStep;
 import org.apache.uima.flow.FlowControllerContext;
+import org.apache.uima.flow.ParallelStep;
 import org.apache.uima.flow.SimpleStep;
 import org.apache.uima.flow.Step;
 import org.apache.uima.flow.impl.FlowControllerContext_impl;
@@ -480,6 +484,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
       try {
         while (true) {
           CAS cas = null;
+          Step nextStep = null;
           flow = null;
           // get an initial CAS from the CasIteratorStack
           while (cas == null) {
@@ -497,6 +502,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
               // that stack frame and continue with its flow
               cas = frame.originalCas;
               flow = frame.originalCasFlow;
+              nextStep = frame.incompleteParallelStep; //in case we need to resume a parallel step
               cas.setCurrentComponentInfo(null); // this CAS is done being processed by the
               // previous AnalysisComponent
               casIteratorStack.pop(); // remove this state from the stack now
@@ -506,11 +512,15 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
           // record active CASes in case we encounter an exception and need to release them
           activeCASes.add(cas);
 
-          // get next CAS Processor to route to
-          Step nextStep = flow.next();
+          // if we're not in the middle of parallel step already, ask the FlowController 
+          // for the next step
+          if (nextStep == null) {
+            nextStep = flow.next();
+          }
 
           // repeat until we reach a FinalStep
           while (!(nextStep instanceof FinalStep)) {
+            //Simple Step
             if (nextStep instanceof SimpleStep) {
               String nextAeKey = ((SimpleStep) nextStep).getAnalysisEngineKey();
               AnalysisEngine nextAe = (AnalysisEngine) mComponentAnalysisEngineMap.get(nextAeKey);
@@ -540,6 +550,49 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
                         AnalysisEngineProcessException.UNKNOWN_ID_IN_SEQUENCE,
                         new Object[] { nextAeKey });
               }
+            } 
+            //ParallelStep
+            else if (nextStep instanceof ParallelStep) {
+              //create modifiable list of destinations 
+              List destinations = new LinkedList(((ParallelStep)nextStep).getAnalysisEngineKeys());
+              //iterate over all destinations, removing them from the list as we go
+              while (!destinations.isEmpty()) {
+                String nextAeKey = (String)destinations.get(0);
+                destinations.remove(0); 
+                //execute this step as we would a single step
+                AnalysisEngine nextAe = (AnalysisEngine) mComponentAnalysisEngineMap.get(nextAeKey);
+                if (nextAe != null) {
+                  // invoke next AE in flow
+                  CasIterator casIter;
+                  casIter = nextAe.processAndOutputNewCASes(cas);
+                  if (casIter.hasNext()) // new CASes are output
+                  {
+                    CAS outputCas = casIter.next();
+                    // when pushing the stack frame so we know where to pick up later,
+                    // be sure to include the incomplete ParallelStep
+                    if (!destinations.isEmpty()) {
+                      casIteratorStack.push(new StackFrame(casIter, cas, flow, nextAeKey,
+                              new ParallelStep(destinations)));
+                    } else {
+                      casIteratorStack.push(new StackFrame(casIter, cas, flow, nextAeKey));                      
+                    }
+                      
+                    // compute Flow for the output CAS and begin routing it through the flow
+                    flow = flow.newCasProduced(outputCas, nextAeKey);
+                    cas = outputCas;
+                    activeCASes.add(cas);
+                    break; //break out of processing of ParallelStep
+                  } else {
+                    // no new CASes are output; this cas is done being processed
+                    // by that AnalysisEngine so clear the componentInfo
+                    cas.setCurrentComponentInfo(null);
+                  }
+                } else {
+                  throw new AnalysisEngineProcessException(
+                          AnalysisEngineProcessException.UNKNOWN_ID_IN_SEQUENCE,
+                          new Object[] { nextAeKey });
+                }
+              }            
             } else {
               throw new AnalysisEngineProcessException(
                       AnalysisEngineProcessException.UNSUPPORTED_STEP_TYPE, new Object[] { nextStep
@@ -593,12 +646,17 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
   static class StackFrame {
     StackFrame(CasIterator casIterator, CAS originalCas, FlowContainer originalCasFlow,
             String lastAeKey) {
+      this(casIterator, originalCas, originalCasFlow, lastAeKey, null);
+    }
+
+    StackFrame(CasIterator casIterator, CAS originalCas, FlowContainer originalCasFlow,
+            String lastAeKey, ParallelStep incompleteParallelStep) {
       this.casIterator = casIterator;
       this.originalCas = originalCas;
       this.originalCasFlow = originalCasFlow;
       this.casMultiplierAeKey = lastAeKey;
+      this.incompleteParallelStep = incompleteParallelStep;
     }
-
     /** CasIterator that returns output CASes produced by the CasMultiplier. */
     CasIterator casIterator;
 
@@ -613,6 +671,12 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
 
     /** The key that identifies the CasMultiplier whose output we are processing */
     String casMultiplierAeKey;
+    
+    /** If the CAS Multiplier was called while processing a ParallelStep, this specifies
+     * the remaining parts of the parallel step, so we can pick up processing from there
+     * once we've processed all the output CASes.
+     */
+    ParallelStep incompleteParallelStep;
   }
 
   /**
