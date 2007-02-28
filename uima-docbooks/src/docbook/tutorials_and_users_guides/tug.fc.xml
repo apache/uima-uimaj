@@ -60,21 +60,25 @@ under the License.
       
       <para>The framework then uses the Flow object and calls its <literal>next()</literal> method, which returns
         a <literal>Step</literal> object (implemented by the UIMA Framework) that indicates what to do next with
-        this CAS next. There are two common types of steps:</para>
+        this CAS next. There are three types of steps currently supported:</para>
       
       <itemizedlist>
         <listitem>
           <para><literal>SimpleStep</literal>, which specifies a single Analysis Engine that should receive
             the CAS next.</para>
         </listitem>
+
+        <listitem>
+          <para><literal>ParallelStep</literal>, which specifies that multiple Analysis Engines should receive
+            the CAS next, and that the relative order in which these Analysis Engines execute does not matter.
+            Logically, they can run in parallel. The runtime is not obligated to actually execute them in parallel, 
+            however, and the current implementation will execute them serially in an arbitrary order.</para>
+        </listitem>        
         
         <listitem>
           <para><literal>FinalStep</literal>, which indicates that the flow is completed. </para>
         </listitem>
       </itemizedlist>
-      
-      <para>There may be additional types of steps added in future versions; for example to invoke multiple Analysis
-        Engines in parallel on the same CAS.</para>
       
       <para>After executing the step, the framework will call the Flow object&apos;s <literal>next()</literal>
         method again to determine the next destination, and this will be repeated until the Flow Object indicates
