@@ -92,7 +92,7 @@ under the License.
         <literal>FlowControllerContext</literal> by calling the <literal>getContext()</literal> method
         defined in <literal>JCasFlowController_ImplBase</literal> and
         <literal>CasFlowController_ImplBase</literal>. Then, the
-        <literal>FlowControllerContext.getAnalysisEngineMetaDataMap</literal>method can be called to get a map
+        <literal>FlowControllerContext.getAnalysisEngineMetaDataMap</literal> method can be called to get a map
         containing an entry for each of the Analysis Engines in the Aggregate. The keys in this map are the same as the
         delegate analysis engine keys specified in the aggregate descriptor, and the values are the corresponding
         <literal>AnalysisEngineMetaData</literal> objects.</para>
