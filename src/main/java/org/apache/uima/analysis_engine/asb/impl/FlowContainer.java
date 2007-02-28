@@ -86,6 +86,10 @@ public class FlowContainer {
       getMBean().reportAnalysisTime(mTimer.getDuration());
     }
   }
+  
+  public void aborted() {
+    mFlow.aborted();
+  }
 
   private CasManager getCasManager() {
     return mFlowControllerContainer.getResourceManager().getCasManager();

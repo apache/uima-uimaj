@@ -966,9 +966,11 @@ public class AnalysisEngine_implTest extends TestCase {
                               JUnitExtension
                                       .getFile("TextAnalysisEngineImplTest/AggregateWithSegmenterForErrorTest.xml")));
       AnalysisEngine tae = UIMAFramework.produceAnalysisEngine(aggSegDesc);
+      
       CAS cas = tae.newCAS();
       for (int i = 0; i < 2; i++) // verify we can do this more than once
       {
+        FlowControllerForErrorTest.abortedDocuments.clear();
         cas.setDocumentText("Line one\nLine two\nERROR");
         CasIterator iter = tae.processAndOutputNewCASes(cas);
         assertTrue(iter.hasNext());
@@ -985,6 +987,12 @@ public class AnalysisEngine_implTest extends TestCase {
           fail(); // the above should throw an exception
         } catch (AnalysisEngineProcessException e) {
         }
+        //check that FlowController was notified twice, once for the 
+        //segment's flow and once for the complete document's flow
+        assertEquals(2, FlowControllerForErrorTest.abortedDocuments.size());
+        assertTrue(FlowControllerForErrorTest.abortedDocuments.contains("ERROR"));
+        assertTrue(FlowControllerForErrorTest.abortedDocuments.contains("Line one\nLine two\nERROR"));
+
         cas.reset();
       }
 
@@ -999,6 +1007,7 @@ public class AnalysisEngine_implTest extends TestCase {
       cas = tae.newCAS();
       for (int i = 0; i < 2; i++) // verify we can do this more than once
       {
+        FlowControllerForErrorTest.abortedDocuments.clear();
         cas.setDocumentText("Line one\nLine two\nERROR");
         CasIterator iter = tae.processAndOutputNewCASes(cas);
         assertTrue(iter.hasNext());
@@ -1015,6 +1024,15 @@ public class AnalysisEngine_implTest extends TestCase {
           fail(); // the above should throw an exception
         } catch (AnalysisEngineProcessException e) {
         }
+        //check that FlowController was notified three times, once for the 
+        //segment's flow and twice for the complete document's flow (once
+        //in each aggregate)
+        assertEquals(3, FlowControllerForErrorTest.abortedDocuments.size());
+        assertTrue(FlowControllerForErrorTest.abortedDocuments.contains("ERROR"));
+        assertTrue(FlowControllerForErrorTest.abortedDocuments.contains("Line one\nLine two\nERROR"));
+        FlowControllerForErrorTest.abortedDocuments.remove("Line one\nLine two\nERROR");
+        assertTrue(FlowControllerForErrorTest.abortedDocuments.contains("Line one\nLine two\nERROR"));
+        
         cas.reset();
       }
 
@@ -1029,6 +1047,7 @@ public class AnalysisEngine_implTest extends TestCase {
       cas = tae.newCAS();
       for (int i = 0; i < 2; i++) // verify we can do this more than once
       {
+        FlowControllerForErrorTest.abortedDocuments.clear();
         cas.setDocumentText("One\tTwo\nThree\tERROR");
         CasIterator iter = tae.processAndOutputNewCASes(cas);
         assertTrue(iter.hasNext());
@@ -1049,6 +1068,12 @@ public class AnalysisEngine_implTest extends TestCase {
           fail(); // the above should throw an exception
         } catch (AnalysisEngineProcessException e) {
         }
+        //check that FlowController was notified three times, once for each level of granularity
+        assertEquals(3, FlowControllerForErrorTest.abortedDocuments.size());
+        assertTrue(FlowControllerForErrorTest.abortedDocuments.contains("ERROR"));
+        assertTrue(FlowControllerForErrorTest.abortedDocuments.contains("Three\tERROR"));
+        assertTrue(FlowControllerForErrorTest.abortedDocuments.contains("One\tTwo\nThree\tERROR"));
+        
         cas.reset();
       }
 
@@ -1168,5 +1193,44 @@ public class AnalysisEngine_implTest extends TestCase {
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
+  }
+  
+  public void testProcessWithError() throws Exception {
+    try {
+      //This test uses an aggregate AE fails if the document text is set to "ERROR".
+      AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(
+                      new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateForErrorTest.xml")));
+      AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aeDesc);
+      FlowControllerForErrorTest.abortedDocuments.clear();
+      CAS cas = ae.newCAS();
+      //try document that should succeed
+      cas.setDocumentText("This is OK");
+      ae.process(cas);
+      //flow controller should not be notified
+      assertTrue(FlowControllerForErrorTest.abortedDocuments.isEmpty());
+      
+      //now one that fails
+      cas.reset();
+      cas.setDocumentText("ERROR");
+      try {
+        ae.process(cas);
+        fail();
+      }
+      catch(AnalysisEngineProcessException e) {
+        //expected
+      }
+      assertEquals(1, FlowControllerForErrorTest.abortedDocuments.size());
+      assertTrue(FlowControllerForErrorTest.abortedDocuments.contains("ERROR"));
+      
+      //AE should still be able to process a new document now
+      FlowControllerForErrorTest.abortedDocuments.clear();
+      cas.reset();
+      cas.setDocumentText("This is OK");
+      ae.process(cas);
+      assertTrue(FlowControllerForErrorTest.abortedDocuments.isEmpty());
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }    
   }
 }

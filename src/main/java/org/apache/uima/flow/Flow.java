@@ -60,4 +60,14 @@ public interface Flow {
    * @throws AnalysisEngineProcessException
    */
   Flow newCasProduced(AbstractCas newCas, String producedBy) throws AnalysisEngineProcessException;
+  
+  /**
+   * Called by the framework if processing has been aborted for the CAS that was being
+   * routed by this Flow object.  No further processing will take place on the CAS after
+   * this method is called, so the framework will not call the {@link #next()} method again.
+   * <p>
+   * This method provides the Flow object with an opportunity to clean up any resources.
+   * Also, it could be used to allow the FlowController to reuse a Flow object if desired.
+   */  
+  void aborted();
 }

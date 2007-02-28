@@ -29,7 +29,10 @@
       <import location="ErrorAnnotator.xml"/>
     </delegateAnalysisEngine>
   </delegateAnalysisEngineSpecifiers>
-	
+	<flowController>
+    <import location="FlowControllerForErrorTest.xml"/>
+  </flowController>
+  
   <analysisEngineMetaData>
     <name>Example Aggregate TAE including a Segmenter</name>
     <description>For testing only</description>

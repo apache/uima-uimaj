@@ -26,7 +26,10 @@
       <import location="AggregateWithSegmenterForErrorTest.xml"/>
     </delegateAnalysisEngine>
   </delegateAnalysisEngineSpecifiers>
-	
+	<flowController>
+    <import location="FlowControllerForErrorTest.xml"/>
+  </flowController>
+  	
   <analysisEngineMetaData>
     <name>Nested Aggregate for Error Test</name>
     <description>An aggregate AE that contains an Aggregate Segmenter,
