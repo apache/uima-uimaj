@@ -439,6 +439,14 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
      * @see org.apache.uima.analysis_engine.CasIterator#release()
      */
     public void release() {
+      // pop all frames off the casIteratorStack, calling Flow.abort() on flow objects and
+      //CasIterator.release() on the CAS iterators
+      while (!casIteratorStack.isEmpty()) {
+        StackFrame frame = ((StackFrame) casIteratorStack.pop());
+        frame.originalCasFlow.aborted();
+        frame.casIterator.release();
+      }
+      
       // release all active, internal CASes
       Iterator iter = activeCASes.iterator();
       while (iter.hasNext()) {
@@ -451,12 +459,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
       }
       //clear the active CASes list, to guard against ever trying to
       //reuse these CASes or trying to release them a second time.
-      activeCASes.clear(); 
-
-      // recursively release any CasIterators on stack
-      while (!casIteratorStack.isEmpty()) {
-        ((StackFrame) casIteratorStack.pop()).casIterator.release();
-      }
+      activeCASes.clear();       
     }
 
     /**
@@ -473,10 +476,11 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
      *           if a failure occurs during processing
      */
     private CAS processUntilNextOutputCas() throws AnalysisEngineProcessException {
+      FlowContainer flow = null;
       try {
         while (true) {
           CAS cas = null;
-          FlowContainer flow = null;
+          flow = null;
           // get an initial CAS from the CasIteratorStack
           while (cas == null) {
             if (casIteratorStack.isEmpty()) {
@@ -567,6 +571,10 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
           }
         }
       } catch (Exception e) {
+        //notify Flow that processing has aborted on this CAS
+        if (flow != null) {
+          flow.aborted();
+        }
         release(); // release held CASes before throwing exception
         if (e instanceof AnalysisEngineProcessException) {
           throw (AnalysisEngineProcessException) e;

@@ -58,6 +58,15 @@ public abstract class JCasFlow_ImplBase implements Flow {
                   newCas.getClass() });
     }
   }
+  
+  /** 
+   * By default, does nothing.  May be overriden by subclasses to release resources 
+   * when a flow is aborted.
+   * @see Flow#aborted()
+   */
+  public void aborted() {
+    // does nothing by default
+  }    
 
   /**
    * By default, throws an exception to indicate this this Flow object does not support new CASes
