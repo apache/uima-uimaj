@@ -75,6 +75,20 @@ public class AnalysisEngineProcessException extends ResourceProcessException {
   public static final String INCORRECT_CAS_INTERFACE = "incorrect_cas_interface";
 
   /**
+   * Message key for a standard UIMA exception message: "The FlowController class {0} does not 
+   * support the removeAnalysisEngines method.  Analysis Engines cannot be dynamically removed
+   * from the flow."
+   */
+  public static final String REMOVE_AE_FROM_FLOW_NOT_SUPPORTED = "remove_ae_from_flow_not_supported";
+
+  /**
+   * Message key for a standard UIMA exception message: "The Analysis Engine(s) {0} have
+   * been removed from the flow, and the FlowController has determined the Aggregate 
+   * Analysis Engine's processing can no longer continue."
+   */
+  public static final String FLOW_CANNOT_CONTINUE_AFTER_REMOVE = "flow_cannot_continue_after_remove";
+
+  /**
    * Creates a new exception with a null message.
    */
   public AnalysisEngineProcessException() {

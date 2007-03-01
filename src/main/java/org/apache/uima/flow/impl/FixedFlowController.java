@@ -21,6 +21,9 @@ package org.apache.uima.flow.impl;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
@@ -59,14 +62,15 @@ public class FixedFlowController extends CasFlowController_ImplBase {
 
   private static final int ACTION_DROP_IF_NEW_CAS_PRODUCED = 3;
 
-  private String[] mSequence;
+  private ArrayList mSequence;
 
   private int mActionAfterCasMultiplier;
 
   public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     FlowConstraints flowConstraints = aContext.getAggregateMetadata().getFlowConstraints();
-    mSequence = ((FixedFlow) flowConstraints).getFixedFlow();
+    mSequence = new ArrayList();
+    mSequence.addAll(Arrays.asList(((FixedFlow) flowConstraints).getFixedFlow()));
 
     String actionAfterCasMultiplier = (String) aContext
             .getConfigParameterValue(PARAM_ACTION_AFTER_CAS_MULTIPLIER);
@@ -92,6 +96,22 @@ public class FixedFlowController extends CasFlowController_ImplBase {
    */
   public Flow computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
     return new FixedFlowObject(0);
+  }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.flow.FlowController_ImplBase#addAnalysisEngines(java.util.Collection)
+   */
+  public void addAnalysisEngines(Collection aKeys) {
+    // Append new keys to end of Sequence
+    mSequence.addAll(aKeys);
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.flow.FlowController_ImplBase#removeAnalysisEngines(java.util.Collection)
+   */
+  public void removeAnalysisEngines(Collection aKeys) throws AnalysisEngineProcessException {
+    //Remove keys from Sequence
+    mSequence.removeAll(aKeys);
   }
 
   public static FlowControllerDescription getDescription() {
@@ -170,19 +190,19 @@ public class FixedFlowController extends CasFlowController_ImplBase {
         casMultiplierProducedNewCas = false;
       }
 
-      if (currentStep >= mSequence.length) {
+      if (currentStep >= mSequence.size()) {
         return new FinalStep(); // this CAS has finished the sequence
       }
 
       // if next step is a CasMultiplier, set wasPassedToCasMultiplier to true for next time
       // TODO: optimize
       AnalysisEngineMetaData md = (AnalysisEngineMetaData) getContext()
-              .getAnalysisEngineMetaDataMap().get(mSequence[currentStep]);
+              .getAnalysisEngineMetaDataMap().get(mSequence.get(currentStep));
       if (md.getOperationalProperties().getOutputsNewCASes())
         wasPassedToCasMultiplier = true;
 
       // now send the CAS to the next AE in sequence.
-      return new SimpleStep(mSequence[currentStep++]);
+      return new SimpleStep((String)mSequence.get(currentStep++));
     }
 
     /*
@@ -195,7 +215,7 @@ public class FixedFlowController extends CasFlowController_ImplBase {
       casMultiplierProducedNewCas = true;
       // start the new output CAS from the next node after the CasMultiplier that produced it
       int i = 0;
-      while (!mSequence[i].equals(producedBy))
+      while (!mSequence.get(i).equals(producedBy))
         i++;
       return new FixedFlowObject(i + 1, true);
     }
