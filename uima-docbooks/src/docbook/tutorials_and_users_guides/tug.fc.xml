@@ -97,6 +97,12 @@ under the License.
         delegate analysis engine keys specified in the aggregate descriptor, and the values are the corresponding
         <literal>AnalysisEngineMetaData</literal> objects.</para>
       
+      <para>Finally, the Flow Controller has optional methods <literal>addAnalysisEngines</literal> and
+        <literal>removeAnalysisEngines</literal>.  These methods are intended to notify the Flow Controller if new Analysis 
+        Engines are available to route CASes to, or if previously available Analysis Engines are no longer available.  However, 
+        the current version of the Apache UIMA framework does not support dynamically adding or removing Analysis Engines
+        to/from an aggregate, so these methods are not currently called.  Future versions may support this feature.
+      </para>
     </section>
     
     <section id="ugr.tug.fc.example_code">
