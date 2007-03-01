@@ -19,6 +19,7 @@
 
 package org.apache.uima.flow.impl;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.apache.uima.UimaContextAdmin;
@@ -46,7 +47,7 @@ public class FlowControllerContext_impl extends ChildUimaContext_impl implements
           Map aSofaMappings, Map aAnalysisEngineMetaDataMap,
           AnalysisEngineMetaData aAggregateMetadata) {
     super(aParentContext, aContextName, aSofaMappings);
-    mAnalysisEngineMetaDataMap = aAnalysisEngineMetaDataMap;
+    mAnalysisEngineMetaDataMap = Collections.unmodifiableMap(aAnalysisEngineMetaDataMap);
     mAggregateMetadata = aAggregateMetadata;
 
     // add our MBean to the tree
