@@ -26,16 +26,14 @@ under the License.
 <chapter id="ugr.tug.fc">
   <title>Flow Controller Developer&apos;s Guide</title>
   
-  <para>A Flow Controller is a component that plugs into an Aggregate Analysis Engine. When a
-    CAS is input to the Aggregate, the Flow Controller determines the order in which the
-    components of that aggregate are invoked on that CAS. The ability to provide your own Flow
-    Controller implementation is new as of release 2.0 of UIMA.</para>
+  <para>A Flow Controller is a component that plugs into an Aggregate Analysis Engine. When a CAS is input to the
+    Aggregate, the Flow Controller determines the order in which the components of that aggregate are invoked on that
+    CAS. The ability to provide your own Flow Controller implementation is new as of release 2.0 of UIMA.</para>
   
-  <para>Flow Controllers may decide the flow dynamically, based on the contents of the CAS.
-    So, as just one example, you could develop a Flow Controller that first sends each CAS to a
-    Language Identification Annotator and then, based on the output of the Language
-    Identification Annotator, routes that CAS to an Annotator that is specialized for that
-    particular language.</para>
+  <para>Flow Controllers may decide the flow dynamically, based on the contents of the CAS. So, as just one example,
+    you could develop a Flow Controller that first sends each CAS to a Language Identification Annotator and then,
+    based on the output of the Language Identification Annotator, routes that CAS to an Annotator that is specialized
+    for that particular language.</para>
   
   <section id="ugr.tug.fc.developing_fc_code">
     <title>Developing the Flow Controller Code</title>
@@ -67,13 +65,14 @@ under the License.
           <para><literal>SimpleStep</literal>, which specifies a single Analysis Engine that should receive
             the CAS next.</para>
         </listitem>
-
+        
         <listitem>
-          <para><literal>ParallelStep</literal>, which specifies that multiple Analysis Engines should receive
-            the CAS next, and that the relative order in which these Analysis Engines execute does not matter.
-            Logically, they can run in parallel. The runtime is not obligated to actually execute them in parallel, 
-            however, and the current implementation will execute them serially in an arbitrary order.</para>
-        </listitem>        
+          <para><literal>ParallelStep</literal>, which specifies that multiple Analysis Engines should
+            receive the CAS next, and that the relative order in which these Analysis Engines execute does not
+            matter. Logically, they can run in parallel. The runtime is not obligated to actually execute them in
+            parallel, however, and the current implementation will execute them serially in an arbitrary
+            order.</para>
+        </listitem>
         
         <listitem>
           <para><literal>FinalStep</literal>, which indicates that the flow is completed. </para>
@@ -92,32 +91,30 @@ under the License.
         <literal>FlowControllerContext</literal> by calling the <literal>getContext()</literal> method
         defined in <literal>JCasFlowController_ImplBase</literal> and
         <literal>CasFlowController_ImplBase</literal>. Then, the
-        <literal>FlowControllerContext.getAnalysisEngineMetaDataMap</literal> method can be called to get a map
-        containing an entry for each of the Analysis Engines in the Aggregate. The keys in this map are the same as the
-        delegate analysis engine keys specified in the aggregate descriptor, and the values are the corresponding
-        <literal>AnalysisEngineMetaData</literal> objects.</para>
+        <literal>FlowControllerContext.getAnalysisEngineMetaDataMap</literal> method can be called to get a
+        map containing an entry for each of the Analysis Engines in the Aggregate. The keys in this map are the same as
+        the delegate analysis engine keys specified in the aggregate descriptor, and the values are the
+        corresponding <literal>AnalysisEngineMetaData</literal> objects.</para>
       
       <para>Finally, the Flow Controller has optional methods <literal>addAnalysisEngines</literal> and
-        <literal>removeAnalysisEngines</literal>.  These methods are intended to notify the Flow Controller if new Analysis 
-        Engines are available to route CASes to, or if previously available Analysis Engines are no longer available.  However, 
-        the current version of the Apache UIMA framework does not support dynamically adding or removing Analysis Engines
-        to/from an aggregate, so these methods are not currently called.  Future versions may support this feature.
-      </para>
+        <literal>removeAnalysisEngines</literal>. These methods are intended to notify the Flow Controller if
+        new Analysis Engines are available to route CASes to, or if previously available Analysis Engines are no
+        longer available. However, the current version of the Apache UIMA framework does not support dynamically
+        adding or removing Analysis Engines to/from an aggregate, so these methods are not currently called. Future
+        versions may support this feature. </para>
     </section>
     
     <section id="ugr.tug.fc.example_code">
       <title>Example Code</title>
       
-      <para>This section walks through the source code of an example Flow Controller that
-        simluates a simple version of the <quote>Whiteboard</quote> flow model. At each
-        step of the flow, the Flow Controller looks it all of the available Analysis Engines
-        that have not yet run on this CAS, and picks one whose input requirements are
+      <para>This section walks through the source code of an example Flow Controller that simluates a simple version
+        of the <quote>Whiteboard</quote> flow model. At each step of the flow, the Flow Controller looks it all of the
+        available Analysis Engines that have not yet run on this CAS, and picks one whose input requirements are
         satisfied.</para>
       
       <para>The Java class for the example is
-        <literal>org.apache.uima.examples.flow.WhiteboardFlowController</literal>
-        and the source code is included in the UIMA SDK under the
-        <literal>examples/src</literal> directory.</para>
+        <literal>org.apache.uima.examples.flow.WhiteboardFlowController</literal> and the source code is
+        included in the UIMA SDK under the <literal>examples/src</literal> directory.</para>
       
       <section id="ugr.tug.fc.whiteboard">
         <title>The WhiteboardFlowController Class</title>
@@ -137,17 +134,15 @@ under the License.
         
         <para>The <literal>WhiteboardFlowController</literal> extends from
           <literal>CasFlowController_ImplBase</literal> and implements the
-          <literal>computeFlow</literal> method. The implementation of the
-          <literal>computeFlow</literal> method is very simple; it just constructs a new
-          <literal>WhiteboardFlow</literal> object that will be responsible for routing
-          this CAS, and calls the <literal>WhiteboardFlow.setCas</literal> method to
-          give it a handle to that CAS, which it will later use to make its routing decisions.
-          The <literal>setCas</literal> method is a method provided by the
-          <literal>..._ImplBase</literal> classes for Flows.</para>
+          <literal>computeFlow</literal> method. The implementation of the <literal>computeFlow</literal>
+          method is very simple; it just constructs a new <literal>WhiteboardFlow</literal> object that will be
+          responsible for routing this CAS, and calls the <literal>WhiteboardFlow.setCas</literal> method to
+          give it a handle to that CAS, which it will later use to make its routing decisions. The
+          <literal>setCas</literal> method is a method provided by the <literal>..._ImplBase</literal>
+          classes for Flows.</para>
         
-        <para>Note that we will have one instance of <literal>WhiteboardFlow</literal>
-          per CAS, so if there are multiple CASes being simultaneously processed there will
-          not be any confusion.</para>
+        <para>Note that we will have one instance of <literal>WhiteboardFlow</literal> per CAS, so if there are
+          multiple CASes being simultaneously processed there will not be any confusion.</para>
         
       </section>
       <section id="ugr.tug.fc.whiteboardflow">
@@ -202,40 +197,36 @@ under the License.
   }
 }</programlisting>
         
-        <para>Each instance of the <literal>WhiteboardFlowController</literal> is
-          responsible for routing a single CAS. A handle to the CAS instance is available by
-          calling the <literal>getCas()</literal> method, which is a standard method
-          defined on the <literal>CasFlow_ImplBase </literal>superclass.</para>
+        <para>Each instance of the <literal>WhiteboardFlowController</literal> is responsible for routing a
+          single CAS. A handle to the CAS instance is available by calling the <literal>getCas()</literal> method,
+          which is a standard method defined on the <literal>CasFlow_ImplBase </literal>superclass.</para>
         
-        <para>Each time the <literal>next</literal> method is called, the Flow object
-          iterates over the metadata of all of the available Analysis Engines (obtained via
-          the call to <literal>getContext(). getAnalysisEngineMetaDataMap)</literal>
-          and sees if the input types declared in an AnalysisEngineMetaData object are
-          satisfied by the CAS (that is, the CAS contains at least one instance of each
-          declared input type). The exact details of checking for instances of types in the
-          CAS are not discussed here &ndash; see the WhiteboardFlowController.java file
-          for the complete source.</para>
+        <para>Each time the <literal>next</literal> method is called, the Flow object iterates over the metadata
+          of all of the available Analysis Engines (obtained via the call to <literal>getContext().
+          getAnalysisEngineMetaDataMap)</literal> and sees if the input types declared in an
+          AnalysisEngineMetaData object are satisfied by the CAS (that is, the CAS contains at least one instance of
+          each declared input type). The exact details of checking for instances of types in the CAS are not discussed
+          here &ndash; see the WhiteboardFlowController.java file for the complete source.</para>
         
-        <para>When the Flow object decides which AnalysisEngine should be called next, it
-          indicates this by creating a SimpleStep object with the key for that
-          AnalysisEngine and returning it:</para>
+        <para>When the Flow object decides which AnalysisEngine should be called next, it indicates this by
+          creating a SimpleStep object with the key for that AnalysisEngine and returning it:</para>
         
         <programlisting>return new SimpleStep(aeKey);</programlisting>
         
         <para>The Flow object keeps a list of which Analysis Engines it has invoked in the
-          <literal>mAlreadyCalled</literal> field, and never invokes the same Analysis
-          Engine twice. Note this is not a hard requirement. It is acceptable to design a
-          FlowController that invokes the same Analysis Engine more than once. However, if
-          you do this you must make sure that the flow will eventually terminate.</para>
+          <literal>mAlreadyCalled</literal> field, and never invokes the same Analysis Engine twice. Note this
+          is not a hard requirement. It is acceptable to design a FlowController that invokes the same Analysis
+          Engine more than once. However, if you do this you must make sure that the flow will eventually
+          terminate.</para>
         
-        <para>If there are no Analysis Engines left whose input requirements are satisfied,
-          the Flow object signals the end of the flow by returning a FinalStep object:</para>
+        <para>If there are no Analysis Engines left whose input requirements are satisfied, the Flow object signals
+          the end of the flow by returning a FinalStep object:</para>
         
         <programlisting>return new FinalStep();</programlisting>
         
-        <para>Also, note the use of the logger to write tracing messages indicating the
-          decisions made by the Flow Controller.  This is a good practice that helps with
-          debugging if the Flow Controller is behaving in an unexpected way.</para>                
+        <para>Also, note the use of the logger to write tracing messages indicating the decisions made by the Flow
+          Controller. This is a good practice that helps with debugging if the Flow Controller is behaving in an
+          unexpected way.</para>
       </section>
     </section>
   </section>
@@ -258,6 +249,7 @@ under the License.
     
     <para>This will bring up the Overview page for the Flow Controller Descriptor:
       
+      
       <screenshot>
     <mediaobject>
       <imageobject>
@@ -267,30 +259,26 @@ under the License.
     </mediaobject>
   </screenshot></para>
     
-    <para>Type in the Java class name that implements the Flow Controller, or use the
-      <quote>Browse</quote> button to select it. You must select a Java class that
-      implements the <literal>FlowController</literal> interface.</para>
+    <para>Type in the Java class name that implements the Flow Controller, or use the <quote>Browse</quote> button
+      to select it. You must select a Java class that implements the <literal>FlowController</literal>
+      interface.</para>
     
-    <para>Flow Controller Descriptors are very similar to Primitive Analysis Engine
-      Descriptors &ndash; for example you can specify configuration parameters and
-      external resources if you wish.</para>
+    <para>Flow Controller Descriptors are very similar to Primitive Analysis Engine Descriptors &ndash; for
+      example you can specify configuration parameters and external resources if you wish.</para>
     
-    <para>If you wish to edit a Flow Controller Descriptor by hand, see section <olink
-        targetdoc="&uima_docs_ref;"
-        targetptr="ugr.ref.xml.component_descriptor.flow_controller"/> for the
-      syntax.</para>
+    <para>If you wish to edit a Flow Controller Descriptor by hand, see section <olink targetdoc="&uima_docs_ref;"
+        targetptr="ugr.ref.xml.component_descriptor.flow_controller"/> for the syntax.</para>
   </section>
   
   <section id="ugr.tug.fc.adding_fc_to_aggregate">
     <title>Adding a Flow Controller to an Aggregate Analysis Engine</title>
     <titleabbrev>Adding Flow Controller to an Aggregate</titleabbrev>
     
-    <para>To use a Flow Controller you must add it to an Aggregate Analysis Engine. You can only
-      have one Flow Controller per Aggregate Analysis Engine. In the Component Descriptor
-      Editor, the Flow Controller is specified on the Aggregate page, as a choice in the flow
-      control kind - pick <quote>User-defined Flow</quote>. When you do, the Browse and Search buttons
-      underneath become active, and allow you to specify an existing Flow Controller
-      Descriptor, which when you select it, will be imported into the aggregate descriptor.
+    <para>To use a Flow Controller you must add it to an Aggregate Analysis Engine. You can only have one Flow
+      Controller per Aggregate Analysis Engine. In the Component Descriptor Editor, the Flow Controller is
+      specified on the Aggregate page, as a choice in the flow control kind - pick <quote>User-defined Flow</quote>.
+      When you do, the Browse and Search buttons underneath become active, and allow you to specify an existing Flow
+      Controller Descriptor, which when you select it, will be imported into the aggregate descriptor.
       
       
       <screenshot>
@@ -302,13 +290,11 @@ under the License.
     </mediaobject>
   </screenshot></para>
     
-    <para>The key name is created automatically from the name element in the Flow Controller
-      Descriptor being imported. If you need to change this name, you can do so by switching to
-      the <quote>Source</quote> view using the bottom tabs, and editing the name in the XML
-      source.</para>
+    <para>The key name is created automatically from the name element in the Flow Controller Descriptor being
+      imported. If you need to change this name, you can do so by switching to the <quote>Source</quote> view using the
+      bottom tabs, and editing the name in the XML source.</para>
     
-    <para>If you edit your Aggregate Analysis Engine Descriptor by hand, the syntax for
-      adding a Flow Controller is:
+    <para>If you edit your Aggregate Analysis Engine Descriptor by hand, the syntax for adding a Flow Controller is:
       
       
       <programlisting>  &lt;delegateAnalysisEngineSpecifiers&gt;
@@ -318,64 +304,76 @@ under the License.
     &lt;import .../&gt; 
   &lt;/flowController&gt;</emphasis></programlisting></para>
     
-    <para>As usual, you can use either in import by location or import by name &ndash; see
-        <olink targetdoc="&uima_docs_ref;"
-        targetptr="ugr.ref.xml.component_descriptor.imports"/>.</para>
+    <para>As usual, you can use either in import by location or import by name &ndash; see <olink
+        targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.component_descriptor.imports"/>.</para>
     
-    <para>The key that you assign to the FlowController can be used elsewhere in the Aggregate
-      Analysis Engine Descriptor &ndash; in parameter overrides, resource bindings, and
-      Sofa mappings.</para>
+    <para>The key that you assign to the FlowController can be used elsewhere in the Aggregate Analysis Engine
+      Descriptor &ndash; in parameter overrides, resource bindings, and Sofa mappings.</para>
   </section>
   
   <section id="ugr.tug.fc.adding_fc_to_cpe">
     <title>Adding a Flow Controller to a Collection Processing Engine</title>
     <titleabbrev>Adding Flow Controller to CPE</titleabbrev>
     
-    <para>Flow Controllers cannot be added directly to Collection Processing Engines. To
-      use a Flow Controller in a CPE you first need to wrap the part of your CPE that requires
-      complex flow control into an Aggregate Analysis Engine, and then add the Aggregate
-      Analysis Engine to your CPE. The CPE&apos;s deployment and error handling options can
-      then only be configured for the entire Aggregate Analysis Engine as a unit.</para>
+    <para>Flow Controllers cannot be added directly to Collection Processing Engines. To use a Flow Controller in a
+      CPE you first need to wrap the part of your CPE that requires complex flow control into an Aggregate Analysis
+      Engine, and then add the Aggregate Analysis Engine to your CPE. The CPE&apos;s deployment and error handling
+      options can then only be configured for the entire Aggregate Analysis Engine as a unit.</para>
     
   </section>
   
   <section id="ugr.tug.fc.using_fc_with_cas_multipliers">
     <title>Using Flow Controllers with CAS Multipliers</title>
     
-    <para>If you want your Flow Controller to work inside an Aggregate Analysis Engine that
-      contains a CAS Multiplier (see <olink targetdoc="&uima_docs_tutorial_guides;"
-        targetptr="ugr.tug.cm"/>), there are additional things you must consider.</para>
+    <para>If you want your Flow Controller to work inside an Aggregate Analysis Engine that contains a CAS Multiplier
+      (see <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.cm"/>), there are additional
+      things you must consider.</para>
     
-    <para>When your Flow Controller routes a CAS to a CAS Multiplier, the CAS Multiplier may
-      produce new CASes that then will also need to be routed by the Flow Controller. When a new
-      output CAS is produced, the framework will call the method:
+    <para>When your Flow Controller routes a CAS to a CAS Multiplier, the CAS Multiplier may produce new CASes that
+      then will also need to be routed by the Flow Controller. When a new output CAS is produced, the framework will call
+      the method:
       
       
       <programlisting>protected Flow newCasProduced(AbstractCas newOutputCas, String producedBy)</programlisting>
-      on the Flow object that was managing the flow of the parent CAS (the one that was input to
-      the CAS Multiplier). The <literal>newCasProduced</literal> method must create a new
-      Flow object that will be responsible for routing the new output CAS.</para>
+      on the Flow object that was managing the flow of the parent CAS (the one that was input to the CAS Multiplier). The
+      <literal>newCasProduced</literal> method must create a new Flow object that will be responsible for routing
+      the new output CAS.</para>
     
-    <para>In the <literal>CasFlow_ImplBase</literal> and
-      <literal>JCasFlow_ImplBase</literal> classes, the
-      <literal>newCasProduced</literal> method is defined to throw an exception
-      indicating that the Flow Controller does not handle CAS Multipliers. If you want your
-      Flow Controller to properly deal with CAS Multipliers you must override this
-      method.</para>
+    <para>In the <literal>CasFlow_ImplBase</literal> and <literal>JCasFlow_ImplBase</literal> classes, the
+      <literal>newCasProduced</literal> method is defined to throw an exception indicating that the Flow
+      Controller does not handle CAS Multipliers. If you want your Flow Controller to properly deal with CAS
+      Multipliers you must override this method.</para>
     
-    <para>Also, there is a variant of <literal>FinalStep</literal> which can only be
-      specified for output CASes produced by CAS Multipliers within the Aggregate Analysis
-      Engine containing the Flow Controller. This version of
-      <literal>FinalStep</literal> is produced by the calling the constructor with a
-      <literal>true</literal> argument, and it causes the CAS to be immediately released
-      back to the pool. No further processing will be done on it and it will not be output from the
-      aggregate. This is the way that you can build an Aggregate Analysis Engine that outputs
-      some new CASes but not others. Note that if you never want any new CASes to be output from
-      the Aggregate Analysis Engine, you don&apos;t need to use this; instead just declare
-      <literal>&lt;outputsNewCASes&gt;false&lt;/outputsNewCASes&gt;</literal> in
-      your Aggregate Analysis Engine Descriptor as described in <olink
-        targetdoc="&uima_docs_tutorial_guides;"
+    <para>Also, there is a variant of <literal>FinalStep</literal> which can only be specified for output CASes
+      produced by CAS Multipliers within the Aggregate Analysis Engine containing the Flow Controller. This
+      version of <literal>FinalStep</literal> is produced by the calling the constructor with a
+      <literal>true</literal> argument, and it causes the CAS to be immediately released back to the pool. No
+      further processing will be done on it and it will not be output from the aggregate. This is the way that you can
+      build an Aggregate Analysis Engine that outputs some new CASes but not others. Note that if you never want any new
+      CASes to be output from the Aggregate Analysis Engine, you don&apos;t need to use this; instead just declare
+      <literal>&lt;outputsNewCASes&gt;false&lt;/outputsNewCASes&gt;</literal> in your Aggregate Analysis
+      Engine Descriptor as described in <olink targetdoc="&uima_docs_tutorial_guides;"
         targetptr="ugr.tug.cm.aggregate_cms"/>.</para>
   </section>
   
+  <section id="ugr.tug.fc.continuing_when_exceptions_occur">
+    <title>Continuing the Flow When Exceptions Occur</title>
+    <para> If an exception occurs when processing the a CAS, the framweork may call the      
+      <programlisting>boolean continueOnFailure(String failedAeKey, Exception failure)</programlisting>
+      on the Flow object that was manging the flow of that CAS. If this method returns <literal>true</literal>, then
+      the framework may continue to call the <literal>next()</literal> method to continue routing the CAS. If this
+      method returns <literal>false</literal> (the default), the framework will not make any more calls to the
+      <literal>next()</literal>. </para>
+    <para>In the case where the last Step was a ParallelStep, if at least one of the destinations rsulted in a failure,
+      then <literal>continueOnFailure</literal> will be called to report one of the failures. If this method
+      returns true, but one of the other destinations in the ParallelStep resulted in a failure, then then
+      <literal>continueOnFailure</literal> method will be called again to report the next failure. This
+      continues until either this method returns false or there are no more failures. </para>
+    <para>Note that it is possible for processing of a CAS to be aborted without this method being called. This method
+      is only called when an attempt is being made to continue processing of the CAS following an exception, which may
+      be an application configuration decision.</para>
+    <para>In any case, if processing is aborted by the framework for any reason, including because
+      <literal>continueOnFailure</literal> return false, the framework will call the
+      <literal>Flow.aborted()</literal> method to allow the Flow object to clean up any resources.</para>   
+  </section>
 </chapter>
