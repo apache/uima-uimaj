@@ -286,6 +286,9 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       ConfigurableResource component = (ConfigurableResource) it.next();
       component.reconfigure();
     }
+    //and the FlowController
+    FlowControllerContainer fcc = ((ASB_impl) _getASB()).getFlowControllerContainer();
+    fcc.reconfigure();
   }
 
   public void batchProcessComplete() throws AnalysisEngineProcessException {
