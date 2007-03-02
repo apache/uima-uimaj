@@ -504,6 +504,10 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
               //and ask the Flow Controller if we should continue routing the CAS that was input to the CasMultiplier.
               if (!frame.originalCasFlow.continueOnFailure(frame.casMultiplierAeKey, e)) {
                 throw e;              
+              } else {
+                UIMAFramework.getLogger(CLASS_NAME).logrb(Level.FINE, CLASS_NAME.getName(), "processUntilNextOutputCas",
+                        LOG_RESOURCE_BUNDLE, "UIMA_continuing_after_exception__FINE", e);
+               
               }
               //if the Flow says to continue, we fall through to the if (cas == null) block below, get
               //the originalCas from the stack and continue with its flow.
@@ -548,8 +552,13 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
                 catch(Exception e) {
                   //ask the FlowController if we should continue
                   //TODO: should this be configurable?
-                  if (!flow.continueOnFailure(nextAeKey, e))
+                  if (!flow.continueOnFailure(nextAeKey, e)) {
                     throw e;
+                  }
+                  else {
+                    UIMAFramework.getLogger(CLASS_NAME).logrb(Level.FINE, CLASS_NAME.getName(), "processUntilNextOutputCas",
+                            LOG_RESOURCE_BUNDLE, "UIMA_continuing_after_exception__FINE", e);
+                  }
                 }
                 if (outputCas != null) // new CASes are output
                 {
@@ -595,8 +604,13 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
                   catch(Exception e) {
                     //ask the FlowController if we should continue
                     //TODO: should this be configurable?
-                    if (!flow.continueOnFailure(nextAeKey, e))
+                    if (!flow.continueOnFailure(nextAeKey, e)) {
                       throw e;
+                    }
+                    else {
+                      UIMAFramework.getLogger(CLASS_NAME).logrb(Level.FINE, CLASS_NAME.getName(), "processUntilNextOutputCas",
+                              LOG_RESOURCE_BUNDLE, "UIMA_continuing_after_exception__FINE", e);
+                    }
                   }
                   if (outputCas != null) // new CASes are output
                   {
