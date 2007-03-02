@@ -19,7 +19,6 @@
 
 package org.apache.uima.analysis_engine.asb.impl;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -492,19 +491,31 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
               return null; // there are no more CAS Iterators to obtain CASes from
             }
             StackFrame frame = (StackFrame) casIteratorStack.peek();
-            if (frame.casIterator.hasNext()) {
-              cas = frame.casIterator.next();
-              // this is a new output CAS so we need to compute a flow for it
-              flow = frame.originalCasFlow.newCasProduced(cas, frame.casMultiplierAeKey);
-            } else {
+            try {
+              if (frame.casIterator.hasNext()) {
+                cas = frame.casIterator.next();
+                // this is a new output CAS so we need to compute a flow for it
+                flow = frame.originalCasFlow.newCasProduced(cas, frame.casMultiplierAeKey);
+              }
+            } 
+            catch(Exception e) {
+              //A CAS Multiplier (or possibly an aggregate) threw an exception trying to output the next CAS.
+              //We abandon trying to get further output CASes from that CAS Multiplier,
+              //and ask the Flow Controller if we should continue routing the CAS that was input to the CasMultiplier.
+              if (!frame.originalCasFlow.continueOnFailure(frame.casMultiplierAeKey, e)) {
+                throw e;              
+              }
+              //if the Flow says to continue, we fall through to the if (cas == null) block below, get
+              //the originalCas from the stack and continue with its flow.
+            }
+            if (cas == null) {
               // we've finished routing all the Output CASes from a StackFrame. Now
               // get the originalCas (the one that was input to the CasMultiplier) from
               // that stack frame and continue with its flow
               cas = frame.originalCas;
               flow = frame.originalCasFlow;
               nextStep = frame.incompleteParallelStep; //in case we need to resume a parallel step
-              cas.setCurrentComponentInfo(null); // this CAS is done being processed by the
-              // previous AnalysisComponent
+              cas.setCurrentComponentInfo(null); // this CAS is done being processed by the previous AnalysisComponent
               casIteratorStack.pop(); // remove this state from the stack now
             }
           }
@@ -526,12 +537,22 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
               AnalysisEngine nextAe = (AnalysisEngine) mComponentAnalysisEngineMap.get(nextAeKey);
               if (nextAe != null) {
                 // invoke next AE in flow
-                CasIterator casIter;
-                casIter = nextAe.processAndOutputNewCASes(cas);
-                if (casIter.hasNext()) // new CASes are output
+                CasIterator casIter = null;
+                CAS outputCas = null; //used if the AE we call outputs a new CAS
+                try {
+                  casIter = nextAe.processAndOutputNewCASes(cas);
+                  if (casIter.hasNext()) {
+                    outputCas = casIter.next();
+                  }
+                }
+                catch(Exception e) {
+                  //ask the FlowController if we should continue
+                  //TODO: should this be configurable?
+                  if (!flow.continueOnFailure(nextAeKey, e))
+                    throw e;
+                }
+                if (outputCas != null) // new CASes are output
                 {
-                  // get the first output CAS
-                  CAS outputCas = casIter.next();
                   // push the CasIterator, original CAS, and Flow onto a stack so we
                   // can get the other output CASes and the original CAS later
                   casIteratorStack.push(new StackFrame(casIter, cas, flow, nextAeKey));
@@ -551,7 +572,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
                         new Object[] { nextAeKey });
               }
             } 
-            //ParallelStep
+            //ParallelStep (TODO: refactor out common parts with SimpleStep?)
             else if (nextStep instanceof ParallelStep) {
               //create modifiable list of destinations 
               List destinations = new LinkedList(((ParallelStep)nextStep).getAnalysisEngineKeys());
@@ -563,11 +584,22 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
                 AnalysisEngine nextAe = (AnalysisEngine) mComponentAnalysisEngineMap.get(nextAeKey);
                 if (nextAe != null) {
                   // invoke next AE in flow
-                  CasIterator casIter;
-                  casIter = nextAe.processAndOutputNewCASes(cas);
-                  if (casIter.hasNext()) // new CASes are output
+                  CasIterator casIter = null;
+                  CAS outputCas = null; //used if the AE we call outputs a new CAS
+                  try {
+                    casIter = nextAe.processAndOutputNewCASes(cas);
+                    if (casIter.hasNext()) {
+                      outputCas = casIter.next();
+                    }
+                  }
+                  catch(Exception e) {
+                    //ask the FlowController if we should continue
+                    //TODO: should this be configurable?
+                    if (!flow.continueOnFailure(nextAeKey, e))
+                      throw e;
+                  }
+                  if (outputCas != null) // new CASes are output
                   {
-                    CAS outputCas = casIter.next();
                     // when pushing the stack frame so we know where to pick up later,
                     // be sure to include the incomplete ParallelStep
                     if (!destinations.isEmpty()) {

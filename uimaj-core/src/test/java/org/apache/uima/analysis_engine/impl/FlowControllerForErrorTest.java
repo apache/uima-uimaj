@@ -40,14 +40,20 @@ import org.apache.uima.resource.ResourceInitializationException;
  * when an error occurs.
  */
 public class FlowControllerForErrorTest extends CasFlowController_ImplBase {
-  String[] mSequence;
+  public static final String PARAM_CONTINUE_ON_FAILURE = "ContinueOnFailure";
+  
+  private String[] mSequence;
+  private boolean mContinueOnFailure;
   
   public static List abortedDocuments = new ArrayList();
+  public static List failedAEs = new ArrayList();
 
   public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
     FlowConstraints flowConstraints = aContext.getAggregateMetadata().getFlowConstraints();
     mSequence = ((FixedFlow) flowConstraints).getFixedFlow();
+    Boolean paramVal = (Boolean)aContext.getConfigParameterValue(PARAM_CONTINUE_ON_FAILURE);
+    mContinueOnFailure = paramVal != null && paramVal.booleanValue(); 
   }
 
   /*
@@ -113,6 +119,16 @@ public class FlowControllerForErrorTest extends CasFlowController_ImplBase {
         i++;
       return new FixedFlowObject(newCas, i + 1, true);
     }
+    
+    
+
+    /* (non-Javadoc)
+     * @see org.apache.uima.flow.CasFlow_ImplBase#continueOnFailure(java.lang.String, java.lang.Exception)
+     */
+    public boolean continueOnFailure(String failedAeKey, Exception failure) {
+      failedAEs.add(failedAeKey);
+      return mContinueOnFailure;
+    }
 
     /* (non-Javadoc)
      * @see org.apache.uima.flow.CasFlow_ImplBase#aborted()
@@ -122,5 +138,13 @@ public class FlowControllerForErrorTest extends CasFlowController_ImplBase {
     }
     
     
+  }
+
+  /**
+   * 
+   */
+  public static void reset() {
+    abortedDocuments.clear();
+    failedAEs.clear();    
   }
 }

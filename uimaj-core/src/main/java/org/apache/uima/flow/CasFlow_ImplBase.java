@@ -19,6 +19,7 @@
 
 package org.apache.uima.flow;
 
+
 import org.apache.uima.UIMA_UnsupportedOperationException;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
@@ -59,6 +60,17 @@ public abstract class CasFlow_ImplBase implements Flow {
     }
   }
   
+  
+  
+  /**
+   * By default, returns false, indicating that processing cannot continue after a failure.
+   * May be overridden by subclasses to allow processing to continue.
+   * @see org.apache.uima.flow.Flow#continueOnFailure(String, java.lang.Exception)
+   */
+  public boolean continueOnFailure(String failedAeKey, Exception failure) {
+    return false;
+  }
+
   /** 
    * By default, does nothing.  May be overriden by subclasses to release resources 
    * when a flow is aborted.
