@@ -1005,7 +1005,7 @@ public class AnalysisEngine_implTest extends TestCase {
       CAS cas = tae.newCAS();
       for (int i = 0; i < 2; i++) // verify we can do this more than once
       {
-        FlowControllerForErrorTest.abortedDocuments.clear();
+        FlowControllerForErrorTest.reset();
         cas.setDocumentText("Line one\nLine two\nERROR");
         CasIterator iter = tae.processAndOutputNewCASes(cas);
         assertTrue(iter.hasNext());
@@ -1042,7 +1042,7 @@ public class AnalysisEngine_implTest extends TestCase {
       cas = tae.newCAS();
       for (int i = 0; i < 2; i++) // verify we can do this more than once
       {
-        FlowControllerForErrorTest.abortedDocuments.clear();
+        FlowControllerForErrorTest.reset();
         cas.setDocumentText("Line one\nLine two\nERROR");
         CasIterator iter = tae.processAndOutputNewCASes(cas);
         assertTrue(iter.hasNext());
@@ -1132,6 +1132,59 @@ public class AnalysisEngine_implTest extends TestCase {
       } catch (AnalysisEngineProcessException e) {
         // should get here
       }
+      
+      // bad segmenter in an aggregate
+      AnalysisEngineDescription aggWithBadSegmenterDesc = UIMAFramework.getXMLParser()
+      .parseAnalysisEngineDescription(
+              new XMLInputSource(JUnitExtension
+                      .getFile("TextAnalysisEngineImplTest/AggregateWithBadSegmenterForErrorTest.xml")));
+      tae = UIMAFramework.produceAnalysisEngine(aggWithBadSegmenterDesc);
+      FlowControllerForErrorTest.reset();
+      cas = tae.newCAS();
+      cas.setDocumentText("Line one\nLine two\nLine three");
+      iter = tae.processAndOutputNewCASes(cas);
+      assertTrue(iter.hasNext());
+      outCas = iter.next(); // first call OK
+      outCas.release();
+      assertTrue(FlowControllerForErrorTest.abortedDocuments.isEmpty());
+      assertTrue(FlowControllerForErrorTest.failedAEs.isEmpty());
+      // next call should fail with AnalysisEngineProcessException
+      try {
+        if (iter.hasNext()) {
+          iter.next();
+        }
+        fail(); // should not get here
+      } catch (AnalysisEngineProcessException e) {
+        // should get here
+      }
+      assertEquals(1, FlowControllerForErrorTest.abortedDocuments.size());
+      assertTrue(FlowControllerForErrorTest.abortedDocuments.contains("Line one\nLine two\nLine three"));
+      assertEquals(1,FlowControllerForErrorTest.failedAEs.size());
+      assertTrue(FlowControllerForErrorTest.failedAEs.contains("Segmenter"));
+
+      //configure AE to continue after error
+      tae = UIMAFramework.produceAnalysisEngine(aggWithBadSegmenterDesc);
+      tae.setConfigParameterValue("ContinueOnFailure", Boolean.TRUE);
+      tae.reconfigure();
+      FlowControllerForErrorTest.reset();
+
+      cas.reset();
+      cas.setDocumentText("Line one\nLine two\nLine three");
+      iter = tae.processAndOutputNewCASes(cas);
+      assertTrue(iter.hasNext());
+      outCas = iter.next(); // first call OK
+      outCas.release();
+      assertTrue(FlowControllerForErrorTest.abortedDocuments.isEmpty());
+      assertTrue(FlowControllerForErrorTest.failedAEs.isEmpty());
+      
+      //next call should not have aborted, but FC should have been notified of the failiure,
+      // and no CAS should come back
+      assertFalse(iter.hasNext());
+      assertEquals(0, FlowControllerForErrorTest.abortedDocuments.size());
+      assertEquals(1, FlowControllerForErrorTest.failedAEs.size());
+      assertTrue(FlowControllerForErrorTest.failedAEs.contains("Segmenter"));
+      
+      
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -1237,13 +1290,14 @@ public class AnalysisEngine_implTest extends TestCase {
               .parseAnalysisEngineDescription(
                       new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateForErrorTest.xml")));
       AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aeDesc);
-      FlowControllerForErrorTest.abortedDocuments.clear();
+      FlowControllerForErrorTest.reset();
       CAS cas = ae.newCAS();
       //try document that should succeed
       cas.setDocumentText("This is OK");
       ae.process(cas);
       //flow controller should not be notified
       assertTrue(FlowControllerForErrorTest.abortedDocuments.isEmpty());
+      assertTrue(FlowControllerForErrorTest.failedAEs.isEmpty());
       
       //now one that fails
       cas.reset();
@@ -1257,13 +1311,29 @@ public class AnalysisEngine_implTest extends TestCase {
       }
       assertEquals(1, FlowControllerForErrorTest.abortedDocuments.size());
       assertTrue(FlowControllerForErrorTest.abortedDocuments.contains("ERROR"));
-      
+      assertEquals(1, FlowControllerForErrorTest.failedAEs.size());
+      assertTrue(FlowControllerForErrorTest.failedAEs.contains("ErrorAnnotator"));
+    
       //AE should still be able to process a new document now
-      FlowControllerForErrorTest.abortedDocuments.clear();
+      FlowControllerForErrorTest.reset();
       cas.reset();
       cas.setDocumentText("This is OK");
       ae.process(cas);
       assertTrue(FlowControllerForErrorTest.abortedDocuments.isEmpty());
+      assertTrue(FlowControllerForErrorTest.failedAEs.isEmpty());
+      
+      //configure AE to continue after error
+      ae.setConfigParameterValue("ContinueOnFailure", Boolean.TRUE);
+      ae.reconfigure();
+      cas.reset();
+      cas.setDocumentText("ERROR");
+      ae.process(cas); //should not throw exception now
+      
+      //document should not have aborted, but FC should have been notified of the failiure
+      assertEquals(0, FlowControllerForErrorTest.abortedDocuments.size());
+      assertEquals(1, FlowControllerForErrorTest.failedAEs.size());
+      assertTrue(FlowControllerForErrorTest.failedAEs.contains("ErrorAnnotator"));
+      
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }    

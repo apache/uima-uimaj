@@ -19,6 +19,8 @@
 
 package org.apache.uima.analysis_engine.asb.impl;
 
+import java.util.Collection;
+
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.impl.AnalysisEngineManagementImpl;
@@ -90,6 +92,11 @@ public class FlowContainer {
   public void aborted() {
     mFlow.aborted();
   }
+  
+  public boolean continueOnFailure(String failedAeKey, Exception failure) {
+    return mFlow.continueOnFailure(failedAeKey, failure);
+  }
+
 
   private CasManager getCasManager() {
     return mFlowControllerContainer.getResourceManager().getCasManager();

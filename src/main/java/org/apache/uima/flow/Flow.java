@@ -19,6 +19,7 @@
 
 package org.apache.uima.flow;
 
+
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.AbstractCas;
 
@@ -60,7 +61,34 @@ public interface Flow {
    * @throws AnalysisEngineProcessException
    */
   Flow newCasProduced(AbstractCas newCas, String producedBy) throws AnalysisEngineProcessException;
-  
+
+  /**
+   * May be called by the framework to ask the FlowController if processing of the CAS can
+   * continue after a failure occurred while executing the last Step that the Flow Controller
+   * returned.  
+   * <p>
+   * If this method returns true, then the framework may continue to call the {@link #next()} method
+   * to continue routing the CAS.  If this method returns false, the framework will not make any
+   * more calls to the {@link #next()} method, and will call the {@link #aborted()} method.
+   * <p>
+   * In the case where the last Step was a {@link ParallelStep}, if at least one of the destinations 
+   * resulted in a failure, this method will be called to report one of the failures.  If this method
+   * returns true, but one of the other destinations in the ParallelStep resulted in a failure, this
+   * method will be called again to report the next failure.  This continues until either this method
+   * returns false or there are no more failures.
+   * <p>
+   * Note that it is possible for processing of a CAS to be aborted without this method being called.
+   * This method is only called when an attempt is being made to continue processing of the CAS
+   * following an error, which may be an application configuration decision. 
+   *  
+   * @param failedAeKey The key of the analysis engine that failed.
+   * @param failure the Exception that occurred
+   * 
+   * @return true if the FlowController decides that processing of the CAS can continue; false if
+   *   processing of the CAS should be aborted.
+   */
+  boolean continueOnFailure(String failedAeKey, Exception failure);
+
   /**
    * Called by the framework if processing has been aborted for the CAS that was being
    * routed by this Flow object.  No further processing will take place on the CAS after
@@ -70,4 +98,5 @@ public interface Flow {
    * Also, it could be used to allow the FlowController to reuse a Flow object if desired.
    */  
   void aborted();
+  
 }
