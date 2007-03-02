@@ -19,8 +19,6 @@
 
 package org.apache.uima.analysis_engine.asb.impl;
 
-import java.util.Collection;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.impl.AnalysisEngineManagementImpl;
