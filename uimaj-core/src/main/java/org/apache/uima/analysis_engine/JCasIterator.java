@@ -34,7 +34,7 @@ public interface JCasIterator {
    * 
    * @throws AnalysisEngineProcessException
    *           if a failure has occurred during processing. If an exception is thrown, this
-   *           indicates that processing has aborted, so no further calls to the ResultIterator
+   *           indicates that processing has aborted, so no further calls to the JCasIterator
    *           should be made.
    */
   boolean hasNext() throws AnalysisEngineProcessException;
@@ -46,13 +46,13 @@ public interface JCasIterator {
    * 
    * @throws AnalysisEngineProcessException
    *           if a failure has occurred during processing. If an exception is thrown, this
-   *           indicates that processing has aborted, so no further calls to the ResultIterator
+   *           indicates that processing has aborted, so no further calls to the JCasIterator
    *           should be made.
    */
   JCas next() throws AnalysisEngineProcessException;
 
   /**
-   * Releases any CASes owned by this CasIterator. You only need to Call this method if you stop
+   * Releases any CASes owned by this JCasIterator. You only need to Call this method if you stop
    * using a CasIterator before you have iterated all the way through.
    */
   public void release();
