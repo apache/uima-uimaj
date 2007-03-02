@@ -34,7 +34,7 @@ public interface CasIterator {
    * 
    * @throws AnalysisEngineProcessException
    *           if a failure has occurred during processing. If an exception is thrown, this
-   *           indicates that processing has aborted, so no further calls to the ResultIterator
+   *           indicates that processing has aborted, so no further calls to the CasIterator
    *           should be made.
    */
   boolean hasNext() throws AnalysisEngineProcessException;
@@ -46,7 +46,7 @@ public interface CasIterator {
    * 
    * @throws AnalysisEngineProcessException
    *           if a failure has occurred during processing. If an exception is thrown, this
-   *           indicates that processing has aborted, so no further calls to the ResultIterator
+   *           indicates that processing has aborted, so no further calls to the CasIterator
    *           should be made.
    */
   CAS next() throws AnalysisEngineProcessException;
