@@ -431,6 +431,13 @@ public class ResourceInitializationException extends UIMAException {
   public static final String UNDEFINED_KEY_IN_FLOW = "undefined_key_in_flow";
 
   /**
+   * Message key for a standard UIMA exception message: The value "{0}" is an invalid value for
+   * the FixedFlowController's "ActionAfterCasMultiplier" configuration parameter.  Valid values
+   * are "continue", "stop", "drop", and "dropIfNewCasProduced".
+   */
+  public static final String INVALID_ACTION_AFTER_CAS_MULTIPLIER = "invalid_action_after_cas_multiplier";
+
+  /**
    * Creates a new exception with a null message.
    */
   public ResourceInitializationException() {

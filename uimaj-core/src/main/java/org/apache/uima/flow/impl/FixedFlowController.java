@@ -50,7 +50,16 @@ import org.apache.uima.util.XMLInputSource;
 public class FixedFlowController extends CasFlowController_ImplBase {
 
   /**
-   * TODO
+   * Key for the configuation parameter that determines what should happen to a
+   * CAS after it has been input to a CAS Multiplier.  Possible values are:
+   * continue – the CAS continues on to the next element in the flow
+   * stop – the CAS will no longer continue in the flow, and will be returned from the
+   *        aggregate if possible.
+   * drop – the CAS will no longer continue in the flow, and will be dropped (not 
+   *        returned from the aggregate) if possible.
+   * dropIfNewCasProduced (the default) – if the CAS multiplier produced a new CAS as a
+   *        result of processing this CAS, then this CAS will be dropped. If not, then this CAS
+   *        will continue.
    */
   public static final String PARAM_ACTION_AFTER_CAS_MULTIPLIER = "ActionAfterCasMultiplier";
 
@@ -85,7 +94,8 @@ public class FixedFlowController extends CasFlowController_ImplBase {
     } else if (actionAfterCasMultiplier == null) {
       mActionAfterCasMultiplier = ACTION_DROP_IF_NEW_CAS_PRODUCED; // default
     } else {
-      throw new ResourceInitializationException(); // TODO
+      throw new ResourceInitializationException(ResourceInitializationException.INVALID_ACTION_AFTER_CAS_MULTIPLIER,
+              new Object[]{actionAfterCasMultiplier});
     }
   }
 
