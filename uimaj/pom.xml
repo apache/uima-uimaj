@@ -27,7 +27,17 @@
 	<version>2.2-incubating-SNAPSHOT</version>
 	<name>Apache UIMA Java SDK</name>
 	<url>http://incubator.apache.org/uima</url>
-	<organization><name>The Apache Software Foundation</name></organization>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<organization>
+		<name>The Apache Software Foundation</name>
+		<url>http://www.apache.org/</url>
+	</organization>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -55,7 +65,19 @@
 					<target>1.4</target>
 				</configuration>
 			</plugin>
-		</plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemProperties>
+            <property>
+              <name>java.util.logging.config.file</name>
+              <value>${basedir}/../uimaj-distr/src/main/config/Logger.properties</value>
+            </property>
+          </systemProperties>
+        </configuration>
+      </plugin>
+ 		</plugins>
 	</build>
 	<reporting>
 		<plugins>
