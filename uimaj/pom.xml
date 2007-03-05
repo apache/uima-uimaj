@@ -27,7 +27,17 @@
 	<version>2.1.0-incubating</version>
 	<name>Apache UIMA Java SDK</name>
 	<url>http://incubator.apache.org/uima</url>
-	<organization><name>The Apache Software Foundation</name></organization>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<organization>
+		<name>The Apache Software Foundation</name>
+		<url>http://www.apache.org/</url>
+	</organization>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
