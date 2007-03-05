@@ -25,7 +25,7 @@
 	<artifactId>jVinci</artifactId>
 	<packaging>jar</packaging>
 	<version>2.2-incubating-SNAPSHOT</version>
-	<name>Java Vinci Library</name>
+	<name>Apache UIMA - Java Vinci Transport Library</name>
 	<url>http://incubator.apache.org/uima</url>
 	<parent>
 		<groupId>org.apache.uima</groupId>
