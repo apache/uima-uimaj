@@ -39,11 +39,9 @@ under the License.
     <fileSet>
       <directory>src/main/readme</directory>
       <outputDirectory>/</outputDirectory>
-      <includes>
-        <include>DISCLAIMER</include>
-        <include>RELEASE_NOTES</include>
-        <include>RELEASE_NOTES.html</include>
-      </includes>
+      <excludes>
+		  <exclude>README</exclude>
+      </excludes>
     </fileSet>
     <fileSet>
       <directory>src/main/readme_src</directory>
