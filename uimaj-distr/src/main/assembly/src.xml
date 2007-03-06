@@ -55,7 +55,8 @@ under the License.
         <exclude>docbook/**</exclude>
         <exclude>lib/**</exclude>
         <exclude>Source_UIMA_SDK_Guide_Ref/**</exclude>
-        <exclude>.*</exclude>        
+        <exclude>.*</exclude>   
+        <exclude>LICENSE.txt</exclude>     
       </excludes>
     </fileSet>   
     <fileSet>
