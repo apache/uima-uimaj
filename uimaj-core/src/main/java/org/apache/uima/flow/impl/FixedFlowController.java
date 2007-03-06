@@ -52,12 +52,12 @@ public class FixedFlowController extends CasFlowController_ImplBase {
   /**
    * Key for the configuation parameter that determines what should happen to a
    * CAS after it has been input to a CAS Multiplier.  Possible values are:
-   * continue – the CAS continues on to the next element in the flow
-   * stop – the CAS will no longer continue in the flow, and will be returned from the
+   * continue:  the CAS continues on to the next element in the flow
+   * stop: the CAS will no longer continue in the flow, and will be returned from the
    *        aggregate if possible.
-   * drop – the CAS will no longer continue in the flow, and will be dropped (not 
+   * drop: the CAS will no longer continue in the flow, and will be dropped (not 
    *        returned from the aggregate) if possible.
-   * dropIfNewCasProduced (the default) – if the CAS multiplier produced a new CAS as a
+   * dropIfNewCasProduced (the default): if the CAS multiplier produced a new CAS as a
    *        result of processing this CAS, then this CAS will be dropped. If not, then this CAS
    *        will continue.
    */
