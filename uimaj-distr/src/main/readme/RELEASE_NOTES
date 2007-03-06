@@ -154,7 +154,7 @@ delete the file but instead move it to the correct package
 org.apache.uima.jcas.tcas. For more information about JCas and 
 DocumentAnnotation please see Section 5.5.4, 
 "Adding Features to DocumentAnnotation" in the UIMA References manual
-(docs/html/references).
+(docs/html/references/references.html).
 
 3.2. JCas.getDocumentAnnotation
 
@@ -163,7 +163,7 @@ must be replaced with JCas.getDocumentAnnotationFs. The method
 JCas.getDocumentAnnotationFs() returns type TOP, so your code must cast this to 
 type DocumentAnnotation. The reasons for this are described in Section 
 5.5.4, "Adding Features to DocumentAnnotation" in the UIMA References manual
-(docs/html/references).
+(docs/html/references/references.html).
 
 3.3. Rare Cases Where Additional Manual Migration is Necessary
 
@@ -171,7 +171,8 @@ For most users there should not be any additional migration steps necessary.
 However, if the migration tool reported an additional warning or if you are 
 having trouble getting your code to compile or run after running the migration, 
 please see Section 1.4.2. "Rare Cases Where Additional Manual Migration is 
-Necessary," in the Overview and Setup manual (docs/html/overview_and_setup).
+Necessary," in the Overview and Setup manual 
+(docs/html/overview_and_setup/overview_and_setup.html).
 
 4. How to Get Involved
 
@@ -316,6 +317,8 @@ issues you find at http://issues.apache.org/jira/browse/uima.
     * [UIMA-313] - Flow Controller example Analysis Engine does not work properly
     * [UIMA-314] - MeetingFinderCPE_Managed.xml doesn't run on Linux
     * [UIMA-315] - CDE - hover in aggregate page supposed to show description - but isn't
+    * [UIMA-317] - MeetingFinderCPE_Managed.xml is duplicate of MeetingFinderCPE_Managed_Windows.xml
+    * [UIMA-320] - add LICENSE and NOTICE files to META-INF folder of a jar
 
 ** Improvement
     * [UIMA-9] - Remove support for xi:include
@@ -375,6 +378,7 @@ issues you find at http://issues.apache.org/jira/browse/uima.
     * [UIMA-274] - CDE add new feature - not making visible the additional input fields for element types when range type changed
     * [UIMA-305] - Move FileUtils to non-internal package
     * [UIMA-311] - Docbook build script usability issue
+    * [UIMA-318] - Broken hyperlinks to html docbooks in Release_Notes
 
 ** New Feature
     * [UIMA-49] - Migration tools from IBM UIMA to Apache UIMA
@@ -418,4 +422,7 @@ issues you find at http://issues.apache.org/jira/browse/uima.
     * [UIMA-295] - Restore microscope icon as the window icon for our tools
     * [UIMA-296] - Remove DocBook build files from source distribution
     * [UIMA-299] - Remove SNAPSHOT from version numbers prior to release
-    
+    * [UIMA-332] - Fix copyrights, notice, status page for 2.1 release
+    * [UIMA-333] - Fix issues for Maven artifact packaging
+    * [UIMA-334] - Elimnate redundant LICENSE, NOTICE, DISCLAIMER files from source distribution
+    * [UIMA-335] - Remove extra license file in src distr
