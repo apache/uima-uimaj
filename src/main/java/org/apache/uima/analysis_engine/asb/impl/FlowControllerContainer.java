@@ -113,12 +113,14 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
       // initialize FlowController
       mFlowController.initialize(getFlowControllerContext());
 
-      // update MBean with the name taken from metadata
-      getMBean().setName(getMetaData().getName(), getUimaContextAdmin());
       mMBeanServer = null;
+      String mbeanNamePrefix = null;
       if (aAdditionalParams != null) {
         mMBeanServer = aAdditionalParams.get(AnalysisEngine.PARAM_MBEAN_SERVER);
+        mbeanNamePrefix = (String)aAdditionalParams.get(AnalysisEngine.PARAM_MBEAN_NAME_PREFIX);
       }
+      // update MBean with the name taken from metadata
+      getMBean().setName(getMetaData().getName(), getUimaContextAdmin(), mbeanNamePrefix);
       // register MBean with MBeanServer. If no MBeanServer specified in the
       // additionalParams map, this will use the platform MBean Server
       // (Java 1.5 only)
