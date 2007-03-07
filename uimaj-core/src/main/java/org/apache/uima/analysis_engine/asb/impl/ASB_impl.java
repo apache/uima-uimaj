@@ -276,7 +276,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
       key = "_FlowController"; // default key
     }
 
-    HashMap flowControllerParams = new HashMap();
+    HashMap flowControllerParams = new HashMap(mInitParams);
 
     // retrieve the sofa mappings for the FlowControler
     Map sofamap = new TreeMap();

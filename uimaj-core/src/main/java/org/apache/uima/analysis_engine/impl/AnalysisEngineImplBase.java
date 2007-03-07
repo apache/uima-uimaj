@@ -109,9 +109,11 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
       // read parameters from additionalParams map
       Properties perfSettings = null;
       mMBeanServer = null;
+      String mbeanNamePrefix = null;
       if (aAdditionalParams != null) {
         perfSettings = (Properties) aAdditionalParams.get(PARAM_PERFORMANCE_TUNING_SETTINGS);
         mMBeanServer = aAdditionalParams.get(PARAM_MBEAN_SERVER);
+        mbeanNamePrefix = (String)aAdditionalParams.get(PARAM_MBEAN_NAME_PREFIX);
       }
       // set performance tuning settings
       if (perfSettings != null) {
@@ -120,7 +122,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
       // register MBean with MBeanServer. If no MBeanServer specified in the
       // additionalParams map, this will use the platform MBean Server
       // (Java 1.5 only)
-      getMBean().setName(getMetaData().getName(), getUimaContextAdmin());
+      getMBean().setName(getMetaData().getName(), getUimaContextAdmin(), mbeanNamePrefix);
       JmxMBeanAgent.registerMBean(getManagementInterface(), mMBeanServer);
     }
     return result;
