@@ -19,6 +19,7 @@
 
 package org.apache.uima.analysis_engine.asb.impl;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.apache.uima.Constants;
@@ -228,6 +229,23 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
   public AnalysisEngineManagementImpl getMBean() {
     return (AnalysisEngineManagementImpl) getUimaContextAdmin().getManagementInterface();
   }
+  
+  /**
+   * Notifies this FlowController that new Analysis Engines
+   * @see FlowController#addAnalysisEngines(Collection)
+   */
+  public void addAnalysisEngines(Collection aKeys) {
+    mFlowController.addAnalysisEngines(aKeys);
+  }
+
+  /**
+   * Notifies this FlowController that some Analysis Engines are no longer available to route CASes to.
+   * @see FlowController#removeAnalysisEngines(Collection)
+   */
+  public void removeAnalysisEngines(Collection aKeys) throws AnalysisEngineProcessException {
+    mFlowController.removeAnalysisEngines(aKeys);
+  }
+
 
   /**
    * Instantiates the FlowController class specified in the descriptor.
