@@ -358,13 +358,13 @@ under the License.
   
   <section id="ugr.tug.fc.continuing_when_exceptions_occur">
     <title>Continuing the Flow When Exceptions Occur</title>
-    <para> If an exception occurs when processing the a CAS, the framweork may call the      
+    <para> If an exception occurs when processing the a CAS, the framweork may call the method     
       <programlisting>boolean continueOnFailure(String failedAeKey, Exception failure)</programlisting>
-      on the Flow object that was manging the flow of that CAS. If this method returns <literal>true</literal>, then
+      on the Flow object that was managing the flow of that CAS. If this method returns <literal>true</literal>, then
       the framework may continue to call the <literal>next()</literal> method to continue routing the CAS. If this
       method returns <literal>false</literal> (the default), the framework will not make any more calls to the
-      <literal>next()</literal>. </para>
-    <para>In the case where the last Step was a ParallelStep, if at least one of the destinations rsulted in a failure,
+      <literal>next()</literal> method. </para>
+    <para>In the case where the last Step was a ParallelStep, if at least one of the destinations resulted in a failure,
       then <literal>continueOnFailure</literal> will be called to report one of the failures. If this method
       returns true, but one of the other destinations in the ParallelStep resulted in a failure, then then
       <literal>continueOnFailure</literal> method will be called again to report the next failure. This
