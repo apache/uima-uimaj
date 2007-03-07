@@ -39,6 +39,7 @@ import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.collection.CasInitializerDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.metadata.CpeDescription;
+import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.URISpecifier;
@@ -55,6 +56,7 @@ import org.apache.uima.util.SaxDeserializer;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLizable;
+import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXNotRecognizedException;
@@ -760,6 +762,29 @@ public class XMLParser_impl implements XMLParser {
     } else {
       throw new InvalidXMLException(InvalidXMLException.INVALID_CLASS, new Object[] {
           ResourceManagerConfiguration.class.getName(), object.getClass().getName() });
+    }
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.util.XMLParser#parseFlowControllerDescription(org.apache.uima.util.XMLInputSource)
+   */
+  public FlowControllerDescription parseFlowControllerDescription(XMLInputSource aInput) throws InvalidXMLException {
+    return parseFlowControllerDescription(aInput, DEFAULT_PARSING_OPTIONS);
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.util.XMLParser#parseFlowControllerDescription(org.apache.uima.util.XMLInputSource, org.apache.uima.util.XMLParser.ParsingOptions)
+   */
+  public FlowControllerDescription parseFlowControllerDescription(XMLInputSource aInput, ParsingOptions aOptions) throws InvalidXMLException {
+    // attempt to locate resource specifier schema
+    URL schemaURL = getResourceSpecifierSchemaUrl();
+    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, schemaURL, aOptions);
+
+    if (object instanceof FlowControllerDescription) {
+      return (FlowControllerDescription) object;
+    } else {
+      throw new InvalidXMLException(InvalidXMLException.INVALID_CLASS, new Object[] {
+              FlowControllerDescription.class.getName(), object.getClass().getName() });
     }
   }
 
