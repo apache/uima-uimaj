@@ -358,7 +358,7 @@ under the License.
   
   <section id="ugr.tug.fc.continuing_when_exceptions_occur">
     <title>Continuing the Flow When Exceptions Occur</title>
-    <para> If an exception occurs when processing the a CAS, the framweork may call the method     
+    <para> If an exception occurs when processing a CAS, the framework may call the method     
       <programlisting>boolean continueOnFailure(String failedAeKey, Exception failure)</programlisting>
       on the Flow object that was managing the flow of that CAS. If this method returns <literal>true</literal>, then
       the framework may continue to call the <literal>next()</literal> method to continue routing the CAS. If this
@@ -366,14 +366,14 @@ under the License.
       <literal>next()</literal> method. </para>
     <para>In the case where the last Step was a ParallelStep, if at least one of the destinations resulted in a failure,
       then <literal>continueOnFailure</literal> will be called to report one of the failures. If this method
-      returns true, but one of the other destinations in the ParallelStep resulted in a failure, then then
+      returns true, but one of the other destinations in the ParallelStep resulted in a failure, then the
       <literal>continueOnFailure</literal> method will be called again to report the next failure. This
       continues until either this method returns false or there are no more failures. </para>
     <para>Note that it is possible for processing of a CAS to be aborted without this method being called. This method
       is only called when an attempt is being made to continue processing of the CAS following an exception, which may
       be an application configuration decision.</para>
     <para>In any case, if processing is aborted by the framework for any reason, including because
-      <literal>continueOnFailure</literal> return false, the framework will call the
+      <literal>continueOnFailure</literal> returned false, the framework will call the
       <literal>Flow.aborted()</literal> method to allow the Flow object to clean up any resources.</para>   
   </section>
 </chapter>
