@@ -185,7 +185,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
    *          UIMA context for the aggregate AE
    * @param aFlowControllerDeclaration
    *          declaration (key and specifier) of FlowController to be used for this aggregate.
-   * @parma aAggregateMetadata metadata for the aggregate AE
+   * @param aAggregateMetadata metadata for the aggregate AE
    * @throws ResourceInitializationException
    */
   public void setup(Map aSpecifiers, UimaContextAdmin aParentContext,
@@ -198,7 +198,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
     mComponentAnalysisEngineMetaDataMap.clear();
     mAllComponentMetaDataMap.clear();
 
-    // loop through all entires in the (key, specifier) map
+    // loop through all entries in the (key, specifier) map
     Iterator i = aSpecifiers.entrySet().iterator();
     while (i.hasNext()) {
       Map.Entry entry = (Map.Entry) i.next();
@@ -230,7 +230,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
 
       AnalysisEngine ae;
 
-      // if running in "validation mode", don't try to connnect to any services
+      // if running in "validation mode", don't try to connect to any services
       if (mInitParams.containsKey(AnalysisEngineImplBase.PARAM_VERIFICATION_MODE)
               && !(spec instanceof ResourceCreationSpecifier)) {
         // but we need placeholder entries in maps to satisfy later checking
@@ -391,7 +391,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
         // store CAS and Flow in an initial stack frame which will later be read by the
         // processUtilNextOutputCas method.
         casIteratorStack.push(new StackFrame(new EmptyCasIterator(), inputCas, flow, null));
-        // do the initial procesing here (this will do all of the processing in the case
+        // do the initial processing here (this will do all of the processing in the case
         // where this AE is not a CasMultiplier)
         nextCas = processUntilNextOutputCas();
         getMBean().incrementCASesProcessed();
