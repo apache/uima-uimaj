@@ -30,6 +30,7 @@ import junit.framework.TestCase;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.TaeDescription;
+import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
@@ -37,6 +38,8 @@ import org.apache.uima.util.XMLParser;
 import org.xml.sax.XMLReader;
 
 public class XMLParser_implTest extends TestCase {
+
+  private XMLParser mXmlParser;
 
   /**
    * Constructor for XMLParser_implTest.
@@ -137,5 +140,11 @@ public class XMLParser_implTest extends TestCase {
       JUnitExtension.handleException(e);
     }
   }
-  private XMLParser mXmlParser;
+  
+  public void testParseFlowControllerDescription() throws Exception {
+    XMLInputSource in = new XMLInputSource(
+            JUnitExtension.getFile("TextAnalysisEngineImplTest/FlowControllerForErrorTest.xml"));
+    FlowControllerDescription desc = mXmlParser.parseFlowControllerDescription(in);
+    assertEquals("Flow Controller for Error Test", desc.getMetaData().getName());
+  }
 }

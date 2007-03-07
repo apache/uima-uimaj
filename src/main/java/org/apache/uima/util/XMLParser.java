@@ -28,6 +28,7 @@ import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.collection.CasInitializerDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.metadata.CpeDescription;
+import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.URISpecifier;
 import org.apache.uima.resource.metadata.FsIndexCollection;
@@ -75,8 +76,7 @@ public interface XMLParser {
   public void enableSchemaValidation(boolean aEnable);
 
   /**
-   * Parses an XML input stream and produces an object.
-   * elements.
+   * Parses an XML input stream and produces an object. elements.
    * 
    * @param aInput
    *          the input source from which to read the XML document
@@ -563,6 +563,36 @@ public interface XMLParser {
           ParsingOptions aOptions) throws InvalidXMLException;
 
   /**
+   * Parses a FlowControllerDescription from an XML input stream.
+   * 
+   * @param aInput
+   *          the input source from which to read the XML document
+   * 
+   * @return a <code>FlowControllerDescription</code> object constructed from the XML document
+   * 
+   * @throws InvalidXMLException
+   *           if the input XML is not valid or does not specify a valid FlowControllerDescription
+   */
+  public FlowControllerDescription parseFlowControllerDescription(XMLInputSource aInput)
+          throws InvalidXMLException;
+
+  /**
+   * Parses a FlowControllerDescription from an XML input stream.
+   * 
+   * @param aInput
+   *          the input source from which to read the XML document
+   * @param aOptions
+   *          option settings
+   * 
+   * @return a <code>FlowControllerDescription</code> object constructed from the XML document
+   * 
+   * @throws InvalidXMLException
+   *           if the input XML is not valid or does not specify a valid FlowControllerDescription
+   */
+  public FlowControllerDescription parseFlowControllerDescription(XMLInputSource aInput,
+          ParsingOptions aOptions) throws InvalidXMLException;
+
+  /**
    * Parses an IndexBuildSpecification from an XML input stream.
    * 
    * @param aInput
@@ -679,10 +709,9 @@ public interface XMLParser {
    * @throws InvalidXMLException
    *           if the XML element does not specify a valid object
    * @see #newSaxDeserializer()
-
+   * 
    */
   public SaxDeserializer newSaxDeserializer(ParsingOptions aOptions);
-  
 
   /**
    * Configures this XMLParser by registering a mapping between the name of an XML element and the
@@ -718,6 +747,7 @@ public interface XMLParser {
   public static class ParsingOptions {
     /**
      * Whether to expand &lt;xi:include&gt; elements according to the XInclude spec.
+     * 
      * @deprecated XInclude is no longer supported
      */
     public boolean expandXIncludes;
@@ -752,6 +782,6 @@ public interface XMLParser {
      */
     public ParsingOptions(boolean aExpandEnvVarRefs) {
       expandEnvVarRefs = aExpandEnvVarRefs;
-    }  
+    }
   }
 }
