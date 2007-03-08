@@ -613,6 +613,18 @@
           </simpleType>
         </element>
         <element name="timeout" type="integer" minOccurs="0"/>
+        <element name="parameters" minOccurs="0">
+          <complexType>
+            <sequence>
+              <element name="parameter" maxOccurs="unbounded">
+                <complexType>
+                  <attribute name="name" type="string"/>
+                  <attribute name="value" type="string"/>
+                </complexType>
+              </element>
+            </sequence>
+          </complexType>
+        </element>
       </sequence>
     </complexType>
   </element>
