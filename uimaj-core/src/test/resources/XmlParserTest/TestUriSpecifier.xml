@@ -1,0 +1,10 @@
+<uriSpecifier xmlns="http://uima.apache.org/resourceSpecifier">
+   <resourceType>AnalysisEngine</resourceType>
+   <uri>uima.annot.PersonTitleAnnotator</uri>
+   <protocol>Vinci</protocol>
+   <timeout>60000</timeout> 
+   <parameters>
+     <parameter name="VNS_HOST" value="some.internet.ip.name-or-address"/>
+     <parameter name="VNS_PORT" value="9000"/>
+   </parameters>
+</uriSpecifier>
