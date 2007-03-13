@@ -154,6 +154,14 @@ public class JetExpander {
 		nextQuotePos = in.indexOf('"',i);  
 		String className = in.substring(i, nextQuotePos);
 
+    String p4 = "implements=\"";
+    String implementsName = null;
+    i = in.indexOf(p4, nextQuotePos) + p4.length();
+    if (i > 0) {
+      nextQuotePos = in.indexOf('"',i);  
+      implementsName = in.substring(i, nextQuotePos);
+    }
+
 		String outFileName = null;
 		try {
 			outFileName = outDir + File.separator + pkg.replaceAll("\\.","\\\\") + File.separator + className + ".java";
@@ -171,7 +179,11 @@ public class JetExpander {
 			fileWriter.write("import " + imports[j] + ";\n");
 		}
 
-    fileWriter.write("\npublic class " + className + " {\n\n");
+    fileWriter.write("\npublic class " + className);
+    if (implementsName != null) {
+      fileWriter.write(" implements " + implementsName);
+    }
+    fileWriter.write(" {\n\n");
     fileWriter.write("  public String generate(Object argument) {\n");
     fileWriter.write("    StringBuffer stringBuffer = new StringBuffer();\n");
     
