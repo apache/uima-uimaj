@@ -73,6 +73,14 @@ import org.apache.uima.util.XMLizable;
 
 public class Jg {
 
+  /**
+   * Interface implemeted by JCAS code generation's templates
+   *
+   */
+  public interface IJCasTypeTemplate {
+    public String generate(Object argument);
+  }
+
   static final String jControlModel = "jMergeCtl.xml";
 
   static final FeatureDescription[] featureDescriptionArray0 = new FeatureDescription[0];
@@ -265,8 +273,8 @@ public class Jg {
   private Type casStringType;
 
   private Type tcasAnnotationType;
-  
-  private Map mergedTypesAddingFeatures = new TreeMap();  // a Map of types and the xml files that were merged to create them 
+
+  private Map mergedTypesAddingFeatures = new TreeMap(); // a Map of types and the xml files that were merged to create them 
 
   public Jg() { // default constructor
   }
@@ -331,11 +339,32 @@ public class Jg {
   public void mainForCde(IMerge aMerger, IProgressMonitor aProgressMonitor, IError aError,
           String inputFile, String outputDirectory, TypeDescription[] tds, CASImpl aCas)
           throws IOException {
+    try {
+      // Generate type classes by using DEFAULT templates
+      mainGenerateAllTypesFromTemplates(aMerger, aProgressMonitor, aError, inputFile,
+              outputDirectory, tds, aCas, JCasTypeTemplate.class, JCas_TypeTemplate.class);
+      // convert thrown things to IOExceptions to avoid changing API for this
+      // FIXME later
+    } catch (InstantiationException e) {
+      throw new IOException(e.toString());
+    } catch (IllegalAccessException e) {
+      throw new IOException(e.toString());
+    }
+  }
+
+  // use template classes to generate code
+  public void mainGenerateAllTypesFromTemplates(IMerge aMerger, IProgressMonitor aProgressMonitor,
+          IError aError, String inputFile, String outputDirectory, TypeDescription[] tds,
+          CASImpl aCas, Class jcasTypeClass, // Template class
+          Class jcas_TypeClass) // Template class
+          throws IOException, InstantiationException, IllegalAccessException {
     this.merger = aMerger;
     this.error = aError;
     this.progressMonitor = aProgressMonitor;
     xmlSourceFileName = inputFile.replaceAll("\\\\", "/");
-    generateAllTypes(outputDirectory, tds, aCas);
+
+    // Generate type classes by using SPECIFIED templates
+    generateAllTypesFromTemplates(outputDirectory, tds, aCas, jcasTypeClass, jcas_TypeClass);
   }
 
   public void main0(String[] args, IMerge aMerger, IProgressMonitor aProgressMonitor, IError aError) {
@@ -433,12 +462,8 @@ public class Jg {
                     null);
           }
           if (mergedTypesAddingFeatures.size() > 0) {
-            error.newError(
-                    IError.WARN, 
-                    getString("typesHaveFeaturesAdded",
-                            new Object[] {makeMergeMessage(mergedTypesAddingFeatures)}),
-                    null
-                    );
+            error.newError(IError.WARN, getString("typesHaveFeaturesAdded",
+                    new Object[] { makeMergeMessage(mergedTypesAddingFeatures) }), null);
           }
           TypePriorities typePriorities = null;
           FsIndexDescription[] fsIndexDescription = null;
@@ -466,11 +491,17 @@ public class Jg {
         progressMonitor.worked(1);
         tds = typeSystemDescription.getTypes();
 
-        generateAllTypes(outputDirectory, tds, casLocal);
+        // Generate type classes from DEFAULT templates
+        generateAllTypesFromTemplates(outputDirectory, tds, casLocal, JCasTypeTemplate.class,
+                JCas_TypeTemplate.class);
 
       } catch (IOException e) {
         error.newError(IError.ERROR, getString("IOException", new Object[] {}), e);
       } catch (ErrorExit e) { // do nothing
+      } catch (InstantiationException e) {
+        error.newError(IError.ERROR, getString("InstantiationException", new Object[] {}), e);
+      } catch (IllegalAccessException e) {
+        error.newError(IError.ERROR, getString("IllegalAccessException", new Object[] {}), e);
       }
     } finally {
       progressMonitor.done();
@@ -479,13 +510,14 @@ public class Jg {
 
   // message: TypeName = ".....", URLs defining this type = "xxxx", "xxxx", ....
   private String makeMergeMessage(Map m) {
-    StringBuffer sb = new StringBuffer();  
+    StringBuffer sb = new StringBuffer();
     for (Iterator it = m.entrySet().iterator(); it.hasNext();) {
-      Map.Entry entry = (Map.Entry)it.next();
-      String typeName =(String)entry.getKey();
+      Map.Entry entry = (Map.Entry) it.next();
+      String typeName = (String) entry.getKey();
       sb.append("\n  ");
-      sb.append("TypeName having merged features = ").append(typeName).append("\n    URLs defining this type =");
-      Set urls = (Set)entry.getValue();
+      sb.append("TypeName having merged features = ").append(typeName).append(
+              "\n    URLs defining this type =");
+      Set urls = (Set) entry.getValue();
       boolean afterFirst = false;
       for (Iterator itUrls = urls.iterator(); itUrls.hasNext();) {
         if (afterFirst)
@@ -499,10 +531,16 @@ public class Jg {
     }
     return sb.toString();
   }
-  
+
   // This is also the interface for CDE
-  void generateAllTypes(String outputDirectory, TypeDescription[] tds, CASImpl aCas)
-          throws IOException {
+  private void generateAllTypesFromTemplates(String outputDirectory, TypeDescription[] tds,
+          CASImpl aCas, Class jcasTypeClass, Class jcas_TypeClass) throws IOException,
+          InstantiationException, IllegalAccessException {
+
+    // Create instances of Template classes
+    IJCasTypeTemplate jcasTypeInstance = (IJCasTypeTemplate) jcasTypeClass.newInstance();
+    IJCasTypeTemplate jcas_TypeInstance = (IJCasTypeTemplate) jcas_TypeClass.newInstance();
+
     Set generatedBuiltInTypes = new TreeSet();
 
     this.cas = aCas;
@@ -539,7 +577,7 @@ public class Jg {
           continue;
         }
       }
-      generateClasses(td, outputDirectory);
+      generateClassesFromTemplate(td, outputDirectory, jcasTypeInstance, jcas_TypeInstance);
     }
 
     /* 
@@ -548,48 +586,62 @@ public class Jg {
      * But the only extendable built-in type is DocumentAnnotation, and it should
      * not be generated by default - there's one provided by the framework.
      * 
-    for (Iterator it = extendableBuiltInTypes.entrySet().iterator(); it.hasNext();) {
-      Map.Entry entry = (Map.Entry) it.next();
-      String typeName = (String) entry.getKey();
-      if (noGenTypes.contains(typeName) || generatedBuiltInTypes.contains(typeName))
-        continue;
-      TypeDescription td = createTdFromType(typeName);
-      generateClasses(td, outputDirectory);
-    }
-    */
+     for (Iterator it = extendableBuiltInTypes.entrySet().iterator(); it.hasNext();) {
+     Map.Entry entry = (Map.Entry) it.next();
+     String typeName = (String) entry.getKey();
+     if (noGenTypes.contains(typeName) || generatedBuiltInTypes.contains(typeName))
+     continue;
+     TypeDescription td = createTdFromType(typeName);
+     generateClasses(td, outputDirectory);
+     }
+     */
   }
-  /* This code was only called by above commented out section 
-  private TypeDescription createTdFromType(String typeName) {
-    TypeDescription td = UIMAFramework.getResourceSpecifierFactory().createTypeDescription();
-    Type type = builtInTypeSystem.getType(typeName);
-    td.setName(typeName);
-    td.setSupertypeName(builtInTypeSystem.getParent(type).getName());
 
-    ArrayList featuresOfType = new ArrayList();
-    final List vFeatures = type.getFeatures();
-    for (int i = 0; i < vFeatures.size(); i++) {
-      Feature f = (Feature) vFeatures.get(i);
-      if (f.getDomain().equals(type)) {
-        FeatureDescription fd = UIMAFramework.getResourceSpecifierFactory()
-                .createFeatureDescription();
-        fd.setName(f.getShortName());
-        fd.setRangeTypeName(f.getRange().getName());
-        featuresOfType.add(fd);
-      }
-    }
-    td.setFeatures((FeatureDescription[]) featuresOfType
-            .toArray(new FeatureDescription[featuresOfType.size()]));
-    return td;
-  }
-  */
-  
-  private void generateClasses(TypeDescription td, String outputDirectory) throws IOException {
+  /* This code was only called by above commented out section 
+   private TypeDescription createTdFromType(String typeName) {
+   TypeDescription td = UIMAFramework.getResourceSpecifierFactory().createTypeDescription();
+   Type type = builtInTypeSystem.getType(typeName);
+   td.setName(typeName);
+   td.setSupertypeName(builtInTypeSystem.getParent(type).getName());
+
+   ArrayList featuresOfType = new ArrayList();
+   final List vFeatures = type.getFeatures();
+   for (int i = 0; i < vFeatures.size(); i++) {
+   Feature f = (Feature) vFeatures.get(i);
+   if (f.getDomain().equals(type)) {
+   FeatureDescription fd = UIMAFramework.getResourceSpecifierFactory()
+   .createFeatureDescription();
+   fd.setName(f.getShortName());
+   fd.setRangeTypeName(f.getRange().getName());
+   featuresOfType.add(fd);
+   }
+   }
+   td.setFeatures((FeatureDescription[]) featuresOfType
+   .toArray(new FeatureDescription[featuresOfType.size()]));
+   return td;
+   }
+   */
+
+  /**
+   *  Generate type classes from the specified templates
+   * @param td                        TypeDescription object
+   * @param outputDirectory           output directory
+   * @param jcasTypeInstance          Template instance used to generate class
+   * @param jcas_TypeInstance         Template instance used to generate class
+   * @throws IOException
+   * @throws InstantiationException
+   * @throws IllegalAccessException
+   * @return void
+   */
+  private void generateClassesFromTemplate(TypeDescription td, String outputDirectory,
+          IJCasTypeTemplate jcasTypeInstance, IJCasTypeTemplate jcas_TypeInstance)
+          throws IOException {
     simpleClassName = removePkg(getJavaName(td));
-    generateClass(progressMonitor, outputDirectory, td, (new JCasTypeTemplate())
-            .generate(new Object[] { this, td }), getJavaName(td), merger);
+    generateClass(progressMonitor, outputDirectory, td, jcasTypeInstance.generate(new Object[] {
+        this, td }), getJavaName(td), merger);
     simpleClassName = removePkg(getJavaName_Type(td));
-    generateClass(progressMonitor, outputDirectory, td, (new JCas_TypeTemplate())
-            .generate(new Object[] { this, td }), getJavaName_Type(td), merger);
+    generateClass(progressMonitor, outputDirectory, td, jcas_TypeInstance.generate(new Object[] {
+        this, td }), getJavaName_Type(td), merger);
   }
 
   String getPkg(TypeDescription td) {

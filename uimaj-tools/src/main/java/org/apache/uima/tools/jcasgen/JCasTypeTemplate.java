@@ -23,7 +23,7 @@ import java.util.Iterator;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.FeatureDescription;
 
-public class JCasTypeTemplate {
+public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
 
   public String generate(Object argument) {
     StringBuffer stringBuffer = new StringBuffer();

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- <%@ jet package="org.apache.uima.tools.jcasgen" imports="java.util.Iterator org.apache.uima.resource.metadata.TypeDescription org.apache.uima.resource.metadata.FeatureDescription" class="JCas_TypeTemplate" %>
+ <%@ jet package="org.apache.uima.tools.jcasgen" imports="java.util.Iterator org.apache.uima.resource.metadata.TypeDescription org.apache.uima.resource.metadata.FeatureDescription" class="JCas_TypeTemplate" implements="Jg.IJCasTypeTemplate" %>
 <%
     Object [] args = (Object [])argument;
     Jg jg = (Jg)args[0];
