@@ -76,8 +76,8 @@ public class AnnotatorTester {
   /**
    * Constructor save the specified descriptor file path and initialize the analysis engine.
    * 
-   * @param descFilePath
-   *          descriptor file path
+   * @param descFile
+   *          descriptor file
    * @throws Exception
    *           if an analysis engine initialze error occurs.
    */
@@ -156,7 +156,10 @@ public class AnnotatorTester {
    *          parameter name
    * @param paramValue
    *          parameter value
+   *          
    * @throws InvalidXMLException
+   * @throws ResourceInitializationException
+   * @throws IOException
    */
   public void changeDelegateParameterSetting(String delegeteKey, String groupName,
           String paramName, Object paramValue) throws InvalidXMLException,
@@ -187,6 +190,14 @@ public class AnnotatorTester {
 
   }
 
+  /**
+   * does configuration parameter test
+   * 
+   * @param configDescFilePath
+   * @return AnalysisEngine
+   * 
+   * @throws Exception
+   */
   public static AnalysisEngine doConfigurationTest(String configDescFilePath) throws Exception {
     try {
       AnalysisEngine ae = null;
@@ -270,6 +281,8 @@ public class AnnotatorTester {
    * performs a test with a special annotator configuration. For this a new AE is created and used
    * to process the specified document for the specified language.
    * 
+   * @param descFilePath
+   *          Descriptor file path
    * @param text
    *          a document text
    * @param language
@@ -361,6 +374,8 @@ public class AnnotatorTester {
    *          respected annotation types
    * @param refFile
    *          reference output
+   * @param testFile
+   *          test file for the current output
    * @throws Exception
    */
   public static void checkResult(CAS cas, String[] AnnotationTypes, File refFile, File testFile)
