@@ -75,7 +75,7 @@ public class Descriptor extends DefaultHandler {
 
       // Create the builder and parse the file
       SAXParser parser = factory.newSAXParser();
-      parser.parse(new File(configFile), this);
+      parser.parse(configFile, this);
 
       UIMAFramework.getLogger().log(Level.CONFIG, "Resource::" + getResourceSpecifierPath());
       UIMAFramework.getLogger().log(Level.CONFIG, "Instance Count::" + getInstanceCount());
