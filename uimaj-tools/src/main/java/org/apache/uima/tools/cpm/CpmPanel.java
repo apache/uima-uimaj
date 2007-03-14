@@ -33,6 +33,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -79,6 +82,8 @@ import org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer;
 import org.apache.uima.collection.metadata.CpeCollectionReaderIterator;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.collection.metadata.CpeDescriptorException;
+import org.apache.uima.resource.ResourceConfigurationException;
+import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.URISpecifier;
 import org.apache.uima.resource.metadata.ResourceMetaData;
@@ -213,6 +218,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   private JMenuItem viewCasInitializerPanelMenuItem;
 
   private CpeDescription currentCpeDesc = createEmptyCpeDescription();
+  
+  private final ResourceManager defaultResourceManager = UIMAFramework.newDefaultResourceManager();
 
   public CpmPanel() {
     super();
@@ -1134,11 +1141,24 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   private boolean populateCollectionReaderPanel(CpeCollectionReaderIterator cpeColRdr)
-          throws InvalidXMLException, IOException {
+          throws InvalidXMLException, IOException, ResourceConfigurationException {
     try {
+      URL specifierUrl = null;
       String specifierFile = null;
       if (cpeColRdr != null) {
-        specifierFile = cpeColRdr.getDescriptor().getInclude().get();
+        specifierUrl = cpeColRdr.getDescriptor().findAbsoluteUrl(defaultResourceManager);
+        //CPE GUI only supports file URLs
+        if (!"file".equals(specifierUrl.getProtocol())) {
+          displayError("Could not load descriptor from URL " + specifierUrl.toString() + 
+                  ".  CPE Configurator only supports file: URLs");
+          return false;
+        }  
+        try {
+          specifierFile = new File(new URI(specifierUrl.toString())).toString();
+        } catch (URISyntaxException e) {
+          displayError(e);
+          return false;
+        }
       }
 
       if (collectionReaderPanel.getNrComponents() == 0) {
@@ -1181,11 +1201,24 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   private boolean populateCasInitializerPanel(CpeCollectionReaderCasInitializer cpeCasIni)
-          throws InvalidXMLException, IOException {
+          throws InvalidXMLException, IOException, ResourceConfigurationException {
     try {
+      URL specifierUrl = null;
       String specifierFile = null;
       if (cpeCasIni != null) {
-        specifierFile = cpeCasIni.getDescriptor().getInclude().get();
+        specifierUrl = cpeCasIni.getDescriptor().findAbsoluteUrl(defaultResourceManager);
+        //CPE GUI only supports file URLs
+        if (!"file".equals(specifierUrl.getProtocol())) {
+          displayError("Could not load descriptor from URL " + specifierUrl.toString() + 
+                  ".  CPE Configurator only supports file: URLs");
+          return false;
+        }  
+        try {
+          specifierFile = new File(new URI(specifierUrl.toString())).toString();
+        } catch (URISyntaxException e) {
+          displayError(e);
+          return false;
+        }
       }
 
       if (casInitializerPanel.getNrComponents() == 0) {
@@ -1230,7 +1263,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   private void addAE(String aeSpecifierFile) throws CpeDescriptorException, InvalidXMLException,
-          IOException {
+          IOException, ResourceConfigurationException {
     String tempAeName = new File(aeSpecifierFile).getName(); // overriden later
     CpeCasProcessor casProc = CpeDescriptorFactory.produceCasProcessor(tempAeName);
     casProc.setDescriptor(aeSpecifierFile);
@@ -1245,11 +1278,23 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   private void addAE(CpeCasProcessor cpeCasProc) throws CpeDescriptorException,
-          InvalidXMLException, IOException {
-    String aeSpecifierFile = cpeCasProc.getDescriptor();
-    File f = new File(aeSpecifierFile);
+          InvalidXMLException, IOException, ResourceConfigurationException {
+    URL aeSpecifierUrl = cpeCasProc.getCpeComponentDescriptor().findAbsoluteUrl(defaultResourceManager);
+    //CPE GUI only supports file URLs
+    if (!"file".equals(aeSpecifierUrl.getProtocol())) {
+      displayError("Could not load descriptor from URL " + aeSpecifierUrl.toString() + 
+              ".  CPE Configurator only supports file: URLs");
+      return;
+    }  
+    File f;
+    try {
+      f = new File(new URI(aeSpecifierUrl.toString()));
+    } catch (URISyntaxException e) {
+      displayError(e);
+      return;
+    }
     long fileModStamp = f.lastModified(); // get mod stamp before parsing, to prevent race condition
-    XMLInputSource aeInputSource = new XMLInputSource(aeSpecifierFile);
+    XMLInputSource aeInputSource = new XMLInputSource(aeSpecifierUrl);
     ResourceSpecifier aeSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
             aeInputSource);
 
@@ -1273,7 +1318,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   private void addConsumer(String consumerSpecifierFile) throws CpeDescriptorException,
-          InvalidXMLException, IOException {
+          InvalidXMLException, IOException, ResourceConfigurationException {
     String tempName = new File(consumerSpecifierFile).getName(); // overriden later
     CpeCasProcessor casProc = CpeDescriptorFactory.produceCasProcessor(tempName);
     casProc.setDescriptor(consumerSpecifierFile);
@@ -1287,11 +1332,25 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   private void addConsumer(CpeCasProcessor cpeCasProc) throws CpeDescriptorException,
-          InvalidXMLException, IOException {
-    String consumerSpecifierFile = cpeCasProc.getDescriptor();
-    File f = new File(consumerSpecifierFile);
+          InvalidXMLException, IOException, ResourceConfigurationException {
+    URL consumerSpecifierUrl = cpeCasProc.getCpeComponentDescriptor().findAbsoluteUrl(
+            defaultResourceManager);
+    //CPE GUI only supports file URLs
+    if (!"file".equals(consumerSpecifierUrl.getProtocol())) {
+      displayError("Could not load descriptor from URL " + consumerSpecifierUrl.toString() + 
+              ".  CPE Configurator only supports file: URLs");
+      return;
+    }  
+    File f;
+    try {
+      f = new File(new URI(consumerSpecifierUrl.toString()));
+    } catch (URISyntaxException e) {
+      displayError(e);
+      return;
+    }
+
     long fileModStamp = f.lastModified(); // get mod stamp before parsing, to prevent race condition
-    XMLInputSource consumerInputSource = new XMLInputSource(consumerSpecifierFile);
+    XMLInputSource consumerInputSource = new XMLInputSource(consumerSpecifierUrl);
     ResourceSpecifier casConsumerSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
             consumerInputSource);
     ConsumerPanel consumerPanel = new ConsumerPanel(casConsumerSpecifier, f, fileModStamp);
@@ -1585,7 +1644,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   }
 
   private void openCpeDescriptor(File aFile) throws InvalidXMLException, IOException,
-          CpeDescriptorException {
+          CpeDescriptorException, ResourceConfigurationException {
     // parse
     currentCpeDesc = UIMAFramework.getXMLParser().parseCpeDescription(new XMLInputSource(aFile));
 
@@ -1608,6 +1667,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       casIni = collRdr.getCasInitializer();
     }
     if (casIni != null) {
+      casInitializerPanel.clearAll();
       populateCasInitializerPanel(casIni);
     } else {
       casInitializerPanel.reset();
@@ -1617,15 +1677,17 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     removeAllAEsAndConsumers();
     CpeCasProcessor[] casProcs = currentCpeDesc.getCpeCasProcessors().getAllCpeCasProcessors();
     for (int i = 0; i < casProcs.length; i++) {
-      String specifierFile = casProcs[i].getDescriptor();
+      URL specifierUrl = casProcs[i].getCpeComponentDescriptor().findAbsoluteUrl(defaultResourceManager);
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-              new XMLInputSource(specifierFile));
+              new XMLInputSource(specifierUrl));
       if (isCasConsumerSpecifier(specifier)) {
         addConsumer(casProcs[i]);
       } else {
         addAE(casProcs[i]);
       }
     }
+
+    prefs.put(PREFS_CPE_DESCRIPTOR_FILE, aFile.getAbsolutePath());
 
     // nothing should be dirty when we first open
     clearDirty();
