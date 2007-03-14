@@ -19,10 +19,12 @@
 
 package org.apache.uima.collection.impl.base_cpm.container;
 
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.uima.collection.impl.cpm.utils.Execute;
+import org.apache.uima.collection.metadata.CpeComponentDescriptor;
 import org.apache.uima.resource.ResourceConfigurationException;
 
 /**
@@ -68,7 +70,7 @@ public interface CasProcessorConfiguration {
 
   public int getBatchSize();
 
-  public String getDescriptor();
+  public URL getDescriptorUrl() throws ResourceConfigurationException;
 
   public Execute getExecSpec();
 

@@ -19,6 +19,8 @@
 
 package org.apache.uima.collection.impl.cpm.container.deployer;
 
+import java.net.URL;
+
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.impl.base_cpm.container.deployer.CasProcessorDeployer;
 import org.apache.uima.collection.impl.cpm.Constants;
@@ -31,6 +33,7 @@ import org.apache.uima.collection.impl.cpm.utils.CpmLocalizedMessage;
 import org.apache.uima.collection.metadata.CpeCasProcessor;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.URISpecifier;
 import org.apache.uima.util.InvalidXMLException;
@@ -69,7 +72,7 @@ public class DeployFactory {
     if (Constants.DEPLOYMENT_LOCAL.equals(deployMode)) {
       return new VinciCasProcessorDeployer(aCpeFactory);
     } else if (Constants.DEPLOYMENT_REMOTE.equals(deployMode)) {
-      String protocol = getProtocol(aCasProcessorConfig);
+      String protocol = getProtocol(aCasProcessorConfig, aCpeFactory.getResourceManager());
       if (protocol == null || protocol.trim().length() == 0) {
         throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
                 "UIMA_CPM_invalid_service_descriptor__SEVERE", new Object[] {
@@ -103,19 +106,16 @@ public class DeployFactory {
   /**
    * Retrieve protocol from the service descriptor
    * 
-   * @param aCasProcessorConfig -
-   *          Cas Processor configuration
+   * @param aCasProcessorConfig Cas Processor configuration
+   * @param aResourceManager needed to resolve import by name        
    * @return - protocol as string (vinci, socket)
    * 
    * @throws ResourceConfigurationException
    */
-  public static String getProtocol(CpeCasProcessor aCasProcessorConfig)
+  public static String getProtocol(CpeCasProcessor aCasProcessorConfig, ResourceManager aResourceManager)
           throws ResourceConfigurationException {
     try {
-      String clientServiceDescriptor = aCasProcessorConfig.getDescriptor();
-      clientServiceDescriptor = CPMUtils.convertToAbsolutePath(System.getProperty("CPM_HOME"),
-              CPEFactory.CPM_HOME, clientServiceDescriptor);
-
+      URL clientServiceDescriptor = aCasProcessorConfig.getCpeComponentDescriptor().findAbsoluteUrl(aResourceManager);
       ResourceSpecifier resourceSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
               new XMLInputSource(clientServiceDescriptor));
       if (resourceSpecifier instanceof URISpecifier) {

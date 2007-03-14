@@ -19,6 +19,9 @@
 
 package org.apache.uima.collection.impl.cpm.container.deployer;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +32,7 @@ import org.apache.uima.collection.impl.cpm.utils.CPMUtils;
 import org.apache.uima.collection.impl.cpm.utils.Execute;
 import org.apache.uima.collection.metadata.CpeCasProcessor;
 import org.apache.uima.resource.ResourceConfigurationException;
+import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.util.Level;
 
 /**
@@ -40,7 +44,6 @@ import org.apache.uima.util.Level;
  * 
  */
 public class NonJavaApplication extends RunnableApplication {
-
   public NonJavaApplication(CasProcessorConfiguration aCasProcessorConfiguration,
           CpeCasProcessor aCasProcessorConfig) throws ResourceConfigurationException {
     addApplicationInfo(aCasProcessorConfiguration, aCasProcessorConfig);
@@ -78,12 +81,8 @@ public class NonJavaApplication extends RunnableApplication {
    * @return - command line as array of Strings
    */
   protected String[] addApplicationCmdLineArguments(
-          CasProcessorConfiguration aCasProcessorConfiguration, List argList, String aExecutable) // String[]
-                                                                                                  // cmdLine)
-                                                                                                  // //,
-                                                                                                  // String
-                                                                                                  // aDescriptor,List
-  // aDeploymentParameters )
+          CasProcessorConfiguration aCasProcessorConfiguration, List argList, String aExecutable) 
+      throws ResourceConfigurationException
   {
     ArrayList cmdArgs = new ArrayList();
     cmdArgs.add(aExecutable);
@@ -98,10 +97,14 @@ public class NonJavaApplication extends RunnableApplication {
                 new Object[] { Thread.currentThread().getName(), String.valueOf(i), arg });
       }
       if ("${descriptor}".equals(arg.trim())) {
-        String descriptor = CPMUtils.convertToAbsolutePath(System.getProperty("CPM_HOME"),
-                CPEFactory.CPM_HOME, aCasProcessorConfiguration.getDescriptor());
-
-        cmdArgs.add("\"" + descriptor + "\"");
+        URL descriptorUrl = aCasProcessorConfiguration.getDescriptorUrl();
+        String descriptorPath;
+        try {
+          descriptorPath = new URI(descriptorUrl.toString()).getPath();
+        } catch (URISyntaxException e) {
+          throw new ResourceConfigurationException(e);
+        }
+        cmdArgs.add("\"" + descriptorPath + "\"");
       } else {
         cmdArgs.add(arg);
       }

@@ -19,12 +19,14 @@
 
 package org.apache.uima.collection.impl.cpm.container.deployer;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.impl.base_cpm.container.CasProcessorConfiguration;
-import org.apache.uima.collection.impl.cpm.container.CPEFactory;
 import org.apache.uima.collection.impl.cpm.utils.CPMUtils;
 import org.apache.uima.collection.impl.cpm.utils.Execute;
 import org.apache.uima.collection.metadata.CasProcessorExecArg;
@@ -51,9 +53,7 @@ public class JavaApplication extends RunnableApplication {
    */
   public JavaApplication(CasProcessorConfiguration aCasProcessorConfiguration,
           CpeCasProcessor aJaxbCasProcessorConfig) throws ResourceConfigurationException {
-    addApplicationInfo(aCasProcessorConfiguration, aJaxbCasProcessorConfig); // aJaxbCasProcessorConfig,
-    // aDescriptor,aDeploymentParameters
-    // );
+    addApplicationInfo(aCasProcessorConfiguration, aJaxbCasProcessorConfig); 
   }
 
   /**
@@ -87,7 +87,8 @@ public class JavaApplication extends RunnableApplication {
    * @return - complete command line ready for use
    */
   protected String[] addApplicationCmdLineArguments(
-          CasProcessorConfiguration aCasProcessorConfiguration, List argList, String aExecutable) {
+          CasProcessorConfiguration aCasProcessorConfiguration, List argList, String aExecutable) 
+      throws ResourceConfigurationException {
     ArrayList cmdArgs = new ArrayList();
     // build commandline
     cmdArgs.add(aExecutable);
@@ -153,14 +154,18 @@ public class JavaApplication extends RunnableApplication {
         continue; // next iteration will copy the classpath into cmdArgs
       }
       if ("${descriptor}".equals(argValue.trim())) {
-
-        String descriptor = CPMUtils.convertToAbsolutePath(System.getProperty("CPM_HOME"),
-                CPEFactory.CPM_HOME, aCasProcessorConfiguration.getDescriptor());
+        URL descriptorUrl = aCasProcessorConfiguration.getDescriptorUrl();
+        String descriptorPath;
+        try {
+          descriptorPath = new URI(descriptorUrl.toString()).getPath();
+        } catch (URISyntaxException e) {
+          throw new ResourceConfigurationException(e);
+        }
         if (System.getProperty("os.name") != null
                 && System.getProperty("os.name").toLowerCase().startsWith("linux")) {
-          cmdArgs.add(descriptor);
+          cmdArgs.add(descriptorPath);
         } else {
-          cmdArgs.add("\"" + descriptor + "\"");
+          cmdArgs.add("\"" + descriptorPath + "\"");
         }
       } else {
         cmdArgs.add(argValue);

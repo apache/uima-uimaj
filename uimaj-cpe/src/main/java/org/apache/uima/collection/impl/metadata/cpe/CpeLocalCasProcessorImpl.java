@@ -120,9 +120,6 @@ public class CpeLocalCasProcessorImpl extends CasProcessorCpeObject implements C
   }
 
   protected void addDefaults() throws CpeDescriptorException {
-    if (getDescriptor() == null) {
-      // setDescriptor("");
-    }
     if (getRunInSeperateProcess() == null) {
       CasProcessorRunInSeperateProcess sepProcess = CpeDescriptorFactory
               .produceRunInSeperateProcess();

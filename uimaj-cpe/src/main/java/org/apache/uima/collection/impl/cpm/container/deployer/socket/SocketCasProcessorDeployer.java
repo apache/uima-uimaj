@@ -132,7 +132,7 @@ public class SocketCasProcessorDeployer implements CasProcessorDeployer {
           // through
           // getCasProcessor() and releaseProcessor() methods.
           // Create CasProcess Configuration holding info defined in the CPE descriptor
-          casProcessorConfig = new CasProcessorConfigurationJAXBImpl(casProcessorType);
+          casProcessorConfig = new CasProcessorConfigurationJAXBImpl(casProcessorType, cpeFactory.getResourceManager());
 
           // Associate CasProcessor configuration from CPE descriptor with this container
           processingContainer = new ProcessingContainer_Impl(casProcessorConfig, metaData,

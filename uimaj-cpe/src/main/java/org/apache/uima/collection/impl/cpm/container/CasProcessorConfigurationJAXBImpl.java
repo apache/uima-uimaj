@@ -19,6 +19,7 @@
 
 package org.apache.uima.collection.impl.cpm.container;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,7 +42,9 @@ import org.apache.uima.collection.metadata.CasProcessorRunInSeperateProcess;
 import org.apache.uima.collection.metadata.CasProcessorTimeout;
 import org.apache.uima.collection.metadata.CpeCasProcessor;
 import org.apache.uima.collection.metadata.CpeCheckpoint;
+import org.apache.uima.collection.metadata.CpeComponentDescriptor;
 import org.apache.uima.resource.ResourceConfigurationException;
+import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.util.InvalidXMLException;
@@ -60,7 +63,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
 
   private String name;
 
-  private String descriptor;
+  private CpeComponentDescriptor descriptor;
 
   private String deploymentType;
 
@@ -95,17 +98,22 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   private boolean parallelizable = true; // default
 
   private boolean readOnly = false; // make this explicit
-
+  
+  private ResourceManager resourceManager;
+  
   /**
    * Initializes instance and copies configuation from cpe descriptor.
    * 
    * @param aJaxbCasProcessorConfig - -
    *          configuration object containing Cas Processor configuration
-   * 
+   * @param aResourceManager - 
+   *          needed to resolve import by name
    * @throws ResourceConfigurationException
    */
-  public CasProcessorConfigurationJAXBImpl(CpeCasProcessor aCasProcessorConfig)
+  public CasProcessorConfigurationJAXBImpl(CpeCasProcessor aCasProcessorConfig, ResourceManager aResourceManager)
           throws ResourceConfigurationException {
+    this.resourceManager = aResourceManager;
+    
     if (aCasProcessorConfig == null) {
       throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND, new Object[] {
           "<casProcessor>", "<casProcessors>" }, new Exception(CpmLocalizedMessage
@@ -141,9 +149,7 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
                 "UIMA_CPM_config_non_java_service__FINEST",
                 new Object[] { Thread.currentThread().getName(), name });
       }
-      nonJavaApp = new NonJavaApplication(this, aCasProcessorConfig); // aJaxbCasProcessorConfig,
-      // getDescriptor(),
-      // getDeploymentParameters());
+      nonJavaApp = new NonJavaApplication(this, aCasProcessorConfig); 
     } else {
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
@@ -442,14 +448,18 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
                       "UIMA_CPM_EXP_bad_cpe_descriptor_no_cp__WARNING", new Object[] { Thread
                               .currentThread().getName() })));
     }
-    descriptor = aCasProcessorConfig.getDescriptor();
-    if (descriptor == null || descriptor.trim().length() == 0) {
-      throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND, new Object[] {
-          "href", "include" }, new Exception(CpmLocalizedMessage.getLocalizedMessage(
-              CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
-              "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING", new Object[] {
-                  Thread.currentThread().getName(), aCasProcessorConfig.getName(), "href",
-                  "<include>" })));
+    descriptor = aCasProcessorConfig.getCpeComponentDescriptor();
+    
+    if (descriptor.getInclude() != null) {
+      String descPath = descriptor.getInclude().get();
+      if (descPath == null || descPath.trim().length() == 0) {
+        throw new ResourceConfigurationException(InvalidXMLException.ELEMENT_NOT_FOUND, new Object[] {
+            "href", "include" }, new Exception(CpmLocalizedMessage.getLocalizedMessage(
+                CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
+                "UIMA_CPM_EXP_missing_attribute_from_xml_element__WARNING", new Object[] {
+                    Thread.currentThread().getName(), aCasProcessorConfig.getName(), "href",
+                    "<include>" })));
+      }
     }
 
   }
@@ -661,14 +671,16 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   }
 
   /**
-   * Returns descriptor path associated with this Cas Processor
+   * Returns descriptor associated with this Cas Processor
    * 
-   * @return descriptor path
+   * @return object that identifies location of descriptor
+   * 
+   * @throws ResourceConfigurationException if an import could not be resolved
    */
-  public String getDescriptor() {
-    return descriptor;
+  public URL getDescriptorUrl() throws ResourceConfigurationException {
+    return descriptor.findAbsoluteUrl(resourceManager);
   }
-
+  
   /**
    * Returns a value for a given deployment parameter
    * 

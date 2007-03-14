@@ -22,9 +22,7 @@ package org.apache.uima.collection.impl.cpm.container;
 import java.io.IOException;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.adapter.vinci.util.Descriptor;
 import org.apache.uima.cas_data.CasData;
-import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.collection.base_cpm.CasDataProcessor;
 import org.apache.uima.collection.impl.base_cpm.container.ServiceConnectionException;
 import org.apache.uima.collection.impl.cpm.Constants;
@@ -33,18 +31,15 @@ import org.apache.uima.collection.impl.cpm.utils.CPMUtils;
 import org.apache.uima.collection.impl.cpm.utils.CpmLocalizedMessage;
 import org.apache.uima.collection.metadata.CpeCasProcessor;
 import org.apache.uima.resource.ResourceProcessException;
-import org.apache.uima.resource.ResourceSpecifier;
-import org.apache.uima.resource.URISpecifier;
+import org.apache.uima.resource.ResourceServiceException;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.OperationalProperties;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.resource.metadata.impl.ConfigurationParameterSettings_impl;
 import org.apache.uima.resource.metadata.impl.OperationalProperties_impl;
 import org.apache.uima.resource.metadata.impl.ProcessingResourceMetaData_impl;
-import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.ProcessTrace;
-import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 import org.apache.vinci.transport.ServiceException;
 
@@ -74,8 +69,6 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
 
   private ProcessingResourceMetaData resourceMetadata = null;
 
-  private boolean isCasConsumer;
-
   /**
    * Initializes this instance with configuration defined in the CPE descriptor.
    * 
@@ -102,16 +95,6 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
     ConfigurationParameterSettings settings = new ConfigurationParameterSettings_impl();
     settings.setParameterValue(Constants.CAS_PROCESSOR_CONFIG, casProcessorType);
     metadata.setConfigurationParameterSettings(settings);
-
-    // Determine if the network CAS Processor is a CAS Consumer by
-    // checking descriptor. -APL
-    try {
-      checkNetworkCasProcessorType();
-    } catch (Exception e) {
-      // can't throw an exception from here, so just log it. Likely errors
-      // would be descriptor parse problems, which should be caught later anyway.
-      UIMAFramework.getLogger().log(Level.SEVERE, e.getMessage(), e);
-    }
   }
 
   /**
@@ -226,7 +209,20 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
    * @see org.apache.uima.collection.base_cpm.CasProcessor#isStateless()
    */
   public boolean isStateless() {
-    return !isCasConsumer;
+    if (resourceMetadata == null) {
+      try {
+        resourceMetadata = textAnalysisProxy.getAnalysisEngineMetaData();
+      } catch (ResourceServiceException e) {
+        //can't throw exception from here so just log it and return the default
+        UIMAFramework.getLogger(this.getClass()).log(Level.SEVERE, e.getMessage(), e);
+        return true; 
+      }
+    }
+    OperationalProperties opProps =  resourceMetadata.getOperationalProperties();
+    if (opProps != null) {
+      return !opProps.isMultipleDeploymentAllowed();
+    }
+    return true; //default
   }
 
   /*
@@ -235,7 +231,20 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
    * @see org.apache.uima.collection.base_cpm.CasProcessor#isReadOnly()
    */
   public boolean isReadOnly() {
-    return isCasConsumer;
+    if (resourceMetadata == null) {
+      try {
+        resourceMetadata = textAnalysisProxy.getAnalysisEngineMetaData();
+      } catch (ResourceServiceException e) {
+        //can't throw exception from here so just log it and return the default
+        UIMAFramework.getLogger(this.getClass()).log(Level.SEVERE, e.getMessage(), e);
+        return false; 
+      }
+    }
+    OperationalProperties opProps =  resourceMetadata.getOperationalProperties();
+    if (opProps != null) {
+      return !opProps.getModifiesCas();
+    }
+    return false; //default  
   }
 
   /**
@@ -363,36 +372,4 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
     }
     return true;
   }
-
-  /**
-   * Inspect descriptors to determine if the network CAS processor is an AnalysisEngine or a
-   * CasConsumer. Sets the isCasConsumer field appropriately.
-   */
-  private void checkNetworkCasProcessorType() throws IOException, InvalidXMLException {
-    isCasConsumer = false; // default unless shown to be a CAS Consumer
-    String desc = casProcessorType.getDescriptor();
-    if (desc != null) {
-      String descriptorPath = CPMUtils.convertToAbsolutePath(System.getProperty("CPM_HOME"),
-              CPEFactory.CPM_HOME, desc);
-      if (Constants.DEPLOYMENT_REMOTE.equals(casProcessorType.getDeployment())) {
-        // parse the descriptor, expecting it to be a URISpecifier, and get the resource type from
-        // there
-        ResourceSpecifier resourceSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-                new XMLInputSource(descriptorPath));
-        if (resourceSpecifier instanceof URISpecifier) {
-          String casProcType = ((URISpecifier) resourceSpecifier).getResourceType();
-          isCasConsumer = URISpecifier.RESOURCE_TYPE_CAS_CONSUMER.equals(casProcType);
-        }
-      } else if (Constants.DEPLOYMENT_LOCAL.equals(casProcessorType.getDeployment())) {
-        // parse as a Vinci service descriptor
-        Descriptor deployDesc = new Descriptor(descriptorPath);
-        // from there get the UIMA component descriptor, and check its path
-        String componentDescPath = deployDesc.getResourceSpecifierPath();
-        ResourceSpecifier resourceSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-                new XMLInputSource(componentDescPath));
-        isCasConsumer = (resourceSpecifier instanceof CasConsumerDescription);
-      }
-    }
-  }
-
 }

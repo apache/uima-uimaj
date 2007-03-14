@@ -129,7 +129,7 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
           }
           casProcessorPool = new ServiceProxyPool();
           // Instantiate an object that encapsulates CasProcessor configuration
-          casProcessorConfig = new CasProcessorConfigurationJAXBImpl(cpeCasProcessor);
+          casProcessorConfig = new CasProcessorConfigurationJAXBImpl(cpeCasProcessor, cpeFactory.getResourceManager());
 
           if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
             UIMAFramework.getLogger(this.getClass()).logrb(
@@ -221,7 +221,8 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
                 "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_redeploying_cp__FINEST",
                 new Object[] { Thread.currentThread().getName(), name });
       }
-      CasProcessor casProcessor = produceIntegratedCasProcessor(casProcessorConfig.getDescriptor());
+      URL descriptorUrl = casProcessorConfig.getDescriptorUrl();
+      CasProcessor casProcessor = produceIntegratedCasProcessor(descriptorUrl);
       casProcessorPool.addCasProcessor(casProcessor);
     } catch (ResourceConfigurationException e) {
       e.printStackTrace();
@@ -242,7 +243,7 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
    * 
    * @throws ResourceConfigurationException
    */
-  private CasProcessor produceIntegratedCasProcessor(String aDescriptor)
+  private CasProcessor produceIntegratedCasProcessor(URL aDescriptor)
           throws ResourceConfigurationException {
     CasProcessor casProcessor = null;
     try {
@@ -254,7 +255,7 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
                   .getResourceManager(), null);
           // casProcessor.
         } else if (resourceSpecifier instanceof CasConsumerDescription) {
-          if (cpeFactory.isDefinitionInstanceOf(CasConsumer.class, resourceSpecifier, aDescriptor)) {
+          if (cpeFactory.isDefinitionInstanceOf(CasConsumer.class, resourceSpecifier, aDescriptor.toString())) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
                       this.getClass().getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
@@ -264,7 +265,7 @@ public class CPEDeployerDefaultImpl implements CasProcessorDeployer {
             casProcessor = UIMAFramework.produceCasConsumer(resourceSpecifier, this.cpeFactory
                     .getResourceManager(), null);
           } else if (cpeFactory.isDefinitionInstanceOf(CasProcessor.class, resourceSpecifier,
-                  aDescriptor)) {
+                  aDescriptor.toString())) {
             if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
               UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST,
                       this.getClass().getName(), "initialize", CPMUtils.CPM_LOG_RESOURCE_BUNDLE,

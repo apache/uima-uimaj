@@ -19,8 +19,10 @@
 
 package org.apache.uima.collection.impl.cpm.engine;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -878,7 +880,7 @@ public class CPMEngine extends Thread {
           throws Exception {
     OperationalProperties op = null;
     // Parse the descriptor to access Operational Properties
-    ResourceSpecifier resourceSpecifier = cpeFactory.getSpecifier(aDescPath);
+    ResourceSpecifier resourceSpecifier = cpeFactory.getSpecifier(new File(aDescPath).toURL());
     if (resourceSpecifier != null && resourceSpecifier instanceof ResourceCreationSpecifier) {
       ResourceMetaData md = ((ResourceCreationSpecifier) resourceSpecifier).getMetaData();
       if (md instanceof ProcessingResourceMetaData) {
@@ -896,21 +898,6 @@ public class CPMEngine extends Thread {
     throw new ResourceConfigurationException(ResourceInitializationException.NOT_A_CAS_PROCESSOR,
             new Object[] { aCpName, "<unknown>", aDescPath });
 
-  }
-
-  /**
-   * Get the full (absolute) path of the Cas Processor descriptor.
-   * 
-   * @param aCasProcessorCPEConfig -
-   *          Cas Processor configuration from the CPE descriptor
-   * @return - fully qualified descriptor path
-   * 
-   * @throws Exception
-   */
-  private String getDescriptorPath(CpeCasProcessor aCasProcessorCPEConfig) throws Exception {
-    String descAsString = cpeFactory.getDescriptor(aCasProcessorCPEConfig);
-    return CPMUtils.convertToAbsolutePath(System.getProperty("CPM_HOME"), CPEFactory.CPM_HOME,
-            descAsString);
   }
 
   /**
@@ -961,8 +948,8 @@ public class CPMEngine extends Thread {
 
     if (Constants.DEPLOYMENT_LOCAL.equalsIgnoreCase(casProcessorCPEConfig.getDeployment())) {
       // Extract the client service descriptor.
-      String descriptorPath = getDescriptorPath(casProcessorCPEConfig);
-      Descriptor descriptor = new Descriptor(descriptorPath);
+      URL descriptorUrl = cpeFactory.getDescriptorURL(casProcessorCPEConfig);
+      Descriptor descriptor = new Descriptor(descriptorUrl.toString());
       // From the client service descriptor extract the actual Cas Processor descriptor
       String aResourceSpecifierPath = descriptor.getResourceSpecifierPath();
       // Determine if this Cas Processor is parallelizable

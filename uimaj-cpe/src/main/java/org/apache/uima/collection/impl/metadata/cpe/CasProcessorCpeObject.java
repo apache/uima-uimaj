@@ -146,6 +146,7 @@ public class CasProcessorCpeObject extends MetaDataObject_impl implements CpeCas
    * Returns a descriptor path associated with this CasProcessor
    * 
    * @return String - descriptor path
+   * @deprecated Doesn't support the new import syntax.  Use getCpeComponentDescriptor().findAbsoluteUrl() instead.
    */
 
   public String getDescriptor() {

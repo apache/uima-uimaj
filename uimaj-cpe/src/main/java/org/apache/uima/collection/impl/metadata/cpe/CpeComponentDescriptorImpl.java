@@ -19,17 +19,27 @@
 
 package org.apache.uima.collection.impl.metadata.cpe;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.apache.uima.collection.metadata.CpeComponentDescriptor;
 import org.apache.uima.collection.metadata.CpeInclude;
+import org.apache.uima.resource.ResourceConfigurationException;
+import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
+import org.apache.uima.util.InvalidXMLException;
 
 public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
         CpeComponentDescriptor {
   private static final long serialVersionUID = 1607312024379882416L;
 
-  private CpeInclude include;
+  private CpeInclude mInclude;
+  
+  private Import mImport;
 
   public CpeComponentDescriptorImpl() {
   }
@@ -40,7 +50,7 @@ public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
    * @see org.apache.uima.collection.metadata.CpeComponentDescriptor#setInclude(org.apache.uima.collection.metadata.CpeInclude)
    */
   public void setInclude(CpeInclude aInclude) {
-    include = aInclude;
+    mInclude = aInclude;
   }
 
   /*
@@ -49,7 +59,50 @@ public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
    * @see org.apache.uima.collection.metadata.CpeComponentDescriptor#getInclude()
    */
   public CpeInclude getInclude() {
-    return include;
+    return mInclude;
+  }
+  
+  
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.metadata.CpeComponentDescriptor#getImport()
+   */
+  public Import getImport() {
+    return mImport;
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.metadata.CpeComponentDescriptor#setImport(org.apache.uima.resource.metadata.Import)
+   */
+  public void setImport(Import aImport) {
+    mImport = aImport;
+  }
+  
+  /**
+   * @see CpeComponentDescriptor#findAbsoluteUrl(ResourceManager)
+   */
+  public URL findAbsoluteUrl(ResourceManager aResourceManager) throws ResourceConfigurationException {
+    try {
+      if (mImport != null) {
+        return mImport.findAbsoluteUrl(aResourceManager);
+      }
+      else {
+        String relPath = mInclude.get();
+        //replace ${CPM_HOME}
+        if (relPath.startsWith("${CPM_HOME}")) {
+          String cpmHome = System.getProperty("CPM_HOME");
+          relPath = cpmHome + relPath.substring("${CPM_HOME}".length());
+        }
+        try {
+          return new File(relPath).getAbsoluteFile().toURI().toURL();
+        } catch (MalformedURLException e) {
+          throw new InvalidXMLException(InvalidXMLException.MALFORMED_IMPORT_URL, new Object[] {
+                  relPath, getSourceUrlString() }, e);
+        }
+      }
+    } catch (InvalidXMLException e) {
+      throw new ResourceConfigurationException(e);
+    }
   }
 
   protected XmlizationInfo getXmlizationInfo() {
@@ -57,6 +110,8 @@ public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
   }
 
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("descriptor",
-          new PropertyXmlInfo[] { new PropertyXmlInfo("include", null), });
+          new PropertyXmlInfo[] { 
+           new PropertyXmlInfo("include", null), 
+           new PropertyXmlInfo("import", null)});
 
 }

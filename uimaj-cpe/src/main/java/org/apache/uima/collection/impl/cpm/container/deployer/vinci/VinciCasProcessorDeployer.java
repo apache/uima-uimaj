@@ -59,6 +59,7 @@ import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.URISpecifier;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
+import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.vinci.transport.ServiceDownException;
@@ -234,7 +235,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           // getCasProcessor() and releaseProcessor() methods.
           casProcessorPool = new ServiceProxyPool();
           // Create CasProcess Configuration holding info defined in the CPE descriptor
-          casProcessorConfig = new CasProcessorConfigurationJAXBImpl(casProcessorType);
+          casProcessorConfig = new CasProcessorConfigurationJAXBImpl(casProcessorType, cpeFactory.getResourceManager());
 
           // Associate CasProcessor configuration from CPE descriptor with this container
           processingContainer = new ProcessingContainer_Impl(casProcessorConfig, metaData,
@@ -1036,14 +1037,15 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    */
   private String getServiceUri(CasProcessorConfiguration aCasProcessorConfig)
           throws ResourceConfigurationException {
-    String descriptor = aCasProcessorConfig.getDescriptor();
+    URL descriptorUrl;
+    descriptorUrl = aCasProcessorConfig.getDescriptorUrl();
 
-    URISpecifier uriSpecifier = getURISpecifier(descriptor);
+    URISpecifier uriSpecifier = getURISpecifier(descriptorUrl);
     String uri = uriSpecifier.getUri();
     if (uri == null || uri.trim().length() == 0) {
       throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
               "UIMA_CPM_invalid_deployment__SEVERE", new Object[] {
-                  Thread.currentThread().getName(), descriptor, uri });
+                  Thread.currentThread().getName(), descriptorUrl, uri });
     }
 
     return uri;
@@ -1056,38 +1058,34 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * @return URISpecifier
    * @throws ResourceConfigurationException
    */
-  private URISpecifier getURISpecifier(String aDescriptor) throws ResourceConfigurationException {
-    String descriptorPath = CPMUtils.convertToAbsolutePath(System.getProperty("CPM_HOME"),
-            CPEFactory.CPM_HOME, aDescriptor);
-    ResourceSpecifier resourceSpecifier = getSpecifier(descriptorPath);
+  private URISpecifier getURISpecifier(URL aDescriptorUrl) throws ResourceConfigurationException {
+    ResourceSpecifier resourceSpecifier = getSpecifier(aDescriptorUrl);
 
     if (!(resourceSpecifier instanceof URISpecifier)) {
       throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
               "UIMA_CPM_invalid_deployment__SEVERE", new Object[] {
-                  Thread.currentThread().getName(), descriptorPath, null });
+                  Thread.currentThread().getName(), aDescriptorUrl, null });
     }
     return (URISpecifier) resourceSpecifier;
   }
 
   /**
-   * Parses given service descriptor and returns initialized Resource
+   * Parses given service descriptor and returns initialized ResourceSpecifier
    * 
-   * @param aFileName -
-   *          path of the descriptor
-   * @return - Resource - initialized from descriptor
+   * @param aUrl -
+   *          URL of the descriptor
+   * @return - ResourceSpecifier parsed from descriptor
    * @throws ResourceConfigurationException
    */
-  private ResourceSpecifier getSpecifier(String aFileName) throws ResourceConfigurationException {
+  private ResourceSpecifier getSpecifier(URL aUrl) throws ResourceConfigurationException {
     try {
-
-      File processorSpecifierFile = new File(aFileName);
-      XMLInputSource in = new XMLInputSource(processorSpecifierFile);
+      XMLInputSource in = new XMLInputSource(aUrl);
       return UIMAFramework.getXMLParser().parseResourceSpecifier(in);
     } catch (Exception e) {
       e.printStackTrace();
       throw new ResourceConfigurationException(CPMUtils.CPM_LOG_RESOURCE_BUNDLE,
               "UIMA_CPM_invalid_deployment__SEVERE", new Object[] {
-                  Thread.currentThread().getName(), aFileName, null });
+                  Thread.currentThread().getName(), aUrl, null });
     }
   }
 
@@ -1697,8 +1695,8 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
           throws ResourceConfigurationException {
     String vnsParam = null;
 
-    String descriptor = aCasProcessorConfig.getDescriptor();
-    URISpecifier uriSpecifier = getURISpecifier(descriptor);
+    URL descriptorUrl = aCasProcessorConfig.getDescriptorUrl();
+    URISpecifier uriSpecifier = getURISpecifier(descriptorUrl);
     Parameter[] params = uriSpecifier.getParameters();
 
     for (int i = 0; params != null && i < params.length; i++) {
