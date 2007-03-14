@@ -25,14 +25,14 @@
     <collectionReader>
         <collectionIterator>
             <descriptor>
-                <include href="descriptors/collection_reader/FileSystemCollectionReader.xml"/>
+                <import location="../collection_reader/FileSystemCollectionReader.xml"/>
             </descriptor>
         </collectionIterator>
     </collectionReader>
     <casProcessors casPoolSize="2" processingUnitThreadCount="1">
 		<casProcessor deployment="integrated" name="Simple Token and Sentence Annotator">
 	        <descriptor>
-                <include href="descriptors/analysis_engine/SimpleTokenAndSentenceAnnotator.xml"/>
+                <import location="../analysis_engine/SimpleTokenAndSentenceAnnotator.xml"/>
             </descriptor>
             <deploymentParameters/>
             <filter></filter>
@@ -45,7 +45,7 @@
         </casProcessor>
 		<casProcessor deployment="local" name="Meeting Detector TAE">
 			<descriptor>
-				<include href="deploy/vinci/Deploy_MeetingDetectorTAE.xml"/>
+				<import location="../../deploy/vinci/Deploy_MeetingDetectorTAE.xml"/>
 			</descriptor>
 			<runInSeparateProcess>
 				<exec dir="." executable="java">
@@ -67,7 +67,7 @@
 		</casProcessor>
         <casProcessor deployment="integrated" name="XMI Writer CAS Consumer">
             <descriptor>
-                <include href="descriptors/cas_consumer/XmiWriterCasConsumer.xml"/>
+                <import location="../cas_consumer/XmiWriterCasConsumer.xml"/>
             </descriptor>
             <deploymentParameters/>
             <filter></filter>
