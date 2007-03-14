@@ -19,6 +19,11 @@
 
 package org.apache.uima.collection.metadata;
 
+import java.net.URL;
+
+import org.apache.uima.resource.ResourceConfigurationException;
+import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.MetaDataObject;
 
 /**
@@ -42,4 +47,38 @@ public interface CpeComponentDescriptor extends MetaDataObject {
    * @return {@link org.apache.uima.collection.metadata.CpeInclude}
    */
   public CpeInclude getInclude();
+  
+  /** 
+   * Gets the Import object that declares where the component descriptor is located.
+   * Import objects support locating the component descriptor either using a
+   * path that's relative to the CPE descriptor's location ("import by location")
+   * or using the classpath/datapath ("import by name").
+   * 
+   * @return the import, null if none
+   */
+  public Import getImport();
+  
+  /** 
+   * Sets the Import object that declares where the component descriptor is located.
+   * Import objects support locating the component descriptor either using a
+   * path that's relative to the CPE descriptor's location ("import by location")
+   * or using the classpath/datapath ("import by name").
+   * 
+   * @param aImport the import, null if none
+   */
+  public void setImport(Import aImport);
+  
+  /**
+   * Returns the absolute URL where the component descriptor is located.  This will use either the
+   * include or import property, whichever is specified.
+   * 
+   * @param aResourceManager
+   *          resource manager to use to do import-by-name lookups
+   * 
+   * @return the absolute URL of the component descriptor
+   * 
+   * @throws ResourceConfiguration
+   *           if an import could not be resolved
+   */
+  public URL findAbsoluteUrl(ResourceManager aResourceManager) throws ResourceConfigurationException;  
 }
