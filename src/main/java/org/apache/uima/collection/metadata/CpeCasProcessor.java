@@ -55,6 +55,7 @@ public interface CpeCasProcessor extends MetaDataObject {
    * @param aDescriptor -
    *          descriptor path
    * @throws CpeDescriptorException
+   * @deprecated Doesn't support the new import syntax.  Use setCpeComponentDescriptor() instead.
    */
   public void setDescriptor(String aDescriptor) throws CpeDescriptorException;
 
@@ -62,10 +63,26 @@ public interface CpeCasProcessor extends MetaDataObject {
    * Returns CasProcessor descriptor.
    * 
    * @return descriptor
+   * @deprecated Doesn't support the new import syntax.  Use getCpeComponentDescriptor().findAbsoluteUrl() instead.
    */
   public String getDescriptor();
 
-  // public CpeComponentDescriptor getCpeComponentDescriptor();
+  /**
+   * Returns the {@link CpeComponentDescriptor} instance associated with this Cas Processor. That
+   * object contains a path to the component descriptor.
+   * 
+   * @return {@link CpeComponentDescriptor} instance
+   */
+  public CpeComponentDescriptor getCpeComponentDescriptor();
+
+  /**
+   * Sets the {@link CpeComponentDescriptor} instance associated with this Cas Processor. That
+   * object contains a path to the component descriptor.
+   * 
+   * @param aDescriptor {@link CpeComponentDescriptor} instance
+   * @throws CpeDescriptorException 
+   */ 
+  public void setCpeComponentDescriptor(CpeComponentDescriptor aDescriptor) throws CpeDescriptorException;
 
   /**
    * Returns CasProcessor deployment type. Three types are currently supported:
