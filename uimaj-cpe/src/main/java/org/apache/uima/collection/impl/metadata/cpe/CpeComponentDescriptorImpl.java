@@ -87,21 +87,25 @@ public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
         return mImport.findAbsoluteUrl(aResourceManager);
       }
       else {
-        String relPath = mInclude.get();
+        String path = mInclude.get();
         //replace ${CPM_HOME}
-        if (relPath.startsWith("${CPM_HOME}")) {
+        if (path.startsWith("${CPM_HOME}")) {
           String cpmHome = System.getProperty("CPM_HOME");
-          relPath = cpmHome + relPath.substring("${CPM_HOME}".length());
+          path = cpmHome + path.substring("${CPM_HOME}".length());
         }
         try {
-          //TODO: fix this logic
-          if (relPath.startsWith("file:")) {
-            return new URL(relPath);
-          }
-          return new File(relPath).getAbsoluteFile().toURI().toURL();
+          //try path as a URL, then if that fails try it as a File
+          //TODO: is there a good way to tell if it's a valid URL without
+          //having to catch MalformedURLException?
+          return new URL(path);         
         } catch (MalformedURLException e) {
-          throw new InvalidXMLException(InvalidXMLException.MALFORMED_IMPORT_URL, new Object[] {
-                  relPath, getSourceUrlString() }, e);
+          try {
+            return new File(path).getAbsoluteFile().toURI().toURL();
+          }
+          catch(MalformedURLException e2) {
+            throw new InvalidXMLException(InvalidXMLException.MALFORMED_IMPORT_URL, new Object[] {
+                  path, getSourceUrlString() }, e);
+          }
         }
       }
     } catch (InvalidXMLException e) {
