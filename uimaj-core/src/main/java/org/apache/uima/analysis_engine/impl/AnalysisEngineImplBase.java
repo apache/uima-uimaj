@@ -102,9 +102,10 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
     boolean result = super.initialize(aSpecifier, aAdditionalParams);
     if (result) {
       // add our metadata to the CasManager, so that it will pick up our
-      // type system, priorities, and indexes
+      // type system, priorities, and indexes (clone it first, to ensure
+      // CasManager's version doesn't change).
       AnalysisEngineMetaData md = getAnalysisEngineMetaData();
-      getCasManager().addMetaData(md);
+      getCasManager().addMetaData((AnalysisEngineMetaData)md.clone());
 
       // read parameters from additionalParams map
       Properties perfSettings = null;
