@@ -80,10 +80,11 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
   public UimacppAnalysisComponent(ResourceCreationSpecifier aeDescription, AnalysisEngineImplBase ae) {
 	    super();
 	    this.ae = ae;
-	    this.resourceDescription = aeDescription;
 	    // TAF won't except the new <fsIndexCollection> element, but actuall it doesn't need it,
 	    // because the index definitions are transmitted with the serialized CAS. So we can
 	    // just null it out.
+      // BUT do this in a clone, so we don't affect Java!
+      this.resourceDescription = (ResourceCreationSpecifier)aeDescription.clone();
 	    ((ProcessingResourceMetaData)this.resourceDescription.getMetaData()).setFsIndexCollection(null);
 	    this.tsReinit = true;
 	    // System.out.println("Data path: " + dataPath);
