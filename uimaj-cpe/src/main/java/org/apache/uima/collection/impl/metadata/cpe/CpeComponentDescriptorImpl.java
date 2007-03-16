@@ -94,6 +94,10 @@ public class CpeComponentDescriptorImpl extends MetaDataObject_impl implements
           relPath = cpmHome + relPath.substring("${CPM_HOME}".length());
         }
         try {
+          //TODO: fix this logic
+          if (relPath.startsWith("file:")) {
+            return new URL(relPath);
+          }
           return new File(relPath).getAbsoluteFile().toURI().toURL();
         } catch (MalformedURLException e) {
           throw new InvalidXMLException(InvalidXMLException.MALFORMED_IMPORT_URL, new Object[] {
