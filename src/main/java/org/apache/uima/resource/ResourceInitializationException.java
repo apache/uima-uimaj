@@ -438,6 +438,12 @@ public class ResourceInitializationException extends UIMAException {
   public static final String INVALID_ACTION_AFTER_CAS_MULTIPLIER = "invalid_action_after_cas_multiplier";
 
   /**
+   * Message key for a standard UIMA exception message: The Flow Controller "{0}" requires a flow contraints
+   * element of type "{1}" in the aggregate descriptor
+   */
+  public static final String FLOW_CONTROLLER_REQUIRES_FLOW_CONSTRAINTS = "flow_controller_requires_flow_constraints";
+
+  /**
    * Creates a new exception with a null message.
    */
   public ResourceInitializationException() {
