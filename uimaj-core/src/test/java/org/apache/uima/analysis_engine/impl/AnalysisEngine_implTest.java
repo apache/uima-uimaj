@@ -766,11 +766,17 @@ public class AnalysisEngine_implTest extends TestCase {
       aggDesc.getMetaData().setName("Test Aggregate TAE");
       aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", primitiveDesc);
       FixedFlow_impl flow = new FixedFlow_impl();
-      flow.setFixedFlow(new String[] { "Test" });
       aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
       AggregateAnalysisEngine_impl aggTae = new AggregateAnalysisEngine_impl();
       aggTae.initialize(aggDesc, null);
       aggTae.collectionProcessComplete(new ProcessTrace_impl());
+      
+      //test that fixedFlow order is used
+      File descFile = JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateForCollectionProcessCompleteTest.xml");
+      AnalysisEngineDescription cpcTestDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(new XMLInputSource(descFile));
+      AnalysisEngine cpcTestAe = UIMAFramework.produceAnalysisEngine(cpcTestDesc);
+      cpcTestAe.collectionProcessComplete();
+      assertEquals("One", AnnotatorForCollectionProcessCompleteTest.lastValue);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }

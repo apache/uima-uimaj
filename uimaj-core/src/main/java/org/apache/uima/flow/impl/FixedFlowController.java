@@ -79,7 +79,13 @@ public class FixedFlowController extends CasFlowController_ImplBase {
     super.initialize(aContext);
     FlowConstraints flowConstraints = aContext.getAggregateMetadata().getFlowConstraints();
     mSequence = new ArrayList();
-    mSequence.addAll(Arrays.asList(((FixedFlow) flowConstraints).getFixedFlow()));
+    if (flowConstraints instanceof FixedFlow) {
+      String[] sequence = ((FixedFlow) flowConstraints).getFixedFlow();
+      mSequence.addAll(Arrays.asList(sequence));
+    } else {
+      throw new ResourceInitializationException(ResourceInitializationException.FLOW_CONTROLLER_REQUIRES_FLOW_CONSTRAINTS,
+              new Object[]{this.getClass().getName(), "fixedFlow", aContext.getAggregateMetadata().getSourceUrlString()});
+    }
 
     String actionAfterCasMultiplier = (String) aContext
             .getConfigParameterValue(PARAM_ACTION_AFTER_CAS_MULTIPLIER);

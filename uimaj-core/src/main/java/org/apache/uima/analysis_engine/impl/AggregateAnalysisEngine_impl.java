@@ -38,6 +38,8 @@ import org.apache.uima.analysis_engine.asb.impl.ASB_impl;
 import org.apache.uima.analysis_engine.asb.impl.FlowControllerContainer;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.CapabilityLanguageFlow;
+import org.apache.uima.analysis_engine.metadata.FixedFlow;
+import org.apache.uima.analysis_engine.metadata.FlowConstraints;
 import org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration;
 import org.apache.uima.analysis_engine.metadata.impl.FlowControllerDeclaration_impl;
 import org.apache.uima.cas.CAS;
@@ -307,8 +309,30 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     enterCollectionProcessComplete();
     try {
-      // pass call down to components, which might be (or contain) CAS Consumers
-      Iterator iter = this._getASB().getComponentAnalysisEngines().values().iterator();
+      // Pass call down to all components.
+      // If there's a standard flow type, use that order, then call components not in flow
+      // at the end in arbitrary order.  If there's no standard flow type
+      // (a custom FlowController must be in use), the entire order is arbitrary.
+      String[] orderedNodes = null;
+      Map components = new HashMap(this._getASB().getComponentAnalysisEngines());
+      FlowConstraints flow = getAnalysisEngineMetaData().getFlowConstraints();
+      if (flow != null) {
+        if (flow instanceof FixedFlow) {
+          orderedNodes = ((FixedFlow)flow).getFixedFlow();
+        }
+        else if (flow instanceof CapabilityLanguageFlow) {
+          orderedNodes = ((CapabilityLanguageFlow)flow).getCapabilityLanguageFlow();
+        }
+      }
+      //call components in the order specified in the flow
+      if (orderedNodes != null) {
+        for (int i = 0; i < orderedNodes.length; i++) {
+          AnalysisEngine component = (AnalysisEngine)components.remove(orderedNodes[i]);  
+          component.collectionProcessComplete();
+        }
+      }
+      //now call reamining components in arbitrary order
+      Iterator iter = components.values().iterator();
       while (iter.hasNext()) {
         ((AnalysisEngine) iter.next()).collectionProcessComplete();
       }
