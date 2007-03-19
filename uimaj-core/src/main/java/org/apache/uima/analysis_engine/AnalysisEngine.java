@@ -496,6 +496,13 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
    * Notifies this AnalysisEngine that processing of an entire collection has completed. It is up to
    * the caller to determine when this has occurred. Components (particularly CAS Consumers) inside
    * this Analysis Engine may respond to this event, for example by writing data to the disk.
+   * <p>
+   * If this AnalysisEngine is an aggregate, this method will call the collectionProcessComplete method of 
+   * all components of that aggregate.  If the aggregate descriptor declares a <code>fixedFlow</code> or 
+   * <code>capabilityLanguageFlow</code>, then the components' collectionProcessComplete methods will be called
+   * in the order specified by that flow element.  Once all components in the flow have been called, any components
+   * not declared in the flow will be called, in arbitrary order.  If there is no <code>fixedFlow</code> or 
+   * <code>capabilityLanguageFlow</code>, then all components in the aggregate will be called in arbitrary order.
    * 
    * @throws AnalysisEngineProcessException
    *           if an exception occurs during processing
