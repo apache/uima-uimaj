@@ -339,5 +339,47 @@ public class FileUtils {
         os.close();
     }
   }
+  
+  /**
+   * Finds a relative path to a given file, relative to a specified directory.
+   * @param file file that the relative path should resolve to
+   * @param relativeToDir directory that the path should be relative to
+   * @return a relative path.  This always uses / as the separator character.
+   */
+  public static String findRelativePath(File file, File relativeToDir) throws IOException {
+    String canonicalFile = file.getCanonicalPath();
+    String canonicalRelTo = relativeToDir.getCanonicalPath();
+    String[] filePathComponents = getPathComponents(canonicalFile);
+    String[] relToPathComponents = getPathComponents(canonicalRelTo);
+    int i = 0;
+    while(i < filePathComponents.length && i < relToPathComponents.length &&
+          filePathComponents[i].equals(relToPathComponents[i])) {
+      i++;
+    }
+    StringBuffer buf = new StringBuffer();
+    for (int j = i; j < relToPathComponents.length; j++) {
+      buf.append("../");
+    }
+    for (int j = i; j < filePathComponents.length - 1; j++) {
+      buf.append(filePathComponents[j]).append('/');
+    }
+    buf.append(filePathComponents[filePathComponents.length-1]);
+    return buf.toString();
+  }
+      
+
+    
+  /**
+   * Splits a path into components using the OS file separator character.
+   * This can be used on the results of File.getCanonicalPath().
+   * @param canonicalPath a file path that uses the OS file separator character
+   * @return an array of strings, one for each component of the path
+   */
+  public static String[] getPathComponents(String canonicalPath) {
+    String regex = File.separator;
+    if (regex.equals("\\"))
+      regex = "\\\\";
+    return canonicalPath.split(regex);
+  }  
 
 }
