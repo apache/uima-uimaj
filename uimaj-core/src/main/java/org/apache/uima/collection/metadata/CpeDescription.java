@@ -44,14 +44,14 @@ public interface CpeDescription extends MetaDataObject {
 
   /**
    * Adds a path to the descriptor file containing CollectionReader's configuration.
-   * 
+   * The CPE supports only one CollectionReader instance.
    * <p>
-   * Currently the CPE supports only one CollectionReader instance. A future version of the CPM will
-   * include support for more.
-   * </p>
+   * This method causes the CPE descriptor to use the older &lt;include> syntax.  To use the 
+   * &lt;import> syntax, you must use {@link #addCollectionReader(CpeCollectionReader)} instead.
    * 
    * @param aCollectionReaderPath -
-   *          path to the CollectionReader descriptor
+   *          path to the CollectionReader descriptor.  A relative path is interpreted as
+   *          relative to the current working directory.
    * @return {@link org.apache.uima.collection.metadata.CpeCollectionReader}
    * 
    * @throws CpeDescriptorException
