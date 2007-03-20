@@ -178,9 +178,13 @@ under the License.
   <section id="&tp;imports">
     <title>Imports</title>
     
-    <para>A CPE Descriptor uses the following notation to reference descriptors for other
-      components that are incorporated into the defined CPE:
-      
+    <para>As of version 2.2, a CPE Descriptor can use the same <literal>import</literal> mecanism
+      as other component descriptors.  This allows referring to component
+      descriptors using either relative paths (resolved relative to the location of the CPE descriptor)
+      or the classpath/datapath.  For details see <olink targetdoc="&uima_docs_ref;"
+      targetptr="ugr.ref.xml.component_descriptor"/>.</para>
+     
+    <para>The follwing older syntax is still supported, but not recommended:
       
       <programlisting><![CDATA[<descriptor>
     <include href="[URL or File]"/>
@@ -190,8 +194,9 @@ under the License.
       incorporated component. The argument is first attempted to be resolved as a URL.</para>
     
     <para>
-      A fully qualified filename may be provided, or the filename
-      may be relative to a directory specified using the <literal>CPM_HOME</literal>
+      Relative paths in an <literal>include</literal> are resolved relative to the current working directory 
+      (NOT the CPE descriptor location as is the case for <literal>import</literal>). 
+      A filename relative to another directory can be specified using the <literal>CPM_HOME</literal>
       variable, e.g.,    
     <programlisting>&lt;descriptor&gt;
     &lt;include href="${CPM_HOME}/desc_dir/descriptor.xml"/&gt;
@@ -199,14 +204,10 @@ under the License.
     
       In this case, the value for the <literal>CPM_HOME</literal> variable must be
       provided to the CPE by specifying it on the Java command line, e.g.,
-    
-    
+        
     <programlisting>java -DCPM_HOME="C:/Program Files/apache/uima/cpm" ...</programlisting>
     
-    Note that this mechanism for referencing other component descriptor files is
-      different from and in no way related to either of the two import mechanisms described in
-        <olink targetdoc="&uima_docs_ref;"
-        targetptr="ugr.ref.xml.component_descriptor"/>.</para>
+  </para>
     
   </section>
   
@@ -277,14 +278,14 @@ under the License.
         <programlisting><![CDATA[<collectionReader>
   <collectionIterator>
     <descriptor>
-      <include href="[File]"/>
+      <import ...> | <include .../>
     </descriptor>
     <configurationParameterSettings>...</configurationParameterSettings>
     <sofaNameMappings>...</sofaNameMappings>
   </collectionIterator>
   <casInitializer>
     <descriptor>
-      <include href="[File]"/>
+      <import ...> | <include .../>
     </descriptor>
     <configurationParameterSettings>...</configurationParameterSettings>
     <sofaNameMappings>...</sofaNameMappings>
@@ -402,7 +403,7 @@ under the License.
           
           <programlisting><![CDATA[<casProcessor deployment="local|remote|integrated" name="[String]" >
     <descriptor>
-        <include href=[File]/>
+      <import ...> | <include .../>
     </descriptor>
     <configurationParameterSettings>...</configurationParameterSettings>
     <sofaNameMappings>...</sofaNameMappings>
@@ -1317,8 +1318,7 @@ vinci.VinciAnalysisEngineService_impl</arg>
   <collectionReader>
     <collectionIterator>
       <descriptor>
-        <include href="C:/Program Files/apache-uima/examples/descriptors/
-      collection_reader/FileSystemCollectionReader.xml"/>
+        <import location="../collection_reader/FileSystemCollectionReader.xml"/>
       </descriptor>
     </collectionIterator>
   </collectionReader>
@@ -1327,8 +1327,7 @@ vinci.VinciAnalysisEngineService_impl</arg>
     <casProcessor deployment="integrated" 
       name="Aggregate TAE - Name Recognizer and Person Title Annotator">
       <descriptor>
-        <include href="C:/Program Files/apache-uima/examples/descriptors/
-      analysis_engine/NamesAndPersonTitles_TAE.xml"/>
+        <import location="../analysis_engine/NamesAndPersonTitles_TAE.xml"/>
       </descriptor>
       <deploymentParameters/>
       <filter/>
@@ -1341,8 +1340,7 @@ vinci.VinciAnalysisEngineService_impl</arg>
     </casProcessor>
     <casProcessor deployment="integrated" name="Annotation Printer">
       <descriptor>
-        <include href="C:/Program Files/apache-uima/examples/descriptors/
-      cas_consumer/AnnotationPrinter.xml"/>
+        <import location="../cas_consumer/AnnotationPrinter.xml"/>
       </descriptor>
       <deploymentParameters/>
       <filter/>

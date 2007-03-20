@@ -582,6 +582,10 @@
          <ttl>Using Flow Controllers with CAS Multipliers</ttl>
          <xreftext>Section 4.5, “Using Flow Controllers with CAS Multipliers”</xreftext>
       </div>
+      <div element="section" href="#ugr.tug.fc.continuing_when_exceptions_occur" number="4.6" targetptr="ugr.tug.fc.continuing_when_exceptions_occur">
+         <ttl>Continuing the Flow When Exceptions Occur</ttl>
+         <xreftext>Section 4.6, “Continuing the Flow When Exceptions Occur”</xreftext>
+      </div>
    </div>
    <div element="chapter" href="#ugr.tug.aas" number="5" targetptr="ugr.tug.aas">
       <ttl>Annotations, Artifacts, and Sofas</ttl>

@@ -146,11 +146,13 @@ examples/descriptors/cas_consumer/XmiWriterCasConsumer.xml</programlisting></par
   <section id="ugr.tools.cpe.file_menu">
     <title>The File Menu</title>
     
-    <para>The CPE Configurator&apos;s File Menu has six options:</para>
+    <para>The CPE Configurator&apos;s File Menu has the following options:</para>
     
     <itemizedlist><listitem><para>Open CPE Descriptor</para></listitem>
       
       <listitem><para>Save CPE Descriptor</para></listitem>
+
+      <listitem><para>Save Options</para> (submenu)</listitem>
       
       <listitem><para>Refresh Descriptors from File System</para></listitem>
       
@@ -177,6 +179,14 @@ examples/descriptors/cas_consumer/XmiWriterCasConsumer.xml</programlisting></par
       Configurator. For more information on manually creating a CPE Descriptor, see <olink
         targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/>
       .</para>
+    
+    <para>The <emphasis role="bold">Save Options</emphasis> submenu has one item,
+      "Use &lt;import>".  If this item is checked (the default), saved CPE descriptors
+      will use the <literal>&lt;import></literal> syntax to refer to their component 
+      descriptors.  If unchecked, the older <literal>&lt;include></literal> syntax will
+      be used for new components that you add to your CPE using the GUI.  (However, if you  
+      open a CPE descriptor that used &lt;import>, these imports will not be replaced.)    
+    </para>
     
     <para><emphasis role="bold">Refresh Descriptors from File System</emphasis> will
       reload all descriptors from disk. This is useful if you have made a change to the
