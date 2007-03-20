@@ -50,10 +50,12 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
@@ -80,12 +82,14 @@ import org.apache.uima.collection.metadata.CpeCasProcessors;
 import org.apache.uima.collection.metadata.CpeCollectionReader;
 import org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer;
 import org.apache.uima.collection.metadata.CpeCollectionReaderIterator;
+import org.apache.uima.collection.metadata.CpeComponentDescriptor;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.collection.metadata.CpeDescriptorException;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.URISpecifier;
+import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.tools.util.gui.FileChooserBugWorkarounds;
 import org.apache.uima.tools.util.gui.FileSelector;
@@ -94,6 +98,7 @@ import org.apache.uima.tools.util.gui.SwingWorker;
 import org.apache.uima.tools.util.gui.TransportControlListener;
 import org.apache.uima.tools.util.gui.TransportControlPanel;
 import org.apache.uima.tools.util.gui.XMLFileFilter;
+import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Progress;
 import org.apache.uima.util.XMLInputSource;
@@ -114,6 +119,8 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
           + "since UIMA version 2.0, but are still supported by this tool.";
 
   private static final String PREFS_CPE_DESCRIPTOR_FILE = "cpeDescriptorFile";
+  
+  private static final String PREFS_SAVE_USING_IMPORTS ="saveUsingImports";
 
   private JMenuItem openCpeDescMenuItem;
 
@@ -220,6 +227,10 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   private CpeDescription currentCpeDesc = createEmptyCpeDescription();
   
   private final ResourceManager defaultResourceManager = UIMAFramework.newDefaultResourceManager();
+  
+  private boolean saveUsingImports = true;
+
+  private JCheckBoxMenuItem saveUsingImportMenuItem;
 
   public CpmPanel() {
     super();
@@ -478,6 +489,13 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     refreshMenuItem.addActionListener(this);
     menuItemList.add(refreshMenuItem);
 
+    JMenu saveOptionsSubmenu = new JMenu ("Save Options");
+    saveUsingImportMenuItem = new JCheckBoxMenuItem("Use <import>");
+    saveUsingImportMenuItem.addActionListener(this);
+    saveUsingImportMenuItem.setSelected(saveUsingImports);
+    saveOptionsSubmenu.add(saveUsingImportMenuItem);
+    menuItemList.add(saveOptionsSubmenu);
+        
     clearAllMenuItem = new JMenuItem("Clear All");
     clearAllMenuItem.addActionListener(this);
     menuItemList.add(clearAllMenuItem);
@@ -500,7 +518,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
 
     return menuItemList;
   }
-
+  
   private void setCasInitializerPanelVisible(boolean visible) {
     casInitializerPanel.setVisible(visible);
     if (viewCasInitializerPanelMenuItem != null) {
@@ -525,6 +543,15 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
         }
       }
     }
+    String saveUsingImportsString = prefs.get(PREFS_SAVE_USING_IMPORTS, "true");
+    setSaveUsingImports("true".equalsIgnoreCase(saveUsingImportsString));
+  }
+
+  private void setSaveUsingImports(boolean b) {
+    saveUsingImports = b;
+    if (saveUsingImportMenuItem != null)
+      saveUsingImportMenuItem.setSelected(b);
+    prefs.put(PREFS_SAVE_USING_IMPORTS, Boolean.toString(b));
   }
 
   private void startProcessing() {
@@ -829,7 +856,9 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
       clearAll();
     } else if (source == viewCasInitializerPanelMenuItem) {
       setCasInitializerPanelVisible(!casInitializerPanel.isVisible());
-    }
+    } else if (source == saveUsingImportMenuItem) {
+      setSaveUsingImports(!saveUsingImports);      
+    } 
   }
 
   /**
@@ -892,6 +921,11 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
   private void doSaveCpeDescriptor(File aFile) throws Exception {
     // update the parameter overrides according to GUI settings
     updateCpeDescriptionParameterOverrides();
+    
+    if (saveUsingImports) {
+      //replace <include> with <import>, and update relative import paths
+      updateImports(aFile);
+    }
 
     // save descriptor
     OutputStream out = null;
@@ -907,7 +941,58 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
         out.close();
       }
     }
+
+    //mark descriptor with new location, for later import resolution
+    currentCpeDesc.setSourceUrl(aFile.toURI().toURL());
+    
     clearDirty();
+  }
+
+  /**
+   * @param file
+   */
+  private void updateImports(File cpeDescSaveFile) throws Exception {
+    CpeCollectionReader[] readers = currentCpeDesc.getAllCollectionCollectionReaders();
+    if (readers != null) {
+      for (int i = 0; i < readers.length; i++) {
+        updateImport(readers[i].getDescriptor(), cpeDescSaveFile);
+        if (readers[i].getCasInitializer() != null) {
+          updateImport(readers[i].getCasInitializer().getDescriptor(), cpeDescSaveFile);
+        }
+      }
+    }
+    CpeCasProcessor[] casProcs = currentCpeDesc.getCpeCasProcessors().getAllCpeCasProcessors();
+    for (int i = 0; i < casProcs.length; i++) {
+      updateImport(casProcs[i].getCpeComponentDescriptor(), cpeDescSaveFile);
+    }
+    
+  }
+
+  /**
+   * @param descriptor
+   * @param cpeDescSaveFile
+   */
+  private void updateImport(CpeComponentDescriptor descriptor, File cpeDescSaveFile) throws Exception {
+    //don't touch import by name
+    if (descriptor.getImport() != null && descriptor.getImport().getName() != null)
+      return;
+    
+    //for include or import by location, get the absolute URL of the descriptor
+    URL descUrl = descriptor.findAbsoluteUrl(defaultResourceManager);
+    
+    //don't touch URLs with protocol other than file:
+    if ("file".equals(descUrl.getProtocol())) {
+      File descFile = new File(new URI(descUrl.toString()));
+      //try to find relative path from cpeDescSaveFile to descFile
+      String relPath = FileUtils.findRelativePath(descFile, cpeDescSaveFile.getParentFile());
+      if (relPath != null) {
+        //update CPE descriptor
+        descriptor.setInclude(null);
+        Import newImport = UIMAFramework.getResourceSpecifierFactory().createImport();
+        newImport.setLocation(relPath);
+        descriptor.setImport(newImport);
+      }
+    }    
   }
 
   private void displayProgress() {
