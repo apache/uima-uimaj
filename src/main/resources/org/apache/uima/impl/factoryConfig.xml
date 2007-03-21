@@ -53,6 +53,8 @@
 	  	             factoryClass="org.apache.uima.impl.CollectionReaderFactory_impl"/>
 	  <customFactory specifier="org.apache.uima.resource.ResourceCreationSpecifier"
 	  	             factoryClass="org.apache.uima.impl.AnalysisEngineFactory_impl"/>
+	  <customFactory specifier="org.apache.uima.resource.CustomResourceSpecifier"
+	  	             factoryClass="org.apache.uima.impl.CustomResourceFactory_impl"/>
 	</resource>
 
 	<resourceSpecifier>
@@ -69,6 +71,7 @@
 		<binding element="configurationParameter" interface="org.apache.uima.resource.metadata.ConfigurationParameter" class="org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl"/>
 		<binding element="configurationParameterSettings" interface="org.apache.uima.resource.metadata.ConfigurationParameterSettings" class="org.apache.uima.resource.metadata.impl.ConfigurationParameterSettings_impl"/>
 		<binding element="configurationParameters" interface="org.apache.uima.resource.metadata.ConfigurationParameterDeclarations" class="org.apache.uima.resource.metadata.impl.ConfigurationParameterDeclarations_impl"/>
+		<binding element="customResourceSpecifier" interface="org.apache.uima.resource.CustomResourceSpecifier" class="org.apache.uima.resource.impl.CustomResourceSpecifier_impl"/>
 		<binding element="externalResource" interface="org.apache.uima.resource.ExternalResourceDescription" class="org.apache.uima.resource.impl.ExternalResourceDescription_impl"/>
 		<binding element="externalResourceBinding" interface="org.apache.uima.resource.metadata.ExternalResourceBinding" class="org.apache.uima.resource.metadata.impl.ExternalResourceBinding_impl"/>
 		<binding element="externalResourceDependency" interface="org.apache.uima.resource.ExternalResourceDependency" class="org.apache.uima.resource.impl.ExternalResourceDependency_impl"/>

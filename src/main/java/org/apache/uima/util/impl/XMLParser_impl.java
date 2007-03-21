@@ -41,6 +41,7 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.internal.util.XMLUtils;
+import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.URISpecifier;
 import org.apache.uima.resource.metadata.FsIndexCollection;
@@ -788,6 +789,28 @@ public class XMLParser_impl implements XMLParser {
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.util.XMLParser#parseCustomResourceSpecifier(org.apache.uima.util.XMLInputSource)
+   */
+  public CustomResourceSpecifier parseCustomResourceSpecifier(XMLInputSource aInput) throws InvalidXMLException {
+    return parseCustomResourceSpecifier(aInput, DEFAULT_PARSING_OPTIONS);
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.util.XMLParser#parseCustomResourceSpecifier(org.apache.uima.util.XMLInputSource, org.apache.uima.util.XMLParser.ParsingOptions)
+   */
+  public CustomResourceSpecifier parseCustomResourceSpecifier(XMLInputSource aInput, ParsingOptions aOptions) throws InvalidXMLException {
+    // attempt to locate resource specifier schema
+    URL schemaURL = getResourceSpecifierSchemaUrl();
+    XMLizable object = parse(aInput, RESOURCE_SPECIFIER_NAMESPACE, schemaURL, aOptions);
+
+    if (object instanceof CustomResourceSpecifier) {
+      return (CustomResourceSpecifier) object;
+    } else {
+      throw new InvalidXMLException(InvalidXMLException.INVALID_CLASS, new Object[] {
+              CustomResourceSpecifier.class.getName(), object.getClass().getName() });
+    }
+  }
   /*
    * (non-Javadoc)
    * 
