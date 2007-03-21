@@ -23,11 +23,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.TreeSet;
 import java.util.jar.JarFile;
 
 import org.apache.uima.pear.util.FileUtil;
 import org.apache.uima.pear.util.StringUtil;
+import org.apache.uima.resource.RelativePathResolver;
 import org.xml.sax.SAXException;
 
 /**
@@ -380,5 +382,27 @@ public class PackageBrowser {
    */
   public boolean isArchived() {
     return _archived;
+  }
+
+  /**
+   * Returns the UIMA datapath setting for the component. 
+   * 
+   * The datapath of the component must be specified as environment variable with the key 
+   * <code>uima.datapath</code>.
+   * 
+   * @return the datapath setting for the component or null if the datapath is not specified.
+   * 
+   * @throws IOException
+   *            If any I/O exception occurred while reading the component meta data.
+   */
+  public String getComponentDataPath() throws IOException {
+
+    //get all environment variables that are specified for the current pear file
+    Properties pearEnvProps = InstallationController.buildTableOfEnvVars(this
+            .getInstallationDescriptor());
+
+    //return the uima datapath setting if available. If not return null
+    return (String) pearEnvProps.get(RelativePathResolver.UIMA_DATAPATH_PROP);
+
   }
 }
