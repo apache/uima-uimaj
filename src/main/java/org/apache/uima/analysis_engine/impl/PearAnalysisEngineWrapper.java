@@ -56,9 +56,9 @@ import org.apache.uima.util.XMLInputSource;
 public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
   /**
-   * PEAR protocol constant
+   * installed pear root directory parameter key
    */
-  public static final String PEAR_ROOT_DIR_PARAMETER = "installedPear";
+  public static final String INSTALLED_PEAR_ROOT_DIR_PARAMETER = "installedPearRoot";
 
   private AnalysisEngine ae = null;
 
@@ -84,7 +84,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     Parameter[] params = customSpec.getParameters();
     String pearRootDirPath = null;
     for(int i = 0; i < params.length; i++) {
-      if(params[i].getName().equals(PEAR_ROOT_DIR_PARAMETER)){
+      if(params[i].getName().equals(INSTALLED_PEAR_ROOT_DIR_PARAMETER)){
         pearRootDirPath = params[i].getValue();
       }
     }
@@ -105,7 +105,12 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       ResourceManager rsrcMgr = null;
       rsrcMgr = UIMAFramework.newDefaultResourceManager();
       rsrcMgr.setExtensionClassPath(pkgBrowser.buildComponentClassPath(), true);
-
+      //get and set uima.datapath if specified
+      String dataPath = pkgBrowser.getComponentDataPath();
+      if(dataPath != null) {
+        rsrcMgr.setDataPath(dataPath);  
+      }
+     
       // Create an XML input source from the specifier file
       XMLInputSource in = new XMLInputSource(pkgBrowser.getInstallationDescriptor()
               .getMainComponentDesc());
