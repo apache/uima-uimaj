@@ -24,8 +24,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Map;
 
 import org.apache.uima.UIMAFramework;
@@ -38,10 +36,11 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.CASSerializer;
 import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.pear.tools.PackageBrowser;
+import org.apache.uima.resource.CustomResourceSpecifier;
+import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
-import org.apache.uima.resource.URISpecifier;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
@@ -59,7 +58,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
   /**
    * PEAR protocol constant
    */
-  public static final String PEAR_PROTOCOL = "PEAR";
+  public static final String PEAR_ROOT_DIR_PARAMETER = "installedPear";
 
   private AnalysisEngine ae = null;
 
@@ -74,20 +73,30 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
           throws ResourceInitializationException {
 
-    // aSpecifier must be a URISpecifier
-    if (!(aSpecifier instanceof URISpecifier)) {
+    // aSpecifier must be a CustomResourceSpecifier
+    if (!(aSpecifier instanceof CustomResourceSpecifier)) {
       return false;
     }
 
-    URISpecifier uriSpec = (URISpecifier) aSpecifier;
-    // URISpecifier protocol must be "PEAR"
-    if (!uriSpec.getProtocol().equals(PEAR_PROTOCOL)) {
-      return false;
+    CustomResourceSpecifier customSpec = (CustomResourceSpecifier) aSpecifier;
+    
+    //get custom resource specifier parameters
+    Parameter[] params = customSpec.getParameters();
+    String pearRootDirPath = null;
+    for(int i = 0; i < params.length; i++) {
+      if(params[i].getName().equals(PEAR_ROOT_DIR_PARAMETER)){
+        pearRootDirPath = params[i].getValue();
+      }
     }
 
+    //if PEAR_ROOT_DIR_PARAMETER was not available, return false. The Wrapper cannot start the pear file.
+    if(pearRootDirPath == null) {
+      return false;
+    }
+    
     try {
       // get installed pear root directory - specified as URI of the descriptor
-      File pearRootDir = new File(new URI(uriSpec.getUri()));
+      File pearRootDir = new File(pearRootDirPath);
 
       // create pear package browser to get the pear meta data 
       PackageBrowser pkgBrowser = new PackageBrowser(pearRootDir);
@@ -107,8 +116,6 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       // create analysis engine
       this.ae = UIMAFramework.produceAnalysisEngine(specifier, rsrcMgr, null);
     } catch (IOException ex) {
-      throw new ResourceInitializationException(ex);
-    } catch (URISyntaxException ex) {
       throw new ResourceInitializationException(ex);
     } catch (InvalidXMLException ex) {
       throw new ResourceInitializationException(ex);

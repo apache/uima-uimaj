@@ -35,9 +35,7 @@
 	  	<binding specifier="org.apache.uima.resource.URISpecifier" 
 	  		     resource="org.apache.uima.adapter.vinci.VinciAnalysisEngineServiceAdapter"/>
 	  	<binding specifier="org.apache.uima.resource.URISpecifier" 
-	  		     resource="org.apache.uima.adapter.soap.SoapAnalysisEngineServiceAdapter"/>
-		<binding specifier="org.apache.uima.resource.URISpecifier" 
-	  		     resource="org.apache.uima.analysis_engine.impl.PearAnalysisEngineWrapper"/>	  		     
+	  		     resource="org.apache.uima.adapter.soap.SoapAnalysisEngineServiceAdapter"/>	     
 	  	<binding specifier="org.apache.uima.resource.FileResourceSpecifier" 
 	  		     resource="org.apache.uima.resource.impl.DataResource_impl"/>
 	  	<binding specifier="org.apache.uima.resource.FileLanguageResourceSpecifier" 
