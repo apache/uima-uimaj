@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.UIMARuntimeException;
+import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.internal.util.UIMAClassLoader;
 import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.DataResource;
@@ -99,7 +101,7 @@ public class ResourceManager_impl implements ResourceManager {
   private UIMAClassLoader uimaCL = null;
 
   /** CasManager - manages creation and pooling of CASes. */
-  private CasManager mCasManager = new CasManager_impl(this);
+  private CasManager mCasManager = null;
 
   /**
    * Creates a new <code>ResourceManager_impl</code>.
@@ -607,7 +609,29 @@ public class ResourceManager_impl implements ResourceManager {
    * @see org.apache.uima.resource.ResourceManager#getCasManager()
    */
   public CasManager getCasManager() {
-    return mCasManager;
+    synchronized(this) {
+      if (mCasManager == null) {
+        mCasManager = new CasManager_impl(this);
+      }
+      return mCasManager;
+    }
+  }
+  
+  
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.ResourceManager#setCasManager(org.apache.uima.resource.CasManager)
+   */
+  public void setCasManager(CasManager aCasManager) {
+    synchronized(this) {
+      if (mCasManager == null) {
+        mCasManager = aCasManager;
+      }
+      else {
+        throw new UIMA_IllegalStateException(
+                UIMA_IllegalStateException.CANNOT_SET_CAS_MANAGER, new Object[0]);
+      }
+    }
   }
 
   static class ResourceRegistration {

@@ -280,4 +280,20 @@ public interface ResourceManager {
    * Gets the CasManager, which manages the creation and pooling of CASes.
    */
   public CasManager getCasManager();
+
+  /**
+   * Sets the CasManager, which manages the creation and pooling of CASes.
+   * This method does not normally need to be called by an application.  It allows
+   * a custom CAS Manager implementation to be substituted for the default one,
+   * which may be useful when embedding UIMA in other middleware where a different
+   * CAS Manager implementation may be desired.
+   * <p>
+   * This method can only be called once, and must be called before creating any 
+   * AnalysisEngines that use this ResourceManager.  An Exception will be thrown if this 
+   * method is called twice or is called after {@link #getCasManager()} has already been called 
+   * (which happens during AE initialization).
+   * 
+   * @param aCasManager CAS Manager instance to plug in
+   */
+  public void setCasManager(CasManager aCasManager);
 }
