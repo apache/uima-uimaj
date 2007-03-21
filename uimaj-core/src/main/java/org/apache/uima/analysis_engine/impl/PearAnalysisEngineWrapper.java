@@ -45,6 +45,7 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
+import org.apache.uima.util.Level;
 import org.apache.uima.util.TypeSystemUtil;
 import org.apache.uima.util.XMLInputSource;
 
@@ -89,8 +90,14 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       }
     }
 
-    //if PEAR_ROOT_DIR_PARAMETER was not available, return false. The Wrapper cannot start the pear file.
+    //if INSTALLED_PEAR_ROOT_DIR_PARAMETER was not available, return false. 
+    //The Wrapper cannot start the pear file wihtout knowing the installed pear root directory.
     if(pearRootDirPath == null) {
+      //log that INSTALLED_PEAR_ROOT_DIR_PARAMETER parameter is missing in the descriptor
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
+              "initialize", LOG_RESOURCE_BUNDLE,
+              "UIMA_pear_runtime_param_not_available__SEVERE",
+              new Object[] { INSTALLED_PEAR_ROOT_DIR_PARAMETER });
       return false;
     }
     
@@ -127,6 +134,11 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     }
 
     super.initialize(aSpecifier, aAdditionalParams);
+    
+    UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+            "initialize", LOG_RESOURCE_BUNDLE,
+            "UIMA_analysis_engine_init_successful__CONFIG",
+            new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
 
     return true;
   }
@@ -171,6 +183,11 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
    * @see org.apache.uima.analysis_engine.AnalysisEngine#processAndOutputNewCASes(org.apache.uima.cas.CAS)
    */
   public CasIterator processAndOutputNewCASes(CAS aCAS) throws AnalysisEngineProcessException {
+
+    UIMAFramework.getLogger(this.getClass()).logrb(Level.FINE, this.getClass().getName(),
+            "processAndOutputNewCASes", LOG_RESOURCE_BUNDLE,
+            "UIMA_analysis_engine_process_begin__FINE",
+            new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
 
     // create CAS with the type system of the first document
     if (this.cas == null) {
@@ -276,6 +293,11 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 //    System.out.print(" : " + serialize2.getTimeSpan());
 //    System.out.print(" : " + globalTimer.getTimeSpan());
 
+    UIMAFramework.getLogger(this.getClass()).logrb(Level.FINE, this.getClass().getName(),
+            "processAndOutputNewCASes", LOG_RESOURCE_BUNDLE,
+            "UIMA_analysis_engine_process_end__FINE",
+            new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
+
     return new EmptyCasIterator();
   }
 
@@ -283,6 +305,12 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
    * @see org.apache.uima.resource.Resource#destroy()
    */
   public void destroy() {
+      
+    UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+            "destroy", LOG_RESOURCE_BUNDLE,
+            "UIMA_analysis_engine_destroyed__CONFIG",
+            new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
+    
     this.ae.destroy();
     this.cas = null;
   }
