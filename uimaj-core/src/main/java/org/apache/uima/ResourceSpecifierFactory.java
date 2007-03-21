@@ -47,6 +47,7 @@ import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.collection.metadata.CpeInclude;
 import org.apache.uima.collection.metadata.OutputQueue;
 import org.apache.uima.flow.FlowControllerDescription;
+import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.ExternalResourceDependency;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.FileLanguageResourceSpecifier;
@@ -419,6 +420,13 @@ public interface ResourceSpecifierFactory {
    */
   public FlowControllerDeclaration createFlowControllerDeclaration();
 
+  /**
+   * Creates a <code>CustomResourceSpecifier</code>.
+   * 
+   * @return an instance of an object implementing <code>CustomResourceSpecifier</code>.
+   */
+  public CustomResourceSpecifier createCustomResourceSpecifier();
+  
   /**
    * Creates a <code>FlowControllerDescription</code>
    * 

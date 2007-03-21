@@ -56,6 +56,7 @@ import org.apache.uima.collection.metadata.CpeInclude;
 import org.apache.uima.collection.metadata.CpeSofaMappings;
 import org.apache.uima.collection.metadata.OutputQueue;
 import org.apache.uima.flow.FlowControllerDescription;
+import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.ExternalResourceDependency;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.FileLanguageResourceSpecifier;
@@ -436,10 +437,14 @@ public class ResourceSpecifierFactory_impl implements ResourceSpecifierFactory {
   public FlowControllerDeclaration createFlowControllerDeclaration() {
     return (FlowControllerDeclaration) createObject(FlowControllerDeclaration.class);
   }
-
+  
   public FlowControllerDescription createFlowControllerDescription() {
     return (FlowControllerDescription) createObject(FlowControllerDescription.class);
   }
+  
+  public CustomResourceSpecifier createCustomResourceSpecifier() {
+    return (CustomResourceSpecifier) createObject(CustomResourceSpecifier.class);
+  }  
 
   public CpeCollectionReaderCasInitializer createCasInitializer() {
     return (CpeCollectionReaderCasInitializer) createObject(CpeCollectionReaderCasInitializer.class);

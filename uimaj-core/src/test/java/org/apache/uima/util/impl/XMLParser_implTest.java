@@ -31,6 +31,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.TaeDescription;
 import org.apache.uima.flow.FlowControllerDescription;
+import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.URISpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
@@ -163,5 +164,18 @@ public class XMLParser_implTest extends TestCase {
     assertEquals("some.internet.ip.name-or-address", params[0].getValue());
     assertEquals("VNS_PORT", params[1].getName());
     assertEquals("9000", params[1].getValue());    
+  }
+  
+  public void testParseCustomResourceSpecifier() throws Exception {
+    XMLInputSource in = new XMLInputSource(
+            JUnitExtension.getFile("XmlParserTest/TestCustomResourceSpecifier.xml"));
+    CustomResourceSpecifier uriSpec = mXmlParser.parseCustomResourceSpecifier(in);
+    assertEquals("foo.bar.MyResource", uriSpec.getResourceClassName());
+    Parameter[] params = uriSpec.getParameters();
+    assertEquals(2, params.length);
+    assertEquals("param1", params[0].getName());
+    assertEquals("val1", params[0].getValue());
+    assertEquals("param2", params[1].getName());
+    assertEquals("val2", params[1].getValue());  
   }
 }

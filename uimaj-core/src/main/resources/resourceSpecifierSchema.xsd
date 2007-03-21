@@ -616,7 +616,7 @@
         <element name="parameters" minOccurs="0">
           <complexType>
             <sequence>
-              <element name="parameter" maxOccurs="unbounded">
+              <element name="parameter" minOccurs="0" maxOccurs="unbounded">
                 <complexType>
                   <attribute name="name" type="string"/>
                   <attribute name="value" type="string"/>
@@ -628,5 +628,27 @@
       </sequence>
     </complexType>
   </element>
+  
+  <!-- Top Level Element Definitions for Custom ResourceSpecifiers -->
+
+  <element name="customResourceSpecifier" substitutionGroup="rs:resourceSpecifier">
+    <complexType>
+      <sequence>
+        <element name="resourceClassName" type="string"/>
+        <element name="parameters" minOccurs="0">
+          <complexType>
+            <sequence>
+              <element name="parameter" minOccurs="0" maxOccurs="unbounded">
+                <complexType>
+                  <attribute name="name" type="string"/>
+                  <attribute name="value" type="string"/>
+                </complexType>
+              </element>
+            </sequence>
+          </complexType>
+        </element>
+      </sequence>
+    </complexType>
+  </element>  
   
 </schema>
