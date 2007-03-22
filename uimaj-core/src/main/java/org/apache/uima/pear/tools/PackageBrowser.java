@@ -405,4 +405,27 @@ public class PackageBrowser {
     return (String) pearEnvProps.get(RelativePathResolver.UIMA_DATAPATH_PROP);
 
   }
+  
+  /**
+   * Returns the environment variable settings for the component. The variable settings does not contain 
+   * the <code>classpath</code> and <code>uima.datapath</code> settings for the component. 
+   * 
+   * @return returns the environment variable settings for the component
+   * 
+   * @throws IOException
+   *            If any I/O exception occurred while reading the component meta data.
+   */
+  public Properties getComponentEnvVars() throws IOException {
+    //get all environment variables that are specified for the current pear file
+    Properties pearEnvProps = InstallationController.buildTableOfEnvVars(this
+            .getInstallationDescriptor());
+
+    //removes the UIMA datapath setting if available since it is already returned with the 
+    //getComponentDataPath() method.
+    pearEnvProps.remove(RelativePathResolver.UIMA_DATAPATH_PROP);
+        
+    //return the environment variables specified for the component
+    return pearEnvProps;
+
+  }
 }
