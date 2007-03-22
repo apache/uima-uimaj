@@ -162,6 +162,10 @@ public class XmiSerializationSharedData {
    */
   public void addOutOfTypeSystemElement(OotsElementData elemData) {
     this.ootsFs.add(elemData);
+    //check if we need to update max ID
+    int xmiId = Integer.parseInt(elemData.xmiId);
+    if (xmiId > maxXmiId)
+      maxXmiId = xmiId;
   }
 
   /**
