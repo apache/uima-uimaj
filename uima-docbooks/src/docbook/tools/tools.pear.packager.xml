@@ -218,6 +218,11 @@ under the License.
             <para>ClassPath segments are written here using a semicolon ";" as the separator;
               during PEAR installation, these will be adjusted to be the correct character for the
               target Operating System.</para>
+            
+            <para>In order to specify the UIMA datapath for your component you have to create an environment
+            variable with the property name <literal>uima.datapath</literal>. The value of this property 
+            must contain the UIMA datapath settings.</para>
+              
               </listitem></itemizedlist></para>
         
         <para>Path names should be specified using macros (see below), instead of
