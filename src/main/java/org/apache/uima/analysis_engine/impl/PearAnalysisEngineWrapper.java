@@ -24,7 +24,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -80,44 +82,94 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     }
 
     CustomResourceSpecifier customSpec = (CustomResourceSpecifier) aSpecifier;
-    
-    //get custom resource specifier parameters
+
+    // get custom resource specifier parameters
     Parameter[] params = customSpec.getParameters();
     String pearRootDirPath = null;
-    for(int i = 0; i < params.length; i++) {
-      if(params[i].getName().equals(INSTALLED_PEAR_ROOT_DIR_PARAMETER)){
+    for (int i = 0; i < params.length; i++) {
+      if (params[i].getName().equals(INSTALLED_PEAR_ROOT_DIR_PARAMETER)) {
         pearRootDirPath = params[i].getValue();
       }
     }
 
-    //if INSTALLED_PEAR_ROOT_DIR_PARAMETER was not available, return false. 
-    //The Wrapper cannot start the pear file wihtout knowing the installed pear root directory.
-    if(pearRootDirPath == null) {
-      //log that INSTALLED_PEAR_ROOT_DIR_PARAMETER parameter is missing in the descriptor
+    // if INSTALLED_PEAR_ROOT_DIR_PARAMETER was not available, return false.
+    // The Wrapper cannot start the pear file wihtout knowing the installed pear root directory.
+    if (pearRootDirPath == null) {
+      // log that INSTALLED_PEAR_ROOT_DIR_PARAMETER parameter is missing in the descriptor
       UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-              "initialize", LOG_RESOURCE_BUNDLE,
-              "UIMA_pear_runtime_param_not_available__SEVERE",
+              "initialize", LOG_RESOURCE_BUNDLE, "UIMA_pear_runtime_param_not_available__SEVERE",
               new Object[] { INSTALLED_PEAR_ROOT_DIR_PARAMETER });
       return false;
     }
-    
+
     try {
       // get installed pear root directory - specified as URI of the descriptor
       File pearRootDir = new File(pearRootDirPath);
 
-      // create pear package browser to get the pear meta data 
+      // create pear package browser to get the pear meta data
       PackageBrowser pkgBrowser = new PackageBrowser(pearRootDir);
+
+      // get pear env variables and set them as system properties
+      Properties props = pkgBrowser.getComponentEnvVars();
+      Iterator keyIterator = props.keySet().iterator();
+      Properties systemProps = System.getProperties();
+      while (keyIterator.hasNext()) {
+        String key = (String) keyIterator.next();
+        String value = (String) props.get(key);
+
+        // log warning if system property already exist and does not have the same value
+        if (systemProps.containsKey(key)) {
+          String systemPropValue = (String) systemProps.get(key);
+          if (!systemPropValue.equals(value)) {
+            UIMAFramework.getLogger(this.getClass()).logrb(
+                    Level.WARNING,
+                    this.getClass().getName(),
+                    "initialize",
+                    LOG_RESOURCE_BUNDLE,
+                    "UIMA_pear_runtime_system_var_already_set__WARNING",
+                    new Object[] { new String(key + "=" + systemPropValue),
+                        new String(key + "=" + value), pkgBrowser.getRootDirectory().getName() });
+          }
+        }
+        // set new system property
+        System.setProperty(key, value);
+        
+        UIMAFramework.getLogger(this.getClass()).logrb(
+                Level.CONFIG,
+                this.getClass().getName(),
+                "initialize",
+                LOG_RESOURCE_BUNDLE,
+                "UIMA_pear_runtime_set_system_var__CONFIG",
+                new Object[] { new String(key + "=" + value), pkgBrowser.getRootDirectory().getName() });
+
+      }
 
       // create UIMA resource manager and apply pear settings
       ResourceManager rsrcMgr = null;
       rsrcMgr = UIMAFramework.newDefaultResourceManager();
-      rsrcMgr.setExtensionClassPath(pkgBrowser.buildComponentClassPath(), true);
-      //get and set uima.datapath if specified
+      String classpath = pkgBrowser.buildComponentClassPath();
+      rsrcMgr.setExtensionClassPath(classpath, true);
+      UIMAFramework.getLogger(this.getClass()).logrb(
+              Level.CONFIG,
+              this.getClass().getName(),
+              "initialize",
+              LOG_RESOURCE_BUNDLE,
+              "UIMA_pear_runtime_set_classpath__CONFIG",
+              new Object[] { classpath, pkgBrowser.getRootDirectory().getName() });
+      
+      // get and set uima.datapath if specified
       String dataPath = pkgBrowser.getComponentDataPath();
-      if(dataPath != null) {
-        rsrcMgr.setDataPath(dataPath);  
+      if (dataPath != null) {
+        rsrcMgr.setDataPath(dataPath);
+        UIMAFramework.getLogger(this.getClass()).logrb(
+                Level.CONFIG,
+                this.getClass().getName(),
+                "initialize",
+                LOG_RESOURCE_BUNDLE,
+                "UIMA_pear_runtime_set_datapath__CONFIG",
+                new Object[] { dataPath, pkgBrowser.getRootDirectory().getName() });
       }
-     
+
       // Create an XML input source from the specifier file
       XMLInputSource in = new XMLInputSource(pkgBrowser.getInstallationDescriptor()
               .getMainComponentDesc());
@@ -134,10 +186,9 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     }
 
     super.initialize(aSpecifier, aAdditionalParams);
-    
+
     UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
-            "initialize", LOG_RESOURCE_BUNDLE,
-            "UIMA_analysis_engine_init_successful__CONFIG",
+            "initialize", LOG_RESOURCE_BUNDLE, "UIMA_analysis_engine_init_successful__CONFIG",
             new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
 
     return true;
@@ -206,13 +257,13 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       }
     }
 
-      //DEBUG INFORMATION
-//    Timer globalTimer = new Timer();
-//    Timer serialize1 = new Timer();
-//    Timer serialize2 = new Timer();
-//    Timer processing = new Timer();
-//    globalTimer.start();
-//    serialize1.start();
+    // DEBUG INFORMATION
+    // Timer globalTimer = new Timer();
+    // Timer serialize1 = new Timer();
+    // Timer serialize2 = new Timer();
+    // Timer processing = new Timer();
+    // globalTimer.start();
+    // serialize1.start();
 
     this.cas.reset();
 
@@ -229,7 +280,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     // serializer.addCAS((CASImpl) aCAS);
     // ((CASImpl) this.cas).reinit(serializer);
 
-    //FASTEST CAS SERIALIZATION/DESERIALIZATION
+    // FASTEST CAS SERIALIZATION/DESERIALIZATION
     try {
       ByteArrayOutputStream byteOut = new ByteArrayOutputStream(aCAS.size());
       BufferedOutputStream bufOut = new BufferedOutputStream(byteOut);
@@ -245,24 +296,24 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       throw new AnalysisEngineProcessException(ex);
     }
 
-      // DEBUG INFORMATION
-//    serialize1.stop();
-//    processing.start();
+    // DEBUG INFORMATION
+    // serialize1.stop();
+    // processing.start();
 
     // process pear ae
     this.ae.process(this.cas);
 
-      // DEBUG INFORMATION
-//    processing.stop();
-//    serialize2.start();
+    // DEBUG INFORMATION
+    // processing.stop();
+    // serialize2.start();
 
     // serialize pear CAS into the aggregate CAS
-    
+
     // SLOWEST CAS SERIALIZATION/DESERIALIZATION
     // serializer = Serialization.serializeCASComplete((CASMgr)this.cas);
     // this.cas.reset();
     // Serialization.deserializeCASComplete(serializer, (CASMgr) aCAS);
-    
+
     // FASTER CAS SERIALIZATION/DESERIALIZATION
     // aCAS.reset();
     // serializer = new CASSerializer();
@@ -285,13 +336,13 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       throw new AnalysisEngineProcessException(ex);
     }
 
-      // DEBUG INFORMATION
-//    serialize2.stop();
-//    globalTimer.stop();
-//    System.out.print("\n" + serialize1.getTimeSpan());
-//    System.out.print(" : " + processing.getTimeSpan());
-//    System.out.print(" : " + serialize2.getTimeSpan());
-//    System.out.print(" : " + globalTimer.getTimeSpan());
+    // DEBUG INFORMATION
+    // serialize2.stop();
+    // globalTimer.stop();
+    // System.out.print("\n" + serialize1.getTimeSpan());
+    // System.out.print(" : " + processing.getTimeSpan());
+    // System.out.print(" : " + serialize2.getTimeSpan());
+    // System.out.print(" : " + globalTimer.getTimeSpan());
 
     UIMAFramework.getLogger(this.getClass()).logrb(Level.FINE, this.getClass().getName(),
             "processAndOutputNewCASes", LOG_RESOURCE_BUNDLE,
@@ -305,12 +356,11 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
    * @see org.apache.uima.resource.Resource#destroy()
    */
   public void destroy() {
-      
+
     UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
-            "destroy", LOG_RESOURCE_BUNDLE,
-            "UIMA_analysis_engine_destroyed__CONFIG",
+            "destroy", LOG_RESOURCE_BUNDLE, "UIMA_analysis_engine_destroyed__CONFIG",
             new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
-    
+
     this.ae.destroy();
     this.cas = null;
   }
