@@ -70,7 +70,7 @@ public class CASSerializer implements Serializable {
 	}
 
 	/**
-   * Serialize CAS data without heap-internal meta data. Currently used for serialization to TAF.
+   * Serialize CAS data without heap-internal meta data. Currently used for serialization to C++.
    * 
    * @param casImpl
    *          The CAS to be serialized.
@@ -122,23 +122,39 @@ public class CASSerializer implements Serializable {
 
 	/**
    * Serializes the CAS data and writes it to the output stream.
-   * --------------------------------------------------------------------- Blob Format
+   * --------------------------------------------------------------------- 
+   * Blob Format
    * 
-   * Element Size Number of Description (bytes) Elements ------------ ---------
-   * -------------------------------- 4 1 Blob key = "UIMA" in utf-8 4 1 Version (currently = 1) 4 1
-   * size of 32-bit FS Heap array = s32H 4 s32H 32-bit FS heap array 4 1 size of 16-bit string Heap
-   * array = sSH 2 sSH 16-bit string heap array 4 1 size of string Ref Heap array = sSRH 4 2*sSRH
-   * string ref offsets and lengths 4 1 size of FS index array = sFSI 4 sFSI FS index array
+   * Element Size     Number of  Description
+   *   (bytes)        Elements
+   *  ------------    ---------  -------------------------------- 
+   *      4               1      Blob key = "UIMA" in utf-8
+   *      4               1      Version (currently = 1)
+   *      4               1      size of 32-bit FS Heap array = s32H
+   *      4             s32H     32-bit FS heap array
+   *      4               1      size of 16-bit string Heap array = sSH
+   *      2              sSH     16-bit string heap array
+   *      4               1      size of string Ref Heap array = sSRH
+   *      4             2*sSRH   string ref offsets and lengths
+   *      4               1      size of FS index array = sFSI
+   *      4             sFSI     FS index array
    * 
-   * to be added 4 1 size of 8-bit Heap array = s8H 1 s8H 8-bit Heap array 4 1 size of 16-bit Heap
-   * array = s16H 2 s16H 16-bit Heap array 4 1 size of 64-bit Heap array = s64H 8 s64H 64-bit Heap
-   * array ---------------------------------------------------------------------
+   *      4               1      size of 8-bit Heap array = s8H
+   *      1              s8H     8-bit Heap array
+   *      4               1      size of 16-bit Heap array = s16H
+   *      2             s16H     16-bit Heap array
+   *      4               1      size of 64-bit Heap array = s64H
+   *      8             s64H     64-bit Heap array
+   * ---------------------------------------------------------------------
    * 
-   * This reads in and deserializes CAS data from a stream. Byte swapping may be needed is the blob
-   * is from TAF -- TAF blob serialization writes data in native byte order.
+   * This reads in and deserializes CAS data from a stream.
+   * Byte swapping may be needed is the blob is from C++ --
+   * C++ blob serialization writes data in native byte order.
    * 
    * @param cas
-   *          The CAS to be serialized. ostream The output stream.
+   *          The CAS to be serialized. 
+   *        ostream
+   *          The output stream.
    */
 	public void addCAS(CASImpl cas, OutputStream ostream) {
 
@@ -152,10 +168,10 @@ public class CASSerializer implements Serializable {
 			// output the key and version number
 
 			byte[] uima = new byte[4];
-			uima[3] = 85; // U
-			uima[2] = 73; // I
-			uima[1] = 77; // M
-			uima[0] = 65; // A
+			uima[0] = 85; // U
+			uima[1] = 73; // I
+			uima[2] = 77; // M
+			uima[3] = 65; // A
 
 			ByteBuffer buf = ByteBuffer.wrap(uima);
 			int key = buf.asIntBuffer().get();
@@ -184,51 +200,68 @@ public class CASSerializer implements Serializable {
 
 			// compute the number of total size of data in stringHeap
 			// total size = char buffer length + length of strings in the string list;
-			int stringHeapLength = cas.stringHeap.charHeapPos + 1;
+			int stringHeapLength = cas.stringHeap.charHeapPos;
+            int stringListLength = 0;
 			for (int i = 0; i < refheap.length; i += 3) {
 				int ref = refheap[i + StringHeap.STRING_LIST_ADDR_OFFSET];
 				// this is a string in the string list
 				// get length and add to total string heap length
 				if (ref != 0) {
-					stringHeapLength += 1 + ((String) cas.stringHeap.stringList.get(ref)).length();
+                    // terminate each string with a null
+					stringListLength += 1 + ((String) cas.stringHeap.stringList.get(ref)).length();
 				}
 			}
+			
+            int stringTotalLength = stringHeapLength + stringListLength;
+            if ( stringHeapLength == 0 && stringListLength > 0 ) {
+               // nothing from stringHeap
+               // add 1 for the null at the beginning
+               stringTotalLength += 1;
+            }
 
 			// word alignment
-			if (stringHeapLength % 2 != 0) {
-				dos.writeInt(stringHeapLength + 1);
+			if (stringTotalLength % 2 != 0) {
+				dos.writeInt(stringTotalLength + 1);
 			} else {
-				dos.writeInt(stringHeapLength);
+				dos.writeInt(stringTotalLength);
 			}
 
-			// write 0 as first char buffer
-			dos.writeChar(0);
+            //write the data in the stringheap, if there is any
+            if (stringTotalLength > 0) {
+                if (cas.stringHeap.charHeapPos > 0) {
+                    dos.writeChars( String.valueOf(cas.stringHeap.stringHeap) );
+                }
+                else {
+                    // no stringheap data
+                    //if there is data in the string lists, write a leading 0
+                    if ( stringListLength > 0 ) {
+                        dos.writeChar(0);
+                    }
+                }
+				
+                //write out the data in the StringList and update the 
+                //reference in the local ref heap.
+                if ( stringListLength > 0 ) {
+                    int pos = cas.stringHeap.charHeapPos > 0 ? cas.stringHeap.charHeapPos : 1;
+                    for (int i=0; i < refheap.length; i+=3) {
+                        int ref = refheap[i+StringHeap.STRING_LIST_ADDR_OFFSET];
+                        //this is a string in the string list
+                        if (ref !=0) {
+                            //update the ref					
+                            refheap[i+StringHeap.CHAR_HEAP_POINTER_OFFSET] = pos;
+                            //write out the chars in the string
+                            dos.writeChars((String)cas.stringHeap.stringList.get(ref));
+                            dos.writeChar(0); // null terminate each string
+                            //update pos
+                            pos += 1 + ((String) cas.stringHeap.stringList.get(ref)).length(); 
+                        }				
+                    }
+                }
 
-			// write the data in the stringheap
-			if (cas.stringHeap.charHeapPos > 0)
-				dos.writeChars(String.valueOf(cas.stringHeap.stringHeap));
-
-			// write out the data in the StringList and update the
-			// reference in the local ref heap.
-
-			int pos = cas.stringHeap.charHeapPos + 1;
-			for (int i = 0; i < refheap.length; i += 3) {
-				int ref = refheap[i + StringHeap.STRING_LIST_ADDR_OFFSET];
-				// this is a string in the string list
-				if (ref != 0) {
-					// update the ref
-					refheap[i + StringHeap.CHAR_HEAP_POINTER_OFFSET] = pos;
-					// write out the chars in the string
-					dos.writeChars((String) cas.stringHeap.stringList.get(ref));
-					dos.writeChar(0); // null terminate each string
-					// update pos
-					pos += 1 + ((String) cas.stringHeap.stringList.get(ref)).length();
-				}
-			}
-
-			// word alignment
-			if (stringHeapLength % 2 != 0) {
-				dos.writeChar(0);
+                //word alignment
+                if (stringTotalLength % 2  != 0) {
+                    dos.writeChar(0);
+                }
 			}
 
 			// write out the string ref heap
@@ -247,6 +280,7 @@ public class CASSerializer implements Serializable {
 			for (int i = 0; i < this.fsIndex.length; i++) {
 				dos.writeInt(this.fsIndex[i]);
 			}
+
 			// 8bit heap
 			int byteheapsz = 4 * ((cas.byteHeap.getSize() + 3) / 4);
 			dos.writeInt(byteheapsz);
