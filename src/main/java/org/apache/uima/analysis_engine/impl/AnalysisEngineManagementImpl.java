@@ -35,11 +35,11 @@ import org.apache.uima.analysis_engine.AnalysisEngineManagement;
  * Implements Monitoring/Management interface to an AnalysisEngine.
  * 
  */
-public class AnalysisEngineManagementImpl implements AnalysisEngineManagementImplMBean,
-        AnalysisEngineManagement {
+public class AnalysisEngineManagementImpl 
+    implements AnalysisEngineManagementImplMBean, AnalysisEngineManagement {
 
   private static final long serialVersionUID = 1988620286191379887L;
- 
+  
   private static final Pattern RESERVED_CHAR_PATTERN = Pattern.compile("[\",=:*?]");
   
   static final DecimalFormat format = new DecimalFormat("0.##");
@@ -225,9 +225,8 @@ public class AnalysisEngineManagementImpl implements AnalysisEngineManagementImp
       prefix = aCustomPrefix;
       if (!prefix.endsWith(":") && !prefix.endsWith(",")) {
         prefix += ",";
-      }
+}
     }
-    
     // compute the unique name   
     // (first get the rootMBean and assign it a unique name if it doesn't already have one)
     AnalysisEngineManagementImpl rootMBean = (AnalysisEngineManagementImpl) aContext

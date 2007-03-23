@@ -91,6 +91,11 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    */
   private Object mMBeanServer;
 
+  /**
+   * An optional name prefix for this AnalysisEngine's MBean.
+   */
+  private String mMBeanNamePrefix;
+
   /*
    * (non-Javadoc)
    * 
@@ -110,11 +115,11 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
       // read parameters from additionalParams map
       Properties perfSettings = null;
       mMBeanServer = null;
-      String mbeanNamePrefix = null;
+      mMBeanNamePrefix = null;
       if (aAdditionalParams != null) {
         perfSettings = (Properties) aAdditionalParams.get(PARAM_PERFORMANCE_TUNING_SETTINGS);
         mMBeanServer = aAdditionalParams.get(PARAM_MBEAN_SERVER);
-        mbeanNamePrefix = (String)aAdditionalParams.get(PARAM_MBEAN_NAME_PREFIX);
+        mMBeanNamePrefix = (String)aAdditionalParams.get(PARAM_MBEAN_NAME_PREFIX);
       }
       // set performance tuning settings
       if (perfSettings != null) {
@@ -123,8 +128,14 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
       // register MBean with MBeanServer. If no MBeanServer specified in the
       // additionalParams map, this will use the platform MBean Server
       // (Java 1.5 only)
-      getMBean().setName(getMetaData().getName(), getUimaContextAdmin(), mbeanNamePrefix);
+      getMBean().setName(getMetaData().getName(), getUimaContextAdmin(), mMBeanNamePrefix);
       JmxMBeanAgent.registerMBean(getManagementInterface(), mMBeanServer);
+      
+      //if this is the root component, also configure the CAS Manager's JMX info at this point
+      //TODO: not really necessary to do this every time, only for the first AE we initialize that
+      //uses this CasManager.
+      getCasManager().setJmxInfo(mMBeanServer, 
+              getUimaContextAdmin().getRootContext().getManagementInterface().getUniqueMBeanName());
     }
     return result;
   }
@@ -512,5 +523,13 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    */
   protected boolean isProcessTraceEnabled() {
     return mProcessTraceEnabled;
+  }
+  
+  protected Object getMBeanServer() {
+    return mMBeanServer;
+  }
+  
+  protected String getMBeanNamePrefix() {
+    return mMBeanNamePrefix;
   }
 }

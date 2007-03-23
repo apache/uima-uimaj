@@ -23,12 +23,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.analysis_engine.AnalysisEngineManagement;
+import org.apache.uima.resource.ManagementObject;
 import org.apache.uima.util.Level;
 
 /**
  * Utility class for registering MBeans with a JMX MBeanServer. This allows AnalysisEngine
- * performance stats to be monitored through JMX.
+ * performance stats to be monitored through JMX, for example.
  */
 public class JmxMBeanAgent {
   /**
@@ -41,7 +41,7 @@ public class JmxMBeanAgent {
    *          running under Java 1.5. Earlier versions of Java did not have a platform MBeanServer;
    *          in that case, this method will do nothing.
    */
-  public static void registerMBean(AnalysisEngineManagement aMBean, Object aMBeanServer) {
+  public static void registerMBean(ManagementObject aMBean, Object aMBeanServer) {
     if (!jmxAvailable) // means we couldn't find the required classes and methods
     {
       return;
@@ -88,7 +88,7 @@ public class JmxMBeanAgent {
    *          running under Java 1.5. Earlier versions of Java did not have a platform MBeanServer;
    *          in that case, this method will do nothing.
    */
-  public static void unregisterMBean(AnalysisEngineManagement aMBean, Object aMBeanServer) {
+  public static void unregisterMBean(ManagementObject aMBean, Object aMBeanServer) {
     if (!jmxAvailable) // means we couldn't find the required classes and methods
     {
       return;

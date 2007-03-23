@@ -25,6 +25,7 @@ import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CasOwner;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
+import org.apache.uima.util.CasPoolManagement;
 
 /**
  * Manages creation and pooling of CAS instances within an AnalysisEngine.
@@ -63,7 +64,7 @@ public interface CasManager extends CasOwner {
    * @throws ResourceInitializationException
    *           if a CAS could not be created.
    */
-  void defineCasPool(String aRequestorContextName, int aSize, Properties aPerformanceTuningSettings)
+  void defineCasPool(String aRequestorContextName, int aMinimumSize, Properties aPerformanceTuningSettings)
           throws ResourceInitializationException;
 
   /**
@@ -101,5 +102,17 @@ public interface CasManager extends CasOwner {
    * @param requiredInterface
    *          interface to get. Currently must be either CAS or JCas.
    */
-  AbstractCas getCasInterface(CAS cas, Class requiredInterface);  
+  AbstractCas getCasInterface(CAS cas, Class requiredInterface);
+  
+  /**
+   * Configures this CAS Manager so it can register an MBean for each of its CAS pools.
+   * 
+   * @param aMBeanServer the JMX MBean Server to register MBeans with.  If null, the
+   *   platform MBeanServer (Java 1.5+ only) will be used.
+   * @param aRootComponentMBeanName unique MBean name for the root component that owns
+   *   this CAS Manager.  The names of the CAS Pool MBeans will be formed by appending
+   *   <code>,casPoolContextName=[contextName]</code> to the root component name, where
+   *   [contextName] is the requestorContextName for the CasPool.
+   */
+  public void setJmxInfo(Object aMBeanServer, String aRootComponentMBeanName);
 }

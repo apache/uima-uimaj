@@ -269,6 +269,14 @@ public class CasPool {
   public int getSize() {
     return mNumInstances;
   }
+  
+  /**
+   * Gets the number of CASes currently available in this pool.
+   * @return the numberof available CASes 
+   */
+  public int getNumAvailable() {
+    return getFreeInstances().size();
+  }  
 
   /**
    * @param componentDescriptionsOrMetaData
