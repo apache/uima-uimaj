@@ -34,10 +34,10 @@ public interface CasPoolManagementImplMBean {
    */
   public int getAvailableInstances();
   
-  /**
-   * Get the average time, in milliseconds, that getCas() requests on
-   * the pool have to wait for a CAS to become available
-   * @return average wait time in milliseconds
-   */
-  public int getAverageWaitTime();
+//  /**
+//   * Get the average time, in milliseconds, that getCas() requests on
+//   * the pool have to wait for a CAS to become available
+//   * @return average wait time in milliseconds
+//   */
+//  public int getAverageWaitTime();
 }
