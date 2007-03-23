@@ -66,6 +66,8 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
   private AnalysisEngine ae = null;
 
   private CAS cas = null;
+  
+  private ResourceManager rsrcMgr = null;
 
   /*
    * (non-Javadoc)
@@ -145,10 +147,9 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       }
 
       // create UIMA resource manager and apply pear settings
-      ResourceManager rsrcMgr = null;
-      rsrcMgr = UIMAFramework.newDefaultResourceManager();
+      this.rsrcMgr = UIMAFramework.newDefaultResourceManager();
       String classpath = pkgBrowser.buildComponentClassPath();
-      rsrcMgr.setExtensionClassPath(classpath, true);
+      this.rsrcMgr.setExtensionClassPath(classpath, true);
       UIMAFramework.getLogger(this.getClass()).logrb(
               Level.CONFIG,
               this.getClass().getName(),
@@ -160,7 +161,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       // get and set uima.datapath if specified
       String dataPath = pkgBrowser.getComponentDataPath();
       if (dataPath != null) {
-        rsrcMgr.setDataPath(dataPath);
+        this.rsrcMgr.setDataPath(dataPath);
         UIMAFramework.getLogger(this.getClass()).logrb(
                 Level.CONFIG,
                 this.getClass().getName(),
@@ -178,7 +179,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
 
       // create analysis engine
-      this.ae = UIMAFramework.produceAnalysisEngine(specifier, rsrcMgr, null);
+      this.ae = UIMAFramework.produceAnalysisEngine(specifier, this.rsrcMgr, null);
     } catch (IOException ex) {
       throw new ResourceInitializationException(ex);
     } catch (InvalidXMLException ex) {
@@ -249,7 +250,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
                 .getTypeSystem());
 
         this.cas = CasCreationUtils.createCas(tsDescription, super.getAnalysisEngineMetaData()
-                .getTypePriorities(), super.getAnalysisEngineMetaData().getFsIndexes());
+                .getTypePriorities(), super.getAnalysisEngineMetaData().getFsIndexes(), null, this.rsrcMgr);
         // casTimer.stop();
         // System.out.println("\nCAS creation time:" + casTimer.getTimeSpan());
       } catch (ResourceInitializationException ex) {
