@@ -282,20 +282,25 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     // ((CASImpl) this.cas).reinit(serializer);
 
     // FASTEST CAS SERIALIZATION/DESERIALIZATION
-    try {
-      ByteArrayOutputStream byteOut = new ByteArrayOutputStream(aCAS.size());
-      BufferedOutputStream bufOut = new BufferedOutputStream(byteOut);
-      CASSerializer serializer = new CASSerializer();
-      serializer.addCAS((CASImpl) aCAS, bufOut);
-      bufOut.flush();
-      byte[] content = byteOut.toByteArray();
-      bufOut.close();
-      aCAS.reset();
-      BufferedInputStream bufIn = new BufferedInputStream(new ByteArrayInputStream(content));
-      Serialization.deserializeCAS(this.cas, bufIn);
-    } catch (IOException ex) {
-      throw new AnalysisEngineProcessException(ex);
-    }
+    ByteArrayOutputStream fos = new ByteArrayOutputStream();
+    Serialization.serializeCAS(aCAS, fos);
+    ByteArrayInputStream fis = new ByteArrayInputStream(fos.toByteArray());
+    Serialization.deserializeCAS(this.cas, fis);
+
+//    try {
+//      ByteArrayOutputStream byteOut = new ByteArrayOutputStream(aCAS.size());
+//      BufferedOutputStream bufOut = new BufferedOutputStream(byteOut);
+//      CASSerializer serializer = new CASSerializer();
+//      serializer.addCAS((CASImpl) aCAS, bufOut);
+//      bufOut.flush();
+//      byte[] content = byteOut.toByteArray();
+//      bufOut.close();
+//      aCAS.reset();
+//      BufferedInputStream bufIn = new BufferedInputStream(new ByteArrayInputStream(content));
+//      Serialization.deserializeCAS(this.cas, bufIn);
+//    } catch (IOException ex) {
+//      throw new AnalysisEngineProcessException(ex);
+//    }
 
     // DEBUG INFORMATION
     // serialize1.stop();
