@@ -76,34 +76,35 @@ under the License.
     
     <section id="ugr.ovv.eclipse_setup.install_emf">
       <title>Install additional Eclipse component: EMF</title>
-      
-      <warning><para>EMF comes in many versions; <emphasis role="bold">you must install the version
-      that corresponds to the level of Eclipse that you are running.</emphasis> This is automatically
-      done for you if you install it using the Eclipse update mechanism, described below.  If you separately download
-      an EMF package, you will need to verify it is the version that corresponds to the level
-      of Eclipse you are running, before installing it.</para></warning>
+      <warning><para>EMF comes in many versions; <emphasis role="bold">you must install
+      the version that corresponds to the level of Eclipse that you are running.</emphasis>
+      This is automatically done for you if you install it using the Eclipse update mechanism,
+      described below. If you separately download an EMF package, you will need to verify it is
+      the version that corresponds to the level of Eclipse you are running, before installing
+      it.</para></warning>
       
       <para>EMF stands for Eclipse Modeling Framework. It is an add-on to Eclipse, and is used
         by the UIMA Eclipse tooling. Before installing it, please go to <ulink
           url="&url_emf;"/> and read the installation instructions, and then click on the
         "Update Manager" link to see what url to use in the next step, where you use the built-in
         facilities in Eclipse to find and install new features. </para>
-        
-      <para>
-      The exact way to install EMF changes from time to time.  In the next few paragraphs, we try
-      to give instructions that should work for most versions.  Please see the end of this section
-      for shortcut instructions for the current version of Eclipse at the time of this writing,
-      Eclipse 3.2.1.
-      </para>
+      
+      <para> The exact way to install EMF changes from time to time. In the next few paragraphs,
+        we try to give instructions that should work for most versions. Please see the end of
+        this section for shortcut instructions for the current version of Eclipse at the time
+        of this writing, Eclipse 3.2.1. </para>
       
       <para>Activate the software feature finding by using the menu: Help &rarr; Software
         Updates &rarr; Find and Install. Select <quote>Search for new features to
-        install</quote>, push <quote>Next</quote>. Specify the update site where EMF is
-        found as a site to search, making sure the <quote>Ignore features not applicable to
-        this environment</quote> box is checked, and push <quote>Finish</quote>. If your
-        computer is on an internet connection which uses a proxy server, you can configure
-        Eclipse to know about that. Put your proxy settings into Ecluse using the Eclipse
-        preferences by accessing the menus: Window &rarr; Preferences... &rarr;
+        install</quote>, push <quote>Next</quote>. Specify the update sites to use to
+        search for EMF, making sure the <quote>Ignore features not applicable to this
+        environment</quote> box is checked (at the bottom of the dialog), and push
+        <quote>Finish</quote>. A good site to use is the Callisto Discovery Site - which has a
+        collection of Eclipse components. </para>
+      
+      <para> If your computer is on an internet connection which uses a proxy server, you can
+        configure Eclipse to know about that. Put your proxy settings into Ecluse using the
+        Eclipse preferences by accessing the menus: Window &rarr; Preferences... &rarr;
         Install/Update, and Enable HTTP proxy connection under the Proxy Settings with the
         information about your proxy. </para>
       
@@ -133,30 +134,21 @@ under the License.
         <quote>Examples for Eclipse Modeling Framework</quote>.)</para>
       
       <section id="ugr.ovv.eclipse_setup.install_emf_shortcut">
-      <title>EMF Installation Shortcut for Eclipse 3.2</title>
-      <para>
-      In Eclipse 3.2, all major Eclipse sub-projects have coordinated their release timeframes and
-      published the consolidated "Callisto" release.  You can easily install EMF via the Callisto
-      discovery site as follows.
-      <orderedlist>
-      <listitem><para>
-      From the Eclipse menu, select Help/Software Updates/Find and Install.../Search for new 
-      features to install.
-      </para></listitem>
-      <listitem><para>
-      Check the "Callisto discovery site", push "Next".
-      </para></listitem>
-      <listitem><para>
-      Select a convenient mirror site.
-      </para></listitem>
-      <listitem><para>
-      Check the EMF box under "Models and model development"
-      </para></listitem>
-      <listitem><para>
-      Follow the instructions for the rest of the install.
-      </para></listitem>
-      </orderedlist>
-      </para>
+        <title>EMF Installation Shortcut for Eclipse 3.2</title>
+        <para> In Eclipse 3.2, all major Eclipse sub-projects have coordinated their
+          release timeframes and published the consolidated "Callisto" release. You can
+          easily install EMF via the Callisto discovery site as follows.
+          <orderedlist>
+            <listitem><para> From the Eclipse menu, select Help/Software Updates/Find
+              and Install.../Search for new features to install. </para></listitem>
+            <listitem><para> Check the "Callisto discovery site", push "Next". </para>
+              </listitem>
+            <listitem><para> Select a convenient mirror site. </para></listitem>
+            <listitem><para> Check the EMF box under "Models and model development"
+              </para></listitem>
+            <listitem><para> Follow the instructions for the rest of the install. </para>
+              </listitem>
+          </orderedlist> </para>
       </section>
       
     </section>
