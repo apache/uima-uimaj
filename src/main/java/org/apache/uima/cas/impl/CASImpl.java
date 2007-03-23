@@ -1261,20 +1261,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 	}
 
 	/**
-   * --------------------------------------------------------------------- Blob Format
-   * 
-   * Element Size Number of Description (bytes) Elements ------------ ---------
-   * -------------------------------- 4 1 Blob key = "UIMA" in utf-8 4 1 Version (currently = 1) 4 1
-   * size of 32-bit FS Heap array = s32H 4 s32H 32-bit FS heap array 4 1 size of 16-bit string Heap
-   * array = sSH 2 sSH 16-bit string heap array 4 1 size of string Ref Heap array = sSRH 4 2*sSRH
-   * string ref offsets and lengths 4 1 size of FS index array = sFSI 4 sFSI FS index array
-   * 
-   * 4 1 size of 8-bit Heap array = s8H 1 s8H 8-bit Heap array 4 1 size of 16-bit Heap array = s16H
-   * 2 s16H 16-bit Heap array 4 1 size of 64-bit Heap array = s64H 8 s64H 64-bit Heap array
-   * ---------------------------------------------------------------------
+   * --------------------------------------------------------------------- 
+   * see Blob Format in CASSerializer
    * 
    * This reads in and deserializes CAS data from a stream. Byte swapping may be needed if the blob
-   * is from TAF -- TAF blob serialization writes data in native byte order.
+   * is from C++ -- C++ blob serialization writes data in native byte order.
    * 
    * @param istream
    * @throws CASRuntimeException
@@ -1298,15 +1289,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
 			boolean swap = false;
 			// check if first byte is ascii char U
-			if (bytebuf[0] != 65) {
+			if (bytebuf[0] != 85) {
 				swap = true;
 			}
 
 			// version
-			// NOTE: even though nothing ever uses the version (yet), we MUST
-			// read it
-			// from the stream or else subsequent reads will not work. So that's
-			// why
+			// NOTE: even though nothing ever uses the version (yet),
+			// we MUST read it from the stream or else subsequent 
+			// reads will not work. So that's why
 			// we are reading here and not assigning to any variable.
 			if (swap) {
 				swap4(dis, bytebuf);
@@ -1381,7 +1371,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 				}
 				this.stringHeap.refHeap[i + StringHeap.STRING_LIST_ADDR_OFFSET] = 0;
 			}
-			this.stringHeap.refHeapPos = refheapsz;
+			this.stringHeap.refHeapPos = refheapsz+ StringHeap.FIRST_CELL_REF;
 
 			// indexed FSs
 			int fsindexsz = 0;
@@ -1628,7 +1618,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    *              If <code>type</code> is not a type.
    */
 	public int createTempStringArray(int type, int len) {
-		// String arrays are different, since for compatibility with TAF, we
+		// String arrays are different, since for compatibility with C++, we
 		// need
 		// to allocate space for the size of the strings.
 		final int addr = this.heap.addToTempHeap(arrayContentOffset + len, type);
