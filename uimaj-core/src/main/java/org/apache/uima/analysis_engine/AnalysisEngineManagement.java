@@ -22,6 +22,7 @@ package org.apache.uima.analysis_engine;
 import java.util.Map;
 
 import org.apache.uima.cas.CAS;
+import org.apache.uima.resource.ManagementObject;
 
 /**
  * Monitoring and management interface to an AnalysisEngine. An application can obtain an instance
@@ -31,7 +32,7 @@ import org.apache.uima.cas.CAS;
  * that you can register with an MBeanServer. For information on JMX see <a
  * href="http://java.sun.com/j2se/1.5.0/docs/api/javax/management/package-summary.html"/>
  */
-public interface AnalysisEngineManagement {
+public interface AnalysisEngineManagement extends ManagementObject {
   /**
    * Gets a name for this AnalysisEngineManagement object, which will be unique among all of its
    * siblings (i.e. the objects returned from its parent's {@link #getComponents()} method.
@@ -106,16 +107,4 @@ public interface AnalysisEngineManagement {
    * the statistics for all the components of the aggregate.
    */
   void resetStats();
-
-  /**
-   * Gets a valid JMX MBean name that is unique among all AnalysisEngineManagement objects in this
-   * JVM. (Technically, it is unique only among AnalysisEngineManagement objects loaded by the same
-   * ClassLoader, which is whatever ClassLoader was used to load the UIMA Framework classes.)
-   * <p>
-   * If you are running with JRE 1.5, this is the name used to register this object with the
-   * platform MBeanServer.
-   * 
-   * @return
-   */
-  String getUniqueMBeanName();
 }

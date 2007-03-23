@@ -30,6 +30,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.internal.util.JmxMBeanAgent;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.CasDefinition;
 import org.apache.uima.resource.CasManager;
@@ -38,6 +39,7 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.CasPool;
+import org.apache.uima.util.impl.CasPoolManagementImpl;
 
 /**
  * Simple CAS Manager Implementation used in the AnalysisEngine framework. Maintains a pool of 1 CAS
@@ -55,6 +57,10 @@ public class CasManager_impl implements CasManager {
   private CasDefinition mCasDefinition = null;
   
   private TypeSystem mCurrentTypeSystem = null;
+
+  private Object mMBeanServer;
+
+  private String mMBeanNamePrefix;
 
   public CasManager_impl(ResourceManager aResourceManager) {
     mResourceManager = aResourceManager;
@@ -119,21 +125,25 @@ public class CasManager_impl implements CasManager {
    * 
    * @see org.apache.uima.resource.CasManager#setMinimumCasPoolSize(java.lang.String, int)
    */
-  public void defineCasPool(String aRequestorContextName, int aSize,
+  public void defineCasPool(String aRequestorContextName, int aMinimumSize,
           Properties aPerformanceTuningSettings) throws ResourceInitializationException {
-    if (aSize > 0) {
+    if (aMinimumSize > 0) {
       CasPool pool = (CasPool) mRequestorToCasPoolMap.get(aRequestorContextName);
       if (pool == null) {
         // this requestor hasn't requested a CAS before
-        pool = new CasPool(aSize, this, aPerformanceTuningSettings);
+        pool = new CasPool(aMinimumSize, this, aPerformanceTuningSettings);
         populateCasToCasPoolMap(pool);
         mRequestorToCasPoolMap.put(aRequestorContextName, pool);
+        //register with JMX
+        registerCasPoolMBean(aRequestorContextName, pool);
+
       } else {
         throw new UIMARuntimeException(UIMARuntimeException.DEFINE_CAS_POOL_CALLED_TWICE,
                 new Object[] { aRequestorContextName });
       }
     }
   }
+
   
   /* (non-Javadoc)
    * @see org.apache.uima.resource.CasManager#createNewCas(java.util.Properties)
@@ -176,8 +186,25 @@ public class CasManager_impl implements CasManager {
               new Object[] { requiredInterface });
     }
   }
+    
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.CasManager#setJmxInfo(java.lang.Object, java.lang.String)
+   */
+  public void setJmxInfo(Object aMBeanServer, String aRootMBeanName) {
+    mMBeanServer = aMBeanServer;
+    if (aRootMBeanName.endsWith("\"")) {
+      mMBeanNamePrefix = aRootMBeanName.substring(0, aRootMBeanName.length() - 1) + " CAS Pools\",";
+    }
+    else {
+      mMBeanNamePrefix = aRootMBeanName + " CAS Pools,";
+    }
+  }
 
-  private void populateCasToCasPoolMap(CasPool aCasPool) {
+  protected Map getCasToCasPoolMap() {
+    return mCasToCasPoolMap;
+  }
+  
+  protected void populateCasToCasPoolMap(CasPool aCasPool) {
     CAS[] casArray = new CAS[aCasPool.getSize()];
     for (int i = 0; i < casArray.length; i++) {
       casArray[i] = ((CASImpl) aCasPool.getCas()).getBaseCAS();
@@ -187,5 +214,18 @@ public class CasManager_impl implements CasManager {
       aCasPool.releaseCas(casArray[i]);
     }
   }
+  
+  /**
+   * Registers an MBean for the given CasPool.
+   * @param aRequestorContextName context name that identifies this CasPool
+   * @param pool the CasPool
+   */
+  protected void registerCasPoolMBean(String aRequestorContextName, CasPool pool) {
+    if (mMBeanNamePrefix != null) {
+      String mbeanName = mMBeanNamePrefix + "casPoolContextName=" + aRequestorContextName;
+      CasPoolManagementImpl mbean = new CasPoolManagementImpl(pool, mbeanName);
+      JmxMBeanAgent.registerMBean(mbean, mMBeanServer);
+    }
+  }  
 
 }
