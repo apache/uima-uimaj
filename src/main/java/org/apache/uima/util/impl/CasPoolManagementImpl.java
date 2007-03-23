@@ -41,13 +41,13 @@ public class CasPoolManagementImpl implements CasPoolManagement, CasPoolManageme
     return mCasPool.getNumAvailable();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.util.CasPoolManagement#getAverageWaitTime()
-   */
-  public int getAverageWaitTime() {
-    // TODO Auto-generated method stub
-    return 0;
-  }
+//  /* (non-Javadoc)
+//   * @see org.apache.uima.util.CasPoolManagement#getAverageWaitTime()
+//   */
+//  public int getAverageWaitTime() {
+//    // TODO Auto-generated method stub
+//    return 0;
+//  }
 
   /* (non-Javadoc)
    * @see org.apache.uima.util.CasPoolManagement#getPoolSize()
