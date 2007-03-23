@@ -77,6 +77,12 @@ under the License.
     <section id="ugr.ovv.eclipse_setup.install_emf">
       <title>Install additional Eclipse component: EMF</title>
       
+      <warning><para>EMF comes in many versions; <emphasis role="bold">you must install the version
+      that corresponds to the level of Eclipse that you are running.</emphasis> This is automatically
+      done for you if you install it using the Eclipse update mechanism, described below.  If you separately download
+      an EMF package, you will need to verify it is the version that corresponds to the level
+      of Eclipse you are running, before installing it.</para></warning>
+      
       <para>EMF stands for Eclipse Modeling Framework. It is an add-on to Eclipse, and is used
         by the UIMA Eclipse tooling. Before installing it, please go to <ulink
           url="&url_emf;"/> and read the installation instructions, and then click on the
