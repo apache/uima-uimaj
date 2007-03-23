@@ -3,14 +3,14 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Apache UIMA Runtime Plugin
 Bundle-SymbolicName: org.apache.uima.runtime
 Bundle-Version: 2.2.0.incubating-SNAPSHOT
-Bundle-ClassPath:  lib/uima_adapter_soap.jar,
- lib/uima-adapter-vinci.jar,
- lib/uima-core.jar,
- lib/uima-cpe.jar,
- lib/uima-examples.jar,
- lib/uima-jcas-builtin-types.jar,
- lib/uima-tools.jar,
- lib/jVinci.jar
+Bundle-ClassPath:  uimaj-adapter-soap-2.2-incubating-SNAPSHOT.jar,
+ uimaj-adapter-vinci-2.2-incubating-SNAPSHOT.jar,
+ uimaj-core-2.2-incubating-SNAPSHOT.jar,
+ uimaj-cpe-2.2-incubating-SNAPSHOT.jar,
+ uimaj-examples-2.2-incubating-SNAPSHOT.jar,
+ uima-jcas-builtin-types.jar,
+ uimaj-tools-2.2-incubating-SNAPSHOT.jar,
+ jVinci-2.2-incubating-SNAPSHOT.jar
 Bundle-Vendor: The Apache Software Foundation
 Bundle-Localization: plugin
 Eclipse-BuddyPolicy: registered
@@ -73,7 +73,6 @@ Export-Package: example,
  org.apache.uima.jcas.cas,
  org.apache.uima.jcas.impl,
  org.apache.uima.jcas.tcas,
- org.apache.uima.klt,
  org.apache.uima.pear.tools,
  org.apache.uima.pear.util,
  org.apache.uima.resource,
@@ -96,7 +95,6 @@ Export-Package: example,
  org.apache.uima.tools.util.gui,
  org.apache.uima.tools.util.htmlview,
  org.apache.uima.tools.viewer,
- org.apache.uima.tttypesystem,
  org.apache.uima.tutorial,
  org.apache.uima.tutorial.ex1,
  org.apache.uima.tutorial.ex2,

@@ -23,7 +23,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.apache.uima</groupId>
 	<artifactId>uimaj-ep-runtime</artifactId>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 	<version>2.2-incubating-SNAPSHOT</version>
 	<name>Apache UIMA Runtime Plugin</name>
 	<url>http://incubator.apache.org/uima</url>
@@ -79,6 +79,16 @@
 	<build>
 		<finalName>uima-ep-runtime</finalName>	
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+        <version>2.3</version>
+				<configuration>
+					<manifest>.ignore</manifest>
+					<pde>true</pde>
+				</configuration>
+			</plugin>
+			
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<executions>
