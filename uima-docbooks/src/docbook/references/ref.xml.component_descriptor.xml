@@ -60,7 +60,11 @@ under the License.
   <para><xref linkend="&tp;service_client"/> describes the XML format for
     <emphasis>Service Client Descriptors</emphasis>, which specify how to connect to and
     interact with resources deployed as remote services.</para>
-  
+
+   <para><xref linkend="&tp;custom_resource_specifiers"/> describes the XML format for
+    <emphasis>Custom Resource Specifiers</emphasis>, which allow you to plug in your
+    own Java class as a UIMA Resource.</para>
+	  
   <section id="&tp;notation">
     <title>Notation</title>
     
@@ -1389,6 +1393,10 @@ uima.tcas.Annotation.</programlisting>
               &ndash; see <xref linkend="&tp;aes.capabilities"/> for more
               information), and the suffix.</para>
             
+		    <para>A third option is a <literal>customResourceSpecifier</literal>, which allows
+			  you to plug in an arbitrary Java class.  See <xref linkend="&tp;custom_resource_specifiers"/>
+			  for more information.</para>
+			  
             <para>The <literal>externalResourceBindings</literal> element declares
               which resources are bound to which dependencies. Each
               <literal>externalResourceBinding</literal> consists of:
@@ -2169,5 +2177,39 @@ uima.tcas.Annotation.</programlisting>
         targetptr="ugr.tug.application.remote_services"/>.</para>
     
   </section>
-  
+
+  <section id="&tp;custom_resource_specifiers">
+    <title>Custom Resource Specifiers</title>
+	<para>A Custom Resource Specifier allows you to plug in your own Java class as a UIMA Resource.
+		For example you can support a new service protocol by plugging in a Java class that implements
+		the UIMA <literal>AnalysisEngine</literal> interface and communicates with the remote service.</para>
+	
+	<para>A Custom Resource Specifier has the following format:</para>
+    <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8" ?>
+<customResourceSpecifier xmlns="http://uima.apache.org/resourceSpecifier">
+  <resourceClassName>[Java Class Name]</resourceClassName>
+  <parameters>
+    <parameter name="[String]" value="[String]"/>
+    <parameter name="[String]" value="[String]"/>
+  </parameters> 
+</customResourceSpecifier>]]></programlisting>	
+	  
+	<para>The <literal>resourceClassName</literal> element must contain the fully-qualified name of a Java class
+	that can be found in the classpath (including the UIMA extension classpath, if you have specified one using
+	the <literal>ResourceManager.setExtensionClassPath</literal> method).  This class must implement the
+	UIMA <literal>Resource</literal> interface.</para>    
+	  
+	<para>When an application calls the <literal>UIMAFramework.produceResource</literal> method and passes a
+	<literal>CustomResourceSpecifier</literal>, the UIMA framework will load the named class and call its
+	<literal>initialize(ResourceSpecifier,Map)</literal> method, passing the <literal>CustomResourceSpecifier</literal>
+	as the first argument.  Your class can override the <literal>initialize</literal> method and use the
+	<literal>CustomResourceSpecifier</literal> API to get access to the <literal>parameter</literal> names and values 
+	specified in the XML.</para>  
+	  
+	<para>If you are using a custom resource specifier to plug in a class that implements a new service protocol,
+	your class must also implement the <literal>AnalysisEngine</literal> interface.  Generally it should also
+	extend <literal>AnalysisEngineImplBase</literal>.  The key methods that should be implemented are 
+	<literal>getMetaData</literal>, <literal>processAndOutputNewCASes</literal>, 
+	<literal>collectionProcessComplete</literal>, and <literal>destroy</literal>.</para>  
+  </section>	  
 </chapter>
