@@ -63,6 +63,7 @@ public class AboutDialog extends JDialog {
     String aboutText = ABOUT_TEXT.replaceAll("\\$\\{version\\}", UIMAFramework.getVersionString());
        
     JTextArea textArea = new JTextArea(aboutText);
+    textArea.setEditable(false);
     getContentPane().add(textArea, BorderLayout.CENTER);
     
     JPanel buttonPanel = new JPanel();

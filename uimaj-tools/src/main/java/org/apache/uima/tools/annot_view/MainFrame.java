@@ -1290,8 +1290,8 @@ public class MainFrame extends JFrame {
 				versionInfo = "Running Java " + javaVersion + " from " + javaVendor;
 			}
 			String msg = "CVD (CAS Visual Debugger)\n" + "Apache UIMA Version "
-					+ UIMAFramework.getVersionString() + "\n"
-					+ "Copyright 2006 The Apache Software Foundation\n" + versionInfo + "\n";
+					+ UIMAFramework.getVersionString() + "-incubating\n"
+					+ "Copyright 2006, 2007 The Apache Software Foundation\n" + versionInfo + "\n";
 			Icon icon = Images.getImageIcon(Images.UIMA_LOGO_SMALL);
 			if (icon == null) {
 				JOptionPane.showMessageDialog(MainFrame.this, msg, "About CVD",
