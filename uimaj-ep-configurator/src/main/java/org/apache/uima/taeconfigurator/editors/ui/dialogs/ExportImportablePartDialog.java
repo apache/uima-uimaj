@@ -64,7 +64,8 @@ public class ExportImportablePartDialog extends AbstractDialog {
         pos = text.length();
       baseFileName = baseFileNameUI.getText();
       genFilePathUI.setText(text.substring(0, pos) + baseFileName + ".xml");
-      enableOK();
+      if (okButton != null)
+        enableOK();
     }
   }
 

@@ -138,7 +138,7 @@ public class SelectTypeDialog extends AbstractDialog {
       displayNameSpacesForSelectedItem(
               (Map.Entry)(matchingTypesUI.getSelection()[0].getData()));
     }
-    enableOK();
+    super.handleEvent(event);
   }
 
   /* (non-Javadoc)

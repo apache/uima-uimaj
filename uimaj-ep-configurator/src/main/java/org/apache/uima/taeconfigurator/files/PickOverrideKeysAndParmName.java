@@ -115,12 +115,12 @@ public class PickOverrideKeysAndParmName extends AbstractDialog {
   public void handleEvent(Event event) {
     if (event.widget == keysUI && event.type == SWT.Selection) {
       fillParameterCandidates();
-      enableOK();
+      super.handleEvent(event);
     }
     
     else if (event.widget == paramsUI && event.type == SWT.Selection) {
       copyValuesFromGUI();
-      enableOK();
+      super.handleEvent(event);
     }
   }
 

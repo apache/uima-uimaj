@@ -77,7 +77,7 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
       errorMessageUI.setText("");
       toggleValue(item, col);
     }
-    enableOK();
+    super.handleEvent(event);
   }
 
   private void jitHowTo() {

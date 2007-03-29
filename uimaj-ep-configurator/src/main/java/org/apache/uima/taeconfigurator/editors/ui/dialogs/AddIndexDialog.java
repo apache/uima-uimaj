@@ -233,8 +233,7 @@ public class AddIndexDialog extends AbstractDialogKeyVerifyJavaNames {
       TableItem[] items = table.getItems();
       AbstractSection.swapTableItems(items[i + 1], i + 1);
     }
-
-    enableOK();
+    super.handleEvent(event);
   }
 
   public List alreadyDefined(TableItem[] items) {

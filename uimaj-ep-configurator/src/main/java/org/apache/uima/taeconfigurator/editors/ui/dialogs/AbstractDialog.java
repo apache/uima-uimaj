@@ -313,9 +313,12 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     shell.setSize(shell.computeSize(-1, -1));
   }
 
-  // overridden where needed
+  // subclasses override, and often use super.handleEvent to call this
   public void handleEvent(Event event) {
-    enableOK();
+    if (okButton != null)  // may be null if handler called from 
+                           // main area setText event, during construction
+                           // because button bar is constructed after main area
+      enableOK();
   }
 
   protected void superButtonPressed(int buttonId) {
@@ -418,7 +421,8 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
                 "".equals(dialog.nameSpaceName)) ? 
                 dialog.typeName :
                 dialog.nameSpaceName + "." + dialog.typeName);
-        enableOK();
+        if (okButton != null)
+          enableOK();
     /*
         Object[] types = dialog.getResult();
         if (types != null && types.length > 0) {
