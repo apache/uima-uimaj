@@ -17,7 +17,7 @@ Environment Variables
 ----------------------
 
 After you have unpacked the Apache UIMA distribution from the package of your choice (e.g. .zip or .gz), 
-you have to do the steps below that UIMA functioning properly.
+you must perform the steps below to set up UIMA so that it will function properly.
 
     * Set JAVA_HOME to the directory of your JRE installation you would like to use for UIMA.  
     * Set UIMA_HOME to the apache-uima directory of your unpacked Apache UIMA distribution
