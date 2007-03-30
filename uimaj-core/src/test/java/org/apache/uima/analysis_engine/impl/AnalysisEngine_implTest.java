@@ -248,6 +248,8 @@ public class AnalysisEngine_implTest extends TestCase {
       _testInvalidDescriptor(JUnitExtension
               .getFile("TextAnalysisEngineImplTest/UnsatisfiedResourceDependency.xml"));
 
+      tae.destroy();
+      
       // test an aggregate TAE containing a CAS Consumer
       in = new XMLInputSource(JUnitExtension
               .getFile("TextAnalysisEngineImplTest/AggregateTaeWithCasConsumer.xml"));
@@ -260,7 +262,8 @@ public class AnalysisEngine_implTest extends TestCase {
               "CasConsumer");
       assertTrue(delegate1.getAnalysisEngineMetaData().getOperationalProperties().getModifiesCas());
       assertFalse(delegate2.getAnalysisEngineMetaData().getOperationalProperties().getModifiesCas());
-
+      tae.destroy();
+      
       // try an aggregate with no components (tests that empty flow works)
       in = new XMLInputSource(JUnitExtension
               .getFile("TextAnalysisEngineImplTest/EmptyAggregate.xml"));
@@ -270,7 +273,8 @@ public class AnalysisEngine_implTest extends TestCase {
       assertTrue(emptyFlow.getFixedFlow().length == 0);
       tae = new AggregateAnalysisEngine_impl();
       tae.initialize(desc, Collections.EMPTY_MAP);
-
+      tae.destroy();
+      
       // aggregate with duplicate group overrides
       in = new XMLInputSource(JUnitExtension
               .getFile("TextAnalysisEngineImplTest/AggregateWithDuplicateGroupOverrides.xml"));
@@ -292,6 +296,8 @@ public class AnalysisEngine_implTest extends TestCase {
               "BCParam");
       Assert.assertEquals("AggregateParam3b", ann2_groupBParamBC);
 
+      tae.destroy();
+      
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
