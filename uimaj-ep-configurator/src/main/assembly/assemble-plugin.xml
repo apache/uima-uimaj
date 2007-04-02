@@ -35,6 +35,11 @@
 			</includes>
 			<outputDirectory>/</outputDirectory>
 		</fileSet>
+			<!-- for hotfix-1 -->
+		<fileSet>
+			<directory>src/main/readme</directory>
+			<outputDirectory>/</outputDirectory>
+		</fileSet>
 		<fileSet>
 			<directory>target</directory>
 			<includes>

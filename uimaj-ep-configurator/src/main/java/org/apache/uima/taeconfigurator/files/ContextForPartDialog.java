@@ -132,7 +132,6 @@ public class ContextForPartDialog extends /*LimitedResourceSelectionDialog*/
         contextPathGUI.setText(f.getLocation().toOSString());
       }   
     }
-    enableOK();
   }
 
   protected void okPressed() {

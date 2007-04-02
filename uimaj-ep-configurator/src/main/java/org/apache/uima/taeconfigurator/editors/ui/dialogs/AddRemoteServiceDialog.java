@@ -103,7 +103,8 @@ public class AddRemoteServiceDialog extends AbstractDialog {
         pos = text.length();
       keyTextPrev = keyText.getText() + ".xml";
       genFilePathUI.setText(text.substring(0, pos) + keyTextPrev);
-      enableOK();
+      if (okButton != null)
+        enableOK();
     }
   }
 

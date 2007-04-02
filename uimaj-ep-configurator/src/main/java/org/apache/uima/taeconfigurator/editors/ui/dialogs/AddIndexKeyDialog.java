@@ -156,8 +156,7 @@ public class AddIndexKeyDialog extends AbstractDialog {
       featureUI.setVisible(makeFeatureVisible);
       featureLabel.setVisible(makeFeatureVisible);
     }
-
-    enableOK();
+    super.handleEvent(event);
   }
 
   public void enableOK() {

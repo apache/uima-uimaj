@@ -110,7 +110,7 @@ public class ResourcePickerDialog extends AbstractDialog {
     } else if (event.widget == resourcesUI && event.type == SWT.Selection) {
       copyValuesFromGUI();
     }
-    enableOK();
+    super.handleEvent(event);
   }
   /* (non-Javadoc)
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()

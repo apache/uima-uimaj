@@ -67,7 +67,8 @@ public class PickTaeForTypesDialog extends AbstractDialog {
       if (e.widget == delegateComponentListGUI) {
         update();
       } else {
-        enableOK();
+        if (okButton != null)
+          enableOK();
       }
     }
 
@@ -195,7 +196,8 @@ public class PickTaeForTypesDialog extends AbstractDialog {
         }
       }
     }
-    enableOK();
+    if (okButton != null)
+      enableOK();
   }
 
   public void enableOK() {
