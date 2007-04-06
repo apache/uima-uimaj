@@ -1,0 +1,598 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+   
+     http://www.apache.org/licenses/LICENSE-2.0
+   
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+-->
+
+	<!-- ==  ================================================================ -->
+	<!-- ==          Conventions used (mostly directory structures         == -->
+	<!-- ==  ================================================================ -->
+	<!-- ==  Put multiple books under ${docbook.src.dir}                   == -->
+	<!-- ==    each in its own subdirectory e.g. myNthBook                 == -->
+	<!-- ==                                                                == -->
+	<!-- ==  If you're using master/includes, name the master              == -->
+	<!-- ==    that XIncludes the other parts also myNthBook.xml           == -->
+	<!-- ==                                                                == -->
+	<!-- ==  css and styles can be shared among multiple books.            == -->
+	<!-- ==    if shared, css and styles directories are                   == -->
+	<!-- ==          ${src.dir}/css  and ${src.dir}/styles                 == -->
+	<!-- ==    if not shared, they are here:                               == -->
+	<!-- ==          ${docbook.src.dir}/${book_name}/...                   == -->
+	<!-- ==                                                                == -->
+	<!-- ==  For multiple books:                                           == -->
+	<!-- ==    If sharing css                                              == -->
+	<!-- ==                                                                == -->
+	<!-- ==  Output        will go into ${target.dir}/myNthBook            == -->
+	<!-- ==    html        will go into ${target.dir)/myNthBook/myNthBook  == -->
+	<!-- ==    htmlsingle  will go into ${target.dir)/myNthBook.html       == -->
+	<!-- ==    pdf         will go into ${target.dir)/myNthBook.pdf        == -->
+	<!-- ==                                                                == -->
+	<!-- ==  images go into ${target.dir}/images/myNthBook                 == -->
+	<!-- ==  css    go into ${target.dir}/css/myNthBook                    == -->  
+	<!-- ==                                                                == -->
+	<!-- ==  ================================================================ -->
+
+
+	<!-- ======================================================================== -->
+	<!-- ==  Parameter properties:                                             == -->
+	<!-- ==    book_name e.g. myNthBook                                        == -->
+	<!-- ==    (optional: chapter_name e.g. faqs                               == -->
+	<!-- ==            - only use when doing single chapter)                   == -->
+	<!-- ==            - if ommitted, defaults to same as book_name            == -->
+  <!-- ==      ${docbook.src.dir}/${book_name}/${chapter_name}.xml is source file  -->
+  <!-- ==      ${docbook.src.dir}/${book_name}/images/ ... image files       == -->
+  <!-- ==      ${docbook.src.dir}/${book_name}/css/  ... css files           == --> 
+  <!-- ==                                                                    == -->
+	<!-- ==      images source:                                                == -->
+	<!-- ==        ${docbook.src.dir}/${book_name}/images                      == -->
+  <!-- ==                                                                    == -->
+  <!-- ==    use_local_css_and_styles - set only if not sharing              == -->
+  <!-- ==                                                                    == -->
+	<!-- ==      ${chapter_name}.xml is the source file                        == -->  
+	<!-- ==      ${src.dir}/olink/${book_name}/${type}-target.db is used       == -->
+	<!-- ==         as the olink database for this source file                 == -->
+	<!-- ==         type = pdf, html, or htmlsingle                            == -->
+	<!-- ==      ${target.dir}/images/${book_name}                             == -->
+	<!-- ==      ${target.dir}/${chapter_name}/css/                            == -->	
+	<!-- ==      ${target.dir)/${chapter_name}/chunked-html-files.html         == -->
+	<!-- ==      ${target.dir)/${chapter_name}/${docbook.outname}.html         == -->
+	<!-- ==      ${target.dir)/${chapter_name}/${docbook.outname}.pdf          == -->
+  <!-- ==                                                                    == -->
+	<!-- ==    (optional) docbook.outname (defaults to same as book_name)      == -->
+	<!-- ==      is the name used for the dir of the                           == -->   
+	<!-- ==        generated single html (.html) and                           == -->
+	<!-- ==        generated pdf (.pdf)                                        == -->
+	<!-- ==  ===============================================================   == -->
+	<!-- ==                                                                    == -->
+	<!-- ==  Derived from the Velocity docbook system       )                  == -->
+	<!-- ==                                                                    == -->
+	<!-- ==  There are 2 dimensions of work done by this script                == -->
+	<!-- ==    1) which of several "books" (1 or more)                         == -->
+	<!-- ==         ** Done outside of this script **                          == -->
+	<!-- ==    2) which kinds of outputs (html chunked, htmlsingle, pdf)       == -->
+	<!-- ==         ** Done in this script using targets **                    == -->
+	<!-- ==                                                                    == -->
+	<!-- ==  Targets for users:                                                == -->
+	<!-- ==    clean - erase all the files in the target                       == -->
+	<!-- ==    all - do 3 kinds                                                == -->
+	<!-- ==    html                                                            == -->
+	<!-- ==    htmlsingle                                                      == -->
+	<!-- ==    pdf                                                             == -->
+	<!-- ==                                                                    == -->
+	<!-- ==    No zip files of the results are done                            == -->
+	<!-- ==                                                                    == -->
+	<!-- ==    olink-ing is in use                                             == -->
+	<!-- ==      collect.xref.targets is set to property value of same name    == -->
+	<!-- ==        and can be "yes" or "only" or "no".                         == -->
+	<!-- ======================================================================== -->
+
+<!-- basedir is set by the caller to where the source and outputs are
+     and doesn't point into this project          -->
+<!-- basedir should be set to the base dir of the caller project -->
+<!--   files expected:
+          basedir / local.docbook.properties 
+          input, styles, olink dbs, and output, locations all set by local.docbook.properties
+          output --> 
+
+<!-- properties set by caller:
+       basedir      - location of calling project 
+       book_name    - name of book 
+       ant.file.build-docbook - path to this file (Set by Ant)
+       -->
+
+<project name="build-docbook" default="all">
+	
+	<target name="init_once" depends="init_once_a, fop-0.20.5, fop-0.93, saxon-6.5.5, saxon-8.9" description="sets properties, once"/>
+	
+	<target name="init_once_a">
+
+		<property name="docbook.tool.project" location="${ant.file.build-docbook}/../.."/>
+		<property name="jai.version" value="1.1.3"/>  <!-- only this version supported in the auto download script -->
+		<!-- Load our properties -->
+		<!-- if the file is not there, it is not an error - it is just skipped -->
+		<!-- earlier files override later ones -->
+	  <property file="local.docbook.properties"/>  <!-- load from caller project -->
+
+		<property file="${docbook.tool.project}/properties/default.docbook.properties"/>
+
+		<!-- if chapter_name is not set, set it to the book_name -->
+		<property name="chapter_name" value="${book_name}"/>
+		
+		<!-- if docbook.outname is not set, set it to the chapter_name -->
+		<property name="docbook.outname" value="${chapter_name}"/>
+
+		<!-- if olink_work is not set, set it to yes -->
+		<property name="olink_work" value="yes"/>
+
+		<!-- skip some steps if olink_work value is "only" -->
+		<condition property="do_olinkdb_only">
+			<equals arg1="${olink_work}" arg2="only"/>
+	  </condition>
+		
+		<!-- default styles and css -->
+	  <property name="css_styles_prefix" location="${docbook.tool.project}/styles/uima-style"/>
+		
+	  <property name="css.dir"    value="${css_styles_prefix}/css"/>
+	  <property name="styles.dir" value="${css_styles_prefix}"/>
+		
+		<property name="docbook.tools.lib.dir" location="${docbook.tool.project}/tools/common-lib"/>
+		<property name="docbook.ref.dir" location="${docbook.tool.project}/tools/docbook-versions"/>
+		<property name="docbook.xsl.dir" location="${docbook.ref.dir}/docbook-xsl-${docbook.xsl.version}"/>
+		<property name="docbook.xml.dir" location="${docbook.ref.dir}/docbook-xml-${docbook.xml.version}"/>
+		<property name="saxon.dir"       location="${docbook.tool.project}/tools/saxon-versions/saxon-${saxon.version}"/>
+		<property name="jai.dir"         location="${docbook.tool.project}/tools/jai-versions/jai-${jai.version}"/>
+		<property name="tmp.dir"         location="${target.dir}/temp"/> <!-- in caller's project -->
+		<property name="fop.config"      location="${docbook.tool.project}/tools/fop-versions/fop-${fop.version}/fop-config.xml"/>
+
+		<!-- ======================================================================== -->
+		<!-- ==                                                                    == -->
+		<!-- == Set up the classpath for the XSLT conversion                       == -->
+		<!-- ==   and for running FOP                                              == -->
+		<!-- ==                                                                    == -->
+		<!-- ======================================================================== -->
+
+		<path id="saxon_and_fop.classpath">
+			<!-- xercesImpl.jar comes first to allow using XInclude -->
+			<pathelement location="${docbook.tools.lib.dir}/xercesImpl.jar"/>
+			<pathelement location="${docbook.tools.lib.dir}/xml-apis.jar"/>
+			<fileset dir="${docbook.tool.project}/tools/fop-versions/fop-${fop.version}"
+			         includes="*.jar"/>
+			<fileset dir="${saxon.dir}" includes="*.jar"/>
+			<fileset dir="${docbook.tools.lib.dir}" includes="*.jar"/>
+
+			<fileset dir="${docbook.xsl.dir}/extensions">
+				<include name="${xslt-db.jar}"/>
+			</fileset>
+			
+			<fileset dir="${jai.dir}" includes="*.jar"/>
+			
+			<!--  Needed to find CatalogManager.properties -->
+			<pathelement location="${docbook.tool.project}/catalog/docbook.version_${docbook.xml.version}"/>
+		</path>
+		
+		<uptodate property="title-pdf-uptodate"
+			           srcfile="${local.titlepage.dir}/titlepage-pdf.xml"
+			           targetfile="${local.titlepage.dir}/titlepage-pdf.xsl"/>
+		<uptodate property="title-html-uptodate"
+			           srcfile="${local.titlepage.dir}/titlepage-html.xml"
+			           targetfile="${local.titlepage.dir}/titlepage-html.xsl"/>
+		
+		<condition property="fop-0.20.5"> <equals arg1="0.20.5" arg2="${fop.version}"/></condition>
+		<condition property="fop-0.93">   <equals arg1="0.93"   arg2="${fop.version}"/></condition>
+		<condition property="saxon-6.5.5"><equals arg1="6.5.5"  arg2="${saxon.version}"/></condition>
+		<condition property="saxon-8.9">  <equals arg1="8.9"    arg2="${saxon.version}"/></condition>
+		
+    <!--echoproperties/-->
+	</target>
+	
+	<target name="fop-0.20.5" if="fop-0.20.5">
+		<property name="docbook.fop.extensions" value="fop.extensions"/>
+    <property name="fop.main.class"         value="org.apache.fop.apps.Fop"/>
+	</target>
+
+	<target name="fop-0.93" if="fop-0.93">
+		<property name="docbook.fop.extensions" value="fop1.extensions"/>
+    <property name="fop.main.class"         value="org.apache.fop.cli.Main"/>
+	</target>
+
+	<target name="saxon-6.5.5" if="saxon-6.5.5">
+		<property name="saxon.main.class"       value="com.icl.saxon.StyleSheet"/>
+	</target>
+
+	<target name="saxon-8.9" if="saxon-8.9">
+		<property name="saxon.main.class"       value="net.sf.saxon.Transform"/>
+	</target>
+	
+	<!-- ======================================================================== -->
+	<!-- ==                             target layout                          == -->                                                                          
+	<!-- ======================================================================== -->
+	<!-- == (root) (= target in the uima-docbook project)                      == -->
+	<!-- ==  |                                                                 == -->
+	<!-- ==  |-images            << shared images subdir                       == -->
+	<!-- ==  |    |-${book_name}/chapter-name/image-name                       == -->
+	<!-- ==  |                                                                 == -->
+	<!-- ==  |-${chapter_name)  overview_and_setup  << directories             == -->
+	<!-- ==  |    |-css                            << subdir                   == -->
+	<!-- ==  |    |-chunked html files                                         == -->
+	<!-- ==  |    |-${docbook.outname}.html        << single html              == -->
+	<!-- ==  |    |-${docbook.outname}.pdf         << pdf                      == -->
+	<!-- ==  |-${chapter_name)  Tutorials-and-Users-Guides                     == -->
+	<!-- ==  |    |-css                            << subdir                   == -->
+	<!-- ==  |    |-chunked html files                                         == -->
+	<!-- ==  |    |-${docbook.outname}.html        << single html              == -->
+	<!-- ==  |    |-${docbook.outname}.pdf         << pdf                      == -->
+	<!-- ==  |-${chapter_name)  UIMA-Tools                                     == -->
+	<!-- ==  |    |-css                            << subdir                   == -->
+	<!-- ==  |    |-chunked html files                                         == -->
+	<!-- ==  |    |-${docbook.outname}.html        << single html              == -->
+	<!-- ==  |    |-${docbook.outname}.pdf         << pdf                      == -->
+	<!-- ==  |-${chapter_name)  UIMA-References                                == -->
+	<!-- ==       |-css                            << subdir                   == -->
+	<!-- ==       |-chunked html files                                         == -->
+	<!-- ==       |-${docbook.outname}.html        << single html              == -->
+	<!-- ==       |-${docbook.outname}.pdf         << pdf                      == -->
+	<!-- ======================================================================== -->
+
+
+      
+	<!-- ======================================================================== -->
+ 	<!-- ==                      olink info layout                             == -->
+	<!-- ======================================================================== -->
+	<!-- ==	(root) (= src/olink in the uima-docbook project)                   == -->
+	<!-- ==  |-olink_db_html.xml                                               == -->
+	<!-- ==  |-olink_db_htmlsingle.xml                                         == -->
+	<!-- ==  |-olink_db_pdf.xml                                                == -->
+	<!-- ==  |                                                                 == -->
+	<!-- ==  |-${chapter_name)  overview_and_setup  << directories             == -->
+	<!-- ==  |    |-html-target.db              << for chunked html            == -->
+	<!-- ==  |    |-htmlsingle-target.db        << single html                 == -->
+	<!-- ==  |    |-pdf-target.db               << pdf                         == -->
+	<!-- ==  |-${chapter_name)  Tutorials-and-Users-Guides                     == -->
+	<!-- ==  |    |-html-target.db              << for chunked html            == -->
+	<!-- ==  |    |-htmlsingle-target.db        << single html                 == -->
+	<!-- ==  |    |-pdf-target.db               << pdf                         == -->
+	<!-- ==  |-${chapter_name)  UIMA-Tools                                     == -->
+	<!-- ==  |    |-html-target.db              << for chunked html            == -->
+	<!-- ==  |    |-htmlsingle-target.db        << single html                 == -->
+	<!-- ==  |    |-pdf-target.db               << pdf                         == -->
+	<!-- ==  |-${chapter_name)  UIMA-References                                == -->
+	<!-- ==       |-html-target.db              << for chunked html            == -->
+	<!-- ==       |-htmlsingle-target.db        << single html                 == -->
+	<!-- ==       |-pdf-target.db               << pdf                         == -->
+	<!-- ======================================================================== -->
+    
+       
+
+	<!-- =========================================================================== -->
+	<!-- ==                                                                       == -->
+	<!-- == prepare temporary directories and unzip the docbook DTD and XSL files == -->
+	<!-- ==                                                                       == -->
+	<!-- =========================================================================== -->
+	<target name="prepare" depends="init_once">
+
+		<fail message="You must set book_name">
+			<condition> <not> <isset property="book_name"/> </not> </condition>
+		</fail>
+		
+		<fail message="Your local.docbook.properties file is missing the local.titlepage.dir setting">
+			<condition> <not> <isset property="local.titlepage.dir"/> </not> </condition>
+		</fail>
+
+		<mkdir dir="${tmp.dir}" />
+
+		<available file="${saxon.dir}/saxon.jar" property="saxon.available" />
+		<antcall target="get-saxon"/>
+
+		<available file="${docbook.xml.dir}/catalog.xml" property="docbook.available" />
+		<antcall target="get-docbook"/>
+		
+		<available file="${jai.dir}/jai_core.jar" property="jai.available"/>
+		<antcall target="get-jai"/>
+	</target>
+
+
+	<!-- ======================================================================== -->
+	<!-- ==                                                                    == -->
+	<!-- == This is the main target to generate all the docs                   == -->
+	<!-- ==                                                                    == -->
+	<!-- ======================================================================== -->
+	<target name="all" depends="pdf,html,htmlsingle"
+          description="--> Generate and copy reference documentation">
+		<echo message="build all for ${chapter_name}"/>
+	</target>
+
+	<!-- ======================================================================== -->
+	<!-- ==                                                                    == -->
+	<!-- == Clean up the target directory                                      == -->
+	<!-- ==                                                                    == -->
+	<!-- ======================================================================== -->
+	<target name="clean" depends="init_once"
+          description="--> Delete temporary and distribution directories for docs">
+		<delete quiet="true" dir="${target.dir}"/>
+	</target>
+
+	<!-- ======================================================================== -->
+	<!-- ==                                                                    == -->
+	<!-- == Create the PDF documentation                                       == -->
+	<!-- ==                                                                    == -->
+	<!-- ======================================================================== -->
+	<target name="pdf" depends="prepare, transform-pdf, fop_conditionally" description="--> Generate PDF docs"/>
+	
+	<target name="transform-pdf" depends="transform-title-pdf, transform-source-pdf" description="--> internal transform for pdf output"/>
+	
+	<target name="transform-source-pdf" description="--> internal transform source for pdf output">
+			
+		<saxon input="${docbook.src.dir}/${book_name}/${chapter_name}.xml"
+           output="${target.dir}/${chapter_name}/${docbook.outname}.pdf_src.xml"
+           style="${src.dir}/styles/top/pdf.xsl"
+		       params="fop.version=${fop.version} 
+		               paper.type=${paper.type} 
+		               collect.xref.targets=${olink_work} 
+		               targets.filename=${olink.dir}/${chapter_name}/pdf-target.db
+		               target.database.document=${olink.dir}/olink_db_pdf.xml
+		               current.docid=${chapter_name}
+			             docbook.xsl.root=${docbook.xsl.dir}			             
+			             "/>
+	</target>
+	
+	<target name="transform-title-pdf" unless="title-pdf-uptodate" description="--> internal transform title page for pdf">	
+		<saxon input="${local.titlepage.dir}/titlepage-pdf.xml"
+           output="${local.titlepage.dir}/titlepage-pdf.xsl"
+           style="${docbook.xsl.dir}/template/titlepage.xsl"/>
+	</target>
+	
+	<target name="transform-title-html" unless="title-html-uptodate" description="--> internal trnasform title page for html">
+		<saxon input="${local.titlepage.dir}/titlepage-html.xml"
+           output="${local.titlepage.dir}/titlepage-html.xsl"
+           style="${docbook.xsl.dir}/template/titlepage.xsl"/>
+	</target>
+		
+  <target name="fop_conditionally" description="internal - runs fop conditionally"
+  	      unless="do_olinkdb_only">
+  	
+		<java classname="${fop.main.class}" fork="true" maxmemory="256m"
+          dir="${target.dir}/${chapter_name}" classpathref="saxon_and_fop.classpath">
+			<arg value="-c"/>
+			<arg value="${fop.config}"/>
+			<arg value="${target.dir}/${chapter_name}/${docbook.outname}.pdf_src.xml"/>
+			<arg value="${target.dir}/${chapter_name}/${docbook.outname}.pdf"/>
+		</java>
+  	
+	</target>
+	
+	<!-- ======================================================================== -->
+	<!-- ==                                                                    == -->
+	<!-- == Create the HTML documentation, many pages                          == -->
+	<!-- ==                                                                    == -->
+	<!-- ======================================================================== -->
+	<target name="html"
+          depends="prepare"
+          description="--> Generate HTML docs in multiple files">
+
+		<echo message="skipping many-page html output for now for ${chapter_name}"/>
+		
+	</target>
+	
+	<!-- ======================================================================== -->
+	<!-- ==                                                                    == -->
+	<!-- == Create the HTML documentation, one big page                        == -->
+	<!-- ==                                                                    == -->
+	<!-- ======================================================================== -->
+	<target name="htmlsingle" 
+          depends="prepare, transform-title-html, transform-html-single, copy-docbook-images-and-css"
+          description="--> Generate HTML docs in a single, big file"/>
+
+	<target name="transform-html-single">
+		<echo message="${src.dir}/styles/top/html-single.xsl"/>
+		<saxon input="${docbook.src.dir}/${book_name}/${chapter_name}.xml"
+           output="${target.dir}/${chapter_name}/${docbook.outname}.html"
+           style="${src.dir}/styles/top/html-single.xsl"
+		       params="fop-version=$fop.version 
+		               paper.type=${paper.type} 
+		               collect.xref.targets=${olink_work} 
+		               targets.filename=${olink.dir}/${chapter_name}/htmlsingle-target.db
+		               target.database.document=${olink.dir}/olink_db_htmlsingle.xml
+		               current.docid=${chapter_name}"/>
+	</target>
+	
+	<!-- ======================================================================== -->
+	<!-- ==                                                                    == -->
+	<!-- == Subroutines                                                        == -->
+	<!-- ==                                                                    == -->
+	<!-- ======================================================================== -->
+	<!-- ======================================================================== -->
+	<!-- == Subroutine: Copy the images and css                                == -->
+	<!-- ======================================================================== -->
+
+	<target name="copy-docbook-images-and-css"  unless="${do_olinkdb_only}">
+		<copy todir="${target.dir}/images">
+			<fileset dir="${docbook.xsl.dir}/images/"/>
+		</copy>
+
+		<copy todir="${target.dir}/${chapter_name}/css">
+			<fileset dir="${css.dir}"/>
+		</copy>
+		
+		
+	</target>
+
+	<!-- ======================================================================== -->
+	<!-- == Subroutine: Download Saxon                                         == -->
+	<!-- ======================================================================== -->
+	
+  <target name="get-saxon" unless="saxon.available">
+    <input message="Downloading and unzipping (one time) Saxon's free XSLT package,&#xA;
+licensed under the Mozilla Public License Version 1.0;&#xA;
+you may not use this package except in compliance with the License.&#xA;&#xA; 
+You may obtain a copy of the License at http://www.mozilla.org/MPL/&#xA;&#xA;Ok to download?"  validargs="y,n"
+        addproperty="ok.download.saxon" />
+    <condition property="do.download.saxon">
+      <equals arg1="y" arg2="${ok.download.saxon}"/>
+    </condition>
+    <fail unless="do.download.saxon" message="Download aborted by user."/>
+
+		<get src="http://prdownloads.sourceforge.net/saxon/saxon6-5-5.zip"
+		     dest="${tmp.dir}/saxon.zip" />
+		<unzip src="${tmp.dir}/saxon.zip" dest="${tmp.dir}/saxon" />
+  	<copy file="${tmp.dir}/saxon/saxon.jar" tofile="${saxon.dir}/saxon.jar"/>
+  </target>
+
+	<!-- ======================================================================== -->
+	<!-- == Subroutine: Download jai                                           == -->
+	<!-- ======================================================================== -->
+	
+  <target name="get-jai" unless="jai.available">
+    <input message="Downloading and unzipping (one time) Java Advanced Imaging package (JAI),&#xA;
+licensed under the specific Sun license for JAI;&#xA;
+You may not use this package except in compliance with the License.&#xA;&#xA; 
+The license is contained in the download.&#xA;&#xA;Ok to download?"  validargs="y,n"
+        addproperty="ok.download.jai" />
+    <condition property="do.download.jai">
+      <equals arg1="y" arg2="${ok.download.jai}"/>
+    </condition>
+    <fail unless="do.download.jai" message="Download aborted by user."/>
+
+  	
+		<get src="http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib.zip"
+		     dest="${tmp.dir}/jai.zip" />
+  	<unzip src="${tmp.dir}/jai.zip" dest="${tmp.dir}"/>
+		<copy todir="${jai.dir}">
+			<fileset dir="${tmp.dir}/jai-1_1_3/lib">
+				<include name="jai_codec.jar"/>
+				<include name="jai_core.jar"/>
+		  </fileset>
+		</copy>
+  </target>
+
+
+	<!-- ======================================================================== -->
+	<!-- == Subroutine: Unzip the docbook xml and xslt transformations         == -->
+	<!-- ======================================================================== -->
+	<target name="get-docbook" 
+	        description="internal: gets and unzips docbook xml and xsl style sheets"
+	        unless="docbook.available">
+
+    <input message="Downloading and unzipping (one time) the free docbook DTDs and XSLT packages.&#xA;
+The DTDs are copyrighted with the following permissions granted:
+  Copyright 1992-2004 HaL Computer Systems, Inc.,&#xA;
+  O'Reilly &amp; Associates, Inc., ArborText, Inc., Fujitsu Software&#xA;
+  Corporation, Norman Walsh, Sun Microsystems, Inc., and the&#xA;
+  Organization for the Advancement of Structured Information&#xA;
+  Standards (OASIS).&#xA;&#xA;
+  Permission to use, copy, modify and distribute the DocBook DTD&#xA;
+  and its accompanying documentation for any purpose and without fee&#xA;
+  is hereby granted in perpetuity, provided that the above copyright&#xA;
+  notice and this paragraph appear in all copies. The copyright&#xA;
+  holders make no representation about the suitability of the DTD for&#xA;
+  any purpose. It is provided &quot;as is&quot; without expressed or implied&#xA;
+  warranty.&#xA;&#xA;
+  If you modify the DocBook DTD in any way, except for declaring and&#xA;
+  referencing additional sets of general entities and declaring&#xA;
+  additional notations, label your DTD as a variant of DocBook. See&#xA;
+  the maintenance documentation for more information. &#xA;&#xA;
+The XSLT transforms come with the following copyright and permissions:&#xA;
+  Permission is hereby granted, free of charge, to any person&#xA;
+  obtaining a copy of this software and associated documentation&#xA;
+  files (the ``Software''), to deal in the Software without&#xA;
+  restriction, including without limitation the rights to use,&#xA;
+  copy, modify, merge, publish, distribute, sublicense, and/or&#xA;
+  sell copies of the Software, and to permit persons to whom the&#xA;
+  Software is furnished to do so, subject to the following&#xA;
+  conditions:&#xA;&#xA;
+  The above copyright notice and this permission notice shall be&#xA;
+  included in all copies or substantial portions of the Software.&#xA;
+ 	Except as contained in this notice, the names of individuals&#xA;
+ 	credited with contribution to this software shall not be used in&#xA;
+ 	advertising or otherwise to promote the sale, use or other&#xA;
+ 	dealings in this Software without prior written authorization&#xA;
+ 	from the individuals in question.&#xA;&#xA;
+ 	Any stylesheet derived from this Software that is publically&#xA;
+ 	distributed will be identified with a different name and the&#xA;
+ 	version strings in any derived Software will be changed so that&#xA;
+ 	no possibility of confusion between the derived package and this&#xA;
+ 	Software will exist.&#xA;&#xA;
+ 	Warranty&#xA;
+ 	--------&#xA;&#xA;
+ 	THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND,&#xA;
+ 	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES&#xA;
+ 	OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND&#xA;
+ 	NONINFRINGEMENT. IN NO EVENT SHALL NORMAN WALSH OR ANY OTHER&#xA;
+ 	CONTRIBUTOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,&#xA;
+ 	WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING&#xA;
+ 	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR&#xA;
+ 	OTHER DEALINGS IN THE SOFTWARE.&#xA;
+ &#xA;&#xA;Ok to download?"  validargs="y,n"
+        addproperty="ok.download.docbooks" />
+
+    <condition property="do.download.docbooks">
+      <equals arg1="y" arg2="${ok.download.docbooks}"/>
+    </condition>
+    <fail unless="do.download.docbooks" message="Download aborted by user."/>
+
+		<mkdir dir="${docbook.xml.dir}" />
+		<echo message="Downloading and unzipping (one time) docbook-xml-${docbook.xml.version}.zip"/>
+		<get src="http://www.docbook.org/xml/${docbook.xml.version}/docbook-xml-${docbook.xml.version}.zip"
+		     dest="${tmp.dir}/docbook-system-xml.zip" />
+		<unzip src="${tmp.dir}/docbook-system-xml.zip" dest="${docbook.xml.dir}" />
+
+		<mkdir dir="${docbook.xsl.dir}" />
+		<echo message="Downloading and unzipping (one time) docbook-xsl-${docbook.xsl.version}.zip"/>
+		<get src="http://downloads.sourceforge.net/docbook/docbook-xsl-${docbook.xsl.version}.zip"
+		     dest="${tmp.dir}/docbook-system-xsl.zip" />
+
+		<unzip src="${tmp.dir}/docbook-system-xsl.zip" dest="${docbook.ref.dir}" />
+	</target>
+	
+	<!-- ======================================================================== -->
+	<!-- ==                                                                    == -->
+	<!-- == Saxon Converter macro that uses commons-resolver                   == -->
+	<!-- ==   and xerces parser (to handle XIncludes)                          == -->
+	<!-- ==                                                                    == -->
+	<!-- == input: The file to transform                                       == -->
+	<!-- == output: The transformation result                                  == -->
+	<!-- == style: The Style Sheet used for the transformation                 == -->
+	<!-- ==                                                                    == -->
+	<!-- ======================================================================== -->
+	<macrodef name="saxon">
+		<attribute name="input"/>
+		<attribute name="output"/>
+		<attribute name="style"/>
+		<attribute name="params" default=""/>
+		<sequential>
+			<!--echo message="input"/>
+			<echo message="@{input}"/-->
+			<java classname="com.icl.saxon.StyleSheet" fork="true"
+            dir="${docbook.tool.project}" classpathref="saxon_and_fop.classpath">
+				<!-- The jvm args install the xerces parser to allow use of XIncludes -->
+				<jvmarg value="-Djavax.xml.parsers.DocumentBuilderFactory=org.apache.xerces.jaxp.DocumentBuilderFactoryImpl"/>
+				<jvmarg value="-Djavax.xml.parsers.SAXParserFactory=org.apache.xerces.jaxp.SAXParserFactoryImpl"/>
+				<jvmarg value="-Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration"/>
+				<arg line="-x org.apache.xml.resolver.tools.ResolvingXMLReader"/>
+				<arg line="-y org.apache.xml.resolver.tools.ResolvingXMLReader"/>
+				<arg line="-r org.apache.xml.resolver.tools.CatalogResolver"/>
+				<!--arg value="-T"/-->
+				<arg value="-o"/>
+				<arg value="@{output}"/>
+				<arg value="@{input}"/>
+				<arg value="@{style}"/>
+        <arg line="@{params}"/>
+			</java>
+		</sequential>
+	</macrodef>
+
+</project>
