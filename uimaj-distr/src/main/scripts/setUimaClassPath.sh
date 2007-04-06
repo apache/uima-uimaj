@@ -39,6 +39,6 @@ fi
 #set default JVM opts
 if [ "$UIMA_JVM_OPTS" = "" ]
 then
-  UIMA_JVM_OPTS="-Xms128M -Xmx256M"
+  UIMA_JVM_OPTS="-Xms128M -Xmx800M"
 fi
 
