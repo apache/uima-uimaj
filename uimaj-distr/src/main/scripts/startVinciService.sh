@@ -44,6 +44,6 @@ then
   VNS_HOST=$2
 fi
 
-"$UIMA_JAVA_CALL" -cp "$UIMA_CLASSPATH" "-Duima.datapath=$UIMA_DATAPATH" -DVNS_HOST=$VNS_HOST -DVNS_PORT=$VNS_PORT "-Djava.util.logging.config.file=$UIMA_HOME/config/Logger.properties" org.apache.uima.adapter.vinci.VinciAnalysisEngineService_impl $SERVICE $INSTANCEID
+"$UIMA_JAVA_CALL" -cp "$UIMA_CLASSPATH" "-Duima.datapath=$UIMA_DATAPATH" -DVNS_HOST=$VNS_HOST -DVNS_PORT=$VNS_PORT "-Djava.util.logging.config.file=$UIMA_LOGGER_CONFIG_FILE" $UIMA_JVM_OPTS org.apache.uima.adapter.vinci.VinciAnalysisEngineService_impl $SERVICE $INSTANCEID
 
 

@@ -29,4 +29,4 @@ REM   under the License.
 @set LOGGER=-Djava.util.logging.config.file=%UIMA_HOME%\config\FileConsoleLogger.properties
 @echo Running JCasGen with no Java CAS Model merging.  To run with merging, use jcasgen_merge (requires Eclipse, plus UIMA and EMF plugins).
 @if "%JAVA_HOME%"=="" (set UIMA_JAVA_CALL=java) else (set UIMA_JAVA_CALL=%JAVA_HOME%\bin\java)
-"%UIMA_JAVA_CALL%" "%LOGGER%" -cp "%UIMA_CLASSPATH%" org.apache.uima.tools.jcasgen.Jg %firstarg% %secondarg%
+"%UIMA_JAVA_CALL%" "%LOGGER%" -cp "%UIMA_CLASSPATH%" %UIMA_JVM_OPTS% org.apache.uima.tools.jcasgen.Jg %firstarg% %secondarg%

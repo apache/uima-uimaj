@@ -33,7 +33,11 @@ then
 else
   UIMA_JAVA_CALL="$JAVA_HOME/bin/java"
 fi
-LOGGER="-Djava.util.logging.config.file=$UIMA_HOME/config/FileConsoleLogger.properties"
+if [ "$UIMA_LOGGER_CONFIG_FILE" = "" ]
+then
+  UIMA_LOGGER_CONFIG_FILE=$UIMA_HOME/config/Logger.properties
+fi
+LOGGER="-Djava.util.logging.config.file=$UIMA_LOGGER_CONFIG_FILE"
 MAIN=org.apache.uima.tools.jcasgen.Jg
 if [ "$firstarg" = "" ]
 then

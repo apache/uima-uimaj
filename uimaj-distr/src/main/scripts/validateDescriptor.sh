@@ -24,4 +24,4 @@ then
 else
   UIMA_JAVA_CALL="$JAVA_HOME/bin/java"
 fi
-"$UIMA_JAVA_CALL" -cp "$UIMA_CLASSPATH" "-Duima.datapath=$UIMA_DATAPATH" -Xms128M -Xmx256M org.apache.uima.tools.ValidateDescriptor $*
+"$UIMA_JAVA_CALL" -cp "$UIMA_CLASSPATH" "-Duima.datapath=$UIMA_DATAPATH" $UIMA_JVM_OPTS org.apache.uima.tools.ValidateDescriptor $*

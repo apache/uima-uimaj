@@ -22,6 +22,6 @@ REM   under the License.
 setlocal
 call "%UIMA_HOME%\bin\setUimaClassPath"
 if "%JAVA_HOME%"=="" (set UIMA_JAVA_CALL=java) else (set UIMA_JAVA_CALL=%JAVA_HOME%\bin\java)
-"%UIMA_JAVA_CALL%" -cp "%UIMA_CLASSPATH%;%CATALINA_HOME%\webapps\axis\WEB-INF\classes" org.apache.axis.client.AdminClient -lhttp://localhost:8080/axis/services/AdminService %1
+"%UIMA_JAVA_CALL%" -cp "%UIMA_CLASSPATH%;%CATALINA_HOME%\webapps\axis\WEB-INF\classes" %UIMA_JVM_OPTS% org.apache.axis.client.AdminClient -lhttp://localhost:8080/axis/services/AdminService %1
 
 

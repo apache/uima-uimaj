@@ -29,5 +29,5 @@ setlocal
 @echo on
 call "%UIMA_HOME%\bin\setUimaClassPath"
 if "%JAVA_HOME%"=="" (set UIMA_JAVA_CALL=java) else (set UIMA_JAVA_CALL=%JAVA_HOME%\bin\java)
-"%UIMA_JAVA_CALL%" -cp "%UIMA_CLASSPATH%" -Duima.home="%UIMA_HOME%" org.apache.uima.tools.pear.install.InstallPear
+"%UIMA_JAVA_CALL%" -cp "%UIMA_CLASSPATH%" -Duima.home="%UIMA_HOME%" %UIMA_JVM_OPTS% org.apache.uima.tools.pear.install.InstallPear
 :EXIT

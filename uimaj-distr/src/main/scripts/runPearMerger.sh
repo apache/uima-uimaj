@@ -24,4 +24,4 @@ then
 else
   UIMA_JAVA_CALL="$JAVA_HOME/bin/java"
 fi
-"$UIMA_JAVA_CALL" -cp "$UIMA_CLASSPATH" "-Duima.home=$UIMA_HOME" org.apache.uima.tools.pear.merger.PMController $*
+"$UIMA_JAVA_CALL" -cp "$UIMA_CLASSPATH" "-Duima.home=$UIMA_HOME" $UIMA_JVM_OPTS org.apache.uima.tools.pear.merger.PMController $*

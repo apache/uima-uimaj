@@ -24,4 +24,4 @@ then
 else
   UIMA_JAVA_CALL="$JAVA_HOME/bin/java"
 fi
-"$UIMA_JAVA_CALL" -cp "$UIMA_CLASSPATH" -Xms128M -Xmx900M "-Duima.home=$UIMA_HOME" "-Duima.datapath=$UIMA_DATAPATH" "-Djava.util.logging.config.file=$UIMA_HOME/config/Logger.properties" org.apache.uima.tools.AnnotationViewerMain
+"$UIMA_JAVA_CALL" -cp "$UIMA_CLASSPATH" $UIMA_JVM_OPTS "-Duima.home=$UIMA_HOME" "-Duima.datapath=$UIMA_DATAPATH" "-Djava.util.logging.config.file=$UIMA_LOGGER_CONFIG_FILE" org.apache.uima.tools.AnnotationViewerMain

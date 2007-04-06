@@ -31,3 +31,14 @@ if [ "$VNS_PORT" = "" ];
 then
   VNS_PORT=9000
 fi
+#also set default vlaue for UIMA_LOGGER_CONFIG_FILE
+if [ "$UIMA_LOGGER_CONFIG_FILE" = "" ]
+then
+  UIMA_LOGGER_CONFIG_FILE=$UIMA_HOME/config/Logger.properties
+fi
+#set default JVM opts
+if [ "$UIMA_JVM_OPTS" = "" ]
+then
+  UIMA_JVM_OPTS="-Xms128M -Xmx256M"
+fi
+

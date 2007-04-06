@@ -29,5 +29,7 @@ set PATH=%UIMA_HOME%\uimacpp\bin;%UIMA_HOME%\uimacpp\examples\tutorial\src;%PATH
 @rem Also set VNS_HOST and VNS_PORT to default values if they are not specified
 @if "%VNS_HOST%"=="" set VNS_HOST=localhost
 @if "%VNS_PORT%"=="" set VNS_PORT=9000
-
-
+@rem Also set default value for UIMA_LOGGER_CONFIG_FILE
+@if "%UIMA_LOGGER_CONFIG_FILE%"=="" set UIMA_LOGGER_CONFIG_FILE=%UIMA_HOME%\config\Logger.properties
+@rem Set default JVM opts
+@if "%UIMA_JVM_OPTS%"=="" set UIMA_JVM_OPTS=-Xms128M -Xmx800M

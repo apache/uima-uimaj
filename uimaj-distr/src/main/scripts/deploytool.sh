@@ -24,4 +24,4 @@ then
 else
   UIMA_JAVA_CALL="$JAVA_HOME/bin/java"
 fi
-"$UIMA_JAVA_CALL" -cp "$UIMA_CLASSPATH:$CATALINA_HOME/webapps/axis/WEB-INF/classes" org.apache.axis.client.AdminClient -lhttp://localhost:8080/axis/services/AdminService $1
+"$UIMA_JAVA_CALL" -cp "$UIMA_CLASSPATH:$CATALINA_HOME/webapps/axis/WEB-INF/classes" $UIMA_JVM_OPTS org.apache.axis.client.AdminClient -lhttp://localhost:8080/axis/services/AdminService $1

@@ -22,6 +22,6 @@ REM   under the License.
 setlocal
 call "%UIMA_HOME%\bin\setUimaClassPath"
 if "%JAVA_HOME%"=="" (set UIMA_JAVA_CALL=java) else (set UIMA_JAVA_CALL=%JAVA_HOME%\bin\java)
-"%UIMA_JAVA_CALL%" -cp "%UIMA_CLASSPATH%" "-Duima.datapath=%UIMA_DATAPATH%" -Xms128M -Xmx256M org.apache.uima.tools.ValidateDescriptor %1 %2 %3 %4 %5 %6 %7 %8 %9
+"%UIMA_JAVA_CALL%" -cp "%UIMA_CLASSPATH%" "-Duima.datapath=%UIMA_DATAPATH%" %UIMA_JVM_OPTS% org.apache.uima.tools.ValidateDescriptor %1 %2 %3 %4 %5 %6 %7 %8 %9
 
 

@@ -22,6 +22,6 @@ REM   under the License.
 setlocal
 call "%UIMA_HOME%\bin\setUimaClassPath"
 if "%JAVA_HOME%"=="" (set UIMA_JAVA_CALL=java) else (set UIMA_JAVA_CALL=%JAVA_HOME%\bin\java)
-"%UIMA_JAVA_CALL%" -cp "%UIMA_CLASSPATH%" -Xms128M -Xmx256M "-Duima.home=%UIMA_HOME%" "-Duima.datapath=%UIMA_DATAPATH%" -DVNS_HOST=%VNS_HOST% -DVNS_PORT=%VNS_PORT% "-Djava.util.logging.config.file=%UIMA_HOME%\config\Logger.properties" org.apache.uima.tools.cpm.CpmFrame
+"%UIMA_JAVA_CALL%" -cp "%UIMA_CLASSPATH%" "-Duima.home=%UIMA_HOME%" "-Duima.datapath=%UIMA_DATAPATH%" -DVNS_HOST=%VNS_HOST% -DVNS_PORT=%VNS_PORT% "-Djava.util.logging.config.file=%UIMA_LOGGER_CONFIG_FILE%" %UIMA_JVM_OPTS% org.apache.uima.tools.cpm.CpmFrame
 
 
