@@ -36,6 +36,6 @@
   <!-- The script will generate a title page in ${local.titlepage.dir} -->
   <!-- this generate xsl file needs to be included here -->
   <!-- Make sure the path agrees with your setting of ${local.titlepage.dir} in local.docbook.properties -->
-  <xsl:include href="../titlepage/titlepage-html.xsl"/>
+  <xsl:include href="../titlepage/titlepage-pdf.xsl"/>
    
 </xsl:stylesheet>
