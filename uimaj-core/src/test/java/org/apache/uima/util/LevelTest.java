@@ -32,13 +32,6 @@ public class LevelTest extends TestCase {
     super(arg0);
   }
 
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
-
-  }
-
   public void testLevelOff() throws Exception {
     Level level = Level.OFF;
 

@@ -19,7 +19,6 @@
 
 package org.apache.uima.cas_data.impl;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -39,7 +38,6 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
@@ -55,7 +53,6 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
-import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
@@ -75,7 +72,7 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
    * 
    * @param arg0
    */
-  public XCasToCasDataSaxHandlerTest(String arg0) throws IOException {
+  public XCasToCasDataSaxHandlerTest(String arg0) {
     super(arg0);
   }
 
@@ -148,7 +145,7 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
     }
   }
 
-  private void _testConversions(CAS aCAS) throws CASException, IOException,
+  private void _testConversions(CAS aCAS) throws IOException,
           ParserConfigurationException, SAXException, ResourceInitializationException,
           CASRuntimeException {
     // generate XCAS events and pipe them to XCasToCasDataSaxHandler
@@ -227,11 +224,11 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
 
         // all annotations should be indexed (not a general requirement, but good
         // for these test CASes)
-        Assert.assertTrue(fs.isIndexed());
+        Assert.assertTrue(fs.getIndexed().length > 0);
       } else if (typeSystem.subsumes(arrayType, type)) {
         // all non-annotations should not be indexed (not a general requirement, but good
         // for these test CASes)
-        Assert.assertFalse(fs.isIndexed());
+        Assert.assertFalse(fs.getIndexed().length > 0);
       }
     }
   }

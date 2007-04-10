@@ -29,7 +29,6 @@ import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.analysis_engine.TaeDescription;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.Parameter;
@@ -98,12 +97,12 @@ public class XMLParser_implTest extends TestCase {
       File envVarRefTest = JUnitExtension.getFile("XmlParserTest/EnvVarRefTest.xml");
       System.setProperty("uima.test.var1", "foo");
       System.setProperty("uima.test.var2", "bar");
-      TaeDescription taeDesc = UIMAFramework.getXMLParser().parseTaeDescription(
+      AnalysisEngineDescription taeDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(envVarRefTest), new XMLParser.ParsingOptions(true, true));
       Assert.assertEquals("foo-bar", taeDesc.getMetaData().getName());
 
       // parse with env var ref expansion disabled
-      taeDesc = UIMAFramework.getXMLParser().parseTaeDescription(new XMLInputSource(envVarRefTest),
+      taeDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(new XMLInputSource(envVarRefTest),
               new XMLParser.ParsingOptions(false));
       Assert.assertEquals(
               "<envVarRef>uima.test.var1</envVarRef>-<envVarRef>uima.test.var2</envVarRef>",
@@ -138,6 +137,7 @@ public class XMLParser_implTest extends TestCase {
         fail();
       }
       catch (InvalidXMLException e) {        
+        //do nothing
       }
     } catch (Exception e) {
       JUnitExtension.handleException(e);

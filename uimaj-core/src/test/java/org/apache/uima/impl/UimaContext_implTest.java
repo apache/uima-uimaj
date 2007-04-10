@@ -93,21 +93,21 @@ public class UimaContext_implTest extends TestCase {
       // create a UimaContext with Config Params in Groups but no resources
       XMLInputSource in = new XMLInputSource(JUnitExtension
               .getFile("AnnotatorContextTest/AnnotatorWithConfigurationGroups.xml"));
-      AnalysisEngineDescription taeDesc = UIMAFramework.getXMLParser().parseTaeDescription(in);
+      AnalysisEngineDescription taeDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(taeDesc, rm, null);
       mContext2 = ae.getUimaContext();
 
       // create a UimaContext with Groups and Groupless Parameters
       XMLInputSource in2 = new XMLInputSource(JUnitExtension
               .getFile("AnnotatorContextTest/AnnotatorWithGroupsAndNonGroupParams.xml"));
-      AnalysisEngineDescription taeDesc2 = UIMAFramework.getXMLParser().parseTaeDescription(in2);
+      AnalysisEngineDescription taeDesc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in2);
       AnalysisEngine ae2 = UIMAFramework.produceAnalysisEngine(taeDesc2, rm, null);
       mContext3 = ae2.getUimaContext();
 
       // create a UimaContext with duplicate configuration groups
       XMLInputSource in3 = new XMLInputSource(JUnitExtension
               .getFile("TextAnalysisEngineImplTest/AnnotatorWithDuplicateConfigurationGroups.xml"));
-      AnalysisEngineDescription taeDesc3 = UIMAFramework.getXMLParser().parseTaeDescription(in3);
+      AnalysisEngineDescription taeDesc3 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in3);
       AnalysisEngine ae3 = UIMAFramework.produceAnalysisEngine(taeDesc3, rm, null);
       mContext4 = ae3.getUimaContext();
       super.setUp();
@@ -194,7 +194,7 @@ public class UimaContext_implTest extends TestCase {
       Assert.assertEquals(6, intArr2[2].intValue());
 
       Float floatVal2 = (Float) mContext2.getConfigParameterValue("de", "FloatParam");
-      Assert.assertEquals(null, floatVal);
+      Assert.assertEquals(null, floatVal2);
 
       // zh group
       String str3 = (String) mContext2.getConfigParameterValue("zh", "StringParam");

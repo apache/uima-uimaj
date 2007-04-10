@@ -36,6 +36,7 @@ public class BadSegmenter extends CasMultiplier_ImplBase {
    * @see org.apache.uima.analysis_component.CasSegmenter_ImplBase#process(org.apache.uima.cas.CAS)
    */
   public void process(CAS aCAS) throws AnalysisEngineProcessException {
+    //do nothing
   }
 
   /*

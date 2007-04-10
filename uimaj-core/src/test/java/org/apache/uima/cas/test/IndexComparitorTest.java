@@ -34,7 +34,6 @@ import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.admin.TypeSystemMgr;
-import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LinearTypeOrderBuilderImpl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
@@ -132,7 +131,7 @@ public class IndexComparitorTest extends TestCase {
     }
 
     /**
-     * @see org.apache.uima.cas.test.AnnotatorInitializer#initIndexes(FSIndexRepositoryMgr)
+     * 
      */
     public void initIndexes(FSIndexRepositoryMgr parmIrm, TypeSystem parmTs) {
       IndexComparitorTest.this.ts = parmTs;

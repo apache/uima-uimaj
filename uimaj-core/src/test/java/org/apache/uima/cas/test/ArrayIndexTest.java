@@ -22,9 +22,9 @@ package org.apache.uima.cas.test;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.ResultSpecification;
-import org.apache.uima.analysis_engine.TaeDescription;
-import org.apache.uima.analysis_engine.TextAnalysisEngine;
 import org.apache.uima.analysis_engine.annotator.AnnotatorConfigurationException;
 import org.apache.uima.analysis_engine.annotator.AnnotatorContext;
 import org.apache.uima.analysis_engine.annotator.AnnotatorInitializationException;
@@ -44,21 +44,21 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
 
   private static final String idxId = "ArrayIndex";
 
-  private TextAnalysisEngine tae = null;
+  private AnalysisEngine ae = null;
 
   protected void setUp() throws Exception {
     super.setUp();
     // Start up TAE
     XMLInputSource input = new XMLInputSource(JUnitExtension
             .getFile("CASTests/desc/ArrayIndexTest.xml"));
-    TaeDescription desc = UIMAFramework.getXMLParser().parseTaeDescription(input);
-    this.tae = UIMAFramework.produceTAE(desc);
+    AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(input);
+    this.ae = UIMAFramework.produceAnalysisEngine(desc);
 
   }
 
   public void testArrayIndex() {
     try {
-      CAS cas = this.tae.newCAS();
+      CAS cas = this.ae.newCAS();
       FSIndexRepository ir = cas.getIndexRepository();
       TypeSystem ts = cas.getTypeSystem();
       Type annotationType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
@@ -86,7 +86,7 @@ public class ArrayIndexTest extends TestCase implements TextAnnotator {
 
   protected void tearDown() throws Exception {
     super.tearDown();
-    this.tae.destroy();
+    this.ae.destroy();
   }
 
   public void process(CAS aCAS, ResultSpecification aResultSpec) throws AnnotatorProcessException {

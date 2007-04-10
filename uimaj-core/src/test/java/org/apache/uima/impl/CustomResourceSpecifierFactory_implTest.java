@@ -23,13 +23,9 @@ import java.util.Collections;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.collection.CasConsumer;
-import org.apache.uima.collection.CasConsumerDescription;
-import org.apache.uima.collection.impl.CasConsumerDescription_impl;
 import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.Resource;
-import org.apache.uima.resource.ResourceInitializationException;
 
 /**
  * 

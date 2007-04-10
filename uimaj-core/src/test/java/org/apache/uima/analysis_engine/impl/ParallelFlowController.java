@@ -58,10 +58,9 @@ public class ParallelFlowController extends CasFlowController_ImplBase {
     /**
      * Create a new fixed flow starting at step <code>startStep</code> of the fixed sequence.
      * 
-     * @param startStep
-     *          index of mSequence to start at
      */
     public ParallelFlowObject() {
+      //do nothing
     }
 
     /*

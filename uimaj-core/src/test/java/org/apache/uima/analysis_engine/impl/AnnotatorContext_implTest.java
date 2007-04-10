@@ -63,7 +63,7 @@ public class AnnotatorContext_implTest extends TestCase {
    * 
    * @param arg0
    */
-  public AnnotatorContext_implTest(String arg0) throws java.io.FileNotFoundException {
+  public AnnotatorContext_implTest(String arg0) {
     super(arg0);
   }
 
@@ -76,7 +76,7 @@ public class AnnotatorContext_implTest extends TestCase {
       // create primitive analysis engine with configuration groups
       XMLInputSource in = new XMLInputSource(JUnitExtension
               .getFile("AnnotatorContextTest/AnnotatorWithConfigurationGroups.xml"));
-      AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
+      AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       PrimitiveAnalysisEngine_impl tae = new PrimitiveAnalysisEngine_impl();
       // set data path just to test that we can get it later
       HashMap map = new HashMap();
@@ -91,7 +91,7 @@ public class AnnotatorContext_implTest extends TestCase {
       // create aggregate analysis engine with configuration parameter overrides
       XMLInputSource in2 = new XMLInputSource(JUnitExtension
               .getFile("AnnotatorContextTest/AggregateTaeWithConfigParamOverrides.xml"));
-      AnalysisEngineDescription aggDesc = UIMAFramework.getXMLParser().parseTaeDescription(in2);
+      AnalysisEngineDescription aggDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in2);
       AggregateAnalysisEngine_impl aggTae = new AggregateAnalysisEngine_impl();
       aggTae.initialize(aggDesc, map);
       // get the primitive TAE
@@ -103,7 +103,7 @@ public class AnnotatorContext_implTest extends TestCase {
       // create primitive analysis engine for resource testing
       XMLInputSource in3 = new XMLInputSource(JUnitExtension
               .getFile("AnnotatorContextTest/ResourceTestAnnotator.xml"));
-      AnalysisEngineDescription resTestDesc = UIMAFramework.getXMLParser().parseTaeDescription(in3);
+      AnalysisEngineDescription resTestDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in3);
       PrimitiveAnalysisEngine_impl resTestTae = new PrimitiveAnalysisEngine_impl();
       resTestTae.initialize(resTestDesc, map);
       // this should include an annotator context
@@ -112,7 +112,7 @@ public class AnnotatorContext_implTest extends TestCase {
       // create primitive TAE with configuration groups and default fallback
       XMLInputSource in4 = new XMLInputSource(JUnitExtension
               .getFile("AnnotatorContextTest/AnnotatorWithDefaultFallbackConfiguration.xml"));
-      AnalysisEngineDescription desc4 = UIMAFramework.getXMLParser().parseTaeDescription(in4);
+      AnalysisEngineDescription desc4 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in4);
       PrimitiveAnalysisEngine_impl tae4 = new PrimitiveAnalysisEngine_impl();
       // set data path just to test that we can get it later
       tae4.initialize(desc4, null);
@@ -122,7 +122,7 @@ public class AnnotatorContext_implTest extends TestCase {
       // create primitive TAE with configuration parameters (no groups)
       XMLInputSource in5 = new XMLInputSource(JUnitExtension
               .getFile("AnnotatorContextTest/AnnotatorWithConfigurationParameters.xml"));
-      AnalysisEngineDescription desc5 = UIMAFramework.getXMLParser().parseTaeDescription(in5);
+      AnalysisEngineDescription desc5 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in5);
       PrimitiveAnalysisEngine_impl tae5 = new PrimitiveAnalysisEngine_impl();
       // set data path just to test that we can get it later
       tae5.initialize(desc5, null);
@@ -229,7 +229,7 @@ public class AnnotatorContext_implTest extends TestCase {
       Assert.assertEquals(6, intArr2[2].intValue());
 
       Float floatVal2 = (Float) mAC1.getConfigParameterValue("de", "FloatParam");
-      Assert.assertEquals(null, floatVal);
+      Assert.assertEquals(null, floatVal2);
 
       // zh group
       String str3 = (String) mAC1.getConfigParameterValue("zh", "StringParam");
@@ -257,7 +257,7 @@ public class AnnotatorContext_implTest extends TestCase {
       Assert.assertEquals("override", str4);
       // fallback too
       String str5 = (String) mAC2.getConfigParameterValue("en-GB", "StringParam");
-      Assert.assertEquals("override", str4);
+      Assert.assertEquals("override", str5);
       // other groups should not be affected
       String str6 = (String) mAC2.getConfigParameterValue("de", "StringParam");
       Assert.assertEquals("de", str6);

@@ -24,11 +24,11 @@ import junit.framework.TestCase;
 
 import org.apache.uima.Constants;
 import org.apache.uima.UIMAException;
+import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.ResultSpecification;
-import org.apache.uima.analysis_engine.TaeDescription;
-import org.apache.uima.analysis_engine.TextAnalysisEngine;
+import org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_impl;
 import org.apache.uima.analysis_engine.impl.ResultSpecification_impl;
-import org.apache.uima.analysis_engine.impl.TaeDescription_impl;
 import org.apache.uima.analysis_engine.impl.TestAnnotator;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.impl.FixedFlow_impl;
@@ -42,14 +42,14 @@ import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 
-public class TextAnalysisEnginePoolTest extends TestCase {
+public class AnalysisEnginePoolTest extends TestCase {
 
   /**
    * Constructor for MultithreadableAnalysisEngine_implTest.
    * 
    * @param arg0
    */
-  public TextAnalysisEnginePoolTest(String arg0) throws java.io.FileNotFoundException {
+  public AnalysisEnginePoolTest(String arg0) throws java.io.FileNotFoundException {
     super(arg0);
   }
 
@@ -59,7 +59,7 @@ public class TextAnalysisEnginePoolTest extends TestCase {
   protected void setUp() throws Exception {
     try {
       super.setUp();
-      mSimpleDesc = new TaeDescription_impl();
+      mSimpleDesc = new AnalysisEngineDescription_impl();
       mSimpleDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       mSimpleDesc.setPrimitive(true);
       mSimpleDesc.getMetaData().setName("Test Primitive TAE");
@@ -77,12 +77,12 @@ public class TextAnalysisEnginePoolTest extends TestCase {
   }
 
   public void testGetAnalysisEngineMetaData() throws Exception {
-    TextAnalysisEnginePool pool = null;
+    AnalysisEnginePool pool = null;
     try {
       // create pool
-      pool = new TextAnalysisEnginePool("taePool", 3, mSimpleDesc);
+      pool = new AnalysisEnginePool("taePool", 3, mSimpleDesc);
 
-      TextAnalysisEngine tae = pool.getTAE();
+      AnalysisEngine tae = pool.getAnalysisEngine();
       AnalysisEngineMetaData md = tae.getAnalysisEngineMetaData();
       Assert.assertNotNull(md);
       Assert.assertEquals("Simple Test", md.getName());
@@ -98,19 +98,19 @@ public class TextAnalysisEnginePoolTest extends TestCase {
     try {
       // test simple primitive MultithreadableTextAnalysisEngine
       // (using TestAnnotator class)
-      TextAnalysisEnginePool pool = new TextAnalysisEnginePool("taePool", 3, mSimpleDesc);
+      AnalysisEnginePool pool = new AnalysisEnginePool("taePool", 3, mSimpleDesc);
       _testProcess(pool, 0);
 
       // test simple aggregate MultithreadableTextAnalysisEngine
       // (again using TestAnnotator class)
-      TaeDescription aggDesc = new TaeDescription_impl();
+      AnalysisEngineDescription aggDesc = new AnalysisEngineDescription_impl();
       aggDesc.setPrimitive(false);
       aggDesc.getMetaData().setName("Test Aggregate TAE");
       aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", mSimpleDesc);
       FixedFlow_impl flow = new FixedFlow_impl();
       flow.setFixedFlow(new String[] { "Test" });
       aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
-      pool = new TextAnalysisEnginePool("taePool", 3, aggDesc);
+      pool = new AnalysisEnginePool("taePool", 3, aggDesc);
       _testProcess(pool, 0);
 
       // multiple threads!
@@ -152,7 +152,7 @@ public class TextAnalysisEnginePoolTest extends TestCase {
   public void testReconfigure() throws Exception {
     try {
       // create simple primitive TextAnalysisEngine descriptor (using TestAnnotator class)
-      TaeDescription primitiveDesc = new TaeDescription_impl();
+      AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
       primitiveDesc.setPrimitive(true);
       primitiveDesc.getMetaData().setName("Test Primitive TAE");
       primitiveDesc
@@ -167,9 +167,9 @@ public class TextAnalysisEnginePoolTest extends TestCase {
               new NameValuePair[] { new NameValuePair_impl("StringParam", "Test1") });
 
       // create pool
-      TextAnalysisEnginePool pool = new TextAnalysisEnginePool("taePool", 3, primitiveDesc);
+      AnalysisEnginePool pool = new AnalysisEnginePool("taePool", 3, primitiveDesc);
 
-      TextAnalysisEngine tae = pool.getTAE();
+      AnalysisEngine tae = pool.getAnalysisEngine();
       try {
         // check value of string param (TestAnnotator saves it in a static field)
         assertEquals("Test1", TestAnnotator.stringParamValue);
@@ -185,7 +185,7 @@ public class TextAnalysisEnginePoolTest extends TestCase {
         pool.getMetaData().setUUID(tae.getMetaData().getUUID());
         Assert.assertEquals(tae.getMetaData(), pool.getMetaData());
       } finally {
-        pool.releaseTAE(tae);
+        pool.releaseAnalysisEngine(tae);
       }
     } catch (Exception e) {
       JUnitExtension.handleException(e);
@@ -198,9 +198,9 @@ public class TextAnalysisEnginePoolTest extends TestCase {
    * @param aTaeDesc
    *          description of TextAnalysisEngine to test
    */
-  protected void _testProcess(TextAnalysisEnginePool aPool, int i)
+  protected void _testProcess(AnalysisEnginePool aPool, int i)
           throws UIMAException {
-    TextAnalysisEngine tae = aPool.getTAE(0);
+    AnalysisEngine tae = aPool.getAnalysisEngine(0);
     try {
       // Test each form of the process method. When TestAnnotator executes, it
       // stores in static fields the document text and the ResultSpecification.
@@ -220,12 +220,12 @@ public class TextAnalysisEnginePoolTest extends TestCase {
       tae.process(tcas, resultSpec);
       tcas.reset();
     } finally {
-      aPool.releaseTAE(tae);
+      aPool.releaseAnalysisEngine(tae);
     }
   }
 
   class ProcessThread extends Thread {
-    ProcessThread(TextAnalysisEnginePool aPool, int aId) {
+    ProcessThread(AnalysisEnginePool aPool, int aId) {
       mPool = aPool;
       mId = aId;
     }
@@ -249,12 +249,12 @@ public class TextAnalysisEnginePoolTest extends TestCase {
 
     int mId;
 
-    TextAnalysisEnginePool mPool;
+    AnalysisEnginePool mPool;
 
     boolean mIsAggregate;
     
     Throwable mFailure = null;
   }
 
-  private TaeDescription mSimpleDesc;
+  private AnalysisEngineDescription mSimpleDesc;
 }

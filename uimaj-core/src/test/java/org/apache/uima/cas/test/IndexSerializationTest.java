@@ -114,7 +114,7 @@ public class IndexSerializationTest extends TestCase {
   }
 
   // Initialize the first CAS.
-  private static CASMgr initCAS() throws CASException {
+  private static CASMgr initCAS() {
     // // Create a CASMgr. Ensures existence of AnnotationFS type.
     // CASMgr tcas = CASFactory.createCAS();
     CASMgr casMgr = CASFactory.createCAS();

@@ -30,8 +30,8 @@ import org.apache.uima.Constants;
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.ResultSpecification;
-import org.apache.uima.analysis_engine.TaeDescription;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.impl.FixedFlow_impl;
 import org.apache.uima.cas.CAS;
@@ -48,16 +48,16 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 
 public class MultiprocessingAnalysisEngine_implTest extends TestCase {
 
-  private TaeDescription mSimpleDesc;
+  private AnalysisEngineDescription mSimpleDesc;
 
-  private TaeDescription mAggDesc;
+  private AnalysisEngineDescription mAggDesc;
 
   /**
    * Constructor for MultiprocessingAnalysisEngine_implTest.
    * 
    * @param arg0
    */
-  public MultiprocessingAnalysisEngine_implTest(String arg0) throws FileNotFoundException {
+  public MultiprocessingAnalysisEngine_implTest(String arg0) {
     super(arg0);
   }
 
@@ -67,7 +67,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
   protected void setUp() throws Exception {
     try {
       super.setUp();
-      mSimpleDesc = new TaeDescription_impl();
+      mSimpleDesc = new AnalysisEngineDescription_impl();
       mSimpleDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       mSimpleDesc.setPrimitive(true);
       mSimpleDesc
@@ -84,7 +84,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       Capability[] caps = new Capability[] {cap};
        mSimpleDesc.getAnalysisEngineMetaData().setCapabilities(caps);
 
-      mAggDesc = new TaeDescription_impl();
+      mAggDesc = new AnalysisEngineDescription_impl();
       mAggDesc.setPrimitive(false);
       mAggDesc.getMetaData().setName("Simple Test Aggregate");
       mAggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", mSimpleDesc);
@@ -232,7 +232,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
   public void testReconfigure() throws Exception {
     try {
       // create simple primitive TextAnalysisEngine descriptor (using TestAnnotator class)
-      TaeDescription primitiveDesc = new TaeDescription_impl();
+      AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
       primitiveDesc.setPrimitive(true);
       primitiveDesc
               .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
@@ -261,7 +261,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       assertEquals("Test2", TestAnnotator.stringParamValue);
 
       // test aggregate TAE
-      TaeDescription aggDesc = new TaeDescription_impl();
+      AnalysisEngineDescription aggDesc = new AnalysisEngineDescription_impl();
       aggDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       aggDesc.setPrimitive(false);
       aggDesc.getDelegateAnalysisEngineSpecifiersWithImports().put("Test", primitiveDesc);
@@ -307,7 +307,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
    * @param i
    *          thread identifier for multithreaded testing
    */
-  protected void _testProcess(TaeDescription aTaeDesc, int i) throws UIMAException {
+  protected void _testProcess(AnalysisEngineDescription aTaeDesc, int i) throws UIMAException {
     // create and initialize MultiprocessingTextAnalysisEngine
     MultiprocessingAnalysisEngine_impl tae = new MultiprocessingAnalysisEngine_impl();
     tae.initialize(aTaeDesc, null);

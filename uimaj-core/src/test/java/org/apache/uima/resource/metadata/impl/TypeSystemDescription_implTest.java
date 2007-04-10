@@ -21,7 +21,6 @@ package org.apache.uima.resource.metadata.impl;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
 
 import junit.framework.TestCase;
 

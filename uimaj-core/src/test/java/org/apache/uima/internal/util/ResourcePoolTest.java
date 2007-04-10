@@ -23,9 +23,9 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.analysis_engine.TaeDescription;
-import org.apache.uima.analysis_engine.TextAnalysisEngine;
-import org.apache.uima.analysis_engine.impl.TaeDescription_impl;
+import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_impl;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.test.junit_extension.JUnitExtension;
@@ -52,12 +52,12 @@ public class ResourcePoolTest extends TestCase {
     try {
       super.setUp();
       // create resource specifier and a pool containing 3 instances
-      mDesc = new TaeDescription_impl();
+      mDesc = new AnalysisEngineDescription_impl();
       mDesc.setPrimitive(true);
       mDesc.setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       mDesc.getMetaData().setName("Test TAE");
       mDesc.getMetaData().setDescription("This is a test.");
-      pool1 = new ResourcePool(3, mDesc, TextAnalysisEngine.class);
+      pool1 = new ResourcePool(3, mDesc, AnalysisEngine.class);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -205,7 +205,7 @@ public class ResourcePoolTest extends TestCase {
     }
   }
 
-  private TaeDescription mDesc;
+  private AnalysisEngineDescription mDesc;
 
   private ResourcePool pool1;
 

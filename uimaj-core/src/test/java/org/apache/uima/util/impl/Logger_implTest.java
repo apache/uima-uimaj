@@ -33,13 +33,6 @@ public class Logger_implTest extends TestCase {
     super(arg0);
   }
 
-  /**
-   * @see junit.framework.TestCase#setUp()
-   */
-  protected void setUp() throws Exception {
-
-  }
-
   public void testLogWrapperCreation() throws Exception {
     org.apache.uima.util.Logger rootLogger = Logger_impl.getInstance();
     org.apache.uima.util.Logger rootLogger1 = Logger_impl.getInstance();

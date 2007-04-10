@@ -25,8 +25,8 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.analysis_engine.TextAnalysisEngine;
 import org.apache.uima.resource.impl.ResourceCreationSpecifier_impl;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.ResourceMetaData;
@@ -179,7 +179,7 @@ public class ConfigurableResource_implTest extends TestCase {
       // (instantiate metadata from XML TAE descriptor because it's convenient)
       XMLInputSource in = new XMLInputSource(JUnitExtension
               .getFile("ConfigurableResourceImplTest/AnnotatorWithConfigurationGroups.xml"));
-      AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
+      AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       ResourceMetaData metadata = desc.getMetaData();
       MyTestSpecifier spec = new MyTestSpecifier();
       spec.setMetaData(metadata);
@@ -232,7 +232,7 @@ public class ConfigurableResource_implTest extends TestCase {
               .getFile("ConfigurableResourceImplTest/AnnotatorWithConfigurationGroups.xml"));
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               in);
-      TextAnalysisEngine test = UIMAFramework.produceTAE(desc);
+      AnalysisEngine test = UIMAFramework.produceAnalysisEngine(desc);
 
       // test default fallback
       String str3 = (String) test.getConfigParameterValue("StringParam");
@@ -281,6 +281,7 @@ class MyTestResource extends ConfigurableResource_ImplBase {
   }
 
   public void destroy() {
+    //do nothing
   }
 }
 
