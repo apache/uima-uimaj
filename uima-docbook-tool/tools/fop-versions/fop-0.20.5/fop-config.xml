@@ -17,23 +17,27 @@
    under the License.
 -->
 <configuration>
+  <entry>
+    <key>fontBaseDir</key>
+    <value>../../../uima-docbook-tool/tools/fop-versions/fop-0.20.5/fonts</value>
+  </entry>
   <fonts>
-    <font metrics-file="file:fonts/palatino.xml" 
+    <font metrics-file="palatino.xml" 
       kerning="yes"
       embed-file="file:///c:/WINDOWS/Fonts/pala.TTF">
       <font-triplet name="Palatino" style="normal" weight="normal"/>
     </font>
-    <font metrics-file="file:fonts/palatino-bold.xml" 
+    <font metrics-file="palatino-bold.xml" 
       kerning="yes"
       embed-file="file:///c:/WINDOWS/Fonts/palab.TTF">
       <font-triplet name="Palatino" style="normal" weight="bold"/>
     </font>
-    <font metrics-file="file:fonts/palatino-italic.xml" 
+    <font metrics-file="palatino-italic.xml" 
       kerning="yes"
       embed-file="file:///c:/WINDOWS/Fonts/palai.TTF">
       <font-triplet name="Palatino" style="italic" weight="normal"/>
     </font>
-    <font metrics-file="file:fonts/palatino-bold-italic.xml" 
+    <font metrics-file="palatino-bold-italic.xml" 
       kerning="yes"
       embed-file="file:///c:/WINDOWS/Fonts/palabi.TTF">
       <font-triplet name="Palatino" style="italic" weight="bold"/>

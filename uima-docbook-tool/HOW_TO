@@ -33,7 +33,11 @@ Step 2: Organize the documentation into "books", and within books, "chapters".
 
 Step 3: create a file "local.docbook.properties", modelled on samples/local.docbook.properties
 
+=============================================================
+Path requirements:
 
+The target path must be a top level path in a parallel project directory.  The font config
+currently depends on this.
 
 NOTES:
 
