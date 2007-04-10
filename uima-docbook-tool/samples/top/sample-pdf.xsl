@@ -27,7 +27,15 @@
   <!-- note that xsl:import elements must appear FIRST
        and their href strings must be literal (no variables allowed) -->
   
-  <!-- import docbook system from the shared uima-docbook-tool project -->  
+  <!-- import docbook system from the shared uima-docbook-tool project 
+  
+    
+             I M P O R T A N T
+         Change the ../../../ . . .   pattern below to go up enough to
+         reach the directory where uima-docbook-tool project is,
+         relative to the directory where you put this file -->  
+  
+  
   <xsl:import href="../../../uima-docbook-tool/tools/docbook-versions/docbook-xsl-1.72.0/fo/docbook.xsl" />
   
   <!-- import the standard uima-style of formatting from the shared uima-docbook-tool project -->
@@ -36,6 +44,7 @@
   <!-- The script will generate a title page in ${local.titlepage.dir} -->
   <!-- this generate xsl file needs to be included here -->
   <!-- Make sure the path agrees with your setting of ${local.titlepage.dir} in local.docbook.properties -->
+  
   <xsl:include href="../titlepage/titlepage-pdf.xsl"/>
    
 </xsl:stylesheet>
