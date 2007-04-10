@@ -29,7 +29,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.analysis_engine.impl.TaeDescription_impl;
+import org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_impl;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
@@ -156,11 +156,11 @@ public class Import_implTest extends TestCase {
               .getFile("ImportImplTest/subdir/subdir2/AggregateTaeForNestedImportTest.xml");
       File importedFile = JUnitExtension
               .getFile("ImportImplTest/subdir/PrimitiveTaeForNestedImportTest.xml");
-      TaeDescription_impl agg = (TaeDescription_impl) UIMAFramework.getXMLParser()
-              .parseTaeDescription(new XMLInputSource(baseDescriptorFile));
+      AnalysisEngineDescription_impl agg = (AnalysisEngineDescription_impl) UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(new XMLInputSource(baseDescriptorFile));
       assertEquals(baseDescriptorFile.toURL(), agg.getSourceUrl());
 
-      TaeDescription_impl prim = (TaeDescription_impl) agg.getDelegateAnalysisEngineSpecifiers()
+      AnalysisEngineDescription_impl prim = (AnalysisEngineDescription_impl) agg.getDelegateAnalysisEngineSpecifiers()
               .get("Annotator1");
       assertEquals(importedFile.toURL(), prim.getSourceUrl());
 

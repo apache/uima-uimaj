@@ -38,6 +38,7 @@ public class CrossAnnotation extends Annotation {
 
   // Never called. Disable default constructor
   protected CrossAnnotation() {
+    //do nothing
   }
 
   /** Internal - Constructor used by generator */

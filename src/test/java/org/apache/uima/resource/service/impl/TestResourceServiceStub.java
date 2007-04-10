@@ -52,7 +52,7 @@ public class TestResourceServiceStub implements ResourceServiceStub {
    * @see org.apache.uima.resource.service.impl.ResourceServiceStub#destroy()
    */
   public void destroy() {
-
+    //do nothing
   }
 
 }

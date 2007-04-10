@@ -233,5 +233,6 @@ public class CASTestSetup extends TestCase implements AnnotatorInitializer {
   }
 
   public void testNothing() {
+    //do nothing
   } // to avoid junit warning about no tests found
 }

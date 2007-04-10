@@ -65,6 +65,7 @@ public class TestResourceInterface_impl extends Resource_ImplBase implements Sha
    * @see org.apache.uima.resource.Resource#destroy()
    */
   public void destroy() {
+    //do nothing
   }
 
   /**
@@ -87,6 +88,7 @@ public class TestResourceInterface_impl extends Resource_ImplBase implements Sha
    */
   public void setConfigurationParameters(NameValuePair[] aSettings)
           throws ResourceConfigurationException {
+    //do nothing
   }
 
 }

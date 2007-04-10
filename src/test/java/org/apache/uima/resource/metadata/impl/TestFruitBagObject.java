@@ -29,6 +29,7 @@ import org.apache.uima.util.NameClassPair;
  */
 public class TestFruitBagObject extends MetaDataObject_impl {
   public TestFruitBagObject() {
+    //do nothing
   }
 
   public TestFruitObject[] getFruits() {

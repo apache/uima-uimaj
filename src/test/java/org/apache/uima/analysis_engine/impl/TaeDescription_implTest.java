@@ -29,7 +29,7 @@ import junit.framework.TestCase;
 
 import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.analysis_engine.TaeDescription;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.FixedFlow;
 import org.apache.uima.analysis_engine.metadata.impl.FixedFlow_impl;
@@ -124,7 +124,7 @@ public class TaeDescription_implTest extends TestCase {
       index2.setKeys(new FsIndexKeyDescription[] { key1a });
 
       // create primitive TAE description
-      primitiveDesc = new TaeDescription_impl();
+      primitiveDesc = new AnalysisEngineDescription_impl();
       primitiveDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       primitiveDesc.setPrimitive(true);
       primitiveDesc.setAnnotatorImplementationName("org.apache.uima.examples.TestAnnotator");
@@ -180,12 +180,12 @@ public class TaeDescription_implTest extends TestCase {
       settings.getSettingsForGroups().put("cfgGrp2b", new NameValuePair[] { nvp3b });
 
       // create aggregate TAE description
-      aggregateDesc = new TaeDescription_impl();
+      aggregateDesc = new AnalysisEngineDescription_impl();
       aggregateDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       aggregateDesc.setPrimitive(false);
       Map delegateTaeMap = aggregateDesc.getDelegateAnalysisEngineSpecifiersWithImports();
       delegateTaeMap.put("Test", primitiveDesc);
-      TaeDescription_impl primDesc2 = new TaeDescription_impl();
+      AnalysisEngineDescription_impl primDesc2 = new AnalysisEngineDescription_impl();
       primDesc2.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       primDesc2.setAnnotatorImplementationName("fakeClass");
       primDesc2.getAnalysisEngineMetaData().setName("fakeAnnotator");
@@ -252,10 +252,10 @@ public class TaeDescription_implTest extends TestCase {
 
       // parse objects back from XML
       InputStream is = new ByteArrayInputStream(primitiveDescXml.getBytes());
-      TaeDescription newPrimitiveDesc = UIMAFramework.getXMLParser().parseTaeDescription(
+      AnalysisEngineDescription newPrimitiveDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(is, null));
       is = new ByteArrayInputStream(aggregateDescXml.getBytes());
-      TaeDescription newAggregateDesc = UIMAFramework.getXMLParser().parseTaeDescription(
+      AnalysisEngineDescription newAggregateDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(is, null));
 
       Assert.assertEquals(primitiveDesc, newPrimitiveDesc);
@@ -268,12 +268,12 @@ public class TaeDescription_implTest extends TestCase {
   public void testSerialization() throws Exception {
     try {
       byte[] primitiveDescBytes = SerializationUtils.serialize(primitiveDesc);
-      TaeDescription_impl primitiveDesc2 = (TaeDescription_impl) SerializationUtils
+      AnalysisEngineDescription_impl primitiveDesc2 = (AnalysisEngineDescription_impl) SerializationUtils
               .deserialize(primitiveDescBytes);
       Assert.assertEquals(primitiveDesc, primitiveDesc2);
 
       byte[] aggregateDescBytes = SerializationUtils.serialize(aggregateDesc);
-      TaeDescription_impl aggregateDesc2 = (TaeDescription_impl) SerializationUtils
+      AnalysisEngineDescription_impl aggregateDesc2 = (AnalysisEngineDescription_impl) SerializationUtils
               .deserialize(aggregateDescBytes);
       Assert.assertEquals(aggregateDesc, aggregateDesc2);
 
@@ -298,8 +298,8 @@ public class TaeDescription_implTest extends TestCase {
     }
   }
 
-  private TaeDescription_impl primitiveDesc;
+  private AnalysisEngineDescription_impl primitiveDesc;
 
-  private TaeDescription_impl aggregateDesc;
+  private AnalysisEngineDescription_impl aggregateDesc;
 
 }

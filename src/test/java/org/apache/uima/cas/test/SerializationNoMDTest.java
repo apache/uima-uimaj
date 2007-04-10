@@ -133,7 +133,7 @@ public class SerializationNoMDTest extends TestCase {
   }
 
   // Initialize the first CAS.
-  private static CASMgr initCAS() throws CASException {
+  private static CASMgr initCAS() {
     // Create an initial CASMgr from the factory.
     // CASMgr cas = CASFactory.createCAS();
     // assert(tsa != null);
@@ -248,7 +248,7 @@ public class SerializationNoMDTest extends TestCase {
   }
 
   // Very (!) primitive EOS detection.
-  private void createSentences() throws CASException {
+  private void createSentences() {
     // TypeSystem ts = cas.getTypeSystem();
     // Type eosType = ts.getType(EOS_TYPE);
     // Type tokenType = ts.getType(TOKEN_TYPE);
@@ -305,7 +305,7 @@ public class SerializationNoMDTest extends TestCase {
   }
 
   // Check results.
-  private void checkSentences() throws CASException, CASException {
+  private void checkSentences() {
     TypeSystem ts = cas.getTypeSystem();
     Type localSentenceType = ts.getType(SENT_TYPE);
     // Feature tokenTypeFeature = ts.getFeatureByFullName(TOKEN_TYPE_FEAT);

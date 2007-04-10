@@ -21,7 +21,6 @@ package org.apache.uima.cas.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -66,7 +65,7 @@ public class XCASDeserializerTest extends TestCase {
    * 
    * @param arg0
    */
-  public XCASDeserializerTest(String arg0) throws IOException {
+  public XCASDeserializerTest(String arg0) {
     super(arg0);
   }
 

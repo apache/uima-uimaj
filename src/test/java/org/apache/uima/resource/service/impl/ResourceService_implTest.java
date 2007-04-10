@@ -22,8 +22,8 @@ package org.apache.uima.resource.service.impl;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.uima.analysis_engine.TaeDescription;
-import org.apache.uima.analysis_engine.impl.TaeDescription_impl;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_impl;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.metadata.impl.ConfigurationParameter_impl;
@@ -50,7 +50,7 @@ public class ResourceService_implTest extends TestCase {
     try {
       super.setUp();
       // create resource specifier and a pool containing 2 instances
-      TaeDescription primitiveDesc = new TaeDescription_impl();
+      AnalysisEngineDescription primitiveDesc = new AnalysisEngineDescription_impl();
       primitiveDesc.setPrimitive(true);
       primitiveDesc
               .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");

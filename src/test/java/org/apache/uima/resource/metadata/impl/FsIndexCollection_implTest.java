@@ -20,7 +20,6 @@
 package org.apache.uima.resource.metadata.impl;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
@@ -30,7 +29,6 @@ import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 

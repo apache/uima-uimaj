@@ -32,7 +32,6 @@ import junit.framework.TestCase;
 import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.analysis_engine.TaeDescription;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.FixedFlow;
 import org.apache.uima.analysis_engine.metadata.FlowControllerDeclaration;
@@ -135,7 +134,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
       key1a.setComparator(1);
       index2.setKeys(new FsIndexKeyDescription[] { key1a });
 
-      // create primitive TAE description
+      // create primitive AE description
       primitiveDesc = new AnalysisEngineDescription_impl();
       primitiveDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       primitiveDesc.setPrimitive(true);
@@ -193,7 +192,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
       settings.getSettingsForGroups().put("cfgGrp2a", new NameValuePair[] { nvp3a });
       settings.getSettingsForGroups().put("cfgGrp2b", new NameValuePair[] { nvp3b });
 
-      // create aggregate TAE description
+      // create aggregate AE description
       aggregateDesc = new AnalysisEngineDescription_impl();
       aggregateDesc.setFrameworkImplementation(Constants.JAVA_FRAMEWORK_NAME);
       aggregateDesc.setPrimitive(false);
@@ -287,7 +286,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
       // test a complex descriptor
       XMLInputSource in = new XMLInputSource(JUnitExtension
               .getFile("AnnotatorContextTest/AnnotatorWithGroupsAndNonGroupParams.xml"));
-      AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
+      AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       OperationalProperties opProps = desc.getAnalysisEngineMetaData().getOperationalProperties();
       assertNotNull(opProps);
       assertEquals(true, opProps.getModifiesCas());
@@ -303,7 +302,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
       // test a descriptor that includes a CasConsumer
       in = new XMLInputSource(JUnitExtension
               .getFile("TextAnalysisEngineImplTest/AggregateTaeWithCasConsumer.xml"));
-      desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
+      desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       writer = new StringWriter();
       desc.toXML(writer);
       descXml = writer.getBuffer().toString();
@@ -396,46 +395,46 @@ public class AnalysisEngineDescription_implTest extends TestCase {
     // try some that should work
     XMLInputSource in = new XMLInputSource(JUnitExtension
             .getFile("TextAnalysisEngineImplTest/AggregateTaeWithConfigParamOverrides.xml"));
-    TaeDescription desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
+    AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
     desc.doFullValidation();
     in = new XMLInputSource(JUnitExtension
             .getFile("AnnotatorContextTest/AnnotatorWithGroupsAndNonGroupParams.xml"));
-    desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
+    desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
     desc.doFullValidation();
 
     // try aggregate containing remote service - should work even if can't connect
     in = new XMLInputSource(JUnitExtension
             .getFile("TextAnalysisEngineImplTest/AggregateWithUnknownRemoteComponent.xml"));
-    desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
+    desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
     desc.doFullValidation();
 
     // try aggregate with sofas
     in = new XMLInputSource(JUnitExtension.getFile("CpeSofaTest/TransAnnotatorAggregate.xml"));
-    desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
+    desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
     desc.doFullValidation();
 
     // try another aggregate with sofas
     in = new XMLInputSource(JUnitExtension
             .getFile("CpeSofaTest/TransAnnotatorAndTestAnnotatorAggregate.xml"));
-    desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
+    desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
     desc.doFullValidation();
 
     // try primitive with duplicate configuration group definitions
     in = new XMLInputSource(JUnitExtension
             .getFile("TextAnalysisEngineImplTest/AnnotatorWithDuplicateConfigurationGroups.xml"));
-    desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
+    desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
     desc.doFullValidation();
 
     // try aggregate with duplicate configuration group definitions
     in = new XMLInputSource(JUnitExtension
             .getFile("TextAnalysisEngineImplTest/AggregateWithDuplicateGroupOverrides.xml"));
-    desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
+    desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
     desc.doFullValidation();
     
     //test aggregate with import by name and configuration parameter overrides
     in = new XMLInputSource(JUnitExtension
             .getFile("TextAnalysisEngineImplTest/AeWithConfigParamOverridesAndImportByName.xml"));
-    desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
+    desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
     ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
     File dataPathDir = JUnitExtension.getFile("TextAnalysisEngineImplTest/dataPathDir");
     resMgr.setDataPath(dataPathDir.getCanonicalPath());
@@ -444,12 +443,12 @@ public class AnalysisEngineDescription_implTest extends TestCase {
     //test UIMA C++ descriptor (should succeed even though annotator library doesn't exist)
     in = new XMLInputSource(JUnitExtension
             .getFile("TextAnalysisEngineImplTest/TestUimaCppAe.xml"));
-    desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
+    desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
     desc.doFullValidation();
     
     in = new XMLInputSource(JUnitExtension
             .getFile("TextAnalysisEngineImplTest/TestAggregateContainingCppAnnotator.xml"));
-    desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
+    desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
     desc.doFullValidation();    
   }
   
@@ -500,7 +499,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
     XMLInputSource in = new XMLInputSource(aFile);
     Exception ex = null;
     try {
-      TaeDescription desc = UIMAFramework.getXMLParser().parseTaeDescription(in);
+      AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       desc.doFullValidation();
     } catch (InvalidXMLException e) {
       // e.printStackTrace();
