@@ -21,7 +21,10 @@
 
 <!-- This is the common xsl parameterization shared by all formats -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+               xmlns:exsl="http://exslt.org/common"
                 version='1.0'>
+  
+  
 
   <xsl:attribute-set name="root.properties">
       <xsl:attribute name="text-align">left</xsl:attribute>
@@ -100,6 +103,42 @@
 
   <!-- Format Variable Lists as Blocks (prevents horizontal overflow) -->
   <xsl:param name="variablelist.as.blocks">1</xsl:param>
+
+  <!-- expand plain imageobject nodes into doubles, one for fo output the other for html output
+       Scale the html output by 1.1 -->
+    
+  <xsl:template match="mediaobject[imageobject[not(@role)]]">
+    <xsl:variable name="id1" select="imageobject/imagedata"/>
+    <xsl:variable name="width" select="string(imageobject/imagedata/@width)"/>
+    
+    <xsl:variable name="width_number"
+      select="substring($id1/@width, 1, string-length($id1/@width) - 2)"/>
+    
+    <xsl:variable name="width_unit"
+      select="substring($id1/@width, string-length($id1/@width) - 1)"/>
+    
+    <xsl:variable name="scale_factor">
+      <xsl:choose>
+        <xsl:when test="$width_unit = 'px'">1.37</xsl:when>
+        <xsl:otherwise>1.1</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    
+    <xsl:variable name="n">
+      <mediaobject>
+        <imageobject role="html">
+          <imagedata width="{concat($width_number * $scale_factor, $width_unit)}"
+            format="{$id1/@format}" fileref="{$id1/@fileref}"/>
+        </imageobject>
+        <imageobject role="fo">
+          <imagedata width="{$id1/@width}" format="{$id1/@format}"
+            fileref="{$id1/@fileref}"/>
+        </imageobject>
+        <textobject><phrase><xsl:value-of select="textobject/phrase"/></phrase></textobject>
+      </mediaobject>
+    </xsl:variable>
+    <xsl:apply-templates select="exsl:node-set($n)/*"/>
+  </xsl:template>
   
 </xsl:stylesheet>
 
