@@ -336,7 +336,7 @@
 	<!-- == This is the main target to generate all the docs                   == -->
 	<!-- ==                                                                    == -->
 	<!-- ======================================================================== -->
-	<target name="all" depends="pdf,html,htmlsingle"
+	<target name="all" depends="pdf, html, htmlsingle"
           description="--> Generate and copy reference documentation">
 		<!--echo message="build all for ${chapter_name}"/-->
 	</target>
@@ -356,7 +356,7 @@
 	<!-- == Create the PDF documentation                                       == -->
 	<!-- ==                                                                    == -->
 	<!-- ======================================================================== -->
-	<target name="pdf" depends="prepare, transform-pdf, fop_conditionally" description="--> Generate PDF docs"/>
+	<target name="pdf" depends="prepare, transform-pdf, copy-docbook-images-and-css, fop_conditionally" description="--> Generate PDF docs"/>
 	
 	<target name="transform-pdf" depends="transform-title-pdf, transform-source-pdf" description="--> internal transform for pdf output"/>
 	
@@ -406,7 +406,7 @@
 	<!-- ==                                                                    == -->
 	<!-- ======================================================================== -->
 	<target name="html"
-          depends="prepare"
+          depends="prepare, copy-docbook-images-and-css"
           description="--> Generate HTML docs in multiple files">
 
 		<echo message="skipping many-page html output for now for ${chapter_name}"/>
@@ -419,7 +419,7 @@
 	<!-- ==                                                                    == -->
 	<!-- ======================================================================== -->
 	<target name="htmlsingle" 
-          depends="prepare, transform-title-html, transform-html-single, copy-docbook-images-and-css"
+          depends="prepare, copy-docbook-images-and-css, transform-title-html, transform-html-single"
           description="--> Generate HTML docs in a single, big file"/>
 
 	<target name="transform-html-single">
