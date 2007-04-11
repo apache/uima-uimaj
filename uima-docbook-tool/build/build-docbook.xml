@@ -434,11 +434,6 @@
 		               targets.filename=${olink.dir.path}/${chapter_name}/htmlsingle-target.db
 		               target.database.document=file:///${olink.dir.path}/olink_db_htmlsingle.xml
 		               current.docid=${chapter_name}"/>
-		
-    	<copy todir="${target.dir.path}/images/${book_name}">
-			<fileset dir="${docbook.src.dir}/${book_name}/images"/>
-		</copy>
-
 	</target>
 	
 	<!-- ======================================================================== -->
@@ -455,11 +450,14 @@
 			<fileset dir="${docbook.xsl.dir}/images/"/>
 		</copy>
 
+ 	  <copy todir="${target.dir.path}/images/${book_name}">
+      <fileset dir="${docbook.src.dir}/${book_name}/images" excludes="*.ppt"/>
+		</copy>
+
 		<copy todir="${target.dir.path}/${chapter_name}/css">
 			<fileset dir="${css.dir}"/>
-		</copy>
-		
-		
+		</copy>		
+
 	</target>
 
 	<!-- ======================================================================== -->
