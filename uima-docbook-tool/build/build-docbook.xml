@@ -119,7 +119,8 @@
 	
 	<target name="init_once" depends="init_once_a, fop-0.20.5, fop-0.93, saxon-6.5.5, saxon-8.9" description="sets properties, once"/>
 	
-  <target name="init_once_a">
+  <target name="init_once_a" unless="init_once_done">
+    <property name="init_once_done" value="ignored"/>
     
     <path id="docbook.tool.project" location="${ant.file.build-docbook}/../.."/>
     <pathconvert dirsep="/" property="docbook.tool.project" refid="docbook.tool.project"/>
@@ -337,7 +338,7 @@
 	<!-- ======================================================================== -->
 	<target name="all" depends="pdf,html,htmlsingle"
           description="--> Generate and copy reference documentation">
-		<echo message="build all for ${chapter_name}"/>
+		<!--echo message="build all for ${chapter_name}"/-->
 	</target>
 
 	<!-- ======================================================================== -->
