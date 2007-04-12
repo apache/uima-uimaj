@@ -2,18 +2,6 @@
   framework actually works on Windows. It should, but all testing was
   done on Linux.
 
-* Test JDK 1.4.2
-
-* Convert the README into Docbook and render it through the framework
-  (Eat our own dogfood)
-
-* Don't use Saxon directly. Use the <style> ant task and make Saxon
-  configurable (use another processor, e.g. Xalan (eat Apache dog
-  food... ;-) )
-
-* The title pages still have some large gaps. Toy with the style sheets
-  and titlepage.xml files
-
 * Document the customizations in the custom.xsl files better
 
 * Don't blindly add all the images from the docbook XSL distribution to

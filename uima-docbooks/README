@@ -44,6 +44,9 @@ Author information
 
 This framework and documentation was originally written by the Jakarta Velocity
 Developers. It has been extensively modified by the UIMA developers.
+The tool framework has been moved out of this project and into 
+the uima-docbook-tool project.
+
 If you have questions, found a bug or have enhancements,
 please contact the UIMA developers through the UIMA Development Mailing
 list at uima-dev@incubator.apache.org
@@ -51,18 +54,6 @@ list at uima-dev@incubator.apache.org
 
 Why another framework for rendering docbook?
 ============================================
-
-The Velocity project uses a simple HTML based format called XDOC for
-its documentation for a very long time. However, XDOC is not really
-popular outside the Apache world (and not even in the Apache world),
-it renders somehow into HTML but no other formats (unless you consider
-a set of alpha and beta-level Maven plugins) and tool support for this
-format is not really there.
-
-When an XML based format for documentation is considered, DocBook
-seems to be a natural choice. So we decided to take a stab at rendering
-the existing Velocity Docs that are end-user specific (Users Guide,
-Developers Guide, Reference and the likes) through DocBook.
 
 What we wanted to have, was a framework, that
 
@@ -104,20 +95,23 @@ What we wanted to have, was a framework, that
 
 * shares images among html and htmlsingle formats (images are often the
   most memory consuming part of the document)
+  
+* automatically scale images for html vs pdf so they appear the same size
 
 
 What you need
 =============
 
+* The uima-docbook-tool project (from the UIMA svn)
+
 * A Java Runtime. All testing has been done using the Sun JSDK 1.5.0
+  and 1.6.0
   but Java 1.4.2 has also been used quite extensively.
 
 * Apache Ant version 1.6 or better. The build script uses the macrodef
   task which was introduced in ant 1.6. Get it from http://ant.apache.org/
 
 * If you want to render images, Java Advanced Imaging (see README.FIRST)
-
-Everything else should be included in this package.
 
 
 How it is used
@@ -145,8 +139,8 @@ the rebuilding of the targets.
 
 If you run ant in the base directory of this distribution, it should
 build a target directory in target/ for each directory in
-src/docbook. In each of the directories, you'll find three
-outputs for the chunked html, the single html (called by the book-name.html)
+src/docbook. In each of the directories, you'll find two
+outputs for the single html (called by the book-name.html)
 and the pdf (called by the book-name.pdf).
 
 In addition, the target directory has 
@@ -160,13 +154,6 @@ if needed.
 
 Running Ant from Eclipse
 ========================
-
-If you right click the build-docbook.xml file and select run as Ant ...
-it will bring up a menu where you can add properties.  You can use this
-to add/edit the "book_name" property and set it to, e.g., tools - this
-would build the tools book.  This setting is sticky - it is remembered by
-the Eclipse framework - and you can rerun it with a single click on the 
-run-external-tools icon.
 
 If you run ant with no arguments in the base directory, it runs the
 build.xml ant script which builds all the UIMA documentation.
@@ -188,15 +175,15 @@ Notes
 Add a new DocBook "book"
 ========================
 
-You create a new subdirectory inside src/docbook. In there goes your
+Create a new subdirectory inside src/docbook. In there goes your
 new docbook document. If you need images for your document, they go
-into src/<bookname>/images/<maybe-subdir-for-chapter>/image001.png_etc. 
+into src/<bookname>/images/<maybe-subdir-for-chapter>/<image-name>.png etc. 
 Inside your document, they should be referenced as
 '..images/etc.' because images are kept one level highter in the target
 for sharing the docbook images.
 
-In the main build.xml file, you must add a call to the framework for
-your new document:
+In the main build.xml file, you must add a call to the build-all-books
+task for your new document:
 
 <ant antfile="build-docbook.xml" target="all">
       <property name="book_name" value="tutorials_and_users_guides"/>  (1)
@@ -213,9 +200,13 @@ If you want to do just one chapter of a book, you can.  Do it like this:
 
 When you add a new document to the framework, you must make sure that
 its referenced DocBook DTD files can be resolved by the Catalog
-resolver. Currently, the resolver knows about DocBook 4.4, so your
+resolver. Currently, the resolver knows about DocBook 4.5 and 4.4, so your
 document declaration should be
 
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+       "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+
+(or, if you're using an older level of docbook:
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
        "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
 
@@ -229,59 +220,50 @@ How to write / edit Docbook source
 
 If you are comfortable with Eclipse, obtain the XMLBuddy plugin for it
 and use it.  It integrates into the Eclipse auto-complete framework all the
-docbook elements and attributes.  It also includes any "entities" that you
+docbook elements and attributes.  It also "knows about" any "entities" that you
 might define/declare.  The UIMA Docbook source makes extensive use of these -
 using entities this way will show an error indicator if you mispell it, and
 entities also participate in the auto-complete framework.  And, when you're
 all done, click on the menu "XML" -> "format" and the source is nicely
 formatted for you.
 
-You can also use XMLMind (see the bottom of this document).
+You can also use XMLMind (see the bottom of this document), but it doesn't
+support entities.
 
 
 How it works (in depth)
 =======================
 
-Take a look at the MANIFEST file first to get an idea what is in this
-package and what the various files are supposed to do.
-
-
 ant files
 ---------
 
 The build.xml file contains only the driver targets for rendering the
-documentation. The actual work is done through targets defined in
-build-docbook.xml. This file normally should not be changed; if you
+documentation.  It imports the main build file from the uima-docbook-took
+project - the build-docbook.xml. This file normally should not be changed; if you
 have to, please let the developers know, so we can incorporate your
 changes and or bug fixes into the main distribution.
 
 build-docbook.xml contains three main targets: pdf, html and
 htmlsingle. Each is responsible for rendering one format.
 
-Most settings are done in the project.properties file and there should
-be no need to change these properties.
-
+User configurable settings are done using the local.docbook.properties
+file, which needs to be at the top level of the project.
 
 DocBook reference files
 -----------------------
 
-This framework uses the DocBook XML and XSL distribution archives
-without any changes to them. The reference files are located in
-docbook/zip and are expanded into the docbook/ directory before the
-rendering process. The file names must be reflected in the
-docbook.xml.version and docbook.xsl.version properties in the
-project.properties file. If you want to use e.g. a newer XSL version,
-you can put it into docbook/zip and update project.properties to reflect
-the change.
+The uima-docbook-tool project uses the DocBook XML and XSL distribution archives
+without any changes to them. The version number needs to be in the
+local.docbook.properties files.  
 
 
 XML Resolver
 ------------
 
 The framework uses the Apache XML commons resolver to avoid accessing
-the Internet for Catalog files. The resolver is configured through the
-CatalogManager.properties and xml-catalog.xml files in the base
-directory of the distribution. If you update e.g. the Docbook XML
+the Internet for DTD files. The resolver is configured through the
+CatalogManager.properties and xml-catalog.xml files in the uima-docbook-tool/catalog
+configuration files. If you update e.g. the Docbook XML
 version, you must also update the catalog file to match the new
 version.
 
@@ -308,37 +290,6 @@ filtering. This two step process has been chosen because html and
 htmlsingle are very similar and it makes no sense to maintain two sets
 of stylesheet customizations that are virtually identical.
 
-Before usage, these files are copied to target/tmp using an ant filter
-set. This allows you to use the following replacements in the driver
-files:
-
-@file.prefix@     - Prefix for loading a file through the XSL
-                    processor. Is 'file://' for Unix and 'file:///'
-                    for Windows (defined in the build-docbook.xml ant
-                    file).
-
-@docbook.xml@     - Location of the DocBook XML files
-
-@docbook.xsl@     - Location of the DocBook XSL style sheets
-
-@olink_file@      - where generated olink db is put (usually the book_name)
-
-@type@            - pdf, html, or htmlsingle - used to form names in olink dbs
-
-@paper.type@      - paper size for pdf output
-
-@src.dir@         - Location of ${basedir}/src
-
-@tmp.dir@         - Location of ${basedir}/target/tmp
-
-@html.target.dir@ - used only for chunked pdf - the base target directory
-
-Please note, that *only* the driver file is filtered! If you have path
-adjustments to make, you must do them in the driver file!
-
-Please look at the provided driver files in src/styles on how to use
-the filter set.
-
 
 StyleSheet customizations
 -------------------------
@@ -363,12 +314,12 @@ Titlepages
 PDF and HTML use custom title pages. These are located in the
 respecting src/styles subdirectories as titlepage.xml template
 definitions. The build process renders these files using the DocBook
-XSL template/titlepage.xsl Stylesheet into the target/tmp/ directory
-as <type>-titlepage.xsl (e.g. target/tmp/pdf-titlepage.xsl). This
+XSL template/titlepage.xsl Stylesheet into the same directory
+as the source.  This
 style sheet then must be included in the style sheet driver file (see
 the driver files in src/styles, e.g. pdf.xsl).
 
-The current titlepage reference a project logo which must be located
+If the titlepage reference a project logo, it should be saved 
 as 'logo.png' in the src/images directory. It gets rendered on both
 the HTML and PDF title pages.
 
@@ -398,6 +349,8 @@ actually copied some of the ideas.
 
 This DocBook framework is literally standing on the shoulders of other
 projects, in particular:
+
+* The Docbook project from Apache Velocity
 
 * The DocBook Format by Norman Walsh; (C) 1999-2006 by Norman Walsh,
   OASIS and O'Reilly, especially all the documentation that is
