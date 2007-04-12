@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"[
 <!ENTITY imgroot "../images/tools/tools.cpe/" >
 <!ENTITY % uimaents SYSTEM "../entities.ent" >  
 %uimaents;
@@ -152,7 +152,7 @@ examples/descriptors/cas_consumer/XmiWriterCasConsumer.xml</programlisting></par
       
       <listitem><para>Save CPE Descriptor</para></listitem>
 
-      <listitem><para>Save Options</para> (submenu)</listitem>
+      <listitem><para>Save Options (submenu)</para></listitem>
       
       <listitem><para>Refresh Descriptors from File System</para></listitem>
       

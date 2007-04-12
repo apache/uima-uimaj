@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"[
 <!ENTITY % uimaents SYSTEM "../entities.ent" >  
 %uimaents;
 ]>
@@ -450,14 +450,11 @@ under the License.
   
   <section id="ugr.project_overview_changes_from_previous">
       <title>Changes from Previous Versions</title>
-    <para>
-      There are two previous version of UIMA, available from IBM's alphaWorks: version 1.4.4 and version 2.0
-      (the 2.0 version was a "beta" only release).  This section describes the changes
-      relative to both of these releases.  A migration utility is provided which updates 
-      your Java code and descriptors as needed for this release. 
-      See <xref linkend="ugr.project_overview_migrating_from_ibm_uima"/> for 
-      instructions on how to run the migration utility.
-    </para>
+    <para> There are two previous version of UIMA, available from IBM's alphaWorks: version 1.4.x and version 2.0
+      (the 2.0 version was a "beta" only release). This section describes the changes relative to both of these
+      releases. A migration utility is provided which updates your Java code and descriptors as needed for this
+      release. See <xref linkend="ugr.project_overview_migrating_from_ibm_uima"/> for instructions on how to
+      run the migration utility. </para>
 
     <section id="ugr.project_overview_changes_from_2_0">
     <title>Changes from IBM UIMA 2.0 to Apache UIMA 2.1</title>
