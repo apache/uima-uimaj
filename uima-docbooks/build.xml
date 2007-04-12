@@ -19,60 +19,54 @@
 -->
 
 
-<project name="Apache UIMA DocBook" default="all" basedir=".">
-
-	<!-- ======================================================================== -->
-	<!-- ==                                                                    == -->
-	<!-- == Build all the Docbook Documentation under src/docbook              == -->
-	<!-- ==                                                                    == -->
-	<!-- ==   Built 2 times - first time updates the olinks, 2nd time builds   == -->
-	<!-- ==                                                                    == -->
-	<!-- ======================================================================== -->
-	
-	<!-- Load our properties -->
-	<property file="project.properties"/>
-	
-	<target name="all" description="--> Build all documentation" depends="do_olinks, do_build_given_olinks" />
-
-	<target name="do_olinks" description="--> for all books, compute the cross reference databases needed for linking">
-		<antcall target="build_all_books">
-			<param name="olink_work" value="only" />
-		</antcall>
-	</target>
-
-	<target name="do_build_given_olinks" description="--> build all books using precomputed olink database information">
-		<antcall target="build_all_books">
-			<param name="olink_work" value="no" />
-		</antcall>
-	</target>
-
-	<target name="build_all_books" description="internal - build all books">
-		<!-- Build the UIMA books -->
-		<ant antfile="build-docbook.xml" target="all">
-			<property name="book_name" value="overview_and_setup" />
-		</ant>
-		<ant antfile="build-docbook.xml" target="all">
-			<property name="book_name" value="tutorials_and_users_guides" />
-		</ant>
-		<ant antfile="build-docbook.xml" target="all">
-			<property name="book_name" value="tools" />
-		</ant>
-		<ant antfile="build-docbook.xml" target="all">
-			<property name="book_name" value="references" />
-		</ant>
-		
-		<!--copy html overview index.html to the target directory -->
-		<copy todir="${target.dir}/" file="${src.dir}/index.html"/>
-
-	</target>
-
-
-	<!-- ======================================================================== -->
-	<!-- ==                                                                    == -->
-	<!-- == Clean up the target directory                                      == -->
-	<!-- ==                                                                    == -->
-	<!-- ======================================================================== -->
-	<target name="clean" description="--> Delete temporary and distribution directories for docs">
-		<ant antfile="build-docbook.xml" target="clean" />
-	</target>
+<project name="Build all Apache UIMA DocBooks" default="all-books" basedir=".">
+  
+  <!-- ======================================================================== -->
+  <!-- ==                                                                    == -->
+  <!-- == Build all the Docbook Documentation under src/docbook              == -->
+  <!-- ==                                                                    == -->
+  <!-- ==   Built 2 times - first time updates the olinks, 2nd time builds   == -->
+  <!-- ==                                                                    == -->
+  <!-- ======================================================================== -->
+  
+  <import file="../uima-docbook-tool/build/build-docbook.xml"/>
+  
+  <target name="all-books" description="--> Build all documentation"
+    depends="init_once, do_olinks, do_build_given_olinks, copy-index.html"/>
+  
+  <target name="do_olinks"
+    description="--> for all books, compute the cross reference databases needed for linking">
+    <antcall target="build_all_books">
+      <param name="olink_work" value="only"/>
+    </antcall>
+  </target>
+  
+  <target name="do_build_given_olinks"
+    description="--> build all books using precomputed olink database information">
+    <antcall target="build_all_books">
+      <param name="olink_work" value="no"/>
+    </antcall>
+  </target>
+  
+  <target name="copy-index.html" depends="init_once">
+    <!--copy html overview index.html to the target directory -->
+    <copy todir="${target.dir}/" file="${src.dir}/index.html"/>
+  </target>
+  
+  <target name="build_all_books" description="internal - build all books">
+    <!--  Build the UIMA books  -->
+    <antcall target="all">
+      <param name="book_name" value="overview_and_setup"/>
+    </antcall>
+    <antcall target="all">
+      <param name="book_name" value="tutorials_and_users_guides"/>
+    </antcall>
+    <antcall target="all">
+      <param name="book_name" value="tools"/>
+    </antcall>
+    <antcall target="all">
+      <param name="book_name" value="references"/>
+    </antcall>
+  </target>
+  
 </project>

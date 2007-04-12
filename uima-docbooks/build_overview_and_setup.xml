@@ -19,28 +19,10 @@
    under the License.    
 -->
 
-<project name="Apache UIMA overview and setup documentation" default="all" basedir=".">
+<project name="Build Apache UIMA overview and setup docbook" default="all" basedir=".">
 
-  <!-- ======================================================================== -->
-  <!-- ==                                                                    == -->
-  <!-- == Build all the Velocity Docbook Documentation                       == -->
-  <!-- ==                                                                    == -->
-  <!-- ======================================================================== -->
-  <target name="all" description="--> Build the book">
+  <property name="book_name" value="overview_and_setup"/>
 
-    <!-- Build the Users Guide -->
-    <ant antfile="build-docbook.xml" target="all">
-      <property name="book_name" value="overview_and_setup"/>
-    </ant>
-  </target>
-
-  <!-- ======================================================================== -->
-  <!-- ==                                                                    == -->
-  <!-- == Clean up the target directory                                      == -->
-  <!-- ==                                                                    == -->
-  <!-- ======================================================================== -->
-  <target name="clean"
-          description="--> Delete temporary and distribution directories for docs">
-    <ant antfile="build-docbook.xml" target="clean"/>
-  </target>
+  <import file="../uima-docbook-tool/build/build-docbook.xml"/> 
+   
 </project>
