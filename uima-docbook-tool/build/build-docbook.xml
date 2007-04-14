@@ -471,7 +471,7 @@
     </copy>
     
     <copy todir="${target.dir.path}/images/${book_name}">
-      <fileset dir="${docbook.src.dir}/${book_name}/images" excludes="*.ppt"/>
+      <fileset dir="${docbook.src.dir}/${book_name}/images" excludes="*/*.ppt"/>
     </copy>
     
     <copy todir="${target.dir.path}/${chapter_name}/css">
