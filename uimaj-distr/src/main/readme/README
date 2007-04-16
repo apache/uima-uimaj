@@ -41,7 +41,7 @@ This should pop up a "Document Analyzer" window. Set the values displayed in thi
 
     * Input Directory: UIMA_HOME/examples/data
     * Output Directory: UIMA_HOME/examples/data/processed
-    * TAE XML Descriptor: UIMA_HOME/examples/descriptors/analysis_engine/PersonTitleAnnotator.xml
+    * Location of Analysis Engine XML Descriptor: UIMA_HOME/examples/descriptors/analysis_engine/PersonTitleAnnotator.xml
 
 Replace UIMA_HOME above with the path of your Apache UIMA installation.
 
