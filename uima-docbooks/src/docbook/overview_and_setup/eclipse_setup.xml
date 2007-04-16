@@ -70,7 +70,8 @@ under the License.
         
         <listitem><para>Eclipse has a bit of a learning curve. If you plan to make
           significant use of Eclipse, check out the tutorial under the help menu. It is well
-          worth the effort. </para></listitem></itemizedlist>
+          worth the effort. There are also books you can get that describe Eclipse and its
+        use.</para></listitem></itemizedlist>
       
     </section>
     
@@ -184,10 +185,7 @@ under the License.
         <code>-clean</code> option; you can do this by running the command
         <command>eclipse -clean</command> (see explanation in the next section) in the
         directory where you installed Eclipse. You may want to set up a desktop shortcut at
-        this point for Eclipse. Eclipse has a bit of a learning curve. If you plan to make
-        significant use of Eclipse, check out the tutorial under the help menu. It is well
-        worth the effort. There are also books you can get that describe Eclipse and its
-        use.</para>
+        this point for Eclipse.</para>
       
       <para>The first time Eclipse starts up it will take a bit longer as it completes its
         installation. A <quote>welcome</quote> page will come up. After you are through
