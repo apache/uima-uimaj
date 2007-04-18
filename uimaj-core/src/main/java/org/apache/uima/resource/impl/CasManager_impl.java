@@ -127,11 +127,12 @@ public class CasManager_impl implements CasManager {
    */
   public void defineCasPool(String aRequestorContextName, int aMinimumSize,
           Properties aPerformanceTuningSettings) throws ResourceInitializationException {
-    if (aMinimumSize > 0) {
+    int poolSize = getCasPoolSize(aRequestorContextName, aMinimumSize);
+    if (poolSize > 0) {
       CasPool pool = (CasPool) mRequestorToCasPoolMap.get(aRequestorContextName);
       if (pool == null) {
         // this requestor hasn't requested a CAS before
-        pool = new CasPool(aMinimumSize, this, aPerformanceTuningSettings);
+        pool = new CasPool(poolSize, this, aPerformanceTuningSettings);
         populateCasToCasPoolMap(pool);
         mRequestorToCasPoolMap.put(aRequestorContextName, pool);
         //register with JMX
@@ -227,5 +228,19 @@ public class CasManager_impl implements CasManager {
       JmxMBeanAgent.registerMBean(mbean, mMBeanServer);
     }
   }  
+  
+  /**
+   * Determines the size to use for a particular CAS Pool.  This can be overridden
+   * by subclasses to specify custom pool sizes.
+   * @param aRequestorContextName
+   *          the context name of the AE that will request the CASes
+   *          (AnalysisEngine.getUimaContextAdmin().getQualifiedContextName()).
+   * @param aMinimumSize
+   *          the minimum CAS pool size required
+   * @return the size of the CAS pool to create for the specified AE
+   */
+  protected int getCasPoolSize(String aRequestorContextName, int aMinimumSize) {
+    return aMinimumSize;
+  }
 
 }
