@@ -208,26 +208,26 @@ public class InstallationController {
   protected static final String INSTALLATION_TESTER_APP = "org.apache.uima.pear.tools.InstallationTester";
 
   // Package configuration file
-  protected static final String PACKAGE_CONFIG_FILE = "metadata/PEAR.properties";
+  public static final String PACKAGE_CONFIG_FILE = "metadata/PEAR.properties";
 
   // Standard package directories
-  protected static final String PACKAGE_METADATA_DIR = "metadata";
+  public static final String PACKAGE_METADATA_DIR = "metadata";
 
-  protected static final String PACKAGE_BIN_DIR = "bin";
+  public static final String PACKAGE_BIN_DIR = "bin";
 
-  protected static final String PACKAGE_CONF_DIR = "conf";
+  public static final String PACKAGE_CONF_DIR = "conf";
 
-  protected static final String PACKAGE_DATA_DIR = "data";
+  public static final String PACKAGE_DATA_DIR = "data";
 
-  protected static final String PACKAGE_DESC_DIR = "desc";
+  public static final String PACKAGE_DESC_DIR = "desc";
 
-  protected static final String PACKAGE_DOC_DIR = "doc";
+  public static final String PACKAGE_DOC_DIR = "doc";
 
-  protected static final String PACKAGE_LIB_DIR = "lib";
+  public static final String PACKAGE_LIB_DIR = "lib";
 
-  protected static final String PACKAGE_RESOURCES_DIR = "resources";
+  public static final String PACKAGE_RESOURCES_DIR = "resources";
 
-  protected static final String PACKAGE_SOURCES_DIR = "src";
+  public static final String PACKAGE_SOURCES_DIR = "src";
 
   // file generated at the end of local installation
   public static final String SET_ENV_FILE = "metadata/setenv.txt";
@@ -244,7 +244,7 @@ public class InstallationController {
   protected static final String JAR_FILE_EXT = ".jar";
 
   // special environment variables that need to be appended to JVM variables
-  protected static final String CLASSPATH_VAR = "classpath";
+  public static final String CLASSPATH_VAR = "classpath";
 
   protected static final String PATH_VAR = "path";
 
