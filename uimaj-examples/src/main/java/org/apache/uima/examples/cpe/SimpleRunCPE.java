@@ -45,9 +45,14 @@ public class SimpleRunCPE extends Thread {
   private CollectionProcessingEngine mCPE;
 
   /**
-   * Start time of the processing - used to compute elapsed time.
+   * Start time of CPE initialization
    */
   private long mStartTime;
+  
+  /**
+   * Start time of the processing
+   */
+  private long mInitCompleteTime;
 
   /**
    * Constructor for the class.
@@ -124,8 +129,9 @@ public class SimpleRunCPE extends Thread {
      * 
      * @see org.apache.uima.collection.processing.StatusCallbackListener#initializationComplete()
      */
-    public void initializationComplete() {
+    public void initializationComplete() {      
       System.out.println("CPM Initialization Complete");
+      mInitCompleteTime = System.currentTimeMillis();
     }
 
     /**
@@ -150,13 +156,19 @@ public class SimpleRunCPE extends Thread {
      * @see org.apache.uima.collection.processing.StatusCallbackListener#collectionProcessComplete()
      */
     public void collectionProcessComplete() {
+      long time = System.currentTimeMillis();
       System.out.print("Completed " + entityCount + " documents");
       if (size > 0) {
         System.out.print("; " + size + " characters");
       }
       System.out.println();
-      long elapsedTime = System.currentTimeMillis() - mStartTime;
-      System.out.println("Time Elapsed : " + elapsedTime + " ms ");
+      long initTime = mInitCompleteTime - mStartTime; 
+      long processingTime = time - mInitCompleteTime;
+      long elapsedTime = initTime + processingTime;
+      System.out.println("Total Time Elapsed: " + elapsedTime + " ms ");
+      System.out.println("Initialization Time: " + initTime + " ms");
+      System.out.println("Processing Time: " + processingTime + " ms");
+      
       System.out.println("\n\n ------------------ PERFORMANCE REPORT ------------------\n");
       System.out.println(mCPE.getPerformanceReport().toString());
       // stop the JVM. Otherwise main thread will still be blocked waiting for
