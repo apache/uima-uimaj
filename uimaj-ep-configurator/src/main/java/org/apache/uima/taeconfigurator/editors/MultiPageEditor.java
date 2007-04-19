@@ -200,7 +200,7 @@ public class MultiPageEditor extends FormEditor {
   // M O D E L
   // the following are only populated based on what type
   // of descriptor is being edited
-  private AnalysisEngineDescription aeDescription = null;
+  protected AnalysisEngineDescription aeDescription = null;
 
   private TypeSystemDescription typeSystemDescription = null;
 
@@ -277,9 +277,9 @@ public class MultiPageEditor extends FormEditor {
    * instance of the editor opens.
    */
 
-  private int sourceIndex = -1;
+  protected int sourceIndex = -1;
 
-  private int overviewIndex = -1;
+  protected int overviewIndex = -1;
 
   private int aggregateIndex = -1;
 
@@ -287,15 +287,15 @@ public class MultiPageEditor extends FormEditor {
 
   private int settingsIndex = -1;
 
-  private int typeIndex = -1;
+  protected int typeIndex = -1;
 
-  private int capabilityIndex = -1;
+  protected int capabilityIndex = -1;
 
-  private int indexesIndex = -1;
+  protected int indexesIndex = -1;
 
-  private int resourcesIndex = -1;
+  protected int resourcesIndex = -1;
 
-  private OverviewPage overviewPage = null;
+  protected OverviewPage overviewPage = null;
 
   private AggregatePage aggregatePage = null;
 
@@ -303,19 +303,19 @@ public class MultiPageEditor extends FormEditor {
 
   private SettingsPage settingsPage = null;
 
-  private TypePage typePage = null;
+  protected TypePage typePage = null;
 
-  private CapabilityPage capabilityPage = null;
+  protected CapabilityPage capabilityPage = null;
 
-  private IndexesPage indexesPage = null;
+  protected IndexesPage indexesPage = null;
 
-  private ResourcesPage resourcesPage = null;
+  protected ResourcesPage resourcesPage = null;
 
-  private XMLEditor sourceTextEditor;
+  protected XMLEditor sourceTextEditor;
 
   private boolean m_bIsInited = false;
 
-  private boolean isBadXML = true;
+  protected boolean isBadXML = true;
 
   public boolean sourceChanged = true;
 
@@ -459,7 +459,7 @@ public class MultiPageEditor extends FormEditor {
 
   private boolean isRevertingIndex;
 
-  private boolean isPageChangeRecursion = false;
+  protected boolean isPageChangeRecursion = false;
 
   public static final TypeDescription[] typeDescriptionArray0 = new TypeDescription[0];
 
@@ -500,14 +500,14 @@ public class MultiPageEditor extends FormEditor {
   /*
    * Two forms of addPage - one for non-source-editors, and one for source-editor
    */
-  private int addPageAndSetTabTitle(HeaderPage page, String keyTabTitle) throws PartInitException {
+  protected int addPageAndSetTabTitle(HeaderPage page, String keyTabTitle) throws PartInitException {
     int pageIndex = addPage(page);
     // set the text on the tab used to select the page in the multipage editor
     setPageText(pageIndex, keyTabTitle);
     return pageIndex;
   }
 
-  private int addPageAndSetTabTitle(IEditorPart page, IEditorInput input, String keyTabTitle)
+  protected int addPageAndSetTabTitle(IEditorPart page, IEditorInput input, String keyTabTitle)
           throws PartInitException {
     int pageIndex = addPage(page, input);
     // set the text on the tab used to select the page in the multipage editor
@@ -945,7 +945,7 @@ public class MultiPageEditor extends FormEditor {
     }
   }
 
-  private void setActivePageWhileBlockingRecursion(int sourceIndex) {
+  protected void setActivePageWhileBlockingRecursion(int sourceIndex) {
     try {
       isPageChangeRecursion = true;
       // next call needed to be done but wasn't prior to
