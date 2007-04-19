@@ -139,24 +139,26 @@ public class PackageCreator {
             .getProperty("java.version"));
 
     // add classpath setting to the installation descriptor
-    InstallationDescriptor.ActionInfo actionInfo = new InstallationDescriptor.ActionInfo(
-            InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
-    actionInfo.params.put(InstallationDescriptorHandler.VAR_NAME_TAG,
-            InstallationController.CLASSPATH_VAR);
-    actionInfo.params.put(InstallationDescriptorHandler.VAR_VALUE_TAG, classpath);
-    String commentMessage = I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
-            "package_creator_env_setting", new Object[] { InstallationController.CLASSPATH_VAR });
-    actionInfo.params.put(InstallationDescriptorHandler.COMMENTS_TAG, commentMessage);
-    insd.addInstallationAction(actionInfo);
-
+    if (classpath != null) {
+      InstallationDescriptor.ActionInfo actionInfo = new InstallationDescriptor.ActionInfo(
+              InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
+      actionInfo.params.put(InstallationDescriptorHandler.VAR_NAME_TAG,
+              InstallationController.CLASSPATH_VAR);
+      actionInfo.params.put(InstallationDescriptorHandler.VAR_VALUE_TAG, classpath);
+      String commentMessage = I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
+              "package_creator_env_setting", new Object[] { InstallationController.CLASSPATH_VAR });
+      actionInfo.params.put(InstallationDescriptorHandler.COMMENTS_TAG, commentMessage);
+      insd.addInstallationAction(actionInfo);
+    }
+    
     // add datapath settings to the installation descriptor
     if (datapath != null) {
-      actionInfo = new InstallationDescriptor.ActionInfo(
+      InstallationDescriptor.ActionInfo actionInfo = new InstallationDescriptor.ActionInfo(
               InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
       actionInfo.params.put(InstallationDescriptorHandler.VAR_NAME_TAG,
               RelativePathResolver.UIMA_DATAPATH_PROP);
       actionInfo.params.put(InstallationDescriptorHandler.VAR_VALUE_TAG, datapath);
-      commentMessage = I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
+      String commentMessage = I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
               "package_creator_env_setting",
               new Object[] { RelativePathResolver.UIMA_DATAPATH_PROP });
       actionInfo.params.put(InstallationDescriptorHandler.COMMENTS_TAG, commentMessage);
@@ -167,13 +169,13 @@ public class PackageCreator {
     if (envVars != null) {
       Enumeration keys = envVars.keys();
       while (keys.hasMoreElements()) {
-        actionInfo = new InstallationDescriptor.ActionInfo(
+        InstallationDescriptor.ActionInfo actionInfo = new InstallationDescriptor.ActionInfo(
                 InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
         String key = (String) keys.nextElement();
         actionInfo.params.put(InstallationDescriptorHandler.VAR_NAME_TAG, key);
         actionInfo.params
                 .put(InstallationDescriptorHandler.VAR_VALUE_TAG, envVars.getProperty(key));
-        commentMessage = I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
+        String commentMessage = I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
                 "package_creator_env_setting", new Object[] { key });
         actionInfo.params.put(InstallationDescriptorHandler.COMMENTS_TAG, commentMessage);
         insd.addInstallationAction(actionInfo);
