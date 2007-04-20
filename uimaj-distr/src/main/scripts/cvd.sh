@@ -24,4 +24,4 @@ then
 else
   UIMA_JAVA_CALL="$JAVA_HOME/bin/java"
 fi
-"$UIMA_JAVA_CALL" -cp "$UIMA_CLASSPATH" $UIMA_JVM_OPTS "-Djava.util.logging.config.file=$UIMA_LOGGER_CONFIG_FILE" "-Duima.home=$UIMA_HOME" "-Duima.tools.cvd.manpath=${UIMA_HOME}/docs/html" "-Duima.datapath=$UIMA_DATAPATH" -DVNS_HOST=$VNS_HOST -DVNS_PORT=$VNS_PORT org.apache.uima.tools.annot_view.Gladis $*
+"$UIMA_JAVA_CALL" -cp "$UIMA_CLASSPATH" $UIMA_JVM_OPTS "-Djava.util.logging.config.file=$UIMA_LOGGER_CONFIG_FILE" "-Duima.home=$UIMA_HOME" "-Duima.tools.cvd.manpath=${UIMA_HOME}/docs/html" "-Duima.datapath=$UIMA_DATAPATH" -DVNS_HOST=$VNS_HOST -DVNS_PORT=$VNS_PORT org.apache.uima.tools.cvd.CVD $*
