@@ -692,7 +692,7 @@ public class InstallPear extends JFrame {
 
       // start CVD GUI
       cvdProcess = Runtime.getRuntime().exec(cmdArray, envArray);
-      new ProcessUtil.Runner(cvdProcess, "GLADIS");
+      new ProcessUtil.Runner(cvdProcess, "CVD");
     } catch (Throwable e) {
       pearConsole.append(" Error in runCVD() " + e.toString());
       if (System.getProperty("DEBUG") != null) {
