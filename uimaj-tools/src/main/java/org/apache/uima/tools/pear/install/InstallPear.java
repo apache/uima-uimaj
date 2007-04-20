@@ -72,7 +72,7 @@ import org.apache.uima.tools.util.gui.AboutDialog;
 
 /**
  * This GUI is used to install a pear file locally in a directory chosen by the user and then run
- * the installed AE in Gladis. <br />
+ * the installed AE in CVD. <br />
  * The required field is : The pear file must be specified. The User may or may not specify the
  * installation directory. If the installation directory is not specified, the current working
  * directory is used by default. 
@@ -209,9 +209,9 @@ public class InstallPear extends JFrame {
 
   private static String mainComponentRootPath;
 
-  private static Process gladisProcess = null;
+  private static Process cvdProcess = null;
 
-  private static Properties gladisProperties = null;
+  private static Properties cvdProperties = null;
 
   private static boolean helpExists = true;
 
@@ -451,14 +451,14 @@ public class InstallPear extends JFrame {
    * @throws IOException
    *           If any I/O exception occurred.
    */
-  private void runGladis() throws IOException {
+  private void runCVD() throws IOException {
     try {
-      // load gladis properties
-      if (gladisProperties == null)
-        gladisProperties = loadProperties("gladis.properties");
+      // load CVD properties
+      if (cvdProperties == null)
+        cvdProperties = loadProperties("cvd.properties");
 
-      // get Gladis specific CLASSPATH
-      String gladisClassPath = System.getProperty("java.class.path");// gladisProperties.getProperty("env.CLASSPATH");
+      // get CVD specific CLASSPATH
+      String cvdClassPath = System.getProperty("java.class.path");// cvdProperties.getProperty("env.CLASSPATH");
 
       // get component specific PATH
       String compPath = InstallationController
@@ -490,20 +490,20 @@ public class InstallPear extends JFrame {
       // start command with executable
       cmdArrayList.add(javaExeFile.getAbsolutePath());
       // add '-cp' JVM option
-      if (gladisClassPath.length() > 0 || compClassPath.length() > 0) {
+      if (cvdClassPath.length() > 0 || compClassPath.length() > 0) {
         cmdArrayList.add("-cp");
         StringBuffer cpBuffer = new StringBuffer();
         if (compClassPath.length() > 0)
           cpBuffer.append(compClassPath);
-        if (gladisClassPath.length() > 0) {
+        if (cvdClassPath.length() > 0) {
           if (cpBuffer.length() > 0)
             cpBuffer.append(File.pathSeparatorChar);
-          cpBuffer.append(gladisClassPath);
+          cpBuffer.append(cvdClassPath);
         }
         cmdArrayList.add(cpBuffer.toString());
       }
-      // add Gladis JVM options
-      String jvmOptions = gladisProperties.getProperty("jvm.options").trim();
+      // add CVD JVM options
+      String jvmOptions = cvdProperties.getProperty("jvm.options").trim();
       if (jvmOptions != null && jvmOptions.length() > 0) {
         StringTokenizer tokenList = new StringTokenizer(jvmOptions, " ");
         while (tokenList.hasMoreTokens()) {
@@ -537,15 +537,15 @@ public class InstallPear extends JFrame {
       }
       // add java.library.path
       boolean addJavaLibPath = (compPath.length() > 0) ? true : false;
-      Enumeration gladisPropKeys = gladisProperties.keys();
-      while (gladisPropKeys.hasMoreElements()) {
-        String key = (String) gladisPropKeys.nextElement();
+      Enumeration cvdPropKeys = cvdProperties.keys();
+      while (cvdPropKeys.hasMoreElements()) {
+        String key = (String) cvdPropKeys.nextElement();
         if (key.startsWith("jvm.arg.")) {
           String arg = key.substring(8).trim();
 //          // substitute UIMA_HOME
-//          String value = gladisProperties.getProperty(key).replaceAll("%UIMA_HOME%",
+//          String value = cvdProperties.getProperty(key).replaceAll("%UIMA_HOME%",
 //                  System.getProperty("uima.home").replace('\\', '/'));
-          String value = gladisProperties.getProperty(key);
+          String value = cvdProperties.getProperty(key);
           // if arg = java.library.path, add component path
           if (arg.equals("java.library.path")) {
             if (addJavaLibPath) {
@@ -560,18 +560,18 @@ public class InstallPear extends JFrame {
       if (addJavaLibPath)
         cmdArrayList.add("-Djava.library.path=" + compPath);
       // add main class
-      String mainClass = gladisProperties.getProperty("main.class").trim();
+      String mainClass = cvdProperties.getProperty("main.class").trim();
       cmdArrayList.add(mainClass);
       // add main class args sorted by arg name
-      gladisPropKeys = gladisProperties.keys();
+      cvdPropKeys = cvdProperties.keys();
       TreeMap mainClassArgs = new TreeMap();
-      while (gladisPropKeys.hasMoreElements()) {
-        String key = (String) gladisPropKeys.nextElement();
+      while (cvdPropKeys.hasMoreElements()) {
+        String key = (String) cvdPropKeys.nextElement();
         if (key.startsWith("main.class.arg.")) {
 //          // substitute UIMA_HOME
-//          String value = gladisProperties.getProperty(key).replaceAll("%UIMA_HOME%",
+//          String value = cvdProperties.getProperty(key).replaceAll("%UIMA_HOME%",
 //                  System.getProperty("uima.home").replace('\\', '/'));
-        	String value = gladisProperties.getProperty(key);
+        	String value = cvdProperties.getProperty(key);
           // substitute DESCRIPTOR
           if (value.equals("%DESCRIPTOR%"))
             value = insdObject.getMainComponentDesc();
@@ -594,7 +594,7 @@ public class InstallPear extends JFrame {
       String[] cmdArray = new String[cmdArrayList.size()];
       cmdArrayList.toArray(cmdArray);
       if (System.getProperty("DEBUG") != null) {
-        System.out.println("[DEBUG:runGladis()]: cmdArray =>");
+        System.out.println("[DEBUG:runCVD()]: cmdArray =>");
         for (int i = 0; i < cmdArray.length; i++)
           System.out.println("\t" + cmdArray[i]);
       }
@@ -602,7 +602,7 @@ public class InstallPear extends JFrame {
       // build array of environment variables
       Properties sysEnvVars = SystemEnvReader.getEnvVars();
       if (System.getProperty("DEBUG") != null) {
-        System.out.println("[DEBUG:runGladis()]: system env vars =>");
+        System.out.println("[DEBUG:runCVD()]: system env vars =>");
         Enumeration keys = sysEnvVars.keys();
         while (keys.hasMoreElements()) {
           String key = (String) keys.nextElement();
@@ -618,9 +618,9 @@ public class InstallPear extends JFrame {
         String sysKey = (String) sysEnvKeys.nextElement();
         String sysValue = sysEnvVars.getProperty(sysKey);
         String value = sysValue;
-        // append component/gladis path and classpath
+        // append component/cvd path and classpath
         if (sysKey.equalsIgnoreCase("CLASSPATH")) {
-          value = compClassPath + File.pathSeparator + gladisClassPath + File.pathSeparator
+          value = compClassPath + File.pathSeparator + cvdClassPath + File.pathSeparator
                   + sysValue;
           classPathAdded = true;
         } else if (sysKey.equalsIgnoreCase("PATH") || sysKey.equalsIgnoreCase("LD_LIBRARY_PATH")) {
@@ -632,7 +632,7 @@ public class InstallPear extends JFrame {
       }
       // check CLASSPATH and PATH
       if (!classPathAdded) {
-        String classPath = compClassPath + File.pathSeparator + gladisClassPath;
+        String classPath = compClassPath + File.pathSeparator + cvdClassPath;
         envArrayList.add("CLASSPATH=" + classPath);
       }
       if (!pathAdded) {
@@ -648,20 +648,20 @@ public class InstallPear extends JFrame {
         envArrayList.add(cmpKey + "=" + cmpValue);
       }
       if (System.getProperty("DEBUG") != null) {
-        System.out.println("[DEBUG:runGladis()]: envArrayList w/o Gladis =>");
+        System.out.println("[DEBUG:runCVD()]: envArrayList w/o CVD =>");
         Iterator list = envArrayList.iterator();
         while (list.hasNext())
           System.out.println("\t" + (String) list.next());
       }
-      // add the rest of gladis env. vars
-      gladisPropKeys = gladisProperties.keys();
-      while (gladisPropKeys.hasMoreElements()) {
-        String key = (String) gladisPropKeys.nextElement();
+      // add the rest of cvd env. vars
+      cvdPropKeys = cvdProperties.keys();
+      while (cvdPropKeys.hasMoreElements()) {
+        String key = (String) cvdPropKeys.nextElement();
         if (key.startsWith("env.") && !key.equals("env.PATH") && !key.equals("env.CLASSPATH")) {
           String arg = key.substring(4).trim();
-//          String value = gladisProperties.getProperty(key).replaceAll("%UIMA_HOME%",
+//          String value = cvdProperties.getProperty(key).replaceAll("%UIMA_HOME%",
 //                  System.getProperty("uima.home").replace('\\', '/'));
-          String value = gladisProperties.getProperty(key);
+          String value = cvdProperties.getProperty(key);
           envArrayList.add(arg + "=" + value);
         }
       }
@@ -669,29 +669,29 @@ public class InstallPear extends JFrame {
       String[] envArray = new String[envArrayList.size()];
       envArrayList.toArray(envArray);
       if (System.getProperty("DEBUG") != null) {
-        System.out.println("[DEBUG:runGladis()]: envArray =>");
+        System.out.println("[DEBUG:runCVD()]: envArray =>");
         for (int i = 0; i < envArray.length; i++)
           System.out.println("\t" + envArray[i]);
       }
 
-      // add shutdown hook to terminate Gladis process
+      // add shutdown hook to terminate CVD process
       Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
         public void run() {
           try {
-            if (gladisProcess != null) {
-              gladisProcess.destroy();
-              gladisProcess.waitFor();
+            if (cvdProcess != null) {
+              cvdProcess.destroy();
+              cvdProcess.waitFor();
             }
           } catch (Throwable e) {
           }
         }
       }));
 
-      // start Gladis GUI
-      gladisProcess = Runtime.getRuntime().exec(cmdArray, envArray);
-      new ProcessUtil.Runner(gladisProcess, "GLADIS");
+      // start CVD GUI
+      cvdProcess = Runtime.getRuntime().exec(cmdArray, envArray);
+      new ProcessUtil.Runner(cvdProcess, "GLADIS");
     } catch (Throwable e) {
-      pearConsole.append(" Error in runGladis() " + e.toString());
+      pearConsole.append(" Error in runCVD() " + e.toString());
       if (System.getProperty("DEBUG") != null) {
         e.printStackTrace(System.err);
       }
@@ -861,9 +861,9 @@ public class InstallPear extends JFrame {
   }
 
   /**
-   * This method initializes 'Run your AE in Gladis' Button.
+   * This method initializes 'Run your AE in CVD' Button.
    * 
-   * @return The initialized 'Run your AE in Gladis' Button.
+   * @return The initialized 'Run your AE in CVD' Button.
    */
   private JButton getRunButton() {
     if (runButton == null) {
@@ -879,7 +879,7 @@ public class InstallPear extends JFrame {
           if (e.getActionCommand().equals("Run your AE in the CAS Visual Debugger")) {
             installButton.setEnabled(false);
             try {
-              runGladis();
+              runCVD();
             } catch (IOException e1) {
               e1.printStackTrace();
             }
