@@ -1401,7 +1401,7 @@ public class MainFrame extends JFrame {
         editorPane.addHyperlinkListener(new Hyperactive());
         URL manURL = ClassLoader.getSystemResource(manFileName);
         if (manURL == null) {
-          String manpath = System.getProperty(Gladis.MAN_PATH_PROPERTY, null);
+          String manpath = System.getProperty(CVD.MAN_PATH_PROPERTY, null);
           if (manpath != null) {
             File manDir = new File(manpath);
             File manFile = new File(manDir, manFileName);

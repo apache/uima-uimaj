@@ -34,7 +34,7 @@ import org.apache.uima.tools.images.Images;
  * 
  * 
  */
-public class Gladis {
+public class CVD {
 	
 	public static final String MAN_PATH_PROPERTY = "uima.tools.cvd.manpath";
 
@@ -48,7 +48,7 @@ public class Gladis {
   
   private static final String LOOK_AND_FEEL_PARAM = "-lookandfeel";
 
-  private Gladis() {
+  private CVD() {
     super();
   }
 
