@@ -17,60 +17,47 @@
  * under the License.
  */
 
-package org.apache.uima.tools.annot_view;
+package org.apache.uima.tools.cvd;
 
-import org.apache.uima.cas.Type;
+import java.util.ArrayList;
 
 /**
- * Class comment for TypeTreeNode.java goes here.
+ * TODO: add type comment for <code>FSTreeNode</code>.
  * 
  * 
  */
-public class TypeTreeNode {
+public abstract class FSTreeNode {
 
-  private final Type type;
-
-  private final String label;
-
-  private final int size;
+  protected ArrayList children = null;
 
   /**
-   * Constructor for TypeTreeNode.
-   */
-  public TypeTreeNode() {
-    super();
-    this.type = null;
-    this.label = null;
-    this.size = -1;
-  }
-
-  public TypeTreeNode(Type type, String label, int size) {
-    super();
-    this.type = type;
-    this.label = label;
-    this.size = size;
-  }
-
-  public String toString() {
-    return "<html><font color=blue>" + this.type.getName() + "</font> [" + this.size + "]</html>";
-  }
-
-  /**
-   * Returns the label.
    * 
-   * @return String
    */
-  public String getLabel() {
-    return this.label;
+  public FSTreeNode() {
+    super();
+    // TODO Auto-generated constructor stub
   }
 
-  /**
-   * Returns the type.
-   * 
-   * @return Type
-   */
-  public Type getType() {
-    return this.type;
+  void removeAllChildren() {
+    this.children = new ArrayList();
   }
+
+  void setChildren(ArrayList children) {
+    this.children = children;
+  }
+
+  ArrayList getChildren() {
+    return this.children;
+  }
+
+  int getChildCount() {
+    initChildren();
+    if (this.children == null) {
+      return 0;
+    }
+    return this.children.size();
+  }
+
+  protected abstract void initChildren();
 
 }

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.uima.tools.annot_view;
+package org.apache.uima.tools.cvd;
 
 import java.util.ArrayList;
 import java.util.HashMap;

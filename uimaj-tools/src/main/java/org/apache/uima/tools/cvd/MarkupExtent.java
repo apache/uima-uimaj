@@ -17,64 +17,38 @@
  * under the License.
  */
 
-package org.apache.uima.tools.annot_view;
+package org.apache.uima.tools.cvd;
 
 /**
- * TODO: add type comment for <code>ArrayNode</code>.
+ * Represents an element in a list of markup extents. Knows about the length of the extent, as well
+ * as the depth of markup. Depth of markup means, how many annotations cover this extent?
  * 
  * 
  */
-public class ArrayNode extends FSTreeNode {
-
-  public static final int CUTOFF = 100;
-
-  public static final int MULT = 10;
+public class MarkupExtent {
 
   private int start;
 
   private int end;
 
+  private int markupDepth;
+
   /**
    * 
    */
-  public ArrayNode(int start, int end) {
+  public MarkupExtent(int start, int end, int markupDepth) {
     super();
     this.start = start;
     this.end = end;
+    this.markupDepth = markupDepth;
   }
 
-  public String toString() {
-    return "[" + this.start + ".." + this.end + "]";
+  public int getLength() {
+    return this.end - this.start;
   }
 
-  protected void initChildren() {
-    // Does nothing.
-  }
-
-  static int degree(int i) {
-    // assert(i >= 0);
-    // This is ugly. There has to be a better way.
-    if (i <= 10) {
-      return 0;
-    } else if (i <= 100) {
-      return 1;
-    } else if (i <= 1000) {
-      return 2;
-    } else if (i <= 10000) {
-      return 3;
-    } else if (i <= 100000) {
-      return 4;
-    } else if (i <= 1000000) {
-      return 5;
-    } else if (i <= 10000000) {
-      return 6;
-    } else if (i <= 100000000) {
-      return 7;
-    } else if (i <= 1000000000) {
-      return 8;
-    } else {
-      return 9;
-    }
+  public int getMarkupDepth() {
+    return this.markupDepth;
   }
 
   /**

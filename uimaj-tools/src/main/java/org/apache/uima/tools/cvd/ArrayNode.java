@@ -17,38 +17,64 @@
  * under the License.
  */
 
-package org.apache.uima.tools.annot_view;
-
-import javax.swing.text.Style;
+package org.apache.uima.tools.cvd;
 
 /**
+ * TODO: add type comment for <code>ArrayNode</code>.
  * 
  * 
  */
-public class AnnotationExtent {
+public class ArrayNode extends FSTreeNode {
+
+  public static final int CUTOFF = 100;
+
+  public static final int MULT = 10;
 
   private int start;
 
   private int end;
 
-  private Style style;
-
   /**
    * 
    */
-  public AnnotationExtent(int start, int end, Style style) {
+  public ArrayNode(int start, int end) {
     super();
     this.start = start;
     this.end = end;
-    this.style = style;
   }
 
-  public int getLength() {
-    return this.end - this.start;
+  public String toString() {
+    return "[" + this.start + ".." + this.end + "]";
   }
 
-  public Style getStyle() {
-    return this.style;
+  protected void initChildren() {
+    // Does nothing.
+  }
+
+  static int degree(int i) {
+    // assert(i >= 0);
+    // This is ugly. There has to be a better way.
+    if (i <= 10) {
+      return 0;
+    } else if (i <= 100) {
+      return 1;
+    } else if (i <= 1000) {
+      return 2;
+    } else if (i <= 10000) {
+      return 3;
+    } else if (i <= 100000) {
+      return 4;
+    } else if (i <= 1000000) {
+      return 5;
+    } else if (i <= 10000000) {
+      return 6;
+    } else if (i <= 100000000) {
+      return 7;
+    } else if (i <= 1000000000) {
+      return 8;
+    } else {
+      return 9;
+    }
   }
 
   /**

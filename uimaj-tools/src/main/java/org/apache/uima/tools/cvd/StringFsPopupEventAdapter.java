@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.uima.tools.annot_view;
+package org.apache.uima.tools.cvd;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

@@ -17,51 +17,51 @@
  * under the License.
  */
 
-package org.apache.uima.tools.annot_view;
+package org.apache.uima.tools.cvd;
 
 import org.apache.uima.cas.Type;
 
 /**
- * Class comment for IndexTreeNode.java goes here.
+ * Class comment for TypeTreeNode.java goes here.
  * 
  * 
  */
-public class IndexTreeNode {
-
-  private final String name;
+public class TypeTreeNode {
 
   private final Type type;
 
+  private final String label;
+
   private final int size;
 
-  public IndexTreeNode(String name, Type type, int size) {
+  /**
+   * Constructor for TypeTreeNode.
+   */
+  public TypeTreeNode() {
     super();
-    this.name = name;
+    this.type = null;
+    this.label = null;
+    this.size = -1;
+  }
+
+  public TypeTreeNode(Type type, String label, int size) {
+    super();
     this.type = type;
+    this.label = label;
     this.size = size;
   }
 
-  /**
-   * Constructor for IndexTreeNode.
-   */
-  public IndexTreeNode() {
-    super();
-    this.name = null;
-    this.type = null;
-    this.size = 0;
-  }
-
   public String toString() {
-    return "<html><font color=green>" + this.name + "</font> [" + this.size + "]</html>";
+    return "<html><font color=blue>" + this.type.getName() + "</font> [" + this.size + "]</html>";
   }
 
   /**
-   * Returns the name.
+   * Returns the label.
    * 
    * @return String
    */
-  public String getName() {
-    return this.name;
+  public String getLabel() {
+    return this.label;
   }
 
   /**
@@ -71,14 +71,6 @@ public class IndexTreeNode {
    */
   public Type getType() {
     return this.type;
-  }
-
-  public boolean equals(Object o) {
-    return (this == o);
-  }
-
-  public int hashCode() {
-    return super.hashCode();
   }
 
 }

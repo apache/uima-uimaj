@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.uima.tools.annot_view;
+package org.apache.uima.tools.cvd;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -1143,7 +1143,7 @@ public class MainFrame extends JFrame {
       if (MainFrame.this.cas == null) {
         return;
       }
-      org.apache.uima.tools.annot_view.tsview.MainFrame tsFrame = new org.apache.uima.tools.annot_view.tsview.MainFrame();
+      org.apache.uima.tools.cvd.tsview.MainFrame tsFrame = new org.apache.uima.tools.cvd.tsview.MainFrame();
       tsFrame.addWindowListener(new CloseTypeSystemHandler());
       JComponent tsContentPane = (JComponent) tsFrame.getContentPane();
       MainFrame.this.setPreferredSize(tsContentPane, tsWindowSizePref);
@@ -2816,7 +2816,7 @@ public class MainFrame extends JFrame {
     }
     DefaultTreeModel model = (DefaultTreeModel) this.indexTree.getModel();
     // 1.3 workaround
-    TreeModelListener[] listeners = org.apache.uima.tools.annot_view.tsview.MainFrame
+    TreeModelListener[] listeners = org.apache.uima.tools.cvd.tsview.MainFrame
             .getTreeModelListeners(model);
     // TreeModelListener[] listeners = model.getTreeModelListeners();
     // System.out.println("Number of tree model listeners: " +

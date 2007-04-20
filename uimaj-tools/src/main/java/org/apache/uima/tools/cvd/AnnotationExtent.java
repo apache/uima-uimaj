@@ -17,47 +17,52 @@
  * under the License.
  */
 
-package org.apache.uima.tools.annot_view;
+package org.apache.uima.tools.cvd;
 
-import java.util.ArrayList;
+import javax.swing.text.Style;
 
 /**
- * TODO: add type comment for <code>FSTreeNode</code>.
  * 
  * 
  */
-public abstract class FSTreeNode {
+public class AnnotationExtent {
 
-  protected ArrayList children = null;
+  private int start;
+
+  private int end;
+
+  private Style style;
 
   /**
    * 
    */
-  public FSTreeNode() {
+  public AnnotationExtent(int start, int end, Style style) {
     super();
-    // TODO Auto-generated constructor stub
+    this.start = start;
+    this.end = end;
+    this.style = style;
   }
 
-  void removeAllChildren() {
-    this.children = new ArrayList();
+  public int getLength() {
+    return this.end - this.start;
   }
 
-  void setChildren(ArrayList children) {
-    this.children = children;
+  public Style getStyle() {
+    return this.style;
   }
 
-  ArrayList getChildren() {
-    return this.children;
+  /**
+   * @return int
+   */
+  public int getEnd() {
+    return this.end;
   }
 
-  int getChildCount() {
-    initChildren();
-    if (this.children == null) {
-      return 0;
-    }
-    return this.children.size();
+  /**
+   * @return int
+   */
+  public int getStart() {
+    return this.start;
   }
-
-  protected abstract void initChildren();
 
 }
