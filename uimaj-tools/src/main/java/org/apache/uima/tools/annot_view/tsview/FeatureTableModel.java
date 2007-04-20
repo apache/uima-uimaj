@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.uima.tools.annot_view.ts_editor;
+package org.apache.uima.tools.annot_view.tsview;
 
 import java.util.List;
 
