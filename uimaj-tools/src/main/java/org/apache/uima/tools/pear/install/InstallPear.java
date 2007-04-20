@@ -42,7 +42,6 @@ import java.util.jar.JarFile;
 import java.util.prefs.Preferences;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
@@ -56,6 +55,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
@@ -165,7 +165,7 @@ public class InstallPear extends JFrame {
     }
   }
 
-  private JPanel aboutMenuItemPanel = null;
+//  private JPanel aboutMenuItemPanel = null;
 
   private JTextField pearFileTextField = null;
 
@@ -189,7 +189,7 @@ public class InstallPear extends JFrame {
 
   private JMenu helpMenu = null;
 
-  private JLabel bannerLabel = null;
+//  private JLabel bannerLabel = null;
 
   private static JButton runButton = null;
 
@@ -393,6 +393,7 @@ public class InstallPear extends JFrame {
             if (UIMAUtil.ANALYSIS_ENGINE_CTG.equals(uimaCompCtg))
               runButton.setEnabled(true);
           } catch (Exception e) {
+            // Ignore exceptions!
           }
           errorFlag = false;
           message = "Verification of " + mainComponentId + " completed \n";
@@ -439,6 +440,7 @@ public class InstallPear extends JFrame {
         try {
           propStream.close();
         } catch (Exception e) {
+          // Ignore exceptions!
         }
       }
     }
@@ -451,7 +453,7 @@ public class InstallPear extends JFrame {
    * @throws IOException
    *           If any I/O exception occurred.
    */
-  private void runCVD() throws IOException {
+  private void runCVD() {
     try {
       // load CVD properties
       if (cvdProperties == null)
@@ -683,6 +685,7 @@ public class InstallPear extends JFrame {
               cvdProcess.waitFor();
             }
           } catch (Throwable e) {
+            // Ignore exceptions!
           }
         }
       }));
@@ -878,11 +881,7 @@ public class InstallPear extends JFrame {
         public void actionPerformed(java.awt.event.ActionEvent e) {
           if (e.getActionCommand().equals("Run your AE in the CAS Visual Debugger")) {
             installButton.setEnabled(false);
-            try {
-              runCVD();
-            } catch (IOException e1) {
-              e1.printStackTrace();
-            }
+            runCVD();
           }
         }
       });
@@ -932,11 +931,11 @@ public class InstallPear extends JFrame {
    */
   private JScrollPane getJScrollPane() {
     if (jScrollPane == null) {
-      jScrollPane = new JScrollPane(getPearConsole(), JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-              JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+      jScrollPane = new JScrollPane(getPearConsole(), ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+          ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
       jScrollPane.setBounds(10, 190, 708, 352);
-      jScrollPane.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-      jScrollPane.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+      jScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+      jScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     }
     return jScrollPane;
   }
@@ -973,7 +972,7 @@ public class InstallPear extends JFrame {
               scrollPane.setPreferredSize(new Dimension(700, 800));
               manFrame.setContentPane(scrollPane);
               manFrame.pack();
-              manFrame.show();
+              manFrame.setVisible(true);
             } catch (Exception ex) {
               JOptionPane.showMessageDialog(InstallPear.this, ex.getMessage(), "Error showing help",
                       JOptionPane.ERROR_MESSAGE);
@@ -1077,7 +1076,7 @@ public class InstallPear extends JFrame {
             scrollPane.setPreferredSize(new Dimension(700, 800));
             manFrame.setContentPane(scrollPane);
             manFrame.pack();
-            manFrame.show();
+            manFrame.setVisible(true);
           } catch (Exception ex) {
             JOptionPane.showMessageDialog(InstallPear.this, ex.getMessage(), "Error showing help",
                     JOptionPane.ERROR_MESSAGE);
