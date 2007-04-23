@@ -30,8 +30,10 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.internal.util.I18nUtil;
 import org.apache.uima.resource.RelativePathResolver;
+import org.apache.uima.util.Level;
 
 /**
  * Utility class to generate a pear package.
@@ -115,11 +117,16 @@ public class PackageCreator {
    * 
    * @throws PackageCreatorException
    *           if an error occurs while creating the installation descriptor
+   *           
+   * @return Path to the created installation descriptor.
    */
-  public static void createInstallDescriptor(String componentID, String mainComponentDesc,
+  public static String createInstallDescriptor(String componentID, String mainComponentDesc,
           String classpath, String datapath, String mainComponentDir, Properties envVars)
           throws PackageCreatorException {
 
+    //installation descriptor file path
+    String installationDesc = null;
+    
     // create new install descriptor
     InstallationDescriptor insd = new InstallationDescriptor();
 
@@ -140,27 +147,34 @@ public class PackageCreator {
 
     // add classpath setting to the installation descriptor
     if (classpath != null) {
-      //classpath setting should use ";" as separator if it contains ":" as separator throw an exception.
-      if(classpath.indexOf(":") == -1) {
-        InstallationDescriptor.ActionInfo actionInfo = new InstallationDescriptor.ActionInfo(
-                InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
-        actionInfo.params.put(InstallationDescriptorHandler.VAR_NAME_TAG,
-                InstallationController.CLASSPATH_VAR);
-        actionInfo.params.put(InstallationDescriptorHandler.VAR_VALUE_TAG, classpath);
-        String commentMessage = I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
-                "package_creator_env_setting", new Object[] { InstallationController.CLASSPATH_VAR });
-        actionInfo.params.put(InstallationDescriptorHandler.COMMENTS_TAG, commentMessage);
-        insd.addInstallationAction(actionInfo);  
+      // classpath setting should use ";" as separator
+      if (classpath.indexOf(":") != -1) {
+        // log warning that ";" as separator should be used.
+        UIMAFramework.getLogger(PackageCreator.class).logrb(Level.WARNING, "PackageCreator",
+                "createInstallDescriptor", PEAR_MESSAGE_RESOURCE_BUNDLE,
+                "package_creator_classpath_not_valid_warning");
       }
-      else {
-        //throw an exception, classpath should only contain ";" as delimiter not ":"
-        throw new PackageCreatorException(PEAR_MESSAGE_RESOURCE_BUNDLE,
-                "error_package_creator_classpath_not_valid");
-      }     
+      InstallationDescriptor.ActionInfo actionInfo = new InstallationDescriptor.ActionInfo(
+              InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
+      actionInfo.params.put(InstallationDescriptorHandler.VAR_NAME_TAG,
+              InstallationController.CLASSPATH_VAR);
+      actionInfo.params.put(InstallationDescriptorHandler.VAR_VALUE_TAG, classpath);
+      String commentMessage = I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
+              "package_creator_env_setting", new Object[] { InstallationController.CLASSPATH_VAR });
+      actionInfo.params.put(InstallationDescriptorHandler.COMMENTS_TAG, commentMessage);
+      insd.addInstallationAction(actionInfo);
+
     }
-    
+
     // add datapath settings to the installation descriptor
     if (datapath != null) {
+      // datapath setting should use ";" as separator
+      if (datapath.indexOf(":") != -1) {
+        // log warning that ";" as separator should be used.
+        UIMAFramework.getLogger(PackageCreator.class).logrb(Level.WARNING, "PackageCreator",
+                "createInstallDescriptor", PEAR_MESSAGE_RESOURCE_BUNDLE,
+                "package_creator_datapath_not_valid_warning");
+      }
       InstallationDescriptor.ActionInfo actionInfo = new InstallationDescriptor.ActionInfo(
               InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
       actionInfo.params.put(InstallationDescriptorHandler.VAR_NAME_TAG,
@@ -196,13 +210,22 @@ public class PackageCreator {
       if (!metaDataDir.exists()) {
         metaDataDir.mkdir();
       }
-      InstallationDescriptorHandler.saveInstallationDescriptor(insd, new File(mainComponentDir,
-              InstallationProcessor.INSD_FILE_PATH));
+      File installDesc = new File(mainComponentDir, InstallationProcessor.INSD_FILE_PATH);
+      InstallationDescriptorHandler.saveInstallationDescriptor(insd, installDesc);
+      
+      UIMAFramework.getLogger(PackageCreator.class).logrb(Level.INFO, "PackageCreator",
+              "createInstallDescriptor", PEAR_MESSAGE_RESOURCE_BUNDLE,
+              "package_creator_install_desc_created_info", new Object[] {installDesc});
+      
+      //set installation descriptor file path
+      installationDesc = installDesc.getAbsolutePath();
+      
     } catch (IOException ex) {
       throw new PackageCreatorException(PEAR_MESSAGE_RESOURCE_BUNDLE,
               "error_package_creator_creating_pear_package", new Object[] { componentID }, ex);
-    }
-
+    }   
+    
+    return installationDesc;
   }
 
   /**
@@ -222,18 +245,25 @@ public class PackageCreator {
    * 
    * @throws PackageCreatorException
    *           if the pear package can not be created successfully.
+   * 
+   * @return Retuns path absolute path to the created pear package.
    */
-  public static void createPearPackage(String componentID, String mainComponentDir, String targetDir)
+  public static String createPearPackage(String componentID, String mainComponentDir, String targetDir)
           throws PackageCreatorException {
     // package pear file with all data from the mainComponentDir
     ZipOutputStream zipFile;
+    File pearFile;
+    
     try {
-      zipFile = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(new File(
-              targetDir, componentID + ".pear"))));
+      pearFile = new File(targetDir, componentID + ".pear");
+      zipFile = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(pearFile)));
       File mainDir = new File(mainComponentDir);
       zipDirectory(componentID, mainDir.getAbsolutePath(), mainDir, zipFile);
       zipFile.close();
-
+      
+      UIMAFramework.getLogger(PackageCreator.class).logrb(Level.INFO, "PackageCreator",
+              "createInstallDescriptor", PEAR_MESSAGE_RESOURCE_BUNDLE,
+              "package_creator_pear_created_info", new Object[] {pearFile});
     } catch (FileNotFoundException ex) {
       throw new PackageCreatorException(PEAR_MESSAGE_RESOURCE_BUNDLE,
               "error_package_creator_creating_pear_package", new Object[] { componentID }, ex);
@@ -241,7 +271,8 @@ public class PackageCreator {
       throw new PackageCreatorException(PEAR_MESSAGE_RESOURCE_BUNDLE,
               "error_package_creator_creating_pear_package", new Object[] { componentID }, ex);
     }
-
+    
+    return pearFile.getAbsolutePath();
   }
 
   /**
