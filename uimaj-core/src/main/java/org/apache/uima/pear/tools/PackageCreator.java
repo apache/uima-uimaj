@@ -140,15 +140,23 @@ public class PackageCreator {
 
     // add classpath setting to the installation descriptor
     if (classpath != null) {
-      InstallationDescriptor.ActionInfo actionInfo = new InstallationDescriptor.ActionInfo(
-              InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
-      actionInfo.params.put(InstallationDescriptorHandler.VAR_NAME_TAG,
-              InstallationController.CLASSPATH_VAR);
-      actionInfo.params.put(InstallationDescriptorHandler.VAR_VALUE_TAG, classpath);
-      String commentMessage = I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
-              "package_creator_env_setting", new Object[] { InstallationController.CLASSPATH_VAR });
-      actionInfo.params.put(InstallationDescriptorHandler.COMMENTS_TAG, commentMessage);
-      insd.addInstallationAction(actionInfo);
+      //classpath setting should use ";" as separator if it contains ":" as separator throw an exception.
+      if(classpath.indexOf(":") == -1) {
+        InstallationDescriptor.ActionInfo actionInfo = new InstallationDescriptor.ActionInfo(
+                InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
+        actionInfo.params.put(InstallationDescriptorHandler.VAR_NAME_TAG,
+                InstallationController.CLASSPATH_VAR);
+        actionInfo.params.put(InstallationDescriptorHandler.VAR_VALUE_TAG, classpath);
+        String commentMessage = I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
+                "package_creator_env_setting", new Object[] { InstallationController.CLASSPATH_VAR });
+        actionInfo.params.put(InstallationDescriptorHandler.COMMENTS_TAG, commentMessage);
+        insd.addInstallationAction(actionInfo);  
+      }
+      else {
+        //throw an exception, classpath should only contain ";" as delimiter not ":"
+        throw new PackageCreatorException(PEAR_MESSAGE_RESOURCE_BUNDLE,
+                "error_package_creator_classpath_not_valid");
+      }     
     }
     
     // add datapath settings to the installation descriptor
