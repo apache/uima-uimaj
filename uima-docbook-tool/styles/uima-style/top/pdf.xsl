@@ -497,6 +497,13 @@
    </fo:inline>
  </xsl:template>
   
+  
+  <xsl:attribute-set name="admonition.title.properties">
+    <xsl:attribute name="font-size">
+      <xsl:value-of select="$body.font.master * 1.05"/>
+    </xsl:attribute>
+  </xsl:attribute-set>
+  
   <!-- Make notes display inline for 1st para --> 
   <xsl:template name="nongraphical.admonition">
     <xsl:variable name="id">
