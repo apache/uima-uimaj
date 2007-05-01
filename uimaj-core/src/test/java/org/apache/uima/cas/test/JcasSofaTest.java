@@ -27,14 +27,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import junit.framework.TestCase;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.SofaFS;
+import org.apache.uima.cas.SofaID;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.CASMgr;
@@ -58,8 +61,10 @@ import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
+import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.SAXException;
 
@@ -462,6 +467,46 @@ public class JcasSofaTest extends TestCase {
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
+  }
+  
+  public void testIndexTwice() throws Exception {
+    try {
+      CAS newCas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null);
+      JCas newJCas = newCas.getJCas();
+      CAS view = newCas.createView("DetaggedView");
+      view.getJCas();
+
+      Annotation annot = new Annotation(newJCas);
+      annot.addToIndexes();
+      
+      Iterator annotIter = newJCas.getAnnotationIndex(Annotation.type).iterator();
+      Annotation annot2 = (Annotation)annotIter.next();
+      assertEquals(annot, annot2);
+      assertEquals(annot2.getSofa(), annot2.getCASImpl().getSofa());
+      
+      annot2.addToIndexes();
+    }
+    catch (Exception e) {
+      JUnitExtension.handleException(e);      
+    }    
+  }
+  
+  public void testGetSofa() throws Exception {
+    try {
+      File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
+      TypeSystemDescription typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
+              new XMLInputSource(typeSystemFile));
+      CAS newCas = CasCreationUtils.createCas(typeSystem, null, null);
+      File xcasFile = JUnitExtension.getFile("ExampleCas/multiSofaCas.xml"); 
+      XCASDeserializer.deserialize(new FileInputStream(xcasFile), newCas);
+      JCas newJCas = newCas.getJCas();
+      
+      SofaID sofaId = new SofaID_impl("EnglishDocument");
+      JCas view = newJCas.getView(newJCas.getSofa(sofaId));
+    }
+    catch (Exception e) {
+      JUnitExtension.handleException(e);      
+    }      
   }
 
   public static void main(String[] args) {

@@ -62,7 +62,8 @@ public class AnnotationBase extends org.apache.uima.jcas.cas.TOP implements Anno
   public SofaFS getSofa() {
     if (AnnotationBase_Type.featOkTst && ((AnnotationBase_Type) jcasType).casFeat_sofa == null)
       this.jcasType.jcas.throwFeatMissing("sofa", "uima.tcas.Annotation");
-    return (SofaFS) jcasType.ll_cas.ll_getFSForRef(addr);
+    return (SofaFS) jcasType.ll_cas.ll_getFSForRef(
+            jcasType.ll_cas.ll_getRefValue(addr, ((AnnotationBase_Type)jcasType).casFeatCode_sofa));
   }
 
   public CAS getView() {
