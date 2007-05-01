@@ -51,6 +51,8 @@ public class CollectionReaderAdapter implements AnalysisComponent {
   private UimaContext mUimaContext;
 
   private boolean mSofaAware;
+  
+  private boolean mProcessCalled;
 
   /**
    * Create a new annotator adapter.
@@ -64,6 +66,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
           AnalysisEngineMetaData aMetaData) {
     mCollectionReader = aCollectionReader;
     mSofaAware = aMetaData.isSofaAware();
+    mProcessCalled = false;
   }
 
   /*
@@ -114,7 +117,21 @@ public class CollectionReaderAdapter implements AnalysisComponent {
    * @see org.apache.uima.annotator.Annotator#process(org.apache.uima.core.AbstractCas)
    */
   public void process(AbstractCas aCAS) throws AnalysisEngineProcessException {
-    // does nothing - CollectionReaders ignore their input CAS
+    // Does nothing on the first call to process - CollectionReaders ignore their input CAS.
+    // On a subsequent call to process, we want to reset the CollectionReader, which we
+    // try to do by calling its reconfigure method.
+    if (mProcessCalled) {
+      try {
+        reconfigure();
+      } catch (ResourceInitializationException e) {
+        throw new AnalysisEngineProcessException(e);
+      } catch (ResourceConfigurationException e) {
+        throw new AnalysisEngineProcessException(e);
+      }
+    }
+    else {
+      mProcessCalled = true;
+    }
   }
 
   /*
