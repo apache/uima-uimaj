@@ -493,6 +493,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 			this.mySofaRef = -1;
 		}
 
+		initFSClassRegistry();
+
 		// get the indexRepository for this Sofa
 		this.indexRepository = (this.mySofaRef == -1) ? (FSIndexRepositoryImpl) ((CASImpl) cas)
 				.getSofaIndexRepository(1) : (FSIndexRepositoryImpl) ((CASImpl) cas)
