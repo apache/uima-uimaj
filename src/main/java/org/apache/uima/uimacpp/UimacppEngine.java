@@ -39,7 +39,15 @@ public class UimacppEngine {
   private static String[] compatibleTafJniVersions = { "2.0" };
 
   static {
-    System.loadLibrary("uima");
+    String uimacpp_lib = "uima";
+    String debug = System.getProperty("DEBUG_UIMACPP");
+    if (debug != null) {
+      String osname = System.getProperty("os.name");
+      if (osname.startsWith("Windows")) {
+        uimacpp_lib = "uimaD";
+      }
+    }
+    System.loadLibrary(uimacpp_lib);
     try {
       String jniVersion = getTafJNIVersion();
       boolean compatible = false;
