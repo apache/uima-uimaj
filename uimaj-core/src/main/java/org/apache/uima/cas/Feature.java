@@ -62,12 +62,15 @@ public interface Feature extends Comparable {
   String getShortName();
 
   /**
-   * Checks if there can be multiple references to values of this feature. There can only be a
-   * single reference to a value of a feature if the value type is primitive, or if the feature is
-   * array valued and has been declared in the type system to not allow multiple references.
-   * 
-   * @return <code>true</code> iff the value type of this feature is primitive, or if it's an
-   *         array valued feature and has been declared not to allow multiple references.
+   * Checks if there can be multiple references to values of this feature.  This is only 
+   * meaningful for array-valued or list-values features.
+   * <p>
+   * If this is false it indicates that this feature has exclusive ownership of the
+   * array or list, so changes to the array or list are localized. If this is true it indicates
+   * that the array or list may be shared, so changes to it may affect other objects in the CAS. 
+   *  
+   * @return <code>true</code> iff the value type of this feature is an array or list and has been
+   *    declared to allow multiple references.
    */
   boolean isMultipleReferencesAllowed();
 
