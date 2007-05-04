@@ -65,6 +65,7 @@ import org.apache.uima.resource.JMSMessagingSpecifier;
 import org.apache.uima.resource.MQMessagingSpecifier;
 import org.apache.uima.resource.MailMessagingSpecifier;
 import org.apache.uima.resource.Parameter;
+import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.resource.URISpecifier;
 import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.resource.metadata.Capability;
@@ -444,6 +445,10 @@ public class ResourceSpecifierFactory_impl implements ResourceSpecifierFactory {
   
   public CustomResourceSpecifier createCustomResourceSpecifier() {
     return (CustomResourceSpecifier) createObject(CustomResourceSpecifier.class);
+  }  
+
+  public PearSpecifier createPearSpecifier() {
+    return (PearSpecifier) createObject(PearSpecifier.class);
   }  
 
   public CpeCollectionReaderCasInitializer createCasInitializer() {

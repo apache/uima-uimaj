@@ -30,6 +30,7 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.resource.CustomResourceSpecifier;
+import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.URISpecifier;
 import org.apache.uima.resource.metadata.FsIndexCollection;
@@ -621,6 +622,36 @@ public interface XMLParser {
    *           if the input XML is not valid or does not specify a valid CustomResourceSpecifier
    */
   public CustomResourceSpecifier parseCustomResourceSpecifier(XMLInputSource aInput,
+          ParsingOptions aOptions) throws InvalidXMLException;
+
+  /**
+   * Parses a PearSpecifier from an XML input stream.
+   * 
+   * @param aInput
+   *          the input source from which to read the XML document
+   * 
+   * @return a <code>PearSpecifier</code> object constructed from the XML document
+   * 
+   * @throws InvalidXMLException
+   *           if the input XML is not valid or does not specify a valid PearSpecifier
+   */
+  public PearSpecifier parsePearSpecifier(XMLInputSource aInput)
+          throws InvalidXMLException;
+
+  /**
+   * Parses a PearSpecifier from an XML input stream.
+   * 
+   * @param aInput
+   *          the input source from which to read the XML document
+   * @param aOptions
+   *          option settings
+   * 
+   * @return a <code>PearSpecifier</code> object constructed from the XML document
+   * 
+   * @throws InvalidXMLException
+   *           if the input XML is not valid or does not specify a valid PearSpecifier
+   */
+  public PearSpecifier parsePearSpecifier(XMLInputSource aInput,
           ParsingOptions aOptions) throws InvalidXMLException;
 
   /**
