@@ -43,10 +43,15 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.jar.JarFile;
 
+import org.apache.uima.UIMAFramework;
+import org.apache.uima.analysis_engine.impl.PearAnalysisEngineWrapper;
 import org.apache.uima.internal.util.SystemEnvReader;
 import org.apache.uima.pear.util.FileUtil;
 import org.apache.uima.pear.util.MessageRouter;
 import org.apache.uima.pear.util.StringUtil;
+import org.apache.uima.resource.Parameter;
+import org.apache.uima.resource.PearSpecifier;
+import org.xml.sax.SAXException;
 
 /**
  * The <code>InstallationController</code> class allows installing PEAR files that contain UIMA
@@ -231,6 +236,8 @@ public class InstallationController {
 
   // file generated at the end of local installation
   public static final String SET_ENV_FILE = "metadata/setenv.txt";
+  
+  public static final String PEAR_DESC_FILE_POSTFIX = "_pear.xml";
 
   // UIMA constants
   protected static final String UIMA_HOME_ENV = "UIMA_HOME";
@@ -252,7 +259,7 @@ public class InstallationController {
   protected static final String LOCAL_OPT = "-local";
 
   protected static final String INSTALL_IN_ROOT_OPT = "-root";
-
+  
   // static attributes
   private static boolean __inLocalMode = false;
 
@@ -1640,6 +1647,7 @@ public class InstallationController {
       generatePackageConfigFile();
       // generate 'setenv.bat' file
       generateSetEnvFile();
+      generatePearSpecifier(_mainComponentRootPath, _mainComponentId);
       getOutMsgWriter().println(
               "[InstallationController]: " + "the " + SET_ENV_FILE + " file contains required "
                       + "environment variables for this component");
@@ -1789,6 +1797,27 @@ public class InstallationController {
       _installationTable.put(componentId, componentRootPath);
       _installationInsDs.put(componentId, dlgInsdObject);
     }
+  }
+  
+  /**
+   * generates the pearSpecifier to run the installed pear component. The descriptor that is created has
+   * the filename &lt;componentID&gt;_pear.xml and is created in the main component root directory. 
+   * If the file already exist, it will be overridden. 
+   * 
+   * @param mainComponentRootPath
+   *          main component root path where the pear was installed to
+   *           
+   * @param mainComponentId
+   *          main component ID of the installed pear file
+   *          
+   * @throws IOException
+   * @throws SAXException
+   */
+  protected static synchronized void generatePearSpecifier(String mainComponentRootPath, String mainComponentId) throws IOException, SAXException{    
+    PearSpecifier pearSpec = UIMAFramework.getResourceSpecifierFactory().createPearSpecifier();
+    pearSpec.setPearPath(mainComponentRootPath);
+    File outputFile = new File(mainComponentRootPath, mainComponentId + PEAR_DESC_FILE_POSTFIX);      
+    pearSpec.toXML(new FileOutputStream(outputFile));
   }
 
   /**

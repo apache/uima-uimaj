@@ -56,6 +56,7 @@ import org.apache.uima.resource.JMSMessagingSpecifier;
 import org.apache.uima.resource.MQMessagingSpecifier;
 import org.apache.uima.resource.MailMessagingSpecifier;
 import org.apache.uima.resource.Parameter;
+import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.resource.URISpecifier;
 import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.resource.metadata.Capability;
@@ -426,7 +427,14 @@ public interface ResourceSpecifierFactory {
    * @return an instance of an object implementing <code>CustomResourceSpecifier</code>.
    */
   public CustomResourceSpecifier createCustomResourceSpecifier();
-  
+
+  /**
+   * Creates a <code>PearSpecifier</code>.
+   * 
+   * @return an instance of an object implementing <code>PearSpecifier</code>.
+   */
+  public PearSpecifier createPearSpecifier();
+
   /**
    * Creates a <code>FlowControllerDescription</code>
    * 

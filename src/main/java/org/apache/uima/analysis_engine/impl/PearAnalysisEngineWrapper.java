@@ -18,8 +18,6 @@
  */
 package org.apache.uima.analysis_engine.impl;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -34,12 +32,9 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.CasIterator;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.CASSerializer;
 import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.pear.tools.PackageBrowser;
-import org.apache.uima.resource.CustomResourceSpecifier;
-import org.apache.uima.resource.Parameter;
+import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
@@ -58,11 +53,6 @@ import org.apache.uima.util.XMLInputSource;
  */
 public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
-  /**
-   * installed pear root directory parameter key
-   */
-  public static final String INSTALLED_PEAR_ROOT_DIR_PARAMETER = "installedPearRoot";
-
   private AnalysisEngine ae = null;
 
   private CAS cas = null;
@@ -78,32 +68,17 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
   public boolean initialize(ResourceSpecifier aSpecifier, Map aAdditionalParams)
           throws ResourceInitializationException {
 
-    // aSpecifier must be a CustomResourceSpecifier
-    if (!(aSpecifier instanceof CustomResourceSpecifier)) {
+    // aSpecifier must be a pearSpecifier
+    if (!(aSpecifier instanceof PearSpecifier)) {
       return false;
     }
 
-    CustomResourceSpecifier customSpec = (CustomResourceSpecifier) aSpecifier;
+    //cast resource specifier to a pear specifier
+    PearSpecifier pearSpec = (PearSpecifier) aSpecifier;
 
-    // get custom resource specifier parameters
-    Parameter[] params = customSpec.getParameters();
-    String pearRootDirPath = null;
-    for (int i = 0; i < params.length; i++) {
-      if (params[i].getName().equals(INSTALLED_PEAR_ROOT_DIR_PARAMETER)) {
-        pearRootDirPath = params[i].getValue();
-      }
-    }
-
-    // if INSTALLED_PEAR_ROOT_DIR_PARAMETER was not available, return false.
-    // The Wrapper cannot start the pear file wihtout knowing the installed pear root directory.
-    if (pearRootDirPath == null) {
-      // log that INSTALLED_PEAR_ROOT_DIR_PARAMETER parameter is missing in the descriptor
-      UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
-              "initialize", LOG_RESOURCE_BUNDLE, "UIMA_pear_runtime_param_not_available__SEVERE",
-              new Object[] { INSTALLED_PEAR_ROOT_DIR_PARAMETER });
-      return false;
-    }
-
+    // get pear path
+    String pearRootDirPath = pearSpec.getPearPath();
+ 
     try {
       // get installed pear root directory - specified as URI of the descriptor
       File pearRootDir = new File(pearRootDirPath);

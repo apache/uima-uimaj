@@ -36,6 +36,8 @@
 	  		     resource="org.apache.uima.adapter.vinci.VinciAnalysisEngineServiceAdapter"/>
 	  	<binding specifier="org.apache.uima.resource.URISpecifier" 
 	  		     resource="org.apache.uima.adapter.soap.SoapAnalysisEngineServiceAdapter"/>	     
+		<binding specifier="org.apache.uima.resource.PearSpecifier" 
+	  		     resource="org.apache.uima.analysis_engine.impl.PearAnalysisEngineWrapper"/>	  		     
 	  	<binding specifier="org.apache.uima.resource.FileResourceSpecifier" 
 	  		     resource="org.apache.uima.resource.impl.DataResource_impl"/>
 	  	<binding specifier="org.apache.uima.resource.FileLanguageResourceSpecifier" 
@@ -108,6 +110,7 @@
 		<binding element="typePriorities" interface="org.apache.uima.resource.metadata.TypePriorities" class="org.apache.uima.resource.metadata.impl.TypePriorities_impl"/>
 		<binding element="typeSystemDescription" interface="org.apache.uima.resource.metadata.TypeSystemDescription" class="org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl"/>
 		<binding element="uriSpecifier" interface="org.apache.uima.resource.URISpecifier" class="org.apache.uima.resource.impl.URISpecifier_impl"/>
+		<binding element="pearSpecifier" interface="org.apache.uima.resource.PearSpecifier" class="org.apache.uima.resource.impl.PearSpecifier_impl"/>
 		<binding element="value" interface="org.apache.uima.resource.metadata.AllowedValue" class="org.apache.uima.resource.metadata.impl.AllowedValue_impl"/>
 	    <binding element="sofaMapping" interface="org.apache.uima.analysis_engine.metadata.SofaMapping" class="org.apache.uima.analysis_engine.metadata.impl.SofaMapping_impl"/>
 	
