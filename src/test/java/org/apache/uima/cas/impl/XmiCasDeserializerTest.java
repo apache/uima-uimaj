@@ -439,6 +439,11 @@ public class XmiCasDeserializerTest extends TestCase {
     serCasStream.close();
     int numAnnotations = cas.getAnnotationIndex().size(); //for comparison later
     String docText = cas.getDocumentText(); //for comparison later
+    //add a new Sofa to test that multiple Sofas in original CAS work
+    CAS preexistingView = cas.createView("preexistingView");
+    String preexistingViewText = "John Smith blah blah blah";
+    preexistingView.setDocumentText(preexistingViewText);
+    createPersonAnnot(preexistingView, 0, 10);
     
     // do XMI serialization to a string, using XmiSerializationSharedData
     // to keep track of maximum ID generated
@@ -551,6 +556,16 @@ public class XmiCasDeserializerTest extends TestCase {
     assertEquals(annotText, targetAnnot2.getCoveredText());
     assertTrue(targetView1.getSofa().getSofaRef() != 
             targetView2.getSofa().getSofaRef());
+    
+    CAS checkPreexistingView = cas.getView("preexistingView");
+    assertEquals(preexistingViewText, checkPreexistingView.getDocumentText());
+    Type personType = cas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Person");    
+    AnnotationFS targetAnnot3 = (AnnotationFS)
+            checkPreexistingView.getAnnotationIndex(personType).iterator().get();
+    assertEquals("John Smith", targetAnnot3.getCoveredText());
+    
+    //try an initial CAS that contains multiple Sofas
+    
   }
   
   public void testOutOfTypeSystemData() throws Exception {
@@ -763,7 +778,7 @@ public class XmiCasDeserializerTest extends TestCase {
     
     //deserialize into a new CAS that has the full type system
     CAS newCas = CasCreationUtils.createCas(typeSystem, null, indexes);
-    deserialize(xmiStr, newCas, null, false, -1);
+    deserialize(xmiStr2, newCas, null, false, -1);
     
     //compare
     CasComparer.assertEquals(originalCas, newCas);

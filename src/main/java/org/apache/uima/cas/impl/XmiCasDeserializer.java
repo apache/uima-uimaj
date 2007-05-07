@@ -39,6 +39,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
@@ -228,6 +229,19 @@ public class XmiCasDeserializer {
       indexRepositories.add(this.cas.getBaseIndexRepository());
       // There should always be another index for the Initial View
       indexRepositories.add(this.cas.getView(CAS.NAME_DEFAULT_SOFA).getIndexRepository());
+      //add an entry to indexRepositories for each Sofa in the CAS (which can only happen if
+      //a mergePoint was specified)
+      FSIterator sofaIter = this.cas.getSofaIterator();
+      while(sofaIter.hasNext()) {
+        SofaFS sofa = (SofaFS)sofaIter.next();
+        if (sofa.getSofaRef() == 1) {
+          cas.registerInitialSofa();
+        } else {
+          // add indexRepo for views other than the initial view
+          indexRepositories.add(cas.getSofaIndexRepository(sofa));
+        }        
+      }      
+      
       this.sofaTypeCode = cas.ts.getTypeCode(CAS.TYPE_NAME_SOFA);
       this.sofaNumFeatCode = cas.ts.getFeatureCode(CAS.FEATURE_FULL_NAME_SOFANUM);
       this.sofaFeatCode = cas.ts.getFeatureCode(CAS.FEATURE_FULL_NAME_SOFA);
