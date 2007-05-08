@@ -20,18 +20,26 @@
 package org.apache.uima.cas.impl;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 
-/**
+/*
+ * For JCas there is one instance of this class per view.
  * 
+ * To have all views share the same instance of this would require
+ * that JCasGen generate different "generator" classes which used the
+ * CASImpl parameter to locate at generate time the corresponding 
+ * JCas impl and the corresponding xxx_Type instance.  While this could
+ * reasonably be done, it would break all existing applications until they
+ * "regenerated" their JCas cover classes.  So we won't go there ... 5/2007
  * 
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates. To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
  */
+
 public class FSClassRegistry {
 
   private final boolean useFSCache;
@@ -48,7 +56,26 @@ public class FSClassRegistry {
 
   private TypeSystemImpl ts;
 
-  private final FSGenerator[] generators;
+  private FSGenerator[] generators;
+ 
+  /*
+   * Generators sometimes need to be changed while running
+   * 
+   *   An Annotator's process method is about to be called, but the class loader
+   *   used for loading the JCas classes differs from the one used to load the 
+   *   Annotator class.  This can happen when a PEAR with different class loader
+   *   is inserted into a pipeline.  
+   *   
+   *   To make this switch efficient, we keep the generators stored in a map
+   *   keyed by the class loader.
+   *   
+   *   JCas creation will, after all the generators are created, call the
+   *   saveGeneratorsForClassLoader to save a copy of the generators.
+   *   
+   *   Generators can be switched by calling loadGeneratorsForClassLoader
+   *   
+   */
+  private final Map generatorsByClassLoader = new HashMap(4);
 
   // private final RedBlackTree rbt;
   // private final TreeMap map;
@@ -116,10 +143,24 @@ public class FSClassRegistry {
     this.generators[targetType.getCode()] = this.generators[sourceType.getCode()];
   }
 
+  /* only of interest when caching FSes */
   void flush() {
     if (this.fsArray != null) {
       Arrays.fill(this.fsArray, null);
     }
+  }
+  
+  public void saveGeneratorsForClassLoader(ClassLoader cl) {
+    generatorsByClassLoader.put(cl, generators.clone());
+  }
+  
+  public boolean swapInGeneratorsForClassLoader(ClassLoader cl) {
+    FSGenerator[] cachedGenerators = (FSGenerator[]) generatorsByClassLoader.get(cl);
+    if (cachedGenerators != null) {
+      generators = cachedGenerators;
+      return true;
+    }
+    return false;
   }
 
   FeatureStructure createFS(int addr, CASImpl cas) {
