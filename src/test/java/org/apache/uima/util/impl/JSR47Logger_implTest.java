@@ -21,6 +21,7 @@ package org.apache.uima.util.impl;
 
 import java.util.HashMap;
 import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -51,47 +52,48 @@ public class JSR47Logger_implTest extends TestCase {
   }
 
   public void testLogWrapperCreation() throws Exception {
-    org.apache.uima.util.Logger rootLogger = JSR47Logger_impl.getInstance();
+    org.apache.uima.util.Logger uimaLogger = JSR47Logger_impl.getInstance();
     org.apache.uima.util.Logger classLogger = JSR47Logger_impl.getInstance(this.getClass());
 
     // check base configuration
-    Assert.assertNotNull(rootLogger);
+    Assert.assertNotNull(uimaLogger);
     Assert.assertNotNull(classLogger);
-    Assert.assertTrue(rootLogger.isLoggable(Level.INFO));
+    Assert.assertTrue(uimaLogger.isLoggable(Level.INFO));
     Assert.assertTrue(classLogger.isLoggable(Level.INFO));
   }
 
   public void testIsLoggable() throws Exception {
     // create logger
-    org.apache.uima.util.Logger rootLogger = JSR47Logger_impl.getInstance();
+    org.apache.uima.util.Logger uimaLogger = JSR47Logger_impl.getInstance();
     org.apache.uima.util.Logger classLogger = JSR47Logger_impl.getInstance(this.getClass());
 
-    Level defaultLogLevel = (Level) logLevels.get(LogManager.getLogManager().getProperty(".level"));
-    
-    if(defaultLogLevel == null) {
-      //no log level was specified, use default log level settings "INFO" that is also 
-      //used by the Java logging framework.
-      defaultLogLevel = Level.INFO;
+    //get uimaLogger log level, get parent logger of "org.apache.uima" until we have the
+    //JSR47 root logger that defines the default log level
+    Logger jsrLogger = java.util.logging.Logger.getLogger("org.apache.uima");
+    while(jsrLogger.getLevel() == null) {
+      jsrLogger = jsrLogger.getParent(); 
     }
-
+        
+    Level defaultLogLevel = (Level) logLevels.get(jsrLogger.getLevel().toString());
+    
     // check message logging for root logger based on default log level
-    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.ALL), rootLogger
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.ALL), uimaLogger
             .isLoggable(Level.ALL));
-    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINEST), rootLogger
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINEST), uimaLogger
             .isLoggable(Level.FINEST));
-    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINER), rootLogger
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINER), uimaLogger
             .isLoggable(Level.FINER));
-    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINE), rootLogger
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.FINE), uimaLogger
             .isLoggable(Level.FINE));
-    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.CONFIG), rootLogger
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.CONFIG), uimaLogger
             .isLoggable(Level.CONFIG));
-    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.INFO), rootLogger
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.INFO), uimaLogger
             .isLoggable(Level.INFO));
-    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.WARNING), rootLogger
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.WARNING), uimaLogger
             .isLoggable(Level.WARNING));
-    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.SEVERE), rootLogger
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.SEVERE), uimaLogger
             .isLoggable(Level.SEVERE));
-    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.OFF), rootLogger
+    Assert.assertEquals(defaultLogLevel.isGreaterOrEqual(Level.OFF), uimaLogger
             .isLoggable(Level.OFF));
 
     // check message logging for class logger based on default log level
