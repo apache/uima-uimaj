@@ -153,8 +153,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 	// A map from Sofas to CAS views.
 	private HashMap sofa2tcasMap;
 
+  /*
 	// A map from Sofas to JCas views.
 	private HashMap sofa2jcasMap;
+  */
 
 	// Count of Sofa created in this cas
 	protected HashSet sofaNameSet;
@@ -369,7 +371,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 		this.indexRepository = in.indexRepository;
 		this.sofa2indexMap = in.sofa2indexMap;
 		this.sofa2tcasMap = in.sofa2tcasMap;
-		this.sofa2jcasMap = in.sofa2jcasMap;
+//		this.sofa2jcasMap = in.sofa2jcasMap;
 		this.sofaNameSet = in.sofaNameSet;
 		this.fsClassReg = in.fsClassReg;
 		this.featureOffset = in.featureOffset;
@@ -447,7 +449,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 		}
 		this.sofa2indexMap = new HashMap();
 		this.sofa2tcasMap = new HashMap();
-		this.sofa2jcasMap = new HashMap();
+//		this.sofa2jcasMap = new HashMap();
 		this.sofaNameSet = new HashSet();
 		this.initialSofaCreated = false;
 		this.sofaCount = 0;
@@ -487,7 +489,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 		// this.mySofa = aSofa;
 		if (aSofa != null) {
 			// save address of SofaFS
-			this.mySofaRef = aSofa.hashCode();
+			this.mySofaRef = ((FeatureStructureImpl)aSofa).getAddress();
 		} else {
 			// this is the InitialView
 			this.mySofaRef = -1;
@@ -519,7 +521,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 		this.setCAS(cas);
 		if (aSofa != null) {
 			// save address of SofaFS
-			this.mySofaRef = aSofa.hashCode();
+			this.mySofaRef = ((FeatureStructureImpl)aSofa).getAddress();
 		} else {
 			// this is the InitialView
 			this.mySofaRef = -1;
@@ -778,7 +780,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 		getLowLevelCAS().ll_setIntValue(llsofa, this.sofaNumFeatCode, 1);
 		addSofa(sofa, CAS.NAME_DEFAULT_SOFA, mimeType);
 		registerInitialSofa();
-		this.mySofaRef = sofa.hashCode();
+		this.mySofaRef = ((FeatureStructureImpl)sofa).getAddress();
 		return (SofaFS) sofa;
 	}
 
@@ -819,7 +821,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 		FSIterator iterator = this.baseCAS.getSofaIterator();
 		while (iterator.isValid()) {
 			SofaFS sofa = (SofaFS) iterator.get();
-			if (sofaName.equals(getStringValue(sofa.hashCode(), this.sofaIdFeatCode))) {
+			if (sofaName.equals(getStringValue(((FeatureStructureImpl)sofa).getAddress(), this.sofaIdFeatCode))) {
 				return sofa;
 			}
 			iterator.moveToNext();
@@ -1111,7 +1113,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 	}
 
 	protected void registerView(SofaFS aSofa) {
-		this.mySofaRef = aSofa.hashCode();
+		this.mySofaRef = ((FeatureStructureImpl)aSofa).getAddress();
 	}
 
 	public void reinit(CASSerializer ser) {
@@ -1243,7 +1245,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 		// this happens only in a service, where JCAS handles are not held on
 		// to.
 		this.jcas = null;
-		this.sofa2jcasMap.clear();
+//		this.sofa2jcasMap.clear();
 	}
 
 	void reinit(int[] heapMetadata, int[] heapArray, String[] stringTable, int[] fsIndex,
@@ -1509,7 +1511,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 		// Add FSs to index repository for each View
 		while (iterator.isValid()) {
 			SofaFS sofa = (SofaFS) iterator.get();
-			String id = getLowLevelCAS().ll_getStringValue(sofa.hashCode(),
+			String id = getLowLevelCAS().ll_getStringValue(((FeatureStructureImpl)sofa).getAddress(),
 					((FeatureImpl) idFeat).getCode());
 			this.sofaNameSet.add(id);
 			if (CAS.NAME_DEFAULT_SOFA.equals(id)) {
@@ -2455,10 +2457,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 	// Create JCas view of aSofa
 	public JCas getJCas(SofaFS aSofa) throws CASException {
 		// Create base JCas, if needed
-		if (this.baseCAS.jcas == null) {
-			this.baseCAS.jcas = JCasImpl.getJCas(this.baseCAS);
-		}
-
+    this.baseCAS.getJCas();
+		
+    return getView(aSofa).getJCas();
+/*
 		// If a JCas already exists for this Sofa, return it
 		JCas aJCas = (JCas) this.baseCAS.sofa2jcasMap.get(new Integer(aSofa.getSofaRef()));
 		if (null != aJCas) {
@@ -2471,6 +2473,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 		aJCas = view.getJCas();
 		this.sofa2jcasMap.put(new Integer(aSofa.getSofaRef()), aJCas);
 		return aJCas;
+*/
 	}
 
 	/**
@@ -2556,7 +2559,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 				// for binary deserialization
 				this.baseCAS.sofaCount = aSofa.getSofaRef();
 				final Feature idFeat = getTypeSystem().getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFAID);
-				String id = getLowLevelCAS().ll_getStringValue(aSofa.hashCode(),
+				String id = getLowLevelCAS().ll_getStringValue(((FeatureStructureImpl)aSofa).getAddress(),
 						((FeatureImpl) idFeat).getCode());
 				if (this.baseCAS.sofaNameSet.contains(id)) {
 					CASRuntimeException e = new CASRuntimeException(
@@ -2569,14 +2572,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     else {
       // might need to tie new Sofa to old View
       if (0 == aTcas.mySofaRef) {
-        aTcas.mySofaRef = aSofa.hashCode();
+        aTcas.mySofaRef = ((FeatureStructureImpl)aSofa).getAddress();
       }
     }
 		if (this.baseCAS.sofaCount < aSofa.getSofaRef()) {
 			// for xcas deserialization
 			this.baseCAS.sofaCount = aSofa.getSofaRef();
 			final Feature idFeat = getTypeSystem().getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFAID);
-			String id = getLowLevelCAS().ll_getStringValue(aSofa.hashCode(),
+			String id = getLowLevelCAS().ll_getStringValue(((FeatureStructureImpl)aSofa).getAddress(),
 					((FeatureImpl) idFeat).getCode());
 			if (this.baseCAS.sofaNameSet.contains(id)) {
 				CASRuntimeException e = new CASRuntimeException(
