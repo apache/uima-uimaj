@@ -126,6 +126,7 @@
             <descriptor>src/main/assembly/src.xml</descriptor>
 					</descriptors>
 					<finalName>uimaj-${pom.version}</finalName>
+          <tarLongFileMode>gnu</tarLongFileMode>
 				</configuration>
 			</plugin>
 			<plugin>
