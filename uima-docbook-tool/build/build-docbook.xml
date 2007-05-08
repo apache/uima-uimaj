@@ -156,12 +156,8 @@
       <equals arg1="8.9" arg2="${saxon.version}"/></condition>
         
     <!-- computed defaults -->
-    <property name="src.dir" value="${basedir}/src"/>
-    <property name="docbook.src.dir" value="${src.dir}/docbook"/>
-    <property name="olink.dir" value="${src.dir}/olink"/>
-    <property name="target.dir" value="${basedir}/target"/>
+
     <property name="css.dir" value="${docbook.tool.project}/styles/uima-style/css"/>
-    <property name="styles.dir" value="${src.dir}/styles"/>
     <property name="local.titlepage.dir" value="${styles.dir}/titlepage"/>
     
     <property name="docbook.tools.lib.dir" value="${docbook.tool.project}/tools/common-lib"/>
@@ -217,15 +213,14 @@
       targetfile="${local.titlepage.dir}/titlepage-pdf.xsl"/>
     <uptodate property="title-html-uptodate" srcfile="${local.titlepage.dir}/titlepage-html.xml"
       targetfile="${local.titlepage.dir}/titlepage-html.xsl"/>
-        
-    <path id="olink.dir.path" location="${olink.dir}"/>
-    <pathconvert dirsep="/" property="olink.dir.path" refid="olink.dir.path"/>
-    
+            
     <path id="target.dir.path" location="${target.dir}"/>
     <pathconvert dirsep="/" property="target.dir.path" refid="target.dir.path"/>
+  	
     <property name="tmp.dir" value="${target.dir.path}/temp"/>
     <!-- in caller's project -->
     
+    	
     <!--echoproperties/-->
   </target>
   
@@ -242,6 +237,53 @@
     <!-- skip some steps if olink_work value is "only" -->
     <condition property="do_olinkdb_only">
       <equals arg1="${olink_work}" arg2="only"/>
+    </condition>
+  	
+    <property name="src.dir" value="${basedir}/src"/>
+    <property name="styles.dir" value="${src.dir}/styles"/>
+    <property name="docbook.src.dir" value="${src.dir}/docbook"/>
+    <property name="olink.dir" value="${src.dir}/olink"/>
+  	
+    <path id="olink.dir.path" location="${olink.dir}"/>
+    <pathconvert dirsep="/" property="olink.dir.path" refid="olink.dir.path"/>
+
+    <property name="target.dir" value="${basedir}/target"/>
+  	
+  	<!-- set up to date values for this docbook -->
+  	<uptodate property="target-book-pdf-uptodate">
+  		<srcfiles dir="${styles.dir}" includes="**/*.*"/>
+  	  <srcfiles dir="${docbook.src.dir}/${book_name}" includes="*.xml"/>
+  		<srcfiles dir="${olink.dir.path}" includes="**/*.*"/>
+			<mergemapper 
+				to="${target.dir}${file.separator}${book_name}${file.separator}${docbook.outname}.pdf"/>
+    </uptodate> 
+
+  	<uptodate property="target-book-html-single-uptodate">
+  		<srcfiles dir="${styles.dir}" includes="**/*.*"/>
+  	  <srcfiles dir="${docbook.src.dir}/${book_name}" includes="*.xml"/>
+  		<srcfiles dir="${olink.dir.path}" includes="**/*.*"/>
+			<mergemapper 
+				to="${target.dir}${file.separator}${book_name}${file.separator}${docbook.outname}.html"/>
+    </uptodate> 
+
+  	<uptodate property="target-book-html-chunked-uptodate">
+  		<srcfiles dir="${styles.dir}" includes="**/*.*"/>
+  	  <srcfiles dir="${docbook.src.dir}/${book_name}" includes="*.xml"/>
+  		<srcfiles dir="${olink.dir.path}" includes="**/*.*"/>
+			<mergemapper 
+				to="${target.dir}${file.separator}${book_name}${file.separator}${docbook.outname}"/>
+    </uptodate> 
+
+    <condition property="skip-or-uptodate.pdf">
+    	<or><isset property="skip.pdf"/><isset property="target-book-pdf-uptodate"/></or>
+    </condition>
+  	
+    <condition property="skip-or-uptodate.html-chunked">
+    	<or><isset property="skip.html-chunked"/><isset property="target-book-html-chunked-uptodate"/></or>
+    </condition>
+  	
+    <condition property="skip-or-uptodate.html-single">
+    	<or><isset property="skip.html-single"/><isset property="target-book-html-single-uptodate"/></or>
     </condition>
 
 
@@ -337,15 +379,15 @@
   <target name="all" depends="prepare, pdf-c, html-c, htmlsingle-c"
     description="--> Generate and copy reference documentation"/>
   
-  <target name="pdf-c" unless="skip.pdf">
+  <target name="pdf-c" unless="skip-or-uptodate.pdf">
     <antcall target="pdf"/>
   </target>
 
-  <target name="html-c" unless="skip.html-chunked">
+  <target name="html-c" unless="skip-or-uptodate.html-chunked">
     <antcall target="html"/>
   </target>
   
-  <target name="htmlsingle-c" unless="skip.html-single">
+  <target name="htmlsingle-c" unless="skip-or-uptodate.html-single">
     <antcall target="htmlsingle"/>
   </target>
   
