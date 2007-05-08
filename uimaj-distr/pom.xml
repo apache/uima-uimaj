@@ -139,7 +139,7 @@
 							<goal>javadoc</goal>
 						</goals>
 						<configuration>
-							<aggregate>false</aggregate>
+              <quiet>true</quiet>
 							<source>1.4</source>
 							<groups>
 								<group>
@@ -174,7 +174,7 @@
             <configuration>
               <tasks>
                 <!-- Build documentation -->
-                <ant dir="../uima-docbooks"/>                
+                <ant dir="../uima-docbooks" inheritAll="false"/>                
               </tasks>
             </configuration>
             <goals>
