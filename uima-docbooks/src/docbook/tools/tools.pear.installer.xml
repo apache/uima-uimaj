@@ -73,13 +73,14 @@ under the License.
     throws an exception, you can find more information about the problem in the uima.log file
     in the current working directory. The log file can be viewed with the CVD.</para>
   
-  <para>PEAR Installer creates a file named <literal>setenv.txt</literal> file in the
+  <para>PEAR Installer creates a file named <literal>setenv.txt</literal> in the
     <literal>&lt;component_root&gt;/metadata</literal> directory. This file contains
-    environment variables required to run your component in any UIMA application. For
-    instance, if you want to run your component in the Collection Processing Engine
-    Configurator GUI application, you need to add the environment variables settings from
-    the component&apos;s <literal>setenv.txt</literal> file to the <literal>cpeGui.bat
-    (cpeGui.sh)</literal> script file in the <literal>&lt;UIMA_HOME&gt;/bin</literal>
-    directory.</para>
+    environment variables required to run your component in any UIMA application. 
+    It also creates a PEAR descriptor (see also <olink targetdoc="&uima_docs_ref;"
+      targetptr="ugr.ref.pear.specifier"/>)
+    file named <literal>&lt;componentID&gt;_pear.xml</literal> 
+    in the <literal>&lt;component_root&gt;</literal> directory that can be used to directly run
+    the installed pear file in your application.
+    </para>
   
 </chapter>

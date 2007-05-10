@@ -621,6 +621,8 @@ try {
   // PEAR package component ID
   String mainComponentID = instPear
      	.getInstallationDescriptor().getMainComponentId();
+  // PEAR package pear descriptor
+  String pearDescPath = instPear.getComponentPearDescPath();
 
   // print out settings
   System.out.println("PEAR package class path: " + classpath);
@@ -629,9 +631,10 @@ try {
    	+ mainComponentDescriptor);
   System.out.println("PEAR package mainComponentID: " 
    	+ mainComponentID);
+  System.out.println("PEAR package specifier path: " + pearDescPath); 	
 
   } catch (PackageInstallerException ex) {
-    // catch PackageInstallerException - pear installation failed
+    // catch PackageInstallerException - PEAR installation failed
     ex.printStackTrace();
     System.out.println("PEAR installation failed");
   } catch (IOException ex) {
@@ -640,9 +643,9 @@ try {
   }</programlisting></para>
 	  
 	  <para>
-	    To run a PEAR package after it was installed using the PEAR API see the sample below. It use the UIMA classloader
-	    extension to set the classpath of the installed PEAR dynamically. For more details about the APIs please refer
-	    to the JavaDocs.
+	    To run a PEAR package after it was installed using the PEAR API see the example below. It use the 
+	    generated PEAR specifier that was automatically created during the PEAR installation. 
+	    For more details about the APIs please refer to the JavaDocs.
 	  
 
       <programlisting>File installDir = new File("/home/user/uimaApp/installedPears");
@@ -655,19 +658,12 @@ try {
   PackageBrowser instPear = PackageInstaller.installPackage(
   	installDir, pearFile, doVerification);
 
-  // Create resouce manager and set PEAR package classpath
+  // Create a default resouce manager
   ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
-  // Set PEAR package classpath and use it also to resolve resources
-  rsrcMgr.setExtensionClassPath(
-      	instPear.buildComponentClassPath(), true);
-  // Set PEAR package datapath 
-  if(instPear.getComponentDataPath() != null) {
-        rsrcMgr.setDataPath(instPear.getComponentDataPath());
-  }
 
-  // Create analysis engine from the installed PEAR package
-  XMLInputSource in = new XMLInputSource(instPear
-      	.getInstallationDescriptor().getMainComponentDesc());
+  // Create analysis engine from the installed PEAR package using
+  // the created PEAR specifier
+  XMLInputSource in = new XMLInputSource(instPear.getComponentPearDescPath());
   ResourceSpecifier specifier = UIMAFramework.getXMLParser()
       	.parseResourceSpecifier(in);
   AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(
@@ -686,6 +682,24 @@ try {
    
     </section>
 
+  </section>
+  
+    <section id="ugr.ref.pear.specifier">
+    <title>PEAR package descriptor</title>
+    
+    <para>To run an installed PEAR package directly in the UIMA framework the <literal>pearSpecifier</literal> 
+    XML descriptor can be used. Typically during the PEAR installation such an specifier is automatically generated 
+    and contains all the necessary settings to run the installed PEAR package. The generated PEAR descriptor
+    is located in the component root directory of the installed PEAR package and has a filename like 
+    &lt;componentID&gt;_pear.xml.</para>
+    <para>The PEAR package descriptor looks like:</para>
+    <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<pearSpecifier xmlns="http://uima.apache.org/resourceSpecifier">
+   <pearPath>/home/user/uimaApp/installedPears/testpear</pearPath>
+</pearSpecifier>]]>
+    </programlisting>
+    <para>The <literal>pearPath</literal> setting in the descriptor must point to the component root directory 
+    of the installed PEAR package.</para>
   </section>
   
 </chapter>
