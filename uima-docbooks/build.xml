@@ -30,6 +30,12 @@
   <!-- ======================================================================== -->
   
   <import file="../uima-docbook-tool/build/build-docbook.xml"/>
+	
+  <property name="fop.version" value="0.20.5"/>
+  <property name="docbook.xml.version" value="4.5"/>
+  <property name="docbook.xsl.version" value="1.72.0"/>
+  <property name="skip.html-chunked" value="true"/>
+
   
   <target name="all-books" description="--> Build all documentation"
     depends="init_once, do_olinks, do_build_given_olinks, copy-index.html"/>
