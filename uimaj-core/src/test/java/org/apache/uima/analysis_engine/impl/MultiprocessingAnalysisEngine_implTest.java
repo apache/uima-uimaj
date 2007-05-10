@@ -19,9 +19,9 @@
 
 package org.apache.uima.analysis_engine.impl;
 
-import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -198,23 +198,36 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       
       final int NUM_THREADS = 4;
       ProcessThread[] threads = new ProcessThread[NUM_THREADS];
-      for (int i = 0; i < NUM_THREADS; i++) {
-        threads[i] = new ProcessThread(ae);
-        threads[i].start();
-      }
+      Random random = new Random();
+      for (int repetitions = 0; repetitions < 4; repetitions++) {
+        for (int i = 0; i < NUM_THREADS; i++) {
+          threads[i] = new ProcessThread(ae);
+          threads[i].start();
+          Thread.sleep(random.nextInt(2));  // delay between 0 and 2 milliseconds
+        }
 
-      // wait for threads to finish and check if they got exceptions
-      for (int i = 0; i < NUM_THREADS; i++) {
-        threads[i].join();
-        Throwable failure = threads[i].getFailure();
-        if (failure != null) {
-          if (failure instanceof Exception) {
-            throw (Exception)failure;
-          } else {
-            fail(failure.getMessage());
+        // wait for threads to finish and check if they got exceptions
+        for (int i = 0; i < NUM_THREADS; i++) {
+          try {
+            threads[i].join(10000);
+          } catch (InterruptedException ie) {
+            System.err.println("got unexpected Interrupted exception " + ie);
+          }
+          if (threads[i].isAlive()) {
+            System.err.println("timeout waiting for thread to complete " + i);
+            fail("timeout waiting for thread to complete " + i);
+          }
+
+          Throwable failure = threads[i].getFailure();
+          if (failure != null) {
+            if (failure instanceof Exception) {
+              throw (Exception) failure;
+            } else {
+              fail(failure.getMessage());
+            }
           }
         }
-      }     
+      }
       
       //Check TestAnnotator fields only at the very end of processing,
       //we can't test from the threads themsleves since the state of

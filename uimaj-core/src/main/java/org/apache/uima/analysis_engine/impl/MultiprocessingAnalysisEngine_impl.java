@@ -25,6 +25,7 @@ import java.util.Map;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.CasIterator;
+import org.apache.uima.analysis_engine.ResultNotSupportedException;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.TextAnalysisEngine;
 import org.apache.uima.cas.CAS;
@@ -33,6 +34,7 @@ import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.Logger;
+import org.apache.uima.util.ProcessTrace;
 
 /**
  * An {@link AnalysisEngine} implementation that can process multiple {@link CAS} objects
@@ -93,6 +95,52 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
     return true;
   }
 
+  /**
+   * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.cas.CAS,
+   *      org.apache.uima.analysis_engine.ResultSpecification)
+   */
+  public ProcessTrace process(CAS aCAS, ResultSpecification aResultSpec)
+          throws ResultNotSupportedException, AnalysisEngineProcessException {
+    AnalysisEngine ae = null;
+    try {
+      ae = mPool.getAnalysisEngine(mTimeout);
+      if (ae == null) // timeout elapsed
+      {
+        throw new AnalysisEngineProcessException(AnalysisEngineProcessException.TIMEOUT_ELAPSED,
+                new Object[] { new Integer(getTimeout()) });
+      }       
+      return ae.process(aCAS, aResultSpec);
+    } finally {
+      if (ae != null) {
+        mPool.releaseAnalysisEngine(ae);
+      }
+    }
+  }
+
+  /**
+   * @see org.apache.uima.analysis_engine.AnalysisEngine#process(org.apache.uima.cas.CAS,
+   *      org.apache.uima.analysis_engine.ResultSpecification, org.apache.uima.util.ProcessTrace)
+   */
+  public void process(CAS aCAS, ResultSpecification aResultSpec, ProcessTrace aTrace)
+          throws ResultNotSupportedException, AnalysisEngineProcessException {
+    AnalysisEngine ae = null;
+    try {
+      ae = mPool.getAnalysisEngine(mTimeout);
+      if (ae == null) // timeout elapsed
+      {
+        throw new AnalysisEngineProcessException(AnalysisEngineProcessException.TIMEOUT_ELAPSED,
+                new Object[] { new Integer(getTimeout()) });
+      }       
+      ae.process(aCAS, aResultSpec);
+      buildProcessTraceFromMBeanStats(aTrace);
+    } finally {
+      if (ae != null) {
+        mPool.releaseAnalysisEngine(ae);
+      }
+    }
+  }
+
+  
   public CasIterator processAndOutputNewCASes(CAS aCAS) throws AnalysisEngineProcessException {
     enterProcess(); // start timer for collecting performance stats
     AnalysisEngine ae = null;
@@ -102,8 +150,7 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
       {
         throw new AnalysisEngineProcessException(AnalysisEngineProcessException.TIMEOUT_ELAPSED,
                 new Object[] { new Integer(getTimeout()) });
-      }
-
+      }       
       return ae.processAndOutputNewCASes(aCAS);
     } finally {
       if (ae != null) {
@@ -113,13 +160,14 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
     }
   }
 
+  
   /*
    * (non-Javadoc)
    * 
    * @see org.apache.uima.analysis_engine.AnalysisEngine#setResultSpecification(org.apache.uima.analysis_engine.ResultSpecification)
    */
   public void setResultSpecification(ResultSpecification aResultSpec) {
-    mPool.setResultSpecification(aResultSpec);
+   mPool.setResultSpecification(aResultSpec);
   }
 
   /**
