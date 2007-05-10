@@ -174,6 +174,21 @@ public class ResourcePool {
     return resource;
   }
 
+  /*
+   * Checks out a specific resource from the pool, waiting as long as needed until it is free
+   * @param r
+   */
+
+  public synchronized void checkoutSpecificResource(Resource r) {
+    while (!mFreeInstances.contains(r)) {
+      try {
+        wait();
+      } catch (InterruptedException e) {
+      }
+    }
+    mFreeInstances.remove(r);
+  }
+  
   /**
    * Destroys all Resources in this pool.
    */
