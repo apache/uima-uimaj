@@ -24,6 +24,7 @@
 <project name="Build Apache UIMA tutorials_and_users_guides docbook" default="all" basedir=".">
   
   <property name="book_name" value="tutorials_and_users_guides"/>
+  <property name="skip.html-chunked" value="true"/>
   
   <import file="../uima-docbook-tool/build/build-docbook.xml"/>  
   

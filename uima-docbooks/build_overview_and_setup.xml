@@ -22,6 +22,7 @@
 <project name="Build Apache UIMA overview and setup docbook" default="all" basedir=".">
 
   <property name="book_name" value="overview_and_setup"/>
+  <property name="skip.html-chunked" value="true"/>
 
   <import file="../uima-docbook-tool/build/build-docbook.xml"/> 
    

@@ -22,6 +22,7 @@
 <project default="all" basedir="." name="Build Apache UIMA references docbook">
 
   <property name="book_name" value="references"/>
+  <property name="skip.html-chunked" value="true"/>
 
   <import file="../uima-docbook-tool/build/build-docbook.xml"/>  
   
