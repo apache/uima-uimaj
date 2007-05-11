@@ -44,7 +44,10 @@ public class CustomResourceFactory_impl implements ResourceFactory {
       //check additional params map for ResourceManager, and use the UIMA extension ClassLoader
       //if one exists
       ClassLoader loader = null;
-      ResourceManager resMgr = (ResourceManager)aAdditionalParams.get(Resource.PARAM_RESOURCE_MANAGER);
+      ResourceManager resMgr = null;
+      if (aAdditionalParams != null) {
+        resMgr = (ResourceManager)aAdditionalParams.get(Resource.PARAM_RESOURCE_MANAGER);
+      }
       if (resMgr != null) {
         resMgr.getExtensionClassLoader();
       }
