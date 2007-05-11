@@ -54,7 +54,13 @@
 					<artifactId>maven-javadoc-plugin</artifactId>
 					<version>2.1</version>
 				</plugin>
-			</plugins>
+        <!-- Require v2.1 of assembly plugin because v2.2 doesn't seem to correctly unpack zip files.
+             It creates an extra top-level directory with the same name as the zip file. -->
+				<plugin>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.1</version>
+				</plugin>
+ 			</plugins>
 		</pluginManagement>
 		<plugins>
 			<plugin>
