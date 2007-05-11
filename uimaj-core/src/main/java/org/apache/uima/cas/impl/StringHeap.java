@@ -236,7 +236,7 @@ final class StringHeap {
     // Create the cell.
     this.refHeap[cellRef + CHAR_HEAP_POINTER_OFFSET] = charBufStart;
     this.refHeap[cellRef + CHAR_HEAP_STRLEN_OFFSET] = length;
-    this.charHeapPos += length;
+    this.charHeapPos += length + 1;
     ensureCharHeapSize();
     System.arraycopy(buffer, start, this.stringHeap, charBufStart, length);
     return refHeap2casPointer(cellRef);
