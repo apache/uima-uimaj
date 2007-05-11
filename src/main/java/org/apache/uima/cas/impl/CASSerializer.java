@@ -218,13 +218,7 @@ public class CASSerializer implements Serializable {
                // add 1 for the null at the beginning
                stringTotalLength += 1;
             }
-
-			// word alignment
-			if (stringTotalLength % 2 != 0) {
-				dos.writeInt(stringTotalLength + 1);
-			} else {
-				dos.writeInt(stringTotalLength);
-			}
+            dos.writeInt(stringTotalLength);
 
             //write the data in the stringheap, if there is any
             if (stringTotalLength > 0) {
@@ -282,30 +276,27 @@ public class CASSerializer implements Serializable {
 			}
 
 			// 8bit heap
-			int byteheapsz = 4 * ((cas.byteHeap.getSize() + 3) / 4);
+			int byteheapsz = cas.byteHeap.getSize();
 			dos.writeInt(byteheapsz);
 			for (int i = 0; i < cas.byteHeap.getSize(); i++) {
 				dos.writeByte(cas.byteHeap.heap[i]);
 			}
-
 			// word alignment
-			int align = byteheapsz - cas.byteHeap.getSize();
+      int align = (4 - (byteheapsz % 4)) % 4;
 			for (int i = 0; i < align; i++) {
 				dos.writeByte(0);
 			}
 
 			// 16bit heap
-			int shortheapsz = 2 * ((cas.shortHeap.getSize() * 2 + 2) / 4);
+      int shortheapsz = cas.shortHeap.getSize();
 			dos.writeInt(shortheapsz);
 			for (int i = 0; i < cas.shortHeap.getSize(); i++) {
 				dos.writeShort(cas.shortHeap.heap[i]);
 			}
-
 			// word alignment
-			align = shortheapsz - (cas.shortHeap.getSize());
-			for (int i = 0; i < align; i++) {
-				dos.writeChar(0);
-			}
+      if (shortheapsz % 2 != 0) {
+        dos.writeShort(0);
+      }
 
 			// 64bit heap
 			int longheapsz = cas.longHeap.getSize();

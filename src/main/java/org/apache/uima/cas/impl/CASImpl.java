@@ -1411,7 +1411,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 			this.byteHeap.heapPos = byteheapsz;
 
 			// word alignment
-			int align = byteheapsz % 4;
+      int align = (4 - (byteheapsz % 4)) % 4;
 			for (int i = 0; i < align; i++) {
 				dis.readByte();
 			}
@@ -1437,7 +1437,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
 			// word alignment
 			if (shortheapsz % 2 != 0) {
-				dis.readChar();
+				dis.readShort();
 			}
 
 			// long heap
