@@ -249,7 +249,7 @@
   	<uptodate property="target-book-pdf-uptodate">
   		<srcfiles dir="${styles.dir}" includes="**/*.*"/>
   	  <srcfiles dir="${docbook.src.dir}/${book_name}" includes="*.xml"/>
-  		<srcfiles dir="${olink.dir.path}" includes="**/*.*"/>
+  		<srcfiles dir="${olink.dir.path}" includes="*/pdf-target.db"/>
 			<mergemapper 
 				to="${target.dir}${file.separator}${book_name}${file.separator}${docbook.outname}.pdf"/>
     </uptodate> 
@@ -257,7 +257,7 @@
   	<uptodate property="target-book-html-single-uptodate">
   		<srcfiles dir="${styles.dir}" includes="**/*.*"/>
   	  <srcfiles dir="${docbook.src.dir}/${book_name}" includes="*.xml"/>
-  		<srcfiles dir="${olink.dir.path}" includes="**/*.*"/>
+  		<srcfiles dir="${olink.dir.path}" includes="*/htmlsingle-target.db"/>
 			<mergemapper 
 				to="${target.dir}${file.separator}${book_name}${file.separator}${docbook.outname}.html"/>
     </uptodate> 
@@ -265,9 +265,9 @@
   	<uptodate property="target-book-html-chunked-uptodate">
   		<srcfiles dir="${styles.dir}" includes="**/*.*"/>
   	  <srcfiles dir="${docbook.src.dir}/${book_name}" includes="*.xml"/>
-  		<srcfiles dir="${olink.dir.path}" includes="**/*.*"/>
+  		<srcfiles dir="${olink.dir.path}" includes="*/htmlchunked-target.db"/>
 			<mergemapper 
-				to="${target.dir}${file.separator}${book_name}${file.separator}${docbook.outname}"/>
+				to="${target.dir}${file.separator}${book_name}${file.separator}${docbook.outname}${file.separator}index.html"/>
     </uptodate> 
 
     <condition property="skip-or-uptodate.pdf">
