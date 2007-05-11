@@ -32,6 +32,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.Parameter;
+import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.resource.URISpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
@@ -178,4 +179,18 @@ public class XMLParser_implTest extends TestCase {
     assertEquals("param2", params[1].getName());
     assertEquals("val2", params[1].getValue());  
   }
+  
+  public void testParsePearSpecifier() throws Exception {
+    XMLInputSource in = new XMLInputSource(
+            JUnitExtension.getFile("XmlParserTest/TestPearSpecifier.xml"));
+    PearSpecifier pearSpec = this.mXmlParser.parsePearSpecifier(in);
+    assertEquals("/home/user/uimaApp/installedPears/testpear", pearSpec.getPearPath());
+    Parameter[] params = pearSpec.getParameters();
+    assertEquals(2, params.length);
+    assertEquals("param1", params[0].getName());
+    assertEquals("val1", params[0].getValue());
+    assertEquals("param2", params[1].getName());
+    assertEquals("val2", params[1].getValue());  
+  }
+
 }
