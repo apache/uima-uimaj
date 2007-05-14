@@ -223,7 +223,7 @@ public class CASSerializer implements Serializable {
             //write the data in the stringheap, if there is any
             if (stringTotalLength > 0) {
                 if (cas.stringHeap.charHeapPos > 0) {
-                    dos.writeChars( String.valueOf(cas.stringHeap.stringHeap) );
+                    dos.writeChars( String.valueOf(cas.stringHeap.stringHeap, 0, cas.stringHeap.charHeapPos) );
                 }
                 else {
                     // no stringheap data
