@@ -104,8 +104,8 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
                     "initialize",
                     LOG_RESOURCE_BUNDLE,
                     "UIMA_pear_runtime_system_var_already_set__WARNING",
-                    new Object[] { new String(key + "=" + systemPropValue),
-                        new String(key + "=" + value), pkgBrowser.getRootDirectory().getName() });
+                    new Object[] { (key + "=" + systemPropValue),
+                        (key + "=" + value), pkgBrowser.getRootDirectory().getName() });
           }
         }
         // set new system property
