@@ -26,17 +26,12 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 import java.awt.HeadlessException;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -61,7 +56,6 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.LogManager;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -89,16 +83,10 @@ import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -108,26 +96,19 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-import javax.swing.undo.UndoManager;
-import javax.swing.undo.UndoableEdit;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
-import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeSystem2Xml;
-import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XCASSerializer;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.internal.util.TimeSpan;
@@ -136,6 +117,29 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.tools.cvd.control.CaretChangeHandler;
+import org.apache.uima.tools.cvd.control.FSTreeSelectionListener;
+import org.apache.uima.tools.cvd.control.FileOpenEventHandler;
+import org.apache.uima.tools.cvd.control.FileSaveAsEventHandler;
+import org.apache.uima.tools.cvd.control.FileSaveEventHandler;
+import org.apache.uima.tools.cvd.control.FocusFSAction;
+import org.apache.uima.tools.cvd.control.FocusIRAction;
+import org.apache.uima.tools.cvd.control.FocusTextAction;
+import org.apache.uima.tools.cvd.control.IndexPopupListener;
+import org.apache.uima.tools.cvd.control.IndexTreeSelectionListener;
+import org.apache.uima.tools.cvd.control.LoadRecentDescFileEventHandler;
+import org.apache.uima.tools.cvd.control.LoadRecentTextFileEventHandler;
+import org.apache.uima.tools.cvd.control.MainFrameClosing;
+import org.apache.uima.tools.cvd.control.NewTextEventHandler;
+import org.apache.uima.tools.cvd.control.PopupHandler;
+import org.apache.uima.tools.cvd.control.PopupListener;
+import org.apache.uima.tools.cvd.control.ShowAnnotatedTextHandler;
+import org.apache.uima.tools.cvd.control.TextChangedListener;
+import org.apache.uima.tools.cvd.control.TextContextMenuAction;
+import org.apache.uima.tools.cvd.control.TextFocusHandler;
+import org.apache.uima.tools.cvd.control.TreeFocusHandler;
+import org.apache.uima.tools.cvd.control.UndoMgr;
+import org.apache.uima.tools.cvd.control.XCASFileOpenEventHandler;
 import org.apache.uima.tools.images.Images;
 import org.apache.uima.tools.util.gui.AboutDialog;
 import org.apache.uima.util.CasCreationUtils;
@@ -166,598 +170,6 @@ public class MainFrame extends JFrame {
     logLevels.add(Level.FINER);
     logLevels.add(Level.FINEST);
     logLevels.add(Level.ALL);
-  }
-
-  private class FocusIRAction extends AbstractAction implements Action {
-
-    private static final long serialVersionUID = -8128067676842119411L;
-
-    public void actionPerformed(ActionEvent arg0) {
-      // Only available in 1.4.
-      // MainFrame.this.indexTree.requestFocusInWindow();
-      MainFrame.this.indexTree.requestFocus();
-    }
-
-  }
-
-  private class FocusFSAction extends AbstractAction implements Action {
-
-    private static final long serialVersionUID = -8330075846211434833L;
-
-    public void actionPerformed(ActionEvent arg0) {
-      // Only available in 1.4.
-      // MainFrame.this.fsTree.requestFocusInWindow();
-      MainFrame.this.fsTree.requestFocus();
-    }
-
-  }
-
-  private class FocusTextAction extends AbstractAction implements Action {
-
-    private static final long serialVersionUID = -4867535661038776033L;
-
-    public void actionPerformed(ActionEvent arg0) {
-      // Only available in 1.4.
-      // MainFrame.this.textArea.requestFocusInWindow();
-      MainFrame.this.textArea.requestFocus();
-    }
-
-  }
-
-  private class TextChangedListener implements DocumentListener {
-
-    public void changedUpdate(DocumentEvent arg0) {
-      // Do nothing.
-    }
-
-    public void insertUpdate(DocumentEvent arg0) {
-      removeUpdate(arg0);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
-     */
-    public void removeUpdate(DocumentEvent arg0) {
-      if (!MainFrame.this.isDirty) {
-        MainFrame.this.isDirty = true;
-        setTitle();
-        if (MainFrame.this.cas != null) {
-          setStatusbarMessage("Text changed, CAS removed.");
-        }
-        resetTrees();
-      }
-    }
-
-  }
-
-  private class TextFocusHandler implements FocusListener {
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.awt.event.FocusListener#focusGained(java.awt.event.FocusEvent)
-     */
-    public void focusGained(FocusEvent e) {
-      MainFrame.this.textArea.getCaret().setVisible(true);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
-     */
-    public void focusLost(FocusEvent e) {
-      // Does nothing
-    }
-
-  }
-
-  private static class TreeFocusHandler implements FocusListener {
-
-    private JTree tree;
-
-    private TreeFocusHandler(JTree tree) {
-      super();
-      this.tree = tree;
-    }
-
-    public void focusGained(FocusEvent arg0) {
-      TreePath selPath = this.tree.getSelectionPath();
-      if (selPath == null) {
-        selPath = new TreePath(new Object[] { this.tree.getModel().getRoot() });
-        this.tree.setSelectionPath(selPath);
-      }
-    }
-
-    public void focusLost(FocusEvent arg0) {
-      // Do nothing.
-    }
-
-  }
-
-  private class PopupHandler implements ActionListener {
-
-    private final int node;
-
-    private PopupHandler(int n) {
-      super();
-      this.node = n;
-    }
-
-    public void actionPerformed(ActionEvent e) {
-      FSTreeModel treeModel = (FSTreeModel) MainFrame.this.fsTree.getModel();
-      TreePath path = treeModel.pathToNode(this.node);
-      MainFrame.this.fsTree.setSelectionPath(path);
-      MainFrame.this.fsTree.scrollPathToVisible(path);
-    }
-
-  }
-
-  private class CaretChangeHandler implements CaretListener {
-
-    public void caretUpdate(CaretEvent ce) {
-      final int dot = ce.getDot();
-      final int mark = ce.getMark();
-      setCaretStatus(dot, mark);
-      if (dot == mark) {
-        MainFrame.this.cutAction.setEnabled(false);
-        MainFrame.this.copyAction.setEnabled(false);
-      } else {
-        MainFrame.this.cutAction.setEnabled(true);
-        MainFrame.this.copyAction.setEnabled(true);
-      }
-    }
-
-  }
-
-  private class PopupListener extends MouseAdapter {
-
-    public void mousePressed(MouseEvent e) {
-      maybeShowPopup(e);
-    }
-
-    public void mouseReleased(MouseEvent e) {
-      maybeShowPopup(e);
-    }
-
-    private void maybeShowPopup(MouseEvent e) {
-      if (e.isPopupTrigger()) {
-        showTextPopup(e.getX(), e.getY());
-      }
-    }
-  }
-
-  private class TextContextMenuAction extends AbstractAction {
-
-    private static final long serialVersionUID = -5518456467913617514L;
-
-    public void actionPerformed(ActionEvent arg0) {
-      Point caretPos = MainFrame.this.textArea.getCaret().getMagicCaretPosition();
-      if (caretPos == null) {
-        // No idea why this is needed. Bug in JTextArea, or my poor
-        // understanding of the magics of carets. The point is null when
-        // the
-        // text area is first focused.
-        showTextPopup(0, 0);
-      } else {
-        showTextPopup(caretPos.x, caretPos.y);
-      }
-    }
-
-  }
-
-  private class IndexPopupListener extends MouseAdapter {
-
-    public void mousePressed(MouseEvent e) {
-      maybeShowPopup(e);
-    }
-
-    public void mouseReleased(MouseEvent e) {
-      maybeShowPopup(e);
-    }
-
-    private void maybeShowPopup(MouseEvent e) {
-      if (e.isPopupTrigger()) {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) MainFrame.this.indexTree
-            .getLastSelectedPathComponent();
-        if (node == null) {
-          return;
-        }
-        Object userObject = node.getUserObject();
-        String annotTitle = null;
-        boolean isAnnotation = true;
-        if (userObject instanceof IndexTreeNode) {
-          IndexTreeNode iNode = (IndexTreeNode) userObject;
-          if (!iNode.getName().equals(CAS.STD_ANNOTATION_INDEX)) {
-            isAnnotation = false;
-          }
-          annotTitle = iNode.getType().getName();
-        } else if (userObject instanceof TypeTreeNode) {
-          TypeTreeNode tNode = (TypeTreeNode) userObject;
-          if (!tNode.getLabel().equals(CAS.STD_ANNOTATION_INDEX)) {
-            isAnnotation = false;
-          }
-          annotTitle = tNode.getType().getName();
-        } else {
-          isAnnotation = false;
-        }
-        JPopupMenu menu = new JPopupMenu();
-        JMenuItem item = null;
-        if (isAnnotation) {
-          item = new JMenuItem("Show annotations: " + annotTitle);
-          item.addActionListener(new ShowAnnotatedTextHandler());
-        } else {
-          item = new JMenuItem("No annotations selected");
-        }
-        menu.add(item);
-        menu.show(e.getComponent(), e.getX(), e.getY());
-      }
-    }
-  }
-
-  // private class IndexPopupHandler implements ActionListener {
-  //
-  // public void actionPerformed(ActionEvent event) {
-  // DefaultMutableTreeNode node =
-  // (DefaultMutableTreeNode) indexTree.getLastSelectedPathComponent();
-  // if (node == null) {
-  // return;
-  // }
-  // Object userObject = node.getUserObject();
-  // String label = null;
-  // Type type = null;
-  // if (userObject instanceof IndexTreeNode) {
-  // IndexTreeNode indexNode = (IndexTreeNode) userObject;
-  // label = indexNode.getName();
-  // type = indexNode.getType();
-  // } else if (userObject instanceof TypeTreeNode) {
-  // TypeTreeNode typeNode = (TypeTreeNode) userObject;
-  // label = typeNode.getLabel();
-  // type = typeNode.getType();
-  // } else {
-  // return;
-  // }
-  // indexLabel = label;
-  // isAnnotIndex = label.equals(CAS.STD_ANNOTATION_INDEX);
-  // index = cas.getIndexRepository().getIndex(label, type);
-  // String title = indexLabel + " [" + index.getType().getName() + "]";
-  // MultiAnnotViewerFrame f = new MultiAnnotViewerFrame(title);
-  // f.addWindowListener(new CloseAnnotationViewHandler());
-  // FSIterator it = index.iterator();
-  // final String text = cas.getDocumentText();
-  // System.out.println("Creating extents.");
-  // AnnotationExtent[] extents =
-  // MultiMarkup.createAnnotationMarkups(it, text.length(), styleMap);
-  // System.out.println("Initializing text frame.");
-  // f.init(text, extents, getDimension(MainFrame.annotViewSizePref));
-  // System.out.println("Done.");
-  // }
-  //
-  // }
-
-  private class MainFrameClosing extends WindowAdapter {
-
-    public void windowClosing(WindowEvent e) {
-      try {
-        setStatusbarMessage("Saving preferences.");
-        saveProgramPreferences();
-        if (MainFrame.this.ae != null) {
-          MainFrame.this.ae.destroy();
-        }
-      } catch (IOException ioe) {
-        handleException(ioe);
-      }
-      System.exit(0);
-    }
-
-  }
-
-  /**
-   * Change the display of the FSTree if a type in an index is selected.
-   */
-  private class IndexTreeSelectionListener implements TreeSelectionListener {
-
-    /**
-     * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
-     */
-    public void valueChanged(TreeSelectionEvent arg0) {
-      // System.out.println("Tree selection value changed");
-      DefaultMutableTreeNode node = (DefaultMutableTreeNode) MainFrame.this.indexTree
-          .getLastSelectedPathComponent();
-      if (node == null) {
-        return;
-      }
-      Object userObject = node.getUserObject();
-      String label = null;
-      Type type = null;
-      if (userObject instanceof IndexTreeNode) {
-        IndexTreeNode indexNode = (IndexTreeNode) userObject;
-        label = indexNode.getName();
-        type = indexNode.getType();
-      } else if (userObject instanceof TypeTreeNode) {
-        TypeTreeNode typeNode = (TypeTreeNode) userObject;
-        label = typeNode.getLabel();
-        type = typeNode.getType();
-      } else {
-        return;
-      }
-      MainFrame.this.indexLabel = label;
-      MainFrame.this.isAnnotIndex = label.equals(CAS.STD_ANNOTATION_INDEX);
-      MainFrame.this.index = MainFrame.this.cas.getIndexRepository().getIndex(label, type);
-      updateFSTree(label, MainFrame.this.index);
-      MainFrame.this.allAnnotViewerItem.setEnabled(((CASImpl) MainFrame.this.cas)
-          .isAnnotationType(type));
-      MainFrame.this.textArea.getCaret().setVisible(true);
-    }
-
-  }
-
-  private class FSTreeSelectionListener implements TreeSelectionListener {
-
-    /**
-     * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
-     */
-    public void valueChanged(TreeSelectionEvent event) {
-      // System.out.println("");
-      FSTreeNode protoNode = (FSTreeNode) MainFrame.this.fsTree.getLastSelectedPathComponent();
-      if (!(protoNode instanceof FSNode)) {
-        return;
-      }
-      FSNode node = (FSNode) protoNode;
-      if (node == null) {
-        return;
-      }
-      // Remeber start of current selection.
-      final int currentSelStart = MainFrame.this.textArea.getSelectionStart();
-      if (node.isAnnotation()) {
-        if (null != MainFrame.this.cas.getDocumentText()) {
-          MainFrame.this.textArea.setSelectionStart(node.getStart());
-          MainFrame.this.textArea.setSelectionEnd(node.getEnd());
-          // System.out.println(
-          // "Setting selection from " + node.getStart() + " to " +
-          // node.getEnd());
-          MainFrame.this.textArea.getCaret().setSelectionVisible(true);
-        }
-      } else {
-        MainFrame.this.textArea.setSelectionEnd(currentSelStart);
-      }
-
-    }
-
-  }
-
-  private class FileOpenEventHandler implements ActionListener {
-
-    private FileOpenEventHandler() {
-      super();
-    }
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
-     */
-    public void actionPerformed(ActionEvent event) {
-      JFileChooser fileChooser = new JFileChooser();
-      fileChooser.setDialogTitle("Open text file");
-      fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-      if (MainFrame.this.fileOpenDir != null) {
-        fileChooser.setCurrentDirectory(MainFrame.this.fileOpenDir);
-      }
-      int rc = fileChooser.showOpenDialog(MainFrame.this);
-      if (rc == JFileChooser.APPROVE_OPTION) {
-        MainFrame.this.textFile = fileChooser.getSelectedFile();
-        if (MainFrame.this.textFile.exists() && MainFrame.this.textFile.isFile()) {
-          MainFrame.this.fileOpenDir = MainFrame.this.textFile.getParentFile();
-        }
-        Timer time = new Timer();
-        time.start();
-        loadFile();
-        time.stop();
-        resetTrees();
-        MainFrame.this.fileSaveItem.setEnabled(true);
-        MainFrame.this.undoMgr.discardAllEdits();
-        setFileStatusMessage();
-        setStatusbarMessage("Done loading text file " + MainFrame.this.textFile.getName() + " in "
-            + time.getTimeSpan() + ".");
-      }
-    }
-  }
-
-  private class NewTextEventHandler implements ActionListener {
-
-    private NewTextEventHandler() {
-      super();
-    }
-
-    public void actionPerformed(ActionEvent event) {
-      MainFrame.this.textFile = null;
-      MainFrame.this.textArea.setText("");
-      if (MainFrame.this.isDirty) {
-        MainFrame.this.isDirty = false;
-      }
-      setTitle();
-      resetTrees();
-      MainFrame.this.fileSaveItem.setEnabled(false);
-      MainFrame.this.undoMgr.discardAllEdits();
-      setFileStatusMessage();
-      setStatusbarMessage("Text area cleared.");
-    }
-
-  }
-
-  private class LoadRecentTextFileEventHandler implements ActionListener {
-
-    private final String fileName;
-
-    private LoadRecentTextFileEventHandler(String fileName) {
-      super();
-      this.fileName = fileName;
-    }
-
-    public void actionPerformed(ActionEvent e) {
-      loadTextFile(new File(this.fileName));
-    }
-
-  }
-
-  private class LoadRecentDescFileEventHandler implements ActionListener {
-
-    private final String fileName;
-
-    private LoadRecentDescFileEventHandler(String fileName) {
-      super();
-      this.fileName = fileName;
-    }
-
-    public void actionPerformed(ActionEvent e) {
-      loadAEDescriptor(new File(this.fileName));
-    }
-
-  }
-
-  private class FileSaveAsEventHandler implements ActionListener {
-
-    private FileSaveAsEventHandler() {
-      super();
-    }
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
-     */
-    public void actionPerformed(ActionEvent event) {
-      JFileChooser fileChooser = new JFileChooser();
-      fileChooser.setDialogTitle("Save file as...");
-      fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-      fileChooser.setDialogType(JFileChooser.SAVE_DIALOG);
-      if (MainFrame.this.fileOpenDir != null) {
-        fileChooser.setCurrentDirectory(MainFrame.this.fileOpenDir);
-      }
-      int rc = fileChooser.showSaveDialog(MainFrame.this);
-      if (rc == JFileChooser.APPROVE_OPTION) {
-        File tmp = MainFrame.this.textFile;
-        MainFrame.this.textFile = fileChooser.getSelectedFile();
-        boolean fileSaved = saveFile();
-        if (fileSaved) {
-          MainFrame.this.isDirty = false;
-          setTitle();
-          MainFrame.this.fileSaveItem.setEnabled(true);
-          setFileStatusMessage();
-          setStatusbarMessage("Text file " + MainFrame.this.textFile.getName() + " saved.");
-        } else {
-          MainFrame.this.textFile = tmp;
-        }
-      }
-    }
-
-  }
-
-  private class FileSaveEventHandler implements ActionListener {
-
-    private FileSaveEventHandler() {
-      super();
-    }
-
-    public void actionPerformed(ActionEvent event) {
-      saveFile();
-      setStatusbarMessage("Text file " + MainFrame.this.textFile.getName() + " saved.");
-    }
-
-  }
-
-  private class XCASFileOpenEventHandler implements ActionListener {
-
-    private XCASFileOpenEventHandler() {
-      super();
-    }
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
-     */
-    public void actionPerformed(ActionEvent event) {
-      JFileChooser fileChooser = new JFileChooser();
-      fileChooser.setDialogTitle("Open XCAS file");
-      if (MainFrame.this.xcasFileOpenDir != null) {
-        fileChooser.setCurrentDirectory(MainFrame.this.xcasFileOpenDir);
-      }
-      int rc = fileChooser.showOpenDialog(MainFrame.this);
-      if (rc == JFileChooser.APPROVE_OPTION) {
-        File xcasFile = fileChooser.getSelectedFile();
-        if (xcasFile.exists() && xcasFile.isFile()) {
-          try {
-            MainFrame.this.xcasFileOpenDir = xcasFile.getParentFile();
-            Timer time = new Timer();
-            time.start();
-            SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-            XCASDeserializer xcasDeserializer = new XCASDeserializer(MainFrame.this.cas
-                .getTypeSystem());
-            MainFrame.this.cas.reset();
-            parser.parse(xcasFile, xcasDeserializer.getXCASHandler(MainFrame.this.cas));
-            time.stop();
-            // Populate sofa combo box with the names of all text
-            // Sofas in the CAS
-            MainFrame.this.disableSofaListener = true;
-            String currentView = (String) MainFrame.this.sofaSelectionComboBox.getSelectedItem();
-            MainFrame.this.sofaSelectionComboBox.removeAllItems();
-            MainFrame.this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
-            Iterator sofas = ((CASImpl) MainFrame.this.cas).getBaseCAS().getSofaIterator();
-            Feature sofaIdFeat = MainFrame.this.cas.getTypeSystem().getFeatureByFullName(
-                CAS.FEATURE_FULL_NAME_SOFAID);
-            boolean nonDefaultSofaFound = false;
-            while (sofas.hasNext()) {
-              SofaFS sofa = (SofaFS) sofas.next();
-              String sofaId = sofa.getStringValue(sofaIdFeat);
-              if (!CAS.NAME_DEFAULT_SOFA.equals(sofaId)) {
-                MainFrame.this.sofaSelectionComboBox.addItem(sofaId);
-                nonDefaultSofaFound = true;
-              }
-            }
-            // reuse last selected view if found in new CAS
-            int newIndex = 0;
-            String newView = CAS.NAME_DEFAULT_SOFA;
-            for (int i = 0; i < MainFrame.this.sofaSelectionComboBox.getItemCount(); i++) {
-              if (currentView.equals(MainFrame.this.sofaSelectionComboBox.getItemAt(i))) {
-                newIndex = i;
-                newView = currentView;
-                break;
-              }
-            }
-            // make sofa selector visible if any text sofa other
-            // than the default was found
-            MainFrame.this.sofaSelectionPanel.setVisible(nonDefaultSofaFound);
-            MainFrame.this.cas = MainFrame.this.cas.getView(newView);
-            MainFrame.this.disableSofaListener = false;
-
-            MainFrame.this.sofaSelectionComboBox.setSelectedIndex(newIndex);
-            String text = MainFrame.this.cas.getDocumentText();
-            if (text == null) {
-              text = MainFrame.this.cas.getSofaDataURI();
-              if (text != null) {
-                text = "SofaURI = " + text;
-              } else {
-                if (null != MainFrame.this.cas.getSofaDataArray()) {
-                  text = "Sofa array with mime type = "
-                      + MainFrame.this.cas.getSofa().getSofaMime();
-                }
-              }
-            }
-            MainFrame.this.textArea.setText(text);
-            if (text == null) {
-              MainFrame.this.textArea.repaint();
-            }
-
-            MainFrame.this.setTitle("XCAS");
-            MainFrame.this.updateIndexTree(true);
-            MainFrame.this.runOnCasMenuItem.setEnabled(true);
-            setStatusbarMessage("Done loading XCAS file in " + time.getTimeSpan() + ".");
-          } catch (Exception e) {
-            e.printStackTrace();
-            handleException(e);
-          }
-        }
-      }
-    }
-
   }
 
   private class TypeSystemFileOpenEventHandler implements ActionListener {
@@ -973,7 +385,7 @@ public class MainFrame extends JFrame {
           MainFrame.this.aeDescriptorFile = fileChooser.getSelectedFile();
           loadAEDescriptor(MainFrame.this.aeDescriptorFile);
         }
-        MainFrame.this.allAnnotViewerItem.setEnabled(false);
+        MainFrame.this.allAnnotationViewerItem.setEnabled(false);
       } finally {
         resetCursor();
       }
@@ -1092,7 +504,7 @@ public class MainFrame extends JFrame {
     setStatusbarMessage("Done running AE " + this.ae.getAnalysisEngineMetaData().getName() + " in "
         + timer.getTimeSpan() + ".");
     updateIndexTree(true);
-    this.allAnnotViewerItem.setEnabled(false);
+    this.allAnnotationViewerItem.setEnabled(false);
     this.isDirty = false;
     this.runOnCasMenuItem.setEnabled(true);
   }
@@ -1104,20 +516,8 @@ public class MainFrame extends JFrame {
       JComponent tsContentPane = (JComponent) ((JFrame) event.getComponent()).getContentPane();
       final int x = tsContentPane.getWidth();
       final int y = tsContentPane.getHeight();
-      MainFrame.this.prefs.setProperty(tsWindowSizePref + widthSuffix, Integer.toString(x));
-      MainFrame.this.prefs.setProperty(tsWindowSizePref + heightSuffix, Integer.toString(y));
-    }
-
-  }
-
-  private class CloseAnnotationViewHandler extends WindowAdapter implements WindowListener {
-
-    public void windowClosing(WindowEvent event) {
-      JComponent tsContentPane = (JComponent) ((JFrame) event.getComponent()).getContentPane();
-      final int x = tsContentPane.getWidth();
-      final int y = tsContentPane.getHeight();
-      MainFrame.this.prefs.setProperty(annotViewSizePref + widthSuffix, Integer.toString(x));
-      MainFrame.this.prefs.setProperty(annotViewSizePref + heightSuffix, Integer.toString(y));
+      MainFrame.this.preferences.setProperty(tsWindowSizePref + widthSuffix, Integer.toString(x));
+      MainFrame.this.preferences.setProperty(tsWindowSizePref + heightSuffix, Integer.toString(y));
     }
 
   }
@@ -1128,8 +528,8 @@ public class MainFrame extends JFrame {
       JComponent contentPane = (JComponent) ((JFrame) event.getComponent()).getContentPane();
       final int x = contentPane.getWidth();
       final int y = contentPane.getHeight();
-      MainFrame.this.prefs.setProperty(logViewSizePref + widthSuffix, Integer.toString(x));
-      MainFrame.this.prefs.setProperty(logViewSizePref + heightSuffix, Integer.toString(y));
+      MainFrame.this.preferences.setProperty(logViewSizePref + widthSuffix, Integer.toString(x));
+      MainFrame.this.preferences.setProperty(logViewSizePref + heightSuffix, Integer.toString(y));
     }
 
   }
@@ -1250,24 +650,6 @@ public class MainFrame extends JFrame {
       MainFrame.this.codePagePrefsList = null;
       createCodePages();
       resetCPMenu();
-    }
-
-  }
-
-  private class ShowAnnotatedTextHandler implements ActionListener {
-
-    public void actionPerformed(ActionEvent event) {
-      String title = MainFrame.this.indexLabel + " - " + MainFrame.this.index.getType().getName();
-      MultiAnnotViewerFrame f = new MultiAnnotViewerFrame(title);
-      f.addWindowListener(new CloseAnnotationViewHandler());
-      FSIterator it = MainFrame.this.index.iterator();
-      final String text = MainFrame.this.cas.getDocumentText();
-      System.out.println("Creating extents.");
-      AnnotationExtent[] extents = MultiMarkup.createAnnotationMarkups(it, text.length(),
-          MainFrame.this.styleMap);
-      System.out.println("Initializing text frame.");
-      f.init(text, extents, getDimension(MainFrame.annotViewSizePref));
-      System.out.println("Done.");
     }
 
   }
@@ -1445,34 +827,6 @@ public class MainFrame extends JFrame {
 
   }
 
-  private class UndoMgr extends UndoManager implements ActionListener {
-
-    private static final long serialVersionUID = 7677701629555379146L;
-
-    public void actionPerformed(ActionEvent arg0) {
-      undo();
-      if (!canUndo()) {
-        MainFrame.this.undoItem.setEnabled(false);
-      }
-    }
-
-    public synchronized boolean addEdit(UndoableEdit arg0) {
-      MainFrame.this.undoItem.setEnabled(true);
-      return super.addEdit(arg0);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see javax.swing.undo.UndoManager#discardAllEdits()
-     */
-    public synchronized void discardAllEdits() {
-      super.discardAllEdits();
-      MainFrame.this.undoItem.setEnabled(false);
-    }
-
-  }
-
   private static final String loggerPropertiesFileName = "org/apache/uima/tools/annot_view/Logger.properties";
 
   private static final String defaultText =
@@ -1491,11 +845,11 @@ public class MainFrame extends JFrame {
   // private static final String noIndexReposLabel = indexReposRootLabel;
 
   // The content areas.
-  protected JTextArea textArea;
+  JTextArea textArea;
 
-  private JTree indexTree;
+  JTree indexTree;
 
-  private JTree fsTree;
+  JTree fsTree;
 
   private JPanel statusPanel;
 
@@ -1510,7 +864,7 @@ public class MainFrame extends JFrame {
   private Border textTitleBorder;
 
   // Dirty flag for the editor.
-  private boolean isDirty;
+  boolean isDirty;
 
   // The scroll panels.
   private JScrollPane textScrollPane;
@@ -1520,21 +874,21 @@ public class MainFrame extends JFrame {
   private JScrollPane fsTreeScrollPane;
 
   // Menus
-  protected JMenu fileMenu = null;
+  private  JMenu fileMenu = null;
 
-  private JMenuItem fileSaveItem = null;
+  JMenuItem fileSaveItem = null;
 
   private JMenu editMenu;
 
-  private JMenuItem undoItem;
+  JMenuItem undoItem;
 
-  private UndoMgr undoMgr;
+  UndoMgr undoMgr;
 
   private Action cutAction;
 
   private Action copyAction;
 
-  private JMenuItem allAnnotViewerItem;
+  private JMenuItem allAnnotationViewerItem;
 
   private JMenuItem acdItem;
 
@@ -1542,7 +896,7 @@ public class MainFrame extends JFrame {
 
   private JMenuItem reRunMenu;
 
-  private JMenuItem runOnCasMenuItem;
+  JMenuItem runOnCasMenuItem;
 
   private JPopupMenu textPopup;
 
@@ -1587,13 +941,13 @@ public class MainFrame extends JFrame {
 
   private static final String defaultLanguages = "de,en,fr,ja,ko-kr,pt-br,zh-cn,zh-tw,x-unspecified";
 
-  protected File textFile = null;
+  File textFile = null;
 
-  private File fileOpenDir = null;
+  File fileOpenDir = null;
 
   private File annotOpenDir = null;
 
-  private File xcasFileOpenDir = null;
+  File xcasFileOpenDir = null;
 
   private File colorSettingsDir = null;
 
@@ -1602,11 +956,11 @@ public class MainFrame extends JFrame {
 
   private FSIndex index = null;
 
-  private boolean isAnnotIndex = false;
+  private boolean isAnnotationIndex = false;
 
   // private ArrayList runConfigs;
 
-  protected CAS cas = null;
+  CAS cas = null;
 
   private File aeDescriptorFile = null;
 
@@ -1622,29 +976,29 @@ public class MainFrame extends JFrame {
 
   private static final Color selectionColor = Color.orange;
 
-  private Properties prefs;
+  private Properties preferences;
 
-  private static final String textDirPref = "dir.open.text";
+  public static final String textDirPref = "dir.open.text";
 
-  private static final String aeDirPref = "dir.open.tae";
+  public static final String aeDirPref = "dir.open.tae";
 
-  private static final String xcasDirPref = "dir.open.xcas";
+  public static final String xcasDirPref = "dir.open.xcas";
 
-  private static final String textSizePref = "textArea.size";
+  public static final String textSizePref = "textArea.size";
 
-  private static final String indexTreeSizePref = "indexTree.size";
+  public static final String indexTreeSizePref = "indexTree.size";
 
-  private static final String fsTreeSizePref = "fsTree.size";
+  public static final String fsTreeSizePref = "fsTree.size";
 
-  private static final String tsWindowSizePref = "tsWindow.size";
+  public static final String tsWindowSizePref = "tsWindow.size";
 
-  private static final String annotViewSizePref = "annotViewWindow.size";
+  public static final String annotViewSizePref = "annotViewWindow.size";
 
-  private static final String logViewSizePref = "logViewWindow.size";
+  public static final String logViewSizePref = "logViewWindow.size";
 
-  private static final String widthSuffix = ".width";
+  public static final String widthSuffix = ".width";
 
-  private static final String heightSuffix = ".height";
+  public static final String heightSuffix = ".height";
 
   private static final String colorFilePref = "colors.file";
 
@@ -1696,11 +1050,11 @@ public class MainFrame extends JFrame {
 
   private String dataPathName;
 
-  private JComboBox sofaSelectionComboBox;
+  JComboBox sofaSelectionComboBox;
 
-  private JPanel sofaSelectionPanel;
+  JPanel sofaSelectionPanel;
 
-  private boolean disableSofaListener = false;
+  boolean disableSofaListener = false;
 
   /**
    * Constructor for MainFrame.
@@ -1744,7 +1098,7 @@ public class MainFrame extends JFrame {
     init();
   }
 
-  protected void handleException(Throwable e) {
+  public void handleException(Throwable e) {
     StringBuffer msg = new StringBuffer();
     handleException(e, msg);
   }
@@ -1776,7 +1130,7 @@ public class MainFrame extends JFrame {
     JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.ERROR_MESSAGE);
   }
 
-  protected void loadFile() {
+  public void loadFile() {
     try {
       if (this.textFile.exists() && this.textFile.canRead()) {
         String text = null;
@@ -1829,7 +1183,7 @@ public class MainFrame extends JFrame {
   private final JMenuItem createRecentTextFileItem(int num, File file) {
     String fileShortName = file.getName();
     JMenuItem item = new JMenuItem(num + " " + fileShortName, getMnemonic(num));
-    item.addActionListener(new LoadRecentTextFileEventHandler(file.getAbsolutePath()));
+    item.addActionListener(new LoadRecentTextFileEventHandler(this, file.getAbsolutePath()));
     item.setToolTipText(file.getAbsolutePath());
     return item;
   }
@@ -1858,7 +1212,7 @@ public class MainFrame extends JFrame {
   private final JMenuItem createRecentDescFileItem(int num, File file) {
     String fileShortName = file.getName();
     JMenuItem item = new JMenuItem(num + " " + fileShortName, getMnemonic(num));
-    item.addActionListener(new LoadRecentDescFileEventHandler(file.getAbsolutePath()));
+    item.addActionListener(new LoadRecentDescFileEventHandler(this, file.getAbsolutePath()));
     item.setToolTipText(file.getAbsolutePath());
     return item;
   }
@@ -1914,7 +1268,7 @@ public class MainFrame extends JFrame {
     this.isDirty = false;
   }
 
-  private void setTitle() {
+  public void setTitle() {
     StringBuffer buf = new StringBuffer();
     buf.append(titleText);
     if (this.textFile != null) {
@@ -1926,7 +1280,7 @@ public class MainFrame extends JFrame {
     this.setTitle(buf.toString());
   }
 
-  private boolean saveFile() {
+  public boolean saveFile() {
     if (this.textFile.exists() && !this.textFile.canWrite()) {
       showError("File is not writable: " + this.textFile.getAbsolutePath());
       return false;
@@ -1974,12 +1328,12 @@ public class MainFrame extends JFrame {
       this.textArea.setLineWrap(true);
       this.textArea.setWrapStyleWord(true);
       this.textArea.setText(defaultText);
-      this.textArea.addMouseListener(new PopupListener());
+      this.textArea.addMouseListener(new PopupListener(this));
       // textArea.setFocusable(true);
-      this.textArea.addFocusListener(new TextFocusHandler());
-      this.textArea.getDocument().addDocumentListener(new TextChangedListener());
-      this.textArea.addCaretListener(new CaretChangeHandler());
-      this.undoMgr = new UndoMgr();
+      this.textArea.addFocusListener(new TextFocusHandler(this));
+      this.textArea.getDocument().addDocumentListener(new TextChangedListener(this));
+      this.textArea.addCaretListener(new CaretChangeHandler(this));
+      this.undoMgr = new UndoMgr(this);
       this.textArea.getDocument().addUndoableEditListener(this.undoMgr);
     } catch (Exception e) {
       handleException(e);
@@ -2071,20 +1425,20 @@ public class MainFrame extends JFrame {
     this.fileMenu = new JMenu("File");
     JMenuItem newTextItem = new JMenuItem("New Text...", KeyEvent.VK_N);
     newTextItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
-    newTextItem.addActionListener(new NewTextEventHandler());
+    newTextItem.addActionListener(new NewTextEventHandler(this));
     this.fileMenu.add(newTextItem);
     this.fileMenu.setMnemonic(KeyEvent.VK_F);
     JMenuItem fileOpen = new JMenuItem("Open Text File", KeyEvent.VK_O);
-    fileOpen.addActionListener(new FileOpenEventHandler());
+    fileOpen.addActionListener(new FileOpenEventHandler(this));
     fileOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
     this.fileMenu.add(fileOpen);
     this.fileSaveItem = new JMenuItem("Save Text File", KeyEvent.VK_S);
     this.fileSaveItem.setEnabled(false);
-    this.fileSaveItem.addActionListener(new FileSaveEventHandler());
+    this.fileSaveItem.addActionListener(new FileSaveEventHandler(this));
     this.fileSaveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
     this.fileMenu.add(this.fileSaveItem);
     JMenuItem fileSaveAsItem = new JMenuItem("Save Text As...", KeyEvent.VK_A);
-    fileSaveAsItem.addActionListener(new FileSaveAsEventHandler());
+    fileSaveAsItem.addActionListener(new FileSaveAsEventHandler(this));
     this.fileMenu.add(fileSaveAsItem);
     createCPMenu();
     this.cpMenu.setMnemonic(KeyEvent.VK_P);
@@ -2115,7 +1469,7 @@ public class MainFrame extends JFrame {
     this.xcasWriteItem.addActionListener(new XCASSaveHandler());
     this.fileMenu.add(this.xcasWriteItem);
     this.xcasReadItem = new JMenuItem("Read XCAS File", KeyEvent.VK_R);
-    this.xcasReadItem.addActionListener(new XCASFileOpenEventHandler());
+    this.xcasReadItem.addActionListener(new XCASFileOpenEventHandler(this));
     this.xcasReadItem.setEnabled(false);
     this.fileMenu.add(this.xcasReadItem);
     this.fileMenu.addSeparator();
@@ -2192,7 +1546,7 @@ public class MainFrame extends JFrame {
     }
   }
 
-  private void resetTrees() {
+  public void resetTrees() {
     updateIndexTree(false);
   }
 
@@ -2338,10 +1692,10 @@ public class MainFrame extends JFrame {
     this.tsViewerItem.addActionListener(new ShowTypesystemHandler());
     this.tsViewerItem.setEnabled(false);
     toolsMenu.add(this.tsViewerItem);
-    this.allAnnotViewerItem = new JMenuItem("Show Selected Annotations", KeyEvent.VK_A);
-    this.allAnnotViewerItem.addActionListener(new ShowAnnotatedTextHandler());
-    toolsMenu.add(this.allAnnotViewerItem);
-    this.allAnnotViewerItem.setEnabled(false);
+    this.allAnnotationViewerItem = new JMenuItem("Show Selected Annotations", KeyEvent.VK_A);
+    this.allAnnotationViewerItem.addActionListener(new ShowAnnotatedTextHandler(this));
+    toolsMenu.add(this.allAnnotationViewerItem);
+    this.allAnnotationViewerItem.setEnabled(false);
     this.acdItem = new JMenuItem("Customize Annotation Display", KeyEvent.VK_C);
     toolsMenu.add(this.acdItem);
     this.acdItem.setEnabled(false);
@@ -2433,7 +1787,7 @@ public class MainFrame extends JFrame {
     setAEStatusMessage();
   }
 
-  private void setCaretStatus(final int dot, final int mark) {
+  public void setCaretStatus(final int dot, final int mark) {
     if (dot == mark) {
       this.caretStatus.setText("Cursor: " + dot);
     } else {
@@ -2450,7 +1804,7 @@ public class MainFrame extends JFrame {
     this.statusPanel.revalidate();
   }
 
-  private void setFileStatusMessage() {
+  public void setFileStatusMessage() {
     // if (this.textFile == null)
     // {
     // fileStatus.setText("(No Text File Loaded)");
@@ -2486,7 +1840,7 @@ public class MainFrame extends JFrame {
     this.statusPanel.revalidate();
   }
 
-  private void setStatusbarMessage(String message) {
+  public void setStatusbarMessage(String message) {
     // Date date = new Date();
     Calendar calendar = Calendar.getInstance();
     int time;
@@ -2543,7 +1897,7 @@ public class MainFrame extends JFrame {
   private void init() {
     initializeLogging();
     this.addCursorOwningComponent(this);
-    this.addWindowListener(new MainFrameClosing());
+    this.addWindowListener(new MainFrameClosing(this));
     // runConfigs = new ArrayList();
     createTextArea();
     this.setTitle(titleText);
@@ -2562,7 +1916,7 @@ public class MainFrame extends JFrame {
 
     this.setContentPane(contentPane);
     initIRTree();
-    this.indexTree.addMouseListener(new IndexPopupListener());
+    this.indexTree.addMouseListener(new IndexPopupListener(this));
 
     // add combobox to select the view
     JPanel leftPanel = new JPanel();
@@ -2765,7 +2119,7 @@ public class MainFrame extends JFrame {
     this.indexTree.setBorder(BorderFactory.createEmptyBorder(2, 4, 2, 2));
     // Only one node can be selected at any one time.
     this.indexTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-    this.indexTree.addTreeSelectionListener(new IndexTreeSelectionListener());
+    this.indexTree.addTreeSelectionListener(new IndexTreeSelectionListener(this));
     // No icons.
     DefaultTreeCellRenderer cellRenderer = new DefaultTreeCellRenderer();
     cellRenderer.setLeafIcon(null);
@@ -2783,7 +2137,7 @@ public class MainFrame extends JFrame {
     this.fsTree.setLargeModel(true);
     // Only one node can be selected at any one time.
     this.fsTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-    this.fsTree.addTreeSelectionListener(new FSTreeSelectionListener());
+    this.fsTree.addTreeSelectionListener(new FSTreeSelectionListener(this));
     DefaultTreeCellRenderer cellRenderer = new DefaultTreeCellRenderer();
     cellRenderer.setLeafIcon(null);
     // cellRenderer.setIcon(null);
@@ -2796,7 +2150,7 @@ public class MainFrame extends JFrame {
     ((FSTreeModel) this.fsTree.getModel()).reset();
   }
 
-  protected void updateIndexTree(boolean useCAS) {
+  public void updateIndexTree(boolean useCAS) {
     deleteFSTree();
     DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.indexTree.getModel().getRoot();
     if (useCAS) {
@@ -2832,7 +2186,7 @@ public class MainFrame extends JFrame {
     }
   }
 
-  private void updateFSTree(String indexName, FSIndex index1) {
+  public void updateFSTree(String indexName, FSIndex index1) {
     FSTreeModel treeModel = (FSTreeModel) this.fsTree.getModel();
     treeModel.update(indexName, index1, this.cas);
   }
@@ -2872,21 +2226,21 @@ public class MainFrame extends JFrame {
     File prefFile = new File(home, "annotViewer.pref");
     if (prefFile.exists() && prefFile.isFile() && prefFile.canRead()) {
       FileInputStream in = new FileInputStream(prefFile);
-      this.prefs = new Properties();
-      this.prefs.load(in);
-      String fileOpenDirName = this.prefs.getProperty(textDirPref);
+      this.preferences = new Properties();
+      this.preferences.load(in);
+      String fileOpenDirName = this.preferences.getProperty(textDirPref);
       if (fileOpenDirName != null) {
         this.fileOpenDir = new File(fileOpenDirName);
       }
-      String aeOpenDirName = this.prefs.getProperty(aeDirPref);
+      String aeOpenDirName = this.preferences.getProperty(aeDirPref);
       if (aeOpenDirName != null) {
         this.annotOpenDir = new File(aeOpenDirName);
       }
-      String xcasOpenDirName = this.prefs.getProperty(xcasDirPref);
+      String xcasOpenDirName = this.preferences.getProperty(xcasDirPref);
       if (xcasOpenDirName != null) {
         this.xcasFileOpenDir = new File(xcasOpenDirName);
       }
-      String colorFileName = this.prefs.getProperty(colorFilePref);
+      String colorFileName = this.preferences.getProperty(colorFilePref);
       if (colorFileName != null) {
         this.colorSettingFile = new File(colorFileName);
         try {
@@ -2895,17 +2249,17 @@ public class MainFrame extends JFrame {
           handleException(e);
         }
       }
-      String colorDirName = this.prefs.getProperty(colorDirPref);
+      String colorDirName = this.preferences.getProperty(colorDirPref);
       if (colorDirName != null) {
         this.colorSettingsDir = new File(colorDirName);
       }
-      this.codePage = this.prefs.getProperty(cpCurrentPref);
-      this.codePagePrefsList = this.prefs.getProperty(cpListPref);
-      this.language = this.prefs.getProperty(langCurrentPref);
-      this.languagePrefsList = this.prefs.getProperty(langListPref);
-      this.dataPathName = this.prefs.getProperty(dataPathPref);
+      this.codePage = this.preferences.getProperty(cpCurrentPref);
+      this.codePagePrefsList = this.preferences.getProperty(cpListPref);
+      this.language = this.preferences.getProperty(langCurrentPref);
+      this.languagePrefsList = this.preferences.getProperty(langListPref);
+      this.dataPathName = this.preferences.getProperty(dataPathPref);
     }
-    if (this.prefs == null) {
+    if (this.preferences == null) {
       this.textScrollPane.setPreferredSize(textDimensionDefault);
       this.fsTree.setPreferredSize(fsTreeDimensionDefault);
     } else {
@@ -2913,21 +2267,21 @@ public class MainFrame extends JFrame {
       setPreferredSize(this.indexTreeScrollPane, indexTreeSizePref);
       setPreferredSize(this.fsTreeScrollPane, fsTreeSizePref);
     }
-    if (this.prefs != null) {
-      ArrayList list = stringToArrayList(this.prefs.getProperty(textFileListPref, ""));
+    if (this.preferences != null) {
+      ArrayList list = stringToArrayList(this.preferences.getProperty(textFileListPref, ""));
       for (int i = 0; i < list.size(); i++) {
         this.textFileNameList.add(list.get(i));
         ++this.numRecentTextFiles;
       }
-      list = stringToArrayList(this.prefs.getProperty(descFileListPref, ""));
+      list = stringToArrayList(this.preferences.getProperty(descFileListPref, ""));
       for (int i = 0; i < list.size(); i++) {
         this.descFileNameList.add(list.get(i));
         ++this.numRecentDescFiles;
       }
     }
     // System.out.println("Home dir: " + System.getProperty("user.home"));
-    if (this.prefs == null) {
-      this.prefs = new Properties();
+    if (this.preferences == null) {
+      this.preferences = new Properties();
     }
   }
 
@@ -2936,12 +2290,12 @@ public class MainFrame extends JFrame {
     comp.setPreferredSize(getDimension(propPrefix));
   }
 
-  private Dimension getDimension(String propPrefix) {
-    if (this.prefs == null) {
+  public Dimension getDimension(String propPrefix) {
+    if (this.preferences == null) {
       return null;
     }
-    final String width = this.prefs.getProperty(propPrefix + widthSuffix);
-    final String height = this.prefs.getProperty(propPrefix + heightSuffix);
+    final String width = this.preferences.getProperty(propPrefix + widthSuffix);
+    final String height = this.preferences.getProperty(propPrefix + heightSuffix);
     if ((height == null) || (width == null)) {
       return null;
     }
@@ -2987,39 +2341,39 @@ public class MainFrame extends JFrame {
     // File open dialog preferences.
     File home = new File(System.getProperty("user.home"));
     File prefFile = new File(home, "annotViewer.pref");
-    if (this.prefs == null) {
-      this.prefs = new Properties();
+    if (this.preferences == null) {
+      this.preferences = new Properties();
     }
     if (this.fileOpenDir != null) {
-      this.prefs.setProperty(textDirPref, this.fileOpenDir.getAbsolutePath());
+      this.preferences.setProperty(textDirPref, this.fileOpenDir.getAbsolutePath());
     }
     if (this.annotOpenDir != null) {
-      this.prefs.setProperty(aeDirPref, this.annotOpenDir.getAbsolutePath());
+      this.preferences.setProperty(aeDirPref, this.annotOpenDir.getAbsolutePath());
     }
     if (this.xcasFileOpenDir != null) {
-      this.prefs.setProperty(xcasDirPref, this.xcasFileOpenDir.getAbsolutePath());
+      this.preferences.setProperty(xcasDirPref, this.xcasFileOpenDir.getAbsolutePath());
     }
     // Window size preferences.
     Dimension d = this.textScrollPane.getSize();
-    this.prefs.setProperty(textSizePref + widthSuffix, Double.toString(d.getWidth()));
-    this.prefs.setProperty(textSizePref + heightSuffix, Double.toString(d.getHeight()));
+    this.preferences.setProperty(textSizePref + widthSuffix, Double.toString(d.getWidth()));
+    this.preferences.setProperty(textSizePref + heightSuffix, Double.toString(d.getHeight()));
     d = this.indexTreeScrollPane.getSize();
-    this.prefs.setProperty(indexTreeSizePref + widthSuffix, Double.toString(d.getWidth()));
-    this.prefs.setProperty(indexTreeSizePref + heightSuffix, Double.toString(d.getHeight()));
+    this.preferences.setProperty(indexTreeSizePref + widthSuffix, Double.toString(d.getWidth()));
+    this.preferences.setProperty(indexTreeSizePref + heightSuffix, Double.toString(d.getHeight()));
     d = this.fsTreeScrollPane.getSize();
-    this.prefs.setProperty(fsTreeSizePref + widthSuffix, Double.toString(d.getWidth()));
-    this.prefs.setProperty(fsTreeSizePref + heightSuffix, Double.toString(d.getHeight()));
+    this.preferences.setProperty(fsTreeSizePref + widthSuffix, Double.toString(d.getWidth()));
+    this.preferences.setProperty(fsTreeSizePref + heightSuffix, Double.toString(d.getHeight()));
     if (this.dataPathName != null) {
-      this.prefs.setProperty(dataPathPref, this.dataPathName);
+      this.preferences.setProperty(dataPathPref, this.dataPathName);
     }
     if (this.colorSettingFile != null) {
-      this.prefs.setProperty(colorFilePref, this.colorSettingFile.getAbsolutePath());
+      this.preferences.setProperty(colorFilePref, this.colorSettingFile.getAbsolutePath());
     }
     if (this.colorSettingsDir != null) {
-      this.prefs.setProperty(colorDirPref, this.colorSettingsDir.getAbsolutePath());
+      this.preferences.setProperty(colorDirPref, this.colorSettingsDir.getAbsolutePath());
     }
     if (this.codePage != null) {
-      this.prefs.setProperty(cpCurrentPref, this.codePage);
+      this.preferences.setProperty(cpCurrentPref, this.codePage);
     }
     if (this.codePages != null && this.codePages.size() > 0) {
       StringBuffer buf = new StringBuffer();
@@ -3028,10 +2382,10 @@ public class MainFrame extends JFrame {
         buf.append(",");
         buf.append((String) this.codePages.get(i));
       }
-      this.prefs.setProperty(cpListPref, buf.toString());
+      this.preferences.setProperty(cpListPref, buf.toString());
     }
     if (this.language != null) {
-      this.prefs.setProperty(langCurrentPref, this.language);
+      this.preferences.setProperty(langCurrentPref, this.language);
     }
     if (this.languages != null && this.languages.size() > 0) {
       StringBuffer buf = new StringBuffer();
@@ -3040,13 +2394,13 @@ public class MainFrame extends JFrame {
         buf.append(",");
         buf.append((String) this.languages.get(i));
       }
-      this.prefs.setProperty(langListPref, buf.toString());
+      this.preferences.setProperty(langListPref, buf.toString());
     }
-    this.prefs.setProperty(textFileListPref, arrayListToString(this.textFileNameList));
-    this.prefs.setProperty(descFileListPref, arrayListToString(this.descFileNameList));
+    this.preferences.setProperty(textFileListPref, arrayListToString(this.textFileNameList));
+    this.preferences.setProperty(descFileListPref, arrayListToString(this.descFileNameList));
     // Write out preferences to file.
     FileOutputStream out = new FileOutputStream(prefFile);
-    this.prefs.store(out, "Automatically generated preferences file for Annotation Viewer");
+    this.preferences.store(out, "Automatically generated preferences file for Annotation Viewer");
   }
 
   private void saveColorPreferences(File file) throws IOException {
@@ -3097,49 +2451,189 @@ public class MainFrame extends JFrame {
 
   private void initKeyMap() {
     // Create a key map for focussing the index repository tree panel.
-    Action focusIRAction = new FocusIRAction();
+    Action focusIRAction = new FocusIRAction(this);
     String focusIRActionName = "focusIRAction";
     getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
         KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_MASK), focusIRActionName);
     getRootPane().getActionMap().put(focusIRActionName, focusIRAction);
     // Create a key map for focussing the FS tree panel.
-    Action focusFSAction = new FocusFSAction();
+    Action focusFSAction = new FocusFSAction(this);
     String focusFSActionName = "focusFSAction";
     getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
         KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_MASK), focusFSActionName);
     getRootPane().getActionMap().put(focusFSActionName, focusFSAction);
     // Create a key map for focussing the text area.
-    Action focusTextAction = new FocusTextAction();
+    Action focusTextAction = new FocusTextAction(this);
     String focusTextActionName = "focusTextAction";
     getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
         KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK), focusTextActionName);
     getRootPane().getActionMap().put(focusTextActionName, focusTextAction);
     // Create a key map for bringing up the text area context menu.
-    Action textContextAction = new TextContextMenuAction();
+    Action textContextAction = new TextContextMenuAction(this);
     String textContextActionName = "textContextAction";
     this.textArea.getInputMap(JComponent.WHEN_FOCUSED).put(
         KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.ALT_MASK), textContextActionName);
     this.textArea.getActionMap().put(textContextActionName, textContextAction);
   }
 
-  private void showTextPopup(int x, int y) {
+  public void showTextPopup(int x, int y) {
     final int pos = this.textArea.getCaretPosition();
     this.textPopup.removeAll();
     JMenuItem item = new JMenuItem("Position: " + pos);
     item.setEnabled(false);
     this.textPopup.add(item);
     FSNode posAnnot;
-    if (this.isAnnotIndex) {
+    if (this.isAnnotationIndex) {
       ArrayList annots = ((FSTreeModel) this.fsTree.getModel()).getFSs();
       ArrayList selAnnots = getAnnotationsAtPos(pos, annots);
       for (int i = 0; i < selAnnots.size(); i++) {
         posAnnot = (FSNode) selAnnots.get(i);
         item = new JMenuItem("[" + posAnnot.getArrayPos() + "] = " + posAnnot.getType().getName());
-        item.addActionListener(new PopupHandler(posAnnot.getArrayPos()));
+        item.addActionListener(new PopupHandler(this, posAnnot.getArrayPos()));
         this.textPopup.add(item);
       }
     }
     this.textPopup.show(this.textArea, x, y);
+  }
+
+  public JTree getIndexTree() {
+    return this.indexTree;
+  }
+
+  public JTree getFsTree() {
+    return this.fsTree;
+  }
+
+  public JTextArea getTextArea() {
+    return this.textArea;
+  }
+
+  public CAS getCas() {
+    return this.cas;
+  }
+
+  public boolean isDirty() {
+    return this.isDirty;
+  }
+
+  public void setDirty(boolean isDirty) {
+    this.isDirty = isDirty;
+  }
+
+  public Action getCopyAction() {
+    return this.copyAction;
+  }
+
+  public Action getCutAction() {
+    return this.cutAction;
+  }
+
+  public Properties getPreferences() {
+    return this.preferences;
+  }
+
+  public String getIndexLabel() {
+    return this.indexLabel;
+  }
+
+  public FSIndex getIndex() {
+    return this.index;
+  }
+
+  public HashMap getStyleMap() {
+    return this.styleMap;
+  }
+
+  public AnalysisEngine getAe() {
+    return this.ae;
+  }
+
+  public void setIndexLabel(String indexLabel) {
+    this.indexLabel = indexLabel;
+  }
+
+  public boolean isAnnotationIndex() {
+    return this.isAnnotationIndex;
+  }
+
+  public void setAnnotationIndex(boolean isAnnotationIndex) {
+    this.isAnnotationIndex = isAnnotationIndex;
+  }
+
+  public void setIndex(FSIndex index) {
+    this.index = index;
+  }
+
+  public JMenuItem getAllAnnotationViewerItem() {
+    return this.allAnnotationViewerItem;
+  }
+
+  public File getFileOpenDir() {
+    return this.fileOpenDir;
+  }
+
+  public void setFileOpenDir(File fileOpenDir) {
+    this.fileOpenDir = fileOpenDir;
+  }
+
+  public File getTextFile() {
+    return this.textFile;
+  }
+
+  public void setTextFile(File textFile) {
+    this.textFile = textFile;
+  }
+
+  public JMenuItem getFileSaveItem() {
+    return this.fileSaveItem;
+  }
+
+  public UndoMgr getUndoMgr() {
+    return this.undoMgr;
+  }
+
+  public JMenuItem getUndoItem() {
+    return this.undoItem;
+  }
+
+  public File getXcasFileOpenDir() {
+    return this.xcasFileOpenDir;
+  }
+
+  public void setXcasFileOpenDir(File xcasFileOpenDir) {
+    this.xcasFileOpenDir = xcasFileOpenDir;
+  }
+
+  public boolean isDisableSofaListener() {
+    return this.disableSofaListener;
+  }
+
+  public void setDisableSofaListener(boolean disableSofaListener) {
+    this.disableSofaListener = disableSofaListener;
+  }
+
+  public JComboBox getSofaSelectionComboBox() {
+    return this.sofaSelectionComboBox;
+  }
+
+  public void setSofaSelectionComboBox(JComboBox sofaSelectionComboBox) {
+    this.sofaSelectionComboBox = sofaSelectionComboBox;
+  }
+
+  public JPanel getSofaSelectionPanel() {
+    return this.sofaSelectionPanel;
+  }
+
+  public void setSofaSelectionPanel(JPanel sofaSelectionPanel) {
+    this.sofaSelectionPanel = sofaSelectionPanel;
+  }
+
+  public void setCas(CAS cas) {
+    this.cas = cas;
+  }
+
+  public JMenuItem getRunOnCasMenuItem() {
+    return this.runOnCasMenuItem;
   }
 
   // private void initFocusTraversalPolicy() {

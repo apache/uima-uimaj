@@ -29,7 +29,7 @@ import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.text.AnnotationFS;
 
-class FSNode extends FSTreeNode {
+public class FSNode extends FSTreeNode {
 
   private static final int maxStringLength = 100;
   
@@ -331,7 +331,7 @@ class FSNode extends FSTreeNode {
     return cas.getTypeSystemImpl().getType(cas.getHeapValue((int) this.addr));
   }
 
-  boolean isAnnotation() {
+  public boolean isAnnotation() {
     CASImpl cas = this.fSTreeModel.getCas();
     if (this.nodeClass != STD_FS || this.addr == 0) {
       return false;
@@ -344,7 +344,7 @@ class FSNode extends FSTreeNode {
     return false;
   }
 
-  int getStart() {
+  public int getStart() {
     CASImpl cas = this.fSTreeModel.getCas();
     if (isAnnotation()) {
       final FeatureImpl feat1 = (FeatureImpl) cas.getBeginFeature();
@@ -353,7 +353,7 @@ class FSNode extends FSTreeNode {
     return -1;
   }
 
-  int getEnd() {
+  public int getEnd() {
     CASImpl cas = this.fSTreeModel.getCas();
     if (isAnnotation()) {
       final FeatureImpl feat1 = (FeatureImpl) cas.getEndFeature();
