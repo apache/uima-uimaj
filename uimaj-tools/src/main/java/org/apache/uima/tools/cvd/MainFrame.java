@@ -29,19 +29,12 @@ import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
@@ -64,7 +57,6 @@ import javax.swing.Icon;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -80,7 +72,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
-import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.event.HyperlinkEvent;
@@ -108,16 +99,17 @@ import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.TypeSystem2Xml;
-import org.apache.uima.cas.impl.XCASSerializer;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.internal.util.TimeSpan;
 import org.apache.uima.internal.util.Timer;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
-import org.apache.uima.resource.metadata.FsIndexDescription;
-import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.tools.cvd.control.AnnotatorOpenEventHandler;
+import org.apache.uima.tools.cvd.control.AnnotatorRerunEventHandler;
+import org.apache.uima.tools.cvd.control.AnnotatorRunOnCasEventHandler;
 import org.apache.uima.tools.cvd.control.CaretChangeHandler;
+import org.apache.uima.tools.cvd.control.CloseLogViewHandler;
+import org.apache.uima.tools.cvd.control.ColorPrefsOpenHandler;
+import org.apache.uima.tools.cvd.control.ColorPrefsSaveHandler;
 import org.apache.uima.tools.cvd.control.FSTreeSelectionListener;
 import org.apache.uima.tools.cvd.control.FileOpenEventHandler;
 import org.apache.uima.tools.cvd.control.FileSaveAsEventHandler;
@@ -133,22 +125,32 @@ import org.apache.uima.tools.cvd.control.MainFrameClosing;
 import org.apache.uima.tools.cvd.control.NewTextEventHandler;
 import org.apache.uima.tools.cvd.control.PopupHandler;
 import org.apache.uima.tools.cvd.control.PopupListener;
+import org.apache.uima.tools.cvd.control.RemoveCodePageHandler;
+import org.apache.uima.tools.cvd.control.RemoveLanguageHandler;
+import org.apache.uima.tools.cvd.control.RestoreLangDefaultsHandler;
+import org.apache.uima.tools.cvd.control.SetCodePageHandler;
+import org.apache.uima.tools.cvd.control.SetDataPathHandler;
+import org.apache.uima.tools.cvd.control.SetLanguageHandler;
+import org.apache.uima.tools.cvd.control.SetLogConfigHandler;
 import org.apache.uima.tools.cvd.control.ShowAnnotatedTextHandler;
+import org.apache.uima.tools.cvd.control.ShowTypesystemHandler;
+import org.apache.uima.tools.cvd.control.SofaSelectionListener;
+import org.apache.uima.tools.cvd.control.SystemExitHandler;
 import org.apache.uima.tools.cvd.control.TextChangedListener;
 import org.apache.uima.tools.cvd.control.TextContextMenuAction;
 import org.apache.uima.tools.cvd.control.TextFocusHandler;
 import org.apache.uima.tools.cvd.control.TreeFocusHandler;
+import org.apache.uima.tools.cvd.control.TypeSystemFileOpenEventHandler;
 import org.apache.uima.tools.cvd.control.UndoMgr;
 import org.apache.uima.tools.cvd.control.XCASFileOpenEventHandler;
+import org.apache.uima.tools.cvd.control.XCASSaveHandler;
+import org.apache.uima.tools.cvd.control.XCASSaveTSHandler;
 import org.apache.uima.tools.images.Images;
 import org.apache.uima.tools.util.gui.AboutDialog;
-import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.XMLInputSource;
-import org.apache.uima.util.XMLSerializer;
-import org.xml.sax.SAXException;
 
 /**
  * Class comment for MainFrame.java goes here.
@@ -159,7 +161,7 @@ public class MainFrame extends JFrame {
 
   private static final long serialVersionUID = -1357410768440678886L;
 
-  private static ArrayList logLevels = new ArrayList(9);
+  public static ArrayList logLevels = new ArrayList(9);
   static {
     logLevels.add(Level.OFF);
     logLevels.add(Level.SEVERE);
@@ -170,325 +172,6 @@ public class MainFrame extends JFrame {
     logLevels.add(Level.FINER);
     logLevels.add(Level.FINEST);
     logLevels.add(Level.ALL);
-  }
-
-  private class TypeSystemFileOpenEventHandler implements ActionListener {
-
-    private TypeSystemFileOpenEventHandler() {
-      super();
-    }
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
-     */
-    public void actionPerformed(ActionEvent event) {
-      JFileChooser fileChooser = new JFileChooser();
-      fileChooser.setDialogTitle("Open Type System File");
-      if (MainFrame.this.xcasFileOpenDir != null) {
-        fileChooser.setCurrentDirectory(MainFrame.this.xcasFileOpenDir);
-      }
-      int rc = fileChooser.showOpenDialog(MainFrame.this);
-      if (rc == JFileChooser.APPROVE_OPTION) {
-        File tsFile = fileChooser.getSelectedFile();
-        if (tsFile.exists() && tsFile.isFile()) {
-          try {
-            MainFrame.this.xcasFileOpenDir = tsFile.getParentFile();
-            Timer time = new Timer();
-            time.start();
-            Object descriptor = UIMAFramework.getXMLParser().parse(new XMLInputSource(tsFile));
-            // instantiate CAS to get type system. Also build style
-            // map file if there is none.
-            TypeSystemDescription tsDesc = (TypeSystemDescription) descriptor;
-            tsDesc.resolveImports();
-            if (MainFrame.this.ae != null) {
-              MainFrame.this.ae.destroy();
-              MainFrame.this.ae = null;
-            }
-            MainFrame.this.cas = CasCreationUtils
-                .createCas(tsDesc, null, new FsIndexDescription[0]);
-            MainFrame.this.runOnCasMenuItem.setEnabled(false);
-            MainFrame.this.reRunMenu.setEnabled(false);
-            MainFrame.this.textArea.setText("");
-            MainFrame.this.resetTrees();
-            MainFrame.this.tsViewerItem.setEnabled(true);
-            MainFrame.this.xcasReadItem.setEnabled(true);
-            time.stop();
-            setStatusbarMessage("Done loading type system file in " + time.getTimeSpan() + ".");
-          } catch (Exception e) {
-            e.printStackTrace();
-            handleException(e);
-          }
-        }
-      }
-    }
-
-  }
-
-  private class ColorPrefsOpenHandler implements ActionListener {
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
-     */
-    public void actionPerformed(ActionEvent event) {
-      JFileChooser fileChooser = new JFileChooser();
-      fileChooser.setDialogTitle("Load color preferences file");
-      fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-      if (MainFrame.this.colorSettingsDir != null) {
-        fileChooser.setCurrentDirectory(MainFrame.this.colorSettingsDir);
-      }
-      int rc = fileChooser.showOpenDialog(MainFrame.this);
-      if (rc == JFileChooser.APPROVE_OPTION) {
-        File file = fileChooser.getSelectedFile();
-        if (file.exists() && file.isFile()) {
-          MainFrame.this.colorSettingsDir = file.getParentFile();
-          MainFrame.this.colorSettingFile = file;
-          try {
-            loadColorPreferences(MainFrame.this.colorSettingFile);
-          } catch (IOException e) {
-            handleException(e);
-            // e.printStackTrace();
-            // JOptionPane.showMessageDialog(
-            // MainFrame.this,
-            // e.getMessage(),
-            // "I/O Error",
-            // JOptionPane.ERROR_MESSAGE);
-          }
-        }
-      }
-    }
-
-  }
-
-  private class ColorPrefsSaveHandler implements ActionListener {
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
-     */
-    public void actionPerformed(ActionEvent event) {
-      JFileChooser fileChooser = new JFileChooser();
-      fileChooser.setDialogTitle("Save color preferences");
-      if (MainFrame.this.colorSettingsDir != null) {
-        fileChooser.setCurrentDirectory(MainFrame.this.colorSettingsDir);
-      }
-      int rc = fileChooser.showSaveDialog(MainFrame.this);
-      if (rc == JFileChooser.APPROVE_OPTION) {
-        File prefFile = fileChooser.getSelectedFile();
-        MainFrame.this.colorSettingsDir = prefFile.getParentFile();
-        try {
-          saveColorPreferences(prefFile);
-        } catch (IOException e) {
-          handleException(e);
-        }
-      }
-    }
-
-  }
-
-  private class XCASSaveHandler implements ActionListener {
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
-     */
-    public void actionPerformed(ActionEvent event) {
-      JFileChooser fileChooser = new JFileChooser();
-      fileChooser.setDialogTitle("Save XCAS file");
-      if (MainFrame.this.xcasFileOpenDir != null) {
-        fileChooser.setCurrentDirectory(MainFrame.this.xcasFileOpenDir);
-      }
-      int rc = fileChooser.showSaveDialog(MainFrame.this);
-      if (rc == JFileChooser.APPROVE_OPTION) {
-        File xcasFile = fileChooser.getSelectedFile();
-        MainFrame.this.xcasFileOpenDir = xcasFile.getParentFile();
-        try {
-          long time = System.currentTimeMillis();
-          OutputStream outStream = new BufferedOutputStream(new FileOutputStream(xcasFile));
-          XMLSerializer xmlSerializer = new XMLSerializer(outStream);
-          XCASSerializer xcasSerializer = new XCASSerializer(MainFrame.this.cas.getTypeSystem());
-          xcasSerializer.serialize(MainFrame.this.cas, xmlSerializer.getContentHandler());
-          outStream.close();
-          time = System.currentTimeMillis() - time;
-          System.out.println("Time taken: " + new TimeSpan(time));
-        } catch (IOException e) {
-          handleException(e);
-        } catch (SAXException e) {
-          handleException(e);
-        }
-      }
-    }
-
-  }
-
-  private class XCASSaveTSHandler implements ActionListener {
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
-     */
-    public void actionPerformed(ActionEvent event) {
-      JFileChooser fileChooser = new JFileChooser();
-      fileChooser.setDialogTitle("Save type system file");
-      if (MainFrame.this.xcasFileOpenDir != null) {
-        fileChooser.setCurrentDirectory(MainFrame.this.xcasFileOpenDir);
-      }
-      int rc = fileChooser.showSaveDialog(MainFrame.this);
-      if (rc == JFileChooser.APPROVE_OPTION) {
-        File tsFile = fileChooser.getSelectedFile();
-        MainFrame.this.xcasFileOpenDir = tsFile.getParentFile();
-        try {
-          OutputStream outStream = new BufferedOutputStream(new FileOutputStream(tsFile));
-          TypeSystem2Xml.typeSystem2Xml(MainFrame.this.cas.getTypeSystem(), outStream);
-          outStream.close();
-        } catch (IOException e) {
-          handleException(e);
-        } catch (SAXException e) {
-          handleException(e);
-        }
-      }
-    }
-
-  }
-
-  private class SystemExitHandler implements ActionListener {
-
-    public void actionPerformed(ActionEvent event) {
-      try {
-        saveProgramPreferences();
-      } catch (IOException e) {
-        handleException(e);
-      }
-      System.exit(0);
-    }
-
-  }
-
-  private class AnnotatorOpenEventHandler implements ActionListener {
-
-    private MainFrame frame;
-
-    private AnnotatorOpenEventHandler(MainFrame frame) {
-      super();
-      this.frame = frame;
-    }
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
-     */
-    public void actionPerformed(ActionEvent event) {
-      try {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Load AE specifier file");
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        if (MainFrame.this.annotOpenDir != null) {
-          fileChooser.setCurrentDirectory(MainFrame.this.annotOpenDir);
-        }
-        int rc = fileChooser.showOpenDialog(this.frame);
-        if (rc == JFileChooser.APPROVE_OPTION) {
-          MainFrame.this.aeDescriptorFile = fileChooser.getSelectedFile();
-          loadAEDescriptor(MainFrame.this.aeDescriptorFile);
-        }
-        MainFrame.this.allAnnotationViewerItem.setEnabled(false);
-      } finally {
-        resetCursor();
-      }
-    }
-
-  }
-
-  private class SofaSelectionListener implements ItemListener {
-
-    public void itemStateChanged(ItemEvent e) {
-      if (MainFrame.this.disableSofaListener) {
-        return;
-      }
-      if (e.getSource() == MainFrame.this.sofaSelectionComboBox) {
-        // a new sofa was selected. Switch to that view and update
-        // display
-        String sofaId = (String) e.getItem();
-        MainFrame.this.cas = MainFrame.this.cas.getView(sofaId);
-        String text = MainFrame.this.cas.getDocumentText();
-        if (text == null) {
-          text = MainFrame.this.cas.getSofaDataURI();
-          if (text != null) {
-            text = "SofaURI = " + text;
-          } else {
-            if (null != MainFrame.this.cas.getSofaDataArray()) {
-              text = "Sofa array with mime type = " + MainFrame.this.cas.getSofa().getSofaMime();
-            }
-          }
-        }
-        MainFrame.this.textArea.setText(text);
-        if (text == null) {
-          MainFrame.this.textArea.repaint();
-        }
-        MainFrame.this.updateIndexTree(true);
-      }
-    }
-  }
-
-  public void loadAEDescriptor(File descriptorFile) {
-    setWaitCursor();
-    if (descriptorFile.exists() && descriptorFile.isFile()) {
-      this.annotOpenDir = descriptorFile.getParentFile();
-    }
-    Timer time = new Timer();
-    time.start();
-    boolean success = false;
-    try {
-      success = setupAE(descriptorFile);
-    } catch (Exception e) {
-      handleException(e);
-    } catch (NoClassDefFoundError e) {
-      // We don't want to catch all errors, but some are ok.
-      handleException(e);
-    }
-    time.stop();
-    addRecentDescFile(descriptorFile);
-    if (!success) {
-      setStatusbarMessage("Failed to load AE specifier: " + descriptorFile.getName());
-      this.reRunMenu.setText("Run AE");
-      setAEStatusMessage();
-      resetCursor();
-      return;
-    }
-    if (this.ae != null) {
-      String annotName = this.ae.getAnalysisEngineMetaData().getName();
-      this.reRunMenu.setText("Run " + annotName);
-      this.reRunMenu.setEnabled(true);
-      this.runOnCasMenuItem.setText("Run " + annotName + " on CAS");
-      setAEStatusMessage();
-      setStatusbarMessage("Done loading AE " + annotName + " in " + time.getTimeSpan() + ".");
-    }
-    // Check for CAS multiplier
-    // TODO: properly handle CAS multiplication
-    if (this.ae != null) {
-      if (this.ae.getAnalysisEngineMetaData().getOperationalProperties().getOutputsNewCASes()) {
-        JOptionPane
-            .showMessageDialog(
-                this,
-                "This analysis engine uses a CAS multiplier component.\nCAS multiplication/merging is not currently supported in CVD.\nYou can run the analysis engine, but will not see any results.",
-                "Warning: unsupported operation", JOptionPane.WARNING_MESSAGE);
-      }
-    }
-    resetCursor();
-  }
-
-  private class AnnotatorRerunEventHandler implements ActionListener {
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
-     */
-    public void actionPerformed(ActionEvent event) {
-      runAE(true);
-    }
-  }
-
-  private class AnnotatorRunOnCasEventHandler implements ActionListener {
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
-     */
-    public void actionPerformed(ActionEvent event) {
-      runAE(false);
-    }
   }
 
   public void runAE(boolean doCasReset) {
@@ -509,138 +192,8 @@ public class MainFrame extends JFrame {
     this.runOnCasMenuItem.setEnabled(true);
   }
 
-  // Get the size of the window so we can save it for later use.
-  private class CloseTypeSystemHandler extends WindowAdapter implements WindowListener {
-
-    public void windowClosing(WindowEvent event) {
-      JComponent tsContentPane = (JComponent) ((JFrame) event.getComponent()).getContentPane();
-      final int x = tsContentPane.getWidth();
-      final int y = tsContentPane.getHeight();
-      MainFrame.this.preferences.setProperty(tsWindowSizePref + widthSuffix, Integer.toString(x));
-      MainFrame.this.preferences.setProperty(tsWindowSizePref + heightSuffix, Integer.toString(y));
-    }
-
-  }
-
-  private class CloseLogViewHandler extends WindowAdapter implements WindowListener {
-
-    public void windowClosing(WindowEvent event) {
-      JComponent contentPane = (JComponent) ((JFrame) event.getComponent()).getContentPane();
-      final int x = contentPane.getWidth();
-      final int y = contentPane.getHeight();
-      MainFrame.this.preferences.setProperty(logViewSizePref + widthSuffix, Integer.toString(x));
-      MainFrame.this.preferences.setProperty(logViewSizePref + heightSuffix, Integer.toString(y));
-    }
-
-  }
-
-  private class ShowTypesystemHandler implements ActionListener {
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
-     */
-    public void actionPerformed(ActionEvent event) {
-      if (MainFrame.this.cas == null) {
-        return;
-      }
-      org.apache.uima.tools.cvd.tsview.MainFrame tsFrame = new org.apache.uima.tools.cvd.tsview.MainFrame();
-      tsFrame.addWindowListener(new CloseTypeSystemHandler());
-      JComponent tsContentPane = (JComponent) tsFrame.getContentPane();
-      MainFrame.this.setPreferredSize(tsContentPane, tsWindowSizePref);
-      tsFrame.setTypeSystem(MainFrame.this.cas.getTypeSystem());
-      tsFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-      tsFrame.pack();
-      tsFrame.setVisible(true);
-    }
-
-  }
-
-  private class SetDataPathHandler implements ActionListener {
-
-    public void actionPerformed(ActionEvent arg0) {
-      String result = (String) JOptionPane.showInputDialog(MainFrame.this, "Specify the data path",
-          "Set data path", JOptionPane.PLAIN_MESSAGE, null, null, MainFrame.this.dataPathName);
-
-      if (result != null) {
-        MainFrame.this.setDataPath(result);
-      }
-    }
-
-  }
-
   public void setDataPath(String dataPath) {
     this.dataPathName = dataPath;
-  }
-
-  private class SetCodePageHandler implements ActionListener {
-
-    public void actionPerformed(ActionEvent e) {
-      JRadioButtonMenuItem item = (JRadioButtonMenuItem) e.getSource();
-      MainFrame.this.codePage = item.getText();
-    }
-
-  }
-
-  private class RemoveCodePageHandler implements ActionListener {
-
-    public void actionPerformed(ActionEvent e) {
-      String cp = ((JMenuItem) e.getSource()).getText();
-      if (MainFrame.this.codePage.equals(cp)) {
-        MainFrame.this.codePage = null;
-      }
-      MainFrame.this.codePages.remove(cp);
-      resetCPMenu();
-    }
-
-  }
-
-  private class SetLogConfigHandler implements ActionListener {
-
-    public void actionPerformed(ActionEvent e) {
-      JRadioButtonMenuItem item = (JRadioButtonMenuItem) e.getSource();
-
-      // set UIMA framework log level with the given value
-      for (int i = 0; i < MainFrame.logLevels.size(); i++) {
-        Level level = (Level) MainFrame.logLevels.get(i);
-        // search for selected log level
-        if (level.toString().equals(item.getText())) {
-          UIMAFramework.getLogger().setLevel(level);
-        }
-      }
-    }
-  }
-
-  private class SetLanguageHandler implements ActionListener {
-
-    public void actionPerformed(ActionEvent e) {
-      JRadioButtonMenuItem item = (JRadioButtonMenuItem) e.getSource();
-      MainFrame.this.language = item.getText();
-    }
-
-  }
-
-  private class RemoveLanguageHandler implements ActionListener {
-
-    public void actionPerformed(ActionEvent e) {
-      String lang = ((JMenuItem) e.getSource()).getText();
-      if (MainFrame.this.language.equals(lang)) {
-        MainFrame.this.language = null;
-      }
-      MainFrame.this.languages.remove(lang);
-      resetLangMenu();
-    }
-
-  }
-
-  private class RestoreLangDefaultsHandler implements ActionListener {
-
-    public void actionPerformed(ActionEvent e) {
-      MainFrame.this.language = null;
-      MainFrame.this.languagePrefsList = null;
-      createLanguages();
-      resetLangMenu();
-    }
-
   }
 
   private class RestoreCPDefaultsHandler implements ActionListener {
@@ -712,6 +265,53 @@ public class MainFrame extends JFrame {
             JOptionPane.INFORMATION_MESSAGE, icon);
       }
     }
+  }
+
+  public void loadAEDescriptor(File descriptorFile) {
+    setWaitCursor();
+    if (descriptorFile.exists() && descriptorFile.isFile()) {
+      this.annotOpenDir = descriptorFile.getParentFile();
+    }
+    Timer time = new Timer();
+    time.start();
+    boolean success = false;
+    try {
+      success = setupAE(descriptorFile);
+    } catch (Exception e) {
+      handleException(e);
+    } catch (NoClassDefFoundError e) {
+      // We don't want to catch all errors, but some are ok.
+      handleException(e);
+    }
+    time.stop();
+    addRecentDescFile(descriptorFile);
+    if (!success) {
+      setStatusbarMessage("Failed to load AE specifier: " + descriptorFile.getName());
+      this.reRunMenu.setText("Run AE");
+      setAEStatusMessage();
+      resetCursor();
+      return;
+    }
+    if (this.ae != null) {
+      String annotName = this.ae.getAnalysisEngineMetaData().getName();
+      this.reRunMenu.setText("Run " + annotName);
+      this.reRunMenu.setEnabled(true);
+      this.runOnCasMenuItem.setText("Run " + annotName + " on CAS");
+      setAEStatusMessage();
+      setStatusbarMessage("Done loading AE " + annotName + " in " + time.getTimeSpan() + ".");
+    }
+    // Check for CAS multiplier
+    // TODO: properly handle CAS multiplication
+    if (this.ae != null) {
+      if (this.ae.getAnalysisEngineMetaData().getOperationalProperties().getOutputsNewCASes()) {
+        JOptionPane
+            .showMessageDialog(
+                this,
+                "This analysis engine uses a CAS multiplier component.\nCAS multiplication/merging is not currently supported in CVD.\nYou can run the analysis engine, but will not see any results.",
+                "Warning: unsupported operation", JOptionPane.WARNING_MESSAGE);
+      }
+    }
+    resetCursor();
   }
 
   // private static class WindowClosingMouseListener implements MouseListener {
@@ -888,19 +488,19 @@ public class MainFrame extends JFrame {
 
   private Action copyAction;
 
-  private JMenuItem allAnnotationViewerItem;
+  JMenuItem allAnnotationViewerItem;
 
   private JMenuItem acdItem;
 
-  private JMenuItem tsViewerItem;
+  JMenuItem tsViewerItem;
 
-  private JMenuItem reRunMenu;
+  JMenuItem reRunMenu;
 
   JMenuItem runOnCasMenuItem;
 
   private JPopupMenu textPopup;
 
-  private JMenuItem xcasReadItem;
+  JMenuItem xcasReadItem;
 
   private JMenuItem xcasWriteItem;
 
@@ -915,9 +515,9 @@ public class MainFrame extends JFrame {
   // Code page support
   private String codePagePrefsList = null;
 
-  private ArrayList codePages = null;
+  ArrayList codePages = null;
 
-  private String codePage = null;
+  String codePage = null;
 
   private JMenu cpMenu;
 
@@ -926,10 +526,10 @@ public class MainFrame extends JFrame {
   private static final String defaultCodePages = "US-ASCII,ISO-8859-1,UTF-8,UTF-16BE,UTF-16LE,UTF-16";
 
   // Language support
-  private String languagePrefsList = null;
+  String languagePrefsList = null;
 
   // private String defaultLanguagePref = null;
-  private ArrayList languages = null;
+  ArrayList languages = null;
 
   private JMenu langMenu;
 
@@ -937,7 +537,7 @@ public class MainFrame extends JFrame {
 
   private static final String LANGUAGE_DEFAULT = "en";
 
-  private String language;
+  String language;
 
   private static final String defaultLanguages = "de,en,fr,ja,ko-kr,pt-br,zh-cn,zh-tw,x-unspecified";
 
@@ -945,11 +545,11 @@ public class MainFrame extends JFrame {
 
   File fileOpenDir = null;
 
-  private File annotOpenDir = null;
+  File annotOpenDir = null;
 
   File xcasFileOpenDir = null;
 
-  private File colorSettingsDir = null;
+  File colorSettingsDir = null;
 
   // Selected index
   private String indexLabel = null;
@@ -962,9 +562,9 @@ public class MainFrame extends JFrame {
 
   CAS cas = null;
 
-  private File aeDescriptorFile = null;
+  File aeDescriptorFile = null;
 
-  private AnalysisEngine ae = null;
+  AnalysisEngine ae = null;
 
   private File logFile = null;
 
@@ -972,11 +572,11 @@ public class MainFrame extends JFrame {
 
   private Logger log = null;
 
-  private File colorSettingFile;
+  File colorSettingFile;
 
   private static final Color selectionColor = Color.orange;
 
-  private Properties preferences;
+  Properties preferences;
 
   public static final String textDirPref = "dir.open.text";
 
@@ -1048,7 +648,7 @@ public class MainFrame extends JFrame {
 
   private ArrayList cursorCache = null;
 
-  private String dataPathName;
+  String dataPathName;
 
   JComboBox sofaSelectionComboBox;
 
@@ -1449,24 +1049,24 @@ public class MainFrame extends JFrame {
     this.fileMenu.add(this.recentTextFileMenu);
     this.fileMenu.addSeparator();
     JMenuItem colorPrefsOpenItem = new JMenuItem("Load Color Settings", KeyEvent.VK_L);
-    colorPrefsOpenItem.addActionListener(new ColorPrefsOpenHandler());
+    colorPrefsOpenItem.addActionListener(new ColorPrefsOpenHandler(this));
     this.fileMenu.add(colorPrefsOpenItem);
     JMenuItem colorPrefsSaveItem = new JMenuItem("Save Color Settings", KeyEvent.VK_C);
-    colorPrefsSaveItem.addActionListener(new ColorPrefsSaveHandler());
+    colorPrefsSaveItem.addActionListener(new ColorPrefsSaveHandler(this));
     this.fileMenu.add(colorPrefsSaveItem);
     this.fileMenu.addSeparator();
     this.typeSystemReadItem = new JMenuItem("Read Type System File");
     this.typeSystemReadItem.setEnabled(true);
-    this.typeSystemReadItem.addActionListener(new TypeSystemFileOpenEventHandler());
+    this.typeSystemReadItem.addActionListener(new TypeSystemFileOpenEventHandler(this));
     this.fileMenu.add(this.typeSystemReadItem);
     this.typeSystemWriteItem = new JMenuItem("Write Type System File");
     this.typeSystemWriteItem.setEnabled(false);
-    this.typeSystemWriteItem.addActionListener(new XCASSaveTSHandler());
+    this.typeSystemWriteItem.addActionListener(new XCASSaveTSHandler(this));
     this.fileMenu.add(this.typeSystemWriteItem);
     this.fileMenu.addSeparator();
     this.xcasWriteItem = new JMenuItem("Write XCAS File", KeyEvent.VK_W);
     this.xcasWriteItem.setEnabled(false);
-    this.xcasWriteItem.addActionListener(new XCASSaveHandler());
+    this.xcasWriteItem.addActionListener(new XCASSaveHandler(this));
     this.fileMenu.add(this.xcasWriteItem);
     this.xcasReadItem = new JMenuItem("Read XCAS File", KeyEvent.VK_R);
     this.xcasReadItem.addActionListener(new XCASFileOpenEventHandler(this));
@@ -1474,7 +1074,7 @@ public class MainFrame extends JFrame {
     this.fileMenu.add(this.xcasReadItem);
     this.fileMenu.addSeparator();
     JMenuItem exit = new JMenuItem("Exit", KeyEvent.VK_X);
-    exit.addActionListener(new SystemExitHandler());
+    exit.addActionListener(new SystemExitHandler(this));
     this.fileMenu.add(exit);
   }
 
@@ -1492,7 +1092,7 @@ public class MainFrame extends JFrame {
     }
   }
 
-  private final void resetCursor() {
+  public final void resetCursor() {
     if (this.cursorCache == null) {
       return;
     }
@@ -1556,7 +1156,7 @@ public class MainFrame extends JFrame {
     resetCPMenu();
   }
 
-  private void resetCPMenu() {
+  public void resetCPMenu() {
     this.cpMenu.removeAll();
     this.cpButtons = new ButtonGroup();
     JRadioButtonMenuItem item;
@@ -1567,7 +1167,7 @@ public class MainFrame extends JFrame {
       if (cp.equals(this.codePage)) {
         item.setSelected(true);
       }
-      item.addActionListener(new SetCodePageHandler());
+      item.addActionListener(new SetCodePageHandler(this));
       this.cpButtons.add(item);
       this.cpMenu.add(item);
     }
@@ -1578,7 +1178,7 @@ public class MainFrame extends JFrame {
     JMenu removeMenu = new JMenu("Remove code page");
     for (int i = 0; i < this.codePages.size(); i++) {
       JMenuItem rmItem = new JMenuItem((String) this.codePages.get(i));
-      rmItem.addActionListener(new RemoveCodePageHandler());
+      rmItem.addActionListener(new RemoveCodePageHandler(this));
       removeMenu.add(rmItem);
     }
     this.cpMenu.add(removeMenu);
@@ -1601,7 +1201,7 @@ public class MainFrame extends JFrame {
     resetLangMenu();
   }
 
-  private void resetLangMenu() {
+  public void resetLangMenu() {
     this.langMenu.removeAll();
     this.langButtons = new ButtonGroup();
     JRadioButtonMenuItem item;
@@ -1612,7 +1212,7 @@ public class MainFrame extends JFrame {
       if (lang.equals(this.language)) {
         item.setSelected(true);
       }
-      item.addActionListener(new SetLanguageHandler());
+      item.addActionListener(new SetLanguageHandler(this));
       this.langButtons.add(item);
       this.langMenu.add(item);
     }
@@ -1623,16 +1223,16 @@ public class MainFrame extends JFrame {
     JMenu removeMenu = new JMenu("Remove language");
     for (int i = 0; i < this.languages.size(); i++) {
       JMenuItem rmItem = new JMenuItem((String) this.languages.get(i));
-      rmItem.addActionListener(new RemoveLanguageHandler());
+      rmItem.addActionListener(new RemoveLanguageHandler(this));
       removeMenu.add(rmItem);
     }
     this.langMenu.add(removeMenu);
     JMenuItem restoreDefaultsItem = new JMenuItem("Restore defaults");
-    restoreDefaultsItem.addActionListener(new RestoreLangDefaultsHandler());
+    restoreDefaultsItem.addActionListener(new RestoreLangDefaultsHandler(this));
     this.langMenu.add(restoreDefaultsItem);
   }
 
-  private void createLanguages() {
+  public void createLanguages() {
     this.languages = new ArrayList();
     if (this.languagePrefsList == null) {
       this.languagePrefsList = defaultLanguages;
@@ -1660,13 +1260,13 @@ public class MainFrame extends JFrame {
     this.reRunMenu = new JMenuItem("Run AE", KeyEvent.VK_R);
     this.reRunMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK));
     runMenu.add(this.reRunMenu);
-    this.reRunMenu.addActionListener(new AnnotatorRerunEventHandler());
+    this.reRunMenu.addActionListener(new AnnotatorRerunEventHandler(this));
     this.reRunMenu.setEnabled(false);
     this.runOnCasMenuItem = new JMenuItem("Run AE on CAS", KeyEvent.VK_Y);
     this.runOnCasMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y,
         ActionEvent.CTRL_MASK));
     runMenu.add(this.runOnCasMenuItem);
-    this.runOnCasMenuItem.addActionListener(new AnnotatorRunOnCasEventHandler());
+    this.runOnCasMenuItem.addActionListener(new AnnotatorRunOnCasEventHandler(this));
     this.runOnCasMenuItem.setEnabled(false);
     runMenu.addSeparator();
     this.recentDescFileMenu = new JMenu("Recently used ...");
@@ -1678,7 +1278,7 @@ public class MainFrame extends JFrame {
     this.langMenu.setMnemonic(KeyEvent.VK_L);
     // runMenu.addSeparator();
     JMenuItem dataPathItem = new JMenuItem("Set data path");
-    dataPathItem.addActionListener(new SetDataPathHandler());
+    dataPathItem.addActionListener(new SetDataPathHandler(this));
     dataPathItem.setMnemonic(KeyEvent.VK_S);
     runMenu.addSeparator();
     runMenu.add(dataPathItem);
@@ -1689,7 +1289,7 @@ public class MainFrame extends JFrame {
     JMenu toolsMenu = new JMenu("Tools");
     toolsMenu.setMnemonic(KeyEvent.VK_T);
     this.tsViewerItem = new JMenuItem("View Typesystem", KeyEvent.VK_T);
-    this.tsViewerItem.addActionListener(new ShowTypesystemHandler());
+    this.tsViewerItem.addActionListener(new ShowTypesystemHandler(this));
     this.tsViewerItem.setEnabled(false);
     toolsMenu.add(this.tsViewerItem);
     this.allAnnotationViewerItem = new JMenuItem("Show Selected Annotations", KeyEvent.VK_A);
@@ -1728,7 +1328,7 @@ public class MainFrame extends JFrame {
       public void actionPerformed(ActionEvent event) {
         LogFileViewer viewer = new LogFileViewer("Log file: "
             + MainFrame.this.logFile.getAbsolutePath());
-        viewer.addWindowListener(new CloseLogViewHandler());
+        viewer.addWindowListener(new CloseLogViewHandler(MainFrame.this));
         Dimension dim = getDimension(logViewSizePref);
         if (dim == null) {
           dim = logFileDimensionDefault;
@@ -1928,7 +1528,7 @@ public class MainFrame extends JFrame {
     this.sofaSelectionPanel.add(this.sofaSelectionComboBox);
     leftPanel.add(this.sofaSelectionPanel, BorderLayout.NORTH);
     this.sofaSelectionPanel.setVisible(false);
-    this.sofaSelectionComboBox.addItemListener(new SofaSelectionListener());
+    this.sofaSelectionComboBox.addItemListener(new SofaSelectionListener(this));
     this.sofaSelectionComboBox
         .setToolTipText("This CAS has multiple Views. Select the View to display.");
 
@@ -2285,7 +1885,7 @@ public class MainFrame extends JFrame {
     }
   }
 
-  private void setPreferredSize(JComponent comp, String propPrefix) {
+  public void setPreferredSize(JComponent comp, String propPrefix) {
     // assert(comp != null);
     comp.setPreferredSize(getDimension(propPrefix));
   }
@@ -2403,7 +2003,7 @@ public class MainFrame extends JFrame {
     this.preferences.store(out, "Automatically generated preferences file for Annotation Viewer");
   }
 
-  private void saveColorPreferences(File file) throws IOException {
+  public void saveColorPreferences(File file) throws IOException {
     Properties prefs1 = new Properties();
     Iterator it = this.styleMap.keySet().iterator();
     String type;
@@ -2420,7 +2020,7 @@ public class MainFrame extends JFrame {
     prefs1.store(out, "Color preferences for annotation viewer.");
   }
 
-  private void loadColorPreferences(File file) throws IOException {
+  public void loadColorPreferences(File file) throws IOException {
     Style parent = (Style) this.styleMap.get(CAS.TYPE_NAME_ANNOTATION);
     StyleContext sc = StyleContext.getDefaultStyleContext();
     Properties prefs1 = new Properties();
@@ -2634,6 +2234,94 @@ public class MainFrame extends JFrame {
 
   public JMenuItem getRunOnCasMenuItem() {
     return this.runOnCasMenuItem;
+  }
+
+  public void setAe(AnalysisEngine ae) {
+    this.ae = ae;
+  }
+
+  public JMenuItem getReRunMenu() {
+    return this.reRunMenu;
+  }
+
+  public JMenuItem getTsViewerItem() {
+    return this.tsViewerItem;
+  }
+
+  public JMenuItem getXcasReadItem() {
+    return this.xcasReadItem;
+  }
+
+  public File getColorSettingsDir() {
+    return this.colorSettingsDir;
+  }
+
+  public void setColorSettingsDir(File colorSettingsDir) {
+    this.colorSettingsDir = colorSettingsDir;
+  }
+
+  public File getColorSettingFile() {
+    return this.colorSettingFile;
+  }
+
+  public void setColorSettingFile(File colorSettingFile) {
+    this.colorSettingFile = colorSettingFile;
+  }
+
+  public File getAnnotOpenDir() {
+    return this.annotOpenDir;
+  }
+
+  public void setAnnotOpenDir(File annotOpenDir) {
+    this.annotOpenDir = annotOpenDir;
+  }
+
+  public File getAeDescriptorFile() {
+    return this.aeDescriptorFile;
+  }
+
+  public void setAeDescriptorFile(File aeDescriptorFile) {
+    this.aeDescriptorFile = aeDescriptorFile;
+  }
+
+  public String getDataPathName() {
+    return this.dataPathName;
+  }
+
+  public void setDataPathName(String dataPathName) {
+    this.dataPathName = dataPathName;
+  }
+
+  public String getCodePage() {
+    return this.codePage;
+  }
+
+  public void setCodePage(String codePage) {
+    this.codePage = codePage;
+  }
+
+  public ArrayList getCodePages() {
+    return this.codePages;
+  }
+
+  public String getLanguage() {
+    return this.language;
+  }
+
+  public void setLanguage(String language) {
+    this.language = language;
+  }
+
+  public ArrayList getLanguages() {
+    return this.languages;
+  }
+
+  public String getLanguagePrefsList() {
+    return this.languagePrefsList;
+  }
+
+  public void setLanguagePrefsList(String languagePrefsList) {
+    this.languagePrefsList = languagePrefsList;
   }
 
   // private void initFocusTraversalPolicy() {
