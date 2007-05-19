@@ -48,6 +48,7 @@ import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.CASMgr;
+import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.CASImpl;
@@ -162,8 +163,27 @@ public class NewPrimitiveTypesTest extends TestCase {
 
       // Create the Base indexes.
       casMgr.initCASIndexes();
+
+      // create custom indexes to test new primitive keys
       FSIndexRepositoryMgr irm = casMgr.getIndexRepositoryMgr();
-      // init.initIndexes(irm, casMgr.getTypeSystemMgr());
+      FSIndexComparator comp = irm.createComparator();
+      comp.setType(tsa.getType("test.primitives.Example"));
+      comp.addKey(tsa.getFeatureByFullName("test.primitives.Example:doubleFeature"),
+          FSIndexComparator.STANDARD_COMPARE);
+      irm.createIndex(comp, "doubleIndex");
+
+      comp = irm.createComparator();
+      comp.setType(tsa.getType("test.primitives.Example"));
+      comp.addKey(tsa.getFeatureByFullName("test.primitives.Example:longFeature"),
+          FSIndexComparator.REVERSE_STANDARD_COMPARE);
+      irm.createIndex(comp, "longIndex");
+
+      comp = irm.createComparator();
+      comp.setType(tsa.getType("test.primitives.Example"));
+      comp.addKey(tsa.getFeatureByFullName("test.primitives.Example:shortFeature"),
+          FSIndexComparator.STANDARD_COMPARE);
+      irm.createIndex(comp, "shortIndex");
+
       irm.commit();
 
       cas = casMgr.getCAS().getView(CAS.NAME_DEFAULT_SOFA);
@@ -498,6 +518,60 @@ public class NewPrimitiveTypesTest extends TestCase {
     fs.setFeatureValue(longArrayFeature, longArrayFS);
     fs.setDoubleValue(doubleFeature, Double.MAX_VALUE);
     fs.setFeatureValue(doubleArrayFeature, doubleArrayFS);
+  }
+
+  public void testNewPrimitiveTypeKeys() throws Exception {
+    // Create FS with features set in reverse order
+    for (int i=0; i<5; i++) {
+      AnnotationFS fs = cas.createAnnotation(exampleType, 0, 0);
+      fs.setDoubleValue(doubleFeature, 5.0 - i );
+      fs.setLongValue(longFeature, (long)1+i );
+      fs.setShortValue(shortFeature, (short)(5 - i) );
+      cas.getIndexRepository().addFS(fs);
+    }
+
+    // test double as key
+    FSIterator iter = cas.getIndexRepository().getIndex("doubleIndex", exampleType).iterator();
+//    System.out.println("\nDouble");
+    for (int i=0; i<5; i++) {
+      AnnotationFS testfs = (AnnotationFS)iter.get();
+//      System.out.println("exampleType has double=" + testfs.getDoubleValue(doubleFeature)
+//              + " long=" + testfs.getLongValue(longFeature)
+//              + " short=" + testfs.getShortValue(shortFeature));
+      assertTrue(1+i == testfs.getDoubleValue(doubleFeature));
+      assertTrue(5-i == testfs.getLongValue(longFeature));
+      assertTrue(1+i == testfs.getShortValue(shortFeature));
+      iter.moveToNext();
+    }
+
+    // test long as key
+    iter = cas.getIndexRepository().getIndex("longIndex", exampleType).iterator();
+//    System.out.println("\nLong");
+    for (int i=0; i<5; i++) {
+      AnnotationFS testfs = (AnnotationFS)iter.get();
+//      System.out.println("exampleType has double=" + testfs.getDoubleValue(doubleFeature)
+//              + " long=" + testfs.getLongValue(longFeature)
+//              + " short=" + testfs.getShortValue(shortFeature));
+      assertTrue(1+i == testfs.getDoubleValue(doubleFeature));
+      assertTrue(5-i == testfs.getLongValue(longFeature));
+      assertTrue(1+i == testfs.getShortValue(shortFeature));
+      iter.moveToNext();
+    }
+
+    // test short as key
+    iter = cas.getIndexRepository().getIndex("shortIndex", exampleType).iterator();
+//    System.out.println("\nShort");
+    for (int i=0; i<5; i++) {
+      AnnotationFS testfs = (AnnotationFS)iter.get();
+//      System.out.println("exampleType has double=" + testfs.getDoubleValue(doubleFeature)
+//              + " long=" + testfs.getLongValue(longFeature)
+//              + " short=" + testfs.getShortValue(shortFeature));
+      assertTrue(1+i == testfs.getDoubleValue(doubleFeature));
+      assertTrue(5-i == testfs.getLongValue(longFeature));
+      assertTrue(1+i == testfs.getShortValue(shortFeature));
+      iter.moveToNext();
+    }
+
   }
 
   // public void testUimaTypeSystem2Ecore() throws Exception
