@@ -284,7 +284,7 @@ public abstract class FSLeafIndexImpl implements IntComparator, FSIndex, FSIndex
         }
         case LONG_CODE: {
           long long1 = this.lowLevelCAS.longHeap.getHeapValue(val1);
-          long long2 = this.lowLevelCAS.longHeap.getHeapValue(val1);
+          long long2 = this.lowLevelCAS.longHeap.getHeapValue(val2);
           if (long1 < long2) {
             if (this.keyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
               return -1;
