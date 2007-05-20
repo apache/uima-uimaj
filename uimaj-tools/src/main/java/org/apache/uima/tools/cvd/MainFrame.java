@@ -39,7 +39,6 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -53,10 +52,8 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.Icon;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -74,16 +71,12 @@ import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
@@ -103,6 +96,10 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.internal.util.Timer;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
+import org.apache.uima.tools.cvd.control.AboutHandler;
+import org.apache.uima.tools.cvd.control.AboutUimaHandler;
+import org.apache.uima.tools.cvd.control.AddCPHandler;
+import org.apache.uima.tools.cvd.control.AddLanguageHandler;
 import org.apache.uima.tools.cvd.control.AnnotatorOpenEventHandler;
 import org.apache.uima.tools.cvd.control.AnnotatorRerunEventHandler;
 import org.apache.uima.tools.cvd.control.AnnotatorRunOnCasEventHandler;
@@ -117,22 +114,26 @@ import org.apache.uima.tools.cvd.control.FileSaveEventHandler;
 import org.apache.uima.tools.cvd.control.FocusFSAction;
 import org.apache.uima.tools.cvd.control.FocusIRAction;
 import org.apache.uima.tools.cvd.control.FocusTextAction;
+import org.apache.uima.tools.cvd.control.HelpHandler;
 import org.apache.uima.tools.cvd.control.IndexPopupListener;
 import org.apache.uima.tools.cvd.control.IndexTreeSelectionListener;
 import org.apache.uima.tools.cvd.control.LoadRecentDescFileEventHandler;
 import org.apache.uima.tools.cvd.control.LoadRecentTextFileEventHandler;
 import org.apache.uima.tools.cvd.control.MainFrameClosing;
+import org.apache.uima.tools.cvd.control.ManualHandler;
 import org.apache.uima.tools.cvd.control.NewTextEventHandler;
 import org.apache.uima.tools.cvd.control.PopupHandler;
 import org.apache.uima.tools.cvd.control.PopupListener;
 import org.apache.uima.tools.cvd.control.RemoveCodePageHandler;
 import org.apache.uima.tools.cvd.control.RemoveLanguageHandler;
+import org.apache.uima.tools.cvd.control.RestoreCPDefaultsHandler;
 import org.apache.uima.tools.cvd.control.RestoreLangDefaultsHandler;
 import org.apache.uima.tools.cvd.control.SetCodePageHandler;
 import org.apache.uima.tools.cvd.control.SetDataPathHandler;
 import org.apache.uima.tools.cvd.control.SetLanguageHandler;
 import org.apache.uima.tools.cvd.control.SetLogConfigHandler;
 import org.apache.uima.tools.cvd.control.ShowAnnotatedTextHandler;
+import org.apache.uima.tools.cvd.control.ShowAnnotationCustomizerHandler;
 import org.apache.uima.tools.cvd.control.ShowTypesystemHandler;
 import org.apache.uima.tools.cvd.control.SofaSelectionListener;
 import org.apache.uima.tools.cvd.control.SystemExitHandler;
@@ -145,8 +146,6 @@ import org.apache.uima.tools.cvd.control.UndoMgr;
 import org.apache.uima.tools.cvd.control.XCASFileOpenEventHandler;
 import org.apache.uima.tools.cvd.control.XCASSaveHandler;
 import org.apache.uima.tools.cvd.control.XCASSaveTSHandler;
-import org.apache.uima.tools.images.Images;
-import org.apache.uima.tools.util.gui.AboutDialog;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
@@ -172,146 +171,6 @@ public class MainFrame extends JFrame {
     logLevels.add(Level.FINER);
     logLevels.add(Level.FINEST);
     logLevels.add(Level.ALL);
-  }
-
-  public void runAE(boolean doCasReset) {
-    setStatusbarMessage("Running Annotator.");
-    Timer timer = new Timer();
-    timer.start();
-    if (this.ae == null) {
-      JOptionPane.showMessageDialog(this, "No AE loaded.", "Error", JOptionPane.ERROR_MESSAGE);
-      return;
-    }
-    internalRunAE(doCasReset);
-    timer.stop();
-    setStatusbarMessage("Done running AE " + this.ae.getAnalysisEngineMetaData().getName() + " in "
-        + timer.getTimeSpan() + ".");
-    updateIndexTree(true);
-    this.allAnnotationViewerItem.setEnabled(false);
-    this.isDirty = false;
-    this.runOnCasMenuItem.setEnabled(true);
-  }
-
-  public void setDataPath(String dataPath) {
-    this.dataPathName = dataPath;
-  }
-
-  private class RestoreCPDefaultsHandler implements ActionListener {
-
-    public void actionPerformed(ActionEvent e) {
-      MainFrame.this.codePage = null;
-      MainFrame.this.codePagePrefsList = null;
-      createCodePages();
-      resetCPMenu();
-    }
-
-  }
-
-  private class ShowAnnotationCustomizerHandler implements ActionListener {
-
-    public void actionPerformed(ActionEvent event) {
-      AnnotationDisplayCustomizationFrame acd = new AnnotationDisplayCustomizationFrame(
-          "Customize Annotation Display");
-      acd.init(MainFrame.this.styleMap, MainFrame.this.cas);
-      acd.pack();
-      acd.setVisible(true);
-    }
-
-  }
-
-  private class AddCPHandler implements ActionListener {
-
-    public void actionPerformed(ActionEvent arg0) {
-      String input = JOptionPane.showInputDialog(MainFrame.this, "Add new code page option");
-      if (input != null && input.length() > 0) {
-        addCodePage(input);
-      }
-    }
-
-  }
-
-  private class AddLangHandler implements ActionListener {
-
-    public void actionPerformed(ActionEvent arg0) {
-      String input = JOptionPane.showInputDialog(MainFrame.this, "Add new language");
-      if (input != null && input.length() > 0) {
-        addLanguage(input);
-      }
-    }
-
-  }
-
-  private class AboutHandler implements ActionListener {
-
-    public void actionPerformed(ActionEvent e) {
-      String javaVersion = System.getProperty("java.version");
-      String javaVendor = System.getProperty("java.vendor");
-      javaVendor = (javaVendor == null) ? "<Unknown>" : javaVendor;
-      String versionInfo = null;
-      if (javaVersion == null) {
-        versionInfo = "Running on an old version of Java";
-      } else {
-        versionInfo = "Running Java " + javaVersion + " from " + javaVendor;
-      }
-      String msg = "CVD (CAS Visual Debugger)\n" + "Apache UIMA Version "
-          + UIMAFramework.getVersionString() + "-incubating\n"
-          + "Copyright 2006, 2007 The Apache Software Foundation\n" + versionInfo + "\n";
-      Icon icon = Images.getImageIcon(Images.UIMA_LOGO_SMALL);
-      if (icon == null) {
-        JOptionPane.showMessageDialog(MainFrame.this, msg, "About CVD",
-            JOptionPane.INFORMATION_MESSAGE);
-      } else {
-        JOptionPane.showMessageDialog(MainFrame.this, msg, "About CVD",
-            JOptionPane.INFORMATION_MESSAGE, icon);
-      }
-    }
-  }
-
-  public void loadAEDescriptor(File descriptorFile) {
-    setWaitCursor();
-    if (descriptorFile.exists() && descriptorFile.isFile()) {
-      this.annotOpenDir = descriptorFile.getParentFile();
-    }
-    Timer time = new Timer();
-    time.start();
-    boolean success = false;
-    try {
-      success = setupAE(descriptorFile);
-    } catch (Exception e) {
-      handleException(e);
-    } catch (NoClassDefFoundError e) {
-      // We don't want to catch all errors, but some are ok.
-      handleException(e);
-    }
-    time.stop();
-    addRecentDescFile(descriptorFile);
-    if (!success) {
-      setStatusbarMessage("Failed to load AE specifier: " + descriptorFile.getName());
-      this.reRunMenu.setText("Run AE");
-      setAEStatusMessage();
-      resetCursor();
-      return;
-    }
-    if (this.ae != null) {
-      String annotName = this.ae.getAnalysisEngineMetaData().getName();
-      this.reRunMenu.setText("Run " + annotName);
-      this.reRunMenu.setEnabled(true);
-      this.runOnCasMenuItem.setText("Run " + annotName + " on CAS");
-      setAEStatusMessage();
-      setStatusbarMessage("Done loading AE " + annotName + " in " + time.getTimeSpan() + ".");
-    }
-    // Check for CAS multiplier
-    // TODO: properly handle CAS multiplication
-    if (this.ae != null) {
-      if (this.ae.getAnalysisEngineMetaData().getOperationalProperties().getOutputsNewCASes()) {
-        JOptionPane
-            .showMessageDialog(
-                this,
-                "This analysis engine uses a CAS multiplier component.\nCAS multiplication/merging is not currently supported in CVD.\nYou can run the analysis engine, but will not see any results.",
-                "Warning: unsupported operation", JOptionPane.WARNING_MESSAGE);
-      }
-    }
-    resetCursor();
   }
 
   // private static class WindowClosingMouseListener implements MouseListener {
@@ -344,89 +203,6 @@ public class MainFrame extends JFrame {
   //
   // }
 
-  private class AboutUimaHandler implements ActionListener {
-
-    public void actionPerformed(ActionEvent e) {
-      AboutDialog dialog = new AboutDialog(MainFrame.this, "About UIMA");
-      dialog.setVisible(true);
-    }
-  }
-
-  private class ManualHandler implements ActionListener {
-
-    class Hyperactive implements HyperlinkListener {
-
-      public void hyperlinkUpdate(HyperlinkEvent e) {
-        if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-          JEditorPane pane = (JEditorPane) e.getSource();
-          if (e instanceof HTMLFrameHyperlinkEvent) {
-            HTMLFrameHyperlinkEvent evt = (HTMLFrameHyperlinkEvent) e;
-            HTMLDocument doc = (HTMLDocument) pane.getDocument();
-            doc.processHTMLFrameHyperlinkEvent(evt);
-          } else {
-            try {
-              pane.setPage(e.getURL());
-            } catch (Throwable t) {
-              t.printStackTrace();
-            }
-          }
-        }
-      }
-    }
-
-    public void actionPerformed(ActionEvent event) {
-      try {
-        String manFileName = "tools/tools.html";
-        JFrame manFrame = new JFrame("CVD Manual");
-        JEditorPane editorPane = new JEditorPane();
-        editorPane.setEditable(false);
-        editorPane.addHyperlinkListener(new Hyperactive());
-        URL manURL = ClassLoader.getSystemResource(manFileName);
-        if (manURL == null) {
-          String manpath = System.getProperty(CVD.MAN_PATH_PROPERTY, null);
-          if (manpath != null) {
-            File manDir = new File(manpath);
-            File manFile = new File(manDir, manFileName);
-            if (manFile.exists()) {
-              manURL = manFile.toURL();
-            }
-          }
-        }
-        if (manURL == null) {
-          String msg = "Can't find manual. The manual is loaded via the classpath,\n"
-              + "so make sure the manual folder is in the classpath.";
-          JOptionPane.showMessageDialog(MainFrame.this, msg, "Error loading manual",
-              JOptionPane.ERROR_MESSAGE);
-          return;
-        }
-        editorPane.setPage(manURL);
-        JScrollPane scrollPane = new JScrollPane(editorPane);
-        scrollPane.setPreferredSize(new Dimension(700, 800));
-        manFrame.setContentPane(scrollPane);
-        manFrame.pack();
-        manFrame.setVisible(true);
-        URL cvdLinkUrl = new URL(manURL.toString() + "#ugr.tools.cvd");
-        HyperlinkEvent e = new HyperlinkEvent(editorPane, HyperlinkEvent.EventType.ACTIVATED,
-            cvdLinkUrl);
-        editorPane.fireHyperlinkUpdate(e);
-      } catch (Exception e) {
-        handleException(e);
-      }
-    }
-
-  }
-
-  private class HelpHandler implements ActionListener {
-
-    public void actionPerformed(ActionEvent event) {
-      String msg = "There is currently no online help."
-          + "\nPlease find documentation on CVD and UIMA"
-          + "\nin the doc directory of the UIMA installation";
-      JOptionPane.showMessageDialog(MainFrame.this, msg, "Help", JOptionPane.INFORMATION_MESSAGE);
-    }
-
-  }
-
   private static final String loggerPropertiesFileName = "org/apache/uima/tools/annot_view/Logger.properties";
 
   private static final String defaultText =
@@ -445,11 +221,11 @@ public class MainFrame extends JFrame {
   // private static final String noIndexReposLabel = indexReposRootLabel;
 
   // The content areas.
-  JTextArea textArea;
+  private JTextArea textArea;
 
-  JTree indexTree;
+  private JTree indexTree;
 
-  JTree fsTree;
+  private JTree fsTree;
 
   private JPanel statusPanel;
 
@@ -464,7 +240,7 @@ public class MainFrame extends JFrame {
   private Border textTitleBorder;
 
   // Dirty flag for the editor.
-  boolean isDirty;
+  private boolean isDirty;
 
   // The scroll panels.
   private JScrollPane textScrollPane;
@@ -476,31 +252,31 @@ public class MainFrame extends JFrame {
   // Menus
   private  JMenu fileMenu = null;
 
-  JMenuItem fileSaveItem = null;
+  private JMenuItem fileSaveItem = null;
 
   private JMenu editMenu;
 
-  JMenuItem undoItem;
+  private JMenuItem undoItem;
 
-  UndoMgr undoMgr;
+  private UndoMgr undoMgr;
 
   private Action cutAction;
 
   private Action copyAction;
 
-  JMenuItem allAnnotationViewerItem;
+  private JMenuItem allAnnotationViewerItem;
 
   private JMenuItem acdItem;
 
-  JMenuItem tsViewerItem;
+  private JMenuItem tsViewerItem;
 
-  JMenuItem reRunMenu;
+  private JMenuItem reRunMenu;
 
-  JMenuItem runOnCasMenuItem;
+  private JMenuItem runOnCasMenuItem;
 
   private JPopupMenu textPopup;
 
-  JMenuItem xcasReadItem;
+  private JMenuItem xcasReadItem;
 
   private JMenuItem xcasWriteItem;
 
@@ -515,9 +291,9 @@ public class MainFrame extends JFrame {
   // Code page support
   private String codePagePrefsList = null;
 
-  ArrayList codePages = null;
+  private ArrayList codePages = null;
 
-  String codePage = null;
+  private String codePage = null;
 
   private JMenu cpMenu;
 
@@ -529,7 +305,7 @@ public class MainFrame extends JFrame {
   String languagePrefsList = null;
 
   // private String defaultLanguagePref = null;
-  ArrayList languages = null;
+  private ArrayList languages = null;
 
   private JMenu langMenu;
 
@@ -537,19 +313,19 @@ public class MainFrame extends JFrame {
 
   private static final String LANGUAGE_DEFAULT = "en";
 
-  String language;
+  private String language;
 
   private static final String defaultLanguages = "de,en,fr,ja,ko-kr,pt-br,zh-cn,zh-tw,x-unspecified";
 
-  File textFile = null;
+  private File textFile = null;
 
-  File fileOpenDir = null;
+  private File fileOpenDir = null;
 
-  File annotOpenDir = null;
+  private File annotOpenDir = null;
 
-  File xcasFileOpenDir = null;
+  private File xcasFileOpenDir = null;
 
-  File colorSettingsDir = null;
+  private File colorSettingsDir = null;
 
   // Selected index
   private String indexLabel = null;
@@ -560,11 +336,11 @@ public class MainFrame extends JFrame {
 
   // private ArrayList runConfigs;
 
-  CAS cas = null;
+  private CAS cas = null;
 
-  File aeDescriptorFile = null;
+  private File aeDescriptorFile = null;
 
-  AnalysisEngine ae = null;
+  private AnalysisEngine ae = null;
 
   private File logFile = null;
 
@@ -572,11 +348,11 @@ public class MainFrame extends JFrame {
 
   private Logger log = null;
 
-  File colorSettingFile;
+  private File colorSettingFile;
 
   private static final Color selectionColor = Color.orange;
 
-  Properties preferences;
+  private Properties preferences;
 
   public static final String textDirPref = "dir.open.text";
 
@@ -648,13 +424,13 @@ public class MainFrame extends JFrame {
 
   private ArrayList cursorCache = null;
 
-  String dataPathName;
+  private String dataPathName;
 
-  JComboBox sofaSelectionComboBox;
+  private JComboBox sofaSelectionComboBox;
 
-  JPanel sofaSelectionPanel;
+  private JPanel sofaSelectionPanel;
 
-  boolean disableSofaListener = false;
+  private boolean disableSofaListener = false;
 
   /**
    * Constructor for MainFrame.
@@ -696,6 +472,75 @@ public class MainFrame extends JFrame {
   public MainFrame(String arg0, GraphicsConfiguration arg1) {
     super(arg0, arg1);
     init();
+  }
+
+  public void runAE(boolean doCasReset) {
+    setStatusbarMessage("Running Annotator.");
+    Timer timer = new Timer();
+    timer.start();
+    if (this.ae == null) {
+      JOptionPane.showMessageDialog(this, "No AE loaded.", "Error", JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    internalRunAE(doCasReset);
+    timer.stop();
+    setStatusbarMessage("Done running AE " + this.ae.getAnalysisEngineMetaData().getName() + " in "
+        + timer.getTimeSpan() + ".");
+    updateIndexTree(true);
+    this.allAnnotationViewerItem.setEnabled(false);
+    this.isDirty = false;
+    this.runOnCasMenuItem.setEnabled(true);
+  }
+
+  public void setDataPath(String dataPath) {
+    this.dataPathName = dataPath;
+  }
+
+  public void loadAEDescriptor(File descriptorFile) {
+    setWaitCursor();
+    if (descriptorFile.exists() && descriptorFile.isFile()) {
+      this.annotOpenDir = descriptorFile.getParentFile();
+    }
+    Timer time = new Timer();
+    time.start();
+    boolean success = false;
+    try {
+      success = setupAE(descriptorFile);
+    } catch (Exception e) {
+      handleException(e);
+    } catch (NoClassDefFoundError e) {
+      // We don't want to catch all errors, but some are ok.
+      handleException(e);
+    }
+    time.stop();
+    addRecentDescFile(descriptorFile);
+    if (!success) {
+      setStatusbarMessage("Failed to load AE specifier: " + descriptorFile.getName());
+      this.reRunMenu.setText("Run AE");
+      setAEStatusMessage();
+      resetCursor();
+      return;
+    }
+    if (this.ae != null) {
+      String annotName = this.ae.getAnalysisEngineMetaData().getName();
+      this.reRunMenu.setText("Run " + annotName);
+      this.reRunMenu.setEnabled(true);
+      this.runOnCasMenuItem.setText("Run " + annotName + " on CAS");
+      setAEStatusMessage();
+      setStatusbarMessage("Done loading AE " + annotName + " in " + time.getTimeSpan() + ".");
+    }
+    // Check for CAS multiplier
+    // TODO: properly handle CAS multiplication
+    if (this.ae != null) {
+      if (this.ae.getAnalysisEngineMetaData().getOperationalProperties().getOutputsNewCASes()) {
+        JOptionPane
+            .showMessageDialog(
+                this,
+                "This analysis engine uses a CAS multiplier component.\nCAS multiplication/merging is not currently supported in CVD.\nYou can run the analysis engine, but will not see any results.",
+                "Warning: unsupported operation", JOptionPane.WARNING_MESSAGE);
+      }
+    }
+    resetCursor();
   }
 
   public void handleException(Throwable e) {
@@ -1006,17 +851,17 @@ public class MainFrame extends JFrame {
     JMenu helpMenu = new JMenu("Help");
     helpMenu.setMnemonic(KeyEvent.VK_H);
     JMenuItem manualItem = new JMenuItem("Manual", KeyEvent.VK_M);
-    manualItem.addActionListener(new ManualHandler());
+    manualItem.addActionListener(new ManualHandler(this));
     helpMenu.add(manualItem);
     JMenuItem helpInfoItem = new JMenuItem("Help", KeyEvent.VK_H);
-    helpInfoItem.addActionListener(new HelpHandler());
+    helpInfoItem.addActionListener(new HelpHandler(this));
     helpMenu.add(helpInfoItem);
     helpMenu.addSeparator();
     JMenuItem aboutItem = new JMenuItem("About CVD", KeyEvent.VK_A);
-    aboutItem.addActionListener(new AboutHandler());
+    aboutItem.addActionListener(new AboutHandler(this));
     helpMenu.add(aboutItem);
     JMenuItem aboutUimaItem = new JMenuItem("About UIMA", KeyEvent.VK_U);
-    aboutUimaItem.addActionListener(new AboutUimaHandler());
+    aboutUimaItem.addActionListener(new AboutUimaHandler(this));
     helpMenu.add(aboutUimaItem);
     return helpMenu;
   }
@@ -1106,7 +951,7 @@ public class MainFrame extends JFrame {
     this.setEnabled(true);
   }
 
-  private void addCodePage(String codePage1) {
+  public void addCodePage(String codePage1) {
     this.codePage = codePage1;
     if (!this.codePages.contains(codePage1)) {
       this.codePages.add(codePage1);
@@ -1114,7 +959,7 @@ public class MainFrame extends JFrame {
     resetCPMenu();
   }
 
-  private void createCodePages() {
+  public void createCodePages() {
     this.codePages = new ArrayList();
     if (this.codePagePrefsList == null) {
       this.codePagePrefsList = defaultCodePages;
@@ -1173,7 +1018,7 @@ public class MainFrame extends JFrame {
     }
     this.cpMenu.addSeparator();
     JMenuItem addCPItem = new JMenuItem("Add code page");
-    addCPItem.addActionListener(new AddCPHandler());
+    addCPItem.addActionListener(new AddCPHandler(this));
     this.cpMenu.add(addCPItem);
     JMenu removeMenu = new JMenu("Remove code page");
     for (int i = 0; i < this.codePages.size(); i++) {
@@ -1183,11 +1028,11 @@ public class MainFrame extends JFrame {
     }
     this.cpMenu.add(removeMenu);
     JMenuItem restoreDefaultsItem = new JMenuItem("Restore defaults");
-    restoreDefaultsItem.addActionListener(new RestoreCPDefaultsHandler());
+    restoreDefaultsItem.addActionListener(new RestoreCPDefaultsHandler(this));
     this.cpMenu.add(restoreDefaultsItem);
   }
 
-  private void addLanguage(String language1) {
+  public void addLanguage(String language1) {
     this.language = language1;
     if (!this.languages.contains(language1)) {
       this.languages.add(language1);
@@ -1218,7 +1063,7 @@ public class MainFrame extends JFrame {
     }
     this.langMenu.addSeparator();
     JMenuItem addLangItem = new JMenuItem("Add language");
-    addLangItem.addActionListener(new AddLangHandler());
+    addLangItem.addActionListener(new AddLanguageHandler(this));
     this.langMenu.add(addLangItem);
     JMenu removeMenu = new JMenu("Remove language");
     for (int i = 0; i < this.languages.size(); i++) {
@@ -1299,7 +1144,7 @@ public class MainFrame extends JFrame {
     this.acdItem = new JMenuItem("Customize Annotation Display", KeyEvent.VK_C);
     toolsMenu.add(this.acdItem);
     this.acdItem.setEnabled(false);
-    this.acdItem.addActionListener(new ShowAnnotationCustomizerHandler());
+    this.acdItem.addActionListener(new ShowAnnotationCustomizerHandler(this));
 
     JMenu logConfig = new JMenu("Set Log Level");
     ButtonGroup levelGroup = new ButtonGroup();
@@ -2322,6 +2167,10 @@ public class MainFrame extends JFrame {
 
   public void setLanguagePrefsList(String languagePrefsList) {
     this.languagePrefsList = languagePrefsList;
+  }
+
+  public void setCodePagePrefsList(String codePagePrefsList) {
+    this.codePagePrefsList = codePagePrefsList;
   }
 
   // private void initFocusTraversalPolicy() {
