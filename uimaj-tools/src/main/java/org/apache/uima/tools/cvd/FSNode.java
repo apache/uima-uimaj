@@ -107,7 +107,7 @@ public class FSNode extends FSTreeNode {
     Type type = getType();
     CASImpl cas = this.fSTreeModel.getCas();
     if (this.fSTreeModel.getCas().isArrayType(type)) {
-      int arrayLength = cas.getArraySize((int) this.addr);
+      int arrayLength = cas.ll_getArraySize((int) this.addr);
       if (arrayLength > 20) {
         arrayLength = 20;
       }
@@ -272,7 +272,7 @@ public class FSNode extends FSTreeNode {
           return getNullString();
         }
         return "<font color=blue>" + getType().getName() + "</font>["
-                + cas.getArraySize((int) this.addr) + "]";
+                + cas.ll_getArraySize((int) this.addr) + "]";
       }
       case STD_FS: {
         if (cas.getHeapValue((int) this.addr) == LowLevelCAS.NULL_FS_REF) {
