@@ -44,7 +44,7 @@ public class CommonArray_Type extends TOP_Type {
    */
   /** return the size of the array */
   public int size(int addr) {
-    return casImpl.getArraySize(addr);
+    return casImpl.ll_getArraySize(addr);
   }
 
 }

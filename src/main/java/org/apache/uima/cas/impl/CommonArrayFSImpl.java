@@ -33,7 +33,7 @@ public abstract class CommonArrayFSImpl extends FeatureStructureImplC {
   }
 
   public int size() {
-    return casImpl.getArraySize(addr);
+    return casImpl.ll_getArraySize(addr);
   }
 
   public abstract void copyToArray(int srcOffset, String[] dest, int destOffset, int length);

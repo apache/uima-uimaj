@@ -726,7 +726,7 @@ public class XCASDeserializer {
     }
 
     private void addArrayElement(String content) throws SAXParseException {
-      if (arrayPos >= cas.getArraySize(currentAddr)) {
+      if (arrayPos >= cas.ll_getArraySize(currentAddr)) {
         throw createException(XCASParsingException.EXCESS_ARRAY_ELE);
       }
       try {
@@ -839,7 +839,7 @@ public class XCASDeserializer {
         // Nothing to do.
         return;
       }
-      final int size = cas.getArraySize(addr);
+      final int size = cas.ll_getArraySize(addr);
       FSInfo fsValInfo;
       for (int i = 0; i < size; i++) {
         int arrayVal = cas.getArrayValue(addr, i);

@@ -259,7 +259,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 			int arrayFS = (this.isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS,
 					this.featureCode));
 
-			int arraySize = ((CASImpl) cas).getArraySize(arrayFS);
+			int arraySize = ((CASImpl) cas).ll_getArraySize(arrayFS);
 			// if the user specified name[1000], but the array has only 5
 			// entries for name...
 			if (this.arrayIndex >= arraySize) {
@@ -333,7 +333,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 			int arrayFS = (this.isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS,
 					this.featureCode));
 
-			int arraySize = ((CASImpl) cas).getArraySize(arrayFS);
+			int arraySize = ((CASImpl) cas).ll_getArraySize(arrayFS);
 
 			// if the user specified name[1000], but the array has only 5
 			// entries for name...
@@ -417,7 +417,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 			int arrayFS = (this.isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS,
 					this.featureCode));
 
-			int arraySize = ((CASImpl) cas).getArraySize(arrayFS);
+			int arraySize = ((CASImpl) cas).ll_getArraySize(arrayFS);
 			// if the user specified name[1000], but the array has only 5
 			// entries for name...
 			if (this.arrayIndex >= arraySize) {
@@ -493,7 +493,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 			int arrayFS = (this.isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS,
 					this.featureCode));
 
-			int arraySize = ((CASImpl) cas).getArraySize(arrayFS);
+			int arraySize = ((CASImpl) cas).ll_getArraySize(arrayFS);
 
 			// if the user specified name[1000], but the array has only 5
 			// entries for name...
@@ -587,7 +587,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 			int arrayFS = (this.isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS,
 					this.featureCode));
 
-			int arraySize = ((CASImpl) cas).getArraySize(arrayFS);
+			int arraySize = ((CASImpl) cas).ll_getArraySize(arrayFS);
 			// if the user specified name[1000], but the array has only 5
 			// entries for name...
 			if (this.arrayIndex >= arraySize) {
@@ -670,7 +670,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 			int arrayFS = (this.isBracketsOnly ? currentFS : cas.ll_getRefValue(currentFS,
 					this.featureCode));
 
-			int arraySize = ((CASImpl) cas).getArraySize(arrayFS);
+			int arraySize = ((CASImpl) cas).ll_getArraySize(arrayFS);
 
 			// if the user specified name[1000], but the array has only 5
 			// entries for name...

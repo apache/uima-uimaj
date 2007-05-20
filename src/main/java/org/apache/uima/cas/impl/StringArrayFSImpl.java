@@ -60,7 +60,7 @@ public class StringArrayFSImpl extends FeatureStructureImplC implements StringAr
    * @see org.apache.uima.cas.ArrayFS#size()
    */
   public int size() {
-    return this.casImpl.getArraySize(this.addr);
+    return this.casImpl.ll_getArraySize(this.addr);
   }
 
   /**

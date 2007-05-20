@@ -881,7 +881,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 				FeatureStructureImpl fs = (FeatureStructureImpl) aSofa.getLocalFSData();
 
 				int arrayStart = 0;
-				int arraySize = this.getArraySize(fs.getAddress());
+				int arraySize = this.ll_getArraySize(fs.getAddress());
 				ByteBuffer buf = null;
 				Type type = fs.getType();
 				if (type.getName().equals(CAS.TYPE_NAME_INTEGER_ARRAY)) {
@@ -1609,48 +1609,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 		return this.fsClassReg.createFS(addr, this);
 	}
 
-	/**
-   * Create a temporary (i.e., per document) String array FS on the heap.
-   * 
-   * @param type
-   *          The type code of the array to be created.
-   * @param len
-   *          The length of the array to be created.
-   * @exception ArrayIndexOutOfBoundsException
-   *              If <code>type</code> is not a type.
-   */
-	public int createTempStringArray(int type, int len) {
-		// String arrays are different, since for compatibility with C++, we
-		// need
-		// to allocate space for the size of the strings.
-		final int addr = this.heap.addToTempHeap(arrayContentOffset + len, type);
-		this.heap.heap[(addr + arrayLengthFeatOffset)] = len;
-		return addr;
-	}
-
-	// /**
-	// * Create a permanent FS on the heap.
-	// *
-	// * @param type
-	// * The type of the FS.
-	// * @return The address of the new FS. This is an int <code>&gt;=0</code>.
-	// * If it is <code>0</code>, something went wrong; <code>0</code>
-	// * is not a valid address.
-	// */
-	// public int createPermFS(int type) {
-	// return this.heap.addToHeap(this.fsSpaceReq[type], type);
-	// }
-
-	/**
-   * Get the size of an array.
-   * 
-   * @param addr
-   *          The address of the array.
-   * @return The length of the array.
-   */
-	public int getArraySize(int addr) {
-		return this.ll_getArraySize(addr);
-	}
 
 	public int ll_getArraySize(int arrayFsRef) {
 		return this.heap.heap[arrayFsRef + arrayLengthFeatOffset];
@@ -3106,7 +3064,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 	}
 
 	public final void checkArrayBounds(int fsRef, int pos) {
-		final int arrayLength = getArraySize(fsRef);
+		final int arrayLength = ll_getArraySize(fsRef);
 		if (pos < 0 || pos >= arrayLength) {
 			throw new ArrayIndexOutOfBoundsException(pos);
 			// LowLevelException e = new LowLevelException(
@@ -3117,7 +3075,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 	}
 
 	public final void checkArrayBounds(int fsRef, int pos, int length) {
-		final int arrayLength = getArraySize(fsRef);
+		final int arrayLength = ll_getArraySize(fsRef);
 		if (pos < 0 || length < 0 || (pos + length) > arrayLength) {
 			LowLevelException e = new LowLevelException(LowLevelException.ARRAY_INDEX_LENGTH_OUT_OF_RANGE);
 			e.addArgument(Integer.toString(pos));

@@ -1123,7 +1123,7 @@ public class XmiCasDeserializer {
         // Nothing to do.
         return;
       }
-      final int size = cas.getArraySize(addr);
+      final int size = cas.ll_getArraySize(addr);
       for (int i = 0; i < size; i++) {
         int arrayVal = cas.getArrayValue(addr, i);
         if (arrayVal != CASImpl.NULL) {
