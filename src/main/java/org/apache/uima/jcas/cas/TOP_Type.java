@@ -196,6 +196,6 @@ public class TOP_Type {
 	}
 
 	public int noObjCreate() {
-		return casImpl.createTempFS(casTypeCode);
+		return casImpl.ll_createFS(casTypeCode);
 	}
 }

@@ -440,7 +440,7 @@ public class XmiCasDeserializer {
           }
         }
       } else {
-        final int addr = cas.createTempFS(currentType.getCode());
+        final int addr = cas.ll_createFS(currentType.getCode());
         readFS(addr, attrs);
       }
     }

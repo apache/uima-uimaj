@@ -298,7 +298,7 @@ public class XCASDeserializer {
           readArray(type, attrs);
           return;
         }
-        final int addr = cas.createTempFS(type.getCode());
+        final int addr = cas.ll_createFS(type.getCode());
         readFS(addr, attrs, true);
       }
     }
