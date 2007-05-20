@@ -1316,7 +1316,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   public LowLevelIndex ll_getIndex(String indexName, int typeCode) {
-    if (!this.typeSystem.isType(typeCode) || !this.cas.isFSRefType(typeCode)) {
+    if (!this.typeSystem.isType(typeCode) || !this.cas.ll_isRefType(typeCode)) {
       LowLevelException e = new LowLevelException(LowLevelException.INVALID_INDEX_TYPE);
       e.addArgument(Integer.toString(typeCode));
       throw e;
@@ -1327,7 +1327,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   public final void ll_addFS(int fsRef, boolean doChecks) {
     if (doChecks) {
       this.cas.checkFsRef(fsRef);
-      this.cas.isFSRefType(this.cas.ll_getFSRefType(fsRef));
+      this.cas.ll_isRefType(this.cas.ll_getFSRefType(fsRef));
     }
     ll_addFS(fsRef);
   }

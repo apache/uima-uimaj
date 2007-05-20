@@ -629,7 +629,7 @@ public class XCASSerializer {
         featAddr = addr + cas.getFeatureOffset(feats[i]);
         featVal = cas.getHeapValue(featAddr);
         featName = featureNames[feats[i]];
-        if (!cas.isFSRefType(ts.range(feats[i]))) {
+        if (!cas.ll_isRefType(ts.range(feats[i]))) {
           attrValue = cas.getFeatureValueAsString(addr, feats[i]);
           if (nameMapping && featName.equals(CAS.FEATURE_BASE_NAME_SOFAID) && uimaContext != null) {
             // map absolute SofaID to that expected by Component
@@ -656,7 +656,7 @@ public class XCASSerializer {
       for (int i = 0; i < feats.length; i++) {
         featAddr = addr + cas.getFeatureOffset(feats[i]);
         featVal = cas.getHeapValue(featAddr);
-        if (cas.isFSRefType(ts.range(feats[i]))) {
+        if (cas.ll_isRefType(ts.range(feats[i]))) {
           if (featVal == CASImpl.NULL) {
             // break;
           } else {

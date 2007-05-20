@@ -224,7 +224,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 		}
 		// Check that feature value is not primitive.
 		final int rangeTypeCode = ts.ll_getRangeType(featCode);
-		if (!this.getCASImpl().isFSRefType(rangeTypeCode)) {
+		if (!this.getCASImpl().ll_isRefType(rangeTypeCode)) {
 			CASRuntimeException e = new CASRuntimeException(CASRuntimeException.PRIMITIVE_VAL_FEAT,
 					new String[] { feat.getName() });
 			throw e;

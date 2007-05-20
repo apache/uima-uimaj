@@ -2696,10 +2696,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 		}
 	}
 
-	final boolean isFSRefType(int typeCode) {
-		return ll_isRefType(typeCode);
-	}
-
 	public final boolean ll_isRefType(int typeCode) {
 		if (typeCode == this.intTypeCode || typeCode == this.floatTypeCode
 				|| typeCode == this.stringTypeCode || typeCode == this.byteTypeCode
