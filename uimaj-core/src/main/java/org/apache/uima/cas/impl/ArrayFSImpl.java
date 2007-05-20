@@ -41,7 +41,7 @@ public class ArrayFSImpl extends FeatureStructureImplC implements ArrayFS {
    * @see org.apache.uima.cas.ArrayFS#size()
    */
   public int size() {
-    return this.getCASImpl().getArraySize(this.getAddress());
+    return this.getCASImpl().ll_getArraySize(this.getAddress());
   }
 
   /**

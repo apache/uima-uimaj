@@ -139,7 +139,7 @@ public final class FloatArray extends TOP implements FloatArrayFS {
    */
 
   public int size() {
-    return jcasType.casImpl.getArraySize(addr);
+    return jcasType.casImpl.ll_getArraySize(addr);
   }
 
   /**

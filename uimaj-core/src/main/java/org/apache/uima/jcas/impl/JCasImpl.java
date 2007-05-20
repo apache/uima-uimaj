@@ -753,7 +753,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 			e.addArgument(Integer.toString(pos));
 			throw e;
 		}
-		final int arrayLength = casImpl.getArraySize(fsRef);
+		final int arrayLength = casImpl.ll_getArraySize(fsRef);
 		if (pos < 0 || pos >= arrayLength) {
 			LowLevelException e = new LowLevelException(LowLevelException.ARRAY_INDEX_OUT_OF_RANGE);
 			e.addArgument(Integer.toString(pos));

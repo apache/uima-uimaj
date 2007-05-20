@@ -38,7 +38,7 @@ public abstract class CommonAuxArrayFSImpl extends FeatureStructureImplC {
    * @see org.apache.uima.cas.ArrayFS#size()
    */
   public int size() {
-    return casImpl.getArraySize(addr);
+    return casImpl.ll_getArraySize(addr);
   }
 
   /**

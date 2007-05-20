@@ -551,7 +551,7 @@ public class XCASSerializer {
 
     private void encodeFSArray(int addr, AttributesImpl attrs) throws SAXException {
       final String typeName = getTypeName(addr);
-      final int size = cas.getArraySize(addr);
+      final int size = cas.ll_getArraySize(addr);
       int pos = cas.getArrayStartAddress(addr);
       // xmlStack.addAttribute(ARRAY_SIZE_ATTR, Integer.toString(size));
       // xmlStack.commitNode();
@@ -597,7 +597,7 @@ public class XCASSerializer {
     }
 
     private void enqueueFSArray(int addr) {
-      final int size = cas.getArraySize(addr);
+      final int size = cas.ll_getArraySize(addr);
       int pos = cas.getArrayStartAddress(addr);
       int val;
       for (int i = 0; i < size; i++) {

@@ -108,6 +108,6 @@ public final class StringArray extends TOP implements StringArrayFS {
 
   /** return the size of the array */
   public int size() {
-    return jcasType.casImpl.getArraySize(addr);
+    return jcasType.casImpl.ll_getArraySize(addr);
   }
 }

@@ -498,7 +498,7 @@ public class XmiCasSerializer {
      *          Address of an FSArray
      */
     private void enqueueFSArrayElements(int addr) throws SAXException {
-      final int size = cas.getArraySize(addr);
+      final int size = cas.ll_getArraySize(addr);
       int pos = cas.getArrayStartAddress(addr);
       int val;
       for (int i = 0; i < size; i++) {
@@ -858,7 +858,7 @@ public class XmiCasSerializer {
 
       // it is not safe to use a space-separated attribute, which would
       // break for strings containing spaces. So use child elements instead.
-      final int size = cas.getArraySize(addr);
+      final int size = cas.ll_getArraySize(addr);
       if (size > 0 && !arrayAndListFSs.put(addr, addr)) {
         reportWarning("Warning: multiple references to a String array.  Reference identity will not be preserved.");
       }
@@ -877,7 +877,7 @@ public class XmiCasSerializer {
       }
 
       StringBuffer buf = new StringBuffer();
-      final int size = cas.getArraySize(addr);
+      final int size = cas.ll_getArraySize(addr);
       if (size > 0 && !arrayAndListFSs.put(addr, addr)) {
         reportWarning("Warning: multiple references to an array.  Reference identity will not be preserved in XMI.");
       }

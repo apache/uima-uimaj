@@ -105,7 +105,7 @@ public final class BooleanArray extends TOP implements BooleanArrayFS {
 
   /** return the size of the array */
   public int size() {
-    return jcasType.casImpl.getArraySize(addr);
+    return jcasType.casImpl.ll_getArraySize(addr);
   }
 
   /**
