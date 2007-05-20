@@ -603,7 +603,7 @@ public class XCASDeserializer {
           throw createException(XCASParsingException.UNKNOWN_FEATURE, featName);
         }
       } else {
-        if (cas.isFSRefType(ts.range(feat.getCode()))) {
+        if (cas.ll_isRefType(ts.range(feat.getCode()))) {
           cas.setFeatureValue(addr, feat.getCode(), Integer.parseInt(featVal));
         } else {
           cas.setFeatureValueFromString(addr, feat.getCode(), featVal);
@@ -808,7 +808,7 @@ public class XCASDeserializer {
       FSInfo fsValInfo;
       for (int i = 0; i < feats.length; i++) {
         feat = feats[i];
-        if (cas.isFSRefType(ts.range(feats[i]))) {
+        if (cas.ll_isRefType(ts.range(feats[i]))) {
           int featVal = cas.getFeatureValue(addr, feat);
           fsValInfo = (FSInfo) fsTree.get(featVal);
           if (fsValInfo == null) {
