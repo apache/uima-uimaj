@@ -659,7 +659,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 					new String[] { type.getName(), "CAS.createFS()" });
 			throw e;
 		}
-		final int addr = createTempFS(typeCode);
+		final int addr = ll_createFS(typeCode);
 		final boolean isAnnot = this.ts.subsumes(this.annotBaseTypeCode, typeCode);
 		if (isAnnot && this == this.getBaseCAS()) {
 			CASRuntimeException e = new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS,
@@ -767,14 +767,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 	}
 
 	protected SofaFS createSofa(String sofaName, String mimeType) {
-		final int addr = createTempFS(this.sofaTypeCode);
+		final int addr = ll_createFS(this.sofaTypeCode);
 		final FeatureStructure sofa = this.fsClassReg.createFS(addr, this);
 		addSofa(sofa, sofaName, mimeType);
 		return (SofaFS) sofa;
 	}
 
 	protected SofaFS createInitialSofa(String mimeType) {
-		final int addr = createTempFS(this.sofaTypeCode);
+		final int addr = ll_createFS(this.sofaTypeCode);
 		final FeatureStructure sofa = this.fsClassReg.createFS(addr, this);
 		final int llsofa = getLowLevelCAS().ll_getFSRef(sofa);
 		getLowLevelCAS().ll_setIntValue(llsofa, this.sofaNumFeatCode, 1);
@@ -2763,18 +2763,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 		}
 
 		return TYPE_CLASS_FS;
-	}
-
-	/**
-   * Create a temporary (i.e., per document) FS on the heap.
-   * 
-   * @param type
-   *          The type code of the structure to be created.
-   * @exception ArrayIndexOutOfBoundsException
-   *              If <code>type</code> is not a type.
-   */
-	public int createTempFS(int type) {
-		return ll_createFS(type);
 	}
 
 	public final int ll_createFS(int typeCode) {

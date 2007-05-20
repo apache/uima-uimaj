@@ -318,11 +318,11 @@ public class ListUtils {
   }
 
   public int createIntList(List stringValues) {
-    int first = cas.createTempFS(eIntListType);
+    int first = cas.ll_createFS(eIntListType);
     ListIterator iter = stringValues.listIterator(stringValues.size());
     while (iter.hasPrevious()) {
       int value = Integer.parseInt((String) iter.previous());
-      int node = cas.createTempFS(neIntListType);
+      int node = cas.ll_createFS(neIntListType);
       cas.setFeatureValue(node, intHeadFeat, value);
       cas.setFeatureValue(node, intTailFeat, first);
       first = node;
@@ -331,11 +331,11 @@ public class ListUtils {
   }
 
   public int createFloatList(List stringValues) {
-    int first = cas.createTempFS(eFloatListType);
+    int first = cas.ll_createFS(eFloatListType);
     ListIterator iter = stringValues.listIterator(stringValues.size());
     while (iter.hasPrevious()) {
       float value = Float.parseFloat((String) iter.previous());
-      int node = cas.createTempFS(neFloatListType);
+      int node = cas.ll_createFS(neFloatListType);
       cas.setFeatureValue(node, floatHeadFeat, CASImpl.float2int(value));
       cas.setFeatureValue(node, floatTailFeat, first);
       first = node;
@@ -344,11 +344,11 @@ public class ListUtils {
   }
 
   public int createStringList(List stringValues) {
-    int first = cas.createTempFS(eStringListType);
+    int first = cas.ll_createFS(eStringListType);
     ListIterator iter = stringValues.listIterator(stringValues.size());
     while (iter.hasPrevious()) {
       String value = (String) iter.previous();
-      int node = cas.createTempFS(neStringListType);
+      int node = cas.ll_createFS(neStringListType);
       cas.setFeatureValue(node, stringHeadFeat, cas.addString(value));
       cas.setFeatureValue(node, stringTailFeat, first);
       first = node;
@@ -357,11 +357,11 @@ public class ListUtils {
   }
 
   public int createFsList(List stringValues, IntVector fsAddresses) {
-    int first = cas.createTempFS(eFsListType);
+    int first = cas.ll_createFS(eFsListType);
     ListIterator iter = stringValues.listIterator(stringValues.size());
     while (iter.hasPrevious()) {
       int value = Integer.parseInt((String) iter.previous());
-      int node = cas.createTempFS(neFsListType);
+      int node = cas.ll_createFS(neFsListType);
       fsAddresses.add(node);
       cas.setFeatureValue(node, fsHeadFeat, value);
       cas.setFeatureValue(node, fsTailFeat, first);
