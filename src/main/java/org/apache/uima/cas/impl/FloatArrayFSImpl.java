@@ -77,7 +77,7 @@ public class FloatArrayFSImpl extends CommonArrayFSImpl implements FloatArrayFS 
    */
   public void copyFromArray(float[] src, int srcOffset, int destOffset, int length) {
     casImpl.checkArrayBounds(addr, destOffset, length);
-    final int[] heap = this.casImpl.heap.heap;
+    final int[] heap = this.casImpl.getHeap().heap;
     destOffset += this.casImpl.getArrayStartAddress(this.addr);
     for (int i = 0; i < length; i++) {
       heap[i + destOffset] = CASImpl.float2int(src[i + srcOffset]);
@@ -89,7 +89,7 @@ public class FloatArrayFSImpl extends CommonArrayFSImpl implements FloatArrayFS 
    */
   public void copyToArray(int srcOffset, float[] dest, int destOffset, int length) {
     casImpl.checkArrayBounds(addr, srcOffset, length);
-    final int[] heap = this.casImpl.heap.heap;
+    final int[] heap = this.casImpl.getHeap().heap;
     srcOffset += this.casImpl.getArrayStartAddress(this.addr);
     for (int i = 0; i < length; i++) {
       dest[i + destOffset] = CASImpl.int2float(heap[i + srcOffset]);
@@ -111,7 +111,7 @@ public class FloatArrayFSImpl extends CommonArrayFSImpl implements FloatArrayFS 
    */
   public void copyToArray(int srcOffset, String[] dest, int destOffset, int length) {
     casImpl.checkArrayBounds(addr, srcOffset, length);
-    final int[] heap = this.casImpl.heap.heap;
+    final int[] heap = this.casImpl.getHeap().heap;
     srcOffset += this.casImpl.getArrayStartAddress(this.addr);
     for (int i = 0; i < length; i++) {
       dest[i + destOffset] = Float.toString(CASImpl.int2float(heap[i + srcOffset]));
@@ -123,7 +123,7 @@ public class FloatArrayFSImpl extends CommonArrayFSImpl implements FloatArrayFS 
    */
   public void copyFromArray(String[] src, int srcOffset, int destOffset, int length) {
     casImpl.checkArrayBounds(addr, destOffset, length);
-    final int[] heap = casImpl.heap.heap;
+    final int[] heap = casImpl.getHeap().heap;
     destOffset += casImpl.getArrayStartAddress(this.addr);
     for (int i = 0; i < length; i++) {
       heap[i + destOffset] = CASImpl.float2int(Float.parseFloat(src[i + srcOffset]));
