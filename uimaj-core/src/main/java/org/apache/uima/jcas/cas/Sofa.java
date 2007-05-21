@@ -80,6 +80,7 @@ public class Sofa extends TOP implements SofaFS {
 		super(jcas);
 		final CASImpl casImpl = jcasType.casImpl;
 		casImpl.addSofa(casImpl.createFS(this.addr), ID.getSofaID(), mimeType);
+    casImpl.getView(this); // needed to make reset work
 	}
 
 	/**
@@ -93,7 +94,7 @@ public class Sofa extends TOP implements SofaFS {
 
 	// *--------------*
 	// * Feature: sofaNum
-
+  // ** Note: this gets the same feature, sofaNum, as getSofaRef, below
 	/**
    * getter for sofaNum - gets
    * 
@@ -250,6 +251,7 @@ public class Sofa extends TOP implements SofaFS {
 	}
 
 	// This method is duplicated in SofaFSImpl. Any changes should be made in both places.
+  // ** Note: this gets the feature named "sofaNum"
 	public int getSofaRef() {
 		final Feature numFeat = jcasType.casImpl.getTypeSystem().getFeatureByFullName(
 				CAS.FEATURE_FULL_NAME_SOFANUM);
