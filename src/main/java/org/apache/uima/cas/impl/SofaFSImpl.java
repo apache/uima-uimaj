@@ -199,6 +199,7 @@ public class SofaFSImpl extends FeatureStructureImplC implements SofaFS {
 
 	// This method is duplicated in org.apache.uima.jcas.cas.Sofa. Any changes
 	// should be made in both places.
+  // ** Note: This gets the feature named "sofaNum".
 	public int getSofaRef() {
 		final Feature numFeat = this.casImpl.getTypeSystem().getFeatureByFullName(
 				CAS.FEATURE_FULL_NAME_SOFANUM);
