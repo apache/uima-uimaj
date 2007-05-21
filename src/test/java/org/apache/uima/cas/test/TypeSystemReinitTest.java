@@ -59,6 +59,8 @@ public class TypeSystemReinitTest extends TestCase {
       tcas2.setDocumentText("bar");
 
       // reinit
+      //  This uses cas2 which only has a base type system to start, 
+      //    and loads it from a complete serialization which has other new types
       cas2.reinit(ser);
       CAS tcas3 = cas2.getCurrentView();
 
