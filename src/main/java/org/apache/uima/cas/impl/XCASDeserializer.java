@@ -731,7 +731,7 @@ public class XCASDeserializer {
       }
       try {
         if (!emptyVal(content)) {
-          if (cas.isArrayType(cas.heap.heap[currentAddr])) {
+          if (cas.isArrayType(cas.getHeap().heap[currentAddr])) {
             cas.setArrayValueFromString(currentAddr, arrayPos, content);
           } else {
             System.out.println(" not a known array type ");
