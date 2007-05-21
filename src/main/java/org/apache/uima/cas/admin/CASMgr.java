@@ -77,6 +77,10 @@ public interface CASMgr {
 
   void setCAS(CAS cas);
 
+  /**
+   * Install the standard built-in indexes into the base CAS
+   * @throws CASException
+   */
   void initCASIndexes() throws CASException;
 
   /**
