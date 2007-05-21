@@ -60,7 +60,7 @@ public class TOP extends FeatureStructureImpl {
    * casImpl ref) to every instance.
    */
 	/** used to reference the corresponding TOP_Type instance */
-	public final TOP_Type jcasType;
+	public TOP_Type jcasType;
 
 	/** used to reference the corresponding Cas instance */
 	protected final int addr;
