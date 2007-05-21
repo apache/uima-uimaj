@@ -88,10 +88,10 @@ public class LongArrayFSImpl extends CommonAuxArrayFSImpl implements LongArrayFS
       throw new ArrayIndexOutOfBoundsException();
     }
 
-    final int startoffset = casImpl.heap.heap[casImpl.getArrayStartAddress(this.addr)];
+    final int startoffset = casImpl.getHeap().heap[casImpl.getArrayStartAddress(this.addr)];
     destOffset += startoffset;
     for (int i = 0; i < length; i++) {
-      // cas.heap.heap[destOffset] = ((FeatureStructureImpl)src[srcOffset]).getAddress();
+      // cas.getHeap().heap[destOffset] = ((FeatureStructureImpl)src[srcOffset]).getAddress();
       this.casImpl.ll_setLongArrayValue(this.addr, destOffset, src[srcOffset]);
       ++destOffset;
       ++srcOffset;
@@ -107,7 +107,7 @@ public class LongArrayFSImpl extends CommonAuxArrayFSImpl implements LongArrayFS
       throw new ArrayIndexOutOfBoundsException();
     }
 
-    // srcOffset += this.casImpl.heap.heap[this.casImpl.getArrayStartAddress(addr)];
+    // srcOffset += this.casImpl.getHeap().heap[this.casImpl.getArrayStartAddress(addr)];
     for (int i = 0; i < length; i++) {
       dest[destOffset] = this.casImpl.ll_getLongArrayValue(this.addr, srcOffset);
       ++destOffset;
