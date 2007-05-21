@@ -268,6 +268,8 @@ abstract class TypeSystemUtils {
     return (Character.isLetter(c) || Character.isDigit(c) || (c == '_'));
   }
 
+  static private final String NAMESPACE_SEPARATOR_AS_STRING = "" + TypeSystem.NAMESPACE_SEPARATOR;
+
   /**
    * Check if <code>name</code> is a possible type name. Does not check if this type actually
    * exists!
@@ -281,8 +283,7 @@ abstract class TypeSystemUtils {
     // space
     // boundaries. We need to see the delimiters to make sure there are no
     // gratuitous delimiters at the beginning or the end.
-    String separatorString = "" + TypeSystem.NAMESPACE_SEPARATOR;
-    StringTokenizer tok = new StringTokenizer(name, separatorString, true);
+    StringTokenizer tok = new StringTokenizer(name, NAMESPACE_SEPARATOR_AS_STRING, true);
     // Loop over the tokens and check that every item is an identifier.
     while (tok.hasMoreTokens()) {
       // Any subsequence must start with an identifier.
@@ -291,7 +292,7 @@ abstract class TypeSystemUtils {
       }
       // If there is a next token, it must be a separator.
       if (tok.hasMoreTokens()) {
-        if (!tok.nextToken().equals(separatorString)) {
+        if (!tok.nextToken().equals(NAMESPACE_SEPARATOR_AS_STRING)) {
           return false;
         }
         // A sequence can not end in a separator.
