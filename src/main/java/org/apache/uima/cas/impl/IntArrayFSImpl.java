@@ -78,7 +78,7 @@ public class IntArrayFSImpl extends CommonArrayFSImpl implements IntArrayFS {
   public void copyFromArray(int[] src, int srcOffset, int destOffset, int length) {
     casImpl.checkArrayBounds(addr, destOffset, length);
     destOffset += this.casImpl.getArrayStartAddress(this.addr);
-    System.arraycopy(src, srcOffset, this.casImpl.heap.heap, destOffset, length);
+    System.arraycopy(src, srcOffset, this.casImpl.getHeap().heap, destOffset, length);
   }
 
   /**
@@ -87,7 +87,7 @@ public class IntArrayFSImpl extends CommonArrayFSImpl implements IntArrayFS {
   public void copyToArray(int srcOffset, int[] dest, int destOffset, int length) {
     casImpl.checkArrayBounds(addr, srcOffset, length);
     srcOffset += this.casImpl.getArrayStartAddress(this.addr);
-    System.arraycopy(this.casImpl.heap.heap, srcOffset, dest, destOffset, length);
+    System.arraycopy(this.casImpl.getHeap().heap, srcOffset, dest, destOffset, length);
   }
 
   /**
@@ -105,7 +105,7 @@ public class IntArrayFSImpl extends CommonArrayFSImpl implements IntArrayFS {
    */
   public void copyToArray(int srcOffset, String[] dest, int destOffset, int length) {
     casImpl.checkArrayBounds(addr, srcOffset, length);
-    final int[] heap = this.casImpl.heap.heap;
+    final int[] heap = this.casImpl.getHeap().heap;
     srcOffset += this.casImpl.getArrayStartAddress(this.addr);
     for (int i = 0; i < length; i++) {
       dest[i + destOffset] = Integer.toString(heap[i + srcOffset]);
@@ -117,7 +117,7 @@ public class IntArrayFSImpl extends CommonArrayFSImpl implements IntArrayFS {
    */
   public void copyFromArray(String[] src, int srcOffset, int destOffset, int length) {
     casImpl.checkArrayBounds(addr, destOffset, length);
-    final int[] heap = casImpl.heap.heap;
+    final int[] heap = casImpl.getHeap().heap;
     destOffset += casImpl.getArrayStartAddress(this.addr);
     for (int i = 0; i < length; i++) {
       heap[i + destOffset] = Integer.parseInt(src[i + srcOffset]);
