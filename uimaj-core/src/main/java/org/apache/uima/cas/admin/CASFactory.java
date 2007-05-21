@@ -98,7 +98,6 @@ public abstract class CASFactory {
    */
   public static TypeSystemMgr createTypeSystem() {
     TypeSystemImpl ts = new TypeSystemImpl();
-    CASImpl.setupTSDefault(ts);
     return ts;
   }
 

@@ -19,30 +19,28 @@
 
 package org.apache.uima.cas.impl;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.TreeMap;
 
+import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
+import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.impl.JCasImpl;
 
 /*
- * For JCas there is one instance of this class per view.
- * 
- * To have all views share the same instance of this would require
- * that JCasGen generate different "generator" classes which used the
- * CASImpl parameter to locate at generate time the corresponding 
- * JCas impl and the corresponding xxx_Type instance.  While this could
- * reasonably be done, it would break all existing applications until they
- * "regenerated" their JCas cover classes.  So we won't go there ... 5/2007
- * 
+ * There is one instance of this class per type system.
+ * It is shared by multiple CASes (in a CAS pool, for instance,
+ * when these CASes are sharing the same type system), and
+ * it is shared by all views of that CAS.
  */
 
 public class FSClassRegistry {
-
-  private final boolean useFSCache;
 
   private static class DefaultFSGenerator implements FSGenerator {
     private DefaultFSGenerator() {
@@ -54,9 +52,76 @@ public class FSClassRegistry {
     }
   }
 
+  static private class JCasFsGenerator implements FSGenerator {
+    private final int type;
+    private final Constructor c;
+    private final Object[] initargs;
+    private final boolean isSubtypeOfAnnotationBase;
+    private final int sofaNbrFeatCode;
+    private final int annotSofaFeatCode;
+
+    JCasFsGenerator(int type, Constructor c, boolean isSubtypeOfAnnotationBase, int sofaNbrFeatCode, int annotSofaFeatCode) {
+      this.type = type;  
+      this.c = c;
+      initargs = new Object[] {null, null};
+      this.isSubtypeOfAnnotationBase = isSubtypeOfAnnotationBase;
+      this.sofaNbrFeatCode = sofaNbrFeatCode;
+      this.annotSofaFeatCode = annotSofaFeatCode;
+    }
+    
+    public FeatureStructure createFS(int addr, CASImpl casView) {
+      JCasImpl jcasView = null;
+      final CASImpl view = (isSubtypeOfAnnotationBase) ?
+              (CASImpl)casView.getView(getSofaNbr(addr, casView)) :
+              casView;
+      if (null == view) 
+        System.out.println("null");
+      try {
+        jcasView = (JCasImpl)view.getJCas();
+      } catch (CASException e1) {
+       logAndThrow(e1);
+      }
+     
+     // Return eq fs instance if already created
+      TOP fs = jcasView.getJfsFromCaddr(addr);
+      if (null != fs) {
+        fs.jcasType = jcasView.getType(type);
+      } else {
+        initargs[0] = new Integer(addr);
+        initargs[1] = jcasView.getType(type);
+        try {
+          fs = (TOP) c.newInstance(initargs);
+        } catch (IllegalArgumentException e) {
+          logAndThrow(e);
+        } catch (InstantiationException e) {
+          logAndThrow(e);
+        } catch (IllegalAccessException e) {
+          logAndThrow(e);
+        } catch (InvocationTargetException e) {
+          logAndThrow(e);
+        } 
+        jcasView.putJfsFromCaddr(addr, fs);
+      }
+      return fs;
+    }
+ 
+    private void logAndThrow(Exception e) {
+      CASRuntimeException casEx = new CASRuntimeException(CASRuntimeException.JCAS_CAS_MISMATCH);
+      casEx.initCause(e);
+      throw casEx;      
+    }
+
+    private int getSofaNbr(int addr, CASImpl casView) {
+      final LowLevelCAS llCas = casView.getLowLevelCAS();
+      int sofa = llCas.ll_getIntValue(addr, annotSofaFeatCode, false);
+      return casView.getLowLevelCAS().ll_getIntValue(sofa, sofaNbrFeatCode);
+    }
+  }
   private TypeSystemImpl ts;
 
-  private FSGenerator[] generators;
+  private FSGenerator[] generators; 
+  
+  private static final FSGenerator defaultGenerator = new DefaultFSGenerator();
  
   /*
    * Generators sometimes need to be changed while running
@@ -81,24 +146,17 @@ public class FSClassRegistry {
   // private final TreeMap map;
   private FeatureStructure[] fsArray;
 
-  private static final int initialArraySize = 1000;
-
-  FSClassRegistry(TypeSystemImpl ts, boolean useFSCache) {
-    super();
-    this.useFSCache = useFSCache;
+  FSClassRegistry(TypeSystemImpl ts) {
     this.ts = ts;
+  }
+  
+  void initGeneratorArray() {
     this.generators = new FSGenerator[ts.getTypeArraySize()];
-    DefaultFSGenerator fsg = new DefaultFSGenerator();
     for (int i = ts.getSmallestType(); i < this.generators.length; i++) {
-      this.generators[i] = fsg;
-    }
-    // rbt = new RedBlackTree();
-    // this.map = new TreeMap();
-    if (useFSCache) {
-      this.fsArray = new FeatureStructure[initialArraySize];
+      this.generators[i] = defaultGenerator;
     }
   }
-
+  
   /**
    * adds generator for type and all its subtypes. Because of this, call this on supertypes first,
    * then subtypes (otherwise subtypes will be overwritten by generators for the supertypes).
@@ -163,38 +221,22 @@ public class FSClassRegistry {
     return false;
   }
 
-  FeatureStructure createFS(int addr, CASImpl cas) {
-    // Get the type of the structure from the heap and invoke the
-    // corresponding
-    // generator.
-    if (addr == 0) {
-      return null;
-    }
-    // FS object cache code.
-    FeatureStructure fs = null;
-    if (this.useFSCache) {
-      try {
-        fs = this.fsArray[addr];
-      } catch (ArrayIndexOutOfBoundsException e) {
-        // Do nothing.
-      }
-      if (fs == null) {
-        fs = this.generators[cas.heap.heap[addr]].createFS(addr, cas);
-        if (addr >= this.fsArray.length) {
-          int newLen = this.fsArray.length * 2;
-          while (newLen <= addr) {
-            newLen *= 2;
-          }
-          FeatureStructure[] newArray = new FeatureStructure[newLen];
-          System.arraycopy(this.fsArray, 0, newArray, 0, this.fsArray.length);
-          this.fsArray = newArray;
-        }
-        this.fsArray[addr] = fs;
-      }
-    } else {
-      fs = this.generators[cas.heap.heap[addr]].createFS(addr, cas);
-    }
-    return fs;
+  // assume addr is never 0 - caller must insure this
+  FeatureStructure createFSusingGenerator(int addr, CASImpl cas) {
+    return this.generators[cas.getHeap().heap[addr]].createFS(addr, cas);    
   }
-
+  
+  /*
+   * Generators used are created with as much info as can be looked up once, ahead of time.
+   * Things variable at run time include the cas instance, and the view.
+   * 
+   * In this design, generators are shared with all views for a particular CAS, but are different for 
+   * different CASes (distinct from shared-views of the same CAS)
+   * 
+   * Internal use only - public only to give access to JCas routines in another package
+   */
+  public void loadJCasGeneratorForType (int type, Constructor c, TypeImpl casType, boolean isSubtypeOfAnnotationBase) {
+    FSGenerator fsGenerator = new JCasFsGenerator(type, c, isSubtypeOfAnnotationBase, ts.sofaNumFeatCode, ts.annotSofaFeatCode);
+    addGeneratorForType(casType, fsGenerator);
+  }
 }

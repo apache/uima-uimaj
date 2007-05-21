@@ -424,7 +424,7 @@ public class CASMgrSerializer implements Serializable {
   public TypeSystemImpl getTypeSystem() {
     final TypeSystemImpl ts = new TypeSystemImpl();
     // First, add the top type.
-    ts.addTopType(CAS.TYPE_NAME_TOP);
+//    ts.addTopType(CAS.TYPE_NAME_TOP);  // does nothing, top type already there
     // HashMap nameMap = null;
     // Temporary. The name map will go away completely.
     HashMap nameMap = new HashMap();

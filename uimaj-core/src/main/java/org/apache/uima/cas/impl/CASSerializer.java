@@ -99,25 +99,25 @@ public class CASSerializer implements Serializable {
    */
 	public void addCAS(CASImpl cas, boolean addMetaData) {
 		this.fsIndex = cas.getIndexedFSs();
-		final int heapSize = cas.heap.getCurrentTempSize();
+		final int heapSize = cas.getHeap().getCurrentTempSize();
 		this.heapArray = new int[heapSize];
-		System.arraycopy(cas.heap.heap, 0, this.heapArray, 0, heapSize);
+		System.arraycopy(cas.getHeap().heap, 0, this.heapArray, 0, heapSize);
 		if (addMetaData) {
-			this.heapMetaData = cas.heap.getMetaData();
+			this.heapMetaData = cas.getHeap().getMetaData();
 		}
 		this.stringTable = stringArrayListToArray(cas.getStringTable());
 
-		final int byteHeapSize = cas.byteHeap.getSize();
+		final int byteHeapSize = cas.getByteHeap().getSize();
 		this.byteHeapArray = new byte[byteHeapSize];
-		System.arraycopy(cas.byteHeap.heap, 0, this.byteHeapArray, 0, byteHeapSize);
+		System.arraycopy(cas.getByteHeap().heap, 0, this.byteHeapArray, 0, byteHeapSize);
 
-		final int shortHeapSize = cas.shortHeap.getSize();
+		final int shortHeapSize = cas.getShortHeap().getSize();
 		this.shortHeapArray = new short[shortHeapSize];
-		System.arraycopy(cas.shortHeap.heap, 0, this.shortHeapArray, 0, shortHeapSize);
+		System.arraycopy(cas.getShortHeap().heap, 0, this.shortHeapArray, 0, shortHeapSize);
 
-		final int longHeapSize = cas.longHeap.getSize();
+		final int longHeapSize = cas.getLongHeap().getSize();
 		this.longHeapArray = new long[longHeapSize];
-		System.arraycopy(cas.longHeap.heap, 0, this.longHeapArray, 0, longHeapSize);
+		System.arraycopy(cas.getLongHeap().heap, 0, this.longHeapArray, 0, longHeapSize);
 	}
 
 	/**
@@ -181,10 +181,10 @@ public class CASSerializer implements Serializable {
 			dos.writeInt(version);
 
 			// output the FS heap
-			final int heapSize = cas.heap.getCurrentTempSize();
+			final int heapSize = cas.getHeap().getCurrentTempSize();
 			dos.writeInt(heapSize);
 			for (int i = 0; i < heapSize; i++) {
-				dos.writeInt(cas.heap.heap[i]);
+				dos.writeInt(cas.getHeap().heap[i]);
 			}
 
 			// output the strings
@@ -193,14 +193,14 @@ public class CASSerializer implements Serializable {
 
 			// local array to hold ref heap to be serialized
 			// String list reference in this local ref heap will be updated to be string heap references.
-			int[] refheap = new int[cas.stringHeap.refHeapPos];
+			int[] refheap = new int[cas.getStringHeap().refHeapPos];
 			for (int i = 0; i < refheap.length; i++) {
-				refheap[i] = cas.stringHeap.refHeap[i];
+				refheap[i] = cas.getStringHeap().refHeap[i];
 			}
 
 			// compute the number of total size of data in stringHeap
 			// total size = char buffer length + length of strings in the string list;
-			int stringHeapLength = cas.stringHeap.charHeapPos;
+			int stringHeapLength = cas.getStringHeap().charHeapPos;
             int stringListLength = 0;
 			for (int i = 0; i < refheap.length; i += 3) {
 				int ref = refheap[i + StringHeap.STRING_LIST_ADDR_OFFSET];
@@ -208,7 +208,7 @@ public class CASSerializer implements Serializable {
 				// get length and add to total string heap length
 				if (ref != 0) {
                     // terminate each string with a null
-					stringListLength += 1 + ((String) cas.stringHeap.stringList.get(ref)).length();
+					stringListLength += 1 + ((String) cas.getStringHeap().stringList.get(ref)).length();
 				}
 			}
 			
@@ -218,12 +218,12 @@ public class CASSerializer implements Serializable {
                // add 1 for the null at the beginning
                stringTotalLength += 1;
             }
-            dos.writeInt(stringTotalLength);
+				dos.writeInt(stringTotalLength);
 
             //write the data in the stringheap, if there is any
             if (stringTotalLength > 0) {
-                if (cas.stringHeap.charHeapPos > 0) {
-                    dos.writeChars( String.valueOf(cas.stringHeap.stringHeap, 0, cas.stringHeap.charHeapPos) );
+                if (cas.getStringHeap().charHeapPos > 0) {
+                    dos.writeChars( String.valueOf(cas.getStringHeap().stringHeap, 0, cas.getStringHeap().charHeapPos) );
                 }
                 else {
                     // no stringheap data
@@ -236,7 +236,7 @@ public class CASSerializer implements Serializable {
                 //write out the data in the StringList and update the 
                 //reference in the local ref heap.
                 if ( stringListLength > 0 ) {
-                    int pos = cas.stringHeap.charHeapPos > 0 ? cas.stringHeap.charHeapPos : 1;
+                    int pos = cas.getStringHeap().charHeapPos > 0 ? cas.getStringHeap().charHeapPos : 1;
                     for (int i=0; i < refheap.length; i+=3) {
                         int ref = refheap[i+StringHeap.STRING_LIST_ADDR_OFFSET];
                         //this is a string in the string list
@@ -244,10 +244,10 @@ public class CASSerializer implements Serializable {
                             //update the ref					
                             refheap[i+StringHeap.CHAR_HEAP_POINTER_OFFSET] = pos;
                             //write out the chars in the string
-                            dos.writeChars((String)cas.stringHeap.stringList.get(ref));
+                            dos.writeChars((String)cas.getStringHeap().stringList.get(ref));
                             dos.writeChar(0); // null terminate each string
                             //update pos
-                            pos += 1 + ((String) cas.stringHeap.stringList.get(ref)).length(); 
+                            pos += 1 + ((String) cas.getStringHeap().stringList.get(ref)).length(); 
                         }				
                     }
                 }
@@ -276,11 +276,12 @@ public class CASSerializer implements Serializable {
 			}
 
 			// 8bit heap
-			int byteheapsz = cas.byteHeap.getSize();
+			int byteheapsz = cas.getByteHeap().getSize();
 			dos.writeInt(byteheapsz);
-			for (int i = 0; i < cas.byteHeap.getSize(); i++) {
-				dos.writeByte(cas.byteHeap.heap[i]);
+			for (int i = 0; i < cas.getByteHeap().getSize(); i++) {
+				dos.writeByte(cas.getByteHeap().heap[i]);
 			}
+
 			// word alignment
       int align = (4 - (byteheapsz % 4)) % 4;
 			for (int i = 0; i < align; i++) {
@@ -288,21 +289,22 @@ public class CASSerializer implements Serializable {
 			}
 
 			// 16bit heap
-      int shortheapsz = cas.shortHeap.getSize();
+			int shortheapsz = cas.getShortHeap().getSize();
 			dos.writeInt(shortheapsz);
-			for (int i = 0; i < cas.shortHeap.getSize(); i++) {
-				dos.writeShort(cas.shortHeap.heap[i]);
+			for (int i = 0; i < cas.getShortHeap().getSize(); i++) {
+				dos.writeShort(cas.getShortHeap().heap[i]);
 			}
+
 			// word alignment
       if (shortheapsz % 2 != 0) {
         dos.writeShort(0);
-      }
+			}
 
 			// 64bit heap
-			int longheapsz = cas.longHeap.getSize();
+			int longheapsz = cas.getLongHeap().getSize();
 			dos.writeInt(longheapsz);
-			for (int i = 0; i < cas.longHeap.getSize(); i++) {
-				dos.writeLong(cas.longHeap.heap[i]);
+			for (int i = 0; i < cas.getLongHeap().getSize(); i++) {
+				dos.writeLong(cas.getLongHeap().heap[i]);
 			}
 		} catch (IOException e) {
 			CASRuntimeException exception = new CASRuntimeException(
