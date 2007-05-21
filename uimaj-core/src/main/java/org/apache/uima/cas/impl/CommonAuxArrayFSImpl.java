@@ -48,7 +48,7 @@ public abstract class CommonAuxArrayFSImpl extends FeatureStructureImplC {
   protected void copyFromJavaArray(Object src, int srcOffset, Object casAuxHeap, int tgtOffset,
           int length) {
     this.casImpl.checkArrayBounds(this.addr, tgtOffset, length);
-    final int startOffset = casImpl.heap.heap[casImpl.getArrayStartAddress(this.addr)];
+    final int startOffset = casImpl.getHeap().heap[casImpl.getArrayStartAddress(this.addr)];
     System.arraycopy(src, srcOffset, casAuxHeap, startOffset + tgtOffset, length);
   }
 
@@ -59,7 +59,7 @@ public abstract class CommonAuxArrayFSImpl extends FeatureStructureImplC {
   protected void copyToJavaArray(Object casAuxHeap, int srcOffset, Object tgt, int tgtOffset,
           int length) {
     this.casImpl.checkArrayBounds(this.addr, srcOffset, length);
-    final int startOffset = casImpl.heap.heap[casImpl.getArrayStartAddress(this.addr)];
+    final int startOffset = casImpl.getHeap().heap[casImpl.getArrayStartAddress(this.addr)];
     System.arraycopy(casAuxHeap, startOffset + srcOffset, tgt, tgtOffset, length);
   }
 
