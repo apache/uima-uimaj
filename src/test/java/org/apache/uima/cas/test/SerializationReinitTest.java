@@ -538,10 +538,14 @@ public class SerializationReinitTest extends TestCase {
         // CASMgr casMgr = CASFactory.createCAS();
         // casMgr.setCAS(cas);
         // cas = (CAS) casMgr.getCAS();
-        CASMgr realCasMgr = CASFactory.createCAS();
+        /* setCAS is no longer used or implemented
+         * You cannot use this method to set up a new cas with a copy of
+         * the contents of another cas, including its indexes
+        CASMgr realCasMgr = CASFactory.createCAS(cas.getTypeSystem());
         realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
         cas = ((CASImpl) realCasMgr).getCurrentView();
         casMgr = (CASMgr) cas;
+        */
 
         assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
 
@@ -554,10 +558,14 @@ public class SerializationReinitTest extends TestCase {
         // casMgr = CASFactory.createCAS();
         // casMgr.setCAS(cas);
         // cas = (CAS) casMgr.getCAS();
+        /* setCAS is no longer used or implemented
+         * You cannot use this method to set up a new cas with a copy of
+         * the contents of another cas, including its indexes
         realCasMgr = CASFactory.createCAS();
         realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
         cas = ((CASImpl) realCasMgr).getCurrentView();
         casMgr = (CASMgr) cas;
+        */
 
         assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
         assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());
@@ -566,10 +574,14 @@ public class SerializationReinitTest extends TestCase {
         // casMgr = CASFactory.createCAS();
         // casMgr.setCAS(cas);
         // cas = (CAS) casMgr.getCAS();
+        /* setCAS is no longer used or implemented
+         * You cannot use this method to set up a new cas with a copy of
+         * the contents of another cas, including its indexes
         realCasMgr = CASFactory.createCAS();
         realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
         cas = ((CASImpl) realCasMgr).getCurrentView();
         casMgr = (CASMgr) cas;
+        */
 
         assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
         assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());
