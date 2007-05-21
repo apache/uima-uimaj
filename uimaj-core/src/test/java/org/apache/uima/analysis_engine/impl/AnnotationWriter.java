@@ -49,7 +49,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
   // output file writer
   OutputStreamWriter fileWriter;
 
-  public static boolean typeSystemInitCalled = false;
+  static boolean typeSystemInitCalled = false;
 
   /**
    * Initializes this CAS Consumer with the parameters specified in the descriptor.
