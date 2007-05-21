@@ -71,9 +71,9 @@ public class ArrayFSImpl extends FeatureStructureImplC implements ArrayFS {
     }
     destOffset += this.casImpl.getArrayStartAddress(this.addr);
     for (int i = 0; i < length; i++) {
-      // cas.heap.heap[destOffset] =
+      // cas.getHeap().heap[destOffset] =
       // ((FeatureStructureImpl)src[srcOffset]).getAddress();
-      this.casImpl.heap.heap[destOffset] = this.getCASImpl().ll_getFSRef(src[srcOffset]);
+      this.casImpl.getHeap().heap[destOffset] = this.getCASImpl().ll_getFSRef(src[srcOffset]);
       ++destOffset;
       ++srcOffset;
     }
@@ -89,7 +89,7 @@ public class ArrayFSImpl extends FeatureStructureImplC implements ArrayFS {
     }
     srcOffset += this.casImpl.getArrayStartAddress(this.addr);
     for (int i = 0; i < length; i++) {
-      dest[destOffset] = this.casImpl.createFS(this.casImpl.heap.heap[srcOffset]);
+      dest[destOffset] = this.casImpl.createFS(this.casImpl.getHeap().heap[srcOffset]);
       ++destOffset;
       ++srcOffset;
     }
