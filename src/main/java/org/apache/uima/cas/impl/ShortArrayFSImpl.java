@@ -69,21 +69,21 @@ public class ShortArrayFSImpl extends CommonAuxArrayFSImpl implements ShortArray
    * @see org.apache.uima.cas.ShortArrayFS#copyFromArray(short[], int, int, int)
    */
   public void copyFromArray(short[] src, int srcOffset, int destOffset, int length) {
-    copyFromJavaArray(src, srcOffset, casImpl.shortHeap.heap, destOffset, length);
+    copyFromJavaArray(src, srcOffset, casImpl.getShortHeap().heap, destOffset, length);
   }
 
   /**
    * @see org.apache.uima.cas.ShortArrayFS#copyToArray(int, short[], int, int)
    */
   public void copyToArray(int srcOffset, short[] dest, int destOffset, int length) {
-    copyToJavaArray(this.casImpl.shortHeap.heap, srcOffset, dest, destOffset, length);
+    copyToJavaArray(this.casImpl.getShortHeap().heap, srcOffset, dest, destOffset, length);
   }
 
   /**
    * @see org.apache.uima.cas.ShortArrayFS#toArray()
    */
   public short[] toArray() {
-    return (short[]) toArray(this.casImpl.shortHeap.heap);
+    return (short[]) toArray(this.casImpl.getShortHeap().heap);
   }
 
   /**
@@ -91,8 +91,8 @@ public class ShortArrayFSImpl extends CommonAuxArrayFSImpl implements ShortArray
    */
   public void copyToArray(int srcOffset, String[] dest, int destOffset, int length) {
     casImpl.checkArrayBounds(addr, srcOffset, length);
-    srcOffset += casImpl.heap.heap[casImpl.getArrayStartAddress(addr)];
-    final short[] heap = this.casImpl.shortHeap.heap;
+    srcOffset += casImpl.getHeap().heap[casImpl.getArrayStartAddress(addr)];
+    final short[] heap = this.casImpl.getShortHeap().heap;
     for (int i = 0; i < length; i++) {
       dest[i + destOffset] = Short.toString(heap[i + srcOffset]);
     }

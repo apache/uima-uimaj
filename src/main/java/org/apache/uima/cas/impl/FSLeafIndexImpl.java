@@ -283,8 +283,8 @@ public abstract class FSLeafIndexImpl implements IntComparator, FSIndex, FSIndex
           return -1;
         }
         case LONG_CODE: {
-          long long1 = this.lowLevelCAS.longHeap.getHeapValue(val1);
-          long long2 = this.lowLevelCAS.longHeap.getHeapValue(val2);
+          long long1 = this.lowLevelCAS.getLongHeap().getHeapValue(val1);
+          long long2 = this.lowLevelCAS.getLongHeap().getHeapValue(val2);
           if (long1 < long2) {
             if (this.keyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
               return -1;
@@ -299,8 +299,8 @@ public abstract class FSLeafIndexImpl implements IntComparator, FSIndex, FSIndex
           break;
         }
         case DOUBLE_CODE: {
-          double double1 = Double.longBitsToDouble(this.lowLevelCAS.longHeap.getHeapValue(val1));
-          double double2 = Double.longBitsToDouble(this.lowLevelCAS.longHeap.getHeapValue(val2));
+          double double1 = Double.longBitsToDouble(this.lowLevelCAS.getLongHeap().getHeapValue(val1));
+          double double2 = Double.longBitsToDouble(this.lowLevelCAS.getLongHeap().getHeapValue(val2));
           if (double1 < double2) {
             if (this.keyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
               return -1;

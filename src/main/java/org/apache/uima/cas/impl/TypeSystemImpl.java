@@ -130,9 +130,9 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   // feature is declared on).
   private StringToIntMap featureMap;
 
-  private ArrayList tree; // Vector of IntVectors encoding type tree
+  private ArrayList tree; // Collection of IntVectors encoding type tree
 
-  private ArrayList subsumes; // Vector of BitSets for subsumption relation
+  private ArrayList subsumes; // Collection of BitSets for subsumption relation
 
   private IntVector intro;
 
@@ -146,10 +146,10 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   // Code of root of hierarchy (will be 1 with current implementation)
   private int top;
 
-  // A vector of TypeImpl objects.
+  // An ArrayList (unsynchronized) of TypeImpl objects.
   private ArrayList types;
 
-  // A vector of FeatureImpl objects.
+  // An ArrayList (unsynchronized) of FeatureImpl objects.
   private ArrayList features;
 
   // List of parent types.
@@ -158,12 +158,11 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   // String sets for string subtypes.
   private final ArrayList stringSets;
 
-  
   // This map contains an entry for every subtype of the string type.  The value is a pointer into
   // the stringSets array list.
   private final IntRedBlackTree stringSetMap;
 
-  // For each type, remember of an array of this component type has already
+  // For each type, remember if an array of this component type has already
   // been created.
   private final IntRedBlackTree componentToArrayTypeMap;
 
@@ -176,55 +175,129 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   // Is the type system locked?
   private boolean locked = false;
 
-  // Must be able to lock type system info in the CAS, so need a handle to
-  // embedding CAS.
-  // Deleted (MIS 6/06) - Type Systems shared by many CASes, can't point to
-  // one.
-  // private CASImpl cas;
-
   private static final int LEAST_TYPE_CODE = 1;
 
   // private static final int INVALID_TYPE_CODE = 0;
-  private static final int LEAST_FEATUE_CODE = 1;
-
-  // private int topTypeCode;
-  private int booleanTypeCode = UNKNOWN_TYPE_CODE;
-
-  private int byteTypeCode = UNKNOWN_TYPE_CODE;
-
-  private int shortTypeCode = UNKNOWN_TYPE_CODE;
-
-  private int intTypeCode = UNKNOWN_TYPE_CODE;
-
-  private int floatTypeCode = UNKNOWN_TYPE_CODE;
-
-  private int longTypeCode = UNKNOWN_TYPE_CODE;
-
-  private int doubleTypeCode = UNKNOWN_TYPE_CODE;
-
-  private int stringTypeCode = UNKNOWN_TYPE_CODE;
-
-  private int arrayBaseTypeCode = UNKNOWN_TYPE_CODE;
-
-  private int booleanArrayTypeCode = UNKNOWN_TYPE_CODE;
-
-  private int byteArrayTypeCode = UNKNOWN_TYPE_CODE;
-
-  private int shortArrayTypeCode = UNKNOWN_TYPE_CODE;
-
-  private int intArrayTypeCode = UNKNOWN_TYPE_CODE;
-
-  private int floatArrayTypeCode = UNKNOWN_TYPE_CODE;
-
-  private int longArrayTypeCode = UNKNOWN_TYPE_CODE;
-
-  private int doubleArrayTypeCode = UNKNOWN_TYPE_CODE;
-
-  private int stringArrayTypeCode = UNKNOWN_TYPE_CODE;
-
-  private int fsArrayTypeCode = UNKNOWN_TYPE_CODE;
+  private static final int LEAST_FEATURE_CODE = 1;
 
   private int numCommittedTypes = 0;
+  
+  final CASMetadata casMetadata;  // needs to be visible in package
+  
+  boolean areBuiltInTypesSetup = false;
+
+  TypeImpl intType;
+
+  TypeImpl stringType;
+
+  TypeImpl floatType;
+
+  TypeImpl arrayBaseType;
+
+  TypeImpl intArrayType;
+
+  TypeImpl floatArrayType;
+
+  TypeImpl stringArrayType;
+
+  TypeImpl fsArrayType;
+
+  TypeImpl sofaType;
+
+  TypeImpl annotType;
+
+  TypeImpl annotBaseType;
+
+  TypeImpl docType;
+
+  FeatureImpl startFeat;
+
+  FeatureImpl endFeat;
+
+  FeatureImpl langFeat;
+  
+  FeatureImpl sofaNum;
+
+  TypeImpl byteType;
+
+  TypeImpl byteArrayType;
+
+  TypeImpl booleanType;
+
+  TypeImpl booleanArrayType;
+
+  TypeImpl shortType;
+
+  TypeImpl shortArrayType;
+
+  TypeImpl longType;
+
+  TypeImpl longArrayType;
+
+  TypeImpl doubleType;
+
+  TypeImpl doubleArrayType;
+
+ //  int topTypeCode;
+  int intTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int stringTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int floatTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int arrayBaseTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int intArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int floatArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int stringArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int fsArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int sofaTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int annotTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int annotBaseTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int byteTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int booleanTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int shortTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int longTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int doubleTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int byteArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int booleanArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int shortArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int longArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int doubleArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int sofaNumFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int sofaIdFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int sofaMimeFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int sofaUriFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int sofaArrayFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int annotSofaFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int startFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int endFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+
+  int langFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
 
   /**
    * Default constructor.
@@ -237,7 +310,6 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   }
 
   public TypeSystemImpl() {
-    super();
     // Changed numbering to start at 1. Hope this doesn't break
     // anything. If it does, I know who's fault it is...
     this.typeNameST = new SymbolTable(1);
@@ -266,6 +338,97 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     this.arrayCodeToTypeMap = new RedBlackTree();
     this.parents = new IntVector();
     this.parents.add(0);
+    
+    this.casMetadata = new CASMetadata(this);
+    // load in built-in types
+    CASImpl.setupTSDefault(this);
+    initTypeVariables();
+  }
+  
+  // only built-in types here; can be called before 
+  // type system is committed, as long as the built-in ones
+  // are defined.
+  final void initTypeVariables() {
+    // Type objects.
+//    this.ts.topType = (TypeImpl) this.ts.getTopType();  // never used
+    this.intType = (TypeImpl) getType(CAS.TYPE_NAME_INTEGER);
+    this.stringType = (TypeImpl) getType(CAS.TYPE_NAME_STRING);
+    this.floatType = (TypeImpl) getType(CAS.TYPE_NAME_FLOAT);
+    this.arrayBaseType = (TypeImpl) getType(CAS.TYPE_NAME_ARRAY_BASE);
+    this.intArrayType = (TypeImpl) getType(CAS.TYPE_NAME_INTEGER_ARRAY);
+    this.floatArrayType = (TypeImpl) getType(CAS.TYPE_NAME_FLOAT_ARRAY);
+    this.stringArrayType = (TypeImpl) getType(CAS.TYPE_NAME_STRING_ARRAY);
+    this.fsArrayType = (TypeImpl) getType(CAS.TYPE_NAME_FS_ARRAY);
+    this.sofaType = (TypeImpl) getType(CAS.TYPE_NAME_SOFA);
+    this.annotType = (TypeImpl) getType(CAS.TYPE_NAME_ANNOTATION);
+    this.sofaNum = (FeatureImpl) getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFANUM);
+    this.annotBaseType = (TypeImpl) getType(CAS.TYPE_NAME_ANNOTATION_BASE);
+    this.startFeat = (FeatureImpl) getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
+    this.endFeat = (FeatureImpl) getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
+    this.langFeat = (FeatureImpl) getFeatureByFullName(CAS.FEATURE_FULL_NAME_LANGUAGE);
+    this.docType = (TypeImpl) getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION);
+
+    this.byteType = (TypeImpl) getType(CAS.TYPE_NAME_BYTE);
+    this.byteArrayType = (TypeImpl) getType(CAS.TYPE_NAME_BYTE_ARRAY);
+    this.booleanType = (TypeImpl) getType(CAS.TYPE_NAME_BOOLEAN);
+    this.booleanArrayType = (TypeImpl) getType(CAS.TYPE_NAME_BOOLEAN_ARRAY);
+    this.shortType = (TypeImpl) getType(CAS.TYPE_NAME_SHORT);
+    this.shortArrayType = (TypeImpl) getType(CAS.TYPE_NAME_SHORT_ARRAY);
+    this.longType = (TypeImpl) getType(CAS.TYPE_NAME_LONG);
+    this.longArrayType = (TypeImpl) getType(CAS.TYPE_NAME_LONG_ARRAY);
+    this.doubleType = (TypeImpl) getType(CAS.TYPE_NAME_DOUBLE);
+    this.doubleArrayType = (TypeImpl) getType(CAS.TYPE_NAME_DOUBLE_ARRAY);
+
+    // Type codes.
+    initTypeCodeVars();
+  }
+
+
+  private final void initTypeCodeVars() {
+    this.intTypeCode = this.intType.getCode();
+    this.stringTypeCode = this.stringType.getCode();
+    this.floatTypeCode = this.floatType.getCode();
+    // this.arrayBaseTypeCode = arrayBaseType.getCode();
+    this.intArrayTypeCode = this.intArrayType.getCode();
+    this.floatArrayTypeCode = this.floatArrayType.getCode();
+    this.stringArrayTypeCode = this.stringArrayType.getCode();
+    this.fsArrayTypeCode = this.fsArrayType.getCode();
+    this.sofaTypeCode = this.sofaType.getCode();
+    this.annotTypeCode = this.annotType.getCode();
+    this.annotBaseTypeCode = this.annotBaseType.getCode();
+
+    this.byteArrayTypeCode = this.byteArrayType.getCode();
+    this.byteTypeCode = this.byteType.getCode();
+    this.booleanTypeCode = this.booleanType.getCode();
+    this.booleanArrayTypeCode = this.booleanArrayType.getCode();
+    this.shortTypeCode = this.shortType.getCode();
+    this.shortArrayTypeCode = this.shortArrayType.getCode();
+    this.longTypeCode = this.longType.getCode();
+    this.longArrayTypeCode = this.longArrayType.getCode();
+    this.doubleTypeCode = this.doubleType.getCode();
+    this.doubleArrayTypeCode = this.doubleArrayType.getCode();
+    
+    this.arrayBaseTypeCode = this.arrayBaseType.getCode();
+   
+    final Type sofaT = this.sofaType;
+    this.sofaNumFeatCode = ll_getCodeForFeature(
+            sofaT.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFANUM));
+    this.sofaIdFeatCode = ll_getCodeForFeature(
+            sofaT.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAID));
+    this.sofaMimeFeatCode = ll_getCodeForFeature(
+            sofaT.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAMIME));
+    this.sofaUriFeatCode = ll_getCodeForFeature(
+            sofaT.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAURI));
+    this.sofaArrayFeatCode = ll_getCodeForFeature(
+            sofaT.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAARRAY));
+    this.annotSofaFeatCode = ll_getCodeForFeature(
+        this.annotBaseType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFA));
+    this.startFeatCode = ll_getCodeForFeature(
+        this.annotType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN));
+    this.endFeatCode = ll_getCodeForFeature(
+        this.annotType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_END));
+    this.langFeatCode = ll_getCodeForFeature(
+        this.docType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE));
   }
 
   // Some implementation helpers for users of the type system.
@@ -274,7 +437,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   }
 
   final int getSmallestFeature() {
-    return LEAST_FEATUE_CODE;
+    return LEAST_FEATURE_CODE;
   }
 
   final int getTypeArraySize() {
@@ -385,25 +548,34 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    * @return An feature object, or <code>null</code> if no such feature exists.
    */
   public Feature getFeatureByFullName(String featureName) {
-    if (!this.featureMap.containsKey(featureName)) {
-      return null;
-    }
-    final int featCode = this.featureMap.get(featureName);
-    return (Feature) this.features.get(featCode);
+//    if (!this.featureMap.containsKey(featureName)) {
+//      return null;
+//    }
+//    final int featCode = this.featureMap.get(featureName);
+//    return (Feature) this.features.get(featCode);
+    // will return null if feature not present because
+    //   the featureMap.get will return 0, and
+    //   getFeature returns null for code of 0
+    return getFeature(this.featureMap.get(featureName));
   }
 
   private static final String getArrayTypeName(String typeName) {
-    if (arrayComponentTypeNameMap.containsKey(typeName)) {
-      return (String) arrayComponentTypeNameMap.get(typeName);
-    }
-    return typeName + arrayTypeSuffix;
+    final String arrayTypeName = (String) arrayComponentTypeNameMap.get(typeName);
+    return (null == arrayTypeName) ? 
+            typeName + arrayTypeSuffix :
+            arrayTypeName;
+//    if (arrayComponentTypeNameMap.containsKey(typeName)) {
+//      return (String) arrayComponentTypeNameMap.get(typeName);
+//    }
+//    return typeName + arrayTypeSuffix;
   }
 
   private static final String getBuiltinArrayComponent(String typeName) {
-    if (arrayTypeComponentNameMap.containsKey(typeName)) {
+    // if typeName is not contained in the map, the "get" returns null
+//    if (arrayTypeComponentNameMap.containsKey(typeName)) {
       return (String) arrayTypeComponentNameMap.get(typeName);
-    }
-    return null;
+//    }
+//    return null;
   }
 
   /**
@@ -425,6 +597,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
       throw e;
     }
     // Check type name syntax.
+    // Handle the built-in array types, like BooleanArray, FSArray, etc.
     String componentTypeName = getBuiltinArrayComponent(typeName);
     if (componentTypeName != null) {
       return getArrayType(getType(componentTypeName));
@@ -935,40 +1108,18 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     if (this.locked == true)
       return; // might be called multiple times, but only need to do once
     this.locked = true;
-    initTypeCodes(); // needs to preceed cas.commitTypeSystem()
     // because subsumes depends on it
     // and generator initialization uses subsumes
     this.numCommittedTypes = this.types.size(); // do before
     // cas.commitTypeSystem -
     // because it will call the type system iterator
-
+    this.casMetadata.setupFeaturesAndCreatableTypes();
     // ts should never point to a CAS. Many CASes can share one ts.
     // if (this.cas != null) {
     // this.cas.commitTypeSystem();
     // }
   }
-
-  private final void initTypeCodes() {
-    this.booleanTypeCode = ll_getCodeForTypeName(CAS.TYPE_NAME_BOOLEAN);
-    this.byteTypeCode = ll_getCodeForTypeName(CAS.TYPE_NAME_BYTE);
-    this.shortTypeCode = ll_getCodeForTypeName(CAS.TYPE_NAME_SHORT);
-    this.intTypeCode = ll_getCodeForTypeName(CAS.TYPE_NAME_INTEGER);
-    this.floatTypeCode = ll_getCodeForTypeName(CAS.TYPE_NAME_FLOAT);
-    this.longTypeCode = ll_getCodeForTypeName(CAS.TYPE_NAME_LONG);
-    this.doubleTypeCode = ll_getCodeForTypeName(CAS.TYPE_NAME_DOUBLE);
-    this.stringTypeCode = ll_getCodeForTypeName(CAS.TYPE_NAME_STRING);
-
-    this.arrayBaseTypeCode = ll_getCodeForTypeName(CAS.TYPE_NAME_ARRAY_BASE);
-    this.booleanArrayTypeCode = ll_getCodeForTypeName(CAS.TYPE_NAME_BOOLEAN_ARRAY);
-    this.byteArrayTypeCode = ll_getCodeForTypeName(CAS.TYPE_NAME_BYTE_ARRAY);
-    this.shortArrayTypeCode = ll_getCodeForTypeName(CAS.TYPE_NAME_SHORT_ARRAY);
-    this.intArrayTypeCode = ll_getCodeForTypeName(CAS.TYPE_NAME_INTEGER_ARRAY);
-    this.floatArrayTypeCode = ll_getCodeForTypeName(CAS.TYPE_NAME_FLOAT_ARRAY);
-    this.longArrayTypeCode = ll_getCodeForTypeName(CAS.TYPE_NAME_LONG_ARRAY);
-    this.doubleArrayTypeCode = ll_getCodeForTypeName(CAS.TYPE_NAME_DOUBLE_ARRAY);
-    this.stringArrayTypeCode = ll_getCodeForTypeName(CAS.TYPE_NAME_STRING_ARRAY);
-    this.fsArrayTypeCode = ll_getCodeForTypeName(CAS.TYPE_NAME_FS_ARRAY);
-  }
+  
 
   /**
    * @see org.apache.uima.cas.admin.TypeSystemMgr#isCommitted()
@@ -1171,7 +1322,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     if (typeCode == this.doubleTypeCode) {
       return LowLevelCAS.TYPE_CLASS_DOUBLE;
     }
-    if (this.ll_subsumes(this.stringTypeCode, typeCode)) {
+    if (ll_subsumes(this.stringTypeCode, typeCode)) {
       return LowLevelCAS.TYPE_CLASS_STRING;
     }
     if (typeCode == this.booleanArrayTypeCode) {
@@ -1240,8 +1391,8 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     // array are all over the place. Would be nice to just remove it.
     // Add an edge to the tree.
     if (!isCommitted()) {
-      final int arrayBaseType = ll_getCodeForTypeName(CAS.TYPE_NAME_ARRAY_BASE);
-      ((IntVector) this.tree.get(arrayBaseType)).add(arrayTypeCode);
+      final int arrayBaseTypeCodeBeforeCommitted = ll_getCodeForTypeName(CAS.TYPE_NAME_ARRAY_BASE);
+      ((IntVector) this.tree.get(arrayBaseTypeCodeBeforeCommitted)).add(arrayTypeCode);
       // Update subsumption relation.
       updateSubsumption(arrayTypeCode, this.arrayBaseTypeCode);
     }
