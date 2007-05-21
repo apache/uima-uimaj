@@ -90,9 +90,9 @@ public class StringArrayFSImpl extends FeatureStructureImplC implements StringAr
     }
     destOffset += this.casImpl.getArrayStartAddress(this.addr);
     for (int i = 0; i < length; i++) {
-      // cas.heap.heap[destOffset] =
+      // cas.getHeap().heap[destOffset] =
       // ((FeatureStructureImpl)src[srcOffset]).getAddress();
-      this.casImpl.heap.heap[destOffset] = this.casImpl.addString(src[srcOffset]);
+      this.casImpl.getHeap().heap[destOffset] = this.casImpl.addString(src[srcOffset]);
       ++destOffset;
       ++srcOffset;
     }
