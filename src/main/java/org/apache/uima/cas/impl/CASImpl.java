@@ -434,7 +434,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 		final int addr = ll_createFS(typeCode);
     final TypeSystemImpl ts = this.svd.casMetadata.ts;
 		final boolean isAnnot = ts.subsumes(ts.annotBaseTypeCode, typeCode);
-		if (isAnnot && this == this.getBaseCAS()) {
+		if (isAnnot && (this == this.getBaseCAS())) {
 			CASRuntimeException e = new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS,
 					new String[] { type.getName() });
 			throw e;
@@ -497,15 +497,18 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
 		// check for mime type exactly equal to "text"
 		String sofaMime = getLowLevelCAS().ll_getStringValue(llsofa, ts.sofaMimeFeatCode);
-		if (!"text".equals(sofaMime))
-			return false;
+		if (!"text".equals(sofaMime)) {
+      return false;
+    }
 		// check that sofaURI and sofaArray are not set
 		String sofaUri = getLowLevelCAS().ll_getStringValue(llsofa, ts.sofaUriFeatCode);
-		if (sofaUri != null)
-			return false;
+		if (sofaUri != null) {
+      return false;
+    }
 		int sofaArray = getLowLevelCAS().ll_getRefValue(llsofa, ts.sofaArrayFeatCode);
-		if (sofaArray != CASImpl.NULL)
-			return false;
+		if (sofaArray != CASImpl.NULL) {
+      return false;
+    }
 		// check that name is NAME_DEFAULT_SOFA
 		String sofaname = getLowLevelCAS().ll_getStringValue(llsofa, ts.sofaIdFeatCode);
 		return NAME_DEFAULT_SOFA.equals(sofaname);
@@ -1014,12 +1017,15 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 			byte[] byteHeapArray, short[] shortHeapArray, long[] longHeapArray) {
 		createStringTableFromArray(stringTable);
 		this.getHeap().reinit(heapMetadata, heapArray);
-		if (byteHeapArray != null)
-			this.getByteHeap().reinit(byteHeapArray);
-		if (shortHeapArray != null)
-			this.getShortHeap().reinit(shortHeapArray);
-		if (longHeapArray != null)
-			this.getLongHeap().reinit(longHeapArray);
+		if (byteHeapArray != null) {
+      this.getByteHeap().reinit(byteHeapArray);
+    }
+		if (shortHeapArray != null) {
+      this.getShortHeap().reinit(shortHeapArray);
+    }
+		if (longHeapArray != null) {
+      this.getLongHeap().reinit(longHeapArray);
+    }
 
 		reinitIndexedFSs(fsIndex);
 	}
@@ -1332,10 +1338,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 		for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
 			FSIndexRepositoryImpl loopIndexRep = (FSIndexRepositoryImpl) this.svd.baseCAS
 					.getSofaIndexRepository(sofaNum);
-			if (loopIndexRep != null)
-				fsLoopIndex = loopIndexRep.getIndexedFSs();
-			else
-				fsLoopIndex = (new IntVector()).toArray();
+			if (loopIndexRep != null) {
+        fsLoopIndex = loopIndexRep.getIndexedFSs();
+      } else {
+        fsLoopIndex = (new IntVector()).toArray();
+      }
 			v.add(fsLoopIndex.length);
 			for (int k = 0; k < fsLoopIndex.length; k++) {
 				v.add(fsLoopIndex[k]);
@@ -1961,7 +1968,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
 	public int getFeatureOffset(int feat) {
-		if (feat < 1 || feat >= this.svd.casMetadata.featureOffset.length) {
+		if ((feat < 1) || (feat >= this.svd.casMetadata.featureOffset.length)) {
 			return -1;
 		}
 		return this.svd.casMetadata.featureOffset[feat];
@@ -1971,8 +1978,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 	public static void setupTSDefault(TypeSystemImpl ts) {
     // because historically this method was public, protect
     // against user code calling multiple times
-    if (ts.areBuiltInTypesSetup) 
+    if (ts.areBuiltInTypesSetup) {
       return;
+    }
     ts.areBuiltInTypesSetup = true;
     
 		// Create top type.
@@ -2428,7 +2436,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 	}
 
 	final void checkFsRef(int fsRef) {
-		if (fsRef <= NULL_FS_REF || fsRef >= this.getHeap().heap.length) {
+		if ((fsRef <= NULL_FS_REF) || (fsRef >= this.getHeap().heap.length)) {
 			LowLevelException e = new LowLevelException(LowLevelException.INVALID_FS_REF);
 			e.addArgument(Integer.toString(fsRef));
 			throw e;
@@ -2437,10 +2445,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
 	public final boolean ll_isRefType(int typeCode) {
     final TypeSystemImpl ts = this.svd.casMetadata.ts;
-		if (typeCode == ts.intTypeCode || typeCode == ts.floatTypeCode
-				|| typeCode == ts.stringTypeCode || typeCode == ts.byteTypeCode
-				|| typeCode == ts.booleanTypeCode || typeCode == ts.shortTypeCode
-				|| typeCode == ts.longTypeCode || typeCode == ts.doubleTypeCode) {
+		if ((typeCode == ts.intTypeCode) || (typeCode == ts.floatTypeCode)
+				|| (typeCode == ts.stringTypeCode) || (typeCode == ts.byteTypeCode)
+				|| (typeCode == ts.booleanTypeCode) || (typeCode == ts.shortTypeCode)
+				|| (typeCode == ts.longTypeCode) || (typeCode == ts.doubleTypeCode)) {
 			return false;
 		}
 		if (ll_getTypeSystem().ll_isStringSubtype(typeCode)) {
@@ -2642,15 +2650,16 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
 	private final boolean isCreatableArrayType(int typeCode) {
 		final int tc = ll_getTypeClass(typeCode);
-		return (tc == TYPE_CLASS_INTARRAY || tc == TYPE_CLASS_FLOATARRAY
-				|| tc == TYPE_CLASS_STRINGARRAY || tc == TYPE_CLASS_FSARRAY
-				|| tc == TYPE_CLASS_BOOLEANARRAY || tc == TYPE_CLASS_BYTEARRAY
-				|| tc == TYPE_CLASS_SHORTARRAY || tc == TYPE_CLASS_LONGARRAY || tc == TYPE_CLASS_DOUBLEARRAY);
+		return ((tc == TYPE_CLASS_INTARRAY) || (tc == TYPE_CLASS_FLOATARRAY)
+				|| (tc == TYPE_CLASS_STRINGARRAY) || (tc == TYPE_CLASS_FSARRAY)
+				|| (tc == TYPE_CLASS_BOOLEANARRAY) || (tc == TYPE_CLASS_BYTEARRAY)
+				|| (tc == TYPE_CLASS_SHORTARRAY) || (tc == TYPE_CLASS_LONGARRAY) || (tc == TYPE_CLASS_DOUBLEARRAY));
 	}
 
 	public final int ll_getFSRef(FeatureStructure fsImpl) {
-		if (null == fsImpl)
-			return NULL;
+		if (null == fsImpl) {
+      return NULL;
+    }
 		return ((FeatureStructureImpl) fsImpl).getAddress();
 	}
 
@@ -2880,7 +2889,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
 	public final void checkArrayBounds(int fsRef, int pos) {
 		final int arrayLength = ll_getArraySize(fsRef);
-		if (pos < 0 || pos >= arrayLength) {
+		if ((pos < 0) || (pos >= arrayLength)) {
 			throw new ArrayIndexOutOfBoundsException(pos);
 			// LowLevelException e = new LowLevelException(
 			// LowLevelException.ARRAY_INDEX_OUT_OF_RANGE);
@@ -2891,7 +2900,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
 	public final void checkArrayBounds(int fsRef, int pos, int length) {
 		final int arrayLength = ll_getArraySize(fsRef);
-		if (pos < 0 || length < 0 || (pos + length) > arrayLength) {
+		if ((pos < 0) || (length < 0) || ((pos + length) > arrayLength)) {
 			LowLevelException e = new LowLevelException(LowLevelException.ARRAY_INDEX_LENGTH_OUT_OF_RANGE);
 			e.addArgument(Integer.toString(pos));
 			e.addArgument(Integer.toString(length));
@@ -2927,8 +2936,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 	// }
 
 	private final void checkPrimitiveArrayConditions(int fsRef, int typeCode, int position) {
-		if (typeCode != ll_getFSRefType(fsRef))
-			throwAccessTypeError(fsRef, typeCode);
+		if (typeCode != ll_getFSRefType(fsRef)) {
+      throwAccessTypeError(fsRef, typeCode);
+    }
 		checkArrayBounds(fsRef, position);
 	}
 
@@ -3433,8 +3443,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 		final Type SofaType = this.svd.casMetadata.ts.sofaType;
 		final Feature sofaString = SofaType.getFeatureByBaseName(FEATURE_BASE_NAME_SOFASTRING);
 		String newDoc = getSofa(this.mySofaRef).getStringValue(sofaString);
-		if (null != newDoc)
-			getDocumentAnnotation().setIntValue(getEndFeature(), newDoc.length());
+		if (null != newDoc) {
+      getDocumentAnnotation().setIntValue(getEndFeature(), newDoc.length());
+    }
 	}
 
 	public AnnotationFS getDocumentAnnotation() {
