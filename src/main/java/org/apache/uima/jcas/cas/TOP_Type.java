@@ -181,7 +181,7 @@ public class TOP_Type {
 	protected void invalidTypeArg(int inst) {
 		CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INAPPROP_TYPE,
 				new String[] { casType.getName(),
-						this.casImpl.getTypeSystemImpl().getType(casImpl.getHeapValue(inst)).getName() });
+						this.casImpl.getTypeSystemImpl().ll_getTypeForCode(casImpl.getHeapValue(inst)).getName() });
 		throw e;
 	}
 

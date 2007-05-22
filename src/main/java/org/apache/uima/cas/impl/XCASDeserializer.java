@@ -574,7 +574,7 @@ public class XCASDeserializer {
       // handle v1.x sofanum values, remapping so that _InitialView always == 1
       if (featName.equals(CAS.FEATURE_BASE_NAME_SOFAID)
               && this.sofaTypeCode == cas.getHeapValue(addr)) {
-        Type sofaType = ts.getType(this.sofaTypeCode);
+        Type sofaType = ts.ll_getTypeForCode(this.sofaTypeCode);
         final FeatureImpl sofaNumFeat = (FeatureImpl) sofaType
                 .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFANUM);
         int sofaNum = cas.getFeatureValue(addr, sofaNumFeat.getCode());
@@ -822,7 +822,7 @@ public class XCASDeserializer {
                 ootsAttrs = new ArrayList();
                 outOfTypeSystemData.extraFeatureValues.put(addrInteger, ootsAttrs);
               }
-              String featFullName = ts.getFeatureName(feat);
+              String featFullName = ts.ll_getFeatureForCode(feat).getName();
               int separatorOffset = featFullName.indexOf(TypeSystem.FEATURE_SEPARATOR);
               String featName = "_ref_" + featFullName.substring(separatorOffset + 1);
               ootsAttrs.add(new String[] { featName, Integer.toString(featVal) });

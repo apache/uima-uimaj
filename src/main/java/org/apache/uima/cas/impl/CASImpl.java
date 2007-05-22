@@ -1696,7 +1696,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 			return Double.toString(this.getDoubleValue(addr, feat));
 		} else {
 			CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INAPPROP_RANGE,
-					new String[] { ts.getFeatureName(feat), ts.getTypeName(typeCode) });
+					new String[] { ts.ll_getFeatureForCode(feat).getName(), ts.getTypeName(typeCode) });
 			throw e;
 		}
 
@@ -1723,7 +1723,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 			this.setFeatureValue(fsref, feat, Double.parseDouble(value));
 		} else {
 			CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INAPPROP_TYPE,
-					new String[] { ts.getFeatureName(feat), ts.getTypeName(typeCode) });
+					new String[] { ts.ll_getFeatureForCode(feat).getName(), ts.getTypeName(typeCode) });
 			throw e;
 		}
 	}

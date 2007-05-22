@@ -44,7 +44,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 	protected abstract CASImpl getCASImpl();
 
 	public Type getType() {
-		return this.getCASImpl().getTypeSystemImpl().getType(
+		return this.getCASImpl().getTypeSystemImpl().ll_getTypeForCode(
 				this.getCASImpl().getHeapValue(this.getAddress()));
 	}
 
