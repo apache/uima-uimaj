@@ -161,9 +161,12 @@ public class TypePriorityTest extends TestCase {
   }
 
   /*
-   * Diagram to figure out what the answers should be a aa ab aaa aab aba abb aaaa aaab aaba aabb
-   * aaba aabb aaba aabb aaaaa aaaab aaaba aaabb aabaa aabab aabba aabbb abaaa abaab ababa ababb
-   * abbaa abbab abbba abbbb
+   * Diagram to figure out what the answers should be 
+   *                                                a                                                    b
+   *                        aa                                             ab                           ba ... 
+   *            aaa                     aab                   aba                     abb              baa ... 
+   *     aaaa        aaab        aaba        aabb       abaa        abab        abba        abbb      baaa ...
+   * aaaaa aaaab aaaba aaabb aabaa aabab aabba aabbb abaaa abaab ababa ababb abbaa abbab abbba abbbb baaaa ...
    */
   /**
    * Test driver.
@@ -186,16 +189,18 @@ public class TypePriorityTest extends TestCase {
     order = irm.createTypeSortOrder();
     LinearTypeOrder lo;
     try {
+      // aaa (and all its subtypes) come before bbb (and all its subtypes)
       order.add(new String[] { "aaa", "bbb" });
+      // aa (and all its subtypes) come before 
+      //   abaa (and all its subtypes) come before
+      //     abbbb (and all its subtypes)
       order.add(new String[] { "aa", "abaa", "abbbb" });
       lo = order.getOrder();
       check(lo, new String[] { "aa", "abaa", "abbbb" });
       check(lo, "aaa", "bbb");
 
-      // AFAICT, these relations do not necessarily follow from the type order defined for this
-      // test case.
-//      check(lo, "aba", "abab");
-//      check(lo, "abab", "abaa");
+      check(lo, "aaa", "abaaa"); 
+      check(lo, "aaab", "abaab");  
       check(lo, "aa", "abbbb");
       check(lo, "abaa", "abbbb");
     } catch (CASException e) {
