@@ -352,33 +352,12 @@ public class CASMgrSerializer implements Serializable {
     this.featDecls = new int[max * 2];
     Feature f;
     for (int i = ts.getSmallestFeature(); i < max; i++) {
-      f = ts.getFeature(i);
+      f = ts.ll_getFeatureForCode(i);
       this.featureNames[i] = f.getShortName();
       this.featDecls[i * 2] = ((TypeImpl) f.getDomain()).getCode();
       this.featDecls[(i * 2) + 1] = ((TypeImpl) f.getRange()).getCode();
     }
   }
-
-  // private void encodeFeatureDecls(TypeSystemImpl ts) {
-  // Iterator it = ts.getFeatures();
-  // ArrayList featList = new ArrayList();
-  // while (it.hasNext()) {
-  // featList.add(it.next());
-  // }
-  // this.featureNames = new String [featList.size()+1];
-  // featureNames[0] = null;
-  // for (int i = 0; i < featList.size(); i++) {
-  // featureNames[i+1] = ((Feature)featList.get(i)).getShortName();
-  // }
-  // IntVector vec = new IntVector();
-  // Feature f;
-  // for (int i = 0; i < featList.size(); i++) {
-  // f = (Feature)featList.get(i);
-  // vec.add(((TypeImpl)f.getDomain()).getCode());
-  // vec.add(((TypeImpl)f.getRange()).getCode());
-  // }
-  // this.featDecls = vec.toArray();
-  // }
 
   private void encodeTypeInheritance(TypeSystemImpl ts) {
     final int max = ts.getSmallestType() + ts.getNumberOfTypes();
@@ -507,7 +486,7 @@ public class CASMgrSerializer implements Serializable {
         // System.out.println("Type system: " +
         // cas.getTypeSystem().toString());
         if (this.comparators[pos] > 0) {
-          feat = tsi.getFeature(this.comparators[pos]);
+          feat = tsi.ll_getFeatureForCode(this.comparators[pos]);
           // assert(feat != null);
           // System.out.println("Adding feature: " + feat.getName());
           ++pos;

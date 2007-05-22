@@ -674,7 +674,7 @@ public class XmiCasDeserializer {
         case LowLevelCAS.TYPE_CLASS_LONGARRAY:
         case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY:
         case LowLevelCAS.TYPE_CLASS_FSARRAY: {
-          if (ts.getFeature(featCode).isMultipleReferencesAllowed()) {
+          if (ts.ll_getFeatureForCode(featCode).isMultipleReferencesAllowed()) {
             // do the usual FS deserialization
             try {
               if (!emptyVal(featVal)) {
@@ -702,7 +702,7 @@ public class XmiCasDeserializer {
         case XmiCasSerializer.TYPE_CLASS_FLOATLIST:
         case XmiCasSerializer.TYPE_CLASS_STRINGLIST:
         case XmiCasSerializer.TYPE_CLASS_FSLIST: {
-          if (ts.getFeature(featCode).isMultipleReferencesAllowed()) {
+          if (ts.ll_getFeatureForCode(featCode).isMultipleReferencesAllowed()) {
             // do the usual FS deserialization
             try {
               if (!emptyVal(featVal)) {
@@ -769,7 +769,7 @@ public class XmiCasDeserializer {
             throw new SAXParseException(I18nUtil.localizeMessage(
                     UIMAException.STANDARD_MESSAGE_CATALOG, Locale.getDefault(),
                     "multiple_values_unexpected",
-                    new Object[] { ts.getFeature(featCode).getName() }), locator);
+                    new Object[] { ts.ll_getFeatureForCode(featCode).getName() }), locator);
           } else {
             handleFeature(addr, featCode, (String) featVals.get(0));
           }
@@ -1049,7 +1049,7 @@ public class XmiCasDeserializer {
       int[] feats = casBeingFilled.getTypeSystemImpl().ll_getAppropriateFeatures(type);
       Feature feat;
       for (int i = 0; i < feats.length; i++) {
-        feat = ts.getFeature(feats[i]);
+        feat = ts.ll_getFeatureForCode(feats[i]);
         int typeCode = ts.ll_getRangeType(feats[i]);
         if (casBeingFilled.ll_isRefType(typeCode)
                 && (featureType[feats[i]] == LowLevelCAS.TYPE_CLASS_FS || feat

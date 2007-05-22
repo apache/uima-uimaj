@@ -213,7 +213,7 @@ public class TypeImpl implements Type, Comparable {
     int[] feats = this.ts.ll_getAppropriateFeatures(this.code);
     ArrayList list = new ArrayList(feats.length);
     for (int i = 0; i < feats.length; i++) {
-      list.add(this.ts.getFeature(feats[i]));
+      list.add(this.ts.ll_getFeatureForCode(feats[i]));
     }
     return list;
   }

@@ -464,7 +464,7 @@ public class XmiCasSerializer {
           case LowLevelCAS.TYPE_CLASS_FSARRAY: {
             // we only enqueue arrays as first-class objects if the feature has
             // multipleReferencesAllowed = true
-            if (cas.getTypeSystemImpl().getFeature(feats[i]).isMultipleReferencesAllowed()) {
+            if (cas.getTypeSystemImpl().ll_getFeatureForCode(feats[i]).isMultipleReferencesAllowed()) {
               enqueue(featVal);
             } else if (fsClass == LowLevelCAS.TYPE_CLASS_FSARRAY) {
               // but we do need to enqueue any FSs reachable from an FSArray
@@ -479,7 +479,7 @@ public class XmiCasSerializer {
             // we only enqueue lists as first-class objects if the feature has
             // multipleReferencesAllowed = true
             // OR if we're already inside a list node (this handles the tail feature correctly)
-            if (cas.getTypeSystemImpl().getFeature(feats[i]).isMultipleReferencesAllowed() || insideListNode) {
+            if (cas.getTypeSystemImpl().ll_getFeatureForCode(feats[i]).isMultipleReferencesAllowed() || insideListNode) {
               enqueue(featVal);
             } else if (fsClass == TYPE_CLASS_FSLIST) {
               // also, we need to enqueue any FSs reachable from an FSList
@@ -708,7 +708,7 @@ public class XmiCasSerializer {
 
         featAddr = addr + cas.getFeatureOffset(feats[i]);
         featVal = cas.getHeapValue(featAddr);
-        featName = cas.getTypeSystemImpl().getFeature(feats[i]).getShortName();
+        featName = cas.getTypeSystemImpl().ll_getFeatureForCode(feats[i]).getShortName();
         fsClass = classifyType(cas.getTypeSystemImpl().range(feats[i]));
         switch (fsClass) {
           case LowLevelCAS.TYPE_CLASS_INT:
@@ -740,7 +740,7 @@ public class XmiCasSerializer {
           case LowLevelCAS.TYPE_CLASS_FSARRAY: {
             // If the feature has multipleReferencesAllowed = true, serialize as any other FS.
             // If false, serialize as a multi-valued property.
-            if (cas.getTypeSystemImpl().getFeature(feats[i]).isMultipleReferencesAllowed()) {
+            if (cas.getTypeSystemImpl().ll_getFeatureForCode(feats[i]).isMultipleReferencesAllowed()) {
               attrValue = getXmiId(featVal);
             } else {
               attrValue = arrayToString(featVal, fsClass);
@@ -752,7 +752,7 @@ public class XmiCasSerializer {
           case LowLevelCAS.TYPE_CLASS_STRINGARRAY: {
             // If the feature has multipleReferencesAllowed = true, serialize as any other FS.
             // If false, serialize as a multi-valued property.
-            if (cas.getTypeSystemImpl().getFeature(feats[i]).isMultipleReferencesAllowed()) {
+            if (cas.getTypeSystemImpl().ll_getFeatureForCode(feats[i]).isMultipleReferencesAllowed()) {
               attrValue = getXmiId(featVal);
             } else {
               stringArrayToElementList(featName, featVal, childElements);
@@ -767,7 +767,7 @@ public class XmiCasSerializer {
             // If the feature has multipleReferencesAllowed = true OR if we're already
             // inside another list node (i.e. this is the "tail" feature), serialize as a normal FS.
             // Otherwise, serialize as a multi-valued property.
-            if (cas.getTypeSystemImpl().getFeature(feats[i]).isMultipleReferencesAllowed() || insideListNode) {
+            if (cas.getTypeSystemImpl().ll_getFeatureForCode(feats[i]).isMultipleReferencesAllowed() || insideListNode) {
               attrValue = getXmiId(featVal);
             } else {
               attrValue = listToString(featVal, fsClass);
@@ -777,7 +777,7 @@ public class XmiCasSerializer {
             // special case for StringLists, which stored values as child elements rather
             // than attributes.
           case TYPE_CLASS_STRINGLIST: {
-            if (cas.getTypeSystemImpl().getFeature(feats[i]).isMultipleReferencesAllowed() || insideListNode) {
+            if (cas.getTypeSystemImpl().ll_getFeatureForCode(feats[i]).isMultipleReferencesAllowed() || insideListNode) {
               attrValue = getXmiId(featVal);
             } else {
               // it is not safe to use a space-separated attribute, which would
