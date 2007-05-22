@@ -19,7 +19,6 @@
 
 package org.apache.uima.pear.tools;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -27,7 +26,6 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -44,12 +42,9 @@ import java.util.Set;
 import java.util.jar.JarFile;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.analysis_engine.impl.PearAnalysisEngineWrapper;
-import org.apache.uima.internal.util.SystemEnvReader;
 import org.apache.uima.pear.util.FileUtil;
 import org.apache.uima.pear.util.MessageRouter;
 import org.apache.uima.pear.util.StringUtil;
-import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.PearSpecifier;
 import org.xml.sax.SAXException;
 
@@ -188,10 +183,44 @@ public class InstallationController {
    * 'serviceability' verification test.
    */
   public static class TestStatus {
-    // public attributes
-    public int retCode;
 
-    public String message;
+    final public static int TEST_SUCCESSFUL = 0;
+
+    final public static int TEST_NOT_SUCCESSFUL = -1;
+
+    private int retCode = TEST_NOT_SUCCESSFUL;
+
+    private String message = null;
+
+    /**
+     * @return the message
+     */
+    public String getMessage() {
+      return this.message;
+    }
+
+    /**
+     * @param message
+     *          the message to set
+     */
+    public void setMessage(String message) {
+      this.message = message;
+    }
+
+    /**
+     * @return the retCode
+     */
+    public int getRetCode() {
+      return this.retCode;
+    }
+
+    /**
+     * @param retCode
+     *          the retCode to set
+     */
+    public void setRetCode(int retCode) {
+      this.retCode = retCode;
+    }
   }
 
   // Component installation status values
@@ -211,6 +240,8 @@ public class InstallationController {
 
   // Verification application class
   protected static final String INSTALLATION_TESTER_APP = "org.apache.uima.pear.tools.InstallationTester";
+
+  private static final String PEAR_MESSAGE_RESOURCE_BUNDLE = "org.apache.uima.pear.pear_messages";
 
   // Package configuration file
   public static final String PACKAGE_CONFIG_FILE = "metadata/PEAR.properties";
@@ -236,7 +267,7 @@ public class InstallationController {
 
   // file generated at the end of local installation
   public static final String SET_ENV_FILE = "metadata/setenv.txt";
-  
+
   public static final String PEAR_DESC_FILE_POSTFIX = "_pear.xml";
 
   // UIMA constants
@@ -259,7 +290,7 @@ public class InstallationController {
   protected static final String LOCAL_OPT = "-local";
 
   protected static final String INSTALL_IN_ROOT_OPT = "-root";
-  
+
   // static attributes
   private static boolean __inLocalMode = false;
 
@@ -635,153 +666,10 @@ public class InstallationController {
   }
 
   /**
-   * Creates command for running the installation test for a given installed component, including
-   * possible separately installed delegate components, runs the test, and returns the
-   * <code>TestStatus</code> object with the test results.
-   * 
-   * @param mainRootDirPath
-   *          The given main component root directory path.
-   * @param mainInsD
-   *          The given main component <code>InstallationDescriptor</code> object.
-   * @param mainDescPath
-   *          The given main component XML descriptor file path.
-   * @param compClassPath
-   *          The given CLASSPATH for the installed component, including CLASSPATH for possible
-   *          delegate components.
-   * @param javaLibPath
-   *          The given PATH for the installed component, including PATH for possible delegate
-   *          components.
-   * @param tableOfEnvVars
-   *          The given table of required environment variables for the installed component,
-   *          including possible delegate components.
-   * @param uimaClassPath
-   *          The required UIMA CLASSPATH.
-   * @return The instance of the <code>TestStatus</code> class that contains the return code and
-   *         possible error message of the given command.
-   * @throws IOException
-   *           if any I/O error occurred.
-   */
-  protected static TestStatus deployInstallationVerificationTest(String mainRootDirPath,
-          InstallationDescriptor mainInsD, String mainDescPath, String compClassPath,
-          String javaLibPath, Properties tableOfEnvVars, String uimaClassPath) throws IOException {
-    // build command array to run installation tester app.
-    ArrayList cmdArrayList = new ArrayList();
-    StringBuffer cmdBuffer = new StringBuffer();
-    // set Java executable path - OS dependent
-    String osName = System.getProperty("os.name");
-    String javaHome = System.getProperty("java.home");
-    String javaExeName = (osName.indexOf("Windows") >= 0) ? "java.exe" : "java";
-    String javaExePath = null;
-    File javaExeFile = null;
-    // 1st - try in 'java.home'/bin folder
-    javaExePath = javaHome + java.io.File.separator + "bin" + java.io.File.separator + javaExeName;
-    javaExeFile = new File(javaExePath);
-    if (!javaExeFile.isFile()) {
-      // 2nd - try in 'java.home'/jre/bin folder
-      javaExePath = javaHome + java.io.File.separator + "jre" + java.io.File.separator + "bin"
-              + java.io.File.separator + javaExeName;
-      javaExeFile = new java.io.File(javaExePath);
-    }
-    cmdArrayList.add(javaExeFile.getAbsolutePath());
-    // specify heap size
-    cmdArrayList.add("-Xmx512M");
-    // specify classpath
-    cmdArrayList.add("-cp");
-    cmdBuffer.setLength(0);
-    cmdBuffer.append(compClassPath);
-    cmdBuffer.append(File.pathSeparatorChar);
-    cmdBuffer.append(uimaClassPath);
-    cmdArrayList.add(cmdBuffer.toString());
-    // specify java.library.path
-    if (javaLibPath.length() > 0) {
-      cmdBuffer.setLength(0);
-      cmdBuffer.append("-Djava.library.path=");
-      cmdBuffer.append(javaLibPath);
-      cmdArrayList.add(cmdBuffer.toString());
-    }
-    // for 'network' AEs: add network parameters
-    if (mainInsD.getMainComponentDeployment().equals(InstallationDescriptorHandler.NETWORK_TAG)) {
-      String[] networkParams = buildArrayOfNetworkParams(mainInsD);
-      for (int i = 0; i < networkParams.length; i++)
-        cmdArrayList.add(networkParams[i]);
-    }
-    // specify env vars and create array
-    ArrayList envArrayList = new ArrayList();
-    // get global system env vars
-    Properties tableOfSysEnvVars = new Properties();
-    try {
-      tableOfSysEnvVars = SystemEnvReader.getEnvVars();
-    } catch (Throwable err) {
-      throw new IOException("system environment error: " + err.toString());
-    }
-    // add local CLASSPATH, PATH and LD_LIBRARY_PATH to system env
-    String localClasspath = tableOfEnvVars.getProperty("CLASSPATH");
-    if (localClasspath != null && localClasspath.length() > 0) {
-      if (addToSystemEnvTable(tableOfSysEnvVars, "CLASSPATH", localClasspath))
-        tableOfEnvVars.remove("CLASSPATH");
-    }
-    String localPath = tableOfEnvVars.getProperty("PATH");
-    if (localPath != null && localPath.length() > 0) {
-      if (addToSystemEnvTable(tableOfSysEnvVars, "PATH", localPath))
-        tableOfEnvVars.remove("PATH");
-    }
-    String localLdlPath = tableOfEnvVars.getProperty("LD_LIBRARY_PATH");
-    if (localLdlPath != null && localLdlPath.length() > 0) {
-      if (addToSystemEnvTable(tableOfSysEnvVars, "LD_LIBRARY_PATH", localLdlPath))
-        tableOfEnvVars.remove("LD_LIBRARY_PATH");
-    }
-    // add system env vars to the list
-    StringBuffer envBuffer = new StringBuffer();
-    Enumeration sysKeys = tableOfSysEnvVars.keys();
-    while (sysKeys.hasMoreElements()) {
-      String key = (String) sysKeys.nextElement();
-      String value = tableOfSysEnvVars.getProperty(key);
-      if (value.length() > 0) {
-        envBuffer.setLength(0);
-        envBuffer.append(key);
-        envBuffer.append('=');
-        envBuffer.append(value);
-        envArrayList.add(envBuffer.toString());
-      }
-    }
-    // add the rest of local env vars
-    Enumeration envKeys = tableOfEnvVars.keys();
-    while (envKeys.hasMoreElements()) {
-      String key = (String) envKeys.nextElement();
-      String value = tableOfEnvVars.getProperty(key);
-      if (value.length() > 0) {
-        envBuffer.setLength(0);
-        envBuffer.append(key);
-        envBuffer.append('=');
-        envBuffer.append(value);
-        envArrayList.add(envBuffer.toString());
-        cmdBuffer.setLength(0);
-        cmdBuffer.append("-D");
-        cmdBuffer.append(envBuffer.toString());
-        cmdArrayList.add(cmdBuffer.toString());
-      }
-    }
-    // specify application class and its args
-    cmdArrayList.add(INSTALLATION_TESTER_APP);
-    cmdBuffer.setLength(0);
-    cmdBuffer.append(mainDescPath);
-    cmdArrayList.add(cmdBuffer.toString());
-    // run installation verification app.
-    String[] cmdArray = new String[cmdArrayList.size()];
-    cmdArrayList.toArray(cmdArray);
-    String[] envArray = new String[envArrayList.size()];
-    envArrayList.toArray(envArray);
-    File workDir = new File(mainRootDirPath);
-    return runInstallationVerificationTest(cmdArray, envArray, workDir);
-  }
-
-  /**
    * Extracts files with a given extension from a given PEAR file into a given target directory. If
    * the given filename extension is <code>null</code>, extracts all the files from a given PEAR
    * file. Returns the path to the new component root directory.
    * 
-   * @param componentId
-   *          The given component ID.
    * @param pearFileLocation
    *          The given PEAR file location.
    * @param fileExt
@@ -792,9 +680,9 @@ public class InstallationController {
    * @throws IOException
    *           if any I/O exception occurred.
    */
-  public static String extractFilesFromPEARFile(String componentId, String pearFileLocation,
-          String fileExt, File targetDir) throws IOException {
-    return extractFilesFromPEARFile(componentId, pearFileLocation, fileExt, targetDir, null);
+  public static String extractFilesFromPEARFile(String pearFileLocation, String fileExt,
+          File targetDir) throws IOException {
+    return extractFilesFromPEARFile(pearFileLocation, fileExt, targetDir, null);
   }
 
   /**
@@ -815,8 +703,8 @@ public class InstallationController {
    * @return The path to the new component root directory.
    * @throws IOException if any I/O exception occurred.
    */
-  protected static String extractFilesFromPEARFile(String componentId, String pearFileLocation,
-          String fileExt, File targetDir, InstallationController controller) throws IOException {
+  protected static String extractFilesFromPEARFile(String pearFileLocation, String fileExt,
+          File targetDir, InstallationController controller) throws IOException {
     // get PEAR file size
     long fileSize = FileUtil.getFileSize(pearFileLocation);
     // create root directory
@@ -884,8 +772,6 @@ public class InstallationController {
    * Extracts all files of a given component from a given PEAR file into a given target directory.
    * Returns the path to the new component root directory.
    * 
-   * @param componentId
-   *          The given component ID.
    * @param pearFileLocation
    *          The given PEAR file location.
    * @param installationDir
@@ -894,9 +780,9 @@ public class InstallationController {
    * @throws IOException
    *           if any I/O exception occurred.
    */
-  public static String extractPEARFile(String componentId, String pearFileLocation,
-          File installationDir) throws IOException {
-    return extractFilesFromPEARFile(componentId, pearFileLocation, null, installationDir);
+  public static String extractPEARFile(String pearFileLocation, File installationDir)
+          throws IOException {
+    return extractFilesFromPEARFile(pearFileLocation, null, installationDir);
   }
 
   /**
@@ -915,10 +801,9 @@ public class InstallationController {
    * @return The path to the new component root directory.
    * @throws IOException if any I/O exception occurred.
    */
-  protected static String extractPEARFile(String componentId, String pearFileLocation,
-          File installationDir, InstallationController controller) throws IOException {
-    return extractFilesFromPEARFile(componentId, pearFileLocation, null, installationDir,
-            controller);
+  protected static String extractPEARFile(String pearFileLocation, File installationDir,
+          InstallationController controller) throws IOException {
+    return extractFilesFromPEARFile(pearFileLocation, null, installationDir, controller);
   }
 
   /**
@@ -959,6 +844,7 @@ public class InstallationController {
     try {
       hostAddress = InetAddress.getLocalHost().getHostAddress();
     } catch (Exception e) {
+      // in case of errors use localhost IP address
     }
     return hostAddress;
   } // end of getHostIpAddress() method
@@ -1131,63 +1017,6 @@ public class InstallationController {
   }
 
   /**
-   * Runs the installation test executing a given command. Sets the attributes of the returned
-   * <code>TestStatus</code> object.
-   * 
-   * @param cmdArray
-   *          The array of strings that represents the given command to be executed.
-   * @param envArray
-   *          The array of environment variables settings - (key=value) pairs.
-   * @param workDir
-   *          The working directory where the installation test needs to be run.
-   * @return The instance of the <code>TestStatus</code> class that contains the return code and
-   *         possible error message of the given command.
-   * @throws IOException
-   *           if any I/O error occurred.
-   */
-  protected static TestStatus runInstallationVerificationTest(String[] cmdArray, String[] envArray,
-          File workDir) throws IOException {
-
-    if (System.getProperty("DEBUG") != null) {
-      System.out.println(">>> DBG: command array => ");
-      for (int i = 0; i < cmdArray.length; i++)
-        System.out.println("\t[" + i + "]=" + cmdArray[i]);
-      System.out.println(">>> DBG: env array => ");
-      for (int i = 0; i < envArray.length; i++)
-        System.out.println("\t" + envArray[i]);
-      System.out.println(">>> DBG: working dir => ");
-      System.out.println("\t" + workDir.getAbsolutePath());
-    }
-    BufferedReader errReader = null;
-    TestStatus status = new TestStatus();
-    try {
-      // run specified command with specified env.vars as a separate process
-      Process process = Runtime.getRuntime().exec(cmdArray, envArray, workDir);
-      // get error message (if exists)
-      errReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-      StringWriter msgBuffer = new StringWriter();
-      PrintWriter msgWriter = new PrintWriter(msgBuffer);
-      String line;
-      while ((line = errReader.readLine()) != null)
-        msgWriter.println(line);
-      try {
-        status.retCode = process.waitFor();
-      } catch (InterruptedException e) {
-        
-      }
-      status.message = msgBuffer.toString();
-    } finally {
-      if (errReader != null) {
-        try {
-          errReader.close();
-        } catch (Exception e) {
-        }
-      }
-    }
-    return status;
-  }
-
-  /**
    * Switches between the 'local' and 'DB' modes, depending on a given <code>boolean</code> flag.
    * 
    * @param inLocalMode
@@ -1199,69 +1028,48 @@ public class InstallationController {
   }
 
   /**
-   * Creates command for running the installation test for a given installed component, including
-   * possible separately installed delegate components, runs the test, and returns the
-   * <code>TestStatus</code> object with the test results. If a given table of separately
-   * installed delegate components is not empty, adds environment variables for the specified
-   * delegate components to the test process environment.
+   * Runs the installation test for a given installed pear component, and returns the
+   * <code>TestStatus</code> object with the test results.
    * 
-   * @param controller
-   *          The given active <code>InstallationController</code> object.
-   * @param uimaHomePath
-   *          The UIMA_HOME directory path.
+   * @param pkgBrowser
+   *          The given package borwser object of the installed pear package.
    * @return The <code>TestStatus</code> object that contains the return code and possible error
    *         message of the test.
    */
-  public static synchronized TestStatus verifyComponentInstallation(
-          InstallationController controller, String uimaHomePath) {
+  public static synchronized TestStatus verifyComponentInstallation(PackageBrowser pkgBrowser) {
     try {
-      // check input parameters
-      if (controller._insdObject == null)
-        throw new RuntimeException("null installation descriptor");
-      InstallationDescriptor mainInsD = controller._insdObject;
-      String mainRootDirPath = mainInsD.getMainComponentRoot();
-      if (mainRootDirPath == null)
-        throw new RuntimeException("main root directory not specified");
-      String mainDescPath = mainInsD.getMainComponentDesc();
-      if (mainDescPath == null)
-        throw new RuntimeException("main descriptor path not specified");
-
-      String uimaClassPath = null;
-      if (uimaHomePath == null) {
-        // build UIMA classpath using application class path
-        uimaClassPath = System.getProperty("java.class.path", null);
-      } else {
-        // build UIMA classpath using UIMA_HOME env variable
-        uimaClassPath = buildUIMAClassPath(uimaHomePath);
-      }
-      if (uimaClassPath == null) {
-        throw new RuntimeException(UIMA_HOME_ENV + " variable not specified");
+      // check package browser parameters
+      if (pkgBrowser != null) {
+        if (pkgBrowser.getInstallationDescriptor() == null) {
+          throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
+                  "installation_verification_install_desc_not_available");
+        }
+        if (pkgBrowser.getInstallationDescriptor().getMainComponentDesc() == null) {
+          throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
+                  "installation_verification_main_desc_not_available", new Object[] { pkgBrowser
+                          .getInstallationDescriptor().getMainComponentId() });
+        }
+        if (pkgBrowser.getInstallationDescriptor().getMainComponentRoot() == null) {
+          throw new PackageInstallerException(PEAR_MESSAGE_RESOURCE_BUNDLE,
+                  "installation_verification_main_root_not_available", new Object[] { pkgBrowser
+                          .getInstallationDescriptor().getMainComponentId() });
+        }
       }
 
-      // build component classpath, including dlg components
-      String compClassPath = controller.buildComponentClassPath();
+      // create InstallationTester object
+      InstallationTester installTester = new InstallationTester(pkgBrowser);
+      TestStatus status = installTester.doTest();
 
-      // set java.library.path, including dlg components
-      String javaLibPath = controller.buildComponentPath();
-      // set other required env vars
-      Properties tableOfEnvVars = controller.buildTableOfEnvVars();
-      // add CLASSPATH, PATH and LD_LIBRARY_PATH to the table of env.vars
-      if (compClassPath.length() > 0)
-        tableOfEnvVars.setProperty("CLASSPATH", compClassPath);
-      if (javaLibPath.length() > 0) {
-        tableOfEnvVars.setProperty("PATH", javaLibPath);
-        tableOfEnvVars.setProperty("LD_LIBRARY_PATH", javaLibPath);
-      }
-      return deployInstallationVerificationTest(mainRootDirPath, mainInsD, mainDescPath,
-              compClassPath, javaLibPath, tableOfEnvVars, uimaClassPath);
+      return status;
+
     } catch (Throwable exc) {
       // print exception as 'verification message'
       StringWriter strWriter = new StringWriter();
       PrintWriter oWriter = new PrintWriter(strWriter);
       exc.printStackTrace(oWriter);
       TestStatus status = new TestStatus();
-      status.retCode = -1;
-      status.message = strWriter.toString();
+      status.setRetCode(TestStatus.TEST_NOT_SUCCESSFUL);
+      status.setMessage(strWriter.toString());
       return status;
     }
   }
@@ -1621,7 +1429,7 @@ public class InstallationController {
       if (_mainPearFileLocation == null) // get PEAR file location
         _mainPearFileLocation = getPEARFileLocation(_mainComponentId, _packageSelector);
       // extract PEAR file in a specified directory
-      if (extractPEARFile(_mainComponentId, _mainPearFileLocation, _mainComponentRoot, this) == null) {
+      if (extractPEARFile(_mainPearFileLocation, _mainComponentRoot, this) == null) {
         // PEAR extraction failed
         // set error message
         setInstallationError(new IOException("PEAR extraction failed"));
@@ -1687,8 +1495,7 @@ public class InstallationController {
       if (_mainPearFileLocation == null) // get PEAR file location
         _mainPearFileLocation = getPEARFileLocation(_mainComponentId, _packageSelector);
       // extract main XML descriptors in a specified directory
-      if (extractFilesFromPEARFile(_mainComponentId, _mainPearFileLocation, ".xml",
-              _mainComponentRoot, this) == null) {
+      if (extractFilesFromPEARFile(_mainPearFileLocation, ".xml", _mainComponentRoot, this) == null) {
         // PEAR extraction failed
         // set error message
         setInstallationError(new IOException("PEAR extraction failed"));
@@ -1722,9 +1529,6 @@ public class InstallationController {
   /**
    * Performs installation of all separate delegate components for the specified main component.
    * 
-   * @return The <code>Hashtable</code> that contains the
-   *         <code>(component_id, root_directory)</code> pairs for the installed delegate
-   *         components.
    */
   protected synchronized void installDelegateComponents() {
     // get list of separate delegate components IDs
@@ -1798,25 +1602,26 @@ public class InstallationController {
       _installationInsDs.put(componentId, dlgInsdObject);
     }
   }
-  
+
   /**
-   * generates the pearSpecifier to run the installed pear component. The descriptor that is created has
-   * the filename &lt;componentID&gt;_pear.xml and is created in the main component root directory. 
-   * If the file already exist, it will be overridden. 
+   * generates the pearSpecifier to run the installed pear component. The descriptor that is created
+   * has the filename &lt;componentID&gt;_pear.xml and is created in the main component root
+   * directory. If the file already exist, it will be overridden.
    * 
    * @param mainComponentRootPath
    *          main component root path where the pear was installed to
-   *           
+   * 
    * @param mainComponentId
    *          main component ID of the installed pear file
-   *          
+   * 
    * @throws IOException
    * @throws SAXException
    */
-  protected static synchronized void generatePearSpecifier(String mainComponentRootPath, String mainComponentId) throws IOException, SAXException{    
+  protected static synchronized void generatePearSpecifier(String mainComponentRootPath,
+          String mainComponentId) throws IOException, SAXException {
     PearSpecifier pearSpec = UIMAFramework.getResourceSpecifierFactory().createPearSpecifier();
     pearSpec.setPearPath(mainComponentRootPath);
-    File outputFile = new File(mainComponentRootPath, mainComponentId + PEAR_DESC_FILE_POSTFIX);      
+    File outputFile = new File(mainComponentRootPath, mainComponentId + PEAR_DESC_FILE_POSTFIX);
     pearSpec.toXML(new FileOutputStream(outputFile));
   }
 
@@ -1861,6 +1666,7 @@ public class InstallationController {
         try {
           fWriter.close();
         } catch (Exception e) {
+          // ignore close exception
         }
       }
     }
@@ -1887,6 +1693,7 @@ public class InstallationController {
           try {
             iStream.close();
           } catch (Exception e) {
+            // ignore close exception
           }
         }
       }
@@ -1912,6 +1719,7 @@ public class InstallationController {
         try {
           oStream.close();
         } catch (Exception e) {
+          // ignore close exception
         }
       }
     }
@@ -2044,16 +1852,19 @@ public class InstallationController {
     try {
       if (_installationMonitor != null) // notify monitor
         _installationMonitor.setInstallationStatus(_mainComponentId, VERIFICATION_IN_PROGRESS);
-      TestStatus status = verifyComponentInstallation(this, _uimaHomePath);
-      if (status.retCode == 0) {
+
+      // create PackageBrowser object for the installed PEAR
+      PackageBrowser installedPear = new PackageBrowser(this._mainComponentRoot);
+      TestStatus status = verifyComponentInstallation(installedPear);
+      if (status.getRetCode() == TestStatus.TEST_SUCCESSFUL) {
         // verification successful
         success = true;
         _verificationMsg = null;
         if (_installationMonitor != null) // notify monitor
           _installationMonitor.setInstallationStatus(_mainComponentId, VERIFICATION_COMPLETED);
-      } else if (status.retCode == -1) {
+      } else if (status.getRetCode() == TestStatus.TEST_NOT_SUCCESSFUL) {
         // verification failed
-        _verificationMsg = status.message;
+        _verificationMsg = status.getMessage();
         if (_installationMonitor != null) // notify monitor
           _installationMonitor.setInstallationStatus(_mainComponentId, VERIFICATION_FAILED);
       } else {
