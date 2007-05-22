@@ -430,7 +430,7 @@ public class XmiCasSerializer {
      */
     private void enqueueFeatures(int addr, int typeCode) throws SAXException {
       boolean insideListNode = listUtils.isListType(typeCode);
-      int[] feats = cas.getTypeSystemImpl().getAppropriateFeatures(typeCode);
+      int[] feats = cas.getTypeSystemImpl().ll_getAppropriateFeatures(typeCode);
       int featAddr, featVal, fsClass;
       for (int i = 0; i < feats.length; i++) {
         if (isFiltering) {
@@ -688,7 +688,7 @@ public class XmiCasSerializer {
             throws SAXException {
       List childElements = new ArrayList();
       int heapValue = cas.getHeapValue(addr);
-      int[] feats = cas.getTypeSystemImpl().getAppropriateFeatures(heapValue);
+      int[] feats = cas.getTypeSystemImpl().ll_getAppropriateFeatures(heapValue);
       int featAddr, featVal, fsClass;
       String featName, attrValue;
       // boolean isSofa = false;

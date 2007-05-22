@@ -803,7 +803,7 @@ public class XCASDeserializer {
         finalizeArray(type, addr, fsInfo);
         return;
       }
-      int[] feats = cas.getTypeSystemImpl().getAppropriateFeatures(type);
+      int[] feats = cas.getTypeSystemImpl().ll_getAppropriateFeatures(type);
       int feat;
       FSInfo fsValInfo;
       for (int i = 0; i < feats.length; i++) {
