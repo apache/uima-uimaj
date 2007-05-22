@@ -2682,9 +2682,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         this.svd.fsArray[fsRef] = fs;
       }
       return fs;
-    } else {
-      return this.svd.casMetadata.fsClassRegistry.createFSusingGenerator(fsRef, this);
     }
+    return this.svd.casMetadata.fsClassRegistry.createFSusingGenerator(fsRef, this);
 	}
 
 	public final int ll_getIntValue(int fsRef, int featureCode) {
