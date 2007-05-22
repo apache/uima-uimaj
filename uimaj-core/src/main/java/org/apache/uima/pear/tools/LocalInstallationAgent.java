@@ -28,7 +28,10 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Properties;
 
+import org.apache.uima.UIMAException;
+import org.apache.uima.pear.tools.InstallationController.TestStatus;
 import org.apache.uima.pear.util.FileUtil;
+import org.apache.uima.resource.ResourceInitializationException;
 
 /**
  * The <code>LocalInstallationAgent</code> allows localizing files of UIMA compliant components
@@ -292,6 +295,7 @@ public class LocalInstallationAgent {
         try {
           iStream.close();
         } catch (Exception e) {
+          //ignore close exception
         }
       }
     }
@@ -391,47 +395,39 @@ public class LocalInstallationAgent {
    * 
    * @throws IOException
    *           if any I/O exception occurred.
+   * 
+   * @throws ResourceInitializationException
+   *           if the specified component cannot be instantiated.
+   *           
+   * @throws UIMAException
+   *           if this exception occurred while identifying UIMA component category.
+   *           
    * @see org.apache.uima.pear.tools.InstallationTester
    */
-  public synchronized boolean verifyLocalizedComponent() throws IOException {
-    boolean success = false;
+  public synchronized boolean verifyLocalizedComponent() throws IOException,
+          ResourceInitializationException, UIMAException {
     // check input parameters
     if (_insdObject == null)
       throw new RuntimeException("null installation descriptor");
     if (_mainRootDir == null)
       throw new RuntimeException("main root directory not specified");
-    String mainRootDirPath = _mainRootDir.getAbsolutePath();
     String mainDescPath = _insdObject.getMainComponentDesc();
     if (mainDescPath == null)
       throw new RuntimeException("main descriptor path not specified");
-    if (_uimaHomePath == null)
-      throw new RuntimeException(InstallationController.UIMA_HOME_ENV + " variable not specified");
-    // build component classpath
-    String compClassPath = InstallationController.buildComponentClassPath(mainRootDirPath,
-            _insdObject);
-    // build UIMA classpath
-    String uimaClassPath = InstallationController.buildUIMAClassPath(_uimaHomePath);
-    // set java.library.path
-    String javaLibPath = InstallationController.buildComponentPath(mainRootDirPath, _insdObject);
-    // set other required env vars
-    Properties tableOfEnvVars = InstallationController.buildTableOfEnvVars(_insdObject);
-    // add CLASSPATH, PATH and LD_LIBRARY_PATH to the table of env.vars
-    if (compClassPath.length() > 0)
-      tableOfEnvVars.setProperty("CLASSPATH", compClassPath);
-    if (javaLibPath.length() > 0) {
-      tableOfEnvVars.setProperty("PATH", javaLibPath);
-      tableOfEnvVars.setProperty("LD_LIBRARY_PATH", javaLibPath);
-    }
-    // deploy and run installation verification test
-    InstallationController.TestStatus status = InstallationController
-            .deployInstallationVerificationTest(mainRootDirPath, _insdObject, mainDescPath,
-                    compClassPath, javaLibPath, tableOfEnvVars, uimaClassPath);
-    if (status.retCode != 0) {
+
+    // run installation verification test
+
+    InstallationTester installTester = new InstallationTester(new PackageBrowser(new File(
+            _mainRootDir.getAbsolutePath())));
+    TestStatus status = installTester.doTest();
+    
+    if (status.getRetCode() == TestStatus.TEST_SUCCESSFUL) {
+      return true;
+    } else {
       System.err.println("[LocalInstallationAgent]: " + "localization test failed =>");
-      System.out.println("> Error message: " + status.message);
-    } else
-      success = true;
-    return success;
+      System.out.println("> Error message: " + status.getMessage());
+      return false;
+    }
   }
 
   /**
