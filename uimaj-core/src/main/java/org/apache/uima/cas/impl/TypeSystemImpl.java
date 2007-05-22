@@ -495,21 +495,6 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   }
 
   /**
-   * Get a type object for a given code.
-   * 
-   * @param typeCode
-   *          The code of the type.
-   * @return A type object, or <code>null</code> if no such type exists.
-   */
-//  public Type getType(int typeCode) {
-//    return (Type) this.types.get(typeCode);
-//  }
-
-  public String getTypeName(int typeCode) {
-    return this.typeNameST.getSymbol(typeCode);
-  }
-
-  /**
    * Get a type object for a given name.
    * 
    * @param typeName

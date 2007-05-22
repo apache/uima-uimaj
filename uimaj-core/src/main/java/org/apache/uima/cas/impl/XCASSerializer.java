@@ -715,7 +715,7 @@ public class XCASSerializer {
     }
 
     private final String getTypeName(int addr) {
-      return ts.getTypeName(cas.getHeapValue(addr));
+      return ts.ll_getTypeForCode(cas.getHeapValue(addr)).getName();
     }
 
     private final int classifyType(int type) {
