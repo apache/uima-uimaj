@@ -134,7 +134,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   //   - shared data is computed once
   
   // fields shared among all CASes belong to views of a common base CAS
-  // package protected visibility to let other things share this info
   private static class SharedViewData {
     
     private Heap heap;
