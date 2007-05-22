@@ -382,7 +382,7 @@ public class XmiCasSerializer {
         return;
       }
       if (isFiltering) {
-        String typeName = cas.getTypeSystemImpl().getTypeName(cas.getHeapValue(addr));
+        String typeName = cas.getTypeSystemImpl().ll_getTypeForCode(cas.getHeapValue(addr)).getName();
         if (filterTypeSystem.getType(typeName) == null) {
           return; // this type is not in the target type system
         }
@@ -403,7 +403,7 @@ public class XmiCasSerializer {
       }
       int typeCode = cas.getHeapValue(addr);
       if (isFiltering) {
-        String typeName = cas.getTypeSystemImpl().getTypeName(typeCode);
+        String typeName = cas.getTypeSystemImpl().ll_getTypeForCode(typeCode).getName();
         if (filterTypeSystem.getType(typeName) == null) {
           return; // this type is not in the target type system
         }
@@ -636,7 +636,7 @@ public class XmiCasSerializer {
       }
       if (isFiltering) // return as null any references to types not in target TS
       {
-        String typeName = cas.getTypeSystemImpl().getTypeName(cas.getHeapValue(addr));
+        String typeName = cas.getTypeSystemImpl().ll_getTypeForCode(cas.getHeapValue(addr)).getName();
         if (filterTypeSystem.getType(typeName) == null) {
           return null;
         }
