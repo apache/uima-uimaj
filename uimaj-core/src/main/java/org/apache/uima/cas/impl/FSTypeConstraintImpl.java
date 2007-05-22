@@ -92,7 +92,7 @@ class FSTypeConstraintImpl implements FSTypeConstraint {
 		int typeCode;
 		while (it.hasNext()) {
 			typeName = (String) it.next();
-			typeCode = tsi.getTypeCode(typeName);
+			typeCode = tsi.ll_getCodeForTypeName(typeName);
 			if (typeCode < tsi.getSmallestType()) {
 				CASRuntimeException e = new CASRuntimeException(
 						CASRuntimeException.UNKNOWN_CONSTRAINT_TYPE, new String[] { typeName });

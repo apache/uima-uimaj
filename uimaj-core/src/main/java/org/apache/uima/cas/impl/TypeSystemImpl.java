@@ -812,13 +812,6 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   }
 
   /**
-   * Get the code for a feature, given its name.
-   */
-  public int getFeatureCode(String feat) {
-    return ll_getCodeForFeatureName(feat);
-  }
-
-  /**
    * Get an array of the appropriate features for this type.
    */
   public int[] ll_getAppropriateFeatures(int type) {
@@ -827,10 +820,6 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     }
     // We have to copy the array since we don't have const.
     return ((IntVector) this.approp.get(type)).toArrayCopy();
-  }
-
-  public int[] getAppropriateFeatures(int type) {
-    return ll_getAppropriateFeatures(type);
   }
 
   /**
@@ -1061,10 +1050,6 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   public SymbolTable getFeatureNameST() {
     return this.featureNameST;
-  }
-
-  public int getTypeCode(String typeName) {
-    return this.typeNameST.get(typeName);
   }
 
   private final String getTypeString(Type t) {

@@ -106,7 +106,7 @@ public class TypeImpl implements Type, Comparable {
    * @return The number of features.
    */
   public int getNumberOfFeatures() {
-    return this.ts.getAppropriateFeatures(this.code).length;
+    return this.ts.ll_getAppropriateFeatures(this.code).length;
   }
 
   /**
@@ -210,7 +210,7 @@ public class TypeImpl implements Type, Comparable {
   }
 
   public List getFeatures() {
-    int[] feats = this.ts.getAppropriateFeatures(this.code);
+    int[] feats = this.ts.ll_getAppropriateFeatures(this.code);
     ArrayList list = new ArrayList(feats.length);
     for (int i = 0; i < feats.length; i++) {
       list.add(this.ts.getFeature(feats[i]));

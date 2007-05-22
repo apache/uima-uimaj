@@ -101,26 +101,26 @@ public class ListUtils {
     this.logger = aLogger;
     this.eh = aErrorHandler;
     TypeSystemImpl ts = aCASImpl.getTypeSystemImpl();
-    this.intListType = ts.getTypeCode(CAS.TYPE_NAME_INTEGER_LIST);
-    this.floatListType = ts.getTypeCode(CAS.TYPE_NAME_FLOAT_LIST);
-    this.stringListType = ts.getTypeCode(CAS.TYPE_NAME_STRING_LIST);
-    this.fsListType = ts.getTypeCode(CAS.TYPE_NAME_FS_LIST);
-    this.neIntListType = ts.getTypeCode(CAS.TYPE_NAME_NON_EMPTY_INTEGER_LIST);
-    this.neFloatListType = ts.getTypeCode(CAS.TYPE_NAME_NON_EMPTY_FLOAT_LIST);
-    this.neStringListType = ts.getTypeCode(CAS.TYPE_NAME_NON_EMPTY_STRING_LIST);
-    this.neFsListType = ts.getTypeCode(CAS.TYPE_NAME_NON_EMPTY_FS_LIST);
-    this.eIntListType = ts.getTypeCode(CAS.TYPE_NAME_EMPTY_INTEGER_LIST);
-    this.eFloatListType = ts.getTypeCode(CAS.TYPE_NAME_EMPTY_FLOAT_LIST);
-    this.eStringListType = ts.getTypeCode(CAS.TYPE_NAME_EMPTY_STRING_LIST);
-    this.eFsListType = ts.getTypeCode(CAS.TYPE_NAME_EMPTY_FS_LIST);
-    this.intHeadFeat = ts.getFeatureCode(CAS.FEATURE_FULL_NAME_INTEGER_LIST_HEAD);
-    this.floatHeadFeat = ts.getFeatureCode(CAS.FEATURE_FULL_NAME_FLOAT_LIST_HEAD);
-    this.stringHeadFeat = ts.getFeatureCode(CAS.FEATURE_FULL_NAME_STRING_LIST_HEAD);
-    this.fsHeadFeat = ts.getFeatureCode(CAS.FEATURE_FULL_NAME_FS_LIST_HEAD);
-    this.intTailFeat = ts.getFeatureCode(CAS.FEATURE_FULL_NAME_INTEGER_LIST_TAIL);
-    this.floatTailFeat = ts.getFeatureCode(CAS.FEATURE_FULL_NAME_FLOAT_LIST_TAIL);
-    this.stringTailFeat = ts.getFeatureCode(CAS.FEATURE_FULL_NAME_STRING_LIST_TAIL);
-    this.fsTailFeat = ts.getFeatureCode(CAS.FEATURE_FULL_NAME_FS_LIST_TAIL);
+    this.intListType = ts.ll_getCodeForTypeName(CAS.TYPE_NAME_INTEGER_LIST);
+    this.floatListType = ts.ll_getCodeForTypeName(CAS.TYPE_NAME_FLOAT_LIST);
+    this.stringListType = ts.ll_getCodeForTypeName(CAS.TYPE_NAME_STRING_LIST);
+    this.fsListType = ts.ll_getCodeForTypeName(CAS.TYPE_NAME_FS_LIST);
+    this.neIntListType = ts.ll_getCodeForTypeName(CAS.TYPE_NAME_NON_EMPTY_INTEGER_LIST);
+    this.neFloatListType = ts.ll_getCodeForTypeName(CAS.TYPE_NAME_NON_EMPTY_FLOAT_LIST);
+    this.neStringListType = ts.ll_getCodeForTypeName(CAS.TYPE_NAME_NON_EMPTY_STRING_LIST);
+    this.neFsListType = ts.ll_getCodeForTypeName(CAS.TYPE_NAME_NON_EMPTY_FS_LIST);
+    this.eIntListType = ts.ll_getCodeForTypeName(CAS.TYPE_NAME_EMPTY_INTEGER_LIST);
+    this.eFloatListType = ts.ll_getCodeForTypeName(CAS.TYPE_NAME_EMPTY_FLOAT_LIST);
+    this.eStringListType = ts.ll_getCodeForTypeName(CAS.TYPE_NAME_EMPTY_STRING_LIST);
+    this.eFsListType = ts.ll_getCodeForTypeName(CAS.TYPE_NAME_EMPTY_FS_LIST);
+    this.intHeadFeat = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_INTEGER_LIST_HEAD);
+    this.floatHeadFeat = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_FLOAT_LIST_HEAD);
+    this.stringHeadFeat = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_STRING_LIST_HEAD);
+    this.fsHeadFeat = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_FS_LIST_HEAD);
+    this.intTailFeat = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_INTEGER_LIST_TAIL);
+    this.floatTailFeat = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_FLOAT_LIST_TAIL);
+    this.stringTailFeat = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_STRING_LIST_TAIL);
+    this.fsTailFeat = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_FS_LIST_TAIL);
   }
 
   public boolean isIntListType(int type) {

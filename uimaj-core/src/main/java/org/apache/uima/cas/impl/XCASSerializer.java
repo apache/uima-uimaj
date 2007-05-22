@@ -616,7 +616,7 @@ public class XCASSerializer {
      */
     private void encodeFeatures(int addr, AttributesImpl attrs) {
       int heapValue = cas.getHeapValue(addr);
-      int[] feats = ts.getAppropriateFeatures(heapValue);
+      int[] feats = ts.ll_getAppropriateFeatures(heapValue);
       int featAddr, featVal;
       String featName, attrValue;
       boolean nameMapping = false;
@@ -650,7 +650,7 @@ public class XCASSerializer {
     }
 
     private void enqueueFeatures(int addr, int heapValue) {
-      int[] feats = ts.getAppropriateFeatures(heapValue);
+      int[] feats = ts.ll_getAppropriateFeatures(heapValue);
       int featAddr, featVal;
 
       for (int i = 0; i < feats.length; i++) {

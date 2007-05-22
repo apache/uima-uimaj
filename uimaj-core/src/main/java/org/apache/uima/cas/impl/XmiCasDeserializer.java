@@ -242,9 +242,9 @@ public class XmiCasDeserializer {
         }        
       }      
       final TypeSystemImpl tsOfReceivingCas = casBeingFilled.getTypeSystemImpl();
-      this.sofaTypeCode = tsOfReceivingCas.getTypeCode(CAS.TYPE_NAME_SOFA);
-      this.sofaNumFeatCode = tsOfReceivingCas.getFeatureCode(CAS.FEATURE_FULL_NAME_SOFANUM);
-      this.sofaFeatCode = tsOfReceivingCas.getFeatureCode(CAS.FEATURE_FULL_NAME_SOFA);
+      this.sofaTypeCode = tsOfReceivingCas.ll_getCodeForTypeName(CAS.TYPE_NAME_SOFA);
+      this.sofaNumFeatCode = tsOfReceivingCas.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_SOFANUM);
+      this.sofaFeatCode = tsOfReceivingCas.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_SOFA);
       this.nextSofaNum = 2;
       this.listUtils = new ListUtils(casBeingFilled, UIMAFramework.getLogger(XmiCasDeserializer.class), null);
 
@@ -1046,7 +1046,7 @@ public class XmiCasDeserializer {
         return;
       }
       // remap IDs for all nonprimtive, non-multivalued-property features
-      int[] feats = casBeingFilled.getTypeSystemImpl().getAppropriateFeatures(type);
+      int[] feats = casBeingFilled.getTypeSystemImpl().ll_getAppropriateFeatures(type);
       Feature feat;
       for (int i = 0; i < feats.length; i++) {
         feat = ts.getFeature(feats[i]);
@@ -1088,7 +1088,7 @@ public class XmiCasDeserializer {
       final int type = casBeingFilled.getHeapValue(addr);
       if (!listUtils.isFsListType(type))
         return;
-      int[] feats = casBeingFilled.getTypeSystemImpl().getAppropriateFeatures(type);
+      int[] feats = casBeingFilled.getTypeSystemImpl().ll_getAppropriateFeatures(type);
       if (feats.length == 0)
         return;
       int headFeat = feats[0];

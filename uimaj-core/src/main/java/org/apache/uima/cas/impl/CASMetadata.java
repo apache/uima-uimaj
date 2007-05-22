@@ -98,7 +98,7 @@ class CASMetadata {
     final int numTypes = ts.getNumberOfTypes();
     this.fsSpaceReq = new int[numTypes + 1];
     for (int i = 1; i <= numTypes; i++) {
-      this.fsSpaceReq[i] = ts.getAppropriateFeatures(i).length + 1;
+      this.fsSpaceReq[i] = ts.ll_getAppropriateFeatures(i).length + 1;
     }
     // Initialize the non-creatable types info.
     initCreatableTypeTable();
