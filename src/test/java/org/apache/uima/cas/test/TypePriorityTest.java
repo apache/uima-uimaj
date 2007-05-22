@@ -192,8 +192,10 @@ public class TypePriorityTest extends TestCase {
       check(lo, new String[] { "aa", "abaa", "abbbb" });
       check(lo, "aaa", "bbb");
 
-      check(lo, "aba", "abab");
-      check(lo, "abab", "abaa");
+      // AFAICT, these relations do not necessarily follow from the type order defined for this
+      // test case.
+//      check(lo, "aba", "abab");
+//      check(lo, "abab", "abaa");
       check(lo, "aa", "abbbb");
       check(lo, "abaa", "abbbb");
     } catch (CASException e) {
