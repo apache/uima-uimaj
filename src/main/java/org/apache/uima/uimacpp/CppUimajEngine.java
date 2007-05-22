@@ -199,7 +199,7 @@ public class CppUimajEngine {
                           false);
         }
         for (int i = 0; i < resultSpecFeatures.length; ++i) {
-          rs.addResultFeature(casImpl.getTypeSystemImpl().getFeature(resultSpecFeatures[i])
+          rs.addResultFeature(casImpl.getTypeSystemImpl().ll_getFeatureForCode(resultSpecFeatures[i])
                   .getName());
         }
         // 3. call process with cas

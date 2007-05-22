@@ -75,7 +75,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 		if (this.getCASImpl().isIntType(rangeType) || this.getCASImpl().isFloatType(rangeType)
 				|| this.getCASImpl().isStringType(rangeType)) {
 			CASRuntimeException e = new CASRuntimeException(CASRuntimeException.PRIMITIVE_VAL_FEAT,
-					new String[] { this.getCASImpl().getTypeSystemImpl().getFeature(featCode).getName() });
+					new String[] { this.getCASImpl().getTypeSystemImpl().ll_getFeatureForCode(featCode).getName() });
 			throw e;
 		}
 		this.getCASImpl().setFeatureValue(this.getAddress(), featCode, CASImpl.NULL);

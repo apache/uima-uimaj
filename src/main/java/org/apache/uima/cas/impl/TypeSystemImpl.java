@@ -158,7 +158,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   // String sets for string subtypes.
   private final ArrayList stringSets;
 
-  // This map contains an entry for every subtype of the string type.  The value is a pointer into
+  // This map contains an entry for every subtype of the string type. The value is a pointer into
   // the stringSets array list.
   private final IntRedBlackTree stringSetMap;
 
@@ -181,9 +181,9 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   private static final int LEAST_FEATURE_CODE = 1;
 
   private int numCommittedTypes = 0;
-  
-  final CASMetadata casMetadata;  // needs to be visible in package
-  
+
+  final CASMetadata casMetadata; // needs to be visible in package
+
   boolean areBuiltInTypesSetup = false;
 
   TypeImpl intType;
@@ -215,7 +215,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   FeatureImpl endFeat;
 
   FeatureImpl langFeat;
-  
+
   FeatureImpl sofaNum;
 
   TypeImpl byteType;
@@ -238,7 +238,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   TypeImpl doubleArrayType;
 
- //  int topTypeCode;
+  // int topTypeCode;
   int intTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
 
   int stringTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
@@ -338,19 +338,19 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     this.arrayCodeToTypeMap = new RedBlackTree();
     this.parents = new IntVector();
     this.parents.add(0);
-    
+
     this.casMetadata = new CASMetadata(this);
     // load in built-in types
     CASImpl.setupTSDefault(this);
     initTypeVariables();
   }
-  
-  // only built-in types here; can be called before 
+
+  // only built-in types here; can be called before
   // type system is committed, as long as the built-in ones
   // are defined.
   final void initTypeVariables() {
     // Type objects.
-//    this.ts.topType = (TypeImpl) this.ts.getTopType();  // never used
+    // this.ts.topType = (TypeImpl) this.ts.getTopType(); // never used
     this.intType = (TypeImpl) getType(CAS.TYPE_NAME_INTEGER);
     this.stringType = (TypeImpl) getType(CAS.TYPE_NAME_STRING);
     this.floatType = (TypeImpl) getType(CAS.TYPE_NAME_FLOAT);
@@ -383,7 +383,6 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     initTypeCodeVars();
   }
 
-
   private final void initTypeCodeVars() {
     this.intTypeCode = this.intType.getCode();
     this.stringTypeCode = this.stringType.getCode();
@@ -407,28 +406,28 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     this.longArrayTypeCode = this.longArrayType.getCode();
     this.doubleTypeCode = this.doubleType.getCode();
     this.doubleArrayTypeCode = this.doubleArrayType.getCode();
-    
+
     this.arrayBaseTypeCode = this.arrayBaseType.getCode();
-   
+
     final Type sofaT = this.sofaType;
-    this.sofaNumFeatCode = ll_getCodeForFeature(
-            sofaT.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFANUM));
-    this.sofaIdFeatCode = ll_getCodeForFeature(
-            sofaT.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAID));
-    this.sofaMimeFeatCode = ll_getCodeForFeature(
-            sofaT.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAMIME));
-    this.sofaUriFeatCode = ll_getCodeForFeature(
-            sofaT.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAURI));
-    this.sofaArrayFeatCode = ll_getCodeForFeature(
-            sofaT.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAARRAY));
-    this.annotSofaFeatCode = ll_getCodeForFeature(
-        this.annotBaseType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFA));
-    this.startFeatCode = ll_getCodeForFeature(
-        this.annotType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN));
-    this.endFeatCode = ll_getCodeForFeature(
-        this.annotType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_END));
-    this.langFeatCode = ll_getCodeForFeature(
-        this.docType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE));
+    this.sofaNumFeatCode = ll_getCodeForFeature(sofaT
+        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFANUM));
+    this.sofaIdFeatCode = ll_getCodeForFeature(sofaT
+        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAID));
+    this.sofaMimeFeatCode = ll_getCodeForFeature(sofaT
+        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAMIME));
+    this.sofaUriFeatCode = ll_getCodeForFeature(sofaT
+        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAURI));
+    this.sofaArrayFeatCode = ll_getCodeForFeature(sofaT
+        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAARRAY));
+    this.annotSofaFeatCode = ll_getCodeForFeature(this.annotBaseType
+        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFA));
+    this.startFeatCode = ll_getCodeForFeature(this.annotType
+        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN));
+    this.endFeatCode = ll_getCodeForFeature(this.annotType
+        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_END));
+    this.langFeatCode = ll_getCodeForFeature(this.docType
+        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE));
   }
 
   // Some implementation helpers for users of the type system.
@@ -469,8 +468,8 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   int ll_computeArrayParentFromComponentType(int componentType) {
     if (ll_isPrimitiveType(componentType) ||
     // note: not using this.top - until we can confirm this is set
-            // in all cases
-            (ll_getTypeForCode(componentType).getName().equals(CAS.TYPE_NAME_TOP))) {
+        // in all cases
+        (ll_getTypeForCode(componentType).getName().equals(CAS.TYPE_NAME_TOP))) {
       return ll_getCodeForTypeName(CAS.TYPE_NAME_ARRAY_BASE);
     }
     // is a subtype of FSArray.
@@ -536,9 +535,9 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    *          The code of the feature.
    * @return A feature object, or <code>null</code> if no such feature exists.
    */
-  public Feature getFeature(int featCode) {
-    return (Feature) this.features.get(featCode);
-  }
+//  public Feature getFeature(int featCode) {
+//    return (Feature) this.features.get(featCode);
+//  }
 
   /**
    * Get an feature object for a given name.
@@ -548,34 +547,32 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    * @return An feature object, or <code>null</code> if no such feature exists.
    */
   public Feature getFeatureByFullName(String featureName) {
-//    if (!this.featureMap.containsKey(featureName)) {
-//      return null;
-//    }
-//    final int featCode = this.featureMap.get(featureName);
-//    return (Feature) this.features.get(featCode);
+    // if (!this.featureMap.containsKey(featureName)) {
+    // return null;
+    // }
+    // final int featCode = this.featureMap.get(featureName);
+    // return (Feature) this.features.get(featCode);
     // will return null if feature not present because
-    //   the featureMap.get will return 0, and
-    //   getFeature returns null for code of 0
-    return getFeature(this.featureMap.get(featureName));
+    // the featureMap.get will return 0, and
+    // getFeature returns null for code of 0
+    return ll_getFeatureForCode(this.featureMap.get(featureName));
   }
 
   private static final String getArrayTypeName(String typeName) {
     final String arrayTypeName = (String) arrayComponentTypeNameMap.get(typeName);
-    return (null == arrayTypeName) ? 
-            typeName + arrayTypeSuffix :
-            arrayTypeName;
-//    if (arrayComponentTypeNameMap.containsKey(typeName)) {
-//      return (String) arrayComponentTypeNameMap.get(typeName);
-//    }
-//    return typeName + arrayTypeSuffix;
+    return (null == arrayTypeName) ? typeName + arrayTypeSuffix : arrayTypeName;
+    // if (arrayComponentTypeNameMap.containsKey(typeName)) {
+    // return (String) arrayComponentTypeNameMap.get(typeName);
+    // }
+    // return typeName + arrayTypeSuffix;
   }
 
   private static final String getBuiltinArrayComponent(String typeName) {
     // if typeName is not contained in the map, the "get" returns null
-//    if (arrayTypeComponentNameMap.containsKey(typeName)) {
-      return (String) arrayTypeComponentNameMap.get(typeName);
-//    }
-//    return null;
+    // if (arrayTypeComponentNameMap.containsKey(typeName)) {
+    return (String) arrayTypeComponentNameMap.get(typeName);
+    // }
+    // return null;
   }
 
   /**
@@ -656,7 +653,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
       featCode = superApprop.get(i);
       typeApprop.add(featCode);
       // Add inherited feature names.
-      String feat = name + TypeSystem.FEATURE_SEPARATOR + getFeature(featCode).getShortName();
+      String feat = name + TypeSystem.FEATURE_SEPARATOR + ll_getFeatureForCode(featCode).getShortName();
       // System.out.println("Adding name: " + feat);
       this.featureMap.put(feat, featCode);
     }
@@ -675,7 +672,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   }
 
   public Feature addFeature(String featureName, Type domainType, Type rangeType)
-          throws CASAdminException {
+      throws CASAdminException {
     return addFeature(featureName, domainType, rangeType, true);
   }
 
@@ -683,7 +680,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    * @see TypeSystemMgr#addFeature(String, Type, Type)
    */
   public Feature addFeature(String featureName, Type domainType, Type rangeType,
-          boolean multipleReferencesAllowed) throws CASAdminException {
+      boolean multipleReferencesAllowed) throws CASAdminException {
     // assert(featureName != null);
     // assert(domainType != null);
     // assert(rangeType != null);
@@ -701,7 +698,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     }
     checkFeatureNameSyntax(featureName);
     final int featCode = this.addFeature(featureName, ((TypeImpl) domainType).getCode(),
-            ((TypeImpl) rangeType).getCode(), multipleReferencesAllowed);
+        ((TypeImpl) rangeType).getCode(), multipleReferencesAllowed);
     if (featCode < this.featureNameST.getStart()) {
       return null;
     }
@@ -915,7 +912,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     // Add entries for all subtypes.
     for (int i = 0; i < max; i++) {
       this.featureMap.put(((Type) typesLocal.get(i)).getName() + FEATURE_SEPARATOR + shortName,
-              feat);
+          feat);
     }
     this.intro.add(domain);
     this.featRange.add(range);
@@ -968,9 +965,9 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   private boolean ll_isPrimitiveArrayType(int type) {
     return type == this.floatArrayTypeCode || type == this.intArrayTypeCode
-            || type == this.booleanArrayTypeCode || type == this.shortArrayTypeCode
-            || type == this.byteArrayTypeCode || type == this.longArrayTypeCode
-            || type == this.doubleArrayTypeCode || type == this.stringArrayTypeCode;
+        || type == this.booleanArrayTypeCode || type == this.shortArrayTypeCode
+        || type == this.byteArrayTypeCode || type == this.longArrayTypeCode
+        || type == this.doubleArrayTypeCode || type == this.stringArrayTypeCode;
   }
 
   public boolean ll_subsumes(int superType, int type) {
@@ -999,7 +996,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
     if (type == this.fsArrayTypeCode) {
       return superType == this.top || superType == this.arrayBaseTypeCode
-              || (!ll_isPrimitiveArrayType(superType) && ll_isArrayType(superType));
+          || (!ll_isPrimitiveArrayType(superType) && ll_isArrayType(superType));
     }
 
     // at this point, we could have arrays of other primitive types, or
@@ -1044,12 +1041,9 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     this.approp.add(new IntVector());
   }
 
-  public SymbolTable getTypeNameST() {
+  // Only used for serialization code.
+  SymbolTable getTypeNameST() {
     return this.typeNameST;
-  }
-
-  public SymbolTable getFeatureNameST() {
-    return this.featureNameST;
   }
 
   private final String getTypeString(Type t) {
@@ -1061,8 +1055,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   }
 
   /**
-   * This writes out the type hierarchy in a human-readable form. Files in this form can be read in
-   * by a {@link TypeSystemParser TypeSystemParser}.
+   * This writes out the type hierarchy in a human-readable form.
    */
   public String toString() {
     // This code is maximally readable, not maximally efficient.
@@ -1079,9 +1072,9 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     final int numFeats = this.featureNameST.size();
     Feature f;
     for (int i = 1; i <= numFeats; i++) {
-      f = this.getFeature(i);
+      f = this.ll_getFeatureForCode(i);
       buf.append(getFeatureString(f) + ": " + getTypeString(f.getDomain()) + " > "
-              + getTypeString(f.getRange()) + ";\n");
+          + getTypeString(f.getRange()) + ";\n");
     }
     return buf.toString();
   }
@@ -1104,7 +1097,6 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     // this.cas.commitTypeSystem();
     // }
   }
-  
 
   /**
    * @see org.apache.uima.cas.admin.TypeSystemMgr#isCommitted()
@@ -1143,7 +1135,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    */
   public Type addStringSubtype(String typeName, String[] stringList) throws CASAdminException {
     // final int stringSetCode = this.stringSets.size();
-    Type mother = getStringType();
+    Type mother = this.stringType;
     // Check type name syntax.
     checkTypeSyntax(typeName);
     // Create the type.
@@ -1163,13 +1155,9 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     return type;
   }
 
-  Type getStringType() {
-    return this.getType(CAS.TYPE_NAME_STRING);
-  }
-
-  public String[] getStringSet(int i) // public for ref from JCas TOP type,
+  // public for ref from JCas TOP type,
   // impl FeatureStructureImpl
-  {
+  public String[] getStringSet(int i) {
     return (String[]) this.stringSets.get(i);
   }
 
@@ -1227,11 +1215,11 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     return null;
   }
 
-  public final int getLargestFeatureCode() {
+  private final int getLargestFeatureCode() {
     return this.getNumberOfFeatures();
   }
 
-  public final boolean isFeature(int featureCode) {
+  final boolean isFeature(int featureCode) {
     return ((featureCode > UNKNOWN_FEATURE_CODE) && (featureCode <= getLargestFeatureCode()));
   }
 
@@ -1261,19 +1249,19 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   public boolean ll_isRefType(int typeCode) {
     final int typeClass = ll_getTypeClass(typeCode);
     switch (typeClass) {
-      case LowLevelCAS.TYPE_CLASS_BOOLEAN:
-      case LowLevelCAS.TYPE_CLASS_BYTE:
-      case LowLevelCAS.TYPE_CLASS_SHORT:
-      case LowLevelCAS.TYPE_CLASS_INT:
-      case LowLevelCAS.TYPE_CLASS_FLOAT:
-      case LowLevelCAS.TYPE_CLASS_LONG:
-      case LowLevelCAS.TYPE_CLASS_DOUBLE:
-      case LowLevelCAS.TYPE_CLASS_STRING: {
-        return false;
-      }
-      default: {
-        return true;
-      }
+    case LowLevelCAS.TYPE_CLASS_BOOLEAN:
+    case LowLevelCAS.TYPE_CLASS_BYTE:
+    case LowLevelCAS.TYPE_CLASS_SHORT:
+    case LowLevelCAS.TYPE_CLASS_INT:
+    case LowLevelCAS.TYPE_CLASS_FLOAT:
+    case LowLevelCAS.TYPE_CLASS_LONG:
+    case LowLevelCAS.TYPE_CLASS_DOUBLE:
+    case LowLevelCAS.TYPE_CLASS_STRING: {
+      return false;
+    }
+    default: {
+      return true;
+    }
     }
   }
 
@@ -1345,7 +1333,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
       return this.componentToArrayTypeMap.get(componentTypeCode);
     }
     return addArrayType(ll_getTypeForCode(componentTypeCode),
-            ll_getTypeForCode(ll_computeArrayParentFromComponentType(componentTypeCode)));
+        ll_getTypeForCode(ll_computeArrayParentFromComponentType(componentTypeCode)));
   }
 
   int addArrayType(Type componentType, Type mother) {
@@ -1386,7 +1374,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   public boolean ll_isValidTypeCode(int typeCode) {
     return (this.typeNameST.getSymbol(typeCode) != null)
-            || this.arrayToComponentTypeMap.containsKey(typeCode);
+        || this.arrayToComponentTypeMap.containsKey(typeCode);
   }
 
   public boolean ll_isArrayType(int typeCode) {
