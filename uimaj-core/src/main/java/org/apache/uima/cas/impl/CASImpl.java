@@ -137,17 +137,17 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   // package protected visibility to let other things share this info
   private static class SharedViewData {
     
-    Heap heap;
+    private Heap heap;
 
     // private SymbolTable stringTable;
     // private ArrayList stringList;
-    StringHeap stringHeap;
+    private StringHeap stringHeap;
 
-    ByteHeap byteHeap; // for storing 8 bit values
+    private ByteHeap byteHeap; // for storing 8 bit values
 
-    ShortHeap shortHeap; // for storing 16 bit values
+    private ShortHeap shortHeap; // for storing 16 bit values
 
-    LongHeap longHeap; // for storing 64 bit values
+    private LongHeap longHeap; // for storing 64 bit values
     
     // A map from Sofas to IndexRepositories.
     private HashMap sofa2indexMap;
@@ -196,11 +196,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // Base CAS for all views
     private CASImpl baseCAS;
     
-    CASMetadata casMetadata;
+    private CASMetadata casMetadata;
     
     private ComponentInfo componentInfo;
     
-    SharedViewData(boolean useFSCache) {
+    private SharedViewData(boolean useFSCache) {
       this.useFSCache = useFSCache;
     }
   }
