@@ -1058,9 +1058,7 @@ public class InstallationController {
 
       // create InstallationTester object
       InstallationTester installTester = new InstallationTester(pkgBrowser);
-      TestStatus status = installTester.doTest();
-
-      return status;
+      return installTester.doTest();
 
     } catch (Throwable exc) {
       // print exception as 'verification message'
