@@ -195,7 +195,7 @@ public class CppUimajEngine {
         for (int i = 0; i < resultSpecTypes.length; ++i) {
           // allAnnotatorFeatures is not considere here! (TODO)
           rs
-                  .addResultType(casImpl.getTypeSystemImpl().getType(resultSpecTypes[i]).getName(),
+                  .addResultType(casImpl.getTypeSystemImpl().ll_getTypeForCode(resultSpecTypes[i]).getName(),
                           false);
         }
         for (int i = 0; i < resultSpecFeatures.length; ++i) {

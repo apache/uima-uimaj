@@ -1347,7 +1347,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
     if (size == 0) {
       // lazily create a default bag index for this type
-      Type type = this.typeSystem.getType(typeCode);
+      Type type = this.typeSystem.ll_getTypeForCode(typeCode);
       String defIndexName = getAutoIndexNameForType(type);
       FSIndexComparator comparator = createComparator();
       comparator.setType(type);

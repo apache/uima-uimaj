@@ -365,7 +365,7 @@ public class CASMgrSerializer implements Serializable {
     TypeImpl parent;
     // The smallest type is top, which doesn't inherit.
     for (int i = ts.getSmallestType() + 1; i < max; i++) {
-      parent = (TypeImpl) ts.getParent(ts.getType(i));
+      parent = (TypeImpl) ts.getParent(ts.ll_getTypeForCode(i));
       this.typeInheritance[i] = parent.getCode();
     }
   }
@@ -472,7 +472,7 @@ public class CASMgrSerializer implements Serializable {
       comp = ir.createComparator();
       // assert(pos == comparatorIndex[i]);
       pos = this.comparatorIndex[this.nameToIndexMap[i]];
-      type = cas.getTypeSystemImpl().getType(this.comparators[pos]);
+      type = cas.getTypeSystemImpl().ll_getTypeForCode(this.comparators[pos]);
       comp.setType(type);
       ++pos;
       next = this.nameToIndexMap[i] + 1;

@@ -435,7 +435,7 @@ public class XmiCasSerializer {
       for (int i = 0; i < feats.length; i++) {
         if (isFiltering) {
           // skip features that aren't in the target type system
-          String fullFeatName = cas.getTypeSystemImpl().getFeatureName(feats[i]);
+          String fullFeatName = cas.getTypeSystemImpl().ll_getFeatureForCode(feats[i]).getName();
           if (filterTypeSystem.getFeatureByFullName(fullFeatName) == null) {
             continue;
           }
@@ -700,7 +700,7 @@ public class XmiCasSerializer {
       for (int i = 0; i < feats.length; i++) {
         if (isFiltering) {
           // skip features that aren't in the target type system
-          String fullFeatName = cas.getTypeSystemImpl().getFeatureName(feats[i]);
+          String fullFeatName = cas.getTypeSystemImpl().ll_getFeatureForCode(feats[i]).getName();
           if (filterTypeSystem.getFeatureByFullName(fullFeatName) == null) {
             continue;
           }

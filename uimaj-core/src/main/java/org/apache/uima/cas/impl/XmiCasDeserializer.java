@@ -506,7 +506,7 @@ public class XmiCasDeserializer {
       int id = -1;
       String attrName, attrValue;
       final int typeCode = casBeingFilled.getHeapValue(addr);
-      final Type type = casBeingFilled.getTypeSystemImpl().getType(typeCode);
+      final Type type = casBeingFilled.getTypeSystemImpl().ll_getTypeForCode(typeCode);
       int thisSofaNum = 0;
 
       if (sofaTypeCode == typeCode) {

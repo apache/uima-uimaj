@@ -59,7 +59,7 @@ public class FeatureImpl implements Feature {
    * @return The domain type. This can not be <code>null</code>.
    */
   public Type getDomain() {
-    return this.ts.getType(this.ts.intro(this.code));
+    return this.ts.ll_getTypeForCode(this.ts.intro(this.code));
   }
 
   /**
@@ -68,7 +68,7 @@ public class FeatureImpl implements Feature {
    * @return The range type. This can not be <code>null</code>.
    */
   public Type getRange() {
-    return this.ts.getType(this.ts.range(this.code));
+    return this.ts.ll_getTypeForCode(this.ts.range(this.code));
   }
 
   /**

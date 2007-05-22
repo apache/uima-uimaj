@@ -501,16 +501,12 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    *          The code of the type.
    * @return A type object, or <code>null</code> if no such type exists.
    */
-  public Type getType(int typeCode) {
-    return (Type) this.types.get(typeCode);
-  }
+//  public Type getType(int typeCode) {
+//    return (Type) this.types.get(typeCode);
+//  }
 
   public String getTypeName(int typeCode) {
     return this.typeNameST.getSymbol(typeCode);
-  }
-
-  public String getFeatureName(int featCode) {
-    return this.featureNameST.getSymbol(featCode);
   }
 
   /**
@@ -881,8 +877,8 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     // if (t == null) {
     // System.out.println("Type is null");
     // }
-    List typesLocal = getProperlySubsumedTypes(getType(domain));
-    typesLocal.add(getType(domain));
+    List typesLocal = getProperlySubsumedTypes(ll_getTypeForCode(domain));
+    typesLocal.add(ll_getTypeForCode(domain));
     // For each type, check that the feature doesn't already exist.
     int max = typesLocal.size();
     for (int i = 0; i < max; i++) {
@@ -1066,7 +1062,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     final int numTypes = this.typeNameST.size();
     Type t;
     for (int i = 2; i <= numTypes; i++) {
-      t = this.getType(i);
+      t = this.ll_getTypeForCode(i);
       buf.append(getTypeString(t) + " < " + getTypeString(this.getParent(t)) + ";\n");
     } // Print feature declarations.
     final int numFeats = this.featureNameST.size();
