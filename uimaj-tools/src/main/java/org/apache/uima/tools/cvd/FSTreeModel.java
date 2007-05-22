@@ -142,7 +142,7 @@ public class FSTreeModel implements TreeModel {
     } else if (this.cas.isAbstractArrayType(domType)) {
       final int featAddr = this.cas.getFeatureValue(addr, ((FeatureImpl) feat).getCode());
       if (this.cas.isArrayType(this.cas.getTypeSystemImpl()
-              .getType(this.cas.getHeapValue(featAddr)))) {
+              .ll_getTypeForCode(this.cas.getHeapValue(featAddr)))) {
         return FSNode.ARRAY_FS;
       }
     }

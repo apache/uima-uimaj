@@ -328,7 +328,7 @@ public class FSNode extends FSTreeNode {
 
   Type getType() {
     CASImpl cas = this.fSTreeModel.getCas();
-    return cas.getTypeSystemImpl().getType(cas.getHeapValue((int) this.addr));
+    return cas.getTypeSystemImpl().ll_getTypeForCode(cas.getHeapValue((int) this.addr));
   }
 
   public boolean isAnnotation() {
