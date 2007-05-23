@@ -66,22 +66,60 @@ public class TestPearInstallationVerification extends TestCase {
   public void testAePearVerification() throws Exception {
     
      //get pear file to install
-    File pearFile = JUnitExtension.getFile("pearTests/DateTime.pear");
-    Assert.assertNotNull(pearFile);
+    File pearFile = JUnitExtension.getFile("pearTests/analysisEngine.pear");
+    Assert.assertNotNull("analysisEngine.pear file not found", pearFile);
     
     // Install PEAR package without verification
     PackageBrowser instPear = PackageInstaller.installPackage(
             this.tempInstallDir, pearFile, false);
     
     //check package browser
-    Assert.assertNotNull(instPear);
+    Assert.assertNotNull("PackageBrowser is null", instPear);
        
     InstallationTester installTester = new InstallationTester(instPear);
     TestStatus status = installTester.doTest();
     
     Assert.assertEquals(status.getRetCode(), TestStatus.TEST_SUCCESSFUL);
   }
-  
-  //TODO: create testcases for cc, ci, cr, cpe and ts pear packages
+
+  public void testCcPearVerification() throws Exception {
+    
+    //get pear file to install
+   File pearFile = JUnitExtension.getFile("pearTests/casConsumer.pear");
+   Assert.assertNotNull("casConsumer.pear file not found", pearFile);
+   
+   // Install PEAR package without verification
+   PackageBrowser instPear = PackageInstaller.installPackage(
+           this.tempInstallDir, pearFile, false);
+   
+   //check package browser
+   Assert.assertNotNull("PackageBrowser is null", instPear);
+      
+   InstallationTester installTester = new InstallationTester(instPear);
+   TestStatus status = installTester.doTest();
+   
+   Assert.assertEquals(status.getRetCode(), TestStatus.TEST_SUCCESSFUL);
+ }
+
+  public void testTsPearVerification() throws Exception {
+    
+    //get pear file to install
+   File pearFile = JUnitExtension.getFile("pearTests/typeSystem.pear");
+   Assert.assertNotNull("typeSystem.pear file not found", pearFile);
+   
+   // Install PEAR package without verification
+   PackageBrowser instPear = PackageInstaller.installPackage(
+           this.tempInstallDir, pearFile, false);
+   
+   //check package browser
+   Assert.assertNotNull("PackageBrowser is null", instPear);
+      
+   InstallationTester installTester = new InstallationTester(instPear);
+   TestStatus status = installTester.doTest();
+   
+   Assert.assertEquals(status.getRetCode(), TestStatus.TEST_SUCCESSFUL);
+ }
+
+  //TODO: create testcases for ci, cr, cpe pear packages
 
 }
