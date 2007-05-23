@@ -30,14 +30,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.StringTokenizer;
-import java.util.TreeMap;
 import java.util.jar.JarFile;
 import java.util.prefs.Preferences;
 
@@ -60,13 +53,14 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
-import org.apache.uima.internal.util.SystemEnvReader;
 import org.apache.uima.pear.tools.InstallationController;
 import org.apache.uima.pear.tools.InstallationDescriptor;
 import org.apache.uima.pear.tools.InstallationDescriptorHandler;
+import org.apache.uima.pear.tools.PackageBrowser;
 import org.apache.uima.pear.util.MessageRouter;
-import org.apache.uima.pear.util.ProcessUtil;
 import org.apache.uima.pear.util.UIMAUtil;
+import org.apache.uima.tools.cvd.CVD;
+import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.tools.images.Images;
 import org.apache.uima.tools.util.gui.AboutDialog;
 
@@ -208,10 +202,6 @@ public class InstallPear extends JFrame {
   private static InstallationDescriptor insdObject;
 
   private static String mainComponentRootPath;
-
-  private static Process cvdProcess = null;
-
-  private static Properties cvdProperties = null;
 
   private static boolean helpExists = true;
 
@@ -416,38 +406,6 @@ public class InstallPear extends JFrame {
   }
 
   /**
-   * Method that loads specified properties file. The properties file should be on the CLASSPATH.
-   * 
-   * @param propFileName
-   *          The specified properties file name.
-   * @return The Properties object loaded from the specified file.
-   * @throws IOException
-   *           If any I/O exception occurred.
-   */
-  private static Properties loadProperties(String propFileName) throws IOException {
-    Properties propObject = null;
-    InputStream propStream = null;
-    try {
-      propStream = InstallPear.class.getResourceAsStream(propFileName);
-      if (propStream == null)
-        throw new IOException(propFileName + " not found");
-      propObject = new Properties();
-      propObject.load(propStream);
-    } catch (IOException exc) {
-      throw exc;
-    } finally {
-      if (propStream != null) {
-        try {
-          propStream.close();
-        } catch (Exception e) {
-          // Ignore exceptions!
-        }
-      }
-    }
-    return (propObject != null) ? propObject : new Properties();
-  }
-
-  /**
    * This method runs the installed AE in CVD (Gladis).
    * 
    * @throws IOException
@@ -455,244 +413,22 @@ public class InstallPear extends JFrame {
    */
   private void runCVD() {
     try {
-      // load CVD properties
-      if (cvdProperties == null)
-        cvdProperties = loadProperties("cvd.properties");
 
-      // get CVD specific CLASSPATH
-      String cvdClassPath = System.getProperty("java.class.path");// cvdProperties.getProperty("env.CLASSPATH");
-
-      // get component specific PATH
-      String compPath = InstallationController
-              .buildComponentPath(mainComponentRootPath, insdObject);
-      // get component specific CLASSPATH
-      String compClassPath = InstallationController.buildComponentClassPath(mainComponentRootPath,
-              insdObject);
-      // get the rest of component specific env. vars
-      Properties compEnvVars = InstallationController.buildTableOfEnvVars(insdObject);
-
-      // build command array
-      ArrayList cmdArrayList = new ArrayList();
-      // set Java executable path - OS dependent
-      String osName = System.getProperty("os.name");
-      String javaHome = System.getProperty("java.home");
-      String javaExeName = (osName.indexOf("Windows") >= 0) ? "java.exe" : "java";
-      String javaExePath = null;
-      File javaExeFile = null;
-      // 1st - try 'java.home'/bin folder
-      javaExePath = javaHome + java.io.File.separator + "bin" + java.io.File.separator
-              + javaExeName;
-      javaExeFile = new File(javaExePath);
-      if (!javaExeFile.isFile()) {
-        // 2nd - try 'java.home'/jre/bin folder
-        javaExePath = javaHome + java.io.File.separator + "jre" + java.io.File.separator + "bin"
-                + java.io.File.separator + javaExeName;
-        javaExeFile = new java.io.File(javaExePath);
-      }
-      // start command with executable
-      cmdArrayList.add(javaExeFile.getAbsolutePath());
-      // add '-cp' JVM option
-      if (cvdClassPath.length() > 0 || compClassPath.length() > 0) {
-        cmdArrayList.add("-cp");
-        StringBuffer cpBuffer = new StringBuffer();
-        if (compClassPath.length() > 0)
-          cpBuffer.append(compClassPath);
-        if (cvdClassPath.length() > 0) {
-          if (cpBuffer.length() > 0)
-            cpBuffer.append(File.pathSeparatorChar);
-          cpBuffer.append(cvdClassPath);
-        }
-        cmdArrayList.add(cpBuffer.toString());
-      }
-      // add CVD JVM options
-      String jvmOptions = cvdProperties.getProperty("jvm.options").trim();
-      if (jvmOptions != null && jvmOptions.length() > 0) {
-        StringTokenizer tokenList = new StringTokenizer(jvmOptions, " ");
-        while (tokenList.hasMoreTokens()) {
-          String token = tokenList.nextToken();
-//          // substitute UIMA_HOME
-//          cmdArrayList.add(token.replaceAll("%UIMA_HOME%", System.getProperty("uima.home").replace(
-//                  '\\', '/')));
-          cmdArrayList.add(token);
-        }
-      }
-      // add component-specific JVM options (env.vars)
-      Enumeration compEnvKeys = compEnvVars.keys();
-      while (compEnvKeys.hasMoreElements()) {
-        // set component-specific env.var. as JVM option
-        String key = (String) compEnvKeys.nextElement();
-        String value = compEnvVars.getProperty(key);
-        // if the same JVM option already set, override it
-        boolean valueSet = false;
-        for (int i = 0; i < cmdArrayList.size(); i++) {
-          String item = (String) cmdArrayList.get(i);
-          if (item.startsWith("-D" + key + "=")) {
-            item = "-D" + key + "=" + value;
-            cmdArrayList.set(i, item);
-            valueSet = true;
-            break;
-          }
-        }
-        // if the JVM option is still not set, do it now
-        if (!valueSet)
-          cmdArrayList.add("-D" + key + "=" + value);
-      }
-      // add java.library.path
-      boolean addJavaLibPath = (compPath.length() > 0) ? true : false;
-      Enumeration cvdPropKeys = cvdProperties.keys();
-      while (cvdPropKeys.hasMoreElements()) {
-        String key = (String) cvdPropKeys.nextElement();
-        if (key.startsWith("jvm.arg.")) {
-          String arg = key.substring(8).trim();
-//          // substitute UIMA_HOME
-//          String value = cvdProperties.getProperty(key).replaceAll("%UIMA_HOME%",
-//                  System.getProperty("uima.home").replace('\\', '/'));
-          String value = cvdProperties.getProperty(key);
-          // if arg = java.library.path, add component path
-          if (arg.equals("java.library.path")) {
-            if (addJavaLibPath) {
-              value = compPath + File.pathSeparator + value;
-              addJavaLibPath = false;
-            }
-          }
-          cmdArrayList.add("-D" + arg + "=" + value);
-        }
-      }
-      // add java.library.path if not added before
-      if (addJavaLibPath)
-        cmdArrayList.add("-Djava.library.path=" + compPath);
-      // add main class
-      String mainClass = cvdProperties.getProperty("main.class").trim();
-      cmdArrayList.add(mainClass);
-      // add main class args sorted by arg name
-      cvdPropKeys = cvdProperties.keys();
-      TreeMap mainClassArgs = new TreeMap();
-      while (cvdPropKeys.hasMoreElements()) {
-        String key = (String) cvdPropKeys.nextElement();
-        if (key.startsWith("main.class.arg.")) {
-//          // substitute UIMA_HOME
-//          String value = cvdProperties.getProperty(key).replaceAll("%UIMA_HOME%",
-//                  System.getProperty("uima.home").replace('\\', '/'));
-        	String value = cvdProperties.getProperty(key);
-          // substitute DESCRIPTOR
-          if (value.equals("%DESCRIPTOR%"))
-            value = insdObject.getMainComponentDesc();
-          // add to TreeMap for sorting
-          mainClassArgs.put(key, value);
-        }
-      }
-      // add args sorted by arg name
-      Iterator mainClassArgKeys = mainClassArgs.keySet().iterator();
-      while (mainClassArgKeys.hasNext()) {
-        String key = (String) mainClassArgKeys.next();
-        int index = key.indexOf('.', 15);
-        String arg = key.substring(index + 1).trim();
-        String value = (String) mainClassArgs.get(key);
-        cmdArrayList.add(arg);
-        if (value.length() > 0)
-          cmdArrayList.add(value);
-      }
-      // copy cmd. array list to string array
-      String[] cmdArray = new String[cmdArrayList.size()];
-      cmdArrayList.toArray(cmdArray);
-      if (System.getProperty("DEBUG") != null) {
-        System.out.println("[DEBUG:runCVD()]: cmdArray =>");
-        for (int i = 0; i < cmdArray.length; i++)
-          System.out.println("\t" + cmdArray[i]);
-      }
-
-      // build array of environment variables
-      Properties sysEnvVars = SystemEnvReader.getEnvVars();
-      if (System.getProperty("DEBUG") != null) {
-        System.out.println("[DEBUG:runCVD()]: system env vars =>");
-        Enumeration keys = sysEnvVars.keys();
-        while (keys.hasMoreElements()) {
-          String key = (String) keys.nextElement();
-          String value = sysEnvVars.getProperty(key);
-          System.out.println("\t" + key + "=" + value);
-        }
-      }
-      ArrayList envArrayList = new ArrayList();
-      Enumeration sysEnvKeys = sysEnvVars.keys();
-      boolean classPathAdded = false;
-      boolean pathAdded = false;
-      while (sysEnvKeys.hasMoreElements()) {
-        String sysKey = (String) sysEnvKeys.nextElement();
-        String sysValue = sysEnvVars.getProperty(sysKey);
-        String value = sysValue;
-        // append component/cvd path and classpath
-        if (sysKey.equalsIgnoreCase("CLASSPATH")) {
-          value = compClassPath + File.pathSeparator + cvdClassPath + File.pathSeparator
-                  + sysValue;
-          classPathAdded = true;
-        } else if (sysKey.equalsIgnoreCase("PATH") || sysKey.equalsIgnoreCase("LD_LIBRARY_PATH")) {
-          value = compPath + File.pathSeparator + sysValue;
-          pathAdded = true;
-        }
-        // add to the env. array
-        envArrayList.add(sysKey + "=" + value);
-      }
-      // check CLASSPATH and PATH
-      if (!classPathAdded) {
-        String classPath = compClassPath + File.pathSeparator + cvdClassPath;
-        envArrayList.add("CLASSPATH=" + classPath);
-      }
-      if (!pathAdded) {
-        String path = compPath;
-        envArrayList.add("PATH=" + path);
-        envArrayList.add("LD_LIBRARY_PATH=" + path);
-      }
-      // add the rest of component env. vars
-      Enumeration cmpEnvKeys = compEnvVars.keys();
-      while (cmpEnvKeys.hasMoreElements()) {
-        String cmpKey = (String) cmpEnvKeys.nextElement();
-        String cmpValue = compEnvVars.getProperty(cmpKey);
-        envArrayList.add(cmpKey + "=" + cmpValue);
-      }
-      if (System.getProperty("DEBUG") != null) {
-        System.out.println("[DEBUG:runCVD()]: envArrayList w/o CVD =>");
-        Iterator list = envArrayList.iterator();
-        while (list.hasNext())
-          System.out.println("\t" + (String) list.next());
-      }
-      // add the rest of cvd env. vars
-      cvdPropKeys = cvdProperties.keys();
-      while (cvdPropKeys.hasMoreElements()) {
-        String key = (String) cvdPropKeys.nextElement();
-        if (key.startsWith("env.") && !key.equals("env.PATH") && !key.equals("env.CLASSPATH")) {
-          String arg = key.substring(4).trim();
-//          String value = cvdProperties.getProperty(key).replaceAll("%UIMA_HOME%",
-//                  System.getProperty("uima.home").replace('\\', '/'));
-          String value = cvdProperties.getProperty(key);
-          envArrayList.add(arg + "=" + value);
-        }
-      }
-      // copy env. array list to string array
-      String[] envArray = new String[envArrayList.size()];
-      envArrayList.toArray(envArray);
-      if (System.getProperty("DEBUG") != null) {
-        System.out.println("[DEBUG:runCVD()]: envArray =>");
-        for (int i = 0; i < envArray.length; i++)
-          System.out.println("\t" + envArray[i]);
-      }
-
-      // add shutdown hook to terminate CVD process
-      Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-        public void run() {
-          try {
-            if (cvdProcess != null) {
-              cvdProcess.destroy();
-              cvdProcess.waitFor();
-            }
-          } catch (Throwable e) {
-            // Ignore exceptions!
-          }
-        }
-      }));
-
-      // start CVD GUI
-      cvdProcess = Runtime.getRuntime().exec(cmdArray, envArray);
-      new ProcessUtil.Runner(cvdProcess, "CVD");
+      //create PackageBrowser object
+      PackageBrowser pkgBrowser = new PackageBrowser(new File(mainComponentRootPath));
+      
+      //get pear descriptor
+      String pearDesc = pkgBrowser.getComponentPearDescPath();
+      
+      //start CVD
+      MainFrame frame = CVD.createMainFrame();
+      
+      //load pear descriptor
+      frame.loadAEDescriptor(new File(pearDesc));
+      
+      //run CVD
+      frame.runAE(true);
+      
     } catch (Throwable e) {
       pearConsole.append(" Error in runCVD() " + e.toString());
       if (System.getProperty("DEBUG") != null) {
