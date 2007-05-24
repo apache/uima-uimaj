@@ -30,6 +30,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.impl.XCASDeserializer;
+import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.CollectionReader_ImplBase;
@@ -88,7 +89,9 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
 
   private int mCurrentIndex;
 
-  private boolean mXCAS;
+  private boolean mTEXT;
+
+  private String mXCAS;
 
   /**
    * @see org.apache.uima.collection.CollectionReader_ImplBase#initialize()
@@ -98,8 +101,8 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
     File directory = new File(dirPath);
     mEncoding = (String) getConfigParameterValue(PARAM_ENCODING);
     mLanguage = (String) getConfigParameterValue(PARAM_LANGUAGE);
-    String tempXCAS = (String) getConfigParameterValue(PARAM_XCAS);
-    mXCAS = "true".equalsIgnoreCase(tempXCAS);
+    mXCAS = (String) getConfigParameterValue(PARAM_XCAS);
+    mTEXT = !("xcas".equalsIgnoreCase(mXCAS) || "xmi".equalsIgnoreCase(mXCAS));
 
     mCurrentIndex = 0;
 
@@ -140,7 +143,7 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
     // open input stream to file
     File file = (File) mFiles.get(mCurrentIndex++);
     FileInputStream fis = new FileInputStream(file);
-    if (!mXCAS) {
+    if (mTEXT) {
       try {
         // if there's a CAS Initializer, call it
         if (getCasInitializer() != null) {
@@ -176,7 +179,12 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
     // XCAS input files
     else {
       try {
-        XCASDeserializer.deserialize(fis, aCAS);
+        if (mXCAS.equalsIgnoreCase("XCAS")) {
+          XCASDeserializer.deserialize(fis, aCAS);
+        }
+        else {
+          XmiCasDeserializer.deserialize(fis, aCAS);
+        }
       } catch (SAXException e) {
         throw new CollectionException(e);
       } finally {

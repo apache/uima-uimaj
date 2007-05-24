@@ -32,6 +32,7 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.impl.XCASSerializer;
+import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.collection.CasConsumer_ImplBase;
 import org.apache.uima.examples.SourceDocumentInformation;
@@ -81,7 +82,9 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
 
   private int mDocNum;
 
-  private boolean mXCAS;
+  private String mXCAS;
+  
+  private boolean mTEXT;
 
   public void initialize() throws ResourceInitializationException {
     mDocNum = 0;
@@ -90,12 +93,8 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
       mOutputDir.mkdirs();
     }
     cas2xml = new CasToInlineXml();
-    String tempXCAS = (String) getConfigParameterValue(PARAM_XCAS);
-    if (0 == tempXCAS.compareToIgnoreCase("true")) {
-      mXCAS = true;
-    } else {
-      mXCAS = false;
-    }
+    mXCAS = (String) getConfigParameterValue(PARAM_XCAS);
+    mTEXT = !("xcas".equalsIgnoreCase(mXCAS) || "xmi".equalsIgnoreCase(mXCAS));
   }
 
   /**
@@ -122,7 +121,7 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
     File outFile = null;
     boolean hasDefaultView = false;
 
-    if (!mXCAS) {
+    if (mTEXT) {
       // get the default View if it exists
       try {
         jcas = aCAS.getView(CAS.NAME_DEFAULT_SOFA).getJCas();
@@ -158,9 +157,15 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
         String xmlAnnotations = cas2xml.generateXML(aCAS);
         outStream.write(xmlAnnotations.getBytes("UTF-8"));
       } else {
-        XCASSerializer ser = new XCASSerializer(aCAS.getTypeSystem());
         XMLSerializer xmlSer = new XMLSerializer(outStream, false);
-        ser.serialize(aCAS, xmlSer.getContentHandler());
+        if (mXCAS.equalsIgnoreCase("xcas")) {
+          XCASSerializer ser = new XCASSerializer(aCAS.getTypeSystem());
+          ser.serialize(aCAS, xmlSer.getContentHandler());
+        }
+        else {
+          XmiCasSerializer ser = new XmiCasSerializer(aCAS.getTypeSystem());
+          ser.serialize(aCAS, xmlSer.getContentHandler());
+        }
       }
     } catch (CASException e) {
       throw new ResourceProcessException(e);

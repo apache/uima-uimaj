@@ -94,6 +94,8 @@ public class RunAE implements StatusCallbackListener {
 
   private boolean xcasInput = false;
 
+  private boolean xmiInput = false;
+
   int docsProcessed;
 
   private CollectionProcessingEngine mCPE;
@@ -126,8 +128,11 @@ public class RunAE implements StatusCallbackListener {
               .getAbsolutePath());
       crSettings.setParameterValue(FileSystemCollectionReader.PARAM_ENCODING, encoding);
       crSettings.setParameterValue(FileSystemCollectionReader.PARAM_LANGUAGE, language);
-      crSettings.setParameterValue(FileSystemCollectionReader.PARAM_XCAS, Boolean
-              .toString(xcasInput));
+      if (xcasInput) {
+        crSettings.setParameterValue(FileSystemCollectionReader.PARAM_XCAS, "XCAS");
+      } else if (xmiInput) {
+        crSettings.setParameterValue(FileSystemCollectionReader.PARAM_XCAS, "XMI");
+      }
 
       // if XML tag was specified, configure XmlDetagger annotator and add to CPE
       CpeCasProcessor xmlDetaggerCasProc = null;
@@ -159,8 +164,11 @@ public class RunAE implements StatusCallbackListener {
         casCon.setConfigurationParameterSettings(consumerSettings);
         consumerSettings.setParameterValue(InlineXmlCasConsumer.PARAM_OUTPUTDIR, outputDir
                 .getAbsolutePath());
-        consumerSettings.setParameterValue(InlineXmlCasConsumer.PARAM_XCAS, Boolean
-                .toString(xcasInput));
+        if (xcasInput) {
+          consumerSettings.setParameterValue(InlineXmlCasConsumer.PARAM_XCAS, "XCAS");
+        } else if (xmiInput) {
+          consumerSettings.setParameterValue(InlineXmlCasConsumer.PARAM_XCAS, "XMI");
+        }
         casCon.setMaxErrorCount(0);
         cpeDesc.addCasProcessor(casCon);
       }
@@ -232,7 +240,7 @@ public class RunAE implements StatusCallbackListener {
     } else if (genProgressMessages) {
       // retreive the filename of the input file from the CAS
       // (it was put there by the FileSystemCollectionReader)
-      if (!xcasInput) {
+      if (!(xcasInput || xmiInput)) {
         Type fileLocType = aCas.getTypeSystem().getType(
                 "org.apache.uima.examples.SourceDocumentInformation");
         Feature fileNameFeat = fileLocType.getFeatureByBaseName("uri");
@@ -308,6 +316,7 @@ public class RunAE implements StatusCallbackListener {
     System.err.println("-s<x> (Stats level) - determines the verboseness of "
             + "performance statistics.  s0=none, s1=brief, s2=full.  The default is brief.");
     System.err.println("-x - process input files as XCAS files.");
+    System.err.println("-xmi - process input files as XmiCas files.");
 
   }
 
@@ -354,6 +363,9 @@ public class RunAE implements StatusCallbackListener {
       } else if (arg.equals("-x")) // XCAS file input
       {
         xcasInput = true;
+      } else if (arg.equals("-xmi")) // XMI file input
+      {
+        xmiInput = true;
       } else // one of the standard params - whichever we haven't read yet
       {
         if (aeSpecifierFile == null) {
