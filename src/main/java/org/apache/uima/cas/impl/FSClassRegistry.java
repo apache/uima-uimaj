@@ -102,6 +102,7 @@ public class FSClassRegistry {
         } 
         jcasView.putJfsFromCaddr(addr, fs);
       }
+      initargs[0] = initargs[1] = null; // better gc
       return fs;
     }
  
