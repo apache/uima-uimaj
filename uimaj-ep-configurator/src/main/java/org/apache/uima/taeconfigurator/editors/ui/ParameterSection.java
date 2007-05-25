@@ -673,8 +673,8 @@ public class ParameterSection extends AbstractSectionParm {
   private String[] removeOverride(ConfigurationParameter cp, int i) {
     String[] oldOverrides = cp.getOverrides();
     String[] newOverrides = new String[oldOverrides.length - 1];
-    if (i - 1 > 0)
-      System.arraycopy(oldOverrides, 0, newOverrides, 0, i - 1);
+    if (i > 0)
+      System.arraycopy(oldOverrides, 0, newOverrides, 0, i);
     if (oldOverrides.length - 1 - i > 0)
       System.arraycopy(oldOverrides, i + 1, newOverrides, i, oldOverrides.length - 1 - i);
     return newOverrides;
@@ -862,6 +862,7 @@ public class ParameterSection extends AbstractSectionParm {
     cp.setOverrides(addOverrideToArray(cp.getOverrides(), override));
     addOverrideToGUI(parent, override);
     parent.setExpanded(true);
+    commonActionFinish();
   }
 
   private void alterExistingConfigurationParameter(AddParameterDialog dialog,
