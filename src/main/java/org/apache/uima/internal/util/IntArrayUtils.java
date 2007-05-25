@@ -32,29 +32,33 @@ public final class IntArrayUtils {
     return ensure_size(array, req, default_growth_factor, default_multiplication_limit);
   }
 
+  // done this way to allow more inlining
   public static final int[] ensure_size(int[] array, int req, int growth_factor,
           int multiplication_limit) {
     if (array.length < req) {
-      int new_array_size;
-      if (array.length > 0) {
-        new_array_size = array.length;
-      } else {
-        return new int[req];
-      }
-      while (new_array_size < req) {
-        if (new_array_size < multiplication_limit) {
-          new_array_size = new_array_size * growth_factor;
-        } else {
-          new_array_size = new_array_size + multiplication_limit;
-        }
-      }
-      int[] new_array = new int[new_array_size];
-      System.arraycopy(array, 0, new_array, 0, array.length);
-      array = new_array;
+      return expand_size(array, req, growth_factor, multiplication_limit);
     }
     return array;
   }
 
+  private static final int[] expand_size(int[] array, int req, int growth_factor,
+          int multiplication_limit) {
+    if (array.length == 0)
+      return new int[req];
+    int new_array_size = array.length;
+    
+    while (new_array_size < req) {
+      if (new_array_size < multiplication_limit) {
+        new_array_size = new_array_size * growth_factor;
+      } else {
+        new_array_size = new_array_size + multiplication_limit;
+      }
+    }
+    int[] new_array = new int[new_array_size];
+    System.arraycopy(array, 0, new_array, 0, array.length);
+    return new_array;
+  }
+  
   public static final boolean[] ensure_size(boolean[] array, int req, int growth_factor,
           int multiplication_limit) {
     if (array.length < req) {
