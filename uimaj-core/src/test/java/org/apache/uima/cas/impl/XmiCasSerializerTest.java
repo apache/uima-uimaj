@@ -61,7 +61,6 @@ public class XmiCasSerializerTest extends TestCase {
     // Temp output file, deleted on exit.
     this.outputFile = new File(JUnitExtension.getFile("ExampleCas"),
         "xmiSerializerInvalidCharsTestOutput.xmi");
-    System.out.println(this.outputFile.getAbsolutePath());
     this.typeSystemDesc = UIMAFramework.getXMLParser().parseTypeSystemDescription(
         new XMLInputSource(typeSystemFile));
   }
