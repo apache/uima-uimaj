@@ -41,6 +41,7 @@ import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.XmiArrayElement;
 import org.apache.uima.internal.util.IntStack;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementName;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
@@ -800,6 +801,7 @@ public class XmiCasSerializer {
             break;
           }
         }
+        checkXml10String(attrValue);
         if (attrValue != null && featName != null) {
           addAttribute(attrs, featName, attrValue);
         }
@@ -822,10 +824,19 @@ public class XmiCasSerializer {
       return childElements;
     }
 
+    private final void checkXml10String(String s) throws SAXParseException {
+      final int index = XMLUtils.checkForNonXmlCharacters(s);
+      if (index >= 0) {
+        throw new SAXParseException("Trying to serialize non-XML 1.0 character: " + s.charAt(index)
+            + ", 0x" + Integer.toHexString(s.charAt(index)), null);
+      }
+    }
+    
     private void addText(String text) throws SAXException {
+      checkXml10String(text);
       ch.characters(text.toCharArray(), 0, text.length());
     }
-
+    
     private void addAttribute(AttributesImpl attrs, String attrName, String attrValue) {
       attrs.addAttribute(null, null, attrName, cdataType, attrValue);
     }
