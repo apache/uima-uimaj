@@ -50,7 +50,7 @@ public class IndexTreeSelectionListener implements TreeSelectionListener {
     this.main.setAnnotationIndex(label.equals(CAS.STD_ANNOTATION_INDEX));
     this.main.setIndex(this.main.getCas().getIndexRepository().getIndex(label, type));
     this.main.updateFSTree(label, this.main.getIndex());
-    this.main.getAllAnnotationViewerItem().setEnabled(((CASImpl) this.main.getCas())
+    this.main.setAllAnnotationViewerItemEnable(((CASImpl) this.main.getCas())
         .isAnnotationType(type));
     this.main.getTextArea().getCaret().setVisible(true);
   }

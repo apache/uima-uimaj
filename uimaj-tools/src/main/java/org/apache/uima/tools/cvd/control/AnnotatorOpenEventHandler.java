@@ -52,7 +52,7 @@ public class AnnotatorOpenEventHandler implements ActionListener {
         this.main.setAeDescriptorFile(fileChooser.getSelectedFile());
         this.main.loadAEDescriptor(this.main.getAeDescriptorFile());
       }
-      this.main.getAllAnnotationViewerItem().setEnabled(false);
+      this.main.setAllAnnotationViewerItemEnable(false);
     } finally {
       this.main.resetCursor();
     }

@@ -45,7 +45,7 @@ public class NewTextEventHandler implements ActionListener {
     }
     this.main.setTitle();
     this.main.resetTrees();
-    this.main.getFileSaveItem().setEnabled(false);
+    this.main.setSaveTextFileEnable(false);
     this.main.getUndoMgr().discardAllEdits();
     this.main.setFileStatusMessage();
     this.main.setStatusbarMessage("Text area cleared.");

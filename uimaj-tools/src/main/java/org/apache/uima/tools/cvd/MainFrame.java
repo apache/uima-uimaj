@@ -146,6 +146,8 @@ import org.apache.uima.tools.cvd.control.UndoMgr;
 import org.apache.uima.tools.cvd.control.XCASFileOpenEventHandler;
 import org.apache.uima.tools.cvd.control.XCASSaveHandler;
 import org.apache.uima.tools.cvd.control.XCASSaveTSHandler;
+import org.apache.uima.tools.cvd.control.XmiCasFileOpenHandler;
+import org.apache.uima.tools.cvd.control.XmiCasSaveHandler;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
@@ -279,6 +281,10 @@ public class MainFrame extends JFrame {
   private JMenuItem xcasReadItem;
 
   private JMenuItem xcasWriteItem;
+  
+  private JMenuItem xmiCasReadItem;
+  
+  private JMenuItem xmiCasWriteItem;
 
   private JMenuItem typeSystemWriteItem;
 
@@ -868,6 +874,8 @@ public class MainFrame extends JFrame {
 
   private void createFileMenu() {
     this.fileMenu = new JMenu("File");
+    
+    // Standard text file menu items.
     JMenuItem newTextItem = new JMenuItem("New Text...", KeyEvent.VK_N);
     newTextItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
     newTextItem.addActionListener(new NewTextEventHandler(this));
@@ -893,6 +901,8 @@ public class MainFrame extends JFrame {
     this.recentTextFileMenu.setMnemonic(KeyEvent.VK_U);
     this.fileMenu.add(this.recentTextFileMenu);
     this.fileMenu.addSeparator();
+    
+    // Color preferences
     JMenuItem colorPrefsOpenItem = new JMenuItem("Load Color Settings", KeyEvent.VK_L);
     colorPrefsOpenItem.addActionListener(new ColorPrefsOpenHandler(this));
     this.fileMenu.add(colorPrefsOpenItem);
@@ -900,29 +910,55 @@ public class MainFrame extends JFrame {
     colorPrefsSaveItem.addActionListener(new ColorPrefsSaveHandler(this));
     this.fileMenu.add(colorPrefsSaveItem);
     this.fileMenu.addSeparator();
+    
+    // Reading and writing type system files.
     this.typeSystemReadItem = new JMenuItem("Read Type System File");
     this.typeSystemReadItem.setEnabled(true);
     this.typeSystemReadItem.addActionListener(new TypeSystemFileOpenEventHandler(this));
     this.fileMenu.add(this.typeSystemReadItem);
     this.typeSystemWriteItem = new JMenuItem("Write Type System File");
-    this.typeSystemWriteItem.setEnabled(false);
     this.typeSystemWriteItem.addActionListener(new XCASSaveTSHandler(this));
     this.fileMenu.add(this.typeSystemWriteItem);
     this.fileMenu.addSeparator();
-    this.xcasWriteItem = new JMenuItem("Write XCAS File", KeyEvent.VK_W);
-    this.xcasWriteItem.setEnabled(false);
-    this.xcasWriteItem.addActionListener(new XCASSaveHandler(this));
-    this.fileMenu.add(this.xcasWriteItem);
+
+    // Reading and writing XMI CAS files.
+    this.xmiCasReadItem = new JMenuItem("Read XMI CAS File");
+    this.xmiCasReadItem.addActionListener(new XmiCasFileOpenHandler(this));
+    this.fileMenu.add(this.xmiCasReadItem);
+    this.xmiCasWriteItem = new JMenuItem("Write XMI CAS File");
+    this.xmiCasWriteItem.addActionListener(new XmiCasSaveHandler(this));
+    this.fileMenu.add(this.xmiCasWriteItem);
+    this.fileMenu.addSeparator();
+    
+    // Reading and writing old-style XCAS files.
     this.xcasReadItem = new JMenuItem("Read XCAS File", KeyEvent.VK_R);
     this.xcasReadItem.addActionListener(new XCASFileOpenEventHandler(this));
-    this.xcasReadItem.setEnabled(false);
     this.fileMenu.add(this.xcasReadItem);
+    this.xcasWriteItem = new JMenuItem("Write XCAS File", KeyEvent.VK_W);
+    this.xcasWriteItem.addActionListener(new XCASSaveHandler(this));
+    this.fileMenu.add(this.xcasWriteItem);
     this.fileMenu.addSeparator();
     JMenuItem exit = new JMenuItem("Exit", KeyEvent.VK_X);
     exit.addActionListener(new SystemExitHandler(this));
     this.fileMenu.add(exit);
+    
+    // Disable menu items that can't be executed yet.
+    this.typeSystemWriteItem.setEnabled(false);
+    setEnableCasFileReading(false);
+    setEnableCasFileWriting();
   }
 
+  public final void setEnableCasFileReading(boolean enable) {
+    this.xcasReadItem.setEnabled(enable);
+    this.xmiCasReadItem.setEnabled(enable);
+  }
+  
+  public final void setEnableCasFileWriting() {
+    final boolean enable = (this.cas != null);
+    this.xcasWriteItem.setEnabled(enable);
+    this.xmiCasWriteItem.setEnabled(enable);
+  }
+  
   private final void addCursorOwningComponent(Component comp) {
     this.cursorOwningComponents.add(comp);
   }
@@ -941,9 +977,6 @@ public class MainFrame extends JFrame {
     if (this.cursorCache == null) {
       return;
     }
-    // assert(this.cursorCache != null);
-    // assert(this.cursorCache.size() ==
-    // this.cursorOwningComponents.size());
     for (int i = 0; i < this.cursorOwningComponents.size(); i++) {
       Component comp = (Component) this.cursorOwningComponents.get(i);
       comp.setCursor((Cursor) this.cursorCache.get(i));
@@ -1250,17 +1283,6 @@ public class MainFrame extends JFrame {
   }
 
   public void setFileStatusMessage() {
-    // if (this.textFile == null)
-    // {
-    // fileStatus.setText("(No Text File Loaded)");
-    // fileStatus.setToolTipText("No text file loaded.");
-    // } else
-    // {
-    // fileStatus.setText(textFile.getName());
-    // fileStatus.setToolTipText(
-    // "Currently loaded text file: " + textFile.getAbsolutePath());
-    // }
-    // statusPanel.revalidate();
     Border textBorder;
     if (this.textFile == null) {
       textBorder = BorderFactory.createTitledBorder(this.textTitleBorder, "New Text Buffer");
@@ -1454,13 +1476,12 @@ public class MainFrame extends JFrame {
 
       // Destroy old AE.
       if (this.ae != null) {
+        destroyAe();
         this.acdItem.setEnabled(false);
-        this.xcasWriteItem.setEnabled(false);
+        setEnableCasFileWriting();
         this.tsViewerItem.setEnabled(false);
         this.reRunMenu.setEnabled(false);
         this.runOnCasMenuItem.setEnabled(false);
-        this.ae.destroy();
-        this.ae = null;
       }
 
       // get Resource Specifier from XML file
@@ -1479,10 +1500,10 @@ public class MainFrame extends JFrame {
       this.cas = this.ae.newCAS();
       this.acdItem.setEnabled(true);
       this.tsViewerItem.setEnabled(true);
-      this.xcasWriteItem.setEnabled(true);
-      this.xcasReadItem.setEnabled(true);
-      this.reRunMenu.setEnabled(true);
       this.typeSystemWriteItem.setEnabled(true);
+      setEnableCasFileReading(true);
+      setEnableCasFileWriting();
+      this.reRunMenu.setEnabled(true);
 
       // reset sofa combo box with just the initial view
       this.disableSofaListener = true;
@@ -1965,12 +1986,9 @@ public class MainFrame extends JFrame {
     this.isDirty = isDirty;
   }
 
-  public Action getCopyAction() {
-    return this.copyAction;
-  }
-
-  public Action getCutAction() {
-    return this.cutAction;
+  public void setCutCopyEnabled(boolean enable) {
+    this.cutAction.setEnabled(enable);
+    this.copyAction.setEnabled(enable);
   }
 
   public Properties getPreferences() {
@@ -2009,8 +2027,8 @@ public class MainFrame extends JFrame {
     this.index = index;
   }
 
-  public JMenuItem getAllAnnotationViewerItem() {
-    return this.allAnnotationViewerItem;
+  public void setAllAnnotationViewerItemEnable(boolean enabled) {
+    this.allAnnotationViewerItem.setEnabled(enabled);
   }
 
   public File getFileOpenDir() {
@@ -2029,16 +2047,16 @@ public class MainFrame extends JFrame {
     this.textFile = textFile;
   }
 
-  public JMenuItem getFileSaveItem() {
-    return this.fileSaveItem;
+  public void setSaveTextFileEnable(boolean enabled) {
+    this.fileSaveItem.setEnabled(enabled);
   }
 
   public UndoMgr getUndoMgr() {
     return this.undoMgr;
   }
 
-  public JMenuItem getUndoItem() {
-    return this.undoItem;
+  public void setUndoEnabled(boolean enabled) {
+    this.undoItem.setEnabled(enabled);
   }
 
   public File getXcasFileOpenDir() {
@@ -2049,54 +2067,35 @@ public class MainFrame extends JFrame {
     this.xcasFileOpenDir = xcasFileOpenDir;
   }
 
-  public boolean isDisableSofaListener() {
-    return this.disableSofaListener;
-  }
-
   public void setDisableSofaListener(boolean disableSofaListener) {
     this.disableSofaListener = disableSofaListener;
-  }
-
-  public JComboBox getSofaSelectionComboBox() {
-    return this.sofaSelectionComboBox;
-  }
-
-  public void setSofaSelectionComboBox(JComboBox sofaSelectionComboBox) {
-    this.sofaSelectionComboBox = sofaSelectionComboBox;
-  }
-
-  public JPanel getSofaSelectionPanel() {
-    return this.sofaSelectionPanel;
-  }
-
-  public void setSofaSelectionPanel(JPanel sofaSelectionPanel) {
-    this.sofaSelectionPanel = sofaSelectionPanel;
   }
 
   public void setCas(CAS cas) {
     this.cas = cas;
   }
 
-  public JMenuItem getRunOnCasMenuItem() {
-    return this.runOnCasMenuItem;
+  public void setRunOnCasEnabled() {
+    // Enable the "Run on CAS" menu item when we have both an AE and a CAS.
+    this.runOnCasMenuItem.setEnabled((this.ae != null) && (this.cas != null));
   }
 
-  public void setAe(AnalysisEngine ae) {
-    this.ae = ae;
+  public void destroyAe() {
+    this.cas = null;
+    if (this.ae != null) {
+      this.ae.destroy();
+      this.ae = null;
+    }
   }
 
-  public JMenuItem getReRunMenu() {
-    return this.reRunMenu;
+  public void setRerunEnabled(boolean enabled) {
+    this.reRunMenu.setEnabled(enabled);
   }
 
-  public JMenuItem getTsViewerItem() {
-    return this.tsViewerItem;
+  public void setTypeSystemViewerEnabled(boolean enabled) {
+    this.tsViewerItem.setEnabled(enabled);
   }
-
-  public JMenuItem getXcasReadItem() {
-    return this.xcasReadItem;
-  }
-
+  
   public File getColorSettingsDir() {
     return this.colorSettingsDir;
   }
@@ -2171,6 +2170,64 @@ public class MainFrame extends JFrame {
 
   public void setCodePagePrefsList(String codePagePrefsList) {
     this.codePagePrefsList = codePagePrefsList;
+  }
+
+  /**
+   * @param handler TODO
+   * 
+   */
+  public void handleSofas() {
+    // Populate sofa combo box with the names of all text
+    // Sofas in the CAS
+    setDisableSofaListener(true);
+    String currentView = (String) this.sofaSelectionComboBox.getSelectedItem();
+    this.sofaSelectionComboBox.removeAllItems();
+    this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
+    Iterator sofas = ((CASImpl) getCas()).getBaseCAS().getSofaIterator();
+    Feature sofaIdFeat = getCas().getTypeSystem().getFeatureByFullName(
+        CAS.FEATURE_FULL_NAME_SOFAID);
+    boolean nonDefaultSofaFound = false;
+    while (sofas.hasNext()) {
+      SofaFS sofa = (SofaFS) sofas.next();
+      String sofaId = sofa.getStringValue(sofaIdFeat);
+      if (!CAS.NAME_DEFAULT_SOFA.equals(sofaId)) {
+        this.sofaSelectionComboBox.addItem(sofaId);
+        nonDefaultSofaFound = true;
+      }
+    }
+    // reuse last selected view if found in new CAS
+    int newIndex = 0;
+    String newView = CAS.NAME_DEFAULT_SOFA;
+    for (int i = 0; i < this.sofaSelectionComboBox.getItemCount(); i++) {
+      if (currentView.equals(this.sofaSelectionComboBox.getItemAt(i))) {
+        newIndex = i;
+        newView = currentView;
+        break;
+      }
+    }
+    // make sofa selector visible if any text sofa other
+    // than the default was found
+    this.sofaSelectionPanel.setVisible(nonDefaultSofaFound);
+    setCas(getCas().getView(newView));
+    setDisableSofaListener(false);
+  
+    this.sofaSelectionComboBox.setSelectedIndex(newIndex);
+    String text = getCas().getDocumentText();
+    if (text == null) {
+      text = getCas().getSofaDataURI();
+      if (text != null) {
+        text = "SofaURI = " + text;
+      } else {
+        if (getCas().getSofaDataArray() != null) {
+          text = "Sofa array with mime type = "
+              + getCas().getSofa().getSofaMime();
+        }
+      }
+    }
+    getTextArea().setText(text);
+    if (text == null) {
+      getTextArea().repaint();
+    }
   }
 
   // private void initFocusTraversalPolicy() {

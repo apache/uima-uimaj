@@ -33,30 +33,25 @@ public class SofaSelectionListener implements ItemListener {
   }
 
   public void itemStateChanged(ItemEvent e) {
-    if (this.main.isDisableSofaListener()) {
-      return;
-    }
-    if (e.getSource() == this.main.getSofaSelectionComboBox()) {
-      // a new sofa was selected. Switch to that view and update
-      // display
-      String sofaId = (String) e.getItem();
-      this.main.setCas(this.main.getCas().getView(sofaId));
-      String text = this.main.getCas().getDocumentText();
-      if (text == null) {
-        text = this.main.getCas().getSofaDataURI();
-        if (text != null) {
-          text = "SofaURI = " + text;
-        } else {
-          if (null != this.main.getCas().getSofaDataArray()) {
-            text = "Sofa array with mime type = " + this.main.getCas().getSofa().getSofaMime();
-          }
+    // a new sofa was selected. Switch to that view and update
+    // display
+    String sofaId = (String) e.getItem();
+    this.main.setCas(this.main.getCas().getView(sofaId));
+    String text = this.main.getCas().getDocumentText();
+    if (text == null) {
+      text = this.main.getCas().getSofaDataURI();
+      if (text != null) {
+        text = "SofaURI = " + text;
+      } else {
+        if (null != this.main.getCas().getSofaDataArray()) {
+          text = "Sofa array with mime type = " + this.main.getCas().getSofa().getSofaMime();
         }
       }
-      this.main.getTextArea().setText(text);
-      if (text == null) {
-        this.main.getTextArea().repaint();
-      }
-      this.main.updateIndexTree(true);
     }
+    this.main.getTextArea().setText(text);
+    if (text == null) {
+      this.main.getTextArea().repaint();
+    }
+    this.main.updateIndexTree(true);
   }
 }

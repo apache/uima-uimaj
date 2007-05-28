@@ -31,7 +31,6 @@ import java.io.OutputStream;
 import javax.swing.JFileChooser;
 
 import org.apache.uima.cas.impl.XCASSerializer;
-import org.apache.uima.internal.util.TimeSpan;
 import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.SAXException;
@@ -58,14 +57,11 @@ public class XCASSaveHandler implements ActionListener {
       File xcasFile = fileChooser.getSelectedFile();
       this.main.setXcasFileOpenDir(xcasFile.getParentFile());
       try {
-        long time = System.currentTimeMillis();
         OutputStream outStream = new BufferedOutputStream(new FileOutputStream(xcasFile));
         XMLSerializer xmlSerializer = new XMLSerializer(outStream);
         XCASSerializer xcasSerializer = new XCASSerializer(this.main.getCas().getTypeSystem());
         xcasSerializer.serialize(this.main.getCas(), xmlSerializer.getContentHandler());
         outStream.close();
-        time = System.currentTimeMillis() - time;
-        System.out.println("Time taken: " + new TimeSpan(time));
       } catch (IOException e) {
         this.main.handleException(e);
       } catch (SAXException e) {

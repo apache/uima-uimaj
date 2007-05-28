@@ -60,7 +60,7 @@ public class FileOpenEventHandler implements ActionListener {
       this.main.loadFile();
       time.stop();
       this.main.resetTrees();
-      this.main.getFileSaveItem().setEnabled(true);
+      this.main.setSaveTextFileEnable(true);
       this.main.getUndoMgr().discardAllEdits();
       this.main.setFileStatusMessage();
       this.main.setStatusbarMessage("Done loading text file " + this.main.getTextFile().getName()

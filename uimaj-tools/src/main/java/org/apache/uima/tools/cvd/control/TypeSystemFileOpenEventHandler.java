@@ -68,18 +68,15 @@ public class TypeSystemFileOpenEventHandler implements ActionListener {
           // map file if there is none.
           TypeSystemDescription tsDesc = (TypeSystemDescription) descriptor;
           tsDesc.resolveImports();
-          if (this.main.getAe() != null) {
-            this.main.getAe().destroy();
-            this.main.setAe(null);
-          }
+          this.main.destroyAe();
           this.main.setCas(CasCreationUtils
               .createCas(tsDesc, null, new FsIndexDescription[0]));
-          this.main.getRunOnCasMenuItem().setEnabled(false);
-          this.main.getReRunMenu().setEnabled(false);
+          this.main.setRunOnCasEnabled();
+          this.main.setRerunEnabled(false);
           this.main.getTextArea().setText("");
           this.main.resetTrees();
-          this.main.getTsViewerItem().setEnabled(true);
-          this.main.getXcasReadItem().setEnabled(true);
+          this.main.setTypeSystemViewerEnabled(true);
+          this.main.setEnableCasFileReading(true);
           time.stop();
           this.main.setStatusbarMessage("Done loading type system file in " + time.getTimeSpan() + ".");
         } catch (Exception e) {

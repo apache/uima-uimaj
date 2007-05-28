@@ -55,7 +55,7 @@ public class FileSaveAsEventHandler implements ActionListener {
       if (fileSaved) {
         this.main.setDirty(false);
         this.main.setTitle();
-        this.main.getFileSaveItem().setEnabled(true);
+        this.main.setSaveTextFileEnable(true);
         this.main.setFileStatusMessage();
         this.main.setStatusbarMessage("Text file " + this.main.getTextFile().getName() + " saved.");
       } else {

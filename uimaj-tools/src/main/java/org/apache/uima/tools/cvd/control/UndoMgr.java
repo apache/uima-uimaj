@@ -44,18 +44,18 @@ public class UndoMgr extends UndoManager implements ActionListener {
   public void actionPerformed(ActionEvent arg0) {
     undo();
     if (!canUndo()) {
-      this.main.getUndoItem().setEnabled(false);
+      this.main.setUndoEnabled(false);
     }
   }
 
   public synchronized boolean addEdit(UndoableEdit arg0) {
-    this.main.getUndoItem().setEnabled(true);
+    this.main.setUndoEnabled(true);
     return super.addEdit(arg0);
   }
 
   public synchronized void discardAllEdits() {
     super.discardAllEdits();
-    this.main.getUndoItem().setEnabled(false);
+    this.main.setUndoEnabled(false);
   }
 
 }

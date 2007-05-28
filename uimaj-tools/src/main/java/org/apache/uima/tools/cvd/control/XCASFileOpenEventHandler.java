@@ -23,16 +23,11 @@ package org.apache.uima.tools.cvd.control;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.Iterator;
 
 import javax.swing.JFileChooser;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.Feature;
-import org.apache.uima.cas.SofaFS;
-import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.internal.util.Timer;
 import org.apache.uima.tools.cvd.MainFrame;
@@ -72,61 +67,11 @@ public class XCASFileOpenEventHandler implements ActionListener {
           this.main.getCas().reset();
           parser.parse(xcasFile, xcasDeserializer.getXCASHandler(this.main.getCas()));
           time.stop();
-          // Populate sofa combo box with the names of all text
-          // Sofas in the CAS
-          this.main.setDisableSofaListener(true);
-          String currentView = (String) this.main.getSofaSelectionComboBox().getSelectedItem();
-          this.main.getSofaSelectionComboBox().removeAllItems();
-          this.main.getSofaSelectionComboBox().addItem(CAS.NAME_DEFAULT_SOFA);
-          Iterator sofas = ((CASImpl) this.main.getCas()).getBaseCAS().getSofaIterator();
-          Feature sofaIdFeat = this.main.getCas().getTypeSystem().getFeatureByFullName(
-              CAS.FEATURE_FULL_NAME_SOFAID);
-          boolean nonDefaultSofaFound = false;
-          while (sofas.hasNext()) {
-            SofaFS sofa = (SofaFS) sofas.next();
-            String sofaId = sofa.getStringValue(sofaIdFeat);
-            if (!CAS.NAME_DEFAULT_SOFA.equals(sofaId)) {
-              this.main.getSofaSelectionComboBox().addItem(sofaId);
-              nonDefaultSofaFound = true;
-            }
-          }
-          // reuse last selected view if found in new CAS
-          int newIndex = 0;
-          String newView = CAS.NAME_DEFAULT_SOFA;
-          for (int i = 0; i < this.main.getSofaSelectionComboBox().getItemCount(); i++) {
-            if (currentView.equals(this.main.getSofaSelectionComboBox().getItemAt(i))) {
-              newIndex = i;
-              newView = currentView;
-              break;
-            }
-          }
-          // make sofa selector visible if any text sofa other
-          // than the default was found
-          this.main.getSofaSelectionPanel().setVisible(nonDefaultSofaFound);
-          this.main.setCas(this.main.getCas().getView(newView));
-          this.main.setDisableSofaListener(false);
-
-          this.main.getSofaSelectionComboBox().setSelectedIndex(newIndex);
-          String text = this.main.getCas().getDocumentText();
-          if (text == null) {
-            text = this.main.getCas().getSofaDataURI();
-            if (text != null) {
-              text = "SofaURI = " + text;
-            } else {
-              if (this.main.getCas().getSofaDataArray() != null) {
-                text = "Sofa array with mime type = "
-                    + this.main.getCas().getSofa().getSofaMime();
-              }
-            }
-          }
-          this.main.getTextArea().setText(text);
-          if (text == null) {
-            this.main.getTextArea().repaint();
-          }
-
+          this.main.handleSofas();
           this.main.setTitle("XCAS");
           this.main.updateIndexTree(true);
-          this.main.getRunOnCasMenuItem().setEnabled(true);
+          this.main.setRunOnCasEnabled();
+          this.main.setEnableCasFileWriting();
           this.main.setStatusbarMessage("Done loading XCAS file in " + time.getTimeSpan() + ".");
         } catch (Exception e) {
           e.printStackTrace();
