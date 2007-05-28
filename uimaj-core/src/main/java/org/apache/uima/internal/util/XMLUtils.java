@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
 
-import org.apache.uima.util.InvalidXMLException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -76,26 +75,26 @@ public abstract class XMLUtils {
           aResultBuf.append("&#").append((int) c).append(';');
         } else {
           switch (c) {
-            case '<':
-              aResultBuf.append("&lt;");
-              break;
-            case '>':
-              aResultBuf.append("&gt;");
-              break;
-            case '&':
-              aResultBuf.append("&amp;");
-              break;
-            case '"':
-              aResultBuf.append("&quot;");
-              break;
-            case '\n':
-              aResultBuf.append(aNewlinesToSpaces ? " " : "\n");
-              break;
-            case '\r':
-              aResultBuf.append(aNewlinesToSpaces ? " " : "\r");
-              break;
-            default:
-              aResultBuf.append(c);
+          case '<':
+            aResultBuf.append("&lt;");
+            break;
+          case '>':
+            aResultBuf.append("&gt;");
+            break;
+          case '&':
+            aResultBuf.append("&amp;");
+            break;
+          case '"':
+            aResultBuf.append("&quot;");
+            break;
+          case '\n':
+            aResultBuf.append(aNewlinesToSpaces ? " " : "\n");
+            break;
+          case '\r':
+            aResultBuf.append(aNewlinesToSpaces ? " " : "\r");
+            break;
+          default:
+            aResultBuf.append(c);
           }
         }
       }
@@ -119,7 +118,7 @@ public abstract class XMLUtils {
    *           if an I/O failure occurs when writing to <code>aWriter</code>
    */
   public static void writeNormalizedString(String aStr, Writer aWriter, boolean aNewlinesToSpaces)
-          throws IOException {
+      throws IOException {
     if (aStr == null)
       return;
 
@@ -127,26 +126,26 @@ public abstract class XMLUtils {
     for (int i = 0; i < len; i++) {
       char c = aStr.charAt(i);
       switch (c) {
-        case '<':
-          aWriter.write("&lt;");
-          break;
-        case '>':
-          aWriter.write("&gt;");
-          break;
-        case '&':
-          aWriter.write("&amp;");
-          break;
-        case '"':
-          aWriter.write("&quot;");
-          break;
-        case '\n':
-          aWriter.write(aNewlinesToSpaces ? " " : "\n");
-          break;
-        case '\r':
-          aWriter.write(aNewlinesToSpaces ? " " : "\r");
-          break;
-        default:
-          aWriter.write(c);
+      case '<':
+        aWriter.write("&lt;");
+        break;
+      case '>':
+        aWriter.write("&gt;");
+        break;
+      case '&':
+        aWriter.write("&amp;");
+        break;
+      case '"':
+        aWriter.write("&quot;");
+        break;
+      case '\n':
+        aWriter.write(aNewlinesToSpaces ? " " : "\n");
+        break;
+      case '\r':
+        aWriter.write(aNewlinesToSpaces ? " " : "\r");
+        break;
+      default:
+        aWriter.write(c);
       }
     }
   }
@@ -207,7 +206,7 @@ public abstract class XMLUtils {
    *           if the ContentHandler throws an exception
    */
   public static void writePrimitiveValue(Object aObj, ContentHandler aContentHandler)
-          throws SAXException {
+      throws SAXException {
     final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
 
     String className = aObj.getClass().getName();
@@ -278,7 +277,7 @@ public abstract class XMLUtils {
    * @return the value that was read, <code>null</code> if a primitive value could not be
    *         constructed from the element
    */
-  public static Object readPrimitiveValue(Element aElem) throws InvalidXMLException {
+  public static Object readPrimitiveValue(Element aElem) {
     // the element's tag name is the lowercase name of the class, minus the
     // package name
     String tagName = aElem.getTagName();
@@ -374,4 +373,46 @@ public abstract class XMLUtils {
 
     return buf.toString().trim();
   }
+
+  /**
+   * Check the input string for non-XML 1.0 characters. If non-XML characters are found, return the
+   * position of first offending character. Else, return <code>-1</code>.
+   * 
+   * @param s
+   *          Input string
+   * @return The position of the first invalid XML character encountered. <code>-1</code> if no
+   *         invalid XML characters found.
+   */
+  public static final int checkForNonXmlCharacters(String s) {
+    if (s == null) {
+      return -1;
+    }
+    for (int i = 0; i < s.length(); i++) {
+      if (!isValidXml10Char(s.charAt(i))) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  // Check if the character we're looking at is a valid XML 1.0 character. From the XML 1.0 spec:
+  //
+  // Char ::= #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF] /* any Unicode
+  // character, excluding the surrogate blocks, FFFE, and FFFF. */
+  //
+  // And from the UTF-16 spec:
+  //
+  // Characters with values between 0x10000 and 0x10FFFF are
+  // represented by a 16-bit integer with a value between 0xD800 and
+  // 0xDBFF (within the so-called high-half zone or high surrogate
+  // area) followed by a 16-bit integer with a value between 0xDC00 and
+  // 0xDFFF (within the so-called low-half zone or low surrogate area).
+  //
+  // So it actually looks as if the surrogate case can be handled correctly by just looking at
+  // individual Java chars.
+  private static final boolean isValidXml10Char(char c) {
+    return ((c == 0x9) || (c == 0xA) || (c == 0xD) || ((c >= 0x20) && (c <= 0xD7FF)) || 
+        ((c >= 0xE000) && (c <= 0xFFFD)));
+  }
+
 }
