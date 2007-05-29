@@ -84,31 +84,36 @@ under the License.
     <para> The user documentation for UIMA is organized into several parts.
       <itemizedlist spacing="compact">
         <listitem>
-          <para> <xref linkend="ugr.project_overview_overview"/> - this documentation </para>
+          <para> Overviews - this documentation </para>
         </listitem>
         <listitem>
-          <para> <xref linkend="ugr.project_overview_setup"/> </para>
+          <para> Eclipse Tooling Installation and Setup - also in this document </para>
         </listitem>
         <listitem>
-          <para> <xref linkend="ugr.project_overview_tutorials_dev_guides"/> </para>
+          <para> Tutorials and Developer's Guides </para>
         </listitem>
         <listitem>
-          <para> <xref linkend="ugr.project_overview_tool_guides"/> </para>
+          <para> Tools Users' Guides </para>
         </listitem>
         <listitem>
-          <para> <xref linkend="ugr.project_overview_reference"/> </para>
+          <para> References </para>
         </listitem>
       </itemizedlist> </para>
     
     <para>
-    The first 2 parts make up the book <quote>overview_and_setup</quote>; the last 3 have individual books.  The books are provided both as
+    The first 2 parts make up the book <quote>overview_and_setup</quote>; the last 3 have individual 
+    books.  The books are provided both as
     (somewhat large) html files, viewable in browsers, and also as PDF files.  
     The documentation is fully hyperlinked, with tables of contents.  The PDF versions are set up to 
     print nicely - they have page numbers included on the cross references within a book. </para>
     
     <para>If you view the PDF files inside
     a browser that supports imbedded viewing of PDF, the hyperlinks between different PDF books may work (not 
-    all browsers have been tested...).</para>  
+    all browsers have been tested...).</para>
+    
+    <para>The following set of tables gives a more detailed overview of the various parts of the
+    documentation.
+    </para>
     
     <section id="ugr.project_overview_overview">
       <title>Overviews</title>
@@ -122,30 +127,36 @@ under the License.
               <entry><emphasis>Overview of the Documentation</emphasis>
               </entry>
               <entry>
-                <para>Lists the documents provided in the Apache UIMA documentation set.</para>
-                <para>Provides a recommended path through the documentation for getting started using
-                  UIMA.</para>
-                <para>Includes release notes.</para>
-                <para>Provides a brief high-level description of the different software modules included in the
-                  Apache UIMA Project.</para>
+                <para>What you are currently reading.  Lists the documents provided in the Apache 
+                UIMA documentation set and provides
+                 a recommended path through the documentation for getting started using
+                  UIMA.  It includes release notes and provides a brief high-level description of 
+                  the different software modules included in the
+                  Apache UIMA Project.  See <xref linkend="ugr.project_overview_doc_overview"/>.</para>
               </entry>
             </row>
             <row>
               <entry><emphasis>Conceptual Overview</emphasis>
               </entry>
               <entry>Provides a broad conceptual overview of the UIMA component architecture; includes
-                references to the other documents in the documentation set that provide more detail.</entry>
+                references to the other documents in the documentation set that provide more detail.
+                See <xref linkend="ugr.ovv.conceptual"/></entry>
             </row>
             <row>
               <entry><emphasis>UIMA FAQs</emphasis>
               </entry>
               <entry>Frequently Asked Questions about general UIMA concepts. (Not a programming
-                resource.)</entry>
+                resource.)  See <xref linkend="ugr.faqs"/>.</entry>
+            </row>
+            <row>
+              <entry><emphasis>Known Issues</emphasis>
+              </entry>
+              <entry>Known issues and problems with the UIMA SDK.  See <xref linkend="ugr.issues"/>.</entry>
             </row>
             <row>
               <entry><emphasis>Glossary</emphasis>
               </entry>
-              <entry>UIMA terms and concepts and their basic definitions.</entry>
+              <entry>UIMA terms and concepts and their basic definitions.  See <xref linkend="ugr.glossary"/>.</entry>
             </row>
           </tbody>
         </tgroup>
@@ -154,7 +165,7 @@ under the License.
     <section id="ugr.project_overview_setup">
       <title>Eclipse Tooling Installation and Setup</title>
       <para>Provides step-by-step instructions for installing Apache UIMA in the Eclipse Interactive
-        Development Environment.</para>
+        Development Environment.  See <xref linkend="ugr.ovv.eclipse_setup"/>.</para>
     </section>
     
     <section id="ugr.project_overview_tutorials_dev_guides">
@@ -170,27 +181,31 @@ under the License.
               <entry>Tutorial-style guide for building UIMA annotators and analysis engines. This chapter
                 introduces the developer to creating type systems and using UIMA&apos;s common data structure,
                 the CAS or Common Analysis Structure. It demonstrates how to use built in tools to specify and create
-                basic UIMA analysis components.</entry>
+                basic UIMA analysis components.  See 
+                <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.aae"/>.</entry>
             </row>
             <row id="ugr.project_overview_tutorial_cpe">
               <entry><emphasis>Building UIMA Collection Processing Engines</emphasis>
               </entry>
-              <entry>Tutorial-style guide for building UIMA collection processing engines. These manage the
-                analysis of collections of documents from source to sink.</entry>
+              <entry>Tutorial-style guide for building UIMA collection processing engines. These
+               manage the
+                analysis of collections of documents from source to sink.  See 
+                <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.cpe"/>.</entry>
             </row>
             <row id="ugr.project_overview_tutorial_application_development">
               <entry><emphasis>Developing Complete Applications</emphasis>
               </entry>
               <entry>Tutorial-style guide on using the UIMA APIs to create, run and manage UIMA components from
                 your application. Also describes APIs for saving and restoring the contents of a CAS using an XML
-                format called <trademark class="registered"> XMI</trademark>.</entry>
+                format called <trademark class="registered"> XMI</trademark>.  See 
+                <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.application"/>.</entry>
             </row>
             <row id="ugr.project_overview_guide_flow_controller">
               <entry><emphasis>Flow Controller</emphasis>
               </entry>
               <entry>When multiple components are combined in an Aggregate, each CAS flow among the various
                 components. UIMA provides two built-in flows, and also allows custom flows to be
-                implemented.</entry>
+                implemented.  See <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.fc"/>.</entry>
             </row>
             <row id="ugr.project_overview_guide_multiple_sofas">
               <entry><emphasis>Developing Applications using Multiple Subjects of Analysis</emphasis>
@@ -199,21 +214,32 @@ under the License.
                 for representing and analyzing different formats or translations of the same document. For
                 multi-modal analysis, Sofas are good for different modal representations of the same stream
                 (e.g., audio and close-captions).This chapter provides the developer details on how to use
-                multiple Sofas in an application.</entry>
+                multiple Sofas in an application.  See 
+                <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.aas"/>.</entry>
+            </row>
+            <row id="ugr.project_overview_guide_multiple_views">
+              <entry><emphasis>Multiple CAS Views of an Artifact</emphasis>
+              </entry>
+              <entry>UIMA provides an extension to the basic model of the CAS which supports 
+              analysis of multiple views of the same artifact, all contained with the CAS. This 
+              chapter describes the concepts, terminology, and the API and XML extensions that 
+              enable this.  See 
+                <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.mvs"/>.</entry>
             </row>
             <row id="ugr.project_overview_guide_cas_multiplier">
               <entry><emphasis>CAS Multiplier</emphasis>
               </entry>
               <entry>A component may add additional CASes into the workflow. This may be useful to break up a large
                 artifact into smaller units, or to create a new CAS that collects information from multiple other
-                CASes.</entry>
+                CASes.  See <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.cm"/>.</entry>
             </row>
             <row id="ugr.project_overview_xmi_emf">
               <entry><emphasis>XMI and EMF Interoperability</emphasis>
               </entry>
               <entry>The UIMA Type system and the contents of the CAS itself can be externalized using the XMI
                 standard for XML MetaData. Eclipse Modeling Framework (EMF) tooling can be used to develop
-                applications that use this information.</entry>
+                applications that use this information.  See 
+                <olink targetdoc="&uima_docs_tutorial_guides;" targetptr="ugr.tug.xmi_emf"/>.</entry>
             </row>
           </tbody>
         </tgroup>
@@ -233,58 +259,67 @@ under the License.
               </entry>
               <entry>Describes the features of the Component Descriptor Editor Tool. This tool provides a GUI for
                 specifying the details of UIMA component descriptors, including those for Analysis Engines
-                (primitive and aggregate), Collection Readers, CAS Consumers and Type Systems.</entry>
+                (primitive and aggregate), Collection Readers, CAS Consumers and Type Systems.  See 
+                <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cde"/>.</entry>
             </row>
             <row id="ugr.project_overview_tools_cpe_configurator">
               <entry><emphasis>Collection Processing Engine Configurator</emphasis>
               </entry>
               <entry>Describes the User Interfaces and features of the CPE Configurator tool. This tool allows the
                 user to select and configure the components of a Collection Processing Engine and then to run the
-                engine.</entry>
+                engine.  See 
+                <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cpe"/>.</entry>
             </row>
             <row id="ugr.project_overview_tools_pear_packager">
               <entry><emphasis>Pear Packager</emphasis>
               </entry>
               <entry>Describes how to use the PEAR Packager utility. This utility enables developers to produce an
                 archive file for an analysis engine that includes all required resources for installing that
-                analysis engine in another UIMA environment.</entry>
+                analysis engine in another UIMA environment.  See 
+                <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.pear.packager"/>.</entry>
             </row>
             <row id="ugr.project_overview_tools_pear_installer">
               <entry><emphasis>Pear Installer</emphasis>
               </entry>
               <entry>Describes how to use the PEAR Installer utility. This utility installs and verifies an
                 analysis engine from an archive file (PEAR) with all its resources in the right place so it is ready to
-                run.</entry>
+                run.  See 
+                <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.pear.installer"/>.</entry>
             </row>
             <row id="ugr.project_overview_tools_pear_merger">
               <entry><emphasis>Pear Merger</emphasis>
               </entry>
               <entry>Describes how to use the Pear Merger utility, which does a simple merge of multiple PEAR
-                packages into one.</entry>
+                packages into one.  See 
+                <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.pear.merger"/>.</entry>
             </row>
             <row id="ugr.project_overview_tools_document_analyzer">
               <entry><emphasis>Document Analyzer</emphasis>
               </entry>
               <entry>Describes the features of a tool for applying a UIMA analysis engine to a set of documents and
-                viewing the results.</entry>
+                viewing the results.  See 
+                <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.doc_analyzer"/>.</entry>
             </row>
             <row id="ugr.project_overview_tools_cas_visual_debugger">
               <entry><emphasis>CAS Visual Debugger</emphasis>
               </entry>
               <entry>Describes the features of a tool for viewing the detailed structure and contents of a CAS. Good
-                for debugging.</entry>
+                for debugging.  See 
+                <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.cvd"/>.</entry>
             </row>
             <row id="ugr.project_overview_tools_jcasgen">
               <entry><emphasis>JCasGen</emphasis>
               </entry>
               <entry>Describes how to run the JCasGen utility, which automatically builds Java classes that
-                correspond to a particular CAS Type System.</entry>
+                correspond to a particular CAS Type System.  See 
+                <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.jcasgen"/>.</entry>
             </row>
             <row id="ugr.project_overview_tools_xml_cas_viewer">
               <entry><emphasis>XML CAS Viewer</emphasis>
               </entry>
               <entry>Describes how to run the supplied viewer to view externalized XML forms of CASes. This viewer
-                is used in the examples.</entry>
+                is used in the examples.  See 
+                <olink targetdoc="&uima_docs_tools;" targetptr="ugr.tools.annotation_viewer"/>.</entry>
             </row>
           </tbody>
         </tgroup>
@@ -298,43 +333,50 @@ under the License.
           <colspec colnum="1" colname="col1" colwidth="1*"/>
           <colspec colnum="2" colname="col2" colwidth="2.5*"/>
           <tbody>
+            <row id="ugr.project_overview_javadocs">
+              <entry><emphasis>Introduction to the UIMA API JavaDocs</emphasis>
+              </entry>
+              <entry>JavaDocs detailing the UIMA programming interfaces  See 
+                <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.javadocs"/></entry>
+            </row>
             <row id="ugr.project_overview_xml_ref_component_descriptor">
               <entry><emphasis>XML: Component Descriptor</emphasis>
               </entry>
               <entry>Provides detailed XML format for all the UIMA component descriptors, except the CPE (see
-                next)</entry>
+                next).  See 
+                <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.component_descriptor"/>.</entry>
             </row>
             <row id="ugr.project_overview_xml_ref_collection_processing_engine_descriptor">
               <entry><emphasis>XML: Collection Processing Engine Descriptor</emphasis>
               </entry>
-              <entry>Provides detailed XML format for the Collection Processing Engine descriptor.</entry>
-            </row>
-            <row id="ugr.project_overview_javadocs">
-              <entry><emphasis>Introduction to the UIMA API JavaDocs</emphasis>
-              </entry>
-              <entry>JavaDocs detailing the UIMA programming interfaces</entry>
+              <entry>Provides detailed XML format for the Collection Processing Engine descriptor.  See 
+                <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xml.cpe_descriptor"/></entry>
             </row>
             <row id="ugr.project_overview_cas">
               <entry><emphasis>CAS</emphasis>
               </entry>
-              <entry>Provides detailed description of the principal CAS interface.</entry>
+              <entry>Provides detailed description of the principal CAS interface.  See 
+                <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.cas"/></entry>
             </row>
             <row id="ugr.project_overview_jcas">
               <entry><emphasis>JCas</emphasis>
               </entry>
-              <entry>Provides details on the JCas, a native Java interface to the CAS.</entry>
+              <entry>Provides details on the JCas, a native Java interface to the CAS.  See 
+                <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.jcas"/></entry>
             </row>
             <row id="ugr.project_overview_ref_pear">
               <entry><emphasis>PEAR Reference</emphasis>
               </entry>
               <entry>Provides detailed description of the deployable archive format for UIMA
-                components.</entry>
+                components.  See 
+                <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.pear"/></entry>
             </row>
             <row id="ugr.project_overview_xmi_cas_serialization">
               <entry><emphasis>XMI CAS Serialization Reference</emphasis>
               </entry>
               <entry>Provides detailed description of the deployable archive format for UIMA
-                components.</entry>
+                components.  See 
+                <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.xmi"/></entry>
             </row>
           </tbody>
         </tgroup>
