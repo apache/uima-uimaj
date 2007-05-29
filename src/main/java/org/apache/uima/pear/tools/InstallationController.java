@@ -1867,7 +1867,7 @@ public class InstallationController {
           _installationMonitor.setInstallationStatus(_mainComponentId, VERIFICATION_FAILED);
       } else {
         // verification cancelled
-        _verificationMsg = null;
+        _verificationMsg = status.getMessage();
         if (_installationMonitor != null) // notify monitor
           _installationMonitor.setInstallationStatus(_mainComponentId, VERIFICATION_CANCELLED);
       }
