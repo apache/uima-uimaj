@@ -27,6 +27,7 @@ import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.pear.tools.PackageBrowser;
 import org.apache.uima.pear.tools.PackageInstaller;
 import org.apache.uima.resource.ResourceManager;
@@ -111,14 +112,11 @@ public class PearInstallerTest extends TestCase {
     Assert.assertNotNull(ae);
     
     
-    // Create a CAS with a sample document text and process the CAS
-    /*
+    // Create a CAS with a sample document text and process the CAS   
     CAS cas = ae.newCAS();
-    cas.setDocumentText("Sample text to process");
+    cas.setDocumentText("Sample text to process with a date 05/29/07 and a time 9:45 AM");
     cas.setDocumentLanguage("en");
     ae.process(cas);
-    */
-    
-    
+ 
   }
 }
