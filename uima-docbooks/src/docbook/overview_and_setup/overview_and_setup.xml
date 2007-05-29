@@ -32,5 +32,6 @@ under the License.
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="conceptual_overview.xml"/>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="eclipse_setup.xml"/>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="faqs.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="known_issues.xml"/>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="glossary.xml"/>
 </book>
