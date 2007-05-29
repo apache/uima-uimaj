@@ -282,7 +282,7 @@ public class PackageCreator {
    *          a String representing a relative path to the project root
    * @return The String with the macro
    */
-  public static String addMacro(String s) {
+  private static String addMacro(String s) {
     String macro = "$main_root";
     if (s == null || s.length() == 0)
       return "";
