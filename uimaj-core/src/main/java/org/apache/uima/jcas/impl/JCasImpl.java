@@ -54,6 +54,7 @@ import org.apache.uima.cas.SofaID;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.FeatureStructureImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelException;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
@@ -215,7 +216,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 	// *************************************************
 	// * Static Data shared with all instances of JCas *
 	// *************************************************
-	private final static int INITIAL_HASHMAP_SIZE = 200;
+	private final static int INITIAL_HASHMAP_SIZE = 256;
 
   // keys = class loader, 
   // values = Maps: keys = string = fully qualified java type names of _Type classes
@@ -258,7 +259,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
      */
     private int prevCaddr2JfsSize = INITIAL_HASHMAP_SIZE;
     
-    private Map cAddr2Jfs = new HashMap(INITIAL_HASHMAP_SIZE);
+    private JCasHashMap cAddr2Jfs = new JCasHashMap(INITIAL_HASHMAP_SIZE);
     
 		/* convenience holders of CAS constants that may be useful */
 		/* initialization done lazily - on first call to getter */
@@ -832,7 +833,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.JCas#putJfsFromCaddr(int, org.apache.uima.cas.FeatureStructure)
    */
 	public void putJfsFromCaddr(int casAddr, FeatureStructure fs) {
-		sharedView.cAddr2Jfs.put(new Integer(casAddr), fs);
+		sharedView.cAddr2Jfs.put((FeatureStructureImpl)fs);
 	}
 
 	/*
@@ -841,8 +842,12 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.JCas#getJfsFromCaddr(int)
    */
 	public TOP getJfsFromCaddr(int casAddr) {
-		return (TOP) sharedView.cAddr2Jfs.get(new Integer(casAddr));
+		return (TOP) sharedView.cAddr2Jfs.get(casAddr);
 	}
+  
+  public void showJfsFromCaddrHistogram() {
+    sharedView.cAddr2Jfs.showHistogram();
+  }
 
 	// * Implementation of part of the Cas interface as part of JCas*
 
@@ -862,7 +867,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 			// System.out.println("JCas Shrinking Hashtable from " +
 			// jcas.prevCaddr2JfsSize);
 			sv.prevCaddr2JfsSize = hashSize;
-			sv.cAddr2Jfs = new HashMap(hashSize);
+			sv.cAddr2Jfs = new JCasHashMap(hashSize);
 		} else {
 			sv.prevCaddr2JfsSize = Math.max(hashSize, sv.prevCaddr2JfsSize);
 			// System.out.println("JCas clearing - keeping same size, new max prev
