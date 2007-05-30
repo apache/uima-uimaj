@@ -1260,7 +1260,7 @@ public class MainFrame extends JFrame {
     this.caretStatus.setEditable(false);
     this.caretStatus.setToolTipText("Position of cursor or extent of selection");
     this.statusPanel.add(this.caretStatus);
-    setCaretStatus(0, 0);
+//    setCaretStatus(0, 0);
     // setFileStatusMessage();
     setAEStatusMessage();
   }
@@ -1501,6 +1501,7 @@ public class MainFrame extends JFrame {
         this.ae = UIMAFramework.produceAnalysisEngine(specifier, rsrcMgr, null);
       }
       this.cas = this.ae.newCAS();
+      initCas();
       this.acdItem.setEnabled(true);
       this.tsViewerItem.setEnabled(true);
       this.typeSystemWriteItem.setEnabled(true);
@@ -1523,6 +1524,11 @@ public class MainFrame extends JFrame {
     }
     return true;
   }
+  
+  private final void initCas() {
+    this.cas.setDocumentLanguage(this.language);
+    this.cas.setDocumentText(this.textArea.getText());
+  }
 
   protected void internalRunAE(boolean doCasReset) {
     try {
@@ -1530,8 +1536,7 @@ public class MainFrame extends JFrame {
         // Change to Initial view
         this.cas = this.cas.getView(CAS.NAME_DEFAULT_SOFA);
         this.cas.reset();
-        setLanguage();
-        this.cas.setDocumentText(this.textArea.getText());
+        initCas();
 //        this.disableSofaListener = true;
         this.sofaSelectionComboBox.setSelectedIndex(0);
       }
@@ -1553,7 +1558,6 @@ public class MainFrame extends JFrame {
           nonDefaultSofaFound = true;
         }
       }
-//      this.disableSofaListener = false;
       this.sofaSelectionComboBox.setSelectedIndex(currentViewID);
       // make sofa selector visible if any text sofa other than the
       // default was found
@@ -1562,24 +1566,6 @@ public class MainFrame extends JFrame {
       handleException(e);
     }
   }
-
-  private void setLanguage() {
-    if (this.language != null) {
-      Feature langFeat = this.cas.getTypeSystem().getFeatureByFullName(
-          CAS.FEATURE_FULL_NAME_LANGUAGE);
-      AnnotationFS doc = this.cas.getDocumentAnnotation();
-      if (doc != null) {
-        doc.setStringValue(langFeat, this.language);
-      }
-    }
-  }
-
-  // private void resetIRTree() {
-  // DefaultMutableTreeNode root =
-  // (DefaultMutableTreeNode) this.indexTree.getModel().getRoot();
-  // root.setUserObject(noIndexReposLabel);
-  // root.removeAllChildren();
-  // }
 
   private void initIRTree() {
     DefaultMutableTreeNode root = new DefaultMutableTreeNode(noIndexReposLabel);
