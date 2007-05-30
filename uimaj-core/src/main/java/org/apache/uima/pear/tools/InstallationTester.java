@@ -213,11 +213,18 @@ public class InstallationTester {
     ResourceSpecifier aeSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(xmlIn);
     AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aeSpecifier,
             getResourceManager(this.pkgBrowser), null);
-
+    
+    //create CAS from the analysis engine
+    CAS cas = null;
+    if (ae != null) {
+      cas = ae.newCAS();
+    }
+    
     // create Test status object
     TestStatus status = new TestStatus();
 
-    if (ae != null) {
+    //check test result
+    if (ae != null && cas != null) {
       status.setRetCode(TestStatus.TEST_SUCCESSFUL);
     } else {
       status.setRetCode(TestStatus.TEST_NOT_SUCCESSFUL);
