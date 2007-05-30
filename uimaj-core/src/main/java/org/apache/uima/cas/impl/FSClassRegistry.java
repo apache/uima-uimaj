@@ -74,8 +74,6 @@ public class FSClassRegistry {
       final CASImpl view = (isSubtypeOfAnnotationBase) ?
               (CASImpl)casView.getView(getSofaNbr(addr, casView)) :
               casView;
-      if (null == view) 
-        System.out.println("null");
       try {
         jcasView = (JCasImpl)view.getJCas();
       } catch (CASException e1) {
