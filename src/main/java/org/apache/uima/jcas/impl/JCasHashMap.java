@@ -182,12 +182,13 @@ public class JCasHashMap {
   }
   
   public void showHistogram() {
-    
-    System.out.println("Histogram of number of probes, factor = " + loadFactor + ", max = " + maxProbe);
-    System.out.println("bytes / entry = "  + (float)(table.length) * 4/size);
-    for (int i = 0; i < histogram.length; i++) {
-      System.out.println (i + ": " + histogram[i]);
-    }
-    
+    if (TUNE) {
+      System.out.println("Histogram of number of probes, factor = " + loadFactor + ", max = "
+              + maxProbe);
+      System.out.println("bytes / entry = " + (float) (table.length) * 4 / size);
+      for (int i = 0; i < histogram.length; i++) {
+        System.out.println(i + ": " + histogram[i]);
+      }
+    } 
   }
 }
