@@ -40,7 +40,6 @@ public class CaretChangeHandler implements CaretListener {
     final int dot = ce.getDot();
     final int mark = ce.getMark();
     this.main.setCaretStatus(dot, mark);
-    this.main.setCutCopyEnabled(dot == mark);
   }
 
 }

@@ -436,7 +436,7 @@ public class MainFrame extends JFrame {
 
   private JPanel sofaSelectionPanel;
 
-  private boolean disableSofaListener = false;
+//  private boolean disableSofaListener = false;
 
   /**
    * Constructor for MainFrame.
@@ -1280,6 +1280,9 @@ public class MainFrame extends JFrame {
       this.caretStatus.setText("Selection: " + from + " - " + to);
     }
     this.statusPanel.revalidate();
+    boolean enable = (dot != mark);
+    this.cutAction.setEnabled(enable);
+    this.copyAction.setEnabled(enable);
   }
 
   public void setFileStatusMessage() {
@@ -1506,11 +1509,11 @@ public class MainFrame extends JFrame {
       this.reRunMenu.setEnabled(true);
 
       // reset sofa combo box with just the initial view
-      this.disableSofaListener = true;
+//      this.disableSofaListener = true;
       this.sofaSelectionComboBox.removeAllItems();
       this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
       this.sofaSelectionPanel.setVisible(false);
-      this.disableSofaListener = false;
+//      this.disableSofaListener = false;
       // MainFrame.this.textArea.setText(null);
       // MainFrame.this.textArea.repaint();
       MainFrame.this.updateIndexTree(true);
@@ -1529,12 +1532,12 @@ public class MainFrame extends JFrame {
         this.cas.reset();
         setLanguage();
         this.cas.setDocumentText(this.textArea.getText());
-        this.disableSofaListener = true;
+//        this.disableSofaListener = true;
         this.sofaSelectionComboBox.setSelectedIndex(0);
       }
       this.ae.process(this.cas);
       // Update sofacombobox here
-      this.disableSofaListener = true;
+//      this.disableSofaListener = true;
       int currentViewID = this.sofaSelectionComboBox.getSelectedIndex();
       this.sofaSelectionComboBox.removeAllItems();
       this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
@@ -1550,7 +1553,7 @@ public class MainFrame extends JFrame {
           nonDefaultSofaFound = true;
         }
       }
-      this.disableSofaListener = false;
+//      this.disableSofaListener = false;
       this.sofaSelectionComboBox.setSelectedIndex(currentViewID);
       // make sofa selector visible if any text sofa other than the
       // default was found
@@ -1986,11 +1989,6 @@ public class MainFrame extends JFrame {
     this.isDirty = isDirty;
   }
 
-  public void setCutCopyEnabled(boolean enable) {
-    this.cutAction.setEnabled(enable);
-    this.copyAction.setEnabled(enable);
-  }
-
   public Properties getPreferences() {
     return this.preferences;
   }
@@ -2065,10 +2063,6 @@ public class MainFrame extends JFrame {
 
   public void setXcasFileOpenDir(File xcasFileOpenDir) {
     this.xcasFileOpenDir = xcasFileOpenDir;
-  }
-
-  public void setDisableSofaListener(boolean disableSofaListener) {
-    this.disableSofaListener = disableSofaListener;
   }
 
   public void setCas(CAS cas) {
@@ -2173,13 +2167,11 @@ public class MainFrame extends JFrame {
   }
 
   /**
-   * @param handler TODO
-   * 
+   *  
    */
   public void handleSofas() {
     // Populate sofa combo box with the names of all text
     // Sofas in the CAS
-    setDisableSofaListener(true);
     String currentView = (String) this.sofaSelectionComboBox.getSelectedItem();
     this.sofaSelectionComboBox.removeAllItems();
     this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
@@ -2209,7 +2201,6 @@ public class MainFrame extends JFrame {
     // than the default was found
     this.sofaSelectionPanel.setVisible(nonDefaultSofaFound);
     setCas(getCas().getView(newView));
-    setDisableSofaListener(false);
   
     this.sofaSelectionComboBox.setSelectedIndex(newIndex);
     String text = getCas().getDocumentText();
