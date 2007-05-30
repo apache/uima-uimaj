@@ -34,10 +34,9 @@ under the License.
     applications. It also allows applications and tools to manage UIMA components
     automatically for verification, deployment, invocation, testing, etc.</para>
   
-  <para>Currently, the PEAR Eclipse Plugin is available as a tool to create PEAR files for
+  <para>Currently, there is an Eclipse plugin and a command line tool available to create PEAR packages for
     standard UIMA components. Please refer to <olink targetdoc="&uima_docs_tools;"
-      targetptr="ugr.tools.pear.packager"/> for more information about this
-    tool.</para>
+      targetptr="ugr.tools.pear.packager"/> for more information about these tools.</para>
   
   <section id="ugr.ref.pear.packaging_a_component">
     <title>Packaging a UIMA component</title>
@@ -580,9 +579,42 @@ local_root_directory_for_1st_delegate_component/resources/dict/
       
       <para>The last step of the PEAR process is to simply <emphasis role="bold">
         zip</emphasis> the content of the PEAR root folder (<emphasis role="bold">not
-        including the root folder itself</emphasis>). The PEAR file must have a
-        <quote>.pear</quote> extension.</para>
+        including the root folder itself</emphasis>) to a PEAR file with the extension <quote>.pear</quote>.</para>
+        
+      <para>To do this you can either use the PEAR packaging tools that are described in <quote><olink targetdoc="&uima_docs_tools;"
+      targetptr="ugr.tools.pear.packager"/></quote> or you can use the PEAR packaging API that is shown below.</para>
       
+      <para>
+      To use the PEAR packaging API you first have to create the necessary information for the PEAR package:
+        <programlisting>
+    //define PEAR data  
+    String componentID = "AnnotComponentID";
+    String mainComponentDesc = "desc/mainComponentDescriptor.xml";
+    String classpath ="$main_root/bin;";
+    String datapath ="$main_root/resources;";
+    String mainComponentRoot = "/home/user/develop/myAnnot";
+    String targetDir = "/home/user/develop";
+    Properties annotatorProperties = new Properties();
+    annotatorProperties.setProperty("sysProperty1", "value1");</programlisting>
+  	    
+  	    To create a complete PEAR package in one step call:
+  	    <programlisting>
+   PackageCreator.generatePearPackage(componentID, mainComponentDesc, classpath, datapath,
+         mainComponentRoot, targetDir, annotatorProperties);</programlisting>
+        The created PEAR package has the file name &lt;componentID>.pear and is located in the &lt;targetDir>.
+        </para>      
+        <para>
+        To create just the PEAR installation descriptor in the main component root directory call:
+        <programlisting>
+    PackageCreator.createInstallDescriptor(componentID, mainComponentDesc, classpath, datapath,
+          mainComponentRoot, annotatorProperties);</programlisting>
+  	    
+  	    To package a PEAR file with an existing installation descriptor call:
+        <programlisting>
+  	PackageCreator.createPearPackage(componentID, mainComponentRoot, targetDir);</programlisting>
+        The created PEAR package has the file name &lt;componentID>.pear and is located in the &lt;targetDir>.
+  	  </para>
+  	  
     </section>
   </section>
   <section id="ugr.ref.pear.installing">
@@ -599,7 +631,6 @@ local_root_directory_for_1st_delegate_component/resources/dict/
       <para>The example below shows how to use the PEAR APIs to install a 
       PEAR package and access the installed PEAR package data. For more details about the PackageBrowser API, 
       please refer to the JavaDocs for the org.apache.uima.pear.tools package.
-      
       
       <programlisting>File installDir = new File("/home/user/uimaApp/installedPears");
 File pearFile = new File("/home/user/uimaApp/testpear.pear");
