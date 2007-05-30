@@ -92,7 +92,6 @@ import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.internal.util.Timer;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
@@ -1288,7 +1287,7 @@ public class MainFrame extends JFrame {
   public void setFileStatusMessage() {
     Border textBorder;
     if (this.textFile == null) {
-      textBorder = BorderFactory.createTitledBorder(this.textTitleBorder, "New Text Buffer");
+      textBorder = BorderFactory.createTitledBorder(this.textTitleBorder, "Text");
       // textBorder.setTitleJustification(TitledBorder.ABOVE_TOP);
     } else {
       textBorder = BorderFactory.createTitledBorder(this.textTitleBorder, this.textFile
@@ -1511,12 +1510,12 @@ public class MainFrame extends JFrame {
 
       // reset sofa combo box with just the initial view
 //      this.disableSofaListener = true;
-      this.sofaSelectionComboBox.removeAllItems();
-      this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
+      // I don't know what this does here, but it resets the text, which it shouldn't do at this
+      // point.
+//      this.sofaSelectionComboBox.removeAllItems();
+//      this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
       this.sofaSelectionPanel.setVisible(false);
 //      this.disableSofaListener = false;
-      // MainFrame.this.textArea.setText(null);
-      // MainFrame.this.textArea.repaint();
       MainFrame.this.updateIndexTree(true);
     } catch (Exception e) {
       handleException(e);
@@ -2207,50 +2206,5 @@ public class MainFrame extends JFrame {
     }
   }
 
-  // private void initFocusTraversalPolicy() {
-  //    
-  // FocusTraversalPolicy ftp = new FocusTraversalPolicy() {
-  //
-  // public Component getDefaultComponent(Container arg0)
-  // {
-  // return indexTree;
-  // }
-  //
-  // public Component getFirstComponent(Container arg0)
-  // {
-  // return indexTree;
-  // }
-  //
-  // public Component getLastComponent(Container arg0)
-  // {
-  // return fsTree;
-  // }
-  //
-  // public Component getComponentAfter(Container arg0, Component comp)
-  // {
-  // if (comp == textArea) {
-  // return fsTree;
-  // } else if (comp == fsTree) {
-  // return indexTree;
-  // } else {
-  // return textArea;
-  // }
-  // }
-  //
-  // public Component getComponentBefore(Container arg0, Component comp)
-  // {
-  // if (comp == textArea) {
-  // return indexTree;
-  // } else if (comp == fsTree) {
-  // return textArea;
-  // } else {
-  // return fsTree;
-  // }
-  // }
-  //      
-  // };
-  //    
-  // this.setFocusTraversalPolicy(ftp);
-  // }
 
 }
