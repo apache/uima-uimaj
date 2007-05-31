@@ -30,18 +30,18 @@ under the License.
     Information Management Architecture) components. The PEAR package can be used for
     distribution and reuse by other components or applications. It also allows applications
     and tools to manage UIMA components automatically for verification, deployment,
-    invocation, testing, etc. Please refer to the PEAR Reference chapter for more
-    information about the internal structure of a PEAR file.</para>
+    invocation, testing, etc. Please refer to <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.pear"/>
+    for more information about the internal structure of a PEAR file.</para>
   
-  <para>This chapter describes how to use the PEAR Eclipse Plugin to create PEAR files for
-    standard UIMA components. This plugin is installed if you followed the directions in
-      <olink targetdoc="&uima_docs_overview;" targetptr="ugr.ovv.eclipse_setup"/>
-    .</para>
+  <para>This chapter describes how to use the PEAR Eclipse plugin or the PEAR command line packager 
+  to create PEAR files for standard UIMA components.</para>
   
   <section id="ugr.tools.pear.packager.using_eclipse_plugin">
     <title>Using the PEAR Eclipse Plugin</title>
     
-    <para>Using the PEAR Eclipse Plugin involves the following two steps:</para>
+    <para>The PEAR Eclipse plugin is automatically installed if you followed the directions in
+      <olink targetdoc="&uima_docs_overview;" targetptr="ugr.ovv.eclipse_setup"/>. The use of the 
+      plugin involves the following two steps:</para>
     
     <itemizedlist spacing="compact"><listitem><para>Add the UIMA nature to your project
       </para></listitem>
@@ -307,5 +307,79 @@ under the License.
       </section>
     </section>
   </section>
+  
+  <section id="ugr.tools.pear.packager.using_command_line">
+    <title>Using the PEAR command line packager</title>
+     <para>The PEAR command line packager takes some PEAR package parameter settings on the command line to create an 
+     UIMA PEAR file.</para>
+     
+     <para>To run the PEAR command line packager you can use the provided runPearPackager (.bat for Windows, and .sh for Unix) 
+     scripts. The packager can be used in three different modes.</para>
+     <para><itemizedlist>
+     <listitem> 
+     	<para>Mode 1: creates a complete PEAR package with the provided information (default mode)</para>
+     	<para><programlisting>runPearPackager -compID &lt;componentID> -mainCompDesc &lt;mainComponentDesc> [-classpath &lt;classpath>] 
+     	[-datapath &lt;datapath>] -mainCompDir &lt;mainComponentDir> -targetDir &lt;targetDir> 
+     	[-envVars &lt;propertiesFilePath>]</programlisting></para>   
+     	<para> The created PEAR file has the file name &lt;componentID>.pear and is located in the &lt;targetDir>.</para>
+     </listitem>
+     
+     <listitem> 
+     	<para>Mode 2: creates a PEAR installation descriptor without packaging the PEAR file</para>
+     	<para><programlisting>runPearPackager -create -compID &lt;componentID> -mainCompDesc &lt;mainComponentDesc> 
+     	[-classpath &lt;classpath>] [-datapath &lt;datapath>] -mainCompDir &lt;mainComponentDir> 
+     	[-envVars &lt;propertiesFilePath>]</programlisting></para>
+     	<para> The PEAR installation descriptor is created in the &lt;mainComponentDir>/metadata directory.</para>
+     </listitem>
+
+     <listitem>
+     	<para>Mode 3: creates a PEAR package with an existing PEAR installation descriptor</para>
+     	<para><programlisting>runPearPackager -package -compID &lt;componentID> -mainCompDir &lt;mainComponentDir> 
+     	-targetDir &lt;targetDir></programlisting></para>
+      	<para> The created PEAR file has the file name &lt;componentID>.pear and is located in the &lt;targetDir>.</para>
+     </listitem>
+     	 
+     </itemizedlist>
+     </para>          
+     <para>The modes 2 and 3 should be used when you want to manipulate the PEAR installation descriptor before packaging
+     the PEAR file. </para>
+     
+     <para>Some more details about the PearPackager parameters is provided in the list below:</para>
+     <para><itemizedlist>
+     <listitem> 
+     	<simpara><literal>&lt;componentID></literal>: PEAR package component ID.</simpara>
+     </listitem>
+     
+     <listitem> 
+     	<simpara><literal>&lt;mainComponentDesc></literal>: Main component descriptor of the PEAR package.</simpara>
+     </listitem>
+
+     <listitem>
+     	<simpara><literal>&lt;classpath></literal>: PEAR classpath settings. Use $main_root macros to specify
+     	path entries. Use <literal>;</literal> to separate the entries.</simpara>
+     </listitem>
+
+     <listitem>
+     	<simpara><literal>&lt;datapath></literal>: PEAR datapath settings. Use $main_root macros to specify
+     	path entries. Use <literal>;</literal> to separate the path entries.</simpara>
+     </listitem>
+
+     <listitem>
+     	<simpara><literal>&lt;mainComponentDir></literal>: Main component directory that contains the PEAR package content.</simpara>
+     </listitem>
+
+     <listitem>
+     	<simpara><literal>&lt;targetDir></literal>: Target directory where the created PEAR file is written to.</simpara>
+     </listitem>
+
+     <listitem>
+     	<simpara><literal>&lt;propertiesFilePath></literal>: Path name to a properties file that contains environment variables that must be
+     	set to run the PEAR content.</simpara>
+     </listitem>
+          	 
+     </itemizedlist>
+     
+     </para>
+   </section>
   
 </chapter>

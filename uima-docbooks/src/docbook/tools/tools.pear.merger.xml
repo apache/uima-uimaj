@@ -37,12 +37,10 @@ under the License.
     merging needs to be done by hand. Please see the Restrictions and Limitations section,
     below.</para>
   
-  <para>This is a command-line utility; there are shell scripts (.bat for Windows, and .sh for
-    Unix) to run it.</para>
+  <para>To run the PearMerger command line utility you can use the runPearMerger scripts (.bat for Windows, and .sh for
+    Unix). The usage of the tooling is shown below:</para>
   
-  <para><command>runPearMerger 1<superscript>st</superscript>_input_pear_file ...
-    n<superscript>th</superscript>_input_pear_file -n output_analysis_engine_name [
-    -f output_pear_file ]</command></para>
+  <para><programlisting>runPearMerger 1st_input_pear_file ... nth_input_pear_file -n output_analysis_engine_name [-f output_pear_file ]</programlisting></para>
   
   <para>The first group of parameters are the input PEAR files. No duplicates are allowed
     here. The <literal>-n</literal> parameter is the name of the generated Aggregate
