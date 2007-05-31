@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
-"../../../docbook/docbook-xml-4.5/docbookx.dtd"[
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"[
 <!ENTITY imgroot "../images/tools/tools.cvd/" >
 <!ENTITY % uimaents SYSTEM "../entities.ent" >  
 %uimaents;
@@ -25,9 +25,11 @@
 -->
 <chapter id="ugr.tools.cvd">
  <title>CAS Visual Debugger</title>
+ <section id="ugr.tools.cvd.introduction">
+ <title>Introduction</title>
  <para>
   The CAS Visual Debugger is a tool to run text analysis engines in UIMA
-  and view the results. The tool is implemented as a stand-alone GUI
+  and view the results. The tool is implemented as a stand-alone GUI 
   tool using Java's Swing library.
  </para>
  <para>
@@ -57,28 +59,54 @@
   This depends on your operating system, your version of Java, and a
   variety of other factors.
  </para>
+ <section id="ugr.cvd.introduction.running">
+ <title>Running CVD</title>
+ <para>
+  You will usually want to start CVD from the command line, or from Eclipse.  To start CVD from the
+  command line, you minimally need the uima-core and uima-tools jars.  Below is a sample command
+  line for sh and its offspring.
+  <programlisting>java -cp ${UIMA_HOME}/lib/uima-core.jar:${UIMA_HOME}/lib/uima-tools.jar org.apache.uima.tools.cvd.CVD</programlisting>
+  However, there is no need to type this.  The ${UIMA_HOME}/bin directory contains a cvd.sh and
+  cvd.bat file for favority operating systems.
+ </para>
+ <para>
+   In Eclipse, you have a ready to use launch configuration available when you have installed the
+   UIMA sample project (see ).  Below is a screenshot of the the Eclipse Run dialog with the CVD
+   run configuration selected.
+   <screenshot>
+    <mediaobject>
+     <imageobject>
+      <imagedata scale="100" format="JPG" fileref="&imgroot;eclipse-cvd-launch.jpg"/>
+     </imageobject>
+     <textobject>
+      <phrase>Sample error dialog</phrase>
+     </textobject>
+    </mediaobject>
+   </screenshot>
+ </para>
+ </section>
+ </section>
  <section id="cvd.errorHandling">
   <title>Error Handling</title>
   <para>
-   Error handling is not a strong point of this program. On encountering
-   an error, it will generally pop up an error dialog with a short,
+   On encountering
+   an error, CVD will pop up an error dialog with a short,
    usually incomprehensible message.  Often, the error message will
    claim that there is more information available in the log file, and
    sometimes, this is actually true; so do go and check the log.  You
    can view the log file by selecting the appropriate item in the
    &quot;Tools&quot; menu.
 
-   <figure id="cvd.sampleErrorFigure">
-    <title>A sample error dialog</title>
+   <screenshot>
     <mediaobject>
      <imageobject>
-      <imagedata width="3.44in" format="JPG" fileref="&imgroot;ErrorExample.jpg"/>
+      <imagedata scale="100" format="JPG" fileref="&imgroot;ErrorExample.jpg"/>
      </imageobject>
      <textobject>
       <phrase>Sample error dialog</phrase>
      </textobject>
     </mediaobject>
-   </figure>
+   </screenshot>
 
   </para>
  </section>
@@ -114,17 +142,16 @@
     color settings, and import and export the XCAS format. Here's a
     screenshot.
 
-    <figure id="cvd.figure.fileMenu">
-     <title>The File menu</title>
-     <mediaobject>
+   <screenshot> 
+    <mediaobject>
       <imageobject>
-       <imagedata width="1.91in" format="JPG" fileref="&imgroot;FileMenu.jpg"/>
+       <imagedata scale="100" format="JPG" fileref="&imgroot;FileMenu.jpg"/>
       </imageobject>
       <textobject>
        <phrase>The File menu</phrase>
       </textobject>
      </mediaobject>
-    </figure>
+    </screenshot>
    </para>
 
    <itemizedlist>
@@ -218,11 +245,7 @@
        page. The way to find out if the code page you entered is
        supported in your Java implementation is to try and load a text
        file. If you see an error ``Unsupported text encoding'', the code
-       page is not supported. [Note: as of Java 1.4, it is possible to
-       query Java for the supported code pages and so prevent users from
-       trying out an unsupported code page. This was not possible in
-       Java 1.3, which we're still supporting with this version of
-       Gladis.]
+       page is not supported.
       </para>
      </formalpara>
     </listitem>
