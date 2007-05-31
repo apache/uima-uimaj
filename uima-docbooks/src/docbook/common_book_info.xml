@@ -21,7 +21,7 @@ under the License.
 -->  
 <bookinfo>
 
-    <releaseinfo>Version 2.1</releaseinfo>
+    <releaseinfo>Version 2.2</releaseinfo>
 
     <productname>UIMA</productname>
 
@@ -90,5 +90,5 @@ under the License.
       <year>2006</year>     
       <holder>International Business Machines Corporation</holder>
     </copyright>
-    <pubdate>February, 2007</pubdate>
+    <pubdate>June, 2007</pubdate>
   </bookinfo>
