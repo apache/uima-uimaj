@@ -1476,7 +1476,6 @@ public class MultiPageEditor extends FormEditor {
         }
         if (null != input)
           try {
-            fileNeedingContext = (IFile) getIFileOrFile(contextFile);
             parseSource(input, contextFile);
           } catch (PartInitException e) {
             showContextLoadFailureMessage(e, contextFile);
@@ -1706,7 +1705,7 @@ public class MultiPageEditor extends FormEditor {
   public String getFullPathFromDescriptorRelativePath(String aDescRelPath) {
 
     if (aDescRelPath.indexOf(':') > 0) { // indicates already an absolute path on Windows, at least
-      return aDescRelPath;
+      return aDescRelPath.replace('\\', '/');
     }
 
     String sEditorFileFullPath = getFile().getLocation().toString();
