@@ -206,9 +206,11 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
       Class requiredInterface = mFlowController.getRequiredCasInterface();
       AbstractCas casToPass = getCasManager().getCasInterface(view, requiredInterface);
 
+      ((CASImpl)aCAS).switchClassLoaderLockCas(mFlowController);
       Flow flow = mFlowController.computeFlow(casToPass);
-      return new FlowContainer(flow, this);
+      return new FlowContainer(flow, this, aCAS);
     } finally {
+      ((CASImpl)aCAS).restoreClassLoaderUnlockCas();
       aCAS.setCurrentComponentInfo(null);
       mTimer.stopIt();
       getMBean().reportAnalysisTime(mTimer.getDuration());

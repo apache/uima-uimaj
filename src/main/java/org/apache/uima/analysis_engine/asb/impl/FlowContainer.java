@@ -39,13 +39,16 @@ public class FlowContainer {
   private FlowControllerContainer mFlowControllerContainer;
 
   private boolean mSofaAware;
+  
+  private CASImpl mCAS;
 
   private UimaTimer mTimer = UIMAFramework.newTimer();
 
-  public FlowContainer(Flow aFlow, FlowControllerContainer aFlowControllerContainer) {
+  public FlowContainer(Flow aFlow, FlowControllerContainer aFlowControllerContainer, CAS aCAS) {
     mFlow = aFlow;
     mFlowControllerContainer = aFlowControllerContainer;
     mSofaAware = mFlowControllerContainer.getProcessingResourceMetaData().isSofaAware();
+    mCAS = (CASImpl)aCAS;
   }
 
   public FlowContainer newCasProduced(CAS newCAS, String producedBy)
@@ -67,9 +70,11 @@ public class FlowContainer {
       Class requiredInterface = mFlowControllerContainer.getRequiredCasInterface();
       AbstractCas casToPass = getCasManager().getCasInterface(view, requiredInterface);
 
+      ((CASImpl)newCAS).switchClassLoaderLockCas(mFlow);
       Flow flow = mFlow.newCasProduced(casToPass, producedBy);
-      return new FlowContainer(flow, mFlowControllerContainer);
+      return new FlowContainer(flow, mFlowControllerContainer, newCAS);
     } finally {
+      ((CASImpl)newCAS).restoreClassLoaderUnlockCas();
       newCAS.setCurrentComponentInfo(null);
       mTimer.stopIt();
       getMBean().reportAnalysisTime(mTimer.getDuration());
@@ -80,19 +85,31 @@ public class FlowContainer {
   public Step next() throws AnalysisEngineProcessException {
     mTimer.startIt();
     try {
+      mCAS.switchClassLoaderLockCas(mFlow);
       return mFlow.next();
     } finally {
+      mCAS.restoreClassLoaderUnlockCas();
       mTimer.stopIt();
       getMBean().reportAnalysisTime(mTimer.getDuration());
     }
   }
   
   public void aborted() {
+    try {
+      mCAS.switchClassLoaderLockCas(mFlow);
     mFlow.aborted();
+    } finally {
+      mCAS.restoreClassLoaderUnlockCas();
+    }
   }
   
   public boolean continueOnFailure(String failedAeKey, Exception failure) {
-    return mFlow.continueOnFailure(failedAeKey, failure);
+    try {
+      mCAS.switchClassLoaderLockCas(mFlow);
+      return mFlow.continueOnFailure(failedAeKey, failure);
+    } finally {
+      mCAS.restoreClassLoaderUnlockCas();
+    }
   }
 
 

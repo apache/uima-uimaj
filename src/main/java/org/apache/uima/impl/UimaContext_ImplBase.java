@@ -571,6 +571,9 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     CAS cas = casManager.getCas(getQualifiedContextName());
     // set the component info, so the CAS knows the proper sofa mappings
     cas.setCurrentComponentInfo(getComponentInfo());
+    // This cas will be unlocked and its class loader restored when the
+    //   next() method returns it
+    ((CASImpl)cas).switchClassLoaderLockCasCL(getResourceManager().getExtensionClassLoader());
     // if this is a sofa-aware component, give it the Base CAS
     // if it is a sofa-unaware component, give it whatever view maps to the _InitialVie
     if (mSofaAware) {

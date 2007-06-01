@@ -199,6 +199,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     
     private ComponentInfo componentInfo;
     
+    private ClassLoader previousJCasClassLoader;
+    
     private SharedViewData(boolean useFSCache) {
       this.useFSCache = useFSCache;
     }
@@ -863,13 +865,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 			this.svd.casMetadata.fsClassRegistry.flush();
 		}
 		if (this.jcas != null) {
-			try {
 				JCasImpl.clearData(this);
-			} catch (CASException e) {
-				CASAdminException cae = new CASAdminException(CASAdminException.JCAS_ERROR);
-				cae.addArgument(e.getMessage());
-				throw cae;
-			}
 		}
 	}
 
@@ -3046,9 +3042,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @see org.apache.uima.cas.admin.CASMgr#getJCasClassLoader()
    */
 	public ClassLoader getJCasClassLoader() {
-		if (this != this.svd.baseCAS) {
-			return this.svd.baseCAS.getJCasClassLoader();
-		}
 		return this.svd.jcasClassLoader;
 	}
 
@@ -3059,7 +3052,55 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
 	public void setJCasClassLoader(ClassLoader classLoader) {
 		this.svd.jcasClassLoader = classLoader;
+    this.svd.previousJCasClassLoader = classLoader;
 	}
+  
+  // Internal use only, public for cross package use
+  // Assumes: The JCasClassLoader for a CAS is set up initially when the CAS is created
+  //   and not switched (other than by this code) once it is set.
+  
+  //   Callers of this method always code the "restoreClassLoaderUnlockCAS" in pairs,
+  //   protected as needed with try - finally blocks.
+  //   
+  //     Special handling is needed for CAS Mulipliers - they can modify a cas up to the
+  //     point they no longer "own" it.
+  
+  public void switchClassLoaderLockCas(Object userCode) {
+    switchClassLoaderLockCasCL(userCode.getClass().getClassLoader()); 
+  }
+  
+  public void switchClassLoaderLockCasCL(ClassLoader newClassLoader) {
+    // lock out CAS functions to which annotator should not have access
+    enableReset(false);
+    
+    if (null == newClassLoader) { // is null if no cl set 
+      return;
+    }
+    if (newClassLoader != svd.jcasClassLoader) {
+//      System.out.println("Switching to new class loader");
+      setJCasClassLoader(newClassLoader);
+      if (null != this.jcas) {
+        ((JCasImpl)jcas).switchClassLoader(newClassLoader);
+      }
+    }
+  }
+
+  public void restoreClassLoaderUnlockCas() {
+    // unlock CAS functions
+    enableReset(true);
+    // this might be called without the switch ever being called
+    if (null == svd.previousJCasClassLoader)
+      return;
+    if (svd.previousJCasClassLoader != svd.jcasClassLoader) {
+//      System.out.println("Switching back to previous class loader");
+      setJCasClassLoader(svd.previousJCasClassLoader);
+      if (null != this.jcas) {
+        ((JCasImpl)jcas).switchClassLoader(svd.previousJCasClassLoader);
+      }
+    }
+
+  }
+
 
 	public FeatureValuePath createFeatureValuePath(String featureValuePath)
 			throws CASRuntimeException {
