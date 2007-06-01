@@ -64,7 +64,7 @@ public class PearMergerTest extends TestCase {
   protected void setUp() throws Exception {
     
     // create temporary working directory
-    File tempFile = File.createTempFile("pear_merger_test_", "~tmp");
+    File tempFile = File.createTempFile("pear_merger_test_", "tmp");
     if (tempFile.delete()) {
       File tempDir = tempFile;
       if (tempDir.mkdirs())
@@ -86,6 +86,8 @@ public class PearMergerTest extends TestCase {
    * into the output aggregate PEAR. Then, the output PEAR is installed by using
    * org.apache.uima.pear.tools.InstallationController, and the installed component is verified by
    * instantiating the aggregate TAE and creating CAS object.
+   * 
+   * @throws Exception
    */
   public void testPearMerger() throws Exception {
     // check temporary working directory
@@ -128,8 +130,13 @@ public class PearMergerTest extends TestCase {
     AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aeSpec, resMngr, null);
     Assert.assertTrue(ae != null);
     // create CAS object
-    CAS tCas = ae.newCAS();
-    Assert.assertTrue(tCas != null);
+    CAS cas = ae.newCAS();
+    Assert.assertTrue(cas != null);
+    
+    //process CAS
+    cas.setDocumentText("Sample text for testing");
+    ae.process(cas);
+    
     // clean-up the results
     pmController.cleanUp();
   }
