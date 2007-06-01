@@ -35,6 +35,9 @@ public class SystemExitHandler implements ActionListener {
 
   public void actionPerformed(ActionEvent event) {
     MainFrameClosing.handleClosingEvent(this.main);
+    if (this.main != null) {
+      this.main.dispose();
+    }
   }
 
 }
