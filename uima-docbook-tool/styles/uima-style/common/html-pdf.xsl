@@ -105,7 +105,7 @@
   <xsl:param name="variablelist.as.blocks">1</xsl:param>
 
   <!-- expand plain imageobject nodes into doubles, one for fo output the other for html output
-       Scale the html output by 1.1 -->
+       Scale the html output by 1.1 for inches or 1.4 for pixels -->
     
   <xsl:template match="mediaobject[imageobject[not(@role)]]">
     <xsl:variable name="id1" select="imageobject/imagedata"/>
