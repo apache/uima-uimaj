@@ -432,6 +432,9 @@ public class InstallPear extends JFrame {
 
       // start CVD
       MainFrame frame = CVD.createMainFrame();
+      
+      // Prevent CVD from shutting down JVM after exit
+      frame.setExitOnClose(false);
 
       // load pear descriptor
       frame.loadAEDescriptor(new File(pearDesc));

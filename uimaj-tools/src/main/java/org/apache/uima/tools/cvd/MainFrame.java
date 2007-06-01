@@ -30,6 +30,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -69,6 +71,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
+import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.event.TreeModelEvent;
@@ -434,6 +437,8 @@ public class MainFrame extends JFrame {
   private JComboBox sofaSelectionComboBox;
 
   private JPanel sofaSelectionPanel;
+  
+  private boolean exitOnClose = true;
 
 //  private boolean disableSofaListener = false;
 
@@ -1360,6 +1365,12 @@ public class MainFrame extends JFrame {
   }
 
   private void init() {
+    this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    this.addWindowListener(new WindowAdapter() {
+      public void windowClosing(WindowEvent e) {
+        // Do nothing.
+      }
+    });
     initializeLogging();
     this.addCursorOwningComponent(this);
     this.addWindowListener(new MainFrameClosing(this));
@@ -2199,6 +2210,20 @@ public class MainFrame extends JFrame {
     if (text == null) {
       getTextArea().repaint();
     }
+  }
+
+  public boolean isExitOnClose() {
+    return this.exitOnClose;
+  }
+
+  /**
+   * Set exit-on-close behavior.  Normally, CVD will shut down the JVM it's running in when it's
+   * main window is being closed.  Calling <code>setExitOnClose(false)</code> prevents that.  It
+   * is then the caller's task to shut down the JVM.
+   * @param exitOnClose
+   */
+  public void setExitOnClose(boolean exitOnClose) {
+    this.exitOnClose = exitOnClose;
   }
 
 

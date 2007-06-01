@@ -22,7 +22,6 @@ package org.apache.uima.tools.cvd.control;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
@@ -35,12 +34,7 @@ public class SystemExitHandler implements ActionListener {
   }
 
   public void actionPerformed(ActionEvent event) {
-    try {
-      this.main.saveProgramPreferences();
-    } catch (IOException e) {
-      this.main.handleException(e);
-    }
-    System.exit(0);
+    MainFrameClosing.handleClosingEvent(this.main);
   }
 
 }

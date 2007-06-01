@@ -38,16 +38,22 @@ public class MainFrameClosing extends WindowAdapter {
   }
 
   public void windowClosing(WindowEvent e) {
+    handleClosingEvent(this.main);
+  }
+
+  public static void handleClosingEvent(MainFrame main) {
     try {
-      this.main.setStatusbarMessage("Saving preferences.");
-      this.main.saveProgramPreferences();
-      if (this.main.getAe() != null) {
-        this.main.getAe().destroy();
+      main.setStatusbarMessage("Saving preferences.");
+      main.saveProgramPreferences();
+      if (main.getAe() != null) {
+        main.getAe().destroy();
       }
     } catch (IOException ioe) {
-      this.main.handleException(ioe);
+      main.handleException(ioe);
     }
-    System.exit(0);
+    if (main.isExitOnClose()) {
+      System.exit(0);
+    }
   }
 
 }
