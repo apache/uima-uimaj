@@ -30,6 +30,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.jar.JarFile;
 import java.util.prefs.Preferences;
@@ -51,6 +53,8 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileFilter;
 
 import org.apache.uima.pear.tools.InstallationController;
@@ -69,7 +73,7 @@ import org.apache.uima.tools.util.gui.AboutDialog;
  * the installed AE in CVD. <br />
  * The required field is : The pear file must be specified. The User may or may not specify the
  * installation directory. If the installation directory is not specified, the current working
- * directory is used by default. 
+ * directory is used by default.
  * 
  */
 public class InstallPear extends JFrame {
@@ -159,7 +163,7 @@ public class InstallPear extends JFrame {
     }
   }
 
-//  private JPanel aboutMenuItemPanel = null;
+  // private JPanel aboutMenuItemPanel = null;
 
   private JTextField pearFileTextField = null;
 
@@ -183,7 +187,7 @@ public class InstallPear extends JFrame {
 
   private JMenu helpMenu = null;
 
-//  private JLabel bannerLabel = null;
+  // private JLabel bannerLabel = null;
 
   private static JButton runButton = null;
 
@@ -217,9 +221,9 @@ public class InstallPear extends JFrame {
 
   private static final String SET_ENV_FILE = "metadata/setenv.txt";
 
-//  protected static final String UIMA_HOME_ENV = "UIMA_HOME";
+  // protected static final String UIMA_HOME_ENV = "UIMA_HOME";
 
-//  protected static final String UIMA_DATAPATH_ENV = "uima.datapath";
+  // protected static final String UIMA_DATAPATH_ENV = "uima.datapath";
 
   /**
    * Opens a dialog to select a PEAR file from the local file system.
@@ -307,18 +311,24 @@ public class InstallPear extends JFrame {
   private static void installPear(File localPearFile, File installationDir) {
     InstallationController.setLocalMode(true);
     InstallationDescriptorHandler installationDescriptorHandler = new InstallationDescriptorHandler();
+    pearConsole.setText("");
+    printInConsole(false, "");
     // check input parameters
     if (localPearFile != null && !localPearFile.exists()) {
       errorFlag = true;
       message = localPearFile.getAbsolutePath() + "file not found \n";
       printInConsole(errorFlag, message);
+    } else {
+      if(localPearFile != null) {
+        pearConsole.append("PEAR file to install is => " + localPearFile.getAbsolutePath() + "\n");
+      }
     }
     /* setting current working directory by default */
     if (installationDir == null) {
       installationDir = new File("./");
-      pearConsole
-              .append("installation directory is => " + installationDir.getAbsolutePath() + "\n");
     }
+    pearConsole.append("Installation directory is => " + installationDir.getAbsolutePath() + "\n");
+
     try {
       JarFile jarFile = new JarFile(localPearFile);
       installationDescriptorHandler.parseInstallationDescriptor(jarFile);
@@ -414,26 +424,30 @@ public class InstallPear extends JFrame {
   private void runCVD() {
     try {
 
-      //create PackageBrowser object
+      // create PackageBrowser object
       PackageBrowser pkgBrowser = new PackageBrowser(new File(mainComponentRootPath));
-      
-      //get pear descriptor
+
+      // get pear descriptor
       String pearDesc = pkgBrowser.getComponentPearDescPath();
-      
-      //start CVD
+
+      // start CVD
       MainFrame frame = CVD.createMainFrame();
-      
-      //load pear descriptor
+
+      // load pear descriptor
       frame.loadAEDescriptor(new File(pearDesc));
-      
-      //run CVD
+
+      // run CVD
       frame.runAE(true);
-      
+
     } catch (Throwable e) {
       pearConsole.append(" Error in runCVD() " + e.toString());
-      if (System.getProperty("DEBUG") != null) {
-        e.printStackTrace(System.err);
-      }
+      StringWriter strWriter = new StringWriter();
+      PrintWriter printWriter = new PrintWriter(strWriter, true);
+      e.printStackTrace(printWriter);
+      printWriter.flush();
+      strWriter.flush();
+      pearConsole.setForeground(new Color(0xFF0000));
+      pearConsole.append(strWriter.toString());
     }
   }
 
@@ -445,16 +459,43 @@ public class InstallPear extends JFrame {
   private JTextField getPearFileTextField() {
     if (pearFileTextField == null) {
       pearFileTextField = new JTextField();
-      pearFileTextField.setBounds(83, 90, 492, 20);
+      pearFileTextField.setBounds(83, 40, 492, 20);
       // hazel's change
       pearFileTextField.setLayout(new BorderLayout());
       pearFileTextField.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent e) {
           if (e.getSource() instanceof JTextField) {
             pearFileTextField = (JTextField) e.getSource();
-            browseDirButton.setEnabled(false);
             installButton.setEnabled(true);
-            pearConsole.setText(pearFileTextField.getText());
+            runButton.setEnabled(false);
+            if (pearFileTextField != null) {
+              pearConsole.setText("");
+              printInConsole(false, "");
+              pearConsole.append(pearFileTextField.getText() + "\n");
+            }
+
+          }
+        }
+      });
+
+      this.pearFileTextField.getDocument().addDocumentListener(new DocumentListener() {
+        public void changedUpdate(DocumentEvent e) {
+          // do nothing
+        }
+
+        public void insertUpdate(DocumentEvent e) {
+          InstallPear.runButton.setEnabled(false);
+          String inputPear = InstallPear.this.pearFileTextField.getText();
+          if (inputPear.length() > 0) {
+            InstallPear.this.installButton.setEnabled(true);
+          }
+        }
+
+        public void removeUpdate(DocumentEvent e) {
+          InstallPear.runButton.setEnabled(false);
+          String inputPear = InstallPear.this.pearFileTextField.getText();
+          if (inputPear.length() == 0) {
+            InstallPear.this.installButton.setEnabled(false);
           }
         }
       });
@@ -470,23 +511,18 @@ public class InstallPear extends JFrame {
   private JButton getbrowseButton() {
     if (browseButton == null) {
       browseButton = new JButton();
-      browseButton.setBounds(579, 90, 114, 20);
+      browseButton.setBounds(579, 40, 114, 20);
       browseButton.setText("Browse...");
       browseButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
       browseButton.setMnemonic('b');
       browseButton.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent e) {
-          String pear, message = null;
+          String pear = null;
           if ((e.getActionCommand().equals("Browse..."))) {
             runButton.setEnabled(false);
             pear = selectPear();
             if (pear == null)
               return;
-            browseDirButton.setEnabled(true);
-            boolean errorflag = false;
-            pearConsole.setText("");
-            message = "Selected PEAR => " + pearFileTextField.getText() + "\n";
-            printInConsole(errorflag, message);
           }
         }
       });
@@ -502,22 +538,34 @@ public class InstallPear extends JFrame {
   private JTextField getInstallDirTextField() {
     if (installDirTextField == null) {
       installDirTextField = new JTextField();
-      installDirTextField.setBounds(83, 130, 492, 20);
+      installDirTextField.setBounds(83, 80, 492, 20);
       installDirTextField.isEditable();
       // handling text input
       installDirTextField.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent e) {
           if (e.getSource() instanceof JTextField) {
-            installButton.setEnabled(true);
+            runButton.setEnabled(false);
             installDirTextField = (JTextField) e.getSource();
-            if (installDirTextField == null)
-              pearConsole.setText("");
-
-            else
-              pearConsole.append(installDirTextField.getText());
+            if (installDirTextField != null) {
+              pearConsole.append(installDirTextField.getText() + "\n");
+            }
           }
         }
       });
+      
+      installDirTextField.getDocument().addDocumentListener(new DocumentListener() {
+        public void changedUpdate(DocumentEvent e) {
+          // do nothing
+        }
+
+        public void insertUpdate(DocumentEvent e) {
+          runButton.setEnabled(false);
+         }
+
+        public void removeUpdate(DocumentEvent e) {
+          runButton.setEnabled(false);        }
+      });
+
     }
     return installDirTextField;
   }
@@ -530,25 +578,24 @@ public class InstallPear extends JFrame {
   private JButton getBrowseDirButton() {
     if (browseDirButton == null) {
       browseDirButton = new JButton();
-      browseDirButton.setBounds(579, 130, 114, 20);
+      browseDirButton.setBounds(579, 80, 114, 20);
       browseDirButton.setText("Browse Dir...");
       browseDirButton.setEnabled(false);
       browseDirButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
       browseDirButton.setMnemonic('d');
+      browseDirButton.setEnabled(true);
       browseDirButton.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent e) {
           String dir = null;
           File installationDir = null;
+          runButton.setEnabled(false);
           if (e.getActionCommand().equals("Browse Dir...")) {
             dir = selectDir();
             if (dir == null) {
               installationDir = new File("./");
-              installDirTextField.setText(installationDir.getAbsolutePath().toString());
-              pearConsole.append(" If you choose to install pear file, installation directory is: "
-                      + installationDir.getAbsolutePath() + "\n");
+              installDirTextField.setText(installationDir.getAbsolutePath());
             } else {
-              installDirTextField.setText(dir.toString());
-              pearConsole.append("installation directory => " + dir + "\n\n");
+              installDirTextField.setText(dir);
             }
           }
         }
@@ -565,7 +612,7 @@ public class InstallPear extends JFrame {
   private JButton getInstallButton() {
     if (installButton == null) {
       installButton = new JButton();
-      installButton.setBounds(100, 160, 108, 24);
+      installButton.setBounds(100, 120, 108, 24);
       installButton.setText("Install");
       installButton.setEnabled(false);
       installButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -607,7 +654,7 @@ public class InstallPear extends JFrame {
   private JButton getRunButton() {
     if (runButton == null) {
       runButton = new JButton();
-      runButton.setBounds(255, 160, 240, 24);
+      runButton.setBounds(255, 120, 240, 24);
       runButton.setText("Run your AE in the CAS Visual Debugger");
       runButton.setEnabled(false);
       runButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -667,9 +714,10 @@ public class InstallPear extends JFrame {
    */
   private JScrollPane getJScrollPane() {
     if (jScrollPane == null) {
-      jScrollPane = new JScrollPane(getPearConsole(), ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
-          ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-      jScrollPane.setBounds(10, 190, 708, 352);
+      jScrollPane = new JScrollPane(getPearConsole(),
+              ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+              ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+      jScrollPane.setBounds(10, 150, 708, 352);
       jScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
       jScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     }
@@ -684,7 +732,7 @@ public class InstallPear extends JFrame {
   private JButton getHelpButton() {
     if (helpButton == null) {
       helpButton = new JButton();
-      helpButton.setBounds(540, 160, 108, 24);
+      helpButton.setBounds(540, 120, 108, 24);
       helpButton.setText("Help");
       helpButton.setEnabled(helpExists);
       helpButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -710,8 +758,8 @@ public class InstallPear extends JFrame {
               manFrame.pack();
               manFrame.setVisible(true);
             } catch (Exception ex) {
-              JOptionPane.showMessageDialog(InstallPear.this, ex.getMessage(), "Error showing help",
-                      JOptionPane.ERROR_MESSAGE);
+              JOptionPane.showMessageDialog(InstallPear.this, ex.getMessage(),
+                      "Error showing help", JOptionPane.ERROR_MESSAGE);
             }
           }
         }
@@ -737,17 +785,17 @@ public class InstallPear extends JFrame {
    */
   public static void main(String[] args) {
 
-//    try {
-//      String UIMA_HOME = System.getProperty("uima.home");
-//      if (UIMA_HOME == null)
-//        throw new RuntimeException("-Duima.home not defined");
-//      System.setProperty(UIMA_HOME_ENV, UIMA_HOME);
-//      // load main properties and replace %UIMA_HOME%
-//    } catch (Exception exc) {
-//      System.err.println("Error in InstallPear.main():" + exc.toString());
-//      exc.printStackTrace(System.err);
-//      System.exit(0);
-//    }
+    // try {
+    // String UIMA_HOME = System.getProperty("uima.home");
+    // if (UIMA_HOME == null)
+    // throw new RuntimeException("-Duima.home not defined");
+    // System.setProperty(UIMA_HOME_ENV, UIMA_HOME);
+    // // load main properties and replace %UIMA_HOME%
+    // } catch (Exception exc) {
+    // System.err.println("Error in InstallPear.main():" + exc.toString());
+    // exc.printStackTrace(System.err);
+    // System.exit(0);
+    // }
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         createAndShowGUI();
@@ -839,9 +887,9 @@ public class InstallPear extends JFrame {
     JLabel pearFileLabel = new JLabel();
     JPanel mainPane = new JPanel();
     mainPane.setLayout(null);
-    pearFileLabel.setBounds(83, 70, 126, 20);
+    pearFileLabel.setBounds(83, 20, 126, 20);
     pearFileLabel.setText("PEAR File:");
-    installDirLabel.setBounds(83, 110, 126, 20);
+    installDirLabel.setBounds(83, 60, 126, 20);
     installDirLabel.setText("Installation Directory:");
     mainPane.add(pearFileLabel, null);
     mainPane.add(getPearFileTextField(), null);
@@ -854,7 +902,7 @@ public class InstallPear extends JFrame {
     mainPane.add(getHelpButton(), null);
     mainPane.add(getPearConsole(), null);
     mainPane.add(getJScrollPane(), null);
-    
+
     /*
      * Add main pane and UIMA banner to content pane
      */
@@ -870,7 +918,7 @@ public class InstallPear extends JFrame {
    */
   private void initialize() {
     this.setTitle("Local PEAR Installation, Verification and Testing");
-    this.setSize(735, 600);
+    this.setSize(735, 620);
     this.setResizable(false);
     // center the frame on the screen
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
