@@ -806,27 +806,31 @@ public class MainFrame extends JFrame {
     HashMap actionMap = createEditActionMap();
     // Cut
     this.cutAction = (Action) actionMap.get(DefaultEditorKit.cutAction);
-    this.cutAction.putValue(Action.NAME, "Cut");
     this.cutAction.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_T));
     this.cutAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_X,
         InputEvent.CTRL_MASK));
     this.cutAction.setEnabled(false);
-    this.editMenu.add(this.cutAction);
+    JMenuItem cutItem = new JMenuItem(this.cutAction);
+    cutItem.setAction(this.cutAction);
+    cutItem.setText("Cut");
+    this.editMenu.add(cutItem);
     // Copy
     this.copyAction = (Action) actionMap.get(DefaultEditorKit.copyAction);
-    this.copyAction.putValue(Action.NAME, "Copy");
     this.copyAction.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
     this.copyAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C,
         InputEvent.CTRL_MASK));
     this.copyAction.setEnabled(false);
-    this.editMenu.add(this.copyAction);
+    JMenuItem copyItem = new JMenuItem(this.copyAction);
+    copyItem.setText("Copy");
+    this.editMenu.add(copyItem);
     // Paste
     Action pasteAction = (Action) actionMap.get(DefaultEditorKit.pasteAction);
-    pasteAction.putValue(Action.NAME, "Paste");
     pasteAction.putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_P));
     pasteAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_V,
         InputEvent.CTRL_MASK));
-    this.editMenu.add(pasteAction);
+    JMenuItem pasteItem = new JMenuItem(pasteAction);
+    pasteItem.setText("Paste");
+    this.editMenu.add(pasteItem);
   }
 
   private HashMap createEditActionMap() {
