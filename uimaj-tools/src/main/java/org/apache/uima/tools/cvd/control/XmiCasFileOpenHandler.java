@@ -77,7 +77,7 @@ public class XmiCasFileOpenHandler implements ActionListener {
           this.main.setTitle("XMI CAS");
           this.main.updateIndexTree(true);
           this.main.setRunOnCasEnabled();
-          this.main.setEnableCasFileWriting();
+          this.main.setEnableCasFileReadingAndWriting();
           this.main.setStatusbarMessage("Done loading XMI CAS file in " + time.getTimeSpan() + ".");
         } catch (Exception e) {
           e.printStackTrace();

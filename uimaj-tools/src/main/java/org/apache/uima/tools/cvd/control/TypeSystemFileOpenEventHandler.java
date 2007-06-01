@@ -76,7 +76,7 @@ public class TypeSystemFileOpenEventHandler implements ActionListener {
           this.main.getTextArea().setText("");
           this.main.resetTrees();
           this.main.setTypeSystemViewerEnabled(true);
-          this.main.setEnableCasFileReading(true);
+          this.main.setEnableCasFileReadingAndWriting();
           time.stop();
           this.main.setStatusbarMessage("Done loading type system file in " + time.getTimeSpan() + ".");
         } catch (Exception e) {

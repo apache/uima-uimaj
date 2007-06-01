@@ -943,17 +943,13 @@ public class MainFrame extends JFrame {
     
     // Disable menu items that can't be executed yet.
     this.typeSystemWriteItem.setEnabled(false);
-    setEnableCasFileReading(false);
-    setEnableCasFileWriting();
+    setEnableCasFileReadingAndWriting();
   }
 
-  public final void setEnableCasFileReading(boolean enable) {
+  public final void setEnableCasFileReadingAndWriting() {
+    final boolean enable = (this.cas != null);
     this.xcasReadItem.setEnabled(enable);
     this.xmiCasReadItem.setEnabled(enable);
-  }
-  
-  public final void setEnableCasFileWriting() {
-    final boolean enable = (this.cas != null);
     this.xcasWriteItem.setEnabled(enable);
     this.xmiCasWriteItem.setEnabled(enable);
   }
@@ -1480,7 +1476,7 @@ public class MainFrame extends JFrame {
       if (this.ae != null) {
         destroyAe();
         this.acdItem.setEnabled(false);
-        setEnableCasFileWriting();
+        setEnableCasFileReadingAndWriting();
         this.tsViewerItem.setEnabled(false);
         this.reRunMenu.setEnabled(false);
         this.runOnCasMenuItem.setEnabled(false);
@@ -1504,8 +1500,7 @@ public class MainFrame extends JFrame {
       this.acdItem.setEnabled(true);
       this.tsViewerItem.setEnabled(true);
       this.typeSystemWriteItem.setEnabled(true);
-      setEnableCasFileReading(true);
-      setEnableCasFileWriting();
+      setEnableCasFileReadingAndWriting();
       this.reRunMenu.setEnabled(true);
 
       // reset sofa combo box with just the initial view

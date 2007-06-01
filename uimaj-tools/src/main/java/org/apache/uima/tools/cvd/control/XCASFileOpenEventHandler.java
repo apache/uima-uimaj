@@ -71,7 +71,7 @@ public class XCASFileOpenEventHandler implements ActionListener {
           this.main.setTitle("XCAS");
           this.main.updateIndexTree(true);
           this.main.setRunOnCasEnabled();
-          this.main.setEnableCasFileWriting();
+          this.main.setEnableCasFileReadingAndWriting();
           this.main.setStatusbarMessage("Done loading XCAS file in " + time.getTimeSpan() + ".");
         } catch (Exception e) {
           e.printStackTrace();
