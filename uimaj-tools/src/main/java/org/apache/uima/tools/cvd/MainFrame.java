@@ -811,7 +811,6 @@ public class MainFrame extends JFrame {
         InputEvent.CTRL_MASK));
     this.cutAction.setEnabled(false);
     JMenuItem cutItem = new JMenuItem(this.cutAction);
-    cutItem.setAction(this.cutAction);
     cutItem.setText("Cut");
     this.editMenu.add(cutItem);
     // Copy
