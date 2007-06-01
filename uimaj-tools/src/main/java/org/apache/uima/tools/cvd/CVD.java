@@ -81,7 +81,7 @@ public class CVD {
 
   private static final void printUsage() {
     System.out
-            .println("Usage: java org.apache.uima.annot_view.Gladis [-text <TextFile>] [-desc <XmlDescriptor>] [-datapath <DataPath>] [-exec]");
+            .println("Usage: java org.apache.uima.cvd.CVD [-text <TextFile>] [-desc <XmlDescriptor>] [-datapath <DataPath>] [-exec]");
     System.out.println("Additional optional parameters:");
     System.out.println("  -lookandfeel <LookAndFeelClassName>");
   }
