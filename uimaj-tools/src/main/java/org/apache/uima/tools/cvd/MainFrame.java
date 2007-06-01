@@ -532,6 +532,7 @@ public class MainFrame extends JFrame {
       return;
     }
     if (this.ae != null) {
+      this.aeDescriptorFile = descriptorFile;
       String annotName = this.ae.getAnalysisEngineMetaData().getName();
       this.reRunMenu.setText("Run " + annotName);
       this.reRunMenu.setEnabled(true);
@@ -2110,10 +2111,6 @@ public class MainFrame extends JFrame {
 
   public File getAeDescriptorFile() {
     return this.aeDescriptorFile;
-  }
-
-  public void setAeDescriptorFile(File aeDescriptorFile) {
-    this.aeDescriptorFile = aeDescriptorFile;
   }
 
   public String getDataPathName() {
