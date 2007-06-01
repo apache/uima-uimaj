@@ -38,7 +38,6 @@ import org.apache.uima.analysis_engine.impl.compatibility.AnalysisComponentAdapt
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.impl.UimaContext_ImplBase;
 import org.apache.uima.internal.util.UUIDGenerator;
@@ -335,9 +334,6 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     try {
       // call Annotator's process method
       try {
-        // lock out CAS functions to which annotator should not have access
-        enableProhibitedAnnotatorCasFunctions(aCAS, false);
-
         // set the current component info of the CAS, so that it knows the sofa
         // mappings for the component that's about to process it
         aCAS.setCurrentComponentInfo(getUimaContextAdmin().getComponentInfo());
@@ -368,6 +364,8 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
           mAnalysisComponent.setResultSpecification(analysisComponentResultSpec);
           mResultSpecChanged = false;
         }
+        
+        ((CASImpl)aCAS).switchClassLoaderLockCas(mAnalysisComponent);
 
         // call the process method
         mAnalysisComponent.process(casToPass);
@@ -378,6 +376,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
         //AnalysisComponentCasIterator that knows when it is time to clear the currentComponentInfo.
       } catch (Exception e) {
         aCAS.setCurrentComponentInfo(null);
+        ((CASImpl)aCAS).restoreClassLoaderUnlockCas();
         if (e instanceof AnalysisEngineProcessException) {
           throw e;
         } else {
@@ -385,8 +384,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
                   AnalysisEngineProcessException.ANNOTATOR_EXCEPTION, null, e);
         }
       } finally {
-        // unlock CAS functions
-        enableProhibitedAnnotatorCasFunctions(aCAS, true);
+        
       }
 
       // log end of event
@@ -468,6 +466,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       // clear the CAS's component info, since it is no longer
       // being processed by this AnalysisComponent
       casToReturn.setCurrentComponentInfo(null);
+      ((CASImpl)casToReturn).restoreClassLoaderUnlockCas();
       return casToReturn;
     } catch (Exception e) {
       // log and rethrow exception
@@ -491,22 +490,6 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       mAnalysisComponent.reconfigure();
     } catch (ResourceInitializationException e) {
       throw new ResourceConfigurationException(e);
-    }
-  }
-
-  /**
-   * Lock/unlock CAS functions to which Annotators should not have access
-   * 
-   * @param aCAS
-   *          the CAS to be affected
-   * @param aEnable
-   *          false to lock out functions, true to re-enable them
-   */
-  protected void enableProhibitedAnnotatorCasFunctions(CAS aCAS, boolean aEnable) {
-    // these methods are on the CASMgr interface - currently this requires a
-    // typecast
-    if (aCAS instanceof CASMgr) {
-      ((CASMgr) aCAS).enableReset(aEnable);
     }
   }
 
@@ -540,6 +523,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
           //input CAS.  Now is the time to clear the currentComponentInfo to indicate that the
           //CAS is no longer being processed.
           mInputCas.setCurrentComponentInfo(null);
+          ((CASImpl)mInputCas).restoreClassLoaderUnlockCas();
         }
         return result;
       } finally {

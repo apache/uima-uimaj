@@ -261,6 +261,8 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     
     private JCasHashMap cAddr2Jfs = new JCasHashMap(INITIAL_HASHMAP_SIZE);
     
+    private final Map cAddr2JfsByClassLoader = new HashMap(); 
+        
 		/* convenience holders of CAS constants that may be useful */
 		/* initialization done lazily - on first call to getter */
 
@@ -274,6 +276,10 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 
 		// * collection of errors that occur during initialization
 		public Collection errorSet = new ArrayList();
+    
+    private JCasSharedView(CASImpl aCAS) {
+      cAddr2JfsByClassLoader.put(aCAS.getJCasClassLoader(), cAddr2Jfs);
+    }
 	}
   
 	// *******************
@@ -445,7 +451,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 			sharedView = ((JCasImpl) casImpl.getBaseCAS().getJCas()).sharedView;
 			sharedView.errorSet.clear();
 		} else {
-			sharedView = new JCasSharedView();
+			sharedView = new JCasSharedView(cas);
 		}
 
 		this.ll_IndexRepository = casImpl.ll_getIndexRepository();
@@ -469,18 +475,18 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @param cl class loader to switch to
    * @throws CASException 
    */
-  public void switchClassLoader(ClassLoader cl) throws CASException {
-    JCasImpl baseJCas = (JCasImpl)casImpl.getBaseCAS().getJCas();
-    if (baseJCas != this) {
-      baseJCas.switchClassLoader(cl);
-    }
+  public void switchClassLoader(ClassLoader cl)  {
     
     // first try a fast switch - works if we've switched before to this class loader
     if (!casImpl.getFSClassRegistry().swapInGeneratorsForClassLoader(cl)) {
       instantiateJCas_Types(cl);      
     }
-    
-    clearData(casImpl);
+    final JCasSharedView sv = this.sharedView;
+    sv.cAddr2Jfs = (JCasHashMap) sv.cAddr2JfsByClassLoader.get(cl);
+    if (null == sv.cAddr2Jfs) {
+      sv.cAddr2Jfs = new JCasHashMap(INITIAL_HASHMAP_SIZE);
+      sv.cAddr2JfsByClassLoader.put(cl, sv.cAddr2Jfs);
+    }
   }
   
   private synchronized Map loadJCasClasses(ClassLoader cl) {
@@ -855,30 +861,36 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * (Internal Use only) called by the CAS reset function - clears the hashtable holding the
    * associations.
    */
-	public static void clearData(CAS cas) throws CASException {
-		JCasImpl jcas = (JCasImpl) cas.getJCas();
+	public static void clearData(CAS cas) {
+		JCasImpl jcas = (JCasImpl) ((CASImpl)cas).getExistingJCas();
     final JCasSharedView sv = jcas.sharedView;
-		int hashSize = Math.max(sv.cAddr2Jfs.size(), 32); // not worth dropping
-		// below 32
-		// System.out.println("\n***JCas Resizing Hashtable: size is: " +
-		// hashSize + ", curmax = " +
-		// jcas.prevCaddr2JfsSize);
-		if (hashSize <= (sv.prevCaddr2JfsSize >> 1)) {
-			// System.out.println("JCas Shrinking Hashtable from " +
-			// jcas.prevCaddr2JfsSize);
-			sv.prevCaddr2JfsSize = hashSize;
-			sv.cAddr2Jfs = new JCasHashMap(hashSize);
-		} else {
-			sv.prevCaddr2JfsSize = Math.max(hashSize, sv.prevCaddr2JfsSize);
-			// System.out.println("JCas clearing - keeping same size, new max prev
-			// size = " +
-			// jcas.prevCaddr2JfsSize);
-			sv.cAddr2Jfs.clear();
-		}
-		sv.stringArray0L = null;
-		sv.floatArray0L = null;
-		sv.fsArray0L = null;
-		sv.integerArray0L = null;
+    for (Iterator it = sv.cAddr2JfsByClassLoader.entrySet().iterator(); it.hasNext();) {
+      Map.Entry e = (Map.Entry)it.next();
+      sv.cAddr2Jfs = (JCasHashMap)e.getValue();
+      int hashSize = Math.max(sv.cAddr2Jfs.size(), 32); // not worth dropping
+      // below 32
+      // System.out.println("\n***JCas Resizing Hashtable: size is: " +
+      // hashSize + ", curmax = " +
+      // jcas.prevCaddr2JfsSize);
+      if (hashSize <= (sv.prevCaddr2JfsSize >> 1)) {
+        // System.out.println("JCas Shrinking Hashtable from " +
+        // jcas.prevCaddr2JfsSize);
+        sv.prevCaddr2JfsSize = hashSize;
+        sv.cAddr2Jfs = new JCasHashMap(hashSize);
+        sv.cAddr2JfsByClassLoader.put(e.getKey(), sv.cAddr2Jfs);
+      } else {
+        sv.prevCaddr2JfsSize = Math.max(hashSize, sv.prevCaddr2JfsSize);
+        // System.out.println("JCas clearing - keeping same size, new max prev
+        // size = " +
+        // jcas.prevCaddr2JfsSize);
+        sv.cAddr2Jfs.clear();
+      }
+      sv.stringArray0L = null;
+      sv.floatArray0L = null;
+      sv.fsArray0L = null;
+      sv.integerArray0L = null;
+    }
+    sv.cAddr2Jfs = (JCasHashMap)sv.cAddr2JfsByClassLoader.get(((CASImpl)cas).getJCasClassLoader());
 	}
 
 	/*

@@ -76,6 +76,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    */
   public static final String PARAM_VERIFICATION_MODE = "VERIFICATION_MODE";
 
+
   /**
    * Performance Tuning setting in effect for this Analysis Engine.
    */

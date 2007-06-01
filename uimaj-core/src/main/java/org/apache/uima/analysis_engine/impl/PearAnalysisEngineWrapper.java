@@ -18,8 +18,6 @@
  */
 package org.apache.uima.analysis_engine.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
@@ -32,18 +30,14 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.CasIterator;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.pear.tools.PackageBrowser;
 import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.metadata.ResourceMetaData;
-import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
-import org.apache.uima.util.TypeSystemUtil;
 import org.apache.uima.util.XMLInputSource;
 
 /**
@@ -55,7 +49,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
   private AnalysisEngine ae = null;
 
-  private CAS cas = null;
+//  private CAS cas = null;
   
   private ResourceManager rsrcMgr = null;
 
@@ -117,7 +111,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
                 "initialize",
                 LOG_RESOURCE_BUNDLE,
                 "UIMA_pear_runtime_set_system_var__CONFIG",
-                new Object[] { new String(key + "=" + value), pkgBrowser.getRootDirectory().getName() });
+                new Object[] { key + "=" + value, pkgBrowser.getRootDirectory().getName() });
 
       }
 
@@ -217,31 +211,31 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
             new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
 
     // create CAS with the type system of the first document
-    if (this.cas == null) {
-      try {
-        // Timer casTimer = new Timer();
-        // casTimer.start();
-        TypeSystemDescription tsDescription = TypeSystemUtil.typeSystem2TypeSystemDescription(aCAS
-                .getTypeSystem());
-
-        this.cas = CasCreationUtils.createCas(tsDescription, super.getAnalysisEngineMetaData()
-                .getTypePriorities(), super.getAnalysisEngineMetaData().getFsIndexes(), null, this.rsrcMgr);
-        // casTimer.stop();
-        // System.out.println("\nCAS creation time:" + casTimer.getTimeSpan());
-      } catch (ResourceInitializationException ex) {
-        throw new AnalysisEngineProcessException(ex);
-      }
-    }
-
-    // DEBUG INFORMATION
-    // Timer globalTimer = new Timer();
-    // Timer serialize1 = new Timer();
-    // Timer serialize2 = new Timer();
-    // Timer processing = new Timer();
-    // globalTimer.start();
-    // serialize1.start();
-
-    this.cas.reset();
+//    if (this.cas == null) {
+//      try {
+//        // Timer casTimer = new Timer();
+//        // casTimer.start();
+//        TypeSystemDescription tsDescription = TypeSystemUtil.typeSystem2TypeSystemDescription(aCAS
+//                .getTypeSystem());
+//
+//        this.cas = CasCreationUtils.createCas(tsDescription, super.getAnalysisEngineMetaData()
+//                .getTypePriorities(), super.getAnalysisEngineMetaData().getFsIndexes(), null, this.rsrcMgr);
+//        // casTimer.stop();
+//        // System.out.println("\nCAS creation time:" + casTimer.getTimeSpan());
+//      } catch (ResourceInitializationException ex) {
+//        throw new AnalysisEngineProcessException(ex);
+//      }
+//    }
+//
+//    // DEBUG INFORMATION
+//    // Timer globalTimer = new Timer();
+//    // Timer serialize1 = new Timer();
+//    // Timer serialize2 = new Timer();
+//    // Timer processing = new Timer();
+//    // globalTimer.start();
+//    // serialize1.start();
+//
+//    this.cas.reset();
 
     // serialize aggregate CAS into the pear CAS
 
@@ -257,17 +251,18 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     // ((CASImpl) this.cas).reinit(serializer);
 
     // FASTEST CAS SERIALIZATION/DESERIALIZATION
-    ByteArrayOutputStream fos = new ByteArrayOutputStream();
-    Serialization.serializeCAS(aCAS, fos);
-    ByteArrayInputStream fis = new ByteArrayInputStream(fos.toByteArray());
-    Serialization.deserializeCAS(this.cas, fis);
+//    ByteArrayOutputStream fos = new ByteArrayOutputStream();
+//    Serialization.serializeCAS(aCAS, fos);
+//    ByteArrayInputStream fis = new ByteArrayInputStream(fos.toByteArray());
+//    Serialization.deserializeCAS(this.cas, fis);
 
     // DEBUG INFORMATION
     // serialize1.stop();
     // processing.start();
 
     // process pear ae
-    this.ae.process(this.cas);
+//    this.ae.process(this.cas);
+    this.ae.process(aCAS);
 
     // DEBUG INFORMATION
     // processing.stop();
@@ -287,10 +282,10 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
     // ((CASImpl) aCAS).reinit(serializer);
 
     // FASTEST CAS SERIALIZATION/DESERIALIZATION
-    fos = new ByteArrayOutputStream();
-    Serialization.serializeCAS(this.cas, fos);
-    fis = new ByteArrayInputStream(fos.toByteArray());
-    Serialization.deserializeCAS(aCAS, fis);
+//    fos = new ByteArrayOutputStream();
+//    Serialization.serializeCAS(this.cas, fos);
+//    fis = new ByteArrayInputStream(fos.toByteArray());
+//    Serialization.deserializeCAS(aCAS, fis);
 
     // DEBUG INFORMATION
     // serialize2.stop();
@@ -318,7 +313,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
             new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
 
     this.ae.destroy();
-    this.cas = null;
+//    this.cas = null;
   }
 
 }
