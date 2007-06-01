@@ -191,7 +191,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * @see org.apache.uima.UIMAFramework#_getMinorVersion()
    */
   public short _getMinorVersion() {
-    return 1;
+    return 2;
   }
 
   /**
