@@ -36,9 +36,8 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
 /**
- * The <code>PearMergerTest</code> class provides JUnit test cases for the jedii_pear_merger
- * component. The test cases are based on the sample input PEARs located in the
- * 'pearTests/pearMergerTests' folder.
+ * The PearInstallerTest tests the PEAR installation and checks some
+ * parameters of the installed PEAR file
  * 
  */
 public class PearInstallerTest extends TestCase {
@@ -52,7 +51,7 @@ public class PearInstallerTest extends TestCase {
   protected void setUp() throws Exception {
     
     // create temporary working directory
-    File tempFile = File.createTempFile("pear_installer_test_", "~tmp");
+    File tempFile = File.createTempFile("pear_installer_test_", "tmp");
     if (tempFile.delete()) {
       File tempDir = tempFile;
       if (tempDir.mkdirs())
