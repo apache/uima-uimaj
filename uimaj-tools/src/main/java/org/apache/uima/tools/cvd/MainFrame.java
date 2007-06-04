@@ -2109,10 +2109,6 @@ public class MainFrame extends JFrame {
     this.annotOpenDir = annotOpenDir;
   }
 
-  public File getAeDescriptorFile() {
-    return this.aeDescriptorFile;
-  }
-
   public String getDataPathName() {
     return this.dataPathName;
   }
