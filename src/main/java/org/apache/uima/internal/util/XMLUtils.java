@@ -266,7 +266,7 @@ public abstract class XMLUtils {
 
   /**
    * Reads a primitive value from its standard DOM representation. (This is the representation
-   * produced by {@link #writePrimitiveValue).
+   * produced by {@link #writePrimitiveValue(Object, ContentHandler)}.
    * <p>
    * This is intended to be used for Java Strings and wrappers for primitive value classes (e.g.
    * Integer, Boolean).
@@ -342,7 +342,7 @@ public abstract class XMLUtils {
    * 
    * @param aElem
    *          the element
-   * @param aExpandVarRefs
+   * @param aExpandEnvVarRefs
    *          whether to expand environment variable references. Defaults to false.
    * 
    * @return the text of <code>aElem</code>
@@ -378,6 +378,23 @@ public abstract class XMLUtils {
    * Check the input string for non-XML 1.0 characters. If non-XML characters are found, return the
    * position of first offending character. Else, return <code>-1</code>.
    * 
+   * <p>
+   * From the XML 1.0 spec:
+   * 
+   * <pre>
+   *   Char ::= #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF] // any Unicode
+   *    character, excluding the surrogate blocks, FFFE, and FFFF.  
+   * </pre>
+   * 
+   * <p>
+   * And from the UTF-16 spec:
+   * 
+   * <p>
+   * Characters with values between 0x10000 and 0x10FFFF are represented by a 16-bit integer with a
+   * value between 0xD800 and 0xDBFF (within the so-called high-half zone or high surrogate area)
+   * followed by a 16-bit integer with a value between 0xDC00 and 0xDFFF (within the so-called
+   * low-half zone or low surrogate area).
+   * 
    * @param s
    *          Input string
    * @return The position of the first invalid XML character encountered. <code>-1</code> if no
@@ -387,30 +404,32 @@ public abstract class XMLUtils {
     if (s == null) {
       return -1;
     }
+    char c;
     for (int i = 0; i < s.length(); i++) {
-      if (!isValidXml10Char(s.charAt(i))) {
-        return i;
+      c = s.charAt(i);
+      if (isValidXmlUtf16int(c)) {
+        // The easy case: this code unit is ok by itself, no further checking required.
+        continue;
       }
+      if ((c >= 0xD800) && (c <= 0xDBFF)) {
+        // The case for Unicode code points #x10000-#x10FFFF. Check if a high surrogate is followed
+        // by a low surrogate, which is the only allowable combination.
+        int iNext = i + 1;
+        if (iNext < s.length()) {
+          char cNext = s.charAt(iNext);
+          if ((cNext >= 0xDC00) && (cNext <= 0xDFFF)) {
+            ++i;
+            continue;
+          }
+        }
+      }
+      return i;
     }
     return -1;
   }
 
-  // Check if the character we're looking at is a valid XML 1.0 character. From the XML 1.0 spec:
-  //
-  // Char ::= #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF] /* any Unicode
-  // character, excluding the surrogate blocks, FFFE, and FFFF. */
-  //
-  // And from the UTF-16 spec:
-  //
-  // Characters with values between 0x10000 and 0x10FFFF are
-  // represented by a 16-bit integer with a value between 0xD800 and
-  // 0xDBFF (within the so-called high-half zone or high surrogate
-  // area) followed by a 16-bit integer with a value between 0xDC00 and
-  // 0xDFFF (within the so-called low-half zone or low surrogate area).
-  //
-  // So it actually looks as if the surrogate case can be handled correctly by just looking at
-  // individual Java chars.
-  private static final boolean isValidXml10Char(char c) {
+  // Check if the utf 16 code unit we're looking at is a valid XML character in its own right.
+  private static final boolean isValidXmlUtf16int(char c) {
     return ((c == 0x9) || (c == 0xA) || (c == 0xD) || ((c >= 0x20) && (c <= 0xD7FF)) || 
         ((c >= 0xE000) && (c <= 0xFFFD)));
   }
