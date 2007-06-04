@@ -49,7 +49,7 @@ public class AnnotatorOpenEventHandler implements ActionListener {
       }
       int rc = fileChooser.showOpenDialog(this.main);
       if (rc == JFileChooser.APPROVE_OPTION) {
-        this.main.loadAEDescriptor(this.main.getAeDescriptorFile());
+        this.main.loadAEDescriptor(fileChooser.getSelectedFile());
       }
       this.main.setAllAnnotationViewerItemEnable(false);
     } finally {
