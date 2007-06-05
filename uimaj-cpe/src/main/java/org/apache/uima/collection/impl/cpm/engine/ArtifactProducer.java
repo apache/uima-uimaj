@@ -884,7 +884,8 @@ public class ArtifactProducer extends Thread {
       EntityProcessStatusImpl aEntityProcStatus = new EntityProcessStatusImpl(prTrace);
       aEntityProcStatus.addEventStatus("Collection Reader Failure", "failed", anException);
       // Notify the listener that the Cas has been processed
-      statCL.entityProcessComplete(aCas, aEntityProcStatus);
+      CPMEngine.callEntityProcessCompleteWithCAS(statCL, aCas, aEntityProcStatus);
+//      statCL.entityProcessComplete(aCas, aEntityProcStatus);
     }
   }
 

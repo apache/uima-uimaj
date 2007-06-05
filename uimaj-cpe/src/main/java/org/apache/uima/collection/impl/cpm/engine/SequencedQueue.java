@@ -524,12 +524,13 @@ public class SequencedQueue extends BoundedWorkQueue {
    */
   protected void doNotifyListeners(Object aCas, EntityProcessStatus aEntityProcStatus) {
     // Notify Listener that the entity has been processed
-    Object casObjectCopy = aCas;
+    CAS casObjectCopy = (CAS)aCas;
     // Notify ALL listeners
     for (int j = 0; j < statusCbL.size(); j++) {
-      BaseStatusCallbackListener statCL = (BaseStatusCallbackListener) statusCbL.get(j);
-      ((StatusCallbackListener) statCL).entityProcessComplete((CAS) casObjectCopy,
-              aEntityProcStatus);
+      StatusCallbackListener statCL = (StatusCallbackListener) statusCbL.get(j);
+      CPMEngine.callEntityProcessCompleteWithCAS(statCL, casObjectCopy, aEntityProcStatus);
+//      ((StatusCallbackListener) statCL).entityProcessComplete((CAS) casObjectCopy,
+//              aEntityProcStatus);
     }
 
   }

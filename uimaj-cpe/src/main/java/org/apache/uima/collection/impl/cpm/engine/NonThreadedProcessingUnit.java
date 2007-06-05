@@ -1309,8 +1309,10 @@ public class NonThreadedProcessingUnit {
           casObjectCopy = conversionCas;
         }
         // Notify the listener that the Cas has been processed
-        ((StatusCallbackListener) statCL).entityProcessComplete((CAS) casObjectCopy,
-                aEntityProcStatus);
+//        ((StatusCallbackListener) statCL).entityProcessComplete((CAS) casObjectCopy,
+//                aEntityProcStatus);
+        CPMEngine.callEntityProcessCompleteWithCAS(
+                (StatusCallbackListener) statCL, (CAS) casObjectCopy, aEntityProcStatus);
         if (conversionCas != null) {
           if (casFromPool) {
             conversionCasArray[0] = conversionCas;

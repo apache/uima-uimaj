@@ -41,6 +41,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.collection.CasConsumer;
 import org.apache.uima.collection.CasInitializer;
 import org.apache.uima.collection.CollectionReader;
+import org.apache.uima.collection.EntityProcessStatus;
 import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.collection.base_cpm.AbortCPMException;
 import org.apache.uima.collection.base_cpm.BaseCollectionReader;
@@ -3422,7 +3423,8 @@ public class CPMEngine extends Thread {
               eps.addEventStatus("Process", "Failed", t);
             }
             if (entity[i] != null && entity[i] instanceof CAS) {
-              ((StatusCallbackListener) statCL).entityProcessComplete((CAS) entity[i], eps);
+              callEntityProcessCompleteWithCAS((StatusCallbackListener)statCL, (CAS)entity[i], eps);
+//              ((StatusCallbackListener) statCL).entityProcessComplete((CAS) entity[i], eps);
             } else {
               ((StatusCallbackListener) statCL).entityProcessComplete(null, eps);
             }
@@ -3433,6 +3435,21 @@ public class CPMEngine extends Thread {
 
   }
 
+  /**
+   * Internal use only, public for crss package access. switches class loaders and locks cas
+   * @param statCL status call back listener
+   * @param cas cas
+   * @param eps entity process status
+   */
+  public static void callEntityProcessCompleteWithCAS(StatusCallbackListener statCL, CAS cas, EntityProcessStatus eps) {
+    try {
+      ((CASImpl)cas).switchClassLoaderLockCas(statCL);
+      statCL.entityProcessComplete(cas, eps);
+    } finally {
+      ((CASImpl)cas).restoreClassLoaderUnlockCas();
+    }
+  }  
+  
   private ProcessTrace getProcessTrace() throws Exception {
     ProcessTrace pT = null;
     UimaTimer uTimer = getTimer();
