@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
+import javax.xml.transform.OutputKeys;
+
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
@@ -81,6 +83,17 @@ public class XmiCasSerializerTest extends TestCase {
     out.close();
     assertTrue("XMI serialization of document text with bad XML 1.0 char should throw exception",
         caughtException);
+    
+    //but when XML 1.1 output is being generated, don't fail on control chracters which are valid in 1.1.
+    out = new FileOutputStream(this.outputFile);
+    try {
+      XMLSerializer xml11Serializer = new XMLSerializer(out);
+      xml11Serializer.setOutputProperty(OutputKeys.VERSION,"1.1");
+      xmiCasSerializer.serialize(cas, xml11Serializer.getContentHandler());
+    }
+    finally {
+      out.close();
+    }
   }
 
   public void testInvalidCharsInFeatureValue() throws Exception {
@@ -99,6 +112,17 @@ public class XmiCasSerializerTest extends TestCase {
     out.close();
     assertTrue("XMI serialization of document text with bad XML 1.0 char should throw exception",
         caughtException);
+    
+    //but when XML 1.1 output is being generated, don't fail on control chracters which are valid in 1.1.
+    out = new FileOutputStream(this.outputFile);
+    try {
+      XMLSerializer xml11Serializer = new XMLSerializer(out);
+      xml11Serializer.setOutputProperty(OutputKeys.VERSION,"1.1");
+      xmiCasSerializer.serialize(cas, xml11Serializer.getContentHandler());
+    }
+    finally {
+      out.close();
+    }    
   }
 
   /*

@@ -401,13 +401,54 @@ public abstract class XMLUtils {
    *         invalid XML characters found.
    */
   public static final int checkForNonXmlCharacters(String s) {
+    return checkForNonXmlCharacters(s, false);
+  }
+  
+  /**
+   * Check the input string for non-XML characters. If non-XML characters are found, return the
+   * position of first offending character. Else, return <code>-1</code>.
+   * <p>
+   * The definition of an XML character is different for
+   * XML 1.0 and 1.1.  This method will check either version, depending on the value of the
+   * <code>xml11</code> argument.  
+   * 
+   * <p>
+   * From the XML 1.0 spec:
+   * 
+   * <pre>
+   *   Char ::= #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF] // any Unicode
+   *    character, excluding the surrogate blocks, FFFE, and FFFF.  
+   * </pre>
+   * 
+   * <p>
+   * From the XML 1.1 spec:
+   * <pre>
+   *  Char     ::=    [#x1-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
+   * </pre>
+   * <p>
+   * And from the UTF-16 spec:
+   * 
+   * <p>
+   * Characters with values between 0x10000 and 0x10FFFF are represented by a 16-bit integer with a
+   * value between 0xD800 and 0xDBFF (within the so-called high-half zone or high surrogate area)
+   * followed by a 16-bit integer with a value between 0xDC00 and 0xDFFF (within the so-called
+   * low-half zone or low surrogate area).
+   * 
+   * @param s
+   *          Input string
+   * @param xml11 true to check for invalid XML 1.1 characters, false to check for invalid XML 1.0 characters.
+   *   The default is false.
+   * @return The position of the first invalid XML character encountered. <code>-1</code> if no
+   *         invalid XML characters found.
+   */  
+  public static final int checkForNonXmlCharacters(String s, boolean xml11) {
     if (s == null) {
       return -1;
     }
     char c;
     for (int i = 0; i < s.length(); i++) {
       c = s.charAt(i);
-      if (isValidXmlUtf16int(c)) {
+      if (isValidXmlUtf16int(c, xml11)) {
         // The easy case: this code unit is ok by itself, no further checking required.
         continue;
       }
@@ -428,10 +469,54 @@ public abstract class XMLUtils {
     return -1;
   }
 
+  /**
+   * Check the input character array for non-XML characters. If non-XML characters are found, return the
+   * position of first offending character. Else, return <code>-1</code>.
+   * 
+   * @param ch Input character array
+   * @param start offset of first char to check
+   * @param length nunmber of chars to check
+   * @param xml11 true to check for invalid XML 1.1 characters, false to check for invalid XML 1.0 characters.
+   *   The default is false.
+   * @return The position of the first invalid XML character encountered. <code>-1</code> if no
+   *         invalid XML characters found.
+   * @see #checkForNonXmlCharacters(String, boolean) 
+   */  
+  public static final int checkForNonXmlCharacters(char[] ch, int start, int length, boolean xml11) {
+    if (ch == null) {
+      return -1;
+    }
+    char c;
+    for (int i = start; i < start + length; i++) {
+      c = ch[i];
+      if (isValidXmlUtf16int(c, xml11)) {
+        // The easy case: this code unit is ok by itself, no further checking required.
+        continue;
+      }
+      if ((c >= 0xD800) && (c <= 0xDBFF)) {
+        // The case for Unicode code points #x10000-#x10FFFF. Check if a high surrogate is followed
+        // by a low surrogate, which is the only allowable combination.
+        int iNext = i + 1;
+        if (iNext < start + length) {
+          char cNext = ch[iNext];
+          if ((cNext >= 0xDC00) && (cNext <= 0xDFFF)) {
+            ++i;
+            continue;
+          }
+        }
+      }
+      return i;
+    }
+    return -1;
+  }  
+  
   // Check if the utf 16 code unit we're looking at is a valid XML character in its own right.
-  private static final boolean isValidXmlUtf16int(char c) {
-    return ((c == 0x9) || (c == 0xA) || (c == 0xD) || ((c >= 0x20) && (c <= 0xD7FF)) || 
-        ((c >= 0xE000) && (c <= 0xFFFD)));
+  private static final boolean isValidXmlUtf16int(char c, boolean xml11) {
+    if (xml11)
+      return (c >= 0x1 && c <= 0xD7FF) || (c >= 0xE000) && (c <= 0xFFFD);
+    else
+      return ((c == 0x9) || (c == 0xA) || (c == 0xD) || ((c >= 0x20) && (c <= 0xD7FF)) || 
+        (c >= 0xE000 && c <= 0xFFFD));
   }
 
 }
