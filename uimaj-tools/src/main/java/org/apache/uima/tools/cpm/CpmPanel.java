@@ -55,7 +55,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
@@ -1362,21 +1361,21 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     addAE(casProc);
   }
 
-  private void addAE(CpeCasProcessor cpeCasProc) throws CpeDescriptorException,
+  private boolean addAE(CpeCasProcessor cpeCasProc) throws CpeDescriptorException,
           InvalidXMLException, IOException, ResourceConfigurationException {
     URL aeSpecifierUrl = cpeCasProc.getCpeComponentDescriptor().findAbsoluteUrl(defaultResourceManager);
     //CPE GUI only supports file URLs
     if (!"file".equals(aeSpecifierUrl.getProtocol())) {
       displayError("Could not load descriptor from URL " + aeSpecifierUrl.toString() + 
               ".  CPE Configurator only supports file: URLs");
-      return;
+      return false;
     }  
     File f;
     try {
       f = new File(new URI(aeSpecifierUrl.toString()));
     } catch (URISyntaxException e) {
       displayError(e);
-      return;
+      return false;
     }
     long fileModStamp = f.lastModified(); // get mod stamp before parsing, to prevent race condition
     XMLInputSource aeInputSource = new XMLInputSource(aeSpecifierUrl);
@@ -1400,6 +1399,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     aeSpecifiers.add(f.getAbsolutePath());
 
     selectedComponentsChanged = true;
+    return true;
   }
 
   private void addConsumer(String consumerSpecifierFile) throws CpeDescriptorException,
@@ -1416,7 +1416,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     addConsumer(casProc);
   }
 
-  private void addConsumer(CpeCasProcessor cpeCasProc) throws CpeDescriptorException,
+  private boolean addConsumer(CpeCasProcessor cpeCasProc) throws CpeDescriptorException,
           InvalidXMLException, IOException, ResourceConfigurationException {
     URL consumerSpecifierUrl = cpeCasProc.getCpeComponentDescriptor().findAbsoluteUrl(
             defaultResourceManager);
@@ -1424,14 +1424,14 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     if (!"file".equals(consumerSpecifierUrl.getProtocol())) {
       displayError("Could not load descriptor from URL " + consumerSpecifierUrl.toString() + 
               ".  CPE Configurator only supports file: URLs");
-      return;
+      return false;
     }  
     File f;
     try {
       f = new File(new URI(consumerSpecifierUrl.toString()));
     } catch (URISyntaxException e) {
       displayError(e);
-      return;
+      return false;
     }
 
     long fileModStamp = f.lastModified(); // get mod stamp before parsing, to prevent race condition
@@ -1455,6 +1455,7 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     consumerTabbedPane.addTab(tabName, consumerPanel);
     consumerSpecifiers.add(f.getAbsolutePath());
     selectedComponentsChanged = true;
+    return true;
   }
 
   private String makeUniqueCasProcessorName(String baseName) {
@@ -1759,19 +1760,32 @@ public class CpmPanel extends JPanel implements ActionListener, FileSelectorList
     }
 
     // CAS Processors
+    int numFailed = 0;
     removeAllAEsAndConsumers();
     CpeCasProcessor[] casProcs = currentCpeDesc.getCpeCasProcessors().getAllCpeCasProcessors();
     for (int i = 0; i < casProcs.length; i++) {
-      URL specifierUrl = casProcs[i].getCpeComponentDescriptor().findAbsoluteUrl(defaultResourceManager);
-      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
-              new XMLInputSource(specifierUrl));
-      if (isCasConsumerSpecifier(specifier)) {
-        addConsumer(casProcs[i]);
-      } else {
-        addAE(casProcs[i]);
+      boolean success = true;
+      try {
+        URL specifierUrl = casProcs[i].getCpeComponentDescriptor().findAbsoluteUrl(defaultResourceManager);
+        ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(
+                new XMLInputSource(specifierUrl));
+        if (isCasConsumerSpecifier(specifier)) {
+          success = addConsumer(casProcs[i]);
+        } else {
+          success = addAE(casProcs[i]);
+        }
       }
-    }
-
+      catch(Exception e) {
+        System.err.println("Error loading CPE Descriptor " + aFile.getPath());
+        e.printStackTrace();        
+        success= false;
+      }
+      if (!success) {
+        currentCpeDesc.getCpeCasProcessors().removeCpeCasProcessor(i - numFailed);
+        numFailed++;
+      }
+    }    
+    
     prefs.put(PREFS_CPE_DESCRIPTOR_FILE, aFile.getAbsolutePath());
 
     // nothing should be dirty when we first open
