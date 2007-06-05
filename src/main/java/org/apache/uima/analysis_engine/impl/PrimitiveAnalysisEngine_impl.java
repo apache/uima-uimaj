@@ -365,7 +365,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
           mResultSpecChanged = false;
         }
         
-        ((CASImpl)aCAS).switchClassLoaderLockCas(mAnalysisComponent);
+        ((CASImpl)aCAS).switchClassLoaderLockCasCL(this.getResourceManager().getExtensionClassLoader());
 
         // call the process method
         mAnalysisComponent.process(casToPass);

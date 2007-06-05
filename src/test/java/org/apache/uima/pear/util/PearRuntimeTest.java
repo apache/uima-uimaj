@@ -83,7 +83,7 @@ public class PearRuntimeTest extends TestCase {
   /**
    * @throws Exception
    */
-  /*
+
   public void testPearRuntimeDocAnnot() throws Exception {
 
     CAS cas = this.runPearRuntimeTestcase("pearTests/analysisEngine.pear", "pearTests/analysisEngine2.pear");
@@ -91,7 +91,7 @@ public class PearRuntimeTest extends TestCase {
     //check if 3 annotations are available in the CAS index
     Assert.assertEquals(cas.getAnnotationIndex().size(), 3);
    }
-*/
+
   
   /**
    * @throws Exception
