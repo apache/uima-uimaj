@@ -218,3 +218,5 @@ Provide-Package:     example,
  org.apache.vinci.transport.vns,
  org.apache.vinci.transport.vns.client,
  org.apache.vinci.transport.vns.service
+ Eclipse-ExtensibleAPI: true
+ 
