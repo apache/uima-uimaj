@@ -496,7 +496,8 @@ public class JCasTest extends TestCase {
 			try {
 
 				while (it.isValid()) {
-					assertTrue(it.get() instanceof Annotation);
+          Object o = it.get();
+					assertTrue(o instanceof Annotation);
 					it.moveToNext();
 				}
 			} catch (Exception e) {

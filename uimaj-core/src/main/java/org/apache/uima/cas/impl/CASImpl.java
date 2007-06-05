@@ -171,6 +171,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // FS cover classes for this CAS. Defaults to the ClassLoader used
     // to load the CASImpl class.
     private ClassLoader jcasClassLoader = this.getClass().getClassLoader();
+    
+    private ClassLoader previousJCasClassLoader = jcasClassLoader;
 
     // If this CAS can be flushed (reset) or not.
     //   often, the framework disables this before calling users code
@@ -198,8 +200,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     private CASMetadata casMetadata;
     
     private ComponentInfo componentInfo;
-    
-    private ClassLoader previousJCasClassLoader;
     
     private SharedViewData(boolean useFSCache) {
       this.useFSCache = useFSCache;
@@ -344,8 +344,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 			// this is the InitialView
 			this.mySofaRef = -1;
 		}
-
-		initFSClassRegistry();
 
 		// get the indexRepository for this Sofa
 		this.indexRepository = (this.mySofaRef == -1) ?
@@ -2281,7 +2279,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     
     CASImpl aView = (CASImpl) this.svd.sofaNbr2ViewMap.get(new Integer(aSofa.getSofaRef()));
 		if (null == aView) {
-      // This is the deserializer case.
+      // This is the deserializer case, or the case where an older API created a sofa,
+      // which is now creating the associated view
       
 			// create a new CAS view
 			aView = new CASImpl(this.svd.baseCAS, aSofa);
@@ -3046,13 +3045,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 	}
 
 	/*
-   * (non-Javadoc)
+   * Called to set the overall jcas class loader to use.
    * 
    * @see org.apache.uima.cas.admin.CASMgr#setJCasClassLoader(java.lang.ClassLoader)
    */
 	public void setJCasClassLoader(ClassLoader classLoader) {
-		this.svd.jcasClassLoader = classLoader;
     this.svd.previousJCasClassLoader = classLoader;
+		this.svd.jcasClassLoader = classLoader;
 	}
   
   // Internal use only, public for cross package use
@@ -3078,7 +3077,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     if (newClassLoader != svd.jcasClassLoader) {
 //      System.out.println("Switching to new class loader");
-      setJCasClassLoader(newClassLoader);
+      svd.jcasClassLoader = newClassLoader;
       if (null != this.jcas) {
         ((JCasImpl)jcas).switchClassLoader(newClassLoader);
       }
@@ -3093,7 +3092,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       return;
     if (svd.previousJCasClassLoader != svd.jcasClassLoader) {
 //      System.out.println("Switching back to previous class loader");
-      setJCasClassLoader(svd.previousJCasClassLoader);
+      svd.jcasClassLoader = svd.previousJCasClassLoader;
       if (null != this.jcas) {
         ((JCasImpl)jcas).switchClassLoader(svd.previousJCasClassLoader);
       }

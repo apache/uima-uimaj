@@ -70,7 +70,7 @@ public class FlowContainer {
       Class requiredInterface = mFlowControllerContainer.getRequiredCasInterface();
       AbstractCas casToPass = getCasManager().getCasInterface(view, requiredInterface);
 
-      ((CASImpl)newCAS).switchClassLoaderLockCas(mFlow);
+      ((CASImpl)newCAS).switchClassLoaderLockCasCL(getFlowClassLoader());
       Flow flow = mFlow.newCasProduced(casToPass, producedBy);
       return new FlowContainer(flow, mFlowControllerContainer, newCAS);
     } finally {
@@ -85,7 +85,7 @@ public class FlowContainer {
   public Step next() throws AnalysisEngineProcessException {
     mTimer.startIt();
     try {
-      mCAS.switchClassLoaderLockCas(mFlow);
+      mCAS.switchClassLoaderLockCasCL(getFlowClassLoader());
       return mFlow.next();
     } finally {
       mCAS.restoreClassLoaderUnlockCas();
@@ -96,7 +96,7 @@ public class FlowContainer {
   
   public void aborted() {
     try {
-      mCAS.switchClassLoaderLockCas(mFlow);
+      mCAS.switchClassLoaderLockCasCL(getFlowClassLoader());
     mFlow.aborted();
     } finally {
       mCAS.restoreClassLoaderUnlockCas();
@@ -105,7 +105,7 @@ public class FlowContainer {
   
   public boolean continueOnFailure(String failedAeKey, Exception failure) {
     try {
-      mCAS.switchClassLoaderLockCas(mFlow);
+      mCAS.switchClassLoaderLockCasCL(getFlowClassLoader());
       return mFlow.continueOnFailure(failedAeKey, failure);
     } finally {
       mCAS.restoreClassLoaderUnlockCas();
@@ -123,5 +123,9 @@ public class FlowContainer {
   public AnalysisEngineManagementImpl getMBean() {
     return (AnalysisEngineManagementImpl) mFlowControllerContainer.getUimaContextAdmin()
             .getManagementInterface();
+  }
+  
+  private ClassLoader getFlowClassLoader() {
+    return mFlowControllerContainer.getResourceManager().getExtensionClassLoader();
   }
 }

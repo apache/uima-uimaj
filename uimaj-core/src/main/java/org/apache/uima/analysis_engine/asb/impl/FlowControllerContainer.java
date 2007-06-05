@@ -204,9 +204,8 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
       }
       // now get the right interface(e.g. CAS or JCAS)
       Class requiredInterface = mFlowController.getRequiredCasInterface();
-      AbstractCas casToPass = getCasManager().getCasInterface(view, requiredInterface);
-
-      ((CASImpl)aCAS).switchClassLoaderLockCas(mFlowController);
+      AbstractCas casToPass = getCasManager().getCasInterface(view, requiredInterface);    
+      ((CASImpl)aCAS).switchClassLoaderLockCasCL(this.getResourceManager().getExtensionClassLoader());
       Flow flow = mFlowController.computeFlow(casToPass);
       return new FlowContainer(flow, this, aCAS);
     } finally {

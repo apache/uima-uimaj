@@ -230,7 +230,7 @@ public class FSClassRegistry {
    * Things variable at run time include the cas instance, and the view.
    * 
    * In this design, generators are shared with all views for a particular CAS, but are different for 
-   * different CASes (distinct from shared-views of the same CAS)
+   * different CAS Type Systems and Class Loaders (distinct from shared-views of the same CAS)
    * 
    * Internal use only - public only to give access to JCas routines in another package
    */
