@@ -72,6 +72,12 @@
       <fileMode>420</fileMode> <!-- workaround for bug MASSEMBLY-173 -->
 		</file>
 		<file>
+			<source>../uimaj-document-annotation/target/uima-document-annotation.jar</source>
+			<destName>uimaj-document-annotation-2.2-incubating-SNAPSHOT.jar</destName>
+			<outputDirectory>/</outputDirectory>
+      <fileMode>420</fileMode> <!-- workaround for bug MASSEMBLY-173 -->
+		</file>    
+		<file>
 			<source>../jVinci/target/jVinci.jar</source>
 			<destName>jVinci-2.2-incubating-SNAPSHOT.jar</destName>
 			<outputDirectory>/</outputDirectory>
