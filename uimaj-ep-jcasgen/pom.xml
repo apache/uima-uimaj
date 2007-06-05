@@ -81,7 +81,7 @@
 								<descriptor>
 									src/main/assembly/assemble-plugin.xml</descriptor>
 							</descriptors>
-							<finalName>org.apache.uima.jcas.jcasgenp.2.2.0.incubating-SNAPSHOT</finalName>
+							<finalName>org.apache.uima.jcas.jcasgenp_2.2.0.incubating-SNAPSHOT</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 					</execution>
