@@ -718,12 +718,12 @@ public class MainFrame extends JFrame {
   }
 
   // Set the text.
-  private void setTextNoTitle(String text) {
+  public void setTextNoTitle(String text) {
     this.textArea.setText(text);
     this.textArea.getCaret().setDot(0);
     this.isDirty = false;
   }
-
+  
   public void setTitle() {
     StringBuffer buf = new StringBuffer();
     buf.append(titleText);
@@ -1520,10 +1520,8 @@ public class MainFrame extends JFrame {
 
       // reset sofa combo box with just the initial view
 //      this.disableSofaListener = true;
-      // I don't know what this does here, but it resets the text, which it shouldn't do at this
-      // point.
-//      this.sofaSelectionComboBox.removeAllItems();
-//      this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
+      this.sofaSelectionComboBox.removeAllItems();
+      this.sofaSelectionComboBox.addItem(CAS.NAME_DEFAULT_SOFA);
       this.sofaSelectionPanel.setVisible(false);
 //      this.disableSofaListener = false;
       MainFrame.this.updateIndexTree(true);
@@ -2202,7 +2200,7 @@ public class MainFrame extends JFrame {
         }
       }
     }
-    getTextArea().setText(text);
+    setText(text);
     if (text == null) {
       getTextArea().repaint();
     }

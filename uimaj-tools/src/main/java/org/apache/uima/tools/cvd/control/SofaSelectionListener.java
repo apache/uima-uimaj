@@ -48,7 +48,10 @@ public class SofaSelectionListener implements ItemListener {
         }
       }
     }
-    this.main.getTextArea().setText(text);
+    String oldText = this.main.getTextArea().getText();
+    if ((oldText == null) || (text == null) || !oldText.equals(text)) {
+      this.main.setText(text);
+    }
     if (text == null) {
       this.main.getTextArea().repaint();
     }
