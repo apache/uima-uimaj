@@ -52,7 +52,7 @@ under the License.
       <title>CPE Runtime Overview</title>
       <mediaobject>
         <imageobject>
-          <imagedata width="550px" format="PNG"
+          <imagedata width="5.8in" format="PNG"
             fileref="&imgroot;image002.png"/>
         </imageobject>
         <textobject><phrase>CPE Runtime Overview diagram</phrase></textobject>
@@ -1318,7 +1318,8 @@ vinci.VinciAnalysisEngineService_impl</arg>
   <collectionReader>
     <collectionIterator>
       <descriptor>
-        <import location="../collection_reader/FileSystemCollectionReader.xml"/>
+        <import location=
+           "../collection_reader/FileSystemCollectionReader.xml"/>
       </descriptor>
     </collectionIterator>
   </collectionReader>
@@ -1327,7 +1328,8 @@ vinci.VinciAnalysisEngineService_impl</arg>
     <casProcessor deployment="integrated" 
       name="Aggregate TAE - Name Recognizer and Person Title Annotator">
       <descriptor>
-        <import location="../analysis_engine/NamesAndPersonTitles_TAE.xml"/>
+        <import location=
+           "../analysis_engine/NamesAndPersonTitles_TAE.xml"/>
       </descriptor>
       <deploymentParameters/>
       <filter/>

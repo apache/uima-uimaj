@@ -337,7 +337,7 @@ JCas getEmptyJCas()</programlisting> which are
       <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="506px" align="center" format="JPG" fileref="&imgroot;image002.jpg"/>
+        <imagedata width="5.2in" align="center" format="JPG" fileref="&imgroot;image002.jpg"/>
       </imageobject>
       <textobject><phrase>Screen shot of Component Descriptor Editor on Overview 
         showing checking of "Outputs new CASes" box</phrase>       

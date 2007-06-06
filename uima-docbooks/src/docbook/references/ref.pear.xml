@@ -113,7 +113,7 @@ under the License.
         <title>The PEAR Structure</title>
         <mediaobject>
           <imageobject>
-            <imagedata width="303px" format="JPG"
+            <imagedata width="3in" format="JPG"
               fileref="&imgroot;image002.jpg"/>
           </imageobject>
           <textobject><phrase>diagram of the PEAR structure</phrase></textobject>
@@ -586,8 +586,7 @@ local_root_directory_for_1st_delegate_component/resources/dict/
       
       <para>
       To use the PEAR packaging API you first have to create the necessary information for the PEAR package:
-        <programlisting>
-    //define PEAR data  
+        <programlisting>    //define PEAR data  
     String componentID = "AnnotComponentID";
     String mainComponentDesc = "desc/mainComponentDescriptor.xml";
     String classpath ="$main_root/bin;";
@@ -598,20 +597,18 @@ local_root_directory_for_1st_delegate_component/resources/dict/
     annotatorProperties.setProperty("sysProperty1", "value1");</programlisting>
   	    
   	    To create a complete PEAR package in one step call:
-  	    <programlisting>
-   PackageCreator.generatePearPackage(componentID, mainComponentDesc, classpath, datapath,
-         mainComponentRoot, targetDir, annotatorProperties);</programlisting>
+  	    <programlisting>PackageCreator.generatePearPackage(componentID, mainComponentDesc,
+   classpath, datapath, mainComponentRoot, targetDir, annotatorProperties);</programlisting>
         The created PEAR package has the file name &lt;componentID>.pear and is located in the &lt;targetDir>.
         </para>      
         <para>
         To create just the PEAR installation descriptor in the main component root directory call:
-        <programlisting>
-    PackageCreator.createInstallDescriptor(componentID, mainComponentDesc, classpath, datapath,
-          mainComponentRoot, annotatorProperties);</programlisting>
+        <programlisting>PackageCreator.createInstallDescriptor(componentID, mainComponentDesc,
+   classpath, datapath, mainComponentRoot, annotatorProperties);</programlisting>
   	    
   	    To package a PEAR file with an existing installation descriptor call:
-        <programlisting>
-  	PackageCreator.createPearPackage(componentID, mainComponentRoot, targetDir);</programlisting>
+        <programlisting>PackageCreator.createPearPackage(componentID, mainComponentRoot,
+   targetDir);</programlisting>
         The created PEAR package has the file name &lt;componentID>.pear and is located in the &lt;targetDir>.
   	  </para>
   	  
@@ -701,11 +698,12 @@ try {
 
   // Create analysis engine from the installed PEAR package using
   // the created PEAR specifier
-  XMLInputSource in = new XMLInputSource(instPear.getComponentPearDescPath());
-  ResourceSpecifier specifier = UIMAFramework.getXMLParser()
-      	.parseResourceSpecifier(in);
-  AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(
-      	specifier, rsrcMgr, null);
+  XMLInputSource in = 
+        new XMLInputSource(instPear.getComponentPearDescPath());
+  ResourceSpecifier specifier =
+        UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+  AnalysisEngine ae = 
+        UIMAFramework.produceAnalysisEngine(specifier, rsrcMgr, null);
 
   // Create a CAS with a sample document text
   CAS cas = ae.newCAS();
@@ -739,8 +737,7 @@ try {
     <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <pearSpecifier xmlns="http://uima.apache.org/resourceSpecifier">
    <pearPath>/home/user/uimaApp/installedPears/testpear</pearPath>
-</pearSpecifier>]]>
-    </programlisting>
+</pearSpecifier>]]></programlisting>
     <para>The <literal>pearPath</literal> setting in the descriptor must point to the component root directory 
     of the installed PEAR package.</para>
   </section>

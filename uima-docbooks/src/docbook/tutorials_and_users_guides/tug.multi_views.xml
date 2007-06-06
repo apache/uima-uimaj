@@ -393,7 +393,8 @@ UimaContextAdmin childContext = rootContext.createChild("myAE", sofamap);
 Map additionalParams = new HashMap();
 additionalParams.put(Resource.PARAM_UIMA_CONTEXT, childContext);
 
-AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc,additionalParams);</programlisting>
+AnalysisEngine ae = 
+        UIMAFramework.produceAnalysisEngine(desc,additionalParams);</programlisting>
       
       <para>Sofa mappings are applied from the inside out, i.e., local to global. First, any
         aggregate mappings are applied, then any CPE mappings, and finally, any specified

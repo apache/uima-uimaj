@@ -53,10 +53,7 @@ under the License.
       <title>UIMA helps you build the bridge between the unstructured and structured
         worlds</title>
       <mediaobject>
-        <imageobject role="html">
-          <imagedata width="576px" format="PNG" fileref="&imgroot;image002.png"/>
-        </imageobject>
-        <imageobject role="fo">
+        <imageobject>
           <imagedata width="5.5in" format="PNG" fileref="&imgroot;image002.png"/>
         </imageobject>
         <textobject><phrase>Picture of a bridge between unstructured information

@@ -96,7 +96,7 @@ under the License.
       <title>CPE Components</title>
       <mediaobject>
         <imageobject>
-          <imagedata width="576px" format="PNG"
+          <imagedata width="5.84in" format="PNG"
             fileref="&imgroot;image002.png"/>
         </imageobject>
         <textobject><phrase>CPE Components and flow between them</phrase>
@@ -164,7 +164,7 @@ under the License.
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata width="573px" format="JPG" fileref="&imgroot;image004.jpg"/>
+              <imagedata width="5.84in" format="JPG" fileref="&imgroot;image004.jpg"/>
             </imageobject>
             <textobject><phrase>Screenshot of CPE GUI</phrase></textobject>
           </mediaobject>
@@ -198,7 +198,7 @@ CAS Consumer:
       <screenshot>
      <mediaobject>
       <imageobject>
-        <imagedata width="578px" format="JPG" fileref="&imgroot;image006.jpg"/>
+        <imagedata width="5.84in" format="JPG" fileref="&imgroot;image006.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of CPE GUI after fields filled in</phrase></textobject>
     </mediaobject>
@@ -245,7 +245,7 @@ CAS Consumer:
         <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="508px" format="JPG" fileref="&imgroot;image008.jpg"/>
+        <imagedata width="5.5in" format="JPG" fileref="&imgroot;image008.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of Annotation Viewer results</phrase></textobject>
     </mediaobject>
@@ -265,7 +265,7 @@ CAS Consumer:
         <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="385px" format="JPG" fileref="&imgroot;image010.jpg"/>
+        <imagedata width="3.5in" format="JPG" fileref="&imgroot;image010.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of CPE Configurator Analyzed Documents</phrase></textobject>
     </mediaobject>
@@ -280,7 +280,7 @@ CAS Consumer:
         <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="575px" format="JPG" fileref="&imgroot;image012.jpg"/>
+        <imagedata width="5.84in" format="JPG" fileref="&imgroot;image012.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of Document and Annotation Viewer</phrase></textobject>
     </mediaobject>
@@ -447,7 +447,7 @@ mCPE.process();</programlisting></para>
         <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="382px" format="JPG" fileref="&imgroot;image014.jpg"/>
+        <imagedata width="4.4in" format="JPG" fileref="&imgroot;image014.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot showing Eclipse new class wizard</phrase></textobject>
     </mediaobject>
@@ -1007,7 +1007,7 @@ mCPE.process();</programlisting></para>
       <title>CPE Instantiation</title>
       <mediaobject>
         <imageobject>
-          <imagedata width="535px" format="PNG"
+          <imagedata width="5.84in" format="PNG"
             fileref="&imgroot;image018.png"/>
         </imageobject>
         <textobject><phrase>Picture of deployment of a CPE</phrase></textobject>
@@ -1075,7 +1075,7 @@ mCPE.process();</programlisting></para>
         <title>CPE with Managed CAS Processors</title>
         <mediaobject>
           <imageobject>
-            <imagedata width="306px" format="PNG"
+            <imagedata width="3.6in" format="PNG"
               fileref="&imgroot;image020.png"/>
           </imageobject>
           <textobject><phrase>Managed deployment showing separate JVMs and CASes
@@ -1104,11 +1104,12 @@ mCPE.process();</programlisting></para>
   &lt;runInSeparateProcess&gt;
     &lt;exec dir="." executable="java"&gt;
       &lt;env key="CLASSPATH" 
-         value="src;C:/Program Files/apache/uima/lib/uima-core.jar;
-                    C:/Program Files/apache/uima/lib/uima-cpe.jar;
-                    C:/Program Files/apache/uima/lib/uima-examples.jar;
-                    C:/Program Files/apache/uima/lib/uima-adapter-vinci.jar;
-                    C:/Program Files/apache/uima/lib/jVinci.jar"/>
+         value="src;
+                C:/Program Files/apache/uima/lib/uima-core.jar;
+                C:/Program Files/apache/uima/lib/uima-cpe.jar;
+                C:/Program Files/apache/uima/lib/uima-examples.jar;
+                C:/Program Files/apache/uima/lib/uima-adapter-vinci.jar;
+                C:/Program Files/apache/uima/lib/jVinci.jar"/>
       &lt;arg&gt;-DLOG=C:/Temp/service.log&lt;/arg&gt;
       &lt;arg&gt;org.apache.uima.reference_impl.collection.
          service.vinci.VinciAnalysisEnginerService_impl&lt;/arg&gt;
@@ -1149,7 +1150,7 @@ mCPE.process();</programlisting></para>
         <title>CPE with non-managed CAS Processors</title>
         <mediaobject>
           <imageobject>
-            <imagedata width="396px" format="PNG"
+            <imagedata width="4.8in" format="PNG"
               fileref="&imgroot;image023.png"/>
           </imageobject>
           <textobject><phrase>Non-managed CPE deployment</phrase></textobject>
@@ -1209,7 +1210,7 @@ mCPE.process();</programlisting></para>
         <title>CPE with integrated CAS Processor</title>
         <mediaobject>
           <imageobject>
-            <imagedata width="330px" format="PNG"
+            <imagedata width="3.2in" format="PNG"
               fileref="&imgroot;image026.png"/>
           </imageobject>
           <textobject><phrase>CPE with integrated CAS Processor</phrase>

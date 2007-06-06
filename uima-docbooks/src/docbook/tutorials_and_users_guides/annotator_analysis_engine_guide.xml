@@ -220,7 +220,7 @@ under the License.
       <screenshot>
  <mediaobject>
         <imageobject>
-          <imagedata width="768px" format="JPG" fileref="&imgroot;image002.jpg"/>
+          <imagedata scale="100" format="JPG" fileref="&imgroot;image002.jpg"/>
         </imageobject>
         <textobject><phrase>Screenshot of editor for Type System Definitions</phrase></textobject>
       </mediaobject>
@@ -302,7 +302,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="575px" format="JPG" fileref="&imgroot;image004.jpg"/>
+          <imagedata width="5.84in" format="JPG" fileref="&imgroot;image004.jpg"/>
         </imageobject>
         <textobject><phrase>Screenshot of enabling automatic running of JCasGen</phrase></textobject>
       </mediaobject>
@@ -323,7 +323,7 @@ under the License.
       <screenshot>
         <mediaobject>
         <imageobject>
-          <imagedata width="532px" format="JPG" fileref="&imgroot;image006.jpg"/>
+          <imagedata width="5.84in" format="JPG" fileref="&imgroot;image006.jpg"/>
         </imageobject>
         <textobject><phrase>Screenshot of JCasGen</phrase></textobject>
       </mediaobject>
@@ -547,7 +547,7 @@ annotation.setBuilding("Yorktown");</programlisting>
       <screenshot>
   <mediaobject>
     <imageobject>
-      <imagedata width="574px" format="JPG" fileref="&imgroot;image008.jpg"/>
+      <imagedata width="5.84in" format="JPG" fileref="&imgroot;image008.jpg"/>
     </imageobject>
     <textobject><phrase>Screenshot of Component Descriptor Editor overview page</phrase>      
     </textobject>
@@ -576,7 +576,7 @@ annotation.setBuilding("Yorktown");</programlisting>
       <screenshot>
    <mediaobject>
      <imageobject>
-       <imagedata width="576px" format="JPG" fileref="&imgroot;image010.jpg"/>
+       <imagedata width="5.84in" format="JPG" fileref="&imgroot;image010.jpg"/>
      </imageobject>
      <textobject><phrase>Screenshot of CDE Type System page</phrase></textobject>
    </mediaobject>
@@ -589,7 +589,7 @@ annotation.setBuilding("Yorktown");</programlisting>
       <screenshot>
    <mediaobject>
      <imageobject>
-       <imagedata width="534px" format="JPG" fileref="&imgroot;image012.jpg"/>
+       <imagedata width="5.3in" format="JPG" fileref="&imgroot;image012.jpg"/>
      </imageobject>
      <textobject><phrase>Screenshot of CDE Capabilities page</phrase></textobject>
    </mediaobject>
@@ -634,7 +634,7 @@ annotation.setBuilding("Yorktown");</programlisting>
       <screenshot>
    <mediaobject>
      <imageobject>
-       <imagedata width="574px" format="JPG" fileref="&imgroot;image014.jpg"/>
+       <imagedata width="5.84in" format="JPG" fileref="&imgroot;image014.jpg"/>
      </imageobject>
      <textobject><phrase>Screenshot of UIMA Document Analyzer GUI</phrase></textobject>
    </mediaobject>       
@@ -676,7 +676,7 @@ annotation.setBuilding("Yorktown");</programlisting>
       <screenshot>
    <mediaobject>
      <imageobject>
-       <imagedata width="332px" format="JPG" fileref="&imgroot;image016.jpg"/>
+       <imagedata width="3.5in" format="JPG" fileref="&imgroot;image016.jpg"/>
      </imageobject>
      <textobject><phrase>Screenshot of UIMA Document Analyzer Results GUI</phrase></textobject>
    </mediaobject>       
@@ -691,7 +691,7 @@ annotation.setBuilding("Yorktown");</programlisting>
       <screenshot>
    <mediaobject>
      <imageobject>
-       <imagedata width="510px" format="JPG" fileref="&imgroot;image018.jpg"/>
+       <imagedata width="5.84in" format="JPG" fileref="&imgroot;image018.jpg"/>
      </imageobject>
      <textobject><phrase>Screenshot of UIMA CAS Annotation Viewer GUI</phrase></textobject>
    </mediaobject>       
@@ -743,7 +743,7 @@ annotation.setBuilding("Yorktown");</programlisting>
         <screenshot>
    <mediaobject>
      <imageobject>
-       <imagedata width="538px" format="JPG" fileref="&imgroot;image020.jpg"/>
+       <imagedata width="5.84in" format="JPG" fileref="&imgroot;image020.jpg"/>
      </imageobject>
      <textobject><phrase>Screenshot of UIMA Component Descriptor Editor (CDE) Parameters page</phrase></textobject>
    </mediaobject>       
@@ -781,7 +781,7 @@ annotation.setBuilding("Yorktown");</programlisting>
         <screenshot>
    <mediaobject>
      <imageobject>
-       <imagedata width="538px" format="JPG" fileref="&imgroot;image022.jpg"/>
+       <imagedata width="5.84in" format="JPG" fileref="&imgroot;image022.jpg"/>
      </imageobject>
      <textobject><phrase>Screenshot of UIMA Component Descriptor Editor (CDE) Parameter Settings page</phrase></textobject>
    </mediaobject>       
@@ -1103,7 +1103,7 @@ public void initialize(UimaContext aContext)
           <title>Combining Annotators to form an Aggregate Analysis Engine</title>
           <mediaobject>
             <imageobject>
-              <imagedata width="560px" format="PNG"
+              <imagedata width="5.84in" format="PNG"
                 fileref="&imgroot;image024.png"/>
             </imageobject>
             <textobject> <phrase>Combining Annotators to form an Aggregate Analysis
@@ -1127,7 +1127,7 @@ public void initialize(UimaContext aContext)
         <screenshot>
   <mediaobject>
     <imageobject>
-      <imagedata width="575px" format="JPG" fileref="&imgroot;image026.jpg"/>
+      <imagedata width="5.84in" format="JPG" fileref="&imgroot;image026.jpg"/>
     </imageobject>
     <textobject>
       <phrase>Aggregate page of the Component Descriptor Editor (CDE)</phrase>
@@ -1180,7 +1180,7 @@ public void initialize(UimaContext aContext)
           <screenshot>
      <mediaobject>
        <imageobject>
-         <imagedata width="565px" format="JPG" fileref="&imgroot;image028.jpg"/>
+         <imagedata width="5.84in" format="JPG" fileref="&imgroot;image028.jpg"/>
        </imageobject>
        <textobject><phrase>Screen shot of the Capabilities page of the Component Descriptor Editor
        </phrase></textobject>
@@ -1202,7 +1202,7 @@ public void initialize(UimaContext aContext)
         <screenshot>
      <mediaobject>
        <imageobject>
-         <imagedata width="525px" format="JPG" fileref="&imgroot;image030.jpg"/>
+         <imagedata width="5.84in" format="JPG" fileref="&imgroot;image030.jpg"/>
        </imageobject>
        <textobject><phrase>Screen shot results of running the Document Analyzer
        </phrase></textobject>
@@ -1280,7 +1280,7 @@ while (timeIter.hasNext()) {
       <screenshot>
      <mediaobject>
        <imageobject>
-         <imagedata width="566px" format="JPG" fileref="&imgroot;image032.jpg"/>
+         <imagedata width="5.84in" format="JPG" fileref="&imgroot;image032.jpg"/>
        </imageobject>
        <textobject><phrase>Screen shot of Capabilities page of the Component Descriptor Editor
        </phrase></textobject>
@@ -1300,7 +1300,7 @@ while (timeIter.hasNext()) {
             engines</title>
           <mediaobject>
             <imageobject>
-              <imagedata width="555px" format="PNG" fileref="&imgroot;image034.png"/>
+              <imagedata width="5.84in" format="PNG" fileref="&imgroot;image034.png"/>
             </imageobject>
             <textobject><phrase>An Aggregate Analysis Engine where an internal component uses output from
               previous engines. </phrase>
@@ -1637,7 +1637,7 @@ catch (PatternSyntaxException e) {
         <screenshot>
        <mediaobject>
        <imageobject>
-         <imagedata width="575px" format="JPG" fileref="&imgroot;image036.jpg"/>
+         <imagedata width="5.84in" format="JPG" fileref="&imgroot;image036.jpg"/>
        </imageobject>
        <textobject><phrase>Screen shot of Component Descriptor Editor page for configuring External Resources
        </phrase></textobject>
@@ -1655,7 +1655,7 @@ catch (PatternSyntaxException e) {
         <screenshot>
        <mediaobject>
        <imageobject>
-         <imagedata width="680px" format="JPG" fileref="&imgroot;image038.jpg"/>
+         <imagedata width="5.84in" format="JPG" fileref="&imgroot;image038.jpg"/>
        </imageobject>
        <textobject><phrase>Screen shot of Component Descriptor Editor page for configuring External Resources after
          adjusting the layout
@@ -1821,7 +1821,7 @@ catch (PatternSyntaxException e) {
             <title>External Resource Binding</title>
             <mediaobject>
               <imageobject>
-                <imagedata width="528px" format="PNG"
+                <imagedata width="3.7in" format="PNG"
                   fileref="&imgroot;image040.png"/>
               </imageobject>
               <textobject><phrase>External Resource Binding</phrase></textobject>
@@ -1862,7 +1862,7 @@ catch (PatternSyntaxException e) {
             <title>Component engines of an aggregate share a common resource</title>
             <mediaobject>
               <imageobject>
-                <imagedata width="563px" format="PNG"
+                <imagedata width="5.84in" format="PNG"
                   fileref="&imgroot;image042.png"/>
               </imageobject>
               <textobject><phrase>Picture of Component engines of an aggregate sharing a
@@ -1881,7 +1881,7 @@ catch (PatternSyntaxException e) {
           <screenshot>
      <mediaobject>
       <imageobject>
-        <imagedata width="615px" format="JPG" fileref="&imgroot;image044.jpg"/>
+        <imagedata width="5.84in" format="JPG" fileref="&imgroot;image044.jpg"/>
       </imageobject>
       <textobject><phrase>UimaMeetingDetectorAE.xml binding a common resource</phrase></textobject>
     </mediaobject>
@@ -2149,7 +2149,7 @@ documentAnalyzer</programlisting>
       <screenshot>
      <mediaobject>
       <imageobject>
-        <imagedata width="580px" format="JPG" fileref="&imgroot;image046.jpg"/>
+        <imagedata width="5.84in" format="JPG" fileref="&imgroot;image046.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of Eclipse debugger showing non-logical-structure display of 
       a feature structure</phrase></textobject>
@@ -2164,7 +2164,7 @@ documentAnalyzer</programlisting>
       <screenshot>
      <mediaobject>
       <imageobject>
-        <imagedata width="480px" format="JPG" fileref="&imgroot;image048.jpg"/>
+        <imagedata width="5.6in" format="JPG" fileref="&imgroot;image048.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of Eclipse debugger showing button to push to 
         enable viewing logical structures</phrase></textobject>
@@ -2176,7 +2176,7 @@ documentAnalyzer</programlisting>
       <screenshot>
      <mediaobject>
       <imageobject>
-        <imagedata width="581px" format="JPG" fileref="&imgroot;image050.jpg"/>
+        <imagedata width="5.84in" format="JPG" fileref="&imgroot;image050.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of Eclipse debugger showing logical structure display of 
       an annotation</phrase></textobject>

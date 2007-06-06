@@ -117,7 +117,7 @@ under the License.
       <informalfigure>
         <mediaobject>
           <imageobject>
-            <imagedata width="350px" format="JPG" fileref="&imgroot;image002.jpg"/>
+            <imagedata width="4in" format="JPG" fileref="&imgroot;image002.jpg"/>
           </imageobject>
           <textobject><phrase>Screenshot showing search results for EMF</phrase>
           </textobject>

@@ -80,7 +80,7 @@ under the License.
         <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="612px" format="JPG" fileref="&imgroot;image002.jpg"/>
+          <imagedata width="5.8in" format="JPG" fileref="&imgroot;image002.jpg"/>
         </imageobject>
         <textobject><phrase>Screenshot of Adding the UIMA Nature to your project</phrase>
         </textobject>
@@ -143,7 +143,7 @@ under the License.
           <title>The Pear Structure</title>
           <mediaobject>
             <imageobject>
-              <imagedata width="303px" format="JPG"
+              <imagedata width="3in" format="JPG"
                 fileref="&imgroot;image004.jpg"/>
             </imageobject>
             <textobject><phrase>Pear structure</phrase>
@@ -188,7 +188,7 @@ under the License.
             <title>The Component Information Page</title>
             <mediaobject>
               <imageobject>
-                <imagedata width="636px" format="JPG"
+                <imagedata width="5.8in" format="JPG"
                   fileref="&imgroot;image006.jpg"/>
               </imageobject>
               <textobject><phrase>Pear Wizard - component information page</phrase>
@@ -252,7 +252,7 @@ under the License.
           <title>The Installation Environment Page</title>
           <mediaobject>
             <imageobject>
-              <imagedata width="612px" format="JPG"
+              <imagedata width="5.8in" format="JPG"
                 fileref="&imgroot;image008.jpg"/>
             </imageobject>
             <textobject><phrase>Pear Wizard - install environment page</phrase>
@@ -294,7 +294,7 @@ under the License.
             <title>The PEAR File Export Page</title>
             <mediaobject>
               <imageobject>
-                <imagedata width="576px" format="JPG"
+                <imagedata width="5.8in" format="JPG"
                   fileref="&imgroot;image010.jpg"/>
               </imageobject>
               <textobject><phrase>Pear Wizard - File Export Page</phrase>
@@ -318,24 +318,26 @@ under the License.
      <para><itemizedlist>
      <listitem> 
      	<para>Mode 1: creates a complete PEAR package with the provided information (default mode)</para>
-     	<para><programlisting>runPearPackager -compID &lt;componentID> -mainCompDesc &lt;mainComponentDesc> [-classpath &lt;classpath>] 
-     	[-datapath &lt;datapath>] -mainCompDir &lt;mainComponentDir> -targetDir &lt;targetDir> 
-     	[-envVars &lt;propertiesFilePath>]</programlisting></para>   
+     	<para><programlisting>runPearPackager -compID &lt;componentID> 
+  -mainCompDesc &lt;mainComponentDesc> [-classpath &lt;classpath>] 
+  [-datapath &lt;datapath>] -mainCompDir &lt;mainComponentDir> 
+  -targetDir &lt;targetDir> [-envVars &lt;propertiesFilePath>]</programlisting></para>   
      	<para> The created PEAR file has the file name &lt;componentID>.pear and is located in the &lt;targetDir>.</para>
      </listitem>
      
      <listitem> 
      	<para>Mode 2: creates a PEAR installation descriptor without packaging the PEAR file</para>
-     	<para><programlisting>runPearPackager -create -compID &lt;componentID> -mainCompDesc &lt;mainComponentDesc> 
-     	[-classpath &lt;classpath>] [-datapath &lt;datapath>] -mainCompDir &lt;mainComponentDir> 
-     	[-envVars &lt;propertiesFilePath>]</programlisting></para>
+     	<para><programlisting>runPearPackager -create -compID &lt;componentID> 
+  -mainCompDesc &lt;mainComponentDesc> [-classpath &lt;classpath>]
+  [-datapath &lt;datapath>] -mainCompDir &lt;mainComponentDir> 
+  [-envVars &lt;propertiesFilePath>]</programlisting></para>
      	<para> The PEAR installation descriptor is created in the &lt;mainComponentDir>/metadata directory.</para>
      </listitem>
 
      <listitem>
      	<para>Mode 3: creates a PEAR package with an existing PEAR installation descriptor</para>
-     	<para><programlisting>runPearPackager -package -compID &lt;componentID> -mainCompDir &lt;mainComponentDir> 
-     	-targetDir &lt;targetDir></programlisting></para>
+     	<para><programlisting>runPearPackager -package -compID &lt;componentID> 
+  -mainCompDir &lt;mainComponentDir> -targetDir &lt;targetDir></programlisting></para>
       	<para> The created PEAR file has the file name &lt;componentID>.pear and is located in the &lt;targetDir>.</para>
      </listitem>
      	 

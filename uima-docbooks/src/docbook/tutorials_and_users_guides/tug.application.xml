@@ -948,7 +948,7 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
         <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="577px" format="JPG" fileref="&imgroot;image002.jpg"/>
+        <imagedata width="5.84in" format="JPG" fileref="&imgroot;image002.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of the Semantic Search tool set up to run 
         semantic queries against a semantic search index</phrase></textobject>
@@ -1705,7 +1705,7 @@ Exception: Connection refused: connect</programlisting>
       <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="300px" format="JPG" fileref="&imgroot;image004.jpg"/>
+        <imagedata width="3.5in" format="JPG" fileref="&imgroot;image004.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of JMX console</phrase></textobject>
     </mediaobject>
@@ -1720,7 +1720,7 @@ Exception: Connection refused: connect</programlisting>
       <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="634px" format="JPG" fileref="&imgroot;image006.jpg"/>
+        <imagedata width="5.84in" format="JPG" fileref="&imgroot;image006.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of JMX console monitoring UIMA components</phrase></textobject>
     </mediaobject>

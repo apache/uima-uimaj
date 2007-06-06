@@ -915,7 +915,7 @@ FSIterator it = cas.createFilteredIterator(annotIt, nounTokenCons);</programlist
           <title>CAS Object hierarchy</title>
           <mediaobject>
             <imageobject>
-              <imagedata width="586px" format="JPG"
+              <imagedata width="5.8in" format="JPG"
                 fileref="&imgroot;image001.png"/>
             </imageobject>
             <textobject><phrase>CAS object hierarchy</phrase></textobject>

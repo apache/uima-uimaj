@@ -84,7 +84,7 @@ under the License.
       <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="573px" format="JPG" fileref="&imgroot;image002.jpg"/>
+        <imagedata width="5.8in" format="JPG" fileref="&imgroot;image002.jpg"/>
       </imageobject>
       <textobject><phrase>CPE Configurator main GUI window</phrase> 
       </textobject>
@@ -119,7 +119,7 @@ examples/descriptors/cas_consumer/XmiWriterCasConsumer.xml</programlisting></par
     <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="578px" format="JPG" fileref="&imgroot;image004.jpg"/>
+        <imagedata width="5.8in" format="JPG" fileref="&imgroot;image004.jpg"/>
       </imageobject>
       <textobject><phrase>CPE Configurator after components chosen</phrase> 
       </textobject>

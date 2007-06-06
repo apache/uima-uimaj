@@ -65,9 +65,10 @@
   You will usually want to start CVD from the command line, or from Eclipse.  To start CVD from the
   command line, you minimally need the uima-core and uima-tools jars.  Below is a sample command
   line for sh and its offspring.
-  <programlisting>java -cp ${UIMA_HOME}/lib/uima-core.jar:${UIMA_HOME}/lib/uima-tools.jar org.apache.uima.tools.cvd.CVD</programlisting>
+  <programlisting>java -cp ${UIMA_HOME}/lib/uima-core.jar:${UIMA_HOME}/lib/uima-tools.jar 
+    org.apache.uima.tools.cvd.CVD</programlisting>
   However, there is no need to type this.  The ${UIMA_HOME}/bin directory contains a cvd.sh and
-  cvd.bat file for favority operating systems.
+  cvd.bat file for Windows and *nix operating systems.
  </para>
  <para>
    In Eclipse, you have a ready to use launch configuration available when you have installed the
@@ -348,8 +349,8 @@
     <figure id="cvd.figure.editMenu">
      <title>The Edit menu</title>
      <mediaobject>
-      <imageobject>
-       <imagedata width="2.15in" format="JPG" fileref="&imgroot;EditMenu.jpg" />
+      <imageobject>  <!-- was 2.15in -->
+       <imagedata scale="100" format="JPG" fileref="&imgroot;EditMenu.jpg" />
       </imageobject>
       <textobject>
        <phrase>The Edit menu</phrase>
@@ -376,8 +377,8 @@
     <figure id="cvd.figure.runMenu">
      <title>The Run menu</title>
      <mediaobject>
-      <imageobject>
-       <imagedata width="2.225in" format="JPG" fileref="&imgroot;RunMenu.jpg" />
+      <imageobject> <!-- was width="2.225in" -->
+       <imagedata scale="100" format="JPG" fileref="&imgroot;RunMenu.jpg" />
       </imageobject>
       <textobject>
        <phrase>The Run menu</phrase>
@@ -485,8 +486,8 @@
       <title>The type system viewer</title>
       <screenshot>
        <mediaobject>
-        <imageobject>
-         <imagedata width="5.816in" format="JPG"
+        <imageobject>  
+         <imagedata width="5.31in" format="JPG"
           fileref="&imgroot;TypeSystemViewer.jpg" />
         </imageobject>
        </mediaobject>
@@ -522,8 +523,8 @@
        Annotations produced by a statistical named entity tagger
       </title>
       <mediaobject>
-       <imageobject>
-        <imagedata width="5.82in" format="JPG" fileref="&imgroot;AnnotationViewer.jpg" />
+       <imageobject> <!-- was width="5.82in" -->
+        <imagedata scale="100" format="JPG" fileref="&imgroot;AnnotationViewer.jpg" />
        </imageobject>
       </mediaobject>
      </figure>
@@ -582,8 +583,8 @@
    <figure id="Main1Figure">
     <title>State of GUI after running an analysis engine</title>
     <mediaobject>
-     <imageobject>
-      <imagedata width="6.423in" format="JPG" fileref="&imgroot;Main1.jpg" />
+     <imageobject>  <!-- next width was 6.423 -->
+      <imagedata scale="100" format="JPG" fileref="&imgroot;Main1.jpg" />
      </imageobject>
     </mediaobject>
    </figure>
@@ -620,8 +621,8 @@
      Finding annotations for a specific location in the text
     </title>
     <mediaobject>
-     <imageobject>
-      <imagedata width="6.39in" format="JPG" fileref="&imgroot;Main2.jpg" />
+     <imageobject>  <!-- next width was 6.39in -->
+      <imagedata scale="100" format="JPG" fileref="&imgroot;Main2.jpg" />
      </imageobject>
     </mediaobject>
    </figure>
@@ -641,8 +642,8 @@
      annotation in the FS display
     </title>
     <mediaobject>
-     <imageobject>
-      <imagedata width="6.39in" format="JPG" fileref="&imgroot;Main3.jpg" />
+     <imageobject> <!-- width was 6.39in -->
+      <imagedata scale="100" format="JPG" fileref="&imgroot;Main3.jpg" />
      </imageobject>
     </mediaobject>
    </figure>

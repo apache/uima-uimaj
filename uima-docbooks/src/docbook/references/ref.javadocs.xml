@@ -45,7 +45,7 @@ under the License.
     <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="576px" format="JPG" fileref="&imgroot;image002.jpg"/>
+        <imagedata width="5.8in" format="JPG" fileref="&imgroot;image002.jpg"/>
       </imageobject>
       <textobject><phrase>Screenshot of attaching Javadoc to source in Eclipse</phrase></textobject>
     </mediaobject>

@@ -88,7 +88,7 @@ under the License.
     <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="576px" format="JPG" fileref="&imgroot;image002.jpg"/>
+          <imagedata width="5.8in" format="JPG" fileref="&imgroot;image002.jpg"/>
         </imageobject>
         <textobject><phrase>JCasGen tool showing fields for input arguments</phrase>
         </textobject>
@@ -162,7 +162,7 @@ under the License.
       <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata width="503px" format="JPG" fileref="&imgroot;image004.jpg"/>
+          <imagedata width="5.8in" format="JPG" fileref="&imgroot;image004.jpg"/>
         </imageobject>
         <textobject><phrase>Running JCasGen within Eclipse using the external tool launcher</phrase>
         </textobject>
