@@ -273,10 +273,10 @@ public final class Heap {
         this.tempPos = 1;
         this.tempMax = this.PAGE_SIZE;
       }
-      // else {
+       else {
       // this.tempPos = pageCode * this.PAGE_SIZE;
-      // this.tempMax = this.tempPos + this.PAGE_SIZE;
-      // }
+         this.tempMax = this.tempPos + this.PAGE_SIZE;
+       }
       return;
     }
     // Allocate a new page.
