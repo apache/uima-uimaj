@@ -52,26 +52,47 @@ public class CasResetResizeTest extends TestCase {
       TextAnalysisEngine taeDefault = UIMAFramework.produceTAE(testDescriptor);
       CAS cas = taeDefault.newCAS();
       int heapSize = ((CASImpl) cas).getHeap().getCurrentTempSize();
-      // System.out.println("Heap size: " + heapSize + ", buffer size: " + ((CASImpl)
-      // cas).getHeap().heap.length);
-      Assert.assertTrue(heapSize < CASImpl.DEFAULT_RESET_HEAP_SIZE);
-      assertTrue(heapSize <= ((CASImpl) cas).getHeap().heap.length);
+      int bufSize = ((CASImpl)cas).getHeap().heap.length;
+      //System.out.println("Heap size: " + heapSize + ", buffer size: " + bufSize);       
+      Assert.assertTrue(bufSize < CASImpl.DEFAULT_RESET_HEAP_SIZE);
+      assertTrue(heapSize <= bufSize);
+      
+      //create enough annotations to exceed the DEFAULT_RESET_HEAP_SIZE
       Type annotType = cas.getTypeSystem().getType(CAS.TYPE_NAME_ANNOTATION);
       for (int i = 0; i < 2000000; i++) {
         cas.createAnnotation(annotType, i, i);
       }
+      
       heapSize = ((CASImpl) cas).getHeap().getCurrentTempSize();
-      // System.out.println("Heap size: " + heapSize + ", buffer size: " + ((CASImpl)
-      // cas).getHeap().heap.length);
-      assertTrue(heapSize <= ((CASImpl) cas).getHeap().heap.length);
+      bufSize = ((CASImpl)cas).getHeap().heap.length;
+      //System.out.println("Heap size: " + heapSize + ", buffer size: " + bufSize);      
+      assertTrue(heapSize <= bufSize);
       Assert.assertTrue(heapSize > CASImpl.DEFAULT_RESET_HEAP_SIZE);
+      
+      //reset the CAS - it should shrink
       cas.reset();
       heapSize = ((CASImpl) cas).getHeap().getCurrentTempSize();
-      // System.out.println("Heap size: " + heapSize + ", buffer size: " + ((CASImpl)
-      // cas).getHeap().heap.length);
-      assertTrue(heapSize <= ((CASImpl) cas).getHeap().heap.length);
-      Assert.assertTrue(heapSize < CASImpl.DEFAULT_RESET_HEAP_SIZE);
+      bufSize = ((CASImpl)cas).getHeap().heap.length;
+      //System.out.println("Heap size: " + heapSize + ", buffer size: " + bufSize);
+      assertTrue(heapSize <= bufSize);
+      Assert.assertTrue(bufSize < CASImpl.DEFAULT_RESET_HEAP_SIZE);
 
+      
+      //If instead we create the annotations in smaller chunks and reset each time,
+      //the CAS buffer size shouldn't grow    
+      for (int j = 0; j < 10; j++) {
+        for (int i = 0; i < 200000; i++) {
+          cas.createAnnotation(annotType, i, i);
+        }
+        
+        heapSize = ((CASImpl) cas).getHeap().getCurrentTempSize();
+        bufSize = ((CASImpl)cas).getHeap().heap.length;
+        //System.out.println("Heap size: " + heapSize + ", buffer size: " + bufSize);      
+        assertTrue(heapSize <= bufSize);
+        Assert.assertTrue(bufSize < CASImpl.DEFAULT_RESET_HEAP_SIZE);      
+        cas.reset();
+      }
+  
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
