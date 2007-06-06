@@ -117,7 +117,7 @@ public class FSClassRegistry {
       CASRuntimeException casEx = new CASRuntimeException(CASRuntimeException.JCAS_CAS_MISMATCH,
               new String[] { (null == jcasView)? "-- ignore outer msg, error is can''t get value of jcas from cas"
                         : (jcasView.getType(type).casType.getName() + "; exception= " 
-                                + e.getClass().getSimpleName() + "; msg= " + e.getLocalizedMessage())});
+                                + e.getClass().getName() + "; msg= " + e.getLocalizedMessage())});
       casEx.initCause(e);
       throw casEx;      
     }
