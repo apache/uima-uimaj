@@ -714,10 +714,6 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   /**
    * Make the instance of the JCas xxx_Type class for this CAS. Note: not all types will have
    * xxx_Type. Instance creation does the typeSystemInit kind of function, as well.
-   * 
-   * If the type has already been loaded, much of the work here is bypassed, but the 
-   * instance still must be created.  If the type isn't loaded, information is saved
-   * in the LoadedJCasType object instance for subsequent use.
    */
 
   private void makeInstanceOf_Type(LoadedJCasType jcasTypeInfo, boolean installGenerator) {
