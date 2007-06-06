@@ -71,13 +71,22 @@ public class FSClassRegistry {
     
     public FeatureStructure createFS(int addr, CASImpl casView) {
       JCasImpl jcasView = null;
-      final CASImpl view = (isSubtypeOfAnnotationBase) ?
-              (CASImpl)casView.getView(getSofaNbr(addr, casView)) :
-              casView;
+      // this funny logic is because although the annotationView should always be set if
+      //  a type is a subtype of annotation, it isn't always set if an application uses low-level 
+      //  api's.  Rather than blow up, we limp along.
+      CASImpl maybeAnnotationView = null;  
+      if (isSubtypeOfAnnotationBase) {
+        final int sofaNbr = getSofaNbr(addr, casView);
+        if (sofaNbr > 0) {
+          maybeAnnotationView = (CASImpl)casView.getView(sofaNbr);
+        }
+      }
+      final CASImpl view = (null != maybeAnnotationView) ? maybeAnnotationView : casView;
+
       try {
         jcasView = (JCasImpl)view.getJCas();
       } catch (CASException e1) {
-       logAndThrow(e1);
+       logAndThrow(e1, jcasView);
       }
      
      // Return eq fs instance if already created
@@ -90,13 +99,13 @@ public class FSClassRegistry {
         try {
           fs = (TOP) c.newInstance(initargs);
         } catch (IllegalArgumentException e) {
-          logAndThrow(e);
+          logAndThrow(e, jcasView);
         } catch (InstantiationException e) {
-          logAndThrow(e);
+          logAndThrow(e, jcasView);
         } catch (IllegalAccessException e) {
-          logAndThrow(e);
+          logAndThrow(e, jcasView);
         } catch (InvocationTargetException e) {
-          logAndThrow(e);
+          logAndThrow(e, jcasView);
         } 
         jcasView.putJfsFromCaddr(addr, fs);
       }
@@ -104,16 +113,18 @@ public class FSClassRegistry {
       return fs;
     }
  
-    private void logAndThrow(Exception e) {
-      CASRuntimeException casEx = new CASRuntimeException(CASRuntimeException.JCAS_CAS_MISMATCH);
+    private void logAndThrow(Exception e, JCasImpl jcasView) {
+      CASRuntimeException casEx = new CASRuntimeException(CASRuntimeException.JCAS_CAS_MISMATCH,
+              new String[] { (null == jcasView)? "-- ignore outer msg, error is can''t get value of jcas from cas"
+                        : (jcasView.getType(type).casType.getName() + "; " + e.getLocalizedMessage())});
       casEx.initCause(e);
       throw casEx;      
     }
 
     private int getSofaNbr(int addr, CASImpl casView) {
       final LowLevelCAS llCas = casView.getLowLevelCAS();
-      int sofa = llCas.ll_getIntValue(addr, annotSofaFeatCode, false);
-      return casView.getLowLevelCAS().ll_getIntValue(sofa, sofaNbrFeatCode);
+      final int sofa = llCas.ll_getIntValue(addr, annotSofaFeatCode, false);
+      return (sofa == 0) ? 0 : llCas.ll_getIntValue(sofa, sofaNbrFeatCode);
     }
   }
   private TypeSystemImpl ts;
