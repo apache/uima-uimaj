@@ -2276,15 +2276,16 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
 	public CAS getView(SofaFS aSofa) {
     final int sofaNbr = aSofa.getSofaRef();
+    final Integer sofaNbrInteger = new Integer(sofaNbr);
     
-    CASImpl aView = (CASImpl) this.svd.sofaNbr2ViewMap.get(new Integer(aSofa.getSofaRef()));
+    CASImpl aView = (CASImpl) this.svd.sofaNbr2ViewMap.get(sofaNbrInteger);
 		if (null == aView) {
       // This is the deserializer case, or the case where an older API created a sofa,
       // which is now creating the associated view
       
 			// create a new CAS view
 			aView = new CASImpl(this.svd.baseCAS, aSofa);
-			this.svd.sofaNbr2ViewMap.put(new Integer(aSofa.getSofaRef()), aView);
+			this.svd.sofaNbr2ViewMap.put(sofaNbrInteger, aView);
       verifySofaNameUniqueIfDeserializedViewAdded(sofaNbr, aSofa);
       return aView;
 		}
@@ -2665,6 +2666,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     if (this.svd.useFSCache) {
       // FS object cache code.
+      // ***** NOTE: This code has not been maintained and may not work ******
       FeatureStructure fs = null;
       try {
         fs = this.svd.fsArray[fsRef];
@@ -2685,10 +2687,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         this.svd.fsArray[fsRef] = fs;
       }
       return fs;
-    }
+    }  
+    
     return this.svd.casMetadata.fsClassRegistry.createFSusingGenerator(fsRef, this);
 	}
-
+  
 	public final int ll_getIntValue(int fsRef, int featureCode) {
 		return this.getHeap().heap[(fsRef + this.svd.casMetadata.featureOffset[featureCode])];
 	}
