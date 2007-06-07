@@ -206,7 +206,7 @@ public class FSClassRegistry {
 
   // internal use only
   public void addGeneratorForTypeInternal(TypeImpl type, FSGenerator fsFactory) {
-    //this.generators[type.getCode()] = fsFactory;
+    this.generators[type.getCode()] = fsFactory;
   }
 
   
