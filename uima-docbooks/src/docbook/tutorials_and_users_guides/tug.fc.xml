@@ -375,5 +375,9 @@ under the License.
     <para>In any case, if processing is aborted by the framework for any reason, including because
       <literal>continueOnFailure</literal> returned false, the framework will call the
       <literal>Flow.aborted()</literal> method to allow the Flow object to clean up any resources.</para>   
+    <para>For an example of how to continue after an exception, see the example
+      code <literal>org.apache.uima.examples.flow.AdvancedFixedFlowController</literal>, in
+      the <literal>examples/src</literal> directory of the UIMA SDK.  This exampe also demonstrates the use of
+      <literal>ParallelStep</literal>.</para>
   </section>
 </chapter>
