@@ -95,6 +95,8 @@ public class RunAE implements StatusCallbackListener {
   private boolean xcasInput = false;
 
   private boolean xmiInput = false;
+  
+  private boolean xLenient = false;
 
   int docsProcessed;
 
@@ -132,6 +134,9 @@ public class RunAE implements StatusCallbackListener {
         crSettings.setParameterValue(FileSystemCollectionReader.PARAM_XCAS, "XCAS");
       } else if (xmiInput) {
         crSettings.setParameterValue(FileSystemCollectionReader.PARAM_XCAS, "XMI");
+      }
+      if (xLenient) {
+        crSettings.setParameterValue(FileSystemCollectionReader.PARAM_LENIENT, "true");
       }
 
       // if XML tag was specified, configure XmlDetagger annotator and add to CPE
@@ -317,7 +322,8 @@ public class RunAE implements StatusCallbackListener {
             + "performance statistics.  s0=none, s1=brief, s2=full.  The default is brief.");
     System.err.println("-x - process input files as XCAS files.");
     System.err.println("-xmi - process input files as XmiCas files.");
-
+    System.err.println("-lenient - ignore out-of-typesystem content when deserializing XML files.");
+    
   }
 
   /**
@@ -366,6 +372,13 @@ public class RunAE implements StatusCallbackListener {
       } else if (arg.equals("-xmi")) // XMI file input
       {
         xmiInput = true;
+      } else if (arg.equals("-lenient")) // lenient XML deserialization
+      {
+        xLenient = true;
+      } else if (arg.startsWith("-")) // invalid option
+      {
+        System.err.println(arg + " is not a valid option");
+        return false;
       } else // one of the standard params - whichever we haven't read yet
       {
         if (aeSpecifierFile == null) {

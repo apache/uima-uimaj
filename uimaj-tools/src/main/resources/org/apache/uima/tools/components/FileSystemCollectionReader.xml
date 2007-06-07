@@ -70,6 +70,13 @@
                 <multiValued>false</multiValued>
                 <mandatory>false</mandatory>
             </configurationParameter>
+            <configurationParameter>
+                <name>LENIENT</name>
+                <description>How to deserialize XML input files</description>
+                <type>String</type>
+                <multiValued>false</multiValued>
+                <mandatory>false</mandatory>
+            </configurationParameter>
         </configurationParameters>
 		<configurationParameterSettings>
 		    <nameValuePair>

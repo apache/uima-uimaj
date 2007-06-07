@@ -41,6 +41,8 @@ import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.InvalidXMLException;
+import org.apache.uima.util.Level;
+import org.apache.uima.util.Logger;
 import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
 import org.apache.uima.util.XMLInputSource;
@@ -81,6 +83,8 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
    */
   public static final String PARAM_XCAS = "XCAS";
 
+  public static final String PARAM_LENIENT = "LENIENT";
+
   private ArrayList mFiles;
 
   private String mEncoding;
@@ -92,6 +96,8 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
   private boolean mTEXT;
 
   private String mXCAS;
+  
+  private boolean lenient;
 
   /**
    * @see org.apache.uima.collection.CollectionReader_ImplBase#initialize()
@@ -103,6 +109,8 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
     mLanguage = (String) getConfigParameterValue(PARAM_LANGUAGE);
     mXCAS = (String) getConfigParameterValue(PARAM_XCAS);
     mTEXT = !("xcas".equalsIgnoreCase(mXCAS) || "xmi".equalsIgnoreCase(mXCAS));
+    String mLenient = (String) getConfigParameterValue(PARAM_LENIENT);
+    lenient = "true".equalsIgnoreCase(mLenient);
 
     mCurrentIndex = 0;
 
@@ -180,12 +188,14 @@ public class FileSystemCollectionReader extends CollectionReader_ImplBase {
     else {
       try {
         if (mXCAS.equalsIgnoreCase("XCAS")) {
-          XCASDeserializer.deserialize(fis, aCAS);
+          XCASDeserializer.deserialize(fis, aCAS, lenient);
         }
         else {
-          XmiCasDeserializer.deserialize(fis, aCAS);
+          XmiCasDeserializer.deserialize(fis, aCAS, lenient);
         }
       } catch (SAXException e) {
+        UIMAFramework.getLogger(FileSystemCollectionReader.class).log(Level.WARNING,
+                "Problem with XML input file: " + file.getAbsolutePath());
         throw new CollectionException(e);
       } finally {
         fis.close();
