@@ -588,7 +588,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     expandTypeArrayIfNeeded();
     for (Iterator it = loadedJCasTypes.entrySet().iterator();
          it.hasNext();) {
-      makeInstanceOf_Type((LoadedJCasType) ((Map.Entry)it.next()).getValue());
+      makeInstanceOf_Type((LoadedJCasType) ((Map.Entry)it.next()).getValue(), alreadyLoaded);
     }
     if ( ! alreadyLoaded) {
       copyDownSuperGenerators(loadedJCasTypes);
@@ -716,7 +716,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * xxx_Type. Instance creation does the typeSystemInit kind of function, as well.
    */
 
-  private void makeInstanceOf_Type(LoadedJCasType jcasTypeInfo) {
+  private void makeInstanceOf_Type(LoadedJCasType jcasTypeInfo, boolean alreadyLoaded) {
     Constructor c_Type = jcasTypeInfo.constructorFor_Type;
     Constructor cType  = jcasTypeInfo.constructorForType;
     int typeIndex = jcasTypeInfo.index;
@@ -727,9 +727,10 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
       constructorArgsFor_Type[1] = casType;
       TOP_Type x_Type_instance = (TOP_Type) c_Type.newInstance(constructorArgsFor_Type);
       typeArray[typeIndex] = x_Type_instance;
-      // install the standard generator, overriding the one coming in from JCas classes
-      //   do this always, because the act of creating a new instance installs a generator
-      this.casImpl.getFSClassRegistry().loadJCasGeneratorForType(typeIndex, cType, casType, jcasTypeInfo.isSubtypeOfAnnotationBase);
+      // install the standard generator
+      if (! alreadyLoaded) {
+        this.casImpl.getFSClassRegistry().loadJCasGeneratorForType(typeIndex, cType, casType, jcasTypeInfo.isSubtypeOfAnnotationBase);
+      }
     } catch (SecurityException e) {
       logAndThrow(e);
     } catch (InstantiationException e) {
