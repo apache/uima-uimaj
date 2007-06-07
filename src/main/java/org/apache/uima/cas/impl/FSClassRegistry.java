@@ -201,8 +201,14 @@ public class FSClassRegistry {
    *          the object having a createFS method in it for this type
    */
   public void addGeneratorForType(TypeImpl type, FSGenerator fsFactory) {
-    this.generators[type.getCode()] = fsFactory;
+    //this.generators[type.getCode()] = fsFactory;
   }
+
+  // internal use only
+  public void addGeneratorForTypeInternal(TypeImpl type, FSGenerator fsFactory) {
+    //this.generators[type.getCode()] = fsFactory;
+  }
+
   
   // Internal use only
   public FSGenerator getGeneratorForType(TypeImpl type) {
@@ -256,8 +262,7 @@ public class FSClassRegistry {
    */
   public void loadJCasGeneratorForType (int type, Constructor c, TypeImpl casType, boolean isSubtypeOfAnnotationBase) {
     FSGenerator fsGenerator = new JCasFsGenerator(type, c, isSubtypeOfAnnotationBase, ts.sofaNumFeatCode, ts.annotSofaFeatCode);
-    addGeneratorForType(casType, fsGenerator);
+    addGeneratorForTypeInternal(casType, fsGenerator);
   }
-  
-  
+   
 }
