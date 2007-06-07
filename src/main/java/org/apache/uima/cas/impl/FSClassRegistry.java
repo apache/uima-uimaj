@@ -69,6 +69,10 @@ public class FSClassRegistry {
       this.annotSofaFeatCode = annotSofaFeatCode;
     }
     
+    // Called in 3 cases
+    //   1) a non-JCas call to create a new FS
+    //   2) a dereference of an existing FS
+    //   3) an iterator
     public FeatureStructure createFS(int addr, CASImpl casView) {
       JCasImpl jcasView = null;
       // this funny logic is because although the annotationView should always be set if
