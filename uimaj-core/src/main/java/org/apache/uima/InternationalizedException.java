@@ -257,5 +257,11 @@ public class InternationalizedException extends Exception {
       return ((InternationalizedException)cause).hasMessageKey(messageKey);    
     }
     return false;
-  }    
+  } 
+  
+  public synchronized Throwable initCause(Throwable cause) {
+    mCause = cause;
+    return this;
+  }
+  
 }

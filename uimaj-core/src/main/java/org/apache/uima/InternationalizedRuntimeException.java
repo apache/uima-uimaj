@@ -243,4 +243,10 @@ public class InternationalizedRuntimeException extends RuntimeException {
   public Throwable getCause() {
     return mCause;
   }
+
+  public synchronized Throwable initCause(Throwable cause) {
+    mCause = cause;
+    return this;
+  }
+
 }
