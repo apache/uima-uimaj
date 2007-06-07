@@ -55,7 +55,7 @@ public class FSClassRegistry {
   static private class JCasFsGenerator implements FSGenerator {
     private final int type;
     private final Constructor c;
-    private final Object[] initargs;
+
     private final boolean isSubtypeOfAnnotationBase;
     private final int sofaNbrFeatCode;
     private final int annotSofaFeatCode;
@@ -63,7 +63,6 @@ public class FSClassRegistry {
     JCasFsGenerator(int type, Constructor c, boolean isSubtypeOfAnnotationBase, int sofaNbrFeatCode, int annotSofaFeatCode) {
       this.type = type;  
       this.c = c;
-      initargs = new Object[] {null, null};
       this.isSubtypeOfAnnotationBase = isSubtypeOfAnnotationBase;
       this.sofaNbrFeatCode = sofaNbrFeatCode;
       this.annotSofaFeatCode = annotSofaFeatCode;
@@ -74,6 +73,7 @@ public class FSClassRegistry {
     //   2) a dereference of an existing FS
     //   3) an iterator
     public FeatureStructure createFS(int addr, CASImpl casView) {
+      Object [] initargs = new Object[2];
       JCasImpl jcasView = null;
       // this funny logic is because although the annotationView should always be set if
       //  a type is a subtype of annotation, it isn't always set if an application uses low-level 
@@ -113,7 +113,6 @@ public class FSClassRegistry {
         } 
         jcasView.putJfsFromCaddr(addr, fs);
       }
-      initargs[0] = initargs[1] = null; // better gc
       return fs;
     }
  
@@ -204,6 +203,11 @@ public class FSClassRegistry {
   public void addGeneratorForType(TypeImpl type, FSGenerator fsFactory) {
     this.generators[type.getCode()] = fsFactory;
   }
+  
+  // Internal use only
+  public FSGenerator getGeneratorForType(TypeImpl type) {
+    return this.generators[type.getCode()];
+  }
 
   /**
    * copies a generator for a type into another type. Called by JCas after basic types are created
@@ -254,4 +258,6 @@ public class FSClassRegistry {
     FSGenerator fsGenerator = new JCasFsGenerator(type, c, isSubtypeOfAnnotationBase, ts.sofaNumFeatCode, ts.annotSofaFeatCode);
     addGeneratorForType(casType, fsGenerator);
   }
+  
+  
 }
