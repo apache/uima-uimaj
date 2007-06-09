@@ -41,10 +41,12 @@ public class CASInitializer {
     CASMgr casMgr0 = CASFactory.createCAS();
     CASMgr casMgr = null;
     try {
+      // this call does nothing: because 2nd arg is null
       CasCreationUtils.setupTypeSystem(casMgr0, (TypeSystemDescription) null);
       // Create a writable type system.
       TypeSystemMgr tsa = casMgr0.getTypeSystemMgr();
-      ((TypeSystemImpl) tsa).setCommitted(false);
+      // Next not needed, type system is already uncommitted
+//      ((TypeSystemImpl) tsa).setCommitted(false);
       // do the type system tests
       init.initTypeSystem(tsa);
       // Commit the type system.
