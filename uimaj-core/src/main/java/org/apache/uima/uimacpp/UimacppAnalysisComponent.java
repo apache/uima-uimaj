@@ -42,15 +42,12 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.impl.CASMgrSerializer;
 import org.apache.uima.cas.impl.Serialization;
-import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
-import org.apache.uima.util.ProcessTrace;
 import org.xml.sax.SAXException;
 
 public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {

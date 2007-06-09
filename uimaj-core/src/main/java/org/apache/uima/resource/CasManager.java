@@ -25,7 +25,6 @@ import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CasOwner;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
-import org.apache.uima.util.CasPoolManagement;
 
 /**
  * Manages creation and pooling of CAS instances within an AnalysisEngine.
