@@ -201,6 +201,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     
     private ComponentInfo componentInfo;
     
+    private FSGenerator [] localFsGenerators;
+    
     private SharedViewData(boolean useFSCache) {
       this.useFSCache = useFSCache;
     }
@@ -746,13 +748,35 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 	}
 
 	public void commitTypeSystem() {
-		this.svd.casMetadata.ts.commit();
-		initFSClassRegistry();
+    final TypeSystemImpl ts = this.svd.casMetadata.ts;
+    // For CAS pools, the type system could have already been committed
+    // Skip the initFSClassReg if so, because it may have been updated to a JCas
+    //   version by another CAS processing in the pool
+    //   @see org.apache.uima.cas.impl.FSClassRegistry
+    
+    // avoid race: two instances of a CAS from a pool attempting to commit the ts 
+    // at the same time
+    synchronized (ts) {
+  		if ( ! ts.isCommitted()) {
+        this.svd.casMetadata.ts.commit();
+        initFSClassRegistry();
+        FSClassRegistry fscr = getFSClassRegistry();
+        // save for the case of non=jcas pipeline with a jcas pear in the middle - this
+        //  allows subsequent downstream annotators to run without jcas
+        fscr.saveGeneratorsForClassLoader(svd.previousJCasClassLoader, fscr.getBaseGenerators());      
+      }
+    }
+    setLocalFsGenerators(this.svd.casMetadata.fsClassRegistry.getBaseGenerators());
 		// After the type system has been committed, we can create the
 		// index repository.
 		createIndexRepository();
 	}
-
+  
+  // internal use, public for cross class ref
+  public void setLocalFsGenerators(FSGenerator [] fsGenerators) {
+    this.svd.localFsGenerators = fsGenerators;
+  }
+  
 	private void createIndexRepository() {
 		if (!this.getTypeSystemMgr().isCommitted()) {
 			throw new CASAdminException(CASAdminException.MUST_COMMIT_TYPE_SYSTEM);
@@ -829,17 +853,16 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 			CAS tcas = (view == 1) ? getInitialView() : getView(view);
 			if (tcas != null) {
 				((CASImpl) tcas).resetView();
-			}
+
       // mySofaRef = -1 is a flag in initial view that sofa has not been set.
       //    For the initial view, it is possible to not have a sofa - it is set
       //    "lazily" upon the first need.
       //  all other views always have a sofa set.  The sofaRef is set to 0, 
       //  but will be set to the actual sofa addr in the cas when the view is
       //  initialized.
-      ((CASImpl) tcas).mySofaRef = (1 == view) ? -1 : 0;
-        
-        
-		}
+        ((CASImpl) tcas).mySofaRef = (1 == view) ? -1 : 0;
+      }
+ 		}
 		if (this.getHeap().getCurrentTempSize() > CASImpl.resetHeapSize) {
 			this.getHeap().resetTempHeap(true);
 			resetStringTable(true);
@@ -859,7 +882,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 		this.svd.viewCount = 1;
 
 		if (null != this.svd.casMetadata.fsClassRegistry ) {
-			// TODO figure out why this is needed
+			// needed only if caching non-JCas Java cover objects
+      //  NOTE:  This code may not work - has not been maintained
 			this.svd.casMetadata.fsClassRegistry.flush();
 		}
 		if (this.jcas != null) {
@@ -942,7 +966,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 //		this.svd.casMetadata.fsClassRegistry = fsClassReg;
 //	}
 
-	void initFSClassRegistry() {
+	private void initFSClassRegistry() {
     final TypeSystemImpl ts = this.svd.casMetadata.ts;
 		// System.out.println("Initializing FSClassRegistry");
 		this.svd.casMetadata.fsClassRegistry.initGeneratorArray();
@@ -961,7 +985,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
 		// assert(fsClassReg != null);
 	}
-
+  // JCasGen'd cover classes use this to add their generators to the class registry
+  //   Note that this now (June 2007) a no-op for JCasGen'd generators
+  // Also used in JCas initialization to copy-down super generators to subtypes as needed
 	public FSClassRegistry getFSClassRegistry() // for JCas integration
 	{
 		return this.svd.casMetadata.fsClassRegistry;
@@ -2674,7 +2700,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         // Do nothing.  Code below will expand array as needed.
       }
       if (fs == null) {
-        fs = this.svd.casMetadata.fsClassRegistry.createFSusingGenerator(fsRef, this);
+        fs = this.svd.localFsGenerators[getHeap().heap[fsRef]].createFS(fsRef, this);
+//        fs = this.svd.casMetadata.fsClassRegistry.createFSusingGenerator(fsRef, this);
         if (fsRef >= this.svd.fsArray.length) {
           int newLen = this.svd.fsArray.length * 2;
           while (newLen <= fsRef) {
@@ -2689,7 +2716,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       return fs;
     }  
     
-    return this.svd.casMetadata.fsClassRegistry.createFSusingGenerator(fsRef, this);
+    return this.svd.localFsGenerators[getHeap().heap[fsRef]].createFS(fsRef, this);
+//    return this.svd.casMetadata.fsClassRegistry.createFSusingGenerator(fsRef, this);
 	}
   
 	public final int ll_getIntValue(int fsRef, int featureCode) {
@@ -3087,6 +3115,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
   }
 
+  // internal use, public for cross-package ref
+  public boolean usingBaseClassLoader() {
+    return (svd.jcasClassLoader == svd.previousJCasClassLoader);
+  }
+  
   public void restoreClassLoaderUnlockCas() {
     // unlock CAS functions
     enableReset(true);

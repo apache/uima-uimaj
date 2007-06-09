@@ -281,7 +281,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   int doubleArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
 
-  int sofaNumFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public int sofaNumFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;  // ref from another pkg
 
   int sofaIdFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
 
@@ -291,7 +291,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   int sofaArrayFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
 
-  int annotSofaFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public int annotSofaFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE; // ref from another pkg
 
   int startFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
 
@@ -1086,9 +1086,10 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     return this.locked;
   }
 
-  public void setCommitted(boolean b) {
-    this.locked = b;
-  }
+  // dangerous, and not needed, not in any interface
+//  public void setCommitted(boolean b) {
+//    this.locked = b;
+//  }
 
   /**
    * @deprecated
