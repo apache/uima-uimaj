@@ -19,9 +19,7 @@
 
 package org.apache.uima.collection.impl.cpm.engine;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.StringTokenizer;
 

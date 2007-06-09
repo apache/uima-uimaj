@@ -27,7 +27,6 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.EntityProcessStatus;
 import org.apache.uima.collection.StatusCallbackListener;
-import org.apache.uima.collection.base_cpm.BaseStatusCallbackListener;
 import org.apache.uima.collection.impl.EntityProcessStatusImpl;
 import org.apache.uima.collection.impl.cpm.utils.CPMUtils;
 import org.apache.uima.collection.impl.cpm.utils.ChunkMetadata;
