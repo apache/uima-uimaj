@@ -20,7 +20,6 @@
 package org.apache.uima.analysis_component;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.analysis_engine.annotator.AnnotatorContext;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
