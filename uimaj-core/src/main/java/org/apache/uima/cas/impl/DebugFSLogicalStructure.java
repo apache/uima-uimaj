@@ -40,7 +40,6 @@ import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.AnnotationIndex;
 
 /*
  * this class has static methods used to format feature structures FSIndexes, and other CAS related
