@@ -27,12 +27,10 @@ import java.util.List;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.impl.base_cpm.container.CasProcessorConfiguration;
-import org.apache.uima.collection.impl.cpm.container.CPEFactory;
 import org.apache.uima.collection.impl.cpm.utils.CPMUtils;
 import org.apache.uima.collection.impl.cpm.utils.Execute;
 import org.apache.uima.collection.metadata.CpeCasProcessor;
 import org.apache.uima.resource.ResourceConfigurationException;
-import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.util.Level;
 
 /**

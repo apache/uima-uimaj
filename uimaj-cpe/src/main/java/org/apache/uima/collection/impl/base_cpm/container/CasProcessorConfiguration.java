@@ -24,7 +24,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.uima.collection.impl.cpm.utils.Execute;
-import org.apache.uima.collection.metadata.CpeComponentDescriptor;
 import org.apache.uima.resource.ResourceConfigurationException;
 
 /**

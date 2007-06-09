@@ -19,7 +19,6 @@
 
 package org.apache.uima.collection.impl.cpm.container.deployer.vinci;
 
-import java.io.File;
 import java.net.ConnectException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -59,7 +58,6 @@ import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.URISpecifier;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
-import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.vinci.transport.ServiceDownException;
