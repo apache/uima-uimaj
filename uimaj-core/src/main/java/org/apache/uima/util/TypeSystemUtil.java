@@ -28,8 +28,6 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.LowLevelTypeSystem;
-import org.apache.uima.cas.impl.StringTypeImpl;
-import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.resource.metadata.FeatureDescription;
 import org.apache.uima.resource.metadata.TypeDescription;

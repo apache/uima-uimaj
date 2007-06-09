@@ -31,7 +31,6 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.BooleanArrayFSImpl;
 import org.apache.uima.cas.impl.ByteArrayFSImpl;
 import org.apache.uima.cas.impl.DoubleArrayFSImpl;
