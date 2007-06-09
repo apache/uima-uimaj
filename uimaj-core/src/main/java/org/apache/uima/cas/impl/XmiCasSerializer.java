@@ -41,7 +41,6 @@ import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.XmiArrayElement;
 import org.apache.uima.internal.util.IntStack;
 import org.apache.uima.internal.util.IntVector;
-import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementName;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
@@ -991,7 +990,7 @@ public class XmiCasSerializer {
         return null;
       }
       StringBuffer buf = new StringBuffer();
-      String[] array = null;
+      String[] array = new String[0];
       switch (arrayType) {
         case TYPE_CLASS_INTLIST:
           array = listUtils.intListToStringArray(addr);
