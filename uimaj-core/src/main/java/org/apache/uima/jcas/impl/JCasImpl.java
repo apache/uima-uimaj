@@ -55,11 +55,14 @@ import org.apache.uima.cas.SofaID;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.FSClassRegistry;
+import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.FeatureStructureImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelException;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
@@ -228,10 +231,12 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   //   Then use value and look up using class loader (uses == test)
   //   These are Weak maps so that they don't hold onto their keys (class loader or type system) if these 
   //     are no longer in use
+  //
+  //  This is a static map - effectively indexed by all loaded type systems and all classloaders
+  
+  //  Access to this must be synch'd
   private static Map typeSystemToLoadedJCasTypesByClassLoader = new WeakHashMap(4);
   
-  
-   
 	// **********************************************
 	// * Data shared among views of a single CAS *
 	// * We keep one copy per view set *
@@ -488,7 +493,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   public void switchClassLoader(ClassLoader cl)  {
     
     // first try a fast switch - works if we've switched before to this class loader
-    if (!casImpl.getFSClassRegistry().swapInGeneratorsForClassLoader(cl)) {
+    if (!casImpl.getFSClassRegistry().swapInGeneratorsForClassLoader(cl, casImpl)) {
       instantiateJCas_Types(cl);      
     }
     final JCasSharedView sv = this.sharedView;
@@ -557,12 +562,17 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
         // error
       }
     }
-    Map classLoaderToLoadedJCasTypes = (Map)typeSystemToLoadedJCasTypesByClassLoader.get(casImpl.getTypeSystemImpl());
-    if (null == classLoaderToLoadedJCasTypes) {
-      classLoaderToLoadedJCasTypes = new WeakHashMap(4);
-      typeSystemToLoadedJCasTypesByClassLoader.put(casImpl.getTypeSystemImpl(), classLoaderToLoadedJCasTypes);     
+    
+    synchronized (JCasImpl.class) {
+      Map classLoaderToLoadedJCasTypes = (Map) typeSystemToLoadedJCasTypesByClassLoader.get(casImpl
+              .getTypeSystemImpl());
+      if (null == classLoaderToLoadedJCasTypes) {
+        classLoaderToLoadedJCasTypes = new WeakHashMap(4);
+        typeSystemToLoadedJCasTypesByClassLoader.put(casImpl.getTypeSystemImpl(),
+                classLoaderToLoadedJCasTypes);
+      }
+      classLoaderToLoadedJCasTypes.put(cl, jcasTypes);
     }
-    classLoaderToLoadedJCasTypes.put(cl, jcasTypes);
     expandTypeArrayIfNeeded();
     return jcasTypes;
   }
@@ -577,26 +587,40 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   
   public void instantiateJCas_Types(ClassLoader cl) {
     Map loadedJCasTypes = null;
-    Map classLoaderToLoadedJCasTypes = (Map)typeSystemToLoadedJCasTypesByClassLoader.get(casImpl.getTypeSystemImpl());
-    if (null != classLoaderToLoadedJCasTypes) {
-      loadedJCasTypes = (Map)classLoaderToLoadedJCasTypes.get(cl);
-    }
-    boolean alreadyLoaded = (null != loadedJCasTypes);
-    if ( ! alreadyLoaded) {
-      loadedJCasTypes = loadJCasClasses(cl);
+    FSClassRegistry fscr = casImpl.getFSClassRegistry();
+    boolean alreadyLoaded;
+    synchronized (JCasImpl.class) {
+      Map classLoaderToLoadedJCasTypes = (Map) typeSystemToLoadedJCasTypesByClassLoader.get(casImpl
+              .getTypeSystemImpl());
+      if (null != classLoaderToLoadedJCasTypes) {
+        loadedJCasTypes = (Map) classLoaderToLoadedJCasTypes.get(cl);
+      }
+      alreadyLoaded = (null != loadedJCasTypes);
+      if (!alreadyLoaded) {
+        loadedJCasTypes = loadJCasClasses(cl);
+      }
     }
     expandTypeArrayIfNeeded();
+    FSGenerator [] newFSGeneratorSet = alreadyLoaded ? null : fscr.getNewFSGeneratorSet();
     for (Iterator it = loadedJCasTypes.entrySet().iterator();
          it.hasNext();) {
-      makeInstanceOf_Type((LoadedJCasType) ((Map.Entry)it.next()).getValue(), alreadyLoaded);
+      makeInstanceOf_Type((LoadedJCasType) ((Map.Entry)it.next()).getValue(), alreadyLoaded, newFSGeneratorSet);
     }
     if ( ! alreadyLoaded) {
-      copyDownSuperGenerators(loadedJCasTypes);
-      casImpl.getFSClassRegistry().saveGeneratorsForClassLoader(cl);    
+      copyDownSuperGenerators(loadedJCasTypes, newFSGeneratorSet);
+      if (casImpl.usingBaseClassLoader()) {
+        fscr.setBaseGenerators(newFSGeneratorSet);
+      }
+      fscr.saveGeneratorsForClassLoader(cl, newFSGeneratorSet);    
+    }
+    if (alreadyLoaded) {
+      fscr.swapInGeneratorsForClassLoader(cl, casImpl);
+    } else {
+      casImpl.setLocalFsGenerators(newFSGeneratorSet);
     }
   }
   
-  private void copyDownSuperGenerators(Map jcasTypes) { 
+  private void copyDownSuperGenerators(Map jcasTypes, FSGenerator [] fsGenerators) { 
     final TypeSystem ts = casImpl.getTypeSystem();
     Iterator typeIt = ts.getTypeIterator(); // reset iterator to start
     Type topType = ts.getTopType();
@@ -626,7 +650,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
         }
       } while ((null == jcasTypes.get(superTypeName) && !superType.equals(topType)));
       // copy down its generator
-      casImpl.getFSClassRegistry().copyGeneratorForType((TypeImpl) t, (TypeImpl) superType);
+      fsGenerators[((TypeImpl)t).getCode()] = fsGenerators[((TypeImpl)superType).getCode()];
     }
   }
 
@@ -709,6 +733,89 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 		}
 	}
 
+  
+  static private class JCasFsGenerator implements FSGenerator {
+    private final int type;
+    private final Constructor c;
+
+    private final boolean isSubtypeOfAnnotationBase;
+    private final int sofaNbrFeatCode;
+    private final int annotSofaFeatCode;
+
+    JCasFsGenerator(int type, Constructor c, boolean isSubtypeOfAnnotationBase, int sofaNbrFeatCode, int annotSofaFeatCode) {
+      this.type = type;  
+      this.c = c;
+      this.isSubtypeOfAnnotationBase = isSubtypeOfAnnotationBase;
+      this.sofaNbrFeatCode = sofaNbrFeatCode;
+      this.annotSofaFeatCode = annotSofaFeatCode;
+    }
+    
+    // Called in 3 cases
+    //   1) a non-JCas call to create a new FS
+    //   2) a dereference of an existing FS
+    //   3) an iterator
+    public FeatureStructure createFS(int addr, CASImpl casView) {
+      Object [] initargs = new Object[2];
+      JCasImpl jcasView = null;
+      // this funny logic is because although the annotationView should always be set if
+      //  a type is a subtype of annotation, it isn't always set if an application uses low-level 
+      //  api's.  Rather than blow up, we limp along.
+      CASImpl maybeAnnotationView = null;  
+      if (isSubtypeOfAnnotationBase) {
+        final int sofaNbr = getSofaNbr(addr, casView);
+        if (sofaNbr > 0) {
+          maybeAnnotationView = (CASImpl)casView.getView(sofaNbr);
+        }
+      }
+      final CASImpl view = (null != maybeAnnotationView) ? maybeAnnotationView : casView;
+
+      try {
+        jcasView = (JCasImpl)view.getJCas();
+      } catch (CASException e1) {
+       logAndThrow(e1, jcasView);
+      }
+     
+     // Return eq fs instance if already created
+      TOP fs = jcasView.getJfsFromCaddr(addr);
+      if (null != fs) {
+        fs.jcasType = jcasView.getType(type);
+      } else {
+        initargs[0] = new Integer(addr);
+        initargs[1] = jcasView.getType(type);
+        try {
+          fs = (TOP) c.newInstance(initargs);
+        } catch (IllegalArgumentException e) {
+          logAndThrow(e, jcasView);
+        } catch (InstantiationException e) {
+          logAndThrow(e, jcasView);
+        } catch (IllegalAccessException e) {
+          logAndThrow(e, jcasView);
+        } catch (InvocationTargetException e) {
+          logAndThrow(e, jcasView);
+        } 
+        jcasView.putJfsFromCaddr(addr, fs);
+      }
+      return fs;
+    }
+ 
+    private void logAndThrow(Exception e, JCasImpl jcasView) {
+      CASRuntimeException casEx = new CASRuntimeException(CASRuntimeException.JCAS_CAS_MISMATCH,
+              new String[] { (null == jcasView)? "-- ignore outer msg, error is can''t get value of jcas from cas"
+                        : (jcasView.getType(type).casType.getName() + "; exception= " 
+                                + e.getClass().getName() + "; msg= " + e.getLocalizedMessage())});
+      casEx.initCause(e);
+      throw casEx;      
+    }
+
+    private int getSofaNbr(int addr, CASImpl casView) {
+      final LowLevelCAS llCas = casView.getLowLevelCAS();
+      final int sofa = llCas.ll_getIntValue(addr, annotSofaFeatCode, false);
+      return (sofa == 0) ? 0 : llCas.ll_getIntValue(sofa, sofaNbrFeatCode);
+    }
+  }
+
+  
+  // per JCas instance - so don't need to synch.
   private final Object[] constructorArgsFor_Type = new Object[2];
   
   /**
@@ -716,7 +823,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * xxx_Type. Instance creation does the typeSystemInit kind of function, as well.
    */
 
-  private void makeInstanceOf_Type(LoadedJCasType jcasTypeInfo, boolean alreadyLoaded) {
+  private void makeInstanceOf_Type(LoadedJCasType jcasTypeInfo, boolean alreadyLoaded, FSGenerator[] fsGenerators) {
     Constructor c_Type = jcasTypeInfo.constructorFor_Type;
     Constructor cType  = jcasTypeInfo.constructorForType;
     int typeIndex = jcasTypeInfo.index;
@@ -729,7 +836,10 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
       typeArray[typeIndex] = x_Type_instance;
       // install the standard generator
       if (! alreadyLoaded) {
-        this.casImpl.getFSClassRegistry().loadJCasGeneratorForType(typeIndex, cType, casType, jcasTypeInfo.isSubtypeOfAnnotationBase);
+        final TypeSystemImpl ts = casImpl.getTypeSystemImpl();
+        fsGenerators[casType.getCode()] = new JCasFsGenerator(typeIndex, cType, jcasTypeInfo.isSubtypeOfAnnotationBase, 
+                ts.sofaNumFeatCode, ts.annotSofaFeatCode);
+//        this.casImpl.getFSClassRegistry().loadJCasGeneratorForType(typeIndex, cType, casType, jcasTypeInfo.isSubtypeOfAnnotationBase);
       }
     } catch (SecurityException e) {
       logAndThrow(e);
