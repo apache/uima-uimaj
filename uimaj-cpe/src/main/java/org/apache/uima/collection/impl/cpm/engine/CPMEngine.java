@@ -3443,10 +3443,12 @@ public class CPMEngine extends Thread {
    */
   public static void callEntityProcessCompleteWithCAS(StatusCallbackListener statCL, CAS cas, EntityProcessStatus eps) {
     try {
-      ((CASImpl)cas).switchClassLoaderLockCas(statCL);
+      if (null != cas)
+        ((CASImpl)cas).switchClassLoaderLockCas(statCL);
       statCL.entityProcessComplete(cas, eps);
     } finally {
-      ((CASImpl)cas).restoreClassLoaderUnlockCas();
+      if (null != cas) 
+        ((CASImpl)cas).restoreClassLoaderUnlockCas();
     }
   }  
   
