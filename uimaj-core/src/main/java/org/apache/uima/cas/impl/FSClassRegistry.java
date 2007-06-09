@@ -19,25 +19,93 @@
 
 package org.apache.uima.cas.impl;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.uima.cas.CASException;
-import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.jcas.impl.JCasImpl;
 
 /*
  * There is one instance of this class per type system.
  * It is shared by multiple CASes (in a CAS pool, for instance,
  * when these CASes are sharing the same type system), and
  * it is shared by all views of that CAS.
+ */
+
+/* Design:
+ *   Goals: Suppport PEARs, which can switch class loaders for component
+ *          code.  Different class loaders imply different instances of 
+ *          JCas cover class definitions, potentially, needing different
+ *          generators.
+ *          
+ *          Keep the non-JCas path (relatively) uncluttered
+ *   
+ *   Concepts:
+ *     Base-ClassLoader: there is one class loader that is considered the base.
+ *       This is the one used for the "application code" (if it exists) driving
+ *       the UIMA framework.  It is set when the CAS or CAS Pool is created,
+ *       according to the resource manager used.  Components (annotators, flow controllers, etc.)
+ *       run with this same class loader, unless they are contained within a PEAR;
+ *       within PEAR components, the loader is switched (on a per-cas-view-collection basis)
+ *       when entering the component, and switched back when the component "returns".
+ *       
+ *     base-generators - these are the generators associated with the Base-ClassLoader;
+ *       there is one set per FSClassRegistry instance (and also, one per TypeSystem instance).
+ *     cas-generators - generator set kept in the CAS svd - shared-view-data - 
+ *       that are updated as needed during the processing of the CAS, switching
+ *       these as needed for entering / exiting PEAR components  
+ *
+ *   Significant data structures:
+ *     - static map in JCasImpl - keys: typeSystem instance and classLoader instance;
+ *         value = a hashmap of LoadedJCasType instances for that combination, used to 
+ *         make new instances of the _Type objects for views.
+ *     - map in this class: key = class loader, value = generator-set to use for this
+ *         class loader.  This is also per unique type system, since there's one instance of
+ *         this class per type system instance. This is used to load the cas-generators.           
+ *          
+ *   Life cycle: Instances of this class are tied one-to-one with particular 
+ *     TypeSystem instances.
+ *     
+ *   At typeSystemCommit time, initGenerators is called; it loads the default
+ *     (non-JCas) generator for all types, and then overrides the 
+ *     built-in array types with particular generators for those.  
+ *          
+ *     *BUT* This is done only if the type system has not already been committed,
+ *       so if the generators had (for some other CAS sharing this type system)
+ *       already been updated to JCas generators, that is never "undone".
+ *       
+ *     The cas-generators are set from the base-generators (synch'd)
+ *       
+ *   When JCas is initialized for this CAS
+ *     - it may have already been initialized for another CAS sharing this generator
+ *     - it may be initializing for a non-Base-ClassLoader
+ *     
+ *     When JCas is initialized, if it is for the Base-ClassLoader, then the
+ *       if this is the first time this happens for this class loader and type system,
+ *       the base-generators are updated (synch'd) (otherwise, the base-generators have
+ *       already been updated).
+ *                    
+ *       The cas-generators are set from the base-generators (synch'd).
+ *       
+ *       If it is *not* for the Base-ClassLoader, the same thing happens, except that
+ *       the base-generators are not updated (so they can be switched-back-to when
+ *       leaving the PEAR component class loader environment).  In this case, the
+ *       cas-generators are set from the static map(ts, cl) in the jcasimpl.
+ *       
+ *   When new JCas classes are loaded due to switching to a new class loader for a PEAR,
+ *     the static map(ts, cl) in JCasImpl is updated, and the map in this class for 
+ *     generators for this class loader is updated, and the cas-generators are loaded
+ *     from that. 
+ *         
+ *   When switching class loaders in component code, the cas-generators are loaded if
+ *     a switch is needed from this class's map(cl).
+ *     
+ *   All refs to the base-generators are synchronized, since different CASes running on 
+ *   different threads can update these (when switching to the JCas version for the
+ *   Base-ClassLoader).      
+ *     
  */
 
 public class FSClassRegistry {
@@ -52,85 +120,6 @@ public class FSClassRegistry {
     }
   }
 
-  static private class JCasFsGenerator implements FSGenerator {
-    private final int type;
-    private final Constructor c;
-
-    private final boolean isSubtypeOfAnnotationBase;
-    private final int sofaNbrFeatCode;
-    private final int annotSofaFeatCode;
-
-    JCasFsGenerator(int type, Constructor c, boolean isSubtypeOfAnnotationBase, int sofaNbrFeatCode, int annotSofaFeatCode) {
-      this.type = type;  
-      this.c = c;
-      this.isSubtypeOfAnnotationBase = isSubtypeOfAnnotationBase;
-      this.sofaNbrFeatCode = sofaNbrFeatCode;
-      this.annotSofaFeatCode = annotSofaFeatCode;
-    }
-    
-    // Called in 3 cases
-    //   1) a non-JCas call to create a new FS
-    //   2) a dereference of an existing FS
-    //   3) an iterator
-    public FeatureStructure createFS(int addr, CASImpl casView) {
-      Object [] initargs = new Object[2];
-      JCasImpl jcasView = null;
-      // this funny logic is because although the annotationView should always be set if
-      //  a type is a subtype of annotation, it isn't always set if an application uses low-level 
-      //  api's.  Rather than blow up, we limp along.
-      CASImpl maybeAnnotationView = null;  
-      if (isSubtypeOfAnnotationBase) {
-        final int sofaNbr = getSofaNbr(addr, casView);
-        if (sofaNbr > 0) {
-          maybeAnnotationView = (CASImpl)casView.getView(sofaNbr);
-        }
-      }
-      final CASImpl view = (null != maybeAnnotationView) ? maybeAnnotationView : casView;
-
-      try {
-        jcasView = (JCasImpl)view.getJCas();
-      } catch (CASException e1) {
-       logAndThrow(e1, jcasView);
-      }
-     
-     // Return eq fs instance if already created
-      TOP fs = jcasView.getJfsFromCaddr(addr);
-      if (null != fs) {
-        fs.jcasType = jcasView.getType(type);
-      } else {
-        initargs[0] = new Integer(addr);
-        initargs[1] = jcasView.getType(type);
-        try {
-          fs = (TOP) c.newInstance(initargs);
-        } catch (IllegalArgumentException e) {
-          logAndThrow(e, jcasView);
-        } catch (InstantiationException e) {
-          logAndThrow(e, jcasView);
-        } catch (IllegalAccessException e) {
-          logAndThrow(e, jcasView);
-        } catch (InvocationTargetException e) {
-          logAndThrow(e, jcasView);
-        } 
-        jcasView.putJfsFromCaddr(addr, fs);
-      }
-      return fs;
-    }
- 
-    private void logAndThrow(Exception e, JCasImpl jcasView) {
-      CASRuntimeException casEx = new CASRuntimeException(CASRuntimeException.JCAS_CAS_MISMATCH,
-              new String[] { (null == jcasView)? "-- ignore outer msg, error is can''t get value of jcas from cas"
-                        : (jcasView.getType(type).casType.getName() + "; exception= " 
-                                + e.getClass().getName() + "; msg= " + e.getLocalizedMessage())});
-      casEx.initCause(e);
-      throw casEx;      
-    }
-
-    private int getSofaNbr(int addr, CASImpl casView) {
-      final LowLevelCAS llCas = casView.getLowLevelCAS();
-      final int sofa = llCas.ll_getIntValue(addr, annotSofaFeatCode, false);
-      return (sofa == 0) ? 0 : llCas.ll_getIntValue(sofa, sofaNbrFeatCode);
-    }
-  }
   private TypeSystemImpl ts;
 
   private FSGenerator[] generators; 
@@ -164,7 +153,7 @@ public class FSClassRegistry {
     this.ts = ts;
   }
   
-  void initGeneratorArray() {
+  synchronized void initGeneratorArray() {
     this.generators = new FSGenerator[ts.getTypeArraySize()];
     for (int i = ts.getSmallestType(); i < this.generators.length; i++) {
       this.generators[i] = defaultGenerator;
@@ -192,39 +181,28 @@ public class FSClassRegistry {
   }
 
   /**
-   * adds generator for type, only (doesn't add for all its subtypes). Called by JCas xxx_Type at
-   * instantiation time.
-   * 
-   * @param type
-   *          the CAS type
-   * @param fsFactory
-   *          the object having a createFS method in it for this type
+   * No longer used, but left in for backward compatibility with older JCasgen'd 
+   * classes
    */
   public void addGeneratorForType(TypeImpl type, FSGenerator fsFactory) {
     //this.generators[type.getCode()] = fsFactory;
   }
 
-  // internal use only
-  public void addGeneratorForTypeInternal(TypeImpl type, FSGenerator fsFactory) {
-    this.generators[type.getCode()] = fsFactory;
-  }
+//  // Internal use only
+//  public FSGenerator getGeneratorForType(TypeImpl type) {
+//    return this.generators[type.getCode()];
+//  }
 
-  
-  // Internal use only
-  public FSGenerator getGeneratorForType(TypeImpl type) {
-    return this.generators[type.getCode()];
-  }
-
-  /**
-   * copies a generator for a type into another type. Called by JCas after basic types are created
-   * to change the generated types for things having no JCas Java model to the most specific
-   * supertype JCas Java model (if one exists). This allows writinge iterators using JCas where some
-   * of the returned items may be subtypes which have no JCas cover types.
-   * 
-   */
-  public void copyGeneratorForType(TypeImpl targetType, TypeImpl sourceType) {
-    this.generators[targetType.getCode()] = this.generators[sourceType.getCode()];
-  }
+//  /**
+//   * copies a generator for a type into another type. Called by JCas after basic types are created
+//   * to change the generated types for things having no JCas Java model to the most specific
+//   * supertype JCas Java model (if one exists). This allows writinge iterators using JCas where some
+//   * of the returned items may be subtypes which have no JCas cover types.
+//   * 
+//   */
+//  public void copyGeneratorForType(TypeImpl targetType, TypeImpl sourceType) {
+//    this.generators[targetType.getCode()] = this.generators[sourceType.getCode()];
+//  }
 
   /* only of interest when caching FSes */
   void flush() {
@@ -233,36 +211,57 @@ public class FSClassRegistry {
     }
   }
   
-  public void saveGeneratorsForClassLoader(ClassLoader cl) {
-    generatorsByClassLoader.put(cl, generators.clone());
+  public void saveGeneratorsForClassLoader(ClassLoader cl, FSGenerator [] newGenerators) {
+    generatorsByClassLoader.put(cl, newGenerators);
   }
   
-  public boolean swapInGeneratorsForClassLoader(ClassLoader cl) {
+  public boolean swapInGeneratorsForClassLoader(ClassLoader cl, CASImpl casImpl) {
     FSGenerator[] cachedGenerators = (FSGenerator[]) generatorsByClassLoader.get(cl);
     if (cachedGenerators != null) {
-      generators = cachedGenerators;
+      casImpl.setLocalFsGenerators(cachedGenerators);
       return true;
     }
     return false;
   }
 
-  // assume addr is never 0 - caller must insure this
-  FeatureStructure createFSusingGenerator(int addr, CASImpl cas) {
-    return this.generators[cas.getHeap().heap[addr]].createFS(addr, cas);    
+
+//  // assume addr is never 0 - caller must insure this
+//  FeatureStructure createFSusingGenerator(int addr, CASImpl cas) {
+//    return this.generators[cas.getHeap().heap[addr]].createFS(addr, cas);    
+//  }
+  
+//  /*
+//   * Generators used are created with as much info as can be looked up once, ahead of time.
+//   * Things variable at run time include the cas instance, and the view.
+//   * 
+//   * In this design, generators are shared with all views for a particular CAS, but are different for 
+//   * different CAS Type Systems and Class Loaders (distinct from shared-views of the same CAS)
+//   * 
+//   * Internal use only - public only to give access to JCas routines in another package
+//   */
+//  public void loadJCasGeneratorForType (int type, Constructor c, TypeImpl casType, boolean isSubtypeOfAnnotationBase) {
+//    FSGenerator fsGenerator = new JCasFsGenerator(type, c, isSubtypeOfAnnotationBase, ts.sofaNumFeatCode, ts.annotSofaFeatCode);
+//    addGeneratorForTypeInternal(casType, fsGenerator);
+//  }
+   
+  /* 
+   * Internal Use only
+   */
+  
+  public synchronized FSGenerator [] getBaseGenerators() {
+    return this.generators;
+  }
+  
+  // internal use, public only for cross package ref
+  public synchronized void setBaseGenerators(FSGenerator [] generators) {
+    this.generators = generators;
   }
   
   /*
-   * Generators used are created with as much info as can be looked up once, ahead of time.
-   * Things variable at run time include the cas instance, and the view.
-   * 
-   * In this design, generators are shared with all views for a particular CAS, but are different for 
-   * different CAS Type Systems and Class Loaders (distinct from shared-views of the same CAS)
-   * 
-   * Internal use only - public only to give access to JCas routines in another package
+   * Internal Use Only
    */
-  public void loadJCasGeneratorForType (int type, Constructor c, TypeImpl casType, boolean isSubtypeOfAnnotationBase) {
-    FSGenerator fsGenerator = new JCasFsGenerator(type, c, isSubtypeOfAnnotationBase, ts.sofaNumFeatCode, ts.annotSofaFeatCode);
-    addGeneratorForTypeInternal(casType, fsGenerator);
+  
+  public FSGenerator [] getNewFSGeneratorSet() {
+    return (FSGenerator [])this.generators.clone();
   }
-   
 }
