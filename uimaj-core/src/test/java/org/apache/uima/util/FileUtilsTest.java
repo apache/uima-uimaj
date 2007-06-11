@@ -36,9 +36,11 @@ public class FileUtilsTest extends TestCase {
     assertEquals("../../../d1/d2/d3/blah.xml", 
             FileUtils.findRelativePath(target, base));
 
-    base = new File("c:\\foo\\bar\\baz\\dir\\");
-    target = new File("c:\\foo\\d1\\d2\\d3\\blah.xml");
-    assertEquals("../../../d1/d2/d3/blah.xml", 
-            FileUtils.findRelativePath(target, base));
+    if (File.separatorChar == '\\') {
+      base = new File("c:\\foo\\bar\\baz\\dir\\");
+      target = new File("c:\\foo\\d1\\d2\\d3\\blah.xml");
+      assertEquals("../../../d1/d2/d3/blah.xml", 
+              FileUtils.findRelativePath(target, base));
+    }
   }
 }
