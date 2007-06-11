@@ -965,13 +965,20 @@ public void initialize(UimaContext aContext)
           <programlisting><?db-font-size 70% ?>java "-Djava.util.logging.config.file=C:/Program Files/apache-uima/config/Logger.properties"</programlisting>
           <note><para>In a shell script, you can use environment variables such as
           UIMA_HOME if convenient.</para></note> </para>
-        
+               
         <para>If you are using Eclipse to launch your application, you can set this property
           in the VM arguments section of the Arguments tab of the run configuration screen. If
           you&apos;ve set an environment variable UIMA_HOME, you could for example, use the
           string:
           <literal>"-Djava.util.logging.config.file=${env_var:UIMA_HOME}/config/Logger.properties".</literal>
           </para>
+        
+        <para>If you running the .bat or .sh files in the UIMA SDK's <literal>bin</literal> directory, you can specify the location of your
+           logger configuration file by setting the <literal>UIMA_LOGGER_CONFIG_FILE</literal> environment variable prior to running the script,
+           for example (on Windows): 
+
+           <programlisting><?db-font-size 70% ?>set UIMA_LOGGER_CONFIG_FILE=C:/myapp/MyLogger.properties</programlisting>        
+        </para>        
       </section>
       
       <section id="ugr.tug.aae.logging.setting_logging_levels">
