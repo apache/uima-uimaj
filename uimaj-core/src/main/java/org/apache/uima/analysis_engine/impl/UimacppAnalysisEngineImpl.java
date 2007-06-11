@@ -384,7 +384,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
       // notify UimaContext that a CAS was returned -- it uses
       // this information to track how many CASes the AnalysisComponent
       // is using at any one time.
-      ((UimaContext_ImplBase) getUimaContext()).returnedCAS();
+      ((UimaContext_ImplBase) getUimaContext()).returnedCAS(absCas);
 
       // convert back to CASImpl and then get the initial View
       CAS casToReturn;

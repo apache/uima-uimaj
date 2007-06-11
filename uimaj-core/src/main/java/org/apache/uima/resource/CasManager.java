@@ -21,6 +21,8 @@ package org.apache.uima.resource;
 
 import java.util.Properties;
 
+import org.apache.uima.UimaContext;
+import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CasOwner;
@@ -50,12 +52,16 @@ public interface CasManager extends CasOwner {
   CasDefinition getCasDefinition() throws ResourceInitializationException;
 
   /**
-   * Defines the CAS pool required by a particular AnalysisEngine. (The AnalysisEngine must contain
-   * a CAS Multiplier if it requires a CAS pool.)
+   * Defines a CAS pool within this CAS Manager.  (Note that if this CAS pool is to be used
+   * by a CAS Multiplier, then {@link #defineCasPool(UimaContextAdmin, int, Properties)}
+   * should be used instead.
    * 
    * @param aRequestorContextName
-   *          the context name of the AE that will request the CASes
-   *          (AnalysisEngine.getUimaContextAdmin().getQualifiedContextName()).
+   *          name to give to the pool.  Must be unique among all pool names in this
+   *          CAS manager, and care should be taken to assure that this does not match the
+   *          qualified name of UIMA Contexts passed to {@link #defineCasPool(UimaContextAdmin, int, Properties)}.
+   *          This name is later passed to the {@link #getCas(String)} method, to check out 
+   *          CASes from the pool.
    * @param aSize
    *          the minimum CAS pool size required
    * @param aPerformanceTuningSettings
@@ -65,6 +71,23 @@ public interface CasManager extends CasOwner {
    */
   void defineCasPool(String aRequestorContextName, int aMinimumSize, Properties aPerformanceTuningSettings)
           throws ResourceInitializationException;
+  
+  /**
+   * Defines the CAS pool required by a particular AnalysisEngine. (The AnalysisEngine must contain
+   * a CAS Multiplier if it requires a CAS pool.)
+   * 
+   * @param aRequestorContextName
+   *          the UimaContext of the AE that will request the CASes
+   *          (AnalysisEngine.getUimaContextAdmin()).
+   * @param aSize
+   *          the minimum CAS pool size required
+   * @param aPerformanceTuningSettings
+   *          settings, including initial CAS heap size, for the AE
+   * @throws ResourceInitializationException
+   *           if a CAS could not be created.
+   */
+  void defineCasPool(UimaContextAdmin aRequestorContext, int aMinimumSize, Properties aPerformanceTuningSettings)
+          throws ResourceInitializationException;  
 
   /**
    * Gets an empty CAS. An AnalysisEngine may only call this method after it has first called

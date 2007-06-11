@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.uima.UIMARuntimeException;
+import org.apache.uima.UimaContext;
+import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -53,6 +55,8 @@ public class CasManager_impl implements CasManager {
   private Map mRequestorToCasPoolMap = new HashMap();
 
   private Map mCasToCasPoolMap = new HashMap();
+  
+  private Map mCasToUimaContextMap = new HashMap();
 
   private CasDefinition mCasDefinition = null;
   
@@ -116,6 +120,13 @@ public class CasManager_impl implements CasManager {
       throw new UIMARuntimeException(UIMARuntimeException.CAS_RELEASED_TO_WRONG_CAS_MANAGER,
               new Object[0]);
     } else {
+      //see if we have a UimaContext that we can notify that CAS was release
+      UimaContextAdmin uc = (UimaContextAdmin)mCasToUimaContextMap.get(aCAS);
+      if (uc != null) {
+        uc.returnedCAS(aCAS);
+      }
+      
+      //release the CAS
       pool.releaseCas((CAS) aCAS);
     }
   }
@@ -127,13 +138,30 @@ public class CasManager_impl implements CasManager {
    */
   public void defineCasPool(String aRequestorContextName, int aMinimumSize,
           Properties aPerformanceTuningSettings) throws ResourceInitializationException {
+    defineCasPool(null, aRequestorContextName, aMinimumSize, aPerformanceTuningSettings);
+  }
+
+  
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.CasManager#defineCasPool(org.apache.uima.UimaContextAdmin, int, java.util.Properties)
+   */
+  public void defineCasPool(UimaContextAdmin aRequestorContext, int aMinimumSize, Properties aPerformanceTuningSettings) throws ResourceInitializationException {
+    defineCasPool(aRequestorContext, aRequestorContext.getQualifiedContextName(), aMinimumSize, aPerformanceTuningSettings);
+  }
+
+  /*
+   * Defines a CAS pool using either a UimaContext or the name of a UimaContext.
+   */
+  private void defineCasPool(UimaContext aRequestorContext, String aRequestorContextName, int aMinimumSize,
+          Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     int poolSize = getCasPoolSize(aRequestorContextName, aMinimumSize);
     if (poolSize > 0) {
       CasPool pool = (CasPool) mRequestorToCasPoolMap.get(aRequestorContextName);
       if (pool == null) {
         // this requestor hasn't requested a CAS before
         pool = new CasPool(poolSize, this, aPerformanceTuningSettings);
-        populateCasToCasPoolMap(pool);
+        populateCasToCasPoolAndUimaContextMaps(pool, aRequestorContext);
         mRequestorToCasPoolMap.put(aRequestorContextName, pool);
         //register with JMX
         registerCasPoolMBean(aRequestorContextName, pool);
@@ -143,8 +171,7 @@ public class CasManager_impl implements CasManager {
                 new Object[] { aRequestorContextName });
       }
     }
-  }
-
+  }  
   
   /* (non-Javadoc)
    * @see org.apache.uima.resource.CasManager#createNewCas(java.util.Properties)
@@ -206,15 +233,22 @@ public class CasManager_impl implements CasManager {
   }
   
   protected void populateCasToCasPoolMap(CasPool aCasPool) {
+    populateCasToCasPoolAndUimaContextMaps(aCasPool, null);
+  }
+  
+  protected void populateCasToCasPoolAndUimaContextMaps(CasPool aCasPool, UimaContext aUimaContext) {
     CAS[] casArray = new CAS[aCasPool.getSize()];
     for (int i = 0; i < casArray.length; i++) {
       casArray[i] = ((CASImpl) aCasPool.getCas()).getBaseCAS();
       mCasToCasPoolMap.put(casArray[i], aCasPool);
+      if (aUimaContext != null) {
+        mCasToUimaContextMap.put(casArray[i], aUimaContext);
+      }
     }
     for (int i = 0; i < casArray.length; i++) {
       aCasPool.releaseCas(casArray[i]);
     }
-  }
+  }  
   
   /**
    * Registers an MBean for the given CasPool.
