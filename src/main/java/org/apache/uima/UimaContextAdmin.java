@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.uima.analysis_engine.AnalysisEngineManagement;
+import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.ComponentInfo;
 import org.apache.uima.resource.ConfigurationManager;
@@ -164,5 +165,13 @@ public interface UimaContextAdmin extends UimaContext {
    * @return the Sofa map for this component
    */
   public Map getSofaMap();
+  
+  /**
+   * Called internally by the framework whenever the AnalysisComponent returns a CAS 
+   * from its next() method or calls cas.release(). Used to monitor the number of CASes
+   * that the AnalysisComponent is using at any one time.
+   * @param aCAS the CAS that was returned or released
+   */
+  public void returnedCAS(AbstractCas aCAS);
 
 }

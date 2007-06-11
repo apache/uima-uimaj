@@ -32,6 +32,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CasConsumer;
 import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.resource.DataResource;
@@ -60,6 +61,8 @@ public class UimaContext_implTest extends TestCase {
   private UimaContext mContext3;
 
   private UimaContext mContext4;
+  
+  private UimaContext mContext5;
 
   /**
    * Constructor for UimaContext_implTest.
@@ -111,6 +114,15 @@ public class UimaContext_implTest extends TestCase {
       AnalysisEngine ae3 = UIMAFramework.produceAnalysisEngine(taeDesc3, rm, null);
       mContext4 = ae3.getUimaContext();
       super.setUp();
+
+      // create a UimaContext for a CAS Multiplier
+      XMLInputSource in4 = new XMLInputSource(JUnitExtension
+              .getFile("TextAnalysisEngineImplTest/NewlineSegmenter.xml"));
+      AnalysisEngineDescription taeDesc4 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in4);
+      AnalysisEngine ae4 = UIMAFramework.produceAnalysisEngine(taeDesc4);
+      mContext5 = ae4.getUimaContext();
+      super.setUp();
+      
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -854,6 +866,19 @@ public class UimaContext_implTest extends TestCase {
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
+  }
+  
+  public void testGetEmptyCas() throws Exception {
+    try {
+      CAS emptyCas = (CAS)mContext5.getEmptyCas(CAS.class);
+      //should be allowed to release this CAS 
+      emptyCas.release();
+      //and then get it again
+      emptyCas = (CAS)mContext5.getEmptyCas(CAS.class);
+      emptyCas.release();      
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }    
   }
 
 }

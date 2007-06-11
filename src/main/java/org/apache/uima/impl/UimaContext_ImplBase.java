@@ -29,6 +29,7 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -46,6 +47,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.ComponentInfo;
 import org.apache.uima.cas.SofaID;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.ResourceAccessException;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -100,12 +102,14 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   private boolean mCasPoolCreated = false;
 
   /**
-   * Number of CASes that have been requested via {@link #getEmptyCas(Class)} minus the number calls
-   * the framework has made to {@link #returnedCAS()} (which indicate that the AnalysisComponent has
-   * returned a CAS from its next() method. If this number exceeeds mCasPoolSize, the
-   * AnalysisComponent has requested more CASes than it is allocated and we throw an exception.
+   * CASes that have been requested via {@link #getEmptyCas(Class)} minus the number calls
+   * the framework has made to {@link #returnedCAS(AbstractCas)} (which indicate that the 
+   * AnalysisComponent has returned a CAS from its next() method or released the CAS. If this 
+   * Set includes all CASes in the Cas Pool and the Analysis Component requests any additional
+   * CASes, then the AnalysisComponent has requested more CASes than it is allocated and we throw 
+   * an exception.
    */
-  protected int mOutstandingCasRequests = 0;
+  protected Set mOutstandingCASes = new HashSet();
 
   /**
    * Object that implements management interface to the AE.
@@ -536,12 +540,18 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   }
 
   /**
-   * Not part of the public API. Called directly from the AnalysisEngine whenever the
-   * AnalysisComponent returns a CAS from its next() method. Used to monitor the number of CASes
-   * that the AnalysisComponent is using at any one time.
+   * @see UimaContextAdmin#returnedCAS()
    */
-  public void returnedCAS() {
-    mOutstandingCasRequests--;
+  public void returnedCAS(AbstractCas aCAS) {
+    //remove Base CAS from outstanding CASes set
+    CAS baseCas = null;
+    if (aCAS instanceof JCas) {
+      baseCas = ((JCas)aCAS).getCasImpl().getBaseCAS();
+    }
+    else if (aCAS instanceof CASImpl) {
+      baseCas = ((CASImpl)aCAS).getBaseCAS();
+    }
+    mOutstandingCASes.remove(aCAS);
   }
 
   /*
@@ -553,7 +563,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     if (!mCasPoolCreated) {
       // define CAS Pool in the CasManager
       try {
-        getResourceManager().getCasManager().defineCasPool(getQualifiedContextName(), mCasPoolSize,
+        getResourceManager().getCasManager().defineCasPool(this, mCasPoolSize,
                 mPerformanceTuningSettings);
       } catch (ResourceInitializationException e) {
         throw new UIMARuntimeException(e);
@@ -561,19 +571,21 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
       mCasPoolCreated = true;
     }
 
-    mOutstandingCasRequests++;
-    if (mOutstandingCasRequests > mCasPoolSize) {
+    //check if component has exceeded its CAS pool
+    if (mOutstandingCASes.size() == mCasPoolSize) {
       throw new UIMARuntimeException(UIMARuntimeException.REQUESTED_TOO_MANY_CAS_INSTANCES,
-              new Object[] { getQualifiedContextName(), Integer.toString(mOutstandingCasRequests),
+              new Object[] { getQualifiedContextName(), Integer.toString(mCasPoolSize + 1),
                   Integer.toString(mCasPoolSize) });
     }
     CasManager casManager = getResourceManager().getCasManager();
     CAS cas = casManager.getCas(getQualifiedContextName());
+    //add to the set of outstanding CASes
+    mOutstandingCASes.add(((CASImpl)cas).getBaseCAS());
     // set the component info, so the CAS knows the proper sofa mappings
     cas.setCurrentComponentInfo(getComponentInfo());
     // This cas will be unlocked and its class loader restored when the
     //   next() method returns it
-    ((CASImpl)cas).switchClassLoaderLockCasCL(getResourceManager().getExtensionClassLoader());
+    ((CASImpl)cas).switchClassLoader(getResourceManager().getExtensionClassLoader());
     // if this is a sofa-aware component, give it the Base CAS
     // if it is a sofa-unaware component, give it whatever view maps to the _InitialVie
     if (mSofaAware) {

@@ -3103,6 +3103,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // lock out CAS functions to which annotator should not have access
     enableReset(false);
     
+    switchClassLoader(newClassLoader);
+  }
+  
+  //switches ClassLoader but does not lock CAS
+  public void switchClassLoader(ClassLoader newClassLoader) {    
     if (null == newClassLoader) { // is null if no cl set 
       return;
     }
@@ -3113,7 +3118,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         ((JCasImpl)jcas).switchClassLoader(newClassLoader);
       }
     }
-  }
+  }  
 
   // internal use, public for cross-package ref
   public boolean usingBaseClassLoader() {
