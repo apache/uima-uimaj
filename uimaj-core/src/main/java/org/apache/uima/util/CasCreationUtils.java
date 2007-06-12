@@ -1381,6 +1381,84 @@ public class CasCreationUtils {
     }
     return mergeTypePriorities(typePriorities, aResourceManager);
   }
+  
+  /**
+   * Merges the Type Systems, Type Priorities, and FS Indexes of each component within an 
+   * aggregate Analysis Engine.
+   * <p>
+   * This version of this method takes an argument <code>aOutputMergedTypes</code>, which
+   * this method will populate with the names and descriptor locations of any types whose definitions 
+   * have been merged from multiple non-identical sources. That is, types that are declared
+   * more than once, with different (but compatible) sets of features in each declaration,
+   * or with different (but compatible) supertypes.
+   *  
+   * @param aAggregateDescription
+   *          an aggregate Analysis Engine description
+   * @param aResourceManager
+   *          ResourceManager instance used to resolve imports
+   * @param aOutputMergedTypes
+   *          A Map that this method will populate with information about the set of types
+   *          whose definitions were merged from multiple non-identical sources.  That is, 
+   *          types that are declared more than once, with different (but compatible) sets 
+   *          of features in each declaration, or with different (but compatible) supertypes. 
+   *          The keys in the Map will be the type names (Strings) and the values will be 
+   *          {link Set}s containing Descriptor URLs (Strings) where those types are 
+   *          declared. You may pass null if you are not interested in this information.
+   *  @param aOutputFailedRemotes
+   *          If this paramter is non-null, and if a remote AE could not be contacted, then
+   *          an entry will be added to this map.  The key will be the context name (e.g.,
+   *          /myDelegate1/nestedRemoteDelegate) of the failed remote, and the value will be
+   *          the Exception that occurred.  If this parameter is null, an exception will be thrown
+   *          if a remote AE could not be contacted.
+   *  
+   * @return an object containing the merged TypeSystem, TypePriorities, and FS Index definitions.
+   * 
+   * @throws ResourceInitializationException
+   *           if an incompatibiliy exists or if an import could not be resolved
+   */  
+  public static ProcessingResourceMetaData mergeDelegateAnalysisEngineMetaData(
+          AnalysisEngineDescription aAggregateDescription, ResourceManager aResourceManager,
+          Map aOutputMergedTypes, Map aOutputFailedRemotes) throws ResourceInitializationException {
+    // expand the aggregate AE description into the individual delegates
+    ArrayList l = new ArrayList();
+    l.add(aAggregateDescription);
+    List mdList = getMetaDataList(l, aResourceManager, aOutputFailedRemotes);
+    
+    ProcessingResourceMetaData result = 
+      UIMAFramework.getResourceSpecifierFactory().createProcessingResourceMetaData();
+    
+    // extract type systems and merge
+    List typeSystems = new ArrayList();
+    Iterator it = mdList.iterator();
+    while (it.hasNext()) {
+      ProcessingResourceMetaData md = (ProcessingResourceMetaData) it.next();
+      if (md.getTypeSystem() != null)
+        typeSystems.add(md.getTypeSystem());
+    }
+    result.setTypeSystem(mergeTypeSystems(typeSystems, aResourceManager, aOutputMergedTypes));
+    
+    // extract TypePriorities and merge
+    List typePriorities = new ArrayList();
+    it = mdList.iterator();
+    while (it.hasNext()) {
+      ProcessingResourceMetaData md = (ProcessingResourceMetaData) it.next();
+      if (md.getTypePriorities() != null)
+        typePriorities.add(md.getTypePriorities());
+    }
+    result.setTypePriorities(mergeTypePriorities(typePriorities, aResourceManager));
+
+    // extract FsIndexCollections and merge
+    List fsIndexes = new ArrayList();
+    it = mdList.iterator();
+    while (it.hasNext()) {
+      ProcessingResourceMetaData md = (ProcessingResourceMetaData) it.next();
+      if (md.getFsIndexCollection() != null)
+        fsIndexes.add(md.getFsIndexCollection());
+    }
+    result.setFsIndexCollection(mergeFsIndexes(fsIndexes, aResourceManager));
+    
+    return result;
+  }
 
   /**
    * Determines whether one type subsumes another.
@@ -1489,7 +1567,12 @@ public class CasCreationUtils {
    *          objects.
    * @param aResourceManager
    *          used to resolve delegate analysis engine imports
-   * 
+   * @param aOutputFailedRemotes
+   *          If this paramter is non-null, and if a remote AE could not be contacted, then
+   *          the context name (e.g. /myDelegate1/nestedRemoteDelegate) of the failed remote will 
+   *          be added to this collection.  If this parameter is null, an exception will be thrown
+   *          if a remote AE could not be contacted.
+   *           
    * @return a List containing the ProcessingResourceMetaData objects containing all of the
    *         information in all of the objects in <code>aComponentDescriptionOrMetaData</code>
    *         (including all components of aggregate AnalysisEngines)
@@ -1498,7 +1581,13 @@ public class CasCreationUtils {
    *           if a failure occurs because an import could not be resolved
    */
   public static List getMetaDataList(Collection aComponentDescriptionOrMetaData,
-          ResourceManager aResourceManager) throws ResourceInitializationException {
+          ResourceManager aResourceManager, Map aOutputFailedRemotes) throws ResourceInitializationException {
+    return getMetaDataList(aComponentDescriptionOrMetaData, aResourceManager, aOutputFailedRemotes, "");
+  }
+  
+  private static List getMetaDataList(Collection aComponentDescriptionOrMetaData,
+          ResourceManager aResourceManager, Map aOutputFailedRemotes, String aContextName) throws ResourceInitializationException {
+  
     List mdList = new ArrayList();
     if (null == aComponentDescriptionOrMetaData) {
       return mdList;
@@ -1519,7 +1608,13 @@ public class CasCreationUtils {
           } catch (InvalidXMLException e) {
             throw new ResourceInitializationException(e);
           }
-          mdList.addAll(getMetaDataList(delegateMap.values(), aResourceManager));
+          Iterator delIter = delegateMap.entrySet().iterator();
+          while(delIter.hasNext()) {
+            Map.Entry delEntry = (Map.Entry)delIter.next();
+            List tempList = new ArrayList();
+            tempList.add(delEntry.getValue());
+            mdList.addAll(getMetaDataList(tempList, aResourceManager, aOutputFailedRemotes, aContextName + "/" + delEntry.getKey()));
+          }
         }
       } else if (current instanceof CollectionReaderDescription) {
         mdList.add(((CollectionReaderDescription) current).getMetaData().clone());
@@ -1542,13 +1637,32 @@ public class CasCreationUtils {
         md.setTypePriorities((TypePriorities) current);
         mdList.add(md);
       } else if (current instanceof ResourceSpecifier) {
-        Resource resource = UIMAFramework.produceResource((ResourceSpecifier) current,
-                Collections.EMPTY_MAP);
-        ResourceMetaData metadata = resource.getMetaData();
-        if (metadata instanceof ProcessingResourceMetaData) {
-          mdList.add(metadata);
+        //try to instantiate the resource
+        Resource resource = null;
+        try {
+          resource = UIMAFramework.produceResource((ResourceSpecifier) current,
+                  Collections.EMPTY_MAP);
+        } catch (Exception e) {
+          //failed.  If aOutputFailedRemotes is non-null, add an entry to it to it, else throw the exception.
+          if (aOutputFailedRemotes != null) {
+            aOutputFailedRemotes.put(aContextName,e);
+          }
+          else {
+            if (e instanceof ResourceInitializationException) 
+              throw (ResourceInitializationException)e;
+            else if (e instanceof RuntimeException) 
+              throw (RuntimeException)e;
+            else
+              throw new RuntimeException(e);
+          }
         }
-        resource.destroy();
+        if (resource != null) {
+          ResourceMetaData metadata = resource.getMetaData();
+          if (metadata instanceof ProcessingResourceMetaData) {
+            mdList.add(metadata);
+          }
+          resource.destroy();
+        }
       } else {
         throw new ResourceInitializationException(
                 ResourceInitializationException.UNSUPPORTED_OBJECT_TYPE_IN_CREATE_CAS,
@@ -1557,6 +1671,43 @@ public class CasCreationUtils {
     }
 
     return mdList;
+  }
+  
+  
+  /**
+   * Gets a list of ProcessingResourceMetadata objects from a list containing either
+   * ResourceSpecifiers, ProcessingResourceMetadata objects, or subparts of
+   * ProcessingResourceMetadata objects (type sypstems, indexes, or type priorities). Subparts will
+   * be wrapped inside a ProcessingResourceMetadata object. All objects will be cloned, so that
+   * further processing (such as import resolution) does not affect the caller.
+   * <p>
+   * If you pass this method objects of type {@link AnalysisEngineDescription},
+   * {@link CollectionReaderDescription}, {@link CasInitializerDescription}, or
+   * {@link CasConsumerDescription}, it will not instantiate the components. It will just extract
+   * the type system information from the descriptor. For any other kind of
+   * {@link ResourceSpecifier}, it will call
+   * {@link UIMAFramework#produceResource(org.apache.uima.resource.ResourceSpecifier, Map)}. For
+   * example, if a {@link URISpecifier} is passed, a remote connection will be established and the
+   * service will be queries for its metadata. An exception will be thrown if the connection can not
+   * be opened.
+   * 
+   * @param aComponentDescriptionsOrMetaData
+   *          a collection of {@link ResourceSpecifier}, {@link ProcessingResourceMetaData},
+   *          {@link TypeSystemDescription}, {@link FsIndexCollection}, or {@link TypePriorities}
+   *          objects.
+   * @param aResourceManager
+   *          used to resolve delegate analysis engine imports
+   * 
+   * @return a List containing the ProcessingResourceMetaData objects containing all of the
+   *         information in all of the objects in <code>aComponentDescriptionOrMetaData</code>
+   *         (including all components of aggregate AnalysisEngines)
+   * 
+   * @throws ResourceInitialziationException
+   *           if a failure occurs because an import could not be resolved
+   */
+  public static List getMetaDataList(Collection aComponentDescriptionOrMetaData,
+          ResourceManager aResourceManager) throws ResourceInitializationException {
+    return getMetaDataList(aComponentDescriptionOrMetaData, aResourceManager, null);
   }
 
 }
