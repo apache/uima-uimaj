@@ -49,10 +49,6 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 
   private AnalysisEngine ae = null;
 
-//  private CAS cas = null;
-  
-  private ResourceManager rsrcMgr = null;
-
   /*
    * (non-Javadoc)
    * 
@@ -67,12 +63,12 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       return false;
     }
 
-    //cast resource specifier to a pear specifier
+    // cast resource specifier to a pear specifier
     PearSpecifier pearSpec = (PearSpecifier) aSpecifier;
 
     // get pear path
     String pearRootDirPath = pearSpec.getPearPath();
- 
+
     try {
       // get installed pear root directory - specified as URI of the descriptor
       File pearRootDir = new File(pearRootDirPath);
@@ -98,45 +94,33 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
                     "initialize",
                     LOG_RESOURCE_BUNDLE,
                     "UIMA_pear_runtime_system_var_already_set__WARNING",
-                    new Object[] { (key + "=" + systemPropValue),
-                        (key + "=" + value), pkgBrowser.getRootDirectory().getName() });
+                    new Object[] { (key + "=" + systemPropValue), (key + "=" + value),
+                        pkgBrowser.getRootDirectory().getName() });
           }
         }
         // set new system property
         System.setProperty(key, value);
-        
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                Level.CONFIG,
-                this.getClass().getName(),
-                "initialize",
-                LOG_RESOURCE_BUNDLE,
-                "UIMA_pear_runtime_set_system_var__CONFIG",
+
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+                "initialize", LOG_RESOURCE_BUNDLE, "UIMA_pear_runtime_set_system_var__CONFIG",
                 new Object[] { key + "=" + value, pkgBrowser.getRootDirectory().getName() });
 
       }
 
       // create UIMA resource manager and apply pear settings
-      this.rsrcMgr = UIMAFramework.newDefaultResourceManager();
+      ResourceManager rsrcMgr = UIMAFramework.newDefaultResourceManager();
       String classpath = pkgBrowser.buildComponentClassPath();
-      this.rsrcMgr.setExtensionClassPath(classpath, true);
-      UIMAFramework.getLogger(this.getClass()).logrb(
-              Level.CONFIG,
-              this.getClass().getName(),
-              "initialize",
-              LOG_RESOURCE_BUNDLE,
-              "UIMA_pear_runtime_set_classpath__CONFIG",
+      rsrcMgr.setExtensionClassPath(classpath, true);
+      UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+              "initialize", LOG_RESOURCE_BUNDLE, "UIMA_pear_runtime_set_classpath__CONFIG",
               new Object[] { classpath, pkgBrowser.getRootDirectory().getName() });
-      
+
       // get and set uima.datapath if specified
       String dataPath = pkgBrowser.getComponentDataPath();
       if (dataPath != null) {
-        this.rsrcMgr.setDataPath(dataPath);
-        UIMAFramework.getLogger(this.getClass()).logrb(
-                Level.CONFIG,
-                this.getClass().getName(),
-                "initialize",
-                LOG_RESOURCE_BUNDLE,
-                "UIMA_pear_runtime_set_datapath__CONFIG",
+        rsrcMgr.setDataPath(dataPath);
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+                "initialize", LOG_RESOURCE_BUNDLE, "UIMA_pear_runtime_set_datapath__CONFIG",
                 new Object[] { dataPath, pkgBrowser.getRootDirectory().getName() });
       }
 
@@ -148,7 +132,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(in);
 
       // create analysis engine
-      this.ae = UIMAFramework.produceAnalysisEngine(specifier, this.rsrcMgr, null);
+      this.ae = UIMAFramework.produceAnalysisEngine(specifier, rsrcMgr, null);
     } catch (IOException ex) {
       throw new ResourceInitializationException(ex);
     } catch (InvalidXMLException ex) {
@@ -210,90 +194,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
             "UIMA_analysis_engine_process_begin__FINE",
             new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
 
-    // create CAS with the type system of the first document
-//    if (this.cas == null) {
-//      try {
-//        // Timer casTimer = new Timer();
-//        // casTimer.start();
-//        TypeSystemDescription tsDescription = TypeSystemUtil.typeSystem2TypeSystemDescription(aCAS
-//                .getTypeSystem());
-//
-//        this.cas = CasCreationUtils.createCas(tsDescription, super.getAnalysisEngineMetaData()
-//                .getTypePriorities(), super.getAnalysisEngineMetaData().getFsIndexes(), null, this.rsrcMgr);
-//        // casTimer.stop();
-//        // System.out.println("\nCAS creation time:" + casTimer.getTimeSpan());
-//      } catch (ResourceInitializationException ex) {
-//        throw new AnalysisEngineProcessException(ex);
-//      }
-//    }
-//
-//    // DEBUG INFORMATION
-//    // Timer globalTimer = new Timer();
-//    // Timer serialize1 = new Timer();
-//    // Timer serialize2 = new Timer();
-//    // Timer processing = new Timer();
-//    // globalTimer.start();
-//    // serialize1.start();
-//
-//    this.cas.reset();
-
-    // serialize aggregate CAS into the pear CAS
-
-    // SLOWEST CAS SERIALIZATION/DESERIALIZATION
-    // CASCompleteSerializer serializer = Serialization.serializeCASComplete((CASMgr)aCAS);
-    // aCAS.reset();
-    // Serialization.deserializeCASComplete(serializer, (CASMgr) this.cas);
-
-    // FASTER CAS SERIALIZATION/DESERIALIZATION
-    // this.cas.reset();
-    // CASSerializer serializer = new CASSerializer();
-    // serializer.addCAS((CASImpl) aCAS);
-    // ((CASImpl) this.cas).reinit(serializer);
-
-    // FASTEST CAS SERIALIZATION/DESERIALIZATION
-//    ByteArrayOutputStream fos = new ByteArrayOutputStream();
-//    Serialization.serializeCAS(aCAS, fos);
-//    ByteArrayInputStream fis = new ByteArrayInputStream(fos.toByteArray());
-//    Serialization.deserializeCAS(this.cas, fis);
-
-    // DEBUG INFORMATION
-    // serialize1.stop();
-    // processing.start();
-
-    // process pear ae
-//    this.ae.process(this.cas);
     this.ae.process(aCAS);
-
-    // DEBUG INFORMATION
-    // processing.stop();
-    // serialize2.start();
-
-    // serialize pear CAS into the aggregate CAS
-
-    // SLOWEST CAS SERIALIZATION/DESERIALIZATION
-    // serializer = Serialization.serializeCASComplete((CASMgr)this.cas);
-    // this.cas.reset();
-    // Serialization.deserializeCASComplete(serializer, (CASMgr) aCAS);
-
-    // FASTER CAS SERIALIZATION/DESERIALIZATION
-    // aCAS.reset();
-    // serializer = new CASSerializer();
-    // serializer.addCAS((CASImpl) this.cas);
-    // ((CASImpl) aCAS).reinit(serializer);
-
-    // FASTEST CAS SERIALIZATION/DESERIALIZATION
-//    fos = new ByteArrayOutputStream();
-//    Serialization.serializeCAS(this.cas, fos);
-//    fis = new ByteArrayInputStream(fos.toByteArray());
-//    Serialization.deserializeCAS(aCAS, fis);
-
-    // DEBUG INFORMATION
-    // serialize2.stop();
-    // globalTimer.stop();
-    // System.out.print("\n" + serialize1.getTimeSpan());
-    // System.out.print(" : " + processing.getTimeSpan());
-    // System.out.print(" : " + serialize2.getTimeSpan());
-    // System.out.print(" : " + globalTimer.getTimeSpan());
 
     UIMAFramework.getLogger(this.getClass()).logrb(Level.FINE, this.getClass().getName(),
             "processAndOutputNewCASes", LOG_RESOURCE_BUNDLE,
@@ -313,7 +214,6 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
             new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
 
     this.ae.destroy();
-//    this.cas = null;
   }
 
 }
