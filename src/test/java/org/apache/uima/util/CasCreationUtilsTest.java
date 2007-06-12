@@ -22,6 +22,7 @@ package org.apache.uima.util;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import junit.framework.Assert;
@@ -41,6 +42,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.FsIndexDescription;
+import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
@@ -52,7 +54,6 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypePriorityList_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-
 
 public class CasCreationUtilsTest extends TestCase {
 
@@ -83,19 +84,20 @@ public class CasCreationUtilsTest extends TestCase {
       tsList.add(ts1desc);
       tsList.add(ts2desc);
       Map typesWithMergedFeatures = new HashMap();
-      TypeSystemDescription merged = CasCreationUtils.mergeTypeSystems(tsList, UIMAFramework.newDefaultResourceManager(), typesWithMergedFeatures);
+      TypeSystemDescription merged = CasCreationUtils.mergeTypeSystems(tsList, UIMAFramework
+              .newDefaultResourceManager(), typesWithMergedFeatures);
 
       Assert.assertEquals(2, merged.getType("Type1").getFeatures().length);
       Assert.assertEquals(2, merged.getType("Type2").getFeatures().length);
       Assert.assertEquals(1, merged.getType("Type3").getFeatures().length);
-      
+
       assertEquals(2, typesWithMergedFeatures.size());
       assertTrue(typesWithMergedFeatures.containsKey("Type1"));
       assertTrue(typesWithMergedFeatures.containsKey("Type2"));
-      
-      //make sure one-arg version doesn't fail
+
+      // make sure one-arg version doesn't fail
       CasCreationUtils.mergeTypeSystems(tsList);
-      
+
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -165,7 +167,7 @@ public class CasCreationUtilsTest extends TestCase {
       AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
               new XMLInputSource(descFile));
       Map mergedTypes = new HashMap();
-      TypeSystemDescription typeSys = CasCreationUtils.mergeDelegateAnalysisEngineTypeSystems(desc, 
+      TypeSystemDescription typeSys = CasCreationUtils.mergeDelegateAnalysisEngineTypeSystems(desc,
               UIMAFramework.newDefaultResourceManager(), mergedTypes);
 
       // test results of merge
@@ -210,15 +212,15 @@ public class CasCreationUtilsTest extends TestCase {
       Assert.assertNotNull(type7);
       Assert.assertEquals("uima.tcas.Annotation", type7.getSupertypeName());
       Assert.assertEquals(1, type7.getFeatures().length);
-      
-      //Place has merged features, Person has different supertype
+
+      // Place has merged features, Person has different supertype
       assertEquals(2, mergedTypes.size());
       assertTrue(mergedTypes.containsKey("Place"));
       assertTrue(mergedTypes.containsKey("Person"));
-      
-      //make sure one-arg version doesn't fail
+
+      // make sure one-arg version doesn't fail
       CasCreationUtils.mergeDelegateAnalysisEngineTypeSystems(desc);
-      
+
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -345,7 +347,7 @@ public class CasCreationUtilsTest extends TestCase {
       JUnitExtension.handleException(e);
     }
   }
-  
+
   public void testCreateCasCollection() throws Exception {
     try {
       // create two Type System description objects
@@ -358,33 +360,33 @@ public class CasCreationUtilsTest extends TestCase {
       TypeSystemDescription tsd2 = new TypeSystemDescription_impl();
       TypeDescription fooType = tsd1.addType("test.Foo", "", "uima.cas.TOP");
       fooType.addFeature("bar", "", "uima.cas.String");
-      
-      //create index and priorities descriptions
-      
+
+      // create index and priorities descriptions
+
       FsIndexCollection indexes = new FsIndexCollection_impl();
       FsIndexDescription index = new FsIndexDescription_impl();
       index.setLabel("MyIndex");
       index.setTypeName("test.Foo");
       index.setKind(FsIndexDescription.KIND_BAG);
       indexes.addFsIndex(index);
-      
+
       TypePriorities priorities = new TypePriorities_impl();
       TypePriorityList priList = new TypePriorityList_impl();
       priList.addType("test.Foo");
       priList.addType("test.Sub");
       priList.addType("test.Super");
       priorities.addPriorityList(priList);
-      
-      //create a CAS containing all these definitions
+
+      // create a CAS containing all these definitions
       ArrayList descList = new ArrayList();
       descList.add(tsd1);
-      descList.add(tsd2);  
+      descList.add(tsd2);
       descList.add(indexes);
       descList.add(priorities);
-     
+
       CAS cas = CasCreationUtils.createCas(descList);
-      
-      //check that type system has been installed
+
+      // check that type system has been installed
       TypeSystem ts = cas.getTypeSystem();
       Type supertypeHandle = ts.getType(supertype.getName());
       assertNotNull(supertypeHandle);
@@ -395,34 +397,154 @@ public class CasCreationUtilsTest extends TestCase {
       Type fooTypeHandle = ts.getType(fooType.getName());
       assertNotNull(fooTypeHandle);
       assertNotNull(fooTypeHandle.getFeatureByBaseName("bar"));
-      
-      //check that index exists
+
+      // check that index exists
       assertNotNull(cas.getIndexRepository().getIndex("MyIndex"));
-      
-      //test that priorities work
+
+      // test that priorities work
       cas.createFS(supertypeHandle);
       cas.createFS(subtypeHandle);
       FSIterator iter = cas.getAnnotationIndex().iterator();
       while (iter.isValid()) {
-        if (iter.get().getType() == subtypeHandle) //expected
+        if (iter.get().getType() == subtypeHandle) // expected
           break;
-        if (iter.get().getType() == supertypeHandle) //unexpected
+        if (iter.get().getType() == supertypeHandle) // unexpected
           fail();
         iter.moveToNext();
       }
-      
-      //test that passing an invalid object causes an error
+
+      // test that passing an invalid object causes an error
       descList.add(new ConfigurationParameter_impl());
       try {
         CasCreationUtils.createCas(descList);
         fail();
-      }
-      catch (ResourceInitializationException e) {
-        //expected        
+      } catch (ResourceInitializationException e) {
+        // expected
       }
     } catch (Exception e) {
       JUnitExtension.handleException(e);
-    }       
+    }
   }
-  
+
+  public void testMergeDelegateAnalysisEngineMetaData() throws Exception {
+    try {
+      File descFile = JUnitExtension
+              .getFile("TextAnalysisEngineImplTest/AggregateTaeForMergeTest.xml");
+      AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+              new XMLInputSource(descFile));
+      Map mergedTypes = new HashMap();
+      ProcessingResourceMetaData mergedMetaData = CasCreationUtils
+              .mergeDelegateAnalysisEngineMetaData(desc, UIMAFramework.newDefaultResourceManager(),
+                      mergedTypes, null);
+      TypeSystemDescription typeSys = mergedMetaData.getTypeSystem();
+      TypePriorities pri = mergedMetaData.getTypePriorities();
+      FsIndexCollection indexColl = mergedMetaData.getFsIndexCollection();
+
+      // test results of merge
+      // Type System
+      Assert.assertEquals(8, typeSys.getTypes().length);
+
+      TypeDescription type0 = typeSys.getType("NamedEntity");
+      Assert.assertNotNull(type0);
+      Assert.assertEquals("uima.tcas.Annotation", type0.getSupertypeName());
+      Assert.assertEquals(1, type0.getFeatures().length);
+
+      TypeDescription type1 = typeSys.getType("Person");
+      Assert.assertNotNull(type1);
+      Assert.assertEquals("NamedEntity", type1.getSupertypeName());
+      Assert.assertEquals(1, type1.getFeatures().length);
+
+      TypeDescription type2 = typeSys.getType("Place");
+      Assert.assertNotNull(type2);
+      Assert.assertEquals("NamedEntity", type2.getSupertypeName());
+      Assert.assertEquals(3, type2.getFeatures().length);
+
+      TypeDescription type3 = typeSys.getType("Org");
+      Assert.assertNotNull(type3);
+      Assert.assertEquals("uima.tcas.Annotation", type3.getSupertypeName());
+      Assert.assertEquals(0, type3.getFeatures().length);
+
+      TypeDescription type4 = typeSys.getType("DocumentStructure");
+      Assert.assertNotNull(type4);
+      Assert.assertEquals("uima.tcas.Annotation", type4.getSupertypeName());
+      Assert.assertEquals(0, type4.getFeatures().length);
+
+      TypeDescription type5 = typeSys.getType("Paragraph");
+      Assert.assertNotNull(type5);
+      Assert.assertEquals("DocumentStructure", type5.getSupertypeName());
+      Assert.assertEquals(0, type5.getFeatures().length);
+
+      TypeDescription type6 = typeSys.getType("Sentence");
+      Assert.assertNotNull(type6);
+      Assert.assertEquals("DocumentStructure", type6.getSupertypeName());
+      Assert.assertEquals(0, type6.getFeatures().length);
+
+      TypeDescription type7 = typeSys.getType("test.flowController.Test");
+      Assert.assertNotNull(type7);
+      Assert.assertEquals("uima.tcas.Annotation", type7.getSupertypeName());
+      Assert.assertEquals(1, type7.getFeatures().length);
+
+      // Place has merged features, Person has different supertype
+      assertEquals(2, mergedTypes.size());
+      assertTrue(mergedTypes.containsKey("Place"));
+      assertTrue(mergedTypes.containsKey("Person"));
+
+      // Type Priorities
+      Assert.assertNotNull(pri);
+      TypePriorityList[] priLists = pri.getPriorityLists();
+      Assert.assertEquals(3, priLists.length);
+      String[] list0 = priLists[0].getTypes();
+      String[] list1 = priLists[1].getTypes();
+      String[] list2 = priLists[2].getTypes();
+      // order of the three lists is not defined
+      Assert.assertTrue((list0.length == 2 && list1.length == 2 && list2.length == 3)
+              || (list0.length == 2 && list1.length == 3 && list2.length == 2)
+              || (list0.length == 3 && list1.length == 2 && list2.length == 2));
+
+      // Indexes
+      FsIndexDescription[] indexes = indexColl.getFsIndexes();
+      Assert.assertEquals(3, indexes.length);
+      // order of indexes is not defined
+      String label0 = indexes[0].getLabel();
+      String label1 = indexes[1].getLabel();
+      String label2 = indexes[2].getLabel();
+      Assert.assertTrue(label0.equals("DocStructIndex") || label1.equals("DocStructIndex")
+              || label2.equals("DocStructIndex"));
+      Assert.assertTrue(label0.equals("PlaceIndex") || label1.equals("PlaceIndex")
+              || label2.equals("PlaceIndex"));
+      Assert.assertTrue(label0.equals("FlowControllerTestIndex")
+              || label1.equals("FlowControllerTestIndex")
+              || label2.equals("FlowControllerTestIndex"));
+
+      // Now test case where aggregate contains a remote, and we want to do the
+      // merge of the non-remote delegates and report the failure.  (This example
+      // also happens to use import-by-name so we need to set the data path.)
+      ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
+      String pathSep = System.getProperty("path.separator");
+      resMgr.setDataPath(JUnitExtension.getFile("TypeSystemDescriptionImplTest/dataPathDir")
+              .getAbsolutePath()
+              + pathSep
+              + JUnitExtension.getFile("TypePrioritiesImplTest/dataPathDir").getAbsolutePath()
+              + pathSep
+              + JUnitExtension.getFile("FsIndexCollectionImplTest/dataPathDir").getAbsolutePath());
+
+      File descFile2 = JUnitExtension
+              .getFile("CasCreationUtilsTest/AggregateTaeWithSoapDelegate.xml");
+      AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser()
+              .parseAnalysisEngineDescription(new XMLInputSource(descFile2));
+      Map mergedTypes2 = new HashMap();
+      Map failedRemotes = new HashMap();
+      ProcessingResourceMetaData mergedMetaData2 = CasCreationUtils
+              .mergeDelegateAnalysisEngineMetaData(desc2, resMgr,
+                      mergedTypes2, failedRemotes);
+      assertTrue(failedRemotes.containsKey("/RemoteDelegate"));
+      ((Exception)failedRemotes.get("/RemoteDelegate")).printStackTrace();
+      assertTrue(mergedMetaData2.getTypeSystem().getTypes().length > 0);
+
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
+
+  }
+
 }
