@@ -239,12 +239,22 @@ public class BoundedWorkQueue {
     Object resource = dequeue();
     if (resource == null && cpm.isRunning()) {
       try {
-        if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
-          UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
-                  "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_queue_empty__FINEST",
-                  new Object[] { Thread.currentThread().getName(), queueName });
+        // add 1 millisecond to expire time to account for "rounding" issues
+        long timeExpire = (0 == aTimeout)? Long.MAX_VALUE : (System.currentTimeMillis() + aTimeout + 1);
+        long timeLeft = timeExpire - System.currentTimeMillis();
+        while (timeLeft > 0) {
+          if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
+            UIMAFramework.getLogger(this.getClass()).logrb(Level.FINEST, this.getClass().getName(),
+                    "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_queue_empty__FINEST",
+                    new Object[] { Thread.currentThread().getName(), queueName });
+          }
+          this.wait(timeLeft);  // timeLeft is always > 0
+          resource = dequeue();
+          if (null != resource) {
+            return resource;
+          }
+          timeLeft = timeExpire - System.currentTimeMillis();
         }
-        this.wait(aTimeout);
       } catch (InterruptedException e) {
       }
       if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {

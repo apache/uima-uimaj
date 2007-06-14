@@ -418,7 +418,10 @@ public class SequencedQueue extends BoundedWorkQueue {
    */
   public synchronized Object dequeue(long aTimeout) {
     Object resource = null;
-    long startTime = new Date().getTime();
+    long startTime = System.currentTimeMillis();
+    // add 1 for rounding issues.  Should really add the smallest incr unit, which might be
+    //   > 1...  Java docs say it could be 10...
+    long expireTime = (aTimeout == 0)? Long.MAX_VALUE : startTime + aTimeout + 1;
     while ((resource = dequeue()) == null) {
       try {
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
@@ -426,11 +429,14 @@ public class SequencedQueue extends BoundedWorkQueue {
                   "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_wait_for_chunk__FINEST",
                   new Object[] { Thread.currentThread().getName(), getName() });
         }
-        wait(20);  // wait time is rest of time out - FIXME
+        long timeRemaining = expireTime - System.currentTimeMillis();
+        if (timeRemaining > 0) {
+          wait(timeRemaining);
+        }
       } catch (InterruptedException e) {
       }
       resource = dequeue();
-      if (resource == null && aTimeout > 0 && (new Date().getTime() - startTime) >= aTimeout) {
+      if (resource == null && (System.currentTimeMillis() > expireTime)) {
         String docId = nextChunkMetadata.getDocId();
 
         if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
